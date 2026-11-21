@@ -1,7 +1,5 @@
 import Mathlib
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModBasic
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEisInt
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDeltaInt
 
 noncomputable section

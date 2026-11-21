@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableT2LocalField
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory PositivityTheory.Rg.Tf.Loc
 open scoped ENNReal Topology
 
@@ -198,3 +200,8 @@ theorem h2U : PositivityTheory.Rg.Tf.Loc.QuotientIntegralCompactOpen := by
   exact quotLIntegral_eq_tsum μG H μH U hUo hUc hH hcomm Fn hFH hFU Rp hcov huniq
 
 end GlobalTheory.CompanionTheory.QuotU
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unipotent_hecke_support : PositivityTheory.Rg.Tf.Loc.QuotientIntegralCompactOpen := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.QuotU.h2U

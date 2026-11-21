@@ -3,6 +3,7 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GenHom
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedIdealPowerLeSections
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GeneratedSubsheafLeOfTwistedSectionMem
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -93,3 +94,10 @@ theorem genSub_le_powSub : ∀ {A : Type} [CommRing A] [IsNoetherianRing A] (I :
   exact genSub_le hH (powSub I P m) n c (mem_twSecs_of_mem_twPow I H P n m hc)
 
 end GlobalTheory.CompanionTheory.GE.TwGen
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE GlobalTheory.CompanionTheory.GE.TwGen
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generated_subsheaf_le_ideal_power : ∀ {A : Type} [CommRing A] [IsNoetherianRing A] (I : Ideal A) {X : Scheme.{0}} [X.Over (Spec (.of A))] {H : ReciprocityTheory.ChartRestriction.G.Semi.LB X} (hH : H.IsLB) {P : X.Modules}, P.IsQuasicoherent → ∀ (n : ℤ) (m : ℕ) (c : Γ(GlobalTheory.twistZ P H n, ⊤)), c ∈ twPow I H n P m → genSub hH n c ≤ powSub I P m := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.TwGen.genSub_le_powSub

@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EndOmega
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.NormPowSubPowLtOne
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.Honda
 
 theorem unitFix_subMax {K : Type} [NormedField K] [IsUltrametricDist K] (x y : K) : ‖x - y‖ ≤ max ‖x‖ ‖y‖ := by
@@ -171,3 +173,9 @@ theorem unit_solution_twisted_frobenius : ∀ (K : Type) [NormedField K] [IsUltr
   exact tendsto_nhds_unique hn tendsto_const_nhds
 
 end GlobalTheory.Honda
+end
+
+open PowerSeries GlobalTheory.Honda
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_solution_twisted_frobenius_square : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [CharZero K] [CompleteSpace K] (l : ℕ) (σ : K →+* K), Unr K l σ → ResAlg K → ∀ c : K, ‖c‖ = 1 → ∃ ε : K, ‖ε‖ = 1 ∧ ε = c * (σ ^ 2) ε := by
+  atlas_forward_decl GlobalTheory.Honda.unit_solution_twisted_frobenius

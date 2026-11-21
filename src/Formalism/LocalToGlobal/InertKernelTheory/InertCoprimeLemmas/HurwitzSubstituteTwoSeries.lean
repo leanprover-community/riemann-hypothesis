@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
-import Formalism.LocalToGlobal.InertKernelTheory.StatementZ
 import Formalism.LocalToGlobal.InertKernelTheory.Adm11OfBeProp
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EnInParamKProd
 import Formalism.FormalGroupWitt.FormalGroupWittProofs.WittTeichmullerRoot

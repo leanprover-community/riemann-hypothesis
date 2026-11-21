@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PrimOfIsUnitDet
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.GramCount
 open scoped Classical
 
@@ -43,3 +46,10 @@ theorem exists_isPrimitive_invol_invariant {B : Type} [CommRing B] [Fintype B] (
     simp only [AddChar.compAddMonoidHom_apply, hT, hc, add_comm]
 
 end GlobalTheory.GramCount
+end
+
+open GlobalTheory.GramCount
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_primitive_addChar_involution_invariant : ∀ {B : Type} [CommRing B] [Fintype B] (c : B →+* B), (∀ u, c (c u) = u) → ∀ (ω : B), IsUnit (ω - c ω) → (∀ t, c t = t → t ≠ 0 → IsUnit t) → ∃ χ : AddChar B ℂ, χ.IsPrimitive ∧ ∀ u, χ (c u) = χ u := by
+  atlas_forward_decl GlobalTheory.GramCount.exists_isPrimitive_invol_invariant

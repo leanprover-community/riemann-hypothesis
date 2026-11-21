@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
+import BuildAid.ForwardExisting
 
+section
 open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
 open Polynomial
 
@@ -31,3 +33,10 @@ theorem isIntegral_of_esymm_mem (ι : Type) [Fintype ι] (R : Subring ℂ) (x : 
   simpa using hneg.neg
 
 end GlobalTheory.QFam
+end
+
+open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators
+open GlobalTheory.QFam
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIntegral_of_esymm_mem_subring : ∀ (ι : Type) [Fintype ι] (R : Subring ℂ) (x : ι → ℂ), (∀ k : ℕ, (∑ t ∈ Finset.powersetCard k Finset.univ, ∏ i ∈ t, x i) ∈ R) → ∀ i, IsIntegral R (x i) := by
+  atlas_forward_decl GlobalTheory.QFam.isIntegral_of_esymm_mem

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped NNReal TensorProduct
 
 namespace GlobalTheory
@@ -69,3 +72,9 @@ theorem laurentSeries_eq_sum_single_mul_pow :
   ring
 
 end GlobalTheory
+end
+
+open scoped NNReal TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.laurentSeries_eq_sum_single_mul_pow_prime : ∀ (p : ℕ) [Fact p.Prime] (f : LaurentSeries (ZMod p)), ∃ g : Fin p → LaurentSeries (ZMod p), f = ∑ j : Fin p, HahnSeries.single ((j : ℕ) : ℤ) (1 : ZMod p) * g j ^ p := by
+  atlas_forward_decl GlobalTheory.laurentSeries_eq_sum_single_mul_pow

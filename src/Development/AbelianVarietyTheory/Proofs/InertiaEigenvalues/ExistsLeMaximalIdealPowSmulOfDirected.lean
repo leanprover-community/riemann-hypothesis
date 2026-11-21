@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FiniteCocycles
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MatMapTmul
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FiniteAlgebraLocalCompletion
 open TensorProduct Polynomial IsLocalRing GlobalTheory.Pat

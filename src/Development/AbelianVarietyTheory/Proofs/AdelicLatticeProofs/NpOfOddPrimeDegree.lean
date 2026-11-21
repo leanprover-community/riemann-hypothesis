@@ -5,6 +5,7 @@ import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsPushout
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.NpOfFinrankPrimeOfIsPrimitiveRoot
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsNormFromBaseChangeBaseChangeProperties
 
+section
 open NumberField IsDedekindDomain Polynomial GlobalTheory.QNorm GlobalTheory.CNorm
 open scoped WithZero TensorProduct
 
@@ -64,3 +65,10 @@ theorem np_of_odd_prime_degree : ∀ (p : ℕ) (F E : Type) [Field F] [NumberFie
   exact exists_norm_eq_of_coprime_pow hc hx h1 h3
 
 end GlobalTheory.CNorm
+end
+
+open NumberField IsDedekindDomain Polynomial GlobalTheory.QNorm GlobalTheory.CNorm
+open scoped WithZero TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.np_of_odd_prime_degree' : ∀ (p : ℕ) (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsGalois F E], p.Prime → p ≠ 2 → Module.finrank F E = p → NP F E := by
+  atlas_forward_decl GlobalTheory.CNorm.np_of_odd_prime_degree

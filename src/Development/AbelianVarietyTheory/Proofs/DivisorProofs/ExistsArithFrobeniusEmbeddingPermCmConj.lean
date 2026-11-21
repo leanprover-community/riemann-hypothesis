@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.HasBlockOfOccurs
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.CycFieldA
 
+section
 open NumberField IsDedekindDomain GlobalTheory.ExpFrame Formalism.CohomologicalDescent.DepthNonnegative Formalism.CohomologicalDescent.LD Formalism.RankGapBounds.FormsTensorLocalization Formalism.L2.Host GlobalTheory.HeckeGal
 
 namespace GlobalTheory.FrobEmb
@@ -32,3 +33,9 @@ theorem exists_frobPerm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   exact h
 
 end GlobalTheory.FrobEmb
+end
+
+open NumberField IsDedekindDomain GlobalTheory.ExpFrame Formalism.CohomologicalDescent.DepthNonnegative Formalism.CohomologicalDescent.LD Formalism.RankGapBounds.FormsTensorLocalization Formalism.L2.Host GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_arithFrobenius_embedding_perm_cmConj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (l : ℕ) [Fact l.Prime], ¬ (l : ℤ) ∣ NumberField.discr E → ∃ σ : Equiv.Perm (E →+* PadicAlgCl l), IsFrobPerm σ ∧ ∀ τ, σ (cj τ) = cj (σ τ) := by
+  atlas_forward_decl GlobalTheory.FrobEmb.exists_frobPerm

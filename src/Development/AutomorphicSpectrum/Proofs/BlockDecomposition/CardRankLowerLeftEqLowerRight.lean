@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JpUnif
+import BuildAid.ForwardExisting
 
+section
 open Matrix GlobalTheory.CompanionTheory.Jp
 
 namespace GlobalTheory.CompanionTheory.Jp.CntSwap
@@ -24,3 +26,10 @@ theorem card_lower_left_rank_eq_card_lower_right_rank : ∀ (k : Type) [Field k]
     rw [Equiv.coe_mulRight, lowerRightBlock_mul_block_swap]))
 
 end GlobalTheory.CompanionTheory.Jp.CntSwap
+end
+
+open Matrix GlobalTheory.CompanionTheory.Jp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_rank_lower_left_eq_lower_right : ∀ (k : Type) [Field k] [Fintype k] (n i : ℕ),
+    Nat.card {g : GL (Ix n) k // (lowerLeftBlock g).rank = i} = Nat.card {g : GL (Ix n) k // (dBlk g).rank = i} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Jp.CntSwap.card_lower_left_rank_eq_card_lower_right_rank

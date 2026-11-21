@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.KaehlerTower
@@ -99,3 +101,15 @@ theorem kaehler_basis_tower : ∀ (R S T : Type) [CommRing R] [CommRing S] [Comm
   exact hmain
 
 end GlobalTheory.CompanionTheory.KaehlerTower
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kaehler_basis_tower_alt : ∀ (R S T : Type) [CommRing R] [CommRing S] [CommRing T] [Algebra R S] [Algebra S T] [Algebra R T]
+    [IsScalarTower R S T] [Algebra.FormallySmooth S T] (e m : ℕ) (z : Fin e → S) (w : Fin m → T),
+    LinearIndependent S (fun i => KaehlerDifferential.D R S (z i)) →
+    Submodule.span S (Set.range fun i => KaehlerDifferential.D R S (z i)) = ⊤ →
+    LinearIndependent T (fun i => KaehlerDifferential.D S T (w i)) →
+    Submodule.span T (Set.range fun i => KaehlerDifferential.D S T (w i)) = ⊤ →
+    LinearIndependent T (fun i => KaehlerDifferential.D R T (Fin.append (fun i => algebraMap S T (z i)) w i)) ∧
+    Submodule.span T (Set.range fun i => KaehlerDifferential.D R T (Fin.append (fun i => algebraMap S T (z i)) w i)) = ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KaehlerTower.kaehler_basis_tower

@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConjTransposeVecMulVecSelf
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCompactIntMatrix
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -337,3 +338,10 @@ theorem posChar_trivial_and_unimodular : ∀ (F E : Type) [NontriviallyNormedFie
   exact ⟨fun ch hc hpos g => char_eq_one (F := F) r ch hc hpos g, fun M => isMulRightInvariant r M⟩
 
 end GlobalTheory.JR.UnitChar
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryGroup_positiveCharacter_trivial_and_unimodular : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (r : ℕ), (∀ ch : Matrix.unitaryGroup (Fin r) E →* ℝ, Continuous ch → (∀ g, 0 < ch g) → ∀ g, ch g = 1) ∧ ∀ M : Meas r F E, (letI := M.mU; M.μU.IsMulRightInvariant) := by
+  atlas_forward_decl GlobalTheory.JR.UnitChar.posChar_trivial_and_unimodular

@@ -1,10 +1,11 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointLatticeIntersectionSelfDualProperties
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointMajorantFramesGiveMajorants
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GradedPieceSizesUnipotentLeviCompactMove
-import Formalism.HarderNarasimhan.ShiftInvariance
 import Formalism.MeanHeightDescent.AverageDegreeBounds.SpanMuMin
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory NumberField Matrix Formalism.MainNotions.S GlobalTheory.Count Formalism.REAL Formalism.HN
 
 noncomputable section
@@ -176,3 +177,10 @@ theorem least_pow_mul_sqrt_absNorm_le_prod : ∀ (I : AutInst) (x : I.GA) (𝔪 
     two_ne_zero).1 hsq
 
 end GlobalTheory.LineBound
+end
+end
+
+open MeasureTheory NumberField Matrix Formalism.MainNotions.S GlobalTheory.Count Formalism.REAL Formalism.HN
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.leastSize_pow_mul_sqrt_absNorm_le_prod_norms : ∀ (I : AutInst) (x : I.GA) (𝔪 : Ideal (𝓞 I.E)), 𝔪 ≠ ⊥ → ∀ w ∈ 𝔪 • lamX I x, w ≠ 0 → least I x ^ I.f * Real.sqrt (Ideal.absNorm 𝔪) ≤ ∏ v, Real.sqrt (∑ i, ‖(uMat (x.1 v)⁻¹ *ᵥ ((I.P v)⁻¹ *ᵥ fun j => I.φ v (w j))) i‖ ^ 2) := by
+  atlas_forward_decl GlobalTheory.LineBound.least_pow_mul_sqrt_absNorm_le_prod

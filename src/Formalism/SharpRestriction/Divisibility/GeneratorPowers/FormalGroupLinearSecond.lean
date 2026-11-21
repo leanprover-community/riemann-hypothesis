@@ -216,30 +216,7 @@ theorem formal_group_linear_first (G : FGLaw S d) (i j : Fin d) :
   exact formal_group_linear_second G i j
 
 theorem eq_single_of_degree_one {κ : Type} (e : κ →₀ ℕ) (he : e.degree = 1) : ∃ q, e = Finsupp.single q 1 := by
-  classical
-  have h1 : ∑ i ∈ e.support, e i = 1 := by
-    first
-      | exact he
-      | simpa [Finsupp.degree] using he
-  obtain ⟨q, hq⟩ : e.support.Nonempty := by
-    rw [Finset.nonempty_iff_ne_empty]
-    intro h
-    rw [h, Finset.sum_empty] at h1
-    exact zero_ne_one h1
-  have h2 := Finset.add_sum_erase e.support e hq
-  rw [h1] at h2
-  have hq0 : e q ≠ 0 := Finsupp.mem_support_iff.1 hq
-  have h3s : ∑ i ∈ e.support.erase q, e i = 0 := by omega
-  have h3 := Finset.sum_eq_zero_iff.1 h3s
-  refine ⟨q, ?_⟩
-  ext i
-  by_cases hi : i = q
-  · subst hi
-    rw [Finsupp.single_eq_same]
-    omega
-  · rw [Finsupp.single_apply, if_neg (Ne.symm hi)]
-    by_contra hne
-    exact hne (h3 i (Finset.mem_erase.2 ⟨hi, Finsupp.mem_support_iff.2 hne⟩))
+  apply eq_single_lemma_6 (e := e) (he := he) <;> assumption
 
 private theorem mem_degLE_lemma {κ : Type} [Fintype κ] [DecidableEq κ] {n : ℕ} {x : κ →₀ ℕ}
     (hx : x.degree ≤ n) : x ∈ degLE n := by

@@ -1,11 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.HypothesesAbsDet
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSubAug
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RkSubSuccLe
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ChainLengthBoundOfSupInfStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaRankSubmoduleChainBoundedStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ChainLengthBoundOfSupInf
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaRankSubmoduleChainBounded
 
+section
 noncomputable section
 
 open GlobalTheory.SplitWeil GlobalTheory.ThetaGLSub GlobalTheory.ThetaGLRank
@@ -57,3 +56,12 @@ theorem boundedChains_thetaGL : GlobalTheory.FunPr.Hypotheses₂ → ∀ (k : Ty
   exact le_sup_of_le_right (hQ i).2.1
 
 end GlobalTheory.ThetaGLRank
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_submodule_chain_bounded : GlobalTheory.FunPr.Hypotheses₂ → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (n m : ℕ) (χ : GL (Fin n) k →* ℂˣ), IsOpen {g | χ g = 1} →
+    ∃ L : ℕ, ∀ (r : ℕ) (N : Fin r → Submodule ℂ (Matrix (Fin n) (Fin m) k → ℂ)),
+      StrictMono N → (∀ i, GlobalTheory.ThetaGLSub.IsSub χ (N i)) → r ≤ L := by
+  atlas_forward_decl GlobalTheory.ThetaGLRank.boundedChains_thetaGL

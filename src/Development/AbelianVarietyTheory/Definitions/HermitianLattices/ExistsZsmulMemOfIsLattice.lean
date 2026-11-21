@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
 import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.Imports
 
 noncomputable section

@@ -3,6 +3,9 @@ import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsF
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SumSupportEq
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EventualValue
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LocPairValLinear
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.ValLin
@@ -18,3 +21,9 @@ theorem locPair_val_linear : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscret
   _root_.UpperTheory.Reformulated.B.Qp9.locPair_val_linear
 
 end GlobalTheory.CompanionTheory.Ar.Num
+end
+
+open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_pair_value_linear : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (σ : Type) [Fintype σ] (T : LocPair ι O σ) (P : Ideal (MRing ι O)), (∀ Gs Hs, T.val P (Gs + Hs) = T.val P Gs + T.val P Hs) ∧ (∀ (c : ℝ) Gs, T.val P (fun i => C c * Gs i) = c * T.val P Gs) ∧ ∀ (α : Type) (s : Finset α) (Gs : α → σ → MvPolynomial (σ ⊕ σ) ℝ), T.val P (fun i => ∑ a ∈ s, Gs a i) = ∑ a ∈ s, T.val P (Gs a) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.locPair_val_linear

@@ -10,7 +10,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeCountingBound.Ar
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeCountingBound.DualIncl
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeCountingBound.Choose
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeCountingBound.ArchPlace
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeCountingBound.IndexDefs
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeCountingBound.IndexDual
 
 noncomputable section

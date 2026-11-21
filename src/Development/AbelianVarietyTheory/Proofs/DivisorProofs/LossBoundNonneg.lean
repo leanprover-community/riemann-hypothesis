@@ -3,7 +3,6 @@ import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LevelLossDegreeB
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.BracketAbsoluteSums
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OneLeLetterBlockLength
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemHeightOneIdealIffAdditiveValuationPos
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
 noncomputable section
 

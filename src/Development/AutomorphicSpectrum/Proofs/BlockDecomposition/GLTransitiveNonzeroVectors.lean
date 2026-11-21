@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ColGeR
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin GlobalTheory.CompanionTheory.TyFin.ColStep
 
 namespace GlobalTheory.CompanionTheory.TyFin.RowTrans
@@ -39,3 +40,10 @@ theorem gl_transitive_rows : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K
     exact he
 
 end GlobalTheory.CompanionTheory.TyFin.RowTrans
+end
+
+open ReciprocityTheory.Ty.Fin GlobalTheory.CompanionTheory.TyFin.ColStep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.GL_transitive_nonzero_vectors : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K] (j : ℕ) (r r' : Fin j → K), r ≠ 0 → r' ≠ 0 →
+    ∃ g : GL (Fin j) K, Matrix.vecMul r (g : Matrix (Fin j) (Fin j) K) = r' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.RowTrans.gl_transitive_rows

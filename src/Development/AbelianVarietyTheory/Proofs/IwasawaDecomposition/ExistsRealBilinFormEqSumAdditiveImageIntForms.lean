@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SumMulEqZeroOfSumToReal
+
+section
 open GlobalTheory.PolFan
 
 namespace GlobalTheory.PolFan
@@ -62,3 +64,9 @@ theorem exists_sum_toReal_additive_images : ∀ {L : Type} [AddCommGroup L] [Mod
   exact (e.symm.sum_comp fun s => w s • toReal (Q s)).symm
 
 end GlobalTheory.PolFan
+end
+
+open GlobalTheory.PolFan
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_realBilinForm_eq_sum_additive_image_intForms : ∀ {L : Type} [AddCommGroup L] [Module.Free ℤ L] [Module.Finite ℤ L] (B : L →ₗ[ℤ] L →ₗ[ℤ] ℝ), ∃ (n : ℕ) (w : Fin n → ℝ) (Q : Fin n → LinearMap.BilinForm ℤ L), B = ∑ j, w j • toReal (Q j) ∧ ∀ j, ∃ g : ℝ →+ ℝ, ∀ y z, (Q j y z : ℝ) = g (B y z) := by
+  atlas_forward_decl GlobalTheory.PolFan.exists_sum_toReal_additive_images

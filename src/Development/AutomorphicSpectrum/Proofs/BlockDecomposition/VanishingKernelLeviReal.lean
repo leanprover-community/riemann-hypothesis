@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.InjectiveDecompositionAction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsPermOfMapEq
 
+section
 open Finset
 
 noncomputable section
@@ -406,3 +407,10 @@ theorem vanKL : VanKL := by
     simp
 
 end GlobalTheory.CompanionTheory.KostL
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.vanishing_kernel_levi_real : PositivityTheory.RgBcC.RealD.VanKL := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KostL.vanKL

@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPowEqOfKaehlerDEqZeroStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPowEqOfKaehlerDEqZero
 
+section
 open TensorProduct
 
 namespace GlobalTheory
@@ -24,3 +25,9 @@ theorem exists_pow_eq_of_kaehlerDifferential_eq_zero_of_smooth_domain :
   rw [map_pow, hh]
 
 end GlobalTheory
+end
+
+open TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_pow_eq_of_kaehler_D_eq_zero_of_smooth_domain : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [IsAlgClosed k] (hk : (p : k) = 0) (S : Type) [CommRing S] [IsDomain S] [Algebra k S] [Algebra.Smooth k S] (f : S), KaehlerDifferential.D k S f = 0 → ∃ h : S, h ^ p = f := by
+  atlas_forward_decl GlobalTheory.exists_pow_eq_of_kaehlerDifferential_eq_zero_of_smooth_domain

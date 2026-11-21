@@ -1,4 +1,3 @@
-import Formalism.SizeWindowBrackets.Chain2aCoreNoAnalytic
 import Formalism.SizeWindowBrackets.SmoothedRemainderRealIntegralFormula
 import Formalism.SizeWindowBrackets.SBrDiv
 import Formalism.SizeWindowBrackets.TranslateWordBoundHypotheses

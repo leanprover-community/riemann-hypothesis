@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteReal.AllPartsTransferOfFacts
-import Formalism.LocalToGlobal.IndefiniteReal.TraceOfDiag
 import Formalism.LocalToGlobal.IndefiniteReal.OpNormAtLeOfPoints
 import Formalism.LocalToGlobal.IndefiniteReal.FinrankIntSelf
 import Formalism.LocalToGlobal.IndefiniteReal.ExistsStrictHenselianAbsolutelyClosedLocalRing

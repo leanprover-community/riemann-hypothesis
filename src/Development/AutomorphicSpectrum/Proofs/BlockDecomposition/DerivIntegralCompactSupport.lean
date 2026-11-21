@@ -1,4 +1,7 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Rr
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Finset
 open scoped ContDiff ComplexConjugate InnerProductSpace Topology
 open PositivityTheory.RgBcC GlobalTheory.CompanionTheory.WaveSpd
@@ -95,3 +98,13 @@ theorem hasDerivAt_integral_compact {n : ℕ} [MeasurableSpace (G n)] [BorelSpac
   exact this.2
 
 end GlobalTheory.CompanionTheory.WaveSpd.IntDeriv
+end
+
+open MeasureTheory Matrix Finset
+open scoped ContDiff ComplexConjugate InnerProductSpace
+open PositivityTheory.RgBcC GlobalTheory.CompanionTheory.WaveSpd
+open PositivityTheory.RgTw (Mat G)
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.deriv_integral_compact_support : ∀ {n : ℕ} [MeasurableSpace (G n)] [BorelSpace (G n)] (μ : Measure (G n)) [μ.IsHaarMeasure] (ρ : ℝ → Mat n → ℝ), Sm ρ → ∀ (K : Set (G n)), IsCompact K → ∀ (s₀ ε : ℝ), 0 < ε → (∀ s ∈ Metric.ball s₀ ε, ∀ y : G n, y ∉ K → ρ s y.val = 0) → HasDerivAt (fun s => ∫ y : G n, ρ s y.val ∂μ) (∫ y : G n, dt ρ s₀ y.val ∂μ) s₀ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WaveSpd.IntDeriv.hasDerivAt_integral_compact

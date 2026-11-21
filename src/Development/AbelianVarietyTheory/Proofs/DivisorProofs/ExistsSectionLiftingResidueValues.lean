@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtChart
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing
 
 namespace GlobalTheory.DenseSec
@@ -104,3 +107,9 @@ theorem hensel_etChart : ∀ (R : Type) [CommRing R] [IsLocalRing R], IsAdicComp
     rw [this, Φ.commutes, hPR, MvPolynomial.aeval_X]
 
 end GlobalTheory.DenseSec
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_section_lifting_residue_values : ∀ (R : Type) [CommRing R] [IsLocalRing R], IsAdicComplete (maximalIdeal R) R → ∀ (A : Type) [CommRing A] [Algebra R A] (g : ℕ) (t : Fin g → A) (h : A), GlobalTheory.DenseSec.EtChart R A t h → ∀ (ε : A →ₐ[R] R), IsUnit (ε h) → ∀ c : Fin g → R, (∀ i, c i - ε (t i) ∈ maximalIdeal R) → ∃ a : A →ₐ[R] R, IsUnit (a h) ∧ ∀ i, a (t i) = c i := by
+  atlas_forward_decl GlobalTheory.DenseSec.hensel_etChart

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.ConvGrOf
+import BuildAid.ForwardExisting
 
+section
 open Matrix Topology
 
 namespace GlobalTheory.CompanionTheory.RgEisTop
@@ -80,3 +82,8 @@ theorem grpTop : PositivityTheory.RgEis.GrpTop := by
   exact hce.isCompact_preimage (hA.toGoodL.kcpt (ι ⊕ ι))
 
 end GlobalTheory.CompanionTheory.RgEisTop
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.general_linear_topological_group : PositivityTheory.RgEis.GrpTop := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisTop.grpTop

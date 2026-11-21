@@ -1,9 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfCountAtOf
-import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.InfClassAt
-import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardQuotPowSmulBoundsDvrFgModule
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain
@@ -156,3 +155,9 @@ theorem dataK : GlobalTheory.SumCount.DataK := by
 end GlobalTheory.SumCount.DataCount
 
 end
+end
+
+open GlobalTheory.SumCount GlobalTheory.SumSize
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.datumCountBound_largeData : GlobalTheory.SumCount.DataK := by
+  atlas_forward_decl GlobalTheory.SumCount.DataCount.dataK

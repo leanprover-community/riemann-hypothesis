@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameGraphGeneric
-import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameJacobianGeneric
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameImplicitGraph
 set_option maxSynthPendingDepth 1
 

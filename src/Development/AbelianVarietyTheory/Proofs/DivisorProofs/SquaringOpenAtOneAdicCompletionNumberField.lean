@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceOpen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquaringOpenAtOneOfCompleteTwoNeZeroStatement
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.QSA
 open scoped Quaternion Topology
 
@@ -24,3 +26,10 @@ theorem sqOpen_and_nhdsNE_zero_neBot_adicCompletion :
 end GlobalTheory.QSA
 
 end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.QSA
+open scoped Quaternion Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.squaringOpenAtOne_adicCompletion_numberField : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)), SqOpen (v.adicCompletion F) ∧ (𝓝[≠] (0 : v.adicCompletion F)).NeBot := by
+  atlas_forward_decl GlobalTheory.QSA.sqOpen_and_nhdsNE_zero_neBot_adicCompletion

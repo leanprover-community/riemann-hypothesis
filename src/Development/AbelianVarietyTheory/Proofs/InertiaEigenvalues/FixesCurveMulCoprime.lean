@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.PermutesRefl
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIsGrpPullbackOfLattice
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsRingEquiv
 
+section
 noncomputable section
 
 open CategoryTheory NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompRat PeriodPair
@@ -146,3 +146,10 @@ theorem fixesCurve_mul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   exact conj_add h (hm _) (hnT _)
 
 end GlobalTheory.CompRat.Inertia
+end
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompRat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fixesCurve_mul_coprime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (m n p : ℕ) (A : ValuationSubring ℂ) (τ : ℂ ≃+* ℂ), p.Prime → (p : ℂ) ∈ A.nonunits → ¬ p ∣ n → Nat.Coprime m n → 3 ≤ m / p ^ m.factorization p → FixesCurve H τ m → (∀ x : ℂ, IsAlgebraic ℚ x → x ∈ A → τ x - x ∈ A.nonunits) → FixesCurve H τ (m * n) := by
+  atlas_forward_decl GlobalTheory.CompRat.Inertia.fixesCurve_mul

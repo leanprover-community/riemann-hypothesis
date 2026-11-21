@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LiftSemiTmul
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -28,3 +29,10 @@ theorem comparison_degree_one_tower (R S S' C : Type) [CommRing R] [CommRing S] 
   | add x y hx hy => simp only [map_add, hx, hy]
 
 end GlobalTheory.CompanionTheory.PerfVB
+end
+end
+
+open CategoryTheory AlgebraicGeometry TensorProduct Opposite MonoidalCategory CartesianMonoidalCategory MonObj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR MainStatements.Hodge GlobalTheory.CompanionTheory.PerfVB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.comparison_degree_one_tower_formula : ∀ (R S S' C : Type) [CommRing R] [CommRing S] [CommRing S'] [Algebra R S] [Algebra S S'] [Algebra R S'] [IsScalarTower R S S'] [Category.{0} C] (F : C ⥤ CommAlgCat.{0} R) (F' : C ⥤ CommAlgCat.{0} S) (F'' : C ⥤ CommAlgCat.{0} S') (m : BC F F') (n : BC F' F'') (l : BC F F''), (∀ T b, l.α T b = n.α T (m.α T b)) → ∀ x : S ⊗[R] C1 F, th1 l ((IsScalarTower.toAlgHom R S S').toLinearMap.rTensor (C1 F) x) = c1 n (th1 m x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PerfVB.comparison_degree_one_tower

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl GlobalTheory.InertZeta
@@ -277,3 +279,9 @@ theorem pointwise : AddVec → Dual → SpanEq → Heis → Pointwise := by
 end GlobalTheory.CompanionTheory.InertLen
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pointwise_of_span_heisenberg : AddVec → Dual → SpanEq → Heis → Pointwise := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertLen.pointwise

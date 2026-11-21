@@ -3,7 +3,9 @@ import Formalism.RealPlaceAnalysis.StatementE
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.WhittakerZeroStatement
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantEquality
+import BuildAid.ForwardExisting
 
+section
 open Finset Formalism.REAL ReciprocityTheory.ChartRestriction.DS.Lap.Capelli CompanionTheory.RgExh
 
 namespace GlobalTheory.CompanionTheory.RgExhHecke
@@ -204,3 +206,8 @@ theorem rankOneTens : ∀ (m : ℕ) (X : GMod (m + 1)) (u : ℂ),
 theorem rankOne : Hk.RankOne := rankOneTens
 
 end GlobalTheory.CompanionTheory.RgExhHecke
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.HeckeRankOne : CompanionTheory.RgExh.Hk.RankOne := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgExhHecke.rankOne

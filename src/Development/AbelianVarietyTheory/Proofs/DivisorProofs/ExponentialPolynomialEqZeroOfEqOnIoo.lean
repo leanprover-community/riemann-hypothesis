@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemExpSolCons
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
 
 namespace GlobalTheory.HCF
@@ -39,3 +42,9 @@ theorem expSol_eq_zero_of_eqOn_Ioo :
     simpa [Complex.exp_ne_zero] using this
 
 end GlobalTheory.HCF
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exponentialPolynomial_eq_zero_of_eqOn_Ioo : ∀ (l : List ℂ) (f : ℝ → ℂ), f ∈ expSol l → ∀ s t : ℝ, s < t → (∀ x ∈ Set.Ioo s t, f x = 0) → f = 0 := by
+  atlas_forward_decl GlobalTheory.HCF.expSol_eq_zero_of_eqOn_Ioo

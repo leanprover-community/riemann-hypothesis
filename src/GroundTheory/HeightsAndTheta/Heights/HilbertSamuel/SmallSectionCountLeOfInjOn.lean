@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLocalRep
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsConstantShift
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmAExpand

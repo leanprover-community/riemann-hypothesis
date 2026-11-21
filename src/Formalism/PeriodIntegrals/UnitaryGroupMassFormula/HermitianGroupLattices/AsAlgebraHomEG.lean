@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.SameFormAllLevels
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianGroupLattices.StarMapTraceOfPowEqOne
 
 noncomputable section

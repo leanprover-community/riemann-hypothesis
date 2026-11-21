@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.RankEqCardIffExistsFrameMatrixFirstColumnBlock
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.SplitFlip
 
 def pathInnerDiff (X : ℕ × ℕ) : ℤ := (X.1 : ℤ) - X.2
@@ -45,3 +47,9 @@ theorem mem_innerVertices_flipPath {γ : List Edge} {i j : ℕ} (hγ : IsPath γ
     refine ⟨fun H => h (hγ.eq_of_src_eq_of_mem heγ hex (by simpa using H)), fun _ => List.mem_map.2 ⟨e, he, rfl⟩⟩
 
 end GlobalTheory.SplitFlip
+end
+
+open GlobalTheory.SplitFlip
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_gridPathInnerVertices_flipGridPathAtSquare : ∀ {γ : List Edge} {i j : ℕ}, IsPath γ → PassesThrough i j γ → ∀ X ∈ innerVertices (flipPath i j γ), X ≠ (i, j) ∧ (X ≠ (i + 1, j + 1) → X ∈ innerVertices γ) := by
+  atlas_forward_decl GlobalTheory.SplitFlip.mem_innerVertices_flipPath

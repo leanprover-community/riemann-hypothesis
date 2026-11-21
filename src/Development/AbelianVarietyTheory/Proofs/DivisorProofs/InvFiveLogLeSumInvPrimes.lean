@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Classical
 
 namespace GlobalTheory.PrimeRecip
@@ -310,3 +313,9 @@ theorem inv_five_log_le_sum_inv_primes :
   · exact inv_five_log_le_sum_inv_primes_of_large N (by omega)
 
 end GlobalTheory.PrimeRecip
+end
+
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inv_five_log_le_sum_inv_primes_half_interval : ∀ N : ℕ, 100 ≤ N → 1 / (5 * Real.log N) ≤ ∑ p ∈ (Finset.range (N + 1)).filter (fun p => p.Prime ∧ N < 2 * p ∧ p + 3 ≤ N), (1 : ℝ) / p := by
+  atlas_forward_decl GlobalTheory.PrimeRecip.inv_five_log_le_sum_inv_primes

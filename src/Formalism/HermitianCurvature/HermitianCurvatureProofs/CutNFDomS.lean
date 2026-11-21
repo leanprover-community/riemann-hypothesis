@@ -1,10 +1,6 @@
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFHypS
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTopDomPtwAsm
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.DominatedL2TruncationBoundHolds
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTopDomEmpty
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTopDomVMul
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFCutSup
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.DominatedL2OperatorBoundHolds
 
 namespace Formalism.FourierDecayAlt.P.CutBP
 

@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FintypeResidue
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctionalSectionNonvanishing
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
 open GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.Iwasawa GroundTheory.Automorphic.GLnLocal
 open scoped ValuativeRel
@@ -21,3 +24,12 @@ theorem det_torusPow_eq (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace 
   simp [Units.coe_prod, Iwasawa.coe_uniformizerUnit, Units.val_zpow_eq_zpow_val]
 
 end GlobalTheory.CompanionTheory.LFUDom
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
+open GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.Iwasawa GroundTheory.Automorphic.GLnLocal
+open scoped ValuativeRel
+open GlobalTheory.CompanionTheory.LFUDom
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_torus_power : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (n : ℕ) (l : Fin n → ℤ), GeneralLinearGroup.det (torusPow F n l) = uniformizerUnit F ^ (∑ i, l i) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LFUDom.det_torusPow_eq

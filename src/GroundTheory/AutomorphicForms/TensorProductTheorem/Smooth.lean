@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.SmoothRep
 import GroundTheory.AutomorphicForms.TensorProductTheorem.Restricted
 import GroundTheory.AutomorphicForms.TensorProductTheorem.TotallyDisconnectedSpaceRestrictedProduct
 

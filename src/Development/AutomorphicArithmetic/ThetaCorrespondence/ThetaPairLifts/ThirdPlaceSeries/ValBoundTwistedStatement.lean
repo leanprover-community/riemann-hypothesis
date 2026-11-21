@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmAbelianFieldDataOfToricRatioStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.Realised
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ValBoundTwisted
 
 set_option synthInstance.maxHeartbeats 200000
@@ -18,5 +16,5 @@ theorem _root_.GlobalTheory.T.cm_abelian_field_data_of_toric_ratio_alt : ∀ {D 
     GlobalTheory.CMVal.IsHeckeL (nuH d.G p.P.A3.A.μ0 i j * p.R.C.delAt (D.what₂.places.resChar w)) Λd →
     D.what₂.embLL z * Λd s = Λ s →
     (Formalism.DivisionValues.vw (D.plEq w) z : ℝ) ≤ (Formalism.DivisionValues.vw (D.plEq w) ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) : ℝ) / ((D.what₂.places.resChar w : ℕ) : ℝ) ^ 2 := by
-  first | exact @_root_.GlobalTheory.ThmAUpper.val_bound_twisted_alt | exact _root_.GlobalTheory.ThmAUpper.val_bound_twisted_alt | (intros; apply _root_.GlobalTheory.ThmAUpper.val_bound_twisted_alt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.ThmAUpper.val_bound_twisted_alt
 end

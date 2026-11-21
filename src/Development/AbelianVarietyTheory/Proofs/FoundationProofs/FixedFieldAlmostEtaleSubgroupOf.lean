@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.AlmostEt
 open scoped NNReal
 
@@ -24,3 +26,10 @@ theorem almostSep_subgroupOf (L : Type) [Field L] (v : Valuation L ℝ≥0) (G :
 example : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (G : Type) [Group G] [MulSemiringAction G L] (U H : Subgroup G), AlmostSep v U → AlmostSep v (U.subgroupOf H) := @almostSep_subgroupOf
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fixedFieldAlmostEtale_subgroupOf : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (G : Type) [Group G] [MulSemiringAction G L] (U H : Subgroup G), AlmostSep v U → AlmostSep v (U.subgroupOf H) := by
+  atlas_forward_decl GlobalTheory.AlmostEt.almostSep_subgroupOf

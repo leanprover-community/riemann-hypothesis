@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CorrESymmCoe
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Filter Topology PositivityTheory.RgEis
@@ -61,3 +62,9 @@ theorem transfer : SecLaw → WallLaw → Transfer := by
     exact congrArg (fun u => Complex.exp (ξ' (π q)) • u) this.symm
 
 end GlobalTheory.CompanionTheory.RgTransfer
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.transfer_of_section_and_wall_laws : PositivityTheory.RgEis.SecLaw → PositivityTheory.RgEis.WallLaw → PositivityTheory.RgEis.Transfer := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgTransfer.transfer

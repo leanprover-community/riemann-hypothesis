@@ -1,12 +1,12 @@
 import Mathlib
-import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.OfListTailLog
-import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PGreenMassZero
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.TailBoundStatementHolds
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConvergenceStatementHoldsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedMeasureConvergenceSncStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.WeakConvergenceOffZeroSetStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedMeasureConvergenceSnc
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.WeakConvergenceOffZeroSet
+
+section
 open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
 open scoped ContDiff
 
@@ -126,3 +126,10 @@ theorem unifInt_holds : UnifIntStatement := by
       (Filter.Eventually.of_forall fun t => hnull _) hweak hsmall
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniform_integrability_statement_holds : UnifIntStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.unifInt_holds

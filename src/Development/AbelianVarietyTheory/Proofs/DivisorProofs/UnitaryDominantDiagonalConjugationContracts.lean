@@ -1,6 +1,8 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
+import BuildAid.ForwardExisting
+
+section
 open Formalism.UG GlobalTheory.SatakeWeyl
 
 noncomputable section
@@ -109,3 +111,9 @@ theorem contract : GlobalTheory.SatakeWeyl.Contract := by
 end GlobalTheory.SatakeWeyl.ContractProof
 
 end
+end
+
+open Formalism.UG GlobalTheory.SatakeWeyl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_dominant_diagonal_conjugation_contracts : GlobalTheory.SatakeWeyl.Contract := by
+  atlas_forward_decl GlobalTheory.SatakeWeyl.ContractProof.contract

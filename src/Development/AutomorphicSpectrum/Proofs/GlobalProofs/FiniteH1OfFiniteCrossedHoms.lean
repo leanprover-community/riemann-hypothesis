@@ -1,9 +1,10 @@
 import Mathlib
 import ReciprocityTheory.Hypotheses.GalCoh
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
-import GroundTheory.ProfiniteCohomology.ContinuousCochains
 import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Glob
 
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
@@ -89,3 +90,9 @@ theorem finite_cohomology_one_of_finite_cocycles :
   exact Finite.of_surjective _ hsurj
 
 end GlobalTheory.CompanionTheory.Glob
+end
+
+open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_H1_of_finite_crossed_homs : ∀ (k G : Type) [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (A : Rep.{0} k G) [IsDiscreteRep A], {f : G → A.V | IsLocallyConstant f ∧ ∀ g h : G, f (g * h) = f g + A.ρ g (f h)}.Finite → Finite (cohomology A 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Glob.finite_cohomology_one_of_finite_cocycles

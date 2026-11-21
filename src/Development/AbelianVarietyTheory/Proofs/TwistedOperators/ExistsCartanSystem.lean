@@ -3,6 +3,9 @@ import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.Ps
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.DiscreteSeriesCharacter
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleCoefficientsAnalytic
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsAdmOnOfFiniteDimensional
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Filter Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
 open GlobalTheory.SmoothGlob (lieSet)
 open GlobalTheory.Dec (IsHaarSub HasInfChar IsSqIntIrr)
@@ -175,3 +178,16 @@ theorem exists_isCartanSystem : ∀ (n : ℕ) (ε : Fin n → Bool), ∃ 𝒯 : 
     exact conj_of_gram_eq hg hg' (Matrix.ext fun a b => (hG a b).trans (hG' a b).symm)
 
 end GlobalTheory.CartanFinite
+end
+end
+
+open MeasureTheory Matrix Filter Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
+open GlobalTheory.SmoothGlob (lieSet)
+open GlobalTheory.Dec (IsHaarSub HasInfChar IsSqIntIrr)
+open GlobalTheory.Orb (ujMat ujRep CcMat IsBiFinite IsUnitEquiv IsCharFn IsRegSS cent HasOrbInt quotMeas)
+open GlobalTheory.AutomorphicL2Unitary (IsTopIrreducible)
+open GlobalTheory.HCChar GlobalTheory.Published GlobalTheory.Published.Langlands
+open scoped InnerProductSpace Topology ENNReal ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cartan_system : ∀ (n : ℕ) (ε : Fin n → Bool), ∃ 𝒯 : Finset (Subgroup (UJ ε)), IsCartanSystem 𝒯 := by
+  atlas_forward_decl GlobalTheory.CartanFinite.exists_isCartanSystem

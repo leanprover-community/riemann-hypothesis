@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PowIdeal
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE TensorProduct
 
 set_option autoImplicit false
@@ -50,3 +52,9 @@ theorem exists_ideal_not_pow_le {X : Scheme.{0}} (J : X.IdealSheafData) (W : J.s
     · rwa [Scheme.basicOpen_pow _ _ hm0]
 
 end GlobalTheory.CompanionTheory.GE.NonIso
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonempty_open_ideal_not_nilpotent : ∀ {X : Scheme.{0}} (J : X.IdealSheafData) (W : J.subscheme.Opens), (W : Set J.subscheme).Nonempty → ∃ J₀ : X.IdealSheafData, (∀ (V : X.affineOpens) (f : Γ(X, V)), f ∈ J₀.ideal V → J.subschemeι ⁻¹ᵁ X.basicOpen f ≤ W) ∧ ∀ m, ¬ powIdeal J₀ m ≤ J := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.NonIso.exists_ideal_not_pow_le

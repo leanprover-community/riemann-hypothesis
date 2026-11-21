@@ -1,7 +1,4 @@
 import Mathlib
-import GroundTheory.FunctionField.PlaceDefs
-import GroundTheory.FunctionField.PlaceBasic
-import GroundTheory.FunctionField.ValuationAevalSubCoeffZeroLe
 import GroundTheory.FunctionField.Divisor
 set_option maxSynthPendingDepth 1
 

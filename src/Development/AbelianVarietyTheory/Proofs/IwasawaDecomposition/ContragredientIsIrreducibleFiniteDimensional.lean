@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IncludeLInjective
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting GlobalTheory.HeightCounting.FormsStep NumberField IsDedekindDomain Polynomial
 open scoped TensorProduct
 
@@ -38,3 +40,11 @@ theorem contragredient_isIrreducible : ∀ (k : Type) [Field k] (G : Type) [Grou
       exact Submodule.dualAnnihilator_top
 
 end GlobalTheory
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting GlobalTheory.HeightCounting.FormsStep NumberField IsDedekindDomain Polynomial
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contragredient_isIrreducible_finiteDimensional : ∀ (k : Type) [Field k] (G : Type) [Group G] (V : Type) [AddCommGroup V] [Module k V] [FiniteDimensional k V]
+    (ρ : Representation k G V), ρ.IsIrreducible → ρ.dual.IsIrreducible := by
+  atlas_forward_decl GlobalTheory.contragredient_isIrreducible

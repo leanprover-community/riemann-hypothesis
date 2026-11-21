@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DvdPowZeroIff
+import BuildAid.ForwardExisting
+
+section
 open Matrix
 
 noncomputable section
@@ -133,3 +136,14 @@ theorem exists_dual_of_indepMod : ∀ (L : Type) [Field L] [Valued L (WithZero (
   split_ifs <;> simp
 
 end GlobalTheory.Hk3.IntWitt
+end
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_dual_of_independentModUniformizer : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L),
+    Valued.v ϖ = ((Multiplicative.ofAdd (-1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) →
+    ∀ (m : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] (z : ι → Fin m → L), (∀ i r, z i r ∈ Formalism.UG.intL L) →
+    GlobalTheory.Hk3.IntWitt.IndepMod ϖ z →
+    ∃ a : ι → Fin m → L, (∀ i r, a i r ∈ Formalism.UG.intL L) ∧ ∀ i j, ∑ r, a i r * z j r = if i = j then 1 else 0 := by
+  atlas_forward_decl GlobalTheory.Hk3.IntWitt.exists_dual_of_indepMod

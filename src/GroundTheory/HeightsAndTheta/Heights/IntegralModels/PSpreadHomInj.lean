@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Statements
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsSpreadHom
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsGenericSections
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsPullbackFaithful

@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.AlmostEt
 open scoped NNReal
 
@@ -59,3 +62,10 @@ theorem approxRoot_closed : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (
       exact approxRoot_mul v hθ1 hx hw
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.approxPthRoot_closed_mul_div_pow : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (p : ℕ) (F : Subfield L) (θ : ℝ≥0), θ < 1 → ∀ u u' : L, (∃ w ∈ F, v (u - w ^ p) ≤ θ * v u) → (∃ w ∈ F, v (u' - w ^ p) ≤ θ * v u') → (∃ w ∈ F, v (u * u' - w ^ p) ≤ θ * v (u * u')) ∧ (u' ≠ 0 → ∃ w ∈ F, v (u / u' - w ^ p) ≤ θ * v (u / u')) ∧ ∀ k : ℕ, ∃ w ∈ F, v (u ^ k - w ^ p) ≤ θ * v (u ^ k) := by
+  atlas_forward_decl GlobalTheory.AlmostEt.approxRoot_closed

@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZarhinDualPolarisation.FlatFiniteFibres.FlatOfFibresFinite
 
+section
 set_option autoImplicit false
 
 open CategoryTheory AlgebraicGeometry
@@ -16,3 +17,8 @@ theorem epiOfFF : PositivityTheory.Tls2.Zar3.Ch1.EpiOfFF := by
   simpa using congrArg (fun k => k.left) h
 
 end GlobalTheory.CompanionTheory.Dblock
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.epi_of_finite_flat : PositivityTheory.Tls2.Zar3.Ch1.EpiOfFF := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Dblock.epiOfFF

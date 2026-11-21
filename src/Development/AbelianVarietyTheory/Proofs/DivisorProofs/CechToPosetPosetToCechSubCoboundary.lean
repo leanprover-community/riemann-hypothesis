@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictCapFBijective
+
+section
 open CategoryTheory AlgebraicGeometry Opposite
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.KS (rsT IsCoc IsCob)
@@ -54,3 +56,13 @@ theorem cechToPoset_posetToCech_sub_coboundary : ∀ (I : Type) [Finite I] (X : 
   linear_combination -c3 + c2 - c1
 
 end GlobalTheory.CechCmp
+end
+end
+
+open CategoryTheory AlgebraicGeometry Opposite
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.KS (rsT IsCoc IsCob)
+open GlobalTheory.CatCoh GlobalTheory.CechDR GlobalTheory.CechCmp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_d0_eq_toPos_toCech_sub_of_mem_Z1 : ∀ (I : Type) [Finite I] (X : Scheme.{0}) (R : Type) [CommRing R] (s : X ⟶ Sp R) (U : I → X.Opens) (hU : ∀ i, IsAffineOpen (U i)) (hinf : ∀ V W : X.Opens, IsAffineOpen V → IsAffineOpen W → IsAffineOpen (V ⊓ W)), ∀ f : GlobalTheory.CatCoh.C1 (capF s U hU hinf), f ∈ Z1 (capF s U hU hinf) → ∃ g, d0 (capF s U hU hinf) g = toPos s U hU hinf (toCech s U hU hinf f) - f := by
+  atlas_forward_decl GlobalTheory.CechCmp.cechToPoset_posetToCech_sub_coboundary

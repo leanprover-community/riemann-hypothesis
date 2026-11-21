@@ -1,24 +1,20 @@
 import Mathlib
 import Formalism.PeriodIntegrals.DSInfCharCap
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.PseudoCoefficientSeparation
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
-import Formalism.RealPlaceAnalysis.StatementE
-import Formalism.RealPlaceAnalysis.StatementB
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LanglandsClassification
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RestrOfNotMem
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsometryIntertwinesEnvelopingStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RefineIsotropicFlagStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitTorusRefinedFlagStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviCommutesSplitTorusStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitTorusLeviSumVanishesStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviConjugatesUnipotentRefinedStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RefinedFlagHalfSumOfRootsStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InductionInStagesRestrictionStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StageFunctionContinuousStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InductionInStagesIntertwiningStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StageFunctionNormIntegralStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StageParameterPairingShiftStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsometryIntertwinesEnveloping
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RefineIsotropicFlag
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitTorusRefinedFlag
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviCommutesSplitTorus
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitTorusLeviSumVanishes
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviConjugatesUnipotentRefined
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RefinedFlagHalfSumOfRoots
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InductionInStagesRestriction
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StageFunctionContinuous
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InductionInStagesIntertwining
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StageFunctionNormIntegral
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StageParameterPairingShift
 
+section
 noncomputable section
 open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
 open GlobalTheory.SmoothGlob (lieSet)
@@ -154,3 +150,14 @@ theorem exists_first_step_one : GlobalTheory.Published.LanglandsClassification �
 end GlobalTheory.RealInd.Stages
 
 end
+end
+
+open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
+open GlobalTheory.SmoothGlob (lieSet)
+open GlobalTheory.Dec (IsHaarSub HasInfChar UEquiv gelfVal)
+open GlobalTheory.Orb (IsPseudoCoeff ujMat ujRep)
+open scoped InnerProductSpace
+open PI.DSInfCharCap (actU Egl)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.positive_induced_module_shift : GlobalTheory.Published.LanglandsClassification → ∀ (n : ℕ) (ε : Fin n → Bool) (I : IndModule ε) (h : 0 < I.a) (χ : Fin n → ℂ), (∀ (k : ℕ) v, IsKFin ε I.ρ v → ∃ N : ℕ, actU ε I.ρ ((etr (Egl n) (k + 1) - algebraMap ℂ _ (gelfVal χ (k + 1))) ^ N) v = 0) → ∃ (I' : IndModule ε) (h' : 0 < I'.a), I'.j ⟨0, h'⟩ = 1 ∧ (I'.s ⟨0, h'⟩).re = (I.s ⟨0, h⟩).re ∧ (∀ (k : ℕ) v, IsKFin ε I'.ρ v → ∃ N : ℕ, actU ε I'.ρ ((etr (Egl n) (k + 1) - algebraMap ℂ _ (gelfVal χ (k + 1))) ^ N) v = 0) := by
+  atlas_forward_decl GlobalTheory.RealInd.Stages.exists_first_step_one

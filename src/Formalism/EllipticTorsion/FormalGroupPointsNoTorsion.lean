@@ -1,4 +1,3 @@
-import Formalism.EllipticTorsion.EllipticTorsionProofs.LegendreInvariant
 import Formalism.EllipticTorsion.EllipticTorsionProofs.Legendre
 import Formalism.EllipticTorsion.EllipticTorsionProofs.Deuring
 import Formalism.EllipticTorsion.EllipticTorsionProofs.ModelUnitOf

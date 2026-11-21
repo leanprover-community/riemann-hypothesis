@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCliff
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CPoly
 import GroundTheory.GlobalFields.TateThesis.ArchCharsUnitary
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix Finset
@@ -209,3 +210,12 @@ theorem iSup_wtDual_eq_top {n : ℕ} (E : KMod n) : (⨆ μ, wtDual E μ) = ⊤ 
     exact add_mem hx hy
 
 end GlobalTheory.CompanionTheory.RealCount.Tope
+end
+end
+
+open Matrix Finset
+open scoped InnerProductSpace
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.RealCount GlobalTheory.CompanionTheory.RealCount.Tope
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_weight_spaces_span : ∀ {n : ℕ} (E : KMod n), (⨆ μ, wtDual E μ) = ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RealCount.Tope.iSup_wtDual_eq_top

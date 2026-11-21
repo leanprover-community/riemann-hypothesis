@@ -2,10 +2,9 @@ import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StDefinite
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.FinalAll
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SignFrameUnitaryIso
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DenseKFiniteVectorsUnitaryGroupRep
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
 
+section
 open MeasureTheory Matrix NumberField
 open scoped InnerProductSpace ComplexConjugate
 
@@ -309,3 +308,10 @@ theorem archPI : StArchPI := by
   exact ⟨P, isPIProj_of_equiv φ.toMulEquiv ρ hP⟩
 
 end GlobalTheory.CompanionTheory.ArchPI
+end
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ArchimedeanPrincipalSeries : StArchPI := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ArchPI.archPI

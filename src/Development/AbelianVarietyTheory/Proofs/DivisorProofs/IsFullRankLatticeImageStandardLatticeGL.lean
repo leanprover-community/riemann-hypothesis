@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.Statement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemMatLat
+import BuildAid.ForwardExisting
+
+section
 open Polynomial Matrix GlobalTheory.LatOrb
 
 namespace GlobalTheory.LatOrbIsLat
@@ -56,3 +59,10 @@ theorem GlobalTheory.LatOrb.matLat_stdLat_isLatV : ∀ {O K : Type} [CommRing O]
   show _ ∈ matLat O g.val (stdLat O n)
   rw [mem_matLat]
   exact ⟨_, single_mem_stdLat n i, rfl⟩
+end
+
+open Polynomial Matrix GlobalTheory.LatOrb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isFullRankLattice_image_standardLattice_GL : ∀ {O K : Type} [CommRing O] [Field K] [Algebra O K] (n : ℕ) (g : GL (Fin n) K),
+    IsLatV O (matLat O g.val (stdLat O n)) := by
+  atlas_forward_decl GlobalTheory.LatOrb.matLat_stdLat_isLatV

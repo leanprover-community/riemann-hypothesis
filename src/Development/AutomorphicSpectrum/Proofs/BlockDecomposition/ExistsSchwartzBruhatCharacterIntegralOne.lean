@@ -2,7 +2,9 @@ import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.BernsteinUnitaryProducts.BernsteinTheoremA.FrobeniusReciprocity.SupportedInIffOfFrob
 import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
 import GroundTheory.AutomorphicForms.LocallyProfinite
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory MeasureTheory.Measure GlobalTheory.SplitWeil PositivityTheory.PfBern.Frob Topology
@@ -150,3 +152,10 @@ theorem exists_SB_integral_mul_char_eq_one : ∀ (G : Type) [Group G] [Topologic
     simp [Measure.real, hpos.ne', hfin.ne, hr]
 
 end GlobalTheory.CompanionTheory.FrobNz
+end
+end
+
+open MeasureTheory MeasureTheory.Measure GlobalTheory.SplitWeil PositivityTheory.PfBern.Frob
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_schwartzBruhat_character_integral_one : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [LocallyCompactSpace G] [TotallyDisconnectedSpace G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (χ : G →* ℂˣ), Continuous (fun g => (χ g : ℂ)) → ∃ α : SB G, ∫ x, (α : G → ℂ) x * (χ x : ℂ) ∂μ = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FrobNz.exists_SB_integral_mul_char_eq_one

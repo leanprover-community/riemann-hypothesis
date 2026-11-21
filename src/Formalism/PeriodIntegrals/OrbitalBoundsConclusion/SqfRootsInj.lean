@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.SqfRootsInj
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarefreeRootsInjective.WitMain
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarefreeRootsInjective.RpowQuarterPowFour
 

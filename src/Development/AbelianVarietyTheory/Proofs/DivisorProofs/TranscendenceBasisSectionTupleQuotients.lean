@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsRatioOfWeight
 
+section
 open Filter Topology MvPolynomial GlobalTheory.HSAmp
 
 set_option autoImplicit false
@@ -123,3 +124,9 @@ theorem trBasis_of_integral_ratR (K : Type) [Field K] [CharZero K] (D : ℕ) (x 
   exact IntermediateField.topEquiv.toLinearEquiv.finiteDimensional
 
 end GlobalTheory.HSAmp.TrBasis
+end
+
+open Filter Topology MvPolynomial GlobalTheory.HSAmp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.transcendenceBasis_sectionTupleQuotients : ∀ (K : Type) [Field K] [CharZero K] (D : ℕ) (x : Fin (D + 1) → K) (l : Fin (D + 1)) (A : Subring K), Algebra.trdeg ℤ K = D → x l ≠ 0 → Algebra.FiniteType ℤ A → (∀ w ∈ A, IsIntegral (ratR x l) w) → (∀ w : K, ∃ a ∈ A, ∃ b ∈ A, b ≠ 0 ∧ w = a / b) → (∀ j, x j ≠ 0) ∧ AlgebraicIndependent ℤ (fun j : Fin D => x j.succ / x 0) ∧ FiniteDimensional (ratF x) K := by
+  atlas_forward_decl GlobalTheory.HSAmp.TrBasis.trBasis_of_integral_ratR

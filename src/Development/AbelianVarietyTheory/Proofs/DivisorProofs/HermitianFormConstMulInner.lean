@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
 import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory GlobalTheory.RealWeil
 open scoped SchwartzMap
 
@@ -44,3 +47,13 @@ theorem hermitian_form_eq_smul_l2 : ∀ (n : ℕ) (B : Sch (Fin n) → Sch (Fin 
   linear_combination key
 
 end GlobalTheory
+end
+
+open MeasureTheory GlobalTheory.RealWeil
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_form_const_mul_inner : ∀ (n : ℕ) (B : Sch (Fin n) → Sch (Fin n) → ℂ), (∀ h h', B h' h = starRingEnd ℂ (B h h')) →
+    (∀ h, 0 ≤ (B h h).re) →
+    (∀ f f' g g' : Sch (Fin n), (∫ x, f x * starRingEnd ℂ (g x)) * B g' f' = (∫ x, g' x * starRingEnd ℂ (f' x)) * B f g) →
+    ∃ c : ℝ, 0 ≤ c ∧ ∀ h h', B h h' = c * ∫ x, h x * starRingEnd ℂ (h' x) := by
+  atlas_forward_decl GlobalTheory.hermitian_form_eq_smul_l2

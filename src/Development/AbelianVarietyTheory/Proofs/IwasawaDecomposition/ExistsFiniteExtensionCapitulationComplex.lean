@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Matrix
 open scoped BigOperators
 
@@ -119,3 +122,10 @@ theorem exists_finite_extension_capitulation :
     exact ⟨x, hx, rfl⟩
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Matrix
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_extension_capitulation_complex : ∀ (E : Type) [Field E] [NumberField E] (φ : E →+* ℂ) (ι : Type) [Finite ι] (I : ι → Submodule (𝓞 E) E), (∀ τ, (I τ).FG) → ∃ M : IntermediateField ℚ ℂ, FiniteDimensional ℚ M ∧ (∀ x, φ x ∈ M) ∧ ∀ τ, ∃ s : M, Submodule.span (𝓞 M) {y : M | ∃ x ∈ I τ, (y : ℂ) = φ x} = Submodule.span (𝓞 M) {s} := by
+  atlas_forward_decl GlobalTheory.exists_finite_extension_capitulation

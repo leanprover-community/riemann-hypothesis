@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.PeriodIntegrals.LocHerm
-import Formalism.PeriodIntegrals.AlgebraMapMemO
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalOrderProjection.LocOProjOf
 
 noncomputable section

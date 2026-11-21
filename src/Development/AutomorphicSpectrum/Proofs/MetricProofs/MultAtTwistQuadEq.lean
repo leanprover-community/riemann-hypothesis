@@ -2,8 +2,9 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsHorizontalTwist
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSpecialMultAt
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PBCMult
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LengthLocalizedModuleQuotient
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Tw
@@ -178,3 +179,10 @@ theorem multAt_twist (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (�
     (comap_inc_twist p W) (flat_quad p))
 
 end GlobalTheory.CompanionTheory.Ar.Tw
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo MeasureTheory GlobalTheory.CompanionTheory.Ar.Tw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.multAt_twist_quad_eq : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (p : ℕ) (J W : Ideal (MRing ι)), W ∈ J.minimalPrimes → (twist p W).IsPrime → multAt (J.map inc ⊔ Ideal.span {quad p}) (twist p W) = multAt J W := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Tw.multAt_twist

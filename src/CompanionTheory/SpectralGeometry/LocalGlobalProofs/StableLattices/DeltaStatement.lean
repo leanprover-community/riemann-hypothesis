@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.FlB
 
 namespace GlobalTheory.CompanionTheory.RgFl
@@ -126,3 +128,9 @@ theorem exists_isDelta (L : Type) [NontriviallyNormedField L] [IsUltrametricDist
 theorem stDelta : StDelta := fun L _ _ _ _ s hs => exists_isDelta L s hs
 
 end GlobalTheory.CompanionTheory.RgFl
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.DeltaStatement : StDelta := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgFl.stDelta

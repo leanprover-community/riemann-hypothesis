@@ -1,5 +1,4 @@
 import Formalism.BranchSandwichDivisors.StatementL
-import Formalism.HarderNarasimhan.ShiftInvariance
 import Formalism.BranchSandwichDivisors.BranchIsometryProofs.MapScale
 
 open Module NumberField

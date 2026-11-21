@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.LocalToGlobal.CharacterGerms.ValuationChoiceHypothesis
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LevelsUsedBalancedValueOrbitSums
+import BuildAid.ForwardExisting
 
+section
 open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds Formalism.UnitaryBoundIntegral
 
 namespace GlobalTheory.TailPrimeSum
@@ -129,3 +130,9 @@ theorem main : Formalism.UnitaryBoundIntegral.ThBounds ∧ ∀ (k : ℕ) (Q : Fi
   linarith
 
 end GlobalTheory.TailPrimeSum
+end
+
+open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds Formalism.UnitaryBoundIntegral
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_level_tail_mul_log_primes_le : Formalism.UnitaryBoundIntegral.ThBounds ∧ ∀ (k : ℕ) (Q : Finset ℕ), 1 ≤ k → (∀ p ∈ Q, p.Prime) → ∑ p ∈ Q, thl k p * Real.log p ≤ 20 / k := by
+  atlas_forward_decl GlobalTheory.TailPrimeSum.main

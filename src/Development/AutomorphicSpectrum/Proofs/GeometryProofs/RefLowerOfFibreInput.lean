@@ -1,12 +1,11 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LineHeightBoundedUnitStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AmpleHeightBoundsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.WeightedFlagDegreeLowerBoundStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.OrthogonalFlagDegreeComparisonStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LineHeightBoundedUnit
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AmpleHeightBounds
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.WeightedFlagDegreeLowerBound
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.OrthogonalFlagDegreeComparison
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalNormOutsideFiniteSet
-import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FieldChange
 
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Small GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.Ht
 open GroundTheory.Heights₂.Heights
 
@@ -333,3 +332,10 @@ theorem refLower_of_fibre (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (j k : ℕ) 
   linarith
 
 end GlobalTheory.CompanionTheory.Ar.Ht.RefLow
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Small GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.Ht
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ref_lower_of_fibre_input : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (j k : ℕ) (R : RootModel Ψ (j + 1 + (k + 1))), AmpleQ R.y R.A.a → FlatUnit R → FibreInput R → RefLower R := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Ht.RefLow.refLower_of_fibre

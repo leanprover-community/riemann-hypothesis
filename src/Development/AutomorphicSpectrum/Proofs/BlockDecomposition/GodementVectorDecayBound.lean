@@ -1,10 +1,12 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocalWhittakerDuality.WhittakerFunctionalEquationAdditive
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Aq
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerAdditiveCharacterEquivariance
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerCentralCharacter
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerSmoothness
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerGaugeBound
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.DampedZetaMajorant GlobalTheory.CompanionTheory.GL2Unfolding GlobalTheory.CompanionTheory.GJTwo
 open scoped ValuativeRel
 
@@ -97,3 +99,15 @@ theorem godement_vector_growth_support : ForS fun F _ _ _ _ _ _ ψ => ∀ ν : F
   exact ⟨h1, h2, continuous_of_rightInv U h3, h4⟩
 
 end GlobalTheory.CompanionTheory.GL2LocalData.GL2GodementVector
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.DampedZetaMajorant GlobalTheory.CompanionTheory.GL2Unfolding GlobalTheory.CompanionTheory.GJTwo
+open scoped ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.godement_vector_decay_bound : ForS fun F _ _ _ _ _ _ ψ => ∀ ν : Fˣ →* ℂˣ, IsUnit1 ν → ∀ W₀ ∈ V2 ψ ν ν⁻¹,
+  (∀ x g, W₀ (uni2 x * g) = (ψ x : ℂ) * W₀ g) ∧ (∀ (a : Fˣ) g, W₀ (dg2 a a * g) = W₀ g) ∧ Continuous W₀ ∧
+  ∀ ε : ℝ, 0 < ε → ∃ C B : ℝ, 0 ≤ C ∧ ∀ (a : Fˣ), ∀ k ∈ GLnLocal.integralGL F 2,
+    ‖W₀ (dg2 a 1 * k)‖ ≤ C * (modulus (a : F) : ℝ) ^ (1 / 2 - ε) ∧ (W₀ (dg2 a 1 * k) ≠ 0 → (modulus (a : F) : ℝ) ≤ B) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GL2LocalData.GL2GodementVector.godement_vector_growth_support

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.Statement
 import Formalism.RankGapBounds.TheoremALocOfLemmaA
 import Formalism.PieriBlockIdeals.Statement
 

@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.FlB
 
 noncomputable section
@@ -375,3 +377,9 @@ theorem stPlane_of_hensel_pairing : StHensel → StPairing → StPlane := by
 end GlobalTheory.CompanionTheory.HermPlane
 
 end
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.plane_of_hensel_and_pairing : StHensel → StPairing → StPlane := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HermPlane.stPlane_of_hensel_pairing

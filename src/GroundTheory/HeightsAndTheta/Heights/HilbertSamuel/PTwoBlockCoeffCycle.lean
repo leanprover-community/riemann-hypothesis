@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockCoeffCycle
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsTwoBlockHorizDiv
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTwoBlockTop
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PMetricTransportSmooth

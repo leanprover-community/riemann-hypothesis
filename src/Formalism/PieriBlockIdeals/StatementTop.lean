@@ -1,4 +1,3 @@
-import Formalism.PieriBlockIdeals.StatementDown
 import Formalism.PieriBlockIdeals.HidaLatticeInclusionAtCoarseWeightBound
 
 noncomputable section

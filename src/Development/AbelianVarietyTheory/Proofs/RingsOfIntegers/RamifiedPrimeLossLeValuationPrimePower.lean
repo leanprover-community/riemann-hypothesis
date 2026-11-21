@@ -3,7 +3,9 @@ import Development.AutomorphicArithmetic.CMTraceForms.CmDatumDiscriminantDepthBo
 import Development.AbelianVarietyTheory.Statements.ShortVectorBound.ScaledLatticesInSupLattices
 import Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.PlaceBoundOwnPrimeOf
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.PlaceTop
@@ -56,3 +58,10 @@ theorem ramLoss_le_vLa_pPow (D : D7) (K : Type) [Field K] [NumberField K] (la : 
     positivity
 
 end GlobalTheory.PlaceTop
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.DIV.Cons Formalism.L2.Pj GlobalTheory.PtTie GlobalTheory.PlaceTop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ramified_prime_loss_le_valuation_prime_power : ∀ (D : D7) (K : Type) [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K)) (j : ℕ) (w : WeightFamilies.Wt D j) (a b : ℕ), c2 D w ≤ a → Formalism.MainNotions.DIV.Cons.cHalf w ≤ b → ramLoss D la w ≤ ((vLa la ((pPow D a b b : ℕ) : K) : ℤ) : ℝ) := by
+  atlas_forward_decl GlobalTheory.PlaceTop.ramLoss_le_vLa_pPow

@@ -1,9 +1,9 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.QuantumDeterminants CompanionTheory.Bmu
 
 noncomputable section
@@ -483,3 +483,10 @@ theorem cartanQ : CartanQ := by
     rw [← Matrix.mul_assoc (dg (tor k r u⁻¹)), dg_mul k r u hu, Matrix.one_mul, hK'u', Matrix.mul_one]
 
 end GlobalTheory.CompanionTheory.BesselCartan
+end
+end
+
+open CompanionTheory.Bmu
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.CartanDecomposition : CartanQ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BesselCartan.cartanQ

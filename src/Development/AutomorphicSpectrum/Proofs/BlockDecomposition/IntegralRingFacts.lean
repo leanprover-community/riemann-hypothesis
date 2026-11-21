@@ -1,9 +1,9 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.ConstantCoeffSurjective
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.ObFacts
-import GroundTheory.PAdicHodge.BStPeriod
-import GroundTheory.PAdicHodge.KerTheta
-import GroundTheory.PAdicHodge.TiltValuation
+import BuildAid.ForwardExisting
+
+section
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -61,3 +61,11 @@ theorem obFacts : ∀ (l : ℕ) [Fact l.Prime], CrystallineSemistableComparison.
   · exact Or.inl (preTilt_dvd_iff_norm_le.2 h)
 
 end GlobalTheory.CompanionTheory.TiltFacts
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_ring_facts : ∀ (l : ℕ) [Fact l.Prime], CrystallineSemistableComparison.D.ObFacts l := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TiltFacts.obFacts

@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoConjOfIsCsd
-import GroundTheory.AutomorphicForms.GKModules.RightRegular
 import GroundTheory.AutomorphicForms.HarishChandraRegularity.CartanBasis
 
 noncomputable section

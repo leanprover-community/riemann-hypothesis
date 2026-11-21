@@ -1,7 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairPtsClasses
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairPtsEqSum
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MovFn
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DetIdlVal
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GivenLevelInner
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare

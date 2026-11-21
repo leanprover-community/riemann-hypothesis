@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.LeviCommutantWordReduction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NegRightMulLetterShiftApply
 
+section
 noncomputable section
 
 open Finset Formalism.REAL
@@ -205,3 +206,10 @@ theorem commutant_block_capelli_words : LeviCommutantWordReduction := by
   rw [evLv_eq, e1, ← hy, ← hz, rho_capWord F1 ρ hρ]
 
 end GlobalTheory.CompanionTheory.BlockCapelliWords
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.commutant_reduction_real : PositivityTheory.RgBcC.RealD.LeviCommutantWordReduction := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BlockCapelliWords.commutant_block_capelli_words

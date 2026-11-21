@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormMulApplyLeOne
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 namespace GlobalTheory.JR.GLift
@@ -44,3 +47,9 @@ theorem glO_isOpen_isCompact : ∀ (F : Type) [NontriviallyNormedField F] [IsUlt
     Units.isClosedEmbedding_embedProduct.isCompact_preimage hSc⟩
 
 end GlobalTheory.JR.GLift
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralGLSet_isOpen_and_isCompact : ∀ (F : Type) [NontriviallyNormedField F] [IsUltrametricDist F] [ProperSpace F] (n : ℕ), IsOpen (glO n F) ∧ IsCompact (glO n F) := by
+  atlas_forward_decl GlobalTheory.JR.GLift.glO_isOpen_isCompact

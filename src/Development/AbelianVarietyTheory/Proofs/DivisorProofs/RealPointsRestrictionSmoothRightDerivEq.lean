@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsExpLieAlgebraComp
 import Development.AbelianVarietyTheory.Definitions.Divisors.CentralNilGL
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfMemWeakIn
 
+section
 noncomputable section
 
 open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.HCA GroundTheory.Automorphic NormedSpace
@@ -58,3 +59,10 @@ theorem glRes_smooth_rightDeriv : ∀ (E : Type) [Field E] [NumberField E] [IsTo
 end GlobalTheory.HCA
 
 end
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.HCA GroundTheory.Automorphic
+attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realPointsRestriction_smooth_rightDeriv_eq : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), ∀ φ : Sm E a, ∀ x, (glH E a).IsSmoothFun (glRes φ.1 x) ∧ ∀ X : glL E a, (glH E a).rightDeriv X (glRes φ.1 x) = glRes (lie E a (toL X.1) φ).1 x := by
+  atlas_forward_decl GlobalTheory.HCA.glRes_smooth_rightDeriv

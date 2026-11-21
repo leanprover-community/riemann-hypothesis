@@ -1,13 +1,10 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.MoriwakiSt
 import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPushDown
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsFlagGrassPush
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFlagGrassPush
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHFlProdLinear
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFsInvPow
@@ -19,7 +16,9 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.PConsequences
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ChangeOfModel
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsPermAppendSnoc
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagPointsIntegralProductFormulaStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagPointsIntegralProductFormula
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -249,3 +248,10 @@ theorem flagGrassPush : GlobalTheory.CompanionTheory.Ar.PB.Inputs → Reciprocit
   ring
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_grassmann_push_of_inputs : GlobalTheory.CompanionTheory.Ar.PB.Inputs → ReciprocityTheory.ChartRestriction.G.Geo.ArithIntersectionSystemStatement → GroundTheory.Heights₂.Heights.LowerBoundFree.FlagGrassPush.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.flagGrassPush

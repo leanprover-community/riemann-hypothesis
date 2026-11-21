@@ -1,15 +1,15 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasIsFormDelStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFormDbarStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasIsFormDel
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFormDbar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFormMulStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelMulOfDelEqZeroStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFormSmulDelSmulStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DelMulOfDelEqZero
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFormSmulDelSmul
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteSmoothPartitionUnityHolAtlasStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasIntegralFinSumCompactStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralDelChartSupportedMulFormEqZeroStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasDelFinsetSumStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasIntegralFinSumCompact
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralDelChartSupportedMulFormEqZero
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasDelFinsetSum
 
+section
 open Set Matrix MeasureTheory
 open GlobalTheory.HermFrame
 open scoped ComplexOrder
@@ -38,3 +38,13 @@ theorem integral_ddc_mul_eq_zero : ∀ {M : Type} [TopologicalSpace M] [CompactS
   exact Finset.sum_eq_zero fun j _ => GlobalTheory.T.integral_del_chartSupported_mul_form_eq_zero A γ (χ j) (c j) hγ' (hχs j) (hχt j)
 
 end GlobalTheory.CxFormStokes
+end
+
+open Set Matrix MeasureTheory
+open GlobalTheory.HermFrame
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_ddc_closed_form_zero : ∀ {M : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M] [SecondCountableTopology M] [MeasurableSpace M]
+    [BorelSpace M] {n : ℕ} (A : GlobalTheory.CxForm.HolAtlas M n) (η Z : A.Fld), A.IsForm η → A.IsForm Z → A.del Z = 0 →
+    A.dbar Z = 0 → A.integral (A.ddc η * Z) = 0 := by
+  atlas_forward_decl GlobalTheory.CxFormStokes.integral_ddc_mul_eq_zero

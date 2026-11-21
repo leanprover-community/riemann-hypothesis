@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.AnalyticForms.MaIntEmpty
 import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsComplexTaylor
 set_option maxSynthPendingDepth 1

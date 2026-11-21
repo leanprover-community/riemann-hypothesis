@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotCompactOfIdempotent
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix Formalism.UG NumberField GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms GlobalTheory.RegSS
@@ -116,3 +117,10 @@ theorem compactOfMatBounded (hL : TensorLattice) : CompactOfMatBounded := by
   exact hK.image QuotientGroup.continuous_mk
 
 end GlobalTheory.RegSS.CptQuot
+end
+end
+
+open GlobalTheory.RegSS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelic_quotient_compact_of_bounded_matrices : GlobalTheory.RegSS.TensorLattice → GlobalTheory.RegSS.CompactOfMatBounded := by
+  atlas_forward_decl GlobalTheory.RegSS.CptQuot.compactOfMatBounded

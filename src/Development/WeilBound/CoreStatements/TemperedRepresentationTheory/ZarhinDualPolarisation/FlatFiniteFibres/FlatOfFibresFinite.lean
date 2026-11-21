@@ -1,5 +1,4 @@
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZarhinDualPolarisation.DualPolarisationOC
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsFinFlatSub
 
 set_option autoImplicit false
 

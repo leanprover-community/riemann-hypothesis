@@ -1,5 +1,4 @@
 import Formalism.WachLatticeTwists.HerrComplexInjectivity.GammaSubOneStatedForm
-import Formalism.WachLatticeTwists.HerrComplexInjectivity.StatementH
 
 noncomputable section
 

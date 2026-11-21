@@ -1,7 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormGoodPrimeIntegral
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullConeNullModP
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullConeDegreeInt
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullSectionIntegralInt
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDehomNormPIntegral
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGeneric
@@ -9,7 +7,6 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullRatiosAlgebraic
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeNull
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeDegree
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullGradedAlgebraic
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel

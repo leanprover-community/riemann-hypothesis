@@ -3,8 +3,8 @@ import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTr
 import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.LefData
 import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.HomSurj
 import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.HarmDom
-import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.EntriesZero
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HarmonicOfNormBoundStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HarmonicOfNormBound
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RangeStable
 
 open UpperTheory.V.Z.GSp4Splitting PositivityTheory.RgBcC PositivityTheory.RgBcC.RealD PositivityTheory.Rg.BcB.Desc

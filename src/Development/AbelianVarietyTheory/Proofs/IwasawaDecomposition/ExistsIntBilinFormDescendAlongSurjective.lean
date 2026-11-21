@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfIsOrbFormConst
+
+section
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan
 
 namespace GlobalTheory
@@ -36,3 +38,11 @@ theorem exists_bilinForm_descend_of_surjective {X Y : Type} [AddCommGroup X] [Ad
     rw [LinearMap.mk₂_apply, key1 (g (f x)) x (hg _), key2 (g (f y)) y (hg _)]
 
 end GlobalTheory
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_intBilinForm_descend_along_surjective : ∀ {X Y : Type} [AddCommGroup X] [AddCommGroup Y] (f : X →+ Y), Function.Surjective f → ∀ β : LinearMap.BilinForm ℤ X,
+  (∀ x, f x = 0 → ∀ y, β x y = 0) → (∀ x, f x = 0 → ∀ y, β y x = 0) →
+  ∃ ζ : LinearMap.BilinForm ℤ Y, ∀ x y, ζ (f x) (f y) = β x y := by
+  atlas_forward_decl GlobalTheory.exists_bilinForm_descend_of_surjective

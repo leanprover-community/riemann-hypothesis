@@ -1,7 +1,6 @@
 import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementG
 import Formalism.ThetaLogCoordinates.FockResolutionOnto.StatementF
 import Formalism.ThetaLogCoordinates.FockResolutionOnto.MulEarlyModP
-import Formalism.ThetaLogCoordinates.TraceIsometryWeights.DischargeHeightBound
 import Formalism.ThetaLogCoordinates.TraceIsometryWeights.FinalM
 
 namespace Formalism.InvariantFactorPaths.L4

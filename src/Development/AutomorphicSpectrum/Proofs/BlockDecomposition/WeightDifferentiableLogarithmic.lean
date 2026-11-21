@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Qf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeightVectorExplicitFormula
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Ad3.LR Ad3.LR.DTr GlobalTheory.CompanionTheory.DInt2
@@ -123,3 +125,10 @@ end GlobalTheory.CompanionTheory.DInt2.DerivW
 theorem GlobalTheory.CompanionTheory.DInt2.dw0 : ∀ k : ℕ, 3 ≤ k → ∀ h : M22, 0 < (Matrix.of h).det →
     DifferentiableAt ℝ (w0 k) h ∧ ∀ X : M22, fderiv ℝ (w0 k) h X = w0 k h * ell k h X :=
   fun k hk h hΔ => GlobalTheory.CompanionTheory.DInt2.DerivW.main_deriv k hk h hΔ
+end
+end
+
+open Ad3.LR Ad3.LR.DTr GlobalTheory.CompanionTheory.DInt2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weight_differentiable_logarithmic : ∀ k : ℕ, 3 ≤ k → ∀ h : M22, 0 < (Matrix.of h).det → DifferentiableAt ℝ (w0 k) h ∧ ∀ X : M22, fderiv ℝ (w0 k) h X = w0 k h * ell k h X := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DInt2.dw0

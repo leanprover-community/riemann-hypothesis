@@ -1,8 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
-import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
-import GroundTheory.AutomorphicForms.GL2.SummableNormIffAndTsumEqCoset2
+import BuildAid.ForwardExisting
 
+section
 set_option maxSynthPendingDepth 1
 set_option synthInstance.maxSize 1000
 
@@ -41,3 +41,8 @@ theorem gaussian_exists : Ad3.R.GS := by
 end
 
 end GlobalTheory.CompanionTheory.RankinSelberg
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussian_schwartz_bruhat : Ad3.R.GS := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelberg.gaussian_exists

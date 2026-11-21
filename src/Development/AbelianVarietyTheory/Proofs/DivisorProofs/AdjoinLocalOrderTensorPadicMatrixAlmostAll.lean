@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CentreCompat
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsScalarTowerCenAlgebra
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitSectionAvoidPrime
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CenOrderFinite

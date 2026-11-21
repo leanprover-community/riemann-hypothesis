@@ -1,8 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.EisensteinChartSplitting.TChartSplit
-import Development.WeilBound.ThetaLifts.LatticeBasics.FrameConj
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemUpperHalf
 
+section
 noncomputable section
 
 open scoped NNReal Matrix TensorProduct
@@ -29,3 +29,9 @@ theorem tStd : TStd := by
 end GlobalTheory.CompanionTheory.StdChart
 
 end
+end
+
+open ResidueKilled.Tr
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.standard_section_exists : TStd := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.StdChart.tStd

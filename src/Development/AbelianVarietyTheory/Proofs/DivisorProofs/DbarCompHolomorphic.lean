@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
 
+section
 open Set Filter Topology
 open ReciprocityTheory.L2DbarEstimates (V)
 open GlobalTheory.GoodMetric (coordVec)
@@ -27,3 +28,13 @@ theorem sum_dbar_comp_smul_dzb {n m : ℕ} {φ : V n → V m} {c : V m → ℂ} 
   rw [GlobalTheory.dbar_comp_holo hc hφ, key, Finset.sum_smul]
 
 end GlobalTheory.CxForm
+end
+
+open Set Filter Topology
+open ReciprocityTheory.L2DbarEstimates (V)
+open GlobalTheory.GoodMetric (coordVec)
+open GlobalTheory.CxForm
+open scoped ComplexConjugate ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dbar_comp_holomorphic : ∀ {n m : ℕ} {φ : V n → V m} {c : V m → ℂ} {v : V n}, DifferentiableAt ℂ φ v → DifferentiableAt ℝ c (φ v) → ∑ a, GlobalTheory.dbar (fun x => c (φ x)) v (coordVec a) • dzb a = pull (fderiv ℂ φ v) (∑ b, GlobalTheory.dbar c (φ v) (coordVec b) • dzb b) := by
+  atlas_forward_decl GlobalTheory.CxForm.sum_dbar_comp_smul_dzb

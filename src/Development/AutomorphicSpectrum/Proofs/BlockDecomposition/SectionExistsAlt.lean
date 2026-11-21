@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.IsPairLevel
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.Ex0 PositivityTheory.Rg.Bc.ArchbcB.B
@@ -33,3 +34,9 @@ theorem secEx : SecEx := by
 end GlobalTheory.CompanionTheory.SecThrough
 
 end
+end
+
+open NumberField GlobalTheory.BCT Formalism.L2.Host PositivityTheory.Rg.BcB.F.Ex0 PositivityTheory.Rg.Bc.ArchbcB.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sec_ex : SecEx := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SecThrough.secEx

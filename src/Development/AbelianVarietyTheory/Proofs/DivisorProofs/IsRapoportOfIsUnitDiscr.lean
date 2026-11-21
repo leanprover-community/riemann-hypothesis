@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HilbertKodairaSpencer
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDetGen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvertibleOfFaithfullyFlatBaseChangeTensorInt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyLevelOfIsAlgClosed

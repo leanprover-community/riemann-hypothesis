@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.PairingDivisors.StatementA
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsFinSetSplitPlacesCoprimeConductor
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain GlobalTheory.CMVal
 
 namespace GlobalTheory.CMVal.OrderUnits
@@ -143,3 +145,9 @@ theorem orderC_units (E : Type) [Field E] [NumberField E] [IsCMField E] (𝔣 c 
   rfl
 
 end GlobalTheory.CMVal.OrderUnits
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cmRingClassOrder_units_eq_maxRealSubfield_units : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (𝔣 c : Ideal (OF E)), IsBaseCond 𝔣 → 𝔣 ∣ c → ∀ x : E, x ≠ 0 → x ∈ orderC c → x⁻¹ ∈ orderC c → ∃ u : (OF E)ˣ, x = algebraMap (OF E) E u := by
+  atlas_forward_decl GlobalTheory.CMVal.OrderUnits.orderC_units

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Module
 
 namespace GlobalTheory
@@ -50,3 +53,9 @@ theorem card_quot_span_pow :
     rw [card_quot_span_pow_succ_eq_mul_domain O t ht r, ih, pow_succ, mul_comm]
 
 end GlobalTheory
+end
+
+open Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_quot_span_pow_eq_card_pow_domain : ∀ (O : Type) [CommRing O] [IsDomain O] (t : O), t ≠ 0 → Finite (O ⧸ Ideal.span {t}) → ∀ r : ℕ, Nat.card (O ⧸ Ideal.span {t ^ r}) = Nat.card (O ⧸ Ideal.span {t}) ^ r := by
+  atlas_forward_decl GlobalTheory.card_quot_span_pow

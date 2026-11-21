@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.BranchDefs
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealInputOfBranching
 import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.BranchSmooth
 import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.BranchVol
 

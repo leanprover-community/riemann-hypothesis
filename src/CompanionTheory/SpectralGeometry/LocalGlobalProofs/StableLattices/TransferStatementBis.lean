@@ -1,7 +1,8 @@
 import Mathlib
-import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HeckeOperatorsSpanAndFaithfulStatement
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.Fl
 open CompanionTheory.D.gk.admitted (stdPoly word word_nil word_cons)
 
@@ -218,3 +219,10 @@ theorem stTransfer : StTransfer := by
   exact key _ (hA.1 v)
 
 end GlobalTheory.CompanionTheory.HeckeTransfer
+end
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.TransferStatementBis : StTransfer := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeckeTransfer.stTransfer

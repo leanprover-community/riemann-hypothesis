@@ -1,10 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.InclEquiv
-import Development.AbelianVarietyTheory.Definitions.Divisors.IntegralBound
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FilSpaceVEqSpaceP
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulPowMemAndSpaceVLe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HilbertSamuelSectionShiftCommSingleMonomialStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HilbertSamuelSectionShiftCommSingleMonomial
 
+section
 set_option autoImplicit false
 
 open CategoryTheory AlgebraicGeometry NumberField
@@ -40,3 +40,15 @@ theorem totFil_deepest : FilMono → ∀ (K : Type) [Field K] [NumberField K] (X
   rfl
 
 end GlobalTheory.HSShort
+end
+
+open CategoryTheory AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory
+open GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.HermTools GlobalTheory.Vanishing GlobalTheory.Adelic GlobalTheory.HilbertSamuel GlobalTheory.ChowHt GlobalTheory.TangentOrigin
+open GlobalTheory.IndefiniteRowSideFullHecke.RadicalPowers
+open GlobalTheory.HSCore GlobalTheory.QCoh
+open GlobalTheory
+open GlobalTheory.HSShort GlobalTheory.HSChoice MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hilbertSamuelVanishingFiltration_deepest_step_span : FilMono → ∀ (K : Type) [Field K] [NumberField K] (X : Data K) (s : Fin X.D → Fin X.N → K), X.IsGood s → IsNef K X.LA → IsBig K X.LA → X.MulStable → totFil X s (X.T - X.D) = ⨆ α : MonoDeg (Fin X.D) (X.T - X.D), (LinearMap.range (incl X X.D)).map (pw (shift X.toGeo) s α.1) := by
+  atlas_forward_decl GlobalTheory.HSShort.totFil_deepest

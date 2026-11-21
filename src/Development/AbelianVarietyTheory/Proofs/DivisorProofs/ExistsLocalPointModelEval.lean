@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
-import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocPt
 
+section
 open scoped TensorProduct
 open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 open scoped Classical
@@ -46,3 +46,15 @@ theorem GlobalTheory.FinComm.exists_At_locPt_eq {F E : Type} [Field F] [NumberFi
     · exact mul_adAt_eq_zero v _ hu
   · rw [LinearEquiv.apply_symm_apply]
     exact Prod.ext (funext fun i => evFin_adAt_self v _) (funext fun i => evFin_adAt_self v _)
+end
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open scoped Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_local_point_model_eval : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
+    {X : Spc F E n} {W : Spc F E d} (M : Model σ X W) (v : Pl F)
+    (p : (Fin n × Fin d → Fv F v) × (Fin n × Fin d → Fv F v)),
+    ∃ w : Matrix (Fin n) (Fin d) (AE F E), At (evFin F v) w ∧ GlobalTheory.FinComm.locPt v (M.co.e w) = p := by
+  atlas_forward_decl GlobalTheory.FinComm.exists_At_locPt_eq

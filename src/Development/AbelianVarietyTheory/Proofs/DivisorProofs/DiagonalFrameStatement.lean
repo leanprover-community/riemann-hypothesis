@@ -1,11 +1,10 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.StepsNonvacuous
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PeriodComparison
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAppellHumbertUniformizationStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AppellHumbertRealMultiplicationStatement
 
+section
 open GlobalTheory.LatVal GlobalTheory.LatJet GlobalTheory.LatJet.An
 
 set_option autoImplicit false
@@ -61,3 +60,10 @@ theorem diagFrame : DiagFrame := by
   exact hAH
 
 end GlobalTheory.DiagAH
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet GlobalTheory.LatJet.An
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.diagonal_frame_statement : DiagFrame := by
+  atlas_forward_decl GlobalTheory.DiagAH.diagFrame

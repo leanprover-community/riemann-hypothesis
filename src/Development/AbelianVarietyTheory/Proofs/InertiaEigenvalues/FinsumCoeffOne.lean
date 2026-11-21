@@ -1,7 +1,5 @@
 import Mathlib
 import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ConvZero
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PeriodDiscExtensionTateElement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SeriesTransport
 
 set_option linter.unusedSectionVars false

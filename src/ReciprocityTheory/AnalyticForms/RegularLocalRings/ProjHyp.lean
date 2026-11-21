@@ -1,6 +1,5 @@
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjDehom
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.LogResStC
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinTypeQE
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjHypA
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjHypStalk
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjHypB

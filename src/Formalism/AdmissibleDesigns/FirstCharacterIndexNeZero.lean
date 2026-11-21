@@ -1,6 +1,5 @@
 import Formalism.AdmissibleDesigns.TheoremFromNormalizedOpenThree
 import Formalism.AdmissibleDesigns.TrivialBoundTargetOfPsi
-import Formalism.AdmissibleDesigns.YtTargetOf
 import Formalism.AdmissibleDesigns.TwistedTargetOfInputs
 import Formalism.AdmissibleDesigns.MsContW
 import Formalism.AdmissibleDesigns.TrivialBoundAtRowsOfAdmTB

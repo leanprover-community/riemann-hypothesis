@@ -5,20 +5,15 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormsUnitRescaling
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormsTensorPower
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RegularOfIntegralValuationBound
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsometricOfSameNorms
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeModelInducesRootMetric
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAlgebraicPointSpecializing
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsElementHeightDifference
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LogAbsoluteValueRational
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InducedMetricShiftElement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InducedMetricDifferenceLog
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RatIsomOfInducedHermitianBundles
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ModelFunctionFieldCompatibility
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FromModelNeg
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NefFibPowIff
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
-import Development.AbelianVarietyTheory.Definitions.Divisors.LineBundleGlobalSectionsDimCongrPicardClass
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ExistsLiftPt
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -312,3 +307,10 @@ theorem geoSt_of_regLocSt : RegLocSt → GeoSt := by
   exact (mul_nonneg_iff_of_pos_left (by exact_mod_cast M.pos)).1 h
 
 end GlobalTheory.DetHT
+end
+end
+
+open GlobalTheory.DetHT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.regular_local_implies_geometric : RegLocSt → GeoSt := by
+  atlas_forward_decl GlobalTheory.DetHT.geoSt_of_regLocSt

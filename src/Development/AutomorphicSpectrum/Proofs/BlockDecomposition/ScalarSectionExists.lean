@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.EisensteinChartSplitting.TChartSplit
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SiegelEisensteinMultiplicativity
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.ScalWall
@@ -123,3 +124,9 @@ theorem tScal : TScal := by
 end GlobalTheory.CompanionTheory.ScalWall
 
 end
+end
+
+open ResidueKilled.Tr
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.scalar_section_exists : TScal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ScalWall.tScal

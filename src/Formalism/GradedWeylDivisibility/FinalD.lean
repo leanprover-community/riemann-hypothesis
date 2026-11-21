@@ -1,8 +1,6 @@
-import Formalism.GradedWeylDivisibility.FinalC
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.SSIdxFinite
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.SSBasis
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.RowActDiagWeight
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.RowActMul
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLLe
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLBasis
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLKBasis

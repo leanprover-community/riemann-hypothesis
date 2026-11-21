@@ -1,5 +1,4 @@
 import Formalism.LocalRingCardinality.SpanPowerMembership.NZRowGat
-import Formalism.SharpRestriction.InertJacobiLevels.ExtraNum
 
 noncomputable section
 

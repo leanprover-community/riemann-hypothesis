@@ -1,8 +1,9 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussTubeOfTubeGood
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FInt
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.CompanionTheory.TubeFourier
@@ -82,3 +83,10 @@ theorem inv_continuous_joint : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpac
   exact continuousAt_const.smul key
 
 end GlobalTheory.CompanionTheory.TubeFourier
+end
+end
+
+open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.CompanionTheory.TubeFourier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inverse_transform_continuous : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℂ X] (T : Type) [TopologicalSpace T] [FirstCountableTopology T] (φ : ℝ × ℝ → T → X), ExpDecay φ → Continuous (fun p : (ℝ × ℝ) × T => φ p.1 p.2) → Continuous (fun y : (ℂ × ℂ) × T => inv (fun t => φ t y.2) y.1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TubeFourier.inv_continuous_joint

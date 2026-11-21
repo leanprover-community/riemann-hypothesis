@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsAddHaarMeasureVolumeLie
+import BuildAid.ForwardExisting
+
+section
 open scoped Classical
 
 namespace GlobalTheory.JSW
@@ -31,3 +34,9 @@ theorem esymm_mul_alternant (n : ℕ) (m : Fin n → ℕ) (j : ℕ) :
   ring
 
 end GlobalTheory.JSW
+end
+
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.esymm_mul_det_pow_eq_sum_det_shifted : ∀ (n : ℕ) (m : Fin n → ℕ) (j : ℕ), MvPolynomial.esymm (Fin n) ℤ j * Matrix.det (Matrix.of fun i k : Fin n => (MvPolynomial.X i : MvPolynomial (Fin n) ℤ) ^ m k) = ∑ J ∈ (Finset.univ : Finset (Finset (Fin n))).filter (fun J => J.card = j), Matrix.det (Matrix.of fun i k : Fin n => (MvPolynomial.X i : MvPolynomial (Fin n) ℤ) ^ (m k + if k ∈ J then 1 else 0)) := by
+  atlas_forward_decl GlobalTheory.JSW.esymm_mul_alternant

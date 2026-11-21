@@ -1,7 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.EquivariantSections.EquivSection
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix
@@ -97,3 +98,9 @@ theorem torW : TorW := by
   rw [ContinuousLinearMap.smul_apply, dtau_diag_w, smul_smul, Complex.ofReal_one, one_mul]
 
 end GlobalTheory.CompanionTheory.RgDsTor
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torus_weight_decomposition : PositivityTheory.RgDs.K.TorW := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgDsTor.torW

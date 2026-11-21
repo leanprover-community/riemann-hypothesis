@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsReducedAlgebraOfSmoothOfIsNoetherianRing
+import BuildAid.ForwardExisting
 
+section
 open AlgebraicGeometry CategoryTheory Limits
 open scoped TensorProduct
 
@@ -217,3 +219,12 @@ theorem localization_eq_zero_of_mul_eq_zero : ∀ (A B : Type) [CommRing A] [IsN
   rw [← map_mul, hgb, map_zero]
 
 end GlobalTheory.FlatFibreRegular
+end
+
+open AlgebraicGeometry CategoryTheory Limits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_algebra_localization_eq_zero_of_avoid_fibre_minimal : ∀ (A B : Type) [CommRing A] [IsNoetherianRing A] [CommRing B] [Algebra A B] [Algebra.Smooth A B]
+    (b g : B) (u : PrimeSpectrum B), g * b = 0 →
+    (∀ Q ∈ ((u.asIdeal.comap (algebraMap A B)).map (algebraMap A B)).minimalPrimes, Q ≤ u.asIdeal → g ∉ Q) →
+    algebraMap B (Localization.AtPrime u.asIdeal) b = 0 := by
+  atlas_forward_decl GlobalTheory.FlatFibreRegular.localization_eq_zero_of_mul_eq_zero

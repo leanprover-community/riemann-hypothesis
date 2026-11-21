@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotCompactOfIdempotent
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms
@@ -90,3 +91,10 @@ theorem splitClosed : SplitClosed := by
   | add a w ha hw => rw [map_add, map_add, map_add, Pi.add_apply, Pi.add_apply, ha, hw, Prod.swap_add]
 
 end GlobalTheory.RegSS
+end
+end
+
+open GlobalTheory.RegSS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etale_tensor_quadratic_split_algClosed : GlobalTheory.RegSS.SplitClosed := by
+  atlas_forward_decl GlobalTheory.RegSS.splitClosed

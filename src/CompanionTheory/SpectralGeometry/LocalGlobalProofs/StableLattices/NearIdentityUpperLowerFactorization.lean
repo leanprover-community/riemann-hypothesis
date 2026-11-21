@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.EntryMulSubOne
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FactorizationBis
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix
@@ -45,3 +47,10 @@ theorem iwahori_factorisation (L : Type) [NontriviallyNormedField L] [IsUltramet
   factor n r h0 h1 A hA
 
 end GlobalTheory.CompanionTheory.CartGL.IwahoriLU
+end
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.near_identity_upper_lower_factorization : ∀ (L : Type) [NontriviallyNormedField L] [IsUltrametricDist L] (n : ℕ) (r : ℝ), 0 ≤ r → r < 1 → ∀ A : Matrix (Fin n) (Fin n) L, (∀ i j, ‖(A - 1) i j‖ ≤ r) → ∃ U W : Matrix (Fin n) (Fin n) L, (∀ i j, j < i → U i j = 0) ∧ (∀ i j, i < j → W i j = 0) ∧ (∀ i j, ‖(U - 1) i j‖ ≤ r) ∧ (∀ i j, ‖(W - 1) i j‖ ≤ r) ∧ A = U * W := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CartGL.IwahoriLU.iwahori_factorisation

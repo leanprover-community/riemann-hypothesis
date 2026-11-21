@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HilbertKodairaSpencer
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsRapoportOfIsUnitDiscr
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RuleEqOfAgreeRapoport
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRuleAllObjOfExtend
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -48,3 +48,9 @@ theorem qExpansionOnAll_of_model (hDP : GlobalTheory.Published.DelignePappasMode
   exact congrArg (fun t : Rule (rapObj (𝔞 * 𝔟⁻¹)) R₀ k ↦ t.val R X hX δ) (h1.trans h2.symm)
 
 end GlobalTheory.RealMult
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.qexpansion_on_all_components : GlobalTheory.Published.DelignePappasModel → GlobalTheory.Published.HilbertQExpansion → GlobalTheory.RealMult.QExpansionOnAll := by
+  atlas_forward_decl GlobalTheory.RealMult.qExpansionOnAll_of_model

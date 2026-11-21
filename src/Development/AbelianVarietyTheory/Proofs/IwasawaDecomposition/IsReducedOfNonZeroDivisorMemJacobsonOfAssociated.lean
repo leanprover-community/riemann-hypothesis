@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open IsLocalRing
 
 namespace GlobalTheory
@@ -57,3 +59,9 @@ theorem isReduced_of_nonZeroDivisor_mem_jacobson_of_associatedPrimes :
   simpa using this
 
 end GlobalTheory
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isReduced_of_nonZeroDivisor_mem_jacobson_of_assocPrimes : ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (x : R), x ∈ nonZeroDivisors R → x ∈ Ideal.jacobson (⊥ : Ideal R) → (∀ (P : Ideal R) [P.IsPrime], P ∈ associatedPrimes R (R ⧸ Ideal.span {x}) → IsDomain (Localization.AtPrime P)) → IsReduced R := by
+  atlas_forward_decl GlobalTheory.isReduced_of_nonZeroDivisor_mem_jacobson_of_associatedPrimes

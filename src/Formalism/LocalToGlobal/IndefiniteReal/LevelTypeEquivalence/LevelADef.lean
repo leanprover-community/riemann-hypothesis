@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.LevelA
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.MeasFr
 
 noncomputable section

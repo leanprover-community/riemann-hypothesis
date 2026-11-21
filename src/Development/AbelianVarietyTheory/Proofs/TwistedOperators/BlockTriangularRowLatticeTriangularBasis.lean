@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.InertZeta Matrix Formalism.UG
 
 noncomputable section
@@ -301,3 +303,10 @@ theorem spanEq_holds : SpanEq := by
         · exact sub_mem (smem (pow_mem_int hϖ _) (gS 0)) (eS 0)
 
 end GlobalTheory.InertZeta.RowSpan
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blockTriangular_row_lattice_triangular_basis : SpanEq := by
+  atlas_forward_decl GlobalTheory.InertZeta.RowSpan.spanEq_holds

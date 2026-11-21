@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.KZ
 open Filter Topology
 
@@ -59,3 +62,10 @@ theorem Tower.an_meromorphicAt {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω 
     _ = 0 := by rw [hab, mul_zero]
 
 end GlobalTheory.KZ
+end
+
+open Matrix GlobalTheory.KZ
+open Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.an_meromorphicAt_upperHalfPlane : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (x : X.K) (φ : ℂ → ℂ), X.an x = (φ : Mero) → ∀ τ : ℂ, τ ∈ Hs → MeromorphicAt φ τ ∧ (x ≠ 0 → meromorphicOrderAt φ τ ≠ ⊤) := by
+  atlas_forward_decl GlobalTheory.KZ.Tower.an_meromorphicAt

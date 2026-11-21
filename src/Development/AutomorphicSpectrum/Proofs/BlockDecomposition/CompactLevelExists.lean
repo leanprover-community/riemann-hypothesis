@@ -1,11 +1,10 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.IsPairLevel
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBallSubset
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSat2InvTConj
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsNormalisedOfDualIsConj
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockIntegralIff
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockInverseIntegralIff
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Filter Topology
@@ -202,3 +201,9 @@ theorem kEx : KEx := by
 end GlobalTheory.CompanionTheory.KExLevel
 
 end
+end
+
+open NumberField GlobalTheory.BCT Formalism.L2.Host PositivityTheory.Rg.BcB.F.Ex0 PositivityTheory.Rg.Bc.ArchbcB.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_level_exists : KEx := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KExLevel.kEx

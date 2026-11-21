@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem isReduced_of_smooth_over_field (K A : Type) [Field K] [CommRing A] [Algebra K A]
@@ -19,3 +21,8 @@ theorem isReduced_of_smooth_over_field (K A : Type) [Field K] [CommRing A] [Alge
   exact hf (hp.isPrime.mem_of_pow_mem N (hI ((Submodule.mem_annihilator_span_singleton a _).2 hN)))
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isReduced_of_smooth_over_field' : ∀ (K A : Type) [Field K] [CommRing A] [Algebra K A] [Algebra.Smooth K A], IsReduced A := by
+  atlas_forward_decl GlobalTheory.isReduced_of_smooth_over_field

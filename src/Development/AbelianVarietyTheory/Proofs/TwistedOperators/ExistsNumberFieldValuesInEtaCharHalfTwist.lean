@@ -2,8 +2,9 @@ import Mathlib
 import Formalism.LocalToGlobal.UnitaryNorms.CharHost
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.AlgValsFinMain
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitaryRationalInfTypeSubgroupAndInfTypeUnique
-import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CardTrivialFirstComponent
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.L2.Host
 
 noncomputable section
@@ -79,3 +80,10 @@ theorem etaVals : ∀ {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNot
   exact ⟨e y, hy⟩
 
 end GlobalTheory.EtaValsNumberField
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Host
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_numberField_valuesIn_etaChar_halfTwist : ∀ {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R) (χ : HChar H.E), IsEtaT H χ → ∃ M : IntermediateField ℚ ℂ, FiniteDimensional ℚ M ∧ χ.ValuesIn (1 / 2) (algebraMap M ℂ) := by
+  atlas_forward_decl GlobalTheory.EtaValsNumberField.etaVals

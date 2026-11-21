@@ -8,11 +8,9 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DvdDiscrTors
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnramInIffDifferentIdealEqTop
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.AbelianUnramIn
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsIsRayIntermediateField
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsImagQuadraticHost
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.NatCastMulFinrankMemDifferentIdeal
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.LogRootDiscrLeOfNatCastMemDifferentIdeal
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeckeIdealEqOfRay
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPrimeDvdNatCastMem
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Host GlobalTheory.NT GlobalTheory.Mem GlobalTheory.Mem.Fld GlobalTheory.FieldSize
 open scoped IntermediateField
 
@@ -252,3 +250,10 @@ theorem sz_discField : RayField → ∀ (P : Pre) (δ : FieldDat P),
   linarith
 
 end GlobalTheory.Mem.Fld.TorsionSize
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Host GlobalTheory.NT GlobalTheory.Mem GlobalTheory.Mem.Fld GlobalTheory.FieldSize
+open scoped IntermediateField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.field_datum_size_log_discriminant : RayField → ∀ (P : Pre) (δ : FieldDat P), Sz δ.M' (Real.log P.host.d + 20) (3 * Real.log P.host.d + 20) := by
+  atlas_forward_decl GlobalTheory.Mem.Fld.TorsionSize.sz_discField

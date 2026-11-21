@@ -1,6 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
+import BuildAid.ForwardExisting
+
+section
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
 open scoped TensorProduct Quaternion
 
@@ -86,3 +88,13 @@ theorem exists_adelic_unit : ∀ {F : Type} [Field F] [NumberField F] (d β : F)
   exact ⟨⟨_, _, hl, hr⟩, fun u h => qmap_glue_mem T _ h, fun u h => qmap_glue_not_mem T _ h⟩
 
 end GlobalTheory.CompanionTheory.PlaneSA.LocalUnit
+end
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
+open scoped TensorProduct Quaternion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelic_quaternion_local_units : ∀ {F : Type} [Field F] [NumberField F] (d β : F) (T : Finset (Pl F)) (y : (u : Pl F) → (Q d β (Kp u))ˣ),
+  ∃ Y : (Q d β (AF F))ˣ, (∀ u ∈ T, qmap (proj u) (Y : Q d β (AF F)) = y u) ∧
+    ∀ u, u ∉ T → qmap (proj u) (Y : Q d β (AF F)) = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PlaneSA.LocalUnit.exists_adelic_unit

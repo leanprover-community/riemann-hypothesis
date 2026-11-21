@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FactorRapid
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -226,3 +228,9 @@ theorem waveInt : WaveInt := by
   exact sub_eq_zero.1 (norm_eq_zero.1 hnorm)
 
 end GlobalTheory.CompanionTheory.KerFc
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wave_integral_identity : GlobalTheory.CompanionTheory.KerFc.WaveInt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KerFc.waveInt

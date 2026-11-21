@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousConjNilSymm
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableNilrad
+import BuildAid.ForwardExisting
+
+section
 open Matrix MeasureTheory PositivityTheory.Rg.BcB PositivityTheory.Rg.Tf.Loc GlobalTheory.CompanionTheory.LocVan
 open scoped ENNReal
 
@@ -60,3 +62,12 @@ theorem nmul_measurePreserving : ∀ (n : ℕ) (W₁ W₂ : Submodule ℂ (Fin n
   abel
 
 end GlobalTheory.CompanionTheory.LocVan
+end
+
+open Matrix MeasureTheory PositivityTheory.Rg.BcB PositivityTheory.Rg.Tf.Loc GlobalTheory.CompanionTheory.LocVan
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nilradical_translation_measure_preserving : ∀ (n : ℕ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ)) (hW : W₁ ≤ W₂) [MeasurableSpace (nilrad W₁ W₂)]
+  [BorelSpace (nilrad W₁ W₂)] (ν : Measure (nilrad W₁ W₂)) [ν.IsAddHaarMeasure] (Y : nilrad W₁ W₂),
+  MeasurePreserving (nmul hW Y) ν ν := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocVan.nmul_measurePreserving

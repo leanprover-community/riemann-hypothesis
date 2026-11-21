@@ -1,10 +1,10 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.RealLocalIntegrals.RealGammaLimits.UnipotentTateFunctionalEquation
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.RealLocalIntegrals.RealGammaLimits.FunctionalEquationGL2GL1Complex
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ValMeasurableEmbedding
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AbsIntegralTranslatesBound
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrablePhi
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Set
 
 namespace GlobalTheory.CompanionTheory.PowerKernel
@@ -130,3 +130,11 @@ theorem kernel_integral_le :
   rw [← integral_mul_right_eq_self f u, hcomp, integral_const_mul, mul_comm]
 
 end GlobalTheory.CompanionTheory.PowerKernel
+end
+
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mult_integral_power_bound : ∀ σ : ℝ, 0 < σ → σ < 1 → ∀ N : ℕ, 1 ≤ N → ∃ K : ℝ, ∀ q : ℝ, 0 < q →
+    Integrable (fun t : ℝˣ => |(t : ℝ)| ^ (σ - 1) / (1 + |(t : ℝ)⁻¹| * q) ^ N) Ad3.mulR ∧
+    ∫ t : ℝˣ, |(t : ℝ)| ^ (σ - 1) / (1 + |(t : ℝ)⁻¹| * q) ^ N ∂Ad3.mulR ≤ K * q ^ (σ - 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PowerKernel.kernel_integral_le

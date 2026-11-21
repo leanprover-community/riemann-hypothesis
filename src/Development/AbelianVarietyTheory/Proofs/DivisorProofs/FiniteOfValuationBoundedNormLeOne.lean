@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Filter
 
 namespace GlobalTheory.BCT.SuppFin
@@ -62,3 +65,9 @@ theorem finite_of_valuation_bounded_of_norm_le_one :
     (fun x _ y _ hxy => mul_left_cancel₀ hd'0 hxy)
 
 end GlobalTheory.BCT.SuppFin
+end
+
+open NumberField IsDedekindDomain Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_of_valuation_bounded_norm_le_one : ∀ (E : Type) [Field E] [NumberField E] (X : Set E), (∀ w : HeightOneSpectrum (𝓞 E), ∃ N : ℤ, ∀ a ∈ X, w.valuation E a ≤ WithZero.exp N) → (∀ᶠ w : HeightOneSpectrum (𝓞 E) in cofinite, ∀ a ∈ X, w.valuation E a ≤ 1) → (∀ a ∈ X, ∀ τ : E →+* ℂ, ‖τ a‖ ≤ 1) → X.Finite := by
+  atlas_forward_decl GlobalTheory.BCT.SuppFin.finite_of_valuation_bounded_of_norm_le_one

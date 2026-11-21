@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffThetaTransformRealLinesCmExtensionStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ContDiffThetaTrRealCMK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -24,5 +22,5 @@ theorem _root_.GlobalTheory.T.doubled_theta_lift_nonvanishing : ∀ (F E : Type)
           ∀ (k : ℕ) (L : (Fin k → ℝ) →+ Formalism.IndefR.DatumF.WOF F E nS nT), Continuous L →
             (∀ t, (L t).map (Formalism.IndefR.DatumF.finPartF F E) = 0) →
             ∀ w, ContDiff ℝ ∞ fun t => GlobalTheory.WeilSchrodinger.thetaTr F co B.ψ φ (w + L t) := by
-  first | exact @_root_.GlobalTheory.ThetaSmoothCM.contDiff_thetaTr_real_CM_k | exact _root_.GlobalTheory.ThetaSmoothCM.contDiff_thetaTr_real_CM_k | (intros; apply _root_.GlobalTheory.ThetaSmoothCM.contDiff_thetaTr_real_CM_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.ThetaSmoothCM.contDiff_thetaTr_real_CM_k
 end

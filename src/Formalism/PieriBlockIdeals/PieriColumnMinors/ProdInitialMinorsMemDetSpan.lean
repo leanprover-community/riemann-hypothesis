@@ -1,5 +1,4 @@
 import Formalism.PieriBlockIdeals.StatementLA
-import Formalism.GradedWeylDivisibility.FinalC
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
 import Formalism.PieriBlockIdeals.PieriColumnMinors.PadicValIntProdElevenMultiples
 import Formalism.PieriBlockIdeals.PieriColumnMinors.JointExactExponentStopHigh

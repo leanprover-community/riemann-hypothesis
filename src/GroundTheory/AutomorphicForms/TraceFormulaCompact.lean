@@ -1,11 +1,7 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.DiscreteDecomposition
-import GroundTheory.AutomorphicForms.TraceFormulaSpectral
 import GroundTheory.AutomorphicForms.TraceFormulaMultiplicity
-import GroundTheory.AutomorphicForms.TraceFormulaGeometric
-import GroundTheory.AutomorphicForms.TraceFormulaCentralizer
 import GroundTheory.AutomorphicForms.TraceFormulaWeil
-import GroundTheory.AutomorphicForms.TraceFormulaConvolution
 
 open MeasureTheory Topology Filter Set Function
 open scoped ENNReal Pointwise

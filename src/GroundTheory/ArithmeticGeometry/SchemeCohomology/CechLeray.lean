@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.Cartan
 import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechToDerived
 import GroundTheory.ArithmeticGeometry.SchemeCohomology.SheafH
 set_option maxSynthPendingDepth 1

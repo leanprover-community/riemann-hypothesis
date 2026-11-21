@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.InvariantRadonFibre
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsBruhatFunctionClosedSubgroup
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsUniqueHaarOfInvariantRadonOnCosets
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory MeasureTheory.Measure GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre Topology
 open scoped ENNReal NNReal
 
@@ -213,3 +214,10 @@ theorem modulusClause : ModulusClause := by
   exact ⟨exists_isInvariantRadon H hH hΔ, isInvariantRadon_unique H hH⟩
 
 end GlobalTheory.WeilCriterion
+end
+
+open MeasureTheory GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_criterion_invariant_measure_homogeneous_space : ModulusClause := by
+  atlas_forward_decl GlobalTheory.WeilCriterion.modulusClause

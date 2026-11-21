@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalFiniteDimensionalFinitePartsWeilTransStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ExistsLocalFinitePartsFK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -29,5 +27,5 @@ theorem _root_.GlobalTheory.T.weil_pair_commuting_actions : ∀ (F E : Type) [Fi
       (∀ i, g i ∈ SB (κ → FiniteAdeleRing (𝓞 F) F)) ∧ (∀ i j, g i (y j) = if i = j then 1 else 0) ∧
       ∀ p ∈ N, ∃ f : Fin m → SchwartzMap (κ → mixedEmbedding.mixedSpace F) ℂ,
         om p Φ = ∑ i, pureA F (f i) (g i) := by
-  first | exact @_root_.GlobalTheory.WeilContF.exists_local_finite_parts_F_k | exact _root_.GlobalTheory.WeilContF.exists_local_finite_parts_F_k | (intros; apply _root_.GlobalTheory.WeilContF.exists_local_finite_parts_F_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.WeilContF.exists_local_finite_parts_F_k
 end

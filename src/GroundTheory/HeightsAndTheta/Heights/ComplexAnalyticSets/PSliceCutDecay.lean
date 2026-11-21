@@ -9,7 +9,6 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasura
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffDominated
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffGradient
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StokesOffDiscriminantWindow
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.LogIntegrableOnOfLogIntegrable
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights

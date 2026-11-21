@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashToGLSmul
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.HeckeFamilyMatrices UpperHalfPlane CongruenceSubgroup
 open scoped MatrixGroups ModularForm Manifold
 
@@ -62,3 +65,10 @@ theorem chiInv_slash_wOld : ∀ (N l : ℕ) (k : ℤ) (a b : ℤ), (l : ℤ) * b
     smul_slash_toGL k _ hW, h11]
 
 end GlobalTheory.HeckeFamilyMatrices
+end
+
+open GlobalTheory.HeckeFamilyMatrices UpperHalfPlane CongruenceSubgroup
+open scoped MatrixGroups ModularForm Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nebentypus_slash_oldformLevelRaisingMatrix : ∀ (N l : ℕ) (k : ℤ) (a b : ℤ), (l : ℤ) * b - N * a = 1 → ∀ (χ : DirichletCharacter ℂ N) (G : ℍ → ℂ), 0 < l → ChiInv k N (N * l) χ G → ChiInv k N (N * l) χ (G ∣[k] toGL (wOld N l a b)) := by
+  atlas_forward_decl GlobalTheory.HeckeFamilyMatrices.chiInv_slash_wOld

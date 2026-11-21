@@ -1,20 +1,21 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagVarietyBoundaryDimensionDropStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestHeightBoundStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagHeightLabelInvariantStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagHeightTestBoundStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.MeanSlopeProportionalVolumeStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerT2Statement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerTheoremBStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerTheoremBAveragedStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerWeilTheoremStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerI3OfSemipositiveNefStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagHeightI9PropertiesStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerT1LimitStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagVarietyBoundaryDimensionDrop
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestHeightBound
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagHeightLabelInvariant
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagHeightTestBound
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.MeanSlopeProportionalVolume
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerT2
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerTheoremB
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerTheoremBAveraged
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerWeilTheorem
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerI3OfSemipositiveNef
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagHeightI9Properties
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TowerT1Limit
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DivSuppArithHolds
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueRationalStatementStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueRationalStatement
+
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 
 namespace GlobalTheory.CompanionTheory.Ar.Top
@@ -53,3 +54,9 @@ theorem chain_tower : PB.FlagHeight → PB.Inputs → SuccessiveMinimaLowerBound
   exact ⟨hT1, hB, hT2', GlobalTheory.T.mean_slope_proportional_volume II Ψ N T _ rd Lval hP hVol hT2'⟩
 
 end GlobalTheory.CompanionTheory.Ar.Top
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tower_weil_inputs_combined : PB.FlagHeight → PB.Inputs → SuccessiveMinimaLowerBound → SuccessiveMinimaUpperBound → GroundTheory.Heights₂.Heights.AntisymPerturbation.Statement → GroundTheory.Heights₂.Heights.LowerBoundFree.GrassmannianHeightZTwo.Statement → ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) [Nonempty Ψ] (T : RootTower Ψ N) (frob : ℕ → Ψ → ℕ → Ψ ⊕ Ψ) (C C' rd Lval : ℝ), 0 ≤ C → 0 ≤ C' → 1 ≤ rd → FrobShape frob → T.Proportional → T.I1 II → T.I2 II → T.A1 → T.ModelNefStatement → T.M2 → T.ANef → T.I5 II → T.I6 II → T.I7 → T.I8 II (hhFl Ψ N II) → T.Prop6 II frob → T.PropA II → T.PropF II C' rd Lval → T.VolEq → T.SlopeLower II C rd Lval → T.T1 II ∧ T.ThmB II (hhFl Ψ N II) ∧ T.T2 II (2 * C + 3 * C' + 5) rd Lval ∧ T.MeanSlope II (2 * C + 3 * C' + 5) rd Lval := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.chain_tower

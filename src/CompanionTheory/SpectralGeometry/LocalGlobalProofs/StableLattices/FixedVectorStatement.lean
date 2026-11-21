@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.Fl
 
 namespace GlobalTheory.CompanionTheory.RgFl
@@ -79,3 +81,9 @@ theorem stFixVec : StFixVec := by
     exact (hu _ (hstable ⟨k, hk⟩ u huC)).2 (hiso k u).le
 
 end GlobalTheory.CompanionTheory.RgFl
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.FixedVectorStatement : StFixVec := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgFl.stFixVec

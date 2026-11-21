@@ -2,9 +2,10 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SeriesRatSOf
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.TwistSeries
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RationalFormsDetTwistMulRationalStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RationalFormsDetTwistMulRational
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaWeilTwist
 
+section
 set_option autoImplicit false
 noncomputable section
 open NumberField IsDedekindDomain
@@ -32,3 +33,9 @@ theorem seriesRatS_of_untwRatS (hRF : GlobalTheory.Published.RayClassFieldSt) (h
     rw [heq g]; ring
 
 end GlobalTheory.SerStdTwist
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaSeriesRationalOnGoodCovers_of_untwisted : GlobalTheory.Published.RayClassFieldSt → GlobalTheory.SerStd.UntwRatS → GlobalTheory.SerStd.SeriesRatS := by
+  atlas_forward_decl GlobalTheory.SerStdTwist.seriesRatS_of_untwRatS

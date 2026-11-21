@@ -1,5 +1,4 @@
 import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SSmooth
-import GroundTheory.GlobalFields.TateThesis.AdelePoisson
 import GroundTheory.GlobalFields.TateThesis.TateThetaDecay
 
 noncomputable section

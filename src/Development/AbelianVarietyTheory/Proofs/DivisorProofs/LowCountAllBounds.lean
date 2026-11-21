@@ -3,8 +3,10 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.Pe
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.WtSubOneLe
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatFrame
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LegendreBoundsFactorialMultiIndexCapelli
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DigitsSumLeLogbStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DigitsSumLeLogb
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddValuationNatCastEqPadicValNatStatement
+
+section
 open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
 
 namespace GlobalTheory.LowCount
@@ -192,3 +194,9 @@ theorem lowC_all : FactorialWeightedSumBound ∧ FactorialMultiindexBound ∧ Ra
   ⟨low_count_first_bound, low_count_second_bound, low_count_third_bound⟩
 
 end GlobalTheory.LowCount
+end
+
+open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Sh GlobalTheory.FGDepth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.low_count_all_bounds : FactorialWeightedSumBound ∧ FactorialMultiindexBound ∧ RadiusExponentInequality := by
+  atlas_forward_decl GlobalTheory.LowCount.lowC_all

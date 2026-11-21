@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.GL3MeanSquares.ConcavityEquidistribution
 import Formalism.GL3MeanSquares.HookFormulaTorsion.SumLogFactorialRowsBounds
 
 namespace Formalism.HermitianLattices.TraceIntegrality

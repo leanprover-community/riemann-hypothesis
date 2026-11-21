@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GoodTopBot
 import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
 
 noncomputable section
@@ -110,3 +112,10 @@ theorem rowOperators_main : ∀ (R : Type) [CommRing R] (r n : ℕ), GlRel (rowE
     fun S _ φ k f => map_gel φ r n k f⟩
 
 end GlobalTheory.Alc
+end
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility Formalism.BasicNotions GlobalTheory.Alc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowPolarizationOperators_relations_divPow_baseChange : ∀ (R : Type) [CommRing R] (r n : ℕ), GlRel (rowE R r n) ∧ (∀ a b f, rowE R r n a b f = rowDiv R a b 1 f) ∧ ∀ (S : Type) [CommRing S] (φ : R →+* S) (k : ℕ) (f : MvPolynomial (Fin r × Fin n) R), map φ (gel R r n k f) = gel S r n k (map φ f) := by
+  atlas_forward_decl GlobalTheory.Alc.rowOperators_main

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory GlobalTheory.RealWeil
 open scoped SchwartzMap
 open scoped FourierTransform ContDiff RealInnerProductSpace Real
@@ -145,3 +148,11 @@ theorem GlobalTheory.RealWeil.coef_qDecay : ∀ (n : ℕ) (g g' : Sch (Fin n)) (
   calc F * (1 + ‖qPart w‖) ^ N ≤ F * (2 ^ N * (1 + ‖qPart w‖ ^ N)) := by gcongr
     _ = 2 ^ N * (F + ‖qPart w‖ ^ N * F) := by ring
     _ ≤ 2 ^ N * (T + 2 ^ N * T) := by gcongr
+end
+end
+
+open MeasureTheory GlobalTheory.RealWeil
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_coeff_decay_second_part : ∀ (n : ℕ) (g g' : Sch (Fin n)) (N : ℕ), ∃ C : ℝ, ∀ w : Fin n ⊕ Fin n → ℝ, ‖∫ x, rhoFun w ⇑g x * starRingEnd ℂ (g' x)‖ * (1 + ‖qPart w‖) ^ N ≤ C := by
+  atlas_forward_decl GlobalTheory.RealWeil.coef_qDecay

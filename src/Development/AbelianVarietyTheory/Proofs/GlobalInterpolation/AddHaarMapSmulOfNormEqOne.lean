@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Topology
 
 namespace GlobalTheory
@@ -51,3 +54,9 @@ theorem addHaar_map_smul_of_norm_eq_one (K V : Type) [NontriviallyNormedField K]
   rw [hk, hk1, one_smul]
 
 end GlobalTheory
+end
+
+open MeasureTheory Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.map_smul_addHaar_of_norm_eq_one : ∀ (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (c : K), ‖c‖ = 1 → Measure.map (fun x : V => c • x) μ = μ := by
+  atlas_forward_decl GlobalTheory.addHaar_map_smul_of_norm_eq_one

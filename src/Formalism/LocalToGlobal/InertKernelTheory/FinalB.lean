@@ -9,7 +9,6 @@ import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.UnitSubstOfL
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.MMFour
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntUnit
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.DegreeLeOfCoeffProdNe
-import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.TestVectorMemSchwartzBruhat
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.JetsModel
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.JetsOrth
 

@@ -4,7 +4,9 @@ import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.
 import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementC
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementK
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
+import BuildAid.ForwardExisting
 
+section
 open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
 
 noncomputable section
@@ -214,3 +216,10 @@ theorem wp_odd_mul_sub_half_prod : ∀ (L : PeriodPair) (n : ℕ) (S : Finset �
     + (sgStar L z ^ 2 * sgStar L t ^ 2 * (L.weierstrassP z - L.weierstrassP t)) * hprod
 
 end GlobalTheory.OddHalfProduct
+end
+end
+
+open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weierstrassP_odd_mul_sub_twoTorsion_product : ∀ (L : PeriodPair) (n : ℕ) (S : Finset ℂ) (t : ℂ), Odd n → Formalism.L2.Th1.F.IsKerReps L (n : ℂ) S → t ∉ L.lattice → 2 * t ∈ L.lattice → ∀ z, (n : ℂ) * z ∉ L.lattice → (n : ℂ) ^ 2 * (L.weierstrassP (n * z) - L.weierstrassP t) * ∏ P ∈ S, (L.weierstrassP z - L.weierstrassP P) = (L.weierstrassP z - L.weierstrassP t) * ∏ P ∈ S, (L.weierstrassP z - L.weierstrassP (t + P)) := by
+  atlas_forward_decl GlobalTheory.OddHalfProduct.wp_odd_mul_sub_half_prod

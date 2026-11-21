@@ -2,7 +2,6 @@ import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StProjBundleDim
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PProjBundleArith
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PFlagArith
-import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.StatementsIntDim
 set_option maxSynthPendingDepth 1
 
 noncomputable section

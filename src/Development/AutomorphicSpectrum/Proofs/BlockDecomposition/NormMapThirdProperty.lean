@@ -1,12 +1,12 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnitOneAddJacobsonTensorStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFiniteAlgebraJacobsonRadicalStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteModuleAdicCompleteStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TensorIdealMapInjectiveStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormMapCongruenceStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CyclicAlgebraHilbertNinetyStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteModuleAdicComplete
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TensorIdealMapInjective
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormMapCongruence
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CyclicAlgebraHilbertNinety
 
+section
 open scoped TensorProduct
 open IsLocalRing
 
@@ -201,3 +201,8 @@ theorem norm_units_surjective : PositivityTheory.Rg.Tf.Loc.N1 → PositivityTheo
 end
 
 end GlobalTheory.CompanionTheory.UnitNorm
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_map_third_property : PositivityTheory.Rg.Tf.Loc.N1 → PositivityTheory.Rg.Tf.Loc.N2 → PositivityTheory.Rg.Tf.Loc.N3 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnitNorm.norm_units_surjective

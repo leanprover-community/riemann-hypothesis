@@ -1,4 +1,3 @@
-import Formalism.MirabolicMackeyTheory.StatementL
 import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.OnLocal
 import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.Mirabolic
 import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.LemmaGG

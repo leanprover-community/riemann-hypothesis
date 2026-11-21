@@ -1,8 +1,6 @@
 import Formalism.FlagUnipotentLattices.AlgebraicIdentityHigherDegree
 import Formalism.FlagUnipotentLattices.BlockMinorAbsoluteFromExplicit
-import Formalism.FormalDegreeBessel.FinalDS
 import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
-import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.FramesPt
 
 open MeasureTheory Matrix Finset
 open scoped InnerProductSpace

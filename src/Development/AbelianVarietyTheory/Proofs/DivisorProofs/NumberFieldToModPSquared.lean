@@ -1,5 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SepIntPolyRootModPrimeSqStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SepIntPolyRootModPrimeSq
+
+section
 open scoped TensorProduct Polynomial
 
 namespace GlobalTheory
@@ -119,3 +121,8 @@ theorem exists_prime_sq_ringHom_of_closure : ∀ (K : Type) [Field K] [NumberFie
   exact nonempty_closure_ringHom_of_mul_mem K (Algebra.adjoin ℤ ({θ} : Set K)).toSubring (ZMod (p ^ 2)) ψ N hN0 hu S hNS
 
 end GlobalTheory
+end
+
+open scoped TensorProduct Polynomial
+theorem _root_.GlobalTheory.T.number_field_to_mod_p_squared : ∀ (K : Type) [Field K] [NumberField K] (S : Finset K) (n : ℕ), ∃ p : ℕ, p.Prime ∧ n < p ∧ Nonempty (Subring.closure (S : Set K) →+* ZMod (p ^ 2)) := by
+  atlas_forward_decl _root_.GlobalTheory.exists_prime_sq_ringHom_of_closure

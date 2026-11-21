@@ -3,6 +3,8 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolyApproxZer
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPsCharOne
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteSemisimple
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CompactGroupRepDefinedOverFiniteExtension
+
+section
 open Formalism.MainNotions.N GlobalTheory.Cong GlobalTheory.PsChar
 
 namespace GlobalTheory.CompactRepField
@@ -23,3 +25,9 @@ theorem exists_finiteDimensional_entries_mem_of_continuous :
   exact hmem ⟨r g, ⟨g, rfl⟩⟩ i j
 
 end GlobalTheory.CompactRepField
+end
+
+open Formalism.MainNotions.N GlobalTheory.Cong GlobalTheory.PsChar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finiteExtension_entries_of_compact_rep : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ] (a : ℕ) (r : Γ →* GL (Fin a) (PadicAlgCl l)), Continuous r → ∃ L : IntermediateField ℚ_[l] (PadicAlgCl l), FiniteDimensional ℚ_[l] L ∧ ∀ g i j, ((r g : GL (Fin a) (PadicAlgCl l)) : Matrix (Fin a) (Fin a) (PadicAlgCl l)) i j ∈ L := by
+  atlas_forward_decl GlobalTheory.CompactRepField.exists_finiteDimensional_entries_mem_of_continuous

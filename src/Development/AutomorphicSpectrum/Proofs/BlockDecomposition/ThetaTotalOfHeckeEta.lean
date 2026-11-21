@@ -1,21 +1,21 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.HeckeEta
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FockTranslateSchwartzMajorant
 import Development.AutomorphicSpectrum.Proofs.TwistedProofs.ExistsIsCovolOneRatMx
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ZeroCoefficientTotalStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankOneThetaTotalStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StepTotalOfProductsStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StepTotalOfProducts
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductThetaOfSchwartzTensorStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductMeasureStatementStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzTensorDensityStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilRepresentationContinuityStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilRepresentationKFiniteStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrbitMajorantStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwasawaCompactnessStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankOneMajorantStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EuclideanTotalStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FockTotalOfEuclideanStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilRepresentationContinuity
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilRepresentationKFinite
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrbitMajorant
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwasawaCompactness
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankOneMajorant
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EuclideanTotal
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FockTotalOfEuclidean
 
+section
 noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
@@ -112,3 +112,9 @@ theorem thTotal : HeckeEta → ThTotal :=
 end GlobalTheory.CompanionTheory.ThTot
 
 end
+end
+
+open PositivityTheory.Rg.Rsw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_total_of_hecke_eta : HeckeEta → ThTotal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ThTot.thTotal

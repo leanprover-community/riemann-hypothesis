@@ -1,5 +1,4 @@
 import Formalism.CharacterColumnKernels.StatementRho
-import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerOfDetEqZero
 import Formalism.CharacterColumnKernels.IdempotentNormalForms.RightMulEpsAlgebraMap
 
 open Finset

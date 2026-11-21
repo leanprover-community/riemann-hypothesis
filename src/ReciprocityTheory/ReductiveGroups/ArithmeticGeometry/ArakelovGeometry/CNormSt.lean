@@ -2,7 +2,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.Fib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ChooseLePowDivFactorial
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.SupLeL2NormSections
 import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.SupStMonoNormSqPos
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.LemCone
 
 namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 

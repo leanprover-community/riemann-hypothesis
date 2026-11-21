@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsFlagModelHermSum
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOnDiagValExtTrace
 
 set_option autoImplicit false

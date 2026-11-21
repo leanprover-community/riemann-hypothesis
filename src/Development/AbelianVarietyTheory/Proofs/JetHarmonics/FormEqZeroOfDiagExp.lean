@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GCorCut
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FrRatio
-import Formalism.LocalToGlobal.ProjectiveLattices.ThProps
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PsJetTwistedSeriesOfLeOne
 
 set_option autoImplicit false

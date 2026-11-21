@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.InvariantRadonFibre
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsUniqueHaarOfInvariantRadonOnCosetsStatement
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre
 open scoped ENNReal NNReal
 
@@ -76,3 +78,10 @@ theorem normaliseSubgroupClause : NormaliseSubgroupClause := by
   exact key _ _ h₁ h
 
 end GlobalTheory.Proof.existsUnique_haar_subgroup_quotient_integral_formula
+end
+
+open MeasureTheory GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.existsUnique_haar_subgroup_quotient_integral_formula : NormaliseSubgroupClause := by
+  atlas_forward_decl GlobalTheory.Proof.existsUnique_haar_subgroup_quotient_integral_formula.normaliseSubgroupClause

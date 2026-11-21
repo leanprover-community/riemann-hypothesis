@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsAdmissibleIntegralBasisChangeOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistAtOfNe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdmissibleAdelicMatrixFamilyOrdersFiniteStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdmissibleAdelicMatrixFamilyOrdersFinite
 
+section
 open scoped IntermediateField Polynomial RatFunc
 open GlobalTheory.Nef Polynomial
 
@@ -66,3 +66,10 @@ theorem GlobalTheory.Nef.degLine_ge_of_twist : ∀ (k F : Type) [Field k] [IsAlg
   have : 0 ≤ ∑ x ∈ (hfin.toFinset ∪ {v₀}).erase v₀, d x :=
     Finset.sum_nonneg fun v hv => hnn v (Finset.ne_of_mem_erase hv)
   omega
+end
+
+open scoped IntermediateField Polynomial RatFunc
+open GlobalTheory.Nef Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lineDegree_ge_of_twisted_section : ∀ (k F : Type) [Field k] [IsAlgClosed k] [CharZero k] [Field F] [Algebra k F], IsFF k F → ∀ (n : ℕ) (h : Place k F → Matrix (Fin n) (Fin n) F), admitted h → ∀ (v₀ : Place k F) (π : F), π ≠ 0 → ord v₀ π = 1 → ∀ (e : ℤ) (p : Fin n → F), p ≠ 0 → (∀ (v : Place k F) (i : Fin n), v.1 ((twistAt v₀ (π ^ (-e)) h v).mulVec p i) ≤ 1) → e ≤ degLine h p := by
+  atlas_forward_decl GlobalTheory.Nef.degLine_ge_of_twist

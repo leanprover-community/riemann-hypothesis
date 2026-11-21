@@ -6,7 +6,9 @@ import ReciprocityTheory.ClassFieldTheory.GlobalClassField.AsGabLimB
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsDiagMulRayMulUnif
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.InvMemUFin
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Neutral.B1
@@ -193,3 +195,12 @@ theorem abRestrict_eq : ∀ (K : Type) [Field K] [NumberField K] [IsTotallyCompl
   exact ha
 
 end GlobalTheory.CompanionTheory.ArtinUniq
+end
+end
+
+open NumberField
+open scoped nonZeroDivisors
+open scoped GlobalTheory.Idele
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.artin_map_abelian_unique : ∀ (K : Type) [Field K] [NumberField K] [IsTotallyComplex K] (Art Art' : Neutral.B1.IdeleClassGroup K →* Field.absoluteGaloisGroupAbelianization K), Neutral.B1.IsGlobalArtinMap K Art → Neutral.B1.IsGlobalArtinMap K Art' → ∀ (L : IntermediateField K (AlgebraicClosure K)) (h : Neutral.B1.IsFiniteAbelian K L) (c : Neutral.B1.IdeleClassGroup K), Neutral.B1.abRestrict K L h (Art c) = Neutral.B1.abRestrict K L h (Art' c) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ArtinUniq.abRestrict_eq

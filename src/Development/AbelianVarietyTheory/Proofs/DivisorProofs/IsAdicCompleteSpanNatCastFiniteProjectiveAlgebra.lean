@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.FinProjComplete
 
 theorem mem_smul_top_pi {R ι : Type*} [CommRing R] [Finite ι] (J : Ideal R) (x : ι → R) :
@@ -72,3 +74,8 @@ theorem isAdicComplete_span_natCast_of_finite_projective (p : ℕ) (O A : Type) 
   exact (IsAdicComplete.map_algebraMap_iff _ _).2 hO
 
 end GlobalTheory.FinProjComplete
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isAdicComplete_span_natCast_finite_projective_algebra : ∀ (p : ℕ) (O A : Type) [CommRing O] [CommRing A] [Algebra O A] [Module.Finite O A] [Module.Projective O A] [IsAdicComplete (Ideal.span {(p : O)}) O], IsAdicComplete (Ideal.span {(p : A)}) A := by
+  atlas_forward_decl GlobalTheory.FinProjComplete.isAdicComplete_span_natCast_of_finite_projective

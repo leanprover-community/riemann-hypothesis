@@ -1,4 +1,3 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.StepW
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.ColumnAdditionFixesTranspose
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.WCoreDef
 

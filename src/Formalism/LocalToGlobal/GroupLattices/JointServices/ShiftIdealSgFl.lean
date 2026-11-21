@@ -1,5 +1,4 @@
 import Formalism.LocalToGlobal.GroupLattices.JointServices
-import Formalism.LocalToGlobal.Divisibility.Inputs
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.LocalizationStructureHolds
 
 open Module NumberField IsDedekindDomain

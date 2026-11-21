@@ -1,6 +1,9 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNormFormGaussBound
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PDehomNormPIntegral
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
@@ -241,3 +244,8 @@ theorem normFormGaussBound : NormFormGaussBound.Statement := by
 end
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_form_gauss_bound_holds : GroundTheory.Heights₂.Heights.HilbertSamuel.NormFormGaussBound.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.normFormGaussBound

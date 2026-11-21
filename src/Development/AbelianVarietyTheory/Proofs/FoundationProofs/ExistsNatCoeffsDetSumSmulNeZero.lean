@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped Matrix
 open Polynomial
 
@@ -80,3 +83,9 @@ theorem exists_nat_coeffs_det_ne_zero : ∀ {K : Type} [Field K] [CharZero K] {m
   simp_rw [← ha]; exact hb'
 
 end GlobalTheory
+end
+
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nat_coeffs_det_sum_smul_ne_zero : ∀ {K : Type} [Field K] [CharZero K] {m n : ℕ} (T : Fin n → Matrix (Fin m) (Fin m) K) (b : Fin n → K), (∑ i, b i • T i).det ≠ 0 → ∃ a : Fin n → ℕ, (∑ i, (a i : K) • T i).det ≠ 0 := by
+  atlas_forward_decl GlobalTheory.exists_nat_coeffs_det_ne_zero

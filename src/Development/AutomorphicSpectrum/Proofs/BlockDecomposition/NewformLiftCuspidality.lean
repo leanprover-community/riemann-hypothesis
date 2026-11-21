@@ -1,9 +1,9 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 import GroundTheory.AutomorphicForms.CompactAbelianCharacters
-import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
-import GroundTheory.GlobalFields.TateThesis.AdeleScaling
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -408,3 +408,8 @@ theorem f6 : Ad3.R.F6 := by
 
 end GlobalTheory.CompanionTheory.NewformLiftCuspidality
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_lift_cuspidality : Ad3.R.F6 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.NewformLiftCuspidality.f6

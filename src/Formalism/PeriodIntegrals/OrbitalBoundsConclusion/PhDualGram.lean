@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.FglGram
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DualGramSubstitution.PhDualGramMain
 
 namespace PI.Final.PhDualGram

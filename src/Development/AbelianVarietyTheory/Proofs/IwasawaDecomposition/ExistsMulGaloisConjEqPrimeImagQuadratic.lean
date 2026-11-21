@@ -5,6 +5,8 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsOfFinOrder
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NotDvdDiscrIffRamificationIdx
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.LeOfFiniteSplitNotSplitBauer
 import Formalism.LocalToGlobal.Divisibility.ConjugationAtDistinguishedPlace
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
 
 namespace GlobalTheory.RayFieldNorm
@@ -54,3 +56,12 @@ theorem exists_mul_conj_eq_norm : ∀ (K : Type) [Field K] [NumberField K], IsEm
   simp
 
 end GlobalTheory.RayFieldNorm
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_mul_galois_conj_eq_prime_imagQuadratic : ∀ (K : Type) [Field K] [NumberField K], IsEmpty (K →+* ℝ) → Module.finrank ℚ K = 2 →
+    ∀ (j : K →+* Qb) (π : 𝓞 K) (p : ℕ), Ideal.absNorm (Ideal.span {π}) = p →
+      ∃ σ : Qb →ₐ[ℚ] Qb, j (π : K) * σ (j (π : K)) = (p : Qb) := by
+  atlas_forward_decl GlobalTheory.RayFieldNorm.exists_mul_conj_eq_norm

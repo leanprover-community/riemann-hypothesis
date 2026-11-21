@@ -1,6 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.PadicTop
@@ -198,3 +200,9 @@ theorem topEx : TopEx := by
   exact ⟨τ, τK, h1, h2, hO, h3⟩
 
 end GlobalTheory.PadicTop
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dvr_finite_over_padic_topologies_exist : ReciprocityTheory.ChartRestriction.T2.TopEx := by
+  atlas_forward_decl GlobalTheory.PadicTop.topEx

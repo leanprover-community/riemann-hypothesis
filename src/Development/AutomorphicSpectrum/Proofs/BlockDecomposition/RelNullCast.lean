@@ -2,12 +2,7 @@ import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FormUniq
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.NLeA
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.Imports
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ChartGrConst
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FormConsMul
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LamFamily
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AppendCons
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AffineFinsetInf
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CupMemRelS
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DCupZero
 
 set_option autoImplicit false

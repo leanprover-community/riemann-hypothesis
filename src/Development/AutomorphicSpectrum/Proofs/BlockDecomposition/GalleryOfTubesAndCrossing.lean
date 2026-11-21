@@ -1,9 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableAffLine
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChamberPairThreeFour
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StripEntireOfFac
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Filter Topology PositivityTheory.RgEis
@@ -350,3 +349,9 @@ theorem gallery : SecLaw → IdTube → TubeChain → Cross → Gallery := by
     · rw [hu']; push_cast; ring
 
 end GlobalTheory.CompanionTheory.RgEisGal
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gallery_of_tubes_and_crossing : PositivityTheory.RgEis.SecLaw → PositivityTheory.RgEis.IdTube → PositivityTheory.RgEis.TubeChain → PositivityTheory.RgEis.Cross → PositivityTheory.RgEis.Gallery := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisGal.gallery

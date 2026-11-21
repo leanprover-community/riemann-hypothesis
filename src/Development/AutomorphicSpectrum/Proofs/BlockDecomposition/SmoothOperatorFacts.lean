@@ -2,13 +2,13 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.CalcSteps
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FunctionalCalculusJointCurve
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SobolevOperatorFacts
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Lap
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SobolevSpaceCompleteStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RightWordLaplacianPowerBoundStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LaplacianCasimirRelationStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LaplacianPowerCasimirBoundStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FunctionalCalculusOnSobolevStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SobolevSpaceComplete
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RightWordLaplacianPowerBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LaplacianCasimirRelation
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LaplacianPowerCasimirBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FunctionalCalculusOnSobolev
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -185,3 +185,9 @@ theorem smoothOp : SmoothOp := by
       _ = _ := by ring
 
 end GlobalTheory.CompanionTheory.FcSmooth
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_operator_facts : PositivityTheory.RgBcC.Fc.SmoothOp := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FcSmooth.smoothOp

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsEqNsmulOfForallDvdOfBijective
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Flat
 
 theorem mem_of_forall_exists_sub_eq_nsmul (Λ : Type) [AddCommGroup Λ] [Module.Finite ℤ Λ]
@@ -93,3 +95,8 @@ theorem mem_of_forall_card_mul_eq_pow :
   exact ⟨w, w.2, b, hwb⟩
 
 end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.saturated_lattice_quotient_count : ∀ (Λ : Type) [AddCommGroup Λ] [Module.Free ℤ Λ] [Module.Finite ℤ Λ] (B : LinearMap.BilinForm ℤ Λ), Function.Bijective B → (∀ x, B x x = 0) → ∀ W : Submodule ℤ Λ, (∀ (k : ℤ) x, k ≠ 0 → k • x ∈ W → x ∈ W) → (∀ N : ℕ, 0 < N → ∃ T : Set (W ⧸ LinearMap.range ((N : ℤ) • (LinearMap.id : W →ₗ[ℤ] W))), Nat.card (W ⧸ LinearMap.range ((N : ℤ) • (LinearMap.id : W →ₗ[ℤ] W))) * Nat.card T = N ^ Module.finrank ℤ Λ ∧ ∀ x y : W, Submodule.Quotient.mk x ∈ T → (N : ℤ) ∣ B x y) → ∀ x, (∀ y ∈ W, B x y = 0) → x ∈ W := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.mem_of_forall_card_mul_eq_pow

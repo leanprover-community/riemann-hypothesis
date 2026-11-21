@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.InclEquiv
-import Development.AbelianVarietyTheory.Definitions.Divisors.IntegralBound
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComplexifyStatement
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -100,3 +100,16 @@ theorem GeoHyp.sysOf_hyp : ∀ (F : Type) [Field F] [NumberField F] (X : Data F)
     exact Pi.single_injective (M := fun l => X.Sec l) (j + 1) e₁
 
 end GlobalTheory.HSShort
+end
+end
+
+open CategoryTheory AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory
+open GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.HermTools GlobalTheory.Vanishing GlobalTheory.Adelic GlobalTheory.HilbertSamuel GlobalTheory.ChowHt GlobalTheory.TangentOrigin
+open GlobalTheory.IndefiniteRowSideFullHecke.RadicalPowers
+open GlobalTheory.HSCore GlobalTheory.QCoh
+open GlobalTheory
+open GlobalTheory.HSShort GlobalTheory.HSChoice MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hilbertSamuelLatticeSystem_hyp : ∀ (F : Type) [Field F] [NumberField F] (X : Data F) (Λ₀ : ℝ), GeoHyp X Λ₀ → (sysOf X Λ₀).Hyp := by
+  atlas_forward_decl GlobalTheory.HSShort.GeoHyp.sysOf_hyp

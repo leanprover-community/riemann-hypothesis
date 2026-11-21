@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HermSysHypOneLeLambdaZero
-import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -21,3 +21,11 @@ theorem finsum_log_finitePlace_eq_neg_log_abs_norm :
   rw [Real.log_inv]
 
 end GlobalTheory.ProdFormula
+end
+end
+
+open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights ReciprocityTheory.GeometryOfNumbersTheory
+open GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HermTools GlobalTheory.HilbertSamuel GlobalTheory.HSChoice GlobalTheory.HSShort
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finsum_log_finitePlace_eq_neg_log_abs_norm' : ∀ (F : Type) [Field F] [NumberField F] (δ : F), δ ≠ 0 → ∑ᶠ q : FinitePlace F, Real.log (q δ) = -Real.log |((Algebra.norm ℚ δ : ℚ) : ℝ)| := by
+  atlas_forward_decl GlobalTheory.ProdFormula.finsum_log_finitePlace_eq_neg_log_abs_norm

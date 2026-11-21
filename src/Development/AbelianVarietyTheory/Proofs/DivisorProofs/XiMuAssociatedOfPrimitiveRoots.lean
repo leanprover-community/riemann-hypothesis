@@ -4,6 +4,8 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FontaineAinfLocalDo
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobeniusTwistedDivisibility
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MuCoeffZeroNeZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TiltIsDomainValuationRing
+
+section
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
 
 namespace GlobalTheory.DetInv
@@ -48,3 +50,9 @@ theorem xi_mu_associated : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [Is
   exact associated_of_dvd_dvd (key ε ε' hε hA) (key ε' ε hε' hA.symm)
 
 end GlobalTheory.DetInv
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.xi_mu_associated_of_primitive_roots : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O], v.Integers O → ∀ (ε : PreTilt O p), IsPrimitiveRoot (root ε).untilt p → ∀ ε' : PreTilt O p, IsPrimitiveRoot (root ε').untilt p → Associated (xi ε) (xi ε') ∧ Associated (mu ε) (mu ε') := by
+  atlas_forward_decl GlobalTheory.DetInv.xi_mu_associated

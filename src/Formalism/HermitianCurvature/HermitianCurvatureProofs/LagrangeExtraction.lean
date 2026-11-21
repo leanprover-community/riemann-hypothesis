@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.LevelRecursionCondNeeded
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChebyshevExtremalPolynomials
 import Mathlib
 

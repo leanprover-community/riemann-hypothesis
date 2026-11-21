@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
 
+section
 open Set Matrix MeasureTheory
 open GlobalTheory.HermFrame
 open scoped ComplexOrder
@@ -35,3 +36,11 @@ theorem isForm_smul_and_del_smul {M : Type} [TopologicalSpace M] {n : ℕ} (A : 
     rw [hc, GlobalTheory.del_const_smul c (hd S), ContinuousLinearMap.smul_apply, smul_assoc]
 
 end GlobalTheory.CxForm.SmulForm
+end
+
+open Set Matrix MeasureTheory
+open GlobalTheory.HermFrame
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isForm_smul_del_smul : ∀ {M : Type} [TopologicalSpace M] {n : ℕ} (A : GlobalTheory.CxForm.HolAtlas M n) (c : ℂ) (α : A.Fld), A.IsForm α → A.IsForm (c • α) ∧ A.del (c • α) = c • A.del α := by
+  atlas_forward_decl GlobalTheory.CxForm.SmulForm.isForm_smul_and_del_smul

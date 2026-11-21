@@ -1,4 +1,3 @@
-import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SSmooth
 import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.LibOpenLevel
 
 noncomputable section

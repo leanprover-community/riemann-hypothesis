@@ -1,7 +1,5 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
-import Formalism.GaloisCohomology.LocalTateDualityK
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LevRepZApply
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteResidueFieldOfCompactIsAdicDvr
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FractionRingQuotDivisibleByUniformizer
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FractionRingQuotKilledByPowUniformizer
@@ -17,6 +15,7 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PowMulEqZeroOf
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1H2Local
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardUnramifiedLevelTrivialAction
 
+section
 namespace GlobalTheory.ShapeUnrTriv
 
 open ReciprocityTheory.Gal Formalism.NG Formalism.RepresentationBoundsCohomology.BR ReciprocityTheory.ChartRestriction.T2 GlobalTheory.ShapeNeg
@@ -327,3 +326,8 @@ theorem _root_.GlobalTheory.ShapeUnrTriv.shapeUnr_of_localDuality (hT : _root_.F
     exact (E.symm_apply_apply (ι x)).symm
 
 end GlobalTheory.ShapeUnrTriv
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.galoisHom_modulo_unramified_shape_of_localDuality : Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK → ReciprocityTheory.ChartRestriction.T2.ShapeUnr := by
+  atlas_forward_decl GlobalTheory.ShapeUnrTriv.shapeUnr_of_localDuality

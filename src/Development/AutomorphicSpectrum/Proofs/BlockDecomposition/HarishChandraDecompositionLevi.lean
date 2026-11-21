@@ -2,7 +2,9 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.InjectiveDecompositionAction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EvaluationGenerator
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsAdFamL
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset
@@ -389,3 +391,10 @@ theorem hcdecLv : HCdecLv := by
     exact ⟨w, by rw [← hw, Lm_apply]⟩
 
 end GlobalTheory.CompanionTheory.RealHCLv
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.harish_chandra_decomposition_levi : PositivityTheory.RgBcC.RealD.HCdecLv := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RealHCLv.hcdecLv

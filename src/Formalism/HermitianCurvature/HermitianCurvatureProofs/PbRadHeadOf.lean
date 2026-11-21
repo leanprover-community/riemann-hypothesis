@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementHeads
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialTransportPlus
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableOfDecay4
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumPairAtStarMul

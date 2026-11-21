@@ -107,13 +107,7 @@ theorem useGermOfParts : UseGermOfParts := by
     _ = max R 0 ^ (Mlev k ρ - 2) * Cst * max C 0 * c * ‖t‖ := by ring
 
 theorem cc_nonneg {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {A : ℝ} {m : ℕ}
-    {f : B.Mat k r → E} {c : ℝ} (hf : B.CCle A m f c) : 0 ≤ c := by
-  have h1 : (1 : B.Mat k r) ∈ B.GV k r := by
-    show (1 : B.Mat k r)ᴴ * _ * 1 = _
-    simp
-  obtain ⟨_, h2⟩ := hf
-  have h := h2 [] [] (by simp) (by simp) (by simp) 1 h1
-  exact le_trans (mul_nonneg (Real.rpow_nonneg (by unfold B.gN; exact Real.sqrt_nonneg _) _) (norm_nonneg _)) h
+    {f : B.Mat k r → E} {c : ℝ} (hf : B.CCle A m f c) : 0 ≤ c := nonneg_of_CCle_mat (hf := hf)
 
 private theorem star_mono_bound {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {k j ρ : ℕ}
     {F₁ : B.Mat k (j + ρ) → E} {A₁ : ℝ} {Q : ℕ} {B₁ B₂ : ℝ} {K : Set ℝ}

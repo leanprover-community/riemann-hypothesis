@@ -1,8 +1,7 @@
 import Mathlib
-import Formalism.GL3MeanSquares.SmoothedRemainderRealIntegralFormula
 import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KroneckerReal
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Gl2L2IntegralityStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Gl2L2Integrality
 
 open Finset Filter Topology
 

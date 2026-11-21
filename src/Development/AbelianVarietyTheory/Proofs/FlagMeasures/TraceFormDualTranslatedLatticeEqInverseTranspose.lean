@@ -1,7 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurableSetDetNormPos
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoeSmulMem
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas GlobalTheory.FlagBase GlobalTheory.MeanDual
 
 namespace GlobalTheory.MeanDual.LatticeDual
@@ -230,3 +232,9 @@ theorem dualAt_latAt_eq_latAt_trDual : ∀ (E : Type) [Field E] [NumberField E],
       rw [this, smul_dotProduct]; simp
 
 end GlobalTheory.MeanDual
+end
+
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas GlobalTheory.FlagBase GlobalTheory.MeanDual
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.traceFormDual_translatedLattice_eq_inverseTranspose : ∀ (E : Type) [Field E] [NumberField E], IsTotallyComplex E → ∀ (j : ℕ) (Λ : Submodule (𝓞 E) (Fin j → E)), Submodule.IsLattice E Λ → ∀ g : MatInf E j, 0 < detNorm E j g → dualAt E j (latAt E j Λ g) = latAt E j (trDual E j Λ) (invT E j g) := by
+  atlas_forward_decl GlobalTheory.MeanDual.dualAt_latAt_eq_latAt_trDual

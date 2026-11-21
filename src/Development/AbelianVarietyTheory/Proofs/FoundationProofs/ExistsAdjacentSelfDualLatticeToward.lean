@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHeisTrivial
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PerfectPairingQuotients
+import BuildAid.ForwardExisting
+
+section
 open Classical GlobalTheory.FinWeil
 open scoped BigOperators
 
@@ -104,3 +106,10 @@ theorem exists_adj_selfDual_step : ∀ {R X M : Type} [CommRing R] [AddCommGroup
   · exact sup_le_sup (le_inf le_sup_left hSA) (le_inf le_sup_right hTB)
 
 end GlobalTheory.FinWeil
+end
+
+open Classical GlobalTheory.FinWeil
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_adjacent_selfDual_lattice_toward : ∀ {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M}, IsHeis σ w γ W → ∀ (A B : Submodule R X), SelfDual γ A → SelfDual γ B → idx A B ≠ 0 → ¬ B ≤ A → ∃ A' : Submodule R X, SelfDual γ A' ∧ Adj A A' ∧ A' ≤ (A' ⊓ A) ⊔ (A' ⊓ B) := by
+  atlas_forward_decl GlobalTheory.FinWeil.exists_adj_selfDual_step

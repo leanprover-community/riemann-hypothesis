@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProdMinorsMemInv
+import BuildAid.ForwardExisting
+
+section
 open Classical MeasureTheory
 
 noncomputable section
@@ -116,3 +119,13 @@ theorem exists_rat_proj : ∀ {ι : Type} [Fintype ι] (a d : ℕ) (n : ι → �
   rw [h4, sub_self, Rat.cast_zero]
 
 end GlobalTheory.MinorFrame.RatProj
+end
+end
+
+open Classical MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_rational_fock_projection_maximal_minors : ∀ {ι : Type} [Fintype ι] (a d : ℕ) (n : ι → ℕ) (k : GlobalTheory.MinorFrame.Var ι d a →₀ ℕ),
+  ∃ (M : ℕ) (r : Fin M → ℚ) (U : Fin M → GlobalTheory.MinorFrame.Tup ι a d n), ∀ T : GlobalTheory.MinorFrame.Tup ι a d n,
+    Formalism.L2.DIV.fockS (GlobalTheory.MinorFrame.prodMinors T)
+      (MvPolynomial.monomial k 1 - ∑ p, ((r p : ℚ) : ℂ) • GlobalTheory.MinorFrame.prodMinors (U p)) = 0 := by
+  atlas_forward_decl GlobalTheory.MinorFrame.RatProj.exists_rat_proj

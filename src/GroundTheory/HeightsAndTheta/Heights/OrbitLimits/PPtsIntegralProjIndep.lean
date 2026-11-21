@@ -2,7 +2,6 @@ import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsIntegralProjIndep
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosPartProjIndep
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsPosDensIntegrable
 set_option maxSynthPendingDepth 1
 

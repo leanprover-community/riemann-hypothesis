@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeHeightSpanRangeXMvPolynomial
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing
 
 namespace GlobalTheory
@@ -65,3 +68,9 @@ theorem exists_ne_zero_common_zero_of_isHomogeneous :
   omega
 
 end GlobalTheory
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ne_zero_common_zero_of_isHomogeneous' : ∀ (k : Type) [Field k] [IsAlgClosed k] (n r : ℕ) (f : Fin r → MvPolynomial (Fin n) k), (∀ i, ∃ d, 0 < d ∧ (f i).IsHomogeneous d) → r < n → ∃ x : Fin n → k, x ≠ 0 ∧ ∀ i, MvPolynomial.eval x (f i) = 0 := by
+  atlas_forward_decl GlobalTheory.exists_ne_zero_common_zero_of_isHomogeneous

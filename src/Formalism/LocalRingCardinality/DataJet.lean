@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.Params
 import Formalism.LocalRingCardinality.DataHost
 
 noncomputable section

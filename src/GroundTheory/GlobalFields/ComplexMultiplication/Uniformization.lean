@@ -1,6 +1,4 @@
 import Mathlib
-import GroundTheory.GlobalFields.ComplexMultiplication.EllipticFunctions
-import GroundTheory.GlobalFields.ComplexMultiplication.EllipticRational
 import GroundTheory.GlobalFields.ComplexMultiplication.EllipticDegree
 
 open Complex Filter Topology Set

@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteReal.DoubleCosetOperators.NHkRow
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.IntegralHeckeForms NumberField Polynomial Formalism.IndefR.NX
 open scoped TensorProduct
 
@@ -65,3 +68,12 @@ theorem goodProjW_idem : ∀ (D : D7) (S : RatDat D.ntw) (j : ℕ), D.ntw.Tw →
   rw [hP, ← map_mul, ← map_mul, hidem]
 
 end GlobalTheory.GoodSS.Idem
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.IntegralHeckeForms NumberField Polynomial Formalism.IndefR.NX
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.good_projector_forms_idempotent : ∀ (D : D7) (S : RatDat D.ntw) (j : ℕ), D.ntw.Tw →
+    goodProjW S j D.nexp.eLL0 * goodProjW S j D.nexp.eLL0 = goodProjW S j D.nexp.eLL0 := by
+  atlas_forward_decl GlobalTheory.GoodSS.Idem.goodProjW_idem

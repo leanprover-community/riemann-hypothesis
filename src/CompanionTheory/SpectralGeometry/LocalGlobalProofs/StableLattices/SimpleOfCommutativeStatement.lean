@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BurnsideSurjOfIrred
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open CompanionTheory.Rg.Fl
@@ -78,3 +80,9 @@ theorem stSimple_of_stComm : StComm → StSimple := by
 end GlobalTheory.CompanionTheory.RgFl
 
 end
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.simple_of_commutative_statement : StComm → StSimple := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgFl.stSimple_of_stComm

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.GlobalFields.TateThesis.ArchChars
 import GroundTheory.GlobalFields.TateThesis.ArchCharsUnits
 
 namespace GroundTheory.Global

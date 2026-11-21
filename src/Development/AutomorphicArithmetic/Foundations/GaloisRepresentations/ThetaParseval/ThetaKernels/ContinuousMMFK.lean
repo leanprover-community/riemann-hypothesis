@@ -1,7 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAdelicActionRealCoordinates
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 
+section
 set_option synthInstance.maxHeartbeats 200000
 
 section
@@ -32,4 +32,20 @@ theorem continuous_mMF_k : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
   exact GlobalTheory.RealWeil.continuous_blk (fun w => (hc w _ _).comp h1) fun w => (hc w _ _).comp h2
 end GlobalTheory.RealWeilF.MCont
 end
+end
+end
+
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open scoped TensorProduct Matrix BoundedContinuousFunction ContDiff
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF MeasureTheory Matrix GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open GlobalTheory.RealWeil GlobalTheory.RealWeilF
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_moment_map : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
+    (B : Base F E), _root_.UpperTheory.TP.W.GoodK σ B → ∀ (nS nT : ℕ) (JS : Matrix (Fin nS) (Fin nS) E) (JT : Matrix (Fin nT) (Fin nT) E)
+      (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)),
+      IsInfFamF (fun w : InfinitePlace F => (B.emb w).1) θ → Continuous (mMF σ JS JT θ) := by
+  atlas_forward_decl _root_.GlobalTheory.RealWeilF.MCont.continuous_mMF_k
 end

@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.RepresentationBounds
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinPowKillsLatticeCokernelStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.KillsCokerAllOfKillsCokerPhiModuleLatticeStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinPowKillsLatticeCokernel
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.KillsCokerAllOfKillsCokerPhiModuleLattice
+
+section
 open PowerSeries GlobalTheory.BK
 
 namespace GlobalTheory.Proof.cokernel_latticeMap_killed_by_prime_pow
@@ -14,3 +16,9 @@ theorem main : GlobalTheory.IndefiniteRowSideFullHecke.RepresentationBounds.Stmt
     (GlobalTheory.T.breuilKisin_pow_kills_lattice_cokernel O K l e a ι κ η H D₁ D₂ F Sig U N hB hD₁.chars_subset hD₂ hF)
 
 end GlobalTheory.Proof.cokernel_latticeMap_killed_by_prime_pow
+end
+
+open PowerSeries GlobalTheory.BK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cokernel_latticeMap_killed_by_prime_pow : GlobalTheory.IndefiniteRowSideFullHecke.RepresentationBounds.Stmt := by
+  atlas_forward_decl GlobalTheory.Proof.cokernel_latticeMap_killed_by_prime_pow.main

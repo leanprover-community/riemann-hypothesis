@@ -1,17 +1,16 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.PlaceShiftSt
-import Development.AbelianVarietyTheory.Definitions.Divisors.PointShiftSt
 import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset
 import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMapToModel
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateInclusionRaynaudExtensionAlgebraicPoint
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExOfFlatWtSome
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbAtSurj
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceBelowExists
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormAlgebraMapLtOneIffValuationLtOne
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PdivPointValuationPropertyStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PdivPointValuationProperty
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -115,3 +114,9 @@ theorem htShift : GlobalTheory.CovTop.Hypotheses2 → GlobalTheory.FlatCM.PlaceS
 end GlobalTheory.HTShiftPf
 
 end
+end
+
+open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_tate_shift_cm : GlobalTheory.CovTop.Hypotheses2 → GlobalTheory.FlatCM.PlaceShiftSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E), GlobalTheory.IndefiniteRowSideFullHecke.EigenvectorLieDegree.IsHostField H → ∀ (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), HTShift Xo c := by
+  atlas_forward_decl GlobalTheory.HTShiftPf.htShift

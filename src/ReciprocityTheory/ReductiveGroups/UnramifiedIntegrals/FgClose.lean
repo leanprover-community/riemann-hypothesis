@@ -6,7 +6,6 @@ import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormSqrtNegPowPrime
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.FgHonH
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.FgMulN
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.FgFinA
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ShortWIntModel
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.EndIntegral
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.FgLevel
 

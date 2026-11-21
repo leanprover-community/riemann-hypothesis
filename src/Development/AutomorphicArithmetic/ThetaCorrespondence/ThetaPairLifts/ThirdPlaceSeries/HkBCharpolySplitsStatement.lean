@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeBasisFreeModulePlaceStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeckeOpen
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HkBCharpolySplits
 
 set_option synthInstance.maxHeartbeats 200000
@@ -17,5 +15,5 @@ theorem _root_.GlobalTheory.T.lattice_basis_free_module_place_alt : ∀ (D : D7)
       ∃ s : Multiset (FractionRing (T.O i)),
         (LinearMap.charpoly (hkB D T S In hst i j b k P)).map
           (algebraMap (T.O i) (FractionRing (T.O i))) = (s.map fun a => X - C a).prod := by
-  first | exact @_root_.GlobalTheory.HeightCounting.FormsStep.hkB_charpoly_splits_alt | exact _root_.GlobalTheory.HeightCounting.FormsStep.hkB_charpoly_splits_alt | (intros; apply _root_.GlobalTheory.HeightCounting.FormsStep.hkB_charpoly_splits_alt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.HeightCounting.FormsStep.hkB_charpoly_splits_alt
 end

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBilinCyclic
+import BuildAid.ForwardExisting
 
+section
 open Polynomial
 
 namespace GlobalTheory.SymmetricSimilarTranspose
@@ -92,3 +94,8 @@ theorem main : ∀ (k ι : Type) [Field k] [Fintype ι] [DecidableEq ι] (A : Ma
       ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec x, Matrix.vecMul_transpose]
 
 end GlobalTheory.SymmetricSimilarTranspose
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_conj_transpose_by_symmetric_taussky_zassenhaus : ∀ (k ι : Type) [Field k] [Fintype ι] [DecidableEq ι] (A : Matrix ι ι k), ∃ P : Matrix ι ι k, IsUnit P ∧ P.transpose = P ∧ P * A = A.transpose * P := by
+  atlas_forward_decl GlobalTheory.SymmetricSimilarTranspose.main

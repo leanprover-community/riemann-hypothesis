@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.RingDataOfCaseAOfP9
 import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ImportsBis
 

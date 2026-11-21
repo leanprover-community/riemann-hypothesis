@@ -1,15 +1,14 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.PoitouTateNormalised
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsAlgHomMulEquivDec
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPowCharPowEqSelf
 import Development.WeilBound.CoreStatements.EulerCharacteristicCounts.GcohCmp
 import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbol
-import GroundTheory.ProfiniteCohomology.GaloisCohomology.IsZeroGroupCohomologyQuotientToInvariantsGalAdd
-import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 import GroundTheory.GlobalFields.LocalFieldAtPlace
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TransportA
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdicCompletionValuationMapUniformiser
-import GroundTheory.LocalFields.UnitsBasic
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.Published GlobalTheory.Published.PoitouTate
 open GroundTheory.ProfCoh GroundTheory.LocalField ValuativeRel CategoryTheory
 
@@ -54,3 +53,10 @@ theorem ord_algebraMap_eq_one : ∀ (F : Type) [Field F] [NumberField F] (v : He
   simp only [ord, hn]
 
 end GlobalTheory.CompanionTheory.Completion
+end
+
+open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.Published GlobalTheory.Published.PoitouTate
+open GroundTheory.ProfCoh GroundTheory.LocalField ValuativeRel CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniformizer_order_eq_one : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (ϖ : 𝓞 F), ϖ ∈ v.asIdeal → ϖ ∉ v.asIdeal ^ 2 → ord (algebraMap F (v.adicCompletion F) (ϖ : F)) = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Completion.ord_algebraMap_eq_one

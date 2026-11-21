@@ -3,6 +3,7 @@ import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodinge
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdeleHaarMapEqScaledVolumeStatement
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement
 
+section
 noncomputable section
 
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory Topology
@@ -76,3 +77,11 @@ theorem coordInf : PositivityTheory.PfSWUS.SchInf.CoordInf := by
 end GlobalTheory.CompanionTheory.SW.CoordR
 
 end
+end
+
+noncomputable section
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_coordinates : PositivityTheory.PfSWUS.SchInf.CoordInf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.CoordR.coordInf

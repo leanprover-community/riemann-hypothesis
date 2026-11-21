@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsAdmissibleIntegralBasisChangeOne
+import BuildAid.ForwardExisting
 
+section
 open scoped IntermediateField Polynomial RatFunc
 open GlobalTheory.Nef
 
@@ -179,3 +181,12 @@ theorem isRat_of_hankel_eventually_zero : ∀ (F : Type) [Field F] (φ : PowerSe
   exact Kron.isRat_of_ann φ q hq h
 
 end GlobalTheory.Nef
+end
+end
+
+open scoped IntermediateField Polynomial RatFunc
+open GlobalTheory.Nef
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isRat_of_hankel_eventually_eq_zero : ∀ (F : Type) [Field F] (φ : PowerSeries F) (N : ℕ), (∀ n, N ≤ n → hankel (fun i => PowerSeries.coeff i φ) n = 0) → IsRat φ := by
+  atlas_forward_decl GlobalTheory.Nef.isRat_of_hankel_eventually_zero

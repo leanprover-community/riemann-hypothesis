@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 import Development.AutomorphicSpectrum.Proofs.AdelicProofs.SumLogEmbeddingsEqNorm
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.RatProductFormulaStatement
+import Development.AutomorphicSpectrum.Proofs.AdelicProofs.RatProductFormula
+
+section
 open NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 
 namespace GlobalTheory.CompanionTheory.Ar.Fl
@@ -20,3 +21,9 @@ theorem product_formula_embeddings (k : Type) [Field k] [NumberField k] (x : k) 
   exact ⟨h1, by rw [hinf]; exact h2⟩
 
 end GlobalTheory.CompanionTheory.Ar.Fl
+end
+
+open NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.product_formula_log_norms : ∀ (k : Type) [Field k] [NumberField k] (x : k), x ≠ 0 → {p | (LogNorms.ofElt x).finSum p ≠ 0}.Finite ∧ (∑ s : k →+* ℂ, Real.log ‖s x‖) + ∑ᶠ p, (LogNorms.ofElt x).finSum p = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Fl.product_formula_embeddings

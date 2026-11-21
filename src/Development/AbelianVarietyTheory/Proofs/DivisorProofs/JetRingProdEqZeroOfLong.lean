@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
+
+section
 open GlobalTheory.LatJet
 open scoped Classical
 
@@ -39,3 +41,10 @@ theorem prod_eq_zero {R : Type} [CommRing R] {I : Type} [Fintype I] {n : ℕ}
   rwa [J.one, one_mul] at this
 
 end GlobalTheory.LatJet.ProdZero
+end
+
+open GlobalTheory.LatJet
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jet_ring_prod_eq_zero_of_long : ∀ {R : Type} [CommRing R] {I : Type} [Fintype I] {n : ℕ} (J : JetRing R I n) (l : List I), n + 1 < l.length → (l.map J.t).prod = 0 := by
+  atlas_forward_decl GlobalTheory.LatJet.ProdZero.prod_eq_zero

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FinrankEqZeroIff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ClosedPointMemAbLocus
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrivOfAbSt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsDiscreteValuationRingOfMinimal
@@ -8,7 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartExtensi
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartTowerHolds
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartCocycleHolds
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartFrameMoveHolds
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChartFlagBaseHolds
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrameOfFlagAt
 
 noncomputable section

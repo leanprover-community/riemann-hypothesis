@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.CdHaarScale
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HaarScaling.MapEqSelfOfIterate
 
 open MeasureTheory MeasureTheory.Measure PI.UnitaryGroupMassFormula.CdHaarScale.Main

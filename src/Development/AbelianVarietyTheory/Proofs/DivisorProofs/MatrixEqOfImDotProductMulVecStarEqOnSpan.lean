@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped Matrix
 
 namespace GlobalTheory
@@ -42,3 +45,11 @@ theorem matrix_eq_of_im_dotProduct_mulVec_star_eq_on_span :
   exact sub_eq_zero.mp hDz
 
 end GlobalTheory
+end
+
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_eq_of_im_dotProduct_mulVec_star_eq_on_span' : ∀ (g : ℕ) (H H' : Matrix (Fin g) (Fin g) ℂ) (S : Set (Fin g → ℂ)),
+    Submodule.span ℝ S = ⊤ →
+    (∀ a ∈ S, ∀ b ∈ S, (a ⬝ᵥ H.mulVec (star b)).im = (a ⬝ᵥ H'.mulVec (star b)).im) → H = H' := by
+  atlas_forward_decl GlobalTheory.matrix_eq_of_im_dotProduct_mulVec_star_eq_on_span

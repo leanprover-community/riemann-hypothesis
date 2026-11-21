@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousTransportWeilDatumCmExtensionStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ContinuousTransportFK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -24,5 +22,5 @@ theorem _root_.GlobalTheory.T.weil_representation_pair_equivariant : ∀ (F E : 
               co.e (incM F x) = (fun i => algebraMap F (AF F) (y i), fun i => algebraMap F (AF F) (z i))) →
             ∀ om : UG (cA σ) (incM F JA) × UG (cA σ) (incM F JB) →* Module.End ℂ ((κ → AF F) → ℂ),
               GlobalTheory.WeilSchrodinger.IsTransportF σ B.ψ co ω om → IsContOn (adeleClass F) om := by
-  first | exact @_root_.GlobalTheory.WeilContF.continuous_transportF_k | exact _root_.GlobalTheory.WeilContF.continuous_transportF_k | (intros; apply _root_.GlobalTheory.WeilContF.continuous_transportF_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.WeilContF.continuous_transportF_k
 end

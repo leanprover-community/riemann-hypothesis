@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.RealPlaceAnalysis.SmoothOnGVIff
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
 
 namespace GlobalTheory.CompanionTheory.ExpOneParam

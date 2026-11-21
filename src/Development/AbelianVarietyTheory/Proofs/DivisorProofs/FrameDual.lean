@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatFrame
+import BuildAid.ForwardExisting
+
+section
 open ReciprocityTheory.PGsh GlobalTheory.FGDepth
 
 namespace GlobalTheory.FrameDual
@@ -76,3 +79,9 @@ theorem frameDual (C : Type) [Field C] (v : AddValuation C (WithTop ℝ)) (i d :
           rw [h1]; exact if_congr eq_comm rfl rfl
 
 end GlobalTheory.FrameDual
+end
+
+open ReciprocityTheory.PGsh GlobalTheory.FGDepth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_dual_frame_of_isSatFrame : ∀ (C : Type) [Field C] (v : AddValuation C (WithTop ℝ)) (i d : ℕ) (u : Fin i → Fin d → C), IsSatFrame v u → ∃ l : Fin i → Fin d → C, (∀ a e, IsIntV v (l a e)) ∧ ∀ a a', ∑ e, l a e * u a' e = if a = a' then 1 else 0 := by
+  atlas_forward_decl GlobalTheory.FrameDual.frameDual

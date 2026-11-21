@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlgebraMapEqMk
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct
 
 set_option autoImplicit false
@@ -241,3 +244,10 @@ theorem finite_projective_faithfullyFlat : ∀ (B : Type) [CommRing B] (L : Type
   exact smul_top_ne_top φ m e he
 
 end GlobalTheory.KummerAlg
+end
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kummerAlgebra_finite_projective_faithfullyFlat : ∀ (B : Type) [CommRing B] (L : Type) [AddCommGroup L] [Module B L] [Module.Invertible B L] (q : ℕ) (φ : MultilinearMap B (fun _ : Fin q => L) B), 0 < q → (∀ p : Ideal B, p.IsPrime → ∃ e : L, φ (fun _ => e) ∉ p) → Module.Finite B (GlobalTheory.KummerAlg.Alg φ) ∧ Module.Projective B (GlobalTheory.KummerAlg.Alg φ) ∧ Module.FaithfullyFlat B (GlobalTheory.KummerAlg.Alg φ) := by
+  atlas_forward_decl GlobalTheory.KummerAlg.finite_projective_faithfullyFlat

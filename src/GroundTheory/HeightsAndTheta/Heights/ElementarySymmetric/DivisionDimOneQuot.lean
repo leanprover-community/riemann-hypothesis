@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.Statements
 import GroundTheory.HeightsAndTheta.Heights.EffectiveHilbertSamuel.Inhabitants
 set_option maxSynthPendingDepth 1
 

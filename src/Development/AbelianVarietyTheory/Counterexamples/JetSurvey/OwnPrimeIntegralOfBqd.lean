@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.ProjectiveLattices.FullExists
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ShortPlace
 
 noncomputable section

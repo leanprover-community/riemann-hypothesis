@@ -1,9 +1,8 @@
 import Development.WeilBound.CoreStatements.CentralCharts.SmoothOnOfTame
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelAnalyticDataExists
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothContinuous
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SingularPotentialLogGrowthPshStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedAtlasSmoothPotentialLocalStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdaptedAtlasSncSectionStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdaptedAtlasSncSection
 
 noncomputable section
 

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceOpen
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain GlobalTheory.QSA
 open scoped Quaternion Topology
 open Filter
@@ -85,3 +87,10 @@ theorem exists_nrm_one_re_sq_ne_one : ∀ (K : Type) [Field K] [TopologicalSpace
       (div_ne_zero (mul_ne_zero h2 h3) h2') hz
 
 end GlobalTheory.QSA
+end
+
+open NumberField IsDedekindDomain GlobalTheory.QSA
+open scoped Quaternion Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_quaternion_normOne_near_re_sq_ne_one : ∀ (K : Type) [Field K] [TopologicalSpace K] [IsTopologicalDivisionRing K] [T2Space K], (2 : K) ≠ 0 → (𝓝[≠] (0 : K)).NeBot → ∀ a b : K, a ≠ 0 → ∀ g : ℍ[K, a, b], nrm g = 1 → ∀ W : Set ℍ[K, a, b], W ∈ 𝓝 g → ∃ g' : ℍ[K, a, b], nrm g' = 1 ∧ g'.re ^ 2 ≠ 1 ∧ W ∈ 𝓝 g' := by
+  atlas_forward_decl GlobalTheory.QSA.exists_nrm_one_re_sq_ne_one

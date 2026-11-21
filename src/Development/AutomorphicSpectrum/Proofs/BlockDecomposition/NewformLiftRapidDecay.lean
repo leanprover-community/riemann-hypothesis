@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -521,3 +523,8 @@ theorem main : B0 → F5 := by
 end GlobalTheory.CompanionTheory.NewformLiftDecay
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_lift_rapid_decay : Ad3.R.B0 → Ad3.R.F5 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.NewformLiftDecay.main

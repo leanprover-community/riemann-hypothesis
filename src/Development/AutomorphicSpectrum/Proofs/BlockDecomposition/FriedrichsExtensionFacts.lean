@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.Friedrichs
+import BuildAid.ForwardExisting
 
+section
 open scoped InnerProductSpace
 
 namespace GlobalTheory.CompanionTheory.FriedrichsFc
@@ -160,3 +162,8 @@ theorem friedrichs : PositivityTheory.RgBcC.Fc.Friedrichs := by
     (fun u v => (ContinuousLinearMap.adjoint_inner_right U u v).symm) h1 h1' h2 h2'
 
 end GlobalTheory.CompanionTheory.FriedrichsFc
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.friedrichs_extension_facts : PositivityTheory.RgBcC.Fc.Friedrichs := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FriedrichsFc.friedrichs

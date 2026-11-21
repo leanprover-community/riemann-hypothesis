@@ -1,8 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsKMeas
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.GramPositiveVolumeContinuousStatement
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.KsetTransitiveStatement
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.HalfVolumeEquivariantStatement
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.KsetTransitive
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.HalfVolumeEquivariant
 
 open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 GlobalTheory.HCXi
 open scoped ENNReal ComplexOrder

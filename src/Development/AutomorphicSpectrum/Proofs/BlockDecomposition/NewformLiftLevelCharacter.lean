@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
 open GroundTheory.Automorphic.GodementSection (localChar adeleAt glAt)
@@ -205,3 +207,8 @@ theorem lift_local_invariance : Ad3.R.B0 → Ad3.R.AutomorphicLevelEquivariance 
   · exact lift_right_good hgood hL hκ (fun v' => κ.2.2 v') hκ' g
 
 end GlobalTheory.CompanionTheory.RankinSelberg.LiftLevel
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_lift_level_character : Ad3.R.B0 → Ad3.R.AutomorphicLevelEquivariance := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelberg.LiftLevel.lift_local_invariance

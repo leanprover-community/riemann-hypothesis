@@ -3,9 +3,7 @@ import Development.WeilBound.ThetaLifts.SphericalLattices.TheoremKSphOf
 import Development.WeilBound.ThetaLifts.SphericalLattices.HoweDuality
 import Development.WeilBound.ThetaLifts.SphericalLattices.FunTop
 import Development.WeilBound.ThetaLifts.SphericalLattices.ModSt2
-import Development.WeilBound.ThetaLifts.SphericalLattices.BelowIffRows
 import Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.SiegelSetUnitaryHolds
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.BernsteinNarrowness.BernsteinClosure.RamifiedMultiplicityOne
 
 namespace PositivityTheory.ThKR
 

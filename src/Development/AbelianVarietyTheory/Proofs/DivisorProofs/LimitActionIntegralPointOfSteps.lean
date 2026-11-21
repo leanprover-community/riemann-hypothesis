@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -52,3 +53,10 @@ theorem limPt_of_steps : AddSt → ActSt → ContSt → LimPtSt := by
     exact (ptIsIntV_iff _).2 (Subring.add_mem _ ((ptIsIntV_iff _).1 h1) ((ptIsIntV_iff _).1 h2))
 
 end GlobalTheory.IsoTriv
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.limitActionIntegralPoint_of_steps : AddSt → ActSt → ContSt → LimPtSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.limPt_of_steps

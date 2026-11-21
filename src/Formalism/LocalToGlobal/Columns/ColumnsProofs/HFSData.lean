@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.RowForms
-import Formalism.LocalToGlobal.Divisibility.TuplesLemmas
 import Formalism.LocalToGlobal.Divisibility.DivisibilityProofs.TuplesP
 
 open NumberField IsDedekindDomain

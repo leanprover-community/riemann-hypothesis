@@ -1,7 +1,9 @@
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BinaryMassMeans.MeanVal
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HermitianOneByOneIsScalarStatement
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.EulerProductMeasureZeroStatement
+import BuildAid.ForwardExisting
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 open PositivityTheory.Rg.Mass
@@ -41,3 +43,9 @@ theorem anisotropic_binary_one_vector_formula : Prop1 → Simil → Hasse → Cn
   exact h1 ▸ hc
 
 end GlobalTheory.CompanionTheory.Mass
+end
+
+open PositivityTheory.Rg.Mass
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.one_vector_formula_of_parts : Prop1 → Simil → Hasse → Cnt → E1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Mass.anisotropic_binary_one_vector_formula

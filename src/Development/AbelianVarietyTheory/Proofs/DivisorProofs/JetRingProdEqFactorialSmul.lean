@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
+
+section
 open GlobalTheory.LatJet
 open scoped Classical
 
@@ -45,3 +47,10 @@ theorem prod_map_t_eq_smul_b : ∀ {R : Type} [CommRing R] {I : Type} [Fintype I
     rw [hidx, hprod, mul_comm]
 
 end GlobalTheory.LatJet
+end
+
+open GlobalTheory.LatJet
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jet_ring_prod_eq_factorial_smul : ∀ {R : Type} [CommRing R] {I : Type} [Fintype I] {n : ℕ} (J : JetRing R I n) (l : List I) (hc : ∑ i, l.count i ≤ n + 1), (l.map J.t).prod = ((∏ i, (l.count i).factorial : ℕ) : R) • J.b ⟨fun i => l.count i, hc⟩ := by
+  atlas_forward_decl GlobalTheory.LatJet.prod_map_t_eq_smul_b

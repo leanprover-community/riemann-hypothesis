@@ -1,5 +1,8 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+import BuildAid.ForwardExisting
+
+section
 open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
@@ -89,3 +92,10 @@ theorem count : Count := by
     · rw [← hp']; exact (addSet_insert μ _ _ hs).symm
 
 end GlobalTheory.CompanionTheory.ZuckCount
+end
+
+open CompanionTheory.Zuck BranchingSupport Matrix Finset
+open scoped InnerProductSpace Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.CountingBound : Count := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ZuckCount.count

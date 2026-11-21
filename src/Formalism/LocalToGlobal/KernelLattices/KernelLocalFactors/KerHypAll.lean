@@ -4,7 +4,6 @@ import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.TopLawQ
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerEquivConcrete
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.RatKDeg
 import Formalism.LocalToGlobal.Columns.ChainLawXiF
-import Formalism.LocalToGlobal.Columns.ChainLawPsi
 import Formalism.LocalToGlobal.Columns.ChainLawTw
 
 open NumberField IsDedekindDomain

@@ -1,6 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+import BuildAid.ForwardExisting
 
+section
 open NumberField Matrix ReciprocityTheory.ChartRestriction.G.FD
 
 namespace GlobalTheory
@@ -71,3 +73,9 @@ theorem linearIndependent_of_skew_of_real : ∀ {E : Type} [Field E] [NumberFiel
   · exact h
 
 end GlobalTheory
+end
+
+open NumberField Matrix ReciprocityTheory.ChartRestriction.G.FD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.real_independent_skew_matrices : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {r n : ℕ} (G : Matrix (Fin r) (Fin r) E), G.det ≠ 0 → ∀ e : Fin n → Matrix (Fin r) (Fin r) E, (∀ i, (e i)ᵀ * G + G * (e i).map cc = 0) → LinearIndependent (maximalRealSubfield E) e → LinearIndependent E e := by
+  atlas_forward_decl GlobalTheory.linearIndependent_of_skew_of_real

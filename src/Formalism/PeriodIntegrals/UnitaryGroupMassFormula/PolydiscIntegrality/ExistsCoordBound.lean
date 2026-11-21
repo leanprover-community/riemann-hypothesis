@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolydiscIntegrality.NormPPosLtOne
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolydiscIntegrality.Lemmas
 
 namespace PI.PolydiscIntegrality₂

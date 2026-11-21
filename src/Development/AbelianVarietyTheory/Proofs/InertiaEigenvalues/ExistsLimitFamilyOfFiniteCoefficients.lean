@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open scoped BigOperators
 
 namespace GlobalTheory
@@ -25,3 +27,9 @@ theorem exists_limit_family_of_finite_coefficients (σ I R : Type) [Finite σ] [
   exact ⟨M, hM, fun x m hm => hFM x m hm⟩
 
 end GlobalTheory
+end
+
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_limit_family_of_finite_coefficients' : ∀ (σ I R : Type) [Finite σ] [Finite I] [Finite R] (F : ℕ → I → (σ →₀ ℕ) → R), ∃ G : I → (σ →₀ ℕ) → R, ∀ N M₀ : ℕ, ∃ M, M₀ ≤ M ∧ ∀ x m, m.degree ≤ N → F M x m = G x m := by
+  atlas_forward_decl GlobalTheory.exists_limit_family_of_finite_coefficients

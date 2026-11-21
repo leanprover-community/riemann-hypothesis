@@ -1,7 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PairTAdjTLeft
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateKernelAtPoint
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfForallDual
 
 set_option autoImplicit false
 

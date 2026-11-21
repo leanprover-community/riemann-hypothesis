@@ -1,5 +1,4 @@
 import Formalism.SatakeDualWeyl.KpqSubgroupCompact
-import Formalism.SatakeDualWeyl.DefsCS
 
 noncomputable section
 

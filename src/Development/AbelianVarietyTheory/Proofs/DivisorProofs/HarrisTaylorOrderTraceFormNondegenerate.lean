@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.NotCompactOfMEqOne
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 open scoped TensorProduct
 
@@ -160,3 +163,11 @@ theorem trace_order_nondeg : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel
   exact inj_tmul p D.O x h1
 
 end GlobalTheory.HTOrderTrace
+end
+end
+
+open NumberField
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.harrisTaylorOrder_traceForm_nondegenerate : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (x : D.O), (∀ y : D.O, LinearMap.trace ℤ D.O (LinearMap.mulLeft ℤ (x * y)) = 0) → x = 0 := by
+  atlas_forward_decl GlobalTheory.HTOrderTrace.trace_order_nondeg

@@ -1,7 +1,6 @@
 import Mathlib
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.RowsStackRight
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.Imports
-import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.ImportsAlt
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairExistence.ExistsIsWeilDatumOF
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.ExistsWeilTransportAdelicSchwartzCmExtensionImpo
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.TransportedWeilDatumCMPreservesSchwartzHeisenber

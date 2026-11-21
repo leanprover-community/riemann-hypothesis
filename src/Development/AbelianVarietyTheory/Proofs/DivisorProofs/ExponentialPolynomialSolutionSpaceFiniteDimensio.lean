@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemExpSolCons
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
 
 namespace GlobalTheory.HCF
@@ -75,3 +78,9 @@ theorem expSol_finiteDimensional : ∀ l : List ℂ, FiniteDimensional ℂ (expS
       exact Module.finite_def.2 htop
 
 end GlobalTheory.HCF
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exponentialPolynomialSolutionSpace_finiteDimensional : ∀ l : List ℂ, FiniteDimensional ℂ (expSol l) := by
+  atlas_forward_decl GlobalTheory.HCF.expSol_finiteDimensional

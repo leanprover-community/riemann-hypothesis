@@ -5,8 +5,9 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.JetOpIdentity
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergCombinationCommFockPolynomialVectors
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsThetaFunOOfThetaAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseThetaKernelSeriesUnique
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MultilinearVanishOfProdVanishStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MultilinearVanishOfProdVanish
 
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
@@ -397,3 +398,10 @@ theorem GlobalTheory.FunObj.sumOK_vec_indep : ∀ (D : D7) (T : Type) (L : LevCh
         (τ₀.sum fun d a => a * (∏ j, (d.1 j).fn (x (.inl j))) * ∏ i, (d.2 i).fn (x (.inr i))) = 0 :=
       fun τ₀ h => Finset.sum_eq_zero fun d hd => by simp only [mul_assoc, hz d (h hd), mul_zero]
     rw [h0 τ Finset.subset_union_left, h0 τ' Finset.subset_union_right]
+end
+end
+
+open Formalism.BasicNotions Formalism.IndefR.Links GlobalTheory.ChiGrid GlobalTheory.FunObj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gridKernelPairing_independent_of_expansion : ∀ (D : D7) (T : Type) (L : LevCh D T) (sc : GlobalTheory.ChiGrid.Consts) (G : GridData L sc) (W : G.Weil) (U : Set T) (S : GridChoice W U) (μ₀ : T), L.Is μ₀ → ∀ t ∈ U, ∀ Φ : G.Datum, (∀ β τ, S.IsExpansion t Φ β τ → ∀ d ∈ τ.support, (∀ j, S.Z.HasVec (d.1 j)) ∧ ∀ i, S.Z.HasVec (d.2 i)) ∧ ∀ β τ τ', S.IsExpansion t Φ β τ → S.IsExpansion t Φ β τ' → ∀ c : S.Classes t Φ β, S.pairAt τ c = S.pairAt τ' c := by
+  atlas_forward_decl GlobalTheory.FunObj.sumOK_vec_indep

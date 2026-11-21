@@ -1,6 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.StepLocGenPinnedGP
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MainEqWire
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped Classical
@@ -49,3 +51,10 @@ theorem genCutP_of_steps (hS : StepSizes) (hC : StepClassG) (hN : StepNormalsG) 
     hH2 C' Cl k1 k2 D large₂ X Y u hc νL νB ng, hSum⟩
 
 end GlobalTheory.SnPos
+end
+end
+
+open Formalism.FourierDecayAlt Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.L2.SG.Pf.MainEqCut Formalism.L2.SG.Pf.MainEqSteps Formalism.L2.SG.Pf.MainEqAna GlobalTheory.SnPos
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generic_height_bound_of_local_estimates : StepSizes → StepClassG → StepNormalsG → StepPointsG → StepHeightG → StepAnalyticGP → GenCutP := by
+  atlas_forward_decl GlobalTheory.SnPos.genCutP_of_steps

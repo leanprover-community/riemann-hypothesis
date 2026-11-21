@@ -1,20 +1,20 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.LineSCShortExact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothFormsCalculusHolomorphicAtlasStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolAtlasTopFormIntegralFiniteAdditiveHomogeneousStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FirstChernFormPropertiesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleChernIntegralPullFourthStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FirstChernFormProperties
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleChernIntegralPullFourth
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralSubOfIsFormStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleHermitianLineCurvatureStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleHermitianLineCurvature
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DdcIntegrationByPartsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedIntegralOfContinuousStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DdcLogPlusConstantStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothCompositionFormStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedIntegralOfContinuous
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DdcLogPlusConstant
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothCompositionForm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleHermitianLineIntegralStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoFlagsSineSquaredIdentityStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleHermitianLineHeightStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleHermitianLineLimitStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoFlagsSineSquaredIdentity
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleHermitianLineHeight
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundleHermitianLineLimit
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -249,3 +249,20 @@ theorem pl_step : ∀ (k : Type) [CommRing k] (B Y : Scheme.{0}) [IsIntegral B] 
   ring
 
 end GlobalTheory.LineForm.PLStep
+end
+end
+
+open CategoryTheory AlgebraicGeometry MvPolynomial MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxForm GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.Cartier GlobalTheory.CovTest GlobalTheory.CovTest.SwapLine GlobalTheory.LineForm
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_bundle_chern_integral_pull_fifth : ∀ (k : Type) [CommRing k] (B Y : Scheme.{0}) [IsIntegral B] [IsIntegral Y] (q : B ⟶ Sp k) (p : Y ⟶ Sp k) (d : ℕ)
+    (hB : IsRegVar q d) (hY : IsRegVar p (d + 1)) (π : Y ⟶ B) (w : π ≫ q = p) (E : B.Modules) (h : VMetric q E 2) (H : h.IsCInf)
+    (flB : Vert.Flag E 2) (fl : Vert.Flag ((Scheme.Modules.pullback π).obj E) 2),
+    IsFlagBundle π (fun _ : Unit => E) (fun _ => 2) (fun _ => fl) → ∀ (A : HermLB q) (σ : k →+* ℂ),
+    ∀ v : CxPts p σ → ℝ, GlobalTheory.CurveDens.IsCosSq ((h.pull π w).met σ) (fl.ι 1) ((Scheme.Modules.pullback π).map (flB.ι 1)) v →
+    ∀ K : MvPolynomial (Fin 5) ℝ,
+      wInt (hY.atlas σ) (fun y => Real.log (1 - v y) / 2) (evalF (hY.atlas σ) (fun i => c1F hY σ (fam5 π w H flB fl A i)) ((X 0 - X 3) * ((X 4 - X 0) * K))) =
+        1 / 2 * ((hY.atlas σ).integral (fld (hY.atlas σ) (omF hY σ (h.pull π w) fl) * evalF (hY.atlas σ) (fun i => c1F hY σ (fam5 π w H flB fl A i)) ((X 4 - X 0) * K)) - (hY.atlas σ).integral (pullF hB hY σ π w (fld (hB.atlas σ) (omF hB σ h flB)) * evalF (hY.atlas σ) (fun i => c1F hY σ (fam5 π w H flB fl A i)) ((X 4 - X 0) * K))) := by
+  atlas_forward_decl GlobalTheory.LineForm.PLStep.pl_step

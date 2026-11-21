@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.StandardFiveNontrivial
+import BuildAid.ForwardExisting
+
+section
 open Polynomial Classical GlobalTheory.BadShare
 
 namespace GlobalTheory.BadShare
@@ -29,3 +32,9 @@ theorem finrank_range_le_three (M : Type) [AddCommGroup M] [Module ℂ M] [Finit
   omega
 
 end GlobalTheory.BadShare
+end
+
+open Polynomial Classical GlobalTheory.BadShare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_range_le_sum_three_complements : ∀ (M : Type) [AddCommGroup M] [Module ℂ M] [FiniteDimensional ℂ M] (P a b : Module.End ℂ M), Module.finrank ℂ (LinearMap.range P) ≤ Module.finrank ℂ (LinearMap.range (a * b * P)) + Module.finrank ℂ (LinearMap.range ((1 - a) * P)) + Module.finrank ℂ (LinearMap.range ((1 - b) * P)) := by
+  atlas_forward_decl GlobalTheory.BadShare.finrank_range_le_three

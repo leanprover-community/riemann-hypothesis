@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThickFibIsPullback
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsProjOverOfIsProjOverBase
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsAbelianSchemeOfAbelianThickenings
 
+section
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits GlobalTheory.SpecialConn
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out
 open GlobalTheory.AbLaw GlobalTheory.AbLaw.Seesaw
@@ -62,3 +62,9 @@ theorem eq_zero_of_thickι (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValua
   simp [loc₀, hw0]
 
 end GlobalTheory.SpecialConn
+end
+
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits GlobalTheory.SpecialConn
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.proper_flat_section_eq_zero_of_thickenings : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (Y : Scheme.{0}) (f : Y ⟶ Spec (.of O)) [IsProper f] [Flat f] (s : Γ(Y, ⊤)), (∀ n, (thickι f n).appTop.hom s = 0) → s = 0 := by
+  atlas_forward_decl GlobalTheory.SpecialConn.eq_zero_of_thickι

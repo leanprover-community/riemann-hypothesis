@@ -2,7 +2,9 @@ import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TraceCompLeftFunLeft
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IrreducibleCharacterSeries.FrobeniusSumFormula
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory Formalism.IrreducibleCountingLemmas.TYPES ReciprocityTheory.Ty.Fin
 
 noncomputable section
@@ -92,3 +94,10 @@ theorem hcChar : St.HCChar := by
   exact ⟨character_hcRep b lam, isClassOn_hcFun b lam⟩
 
 end GlobalTheory.CompanionTheory.FinGLChar
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.harish_chandra_character : ReciprocityTheory.Ty.Fin.St.HCChar := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FinGLChar.hcChar

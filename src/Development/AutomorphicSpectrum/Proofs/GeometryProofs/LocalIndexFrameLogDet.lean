@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PlaceEqOneOfNotMem
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RelIndexMulVec
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StandardRankOneLatticeOfLocal
+import BuildAid.ForwardExisting
+
+section
 open NumberField Matrix IsDedekindDomain GlobalTheory.CompanionTheory.Ar.Cusp.LocFrame
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.LocFrame
@@ -126,3 +128,9 @@ theorem gIdx_locAt_frame (L : Type) [Field L] [NumberField L] (n : ℕ) (v : Fin
   ring
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.LocFrame
+end
+
+open NumberField Matrix IsDedekindDomain GlobalTheory.CompanionTheory.Ar.Cusp.LocFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_index_frame_log_det : ∀ (L : Type) [Field L] [NumberField L] (n : ℕ) (v : FinitePlace L) (T : Matrix (Fin n) (Fin n) L), T.det ≠ 0 → gIdx (locAt v (frame T)).toAddSubgroup (locAt v (frame (1 : Matrix (Fin n) (Fin n) L))).toAddSubgroup = Real.log (v T.det) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.LocFrame.gIdx_locAt_frame

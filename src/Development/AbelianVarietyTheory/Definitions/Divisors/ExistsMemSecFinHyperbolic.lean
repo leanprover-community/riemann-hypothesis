@@ -5,9 +5,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardCompactUnde
 import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.EisensteinMaximalParabolic
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocallyConstantLinOm
 import Development.AbelianVarietyTheory.Definitions.Divisors.EventuallyMemIntMatIff
-import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsStdMulShift
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicAddCharNontrivialFinitePlace
 
 noncomputable section
 

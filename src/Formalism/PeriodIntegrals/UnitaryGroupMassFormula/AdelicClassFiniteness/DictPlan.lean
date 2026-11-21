@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.AdelClassFin
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.StGenusOf
 
 noncomputable section

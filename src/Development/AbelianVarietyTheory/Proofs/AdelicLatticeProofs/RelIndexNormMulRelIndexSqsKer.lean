@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.QNorm
 open scoped WithZero
 
@@ -56,3 +59,10 @@ theorem relIndex_norm_mul_relIndex_sqs_ker :
   exact Subgroup.relIndex_mul_relIndex _ _ _ h1 h2
 
 end GlobalTheory.QNorm
+end
+
+open NumberField IsDedekindDomain GlobalTheory.QNorm
+open scoped WithZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.relIndex_norm_mul_relIndex_sqs_ker' : ∀ (A : Type) [CommGroup A] (σ : A →* A), (∀ a, σ (σ a) = a) → (∀ a, a * σ a = 1 → ∃ b, a = b / σ b) → (MonoidHom.id A * σ).range.relIndex (σ.eqLocus (MonoidHom.id A)) * (sqs (MonoidHom.id A * σ).ker).relIndex (MonoidHom.id A * σ).ker = (sqs (σ.eqLocus (MonoidHom.id A))).relIndex (σ.eqLocus (MonoidHom.id A)) := by
+  atlas_forward_decl GlobalTheory.QNorm.relIndex_norm_mul_relIndex_sqs_ker

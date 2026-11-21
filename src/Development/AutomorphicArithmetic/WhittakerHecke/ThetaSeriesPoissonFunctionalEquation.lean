@@ -1,6 +1,5 @@
 import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.Entire
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ReductionDomains.BddInt
-import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ReductionDomains.KkCpt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralCompMulVec
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LinearChangeMemSchwartzBruhatPi
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdeleModuleInfId

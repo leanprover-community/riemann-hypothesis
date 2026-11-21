@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Topology Filter
 
 namespace GlobalTheory.CompanionTheory.HolFamily
@@ -54,3 +56,9 @@ theorem continuous_iteratedDeriv_family :
   linarith
 
 end GlobalTheory.CompanionTheory.HolFamily
+end
+
+open Topology Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_iteratedDeriv_holomorphic_family : ∀ {G : Type} [TopologicalSpace G] (U : Set ℂ) (Ê : ℂ → G → ℂ), IsOpen U → (∀ g, DifferentiableOn ℂ (Ê · g) U) → ContinuousOn (fun y : ℂ × G => Ê y.1 y.2) (U ×ˢ Set.univ) → ∀ z ∈ U, ∀ j : ℕ, Continuous fun g => iteratedDeriv j (Ê · g) z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HolFamily.continuous_iteratedDeriv_family

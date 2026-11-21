@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BasisApply
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 open scoped TensorProduct
 
@@ -42,3 +45,10 @@ theorem form_bijective_of_unimodular : ∀ {E : Type} [Field E] [NumberField E] 
   exact ⟨Function.LeftInverse.injective hl, Function.RightInverse.surjective hr⟩
 
 end GlobalTheory.UnitaryStd
+end
+
+open NumberField
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryStandardLatticeAlternatingForm_bijective : ∀ {E : Type} [Field E] [NumberField E] {r : ℕ} (ρ : 𝓞 E →+* Matrix (Fin r) (Fin r) ℤ) (g : ℕ) (S : Matrix (Fin r) (Fin r) ℤ), IsUnit S.det → Function.Bijective (GlobalTheory.UnitaryStd.form ρ g S) := by
+  atlas_forward_decl GlobalTheory.UnitaryStd.form_bijective_of_unimodular

@@ -2,6 +2,9 @@ import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedExcLead
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DenominatorOfSpan
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsExtraLast
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 open GroundTheory.Heights₂.Heights ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial NumberField
@@ -489,3 +492,8 @@ theorem dualStackedExcLeadForm : GroundTheory.Heights₂.Heights.DualStackedExcL
 
 end
 end GlobalTheory.CompanionTheory.Ar.Giv.LeadForm
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_stacked_exceptional_leading_form : GroundTheory.Heights₂.Heights.DualStackedExcLeadForm.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.LeadForm.dualStackedExcLeadForm

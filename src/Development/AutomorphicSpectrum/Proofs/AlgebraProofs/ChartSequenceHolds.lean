@@ -1,13 +1,14 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.AlgebraStatements.HodgeTateNormComparison
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPolLatticePlane
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartDualPairingStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartTestPointStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartNonUnitPStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartDifferentBoundStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartDivisibilityStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProjectiveSplitModuloElementStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankDualAndRangeDualMapBaseChange
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartDualPairing
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartTestPoint
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartNonUnitP
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartDifferentBound
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartDivisibility
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProjectiveSplitModuloElement
+
+section
 open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
 
 noncomputable section
@@ -86,3 +87,10 @@ theorem chartSequence : ChartSequence := by
     rfl
 
 end GlobalTheory.CompanionTheory.Ar.HT.FinrankDualChartSequence
+end
+end
+
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_sequence_holds : ChartSequence := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.FinrankDualChartSequence.chartSequence

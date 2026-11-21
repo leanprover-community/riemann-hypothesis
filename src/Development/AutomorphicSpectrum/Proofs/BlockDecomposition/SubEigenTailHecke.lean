@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.CosetCount
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SubquotientOfEigencharacter
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.CuspRep PositivityTheory.Rg.BcB.F.Tail.PExp GlobalTheory.CompanionTheory.SubEig
@@ -75,3 +77,9 @@ theorem subEig : SubEig := by
 end GlobalTheory.CompanionTheory.SubEigIrr
 
 end
+end
+
+namespace PositivityTheory.Rg.BcB.F.Tail.PExp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sub_eigen_tail_hecke : PositivityTheory.Rg.BcB.F.Tail.PExp.SubEig := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SubEigIrr.subEig

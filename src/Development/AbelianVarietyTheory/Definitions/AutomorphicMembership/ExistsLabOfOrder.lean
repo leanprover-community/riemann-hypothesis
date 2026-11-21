@@ -38,12 +38,7 @@ theorem lab_mul_wild {h : IsPlaceOver A w} {τ : Fbar g →* ℂ} {γ u : G E Ω
 
 private theorem tameEig_eq_tameEig_mk_of_rep {h : IsPlaceOver A w} (x : WD h) :
     ∃ (n : ℕ) (b : WDRep h (Fin n → ℂ)), ∀ δ : G E Ω, WD.tameEig x δ = WD.tameEig (WD.mk b) δ := by
-  induction x using Quotient.inductionOn with
-  | h a =>
-    refine ⟨a.1, a.2, fun δ => ?_⟩
-    show (WD.inePol (WD.lpTame ⟦a⟧) δ).roots = (WD.inePol (WD.lpTame (WD.mk a.2)) δ).roots
-    rw [WD.lpTame_mk]
-    rfl
+  apply exists_rep_tameEig_eq (x := x) <;> assumption
 
 private theorem roots_charpoly_pow_eq_map_pow' {V : Type*} [AddCommGroup V] [Module ℂ V]
     [FiniteDimensional ℂ V] (f : Module.End ℂ V) (r : ℕ) :

@@ -1,5 +1,4 @@
 import Formalism.LocalToGlobal.ProjectiveLattices.OpenRowsFree
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetF
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.AnChartX
 
 set_option autoImplicit false

@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.FiniteResidueFieldPadicInt
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SumAlternatingCardElementarySublatticesAboveStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SumAlternatingCardElementarySublatticesAbove
 
+section
 open GlobalTheory.LatHecke
 
 namespace GlobalTheory.HeckeSeries
@@ -71,3 +71,9 @@ theorem heckeSeries_identity : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDis
   simp
 
 end GlobalTheory.HeckeSeries
+end
+
+open GlobalTheory.LatHecke
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeOperator_alternating_series_identity : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Finite (IsLocalRing.ResidueField O)] [Field K] [Algebra O K] [IsFractionRing O K] (r : ℕ) (E : Type) [AddCommGroup E] [Module ℂ E] (φ : Lat O K r → E) (n : ℕ) (L : Lat O K r), 1 ≤ n → ∑ k ∈ Finset.range (n + 1), ((-1 : ℂ) ^ k * (qRes O : ℂ) ^ (k * (k - 1) / 2)) • heckeElem k (heckeAll (n - k) φ) L = 0 := by
+  atlas_forward_decl GlobalTheory.HeckeSeries.heckeSeries_identity

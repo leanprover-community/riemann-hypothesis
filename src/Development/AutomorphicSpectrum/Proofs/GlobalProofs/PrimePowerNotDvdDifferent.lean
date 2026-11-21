@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.TraceIdempotentNotDivisibleStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.TraceIdempotentNotDivisible
 
+section
 open NumberField IsDedekindDomain nonZeroDivisors
 
 namespace GlobalTheory.CompanionTheory.Glob
@@ -91,3 +92,9 @@ theorem not_pow_dvd_different (E : Type) [Field E] [NumberField E] (P J : Ideal 
   exact_mod_cast this
 
 end GlobalTheory.CompanionTheory.Glob
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prime_power_not_dvd_different : ∀ (E : Type) [Field E] [NumberField E] (P J : Ideal (𝓞 E)) [P.IsPrime] (p k : ℕ), p.Prime → (p : 𝓞 E) ∈ P → ¬ P ∣ J → Ideal.span {((p : 𝓞 E)) ^ (Module.finrank ℚ E)} = P ^ k * J → ¬ P ^ k ∣ differentIdeal ℤ (𝓞 E) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Glob.not_pow_dvd_different

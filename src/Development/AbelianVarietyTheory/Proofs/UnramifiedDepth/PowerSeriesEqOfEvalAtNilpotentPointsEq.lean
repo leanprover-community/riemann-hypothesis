@@ -5,7 +5,6 @@ import ReciprocityTheory.DualLattices.TowerZeroSurjective
 import ReciprocityTheory.DualLattices.LinPairStatement
 import ReciprocityTheory.DualLattices.LengthDegreeAbelianVariety
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.LePreimageOfNil
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.Clauses
 import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.IsEigBasisIff
 
 set_option autoImplicit false

@@ -1,7 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
-import GroundTheory.GlobalFields.TateThesis.IdeleMeasureQuotient
+import BuildAid.ForwardExisting
 
+section
 open NumberField MeasureTheory GroundTheory.Global GroundTheory.Global.IdeleGroup
 open scoped ENNReal
 
@@ -103,3 +104,8 @@ theorem exists_idele_fundamentalDomain : Ad3.R.D0 := by
 end GlobalTheory.CompanionTheory.RankinSelberg.IdeleDomain
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fundamental_domain_description : Ad3.R.D0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelberg.IdeleDomain.exists_idele_fundamentalDomain

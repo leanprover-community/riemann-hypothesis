@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 namespace GlobalTheory.JR.OKOpen
@@ -51,3 +54,9 @@ theorem isOpen_OK : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNo
     (IsUltrametricDist.isOpen_closedBall _ one_ne_zero).preimage (continuous_coeff A i)
 
 end GlobalTheory.JR.OKOpen
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpen_finiteEtaleHermitianPair_OK : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (A : Et F E), IsOpen A.OK := by
+  atlas_forward_decl GlobalTheory.JR.OKOpen.isOpen_OK

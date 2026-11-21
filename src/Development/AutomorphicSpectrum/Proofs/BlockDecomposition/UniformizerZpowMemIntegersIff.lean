@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FintypeResidue
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctionalSectionNonvanishing
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
 open GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.Iwasawa GroundTheory.Automorphic.GLnLocal
 open scoped ValuativeRel
@@ -47,3 +50,12 @@ theorem uniformizer_zpow_mem_integers_iff :
     exact Subring.pow_mem _ (GLnLocal.uniformizer F).2 m
 
 end GlobalTheory.CompanionTheory.LFUDom
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
+open GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.Iwasawa GroundTheory.Automorphic.GLnLocal
+open scoped ValuativeRel
+open GlobalTheory.CompanionTheory.LFUDom
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniformizer_zpow_mem_integers_iff' : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (z : ℤ), (GLnLocal.uniformizer F : F) ^ z ∈ 𝒪[F] ↔ 0 ≤ z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LFUDom.uniformizer_zpow_mem_integers_iff

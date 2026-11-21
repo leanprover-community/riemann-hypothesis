@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JpUnif
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix MeasureTheory
@@ -370,3 +372,9 @@ theorem jpAlt_of_steps : JpIw → JpHgt → JpUnif → JpCmp → JpPos → JpCon
 
 end GlobalTheory.CompanionTheory.Jp
 end
+end
+
+open GlobalTheory.CompanionTheory.Jp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.alternative_local_computation_of_components : GlobalTheory.CompanionTheory.Jp.JpIw → GlobalTheory.CompanionTheory.Jp.JpHgt → GlobalTheory.CompanionTheory.Jp.JpUnif → GlobalTheory.CompanionTheory.Jp.JpCmp → GlobalTheory.CompanionTheory.Jp.JpPos → GlobalTheory.CompanionTheory.Jp.JpCondition := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Jp.jpAlt_of_steps

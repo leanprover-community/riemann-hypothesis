@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceAt
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatLevel
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatSelf
 

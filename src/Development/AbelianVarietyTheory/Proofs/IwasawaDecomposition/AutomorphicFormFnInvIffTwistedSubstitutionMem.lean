@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolFunApply
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.IntegralityCompare
@@ -121,3 +123,15 @@ theorem fnOf_inv_iff_twSub_mem : ∀ {E ι : Type} [Field E] [Fintype ι] {n : �
     exact ⟨_, h, fun z => by rw [hf, fnOf_inv_twSub]⟩
 
 end GlobalTheory.IntegralityCompare
+end
+end
+
+open Formalism.L2.Forms GlobalTheory.IntegralityCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.automorphicFormFn_inv_iff_twistedSubstitution_mem : ∀ {E ι : Type} [Field E] [Fintype ι] {n : ℕ} (emb : ι → E →+* ℂ) (M : GL (Fin n) E) (s : ι → ℤ)
+    (G : ι → Matrix (Fin n) (Fin n) ℂ) (P0 : MvPolynomial (ι × Fin n × Fin n) ℂ)
+    (S : AddSubgroup (MvPolynomial (ι × Fin n × Fin n) ℂ)) {Yt : Type} (e : Yt ≃ Frames G) (f : Yt → ℂ),
+    (∀ z, f z = fnOf G s 1 P0 (e z)) →
+    ((∃ P ∈ S, ∀ z, f z = fnOf G s (atInf emb ((M⁻¹ : GL (Fin n) E) : Matrix (Fin n) (Fin n) E)) P (e z)) ↔
+      twSub emb M s P0 ∈ S) := by
+  atlas_forward_decl GlobalTheory.IntegralityCompare.fnOf_inv_iff_twSub_mem

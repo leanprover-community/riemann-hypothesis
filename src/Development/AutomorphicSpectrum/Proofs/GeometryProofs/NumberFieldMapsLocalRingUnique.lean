@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ggeo.TwoMaps
 
 open Polynomial
@@ -55,3 +57,8 @@ theorem ringHom_eq_of_comp_eq (K : Type) [Field K] [NumberField K] (B : Type) [C
   exact (sub_eq_zero.1 hz).symm
 
 end GlobalTheory.CompanionTheory.Ggeo.TwoMaps
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.number_field_maps_local_ring_unique : ∀ (K : Type) [Field K] [NumberField K] (B : Type) [CommRing B] [IsLocalRing B] (Ω : Type) [Field Ω] (π : B →+* Ω) (s t : K →+* B), π.comp s = π.comp t → s = t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.TwoMaps.ringHom_eq_of_comp_eq

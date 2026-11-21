@@ -1,4 +1,3 @@
-import Formalism.ThetaSupremumBounds.LiftOperatorBoundOfFockJet
 import Formalism.ThetaSupremumBounds.FinalJ
 import Formalism.ThetaSupremumBounds.GaussianShiftBounds.GlobalBoundRefinements
 

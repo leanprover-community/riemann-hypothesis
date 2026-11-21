@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.RealPlaceAnalysis.SmoothOnGVIff
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GaussianPlaneIntegrals.CycAvgA
 
 noncomputable section

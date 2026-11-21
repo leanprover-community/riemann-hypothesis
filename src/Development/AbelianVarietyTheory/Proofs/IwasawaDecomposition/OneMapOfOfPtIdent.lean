@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteReal.OneMapT
 import Formalism.LocalToGlobal.IndefiniteReal.FWExist
-import Formalism.LocalToGlobal.ProjectiveLattices.SpMapAlgHomId
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CXiValIff
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.SecBCAndCuspBC
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ActLevAndActBC
@@ -9,7 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntValuationEqOf
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PlaceExtensionValues
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.AdelicCuspFormAutomorphicBoundedSquareIntegrable
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.AdelicLinearIndependent
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftsSpanOfOnto
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OmegaDataLevelFormsStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelMapExtensionStatement
 

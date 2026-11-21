@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.InterPolyProdSum
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockSymApply
-import ReciprocityTheory.DualLattices.DetPolyMulCayleyOmegaPow
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockGraph
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -119,3 +119,10 @@ theorem topCoeff_rename_blockEmb : ∀ {p q : ℕ} (h1 : Fintype.card (Unit × F
     rw [graph_permOf, coeff_rename_mapDomain _ (blockEmb_injective h1), ← sign_permOf h1]
 
 end GlobalTheory.CayleyBlock
+end
+end
+
+open MvPolynomial ReciprocityTheory.PGsh GlobalTheory.CayleyBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.topDegreeFormCoeff_rename_cayleyBlockSymbolEmbedding : ∀ {p q : ℕ} (h1 : Fintype.card (Unit × Fin p × Fin q) = p * q) (G : MvPolynomial (Fin q × Fin p × Fin p) ℂ), GlobalTheory.GoodMetric.topCoeff (rename (blockEmb h1) G) = ∑ τ : Fin q → Equiv.Perm (Fin p), (sgnProd τ : ℂ) * coeff (blockGraph τ) G := by
+  atlas_forward_decl GlobalTheory.CayleyBlock.topCoeff_rename_blockEmb

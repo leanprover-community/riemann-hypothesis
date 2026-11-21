@@ -1,9 +1,7 @@
 import Mathlib
 import Formalism.LocalRingCardinality.Params
-import Formalism.HarderNarasimhan.StatementPl
 import Formalism.HarderNarasimhan.QuotRealize
 import Formalism.HarderNarasimhan.StatementFrame
-import Formalism.LatticeLocalGlobal.Statement
 import Formalism.LatticeLocalGlobal.LatticeLocalGlobalOfGlobal
 
 open Module NumberField IsDedekindDomain

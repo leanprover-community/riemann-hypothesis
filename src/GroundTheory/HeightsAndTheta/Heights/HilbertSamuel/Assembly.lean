@@ -8,7 +8,6 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PProjectionBounds
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFSExtension
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRealGramComparison
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResChiBounds
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResChiIndex
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PVeroneseMonoBasis
 set_option maxSynthPendingDepth 1
 

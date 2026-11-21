@@ -1,8 +1,10 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.HeisenbergTheta.HeisenbergThetaConstant.ThetaC
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzBruhatUniformSummableMajorant
-import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SummableProdCoord
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GlobalTheory.CompanionTheory.EisRkNBound
@@ -222,3 +224,13 @@ theorem exists_summable_bound_thetaC {k : Type} [Field k] [NumberField k] {ι : 
 end
 
 end GlobalTheory.CompanionTheory.EisRkNBound
+end
+
+open NumberField Matrix MeasureTheory Filter Topology
+open scoped NumberField.AdeleRing
+open PositivityTheory.He2M1 GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.GJMatrix IdeleGroup PositivityTheory.RgEis
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_summable_majorant_lattice_sum : ∀ {k : Type} [Field k] [NumberField k], ∀ {ι : Type} [Fintype ι] [DecidableEq ι], ∀ {F : (ι → 𝔸[k]) → ℂ} (hF : F ∈ schwartzBruhatPi k ι) {C : Set (GL ι 𝔸[k])} (hC : IsCompact C), ∃ u : (ι → k) → ℝ, Summable u ∧ ∀ h ∈ C, ∀ ξ : ι → k,
+      ‖F ((h : Matrix ι ι 𝔸[k]) *ᵥ ratV ξ)‖ ≤ u ξ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EisRkNBound.exists_summable_bound_thetaC

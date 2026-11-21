@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AntiJMulApply
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG
@@ -123,3 +124,9 @@ theorem indexFour (hI : IntIndex) : IndexFour := by
 end GlobalTheory.SatakeWeyl.IdxFour
 
 end
+end
+
+open Formalism.UG GlobalTheory.SatakeWeyl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryFourLeviGL2RootIndex_of_cardSq : GlobalTheory.SatakeWeyl.IntIndex → GlobalTheory.SatakeWeyl.IndexFour := by
+  atlas_forward_decl GlobalTheory.SatakeWeyl.IdxFour.indexFour

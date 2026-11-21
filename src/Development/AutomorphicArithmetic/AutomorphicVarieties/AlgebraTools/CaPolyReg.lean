@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CotInd
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaFlatReg
 
 open IsLocalRing UpperTheory.V.AlgebraTools

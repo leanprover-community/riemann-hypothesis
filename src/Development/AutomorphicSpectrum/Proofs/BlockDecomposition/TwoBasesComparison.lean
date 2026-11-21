@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.LogAbsBasic
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.LinAlg
 
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
@@ -80,3 +82,9 @@ theorem twoBases : TwoBases := by
   · rw [e3, span_elim, span_elim, hfs, hgs, hhs, sup_sup_distrib_left, hIP, hIQ]
 
 end GlobalTheory.CompanionTheory.LinAlg
+end
+
+open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.two_bases_comparison : TwoBases := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LinAlg.twoBases

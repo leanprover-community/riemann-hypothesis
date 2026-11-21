@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DistribHaarCharEqOneOfValuationEqOne
+import BuildAid.ForwardExisting
 
+section
 open Matrix ValuativeRel MeasureTheory
 open scoped Topology
 
@@ -30,3 +32,10 @@ theorem distribHaarChar_det_eventually_eq_one :
   rwa [add_sub_cancel] at h1
 
 end GlobalTheory.CompanionTheory.LocalModule
+end
+
+open Matrix
+open scoped Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eventually_haar_det_eq_one_near_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ), ∀ᶠ g in nhds (1 : GL (Fin n) k), MeasureTheory.distribHaarChar k (Matrix.GeneralLinearGroup.det g) = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocalModule.distribHaarChar_det_eventually_eq_one

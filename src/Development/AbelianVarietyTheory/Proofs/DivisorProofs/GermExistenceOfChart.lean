@@ -2,10 +2,10 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.StepsNonvacuous
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PeriodComparison
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDetGen
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -43,3 +43,10 @@ theorem germEx_of_chart_holLift : Chart → HolLift → GermEx := by
     jet_eq := hjet }⟩
 
 end GlobalTheory.LatJet.An
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet GlobalTheory.LatJet.An
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.germ_existence_of_chart : Chart → HolLift → GermEx := by
+  atlas_forward_decl GlobalTheory.LatJet.An.germEx_of_chart_holLift

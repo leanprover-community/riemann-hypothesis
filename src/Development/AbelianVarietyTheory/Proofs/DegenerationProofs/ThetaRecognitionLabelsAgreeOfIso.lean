@@ -9,6 +9,7 @@ import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SymmPairingEqO
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsBasisUniqueMinPairSums
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.FourierExtractionTsumClass
 
+section
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Ex
 open scoped BigOperators
 
@@ -399,3 +400,10 @@ theorem main : AllMatch fun {_} _ {N} {N'} {_} μ _ _ =>
   rw [toAdd_pow, toAdd_pow, map_nsmul, h1]
 
 end GlobalTheory.LabelsAgree
+end
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Ex
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaRecognition_labels_agree_of_iso : AllMatch fun {_} _ {N} {N'} {_} μ _ _ => μ.A → ∀ J : NumD.Iso N N', μ.B J.e → μ.OnG J → (J.lam : _) = μ.c₀ → μ.OnQ J := by
+  atlas_forward_decl GlobalTheory.LabelsAgree.main

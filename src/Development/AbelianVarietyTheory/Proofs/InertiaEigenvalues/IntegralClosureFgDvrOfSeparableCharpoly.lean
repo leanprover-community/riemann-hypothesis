@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.NatCardAlgHomEqFinrankOfIsReducedOfIsFractionRin
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.UnitLemma Polynomial Module
 
 namespace GlobalTheory.IntClosureSep
@@ -118,3 +120,9 @@ theorem integralClosure_fg_of_separable_charpoly : ∀ (O E A : Type) [CommRing 
   exact Submodule.FG.of_le (Submodule.fg_span (Set.finite_range d)) hle
 
 end GlobalTheory.IntClosureSep
+end
+
+open GlobalTheory.UnitLemma Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralClosure_fg_dvr_of_separable_charpoly : ∀ (O E A : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field E] [Algebra O E] [IsFractionRing O E] [CommRing A] [Algebra O A] [Algebra E A] [IsScalarTower O E A] [Module.Finite E A] (g : A), (LinearMap.mulLeft E g).charpoly.Separable → (Subalgebra.toSubmodule (integralClosure O A)).FG := by
+  atlas_forward_decl GlobalTheory.IntClosureSep.integralClosure_fg_of_separable_charpoly

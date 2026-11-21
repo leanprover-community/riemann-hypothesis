@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsStepThreeOnWLift
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsClaimSeq
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PClaimVanish
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSurjectiveClosed
 set_option maxSynthPendingDepth 1

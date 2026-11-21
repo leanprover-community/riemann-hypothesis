@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.PeriodIntegrals.IdealLattice
-import Formalism.PeriodIntegrals.AreaLat
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IdealLatticeBasis.IdealBasisAlt
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AreaLat
 

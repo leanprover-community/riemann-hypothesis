@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsCuspSpaceBot
+import BuildAid.ForwardExisting
+
+section
 open ValuativeRel Matrix MeasureTheory
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.Whittaker GlobalTheory.LocLanglands GlobalTheory.GamMul DiscreteGroups.sglob.LConv
 
@@ -470,3 +473,10 @@ theorem invariant_functional_eq_zero :
     conj_zero hT h2 hlin hinv h3 hK₀B hK₀c hK₀o h0 hKK₀ hKc hKo (hCB (htC x hx)), mul_zero]
 
 end GlobalTheory.GamMul.Uniq
+end
+
+open ValuativeRel Matrix MeasureTheory
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.Whittaker GlobalTheory.LocLanglands GlobalTheory.GamMul DiscreteGroups.sglob.LConv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invariant_integral_unipotent_compact : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] (N B K₀ : Subgroup G) (T : Set (G → ℂ)), (∀ F, F ∈ T ↔ (∀ u ∈ N, ∀ g, F (u * g) = F g) ∧ IsLocallyConstant F ∧ ∃ C : Set G, IsCompact C ∧ C ⊆ B ∧ ∀ g, F g ≠ 0 → ∃ u ∈ N, ∃ c ∈ C, g = u * c) → (∀ K : Subgroup G, K ≤ B → IsCompact (K : Set G) → IsOpen ((Subtype.val : B → G) ⁻¹' K) → IsClopen {g : G | ∃ u ∈ N, ∃ c ∈ K, g = u * c}) → (∀ U ∈ nhds (1 : G), ∃ K : Subgroup G, K ≤ K₀ ∧ IsCompact (K : Set G) ∧ IsOpen ((Subtype.val : B → G) ⁻¹' K) ∧ (K : Set G) ⊆ U ∧ ∀ x ∈ K₀, ∀ y ∈ K, x * y * x⁻¹ ∈ K) → K₀ ≤ B → IsCompact (K₀ : Set G) → IsOpen ((Subtype.val : B → G) ⁻¹' K₀) → ∀ I : (G → ℂ) → ℂ, (∀ F ∈ T, ∀ F' ∈ T, ∀ c c' : ℂ, I (fun g => c * F g + c' * F' g) = c * I F + c' * I F') → (∀ F ∈ T, ∀ x ∈ B, I (fun g => F (g * x)) = I F) → I (Set.indicator {g : G | ∃ u ∈ N, ∃ c ∈ K₀, g = u * c} fun _ => (1 : ℂ)) = 0 → ∀ F ∈ T, I F = 0 := by
+  atlas_forward_decl GlobalTheory.GamMul.Uniq.invariant_functional_eq_zero

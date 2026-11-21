@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.SetupEig
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Filter
@@ -83,3 +84,9 @@ theorem specTrace : UModel → LocAlg → SpecTrace := by
 end GlobalTheory.CompanionTheory.SpecModel
 
 end
+end
+
+open PositivityTheory.Rg.BcB.F.Eig
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.spectral_trace_of_model_algebra : UModel → LocAlg → SpecTrace := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SpecModel.specTrace

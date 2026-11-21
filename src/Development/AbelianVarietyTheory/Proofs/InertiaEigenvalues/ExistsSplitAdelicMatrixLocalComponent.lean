@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnipotentBlockColumnIndex
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EquivOfISupRange
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.CuspGeneric
 
 namespace GlobalTheory.CuspGeneric
@@ -24,3 +26,9 @@ theorem exists_split_loc : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyCo
     exact LocUniq.comm_locGL w hk u
 
 end GlobalTheory.CuspGeneric
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.CuspGeneric
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_split_adelicMatrix_localComponent : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (w : HeightOneSpectrum (𝓞 E)) (g : GA E a), ∃ (h : GA E a) (gw : GL (Fin a) (w.adicCompletion E)), g = h * finGL E a (locGL E a w gw) ∧ ∀ u : GL (Fin a) (w.adicCompletion E), h * finGL E a (locGL E a w u) = finGL E a (locGL E a w u) * h := by
+  atlas_forward_decl GlobalTheory.CuspGeneric.exists_split_loc

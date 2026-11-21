@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.MemL2OfBoundedContinuousInvariant
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemExtSubSpanDepth
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MeasurePreservingConj
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory GlobalTheory.AutomorphicL2Unitary GlobalTheory.Mem.Th GlobalTheory.Cusp
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -23,3 +23,11 @@ theorem constTerm_eq_zero_of_mem_cuspCont (D : D7) (V : HSp D) (φ : GA D V → 
     exact (cocompact_flag D V 𝔉).constTermOn_const 0 x
 
 end GlobalTheory.Cusp
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory GlobalTheory.AutomorphicL2Unitary GlobalTheory.Mem.Th GlobalTheory.Cusp
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.constantTermAlongFlag_eq_zero_of_cuspidal : ∀ (D : D7) (V : HSp D) (φ : GA D V → ℂ), φ ∈ cuspCont V → ∀ 𝔉 : IsoFlag V, 𝔉.Proper → constTerm 𝔉 φ = 0 := by
+  atlas_forward_decl GlobalTheory.Cusp.constTerm_eq_zero_of_mem_cuspCont

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.GlobalFields.IdeleGroups.InfiniteProjInfiniteEmbeddingOfNe
 import GroundTheory.GlobalFields.IdeleGroups.Restricted
 import GroundTheory.GlobalFields.Adele.Topology
 

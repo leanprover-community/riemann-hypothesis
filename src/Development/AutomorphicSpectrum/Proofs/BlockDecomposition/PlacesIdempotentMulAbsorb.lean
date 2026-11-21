@@ -1,6 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousSingleV
+import BuildAid.ForwardExisting
+
+section
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published Sa2 GlobalTheory.CompanionTheory.SaGen
 open scoped TensorProduct Topology
 
@@ -25,3 +27,10 @@ theorem idem_mul_eq_of_subset : ∀ {F : Type} [Field F] [NumberField F] {A₁ B
     · rw [ha4 v hv, mul_zero]
 
 end GlobalTheory.CompanionTheory.SaGen
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published Sa2 GlobalTheory.CompanionTheory.SaGen
+open scoped TensorProduct Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.places_idempotent_mul_absorb : ∀ {F : Type} [Field F] [NumberField F] {A₁ B₁ : Finset (InfinitePlace F)} {A₂ B₂ : Finset (HeightOneSpectrum (𝓞 F))} {a b : AF F}, IsPlacesIdem A₁ A₂ a → IsPlacesIdem B₁ B₂ b → A₁ ⊆ B₁ → A₂ ⊆ B₂ → b * a = a := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SaGen.idem_mul_eq_of_subset

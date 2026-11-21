@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open SchwartzMap
 
 noncomputable section
@@ -99,3 +101,12 @@ theorem summable_seminorm_mul_translate {V : Type} [NormedAddCommGroup V] [Norme
     exact mul_nonneg (mul_nonneg hA0 hD0) (by positivity)
 
 end GlobalTheory.SchwartzTranslateSum
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_translates_cutoff_summable : ∀ {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (Λ : Submodule ℤ V) [DiscreteTopology Λ] [IsZLattice ℝ Λ] (h f : SchwartzMap V ℂ), HasCompactSupport h →
+    ∀ u : Λ → SchwartzMap V ℂ, (∀ (l : Λ) (x : V), u l x = h (x + l) * f x) →
+    ∀ k n : ℕ, Summable (fun l => SchwartzMap.seminorm ℂ k n (u l)) := by
+  atlas_forward_decl GlobalTheory.SchwartzTranslateSum.summable_seminorm_mul_translate

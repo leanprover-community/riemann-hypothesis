@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -319,3 +321,8 @@ theorem complex_unfold_of_nonneg_unfold : Ad3.R.G2b → Ad3.R.G2c := by
 end GlobalTheory.CompanionTheory.RankinUnfold
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unfolding_integral_bottom_row : Ad3.R.G2b → Ad3.R.G2c := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinUnfold.complex_unfold_of_nonneg_unfold

@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul
+
+section
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
 
 namespace GlobalTheory.Katz
@@ -70,3 +72,9 @@ theorem isLaw_map (R S : Type) [CommRing R] [CommRing S] (σ : R →+* S) (d : �
     rwa [e1, e2, e3] at h1
 
 end GlobalTheory.Katz
+end
+
+open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.Katz
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCommFormalGroupLaw_map : ∀ (R S : Type) [CommRing R] [CommRing S] (σ : R →+* S) (d : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R), IsLaw μ → IsLaw (fun i => MvPowerSeries.map σ (μ i)) := by
+  atlas_forward_decl GlobalTheory.Katz.isLaw_map

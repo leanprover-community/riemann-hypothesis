@@ -1,5 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsFirstChernClassOfLineBundle
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.Imports
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.NeedB Polynomial
 
 namespace GlobalTheory
@@ -18,3 +21,11 @@ theorem norm_isHomogeneous_poly_coords :
   | (intros; exact _root_.GlobalTheory.IdealPowerMembership.main ..)
 
 end GlobalTheory
+end
+
+open GlobalTheory.NeedB Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.algebraNorm_eq_homogeneous_polynomial_in_coordinates : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] [FiniteDimensional K L],
+  ∃ f : MvPolynomial (Fin (Module.finrank K L)) K, f.IsHomogeneous (Module.finrank K L) ∧
+    ∀ x : L, Algebra.norm K x = MvPolynomial.eval (fun i => (Module.finBasis K L).repr x i) f := by
+  atlas_forward_decl GlobalTheory.norm_isHomogeneous_poly_coords

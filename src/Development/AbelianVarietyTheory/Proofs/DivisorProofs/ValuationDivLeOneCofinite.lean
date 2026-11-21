@@ -1,6 +1,8 @@
 import Mathlib
-import Formalism.LocalToGlobal.CMDeterminantIdeals.DetIdeal
 import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.ValuationLeOfEqAlgebraMap
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain
 open scoped nonZeroDivisors
 
@@ -30,3 +32,12 @@ theorem valuation_div_le_one_cofinite : ∀ (K : Type) [Field K] [NumberField K]
   rw [Formalism.L2.LamCM.valuation_eq_exp_neg_count p hau, hc, neg_zero, WithZero.exp_zero]
 
 end GlobalTheory.LocGenVal
+end
+
+open NumberField IsDedekindDomain
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finset_valuation_div_le_one_of_isLocGen : ∀ (K : Type) [Field K] [NumberField K] (I : FractionalIdeal (𝓞 K)⁰ K) (u : K),
+    ∃ S : Finset (HeightOneSpectrum (𝓞 K)), ∀ p ∉ S, ∀ a : K, Formalism.L2.LamCM.IsLocGen p a I → u ≠ 0 →
+      p.valuation K (a / u) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.LocGenVal.valuation_div_le_one_cofinite

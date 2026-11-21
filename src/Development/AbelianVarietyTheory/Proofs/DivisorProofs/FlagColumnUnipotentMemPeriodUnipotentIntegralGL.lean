@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrdL
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.FunObj GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.RootEx GlobalTheory.DiagVol ValuativeRel Matrix
 
 namespace GlobalTheory.DiagVol
@@ -72,3 +75,9 @@ theorem colE_mem_symN_KO {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace
       rw [Matrix.sub_apply]; exact sub_mem (hone i j) (hEi i j)
 
 end GlobalTheory.DiagVol
+end
+
+open GlobalTheory.FunObj GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.RootEx GlobalTheory.DiagVol ValuativeRel Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flagColumnUnipotent_mem_periodUnipotent_integralGL : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : Type} [Fintype n] [DecidableEq n] {c : ℕ} (t : n ⊕ Fin c) (y : n ⊕ Fin c → k), (∀ r, y r ∈ 𝒪[k]) → (∀ r, ¬ ordL c r < ordL c t → y r = 0) → ∃ x ∈ symN k n c ⊓ KO k (n ⊕ Fin c), x.val = 1 + Matrix.of (fun r s => if s = t then y r else 0) := by
+  atlas_forward_decl GlobalTheory.DiagVol.colE_mem_symN_KO

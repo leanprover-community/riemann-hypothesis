@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsDCReps
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.HeckeFamilyMatrices Polynomial UpperHalfPlane
 open scoped MatrixGroups ModularForm
 open scoped Manifold
@@ -50,3 +53,11 @@ theorem diam_normalises_lev : ∀ (N l : ℕ) (d : ZMod N) (σ : SL(2, ℤ)), Is
   simp only [mat, ← Matrix.SpecialLinearGroup.coe_mul, inv_mul_cancel_right]
 
 end GlobalTheory.HeckeFamilyMatrices
+end
+
+open GlobalTheory.HeckeFamilyMatrices Polynomial UpperHalfPlane
+open scoped MatrixGroups ModularForm
+open scoped Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.diamondMatrix_normalizes_gammaOneGammaZeroLevel : ∀ (N l : ℕ) (d : ZMod N) (σ : SL(2, ℤ)), IsDiam N l d σ → ∀ γ : Lev N l, ∃ γ' : Lev N l, mat σ * mat γ = mat γ' * mat σ := by
+  atlas_forward_decl GlobalTheory.HeckeFamilyMatrices.diam_normalises_lev

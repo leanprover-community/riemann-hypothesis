@@ -1,16 +1,10 @@
 import Mathlib
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-import Formalism.LocalRingCardinality.DataParams₂
 import Formalism.LocalRingCardinality.DataParamsS
 import Formalism.LocalRingCardinality.DataDIVDefs
 import Formalism.LocalRingCardinality.DataBu
-import Formalism.LocalRingCardinality.PrincipalHermitianLattice
-import Formalism.LocalRingCardinality.DataKap
 import Formalism.LocalRingCardinality.KernelPlaceMeanBound
-import Formalism.LocalRingCardinality.DataAmbForm
 import Formalism.LocalRingCardinality.DataRRMetric
 import Formalism.LocalRingCardinality.DataNChoice
-import Formalism.SharpRestriction.ParConsts
 import Formalism.SharpRestriction.ParamsHeightRankConstant
 import Formalism.SharpRestriction.GlobalSchurBounds.ZetaZeroFreeRegion
 import Formalism.SharpRestriction.Divisibility.PlaceRankTwoOne

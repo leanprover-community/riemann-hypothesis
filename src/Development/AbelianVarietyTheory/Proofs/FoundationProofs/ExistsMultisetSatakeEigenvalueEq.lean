@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
 
 namespace GlobalTheory.LFun
@@ -39,3 +41,9 @@ theorem exists_satEig_eq : ∀ (q n : ℕ), q ≠ 0 → ∀ c : ℕ → ℂ, c 0
   exact mul_div_cancel₀ _ (hw j)
 
 end GlobalTheory.LFun
+end
+
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_multiset_satakeEigenvalue_eq : ∀ (q n : ℕ), q ≠ 0 → ∀ c : ℕ → ℂ, c 0 = 1 → c n ≠ 0 → ∃ B : Multiset ℂˣ, B.card = n ∧ ∀ j ≤ n, satEig q n B j = c j := by
+  atlas_forward_decl GlobalTheory.LFun.exists_satEig_eq

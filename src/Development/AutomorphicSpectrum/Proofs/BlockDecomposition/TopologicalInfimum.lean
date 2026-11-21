@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
+
+section
 open GlobalTheory.CompanionTheory.EGlue
 
 noncomputable section
@@ -16,3 +18,9 @@ theorem topInf : GlobalTheory.CompanionTheory.EGlue.TopInf := by
 end GlobalTheory.CompanionTheory.EGlue.Gl0
 
 end
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.topological_infimum : GlobalTheory.CompanionTheory.EGlue.TopInf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.Gl0.topInf

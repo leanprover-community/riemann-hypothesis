@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.BiextCoeffSecondLinear
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -110,3 +111,10 @@ theorem finSt_of (hAdd : AddSt) (hAct : ActSt) (hUnit : UnitSt) (hBi : BiaddSt) 
   rw [map_zsmul, Int.cast_smul_eq_zsmul, map_zsmul, hF]
 
 end GlobalTheory.IsoTriv.HermRead
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaugeHermitianCombination_of_steps : AddSt → ActSt → UnitSt → BiaddSt → FinSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.HermRead.finSt_of

@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.CFDefs
 import Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.MemKerPowIff
 
 noncomputable section

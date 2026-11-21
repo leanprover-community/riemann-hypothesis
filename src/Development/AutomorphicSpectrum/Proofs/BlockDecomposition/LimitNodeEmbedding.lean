@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.TwistStripLimits.BlockTypes
 import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PExpTwA
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField
@@ -52,3 +54,10 @@ theorem nodeEmb : PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5.NodeEmb := b
 end GlobalTheory.CompanionTheory.TreeNode
 
 end
+end
+
+open scoped Classical
+namespace PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.limit_node_embedding : PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5.NodeEmb := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TreeNode.nodeEmb

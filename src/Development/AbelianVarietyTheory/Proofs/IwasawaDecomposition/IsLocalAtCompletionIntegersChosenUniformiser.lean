@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.LocalToGlobal.Divisibility.QLocTied
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HostPins
 import Formalism.DoubleCosetMeasures.LatticeCoset
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Matrix NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DoubleCosetMeasures Formalism.L2.Host Formalism.L2.DIV Formalism.L2.DIV.QLoc GlobalTheory.Mem.HD
 
 namespace GlobalTheory.Mem.HD
@@ -40,3 +42,9 @@ theorem isLocalAt_adicCompletionIntegers_uniformizer (L : Type) [Field L] [Numbe
     rw [mem, map_inv₀, hx_eq, inv_one]
 
 end GlobalTheory.Mem.HD
+end
+
+open MeasureTheory Matrix NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DoubleCosetMeasures Formalism.L2.Host Formalism.L2.DIV Formalism.L2.DIV.QLoc GlobalTheory.Mem.HD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isLocalAt_completionIntegers_chosenUniformiser : ∀ (L : Type) [Field L] [NumberField L] (P : HeightOneSpectrum (𝓞 L)), IsLocalAt (OP P) ((piP P : (P.adicCompletion L)ˣ) : P.adicCompletion L) := by
+  atlas_forward_decl GlobalTheory.Mem.HD.isLocalAt_adicCompletionIntegers_uniformizer

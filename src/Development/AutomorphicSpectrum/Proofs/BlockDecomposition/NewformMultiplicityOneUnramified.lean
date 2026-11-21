@@ -3,7 +3,9 @@ import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.Arch
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerCentralCharacter
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerRightTranslation
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerLinearity
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.SchwartzSpaceL2 Ad3.R
@@ -394,3 +396,9 @@ theorem m0 : Ad3.R.A2 → Ad3.R.C1 → Ad3.R.M0 := by
   · exact hecke hψ h₁ h₂ u₁ u₂ hR (hcard ϖ B hR) g
 
 end GlobalTheory.CompanionTheory.SphericalVector
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_multiplicity_one_unramified : Ad3.R.A2 → Ad3.R.C1 → Ad3.R.M0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SphericalVector.m0

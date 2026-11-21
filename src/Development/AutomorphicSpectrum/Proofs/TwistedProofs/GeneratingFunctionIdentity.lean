@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.InertZeta
 
 namespace GlobalTheory.CompanionTheory.InertGenFun
@@ -138,3 +140,9 @@ theorem genFun : GenFun := by
   exact h.mul_left _
 
 end GlobalTheory.CompanionTheory.InertGenFun
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generating_function_identity : GenFun := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertGenFun.genFun

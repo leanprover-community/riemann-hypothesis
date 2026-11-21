@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StFrameJacobianGeneric
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StConormalGenerationGeneric
 import GroundTheory.HeightsAndTheta.Heights.Intersections.JacMinorC
 set_option maxSynthPendingDepth 1

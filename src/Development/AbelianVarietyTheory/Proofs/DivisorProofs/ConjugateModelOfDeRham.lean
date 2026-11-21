@@ -2,10 +2,10 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PeriodComparison
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionTransportEllipticStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComplexPointGaloisConjugateStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionTransportElliptic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComplexPointGaloisConjugate
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -58,3 +58,10 @@ theorem modelConj_of_deRham : GlobalTheory.Published.PeriodComparison → Global
     field_simp
 
 end GlobalTheory.LatJet
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conjugate_model_of_de_rham : GlobalTheory.Published.PeriodComparison → GlobalTheory.Published.AbelianDeRham → GlobalTheory.Published.AbelianDualCrystal → ModelConj := by
+  atlas_forward_decl GlobalTheory.LatJet.modelConj_of_deRham

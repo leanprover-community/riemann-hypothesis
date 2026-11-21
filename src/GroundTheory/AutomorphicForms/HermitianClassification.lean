@@ -3,7 +3,6 @@ import GroundTheory.AutomorphicForms.HermitianDisc
 import GroundTheory.AutomorphicForms.HermitianWittExtension
 import GroundTheory.AutomorphicForms.HermitianSplit
 import GroundTheory.LocalFields.HerbrandLocal
-import GroundTheory.LocalFields.FiniteExtension
 import GroundTheory.LocalFields.UnramifiedHensel
 
 noncomputable section

@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PrismaticDieudonnePerfd
+
+section
 open Ideal WittVector
 
 namespace GlobalTheory
@@ -40,3 +42,9 @@ theorem isSMulRegular_natCast_adicCompletion (p : ℕ) (A : Type) [CommRing A]
   exact sub_eq_zero.mp (key _ h0)
 
 end GlobalTheory
+end
+
+open Ideal WittVector
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isSMulRegular_adicCompletion : ∀ (p : ℕ) (A : Type) [CommRing A], IsSMulRegular A (p : A) → IsSMulRegular (AdicCompletion (Ideal.span {(p : A)}) A) (p : AdicCompletion (Ideal.span {(p : A)}) A) := by
+  atlas_forward_decl GlobalTheory.isSMulRegular_natCast_adicCompletion

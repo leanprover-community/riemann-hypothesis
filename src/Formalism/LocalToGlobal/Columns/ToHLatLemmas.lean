@@ -3,7 +3,6 @@ import Formalism.LocalToGlobal.Columns.ToHLat
 import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDualGeOfFamily
 import Formalism.LocalToGlobal.Columns.AtTRank
 import Formalism.LocalToGlobal.Columns.RowFormsGood
 import Formalism.LocalToGlobal.Columns.ColFormsInst

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.CompEqOneIffPush
 import Development.AbelianVarietyTheory.Definitions.Divisors.Subsingleton
 
 set_option autoImplicit false

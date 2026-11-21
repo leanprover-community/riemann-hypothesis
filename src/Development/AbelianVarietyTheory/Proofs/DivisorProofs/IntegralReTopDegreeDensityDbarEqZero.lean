@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
-import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.IntegralFderivApplyEqZero
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -57,3 +57,11 @@ theorem integral_re_dens_dbarAt_eq_zero {n : ℕ} (F : V n → Alt n)
   rw [this, h0, Complex.zero_re]
 
 end GlobalTheory.CxForm
+end
+end
+
+open Set MeasureTheory
+open ReciprocityTheory.L2DbarEstimates (V)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_re_topDegreeDensity_dbar_eq_zero : ∀ {n : ℕ} (F : V n → GlobalTheory.CxForm.Alt n), (∀ S, ContDiff ℝ 1 (fun v => (GlobalTheory.CxForm.bas n).repr (F v) S)) → HasCompactSupport F → ∫ v, (GlobalTheory.CxForm.dens (GlobalTheory.CxForm.dbarAt F v)).re = 0 := by
+  atlas_forward_decl GlobalTheory.CxForm.integral_re_dens_dbarAt_eq_zero

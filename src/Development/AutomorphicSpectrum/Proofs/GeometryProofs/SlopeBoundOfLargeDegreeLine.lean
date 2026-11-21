@@ -2,10 +2,11 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsThetaMeanSquareNorm
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.ZhangDimensionPushDownGrassmannianHeightBounds
 import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
-import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PolarizedDataFieldExtensionStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LineOfKeyDegreeStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LineOfKeyDegree
 import Development.AutomorphicSpectrum.Proofs.AdelicProofs.ShortVectorOfSubmodule
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights TensorProduct
@@ -143,3 +144,13 @@ theorem slopeBound (hS7 : LineOfLargeDegree.Statement) (hKey : KeyDegSt) : Slope
   exact ⟨hS, hS⟩
 
 end GlobalTheory.CompanionTheory.Ar.Sl.TopSlope
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+open GroundTheory.Heights₂.Heights TensorProduct
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.slope_bound_of_large_degree_line : LineOfLargeDegree.Statement → KeyDegSt → SlopeBoundSt ∧ Prov.LemmaS := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Sl.TopSlope.slopeBound

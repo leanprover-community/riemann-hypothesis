@@ -155,16 +155,7 @@ theorem lin_F_right (i l : Fin d) :
 
 private lemma coeff_single_pt_eq_ite' (j j' : Fin n) (l l' : Fin d) :
     coeff (Finsupp.single (j', l') 1) (pt R d j l) = if j = j' ∧ l = l' then 1 else 0 := by
-  show coeff _ (X (j, l)) = _
-  rw [coeff_X]
-  by_cases h : j = j' ∧ l = l'
-  · obtain ⟨rfl, rfl⟩ := h
-    simp
-  · rw [if_neg h, if_neg]
-    intro h'
-    have h2 := Finsupp.single_left_injective one_ne_zero h'
-    simp only [Prod.mk.injEq] at h2
-    exact h ⟨h2.1.symm, h2.2.symm⟩
+  apply coeff_single_pt_eq_ite (j := j) (j' := j') (l := l) (l' := l') <;> assumption
 
 theorem lin_F_left (i l : Fin d) :
     coeff (Finsupp.single ((0 : Fin 2), l) 1) (G.F i) = if i = l then 1 else 0 := by

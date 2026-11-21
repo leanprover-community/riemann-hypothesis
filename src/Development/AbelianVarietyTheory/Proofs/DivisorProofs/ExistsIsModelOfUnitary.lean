@@ -1,7 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InertPlaceKappaOrbitalUnitEqSignedLatticeSumImpo
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAevalEqOfSeparable
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma Polynomial Matrix
 
 namespace GlobalTheory.InertUnitOrb
@@ -37,3 +39,9 @@ theorem exists_isModel_of_unitary : ∀ (K : GlobalTheory.UnitLemma.UQ) (B : Glo
   exact ⟨x, e, h1, fun y => by rw [h2, Matrix.toLin'_apply], h3⟩
 
 end GlobalTheory.InertUnitOrb
+end
+
+open GlobalTheory.UnitLemma Polynomial Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isModel_of_unitary_charpoly_eq : ∀ (K : GlobalTheory.UnitLemma.UQ) (B : GlobalTheory.UnitLemma.InvAlg K) (n : ℕ) (γ : Matrix (Fin n) (Fin n) K.E), (γ.map K.c)ᵀ * γ = 1 → B.g * B.σ B.g = 1 → B.P.Separable → γ.charpoly = B.P → ∃ (x : B.Aˣ) (ψ : B.A ≃ₗ[K.E] (Fin n → K.E)), GlobalTheory.InertUnitOrb.IsModel B γ x ψ := by
+  atlas_forward_decl GlobalTheory.InertUnitOrb.exists_isModel_of_unitary

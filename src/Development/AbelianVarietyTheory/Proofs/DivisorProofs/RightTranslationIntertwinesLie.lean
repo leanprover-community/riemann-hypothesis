@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemNilRad
 
+section
 open Matrix GlobalTheory.TorFin
 open scoped ContDiff
 
@@ -132,3 +133,11 @@ theorem exists_rightTranslation : ∀ (n : ℕ) (G : Type) [Group G] (J : Matrix
     mul_smul_comm, smul_mul_assoc, key A hA, key B hB]
 
 end GlobalTheory.TorFin.RightTr
+end
+
+open Matrix GlobalTheory.TorFin
+open scoped ContDiff
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.right_translation_intertwines_lie : ∀ (n : ℕ) (G : Type) [Group G] (J : Matrix (Fin n) (Fin n) ℂ) (s : Matrix (Fin n) (Fin n) ℂ → G), Jᴴ = J → IsUnit J.det → IsMulOn J s → ∀ ρ : Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] Module.End ℂ (smLoc J s), IsRightDer J s ρ → ∀ (u : Matrix (Fin n) (Fin n) ℂ) (b : G), IsUni J u → (∀ v, IsUni J v → b * s v = s v * b) → ∃ r : Module.End ℂ (smLoc J s), (∀ (f : smLoc J s) (g : G), (r f).1 g = f.1 (g * (s u * b))) ∧ ∀ Y, r * ρ Y = ρ (u * Y * u⁻¹) * r := by
+  atlas_forward_decl GlobalTheory.TorFin.RightTr.exists_rightTranslation

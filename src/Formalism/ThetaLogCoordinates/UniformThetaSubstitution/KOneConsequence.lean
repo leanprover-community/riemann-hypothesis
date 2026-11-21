@@ -14,7 +14,6 @@ import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.MPlaces
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.PlacesAddClass
 import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.KOneConsequenceOf
-import Formalism.GrowthSums.FactorialBaseGrowth.PathBasisOfCount
 
 namespace Formalism.InvariantFactorPaths.G7.Top
 

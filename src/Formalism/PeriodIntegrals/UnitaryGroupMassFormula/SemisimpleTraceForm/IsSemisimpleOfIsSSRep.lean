@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.SSAscent
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemisimpleTraceForm.TraceNilStep
 
 namespace PI.SSAscent.UnitaryGroupMassFormula

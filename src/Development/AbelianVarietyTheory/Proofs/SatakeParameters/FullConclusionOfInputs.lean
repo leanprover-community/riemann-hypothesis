@@ -5,14 +5,12 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenUse
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HtCard
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroWild
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroSupport
-import ReciprocityTheory.Hypotheses.GalCoh
-import Formalism.SharpRestriction.LevelLetterCocycles.ResidualIrreducibleOfTheoremThreePrime
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsCanonicalModuleSuccessor
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PartsGiveDimensionStatement
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ImportsBisTer
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RowsOfInputsAndJumpsStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RowsOfInputsAndJumps
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PrvG5OfLocalDualityStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ResidualRankPartExistsOfJointConditionStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ResidualRankPartExistsOfJointCondition
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PrvG6OfAdmissibleStatement
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.WeightParameterStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IrredOfCharpolyEq
@@ -23,6 +21,8 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ImportsBisSide
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleJOfParamsStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DepthZeroOfPrintsStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqOfOverTwo
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.NPin GlobalTheory.NFacts
 
 noncomputable section
@@ -71,3 +71,9 @@ theorem main : GlobalTheory.NRows.Hypotheses₂ → GlobalTheory.Published.Haris
 end GlobalTheory.CoreFacts
 
 end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.NPin GlobalTheory.NFacts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.full_conclusion_of_inputs : GlobalTheory.NRows.Hypotheses₂ → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.DepthZeroWild → GlobalTheory.Published.DepthZeroSupport → LocalFiniteness → LocalTateDuality → LocalEulerChar → ∀ (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7), GlobalTheory.NRows.Inputs hL D → JumpsCard D.nd D.naut → Core D := by
+  atlas_forward_decl GlobalTheory.CoreFacts.main

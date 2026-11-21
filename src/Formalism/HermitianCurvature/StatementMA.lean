@@ -1,5 +1,4 @@
 import Formalism.HermitianCurvature.StatementM
-import Formalism.HermitianCurvature.StatementLE
 import Formalism.HermitianCurvature.LetterProductDoubleDegreeCount
 
 namespace Formalism.FourierDecayAlt.MA

@@ -1,12 +1,13 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.HeckeInertComm
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PatchAtSelf
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SameAtOfLocalizationEq
-import Formalism.LocalRingCardinality.SpanPowerMembership.Places
 import Formalism.LocalToGlobal.Columns.TwQCmp
 import Formalism.LocalToGlobal.Columns.ReferenceActionRationalLevels
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Formalism.L2.Col GlobalTheory.InertExchange
 open Classical
 
@@ -262,3 +263,11 @@ theorem cartanInert : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] (n :
   · exact GlobalTheory.sameAt_of_localized_eq P _ _ (gmap_lattice g N' hN') hN (key N' N Dn' Dn hs2)
 
 end GlobalTheory.CartanInertPf
+end
+end
+
+open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Formalism.L2.Col GlobalTheory.InertExchange
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cartan_exchange_unimodular_inert_prime : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] (n : ℕ), CartanInert E n := by
+  atlas_forward_decl GlobalTheory.CartanInertPf.cartanInert

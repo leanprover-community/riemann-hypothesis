@@ -4,8 +4,8 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ResidueDeg
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ChernDegreeComplex
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AnalyticWeightLinearComb
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCoordsBaseChange
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyHomologyEquiv
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -68,3 +68,9 @@ theorem chernDegree_of_complex (h : GlobalTheory.Published.ChernDegreeComplex) :
   exact ⟨h₁, h₂⟩
 
 end GlobalTheory.ChernDegreeBaseChange
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.degreeEqChernFormIntegral_of_complex_case : GlobalTheory.Published.ChernDegreeComplex → GlobalTheory.Published.ChernDegree := by
+  atlas_forward_decl GlobalTheory.ChernDegreeBaseChange.chernDegree_of_complex

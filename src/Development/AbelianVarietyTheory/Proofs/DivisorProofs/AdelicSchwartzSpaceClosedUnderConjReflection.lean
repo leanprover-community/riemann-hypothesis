@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
+import BuildAid.ForwardExisting
 
+section
 namespace AdelicReflection
 section
 
@@ -81,3 +83,11 @@ theorem _root_.GlobalTheory.Adopt.adelicSchwartzSpace_closed_under_conj_reflecti
   exact AdelicReflection.GlobalTheory.CompanionTheory.AdelicReflect.schA_conj_neg F κ φ hφ
 
 end
+end
+
+open NumberField IsDedekindDomain
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicSchwartzSpace_closed_under_conj_reflection : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ],
+    ∀ φ ∈ GlobalTheory.WeilM.schA F κ, (fun x => starRingEnd ℂ (φ (-x))) ∈ GlobalTheory.WeilM.schA F κ := by
+  atlas_forward_decl GlobalTheory.Adopt.adelicSchwartzSpace_closed_under_conj_reflection

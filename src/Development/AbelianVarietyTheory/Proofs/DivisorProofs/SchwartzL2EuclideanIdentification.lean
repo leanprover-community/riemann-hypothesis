@@ -1,6 +1,9 @@
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.MetaplecticRepresentation
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IteratedLineDerivMemWeylAlg
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsEqTransposeMulDiagonalMul
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Complex GlobalTheory.RealWeil
 open scoped Real SchwartzMap ComplexConjugate
 
@@ -71,3 +74,11 @@ theorem exists_schwartz_L2_transport (l : Type) [Fintype l] [DecidableEq l] :
   ⟨schwartzTransport l, l2Transport l, schwartzTransport_apply, l2Transport_toLp⟩
 
 end GlobalTheory.EuclidTransport
+end
+end
+
+open MeasureTheory Matrix Complex GlobalTheory.RealWeil
+open scoped Real SchwartzMap ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_L2_euclidean_identification : ∀ (l : Type) [Fintype l] [DecidableEq l], ∃ (e : 𝓢(l → ℝ, ℂ) ≃L[ℂ] Sch l) (u : Lp ℂ 2 (volume : Measure (l → ℝ)) ≃ₗᵢ[ℂ] L2 l), (∀ φ (x : EuclideanSpace ℝ l), e φ x = φ x.ofLp) ∧ ∀ φ : 𝓢(l → ℝ, ℂ), u (φ.toLp 2) = (e φ).toLp 2 := by
+  atlas_forward_decl GlobalTheory.EuclidTransport.exists_schwartz_L2_transport

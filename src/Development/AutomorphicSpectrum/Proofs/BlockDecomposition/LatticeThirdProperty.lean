@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedExtensionIntegralBasis
+import BuildAid.ForwardExisting
 
+section
 open Matrix PositivityTheory.Rg.Tf.Loc
 
 namespace GlobalTheory.CompanionTheory.TfLoc.Descent
@@ -260,3 +261,8 @@ theorem unramified_descent_coset : TraceOneIntegralElement → L1 → L3 := by
   exact descent_core σ hσ hint (fun a ha => (hk a).2 ha) Module.finrank_pos hℓ x y hxy hd g hg
 
 end GlobalTheory.CompanionTheory.TfLoc.Descent
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_third_property : PositivityTheory.Rg.Tf.Loc.TraceOneIntegralElement → PositivityTheory.Rg.Tf.Loc.L1 → PositivityTheory.Rg.Tf.Loc.L3 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TfLoc.Descent.unramified_descent_coset

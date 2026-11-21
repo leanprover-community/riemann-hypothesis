@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Pointwise
 
 namespace GlobalTheory
@@ -49,3 +52,9 @@ theorem main : ∀ (O : Type) [CommRing O] (p : O) (n : ℕ),
   fun O _ p n => length_quotient_span_pow_le O p n
 
 end GlobalTheory
+end
+
+open Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.length_quotient_span_pow_le_mul_length : ∀ (O : Type) [CommRing O] (p : O) (n : ℕ), Module.length O (O ⧸ Ideal.span {p ^ n}) ≤ (n : ℕ∞) * Module.length O (O ⧸ Ideal.span {p}) := by
+  atlas_forward_decl GlobalTheory.main

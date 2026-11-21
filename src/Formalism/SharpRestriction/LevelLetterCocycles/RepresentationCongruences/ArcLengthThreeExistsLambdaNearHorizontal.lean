@@ -3,7 +3,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.
 import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.TruncatedCoefficientPoly
 import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.SaturationFractionModule
 import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
-import Formalism.SharpRestriction.LevelLetterCocycles.LetterConditionGlobal
 
 noncomputable section
 

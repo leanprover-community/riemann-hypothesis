@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.InstBorelGL
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MatrixAdditiveHaarNormalizedStatement
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MatrixHaarRightTranslateStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MatrixAdditiveHaarNormalized
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MatrixHaarRightTranslate
 
+section
 open MeasureTheory Matrix GlobalTheory.CompanionTheory.QL
 open scoped ComplexConjugate ValuativeRel
 
@@ -43,3 +43,10 @@ theorem vol_IIset : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace 
     map_pow, map_inv₀, hL.nrm_pi, inv_inv, ← inv_pow, ← pow_mul, _root_.zpow_neg, zpow_natCast, inv_pow, mul_comm m n]
 
 end GlobalTheory.CompanionTheory.QL.Vol
+end
+
+open MeasureTheory Matrix GlobalTheory.CompanionTheory.QL
+open scoped ComplexConjugate ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measure_uniformizer_multiple_matrices : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] {O : Subring F} {ϖ : F} {nrm : AbsoluteValue F ℝ} {q : ℕ}, LF O ϖ nrm q → ∀ n m : ℕ, ∀ (dx : Measure (Matrix (Fin n) (Fin m) F)), dx.IsAddLeftInvariant → dx (intMat O n m) = 1 → dx (IIset O ϖ : Set (Matrix (Fin n) (Fin m) F)) = ENNReal.ofReal ((q : ℝ) ^ (-((n * m : ℕ) : ℤ))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.QL.Vol.vol_IIset

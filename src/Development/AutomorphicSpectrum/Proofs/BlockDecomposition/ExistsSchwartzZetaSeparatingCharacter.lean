@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GTil
-import GroundTheory.LocalFields.LocalZetaGauss
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData
 open scoped ValuativeRel NNReal ENNReal
 
@@ -155,3 +157,11 @@ theorem GlobalTheory.CompanionTheory.GaussLam.TestFn.exists_test : ∀ (F : Type
       exact_mod_cast hvol
     simp only [Units.val_neg, Units.val_one, sub_neg_eq_add]
     exact mul_ne_zero this (by norm_num)
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData
+open scoped ValuativeRel NNReal ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_schwartz_zeta_separating_character : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (η : Fˣ →* ℂˣ), Continuous η → ∀ t : Fˣ, η t = -1 → ∃ g : F → ℂ, g ∈ schwartzBruhat F ∧ g 0 = 0 ∧ localZeta g 1 (1 / 2) = 0 ∧ localZeta g η (1 / 2) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GaussLam.TestFn.exists_test

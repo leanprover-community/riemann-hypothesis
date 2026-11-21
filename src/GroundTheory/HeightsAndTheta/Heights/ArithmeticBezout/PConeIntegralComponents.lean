@@ -5,7 +5,6 @@ import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConePtsIntegral
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PComplexFibreCycle
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLogBound
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PGenericFibreDim
-import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 set_option maxSynthPendingDepth 1
 
 noncomputable section

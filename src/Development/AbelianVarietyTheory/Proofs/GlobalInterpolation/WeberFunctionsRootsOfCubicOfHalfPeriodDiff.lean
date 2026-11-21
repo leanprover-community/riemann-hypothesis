@@ -2,6 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.ThetaConstantWeber
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.ThetaLine
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DifferentiableOddTheta
+import BuildAid.ForwardExisting
+
+section
 open Complex
 
 open Polynomial
@@ -158,3 +161,10 @@ theorem weberCubic_of_halfPeriodDiff : ∀ τ : UpperHalfPlane, GlobalTheory.Ind
     linear_combination hjl
 
 end GlobalTheory.WeberCubicAlgebra
+end
+end
+
+open Complex
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weberFunctionsRootsOfCubic_of_halfPeriodDiff : ∀ τ : UpperHalfPlane, GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.HalfPeriodDiff τ → GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.JacobiProduct τ → GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.ThetaWeber τ → GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.WeberCubic τ := by
+  atlas_forward_decl GlobalTheory.WeberCubicAlgebra.weberCubic_of_halfPeriodDiff

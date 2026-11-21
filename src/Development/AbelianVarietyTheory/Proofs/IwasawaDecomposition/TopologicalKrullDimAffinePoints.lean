@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsClosedFlagsIff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniMatBlockTriangular
+import BuildAid.ForwardExisting
+
+section
 open Module TopologicalSpace GlobalTheory.FlagPts
 
 set_option autoImplicit false
@@ -160,3 +162,10 @@ theorem topologicalKrullDim_affPts_eq_card :
   exact le_antisymm topologicalKrullDim_affPts_le le_topologicalKrullDim_affPts
 
 end GlobalTheory.FlagPts
+end
+end
+
+open Module TopologicalSpace GlobalTheory.FlagPts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.topologicalKrullDim_affine_points : ∀ (k : Type) [Field k] [IsAlgClosed k] (J : Type) [Fintype J], topologicalKrullDim (AffPts k J) = (Fintype.card J : ℕ) := by
+  atlas_forward_decl GlobalTheory.FlagPts.topologicalKrullDim_affPts_eq_card

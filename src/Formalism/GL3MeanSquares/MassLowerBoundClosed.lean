@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.HermitianLattices.StatementMass
-import Formalism.LogVandermondeBounds.LogRatioLowerBound
 import Formalism.LogVandermondeBounds.LogRatioUpperBound
 
 open NumberField Finset

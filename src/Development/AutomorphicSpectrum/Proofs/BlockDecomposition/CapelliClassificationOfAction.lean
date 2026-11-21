@@ -5,6 +5,7 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EpowRightEqPow
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapPNeg
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CapelliOfGelfand
 
+section
 namespace GlobalTheory.CompanionTheory.CapClsA
 
 open GlobalTheory.CompanionTheory.PairMult
@@ -39,3 +40,9 @@ theorem capCls_of_actUU : PositivityTheory.RgBcC.RealD.ActUU → PositivityTheor
   GlobalTheory.CompanionTheory.CapClsProof.capCls_of hAct capOne_newton dualCap_newton
 
 end GlobalTheory.CompanionTheory.CapClsA
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.capelli_classification_of_action : PositivityTheory.RgBcC.RealD.ActUU → PositivityTheory.RgBcC.RealD.CapCls := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CapClsA.capCls_of_actUU

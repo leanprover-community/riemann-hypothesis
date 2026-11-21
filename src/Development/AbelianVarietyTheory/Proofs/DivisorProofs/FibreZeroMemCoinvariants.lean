@@ -1,20 +1,19 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullRankSB
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.BernsteinUnitaryProductIrreducible
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OmAOneApply
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoinvariantOfLocallyConstantTwistStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbitalIntegralVanishesOfFibreStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullRankIffNonzeroMinorStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFirstMaximalMinorStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SectionInverseIntoSliceStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FirstMaximalMinorLocallyConstantStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SliceStabilizerTrivialStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousSliceSectionMeasureStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousSliceSectionIntegralStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SliceSectionHaarDecompositionStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoinvariantOfLocallyConstantTwist
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbitalIntegralVanishesOfFibre
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullRankIffNonzeroMinor
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFirstMaximalMinor
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SectionInverseIntoSlice
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FirstMaximalMinorLocallyConstant
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SliceStabilizerTrivial
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousSliceSectionMeasure
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousSliceSectionIntegral
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SliceSectionHaarDecomposition
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompactCoveredByOpenCosetsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HaarIntegralOverCosetRepresentativesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HaarIntegralOverCosetRepresentatives
 
+section
 noncomputable section
 open Matrix MeasureTheory ValuativeRel GlobalTheory.SplitFlip GlobalTheory.SmGL GlobalTheory.WeilM GlobalTheory.RankFibre GlobalTheory.SplitWeil
 
@@ -147,3 +146,9 @@ theorem fibre_ker : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace 
     · simp [Set.indicator_of_notMem hY]
 
 end GlobalTheory.RankFibreKer
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fibre_zero_mem_coinvariants : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (a b : ℕ) (ν β : kˣ →* ℂˣ), GlobalTheory.SmGL.IsSmoothChar ν → GlobalTheory.SmGL.IsSmoothChar β → ∀ Φ ∈ GlobalTheory.RankFibre.fullRankSB k a (a + b), GlobalTheory.RankFibre.fibre ν β a b Φ = 0 → Φ ∈ GlobalTheory.RankFibre.coinv ν β a (a + b) := by
+  atlas_forward_decl GlobalTheory.RankFibreKer.fibre_ker

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.FiniteResidueFieldPadicInt
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.LatHecke
 
 namespace GlobalTheory.LatHecke
@@ -40,3 +42,9 @@ theorem gl_transitive_lattices : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsD
   rw [h2, h1, ← Submodule.map_span, b.span_eq, Submodule.map_top, Submodule.range_subtype]
 
 end GlobalTheory.LatHecke
+end
+
+open GlobalTheory.LatHecke
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generalLinear_transitive_on_lattices_over_DVR : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Finite (IsLocalRing.ResidueField O)] [Field K] [Algebra O K] [IsFractionRing O K] (r : ℕ), (∀ L : Lat O K r, ∃ g : GL (Fin r) K, glMap g (std O K r).1 = L.1) ∧ ∀ (g : GL (Fin r) K) (L : Lat O K r), (glMap g L.1).IsLattice K := by
+  atlas_forward_decl GlobalTheory.LatHecke.gl_transitive_lattices

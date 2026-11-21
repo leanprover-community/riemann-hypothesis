@@ -1,6 +1,5 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocallyConstantMajorants.GammaSplitting.FunctionalEquationGL2GL1Complex
-import GroundTheory.GlobalFields.TateThesis.GaussianComplexFourier
 
 noncomputable section
 open MeasureTheory Complex Ad3.K Ad3.K.LC Ad3.K.LC.C

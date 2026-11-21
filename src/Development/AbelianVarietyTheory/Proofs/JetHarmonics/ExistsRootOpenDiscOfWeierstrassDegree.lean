@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Jets.PowerSeriesHasSumAt
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvPowerSeriesIntegralBoundedClosureStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PowerSeriesEvalTsumUnitDiscPropertiesStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PowerSeriesEvalTsumUnitDiscPropertiesAlt
+
+section
 open GlobalTheory.ConvSer
 
 namespace GlobalTheory.ConvSer.DiscRoot
@@ -184,3 +185,9 @@ theorem GlobalTheory.ConvSer.exists_root_of_weierstrassDegree : ∀ (K : Type) [
   have := (hI q hq').2.1
   rw [h0, zero_sub, norm_neg, hq0] at this
   exact absurd hx (not_lt.2 this)
+end
+
+open GlobalTheory.ConvSer
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_root_openDisc_of_weierstrassDegree : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [CompleteSpace K] [IsAlgClosed K] (h : PowerSeries K) (d : ℕ), 0 < d → Intg h → ‖PowerSeries.coeff d h‖ = 1 → (∀ k < d, ‖PowerSeries.coeff k h‖ < 1) → ∃ x : K, ‖x‖ < 1 ∧ ev1 h x = 0 := by
+  atlas_forward_decl GlobalTheory.ConvSer.exists_root_of_weierstrassDegree

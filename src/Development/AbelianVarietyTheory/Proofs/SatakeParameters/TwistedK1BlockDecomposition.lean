@@ -1,7 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.XiAtPenultimateEqXiCpl1
-import Formalism.LocalToGlobal.Columns.KOneCharacterTrivialNearOne
-import Formalism.LocalToGlobal.Columns.ChainTwTopQ
 import Formalism.LocalToGlobal.Columns.DiagUnitMemAndNormalizesKOne
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PhiTopTargetTwist
 import Formalism.LocalToGlobal.Columns.ChainTopLawTw

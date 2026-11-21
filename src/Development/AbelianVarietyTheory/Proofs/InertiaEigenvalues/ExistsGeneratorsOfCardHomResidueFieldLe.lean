@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open TensorProduct
 
 namespace GlobalTheory
@@ -55,3 +57,10 @@ theorem exists_span_eq_top_of_card_hom_residueField_le
   exact ⟨⟨i, i.2.trans_le hda⟩, by simp⟩
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_generators_of_card_hom_residueField_le : ∀ (Λ : Type) [CommRing Λ] [IsLocalRing Λ] [Finite (IsLocalRing.ResidueField Λ)] (A : Type) [AddCommGroup A] [Module Λ A] [Module.Finite Λ A] (a : ℕ),
+  Nat.card (A →ₗ[Λ] IsLocalRing.ResidueField Λ) ≤ Nat.card (IsLocalRing.ResidueField Λ) ^ a →
+  ∃ v : Fin a → A, Submodule.span Λ (Set.range v) = ⊤ := by
+  atlas_forward_decl GlobalTheory.exists_span_eq_top_of_card_hom_residueField_le

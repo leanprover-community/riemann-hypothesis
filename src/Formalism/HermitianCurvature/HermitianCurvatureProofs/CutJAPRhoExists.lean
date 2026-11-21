@@ -1,8 +1,6 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoAssembly
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoFrameLoc
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoCapSmooth
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoEigOrth
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoLagrange
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA

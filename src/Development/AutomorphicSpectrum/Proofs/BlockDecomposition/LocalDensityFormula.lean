@@ -3,6 +3,7 @@ import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanBinaryGramDensity
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalBinaryGramIntegral
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter
 open PositivityTheory.Rg.Base1 PositivityTheory.SiegelWeilFormula.Densx
 open scoped TensorProduct ENNReal NNReal
@@ -44,3 +45,9 @@ theorem dens : Dens := by
 end GlobalTheory.CompanionTheory.SW.RankOne
 
 end
+end
+
+open PositivityTheory.Rg.Base1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_density_formula : Dens := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.RankOne.dens

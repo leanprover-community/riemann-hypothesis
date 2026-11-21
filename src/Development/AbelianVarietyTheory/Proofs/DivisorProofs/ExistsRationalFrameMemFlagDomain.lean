@@ -4,7 +4,9 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.F
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImEmbHermSelf
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsForallAbvSubLt
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsShortVectorUnimodularHermitianLatticeRankT
+import BuildAid.ForwardExisting
 
+section
 open NumberField ReciprocityTheory.ChartRestriction.G.FD
 
 namespace GlobalTheory.OrthoFrame
@@ -63,3 +65,9 @@ theorem exists_frm_mem_dom : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   exact hu a k τ
 
 end GlobalTheory.OrthoFrame
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_rational_frame_mem_flagDomain : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r), ∃ u : Fin r → Fin r → E, GlobalTheory.OrthoFrame.frm X.Ψ u ∈ X.dom := by
+  atlas_forward_decl GlobalTheory.OrthoFrame.exists_frm_mem_dom

@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsFirstChernClassOfLineBundle
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.NeedB Polynomial
 
 namespace GlobalTheory
@@ -70,3 +73,9 @@ theorem valuation_eq_one_of_pow_eq_span :
   simpa [hva] using this
 
 end GlobalTheory
+end
+
+open GlobalTheory.NeedB Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_valuation_div_pow_eq_one_of_pow_eq_span : ∀ (E Ω R : Type) [Field E] [Field Ω] [Algebra E Ω] [CommRing R] [Algebra R E] (B : ValuationSubring Ω) (J : Submodule R E) (N : ℕ), 0 < N → (∀ x : R, algebraMap E Ω (algebraMap R E x) ∈ B) → ∀ w : E, w ≠ 0 → (J ^ N = Submodule.span R {w}) → ∃ c : E, c ≠ 0 ∧ B.valuation (algebraMap E Ω (w / c ^ N)) = 1 := by
+  atlas_forward_decl GlobalTheory.valuation_eq_one_of_pow_eq_span

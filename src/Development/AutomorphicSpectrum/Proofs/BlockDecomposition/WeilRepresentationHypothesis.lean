@@ -1,9 +1,9 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocalWhittakerDuality.WSteps
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RWMulN
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralCompUnitMul
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilRepresentationWhittakerHypothesisStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnstatedLocalWeilLemma
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData
 open scoped ValuativeRel
 
@@ -75,3 +75,11 @@ theorem GlobalTheory.CompanionTheory.GL2LocalData.wRep : Ad3.K.GL2LocalData.WRep
     ⟨by simp [Matrix.det_fin_two], fun g hg Φ hΦ =>
       GlobalTheory.T.weil_representation_whittaker_hypothesis F χ hχ hχ1 E hfr hcont σ hσ η hη g hg Φ hΦ⟩
   exact (rightRule_all hS hN hM hW h hh).2 g hg Φ hΦ
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData
+open scoped ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_representation_hypothesis : Ad3.K.GL2LocalData.WRep := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GL2LocalData.wRep

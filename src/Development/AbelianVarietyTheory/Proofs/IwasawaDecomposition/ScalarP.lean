@@ -5,8 +5,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.OmPins
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SideTw
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleTwistOfTwistingCharacter
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.KeepSideBMtVPlaces
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SideBTies
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.YsOfFi
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ClassSumEq
 
 noncomputable section

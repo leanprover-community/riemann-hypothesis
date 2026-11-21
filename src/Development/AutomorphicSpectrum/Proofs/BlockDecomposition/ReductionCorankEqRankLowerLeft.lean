@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JpUnif
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.CompanionTheory.Jp
 
 noncomputable section
@@ -172,3 +175,12 @@ theorem iD_eq_rank : ∀ (O L : Type) [CommRing O] [IsDomain O] [IsDiscreteValua
 end GlobalTheory.CompanionTheory.Jp.RedRank
 
 end
+end
+
+open Matrix GlobalTheory.CompanionTheory.Jp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.reduction_corank_eq_rank_lower_left : ∀ (O L : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field L] [Algebra O L] [IsFractionRing O L]
+    (n : ℕ) (ϖ : O), Irreducible ϖ → ∀ w : Lˣ, (w : L) = algebraMap O L ϖ →
+    ∀ (κ : GL (Ix n) O) (h : GL (Ix n) (IsLocalRing.ResidueField O)), IsRed (O := O) w κ h →
+      iD h = (lowerLeftBlock (resK κ)).rank := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Jp.RedRank.iD_eq_rank

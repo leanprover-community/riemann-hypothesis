@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.LogAbsBasic
+import BuildAid.ForwardExisting
 
+section
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 namespace GlobalTheory.CompanionTheory.SignChain
@@ -348,3 +350,9 @@ theorem gam_support : ∀ m : ℕ, ∀ (y : (Fin m → SignType) → ℝ) (M : �
   exact h (gam_eq_zero y M a hy i (not_le.mp hi'))
 
 end GlobalTheory.CompanionTheory.SignChain
+end
+
+open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sign_cone_weight_support_bound : ∀ m : ℕ, ∀ (y : (Fin m → SignType) → ℝ) (M : ℝ) a, (∀ e, |y e| ≤ M) → gam y a ≠ 0 → ∀ i, |a i| ≤ 2 * M := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SignChain.gam_support

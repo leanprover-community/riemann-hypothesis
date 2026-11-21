@@ -1,9 +1,5 @@
 import Formalism.SharpRestriction.LevelLetterCocycles.WachCoordinates
 import Formalism.SharpRestriction.LevelLetterCocycles.ArcIffLocalOfAdmissible
-import Formalism.TruncatedSeriesCounting.EtaDeterminantPolynomialIdentities
-import Formalism.GaussValuationBounds.NokLemmaCVal
-import Formalism.WindowSums.PowerSeriesRelationList
-import Formalism.DistinguishedUnitIdeals.DescentLemmasAllHold
 
 noncomputable section
 

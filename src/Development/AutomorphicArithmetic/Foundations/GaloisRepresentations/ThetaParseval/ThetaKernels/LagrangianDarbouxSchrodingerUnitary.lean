@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SiegelWeilSectionLawDiagonalLagrangianStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.MainLawK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -36,5 +34,5 @@ theorem _root_.GlobalTheory.T.lagrangian_darboux_schrodinger_unitary : ∀ (F E 
             ((((adeleClass F).modu (Units.map (Algebra.norm (AF F) : AF F ⊗[F] E →* AF F)
               (Matrix.GeneralLinearGroup.det t)) : ℝ) ^ ((Fintype.card (Fin nS) : ℝ) / 2) : ℝ) : ℂ) *
             GlobalTheory.LagrTheta.lagrInt ν 𝓕 ((diagCols (Fin nT) : Matrix (Fin nT ⊕ Fin nT) (Fin nT) (AF F ⊗[F] E)).submatrix finSumFinEquiv.symm id) (GlobalTheory.WeilSchrodinger.thetaTr F co B.ψ Φ) := by
-  first | exact @_root_.GlobalTheory.SiegelLawDblTargetF.main_law_k | exact _root_.GlobalTheory.SiegelLawDblTargetF.main_law_k | (intros; apply _root_.GlobalTheory.SiegelLawDblTargetF.main_law_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.SiegelLawDblTargetF.main_law_k
 end

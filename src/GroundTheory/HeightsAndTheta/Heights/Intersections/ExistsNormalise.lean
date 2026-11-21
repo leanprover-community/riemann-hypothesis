@@ -1,6 +1,5 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverChart
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreRest
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ImportsMoreSide
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsOrbitCompNonvanish

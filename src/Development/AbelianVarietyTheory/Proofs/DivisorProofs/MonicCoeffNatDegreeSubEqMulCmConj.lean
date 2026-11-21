@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField Polynomial
 
 namespace GlobalTheory
@@ -63,3 +66,11 @@ theorem monic_coeff_natDegree_sub_eq_mul_complexConj :
   exact τ.injective h
 
 end GlobalTheory
+end
+
+open NumberField Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monic_coeff_natDegree_sub_eq_mul_cmConj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (P : Polynomial E),
+    P.Monic → P.natDegree = n → (∀ (τ : E →+* ℂ), ∀ z ∈ (P.map τ).roots, ‖z‖ = 1) →
+    ∀ i ≤ n, P.coeff (n - i) = P.coeff 0 * IsCMField.complexConj E (P.coeff i) := by
+  atlas_forward_decl GlobalTheory.monic_coeff_natDegree_sub_eq_mul_complexConj

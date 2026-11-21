@@ -1,6 +1,5 @@
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.TraceConjMulEqHilbertSchmidt
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SphericalL1StatementOfProjectors
-import Formalism.FlagUnipotentLattices.HalfDeltaL1Bound
 
 noncomputable section
 

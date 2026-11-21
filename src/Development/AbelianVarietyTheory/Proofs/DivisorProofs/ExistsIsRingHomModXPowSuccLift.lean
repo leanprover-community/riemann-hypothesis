@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivCompM
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.Nef
 
 namespace GlobalTheory.Nef.PathJet
@@ -84,3 +86,10 @@ theorem exists_lift_succ : ∀ (A B R : Type) [CommRing A] [CommRing B] [CommRin
   · rw [← mk_eq_iff_X_pow_dvd, ← Ideal.Quotient.factor_mk hle, hψ, ← RingHom.comp_apply, h₁]; rfl
 
 end GlobalTheory.Nef.PathJet
+end
+
+open GlobalTheory.Nef
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isRingHomModXPow_succ_lift : ∀ (A B R : Type) [CommRing A] [CommRing B] [CommRing R] (π : B →+* A) (β : B →+* R), π.FormallySmooth → ∀ n : ℕ, 1 ≤ n → ∀ φ : A → PowerSeries R, GlobalTheory.Nef.PathJet.IsRingHomMod π β n φ → ∃ ψ : A → PowerSeries R, GlobalTheory.Nef.PathJet.IsRingHomMod π β (n + 1) ψ ∧ ∀ f, (PowerSeries.X : PowerSeries R) ^ n ∣ ψ f - φ f := by
+  atlas_forward_decl GlobalTheory.Nef.PathJet.exists_lift_succ

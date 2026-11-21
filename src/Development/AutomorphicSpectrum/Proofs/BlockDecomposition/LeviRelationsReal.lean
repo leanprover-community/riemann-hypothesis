@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.LeviCommutantWordReduction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwLMulSelf
+import BuildAid.ForwardExisting
 
+section
 open Finset PositivityTheory.RgBcC.RealD
 open GlobalTheory.CompanionTheory.LvChain
 open Formalism.REAL (GlRel)
@@ -423,3 +425,10 @@ theorem levRel : LevRel := by
 end Final
 
 end GlobalTheory.CompanionTheory.LevChainRel
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_relations_real : PositivityTheory.RgBcC.RealD.LevRel := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LevChainRel.levRel

@@ -1,20 +1,19 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MultiplicationLatticeSecond
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AffineOpenChartCompStructureEqSpMap
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntStepZeroStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAtlasRefiningCocycleStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyAdaptedOfIntStepStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdaptedNextStepTypeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdaptedSubstepClosureStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdaptedLinearPullbackStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AtlasPullbackPreservesStepStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdaptedClosureLocalSystemStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDROfFullIntStepStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyClosureOfEmbeddingStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdaptedEmbeddingStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AtlasModelComparisonStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsModelOfAtlasStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdaptedNextStepType
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdaptedSubstepClosure
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdaptedLinearPullback
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AtlasPullbackPreservesStep
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdaptedClosureLocalSystem
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasDROfFullIntStep
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyClosureOfEmbedding
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdaptedEmbedding
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AtlasModelComparison
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsModelOfAtlas
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.LocM GlobalTheory.LieMet GlobalTheory.DRFlag
@@ -182,3 +181,10 @@ theorem exists_isDRFlag : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   exact ⟨h ≫ e.inv, ⟨hi ▸ hc.1, hi ▸ hc.2.1, fun σ => by rw [full, hd.1]⟩, m₁ Z'' h hh⟩
 
 end GlobalTheory.DRFlag
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.ModuliIntegralCharts GlobalTheory.ShFam GlobalTheory.LocM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_de_rham_flag : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (Xo : ∀ l : Level H, Moduli Dw l) (p : ℕ) (W : ValuationSubring ℂ), p.Prime → (p : ℂ) ∈ W.nonunits → ∀ (Y : LocalSystem Xo p W) (i₀ : Idx H p), ∀ Z : Mdl Y i₀, (∀ σ, Z.ty σ ⊆ Finset.range (Dw.mult σ + 1)) → ∃ Z', IsDRFlag Z Z' := by
+  atlas_forward_decl GlobalTheory.DRFlag.exists_isDRFlag

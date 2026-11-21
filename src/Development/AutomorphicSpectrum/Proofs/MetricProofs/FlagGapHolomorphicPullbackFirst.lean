@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.HasStepCharts
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SelM
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsClosedSectionBoundary
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LinearIndependentMulSelM
 

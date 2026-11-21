@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MooreNorm
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUniqueIntegralAdditiveSystemFrobeniusPower
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.PMonE
 
 theorem glOnto_zero_and_glCount_zero : GLOnto 0 ∧ GLCount 0 := by
@@ -17,3 +18,9 @@ theorem glOnto_zero_and_glCount_zero : GLOnto 0 ∧ GLCount 0 := by
     exact ⟨⟨y, hy⟩, fun z => Subtype.ext (huniq z.1 z.2)⟩
 
 end GlobalTheory.PMonE
+end
+
+open GlobalTheory.PMonE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additiveSystem_surjectivity_and_count_order_zero : GLOnto 0 ∧ GLCount 0 := by
+  atlas_forward_decl GlobalTheory.PMonE.glOnto_zero_and_glCount_zero

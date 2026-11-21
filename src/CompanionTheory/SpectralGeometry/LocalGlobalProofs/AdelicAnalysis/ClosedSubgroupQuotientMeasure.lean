@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientMeasure.Bruhat
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Topology
 open scoped ENNReal NNReal Matrix
 
@@ -46,3 +48,10 @@ theorem exists_weight_mass_one_right_coset :
   rw [this, mul_inv_rev]
 
 end GlobalTheory.CompanionTheory.SW
+end
+
+open MeasureTheory Topology
+open scoped ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.closed_subgroup_quotient_measure : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (G₁ : Type) [Group G₁] [TopologicalSpace G₁] [IsTopologicalGroup G₁] [LocallyCompactSpace G₁] [SecondCountableTopology G₁] [MeasurableSpace G₁] [BorelSpace G₁] (ι : G₁ →* G), IsClosedEmbedding ι → ∀ (μ₁ : Measure G₁) [μ₁.IsHaarMeasure] [μ₁.IsMulRightInvariant], ∃ w : G → ℝ≥0∞, Measurable w ∧ ∀ g, ∫⁻ u, w (ι u * g) ∂μ₁ = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.exists_weight_mass_one_right_coset

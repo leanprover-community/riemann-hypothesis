@@ -1,9 +1,7 @@
 import ReciprocityTheory.GroupCohomology.CupConnRightStatement
 import ReciprocityTheory.GroupCohomology.HomogExistsStatement
-import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
 import ReciprocityTheory.GroupCohomology.ContractNthCastAddCastSucc
 import ReciprocityTheory.GroupCohomology.HomogIso
-import ReciprocityTheory.GroupCohomology.PrismOpZeroEval
 import ReciprocityTheory.GroupCohomology.ResNormalHolds
 import ReciprocityTheory.GroupCohomology.CupCorB
 

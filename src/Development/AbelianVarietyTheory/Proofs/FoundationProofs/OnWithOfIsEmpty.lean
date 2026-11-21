@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LiftWe
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.LeavesSupSpanLemmaSOfFormTieK
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DepthPageFirstZetaFactorEqPrimePower
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.LeafDepthAllRunUnconditional
-import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ChartIndependenceUnconditional
 
 set_option autoImplicit false
 

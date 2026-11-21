@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LtSeries
-import GroundTheory.LocalFields.LubinTateLimitGalois
 import GroundTheory.LocalFields.LubinTateUnramified
 import GroundTheory.LocalFields.KroneckerWeber
 

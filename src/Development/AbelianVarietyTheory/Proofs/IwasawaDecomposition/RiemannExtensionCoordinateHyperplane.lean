@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CauchySliceEqRemovableExtensionStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableAtCoordinateCauchyIntegralStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CauchySliceEqRemovableExtension
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableAtCoordinateCauchyIntegral
+
+section
 open Metric Filter Topology Set
 
 namespace GlobalTheory
@@ -30,3 +32,9 @@ theorem riemann_extension_coordinate_hyperplane : ∀ (n : ℕ) (U : Set (Fin n 
     filter_upwards [hO.mem_nhds ⟨hz₀, h0⟩] with z hz
     simp [hz.2]
 end GlobalTheory
+end
+
+open Metric Filter Topology Set
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_differentiableOn_ext_of_bounded_off_hyperplane : ∀ (n : ℕ) (U : Set (Fin n → ℂ)) (k : Fin n) (f : (Fin n → ℂ) → ℂ), IsOpen U → DifferentiableOn ℂ f {z | z ∈ U ∧ z k ≠ 0} → (∀ z₀ ∈ U, ∃ V ∈ nhds z₀, ∃ M : ℝ, ∀ z ∈ V, z ∈ U → z k ≠ 0 → ‖f z‖ ≤ M) → ∃ F : (Fin n → ℂ) → ℂ, DifferentiableOn ℂ F U ∧ ∀ z ∈ U, z k ≠ 0 → F z = f z := by
+  atlas_forward_decl GlobalTheory.riemann_extension_coordinate_hyperplane

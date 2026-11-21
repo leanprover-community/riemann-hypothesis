@@ -1,4 +1,3 @@
-import Formalism.PadicSubsetSums.CentralIdempotents.CentralIdempotentIntegral
 import Formalism.PadicSubsetSums.StableGradedCounts.TWCentralIdempotentIntegral
 
 namespace Formalism.IrreducibleCountingLemmas.TW

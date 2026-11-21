@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementG
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.GaussianHessianIntegral
 import Lemmata.GeneralBFactSecondBisForm.Goal1
 

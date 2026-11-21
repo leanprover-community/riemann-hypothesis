@@ -1,10 +1,10 @@
 import Mathlib
 import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.HighestWeightGeneratedWeightsBelow
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProjectorOfIntegrableDiscreteSeriesCoefficientStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarJacLeExpStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProjectorOfIntegrableDiscreteSeriesCoefficient
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarJacLeExp
 
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible Matrix MeasureTheory
 
 namespace GlobalTheory.DSProj
@@ -315,3 +315,9 @@ theorem discreteSeriesHighestVector_of_positivity : ∀ X : ProvA, DiscreteSerie
     rw [SetLike.mem_coe, Submodule.mem_orthogonal_singleton_iff_inner_left, inner_sub_right, ← hsa, hfix, sub_self]
 
 end GlobalTheory.DSProj
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.discreteSeries_integrableCoefficient_projector : ∀ X : ProvA, DiscreteSeriesPositivity X → CoverHaarIntegration X → DiscreteSeriesHighestVector X := by
+  atlas_forward_decl GlobalTheory.DSProj.discreteSeriesHighestVector_of_positivity

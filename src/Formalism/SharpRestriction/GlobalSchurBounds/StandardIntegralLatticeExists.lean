@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
-import Formalism.SharpRestriction.GlobalSchurBounds.TaylorLogMetric
 import Formalism.SharpRestriction.GlobalSchurBounds.FormalGroupJets
 import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
@@ -8,7 +7,6 @@ import Formalism.SharpRestriction.GlobalSchurBounds.CMFieldLemmas
 import Formalism.SharpRestriction.GlobalSchurBounds.ShortIntervalPrimes
 import Formalism.SharpRestriction.GlobalSchurBounds.LocalCountingBounds
 import Formalism.SharpRestriction.GlobalSchurBounds.ZetaZeroFreeRegion
-import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 import Formalism.SharpRestriction.GlobalSchurBounds.KernelEntryData
 import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr

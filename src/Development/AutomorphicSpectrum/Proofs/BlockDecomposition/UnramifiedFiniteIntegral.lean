@@ -1,5 +1,6 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.BasisSet
 
+section
 namespace GlobalTheory.CompanionTheory.Gunr
 
 open NumberField IsDedekindDomain Filter
@@ -25,3 +26,8 @@ theorem finInt : PositivityTheory.SiegelWeilFormula.Gunr.FinInt := by
   exact hall
 
 end GlobalTheory.CompanionTheory.Gunr
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_finite_integral : PositivityTheory.SiegelWeilFormula.Gunr.FinInt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Gunr.finInt

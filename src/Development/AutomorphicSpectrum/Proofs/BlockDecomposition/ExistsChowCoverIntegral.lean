@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PowSubSuccLe
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ExistsChow
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 set_option maxSynthPendingDepth 1
 
@@ -113,3 +114,10 @@ theorem exists_chow_open {A : Type} [CommRing A] [IsNoetherianRing A] {X : Schem
   exists_chow_open_projective (X ↘ Spec (.of A))
 
 end GlobalTheory.CompanionTheory.GE.ChowOpen
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_chow_cover_integral : ∀ {A : Type} [CommRing A] [IsNoetherianRing A] {X : Scheme.{0}} [X.Over (Spec (.of A))] [IsSeparated (X ↘ Spec (.of A))] [LocallyOfFiniteType (X ↘ Spec (.of A))] [QuasiCompact (X ↘ Spec (.of A))] [IsIntegral X], ∃ (N : ℕ) (Y : Scheme.{0}) (i : Y ⟶ projectiveSpace A N) (O : Y.Opens) (ψ : (O : Scheme.{0}) ⟶ X) (W : X.Opens), IsClosedImmersion i ∧ IsProper ψ ∧ O.ι ≫ i ≫ ProjSpace.toSpecBase A N = ψ ≫ (X ↘ Spec (.of A)) ∧ (W : Set X).Nonempty ∧ IsIso (ψ ∣_ W) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.ChowOpen.exists_chow_open

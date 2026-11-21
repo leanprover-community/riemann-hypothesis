@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
-import Formalism.LocalRingCardinality.DataKerI
 import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 
 noncomputable section

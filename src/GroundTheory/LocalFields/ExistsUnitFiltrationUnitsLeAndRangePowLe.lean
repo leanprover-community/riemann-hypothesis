@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.LocalFields.UnitsBasic
 import GroundTheory.LocalFields.UnitsPowers
 
 namespace GroundTheory.LocalField

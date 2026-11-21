@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.LocalRingCardinality.DataParams₂
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions
 
 namespace GlobalTheory
@@ -55,3 +58,9 @@ theorem thick_density_le (D : D7) (L : SizeData₂ D) (h8 : 8 * D.host.Lw < D.R.
   linarith
 
 end GlobalTheory
+end
+
+open Formalism.BasicNotions
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thickSet_density_le_inv_four_Lw : ∀ (D : D7) (L : SizeData₂ D), 8 * D.host.Lw < D.R.n → L.de2 ≤ 1 / (4 * (D.host.Lw : ℝ)) := by
+  atlas_forward_decl GlobalTheory.thick_density_le

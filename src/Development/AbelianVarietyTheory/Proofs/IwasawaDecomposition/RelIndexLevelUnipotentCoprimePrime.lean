@@ -1,10 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitPlaceHeckeOperatorScalarOnSpherical
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryFiniteAdelesSplitPlaceDecomposition
-import Formalism.LocalToGlobal.GaloisLevelStructure.DefsLevel
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PinsCardIndexRanks
 
+section
 open NumberField IsDedekindDomain ReciprocityTheory.Aut Formalism.L2
 open Formalism.AUTREP (GAf)
 
@@ -219,3 +217,11 @@ theorem relIndex_coprime : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L
   exact coprime_prod_pow_sub_one n hp (prime_dvd_card_residue s.v hp hA) Nat.card_pos
 
 end GlobalTheory.UniLevelIndex
+end
+end
+
+open NumberField IsDedekindDomain ReciprocityTheory.Aut Formalism.L2
+open Formalism.AUTREP (GAf)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.relIndex_levelUnipotent_coprime_prime : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (s : SplitPlace L) (r p : ℕ) (H : Subgroup (GL (Fin n) (s.v.adicCompletion (maximalRealSubfield L)))), p.Prime → s.Above p → r ≤ n → (∀ g, g ∈ H ↔ NG.UniRT s r g) → Nat.Coprime (H.relIndex (Formalism.UG.GLint (Fin n) (s.v.adicCompletionIntegers (maximalRealSubfield L)).toSubring)) p := by
+  atlas_forward_decl GlobalTheory.UniLevelIndex.relIndex_coprime

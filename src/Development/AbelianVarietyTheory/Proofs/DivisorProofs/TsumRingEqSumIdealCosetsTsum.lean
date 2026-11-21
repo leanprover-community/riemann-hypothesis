@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbAApply
+import BuildAid.ForwardExisting
+
+section
 open NumberField MeasureTheory
 open scoped RealInnerProductSpace FourierTransform
 
@@ -32,3 +35,10 @@ theorem cosets_main : ∀ (R : Type) [CommRing R] (M : Ideal R) [Fintype (R ⧸ 
   fun R _ M _ h hs => tsum_eq_sum_quotient_tsum_ideal R M h hs
 
 end GlobalTheory
+end
+
+open NumberField MeasureTheory
+open scoped RealInnerProductSpace FourierTransform
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tsum_ring_eq_sum_ideal_cosets_tsum : ∀ (R : Type) [CommRing R] (M : Ideal R) [Fintype (R ⧸ M)] (h : R → ℂ), Summable h → ∑' α, h α = ∑ c : R ⧸ M, ∑' μ : M, h (Quotient.out c + μ) := by
+  atlas_forward_decl GlobalTheory.cosets_main

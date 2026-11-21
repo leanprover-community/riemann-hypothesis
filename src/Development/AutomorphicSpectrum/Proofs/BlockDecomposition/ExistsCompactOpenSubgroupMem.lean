@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix ValuativeRel
 
 namespace GlobalTheory.CompanionTheory.LatticePoint
@@ -53,3 +55,9 @@ theorem exists_compact_open_addSubgroup_mem :
     exact le_sup_of_le_left (Finset.le_sup (f := fun i => valuation k (x i)) (Finset.mem_univ i))
 
 end GlobalTheory.CompanionTheory.LatticePoint
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_compact_open_subgroup_mem : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (x : Fin n → k), ∃ A : AddSubgroup (Fin n → k), IsCompact (A : Set (Fin n → k)) ∧ IsOpen (A : Set (Fin n → k)) ∧ x ∈ A := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LatticePoint.exists_compact_open_addSubgroup_mem

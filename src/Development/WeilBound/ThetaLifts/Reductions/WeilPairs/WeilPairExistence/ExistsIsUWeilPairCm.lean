@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
-import Formalism.LocalToGlobal.IndefiniteReal.DatumF
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.Imports
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.ExistsWeilTransportAdelicSchwartzCmExtensionImpo
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.TransportedWeilDatumCMPreservesSchwartzHeisenber

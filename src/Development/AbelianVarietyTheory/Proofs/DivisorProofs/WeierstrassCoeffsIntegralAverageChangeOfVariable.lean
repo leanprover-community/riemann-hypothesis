@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DatumOfIsIntegersLattice
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDiscreteValuationRingValuationSubringAtPrime
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentSlopeMemStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentSlopeMem
 
+section
 noncomputable section
 
 open WeierstrassCurve
@@ -57,3 +57,11 @@ theorem intV_average (V : ValuationSubring ℂ) (a₄ a₆ r s t : ℂ) (u : ℂ
   exact GlobalTheory.coeff_mem_variableChange V.toSubring h.1 h.2.1 h.2.2.1 h.2.2.2.1 h.2.2.2.2 hr hs ht rfl
 
 end GlobalTheory.CMModel
+end
+end
+
+open NumberField IsDedekindDomain WeierstrassCurve GlobalTheory GlobalTheory.Published GlobalTheory.CMModel Formalism.L2.Th1.F
+open scoped IntermediateField BigOperators Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weierstrassCoeffs_integral_average_change_of_variables : ∀ (V : ValuationSubring ℂ) (a₄ a₆ r s t : ℂ) (u : ℂˣ) (ι : Type) [Fintype ι] (X Y : ι → ℂ), IntV V ((⟨u, r, s, t⟩ : VariableChange ℂ) • (⟨0, 0, 0, a₄, a₆⟩ : WeierstrassCurve ℂ)) → V.valuation (Fintype.card ι : ℂ) = 1 → (∀ i, (X i - r) / (u : ℂ) ^ 2 ∈ V) → (∀ i, (Y i - t - s * (X i - r)) / (u : ℂ) ^ 3 ∈ V) → (∀ i, V.valuation (2 * Y i) = V.valuation (u : ℂ) ^ 3) → IntV V ((⟨u, (∑ i, X i) / Fintype.card ι, (∑ i, (3 * X i ^ 2 + a₄) / (2 * Y i)) / Fintype.card ι, (∑ i, Y i) / Fintype.card ι⟩ : VariableChange ℂ) • (⟨0, 0, 0, a₄, a₆⟩ : WeierstrassCurve ℂ)) := by
+  atlas_forward_decl GlobalTheory.CMModel.intV_average

@@ -1,6 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsClopenDegree
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsClopenComponents
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsComponentDegree
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsComponentsAdditive
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsIntNumComponents

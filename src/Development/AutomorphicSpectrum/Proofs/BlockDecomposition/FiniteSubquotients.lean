@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.SubOfEig
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NontrivialOfIrreducible
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory GlobalTheory.SmGL GlobalTheory.PRep PositivityTheory.Rg.BcN.F2 GlobalTheory.JHMult
 
 namespace GlobalTheory.CompanionTheory.RepFinSubq
@@ -46,3 +48,9 @@ theorem finSubq : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
   · exact exists_factor_equiv hS h0 h1 hc hτ hq
 
 end GlobalTheory.CompanionTheory.RepFinSubq
+end
+
+open MeasureTheory GlobalTheory.SmGL GlobalTheory.PRep PositivityTheory.Rg.BcN.F2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_subquotients : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (ι : Type) [Fintype ι] [DecidableEq ι], FinSubq F ι := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RepFinSubq.finSubq

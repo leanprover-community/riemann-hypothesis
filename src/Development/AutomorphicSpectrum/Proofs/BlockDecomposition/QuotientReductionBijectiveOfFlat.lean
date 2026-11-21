@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LocalSystemQuotients.ModFSW
 
+section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
@@ -318,3 +319,10 @@ theorem qred_bij : ∀ (W : Type) [CommRing W] (l : ℕ) (K L : Cx.{1} W) (m : �
     exact redg_shD L h j g2
 
 end GlobalTheory.CompanionTheory.QredFlat
+end
+end
+
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Ls CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.LsG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quotient_reduction_bijective_of_flat : ∀ (W : Type) [CommRing W] (l : ℕ) (K L : Cx.{1} W) (m : ℕ) (f : Cx.Hom K (quo l L m) (RingHom.id W)), FlatL l m K → FlatL l (m + 1) L → (∀ j, Function.Bijective (f.mapH j)) → ∀ b (h : b ≤ m) j, Function.Bijective ((qred l f h).mapH j) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.QredFlat.qred_bij

@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Geometrica
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsLogMult
 import Development.AbelianVarietyTheory.Definitions.Divisors.AdjKltOfLtDisc
 
+section
 set_option autoImplicit false
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
@@ -40,3 +41,11 @@ theorem exists_ordQ_eq_ord_div : ∀ {k K : Type} [Field k] [Field K] (c : k →
       ring
 
 end GlobalTheory.FieldPair
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ordQ_eq_ord_div_of_rational_combination : ∀ {k K : Type} [Field k] [Field K] (c : k →+* K) (φ : K →₀ ℚ), φ 0 = 0 → ∃ (m : ℕ) (g : Kˣ), 0 < m ∧ ∀ E : Place c, E.ordQ φ = (E.ord (g : K) : ℚ) / m := by
+  atlas_forward_decl GlobalTheory.FieldPair.exists_ordQ_eq_ord_div

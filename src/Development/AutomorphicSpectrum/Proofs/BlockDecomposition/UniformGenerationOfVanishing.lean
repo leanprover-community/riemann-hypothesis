@@ -1,11 +1,11 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KerSCShortExact
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OperatorSequenceSumEpiStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KernelSequenceCoherentStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OperatorSequenceSumEpi
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KernelSequenceCoherent
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KernelOperatorsSpanEventuallyStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformSpanEventuallyStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedVanishingSectionsSpanStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformSpanEventually
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedVanishingSectionsSpan
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -31,3 +31,10 @@ theorem uniformGen_of_gradedNoeth : GradedNoeth → UniformVanishing → Uniform
     (kernel.ι _) (kernel.condition _) (KerSeq.kerSC_shortExact T d e₀) (hn₀ n hn e₀ 1 one_pos)
 
 end GlobalTheory.CompanionTheory.GE
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniform_generation_of_vanishing : GradedNoeth → UniformVanishing → UniformGen := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.uniformGen_of_gradedNoeth

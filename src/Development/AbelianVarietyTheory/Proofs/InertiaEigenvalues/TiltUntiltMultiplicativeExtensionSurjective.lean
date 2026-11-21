@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ImportsAlt
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltUntiltToComplexPAdicBasicLaws
+
+section
 open Formalism.Per GlobalTheory.PSer
 open scoped Formalism.Per
 
@@ -22,3 +23,12 @@ theorem tsh_surjective : ∀ (l : ℕ) [Fact l.Prime] (F : Type) [NormedField F]
     rw [map_inv₀, hsh, hx, inv_inv]
 
 end GlobalTheory.PSer.TshOnto
+end
+
+open Formalism.Per GlobalTheory.PSer
+open scoped Formalism.Per
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tiltUntilt_multiplicative_extension_surjective : ∀ (l : ℕ) [Fact l.Prime] (F : Type) [NormedField F] (ι : Fl l →+* F) (tsh : F →*₀ ℂ_[l]),
+    (∀ z, ‖tsh z‖ = ‖z‖) → (∀ x, tsh (ι x) = sh x) → (∀ z : F, ‖z‖ ≤ 1 → ∃ x, ι x = z) →
+    ∀ t : ℂ_[l], ∃ z : F, tsh z = t := by
+  atlas_forward_decl GlobalTheory.PSer.TshOnto.tsh_surjective

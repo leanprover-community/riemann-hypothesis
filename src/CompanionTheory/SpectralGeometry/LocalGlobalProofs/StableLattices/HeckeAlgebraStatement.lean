@@ -1,7 +1,8 @@
 import Mathlib
-import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HeckeOperatorsSpanAndFaithful
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.Fl
 
 noncomputable section
@@ -249,3 +250,9 @@ theorem stHecke : StHecke := by
 end GlobalTheory.CompanionTheory.HeckeBern
 
 end
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.HeckeAlgebraTheorem : StHecke := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeckeBern.stHecke

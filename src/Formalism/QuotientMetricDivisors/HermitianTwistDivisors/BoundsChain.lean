@@ -1,7 +1,6 @@
 import Formalism.QuotientMetricDivisors.ProdFormula
 import Formalism.QuotientMetricDivisors.BoundsChain
 import Formalism.QuotientMetricDivisors.ReductionLemmaZero
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.BoundsSum
 
 open Module NumberField IsDedekindDomain
 

@@ -1,17 +1,16 @@
 import Mathlib
-import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.RegularHypothesesAndConclusion
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HasAffineChartId
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFreeHom
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShearIsoActionProjectionStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MemOrbitSelfStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.OrbitTransStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteSetBasicOpenAffineStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShearIsoActionProjection
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MemOrbitSelf
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.OrbitTrans
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteSetBasicOpenAffine
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFlatLocallyFreeAffineStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFreePullbackAffineStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PullbackRestrictOpenStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.NormNotMemPrimeIffStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BasicOpenNormFibreIffStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFreePullbackAffine
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PullbackRestrictOpen
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.NormNotMemPrimeIff
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BasicOpenNormFibreIff
 
+section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
 open scoped CategoryTheory.MonObj
 attribute [local instance] Over.cartesianMonoidalCategory
@@ -162,3 +161,13 @@ theorem exists_stable_affine_nbhd : ∀ {S : Scheme.{0}} (G X : Over S) [GrpObj 
     exact ((hVmem y).1 hy).2 (GlobalTheory.T.mem_orbit_trans G X y w t hw ht)
 
 end GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.orbit_affine_neighbourhood : ∀ {S : Scheme.{0}} (G X : Over S) [GrpObj G] [ModObj G X], IsFiniteLocallyFree G.hom → ∀ (x : X.left) (U : X.left.Opens), IsAffineOpen U → orbit G X x ⊆ U → ∃ (V : X.left.Opens) (W : S.Opens), x ∈ V ∧ IsAffineOpen V ∧ IsAffineOpen W ∧ V ≤ X.hom ⁻¹ᵁ W ∧ (γ[G, X] : G ⊗ X ⟶ X).left ⁻¹ᵁ V = (snd G X).left ⁻¹ᵁ V := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.exists_stable_affine_nbhd

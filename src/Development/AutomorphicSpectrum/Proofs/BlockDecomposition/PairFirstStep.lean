@@ -2,6 +2,7 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimensionalProdSpan
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix
@@ -226,3 +227,9 @@ theorem pairStep₁_of_slices : PairSlices → PairStep₁ := by
 end GlobalTheory.CompanionTheory.EGlue.TensorOne
 
 end
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pair_first_step : GlobalTheory.CompanionTheory.EGlue.PairSlices → GlobalTheory.CompanionTheory.EGlue.PairStep₁ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.TensorOne.pairStep₁_of_slices

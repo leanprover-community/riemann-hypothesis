@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FinitePointsDetect
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory
 
 namespace GlobalTheory.UnitaryBC
@@ -174,3 +176,8 @@ theorem mem_of_finiteDimensional_span_rightTranslates :
   exact hconv _ p.2
 
 end GlobalTheory.UnitaryBC
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_of_finiteDimensional_span_rightTranslates' : ∀ (K : Type) [Group K] [TopologicalSpace K] [IsTopologicalGroup K] [CompactSpace K] [T2Space K] (R : Subalgebra ℂ (K → ℂ)), (∀ p ∈ R, Continuous p) → (∀ p ∈ R, star p ∈ R) → (∀ x y : K, x ≠ y → ∃ p ∈ R, p x ≠ p y) → (∀ p ∈ R, ∃ (m : ℕ) (a b : Fin m → K → ℂ), (∀ i, a i ∈ R ∧ Continuous (b i)) ∧ ∀ x k, p (x⁻¹ * k) = ∑ i, a i x * b i k) → ∀ f : K → ℂ, Continuous f → FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k : K => fun x : K => f (x * k))) → f ∈ R := by
+  atlas_forward_decl GlobalTheory.UnitaryBC.mem_of_finiteDimensional_span_rightTranslates

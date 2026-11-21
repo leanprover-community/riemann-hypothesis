@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LocalEnd
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalEndomorphisms.ValSurjective
 
 open NumberField IsDedekindDomain WithZero

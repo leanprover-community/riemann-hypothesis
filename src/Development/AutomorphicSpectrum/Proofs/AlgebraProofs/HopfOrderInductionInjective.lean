@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfInd
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.CompanionTheory.Ar.BT TensorProduct
 
 namespace GlobalTheory.CompanionTheory.Ar.BT.Induced
@@ -194,3 +196,9 @@ theorem isHopfOrder_indOrder : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Typ
     exact hinv _ (hf t⁻¹)
 
 end GlobalTheory.CompanionTheory.Ar.BT.Induced
+end
+
+open GlobalTheory.CompanionTheory.Ar.BT TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hopf_order_induction_injective : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGroup T] [Finite T] (H : Type) [CommGroup H] (ι : H →* T), Function.Injective ι → ∀ A : Subalgebra R (H → R), IsHopfOrder A → IsHopfOrder (indOrder ι A) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.BT.Induced.isHopfOrder_indOrder

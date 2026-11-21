@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TautologicalInnerProductLift
 import Development.AbelianVarietyTheory.Definitions.Divisors.MemSmallSecTrivShift
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -63,3 +64,12 @@ theorem isometric_grLB_zero :
     fun σ j y hy => (grLB_zero_φ σ j hy).trans (congrArg (- ·) (fubini_study_weight_eq_log_norm σ j y).symm))
 
 end GlobalTheory.TautFlag
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_first_isometric_dual_O1 : (VMetric.grLB TautFlag.flag 0 TautFlag.stdH.cInf).Isometric (ProjSpace.hermitianTwistingSheaf ℤ 1).dual := by
+  atlas_forward_decl GlobalTheory.TautFlag.isometric_grLB_zero

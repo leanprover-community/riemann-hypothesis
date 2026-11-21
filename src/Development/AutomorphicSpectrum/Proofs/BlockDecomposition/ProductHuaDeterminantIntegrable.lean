@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableHermC
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HuaDeterminantIntegrableOfLtStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HuaDeterminantIntegrableOfLt
+
+section
 open MeasureTheory
 open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch
 
@@ -19,3 +20,13 @@ theorem integrable_prod_detW_rpow : ∀ (W : Type) [Fintype W] (n : ℕ) (s : �
   exact hpi.smul_measure_nnreal
 
 end GlobalTheory.CompanionTheory.SiegelND.Integ.Arch
+end
+
+open MeasureTheory
+open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.product_hua_determinant_integrable : ∀ (W : Type) [Fintype W] (n : ℕ) (s : ℝ), (n : ℝ) - 1 / 2 < s →
+  ∀ ν : Measure (W → hermC n), ν.IsAddHaarMeasure →
+  Integrable (fun b : W → hermC n => ∏ w, detW (b w : Matrix (Fin n) (Fin n) ℂ) ^ (-s)) ν := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.integrable_prod_detW_rpow

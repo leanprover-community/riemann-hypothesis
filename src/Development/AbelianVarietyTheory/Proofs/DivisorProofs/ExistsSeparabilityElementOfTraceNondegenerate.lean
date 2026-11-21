@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 open scoped TensorProduct
 
@@ -136,3 +139,10 @@ theorem GlobalTheory.exists_separability_element_of_trace_nondegenerate :
   intro A _ _ _ hnd
   let b := Module.finBasis ℤ A
   exact ⟨(gram b).det, _, b, dualD b, det_ne_zero b hnd, sum_mul_dualD b hnd, balanced b hnd⟩
+end
+
+open NumberField
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_separability_element_of_trace_nondegenerate' : ∀ (A : Type) [Ring A] [Module.Free ℤ A] [Module.Finite ℤ A], (∀ x : A, (∀ y : A, LinearMap.trace ℤ A (LinearMap.mulLeft ℤ (x * y)) = 0) → x = 0) → ∃ (N : ℤ) (k : ℕ) (x y : Fin k → A), N ≠ 0 ∧ ∑ j, x j * y j = (N : A) ∧ ∀ c : A, ∑ j, (c * x j) ⊗ₜ[ℤ] y j = ∑ j, x j ⊗ₜ[ℤ] (y j * c) := by
+  atlas_forward_decl GlobalTheory.exists_separability_element_of_trace_nondegenerate

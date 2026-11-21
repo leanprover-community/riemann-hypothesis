@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NilpotentOfNotIsUnit
 
+section
 open scoped NNReal
 open Ideal Finset GlobalTheory.Per.AinfComplete
 
@@ -56,3 +57,9 @@ theorem _root_.GlobalTheory.WittTeichComplete.main : ∀ (l : ℕ) [Fact l.Prime
   rwa [Ideal.span_insert] at h₁
 
 end GlobalTheory.WittTeichComplete
+end
+
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wittVector_teichmuller_isAdicComplete_of_perfect : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [CharP O l] [PerfectRing O l] (x : O), x ≠ 0 → IsAdicComplete (Ideal.span {x}) O → IsAdicComplete (Ideal.span {WittVector.teichmuller l x}) (WittVector l O) ∧ IsAdicComplete (Ideal.span {((l : ℕ) : WittVector l O)} ⊔ Ideal.span {WittVector.teichmuller l x}) (WittVector l O) := by
+  atlas_forward_decl GlobalTheory.WittTeichComplete.main

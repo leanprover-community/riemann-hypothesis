@@ -7,6 +7,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralConjEtaleMe
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InertIntegralTwistedConjugatesTwistedCentralizerStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyDefiniteUnitaryLocalPointMemMaxCompact
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter
@@ -107,3 +108,8 @@ theorem main : PositivityTheory.Rg.BcB.G8.Fin.UnitAE := by
 end GlobalTheory.CompanionTheory.UnitAEPair
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unit_almost_everywhere_facts : PositivityTheory.Rg.BcB.G8.Fin.UnitAE := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnitAEPair.main

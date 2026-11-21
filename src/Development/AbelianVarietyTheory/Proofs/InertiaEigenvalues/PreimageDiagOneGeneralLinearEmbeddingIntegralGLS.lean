@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormMulApplyLeOne
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -47,3 +50,10 @@ theorem emb_preimage_glO : ∀ (F : Type) [NormedField F] (r : ℕ),
     · rw [embHom_apply_cc, embHom_apply_cc]; exact h i j
 
 end GlobalTheory.JR.GLift
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.preimage_diagOneGeneralLinearEmbedding_integralGLSet : ∀ (F : Type) [NormedField F] (r : ℕ), ⇑(GlobalTheory.JR.Step.emb r F) ⁻¹' glO (r + 1) F = glO r F := by
+  atlas_forward_decl GlobalTheory.JR.GLift.emb_preimage_glO

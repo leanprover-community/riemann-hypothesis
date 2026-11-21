@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.PairingDivisors.StatementN
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem legendre_divided_powers : Formalism.PairingDivisionLocalBalance.DivPow := by
@@ -28,3 +30,8 @@ theorem legendre_divided_powers : Formalism.PairingDivisionLocalBalance.DivPow :
       omega
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.divided_powers_valuations : Formalism.PairingDivisionLocalBalance.DivPow := by
+  atlas_forward_decl GlobalTheory.legendre_divided_powers

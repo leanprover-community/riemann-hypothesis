@@ -3,7 +3,9 @@ import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Upqcpt
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousExptPY
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU Matrix MeasureTheory
 
 namespace GlobalTheory.PolarU
@@ -31,3 +33,9 @@ theorem isCompact_Kset : ∀ (p q : ℕ) (T : GrpData p q), IsCompact T.Kset := 
   simpa using GlobalTheory.RealPar.Cover.norm_sq x
 
 end GlobalTheory.PolarU
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible GlobalTheory.PolarU Matrix MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCompact_detSqrtCover_maxCompact : ∀ (p q : ℕ) (T : GrpData p q), IsCompact T.Kset := by
+  atlas_forward_decl GlobalTheory.PolarU.isCompact_Kset

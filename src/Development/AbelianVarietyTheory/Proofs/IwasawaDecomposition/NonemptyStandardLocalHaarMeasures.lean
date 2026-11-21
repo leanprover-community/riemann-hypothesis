@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.T2SpaceNumberFieldInfiniteAdeles
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.GaugeEx.StdExist
@@ -81,3 +83,11 @@ theorem nonempty_stdMeas (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
     nuV_int := fun v => Measure.addHaarMeasure_self (K₀ := intK v) }⟩
 
 end GlobalTheory.GaugeEx.StdExist
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.GaugeEx
+open scoped TensorProduct NNReal ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonempty_standardLocalHaarMeasures : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E], ∀ (d : ℕ) (b : Module.Basis (Fin d) F E), Nonempty (StdMeas b) := by
+  atlas_forward_decl GlobalTheory.GaugeEx.StdExist.nonempty_stdMeas

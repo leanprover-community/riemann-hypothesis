@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.FlatDegree.Statements
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFlatDegreeBoundX
 set_option maxSynthPendingDepth 1
 

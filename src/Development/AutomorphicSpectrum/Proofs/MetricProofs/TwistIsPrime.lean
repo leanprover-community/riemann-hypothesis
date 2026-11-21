@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsHorizontalTwist
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo MeasureTheory GlobalTheory.CompanionTheory.Ar.Tw
 
 namespace GlobalTheory.CompanionTheory.Ar.Tw
@@ -211,3 +214,9 @@ theorem twist_isPrime (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (
   exact (Ideal.Quotient.isDomain_iff_prime _).mp inferInstance
 
 end GlobalTheory.CompanionTheory.Ar.Tw
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo MeasureTheory GlobalTheory.CompanionTheory.Ar.Tw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twist_isPrime_of_isPrime_of_noRoot : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (p : ℕ) (W : Ideal (MRing ι)), W.IsPrime → NoRoot p W → (twist p W).IsPrime := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Tw.twist_isPrime

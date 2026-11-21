@@ -3,9 +3,8 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InducesPl
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CoordinateSectionsOfWeight
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IoOfLeOneIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartierLogHeightFormula
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NotIsBettiZero
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.WithZeroEqOfLeExpIff
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -294,3 +293,9 @@ theorem flagSt_holds : FlagSt := by
 end GlobalTheory.DetHT.FlagNorm
 
 end
+end
+
+open GlobalTheory.DetHT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_statement_holds : FlagSt := by
+  atlas_forward_decl GlobalTheory.DetHT.FlagNorm.flagSt_holds

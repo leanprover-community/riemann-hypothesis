@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.QuotientKernel
 import GroundTheory.AutomorphicForms.TraceFormulaConvolution
 
 open MeasureTheory Set Filter Topology Function

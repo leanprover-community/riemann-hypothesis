@@ -1,9 +1,6 @@
 import Mathlib
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.SharpRestriction.ParConsts
-import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.InstLocalRingSymplecticCoefficients
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.UnitaryThreeIrreduciblePoints
-import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.GradedCompletionLemmas
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.GradedPowerSeriesLemmas
 
 noncomputable section

@@ -1,5 +1,4 @@
 import Formalism.SharpRestriction.InertJacobiLevels.EtaSz
-import Formalism.SharpRestriction.GrowthBounds.DefsInst
 
 noncomputable section
 

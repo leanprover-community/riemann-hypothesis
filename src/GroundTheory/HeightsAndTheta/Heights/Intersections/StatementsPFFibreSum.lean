@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFStep
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsPFHoriz
 set_option maxSynthPendingDepth 1
 

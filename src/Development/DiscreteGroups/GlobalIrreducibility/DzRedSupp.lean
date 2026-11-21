@@ -2,7 +2,6 @@ import Mathlib
 import Development.DiscreteGroups.GlobalIrreducibility.ExistsOfMemKOne
 import Development.DiscreteGroups.GlobalIrreducibility.DzLcFin
 import Development.DiscreteGroups.GlobalIrreducibility.DzLcIso
-import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.NotIsGenericDetRepTwo
 
 noncomputable section
 

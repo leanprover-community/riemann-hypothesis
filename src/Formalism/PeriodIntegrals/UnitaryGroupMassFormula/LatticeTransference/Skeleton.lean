@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.Transference
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeTransference.TransferenceKey
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeTransference.DualTransport
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeTransference.Minima
 

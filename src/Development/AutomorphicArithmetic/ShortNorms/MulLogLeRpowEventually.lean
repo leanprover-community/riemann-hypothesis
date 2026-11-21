@@ -1,4 +1,3 @@
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.PairRowIffQdRows
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExplicitRanksBasicBoundsLargeScale
 import Development.AutomorphicArithmetic.CharacterBoxes.ExistsPageN
 import Development.AutomorphicArithmetic.CoprimeRanks.SecondSetNoRelation

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FactorRapid
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -54,3 +56,9 @@ theorem ltComm_of_ltSob : LtSob → LtComm := by
   exact DFunLike.congr_fun hcomm (cls μ f)
 
 end GlobalTheory.CompanionTheory.KerFc
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.left_translate_commutes : GlobalTheory.CompanionTheory.KerFc.LtSob → GlobalTheory.CompanionTheory.KerFc.LtComm := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KerFc.ltComm_of_ltSob

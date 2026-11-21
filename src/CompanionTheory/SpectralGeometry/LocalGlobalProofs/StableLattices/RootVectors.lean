@@ -1,10 +1,10 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.QuantumDeterminants CompanionTheory.D.Upq.Sm CompanionTheory.Bmu
 open scoped ComplexConjugate
 
@@ -329,3 +329,10 @@ theorem rootVec : RootVec := by
     simp only [hell, Finset.sum_ite_eq', Finset.mem_univ, if_true, Complex.ofReal_re]
 
 end GlobalTheory.CompanionTheory.BmuRootVec
+end
+end
+
+open CompanionTheory.Bmu
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.RootVectors : RootVec := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BmuRootVec.rootVec

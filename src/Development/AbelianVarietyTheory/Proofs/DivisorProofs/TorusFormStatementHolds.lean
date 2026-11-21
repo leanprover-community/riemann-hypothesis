@@ -2,11 +2,12 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FinrankMulDiscrRpowLeSumSqOfMemTraceDual
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRealEmbeddingOrderingStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealEmbeddingsLinearlyIndependentStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalAppellHumbertRealMultStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlternatingPairingOnLatticeStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealEmbeddingsLinearlyIndependent
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalAppellHumbertRealMult
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlternatingPairingOnLattice
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RescaledUniformizationStatement
 
+section
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
@@ -245,3 +246,10 @@ theorem torusForm : TorusForm := by
       rw [hΩ]; field_simp
 
 end GlobalTheory.TorusFormPf
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torus_form_statement_holds : TorusForm := by
+  atlas_forward_decl GlobalTheory.TorusFormPf.torusForm

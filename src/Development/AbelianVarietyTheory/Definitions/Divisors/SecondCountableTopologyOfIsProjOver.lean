@@ -4,7 +4,6 @@ import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.APrimeI
 import Development.AbelianVarietyTheory.Definitions.Divisors.NoCommonZeroCombVal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DOnEqZeroOfEqOne
 import Development.AbelianVarietyTheory.Definitions.Divisors.SmoothOfRelativeDimensionPspace
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 
 set_option autoImplicit false
 

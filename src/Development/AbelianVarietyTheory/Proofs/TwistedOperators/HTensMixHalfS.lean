@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLocIsoRefl
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GenPtSSubset
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SkewGramInrInl
 

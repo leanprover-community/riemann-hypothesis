@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -98,3 +99,10 @@ theorem inclSt_of_lim (hAct : LimActSt) (hPt : LimPtSt) (hFr : LimFrameSt) : Inc
         (fun f b b' => by simpa only [hstar] using hxiso f N b b'))
 
 end GlobalTheory.IsoTriv.Incl
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.columnInclusionIntegral_of_limitSteps : LimActSt → LimPtSt → LimFrameSt → InclSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.Incl.inclSt_of_lim

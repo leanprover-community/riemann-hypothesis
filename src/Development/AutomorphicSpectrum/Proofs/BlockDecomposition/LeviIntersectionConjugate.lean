@@ -1,12 +1,13 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.GeometricLemmaFiltration
-import GroundTheory.AutomorphicForms.GeometricLemma
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviRefinementBlockOrderStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviRefinementParabolicStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviEquivContinuousStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviDoubleCosetIntersectionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RefinedBlockOrderCompatStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockCountReindexEquivsStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviRefinementBlockOrder
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviRefinementParabolic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviEquivContinuous
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviDoubleCosetIntersection
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RefinedBlockOrderCompat
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockCountReindexEquivs
+
+section
 set_option maxSynthPendingDepth 1
 open GlobalTheory.SmGL
 open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical)
@@ -211,3 +212,15 @@ theorem cell_iso : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k
   exact ⟨f, g, cell_equiv f g e β hβ φ hφ e' γ hγ φ' hφ' ρ w hcell⟩
 
 end GlobalTheory.CompanionTheory.GeomCell
+end
+end
+
+set_option maxSynthPendingDepth 1
+open GlobalTheory.SmGL
+open GroundTheory.Automorphic.Parabolic (levi parabolicInd jacquetRep JacquetModule sqrtModular leviIncl cellLeviSub normInducing unipotentRadical)
+open GroundTheory.Automorphic.Iwasawa (blockUpper)
+open GroundTheory.Automorphic (permGL indRep)
+open DoubleCoset (doubleCoset)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_intersection_conjugate : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {α : Type} [Fintype α] [LinearOrder α] {N : ℕ} {m : α → Type} [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)] {β' : Type} [Fintype β'] [LinearOrder β'] {m' : β' → Type} [∀ j, Fintype (m' j)] [∀ j, DecidableEq (m' j)] (e : (Σ i, m i) ≃ Fin N) (β : Fin N → ℕ), (∀ x y, β x < β y ↔ blk e x < blk e y) → ∀ (φ : Levi k m ≃* levi k N β), (∀ g, ((φ g : levi k N β) : GL (Fin N) k) = leviEmb k e g) → ∀ (e' : (Σ j, m' j) ≃ Fin N) (γ : Fin N → ℕ), (∀ x y, γ x < γ y ↔ blk e' x < blk e' y) → ∀ (φ' : Levi k m' ≃* levi k N γ), (∀ g, ((φ' g : levi k N γ) : GL (Fin N) k) = leviEmb k e' g) → ∀ {W : Type} [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ (Levi k m) W) (w : Equiv.Perm (Fin N)), ∃ (f : ∀ i, (Σ j, Fin ((Finset.univ.filter fun x : Fin N => blk e x = i ∧ blk e' (w.symm x) = j).card)) ≃ m i) (g : ∀ j, (Σ i, Fin ((Finset.univ.filter fun x : Fin N => blk e x = i ∧ blk e' (w.symm x) = j).card)) ≃ m' j), Nonempty (Representation.Equiv ((indRep (cellLeviSub k β γ w) (normInducing (ρ.comp φ.symm.toMonoidHom) γ w)).comp φ'.toMonoidHom) (cellFunctor f g ρ)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GeomCell.cell_iso

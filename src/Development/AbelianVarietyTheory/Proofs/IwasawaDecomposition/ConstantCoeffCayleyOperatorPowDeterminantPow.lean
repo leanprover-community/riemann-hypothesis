@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.InterPolyProdSum
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockSymApply
-import ReciprocityTheory.DualLattices.DetPolyMulCayleyOmegaPow
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockGraph
+
+section
 open MvPolynomial ReciprocityTheory.PGsh GlobalTheory.CayleyBlock
 
 namespace GlobalTheory
@@ -45,3 +46,9 @@ theorem constantCoeff_cayOp_pow_cayDet_pow : ∀ (p q : ℕ),
   exact_mod_cast this
 
 end GlobalTheory
+end
+
+open MvPolynomial ReciprocityTheory.PGsh GlobalTheory.CayleyBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.constantCoeff_cayleyOperator_pow_determinant_pow : ∀ (p q : ℕ), constantCoeff ((cayOp p ℂ ^ q) (cayDet p ℂ ^ q)) = ∏ i ∈ Finset.range p, (((q + i).factorial : ℂ) / i.factorial) := by
+  atlas_forward_decl GlobalTheory.constantCoeff_cayOp_pow_cayDet_pow

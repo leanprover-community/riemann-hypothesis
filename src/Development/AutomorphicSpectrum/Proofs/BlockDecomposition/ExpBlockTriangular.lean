@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Matrix Topology Filter
 
 namespace GlobalTheory.CompanionTheory.Unitary.ExpUpper
@@ -25,3 +28,9 @@ theorem blockTriangular_conj_exp {n : ℕ} (U Y : Matrix (Fin n) (Fin n) ℂ)
   exact GlobalTheory.CompanionTheory.Unitary.ExpUpper.blockTriangular_exp _ (hinv ▸ h)
 
 end GlobalTheory.CompanionTheory.Unitary.ExpUpper
+end
+
+open Matrix Topology Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exp_block_triangular : ∀ {n : ℕ} (U Y : Matrix (Fin n) (Fin n) ℂ), U ∈ Matrix.unitaryGroup (Fin n) ℂ → (Uᴴ * Y * U).BlockTriangular id → (Uᴴ * NormedSpace.exp Y * U).BlockTriangular id := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Unitary.ExpUpper.blockTriangular_conj_exp

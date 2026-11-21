@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.PrimesDyadicRS
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicPrimeIntervals.ClaimOfTwo
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicPrimeIntervals.RealIneq
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicPrimeIntervals.SmallNaturalNumbersBound

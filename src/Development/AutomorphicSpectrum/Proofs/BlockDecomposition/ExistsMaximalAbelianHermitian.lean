@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Matrix Topology Filter
 
 namespace GlobalTheory.CompanionTheory.HermitianCommuting
@@ -48,3 +51,9 @@ theorem exists_maximal_commuting_hermitian_subspace {n : ℕ}
   rwa [hne] at hYmem
 
 end GlobalTheory.CompanionTheory.HermitianCommuting
+end
+
+open Matrix Topology Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_maximal_abelian_hermitian : ∀ {n : ℕ} (𝔤 : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ)), ∃ 𝔞 : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ), 𝔞 ≤ 𝔤 ∧ (∀ A ∈ 𝔞, Aᴴ = A) ∧ (∀ A ∈ 𝔞, ∀ B ∈ 𝔞, A * B = B * A) ∧ ∀ Y ∈ 𝔤, Yᴴ = Y → (∀ A ∈ 𝔞, Y * A = A * Y) → Y ∈ 𝔞 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HermitianCommuting.exists_maximal_commuting_hermitian_subspace

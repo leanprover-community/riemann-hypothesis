@@ -4,7 +4,6 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenericFibre
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedOne
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedMixedNonneg
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivPrincipalDegree
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel

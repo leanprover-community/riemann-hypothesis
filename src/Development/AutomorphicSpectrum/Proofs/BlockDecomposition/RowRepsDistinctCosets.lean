@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FintypeResidue
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFunctionalSectionNonvanishing
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
@@ -73,3 +75,14 @@ theorem rowRep_unique (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
   rw [eq_of_bdd_digitSum_sub j hb]
 
 end GlobalTheory.CompanionTheory.LFUDom
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
+open GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.Iwasawa GroundTheory.Automorphic.GLnLocal
+open scoped ValuativeRel
+open GlobalTheory.CompanionTheory.LFUDom
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.row_reps_distinct_cosets : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (a b : Σ _ : ℕ, Σ j : ℕ, (Fin j → 𝓀[F])),
+  rowRep a.1 a.2.1 a.2.2 * (rowRep b.1 b.2.1 b.2.2)⁻¹ ∈ integralGL F 2 → a = b := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LFUDom.rowRep_unique

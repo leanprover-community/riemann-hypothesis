@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDerApply
+
+section
 open IsLocalRing GlobalTheory.FormalOrigin
 
 namespace GlobalTheory.FormalOrigin.TaylorDeriv
@@ -77,3 +79,9 @@ theorem taylor_deriv_eq_pderiv : ∀ (A B : Type) [CommRing A] [CommRing B] [Alg
   field_simp
 
 end GlobalTheory.FormalOrigin.TaylorDeriv
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.derivationTaylorPowerSeries_derivation_eq_pderiv : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra ℚ B] (n : ℕ) (ev : A →+* B) (ds : Fin n → Derivation ℤ A A), (∀ a b f, ds a (ds b f) = ds b (ds a f)) → ∀ a f, taylor ev (fun i => ⇑(ds i)) (ds a f) = MvPowerSeries.pderiv B a (taylor ev (fun i => ⇑(ds i)) f) := by
+  atlas_forward_decl GlobalTheory.FormalOrigin.TaylorDeriv.taylor_deriv_eq_pderiv

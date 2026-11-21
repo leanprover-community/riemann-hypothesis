@@ -1,5 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LocalisationLadders.CriterionTruncation
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
@@ -29,3 +31,13 @@ theorem subsingleton_H_of_ses {R : Type} [CommRing R] {C : Type 1} [Category.{0}
     exact ⟨fun x y => (key x).trans (key y).symm⟩
 
 end GlobalTheory.CompanionTheory.Cohomology
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cohomology_vanishing_short_exact : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {F₁ F₂ F₃ : C ⥤ ModuleCat.{0} R} (α : F₁ ⟶ F₂)
+    (β : F₂ ⟶ F₃), (∀ T, Function.Injective (α.app T).hom) → (∀ T, Function.Exact (α.app T).hom (β.app T).hom) →
+    (∀ T, Function.Surjective (β.app T).hom) → (∀ n, Subsingleton (CH.H F₂ n)) → (∀ n, Subsingleton (CH.H F₃ n)) →
+    ∀ n, Subsingleton (CH.H F₁ n) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Cohomology.subsingleton_H_of_ses

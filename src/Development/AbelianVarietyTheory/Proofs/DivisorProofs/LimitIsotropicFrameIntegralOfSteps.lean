@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PtCoeffSingleSubst
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -113,3 +113,10 @@ theorem limFrame : AddSt → ActSt → UnitSt → BiaddSt → FrameSt → FinSt 
   exact h6
 
 end GlobalTheory.IsoTriv
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.limitIsotropicFrameIntegral_of_steps : AddSt → ActSt → UnitSt → BiaddSt → FrameSt → FinSt → ContSt → LimFrameSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.limFrame

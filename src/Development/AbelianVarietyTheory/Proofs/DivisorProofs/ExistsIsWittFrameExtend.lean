@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WittFrameGLTwoDecomposition
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCentreLawZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTwoPlaneFrame
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StabilizerRestrictsToOrthocomp
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasureFundDomLtTopSmul

@@ -1,9 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSchwartzTranslate
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzTranslationSeminormBound
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzCharacterSeminormBound
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory GlobalTheory.RealWeil Filter Topology
 open scoped SchwartzMap RealInnerProductSpace
 
@@ -163,3 +164,13 @@ theorem exists_continuous_schwartz_rhoFun : ∀ (n : ℕ) (f : Sch (Fin n)), ∃
   fun _ f => ⟨fun w => rhoSch w f, continuous_rhoSch f, fun w => coe_rhoSch w f, seminorm_rhoSch_le f⟩
 
 end GlobalTheory.RealWeil.SchrFamily
+end
+end
+
+open MeasureTheory GlobalTheory.RealWeil
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schrodinger_rep_schwartz_polynomial_bound : ∀ (n : ℕ) (f : Sch (Fin n)), ∃ G : (Fin n ⊕ Fin n → ℝ) → Sch (Fin n), Continuous G ∧
+    (∀ w, ⇑(G w) = rhoFun w ⇑f) ∧
+    ∀ k m : ℕ, ∃ (C : ℝ) (N : ℕ), ∀ w, SchwartzMap.seminorm ℂ k m (G w) ≤ C * (1 + ‖w‖) ^ N := by
+  atlas_forward_decl GlobalTheory.RealWeil.SchrFamily.exists_continuous_schwartz_rhoFun

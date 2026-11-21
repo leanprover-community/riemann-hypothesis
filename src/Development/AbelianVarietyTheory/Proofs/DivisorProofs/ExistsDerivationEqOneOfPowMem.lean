@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open TensorProduct
 
 namespace GlobalTheory
@@ -63,3 +66,9 @@ theorem exists_derivation_eq_one_of_pow_mem : ∀ (p : ℕ) [Fact p.Prime] (K : 
     rw [hwd (G f) X (by rw [hG, aeval_X]), derivative_X, map_one]
 
 end GlobalTheory
+end
+
+open TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_derivation_eq_one_of_pow_mem' : ∀ (p : ℕ) [Fact p.Prime] (K : Type) [Field K] [CharP K p] (L : Subfield K) (f : K), f ∉ L → f ^ p ∈ L → IntermediateField.adjoin L ({f} : Set K) = ⊤ → ∃ D : Derivation L K K, D f = 1 := by
+  atlas_forward_decl GlobalTheory.exists_derivation_eq_one_of_pow_mem

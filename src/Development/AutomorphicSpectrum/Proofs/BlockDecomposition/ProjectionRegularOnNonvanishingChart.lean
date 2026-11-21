@@ -6,6 +6,8 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnderOfSameOr
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PointIdealMultiprojectivePrime
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSheetOnlyNull
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartZeroSet
+
+section
 set_option autoImplicit false
 open CategoryTheory AlgebraicGeometry Limits TopologicalSpace MvPolynomial MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -251,3 +253,21 @@ theorem mem_pieceSet : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ) (X : Scheme.{0}) 
     exact ⟨hyc, hφ0⟩
 
 end GlobalTheory.CompanionTheory.MixZ.ArchEq.PieceAt
+end
+end
+
+set_option autoImplicit false
+open CategoryTheory AlgebraicGeometry Limits TopologicalSpace MvPolynomial MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.ProjSpace GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.ArInt GlobalTheory.Points GlobalTheory.ChartGlue
+open GroundTheory.Arith.SchemeCoh GroundTheory.Arith.SchemeCoh.ProjSpace
+open GlobalTheory.CompanionTheory.MPDict GlobalTheory.CompanionTheory.MixZ
+open ReciprocityTheory.ChartRestriction.G.Geo (mcPts IsMultiHomog SameOrbit segre fibre IsGoodProj IsSheet HermLine IsSmoothHerm sheetDensity maDensity ptsIntegral ptsIntegralAt pot)
+open ReciprocityTheory.ChartRestriction.G.AI.I2 (IsRatSectionOn logNormRat)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projection_regular_on_nonvanishing_chart : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ) (X : Scheme.{0}) [IsIntegral X] (i : X ⟶ MP ℤ m n) [IsClosedImmersion i] (D : ℕ)
+    (Ψ : GlobalTheory.CompanionTheory.MixZ.ArchEq.LinProj n D) (N : Pol n) (a : Fin (m + 1) → ℕ), IsMultiHomog N a →
+    ∀ (c : GlobalTheory.AlgChart (i ≫ mpStr ℤ m n) σ₀ D) (y : GlobalTheory.CxPts (i ≫ mpStr ℤ m n) σ₀) (z : (Σ k, Bk n k) → ℂ),
+      y ∈ c.e.source → GlobalTheory.CompanionTheory.MixZ.ArchEq.Over i y z → eval z (map (Int.castRingHom ℂ) N) ≠ 0 → Ψ (segre z) 0 ≠ 0 →
+      GlobalTheory.CompanionTheory.MixZ.ArchEq.IsRegAt i Ψ c y → y ∈ GlobalTheory.CompanionTheory.MixZ.ArchEq.pieceSet i Ψ N := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MixZ.ArchEq.PieceAt.mem_pieceSet

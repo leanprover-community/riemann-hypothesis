@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.BlowupCategories.SpanScale
 import Development.AutomorphicArithmetic.BlowupCategories.AffC
 import Development.AutomorphicArithmetic.CommutativeAlgebra.IsIsoOfBijectiveOnSimplices
 import Development.AutomorphicArithmetic.CommutativeAlgebra.MonoOfInjectiveOnSimplices

@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoeffZeroNeOfMonicIrr
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IrreducibleCharacterSeries.ConjugateCharacterFormula
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RootsReverseProd
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Polynomial CategoryTheory
@@ -233,3 +235,10 @@ theorem star_coeff_eSerO : ∀ {g : ℕ} [Fact g.Prime] {C : Formalism.Irreducib
   · exact map_zero S
 
 end GlobalTheory.SerConj
+end
+end
+
+open Polynomial CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.star_coeff_eisenstein_series_reverse_poly : ∀ {g : ℕ} [Fact g.Prime] {C : Formalism.IrreducibleCountingLemmas.TYPES.LabelConv (ZMod g)} (O : Formalism.IrreducibleCountingLemmas.TYPES.LabelMap (ZMod g) C), Formalism.IrreducibleCountingLemmas.TYPES.LabelMapEquivariant O → ∀ (r : ℕ) (f : Polynomial (ZMod g)), f.Monic → f.coeff 0 ≠ 0 → ∀ x, star ((Formalism.L2.NT.eSerO O r f).coeff x) = (Formalism.L2.NT.eSerO O r (Polynomial.C (f.coeff 0)⁻¹ * f.reverse)).coeff x := by
+  atlas_forward_decl GlobalTheory.SerConj.star_coeff_eSerO

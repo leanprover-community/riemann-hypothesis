@@ -1,5 +1,4 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.InvAlg
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.EqLagIff
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.UnitsBasic
 
 open Polynomial Matrix IsLocalRing TensorProduct UpperTheory.V.AlgebraTools

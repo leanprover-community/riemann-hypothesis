@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsClassFam
 import Formalism.LocalToGlobal.Divisibility.NumbersLemmas
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV
 
 namespace GlobalTheory.ColumnNormCompare
@@ -20,3 +23,9 @@ theorem numRec_eq_ofRecord : ∀ (D : D7) (L : SizeData₂ D) (Del h0 : ℕ), D.
   simp only [numDatumOfParameters, ofRecord, h1, h2]
 
 end GlobalTheory.ColumnNormCompare
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.columnNormParameters_eq_natStepGap : ∀ (D : D7) (L : SizeData₂ D) (Del h0 : ℕ), D.s.Del = (Del : ℚ) → L.etaSz = (D.R.m : ℝ) * (h0 : ℝ) → GlobalTheory.ColumnNormCompare.numDatumOfParameters D L = ofRecord D L Del h0 := by
+  atlas_forward_decl GlobalTheory.ColumnNormCompare.numRec_eq_ofRecord

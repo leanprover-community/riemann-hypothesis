@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCyclicVectorOfSeparableCharpoly
+import BuildAid.ForwardExisting
+
+section
 open Matrix Polynomial
 
 namespace GlobalTheory.SimSep
@@ -101,3 +104,9 @@ theorem conj_of_charpoly_eq_of_separable : ∀ (R : Type) [Field R] (m : ℕ)
   exact (hcomm x).symm
 
 end GlobalTheory.SimSep
+end
+
+open Matrix Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.conj_of_charpoly_eq_of_charpoly_separable : ∀ (R : Type) [Field R] (m : ℕ) (N U : Matrix (Fin m) (Fin m) R), N.charpoly = U.charpoly → N.charpoly.Separable → ∃ P : GL (Fin m) R, N * P.val = P.val * U := by
+  atlas_forward_decl GlobalTheory.SimSep.conj_of_charpoly_eq_of_separable

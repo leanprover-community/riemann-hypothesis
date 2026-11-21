@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SandwichMaps
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
 
 namespace GlobalTheory
@@ -26,3 +29,9 @@ theorem padicInt_ringHom_ext_of_separated (p : ℕ) [Fact p.Prime] (R : Type) [R
   exact sub_eq_zero.mp key
 
 end GlobalTheory
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ring_hom_from_padic_unique_of_sep : ∀ (p : ℕ) [Fact p.Prime] (R : Type) [Ring R], (∀ x : R, (∀ n : ℕ, ∃ y : R, x = (p : R) ^ n * y) → x = 0) → ∀ f g : ℤ_[p] →+* R, f = g := by
+  atlas_forward_decl GlobalTheory.padicInt_ringHom_ext_of_separated

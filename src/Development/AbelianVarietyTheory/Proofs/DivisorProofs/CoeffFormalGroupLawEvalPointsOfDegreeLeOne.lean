@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -111,3 +112,10 @@ theorem coeff_op_of_degree_le_one : ∀ {B O : Type} [CommRing B] [CommRing O] (
   simp [coeff_inl hμ, coeff_inr hμ]
 
 end GlobalTheory.QLog.OpLin
+end
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeff_formalGroupLawEvalPoints_of_degree_le_one : ∀ {B O : Type} [CommRing B] [CommRing O] (θ : B →+* O) {d : ℕ} {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B}, IsLift θ μ → ∀ {τ : Type} (u v : Fin d → MvPowerSeries τ B), (∀ j, constantCoeff (u j) = 0) → (∀ j, constantCoeff (v j) = 0) → ∀ (i : Fin d) (β : τ →₀ ℕ), β.degree ≤ 1 → coeff β (op μ u v i) = coeff β (u i + v i) := by
+  atlas_forward_decl GlobalTheory.QLog.OpLin.coeff_op_of_degree_le_one

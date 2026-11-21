@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsClosedFlagsIff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniMatBlockTriangular
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -68,3 +69,10 @@ theorem cellMap_injective (k : Type) [Field k] (ι : Type) [Fintype ι] (V : ι 
   rwa [uniMat_apply_of_lt u i hac, uniMat_apply_of_lt u' i hac] at this
 
 end GlobalTheory.FlagPts
+end
+end
+
+open Module TopologicalSpace GlobalTheory.FlagPts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.injective_cellMap : ∀ (k : Type) [Field k] (ι : Type) [Fintype ι] (V : ι → Type) [∀ i, AddCommGroup (V i)] [∀ i, Module k (V i)] [∀ i, FiniteDimensional k (V i)] (b : Frames k V), Function.Injective (cellMap b) := by
+  atlas_forward_decl GlobalTheory.FlagPts.cellMap_injective

@@ -1,9 +1,5 @@
 import Mathlib
-import ReciprocityTheory.DualLattices.CotangentSurjective
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsTight
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.StepOrderRes
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsFinFlatSub
 import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.QuotientByFiniteFlatStatement
 import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.ZarhinStatement
 import Development.AutomorphicSpectrum.Statements.AlgebraStatements.HodgeTateDatumStatement
@@ -12,11 +8,11 @@ import Development.AutomorphicSpectrum.Statements.AlgebraStatements.PolarisedFla
 import ReciprocityTheory.DualLattices.CharTableIsUnit
 import ReciprocityTheory.DualLattices.IsUnitDetOfSpanEq
 import ReciprocityTheory.DualLattices.FourierMapSmulLambdaWeight
-import ReciprocityTheory.DualLattices.VIntCastLtOneOfDvd
 import ReciprocityTheory.DualLattices.PrimeHopfOrderOfAddEquiv
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderContainsAddCharactersStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TensorProductHopfOrdersStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderContainsAddCharacters
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TensorProductHopfOrders
 
+section
 open ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up GlobalTheory.CompanionTheory.Ar.GR
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi
@@ -443,3 +439,15 @@ theorem ord_split : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClos
   exact (eq_of_le_of_hasColen hv hle hcN0 hc (hQ ▸ hasColen_map v e _ _ hcol)).symm
 
 end GlobalTheory.CompanionTheory.Ar.GR.OrdSplit
+end
+end
+
+open ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up GlobalTheory.CompanionTheory.Ar.GR
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi
+open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
+open scoped CategoryTheory.Obj CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.order_p_squared_extremal_colength : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → v (p : C) < 1 → ∀ (N : Type) [AddCommGroup N] [Fintype N] [DecidableEq N], (∀ x : N, p • x = 0) → Fintype.card N = p ^ 2 → ∀ AA : HopfOrder (C := C) R N, ∀ cN, HasColen R v AA.carrier cN → cN ^ 2 = v (p : C) ^ (p ^ 2) → (∃ t : N, ∃ g ∈ AA.carrier, v (g t - g 0) = 1) → ∃ e : ZMod p × ZMod p ≃+ N, AA.carrier.map (LinearMap.funLeft R C (e : ZMod p × ZMod p → N)) = tens (Submodule.span R (Set.range fun (ψ : AddChar (ZMod p) C) (x : (ZMod p)) => ψ x)) (intFun R (ZMod p)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.GR.OrdSplit.ord_split

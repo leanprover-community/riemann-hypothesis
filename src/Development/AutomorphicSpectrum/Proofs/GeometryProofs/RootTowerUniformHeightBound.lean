@@ -1,20 +1,19 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.SlopeBoundSt
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlatLineGenerator
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinModelPointsProjectStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootModelFlagCompareStatement
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplierLine
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareFirstStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareSecondStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootModelFlagCompare
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareFirst
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareSecond
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginPointCompareStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogHermitianSumBoundedStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PotentialBoundedPshBothStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelSummationBoundStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareThirdStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogHermitianSumBounded
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PotentialBoundedPshBoth
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelSummationBound
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCompareThird
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinCoordsUnitValuesStatement
+
+section
 open AlgebraicGeometry CategoryTheory NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
 
@@ -200,3 +199,11 @@ theorem arch_between : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
   exact ⟨by nlinarith [mul_le_mul_of_nonneg_right hCa hlog], by linarith⟩
 
 end GlobalTheory.CompanionTheory.Ar.OrArch
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.root_tower_uniform_height_bound : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) [DecidableEq (CMType H)] (T : Top.RootTower (CMType H) (D.p + D.q)) (g : Top.GoodOrigin Y T), ∃ C s₀ : ℝ, 0 < s₀ ∧ ∀ (B : ℕ) (a : T.Comp) (i : (g.R a).Ω →+* (T.M B a).Ω), i.comp (g.refOr a).g = (g.Or B a).g → ∀ (mu : Top.Wt (CMType H) (D.p + D.q)) (s : ℝ), Top.Dominant mu → ‖mu‖ ≤ 2 → 0 < s → s ≤ s₀ → Ht.ArchBetween (T.M B a) (g.R a) i (fun j => j.elim 1 fun r => i ((g.refOr a).e r) / (g.Or B a).e r) (Top.scale s) mu s (-(C * Real.log (1 / s)) - C) C := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.OrArch.arch_between

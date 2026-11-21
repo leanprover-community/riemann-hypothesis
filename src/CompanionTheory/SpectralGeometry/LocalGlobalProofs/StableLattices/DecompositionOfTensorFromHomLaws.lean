@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
@@ -152,3 +154,10 @@ theorem decTens : HomCat → MatHom → TensHom → HomLie → OKTriv → DecTen
 end GlobalTheory.CompanionTheory.ZuckDecTens
 
 end
+end
+
+open CompanionTheory.Zuck BranchingSupport Matrix Finset
+open scoped InnerProductSpace Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.decomposition_of_tensor_from_hom_laws : HomCat → MatHom → TensHom → HomLie → OKTriv → DecTens := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ZuckDecTens.decTens

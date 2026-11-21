@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Filter Topology
 open scoped InnerProductSpace BigOperators
 
@@ -306,3 +308,10 @@ theorem sum_index_rpow_le : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscrete
   fun _ _ _ _ _ r σ hσ C hC => main_bound r σ hσ C hC
 
 end GlobalTheory.SubZeta
+end
+
+open MeasureTheory Filter Topology
+open scoped InnerProductSpace BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_sublattice_index_rpow_le_solomon : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Finite (IsLocalRing.ResidueField O)] (r : ℕ) (σ : ℝ), (r : ℝ) - 1 < σ → ∀ C : Finset (Submodule O (Fin r → O)), (∀ M ∈ C, M.toAddSubgroup.index ≠ 0) → ∑ M ∈ C, (M.toAddSubgroup.index : ℝ) ^ (-σ) ≤ ∏ i ∈ Finset.range r, (1 - (Nat.card (IsLocalRing.ResidueField O) : ℝ) ^ ((i : ℝ) - σ))⁻¹ := by
+  atlas_forward_decl GlobalTheory.SubZeta.sum_index_rpow_le

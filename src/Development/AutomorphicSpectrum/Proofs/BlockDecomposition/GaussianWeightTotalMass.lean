@@ -2,7 +2,9 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JoinCol
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaMultiplicityWeight
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LintegralFintypeProdEqProd
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory ReciprocityTheory.L2DbarEstimates GlobalTheory.CompanionTheory.FSCrofton
 open scoped ENNReal ComplexConjugate
 
@@ -49,3 +51,11 @@ theorem lintegral_gW (d : ℕ) (α : Type) [Fintype α] :
   rw [← pow_mul, mul_comm, ENNReal.ofReal_pow Real.pi_pos.le, mul_comm]
 
 end GlobalTheory.CompanionTheory.FSCrofton
+end
+end
+
+open MeasureTheory ReciprocityTheory.L2DbarEstimates GlobalTheory.CompanionTheory.FSCrofton
+open scoped ENNReal ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussian_weight_total_mass : ∀ (d : ℕ) (α : Type) [Fintype α], ∫⁻ C : Fin d → α → ℂ, gW d α C = ENNReal.ofReal (Real.pi ^ (d * Fintype.card α)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FSCrofton.lintegral_gW

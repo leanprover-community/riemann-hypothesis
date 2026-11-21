@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementHeads
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGLift
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGFormJ
 

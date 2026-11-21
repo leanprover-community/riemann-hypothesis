@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.NonemptyValExtOfOverLa
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RangeAlgebraMapEqIInfDiscreteValuationSubring
 
+section
 open IsLocalRing Formalism.L2.Pj
 
 namespace GlobalTheory.GaussCountable
@@ -84,3 +84,10 @@ theorem exists_gaussExtension : ∀ T : CDVR, ∃ (T' : CDVR) (φ : T.V →+* T'
   exact congr($this a)
 
 end GlobalTheory.GaussCountable
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain IsLocalRing
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FactorDepth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.complete_dvr_residue_transcendence : ∀ T : CDVR, ∃ (T' : CDVR) (φ : T.V →+* T'.V) (_ : IsLocalHom φ), Function.Injective φ ∧ ∃ t : ℕ → ResidueField T'.V, (letI := (ResidueField.map φ).toAlgebra; AlgebraicIndependent (ResidueField T.V) t) := by
+  atlas_forward_decl GlobalTheory.GaussCountable.exists_gaussExtension

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsChartMemberP
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsUnitTermZero
 
 open IsLocalRing GlobalTheory.Poinc GlobalTheory.UT

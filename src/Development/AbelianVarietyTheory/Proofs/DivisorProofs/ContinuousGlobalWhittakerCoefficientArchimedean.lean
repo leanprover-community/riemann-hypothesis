@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsRapidInf
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AutomorphicFormGLContinuous
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConstantTermAutomorphicFormIntegral
-import GroundTheory.AutomorphicForms.FourierWhittaker
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep Matrix
 
 namespace GlobalTheory.JSW
@@ -21,3 +23,9 @@ theorem continuous_whit_infGL : ∀ (E : Type) [Field E] [NumberField E] [IsTota
   exact hW.comp ((continuous_const.mul GlobalTheory.ConstTermSmooth.continuous_infGL).mul continuous_const)
 
 end GlobalTheory.JSW
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CuspRep Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_globalWhittakerCoefficient_archimedean : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (φ : Sm E a), IsAutForm φ → ∀ g h : GA E a, Continuous (fun y : GL (Fin a) (Cinf E) => GlobalTheory.JSW.whit φ.1 (g * infGL E a y * h)) := by
+  atlas_forward_decl GlobalTheory.JSW.continuous_whit_infGL

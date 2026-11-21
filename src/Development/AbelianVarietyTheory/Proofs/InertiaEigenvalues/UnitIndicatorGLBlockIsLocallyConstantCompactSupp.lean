@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 namespace GlobalTheory.JR.UnitTest
@@ -56,3 +59,9 @@ theorem unitG_isTest (F : Type) [NontriviallyNormedField F] [IsUltrametricDist F
     HasCompactSupport.intro' hSk hSc fun x hx => Set.indicator_of_notMem hx _⟩
 
 end GlobalTheory.JR.UnitTest
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitIndicatorGLBlock_isLocallyConstantCompactSupport : ∀ (F : Type) [NontriviallyNormedField F] [IsUltrametricDist F] [LocallyCompactSpace F] (r : ℕ), IsTest (unitG r F) := by
+  atlas_forward_decl GlobalTheory.JR.UnitTest.unitG_isTest

@@ -2,6 +2,7 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdelicMeasureEulerProductDecomposition
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.MeasProps
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.SiegelND.TupCovolume
@@ -97,3 +98,8 @@ end Main
 end GlobalTheory.CompanionTheory.SiegelND.TupCovolume
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tuple_space_covolume_formula : PositivityTheory.SiegelWeilFormula.KWhit.MeasP.TupCovol := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelND.TupCovolume.tupCovol

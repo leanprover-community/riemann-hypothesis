@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.Columns.ToHLat
 import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 
 open NumberField IsDedekindDomain Module

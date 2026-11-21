@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.TestFnConstTermVanishX
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicAndConstantTermStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonFieldTypeVanishingStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EllipticPartStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NonFieldTypeVanishing
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EllipticPart
 
 section
 noncomputable section

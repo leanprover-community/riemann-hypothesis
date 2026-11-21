@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.GlobalFields.ComplexMultiplication.Uniformization
 import GroundTheory.GlobalFields.ComplexMultiplication.UniformizationEisenstein
 
 open Complex UpperHalfPlane ModularForm EisensteinSeries MatrixGroups Filter Topology

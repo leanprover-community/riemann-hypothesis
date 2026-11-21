@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.SiegelMassRatios.DensExact
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SplitDensity.FiberCard
 
 open Finset Formalism.L2.SG.DensExact

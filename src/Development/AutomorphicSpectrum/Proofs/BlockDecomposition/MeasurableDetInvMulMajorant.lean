@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Kern
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GlobalTheory.CompanionTheory.MajC Ad3.K.LC Ad3.K.LC.B
 
 noncomputable section
@@ -57,3 +60,10 @@ theorem measurable_jm_scaled (N : ℕ) (a b : ℂ) :
   · exact ((c1.add (ht.div (hd.mul he))).pow_const N).inv
 
 end GlobalTheory.CompanionTheory.MajC
+end
+end
+
+open MeasureTheory Matrix GlobalTheory.CompanionTheory.MajC Ad3.K.LC Ad3.K.LC.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurable_det_inv_mul_majorant : ∀ (N : ℕ) (a b : ℂ), Measurable (fun p : M22 × ℂ => (‖(Matrix.of p.1).det‖ ^ 2)⁻¹ * jm N p.1 p.2 a b) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MajC.measurable_jm_scaled

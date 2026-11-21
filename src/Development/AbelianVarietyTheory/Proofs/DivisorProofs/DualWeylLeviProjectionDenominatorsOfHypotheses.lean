@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.ClosedEqNabla
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StandardWeylLatticesFockDual
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.GradedWeylDivisibility TensorProduct
 
 noncomputable section
@@ -285,3 +285,10 @@ theorem leviProj_of : ResLat → ResHw → ResDer → LeviProj := by
     lp_lat hLat p q ν hν c₁ c₂ hc₁ hc₂, fun μ x hx hlt => lp_vanish hDer p q ν μ x hx hlt, lp_hw hHw p q ν hν⟩
 
 end GlobalTheory.LeviCut
+end
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualWeylLeviProjectionDenominators_of_hypotheses : GlobalTheory.LeviCut.ResLat → GlobalTheory.LeviCut.ResHw → GlobalTheory.LeviCut.ResDer → GlobalTheory.LeviCut.LeviProj := by
+  atlas_forward_decl GlobalTheory.LeviCut.leviProj_of

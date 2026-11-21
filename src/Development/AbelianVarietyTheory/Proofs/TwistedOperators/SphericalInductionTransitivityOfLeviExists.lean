@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryLeviNormalizesUnipotentRadical
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG GlobalTheory.SatakeWeyl
@@ -128,3 +130,9 @@ theorem sphTrans (hL : LeviExists) : SphTrans := by
 end GlobalTheory.InertZeta
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sphericalInductionTransitivity_of_leviExists : LeviExists → SphTrans := by
+  atlas_forward_decl GlobalTheory.InertZeta.sphTrans

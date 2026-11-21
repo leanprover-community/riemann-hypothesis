@@ -1,5 +1,4 @@
 import Development.AutomorphicArithmetic.Foundations.Convolution.SplitEigenfunctions.ConjInv
-import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Places
 import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Galois
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DenseRangeUnits
 import Development.WeilBound.CoreStatements.PublishedTheorems.SmoothVectorEstimates.SameSatTwist

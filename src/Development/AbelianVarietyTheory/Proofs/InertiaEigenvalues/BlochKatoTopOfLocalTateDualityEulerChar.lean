@@ -1,23 +1,21 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.TableLineDegreeTwo
-import Formalism.GaloisCohomology.LocalTateDualityK
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RationalDualityOfAllCoefficients
 import Formalism.SharpRestriction.LevelLetterCocycles.InvariantsGenerators
-import Formalism.SharpRestriction.LevelLetterCocycles.ExtensionClauses
-import Formalism.SharpRestriction.LevelLetterCocycles.HerrClassFieldOfNorms
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistedLatticeCohomologyTheoremTOP
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLatticeOfPowMem
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExtensionRuleStmt
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AevalEqZeroOfDiag
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineAndDecompletion
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HerrPartAEveryRecord
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeLaterClausesHoldStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InvariantsStatementHoldsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFullFaithfulExactPsiStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeLaterClausesHold
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InvariantsStatementHolds
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFullFaithfulExactPsi
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoDimensionSaturationUnramified
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineCharactersGivenJumpsUnramifiedTwistsStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineCharactersGivenJumpsUnramifiedTwists
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrysLitAll
 
+section
 open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
 
 namespace GlobalTheory.TopClosing
@@ -42,3 +40,9 @@ theorem blochKatoTop_of_localTateDuality_eulerChar_alt : GlobalTheory.Published.
       GlobalTheory.FiltrationJumpMultiplicity.blochKato_dimension_saturation_unramified D, GlobalTheory.T.crystalline_characters_given_jumps_unramified_twists D HW F, a21, GlobalTheory.CrysFormalism.crysLit_all D, a23, a24⟩
 
 end GlobalTheory.TopClosing
+end
+
+open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blochKatoTop_of_localTateDuality_eulerChar : GlobalTheory.Published.BlochKatoLocal → Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK → ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), tableLineDegreeTwo.aux₃ D HW F := by
+  atlas_forward_decl GlobalTheory.TopClosing.blochKatoTop_of_localTateDuality_eulerChar_alt

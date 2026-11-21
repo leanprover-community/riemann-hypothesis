@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.IsIsoTermComparisonRestrictScalars
 import Development.AbelianVarietyTheory.Definitions.Divisors.CupPair
 
 noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.Stab :

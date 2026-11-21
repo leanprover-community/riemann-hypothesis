@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GoodHerm
@@ -331,3 +332,8 @@ theorem volume_integral_hermitian_one : HermitianLatticeVolumeOne := by
 
 end GlobalTheory.CompanionTheory.GoodHerm
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_hermitian_volume_one : PositivityTheory.SiegelWeilFormula.Gunr.HermitianLatticeVolumeOne := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GoodHerm.volume_integral_hermitian_one

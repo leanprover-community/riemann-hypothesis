@@ -1,5 +1,4 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
-import Formalism.MeanHeightDescent.DivisionInequalityWithCovolume
 import Formalism.MeanHeightDescent.CovolumeFullAssemblyWeighted
 open NumberField GlobalTheory.AllWt
 

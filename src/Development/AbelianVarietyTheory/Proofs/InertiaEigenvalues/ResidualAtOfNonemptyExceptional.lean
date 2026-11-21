@@ -12,13 +12,13 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.De
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroSupport
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalGlobalAboveL
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BoundAtTwoAndThreeForFamily
-import Formalism.SharpRestriction.GlobalTheoremInputs
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OverNEOfNEb
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsXdAllIff
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExtraBoundOfTwistingEigenFactsStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistingEigenOfDepthZeroSupportStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RowClosureAtPrimeStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistingEigenOfDepthZeroSupport
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RowClosureAtPrime
 
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
@@ -38,3 +38,10 @@ theorem main : GlobalTheory.NLink.Hypotheses₂ → GlobalTheory.HeightCounting.
     (hTr (fun D _ => GlobalTheory.NLink.Extra D C CT) hExM) hAt23
 
 end GlobalTheory.NLink.CloseMem
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.residual_at_of_nonempty_exceptional : GlobalTheory.NLink.Hypotheses₂ → GlobalTheory.HeightCounting.HtCard → PrN → GlobalTheory.Published.DepthZeroWild → GlobalTheory.Published.DepthZeroSupport → ∀ (hL : GlobalTheory.Published.LocalLanglandsGL) (N : NExt hL) (S : SExt) (Γ : GeoP), WitMv (prmR N S Γ).s → (∀ K B f T w Z Wt p0 t nch n xd c, N K B f T w Z Wt p0 t nch n xd c → Nonempty (NEb hL K B f T w Z Wt p0 t nch n xd c)) → (AtMem hL fun _ _ _ _ w Z _ _ _ nch _ _ => GlobalTheory.NFacts.Facts (w.D Z) nch) → RL.At (prmR N S Γ) (fun Q L => R1.PredicateAtBundlePoints Q L fun 𝒞 => Closed 𝒞 fun Fm _ => GlobalTheory.NLink.BoundAtTwoAndThreeForFamily Fm) → RL.At (prmR N S Γ) (fun Q L => R1.PredicateAtBundlePoints Q L fun 𝒞 => Closed 𝒞 fun Fm _ => Formalism.MainNotions.LinkN Fm) := by
+  atlas_forward_decl GlobalTheory.NLink.CloseMem.main

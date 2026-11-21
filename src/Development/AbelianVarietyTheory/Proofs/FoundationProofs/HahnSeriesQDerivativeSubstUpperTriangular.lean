@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsRootOfIsAlgClosed
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.KZ GlobalTheory.CyclotomicQExpansion
 
 namespace GlobalTheory.CyclotomicQExpansion
@@ -21,3 +24,10 @@ theorem qD_sub (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (a b 
   ring
 
 end GlobalTheory.CyclotomicQExpansion
+end
+
+open GlobalTheory.KZ GlobalTheory.CyclotomicQExpansion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hahnSeriesQDerivative_substUpperTriangular : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (a b d : ℚ), 0 < a / d → ∀ φ : HahnSeries ℚ Ω,
+  qD (sub ε a b d φ) = HahnSeries.C (algebraMap ℚ Ω (a / d)) * sub ε a b d (qD φ) := by
+  atlas_forward_decl GlobalTheory.CyclotomicQExpansion.qD_sub

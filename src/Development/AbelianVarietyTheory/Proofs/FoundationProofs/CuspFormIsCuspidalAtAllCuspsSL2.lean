@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlashToGLSmul
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.HeckeFamilyMatrices UpperHalfPlane CongruenceSubgroup
 open scoped MatrixGroups ModularForm Manifold
 
@@ -11,3 +14,10 @@ theorem cuspForm_cuspAll : ∀ (Γ : Subgroup SL(2, ℤ)) [Γ.FiniteIndex] (k : 
   exact f.zero_at_cusps' hc
 
 end GlobalTheory.HeckeFamilyMatrices
+end
+
+open GlobalTheory.HeckeFamilyMatrices UpperHalfPlane CongruenceSubgroup
+open scoped MatrixGroups ModularForm Manifold
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspForm_isCuspidalAtAllCuspsSL2 : ∀ (Γ : Subgroup SL(2, ℤ)) [Γ.FiniteIndex] (k : ℤ) (f : CuspForm Γ k), CuspAll k f := by
+  atlas_forward_decl GlobalTheory.HeckeFamilyMatrices.cuspForm_cuspAll

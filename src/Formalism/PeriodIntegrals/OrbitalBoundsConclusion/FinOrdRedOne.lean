@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.PeriodIntegrals.FinOrdRedOne
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FiniteOrderReduction.EqOneOfIsOfFinOrder
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FiniteOrderReduction.Bridge
 
 open NumberField IsDedekindDomain PI.FinOrdRedOne

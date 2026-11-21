@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceReducedGeneral
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceUnmixedGeneral
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceReducedAway
 set_option maxSynthPendingDepth 1

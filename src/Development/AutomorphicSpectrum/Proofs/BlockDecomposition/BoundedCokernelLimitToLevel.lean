@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.TwistedRepresentations.Tens
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArtinianLimitLiftOfCompatibleStatement
 
+section
 open TensorProduct CrystallineSemistableComparison CrystallineSemistableComparison.Tw
 
 namespace GlobalTheory.CompanionTheory.TwCok
@@ -95,3 +96,9 @@ theorem lim_cokernel_bounded : ∀ (W : Type) [CommRing W] [IsNoetherianRing W] 
   simpa [conn] using h3
 
 end GlobalTheory.CompanionTheory.TwCok
+end
+
+open TensorProduct CrystallineSemistableComparison CrystallineSemistableComparison.Tw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bounded_cokernel_limit_to_level : ∀ (W : Type) [CommRing W] [IsNoetherianRing W] (l : ℕ) (S S' : Sys.{1} W) (_ : LSeq l S S'), (∀ n, IsArtinian W (S.M n)) → Module.Finite W S'.lim → ∃ c : ℕ, ∀ n (x : S.M n), ∃ y : S.lim, y.1 n = ((l : W) ^ c) • x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TwCok.lim_cokernel_bounded

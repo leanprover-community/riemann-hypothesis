@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SplitPlaceSiegelLawDiagonalLagrangianCharacter
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.FundamentalDomainParsevalGlobal
 
 set_option synthInstance.maxHeartbeats 200000
@@ -28,5 +26,5 @@ theorem _root_.GlobalTheory.T.fundamental_domain_haar_parseval : ∀ (F E : Type
         GlobalTheory.LagrTheta.lagrInt ν 𝓕 ((diagCols (Fin nT) : Matrix (Fin nT ⊕ Fin nT) (Fin nT) (AF F ⊗[F] E)).submatrix finSumFinEquiv.symm id) f₀ ≠ 0 →
       ∀ e, IsSplitIdemF σ e → ∀ t : GL (Fin nT) (AF F ⊗[F] E),
         (∀ i j, (e + cAF σ e) * (t.1 - 1) i j = (t.1 - 1) i j) → α t = χS (Matrix.GeneralLinearGroup.det t) := by
-  first | exact @_root_.PositivityTheory.ThKW.fundamental_domain_parseval_global | exact _root_.PositivityTheory.ThKW.fundamental_domain_parseval_global | (intros; apply _root_.PositivityTheory.ThKW.fundamental_domain_parseval_global <;> assumption)
+  atlas_forward_decl _root_.PositivityTheory.ThKW.fundamental_domain_parseval_global
 end

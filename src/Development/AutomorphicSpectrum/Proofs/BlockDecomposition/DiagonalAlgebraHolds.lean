@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.SetupEig
 
+section
 open PositivityTheory.Rg.BcB.F.Eig
 
 namespace GlobalTheory.CompanionTheory.BlockScalars
@@ -29,3 +30,9 @@ theorem diagAlg : DiagAlg := by
     ring
 
 end GlobalTheory.CompanionTheory.BlockScalars
+end
+
+open PositivityTheory.Rg.BcB.F.Eig
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.diagonal_algebra_holds : DiagAlg := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BlockScalars.diagAlg

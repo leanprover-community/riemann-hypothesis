@@ -1,5 +1,3 @@
-import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-import Development.AutomorphicSpectrum.Proofs.MembershipProofs.GoodCharIsLocallyConstant
 import Development.AutomorphicSpectrum.Proofs.MembershipProofs.IntegrablePair
 import Development.AutomorphicSpectrum.Proofs.MembershipProofs.CyclicAndLine
 import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ExistsEqMulApplyZero

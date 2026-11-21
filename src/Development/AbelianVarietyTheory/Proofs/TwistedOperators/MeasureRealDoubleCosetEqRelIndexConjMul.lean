@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BorelParam
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Pointwise
 
 namespace GlobalTheory
@@ -80,3 +83,12 @@ theorem measureReal_doubleCoset_eq_relIndex_mul :
     Subgroup.index_eq_card, Nat.card_eq_fintype_card]
 
 end GlobalTheory
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Doubling GlobalTheory.GLDoubling GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection GlobalTheory.ZonalCellDecomposition GlobalTheory.SatakeBound
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measureReal_doubleCoset_eq_relIndex_conj_mul : ∀ {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
+    (μ : Measure G) [μ.IsHaarMeasure] (J : Subgroup G), IsOpen (J : Set G) → IsCompact (J : Set G) → ∀ g : G,
+    μ.real (DoubleCoset.doubleCoset g (J : Set G) (J : Set G)) =
+      ((J.map (MulAut.conj g).toMonoidHom).relIndex J : ℝ) * μ.real (J : Set G) := by
+  atlas_forward_decl GlobalTheory.measureReal_doubleCoset_eq_relIndex_mul

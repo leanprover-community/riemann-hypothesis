@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.AlgValsFinMain
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.EvFLocalIdeleSelf
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.L2.Host
 
 noncomputable section
@@ -44,3 +45,10 @@ theorem loc_div_val_pow (L : Type) [Field L] [NumberField L] (χ : HChar L) :
   rw [e, ← Units.val_pow_eq_pow_val, h, Units.val_one]
 
 end GlobalTheory.HeckeLocDec
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Host
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeChar_local_value_div_uniformiser_pow : ∀ (L : Type) [Field L] [NumberField L] (χ : HChar L), ∃ N : ℕ, 0 < N ∧ ∀ (w : HeightOneSpectrum (𝓞 L)) (x : (w.adicCompletion L)ˣ), ∃ a : ℤ, ((χ.loc w x / χ.val w ^ a : ℂˣ) : ℂ) ^ N = 1 := by
+  atlas_forward_decl GlobalTheory.HeckeLocDec.loc_div_val_pow

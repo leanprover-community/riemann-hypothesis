@@ -2,6 +2,8 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsAmbOfIsArithVar
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PairingMulFirstChern
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DimClosureOfCoheightField
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace MvPolynomial
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
@@ -111,3 +113,13 @@ theorem finsum_ord_mul_log_card_eq_zero : ∀ (k : Type) [CommRing k] (Y : Schem
   rw [Int.cast_mul, mul_assoc, log_card_residueField (κ := ZMod l) hd' hc]
 
 end GlobalTheory.PrincDegZero
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace MvPolynomial
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open GlobalTheory GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.ArInt GlobalTheory.MixHt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.principalDivisor_degree_zero_finiteField_curve : ∀ (k : Type) [CommRing k] (Y : Scheme.{0}) [IsIntegral Y] [IsLocallyNoetherian Y] (q : Y ⟶ Sp k), IsAmb q → topologicalKrullDim Y = (1 : ℕ) → ∀ (l : ℕ) [Fact l.Prime] [Algebra (ZMod l) Γ(Y, ⊤)] (f : Y.functionField), f ≠ 0 → ∑ᶠ z, (Scheme.ord f z : ℝ) * Real.log (Nat.card (Y.residueField z)) = 0 := by
+  atlas_forward_decl GlobalTheory.PrincDegZero.finsum_ord_mul_log_card_eq_zero

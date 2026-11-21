@@ -1,4 +1,3 @@
-import Formalism.PeriodIntegrals.QuotNuSigma
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuotientSigmaFiniteness.SigmaFiniteOfWeil
 
 theorem quotient_sigma_finite : PI.QuotNuSigma.Target :=

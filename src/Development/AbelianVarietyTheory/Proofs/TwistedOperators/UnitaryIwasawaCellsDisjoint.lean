@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryLeviNormalizesUnipotentRadical
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG GlobalTheory.SatakeWeyl
 
 namespace GlobalTheory.InertZeta
@@ -87,3 +89,9 @@ theorem cosetInj : CosetInj := by
   exact hint _ _
 
 end GlobalTheory.InertZeta
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_iwasawa_cells_disjoint : CosetInj := by
+  atlas_forward_decl GlobalTheory.InertZeta.cosetInj

@@ -1,12 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.PsiSide
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SiegelWeilMeasureOfCongruentForm
-import Development.WeilBound.CoreStatements.ThetaDilations.EulerMove
-import Development.WeilBound.CoreStatements.ThetaDilations.SdTransport
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SimilitudeInvariance
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaMeasureIndependentChoices
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaMeasureSimilitude
 
+section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 
@@ -171,3 +167,10 @@ theorem simil : Scal → Simil := by
   exact key hc
 
 end GlobalTheory.CompanionTheory.SW.BaseSimil
+end
+end
+
+open PositivityTheory.Rg.Base1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.similitude_of_scalar_formula : Scal → Simil := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.BaseSimil.simil

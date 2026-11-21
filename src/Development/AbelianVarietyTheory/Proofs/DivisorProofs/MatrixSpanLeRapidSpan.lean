@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.MeasurableCompInfGL
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzRapidDecayColumnStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanSmoothKernelRepresentationStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzRapidDecayColumn
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanSmoothKernelRepresentation
 
+section
 open Classical MeasureTheory NumberField
 
 namespace GlobalTheory.JSW
@@ -22,3 +22,9 @@ theorem mspan_le_rspan : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComp
     exact kerInf_mem_rspan hF _ (GlobalTheory.T.schwartz_rapid_decay_column r f)
 
 end GlobalTheory.JSW
+end
+
+open Classical MeasureTheory NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_span_le_rapid_span : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {a : ℕ} (π : GlobalTheory.CuspRep.CuspSub E a), GlobalTheory.JSW.mspan π ≤ GlobalTheory.JSW.rspan π := by
+  atlas_forward_decl GlobalTheory.JSW.mspan_le_rspan

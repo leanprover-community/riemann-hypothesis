@@ -1,10 +1,9 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.SymZeroCommFrame
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeas
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceSingleMulSingle
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasDerivAtTwistHomotopyKernel
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeIsOpenStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PositiveConeIsOpen
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Topology Filter
@@ -97,3 +96,15 @@ theorem coneMeas_ne_zero_and_lt_top : ∀ n : ℕ, coneMeas n ≠ 0 ∧ ∀ C : 
   fun _ => ⟨coneMeas_ne_zero, coneMeas_lt_top⟩
 
 end GlobalTheory.CompanionTheory.ConeHaar.Fin
+end
+end
+
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_measure_locally_finite : ∀ n : ℕ, coneMeas n ≠ 0 ∧ ∀ C : Set (Fin n × Fin n → ℝ), IsCompact C → C ⊆ PositivityTheory.RgBcC.cone n → coneMeas n C < ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConeHaar.Fin.coneMeas_ne_zero_and_lt_top

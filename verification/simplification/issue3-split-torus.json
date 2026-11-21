@@ -1,0 +1,9 @@
+{
+  "module": "ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.SplitTori.SplitTorusAff",
+  "source_sha256": "44e593c2112154af0fd7fc129709b0e8dd68a11bffd522099c79eae21f0e0e88",
+  "compiler": "Lean (version 4.33.1, x86_64-unknown-linux-gnu, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "mathlib_revision": "0df444a360eaa60ab8c11dca51a86af692955474",
+  "module_exit_code": 0,
+  "inference_exit_code": 0,
+  "check_source": "import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.SplitTori.SplitTorusAff\n\nopen CategoryTheory AlgebraicGeometry\nopen ReciprocityTheory.ChartRestriction.G.Semi\nuniverse u\nnoncomputable example (S : Scheme.{u}) (X : Type u) [AddCommGroup X] :\n    GrpObj (splitTorus S X) := inferInstance\nnoncomputable example (S : Scheme.{u}) (X : Type u) [AddCommGroup X] :\n    MonObj (splitTorus S X) := inferInstance\n"
+}

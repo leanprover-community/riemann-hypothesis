@@ -11,8 +11,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RedMorCupOne
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RedTrans
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RedMCup
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PullUnitClass
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.Imports
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.DividedPowerReduction.IsFirstChernThickening
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false

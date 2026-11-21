@@ -7,6 +7,7 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitarisableOfSq
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContragredientSegmentProductEquivStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IrreducibleSubSegmentProductStatement
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg
@@ -32,3 +33,9 @@ theorem lSegDual : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k
 end GlobalTheory.CompanionTheory.SegLDual
 
 end
+end
+
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.langlands_segment_dual : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation), LSegDual k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SegLDual.lSegDual

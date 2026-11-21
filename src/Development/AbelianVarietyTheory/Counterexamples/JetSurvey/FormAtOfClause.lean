@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ETExSt
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.EtValLink
 import Formalism.LocalToGlobal.ProjectiveLattices.Adm3OfExtension
 

@@ -496,9 +496,7 @@ theorem const_one {P : MvPolynomial (Fin 2 × Fin d) S} {m : ℕ}
 
 theorem aeval_diag_monomial {σ : Type} (s : σ → S) (e : σ →₀ ℕ) (a : S) :
     aeval (fun p => C (s p) * X p) (monomial e a) = monomial e ((e.prod fun p k => s p ^ k) * a) := by
-  rw [aeval_monomial, algebraMap_eq, monomial_eq, C_mul]
-  simp only [Finsupp.prod, mul_pow, Finset.prod_mul_distrib, map_prod, map_pow]
-  ring
+  apply monoDiag_lemma_4 (s := s) (e := e) (a := a) <;> assumption
 
 theorem coeff_aeval_diag {σ : Type} (s : σ → S) (h : MvPolynomial σ S) (e : σ →₀ ℕ) :
     coeff e (aeval (fun p => C (s p) * X p) h) = (e.prod fun p k => s p ^ k) * coeff e h := by
@@ -516,8 +514,7 @@ theorem coeff_aeval_diag {σ : Type} (s : σ → S) (h : MvPolynomial σ S) (e :
 
 theorem prod_position (k : Fin 2) (e : Fin 2 × Fin d →₀ ℕ) :
     (e.prod fun p n => (if p.1 = k then (2 : S) else 1) ^ n) = 2 ^ (∑ i, e (k, i)) := by
-  rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Fintype.prod_prod_type, Fin.prod_univ_two]
-  fin_cases k <;> simp [Finset.prod_pow_eq_pow_sum]
+  apply prod_ite_pow_eq_two_pow_sum (k := k) (e := e) <;> assumption
 
 private theorem coeffXX_lemma_15 (c : S) (a b : Fin 2 × Fin d) (e : Fin 2 × Fin d →₀ ℕ) :
     coeff e (C c * (X a * X b)) = if Finsupp.single a 1 + Finsupp.single b 1 = e then c else 0 := by

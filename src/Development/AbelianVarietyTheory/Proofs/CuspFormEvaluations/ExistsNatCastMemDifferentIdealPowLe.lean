@@ -1,7 +1,9 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.PadicValNatAbsNormEqZero
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.Imports
+import BuildAid.ForwardExisting
 
+section
 open NumberField Pointwise
 
 namespace GlobalTheory
@@ -101,3 +103,9 @@ theorem exists_natCast_mem_differentIdeal_pow_le :
   exact_mod_cast h2
 
 end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_natCast_mem_differentIdeal_pow_le_discr_sq : ∀ (E : Type) [Field E] [NumberField E] [IsGalois ℚ E], ∃ N : ℕ, 0 < N ∧ ((N : ℕ) : 𝓞 E) ∈ differentIdeal ℤ (𝓞 E) ∧ (N : ℝ) ^ Module.finrank ℚ E ≤ |(NumberField.discr E : ℝ)| ^ 2 := by
+  atlas_forward_decl GlobalTheory.exists_natCast_mem_differentIdeal_pow_le

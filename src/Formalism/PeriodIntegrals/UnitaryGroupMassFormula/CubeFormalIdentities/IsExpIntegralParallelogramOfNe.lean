@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.FglGram
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CubeFormalIdentities.CoeffPowMulPowEqZero
 
 noncomputable section

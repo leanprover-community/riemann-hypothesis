@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsMoriwakiBigCurve
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveCountLower
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSmallPacking
 set_option maxSynthPendingDepth 1

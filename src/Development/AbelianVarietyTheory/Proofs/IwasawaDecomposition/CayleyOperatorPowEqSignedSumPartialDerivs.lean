@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.InterPolyProdSum
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockSymApply
-import ReciprocityTheory.DualLattices.DetPolyMulCayleyOmegaPow
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockGraph
+
+section
 open MvPolynomial ReciprocityTheory.PGsh GlobalTheory.CayleyBlock
 
 set_option autoImplicit false
@@ -41,3 +42,9 @@ theorem cayOp_pow_eq_sum (p q : ℕ) :
     rw [smallList_cons', sgnProd_cons', dList_append', cayMono_eq_dList', smul_mul_smul, mul_smul]
 
 end GlobalTheory.CayleyBlock
+end
+
+open MvPolynomial ReciprocityTheory.PGsh GlobalTheory.CayleyBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cayleyOperator_pow_eq_signed_sum_partialDerivs : ∀ (p q : ℕ), cayOp p ℂ ^ q = ∑ τ : Fin q → Equiv.Perm (Fin p), sgnProd τ • dList (smallList τ) := by
+  atlas_forward_decl GlobalTheory.CayleyBlock.cayOp_pow_eq_sum

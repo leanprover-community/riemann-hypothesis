@@ -1,10 +1,10 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.ConstantCoeffSurjective
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.GaloisTwistIdentitySection
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CrystallineFiltrationSpanDividedPowers
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PrimePowAnnihilatorReductionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TensorLiftKernelModPrimeStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PrimePowAnnihilatorReduction
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TensorLiftKernelModPrime
 
+section
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -123,3 +123,11 @@ theorem tens_base_change : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l) (n : ℕ),
     ⟨mem_span_of_tensMap_eq_zero A n z, tensMap_eq_zero_of_mem A n z⟩⟩
 
 end GlobalTheory.CompanionTheory.PerfFil
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory GroundTheory.PAdicHodge CrystallineSemistableComparison CrystallineSemistableComparison.PAlg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensor_lift_surjective_kernel_level : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l) (n : ℕ), Function.Surjective (Algebra.TensorProduct.lift (IsScalarTower.toAlgHom (Ainf l) (Acris l) (A.Acr n)) (IsScalarTower.toAlgHom (Ainf l) A.W (A.Acr n)) (fun _ _ => Commute.all _ _)) ∧ ∀ z : TensorProduct (Ainf l) (Acris l) A.W, Algebra.TensorProduct.lift (IsScalarTower.toAlgHom (Ainf l) (Acris l) (A.Acr n)) (IsScalarTower.toAlgHom (Ainf l) A.W (A.Acr n)) (fun _ _ => Commute.all _ _) z = 0 ↔ z ∈ Ideal.span {(l : TensorProduct (Ainf l) (Acris l) A.W) ^ n} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PerfFil.tens_base_change

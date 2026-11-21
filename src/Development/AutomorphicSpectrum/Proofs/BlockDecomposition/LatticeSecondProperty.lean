@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open PositivityTheory.Rg.Tf.Loc
 
 namespace GlobalTheory.CompanionTheory.Tf.Loc
@@ -55,3 +57,8 @@ theorem stableLattice_unitIntegral : D0a → L2 := by
     exact h
 
 end GlobalTheory.CompanionTheory.Tf.Loc
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_second_property : PositivityTheory.Rg.Tf.Loc.D0a → PositivityTheory.Rg.Tf.Loc.L2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Tf.Loc.stableLattice_unitIntegral

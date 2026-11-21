@@ -1,15 +1,11 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlatLineGenerator
-import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.GagaSections
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundleStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenFramesAnalyticStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenFramesAnalytic
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUnitAnalyticFunctionStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeEigenLineGeneratorStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionsFlatAgreeStatement
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FamilyUniformisationOfAbelianSchemeLaws
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeEigenLineGenerator
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionsFlatAgree
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat.A0
@@ -56,3 +52,9 @@ theorem flat_zero_of_resolution_gaga (hres : Geo.ResK.ResKStatement) (hgaga : Ga
     GlobalTheory.T.frame_functions_flat_agree E H D l Xo c O β Y U Z τ φ φ' hO hτ hZ hφ (FlatOnModel.of_gen hφ hgen hrep) h1' h2'⟩
 
 end GlobalTheory.CompanionTheory.Ar.Flat.A0
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flat_zero_from_resolution_and_gaga : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → GlobalTheory.CompanionTheory.Ar.Flat.GagaSections → GlobalTheory.CompanionTheory.Ar.Flat.FlatLineGenerator := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.A0.flat_zero_of_resolution_gaga

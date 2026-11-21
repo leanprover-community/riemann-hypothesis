@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.LeviCut
 
 namespace GlobalTheory.LeviCut
@@ -51,3 +53,9 @@ theorem adjBdd_holds : AdjBdd := by
     exact LinearMap.ext_on hspan hw
 
 end GlobalTheory.LeviCut
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adjoint_action_endomorphism_weight_bound : GlobalTheory.LeviCut.AdjBdd := by
+  atlas_forward_decl GlobalTheory.LeviCut.adjBdd_holds

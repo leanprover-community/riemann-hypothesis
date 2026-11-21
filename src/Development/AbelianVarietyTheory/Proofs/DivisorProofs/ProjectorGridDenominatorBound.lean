@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.LeviCut
 
 namespace GlobalTheory.LeviCut.GridIntProof
@@ -133,3 +135,9 @@ theorem gridInt_holds : GridInt := by
   exact h
 
 end GlobalTheory.LeviCut
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projector_grid_denominator_bound : GlobalTheory.LeviCut.GridInt := by
+  atlas_forward_decl GlobalTheory.LeviCut.gridInt_holds

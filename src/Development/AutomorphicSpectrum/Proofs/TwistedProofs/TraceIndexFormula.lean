@@ -2,6 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceZeroIntegersModUniformizerCardOfCardSq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardIntegersModUniformizerEqQSq
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.InertZeta Formalism.UG
 
 namespace GlobalTheory.CompanionTheory.InertZeta
@@ -84,3 +87,9 @@ theorem traceIndex : TraceIndex := by
     rw [← AddSubgroup.relIndex_mul_relIndex _ _ _ hle (hmono f), ih, hstep, pow_succ]
 
 end GlobalTheory.CompanionTheory.InertZeta
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trace_index_formula : TraceIndex := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertZeta.traceIndex

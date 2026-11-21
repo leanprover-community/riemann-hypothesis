@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.AdelicUnitaryHaarMeasure
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMulRightInvariantHaarAdelicUnitaryGroupHermiti
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ArchimedeanUnitaryGroupStabilisersUnimodular
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory NumberField IsDedekindDomain Matrix Topology Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicUnimod
 open GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryHaarMeasure
 open Formalism.UG (UJ cT intAd)
@@ -156,3 +157,10 @@ theorem unimodularOver_finiteAdele : ∀ (F E : Type) [Field F] [NumberField F] 
     (fun _ _ h => isUnimodularLC_finiteAdele σ hss (sub_ne_zero.2 hd) (by rw [map_sub, hss, neg_sub]) h) hJ
 
 end GlobalTheory.FiniteAdelicUnimod
+end
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryHaarMeasure
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteAdelicUnitaryGroup_stabilizers_unimodular : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → UnimodularOver (Af F) σ J := by
+  atlas_forward_decl GlobalTheory.FiniteAdelicUnimod.unimodularOver_finiteAdele

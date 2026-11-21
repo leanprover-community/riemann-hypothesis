@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.VolSemiDirect
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ClosedStep
 
 noncomputable section

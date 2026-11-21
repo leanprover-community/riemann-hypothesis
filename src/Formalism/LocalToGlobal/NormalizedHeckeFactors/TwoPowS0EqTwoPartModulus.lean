@@ -1,4 +1,3 @@
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalToGlobal.GaloisLevelStructure.TiedHecke
 
 noncomputable section

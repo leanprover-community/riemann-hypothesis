@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsAdmOnOfFiniteDimensional
+import BuildAid.ForwardExisting
+
+section
 open Matrix Topology Filter
 
 namespace GlobalTheory.CompanionTheory.LinRedFactor
@@ -153,3 +156,9 @@ theorem factor_of_local : ∀ {n : ℕ} {G : Set (Matrix (Fin n) (Fin n) ℂ)}, 
   exact hmem
 
 end GlobalTheory.CompanionTheory.LinRedFactor
+end
+
+open Matrix Topology Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cartan_local_to_global : ∀ {n : ℕ} {G : Set (Matrix (Fin n) (Fin n) ℂ)}, GlobalTheory.LinRed.IsLinRed G → ∀ U ∈ Matrix.unitaryGroup (Fin n) ℂ, (∀ᶠ g in 𝓝 (1 : Matrix (Fin n) (Fin n) ℂ), g ∈ G → ∃ k ∈ GlobalTheory.LinRed.maxCpt G, ∃ s ∈ G, g = k * s ∧ (Uᴴ * s * U).BlockTriangular id) → ∀ g ∈ G, ∃ k ∈ GlobalTheory.LinRed.maxCpt G, ∃ s ∈ G, g = k * s ∧ (Uᴴ * s * U).BlockTriangular id := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LinRedFactor.factor_of_local

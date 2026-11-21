@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnimodMod
+
+section
 open IsLocalRing GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.Poinc
 
 namespace GlobalTheory.Poinc.Span
@@ -113,3 +115,9 @@ theorem GlobalTheory.Poinc.symm_eq_zero_of_qW_lifts :
   refine Int.eq_zero_of_dvd_of_natAbs_lt_natAbs h ?_
   rw [Int.natAbs_pow, Int.natAbs_natCast]
   exact Nat.lt_pow_self (by omega)
+end
+
+open IsLocalRing GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.Poinc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symm_bilinForm_eq_zero_of_weightedQuadraticSum_lifts : ∀ (W : Matrix (Fin 8) (Fin 8) ℤ), PosW W → ∀ (N : ℕ) [NeZero N], 3 ≤ N → ∀ r : ℕ, (∃ ε : Fin 8 → ℤ, Nat.Coprime N (2 * (∑ u, ∑ v, W u v * ε u * ε v).natAbs)) → ∀ μ : (Fin 8 → Fin r → ZMod N) → (Fin 8 → Fin r → ℤ), (∀ c u i, ((μ c u i : ℤ) : ZMod N) = c u i) → ∀ b : LinearMap.BilinForm ℤ (Fin r → ℤ), (∀ x y, b x y = b y x) → (∀ c, qW W b (μ c) = 0) → b = 0 := by
+  atlas_forward_decl GlobalTheory.Poinc.symm_eq_zero_of_qW_lifts

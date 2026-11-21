@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexUpLatEqProd
+import BuildAid.ForwardExisting
 
+section
 open Formalism.UG Matrix GlobalTheory.InertZeta GlobalTheory.BorelUMod.UpLatIndex
 
 noncomputable section
@@ -133,3 +135,9 @@ theorem latIndex (hS : Smith) : LatIndex := by
 end GlobalTheory.CompanionTheory.InertIndex
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_index_of_smith : Smith → LatIndex := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertIndex.latIndex

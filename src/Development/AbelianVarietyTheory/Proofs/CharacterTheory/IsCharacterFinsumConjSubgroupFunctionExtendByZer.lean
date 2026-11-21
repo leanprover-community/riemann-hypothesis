@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharacterOverSubfieldOfRepresentation
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.BI
 noncomputable section
 namespace GlobalTheory.BI
@@ -108,3 +110,10 @@ theorem isChar_finsum_conj_ext0_of_isChar :
     rw [if_neg h, ext0, dif_neg hm, map_zero]
 
 end GlobalTheory.BI
+end
+end
+
+open GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCharacter_finsum_conj_subgroupFunctionExtendByZero : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (G : Type) [Group G] [Finite G] (H : Subgroup G) (ψ : H → L), IsChar K L ψ → IsChar K L (fun g : G => ∑ᶠ q : G ⧸ H, ext0 H ψ (q.out⁻¹ * g * q.out)) := by
+  atlas_forward_decl GlobalTheory.BI.isChar_finsum_conj_ext0_of_isChar

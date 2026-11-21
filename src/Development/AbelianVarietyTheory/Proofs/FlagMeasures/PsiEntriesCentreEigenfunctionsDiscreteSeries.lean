@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpectrumKFiniteDecomposition
-import Formalism.RealPlaceAnalysis.QuotientSettingHolds
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PhiCentreEigenfunctionDiscreteSeriesStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PsiRestrictionHolomorphicNearOneStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PsiEntriesRealAnalyticStatement
@@ -329,10 +328,7 @@ private theorem analyticAt_clm_apply' {𝕜 E F G : Type*} [NontriviallyNormedFi
     [NormedSpace 𝕜 E] [NormedAddCommGroup F] [NormedSpace 𝕜 F] [NormedAddCommGroup G] [NormedSpace 𝕜 G]
     {A : E → F →L[𝕜] G} {B : E → F} {x : E} (hA : AnalyticAt 𝕜 A x) (hB : AnalyticAt 𝕜 B x) :
     AnalyticAt 𝕜 (fun y => A y (B y)) x := by
-  have h := (ContinuousLinearMap.apply 𝕜 G : F →L[𝕜] (F →L[𝕜] G) →L[𝕜] G).analyticAt_bilinear (B x, A x)
-  have h2 : AnalyticAt 𝕜 (fun y => (B y, A y)) x := hB.prod hA
-  exact AnalyticAt.comp (g := fun p : F × (F →L[𝕜] G) => (ContinuousLinearMap.apply 𝕜 G) p.1 p.2)
-    (f := fun y => (B y, A y)) h h2
+  apply analyticAt_clm_apply (hA := hA) (hB := hB) <;> assumption
 
 def Dz (Z : Mt) (G : (Mt × Mt) × Mt → ℂ) : (Mt × Mt) × Mt → ℂ :=
   fun x => fderiv ℂ G x (0, x.2 * Z)
@@ -444,32 +440,7 @@ theorem integrable_slice {ε : Fin n → Bool} {c : KG ε → ℂ} (hc : Continu
   exact Integrable.of_bound (continuous_slice hc hG hz).aestronglyMeasurable C (ae_of_all _ fun k => hC k trivial)
 
 private theorem compactSpace_KG'' (ε : Fin n → Bool) : CompactSpace (KG ε) := by
-  have hKc : IsCompact (Kset ε) := (Formalism.REAL.maximal_compact_facts n ε).2.1
-  have hrange : Set.range (fun k : KG ε => toMK k) = Kset ε := by
-    ext M
-    constructor
-    · rintro ⟨k, rfl⟩
-      exact (Formalism.REAL.mem_KG ε _).1 k.2
-    · intro hM
-      exact ⟨⟨⟨⟨M, star M, Matrix.mem_unitaryGroup_iff.1 hM.1, Matrix.mem_unitaryGroup_iff'.1 hM.1⟩,
-        (Formalism.REAL.maximal_compact_facts n ε).1 M hM⟩, (Formalism.REAL.mem_KG ε _).2 hM⟩, rfl⟩
-  have h1 : Topology.IsInducing (fun k : KG ε => Units.embedProduct Mt ((k : UJ ε) : Mtˣ)) :=
-    Units.isEmbedding_embedProduct.isInducing.comp
-      (Topology.IsInducing.subtypeVal.comp Topology.IsInducing.subtypeVal)
-  have hg : Continuous (fun M : Mt => (M, MulOpposite.op Mᴴ)) :=
-    continuous_id.prodMk (MulOpposite.continuous_op.comp continuous_id.matrix_conjTranspose)
-  have hind : Topology.IsInducing (fun k : KG ε => toMK k) := by
-    refine Topology.IsInducing.of_comp (continuous_toMK ε) hg ?_
-    convert h1 using 1
-    funext k
-    have hu : toMK k ∈ Matrix.unitaryGroup (Fin n) ℂ := ((Formalism.REAL.mem_KG ε _).1 k.2).1
-    have hs : toMK k * (toMK k)ᴴ = 1 := by
-      rw [← Matrix.star_eq_conjTranspose]; exact Matrix.mem_unitaryGroup_iff.1 hu
-    simp only [Function.comp_apply, Units.embedProduct_apply]
-    exact Prod.ext rfl (congrArg MulOpposite.op (Units.eq_inv_of_mul_eq_one_left hs))
-  have hc : IsCompact (Set.univ : Set (KG ε)) := by
-    rw [hind.isCompact_iff, Set.image_univ, hrange]; exact hKc
-  exact isCompact_univ_iff.1 hc
+  apply compactSpace_KG' (ε := ε) <;> assumption
 
 private theorem inUJ_mul_flag_measures {ε : Fin n → Bool} {a b : Mt} (ha : inUJ ε a) (hb : inUJ ε b) :
     inUJ ε (a * b) := by
@@ -578,32 +549,7 @@ theorem continuous_tau {ε : Fin n → Bool} {abelian₂ : Fin n → ℝ} {W : T
   exact continuous_finsetSum _ fun i _ => (hc i).smul continuous_const
 
 private theorem compactSpace_KG''' (ε : Fin n → Bool) : CompactSpace (KG ε) := by
-  have hKc : IsCompact (Kset ε) := (Formalism.REAL.maximal_compact_facts n ε).2.1
-  have hrange : Set.range (fun k : KG ε => toMK k) = Kset ε := by
-    ext M
-    constructor
-    · rintro ⟨k, rfl⟩
-      exact (Formalism.REAL.mem_KG ε _).1 k.2
-    · intro hM
-      exact ⟨⟨⟨⟨M, star M, Matrix.mem_unitaryGroup_iff.1 hM.1, Matrix.mem_unitaryGroup_iff'.1 hM.1⟩,
-        (Formalism.REAL.maximal_compact_facts n ε).1 M hM⟩, (Formalism.REAL.mem_KG ε _).2 hM⟩, rfl⟩
-  have h1 : Topology.IsInducing (fun k : KG ε => Units.embedProduct Mt ((k : UJ ε) : Mtˣ)) :=
-    Units.isEmbedding_embedProduct.isInducing.comp
-      (Topology.IsInducing.subtypeVal.comp Topology.IsInducing.subtypeVal)
-  have hg : Continuous (fun M : Mt => (M, MulOpposite.op Mᴴ)) :=
-    continuous_id.prodMk (MulOpposite.continuous_op.comp continuous_id.matrix_conjTranspose)
-  have hind : Topology.IsInducing (fun k : KG ε => toMK k) := by
-    refine Topology.IsInducing.of_comp (continuous_toMK ε) hg ?_
-    convert h1 using 1
-    funext k
-    have hu : toMK k ∈ Matrix.unitaryGroup (Fin n) ℂ := ((Formalism.REAL.mem_KG ε _).1 k.2).1
-    have hs : toMK k * (toMK k)ᴴ = 1 := by
-      rw [← Matrix.star_eq_conjTranspose]; exact Matrix.mem_unitaryGroup_iff.1 hu
-    simp only [Function.comp_apply, Units.embedProduct_apply]
-    exact Prod.ext rfl (congrArg MulOpposite.op (Units.eq_inv_of_mul_eq_one_left hs))
-  have hc : IsCompact (Set.univ : Set (KG ε)) := by
-    rw [hind.isCompact_iff, Set.image_univ, hrange]; exact hKc
-  exact isCompact_univ_iff.1 hc
+  apply compactSpace_KG' (ε := ε) <;> assumption
 
 theorem inner_ps {ε : Fin n → Bool} (lam : Fin n → ℝ) {abelian₂ : Fin n → ℝ} {W : Type} [NormedAddCommGroup W]
     [InnerProductSpace ℂ W] {τ : Mt → (W →L[ℂ] W)} {w : W} (h : IsTau ε abelian₂ τ w) (u v : W) {z : Mt}

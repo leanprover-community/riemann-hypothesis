@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.DivisorCount
 
 private lemma two_mul_add_one_le_three_pow (k : ℕ) : 2 * k + 1 ≤ 3 ^ k := by
@@ -68,3 +70,8 @@ theorem card_divisors_sq_le_two_mul (n : ℕ) :
   exact_mod_cast (card_divisors_sq_le_strong n).1
 
 end GlobalTheory.CompanionTheory.DivisorCount
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_divisors_sq_le_two_mul' : ∀ n : ℕ, (((n ^ 2).divisors.card : ℕ) : ℝ) ≤ 2 * n := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DivisorCount.card_divisors_sq_le_two_mul

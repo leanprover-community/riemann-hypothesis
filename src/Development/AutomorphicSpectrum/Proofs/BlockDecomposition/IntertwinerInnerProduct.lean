@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
 
@@ -33,3 +35,9 @@ theorem intwIp : ReciprocityTheory.Ty.Fin.St.IntwIp := by
   simp [ip, Set.ncard_univ, Representation.char_linHom]
 
 end GlobalTheory.CompanionTheory.TyFin
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.intertwiner_inner_product : ReciprocityTheory.Ty.Fin.St.IntwIp := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.intwIp

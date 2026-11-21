@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasSigFramesOfIsotropic
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.PointShiftStOfPlaceShiftSt
-import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -187,3 +187,10 @@ theorem idealSt_of_placeShiftSt : PlaceShiftSt → IdealSt := fun hS _ _ _ _ H h
     exact CMKernel.hasSigFrames_of_isGram _ ε i X h τ hτ
 
 end GlobalTheory.CMIdeal
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory GlobalTheory GlobalTheory.CM GlobalTheory.FlatCM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ideal_from_place_shift : PlaceShiftSt → IdealSt := by
+  atlas_forward_decl GlobalTheory.CMIdeal.idealSt_of_placeShiftSt

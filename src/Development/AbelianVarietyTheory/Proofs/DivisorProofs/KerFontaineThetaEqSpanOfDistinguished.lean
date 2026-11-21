@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PrismaticDieudonnePerfd
+
+section
 open Ideal WittVector
 
 noncomputable section
@@ -78,3 +80,10 @@ theorem ker_fontaineTheta_eq_span_of_dvd : ∀ (p : ℕ) [Fact p.Prime] (R : Typ
     rw [RingHom.mem_ker, map_mul, hθξ, mul_zero]
 
 end GlobalTheory
+end
+end
+
+open Ideal WittVector
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ker_fontaineTheta_eq_span_of_distinguished : ∀ (p : ℕ) [Fact p.Prime] (R : Type) [CommRing R] [Fact ¬IsUnit (p : R)] [IsAdicComplete (Ideal.span {(p : R)}) R], IsSMulRegular R (p : R) → ∀ ξ : WittVector p (PreTilt R p), fontaineTheta R p ξ = 0 → (∀ c : PreTilt R p, PreTilt.coeff 0 c = 0 → WittVector.constantCoeff ξ ∣ c) → RingHom.ker (fontaineTheta R p) = Ideal.span {ξ} := by
+  atlas_forward_decl GlobalTheory.ker_fontaineTheta_eq_span_of_dvd

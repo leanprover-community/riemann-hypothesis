@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.NonemptyValExtOfOverLa
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetFactorDepthInChartChartIndependentStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetFactorDepthInChartIndependentClosedFieldStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetProductDepthInChartEqSumFactorDepthsStatement
 
+section
 set_option autoImplicit false
 
 open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain
@@ -36,3 +36,10 @@ theorem nuFac_eq_nuFacC_and_nuProd_eq_nuP :
     (le_iInf₂ fun Ch' X' => (h2 Ch' X').ge)
 
 end GlobalTheory.FactorDepth
+end
+
+open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.CharDepth GlobalTheory.FactorDepth
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.detFactorDepth_eq_chart_value_and_sum : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), letI := H.starRing; ∀ (p : ℕ) [Fact p.Prime] (T : CDVR) (io : c.F →+* T.Fr) (y : IntFr Xo c T io) (Ch : IntegralChartA3 Xo c T io y) (X : ValExt T p), (∀ (f : Lt1 Dw) (k : ℕ), nuFac p y f k = nuFacC Ch X f k) ∧ ∀ cx : Lt1 Dw → ℕ, nuProd p y cx = nuP p y cx := by
+  atlas_forward_decl GlobalTheory.FactorDepth.nuFac_eq_nuFacC_and_nuProd_eq_nuP

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.DivisionRowsRationalLattice
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProjectionRows.Development
 
 noncomputable section

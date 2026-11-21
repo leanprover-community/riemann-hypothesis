@@ -1,7 +1,9 @@
 import Mathlib
 import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularSmooth
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.IsPrecompleteOfBasis
+import BuildAid.ForwardExisting
 
+section
 open IsLocalRing Polynomial
 
 namespace GlobalTheory.MonicRootExtension
@@ -108,3 +110,9 @@ theorem exists_extension : ∀ (A Ω : Type) [CommRing A] [IsRegularLocalRing A]
       exact hx
 
 end GlobalTheory.MonicRootExtension
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_regular_local_extension_with_simple_root : ∀ (A Ω : Type) [CommRing A] [IsRegularLocalRing A] [Field Ω] (u : A →+* Ω) (p : Polynomial A) (α : Ω), RingHom.ker u = maximalIdeal A → IsAdicComplete (maximalIdeal A) A → p.Monic → (p.map u).eval α = 0 → (p.map u).derivative.eval α ≠ 0 → ∃ (E : Type) (_ : CommRing E) (_ : IsRegularLocalRing E) (a : A →+* E) (v : E →+* Ω), a.Flat ∧ (maximalIdeal A).map a = maximalIdeal E ∧ IsAdicComplete (maximalIdeal E) E ∧ RingHom.ker v = maximalIdeal E ∧ v.comp a = u ∧ α ∈ v.range := by
+  atlas_forward_decl GlobalTheory.MonicRootExtension.exists_extension

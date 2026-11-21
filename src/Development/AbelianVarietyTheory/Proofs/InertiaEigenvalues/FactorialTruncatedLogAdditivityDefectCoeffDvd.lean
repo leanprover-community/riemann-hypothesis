@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AevalLogDefect
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.LogU MvPolynomial Finset
 
 namespace GlobalTheory.LogUIntg
@@ -151,3 +153,9 @@ theorem logDefect_coeff_dvd : ∀ (n i j : ℕ), n ≤ i + j → ∃ d : ℤ,
   exact good_logDefect n i j h
 
 end GlobalTheory.LogUIntg
+end
+
+open GlobalTheory.LogU
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.factorialTruncatedLogAdditivityDefect_coeff_dvd : ∀ (n i j : ℕ), n ≤ i + j → ∃ d : ℤ, ((i.factorial * j.factorial : ℕ) : ℤ) * MvPolynomial.coeff (Finsupp.single 0 i + Finsupp.single 1 j) (GlobalTheory.LogU.logDefect n) = ((n.factorial * ((n - 1) / 2).factorial : ℕ) : ℤ) * d := by
+  atlas_forward_decl GlobalTheory.LogUIntg.logDefect_coeff_dvd

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.PAdicHodge.PerfectoidField
 import GroundTheory.PAdicHodge.TiltValuation
 import GroundTheory.PowerSubgroups.CountableNeighbourhoods.TiltCountableNeighbourhoods
 set_option maxSynthPendingDepth 1

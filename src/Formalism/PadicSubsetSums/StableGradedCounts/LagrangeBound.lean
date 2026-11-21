@@ -1,4 +1,3 @@
-import Formalism.PadicSubsetSums.CentralIdempotents.WindowSums
 import Formalism.PadicSubsetSums.StableGradedCounts.PadicDigits
 
 namespace Formalism.IrreducibleCountingLemmas.WindowSums

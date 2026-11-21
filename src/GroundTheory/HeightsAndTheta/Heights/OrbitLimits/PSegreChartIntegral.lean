@@ -2,7 +2,6 @@ import Mathlib
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartIntegral
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreCoordGoodProj
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsIntegralProjIndep
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsIntegralSegreChartProj
 set_option maxSynthPendingDepth 1

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.LatticeBundleObjects
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ImportsMore
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ImportsTer
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ImportsBis

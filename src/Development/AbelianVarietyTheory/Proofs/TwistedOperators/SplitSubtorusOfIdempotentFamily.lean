@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CentralizerTensorForms
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NotCompactOfIdempotent
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix Formalism.UG GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms
@@ -254,3 +255,10 @@ theorem subtorusOfIdempotents : SubtorusOfIdempotents := by
     exact idemLin_mul_idem (idemFamR_idem hi R) (idemFamR_orth ho R) _ (.inl i)
 
 end GlobalTheory.RegSS.IdemTorus
+end
+end
+
+open GlobalTheory.RegSS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.split_subtorus_of_idempotent_family : GlobalTheory.RegSS.SubtorusOfIdempotents := by
+  atlas_forward_decl GlobalTheory.RegSS.IdemTorus.subtorusOfIdempotents

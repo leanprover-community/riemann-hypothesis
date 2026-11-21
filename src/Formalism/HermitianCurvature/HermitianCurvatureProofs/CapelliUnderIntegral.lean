@@ -1,5 +1,4 @@
 import Formalism.HermitianCurvature.StatementJF
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliWordSumExpansion
 
 open Matrix MeasureTheory Filter

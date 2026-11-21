@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilDatumDoubledTargetRestrictsToPairStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.RestrictCoreK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -25,5 +23,5 @@ theorem _root_.GlobalTheory.T.weil_pair_global_intertwiner : ∀ (F E : Type) [F
       ∀ f₁ f₂ : Formalism.IndefR.DatumF.WOF F E nS nT → ℂ,
         Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ f₁ → Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ f₂ →
         ωd (1, hd) (GlobalTheory.DblTargetDelta.deltaT f₁ f₂) = GlobalTheory.DblTargetDelta.deltaT (ω (1, h) f₁) f₂ := by
-  first | exact @_root_.GlobalTheory.DblTargetRestrictCore.restrict_core_k | exact _root_.GlobalTheory.DblTargetRestrictCore.restrict_core_k | (intros; apply _root_.GlobalTheory.DblTargetRestrictCore.restrict_core_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.DblTargetRestrictCore.restrict_core_k
 end

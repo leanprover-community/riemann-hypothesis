@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.CalcSteps
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IteratedDerivTwoSmul
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix
@@ -126,3 +128,9 @@ theorem kerLoc : KerLoc := by
   · rw [huv t (not_lt.mp h)]
 
 end GlobalTheory.CompanionTheory.WaveLoc
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernel_localization : PositivityTheory.RgBcC.Fc.KerLoc := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WaveLoc.kerLoc

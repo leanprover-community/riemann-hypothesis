@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnimodLocStd
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.ExistsIsometryMemLocalizedAtSingle
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.RepAll
 

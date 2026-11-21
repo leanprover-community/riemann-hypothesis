@@ -1,4 +1,3 @@
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollB
 
 namespace ReciprocityTheory.AnForm.A

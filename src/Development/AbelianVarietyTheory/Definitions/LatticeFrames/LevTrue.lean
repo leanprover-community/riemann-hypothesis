@@ -3,9 +3,6 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsStdFr
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FamCol
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.XiEqXiOffMul
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.QLev
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChartZero
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.RatioParts
-import Development.AbelianVarietyTheory.Definitions.LatticeFrames.TailRd
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.Placed
 import Formalism.LocalToGlobal.IndefiniteReal.RealRec
 

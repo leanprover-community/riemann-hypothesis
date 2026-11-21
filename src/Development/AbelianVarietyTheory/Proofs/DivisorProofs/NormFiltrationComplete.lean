@@ -1,8 +1,9 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.StatementF
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AevalRootEqZeroIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitOneAddPiOMul
-import GroundTheory.LocalFields.FilteredSurj
+import BuildAid.ForwardExisting
+
+section
 open Polynomial Matrix Formalism.UG
 
 noncomputable section
@@ -171,3 +172,9 @@ theorem filtrationComplete_filt : ∀ (L : Type) [Field L] [Valued L (WithZero (
   exact (piPow h P N).mul_mem_right _ (hM n hn)
 
 end GlobalTheory.NormEq
+end
+end
+
+open Polynomial Matrix Formalism.UG
+theorem _root_.GlobalTheory.T.norm_filtration_complete : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (σ : L →+* L) (ϖ : L) (q : ℕ) (h : IsUnramInv ϖ σ q) (P : GlobalTheory.UTr.Csr (GlobalTheory.NormEq.sigO σ h.2.1)), GroundTheory.LocalField.FiltrationComplete (GlobalTheory.NormEq.filt h P) := by
+  atlas_forward_decl GlobalTheory.NormEq.filtrationComplete_filt

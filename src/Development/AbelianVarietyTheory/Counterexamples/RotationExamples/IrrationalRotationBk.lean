@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalRingCardinality.DataBu
 import Formalism.LocalRingCardinality.DataTies
 import Formalism.LocalRingCardinality.DataDIVDefs

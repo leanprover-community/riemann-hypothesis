@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
@@ -140,3 +141,9 @@ theorem limTrees : ConvComp → LimTrees := by
 end GlobalTheory.CompanionTheory.EGlue.LimT
 
 end
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.limit_trees : GlobalTheory.CompanionTheory.EGlue.ConvComp → GlobalTheory.CompanionTheory.EGlue.LimTrees := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.LimT.limTrees

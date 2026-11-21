@@ -1,8 +1,6 @@
 import Mathlib
 import Development.EtaleCohomology.EtaleSheaves.LeafChartRing
-import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.SlopeTestRemainingChoices
 import Development.AutomorphicArithmetic.CommutativeAlgebra.SectionsBijectiveDisjointCover
-import Development.AutomorphicArithmetic.CommutativeAlgebra.CohomologyRepresentatives
 import Development.AutomorphicArithmetic.CommutativeAlgebra.RepresentativesAdditive
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTheory.E.t_E6Cut UpperTheory.Et

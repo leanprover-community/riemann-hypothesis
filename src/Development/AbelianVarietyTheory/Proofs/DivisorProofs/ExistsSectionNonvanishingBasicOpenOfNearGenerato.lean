@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.QuasiCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleOfLocallyAmpleOnAffineCover
-import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsSecNonzeroLocusEqBasicOpen
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
@@ -77,3 +77,11 @@ theorem exists_sec_of_gen_near : ∀ (Z X : Scheme.{0}) (e : X ⟶ Z), IsOpenImm
   exact (key y (fun _ => i) (mem_powChart.2 hi)).2 (ht' y)
 
 end GlobalTheory.GenNearExtend
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_section_nonvanishing_basicOpen_of_nearGenerator : ∀ (Z X : Scheme.{0}) (e : X ⟶ Z), IsOpenImmersion e → CompactSpace X → QuasiSeparatedSpace X → ∀ (M : LB Z), M.IsLB → ∀ (r : Γ(X, ⊤)) (O : Z.Opens), (∀ x ∈ X.basicOpen r, e x ∈ O) → ∀ t : LB.Gen (M.pull O.ι), t.IsGen → ∃ σ : LB.Sec (M.pull e), X.basicOpen r ≤ nonzeroLocus σ := by
+  atlas_forward_decl GlobalTheory.GenNearExtend.exists_sec_of_gen_near

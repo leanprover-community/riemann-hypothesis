@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.GlobalFields.AnalyticClassNumber.Quadratic
 import GroundTheory.GlobalFields.AnalyticClassNumber.QuadraticConductor
 import GroundTheory.HeightsAndTheta.Heights.QuadraticFields.SqfDiscr
 import GroundTheory.HeightsAndTheta.Heights.QuadraticFields.SqfZetaFactor

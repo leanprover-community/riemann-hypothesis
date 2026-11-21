@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.MomN.MahlerProd
@@ -295,3 +297,11 @@ theorem mahler_mul (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (κ : T
   rw [BJ_rename, ← mahler_eq, ← mahler_eq]
 
 end GlobalTheory.MomN
+end
+end
+
+open GlobalTheory.MomOne GlobalTheory.MomN PowerSeries
+open scoped ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mahlerJetCoefficient_mul : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (κ : Type) [Fintype κ] [DecidableEq κ] (v : κ → V) (F G : V → ℂ), ContDiff ℂ ⊤ F → ContDiff ℂ ⊤ G → ∀ n : κ → ℕ, mahler v (fun z => F z * G z) n = ∑ k ∈ Fintype.piFinset (fun i => Finset.range (n i + 1)), mahler v F k * mahler v G (fun i => n i - k i) := by
+  atlas_forward_decl GlobalTheory.MomN.mahler_mul

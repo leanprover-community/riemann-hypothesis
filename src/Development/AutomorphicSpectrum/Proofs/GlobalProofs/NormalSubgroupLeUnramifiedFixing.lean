@@ -2,7 +2,9 @@ import Mathlib
 import ReciprocityTheory.Hypotheses.GalCoh
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
 import GroundTheory.ProfiniteCohomology.ContinuousCochains
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
 
 namespace GlobalTheory.CompanionTheory.GlobalFiniteness
@@ -112,3 +114,9 @@ theorem NS_le_fixingSubgroup : ∀ (F Ω : Type) [Field F] [NumberField F] [Fiel
     (InfiniteGalois.fixingSubgroup_isClosed _)
 
 end GlobalTheory.CompanionTheory.GlobalFiniteness
+end
+
+open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normal_subgroup_le_unramified_fixing : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (S : Set (HeightOneSpectrum (𝓞 F))), NS Ω S ≤ (maxUnramifiedOutside F Ω S).fixingSubgroup := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GlobalFiniteness.NS_le_fixingSubgroup

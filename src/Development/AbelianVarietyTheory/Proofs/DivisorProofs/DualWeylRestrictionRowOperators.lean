@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
 import Formalism.PieriBlockIdeals.PieriColumnMinors.HighestWeightMemWZero
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.GradedWeylDivisibility TensorProduct
 
 noncomputable section
@@ -166,3 +168,10 @@ theorem dualWeyl_resDer : ResDer := by
       rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul, map_add, map_mul, map_mul, map_mul, lTensor_der_mul, resT_der_right_X, hg]
 
 end GlobalTheory.LeviCut
+end
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualWeyl_restriction_rowOperators : GlobalTheory.LeviCut.ResDer := by
+  atlas_forward_decl GlobalTheory.LeviCut.dualWeyl_resDer

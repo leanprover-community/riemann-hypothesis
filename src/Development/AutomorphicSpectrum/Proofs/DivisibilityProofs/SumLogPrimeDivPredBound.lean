@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.SumLogDivPredLe
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Flat
 
 theorem log_div_pred_le_of_lt (B p : ℕ) (hB : 128 ≤ B) (hp : B < p) (hL : 1 ≤ Real.log ((B : ℝ) + 1)) :
@@ -96,3 +97,8 @@ theorem sum_log_div_pred_SB :
   linarith
 
 end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_log_prime_div_pred_bound : ∀ (B : ℕ) (bad S : Finset ℕ), 128 ≤ B → bad.card ≤ B → (∀ p ∈ S, p.Prime ∧ (p ≤ B ∨ p ∈ bad)) → ∑ p ∈ S, Real.log p / ((p : ℝ) - 1) ≤ 3 * Real.log B + 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.sum_log_div_pred_SB

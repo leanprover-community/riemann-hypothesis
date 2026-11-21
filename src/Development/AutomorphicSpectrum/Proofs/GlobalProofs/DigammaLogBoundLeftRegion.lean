@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.DigammaLogBoundRightHalfPlaneStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.DigammaLogBoundRightHalfPlane
 
+section
 namespace GlobalTheory.CompanionTheory.DigammaLeft
 
 theorem digamma_sub_digamma_one_sub (w : ℂ) (hw : ∀ n : ℤ, w ≠ n) :
@@ -162,3 +163,8 @@ theorem norm_digamma_le_left :
     _ ≤ (2 * C + 10) * Real.log (‖w‖ + 2) := by nlinarith
 
 end GlobalTheory.CompanionTheory.DigammaLeft
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.digamma_log_bound_left_region : ∃ C : ℝ, 0 < C ∧ ∀ w : ℂ, w.re ≤ 1 / 4 → (1 / 2 ≤ |w.im| ∨ ∃ k : ℤ, w.re = (k : ℝ) / 2 + 1 / 4) → ‖Complex.digamma w‖ ≤ C * Real.log (‖w‖ + 2) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DigammaLeft.norm_digamma_le_left

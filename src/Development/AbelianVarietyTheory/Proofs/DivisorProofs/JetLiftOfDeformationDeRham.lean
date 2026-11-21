@@ -1,12 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetGroupMorphismBaseChangeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetMorphismAdmissibleConnectionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetMorphismDeterminantGeneratorStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetMorphismAdmissibleConnection
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetMorphismDeterminantGenerator
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -39,3 +38,10 @@ theorem jetLift_of_deformation_of_deRham (hGD : GlobalTheory.Published.Grothendi
   exact ⟨⟨X', i, pull, m, δ', fun x hx d hd ↦ hF ▸ Submodule.subset_span ⟨x, hx, hd⟩, hδ⟩⟩
 
 end GlobalTheory.LatJet
+end
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jet_lift_of_deformation_de_rham : GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.Published.AbelianDeRham → GlobalTheory.Published.AbelianDualCrystal → JetLift := by
+  atlas_forward_decl GlobalTheory.LatJet.jetLift_of_deformation_of_deRham

@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PfContractedHypothesesExample
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.HomFracDegZeroEqFunField
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.AddBlockVarEquivFst
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsRename

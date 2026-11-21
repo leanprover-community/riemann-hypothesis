@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsAdmissibleIntegralBasisChangeOne
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 open scoped IntermediateField Polynomial RatFunc
@@ -91,3 +93,11 @@ theorem nrm_coeff_prod_linear : ∀ (k F : Type) [Field k] [Field F] [Algebra k 
     exact zero_le'
 
 end GlobalTheory.Nef
+end
+
+open scoped IntermediateField Polynomial RatFunc
+open GlobalTheory.Nef
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nrm_coeff_prod_linear' : ∀ (k F : Type) [Field k] [Field F] [Algebra k F], ∀ (v : Place k F) (m : ℕ) (α β : Fin m → F), nrm v (fun a : Fin (m + 1) => (∏ j, (Polynomial.C (α j) + Polynomial.C (β j) * Polynomial.X)).coeff a) = ∏ j, max (v.1 (α j)) (v.1 (β j)) := by
+  atlas_forward_decl GlobalTheory.Nef.nrm_coeff_prod_linear

@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIsIotaAt
+
+section
 open NumberField IsDedekindDomain
 
 noncomputable section
@@ -78,3 +80,10 @@ theorem card_locQ (E : Type) [Field E] [NumberField E] (w : IsDedekindDomain.Hei
 end GlobalTheory.DivPtLocal.Count
 
 end
+end
+
+open NumberField IsDedekindDomain
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_localMatrixDivisionPointQuotient : ∀ (E : Type) [Field E] [NumberField E] (w : IsDedekindDomain.HeightOneSpectrum (𝓞 E)) (N m n : ℕ), 0 < N → Nat.card (GlobalTheory.DivPtLocal.LocQ w N m n) = Nat.card (w.adicCompletionIntegers E ⧸ Ideal.span {((N : ℕ) : w.adicCompletionIntegers E)}) ^ (m * n) := by
+  atlas_forward_decl GlobalTheory.DivPtLocal.Count.card_locQ

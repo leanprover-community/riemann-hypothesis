@@ -1,9 +1,10 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.JoinType
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InducedFixedNonzeroStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ModulusTrivialOnCompactParabolicStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ParabolicElementBlockFormStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InducedFixedNonzero
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ModulusTrivialOnCompactParabolic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ParabolicElementBlockForm
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Filter
@@ -131,3 +132,9 @@ theorem rReadLev : RReadLev := by
       ⟨hx _ hq.1, twist_eq_one μ w _ hq.2⟩
 
 end GlobalTheory.CompanionTheory.ReadLevel
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.real_read_levi : PositivityTheory.Rg.BcB.F.Tail.RReadLev := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ReadLevel.rReadLev

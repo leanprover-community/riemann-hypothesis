@@ -1,11 +1,11 @@
 import Mathlib
-import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
-import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.PairRowIffQdRows
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SzRowAndImp
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SzRowEtaBounds
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SzRowEtaLeW
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RbSNumeric
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab GlobalTheory.EX NumberField
 
 namespace GlobalTheory.EX
@@ -16,3 +16,9 @@ theorem szRow_sizeEta : SzRow (fun _ _ L => SizeEta L) := by
   exact ⟨h3, h1, h2, h4, h5, h6, h7, h8, h10⟩
 
 end GlobalTheory.EX
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab GlobalTheory.EX NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.explicitChoice_sizeEta : SzRow (fun _ _ L => SizeEta L) := by
+  atlas_forward_decl GlobalTheory.EX.szRow_sizeEta

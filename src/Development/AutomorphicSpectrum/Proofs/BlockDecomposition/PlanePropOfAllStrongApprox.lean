@@ -1,10 +1,10 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConjMemSupp
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConjTransposeFrameEmbedding
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOfConjEq
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology Sa2 Matrix
@@ -160,3 +160,11 @@ theorem plane_prop_of_strong_approx : (∀ (F E : Type) [Field F] [NumberField F
 end GlobalTheory.CompanionTheory.PlaneSA.OfTwo
 
 end
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
+open scoped TensorProduct Quaternion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.plane_prop_of_all_strong_approx : (∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E),
+    IsCMExt F E σ → ∀ β : F, β ≠ 0 → HermitianPlaneStrongApprox σ β) → Sa2.PropPlane := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PlaneSA.OfTwo.plane_prop_of_strong_approx

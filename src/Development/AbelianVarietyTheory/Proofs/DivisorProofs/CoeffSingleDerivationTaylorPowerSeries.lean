@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDerApply
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfForallMemFilt
+
+section
 open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
 
 namespace GlobalTheory.FormalOrigin.Extend
@@ -36,3 +37,9 @@ theorem taylor_coeff_single (A B : Type) [CommRing A] [CommRing B] [Algebra ℚ 
   rw [hit, hprod, inv_one, one_smul]
 
 end GlobalTheory.FormalOrigin.Extend
+end
+
+open IsLocalRing GlobalTheory.FormalOrigin GlobalTheory.FormalOrigin.Extend
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeff_single_derivationTaylorPowerSeries : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra ℚ B] (n : ℕ) (ev : A →+* B) (ds : Fin n → Derivation ℤ A A) (j : Fin n) (f : A), MvPowerSeries.coeff (Finsupp.single j 1) (taylor ev (fun i => ⇑(ds i)) f) = ev (ds j f) := by
+  atlas_forward_decl GlobalTheory.FormalOrigin.Extend.taylor_coeff_single

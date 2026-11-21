@@ -1,7 +1,6 @@
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.HermitianForms.SelfAdjointForms.Stabilizers.AnnAnti
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsLevelInverseCongruence
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
 
 noncomputable section
 

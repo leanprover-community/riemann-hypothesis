@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
 
+section
 open GlobalTheory.IsoTriv
 
 namespace GlobalTheory.IsoTriv.PrimeIdempotent
@@ -81,3 +82,9 @@ theorem epsSt : EpsSt := by
   exact Ideal.mul_mem_mul ha (Ideal.pow_le_pow_right hM (hεJ N))
 
 end GlobalTheory.IsoTriv.PrimeIdempotent
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.primeIdempotentApproximationsDVR_proof : EpsSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.PrimeIdempotent.epsSt

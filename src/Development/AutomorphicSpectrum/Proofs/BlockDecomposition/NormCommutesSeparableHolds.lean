@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open Polynomial PositivityTheory.Rg.Tf.Loc
 
 namespace GlobalTheory.CompanionTheory.TfLoc
@@ -37,3 +39,8 @@ theorem norm_commutes_of_separable : PositivityTheory.Rg.Tf.Loc.A1 → Positivit
   exact ⟨hc, hA1 E n _ hsep _ hc⟩
 
 end GlobalTheory.CompanionTheory.TfLoc
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_commutes_separable_holds : PositivityTheory.Rg.Tf.Loc.A1 → PositivityTheory.Rg.Tf.Loc.A2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TfLoc.norm_commutes_of_separable

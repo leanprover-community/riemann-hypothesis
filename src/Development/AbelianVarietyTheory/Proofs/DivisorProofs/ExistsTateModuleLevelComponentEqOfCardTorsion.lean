@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.MapSmulOfIsHausdorff
 
+section
 set_option autoImplicit false
 
 open GlobalTheory.HTLat
@@ -83,3 +84,9 @@ theorem exists_tate_lev_eq_of_card_torsion :
   rw [this, hg0]
 
 end GlobalTheory
+end
+
+open GlobalTheory.HTLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_tateModule_levelComponent_eq_of_card_torsion : ∀ (M : Type) [CommGroup M] (l : ℕ) [Fact l.Prime] (c : ℕ), (∀ k : ℕ, Nat.card {x : M // x ^ (l ^ k) = 1} = l ^ (c * k)) → ∀ (N : ℕ) (x : M), x ^ (l ^ N) = 1 → ∃ t : Tate l M, t.lev N = x := by
+  atlas_forward_decl GlobalTheory.exists_tate_lev_eq_of_card_torsion

@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsAddHaarMeasureVolumeLie
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EsymmEqSumFilterPermStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EsymmEqSumFilterPerm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchurMulDetEqDetStatement
+
+section
 open scoped Classical
 
 open MvPolynomial in
@@ -88,3 +89,9 @@ theorem GlobalTheory.JSW.esymm_mul_schur : ∀ (n : ℕ) (l : Fin n → ℕ), An
           intro k; have := k.isLt; simp only [Pi.add_apply]; split_ifs <;> omega
         simp only [e]
     _ = _ := by rw [Finset.filter_filter, Finset.sum_mul]
+end
+
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.esymm_mul_schurPolynomialJacobiTrudi : ∀ (n : ℕ) (l : Fin n → ℕ), Antitone l → ∀ j ≤ n, MvPolynomial.esymm (Fin n) ℤ j * GlobalTheory.JSW.schur n l = ∑ J ∈ (Finset.univ : Finset (Finset (Fin n))).filter (fun J => J.card = j ∧ Antitone (l + (fun i => if i ∈ J then 1 else 0))), GlobalTheory.JSW.schur n (l + (fun i => if i ∈ J then 1 else 0)) := by
+  atlas_forward_decl GlobalTheory.JSW.esymm_mul_schur

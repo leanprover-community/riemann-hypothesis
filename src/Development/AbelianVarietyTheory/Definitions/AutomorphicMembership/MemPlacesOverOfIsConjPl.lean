@@ -1,7 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LabConj
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.BlocksUnique
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseChangeNonempty
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LpUnrNegOneSpec
 
 noncomputable section

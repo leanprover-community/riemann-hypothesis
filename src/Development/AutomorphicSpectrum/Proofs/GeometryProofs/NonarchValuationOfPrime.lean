@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain UniqueFactorizationMonoid
 
 namespace GlobalTheory.CompanionTheory.Ggeo
@@ -148,3 +151,9 @@ theorem map_eq_pow_count_of_ultrametric :
   exact ⟨P, μ π, hPprime, hbot, haP, lt_of_le_of_ne (h0 π) (Ne.symm hπne), hkey⟩
 
 end GlobalTheory.CompanionTheory.Ggeo
+end
+
+open NumberField IsDedekindDomain UniqueFactorizationMonoid
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nonarch_valuation_of_prime : ∀ (R : Type) [CommRing R] [IsDedekindDomain R] (μ : R →*₀ ℝ) (a : R), a ≠ 0 → (∀ x, 0 ≤ μ x) → (∀ x, μ x ≤ 1) → (∀ x y, μ (x + y) ≤ max (μ x) (μ y)) → μ a < 1 → μ a ≠ 0 → ∃ (P : Ideal R) (c : ℝ), P.IsPrime ∧ P ≠ ⊥ ∧ a ∈ P ∧ 0 < c ∧ ∀ x : R, x ≠ 0 → μ x = c ^ (normalizedFactors (Ideal.span {x})).count P := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.map_eq_pow_count_of_ultrametric

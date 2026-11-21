@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowSubst
+
+section
 open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
 
 namespace GlobalTheory.UpperTransvection
@@ -95,3 +97,9 @@ theorem upper_mem_closure (R : Type) [CommRing R] (N : ℕ) (c : Matrix (Fin N) 
     refine S.mul_mem hmem' (Submonoid.subset_closure ⟨a, b, r, hlt.ne, rfl⟩)
 
 end GlobalTheory.UpperTransvection
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.one_add_strictUpper_mem_closure_transvection : ∀ (R : Type) [CommRing R] (N : ℕ) (c : Matrix (Fin N) (Fin N) R), (∀ a b, b ≤ a → c a b = 0) → 1 + c ∈ Submonoid.closure {M | ∃ (a b : Fin N) (r : R), a ≠ b ∧ M = Matrix.transvection a b r} := by
+  atlas_forward_decl GlobalTheory.UpperTransvection.upper_mem_closure

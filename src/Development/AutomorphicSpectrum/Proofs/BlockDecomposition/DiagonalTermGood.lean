@@ -1,5 +1,7 @@
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.RgEisDGood
 
 open PositivityTheory.RgEis PositivityTheory.RgEis.MG
@@ -115,3 +117,9 @@ theorem dGood : DGood := by
           gcongr
 
 end GlobalTheory.CompanionTheory.RgEisDGood
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.diagonal_term_good : DGood := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisDGood.dGood

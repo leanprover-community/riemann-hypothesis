@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsCompactKH
 
+section
 open MeasureTheory Matrix Filter Topology
 
 noncomputable section
@@ -135,3 +136,10 @@ theorem peak_properties : ∀ n : ℕ, 0 < n → Continuous (GlobalTheory.KFinAv
     exact hmax ⟨hg, fun hi => hgU (interior_subset hi)⟩
 
 end GlobalTheory.KFinAvg
+end
+end
+
+open MeasureTheory Matrix Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryRealTraceBump_peak_properties : ∀ n : ℕ, 0 < n → Continuous (GlobalTheory.KFinAvg.peak n) ∧ GlobalTheory.KFinAvg.peak n 1 = 1 ∧ (∀ g ∈ (Matrix.unitaryGroup (Fin n) ℂ : Set (Matrix (Fin n) (Fin n) ℂ)), 0 ≤ GlobalTheory.KFinAvg.peak n g ∧ GlobalTheory.KFinAvg.peak n g ≤ 1) ∧ ∀ U ∈ 𝓝 (1 : Matrix (Fin n) (Fin n) ℂ), ∃ δ < 1, ∀ g ∈ (Matrix.unitaryGroup (Fin n) ℂ : Set (Matrix (Fin n) (Fin n) ℂ)), g ∉ U → GlobalTheory.KFinAvg.peak n g ≤ δ := by
+  atlas_forward_decl GlobalTheory.KFinAvg.peak_properties

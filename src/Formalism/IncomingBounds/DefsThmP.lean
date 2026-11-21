@@ -1,5 +1,4 @@
 import Formalism.IncomingBounds.StatementThmP
-import Formalism.IncomingBounds.LevelTail
 import Formalism.IncomingBounds.LemmaMNumerics
 
 noncomputable section

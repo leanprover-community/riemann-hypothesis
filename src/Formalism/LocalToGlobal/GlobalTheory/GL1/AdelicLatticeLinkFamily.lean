@@ -5,8 +5,6 @@ import Formalism.LocalToGlobal.GlobalTheory.GL1.CompactFixesLattice.SingleMemOrb
 import Formalism.GL3MeanSquares.HookFormulaTorsion.DifferenceStableUnderAction
 import Formalism.GL3MeanSquares.HookFormulaTorsion.DifferentIdealConditions
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.CMFieldLemmas
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
-import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
 
 open IsDedekindDomain TensorProduct NumberField Topology
 

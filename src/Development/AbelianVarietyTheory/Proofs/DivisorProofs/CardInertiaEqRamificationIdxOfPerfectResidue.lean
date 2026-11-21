@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open IsDedekindDomain
 
 namespace GlobalTheory.InertiaDVR
@@ -43,3 +45,9 @@ theorem card_inertia_eq_ramificationIdx : ∀ (R K L : Type) [CommRing R] [IsDom
     Ideal.ramificationIdxIn_eq_ramificationIdx (P.asIdeal.under R) P.asIdeal (L ≃ₐ[K] L)]
 
 end GlobalTheory.InertiaDVR
+end
+
+open IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_inertia_eq_ramificationIdx_of_perfect_residue : ∀ (R K L : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [PerfectField (IsLocalRing.ResidueField R)] [Field K] [Algebra R K] [IsFractionRing R K] [Field L] [Algebra K L] [FiniteDimensional K L] [IsGalois K L] [Algebra R L] [IsScalarTower R K L] [SMulCommClass (L ≃ₐ[K] L) R L] [IsDedekindDomain (integralClosure R L)] [IsFractionRing (integralClosure R L) L] (P : IsDedekindDomain.HeightOneSpectrum (integralClosure R L)), Nat.card (P.asIdeal.inertia (L ≃ₐ[K] L)) = P.asIdeal.ramificationIdx R := by
+  atlas_forward_decl GlobalTheory.InertiaDVR.card_inertia_eq_ramificationIdx

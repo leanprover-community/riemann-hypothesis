@@ -1,7 +1,7 @@
 import Mathlib
-import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantTensorStatement
 
+section
 noncomputable section
 
 open Finset Polynomial
@@ -160,3 +160,9 @@ theorem omScal : OmScal := by
   exact sub_eq_zero.1 this
 
 end GlobalTheory.CompanionTheory.RgExhHecke.OmScalP
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.OmegaScalar : CompanionTheory.RgExh.Hk.OmScal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgExhHecke.OmScalP.omScal

@@ -1,9 +1,10 @@
 import Mathlib
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteChars
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsOpenConnectedComponentOfOneInf
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.DegOneIffSurjective
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open IsDedekindDomain NumberField Filter Topology
@@ -160,3 +161,10 @@ theorem levSub_triv : ∀ (L : Type) [Field L] [NumberField L] (S : Set (HeightO
   rw [hdec, map_mul, eq_one_inf ψ hinf x, eq_one_fin S N ψ hU hN _ hf1 hmem, mul_one]
 
 end GlobalTheory.LevelChars.LevTriv
+end
+end
+
+open IsDedekindDomain NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeChar_trivial_on_congruenceUnitIdeles : ∀ (L : Type) [Field L] [NumberField L] (S : Set (HeightOneSpectrum (𝓞 L))) (N : ℕ) (ψ : Formalism.L2.Host.HChar L), (∀ k : Lˣ, ψ.inf k = 1) → (∀ v, v ∉ S → ψ.UnrAt v) → (∀ v ∈ S, ψ.LevelLe v N) → ∀ a ∈ GlobalTheory.LevelChars.levSub L S N, ψ.1 a = 1 := by
+  atlas_forward_decl GlobalTheory.LevelChars.LevTriv.levSub_triv

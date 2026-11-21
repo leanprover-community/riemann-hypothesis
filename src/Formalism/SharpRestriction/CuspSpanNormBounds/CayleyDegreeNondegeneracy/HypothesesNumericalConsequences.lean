@@ -2,7 +2,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.I
 import Formalism.SharpRestriction.CuspSpanNormBounds.MassAndBranchingHypotheses
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.MinkowskiDividesFactorialOfBound
 import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
-import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 
 noncomputable section
 

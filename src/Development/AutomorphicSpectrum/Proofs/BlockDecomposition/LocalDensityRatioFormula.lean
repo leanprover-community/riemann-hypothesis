@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.PsiSide
 
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -715,3 +716,9 @@ theorem ratio : Ratio := by
 end GlobalTheory.CompanionTheory.RatioBase
 
 end
+end
+
+open PositivityTheory.Rg.Base1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_density_ratio_formula : Ratio := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RatioBase.ratio

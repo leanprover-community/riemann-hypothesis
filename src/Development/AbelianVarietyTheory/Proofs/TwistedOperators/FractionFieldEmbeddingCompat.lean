@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.DataNChTie
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FractionalBaseInclusion
 
 noncomputable section

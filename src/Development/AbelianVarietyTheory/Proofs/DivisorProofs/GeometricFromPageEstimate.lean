@@ -6,7 +6,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasIndexBoundOfRuns
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NumOfFjEqOfRecord
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeafDepthAllRecord
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SecondLinkOfWeightRowsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RunNumericalConditionsHoldAlongFamilyStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RunNumericalConditionsHoldAlongFamily
 
 set_option autoImplicit false
 

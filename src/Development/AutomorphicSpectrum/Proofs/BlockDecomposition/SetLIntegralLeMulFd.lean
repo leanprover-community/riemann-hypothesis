@@ -6,7 +6,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SizeBasicOfConj
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SizeFinitePlaces
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConjugatePlacesFacts
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RedSizeRatGLMul
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
 
 noncomputable section
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology

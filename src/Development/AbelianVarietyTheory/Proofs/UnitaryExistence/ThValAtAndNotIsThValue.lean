@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.ProjectiveLattices.IsThRule
 import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
 import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.ColumnSectionIdeal
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.InvariantFunctionsDescend

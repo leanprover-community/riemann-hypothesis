@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.GoodXgFin
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CyclicSplitting.IrrDecomp
+import BuildAid.ForwardExisting
 
+section
 open Formalism.L2.DIV
 
 namespace GlobalTheory.ColumnOrth
@@ -52,3 +54,9 @@ theorem sum_char_one_mul_char (A : Finset (G → ℂ))
     hmult ψ hψ]
 
 end GlobalTheory.ColumnOrth
+end
+
+open Formalism.L2.DIV
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_irrChar_one_mul_irrChar_column_orthogonality : ∀ {G : Type} [inst : Group G] [inst_1 : Fintype G] [inst_2 : DecidableEq G] (A : Finset (G → ℂ)), (∀ ψ, ψ ∈ A ↔ ψ ∈ Formalism.L2.Col.gxIrrSet (G := G) ℂ) → ∀ g : G, ∑ ψ ∈ A, ψ 1 * ψ g = if g = 1 then (Fintype.card G : ℂ) else 0 := by
+  atlas_forward_decl GlobalTheory.ColumnOrth.sum_char_one_mul_char

@@ -1,6 +1,8 @@
 import Mathlib
 import GroundTheory.GlobalFields.TateThesis.ArchCharsUnitary
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.KlocOp
 
 theorem cstar_char_eq_zpow : ∀ φ : ℂ → ℂ, (∀ z w : ℂ, z ≠ 0 → w ≠ 0 → φ (z * w) = φ z * φ w) →
@@ -42,3 +44,8 @@ theorem cstar_char_eq_zpow : ∀ φ : ℂ → ℂ, (∀ z w : ℂ, z ≠ 0 → w
   exact h
 
 end GlobalTheory.CompanionTheory.KlocOp
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_unitary_multiplicative_eq_arg_pow : ∀ φ : ℂ → ℂ, (∀ z w : ℂ, z ≠ 0 → w ≠ 0 → φ (z * w) = φ z * φ w) → ContinuousOn φ {z : ℂ | z ≠ 0} → (∀ z : ℂ, z ≠ 0 → ‖φ z‖ = 1) → (∀ r : ℝ, 0 < r → φ (r : ℂ) = 1) → ∃ k : ℤ, ∀ z : ℂ, z ≠ 0 → φ z = (z / (‖z‖ : ℂ)) ^ k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KlocOp.cstar_char_eq_zpow

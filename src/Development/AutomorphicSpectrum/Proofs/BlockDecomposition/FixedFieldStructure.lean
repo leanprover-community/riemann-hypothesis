@@ -1,5 +1,6 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.AlmostGoodOf
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.FixedPointsCM
@@ -113,3 +114,9 @@ theorem fixedK : PositivityTheory.SiegelWeilFormula.Gunr.FixedK := by
   exact exists_eq_algebraMap_of_sigR_eq σ hfin hσ u hu x hx
 
 end GlobalTheory.CompanionTheory.FixedPointsCM
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fixed_field_structure : PositivityTheory.SiegelWeilFormula.Gunr.FixedK := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FixedPointsCM.fixedK

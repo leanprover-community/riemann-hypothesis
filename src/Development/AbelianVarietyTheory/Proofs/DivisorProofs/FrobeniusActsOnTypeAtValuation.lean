@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidueEqZeroIffV
 
+section
 set_option autoImplicit false
 
 namespace GlobalTheory.PrimePart
@@ -151,3 +152,9 @@ theorem frobOnType_all (E : Type) [Field E] [NumberField E] [IsCMField E] (H : H
   frobOnType io X
 
 end GlobalTheory.PrimePart
+end
+
+open NumberField MvPowerSeries IsLocalRing ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FGDepth GlobalTheory.CharDepth GlobalTheory.FactorDepth GlobalTheory.IndefiniteRowSideFullHecke.TypedPartSplitPrimes GlobalTheory.PrimePart
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_acts_on_type_at_valuation : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (l : Level H) (c : Coeff l) (p : ℕ) [Fact p.Prime] (T : CDVR) (io : c.F →+* T.Fr) (X : ValExt T p), FrobOnType io X := by
+  atlas_forward_decl GlobalTheory.PrimePart.frobOnType_all

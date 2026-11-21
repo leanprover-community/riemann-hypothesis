@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardHermitianMatricesModPow
 
+section
 open PositivityTheory.PfSWUS.Loc
 
 namespace GlobalTheory.CompanionTheory.GunrNuBound
@@ -267,3 +268,8 @@ theorem GlobalTheory.CompanionTheory.GunrNuBound.nuBound : PositivityTheory.Sieg
         (summable_geometric_of_lt_one hx0 hx).sum_le_tsum _ (fun _ _ => pow_nonneg hx0 _)
     _ = 1 / (1 - (q : ℝ) ^ (n ^ 2) * r) := by
         rw [tsum_geometric_of_lt_one hx0 hx, one_div]
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.multiplicity_bound_unramified : PositivityTheory.SiegelWeilFormula.Gunr.NuBound := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrNuBound.nuBound

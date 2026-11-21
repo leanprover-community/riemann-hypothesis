@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonemptyRayDataOfNeZero
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RayClassPartialZetaContinuationStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DedekindZetaFactorizationRayStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DedekindZetaFactorizationRay
 
+section
 open NumberField IsDedekindDomain GlobalTheory.Mem Complex
 open scoped ComplexOrder
 
@@ -93,3 +93,10 @@ theorem rayLSeries_entire_ne_zero_one : ∀ (K : Type) [Field K] [NumberField K]
   exact lt_irrefl _ hpos
 
 end GlobalTheory.Mem
+end
+
+open NumberField IsDedekindDomain GlobalTheory.Mem Complex
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ray_L_nonvanishing_at_one : ∀ (K : Type) [Field K] [NumberField K] [IsTotallyComplex K], Module.finrank ℚ K = 2 → ∀ (M : ℕ), 2 ≤ M → ∀ (D : RayData K M) (χ : D.G →* ℂˣ), χ ≠ 1 → ∃ L : ℂ → ℂ, Differentiable ℂ L ∧ L 1 ≠ 0 ∧ ∀ s : ℂ, 1 < s.re → L s = LSeries (D.coef χ) s := by
+  atlas_forward_decl GlobalTheory.Mem.rayLSeries_entire_ne_zero_one

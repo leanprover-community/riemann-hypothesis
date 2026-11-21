@@ -1,4 +1,3 @@
-import Formalism.ZeroFreeRegion.SmallHeightLogDeriv
 import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.NormLogDerivLeLamF
 
 open Complex Filter Topology ArithmeticFunction LSeries

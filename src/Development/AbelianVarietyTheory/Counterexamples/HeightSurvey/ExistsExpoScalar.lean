@@ -5,7 +5,6 @@ import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.MaxCuspMemCuspFo
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ArithmeticGroupCuspCentreLattice
 import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.TransvMemZGam
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HyperbolicFlagDataBasePoint
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.M3bExpHolds
 
 open NumberField ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj.FJ Formalism.L2.Pj.QAt
 open scoped ComplexConjugate

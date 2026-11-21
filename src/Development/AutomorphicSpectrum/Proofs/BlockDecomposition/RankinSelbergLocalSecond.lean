@@ -1,7 +1,9 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerLocalTateIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory GroundTheory.LocalField Ad3 Ad3.R
@@ -329,3 +331,8 @@ theorem a2 : A2 := by
 end GlobalTheory.CompanionTheory.RSLocal
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_local_second : Ad3.R.A2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RSLocal.a2

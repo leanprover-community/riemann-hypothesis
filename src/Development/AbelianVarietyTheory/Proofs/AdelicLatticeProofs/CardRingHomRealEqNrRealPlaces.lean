@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain GlobalTheory.QNorm
 open scoped WithZero
 
@@ -25,3 +28,10 @@ theorem card_ringHom_real_eq_nrRealPlaces :
   rw [Nat.card_congr (e.trans InfinitePlace.mkReal), Nat.card_eq_fintype_card]
 
 end GlobalTheory.QNorm
+end
+
+open NumberField IsDedekindDomain GlobalTheory.QNorm
+open scoped WithZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_ringHom_real_eq_nrRealPlaces' : ∀ (F : Type) [Field F] [NumberField F], Nat.card (F →+* ℝ) = InfinitePlace.nrRealPlaces F := by
+  atlas_forward_decl GlobalTheory.QNorm.card_ringHom_real_eq_nrRealPlaces

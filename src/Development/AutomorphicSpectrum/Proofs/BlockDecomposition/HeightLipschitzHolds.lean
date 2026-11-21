@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.RgEis
 
 open PositivityTheory.RgEis
@@ -27,3 +29,8 @@ theorem htLip : PositivityTheory.RgEis.HtLip := by
   simpa using h5
 
 end GlobalTheory.CompanionTheory.RgEis
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.height_lipschitz_holds : PositivityTheory.RgEis.HtLip := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEis.htLip

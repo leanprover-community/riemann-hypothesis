@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResAlgSplitTwo
+import BuildAid.ForwardExisting
 
+section
 open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
 
 namespace GlobalTheory.CompanionTheory.UnrDens.NormUnit
@@ -305,3 +307,9 @@ theorem card_fibre : ∀ (E : Type) [CommRing E] (τ : E →+* E) (q : ℕ) (ε 
     omega
 
 end GlobalTheory.CompanionTheory.UnrDens.NormUnit
+end
+
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_fibre_card_nonzero : ∀ (E : Type) [CommRing E] (τ : E →+* E) (q : ℕ) (ε : ℤ), ResAlg E τ q ε → ∀ t : E, τ t = t → t ≠ 0 → (Nat.card {a : E // a * τ a = t} : ℤ) = q - ε := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnrDens.NormUnit.card_fibre

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG GlobalTheory.InertZeta
@@ -139,3 +141,10 @@ theorem dosetSwap : DosetSwap := by
   rwa [key, ha.tsum_eq] at hb
 
 end GlobalTheory.CompanionTheory.InertZeta
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.double_coset_swap : DosetSwap := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertZeta.dosetSwap

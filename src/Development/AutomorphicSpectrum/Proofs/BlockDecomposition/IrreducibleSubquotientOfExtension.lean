@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhitImgMono
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.CompanionTheory.BZNuPair
@@ -129,3 +131,11 @@ theorem isSubquotient_sub_or_quot :
 end GlobalTheory.CompanionTheory.SubquotExt
 
 end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.CompanionTheory.BZNuPair
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.irreducible_subquotient_of_extension : ∀ (G V W : Type) [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ G V) (σ : Representation ℂ G W)
+    (A B : Subrepresentation ρ), A ≤ B → σ.IsIrreducible → IsSubquotient σ B.toRepresentation →
+    IsSubquotient σ A.toRepresentation ∨ IsSubquotient σ (subQuot B A) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SubquotExt.isSubquotient_sub_or_quot

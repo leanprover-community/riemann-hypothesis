@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.NeutralLocalFields.Reciprocity
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.RecDefs
 
 namespace ReciprocityTheory.DiscreteGroups.LocalClassField

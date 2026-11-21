@@ -1,15 +1,15 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlatDegree
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCMFrame
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.HermitianMetricLogNormFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramDetNeZeroLocalBasisCofiniteStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChowlaSelbergPeriodStatement
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LogNormsExtDegreeAdelicStatement
-import Development.AutomorphicSpectrum.Proofs.AdelicProofs.SumEmbeddingsBaseChangeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionCmValueStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionCmHeightStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionCmNumberFieldStatement
+import Development.AutomorphicSpectrum.Proofs.AdelicProofs.HermitianMetricLogNormFormula
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GramDetNeZeroLocalBasisCofinite
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChowlaSelbergPeriod
+import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LogNormsExtDegreeAdelic
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionCmValue
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionCmHeight
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameFunctionCmNumberField
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Fl
@@ -118,3 +118,9 @@ theorem flatDegree : FlatDegree := by
   rw [← hdeg', hdeg, flatDegree_logOm_re E χ (hxv true)]
 
 end GlobalTheory.CompanionTheory.Ar.Fl
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.FlatDegree_holds : GlobalTheory.CompanionTheory.Ar.Fl.FlatDegree := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Fl.flatDegree

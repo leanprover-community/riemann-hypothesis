@@ -1,7 +1,8 @@
 import Mathlib
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemNilRad
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffMemSubmoduleOfComplexPolyValuesMemStatement
+
+section
 open Matrix GlobalTheory.TorFin
 
 theorem GlobalTheory.isIntMod_of_monic_dvd_affine : ∀ (A : Type) [Ring A] [Algebra ℂ A] (Z : Subalgebra ℂ A) (I : Submodule ℂ A) (H : A),
@@ -76,3 +77,10 @@ theorem GlobalTheory.isIntMod_of_monic_dvd_affine : ∀ (A : Type) [Ring A] [Alg
   rcases neg_one_pow_eq_or A N with h | h <;> rw [h] at hN
   · simpa using hN
   · rw [neg_one_mul] at hN; simpa using (I ⊔ S).neg_mem hN
+end
+
+open Matrix GlobalTheory.TorFin
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_module_of_char_poly : ∀ (A : Type) [Ring A] [Algebra ℂ A] (Z : Subalgebra ℂ A) (I : Submodule ℂ A) (H : A), (∀ i ∈ I, H * i ∈ I) → ∀ (N : ℕ) (c q : ℕ → A), c N = 1 → (∀ k ≤ N, c k ∈ Z) → (∀ u : ℂ, ∑ k ∈ Finset.range (N + 1), u ^ k • c k - (u • (1 : A) + H) * ∑ k ∈ Finset.range N, u ^ k • q k ∈ I) → IsIntMod Z I H := by
+  atlas_forward_decl GlobalTheory.isIntMod_of_monic_dvd_affine

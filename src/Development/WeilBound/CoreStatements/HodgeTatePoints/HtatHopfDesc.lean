@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatDesc
 open GlobalTheory.CompanionTheory.Ar.BT TensorProduct
 

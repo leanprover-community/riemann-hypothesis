@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddSmulVecMulVecMulVec
 
+section
 namespace GlobalTheory.UnipKill
 
 open ReciprocityTheory.ChartRestriction.G.FD NumberField
@@ -30,3 +31,9 @@ theorem mul_transvMat_of_scale : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     smul_mul_assoc, mul_rk1_self_of_scale G g ξ ε hg hξ hc h0, smul_smul, mul_comm α]
 
 end GlobalTheory.UnipKill
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isometry_conj_transvection_scale : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) (G g : Matrix (Fin N) (Fin N) E) (ξ : Fin N → E) (ε : E), IsIsom G g → g.mulVec ξ = ε • ξ → cc ε = ε → ε ≠ 0 → ∀ α : E, g * transvMat G ξ α = transvMat G ξ (ε ^ 2 * α) * g := by
+  atlas_forward_decl GlobalTheory.UnipKill.mul_transvMat_of_scale

@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NatCastMemPlaceAt
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsNormEqOfMemClosure
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsRamificationOverPlaceOfCdvrReadingInCp
+
+section
 open NumberField IsDedekindDomain Formalism.L2.Pj GlobalTheory.GeoTie
 
 set_option autoImplicit false
@@ -207,3 +208,10 @@ theorem kur_approx : ∀ (p : ℕ) [Fact p.Prime] (F : Type) [Field F] [NumberFi
     fun s => ⟨z s, hzM s⟩, fun s => hd s⟩
 
 end GlobalTheory.KurApprox
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Pj GlobalTheory.GeoTie
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_unramified_approximation_padic : ∀ (p : ℕ) [Fact p.Prime] (F : Type) [Field F] [NumberField F] (φ : F →+* ℂ_[p]) (n : ℕ) (y : Fin n → ℂ_[p]), (∀ s, y s ∈ kurC φ) → ∀ ε : ℝ, 0 < ε → ∃ (F' : Type) (_ : Field F') (_ : NumberField F') (_ : Algebra F F') (φ' : F' →+* ℂ_[p]), (∀ a, φ' (algebraMap F F' a) = φ a) ∧ (∀ a : F, vLa (placeAt φ') (algebraMap F F' a) = vLa (placeAt φ) a) ∧ ∃ a' : Fin n → F', ∀ s, ‖y s - φ' (a' s)‖ < ε := by
+  atlas_forward_decl GlobalTheory.KurApprox.kur_approx

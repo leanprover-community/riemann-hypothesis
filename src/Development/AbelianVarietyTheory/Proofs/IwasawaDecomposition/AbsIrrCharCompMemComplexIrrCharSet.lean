@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.GoodXgFin
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IrreducibleFinrankOne.IrrOfFinrankOne
+import BuildAid.ForwardExisting
 
+section
 open Formalism.L2.DIV
 
 noncomputable section
@@ -36,3 +38,10 @@ theorem absIrrChar_comp_mem_gxIrrSet : ∀ {G : Type} [inst : Group G] [inst_1 :
   exact ⟨n, PI.XgCTieBrWork.Chars.ofGL ρc, PI.XgCTieBrWork.Chars.irr_of_finrank_one _ h1, funext hchar⟩
 
 end GlobalTheory
+end
+end
+
+open Formalism.L2.DIV
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absIrrChar_comp_mem_complexIrrCharSet : ∀ {G : Type} [inst : Group G] [inst_1 : Fintype G] {K : Type} [inst_2 : Field K] [inst_3 : CharZero K] (σ : K →+* ℂ) (χ : G → K), IsAbsIrrChar χ → (fun g => σ (χ g)) ∈ Formalism.L2.Col.gxIrrSet (G := G) ℂ := by
+  atlas_forward_decl GlobalTheory.absIrrChar_comp_mem_gxIrrSet

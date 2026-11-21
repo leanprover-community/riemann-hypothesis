@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.InstBorelGL
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CartanDecompositionGeneralLinearStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CartanDecompositionGeneralLinear
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MemIntegralGLIffIntegralUnitDetStatement
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MatrixAdditiveHaarNormalizedStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MatrixAdditiveHaarNormalized
+
+section
 open MeasureTheory Matrix GlobalTheory.CompanionTheory.QL
 open scoped ComplexConjugate ValuativeRel
 
@@ -398,3 +399,11 @@ theorem haar_mat_scale : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalS
   fun hLF n m dx hinv h1 => map_mul_eq hLF n m dx hinv h1
 
 end GlobalTheory.CompanionTheory.QLScale
+end
+end
+
+open MeasureTheory Matrix GlobalTheory.CompanionTheory.QL
+open scoped ComplexConjugate ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_haar_right_translate : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] {O : Subring F} {ϖ : F} {nrm : AbsoluteValue F ℝ} {q : ℕ}, LF O ϖ nrm q → ∀ n m : ℕ, ∀ (dx : Measure (Matrix (Fin n) (Fin m) F)), dx.IsAddLeftInvariant → dx (intMat O n m) = 1 → (∀ g : GL (Fin m) F, Measure.map (fun x : Matrix (Fin n) (Fin m) F => x * (g : Matrix (Fin m) (Fin m) F)) dx = ENNReal.ofReal ((nrm (g : Matrix (Fin m) (Fin m) F).det)⁻¹ ^ n) • dx) ∧ (∀ k ∈ GLint O n, Measure.map (fun x : Matrix (Fin n) (Fin m) F => (k : Matrix (Fin n) (Fin n) F) * x) dx = dx) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.QLScale.haar_mat_scale

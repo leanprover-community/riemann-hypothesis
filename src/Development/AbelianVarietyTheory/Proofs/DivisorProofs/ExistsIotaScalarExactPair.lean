@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IotaScalarOne
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
 
 namespace GlobalTheory.DetInv.ScalarEx
@@ -172,3 +175,9 @@ theorem exists_iotaScalar (C : Type) [Field C] (N : ℕ) (α β : Matrix (Fin N)
   field_simp
 
 end GlobalTheory.DetInv.ScalarEx
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_iota_scalar_exact_pair : ∀ (C : Type) [Field C] (N : ℕ) (α β : Matrix (Fin N) (Fin N) C), α * β = 0 → β * α = 0 → (∀ x, α *ᵥ x = 0 → ∃ y, x = β *ᵥ y) → ∃ lam : C, lam ≠ 0 ∧ IotaScalar α β β.rank lam := by
+  atlas_forward_decl GlobalTheory.DetInv.ScalarEx.exists_iotaScalar

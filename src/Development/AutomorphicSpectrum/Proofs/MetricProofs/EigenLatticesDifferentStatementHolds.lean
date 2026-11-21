@@ -3,7 +3,9 @@ import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.EigenLatDifferent
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProjSumSumEmbeddingsEqTrace
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DifferentGeneratorDualIntegral
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CapelliComplements.GeneralBFactThird
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.EigLat
@@ -301,3 +303,10 @@ theorem eigenLat_eq_diffLat : EigenLatDifferent.Statement := by
   exact le_antisymm (eigenLat_le (card_embeddings ι hι) I hI s) (diffLat_le I s)
 
 end GlobalTheory.CompanionTheory.Ar.EigLat
+end
+end
+
+open NumberField GroundTheory.Heights₂.Heights.NineStatements
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eigen_lattices_different_statement_holds : GroundTheory.Heights₂.Heights.NineStatements.EigenLatDifferent.Statement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.EigLat.eigenLat_eq_diffLat

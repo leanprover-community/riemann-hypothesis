@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RootExchangeStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RootExchange
 
+section
 open ReciprocityTheory.Ty.Fin
 
 namespace GlobalTheory.CompanionTheory.TyFin
@@ -111,3 +112,9 @@ theorem chainIndep : ReciprocityTheory.Ty.Fin.St.ChainIndep := by
   | succ t ih => rw [chain_step K m k t ψ₀ χ hψ hχ ht, ih (by omega)]
 
 end GlobalTheory.CompanionTheory.TyFin
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chain_independence : ReciprocityTheory.Ty.Fin.St.ChainIndep := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.chainIndep

@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.InterPolyProdSum
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -91,3 +92,11 @@ theorem measurable_chernTop {n : ℕ} {ι : Type} {m : ι → ℕ} (R : MvPolyno
   exact Finset.measurable_sum _ fun w _ => (P.2 _).const_mul _
 
 end GlobalTheory.ChernMeas
+end
+end
+
+open MvPolynomial GlobalTheory GlobalTheory.FlagBundle GlobalTheory.HermFrame GlobalTheory.GoodMetric
+open ReciprocityTheory.L2DbarEstimates (V)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurable_chernPolyTopDensity : ∀ {n : ℕ} {ι : Type} {m : ι → ℕ} (R : MvPolynomial (ι × ℕ) ℝ) (G : V n → Mat m ℂ), Measurable (fun v => chernTop R G v) := by
+  atlas_forward_decl GlobalTheory.ChernMeas.measurable_chernTop

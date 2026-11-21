@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.ResolutionCharZero.PrincipalisationCharZeroBotOfEff
 import Development.WeilBound.CoreStatements.ResolutionCharZero.RqGend
 
 noncomputable section

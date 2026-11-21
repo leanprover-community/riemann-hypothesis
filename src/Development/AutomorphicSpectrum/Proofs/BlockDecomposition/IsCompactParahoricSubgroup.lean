@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MetaplecticLowRank.LowC
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApplyMemTwKerOfNormalizer
+import BuildAid.ForwardExisting
 
+section
 open PositivityTheory.LowerBoundConstant GlobalTheory GlobalTheory.Published GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead Topology
 
 namespace GlobalTheory.CompanionTheory.MoyPrasad
@@ -18,3 +20,9 @@ theorem isCompact_Gx : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
     (Subgroup.isClosed_of_isOpen _ hopen) (fun x hx => hle hx)
 
 end GlobalTheory.CompanionTheory.MoyPrasad
+end
+
+open PositivityTheory.LowerBoundConstant GlobalTheory GlobalTheory.Published GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCompact_parahoric_subgroup : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n s : ℕ) (d : Fin s → ℕ) (e : (Σ a, Fin (d a)) ≃ Fin n), IsCompact (Gx k e : Set (GL (Fin n) k)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MoyPrasad.isCompact_Gx

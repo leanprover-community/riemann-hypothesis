@@ -4,8 +4,9 @@ import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Exponential
 import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.DiagonalInfinityValues.InfGLValDiag
 import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.NormalisedExistence.ExistsNormed
 import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.CasimirOnParabolicInduction
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LieOneLMemZalg
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsStableBdSub
+
+section
 open scoped ENNReal
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
@@ -27,3 +28,14 @@ theorem aT_eq_lev (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (r s
   rw [h1, sub_add_cancel, Matrix.one_apply]
 
 end GlobalTheory.CompanionTheory.Conc.LevAt
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torus_element_levi_embedding : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (r s : ℕ) (t : ℝ),
+  aT E (r + s) r t = GlobalTheory.CompanionTheory.CTFin.lev (Ad E) r s (aT E r r t, 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.LevAt.aT_eq_lev

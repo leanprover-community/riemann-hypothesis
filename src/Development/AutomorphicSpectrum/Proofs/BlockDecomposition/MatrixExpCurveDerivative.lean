@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RwAppend
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Finset Filter Topology
 open scoped ContDiff ComplexConjugate InnerProductSpace ZeroAtInfty
 open PositivityTheory.RgTw (Mat G)
@@ -42,3 +45,15 @@ theorem expC_continuous_hasDerivAt :
   exact continuous_iff_continuousAt.2 fun t => (hasDerivAt_exp X t).continuousAt
 
 end GlobalTheory.CompanionTheory.PresSobA.ExpCurve
+end
+end
+
+open MeasureTheory Matrix Finset Filter Topology
+open scoped ContDiff ComplexConjugate InnerProductSpace ZeroAtInfty
+open PositivityTheory.RgTw (Mat G)
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Fc GlobalTheory.CompanionTheory.PresSobA
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+noncomputable section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_exp_curve_derivative : ∀ (n : ℕ) (X : Mat n), Continuous (expC X) ∧ ∀ t : ℝ, HasDerivAt (fun s : ℝ => (expC X s).val) ((expC X t).val * X) t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PresSobA.ExpCurve.expC_continuous_hasDerivAt

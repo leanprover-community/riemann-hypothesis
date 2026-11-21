@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
+import BuildAid.ForwardExisting
+
+section
 open Filter Topology MeasureTheory Metric ReciprocityTheory.L2DbarEstimates
 open scoped ComplexOrder
 
@@ -83,3 +86,10 @@ theorem integral_exp_neg_herm : ∀ (n : ℕ) (H : Matrix (Fin n) (Fin n) ℂ), 
   exact (div_pos (pow_pos Real.pi_pos n) hpos).ne'
 
 end GlobalTheory.GaussHerm
+end
+
+open Filter Topology MeasureTheory Metric ReciprocityTheory.L2DbarEstimates
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_exp_neg_hermitian_form_posDef : ∀ (n : ℕ) (H : Matrix (Fin n) (Fin n) ℂ), H.PosDef → Integrable (fun w : V n => Real.exp (-(∑ j, ∑ l, H j l * w j * (starRingEnd ℂ) (w l)).re)) ∧ ∫ w : V n, Real.exp (-(∑ j, ∑ l, H j l * w j * (starRingEnd ℂ) (w l)).re) = Real.pi ^ n / H.det.re := by
+  atlas_forward_decl GlobalTheory.GaussHerm.integral_exp_neg_herm

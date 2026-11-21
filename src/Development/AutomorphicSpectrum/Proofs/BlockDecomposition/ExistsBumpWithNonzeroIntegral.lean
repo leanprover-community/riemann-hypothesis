@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory
 open scoped ENNReal NNReal Topology
 
@@ -41,3 +44,10 @@ theorem exists_integral_ne_zero_of_carried_by_isOpen
   exact hpos.ne'
 
 end GlobalTheory.CompanionTheory.MeasureBump
+end
+
+open MeasureTheory
+open scoped ENNReal NNReal Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_bump_with_nonzero_integral : ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (m : Measure X) (U : Set X), IsOpen U → m Uᶜ = 0 → m ≠ 0 → (∀ χ : X → ℝ, Continuous χ → HasCompactSupport χ → tsupport χ ⊆ U → Integrable χ m) → ∃ χ : X → ℝ, Continuous χ ∧ HasCompactSupport χ ∧ tsupport χ ⊆ U ∧ ∫ x, χ x ∂m ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MeasureBump.exists_integral_ne_zero_of_carried_by_isOpen

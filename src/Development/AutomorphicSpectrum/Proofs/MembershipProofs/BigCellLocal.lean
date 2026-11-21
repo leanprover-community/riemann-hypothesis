@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.MembershipCriteria.GoodChar
 import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ExistsSkewOfDiagonal
 
 open GlobalTheory.CompanionTheory.VacLoc GlobalTheory.CompanionTheory.FinHeis GlobalTheory.WeilM MeasureTheory Matrix

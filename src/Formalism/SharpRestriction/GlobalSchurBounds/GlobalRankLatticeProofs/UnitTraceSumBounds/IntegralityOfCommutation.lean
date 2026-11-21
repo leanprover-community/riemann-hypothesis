@@ -1,6 +1,5 @@
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.NonvanishingBesselPeriod
 import Formalism.SharpRestriction.CuspSpanNormBounds.DiscreteSeriesWeylDimension
-import Formalism.SharpRestriction.AdmissibleParameterJoins.SfromGLe
 
 namespace Formalism.MainNotions.StandardLattice
 

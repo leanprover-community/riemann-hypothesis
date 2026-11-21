@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivAt0EqSumOfSubs
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalGroupOperatorDepthMulDisjointColumns
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChgPfTP
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -150,3 +151,10 @@ theorem linSt_holds : LinSt := by
       derivAt0_smulG]
 
 end GlobalTheory.IsoTriv
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.constCoeffOperatorLinearSubstitution_proof : LinSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.linSt_holds

@@ -4,7 +4,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMemMatrixAlgebr
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermMulVecMulVec
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.FsvMulFsvNeg
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameOfAdmissibleWord
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagScalarCommuteTransposedRMatrix
 
 open MeasureTheory
 

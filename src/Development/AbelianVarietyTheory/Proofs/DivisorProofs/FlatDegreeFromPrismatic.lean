@@ -1,21 +1,17 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ScholzeWeinsteinB
 import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
-import Development.AbelianVarietyTheory.Definitions.Divisors.P22
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsHorizontalGeneratorOfCharts
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactification
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InjectiveOfSmulMemRange
-import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchimedeanExistenceEverywhereStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatDegreeOfSteps
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmDifferentFromIdealStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdealFromPlaceShiftStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdealFromPlaceShift
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HtValAtNonempty
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameDegreeCmLogPeriodStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameDegreeCmLogPeriod
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateConstantEverywhereStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateShiftCmStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateShiftCm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceShiftStOfPublished
 
+section
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore
 
 namespace GlobalTheory.FlatCore
@@ -35,3 +31,9 @@ theorem flatDegreeSt_of_prismaticDieudonne :
   exact GlobalTheory.FlatCore.flatDegree_of_steps E H Dw l Xo c r U x hL _ hArch hFin hFr
 
 end GlobalTheory.FlatCore
+end
+
+open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flat_degree_from_prismatic : GlobalTheory.Published.ScholzeWeinsteinB → GlobalTheory.CovTop.Hypotheses2 → GlobalTheory.Published.CanonicalExtensionRankOne → GlobalTheory.Published.DeRhamCanonicalExtension → GlobalTheory.Published.PrismaticDieudonneHodge → FlatDegreeSt := by
+  atlas_forward_decl GlobalTheory.FlatCore.flatDegreeSt_of_prismaticDieudonne

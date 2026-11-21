@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ClosureConjugation.GrAlg
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ClosureConjugation.IdemNil
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.StCoiLift
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.UnitsExist

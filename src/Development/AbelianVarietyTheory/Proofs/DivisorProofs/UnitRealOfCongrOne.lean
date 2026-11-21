@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 
 namespace GlobalTheory.UnitReal
@@ -65,3 +68,11 @@ theorem unit_real_of_congr_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   rw [← IsCMField.complexEmbedding_complexConj, hE]
 
 end GlobalTheory.UnitReal
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unit_real_of_sub_one_mem_span_prime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (q : ℕ), q.Prime →
+    ¬ q ∣ Nat.card (Units.torsion E) → ∀ u : (𝓞 E)ˣ, (u : 𝓞 E) - 1 ∈ Ideal.span {((q : ℕ) : 𝓞 E)} →
+    ∀ φ : E →+* ℂ, starRingEnd ℂ (φ ((u : 𝓞 E) : E)) = φ ((u : 𝓞 E) : E) := by
+  atlas_forward_decl GlobalTheory.UnitReal.unit_real_of_congr_one

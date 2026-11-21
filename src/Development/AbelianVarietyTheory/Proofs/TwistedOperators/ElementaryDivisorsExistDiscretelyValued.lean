@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.GlintPrincRelIndexNeZero
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix
@@ -34,3 +34,9 @@ theorem elementaryDivisors_exist_discretely_valued : Smith := by
 end GlobalTheory.InertZeta
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.elementaryDivisors_exist_discretelyValued : Smith := by
+  atlas_forward_decl GlobalTheory.InertZeta.elementaryDivisors_exist_discretely_valued

@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ZetaValueIdeals
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TranslateWideInd
+import BuildAid.ForwardExisting
+
+section
 open NumberField Module Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.IndefiniteRowSideFullHecke.ZetaValueIdeals GlobalTheory.ZetaDenom
 open scoped nonZeroDivisors
 
@@ -57,3 +59,10 @@ theorem mMin_eq_mE : Formalism.PairingDivisionLocalBalance.MinVal → ∀ l n : 
     exact mE_le_padicValNat hl hn he ha hac
 
 end GlobalTheory.MinValClosed
+end
+
+open NumberField Module Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.IndefiniteRowSideFullHecke.ZetaValueIdeals GlobalTheory.ZetaDenom
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.minPadicValPowSubOneCoprime_eq_closedFormula : Formalism.PairingDivisionLocalBalance.MinVal → ∀ l n : ℕ, l.Prime → 2 ≤ n → Even n → mMin l n = Formalism.PairingDivisionLocalBalance.mE l n := by
+  atlas_forward_decl GlobalTheory.MinValClosed.mMin_eq_mE

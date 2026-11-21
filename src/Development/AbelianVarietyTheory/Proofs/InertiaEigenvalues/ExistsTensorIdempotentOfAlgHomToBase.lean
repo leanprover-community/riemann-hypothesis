@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain TensorProduct Polynomial
 
 namespace GlobalTheory
@@ -87,3 +90,9 @@ theorem exists_tensor_idem_of_algHom (E K E' : Type) [Field E] [CharZero E] [Fie
   | add a b ha hb => exact Qadd _ _ ha hb
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_tensor_idempotent_of_algHom_to_base : ∀ (E K E' : Type) [Field E] [CharZero E] [Field K] [Field E'] [Algebra E K] [Algebra E E'] [FiniteDimensional E E'] (ψ : K ⊗[E] E' →ₐ[K] K), ∃ e : K ⊗[E] E', ψ e = 1 ∧ ∀ a, e * a = algebraMap K (K ⊗[E] E') (ψ a) * e := by
+  atlas_forward_decl GlobalTheory.exists_tensor_idem_of_algHom

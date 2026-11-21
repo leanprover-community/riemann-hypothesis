@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalToGlobal.BesselHermitianTheta.MinfDensity
-import Formalism.LocalRingCardinality.DataDIV
 
 noncomputable section
 

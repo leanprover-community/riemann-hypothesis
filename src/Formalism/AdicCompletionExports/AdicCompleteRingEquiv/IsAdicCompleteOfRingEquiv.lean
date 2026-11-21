@@ -1,5 +1,4 @@
 import Formalism.WachLatticeTwists.RealDisplaySplitting.GaloisTheoremWithGenerator
-import ReciprocityTheory.GaloisValuations.Global
 
 noncomputable section
 

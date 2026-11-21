@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing TensorProduct
 
 namespace GlobalTheory
@@ -43,3 +46,9 @@ theorem exists_det_ne_zero_of_rows_separating :
   exact ((Matrix.isUnit_iff_isUnit_det _).mp hu).ne_zero
 
 end GlobalTheory
+end
+
+open IsLocalRing TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_det_ne_zero_of_separating_functionals : ∀ (K : Type) [Field K] (σ : Type) (h : ℕ) (M : σ → Fin h → K), (∀ a : Fin h → K, (∀ s, ∑ j, a j * M s j = 0) → a = 0) → ∃ s : Fin h → σ, (Matrix.of fun i j => M (s i) j).det ≠ 0 := by
+  atlas_forward_decl GlobalTheory.exists_det_ne_zero_of_rows_separating

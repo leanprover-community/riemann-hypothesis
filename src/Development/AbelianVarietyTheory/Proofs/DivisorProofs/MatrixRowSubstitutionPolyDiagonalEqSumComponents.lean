@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowSubst
+
+section
 open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
 
 set_option autoImplicit false
@@ -58,3 +60,9 @@ theorem rowSubst_diagonal_eq_sum_components : ∀ (O : Type) [CommRing O] (N : �
   exact (weight_le N m a).trans ((le_totalDegree hm).trans hf)
 
 end GlobalTheory.DiagRowSubst
+end
+
+open MvPolynomial Formalism.GradedWeylDivisibility GlobalTheory.GenCoef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrixRowSubstitutionPoly_diagonal_eq_sum_components : ∀ (O : Type) [CommRing O] (N : ℕ) (R : Type) [CommRing R] [Algebra O R] (d : Fin N → R) (D : ℕ) (f : MvPolynomial (Fin N × Fin N) O), f.totalDegree ≤ D → rowSubst O N R (Matrix.diagonal d) f = ∑ w ∈ Fintype.piFinset (fun _ : Fin N => Finset.range (D + 1)), (∏ a, d a ^ w a) • MvPolynomial.map (algebraMap O R) (weightedHomogeneousComponent (rowW N N) w f) := by
+  atlas_forward_decl GlobalTheory.DiagRowSubst.rowSubst_diagonal_eq_sum_components

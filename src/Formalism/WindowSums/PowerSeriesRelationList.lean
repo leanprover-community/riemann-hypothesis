@@ -1,4 +1,3 @@
-import Formalism.WindowSums.AnnihilatorPolynomials.DistinctTerms
 import Formalism.WindowSums.AnnihilatorPolynomials.LeOfPowMemIdealOfDistinctTerms
 import Formalism.WindowSums.AnnihilatorPolynomials.FirstCoefficientBoundHolds
 import Formalism.WindowSums.AnnihilatorPolynomials.EvalOneSmulDecomposition

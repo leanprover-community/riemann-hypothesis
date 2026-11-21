@@ -4,13 +4,12 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.JetAnalytic
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDetGen
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnimodularSolCoords
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EllipticMapTangentDifferential
 import GroundTheory.GlobalFields.ComplexMultiplication.EllipticRational
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyNhdsNEInChart
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationRingStalk
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsVariableChangeEqLatticeCurve
 
+section
 section
 
 open Filter Polynomial
@@ -133,3 +132,15 @@ theorem exists_hom_of_periodic_holomorphic : ∀ (Λ : PeriodPair) (Ω : ℂ), �
   rw [h6, rv_pt _ _ h5 h4, Function.comp_apply, Function.comp_apply, h3, h, mul_div_cancel_left₀ _ hc]
 
 end GlobalTheory.CMTorsion
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.RealMult GlobalTheory.CMVal GlobalTheory.LatVal GlobalTheory.LatJet
+open GlobalTheory.IndefiniteRowSideFullHecke.LatticeNormTransport (upIdele IsLatOf)
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option autoImplicit false
+open GlobalTheory.CMTorsion
+open GlobalTheory.WeierstrassCurve (scheme toSpec mapHom)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.holomorphic_map_to_projective_space : ∀ (Λ : PeriodPair) (Ω : ℂ), Ω ≠ 0 → ∀ (N : ℕ) (φ : ℂ → (Sp ℂ ⟶ PSpace ℂ N)), (∀ z, φ z ≫ PSpace.str ℂ N = 𝟙 _) → (∀ z, ∀ l ∈ Λ.lattice, φ (z + l) = φ z) → (∀ (U : (PSpace ℂ N).Opens) (s : Γ(PSpace ℂ N, U)), IsOpen {z | ⊤ ≤ (φ z) ⁻¹ᵁ U} ∧ DifferentiableOn ℂ (fun z => valAt' (φ z) U s) {z | ⊤ ≤ (φ z) ⁻¹ᵁ U}) → ∃ ψ : scheme (curve Λ Ω) ⟶ PSpace ℂ N, ψ ≫ PSpace.str ℂ N = toSpec (curve Λ Ω) ∧ ∀ z, pt Λ Ω z ≫ ψ = φ z := by
+  atlas_forward_decl GlobalTheory.CMTorsion.exists_hom_of_periodic_holomorphic

@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsContOnOfLocal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdeleJoinZero
 
+section
 open IsDedekindDomain NumberField
 open scoped Classical
 
@@ -49,3 +50,12 @@ theorem norm_pow_le_const_mul_one_add_sum_abs_coord_pow :
           linarith
 
 end GlobalTheory
+end
+
+open IsDedekindDomain NumberField
+open scoped Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_pow_le_const_mul_one_add_sum_abs_basisCoord_pow : ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (ι : Type) [Fintype ι] (b : Module.Basis ι ℝ E) (i : ℕ),
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ x : E, ‖x‖ ^ i ≤ K * (1 + ∑ c, |b.coord c x| ^ i) := by
+  atlas_forward_decl GlobalTheory.norm_pow_le_const_mul_one_add_sum_abs_coord_pow

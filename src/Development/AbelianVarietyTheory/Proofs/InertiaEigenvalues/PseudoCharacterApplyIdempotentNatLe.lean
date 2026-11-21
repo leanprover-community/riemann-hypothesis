@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPsCharOne
+import BuildAid.ForwardExisting
 
+section
 open Formalism.MainNotions.N GlobalTheory.PsChar
 
 namespace GlobalTheory.PsChar
@@ -60,3 +62,9 @@ theorem isPsChar_idempotent : ∀ (k R : Type) [Field k] [CharZero k] [Ring R] [
     exact (mul_eq_zero.mp h).resolve_left h1
 
 end GlobalTheory.PsChar
+end
+
+open Formalism.MainNotions.N GlobalTheory.PsChar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pseudoCharacter_apply_idempotent_nat_le : ∀ (k R : Type) [Field k] [CharZero k] [Ring R] [Algebra k R] (d : ℕ) (T : R →ₗ[k] k), IsPsChar d (fun x => T x) → ∀ e : R, IsIdempotentElem e → (∃ m : ℕ, m ≤ d ∧ T e = m) ∧ (T e = 0 → ∀ y : R, T (e * y) = 0) := by
+  atlas_forward_decl GlobalTheory.PsChar.isPsChar_idempotent

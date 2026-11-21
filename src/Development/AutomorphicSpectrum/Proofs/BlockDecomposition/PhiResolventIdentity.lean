@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FactorRapid
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -67,3 +69,9 @@ theorem phiRes_holds : PhiRes := by
   rw [toC0_eq_of_coe p _ hp, toC0_eq_of_coe q _ hq, hΦ]
 
 end GlobalTheory.CompanionTheory.KerFc
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.phi_resolvent_identity : GlobalTheory.CompanionTheory.KerFc.PhiRes := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KerFc.phiRes_holds

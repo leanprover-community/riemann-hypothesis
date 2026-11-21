@@ -1,10 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsAvoidOne
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.PartialSum
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsShintaniConeDomain
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.RayClassConeParametrization
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -28,3 +25,10 @@ theorem exists_classParam_sup_eq_top : ∀ (F : Type) [Field F] [NumberField F] 
   exact ⟨𝔟, J, a, b, c, d, e, hb.2⟩
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.Shintani
+end
+end
+
+open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta GlobalTheory.CompanionTheory.Hypotheses₂.Shintani GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Abel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ray_class_parametrization_exists : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (𝔣 : Ideal (𝓞 F)), 𝔣 ≠ ⊥ → ∀ 𝔞 : Ideal (𝓞 F), CoprimeTo F 𝔣 𝔞 → ∃ (𝔟 : Ideal (𝓞 F)) (J : Type) (_ : Fintype J) (r' : J → ℕ) (y : J → 𝓞 F) (v' : ∀ j, Fin (r' j) → 𝓞 F), ClassParam 𝔣 𝔞 𝔟 r' y v' ∧ 𝔟 ⊔ 𝔣 = ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.exists_classParam_sup_eq_top

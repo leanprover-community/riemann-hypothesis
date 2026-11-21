@@ -1,10 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.FramedDConst
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryOsc
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOscillatorActionNormalisingSchrodingerOper
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct Matrix
 open MeasureTheory Formalism.BasicNotions.TH GlobalTheory.RealLift GlobalTheory.RealWeil Matrix
 
@@ -199,3 +199,19 @@ theorem GlobalTheory.HoweD.exists_osc : ∀ (ι l : Type) [Fintype ι] [Decidabl
   have h := hω₀ (GlobalTheory.HoweD.Osc.unitHom P Q k hk g) z v
   rw [hz, GlobalTheory.HoweD.Osc.coordOf_mulVec, hz] at h
   exact h
+end
+end
+
+open scoped TensorProduct Matrix
+open MeasureTheory Formalism.BasicNotions.TH GlobalTheory.RealLift GlobalTheory.RealWeil
+open GlobalTheory.HoweD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_oscillator_action_normalising_schrodinger : ∀ (ι l : Type) [Fintype ι] [DecidableEq ι] [Fintype l] [DecidableEq l] (P Q R S : ι → ℕ)
+    (φ : (∀ w : ι, Matrix (Ix (P w) (Q w)) (Ix (R w) (S w)) ℂ) ≃ₗ[ℝ] (l ⊕ l → ℝ)),
+    (∀ c c', sympl (φ c) (φ c') = 2 * (∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (c' w a b)).im) →
+    (∀ v : L2 l, Continuous fun w : l ⊕ l → ℝ => rho w v) →
+    ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (k : G →* (∀ w : ι, Mat (R w) (S w))), Continuous k →
+    (∀ g w, (k g w)ᴴ * Jm (R w) (S w) * k g w = Jm (R w) (S w)) →
+    ∃ ω : G →* (L2 l ≃ₗᵢ[ℂ] L2 l), (∀ v, Continuous fun g => ω g v) ∧
+      ∀ g c v, ω g (rho (φ c) v) = rho (φ fun w => c w * (k g w)ᵀ) (ω g v) := by
+  atlas_forward_decl GlobalTheory.HoweD.exists_osc

@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.UniformizerMemDeltaInvariants
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.RecNZFullLen
-import Formalism.JumpKernelCokernel.LengthTheoremsWithEarlier
 
 noncomputable section
 

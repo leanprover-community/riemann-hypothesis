@@ -2,7 +2,6 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DefPerEqGenPer
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfFockSSelf
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CastRealAll
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairwiseFlatMapBand
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmLiftOfMultilinearTprod
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeftCast
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GenPerMultilinear
@@ -10,6 +9,7 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GenPerMove
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdaptedFrameOrthonormal
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InvContCast
 
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
@@ -102,3 +102,10 @@ theorem invLine_big : Big fun ch => InvLine ch := by
   exact invLine_of_iso ch hL hlf hc Aψ hA Bf hB
 
 end GlobalTheory.RowReal
+end
+end
+
+open GlobalTheory.RowClaim GlobalTheory.RowReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowTest_definitePeriods_invariant_functional : Big fun ch => InvLine ch := by
+  atlas_forward_decl GlobalTheory.RowReal.invLine_big

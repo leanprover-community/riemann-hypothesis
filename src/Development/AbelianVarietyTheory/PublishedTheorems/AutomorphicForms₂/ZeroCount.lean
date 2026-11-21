@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
 import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 
 noncomputable section

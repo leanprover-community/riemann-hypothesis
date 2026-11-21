@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumLieCoord
 
+section
 noncomputable section
 
 open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.JSW
@@ -115,3 +116,12 @@ theorem isRapidInf_mul_adCoef : ∀ (E : Type) [Field E] [NumberField E] [IsTota
       _ = C * (‖k x‖ * height (γ x) ^ (N + 2)) := by ring
 
 end GlobalTheory.JSW
+end
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.JSW
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rapidlyDecreasingKernel_mul_adjointConjCoefficient : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X)
+    (k : X → ℂ) (γ : X → GL (Fin a) (Cinf E)), IsRapidInf ν k γ →
+      ∀ p, IsRapidInf ν (fun x => k x * adCoef (γ x) p) γ := by
+  atlas_forward_decl GlobalTheory.JSW.isRapidInf_mul_adCoef

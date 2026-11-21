@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin Formalism.IrreducibleCountingLemmas.TYPES
 
 noncomputable section
@@ -111,3 +113,10 @@ theorem bruhatUniq : ReciprocityTheory.Ty.Fin.St.BruhatUniq := by
   omega
 
 end GlobalTheory.CompanionTheory.BruhatInv
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bruhat_decomposition_unique : ReciprocityTheory.Ty.Fin.St.BruhatUniq := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BruhatInv.bruhatUniq

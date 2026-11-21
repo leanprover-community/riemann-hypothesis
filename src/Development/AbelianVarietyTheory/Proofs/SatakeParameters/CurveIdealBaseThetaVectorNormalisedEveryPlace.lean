@@ -1,15 +1,12 @@
 import Mathlib
 import Formalism.LocalToGlobal.KernelLattices.KerStd
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaZJetsThree
-import Formalism.LocalToGlobal.InertKernelTheory.StatementIota
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactTer
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PFamily
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KappaNormAtSplitPrimesStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KappaOnNonsplitPrimesStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KappaNormAtSplitPrimes
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KappaOnNonsplitPrimes
 
+section
 noncomputable section
 open scoped BigOperators
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Col Classical
@@ -167,3 +164,14 @@ theorem locNormMM : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Taylor
   rw [h2, hc, smul_smul]
 
 end GlobalTheory.ThLoc.LocMM
+end
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Col Classical
+open Formalism.L2.Th1.H (cmL CmOK matH IsIsom taylorMv)
+open Formalism.L2.Th1.GD (LocNorm InMul frameM thetaLin)
+open Formalism.L2.Th1.E (IntCurve curveL Unif)
+open Formalism.DworkPowerSeriesWeights (JetsIntegral)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.curveIdeal_baseThetaVector_normalised_every_place : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), TaylorLogMetric.IsCurveIdeal D cc → TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ → ∀ (B : Base D cc δ) (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀) (hd : 0 < D.host.d) (lam : ℂ) (hlam : lam ≠ 0), CmOK a₀ b₀ c₀ D.host.d → B.IsCm a₀ b₀ ha hd lam hlam → ∀ (p : ℕ) [Fact p.Prime] (ι : ℂ ≃+* ℂ_[p]), B.LocNormMM a₀ b₀ ha hd lam hlam p ι := by
+  atlas_forward_decl GlobalTheory.ThLoc.LocMM.locNormMM

@@ -1,6 +1,5 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Foundations.SamePartIffOfNeZero
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MassDegTypeLeCycleTypeStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MassDegTypeLeCycleType
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardCycleTypeConsMul
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CentralBinomLePowCardPrimesBetween
 

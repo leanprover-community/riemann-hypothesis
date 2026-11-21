@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
+import BuildAid.ForwardExisting
 
+section
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
 
 noncomputable section
@@ -182,3 +184,10 @@ theorem cardParab : ReciprocityTheory.Ty.Fin.St.CardParab := by
   exact ⟨card_GL_int K ι, fun s b => ⟨card_parab K b, choose_blocks b⟩⟩
 
 end GlobalTheory.CompanionTheory.FinGL
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_parabolic_subgroup : ReciprocityTheory.Ty.Fin.St.CardParab := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FinGL.cardParab

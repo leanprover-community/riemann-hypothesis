@@ -1,10 +1,9 @@
 import Mathlib
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliLeftComatrixStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliDetMulVectorTypeStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliDetMulVectorType
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QminorPolyMapStatement
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QminorIntertwiningApplyStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsEigenSplitOfResolventIdentityStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsEigenSplitOfResolventIdentity
+
 open Formalism.REAL Finset
 
 namespace GlobalTheory

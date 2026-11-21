@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.ModDepthGE
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing TensorProduct Pointwise
 
 namespace GlobalTheory
@@ -35,3 +38,9 @@ theorem etale_localization_of_cokernel_killed (S : Type) [CommRing S] (A B : Typ
   exact Algebra.Etale.of_equiv (AlgEquiv.ofBijective Φ ⟨inj, surj⟩)
 
 end GlobalTheory
+end
+
+open IsLocalRing TensorProduct Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etale_localization_of_injective_cokernel_killed : ∀ (S : Type) [CommRing S] (A B : Type) [CommRing A] [CommRing B] [Algebra S A] [Algebra S B] (ι : A →ₐ[S] B), Function.Injective ι → ∀ (p : Ideal S) [p.IsPrime] (s : S), s ∉ p → (∀ y : B, s • y ∈ ι.range) → Algebra.Etale (Localization.AtPrime p) (TensorProduct S (Localization.AtPrime p) A) → Algebra.Etale (Localization.AtPrime p) (TensorProduct S (Localization.AtPrime p) B) := by
+  atlas_forward_decl GlobalTheory.etale_localization_of_cokernel_killed

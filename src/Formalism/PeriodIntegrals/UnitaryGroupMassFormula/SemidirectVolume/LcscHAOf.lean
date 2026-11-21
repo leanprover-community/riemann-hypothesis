@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.VolSemiDirect
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ClosedStep
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.TensTopOf
 
 noncomputable section

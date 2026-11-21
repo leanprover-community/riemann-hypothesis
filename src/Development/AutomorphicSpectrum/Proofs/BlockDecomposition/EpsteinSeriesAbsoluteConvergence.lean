@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 set_option maxSynthPendingDepth 1
 set_option synthInstance.maxSize 1000
 
@@ -227,3 +229,9 @@ theorem g3a : Ad3.R.G3a := by
   exact ENNReal.ofReal_le_ofReal (hle z κ.1 κ.2)
 
 end GlobalTheory.CompanionTheory.EpsteinTensorBound
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.epstein_series_absolute_convergence : Ad3.R.G3a := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EpsteinTensorBound.g3a

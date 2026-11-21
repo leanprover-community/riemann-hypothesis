@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.LogAbsBasic
+import BuildAid.ForwardExisting
 
+section
 open NumberField Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 open GlobalTheory.CuspRep PositivityTheory.Rg.Tf.Loc
 
@@ -121,3 +123,9 @@ theorem onlyIsotropic_of : OnlyStable → DegPairing → SizeBasic → OnlyIsotr
     linarith
 
 end GlobalTheory.CompanionTheory.IsotropicDegreeBound
+end
+
+open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.only_isotropic_subspaces : OnlyStable → DegPairing → SizeBasic → OnlyIsotropic := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IsotropicDegreeBound.onlyIsotropic_of

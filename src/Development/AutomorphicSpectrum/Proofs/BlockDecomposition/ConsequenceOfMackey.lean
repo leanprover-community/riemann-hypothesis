@@ -1,9 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MaschkeProperties
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalIsomorphismProperties
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SimpleIffIrreducible
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory ReciprocityTheory.Ty.Fin
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
 
@@ -101,3 +101,10 @@ theorem fromMackey : ReciprocityTheory.Ty.Fin.St.FromMackey :=
   fun _ _ _ _ hMk => ⟨supportUnique hMk, sqfreeIrr hMk, sqfreeUnique hMk⟩
 
 end GlobalTheory.CompanionTheory.TyFin.FromMackey
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.consequence_of_mackey : ReciprocityTheory.Ty.Fin.St.FromMackey := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.FromMackey.fromMackey

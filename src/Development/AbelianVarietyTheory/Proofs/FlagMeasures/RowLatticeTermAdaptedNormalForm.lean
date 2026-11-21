@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowsMeanC
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagFramesSameGradedDefinitePartLatticeEq
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RatIota
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 open scoped Classical
 open NumberField Formalism.BasicNotions
@@ -424,3 +426,9 @@ theorem termC_holds : GlobalTheory.TypeAsm.TermC := by
 end D7
 
 end GlobalTheory.TermRow
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowLattice_term_adaptedNormalForm : GlobalTheory.TypeAsm.TermC := by
+  atlas_forward_decl GlobalTheory.TermRow.termC_holds

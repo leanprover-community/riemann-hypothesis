@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimesUnder
-import Formalism.PairingDivisors.StatementH
+
+section
 open NumberField Polynomial IsDedekindDomain
 open Formalism.DivisionValues (vw lw)
 
@@ -25,3 +26,10 @@ theorem meanInf_log_norm_embedding (K : Type) [Field K] [NumberField K] [IsTotal
   ring
 
 end GlobalTheory
+end
+
+open NumberField Polynomial IsDedekindDomain
+open Formalism.DivisionValues (vw lw)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.meanInf_log_norm_embedding_eq_log_norm_div : ∀ (K : Type) [Field K] [NumberField K] [IsTotallyComplex K] (a : K), a ≠ 0 → Formalism.PairingDivisionLocalBalance.meanInf K (fun v => Real.log ‖v.embedding a‖) = Real.log |((Algebra.norm ℚ a : ℚ) : ℝ)| / Module.finrank ℚ K := by
+  atlas_forward_decl GlobalTheory.meanInf_log_norm_embedding

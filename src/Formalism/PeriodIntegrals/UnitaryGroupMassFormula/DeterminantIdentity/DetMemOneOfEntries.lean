@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.DetIdPG
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DeterminantIdentity.StNormOne
 
 open NumberField

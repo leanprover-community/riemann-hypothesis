@@ -1,11 +1,11 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitChartAt
-import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralModelOpenNoetherian
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsLocallyNoetherianOfIsQProjOver
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeometricallyIrreducibleOpenIrreducibleStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChartRestrictOpenStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeometricallyIrreducibleOpenIrreducible
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChartRestrictOpen
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -101,3 +101,10 @@ theorem restrictSt : RestrictSt := by
     · simp only [f1]; exact le_rfl
 
 end GlobalTheory.FlatModel
+end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.restriction_statement_holds : RestrictSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.restrictSt

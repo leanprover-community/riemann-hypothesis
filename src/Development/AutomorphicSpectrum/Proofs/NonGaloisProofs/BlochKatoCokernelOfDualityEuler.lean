@@ -7,6 +7,7 @@ import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineMapLemmas
 import Formalism.SharpRestriction.LevelLetterCocycles.RamificationTwoAndConjugationAtQAndD
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateDualDeRhamAndFilZeroDimAll
 
+section
 noncomputable section
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Module TensorProduct
@@ -268,3 +269,10 @@ theorem main : Formalism.GaloisCohomology.LocalTateDualityK → Formalism.Galois
   fun _ _ D l _ K _ hB => bkC_of_bkB _ hB (GlobalTheory.TateDualFil.main D l K).1
 
 end GlobalTheory.CompanionTheory.BKTorsion
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Module TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blochKato_cokernel_of_duality_euler : Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK → ∀ (D : D7) (l : ℕ) [Fact l.Prime] (K : FinExt l), bkACore ((D.loc l).PD K) → bkBCore ((D.loc l).PD K) → LocalSituation.bkC ((D.loc l).PD K) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BKTorsion.main

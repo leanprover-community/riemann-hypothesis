@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix Finset
 
 namespace GlobalTheory.DetDeriv
@@ -57,3 +59,9 @@ theorem main : ∀ {K R : Type} [CommRing K] [CommRing R] [Algebra K R] (δ : De
   fun δ _ _ _ M => derivation_det δ M
 
 end GlobalTheory.DetDeriv
+end
+
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.derivation_det_eq_double_sum_adjugate_entry : ∀ {K R : Type} [CommRing K] [CommRing R] [Algebra K R] (δ : Derivation K R R) {ι : Type} [Fintype ι] [DecidableEq ι] (M : Matrix ι ι R), δ M.det = ∑ i, ∑ j, M.adjugate j i * δ (M i j) := by
+  atlas_forward_decl GlobalTheory.DetDeriv.main

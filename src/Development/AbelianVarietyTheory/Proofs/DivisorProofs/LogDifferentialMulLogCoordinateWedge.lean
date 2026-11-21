@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsEulerContraction
+
+section
 open GlobalTheory GlobalTheory.LogDR
 
 namespace GlobalTheory.LogDR.WedgeMul
@@ -52,3 +54,10 @@ theorem GlobalTheory.LogDR.dlog_mul_logWedge : ∀ (K : Type) [Field K] (n : ℕ
     show f i * ((I.sort (· ≤ ·)).map f).prod = ε • (((insert i I).sort (· ≤ ·)).map f).prod
     rw [e, List.map_cons, List.prod_cons, smul_smul]
     rcases hε with rfl | rfl <;> simp
+end
+
+open GlobalTheory GlobalTheory.LogDR
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.logDifferential_mul_logCoordinateWedge : ∀ (K : Type) [Field K] (n : ℕ) (x : Fin n → Kˣ) (i : Fin n) (I : Finset (Fin n)), (i ∈ I → ExteriorAlgebra.ι K (dlog (x i)) * logWedge x I = 0) ∧ (i ∉ I → ∃ ε : ℤ, (ε = 1 ∨ ε = -1) ∧ ExteriorAlgebra.ι K (dlog (x i)) * logWedge x I = ε • logWedge x (insert i I)) := by
+  atlas_forward_decl GlobalTheory.LogDR.dlog_mul_logWedge

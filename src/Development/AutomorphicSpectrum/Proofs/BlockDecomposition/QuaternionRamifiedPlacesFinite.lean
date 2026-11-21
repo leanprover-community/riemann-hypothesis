@@ -1,8 +1,9 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
 import GroundTheory.AutomorphicForms.HermitianNormLocal
+import BuildAid.ForwardExisting
 
+section
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
 open scoped TensorProduct Quaternion
 
@@ -32,3 +33,11 @@ theorem finite_anisotropic_places {F : Type} [Field F] [NumberField F] (d β : F
     exact hq (hu q hq0)
 
 end GlobalTheory.CompanionTheory.PlaneSA
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
+open scoped TensorProduct Quaternion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quaternion_ramified_places_finite : ∀ {F : Type} [Field F] [NumberField F] (d β : F), (∀ r : F, r ^ 2 ≠ d) → β ≠ 0 →
+  {u : Pl F | ∀ x : Q d β (Kp u), qn x = 0 → x = 0}.Finite := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PlaneSA.finite_anisotropic_places

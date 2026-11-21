@@ -1,4 +1,3 @@
-import ReciprocityTheory.L2DbarEstimates.LeviForms.BergmanExistsStatement
 import ReciprocityTheory.L2DbarEstimates.LeviForms.ApplyC
 
 universe u

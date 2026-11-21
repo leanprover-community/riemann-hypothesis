@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.Dchart
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpBallUMemNhds
+import BuildAid.ForwardExisting
 
+section
 open Matrix Filter Topology
 
 namespace GlobalTheory.ExpStrictUpper
@@ -91,3 +93,10 @@ theorem exp_inj_strictUpper : ∀ (m : ℕ) (X Y : Matrix (Fin m) (Fin m) ℂ),
     _ = Y := by rw [hDE, one_mul, mul_one]
 
 end GlobalTheory.ExpStrictUpper
+end
+
+open MeasureTheory Matrix Filter Topology Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf GlobalTheory.Amp GlobalTheory.CellDens
+open scoped InnerProductSpace ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exp_injective_strictUpperTriangular : ∀ (m : ℕ) (X Y : Matrix (Fin m) (Fin m) ℂ), (∀ i j, j ≤ i → X i j = 0) → (∀ i j, j ≤ i → Y i j = 0) → NormedSpace.exp X = NormedSpace.exp Y → X = Y := by
+  atlas_forward_decl GlobalTheory.ExpStrictUpper.exp_inj_strictUpper

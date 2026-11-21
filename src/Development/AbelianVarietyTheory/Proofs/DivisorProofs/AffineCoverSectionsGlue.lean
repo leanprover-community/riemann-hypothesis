@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SecEquivResM
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AffGlue
@@ -93,3 +95,9 @@ theorem exists_glue {T : Scheme.{0}} (D : GlobalTheory.AffGlue.Data T) {V : T.Op
     rw [map_sub, D.ρ_ρ, hm i k O hO h hOk, ← hx k hk, D.ρ_ρ, sub_self]
 
 end GlobalTheory.AffGlue.Cech
+end
+
+open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AffGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.affine_cover_sections_glue : ∀ {T : Scheme.{0}} (D : GlobalTheory.AffGlue.Data T) {V : T.Opens} (hV : IsAffineOpen V) {ι : Type} (W : ι → T.Opens) (hW : ∀ i, IsAffineOpen (W i)) (hWV : ∀ i, W i ≤ V), V ≤ ⨆ i, W i → ∀ m : ∀ i, D.M (W i) (hW i), (∀ (i j : ι) (O : T.Opens) (hO : IsAffineOpen O) (hi : O ≤ W i) (hj : O ≤ W j), D.ρ (hW i) hO hi (m i) = D.ρ (hW j) hO hj (m j)) → ∃ x : D.M V hV, ∀ i, D.ρ hV (hW i) (hWV i) x = m i := by
+  atlas_forward_decl GlobalTheory.AffGlue.Cech.exists_glue

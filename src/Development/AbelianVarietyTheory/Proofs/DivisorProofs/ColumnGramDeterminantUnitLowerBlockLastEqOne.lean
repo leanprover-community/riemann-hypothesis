@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NmatEqLowMat
+import BuildAid.ForwardExisting
+
+section
 open ReciprocityTheory.ChartRestriction.G.FD MeasureTheory GlobalTheory.IntBall
 open scoped ENNReal Matrix
 
@@ -30,3 +33,10 @@ theorem colGramLast : ∀ (r p0 : ℕ) (w : Low r → ℂ), colGram (blkW p0 w) 
   colGram_blkW_last
 
 end GlobalTheory.IntBall
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD MeasureTheory GlobalTheory.IntBall
+open scoped ENNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.columnGramDeterminant_unitLowerBlock_last_eq_one : ∀ (r p0 : ℕ) (w : Low r → ℂ), colGram (blkW p0 w) (Fin.last (r - 1)) = 1 := by
+  atlas_forward_decl GlobalTheory.IntBall.colGramLast

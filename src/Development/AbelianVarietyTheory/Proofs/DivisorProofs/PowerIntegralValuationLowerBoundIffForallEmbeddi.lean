@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.TorsTransport
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal Polynomial IntermediateField
@@ -210,3 +212,10 @@ theorem valGe_iff_forall_sz (l : ℕ) [hl : Fact l.Prime] (r : ℝ) (x : ℂ) :
     rwa [e] at this
 
 end GlobalTheory.LadicDenom
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.powerIntegralValuationLowerBound_iff_forall_embedding : ∀ (l : ℕ) [Fact l.Prime] (r : ℝ) (x : ℂ), GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds.ValGe_vp l r x ↔ ∀ lam : algebraicClosure ℚ ℂ →+* ℂ_[l], Sz l lam r x := by
+  atlas_forward_decl GlobalTheory.LadicDenom.valGe_iff_forall_sz

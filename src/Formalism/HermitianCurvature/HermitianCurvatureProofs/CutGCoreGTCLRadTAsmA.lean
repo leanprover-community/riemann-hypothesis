@@ -1,5 +1,4 @@
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadTCut
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedF
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt

@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Matrix GroundTheory.LocalField Ad3 Ad3.R
 open scoped ValuativeRel ENNReal
 
@@ -406,3 +408,9 @@ theorem kernel_integrable : A4 := by
   exact ⟨measurable_Kr hν hc s, fun B hB => integrableOn_Kr ψ hν hc hs hB⟩
 
 end GlobalTheory.CompanionTheory.RankinKernel
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_local_fourth : Ad3.R.A4 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinKernel.kernel_integrable

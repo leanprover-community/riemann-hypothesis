@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.OddResidueBounds.ZeroMemUnrHom
 import Development.AutomorphicArithmetic.AutomorphicVarieties.OddResidueBounds.ActEx
 import Development.AutomorphicArithmetic.AutomorphicVarieties.OddResidueBounds.ActFacts
 import Development.AutomorphicArithmetic.AutomorphicVarieties.OddResidueBounds.ActConj

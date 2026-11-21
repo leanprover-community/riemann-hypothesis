@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosureOperatorFacts
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Filter Topology
@@ -442,3 +444,9 @@ theorem concT : ConcT := by
   exact ⟨Ω, T, hDenseM, hsym, h1, h2, hΩ⟩
 
 end GlobalTheory.CompanionTheory.FcConcT
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.concentration_time_bound : PositivityTheory.RgBcC.Fc.ConcT := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FcConcT.concT

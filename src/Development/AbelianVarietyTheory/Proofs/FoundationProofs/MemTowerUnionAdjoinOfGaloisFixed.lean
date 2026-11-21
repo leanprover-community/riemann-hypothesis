@@ -4,9 +4,10 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsTrDataGauss
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingCyclotomicTowerLevel
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemAdjoinDivOfFixed
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLevelOfMemAdjoin
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerEmbeddingInjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemTowerUnionAdjoinIntegralClosureIffStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerEmbeddingInjective
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemTowerUnionAdjoinIntegralClosureIff
 
+section
 noncomputable section
 
 open GlobalTheory.AlmostEt GlobalTheory.K5
@@ -78,3 +79,11 @@ theorem GlobalTheory.K5.mem_towerAlg_of_fixed :
     (by rw [hbc, show ι wb = b from hwb, show ι wc = c from hwc])
   rw [← hw]
   exact GlobalTheory.K5.Level.bn_le_B T N (GlobalTheory.K5.Level.range_le_bn T N ι hι w)
+end
+end
+
+open GlobalTheory.AlmostEt GlobalTheory.K5
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_towerUnionAdjoin_of_galois_fixed : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω → ∀ (T : Tower p Ω) (x : (integralClosure (O0 p) Ω)), (∀ g ∈ ⨅ n, Gn T n, g (x : Ω) = x) → x ∈ towerAlg T := by
+  atlas_forward_decl GlobalTheory.K5.mem_towerAlg_of_fixed

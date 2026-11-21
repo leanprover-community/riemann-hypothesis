@@ -6,7 +6,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CubeTheore
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPdivGroupForPoint
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftLeftFst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigExtMapRelFrobCompRigOfOmega
-import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.IsAbelianSchemeAndExtendOfGenericHoms
 
 set_option autoImplicit false
 

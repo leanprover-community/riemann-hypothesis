@@ -1,16 +1,13 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PlanePropOfAllStrongApproxStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CmExtensionImaginaryGeneratorStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PlaneApproxOfQuaternionApproxStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PlanePropOfAllStrongApprox
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CmExtensionImaginaryGenerator
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PlaneApproxOfQuaternionApprox
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuaternionIsotropicSplitAllPlacesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SupportProductOverPlacesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StrongApproxClosureMulStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SupportClosureRegularTraceStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuaternionNormOneConjClosureStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosureConjugationInvariantStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuaternionNormOneConjClosure
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosureConjugationInvariant
 
+section
 noncomputable section
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
@@ -52,3 +49,11 @@ theorem plane : Sa2.PropPlane := by
     exact GlobalTheory.T.quaternion_isotropic_split_all_places d β hd hβ ⟨x, hx0, hx⟩ s
 
 end GlobalTheory.CompanionTheory.PlaneSA
+end
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published Sa2
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.plane_strong_approx_holds : Sa2.PropPlane := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PlaneSA.plane

@@ -1,8 +1,5 @@
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementD
 import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OneLetterGaussSharpTranslateHolds
-import Formalism.GaussJetBounds.FinalB
-import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.PairedSquareJets.Hurwitz
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.HasCMByStable
 
 noncomputable section
 open scoped BigOperators

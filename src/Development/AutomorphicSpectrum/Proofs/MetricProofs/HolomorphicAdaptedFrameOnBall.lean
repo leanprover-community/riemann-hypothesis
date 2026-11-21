@@ -2,24 +2,24 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsProved
-import GroundTheory.HeightsAndTheta.Heights.CountingLowerBound.Assembly
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.PPartRealSmul
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsAdaptedFrameBisStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsAdaptedFrameBis
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.PosSemidefOfIntQuadNonneg
 import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicEigenProjectionOnBallStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodExtensionImaginaryFormStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.EigenProjectionInEigenspaceStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameHermitianProductStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SignatureUnitaryBlocksInvertibleStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameBallCoordinateStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LinearIndependentOfGramDetUnitStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicCoefficientsInFrameStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallDomainOpenConvexZeroStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallPotentialFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogDetChangeStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicEigenProjectionOnBall
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodExtensionImaginaryForm
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.EigenProjectionInEigenspace
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameHermitianProduct
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SignatureUnitaryBlocksInvertible
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameBallCoordinate
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LinearIndependentOfGramDetUnit
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicCoefficientsInFrame
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallDomainOpenConvexZero
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallPotentialFormula
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogDetChange
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsSideAlt
+
+section
 open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
 open scoped ENNReal InnerProductSpace
 open scoped ComplexOrder
@@ -161,3 +161,13 @@ theorem chart_exists : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (�
     ring
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart
+end
+end
+
+open NumberField Matrix MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.FiniteCovolume GroundTheory.Automorphic GlobalTheory.CompanionTheory.Ar.Cusp.Dict
+open scoped ENNReal InnerProductSpace
+open scoped ComplexOrder
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.holomorphic_adapted_frame_on_ball : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (F : UnivFam E Ψ j j' n g Λ) (C : LatEmb F) (A₀ : Ψ → Matrix (Fin (j + j')) (Sg j j') ℂ), C.IsAdapted (F.R 0) A₀ → ∃ (Z : (Fin n → ℂ) → Fin n → ℂ) (G : (Fin n → ℂ) → ℂ), DifferentiableOn ℂ Z (ballDom F.q) ∧ DifferentiableOn ℂ G (ballDom F.q) ∧ (∀ t ∈ ballDom F.q, ∀ A, C.IsAdapted (F.R t) A → Z t = moebBall F.q (fun τ => C.cinv (A₀ τ) τ * A τ) 0) ∧ ∀ t ∈ ballDom F.q, ballPot F.q (Z t) = ballPot F.q t + (G t).re := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart.chart_exists

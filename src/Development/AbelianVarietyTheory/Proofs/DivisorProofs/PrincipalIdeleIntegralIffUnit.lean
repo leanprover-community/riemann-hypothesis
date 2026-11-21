@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.Tuples
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteAdeleBaseChangeEquiv
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.L2.DIV Formalism.UG
 
 namespace GlobalTheory.RatIdInt
@@ -30,3 +33,10 @@ theorem ratId_mem_intU_iff : ∀ (L : Type) [Field L] [NumberField L] (a : Lˣ),
   exact and_congr (mem_RInt_iff_isIntegral L (a : L)) (mem_RInt_iff_isIntegral L ((a⁻¹ : Lˣ) : L))
 
 end GlobalTheory.RatIdInt
+end
+
+open NumberField IsDedekindDomain Formalism.L2.DIV Formalism.UG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.principal_idele_integral_iff_unit : ∀ (L : Type) [Field L] [NumberField L] (a : Lˣ),
+    ratId ℚ L a ∈ intU ℚ L ↔ IsIntegral ℤ (a : L) ∧ IsIntegral ℤ ((a⁻¹ : Lˣ) : L) := by
+  atlas_forward_decl GlobalTheory.RatIdInt.ratId_mem_intU_iff

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.AdelicOrbitU
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnitaryOrbits.UnitChoice
 
 noncomputable section

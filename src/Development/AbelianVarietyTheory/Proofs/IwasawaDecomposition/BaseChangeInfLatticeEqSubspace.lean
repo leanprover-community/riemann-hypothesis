@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct
 
 namespace GlobalTheory
@@ -55,3 +58,14 @@ theorem baseChange_inf_lattice_eq_subspace : ∀ {O V : Type} [CommRing O] [IsDo
     rw [← hdv, hdK, smul_smul, inv_mul_cancel₀ hne, one_smul]
 
 end GlobalTheory
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_injective_baseChange_inf_restrictScalars_range_eq : ∀ {O V : Type} [CommRing O] [IsDomain O] [AddCommGroup V] [Module (FractionRing O) V] [Module O V]
+    [IsScalarTower O (FractionRing O) V] (N : Submodule O V),
+    Submodule.span (FractionRing O) (N : Set V) = ⊤ → ∀ (W : Submodule (FractionRing O) V),
+    ∃ e : FractionRing O ⊗[O] ↥(N ⊓ W.restrictScalars O) →ₗ[FractionRing O] V,
+      Function.Injective e ∧ LinearMap.range e = W ∧
+      ∀ (c : FractionRing O) (x : ↥(N ⊓ W.restrictScalars O)), e (c ⊗ₜ[O] x) = c • (x : V) := by
+  atlas_forward_decl GlobalTheory.baseChange_inf_lattice_eq_subspace

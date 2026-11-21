@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsAlgebraMapEqRoot
+import BuildAid.ForwardExisting
+
+section
 open PowerSeries GlobalTheory.BK Filter Topology
 
 namespace GlobalTheory
@@ -40,3 +43,9 @@ theorem mem_R_of_adic_limit (O K : Type) [CommRing O] [NormedField K] [IsUltrame
   exact key m (le_of_max_le_left hm)
 
 end GlobalTheory
+end
+
+open PowerSeries GlobalTheory.BK Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_rigidFunctionsClosedDisc_of_adic_limit : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] (l : ℕ) (k : ℝ) (f : K⟦X⟧) (s : ℕ → K⟦X⟧), (∀ n, s n ∈ R O K l k) → (∀ n, (X : K⟦X⟧) ^ (n + 1) ∣ f - s n) → Tendsto (fun n => normR l k (s (n + 1) - s n)) atTop (𝓝 0) → f ∈ R O K l k := by
+  atlas_forward_decl GlobalTheory.mem_R_of_adic_limit

@@ -1,6 +1,5 @@
 import Development.AutomorphicArithmetic.Foundations.LocalLanglands.RecTTransport
 import Development.DiscreteGroups.GlobalIrreducibility.DzGalTR
-import Development.DiscreteGroups.GlobalIrreducibility.DzIneEq
 import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.FinrankK
 import Development.AutomorphicArithmetic.Foundations.LocalLanglands.LocalCentralUnits.TameRecAll
 

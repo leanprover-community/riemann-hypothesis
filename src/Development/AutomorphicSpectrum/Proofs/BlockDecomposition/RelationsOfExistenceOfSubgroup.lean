@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.LocalGlobalCompatibility.TemperedLocalGlobal.LocalGlobalOfIwahori
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EsymmMemVirtualCharactersOfPowerSumEigenvalues
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
@@ -307,3 +308,10 @@ theorem relOfMain_of_exSub : ExSub → RelOfMain := by
   exact charpoly_of_pos a b hU hpos hg
 
 end GlobalTheory.CompanionTheory.LocalParam
+end
+end
+
+open LocalGlobalAboveLAlt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.relations_of_existence_of_subgroup : ExSub → RelOfMain := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocalParam.relOfMain_of_exSub

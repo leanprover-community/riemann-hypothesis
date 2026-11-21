@@ -2,11 +2,12 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.UnitaryExtremality.SatPowNonvan
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.CasselmanStrictlyDominantExample
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetLemmaHoldsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriUnipotentDatumStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetLemmaHolds
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriUnipotentDatum
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantUnipotentContraction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsStrictDom
 
+section
 open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct
 
 namespace GlobalTheory.CompanionTheory.EqForm
@@ -224,3 +225,9 @@ theorem eqFormU : EqFormU :=
   eqFormU_of (fun G _ _ _ => GlobalTheory.T.jacquet_lemma_holds G) GlobalTheory.T.iwahori_unipotent_datum GlobalTheory.CompanionTheory.DomUnitary.domU GlobalTheory.CompanionTheory.KUFactsU.kuFacts
 
 end GlobalTheory.CompanionTheory.EqForm
+end
+
+open GlobalTheory.PRep Formalism.UG GlobalTheory.LFun PositivityTheory.SphericalProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_equivariant_form : PositivityTheory.SphericalProduct.EqFormU := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EqForm.eqFormU

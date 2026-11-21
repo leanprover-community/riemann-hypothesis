@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.NormSqColGrLineOfOrthogonal
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagOrbitMapSurjectiveStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagOrbitMapSurjective
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPermRowsLeadingMinorsNeZeroOfDetNeZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockLuDecompositionExistsStatement
+
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Matrix
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FlagZ GlobalTheory.FlagPoly Formalism.DegreeFormula
 

@@ -1,6 +1,5 @@
 import Formalism.LocalToGlobal.Columns.WmpNatCardQuotEqPowFinrank
 import Formalism.LocalToGlobal.Columns.NonDeg
-import Formalism.LocalToGlobal.Columns.RowFormsGood
 import Formalism.LocalToGlobal.Columns.PathCountSymmetricHolds
 
 noncomputable section

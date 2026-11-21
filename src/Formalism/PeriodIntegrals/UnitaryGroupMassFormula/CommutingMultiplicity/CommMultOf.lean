@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UMultOne
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CommutingMultiplicity.SchurStep
 
 namespace PI.UnitaryGroupMassFormula.CommMult

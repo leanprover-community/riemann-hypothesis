@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Statements
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsGenericGerm
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.StatementsHeightOneSections
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PHeightOneIntersection

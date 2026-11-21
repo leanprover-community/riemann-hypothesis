@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.SatakeDualWeyl.Statement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemMatLat
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharpolyEqPowOfIrreducible
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Polynomial Matrix GlobalTheory.LatOrb IsLocalRing
@@ -100,3 +102,13 @@ theorem isIntegral_aeval_eq_aeval_map : ∀ {O K : Type} [CommRing O] [IsDomain 
     ← mul_assoc, Units.inv_mul, one_mul]
 
 end GlobalTheory.MaxOrder
+end
+end
+
+open Polynomial Matrix GlobalTheory.LatOrb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_aeval_eq_aeval_map_of_coprime_charpoly : ∀ {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K]
+    [IsFractionRing O K] (n : ℕ) (P₀ : O[X]), IsCoprime P₀ (derivative P₀) →
+    ∀ γ : Matrix (Fin n) (Fin n) K, γ.charpoly = P₀.map (algebraMap O K) →
+    ∀ p : K[X], IsIntegral O (aeval γ p) → ∃ r : O[X], aeval γ p = aeval γ (r.map (algebraMap O K)) := by
+  atlas_forward_decl GlobalTheory.MaxOrder.isIntegral_aeval_eq_aeval_map

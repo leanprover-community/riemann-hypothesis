@@ -1,9 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsHeatZero
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsNearlyPrimitive
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsUnitaryExt
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsShortIso
+import BuildAid.ForwardExisting
 
+section
 open Matrix Complex NumberField GlobalTheory.SW Filter Topology
 open ReciprocityTheory.ChartRestriction.G.FD (cc herm)
 open scoped ComplexConjugate ComplexOrder Real
@@ -531,3 +532,11 @@ theorem GlobalTheory.SW.shortIso_step : ∀ (E : Type) [Field E] [NumberField E]
       rw [r1, hval_eq, e]
       exact lift_le (hH τ).1 _ _ (L τ) _ _ (le_max_left _ _) (hVC τ)
         ((hTC i τ).trans (le_max_right _ _)) ((hαC i τ).trans (le_max_right _ _))
+end
+
+open Matrix Complex NumberField GlobalTheory.SW Filter Topology
+open ReciprocityTheory.ChartRestriction.G.FD (cc herm)
+open scoped ComplexConjugate ComplexOrder Real
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shortIsotropicVectorsExistence_succ_of_very_short_step : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Finset (E →+* ℂ)), IsType Ψ → ∀ N : ℕ, (∀ D : ℕ, 0 < D → ∃ C : ℝ, ShortIso Ψ N D 0 C) → (∀ (D : ℕ) (ε : ℝ), 0 < D → 0 < ε → ∃ C : ℝ, ShortIso Ψ (N + 1) D ε C) → ∀ D : ℕ, 0 < D → ∃ C : ℝ, ShortIso Ψ (N + 1) D 0 C := by
+  atlas_forward_decl GlobalTheory.SW.shortIso_step

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.OmHeightslockG
 import Development.WeilBound.CoreStatements.PluriharmonicCharts.PeriodGramConj
 import Development.WeilBound.CoreStatements.PluriharmonicCharts.IsOpenDet
 

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.DropLevelBounds.Statement
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LeWeightOfCoeffPow
 open Formalism.UnitaryBoundIntegral Formalism.IncomingBounds
 open scoped BigOperators

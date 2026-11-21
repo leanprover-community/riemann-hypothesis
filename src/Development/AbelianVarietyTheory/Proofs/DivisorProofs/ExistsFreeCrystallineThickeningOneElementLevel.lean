@@ -6,10 +6,11 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsDPMorphismOfIsStd
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FilProperties
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FilIsSubDPIdeal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuotientSubDPIdeal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsStdStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsStd
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DividedPowerFiltrationIdealLeMapOfIsDPMorphismStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PoincareLemmaTruncatedDivPowerPolyOneVariableStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PoincareLemmaTruncatedDivPowerPolyOneVariable
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -158,3 +159,10 @@ theorem exists_isFree_one_qAt : ∀ (R : Type) [CommRing R] (I : Ideal R) (κ : 
       (SemiHom.of_algHom u.φ) u.dp fun _ ↦ rfl
 
 end GlobalTheory.PDForm
+end
+end
+
+open CategoryTheory AlgebraicGeometry KaehlerDifferential DividedPowers ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.CxCoh GlobalTheory.PDA GlobalTheory.PDForm GlobalTheory.SmoothLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_freeCrystallineThickening_oneElement_level : ∀ (R : Type) [CommRing R] (I : Ideal R) (κ : DividedPowers I) (X : Scheme.{0}) (t : X ⟶ Sp R) (n : ℕ) (T : Thick κ t), IsLev T.δ (n + 1) → ∃ (F : Thick κ t) (u : T ⟶ F) (τ : Unit → F.B), IsFree (n + 1) u τ ∧ (KK κ t).QAt u := by
+  atlas_forward_decl GlobalTheory.PDForm.exists_isFree_one_qAt

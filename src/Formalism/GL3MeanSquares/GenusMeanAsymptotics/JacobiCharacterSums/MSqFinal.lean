@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MSqMain
-import Formalism.GL3MeanSquares.PrimePairOfBoxAndWeakMeanSquareHypotheses
 
 noncomputable section
 

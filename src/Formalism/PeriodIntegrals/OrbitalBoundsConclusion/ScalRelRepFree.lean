@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.ScalRelRepFree
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ScalarRelationReflexive.IsScalarRefl
 
 noncomputable section

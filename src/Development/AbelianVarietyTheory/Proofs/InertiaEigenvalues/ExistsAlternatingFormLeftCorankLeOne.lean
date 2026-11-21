@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.AltCorank
 
 open Module
@@ -113,3 +115,8 @@ theorem exists_alt_corank_le_one :
   fun _ _ _ _ _ _ S₁ S₂ h => good_of_finrank_eq _ S₁ S₂ h rfl
 
 end GlobalTheory.AltCorank
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_alternating_form_left_corank_le_one : ∀ (K V : Type) [Field K] [AddCommGroup V] [Module K V] [Module.Finite K V] (S₁ S₂ : Submodule K V), Module.finrank K S₁ = Module.finrank K S₂ → ∃ ω : V →ₗ[K] V →ₗ[K] K, (∀ v, ω v v = 0) ∧ ∀ x : Fin 2 → V, (∀ a, x a ∈ S₁) → (∀ a, ∀ y ∈ S₂, ω (x a) y = 0) → ¬ LinearIndependent K x := by
+  atlas_forward_decl GlobalTheory.AltCorank.exists_alt_corank_le_one

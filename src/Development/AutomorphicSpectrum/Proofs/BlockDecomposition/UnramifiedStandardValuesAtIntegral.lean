@@ -1,16 +1,15 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.KFiniteThetaLifts.PureThetaTransfer.ConstantTermModerateGrowth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmR
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalWhittakerUnipotentCharacter
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardSphericalNumberField
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedThetaSpherical
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FieldInducedMaxCompactVector
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitInducedMaxCompactVector
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FieldWeilMaxCompactFixedVector
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitWeilMaxCompactFixedVector
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormalizedUnramifiedHypothesis
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilModulusHypothesis
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitRepresentationHypothesis
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
 open GroundTheory.Automorphic.GodementSection (localChar)
 open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
@@ -73,3 +72,17 @@ theorem std_unit : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ 
       exact Set.indicator_of_mem (show (0 : Kv K w') ∈ {x : Kv K w' | x ∈ 𝒪[Kv K w']} from h0) _
 
 end GlobalTheory.CompanionTheory.StdValue
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 Ad3.K.QuadraticBaseChangeGL3.Th
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open Ad3.R (G2 Jd md KA LInv IsLoc2 pt pri dia2)
+open scoped NumberField.AdeleRing ValuativeRel
+open GroundTheory.Global.AdicLiesOver
+open GlobalTheory.CompanionTheory.CenTheta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_standard_values_at_integral : ∀ (K : Type) [Field K] [NumberField K], Module.finrank ℚ K = 2 → ∀ (c : HeckeCharacter K) (v : Pl) (m : LM c v), Unr c v → m.ok → m.std → ∀ k ∈ integralGL (Qv v) 2, m.W k = 1 ∧ m.val k 0 = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.StdValue.std_unit

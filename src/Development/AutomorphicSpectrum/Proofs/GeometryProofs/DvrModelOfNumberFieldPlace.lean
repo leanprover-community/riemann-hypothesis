@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsPullWedge
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteTypeOverIntegersModel
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValuativeLiftExistsUnique
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueSection

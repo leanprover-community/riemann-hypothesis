@@ -1,6 +1,4 @@
 import Mathlib
-import GroundTheory.PAdicHodge.PerfectoidField
-import GroundTheory.PAdicHodge.TiltValuation
 import GroundTheory.PAdicHodge.TiltField
 set_option maxSynthPendingDepth 1
 

@@ -1,6 +1,4 @@
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.SharpRestriction.ParConsts
-import Formalism.SharpRestriction.GrowthBounds.ObjPol
 import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
 
 noncomputable section

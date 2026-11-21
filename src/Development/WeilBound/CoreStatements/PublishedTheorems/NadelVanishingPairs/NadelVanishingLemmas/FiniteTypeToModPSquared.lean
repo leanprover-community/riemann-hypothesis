@@ -1,6 +1,7 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.NumberFieldToModPSquared
-import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.FiniteTypeToNumberField
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NumberFieldToModPSquared
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteTypeToNumberField
+
 open scoped TensorProduct Polynomial
 
 namespace GlobalTheory

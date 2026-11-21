@@ -1,7 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZarhinDualPolarisation.FlatFiniteFibres.FlatOfFibresFinite
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FlatQuotientIsoOfSameKernel
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -58,3 +58,9 @@ theorem factorThroughFF : PositivityTheory.Tls2.Zar3.Ch1.FactorThroughFF := by
       IsMonHom.mul_hom]
 
 end GlobalTheory.CompanionTheory.FlatFactor
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.factor_through_finite_flat : PositivityTheory.Tls2.Zar3.Ch1.FactorThroughFF := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FlatFactor.factorThroughFF

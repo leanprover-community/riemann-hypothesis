@@ -1,5 +1,7 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FactorRapid
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped ContDiff InnerProductSpace
@@ -50,3 +52,9 @@ theorem adjSmooth : AdjSmooth := by
   exact (innerSmulRightR (stdOrthonormalBasis ℂ V i)).contDiff.comp_contDiffOn (hA _)
 
 end GlobalTheory.CompanionTheory.KerFc
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernel_adjoint_smooth : GlobalTheory.CompanionTheory.KerFc.AdjSmooth := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KerFc.adjSmooth

@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.BlockSplitAll
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTypeGroupBlockLift
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselWittDecomposition
 
+section
 open GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.SerSys ValuativeRel Filter Topology
 
 namespace GlobalTheory.TameRead
@@ -56,3 +57,9 @@ theorem exists_tamePart : ∀ (g : ℕ) [Fact g.Prime] (F : Type) [Field F] [Val
     (Function.rightInverse_surjInv (units_toZMod_surj g)) ⟨μ, hker⟩ u).symm
 
 end GlobalTheory.TameRead
+end
+
+open GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.SerSys
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_tameInflationCharacter_of_padic_iso : ∀ (g : ℕ) [Fact g.Prime] (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (e : ℚ_[g] ≃+* F), Continuous e → ∀ ξ : Fˣ →* ℂˣ, GlobalTheory.SplitWeil.IsTame ξ → ∃ χ : (ZMod g)ˣ →* ℂˣ, TamePart (ξ.comp (Units.map e.toMonoidHom)) χ := by
+  atlas_forward_decl GlobalTheory.TameRead.exists_tamePart

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.IsLowUnitH
 import Formalism.PeriodIntegrals.LowCyc
 import Formalism.PeriodIntegrals.KFinSmooth
 

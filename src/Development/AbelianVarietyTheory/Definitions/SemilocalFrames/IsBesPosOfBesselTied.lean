@@ -2,7 +2,6 @@ import Mathlib
 import Formalism.LocalToGlobal.BesselHermitianTheta.AllTied
 import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.OffCharsSeparates
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemberDatumOfFlagTie
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
 
 noncomputable section

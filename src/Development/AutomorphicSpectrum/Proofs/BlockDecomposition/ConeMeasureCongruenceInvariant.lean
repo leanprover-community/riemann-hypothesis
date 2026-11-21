@@ -1,6 +1,8 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.SymZeroCommFrame
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeMeas
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix Topology Filter
 open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
@@ -80,3 +82,15 @@ theorem map_coneMeas_eq (n : ℕ) (g : Mat n) (hg : g.det ≠ 0)
         rw [hmap, Measure.restrict_smul, lintegral_smul_measure, smul_eq_mul]
 
 end GlobalTheory.CompanionTheory.ConeHaar
+end
+end
+
+open MeasureTheory Matrix Topology Filter
+open scoped ContDiff ENNReal ComplexOrder Pointwise
+open PositivityTheory.RgTw (Mat G hb)
+open PositivityTheory.RgBcC
+open GlobalTheory.CompanionTheory.ConeHaar
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_measure_congruence_invariant : ∀ (n : ℕ) (g : Mat n), g.det ≠ 0 → ∀ T : (Fin n × Fin n → ℝ) →ₗ[ℝ] (Fin n × Fin n → ℝ), (∀ v, hOf (T v) = g * hOf v * gᴴ) → LinearMap.det T = ‖g.det‖ ^ (2 * n) → Measure.map T (coneMeas n) = coneMeas n := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ConeHaar.map_coneMeas_eq

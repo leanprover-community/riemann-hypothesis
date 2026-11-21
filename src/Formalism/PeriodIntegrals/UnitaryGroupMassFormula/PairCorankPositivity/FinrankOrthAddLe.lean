@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.PairCorankPos
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PairCorankPositivity.EqZeroOfMulVec
 import Lemmata.GeneralBFactLeftAlt.Imports
 

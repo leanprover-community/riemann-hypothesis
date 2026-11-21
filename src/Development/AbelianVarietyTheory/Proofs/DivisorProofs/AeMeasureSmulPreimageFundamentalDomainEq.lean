@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AeMeasureSetOfSmulMemEqZero
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory
 open scoped ENNReal Pointwise
 
@@ -42,3 +45,11 @@ theorem ae_measure_slice_eq (S X : Type) [Group S] [MeasurableSpace S] [Measurab
   exact hU.measure_eq hE
 
 end GlobalTheory.CovolIndep
+end
+
+open MeasureTheory
+open scoped ENNReal Pointwise
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ae_measure_smul_preimage_fundamentalDomain_eq : ∀ (S X : Type) [Group S] [MeasurableSpace S] [MeasurableSpace X] [MulAction S X] [MeasurableSMul₂ S X] [MeasurableMul₂ S] [MeasurableInv S] (ν : Measure S) [SFinite ν] [ν.IsMulLeftInvariant] (μ : Measure X) [SFinite μ] [SMulInvariantMeasure S X μ] (Γ : Subgroup S) [Countable Γ] (D : Set X), MeasurableSet D → IsFundamentalDomain Γ D μ → ∀ (E : Set S), IsFundamentalDomain Γ E ν → ∀ᵐ y ∂μ, ν {s | s • y ∈ D} = ν E := by
+  atlas_forward_decl GlobalTheory.CovolIndep.ae_measure_slice_eq

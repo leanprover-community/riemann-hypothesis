@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 open MonoidAlgebra
@@ -56,3 +58,8 @@ theorem groupAlgebra_exists_right_inv_of_map {E L G : Type} [Field E] [Field L] 
   simpa [Matrix.mulVec, dotProduct, M] using this
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monoidAlgebra_exists_right_inv_of_map_field : ∀ {E L G : Type} [Field E] [Field L] [Group G] [Fintype G] (j : E →+* L) (x : MonoidAlgebra E G), (∃ v : MonoidAlgebra L G, MonoidAlgebra.mapRingHom G j x * v = 1) → ∃ v : MonoidAlgebra E G, x * v = 1 := by
+  atlas_forward_decl GlobalTheory.groupAlgebra_exists_right_inv_of_map

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.LogAbsBasic
+import BuildAid.ForwardExisting
 
+section
 open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 open Polynomial NumberField
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Tf.Loc
@@ -238,3 +240,9 @@ theorem ellTerm_of_onlyIsotropic : OnlyIsotropic → EllTerm := by
 end GlobalTheory.CompanionTheory.EllIso
 
 end
+end
+
+open Matrix PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.elliptic_term_of_isotropic : OnlyIsotropic → EllTerm := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EllIso.ellTerm_of_onlyIsotropic

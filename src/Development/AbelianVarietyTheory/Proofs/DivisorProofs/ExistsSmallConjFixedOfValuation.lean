@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LinearDescent
+import BuildAid.ForwardExisting
+
+section
 open Polynomial
 
 namespace GlobalTheory.UnitLemma
@@ -66,3 +69,9 @@ theorem exists_small_val (K : UQ) (k : ℕ) (hk : 1 ≤ k) :
   · rw [← K.cInt_spec, map_pow, hsc]
 
 end GlobalTheory.UnitLemma
+end
+
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_small_conjFixed_of_valuation : ∀ (K : GlobalTheory.UnitLemma.UQ) (k : ℕ), 1 ≤ k → ∃ t : K.O, K.Small t ∧ GlobalTheory.UnitLemma.val K.O (algebraMap K.O K.E t) = k := by
+  atlas_forward_decl GlobalTheory.UnitLemma.exists_small_val

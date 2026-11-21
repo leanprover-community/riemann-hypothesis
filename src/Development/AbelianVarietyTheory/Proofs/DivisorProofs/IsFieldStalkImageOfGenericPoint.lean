@@ -1,8 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormIdeal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FamIdeal
+import BuildAid.ForwardExisting
 
+section
 open AlgebraicGeometry CategoryTheory Limits
 
 namespace GlobalTheory.NormSheafDescent
@@ -28,3 +29,10 @@ theorem isField_stalk_genPt :
   exact (hz.antisymm ((genericPoint_specializes y).map π.continuous)).eq
 
 end GlobalTheory.NormSheafDescent
+end
+
+open AlgebraicGeometry CategoryTheory Limits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isField_stalk_imageOfGenericPoint : ∀ (Y Z : Scheme.{0}) (π : Y ⟶ Z) [IsIntegral Y] [GlobalTheory.IsNormalScheme Z], IsOpen (Set.range π) →
+    IsField (Z.presheaf.stalk (GlobalTheory.NormSheafDescent.genPt π)) := by
+  atlas_forward_decl GlobalTheory.NormSheafDescent.isField_stalk_genPt

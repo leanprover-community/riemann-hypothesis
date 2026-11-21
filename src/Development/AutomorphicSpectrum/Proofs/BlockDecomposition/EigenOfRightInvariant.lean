@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionEigenfunctionMaximalCompact
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DetUpperTriangularBlock
 
+section
 noncomputable section
 
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
@@ -58,3 +58,9 @@ theorem eigen_of_rightInvariant : SectionEigenfunctionMaximalCompact := by
 end GlobalTheory.CompanionTheory.Jp.B3
 
 end
+end
+
+open GlobalTheory.CompanionTheory.Jp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.section_eigenfunction_maximal_compact : GlobalTheory.CompanionTheory.Jp.SectionEigenfunctionMaximalCompact := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Jp.B3.eigen_of_rightInvariant

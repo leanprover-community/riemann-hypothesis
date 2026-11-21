@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyInterleaving.Interleave
+import BuildAid.ForwardExisting
 
+section
 open Zc.Comb
 
 universe u
@@ -23,3 +25,10 @@ theorem shuffle_perm_flatten {T : Type u} (us : List (List T)) (w : List T)
     exact (interleave_perm_append hi).trans (ih.append_left _)
 
 end GlobalTheory.CompanionTheory.Comb
+end
+
+open Zc.Comb
+universe u
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.perm_flatten_of_shuffle : ∀ {T : Type u} (us : List (List T)) (w : List T), Shuffle us w → w.Perm us.flatten := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Comb.shuffle_perm_flatten

@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.CharacterGerms.LatticeInclusionFormsInjective
+import BuildAid.ForwardExisting
+
+section
 open Formalism.L2.FormalSeriesBounds
 
 noncomputable section
@@ -192,3 +195,10 @@ theorem GlobalTheory.mainTerm_to_rowHypothesis :
       · rw [h, V.v.map_zero]; exact le_top
       · rw [h, hco]
         exact hP _ (by rw [sum_inl_eps, ← hL]; exact hl) (by rw [sum_inr_eps, ← hR]; exact hr)
+end
+end
+
+open Formalism.L2.FormalSeriesBounds
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mainTerm_implies_rowHypothesis : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [NeZero d] (I J : Fin 2 → Type) [∀ g, Fintype (I g)] [∀ g, Fintype (J g)] (X : RowData C V d I J), X.MtoHM := by
+  atlas_forward_decl GlobalTheory.mainTerm_to_rowHypothesis

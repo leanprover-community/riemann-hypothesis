@@ -1,4 +1,7 @@
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsScaleStable
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
 open scoped ENNReal
@@ -147,3 +150,13 @@ theorem measurable_cntOver : ∀ (n m : ℕ) (S : Set (EuclideanSpace ℂ (Fin n
   exact Measurable.iSup fun N => measurable_const.indicator (measurableSet_natCast_le_encard_ptsOver hS N)
 
 end GlobalTheory.CompanionTheory.Ar.Short.Crofton
+end
+
+set_option maxSynthPendingDepth 1
+open GroundTheory.Heights₂.Heights MeasureTheory MvPolynomial Matrix GlobalTheory.CompanionTheory.Ar.Short.Crofton
+open scoped ENNReal
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurable_fibre_count_over : ∀ (n m : ℕ) (S : Set (EuclideanSpace ℂ (Fin n))), IsSigmaCompact S →
+  Measurable (fun p : (Fin m → Fin n → ℂ) × EuclideanSpace ℂ (Fin m) => cntOver S p.1 p.2) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Short.Crofton.measurable_cntOver

@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullRk
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LastColsVal
+
+section
 open MeasureTheory GlobalTheory.SplitFlip ValuativeRel
 open scoped Matrix
 attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
@@ -85,3 +86,14 @@ theorem exists_GL_mul_mem_unitMinorSet (k : Type) [Field k] [ValuativeRel k] [To
     rwa [hsub, det_one_updateCol_eq] at this
 
 end GlobalTheory.FullRankCoinv.UnitMinor
+end
+end
+
+open MeasureTheory GlobalTheory.SplitFlip ValuativeRel
+open scoped Matrix
+attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_minor_translate : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n d : ℕ)
+    (Y : Matrix (Fin n) (Fin d) k), Y.rank = n →
+    ∃ E : GL (Fin n) k, E.val * Y ∈ GlobalTheory.FullRankCoinv.UnitMinor.unitMinorSet k n d := by
+  atlas_forward_decl GlobalTheory.FullRankCoinv.UnitMinor.exists_GL_mul_mem_unitMinorSet

@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.RealPlaceAnalysis.SmoothOnGVIff
 import Formalism.FormalDegreeBessel.StatementG
+import BuildAid.ForwardExisting
+
+section
 open Matrix
 
 noncomputable section
@@ -184,3 +187,12 @@ theorem exists_KG_coordinate (W : Submodule ℂ (Fin n → ℂ))
     Set.range_comp]
 
 end GlobalTheory.CompanionTheory.JStable
+end
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.involution_stable_subspace_coordinate : ∀ {n : ℕ} (ε : Fin n → Bool) (W : Submodule ℂ (Fin n → ℂ)), (∀ v ∈ W, Formalism.REAL.Jm ε *ᵥ v ∈ W) →
+    ∃ (k : Formalism.REAL.KG ε) (S : Set (Fin n)),
+      W = (Submodule.span ℂ (Set.range fun j : S => (Pi.single (j : Fin n) (1 : ℂ) : Fin n → ℂ))).map (Formalism.REAL.toMK k).mulVecLin := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.JStable.exists_KG_coordinate

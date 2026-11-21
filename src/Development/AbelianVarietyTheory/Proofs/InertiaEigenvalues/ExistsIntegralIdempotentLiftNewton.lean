@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CommOfBezout
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitDiscAlg
 
 namespace GlobalTheory.IdemLift
@@ -146,3 +149,9 @@ theorem idem_lift (E : Type) [NontriviallyNormedField E] [IsUltrametricDist E] [
     · rw [smul_inv_smul₀ h0]
 
 end GlobalTheory.IdemLift
+end
+
+open GlobalTheory.UnitDiscAlg
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_idempotent_lift_newton : ∀ (E : Type) [NontriviallyNormedField E] [IsUltrametricDist E] [CompleteSpace E] (n : ℕ) (N x a : Matrix (Fin n) (Fin n) E) (ϖ : E), ‖ϖ‖ < 1 → x * N = N * x → (∀ i j, ‖x i j‖ ≤ 1) → (∀ i j, ‖a i j‖ ≤ 1) → x * x - x = ϖ • a → ∃ e a' : Matrix (Fin n) (Fin n) E, e * N = N * e ∧ a' * N = N * a' ∧ e * e = e ∧ (∀ i j, ‖e i j‖ ≤ 1) ∧ (∀ i j, ‖a' i j‖ ≤ 1) ∧ e - x = ϖ • a' := by
+  atlas_forward_decl GlobalTheory.IdemLift.idem_lift

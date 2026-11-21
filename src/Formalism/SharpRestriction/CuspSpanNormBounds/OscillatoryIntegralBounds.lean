@@ -2,9 +2,7 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.RadialChainStatements
 import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateTheorem
 import Formalism.SharpRestriction.CuspSpanNormBounds.HereditaryPositivity
 import Formalism.SharpRestriction.CuspSpanNormBounds.RadialLemmaE
-import Formalism.SharpRestriction.CuspSpanNormBounds.DiagonalEntryIdentity
 import Formalism.YangianSpanCharacter.YangianRelationFirst
-import Formalism.FormalDegreeBessel.FinalWR
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BoxOne
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.DualVolumePowerIdentity
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChebyshevExtremalPolynomials
@@ -19,11 +17,8 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.OneLevelInequality
 import Formalism.LatticeTheta.ThetaShiftInversion
 import Mathlib
 import Formalism.FormalDegreeBessel.FinalBF
-import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-import Formalism.SharpRestriction.CuspSpanNormBounds.LocalDataRealPlace
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.LatticeRigidity.RecursionUnrestrictedFalse
-import Formalism.HermitianCurvature.StatementTA
 
 section PartA3c
 

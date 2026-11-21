@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass
+import BuildAid.ForwardExisting
 
+section
 open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.GLm
 open scoped Classical
 
@@ -166,3 +168,11 @@ theorem isClass_der : ∀ (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (
   exact wh_congr ψ fun u hu => res_conj (by omega) hF h y u hu
 
 end GlobalTheory.GLm.DerClass
+end
+end
+
+open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.GLm
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isClassFunction_bernsteinZelevinskyDerivative : ∀ (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (i n : ℕ) (F : Gn g n → ℂ), i < n → IsMirClass F → IsClass (der ψ i F) := by
+  atlas_forward_decl GlobalTheory.GLm.DerClass.isClass_der

@@ -1,4 +1,3 @@
-import Formalism.HyperbolicPlaceProducts.DetIndexProductHyperbolicInequality
 import Formalism.HyperbolicPlaceProducts.SubgroupIndexCounts.ArithmeticLatticeHypothesis
 
 namespace Formalism.SLP.GlobalBoundRefinements.P

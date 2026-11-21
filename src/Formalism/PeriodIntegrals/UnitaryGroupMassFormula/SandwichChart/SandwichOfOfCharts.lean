@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LongWeylElementSquare
 import Formalism.PeriodIntegrals.SwSand
 
 noncomputable section

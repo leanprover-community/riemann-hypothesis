@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HeckeCharEqOfLAdicRealisation
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IrrTransferAbsIrrStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IrrTransferAbsIrr
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ImportsSide
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsCompEq
+
 open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
 
 noncomputable section

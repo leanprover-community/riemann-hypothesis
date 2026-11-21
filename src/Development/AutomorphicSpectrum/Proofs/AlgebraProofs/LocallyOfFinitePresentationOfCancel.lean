@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FinitePresentationOfFaithfullyFlatStatement
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FinitePresentationOfFaithfullyFlat
 
+section
 open CategoryTheory Limits AlgebraicGeometry
 
 namespace GlobalTheory.CompanionTheory.LfpDescent
@@ -59,3 +60,9 @@ theorem descends : ∀ {X Y S : Scheme.{0}} (q : X ⟶ Y) (f : Y ⟶ S), IsFinit
     infer_instance
 
 end GlobalTheory.CompanionTheory.LfpDescent
+end
+
+open CategoryTheory Limits AlgebraicGeometry
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.locallyOfFinitePresentation_of_cancel : ∀ {X Y S : Scheme.{0}} (q : X ⟶ Y) (f : Y ⟶ S), IsFinite q → Flat q → LocallyOfFinitePresentation q → Surjective q → LocallyOfFinitePresentation (q ≫ f) → LocallyOfFinitePresentation f := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LfpDescent.descends

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.ProjectiveLattices.SpMapAlgHomId
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.LeCovCoeff
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SecBCIffSecBCTest
 

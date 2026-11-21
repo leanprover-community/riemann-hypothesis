@@ -1,7 +1,5 @@
 import Mathlib
-import Formalism.LocalToGlobal.KernelLattices.ThDistC
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinAlgOfFinite
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DerivAt0CompMem
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFinsetSdLatReps
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteSemilocalHomLatticeClassesMod

@@ -1,18 +1,18 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullRk
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LastColsVal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegrableFullRankZetaStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsClopenUnitMinorSetStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankEqOfUnitMinorStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralGroupOfUnitMinorStableStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitMinorStableIntegralGroupStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitMinorTranslateStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsClopenUnitMinorSet
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankEqOfUnitMinor
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralGroupOfUnitMinorStable
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitMinorStableIntegralGroup
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitMinorTranslate
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullRankNormalFormOrbitStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OpenCoverFiniteTranslatesSupportStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OpenCoverFiniteTranslatesSupport
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClopenIntegrabilityFullRankOrbitStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothCharacterOrbitalIntegralStableStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothCharacterOrbitalIntegralStable
 
+section
 noncomputable section
 
 open MeasureTheory GlobalTheory.SplitFlip
@@ -39,3 +39,15 @@ theorem mem_augRk_of_fibre_eq_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [
   rw [e]; exact add_mem hdiff hA
 
 end GlobalTheory.FullRankCoinv
+end
+end
+
+open MeasureTheory GlobalTheory.SplitFlip
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.full_rank_zeta_kernel : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    [MeasurableSpace k] [BorelSpace k] (n d : ℕ) (ν : kˣ →* ℂˣ), n ≤ d → GlobalTheory.SmGL.IsSmoothChar ν →
+    ∀ Ψ ∈ GlobalTheory.FullRankCoinv.fullRk k n d,
+    (∀ h : GL (Fin d) k, smallF (haarVol (GlobalTheory.SplitWeil.KO k (Fin n))) ν Ψ (GlobalTheory.FullRankCoinv.Y0 k n d * h.val) = 0) →
+      Ψ ∈ GlobalTheory.FullRankCoinv.augRk n d ν := by
+  atlas_forward_decl GlobalTheory.FullRankCoinv.mem_augRk_of_fibre_eq_zero

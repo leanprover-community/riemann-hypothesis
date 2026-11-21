@@ -1,8 +1,6 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.OnlyIsotropic
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousConjNilSymm
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NilradicalChangeOfVariablesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuotientVanishingStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuotientVanishing
 
 noncomputable section
 

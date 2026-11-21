@@ -5,10 +5,12 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchubertCellOpenImm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagPointInSomeCell
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEqFlagPtOfIsLocalRing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ColSec
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TautologicalFlagUniversalStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TautologicalSubbundleRankStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TautologicalFlagUniversal
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TautologicalSubbundleRank
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIsoInclLastStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PullbackFlagSectionsFrame
+
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.FlagZ GlobalTheory.FlagZ.Univ
 open GlobalTheory.QCoh (freeModule)
 
@@ -35,3 +37,11 @@ theorem exists_lifts (ι : Type) [Fintype ι] (N : ℕ) (T : Scheme.{0}) (g : T 
   exact ⟨g', w, h⟩
 
 end GlobalTheory.FlagZ.Univ
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.FlagZ GlobalTheory.FlagZ.Univ
+open GlobalTheory.QCoh (freeModule)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_variety_lift_exists : ∀ (ι : Type) [Fintype ι] (N : ℕ) (T : Scheme.{0}) (g : T ⟶ Sp ℤ) (fl' : ι → Vert.Flag ((Scheme.Modules.pullback g).obj (freeModule (Sp ℤ) (Fin N))) N), ∃ g', Lifts g fl' g' := by
+  atlas_forward_decl GlobalTheory.FlagZ.Univ.exists_lifts

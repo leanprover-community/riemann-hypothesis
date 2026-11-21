@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.GelfandSpectralNormalisation.NormalisedInvariants.PTConclAt
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NineTermExactIff
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.Published GlobalTheory.Published.PoitouTate PositivityTheory.PoitouTateConclusion GlobalTheory.CompanionTheory.PTIso
 
 namespace GlobalTheory.CompanionTheory.PTIso
@@ -16,3 +17,9 @@ theorem isTotallyComplex_of_ringEquiv : ∀ (F F' : Type) [Field F] [NumberField
   exact InfinitePlace.not_isReal_iff_isComplex.2 (h.isComplex _) hr
 
 end GlobalTheory.CompanionTheory.PTIso
+end
+
+open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.Published GlobalTheory.Published.PoitouTate PositivityTheory.PoitouTateConclusion GlobalTheory.CompanionTheory.PTIso
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.totally_complex_of_ring_equiv : ∀ (F F' : Type) [Field F] [NumberField F] [Field F'] [NumberField F'] (e : F ≃+* F'), IsTotallyComplex F → IsTotallyComplex F' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PTIso.isTotallyComplex_of_ringEquiv

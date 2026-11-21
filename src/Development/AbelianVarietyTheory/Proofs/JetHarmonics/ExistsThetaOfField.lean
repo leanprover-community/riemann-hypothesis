@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
 import Development.AbelianVarietyTheory.Definitions.Jets.IsAppBox
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.LemmaBFSt
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ColumnValueFSt

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FibrePointsLEId
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits AlgebraicGeometry
 
 noncomputable section
@@ -141,3 +144,10 @@ theorem splits_pullbackSnd_of_splits_diagComplHom {Z X V : Scheme.{0}} (f : Z �
       rfl
 
 end GlobalTheory.EtC.Tr
+end
+end
+
+open CategoryTheory Limits AlgebraicGeometry
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.splits_pullbackSnd_of_splits_diagonalComplement : ∀ {Z X V : Scheme.{0}} (f : Z ⟶ X) [IsFinite f] [Etale f] (v : V ⟶ Z), GlobalTheory.EtC.Tr.Splits (GlobalTheory.EtC.Tr.diagComplHom f) v → GlobalTheory.EtC.Tr.Splits (pullback.snd f f) v := by
+  atlas_forward_decl GlobalTheory.EtC.Tr.splits_pullbackSnd_of_splits_diagComplHom

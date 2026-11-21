@@ -1,7 +1,8 @@
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.BasisOne
 import Development.EtaleCohomology.EtaleTrace.LRingPf
 import Development.EtaleCohomology.EtaleTrace.LPdCut
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistCupUnitAndPrimitiveRootClassesStatement
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistCupUnitAndPrimitiveRootClasses
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ProjTrans
 
 noncomputable section

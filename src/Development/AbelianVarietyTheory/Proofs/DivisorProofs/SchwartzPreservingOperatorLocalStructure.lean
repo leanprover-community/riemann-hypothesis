@@ -1,15 +1,14 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
-import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepPureTensorLocalStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalPointModelEvalStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PureTensorMemSchwartzAdelicStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardCharContinuousNontrivialStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalSpanTranslatesOfNonzeroSchwartzStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepLatticeScalarActionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepScalarCharOfSignatureStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocPt
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepPureTensorLocal
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalPointModelEval
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PureTensorMemSchwartzAdelic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardCharContinuousNontrivial
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalSpanTranslatesOfNonzeroSchwartz
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepLatticeScalarAction
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepScalarCharOfSignature
 
+section
 noncomputable section
 
 open scoped TensorProduct
@@ -157,3 +156,19 @@ theorem commutant_pure : GlobalTheory.FunPr.Hypotheses₂ → ∀ (F E : Type) [
     exact hv (hfin.mem_toFinset.mpr h)⟩
 
 end GlobalTheory.FinComm
+end
+end
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_preserving_operator_local_structure : GlobalTheory.FunPr.Hypotheses₂ → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
+    (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (r s r' s' : ℕ),
+    B.IsGood σ → X.IsHerm σ B r s → W.IsSkew σ B r' s' → M.IsGood B.ψ →
+    ∀ A : Module.End ℂ ((Fin n × Fin d → AF F) → ℂ), (∀ Φ ∈ schA F (Fin n × Fin d), A Φ ∈ schA F (Fin n × Fin d)) →
+    (∀ (v : Pl F) (w : Matrix (Fin n) (Fin d) (AE F E)), At (evFin F v) w →
+      ∀ Φ ∈ schA F (Fin n × Fin d), A (M.co.rho B.ψ w Φ) = M.co.rho B.ψ w (A Φ)) →
+    ∀ (f : SInf F (Fin n × Fin d)) (φ : ∀ v : Pl F, (Fin n × Fin d → Fv F v) → ℂ), (∀ v, φ v ∈ SB _) →
+      (∀ᶠ v in cofinite, φ v = M.vac v) → ∃ f₁ : SInf F (Fin n × Fin d), A (pure f φ) = pure f₁ φ := by
+  atlas_forward_decl GlobalTheory.FinComm.commutant_pure

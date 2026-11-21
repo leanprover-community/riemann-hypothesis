@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.CosetCount
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.CuspRep
 open scoped TensorProduct
 
@@ -58,3 +60,9 @@ theorem contrFix : PositivityTheory.Rg.BcB.F.Tail.PExp.ContrFix := by
     rw [contr_right, h1]
 
 end GlobalTheory.CompanionTheory.RepTensor
+end
+
+namespace PositivityTheory.Rg.BcB.F.Tail.PExp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contraction_fixed : PositivityTheory.Rg.BcB.F.Tail.PExp.ContrFix := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RepTensor.contrFix

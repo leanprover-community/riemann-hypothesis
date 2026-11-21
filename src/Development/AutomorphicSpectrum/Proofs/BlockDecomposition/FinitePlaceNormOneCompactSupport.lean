@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
+import BuildAid.ForwardExisting
 
+section
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
 open scoped TensorProduct Quaternion
 
@@ -105,3 +106,11 @@ theorem isCompact_suppAt {F : Type} [Field F] [NumberField F] (d β : F) (S : Fi
   exact (isCompact_univ_pi fun s : S => h s.1 s.2).image (continuous_psi d β S)
 
 end GlobalTheory.CompanionTheory.PlaneSA.CptAdelic
+end
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
+open scoped TensorProduct Quaternion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_place_norm_one_compact_support : ∀ {F : Type} [Field F] [NumberField F] (d β : F) (S : Finset (Pl F)), (∀ s ∈ S, IsCompact {x : Q d β (Kp s) | qn x = 1}) → IsCompact (SuppAt d β (S : Set (Pl F))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PlaneSA.CptAdelic.isCompact_suppAt

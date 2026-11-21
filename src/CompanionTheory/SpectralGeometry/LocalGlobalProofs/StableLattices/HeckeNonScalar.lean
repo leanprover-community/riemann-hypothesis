@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantEquality
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset Polynomial
@@ -255,3 +257,9 @@ theorem nonScal : NonScal := by
     exact h1
 
 end GlobalTheory.CompanionTheory.RgExhHecke.NonScalProof
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.HeckeNonScalar : CompanionTheory.RgExh.Hk.NonScal := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgExhHecke.NonScalProof.nonScal

@@ -4,13 +4,14 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsConstan
 import Formalism.LocalToGlobal.InertKernelTheory.DefsRepDict
 import Formalism.LocalToGlobal.InertKernelTheory.GenusOneModelExistsLattice
 import Formalism.LocalToGlobal.InertKernelTheory.StatementJets
-import Formalism.LocalToGlobal.InertKernelTheory.StatementAlgT
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.JInvNormLeOne
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.GoodOrdinaryModelAtTwoCmLatticeSevenModEight
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocJetsAll
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntSExpMulTranslate
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PlaceExtendsToIso
+import BuildAid.ForwardExisting
 
+section
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker
 
 namespace GlobalTheory.ThLoc
@@ -26,3 +27,9 @@ theorem inputs_of_algT (hT : Formalism.L2.KerInert.AlgTAll) : Inputs where
   lamExt := place_extends_to_iso
 
 end GlobalTheory.ThLoc
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalisedThetaCMCurveTheorems_of_algebraicTranslates : Formalism.L2.KerInert.AlgTAll → GlobalTheory.ThLoc.Inputs := by
+  atlas_forward_decl GlobalTheory.ThLoc.inputs_of_algT

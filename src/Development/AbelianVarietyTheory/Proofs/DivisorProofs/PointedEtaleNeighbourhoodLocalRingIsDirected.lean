@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InstPreorder
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing GlobalTheory.Henselisation
 
 open scoped TensorProduct
@@ -30,3 +33,9 @@ theorem etNbhd_isDirected (R : Type) [CommRing R] [IsLocalRing R] :
     rw [Algebra.TensorProduct.lift_tmul, map_one, one_mul]
 
 end GlobalTheory.Henselisation
+end
+
+open IsLocalRing GlobalTheory.Henselisation
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pointedEtaleNeighbourhoodLocalRing_isDirected : ∀ (R : Type) [CommRing R] [IsLocalRing R], IsDirected (EtNbhd R) (· ≤ ·) := by
+  atlas_forward_decl GlobalTheory.Henselisation.etNbhd_isDirected

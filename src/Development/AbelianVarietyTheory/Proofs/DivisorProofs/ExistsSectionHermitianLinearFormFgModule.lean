@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.CTSmallCone
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct Matrix
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.AdelicU
@@ -63,3 +66,14 @@ theorem exists_section : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
   exact ⟨y₀, hy₀, fun z hz => hL' _ (hmemI z hz)⟩
 
 end GlobalTheory.FormSection
+end
+
+open scoped TensorProduct Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.AdelicU
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_section_hermitianLinearForm_fg_module : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
+    (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (L : Submodule (𝓞 E) (Fin n → E)), L.FG →
+    ∀ x : Fin n → E, (∃ z ∈ L, form σ J z x ≠ 0) →
+    ∃ y₀ : Fin n → E, form σ J y₀ x = 1 ∧ ∀ z ∈ L, form σ J z x • y₀ ∈ L := by
+  atlas_forward_decl GlobalTheory.FormSection.exists_section

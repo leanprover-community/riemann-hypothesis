@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Polynomial
 
 namespace GlobalTheory.CompanionTheory.TfLoc
@@ -74,3 +76,8 @@ theorem transport_open_trace : D0a → T0 → A1 → MeasureTransportOpenSet := 
   rw [e1, hmap, e2]
 
 end GlobalTheory.CompanionTheory.TfLoc
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unipotent_hecke_fourth_property : PositivityTheory.Rg.Tf.Loc.D0a → PositivityTheory.Rg.Tf.Loc.T0 → PositivityTheory.Rg.Tf.Loc.A1 → PositivityTheory.Rg.Tf.Loc.MeasureTransportOpenSet := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TfLoc.transport_open_trace

@@ -6,8 +6,9 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemDualSetOfM
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DualOfDualFrames
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StepLevelTLat
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CmFieldSplitCompletelyPlaceStructureStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeLevelLocalDualQuotientLengthOneStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeLevelLocalDualQuotientLengthOne
 
+section
 open Formalism.BasicNotions Formalism.UG Formalism.L2.Forms NumberField IsDedekindDomain Matrix GlobalTheory.St.G
 open scoped TensorProduct
 
@@ -232,3 +233,10 @@ theorem trivial_iff_mem_Uloc : ∀ (F E : Type) [Field F] [NumberField F] [Field
   · exact key sp hint ⟨_, he⟩ (sp.apply_symm_apply _) hτ h1
 
 end GlobalTheory.St.G.FunFix
+end
+
+open Formalism.BasicNotions Formalism.UG Formalism.L2.Forms NumberField IsDedekindDomain Matrix GlobalTheory.St.G
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trivial_on_dual_quotient_iff_mem_localUnitary : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (cm : CMData F E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHerm (cm.sig : E →+* E) J → J.det ≠ 0 → ∀ (T f : ℕ) (bad : Set (HeightOneSpectrum (𝓞 F))) (S : StepLevel F E cm.sig J T f bad), T.Prime → SplitsIn E T → Module.finrank ℚ E = 2 * f → ∀ (v : HeightOneSpectrum (𝓞 F)), (T : 𝓞 F) ∈ v.asIdeal → ∀ y ∈ levelVL cm.sig J v S.Lb, (∀ x ∈ loc v (dualL cm.sig J S.Lb), (y.1 - 1) *ᵥ x ∈ loc v S.Lb) ↔ y ∈ S.Uloc v := by
+  atlas_forward_decl GlobalTheory.St.G.FunFix.trivial_iff_mem_Uloc

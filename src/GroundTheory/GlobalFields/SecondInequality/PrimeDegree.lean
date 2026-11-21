@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms.InfiniteAdeleRingMapInfiniteAdeleRingMap
 import GroundTheory.GlobalFields.SecondInequality.Statement
 
 namespace GroundTheory.Global

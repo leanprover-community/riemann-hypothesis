@@ -1,6 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.AltCoeff
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Lattice
 set_option maxSynthPendingDepth 1
 

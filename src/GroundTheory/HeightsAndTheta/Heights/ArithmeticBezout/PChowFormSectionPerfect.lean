@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChowFormSectionPerfect
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChowFormSectionAlgClosed
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsSectionCycleReduced
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsMinimalPrimeComap
@@ -20,15 +19,12 @@ import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PThroughTwoPointsTr
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTrdegAdjoinLe
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PTrdegBaseAlgebraic
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncIdealNeBotDim
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LocalMultRadical
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PAffineChartTrdeg
-import GroundTheory.HeightsAndTheta.Heights.ChowForms.PFGNullstellensatz
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncidenceGeneric
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncIdealPrime
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PGenericLinearTrdeg
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncIdealDim
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PConeDimOfChowForm
-import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChowFormExists
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PConeDimComponent
 set_option maxSynthPendingDepth 1
 

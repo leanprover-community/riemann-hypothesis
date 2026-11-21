@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.DiscreteSeriesHilbert.StepSqInt
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.KTypesAboveOfDsClass
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.DiscreteSeries
 
 private lemma two_mul_rhoN_add_rhoC_eq_card_sub_card {n : ℕ} (ε : Fin n → Bool) (x : Fin n) :
@@ -95,3 +97,8 @@ theorem stepVogan : PositivityTheory.RgDs.Hilb.StepVogan := by
   linarith
 
 end GlobalTheory.CompanionTheory.DiscreteSeries
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.vogan_minimal_type_statement : PositivityTheory.RgDs.Hilb.StepVogan := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DiscreteSeries.stepVogan

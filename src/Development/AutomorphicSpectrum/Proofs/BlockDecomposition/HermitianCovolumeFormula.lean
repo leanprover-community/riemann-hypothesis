@@ -4,6 +4,7 @@ import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsU
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.SelfDualTransport
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AdelicCharacterTrivialAlmostEverywhere
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory HeckeCharacterZeroLocus.SiegelWeilU
@@ -175,3 +176,9 @@ theorem hermCovol : HermCovol := by
 end Main
 
 end GlobalTheory.CompanionTheory.SW.HermCov
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_covolume_formula : PositivityTheory.SiegelWeilFormula.KWhit.MeasP.HermCovol := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.HermCov.hermCovol

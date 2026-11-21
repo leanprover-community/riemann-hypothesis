@@ -22,7 +22,6 @@ import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.NcardEqTwoIff
 import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.OrbitSg
 import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ThickExists
 import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.EqZeroOfNegEq
-import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
 
 namespace Formalism.FrobeniusOrbits.Final
 

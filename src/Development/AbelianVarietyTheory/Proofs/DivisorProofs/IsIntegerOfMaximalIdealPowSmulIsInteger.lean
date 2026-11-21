@@ -1,6 +1,9 @@
 import Mathlib
 import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.ModDepthGE
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RegularLocalRingNormalDomain
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing TensorProduct Pointwise
 
 namespace GlobalTheory
@@ -90,3 +93,9 @@ theorem isInteger_of_maximalIdeal_pow_smul_isInteger :
     exact Ideal.mul_mem_mul hb ha
 
 end GlobalTheory
+end
+
+open IsLocalRing TensorProduct Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isInteger_of_maximalIdeal_pow_smul_isInteger' : ∀ (S : Type) [CommRing S] [IsRegularLocalRing S], 2 ≤ ringKrullDim S → ∀ (k : ℕ) (c : FractionRing S), (∀ a ∈ maximalIdeal S ^ k, IsLocalization.IsInteger S (a • c)) → IsLocalization.IsInteger S c := by
+  atlas_forward_decl GlobalTheory.isInteger_of_maximalIdeal_pow_smul_isInteger

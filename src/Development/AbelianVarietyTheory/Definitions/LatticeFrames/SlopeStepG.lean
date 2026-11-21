@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.DataArith
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SlopeStep
 
 noncomputable section

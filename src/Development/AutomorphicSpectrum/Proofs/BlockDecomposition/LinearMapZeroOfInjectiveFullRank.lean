@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open TensorProduct
 
 namespace GlobalTheory.CompanionTheory.Perf
@@ -39,3 +42,9 @@ theorem map_eq_zero_of_comp_injective_of_finrank_eq :
   simpa using (mul_left_mem_nonZeroDivisors_eq_zero_iff hdet).mp h2
 
 end GlobalTheory.CompanionTheory.Perf
+end
+
+open TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linear_map_zero_of_injective_full_rank : ∀ (A W N : Type) [CommRing A] [Nontrivial A] [AddCommGroup W] [Module A W] [AddCommGroup N] [Module A N] [Module.Free A W] [Module.Finite A W] [Module.Free A N] (g : ℕ) (φ : (Fin g → A) →ₗ[A] W) (f : W →ₗ[A] N), Module.finrank A W = g → Function.Injective φ → f ∘ₗ φ = 0 → f = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Perf.map_eq_zero_of_comp_injective_of_finrank_eq

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Matrix
 
 namespace GlobalTheory
@@ -34,3 +37,9 @@ theorem linearIndependent_real_map_of_fieldEmb {E : Type} [Field E] {r n : ℕ} 
   exact h2.restrict_scalars' ℝ
 
 end GlobalTheory
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linear_independent_complex_map : ∀ {E : Type} [Field E] {r n : ℕ} (τ : E →+* ℂ) (e : Fin n → Matrix (Fin r) (Fin r) E), LinearIndependent E e → LinearIndependent ℝ (fun i => (e i).map τ) := by
+  atlas_forward_decl GlobalTheory.linearIndependent_real_map_of_fieldEmb

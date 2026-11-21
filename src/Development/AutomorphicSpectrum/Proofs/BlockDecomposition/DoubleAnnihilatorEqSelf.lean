@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ContinuousCompOfIsOpenKer
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.FiniteDuality
 
 private theorem card_dual_zmod_le_card' (n : ℕ) [NeZero n] (M : Type) [AddCommGroup M]
@@ -87,3 +89,8 @@ theorem double_annihilator (n : ℕ) [NeZero n] (X Y : Type) [AddCommGroup X] [M
     (AddSubgroup.eq_of_le_of_card_ge (show U.toAddSubgroup ≤ W.toAddSubgroup from hUW) hle)).symm
 
 end GlobalTheory.CompanionTheory.FiniteDuality
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.double_annihilator_eq_self : ∀ (n : ℕ) [NeZero n] (X Y : Type) [AddCommGroup X] [Module (ZMod n) X] [Finite X] [AddCommGroup Y] [Module (ZMod n) Y] [Finite Y] (B : Y →ₗ[ZMod n] X →ₗ[ZMod n] ZMod n), Function.Injective B → Function.Injective B.flip → ∀ U : Submodule (ZMod n) X, (⨅ y ∈ (⨅ x ∈ U, LinearMap.ker (B.flip x)), LinearMap.ker (B y)) = U := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FiniteDuality.double_annihilator

@@ -1,10 +1,11 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffOnDbarCoefficientsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffOnDbarCoefficients
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DbarSumLeibnizStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DbarCompHolomorphicStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DifferentiableAtPullbackFormStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DbarCompHolomorphic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DifferentiableAtPullbackForm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DbarPullbackHolomorphicZeroStatement
+
+section
 open Set Matrix MeasureTheory
 open GlobalTheory.HermFrame
 open scoped ComplexOrder
@@ -86,3 +87,11 @@ theorem isForm_dbar {M : Type} [TopologicalSpace M] {n : ℕ} (A : HolAtlas M n)
       (by simp)
 
 end GlobalTheory.CxForm
+end
+
+open Set Matrix MeasureTheory
+open GlobalTheory.HermFrame
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isForm_dbar' : ∀ {M : Type} [TopologicalSpace M] {n : ℕ} (A : GlobalTheory.CxForm.HolAtlas M n) (α : A.Fld), A.IsForm α → A.IsForm (A.dbar α) := by
+  atlas_forward_decl GlobalTheory.CxForm.isForm_dbar

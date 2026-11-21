@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.Brauer.CrossedProduct
 import GroundTheory.Brauer.CrossedProductSimple
 set_option maxSynthPendingDepth 1
 

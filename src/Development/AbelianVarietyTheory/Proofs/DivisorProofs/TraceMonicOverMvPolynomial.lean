@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial
 
 namespace GlobalTheory
@@ -49,3 +52,9 @@ theorem trace_monic_over_mvPolynomial {K : Type} [Field K] (F : Subfield K) [Fin
   exact h
 
 end GlobalTheory
+end
+
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_monic_root_trace_of_isIntegral_closure : ∀ {K : Type} [Field K] (F : Subfield K) [FiniteDimensional F K] {ι : Type} (z : ι → K), (∀ i, z i ∈ F) → ∀ (v : K), IsIntegral (Subring.closure (Set.range z)) v → ∃ f : Polynomial (MvPolynomial ι ℤ), f.Monic ∧ f.eval₂ (aeval z).toRingHom (Algebra.trace F K v : K) = 0 := by
+  atlas_forward_decl GlobalTheory.trace_monic_over_mvPolynomial

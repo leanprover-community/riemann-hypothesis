@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsReducedAlgebraOfSmoothOfIsNoetherianRing
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -42,3 +44,12 @@ theorem descent : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B] [IsRe
   exact ⟨a, ha⟩
 
 end GlobalTheory.EtaleGeomDescent
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etale_faithfullyFlat_descent_geometric_points : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B] [IsReduced A] [IsJacobsonRing A],
+    Module.FaithfullyFlat A B → Algebra.Etale A B → ∀ b : B,
+    (∀ (k : Type) [Field k] [IsAlgClosed k] (φ ψ : B →+* k), φ.comp (algebraMap A B) = ψ.comp (algebraMap A B) →
+      φ b = ψ b) → ∃ a : A, algebraMap A B a = b := by
+  atlas_forward_decl GlobalTheory.EtaleGeomDescent.descent

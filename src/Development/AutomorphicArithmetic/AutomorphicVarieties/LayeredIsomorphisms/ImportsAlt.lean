@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.GaloisCohomology.GaloisCohomologyProofs.LdataNonempty
-import Development.AutomorphicArithmetic.AutomorphicVarieties.LayeredIsomorphisms.SecondBound
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LayeredIsomorphisms.Klen
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LayeredIsomorphisms.Kexp
 

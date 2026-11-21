@@ -1,5 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.GenericUnlinkedGL.UnlinkedRealize
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
 open scoped TensorProduct
 
@@ -55,3 +58,10 @@ theorem exists_equiv_subQuot : ∀ {G V W : Type} [Group G] [AddCommGroup V] [Mo
     (fun q => e.symm_apply_apply q)⟩⟩
 
 end GlobalTheory.CompanionTheory.SubquotPres
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.subquotient_realised_by_subreps : ∀ {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ G V) (π : Representation ℂ G W), IsSubquotient π ρ → ∃ A B : Subrepresentation ρ, B ≤ A ∧ Nonempty (π.Equiv (subQuot A B)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SubquotPres.exists_equiv_subQuot

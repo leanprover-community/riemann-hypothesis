@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.ExponentGrids.SecondComplementColumnExponents
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondComplementParameterBounds
-import Formalism.TranslateCocycles.TranslateCocycleProofs.TranslateScale
 import Formalism.TranslateCocycles.TranslateCocycleProofs.NetGLMapSurjective
 import Formalism.TranslateCocycles.TranslateCocycleProofs.HcBlockSumBounds
 

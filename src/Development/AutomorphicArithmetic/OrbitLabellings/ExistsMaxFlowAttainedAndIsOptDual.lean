@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.IncomingBounds.IncomingBound
 import Formalism.IncomingBounds.FlowDegreeBounds.MaxFlowValueAttained
 
 open scoped BigOperators

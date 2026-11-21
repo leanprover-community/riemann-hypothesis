@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem finiteType_invariants_and_finite (R : Type) [CommRing R] [IsNoetherianRing R]
@@ -16,3 +18,8 @@ theorem finiteType_invariants_and_finite (R : Type) [CommRing R] [IsNoetherianRi
     hfin.fg_top Subtype.val_injective⟩, hfin⟩
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteType_invariants_finite_group_and_finite : ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (C' : Type) [CommRing C'] [Algebra R C'] [Algebra.FiniteType R C'] (G : Type) [Group G] [Finite G] (act : G →* (C' ≃ₐ[R] C')) (C : Subalgebra R C'), (∀ x, x ∈ C ↔ ∀ σ, act σ x = x) → Algebra.FiniteType R C ∧ Module.Finite C C' := by
+  atlas_forward_decl GlobalTheory.finiteType_invariants_and_finite

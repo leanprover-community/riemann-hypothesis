@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.TateCohomology.HerbrandAbstract
 import GroundTheory.GlobalFields.HerbrandQuotients.Cyclic
 import GroundTheory.GlobalFields.HerbrandQuotients.RationalForm
 

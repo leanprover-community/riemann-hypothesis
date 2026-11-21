@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.Columns.Record
 import Formalism.LocalToGlobal.Columns.GFamSEv
 
 open NumberField IsDedekindDomain Module Matrix

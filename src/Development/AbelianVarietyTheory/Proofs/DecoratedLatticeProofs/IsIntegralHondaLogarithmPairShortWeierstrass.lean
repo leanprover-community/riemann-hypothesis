@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EndOmega
 import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.TwoTorsionU
+import BuildAid.ForwardExisting
 
+section
 open PowerSeries GlobalTheory.Honda
 
 namespace GlobalTheory.Honda
@@ -38,3 +40,9 @@ theorem intLog_shortW (K : Type) [NormedField K] [IsUltrametricDist K] [CharZero
     exact hcm.2.2.2.2.2.2.1 n
 
 end GlobalTheory.Honda
+end
+
+open PowerSeries GlobalTheory.Honda
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIntegralHondaLogarithmPair_shortWeierstrass : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [CharZero K] (g2 g3 : K), ‖(2 : K)‖ = 1 → ‖g2‖ ≤ 1 → ‖g3‖ ≤ 1 → IntLog (Formalism.L2.Th1.A.logSer (Formalism.L2.Th1.A.shortW g2 g3)) (Formalism.L2.Th1.A.expSer (Formalism.L2.Th1.A.shortW g2 g3)) := by
+  atlas_forward_decl GlobalTheory.Honda.intLog_shortW

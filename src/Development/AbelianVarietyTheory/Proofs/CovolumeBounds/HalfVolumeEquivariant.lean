@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsKMeas
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.FrameIsotropicOrthonormalStatement
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.GramMinorDetTriangularMulStatement
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.GramMinorDetTriangularMul
 
+section
 open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 GlobalTheory.HCXi
 open scoped ENNReal ComplexOrder
 
@@ -47,3 +47,10 @@ theorem vHalf_left_inv_and_mul : ∀ k r : ℕ, 1 ≤ k →
     ring
 
 end GlobalTheory.HCXi
+end
+
+open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 GlobalTheory.HCXi
+open scoped ENNReal ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.half_volume_equivariant : ∀ k r : ℕ, 1 ≤ k → (∀ κ ∈ Kset k r, ∀ g : Mat k r, vHalf k r (κ * g) = vHalf k r g) ∧ ∀ g ∈ GV k r, ∀ p ∈ Pset k r, vHalf k r (g * p) = vHalf k r g * vHalf k r p := by
+  atlas_forward_decl GlobalTheory.HCXi.vHalf_left_inv_and_mul

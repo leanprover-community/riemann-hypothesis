@@ -1,6 +1,5 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChainIndependenceStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChainIndependence
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerSymmetryStatement
 
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal

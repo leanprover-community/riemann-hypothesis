@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SymInt
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.WittPNe
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.DualFlatOf
 

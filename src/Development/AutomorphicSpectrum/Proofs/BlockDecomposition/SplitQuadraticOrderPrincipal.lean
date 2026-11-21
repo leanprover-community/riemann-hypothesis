@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.SplitQuadratic
 
 theorem isPrincipalIdealRing_of_sq_eq_sq :
@@ -59,3 +61,8 @@ theorem isPrincipalIdealRing_of_sq_eq_sq :
   exact IsPrincipalIdealRing.of_surjective φ hsurj
 
 end GlobalTheory.CompanionTheory.SplitQuadratic
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.split_quadratic_order_principal : ∀ (R O : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [CommRing O] (ι : R →+* O) (δ : O) (e : R), δ * δ = ι (e * e) → (∀ y : O, ∃ p q : R, y = ι p + ι q * δ) → (∀ p q : R, ι p + ι q * δ = 0 → p = 0 ∧ q = 0) → IsUnit e → IsUnit (2 : R) → IsPrincipalIdealRing O := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SplitQuadratic.isPrincipalIdealRing_of_sq_eq_sq

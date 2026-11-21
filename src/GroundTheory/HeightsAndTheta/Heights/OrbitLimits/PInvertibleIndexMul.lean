@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsInvertibleIndexMulSteps
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PInvertibleIdealIndex
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.POrderIdealIndexExtension
 set_option maxSynthPendingDepth 1
 

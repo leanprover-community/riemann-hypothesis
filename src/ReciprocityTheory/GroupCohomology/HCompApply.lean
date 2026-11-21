@@ -1,5 +1,3 @@
-import ReciprocityTheory.GroupCohomology.CupConnRightStatement
-import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
 import ReciprocityTheory.GroupCohomology.FiberFirstH0Injective
 import ReciprocityTheory.GroupCohomology.ProdHolds
 import ReciprocityTheory.GroupCohomology.EqZeroOfLe

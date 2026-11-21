@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPosHermFormV
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IntMIffInt
+import BuildAid.ForwardExisting
+
+section
 open Complex MeasureTheory GlobalTheory.UnitaryTheta
 open scoped BigOperators ComplexConjugate Real Classical
 
@@ -81,3 +84,10 @@ theorem summable_exp_neg_herm : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpa
   linarith
 
 end GlobalTheory.UnitaryTheta.GaussSumm
+end
+
+open Complex MeasureTheory GlobalTheory.UnitaryTheta
+open scoped BigOperators ComplexConjugate Real Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.summable_exp_neg_herm_add_norm : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] [FiniteDimensional ℂ V] (H : Sesq V), IsPosHerm H → ∀ (Λ : AddSubgroup V) [DiscreteTopology Λ] (C : ℝ), Summable (fun x : Λ => Real.exp (-(π / 2) * (H x x).re + C * ‖(x : V)‖)) := by
+  atlas_forward_decl GlobalTheory.UnitaryTheta.GaussSumm.summable_exp_neg_herm

@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOpenSubgroupsIntegers
 
+section
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 noncomputable section
@@ -35,3 +36,15 @@ theorem exists_int_level : ∀ {F : Type} [Field F] [NumberField F] {κ : Type} 
   exact Set.mem_iInter.1 hmem i
 
 end GlobalTheory.SBLevel
+end
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_int_level_schwartzBruhat_finiteAdelic : ∀ {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
+    (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ), g ∈ GlobalTheory.WeilM.SB (κ → FiniteAdeleRing (𝓞 F) F) →
+    ∃ d : 𝓞 F, d ≠ 0 ∧ ∀ x u : κ → FiniteAdeleRing (𝓞 F) F,
+      (∀ i, ∀ v : HeightOneSpectrum (𝓞 F),
+        (algebraMap F (FiniteAdeleRing (𝓞 F) F) ((d : F)⁻¹) * u i) v ∈ v.adicCompletionIntegers F) →
+      g (x + u) = g x := by
+  atlas_forward_decl GlobalTheory.SBLevel.exists_int_level

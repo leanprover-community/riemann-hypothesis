@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilTranslate
 import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilFixedField
 
 namespace GroundTheory.Arith.Abelian

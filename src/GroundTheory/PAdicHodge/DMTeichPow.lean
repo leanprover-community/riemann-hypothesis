@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.PAdicHodge.ExistsWeightLeOfConvergesAt
-import GroundTheory.PAdicHodge.ExtRobbaDMLinear
 set_option maxSynthPendingDepth 1
 
 noncomputable section

@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCliff
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CPoly
+import BuildAid.ForwardExisting
+
+section
 open Matrix Finset
 open scoped InnerProductSpace
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.RealCount GlobalTheory.CompanionTheory.RealCount.Tope
@@ -313,3 +315,13 @@ theorem domLE_of_mul_eq : ∀ {n : ℕ} (lam : Fin n → ℤ), Antitone lam → 
     exact_mod_cast heq
 
 end GlobalTheory.CompanionTheory.RealCountG.DomA
+end
+end
+
+open Matrix Finset
+open scoped InnerProductSpace
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD GlobalTheory.CompanionTheory.RealCount GlobalTheory.CompanionTheory.RealCount.Tope
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dominance_of_weyl_character_coeff : ∀ {n : ℕ} (lam : Fin n → ℤ), Antitone lam → ∀ p : LP n, p * altL (delZ n) ^ 2 = pPL n * altL (lam + delZ n) ^ 2 →
+    ∀ μ, p.coeff μ ≠ 0 → DomLE (wtR μ) (m0 lam) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RealCountG.DomA.domLE_of_mul_eq

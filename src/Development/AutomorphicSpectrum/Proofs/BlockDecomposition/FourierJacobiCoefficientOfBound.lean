@@ -3,6 +3,7 @@ import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaI
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianCharacterContinuousUnit
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CircleZero
 
+section
 noncomputable section
 
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
@@ -135,3 +136,10 @@ theorem cfFJ_of_pcBound : PcBound → CfFJ := by
     exact ker_eq d _ s₀ ε k
 
 end GlobalTheory.CompanionTheory.CfFJ
+end
+end
+
+open PositivityTheory.Rg.Rsw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fourier_jacobi_coefficient_of_bound : PcBound → CfFJ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CfFJ.cfFJ_of_pcBound

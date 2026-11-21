@@ -1,6 +1,6 @@
 import Mathlib
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuantumDetOppositeNegStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuantumDetOppositeNeg
+
 open Formalism.REAL
 
 namespace GlobalTheory.CompanionTheory.CapelliAdj

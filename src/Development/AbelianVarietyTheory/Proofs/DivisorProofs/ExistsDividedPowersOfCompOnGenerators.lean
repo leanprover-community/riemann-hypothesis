@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDividedPowerEvalTwoVarsRingHomStatement
+import BuildAid.ForwardExisting
 
+section
 open DividedPowers GlobalTheory.Cris GlobalTheory.PDA
 
 set_option autoImplicit false
@@ -185,3 +187,10 @@ theorem exists_dividedPowers_of_comp_on_gens :
            dpow_comp := fun hn hx ↦ key _ hx _ _ hn }, rfl⟩
 
 end GlobalTheory.PDA
+end
+end
+
+open DividedPowers GlobalTheory.Cris GlobalTheory.PDA
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_dividedPowers_of_comp_on_generators : ∀ (B : Type) [CommRing B] (J : Ideal B) (γ : ℕ → B → B) (s : Set B), IsPreDP J γ → J = Ideal.span s → (∀ x ∈ s, ∀ m n : ℕ, n ≠ 0 → γ m (γ n x) = (m.uniformBell n : B) * γ (m * n) x) → ∃ δ : DividedPowers J, δ.dpow = γ := by
+  atlas_forward_decl GlobalTheory.PDA.exists_dividedPowers_of_comp_on_gens

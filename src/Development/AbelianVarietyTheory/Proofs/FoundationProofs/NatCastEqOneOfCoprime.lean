@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.AlmostEt
 open scoped NNReal
 
@@ -40,3 +43,10 @@ theorem natCast_eq_one_of_coprime :
   simp at h1
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_natCast_eq_one_of_coprime' : ∀ (L : Type) [Field L] (v : Valuation L ℝ≥0) (p l : ℕ), v (p : L) < 1 → Nat.Coprime l p → v (l : L) = 1 := by
+  atlas_forward_decl GlobalTheory.AlmostEt.natCast_eq_one_of_coprime

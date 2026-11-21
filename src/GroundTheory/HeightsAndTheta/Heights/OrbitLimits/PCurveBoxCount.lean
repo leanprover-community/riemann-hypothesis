@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveBoxCount
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveBoxSmall
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveBoxLattice
 set_option maxSynthPendingDepth 1

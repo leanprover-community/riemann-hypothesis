@@ -1,19 +1,14 @@
 import Mathlib
 import Formalism.LocalToGlobal.KernelLattices.KerStd
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaZJetsThree
-import Formalism.LocalToGlobal.InertKernelTheory.StatementIota
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactTer
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PFamily
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.HalfPeriodStandardCM
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.IsTorsionPointStandardCM
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitDeterminantRoot.DetMemOfEntries
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitDeterminantRoot.NormLeOneOfRoot
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRangeEmb4EqTop
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormLeOneOfTrace
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 open scoped BigOperators ComplexConjugate
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Col Classical
@@ -300,3 +295,14 @@ theorem GlobalTheory.ThLoc.kappaNonSplit : ∀ D : D7, KappaOn (fun D p => ¬ Sp
   obtain ⟨hmem, hone⟩ := PI.UnitaryGroupMassFormula.UnitDetRoot.detInK a₀ b₀ c₀ D.host.d ha hd lam hlam (Fin 4 × D.what₂.Tau) B.latA
     ⟨hcm, hsd, hsta, i1, i2⟩ u ⟨hiso, j1, j2⟩
   exact norm_of_normOne hcm l (trace_le D l hns) ι hmem hone
+end
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Col Classical
+open Formalism.L2.Th1.H (cmL CmOK matH IsIsom taylorMv)
+open Formalism.L2.Th1.GD (LocNorm InMul frameM thetaLin)
+open Formalism.L2.Th1.E (IntCurve curveL Unif)
+open Formalism.DworkPowerSeriesWeights (JetsIntegral)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kappa_on_nonsplit_primes : ∀ D : D7, KappaOn (fun D p => ¬ SplitK D p) D := by
+  atlas_forward_decl GlobalTheory.ThLoc.kappaNonSplit

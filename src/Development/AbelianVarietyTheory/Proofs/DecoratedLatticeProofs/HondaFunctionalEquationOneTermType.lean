@@ -1,6 +1,8 @@
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EndOmega
 import Formalism.TorsionNormIteration.LubinTateExample
+import BuildAid.ForwardExisting
 
+section
 open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
 
 noncomputable section
@@ -183,3 +185,10 @@ theorem honda_funEq : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [Char
   exact hhI n
 
 end GlobalTheory.HondaFunEq
+end
+end
+
+open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.honda_functional_equation_one_term_type : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [CharZero K] (l : ℕ) (σ : K →+* K), Unr K l σ → ∀ (f e : K⟦X⟧), Formalism.L2.Th1.C.IsLogPair f e → ∀ c ε : K, ‖ε‖ = 1 → ε = c * (σ ^ 2) ε → CoefLe ‖(l : K)‖ (C (l : K) * f - C c * frobOp (σ ^ 2) (l ^ 2) 1 f) → CoefLe 1 (e.subst (C ε * ltLog K l)) := by
+  atlas_forward_decl GlobalTheory.HondaFunEq.honda_funEq

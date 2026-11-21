@@ -1,4 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Unitarize
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.DecompC
 
 noncomputable section

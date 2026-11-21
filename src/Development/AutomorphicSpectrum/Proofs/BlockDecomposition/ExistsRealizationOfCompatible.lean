@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.OneSTr
+import BuildAid.ForwardExisting
 
+section
 open CrystallineSemistableComparison.Pb.Kap
 
 namespace GlobalTheory.CompanionTheory.KapRho
@@ -37,3 +39,9 @@ theorem exists_rho {Λ A B K : Type} [CommRing Λ] [CommRing A] [CommRing B] [Fi
     rw [key, ← hu, smul_smul, ← mul_pow, Units.mul_inv, one_pow, one_smul]
 
 end GlobalTheory.CompanionTheory.KapRho
+end
+
+open CrystallineSemistableComparison.Pb.Kap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_realization_of_compatible : ∀ {Λ A B K : Type} [CommRing Λ] [CommRing A] [CommRing B] [Field K] (C : Chain.{1} Λ A B K) (hC : C.Good) {j : ℕ} (x : ∀ n, C.S n j), C.Comp x → ∃ f : Module.Dual K (C.V j) →+ B, C.Rho x f := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KapRho.exists_rho

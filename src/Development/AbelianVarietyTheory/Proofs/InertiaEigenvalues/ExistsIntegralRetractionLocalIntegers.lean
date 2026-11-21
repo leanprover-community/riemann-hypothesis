@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LiftQMk
+
+section
 open Formalism.MainNotions.N Formalism.BasicNotions.Loc GlobalTheory.UseLoc
 
 namespace GlobalTheory.UseLoc
@@ -94,3 +96,9 @@ theorem exists_intRetraction : ∀ {l : ℕ} [Fact l.Prime] {LL LL' : FinExt l} 
   rw [e1, map_smul, smul_eq_mul]
 
 end GlobalTheory.UseLoc
+end
+
+open Formalism.MainNotions.N Formalism.BasicNotions.Loc GlobalTheory.UseLoc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_retraction_localIntegers : ∀ {l : ℕ} [Fact l.Prime] {LL LL' : FinExt l} (h : LL.1 ≤ LL'.1), ∃ r : ↥(OL LL') →+ ↥(OL LL), (∀ (a : ↥(OL LL)) (x : ↥(OL LL')), r (incO h a * x) = a * r x) ∧ r 1 = 1 := by
+  atlas_forward_decl GlobalTheory.UseLoc.exists_intRetraction

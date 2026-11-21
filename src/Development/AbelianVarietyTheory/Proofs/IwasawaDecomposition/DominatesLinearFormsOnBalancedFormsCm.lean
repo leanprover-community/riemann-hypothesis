@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsEqAddOfRedVEq
 
+section
 noncomputable section
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan Matrix Polynomial
 namespace GlobalTheory.DomBal
@@ -557,3 +558,10 @@ theorem dominates : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : 
   simpa [Lm, Mm, B, Matrix.toBilin_toMatrix] using hfin
 
 end GlobalTheory.DomBal
+end
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dominatesLinearFormsOnBalancedForms_cm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Type) [AddCommGroup X] [Module (𝓞 E) X] [Module.Finite (𝓞 E) X] [Module.Projective (𝓞 E) X], Dominates H.bar X := by
+  atlas_forward_decl GlobalTheory.DomBal.dominates

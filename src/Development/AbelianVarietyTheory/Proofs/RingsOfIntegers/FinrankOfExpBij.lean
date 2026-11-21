@@ -16,7 +16,6 @@ import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ImportsBis
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.CrossEq
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.BoxFamLinearIndependent
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralFamilyOfStrictMin
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.HasBasisOfBasis
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsTwistBasisOffPrime
 
 set_option autoImplicit false

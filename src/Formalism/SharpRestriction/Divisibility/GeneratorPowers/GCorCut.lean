@@ -1,6 +1,4 @@
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GCorSt
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.OneCSt
 
 set_option autoImplicit false
 

@@ -5,7 +5,9 @@ import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohom
 import Development.AbelianVarietyTheory.Definitions.Degenerations.OfDerivationFnOn
 import Development.AbelianVarietyTheory.Definitions.Degenerations.PlOrdSomeOfAssociated
 import Development.AbelianVarietyTheory.Statements.SemistableTorsion.SemistableFin
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 namespace GlobalTheory.SS.PlacesExt
 open IsDedekindDomain Polynomial ReciprocityTheory.ChartRestriction.G.T0
@@ -249,3 +251,12 @@ theorem exists_places : ∀ (k K : Type) [Field k] [Field K] [Algebra k K] (t : 
 
 end GlobalTheory.SS.PlacesExt
 end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.SS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_productFormulaPlaces_function_field : ∀ (k K : Type) [Field k] [Field K] [Algebra k K] (t : K), Transcendental k t → FiniteDimensional (IntermediateField.adjoin k {t}) K → Algebra.IsSeparable (IntermediateField.adjoin k {t}) K → ∃ Pl : Places k K, ∀ x : K, (∀ i, x ∈ Pl.O i) → IsAlgebraic k x := by
+  atlas_forward_decl GlobalTheory.SS.PlacesExt.exists_places

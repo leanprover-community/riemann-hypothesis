@@ -1,6 +1,5 @@
 import Mathlib
 import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLineFubiniStudyFacts
-import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PDivisorNull
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StProductBounds
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StListProductMass

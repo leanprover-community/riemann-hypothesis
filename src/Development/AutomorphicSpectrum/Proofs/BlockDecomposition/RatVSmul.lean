@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix NumberField
@@ -252,3 +254,10 @@ theorem lines : Lines := by
 end Adelic
 
 end GlobalTheory.CompanionTheory.RgEisLines
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lines_decomposition : Lines := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisLines.lines

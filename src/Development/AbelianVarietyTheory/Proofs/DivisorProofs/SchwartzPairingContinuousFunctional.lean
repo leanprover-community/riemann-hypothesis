@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Filter Topology
 open scoped SchwartzMap
 
@@ -23,3 +26,12 @@ theorem schwartz_pairing_conj_clm_of_borelSpace (V : Type) [NormedAddCommGroup V
   simp only [smul_eq_mul, mul_comm]
 
 end GlobalTheory
+end
+
+open MeasureTheory Filter Topology
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_pairing_continuous_functional : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
+    (μ : MeasureTheory.Measure V) [μ.IsAddHaarMeasure] (k : SchwartzMap V ℂ),
+    ∃ L : SchwartzMap V ℂ →L[ℂ] ℂ, ∀ u : SchwartzMap V ℂ, L u = ∫ x, u x * starRingEnd ℂ (k x) ∂μ := by
+  atlas_forward_decl GlobalTheory.schwartz_pairing_conj_clm_of_borelSpace

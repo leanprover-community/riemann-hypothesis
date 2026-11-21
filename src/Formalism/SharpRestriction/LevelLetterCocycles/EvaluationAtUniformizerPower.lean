@@ -7,7 +7,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.JumpsLetExists
 import Formalism.SharpRestriction.LevelLetterCocycles.CardBasisEq
 import Formalism.SharpRestriction.LevelLetterCocycles.UniformizerMemDeltaInvariants
-import Formalism.SharpRestriction.LevelLetterCocycles.EqZeroOfPowDvd
 import Formalism.SharpRestriction.LevelLetterCocycles.LemmaDN0OfAdmits
 
 section

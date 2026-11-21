@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
+import BuildAid.ForwardExisting
 
+section
 open CrystallineSemistableComparison.R
 
 namespace GlobalTheory.CompanionTheory.LocAic
@@ -96,3 +98,9 @@ theorem main : ∀ {S : Type} [CommRing S] (ϖ : S),
     exact fun f => local_away_of_val ϖ hV f
 
 end GlobalTheory.CompanionTheory.LocAic
+end
+
+open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localization_preserves_closedness : ∀ {S : Type} [CommRing S] (ϖ : S), (Val ϖ → Loc S ∧ Loc (Localization.Away ϖ)) ∧ (Aic S → Aic (Localization.Away ϖ)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocAic.main

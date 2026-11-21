@@ -1,11 +1,11 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.CalcSteps
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Lap
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableAtOfSmooth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RdSkewEqConst
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SobolevOperatorFacts
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SectionNormBound
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset Filter Topology
@@ -102,3 +102,15 @@ theorem lap_sec : ∀ (n : ℕ) (E : KMod n), RCalc → OmFormula → ∃ Q : E.
   rw [sq _ _ (hBY a c) f hf g hg, sq _ _ (hBZ a c) f hf g hg]
 
 end GlobalTheory.CompanionTheory.FcSmooth
+end
+end
+
+open MeasureTheory Matrix Finset Filter Topology
+open scoped ContDiff ComplexConjugate InnerProductSpace ZeroAtInfty ENNReal
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Fc
+open PositivityTheory.RgTw (Mat G)
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.laplacian_casimir_relation : ∀ (n : ℕ) (E : KMod n), RCalc → OmFormula → ∃ Q : E.V →L[ℂ] E.V, ∀ f ∈ CE E, ∀ g ∈ GLs n,
+    GlobalTheory.CompanionTheory.FcSmooth.Lap f g = -Om f g + Q (f g) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FcSmooth.lap_sec

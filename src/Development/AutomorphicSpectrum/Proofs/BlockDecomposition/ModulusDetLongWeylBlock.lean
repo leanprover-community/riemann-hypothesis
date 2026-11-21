@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Lpart
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DetThreePointsEqExpansion
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.GL2DualWhittakerPair
 open scoped ValuativeRel
 
@@ -53,3 +56,10 @@ theorem main : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [I
   rw [map_mul, GlobalTheory.CompanionTheory.KTwoWhittakerSubgroup.mp_mul, hw, one_mul, det_tinv, mp_inv, GlobalTheory.CompanionTheory.KTwoWhittakerSubgroup.mp_det_em]
 
 end GlobalTheory.CompanionTheory.DeterminantLongWeyl
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.GL2DualWhittakerPair
+open scoped ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.modulus_det_long_weyl_block : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] (h : GL (Fin 2) F), mp (GeneralLinearGroup.det (w3 * tinv (em h))) 1 = mp (GeneralLinearGroup.det h) (-1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DeterminantLongWeyl.main

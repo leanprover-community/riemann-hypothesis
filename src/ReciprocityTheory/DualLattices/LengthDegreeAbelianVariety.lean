@@ -1,7 +1,6 @@
 import ReciprocityTheory.DualLattices.ColengthSqMulLeProd
 import ReciprocityTheory.DualLattices.CokernelsAgreeEquivariantly
 import ReciprocityTheory.DualLattices.LengthDegreeOfFrobenius
-import ReciprocityTheory.DualLattices.LengthDegreeOfWdetFrobenius
 
 noncomputable section
 

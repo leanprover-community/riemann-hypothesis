@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.LabesseWaldspurger
 
+section
 noncomputable section
 
 open MeasureTheory GlobalTheory.Chamber Finset
@@ -140,3 +141,10 @@ theorem continuous_cM_expFam_zero : FamilySmooth → ∀ (k : ℕ) (𝔞 : Submo
     (Complex.continuous_ofReal.comp (continuous_const.inner (hc P hP)))).pow _)
 
 end GlobalTheory.FamCont
+end
+end
+
+open MeasureTheory GlobalTheory.Chamber
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chamber_coefficient_continuous : FamilySmooth → ∀ (k : ℕ) (𝔞 : Submodule ℝ (A0 k)), IsLevi 𝔞 → ∀ Q ∈ parF 𝔞 ∅, ∀ (Z : Type) [TopologicalSpace Z] (X : Z → Finset (SV k) → A0 k), (∀ z, IsOrth 𝔞 (X z)) → (∀ P ∈ parP 𝔞 Q, Continuous fun z => X z P) → Continuous fun z => cM 𝔞 Q (expFam (X z)) 0 := by
+  atlas_forward_decl GlobalTheory.FamCont.continuous_cM_expFam_zero

@@ -5,11 +5,10 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TateUnrami
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.PolarisationModuleIndex
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ConjugateOrderData
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPlaceRing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmFieldLatticeBaseConditionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmFieldLatticePrimeConditionStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmFieldLatticeBaseCondition
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmFieldLatticePrimeCondition
 
+section
 set_option autoImplicit false
 
 open GlobalTheory.LatVal GlobalTheory.LatJet
@@ -24,3 +23,9 @@ theorem modelInt : GlobalTheory.Published.PeriodComparison → GlobalTheory.Publ
     (GlobalTheory.T.cm_field_lattice_base_condition hPC hST hDR hDC hPM E I d φ hd 𝔣 Λ h𝔣 hΛ l Q hQ hQl y hy lam Ω hΩ)
 
 end GlobalTheory.LatModel
+end
+
+open GlobalTheory.LatVal GlobalTheory.LatJet
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_model_of_algebraic_model : GlobalTheory.Published.PeriodComparison → GlobalTheory.Published.SerreTateGoodReductionSt → GlobalTheory.Published.AbelianDeRham → GlobalTheory.Published.AbelianDualCrystal → GlobalTheory.IndefiniteRowSideFullHecke.PolarisationModuleIndex.PolarisationModule → GlobalTheory.IndefiniteRowSideFullHecke.DifferentConductorValuations.Statement → ModelAlg → ModelInt := by
+  atlas_forward_decl GlobalTheory.LatModel.modelInt

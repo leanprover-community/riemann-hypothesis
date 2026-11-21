@@ -2,7 +2,6 @@ import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsCycleSplitSmall
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCycleSplit
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.LengthQuotientEqLengthH0
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationPoint
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PPrimeFiltrationRestrict
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsMemSupport
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PointSecsLenSt

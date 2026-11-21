@@ -1,7 +1,5 @@
 import Mathlib
-import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalIdeles.RamDefs
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalIdeles.LiftUnr
-import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalIdeles.NormRam
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CuspidalTwistRamifiedCharNeSelfStatement
 
 open NumberField IsDedekindDomain

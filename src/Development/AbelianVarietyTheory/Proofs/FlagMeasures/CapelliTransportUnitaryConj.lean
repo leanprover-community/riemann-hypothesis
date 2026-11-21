@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CapelliEigenvalues.Smooth
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CapCommuteRtInfGL
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.REAL Formalism.QuantumDeterminants
 
 namespace GlobalTheory
@@ -190,3 +192,8 @@ theorem capelli_transport_conj : PI.UnitaryGroupMassFormula.CapelliEig.CapTransp
   rw [h1, hA _ hx, hB _ hx, hkey]
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.capelli_transport_unitary_conj : PI.UnitaryGroupMassFormula.CapelliEig.CapTransport := by
+  atlas_forward_decl GlobalTheory.capelli_transport_conj

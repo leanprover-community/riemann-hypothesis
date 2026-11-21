@@ -1,12 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.NonUnitAt
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsThetaCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteTypeCycAway
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdlAlongComapEq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFanOrderIdealThetaCompactificationStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFanOrderIdealThetaCompactification
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNormalisedBlowupCyclotomicAwayProjectiveStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleTwistNormalisedBlowupNoetherianDomainStatement
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits IsLocalRing
@@ -54,3 +54,12 @@ theorem poinSt : PoinSt := by
     rwa [hνπ] at h
 
 end GlobalTheory.PoincTop
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.ZH GlobalTheory.Poinc
+open GlobalTheory.SiegelTor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalisedBlowup_ampleDivisor_compactification : PoinSt := by
+  atlas_forward_decl GlobalTheory.PoincTop.poinSt

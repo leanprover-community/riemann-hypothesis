@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.InertZeta GlobalTheory.Doubling GlobalTheory.SatakeWeyl
@@ -231,3 +233,10 @@ theorem completion : Completion := by
 end Main
 
 end GlobalTheory.CompanionTheory.InertDoubling
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.completion_exists : Completion := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertDoubling.completion

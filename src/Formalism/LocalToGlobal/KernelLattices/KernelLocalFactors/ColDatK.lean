@@ -1,8 +1,5 @@
 import Mathlib
-import Formalism.LocalToGlobal.KernelLattices.ColumnData
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.BaseLinkOfNonzeroDelta
-import Formalism.LocalToGlobal.KernelLattices.ColumnData.BaseExP
-import Formalism.LocalToGlobal.KernelLattices.ColumnData.Smooth
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.AmbOfENeSd
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.Imports
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SplitPairOfGen

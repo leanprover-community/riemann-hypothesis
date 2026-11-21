@@ -1,4 +1,3 @@
-import Formalism.CharacterColumnKernels.Statement
 import Formalism.CharacterColumnKernels.CharacterColumnKernelLengthBound
 import Formalism.CharacterColumnKernels.IdempotentNormalForms.ProdEraseZero
 

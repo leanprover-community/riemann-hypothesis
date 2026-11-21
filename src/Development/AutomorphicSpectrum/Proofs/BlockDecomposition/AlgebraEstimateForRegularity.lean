@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.WaveSt
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset
@@ -270,3 +272,9 @@ theorem algEst : PositivityTheory.RgBcC.AlgEst := by
   rfl
 
 end GlobalTheory.CompanionTheory.SkewWords
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.algebra_estimate_for_regularity : PositivityTheory.RgBcC.AlgEst := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SkewWords.algEst

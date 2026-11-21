@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThValDescIn
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.ThExprBCPf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFramedPointBaseChangeAlgebraMap

@@ -70,12 +70,7 @@ private theorem integral_comp_smul_of_norm_eq_one {n : ℕ} (c : ℂ) (hc : ‖c
   exact e.measurePreserving.integral_comp e.toHomeomorph.measurableEmbedding f
 
 private theorem moll_eq_zero_of_half_lt_norm {n : ℕ} {t : ℝ} (ht : 0 < t) {z : V n} (hz : t / 2 < ‖z‖) :
-    moll n t z = 0 := by
-  have h1 : 1 - 4 * (‖z‖ / t) ^ 2 ≤ 0 := by
-    have h2 : 1 / 2 < ‖z‖ / t := by
-      rw [lt_div_iff₀ ht]; linarith
-    nlinarith
-  simp only [moll, mollProf, bumpProf, Real.smoothTransition.zero_of_nonpos h1, mul_zero]
+    moll n t z = 0 := moll_eq_zero_of_lt (ht := ht) (hz := hz)
 
 private theorem integrable_moll (n : ℕ) {t : ℝ} (ht : 0 < t) : Integrable (moll n t) :=
   (moll_contDiff n t).continuous.integrable_of_hasCompactSupport (moll_hasCompactSupport n ht)

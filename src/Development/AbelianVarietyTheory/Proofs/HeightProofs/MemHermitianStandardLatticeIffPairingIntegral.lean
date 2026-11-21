@@ -2,7 +2,6 @@ import Mathlib
 import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeilUnr
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.ShiftMapsUpDown
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.SymplHAddRight
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsResolution
 
 noncomputable section

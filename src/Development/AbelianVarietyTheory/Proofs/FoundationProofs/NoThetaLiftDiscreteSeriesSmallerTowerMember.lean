@@ -1,10 +1,7 @@
 import Mathlib
-import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NoThetaTensorIntertwinerLowerTowerMembers
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowestKTypesJointShapeBlockUnitaryStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowestKTypesJointShapeBlockInUnitarySStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowestTypeNotJointShapeSmallerPairsStatement
 
+section
 open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
 
 namespace GlobalTheory.TowerDrop
@@ -29,3 +26,9 @@ theorem archimedeanRallisFourth_of_discreteSeriesBlattner : ∀ X : ProvA, admH1
     linarith
 
 end GlobalTheory.TowerDrop
+end
+
+open Formalism.BasicNotions.TH Formalism.MainNotions.SchurIrreducible
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.no_thetaLift_discreteSeries_smaller_tower_member : ∀ X : ProvA, admH1 X → admH2 X → DiscreteSeriesBlattner X → admQ5 X → ArchimedeanRallisFourth X := by
+  atlas_forward_decl GlobalTheory.TowerDrop.archimedeanRallisFourth_of_discreteSeriesBlattner

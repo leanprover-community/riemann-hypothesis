@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.IntegralLocallyConstCochainModPow
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.SndDualLiftAlgebraMap
 import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.Laurent
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.K5
 
 noncomputable section
@@ -60,3 +62,11 @@ theorem exists_qDer : ∀ (p : ℕ) [Fact p.Prime], ∃ D : Derivation ℤ (O0 p
   ⟨thetaZ p, thetaO_qO p, thetaO_algebraMap p⟩
 
 end GlobalTheory.K5.QDer
+end
+end
+
+open GlobalTheory.K5
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_qDerivation_completion_Zp : ∀ (p : ℕ) [Fact p.Prime], ∃ D : Derivation ℤ (O0 p) (O0 p), D (qO p) = qO p ∧
+    ∀ r : ℤ_[p], D (algebraMap ℤ_[p] (O0 p) r) = 0 := by
+  atlas_forward_decl GlobalTheory.K5.QDer.exists_qDer

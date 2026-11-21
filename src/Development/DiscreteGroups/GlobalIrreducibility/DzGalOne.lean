@@ -5,7 +5,6 @@ import Development.DiscreteGroups.GlobalIrreducibility.DzGalInd
 import Development.DiscreteGroups.GlobalIrreducibility.LpTwistLpTwist
 import Development.DiscreteGroups.GlobalIrreducibility.DzGalChi
 import Development.DiscreteGroups.GlobalIrreducibility.DzGalUnr
-import Development.DiscreteGroups.GlobalIrreducibility.ExistsUniformizerValuation
 
 noncomputable section
 

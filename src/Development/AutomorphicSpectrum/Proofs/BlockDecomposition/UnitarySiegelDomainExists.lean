@@ -1,15 +1,15 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RatVInjective
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryAdelicIwasawaStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MinimalParabolicRationalCompactStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WittFrameReduceRankStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RationalUnitarySendsIsotropicStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RationalUnitaryWittExtensionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MinimalParabolicScalesIsotropicStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNearMinimalVectorStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReductionTheoryHeightBoundStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReductionTheoryLowerBoundStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryAdelicIwasawa
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MinimalParabolicRationalCompact
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WittFrameReduceRank
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RationalUnitarySendsIsotropic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RationalUnitaryWittExtension
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MinimalParabolicScalesIsotropic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNearMinimalVector
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReductionTheoryHeightBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReductionTheoryLowerBound
 
+section
 set_option linter.unusedSectionVars false
 noncomputable section
 open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR
@@ -267,3 +267,11 @@ theorem cov_main : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
 end GlobalTheory.CompanionTheory.RedCov
 
 end
+end
+
+open NumberField MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet PositivityTheory.ThKR
+open Formalism.UG (cT)
+open scoped TensorProduct NNReal ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_siegel_domain_exists : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J → ∀ (r : ℕ) (X Y : Matrix (Fin n) (Fin r) E), IsWittFrame σ J X Y → ∀ K : Subgroup (GAd σ J), IsCompact (K : Set (GAd σ J)) → (∀ g, ∃ p ∈ minPar σ J X, ∃ k ∈ K, g = p * k) → GoodPosition σ J X Y K → ∃ (Ω : Set (GAd σ J)) (c : ℝ), IsCompact Ω ∧ Ω ⊆ minParOne σ J X ∧ 0 < c ∧ ∀ g, ∃ γ ∈ ratPts σ J, ∃ s ∈ siegelSet σ J X Y Ω c K, g = γ * s := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RedCov.cov_main

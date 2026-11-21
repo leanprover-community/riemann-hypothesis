@@ -2,10 +2,10 @@ import Mathlib
 import Formalism.PadicSubsetSums.CentralIdempotents.GaloisConjCentralIdempotent
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.BlockEmbeddingFactors
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviTensorBlockExt
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SpanRangeEqTopOfIsIrreducible
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsIrreducibleOuterTprod
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CentralIdempotentsSimpleFDRepFiniteFinsumEqOne
 
+section
 open CategoryTheory Polynomial Formalism.IrreducibleCountingLemmas.TYPES Formalism.L2.DIV GlobalTheory.HcIrr
 
 namespace GlobalTheory.HcIrr
@@ -133,3 +133,9 @@ theorem leviTensor_isIrreducible : ∀ (K : Type) [Field K] [Fintype K] [Decidab
   · exact Or.inr (Subrepresentation.toSubmodule_injective h)
 
 end GlobalTheory.HcIrr
+end
+
+open CategoryTheory Polynomial Formalism.IrreducibleCountingLemmas.TYPES Formalism.L2.DIV GlobalTheory.HcIrr
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.leviPiTensorRepresentation_isIrreducible : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq K] (r s : ℕ) (b : Fin r → Fin s) (lam : ∀ c : Fin s, FDRep ℂ (GL {i // b i = c} K)), (∀ c, Simple (lam c)) → (leviTensor b lam).IsIrreducible := by
+  atlas_forward_decl GlobalTheory.HcIrr.leviTensor_isIrreducible

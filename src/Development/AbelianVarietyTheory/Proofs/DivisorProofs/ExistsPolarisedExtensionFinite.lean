@@ -1,7 +1,6 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsKerTorusExtension
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusPartOfPulledActionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RosatiPolarizationFiniteExtensionStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusPartOfPulledAction
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RosatiPolarizationFiniteExtension
 
 set_option autoImplicit false
 

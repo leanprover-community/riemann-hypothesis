@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+import BuildAid.ForwardExisting
 
+section
 open IsDedekindDomain NumberField
 open scoped Matrix
 
@@ -244,3 +246,10 @@ theorem stable_lattice_eq_zpow_std : ∀ (E : Type) [Field E] [NumberField E] (P
       exact L.sum_mem fun i _ => (hIall i (w i)).2 ((hM (w i)).2 ((key (w i)).1 (hw i)))
 
 end GlobalTheory.LocLatInert
+end
+
+open IsDedekindDomain NumberField
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stable_lattice_eq_zpow_std_inert_completion : ∀ (E : Type) [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E)) (σ : P.adicCompletion E →+* P.adicCompletion E), (∀ x, σ (σ x) = x) → (∀ x, Valued.v (σ x) = Valued.v x) → (∃ x, Valued.v x ≤ 1 ∧ Valued.v (σ x - x) = 1) → ∀ (ϖ : P.adicCompletion E), Valued.v ϖ = WithZero.exp (-1 : ℤ) → ∀ (n : ℕ) (L : AddSubgroup (Fin n → P.adicCompletion E)) (N : P.adicCompletion E), N ≠ 0 → (∀ a : P.adicCompletion E, Valued.v a ≤ 1 → ∀ w ∈ L, a • w ∈ L) → (∀ w : Fin n → P.adicCompletion E, (∀ i, Valued.v (w i) ≤ 1) → N • w ∈ L) → (∀ w ∈ L, ∀ i, Valued.v (N * w i) ≤ 1) → (∀ U : GL (Fin n) (P.adicCompletion E), U ∈ Formalism.UG.UJ σ 1 → (∀ i j, Valued.v (U.1 i j) ≤ 1) → (∀ i j, Valued.v ((U⁻¹).1 i j) ≤ 1) → ∀ w ∈ L, U.1 *ᵥ w ∈ L) → ∃ k : ℤ, ∀ w, w ∈ L ↔ ∀ i, Valued.v (ϖ ^ k * w i) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.LocLatInert.stable_lattice_eq_zpow_std

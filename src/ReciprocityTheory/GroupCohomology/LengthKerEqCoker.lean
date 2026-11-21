@@ -1,8 +1,6 @@
 import ReciprocityTheory.GroupCohomology.CardLenStatement
-import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
 import ReciprocityTheory.GroupCohomology.LowHolds
 import ReciprocityTheory.GroupCohomology.PairHomFCoeOfId
-import ReciprocityTheory.GroupCohomology.ConnNatHolds
 import ReciprocityTheory.GroupCohomology.KilledHolds
 import ReciprocityTheory.GroupCohomology.FiniteLevel
 import ReciprocityTheory.GroupCohomology.FiberFirstH0Injective

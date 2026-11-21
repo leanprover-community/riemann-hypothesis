@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.PadicSubsetSums.CentralIdempotents.IsConstituent
-import Formalism.PadicSubsetSums.CentralIdempotents.GaloisConjCentralIdempotent
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HarishChandraLabels.SupportExistsOf
 
 open Formalism.IrreducibleCountingLemmas.TYPES CategoryTheory Polynomial

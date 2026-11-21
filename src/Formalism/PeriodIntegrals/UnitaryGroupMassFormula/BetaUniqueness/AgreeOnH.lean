@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.BetaLUniq
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Skeleton
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
 

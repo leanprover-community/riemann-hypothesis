@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.HermitianLattices.StatementMass
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ClassNumberMulRegulatorLeSqrtDiscrRpowStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ClassNumberMulRegulatorLeSqrtDiscrRpow
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RootDiscrGeThreeHalvesOfIsTotallyComplexStatement
+
+section
 open MeasureTheory NumberField Finset
 
 namespace GlobalTheory
@@ -75,3 +76,9 @@ theorem dedekindZeta_residue_le_log_rootDiscr_pow :
     _ ≤ _ := by nlinarith
 
 end GlobalTheory
+end
+
+open MeasureTheory NumberField Finset
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dedekindZeta_residue_le_sixteen_log_rootDiscr_pow : ∀ (K : Type) [Field K] [NumberField K], IsTotallyComplex K → 0 < dedekindZeta_residue K ∧ dedekindZeta_residue K ≤ (16 * Real.log (2 * Formalism.HermitianLatticesTheory.vInv K)) ^ (2 * Formalism.HermitianLatticesTheory.fDeg K) := by
+  atlas_forward_decl GlobalTheory.dedekindZeta_residue_le_log_rootDiscr_pow

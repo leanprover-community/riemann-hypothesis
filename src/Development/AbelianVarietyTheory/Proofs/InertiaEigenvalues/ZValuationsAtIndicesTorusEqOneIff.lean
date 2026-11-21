@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValsAtApply
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma
 
 namespace GlobalTheory.TorusKer
@@ -39,3 +42,9 @@ theorem valsAt_torus_eq_one_iff (G : Type) [CommGroup G] (τ : G →* G) (T : Su
     rfl
 
 end GlobalTheory.TorusKer
+end
+
+open GlobalTheory.UnitLemma
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.zValuationsAtIndices_torus_eq_one_iff : ∀ (G : Type) [CommGroup G] (τ : G →* G) (T : Subgroup G), (∀ t, t ∈ T ↔ t * τ t = 1) → ∀ (ι : Type) (s : ι → ι) (w : ι → G →* Multiplicative ℤ), (∀ i x, 0 ≤ Multiplicative.toAdd (w (s i) x) ↔ 0 ≤ Multiplicative.toAdd (w i (τ x))) → ∀ (r : ℕ) (e : Fin r → ι), (∀ i, s i = i ∨ ∃ j, i = e j ∨ i = s (e j)) → ∀ t : T, (valsAt w e).comp T.subtype t = 1 ↔ ∀ i, Multiplicative.toAdd (w i (t : G)) = 0 := by
+  atlas_forward_decl GlobalTheory.TorusKer.valsAt_torus_eq_one_iff

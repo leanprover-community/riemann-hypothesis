@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.NeutralLocalFields.Reciprocity
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Formalism.UnipotentAdelicQuotients.FinOrdValGen
 

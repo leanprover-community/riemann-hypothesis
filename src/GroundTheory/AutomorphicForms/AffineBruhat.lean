@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.GLnLocal
 import GroundTheory.AutomorphicForms.GLnLattice
 import GroundTheory.AutomorphicForms.FiniteBruhat
 

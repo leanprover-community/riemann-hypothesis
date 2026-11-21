@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumAdmissibility
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix NumberField IsDedekindDomain GlobalTheory.WeilM MeasureTheory
@@ -141,3 +142,10 @@ theorem theta_box : ∀ (F : Type) [Field F] [NumberField F] [Invertible (2 : Ad
 end GlobalTheory.CompanionTheory.ThetaBox
 
 end
+end
+
+open Matrix NumberField IsDedekindDomain GlobalTheory.WeilM MeasureTheory
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_sum_tensor_product : ∀ (F : Type) [Field F] [NumberField F] [Invertible (2 : AdeleRing (𝓞 F) F)] (κ κ' : Type) [Fintype κ] [Fintype κ'], ∀ φ₁ ∈ schA F κ, ∀ φ₂ ∈ schA F κ', boxFun φ₁ φ₂ ∈ schA F (κ ⊕ κ') ∧ thetaSum F (boxFun φ₁ φ₂) = thetaSum F φ₁ * thetaSum F φ₂ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ThetaBox.theta_box

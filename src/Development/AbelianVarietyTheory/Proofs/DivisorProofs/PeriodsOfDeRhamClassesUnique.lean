@@ -2,8 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsPeriodHom
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.FamUnif
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPointHol
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodClassInjectiveOfRichChartsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodClassInjectiveOfRichCharts
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -87,3 +88,10 @@ theorem period_unique : PUniq := by
     ((h _ _ (MaxCharts.isFor u)).symm.trans (h' _ _ (MaxCharts.isFor u)))
 
 end GlobalTheory.AnPer
+end
+end
+
+open GlobalTheory.AnPer
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.periods_of_deRham_classes_unique : PUniq := by
+  atlas_forward_decl GlobalTheory.AnPer.period_unique

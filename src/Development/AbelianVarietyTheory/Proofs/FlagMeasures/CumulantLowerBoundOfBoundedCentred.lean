@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExpQuadraticLowerAndLogLinearLowerStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExpQuadraticLowerAndLogLinearLower
 
+section
 open Matrix Finset Real
 
 namespace GlobalTheory
@@ -82,3 +83,9 @@ theorem cumulant_lower_bound_of_bounded_centred :
   exact le_of_mul_le_mul_left h3 ht0
 
 end GlobalTheory
+end
+
+open Matrix Finset Real
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quadratic_le_log_sum_exp_of_bounded_centred : ∀ (ι : Type) [Fintype ι] (w y : ι → ℝ) (R : ℝ), 0 < R → (∀ J, 0 ≤ w J) → ∑ J, w J = 1 → ∑ J, w J * y J = 0 → (∀ J, w J ≠ 0 → |y J| ≤ R) → min 1 (1 / R) * (∑ J, w J * y J ^ 2) / 4 ≤ Real.log (∑ J, w J * Real.exp (y J)) := by
+  atlas_forward_decl GlobalTheory.cumulant_lower_bound_of_bounded_centred

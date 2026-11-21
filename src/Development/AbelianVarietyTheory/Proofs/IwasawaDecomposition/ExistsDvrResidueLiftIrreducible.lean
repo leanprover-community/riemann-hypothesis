@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing GlobalTheory.LN Polynomial
 
 namespace GlobalTheory.UnramExt
@@ -200,3 +203,9 @@ theorem GlobalTheory.exists_unramified_ext_residue : ∀ (W : Type) [CommRing W]
   · exact (IsDiscreteValuationRing.irreducible_iff_uniformizer (f ϖ)).2 (hspan ϖ hϖ)
   · have := τ.commutes (residue W w)
     exact this.trans (ResidueField.map_residue f w)
+end
+
+open IsLocalRing GlobalTheory.LN
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_dvr_residue_lift_irreducible : ∀ (W : Type) [CommRing W] [IsDomain W] [IsLocalRing W], CDvr W → ∀ {L : Type} [Field L] (v : ResidueField W →+* L), v.Finite → v.FormallyUnramified → ∃ (V : Type) (_ : CommRing V) (_ : IsDomain V) (_ : IsLocalRing V) (f : W →+* V) (τ : L →+* ResidueField V), CDvr V ∧ Function.Injective f ∧ IsLocalHom f ∧ (∀ ϖ : W, Irreducible ϖ → Irreducible (f ϖ)) ∧ ∀ w : W, τ (v (residue W w)) = residue V (f w) := by
+  atlas_forward_decl GlobalTheory.exists_unramified_ext_residue

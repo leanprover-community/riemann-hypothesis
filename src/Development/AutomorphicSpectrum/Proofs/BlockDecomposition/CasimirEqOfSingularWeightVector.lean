@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ActEqZeroOfMem
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutBPEqWigMapsValueECas
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -102,3 +105,10 @@ theorem casC_rho_add_eq (μ : Fin n → ℤ) (x : U n) (hw : IsAdW μ x)
   rwa [smul_smul, inv_mul_cancel₀ hc, one_smul] at this
 
 end GlobalTheory.CompanionTheory.PresRho
+end
+end
+
+open GroundTheory.Automorphic.HarishChandra GlobalTheory.CompanionTheory.PresRho
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.casimir_eq_of_singular_weight_vector : ∀ {n : ℕ} (μ : Fin n → ℤ) (x : U n), IsAdW μ x → (∀ a : Fin n × Fin n, IsUpper a → e a * x ∈ Jp n) → x ∉ Jp n → casC (fun k => rhoVec n k + (μ k : ℂ)) = casC (rhoVec n) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PresRho.casC_rho_add_eq

@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsRootOne
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
 open scoped MatrixGroups
 
@@ -86,3 +89,10 @@ theorem exists_scalar_mod_level : ∀ (N l a M : ℕ), 0 < N → l.Prime → l �
     fin_cases i <;> fin_cases j <;> simp [h00, h01, h10, h11, tla, ula, mla]
 
 end GlobalTheory.KZ
+end
+
+open GlobalTheory.KZ GlobalTheory.KZ.H3 Matrix
+open scoped MatrixGroups
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_scalar_gamma1CapGamma0_mod_level : ∀ (N l a M : ℕ), 0 < N → l.Prime → l ≠ 2 → ¬ l ∣ N → 0 < M → ¬ l ∣ M → ∃ c ∈ Gam N l, (∀ g : SL(2, ℤ), c * g * c⁻¹ * g⁻¹ ∈ CongruenceSubgroup.Gamma (M * N * l ^ a)) ∧ ∀ i j, (((c : Matrix (Fin 2) (Fin 2) ℤ) i j : ℤ) : ZMod (l ^ a)) = if i = j then -1 else 0 := by
+  atlas_forward_decl GlobalTheory.KZ.exists_scalar_mod_level

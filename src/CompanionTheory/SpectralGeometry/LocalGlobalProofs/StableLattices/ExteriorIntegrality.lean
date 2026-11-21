@@ -1,5 +1,8 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
+import BuildAid.ForwardExisting
+
+section
 open CompanionTheory.Zuck BranchingSupport Matrix Finset
 open scoped InnerProductSpace Kronecker
 
@@ -182,3 +185,10 @@ theorem wedgeInt : WedgeInt := by
   exact h.symm
 
 end GlobalTheory.CompanionTheory.WedgeEmb
+end
+
+open CompanionTheory.Zuck BranchingSupport Matrix Finset
+open scoped InnerProductSpace Kronecker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ExteriorIntegrality : WedgeInt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WedgeEmb.wedgeInt

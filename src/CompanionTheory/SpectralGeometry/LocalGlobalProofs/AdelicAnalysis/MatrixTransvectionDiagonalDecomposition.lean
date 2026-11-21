@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.UnipotentAdelicQuotients.SWXSDefs
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Topology Matrix
 open scoped ENNReal NNReal
 
@@ -125,3 +128,10 @@ theorem artinian_reduced_list_transvec_mul_diagonal_mul_list_transvec
   exact Matrix.Pivot.exists_list_transvec_mul_diagonal_mul_list_transvec B
 
 end GlobalTheory.CompanionTheory.SW
+end
+
+open MeasureTheory Topology Matrix
+open scoped ENNReal NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_transvection_diagonal_decomposition : ∀ (K : Type) [CommRing K] [IsArtinianRing K] [IsReduced K] (ι : Type) [Fintype ι] [DecidableEq ι] (A : Matrix ι ι K), ∃ (L L' : List (Matrix.TransvectionStruct ι K)) (D : ι → K), A = (L.map Matrix.TransvectionStruct.toMatrix).prod * Matrix.diagonal D * (L'.map Matrix.TransvectionStruct.toMatrix).prod := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.artinian_reduced_list_transvec_mul_diagonal_mul_list_transvec

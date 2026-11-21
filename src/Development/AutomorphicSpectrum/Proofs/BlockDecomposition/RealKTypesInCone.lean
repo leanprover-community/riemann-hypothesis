@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.MuQMemHarmSet
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix Finset
@@ -444,3 +446,10 @@ theorem k_types_in_weight_cone : KTypeGenerationHighest := by
   exact first_summand_zero hp hY.unitK hY.locFin hv M.ne hmult (hye ▸ hyS.2)
 
 end GlobalTheory.CompanionTheory.KTypeCone
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.real_k_types_in_cone : PositivityTheory.RgBcC.RealD.KTypeGenerationHighest := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KTypeCone.k_types_in_weight_cone

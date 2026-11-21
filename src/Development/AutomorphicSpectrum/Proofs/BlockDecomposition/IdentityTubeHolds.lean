@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
+import BuildAid.ForwardExisting
 
+section
 open Filter Topology PositivityTheory.RgEis
 
 namespace GlobalTheory.CompanionTheory.Eis
@@ -47,3 +49,8 @@ theorem idTube : IdTube := by
   simpa using this
 
 end GlobalTheory.CompanionTheory.Eis
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.identity_tube_holds : PositivityTheory.RgEis.IdTube := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Eis.idTube

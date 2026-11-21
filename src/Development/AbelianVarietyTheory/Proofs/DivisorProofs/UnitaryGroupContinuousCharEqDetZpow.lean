@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CircleHomEqZpow
+import BuildAid.ForwardExisting
+
+section
 open Matrix
 
 namespace GlobalTheory.UnitaryChar
@@ -169,3 +172,9 @@ theorem char_eq_det_zpow : ∀ (n : ℕ) (c : Matrix.unitaryGroup (Fin n) ℂ �
   exact map_prod Circle.coeHom _ _
 
 end GlobalTheory.UnitaryChar
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryGroup_continuous_char_eq_det_zpow : ∀ (n : ℕ) (c : Matrix.unitaryGroup (Fin n) ℂ →* Circle), Continuous c → ∃ m : ℤ, ∀ u : Matrix.unitaryGroup (Fin n) ℂ, ((c u : Circle) : ℂ) = (Matrix.det (u : Matrix (Fin n) (Fin n) ℂ)) ^ m := by
+  atlas_forward_decl GlobalTheory.UnitaryChar.char_eq_det_zpow

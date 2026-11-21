@@ -5,6 +5,8 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BesselToJa
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FlatThetaMapsConvergeThetaFunctions
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ThetaFinsetSum
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitLocalPlaceLocalModelsLinearSubspace
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
@@ -75,3 +77,10 @@ theorem GlobalTheory.LastPositionLin.lastLin_zero : Big fun ch => GlobalTheory.C
   intros D _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ch _ _
   intro j _ hj t M hM P h Φ a ha φ φ' c _ hφ hφ' u v
   exact GlobalTheory.LastPositionLin.conAt_last_lin ch.W hM P h Φ j hj a ha φ φ' c hφ hφ' u v
+end
+end
+
+open GlobalTheory.RowClaim GlobalTheory.ConnectionLinear
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lastSeesaw_linear_left_largeDepth : Big fun ch => GlobalTheory.ConnectionLinear.LastLin ch 0 := by
+  atlas_forward_decl GlobalTheory.LastPositionLin.lastLin_zero

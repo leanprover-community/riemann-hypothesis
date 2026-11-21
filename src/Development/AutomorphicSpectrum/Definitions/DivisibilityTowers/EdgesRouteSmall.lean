@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareTriple
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RatInOfUnit
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CartFrSgn
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.HaarOrderData
-import Formalism.LocalToGlobal.IndefiniteReal.LinksLemmas
 import Development.WeilBound.CoreStatements.TorusUniformisation.RepresentationHypotheses.HostNumDef
 
 noncomputable section

@@ -3,6 +3,7 @@ import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.Di
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.InitialStatement
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HaarExistence
 
+section
 noncomputable section
 
 open MeasureTheory Matrix
@@ -233,3 +234,9 @@ theorem lineFormula : Fub2 → LineFacts → PSubEq → LineFormula := by
   all_goals rfl
 
 end GlobalTheory.CompanionTheory.RgLineFormula
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.line_formula_of_fubini_and_parabolic : CompanionTheory.RgExh.Dec.N.S.Fub2 → CompanionTheory.RgExh.Dec.N.S.LineFacts → CompanionTheory.RgExh.Dec.N.S.PSubEq → CompanionTheory.RgExh.Dec.L.LineFormula := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgLineFormula.lineFormula

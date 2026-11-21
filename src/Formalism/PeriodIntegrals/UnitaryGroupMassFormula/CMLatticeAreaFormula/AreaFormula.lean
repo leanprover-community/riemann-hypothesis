@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.GoodLatCM
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CMLatticeAreaFormula.GoodLatCMOf
 
 open NumberField

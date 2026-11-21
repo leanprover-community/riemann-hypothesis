@@ -2,6 +2,8 @@ import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.UnramifiedSchwartzDensity.SchCut
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsContinuousScale
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
+
+section
 noncomputable section
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
@@ -57,3 +59,12 @@ theorem scaleInf : PositivityTheory.PfSWUS.SchInf.ScaleInf := by
     exact hB0
 
 end GlobalTheory.CompanionTheory.SW.HaarScale
+end
+end
+
+noncomputable section
+open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_scaling : PositivityTheory.PfSWUS.SchInf.ScaleInf := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.HaarScale.scaleInf

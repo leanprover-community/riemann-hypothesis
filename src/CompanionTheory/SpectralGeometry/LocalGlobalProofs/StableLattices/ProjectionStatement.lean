@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.FinOfPI
+import BuildAid.ForwardExisting
 
+section
 open scoped InnerProductSpace
 open CompanionTheory.Rg.Fl CompanionTheory.D.gk.admitted
 
@@ -78,3 +80,9 @@ theorem stProj : StProj := by
     rw [h1, h2, add_zero]
 
 end GlobalTheory.CompanionTheory.FixedProj
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ProjectionStatement : StProj := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FixedProj.stProj

@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.LocalRingCardinality.DataParams₂
-import Formalism.SharpRestriction.Divisibility.WeightThresholdDefs
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsLimDeg
 
 open MvPolynomial Formalism.DegreeFormula Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.MainNotions.WeightThresholdDefs Formalism.MainNotions.DIV.Align Filter Topology

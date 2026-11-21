@@ -1,8 +1,10 @@
 import Mathlib
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoeffZeroNeOfMonicIrr
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GreenCuspidalIff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CanonListLength
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Polynomial
 
 namespace GlobalTheory.SerCmp
@@ -72,3 +74,9 @@ theorem finsum_zOf_eq_finsum_zIdem {G : Type} [Group G] [Fintype G] (Q : (G → 
   rw [hiff]
 
 end GlobalTheory.SerCmp
+end
+
+open CategoryTheory Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finsum_centralIdempotentOfIrrCharacter_eq_simple : ∀ {G : Type} [Group G] [Fintype G] (Q : (G → ℂ) → Prop), ∑ᶠ χ ∈ {χ : G → ℂ | GlobalTheory.GLq.IsIrr χ ∧ Q χ}, GlobalTheory.GLq.zOf χ = ∑ᶠ (z : MonoidAlgebra ℂ G) (_ : ∃ τ : FDRep ℂ G, CategoryTheory.Simple τ ∧ Formalism.IrreducibleCountingLemmas.TYPES.zIdem τ = z ∧ Q τ.character), z := by
+  atlas_forward_decl GlobalTheory.SerCmp.finsum_zOf_eq_finsum_zIdem

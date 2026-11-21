@@ -3,7 +3,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.CongruenceAtSplitFrobeniusH
 import Formalism.HermitianLattices.HermitianLatticesProofs.MassTelescope
 import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 import Formalism.FlagUnipotentLattices.CardSubgroupsOfIndexLe
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
 import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LValEtaBounds
 

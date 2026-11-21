@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowBlockIndicatorFromLtIff
+import BuildAid.ForwardExisting
+
+section
 open NumberField UniqueFactorizationMonoid GlobalTheory.StdLoc
 
 noncomputable section
@@ -72,3 +75,12 @@ theorem card_blockPar (R : Type) [CommRing R] [Finite R] (a d : ℕ) (h : a ≤ 
   simp [mul_comm]
 
 end GlobalTheory.StdLoc
+end
+end
+
+open NumberField UniqueFactorizationMonoid GlobalTheory.StdLoc
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_blockParabolicSubgroupGL : ∀ (R : Type) [CommRing R] [Finite R] (a d : ℕ), a ≤ d →
+    Nat.card (blockPar R a d) = Nat.card (GL (Fin a) R) * Nat.card (GL (Fin (d - a)) R) * Nat.card R ^ (a * (d - a)) := by
+  atlas_forward_decl GlobalTheory.StdLoc.card_blockPar

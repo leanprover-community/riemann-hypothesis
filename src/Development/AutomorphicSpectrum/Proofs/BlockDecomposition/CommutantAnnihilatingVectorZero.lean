@@ -1,6 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.EmbeddedFrames.PfD
 import Formalism.RealPlaceAnalysis.Complexify
+import BuildAid.ForwardExisting
+
+section
 open Finset Matrix PositivityTheory.RgHe.Frame
 
 namespace GlobalTheory.CompanionTheory.RgHeFrame
@@ -54,3 +57,9 @@ theorem commutant_cyclic_eq_zero : ∀ {m : ℕ} (g : Matrix (Fin m) (Fin m) ℂ
     _ = 0 := by rw [← hM, hM0, Matrix.mul_zero, Matrix.zero_mul]
 
 end GlobalTheory.CompanionTheory.RgHeFrame
+end
+
+open Finset Matrix PositivityTheory.RgHe.Frame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.commutant_annihilating_vector_zero : ∀ {m : ℕ} (g : Matrix (Fin m) (Fin m) ℂ) (d : Fin m → ℂ) (v : Fin m → ℂ), IsUnit g.det → Function.Injective d → (∀ i, (g⁻¹ *ᵥ v) i ≠ 0) → ∀ A : Matrix (Fin m) (Fin m) ℂ, A * (g * diagonal d * g⁻¹) = (g * diagonal d * g⁻¹) * A → A *ᵥ v = 0 → A = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgHeFrame.commutant_cyclic_eq_zero

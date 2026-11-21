@@ -1,5 +1,4 @@
 import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.StatementE
-import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OrthShapeOne
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.SingleLetterBiextensionRelation
 import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.CmAll
 

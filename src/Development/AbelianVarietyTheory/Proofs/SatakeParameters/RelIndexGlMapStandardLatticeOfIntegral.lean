@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.EsymmInvMulEsymmCard
+
+section
 open GlobalTheory.LatHecke GlobalTheory.SatakeInv
 
 noncomputable section
@@ -59,3 +61,10 @@ theorem GlobalTheory.LatHecke.relIndex_glMap_std_of_integral : ∀ (O K : Type) 
   · intro h
     rw [← Submodule.map_smul''] at h
     exact (Submodule.map_le_map_iff_of_injective coordIncl_injective _ _).1 h
+end
+end
+
+open GlobalTheory.LatHecke GlobalTheory.SatakeInv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.relIndex_glMap_standardLattice_of_integral : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] (r : ℕ) (A : Matrix (Fin r) (Fin r) O) (g : GL (Fin r) K), (g : Matrix (Fin r) (Fin r) K) = A.map (algebraMap O K) → (glMap g (std O K r).1).toAddSubgroup.relIndex (std O K r).1.toAddSubgroup = Nat.card ((Fin r → O) ⧸ LinearMap.range A.mulVecLin) ∧ (IsLocalRing.maximalIdeal O • (std O K r).1 ≤ glMap g (std O K r).1 → IsLocalRing.maximalIdeal O • (⊤ : Submodule O (Fin r → O)) ≤ LinearMap.range A.mulVecLin) := by
+  atlas_forward_decl GlobalTheory.LatHecke.relIndex_glMap_std_of_integral

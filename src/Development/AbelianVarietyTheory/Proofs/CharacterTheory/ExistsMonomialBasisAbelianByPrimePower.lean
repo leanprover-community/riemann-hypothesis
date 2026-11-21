@@ -4,6 +4,9 @@ import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.Invariant
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsAbelianByPrimePowerGroupSubgroup
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantEqTopOfIrreducible
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsMonomialBasisOfImprimitive
+import BuildAid.ForwardExisting
+
+section
 open Polynomial GlobalTheory.CuspGL GlobalTheory.BI
 
 namespace GlobalTheory.CuspGL
@@ -107,3 +110,9 @@ theorem exists_monomial_basis_of_abByP : ∀ (k : Type) [Field k] (G : Type) [Gr
   exact key _ G V ρ rfl hG hc
 
 end GlobalTheory.CuspGL
+end
+
+open Polynomial GlobalTheory.CuspGL GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_monomial_basis_abelianByPrimePower : ∀ (k : Type) [Field k] (G : Type) [Group G] [Finite G] (V : Type) [AddCommGroup V] [Module k V] [FiniteDimensional k V] (ρ : Representation k G V) [IsAlgClosed k], AbByP G → (Nat.card G : k) ≠ 0 → ∃ (n : ℕ) (b : Module.Basis (Fin n) k V), ∀ (g : G) (i : Fin n), ∃ (j : Fin n) (c : k), ρ g (b i) = c • b j := by
+  atlas_forward_decl GlobalTheory.CuspGL.exists_monomial_basis_of_abByP

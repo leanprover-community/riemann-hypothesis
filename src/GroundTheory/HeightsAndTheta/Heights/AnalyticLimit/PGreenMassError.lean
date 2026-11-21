@@ -1,9 +1,5 @@
 import Mathlib
 import ReciprocityTheory.AnalyticForms.PotentialTheory.ProjectiveLineFubiniStudyFacts
-import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PLCurveA
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureA
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.GreenMassError
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.SystemIndependence
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.ConvergenceRate

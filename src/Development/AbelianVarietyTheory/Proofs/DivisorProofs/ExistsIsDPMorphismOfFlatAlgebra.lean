@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDividedPowersOfCompOnGeneratorsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDividedPowersOfCompOnGenerators
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsPreDividedPowersOfGeneratorsStatement
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -127,3 +127,10 @@ theorem exists_isDPMorphism_of_flat : ∀ (R A : Type) [CommRing R] [CommRing A]
   exact ⟨δ, ⟨le_rfl, fun a ha ↦ by rw [hδ]; exact hγx ⟨a, ha⟩ _⟩⟩
 
 end GlobalTheory.DPFlat
+end
+end
+
+open DividedPowers GlobalTheory.Cris GlobalTheory.PDA
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isDPMorphism_of_flat_algebra : ∀ (R A : Type) [CommRing R] [CommRing A] [Algebra R A] [Module.Flat R A] (I : Ideal R) (κ : DividedPowers I), ∃ δ : DividedPowers (I.map (algebraMap R A)), IsDPMorphism κ δ (algebraMap R A) := by
+  atlas_forward_decl GlobalTheory.DPFlat.exists_isDPMorphism_of_flat

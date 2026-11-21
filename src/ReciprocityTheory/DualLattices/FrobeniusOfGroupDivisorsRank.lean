@@ -7,7 +7,6 @@ import ReciprocityTheory.DualLattices.MonomialsSpanOfProdEq
 import ReciprocityTheory.DualLattices.EigenLiftsFrobenius
 import ReciprocityTheory.DualLattices.ElementaryDivisorStatement
 import ReciprocityTheory.DualLattices.RankEqRankOfPermAndZero
-import ReciprocityTheory.DualLattices.LiftMonomialDeterminantStatementHolds
 import ReciprocityTheory.DualLattices.FrobeniusBlock
 import ReciprocityTheory.DualLattices.SumX
 import ReciprocityTheory.DualLattices.EmbeddingSeparatingGroup

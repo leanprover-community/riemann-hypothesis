@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CurveV
-import Formalism.DegreeFormula.PointDegree.PowSum
 
 open MvPolynomial Formalism.DegreeFormula GlobalTheory.FlagPoly GlobalTheory.CovTestDR
 

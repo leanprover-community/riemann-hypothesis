@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+import BuildAid.ForwardExisting
+
+section
 open NumberField ReciprocityTheory.ChartRestriction.G.FD
 
 open scoped ComplexOrder ComplexConjugate Matrix
@@ -81,3 +84,9 @@ theorem definite_frame_leading_minors_sign : ∀ (E : Type) [Field E] [NumberFie
   fun E _ _ _ r X h x τ hx i => dmin_sign_of_definite E r X h x τ hx i
 
 end GlobalTheory.FlagDomain
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.re_dmin_sign_pos_of_definite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r), (X.p0 = 0 ∨ X.p0 = r) → ∀ (x : Frame X.Ψ r) (τ : X.Ψ), (mat x τ).det ≠ 0 → ∀ i : Fin (r + 1), 0 < psgn X.p0 i * (dmin X.Gm x τ i).re := by
+  atlas_forward_decl GlobalTheory.FlagDomain.definite_frame_leading_minors_sign

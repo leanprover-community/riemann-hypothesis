@@ -1,8 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.Columns.AtTRank
 import Formalism.LocalToGlobal.Columns.ToHLatLemmas
-import Formalism.LocalToGlobal.Columns.CoefficientsModP
-import Formalism.LocalToGlobal.Columns.ColFormsInst
 import Formalism.LocalToGlobal.Columns.AtTOwedS
 import Formalism.LocalToGlobal.Columns.RamifiedOperatorsNonvacuous
 

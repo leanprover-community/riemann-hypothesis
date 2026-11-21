@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
+import BuildAid.ForwardExisting
 
+section
 open Formalism.REAL
 
 noncomputable section
@@ -79,3 +81,10 @@ theorem unop_qdet_op_neg (A : Type) [Ring A] [Algebra ℂ A] (n : ℕ) (X : Fin 
   exact Finset.sum_congr rfl fun σ _ => unop_term X v σ
 
 end GlobalTheory.CompanionTheory.CapelliAntipode
+end
+end
+
+open Formalism.REAL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quantum_det_opposite_neg : ∀ (A : Type) [Ring A] [Algebra ℂ A] (n : ℕ) (X : Fin n → Fin n → A), Formalism.REAL.GlRel X → ∀ v : ℂ, MulOpposite.unop (Formalism.REAL.qdet (fun i j => MulOpposite.op (-X i j)) v) = ((-1 : ℂ) ^ n) • Formalism.REAL.qdet X ((n : ℂ) - 1 - v) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CapelliAntipode.unop_qdet_op_neg

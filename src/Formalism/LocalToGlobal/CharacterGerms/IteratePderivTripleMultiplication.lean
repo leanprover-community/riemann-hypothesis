@@ -402,8 +402,7 @@ private theorem v_natCast_nonneg_vf (V : VF C) (m : ℕ) : 0 ≤ V.v (m : C) := 
     rw [AddValuation.map_one]
 
 private theorem mm_add_of_both {a b : C} (ha : V.MM a) (hb : V.MM b) : V.MM (a + b) := by
-  unfold VF.MM at *
-  exact lt_of_lt_of_le (lt_min ha hb) (AddValuation.map_add _ _ _)
+  apply mm_add_character_germs (ha := ha) (hb := hb) <;> assumption
 
 private theorem mm_finset_sum {ι : Type} (s : Finset ι) (a : ι → C) (h : ∀ i ∈ s, V.MM (a i)) :
     V.MM (∑ i ∈ s, a i) := by

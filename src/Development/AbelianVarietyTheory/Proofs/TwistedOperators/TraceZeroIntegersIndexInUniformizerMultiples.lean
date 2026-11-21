@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceZeroIntegersModUniformizerCardOfCardSq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardIntegersModUniformizerEqQSq
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG GlobalTheory.SatakeWeyl
@@ -83,3 +85,9 @@ theorem traceIndex : TraceIndex := by
 end GlobalTheory.InertZeta
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.traceZero_integers_index_in_uniformizer_multiples : TraceIndex := by
+  atlas_forward_decl GlobalTheory.InertZeta.traceIndex

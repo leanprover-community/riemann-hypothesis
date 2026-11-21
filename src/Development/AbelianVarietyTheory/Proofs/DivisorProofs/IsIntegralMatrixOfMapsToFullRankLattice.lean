@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.Statement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemMatLat
+import BuildAid.ForwardExisting
+
+section
 open Polynomial Matrix GlobalTheory.LatOrb
 
 namespace GlobalTheory.LatOrb
@@ -49,3 +52,10 @@ theorem isIntegral_of_mapsTo_lattice : ∀ {O K : Type} [CommRing O] [Field K] [
   simpa using this
 
 end GlobalTheory.LatOrb
+end
+
+open Polynomial Matrix GlobalTheory.LatOrb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIntegral_matrix_of_mapsTo_fullRankLattice : ∀ {O K : Type} [CommRing O] [Field K] [Algebra O K] (n : ℕ) (M : Submodule O (Fin n → K)),
+    IsLatV O M → ∀ c : Matrix (Fin n) (Fin n) K, (∀ v ∈ M, c *ᵥ v ∈ M) → IsIntegral O c := by
+  atlas_forward_decl GlobalTheory.LatOrb.isIntegral_of_mapsTo_lattice

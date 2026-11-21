@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 universe u
 
 namespace GlobalTheory.CompanionTheory.EisTube
@@ -15,3 +17,10 @@ theorem gaussInt : ∀ (ι : Type) [Fintype ι] (c : ℝ), 0 < c →
   simp only [← Real.exp_sum, Finset.mul_sum, Finset.sum_neg_distrib, neg_mul]
 
 end GlobalTheory.CompanionTheory.EisTube
+end
+
+universe u
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussian_integrable_finite_dim : ∀ (ι : Type) [Fintype ι] (c : ℝ), 0 < c →
+    MeasureTheory.Integrable (fun y : ι → ℝ => Real.exp (-(c * ∑ i, y i ^ 2))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EisTube.gaussInt

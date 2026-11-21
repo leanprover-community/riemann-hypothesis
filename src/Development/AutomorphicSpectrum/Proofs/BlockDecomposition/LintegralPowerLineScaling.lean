@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableHermC
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousBlkM
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix
 open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
 
@@ -43,3 +45,11 @@ theorem lintegral_sq_add_sq_rpow_neg :
         rw [← mul_assoc, ← ENNReal.ofReal_mul ha.le, ← hpow, mul_comm]
 
 end GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
+end
+
+open MeasureTheory Matrix
+open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_power_line_scaling : ∀ s : ℝ, 1 / 2 < s → ∃ C : ENNReal, C ≠ ⊤ ∧ ∀ a : ℝ, 0 < a → ∀ m : ℝ,
+    ∫⁻ d : ℝ, ENNReal.ofReal ((a ^ 2 + (d - m) ^ 2) ^ (-s)) = C * ENNReal.ofReal (a ^ (1 - 2 * s)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt.lintegral_sq_add_sq_rpow_neg

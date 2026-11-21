@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalRingCardinality.DataTheta
 import Formalism.SharpRestriction.ParConsts
 import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Decomp

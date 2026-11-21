@@ -1,12 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.InfClassAt
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DictAt
 import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermitianUnique
-import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalUnitaryConjSplitSupportedFiniteAdelicPoi
-import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JetOperatorBoundAtEmbeddingOfComplexOpNormSq
 
+section
 namespace DeltaFormSums
 section
 
@@ -901,3 +899,9 @@ theorem _root_.GlobalTheory.Adopt.archimedeanSumSizeBound_largeData_from_factors
   first | exact @DeltaFormSums.GlobalTheory.CompanionTheory.InfAssembly.infK_of_factors | exact DeltaFormSums.GlobalTheory.CompanionTheory.InfAssembly.infK_of_factors | (intros; apply DeltaFormSums.GlobalTheory.CompanionTheory.InfAssembly.infK_of_factors <;> assumption)
 
 end
+end
+
+open GlobalTheory.SumSize GlobalTheory.RowClaim
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedeanSumSizeBound_largeData_from_factors : SumOKK → DepthK → InfScalK → InfTensK → InfCountK → InfClassK → InfTopK → InfRowK → InfPairK → InfPsiK → InfFormK → InfK := by
+  atlas_forward_decl GlobalTheory.Adopt.archimedeanSumSizeBound_largeData_from_factors

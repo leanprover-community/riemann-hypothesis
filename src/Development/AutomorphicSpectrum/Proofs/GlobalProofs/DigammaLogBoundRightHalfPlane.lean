@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.DigammaTendstoLogSubHarmonic
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.DigammaBound
 
 open Finset
@@ -170,3 +172,8 @@ theorem digamma_bound :
   linarith
 
 end GlobalTheory.CompanionTheory.DigammaBound
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.digamma_log_bound_right_half_plane : ∃ C : ℝ, 0 < C ∧ ∀ z : ℂ, 1 / 2 ≤ z.re → ‖Complex.digamma z‖ ≤ C * Real.log (‖z‖ + 2) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DigammaBound.digamma_bound

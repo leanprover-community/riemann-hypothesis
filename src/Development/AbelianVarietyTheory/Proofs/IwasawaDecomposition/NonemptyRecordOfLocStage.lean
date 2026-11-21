@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalRingCardinality.SpanPowerMembership
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalStageNonempty
 

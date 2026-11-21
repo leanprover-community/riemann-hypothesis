@@ -1,11 +1,13 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocalWhittakerDuality.WhittakerFunctionalEquationAdditive
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Aq
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GodementJacquetMinusOne
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GodementJacquetMinusTwo
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableOnModulusPowBall
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralBoundedRegionDetPowLtTop
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwasawaCoordinatesBoundedRegion
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.DampedZetaMajorant GlobalTheory.CompanionTheory.GL2Unfolding GlobalTheory.CompanionTheory.GJTwo
 open scoped ValuativeRel ENNReal NNReal
 
@@ -280,3 +282,14 @@ theorem lintegral_det_mx_lt_top : ForS fun F _ _ _ _ _ _ ψ => ∀ R c t : ℝ, 
   exact ENNReal.mul_lt_top (hP.const_mul C).lintegral_lt_top hAV.lt_top
 
 end GlobalTheory.CompanionTheory.SingInt
+end
+end
+
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData GlobalTheory.CompanionTheory.DampedZetaMajorant GlobalTheory.CompanionTheory.GL2Unfolding GlobalTheory.CompanionTheory.GJTwo
+open scoped ValuativeRel
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_det_second_vector_finite : ForS fun F _ _ _ _ _ _ ψ => ∀ R c t : ℝ, 1 < c → 0 ≤ t → t < c →
+  ∫⁻ g, Set.indicator {g : GL (Fin 2) F | ∀ i j, (modulus (g.val i j) : ℝ) ≤ R}
+    (fun g => ENNReal.ofReal ((modulus (g.val).det : ℝ) ^ c * mx (e2r g) ^ (-t))) g ∂LFS.hG ψ < ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SingInt.lintegral_det_mx_lt_top

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial
 
 namespace GlobalTheory
@@ -57,3 +60,9 @@ theorem mem_polyring_of_integral_closure_range : ∀ {K : Type} [Field K] {D : �
   exact ⟨T₀, by rw [← hφ, hT]⟩
 
 end GlobalTheory
+end
+
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_polyring_of_integral_closure_range' : ∀ {K : Type} [Field K] {D : ℕ} (y : Fin D → K), AlgebraicIndependent ℤ y → ∀ (t : K), t ∈ Subfield.closure (Set.range y) → ∀ {ι : Type} (z : ι → K), (∀ i, ∃ p : MvPolynomial (Fin D) ℤ, aeval y p = z i) → ∀ (f : Polynomial (MvPolynomial ι ℤ)), f.Monic → f.eval₂ (aeval z).toRingHom t = 0 → ∃ T₀ : MvPolynomial (Fin D) ℤ, t = aeval y T₀ := by
+  atlas_forward_decl GlobalTheory.mem_polyring_of_integral_closure_range

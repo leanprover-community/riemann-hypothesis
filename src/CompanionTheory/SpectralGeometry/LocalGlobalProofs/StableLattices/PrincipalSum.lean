@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset
@@ -188,3 +190,9 @@ theorem prinSum : CompanionTheory.RgExh.Hk.PrinSum := by
   exact sum_principal E x
 
 end GlobalTheory.CompanionTheory.PrinSumP
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.PrincipalSum : CompanionTheory.RgExh.Hk.PrinSum := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PrinSumP.prinSum

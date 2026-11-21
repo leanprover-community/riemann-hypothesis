@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousMulVec
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsClopenCoset
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ZpowMulVec
+
+section
 open Matrix MeasureTheory GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibOrd GlobalTheory.SplitWeil GlobalTheory.JHMult GlobalTheory.CompanionTheory.BZShell GlobalTheory.CompanionTheory.MirPair GlobalTheory.CompanionTheory.BZCore
 open scoped Topology
 
@@ -45,3 +45,10 @@ theorem isOpen_stabilizer_standard_lattice {k : Type} [Field k] [ValuativeRel k]
     rwa [mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, one_mulVec] at this
 
 end GlobalTheory.CompanionTheory.BZCore
+end
+
+open Matrix MeasureTheory GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibOrd GlobalTheory.SplitWeil GlobalTheory.JHMult GlobalTheory.CompanionTheory.BZShell GlobalTheory.CompanionTheory.MirPair GlobalTheory.CompanionTheory.BZCore
+open scoped Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpen_standard_lattice_stabilizer : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {d : ℕ}, IsOpen {g : GL (Fin d) k | (lat0 : COSub k d).act g = lat0} := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZCore.isOpen_stabilizer_standard_lattice

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.FormalDegreeBessel.StatementRP
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GramRight
 
 open Matrix Formalism.QuantumDeterminants

@@ -1,12 +1,12 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Rr
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TranslatedLengthBoundedDerivativeStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothMonotoneCutoffExistsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralRrEqZeroStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TranslatedLengthBoundedDerivative
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothMonotoneCutoffExists
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralRrEqZero
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveTimeReversalStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CasimirRightLaplacianFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EnergyIdentityOfLengthFunctionStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EnergyIdentityOfLengthFunction
 
+section
 noncomputable section
 
 open MeasureTheory Matrix Finset
@@ -110,3 +110,9 @@ theorem asmSpeed : AsmSpeed := by
     simpa using this
 
 end GlobalTheory.CompanionTheory.WaveSpd
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_propagation_speed_holds : PositivityTheory.RgBcC.AsmSpeed := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WaveSpd.asmSpeed

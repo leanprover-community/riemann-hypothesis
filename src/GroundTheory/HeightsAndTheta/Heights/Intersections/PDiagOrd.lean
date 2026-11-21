@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsDiagDiv
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsDiagOffUnit
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsDiagOrdOne
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsDiagRelevant

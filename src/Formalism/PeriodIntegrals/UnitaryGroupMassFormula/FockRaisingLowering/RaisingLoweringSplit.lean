@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.JointBlockShapes.MinusPart
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockRaisingLowering.SameSign
 
 noncomputable section

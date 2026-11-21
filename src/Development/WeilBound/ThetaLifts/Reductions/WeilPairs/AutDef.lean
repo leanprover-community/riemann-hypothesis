@@ -2,7 +2,6 @@ import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.GoodLat
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.EtaDef
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.ImportsBis
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.WeilPairData.ImportsMore
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsHalfIdem
 
 noncomputable section
 

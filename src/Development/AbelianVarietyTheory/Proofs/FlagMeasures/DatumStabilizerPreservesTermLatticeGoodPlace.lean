@@ -1,6 +1,9 @@
 import Mathlib
 import Formalism.SharpRestriction.CuspSpanNormBounds.IsTermOver
 import Formalism.SharpRestriction.CuspSpanNormBounds.KappaEndpoints
+import BuildAid.ForwardExisting
+
+section
 open ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.Loc
 open scoped Pointwise ENNReal Classical
 
@@ -202,3 +205,10 @@ theorem stab_le_aut : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpac
   rwa [← ng_img_mul, mul_inv_cancel, ng_img_one] at h3
 
 end GlobalTheory.HL.StabLat
+end
+
+open ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.Loc
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.datumStabilizer_preserves_termLattice_goodPlace : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → ∀ {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V) (r k : ℕ) (P : LocNG.FPair H r), Module.finrank E V = k + 2 * r + 1 → P.RelG (LocNG.theta M) → P.PrimeTo → ∀ (d : LocNG.Datum P) (τ : Term V M r), LocNG.IsTermOver P d τ → LocNG.Datum.Stab d ≤ LocNG.Aut τ.abelian₂ := by
+  atlas_forward_decl GlobalTheory.HL.StabLat.stab_le_aut

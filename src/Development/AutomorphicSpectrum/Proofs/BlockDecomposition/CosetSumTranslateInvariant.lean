@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.CompanionTheory.Transversal
@@ -34,3 +36,9 @@ theorem sum_add_eq_sum_of_transversal : ∀ {X : Type} [AddCommGroup X] {M : Typ
     exact h3
 
 end GlobalTheory.CompanionTheory.Transversal
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coset_sum_translate_invariant : ∀ {X : Type} [AddCommGroup X] {M : Type} [AddCommMonoid M] {A H : AddSubgroup X}, H ≤ A → ∀ {T : Finset X}, (∀ t ∈ T, t ∈ A) → (∀ a ∈ A, ∃! t, t ∈ T ∧ a - t ∈ H) → ∀ (F : X → M), (∀ a, ∀ h ∈ H, F (a + h) = F a) → ∀ {a : X}, a ∈ A → ∑ t ∈ T, F (t + a) = ∑ t ∈ T, F t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Transversal.sum_add_eq_sum_of_transversal

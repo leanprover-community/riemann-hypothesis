@@ -1,6 +1,4 @@
 import Mathlib
-import GroundTheory.Brauer.CrossedProduct
-import GroundTheory.Brauer.CrossedProductSimple
 import GroundTheory.Brauer.CrossedProductMaps
 import GroundTheory.Brauer.SkolemNoether
 import GroundTheory.Brauer.IsBrauerEquivalentIffNonemptyAlgEquiv

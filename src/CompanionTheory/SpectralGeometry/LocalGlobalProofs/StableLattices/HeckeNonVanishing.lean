@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantEquality
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset
@@ -110,3 +112,9 @@ theorem nonVan : NonVan := by
     simpa using hmem
 
 end GlobalTheory.CompanionTheory.RgExhHecke.NonVanProof
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.HeckeNonVanishing : CompanionTheory.RgExh.Hk.NonVan := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgExhHecke.NonVanProof.nonVan

@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.AnalyticForms.MaIntEmpty
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHessCCompPluri
 set_option maxSynthPendingDepth 1
 

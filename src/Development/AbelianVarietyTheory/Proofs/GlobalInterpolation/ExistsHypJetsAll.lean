@@ -1,7 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.JetsAllOfColIn
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsColInJetsIn
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsColumnInputAssembled
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CardDvdCardGL
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsHFrameDtPackPre
 

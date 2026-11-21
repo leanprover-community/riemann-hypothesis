@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open Polynomial
 open PositivityTheory.Rg.Tf.Loc
 
@@ -257,3 +259,8 @@ theorem cyclicCocycleLemma : PositivityTheory.Rg.Tf.Loc.A2 → PositivityTheory.
   exact cocycle σ hgen γ u hu hN
 
 end GlobalTheory.CompanionTheory.CyclicCocycle
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_centralizer_identification : PositivityTheory.Rg.Tf.Loc.A2 → PositivityTheory.Rg.Tf.Loc.A3 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CyclicCocycle.cyclicCocycleLemma

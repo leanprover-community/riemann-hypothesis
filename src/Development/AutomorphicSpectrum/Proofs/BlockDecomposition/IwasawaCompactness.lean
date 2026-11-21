@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Continuous
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IwasawaDecompositionUnitary
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SiegelParabolicUnnMatrixBlockUpperTriangular
 
+section
 noncomputable section
 
 open scoped Matrix NNReal ComplexConjugate TensorProduct Pointwise
@@ -35,3 +36,9 @@ theorem iwaCpt : IwaCpt := by
 end GlobalTheory.CompanionTheory.ThTot
 
 end
+end
+
+open GlobalTheory.CompanionTheory.ThTot
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.iwasawa_compactness : IwaCpt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ThTot.iwaCpt

@@ -1,5 +1,4 @@
 import Formalism.PieriBlockIdeals.Statement
-import Formalism.PieriBlockIdeals.StatementLD
 import Formalism.PieriBlockIdeals.BranchingBoundLastGradedOneRow
 
 noncomputable section

@@ -1,4 +1,3 @@
-import Formalism.CoboundaryTransfers.StatementAPI
 import Formalism.CoboundaryTransfers.GammaStableTransfers.MemCoboundariesOfIsOneCoboundary
 import Formalism.FrobeniusContraction.FrobeniusContractionProofs.LenBound
 

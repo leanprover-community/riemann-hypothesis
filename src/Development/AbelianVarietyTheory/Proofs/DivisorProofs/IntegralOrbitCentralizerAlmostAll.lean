@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvMemIntV
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyIsIntegralInCompletedTensorBasisMulExpStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StarPreservesIntegrality
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SiegelMeanValueNonnegative

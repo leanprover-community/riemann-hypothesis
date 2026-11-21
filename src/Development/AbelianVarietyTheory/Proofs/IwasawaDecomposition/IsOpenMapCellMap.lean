@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsClosedFlagsIff
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UniMatBlockTriangular
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LuLowerLowerTriangular
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 noncomputable section
 
@@ -351,3 +351,10 @@ end GlobalTheory.FlagPts
 
 example : ∀ (k : Type) [Field k] (ι : Type) [Fintype ι] (V : ι → Type) [∀ i, AddCommGroup (V i)] [∀ i, Module k (V i)]
     [∀ i, FiniteDimensional k (V i)] (b : Frames k V), IsOpenMap (cellMap b) := GlobalTheory.FlagPts.isOpenMap_cellMap
+end
+end
+
+open Module TopologicalSpace GlobalTheory.FlagPts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpenMap_cellMap' : ∀ (k : Type) [Field k] (ι : Type) [Fintype ι] (V : ι → Type) [∀ i, AddCommGroup (V i)] [∀ i, Module k (V i)] [∀ i, FiniteDimensional k (V i)] (b : Frames k V), IsOpenMap (cellMap b) := by
+  atlas_forward_decl GlobalTheory.FlagPts.isOpenMap_cellMap

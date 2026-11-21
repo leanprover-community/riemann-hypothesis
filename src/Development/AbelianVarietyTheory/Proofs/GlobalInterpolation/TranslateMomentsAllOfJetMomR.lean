@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.KernelLattices.DeterminantCokernelCount.JetMomEquiv
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.VacuumEntireAndNormalizedJetsAlgebraic
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TranslateMomentsAll
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WopAddLattice
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsCoprimeMulIntegral
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsRatNear

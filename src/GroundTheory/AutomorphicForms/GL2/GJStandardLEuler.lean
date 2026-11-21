@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.GL2.GJStandardLDefs
 import GroundTheory.AutomorphicForms.GL2.GJStandardLTensor
 import GroundTheory.AutomorphicForms.GL2.GJStandardLBump
 

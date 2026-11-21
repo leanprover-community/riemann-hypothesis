@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+import BuildAid.ForwardExisting
+
+section
 open NumberField Formalism.BasicNotions Classical Formalism.MainNotions Formalism.L2.Ker
 
 namespace GlobalTheory
@@ -36,3 +39,9 @@ theorem detRel_mul_conj_eq_one (D : D7) (γ₀ γ : IsoK D) :
   exact h1.trans h2.symm
 
 end GlobalTheory
+end
+
+open NumberField Formalism.BasicNotions Classical Formalism.MainNotions Formalism.L2.Ker
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.relativeDeterminant_isometry_norm_one : ∀ (D : D7) (γ₀ γ : IsoK D), ((γ.detRel γ₀ : D.host.K) : D.host.E) * D.host.conj ((γ.detRel γ₀ : D.host.K) : D.host.E) = 1 := by
+  atlas_forward_decl GlobalTheory.detRel_mul_conj_eq_one

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.SemiabelianTori.GeometricallyConnectedSplitTorusAff
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.GlobalTheory.ImportsAlt
 
 namespace GlobalTheory

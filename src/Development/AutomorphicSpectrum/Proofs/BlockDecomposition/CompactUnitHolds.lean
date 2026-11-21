@@ -6,10 +6,8 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCompactIma
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductOfLocalLevelsUnitaryIsOpenIsCompactIsLeve
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmField
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FixedPlaceUnitaryLocalPointsEquivLocalUnitaryGro
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceUnitaryLocalPointsEquivGL
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.DiscreteTopologyRationalPointsHermitianSpace
-import Development.AbelianVarietyTheory.Definitions.Foundations.InnerEqZeroOfNotUEquiv
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory
@@ -215,3 +213,10 @@ theorem compUnit : PositivityTheory.Rg.BcB.F.Eig.CompUnit := by
     (fun v => (hπ.aut _ (hfm v)).cont) (fun v => (hπ.aut _ (hfm v)).left) (fun x v y => by rw [hf]; rfl))
 
 end GlobalTheory.CompanionTheory.CompUnitary
+end
+end
+
+open PositivityTheory.Rg.BcB.F.Eig
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_unit_holds : CompUnit := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CompUnitary.compUnit

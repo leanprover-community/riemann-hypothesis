@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapSubApply
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 open AdicCompletion in
@@ -19,3 +21,12 @@ theorem adicCompletion_map_invariants : ∀ (A : Type) [CommRing A] [IsNoetheria
   | (intros; exact _root_.GlobalTheory.LinearMapDifferenceFormula.main ..)
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adicCompletion_map_injective_and_invariants : ∀ (A : Type) [CommRing A] [IsNoetherianRing A] (J : Ideal A) (N M : Type) [AddCommGroup N] [Module A N]
+    [AddCommGroup M] [Module A M] [Module.Finite A M] (f : N →ₗ[A] M) (Γ : Type) [Finite Γ] (g : Γ → (M →ₗ[A] M)),
+    Function.Injective f → (∀ x, x ∈ LinearMap.range f ↔ ∀ σ, g σ x = x) →
+    Function.Injective (AdicCompletion.map J f) ∧
+      ∀ y, y ∈ LinearMap.range (AdicCompletion.map J f) ↔ ∀ σ, AdicCompletion.map J (g σ) y = y := by
+  atlas_forward_decl GlobalTheory.adicCompletion_map_invariants

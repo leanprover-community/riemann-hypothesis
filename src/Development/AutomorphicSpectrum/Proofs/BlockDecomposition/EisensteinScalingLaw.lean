@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.Descend
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Filter Topology PositivityTheory.RgEis
@@ -110,3 +112,9 @@ theorem scale : PositivityTheory.RgEis.Scale := by
   exact ⟨_, _, _, _, wall_scale hs hl hw⟩
 
 end GlobalTheory.CompanionTheory.RgEisScale
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eisenstein_scaling_law : PositivityTheory.RgEis.Scale := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisScale.scale

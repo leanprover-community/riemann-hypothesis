@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsEqnI
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MemRangeOfForallHeightEqOneOfIsReflexive
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.BijectiveAlgebraMapIntegralClosureOfBirational
 
+section
 open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Opposite
 open ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits GlobalTheory.Cartier
 
@@ -255,3 +256,18 @@ theorem GlobalTheory.ExpChoice.exists_exponents : ∀ (X : Scheme.{0}) [IsIntegr
     obtain ⟨u, hu, e⟩ := key x₀ hx₀ i hi
     rw [e, mul_comm (m x₀) (t x₀), sub_self, zpow_zero, mul_one]
     exact hu
+end
+
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Opposite
+open ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits GlobalTheory.Cartier
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_power_section_special_fibre : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] [CompactSpace X],
+  (∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x)) →
+  ∀ (π : Γ(X, ⊤)), genericPoint X ∈ X.basicOpen π → (∃ z : X, z ∉ X.basicOpen π) →
+  ∀ (L : LB X) (τ : L.ι → X.functionFieldˣ), L.IsLB → IsRatSec L τ →
+    (∀ (i : L.ι) (z : X), z ∈ L.U i → z ∈ X.basicOpen π → UnitAt z (τ i : X.functionField)) →
+    ∃ (M : ℕ) (n : ℤ) (x₀ : X), 1 ≤ M ∧ x₀ ∉ X.basicOpen π ∧
+      (∀ (i : L.ι) (z : X), z ∈ L.U i → IsDiscreteValuationRing (X.presheaf.stalk z) →
+        RegAt z (fnOf ⊤ trivial π ^ n * ((τ i : X.functionField) ^ M)⁻¹)) ∧
+      (∀ i : L.ι, x₀ ∈ L.U i → UnitAt x₀ (fnOf ⊤ trivial π ^ n * ((τ i : X.functionField) ^ M)⁻¹)) := by
+  atlas_forward_decl GlobalTheory.ExpChoice.exists_exponents

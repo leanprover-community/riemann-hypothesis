@@ -1,9 +1,7 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Imports
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.RestAssembly
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.AssemblyAnalytic
 import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Assembly
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PGrassArithVar
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PRootArithVar
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualArithVar

@@ -6,6 +6,7 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfAlgHom
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardTorsionMulFinrank
 import Formalism.PieriBlockIdeals.PieriColumnMinors.HeightDescentMinors
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -118,3 +119,9 @@ theorem ringFacts_of_caseA {l : ℕ} [Fact l.Prime] {P : LocPrime l} (H : LocHW 
 end GlobalTheory.WachPlace
 
 end
+end
+
+open NumberField PowerSeries Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.CohomologicalDescent Formalism.CohomologicalDescent.HeightDescentMinors Formalism.CohomologicalDescent.FrobeniusPeriodChange IsLocalRing GlobalTheory.WachPlace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wachRingFacts_unramified_levelOne : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (H : LocHW l P) (K LL : FinExt l) (hA : CaseA K LL), RingFacts (H.W K 1 LL hA.2.2) := by
+  atlas_forward_decl GlobalTheory.WachPlace.ringFacts_of_caseA

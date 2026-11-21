@@ -1,6 +1,5 @@
 import Mathlib
 import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.ProjRows
 
 noncomputable section

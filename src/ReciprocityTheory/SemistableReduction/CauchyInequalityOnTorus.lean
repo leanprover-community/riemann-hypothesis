@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
 import ReciprocityTheory.SemistableReduction.ExistsTorusPointOneLeNormSum
 
 namespace ReciprocityTheory.MultiplicativeHeights

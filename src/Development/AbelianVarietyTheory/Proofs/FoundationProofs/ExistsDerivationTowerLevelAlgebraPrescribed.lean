@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
-import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsTrDataGaussianIntOne
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerEmbeddingInjectiveStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerEmbeddingInjective
+
 open GlobalTheory.AlmostEt GlobalTheory.K5
 open scoped NNReal
 

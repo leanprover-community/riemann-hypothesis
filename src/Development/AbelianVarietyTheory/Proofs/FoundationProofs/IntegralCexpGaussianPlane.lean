@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPosHermFormV
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IntMIffInt
+import BuildAid.ForwardExisting
+
+section
 open Complex MeasureTheory GlobalTheory.UnitaryTheta
 open scoped BigOperators ComplexConjugate Real Classical
 
@@ -51,3 +54,10 @@ theorem integral_cexp_gaussian_plane : ∀ l u v : ℂ, 0 < l.re → Integrable 
     linear_combination (π * (conj v - u) ^ 2) * Complex.I_sq
 
 end GlobalTheory.UnitaryTheta
+end
+
+open Complex MeasureTheory GlobalTheory.UnitaryTheta
+open scoped BigOperators ComplexConjugate Real Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_cexp_complex_gaussian_linear : ∀ l u v : ℂ, 0 < l.re → Integrable (fun z : ℂ => cexp (-(π : ℂ) * l * (z * conj z) + π * (u * conj z) + π * (z * conj v))) ∧ ∫ z : ℂ, cexp (-(π : ℂ) * l * (z * conj z) + π * (u * conj z) + π * (z * conj v)) = l⁻¹ * cexp (π * (u * conj v) / l) := by
+  atlas_forward_decl GlobalTheory.UnitaryTheta.integral_cexp_gaussian_plane

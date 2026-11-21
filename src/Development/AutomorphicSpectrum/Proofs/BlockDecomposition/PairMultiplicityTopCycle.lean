@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InjectiveWedgeHighestCoefficient
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.CompanionTheory.PairMult
 
 noncomputable section
@@ -79,3 +82,10 @@ theorem topCyc : TopCyc := by
       · rw [topq, Pi.single_eq_of_ne e, smul_zero, map_zero]
 
 end GlobalTheory.CompanionTheory.PairMult.TopCycQ
+end
+end
+
+open GlobalTheory.CompanionTheory.PairMult
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pair_multiplicity_top_cycle : GlobalTheory.CompanionTheory.PairMult.TopCyc := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PairMult.TopCycQ.topCyc

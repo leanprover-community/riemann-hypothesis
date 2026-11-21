@@ -1,5 +1,7 @@
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.EquivariantSections.EquivSection
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset Matrix
@@ -229,3 +231,9 @@ theorem betaWeight : HolFacts → RhoTorus → TorW → BetaWeight := by
       ring
 
 end GlobalTheory.CompanionTheory.TorusSymbol
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.beta_weight_of_torus_facts : PositivityTheory.RgDs.K.HolFacts → PositivityTheory.RgDs.K.RhoTorus → PositivityTheory.RgDs.K.TorW → PositivityTheory.RgDs.K.BetaWeight := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TorusSymbol.betaWeight

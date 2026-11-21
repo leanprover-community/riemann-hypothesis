@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.Friedrichs
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped ZeroAtInfty InnerProductSpace ComplexConjugate
@@ -421,3 +423,9 @@ theorem absFC : PositivityTheory.RgBcC.Fc.AbsFC := by
     exact (p6 S c1 (hstar ▸ c2) g).eq.symm
 
 end GlobalTheory.CompanionTheory.FuncCalc
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absolute_fourier_coefficients : PositivityTheory.RgBcC.Fc.AbsFC := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FuncCalc.absFC

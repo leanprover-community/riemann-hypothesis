@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormPullback
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormRoots
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 set_option maxSynthPendingDepth 1

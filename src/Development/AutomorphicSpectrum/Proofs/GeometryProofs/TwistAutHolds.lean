@@ -1,13 +1,14 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.PadicIntegersHenselianFiniteResidue
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwistInverseIsoStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwistIsoNonemptyStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ObjMapCompStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwistObjMapFunctorialStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwistOkAllStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ModuliTwistAutomorphismStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwistInverseIso
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwistIsoNonempty
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ObjMapComp
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwistObjMapFunctorial
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwistOkAll
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ModuliTwistAutomorphism
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ModuliIsReducedStatement
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.TwistAutProof
@@ -49,3 +50,9 @@ theorem twistAut : TwistAut := by
   exact ⟨h, ⟨Φ, Ψ, e₁, e₂⟩, hΦ, ⟨m⟩⟩
 
 end GlobalTheory.CompanionTheory.Ar.TwistAutProof
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.TwistAut_holds : GlobalTheory.CompanionTheory.Ar.TwistAut := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.TwistAutProof.twistAut

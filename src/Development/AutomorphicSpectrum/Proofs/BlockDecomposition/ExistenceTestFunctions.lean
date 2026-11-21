@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.PsiSide
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TestFunctionExists
 
+section
 noncomputable section
 
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1
@@ -117,3 +118,10 @@ theorem testEx : TestEx := by
     exact ENNReal.mul_ne_top h6 (ENNReal.prod_ne_top fun v _ => ht v)
 
 end GlobalTheory.CompanionTheory.SW.BaseTest
+end
+end
+
+open PositivityTheory.Rg.Base1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.existence_test_functions : TestEx := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.BaseTest.testEx

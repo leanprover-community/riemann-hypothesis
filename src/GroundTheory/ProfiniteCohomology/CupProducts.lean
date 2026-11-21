@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.TateCohomology.CupCochains
-import GroundTheory.ProfiniteCohomology.ContinuousCochains
 import GroundTheory.ProfiniteCohomology.Bridge
 set_option maxSynthPendingDepth 1
 

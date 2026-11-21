@@ -1,5 +1,4 @@
 import Formalism.CyclotomicNorms.StatementT
-import Formalism.GaloisIrreducibility.NoSolvableTransitive
 import Lemmata.GeneralBFactSecondBis.Imports
 
 open Polynomial

@@ -1,8 +1,6 @@
-import Formalism.HermitianCurvature.StatementM
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.MultiplicationOpHom
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelNablaStarRelations
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.EulerZetaGammaInvIdentity
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RaisingConstantEqNablaStar
 
 namespace Formalism.FourierDecayAlt.P.Mx7

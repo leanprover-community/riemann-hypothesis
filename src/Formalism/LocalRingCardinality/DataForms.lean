@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalRingCardinality.Params
 import Formalism.LocalRingCardinality.DataHost
 import Formalism.LocalRingCardinality.DataCoeff
 import Formalism.LocalRingCardinality.DataArith

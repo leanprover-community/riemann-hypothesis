@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.SharpRestriction.ParConsts
 import Formalism.SharpRestriction.CuspSpanNormBounds.LeSCSCl
 
 noncomputable section

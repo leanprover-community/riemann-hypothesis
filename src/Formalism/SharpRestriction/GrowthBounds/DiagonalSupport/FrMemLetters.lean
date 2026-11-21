@@ -1,7 +1,6 @@
 import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.RestValBdG
 import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.LeCubeMul
 import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.ImportsAlt
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 
 noncomputable section
 

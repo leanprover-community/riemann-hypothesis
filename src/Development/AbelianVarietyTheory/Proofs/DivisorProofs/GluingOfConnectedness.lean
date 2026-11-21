@@ -1,11 +1,10 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitChartAt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DensityStatementHoldsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictionStatementHoldsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModularityOfDensityStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalOfConnectedDensityStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RestrictionStatementHolds
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModularityOfDensity
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalOfConnectedDensity
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -33,3 +32,10 @@ theorem glueSt_of (hC : ConnSt) (hZ : GlobalTheory.IndefiniteRowSideFullHecke.Sp
   exact hρ yb₂ h2 κ (hs2 (hs1 hκ))
 
 end GlobalTheory.FlatModel
+end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gluing_of_connectedness : ConnSt → GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits.PropZ → GlueSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.glueSt_of

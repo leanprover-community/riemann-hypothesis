@@ -1,8 +1,6 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigExtMapRelFrobCompRigOfOmega
-import Development.AbelianVarietyTheory.Definitions.Divisors.WittOnFalse
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPerfectIdempotentStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivGroupIdempotentSplitFieldStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPerfectIdempotent
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivGroupIdempotentSplitField
 
 set_option autoImplicit false
 

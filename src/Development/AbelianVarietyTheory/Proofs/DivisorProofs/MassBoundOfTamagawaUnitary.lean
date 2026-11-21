@@ -1,12 +1,13 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InstMeasurableSpaceRealSU
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CovolumeRealSpecialUnitaryEqFlagDomainMassStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CovolumeRealSpecialUnitaryEqFlagDomainMass
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ZetaTermTsumLeTwo
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetEqOneUnitaryPrincipalCongruenceLevelThreeStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryDetIsTAStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EquivalenceGeneratedTorusRelStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryFramesStrongApproximationStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryFramesStrongApproximation
 
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up
 open scoped ENNReal
 
@@ -87,3 +88,8 @@ theorem massBound_of_tamagawa : GlobalTheory.Published.TamagawaSpecialUnitary â†
           _ = massBd E r M h := rfl
 
 end GlobalTheory.UCls
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mass_bound_of_tamagawa_unitary : GlobalTheory.Published.TamagawaSpecialUnitary â†’ GlobalTheory.UCls.MassBound := by
+  atlas_forward_decl GlobalTheory.UCls.massBound_of_tamagawa

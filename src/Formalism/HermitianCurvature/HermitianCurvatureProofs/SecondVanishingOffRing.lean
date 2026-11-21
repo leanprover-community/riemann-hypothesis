@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.BlockKernelPropertiesOfSteps
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TripleForm
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ColumnOperationTripleForm
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelQuotientFinite

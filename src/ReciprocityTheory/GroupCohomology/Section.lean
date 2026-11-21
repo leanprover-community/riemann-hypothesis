@@ -1,4 +1,3 @@
-import ReciprocityTheory.GroupCohomology.CupConnRightStatement
 import ReciprocityTheory.GroupCohomology.SectionA
 
 namespace ReciprocityTheory.Coh

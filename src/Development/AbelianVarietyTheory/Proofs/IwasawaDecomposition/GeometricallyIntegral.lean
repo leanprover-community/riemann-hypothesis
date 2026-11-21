@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValRSpMapFromSpecStalk
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -130,3 +131,10 @@ theorem AffCover.geometricallyIntegral : ∀ (F Ω Ω' : Type) [Field F] [Field 
   exact isIntegral_of_irreducibleSpace_of_isReduced Z
 
 end GlobalTheory.FlagBundle
+end
+end
+
+open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH GlobalTheory.Cartier GlobalTheory.FlagBundle
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.geometricallyIntegral_of_affCover : ∀ (F Ω Ω' : Type) [Field F] [Field Ω] [Algebra F Ω] [Field Ω'] [Algebra F Ω'] (M : RatModel F Ω) (M' : RatModel F Ω') (φ : Ω →ₐ[F] Ω') (f : M'.Z ⟶ M.Z) (r : ℕ), AffCover M M' φ f r → GeometricallyIntegral M.s → GeometricallyIntegral M'.s := by
+  atlas_forward_decl GlobalTheory.FlagBundle.AffCover.geometricallyIntegral

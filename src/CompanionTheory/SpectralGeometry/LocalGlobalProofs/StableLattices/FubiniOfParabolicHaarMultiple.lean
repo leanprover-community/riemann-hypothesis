@@ -1,6 +1,7 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.LineFormulas.Fub2
 
+section
 noncomputable section
 
 open MeasureTheory
@@ -36,3 +37,9 @@ theorem fubini_of_parabolic_multiple : CompanionTheory.RgExh.Dec.N.S.Fub2 → Co
   rw [hz, mul_zero]
 
 end GlobalTheory.CompanionTheory.RgFubOf
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fubini_of_parabolic_haar_multiple : CompanionTheory.RgExh.Dec.N.S.Fub2 → CompanionTheory.RgExh.Dec.N.S.Fub := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgFubOf.fubini_of_parabolic_multiple

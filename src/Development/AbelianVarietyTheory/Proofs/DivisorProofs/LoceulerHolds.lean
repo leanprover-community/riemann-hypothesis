@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.Hypotheses.GalCoh
 import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTopEuler
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CardH1EqCardH0MulCardH2
 

@@ -1,7 +1,6 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.MultiplicityOne.GL2BumpFunctions.Parametrix
 import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.Density
-import GroundTheory.AutomorphicForms.DixmierMalliavinHaarCoord
 
 open MeasureTheory Set Filter Topology
 open scoped ContDiff

@@ -1,7 +1,6 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchMu
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsD
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtC
 open Matrix GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.BCFL
 open scoped TensorProduct Classical
 

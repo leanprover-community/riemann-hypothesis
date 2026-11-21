@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LongWeylElementSquare
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PhiDerivative.StarinvDeriv
 
 theorem phiDeriv_of (hW : PI.SwBig.LongWeylElementSquare) : PI.SwBig.PhiDeriv :=

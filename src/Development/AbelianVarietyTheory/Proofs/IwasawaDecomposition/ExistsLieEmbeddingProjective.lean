@@ -1,10 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsFrameCover
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAffineStableTangentBasisStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CocycleTrivialOnProjectiveCoverStatement
-import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.MemRangeCompIffOfIsClosedImmersion
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField
@@ -260,3 +258,12 @@ theorem exists_isLieEmb : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
       congr
 
 end GlobalTheory.LieEmb
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.LocM GlobalTheory.ShFam.Pad GlobalTheory.ProjSpace GlobalTheory.FlagEmb
+open Formalism.MainNotions.DIV.Cons (intO)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_lie_embedding_projective : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (O : Type) [CommRing O] [IsNoetherianRing O] (X : Scheme.{0}) [IsReduced X] (s : X ⟶ Sp O) (t : SAB H X), IsProjOver s → ∃ (L : FinLB X) (aff : ∀ i, IsAffineOpen (L.U i)) (M : ℕ) (crd : Crd t L M), IsLieEmb t L aff crd := by
+  atlas_forward_decl GlobalTheory.LieEmb.exists_isLieEmb

@@ -6,7 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MapDofIterate
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BilinPartEigenMemRange
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NabValColumnsCongr
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CoeffProdLeadingMinors
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumProdNabValLeadingMinors
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumProdNabValLeadingMinorsOfColumnJets
 
 set_option autoImplicit false

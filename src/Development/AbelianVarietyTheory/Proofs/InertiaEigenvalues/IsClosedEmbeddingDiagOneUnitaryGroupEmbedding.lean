@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FullToGlIsSelfAdjoint
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 namespace GlobalTheory.JR.Step
@@ -42,3 +44,9 @@ theorem isClosedEmbedding_uEmb (r : ℕ) (E : Type) [NormedField E] [StarRing E]
   exact (isClosedEmbedding_embHom r E).comp h0
 
 end GlobalTheory.JR.Step
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isClosedEmbedding_diagOneUnitaryGroupEmbedding : ∀ (r : ℕ) (E : Type) [NormedField E] [StarRing E] [ContinuousStar E], Topology.IsClosedEmbedding (GlobalTheory.JR.Step.uEmb r E) := by
+  atlas_forward_decl GlobalTheory.JR.Step.isClosedEmbedding_uEmb

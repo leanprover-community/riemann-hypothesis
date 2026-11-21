@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CokerMinimalPrimes
 
 theorem exists_nat_mem_sup (B : Type) [CommRing B] [Module.Finite ℤ B]
@@ -96,3 +98,8 @@ theorem exists_nat_mul_mem_range_pi_quotient_minimalPrimes : ∀ (B : Type) [Com
   rfl
 
 end GlobalTheory.CokerMinimalPrimes
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nat_mul_mem_range_pi_quotient_minimalPrimes' : ∀ (B : Type) [CommRing B] [Module.Finite ℤ B], ∃ n : ℕ, n ≠ 0 ∧ ∀ b' : ((P : minimalPrimes B) → B ⧸ (P : Ideal B)), (n : (P : minimalPrimes B) → B ⧸ (P : Ideal B)) * b' ∈ (Pi.ringHom fun P : minimalPrimes B => Ideal.Quotient.mk (P : Ideal B)).range := by
+  atlas_forward_decl GlobalTheory.CokerMinimalPrimes.exists_nat_mul_mem_range_pi_quotient_minimalPrimes

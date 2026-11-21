@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.IsQuasiRegularSeqSelfIffLocalizationMaximal
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory
 
 namespace GlobalTheory
@@ -145,3 +148,12 @@ theorem weightedRelation_coeff_mem_span : ∀ {R : Type} [CommRing R] {n : ℕ} 
     coeff_mem_span_of_isWeightedHomogeneous_of_eval_eq_zero z w hw hz D F hF h0 α
 
 end GlobalTheory
+end
+
+open GlobalTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeff_mem_span_of_weightedHomogeneous_relation_quasiRegular : ∀ {R : Type} [CommRing R] {n : ℕ} (z : Fin n → R) (w : Fin n → ℕ), (∀ i, 1 ≤ w i) →
+    IsQuasiRegularSeq R z → ∀ (D : ℕ) (F : MvPolynomial (Fin n) R),
+    F.IsWeightedHomogeneous w D → MvPolynomial.eval z F = 0 →
+    ∀ α : Fin n →₀ ℕ, F.coeff α ∈ Ideal.span (Set.range z) := by
+  atlas_forward_decl GlobalTheory.weightedRelation_coeff_mem_span

@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.HermitianLattices.StatementLat
 import Formalism.SharpRestriction.CuspSpanNormBounds.SArith
-import Formalism.LocalRingCardinality.Params
 import Formalism.LocalRingCardinality.DataSpaces
 import Formalism.LocalRingCardinality.DataCoeff
 import Formalism.LocalRingCardinality.DataArith
@@ -12,13 +11,10 @@ import Formalism.SharpRestriction.GrowthBounds.DataG
 import Formalism.LocalRingCardinality.DataCD
 import Formalism.FrobeniusOrbits.DiscrMaximalRealCyclotomic
 import Formalism.FrobeniusOrbits.HostOrbitsPlaces
-import Formalism.FrobeniusOrbits.HostDiffSupport
 import Formalism.FrobeniusOrbits.HostThickExists
 import Formalism.FrobeniusOrbits.HostOrbitCountSg
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
-import Formalism.CoboundaryTransfers.Statement
 import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.RealCyclotomicSubfield
-import Formalism.FrobeniusOrbits.Statement
 import Formalism.TameInertiaTowers.FinalGroup
 import Formalism.TameInertiaTowers.CentralOrderTwo.Galois
 import Formalism.TameInertiaTowers.CentralOrderTwo.ConjEqInvOfPowEqOne

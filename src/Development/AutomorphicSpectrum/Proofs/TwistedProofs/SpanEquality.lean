@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.InertZeta
@@ -367,3 +369,9 @@ theorem spanEq : SpanEq := by
 end GlobalTheory.CompanionTheory.InertSpan
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.span_equality : SpanEq := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertSpan.spanEq

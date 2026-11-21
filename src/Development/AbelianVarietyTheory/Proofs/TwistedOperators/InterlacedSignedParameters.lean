@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ProjExists
 import Development.AbelianVarietyTheory.Definitions.Foundations.StrictInterlaceIffDescEnum
+import BuildAid.ForwardExisting
+
+section
 open Formalism.L2.Theta
 
 namespace GlobalTheory.SignedHC.GridData
@@ -168,3 +171,9 @@ theorem interlaced_pi_zero_and_D0 : ∀ {G : GlobalTheory.SignedHC.GridData} {n 
   cases Sum.elim ε ε' x <;> cases Sum.elim ε ε' y <;> cases x.isLeft <;> cases y.isLeft <;> decide
 
 end GlobalTheory.SignedHC.GridData
+end
+
+open Formalism.L2.Theta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.interlaced_signed_parameters : ∀ {G : GlobalTheory.SignedHC.GridData} {n : ℕ} {lam : Fin (n + 1) → ℝ} {ε : Fin (n + 1) → Bool} {mu : Fin n → ℝ} {ε' : Fin n → Bool}, 0 < G.ga → 1 ≤ G.v G.k + G.b 1 → IsEnum (G.parPi 0) lam ε → IsEnum G.parD0 mu ε' → GlobalTheory.SepReal.Interlaced ε lam ε' mu := by
+  atlas_forward_decl GlobalTheory.SignedHC.GridData.interlaced_pi_zero_and_D0

@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResAlgSplitTwo
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardHermitianMatricesDvdSq
+import BuildAid.ForwardExisting
 
+section
 open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
 
 namespace GlobalTheory.CompanionTheory.UnrDens
@@ -40,3 +42,9 @@ theorem card_hermitian_resAlg (E : Type) [CommRing E] (τ : E →+* E) (q : ℕ)
   exact Nat.pow_left_injective (by norm_num) (key.trans hsq.symm)
 
 end GlobalTheory.CompanionTheory.UnrDens
+end
+
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_matrices_card : ∀ (E : Type) [CommRing E] (τ : E →+* E) (q : ℕ) (ε : ℤ), ResAlg E τ q ε → ∀ n : ℕ, Nat.card {H : Matrix (Fin n) (Fin n) E // cT τ H = H} = q ^ (n ^ 2) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnrDens.card_hermitian_resAlg

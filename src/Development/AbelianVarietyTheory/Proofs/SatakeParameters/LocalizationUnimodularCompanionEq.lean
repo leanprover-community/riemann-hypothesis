@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.IsOrthCo
+import BuildAid.ForwardExisting
+
+section
 open NumberField Formalism.BasicNotions Formalism.L2.PairingIndexBounds.F
 
 noncomputable section
@@ -147,3 +150,11 @@ theorem loc_compan_eq : ∀ {R : Ranks} {F E : Type} [Field F] [NumberField F] [
     (CompanLoc.locS_le_of_le _ (CompanLoc.compan_le_loc sp J a Q Λ₁ Λ hfg h2 h1))
 
 end GlobalTheory
+end
+end
+
+open NumberField Formalism.BasicNotions Formalism.L2.PairingIndexBounds.F
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localization_unimodularCompanion_eq : ∀ {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (sp : Spaces R F E) {N : ℕ} (J : Matrix (Fin N) (Fin N) E) (a : 𝓞 E) (Q : Ideal (𝓞 E)) (Λ Λ₁ : Submodule (𝓞 E) (Fin N → E)), Λ.FG → Λ₁.FG → Formalism.HermitianLatticesTheory.loc (K := E) Q Λ = Formalism.HermitianLatticesTheory.loc (K := E) Q Λ₁ → Formalism.HermitianLatticesTheory.loc (K := E) Q (compan (sp := sp) J a Λ) = Formalism.HermitianLatticesTheory.loc (K := E) Q (compan (sp := sp) J a Λ₁) := by
+  atlas_forward_decl GlobalTheory.loc_compan_eq

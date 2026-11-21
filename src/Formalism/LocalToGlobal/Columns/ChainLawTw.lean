@@ -2,8 +2,6 @@ import Formalism.LocalToGlobal.Columns.ChainLawPsi
 import Formalism.LocalToGlobal.Columns.ChainLawXiF
 import Formalism.LocalToGlobal.Columns.ChainTwMain
 import Formalism.LocalToGlobal.Columns.ChainTopLawB
-import Formalism.LocalToGlobal.Columns.RowFormsSym
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.MemGoodPrimesOfNoExceptional
 import Formalism.LocalToGlobal.KernelLattices.KerHypAll
 import Formalism.LocalToGlobal.Columns.ChainTwTop
 

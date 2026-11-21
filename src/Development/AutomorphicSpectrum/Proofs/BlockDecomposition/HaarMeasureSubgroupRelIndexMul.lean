@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 open scoped Topology
 
@@ -54,3 +56,10 @@ theorem measure_eq_relIndex_mul : ∀ (G : Type) [AddGroup G] [MeasurableSpace G
   rw [hidx, AddSubgroup.index_eq_card, Nat.card_eq_fintype_card]
 
 end GlobalTheory.CompanionTheory.HaarIndex
+end
+
+open Matrix
+open scoped Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.haar_measure_subgroup_relIndex_mul : ∀ (G : Type) [AddGroup G] [MeasurableSpace G] [MeasurableAdd G] (μ : MeasureTheory.Measure G) [μ.IsAddLeftInvariant] (H K : AddSubgroup G), H ≤ K → MeasurableSet (H : Set G) → H.relIndex K ≠ 0 → μ (K : Set G) = (H.relIndex K : ENNReal) * μ (H : Set G) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HaarIndex.measure_eq_relIndex_mul

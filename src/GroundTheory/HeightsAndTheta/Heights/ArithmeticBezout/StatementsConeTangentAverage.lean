@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeFibreAverage
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMassOfFibre
 set_option maxSynthPendingDepth 1
 

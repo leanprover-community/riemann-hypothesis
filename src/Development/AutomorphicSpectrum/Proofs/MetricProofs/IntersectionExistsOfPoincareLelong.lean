@@ -1,34 +1,20 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.ThmISt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
-import Development.AutomorphicSpectrum.PublishedTheorems.Metrics₂.PoincareLelong
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsMultiHomogIdealMapRedMap
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmIExists
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PThmISymm
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ArIntMul
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PWellDefined
-import GroundTheory.HeightsAndTheta.Heights.Intersections.NotLtLtOfMemMinimalPrimes
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PSwapCycles
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PGeoNumCut
 import GroundTheory.HeightsAndTheta.Heights.Intersections.DeEqZeroOfSemiPosOff
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PDeSlotAdd
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PDeLeSemiPos
 import GroundTheory.HeightsAndTheta.Heights.Intersections.Assembly
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAbsIntegrable
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAbsMeasurable
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsAddFirst
-import GroundTheory.HeightsAndTheta.Heights.Intersections.PPtsRegLimit
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.Stokes
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsBilinear
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSumMeasurable
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.IntNumCompPerm
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.GeoNum
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
 import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.NumbersDVRC3ResidualContractionComponent
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChart
 import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.HilbertSamuelIrreducibleBasicOpenConnected
@@ -37,16 +23,8 @@ import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DvdOfForallEmultipli
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartZeroSet
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartProjFinite
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartSheetCompare
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaLocal
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInjSet
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSegreChartFibreSum
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapAreaOne
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapArea
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaFormulaInj
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantSheetCover
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeSheetGramLintegral
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceMassFiniteDirect
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeSliceSheetParam
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsPosDensMeasurable
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartAbsIntegrable
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsIntegralSegreChartProj
@@ -65,10 +43,11 @@ import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PConeVanishingHomog
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsSheetSimpleNull
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartModel
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsPosPartProjIndep
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PGoodChartZeroSet
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartIntegral
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PPtsIntegralProjIndep
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Pub
 
 open GroundTheory.Heights₂.Heights
@@ -164,3 +143,8 @@ theorem thmIExists (hPL : PoincareLelong) (hE : ReciprocityTheory.ChartRestricti
     (Inter.WellDefined.proof hSwap hRS) hSymm
 
 end GlobalTheory.CompanionTheory.Ar.Pub
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.intersection_exists_of_poincare_lelong : GlobalTheory.CompanionTheory.Ar.Pub.PoincareLelong → ReciprocityTheory.ChartRestriction.G.Geo.ResExistsStatement → ReciprocityTheory.ChartRestriction.G.AI.I2.ExistsStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Pub.thmIExists

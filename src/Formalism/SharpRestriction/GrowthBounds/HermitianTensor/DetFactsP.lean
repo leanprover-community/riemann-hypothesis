@@ -1,6 +1,5 @@
 import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.DetFactsPAlt
 import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.ImportsAlt
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.TensorKP
 
 noncomputable section
 

@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 namespace GlobalTheory.CompanionTheory.FlDecomp
 open CompanionTheory.Rg.FlB
@@ -382,3 +384,9 @@ theorem stDecomp_of_frame_witt_tor : StFrame → StWitt → StTor → StDecomp :
 
 end GlobalTheory.CompanionTheory.FlDecomp
 end
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.decomposition_of_frame_witt_torus : StFrame → StWitt → StTor → StDecomp := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FlDecomp.stDecomp_of_frame_witt_tor

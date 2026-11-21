@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.IsLocalizedModuleGermLinearPointOfPrime
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Opposite
 
 universe u
@@ -229,3 +231,11 @@ theorem GlobalTheory.mono_pullback_map_of_flat : ∀ (X Y : Scheme.{0}) (f : X �
     exact hext.comp (iso.app G).toLinearEquiv.injective
   rw [ModuleCat.hom_comp, LinearMap.coe_comp] at h2
   exact Function.Injective.of_comp h2
+end
+end
+
+open CategoryTheory AlgebraicGeometry
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mono_pullback_map_of_flat' : ∀ (X Y : Scheme.{0}) (f : X ⟶ Y) [Flat f] (G G' : Y.Modules) (φ : G ⟶ G') [Mono φ], Mono ((Scheme.Modules.pullback f).map φ) := by
+  atlas_forward_decl GlobalTheory.mono_pullback_map_of_flat

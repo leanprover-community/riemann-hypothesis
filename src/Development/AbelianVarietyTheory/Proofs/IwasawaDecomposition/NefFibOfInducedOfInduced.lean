@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingKrullDimIntegers
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RingKrullDimLeOfIsAlgebraic
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RatIsom
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RationalIsometryIsometric

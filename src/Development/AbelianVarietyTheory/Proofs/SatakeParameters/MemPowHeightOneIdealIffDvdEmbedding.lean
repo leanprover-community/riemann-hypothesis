@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.EqZeroOfForallLeExp
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain WithZero
 
 namespace GlobalTheory
@@ -70,3 +71,9 @@ theorem ordIdeal_of_embedding {E : Type} [Field E] [NumberField E] (P : HeightOn
   rw [ordIdeal_of_ringHom P (p : W) hp f hP hd x k, hy]
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain WithZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_pow_heightOneIdeal_iff_dvd_embedding : ∀ {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E)) {W Qq : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq] [Algebra W Qq] [IsFractionRing W Qq] (p : ℕ) (hp : Irreducible (p : W)) (ρ : E →+* Qq) (h1 : ∀ x : 𝓞 E, ∃ y : W, ρ x = algebraMap W Qq y ∧ (x ∈ P.asIdeal ↔ (p : W) ∣ y)) (h2 : ∀ (y : W) (n : ℕ), ∃ (x : 𝓞 E) (z : W), ρ x = algebraMap W Qq (y + (p : W) ^ n * z)) (x : 𝓞 E) (y : W) (k : ℕ), ρ x = algebraMap W Qq y → (x ∈ P.asIdeal ^ k ↔ (p : W) ^ k ∣ y) := by
+  atlas_forward_decl GlobalTheory.ordIdeal_of_embedding

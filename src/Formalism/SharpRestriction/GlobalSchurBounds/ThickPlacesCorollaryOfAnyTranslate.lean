@@ -5,7 +5,6 @@ import Formalism.GL3MeanSquares.GenusMassVolumeResults
 import Formalism.GL3MeanSquares.GlobalBoundRefinementResults
 import Formalism.HermitianLattices.FinalMass
 import Formalism.GL3MeanSquares.FinalB
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.InclusionInjective
 import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
 
 noncomputable section

@@ -1,9 +1,9 @@
 import Mathlib
 import ReciprocityTheory.DualLattices.DetPolyMulCayleyOmegaPow
-import ReciprocityTheory.DualLattices.VEqZeroOfPowEqOne
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PeriodValuation
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LegendreBoundsFactorialMultiIndexCapelli
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.PGsh
 
 namespace GlobalTheory.ExpWeight
@@ -78,3 +78,10 @@ theorem _root_.GlobalTheory.ExpWeight.weight_exp :
     _ ≤ _ := add_le_add le_rfl (hpow d α)
 
 end GlobalTheory.ExpWeight
+end
+
+open ReciprocityTheory.PGsh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weight_nonneg_exp_of_weight_ge_inv_prime_sub_one : (∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (l : ℕ), l.Prime → v (l : C) = 1 → ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (ρ : σ → ℝ) (h : MvPowerSeries σ C), MvPowerSeries.constantCoeff h = 0 →
+    (∀ α, (((1 / (l - 1)) - α.sum (fun j e => ρ j * (e : ℝ)) : ℝ) : WithTop ℝ) ≤ v (MvPowerSeries.coeff α (h))) → (∀ α, (((0) - α.sum (fun j e => ρ j * (e : ℝ)) : ℝ) : WithTop ℝ) ≤ v (MvPowerSeries.coeff α (PowerSeries.subst (h) (PowerSeries.exp C))))) := by
+  atlas_forward_decl GlobalTheory.ExpWeight.weight_exp

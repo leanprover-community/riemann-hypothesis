@@ -1,6 +1,5 @@
 import Mathlib
 import GroundTheory.ProfiniteCohomology.CyclicCupDefs
-import GroundTheory.TateCohomology.TateLow
 import GroundTheory.TateCohomology.TateZeroClass
 set_option maxSynthPendingDepth 1
 

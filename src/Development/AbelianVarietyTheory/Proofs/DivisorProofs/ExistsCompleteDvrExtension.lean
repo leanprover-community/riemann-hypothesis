@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsAbsoluteValueOfIsDiscreteValuationRing
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain IsLocalRing HeightOneSpectrum
 
 namespace GlobalTheory.CompleteDVR
@@ -79,3 +81,8 @@ theorem exists_complete : ∀ (F : Type) [Field F] [NumberField F] (V : Valuatio
     exact (Valuation.valuationSubring.integers (la.valuation F)).isUnit_iff_valuation_eq_one.2 h1
 
 end GlobalTheory.CompleteDVR
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_complete_dvr_extension : ∀ (F : Type) [Field F] [NumberField F] (V : ValuationSubring F) [IsDiscreteValuationRing V], ∃ (O : Type) (_ : CommRing O) (_ : IsDomain O) (_ : IsDiscreteValuationRing O) (_ : IsAdicComplete (IsLocalRing.maximalIdeal O) O) (φ : V →+* O), Function.Injective φ ∧ IsLocalHom φ := by
+  atlas_forward_decl GlobalTheory.CompleteDVR.exists_complete

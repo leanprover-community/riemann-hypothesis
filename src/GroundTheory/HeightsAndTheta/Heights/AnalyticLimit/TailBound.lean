@@ -2,7 +2,6 @@ import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StListTailLog
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StBoundingKaehler
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.TailDimZero
-import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.LinearWeights
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.AnalyticLimit

@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FamDefs
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NGVanish
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.StepAnalyticConstantsP
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped Classical
@@ -28,3 +30,10 @@ theorem exists_row_level_analytic (hTi : TieOfCtx) (hB : StepChoiceConstantsC) (
       F0 what₂ vR Q i0 i0' νq (Irat * kapU D) (Ire * kapU D) hBk'⟩
 
 end GlobalTheory.NGRow
+end
+end
+
+open Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic GlobalTheory.NGRow
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.existsRowLevelWithAnalyticFacts_of_steps : TieOfCtx → StepChoiceConstantsC → StepAnalyticP → StepAnalyticConstantsP := by
+  atlas_forward_decl GlobalTheory.NGRow.exists_row_level_analytic

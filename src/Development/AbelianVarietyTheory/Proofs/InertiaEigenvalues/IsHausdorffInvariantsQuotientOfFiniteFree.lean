@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ImagePolynomialAction
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.InertiaEigenvalues.FreeHausdorff
 
 open PowerSeries GlobalTheory.BK
@@ -61,3 +63,9 @@ theorem isHausdorff_Z_of_finiteFree : ∀ (O K : Type) [CommRing O] [NormedField
   exact FreeHausdorff.isHausdorff_of_free _
 
 end GlobalTheory.InertiaEigenvalues
+end
+
+open PowerSeries GlobalTheory.BK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isHausdorff_invariants_quotient_of_finiteFree : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [CompleteSpace K] [Algebra O K] [IsUnitBall O K] (l e a : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] [NeZero a] [TameDescentExponentData K l e a] (η H : ℕ) (D : BKDat O K l e a ι η H), GlobalTheory.IndefiniteRowSideFullHecke.ImagePolynomialAction.FiniteFree D → IsHausdorff (Ideal.span {(l : O)}) D.Z := by
+  atlas_forward_decl GlobalTheory.InertiaEigenvalues.isHausdorff_Z_of_finiteFree

@@ -1,8 +1,9 @@
 import Mathlib
 import ReciprocityTheory.AnalyticForms.LeviForms.UnifInt
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PHyperplaneDivisible
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
 open scoped ContDiff
 
@@ -415,3 +416,10 @@ theorem unifRestrict : UnifRestrictStatement := by
     slice_posPot A Dg B hB hch Θ hΘ hpos, slice_snc A L L' s v m W Dg B hB hch hs hsv hsnc⟩
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniform_restriction_statement_holds : UnifRestrictStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.unifRestrict

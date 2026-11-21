@@ -1,5 +1,4 @@
 import Formalism.HermitianCurvature.HerGenC
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.QQMemAdjAlgCpt
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HerAnalyticFAllOfTop
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThmPActualOfAnalytic
 

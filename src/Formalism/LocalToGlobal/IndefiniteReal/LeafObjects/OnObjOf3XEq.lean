@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.IndefiniteReal.LeafObjects.MirabolicInclusion
 import Formalism.LocalToGlobal.IndefiniteReal.LeafObjects.FunObj
 import Formalism.LocalToGlobal.IndefiniteReal.ZeroPartEigenvalueConvention
 import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow

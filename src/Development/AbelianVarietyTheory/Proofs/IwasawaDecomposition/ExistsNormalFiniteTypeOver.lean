@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteIntegralClosureOfEssFiniteTypeIntDomain
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing GlobalTheory.Toroidal TensorProduct
 
 namespace GlobalTheory
@@ -84,3 +87,9 @@ theorem exists_finiteType_isIntegrallyClosed_integral_over :
   exact isIntegral_algebraMap (R := C) (A := B) (x := ⟨x, hx⟩)
 
 end GlobalTheory
+end
+
+open IsLocalRing GlobalTheory.Toroidal TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_normal_finite_type_over : ∀ (A B : Type) [CommRing A] [Algebra.EssFiniteType ℤ A] [CommRing B] [IsDomain B] [IsIntegrallyClosed B] [Algebra A B] (C : Subalgebra A B), Algebra.FiniteType A C → (∀ b : B, ∃ a ∈ C, ∃ s ∈ C, s ≠ 0 ∧ s * b = a) → ∃ C' : Subalgebra A B, C ≤ C' ∧ Algebra.FiniteType A C' ∧ IsIntegrallyClosed C' ∧ ∀ x ∈ C', IsIntegral C x := by
+  atlas_forward_decl GlobalTheory.exists_finiteType_isIntegrallyClosed_integral_over

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.InFrameStabilizer
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.SgAlg Matrix
 
 namespace GlobalTheory.SgAlg
@@ -67,3 +69,9 @@ theorem isField_or_exists_idempotent_of_isQA {E : Type} [CommRing E] (σ : E →
     rw [← heu, ← hu, mul_assoc, u.mul_inv, mul_one]
 
 end GlobalTheory.SgAlg
+end
+
+open GlobalTheory.SgAlg Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isField_or_exists_swapped_idempotent_of_quadraticEtale : ∀ {E : Type} [CommRing E] (σ : E →+* E), IsQA σ → IsField E ∨ ∃ e : E, e * e = e ∧ e + σ e = 1 ∧ ∀ x : E, e * x ≠ 0 → ∃ y, e * x * y = e := by
+  atlas_forward_decl GlobalTheory.SgAlg.isField_or_exists_idempotent_of_isQA

@@ -1,8 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
-import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
-import GroundTheory.GlobalFields.TateThesis.NonvanishingPrimes
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain GroundTheory.Global GroundTheory.LocalField Ad3
 open GroundTheory.Automorphic.GodementSection (localChar coe_localChar partialLFunction)
 
@@ -161,3 +161,8 @@ theorem e2 (_ : Ad3.R.B0) : Ad3.R.E2 := by
 end GlobalTheory.CompanionTheory.RankinEuler
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eisenstein_basic_second : Ad3.R.B0 → Ad3.R.E2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinEuler.e2

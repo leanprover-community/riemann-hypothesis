@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.CuspDiscreteDecompositionGL
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicCompactDensity.ExistsNatLocal
 
+section
 open NumberField GlobalTheory.CuspRep
 
 namespace GlobalTheory.CompanionTheory.AdeleDen
@@ -56,3 +57,10 @@ theorem exists_common_denominator :
   exact ⟨r, by rw [NumberField.RingOfIntegers.coe_eq_algebraMap, hr]⟩
 
 end GlobalTheory.CompanionTheory.AdeleDen
+end
+
+open NumberField GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compact_adelic_integral_denominator : ∀ (E : Type) [Field E] [NumberField E] (Q : Set (Af E)), IsCompact Q →
+    ∃ D : ℕ, D ≠ 0 ∧ ∀ x : E, algebraMap E (Af E) x ∈ Q → ∃ r : 𝓞 E, (r : E) = D * x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.AdeleDen.exists_common_denominator

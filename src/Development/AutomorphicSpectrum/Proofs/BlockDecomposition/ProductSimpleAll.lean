@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SimpleIffIrreducible
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin CategoryTheory
 
 noncomputable section
@@ -188,3 +189,10 @@ theorem GlobalTheory.CompanionTheory.ProdSimple.prodSimpleAll : ReciprocityTheor
     simp only [LinearMap.compMultilinearMap_apply, LinearMap.comp_apply, PiTensorProduct.map_tprod,
       PiTensorProduct.lift.tprod]
     exact psi_single_mul ρ v g (fun c => (y c : MonoidAlgebra ℂ (L c)))
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.product_simple_all : ReciprocityTheory.Ty.Fin.St.ProdSimpleAll := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ProdSimple.prodSimpleAll

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin
 
 noncomputable section
@@ -187,3 +189,10 @@ theorem mackeyIp : ReciprocityTheory.Ty.Fin.St.MackeyIp := by
   linear_combination (mS A B a b (g r)) * hc
 
 end GlobalTheory.CompanionTheory.MackeyFn
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mackey_inner_product : ReciprocityTheory.Ty.Fin.St.MackeyIp := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MackeyFn.mackeyIp

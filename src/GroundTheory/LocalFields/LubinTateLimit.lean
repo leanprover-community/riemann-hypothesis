@@ -1,7 +1,4 @@
 import Mathlib
-import GroundTheory.LocalFields.LubinTatePrimitive
-import GroundTheory.LocalFields.LubinTateTowerMaps
-import GroundTheory.LocalFields.LubinTateLimitGalois
 import GroundTheory.LocalFields.LubinTateUnramified
 
 noncomputable section

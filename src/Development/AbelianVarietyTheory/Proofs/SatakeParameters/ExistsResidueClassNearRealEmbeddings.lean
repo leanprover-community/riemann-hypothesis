@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open NumberField NumberField.InfinitePlace NumberField.mixedEmbedding
 
 namespace GlobalTheory
@@ -85,3 +87,9 @@ theorem residueClass_relativelyDense : ∀ (F : Type) [Field F] [NumberField F] 
     exact mul_le_mul_of_nonneg_left h hM0.le
 
 end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_residueClass_near_real_embeddings : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (m : Ideal (𝓞 F)) (a₀ : 𝓞 F), m ≠ ⊥ → ∃ C : ℝ, ∀ y : (F →+* ℝ) → ℝ, ∃ a : 𝓞 F, a - a₀ ∈ m ∧ ∀ τ : F →+* ℝ, |τ (a : F) - y τ| ≤ C := by
+  atlas_forward_decl GlobalTheory.residueClass_relativelyDense

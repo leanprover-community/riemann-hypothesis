@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct
 open Finset
 
@@ -423,3 +425,8 @@ theorem norm_onto : PositivityTheory.Rg.Tf.Loc.N1 := by
   rw [ht, ht0, TensorProduct.tmul_zero]
 
 end GlobalTheory.CompanionTheory.NormOnto
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_map_first_property : PositivityTheory.Rg.Tf.Loc.N1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.NormOnto.norm_onto

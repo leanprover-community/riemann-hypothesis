@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.CompanionTheory.InertZeta
@@ -69,3 +71,9 @@ theorem fracExists_of_smith : Smith → FracExists := by
   exact h
 
 end GlobalTheory.CompanionTheory.InertZeta
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fraction_exists_of_smith : Smith → FracExists := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertZeta.fracExists_of_smith

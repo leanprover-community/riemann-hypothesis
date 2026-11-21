@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.DiscreteSeriesHilbert.StepSqInt
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset Matrix
@@ -108,3 +110,9 @@ theorem stepIrred_of_stepDatum : StepDatum → StepIrred := by
     exact le_inf le_rfl (hWle.trans hle)
 
 end GlobalTheory.CompanionTheory.RgDsHilb
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.irreducible_of_discrete_series_datum : PositivityTheory.RgDs.Hilb.StepDatum → PositivityTheory.RgDs.Hilb.StepIrred := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgDsHilb.stepIrred_of_stepDatum

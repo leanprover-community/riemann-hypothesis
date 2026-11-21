@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.R
@@ -106,3 +108,9 @@ theorem a9_of_a0_a1_eigenbasis_a6 : Ad3.R.A1 → Ad3.R.A6 → Ad3.R.A8 → Ad3.R
   ring
 
 end GlobalTheory.CompanionTheory.RankinSelberg
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rankin_selberg_functional_equation : Ad3.R.A1 → Ad3.R.A6 → Ad3.R.A8 → Ad3.R.LocalGammaFunctionalEquation → Ad3.R.A9 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinSelberg.a9_of_a0_a1_eigenbasis_a6

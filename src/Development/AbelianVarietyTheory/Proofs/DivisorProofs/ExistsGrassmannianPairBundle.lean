@@ -2,7 +2,6 @@ import Mathlib
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleRankOne
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.RegularAlteration
-import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPairBundle
 import Development.AutomorphicArithmetic.LocalEmbeddings.ExistsCokerIsoTr
 import Development.AutomorphicArithmetic.DivisorFrames.VectorBundleSubbundleUniversal

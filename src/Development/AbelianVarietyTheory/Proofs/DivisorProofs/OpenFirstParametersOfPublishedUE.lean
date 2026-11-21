@@ -1,17 +1,15 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.BhattScholzeCrystallineLattices
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BoundAtTwoThreeFamily
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GeometricWeakTiesOfStrong
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenUsedOfCenReal
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RhoMemOfMkEq
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumRangeEqRoots
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MainTheoremPublishedInputsThirdStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MainTheoremPublishedInputsThird
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EntryPointGAtParametersStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeilUnitaryEntriesStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.BkLawEntriesStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LinkedBundlesGoodOfLocalLanglandsStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EntriesCombinedRealStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HarishChandraInputsCombinedStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HarishChandraInputsCombined
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.GoodFtEntriesStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RealGroupInputsCombinedStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EntryHPAAtParametersStatement
@@ -19,6 +17,7 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NonemptyExten
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GeometricZeroConditionAllStatement
 import Development.AbelianVarietyTheory.Definitions.Divisors.HypothesisBundleConversions
 
+section
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc
 
 namespace GlobalTheory.Fc.S0.Open0ProofU
@@ -59,3 +58,9 @@ theorem open_of_hypothesesUE : S0.HypothesesUE → ∀ (hL : GlobalTheory.Publis
   exact ⟨hPA, hLam, hDiv, hDc, hJ, hTie, hLab, hGood.2, hGeo, hMi.2, hKap, hDf⟩
 
 end GlobalTheory.Fc.S0.Open0ProofU
+end
+
+open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.open_first_parameters_of_hypothesesUE : S0.HypothesesUE → ∀ (hL : GlobalTheory.Published.LocalLanglandsGL) (cDep : ℝ), S0.Open0 (prm1 hL cDep) := by
+  atlas_forward_decl GlobalTheory.Fc.S0.Open0ProofU.open_of_hypothesesUE

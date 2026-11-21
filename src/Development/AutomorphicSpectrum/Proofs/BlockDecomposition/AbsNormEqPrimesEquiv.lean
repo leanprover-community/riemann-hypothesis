@@ -1,6 +1,5 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.StripEstimates.FaceMapCompSuccAboveCastSucc
-import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
 
 open NumberField IsDedekindDomain GroundTheory.LocalField GroundTheory.Global
 open Ad3 Ad3.S

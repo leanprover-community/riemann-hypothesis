@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmithNormalFormIntegralMatrix
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix Formalism.UG GlobalTheory.InertZeta
@@ -98,3 +100,9 @@ theorem smith : Smith := by
 end GlobalTheory.CompanionTheory.InertSmith
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smith_normal_form_exists : Smith := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertSmith.smith

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial
 
 namespace GlobalTheory
@@ -119,3 +122,12 @@ theorem span_coeff_prod_linear (V : Type) [CommRing V] [IsDomain V] [IsDiscreteV
 
 end GaussContentLinearForms
 end GlobalTheory
+end
+
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.span_coeff_prod_linear_eq_prod_span : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (d m : ℕ)
+    (c : Fin d → Fin m → V),
+    Ideal.span (Set.range fun s => (∏ j, ∑ i, C (c j i) * X i : MvPolynomial (Fin m) V).coeff s) =
+      ∏ j, Ideal.span (Set.range (c j)) := by
+  atlas_forward_decl GlobalTheory.GaussContentLinearForms.span_coeff_prod_linear

@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOnCosSq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosineSquarePushforwardUniformStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosineSquarePushforwardUniform
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -189,3 +189,18 @@ theorem exists_map_cosSq_le (d : ℕ) (T : Set (V (d + 1))) (ρ : V (d + 1) → 
   ring
 
 end GlobalTheory.LineCos
+end
+end
+
+open MeasureTheory
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_density_bound_near_point : ∀ (d : ℕ) (T : Set (ReciprocityTheory.L2DbarEstimates.V (d + 1))) (ρ : ReciprocityTheory.L2DbarEstimates.V (d + 1) → ℝ)
+    (G : (Fin d → ℂ) → Matrix (Fin 2) (Fin 2) ℂ) (s : Bool) (z₀ : ReciprocityTheory.L2DbarEstimates.V (d + 1)),
+    IsOpen T → z₀ ∈ T → ContinuousOn ρ T → ContinuousOn (fun z => G (GlobalTheory.LineCos.base z)) T →
+    (∀ z ∈ T, (G (GlobalTheory.LineCos.base z)).PosDef) →
+    ∃ N : Set (ReciprocityTheory.L2DbarEstimates.V (d + 1)), IsOpen N ∧ z₀ ∈ N ∧ N ⊆ T ∧ ∃ C : ENNReal, C ≠ ⊤ ∧
+      Measure.map (fun z => GlobalTheory.LineCos.cosSq s (G (GlobalTheory.LineCos.base z)) (GlobalTheory.LineCos.fib z))
+          ((volume.restrict N).withDensity fun z => ENNReal.ofReal (ρ z)) ≤
+        C • volume.restrict (Set.Icc (0 : ℝ) 1) := by
+  atlas_forward_decl GlobalTheory.LineCos.exists_map_cosSq_le

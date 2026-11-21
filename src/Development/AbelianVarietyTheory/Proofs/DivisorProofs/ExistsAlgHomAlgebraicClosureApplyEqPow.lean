@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Degenerations.InducedModelMorphismCompStructureMap
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAlgHomInjectiveApplyOfTranscendental
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
@@ -22,3 +25,10 @@ theorem exists_algHom_algebraicClosure_apply_eq_pow :
   exact ⟨j, by simpa [i₀] using hj i₀⟩
 
 end GlobalTheory
+end
+
+open AlgebraicGeometry CategoryTheory
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_algHom_algebraicClosure_apply_eq_pow' : ∀ (Ω : Type) [Field Ω] (K0 : Subfield Ω) (x : Ω), Transcendental K0 x → ∀ m : ℕ, 0 < m → ∃ τ : Ω →ₐ[K0] AlgebraicClosure Ω, τ x = algebraMap Ω (AlgebraicClosure Ω) x ^ m := by
+  atlas_forward_decl GlobalTheory.exists_algHom_algebraicClosure_apply_eq_pow

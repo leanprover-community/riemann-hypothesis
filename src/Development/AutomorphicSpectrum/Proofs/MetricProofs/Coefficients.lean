@@ -1,13 +1,11 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.Pull1
-import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RealisationHeightIndependenceStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.GapEqWeightSubNextStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AgreementPositiveStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FormPolyIsHomogeneousAndEval
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.AbsCoeffProdXLeOne
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RealisationHeightIndependence
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.GapEqWeightSubNext
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.AgreementPositive
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.KillNoneFormPoly
 
+section
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.Top
@@ -82,3 +80,9 @@ theorem coefficients : Coefficients := by
         _ = _ := by ring
 
 end GlobalTheory.CompanionTheory.Ar.PB.Top
+end
+
+open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coefficients' : Coefficients := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.Top.coefficients

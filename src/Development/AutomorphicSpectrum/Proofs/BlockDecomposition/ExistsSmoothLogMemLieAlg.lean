@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.UnipotentAdelicQuotients.SmComplete
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasDerivAtExpMulExpOfFiniteDimensional
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSmoothLog
 open SmoothVectors Filter Topology

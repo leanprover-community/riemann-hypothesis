@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.FlB
 
 namespace GlobalTheory.CompanionTheory.LocalHensel
@@ -44,3 +46,9 @@ theorem stHensel_holds : StHensel := by
   linear_combination -hval
 
 end GlobalTheory.CompanionTheory.LocalHensel
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.HenselStatement : StHensel := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocalHensel.stHensel_holds

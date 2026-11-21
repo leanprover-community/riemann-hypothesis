@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntegralAngMeas
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar.PB.Flat
 open scoped ContDiff
 
@@ -88,3 +90,10 @@ theorem harmonic_annulus_le_zero : ∀ (h : ℂ → ℝ) (a b : ℝ), 0 < a → 
   nlinarith [mul_pos htpos hz₀pos]
 
 end GlobalTheory.CompanionTheory.Ar.PB.Flat
+end
+
+open MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar.PB.Flat
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.harmonic_annulus_maximum_principle : ∀ (h : ℂ → ℝ) (a b : ℝ), 0 < a → a < b → ContinuousOn h {z : ℂ | a ≤ ‖z‖ ∧ ‖z‖ ≤ b} → (∀ z : ℂ, a < ‖z‖ → ‖z‖ < b → InnerProductSpace.HarmonicAt h z) → (∀ z : ℂ, (‖z‖ = a ∨ ‖z‖ = b) → h z ≤ 0) → ∀ z : ℂ, a ≤ ‖z‖ → ‖z‖ ≤ b → h z ≤ 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.Flat.harmonic_annulus_le_zero

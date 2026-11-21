@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SelfDualOne
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LatticeModelVacuumTranslateClassesIndependent
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.Hk3.HoweG
@@ -64,3 +65,11 @@ theorem exists_square_span_cols : ∀ (L : Type) [Field L] [Valued L (WithZero (
   exact h1.symm.trans h2
 
 end GlobalTheory.Hk3.HoweG
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_square_matrix_span_columns_integral : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (n : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]
+    (M : Matrix (Fin n) ι L), ∃ b : Matrix (Fin n) (Fin n) L, ∀ v : Fin n → L,
+      (∃ u : ι → L, (∀ i, u i ∈ Formalism.UG.intL L) ∧ v = M *ᵥ u) ↔ ∃ t : Fin n → L, (∀ i, t i ∈ Formalism.UG.intL L) ∧ v = b *ᵥ t := by
+  atlas_forward_decl GlobalTheory.Hk3.HoweG.exists_square_span_cols

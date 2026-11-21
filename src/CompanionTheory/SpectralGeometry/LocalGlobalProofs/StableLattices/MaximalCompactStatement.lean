@@ -1,6 +1,7 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.LineFormulas.LineFacts
 
+section
 noncomputable section
 
 open MeasureTheory
@@ -117,3 +118,9 @@ theorem kMaj : CompanionTheory.RgExh.Dec.N.S.KMaj := by
     exact ENNReal.ofReal_le_ofReal h
 
 end GlobalTheory.CompanionTheory.RgKMaj
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.MaximalCompactStatement : CompanionTheory.RgExh.Dec.N.S.KMaj := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgKMaj.kMaj

@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory
@@ -113,3 +115,9 @@ theorem lowerUnitriangular_mul_upperTriangular_of_isUnit_leadingMinors :
     induction i using Fin.lastCases with
     | last => simpa [U] using he
     | cast i => simpa [U] using hU'd i
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_lu_of_isUnit_leading_minors : ∀ (R : Type) [CommRing R] (n : ℕ) (M : Matrix (Fin n) (Fin n) R), (∀ (k : ℕ) (hk : k ≤ n), IsUnit (M.submatrix (Fin.castLE hk) (Fin.castLE hk)).det) → ∃ L U : Matrix (Fin n) (Fin n) R, (∀ i j : Fin n, i < j → L i j = 0) ∧ (∀ i, L i i = 1) ∧ U.BlockTriangular id ∧ (∀ i, IsUnit (U i i)) ∧ M = L * U := by
+  atlas_forward_decl GlobalTheory.lowerUnitriangular_mul_upperTriangular_of_isUnit_leadingMinors

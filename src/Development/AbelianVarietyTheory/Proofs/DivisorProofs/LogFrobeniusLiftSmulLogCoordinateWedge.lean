@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsEulerContraction
+
+section
 open GlobalTheory GlobalTheory.LogDR
 
 namespace GlobalTheory
@@ -16,3 +18,10 @@ theorem cartierMap_smul_logWedge : ∀ (K : Type) [Field K] (p : ℕ) (n : ℕ) 
   exact hγ.2 i
 
 end GlobalTheory
+end
+
+open GlobalTheory GlobalTheory.LogDR
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.logFrobeniusLift_smul_logCoordinateWedge : ∀ (K : Type) [Field K] (p : ℕ) (n : ℕ) (x : Fin n → Kˣ) (γ : abelian₂ K →+* abelian₂ K), IsCartierMap p x γ → ∀ (c : K) (I : Finset (Fin n)), γ (c • logWedge x I) = c ^ p • logWedge x I := by
+  atlas_forward_decl GlobalTheory.cartierMap_smul_logWedge

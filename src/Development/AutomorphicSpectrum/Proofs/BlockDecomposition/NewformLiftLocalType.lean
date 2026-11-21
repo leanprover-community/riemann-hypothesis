@@ -1,7 +1,8 @@
 import Mathlib
-import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeSum
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -462,3 +463,9 @@ theorem f3a : Ad3.R.B0 → Ad3.R.HeckeSumLocalTranslates := by
     linear_combination (-(Complex.ofReal (Real.sqrt (pOf v : ℝ)⁻¹) ^ k * ((Real.sqrt x.det.val : ℂ) ^ k * denom x (UpperHalfPlane.I : ℂ) ^ (-(k : ℤ))) * χ ((pOf v : ℕ) : ZMod N) * f (δ' • x • UpperHalfPlane.I))) * hk1
 
 end GlobalTheory.CompanionTheory.RSq
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_lift_local_type : Ad3.R.B0 → Ad3.R.HeckeSumLocalTranslates := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RSq.f3a

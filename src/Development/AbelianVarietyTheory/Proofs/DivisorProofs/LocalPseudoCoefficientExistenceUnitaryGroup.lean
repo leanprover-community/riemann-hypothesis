@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.TCoefMInMMul
-import Development.AbelianVarietyTheory.Definitions.Divisors.RangeShape
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfConstOfTendsto
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MuPowLambdaProductCoeffMuVariablePencilEmbedding
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StProfileHolds
@@ -13,7 +12,9 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StOrbCpt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCompactCentOfConj
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumInnerIntegralEq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StTrAd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaximalCompactPseudoCoefficientDataStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaximalCompactPseudoCoefficientData
+
+section
 open GlobalTheory.PsCo.Pc1
 
 namespace GlobalTheory.PsCo.Pc
@@ -25,3 +26,9 @@ theorem localPC_holds : LocalPC :=
     GlobalTheory.PsCo.NonEll.stNonEll GlobalTheory.PsCo.Pc3.stTr GlobalTheory.PsCo.Pc3.stTrAd GlobalTheory.T.maximalCompact_pseudoCoefficientData
 
 end GlobalTheory.PsCo.Pc
+end
+
+open GlobalTheory.PsCo.Pc1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localPseudoCoefficientExistence_unitaryGroup : GlobalTheory.PsCo.Pc.LocalPC := by
+  atlas_forward_decl GlobalTheory.PsCo.Pc.localPC_holds

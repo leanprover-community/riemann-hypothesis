@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsRealCoord
+import BuildAid.ForwardExisting
 
+section
 open NumberField Matrix Formalism.MainNotions.S GlobalTheory.CuspGeo
 
 namespace GlobalTheory.CuspGeo
@@ -95,3 +97,12 @@ theorem exists_integral_matrix_of_same_mul : ∀ (I : AutInst) {N : ℕ} (e e₀
   fun _ _ e e₀ he he₀ h => exists_integralMatrix_of_same_multiplicationMatrices e e₀ he.1 he.2 he₀.2 h
 
 end GlobalTheory.CuspGeo
+end
+
+open NumberField Matrix Formalism.MainNotions.S GlobalTheory.CuspGeo
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integralMatrix_relating_integralVectorZBases : ∀ (I : AutInst) {N : ℕ} (e e₀ : Fin N → Fin I.n → I.E), IsZBasis I e → IsZBasis I e₀ →
+    (∀ (k : Module.Free.ChooseBasisIndex ℤ (𝓞 I.E)) (j : Fin N) (z : Fin N → ℤ),
+      (integralBasis I.E k : I.E) • e j = ∑ i, z i • e i → (integralBasis I.E k : I.E) • e₀ j = ∑ i, z i • e₀ i) →
+    ∃ M : Matrix (Fin I.n) (Fin I.n) I.E, (∀ i j, IsIntegral ℤ (M i j)) ∧ ∀ j, M *ᵥ e j = e₀ j := by
+  atlas_forward_decl GlobalTheory.CuspGeo.exists_integral_matrix_of_same_mul

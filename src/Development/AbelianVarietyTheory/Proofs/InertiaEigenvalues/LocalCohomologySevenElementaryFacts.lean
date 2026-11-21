@@ -2,7 +2,9 @@ import Mathlib
 import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationLtOneIff
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicIntegersFiniteExtGoodCoefficientRing
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.NG Formalism.RepresentationBoundsCohomology.LOC Formalism.RepresentationBoundsCohomology.JT NumberField IsDedekindDomain ReciprocityTheory.Gal ReciprocityTheory.ChartRestriction.T2
@@ -161,3 +163,9 @@ theorem elem : ReciprocityTheory.ChartRestriction.T2.Elem where
   openOL := fun LL => isOpen_integers LL
 
 end GlobalTheory.LocElem
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_cohomology_seven_elementary_facts : ReciprocityTheory.ChartRestriction.T2.Elem := by
+  atlas_forward_decl GlobalTheory.LocElem.elem

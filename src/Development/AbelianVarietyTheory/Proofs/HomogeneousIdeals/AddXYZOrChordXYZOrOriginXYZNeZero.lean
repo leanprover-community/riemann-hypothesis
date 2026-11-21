@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.DiagZEqNegAddY
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.SubMulOriginD
 
 open WeierstrassCurve WeierstrassCurve.Projective

@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSqLocalizationOfPderivMem
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMinimalLocalGenerators
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct Polynomial
 open IsLocalRing TensorProduct
 
@@ -48,3 +50,8 @@ theorem linearIndependent_tmul_D_of_regular_system :
   exact (residue_eq_zero_iff _).2 this
 
 end GlobalTheory
+end
+
+open scoped TensorProduct Polynomial
+theorem _root_.GlobalTheory.T.regular_local_differentials_linearIndependent : ∀ (k A : Type) [Field k] [CommRing A] [IsLocalRing A] [IsNoetherianRing A] [Algebra k A] [Algebra.FormallySmooth k (IsLocalRing.ResidueField A)] (n : ℕ) (t : Fin n → A), Ideal.span (Set.range t) = IsLocalRing.maximalIdeal A → (n : WithBot ℕ∞) = ringKrullDim A → LinearIndependent (IsLocalRing.ResidueField A) (fun a => (1 : IsLocalRing.ResidueField A) ⊗ₜ[A] KaehlerDifferential.D k A (t a)) := by
+  atlas_forward_decl _root_.GlobalTheory.linearIndependent_tmul_D_of_regular_system

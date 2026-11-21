@@ -1,9 +1,10 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsPeriodHom
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.FamUnif
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPeriodCohomologyClassOfRichBasedStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPeriodCohomologyClassOfRichBased
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPointHol
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -163,3 +164,10 @@ theorem periods_exist : PExist := by
   rfl
 
 end GlobalTheory.AnPer
+end
+end
+
+open GlobalTheory.AnPer
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.periods_exist_affine_zero_section : PExist := by
+  atlas_forward_decl GlobalTheory.AnPer.periods_exist

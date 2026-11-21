@@ -1,13 +1,12 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousMulVec
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsClopenCoset
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ZpowMulVec
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeVolumeScalingLawsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairingLatticeRefinementCardStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenStandardLatticeStabilizerStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalOrbitGLNearOneStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MaximumPrincipleLatticeFunctionsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzFunctionLatticeIndicatorSumStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeVolumeScalingLaws
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PairingLatticeRefinementCard
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenStandardLatticeStabilizer
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalOrbitGLNearOne
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MaximumPrincipleLatticeFunctions
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzFunctionLatticeIndicatorSum
+
+section
 open Matrix MeasureTheory GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibOrd GlobalTheory.SplitWeil GlobalTheory.JHMult GlobalTheory.CompanionTheory.BZShell GlobalTheory.CompanionTheory.MirPair GlobalTheory.CompanionTheory.BZCore
 open scoped Topology
 
@@ -251,3 +250,24 @@ theorem shift_invariant_of_exact_twist : ∀ {k : Type} [Field k] [ValuativeRel 
 end GlobalTheory.CompanionTheory.BZCore
 
 end
+end
+
+open Matrix MeasureTheory GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.LeibOrd GlobalTheory.SplitWeil GlobalTheory.JHMult GlobalTheory.CompanionTheory.BZShell GlobalTheory.CompanionTheory.MirPair
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invariant_pairing_twisted_modulus : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (d : ℕ) (hd : 0 < d) {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
+    (X : Representation ℂ (GL (Fin d) k) V) (Y : Representation ℂ (GL (Fin d) k) V') (hX : IsSmooth X) (hY : IsSmooth Y)
+    (P : V →ₗ[ℂ] V' →ₗ[ℂ] ℂ)
+    (hP : ∀ g a a', P (X g a) (Y g a') = ((dpow d (-2) g : ℂˣ) : ℂ) * P a a')
+    (e : Fin d → k) (he : e ≠ 0)
+    (hU : ∀ β : V →ₗ[ℂ] V' →ₗ[ℂ] ℂ,
+      (∀ g : GL (Fin d) k, (g : Matrix (Fin d) (Fin d) k).mulVec e = e → ∀ a a', β (X g a) (Y g a') =
+        ((dpow d (-2) g : ℂˣ) : ℂ) * β a a') → ∃ c : ℂ, ∀ a a', β a a' = c * P a a')
+    (z : GL (Fin d) k) (ϖ : k) (hz : (z : Matrix (Fin d) (Fin d) k) = ϖ • (1 : Matrix (Fin d) (Fin d) k))
+    (hϖ : ValuativeRel.valuation k ϖ < 1) (hϖ0 : ϖ ≠ 0) (ω ω' : ℂ) (hω : ∀ a, X z a = ω • a) (hω' : ∀ a, Y z a = ω' • a)
+    (hωω : ω * ω' = ((dpow d (-2) z : ℂˣ) : ℂ))
+    (B : SchF k d V →ₗ[ℂ] SchF k d V' →ₗ[ℂ] ℂ)
+    (hT : ∀ x f f', B (shiftF x f) (shiftF x f') = B f f')
+    (hG : ∀ g f f', B (actF X g f) (actF Y g f') = B f f'),
+    ∀ f f' x, B f (shiftF x f') = B f f' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZCore.shift_invariant_of_exact_twist

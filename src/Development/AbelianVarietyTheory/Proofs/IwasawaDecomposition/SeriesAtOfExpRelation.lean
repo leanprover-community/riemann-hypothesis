@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TwistDataAgreeAcrossCoefficientsLocalized
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SetupLGood
 
 noncomputable section

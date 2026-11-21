@@ -1,9 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.CompletedLStripBounds
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormWt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaussZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousTerm
+import BuildAid.ForwardExisting
 
+section
 open NumberField MeasureTheory
 
 namespace GlobalTheory.CMTypeNorm
@@ -42,3 +41,9 @@ theorem prod_norm_sq_eq_absNorm :
   rfl
 
 end GlobalTheory.CMTypeNorm
+end
+
+open NumberField MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cmType_prod_norm_sq_eq_absNorm_span : ∀ (K : Type) [Field K] [NumberField K] [NumberField.IsTotallyComplex K] (I : Type) [Fintype I] (φ : I → K →+* ℂ), GlobalTheory.CMVal.IsCMType φ → ∀ α : 𝓞 K, ∏ i, ‖φ i (α : K)‖ ^ 2 = ((Ideal.absNorm (Ideal.span {α}) : ℕ) : ℝ) := by
+  atlas_forward_decl GlobalTheory.CMTypeNorm.prod_norm_sq_eq_absNorm

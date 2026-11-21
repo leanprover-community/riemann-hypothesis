@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 import Development.WeilBound.CoreStatements.CommonZeroEvaluation.GenMapEqOfFactor
 
 open AlgebraicGeometry CategoryTheory

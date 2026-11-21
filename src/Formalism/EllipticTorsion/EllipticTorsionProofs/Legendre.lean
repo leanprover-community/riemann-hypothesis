@@ -1,4 +1,3 @@
-import Formalism.EllipticTorsion.Statement
 import Formalism.EllipticTorsion.EllipticTorsionProofs.LegendreInvariant
 
 namespace Formalism.ELL

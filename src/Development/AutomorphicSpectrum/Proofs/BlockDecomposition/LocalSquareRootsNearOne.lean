@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
+import BuildAid.ForwardExisting
 
+section
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
 open scoped TensorProduct Quaternion
 
@@ -47,3 +48,10 @@ theorem sq_fills_nhds_one {F : Type} [Field F] [NumberField F] (u : Pl F) :
     exact sq_fills_of_map (K := v.adicCompletion F) (map_sq_nhds_one_of_normed h2) V hV
 
 end GlobalTheory.CompanionTheory.PlaneSA
+end
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField GlobalTheory.Published GlobalTheory.CompanionTheory.PlaneSA Topology
+open scoped TensorProduct Quaternion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_square_roots_near_one : ∀ {F : Type} [Field F] [NumberField F] (u : Pl F), ∀ V ∈ 𝓝 (1 : Kp u), ∀ᶠ x in 𝓝 (1 : Kp u), ∃ μ ∈ V, μ ^ 2 = x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PlaneSA.sq_fills_nhds_one

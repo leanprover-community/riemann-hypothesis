@@ -1,7 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PatternGroupStatement
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin
 
 namespace GlobalTheory.CompanionTheory.RootExch
@@ -523,3 +524,9 @@ theorem rootExchange : ReciprocityTheory.Ty.Fin.St.RootExchange := by
     · rw [if_neg h, if_neg (fun h' => h ((memQ u).2 h'))]
 
 end GlobalTheory.CompanionTheory.RootExch
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.root_exchange' : ReciprocityTheory.Ty.Fin.St.RootExchange := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RootExch.rootExchange

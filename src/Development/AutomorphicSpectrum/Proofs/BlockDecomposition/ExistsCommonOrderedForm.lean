@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyInterleaving.Interleave
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOrderedForm
 
 open Zc.Comb

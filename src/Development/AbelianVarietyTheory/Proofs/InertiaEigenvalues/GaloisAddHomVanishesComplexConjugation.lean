@@ -2,6 +2,9 @@ import Mathlib
 import ReciprocityTheory.GaloisValuations.Global
 import ReciprocityTheory.NeutralLocalFields.HilbertClassField
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HilbertClassFieldA
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Neutral.HilbertClassField
 
 namespace GlobalTheory
@@ -55,3 +58,13 @@ theorem addHom_complexConjugation_eq_zero : ∀ (E Ω : Type) [Field E] [NumberF
   · exact absurd hc (not_isComplexConjugation_of_nrRealPlaces_eq_zero hE c)
 
 end GlobalTheory
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Neutral.HilbertClassField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.galoisAddHom_vanishes_complexConjugation : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
+    (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O],
+    (l ≠ 2 ∨ InfinitePlace.nrRealPlaces E = 0) →
+    ∀ (M : Type) [AddCommGroup M] [Module O M] (z : G E Ω → M), (∀ g h, z (g * h) = z g + z h) →
+    ∀ (c : Ω ≃ₐ[E] Ω), IsComplexConjugation c → z c = 0 := by
+  atlas_forward_decl GlobalTheory.addHom_complexConjugation_eq_zero

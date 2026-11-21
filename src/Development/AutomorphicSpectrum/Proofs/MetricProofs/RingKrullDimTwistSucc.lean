@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsHorizontalTwist
 import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.Integral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Tw
@@ -181,3 +183,10 @@ theorem ringKrullDim_twist (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
     Polynomial.ringKrullDim_of_isNoetherianRing]
 
 end GlobalTheory.CompanionTheory.Ar.Tw
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo MeasureTheory GlobalTheory.CompanionTheory.Ar.Tw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ringKrullDim_twist_succ : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (p : ℕ) (W : Ideal (MRing ι)), W.IsPrime → ringKrullDim (MRing (Tb ι) ⧸ twist p W) = ringKrullDim (MRing ι ⧸ W) + 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Tw.ringKrullDim_twist

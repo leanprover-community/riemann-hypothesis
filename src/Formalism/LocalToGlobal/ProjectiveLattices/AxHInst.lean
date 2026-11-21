@@ -6,12 +6,10 @@ import Formalism.LocalToGlobal.ProjectiveLattices.AxHLAM
 import Formalism.LocalToGlobal.ProjectiveLattices.AxHSup
 import Formalism.LocalToGlobal.ProjectiveLattices.FnTrdegOf
 import Formalism.LocalToGlobal.ProjectiveLattices.DivFinOfLawA3
-import Formalism.LocalToGlobal.ProjectiveLattices.LawA13OfContinuous
 import Formalism.LocalToGlobal.ProjectiveLattices.NrmContPf
 import Formalism.LocalToGlobal.ProjectiveLattices.KapTrdegPf
 import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.CmFrameOfEq
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
-import ReciprocityTheory.SemistableReduction.LatAll
 
 noncomputable section
 

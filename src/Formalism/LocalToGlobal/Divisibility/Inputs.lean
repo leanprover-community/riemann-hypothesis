@@ -2,7 +2,6 @@ import Mathlib
 import Formalism.LocalToGlobal.Divisibility.RowLat
 import Formalism.QuotientMetricDivisors.DivIntoDualShift
 import Formalism.QuotientMetricDivisors.ScalarLiftLowerBoundFull
-import Formalism.ThetaSupremumBounds.DivIneqExplicit6
 import Formalism.ThetaSupremumBounds.StatementCB
 
 open Module NumberField IsDedekindDomain

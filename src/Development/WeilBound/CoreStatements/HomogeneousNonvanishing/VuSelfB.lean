@@ -3,7 +3,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClass
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsLBGenTrivOfRatios
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.GenericTrivialisationSectionAndPullback
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsClosedImmersionOfCoordinateDivisibility
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.HomExtOfIsOpenImmersion
 import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.VuSelfA
 
 set_option autoImplicit false
@@ -253,33 +252,11 @@ theorem exists_bundle (Z : RatModel o Ω) {m : ℕ} (t : Fin m → Ω) (ht : Z.H
 
 private theorem valF_mul_var (M : RatModel o Ω) {V : M.Z.Opens} (hV : (V : Set M.Z).Nonempty)
     (a b : Γ(M.Z, V)) : valF M.pt V (a * b) = valF M.pt V a * valF M.pt V b := by
-  have hgen : genericPoint M.Z ∈ V :=
-    ((genericPoint_spec M.Z).mem_open_set_iff V.isOpen).mpr (by simpa using hV)
-  have htop : ⊤ ≤ M.pt ⁻¹ᵁ V := by
-    intro w _
-    have hw : M.pt w ∈ Set.range M.pt := ⟨w, rfl⟩
-    rw [M.gen] at hw
-    show M.pt w ∈ V
-    rw [hw]
-    exact hgen
-  unfold valF
-  rw [dif_pos htop, dif_pos htop, dif_pos htop]
-  simp only [map_mul]
+  apply valF_pt_mul' (M := M) (hV := hV) (a := a) (b := b) <;> assumption
 
 private theorem valF_one_var (M : RatModel o Ω) {V : M.Z.Opens} (hV : (V : Set M.Z).Nonempty) :
     valF M.pt V 1 = 1 := by
-  have hgen : genericPoint M.Z ∈ V :=
-    ((genericPoint_spec M.Z).mem_open_set_iff V.isOpen).mpr (by simpa using hV)
-  have htop : ⊤ ≤ M.pt ⁻¹ᵁ V := by
-    intro w _
-    have hw : M.pt w ∈ Set.range M.pt := ⟨w, rfl⟩
-    rw [M.gen] at hw
-    show M.pt w ∈ V
-    rw [hw]
-    exact hgen
-  unfold valF
-  rw [dif_pos htop]
-  simp only [map_one]
+  apply valF_pt_one' (M := M) (hV := hV) <;> assumption
 
 theorem exists_unit {M : RatModel o Ω} {H : LB M.Z} {e : H.ι → Ω} (he : M.GenTriv H e) {m : ℕ}
     {s : Fin m → H.Sec} {t : Fin m → Ω} (hv : ∀ k, M.HasVal e (s k) (t k)) (hs : ⨆ k, nonzeroLocus (s k) = ⊤)

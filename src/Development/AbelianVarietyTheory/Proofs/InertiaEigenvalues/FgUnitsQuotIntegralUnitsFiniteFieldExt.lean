@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.UnitLemma Polynomial IsDedekindDomain
 
 noncomputable section
@@ -120,3 +122,10 @@ theorem fg_units_quot : ∀ (K : UQ) (L : Type) [Field L] [Algebra K.O L] [Algeb
   exact fg_quot_ker _
 
 end GlobalTheory.FieldUnitsQuotFG
+end
+end
+
+open GlobalTheory.UnitLemma Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fg_units_quot_integralUnits_finite_field_ext : ∀ (K : UQ) (L : Type) [Field L] [Algebra K.O L] [Algebra K.E L] [IsScalarTower K.O K.E L] [FiniteDimensional K.E L], Group.FG (Lˣ ⧸ intUnits K.O L) := by
+  atlas_forward_decl GlobalTheory.FieldUnitsQuotFG.fg_units_quot

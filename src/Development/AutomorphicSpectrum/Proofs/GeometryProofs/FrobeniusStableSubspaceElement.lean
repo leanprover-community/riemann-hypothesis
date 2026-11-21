@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.HopfFrob
@@ -109,3 +112,11 @@ theorem exists_frobenius_fixed_or_killed :
   exact key _ f₀ hf₀V hf₀ rfl
 
 end GlobalTheory.CompanionTheory.HopfFrob
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_stable_subspace_element : ∀ (k : Type) [Field k] [IsAlgClosed k] (p : ℕ) [Fact p.Prime] [CharP k p]
+    (A : Type) [CommRing A] [Algebra k A] [Module.Finite k A] (V : Submodule k A),
+    V ≠ ⊥ → (∀ f ∈ V, f ^ p ∈ V) → ∃ f ∈ V, f ≠ 0 ∧ (f ^ p = 0 ∨ f ^ p = f) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HopfFrob.exists_frobenius_fixed_or_killed

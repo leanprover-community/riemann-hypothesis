@@ -4,9 +4,7 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceIdeal
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceFormMass
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarIntChartChange
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceSectionMass
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogSmul
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PPointLine
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLogBound
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights

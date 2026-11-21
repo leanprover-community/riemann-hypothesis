@@ -1,6 +1,7 @@
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.RightOnto
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.TopOfMap
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaEquivInducedFibreStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OmegaEquivInducedFibre
 
 noncomputable section
 

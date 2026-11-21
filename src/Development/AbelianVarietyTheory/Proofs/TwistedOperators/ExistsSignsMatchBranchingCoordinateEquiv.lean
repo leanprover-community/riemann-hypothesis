@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ProjExists
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.SepReal
 
 private def optSumLeft (α β : Type) : Option (α ⊕ β) ≃ Option α ⊕ β where
@@ -51,3 +53,8 @@ theorem exists_signs_equiv {n : ℕ} (ε : Fin (n + 1) → Bool) (ε' : Fin n �
       rw [this, hi]
 
 end GlobalTheory.SepReal
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_signsMatchBranchingCoordinate_equiv : ∀ {n : ℕ} (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool), (Finset.univ.filter fun a => ε a = false).card = (Finset.univ.filter fun i => ε' i = false).card → ∃ e : Option (Fin n) ≃ Fin (n + 1), GlobalTheory.SepReal.Signs e ε ε' := by
+  atlas_forward_decl GlobalTheory.SepReal.exists_signs_equiv

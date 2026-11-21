@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.FlB
 
 noncomputable section
@@ -209,3 +211,9 @@ theorem aniso : StHensel → StSandwich → StAniso := by
 end GlobalTheory.CompanionTheory.HermAniso
 
 end
+end
+
+open CompanionTheory.Rg.FlB
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.anisotropic_of_hensel_and_sandwich : StHensel → StSandwich → StAniso := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HermAniso.aniso

@@ -1,7 +1,6 @@
 import Formalism.SharpRestriction.DesignExistsOfChoices
 import Formalism.SharpRestriction.GlobalSchurBounds.AlgebraicJets
 import Formalism.SharpRestriction.Divisibility.PrinLevClass
-import Formalism.SharpRestriction.LevelLetterCocycles.AlignN
 import Formalism.SharpRestriction.AdmissibleParameterJoins.DGamMink
 import Formalism.SharpRestriction.SmoothDesignExistence.DesignExistsDes
 

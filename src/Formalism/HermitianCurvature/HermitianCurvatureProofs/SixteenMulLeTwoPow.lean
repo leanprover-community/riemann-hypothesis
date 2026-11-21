@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementSz
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CorollaryAOfPropositionA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.VandermondeRatioHarmonic
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaBoundOnBoundary

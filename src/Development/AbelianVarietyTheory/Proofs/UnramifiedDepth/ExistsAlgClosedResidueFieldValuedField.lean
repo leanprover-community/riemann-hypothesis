@@ -1,7 +1,8 @@
 import Mathlib
-import Formalism.LocalToGlobal.CharacterGerms.Interface
-import Formalism.LocalToGlobal.CharacterGerms.HostTraceIdentity
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CubWeilOfInjective
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS ev pt addOf)
@@ -90,3 +91,16 @@ theorem exists_residueField : ∀ (C : Type) [Field C] (V : VF C), IsAlgClosed C
     inferInstance, Ideal.Quotient.mk (mm V), fun x => Ideal.Quotient.eq_zero_iff_mem⟩
 
 end GlobalTheory.AlphaPair.ResField
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS ev pt addOf)
+open ReciprocityTheory.PGsh.Be2 (nEval)
+open GlobalTheory.UU (CubWeil)
+attribute [local instance] Over.cartesianMonoidalCategory
+open Formalism.L2.FormalSeriesBounds IsLocalRing GlobalTheory.AlphaPair
+open scoped CategoryTheory.Obj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_algClosed_residueField_valuedField : ∀ (C : Type) [Field C] (V : VF C), IsAlgClosed C → ∃ (Ω : Type) (_ : Field Ω) (_ : IsAlgClosed Ω) (_ : CharP Ω V.l) (ρ : V.RR →+* Ω), ∀ x : V.RR, ρ x = 0 ↔ V.MM (x : C) := by
+  atlas_forward_decl GlobalTheory.AlphaPair.ResField.exists_residueField

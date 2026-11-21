@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PowSubSuccLe
+import BuildAid.ForwardExisting
 
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
 
 namespace GlobalTheory.CompanionTheory.GE
@@ -38,3 +40,9 @@ theorem idealSheafData_wellFoundedGT :
   exact hφ.wellFoundedGT
 
 end GlobalTheory.CompanionTheory.GE
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry GroundTheory.Arith.SchemeCoh GlobalTheory.CompanionTheory.GE
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ideal_sheaf_well_founded_gt : ∀ {X : Scheme.{0}} [IsNoetherian X], WellFoundedGT X.IdealSheafData := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GE.idealSheafData_wellFoundedGT

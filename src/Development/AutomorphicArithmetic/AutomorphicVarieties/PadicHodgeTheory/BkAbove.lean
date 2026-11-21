@@ -1,48 +1,12 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IotaSpec
+import Development.AutomorphicArithmetic.FiniteIndexCoboundary
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.DecJFacts
 open Formalism.ConjugateSelfDual Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc Topology NumberField IsDedekindDomain
 
 private theorem bkAbove_avg {k G W : Type} [Field k] [CharZero k] [Group G] [AddCommGroup W] [Module k W]
     (a : G → W →ₗ[k] W) (hmul : ∀ g h w, a (g * h) w = a g (a h w)) (f : G → W)
     (hf : ∀ g h, f (g * h) = f g + a g (f h)) (H : Subgroup G) [H.FiniteIndex] (x : W)
-    (hx : ∀ h ∈ H, f h = a h x - x) : ∃ y, ∀ g, f g = a g y - y := by
-  classical
-  haveI : Fintype (G ⧸ H) := Fintype.ofFinite _
-  set f' : G → W := fun g => f g - (a g x - x) with hf'
-  have hc : ∀ g h, f' (g * h) = f' g + a g (f' h) := by
-    intro g h
-    simp only [hf', hf, hmul, map_sub]
-    abel
-  have hH : ∀ g h, h ∈ H → f' (g * h) = f' g := by
-    intro g h hh
-    rw [hc]
-    have : f' h = 0 := by simp only [hf', hx h hh, sub_self]
-    rw [this, map_zero, add_zero]
-  let F : G ⧸ H → W := Quotient.lift f' (by
-    intro g g' hgg
-    have h1 : g⁻¹ * g' ∈ H := QuotientGroup.leftRel_apply.1 hgg
-    have := hH g _ h1
-    rw [mul_inv_cancel_left] at this
-    exact this.symm)
-  have hF : ∀ (g : G) (q : G ⧸ H), F (g • q) = f' g + a g (F q) := by
-    intro g q
-    induction q using QuotientGroup.induction_on with
-    | H z => exact hc g z
-  set S : W := ∑ q, F q with hS
-  have hsum : ∀ g, S = (Fintype.card (G ⧸ H) : k) • f' g + a g S := by
-    intro g
-    have e1 : ∑ q, F (g • q) = S := Equiv.sum_comp (MulAction.toPerm g) F
-    refine e1.symm.trans ?_
-    simp only [hF, Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, ← map_sum,
-      Nat.cast_smul_eq_nsmul, ← hS]
-  have hn : (Fintype.card (G ⧸ H) : k) ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
-  refine ⟨x - (Fintype.card (G ⧸ H) : k)⁻¹ • S, fun g => ?_⟩
-  have e : f' g = (Fintype.card (G ⧸ H) : k)⁻¹ • (S - a g S) := by
-    rw [eq_inv_smul_iff₀ hn, eq_sub_iff_add_eq]
-    exact (hsum g).symm
-  have e2 : f g = f' g + (a g x - x) := by simp only [hf', sub_add_cancel]
-  rw [e2, e, map_sub, map_smul, smul_sub]
-  abel
+    (hx : ∀ h ∈ H, f h = a h x - x) : ∃ y, ∀ g, f g = a g y - y :=
+  _root_.UpperTheory.finiteIndexCoboundary a hmul f hf H x hx
 
 theorem UpperTheory.V.Loc.bkAbove :
     ∀ {F Ω : Type} [Field F] [NumberField F] [Field Ω] [CharZero Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime] (j : Ω →+* Om l) {H : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] (φ : H →* GQ l) (ψ : H →* G F Ω), IsOpenEmbedding φ → (∀ h y, φ h (j y) = j (ψ h y)) → ∀ {C V : Type} [CommRing C] [Algebra ℚ_[l] C] [AddCommGroup V] [Module C V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] C V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousConstSMul C V] (ρ : Representation C (G F Ω) V), ∀ c ∈ Z1 ρ, ((fun h => c (ψ h)) ∈ finiteCocycles φ (ρ.comp ψ) ↔ (fun x : ↥(UpperTheory.V.Af.decJ F j) => c x.1.1) ∈ finiteCocycles ((MonoidHom.snd _ _).comp (UpperTheory.V.Af.decJ F j).subtype) (ρ.comp ((MonoidHom.fst _ _).comp (UpperTheory.V.Af.decJ F j).subtype))) := by

@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTie
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CocChart
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SubstCoeRename
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhTwoValHolds

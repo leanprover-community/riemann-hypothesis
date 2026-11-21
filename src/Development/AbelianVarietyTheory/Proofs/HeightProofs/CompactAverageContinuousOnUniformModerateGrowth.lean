@@ -7,15 +7,15 @@ import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.Ha
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasTypeAllAddOfEquiv
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddHsConjLe
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CoefBoundOfCasselmanWallach
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormSubLeOfDerivIcc
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExpSecondKindCoordinatesStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.HasFDerivAtDerFamProdExpStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.DerFamExpandWordsStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeasurableDerFamCompStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.AvgDerFamGrowthStatement
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOnAvgRightTranslatesStatement
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExpSecondKindCoordinates
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.HasFDerivAtDerFamProdExp
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.DerFamExpandWords
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeasurableDerFamComp
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.AvgDerFamGrowth
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOnAvgRightTranslates
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Matrix
 open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
 open scoped TensorProduct
@@ -147,3 +147,17 @@ theorem continuousOn_and_umg_kAvg : ∀ (n : ℕ) (ε : Fin n → Bool) (f : Glo
   rw [hF0 _ (mul_mem_UJ hy (hK k))]
 
 end GlobalTheory.KAvgGrowth
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Matrix
+open Formalism.REAL GlobalTheory.SmoothGlob GlobalTheory.TypeSum
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compactAverage_continuousOn_uniformModerateGrowth : ∀ (n : ℕ) (ε : Fin n → Bool) (f : GlobalTheory.TypeSum.Mx n → ℂ), ContinuousOn f (UJset ε) → GlobalTheory.TypeSum.UMG ε f →
+    ∀ e : ↥(Formalism.REAL.KG ε) → ℂ, Continuous e →
+    ContinuousOn (fun y => ∫ k, e k * f (y * Formalism.REAL.toMK k) ∂(Formalism.REAL.muK ε)) (UJset ε) ∧
+    GlobalTheory.TypeSum.UMG ε (fun y => ∫ k, e k * f (y * Formalism.REAL.toMK k) ∂(Formalism.REAL.muK ε)) := by
+  atlas_forward_decl GlobalTheory.KAvgGrowth.continuousOn_and_umg_kAvg

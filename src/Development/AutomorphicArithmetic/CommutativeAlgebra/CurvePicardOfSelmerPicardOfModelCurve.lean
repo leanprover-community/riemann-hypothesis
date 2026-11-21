@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.IsChart
-import Development.EtaleCohomology.EtaleSheaves.H0TwistOverClosedField
 import Development.EtaleCohomology.EtaleSheaves.LeafPicCut
 import Development.EtaleCohomology.EtaleSheaves.LeafCurveVCut
 import Development.AutomorphicArithmetic.CommutativeAlgebra.IsFunctionFieldFractionRingOfDedekindFiniteType

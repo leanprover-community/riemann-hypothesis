@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementC
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelZeroEstimateProduct
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PeriodLatticeFactsSplitOfGeneral
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LocalisationScaledIdealMemIff

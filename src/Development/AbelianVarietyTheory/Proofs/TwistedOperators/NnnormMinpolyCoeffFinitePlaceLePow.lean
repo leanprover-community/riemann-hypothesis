@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OneLeHtE
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain GlobalTheory.AdelicU
 open scoped TensorProduct NNReal
 open Classical
@@ -61,3 +63,11 @@ theorem nnnorm_coeff_minpoly_le (F E : Type) [Field F] [NumberField F] [Field E]
   exact key.trans (pow_le_pow_right₀ hM hcard)
 
 end GlobalTheory.CoefHeight
+end
+
+open NumberField IsDedekindDomain GlobalTheory.AdelicU
+open scoped TensorProduct NNReal
+open Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nnnorm_minpoly_coeff_finitePlace_le_pow : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (x : E) (v : HeightOneSpectrum (𝓞 F)) (j : ℕ), ‖algebraMap F (v.adicCompletion F) ((minpoly F x).coeff j)‖₊ ≤ max 1 (absFin F v ((1 : v.adicCompletion F) ⊗ₜ[F] x)) ^ Module.finrank F E := by
+  atlas_forward_decl GlobalTheory.CoefHeight.nnnorm_coeff_minpoly_le

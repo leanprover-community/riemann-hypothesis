@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PowForm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzMapBarrelledSpace
+
+section
 open MeasureTheory Filter Topology
 
 namespace GlobalTheory.ConvSeries
@@ -33,3 +35,10 @@ theorem summable_of_summable_seminorm (E : Type) [NormedAddCommGroup E] [NormedS
   exact (hS i u (Finset.disjoint_of_subset_right (Finset.subset_biUnion_of_mem S hi) hu)).le
 
 end GlobalTheory.ConvSeries
+end
+
+open MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.summable_schwartz_of_summable_seminorms : ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (t : ℕ → SchwartzMap E ℂ),
+    (∀ k n, Summable (fun j => SchwartzMap.seminorm ℂ k n (t j))) → Summable t := by
+  atlas_forward_decl GlobalTheory.ConvSeries.summable_of_summable_seminorm

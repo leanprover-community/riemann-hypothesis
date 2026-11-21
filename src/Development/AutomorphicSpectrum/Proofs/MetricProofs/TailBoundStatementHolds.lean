@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 import ReciprocityTheory.AnalyticForms.LeviForms.TailBound
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.CompChartEventuallyEq
 

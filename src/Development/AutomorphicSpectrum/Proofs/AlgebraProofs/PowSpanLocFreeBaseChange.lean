@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LieLatticeData
 import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XPowspan
 open GlobalTheory.CompanionTheory.Ar.Num
 

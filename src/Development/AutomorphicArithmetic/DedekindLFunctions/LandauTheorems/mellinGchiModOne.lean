@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.DedekindLFunctions.LandauZeroFreeCriterion
 import Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.MellinRamp
 
 open Complex MeasureTheory Set Filter Topology
@@ -25,25 +24,8 @@ theorem mellin_Gchi_modOne_sum {μ : Measure ℝ} (T : ℕ → ℝ → ℂ) (E :
   rfl
 
 theorem mellin_Gchi_modOne_int (n : ℕ) (s : ℂ) (hs : 1 < s.re) :
-    IntegrableOn (fun y : ℝ => ((max (y / n - 1) 0 : ℝ) : ℂ) * (y : ℂ) ^ (-s - 1)) (Ioi 1) := by
-  have ha : (-s).re < -1 := by simp; linarith
-  have hb : (-s - 1).re < -1 := by simp; linarith
-  refine Integrable.mono' (integrableOn_Ioi_norm_cpow_of_lt ha zero_lt_one) ?_ ?_
-  · refine AEStronglyMeasurable.mul ?_ (integrableOn_Ioi_cpow_of_lt hb zero_lt_one).1
-    exact Continuous.aestronglyMeasurable (by fun_prop)
-  · refine ae_restrict_of_forall_mem measurableSet_Ioi fun y hy => ?_
-    have hy1 : (1 : ℝ) < y := hy
-    have hy0 : (0 : ℝ) < y := by linarith
-    have hyC : (y : ℂ) ≠ 0 := by exact_mod_cast hy0.ne'
-    have h1 : y / n ≤ y := by
-      rcases Nat.eq_zero_or_pos n with rfl | hn
-      · simpa using hy0.le
-      · exact div_le_self hy0.le (by exact_mod_cast hn)
-    have h2 : max (y / n - 1) 0 ≤ y := max_le (by linarith) hy0.le
-    rw [norm_mul, cpow_sub _ _ hyC, cpow_one, norm_div, Complex.norm_real, Complex.norm_real,
-      Real.norm_of_nonneg (le_max_right _ _), Real.norm_of_nonneg hy0.le]
-    calc _ ≤ y * (‖(y : ℂ) ^ (-s)‖ / y) := by gcongr
-      _ = _ := by field_simp
+    IntegrableOn (fun y : ℝ => ((max (y / n - 1) 0 : ℝ) : ℂ) * (y : ℂ) ^ (-s - 1)) (Ioi 1) :=
+  mellin_ramp_integrable n s hs
 
 theorem mellin_Gchi_modOne_term (n : ℕ) (s : ℂ) (hs : 1 < s.re) :
     ∫ y in Ioi (1 : ℝ), ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ) *

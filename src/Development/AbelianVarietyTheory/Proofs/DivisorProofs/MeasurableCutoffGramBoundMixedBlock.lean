@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NmatEqLowMat
+import BuildAid.ForwardExisting
+
+section
 open ReciprocityTheory.ChartRestriction.G.FD MeasureTheory GlobalTheory.IntBall
 open scoped ENNReal Matrix
 
@@ -38,3 +41,10 @@ theorem measurable_hB : ∀ (r p0 : ℕ), Measurable (hB (r := r) p0) := by
   exact (ENNReal.measurable_ofReal.comp hg).indicator hS.measurableSet
 
 end GlobalTheory.IntBall
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD MeasureTheory GlobalTheory.IntBall
+open scoped ENNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measurable_cutoffGramBoundMixedBlock : ∀ (r p0 : ℕ), Measurable (hB (r := r) p0) := by
+  atlas_forward_decl GlobalTheory.IntBall.measurable_hB

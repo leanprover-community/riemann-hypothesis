@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory PositivityTheory.RgEis PositivityTheory.RgEis.MG
 
 namespace GlobalTheory.CompanionTheory.EisMirGen
@@ -36,3 +38,9 @@ theorem avgMem : AvgMem := by
   exact hw.symm
 
 end GlobalTheory.CompanionTheory.EisMirGen
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.average_membership : AvgMem := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EisMirGen.avgMem

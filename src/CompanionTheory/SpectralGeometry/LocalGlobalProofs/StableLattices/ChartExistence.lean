@@ -1,9 +1,9 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
+import BuildAid.ForwardExisting
 
+section
 open Matrix Formalism.QuantumDeterminants CompanionTheory.D.Upq.Sm CompanionTheory.Bmu
 open scoped ContDiff
 
@@ -264,3 +264,10 @@ theorem chartExists : ChartExists := by
   exact ⟨a, b, ha, hb, fun t ht => by simpa only [Complex.coe_smul] using hab t ht⟩
 
 end GlobalTheory.CompanionTheory.ProdExChart
+end
+end
+
+open CompanionTheory.Bmu
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ChartExistence : ChartExists := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ProdExChart.chartExists

@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RankPosOfLeaves
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology
@@ -117,3 +118,9 @@ theorem oneStep_of_parts : PairSlices → PairRestrict → PairFD → SliceType 
 end GlobalTheory.CompanionTheory.EGlue.OneStepProof
 
 end
+end
+
+open GlobalTheory.CompanionTheory.EGlue
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.single_gluing : GlobalTheory.CompanionTheory.EGlue.PairSlices → GlobalTheory.CompanionTheory.EGlue.PairRestrict → GlobalTheory.CompanionTheory.EGlue.PairFD → GlobalTheory.CompanionTheory.EGlue.SliceType → GlobalTheory.CompanionTheory.EGlue.PairStep₁ → GlobalTheory.CompanionTheory.EGlue.PairStep₂ → GlobalTheory.CompanionTheory.EGlue.HullGen → GlobalTheory.CompanionTheory.EGlue.CapEquiv → GlobalTheory.CompanionTheory.EGlue.OneStep := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EGlue.OneStepProof.oneStep_of_parts

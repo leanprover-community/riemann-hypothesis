@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NullMeasurableSetShearImage
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Function
 open scoped Pointwise
 
@@ -74,3 +77,10 @@ theorem aedisjoint_pairGroup_smul_shear_image : ∀ (H : Type) [Group H] [Topolo
     · exact le_antisymm ((Measure.prod_prod_le _ _).trans (by rw [hZ, mul_zero])) bot_le
 
 end GlobalTheory.UnfoldNormal
+end
+
+open MeasureTheory Function
+open scoped Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.aedisjoint_pairGroup_smul_sheared_domain : ∀ (H : Type) [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [LocallyCompactSpace H] [SecondCountableTopology H] [T2Space H] [MeasurableSpace H] [BorelSpace H], ∀ (ν : Measure H) [ν.IsHaarMeasure] (Γ N : Subgroup H), Countable Γ → IsClosed (N : Set H) → ∀ (hN : ∀ γ ∈ Γ, ∀ n ∈ N, γ * n * γ⁻¹ ∈ N) (κ : Measure N) (𝓝 : Set N), κ.IsHaarMeasure → IsFundamentalDomain (Γ.subgroupOf N) 𝓝 κ → (∀ (γ : H) (hγ : γ ∈ Γ), κ.map (fun n : N => (⟨γ * n * γ⁻¹, hN γ hγ n n.2⟩ : N)) = κ) → ∀ 𝓕 : Set H, IsFundamentalDomain Γ 𝓕 ν → Pairwise (AEDisjoint ((κ.prod ν).map (GlobalTheory.UnfoldNormal.shear N)) on fun g : GlobalTheory.UnfoldNormal.pairGroup Γ N hN => g • (GlobalTheory.UnfoldNormal.shear N '' (𝓝 ×ˢ 𝓕))) := by
+  atlas_forward_decl GlobalTheory.UnfoldNormal.aedisjoint_pairGroup_smul_shear_image

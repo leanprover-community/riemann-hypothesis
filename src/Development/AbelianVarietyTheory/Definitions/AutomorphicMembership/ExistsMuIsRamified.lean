@@ -6,8 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsSmallPr
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLevChOfLevelPrime
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsStdLarge
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsFamPOfKits
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsRanksRankValFrame
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MPowFiveMulFMulLLe
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SzRowNumAt
 
 noncomputable section

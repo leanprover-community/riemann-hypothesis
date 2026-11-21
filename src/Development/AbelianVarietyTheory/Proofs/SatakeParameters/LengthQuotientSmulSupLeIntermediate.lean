@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Pointwise
 
 namespace GlobalTheory
@@ -83,3 +86,9 @@ theorem length_quotient_smul_sup_le : ∀ (O A : Type) [CommRing O] [AddCommGrou
       exact N.neg_mem hy
 
 end GlobalTheory
+end
+
+open Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.length_quotient_smul_sup_le_intermediate : ∀ (O A : Type) [CommRing O] [AddCommGroup A] [Module O A] (Z B B' : Submodule O A) (a : O), B ≤ B' → Module.length O (↥Z ⧸ (Z.map (a • (LinearMap.id : A →ₗ[O] A)) ⊔ B).comap Z.subtype) ≤ Module.length O ((↥Z ⧸ B'.comap Z.subtype) ⧸ LinearMap.range (a • (LinearMap.id : (↥Z ⧸ B'.comap Z.subtype) →ₗ[O] (↥Z ⧸ B'.comap Z.subtype)))) + Module.length O (↥(Z ⊓ B') ⧸ B.comap (Z ⊓ B').subtype) := by
+  atlas_forward_decl GlobalTheory.length_quotient_smul_sup_le

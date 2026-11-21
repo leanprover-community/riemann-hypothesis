@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.LocZeroTranslD
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.TauBalOfSubsingleton
 import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.RosatiAdjOfPoints
 import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.ExistsPowWithAction
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.InhTate
 
 set_option autoImplicit false
 

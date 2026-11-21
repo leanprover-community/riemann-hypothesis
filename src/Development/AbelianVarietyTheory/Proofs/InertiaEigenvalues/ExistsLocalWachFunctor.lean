@@ -10,6 +10,7 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ResEqOneIff
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUniqueFits
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChiGamPowNeOne
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.HWL
 namespace GlobalTheory.HWL.Assembly
 
@@ -28,3 +29,9 @@ theorem exists_wach (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P)
   exact ⟨⟨Γ, R, I, hI, E, Mo, Cl, Cm⟩⟩
 
 end GlobalTheory.HWL.Assembly
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.HWL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_local_wach_functor : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → FaithH AI → WachEx AI → ∃ H : LocHW l P, ∃ F : LocFon l P AI H, Nonempty (LocCmpT l P AI H F) := by
+  atlas_forward_decl GlobalTheory.HWL.Assembly.exists_wach

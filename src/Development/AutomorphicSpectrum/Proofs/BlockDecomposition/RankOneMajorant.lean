@@ -3,6 +3,7 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FockTranslateSc
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousLeviBlock
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CoeLatFrameOfEq
 
+section
 noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct Topology
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory Filter
@@ -118,3 +119,9 @@ theorem rank_one_majorant_of_parts : WeilCont → WeilKFin → OrbitMaj → IwaC
 end GlobalTheory.CompanionTheory.ThTot
 
 end
+end
+
+open GlobalTheory.CompanionTheory.ThTot
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rank_one_majorant : WeilCont → WeilKFin → OrbitMaj → IwaCpt → FockTranslateSchwartzMajorant := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ThTot.rank_one_majorant_of_parts

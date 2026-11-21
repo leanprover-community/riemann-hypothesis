@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.Fl
 
 namespace GlobalTheory.CompanionTheory.HeckePair
@@ -18,3 +20,9 @@ theorem stPair : StPair := by
   exact ⟨k, rfl⟩
 
 end GlobalTheory.CompanionTheory.HeckePair
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.PairingStatement : StPair := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeckePair.stPair

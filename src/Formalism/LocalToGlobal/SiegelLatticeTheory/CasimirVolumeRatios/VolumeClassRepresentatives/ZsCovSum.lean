@@ -2,7 +2,6 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirVolumeRatios.VolumeCla
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirVolumeRatios.VolumeClassRepresentatives.UnfoldingVolume
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirVolumeRatios.VolumeClassRepresentatives.IwasawaCovolume
 import Formalism.LocalToGlobal.GlobalTheory.GL5.PNamed
-import Formalism.SharpRestriction.CuspSpanNormBounds.SGauge
 
 noncomputable section
 

@@ -5,11 +5,10 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CubeTheore
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianHodgeDeRham
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianLifting
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianUnobstructed
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CanonicalOfAbelianDeRham
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianDeRhamOfHyp
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CrystallineSmoothLiftOfRelations
 
+section
 namespace GlobalTheory
 
 theorem abelianDeRham_of_hodge_cube_dual_poincare :
@@ -18,3 +17,8 @@ theorem abelianDeRham_of_hodge_cube_dual_poincare :
   GlobalTheory.abelianDeRham_of_crystallineSmoothLift GlobalTheory.SmoothLift.crystallineSmoothLift_of_relations
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.abelianSchemeDeRhamStructure_of_cube_dual_poincare : GlobalTheory.Published.AbelianHodgeDeRham → GlobalTheory.Published.CubeTheorem → GlobalTheory.Published.DualAbelianScheme → GlobalTheory.Published.PoincareDeRhamDuality → GlobalTheory.Published.AbelianDeRham := by
+  atlas_forward_decl GlobalTheory.abelianDeRham_of_hodge_cube_dual_poincare

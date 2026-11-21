@@ -1,9 +1,9 @@
 import Mathlib
 import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothCyc
-import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.PhMeas
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaCore
+import BuildAid.ForwardExisting
 
+section
 open Matrix Filter Topology Set MeasureTheory Formalism.QuantumDeterminants CompanionTheory.D.Upq.Sm CompanionTheory.Bmu
 open scoped ContDiff InnerProductSpace ComplexConjugate
 
@@ -157,3 +157,9 @@ theorem cutLim_of (hF : Factor) (hD : CutDer) : CutLim := by
 end GlobalTheory.CompanionTheory.BesselCutLim
 
 end
+end
+
+open CompanionTheory.Bmu
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.truncated_derivation_limit : Factor → CutDer → CutLim := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BesselCutLim.cutLim_of

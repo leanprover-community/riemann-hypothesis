@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.FlatSpaceComponents
+import BuildAid.ForwardExisting
 
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain
 open scoped nonZeroDivisors
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -91,3 +93,11 @@ theorem recordDec (D : D7) : RecordDecSt D := by
     exact h
 
 end GlobalTheory.Proof.normLineDecompositionsOfBaseSpace_proof
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain
+open scoped nonZeroDivisors
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normLineDecompositionsOfBaseSpace_proof : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents.RecordDecSt D := by
+  atlas_forward_decl GlobalTheory.Proof.normLineDecompositionsOfBaseSpace_proof.recordDec

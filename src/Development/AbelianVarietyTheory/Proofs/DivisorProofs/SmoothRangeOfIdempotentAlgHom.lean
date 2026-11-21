@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 theorem idempotent_algHom_ker_fg {R A : Type} [CommRing R] [CommRing A] [Algebra R A]
@@ -51,3 +53,8 @@ theorem smooth_range_of_idempotent : ∀ (R A : Type) [CommRing R] [CommRing A] 
   · exact Algebra.FinitePresentation.of_surjective hsurj (idempotent_algHom_ker_fg e he)
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_range_of_idempotent_algHom : ∀ (R A : Type) [CommRing R] [CommRing A] [Algebra R A] [Algebra.Smooth R A] (e : A →ₐ[R] A), (∀ x, e (e x) = e x) → Algebra.Smooth R e.range := by
+  atlas_forward_decl GlobalTheory.smooth_range_of_idempotent

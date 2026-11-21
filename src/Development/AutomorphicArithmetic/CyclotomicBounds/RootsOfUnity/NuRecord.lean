@@ -2,7 +2,6 @@ import Mathlib
 import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalRingCardinality.HostCls
 import Development.AutomorphicArithmetic.CyclotomicBounds.RootsOfUnity.NuLe
-import Development.AutomorphicArithmetic.CyclotomicBounds.RootsOfUnity.NuQDUnit
 import Development.AutomorphicArithmetic.CyclotomicBounds.RootsOfUnity.SumFactorizationMulLogLe
 import Development.AutomorphicArithmetic.CyclotomicBounds.RootsOfUnity.WDvdQS
 import Development.AutomorphicArithmetic.CyclotomicBounds.RootsOfUnity.SplitNotDvd

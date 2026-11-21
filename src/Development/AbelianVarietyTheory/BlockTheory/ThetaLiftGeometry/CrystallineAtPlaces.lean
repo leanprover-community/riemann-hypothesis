@@ -1,8 +1,6 @@
 import Mathlib
-import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Formalism.LocalRingCardinality.DataParams
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
-import Formalism.WeaklyAdmissibleFiltrations.Statement
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Alternates
 
 noncomputable section

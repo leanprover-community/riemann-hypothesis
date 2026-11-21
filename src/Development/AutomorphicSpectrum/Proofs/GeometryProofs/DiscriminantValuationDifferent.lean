@@ -1,6 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.PadicValNatAbsNormEqZero
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain UniqueFactorizationMonoid
 
 namespace GlobalTheory.CompanionTheory.Different
@@ -23,3 +25,9 @@ theorem padicValInt_discr_mul_count_eq :
   rfl
 
 end GlobalTheory.CompanionTheory.Different
+end
+
+open NumberField IsDedekindDomain UniqueFactorizationMonoid
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.discriminant_valuation_different : ∀ (E : Type) [Field E] [NumberField E] [IsGalois ℚ E] (p : ℕ) [Fact p.Prime] (P : Ideal (𝓞 E)), P.IsPrime → (p : 𝓞 E) ∈ P → ((padicValInt p (discr E) : ℕ)) * (normalizedFactors (Ideal.span {(p : 𝓞 E)})).count P = (normalizedFactors (differentIdeal ℤ (𝓞 E))).count P * Module.finrank ℚ E := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Different.padicValInt_discr_mul_count_eq

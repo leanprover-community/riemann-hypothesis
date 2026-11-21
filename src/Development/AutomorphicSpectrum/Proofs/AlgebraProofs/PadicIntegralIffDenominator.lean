@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 import Development.WeilBound.CoreStatements.SesquilinearFractions.PadicIntegralIffDenominator
+
+section
 open NumberField Matrix GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 open scoped ComplexOrder
 private theorem norm_intCast_padicAlgCl_lt_one_iff_dvd (p : ℕ) [Fact p.Prime] (k : ℤ) :
@@ -157,3 +158,10 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.padic_integral_iff_denominator
       _ = ‖(n : ℂ_[p]) * j x‖ := (norm_mul _ _).symm
       _ = ‖j (a : E)‖ := by rw [hj]
       _ ≤ 1 := ha
+end
+
+open NumberField Matrix GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.padic_integral_iff_denominator : ∀ (E : Type) [Field E] [NumberField E] (p : Nat.Primes) (x : E), ((∀ j : E →+* ℂ_[p], ‖j x‖ ≤ 1) ↔ ∃ (n : ℕ) (a : 𝓞 E), ¬ (p : ℕ) ∣ n ∧ (n : E) * x = a) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Relay.padic_integral_iff_denominator

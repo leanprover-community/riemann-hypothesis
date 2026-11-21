@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.PairRowIffQdRows
-import Formalism.SharpRestriction.ElevenLe
 import Development.AutomorphicArithmetic.CyclotomicBounds.RootsOfUnity.HostTorsionOrderLe
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX
 
 namespace GlobalTheory
@@ -133,3 +135,9 @@ theorem cloud_add_node_le_ten_b : ∀ (C : Formalism.MainNotions.Inhab.FC) (cD c
     linarith
 
 end GlobalTheory
+end
+
+open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.EX
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cloud_add_node_le_ten_base_size : ∀ (C : Formalism.MainNotions.Inhab.FC) (cD ch : ℝ) (D : D7) (L : SizeData₂ D), Val C cD ch L → SizesAt L → L.sc.x ≤ L.sc.X' → ∀ τ : D.what₂.Tau, (∀ i j, (((D.hc τ).v i : ℚ) : ℝ) + (((D.hc τ).b j : ℚ) : ℝ) ≤ 10 * L.sc.b) ∧ ∀ j j', (((D.hc τ).b j' : ℚ) : ℝ) - (((D.hc τ).b j : ℚ) : ℝ) ≤ 10 * L.sc.b := by
+  atlas_forward_decl GlobalTheory.cloud_add_node_le_ten_b

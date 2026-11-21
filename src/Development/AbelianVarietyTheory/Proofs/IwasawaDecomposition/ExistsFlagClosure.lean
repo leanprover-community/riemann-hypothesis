@@ -2,20 +2,21 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompGvec
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RingHomExtValuationSubring
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAtlasRefiningCocycle
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AtlasModelComparisonStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AtlasModelComparison
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StepHoldsOfMapStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsModelOfAtlasStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellCoordinatePolynomialsSurjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellCoordinateLinearRelationStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellCoordinatesBaseChangeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellsOfChartsPolynomialStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PlanarOfDenseCarriersStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AtlasLatticeCoordinatesStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellAtlasFromLatticeStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsModelOfAtlas
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellCoordinatePolynomialsSurjective
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellCoordinateLinearRelation
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellCoordinatesBaseChange
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellsOfChartsPolynomial
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PlanarOfDenseCarriers
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AtlasLatticeCoordinates
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellAtlasFromLattice
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLatticeCoordinatesStepStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeStepAtlasPullbackStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeStepAtlasRefinementStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeStepAtlasPullback
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeStepAtlasRefinement
 
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField
@@ -148,3 +149,10 @@ theorem exists_isFlagCl : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     · exact mn' Z'' (mn Z'' hg' fun t' ht' => hH t' (Finset.mem_insert_of_mem ht')) (hH t (Finset.mem_insert_self _ _))
 
 end GlobalTheory.GrCl
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.ModuliIntegralCharts GlobalTheory.ShFam GlobalTheory.LocM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_flag_closure : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (Xo : ∀ l : Level H, Moduli Dw l) (p : ℕ) (W : ValuationSubring ℂ), p.Prime → (p : ℂ) ∈ W.nonunits → ∀ (Y : LocalSystem Xo p W) (i₀ : Idx H p), ∀ (Z : Mdl Y i₀) (s : Finset (Step Y i₀)), (∀ t ∈ s, ∃ f, IsMap Z t.B f) → ∃ Z', IsFlagCl Z s Z' := by
+  atlas_forward_decl GlobalTheory.GrCl.exists_isFlagCl

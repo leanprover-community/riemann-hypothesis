@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SumSumEqSumPair
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NatCastMulCoeffCharpolyRev
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -137,3 +138,11 @@ theorem trace_pow_eq_sum_smul_coeff_charpolyRev_pow :
         linear_combination (-1 : S) ^ m * key + (L ^ (m + 1)).trace * hsq
 
 end GlobalTheory
+end
+end
+
+open MvPolynomial GlobalTheory.FlagBundle GlobalTheory.GoodMetric GlobalTheory.GoodMetric.ChernSpan GlobalTheory.GoodMetric.PolyRep
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_trace_pow_eq_sum_smul_coeff_charpolyRev : ∀ n : ℕ, 1 ≤ n → ∃ c : ℕ → ℝ, ∀ (S : Type) [CommRing S] [Algebra ℝ S] (N : ℕ) (L : Matrix (Fin N) (Fin N) S), ∑ k ∈ Finset.range (n + 1), c k • ((Matrix.charpolyRev (-L)) ^ k).coeff n = (L ^ n).trace := by
+  atlas_forward_decl GlobalTheory.trace_pow_eq_sum_smul_coeff_charpolyRev_pow

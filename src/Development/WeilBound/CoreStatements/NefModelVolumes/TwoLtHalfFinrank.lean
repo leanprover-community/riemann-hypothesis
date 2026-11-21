@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightAbsEntrySumNo
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumAbsExOfLe
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImageHeightAddLogNonneg
 import Development.WeilBound.CoreStatements.NefModelVolumes.VolLLe
-import Formalism.LocalRingCardinality.HeightBoundGeFourthPowerRank
-import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
 
 set_option autoImplicit false
 set_option synthInstance.maxHeartbeats 400000

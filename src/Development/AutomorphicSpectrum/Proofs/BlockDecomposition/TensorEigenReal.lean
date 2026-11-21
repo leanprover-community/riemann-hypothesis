@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.CosetCount
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.TensEigSecond
@@ -142,3 +144,9 @@ theorem tensEigR : PositivityTheory.Rg.BcB.F.Tail.PExp.TensEigR := by
   exact core (A x0) B (lam x0) (hlam x0) mu hmu v hv (hAB x0)
 
 end GlobalTheory.CompanionTheory.TensEigSecond
+end
+
+namespace PositivityTheory.Rg.BcB.F.Tail.PExp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensor_eigen_real : PositivityTheory.Rg.BcB.F.Tail.PExp.TensEigR := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TensEigSecond.tensEigR

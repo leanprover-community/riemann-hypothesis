@@ -1,7 +1,6 @@
 import Mathlib
 import Formalism.SharpRestriction.SmoothDesignExistence.AdmissibleTopsMertens
 import Formalism.LocalToGlobal.GroupLattices.LinkGConcreteNoKer
-import Formalism.LocalToGlobal.ClassRec
 import Formalism.LocalToGlobal.TieTwRecOf
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.JoinSISel
 

@@ -5,7 +5,6 @@ import Formalism.SharpRestriction.SmoothDesignExistence.DesignExistsDes
 import Formalism.SharpRestriction.PageFix
 import Formalism.SharpRestriction.Divisibility.SmallFirstModulusBelowScale
 import Formalism.SharpRestriction.GlobalSchurBounds.WeightVectorSmallSharesEight
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PageDutiesOfClassSeven
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeightAdmissibleSmallSharesAtPoint
 
 namespace GlobalTheory.EX.DQ

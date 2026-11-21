@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.CharacterGerms.LatticeInclusionFormsInjective
 import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
 import Formalism.LocalToGlobal.CharacterGerms.CoeffIterateZero
 

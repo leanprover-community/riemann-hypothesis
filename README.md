@@ -6,8 +6,12 @@ A [Comparator](https://github.com/leanprover/comparator) setup for the Lean form
 claims a proof of the Riemann Hypothesis, and of GRH for Dirichlet L-functions, announced on
 2026-11-20 at <https://alpo.ge/remark.pdf>.
 
-This repository is the submission, unmodified, plus what Comparator needs and the submission
-does not include:
+This branch contains the [Proof Atlas simplification](https://riemann.fairway3games.com/simplification)
+and the existing Comparator setup. The release retains 138,819 Lean modules. The five theorem
+statements and proof bodies in `src/Main.lean` match the submission. A complete Lean build and
+axiom audit of this branch are pending. See the [simplification verification records](verification/simplification/README.md).
+
+The Comparator setup includes the following files.
 
 | File | What it is |
 |---|---|
@@ -68,5 +72,5 @@ limits of what a passing run shows.
 
 ## License
 
-The submission belongs to its author and was published without a license. It is mirrored here
-unmodified, for verification only.
+The submission belongs to its author and was published without a license. This fork presents
+the simplified source for verification.

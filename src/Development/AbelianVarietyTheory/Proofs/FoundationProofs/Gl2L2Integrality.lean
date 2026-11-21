@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.GL3MeanSquares.PrimeCountAsymptoticInProgressions
+import BuildAid.ForwardExisting
 
+section
 open Finset Filter Topology MeasureTheory
 
 namespace GlobalTheory.PsiTail
@@ -213,3 +215,8 @@ theorem psi_tail_bound : PartialSumIntegralBound := by
     _ = _ := by ring
 
 end GlobalTheory.PsiTail
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gl2a2_integral_bound_of_sums : Formalism.HermitianLattices.GL2a2.PartialSumIntegralBound := by
+  atlas_forward_decl GlobalTheory.PsiTail.psi_tail_bound

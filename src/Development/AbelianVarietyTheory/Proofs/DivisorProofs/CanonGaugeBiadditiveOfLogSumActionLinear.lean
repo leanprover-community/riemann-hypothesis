@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -150,3 +151,10 @@ theorem biadd_of_add_of_act : AddSt → ActSt → BiaddSt := by
     exact k
 
 end GlobalTheory.IsoTriv.GaugeBiadd
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.canonGaugeBiadditive_of_logSum_actionLinear : AddSt → ActSt → BiaddSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.GaugeBiadd.biadd_of_add_of_act

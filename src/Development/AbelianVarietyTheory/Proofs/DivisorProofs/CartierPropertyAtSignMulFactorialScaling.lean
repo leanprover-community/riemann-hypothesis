@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsFlatLift
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory GlobalTheory.DI
 
 namespace GlobalTheory.DI
@@ -49,3 +52,9 @@ theorem cartierAt_signFactorial : ∀ {E : Type} [AddCommGroup E] (p : ℕ) [Fac
       rw [hγ _ _ (AddSubgroup.zsmul_mem _ hx u), map_zsmul, ← mul_smul, mul_comm, hu]
 
 end GlobalTheory.DI
+end
+
+open GlobalTheory GlobalTheory.DI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cartierPropertyAt_sign_mul_factorial_scaling : ∀ {E : Type} [AddCommGroup E] (p : ℕ) [Fact p.Prime] (d γ : E →+ E) (γ' : E → E) (N T : ℕ → AddSubgroup E), (∀ x : E, p • x = 0) → (∀ a, p ≤ a → N a = ⊥) → (∀ a, ∀ x ∈ N a, γ' x = ((-1 : ℤ) ^ a * (a.factorial : ℤ)) • γ x) → CartierAt d γ N T → CartierAt d γ' N T := by
+  atlas_forward_decl GlobalTheory.DI.cartierAt_signFactorial

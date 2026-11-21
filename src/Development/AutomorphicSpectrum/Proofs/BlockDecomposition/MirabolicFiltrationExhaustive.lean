@@ -1,7 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.TwistedKernels.ExPhiPlusOnto
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix ValuativeRel GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun GlobalTheory.SplitWeil
@@ -123,3 +124,9 @@ theorem exhaust (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNo
 end GlobalTheory.CompanionTheory.BZMirExhaust
 
 end
+end
+
+open GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mirabolic_filtration_exhaustive : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.BZMir.Fun.Exhaust k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZMirExhaust.exhaust

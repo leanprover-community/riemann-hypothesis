@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.CosetCount
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.HeckeEnd
 
 open PositivityTheory.Rg.BcB.F.Tail.PExp
@@ -19,3 +21,9 @@ theorem hkE_fin : HkEFin := by
     exact hq (by simp [h])
 
 end GlobalTheory.CompanionTheory.HeckeEnd
+end
+
+namespace PositivityTheory.Rg.BcB.F.Tail.PExp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hecke_eigen_finite : PositivityTheory.Rg.BcB.F.Tail.PExp.HkEFin := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeckeEnd.hkE_fin

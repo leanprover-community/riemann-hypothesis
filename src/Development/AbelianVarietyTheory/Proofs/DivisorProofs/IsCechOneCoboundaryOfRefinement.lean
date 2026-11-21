@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsInvDer
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PreimageTranslate
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory GlobalTheory.KS
 
 namespace GlobalTheory.KS.Refine
@@ -39,3 +41,9 @@ theorem isCob_of_refine : ∀ {Y : Scheme.{0}} {I J : Type} (Uc : I → Y.Opens)
   linear_combination h1 - h2 + h3
 
 end GlobalTheory.KS.Refine
+end
+
+open AlgebraicGeometry CategoryTheory GlobalTheory.KS
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCechOneCoboundary_of_refinement : ∀ {Y : Scheme.{0}} {I J : Type} (Uc : I → Y.Opens) (c : GlobalTheory.KS.C1 Uc), GlobalTheory.KS.IsCoc Uc c → ∀ (V : J → Y.Opens) (σ : J → I), (∀ p, V p ≤ Uc (σ p)) → (⨆ p, V p = ⊤) → ∀ (B : ∀ p, Γ(Y, V p)), (∀ p p', GlobalTheory.KS.rsT (c (σ p) (σ p')) (V p ⊓ V p') = GlobalTheory.KS.rsT (B p') (V p ⊓ V p') - GlobalTheory.KS.rsT (B p) (V p ⊓ V p')) → GlobalTheory.KS.IsCob Uc c := by
+  atlas_forward_decl GlobalTheory.KS.Refine.isCob_of_refine

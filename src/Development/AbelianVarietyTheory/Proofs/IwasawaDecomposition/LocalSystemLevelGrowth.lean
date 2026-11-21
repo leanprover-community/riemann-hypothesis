@@ -1,13 +1,13 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.HeightBoundStatement.HTBoundSt
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LineModel
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalSystemModelMapStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalSystemModelExistsStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsDeRhamFlagStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LineModelTrueOfFalseStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalSystemModelExists
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsDeRhamFlag
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LineModelTrueOfFalse
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsModelWithRatioStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasRatioOfHasDRGaloisStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasRatioOfHasDRGalois
 
+section
 open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
 open Formalism.MainNotions.DIV.Cons (intO)
@@ -34,3 +34,11 @@ theorem exists_lineModel_hodgeTate : HTBoundSt → ∀ (E : Type) [Field E] [Num
   exact ⟨Z₂, h₂.trans h₁, hty₂.trans (funext hDR.1), GlobalTheory.T.lineModel_true_of_false E H Dw Xo p W Y i₀ hp hW Z₂ st x hP hL₂⟩
 
 end GlobalTheory.HTLine
+end
+
+open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.Geo GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.LocM GlobalTheory.TrueGeo GlobalTheory.Cartier
+open Formalism.MainNotions.DIV.Cons (intO)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_system_level_growth : HTBoundSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsGalois ℚ E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (Xo : ∀ l : Level H, Moduli Dw l) (p : ℕ) (W : ValuationSubring ℂ) (Y : LocalSystem Xo p W) (i₀ : Idx H p), p.Prime → (p : ℂ) ∈ W.nonunits → (N2 Y ∧ ∀ i, (Y i).SplitFibres ∧ (Y i).N3 ∧ (Y i).N4) → ∀ (i : Idx H p) (n : ℕ), i₀.l.Dvd i.l → i₀.c.F ≤ i.c.F → p ^ n ∣ i.l.A → 1 + 1 / ((p : ℝ) - 1) < n → ∀ st x, letterOf Dw st = some x → ∃ Z : Mdl Y i₀, Z.i = i ∧ (Z.ty = fun τ => Finset.range (Dw.mult τ + 1)) ∧ Nonempty (LineModel Z true st x) := by
+  atlas_forward_decl GlobalTheory.HTLine.exists_lineModel_hodgeTate

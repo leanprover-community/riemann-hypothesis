@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Small
 
 theorem log_tail_step (x : ℝ) (hx : 1 ≤ x) :
@@ -70,3 +72,8 @@ theorem log_tail :
     _ ≤ 2 := by linarith
 
 end GlobalTheory.CompanionTheory.Ar.Small
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_log_div_n_sq_le_two : ∀ S : Finset ℕ, (∀ n ∈ S, 2 ≤ n) → ∑ n ∈ S, Real.log n / ((n : ℝ) * ((n : ℝ) - 1)) ≤ 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Small.log_tail

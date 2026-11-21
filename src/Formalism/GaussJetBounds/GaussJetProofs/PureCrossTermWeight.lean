@@ -1,4 +1,3 @@
-import Formalism.GaussJetBounds.GenLogInverse
 import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 
 noncomputable section

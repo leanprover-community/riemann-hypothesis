@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.LocalFields.Interface
 import GroundTheory.LocalFields.Integers
 
 noncomputable section

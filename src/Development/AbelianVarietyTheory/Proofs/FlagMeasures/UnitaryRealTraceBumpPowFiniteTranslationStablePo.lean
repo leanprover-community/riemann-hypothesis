@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsCompactKH
+
+section
 open MeasureTheory Matrix Filter Topology
 
 noncomputable section
@@ -100,3 +102,10 @@ theorem peak_pow_polynomial : ∀ n m : ℕ, ∃ (N : ℕ) (b : Fin N → Matrix
     exact (Equiv.sum_comp e.symm (fun t => (∏ j, T j (t j)) * ∏ j, coord n (t j) g)).symm
 
 end GlobalTheory.KFinAvg
+end
+end
+
+open MeasureTheory Matrix Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryRealTraceBump_pow_finite_translation_stable_polys : ∀ n m : ℕ, ∃ (N : ℕ) (b : Fin N → Matrix (Fin n) (Fin n) ℂ → ℂ) (c : Fin N → ℂ), (∀ j, Continuous (b j)) ∧ (∀ g, ((GlobalTheory.KFinAvg.peak n g ^ m : ℝ) : ℂ) = ∑ j, c j * b j g) ∧ ∀ (a : Matrix (Fin n) (Fin n) ℂ) (j : Fin N), ∃ d : Fin N → ℂ, ∀ g, b j (a * g) = ∑ i, d i * b i g := by
+  atlas_forward_decl GlobalTheory.KFinAvg.peak_pow_polynomial

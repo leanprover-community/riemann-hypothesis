@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.OwnEvIntro
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.NcardPrimesOverOfSplitsCompl
 import Formalism.SharpRestriction.CuspSpanNormBounds.LocalBesselAndTopKernel
 import Formalism.SharpRestriction.CuspSpanNormBounds.AuxiliaryNormPrimes
@@ -6,8 +5,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.NonGenericAndKTwoTheorems
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.HermitianLattices.FinalMass
 import Formalism.GL3MeanSquares.GlobalBoundRefinementResults
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.MassRatioFormula
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CorollaryAOfPropositionA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CriticalThresholdLowerBound
 
 noncomputable section

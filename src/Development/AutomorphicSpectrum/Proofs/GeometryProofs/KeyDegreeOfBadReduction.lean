@@ -1,22 +1,22 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.KeyBadSt
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsThetaMeanSquareNorm
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.ZhangDimensionPushDownGrassmannianHeightBounds
 import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
 import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExactKeyFormulaProofStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PolarizedDataFieldExtensionStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ThetaFunctionArchimedeanFrameStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ThetaMultiplierQuadraticCharacterStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ThetaMultiplierQuadraticCharacter
 import Development.AutomorphicSpectrum.Proofs.AdelicProofs.GramMatrixPosDefConjugate
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LeWchartOne
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NonvanishingSectionFieldExtStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KeyInputFromPpDataStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KeyOverLieBasisDegreeStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KeyDegreePpDataStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeMetricFrameInnerStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NonvanishingSectionFieldExt
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KeyInputFromPpData
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KeyOverLieBasisDegree
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KeyDegreePpData
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeMetricFrameInner
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FundamentalDomainRiemannFormStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NormalizedDegreeGramDetStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NormalizedDegreeGramDet
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights TensorProduct
@@ -300,3 +300,13 @@ theorem keyDeg_of_keyBad : KeyBadSt → KeyDegSt := by
     nlinarith [mul_le_mul_of_nonneg_left hA hn.le, mul_le_mul_of_nonneg_left hhp hn.le, hS1, hS2]
 
 end GlobalTheory.CompanionTheory.Ar.Sl
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+open GroundTheory.Heights₂.Heights TensorProduct
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.key_degree_of_bad_reduction : KeyBadSt → KeyDegSt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Sl.keyDeg_of_keyBad

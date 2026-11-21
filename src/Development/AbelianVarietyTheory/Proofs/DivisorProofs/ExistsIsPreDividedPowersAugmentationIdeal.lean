@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -336,3 +338,10 @@ theorem exists_isPreDividedPowers_augmentation : ∀ (B : Type) [CommRing B] (Q 
   · rw [Q.augDP_of_mem (Q.e_succ_mem_aug k), Q.augExp_e, Q.coeff_expTerm (by omega), map_one, one_pow, one_mul]
 
 end GlobalTheory.PDA
+end
+end
+
+open DividedPowers GlobalTheory.Cris GlobalTheory.PDA
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isPreDividedPowers_augmentationIdeal : ∀ (B : Type) [CommRing B] (Q : PDPoly B), ∃ η : ℕ → Q.P → Q.P, IsPreDP Q.aug η ∧ ∀ n k : ℕ, η n (Q.e (k + 1)) = (n.uniformBell (k + 1) : Q.P) * Q.e (n * (k + 1)) := by
+  atlas_forward_decl GlobalTheory.PDA.exists_isPreDividedPowers_augmentation

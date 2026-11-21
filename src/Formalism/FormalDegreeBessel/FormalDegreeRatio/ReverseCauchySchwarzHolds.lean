@@ -1,4 +1,3 @@
-import Formalism.FormalDegreeBessel.StatementG
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 
 open Matrix

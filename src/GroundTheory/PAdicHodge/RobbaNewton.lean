@@ -1,6 +1,4 @@
 import Mathlib
-import GroundTheory.PAdicHodge.RobbaSeries
-import GroundTheory.PAdicHodge.HighIndexSingleZeroOne
 import GroundTheory.PAdicHodge.RobbaBounded
 set_option maxSynthPendingDepth 1
 

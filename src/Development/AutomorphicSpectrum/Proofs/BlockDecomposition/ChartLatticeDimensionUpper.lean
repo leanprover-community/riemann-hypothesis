@@ -1,23 +1,18 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNefSectionsAsymptotic
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsShiftSectionBound
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFujitaOne
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.Imports
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AmpleSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
-import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.NefRR
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteDimensionalChartLattice
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinrankChartLatQMono
 import Development.WeilBound.CoreStatements.HodgeTatePoints.KleimanInputUniverseZero
 import Development.WeilBound.CoreStatements.HodgeTatePoints.KTwins
-import Development.WeilBound.CoreStatements.HodgeTatePoints.A36
 import Development.WeilBound.CoreStatements.HodgeTatePoints.SiuaNum
 import Development.WeilBound.CoreStatements.HodgeTatePoints.SiubOf
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ExistsNeZeroOfIsSubvar
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftBirationalNef
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefPlusAmpleDegree
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ExistsLinearIndependentOfGenerates
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRegular
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry GroundTheory.Heights₂.Heights.HilbertSamuel Filter Topology
 
 namespace GlobalTheory.CompanionTheory.NefSections
@@ -285,3 +280,9 @@ theorem finrank_chartLatQ_nsmul_add_le : ∀ (K : Type) [Fintype K] (ι : K → 
     linarith
 
 end GlobalTheory.CompanionTheory.NefSections
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry GroundTheory.Heights₂.Heights.HilbertSamuel Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.chart_lattice_dimension_upper : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] [CharZero Ω] (y : (Σ k, ι k) → Ω) (D : ℕ) (a b : K → ℤ), 1 ≤ D → IsArithVar (mCoordIdeal y) (D + 1) → Birational y → NefOnGenericDeg (mCoordIdeal y) a → ∀ ε : ℝ, 0 < ε → ∀ᶠ n : ℕ in atTop, (Module.finrank ℚ (chartLatQ y ((n : ℤ) • a + b) 1) : ℝ) ≤ ((genDeg (mCoordIdeal y) D a : ℝ) + ε) * (n : ℝ) ^ D / (D.factorial : ℝ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.NefSections.finrank_chartLatQ_nsmul_add_le

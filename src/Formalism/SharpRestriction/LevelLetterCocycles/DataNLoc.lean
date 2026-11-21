@@ -1,6 +1,4 @@
 import Mathlib
-import Formalism.CoboundaryTransfers.Statement
-import Formalism.WeaklyAdmissibleFiltrations.Statement
 import Formalism.WeaklyAdmissibleFiltrations.StatementPC
 
 noncomputable section

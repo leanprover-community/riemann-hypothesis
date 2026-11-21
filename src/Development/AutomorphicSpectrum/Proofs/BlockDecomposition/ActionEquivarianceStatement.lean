@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.EquivariantSections.EquivSection
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.ConjugatedGeneratorGlRelation
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset Matrix MeasureTheory
@@ -215,3 +217,9 @@ theorem actEquiv : ActEquiv := by
       Formalism.REAL.Eword ε (List.ofFn w) (jfun Ψ T.w (T.op k (a ⟨l, y⟩))) g)
 
 end GlobalTheory.CompanionTheory.ActEquivK
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.action_equivariance_statement : PositivityTheory.RgDs.K.ActEquiv := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ActEquivK.actEquiv

@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.GroupIndex.RelProd
 
 theorem relIndex_prod_eq_mul {G₁ G₂ : Type} [Group G₁] [Group G₂]
@@ -23,3 +25,8 @@ theorem relIndex_prod_ne_zero_of_ne_zero :
   exact mul_ne_zero h₁ h₂
 
 end GlobalTheory.CompanionTheory.GroupIndex.RelProd
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prod_rel_index_ne_zero : ∀ (G₁ G₂ : Type) [Group G₁] [Group G₂] (I₁ K₁ : Subgroup G₁) (I₂ K₂ : Subgroup G₂), I₁.relIndex K₁ ≠ 0 → I₂.relIndex K₂ ≠ 0 → (I₁.prod I₂).relIndex (K₁.prod K₂) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GroupIndex.RelProd.relIndex_prod_ne_zero_of_ne_zero

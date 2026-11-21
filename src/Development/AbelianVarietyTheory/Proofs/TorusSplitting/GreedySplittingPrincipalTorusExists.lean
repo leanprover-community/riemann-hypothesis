@@ -7,7 +7,9 @@ import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ExistsShortIndepen
 import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ExistsShortIntegersSpan
 import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ThickSplitRealSpanBot
 import Development.AbelianVarietyTheory.Proofs.TorusSplitting.DivSqLeOfForallDivAddSqLe
+import BuildAid.ForwardExisting
 
+section
 open NumberField Complex ReciprocityTheory.ChartRestriction.G.I2
 
 namespace GlobalTheory
@@ -21,3 +23,8 @@ theorem greedy_splitting_exists : SplitStatement := by
   · exact ⟨⊥, thickSplit_bot E X DF P h⟩
 
 end GlobalTheory
+end
+
+open NumberField Complex ReciprocityTheory.ChartRestriction.G.I2
+theorem _root_.GlobalTheory.T.greedy_splitting_principal_torus_exists : SplitStatement := by
+  atlas_forward_decl GlobalTheory.greedy_splitting_exists

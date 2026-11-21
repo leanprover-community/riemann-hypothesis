@@ -1,13 +1,13 @@
 import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MainEqWire
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MainEqNml
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MainEqNormals
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NmlLineHolds
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NmlIntHolds
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NmlPtDCHolds
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NormalCount
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EqualWordsNonGenericEstimatesChainStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EqualWordsNonGenericEstimatesChain
 
+section
 open Formalism.L2.SG.Pf.MainEqSteps
 
 namespace GlobalTheory
@@ -20,3 +20,9 @@ theorem stepNormalsG_holds : StepNormalsG :=
     GlobalTheory.T.equalWords_nonGeneric_estimates_chain.2.2.2.1
 
 end GlobalTheory
+end
+
+open Formalism.L2.SG.Pf.MainEqSteps
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalCount_genericRow : StepNormalsG := by
+  atlas_forward_decl GlobalTheory.stepNormalsG_holds

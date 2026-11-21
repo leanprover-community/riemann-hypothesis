@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.RSEuler
 
 open Nat Finset
@@ -444,3 +446,8 @@ theorem eulerProduct_integral (hB : B0) : E1 := by
 end GlobalTheory.CompanionTheory.RSEuler
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eisenstein_basic_first : Ad3.R.B0 → Ad3.R.E1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RSEuler.eulerProduct_integral

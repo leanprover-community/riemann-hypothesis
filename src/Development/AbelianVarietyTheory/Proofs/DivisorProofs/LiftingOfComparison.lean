@@ -1,11 +1,11 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsValuationExtensionFieldStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicNormLeOneIffValuationStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsValuationExtensionField
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicNormLeOneIffValuation
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteSubextensionPointStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelChangeLocallyFiniteTypeStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelChangeLocallyFiniteType
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteDvrExtensionStatement
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -115,3 +115,9 @@ theorem liftSt_of_cmpSt (hC : CmpSt) : LiftSt := by
 end GlobalTheory.FlatModel
 
 end
+end
+
+open GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lifting_of_comparison : CmpSt → LiftSt := by
+  atlas_forward_decl GlobalTheory.FlatModel.liftSt_of_cmpSt

@@ -5,8 +5,9 @@ import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.SlopeStep
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensionalMram
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsIsConjAtOfEmbedding
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HermitianLatticeMajorantStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CmLevelHermitianIntegralStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HermitianLatticeMajorant
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CmLevelHermitianIntegral
+
 open Module NumberField Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Rows Formalism.L2.Indef
 open scoped Matrix ComplexOrder
 

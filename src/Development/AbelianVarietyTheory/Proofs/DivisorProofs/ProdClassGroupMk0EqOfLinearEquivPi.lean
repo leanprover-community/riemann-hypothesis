@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped nonZeroDivisors
 
 namespace GlobalTheory.DetClass
@@ -143,3 +146,9 @@ theorem GlobalTheory.prod_classGroup_mk0_eq_of_pi_linearEquiv (R : Type) [CommRi
   rw [← map_prod, ← map_prod, ClassGroup.mk0_eq_mk0_iff]
   refine ⟨x, y, hx, hy, ?_⟩
   simpa only [Submonoid.coe_finsetProd] using hxy
+end
+
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prod_classGroup_mk0_eq_of_linearEquiv_pi : ∀ (R : Type) [CommRing R] [IsDedekindDomain R] (ι : Type) [Fintype ι] (I J : ι → (Ideal R)⁰), Nonempty (((i : ι) → (I i : Ideal R)) ≃ₗ[R] ((i : ι) → (J i : Ideal R))) → ∏ i, ClassGroup.mk0 (I i) = ∏ i, ClassGroup.mk0 (J i) := by
+  atlas_forward_decl GlobalTheory.prod_classGroup_mk0_eq_of_pi_linearEquiv

@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOfFinOrderOfIsOfFinOrderMapRingHomStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOfFinOrderOfIsOfFinOrderMapRingHom
 
+section
 set_option autoImplicit false
 open NumberField
 
@@ -134,3 +135,8 @@ theorem GlobalTheory.pic_isOfFinOrder_of_finite_int : ∀ (B : Type) [CommRing B
   by_cases hc : CharZero B
   · exact GlobalTheory.PicDom.isOfFinOrder_of_charZero B M
   · exact GlobalTheory.PicDom.isOfFinOrder_of_not_charZero B hc M
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pic_isOfFinOrder_of_finite_int' : ∀ (B : Type) [CommRing B] [IsDomain B] [Module.Finite ℤ B] (M : CommRing.Pic B), IsOfFinOrder M := by
+  atlas_forward_decl GlobalTheory.pic_isOfFinOrder_of_finite_int

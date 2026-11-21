@@ -1,7 +1,5 @@
 import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.Imports
-import ReciprocityTheory.L2DbarEstimates.BasicIdentity.BasicIdentityStatement
 import ReciprocityTheory.L2DbarEstimates.BasicIdentity.HasCompactSupportDTw
-import ReciprocityTheory.L2DbarEstimates.BasicIdentity.HalfSumNormSubSq
 import ReciprocityTheory.L2DbarEstimates.BasicIdentity.HasCompactSupportOfVanish
 import ReciprocityTheory.L2DbarEstimates.BasicIdentity.TstarNormSq
 

@@ -1,6 +1,5 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.HarmonicAnnulusMaximumPrincipleStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntegralAngMeas
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HarmonicAnnulusMaximumPrinciple
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshPoisson
 
 open MeasureTheory Filter Topology GlobalTheory.CompanionTheory.Ar.PB.Flat

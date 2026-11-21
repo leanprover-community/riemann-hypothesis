@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.DictInf
 import Development.AutomorphicArithmetic.LocalEmbeddings.OppLagr
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.RgEisCM
@@ -148,3 +149,9 @@ theorem cmGood : StdGood → Dict → DictInf → CMGood := by
     exact ResEtaPow.map_conj hξ hres x
 
 end GlobalTheory.CompanionTheory.RgEisCM
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.constant_multiplier_good : PositivityTheory.RgEis.StdGood → PositivityTheory.RgEis.Dict → PositivityTheory.RgEis.DictInf → PositivityTheory.RgEis.CMGood := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEisCM.cmGood

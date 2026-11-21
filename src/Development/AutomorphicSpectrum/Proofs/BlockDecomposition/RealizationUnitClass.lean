@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LevelChainValuations.OneSTr
+import BuildAid.ForwardExisting
 
+section
 open CrystallineSemistableComparison.Pb.Kap
 
 namespace GlobalTheory.CompanionTheory.KapUnit
@@ -48,3 +50,9 @@ theorem rho_one_eval : ∀ {Λ A B K : Type} [CommRing Λ] [CommRing A] [CommRin
   exact congrArg (· * C.o (φ (bs s))) (congrFun h4 s)
 
 end GlobalTheory.CompanionTheory.KapUnit
+end
+
+open CrystallineSemistableComparison.Pb.Kap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realization_unit_class : ∀ {Λ A B K : Type} [CommRing Λ] [CommRing A] [CommRing B] [Field K] (C : Chain.{1} Λ A B K) (hC : C.Good) (P : Cup C), P.Good → ∀ h : Module.Dual K (C.V 0) →+ B, C.Rho P.oneS h → ∀ φ : Module.Dual K (C.V 0), h φ = C.o (φ P.oneV) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KapUnit.rho_one_eval

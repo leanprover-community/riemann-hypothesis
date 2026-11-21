@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open scoped TensorProduct
 open Algebra.TensorProduct (includeRight)
 
@@ -168,3 +170,8 @@ theorem fixedRing_traceOne_firstOrder : PositivityTheory.Rg.Tf.Loc.N2 := by
   exact key
 
 end GlobalTheory.CompanionTheory.NormLoc
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_map_second_property : PositivityTheory.Rg.Tf.Loc.N2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.NormLoc.fixedRing_traceOne_firstOrder

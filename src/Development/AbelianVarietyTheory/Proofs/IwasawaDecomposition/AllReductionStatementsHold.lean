@@ -4,24 +4,21 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.Ha
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HarishChandraModulesOn
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DiscreteSeriesUpqUniqueOfClassification
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MultW
-import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.WeilRepresentationUnitaryPair
-import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DsExistsOfDiscreteSeriesExists
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenUsedOfCenReal
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SettingsFormsExistList
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SecondBoundOfPrimitiveStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SecondBoundOfPrimitive
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SeriesCoverOfPrimitiveStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MultiplicityOfPrimitiveStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SRatOfIsotInternal
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReductionToLocalLanglandsAStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReductionSeriesB0Statement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReductionSeriesB2Statement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReductionSeriesB0
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReductionSeriesB2
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsEigTrue
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SEta
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinitenessOfPublishedInputsStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StepsPin
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ParameterStatementAllStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsotOverRows
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SXdAll
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 
 namespace GlobalTheory.HeightCounting.Up
@@ -43,3 +40,9 @@ theorem reductionStatements_of_casselmanWallach : GlobalTheory.Published.Casselm
   exact ⟨GlobalTheory.T.settingsFormsExistList_of_localLanglands hP hS hL c, GlobalTheory.T.second_bound_of_primitive hP hS hL c, GlobalTheory.T.moduliPointsExistList_of_localLanglands hP hS hL c, hFin.2 c⟩
 
 end GlobalTheory.HeightCounting.Up
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.all_reduction_statements_hold : GlobalTheory.Published.CasselmanWallach → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists → GlobalTheory.Published.DiscreteSeriesUpqUnique → HypH → PrN → SerN → ∀ hL : GlobalTheory.Published.LocalLanglandsGL, ArchCmp hL → PtSt hL → SA hL ∧ SMt ∧ SRat hL ∧ SCusp hL ∧ SettingsFormsExist hL ∧ SeriesExist hL ∧ SB2 hL ∧ SC hL ∧ SFin hL ∧ ∀ cDep : ℝ, SettingsFormsExistList hL cDep ∧ SeriesExistList hL cDep ∧ ModuliPointsExistList hL cDep ∧ SFinl hL cDep := by
+  atlas_forward_decl GlobalTheory.HeightCounting.Up.reductionStatements_of_casselmanWallach

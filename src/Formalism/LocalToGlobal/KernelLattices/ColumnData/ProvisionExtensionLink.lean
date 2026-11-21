@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.LocalToGlobal.KernelLattices.ColumnData
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.StdOKP
 
 noncomputable section

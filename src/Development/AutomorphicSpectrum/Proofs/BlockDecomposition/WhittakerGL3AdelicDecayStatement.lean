@@ -2,7 +2,8 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerGL3AdelicDecay
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TransposeInvPropertiesStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerTransformPropertiesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CstD
+import BuildAid.ForwardExisting
+
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
 open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
@@ -20,4 +21,4 @@ theorem _root_.GlobalTheory.T.whittaker_GL3_adelic_decay : ∀ W : G3 → ℂ, (
       ‖(tr W) (dg (a * b) b 1 * k)‖ ≤ C / ((IdeleGroup.ideleModule ℚ a : ℝ) * IdeleGroup.ideleModule ℚ b) ^ T /
         ((1 + ‖(a : 𝔸[ℚ]).1 w‖) * (1 + ‖(b : 𝔸[ℚ]).1 w‖)) ^ N ∧
       ((tr W) (dg (a * b) b 1 * k) ≠ 0 → (a : 𝔸[ℚ]).2 ∈ Ω ∧ (b : 𝔸[ℚ]).2 ∈ Ω)) := by
-  first | exact @GlobalTheory.CompanionTheory.UnfoldingAlt.TrGauge.tr_gauge | exact GlobalTheory.CompanionTheory.UnfoldingAlt.TrGauge.tr_gauge | (intros; apply GlobalTheory.CompanionTheory.UnfoldingAlt.TrGauge.tr_gauge <;> assumption)
+  atlas_forward_decl GlobalTheory.CompanionTheory.UnfoldingAlt.TrGauge.tr_gauge

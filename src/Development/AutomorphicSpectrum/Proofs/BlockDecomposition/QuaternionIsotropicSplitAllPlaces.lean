@@ -1,6 +1,4 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PlaneSupports.PlaneSupp
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianPlaneStrongApprox
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeakApproximationIntegral
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StrongApproxClosureMul
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SupportProductOverPlaces

@@ -1,14 +1,13 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableHermC
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousBlkM
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DetWEqNormSqDetOneAddIStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneLeDetWStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DetWBlockMatrixFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralPowerLineScalingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralLinearChangeVariablesComplexStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralComplexPowerFiniteStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianHaarBlockDecompositionStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DetWEqNormSqDetOneAddI
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneLeDetW
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DetWBlockMatrixFormula
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralPowerLineScaling
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralLinearChangeVariablesComplex
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralComplexPowerFinite
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianHaarBlockDecomposition
 
+section
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
 open MeasureTheory Matrix
@@ -121,3 +120,13 @@ theorem hua_integrable : ∀ (n : ℕ) (s : ℝ), (n : ℝ) - 1 / 2 < s → ∀ 
       (ENNReal.mul_lt_top (lt_top_iff_ne_top.2 hK) h4)
 
 end GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt
+end
+end
+
+open MeasureTheory
+open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hua_determinant_integrable_of_lt : ∀ (n : ℕ) (s : ℝ), (n : ℝ) - 1 / 2 < s → ∀ ν : Measure (hermC n), ν.IsAddHaarMeasure →
+  Integrable (fun b : hermC n => detW (b : Matrix (Fin n) (Fin n) ℂ) ^ (-s)) ν := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelND.Integ.Arch.HuaInt.hua_integrable

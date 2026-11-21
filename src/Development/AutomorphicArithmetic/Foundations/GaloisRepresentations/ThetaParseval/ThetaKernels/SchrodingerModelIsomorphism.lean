@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsThetaFunctionThetaTransformRationalCoordsCMStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.IsThetaFunOFThVK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -20,5 +18,5 @@ theorem _root_.GlobalTheory.T.schrodinger_model_isomorphism : ∀ (F E : Type) [
           e (Formalism.IndefR.DatumF.ratWF x) = (GlobalTheory.SWQ.rat y, GlobalTheory.SWQ.rat z)) →
         ∀ Φ ∈ GlobalTheory.WeilM.schA F (Fin N),
           Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ (GlobalTheory.ThetaTransform.thV B.ψ Φ ∘ e) := by
-  first | exact @_root_.GlobalTheory.ThetaTransformF.isThetaFunOF_thV_k | exact _root_.GlobalTheory.ThetaTransformF.isThetaFunOF_thV_k | (intros; apply _root_.GlobalTheory.ThetaTransformF.isThetaFunOF_thV_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.ThetaTransformF.isThetaFunOF_thV_k
 end

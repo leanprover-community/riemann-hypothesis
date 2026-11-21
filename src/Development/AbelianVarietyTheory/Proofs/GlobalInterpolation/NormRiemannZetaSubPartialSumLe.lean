@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DifferentiableAtFractInt
+import BuildAid.ForwardExisting
+
+section
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology
 open Set
 
@@ -113,3 +116,9 @@ theorem norm_zeta_sub_sum_le :
   exact mul_le_mul_of_nonneg_left (norm_tailInt_le hs hM0) (norm_nonneg s)
 
 end GlobalTheory.ZetaPartialSum
+end
+
+open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_riemannZeta_sub_partial_sum_le : ∀ s : ℂ, 0 < s.re → s ≠ 1 → ∀ M : ℕ, 1 ≤ M → ‖riemannZeta s - ∑ n ∈ Finset.Icc 1 M, (n : ℂ) ^ (-s) - (M : ℂ) ^ (1 - s) / (s - 1)‖ ≤ ‖s‖ / s.re * (M : ℝ) ^ (-s.re) := by
+  atlas_forward_decl GlobalTheory.ZetaPartialSum.norm_zeta_sub_sum_le

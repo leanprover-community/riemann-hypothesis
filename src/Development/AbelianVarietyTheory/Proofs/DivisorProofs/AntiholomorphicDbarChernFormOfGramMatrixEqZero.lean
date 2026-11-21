@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsTypeIsRealConst
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClosedFormsMulClosed
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -169,3 +169,14 @@ theorem dbarAt_chernAt : ∀ {n : ℕ} {r : Type} [Fintype r] [DecidableEq r] (H
   exact hm.2
 
 end GlobalTheory.CxForm.ChernDbar
+end
+end
+
+open Set Matrix Filter Topology
+open GlobalTheory.HermFrame GlobalTheory.CxForm
+open ReciprocityTheory.L2DbarEstimates (V)
+open GlobalTheory.GoodMetric (coordVec chernPoly curvPoly)
+open scoped ContDiff ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.antiholomorphicDbar_chernFormOfGramMatrix_eq_zero : ∀ {n : ℕ} {r : Type} [Fintype r] [DecidableEq r] (H : V n → Matrix r r ℂ) (s : Set (V n)), IsOpen s → (∀ a b, ContDiffOn ℝ ∞ (fun v => H v a b) s) → (∀ v ∈ s, IsUnit (H v).det) → ∀ (j : ℕ), ∀ v ∈ s, dbarAt (fun w => (chernAt H w j : Alt n)) v = 0 := by
+  atlas_forward_decl GlobalTheory.CxForm.ChernDbar.dbarAt_chernAt

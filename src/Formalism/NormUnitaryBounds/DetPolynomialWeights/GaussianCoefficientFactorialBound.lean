@@ -1,4 +1,3 @@
-import Formalism.NormUnitaryBounds.Statement
 import Formalism.NormUnitaryBounds.DetPolynomialWeights.IntegralExpInt
 
 open MeasureTheory Complex

@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
@@ -375,3 +377,8 @@ theorem rankinSelberg_measure_facts : Ad3.R.G1a := by
 end GlobalTheory.CompanionTheory.RS
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fundamental_domain_integral_central_invariance : Ad3.R.G1a := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RS.rankinSelberg_measure_facts

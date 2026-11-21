@@ -1,5 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.FiniteComplete
@@ -26,3 +29,9 @@ theorem isAdicComplete_of_finite : ∀ (O M : Type) [CommRing O] [IsLocalRing O]
   exact (AdicCompletion.ofTensorProduct_bijective_of_finite_of_isNoetherian I M).comp e.bijective
 
 end GlobalTheory.CompanionTheory.FiniteComplete
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_module_adic_complete : ∀ (O M : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [AddCommGroup M] [Module O M] [Module.Finite O M], IsAdicComplete (IsLocalRing.maximalIdeal O) M := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FiniteComplete.isAdicComplete_of_finite

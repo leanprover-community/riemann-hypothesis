@@ -5,7 +5,6 @@ import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceMassFinit
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSheetFormCompare
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffGradient
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.LogIntegrableOnOfLogIntegrable
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights

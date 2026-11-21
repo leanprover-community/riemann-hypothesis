@@ -1,5 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.MeasurableCompInfGL
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Classical MeasureTheory NumberField
@@ -84,3 +86,10 @@ theorem isRapidInf_colU : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyCom
     exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by linarith) (hH x) N) (norm_nonneg _)
 
 end GlobalTheory.JSW
+end
+end
+
+open Classical MeasureTheory NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_rapid_decay_column : ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {a : ℕ} (r : ℕ) (f : SchwartzMap (Fin a → GlobalTheory.CuspRep.Cinf E) ℂ), GlobalTheory.JSW.IsRapidInf (volume : Measure (Fin a → GlobalTheory.CuspRep.Cinf E)) (fun x => f x) (GlobalTheory.JSW.colU r) := by
+  atlas_forward_decl GlobalTheory.JSW.isRapidInf_colU

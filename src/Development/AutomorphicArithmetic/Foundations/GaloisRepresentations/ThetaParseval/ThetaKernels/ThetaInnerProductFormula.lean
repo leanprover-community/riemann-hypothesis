@@ -1,6 +1,4 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsThetaFunctionDoublingThetaTensorCMStatement
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.SplitStab
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.HalfIndexLattices.IsLatRepL
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.MainK
 
 set_option synthInstance.maxHeartbeats 200000
@@ -16,5 +14,5 @@ theorem _root_.GlobalTheory.T.theta_inner_product_formula : ∀ (F E : Type) [Fi
       ∀ f₁ f₂ : Formalism.IndefR.DatumF.WOF F E nS nT → ℂ,
         Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ f₁ → Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ f₂ →
         Formalism.IndefR.DatumF.IsThetaFunOF σ JS (GlobalTheory.WeilSchrodinger.DblTargetF.dblG JT) ξ₀ B.ψ (GlobalTheory.DblTargetDelta.deltaT f₁ f₂) := by
-  first | exact @_root_.GlobalTheory.DblTargetThetaF.main_k | exact _root_.GlobalTheory.DblTargetThetaF.main_k | (intros; apply _root_.GlobalTheory.DblTargetThetaF.main_k <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.DblTargetThetaF.main_k
 end

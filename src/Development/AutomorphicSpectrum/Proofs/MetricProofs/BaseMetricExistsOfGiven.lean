@@ -2,24 +2,23 @@ import Mathlib
 import Development.AutomorphicSpectrum.Statements.TowerExistence.GoodTowerExistsX
 import Development.AutomorphicSpectrum.Statements.MetricStatements.ExistsFlagModelBaseMetric
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.RootOnFund
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.OmHeightslockG
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdaptedAtlasSncSectionStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdaptedAtlasSncSection
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsClosedSectionBoundaryStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BoundaryPointsClosedStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsIffCentresStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BoundaryPointsClosed
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CmHostRankBoundsStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsArithVarOfSncModelStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LowerBoundHeightOnBoundaryStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsFiniteFrameCoverStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelFrameHeightComparisonStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelGlobalHeightIdentityStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.CutoffFunctionOnCompatibleAtlasStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockGBlockDiagPosDefStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsLocalHoloIsPeriodGramBlockGBaseGramStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelHeightLowerEstimateStatement
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelResolutionIntegrabilityStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsArithVarOfSncModel
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LowerBoundHeightOnBoundary
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsFiniteFrameCover
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelFrameHeightComparison
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelGlobalHeightIdentity
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.CutoffFunctionOnCompatibleAtlas
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockGBlockDiagPosDef
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsLocalHoloIsPeriodGramBlockGBaseGram
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelHeightLowerEstimate
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelResolutionIntegrability
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.BMx
@@ -186,3 +185,10 @@ theorem baseMetricExists_of_given : Given → PB.BaseMetricExists := by
     exact ⟨mem_bdry_conj_iff (NonPluckerBlocks M.blk) (baseIdx ι M.blk) M.Ω M.x n bd Rb s hbdry htor hconj x x' ho, hrconj x x' ho⟩
 
 end GlobalTheory.CompanionTheory.Ar.PB.BMx
+end
+end
+
+open AlgebraicGeometry CategoryTheory NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.base_metric_exists_of_given : Given → PB.BaseMetricExists := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.BMx.baseMetricExists_of_given

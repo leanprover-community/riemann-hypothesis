@@ -1,5 +1,7 @@
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.ConvGrOf
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.RgEis.UnitaryConv
@@ -117,3 +119,9 @@ theorem convU_of_parLaw : ParLaw → ConvU := by
       (hconv Set.univ y hu.2.2 hGu (hRu y (lt_of_le_of_lt (le_max_right _ _) hy)))
 
 end GlobalTheory.CompanionTheory.RgEis.UnitaryConv
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unipotent_convergence_of_parabolic : PositivityTheory.RgEis.ParLaw → PositivityTheory.RgEis.ConvU := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEis.UnitaryConv.convU_of_parLaw

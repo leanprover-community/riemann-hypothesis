@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharpolyEqPowOfIrreducible
+import BuildAid.ForwardExisting
 
+section
 open Polynomial
 
 namespace GlobalTheory.CompanionTheory.Centraliser
@@ -117,3 +119,8 @@ theorem a1 : PositivityTheory.Rg.Tf.Loc.A1 := by
   rw [Matrix.mulVec_mulVec, hc.eq, ← Matrix.mulVec_mulVec, ← hp, ← act_mul, mul_comm, act_mul]
 
 end GlobalTheory.CompanionTheory.Centraliser
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.separable_norm_commuting : PositivityTheory.Rg.Tf.Loc.A1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Centraliser.a1

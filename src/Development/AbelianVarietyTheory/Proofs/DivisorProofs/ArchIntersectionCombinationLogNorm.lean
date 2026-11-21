@@ -6,6 +6,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernPartCombinatio
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightedIntegralChernCombinationStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchIntegrableRegularVarietyStatement
 
+section
 set_option autoImplicit false
 
 open CategoryTheory AlgebraicGeometry MvPolynomial MeasureTheory
@@ -84,3 +85,17 @@ theorem archInt_sum_eq_wInt : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIn
   rw [wInt_sum_lin_pow hX σ L (g σ) s c fun n _ ε => (key n σ).2 ε]
 
 end GlobalTheory.ChernPoly
+end
+
+open CategoryTheory AlgebraicGeometry MvPolynomial MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxForm GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.Cartier GlobalTheory.CovTest GlobalTheory.CovTest.SwapLine GlobalTheory.LineForm
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.arch_intersection_combination_log_norm : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ) (hX : IsRegVar p D) (ι : Type) [Fintype ι] (L : ι → HermLB p) (N : HermLB p)
+    (r : N.B.ι → X.functionFieldˣ) (hr : IsRatSec N.B r) (g : ∀ σ : k →+* ℂ, CxPts p σ → ℝ),
+    (∀ σ, ∀ y ∈ offSupp p σ (N.div hr), logNorm (N.φ σ) r y = g σ y) →
+    ∀ (s : Finset (ι → ℤ)) (c : (ι → ℤ) → ℝ),
+      ∑ n ∈ s, c n * (comb L n).archInt N D hr =
+        ∑ᶠ σ : k →+* ℂ, wInt (hX.atlas σ) (g σ) (evalF (hX.atlas σ) (fun i => c1F hX σ (L i)) (∑ n ∈ s, c n • lin (fun i => (n i : ℝ)) ^ D)) := by
+  atlas_forward_decl GlobalTheory.ChernPoly.archInt_sum_eq_wInt

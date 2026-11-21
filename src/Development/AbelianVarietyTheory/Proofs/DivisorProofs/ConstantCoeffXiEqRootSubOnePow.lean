@@ -1,6 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PrismaticDieudonnePerfd
 
+section
 open Ideal WittVector Polynomial
 
 namespace GlobalTheory.Sandwich
@@ -28,3 +29,9 @@ theorem constantCoeff_xi : ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] 
   rw [map_pow, WittVector.constantCoeff_apply, WittVector.teichmuller_coeff_zero]
 
 end GlobalTheory.Sandwich
+end
+
+open Ideal WittVector
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.constantCoeff_xi_eq_root_sub_one_pow : ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] (ε : PreTilt O p), WittVector.constantCoeff (GlobalTheory.Sandwich.xi ε) = (GlobalTheory.Sandwich.root ε - 1) ^ (p - 1) := by
+  atlas_forward_decl GlobalTheory.Sandwich.constantCoeff_xi

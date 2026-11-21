@@ -5,12 +5,9 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TateUnrami
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsCrystalPairing
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.PolarisationModuleIndex
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ConjugateOrderData
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPlaceRing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SzPeriodsOfTangent
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EventuallyOfForall
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsPullByCompAlt
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomLieEquivScalarTmul
 
 set_option autoImplicit false
 

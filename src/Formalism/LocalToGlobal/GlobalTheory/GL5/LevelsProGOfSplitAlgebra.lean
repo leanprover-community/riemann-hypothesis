@@ -5,7 +5,6 @@ import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Transport
 import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.ProGTransfer
 import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.OneAddPowOfSq
 import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.SmallOrderPrimeLogSumBound
-import Formalism.LocalToGlobal.GroupLattices.LevelGatherings.GramDetIsUnit
 import Formalism.LocalToGlobal.GlobalTheory.GL5.Statement
 
 noncomputable section

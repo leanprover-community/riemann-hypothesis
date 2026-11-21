@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PadicSubsetSums.CentralIdempotents.IsConstituent
 import Formalism.PadicSubsetSums.CentralIdempotents.GaloisConjCentralIdempotent
 
 open Formalism.IrreducibleCountingLemmas.TYPES CategoryTheory Polynomial

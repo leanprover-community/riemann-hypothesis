@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.ExpToSat
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardResidueEqQV
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix
@@ -58,3 +59,9 @@ theorem GlobalTheory.CompanionTheory.DlBridgeAt.dlBridge : PositivityTheory.Rg.B
   rw [← Complex.ofReal_inv, ← Complex.ofReal_mul, h5]
 
 end
+end
+
+namespace PositivityTheory.Rg.BcB.F.Tail.PExp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.delta_blocks_exponent : PositivityTheory.Rg.BcB.F.Tail.PExp.DlBridge := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DlBridgeAt.dlBridge

@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 
 namespace GlobalTheory.GensModNsmul
@@ -92,3 +95,9 @@ theorem exists_gens_mod_nsmul (E : Type) [Field E] [NumberField E] (r M : ℕ)
       Submodule.coe_smul_of_tower] using h2
 
 end GlobalTheory.GensModNsmul
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_gens_mod_nsmul_of_fg_numberField : ∀ (E : Type) [Field E] [NumberField E] (r M : ℕ) (Λ : Submodule (𝓞 E) (Fin r → E)), 1 ≤ M → Λ.FG → ∃ e : Fin r → Fin r → E, (∀ i, e i ∈ Λ) ∧ ∀ x ∈ Λ, ∃ o : Fin r → 𝓞 E, ∃ y ∈ Λ, x = ∑ i, o i • e i + M • y := by
+  atlas_forward_decl GlobalTheory.GensModNsmul.exists_gens_mod_nsmul

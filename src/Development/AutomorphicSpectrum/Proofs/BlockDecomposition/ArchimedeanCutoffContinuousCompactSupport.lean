@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThPr
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PureAdelicFunctionFormulaStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BoundedDenominatorsCompactIdeleSetStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BoundedDenominatorsCompactIdeleSet
 
+section
 noncomputable section
 
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter GroundTheory.Global PositivityTheory.Rg.Base1 GlobalTheory.CompanionTheory.BasePsi
@@ -34,3 +34,11 @@ theorem phiA_test : ∀ (F : Type) [Field F] [NumberField F] (G : Ainf F → ℝ
 end GlobalTheory.CompanionTheory.BasePsi
 
 end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter GroundTheory.Global PositivityTheory.Rg.Base1 GlobalTheory.CompanionTheory.BasePsi
+open scoped ENNReal NNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.archimedean_cutoff_continuous_compact_support : ∀ (F : Type) [Field F] [NumberField F] (G : Ainf F → ℝ) (a : (AF F)ˣ), Continuous G → HasCompactSupport G →
+    Continuous (phiA G a) ∧ HasCompactSupport (phiA G a) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BasePsi.phiA_test

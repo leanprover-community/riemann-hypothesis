@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Geomet
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocStOfLoc
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GeoTiedPGraft
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.VarietyWithModels
-import Formalism.LocalToGlobal.LatticeGeometry.GeoTiedP
 
 noncomputable section
 

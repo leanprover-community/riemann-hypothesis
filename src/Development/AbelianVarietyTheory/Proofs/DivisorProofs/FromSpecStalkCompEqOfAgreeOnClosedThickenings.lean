@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
+import BuildAid.ForwardExisting
+
+section
 open AlgebraicGeometry CategoryTheory Limits IsLocalRing
 open ReciprocityTheory.ChartRestriction.G.Out
 
@@ -117,3 +120,10 @@ theorem fromSpecStalk_comp_eq : ∀ (R : Type) [CommRing R] [IsLocalRing R] [IsN
   simpa only [Category.assoc] using this
 
 end GlobalTheory.ThickStalkEq
+end
+
+open AlgebraicGeometry CategoryTheory Limits IsLocalRing
+open ReciprocityTheory.ChartRestriction.G.Out
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fromSpecStalk_comp_eq_of_agree_on_closedThickenings : ∀ (R : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (G : Over (Spec (CommRingCat.of R))), LocallyOfFiniteType G.hom → ∀ (b b' : G ⟶ G), (∀ e : ℕ, (Over.pullback (thick R (maximalIdeal R) e)).map b = (Over.pullback (thick R (maximalIdeal R) e)).map b') → ∀ x : G.left, G.hom x = closedPoint R → G.left.fromSpecStalk x ≫ b.left = G.left.fromSpecStalk x ≫ b'.left := by
+  atlas_forward_decl GlobalTheory.ThickStalkEq.fromSpecStalk_comp_eq

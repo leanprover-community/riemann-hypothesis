@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormMulApplyLeOne
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.JR Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -40,3 +43,10 @@ theorem isClosedEmbedding_emb (F : Type) [NontriviallyNormedField F] (r : ℕ) :
   exact hΦ.comp Units.isClosedEmbedding_embedProduct
 
 end GlobalTheory.JR.Step.EmbClosed
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isClosedEmbedding_diagOneGeneralLinearEmbedding : ∀ (F : Type) [NontriviallyNormedField F] (r : ℕ), Topology.IsClosedEmbedding (GlobalTheory.JR.Step.emb r F) := by
+  atlas_forward_decl GlobalTheory.JR.Step.EmbClosed.isClosedEmbedding_emb

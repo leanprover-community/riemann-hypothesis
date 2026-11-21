@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 open scoped TensorProduct
 
@@ -55,3 +58,10 @@ theorem free_of_principal_maximalIdeal_of_ker_smul_le :
   exact hzero n (hann n hxn)
 
 end GlobalTheory
+end
+
+open NumberField
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.free_of_principal_maximalIdeal_of_ker_smul_le' : ∀ (R : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (x : R), IsLocalRing.maximalIdeal R = Ideal.span {x} → ∀ (N : Type 1) [AddCommGroup N] [Module R N], Module.Finite R N → (∀ n : N, x • n = 0 → n ∈ Ideal.span {a : R | x * a = 0} • (⊤ : Submodule R N)) → Module.Free R N := by
+  atlas_forward_decl GlobalTheory.free_of_principal_maximalIdeal_of_ker_smul_le

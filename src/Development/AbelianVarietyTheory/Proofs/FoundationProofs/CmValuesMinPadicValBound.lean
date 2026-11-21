@@ -1,5 +1,7 @@
 import Formalism.PairingDivisors.StatementN
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory
 
 open Formalism.PairingDivisionLocalBalance
@@ -69,3 +71,8 @@ theorem cmValues_minPadicVal_bound : MinVal := by
       exact ⟨a, ha2, hac, padicValNat.eq_zero_of_not_dvd hnd⟩
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dividedPowerValuations_minVal : Formalism.PairingDivisionLocalBalance.MinVal := by
+  atlas_forward_decl GlobalTheory.cmValues_minPadicVal_bound

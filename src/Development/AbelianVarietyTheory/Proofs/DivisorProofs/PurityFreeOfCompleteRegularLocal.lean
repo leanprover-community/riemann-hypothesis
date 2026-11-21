@@ -1,8 +1,10 @@
 import Mathlib
-import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.ModDepthGE
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PurityFree
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsRegularLocalRingAdicCompletion
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.GDimcpl
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing TensorProduct
 
 namespace GlobalTheory.PurityComplete
@@ -83,3 +85,9 @@ theorem purityFree_of_complete :
     (fun P _ hP => GlobalTheory.PurityComplete.etale_baseChange R A he P hP)
 
 end GlobalTheory.PurityStep
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.purityFree_of_complete_regularLocal : ∀ (R : Type) [CommRing R] [IsRegularLocalRing R], (∀ (S : Type) [CommRing S] [IsRegularLocalRing S], IsAdicComplete (maximalIdeal S) S → ringKrullDim S = ringKrullDim R → GlobalTheory.PurityFree S) → GlobalTheory.PurityFree R := by
+  atlas_forward_decl GlobalTheory.PurityStep.purityFree_of_complete

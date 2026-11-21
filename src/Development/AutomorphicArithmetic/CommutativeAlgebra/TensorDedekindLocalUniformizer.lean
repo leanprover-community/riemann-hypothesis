@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.IsChart
 import Development.AutomorphicArithmetic.CommutativeAlgebra.SpecializationTensorRingHomProperties
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsPsi
 open GroundTheory.FunctionField UpperTheory.Et.Sel

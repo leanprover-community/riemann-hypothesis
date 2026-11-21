@@ -1,6 +1,7 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HasCharSub
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.RgTransport
@@ -53,3 +54,10 @@ theorem leviSub_stable {n : ℕ} (P : GMod n) (d : Fin 3 → ℕ) (h : ∑ i, d 
     rw [← e, he i Y, map_smul]
 
 end GlobalTheory.CompanionTheory.RgTransport
+end
+end
+
+open CompanionTheory.RgExh CompanionTheory.RgExh.Dec CompanionTheory.RgExh.Dec.J Formalism.REAL ReciprocityTheory.ChartRestriction.DS GlobalTheory.SmGL GlobalTheory.CompanionTheory.RgTransport
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_subspace_invariant_under_blocks : ∀ {n : ℕ} (P : GMod n) (d : Fin 3 → ℕ) (h : ∑ i, d i = n) (χ : Fin n → ℂ) (L : Fin n → Fin 3) (a b : Fin n), blk (stdBlocks d h) a = blk (stdBlocks d h) b → ∀ x ∈ leviSub P d h χ L, P.E a b x ∈ leviSub P d h χ L := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgTransport.leviSub_stable

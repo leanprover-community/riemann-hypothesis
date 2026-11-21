@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.Residue
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ResidueLatticeCount.HeckeLower
 
 open NumberField

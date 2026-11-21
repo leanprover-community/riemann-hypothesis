@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.LocalFields.Interface
 import GroundTheory.LocalFields.Uniqueness
 import GroundTheory.LocalFields.Integers
 import GroundTheory.LocalFields.UnitsPowers

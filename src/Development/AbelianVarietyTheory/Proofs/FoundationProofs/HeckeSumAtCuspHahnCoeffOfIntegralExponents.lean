@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsRootOfIsAlgClosed
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.KZ GlobalTheory.CyclotomicQExpansion
@@ -102,3 +104,11 @@ theorem hq_coeff_of_int : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClos
     · simp
 
 end GlobalTheory.HeckeInt
+end
+end
+
+open GlobalTheory.KZ GlobalTheory.CyclotomicQExpansion
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeSumAtCuspHahn_coeff_of_integral_exponents : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosed Ω] (ε : Ω →+* ℂ) (q : ℕ), 0 < q → ∀ φ : HahnSeries ℚ Ω,
+  (∀ r : ℚ, φ.coeff r ≠ 0 → r.den = 1) → ∀ s : ℚ, (hq ε q φ).coeff s = if s.den = 1 then φ.coeff ((q : ℚ) * s) else 0 := by
+  atlas_forward_decl GlobalTheory.HeckeInt.hq_coeff_of_int

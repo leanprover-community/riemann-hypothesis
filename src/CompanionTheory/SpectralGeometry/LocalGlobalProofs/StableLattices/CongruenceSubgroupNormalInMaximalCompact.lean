@@ -1,6 +1,8 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.EntryMulSubOne
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.CompanionTheory.CartGL.Normal
@@ -49,3 +51,9 @@ theorem conj_mem_congK (L : Type) [NontriviallyNormedField L] [IsUltrametricDist
     exact entry_conj h0 hC hD hCD (fun i j => (hx i j).2) i j
 
 end GlobalTheory.CompanionTheory.CartGL.Normal
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.congruence_subgroup_normal_in_maximal_compact : ∀ (L : Type) [NontriviallyNormedField L] [IsUltrametricDist L] (n : ℕ) (r : ℝ) (h0 : 0 ≤ r) (h1 : r ≤ 1) (c x : GL (Fin n) L), c ∈ GlobalTheory.CompanionTheory.CartGL.congK L n 1 zero_le_one le_rfl → x ∈ GlobalTheory.CompanionTheory.CartGL.congK L n r h0 h1 → c * x * c⁻¹ ∈ GlobalTheory.CompanionTheory.CartGL.congK L n r h0 h1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CartGL.Normal.conj_mem_congK

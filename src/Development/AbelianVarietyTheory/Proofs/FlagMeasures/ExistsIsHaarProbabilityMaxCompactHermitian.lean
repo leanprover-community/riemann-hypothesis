@@ -1,4 +1,6 @@
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsCompactKH
+
+section
 open MeasureTheory Matrix Filter Topology
 
 noncomputable section
@@ -84,3 +86,10 @@ theorem exists_isHaarKH : ∀ k r : ℕ, ∃ μ : Measure (Matrix (Fin (2 * r + 
     exact (hU.preimage (continuous_incKH k r)).measure_pos ν ⟨1, h1⟩
 
 end GlobalTheory.KFinAvg
+end
+end
+
+open MeasureTheory Matrix Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isHaarProbabilityMaxCompactHermitian : ∀ k r : ℕ, ∃ μ : Measure (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ), GlobalTheory.KFinAvg.IsHaarKH k r μ := by
+  atlas_forward_decl GlobalTheory.KFinAvg.exists_isHaarKH

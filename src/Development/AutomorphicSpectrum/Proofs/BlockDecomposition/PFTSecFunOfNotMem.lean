@@ -6,7 +6,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerAdditi
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerSmoothness
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerWellDefined
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecSet
-import GroundTheory.LocalFields.LocalZetaEpsilon
 open NumberField IsDedekindDomain MeasureTheory Topology GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
 open GroundTheory.Automorphic.GodementSection (localChar)
 open GroundTheory.Global.AdicLiesOver

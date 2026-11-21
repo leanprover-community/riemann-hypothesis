@@ -1,5 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.Divisibility.DefGroup
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 open scoped TensorProduct Matrix
 
@@ -32,3 +35,10 @@ theorem stab_hatL_mapsTo {F E : Type} [Field F] [NumberField F] [Field E] [Numbe
   exact (y : Matrix (Fin n) (Fin n) (Formalism.L2.Herm.intAf F E)) i j |>.2
 
 end GlobalTheory
+end
+
+open NumberField
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frameStabiliser_mapsTo_completedLattice : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ} (β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) (Λ : Submodule (𝓞 E) (Fin n → E)), Formalism.L2.DIV.IsFrame β Λ → ∀ x ∈ Formalism.L2.DIV.St β, ∀ v ∈ Formalism.L2.Herm.hatL (F := F) Λ, x.1 *ᵥ v ∈ Formalism.L2.Herm.hatL (F := F) Λ := by
+  atlas_forward_decl GlobalTheory.stab_hatL_mapsTo

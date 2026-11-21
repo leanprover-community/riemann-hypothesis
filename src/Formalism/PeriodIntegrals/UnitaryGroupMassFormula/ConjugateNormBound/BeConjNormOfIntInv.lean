@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.BeConjNorm
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ConjugateNormBound.Development
 
 noncomputable section

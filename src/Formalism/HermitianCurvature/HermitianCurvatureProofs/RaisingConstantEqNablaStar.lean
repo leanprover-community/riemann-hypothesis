@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementM
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.MultiplicationOpHom
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelNablaStarRelations
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo

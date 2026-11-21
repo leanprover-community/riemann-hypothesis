@@ -1,11 +1,10 @@
 import Development.WeilBound.CoreStatements.CentralCharts.AnalyticAtEval
 import Development.WeilBound.CoreStatements.CentralCharts.PshAt0LogNorm
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagWeightedDegreeSection
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootLinesFlagDegreeStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootLinesFlagDegree
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GlobalPairSumGramBoundStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GramMatrixChangeFrameStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameDomainInSegreChartStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsIffCentresStatement
 
 noncomputable section
 

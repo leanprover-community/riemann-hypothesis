@@ -1,14 +1,14 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IotaScalarOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobeniusOfPadic
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SandwichDatumScalarActionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMatrixOfIntertwinerStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameMatrixCompositionUniqueStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFrobeniusTwistedFrameStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FramePsiCoordinatesPadicStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameTransitionPsiMatrixStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeterminantFrameComparisonStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMatrixOfIntertwiner
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameMatrixCompositionUnique
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFrobeniusTwistedFrame
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FramePsiCoordinatesPadic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameTransitionPsiMatrix
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeterminantFrameComparison
 
+section
 noncomputable section
 
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
@@ -53,3 +53,10 @@ theorem exists_freeForm : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsA
     exact (calc₁ eM eM eM).2.1 _ _ _ h1 ((calc₁ eM eM eM).2.2 (xi ε))
 
 end GlobalTheory.DetInv
+end
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps GlobalTheory.DetInv Matrix TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.determinant_frame_comparison_unit : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O], v.Integers O → ∀ (ε : PreTilt O p), IsPrimitiveRoot (root ε).untilt p → ∀ (Λ : Type) [CommRing Λ] [IsDomain Λ] [IsDiscreteValuationRing Λ] [Algebra ℤ_[p] Λ] [Module.Finite ℤ_[p] Λ] [FaithfulSMul ℤ_[p] Λ], ∀ (N h : ℕ) , h = Module.finrank ℤ_[p] Λ * N → ∀ (D : Datum ε h Λ) (ψ : RL p O Λ →+* RL p O Λ), IsPsi ψ → Nonempty (FreeForm D N ψ) := by
+  atlas_forward_decl GlobalTheory.DetInv.exists_freeForm

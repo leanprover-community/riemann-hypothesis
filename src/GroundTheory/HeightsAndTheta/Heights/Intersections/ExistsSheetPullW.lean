@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridge
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PullWMemFibre
 set_option maxSynthPendingDepth 1
 

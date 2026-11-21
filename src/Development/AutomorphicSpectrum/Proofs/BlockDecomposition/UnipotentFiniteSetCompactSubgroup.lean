@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipotentDerivatives.DerUnipLeUnipB
+import BuildAid.ForwardExisting
 
+section
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir ValuativeRel
 open scoped Topology
 
@@ -153,3 +155,10 @@ theorem exhaust : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     exact ((isCompact_intGL N).image hc).inter_right (isClosed_derUnip N n)
 
 end GlobalTheory.CompanionTheory.DerExhaust
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unipotent_finite_set_compact_subgroup : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (N n : ℕ) (s : Finset (GL (Fin N) k)), (↑s : Set (GL (Fin N) k)) ⊆ derUnip k N n → ∃ L : Subgroup (GL (Fin N) k), L ≤ derUnip k N n ∧ (↑s : Set (GL (Fin N) k)) ⊆ L ∧ IsCompact (L : Set (GL (Fin N) k)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DerExhaust.exhaust

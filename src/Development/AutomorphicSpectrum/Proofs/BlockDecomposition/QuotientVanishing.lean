@@ -1,14 +1,14 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousConjNilSymm
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableNilrad
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralNonnegNormaliserEq
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsBasisDiagonalTwistedCentralizerStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConjCompactOfDiagonalNilradicalStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralUnfoldWeightedAverageStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NilradicalTranslationMeasurePreservingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactConjTwistedCentralizerStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsWeightNilradicalIntegralOneStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConjCompactOfDiagonalNilradical
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralUnfoldWeightedAverage
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NilradicalTranslationMeasurePreserving
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactConjTwistedCentralizer
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsWeightNilradicalIntegralOne
 
+section
 noncomputable section
 
 open Matrix MeasureTheory PositivityTheory.Rg.BcB PositivityTheory.Rg.Tf.Loc
@@ -56,3 +56,9 @@ theorem quotVanish : QuotVanish := by
 
 end GlobalTheory.CompanionTheory.LocVan
 end
+end
+
+open Matrix MeasureTheory PositivityTheory.Rg.BcB PositivityTheory.Rg.Tf.Loc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quotient_vanishing : GlobalTheory.CompanionTheory.LocVan.QuotVanish := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocVan.quotVanish

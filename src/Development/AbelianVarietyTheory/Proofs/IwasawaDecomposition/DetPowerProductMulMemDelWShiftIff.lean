@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.UnipotentAdelicQuotients.WeylLatDual
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolFunApply
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.DetShiftWeyl
@@ -328,3 +330,12 @@ theorem detPow_mul_mem_delW_iff : ∀ (p : ℕ) [Fact p.Prime] (T : Type) [Finty
 end GlobalTheory.DetShiftWeyl
 
 end
+end
+
+open GlobalTheory.IntegralityCompare
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.detPowerProduct_mul_mem_delW_shift_iff : ∀ (p : ℕ) [Fact p.Prime] (T : Type) [Fintype T] (N : ℕ) (ν : T → Fin N → ℕ) (k : T → ℕ)
+    (Φ : MvPolynomial (T × Fin N × Fin N) ℂ_[p]),
+    ((fun y => (∏ τ, (y τ).det ^ k τ) * polFun Φ y) ∈ WeylLatticeDuality.DelW p T N (fun τ r => ν τ r + k τ) ↔
+      polFun Φ ∈ WeylLatticeDuality.DelW p T N ν) := by
+  atlas_forward_decl GlobalTheory.DetShiftWeyl.detPow_mul_mem_delW_iff

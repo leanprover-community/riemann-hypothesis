@@ -7,7 +7,7 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InvFunEvalZA
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InRealConeSummandsOfEvalZAdditiveCell
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteBilinFormAbsLe
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BilinFormExistsPrimitiveOfNeZero
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemClosureSumIndecomposableFaceOfAdditiveStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemClosureSumIndecomposableFaceOfAdditive
 
 noncomputable section
 
@@ -55,9 +55,7 @@ theorem cone_sum {S : Finset (LinearMap.BilinForm ℤ X)} (h : ∀ x ∈ S, InRC
   exact cone_add (h a (Finset.mem_insert_self a S)) (ih fun x hx => h x (Finset.mem_insert_of_mem hx))
 
 private theorem toReal_eq_sum_smul_toReal_of_coe_eq {x : LinearMap.BilinForm ℤ X} {c : Fin m → ℝ}
-    (h : ∀ a b, (x a b : ℝ) = ∑ i, c i * (γ i a b : ℝ)) : toReal x = ∑ i, c i • toReal (γ i) := by
-  ext a b
-  simp [toReal_apply, LinearMap.sum_apply, h a b]
+    (h : ∀ a b, (x a b : ℝ) = ∑ i, c i * (γ i a b : ℝ)) : toReal x = ∑ i, c i • toReal (γ i) := toReal_eq_sum_smul_of_coe_eq_sum h
 
 theorem cone_smul_iff {g : ℕ} (hg : 0 < g) {x : LinearMap.BilinForm ℤ X} : InRCone γ ((g : ℤ) • x) ↔ InRCone γ x := by
   have hg' : (g : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hg.ne'

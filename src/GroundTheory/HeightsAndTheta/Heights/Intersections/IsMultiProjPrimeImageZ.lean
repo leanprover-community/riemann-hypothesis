@@ -7,7 +7,6 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiHomogFirstCoord
 import GroundTheory.HeightsAndTheta.Heights.Intersections.TableDegreeThreeBase
 import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.ContractRelevant
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContractedDim
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContracted
 set_option maxSynthPendingDepth 1
 

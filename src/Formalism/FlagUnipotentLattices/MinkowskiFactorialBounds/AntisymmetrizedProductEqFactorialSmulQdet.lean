@@ -1,6 +1,5 @@
 import Formalism.FlagUnipotentLattices.QDetNegTranspose
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.LanglandsParameterEquivariant
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 
 open Formalism.HermitianLatticeCounting.S8 Formalism.REAL TensorProduct Finset
 

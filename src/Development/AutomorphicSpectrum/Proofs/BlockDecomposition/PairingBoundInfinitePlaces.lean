@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IsotropicMahlerBounds.LogAbsoluteWedges.WedgeSub
+import BuildAid.ForwardExisting
 
+section
 open Matrix PositivityTheory.Rg.BcB.D1
 
 namespace GlobalTheory.CompanionTheory.Wedge
@@ -76,3 +78,9 @@ theorem pairI_of_detMono : DetMono → PairI := by
     exact mul_le_mul_of_nonneg_left hmono hGn
 
 end GlobalTheory.CompanionTheory.Wedge
+end
+
+open Matrix PositivityTheory.Rg.BcB.D1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pairing_bound_infinite_places : DetMono → PairI := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Wedge.pairI_of_detMono

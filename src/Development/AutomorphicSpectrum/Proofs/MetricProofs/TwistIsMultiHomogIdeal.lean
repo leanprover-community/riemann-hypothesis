@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsHorizontalTwist
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Tw
@@ -99,3 +101,10 @@ theorem isMultiHomogIdeal_twist (K : Type) [Fintype K] (ι : K → Type) [∀ k,
   · rw [twist, Ideal.map_span, Ideal.span_union]
 
 end GlobalTheory.CompanionTheory.Ar.Tw
+end
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo MeasureTheory GlobalTheory.CompanionTheory.Ar.Tw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twist_isMultiHomogIdeal : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (p : ℕ) (W : Ideal (MRing ι)), IsMultiHomogIdeal W → IsMultiHomogIdeal (twist p W) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Tw.isMultiHomogIdeal_twist

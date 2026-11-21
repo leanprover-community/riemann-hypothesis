@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Cint
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CintTranslate
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.IdxInt
 open scoped Pointwise Classical
 
@@ -100,3 +101,10 @@ theorem cint_prod (A : AddSubgroup W) (A' : AddSubgroup W') (φ : W × W' → �
   ring
 
 end GlobalTheory.IdxInt.Fubini
+end
+
+open GlobalTheory.IdxInt
+open scoped Pointwise Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.indexMeasureIntegral_prod_fubini : ∀ {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] (A : AddSubgroup W) (A' : AddSubgroup W') (φ : W × W' → ℂ), Nice (A.prod A') φ → (∀ w, Nice A' (fun w' => φ (w, w'))) ∧ Nice A (fun w => cint A' (fun w' => φ (w, w'))) ∧ cint (A.prod A') φ = cint A (fun w => cint A' (fun w' => φ (w, w'))) := by
+  atlas_forward_decl GlobalTheory.IdxInt.Fubini.cint_prod

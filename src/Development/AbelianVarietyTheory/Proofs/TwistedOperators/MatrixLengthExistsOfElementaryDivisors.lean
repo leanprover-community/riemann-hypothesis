@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.InertZeta
 
 noncomputable section
@@ -63,3 +66,10 @@ theorem fracExists_of_smith : Smith → FracExists := by
   exact h
 
 end GlobalTheory.InertZeta
+end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrixLengthExists_of_elementaryDivisors : Smith → FracExists := by
+  atlas_forward_decl GlobalTheory.InertZeta.fracExists_of_smith

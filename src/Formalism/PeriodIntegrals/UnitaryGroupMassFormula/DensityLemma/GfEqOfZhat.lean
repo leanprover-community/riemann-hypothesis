@@ -1,6 +1,4 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.PFdGramCut
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.UnipotentHaarConjInvariant
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 
 open MeasureTheory Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
 

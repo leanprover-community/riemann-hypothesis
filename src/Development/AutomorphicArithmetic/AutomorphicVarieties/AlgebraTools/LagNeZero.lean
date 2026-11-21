@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.EqLagIff
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LagMap
 
 open Polynomial Matrix IsLocalRing TensorProduct UpperTheory.V.AlgebraTools

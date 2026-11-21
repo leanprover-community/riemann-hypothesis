@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RowsConc
+import BuildAid.ForwardExisting
 
+section
 open NumberField Formalism.FourierDecayAlt Formalism.L2.SG.RowsConc Finset
 
 namespace GlobalTheory.HaarWeight
@@ -205,3 +207,9 @@ theorem gram_pow_le_haar : ∀ (E : Type) [Field E] [NumberField E] [StarRing E]
     _ = H ^ (6 * (2 * r + 2)) * (NGPt rd TT γ ^ (k - 1) * ∏ a, U a ^ mm a) := by ring
 
 end GlobalTheory.HaarWeight
+end
+
+open NumberField Formalism.FourierDecayAlt Formalism.L2.SG.RowsConc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gram_invariant_pow_le_haar_weight : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (r k TT : ℕ) (rd H : ℝ) (γ : PN.Pts E r), 0 < rd → (∀ a, 1 ≤ ∏ v : InfinitePlace E, (rd ^ (2 * (endIdx γ a * (2 * r + 1 - endIdx γ a))))⁻¹ * v (endMin γ a) ^ 2) → NDPt rd γ ≤ H → NGPt rd TT γ ^ (k - 1) ≤ H ^ (6 * (2 * r + 2)) * nPt rd k TT γ := by
+  atlas_forward_decl GlobalTheory.HaarWeight.gram_pow_le_haar

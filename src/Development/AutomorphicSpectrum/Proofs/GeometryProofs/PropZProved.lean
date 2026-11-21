@@ -3,8 +3,9 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GenericCentreS
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LocalComponentsSurjective
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.PropZ
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsRegularSectionGenerator
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StalkClosedPointToGermTop
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ConnectedSpecialFibreConstantStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ConnectedSpecialFibreConstant
+
+section
 open AlgebraicGeometry CategoryTheory Limits GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat.PropZPf
@@ -93,3 +94,9 @@ theorem GlobalTheory.CompanionTheory.Ar.Flat.PropZ_holds : GlobalTheory.Companio
     have h1 : unitAt ξ p (algebraMap O Ω ϖ ^ a / (σ / t p) ^ M) := key p hp
     have := ZUnit.inv h1
     rwa [inv_div] at this
+end
+
+open AlgebraicGeometry CategoryTheory Limits GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.PropZ_proved : GlobalTheory.CompanionTheory.Ar.Flat.PropZ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.PropZ_holds

@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.AlmostGoodOf
 import GroundTheory.GlobalFields.LocalAtPlace
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.LocalUnif
@@ -44,3 +45,8 @@ theorem unifEx : PositivityTheory.SiegelWeilFormula.Gunr.UnifEx := by
 end GlobalTheory.CompanionTheory.LocalUnif
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniformizer_existence : PositivityTheory.SiegelWeilFormula.Gunr.UnifEx := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocalUnif.unifEx

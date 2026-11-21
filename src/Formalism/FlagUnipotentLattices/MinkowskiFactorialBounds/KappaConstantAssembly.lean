@@ -1,4 +1,3 @@
-import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.CoefficientLeOperatorNorm
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ExtensionInterSubspace
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.NearFarVolumeBounds
 import Formalism.LatticeRigidity.RecursionUnrestrictedFalse

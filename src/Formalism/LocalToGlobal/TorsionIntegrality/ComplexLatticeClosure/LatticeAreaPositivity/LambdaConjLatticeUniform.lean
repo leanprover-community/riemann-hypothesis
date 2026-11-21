@@ -1,6 +1,5 @@
 import Formalism.LocalToGlobal.TorsionIntegrality.ComplexLatticeClosure.LamConjLat0
 import Formalism.LocalToGlobal.TorsionIntegrality.ComplexLatticeClosure.LatticeAreaPositivity.Bridge
-import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.WeierstrassUniqueness.UniqInvHolds
 import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.ConjugateSets.Status
 
 noncomputable section

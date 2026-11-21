@@ -1,9 +1,25 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLiftAlgebraicallyClosedPoint
-import Mathlib
-open CategoryTheory AlgebraicGeometry
-set_option maxHeartbeats 1000000 in
-theorem _root_.GlobalTheory.T.exists_lift_algebraically_closed_point : ∀ {X Y : AlgebraicGeometry.Scheme.{0}} (f : X ⟶ Y) [AlgebraicGeometry.LocallyOfFiniteType f] (k : Type) [Field k] [IsAlgClosed k]
-    (y : AlgebraicGeometry.Spec (CommRingCat.of k) ⟶ Y), Set.range y ⊆ Set.range f →
-    ∃ x : AlgebraicGeometry.Spec (CommRingCat.of k) ⟶ X, x ≫ f = y := by
-  first | exact @GlobalTheory.exists_lift_of_range_subset_of_isAlgClosed | exact GlobalTheory.exists_lift_of_range_subset_of_isAlgClosed | (intros; apply GlobalTheory.exists_lift_of_range_subset_of_isAlgClosed <;> assumption)
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
+
+namespace GlobalTheory
+
+theorem exists_lift_of_range_subset_of_isAlgClosed :
+    ∀ {X Y : AlgebraicGeometry.Scheme.{0}} (f : X ⟶ Y) [AlgebraicGeometry.LocallyOfFiniteType f]
+      (k : Type) [Field k] [IsAlgClosed k]
+      (y : AlgebraicGeometry.Spec (CommRingCat.of k) ⟶ Y), Set.range y ⊆ Set.range f →
+      ∃ x : AlgebraicGeometry.Spec (CommRingCat.of k) ⟶ X, x ≫ f = y := by
+  intro X Y f _ k _ _ y hr
+  obtain ⟨x₀, hx₀⟩ := hr ⟨IsLocalRing.closedPoint k, rfl⟩
+  obtain ⟨z, -, -⟩ := Scheme.Pullback.exists_preimage_pullback (f := f) (g := y) x₀
+    (IsLocalRing.closedPoint k) hx₀
+  have := LocallyOfFiniteType.jacobsonSpace (pullback.snd f y)
+  obtain ⟨c, -, hc⟩ := nonempty_inter_closedPoints (X := (Limits.pullback f y : Scheme))
+    (Z := Set.univ) ⟨z, trivial⟩ isClosed_univ.isLocallyClosed
+  have hc' : IsClosed {c} := hc
+  refine ⟨pointOfClosedPoint (pullback.snd f y) c hc' ≫ pullback.fst f y, ?_⟩
+  rw [Category.assoc, pullback.condition, ← Category.assoc, pointOfClosedPoint_comp,
+    Category.id_comp]
+
+end GlobalTheory
+
+alias _root_.GlobalTheory.T.exists_lift_algebraically_closed_point := _root_.GlobalTheory.exists_lift_of_range_subset_of_isAlgClosed

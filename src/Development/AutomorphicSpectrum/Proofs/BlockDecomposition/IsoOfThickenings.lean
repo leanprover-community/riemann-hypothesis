@@ -3,6 +3,9 @@ import PositivityTheory.PublishedTheorems.TowerLemmas.FormalTowerLemmas.Imports
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.FormalAlgebraisation
 
 import PositivityTheory.PublishedTheorems.UnitKilling.UnitAnnihilation.UnitAnnihilators.ExistsUnitKillsOfIdempotent
+import BuildAid.ForwardExisting
+
+section
 set_option autoImplicit false
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Out PositivityTheory.FormalThickening
@@ -394,3 +397,9 @@ theorem isoOfThick : IsoOfThick := by
   exact isIso_of_reflects_iso p (Over.forget _)
 
 end GlobalTheory.CompanionTheory.Formal.IsoThick
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Out PositivityTheory.FormalThickening
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.iso_of_thickenings : IsoOfThick := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Formal.IsoThick.isoOfThick

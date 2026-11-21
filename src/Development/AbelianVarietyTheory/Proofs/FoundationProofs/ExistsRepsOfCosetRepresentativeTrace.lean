@@ -1,4 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.AlmostEt
 open scoped NNReal
 
@@ -112,3 +115,10 @@ theorem exists_reps_of_cosetTrace : ∀ (L : Type) [Field L] (G : Type) [Group G
       rw [hfeq]
 
 end GlobalTheory.AlmostEt
+end
+
+open GlobalTheory.AlmostEt
+open scoped NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_reps_of_cosetRepresentativeTrace : ∀ (L : Type) [Field L] (G : Type) [Group G] [MulSemiringAction G L] (U : Subgroup G) [Fintype (G ⧸ U)] (S : Finset L), (∀ s ∈ S, s ∈ Fix L U) → ∀ y₀ ∈ Fix L U, ∃ (y : L) (D E : Finset G), y = ∑ d ∈ D, d • y₀ ∧ (∀ h : G, ∃! g, g ∈ E ∧ h • y = g • y ∧ ∀ s ∈ S, h • s = g • s) ∧ ∑ g ∈ E, g • y = cosetTrace U y₀ := by
+  atlas_forward_decl GlobalTheory.AlmostEt.exists_reps_of_cosetTrace

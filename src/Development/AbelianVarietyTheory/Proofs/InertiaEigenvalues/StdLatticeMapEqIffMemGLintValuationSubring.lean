@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.SatakeDualWeyl.Statement
+import BuildAid.ForwardExisting
 
+section
 open Matrix
 
 namespace GlobalTheory.GLintLattice
@@ -106,3 +108,8 @@ theorem stdLattice_map_eq_iff_mem_GLint : ∀ (K : Type) [Field K] (A : Valuatio
       rw [hf, x_inv]
 
 end GlobalTheory.GLintLattice
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stdLattice_map_eq_iff_mem_GLint_valuationSubring : ∀ (K : Type) [Field K] (A : ValuationSubring K) (r : ℕ) (x : GL (Fin r) K), (Submodule.span A (Set.range (Pi.basisFun K (Fin r)))).map ((x : Matrix (Fin r) (Fin r) K).mulVecLin.restrictScalars A) = Submodule.span A (Set.range (Pi.basisFun K (Fin r))) ↔ x ∈ Formalism.UG.GLint (Fin r) A.toSubring := by
+  atlas_forward_decl GlobalTheory.GLintLattice.stdLattice_map_eq_iff_mem_GLint

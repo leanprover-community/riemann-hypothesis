@@ -1,4 +1,7 @@
 import Formalism.RealPlaceAnalysis.SmoothOnGVIff
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix
 open Formalism.REAL (UJ KG toM toMK muK expG inG Jm Kset)
 
@@ -72,3 +75,10 @@ theorem GlobalTheory.offDiag_sum_sq_norm_unitary_invariant : ∀ (n : ℕ) (ε :
   rw [e]
   apply Complex.ofReal_injective
   rw [sum_sq_norm_eq_trace, sum_sq_norm_eq_trace, trace_unitary_conj _ _ _ ha hb]
+end
+
+open MeasureTheory Matrix
+open Formalism.REAL (UJ KG toM toMK muK expG inG Jm Kset)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.offDiagonalBlock_sum_sq_norm_blockUnitary_invariant : ∀ (n : ℕ) (ε : Fin n → Bool) (a b g : Matrix (Fin n) (Fin n) ℂ), aᴴ * a = 1 → a * Jm ε = Jm ε * a → bᴴ * b = 1 → b * Jm ε = Jm ε * b → ∑ z : {z : Fin n × Fin n // ε z.1 = true ∧ ε z.2 = false}, ‖(a * g * b) z.1.1 z.1.2‖ ^ 2 = ∑ z : {z : Fin n × Fin n // ε z.1 = true ∧ ε z.2 = false}, ‖(g) z.1.1 z.1.2‖ ^ 2 := by
+  atlas_forward_decl GlobalTheory.offDiag_sum_sq_norm_unitary_invariant

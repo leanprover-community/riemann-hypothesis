@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open Algebra
 
 namespace GlobalTheory
@@ -46,3 +48,8 @@ theorem exists_ne_zero_algebraMap_eq_mul_of_formallyUnramified :
   rw [map_mul, ← hds, ← mul_assoc, hy, one_mul, hqs]
 
 end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ne_zero_algebraMap_eq_mul_of_formallyUnramified' : ∀ (P D : Type) [CommRing P] [IsDomain P] [CommRing D] [IsDomain D] [Algebra P D] [Algebra.FiniteType P D] [Algebra.FormallyUnramified P D] (f : D), f ≠ 0 → ∃ Q : P, Q ≠ 0 ∧ ∃ d : D, algebraMap P D Q = f * d := by
+  atlas_forward_decl GlobalTheory.exists_ne_zero_algebraMap_eq_mul_of_formallyUnramified

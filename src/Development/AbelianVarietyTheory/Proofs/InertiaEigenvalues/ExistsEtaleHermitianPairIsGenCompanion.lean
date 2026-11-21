@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocallyCompactModuleTopology
+import BuildAid.ForwardExisting
 
+section
 open Polynomial Matrix MeasureTheory Filter Topology
 
 noncomputable section
@@ -60,3 +61,10 @@ theorem exists_et_isGen_companion : ∀ (F E : Type) [NontriviallyNormedField F]
   exact EtExist.exists_isGen F E r p hs
 
 end GlobalTheory.JR
+end
+end
+
+open GlobalTheory.JR Matrix MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_etaleHermitianPair_isGen_companion : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E] (r : ℕ) (p : Fin r → F), (companion p).charpoly.Separable → ∃ (A : Et F E) (τ : A.K), A.IsGen τ p := by
+  atlas_forward_decl GlobalTheory.JR.exists_et_isGen_companion

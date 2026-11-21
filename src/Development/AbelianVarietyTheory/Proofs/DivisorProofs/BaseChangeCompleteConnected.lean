@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapPairDetCovec
+
+section
 open CategoryTheory Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FlatModel
 
 namespace GlobalTheory.FlatModel
@@ -89,3 +91,9 @@ theorem connected_pullback_of_geomIrr (V : Type) [CommRing V] [IsDomain V] [IsDi
   infer_instance
 
 end GlobalTheory.FlatModel
+end
+
+open CategoryTheory Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FlatModel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.base_change_complete_connected : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (φ : V →+* O), Function.Injective φ → IsLocalHom φ → ∀ (X : Scheme.{0}) (s : X ⟶ Spec (.of V)) (Xw : X.Opens), IsIntegral X → Flat s → GeomIrr s Xw → ConnectedSpace ↑(pullback s (Spec.map (CommRingCat.ofHom φ))) := by
+  atlas_forward_decl GlobalTheory.FlatModel.connected_pullback_of_geomIrr

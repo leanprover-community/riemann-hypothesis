@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SettingsFormsExistGrid
-import Development.AbelianVarietyTheory.Definitions.Divisors.NonemptyGridDataIff
 
 noncomputable section
 

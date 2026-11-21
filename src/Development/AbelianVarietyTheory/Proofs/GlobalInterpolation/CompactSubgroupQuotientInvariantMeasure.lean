@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.InvariantRadonFibre
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeilCriterionInvariantMeasureHomogeneousSpaceStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeilCriterionInvariantMeasureHomogeneousSpace
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMulRightInvariantHaarAdelicUnitaryGroupHermiti
 
+section
 open MeasureTheory GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre
 open scoped ENNReal
 
@@ -19,3 +19,10 @@ theorem compactClause : CompactClause := by
       (Subgroup.mem_top h)]
 
 end GlobalTheory.QuotientMeasureCompact
+end
+
+open MeasureTheory GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compactSubgroup_quotient_invariant_measure : CompactClause := by
+  atlas_forward_decl GlobalTheory.QuotientMeasureCompact.compactClause

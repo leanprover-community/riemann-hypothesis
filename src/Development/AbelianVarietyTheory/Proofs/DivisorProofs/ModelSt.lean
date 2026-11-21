@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadingOfRunModel
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SplitsCompletelyTypePrime
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RunWeightArch
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThreeRLtGOfParams
-import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.LevelDvdBadN
 
 set_option autoImplicit false
 

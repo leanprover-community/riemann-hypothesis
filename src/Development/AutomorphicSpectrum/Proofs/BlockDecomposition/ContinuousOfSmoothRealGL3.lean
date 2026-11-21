@@ -3,6 +3,9 @@ import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.Arch
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BndIUnits
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrablePowerWeightUnits
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ValMeasurableEmbedding
+import BuildAid.ForwardExisting
+
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
 open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
 open GroundTheory.Automorphic.GodementSection (localChar)
@@ -36,3 +39,18 @@ theorem smoothR_continuous : ∀ W : GL (Fin 3) ℝ → ℂ, SmoothR W → Conti
   exact hc.comp_continuous hv hm
 
 end GlobalTheory.CompanionTheory.GL2Factorization
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology
+open GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Automorphic.Reduction (finAt infAt maxCompact)
+open GroundTheory.Automorphic.GLnLocal (integralGL)
+open GroundTheory.Global.AdicLiesOver
+open Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open Ad3.R (G2 Jd md KA lc)
+open scoped NumberField.AdeleRing ValuativeRel
+open GlobalTheory.CompanionTheory.GL2Factorization
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_of_smooth_real_GL3 : ∀ W : GL (Fin 3) ℝ → ℂ, SmoothR W → Continuous W := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GL2Factorization.smoothR_continuous

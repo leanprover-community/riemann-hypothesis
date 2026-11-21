@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtChart
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing
 
 noncomputable section
@@ -108,3 +111,10 @@ theorem exists_etChart : ∀ (R : Type) [CommRing R] [IsLocalRing R] (A : Type) 
       Algebra.FinitePresentation.of_restrict_scalars_finitePresentation R P (Localization.Away g)
     exact ⟨inferInstance, inferInstance⟩
 end GlobalTheory.DenseSec
+end
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_etale_chart_smooth_algebra_local_point : ∀ (R : Type) [CommRing R] [IsLocalRing R] (A : Type) [CommRing A] [Algebra R A] [Algebra.Smooth R A] (ε : A →ₐ[R] R), ∃ (g : ℕ) (t : Fin g → A) (h : A), (∀ i, ε (t i) = 0) ∧ IsUnit (ε h) ∧ GlobalTheory.DenseSec.EtChart R A t h := by
+  atlas_forward_decl GlobalTheory.DenseSec.exists_etChart

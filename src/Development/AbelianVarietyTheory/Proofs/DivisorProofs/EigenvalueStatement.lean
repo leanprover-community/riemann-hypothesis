@@ -2,9 +2,10 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InducesPl
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTatePointDualBasis
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdempotentTraceSeparatingElementStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointLinearFunctionalCmStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointTraceDualStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointLinearFunctionalCm
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointTraceDual
 
+section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open NumberField IsDedekindDomain
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct NNReal
@@ -34,3 +35,10 @@ theorem eigSt_holds : EigSt := by
     exact GlobalTheory.T.p_adic_point_trace_dual Q _ δ hδ0 hb m u ℓ e h1 h2 h3 w hw h
 
 end GlobalTheory.EigDiff
+end
+end
+
+open GlobalTheory.DetHT
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.EigenvalueStatement : EigSt := by
+  atlas_forward_decl GlobalTheory.EigDiff.eigSt_holds

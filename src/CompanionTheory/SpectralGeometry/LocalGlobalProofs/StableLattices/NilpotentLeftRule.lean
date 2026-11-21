@@ -1,7 +1,9 @@
 import Mathlib
 import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.LineFormulas.RightRule
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.InvMulSelfOfMemIndefiniteUnitary
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset Matrix
@@ -232,3 +234,9 @@ theorem leftRule : CompanionTheory.RgExh.Dec.N.LeftRule := by
   exact left_path ss ⟨D, E, hK.gl⟩ χ (fun ξ : D => baseCoef σ D (ξ : H)) (fun ξ => left_base hσ hK ξ) i
 
 end GlobalTheory.CompanionTheory.PathCoef
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.NilpotentLeftRule : CompanionTheory.RgExh.Dec.N.LeftRule := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PathCoef.leftRule

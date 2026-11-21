@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParamChartInt
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartIntCountAdd
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParamPieceInt
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StParamCritNull

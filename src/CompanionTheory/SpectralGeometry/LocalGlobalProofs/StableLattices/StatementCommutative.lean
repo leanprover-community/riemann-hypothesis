@@ -3,7 +3,9 @@ import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.In
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.FinrankRangePowConvex
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CommuteOfMemAdjoin
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.FinrankAdjoinLeAdd
+import BuildAid.ForwardExisting
 
+section
 open CompanionTheory.Rg.Fl
 
 namespace GlobalTheory.CompanionTheory.Bernstein
@@ -183,3 +185,9 @@ theorem stComm : StComm := by
     exact ⟨K, fun V _ _ _ a hc => positionOne_invariantIntegral_exchange_step l N K hN hK _ V a rfl hc⟩
 
 end GlobalTheory.CompanionTheory.Bernstein
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.StatementCommutative : StComm := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Bernstein.stComm

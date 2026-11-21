@@ -1,4 +1,3 @@
-import Formalism.JumpKernelCokernel.Statement
 import Formalism.JumpKernelCokernel.JumpShiftProofs.DetLen
 
 open Polynomial Module

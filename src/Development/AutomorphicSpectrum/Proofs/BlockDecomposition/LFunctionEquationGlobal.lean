@@ -2,9 +2,6 @@ import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.Arch
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GlobalRankinSelbergBasicFacts
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GammaFactorTransportRingEquiv
-import GroundTheory.GlobalFields.Adele.BaseChange.FiniteCoord
-import GroundTheory.GlobalFields.SemilocalAlgebras.NormTrace
-import GroundTheory.GlobalFields.SemilocalAlgebras.Finite
 
 noncomputable section
 

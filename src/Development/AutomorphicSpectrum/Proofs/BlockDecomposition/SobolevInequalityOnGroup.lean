@@ -1,14 +1,13 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.WaveSt
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DwCons
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PoincareValueBoundOnCubeStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PoincareValueBoundOnCube
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeAsRightWordsStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarChartIntegralComparisonStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LengthContinuousProperSublevelStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartAndRightWordsSmoothStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeftTranslateRightDerivativeStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartPartialEqRightWordStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeftTranslateRightDerivative
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartPartialEqRightWord
 
+section
 noncomputable section
 open MeasureTheory Matrix Finset
 open scoped ContDiff
@@ -163,3 +162,9 @@ theorem sobG : PositivityTheory.RgBcC.SobG := by
         ∑ w ∈ T.biUnion W, ∫ y in S, ‖Rw w f (x * (y : Mat n))‖ ^ 2 ∂μ := by rw [hsplit]
 
 end GlobalTheory.CompanionTheory.SobGL
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sobolev_inequality_on_group : PositivityTheory.RgBcC.SobG := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SobGL.sobG

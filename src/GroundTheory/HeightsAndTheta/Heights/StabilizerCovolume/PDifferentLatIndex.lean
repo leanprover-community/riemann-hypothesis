@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.DifferentLatIndex
 import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.PTorusIndex
 import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.DiffLatStep
 set_option maxSynthPendingDepth 1

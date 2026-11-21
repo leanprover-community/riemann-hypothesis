@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JpUnif
+import BuildAid.ForwardExisting
+
+section
 open Matrix GlobalTheory.CompanionTheory.Jp
 
 namespace GlobalTheory.CompanionTheory.Jp.CountRank
@@ -157,3 +160,13 @@ theorem rank_symm (k : Type) [Field k] [Fintype k] (n ρ : ℕ) (h : ρ ≤ n) :
   ring
 
 end GlobalTheory.CompanionTheory.Jp.CountRank
+end
+
+open Matrix GlobalTheory.CompanionTheory.Jp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_rank_completion_symmetry : ∀ (k : Type) [Field k] [Fintype k] (n ρ : ℕ), ρ ≤ n →
+    Nat.card {D : Matrix (Fin n) (Fin n) k // D.rank = ρ} *
+        ∏ j ∈ Finset.range (n - ρ), (Fintype.card k ^ n - Fintype.card k ^ j) =
+      Nat.card {D : Matrix (Fin n) (Fin n) k // D.rank = n - ρ} *
+        ∏ j ∈ Finset.range ρ, (Fintype.card k ^ n - Fintype.card k ^ j) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Jp.CountRank.rank_symm

@@ -1,5 +1,8 @@
 import Mathlib
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRatA
+import BuildAid.ForwardExisting
+
+section
 open scoped TensorProduct
 
 namespace GlobalTheory.FibreMax
@@ -56,3 +59,9 @@ theorem exists_isMaximal_height_ge (k : Type) [CommRing k] [IsDomain k] [Module.
   exact Order.length_le_height (by simp [L])
 
 end GlobalTheory.FibreMax
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_maximal_height_succ_dim : ∀ (k : Type) [CommRing k] [IsDomain k] [Module.Finite ℤ k] [CharZero k] (A : Type) [CommRing A] [IsDomain A] [Algebra k A] [Algebra.FiniteType k A] [FaithfulSMul k A] (d : ℕ), ringKrullDim (FractionRing k ⊗[k] A) = d → ∃ M : Ideal A, M.IsMaximal ∧ ((d + 1 : ℕ) : ℕ∞) ≤ M.height := by
+  atlas_forward_decl GlobalTheory.FibreMax.exists_isMaximal_height_ge

@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.ProfiniteCohomology.OpenNormal
 import GroundTheory.ProfiniteCohomology.OfNatRelIndexSupAntitone
 set_option maxSynthPendingDepth 1
 

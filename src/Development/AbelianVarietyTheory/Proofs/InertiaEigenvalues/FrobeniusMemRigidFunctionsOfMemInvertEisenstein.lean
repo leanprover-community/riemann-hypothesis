@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsAlgebraMapEqRoot
+import BuildAid.ForwardExisting
+
+section
 open PowerSeries GlobalTheory.BK Filter Topology
 
 namespace GlobalTheory.BK
@@ -76,3 +79,9 @@ theorem frob_mem_R_of_mem_invE_A : ∀ (O K : Type) [CommRing O] [NormedField K]
   exact mul_mem (pow_mem hg n) h1
 
 end GlobalTheory.BK
+end
+
+open PowerSeries GlobalTheory.BK Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_mem_rigidFunctions_of_mem_invertEisenstein : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] (l e : ℕ) [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] (k : ℝ), 1 / ((e : ℝ) * l) < k → ∀ f ∈ invE l e (A O K), frob K l f ∈ R O K l k := by
+  atlas_forward_decl GlobalTheory.BK.frob_mem_R_of_mem_invE_A

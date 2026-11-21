@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.IwasawaUnipotent.IwaU
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.GaloisBoundFirst
 
+section
 open Filter Topology Set
 open PositivityTheory.Rg.SwEis
 
@@ -143,3 +144,9 @@ theorem glue : Glue := by
     · rw [hEW z h, hEW z h, hHT]
 
 end GlobalTheory.CompanionTheory.PolyDenominator
+end
+
+open PositivityTheory.Rg.SwEis
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eisenstein_gluing : Glue := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PolyDenominator.glue

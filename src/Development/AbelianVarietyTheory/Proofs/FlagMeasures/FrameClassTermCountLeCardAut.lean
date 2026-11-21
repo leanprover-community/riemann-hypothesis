@@ -4,6 +4,7 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EqCHolds
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EquivFramesSameSecondLatticeFiberProofStatement
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
 
+section
 noncomputable section
 open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
@@ -176,3 +177,9 @@ theorem fibCardC : FibCardC := by
     rw [← div_eq_mul_inv, div_le_one hp]; exact_mod_cast hcard
 
 end GlobalTheory.TypeAsm.FibCard
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frameClass_termCount_le_card_aut : GlobalTheory.TypeAsm.FibCardC := by
+  atlas_forward_decl GlobalTheory.TypeAsm.FibCard.fibCardC

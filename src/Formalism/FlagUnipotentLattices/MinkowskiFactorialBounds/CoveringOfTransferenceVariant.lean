@@ -1,4 +1,3 @@
-import Formalism.FlagUnipotentLattices.CardSubmodulesAndLinearEquivBounds
 import Formalism.FlagUnipotentLattices.SubmoduleGeneratorsBound
 import Formalism.FlagUnipotentLattices.CoveringRadius2
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SumComplexEmbeddingsEqSumInfinitePlace

@@ -7,7 +7,6 @@ import Formalism.SizeWindowBrackets.ChainSlopeWindows.ExistsOrthonormalFrameComp
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.DisplayedInequalitySharpHalf
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.PSmall
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.LocalizationStructureHolds
-import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ZetaNegReal
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.ChiEightNoRealZeroHypothesis
 
 open Module NumberField Matrix IsDedekindDomain

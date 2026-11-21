@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open scoped ComplexOrder
 
 noncomputable section
@@ -62,3 +65,10 @@ theorem posDef_exists_conjTranspose_mul_mul_eq_one :
     _ = 1 := by rw [hU1, Matrix.mul_one, Matrix.mul_one, hdiag]
 
 end GlobalTheory
+end
+end
+
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.posDef_exists_conjTranspose_mul_mul_eq_one' : ∀ (d : ℕ) (H : Matrix (Fin d) (Fin d) ℂ), H.PosDef → ∃ y₀ : GL (Fin d) ℂ, (y₀.1).conjTranspose * H * y₀.1 = 1 := by
+  atlas_forward_decl GlobalTheory.posDef_exists_conjTranspose_mul_mul_eq_one

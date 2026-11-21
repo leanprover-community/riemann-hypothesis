@@ -1,5 +1,4 @@
 import Mathlib
-import Development.WeilBound.ThetaLifts.Reductions.SiegelCore
 import Development.WeilBound.ThetaLifts.Reductions.SiegelAbs
 
 set_option linter.unusedSectionVars false

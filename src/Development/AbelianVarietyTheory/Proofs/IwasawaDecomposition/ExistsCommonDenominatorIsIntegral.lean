@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddSmulVecMulVecMulVec
+
+section
 open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
 
 namespace GlobalTheory
@@ -22,3 +24,9 @@ theorem exists_common_denominator (E : Type) [Field E] [NumberField E] (n : ℕ)
     rw [this, neg_mul]; exact hj.neg
 
 end GlobalTheory
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_common_denominator_isIntegral : ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (f : Fin n → E), ∃ d : ℕ, 0 < d ∧ ∀ j, IsIntegral ℤ ((d : E) * f j) := by
+  atlas_forward_decl GlobalTheory.exists_common_denominator

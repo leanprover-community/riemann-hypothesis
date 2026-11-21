@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsProperToroidalModelStructureMap
+import BuildAid.ForwardExisting
+
+section
 open IsLocalRing GlobalTheory.Toroidal TensorProduct
 
 namespace GlobalTheory
@@ -45,3 +48,9 @@ theorem isDomain_isIntegrallyClosed_of_adicCompletion :
   rw [hd]
 
 end GlobalTheory
+end
+
+open IsLocalRing GlobalTheory.Toroidal TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.domain_integrally_closed_of_completion : ∀ (T : Type) [CommRing T] [IsLocalRing T] [IsNoetherianRing T], IsDomain (AdicCompletion (maximalIdeal T) T) → IsIntegrallyClosed (AdicCompletion (maximalIdeal T) T) → IsDomain T ∧ IsIntegrallyClosed T := by
+  atlas_forward_decl GlobalTheory.isDomain_isIntegrallyClosed_of_adicCompletion

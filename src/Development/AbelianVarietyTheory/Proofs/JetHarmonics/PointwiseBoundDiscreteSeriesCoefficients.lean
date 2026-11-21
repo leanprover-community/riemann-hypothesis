@@ -5,14 +5,16 @@ import Development.AbelianVarietyTheory.PublishedTheorems.BesselIntegrals.Bessel
 import Formalism.HermitianCurvature.HerGenC
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularityAtPlaceOfSubadditive
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NumericalFamilyShapeGaps
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesKFiniteCoeffCapelliEigenDecayStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PointwiseBoundCapelliEigenfunctionStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesCoefficientExpansionBoundBallStatement
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesKFiniteCoeffCapelliEigenDecay
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PointwiseBoundCapelliEigenfunction
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesCoefficientExpansionBoundBall
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HcParamSubIntegral
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.InterlaceHalf
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MarginArithClosing
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NumOfStdHyp
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliParamMemIntAddHalf
+
+section
 open BpJoin Formalism.FourierDecayAlt
 
 namespace GlobalTheory.BpDiscreteSeriesTwoInputs
@@ -75,3 +77,9 @@ theorem pointwise_bound_discreteSeries : GlobalTheory.HCXi.BesselXiIntegrable �
     (fun s => by linarith [habs s]) hreg
 
 end GlobalTheory.BpDiscreteSeriesTwoInputs
+end
+
+open BpJoin Formalism.FourierDecayAlt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pointwiseBound_discreteSeries_coefficients : GlobalTheory.HCXi.BesselXiIntegrable → P5.ThmPActualCpt → ThmBpDS := by
+  atlas_forward_decl GlobalTheory.BpDiscreteSeriesTwoInputs.pointwise_bound_discreteSeries

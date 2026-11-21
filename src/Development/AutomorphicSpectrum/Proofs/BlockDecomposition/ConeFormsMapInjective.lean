@@ -1,9 +1,8 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.NLeA
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AlgebraMapConeRing
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMulPowEqIncl
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KaehlerFreeConeRingStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KaehlerFreeConeRing
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsAlgHomOfIsBaseChange
+
+section
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
 
 set_option autoImplicit false
@@ -83,3 +82,10 @@ theorem omMap_incl_injective : ∀ {K : Type} [Field K] {n d : ℕ} (S : Finset 
   exact hinj (by rw [← heq, ← heq, hxy])
 
 end GlobalTheory.CompanionTheory.SurjectionOntoH4.OmlInj
+end
+end
+
+open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cone_forms_map_injective : ∀ {K : Type} [Field K] {n d : ℕ} (S : Finset (Fin d)) (a : ℕ), Function.Injective (omMap (K := K) (incl (le_top : (cone S : AddSubmonoid (Gam n d)) ≤ ⊤)) a) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SurjectionOntoH4.OmlInj.omMap_incl_injective

@@ -1,9 +1,9 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Statements.GeometryStatements.PropFTop
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DeltaTermLogDegreeBoundStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HBBound
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootFlatPushforwardGeoFunStatement
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.SumLogPrimeDivPredBoundStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DeltaTermLogDegreeBound
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootFlatPushforwardGeoFun
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.SumLogPrimeDivPredBound
+
+section
 open MvPolynomial NumberField Filter Topology ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Flat
 
 noncomputable section
@@ -97,3 +97,10 @@ theorem propFTop : PropFTop := by
     simpa [add_assoc] using hmain
 
 end GlobalTheory.CompanionTheory.Ar.Flat
+end
+end
+
+open MvPolynomial NumberField Filter Topology ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.Flat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.PropFTop_holds : PropFTop := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.propFTop

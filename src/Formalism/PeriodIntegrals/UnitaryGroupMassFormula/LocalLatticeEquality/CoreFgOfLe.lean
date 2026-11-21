@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.LocLatEq
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalLatticeEquality.Development
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalLatticeEquality.Imports
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalLatticeEquality.CoreGenIdeal

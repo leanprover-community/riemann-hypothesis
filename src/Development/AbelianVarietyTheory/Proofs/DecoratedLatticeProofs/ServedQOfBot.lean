@@ -1,6 +1,5 @@
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FamAllQ
 import Formalism.LocalToGlobal.IndefiniteReal.RealRec
-import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
 import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.DiscreteSeriesClassificationIff
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ThmSOwn
 open scoped InnerProductSpace TensorProduct

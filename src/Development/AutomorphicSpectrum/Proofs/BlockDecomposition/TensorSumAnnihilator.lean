@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Polynomial
 
 namespace GlobalTheory.CompanionTheory.KillSum
@@ -53,3 +56,11 @@ theorem sum_killed {ι : Type} (T : Finset ι) (l : ι → Multiset ℂ) :
         (hk R h fun t ht => hh t (Finset.mem_insert_of_mem ht))
 
 end GlobalTheory.CompanionTheory.KillSum
+end
+
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensor_sum_annihilator : ∀ {ι : Type} (T : Finset ι) (l : ι → Multiset ℂ), ∃ l' : Multiset ℂ, Multiset.card l' = ∏ τ ∈ T, Multiset.card (l τ) ∧
+  ∀ (R : Type) [CommRing R] [Algebra ℂ R] (h : ι → R), (∀ τ ∈ T, ((l τ).map fun c => h τ - algebraMap ℂ R c).prod = 0) →
+    (l'.map fun c => ∑ τ ∈ T, h τ - algebraMap ℂ R c).prod = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KillSum.sum_killed

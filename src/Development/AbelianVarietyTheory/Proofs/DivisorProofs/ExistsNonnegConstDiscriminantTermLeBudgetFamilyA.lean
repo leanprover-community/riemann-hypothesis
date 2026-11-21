@@ -1,8 +1,10 @@
 import Formalism.SharpRestriction.Divisibility.WeightDegreeSizes
 import Formalism.SharpRestriction.SmoothDesignExistence.DGamSmooth
-import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLbud
 import Formalism.LocalToGlobal.GlobalTheory.PlacesP
+import BuildAid.ForwardExisting
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions NumberField Classical
 
 namespace GlobalTheory
@@ -19,3 +21,9 @@ theorem exists_nonneg_const_discriminant_term_le_budget_family : ∀ {eps : ℝ}
       (J.factDGam_mono (hG x (le_trans (le_max_right _ _) hx) i) (le_max_left _ _))
 
 end GlobalTheory
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions NumberField Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_const_stabiliserLog_bound_along_family : ∀ {eps : ℝ} (Fm : FamP eps), 0 < eps → eps < 1 / 52 → TuSize Fm → DGamSize Fm → ∃ C x0 : ℝ, 0 ≤ C ∧ ∀ x, x0 ≤ x → ∀ hx : Fm.x1 < x, ∀ i : Fm.Ix x, Formalism.MainNotions.WeightDegreeSizes.StabiliserLogBound (Fm.D x i) (Fm.L x i) C := by
+  atlas_forward_decl GlobalTheory.exists_nonneg_const_discriminant_term_le_budget_family

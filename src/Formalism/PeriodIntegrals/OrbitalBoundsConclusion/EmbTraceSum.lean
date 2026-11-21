@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.EmbTraceSum
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.EmbeddingTraceSum.Imports
 
 theorem sumEqTrace_holds : PI.EmbTraceSum := by

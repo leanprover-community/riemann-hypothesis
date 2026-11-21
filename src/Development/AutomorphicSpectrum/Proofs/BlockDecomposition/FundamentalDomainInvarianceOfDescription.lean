@@ -1,7 +1,9 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Unimodular
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Filter Topology Set
 open GroundTheory.Global GroundTheory.Global.IdeleGroup GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 open scoped NumberField.AdeleRing ENNReal Pointwise
@@ -116,3 +118,8 @@ theorem setup_of_ideleDomain : Ad3.R.D0 → Ad3.R.G0 := by
 end GlobalTheory.CompanionTheory.RSGlobal
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fundamental_domain_invariance_of_description : Ad3.R.D0 → Ad3.R.G0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RSGlobal.setup_of_ideleDomain

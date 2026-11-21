@@ -1,6 +1,8 @@
 import Mathlib
 import ReciprocityTheory.GaloisValuations.Global
+import BuildAid.ForwardExisting
 
+section
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField
 
 namespace GlobalTheory.CycInertial
@@ -378,3 +380,9 @@ theorem main : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (l k : ℕ) [Fact l.P
     · simpa [Valuation.comap_apply] using h₂ x
 
 end GlobalTheory.CycInertial
+end
+
+open Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cyclotomicPrimePow_automorphism_inertial_at_prime : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (l k : ℕ) [Fact l.Prime] (A : ValuationSubring Ω), A.valuation (l : Ω) < 1 → ∀ ζ : Ω, IsPrimitiveRoot ζ (l ^ k) → ∀ τ : (IntermediateField.adjoin ℚ {ζ}) ≃ₐ[ℚ] (IntermediateField.adjoin ℚ {ζ}), (∀ x : IntermediateField.adjoin ℚ {ζ}, A.valuation (x : Ω) ≤ 1 → A.valuation ((τ x : Ω) - (x : Ω)) < 1) ∧ (∀ x : IntermediateField.adjoin ℚ {ζ}, A.valuation ((τ x : IntermediateField.adjoin ℚ {ζ}) : Ω) ≤ 1 ↔ A.valuation (x : Ω) ≤ 1) := by
+  atlas_forward_decl GlobalTheory.CycInertial.main

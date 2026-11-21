@@ -2,7 +2,9 @@ import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.SegmentCuspLines.ProdIrrFiniteLength
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.GeometricLemmaFiltration
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsListPairwiseNotRel
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL
 
 namespace GlobalTheory.CompanionTheory.BZSegReorder
@@ -140,3 +142,9 @@ theorem reorder : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
       ⟨σ, j, hj, H.1, H.2⟩
 
 end GlobalTheory.CompanionTheory.BZSegReorder
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.reorder_of_unlinked_commute_swap : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.BZSeg.LUnlinkedComm k → GlobalTheory.BZSeg.SwapProd k → GlobalTheory.BZSeg.Reorder k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZSegReorder.reorder

@@ -1,6 +1,8 @@
 import Mathlib
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PMertensUpper
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.Ar.Small
 
 theorem mertens_first_log_four :
@@ -58,3 +60,8 @@ theorem mertens_first_log_four :
   linarith
 
 end GlobalTheory.CompanionTheory.Ar.Small
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_prime_log_div_le : ∀ x : ℝ, 1 ≤ x → ∑ p ∈ (Finset.Iic ⌊x⌋₊).filter Nat.Prime, Real.log p / p ≤ Real.log x + Real.log 4 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Small.mertens_first_log_four

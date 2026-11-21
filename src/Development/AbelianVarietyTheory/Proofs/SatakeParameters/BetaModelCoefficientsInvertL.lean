@@ -1,8 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.InertKernelTheory.DefsBeCob
 import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.ExistsCoprimePowEqOne
-import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSq
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.BeCoefficients
@@ -55,3 +56,9 @@ theorem beCoef : Formalism.L2.KerInert.BeCob.BeCoef := by
   rfl
 
 end GlobalTheory.BeCoefficients
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.beta_model_coefficients_invert_l : Formalism.L2.KerInert.BeCob.BeCoef := by
+  atlas_forward_decl GlobalTheory.BeCoefficients.beCoef

@@ -3,6 +3,7 @@ import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseOneSide.
 import Development.WeilBound.CoreStatements.ThetaDilations.SdTransport
 import Formalism.SharpRestriction.Divisibility.SlopeExcess.SummableAbsNormRpow
 
+section
 noncomputable section
 
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter
@@ -327,3 +328,9 @@ theorem cnt_of : Tate → PsiSide → Ratio → HEx → TestEx → Dens → LSid
 end GlobalTheory.CompanionTheory.RgBaseCnt
 
 end
+end
+
+open PositivityTheory.Rg.Base1
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.counting_formula_of_components : Tate → PsiSide → Ratio → HEx → TestEx → Dens → LSide → ThetaId → Cnt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgBaseCnt.cnt_of

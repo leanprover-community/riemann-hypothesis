@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.PAdicHodge.NormalizedTrace
 import GroundTheory.PAdicHodge.CyclotomicField
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.NormNatCastPrime
 set_option maxSynthPendingDepth 1

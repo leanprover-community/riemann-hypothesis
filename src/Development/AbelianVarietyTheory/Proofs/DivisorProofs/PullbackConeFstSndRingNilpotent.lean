@@ -1,6 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsSchemeOfThickenings
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PreimageUpOpen
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Opposite
 
 namespace GlobalTheory
@@ -83,3 +85,9 @@ theorem pullbackCone_fst_snd_ring_nilpotent {A B C : CommRingCat.{0}} (f : A ⟶
         ((inf_le_right).trans (pow_le_ker_of_le_comap _ _ _ m k4 hm)))
 
 end GlobalTheory
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Opposite
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pullbackCone_surjective_nilpotent_ker : ∀ {A B C : CommRingCat.{0}} (f : A ⟶ C) (g : B ⟶ C), Function.Surjective f.hom → IsNilpotent (RingHom.ker f.hom) → Function.Surjective g.hom → IsNilpotent (RingHom.ker g.hom) → (Function.Surjective (CommRingCat.pullbackCone f g).fst.hom ∧ IsNilpotent (RingHom.ker (CommRingCat.pullbackCone f g).fst.hom)) ∧ (Function.Surjective (CommRingCat.pullbackCone f g).snd.hom ∧ IsNilpotent (RingHom.ker (CommRingCat.pullbackCone f g).snd.hom)) ∧ (Function.Surjective ((CommRingCat.pullbackCone f g).fst ≫ f).hom ∧ IsNilpotent (RingHom.ker ((CommRingCat.pullbackCone f g).fst ≫ f).hom)) := by
+  atlas_forward_decl GlobalTheory.pullbackCone_fst_snd_ring_nilpotent

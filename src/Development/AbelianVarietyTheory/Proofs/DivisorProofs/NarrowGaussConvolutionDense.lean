@@ -1,6 +1,7 @@
 import Mathlib
-import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemClosureWideGaussianMulSchwartzStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemClosureWideGaussianMulSchwartz
+
+section
 open FourierTransform MeasureTheory Filter Topology
 
 namespace GlobalTheory.NarrowGauss
@@ -87,3 +88,12 @@ theorem GlobalTheory.narrowGauss_convolution_dense :
       obtain ⟨b, hb, hu⟩ := hu
       exact fourierInv_gauss_mul_eq f u b hb hu)
   simpa [FourierTransform.fourierInv_fourier_eq] using h2
+end
+
+open FourierTransform MeasureTheory Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_closure_gaussian_convolutions : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+    (f : SchwartzMap E ℂ),
+    f ∈ closure {u : SchwartzMap E ℂ | ∃ (c : ℝ) (s : ℂ), 0 < c ∧
+      ∀ y, u y = s * ∫ a, f a * Complex.exp (-((c * ‖y - a‖ ^ 2 : ℝ) : ℂ))} := by
+  atlas_forward_decl GlobalTheory.narrowGauss_convolution_dense

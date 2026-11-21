@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open MeasureTheory Filter Topology Set Module
 open scoped ENNReal
 
@@ -22,3 +24,11 @@ theorem integrable_sq_pow_mul_iteratedFDeriv_schwartz
     exact mul_le_mul_of_nonneg_right hC h0
 
 end GlobalTheory
+end
+
+open MeasureTheory Filter Topology Set Module
+open scoped ENNReal
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integrable_sq_norm_pow_mul_iteratedFDeriv_schwartz : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] (μ : Measure E) [μ.IsAddHaarMeasure] {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (f : SchwartzMap E F) (i j : ℕ), Integrable (fun z => (‖z‖ ^ i * ‖iteratedFDeriv ℝ j f z‖) ^ 2) μ := by
+  atlas_forward_decl GlobalTheory.integrable_sq_pow_mul_iteratedFDeriv_schwartz

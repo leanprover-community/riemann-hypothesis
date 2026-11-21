@@ -3,6 +3,7 @@ import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.Di
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantTensorStatement
 
+section
 noncomputable section
 
 open Polynomial Formalism.REAL CompanionTheory.RgExh CompanionTheory.RgExh.Hk
@@ -249,3 +250,9 @@ theorem cayleyHam_of (H : QdetTens) : CayleyHam := by
 theorem cayleyHam : CayleyHam := cayleyHam_of GlobalTheory.T.QuantumDeterminantTensor
 
 end GlobalTheory.CompanionTheory.RgExhHecke.CayleyOm
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.CayleyHamiltonHk : CompanionTheory.RgExh.Hk.CayleyHam := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgExhHecke.CayleyOm.cayleyHam

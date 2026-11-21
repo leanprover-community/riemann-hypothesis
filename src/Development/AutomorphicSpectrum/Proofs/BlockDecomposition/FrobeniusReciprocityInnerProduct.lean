@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
+import BuildAid.ForwardExisting
 
+section
 open ReciprocityTheory.Ty.Fin
 
 namespace GlobalTheory.CompanionTheory.TyFin
@@ -57,3 +59,9 @@ theorem frobIp : ReciprocityTheory.Ty.Fin.St.FrobIp := by
     field_simp
 
 end GlobalTheory.CompanionTheory.TyFin
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_reciprocity_inner_product : ReciprocityTheory.Ty.Fin.St.FrobIp := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.frobIp

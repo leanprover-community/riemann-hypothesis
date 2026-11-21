@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open Pointwise
 
 namespace GlobalTheory
@@ -30,3 +33,9 @@ theorem length_le_of_forall_fg_length_le (O M : Type) [CommRing O] [AddCommGroup
     _ ≤ b := h N hNfg
 
 end GlobalTheory
+end
+
+open Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.length_le_of_forall_fg_submodule_length_le : ∀ (O M : Type) [CommRing O] [AddCommGroup M] [Module O M] (b : ℕ∞), (∀ N : Submodule O M, N.FG → Module.length O N ≤ b) → Module.length O M ≤ b := by
+  atlas_forward_decl GlobalTheory.length_le_of_forall_fg_length_le

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsNoetherianRingAdicCompletionOfNoetherian
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.AdicPackage
 
 theorem adicCompletion_package : ∀ (B : Type) [CommRing B] [IsNoetherianRing B] (I : Ideal B),
@@ -30,3 +32,8 @@ theorem adicCompletion_package : ∀ (B : Type) [CommRing B] [IsNoetherianRing B
   exact (Ideal.mem_quotient_iff_mem h).1 h2
 
 end GlobalTheory.AdicPackage
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_adicCompletion_noetherian_flat_complete : ∀ (B : Type) [CommRing B] [IsNoetherianRing B] (I : Ideal B), ∃ (C : Type) (_ : CommRing C) (φ : B →+* C), IsNoetherianRing C ∧ φ.Flat ∧ IsAdicComplete (I.map φ) C ∧ ∀ (m : ℕ) (a : Ideal B), I ^ m ≤ a → (a.map φ).comap φ = a := by
+  atlas_forward_decl GlobalTheory.AdicPackage.adicCompletion_package

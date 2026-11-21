@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.PullbackBijectiveDegreesOneTwo
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -91,3 +93,10 @@ theorem vertical_h2_injective_universes :
   ⟨vertical_h2_injective, vertical_h2_injective, vertical_h2_injective⟩
 
 end GlobalTheory.CxCoh
+end
+end
+
+open CategoryTheory GlobalTheory.CxCoh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.vertical_h2_injective_three_universe_pairs : VertHas.{1,1} (fun m ↦ Function.Injective m.h2) ∧ VertHas.{1,0} (fun m ↦ Function.Injective m.h2) ∧ VertHas.{0,0} (fun m ↦ Function.Injective m.h2) := by
+  atlas_forward_decl GlobalTheory.CxCoh.vertical_h2_injective_universes

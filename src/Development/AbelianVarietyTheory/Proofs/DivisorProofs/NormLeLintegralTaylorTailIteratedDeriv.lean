@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Filter Topology Set Module
 open scoped ENNReal
 
@@ -97,3 +100,11 @@ theorem taylorTail_bound {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [
   exact key m le_rfl
 
 end GlobalTheory
+end
+
+open MeasureTheory Filter Topology Set Module
+open scoped ENNReal
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_le_lintegral_taylor_tail_iteratedDeriv : ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F] (h : ℝ → F) (m : ℕ), ContDiff ℝ (⊤ : ℕ∞) h → (∀ j ≤ m, Tendsto (iteratedDeriv j h) atTop (𝓝 0)) → ENNReal.ofReal ‖h 0‖ ≤ ∫⁻ t in Ioi (0:ℝ), ENNReal.ofReal (t ^ m / (m.factorial : ℝ)) * ‖iteratedDeriv (m + 1) h t‖ₑ := by
+  atlas_forward_decl GlobalTheory.taylorTail_bound

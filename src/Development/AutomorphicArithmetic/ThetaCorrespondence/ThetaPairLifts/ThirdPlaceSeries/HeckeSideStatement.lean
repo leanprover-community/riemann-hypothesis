@@ -1,8 +1,5 @@
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SphericalVectorFixedLocalStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeckeSide
-import Development.AutomorphicArithmetic.Foundations.LocalLanglands.IsRecTOfIsRec
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsRecTLocRecT
 
 set_option synthInstance.maxHeartbeats 200000
 
@@ -20,5 +17,5 @@ theorem _root_.GlobalTheory.T.spherical_vector_fixed_local_alt : ∀ (hL : _root
         Polynomial.C ((-1 : ℂ) ^ k * ((normV w : ℕ) : ℂ) ^ (k * (k - 1) / 2) * c k) * X ^ (D.R.nV - k) =
       (Multiset.map (fun α => X - Polynomial.C α)
         ((_root_.GlobalTheory.CuspRep.ParLawsT.locRecT hL (D.nd.plOm.2 w) x).lpTw ((1 - (D.R.nV : ℝ)) / 2)).frobEig).prod := by
-  first | exact @_root_.GlobalTheory.HeckeFrob.locPol_eq_alt | exact _root_.GlobalTheory.HeckeFrob.locPol_eq_alt | (intros; apply _root_.GlobalTheory.HeckeFrob.locPol_eq_alt <;> assumption)
+  atlas_forward_decl _root_.GlobalTheory.HeckeFrob.locPol_eq_alt
 end

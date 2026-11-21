@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OneAddSmulVecMulVecMulVec
+
+section
 open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
 
 namespace GlobalTheory.UnipKill
@@ -36,3 +38,9 @@ theorem exists_real_unit_infinite_order (E : Type) [Field E] [NumberField E] [Is
     exact (basisModTorsion (maximalRealSubfield E)).ne_zero _ hmk.symm
 
 end GlobalTheory.UnipKill
+end
+
+open ReciprocityTheory.ChartRestriction.G.FD NumberField GlobalTheory.UnipKill
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_real_unit_not_root_of_unity : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], 1 < Module.finrank ℚ E / 2 → ∃ u : (𝓞 E)ˣ, cc (u : E) = u ∧ ∀ n : ℕ, 0 < n → (u : E) ^ n ≠ 1 := by
+  atlas_forward_decl GlobalTheory.UnipKill.exists_real_unit_infinite_order

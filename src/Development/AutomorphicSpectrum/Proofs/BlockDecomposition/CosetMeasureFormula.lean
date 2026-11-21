@@ -2,6 +2,7 @@ import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CProps
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.GunrCoset
@@ -65,3 +66,8 @@ theorem cosetMeas : CosetMeas := by
 end GlobalTheory.CompanionTheory.GunrCoset
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coset_measure_formula : PositivityTheory.SiegelWeilFormula.Gunr.CosetMeas := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GunrCoset.cosetMeas

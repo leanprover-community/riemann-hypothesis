@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.EquivariantSections.EquivSection
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.KTypeLemma.Transfer
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Finset MeasureTheory Matrix Topology
@@ -278,3 +280,9 @@ theorem transfer : Transfer := by
   ring
 
 end GlobalTheory.CompanionTheory.RgKeyTransfer
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.transfer_statement : PositivityTheory.RgDs.K.Transfer := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgKeyTransfer.transfer

@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IndApplyOne
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InducedClassFunctionFromSubgroupTransStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InducedClassFunctionFromSubgroupTrans
+
+section
 open GlobalTheory.BI GlobalTheory.BrauerZero
 
 noncomputable section
@@ -63,3 +64,10 @@ theorem ind_mem_D0_of_mem_D0 : ∀ {G : Type} [Group G] [Finite G] (E : Subgroup
     rw [this]; exact neg_mem ha
 
 end GlobalTheory.BrauerZero
+end
+end
+
+open GlobalTheory.BI GlobalTheory.BrauerZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inducedClassFunction_mem_inducedDegreeOneCharDiff : ∀ {G : Type} [Group G] [Finite G] (E : Subgroup G) (f : E → ℂ), f ∈ D0 E → ind E f ∈ D0 G := by
+  atlas_forward_decl GlobalTheory.BrauerZero.ind_mem_D0_of_mem_D0

@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialIdentityOfQuadratic
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SiteZeroMatrixEntry
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDStartCoord
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDWaveRad
@@ -10,8 +9,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDJNice
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialWaveOrbital
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialOperatorLocality
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJALocToolsTheta
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAFFStableAdjComm
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermMulVecMulVec
 
 namespace Formalism.FourierDecayAlt.P.CutSE
 

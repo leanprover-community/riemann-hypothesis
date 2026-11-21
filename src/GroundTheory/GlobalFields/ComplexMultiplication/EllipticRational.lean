@@ -1,5 +1,4 @@
 import Mathlib
-import GroundTheory.GlobalFields.ComplexMultiplication.EllipticFunctions
 import GroundTheory.GlobalFields.ComplexMultiplication.EllipticConstant
 
 open Complex Filter Topology Set Polynomial

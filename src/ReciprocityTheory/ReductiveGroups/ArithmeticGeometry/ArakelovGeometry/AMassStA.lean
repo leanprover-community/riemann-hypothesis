@@ -1,4 +1,3 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFS
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 import Mathlib.Analysis.SpecialFunctions.PolarCoord

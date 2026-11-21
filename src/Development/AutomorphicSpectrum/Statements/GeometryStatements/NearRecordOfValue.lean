@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.TowerExistence.GoodTowerExists
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.NumberField
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PtsIntZero
 
 noncomputable section

@@ -1,5 +1,4 @@
 import Mathlib
-import Formalism.PeriodIntegrals.ExistsGaugeMeasureForEachRank
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CircleGaugeAction.DglApplyOff
 
 noncomputable section

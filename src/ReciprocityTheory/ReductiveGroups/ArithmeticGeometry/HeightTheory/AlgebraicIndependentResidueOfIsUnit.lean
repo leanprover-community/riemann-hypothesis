@@ -1,5 +1,4 @@
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
-import ReciprocityTheory.SemistableReduction.GaussValExists
 import ReciprocityTheory.SemistableReduction.GaussValLeIffDivMem
 import ReciprocityTheory.SemistableReduction.GaussIndepOfLeTrdeg
 import ReciprocityTheory.SemistableReduction.IntegralClosureRankAndResidueTrdegLe

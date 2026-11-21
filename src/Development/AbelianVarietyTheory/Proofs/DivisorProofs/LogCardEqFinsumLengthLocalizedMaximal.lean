@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CardLength
 
 variable {R : Type} [CommRing R]
@@ -143,3 +145,8 @@ theorem log_card_eq_finsum_length : ∀ (B : Type) [CommRing B] (N : Type) [AddC
     intro h0; apply hm; simp [h0]
 
 end GlobalTheory.CardLength
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_card_eq_finsum_length_localized_maximal : ∀ (B : Type) [CommRing B] (N : Type) [AddCommGroup N] [Module B N] [Finite N], Real.log (Nat.card N) = ∑ᶠ m : MaximalSpectrum B, ((Module.length (Localization.AtPrime m.asIdeal) (LocalizedModule m.asIdeal.primeCompl N)).toNat : ℝ) * Real.log (Nat.card (B ⧸ m.asIdeal)) := by
+  atlas_forward_decl GlobalTheory.CardLength.log_card_eq_finsum_length

@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.StepJumpDirect
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContChiRat
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.Pass.HfCharStep
@@ -14,3 +16,9 @@ theorem main : StepHfChar := fun D _ HW F h hI i _ _ h2 w hw h1 =>
 end GlobalTheory.Pass.HfCharStep
 
 end
+end
+
+open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blochKatoCharactersTypePrime_proof : StepHfChar := by
+  atlas_forward_decl GlobalTheory.Pass.HfCharStep.main

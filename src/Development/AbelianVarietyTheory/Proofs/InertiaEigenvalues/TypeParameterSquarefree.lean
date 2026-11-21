@@ -1,7 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.StepJumpDirect
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TypeLocalGlobalStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilDeligneAboveStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WeilDeligneAbove
+
 open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass
 
 theorem _root_.GlobalTheory.Pass.stepType_proof : StepType := by

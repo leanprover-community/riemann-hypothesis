@@ -1,7 +1,6 @@
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepC
 import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepB
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpanHeisenbergTranslatesOfLatticeVacuaEqTopStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsWeilRepresentationOfLatticeVacuaStatement
+import Mathlib
 
 noncomputable section
 

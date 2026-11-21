@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpecialFibreConnectedOfProper
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalAlgebraisationMorphismsStatement
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -109,3 +110,10 @@ theorem isClosed_image_closure : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDis
   exact hZc
 
 end GlobalTheory.FibProperClosed
+end
+end
+
+open CategoryTheory Limits AlgebraicGeometry
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isClosed_image_closure_completeDVR_specialFibre : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (Y P : Scheme.{0}) (q : Y ⟶ P) (s : P ⟶ Spec (CommRingCat.of O)) (C : Set Y), IsProper s → IsImmersion q → IsProper (pullback.snd (q ≫ s) (Spec.map (CommRingCat.ofHom (IsLocalRing.residue O)))) → IsIrreducible C → (∃ y ∈ closure C, (q ≫ s) y = IsLocalRing.closedPoint O) → IsClosed (q '' closure C) := by
+  atlas_forward_decl GlobalTheory.FibProperClosed.isClosed_image_closure

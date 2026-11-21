@@ -9,7 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ESecCompOfIs
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsPullbackKernelBaseChange
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SmoothProjOfFree
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsAffineWeightUnits
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PreimageEqTopOfSurjective
 
 set_option autoImplicit false
 

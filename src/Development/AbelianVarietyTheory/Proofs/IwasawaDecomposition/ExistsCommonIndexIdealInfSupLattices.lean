@@ -1,7 +1,9 @@
 import Mathlib
 import Formalism.LocalToGlobal.ProjectiveLattices.ThClass
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIndexIdeal
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.BetaEx
@@ -76,3 +78,10 @@ theorem exists_index_ideal_inf_sup (E : Type) [Field E] [NumberField E] (n : ℕ
   rwa [sup_eq_right.2 inf_le_left] at this
 
 end GlobalTheory.BetaEx
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_common_indexIdeal_inf_sup_lattices : ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (M M' : Submodule (𝓞 E) (Fin n → E)), GlobalTheory.BetaEx.Bdd (M' ⊔ M) → (∀ m ∈ M, ∃ a : 𝓞 E, a ≠ 0 ∧ a • m ∈ M') → ∃ 𝔞 : Ideal (𝓞 E), 𝔞 ≠ ⊥ ∧ GlobalTheory.BetaEx.detSpan (M ⊓ M') = 𝔞 • GlobalTheory.BetaEx.detSpan M ∧ GlobalTheory.BetaEx.detSpan M' = 𝔞 • GlobalTheory.BetaEx.detSpan (M' ⊔ M) ∧ Ideal.absNorm 𝔞 = (M ⊓ M').toAddSubgroup.relIndex M.toAddSubgroup := by
+  atlas_forward_decl GlobalTheory.BetaEx.exists_index_ideal_inf_sup

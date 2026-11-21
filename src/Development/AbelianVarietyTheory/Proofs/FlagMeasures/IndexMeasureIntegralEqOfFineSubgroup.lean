@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Cint
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CintTranslate
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.IdxInt
 open scoped Pointwise Classical
 
@@ -82,3 +83,10 @@ theorem _root_.GlobalTheory.IdxInt.cint_eq_of_fine : ∀ {W : Type} [AddCommGrou
   rw [← finsum_out_div_relIndex_eq_of_le hB0 inf_le_right hidx, finsum_out_div_relIndex_eq_of_le hB inf_le_left hidx]
 
 end GlobalTheory.IdxInt
+end
+
+open GlobalTheory.IdxInt
+open scoped Pointwise Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.indexMeasureIntegral_eq_of_fineSubgroup : ∀ {W : Type} [AddCommGroup W] (A B : AddSubgroup W) (φ : W → ℂ), Fine A φ B → cint A φ = (∑ᶠ c : W ⧸ B, φ c.out) / (B.relIndex A : ℂ) := by
+  atlas_forward_decl GlobalTheory.IdxInt.cint_eq_of_fine

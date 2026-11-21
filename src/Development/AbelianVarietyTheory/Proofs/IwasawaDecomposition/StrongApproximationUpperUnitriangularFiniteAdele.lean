@@ -8,6 +8,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IdeleClassFiniteness.La
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentApproximation.AddDense
 import ReciprocityTheory.GeneralLinearIntegers.AlgebraMapIntMemOint
 
+section
 noncomputable section
 
 namespace GlobalTheory.UnipApproxGL
@@ -151,3 +152,11 @@ theorem unipApprox : PIW.ClassFinD.UnipApprox := by
 end GlobalTheory.UnipApproxGL
 
 end
+end
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Topology
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.UnitaryBC GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.strongApproximation_upperUnitriangular_finiteAdeles : PIW.ClassFinD.UnipApprox := by
+  atlas_forward_decl GlobalTheory.UnipApproxGL.unipApprox

@@ -1,8 +1,6 @@
 import Mathlib
 import Formalism.LocalToGlobal.KernelLattices.BaseEx
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.SplitK
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.KerPerPair
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.KernelLatticeT0Exists
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.KerFourSq
@@ -13,7 +11,6 @@ import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.KerDetOrd
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.KerDetFin
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.KerTens
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.KerLocIso
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 
 noncomputable section
 open scoped BigOperators ComplexConjugate Pointwise

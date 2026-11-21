@@ -1,21 +1,22 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartAndRightWordsSmooth
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixExpCurveDerivativeStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixExpCurveDerivative
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RegularRepresentationContinuousStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LpIntegralAePointwiseStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ApproximateIdentityExistsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationDifferentiableStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationRightTranslateStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationEvaluationContinuousStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeRightBasisExpansionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.L2LimitEqPointwiseLimitHoldsStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeftConvolutionApproximationStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationAeEqConvolutionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedDerivativeSystemSmoothStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RightTranslateDerivativeIntegralStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SobolevSequenceUniformCauchyStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformLimitRightDerivativesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RwAppend
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LpIntegralAePointwise
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ApproximateIdentityExists
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationDifferentiable
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationRightTranslate
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationEvaluationContinuous
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeRightBasisExpansion
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.L2LimitEqPointwiseLimitHolds
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeftConvolutionApproximation
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MollificationAeEqConvolution
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedDerivativeSystemSmooth
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RightTranslateDerivativeIntegral
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SobolevSequenceUniformCauchy
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformLimitRightDerivatives
+
+section
 open MeasureTheory Matrix Finset Filter Topology
 open scoped ContDiff ComplexConjugate InnerProductSpace ZeroAtInfty
 open PositivityTheory.RgTw (Mat G)
@@ -159,3 +160,9 @@ theorem GlobalTheory.CompanionTheory.PresSobA.presSob : PresSob := by
   obtain ⟨f', hf', hcl⟩ := limit_sob (μ := μ) hS (fun k => Mol μ (φ k) (⇑(x []))) x (fun k => (hfam k).1 [])
     (fun k w => (cls_of_ae μ (hae k w)).1) hlim
   exact ⟨f', hf', hcl [], hcl⟩
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sobolev_space_preserved : PositivityTheory.RgBcC.Fc.PresSob := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PresSobA.presSob

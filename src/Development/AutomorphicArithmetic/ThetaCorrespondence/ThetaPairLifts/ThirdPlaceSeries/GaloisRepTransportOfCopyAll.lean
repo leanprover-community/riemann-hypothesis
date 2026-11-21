@@ -1,6 +1,4 @@
 import Development.AutomorphicArithmetic.UnitTensorPairings.GaloisRepTransportOfCopyAll
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CohomologicalCsdTempered
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeckeOpen
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsIsRepOfTw
 
 set_option synthInstance.maxHeartbeats 200000

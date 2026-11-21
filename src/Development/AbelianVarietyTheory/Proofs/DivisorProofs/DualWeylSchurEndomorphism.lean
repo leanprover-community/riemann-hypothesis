@@ -1,9 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
-import Formalism.GradedWeylDivisibility.FinalB
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Formalism.PieriBlockIdeals.PieriColumnMinors.HighestWeightMemWZero
+import BuildAid.ForwardExisting
 
+section
 open MvPolynomial Formalism.GradedWeylDivisibility
 
 noncomputable section
@@ -83,3 +83,10 @@ theorem nablaSchur : NablaSchur := by
   exact hy
 
 end GlobalTheory.LeviCut
+end
+end
+
+open GlobalTheory.LeviCut
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualWeyl_schur_endomorphism : GlobalTheory.LeviCut.NablaSchur := by
+  atlas_forward_decl GlobalTheory.LeviCut.nablaSchur

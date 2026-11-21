@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Filter Topology PositivityTheory.RgEis
@@ -222,3 +224,9 @@ theorem wallLaw_of_secLaw : SecLaw → WallLaw := by
         _ ≤ _ := bound_left hA hB' hp hq (norm_nonneg _)
 
 end GlobalTheory.CompanionTheory.RgEis
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.wall_law_of_section_law : PositivityTheory.RgEis.SecLaw → PositivityTheory.RgEis.WallLaw := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgEis.wallLaw_of_secLaw

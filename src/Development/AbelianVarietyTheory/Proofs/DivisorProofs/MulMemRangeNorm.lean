@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.UnipVal
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.TransportC
+import BuildAid.ForwardExisting
+
+section
 open MeasureTheory Matrix GlobalTheory.KSp GlobalTheory.SplitUnitary
 open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
 open GlobalTheory.SplitWeil (SB nabs)
@@ -69,3 +71,11 @@ theorem mul_mem_range_norm (F : Type) [Field F] [CharZero F] [ValuativeRel F] [T
   exact mul_eq_one_of_card_two hcard hx hy
 
 end GlobalTheory.KSp.NormIndex
+end
+
+open MeasureTheory Matrix GlobalTheory.KSp GlobalTheory.SplitUnitary
+open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
+open GlobalTheory.SplitWeil (SB nabs)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mul_mem_range_norm_of_not_mem : ∀ (F : Type) [Field F] [CharZero F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (E : Type) [Field E] [Algebra F E] [TopologicalSpace E] [IsModuleTopology F E] (c : E →ₐ[F] E) (δ : E) (hE : IsQuad c δ) (x y : Fˣ), x ∉ (Units.map (Algebra.norm F : E →* F)).range → y ∉ (Units.map (Algebra.norm F : E →* F)).range → x * y ∈ (Units.map (Algebra.norm F : E →* F)).range := by
+  atlas_forward_decl GlobalTheory.KSp.NormIndex.mul_mem_range_norm

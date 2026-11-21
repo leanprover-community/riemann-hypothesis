@@ -1,6 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix GroundTheory.LocalField GroundTheory.Automorphic
@@ -285,3 +287,9 @@ theorem heckeSum_invariant : Ad3.R.C0 := by
   exact sum_eq hR hR' f hf hx g
 
 end GlobalTheory.CompanionTheory.HeckeCosets
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hecke_coset_representatives : Ad3.R.C0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.HeckeCosets.heckeSum_invariant

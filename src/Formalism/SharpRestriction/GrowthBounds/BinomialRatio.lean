@@ -1,9 +1,7 @@
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FamilyFourthBound
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KapCore
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.TopDegreeLeTwoB
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ExtendedStatementOfParts
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.TotalDegreeEplus
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FirstCoefficientFacts
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.LeAndHalfLeProdOneSubExpNegOfBounds
@@ -13,7 +11,6 @@ import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.RankOnDigitsCast
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CardEqChainSum
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.StWeyl
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FactorsOfPerturb
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ChainDim
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.UpperCountOfTopRows
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountLow
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.BlockInj
@@ -23,20 +20,12 @@ import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdStandardLa
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeRatioConsecutive
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairLift
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairCount
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.NotKept
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.WtBound
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KeptBlocksOfSLine
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.Bracket
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KeptBlocksHolds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreesLargeOfStd
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseThresholdRatioConsecutive
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SymInt
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.WittPNe
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FinalTheorems
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.DualFlatOf
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.DualLat
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PosCoreLetter
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SettingCharZeroAt
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SettingCZ
 
 noncomputable section

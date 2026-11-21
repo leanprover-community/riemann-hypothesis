@@ -1,6 +1,7 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.QuadAtOf
 
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.DiscriminantUnit
@@ -238,3 +239,8 @@ theorem q4 : PositivityTheory.SiegelWeilFormula.Gunr.Q4 := by
 end GlobalTheory.CompanionTheory.DiscriminantUnit
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_quadratic_condition_four : PositivityTheory.SiegelWeilFormula.Gunr.Q4 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.DiscriminantUnit.q4

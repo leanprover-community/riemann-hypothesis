@@ -3,26 +3,24 @@ import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.Arch
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.SquareIntegrable.SSmooth
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TemperedBoundGL2
 import GroundTheory.LocalFields.QuadraticAbelian.WeilRepQuadratic
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSmoothCharCompNorm
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WcEqZero
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerBoundQuadraticExtensionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerSupportQuadraticExtensionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilCharacterTwistNontrivialGaloisStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerGaloisConjugateStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerNontrivialGaloisIntegralStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerBoundQuadraticExtension
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerSupportQuadraticExtension
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilCharacterTwistNontrivialGalois
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerGaloisConjugate
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerNontrivialGaloisIntegral
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactTranslateEntriesBoundedStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenNormImageUnitsStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenNormImageUnits
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormImageNeighbourhoodEventuallyStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerContinuityQuadraticExtensionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerMeasureIndependenceStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerNonvanishingCharacterStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerMeasurabilityStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerGaloisInvarianceStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerIntegrableQuadraticStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerContinuousQuadraticStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerSupportBoundQuadraticStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerCentralTwistStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerNontrivialCharacterExtensionStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerContinuityQuadraticExtension
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerNonvanishingCharacter
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerMeasurability
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerGaloisInvariance
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerIntegrableQuadratic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerContinuousQuadratic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerSupportBoundQuadratic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeilWhittakerNontrivialCharacterExtension
+
+section
 open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
 open GroundTheory.Automorphic.GodementSection (localChar)
 open GroundTheory.Global.AdicLiesOver
@@ -137,3 +135,14 @@ theorem temperedBoundGL2_compact_whittaker : ∀ (F : Type) [Field F] [Valuative
       _ = max C0 C1 * (max B0 B1) ^ ε * (modulus ((x / y : Fˣ) : F) : ℝ) ^ (1 / 2 - ε) := by ring
 
 end GlobalTheory.CompanionTheory.WcB
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3
+open GroundTheory.Automorphic.GodementSection (localChar)
+open GroundTheory.Global.AdicLiesOver
+open scoped ValuativeRel
+open GlobalTheory.CompanionTheory.DualHol
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.temperedBoundGL2_quadratic_whittaker : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F] [CharZero F] (χ : AddChar F Circle), Continuous χ → χ ≠ 1 → ∀ (E : Type) [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E] [MeasurableSpace E] [BorelSpace E] [Algebra F E], Module.finrank F E = 2 → Continuous (algebraMap F E) → ∀ σ : E ≃ₐ[F] E, σ ≠ AlgEquiv.refl → ∀ (lam : ℂ) (c : Eˣ →* ℂˣ), IsUnit1 c → ∀ Φ ∈ GL2LocalData.SBc F E c, ∀ h₀ : GL (Fin 2) F, TemperedBoundGL2 (fun g => GL2LocalData.Wc χ σ (selfDualMeasure (GL2LocalData.chE E χ)) lam c Φ (g * h₀)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.WcB.temperedBoundGL2_compact_whittaker

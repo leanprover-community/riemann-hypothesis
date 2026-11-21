@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FixedCoefficientFieldInComplex
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TypeNormOfKummer
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeckeIdealEqOfRay
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.NT GlobalTheory.Mem.Fld GlobalTheory.FieldSize
@@ -103,3 +103,10 @@ theorem classNumber_dvd_finrank : ∀ (K L : Type) [Field K] [NumberField K] [Fi
 end GlobalTheory.Mem.ClassDvd
 
 end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Host GlobalTheory.NT GlobalTheory.Published GlobalTheory.Mem GlobalTheory.Mem.Fld
+open scoped nonZeroDivisors IntermediateField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.classNumber_dvd_finrank_alt : ∀ (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] (𝔮 : Ideal (𝓞 K)), 𝔮 ≠ ⊥ → IsRayField K L 𝔮 → classNumber K ∣ Module.finrank K L := by
+  atlas_forward_decl GlobalTheory.Mem.ClassDvd.classNumber_dvd_finrank

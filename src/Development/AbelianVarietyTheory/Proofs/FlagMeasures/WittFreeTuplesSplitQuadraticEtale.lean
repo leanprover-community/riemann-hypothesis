@@ -1,5 +1,7 @@
 import Development.AbelianVarietyTheory.Definitions.Foundations.InFrameStabilizer
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory.SgAlg Matrix Module
 
 noncomputable section
@@ -303,3 +305,10 @@ theorem witt_split : ∀ {E : Type} [CommRing E] (σ : E →+* E), IsQA σ →
   exact witt_of_field σ hQA.1 e he2 he1 (Ideal.Quotient.mk I) s hs1 hs2 J hJ X X' hX hX' hG
 
 end GlobalTheory.SgAlg.WittSplit
+end
+end
+
+open GlobalTheory.SgAlg Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.witt_free_tuples_split_quadratic_etale : ∀ {E : Type} [CommRing E] (σ : E →+* E), IsQA σ → (∃ e : E, e * e = e ∧ e + σ e = 1 ∧ ∀ x : E, e * x ≠ 0 → ∃ y, e * x * y = e) → ∀ {n a : ℕ} (J : Matrix (Fin n) (Fin n) E), IsHermU σ J → ∀ (X X' : Matrix (Fin n) (Fin a) E), Free X → Free X' → pairM σ J X X = pairM σ J X' X' → ∃ g, IsUn σ J g ∧ g * X = X' := by
+  atlas_forward_decl GlobalTheory.SgAlg.WittSplit.witt_split

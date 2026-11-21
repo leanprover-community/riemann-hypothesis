@@ -1,5 +1,7 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemRiemannRochSpaceIffRegularAtEverywhere
+import BuildAid.ForwardExisting
 
+section
 open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
 
 namespace GlobalTheory.CompanionTheory.GapOpCount
@@ -68,3 +70,11 @@ theorem card_forms_vanishing_missing_line : ∀ (k : Type) [Field k] [Fintype k]
   rw [hcard, Finset.card_univ, Module.card_eq_pow_finrank (K := k) (V := T), hfr]
 
 end GlobalTheory.CompanionTheory.GapOpCount
+end
+
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_functionals_vanishing_subspace : ∀ (k : Type) [Field k] [Fintype k] (n j : ℕ) (M : Submodule k (Fin (n + 1) → k)), e0 k n ∉ M →
+  Module.finrank k M + (j + 1) = n + 1 →
+  (Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ e0 k n = 1 ∧ ∀ x ∈ M, a ⬝ᵥ x = 0)).card = Fintype.card k ^ j := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GapOpCount.card_forms_vanishing_missing_line

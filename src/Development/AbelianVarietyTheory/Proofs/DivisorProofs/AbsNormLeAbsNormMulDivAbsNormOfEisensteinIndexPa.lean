@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.OmegaFactorization
+import BuildAid.ForwardExisting
+
+section
 open NumberField Complex
 open scoped nonZeroDivisors
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization
@@ -62,3 +65,11 @@ theorem main : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (𝔞 
   exact mul_le_mul_of_nonneg_left hle' (abs_nonneg _)
 
 end GlobalTheory.NormLe
+end
+
+open NumberField Complex
+open scoped nonZeroDivisors
+open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.abs_norm_le_abs_norm_mul_div_absNorm_of_eisensteinIndexPair : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (𝔞 𝔟 : Frac F) (p : QPair 𝔞 𝔟), |(Algebra.norm ℚ p.1.1 : ℝ)| ≤ |(Algebra.norm ℚ (p.1.1 * p.1.2) : ℝ)| / nrm 𝔟 := by
+  atlas_forward_decl GlobalTheory.NormLe.main

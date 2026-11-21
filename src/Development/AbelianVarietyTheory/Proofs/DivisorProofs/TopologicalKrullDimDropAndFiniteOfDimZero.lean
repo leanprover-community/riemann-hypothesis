@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 open TopologicalSpace Order
 
 namespace GlobalTheory.DimDrop
@@ -92,3 +94,9 @@ theorem dim_drop : ∀ (S : Type) [TopologicalSpace S] [NoetherianSpace S],
     fun _ h => finite_of_topologicalKrullDim_nonpos S h⟩
 
 end GlobalTheory.DimDrop
+end
+
+open TopologicalSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.topologicalKrullDim_drop_and_finite_of_dim_zero : ∀ (S : Type) [TopologicalSpace S] [NoetherianSpace S], (∀ (C : Set S) (d : ℕ), IsClosed C → topologicalKrullDim S ≤ d → (∀ Z ∈ irreducibleComponents S, (d : WithBot ℕ∞) ≤ topologicalKrullDim Z → ¬ Z ⊆ C) → topologicalKrullDim C < d) ∧ (T0Space S → topologicalKrullDim S ≤ 0 → Finite S) := by
+  atlas_forward_decl GlobalTheory.DimDrop.dim_drop

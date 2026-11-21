@@ -1,6 +1,5 @@
 import Formalism.GaussValuationBounds.KapBound3
 import Formalism.GaussValuationBounds.GaussValueContraction.TruncationExponentBounds
-import Formalism.WachModuleLifts.WachModuleProofs.LemmaHLift
 
 namespace Formalism.NOK
 

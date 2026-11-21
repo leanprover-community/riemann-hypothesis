@@ -3,6 +3,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SplitLocF
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemClosureHeckeSplitCongruenceOfFinPartOne
 import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF Topology Filter
@@ -349,3 +350,11 @@ theorem mem_closure_grpHF_of_finPart_eq_one : ∀ (F E : Type) [Field F] [Number
     exact tpt _ _ _ _ f1' f2' (fun w => (tinv w).1) fun w => (tinv w).2
 
 end GlobalTheory.HeckeSplitGen
+end
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_closure_split_congruence_ideles_of_finPart_eq_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (N : ℕ), 0 < N → ∀ z : (AF F ⊗[F] E)ˣ, finPartF F E (z : AF F ⊗[F] E) = 1 → z ∈ closure (GlobalTheory.HeckeSplitGen.grpHF σ N : Set (AF F ⊗[F] E)ˣ) := by
+  atlas_forward_decl GlobalTheory.HeckeSplitGen.mem_closure_grpHF_of_finPart_eq_one

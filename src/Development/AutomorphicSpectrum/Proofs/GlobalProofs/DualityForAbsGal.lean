@@ -1,5 +1,4 @@
 import Mathlib
-import ReciprocityTheory.Hypotheses.GalCoh
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.Transport
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.ExistsApplyEqOfMemDec
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.Inertia

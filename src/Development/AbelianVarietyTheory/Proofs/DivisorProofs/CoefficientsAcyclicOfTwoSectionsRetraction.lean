@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.PullbackBijectiveDegreesOneTwo
+import BuildAid.ForwardExisting
 
+section
 set_option autoImplicit false
 
 open CategoryTheory GlobalTheory.CxCoh
@@ -74,3 +76,9 @@ theorem coef_acyclic_of_two_sections (C : Type 1) [Category.{0} C] (M : Coef C) 
     linear_combination (norm := abel1) ku - kv
 
 end GlobalTheory
+end
+
+open CategoryTheory GlobalTheory.CxCoh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coefficients_acyclic_of_two_sections_retraction : ∀ (C : Type 1) [Category.{0} C] (M : Coef C) (S : C ⥤ C) (u v : 𝟭 C ⟶ S) (r : ∀ T, M.obj (S.obj T) →+ M.obj T), (∀ (T T' : C) (φ : T ⟶ T') x, r T' (M.map (S.map φ) x) = M.map φ (r T x)) → (∀ T x, r T (M.map (u.app T) x) = 0) → (∀ T x, r T (M.map (v.app T) x) = x) → M.Ac0 ∧ M.Ac1 ∧ M.Ac2 := by
+  atlas_forward_decl GlobalTheory.coef_acyclic_of_two_sections

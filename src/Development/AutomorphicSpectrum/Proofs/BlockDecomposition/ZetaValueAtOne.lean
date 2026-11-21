@@ -1,5 +1,7 @@
 import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.MirabolicGenerators.SideUnfold
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open NumberField Matrix MeasureTheory
@@ -65,3 +67,10 @@ theorem zetaOne_of_epMain : EpMain → ZetaOne := by
     simp
 
 end GlobalTheory.CompanionTheory.EisMG
+end
+end
+
+open PositivityTheory.RgEis PositivityTheory.RgEis.MG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.zeta_value_at_one : EpMain → ZetaOne := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EisMG.zetaOne_of_epMain

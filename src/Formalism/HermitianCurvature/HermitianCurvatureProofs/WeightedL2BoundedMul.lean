@@ -1,4 +1,3 @@
-import Formalism.HermitianCurvature.StatementLE
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasIterDeriv
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThetaLimit
 

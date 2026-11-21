@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.ShortNorms.ShortNorm
 import Development.AutomorphicArithmetic.ShortNorms.normPrimesN
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DivLeRpowThreeQuarters
 

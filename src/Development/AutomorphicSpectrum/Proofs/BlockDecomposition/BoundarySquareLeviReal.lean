@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.InjectiveDecompositionAction
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SgMulSelf
+import BuildAid.ForwardExisting
 
+section
 open Finset
 
 noncomputable section
@@ -267,3 +269,10 @@ theorem bdSqL : PositivityTheory.RgBcC.RealD.BdSqL := by
     GlobalTheory.CompanionTheory.RealMult.BdSqProof.ann_ann GlobalTheory.CompanionTheory.RealMult.BdSqProof.cre_cre GlobalTheory.CompanionTheory.RealMult.BdSqProof.ann_cre
 
 end GlobalTheory.CompanionTheory.KPChains
+end
+end
+
+open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.boundary_square_levi_real : PositivityTheory.RgBcC.RealD.BdSqL := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.KPChains.bdSqL

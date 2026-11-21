@@ -1,7 +1,9 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.SymZeroCommFrame
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryMemGLs
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix Finset
@@ -421,3 +423,9 @@ theorem gelN : GelN := by
 end Analysis
 
 end GlobalTheory.CompanionTheory.GelLevi
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gelfand_operator_normal : PositivityTheory.RgBcC.GelN := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GelLevi.gelN

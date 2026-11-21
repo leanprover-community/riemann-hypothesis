@@ -1,13 +1,11 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocallyConstantMajorants.GammaSplitting.UnipotentTateFunctionalEquation
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MajorantScaled
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralKernelUniformBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MajorantLeSumSwap
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TateLocalL1
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AestronglyMeasurableWhittakerDiagUnits
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Ga
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LintegralMajorantLePowNeg
 
+section
 open MeasureTheory Matrix GlobalTheory.CompanionTheory.MajC Ad3.K.LC
 
 noncomputable section
@@ -131,3 +129,11 @@ theorem ga_integrable : ∀ σ : ℝ, 0 < σ → σ < 1 → Measurable (GlobalTh
     _ < ⊤ := ENNReal.mul_lt_top (ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top) hQ
 
 end GlobalTheory.CompanionTheory.PerUC.GaInt
+end
+end
+
+open MeasureTheory Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_majorant_torus_lt_top : ∀ σ : ℝ, 0 < σ → σ < 1 → Measurable (GlobalTheory.CompanionTheory.PerUC.ga σ 4) ∧ (∀ h, 0 ≤ GlobalTheory.CompanionTheory.PerUC.ga σ 4 h) ∧
+    ∫⁻ h : Ad3.K.LC.M22, ENNReal.ofReal (GlobalTheory.CompanionTheory.PerUC.ga σ 4 h) < ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PerUC.GaInt.ga_integrable

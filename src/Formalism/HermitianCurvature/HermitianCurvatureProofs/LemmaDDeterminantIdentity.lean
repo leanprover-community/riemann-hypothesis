@@ -1,8 +1,6 @@
-import Formalism.HermitianCurvature.StatementQ
 import Formalism.PeriodIntegrals.ContractionsCovariantIff
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmColExp
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmRowExp
-import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmRowForm
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmSkip
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmStar
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QmIndep

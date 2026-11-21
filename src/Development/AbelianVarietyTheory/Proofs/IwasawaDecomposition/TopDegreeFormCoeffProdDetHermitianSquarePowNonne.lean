@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsNegSqZero
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TopDegreeFormCoeffLinearSubstEqAbsDetSqMul
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -140,3 +141,14 @@ theorem GlobalTheory.PointFormSign.topCoeff_prod_det_sqPoly_pow_nonneg {n : ℕ}
   rw [Fintype.prod_sigma] at h
   refine h.trans_eq (congrArg topCoeff (Finset.prod_congr rfl fun t _ => ?_))
   exact (Finset.prod_const (s := Finset.univ) (sqPoly (T t)).det).trans (by rw [Finset.card_univ, Fintype.card_fin])
+end
+end
+
+open Matrix MvPolynomial GlobalTheory.GoodMetric GlobalTheory.HermFrame GlobalTheory.PointFormSign
+open ReciprocityTheory.L2DbarEstimates (V)
+open scoped ComplexOrder Topology
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.topDegreeFormCoeff_prod_det_hermitianSquare_pow_nonneg : ∀ {n : ℕ} {κ : Type} [Fintype κ] (m r e : κ → ℕ) (T : ∀ t, V n →ₗ[ℂ] Matrix (Fin (m t)) (Fin (r t)) ℂ),
+    0 ≤ topCoeff (∏ t, (sqPoly (T t)).det ^ e t) := by
+  atlas_forward_decl GlobalTheory.PointFormSign.topCoeff_prod_det_sqPoly_pow_nonneg

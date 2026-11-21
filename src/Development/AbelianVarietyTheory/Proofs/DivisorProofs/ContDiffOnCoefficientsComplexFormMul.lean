@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineSCShortExact
+
+section
 open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
 open ReciprocityTheory.L2DbarEstimates (V)
 open scoped ContDiff ComplexConjugate Topology
@@ -30,3 +32,17 @@ theorem contDiff_coeff_mul : ∀ (n m : ℕ) (F G : V m → Alt n),
       ((hF T).fun_mul (hG U)).fun_mul (differentiableAt_const _)
 
 end GlobalTheory.CxForm
+end
+
+open GlobalTheory GlobalTheory.CxForm GlobalTheory.GoodMetric
+open ReciprocityTheory.L2DbarEstimates (V)
+open scoped ContDiff ComplexConjugate Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contDiffOn_coefficients_complexForm_mul : ∀ (n m : ℕ) (F G : V m → Alt n),
+    (∀ s : Set (V m), (∀ S, ContDiffOn ℝ ∞ (fun v => (bas n).repr (F v) S) s) →
+      (∀ S, ContDiffOn ℝ ∞ (fun v => (bas n).repr (G v) S) s) →
+      ∀ S, ContDiffOn ℝ ∞ (fun v => (bas n).repr (F v * G v) S) s) ∧
+    (∀ v : V m, (∀ S, DifferentiableAt ℝ (fun x => (bas n).repr (F x) S) v) →
+      (∀ S, DifferentiableAt ℝ (fun x => (bas n).repr (G x) S) v) →
+      ∀ S, DifferentiableAt ℝ (fun x => (bas n).repr (F x * G x) S) v) := by
+  atlas_forward_decl GlobalTheory.CxForm.contDiff_coeff_mul

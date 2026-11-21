@@ -1,7 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoMulInvOf
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsSummableMajorantRationalVectorsLocallyUnif
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.SWQ GlobalTheory.ThetaTransform
 open scoped Matrix Classical
 
@@ -54,3 +56,11 @@ theorem continuous_thV : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) [Inv
   exact hon.continuousAt hωn
 
 end GlobalTheory.ThetaTransform
+end
+
+open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.SWQ GlobalTheory.ThetaTransform
+open scoped Matrix Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_adelicThetaTransformSymplectic_of_decay : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) [Invertible (2 : AF F)] (ψ : AddChar (AF F) ℂ), IsTotallyReal F → IsCharAF F ψ → ∀ Φ : (Fin N → AF F) → ℂ, Decay Φ → Continuous (thV ψ Φ) := by
+  atlas_forward_decl GlobalTheory.ThetaTransform.continuous_thV

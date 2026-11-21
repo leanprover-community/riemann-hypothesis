@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Formalism.UG Matrix GlobalTheory.SatakeWeyl
@@ -113,3 +115,9 @@ theorem dual_inter_eq_sum : Dual := by
 end GlobalTheory.InertZeta
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_inter_eq_sum' : Dual := by
+  atlas_forward_decl GlobalTheory.InertZeta.dual_inter_eq_sum

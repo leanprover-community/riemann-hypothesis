@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JpUnif
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformBoundednessStatement
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open Matrix
@@ -100,3 +101,11 @@ theorem avgK_res : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuation
 end GlobalTheory.CompanionTheory.Jp.AvgRes
 
 end
+end
+
+open Matrix GlobalTheory.CompanionTheory.Jp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.average_over_maximal_compact_residue : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Fintype (IsLocalRing.ResidueField O)]
+    (n : ℕ) (ϖ : O), Irreducible ϖ → ∀ f : GL (Ix n) (IsLocalRing.ResidueField O) → ℂ,
+      avgK ϖ (fun κ => f (resK κ)) = sumG f / (Nat.card (GL (Ix n) (IsLocalRing.ResidueField O)) : ℂ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Jp.AvgRes.avgK_res

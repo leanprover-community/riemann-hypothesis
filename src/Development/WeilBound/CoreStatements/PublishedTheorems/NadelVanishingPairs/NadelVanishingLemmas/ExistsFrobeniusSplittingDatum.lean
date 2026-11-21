@@ -1,7 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsFlatLift
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsExteriorAlgebraExtensionOfFrobeniusSemilin
+import BuildAid.ForwardExisting
 
+section
 open GlobalTheory GlobalTheory.DI
 
 namespace GlobalTheory.DI
@@ -107,3 +108,8 @@ theorem exists_isPhi : ∀ {K : Type} [CommRing K] {V : Type} [AddCommGroup V] [
   exact ⟨Φ, fun c a v => by rw [h1, h2]⟩
 
 end GlobalTheory.DI
+end
+
+open GlobalTheory GlobalTheory.DI
+theorem _root_.GlobalTheory.T.exists_frobenius_splitting_datum : ∀ {K : Type} [CommRing K] {V : Type} [AddCommGroup V] [Module K V] {ι : Type} [LinearOrder ι] (p : ℕ) [Fact p.Prime] [CharP K p] (d : ExteriorAlgebra K V →+ ExteriorAlgebra K V) (f : ι → V →+ V) (h : ι → ι → V →+ K), IsDatum p d f h → ∃ Φ, IsPhi p f h Φ := by
+  atlas_forward_decl _root_.GlobalTheory.DI.exists_isPhi

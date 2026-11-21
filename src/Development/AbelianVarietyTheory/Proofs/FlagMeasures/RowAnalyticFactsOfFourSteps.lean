@@ -2,7 +2,9 @@ import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FamDefs
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.NGVanish
 import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.StepAnalyticConstantsP
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open scoped Classical
@@ -44,3 +46,10 @@ theorem stepAnalyticP_of_steps : StepPinExists → StepVanishPinned → StepLocG
     hB2 C' Cl hp1 hp2 D large₂ X Y u u' hTi hc hb X0 ψ hT sd C Th F0 what₂ vR Q i0 i0' νq Irat Ire hBk ν hν (sc s ν) ng⟩
 
 end GlobalTheory.NGRow
+end
+end
+
+open Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic GlobalTheory.NGRow
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowAnalyticFacts_of_four_steps : StepPinExists → StepVanishPinned → StepLocGenPinnedC → StepThmBPinnedP → StepAnalyticP := by
+  atlas_forward_decl GlobalTheory.NGRow.stepAnalyticP_of_steps

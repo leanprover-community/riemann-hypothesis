@@ -1,7 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TrueColumnChoicesHeckeCharReferenceEqOne
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteAdeleBaseChangeEquiv
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteAdeleFieldIdentificationEqBaseChangeRingEq
+
+section
 open NumberField IsDedekindDomain Formalism.L2.DIV
 open scoped TensorProduct
 
@@ -20,3 +21,10 @@ theorem prV_eq_one_iff_afIso : ∀ (F E : Type) [Field F] [NumberField F] [Field
   rw [GlobalTheory.AdeleBaseChange.prV_eq_one_iff hι, he]
 
 end GlobalTheory.AfIsoPrV
+end
+
+open NumberField IsDedekindDomain Formalism.L2.DIV
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.placeComponent_eq_one_iff_components_over_eq_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (v : HeightOneSpectrum (𝓞 F)) (z : AfE F E), Formalism.UG.prV (E := E) v z = 1 ↔ ∀ P : HeightOneSpectrum (𝓞 E), P.under (𝓞 F) = v → GlobalTheory.Mem.Col2.afIso F E z P = 1 := by
+  atlas_forward_decl GlobalTheory.AfIsoPrV.prV_eq_one_iff_afIso

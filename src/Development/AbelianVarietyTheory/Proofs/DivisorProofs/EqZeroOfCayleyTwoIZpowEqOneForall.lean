@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
+import BuildAid.ForwardExisting
+
+section
 open scoped Matrix
 open Formalism.BasicNotions.TH
 
@@ -43,3 +46,10 @@ theorem zpow_cayley_two_eq_one_forall :
   exact not_finite ℝ
 
 end GlobalTheory
+end
+
+open scoped Matrix
+open Formalism.BasicNotions.TH
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_of_cayley_two_I_zpow_eq_one_forall : ∀ m : ℤ, (∀ x : ℝ, ((1 + 2 * Complex.I * x) / (1 - 2 * Complex.I * x)) ^ m = 1) → m = 0 := by
+  atlas_forward_decl GlobalTheory.zpow_cayley_two_eq_one_forall

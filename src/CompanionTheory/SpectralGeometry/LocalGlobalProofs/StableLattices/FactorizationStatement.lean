@@ -1,6 +1,5 @@
 import Mathlib
 import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StDefinite
-import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.FinOfPI
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.StandardPolynomialVanishesOnBicommutant
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.BicommutantRestrictionPrime
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.NoOrthogonalIdempotents
@@ -8,6 +7,7 @@ import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.ExistsM
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.SchurOnMinimalSubspace
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.StarProjectionCommute
 
+section
 noncomputable section
 
 open CompanionTheory.D.gk.admitted (stdPoly)
@@ -149,3 +149,9 @@ theorem stFactor : StFactor :=
 end GlobalTheory.CompanionTheory.RgFl
 
 end
+end
+
+open CompanionTheory.Rg.Fl
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.FactorizationStatement : StFactor := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgFl.stFactor

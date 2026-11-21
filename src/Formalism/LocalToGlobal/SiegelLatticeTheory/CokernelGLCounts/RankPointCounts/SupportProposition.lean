@@ -1,4 +1,3 @@
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.SupportG
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SupportLoc
 import Formalism.LocalToGlobal.UnitaryNorms.CharRat
 import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices

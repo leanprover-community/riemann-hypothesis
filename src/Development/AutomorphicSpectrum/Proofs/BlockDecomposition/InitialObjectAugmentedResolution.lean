@@ -1,5 +1,8 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.MapHComp
+import BuildAid.ForwardExisting
+
+section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH
 universe w w' w'' t t' v u v' u' v'' u''
@@ -134,3 +137,12 @@ theorem resUpTo_one (F : C ⥤ ModuleCat.{w} R) (T₀ : C) (h : Limits.IsInitial
     exact d_con F h n y hy
 
 end GlobalTheory.CompanionTheory.InitialCoh
+end
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH
+universe w w' w'' t t' v u v' u' v'' u''
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.initial_object_augmented_resolution : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] (F : C ⥤ ModuleCat.{w} R) (T₀ : C) (h : Limits.IsInitial T₀), (cx F).ResUpTo 1 (aug F fun T => (F.map (h.to T)).hom) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InitialCoh.resUpTo_one

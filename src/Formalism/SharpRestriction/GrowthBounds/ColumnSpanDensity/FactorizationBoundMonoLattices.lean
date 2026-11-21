@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.MeanDefs
 import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.SgSegUnique
 import Formalism.PolynomialDimension.DigitClassCount
 

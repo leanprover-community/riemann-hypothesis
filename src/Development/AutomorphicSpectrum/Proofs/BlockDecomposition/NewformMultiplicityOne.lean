@@ -3,7 +3,9 @@ import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.Arch
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerRightTranslation
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerWellDefined
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerLinearity
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3
@@ -658,3 +660,9 @@ theorem main : Ad3.R.A2 → Ad3.R.C1 → Ad3.R.M1 := by
       ring
 
 end GlobalTheory.CompanionTheory.RankinTestVector
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_multiplicity_one : Ad3.R.A2 → Ad3.R.C1 → Ad3.R.M1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RankinTestVector.main

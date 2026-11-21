@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ClassCountBoundAtConstructedPoints
-import Formalism.LocalToGlobal.IndefiniteReal.TrISepWith
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.V0MapIotaEqTopRealStatement
 
 noncomputable section

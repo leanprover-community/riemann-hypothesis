@@ -1,8 +1,9 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FsOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StereographicMeasureChangeStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MobiusChangeOfVariablesStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FibreCosineExplicitFormulaStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FibreCosineExplicitFormula
+
+section
 open MeasureTheory
 open scoped ComplexOrder ENNReal
 
@@ -50,3 +51,12 @@ theorem lintegral_indicator_cos_mul_fs (G : Matrix (Fin 2) (Fin 2) ℂ) (hG : G.
   exact measure_congr (Filter.EventuallyEq.inter (Filter.EventuallyEq.refl _ _) Ioo_ae_eq_Icc)
 
 end GlobalTheory.FibCos
+end
+
+open MeasureTheory
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fibre_cosine_pushforward_uniform : ∀ (G : Matrix (Fin 2) (Fin 2) ℂ), G.PosDef → ∀ J : Set ℝ, MeasurableSet J →
+    ∫⁻ x : ℂ, J.indicator (fun _ => (1 : ENNReal)) (GlobalTheory.FibCos.cos G x) * ENNReal.ofReal (GlobalTheory.FibCos.fs G x) =
+      volume (J ∩ Set.Icc (0 : ℝ) 1) := by
+  atlas_forward_decl GlobalTheory.FibCos.lintegral_indicator_cos_mul_fs

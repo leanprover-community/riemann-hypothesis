@@ -1,11 +1,6 @@
 import Mathlib
 import GroundTheory.AutomorphicForms.HermitianExistence
 import GroundTheory.GlobalFields.GlobalReciprocity.General
-import GroundTheory.GlobalFields.IdeleGroups.LocalConditionIndex
-import GroundTheory.GlobalFields.IdeleGroups.LocalNormGroups
-import GroundTheory.GlobalFields.SemilocalAlgebras.Finite
-import GroundTheory.GlobalFields.SemilocalAlgebras.NormTrace
-import GroundTheory.GlobalFields.SemilocalAlgebras.Infinite
 
 noncomputable section
 

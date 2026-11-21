@@ -1,6 +1,9 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Foundations.EigenOfTwoStep
 import Development.AbelianVarietyTheory.Definitions.Foundations.SiegelNeZeroIff
+import BuildAid.ForwardExisting
+
+section
 open scoped MatrixGroups
 open GlobalTheory.KZ
 
@@ -39,3 +42,10 @@ theorem hahn_pow_neg_one_lead {R : Type} [CommRing R] (x : HahnSeries ℚ R)
   · exact HahnSeries.coeff_eq_zero_of_lt_order (by rw [ho]; exact hr)
 
 end GlobalTheory
+end
+
+open scoped MatrixGroups
+open GlobalTheory.KZ
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hahnSeries_pow_of_leading_qInv : ∀ {R : Type} [CommRing R] (x : HahnSeries ℚ R), x.coeff (-1) = 1 → (∀ r : ℚ, r < -1 → x.coeff r = 0) → ∀ m : ℕ, (x ^ m).coeff (-(m : ℚ)) = 1 ∧ ∀ r : ℚ, r < -(m : ℚ) → (x ^ m).coeff r = 0 := by
+  atlas_forward_decl GlobalTheory.hahn_pow_neg_one_lead

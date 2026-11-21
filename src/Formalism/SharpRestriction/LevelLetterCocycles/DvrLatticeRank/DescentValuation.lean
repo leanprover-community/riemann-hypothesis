@@ -1,4 +1,3 @@
-import Formalism.SharpRestriction.LevelLetterCocycles.UpPositionHypothesis
 import Formalism.SharpRestriction.LevelLetterCocycles.UpPositionOfModels
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.UnivLinkPfA
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ClassMapPf

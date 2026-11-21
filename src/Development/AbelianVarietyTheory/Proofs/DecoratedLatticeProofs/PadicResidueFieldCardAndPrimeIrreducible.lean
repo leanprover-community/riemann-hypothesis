@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
+import BuildAid.ForwardExisting
 
+section
 open ValuativeRel IsLocalRing
 
 noncomputable section
@@ -34,3 +36,10 @@ theorem card_residueField_and_irreducible :
   fun T _ => ⟨card_residueField T, irreducible_natCast T⟩
 
 end GlobalTheory.TAdicInt
+end
+end
+
+open ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.padic_residueField_card_and_prime_irreducible : ∀ (T : ℕ) [Fact T.Prime], Nat.card (IsLocalRing.ResidueField 𝒪[ℚ_[T]]) = T ∧ Irreducible ((T : 𝒪[ℚ_[T]])) := by
+  atlas_forward_decl GlobalTheory.TAdicInt.card_residueField_and_irreducible

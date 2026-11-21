@@ -1,4 +1,3 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.Inertia
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.LamZl
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.LamFactor
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoEvLow

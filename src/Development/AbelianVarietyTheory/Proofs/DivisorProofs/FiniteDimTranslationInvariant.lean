@@ -1,5 +1,7 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemNilRad
+
+section
 open Matrix GlobalTheory.TorFin
 open scoped ContDiff
 
@@ -96,3 +98,11 @@ theorem main : ∀ (G : Type) [Group G] (W : Submodule ℂ (G → ℂ)) (γ : �
   fun G _ W γ hfin hγ hder => mem_of_translate G W γ hfin hγ hder
 
 end GlobalTheory.TransODE
+end
+
+open Matrix GlobalTheory.TorFin
+open scoped ContDiff
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_dim_translation_invariant : ∀ (G : Type) [Group G] (W : Submodule ℂ (G → ℂ)) (γ : ℝ → G), FiniteDimensional ℂ W → γ 0 = 1 → (∀ ψ ∈ W, ∃ ψ' ∈ W, ∀ (g : G) (t : ℝ), HasDerivAt (fun τ : ℝ => ψ (γ τ * g)) (ψ' (γ t * g)) t) → ∀ ψ ∈ W, ∀ t : ℝ, (fun g => ψ (γ t * g)) ∈ W := by
+  atlas_forward_decl GlobalTheory.TransODE.main

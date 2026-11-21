@@ -1,7 +1,5 @@
 import Mathlib
 import Formalism.SharpRestriction.GlobalSchurBounds.MainIn
-import Formalism.GL3MeanSquares.SmoothedRemainderRealIntegralFormula
-import Formalism.CyclotomicNorms.StatementI
 import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 
 noncomputable section

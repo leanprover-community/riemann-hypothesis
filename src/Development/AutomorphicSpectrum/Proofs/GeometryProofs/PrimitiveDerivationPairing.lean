@@ -1,10 +1,12 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.MemPrimitiveTensorsIffIsPrimitiveElem
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrobeniusStableSubspaceElementStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SubspaceContainsUnitStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NilpotentDerivationRankStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MultiplicativeDerivationRankStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimitiveElementPowersIndepStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrobeniusStableSubspaceElement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SubspaceContainsUnit
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NilpotentDerivationRank
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MultiplicativeDerivationRank
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimitiveElementPowersIndep
+
+section
 open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.Ar.HopfCount
@@ -431,3 +433,15 @@ theorem primitive_tangent_dvd_finrank :
   fun k _ _ p _ _ A _ _ _ _ P W hP hW hPW => norm_index_count_bound k p _ A rfl P W hP hW hPW
 
 end GlobalTheory.CompanionTheory.Ar.HopfCount
+end
+
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.primitive_derivation_pairing : ∀ (k : Type) [Field k] [IsAlgClosed k] (p : ℕ) [Fact p.Prime] [CharP k p]
+    (A : Type) [CommRing A] [HopfAlgebra k A] [Coalgebra.IsCocomm k A] [Module.Finite k A]
+    (P : Submodule k A) (W : Submodule k (A →ₗ[k] k)),
+    (∀ f ∈ P, Coalgebra.comul (R := k) f = f ⊗ₜ[k] (1 : A) + (1 : A) ⊗ₜ[k] f) →
+    (∀ v ∈ W, ∀ f g : A, v (f * g) = v f * Coalgebra.counit (R := k) g + Coalgebra.counit (R := k) f * v g) →
+    (∀ v ∈ W, ∀ f ∈ P, v f = 0) →
+    p ^ (Module.finrank k P + Module.finrank k W) ∣ Module.finrank k A := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HopfCount.primitive_tangent_dvd_finrank

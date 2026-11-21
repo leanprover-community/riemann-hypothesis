@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ValsAtApply
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.UnitLemma
 
 namespace GlobalTheory.UnitLemma
@@ -34,3 +37,9 @@ theorem valsAt_torus_surjective : ∀ (G : Type) [CommGroup G] (τ : G →* G), 
   simp only [hc, Finset.sum_ite_eq, Finset.mem_univ, if_true]
 
 end GlobalTheory.UnitLemma
+end
+
+open GlobalTheory.UnitLemma
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.zValuationsAtIndices_torus_surjective : ∀ (G : Type) [CommGroup G] (τ : G →* G), (∀ x, τ (τ x) = x) → ∀ (T : Subgroup G), (∀ t, t ∈ T ↔ t * τ t = 1) → ∀ (ι : Type) (s : ι → ι) (w : ι → G →* Multiplicative ℤ), (∀ i x, 0 ≤ Multiplicative.toAdd (w (s i) x) ↔ 0 ≤ Multiplicative.toAdd (w i (τ x))) → (∀ i (n : ℤ), ∃ y : G, w i y = Multiplicative.ofAdd n ∧ ∀ j, j ≠ i → w j y = 1) → ∀ (r : ℕ) (e : Fin r → ι), (∀ j k, e j = e k → j = k) → (∀ j k, s (e j) ≠ e k) → Function.Surjective ((valsAt w e).comp T.subtype) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.valsAt_torus_surjective

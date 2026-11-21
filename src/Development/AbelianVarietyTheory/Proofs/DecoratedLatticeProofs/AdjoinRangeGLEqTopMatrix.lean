@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsSingle
+import BuildAid.ForwardExisting
+
+section
 open Matrix Formalism.UG Formalism.L2.DIV GlobalTheory.LevNorm
 
 namespace GlobalTheory
@@ -40,3 +43,9 @@ theorem adjoin_range_GL_eq_top (R : Type) [CommRing R] (n : ℕ) :
   rw [this]; exact S.smul_mem (hall i j) _
 
 end GlobalTheory
+end
+
+open Matrix Formalism.UG Formalism.L2.DIV GlobalTheory.LevNorm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adjoin_range_GL_eq_top_matrix : ∀ (R : Type) [CommRing R] (n : ℕ), Algebra.adjoin R ((fun x : GL (Fin n) R => (x : Matrix (Fin n) (Fin n) R)) '' Set.univ) = ⊤ := by
+  atlas_forward_decl GlobalTheory.adjoin_range_GL_eq_top

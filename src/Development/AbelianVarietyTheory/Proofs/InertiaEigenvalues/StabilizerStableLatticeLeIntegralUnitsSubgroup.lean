@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ComapInlMemStLat
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.UnitLemma
@@ -59,3 +61,10 @@ theorem stabilizer_le_intUnits (O E A : Type) [CommRing O] [Field E] [CommRing A
     isIntegral_of_mul_mem_lat (E := E) L.2.1 _ (key t⁻¹ ht')⟩
 
 end GlobalTheory.UnitLemma
+end
+end
+
+open GlobalTheory.UnitLemma Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stabilizer_stableLattice_le_integralUnitsSubgroup : ∀ (O E A : Type) [CommRing O] [Field E] [CommRing A] [Algebra O A] [Algebra E A] (g : A) (L : stLat O E g), MulAction.stabilizer Aˣ L ≤ intUnits O A := by
+  atlas_forward_decl GlobalTheory.UnitLemma.stabilizer_le_intUnits

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ScaledBasisMemChainLattice
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqActStdLat
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLatticeStdLatAndAct
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLatticeChainLatAndComap

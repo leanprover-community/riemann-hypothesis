@@ -1,5 +1,8 @@
 import Mathlib
 import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
+import BuildAid.ForwardExisting
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -457,3 +460,8 @@ theorem lift_cuspidal : Ad3.R.B0 → Ad3.R.ConstantTermVanishingAlt := by
 end GlobalTheory.CompanionTheory.LiftCusp
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.newform_lift_cusp_form : Ad3.R.B0 → Ad3.R.ConstantTermVanishingAlt := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LiftCusp.lift_cuspidal

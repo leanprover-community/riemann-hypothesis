@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ExistsIsHaarMeasureSUJ
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GelfandOperatorExtensionStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GelfandValuesShiftStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryToSpecialUnitaryLocalStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GelfandOperatorExtension
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GelfandValuesShift
+
+section
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Dec GlobalTheory.DSId GlobalTheory.DSSU
 open scoped InnerProductSpace
 
@@ -70,3 +70,10 @@ theorem GlobalTheory.infChar_of_ext : ∀ (n : ℕ), 1 ≤ n → ∀ (ε : Fin n
   rw [Finset.sum_congr rfl hS, ← Finset.sum_mul]
   simp only [Nat.choose_zero_right, Nat.cast_one, Nat.sub_zero]
   ring
+end
+
+open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Dec GlobalTheory.DSId GlobalTheory.DSSU
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.infinitesimal_character_extension : ∀ (n : ℕ), 1 ≤ n → ∀ (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (m : ℤ) (π' π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), Ext ε m π' π → ∀ χ : Fin n → ℂ, HasInfCharS ε χ π' → HasInfChar ε (fun a => χ a + (m : ℂ) / n) π := by
+  atlas_forward_decl GlobalTheory.infChar_of_ext

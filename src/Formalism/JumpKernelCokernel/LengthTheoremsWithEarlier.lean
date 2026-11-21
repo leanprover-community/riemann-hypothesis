@@ -1,7 +1,6 @@
 import Formalism.JumpKernelCokernel.JumpShiftProofs.DetLen
 import Formalism.JumpKernelCokernel.JumpShiftProofs.RelZero
 import Formalism.JumpKernelCokernel.JumpShiftProofs.ColumnDegreeBound
-import Formalism.JumpKernelCokernel.JumpShiftProofs.RowDegreeBound
 import Formalism.JumpKernelCokernel.JumpShiftProofs.ExpRowD
 import Formalism.JumpKernelCokernel.JumpShiftProofs.InvConst
 import Formalism.JumpKernelCokernel.JumpShiftProofs.KerCoker

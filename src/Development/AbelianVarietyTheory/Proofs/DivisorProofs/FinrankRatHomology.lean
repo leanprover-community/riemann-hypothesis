@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyHomologyEquiv
+import BuildAid.ForwardExisting
+
+section
 open CategoryTheory Limits TensorProduct
 
 namespace GlobalTheory.RatHomology
@@ -21,3 +24,9 @@ theorem finrank_rat_homology (C : CochainComplex (ModuleCat.{0} ℤ) ℕ) (n : �
   exact finrank_rat_tensor (C.homology n)
 
 end GlobalTheory.RatHomology
+end
+
+open CategoryTheory Limits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_rat_homology_eq_finrank_int : ∀ (C : CochainComplex (ModuleCat.{0} ℤ) ℕ) (n : ℕ), Module.Finite ℤ (C.homology n) → Module.finrank ℚ ((((ModuleCat.extendScalars (Int.castRingHom ℚ)).mapHomologicalComplex (ComplexShape.up ℕ)).obj C).homology n) = Module.finrank ℤ (C.homology n) := by
+  atlas_forward_decl GlobalTheory.RatHomology.finrank_rat_homology

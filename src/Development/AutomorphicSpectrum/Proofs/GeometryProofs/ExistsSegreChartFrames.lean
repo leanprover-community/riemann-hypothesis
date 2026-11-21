@@ -1,7 +1,7 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsIffCentresStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValAtIffValueAtStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValAtIffValueAt
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SegreChartBundleStatement
 
 noncomputable section

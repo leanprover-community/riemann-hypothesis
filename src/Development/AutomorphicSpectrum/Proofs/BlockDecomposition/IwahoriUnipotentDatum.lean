@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriGlValuedDatum
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL Matrix Formalism.UG PositivityTheory.SphericalProduct GlobalTheory.CompanionTheory.IwGLV
@@ -309,3 +311,10 @@ theorem iwahoriU : PositivityTheory.SphericalProduct.IwahoriU := by
     fun g => Subgroup.mem_subgroupOf.trans mem_diagSub⟩
 
 end GlobalTheory.CompanionTheory.IwUnit
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL Matrix Formalism.UG PositivityTheory.SphericalProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.iwahori_unipotent_datum : PositivityTheory.SphericalProduct.IwahoriU := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IwUnit.iwahoriU

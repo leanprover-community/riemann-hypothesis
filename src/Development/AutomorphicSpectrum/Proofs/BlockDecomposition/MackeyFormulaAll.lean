@@ -1,17 +1,15 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.SupportExistsAll
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BruhatDecompositionTwoBlocksStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BruhatDecompositionUniqueStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalVanishingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FrobeniusReciprocityInnerProductStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HarishChandraCharacterStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntertwinerInnerProductStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BruhatDecompositionTwoBlocks
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BruhatDecompositionUnique
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalVanishing
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FrobeniusReciprocityInnerProduct
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HarishChandraCharacter
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntertwinerInnerProduct
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InnerProductCuspidalIsoStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MackeyInnerProductStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PermutationMatrixPropertiesStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SamePartitionStatementStatement
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GreenLabelSurjective.Transp
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MackeyInnerProduct
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SamePartitionStatement
 
+section
 open CategoryTheory
 open ReciprocityTheory.Ty.Fin
 open Formalism.IrreducibleCountingLemmas.TYPES hiding zIdem IsCuspidal
@@ -290,3 +288,10 @@ theorem GlobalTheory.CompanionTheory.TyFin.mackeyAll : ReciprocityTheory.Ty.Fin.
   rw [← Fintype.card_subtype, ← Nat.card_eq_fintype_card]
   exact Nat.card_congr ⟨fun r => ⟨r.1.1, r.2⟩,
     fun p => ⟨⟨p.1, exists_perm_of_cuspIso b b' lam mu p.1 p.2⟩, p.2⟩, fun _ => rfl, fun _ => rfl⟩
+end
+end
+
+open ReciprocityTheory.Ty.Fin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mackey_formula_all : ReciprocityTheory.Ty.Fin.St.MackeyAll := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TyFin.mackeyAll

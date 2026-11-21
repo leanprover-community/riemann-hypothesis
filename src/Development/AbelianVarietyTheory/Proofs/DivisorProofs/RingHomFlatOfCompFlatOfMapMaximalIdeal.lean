@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealEqBotOfFlatQuotientOfMapMaximalIdeal
+import BuildAid.ForwardExisting
 
+section
 open TensorProduct LinearMap IsLocalRing
 
 namespace GlobalTheory
@@ -175,3 +177,9 @@ theorem ringHom_flat_of_comp_flat_of_map_maximalIdeal :
     exact LocalFlatMax.lTensor_map_injective (maximalIdeal O)
 
 end GlobalTheory
+end
+
+open IsLocalRing
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flat_of_flat_comp_of_map_maximalIdeal_eq : ∀ (O R' E : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [CommRing R'] [IsLocalRing R'] [IsNoetherianRing R'] [CommRing E] [IsLocalRing E] [IsNoetherianRing E] (φ' : O →+* R') (b : R' →+* E), φ'.Flat → (maximalIdeal O).map φ' = maximalIdeal R' → IsLocalHom b → (b.comp φ').Flat → b.Flat := by
+  atlas_forward_decl GlobalTheory.ringHom_flat_of_comp_flat_of_map_maximalIdeal

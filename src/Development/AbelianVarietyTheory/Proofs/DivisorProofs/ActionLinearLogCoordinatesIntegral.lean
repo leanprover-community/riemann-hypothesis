@@ -1,8 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MvIsIntMapMap
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetFactorDepthInChartChartIndependent
-import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsFormalBiextMap
 
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -66,3 +66,10 @@ theorem actSt : ActSt := by
     (fun q => cc_expPt (fglOf hB) hw.1 q.2)
 
 end GlobalTheory.IsoTriv
+end
+end
+
+open GlobalTheory.IsoTriv
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.action_linear_logCoordinates_integral : ActSt := by
+  atlas_forward_decl GlobalTheory.IsoTriv.actSt

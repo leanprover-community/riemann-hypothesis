@@ -1,6 +1,7 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsRatioOfWeight
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetReLePowMulDetReStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetReLePowMulDetRe
+
+section
 open Filter Topology MeasureTheory GlobalTheory.HSAmp
 open scoped ComplexOrder Matrix
 
@@ -115,3 +116,10 @@ theorem main : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (G : Matrix ι ι �
   · nlinarith [mul_nonneg hn hlk]
 
 end GlobalTheory.RealPartDet
+end
+
+open Filter Topology MeasureTheory GlobalTheory.HSAmp
+open scoped ComplexOrder Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realPart_posDef_logDet_bound_of_conjugate_comparable : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (G : Matrix ι ι ℂ) (κ : ℝ), G.PosDef → 1 ≤ κ → (∀ c : ι → ℂ, (∑ i, ∑ j, (starRingEnd ℂ) (c i) * c j * G i j).re ≤ κ * (∑ i, ∑ j, c i * (starRingEnd ℂ) (c j) * G i j).re) → (G.map Complex.re).PosDef ∧ |Real.log (G.map Complex.re).det - Real.log G.det.re| ≤ Fintype.card ι * Real.log (2 * κ) := by
+  atlas_forward_decl GlobalTheory.RealPartDet.main

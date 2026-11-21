@@ -2,6 +2,7 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdIPowLe
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeIntegral
 
+section
 noncomputable section
 
 namespace GlobalTheory.Prism
@@ -197,3 +198,11 @@ theorem GlobalTheory.Prism.finite_product_oriented : ∀ (l : ℕ) [Fact l.Prime
     ⟨fun x y h => funext fun i => congrFun h i, fun y => ⟨y, rfl⟩⟩,
     fun x => pi_mem_span_iff C t ht x,
     fun Z a => ⟨Hom.piLift C t ht Z a, fun i => Hom.ext' (RingHom.ext fun _ => rfl)⟩⟩
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_product_oriented_boundedPrisms : ∀ (l : ℕ) [Fact l.Prime] (R : Type) [CommRing R] (n : ℕ) (C : Fin n → Obj l R), (∀ i, ∃ t, (C i).I = Ideal.span {t}) → ∃ (Q : Obj l R) (π : ∀ i, Hom Q (C i)), Function.Bijective (fun (x : Q.A) (i : Fin n) => (π i).f x) ∧ (∀ x, x ∈ Q.I ↔ ∀ i, (π i).f x ∈ (C i).I) ∧ ∀ (Z : Obj l R) (a : ∀ i, Hom Z (C i)), ∃ c : Hom Z Q, ∀ i, (π i).comp c = a i := by
+  atlas_forward_decl GlobalTheory.Prism.finite_product_oriented

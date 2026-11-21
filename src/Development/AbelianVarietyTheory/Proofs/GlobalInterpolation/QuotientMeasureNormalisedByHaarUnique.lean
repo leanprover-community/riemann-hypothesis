@@ -1,8 +1,8 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.InvariantRadonFibre
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsUniqueHaarOfInvariantRadonOnCosetsStatement
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuotientInvariantMeasureExistsUniqueUnimodularStatement
 
+section
 open MeasureTheory MeasureTheory.Measure GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre
 open scoped ENNReal NNReal
 
@@ -50,3 +50,10 @@ theorem normaliseQuotientClause : NormaliseQuotientClause := by
   rw [hd, hd1, one_smul]
 
 end GlobalTheory.Proof.quotientMeasure_normalised_by_haar_unique
+end
+
+open MeasureTheory GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quotientMeasure_normalised_by_haar_unique : NormaliseQuotientClause := by
+  atlas_forward_decl GlobalTheory.Proof.quotientMeasure_normalised_by_haar_unique.normaliseQuotientClause

@@ -1,5 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
+import BuildAid.ForwardExisting
+
+section
 open GlobalTheory.InertZeta Formalism.UG Matrix
 
 noncomputable section
@@ -277,3 +280,9 @@ theorem count (hH : Heis) (hL : LatIndex) (hT : TraceIndex) : Count := by
 end GlobalTheory.CompanionTheory.InertCount
 
 end
+end
+
+open GlobalTheory.InertZeta
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.count_of_heisenberg_index : Heis → LatIndex → TraceIndex → Count := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.InertCount.count

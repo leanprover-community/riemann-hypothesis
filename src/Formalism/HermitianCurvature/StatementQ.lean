@@ -1,4 +1,3 @@
-import Formalism.FormalDegreeBessel.StatementRP
 import Formalism.HermitianCurvature.StatementB
 import Formalism.HermitianCurvature.StatementM
 

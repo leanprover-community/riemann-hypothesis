@@ -1,4 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
+
+section
 open NumberField
 open scoped TensorProduct
 
@@ -41,3 +44,10 @@ theorem isReduced_field_tensor_finite :
   exact Algebra.FormallyUnramified.isReduced_of_field k _
 
 end GlobalTheory.FinRedTensor
+end
+
+open NumberField
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isReduced_field_tensor_int_finite_reduced : ∀ (A : Type) [CommRing A] [Finite A] [IsReduced A] (k : Type) [Field k], IsReduced (k ⊗[ℤ] A) := by
+  atlas_forward_decl GlobalTheory.FinRedTensor.isReduced_field_tensor_finite

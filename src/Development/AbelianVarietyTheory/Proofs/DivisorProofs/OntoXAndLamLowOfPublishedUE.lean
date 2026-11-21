@@ -1,6 +1,5 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.BhattScholzeCrystallineLattices
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BoundAtTwoThreeFamily
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.GeometricWeakTiesOfStrong
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LamLowOfPublished
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PublishedInputsImplyGalois

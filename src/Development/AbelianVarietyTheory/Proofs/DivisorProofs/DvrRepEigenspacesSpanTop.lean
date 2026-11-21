@@ -1,10 +1,11 @@
 import Mathlib
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.SandwichMaps
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRingHomOfJointEigenvalueStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommutingSemisimpleEigenspacesSpanStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ScalarRepCommuteAndAnnihilateStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSeparableAnnihilatingPolyStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicRingHomUniqueAdicCompleteStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRingHomOfJointEigenvalue
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommutingSemisimpleEigenspacesSpan
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ScalarRepCommuteAndAnnihilate
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSeparableAnnihilatingPoly
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicRingHomUniqueAdicComplete
+
+section
 open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
 
 namespace GlobalTheory
@@ -27,3 +28,9 @@ theorem eigenspaces_span_of_integral_action : ∀ (p : ℕ) [Fact p.Prime] (C : 
     exact le_iSup_of_le σ le_rfl
 
 end GlobalTheory
+end
+
+open GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.SandwichMaps
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dvr_rep_eigenspaces_span_top : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O], v.Integers O → ∀ (Λ : Type) [CommRing Λ] [IsDomain Λ] [IsDiscreteValuationRing Λ] [Algebra ℤ_[p] Λ] [Module.Finite ℤ_[p] Λ] [FaithfulSMul ℤ_[p] Λ] (h : ℕ) (ρ : Λ →+* Matrix (Fin h) (Fin h) O), (⨆ σ : Λ →+* O, eig C (⇑ρ) σ) = ⊤ := by
+  atlas_forward_decl GlobalTheory.eigenspaces_span_of_integral_action

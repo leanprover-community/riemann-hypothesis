@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.OneMemNbh
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DiscreteBranchingUpq
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.L2OpNormConjTransposeExpMulSignMulExpSubLe
+import BuildAid.ForwardExisting
 
+section
 noncomputable section
 
 namespace GlobalTheory.MatLog
@@ -296,3 +298,13 @@ theorem logNear_holds : LogNear := by
 end Main
 
 end GlobalTheory.SepReal
+end
+end
+end
+
+open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Ell
+open scoped InnerProductSpace
+open GlobalTheory.SepReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_near_identity_eq_exp_log_bound : LogNear := by
+  atlas_forward_decl GlobalTheory.SepReal.logNear_holds

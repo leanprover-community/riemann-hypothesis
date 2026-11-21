@@ -7,6 +7,9 @@ import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.KleimanNefF
 import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.KleimanNef
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.KleimanGenericPointSectionInputStatement
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.KleimanInputNefAmpleSectionCountStatement
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Kleiman2
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
@@ -17,3 +20,9 @@ theorem kleimanNef_field_and_fibre : KleimanNefIntersectionNonneg ∧ KleimanNef
   exact ⟨GroundTheory.Heights₂.Heights.ForSecondHalf.KleimanNef.proof hF, hF⟩
 
 end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Kleiman2
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kleiman_nef_criteria_hold : KleimanNefIntersectionNonneg ∧ KleimanNefFStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.kleimanNef_field_and_fibre

@@ -1,6 +1,8 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.Development
+import BuildAid.ForwardExisting
 
+section
 open PositivityTheory.Rg.Tf.Loc
 
 namespace GlobalTheory.CompanionTheory.LatticeCoset
@@ -79,3 +81,8 @@ theorem latticeOf_eq_iff : PositivityTheory.Rg.Tf.Loc.L1 := by
     exact Set.Subset.antisymm (latticeOf_subset_of_integral g' g h2) (latticeOf_subset_of_integral g g' h1)
 
 end GlobalTheory.CompanionTheory.LatticeCoset
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_first_property : PositivityTheory.Rg.Tf.Loc.L1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LatticeCoset.latticeOf_eq_iff

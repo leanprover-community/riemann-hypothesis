@@ -2,7 +2,9 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.IntegrableOnIoiTruncatedPowerMoment
+import BuildAid.ForwardExisting
 
+section
 open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
 open scoped InnerProductSpace ENNReal
 
@@ -70,3 +72,10 @@ theorem compound_properties : ∀ (n l : ℕ) (g h : Matrix (Fin n) (Fin n) ℂ)
   fun n l g h => ⟨compound_mul l g h, compound_conjTranspose l g, compound_one n l, compound_mulVec_wedge g⟩
 
 end GlobalTheory
+end
+
+open BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Matrix MeasureTheory Finset
+open scoped InnerProductSpace ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compoundMatrix_cauchyBinet_properties : ∀ (n l : ℕ) (g h : Matrix (Fin n) (Fin n) ℂ), cmp l (g * h) = cmp l g * cmp l h ∧ cmp l gᴴ = (cmp l g)ᴴ ∧ cmp l (1 : Matrix (Fin n) (Fin n) ℂ) = 1 ∧ ∀ f : Fin l → Fin n → ℂ, cmp l g *ᵥ wedge f = wedge (fun b => g *ᵥ f b) := by
+  atlas_forward_decl GlobalTheory.compound_properties

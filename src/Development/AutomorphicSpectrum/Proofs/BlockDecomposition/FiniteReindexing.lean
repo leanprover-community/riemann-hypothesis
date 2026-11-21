@@ -1,5 +1,6 @@
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.LocCompareSplit
 
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter
@@ -56,3 +57,8 @@ theorem reindex : Reindex := by
 end GlobalTheory.CompanionTheory.SecReindex
 
 end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_reindexing : PositivityTheory.Rg.BcB.G8.Fin.Reindex := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SecReindex.reindex

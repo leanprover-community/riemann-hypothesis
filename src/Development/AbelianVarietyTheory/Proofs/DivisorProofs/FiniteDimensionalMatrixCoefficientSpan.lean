@@ -1,6 +1,8 @@
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HarishChandraFinite
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.Proof.CoeffSpan
 
 theorem finiteDimensional_coeffSpan (K W : Type) [Group K] [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W]
@@ -17,3 +19,8 @@ theorem finiteDimensional_coeffSpan (K W : Type) [Group K] [AddCommGroup W] [Mod
   exact Submodule.finiteDimensional_of_le hle
 
 end GlobalTheory.Proof.CoeffSpan
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDimensional_matrixCoefficientSpan : ∀ (K W : Type) [Group K] [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] (ρ : Representation ℂ K W), FiniteDimensional ℂ (GlobalTheory.Published.AutFin.coeffSpan ρ) := by
+  atlas_forward_decl GlobalTheory.Proof.CoeffSpan.finiteDimensional_coeffSpan

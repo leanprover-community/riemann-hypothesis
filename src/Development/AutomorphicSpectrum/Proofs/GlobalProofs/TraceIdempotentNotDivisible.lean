@@ -1,5 +1,7 @@
 import Mathlib
+import BuildAid.ForwardExisting
 
+section
 namespace GlobalTheory.CompanionTheory.IdemTrace
 
 theorem exists_nat_trace_of_idem {O : Type} [CommRing O] [IsLocalRing O] {g : ℕ}
@@ -125,3 +127,8 @@ theorem not_dvd_trace : ∀ (B : Type) [CommRing B] [Module.Free ℤ B] [Module.
   exact Submodule.smul_of_tower_mem _ _ (hxb j)
 
 end GlobalTheory.CompanionTheory.IdemTrace
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trace_idempotent_not_divisible : ∀ (B : Type) [CommRing B] [Module.Free ℤ B] [Module.Finite ℤ B] (x : B) (p m : ℕ), p.Prime → Module.finrank ℤ B < p ^ m → x * x - x ∈ Ideal.span {((p : B)) ^ m} → x ∉ Ideal.span {((p : B)) ^ m} → ¬ ((p : ℤ) ^ m ∣ Algebra.trace ℤ B x) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.IdemTrace.not_dvd_trace

@@ -1,6 +1,8 @@
 import Mathlib
 import Formalism.LocalRingCardinality.DataSpaces
+import BuildAid.ForwardExisting
 
+section
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory.UnramifiedConj
@@ -96,3 +98,9 @@ theorem le_map_comap_of_le_conj (F E : Type) [Field F] [NumberField F] [Field E]
   simpa using key 1 h1
 
 end GlobalTheory.UnramifiedConj
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.le_map_comap_of_le_conj_maximal_cmData : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E], Formalism.BasicNotions.CMData F E → ∀ (P Q : Ideal (𝓞 E)), Q.IsMaximal → P ≤ Q → P ≤ Q.comap (RingOfIntegers.mapRingHom (starRingEnd E)) → P ≤ Ideal.map (algebraMap (𝓞 F) (𝓞 E)) (Q.comap (algebraMap (𝓞 F) (𝓞 E))) := by
+  atlas_forward_decl GlobalTheory.UnramifiedConj.le_map_comap_of_le_conj

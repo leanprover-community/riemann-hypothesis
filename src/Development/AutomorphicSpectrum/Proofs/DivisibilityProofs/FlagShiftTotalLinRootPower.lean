@@ -1,4 +1,7 @@
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
+import BuildAid.ForwardExisting
+
+section
 open MvPolynomial Filter Topology GlobalTheory.CompanionTheory.Ar.Top
 
 noncomputable section
@@ -47,3 +50,10 @@ theorem GlobalTheory.CompanionTheory.Ar.Top.Sh_Tot_linRoot_pow :
   intro Ψ _ _ N j τ u
   exact ⟨GlobalTheory.CompanionTheory.Ar.Top.LinPow.degFl_sum_pderiv u τ _,
     GlobalTheory.CompanionTheory.Ar.Top.LinPow.degFl_sum_pderiv u τ Finset.univ⟩
+end
+end
+
+open MvPolynomial Filter Topology GlobalTheory.CompanionTheory.Ar.Top
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_shift_total_lin_root_power : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (j : ℕ) (τ : Ψ) (u : Wt Ψ N), Sh j τ (linRoot u ^ (dimFl Ψ N + 1)) = -(((dimFl Ψ N : ℝ) + 1) * flagDeg u * ∑ i ∈ Finset.univ.filter (fun i : Fin N => (i : ℕ) < j), u τ i) ∧ Tot τ (linRoot u ^ (dimFl Ψ N + 1)) = -(((dimFl Ψ N : ℝ) + 1) * flagDeg u * ∑ i, u τ i) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Top.Sh_Tot_linRoot_pow

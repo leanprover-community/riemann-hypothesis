@@ -1,8 +1,5 @@
 import Mathlib
-import GroundTheory.PAdicHodge.PerfectoidField
-import GroundTheory.PAdicHodge.TiltValuation
 import GroundTheory.PAdicHodge.TiltField
-import GroundTheory.PAdicHodge.KerTheta
 import GroundTheory.PAdicHodge.KerFontaineThetaCompFrobeniusEquivSymmPow
 set_option maxSynthPendingDepth 1
 

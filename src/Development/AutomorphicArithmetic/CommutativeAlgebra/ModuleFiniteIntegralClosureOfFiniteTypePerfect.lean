@@ -1,6 +1,5 @@
 import Mathlib
 import Development.EtaleCohomology.EtaleSheaves.H0TwistOverClosedField
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIntegralClosureOfEssFiniteTypeField
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteIntegralClosureOfIsIntegrallyClosed
 
 open CategoryTheory Limits AlgebraicGeometry Opposite LateralTheory.E.E4

@@ -1,5 +1,4 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LeadMinor
 import Development.WeilBound.CoreStatements.HodgeTatePoints.GeFrame
 import Development.WeilBound.CoreStatements.HodgeTatePoints.GaGram
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FinitelyGeneratedHomology
