@@ -1,6 +1,6 @@
 # Where to reduce the Lean proof
 
-For the implemented file and declaration reductions, see [module consolidation and pruning results](fold-and-prune.md). The measurements below describe the planning baseline.
+For the implemented row simplification, see [the all-character row proof](row-proof.md). For the file and declaration reductions, see [module consolidation and pruning results](fold-and-prune.md). The measurements below describe the planning baseline.
 
 The largest reproducible file-count reduction on the current fork is **60,482 files (43.57%)**. The largest mathematical target covers **8,215,997 lines**. The first figure comes from a concrete list of module moves. The second measures code behind a theorem for which a shorter proof is still needed.
 

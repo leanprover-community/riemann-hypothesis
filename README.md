@@ -7,9 +7,9 @@ claims a proof of the Riemann Hypothesis and of GRH for Dirichlet L-functions, a
 2026-11-20 at <https://alpo.ge/remark.pdf>.
 
 This fork contains the [Proof Atlas simplification](https://riemann.fairway3games.com/simplification).
-The current tree has 78,632 tracked Lean files. Main reaches 78,623 of them.
+The current tree has 78,351 tracked Lean files. Main reaches 78,342 of them.
 The five theorem declarations in `src/Main.lean` match the submission. A complete build
-and axiom audit of the reduced proof are pending. [Reduction counts and verification](verification/simplification/fold-and-prune.md).
+and axiom audit of the reduced proof are pending. [Row proof and verification](verification/simplification/row-proof.md) · [Earlier reductions](verification/simplification/fold-and-prune.md).
 
 The fork also includes the Comparator setup and the upstream cache infrastructure.
 
