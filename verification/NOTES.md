@@ -46,7 +46,7 @@ option or `skipKernelTC`. All notation is `local` or `scoped`, and nothing in th
 or writes files, starts processes or reads the environment.
 
 The source does use Lean's metaprogramming API in these places (corrected after
-[issue #2](https://github.com/Deicyde/riemann-hypothesis/issues/2); an earlier version of these
+[issue #2](https://github.com/leanprover-community/riemann-hypothesis/issues/2); an earlier version of these
 notes listed only the first two):
 
 - `BuildAid/D1.lean` … `D5.lean` each add one name to Lean's deny list for library suggestions.
