@@ -1,8 +1,169 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsGrpPullbackGenMap
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilPairingMumfordLambdaSquare
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSmulOfForallCharPowEqOne
+import Development.AbelianVarietyTheory.Definitions.Divisors.TorMatch
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaLinComb
+import BuildAid.ForwardExisting
 
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+
+noncomputable section
+
+namespace GlobalTheory.LamPairing
+
+section Coords
+
+variable {S : Scheme.{0}} (G : Over S) [GrpObj G] [IsCommMonObj G]
+
+theorem finset_fin_two (I : Finset (Fin 2)) : I = ∅ ∨ I = {0} ∨ I = {1} ∨ I = {0, 1} := by
+  revert I; decide
+
+theorem psum_empty : psum G (x2 G) ∅ = 1 := by
+  simp [psum, pzero]; rfl
+
+theorem psum_zero : psum G (x2 G) {0} = fst G G := by
+  simp [psum, padd, pzero, x2, List.finRange]
+
+theorem psum_one : psum G (x2 G) {1} = snd G G := by
+  simp [psum, padd, pzero, x2, List.finRange]
+
+theorem psum_both : psum G (x2 G) {0, 1} = fst G G * snd G G := by
+  simp [psum, padd, pzero, x2, List.finRange]
+  show μ[G] = lift (fst G G) (snd G G) ≫ μ[G]
+  rw [lift_fst_snd, Category.id_comp]
+
+theorem squareGroupPartialSum_isMonHom (I : Finset (Fin 2)) : IsMonHom (psum G (x2 G) I) := by
+  rcases finset_fin_two I with rfl | rfl | rfl | rfl
+  · rw [psum_empty]; exact inferInstanceAs (IsMonHom (toUnit (G2 G) ≫ η[G]))
+  · rw [psum_zero]; infer_instance
+  · rw [psum_one]; infer_instance
+  · rw [psum_both]
+    show IsMonHom (lift (fst G G) (snd G G) ≫ μ[G])
+    rw [lift_fst_snd, Category.id_comp]
+    infer_instance
+
+end Coords
+
+theorem prod_ulift_finset_fin_two {M : Type} [CommMonoid M] (f : ULift.{0} (Finset (Fin 2)) → M) :
+    ∏ I, f I = f ⟨∅⟩ * f ⟨{0}⟩ * f ⟨{1}⟩ * f ⟨{0, 1}⟩ := by
+  rw [← Fintype.prod_equiv Equiv.ulift.symm (fun I => f (Equiv.ulift.symm I)) f (fun _ => rfl)]
+  have h : (Finset.univ : Finset (Finset (Fin 2))) = {∅, {0}, {1}, {0, 1}} := by decide
+  rw [h, Finset.prod_insert (by decide), Finset.prod_insert (by decide), Finset.prod_insert (by decide),
+    Finset.prod_singleton]
+  simp only [Equiv.ulift_symm_apply]
+  ac_rfl
+
+theorem weilIs_lam (S : Scheme.{0}) [IsLocallyNoetherian S] (P : PolAV S) (n : ℕ) (T : Over S)
+    (x₁ x₂ y₁ y₂ : T ⟶ P.A) (hx₁ : x₁ ^ n = 1) (hx₂ : x₂ ^ n = 1) (hy₁ : y₁ ^ n = 1) (hy₂ : y₂ ^ n = 1)
+    (c₁ c₂ : Γ(T.left, ⊤)ˣ) (h₁ : WeilIs P.A P.L n x₁ y₂ c₁) (h₂ : WeilIs P.A P.L n x₂ y₁ c₂) :
+    WeilIs (G2 P.A) (abelian₂ P.A P.L) n (lift x₁ x₂) (lift y₁ y₂) (c₁ * c₂) := by
+  have hW : WeilSt := GlobalTheory.firstFiveLaws.1.weil
+  obtain ⟨a, ha, -⟩ := (hW S P n T).1 x₁ y₁ hx₁ hy₁
+  obtain ⟨b, hb, -⟩ := (hW S P n T).1 x₂ y₂ hx₂ hy₂
+  have hmul := (hW S P n T).2.1
+  have h₀ : WeilIs P.A P.L n 1 1 1 := (hW S P n T).2.2.1 1 (one_pow n)
+
+  have hr : ∀ (x y y' : T ⟶ P.A) (c c' : Γ(T.left, ⊤)ˣ), WeilIs P.A P.L n x y c → WeilIs P.A P.L n x y' c' →
+      WeilIs P.A P.L n x (y * y') (c * c') := fun x y y' c c' hc hc' => by
+    have := CommPairing.weilIs_symm P.isLB
+      (hmul _ _ _ _ _ (CommPairing.weilIs_symm P.isLB hc) (CommPairing.weilIs_symm P.isLB hc'))
+    rwa [← mul_inv, inv_inv] at this
+  have h₁₂ : WeilIs P.A P.L n (x₁ * x₂) (y₁ * y₂) (a * c₁ * (c₂ * b)) :=
+    hmul _ _ _ _ _ (hr _ _ _ _ _ ha h₁) (hr _ _ _ _ _ h₂ hb)
+  have hA : IsAbelianScheme (G2 P.A) := AbelianSchemeGerms.isAbelianScheme_tensor _ _ P.isAb P.isAb
+  let c : ULift.{0} (Finset (Fin 2)) → Γ(T.left, ⊤)ˣ := fun I =>
+    (if (0 : Fin 2) ∈ I.down then a else 1) * (if (1 : Fin 2) ∈ I.down then b else 1) *
+      (if (0 : Fin 2) ∈ I.down ∧ (1 : Fin 2) ∈ I.down then c₁ * c₂ else 1)
+  have key := PairingComb.weilIs_linComb (D := P.L) GlobalTheory.globalFns_holds hA P.isLB
+    (fun I : ULift.{0} (Finset (Fin 2)) => psum P.A (x2 P.A) I.down) (fun I => squareGroupPartialSum_isMonHom P.A I.down)
+    (fun I => (-1) ^ (2 - I.down.card)) (n := n) (x := lift x₁ x₂) (y := lift y₁ y₂) c (by
+      rintro ⟨I⟩
+      rcases finset_fin_two I with rfl | rfl | rfl | rfl
+      · simp only [c, psum_empty, MonObj.comp_one]
+        simpa using h₀
+      · simp only [c, psum_zero, lift_fst]
+        simpa using ha
+      · simp only [c, psum_one, lift_snd]
+        simpa using hb
+      · simp only [c, psum_both, MonObj.comp_mul, lift_fst, lift_snd]
+        convert h₁₂ using 1
+        simp only [Finset.mem_insert, Finset.mem_singleton, true_or, or_true, and_self, if_true]
+        ac_rfl)
+  have e : ∏ I, c I ^ ((-1 : ℤ) ^ (2 - I.down.card)) = c₁ * c₂ := by
+    rw [prod_ulift_finset_fin_two]
+    simp [c]
+    rw [← mul_inv, inv_mul_cancel_left]
+  rw [e] at key
+  exact key
+
+end GlobalTheory.LamPairing
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weilPairing_mumfordLambda_square : ∀ (S : Scheme.{0}) [IsLocallyNoetherian S] (P : PolAV S) (n : ℕ) (T : Over S) (x₁ x₂ y₁ y₂ : T ⟶ P.A), x₁ ^ n = 1 → x₂ ^ n = 1 → y₁ ^ n = 1 → y₂ ^ n = 1 → ∀ (c₁ c₂ : Γ(T.left, ⊤)ˣ), WeilIs P.A P.L n x₁ y₂ c₁ → WeilIs P.A P.L n x₂ y₁ c₂ → WeilIs (G2 P.A) (abelian₂ P.A P.L) n (lift x₁ x₂) (lift y₁ y₂) (c₁ * c₂) := by
+  atlas_forward_decl GlobalTheory.LamPairing.weilIs_lam
+end
+
+section
+section
+namespace GlobalTheory
+
+theorem mem_smul_of_forall_char_pow_eq_one
+    (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] (F : Type) [Field F]
+    [IsAlgClosed F] (k : ℕ) (hk : (k : F) ≠ 0) (d : X)
+    (hd : ∀ τ : Multiplicative X →* Fˣ, τ ^ k = 1 → τ (Multiplicative.ofAdd d) = 1) :
+    ∃ z : X, d = k • z := by
+  classical
+  let b := Module.Free.chooseBasis ℤ X
+  by_contra hne
+  push_neg at hne
+  have hex : ∃ i, ¬ (k : ℤ) ∣ b.repr d i := by
+    by_contra h
+    push_neg at h
+    apply hne (∑ i, (b.repr d i / k) • b i)
+    apply b.repr.injective
+    ext j
+    rw [← natCast_zsmul]
+    simp [map_sum, Finsupp.single_apply, Int.mul_ediv_cancel' (h j)]
+  obtain ⟨i, hi⟩ := hex
+  have hk0 : k ≠ 0 := by rintro rfl; exact hk (by simp)
+  haveI : NeZero (k : F) := ⟨hk⟩
+  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot F k
+  have hζ0 : ζ ≠ 0 := hζ.ne_zero hk0
+  let u : Fˣ := Units.mk0 ζ hζ0
+  have hu : IsPrimitiveRoot u k := IsPrimitiveRoot.coe_units_iff.mp (by simpa [u] using hζ)
+  let τ : Multiplicative X →* Fˣ :=
+    (zpowersHom Fˣ u).comp (AddMonoidHom.toMultiplicative (b.coord i).toAddMonoidHom)
+  have hτ : ∀ x : X, τ (Multiplicative.ofAdd x) = u ^ (b.repr x i) := by
+    intro x; simp [τ]
+  have hτk : τ ^ k = 1 := by
+    ext x
+    show (τ x ^ k : Fˣ).val = (1 : Fˣ).val
+    congr 1
+    rw [← ofAdd_toAdd x, hτ, ← zpow_natCast, ← zpow_mul, mul_comm, zpow_mul, zpow_natCast,
+      hu.pow_eq_one, one_zpow]
+  have h1 := hd τ hτk
+  rw [hτ] at h1
+  exact hi ((hu.zpow_eq_one_iff_dvd _).1 h1)
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_eq_nsmul_of_forall_char_pow_eq_one : ∀ (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] (F : Type) [Field F] [IsAlgClosed F] (k : ℕ), (k : F) ≠ 0 → ∀ d : X, (∀ τ : Multiplicative X →* Fˣ, τ ^ k = 1 → τ (Multiplicative.ofAdd d) = 1) → ∃ z : X, d = k • z := by
+  atlas_forward_decl GlobalTheory.mem_smul_of_forall_char_pow_eq_one
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
@@ -163,3 +324,4 @@ open Classical
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.torsionLabels_eighthPower_projections : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], GlobalTheory.Mum.Base R → IsDiscreteValuationRing R → ∀ (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (U : Unif (maximalIdeal R) D A G) (G' : Over (Sp R)) [GrpObj G'] [IsCommMonObj G'], IsSemiAbelian G' → ∀ (D' : DegData R (maximalIdeal R)) (A' : PolAV (Sp (FractionRing R))) (U' : Unif (maximalIdeal R) D' A' G') (W : Matrix (Fin 8) (Fin 8) ℤ), IsE8 W → ∀ (pr : Fin 8 → (A'.A ⟶ A.A)), (∀ a, IsMonHom (pr a)) → (∀ (T' : Over (Sp (FractionRing R))) (y : Fin 8 → (T' ⟶ A.A)), ∃! z : T' ⟶ A'.A, ∀ a, z ≫ pr a = y a) → LBIso A'.L (LB.LinComb (abelian₂ A.A A.L) (K := Fin 8 × Fin 8) (fun ab => (lift (pr ab.1) (pr ab.2)).left) (fun ab => W ab.1 ab.2)) → ∀ (pG : Fin 8 → (G' ⟶ G)), (∀ v, IsMonHom (pG v)) → (∀ v, (Over.pullback (jK R)).map (pG v) ≫ U.gen.hom = U'.gen.hom ≫ pr v) → ∀ (c : Fin 8 → (D.toPre.X →+ D'.toPre.X)), (∀ v, TorMatch U U' (RingHom.id R) (pG v).left (c v)) → ∀ e : D'.toPre.X ≃+ (Fin 8 → D.toPre.X), (∀ y, ∑ v, c v (∑ u, (W + W.transpose) v u • e y u) = y) → ∀ v : Fin 8, (∀ (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing R) F] (k : ℕ), IsUnit (k : R) → ∀ (q : QkPt D.toPre F k) (q' : QkPt D'.toPre F k) (a : TFK (R := R) F ⟶ A.A) (a' : TFK (R := R) F ⟶ A'.A), QkToAkU U.toUnifPre F k q a → QkToAkU U'.toUnifPre F k q' a' → a.left ≫ genMap U = a'.left ≫ genMap U' ≫ (pG v).left → ∃ z, q.y = e q'.y v + k • z) := by
   atlas_forward_decl GlobalTheory.Poinc.Eq8.Labels.label_proj_eq
+end

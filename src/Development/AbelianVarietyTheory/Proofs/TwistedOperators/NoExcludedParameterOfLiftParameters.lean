@@ -5,7 +5,10 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitCha
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmDataIsCMExtAndGramIsHermND
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HilbertSchurOfAdjointClosed
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeParameterBound
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormSatakeLeOfUnitarySphericalGLStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PowDvdOfHermMatEq
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeParameterGLStarEqInvOfUnitarisable
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeActsByScalarCommutative
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSplitPrimeAvoiding
 import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.CondSq
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitPrimePlacesSplit
@@ -13,6 +16,31 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitPrimeAdditi
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeCharacterInfiniteOrderAtSplit
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CharacterEquivalenceLocalData
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.UG GlobalTheory.PRep GlobalTheory.LFun GlobalTheory.LFun.HeckeScalar
+
+namespace GlobalTheory.LFun.IsoBound
+
+section General
+
+variable {G H : Type} [Group G] [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ρ : Representation ℂ G H}
+  {K : Subgroup G} {x : H}
+
+def gen (hx : x ∈ fixed ρ K) : Representation ℂ G (LinearMap.range (orbitMap ρ K x)) :=
+  sub ρ _ (by
+    rintro g _ ⟨φ, rfl⟩
+    exact ⟨_, orbitMap_permRep hx g φ⟩)
+
+end General
+
+end GlobalTheory.LFun.IsoBound
+
+end
+end
+
+section
 open MeasureTheory NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Links
 open GlobalTheory.IndefiniteRowSideFullHecke.IteratedLiftChains GlobalTheory.PRep GlobalTheory.LFun
@@ -92,4 +120,5 @@ end Zero
 
 end GlobalTheory.NoExcl
 
+end
 end

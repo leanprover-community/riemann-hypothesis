@@ -3,11 +3,547 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.RedSurjective
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KerEqRangeOfRangeEqKer
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRetractionMulP
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsQuotientFiniteCommGroupSchemeClosedSubgrou
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsQuotPDivGroup
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivSubgroupQuotientTowerRSEqSRes
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BialgHomFactorThroughSplitInjectionStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuotientTransitionSurjectiveSameSubgroup
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvEqOneOfForallPairing
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsHopfIdealKerIdealOfBialgHom
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BialgHomFactorThroughSplitInjection
 
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+
+namespace GlobalTheory.PDiv
+
+theorem exists_hopf_quotient_torsionIdeal :
+    ∀ (O : Type) [CommRing O] (B : Type) [CommRing B] [HopfAlgebra O B] [IsCocomm O B] (n : ℕ),
+      ∃ (D : Type) (_ : CommRing D) (_ : HopfAlgebra O D) (_ : IsCocomm O D) (π : B →ₐc[O] D),
+        Function.Surjective π ∧ RingHom.ker π = torsionIdeal O B n := by
+  intro O _ B _ _ _ n
+  haveI : (torsionIdeal O B n).IsHopfIdeal O :=
+    isHopfIdeal_kerIdeal_of_bialgHom O B B (mulBy O B n)
+  let π : B →ₐc[O] B ⧸ torsionIdeal O B n := Bialgebra.Quotient.mkBialgHom _
+  have hπ : Function.Surjective π := Ideal.Quotient.mk_surjective
+  have cocomm : IsCocomm O (B ⧸ torsionIdeal O B n) :=
+    { comm_comp_comul := LinearMap.ext fun b => by
+        obtain ⟨a, rfl⟩ := hπ b
+        have h : ∀ t : B ⊗[O] B,
+            TensorProduct.comm O (B ⧸ torsionIdeal O B n) (B ⧸ torsionIdeal O B n) (TensorProduct.map (π : B →ₗ[O] B ⧸ torsionIdeal O B n) (π : B →ₗ[O] B ⧸ torsionIdeal O B n) t) =
+            TensorProduct.map (π : B →ₗ[O] B ⧸ torsionIdeal O B n) (π : B →ₗ[O] B ⧸ torsionIdeal O B n) (TensorProduct.comm O B B t) := by
+          intro t
+          induction t with
+          | zero => simp
+          | add x y hx hy => simp only [map_add, hx, hy]
+          | tmul x y => simp
+        change TensorProduct.comm O (B ⧸ torsionIdeal O B n) (B ⧸ torsionIdeal O B n) (comul (π a)) = comul (π a)
+        rw [← CoalgHomClass.map_comp_comul_apply π a, h, comm_comul] }
+  exact ⟨B ⧸ torsionIdeal O B n, inferInstance, inferInstance,
+    cocomm, π, hπ,
+    Ideal.ext fun _ => Ideal.Quotient.eq_zero_iff_mem⟩
+
+end GlobalTheory.PDiv
+end
+end
+
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hopf_quotient_ker_eq_torsionIdeal : ∀ (O : Type) [CommRing O] (B : Type) [CommRing B] [HopfAlgebra O B] [IsCocomm O B] (n : ℕ), ∃ (D : Type) (_ : CommRing D) (_ : HopfAlgebra O D) (_ : IsCocomm O D) (π : B →ₐc[O] D), Function.Surjective π ∧ RingHom.ker π = torsionIdeal O B n := by
+  atlas_forward_decl GlobalTheory.PDiv.exists_hopf_quotient_torsionIdeal
+end
+
+section
+section
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+
+namespace GlobalTheory.FibreRanks
+
+theorem fibre_ranks : ∀ (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O M] (N : Type) [AddCommGroup N] [Module O N] (K : Type) [AddCommGroup K] [Module O K] [Module.Finite O M] [Module.Finite O N] (f : M →ₗ[O] N), (∀ (ρ : N →ₗ[O] M), (∀ m, ρ (f m) = m) → ∀ q, fibreRank f q = fibreDim M q) ∧ (∀ (g : N →ₗ[O] K) (q : PrimeSpectrum O), fibreRank g q = fibreDim N q → fibreRank (g ∘ₗ f) q = fibreRank f q) ∧ ((∀ q, fibreRank f q = fibreDim N q) → Function.Surjective f) ∧ (∀ [Module.Free O M] (q : PrimeSpectrum O), fibreDim M q = Module.finrank O M) := by
+  intro O _ M _ _ N _ _ K _ _ _ _ f
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro ρ hρ q
+    have hinj : Function.Injective (f.baseChange q.asIdeal.ResidueField) := by
+      apply Function.LeftInverse.injective (g := ρ.baseChange q.asIdeal.ResidueField)
+      intro x
+      rw [← LinearMap.comp_apply, ← LinearMap.baseChange_comp]
+      have : ρ ∘ₗ f = LinearMap.id := LinearMap.ext hρ
+      rw [this]
+      simp
+    exact LinearMap.finrank_range_of_inj hinj
+  · intro g q hg
+    have hker := LinearMap.finrank_range_add_finrank_ker (g.baseChange q.asIdeal.ResidueField)
+    have h0 : Module.finrank q.asIdeal.ResidueField
+        (LinearMap.ker (g.baseChange q.asIdeal.ResidueField)) = 0 := by
+      unfold fibreRank fibreDim at hg
+      omega
+    have hinj : Function.Injective (g.baseChange q.asIdeal.ResidueField) := by
+      rw [← LinearMap.ker_eq_bot]
+      exact Submodule.finrank_eq_zero.mp h0
+    unfold fibreRank
+    rw [LinearMap.baseChange_comp, LinearMap.range_comp]
+    exact (Submodule.equivMapOfInjective _ hinj _).finrank_eq.symm
+  · intro h
+    exact surjective_of_fibre_rank O M N f h
+  · intro _ q
+    haveI : Nontrivial O := by
+      by_contra hn
+      rw [not_nontrivial_iff_subsingleton] at hn
+      exact q.isPrime.ne_top (Subsingleton.elim _ _)
+    exact Module.finrank_baseChange
+
+end GlobalTheory.FibreRanks
+end
+
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearMapFibreRank_split_comp_surjective : ∀ (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O M] (N : Type) [AddCommGroup N] [Module O N] (K : Type) [AddCommGroup K] [Module O K] [Module.Finite O M] [Module.Finite O N] (f : M →ₗ[O] N), (∀ (ρ : N →ₗ[O] M), (∀ m, ρ (f m) = m) → ∀ q, fibreRank f q = fibreDim M q) ∧ (∀ (g : N →ₗ[O] K) (q : PrimeSpectrum O), fibreRank g q = fibreDim N q → fibreRank (g ∘ₗ f) q = fibreRank f q) ∧ ((∀ q, fibreRank f q = fibreDim N q) → Function.Surjective f) ∧ (∀ [Module.Free O M] (q : PrimeSpectrum O), fibreDim M q = Module.finrank O M) := by
+  atlas_forward_decl GlobalTheory.FibreRanks.fibre_ranks
+end
+
+section
+section
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.PDivGroup
+
+theorem exists_mulPow_fibreRank_eq (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O]
+    (G : PDivGroup p O) (k m : ℕ) :
+    ∃ (r : G.A (k + m) →ₐc[O] G.A k) (μ : G.A k →ₐc[O] G.A (k + m)), Function.Surjective r ∧
+      RingHom.ker r = torsionIdeal O (G.A (k + m)) (p ^ k) ∧
+      (∀ a, μ (r a) = mulBy O (G.A (k + m)) (p ^ m) a) ∧
+      ∀ q, fibreRank (μ : G.A k →ₐ[O] G.A (k + m)).toLinearMap q = fibreDim (G.A k) q := by
+  obtain ⟨r, hr, hk⟩ := G.exists_res_le (m := k) (n := k + m) (by omega)
+  have hle : RingHom.ker r ≤ RingHom.ker (mulBy O (G.A (k + m)) (p ^ m)) := by
+    rw [hk]
+    refine (kerIdeal_le_ker_iff _
+      (mulBy O (G.A (k + m)) (p ^ m) : G.A (k + m) →ₐ[O] G.A (k + m))).2 fun c => ?_
+    change mulBy O _ (p ^ m) (mulBy O _ (p ^ k) c) = _
+    rw [mulBy_mulBy, ← pow_add, add_comm m k, mulBy_pow_self]
+  let μ := liftSurj r hr (mulBy O (G.A (k + m)) (p ^ m)) hle
+  have hμ : ∀ a, μ (r a) = mulBy O (G.A (k + m)) (p ^ m) a := liftSurj_apply r hr _ hle
+  refine ⟨r, μ, hr, hk, hμ, fun q => ?_⟩
+  obtain ⟨f, hf, hfk⟩ := G.exists_res_le (m := m) (n := k + m) (by omega)
+  have hker : kerIdeal μ = RingHom.ker (f : G.A (k + m) →ₐ[O] G.A m) := by
+    rw [← kerIdeal_comp_of_surjective μ hr, show μ.comp r = mulBy O (G.A (k + m)) (p ^ m) from
+      BialgHom.ext hμ]
+    exact hfk.symm
+  have h1 := fibreDim_eq_ker_mul_range μ q
+  rw [hker, fibreDim_congr (Ideal.quotientKerAlgEquivOfSurjective
+    (f := (f : G.A (k + m) →ₐ[O] G.A m)) hf).toLinearEquiv, fibreDim_eq, fibreDim_eq,
+    add_mul, pow_add, mul_comm (p ^ (k * G.height))] at h1
+  rw [fibreDim_eq]
+  have hp : 0 < p ^ (m * G.height) := pow_pos (Fact.out : p.Prime).pos _
+  exact (Nat.eq_of_mul_eq_mul_left hp h1).symm
+
+end GlobalTheory.PDivGroup
+end
+end
+
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_mulPow_fibreRank_eq_pDivGroup : ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] (G : PDivGroup p O) (k m : ℕ), ∃ (r : G.A (k + m) →ₐc[O] G.A k) (μ : G.A k →ₐc[O] G.A (k + m)), Function.Surjective r ∧ RingHom.ker r = torsionIdeal O (G.A (k + m)) (p ^ k) ∧ (∀ a, μ (r a) = mulBy O (G.A (k + m)) (p ^ m) a) ∧ ∀ q, fibreRank (μ : G.A k →ₐ[O] G.A (k + m)).toLinearMap q = fibreDim (G.A k) q := by
+  atlas_forward_decl GlobalTheory.PDivGroup.exists_mulPow_fibreRank_eq
+end
+
+section
+section
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+
+namespace GlobalTheory.TorsDim
+
+theorem fibreDim_quot_torsionIdeal : ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] (G : PDivGroup p O) (k m : ℕ), 1 ≤ k → ∀ (B : Type) [CommRing B] [HopfAlgebra O B] [IsCocomm O B] [Module.Finite O B] [Module.Projective O B] (j : B →ₐc[O] G.A (k + m)) (ρ : G.A (k + m) →ₗ[O] B), (∀ b, ρ (j b) = b) → torsionIdeal O (G.A (k + m)) p ≤ kerIdeal j → ∀ q : PrimeSpectrum O, fibreDim (B ⧸ torsionIdeal O B (p ^ m)) q = p ^ (m * G.height) := by
+  intro p _ O _ G k m hk B _ _ _ _ _ j ρ hρ hj q
+  obtain ⟨r, μ, hr, hker, hμ, hμq⟩ := GlobalTheory.T.exists_mulPow_fibreRank_eq_pDivGroup p O G k m
+  have hjq : fibreRank (j : B →ₐ[O] G.A (k + m)).toLinearMap q = fibreDim B q :=
+    (GlobalTheory.T.linearMapFibreRank_split_comp_surjective O B (G.A (k + m)) (G.A (k + m)) (j : B →ₐ[O] G.A (k + m)).toLinearMap).1 ρ hρ q
+  have h1 := fibreDim_eq_ker_mul_range j q
+  rw [hjq, G.fibreDim_eq] at h1
+  have h2 := fibreDim_eq_ker_mul_range (r.comp j) q
+  rw [G.fibreDim_eq] at h2
+  have hle : RingHom.ker r ≤ kerIdeal j := by
+    rw [hker]
+    exact (torsionIdeal_le_of_dvd (dvd_pow_self p (by omega))).trans (by simpa using hj)
+  let J : Ideal (G.A k) := kerIdeal (r.comp j)
+  let φ : G.A (k + m) →ₐ[O] G.A k ⧸ J := (Ideal.Quotient.mkₐ O J).comp (r : G.A (k + m) →ₐ[O] G.A k)
+  have hφ : Function.Surjective φ := (Ideal.Quotient.mkₐ_surjective O J).comp hr
+  have hkerφ : RingHom.ker φ = kerIdeal j := by
+    have h5 : RingHom.ker φ = J.comap (r : G.A (k + m) →ₐ[O] G.A k) := by
+      ext a
+      simp [φ, RingHom.mem_ker, Ideal.Quotient.eq_zero_iff_mem]
+    rw [h5, show J = Ideal.map (r : G.A (k + m) →ₐ[O] G.A k) (kerIdeal j) from kerIdeal_comp r j,
+      Ideal.comap_map_of_surjective (r : G.A (k + m) →ₐ[O] G.A k) hr, sup_eq_left]
+    exact fun a ha => hle ha
+  let e : (G.A (k + m) ⧸ kerIdeal j) ≃ₗ[O] (G.A k ⧸ J) :=
+    ((Ideal.quotientEquivAlgOfEq O hkerφ).symm.trans (Ideal.quotientKerAlgEquivOfSurjective hφ)).toLinearEquiv
+  rw [← fibreDim_congr e q] at h2
+  have h3 := fibreDim_eq_ker_mul_range (mulBy O B (p ^ m)) q
+  have hlin : (j : B →ₐ[O] G.A (k + m)).toLinearMap ∘ₗ (mulBy O B (p ^ m) : B →ₐ[O] B).toLinearMap =
+      (μ : G.A k →ₐ[O] G.A (k + m)).toLinearMap ∘ₗ ((r.comp j) : B →ₐ[O] G.A k).toLinearMap := by
+    ext b
+    change j (mulBy O B (p ^ m) b) = μ (r (j b))
+    rw [map_mulBy, hμ]
+  have h4 : fibreRank (mulBy O B (p ^ m) : B →ₐ[O] B).toLinearMap q =
+      fibreRank ((r.comp j) : B →ₐ[O] G.A k).toLinearMap q := by
+    rw [← (GlobalTheory.T.linearMapFibreRank_split_comp_surjective O B B (G.A (k + m)) _).2.1 _ q hjq, hlin,
+      (GlobalTheory.T.linearMapFibreRank_split_comp_surjective O B (G.A k) (G.A (k + m)) _).2.1 _ q (hμq q)]
+  change fibreDim (B ⧸ kerIdeal (mulBy O B (p ^ m))) q = _
+  rw [h4] at h3
+  have hp : 0 < p ^ (k * G.height) := pow_pos (Fact.out : p.Prime).pos _
+  have h6 : p ^ ((k + m) * G.height) = p ^ (m * G.height) * p ^ (k * G.height) := by
+    rw [← pow_add]; congr 1; ring
+  refine (Nat.eq_of_mul_eq_mul_right hp ?_).symm
+  rw [← h6, h1, h3, h2]
+  ring
+
+end GlobalTheory.TorsDim
+end
+
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torsion_fibreDim_quotient_pDivGroupLevel : ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] (G : PDivGroup p O) (k m : ℕ), 1 ≤ k → ∀ (B : Type) [CommRing B] [HopfAlgebra O B] [IsCocomm O B] [Module.Finite O B] [Module.Projective O B] (j : B →ₐc[O] G.A (k + m)) (ρ : G.A (k + m) →ₗ[O] B), (∀ b, ρ (j b) = b) → torsionIdeal O (G.A (k + m)) p ≤ kerIdeal j → ∀ q : PrimeSpectrum O, fibreDim (B ⧸ torsionIdeal O B (p ^ m)) q = p ^ (m * G.height) := by
+  atlas_forward_decl GlobalTheory.TorsDim.fibreDim_quot_torsionIdeal
+end
+
+section
+section
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.ConstFibreFree
+
+theorem finrank_tensor_tower (O k K M : Type) [CommRing O] [Field k] [Field K] [Algebra O k]
+    [Algebra O K] [Algebra k K] [IsScalarTower O k K] [AddCommGroup M] [Module O M]
+    [Module.Finite O M] :
+    Module.finrank K (K ⊗[O] M) = Module.finrank k (k ⊗[O] M) := by
+  rw [← (TensorProduct.AlgebraTensorModule.cancelBaseChange O k K K M).finrank_eq]
+  exact Module.finrank_baseChange
+
+theorem fibreDim_closedPoint (O M : Type) [CommRing O] [IsLocalRing O] [AddCommGroup M]
+    [Module O M] [Module.Finite O M] :
+    fibreDim M (IsLocalRing.closedPoint O) =
+      Module.finrank (IsLocalRing.ResidueField O) (IsLocalRing.ResidueField O ⊗[O] M) := by
+  let q := IsLocalRing.closedPoint O
+  let φ : IsLocalRing.ResidueField O →+* q.asIdeal.ResidueField :=
+    Ideal.Quotient.lift _ (algebraMap O q.asIdeal.ResidueField) fun a ha => by
+      rw [← RingHom.mem_ker, Ideal.ker_algebraMap_residueField]; exact ha
+  letI : Algebra (IsLocalRing.ResidueField O) q.asIdeal.ResidueField := φ.toAlgebra
+  haveI : IsScalarTower O (IsLocalRing.ResidueField O) q.asIdeal.ResidueField :=
+    IsScalarTower.of_algebraMap_eq fun a => (Ideal.Quotient.lift_mk _ _ _).symm
+  exact finrank_tensor_tower O _ _ M
+
+theorem exists_one_tmul (O M : Type) [CommRing O] [IsLocalRing O] [AddCommGroup M] [Module O M]
+    (y : IsLocalRing.ResidueField O ⊗[O] M) : ∃ m : M, (1 : IsLocalRing.ResidueField O) ⊗ₜ[O] m = y := by
+  induction y using TensorProduct.induction_on with
+  | zero => exact ⟨0, TensorProduct.tmul_zero _ _⟩
+  | tmul c m =>
+    obtain ⟨a, rfl⟩ := IsLocalRing.residue_surjective c
+    refine ⟨a • m, ?_⟩
+    rw [TensorProduct.tmul_smul, TensorProduct.smul_tmul', Algebra.smul_def, mul_one]
+    rfl
+  | add y z hy hz =>
+    obtain ⟨m₁, h₁⟩ := hy
+    obtain ⟨m₂, h₂⟩ := hz
+    exact ⟨m₁ + m₂, by rw [TensorProduct.tmul_add, h₁, h₂]⟩
+
+theorem nonempty_equiv_fin (O : Type) [CommRing O] [IsDomain O] [IsLocalRing O] (M : Type)
+    [AddCommGroup M] [Module O M] [Module.Finite O M] (n : ℕ)
+    (h : ∀ q : PrimeSpectrum O, fibreDim M q = n) : Nonempty (M ≃ₗ[O] (Fin n → O)) := by
+  let k := IsLocalRing.ResidueField O
+  have hk : Module.finrank k (k ⊗[O] M) = n :=
+    (fibreDim_closedPoint O M).symm.trans (h _)
+  let b : Module.Basis (Fin n) k (k ⊗[O] M) := Module.finBasisOfFinrankEq k _ hk
+  choose f hf using fun i => exists_one_tmul O M (b i)
+  let g : (Fin n → O) →ₗ[O] M := Fintype.linearCombination O f
+  have hg : Function.Surjective g := by
+    rw [← LinearMap.range_eq_top, Fintype.range_linearCombination]
+    exact IsLocalRing.span_eq_top_of_tmul_eq_basis f b hf
+  have hinj : Function.Injective g := by
+    let q₀ : PrimeSpectrum O := ⟨⊥, Ideal.bot_prime⟩
+    let K := q₀.asIdeal.ResidueField
+    have hK : Module.finrank K (K ⊗[O] M) = n := h q₀
+    let gK := g.baseChange K
+    have hgK : Function.Surjective gK := LinearMap.lTensor_surjective K hg
+    have hdim : Module.finrank K (K ⊗[O] (Fin n → O)) = Module.finrank K (K ⊗[O] M) := by
+      rw [hK, Module.finrank_baseChange, Module.finrank_fin_fun]
+    have hgKi : Function.Injective gK :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).2 hgK
+    have hO : Function.Injective (algebraMap O K) := by
+      rw [RingHom.injective_iff_ker_eq_bot, Ideal.ker_algebraMap_residueField]
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro x hx
+    have h1 : gK ((1 : K) ⊗ₜ x) = 0 := by simp [gK, hx]
+    have h2 : (1 : K) ⊗ₜ[O] x = 0 := hgKi (h1.trans (map_zero gK).symm)
+    have h3 := congrArg (TensorProduct.piScalarRight O K K (Fin n)) h2
+    funext i
+    have h4 := congrFun h3 i
+    simp at h4
+    exact hO (by simpa using h4)
+  exact ⟨(LinearEquiv.ofBijective g ⟨hinj, hg⟩).symm⟩
+
+theorem projective_and_rankAtStalk_of_fibreDim :
+    ∀ (O : Type) [CommRing O] [IsDomain O] [IsLocalRing O] (M : Type) [AddCommGroup M] [Module O M]
+      [Module.Finite O M] (n : ℕ), (∀ q : PrimeSpectrum O, fibreDim M q = n) →
+      Module.Projective O M ∧ ∀ q : PrimeSpectrum O, Module.rankAtStalk M q = n := by
+  intro O _ _ _ M _ _ _ n h
+  obtain ⟨e⟩ := nonempty_equiv_fin O M n h
+  haveI : Module.Free O M := Module.Free.of_equiv e.symm
+  refine ⟨inferInstance, fun q => ?_⟩
+  rw [Module.rankAtStalk_eq]
+  exact h q
+
+end GlobalTheory.ConstFibreFree
+end
+end
+
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projective_rankAtStalk_of_const_fibreDim : ∀ (O : Type) [CommRing O] [IsDomain O] [IsLocalRing O] (M : Type) [AddCommGroup M] [Module O M] [Module.Finite O M] (n : ℕ), (∀ q : PrimeSpectrum O, fibreDim M q = n) → Module.Projective O M ∧ ∀ q : PrimeSpectrum O, Module.rankAtStalk M q = n := by
+  atlas_forward_decl GlobalTheory.ConstFibreFree.projective_and_rankAtStalk_of_fibreDim
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+
+namespace GlobalTheory.HTPair
+
+theorem exists_quotPDivGroup : ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O]
+    [IsLocalRing O] (G : PDivGroup p O) (τ : QuotTower G), ∃ (H : PDivGroup p O)
+    (q : ∀ m, τ.B m →ₐc[O] H.A m), (∀ m, Function.Surjective (q m)) ∧
+    (∀ m, RingHom.ker (q m) = torsionIdeal O (τ.B m) (p ^ m)) ∧
+    ∀ m b, H.res m (q (m + 1) b) = q m (τ.r m b) := by
+  intro p _ O _ _ _ G τ
+  have hex := fun m => GlobalTheory.T.exists_hopf_quotient_ker_eq_torsionIdeal O (τ.B m) (p ^ m)
+  choose D iR iH iC q hq hk using hex
+  letI := iR
+  letI := iH
+  letI := iC
+  have hB1 : ∀ m (x : PrimeSpectrum O),
+      fibreDim (τ.B m ⧸ torsionIdeal O (τ.B m) (p ^ m)) x = p ^ (m * G.height) := by
+    intro m x
+    have h := GlobalTheory.T.torsion_fibreDim_quotient_pDivGroupLevel p O G 1 m le_rfl (τ.B m)
+    rw [show 1 + m = m + 1 from Nat.add_comm 1 m] at h
+    exact h (τ.j m) (τ.ρ m) (τ.ρ_j m) (τ.tors_le m) x
+  have hB2 : ∀ m (x : PrimeSpectrum O),
+      fibreDim (τ.B (m + 1) ⧸ torsionIdeal O (τ.B (m + 1)) (p ^ m)) x = p ^ (m * G.height) := by
+    intro m x
+    have h := GlobalTheory.T.torsion_fibreDim_quotient_pDivGroupLevel p O G 2 m (by norm_num) (τ.B (m + 1))
+    rw [show 2 + m = m + 1 + 1 by omega] at h
+    exact h (τ.j (m + 1)) (τ.ρ (m + 1)) (τ.ρ_j (m + 1)) (τ.tors_le (m + 1)) x
+  haveI hfin : ∀ m, Module.Finite O (D m) := fun m =>
+    Module.Finite.of_surjective (q m : τ.B m →ₗ[O] D m) (hq m)
+  have hD : ∀ m (x : PrimeSpectrum O), fibreDim (D m) x = p ^ (m * G.height) := by
+    intro m x
+    have hk' : RingHom.ker (q m : τ.B m →ₐ[O] D m) = torsionIdeal O (τ.B m) (p ^ m) := hk m
+    have e := ((Ideal.quotientEquivAlgOfEq O hk').symm.trans
+      (Ideal.quotientKerAlgEquivOfSurjective (f := (q m : τ.B m →ₐ[O] D m)) (hq m))).toLinearEquiv
+    rw [← hB1 m x]
+    exact (fibreDim_congr e x).symm
+  have hPR := fun m => GlobalTheory.T.projective_rankAtStalk_of_const_fibreDim O (D m) (p ^ (m * G.height)) (hD m)
+  haveI hproj : ∀ m, Module.Projective O (D m) := fun m => (hPR m).1
+  have hle : ∀ m, RingHom.ker (q (m + 1)) ≤ RingHom.ker ((q m).comp (τ.r m)) := by
+    intro m b hb
+    rw [hk] at hb
+    have h1 : τ.r m b ∈ torsionIdeal O (τ.B m) (p ^ (m + 1)) := by
+      rw [← map_torsionIdeal (τ.r_surjective m)]
+      exact Ideal.mem_map_of_mem (τ.r m : τ.B (m + 1) →ₐ[O] τ.B m) hb
+    have h2 : τ.r m b ∈ RingHom.ker (q m) := by
+      rw [hk]
+      exact torsionIdeal_le_of_dvd (pow_dvd_pow p (Nat.le_succ m)) h1
+    rw [RingHom.mem_ker] at h2 ⊢
+    exact h2
+  let res := fun m => liftSurj (q (m + 1)) (hq (m + 1)) ((q m).comp (τ.r m)) (hle m)
+  have hres : ∀ m b, res m (q (m + 1) b) = q m (τ.r m b) := fun m b => liftSurj_apply ..
+  have hres_surj : ∀ m, Function.Surjective (res m) := by
+    intro m d
+    obtain ⟨c, rfl⟩ := hq m d
+    obtain ⟨b, rfl⟩ := τ.r_surjective m c
+    exact ⟨_, hres m b⟩
+  have hker : ∀ m, RingHom.ker (res m) = torsionIdeal O (D (m + 1)) (p ^ m) := by
+    intro m
+    refine ker_eq_of_fibreDim_eq (res m : D (m + 1) →ₐ[O] D m) (hres_surj m) _ ?_ fun x => ?_
+    · rw [← map_torsionIdeal (hq (m + 1))]
+      refine Ideal.map_le_iff_le_comap.2 fun b hb => ?_
+      rw [Ideal.mem_comap, RingHom.mem_ker]
+      change res m (q (m + 1) b) = 0
+      rw [hres, ← RingHom.mem_ker, hk, ← map_torsionIdeal (τ.r_surjective m)]
+      exact Ideal.mem_map_of_mem (τ.r m : τ.B (m + 1) →ₐ[O] τ.B m) hb
+    · let φ : τ.B (m + 1) →ₐ[O] D (m + 1) ⧸ torsionIdeal O (D (m + 1)) (p ^ m) :=
+        (Ideal.Quotient.mkₐ O _).comp (q (m + 1) : τ.B (m + 1) →ₐ[O] D (m + 1))
+      have hφ : Function.Surjective φ :=
+        (Ideal.Quotient.mkₐ_surjective O _).comp (hq (m + 1))
+      have hkφ : RingHom.ker φ = torsionIdeal O (τ.B (m + 1)) (p ^ m) := by
+        ext b
+        rw [RingHom.mem_ker]
+        change Ideal.Quotient.mk _ (q (m + 1) b) = 0 ↔ _
+        rw [Ideal.Quotient.eq_zero_iff_mem, ← map_torsionIdeal (hq (m + 1))]
+        constructor
+        · intro hb
+          obtain ⟨c, hc, e⟩ := (Ideal.mem_map_iff_of_surjective
+            (q (m + 1) : τ.B (m + 1) →ₐ[O] D (m + 1)) (hq (m + 1))).1 hb
+          have h3 : b - c ∈ RingHom.ker (q (m + 1)) := by
+            rw [RingHom.mem_ker, map_sub, sub_eq_zero]
+            exact e.symm
+          rw [hk] at h3
+          have h4 := torsionIdeal_le_of_dvd (R := O) (A := τ.B (m + 1))
+            (pow_dvd_pow p (Nat.le_succ m)) h3
+          simpa using Ideal.add_mem _ h4 hc
+        · intro hb
+          exact Ideal.mem_map_of_mem (q (m + 1) : τ.B (m + 1) →ₐ[O] D (m + 1)) hb
+      have e := ((Ideal.quotientEquivAlgOfEq O hkφ).symm.trans
+        (Ideal.quotientKerAlgEquivOfSurjective hφ)).toLinearEquiv
+      rw [hD, ← hB2 m x]
+      exact (fibreDim_congr e x).symm
+  let H : PDivGroup p O :=
+    { height := G.height
+      A := D
+      commRing := iR
+      hopf := iH
+      cocomm := iC
+      finite := hfin
+      projective := hproj
+      rank_eq := fun m x => (hPR m).2 x
+      res := res
+      res_surjective := hres_surj
+      ker_res := hker }
+  exact ⟨H, q, hq, hk, hres⟩
+
+end GlobalTheory.HTPair
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+
+namespace GlobalTheory.HTPair.QuotIsog
+
+variable {p : ℕ} {O : Type} [CommRing O] {G H : PDivGroup p O} (τ : QuotTower G)
+
+theorem j_injective (m : ℕ) : Function.Injective (τ.j m) := fun a b h => by
+  rw [← τ.ρ_j m a, ← τ.ρ_j m b, h]
+
+theorem pDivSubgroupQuotientTower_r_s_eq_s_res (m : ℕ) (a : G.A (m + 1)) : τ.r m (τ.s (m + 1) a) = τ.s m (G.res m a) := by
+  apply j_injective τ m
+  rw [τ.j_r, τ.j_s, τ.j_s, G.res_mulP, G.mulP_res]
+
+theorem s_res_j (m : ℕ) (b : τ.B m) : τ.s m (G.res m (τ.j m b)) = mulBy O _ p b := by
+  apply j_injective τ m
+  rw [τ.j_s, G.mulP_res, map_mulBy]
+
+theorem ker_le (m : ℕ) : torsionIdeal O (τ.B m) (p ^ m) ≤
+    RingHom.ker (((G.res m).comp (τ.j m) : τ.B m →ₐc[O] G.A m) : τ.B m →ₐ[O] G.A m) := by
+  refine (kerIdeal_le_ker_iff _ _).2 fun c => ?_
+  change ((G.res m).comp (τ.j m)) (mulBy O _ (p ^ m) c) = _
+  rw [map_mulBy, G.mulBy_pow_self, CoalgHomClass.counit_comp_apply]
+
+variable [Fact p.Prime]
+
+def toQuot (q : ∀ m, τ.B m →ₐc[O] H.A m) (hs : ∀ m, Function.Surjective (q m))
+    (hk : ∀ m, RingHom.ker (q m) = torsionIdeal O (τ.B m) (p ^ m))
+    (hc : ∀ m b, H.res m (q (m + 1) b) = q m (τ.r m b)) : G ⟶ H where
+  app m := liftSurj (q m) (hs m) ((G.res m).comp (τ.j m)) ((hk m).le.trans (ker_le τ m))
+  comm n := BialgHom.ext fun c => by
+    obtain ⟨b, rfl⟩ := hs (n + 1) c
+    rw [BialgHom.comp_apply, BialgHom.comp_apply, hc, liftSurj_apply, liftSurj_apply,
+      BialgHom.comp_apply, BialgHom.comp_apply, ← τ.j_r]
+
+theorem toQuot_app_q (q : ∀ m, τ.B m →ₐc[O] H.A m) (hs : ∀ m, Function.Surjective (q m))
+    (hk : ∀ m, RingHom.ker (q m) = torsionIdeal O (τ.B m) (p ^ m))
+    (hc : ∀ m b, H.res m (q (m + 1) b) = q m (τ.r m b)) (m : ℕ) (b : τ.B m) :
+    (toQuot τ q hs hk hc).app m (q m b) = G.res m (τ.j m b) :=
+  liftSurj_apply ..
+
+def fromQuot (q : ∀ m, τ.B m →ₐc[O] H.A m)
+    (hc : ∀ m b, H.res m (q (m + 1) b) = q m (τ.r m b)) : H ⟶ G where
+  app m := (q m).comp (τ.s m)
+  comm n := BialgHom.ext fun a => by
+    change H.res n (q (n + 1) (τ.s (n + 1) a)) = q n (τ.s n (G.res n a))
+    rw [hc, pDivSubgroupQuotientTower_r_s_eq_s_res]
+
+end GlobalTheory.HTPair.QuotIsog
+end
+end
+
+section
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bialgHom_factor_through_split_injection : ∀ (O : Type) [CommRing O] (A B D : Type) [CommRing A] [CommRing B] [CommRing D] [Bialgebra O A] [Bialgebra O B] [Bialgebra O D] (j : B →ₐc[O] A) (ρ : A →ₗ[O] B) (f : D →ₐc[O] A), (∀ b, ρ (j b) = b) → (∀ d, f d ∈ Set.range j) → ∃ g : D →ₐc[O] B, ∀ d, j (g d) = f d := by
+  first | exact @GlobalTheory.bialgHom_factor_through_split | exact GlobalTheory.bialgHom_factor_through_split | (intros; apply GlobalTheory.bialgHom_factor_through_split <;> assumption)
+end
+
+section
+section
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+
+namespace GlobalTheory.QuotTransition
+
+theorem transition_surjective : ∀ (O : Type) [CommRing O] (A₁ : Type) [CommRing A₁] [HopfAlgebra O A₁] [IsCocomm O A₁] [Module.Finite O A₁] [Module.Projective O A₁] (A₂ : Type) [CommRing A₂] [HopfAlgebra O A₂] [IsCocomm O A₂] [Module.Finite O A₂] [Module.Projective O A₂] (B₁ : Type) [CommRing B₁] [HopfAlgebra O B₁] [IsCocomm O B₁] [Module.Finite O B₁] [Module.Projective O B₁] (B₂ : Type) [CommRing B₂] [HopfAlgebra O B₂] [IsCocomm O B₂] [Module.Finite O B₂] [Module.Projective O B₂] (π : A₂ →ₐc[O] A₁) (j₁ : B₁ →ₐc[O] A₁) (j₂ : B₂ →ₐc[O] A₂) (r : B₂ →ₐc[O] B₁) (ρ : A₁ →ₗ[O] B₁), (∀ b, ρ (j₁ b) = b) → (∀ b, j₁ (r b) = π (j₂ b)) → kerIdeal j₁ = Ideal.map (π : A₂ →ₐ[O] A₁) (kerIdeal j₂) → Function.Surjective r := by
+  intro O _ A₁ _ _ _ _ _ A₂ _ _ _ _ _ B₁ _ _ _ _ _ B₂ _ _ _ _ _ π j₁ j₂ r ρ hρ hsq hker
+  let j₁' : B₁ →ₗ[O] A₁ := (j₁ : B₁ →ₐ[O] A₁).toLinearMap
+  let r' : B₂ →ₗ[O] B₁ := (r : B₂ →ₐ[O] B₁).toLinearMap
+  have hcomp : j₁' ∘ₗ r' = ((π.comp j₂ : B₂ →ₐc[O] A₁) : B₂ →ₐ[O] A₁).toLinearMap := by
+    ext b
+    exact hsq b
+  have hs : Function.Surjective r' := by
+    refine GlobalTheory.surjective_of_fibre_rank O B₂ B₁ r' fun q => ?_
+    have hinj : Function.Injective (j₁'.baseChange q.asIdeal.ResidueField) := by
+      apply Function.LeftInverse.injective (g := ρ.baseChange q.asIdeal.ResidueField)
+      intro x
+      rw [← LinearMap.comp_apply, ← LinearMap.baseChange_comp]
+      have hid : ρ ∘ₗ j₁' = LinearMap.id := LinearMap.ext hρ
+      rw [hid, LinearMap.baseChange_id, LinearMap.id_apply]
+    have h1 : fibreRank (j₁' ∘ₗ r') q = fibreRank r' q := by
+      rw [fibreRank, fibreRank, LinearMap.baseChange_comp, LinearMap.range_comp]
+      exact (Submodule.equivMapOfInjective _ hinj _).finrank_eq.symm
+    have h2 : fibreRank j₁' q = fibreDim B₁ q := LinearMap.finrank_range_of_inj hinj
+    have h3 := fibreDim_eq_ker_mul_range (π.comp j₂) q
+    have h4 := fibreDim_eq_ker_mul_range j₁ q
+    rw [kerIdeal_comp, ← hker, ← hcomp] at h3
+    have h5 : fibreDim (A₁ ⧸ kerIdeal j₁) q ≠ 0 := fun h0 =>
+      fibreDim_ne_zero (A := A₁) q (by rw [h4, h0, zero_mul])
+    have h6 : fibreRank (j₁' ∘ₗ r') q = fibreRank j₁' q :=
+      Nat.eq_of_mul_eq_mul_left (Nat.pos_of_ne_zero h5) (h3.symm.trans h4)
+    have h7 : fibreRank r' q = fibreDim B₁ q := by rw [← h1, h6, h2]
+    exact h7
+  exact hs
+
+end GlobalTheory.QuotTransition
+end
+
+open CategoryTheory Coalgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.HTPair
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quotientTransition_surjective_same_subgroup : ∀ (O : Type) [CommRing O] (A₁ : Type) [CommRing A₁] [HopfAlgebra O A₁] [IsCocomm O A₁] [Module.Finite O A₁] [Module.Projective O A₁] (A₂ : Type) [CommRing A₂] [HopfAlgebra O A₂] [IsCocomm O A₂] [Module.Finite O A₂] [Module.Projective O A₂] (B₁ : Type) [CommRing B₁] [HopfAlgebra O B₁] [IsCocomm O B₁] [Module.Finite O B₁] [Module.Projective O B₁] (B₂ : Type) [CommRing B₂] [HopfAlgebra O B₂] [IsCocomm O B₂] [Module.Finite O B₂] [Module.Projective O B₂] (π : A₂ →ₐc[O] A₁) (j₁ : B₁ →ₐc[O] A₁) (j₂ : B₂ →ₐc[O] A₂) (r : B₂ →ₐc[O] B₁) (ρ : A₁ →ₗ[O] B₁), (∀ b, ρ (j₁ b) = b) → (∀ b, j₁ (r b) = π (j₂ b)) → kerIdeal j₁ = Ideal.map (π : A₂ →ₐ[O] A₁) (kerIdeal j₂) → Function.Surjective r := by
+  atlas_forward_decl GlobalTheory.QuotTransition.transition_surjective
+end
+
+section
 section
 set_option autoImplicit false
 
@@ -127,3 +663,4 @@ open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_quotient_pDivGroup_closedSubgroup_pTorsion : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] (G : PDivGroup p k) (C : Type) [CommRing C] [HopfAlgebra k C] [IsCocomm k C] [Module.Finite k C] (π : G.A 1 →ₐc[k] C), Function.Surjective π → ∃ (Q : PDivGroup p k) (q : G ⟶ Q) (q' : Q ⟶ G), q ≫ q' = (p : ℤ_[p]) • 𝟙 G ∧ q' ≫ q = (p : ℤ_[p]) • 𝟙 Q ∧ kerIdeal (q.app 1) = RingHom.ker π := by
   atlas_forward_decl GlobalTheory.HTPair.exists_quot_field
+end

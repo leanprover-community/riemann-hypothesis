@@ -1,7 +1,0 @@
-import ReciprocityTheory.DualLattices.ValuationPairwiseDifferenceProductPowLeColengthS
-import ReciprocityTheory.DualLattices.ColengthSqMulLe
-
-namespace ReciprocityTheory.PGsh.Up
-
-
-end ReciprocityTheory.PGsh.Up

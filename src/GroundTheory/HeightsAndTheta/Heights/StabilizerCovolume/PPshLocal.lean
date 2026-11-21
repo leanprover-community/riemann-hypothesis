@@ -2,7 +2,23 @@ import Mathlib
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMoll
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExtB
-import GroundTheory.HeightsAndTheta.Heights.StabilizerCovolume.StPshLocal
+import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.NineStatements
+
+open ReciprocityTheory.AnForm.A (IsPsh)
+
+def PshLocal.Statement : Prop :=
+  ∀ (D : ℕ) (U : Set (Fin D → ℂ)) (φ : (Fin D → ℂ) → ℝ), IsOpen U →
+    (∀ z ∈ U, ∃ W : Set (Fin D → ℂ), IsOpen W ∧ z ∈ W ∧ W ⊆ U ∧ IsPsh W φ) → IsPsh U φ
+
+end GroundTheory.Heights₂.Heights.NineStatements
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NineStatements
@@ -195,3 +211,4 @@ theorem PshLocal.proof : PshLocal.Statement := by
 end
 
 end GroundTheory.Heights₂.Heights.NineStatements
+end

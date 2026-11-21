@@ -1,9 +1,28 @@
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.TamagawaNumberSpecialUnitary
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatDegreeStatement
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.ToKnownTheoremsOf
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.FlatTensorSwapIsIso
+import Development.WeilBound.CoreStatements.ComplexPeriods.FlatDegreeResidues.FlatSlim
+import Development.WeilBound.CoreStatements.ResolutionCharZero.PlugResK
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatDegreeFromPrismatic
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatDegreeStatementStatement
 
+section
+section
+open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore
+set_option maxHeartbeats 1000000 in
+abbrev _root_.GlobalTheory.T.FlatDegreeHypotheses : Prop :=  _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.CanonicalExtensionRankOne → GlobalTheory.Published.PrismaticDieudonneHodge → FlatDegreeSt
+end
+end
+
+section
+section
+theorem UpperTheory.Lit.Flat.flat_tensor_swap_isIso : _root_.GlobalTheory.T.FlatDegreeHypotheses :=
+  fun _ _ _ => FlatDegreeResidue.flatDegreeSt_of_resK PositivityTheory.ResPlug.FromRes.resK
+end
+end
+
+section
 section
 set_option synthInstance.maxHeartbeats 400000
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.CompHt GlobalTheory.FlatCore GlobalTheory.CovTop GlobalTheory.BigTop
@@ -21,4 +40,5 @@ open GlobalTheory.CovTop GlobalTheory.BigTop
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.flatDeg_of_scholze_weinstein : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → FlatDeg := by
   first | exact @_root_.GlobalTheory.CovTop.FlatDegProof.flatDeg_alt | exact _root_.GlobalTheory.CovTop.FlatDegProof.flatDeg_alt | (intros; apply _root_.GlobalTheory.CovTop.FlatDegProof.flatDeg_alt <;> assumption)
+end
 end

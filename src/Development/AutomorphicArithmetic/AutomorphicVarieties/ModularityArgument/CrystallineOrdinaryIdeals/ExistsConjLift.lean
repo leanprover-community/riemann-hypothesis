@@ -1,9 +1,103 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.SaturatingElementNotMemMinimalPrimesReducedOrdinStatement
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.OrdinaryComponentUniquePrimeDimThirteenNearBaseStatement
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.ReducedOrdinaryIdealLeKerOfConjOfSaturatingNeZer
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.Imports
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.OrdinaryComponentUniquePrimeDimThirteenNearBase
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.OrdinaryIdealSaturatorsConjInvariantStatement
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.OrdinaryIdealSaturatorsMapAlgHomStatement
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoEvLow
 
+section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
+
+namespace GlobalTheory.OrdLoc
+
+theorem mem_IY_of_del_mul_mem {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O]
+    [Algebra ℤ_[l] O] (D : Dat3 l O) (U : D.Univ) {a : U.R}
+    (h : del D U.r.hom * a ∈ IY D U) : a ∈ IY D U := by
+  obtain ⟨n, hn⟩ := h
+  exact ⟨n + 1, by rw [pow_succ, mul_assoc]; exact hn⟩
+
+theorem del_notMem_of_mem_minimalPrimes_Icr : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O]
+    [Algebra ℤ_[l] O] (D : Dat3 l O) (U : D.Univ), ∀ P ∈ (GlobalTheory.OrdLoc.Icr D U).minimalPrimes,
+    GlobalTheory.OrdLoc.del D U.r.hom ∉ P := by
+  intro l _ O _ _ _ D U P hP hd
+  rw [Icr, Ideal.radical_minimalPrimes] at hP
+  obtain ⟨y, hy, hxy⟩ := Ideal.exists_mul_mem_of_mem_minimalPrimes hP hd
+  exact hy (mem_IY_of_del_mul_mem D U hxy)
+
+end GlobalTheory.OrdLoc
+
+example : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] (D : Dat3 l O) (U : D.Univ), ∀ P ∈ (GlobalTheory.OrdLoc.Icr D U).minimalPrimes, GlobalTheory.OrdLoc.del D U.r.hom ∉ P := GlobalTheory.OrdLoc.del_notMem_of_mem_minimalPrimes_Icr
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.saturatingElement_notMem_minimalPrimes_reducedOrdinaryIdeal : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] (D : Dat3 l O) (U : D.Univ), ∀ P ∈ (GlobalTheory.OrdLoc.Icr D U).minimalPrimes, GlobalTheory.OrdLoc.del D U.r.hom ∉ P := by
+  intro l _ O _ _ _ D U P hP hdel
+  have hmem : ∀ a, a ∈ D.IY U ↔ ∃ n, D.del U.r.hom ^ n * a ∈ D.ordIdeal U.r.hom := by
+    intro a
+    rw [UpperTheory.V.Loc.Dat3.IY.eq_1]
+    rfl
+  obtain ⟨y, hy, hxy⟩ := Ideal.exists_mul_mem_of_mem_minimalPrimes hP hdel
+  apply hy
+  rw [UpperTheory.V.Loc.Dat3.Icr.eq_1] at hxy ⊢
+  obtain ⟨k, hk⟩ := hxy
+  obtain ⟨n, hn⟩ := (hmem _).1 hk
+  refine ⟨k, (hmem _).2 ⟨n + k, ?_⟩⟩
+  have e : D.del U.r.hom ^ (n + k) * y ^ k = D.del U.r.hom ^ n * (D.del U.r.hom * y) ^ k := by
+    ring
+  rw [e]
+  exact hn
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ordinaryComponent_unique_prime_dim_thirteen_near_base : LocalPublishedTheorems → ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] [IsAdicComplete (maximalIdeal O) O] (D : Dat3 l O) (U : D.Univ), GlobalTheory.OrdLoc.primesAt0 D U = {GlobalTheory.OrdLoc.It D U} ∧ (GlobalTheory.OrdLoc.It D U).IsPrime ∧ (l : U.R) ∉ GlobalTheory.OrdLoc.It D U ∧ GlobalTheory.OrdLoc.Icr D U ≤ GlobalTheory.OrdLoc.It D U ∧ ringKrullDim (GlobalTheory.OrdLoc.Rt D U) = 13 ∧ GlobalTheory.OrdLoc.On D U (r0 D.η D.Ψ) ∧ ∀ x, IsBase D.η D.Ψ U.r.hom x → ∃ y, x y ≠ 0 ∧ ∀ a ∈ GlobalTheory.OrdLoc.It D U, y * a ∈ GlobalTheory.OrdLoc.Icr D U := by
+  first | exact @GlobalTheory.OrdLoc.component_basic | exact GlobalTheory.OrdLoc.component_basic | (intros; apply GlobalTheory.OrdLoc.component_basic <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
+
+namespace GlobalTheory.OrdLoc
+
+theorem icr_le_ker_of_conj : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] (D : Dat3 l O) (U : D.Univ) (S : Type) [CommRing S] [IsDomain S] [Algebra O S] (i α : U.R →ₐ[O] S) (u : GL (Fin 3) S), push α U.r.hom = conjBy u (push i U.r.hom) → GlobalTheory.OrdLoc.IY D U ≤ RingHom.ker i → i (GlobalTheory.OrdLoc.del D U.r.hom) ≠ 0 → GlobalTheory.OrdLoc.Icr D U ≤ RingHom.ker α := by
+  intro l _ O _ _ _ D U S _ _ _ i α u hc hY hd
+  have hm : HasMult D.η (push i U.r.hom) := U.r.hasMult
+  obtain ⟨hcI, -, hcd⟩ := GlobalTheory.T.ordinaryIdeal_saturators_conj_invariant D (push i U.r.hom) u hm
+  obtain ⟨hiI, -, hid⟩ := GlobalTheory.T.ordinaryIdeal_saturators_map_algHom D i U.r.hom
+  obtain ⟨haI, -, had⟩ := GlobalTheory.T.ordinaryIdeal_saturators_map_algHom D α U.r.hom
+  have hord : ordIdeal D U.r.hom ≤ IY D U := fun a ha => ⟨0, by simpa using ha⟩
+  have hbot : ordIdeal D (push i U.r.hom) = ⊥ := by
+    rw [← hiI, eq_bot_iff, Ideal.map_le_iff_le_comap]
+    intro a ha
+    simpa [Ideal.mem_comap] using hY (hord ha)
+  have hα : ordIdeal D (push α U.r.hom) = ⊥ := by rw [hc, hcI, hbot]
+  have hdel : α (del D U.r.hom) ≠ 0 := by
+    rw [had, hc, hcd, ← hid]; exact hd
+  intro x hx
+  obtain ⟨k, n, hn⟩ := hx
+  have h1 : α (del D U.r.hom ^ n * x ^ k) ∈ ordIdeal D (push α U.r.hom) := by
+    rw [← haI]; exact Ideal.mem_map_of_mem _ hn
+  rw [hα, Ideal.mem_bot, map_mul, map_pow, map_pow] at h1
+  have h2 : α x ^ k = 0 := by
+    rcases mul_eq_zero.1 h1 with h | h
+    · exact absurd (pow_eq_zero_iff'.1 h).1 hdel
+    · exact h
+  exact RingHom.mem_ker.2 (pow_eq_zero_iff'.1 h2).1
+
+end GlobalTheory.OrdLoc
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.reducedOrdinaryIdeal_le_ker_of_conj_of_saturating_ne_zero : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] (D : Dat3 l O) (U : D.Univ) (S : Type) [CommRing S] [IsDomain S] [Algebra O S] (i α : U.R →ₐ[O] S) (u : GL (Fin 3) S), push α U.r.hom = conjBy u (push i U.r.hom) → GlobalTheory.OrdLoc.IY D U ≤ RingHom.ker i → i (GlobalTheory.OrdLoc.del D U.r.hom) ≠ 0 → GlobalTheory.OrdLoc.Icr D U ≤ RingHom.ker α := by
+  atlas_forward_decl GlobalTheory.OrdLoc.icr_le_ker_of_conj
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
 
 namespace GlobalTheory.OrdLoc.RootConjugation
@@ -155,3 +249,4 @@ theorem GlobalTheory.OrdLoc.rtConj :
     rw [hcomp, e1, gl_ext (F : S →+* C) u h _ hu fun a b => hF2 _]
   · show F (α a) = 0
     rw [show α a = 0 from h4 ha, map_zero]
+end

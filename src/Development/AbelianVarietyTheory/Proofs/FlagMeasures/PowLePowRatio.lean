@@ -9,16 +9,844 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointRationalEqui
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CanonicalFlagExistsUniqueSemistable
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrthogonalCanonicalFiltrationStepsAutPoint
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSizeEqLeast
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAndNcardLeProdOfLevels
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PackingGeometricMeanSubspaces
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsRealSubmoduleBlockFinrankLe
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSubmoduleSkewBlockFinrankLe
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StarProjectionInfOrthogonalEqOfMemOrthogonal
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsFramesSubspace
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LoweringDifferenceOfIsometries
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ProdFirstBlocksByLayers
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InnerAddInnerEqZeroSpan
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PackingGeometricMeanSeparated
+import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.PDescentCutA
 
+section
+open Finset
+
+namespace GlobalTheory
+
+theorem card_le_prod_of_separated_levels {α β : Type} (S : Set α) (lv : β → ℕ)
+    (r : β → α → α → Prop) (B : β → ℝ) (hr : ∀ b, Equivalence (r b)) (s : Finset β) :
+    (∀ b ∈ s, ∀ T : Finset α, (↑T : Set α) ⊆ S →
+      (∀ x ∈ T, ∀ y ∈ T, ∀ b' ∈ s, lv b' < lv b → r b' x y) →
+      (∀ x ∈ T, ∀ y ∈ T, r b x y → x = y) → (T.card : ℝ) ≤ B b) →
+    ∀ T : Finset α, (↑T : Set α) ⊆ S → (∀ x ∈ T, ∀ y ∈ T, (∀ b ∈ s, r b x y) → x = y) →
+      (T.card : ℝ) ≤ ∏ b ∈ s, B b := by
+  classical
+  induction s using Finset.induction_on_max_value lv with
+  | empty =>
+    intro _ T _ hT
+    have : T.card ≤ 1 := Finset.card_le_one.2 fun x hx y hy => hT x hx y hy (by simp)
+    simpa using this
+  | insert a s ha hmax ih =>
+    intro hp T hTS hT
+    have hps : ∀ b ∈ s, ∀ T : Finset α, (↑T : Set α) ⊆ S →
+        (∀ x ∈ T, ∀ y ∈ T, ∀ b' ∈ s, lv b' < lv b → r b' x y) →
+        (∀ x ∈ T, ∀ y ∈ T, r b x y → x = y) → (T.card : ℝ) ≤ B b := by
+      intro b hb T' h1 h2 h3
+      refine hp b (mem_insert_of_mem hb) T' h1 ?_ h3
+      intro x hx y hy b' hb' hlt
+      rcases mem_insert.1 hb' with rfl | hb'
+      · exact absurd (hmax b hb) (by omega)
+      · exact h2 x hx y hy b' hb' hlt
+    have hBa : 0 ≤ B a := by
+      simpa using hp a (mem_insert_self _ _) ∅ (by simp) (by simp) (by simp)
+    rw [prod_insert ha]
+    rcases T.eq_empty_or_nonempty with rfl | ⟨x0, -⟩
+    · have := ih hps ∅ (by simp) (by simp)
+      simp only [card_empty, Nat.cast_zero] at this ⊢
+      positivity
+    haveI : Nonempty α := ⟨x0⟩
+    let q : α → Set α := fun x => {y | ∀ b ∈ s, r b x y}
+    have hq : ∀ x y, q x = q y ↔ ∀ b ∈ s, r b x y := by
+      intro x y
+      constructor
+      · intro h
+        have : y ∈ q y := fun b _ => (hr b).refl y
+        rw [← h] at this
+        exact this
+      · intro h
+        ext z
+        exact ⟨fun hz b hb => (hr b).trans ((hr b).symm (h b hb)) (hz b hb),
+          fun hz b hb => (hr b).trans (h b hb) (hz b hb)⟩
+    let ρ : α → α := fun x => Function.invFunOn q (↑T : Set α) (q x)
+    have hρ : ∀ x ∈ T, ρ x ∈ T ∧ q (ρ x) = q x := fun x hx =>
+      Function.invFunOn_pos (f := q) (s := (↑T : Set α)) ⟨x, hx, rfl⟩
+    have him : ((T.image ρ).card : ℝ) ≤ ∏ b ∈ s, B b := by
+      refine ih hps _ ?_ ?_
+      · intro z hz
+        obtain ⟨x, hx, rfl⟩ := mem_image.1 (mem_coe.1 hz)
+        exact hTS (hρ x hx).1
+      · intro z hz w hw h
+        obtain ⟨x, hx, rfl⟩ := mem_image.1 hz
+        obtain ⟨y, hy, rfl⟩ := mem_image.1 hw
+        have h' := (hq _ _).2 h
+        rw [(hρ x hx).2, (hρ y hy).2] at h'
+        simp only [ρ, h']
+    have hfib : ∀ z ∈ T.image ρ, ((T.filter (fun x => ρ x = z)).card : ℝ) ≤ B a := by
+      intro z _
+      have key : ∀ x ∈ T.filter (fun x => ρ x = z), ∀ y ∈ T.filter (fun x => ρ x = z),
+          ∀ b ∈ s, r b x y := by
+        intro x hx y hy
+        obtain ⟨hx, hx'⟩ := mem_filter.1 hx
+        obtain ⟨hy, hy'⟩ := mem_filter.1 hy
+        rw [← hq, ← (hρ x hx).2, ← (hρ y hy).2, hx', hy']
+      refine hp a (mem_insert_self _ _) _ ?_ ?_ ?_
+      · intro x hx
+        exact hTS (mem_filter.1 (mem_coe.1 hx)).1
+      · intro x hx y hy b' hb' hlt
+        rcases mem_insert.1 hb' with rfl | hb'
+        · exact absurd hlt (lt_irrefl _)
+        · exact key x hx y hy b' hb'
+      · intro x hx y hy h
+        refine hT x (mem_filter.1 hx).1 y (mem_filter.1 hy).1 ?_
+        intro b hb
+        rcases mem_insert.1 hb with rfl | hb
+        · exact h
+        · exact key x hx y hy b hb
+    rw [Finset.card_eq_sum_card_image ρ T]
+    push_cast
+    calc ∑ z ∈ T.image ρ, ((T.filter (fun x => ρ x = z)).card : ℝ)
+        ≤ ∑ _z ∈ T.image ρ, B a := sum_le_sum hfib
+      _ = B a * ((T.image ρ).card : ℝ) := by rw [sum_const, nsmul_eq_mul, mul_comm]
+      _ ≤ B a * ∏ b ∈ s, B b := mul_le_mul_of_nonneg_left him hBa
+
+theorem finite_and_ncard_le_prod_of_levels :
+    ∀ (α β : Type) (S : Set α) (s : Finset β) (lv : β → ℕ) (r : β → α → α → Prop) (B : β → ℝ), (∀ b, Equivalence (r b)) → (∀ x ∈ S, ∀ y ∈ S, (∀ b ∈ s, r b x y) → x = y) → (∀ b ∈ s, ∀ T : Finset α, (↑T : Set α) ⊆ S → (∀ x ∈ T, ∀ y ∈ T, ∀ b' ∈ s, lv b' < lv b → r b' x y) → (∀ x ∈ T, ∀ y ∈ T, r b x y → x = y) → (T.card : ℝ) ≤ B b) → S.Finite ∧ ((S.ncard : ℕ) : ℝ) ≤ ∏ b ∈ s, B b := by
+  intro α β S s lv r B hr hinj hp
+  have h : ∀ T : Finset α, (↑T : Set α) ⊆ S → (T.card : ℝ) ≤ ∏ b ∈ s, B b := fun T hT =>
+    card_le_prod_of_separated_levels S lv r B hr s hp T hT
+      fun x hx y hy => hinj x (hT hx) y (hT hy)
+  have hS : S.Finite := by
+    by_contra hinf
+    obtain ⟨n, hn⟩ := exists_nat_gt (∏ b ∈ s, B b)
+    obtain ⟨T, hT, hc⟩ := Set.Infinite.exists_subset_card_eq hinf n
+    have := h T hT
+    rw [hc] at this
+    linarith
+  refine ⟨hS, ?_⟩
+  rw [Set.ncard_eq_toFinset_card S hS]
+  exact h _ (by simp)
+
+end GlobalTheory
+end
+
+section
+open Finset
+
+namespace GlobalTheory
+
+theorem packing_geometric_mean_subspaces : ∀ (ι : Type) [Fintype ι] [Nonempty ι] (W : Type) [NormedAddCommGroup W] [NormedSpace ℝ W] [FiniteDimensional ℝ W] (U : ι → Submodule ℝ W) (N : ℕ), (∀ v, Module.finrank ℝ (U v) ≤ N) → ∀ (α : Type) (T : Finset α) (y : α → ι → W) (la X : ℝ), 0 < la → 0 < X → (∀ t ∈ T, ∀ v, y t v ∈ U v ∧ ‖y t v‖ ≤ X) → (∀ t ∈ T, ∀ t' ∈ T, t ≠ t' → la ≤ (∏ v, ‖y t v - y t' v‖) ^ ((1 : ℝ) / Fintype.card ι)) → (T.card : ℝ) ≤ (1 + 2 * X / la) ^ (N * Fintype.card ι) := by
+  intro ι _ _ W _ _ _ U N hU α T y la X hla hX hT hsep
+  classical
+  have hcard : 0 < Fintype.card ι := Fintype.card_pos
+  have hexp : (1 : ℝ) / Fintype.card ι ≠ 0 := by
+    have : (0 : ℝ) < Fintype.card ι := by exact_mod_cast hcard
+    positivity
+
+  have hinj : Set.InjOn y T := by
+    intro t ht t' ht' he
+    by_contra hne
+    have h := hsep t ht t' ht' hne
+    rw [he] at h
+    simp only [sub_self, norm_zero] at h
+    have h0 : (∏ _v : ι, (0 : ℝ)) = 0 :=
+      Finset.prod_eq_zero (Finset.mem_univ (Classical.arbitrary ι)) rfl
+    rw [h0, Real.zero_rpow hexp] at h
+    linarith
+  rcases Nat.eq_zero_or_pos N with hN | hN
+  ·
+    subst hN
+    have hzero : ∀ t ∈ T, y t = 0 := by
+      intro t ht
+      funext v
+      have hb : U v = ⊥ := Submodule.finrank_eq_zero.mp (Nat.le_zero.mp (hU v))
+      have hm := (hT t ht v).1
+      rw [hb, Submodule.mem_bot] at hm
+      exact hm
+    have h1 : T.card ≤ 1 := by
+      rw [Finset.card_le_one]
+      intro a ha b hb
+      exact hinj ha hb (by rw [hzero a ha, hzero b hb])
+    simp only [zero_mul, pow_zero]
+    exact_mod_cast h1
+  ·
+    have key := packing_geometric_mean_separated ι
+      (fun v => ↥(U v) × (Fin (N - Module.finrank ℝ (U v)) → ℝ)) N hN
+      (fun v => by
+        simp only [Module.finrank_prod, Module.finrank_fin_fun]
+        have := hU v
+        omega)
+      la
+      (↑(T.attach.image (fun t : T => fun v =>
+        ((⟨y t v, (hT t t.2 v).1⟩ : U v), (0 : Fin (N - Module.finrank ℝ (U v)) → ℝ)))))
+      (fun _ => X) hla (fun _ => hX)
+    have hnormpt : ∀ (v : ι) (a : U v),
+        ‖((a, (0 : Fin (N - Module.finrank ℝ (U v)) → ℝ)) :
+          ↥(U v) × (Fin (N - Module.finrank ℝ (U v)) → ℝ))‖ = ‖(a : W)‖ := by
+      intro v a
+      rw [Prod.norm_def, norm_zero, max_eq_left (norm_nonneg _)]
+      rfl
+    obtain ⟨-, hbound⟩ := key (by
+      intro s hs s' hs' hne
+      simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe, Finset.mem_attach,
+        true_and] at hs hs'
+      obtain ⟨a, rfl⟩ := hs
+      obtain ⟨b, rfl⟩ := hs'
+      have hab : (a : α) ≠ b := by
+        intro h
+        apply hne
+        rw [Subtype.ext h]
+      have e : ∀ v, ‖((⟨y a v, (hT a a.2 v).1⟩ : U v),
+            (0 : Fin (N - Module.finrank ℝ (U v)) → ℝ)) -
+          ((⟨y b v, (hT b b.2 v).1⟩ : U v), (0 : Fin (N - Module.finrank ℝ (U v)) → ℝ))‖ =
+          ‖y a v - y b v‖ := by
+        intro v
+        rw [Prod.mk_sub_mk, sub_zero, hnormpt]
+        rfl
+      simp only [e]
+      exact hsep a a.2 b b.2 hab)
+    have hset : {s ∈ (↑(T.attach.image (fun t : T => fun v =>
+        ((⟨y t v, (hT t t.2 v).1⟩ : U v), (0 : Fin (N - Module.finrank ℝ (U v)) → ℝ)))) :
+          Set (∀ v, ↥(U v) × (Fin (N - Module.finrank ℝ (U v)) → ℝ))) |
+          ∀ v, ‖s v‖ ≤ (fun _ => X) v} =
+        ↑(T.attach.image (fun t : T => fun v =>
+          ((⟨y t v, (hT t t.2 v).1⟩ : U v), (0 : Fin (N - Module.finrank ℝ (U v)) → ℝ)))) := by
+      apply Set.sep_eq_self_iff_mem_true.mpr
+      intro s hs
+      simp only [Finset.coe_image, Set.mem_image, Finset.mem_coe, Finset.mem_attach,
+        true_and] at hs
+      obtain ⟨a, rfl⟩ := hs
+      intro v
+      rw [hnormpt]
+      exact (hT a a.2 v).2
+    have hinj' : Function.Injective (fun t : T => fun v =>
+        ((⟨y t v, (hT t t.2 v).1⟩ : U v), (0 : Fin (N - Module.finrank ℝ (U v)) → ℝ))) := by
+      intro a b hab
+      apply Subtype.ext
+      apply hinj a.2 b.2
+      funext v
+      have := congrFun hab v
+      simp only [Prod.mk.injEq, Subtype.mk.injEq] at this
+      exact this.1
+    rw [hset, Set.ncard_coe_finset, Finset.card_image_of_injective _ hinj',
+      Finset.card_attach] at hbound
+    have hX' : (∏ _v : ι, X) ^ ((1 : ℝ) / Fintype.card ι) = X := by
+      rw [Finset.prod_const, Finset.card_univ, one_div]
+      exact Real.pow_rpow_inv_natCast hX.le hcard.ne'
+    rw [hX'] at hbound
+    exact hbound
+
+end GlobalTheory
+end
+
+section
+open Finset
+
+namespace GlobalTheory
+
+theorem exists_real_submodule_block_finrank_le :
+    ∀ (n : ℕ) (E E' : Submodule ℂ (EuclideanSpace ℂ (Fin n))),
+    ∃ U : Submodule ℝ (EuclideanSpace ℂ (Fin n) →L[ℂ] EuclideanSpace ℂ (Fin n)),
+      Module.finrank ℝ U ≤ 2 * Module.finrank ℂ E' * Module.finrank ℂ E ∧
+      ∀ T : EuclideanSpace ℂ (Fin n) →L[ℂ] EuclideanSpace ℂ (Fin n),
+        E'.starProjection ∘L T ∘L E.starProjection ∈ U := by
+  intro n E E'
+  let f : (E →L[ℂ] E') →ₗ[ℝ] (EuclideanSpace ℂ (Fin n) →L[ℂ] EuclideanSpace ℂ (Fin n)) :=
+    { toFun := fun M => E'.subtypeL ∘L M ∘L E.orthogonalProjection
+      map_add' := fun M N => by ext; simp
+      map_smul' := fun c M => by ext; simp }
+  refine ⟨LinearMap.range f, ?_, fun T => ⟨E'.orthogonalProjection ∘L T ∘L E.subtypeL, rfl⟩⟩
+  refine (LinearMap.finrank_range_le f).trans (le_of_eq ?_)
+  have h1 : Module.finrank ℂ (E →L[ℂ] E') = Module.finrank ℂ E * Module.finrank ℂ E' := by
+    rw [← (LinearMap.toContinuousLinearMap (𝕜 := ℂ) (E := E) (F' := E')).finrank_eq,
+      Module.finrank_linearMap]
+  rw [← Module.finrank_mul_finrank ℝ ℂ (E →L[ℂ] E'), Complex.finrank_real_complex, h1]
+  ring
+
+end GlobalTheory
+end
+
+section
+open Finset
+open scoped InnerProductSpace
+
+namespace GlobalTheory
+
+def skewOpsBlock (F : Type) [NormedAddCommGroup F] [InnerProductSpace ℂ F] :
+    Submodule ℝ (F →L[ℂ] F) where
+  carrier := {M | ∀ x z, ⟪M x, z⟫_ℂ + ⟪x, M z⟫_ℂ = 0}
+  zero_mem' := by intro x z; simp
+  add_mem' := by
+    intro a b ha hb x z
+    have h1 := ha x z
+    have h2 := hb x z
+    simp only [ContinuousLinearMap.add_apply, inner_add_left, inner_add_right]
+    linear_combination h1 + h2
+  smul_mem' := by
+    intro c a ha x z
+    have h1 := ha x z
+    have e : ∀ y, (c • a) y = (c : ℂ) • a y := fun y => by
+      simp [Complex.coe_smul]
+    simp only [e, inner_smul_left, inner_smul_right, Complex.conj_ofReal]
+    linear_combination (c : ℂ) * h1
+
+theorem finrank_skewOpsBlock_le (F : Type) [NormedAddCommGroup F] [InnerProductSpace ℂ F]
+    [FiniteDimensional ℂ F] :
+    Module.finrank ℝ (skewOpsBlock F) ≤ Module.finrank ℂ F ^ 2 := by
+  let J : (F →L[ℂ] F) →ₗ[ℝ] (F →L[ℂ] F) :=
+    { toFun := fun M => Complex.I • M
+      map_add' := fun a b => smul_add _ _ _
+      map_smul' := fun c a => by simp only [RingHom.id_apply]; exact smul_comm _ _ _ }
+  have hJ : Function.Injective J := by
+    intro a b h
+    exact smul_right_injective _ Complex.I_ne_zero h
+  have hd : Disjoint (skewOpsBlock F) ((skewOpsBlock F).map J) := by
+    rw [Submodule.disjoint_def]
+    rintro a ha ⟨b, hb, rfl⟩
+    have hb0 : b = 0 := by
+      ext x
+      have h1 := ha x (b x)
+      have h2 := hb x (b x)
+      have e : ∀ y, J b y = Complex.I • b y := fun y => rfl
+      simp only [e, inner_smul_left, inner_smul_right, Complex.conj_I] at h1
+      have h3 : ⟪b x, b x⟫_ℂ = 0 := by
+        linear_combination (Complex.I / 2) * h1 + (1 / 2 : ℂ) * h2 +
+          ((⟪b x, b x⟫_ℂ - ⟪x, b (b x)⟫_ℂ) / 2) * Complex.I_mul_I
+      simpa using h3
+    rw [hb0, map_zero]
+  haveI : FiniteDimensional ℝ (F →L[ℂ] F) := FiniteDimensional.complexToReal _
+  have h1 := Submodule.finrank_add_finrank_le_of_disjoint hd
+  rw [← (Submodule.equivMapOfInjective J hJ (skewOpsBlock F)).finrank_eq,
+    finrank_real_of_complex] at h1
+  have h2 : Module.finrank ℂ (F →L[ℂ] F) = Module.finrank ℂ F ^ 2 := by
+    rw [← (LinearMap.toContinuousLinearMap (𝕜 := ℂ) (E := F) (F' := F)).finrank_eq,
+      Module.finrank_linearMap, sq]
+  omega
+
+theorem exists_submodule_skew_block_finrank_le (n : ℕ)
+    (E : Submodule ℂ (EuclideanSpace ℂ (Fin n))) :
+    ∃ U : Submodule ℝ (EuclideanSpace ℂ (Fin n) →L[ℂ] EuclideanSpace ℂ (Fin n)),
+      Module.finrank ℝ U ≤ Module.finrank ℂ E ^ 2 ∧
+      ∀ T : EuclideanSpace ℂ (Fin n) →L[ℂ] EuclideanSpace ℂ (Fin n),
+        (∀ x ∈ E, ∀ z ∈ E, ⟪T x, z⟫_ℂ + ⟪x, T z⟫_ℂ = 0) →
+          E.starProjection ∘L T ∘L E.starProjection ∈ U := by
+  let Φ : (E →L[ℂ] E) →ₗ[ℝ] (EuclideanSpace ℂ (Fin n) →L[ℂ] EuclideanSpace ℂ (Fin n)) :=
+    { toFun := fun M => E.subtypeL ∘L M ∘L E.orthogonalProjection
+      map_add' := fun a b => by ext1 x; rfl
+      map_smul' := fun c a => by ext1 x; rfl }
+  haveI : FiniteDimensional ℝ (E →L[ℂ] E) := FiniteDimensional.complexToReal _
+  refine ⟨(skewOpsBlock E).map Φ,
+    (Submodule.finrank_map_le Φ _).trans (finrank_skewOpsBlock_le E), ?_⟩
+  intro T hT
+  refine ⟨E.orthogonalProjection ∘L T ∘L E.subtypeL, ?_, ?_⟩
+  · intro x z
+    have := hT x x.2 z z.2
+    simp only [ContinuousLinearMap.comp_apply, Submodule.subtypeL_apply,
+      Submodule.inner_orthogonalProjection_eq_of_mem_left,
+      Submodule.inner_orthogonalProjection_eq_of_mem_right]
+    exact this
+  · ext1 x; rfl
+
+end GlobalTheory
+end
+
+section
+open Finset
+open scoped InnerProductSpace
+
+namespace GlobalTheory
+
+theorem starProjection_inf_orthogonal_eq_sub {n : ℕ}
+    (A A' : Submodule ℂ (EuclideanSpace ℂ (Fin n))) (h : A' ≤ A) (y : EuclideanSpace ℂ (Fin n))
+    (hy : y ∈ A) : (A ⊓ A'ᗮ).starProjection y = y - A'.starProjection y := by
+  apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+  · exact Submodule.mem_inf.2
+      ⟨A.sub_mem hy (h (A'.starProjection_apply_mem y)), A'.sub_starProjection_mem_orthogonal y⟩
+  · intro w hw
+    rw [sub_sub_cancel]
+    exact Submodule.inner_right_of_mem_orthogonal (A'.starProjection_apply_mem y)
+      (Submodule.mem_inf.1 hw).2
+
+theorem starProjection_inf_orthogonal_eq_of_mem_orthogonal {n : ℕ}
+    (C C' : Submodule ℂ (EuclideanSpace ℂ (Fin n))) (h : C' ≤ C) (v : EuclideanSpace ℂ (Fin n))
+    (hv : v ∈ C'ᗮ) : (C ⊓ C'ᗮ).starProjection v = C.starProjection v := by
+  apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+  · refine Submodule.mem_inf.2 ⟨C.starProjection_apply_mem v, ?_⟩
+    rw [Submodule.mem_orthogonal]
+    intro z hz
+    rw [← Submodule.inner_starProjection_left_eq_right, Submodule.starProjection_eq_self_iff.2 (h hz)]
+    exact Submodule.inner_right_of_mem_orthogonal hz hv
+  · intro w hw
+    exact C.starProjection_inner_eq_zero v w (Submodule.mem_inf.1 hw).1
+
+theorem infDist_le_norm_block_mul (n : ℕ)
+    (A A' B B' C C' : Submodule ℂ (EuclideanSpace ℂ (Fin n)))
+    (D T : EuclideanSpace ℂ (Fin n) →L[ℂ] EuclideanSpace ℂ (Fin n))
+    (hD : ∀ x, ‖D x‖ = ‖x‖) (hA : A' ≤ A) (hC : C' ≤ C)
+    (hB : ∀ x ∈ B, ∀ z ∈ C', ⟪z, D x⟫_ℂ = 0) (hB' : ∀ x ∈ B', ∀ z ∈ C, ⟪z, D x⟫_ℂ = 0)
+    (hdim : Module.finrank ℂ C + Module.finrank ℂ B' = n)
+    (hT : ∀ y ∈ A, T y ∈ B) (hT' : ∀ y ∈ A', T y ∈ B') (y : EuclideanSpace ℂ (Fin n))
+    (hy : y ∈ A) :
+    Metric.infDist (T y) (B' : Set (EuclideanSpace ℂ (Fin n))) ≤
+      ‖(C ⊓ C'ᗮ).starProjection ∘L (D ∘L T) ∘L (A ⊓ A'ᗮ).starProjection‖ * ‖y‖ := by
+  have hmap : B'.map (D : EuclideanSpace ℂ (Fin n) →ₗ[ℂ] EuclideanSpace ℂ (Fin n)) = Cᗮ := by
+    have hinj : Function.Injective (D : EuclideanSpace ℂ (Fin n) →ₗ[ℂ] EuclideanSpace ℂ (Fin n)) := by
+      intro a b hab
+      have h0 : ‖D (a - b)‖ = 0 := by
+        rw [map_sub]
+        simp only [ContinuousLinearMap.coe_coe] at hab
+        rw [hab, sub_self, norm_zero]
+      rwa [hD, norm_eq_zero, sub_eq_zero] at h0
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rintro _ ⟨x, hx, rfl⟩
+      rw [Submodule.mem_orthogonal]
+      intro z hz
+      exact hB' x hx z hz
+    · rw [← (Submodule.equivMapOfInjective _ hinj B').finrank_eq]
+      symm
+      apply Submodule.finrank_add_finrank_orthogonal'
+      rw [finrank_euclideanSpace_fin]
+      exact hdim
+  have hy1 : (A ⊓ A'ᗮ).starProjection y = y - A'.starProjection y :=
+    starProjection_inf_orthogonal_eq_sub A A' hA y hy
+  have hy1A : (A ⊓ A'ᗮ).starProjection y ∈ A := by
+    rw [hy1]
+    exact A.sub_mem hy (hA (A'.starProjection_apply_mem y))
+  set w := D (T ((A ⊓ A'ᗮ).starProjection y)) with hw_def
+  have hw : w ∈ C'ᗮ := by
+    rw [Submodule.mem_orthogonal]
+    intro z hz
+    exact hB _ (hT _ hy1A) z hz
+  obtain ⟨b, hb, hbw⟩ : ∃ b ∈ B', D b = Cᗮ.starProjection w := by
+    have hmem : Cᗮ.starProjection w ∈
+        B'.map (D : EuclideanSpace ℂ (Fin n) →ₗ[ℂ] EuclideanSpace ℂ (Fin n)) := by
+      rw [hmap]
+      exact Cᗮ.starProjection_apply_mem w
+    obtain ⟨b, hb, hbw⟩ := hmem
+    exact ⟨b, hb, hbw⟩
+  have hmemB' : T (A'.starProjection y) + b ∈ B' :=
+    B'.add_mem (hT' _ (A'.starProjection_apply_mem y)) hb
+  calc Metric.infDist (T y) (B' : Set (EuclideanSpace ℂ (Fin n)))
+      ≤ dist (T y) (T (A'.starProjection y) + b) := Metric.infDist_le_dist_of_mem hmemB'
+    _ = ‖T ((A ⊓ A'ᗮ).starProjection y) - b‖ := by
+      rw [dist_eq_norm, hy1, map_sub]
+      congr 1
+      abel
+    _ = ‖w - Cᗮ.starProjection w‖ := by
+      rw [← hD, map_sub, hbw]
+    _ = ‖C.starProjection w‖ := by
+      rw [Submodule.starProjection_orthogonal_val, sub_sub_cancel]
+    _ = ‖(C ⊓ C'ᗮ).starProjection w‖ := by
+      rw [starProjection_inf_orthogonal_eq_of_mem_orthogonal C C' hC w hw]
+    _ = ‖((C ⊓ C'ᗮ).starProjection ∘L (D ∘L T) ∘L (A ⊓ A'ᗮ).starProjection) y‖ := rfl
+    _ ≤ _ := ContinuousLinearMap.le_opNorm _ _
+
+end GlobalTheory
+end
+
+section
+open Formalism.HN Matrix NumberField Finset GlobalTheory.IndefiniteRowSideFullHecke.SubquotientSizeInequality
+
+noncomputable section
+
+namespace GlobalTheory.SizeSubToQuot
+
+theorem norm_proj_le_infDist {ι : Type} [Fintype ι] (P Q : Submodule ℂ (EuclideanSpace ℂ ι)) (h : Q ≤ P)
+    (x : EuclideanSpace ℂ ι) :
+    ‖Pᗮ.starProjection x‖ ≤ Metric.infDist x (Q : Set (EuclideanSpace ℂ ι)) := by
+  rw [Metric.le_infDist ⟨0, Q.zero_mem⟩]
+  intro y hy
+  have h0 : Pᗮ.starProjection y = 0 := Submodule.starProjection_orthogonal_apply_eq_zero (h hy)
+  rw [dist_eq_norm, ← sub_zero (Pᗮ.starProjection x), ← h0, ← map_sub]
+  exact Submodule.norm_starProjection_apply_le _ _
+
+section General
+
+variable {K V ι : Type} [Field K] [NumberField K] [StarRing K] [IsTotallyComplex K] [AddCommGroup V]
+  [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [Fintype ι] [DecidableEq ι]
+  (b : Module.Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)
+
+omit [IsTotallyComplex K] in
+
+theorem le_of_subset_span (hX : ∀ v, IsUnit (X v).det) {L S N : Submodule (𝓞 K) V} (hL : L.FG)
+    (hS : IsSat (Formalism.HermitianLatticesTheory.realize b X) L S) (hN : N ≤ L)
+    (h : (N : Set V) ⊆ Submodule.span K (S : Set V)) : N ≤ S := by
+  have hle : S ⊔ N ≤ L := sup_le hS.1 hN
+  have hsp : Submodule.span K ((S ⊔ N : Submodule (𝓞 K) V) : Set V) = Submodule.span K (S : Set V) := by
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      intro y hy
+      obtain ⟨s, hs, n, hn, rfl⟩ := Submodule.mem_sup.1 hy
+      exact Submodule.add_mem _ (Submodule.subset_span hs) (h hn)
+    · exact Submodule.span_mono (SetLike.coe_subset_coe.2 le_sup_left)
+  have h1 := (plLat K V ι b X hX _ (Submodule.FG.of_le hL hle)).2.1
+  have h2 := (plLat K V ι b X hX _ (Submodule.FG.of_le hL hS.1)).2.1
+  have h3 : rkK (S ⊔ N) = rkK S := by unfold rkK; rw [hsp]
+  have h4 := (satBasic _ _ _ (Formalism.HermitianLatticesTheory.realize b X) L (plLat K V ι b X hX L hL).1).2.2.1 S (S ⊔ N) hS
+    le_sup_left hle (by rw [h1, h2, h3])
+  exact sup_eq_left.1 h4
+
+theorem exists_frames_subspace (hX : ∀ v, IsUnit (X v).det) (U : Submodule K V) :
+    ∃ (m : ℕ) (e : Module.Basis (Fin m) K U) (Y : InfinitePlace K → Matrix (Fin m) (Fin m) ℂ),
+      (∀ v, IsUnit (Y v).det) ∧
+      ∀ v (x : U), Formalism.HermitianLatticesTheory.normAt b X v (U.subtype x) = Formalism.HermitianLatticesTheory.normAt e Y v x := by
+  have hfinV : FiniteDimensional K V := Module.Finite.of_basis b
+  let e := Module.finBasis K U
+  let T : InfinitePlace K → ((Fin (Module.finrank K U) → ℂ) →ₗ[ℂ] EuclideanSpace ℂ ι) := fun v =>
+    Fintype.linearCombination ℂ (fun k => WithLp.toLp 2 (Formalism.HermitianLatticesTheory.fcoord b X v (e k : V)))
+  have hT : ∀ v (x : U), (WithLp.toLp 2 (Formalism.HermitianLatticesTheory.fcoord b X v (x : V)) : EuclideanSpace ℂ ι) =
+      T v (fun k => v.embedding (e.repr x k)) := by
+    intro v x
+    have hx : (x : V) = ∑ k, e.repr x k • (e k : V) := by
+      have h := congrArg U.subtype (e.sum_repr x)
+      rw [map_sum] at h
+      exact h.symm
+    rw [hx, PlaceDecomposition.fcoord_lincomb, WithLp.toLp_sum]
+    simp only [T, Fintype.linearCombination_apply, WithLp.toLp_smul]
+  have hinj : ∀ v, Function.Injective (T v) := by
+    intro v
+    have hle : QuotientRealization.pv b X U v ≤ LinearMap.range (T v) := by
+      rw [QuotientRealization.pv, Submodule.span_le]
+      rintro _ ⟨y, hy, rfl⟩
+      exact ⟨_, (hT v ⟨y, hy⟩).symm⟩
+    have h1 := Submodule.finrank_mono hle
+    rw [QuotientRealization.finrank_pv b X hX] at h1
+    have h4 := LinearMap.finrank_range_add_finrank_ker (T v)
+    rw [Module.finrank_fintype_fun_eq_card, Fintype.card_fin] at h4
+    have h5 : Module.finrank ℂ (LinearMap.ker (T v)) = 0 := by omega
+    rw [← LinearMap.ker_eq_bot]
+    exact Submodule.finrank_eq_zero.1 h5
+  have hM := fun v => QuotientRealization.exists_mat (T v) (hinj v)
+  choose M hMu hMn using hM
+  refine ⟨_, e, fun v => (M v)⁻¹, fun v => Matrix.isUnit_nonsing_inv_det _ (hMu v), fun v x => ?_⟩
+  rw [Formalism.HermitianLatticesTheory.normAt, PlaceOperatorNorms.cnorm_eq, Submodule.subtype_apply, hT, ← hMn v]
+  simp only [Formalism.HermitianLatticesTheory.normAt, Formalism.HermitianLatticesTheory.fcoord, Matrix.nonsing_inv_nonsing_inv _ (hMu v)]
+  rfl
+
+theorem ptAt_mem_spanAt (S : Submodule (𝓞 K) V) (v : InfinitePlace K) {y : V}
+    (hy : y ∈ Submodule.span K (S : Set V)) : ptAt b X v y ∈ spanAt b X v S := by
+  have h := Submodule.mem_map_of_mem
+    (f := ((WithLp.linearEquiv 2 ℂ (ι → ℂ)).symm : (ι → ℂ) →ₗ[ℂ] EuclideanSpace ℂ ι))
+    (QuotientRealization.fcoord_mem_span b X S v hy)
+  rw [Submodule.map_span, Set.image_image] at h
+  exact h
+
+theorem size_ineq_to_quot (hX : ∀ v, IsUnit (X v).det) (φ : V →ₗ[K] V) {A B B' : Submodule (𝓞 K) V}
+    (hA : A.FG) (hB : B.FG) (hS : IsSat (Formalism.HermitianLatticesTheory.realize b X) B B') (hAB : ∀ y ∈ A, φ y ∈ B)
+    (hne : ∃ y ∈ A, φ y ∉ B') {lo hi : ℝ} (hlo : 0 < lo)
+    (hl : ∀ N, B' < N → N ≤ B → lo ≤ sizeQ b X N B') (hh : largestSize b X A ≤ hi)
+    (c : InfinitePlace K → ℝ) (hc : ∀ v, 0 ≤ c v)
+    (hn : ∀ v, ∀ y ∈ Submodule.span K (A : Set V),
+      distAt b X v B' (φ y) ≤ c v * Formalism.HermitianLatticesTheory.normAt b X v y) :
+    lo / hi ≤ (∏ v, c v) ^ ((1 : ℝ) / (nPl K : ℝ)) := by
+  have hQ := quotRealize K V ι b X hX B B' hB hS
+  set W := Submodule.span K (B' : Set V) with hW
+  obtain ⟨κ, _, _, b', X', hX', hnorm, hq⟩ := hQ
+  set U := Submodule.span K (A : Set V) with hU
+  obtain ⟨m, e, Y, hY, hiso⟩ := exists_frames_subspace b X hX U
+  set A₀ : Submodule (𝓞 K) U := A.comap (U.subtype.restrictScalars (𝓞 K)) with hA₀
+  have hmapA : A₀.map (U.subtype.restrictScalars (𝓞 K)) = A := by
+    apply le_antisymm
+    · rintro _ ⟨y, hy, rfl⟩; exact hy
+    · intro y hy
+      exact ⟨⟨y, Submodule.subset_span hy⟩, hy, rfl⟩
+  have hA₀fg : A₀.FG := by
+    refine Submodule.fg_of_fg_map_injective (U.subtype.restrictScalars (𝓞 K)) U.injective_subtype ?_
+    rw [hmapA]; exact hA
+  have hre := (rerealize K U (Fin m) V ι e Y b X U.subtype hY hX U.injective_subtype hiso A₀ hA₀fg).2.2.2.2.2.2
+  rw [hmapA] at hre
+  set ψ : U →ₗ[K] V ⧸ W := W.mkQ ∘ₗ φ ∘ₗ U.subtype with hψ
+  set Bq := B.map (W.mkQ.restrictScalars (𝓞 K)) with hBq
+  have hBfg : Bq.FG := hB.map _
+  have hABq : A₀.map (ψ.restrictScalars (𝓞 K)) ≤ Bq := by
+    rintro _ ⟨y, hy, rfl⟩
+    exact ⟨φ y, hAB _ hy, rfl⟩
+  obtain ⟨y₀, hy₀, hy₀'⟩ := hne
+  have h0 : A₀.map (ψ.restrictScalars (𝓞 K)) ≠ ⊥ := by
+    intro h0
+    have h1 : ψ.restrictScalars (𝓞 K) ⟨y₀, Submodule.subset_span hy₀⟩ ∈
+        A₀.map (ψ.restrictScalars (𝓞 K)) := Submodule.mem_map_of_mem hy₀
+    rw [h0, Submodule.mem_bot] at h1
+    have h2 : φ y₀ ∈ W := (Submodule.Quotient.mk_eq_zero W).1 h1
+    have h3 : B ⊓ W.restrictScalars (𝓞 K) ≤ B' :=
+      le_of_subset_span b X hX hB hS inf_le_left fun z hz => hz.2
+    exact hy₀' (h3 ⟨hAB _ hy₀, h2⟩)
+  have hA0 : A₀ ≠ ⊥ := fun h => h0 (by rw [h, Submodule.map_bot])
+  have hB0 : Bq ≠ ⊥ := fun h => h0 (le_bot_iff.1 (h ▸ hABq))
+  have hM := sizeIneq K U (Fin m) _ κ e Y b' X' hY hX' ψ A₀ Bq hA₀fg hBfg hABq h0
+  have hop : ∀ v, opNormAt e Y b' X' v ψ ≤ c v := by
+    intro v
+    refine Formalism.L2.Geo.ExtensionFiltration.opNormAt_le_of_points e Y b' X' hY _ v (c v) (hc v) fun y => ?_
+    rw [← hiso]
+    refine le_trans ?_ (hn v y y.2)
+    rw [hψ, LinearMap.comp_apply, hnorm]
+    refine norm_proj_le_infDist _ _ ?_ _
+    refine Submodule.span_mono ?_
+    rintro _ ⟨z, hz, rfl⟩
+    exact ⟨z, Submodule.subset_span hz, rfl⟩
+  have hP : (∏ v, opNormAt e Y b' X' v ψ) ^ ((1 : ℝ) / (nPl K : ℝ)) ≤
+      (∏ v, c v) ^ ((1 : ℝ) / (nPl K : ℝ)) :=
+    Real.rpow_le_rpow (Finset.prod_nonneg fun v _ => norm_nonneg _)
+      (Finset.prod_le_prod (fun v _ => norm_nonneg _) fun v _ => hop v) (by positivity)
+  have hleast : lo ≤ leastSize b' X' Bq := by
+    refine le_csInf ⟨_, Bq, le_rfl, hB0, rfl⟩ ?_
+    rintro _ ⟨N, hNB, hN0, rfl⟩
+    set N' := B ⊓ N.comap (W.mkQ.restrictScalars (𝓞 K)) with hN'
+    have hS0 : ∀ s ∈ B', W.mkQ s = 0 := fun s hs =>
+      (Submodule.Quotient.mk_eq_zero W).2 (Submodule.subset_span hs)
+    have hSN : B' ≤ N' := by
+      intro s hs
+      refine ⟨hS.1 hs, ?_⟩
+      show W.mkQ s ∈ N
+      rw [hS0 s hs]; exact N.zero_mem
+    have hmap : N'.map (W.mkQ.restrictScalars (𝓞 K)) = N := by
+      apply le_antisymm
+      · rintro _ ⟨y, hy, rfl⟩; exact hy.2
+      · intro z hz
+        obtain ⟨y, hy, rfl⟩ := hNB hz
+        exact ⟨y, ⟨hy, hz⟩, rfl⟩
+    have hne : B' ≠ N' := by
+      intro h
+      apply hN0
+      rw [← hmap, ← h, eq_bot_iff]
+      rintro _ ⟨s, hs, rfl⟩
+      exact hS0 s hs
+    have hlt := hl N' (lt_of_le_of_ne hSN hne) inf_le_left
+    rwa [(hq N' hSN inf_le_left).2, hmap] at hlt
+  have hpos : 0 < largestSize e Y A₀ := by
+    rw [(sizeMu K U (Fin m) e Y hY A₀ hA₀fg hA0).2.2.2.2.1]; exact Real.exp_pos _
+  refine le_trans ?_ (hM.trans hP)
+  exact div_le_div₀ (hlo.le.trans hleast) hleast hpos (hre ▸ hh)
+
+end General
+
+theorem size_ineq_sub_to_quot : ∀ (K : Type) [Field K] [NumberField K] [StarRing K] [IsTotallyComplex K] (n : ℕ) (X : InfinitePlace K → Matrix (Fin n) (Fin n) ℂ), (∀ v, IsUnit (X v).det) → ∀ (φ : Matrix (Fin n) (Fin n) K) (A B B' : Submodule (𝓞 K) (Fin n → K)), A.FG → B.FG → IsSat (Formalism.HermitianLatticesTheory.realize (Pi.basisFun K (Fin n)) X) B B' → (∀ y ∈ A, φ *ᵥ y ∈ B) → (∃ y ∈ A, φ *ᵥ y ∉ B') → ∀ lo hi : ℝ, 0 < lo → (∀ N, B' < N → N ≤ B → lo ≤ sizeQ (Pi.basisFun K (Fin n)) X N B') → largestSize (Pi.basisFun K (Fin n)) X A ≤ hi → ∀ c : InfinitePlace K → ℝ, (∀ v, 0 ≤ c v) → (∀ v, ∀ u ∈ spanAt (Pi.basisFun K (Fin n)) X v A, Metric.infDist (Matrix.toEuclideanLin ((X v)⁻¹ * φ.map v.embedding * X v) u) (spanAt (Pi.basisFun K (Fin n)) X v B' : Set (EuclideanSpace ℂ (Fin n))) ≤ c v * ‖u‖) → lo / hi ≤ (∏ v, c v) ^ ((1 : ℝ) / (nPl K : ℝ)) := by
+  intro K _ _ _ _ n X hX φ A B B' hA hB hS hAB hne lo hi hlo hl hh c hc hn
+  refine size_ineq_to_quot (Pi.basisFun K (Fin n)) X hX (Matrix.toLin' φ) hA hB hS hAB hne hlo hl hh c hc
+    fun v y hy => ?_
+  have h := hn v _ (ptAt_mem_spanAt (Pi.basisFun K (Fin n)) X A v hy)
+  rw [norm_ptAt] at h
+  refine le_trans (le_of_eq ?_) h
+  unfold distAt ptAt
+  rw [PlaceOperatorNorms.fcoord_map (Pi.basisFun K (Fin n)) X (Pi.basisFun K (Fin n)) X hX v,
+    LinearMap.toMatrix_eq_toMatrix', LinearMap.toMatrix'_toLin']
+  rfl
+
+end GlobalTheory.SizeSubToQuot
+end
+end
+
+section
+open Matrix
+
+namespace GlobalTheory
+
+theorem hform_sub_left_flag {A : Type} [CommRing A] {n : Type} [Fintype n] (σ : A →+* A)
+    (J : Matrix n n A) (x x' y : n → A) :
+    Formalism.UG.hform σ J (x - x') y = Formalism.UG.hform σ J x y - Formalism.UG.hform σ J x' y := by
+  unfold Formalism.UG.hform
+  simp only [Pi.sub_apply, map_sub, sub_mul, Finset.sum_sub_distrib]
+
+theorem hform_sub_right_flag {A : Type} [CommRing A] {n : Type} [Fintype n] (σ : A →+* A)
+    (J : Matrix n n A) (x y y' : n → A) :
+    Formalism.UG.hform σ J x (y - y') = Formalism.UG.hform σ J x y - Formalism.UG.hform σ J x y' := by
+  unfold Formalism.UG.hform
+  simp only [Pi.sub_apply, mul_sub, Finset.sum_sub_distrib]
+
+private theorem hform_eq_dotProduct_mulVec {K : Type} [CommRing K] {n : ℕ} (σ : K →+* K)
+    (J : Matrix (Fin n) (Fin n) K) (x y : Fin n → K) :
+    Formalism.UG.hform σ J x y = (fun i => σ (x i)) ⬝ᵥ (J *ᵥ y) := by
+  unfold Formalism.UG.hform
+  simp only [dotProduct, mulVec, Finset.mul_sum, mul_assoc]
+
+private theorem hform_mulVec_eq_of_unitary {K : Type} [CommRing K] {n : ℕ} (σ : K →+* K)
+    (J γ : Matrix (Fin n) (Fin n) K) (hγ : Formalism.UG.cT σ γ * J * γ = J) (x y : Fin n → K) :
+    Formalism.UG.hform σ J (γ *ᵥ x) (γ *ᵥ y) = Formalism.UG.hform σ J x y := by
+  rw [hform_eq_dotProduct_mulVec, hform_eq_dotProduct_mulVec]
+  have h1 : (fun i => σ ((γ *ᵥ x) i)) = γ.map σ *ᵥ (fun i => σ (x i)) := by
+    funext i
+    exact RingHom.map_mulVec σ γ x i
+  unfold Formalism.UG.cT at hγ
+  rw [Matrix.mul_assoc] at hγ
+  rw [h1, ← vecMul_transpose (γ.map σ), ← dotProduct_mulVec]
+  simp only [mulVec_mulVec, hγ]
+
+theorem lowering_difference_of_isometries :
+    ∀ (K R : Type) [Field K] [StarRing K] [CommRing R] [Algebra R K] (n : ℕ) (J : Matrix (Fin n) (Fin n) K), Formalism.UG.IsHerm (starRingEnd K) J → ∀ (a : ℕ) (G : ℕ → Submodule R (Fin n → K)), G 0 = ⊥ → Monotone G → (∀ p ≤ 2 * a + 1, ∀ y, y ∈ G (2 * a + 1 - p) ↔ y ∈ G (2 * a + 1) ∧ ∀ s ∈ G p, Formalism.UG.hform (starRingEnd K) J s y = 0) → ∀ γ γ' : Matrix (Fin n) (Fin n) K, Formalism.UG.cT (starRingEnd K) γ * J * γ = J → Formalism.UG.cT (starRingEnd K) γ' * J * γ' = J → (∀ p ≤ 2 * a, ∀ y ∈ G (p + 1), (γ - 1) *ᵥ y ∈ G p) → (∀ p ≤ 2 * a, ∀ y ∈ G (p + 1), (γ' - 1) *ᵥ y ∈ G p) → ∀ c : ℕ, 1 ≤ c → (∀ q p : ℕ, q < p → q + p ≤ 2 * a → p - q < c → ∀ y ∈ G (p + 1), (γ - γ') *ᵥ y ∈ G q) → (∀ p ≤ 2 * a + 1, ∀ y ∈ G p, (γ - γ') *ᵥ y ∈ G (p - c)) ∧ ∀ p p' : ℕ, p ≤ 2 * a → p' ≤ 2 * a → p + p' ≤ 2 * a + c → ∀ x ∈ G (p + 1), ∀ y ∈ G (p' + 1), Formalism.UG.hform (starRingEnd K) J ((γ - γ') *ᵥ x) y + Formalism.UG.hform (starRingEnd K) J x ((γ - γ') *ᵥ y) = 0 := by
+  intro K R _ _ _ _ n J _ a G hG0 hGm hdual γ γ' hγ hγ' hl hl' c hc hlow
+  set hf := Formalism.UG.hform (starRingEnd K) J with hhf
+  have hL : ∀ x x' y, hf (x - x') y = hf x y - hf x' y := fun x x' y => hform_sub_left_flag _ J x x' y
+  have hR : ∀ x y y', hf x (y - y') = hf x y - hf x y' := fun x y y' => hform_sub_right_flag _ J x y y'
+  have iso : ∀ x y, hf (γ *ᵥ x) (γ *ᵥ y) = hf x y := hform_mulVec_eq_of_unitary _ J γ hγ
+  have iso' : ∀ x y, hf (γ' *ᵥ x) (γ' *ᵥ y) = hf x y := hform_mulVec_eq_of_unitary _ J γ' hγ'
+  have h0 : ∀ v, hf 0 v = 0 := fun v => by simp [hhf, Formalism.UG.hform]
+  have mem0 : ∀ y ∈ G 0, y = 0 := fun y hy => by
+    rw [hG0] at hy
+    exact (Submodule.mem_bot R).1 hy
+  have orth : ∀ m m', m + m' ≤ 2 * a + 1 → ∀ u ∈ G m, ∀ v ∈ G m', hf u v = 0 := by
+    intro m m' hmm u hu v hv
+    exact ((hdual m (by omega) v).1 (hGm (by omega) hv)).2 u hu
+  have key : ∀ x y, hf ((γ - γ') *ᵥ x) (γ *ᵥ y) + hf (γ' *ᵥ x) ((γ - γ') *ᵥ y) = 0 := by
+    intro x y
+    rw [sub_mulVec, sub_mulVec, hL, hR, iso, iso']
+    ring
+  have base : ∀ p ≤ 2 * a + 1, ∀ y ∈ G p, (γ - γ') *ᵥ y ∈ G (p - 1) := by
+    intro p hp y hy
+    rcases Nat.eq_zero_or_pos p with rfl | hp0
+    · rw [mem0 y hy, mulVec_zero]
+      exact zero_mem _
+    · obtain ⟨p0, rfl⟩ : ∃ p0, p = p0 + 1 := ⟨p - 1, by omega⟩
+      have e : (γ - γ') *ᵥ y = (γ - 1) *ᵥ y - (γ' - 1) *ᵥ y := by
+        simp only [sub_mulVec, one_mulVec]
+        abel
+      rw [e, Nat.add_sub_cancel]
+      exact sub_mem (hl p0 (by omega) y hy) (hl' p0 (by omega) y hy)
+  have main1 : ∀ p, p ≤ 2 * a + 1 → ∀ y ∈ G p, (γ - γ') *ᵥ y ∈ G (p - c) := by
+    intro p
+    induction p using Nat.strong_induction_on with
+    | _ p ih =>
+      intro hp y hy
+      by_cases hA : c = 1 ∨ p ≤ 1
+      · exact hGm (by omega) (base p hp y hy)
+      by_cases hB : 2 * p ≤ 2 * a + 1 + c ∨ p < c
+      · obtain ⟨p0, rfl⟩ : ∃ p0, p = p0 + 1 := ⟨p - 1, by omega⟩
+        exact hlow (p0 + 1 - c) p0 (by omega) (by omega) (by omega) y hy
+      have hγy : γ *ᵥ y ∈ G p := by
+        have e1 : γ *ᵥ y = (γ - 1) *ᵥ y + y := by
+          simp only [sub_mulVec, one_mulVec]
+          abel
+        rw [e1]
+        refine add_mem (hGm (Nat.sub_le p 1) (hl (p - 1) (by omega) y ?_)) hy
+        rwa [Nat.sub_add_cancel (by omega : 1 ≤ p)]
+      have inner : ∀ j, j ≤ 2 * a + 1 - (p - c) → ∀ s ∈ G j, hf s ((γ - γ') *ᵥ y) = 0 := by
+        intro j
+        induction j with
+        | zero =>
+          intro _ s hs
+          rw [mem0 s hs, h0]
+        | succ j ihj =>
+          intro hj s hs
+          have k := key s y
+          have ha : hf ((γ' - 1) *ᵥ s) ((γ - γ') *ᵥ y) =
+              hf (γ' *ᵥ s) ((γ - γ') *ᵥ y) - hf s ((γ - γ') *ᵥ y) := by
+            rw [sub_mulVec γ' 1, one_mulVec, hL]
+          have hz1 := ihj (by omega) _ (hl' j (by omega) s hs)
+          have hz2 := orth (j + 1 - c) p (by omega) _ (ih (j + 1) (by omega) (by omega) s hs) _ hγy
+          linear_combination k + ha - hz1 - hz2
+      have hd := (hdual (2 * a + 1 - (p - c)) (by omega) ((γ - γ') *ᵥ y)).2
+        ⟨hGm (by omega) (base p hp y hy), fun s hs => inner _ le_rfl s hs⟩
+      have e2 : 2 * a + 1 - (2 * a + 1 - (p - c)) = p - c := by omega
+      rwa [e2] at hd
+  refine ⟨main1, ?_⟩
+  intro p p' hp hp' hpp x hx y hy
+  have e3 : hf ((γ - γ') *ᵥ x) ((γ - 1) *ᵥ y) = 0 :=
+    orth (p + 1 - c) p' (by omega) _ (main1 (p + 1) (by omega) x hx) _ (hl p' hp' y hy)
+  have e4 : hf ((γ' - 1) *ᵥ x) ((γ - γ') *ᵥ y) = 0 :=
+    orth p (p' + 1 - c) (by omega) _ (hl' p hp x hx) _ (main1 (p' + 1) (by omega) y hy)
+  rw [sub_mulVec γ 1, one_mulVec, hR] at e3
+  rw [sub_mulVec γ' 1, one_mulVec, hL] at e4
+  linear_combination key x y - e3 - e4
+
+end GlobalTheory
+end
+
+section
+open Finset
+
+namespace GlobalTheory
+
+theorem prod_interval_mirror_split (a i : ℕ) (hi : i < a) (f : ℕ → ℝ) :
+    ∏ p ∈ (Finset.range (2 * a + 1)).filter (fun p => i < p ∧ i + p ≤ 2 * a), f p
+      = (∏ k ∈ Finset.Ioo i a, f k * f (2 * a - k)) * (f a * f (2 * a - i)) := by
+  have hS : (Finset.range (2 * a + 1)).filter (fun p => i < p ∧ i + p ≤ 2 * a)
+      = Finset.Ioo i a ∪ insert a (Finset.Ioo a (2 * a - i) ∪ {2 * a - i}) := by
+    ext p
+    simp only [mem_filter, mem_range, mem_union, mem_insert, mem_Ioo, mem_singleton]
+    omega
+  rw [hS, prod_union, prod_insert, prod_union, prod_singleton]
+  · have hm : ∏ p ∈ Finset.Ioo a (2 * a - i), f p = ∏ k ∈ Finset.Ioo i a, f (2 * a - k) := by
+      refine Finset.prod_nbij' (fun p => 2 * a - p) (fun k => 2 * a - k) ?_ ?_ ?_ ?_ ?_
+      · intro x hx
+        simp only [mem_Ioo] at hx ⊢
+        omega
+      · intro x hx
+        simp only [mem_Ioo] at hx ⊢
+        omega
+      · intro x hx
+        simp only [mem_Ioo] at hx
+        omega
+      · intro x hx
+        simp only [mem_Ioo] at hx
+        omega
+      · intro x hx
+        simp only [mem_Ioo] at hx
+        congr 1
+        omega
+    rw [hm, prod_mul_distrib]
+    ring
+  all_goals first
+    | (rw [Finset.disjoint_left]
+       intro x hx hx'
+       simp only [mem_union, mem_insert, mem_Ioo, mem_singleton] at hx hx'
+       omega)
+    | (simp only [mem_union, mem_Ioo, mem_singleton]
+       omega)
+
+private theorem prod_filter_gt_eq_prod_Ioo (a : ℕ) (i : Fin a) (h : ℕ → ℝ) :
+    ∏ k ∈ Finset.univ.filter (fun k : Fin a => i < k), h k = ∏ k ∈ Finset.Ioo (i : ℕ) a, h k := by
+  refine Finset.prod_nbij (fun k => (k : ℕ)) ?_ ?_ ?_ ?_
+  · intro k hk
+    simp only [mem_filter, mem_univ, true_and] at hk
+    simp only [mem_Ioo]
+    exact ⟨hk, k.isLt⟩
+  · intro x _ y _ hxy
+    exact Fin.ext hxy
+  · intro k hk
+    simp only [Finset.mem_coe, mem_Ioo] at hk
+    exact ⟨⟨k, hk.2⟩, Finset.mem_coe.2 (mem_filter.2 ⟨mem_univ _, Fin.lt_def.2 hk.1⟩), rfl⟩
+  · intro k _
+    rfl
+
+theorem prod_first_blocks_by_layers (a : ℕ) (g : ℕ → ℕ → ℝ) :
+    ∏ b ∈ ((Finset.range a) ×ˢ (Finset.range (2 * a + 1))).filter
+        (fun b : ℕ × ℕ => b.1 < b.2 ∧ b.1 + b.2 ≤ 2 * a), g b.1 b.2
+      = (∏ i : Fin a, ∏ k ∈ Finset.univ.filter (fun k : Fin a => i < k),
+          g i k * g i (2 * a - k)) * ∏ i : Fin a, g i a * g i (2 * a - i) := by
+  rw [Finset.prod_filter, Finset.prod_product]
+  have step : ∀ i ∈ Finset.range a,
+      (∏ p ∈ Finset.range (2 * a + 1), if i < p ∧ i + p ≤ 2 * a then g i p else 1)
+        = (∏ k ∈ Finset.Ioo i a, g i k * g i (2 * a - k)) * (g i a * g i (2 * a - i)) := by
+    intro i hi
+    rw [← Finset.prod_filter]
+    exact prod_interval_mirror_split a i (mem_range.1 hi) (g i)
+  refine (Finset.prod_congr rfl step).trans ?_
+  rw [prod_mul_distrib]
+  congr 1
+  · rw [← Fin.prod_univ_eq_prod_range (fun i => ∏ k ∈ Finset.Ioo i a, g i k * g i (2 * a - k)) a]
+    refine Finset.prod_congr rfl (fun i _ => ?_)
+    exact (prod_filter_gt_eq_prod_Ioo a i (fun k => g i k * g i (2 * a - k))).symm
+  · exact (Fin.prod_univ_eq_prod_range (fun i => g i a * g i (2 * a - i)) a).symm
+
+end GlobalTheory
+end
+
+section
+namespace GlobalTheory.InnerSumZeroSpan
+
+theorem main : (let d1 : ℕ → Type := @(fun (n : ℕ) ↦ EuclideanSpace ℂ (Fin n)); ∀ {n : ℕ} (L M : d1 n →L[ℂ] d1 n) (s t : Set (d1 n)), (∀ u ∈ s, ∀ z ∈ t, Inner.inner ℂ ((L : d1 n → d1 n) u) z + Inner.inner ℂ u ((M : d1 n → d1 n) z) = (0 : ℂ)) → ∀ u ∈ Submodule.span ℂ s, ∀ z ∈ Submodule.span ℂ t, Inner.inner ℂ ((L : d1 n → d1 n) u) z + Inner.inner ℂ u ((M : d1 n → d1 n) z) = (0 : ℂ)) := by
+  intro d1 n L M s t h u hu z hz
+  induction hz using Submodule.span_induction with
+  | mem z hz' =>
+    induction hu using Submodule.span_induction with
+    | mem u hu' => exact h u hu' z hz'
+    | zero => simp
+    | add x y _ _ hx hy =>
+      rw [map_add, inner_add_left, inner_add_left, add_add_add_comm, hx, hy, add_zero]
+    | smul c x _ hx =>
+      rw [map_smul, inner_smul_left, inner_smul_left, ← mul_add, hx, mul_zero]
+  | zero => simp
+  | add x y _ _ hx hy =>
+    rw [map_add, inner_add_right, inner_add_right, add_add_add_comm, hx, hy, add_zero]
+  | smul c x _ hx =>
+    rw [map_smul, inner_smul_right, inner_smul_right, ← mul_add, hx, mul_zero]
+
+end GlobalTheory.InnerSumZeroSpan
+end
+
+section
 open GlobalTheory.Count Formalism.MainNotions.S Formalism.HN Formalism.REAL Matrix NumberField MeasureTheory Finset
 open GlobalTheory.IndefiniteRowSideFullHecke.SubquotientSizeInequality
 open scoped InnerProductSpace
@@ -581,3 +1409,5 @@ theorem near_count : ∀ (I : AutInst) (x : I.GA) (de : ℝ), 0 < de → de < 1 
       (pow_le_pow_ratio hde (by positivity) (by nlinarith) _) (by positivity) (by positivity)
 
 end GlobalTheory.NearCount
+end
+end

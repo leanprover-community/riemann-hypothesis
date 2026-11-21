@@ -2,8 +2,27 @@ import Mathlib
 import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.ConclusionOfSmooth
 import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.NotSubsetOfDenseCompl
 import Development.AutomorphicSpectrum.PublishedTheorems.PublishedGlobalResults.PrincipalizationOfPrincipalisation
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsStatement
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.HasSncCoordsOfLocal
 
+section
+section
+open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R ReciprocityTheory.ChartRestriction.G.Geo.ResK
+
+namespace GlobalTheory.CompanionTheory.Geo.SncCoordsSide
+
+theorem coordsStatement_side : ReciprocityTheory.ChartRestriction.G.Geo.ResK.CoordsStatement :=
+  GlobalTheory.CompanionTheory.Geo.SncCoords.coordsStatement
+
+end GlobalTheory.CompanionTheory.Geo.SncCoordsSide
+end
+
+open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R ReciprocityTheory.ChartRestriction.G.Geo.ResK
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coords_statement : ReciprocityTheory.ChartRestriction.G.Geo.ResK.CoordsStatement := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Geo.SncCoordsSide.coordsStatement_side
+end
+
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace
@@ -131,3 +150,5 @@ theorem resK_of_resolution_principalisation (H₁ : ResolutionCharZero) (H₂ : 
   exact ⟨r, X₂, j, t ≫ s, hj, e, hDim, hiso, hd₂, hC⟩
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.ResKSide
+end
+end

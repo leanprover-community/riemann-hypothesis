@@ -1,8 +1,17 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.SBStar
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.PrimitiveDiscriminants.IsPrimCmap
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.TensorPrimeModuli.ExistsNsmulEqZeroOfTmul
 
+section
+open scoped TensorProduct
+
+namespace PositivityTheory.KB.PrimeModuloFree
+
+
+end PositivityTheory.KB.PrimeModuloFree
+end
+
+section
 noncomputable section
 
 open NumberField NumberField.InfinitePlace Matrix UpperTheory.V.KT UpperTheory.V.KL
@@ -85,4 +94,5 @@ end PrimeModuloFree
 
 end PositivityTheory.KB
 
+end
 end

@@ -11,8 +11,28 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwasawaRegionMe
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalUnramifiedShellFormula
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerIwasawaGrowthBound
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GeometricSumBelowThreshold
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegrableZFOfBound
+import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.GaugeTopology.SSmoothW
 
+section
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic
+open scoped ValuativeRel
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.LFGInt
+
+open Ad3
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
+
+
+variable [MeasurableSpace F] [BorelSpace F]
+
+end GlobalTheory.CompanionTheory.LFGInt
+end
+end
+
+section
 noncomputable section
 
 open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Filter Topology
@@ -131,3 +151,5 @@ theorem cont_inn (ψ : AddChar F Circle) (Φ : Matrix (Fin 2) (Fin 3) F → ℂ)
 
 
 end GlobalTheory.CompanionTheory.LFHolP
+end
+end

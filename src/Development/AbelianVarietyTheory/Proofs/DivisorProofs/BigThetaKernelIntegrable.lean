@@ -5,8 +5,27 @@ import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.ThetaInte
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareStanding
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BigRouteKernelIntegrableOnUnitaryQuotient
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareThetaTripleHypothesesOfStandingStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NatCastNotMemOfCoprime
 
+section
+universe u_1
+
+namespace GlobalTheory.CoprimeNatNotMem
+
+theorem natCast_not_mem_of_coprime {Rg : Type u_1} [CommRing Rg] {P : Ideal Rg} (hP : P ≠ ⊤)
+    {p n : ℕ} (h : Nat.Coprime p n) (hp : (p : Rg) ∈ P) : (n : Rg) ∉ P := by
+  intro hn
+
+  obtain ⟨u, v, huv⟩ : IsCoprime (p : Rg) (n : Rg) := by
+    have hz : IsCoprime (p : ℤ) (n : ℤ) := Nat.isCoprime_iff_coprime.mpr h
+    simpa using hz.map (Int.castRingHom Rg)
+  apply hP
+  rw [Ideal.eq_top_iff_one, ← huv]
+  exact P.add_mem (P.mul_mem_left u hp) (P.mul_mem_left v hn)
+
+end GlobalTheory.CoprimeNatNotMem
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames
@@ -76,3 +95,5 @@ theorem bigConv : GlobalTheory.FunPr.Hypotheses₂ → GlobalTheory.IndefiniteRo
   exact GlobalTheory.T.bigRoute_kernel_integrableOn_unitary_quotient hWC hS.core.lev ch.W ch.S.B ch.rm t i j (GlobalTheory.T.squareThetaTripleHypotheses_of_standing hS.core.lev ch.W t i j hst) M hM Θ Θ' hΘ g₁ g
 
 end GlobalTheory.SquareConv
+end
+end

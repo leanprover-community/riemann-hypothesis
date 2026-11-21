@@ -1,8 +1,16 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ThetaGeneratorPlaceValuationBoundStatement
+import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ThetaGeneratorPlaceValuationBound
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.RamifiedPrimeLossLeValuationPrimePower
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.WeightAssemblyClause
 
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.DIV.Cons Formalism.L2.Pj GlobalTheory.PtTie GlobalTheory.PlaceTop
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaGenerator_place_valuation_bound : ThBoundSt := by
+  first | exact @GlobalTheory.ThetaBound.thBound | exact GlobalTheory.ThetaBound.thBound | (intros; apply GlobalTheory.ThetaBound.thBound <;> assumption)
+end
+
+section
 section
 set_option autoImplicit false
 
@@ -69,3 +77,4 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.scaledThetaLattice_le_supLattice_every_weight : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (hinj : Function.Injective D.what₂.OtoLL) (EX : ErrX D), Oriented T EX → ∀ w : WeightFamilies.Wt D j, GlobalTheory.RunIn.ThInt (recPJ h j hj) hinj EX w := by
   atlas_forward_decl GlobalTheory.PlaceTop.thInt_of_oriented
+end

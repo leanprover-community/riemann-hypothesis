@@ -4,20 +4,407 @@ import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.Thir
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ThetaDataExists
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.GaloisPreconditions
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.AtMemberImp
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RamificationJumpsMemAtLayer
+import Mathlib
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.GaloisRepDescendsAtRealPlaces
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PartsGive
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TiedConditionOfLayer
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CompatibleSystemSatisfiesLocalProperty
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.JumpsCardOfBuilt
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InputsJumpsAtMem
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.GeometricGaloisRepCompatibility
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.TwistedMultiplicityOne
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.Adm8AndLambdaUsed
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.Auxiliary
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.FiniteTriplesSatisfyCondition
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NonGaloisGoodFTAll
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.BuiltLaws
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SameTwistAt
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.OneFieldOfNAt
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodFiniteTypesAll
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.OpinAtMemStatement
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsTypeVecNonGalois
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LocalSeriesConcreteOfDzSwap
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.BuiltLaws
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeckeOpen
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SameTwistAt
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NormChoiceOfExtension
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FactsAtMembership
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.GaloisRepIsGeometricAtAllPlaces
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.MainAltAltAltAlt
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ResidualIrreducibleOfTheoremThreePrime
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PrvZrOfInputsRowsStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WeightParamOfPinStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ImportsMoreFurther
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.DepthZeroTameAltBis
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.WeightParameterStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.WeightParameter
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CharacterChoiceData
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InfinitesimalWeightOfDualStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InfinitesimalWeightOfDual
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqOfOverTwo
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DepthZeroOfPrintsStatement
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ThetaLocalInputs
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ExistsTrueReadingStatement
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ImportsBisMore
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ImportsBisFurtherStatement
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.MDzLoc
 
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+namespace GlobalTheory.NRows.AtLayer
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top
+  GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+theorem atMem_mono_of_colPin {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {P : Ctx → ∀ B : Base, Fr B.toPre → TwDat B → Prop} {p q : _root_.GlobalTheory.HeightCounting.Up.LayPAlt hL}
+    (hP : EvLgG P) (h : _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL p)
+    (hpq : ∀ K B f T, P K B f T → KPx B f → ∀ w Z Wt p0 t nch n xd c, Nonempty (_root_.GlobalTheory.HeightCounting.defaultExtension hL K B f T w Z Wt p0 t nch n xd c) →
+      Nonempty (RXs t) → ColPin w → p K B f T w Z Wt p0 t nch n c → q K B f T w Z Wt p0 t nch n c) : _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL q :=
+  EvG.imp (EvG.inter hP h) fun _ _ _ _ _ hK => large₂.imp (large₂.inter hK.1 hK.2) fun B f T _ H kp w Z Wt p0 t nch n xd c a b d =>
+    hpq _ B f T H.1 kp w Z Wt p0 t nch n xd c a b d (H.2 kp w Z Wt p0 t nch n xd c a b d)
+end GlobalTheory.NRows.AtLayer
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+namespace GlobalTheory.NRows.OverX
+set_option maxHeartbeats 2000000 in
+theorem lambdaAdic_components_over_base_alt : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → _root_.GlobalTheory.NRows.GeometricGaloisRepCompatibility → OverRows fun _ _ _ _ w Z _ _ z p0 Y => ReadL z.R z.F p0 Y →
+    (∃ L : SizeData₂ (w.st Z).toD7, Nonempty (ParameterChoice' (w.st Z).toD7 L)) → SumRepresentations.adm8 (w.st Z).toD7 ∧ GlobalTheory.NRows.LamUsed (w.st Z).toD7 := by
+  intro hN hPX
+  refine EvG.imp (evG_of_ev GlobalTheory.Mem.HostFrames.hostHyp_frames_ev) fun K _ _ _ _ hHost => ?_
+  refine ⟨fun _ _ _ => ∅, fun _ _ _ _ => ∅, fun _ _ _ _ _ => ∅, fun _ _ _ _ _ => ∅, by simp, by simp, ?_⟩
+  intro B f T hO _ _ _ _ w _ Z Wt hX z p0 Y hHo hEx _ hGrp _ hRd hp
+  have hH : Formalism.IndefR.Links.HostHyp (w.st Z).toD7 := (hHost (w.st Z) hO).1
+  have hGS : Formalism.L2.DIV.GoodStable z.Xg := by
+    have hI := GlobalTheory.DimPartsCompare.TameTie.idemTie hN.greenC
+      (GlobalTheory.DimPartsCompare.tameTie_of_typesTrue (D := (w.st Z).toD7) hGrp).2.1
+    refine GlobalTheory.Mem.R3.GoodDual.goodStable_of_coeff (w.st Z).B.embLL z.Xg z.good.irr fun g => ?_
+    apply (w.st Z).B.embLL.injective
+    rw [z.good.2, z.good.2, map_inv, GlobalTheory.Mem.R3.GoodDual.goodIdempotent_coeff_inv_eq_coeff hI]
+  have hT : TypesTrue (w.st Z).toD7.ntypes z.R.C.P z.R.C.W := by
+    rw [z.lev.C, w.C_eq]
+    exact hGrp
+  have hME := _root_.GlobalTheory.T.twisted_multiplicity_one hPX.ana hPX.dsc hN.decay hN.hc hPX.trc hPX.dm hPX.flath hN.zel
+    hN.what₂.geo hN.greenC z.R z.F hHo.ok z.pins.char hEx hH hp B.ccK_top z.pins.keep.guard
+    (GlobalTheory.LiftRows.Inh.goodTypes_of_typesTrue z.pins.char.base.lev hT)
+  have hIR : Formalism.BasicNotions.Rows.IsotRank (w.st Z).toD7.what₂ :=
+    GlobalTheory.Mem.R3.isotRank_of_multEq hPX.weil hPX.ds hN.hc hN.decay _ _ _ _ _ _ _ z.R z.F z.cG _ Y z.pins hHo hH hGS
+      (GlobalTheory.CuspDec.cuspDecomp hN.hc hN.decay _) hME
+  exact ⟨GlobalTheory.T.thetaLift_forms_internal_direct_sum_isotypic hPX.weil hPX.ds hN.hc hN.decay _ _ _ _ _ _ _ z.R z.F z.cG p0 Y hRd z.pins hHo hH hIR,
+    GlobalTheory.T.downLift_upLift_positiveScalar_usedTuples hPX.weil hPX.ds hN.hc hN.decay _ _ _ _ _ _ _ z.R z.F z.cG p0 Y hRd z.pins hHo hH⟩
+end GlobalTheory.NRows.OverX
+end
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adm8_and_lamUsed_of_readL_of_parameters : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → _root_.GlobalTheory.NRows.GeometricGaloisRepCompatibility → OverRows fun _ _ _ _ w Z _ _ z p0 Y => ReadL z.R z.F p0 Y → (∃ L : SizeData₂ (w.st Z).toD7, Nonempty (ParameterChoice' (w.st Z).toD7 L)) → SumRepresentations.adm8 (w.st Z).toD7 ∧ GlobalTheory.NRows.LamUsed (w.st Z).toD7 := by
+  first | exact @_root_.GlobalTheory.NRows.OverX.lambdaAdic_components_over_base_alt | exact _root_.GlobalTheory.NRows.OverX.lambdaAdic_components_over_base_alt | (intros; apply _root_.GlobalTheory.NRows.OverX.lambdaAdic_components_over_base_alt <;> assumption)
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+section
+noncomputable section
+namespace GlobalTheory.NRows.AtLayer
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top
+  GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+theorem exists_inputs_pinAt_jumpsCard_at_mem : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → _root_.GlobalTheory.NRows.GeometricGaloisRepCompatibility → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists,
+    _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ w Z _ _ _ _ _ c => ∃ I : _root_.GlobalTheory.NRows.LinkedInputs hL (w.D Z), _root_.GlobalTheory.HeightCounting.Up.PinnedAtCharacterChoice c.a I.P ∧ JumpsCard (w.D Z).nd (w.D Z).naut := by
+  intro prn prx hL
+  have hA := _root_.GlobalTheory.HeightCounting.Up.Model.AtMem.and_z (_root_.GlobalTheory.HeightCounting.Up.Model.AtMem.and_z (_root_.GlobalTheory.T.exists_linked_data_pinned_at_layer prn hL) (_root_.GlobalTheory.T.serLoc_at_member_of_published_inputs prn hL)) (_root_.GlobalTheory.HeightCounting.JumpsAt.jumpsCard_at_members_of_htCard prx.ht hL)
+  refine _root_.GlobalTheory.NRows.AtLayer.atMem_mono_of_colPin (EvG.imp (EvG.inter GlobalTheory.T.eventually_sizes_congruences_hostFacts_columnChoices (_root_.GlobalTheory.T.adm8_and_lamUsed_of_readL_of_parameters prn prx)) fun _ _ _ _ _ hK => large₂.inter hK.1 hK.2) hA ?_
+  rintro K B f T ⟨hS, hR⟩ kp w Z Wt p0 t nch n xd c ⟨ne⟩ _ cp ⟨⟨⟨X, hpin, -⟩, ser⟩, jumps⟩
+  obtain ⟨-, -, -, -, -, hdef, -⟩ := hS kp T w Z
+  have hr := hR kp w cp Z Wt t.hX t.r.z p0 t.r.Y t.r.intersectionNumber_baseChange t.exAt t.inGeo t.grp t.grpAt t.r.Z X.X.given.params
+  exact ⟨⟨X, { hypO := ne.large.1
+               c1 := GlobalTheory.DesignBC.jointCond_of_definite _ hdef
+               bc := _root_.UpperTheory.BaseChangeIdentities.Conclusion1_alt_alt_alt prn.bc prn.what₂.bern prn.gen prn.std hL _ X.P.T X.P.H.au X.P.cg X.P.au
+               lam := hr.2
+               isot := hr.1
+               ser := ser
+               typeNZ := _root_.GlobalTheory.T.galoisRep_descends_at_real_places prn.decay prn.howe prx _ _ _ _ X.X }⟩, hpin, jumps⟩
+end GlobalTheory.NRows.AtLayer
+end
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+namespace GlobalTheory.GoodMem
+set_option maxHeartbeats 4000000 in
+theorem goodFTAll_at_members_of_depthZero : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists,
+    _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ w Z _ _ t nch n c => GoodFTAll (w.D Z) := by
+  intro hP hL
+  have hA := _root_.GlobalTheory.T.coefficient_duty_pin_at_each_member hL
+  have hO := _root_.GlobalTheory.T.nonGalois_typeVec_fixed_by_e0 hP
+  refine EvG.imp (EvG.inter hA hO) fun K _ _ _ _ h => ?_
+  refine large₂.imp (large₂.inter h.1 h.2) fun B f T _ g => ?_
+  intro hK w Z Wt p0 t nch n xd c _ _ hpin
+  have hop := g.1 hK w Z Wt p0 t nch n xd c ‹_› ‹_› hpin
+  have hrow := g.2 hK w hpin Z Wt t.hX t.r.z p0 t.r.Y t.r.intersectionNumber_baseChange t.exAt t.inGeo t.grp t.grpAt
+  refine _root_.UpperTheory.Lit.Dz.nonGaloisTwistType hP.green hP.zel hL (w.D Z) _ nch n.tp c.a hop ?_
+  have key : ∀ (D' : D7) (_ : D' = withLoc c.a.nt.L) (r' : D'.what₂.FT → NG.FinTyp D'.host.E D'.R.r), HEq c.a.nt.rep r' →
+      (∀ (I : GlobalTheory.TypeRec.Ident D') cp, GlobalTheory.TypeRec.IsComp I r' cp → ∀ σ, ∃ (V : Type) (_ : AddCommGroup V) (_ : Module ℂ V)
+        (ρ : Representation ℂ (G0g D'.nd) V) (W : Submodule ℂ V) (x : V),
+        (∀ k v, GlobalTheory.GoodTypes.ConjIn ρ W (GlobalTheory.GoodTypes.facHom D' k v) (cp σ k v).ρ) ∧ x ≠ 0 ∧ (∀ a, ρ.asAlgebraHom a x ∈ W) ∧
+        ρ.asAlgebraHom D'.ntypes.e0 x = x) →
+      ∀ (I : GlobalTheory.TypeRec.Ident c.a.nt.D) cp, GlobalTheory.TypeRec.IsComp I c.a.nt.rep cp → ∀ σ, ∃ (V : Type) (_ : AddCommGroup V)
+        (_ : Module ℂ V) (ρ : Representation ℂ (G0g c.a.nt.D.nd) V) (W : Submodule ℂ V) (x : V),
+        (∀ k v, GlobalTheory.GoodTypes.ConjIn ρ W (GlobalTheory.GoodTypes.facHom c.a.nt.D k v) (cp σ k v).ρ) ∧ x ≠ 0 ∧
+        (∀ b, ρ.asAlgebraHom b x ∈ W) ∧ ρ.asAlgebraHom c.a.nt.D.ntypes.e0 x = x := by
+    rintro _ rfl r' hr h
+    have e : c.a.nt.rep = r' := eq_of_heq hr
+    rw [e]
+    intro I cp hc σ
+    exact h ⟨I.i, I.cont⟩ cp hc σ
+  exact key _ c.a.nt.eq _ c.row.rep_eq hrow
+end GlobalTheory.GoodMem
+end
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.goodFTAll_at_mem_of_inputs : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ w Z _ _ t nch n c => GoodFTAll (w.D Z) := by
+  first | exact @_root_.GlobalTheory.GoodMem.goodFTAll_at_members_of_depthZero | exact _root_.GlobalTheory.GoodMem.goodFTAll_at_members_of_depthZero | (intros; apply _root_.GlobalTheory.GoodMem.goodFTAll_at_members_of_depthZero <;> assumption)
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
+noncomputable section
+namespace GlobalTheory.LocCoincide
+set_option maxHeartbeats 4000000 in
+set_option synthInstance.maxHeartbeats 400000 in
+theorem built_laws_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7), _root_.GlobalTheory.HeightCounting.NormChoiceConstructed hL D →
+    GlobalTheory.RowTie.CharLaws D.nd D.naut ∧
+    (∀ (i i' : D.nd.Loc) (σ : D.what₂.FT) (v : PlE D.host), IsSplitPl D.host v → D.naut.locW i σ v = D.naut.locW i' σ v) ∧
+    (∀ i i' : D.nd.Loc, D.nd.j i = D.nd.j i' → D.nd.w i = D.nd.w i' → D.naut.muC i = D.naut.muC i') := by
+  intro hL D b
+  obtain ⟨D0, cf, jE, A, cg, au, rep, row, low, Pq, S, hLm, eig, θ, Bs, M, C, tp, ch, mt, big, L, Sp, Au, ss, eq⟩ := b
+  subst eq
+  refine ⟨?_, ?_, ?_⟩
+  · exact (GlobalTheory.RowLaws.main _ _ _ _ _ A.wdT).2.1
+  · intro i i' σ v _
+    exact (Au.locW i σ v).trans (Au.locW i' σ v).symm
+  · intro i i' hj hw
+    have hj' : L.X.nd.j i = L.X.nd.j i' := hj
+    have hw' : L.X.nd.w i = L.X.nd.w i' := hw
+    have hjr : 1 ≤ L.X.nd.j i ∧ L.X.nd.j i ≤ D0.R.m := L.X.nd.j_range i
+    have hmu : L.X.nd.mu i = L.X.nd.mu i' :=
+      (L.X.nd.mu_w i).trans ((congrArg _ hw').trans (L.X.nd.mu_w i').symm)
+    have e1 : L.X.nd.j i - 1 + 1 = L.X.nd.j i := by omega
+    have e2 : L.X.nd.j i - 1 + 1 = L.X.nd.j i' := by omega
+    have h1 := Au.muC i ⟨L.X.nd.j i - 1, by omega⟩ e1
+    have h2 := Au.muC i' ⟨L.X.nd.j i - 1, by omega⟩ e2
+    show L.Y.muC i = L.Y.muC i'
+    apply A.chr.e1.injective
+    apply Subtype.ext
+    exact h1.trans ((congrArg (fun μ => tp.tup μ ⟨L.X.nd.j i - 1, by omega⟩) hmu).trans h2.symm)
+theorem main_alt_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (M : Formalism.L2.MtFam D), _root_.GlobalTheory.HeightCounting.NormChoiceConstructed hL D →
+    Formalism.L2.HeckeTied D M → KillingConditions.LocalisationUniqueness D := fun hL D M b hT =>
+  have h := _root_.GlobalTheory.LocCoincide.built_laws_alt hL D b
+  GlobalTheory.T.localization_eq_of_heckeAgreement_twistLaws D M hT h.1 h.2.1 h.2.2
+end GlobalTheory.LocCoincide
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+namespace GlobalTheory.HeightCounting.SameTw
+theorem sameTwist_at_alt : ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, ∀ (D : D7) (cf : CharFrame D) (C : NChoice D) (tp : TupTied D cf C), _root_.GlobalTheory.Mem.Top.Bl.NAtData hL D cf C tp → GlobalTheory.HeightCounting.SameTw.OneField D C → GlobalTheory.PtCore.SameTwist D C :=
+  fun _ D _ C _ a h => sameTwist_of_oneField D C a.all.nct h
+end GlobalTheory.HeightCounting.SameTw
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N NumberField ReciprocityTheory.Gal GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.Fc GlobalTheory.NFacts
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+namespace GlobalTheory.NFacts.AtMemFacts
+theorem oneField_of_nAt_alt {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D : D7} {cf : Formalism.L2.Host.CharFrame D} {C : NChoice D} {tp : Formalism.L2.Host.TupTied D cf C}
+    (a : _root_.GlobalTheory.Mem.Top.Bl.NAtData hL D cf C tp) : GlobalTheory.HeightCounting.SameTw.OneField D C := by
+  have key : ∀ X : Σ (D₁ : D7) (c₁ : Formalism.L2.Host.CharFrame D₁) (C₁ : NChoice D₁), Formalism.L2.Host.TupTied D₁ c₁ C₁,
+      X = ⟨withLoc a.nt.L, cfL a.nt.L a.nt.cf, chL a.nt.L a.nt.C, tpL a.nt.L a.nt.tp⟩ →
+        GlobalTheory.HeightCounting.SameTw.OneField X.1 X.2.2.1 := by
+    rintro _ rfl
+    exact (GlobalTheory.HeightCounting.SameTw.oneField_withLoc a.nt.L a.nt.C).2 a.nt.Sp.tw_reads
+  exact key _ a.nt.pack
+end GlobalTheory.NFacts.AtMemFacts
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.NPin GlobalTheory.NFacts
+namespace GlobalTheory.LocInfWt
+theorem infWt_eq_infOf_alt : ∀ (D : D7) (M : MtFam D) (tup : D.what₂.Tup → Fin D.R.m → HChar D.host.E), _root_.GlobalTheory.HeightCounting.HeckeOpenStatements D M tup → ∀ (i : D.nd.Loc) (a : Formalism.L2.NG.AlgWt D.host.E D.R.nV) (τ : D.host.E →+* ℂ) (lam : Fin D.R.nV → ℤ), (M.loc i).wt.IsDual a → a.HWAt τ lam → D.naut.infWt i τ = Formalism.L2.NG.infOf lam := by
+  intro D M tup hH i a τ lam hd hw
+  obtain ⟨P, -⟩ := D.naut.pt_surj i (Classical.arbitrary (D.nd.X i))
+  rw [D.nbc.embAV_inf i P, hH.emb i P,
+    hH.au.wt (D.nd.j i) (D.nd.j_range i).1 (D.nd.j_range i).2 (hH.av.rep i P) a hd]
+  exact hH.au.infW (D.nd.j i) (D.nd.j_range i).1 (D.nd.j_range i).2 a τ lam hw
+end GlobalTheory.LocInfWt
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.NPin GlobalTheory.NFacts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.infWt_eq_infOf_of_isDual : ∀ (D : D7) (M : MtFam D) (tup : D.what₂.Tup → Fin D.R.m → HChar D.host.E), _root_.GlobalTheory.HeightCounting.HeckeOpenStatements D M tup → ∀ (i : D.nd.Loc) (a : Formalism.L2.NG.AlgWt D.host.E D.R.nV) (τ : D.host.E →+* ℂ) (lam : Fin D.R.nV → ℤ), (M.loc i).wt.IsDual a → a.HWAt τ lam → D.naut.infWt i τ = Formalism.L2.NG.infOf lam := by
+  atlas_forward_decl _root_.GlobalTheory.LocInfWt.infWt_eq_infOf_alt
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.NPin GlobalTheory.NFacts
+namespace GlobalTheory
+theorem weightParam_of_pin_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D), GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary.WeightParam D := by
+  intro hL D P
+  exact GlobalTheory.T.weightInfinitesimalCharacterParam_of_levelCompatible D P.M P.tp.tup P.H.level (GlobalTheory.T.infinityType_etaTilde_at_cmTypeEmbeddings_eq_half D P.cf P.C P.tp P.chr) (_root_.GlobalTheory.T.infWt_eq_infOf_of_isDual D P.M P.tp.tup P.H)
+end GlobalTheory
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up GlobalTheory.NPin GlobalTheory.NFacts
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weight_param_of_character_choice : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D), GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary.WeightParam D := by
+  atlas_forward_decl _root_.GlobalTheory.weightParam_of_pin_alt
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+namespace GlobalTheory.MuUnrTie
+theorem main_alt_alt : GlobalTheory.Published.AutomorphicFormsFiniteGL → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D),
+    GlobalTheory.HubX.MuUnr D := by
+  intro _ hL D P i hl w hw
+  have hj := D.nd.j_range i
+  let j : Fin D.R.m := ⟨D.nd.j i - 1, by omega⟩
+  have hjj : j.1 + 1 = D.nd.j i := by simp only [j]; omega
+  have hlp : (D.nd.l i).Prime := (D.nd.lPrime i).out
+  rw [P.chr.unr_iff, P.chr.tw, P.chr.muC i j hjj, P.chr.etaTinv]
+  refine GlobalTheory.MuTameQS.unrAt_mul ?_ (unrAt_inv (P.cf.isEta.unr w))
+  unfold TupTied.tup
+  refine GlobalTheory.MuTameQS.unrAt_mul ?_ ?_
+  · refine (P.cf.isMu0 j).unr w fun k hk => ?_
+    have e := eq_of_over_two hlp (D.host.g_prime k) w hw hk
+    apply hl
+    rw [e]
+    fin_cases k <;> simp [TwistedPlaces.gset]
+  · rw [D.nd.mu_w i, P.tp.xi_tw, D.nd.w_l i]
+    refine GlobalTheory.MuTameQS.unrAt_mul ?_ ?_
+    · unfold CharFrame.delAt
+      split_ifs with h
+      · refine P.cf.isDel'.unr w fun ho => D.host.pde_ne ?_
+        rw [← h]
+        exact eq_of_over_two hlp D.host.pde'_prime w hw ho
+      · refine P.cf.isDel.unr w fun ho => h ?_
+        exact eq_of_over_two hlp D.host.pde_prime w hw ho
+    · have hpsi := P.tp.psi_is (D.nd.w i) (D.nd.w_tw i)
+      rw [D.nd.w_l i, ← P.Q_eq i] at hpsi
+      exact (hpsi.ram w).2 fun hq => D.nd.SQ_l i w (Or.inr hq) hw
+end GlobalTheory.MuUnrTie
+end
+end
+
+section
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open scoped Pointwise
+namespace GlobalTheory.DepthZeroType
+theorem depthZero_tame_alt : _root_.GlobalTheory.NRows.ThetaLocalInputsAlt → GlobalTheory.Published.DepthZeroSupport → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D), (∀ i : D.nd.Loc, Nonempty (RowMod D P.rep (D.nd.j i))) → GlobalTheory.HubX.DepthZeroG D := by
+  intro hp h2 hL D P hR i w hwS hk Q σ hσ
+  obtain ⟨S, hS, -, -⟩ := _root_.GlobalTheory.T.exists_true_reading_with_laws_suppLaws hp.fin hL D P hR
+  have hw : IsSplitPl D.host w := hk.elim fun k h => isSplitPl_of_over D k w h
+  have ht := (_root_.GlobalTheory.MuTameQS.main_alt_alt hL D P S hS i w hw (Or.inl hwS)).1
+  obtain ⟨v, hv0, hv⟩ := (_root_.GlobalTheory.T.type_block_of_tame_at_split_place hL D P S hS i w hw hk ht).2 Q
+  have hfix : v ∈ GlobalTheory.PRep.fixed ((S i w hw).rep Q).π
+      (GlobalTheory.SplitWeil.KOne (w.adicCompletion D.host.E) (Fin (D.R.r + D.R.t))) := by
+    intro h
+    have := GlobalTheory.JacBlock.KOne_le_stab ht hv h.2
+    rw [MonoidHom.one_apply, Units.val_one, one_smul]
+    exact this
+  rw [P.T.inePol w _ σ (mem_Ine_of_wild D w hσ), (S i w hw).locV Q, hS.rc]
+  exact _root_.GlobalTheory.DepthZeroLoc.main_m_alt hp.bz h2 hL D w _ _ ⟨v, hfix, hv0⟩
+    (hk.elim fun k h => UpperTheory.One.M.isQg_of_over D k w h) σ hσ
+end GlobalTheory.DepthZeroType
+end
+end
+end
+end
+
+set_option synthInstance.maxHeartbeats 200000
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open scoped Pointwise
+namespace GlobalTheory.DepthZeroType
+end GlobalTheory.DepthZeroType
+end
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.depthZeroG_of_rowMod : _root_.GlobalTheory.NRows.ThetaLocalInputsAlt → GlobalTheory.Published.DepthZeroSupport → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D), (∀ i : D.nd.Loc, Nonempty (RowMod D P.rep (D.nd.j i))) → GlobalTheory.HubX.DepthZeroG D := by
+  atlas_forward_decl _root_.GlobalTheory.DepthZeroType.depthZero_tame_alt
+end
+end
+end
+
+section
 set_option synthInstance.maxHeartbeats 200000
 
 section
@@ -89,5 +476,6 @@ theorem galois_preconditions_at_mem : _root_.GlobalTheory.HeightCounting.Up.Publ
     same := _root_.GlobalTheory.HeightCounting.SameTw.sameTwist_at_alt hL (w.D Z) _ nch _ c.a (_root_.GlobalTheory.NFacts.AtMemFacts.oneField_of_nAt_alt c.a)
     good := good }
 end UpperTheory.GalS
+end
 end
 end

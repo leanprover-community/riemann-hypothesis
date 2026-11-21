@@ -1,6 +1,28 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticDedekindZeta.SpanNatCastSupEqTop
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticDedekindZeta.Development
 
+section
+open NumberField
+
+namespace PI.ClassNumImQ.ZetaNonvanishing₂
+
+
+
+variable {K : Type} [Field K] [NumberField K]
+
+
+theorem cnt_one : cnt K 1 = 1 := by
+  unfold cnt
+  rw [Nat.card_eq_one_iff_exists]
+  exact ⟨⟨⊤, Ideal.absNorm_top⟩, fun y => Subtype.ext (Ideal.absNorm_eq_one_iff.mp y.2)⟩
+
+
+
+
+end PI.ClassNumImQ.ZetaNonvanishing₂
+end
+
+section
 open NumberField
 
 namespace PI.ClassNumImQ.ZetaNonvanishing₂
@@ -27,3 +49,4 @@ theorem ne_bot_of_absNorm {P : Ideal (𝓞 K)} {n : ℕ} (hP : Ideal.absNorm P =
 
 
 end PI.ClassNumImQ.ZetaNonvanishing₂
+end

@@ -1,6 +1,21 @@
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
-import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrkDiag
+import Mathlib
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.LeviCoordinates
+
+open MeasureTheory Set TopologicalSpace
+open scoped ENNReal InnerProductSpace
+
+
+end Formalism.MainNotions.LeviCoordinates
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.LeviCoordinates
@@ -31,4 +46,5 @@ def rrk_kap (X : CData) (x : X.I.GA) : X.L2 :=
 
 end Formalism.MainNotions.LeviCoordinates
 
+end
 end

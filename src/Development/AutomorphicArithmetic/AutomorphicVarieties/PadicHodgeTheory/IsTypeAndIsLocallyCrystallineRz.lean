@@ -1,10 +1,422 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsInertiaInfiniteCyclotomic
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.KisinCrTrivial
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.MemFilDDiag
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
+import Mathlib
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsCrField
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsCrIff
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamDieudonneSpansTensorDeRhamPeriods
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSumOfIsCrys
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PeriodRingsRegularPhiSurjectiveFilStatement
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.CharFil
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.AdmProd
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.AdmSub
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.PtCont
+
+section
+open TensorProduct Module
+
+namespace UpperTheory.V.Loc.R0
+
+variable {Q E F B H : Type} [Field Q] [Field E] [Algebra Q E] [Field F] [Algebra Q F]
+  [CommRing B] [Algebra Q B] [Algebra F B] [IsScalarTower Q F B]
+
+theorem inv_tensor [FiniteDimensional Q E] (a : H → B ≃ₐ[Q] B)
+    (ha : ∀ b, (∀ g, a g b = b) → ∃ c : F, algebraMap F B c = b) (z : E ⊗[Q] B)
+    (hz : ∀ g, (a g).toLinearMap.lTensor E z = z) :
+    ∃ c : E ⊗[Q] F, (IsScalarTower.toAlgHom Q F B).toLinearMap.lTensor E c = z := by
+  let b := Module.finBasis Q E
+  let φ : Fin (finrank Q E) → E ⊗[Q] B →ₗ[Q] B := fun i =>
+    (TensorProduct.lid Q B).toLinearMap ∘ₗ (b.coord i).rTensor B
+  have h1 : ∀ y : E ⊗[Q] B, ∑ i, b i ⊗ₜ[Q] φ i y = y := by
+    intro y
+    induction y using TensorProduct.induction_on with
+    | zero => simp
+    | tmul e c =>
+      conv_rhs => rw [← b.sum_repr e, sum_tmul]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp [φ, smul_tmul]
+    | add x y hx hy => simp only [map_add, tmul_add, Finset.sum_add_distrib, hx, hy]
+  have h2 : ∀ g i (y : E ⊗[Q] B), φ i ((a g).toLinearMap.lTensor E y) = a g (φ i y) := by
+    intro g i y
+    induction y using TensorProduct.induction_on with
+    | zero => simp
+    | tmul e c => simp [φ]
+    | add x y hx hy => simp only [map_add, hx, hy]
+  choose c hc using fun i => ha (φ i z) fun g => by rw [← h2, hz]
+  refine ⟨∑ i, b i ⊗ₜ[Q] c i, ?_⟩
+  rw [← h1 z, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← hc]
+  rfl
+
+theorem basis_of_unit [FiniteDimensional Q E] [Nontrivial B] (a : H → B ≃ₐ[Q] B)
+    (ha : ∀ b, (∀ g, a g b = b) → ∃ c : F, algebraMap F B c = b) (κ : H → E)
+    (T : H → E ⊗[Q] B →ₗ[E] E ⊗[Q] B) (hT : ∀ g v b, T g (v ⊗ₜ[Q] b) = (κ g * v) ⊗ₜ[Q] a g b)
+    (S : E ⊗[Q] F →ₗ[Q] Module.End Q (E ⊗[Q] B))
+    (hS : ∀ e f v b, S (e ⊗ₜ[Q] f) (v ⊗ₜ[Q] b) = (e • v) ⊗ₜ[Q] (f • b))
+    (x : E ⊗[Q] B) (hu : IsUnit x) (hx : ∀ g, T g x = x) (y : E ⊗[Q] B) (hy : ∀ g, T g y = y) :
+    ∃! c : E ⊗[Q] F, y = S c x := by
+  let j := (IsScalarTower.toAlgHom Q F B).toLinearMap.lTensor E
+  have hj : Function.Injective j :=
+    Module.Flat.lTensor_preserves_injective_linearMap _ (algebraMap F B).injective
+  have h1 : ∀ c z, S c z = j c * z := by
+    intro c z
+    induction c using TensorProduct.induction_on with
+    | zero => simp
+    | add c c' hc hc' => simp only [map_add, LinearMap.add_apply, hc, hc', add_mul]
+    | tmul e f =>
+      induction z using TensorProduct.induction_on with
+      | zero => simp
+      | add z z' hz hz' => simp only [map_add, hz, hz', mul_add]
+      | tmul v b => simp [hS, j, Algebra.smul_def]
+  have h2 : ∀ g z w, T g (z * w) = (a g).toLinearMap.lTensor E z * T g w := by
+    intro g z w
+    induction z using TensorProduct.induction_on with
+    | zero => simp
+    | add c c' hc hc' => simp only [map_add, hc, hc', add_mul]
+    | tmul e f =>
+      induction w using TensorProduct.induction_on with
+      | zero => simp
+      | add z z' hz hz' => simp only [map_add, hz, hz', mul_add]
+      | tmul v b => simp [hT, mul_left_comm]
+  obtain ⟨z, rfl⟩ : ∃ z, y = z * x := ⟨y * ↑hu.unit⁻¹, by simp [mul_assoc]⟩
+  obtain ⟨c, hc⟩ := inv_tensor a ha z fun g => hu.mul_right_cancel (by
+    have := hy g
+    rwa [h2, hx] at this)
+  refine ⟨c, by simp only [h1]; rw [← hc], fun c' hc' => hj ?_⟩
+  simp only [h1] at hc'
+  rw [← hu.mul_right_cancel hc']
+  exact hc.symm
+
+theorem unit_of_span (D : Submodule E (E ⊗[Q] B)) (hD : finrank E D = 1) {m : ℕ} (b : Fin m → B)
+    (d : Fin m → E ⊗[Q] B) (hd : ∀ i, d i ∈ D)
+    (h : (1 : E ⊗[Q] B) = ∑ i, AlgebraTensorModule.map (LinearMap.id : E →ₗ[E] E) (LinearMap.mulLeft Q (b i)) (d i)) :
+    ∃ x ∈ D, IsUnit x := by
+  obtain ⟨x, -, hx⟩ := finrank_eq_one_iff'.1 hD
+  choose e he using fun i => hx ⟨d i, hd i⟩
+  have h1 : ∀ c (z : E ⊗[Q] B), AlgebraTensorModule.map (LinearMap.id : E →ₗ[E] E) (LinearMap.mulLeft Q c) z =
+      ((1 : E) ⊗ₜ[Q] c) * z := by
+    intro c z
+    induction z using TensorProduct.induction_on with
+    | zero => simp
+    | add z z' hz hz' => simp only [map_add, hz, hz', mul_add]
+    | tmul v b => simp
+  refine ⟨x, x.2, IsUnit.of_mul_eq_one (∑ i, e i • ((1 : E) ⊗ₜ[Q] b i)) ?_⟩
+  rw [h, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have : d i = e i • (x : E ⊗[Q] B) := (congrArg Subtype.val (he i)).symm
+  rw [h1, this, mul_smul_comm, mul_smul_comm, mul_comm]
+
+end UpperTheory.V.Loc.R0
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal TensorProduct Module UpperTheory.V.Loc Topology
+
+namespace UpperTheory.V.Loc.R0
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem mem_Dcr {G A V : Type} [Group G] [CommRing A] [Algebra ℚ_[l] A] [AddCommGroup V] [Module A V]
+    [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] (φ : G →* GQ l) (ρ : Representation A G V) (x : V ⊗[ℚ_[l]] Bcr l) :
+    x ∈ Dcr φ ρ ↔ ∀ g, actC φ ρ g x = x := by
+  simp only [Dcr, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply, sub_eq_zero]
+
+theorem mem_Ddr {G A V : Type} [Group G] [CommRing A] [Algebra ℚ_[l] A] [AddCommGroup V] [Module A V]
+    [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] (φ : G →* GQ l) (ρ : Representation A G V) (x : V ⊗[ℚ_[l]] Bdr l) :
+    x ∈ Ddr φ ρ ↔ ∀ g, actD φ ρ g x = x := by
+  simp only [Ddr, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply, sub_eq_zero]
+
+theorem mem_GK_bot (g : GQ l) : g ∈ GK (botExt l) := by simp [GK, botExt]
+
+variable {E : Type} [Field E] [Algebra ℚ_[l] E] [FiniteDimensional ℚ_[l] E] [TopologicalSpace E]
+  [IsModuleTopology ℚ_[l] E] [IsTopologicalRing E]
+
+theorem char_cr (κ : GQ l →* Eˣ) (h : IsCr (GK (botExt l)).subtype (chRep (κ.comp (GK (botExt l)).subtype))) :
+    ∃ x : E ⊗[ℚ_[l]] Bcr l, (∀ g, actC (MonoidHom.id _) (chRep κ) g x = x) ∧ ∀ (L : FinExt l),
+      ∀ y ∈ Dcr (GK L).subtype (chRep (κ.comp (GK L).subtype)), ∃! c : E ⊗[ℚ_[l]] ↥(K0 L), y = smulC E L c x := by
+  obtain ⟨T⟩ := tiedP l
+  have hdom : IsDomain (PP l).R.B := GlobalTheory.RegularRing.isDomain_of_tied T (botExt l)
+  have hc := (isCrField (botExt l) _).1.1 ((isCrIff (botExt l) _).1.1 h)
+  have hf : GlobalTheory.RegularRing.FracInv ((PP l).PD (botExt l)) := by
+    intro x y hx h
+    refine GlobalTheory.Per.FracInv.tied_frac_invariant l _ _ T _ y x hx fun g hg => ?_
+    have h1 := h ⟨g, hg⟩
+    rw [(PP l).PD_actB, (PP l).PD_actB] at h1
+    rw [mul_comm, h1, mul_comm]
+  have hu : GlobalTheory.RegularRing.LineUnit ((PP l).PD (botExt l)) := by
+    intro b hb h
+    refine (GlobalTheory.T.periodRings_regular_phi_surjective_fil l _ _ T).1 (botExt l) b hb fun g hg => ?_
+    obtain ⟨x, hx⟩ := h ⟨g, hg⟩
+    exact ⟨x, by rw [← (PP l).PD_actB (botExt l) ⟨g, hg⟩, hx, Algebra.smul_def]⟩
+  obtain ⟨m, b, d, hd, h1⟩ := GlobalTheory.Per.TiedSpan.exists_sum_of_isCrys _ hf hu _ hc 1
+  have h0 : finrank ℚ_[l] ↥(K0 (botExt l)) = 1 := by
+    rw [show K0 (botExt l) = ⊥ from bot_inf_eq _, IntermediateField.finrank_bot]
+  rw [IsCrys, h0, finrank_self] at hc
+  obtain ⟨x, hx, hxu⟩ := unit_of_span _ hc b d hd h1
+  have hx' : ∀ g, actC (MonoidHom.id _) (chRep κ) g x = x := by
+    intro g
+    simp only [Dcris, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply,
+      sub_eq_zero] at hx
+    refine Eq.trans ?_ (hx ⟨g, mem_GK_bot g⟩)
+    unfold actC actVB
+    congr 2
+    ext b
+    exact ((PP l).PD_actB (botExt l) ⟨g, mem_GK_bot g⟩ b).symm
+  refine ⟨x, hx', fun L y hy => ?_⟩
+  exact basis_of_unit (H := ↥(GK L)) (fun g => (PP l).actQ g)
+    (fun b hb => ((PP l).PD L).invB b fun g => by rw [(PP l).PD_actB]; exact hb g) (fun g => (κ g : E))
+    (actC (GK L).subtype (chRep (κ.comp (GK L).subtype))) (fun g v b => rfl) (smulC E L) (fun e f v b => rfl)
+    x hxu (fun g => hx' g) y ((mem_Dcr _ _ _).1 hy)
+
+theorem char_dr (κ : GQ l →* Eˣ) (h : IsDr (GK (botExt l)).subtype (chRep (κ.comp (GK (botExt l)).subtype))) :
+    ∃ x : E ⊗[ℚ_[l]] Bdr l, (∀ g, actD (MonoidHom.id _) (chRep κ) g x = x) ∧ ∀ (L : FinExt l),
+      ∀ y ∈ Ddr (GK L).subtype (chRep (κ.comp (GK L).subtype)), ∃! c : E ⊗[ℚ_[l]] ↥L.1, y = smulD E L c x := by
+  obtain ⟨T⟩ := tiedP l
+  have hF := GlobalTheory.RegularRing.isField_of_tied T
+  have := hF.nontrivial
+  have hc := (isCrField (botExt l) _).2.1.1 ((isCrIff (botExt l) _).2.1 h)
+  obtain ⟨m, b, d, hd, h1⟩ := GlobalTheory.Per.DeRhamSpan.span_of_isField _ _ hF hc 1
+  have h0 : finrank ℚ_[l] ↥(botExt l).1 = 1 := IntermediateField.finrank_bot
+  rw [IsDR, h0, finrank_self] at hc
+  obtain ⟨x, hx, hxu⟩ := unit_of_span _ hc b d hd h1
+  have hx' : ∀ g, actD (MonoidHom.id _) (chRep κ) g x = x := by
+    intro g
+    simp only [DdR, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply,
+      sub_eq_zero] at hx
+    refine Eq.trans ?_ (hx ⟨g, mem_GK_bot g⟩)
+    unfold actD actVdR
+    congr 2
+    ext b
+    exact ((PP l).PD_actdR (botExt l) ⟨g, mem_GK_bot g⟩ b).symm
+  refine ⟨x, hx', fun L y hy => ?_⟩
+  exact basis_of_unit (H := ↥(GK L)) (fun g => (PP l).actQdR g)
+    (fun b hb => ((PP l).PD L).invdR b fun g => by rw [(PP l).PD_actdR]; exact hb g) (fun g => (κ g : E))
+    (actD (GK L).subtype (chRep (κ.comp (GK L).subtype))) (fun g v b => rfl) (smulD E L) (fun e f v b => rfl)
+    x hxu (fun g => hx' g) y ((mem_Ddr _ _ _).1 hy)
+
+end UpperTheory.V.Loc.R0
+end
+
+section
+noncomputable section
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal TensorProduct Module UpperTheory.V.Loc Topology
+
+namespace UpperTheory.V.Loc.R0
+
+variable {l : ℕ} [Fact l.Prime]
+
+section Map
+
+variable {G A V V' : Type} [Group G] [CommRing A] [Algebra ℚ_[l] A] [AddCommGroup V] [Module A V]
+  [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] [AddCommGroup V'] [Module A V'] [Module ℚ_[l] V']
+  [IsScalarTower ℚ_[l] A V']
+
+variable (l) in
+
+def tm (B : Type) [AddCommGroup B] [Module ℚ_[l] B] (f : V →ₗ[A] V') : V ⊗[ℚ_[l]] B →ₗ[A] V' ⊗[ℚ_[l]] B :=
+  AlgebraTensorModule.map f LinearMap.id
+
+theorem tm_tmul {B : Type} [AddCommGroup B] [Module ℚ_[l] B] (f : V →ₗ[A] V') (v : V) (b : B) :
+    tm l B f (v ⊗ₜ b) = f v ⊗ₜ b := rfl
+
+variable (φ : G →* GQ l) {ρ : Representation A G V} {ρ' : Representation A G V'} (f : V →ₗ[A] V')
+
+theorem tm_actC (g : G) (hf : ∀ x, f (ρ g x) = ρ' g (f x)) (y : V ⊗[ℚ_[l]] Bcr l) :
+    tm l _ f (actC φ ρ g y) = actC φ ρ' g (tm l _ f y) := by
+  induction y using TensorProduct.induction_on with
+  | zero => simp only [map_zero]
+  | tmul v b => exact congrArg (· ⊗ₜ _) (hf v)
+  | add x y hx hy => simp only [map_add, hx, hy]
+
+theorem tm_actD (g : G) (hf : ∀ x, f (ρ g x) = ρ' g (f x)) (y : V ⊗[ℚ_[l]] Bdr l) :
+    tm l _ f (actD φ ρ g y) = actD φ ρ' g (tm l _ f y) := by
+  induction y using TensorProduct.induction_on with
+  | zero => simp only [map_zero]
+  | tmul v b => exact congrArg (· ⊗ₜ _) (hf v)
+  | add x y hx hy => simp only [map_add, hx, hy]
+
+theorem tm_Dcr (hf : ∀ g x, f (ρ g x) = ρ' g (f x)) {y : V ⊗[ℚ_[l]] Bcr l} (hy : y ∈ Dcr φ ρ) :
+    tm l _ f y ∈ Dcr φ ρ' :=
+  (mem_Dcr _ _ _).2 fun g => by rw [← tm_actC φ f g (hf g), (mem_Dcr _ _ _).1 hy]
+
+theorem tm_FilD (hf : ∀ g x, f (ρ g x) = ρ' g (f x)) {i : ℤ} {y : V ⊗[ℚ_[l]] Bdr l} (hy : y ∈ FilD φ ρ i) :
+    tm l _ f y ∈ FilD φ ρ' i := by
+  refine ⟨(mem_Ddr _ _ _).2 fun g => by rw [← tm_actD φ f g (hf g), (mem_Ddr _ _ _).1 hy.1], ?_⟩
+  obtain ⟨z, rfl⟩ := hy.2
+  refine ⟨tm l _ f z, ?_⟩
+  clear hy
+  induction z using TensorProduct.induction_on with
+  | zero => simp only [map_zero]
+  | tmul v b => rfl
+  | add x y hx hy => simp only [map_add, hx, hy]
+
+theorem tm_smulC (K : FinExt l) (c : A ⊗[ℚ_[l]] ↥(K0 K)) (y : V ⊗[ℚ_[l]] Bcr l) :
+    tm l _ f (smulC V K c y) = smulC V' K c (tm l _ f y) := by
+  induction c using TensorProduct.induction_on with
+  | zero => simp only [map_zero, LinearMap.zero_apply]
+  | add x y hx hy => simp only [map_add, LinearMap.add_apply, hx, hy]
+  | tmul a k =>
+    induction y using TensorProduct.induction_on with
+    | zero => simp only [map_zero]
+    | tmul v b => exact congrArg (· ⊗ₜ _) (f.map_smul a v)
+    | add x y hx hy => simp only [map_add, hx, hy]
+
+theorem tm_smulD (K : FinExt l) (c : A ⊗[ℚ_[l]] ↥K.1) (y : V ⊗[ℚ_[l]] Bdr l) :
+    tm l _ f (smulD V K c y) = smulD V' K c (tm l _ f y) := by
+  induction c using TensorProduct.induction_on with
+  | zero => simp only [map_zero, LinearMap.zero_apply]
+  | add x y hx hy => simp only [map_add, LinearMap.add_apply, hx, hy]
+  | tmul a k =>
+    induction y using TensorProduct.induction_on with
+    | zero => simp only [map_zero]
+    | tmul v b => exact congrArg (· ⊗ₜ _) (f.map_smul a v)
+    | add x y hx hy => simp only [map_add, hx, hy]
+
+theorem smulC_one (K : FinExt l) (a : A) (y : V ⊗[ℚ_[l]] Bcr l) :
+    smulC V K (a ⊗ₜ[ℚ_[l]] (1 : ↥(K0 K))) y = a • y := by
+  induction y using TensorProduct.induction_on with
+  | zero => simp only [map_zero, smul_zero]
+  | tmul v b => exact congrArg (_ ⊗ₜ ·) (one_smul ↥(K0 K) b)
+  | add x y hx hy => simp only [map_add, hx, hy, smul_add]
+
+end Map
+
+section Diag
+
+variable {G A : Type} [Group G] [CommRing A] [Algebra ℚ_[l] A] {n : ℕ}
+
+variable (l) in
+
+abbrev pr (B : Type) [AddCommGroup B] [Module ℚ_[l] B] (a : Fin n) :
+    (Fin n → A) ⊗[ℚ_[l]] B →ₗ[A] A ⊗[ℚ_[l]] B := tm l B (LinearMap.proj a)
+
+variable (l) in
+
+abbrev inc (B : Type) [AddCommGroup B] [Module ℚ_[l] B] (a : Fin n) :
+    A ⊗[ℚ_[l]] B →ₗ[A] (Fin n → A) ⊗[ℚ_[l]] B := tm l B (LinearMap.single A (fun _ => A) a)
+
+variable {B : Type} [AddCommGroup B] [Module ℚ_[l] B]
+
+theorem pr_inc (a b : Fin n) (x : A ⊗[ℚ_[l]] B) : pr l B a (inc l B b x) = if a = b then x else 0 := by
+  induction x using TensorProduct.induction_on with
+  | zero => simp
+  | tmul v c => by_cases h : a = b <;> simp [tm_tmul, h]
+  | add x y hx hy => rw [map_add, map_add, hx, hy]; split_ifs <;> simp
+
+theorem sum_inc_pr (y : (Fin n → A) ⊗[ℚ_[l]] B) : ∑ a, inc l B a (pr l B a y) = y := by
+  induction y using TensorProduct.induction_on with
+  | zero => simp
+  | tmul v c => simp [tm_tmul, ← sum_tmul, Finset.univ_sum_single]
+  | add x y hx hy => simp only [map_add, Finset.sum_add_distrib, hx, hy]
+
+variable {ρ : G →* GL (Fin n) A} {κ : Fin n → G →* Aˣ}
+  (hρ : ∀ g, (ρ g : Matrix (Fin n) (Fin n) A) = Matrix.diagonal fun a => (κ a g : A))
+
+include hρ
+
+theorem proj_diag (a : Fin n) (g : G) (x : Fin n → A) :
+    (LinearMap.proj a : (Fin n → A) →ₗ[A] A) (colRep ρ g x) = chRep (κ a) g (LinearMap.proj (R := A) a x) := by
+  simp [colRep, chRep, hρ, Matrix.mulVec_diagonal]
+
+theorem single_diag (a : Fin n) (g : G) (x : A) :
+    LinearMap.single A (fun _ => A) a (chRep (κ a) g x) = colRep ρ g (LinearMap.single A (fun _ => A) a x) := by
+  ext b
+  by_cases h : b = a <;> simp [colRep, chRep, hρ, Matrix.mulVec_diagonal, h]
+
+theorem mem_FilD_diag (φ : G →* GQ l) (i : ℤ) (y : (Fin n → A) ⊗[ℚ_[l]] Bdr l) :
+    y ∈ FilD φ (colRep ρ) i ↔ ∀ a, pr l _ a y ∈ FilD φ (chRep (κ a)) i := by
+  refine ⟨fun h a => tm_FilD φ _ (proj_diag hρ a) h, fun h => ?_⟩
+  rw [← sum_inc_pr y]
+  exact Submodule.sum_mem _ fun a _ => tm_FilD φ _ (single_diag hρ a) (h a)
+
+end Diag
+
+section Types
+
+variable {A : Type} [CommRing A] [Algebra ℚ_[l] A] {n : ℕ} {K : FinExt l}
+  {ρ : ↥(GK K) →* GL (Fin n) A} {κ : Fin n → ↥(GK K) →* Aˣ}
+  (hρ : ∀ g, (ρ g : Matrix (Fin n) (Fin n) A) = Matrix.diagonal fun a => (κ a g : A))
+
+include hρ
+
+theorem hodge_diag (w : Fin n → ℤ) (hw : Function.Injective w) (m : ℤ → ℕ)
+    (hm1 : ∀ a, m (w a) = 1) (hm0 : ∀ i, (∀ a, w a ≠ i) → m i = 0)
+    (hF : ∀ a i, (i ≤ w a → FilD (GK K).subtype (chRep (κ a)) i = Ddr (GK K).subtype (chRep (κ a))) ∧
+      (w a < i → FilD (GK K).subtype (chRep (κ a)) i = ⊥))
+    (hB : ∀ a, ∃ x ∈ Ddr (GK K).subtype (chRep (κ a)), ∀ y ∈ Ddr (GK K).subtype (chRep (κ a)),
+      ∃! c : A ⊗[ℚ_[l]] ↥K.1, y = smulD A K c x) :
+    HodgeType K (colRep ρ) m := by
+  have step : ∀ a i, w a ≠ i → ∀ y ∈ FilD (GK K).subtype (chRep (κ a)) i,
+      y ∈ FilD (GK K).subtype (chRep (κ a)) (i + 1) := by
+    intro a i h y hy
+    rcases lt_or_gt_of_ne h with h | h
+    · rw [(hF a i).2 h, Submodule.mem_bot] at hy
+      exact hy ▸ Submodule.zero_mem _
+    · rw [(hF a _).1 (Int.add_one_le_of_lt h)]
+      exact hy.1
+  intro i
+  by_cases h : ∃ a, w a = i
+  · obtain ⟨a, rfl⟩ := h
+    obtain ⟨x, hx, hb⟩ := hB a
+    rw [hm1]
+    refine ⟨fun _ => inc l _ a x, fun _ => tm_FilD _ _ (single_diag hρ a) (by rwa [(hF a _).1 le_rfl]),
+      fun y hy => ?_⟩
+    have hy' := (mem_FilD_diag hρ _ _ _).1 hy
+    obtain ⟨c, hc, hcu⟩ := hb _ (hy' a).1
+    refine ⟨fun _ => c, (mem_FilD_diag hρ _ _ _).2 fun b => ?_, fun c' hc' => ?_⟩
+    · rw [Fin.sum_univ_one, map_sub, ← tm_smulD, pr_inc]
+      split_ifs with hba
+      · subst hba
+        rw [← hc, sub_self]
+        exact Submodule.zero_mem _
+      · rw [sub_zero]
+        exact step b _ (fun e => hba (hw e)) _ (hy' b)
+    · have h1 := (mem_FilD_diag hρ _ _ _).1 hc' a
+      rw [Fin.sum_univ_one, map_sub, ← tm_smulD, pr_inc, if_pos rfl, (hF a _).2 (lt_add_one _),
+        Submodule.mem_bot, sub_eq_zero] at h1
+      funext j
+      rw [Subsingleton.elim j 0]
+      exact hcu _ h1
+  · push Not at h
+    rw [hm0 i h]
+    refine ⟨Fin.elim0, fun a => a.elim0, fun y hy => ⟨Fin.elim0, ?_, fun _ _ => Subsingleton.elim _ _⟩⟩
+    simp only [Finset.univ_eq_empty, Finset.sum_empty, sub_zero]
+    exact (mem_FilD_diag hρ _ _ _).2 fun b => step b i (h b) _ ((mem_FilD_diag hρ _ _ _).1 hy b)
+
+theorem crys_diag {L : FinExt l} (h : K.1 ≤ L.1) (hN : ((GK L).subgroupOf (GK K)).Normal)
+    (hC : Crys L ((colRep ρ).comp (incl h))) (t : Fin n → ↥(GK K) → A) (x : Fin n → A ⊗[ℚ_[l]] Bcr l)
+    (hx : ∀ a, x a ∈ Dcr (GK L).subtype (chRep ((κ a).comp (incl h))))
+    (hB : ∀ a, ∀ y ∈ Dcr (GK L).subtype (chRep ((κ a).comp (incl h))),
+      ∃! c : A ⊗[ℚ_[l]] ↥(K0 L), y = smulC A L c (x a))
+    (ht : ∀ a γ, actC (GK K).subtype (chRep (κ a)) γ (x a) = t a γ • x a) :
+    CrysTypeOver K L h (colRep ρ) n fun γ => ∑ a, t a γ := by
+  have key : ∀ (c : Fin n → A ⊗[ℚ_[l]] ↥(K0 L)) b,
+      pr l _ b (∑ a, smulC (Fin n → A) L (c a) (inc l _ a (x a))) = smulC A L (c b) (x b) := by
+    intro c b
+    simp only [map_sum, ← tm_smulC, pr_inc, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  refine ⟨hN, hC, fun a => inc l _ a (x a), fun a => tm_Dcr _ _ (fun g => single_diag hρ a (incl h g)) (hx a),
+    fun y hy => ?_, fun γ _ M hM => ?_⟩
+  · choose c hc hcu using fun a => hB a _ (tm_Dcr _ _ (fun g => proj_diag hρ a (incl h g)) hy)
+    refine ⟨c, ?_, fun c' hc' => funext fun b => hcu b _ ?_⟩
+    · refine (sum_inc_pr y).symm.trans (Finset.sum_congr rfl fun a _ => ?_)
+      rw [← tm_smulC]
+      exact congrArg _ (hc a)
+    · exact (congrArg _ hc').trans (key c' b)
+  · rw [sum_tmul]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    have h1 := congrArg (pr l _ b) (hM b)
+    rw [key (fun a => M a b), tm_actC _ _ _ (proj_diag hρ b γ), pr_inc, if_pos rfl, ht] at h1
+    exact (hB b _ (Submodule.smul_mem _ (t b γ) (hx b))).unique h1 (smulC_one L _ _).symm
+
+end Types
+
+end UpperTheory.V.Loc.R0
+end
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.Published IsLocalRing Polynomial
 
 namespace UpperTheory.V.Loc.R0
@@ -173,3 +585,4 @@ theorem UpperTheory.V.Loc.isType_and_isLocallyCrystalline_rz :
     refine ⟨L, h, ?_⟩
     convert key using 2 with γ
     simp [Fin.sum_univ_three, τ, j, wt1]
+end

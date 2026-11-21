@@ -1,19 +1,20 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryGroupAdelicClassesViaFiniteAdelicPartStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealPointActsLinearlyOnMultiplicityValuesPosDefStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCoefficientSpaceDualDiscreteSeriesModelPosStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryGroupAdelicClassesViaFiniteAdelicPart
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealPointActsLinearlyOnMultiplicityValuesPosDef
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCoefficientSpaceDualDiscreteSeriesModelPos
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsMultiplicityMapPrescribedValueDefinite
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FinrankEqCardMulAndTraceEqZeroOfFreeValuesStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqOneOfFiniteOrderUnipotentReductionLargePrime
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsOfFinOrderOfConjMemSelfDualLatticeStabilizer
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsDefiniteSelfDualOfBaseFramePosDefStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FreeMonoidAlgebraOfCharacterVanishesOffOne
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CardMulFinrankSubgroupEigenspaceOfTraceVanishes
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGenericSeriesSquarefreeLabelsStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GoodProjectorCoeffEqProdAtTwoTypePrimes
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FactTypePrime
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GlEqOneOfPowPrimePow
+import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsDefiniteSelfDualOfBaseFramePosDef
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyEquivOfCharacterEq
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SubgroupCharacterIdempotentProperties
+import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsCharIdemOfIsSeries
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesLabelExistsUniqueGLnStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraProductListDegreeStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WhittakerDimensionHarishChandraInductionMulStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WhittakerDimensionCuspidalGreenDegreeEqOneStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelsReadOnProductPrimeFieldGL
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RangeLevelIdempotentProductAndCentralProduct
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TypePrimeLargeAndOneModSixteenQD
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RowsOfLevelOnObjects
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UpperLeftBlockEqSubmatrixOfRankEq
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GoodTupleProjectorIsProjCentral
@@ -22,6 +23,1005 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FamPSizesRecord
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GreenCuspidalIff
 import Development.AutomorphicArithmetic.ExponentialBounds.BadShareWin
 
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryGroup_adelicClasses_via_finiteAdelicPart : ∀ (D : D7) (V : HSp D), (∀ x : UA D.sp.cm V.gram, ∃ h ∈ GfC V, finU V h = x) ∧ (∀ γ ∈ GQ V, finU V γ ∈ UQ D.sp.cm V.gram) ∧ (∀ x ∈ UQ D.sp.cm V.gram, ∃ γ ∈ GQ V, finU V γ = x) ∧ (∀ γ ∈ GQ V, finU V γ = 1 → γ = 1) ∧ ∀ (K : Subgroup (GL (Fin V.rank) (EAf D))) (h h' : GA D V), clsA V K h = clsA V K h' ↔ ∃ γ ∈ GQ V, ∃ κ ∈ levA V K, ∃ k ∈ GinfC V, h' = γ * h * κ * k := by
+  first | exact @GlobalTheory.DefFree.AdelCls.adelic_classes | exact GlobalTheory.DefFree.AdelCls.adelic_classes | (intros; apply GlobalTheory.DefFree.AdelCls.adelic_classes <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realPoint_acts_linearly_on_multiplicity_values_posDef : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), IsInfFam θ → AllPlus M → ∀ k ∈ GinfC V, ∃ φ : Module.End ℂ (MultilinearMap ℂ (fun τ : D.what₂.Tau => M.sm τ) ℂ), ∀ (J : Set (GA D V)) (χ : GA D V → ℂ), ∀ T ∈ Mult θ M J χ, ∀ g : GA D V, evAt M (g * k) T = φ (evAt M g T) := by
+  first | exact @GlobalTheory.RealAct.real_acts | exact GlobalTheory.RealAct.real_acts | (intros; apply GlobalTheory.RealAct.real_acts <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_coefficientSpace_dual_discreteSeriesModel_posDef : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), IsInfFam θ → AllPlus M → ∃ (c : CoefA V) (pr : c.W →ₗ[ℂ] SmT M →ₗ[ℂ] ℂ), c.Is ∧ IsDualPair θ M c pr ∧ Function.Surjective pr := by
+  first | exact @GlobalTheory.DualCoef.exists_dual_coef | exact GlobalTheory.DualCoef.exists_dual_coef | (intros; apply GlobalTheory.DualCoef.exists_dual_coef <;> assumption)
+end
+
+section
+namespace GlobalTheory
+
+theorem trace_eq_zero_of_coord_move {X W : Type} [Fintype X] [DecidableEq X] [AddCommGroup W]
+    [Module ℂ W] [FiniteDimensional ℂ W] (π : X → X) (hπ : ∀ c, π c ≠ c)
+    (φ : X → Module.End ℂ W) (M : Module.End ℂ (X → W)) (hM : ∀ f c, M f c = φ c (f (π c))) :
+    LinearMap.trace ℂ (X → W) M = 0 := by
+  classical
+
+  let b := Pi.basis (fun _ : X => Module.finBasis ℂ W)
+  rw [LinearMap.trace_eq_matrix_trace ℂ b, Matrix.trace]
+  refine Finset.sum_eq_zero fun i _ => ?_
+  rw [Matrix.diag_apply, LinearMap.toMatrix_apply, Pi.basis_repr, Pi.basis_apply, hM,
+    Pi.single_eq_of_ne (hπ i.1), map_zero, map_zero, Finsupp.zero_apply]
+
+theorem finrank_eq_card_mul_and_trace_eq_zero_of_free_values :
+    ∀ (Y X B W : Type) [Finite X] [AddCommGroup B] [Module ℂ B] [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] (cls : Y → X) (ev : Y → (B →ₗ[ℂ] W)) (S : Submodule ℂ B), Function.Surjective cls → (∀ T : B, (∀ h, ev h T = 0) → T = 0) → (∀ h h', cls h = cls h' → ∃ φ : Module.End ℂ W, ∀ T ∈ S, ev h' T = φ (ev h T)) → (∀ h (ℓ : W), ∃ T ∈ S, ev h T = ℓ ∧ ∀ h', cls h' ≠ cls h → ev h' T = 0) → FiniteDimensional ℂ S ∧ Module.finrank ℂ S = Nat.card X * Module.finrank ℂ W ∧ ∀ (H : Type) [AddCommGroup H] [Module ℂ H] (e : H →ₗ[ℂ] B), Function.Injective e → LinearMap.range e = S → ∀ (A : Module.End ℂ H) (t : Y → Y), (∀ x h, ev h (e (A x)) = ev (t h) (e x)) → (∀ h, cls (t h) ≠ cls h) → LinearMap.trace ℂ H A = 0 := by
+  intro Y X B W _ _ _ _ _ _ cls ev S hcls hinj hcls_eq hfree
+  classical
+  haveI : Fintype X := Fintype.ofFinite X
+
+  obtain ⟨s, hs⟩ : ∃ s : X → Y, ∀ x, cls (s x) = x :=
+    ⟨fun x => (hcls x).choose, fun x => (hcls x).choose_spec⟩
+
+  let Φ : S →ₗ[ℂ] (X → W) := LinearMap.pi (fun x => (ev (s x)).comp S.subtype)
+  have hΦ : ∀ (T : S) x, Φ T x = ev (s x) T := fun _ _ => rfl
+  have hzero : ∀ T ∈ S, (∀ x, ev (s x) T = 0) → T = 0 := by
+    intro T hT h0
+    apply hinj
+    intro h
+    obtain ⟨φ, hφ⟩ := hcls_eq (s (cls h)) h (hs _)
+    rw [hφ T hT, h0, map_zero]
+  have hΦinj : Function.Injective Φ := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro T hT
+    refine Subtype.ext (hzero T T.2 (fun x => ?_))
+    have hx := congrFun hT x
+    rw [hΦ] at hx
+    exact hx
+  have hΦsurj : Function.Surjective Φ := by
+    intro g
+    choose T hTS hTg hT0 using fun x => hfree (s x) (g x)
+    refine ⟨⟨∑ x, T x, Submodule.sum_mem _ (fun x _ => hTS x)⟩, ?_⟩
+    funext y
+    show ev (s y) (∑ x, T x) = g y
+    rw [map_sum, Finset.sum_eq_single y]
+    · exact hTg y
+    · intro x _ hxy
+      apply hT0
+      rw [hs, hs]
+      exact Ne.symm hxy
+    · intro h
+      exact absurd (Finset.mem_univ y) h
+  let Ψ : S ≃ₗ[ℂ] (X → W) := LinearEquiv.ofBijective Φ ⟨hΦinj, hΦsurj⟩
+  have hfd : FiniteDimensional ℂ S := LinearEquiv.finiteDimensional Ψ.symm
+  refine ⟨hfd, ?_, ?_⟩
+  · rw [Ψ.finrank_eq, Module.finrank_pi_fintype, Finset.sum_const, Finset.card_univ, smul_eq_mul,
+      Nat.card_eq_fintype_card]
+  · intro H _ _ e he hrange A t hA ht
+
+    let eS : H ≃ₗ[ℂ] S := (LinearEquiv.ofInjective e he).trans (LinearEquiv.ofEq _ _ hrange)
+    let Θ : H ≃ₗ[ℂ] (X → W) := eS.trans Ψ
+    have hΘ : ∀ x c, Θ x c = ev (s c) (e x) := fun _ _ => rfl
+    haveI : FiniteDimensional ℂ H := LinearEquiv.finiteDimensional Θ.symm
+    rw [← LinearMap.trace_conj' A Θ]
+    choose φ hφ using fun c => hcls_eq (s (cls (t (s c)))) (t (s c)) (hs _)
+    refine trace_eq_zero_of_coord_move (fun c => cls (t (s c)))
+      (fun c => by have h := ht (s c); rwa [hs] at h) φ _ ?_
+    intro g c
+    obtain ⟨x, rfl⟩ := Θ.surjective g
+    rw [LinearEquiv.conj_apply_apply, LinearEquiv.symm_apply_apply, hΘ, hΘ, hA]
+    have hmem : e x ∈ S := by
+      rw [← hrange]
+      exact LinearMap.mem_range_self e x
+    exact hφ c (e x) hmem
+
+end GlobalTheory
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finrank_eq_card_mul_and_trace_eq_zero_of_free_values_alt : ∀ (Y X B W : Type) [Finite X] [AddCommGroup B] [Module ℂ B] [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] (cls : Y → X) (ev : Y → (B →ₗ[ℂ] W)) (S : Submodule ℂ B), Function.Surjective cls → (∀ T : B, (∀ h, ev h T = 0) → T = 0) → (∀ h h', cls h = cls h' → ∃ φ : Module.End ℂ W, ∀ T ∈ S, ev h' T = φ (ev h T)) → (∀ h (ℓ : W), ∃ T ∈ S, ev h T = ℓ ∧ ∀ h', cls h' ≠ cls h → ev h' T = 0) → FiniteDimensional ℂ S ∧ Module.finrank ℂ S = Nat.card X * Module.finrank ℂ W ∧ ∀ (H : Type) [AddCommGroup H] [Module ℂ H] (e : H →ₗ[ℂ] B), Function.Injective e → LinearMap.range e = S → ∀ (A : Module.End ℂ H) (t : Y → Y), (∀ x h, ev h (e (A x)) = ev (t h) (e x)) → (∀ h, cls (t h) ≠ cls h) → LinearMap.trace ℂ H A = 0 := by
+  atlas_forward_decl GlobalTheory.finrank_eq_card_mul_and_trace_eq_zero_of_free_values
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.UnipRed
+
+theorem bc_val {A B : Type} [CommRing A] [CommRing B] {n : ℕ} (f : A →+* B) (g : GL (Fin n) A) :
+    (Formalism.UG.bc f g : GL (Fin n) B).val = f.mapMatrix g.val := rfl
+
+theorem eq_one_of_reduction_eq_one {E R k : Type} [Field E] [CommRing R] [CommRing k]
+    [Nontrivial k] (S : Subring R) (ι : E →+* R) (φ : S →+* k) {n m : ℕ} (hm : IsUnit (m : k))
+    (u : GL (Fin n) E) (x : GL (Fin n) R) (y : GL (Fin n) S) (hu : u ^ m = 1)
+    (hxy : Formalism.UG.bc S.subtype y = x⁻¹ * Formalism.UG.bc ι u * x) (hy : Formalism.UG.bc φ y = 1) : u = 1 := by
+  have hU : u.val ^ m = 1 := by rw [← Units.val_pow_eq_pow_val, hu, Units.val_one]
+  have h1 : (u.val - 1) * ∑ j ∈ Finset.range m, u.val ^ j = 0 := by
+    rw [mul_geom_sum, hU, sub_self]
+  have hj : ∀ j : ℕ, S.subtype.mapMatrix (y.val ^ j)
+      = (x⁻¹).val * ι.mapMatrix (u.val ^ j) * x.val := by
+    intro j
+    have h : Formalism.UG.bc S.subtype (y ^ j) = x⁻¹ * Formalism.UG.bc ι (u ^ j) * x := by
+      rw [map_pow, map_pow, hxy]
+      simpa using conj_pow (a := x⁻¹) (b := Formalism.UG.bc ι u) (i := j)
+    have h' := congrArg Units.val h
+    rw [Units.val_mul, Units.val_mul, bc_val, bc_val, Units.val_pow_eq_pow_val,
+      Units.val_pow_eq_pow_val] at h'
+    exact h'
+  have hsum : S.subtype.mapMatrix (∑ j ∈ Finset.range m, y.val ^ j)
+      = (x⁻¹).val * ι.mapMatrix (∑ j ∈ Finset.range m, u.val ^ j) * x.val := by
+    rw [map_sum, map_sum, Finset.mul_sum, Finset.sum_mul]
+    exact Finset.sum_congr rfl fun j _ => hj j
+  have hY : φ.mapMatrix y.val = 1 := by
+    rw [← bc_val, hy, Units.val_one]
+  have hk : φ.mapMatrix (∑ j ∈ Finset.range m, y.val ^ j) = (m : k) • 1 := by
+    rw [map_sum]
+    simp only [map_pow, hY, one_pow, Finset.sum_const, Finset.card_range]
+    rw [Nat.cast_smul_eq_nsmul]
+  have hd : (∑ j ∈ Finset.range m, u.val ^ j).det ≠ 0 := by
+    intro h0
+    have h2 : S.subtype (∑ j ∈ Finset.range m, y.val ^ j).det = 0 := by
+      rw [RingHom.map_det, hsum, Matrix.det_mul, Matrix.det_mul, ← RingHom.map_det, h0, map_zero,
+        mul_zero, zero_mul]
+    have h3 : (∑ j ∈ Finset.range m, y.val ^ j).det = 0 := Subtype.ext h2
+    have h4 := RingHom.map_det φ (∑ j ∈ Finset.range m, y.val ^ j)
+    rw [h3, map_zero, hk, Matrix.det_smul, Matrix.det_one, mul_one] at h4
+    exact (hm.pow _).ne_zero h4.symm
+  have hunit : IsUnit (∑ j ∈ Finset.range m, u.val ^ j) :=
+    (Matrix.isUnit_iff_isUnit_det _).2 (Ne.isUnit hd)
+  have h5 : u.val - 1 = 0 := (hunit.mul_left_eq_zero).1 h1
+  exact Units.ext (by rw [Units.val_one]; exact sub_eq_zero.1 h5)
+
+theorem eq_one_of_unipotent_reduction :
+    ∀ (E R k : Type) [Field E] [NumberField E] [CommRing R] [CommRing k] (S : Subring R) (ι : E →+* R) (φ : S →+* k) (p n : ℕ), p.Prime → CharP k p → Module.finrank ℚ E * n + 1 < p → ∀ (u : GL (Fin n) E) (x : GL (Fin n) R) (y : GL (Fin n) S), IsOfFinOrder u → Formalism.UG.bc S.subtype y = x⁻¹ * Formalism.UG.bc ι u * x → IsNilpotent ((Formalism.UG.bc φ y : GL (Fin n) k).val - 1) → u = 1 := by
+  intro E R k _ _ _ _ S ι φ p n hp hchar hlt u x y hu hxy hnil
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · exact Units.ext (Subsingleton.elim _ _)
+  haveI : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  haveI : Fact p.Prime := ⟨hp⟩
+  haveI : Nontrivial k := CharP.nontrivial_of_char_ne_one (R := k) hp.ne_one
+  obtain ⟨a, ha⟩ := hnil
+  have hpa : (Formalism.UG.bc φ y) ^ (p ^ a) = 1 := by
+    apply Units.ext
+    have h1 : ((Formalism.UG.bc φ y : GL (Fin n) k).val - 1) ^ (p ^ a) = 0 :=
+      pow_eq_zero_of_le (Nat.lt_pow_self hp.one_lt).le ha
+    rw [sub_pow_char_pow_of_commute p a (Commute.one_right _), one_pow, sub_eq_zero] at h1
+    rw [Units.val_pow_eq_pow_val, h1, Units.val_one]
+  obtain ⟨b, m, hm, hbm⟩ := Nat.exists_eq_pow_mul_and_not_dvd hu.orderOf_pos.ne' p hp.ne_one
+  apply GlobalTheory.BadShare.gl_eq_one_of_pow_prime_pow E n p hp hlt u (a + b)
+  refine eq_one_of_reduction_eq_one S ι φ (m := m) ((CharP.isUnit_natCast_iff hp).2 hm)
+    _ x (y ^ p ^ (a + b)) ?_ ?_ ?_
+  · rw [← pow_mul, pow_add, mul_assoc, ← hbm, mul_comm, pow_mul, pow_orderOf_eq_one, one_pow]
+  · rw [map_pow, map_pow, hxy]
+    simpa using conj_pow (a := x⁻¹) (b := Formalism.UG.bc ι u) (i := p ^ (a + b))
+  · rw [map_pow, pow_add, pow_mul, hpa, one_pow]
+
+end GlobalTheory.UnipRed
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_one_of_finiteOrder_unipotentReduction_largePrime : ∀ (E R k : Type) [Field E] [NumberField E] [CommRing R] [CommRing k] (S : Subring R) (ι : E →+* R) (φ : S →+* k) (p n : ℕ), p.Prime → CharP k p → Module.finrank ℚ E * n + 1 < p → ∀ (u : GL (Fin n) E) (x : GL (Fin n) R) (y : GL (Fin n) S), IsOfFinOrder u → Formalism.UG.bc S.subtype y = x⁻¹ * Formalism.UG.bc ι u * x → IsNilpotent ((Formalism.UG.bc φ y : GL (Fin n) k).val - 1) → u = 1 := by
+  atlas_forward_decl GlobalTheory.UnipRed.eq_one_of_unipotent_reduction
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.DefFree
+
+theorem isOfFinOrder_of_conjIn_mem_St :
+    ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : CMData F E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (Λ : Submodule (𝓞 E) (Fin n → E)) (β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)), IsDefUnimod hc J Λ → IsFrame β Λ → ∀ (u : UR hc J) (x : UA hc J), conjIn hc J (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) u ∈ St β → IsOfFinOrder u := by
+  intro F E _ _ _ _ _ _ hc n J L β hU hβ u x hu
+  have hfin := Formalism.UG.Final.AdelicStabFiniteL F E (Fin n) hc.sig J (cm_comp hc) hU.herm hU.unit hU.tdef L
+    (Module.Finite.iff_fg.2 hU.lat.fg) hU.lat.span_eq_top x
+  have hb := base_level_eq_adelic_level F E hc n J L β hβ
+  let H : Subgroup (UR hc J) :=
+    (Formalism.UG.levelAfL hc.sig J L).comap (conjIn hc J (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)))
+  have hH : Finite H := by
+    let f : H → Formalism.UG.stabAt (UQ hc J) ((Formalism.UG.levelAfL hc.sig J L).subgroupOf (UA hc J)) x :=
+      fun γ => ⟨ratEl γ.1, (ratEl_mem_stabAt x γ.1).2 γ.2⟩
+    refine Finite.of_injective f ?_
+    intro a b hab
+    exact Subtype.ext (ratEl_injective (congrArg Subtype.val hab))
+  have huH : u ∈ H := by
+    show conjIn hc J (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) u ∈ Formalism.UG.levelAfL hc.sig J L
+    rw [← hb]
+    refine ⟨?_, hu⟩
+    rw [conjIn_apply]
+    exact Subgroup.mul_mem _ (Subgroup.mul_mem _ (Subgroup.inv_mem _ x.2) (ratEl u).1.2) x.2
+  have := isOfFinOrder_of_finite (⟨u, huH⟩ : H)
+  exact H.subtype.isOfFinOrder this
+
+end GlobalTheory.DefFree
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOfFinOrder_of_conj_mem_selfDualLatticeStabilizer : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (hc : CMData F E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (Λ : Submodule (𝓞 E) (Fin n → E)) (β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)), IsDefUnimod hc J Λ → IsFrame β Λ → ∀ (u : UR hc J) (x : UA hc J), conjIn hc J (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) u ∈ St β → IsOfFinOrder u := by
+  atlas_forward_decl GlobalTheory.DefFree.isOfFinOrder_of_conjIn_mem_St
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isDefiniteSelfDual_of_baseFrame_posDef : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (N : ℕ), V.SigOK → V.IsPosDef → IsBaseFrame V β Λ N → IsDefUnimod D.sp.cm V.gram Λ := by
+  first | exact @GlobalTheory.BaseFrameUnimod.isDefUnimod_of_isBaseFrame | exact GlobalTheory.BaseFrameUnimod.isDefUnimod_of_isBaseFrame | (intros; apply GlobalTheory.BaseFrameUnimod.isDefUnimod_of_isBaseFrame <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.FreeOfCharacter
+
+noncomputable def freeRep (P : Type) [Group P] (N : ℕ) :
+    Representation ℂ P (Fin N → MonoidAlgebra ℂ P) where
+  toFun g :=
+    { toFun := fun x => (MonoidAlgebra.single g (1 : ℂ) : MonoidAlgebra ℂ P) • x
+      map_add' := fun x y => smul_add _ x y
+      map_smul' := fun c x => smul_comm _ c x }
+  map_one' := by
+    refine LinearMap.ext fun x => ?_
+    simp [← MonoidAlgebra.one_def]
+  map_mul' g h := by
+    refine LinearMap.ext fun x => ?_
+    simp [smul_smul, MonoidAlgebra.single_mul_single]
+
+theorem freeRep_apply {P : Type} [Group P] {N : ℕ} (g : P) (x : Fin N → MonoidAlgebra ℂ P) :
+    freeRep P N g x = (MonoidAlgebra.single g (1 : ℂ) : MonoidAlgebra ℂ P) • x := rfl
+
+theorem trace_freeRep {P : Type} [Group P] [Finite P] (N : ℕ) {g : P} (hg : g ≠ 1) :
+    LinearMap.trace ℂ _ (freeRep P N g) = 0 := by
+  classical
+  haveI := Fintype.ofFinite P
+  let b := Pi.basis fun _ : Fin N => MonoidAlgebra.basis P ℂ
+  have hb : ∀ (j : Fin N) (q : P), b ⟨j, q⟩ = Pi.single j (MonoidAlgebra.single q 1) := by
+    intro j q
+    simp [b, Pi.basis_apply]
+  rw [LinearMap.trace_eq_matrix_trace ℂ b, Matrix.trace]
+  refine Finset.sum_eq_zero fun i _ => ?_
+  obtain ⟨j, p⟩ := i
+  have hmove : freeRep P N g (b ⟨j, p⟩) = b ⟨j, g * p⟩ := by
+    rw [hb, hb, freeRep_apply]
+    funext k
+    by_cases hk : k = j
+    · subst hk
+      simp [MonoidAlgebra.single_mul_single]
+    · simp [hk]
+  rw [Matrix.diag_apply, LinearMap.toMatrix_apply, hmove, b.repr_self, Finsupp.single_apply, if_neg]
+  intro h
+  rw [Sigma.mk.inj_iff, heq_iff_eq] at h
+  exact hg (mul_right_cancel (h.2.trans (one_mul p).symm))
+
+theorem finrank_free (P : Type) [Group P] [Finite P] (N : ℕ) :
+    Module.finrank ℂ (Fin N → MonoidAlgebra ℂ P) = Nat.card P * N := by
+  haveI := Fintype.ofFinite P
+  rw [Module.finrank_eq_card_basis (Pi.basis fun _ : Fin N => MonoidAlgebra.basis P ℂ),
+    Fintype.card_sigma, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul,
+    Nat.card_eq_fintype_card, mul_comm]
+
+theorem free_of_trace_eq_zero : ∀ (P M : Type) [Group P] [Finite P] [AddCommGroup M] [Module ℂ M] [FiniteDimensional ℂ M] (ρ : Representation ℂ P M), (∀ g : P, g ≠ 1 → LinearMap.trace ℂ M (ρ g) = 0) → ∃ N : ℕ, Nat.card P * N = Module.finrank ℂ M ∧ Nonempty (ρ.asModule ≃ₗ[MonoidAlgebra ℂ P] (Fin N → MonoidAlgebra ℂ P)) := by
+  intro P M _ _ _ _ _ ρ hρ
+  classical
+  haveI := Fintype.ofFinite P
+  have hcard : (Nat.card P : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Nat.card_pos.ne'
+  haveI : Invertible (Nat.card P : ℂ) := invertibleOfNonzero hcard
+
+  have hz : ∀ g : P, g ≠ 1 → ρ.character g = 0 := hρ
+  have havg := Representation.card_inv_mul_sum_char_eq_finrank ρ
+  rw [Finset.sum_eq_single (1 : P) (fun g _ hg => hz g hg) (by simp),
+    Representation.char_one] at havg
+  obtain ⟨N, hN⟩ : ∃ N : ℕ, Nat.card P * N = Module.finrank ℂ M := by
+    refine ⟨Module.finrank ℂ (Representation.invariants ρ), ?_⟩
+    have hc : ((Nat.card P * Module.finrank ℂ (Representation.invariants ρ) : ℕ) : ℂ) =
+        (Module.finrank ℂ M : ℂ) := by
+      push_cast
+      rw [← havg, ← mul_assoc, mul_inv_cancel₀ hcard, one_mul]
+    exact_mod_cast hc
+  refine ⟨N, hN, ?_⟩
+  haveI : FiniteDimensional ℂ (MonoidAlgebra ℂ P) :=
+    Module.Finite.of_basis (MonoidAlgebra.basis P ℂ)
+
+  have hχ : ρ.character = (freeRep P N).character := by
+    funext g
+    by_cases hg : g = 1
+    · subst hg
+      rw [Representation.char_one, Representation.char_one, finrank_free, hN]
+    · exact (hz g hg).trans (trace_freeRep N hg).symm
+  obtain ⟨e⟩ := GlobalTheory.CharacterDetermines.nonempty_equiv_of_character_eq P M
+    (Fin N → MonoidAlgebra ℂ P) ρ (freeRep P N) hχ
+
+  have hlin : ∀ (r : MonoidAlgebra ℂ P) (x : M),
+      e.toLinearEquiv (ρ.asAlgebraHom r x) = (freeRep P N).asAlgebraHom r (e.toLinearEquiv x) := by
+    intro r x
+    induction r using MonoidAlgebra.induction_on with
+    | of g =>
+      simp only [Representation.asAlgebraHom_of]
+      exact e.toIntertwiningMap.isIntertwining _ _ g x
+    | add f f' hf hf' => simp only [map_add, LinearMap.add_apply, hf, hf']
+    | smul c f hf => simp only [map_smul, LinearMap.smul_apply, hf]
+
+  have hact : ∀ (r : MonoidAlgebra ℂ P) (y : Fin N → MonoidAlgebra ℂ P),
+      (freeRep P N).asAlgebraHom r y = r • y := by
+    intro r y
+    induction r using MonoidAlgebra.induction_on with
+    | of g => rw [Representation.asAlgebraHom_of, freeRep_apply, MonoidAlgebra.of_apply]
+    | add f f' hf hf' => rw [map_add, LinearMap.add_apply, hf, hf', add_smul]
+    | smul c f hf => rw [map_smul, LinearMap.smul_apply, hf, smul_assoc]
+  exact ⟨{ (ρ.asModuleEquiv.trans e.toLinearEquiv).toAddEquiv with
+    map_smul' := fun r x => by
+      change e.toLinearEquiv (ρ.asModuleEquiv (r • x)) = r • e.toLinearEquiv (ρ.asModuleEquiv x)
+      rw [Representation.asModuleEquiv_map_smul, hlin, hact] }⟩
+
+end GlobalTheory.FreeOfCharacter
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.free_monoidAlgebra_of_character_vanishes_off_one : ∀ (P M : Type) [Group P] [Finite P] [AddCommGroup M] [Module ℂ M] [FiniteDimensional ℂ M] (ρ : Representation ℂ P M), (∀ g : P, g ≠ 1 → LinearMap.trace ℂ M (ρ g) = 0) → ∃ N : ℕ, Nat.card P * N = Module.finrank ℂ M ∧ Nonempty (ρ.asModule ≃ₗ[MonoidAlgebra ℂ P] (Fin N → MonoidAlgebra ℂ P)) := by
+  atlas_forward_decl GlobalTheory.FreeOfCharacter.free_of_trace_eq_zero
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.DefFree
+
+theorem isProj_eig_average {G M : Type} [Group G] [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ G M)
+    (P : Subgroup G) [Fintype P] (χ : P →* ℂˣ) :
+    LinearMap.IsProj (GlobalTheory.DefFree.eig ρ P fun g => ((χ g : ℂˣ) : ℂ))
+      ((Fintype.card P : ℂ)⁻¹ • ∑ g : P, (((χ g)⁻¹ : ℂˣ) : ℂ) • (ρ g : M →ₗ[ℂ] M)) := by
+  classical
+  have hcard : (Fintype.card P : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Fintype.card_ne_zero
+  have happ : ∀ x : M, ((Fintype.card P : ℂ)⁻¹ • ∑ g : P, (((χ g)⁻¹ : ℂˣ) : ℂ) • (ρ g : M →ₗ[ℂ] M)) x
+      = (Fintype.card P : ℂ)⁻¹ • ∑ g : P, (((χ g)⁻¹ : ℂˣ) : ℂ) • ρ g x := by
+    intro x
+    simp only [LinearMap.smul_apply, LinearMap.sum_apply]
+  refine ⟨fun x => ?_, fun x hx => ?_⟩
+  ·
+    rw [happ, mem_eig]
+    intro h
+    have hsum : ρ h (∑ g : P, (((χ g)⁻¹ : ℂˣ) : ℂ) • ρ g x)
+        = ((χ h : ℂˣ) : ℂ) • ∑ g : P, (((χ g)⁻¹ : ℂˣ) : ℂ) • ρ g x := by
+      rw [map_sum, Finset.smul_sum]
+      refine Fintype.sum_equiv (Equiv.mulLeft h) _ _ fun g => ?_
+      have hc : ((χ h : ℂˣ) : ℂ) * (((χ (h * g))⁻¹ : ℂˣ) : ℂ) = (((χ g)⁻¹ : ℂˣ) : ℂ) := by
+        rw [← Units.val_mul, map_mul, mul_inv, mul_inv_cancel_left]
+      show ρ h ((((χ g)⁻¹ : ℂˣ) : ℂ) • ρ g x)
+        = ((χ h : ℂˣ) : ℂ) • ((((χ (h * g))⁻¹ : ℂˣ) : ℂ) • ρ ((h * g : P) : G) x)
+      rw [smul_smul, hc, map_smul, Subgroup.coe_mul, map_mul, Module.End.mul_apply]
+    show ρ h (_ • _) = ((χ h : ℂˣ) : ℂ) • (_ • _)
+    rw [map_smul, hsum, smul_comm]
+  ·
+    have hx' : ∀ g : P, ρ g x = ((χ g : ℂˣ) : ℂ) • x := fun g => (mem_eig.mp hx) g
+    have hterm : ∀ g : P, (((χ g)⁻¹ : ℂˣ) : ℂ) • ρ g x = x := fun g => by
+      rw [hx' g, smul_smul, ← Units.val_mul, inv_mul_cancel, Units.val_one, one_smul]
+    rw [happ]
+    simp only [hterm, Finset.sum_const, Finset.card_univ]
+    rw [← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hcard, one_smul]
+
+theorem card_mul_finrank_eig (G M : Type) [Group G] [Finite G] [AddCommGroup M] [Module ℂ M]
+    [FiniteDimensional ℂ M] (ρ : Representation ℂ G M) (P : Subgroup G) (χ : P →* ℂˣ)
+    (h : ∀ g ∈ P, g ≠ 1 → LinearMap.trace ℂ M (ρ g) = 0) :
+    Nat.card P * Module.finrank ℂ (GlobalTheory.DefFree.eig ρ P fun g => ((χ g : ℂˣ) : ℂ)) = Module.finrank ℂ M := by
+  classical
+  haveI : Fintype P := Fintype.ofFinite P
+  have htr := (isProj_eig_average ρ P χ).trace
+  rw [map_smul, map_sum, smul_eq_mul] at htr
+  simp only [map_smul, smul_eq_mul] at htr
+
+  rw [Finset.sum_eq_single (1 : P) (fun g _ hg => by
+      rw [h g g.2 (fun h1 => hg (Subtype.ext h1)), mul_zero])
+    (fun h1 => absurd (Finset.mem_univ _) h1)] at htr
+  rw [map_one, inv_one, Units.val_one, one_mul, OneMemClass.coe_one, map_one,
+    LinearMap.trace_one] at htr
+  have hcard : (Fintype.card P : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Fintype.card_ne_zero
+  rw [Nat.card_eq_fintype_card]
+  have key : (Fintype.card P : ℂ) * (Module.finrank ℂ (GlobalTheory.DefFree.eig ρ P fun g => ((χ g : ℂˣ) : ℂ)) : ℂ)
+      = (Module.finrank ℂ M : ℂ) := by
+    rw [← htr, ← mul_assoc, mul_inv_cancel₀ hcard, one_mul]
+  exact_mod_cast key
+
+end GlobalTheory.DefFree
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_mul_finrank_subgroupEigenspace_of_trace_vanishes : ∀ (G M : Type) [Group G] [Finite G] [AddCommGroup M] [Module ℂ M] [FiniteDimensional ℂ M] (ρ : Representation ℂ G M) (P : Subgroup G) (χ : P →* ℂˣ), (∀ g ∈ P, g ≠ 1 → LinearMap.trace ℂ M (ρ g) = 0) → Nat.card P * Module.finrank ℂ (eig ρ P fun g => ((χ g : ℂˣ) : ℂ)) = Module.finrank ℂ M := by
+  atlas_forward_decl GlobalTheory.DefFree.card_mul_finrank_eig
+end
+
+section
+open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.BadShare GlobalTheory.BadShare.Basic
+open scoped Classical
+
+namespace GlobalTheory.GLq.SqSeries
+
+variable {g : ℕ} [Fact g.Prime]
+
+theorem isClass_of_isChar {G : Type} [Group G] {χ : G → ℂ} (h : IsChar χ) : IsClass χ := by
+  obtain ⟨V, hV⟩ := h
+  intro x y
+  rw [← hV, ← hV, FDRep.char_conj]
+
+theorem wh_one_zero (ψ : AddChar (ZMod g) ℂ) : wh ψ (fun _ : Gn g 0 => (1 : ℂ)) = 1 := by
+  haveI : Subsingleton (Gn g 0) := ⟨fun a b => Units.ext (Subsingleton.elim _ _)⟩
+  unfold wh tr
+  rw [Fintype.sum_subsingleton _ 1, eU, coeff_eDat, mul_one]
+  have hU : ∀ u : Gn g 0, IsUniUp u.val := fun u a => a.elim0
+  have hc : Nat.card {u : GG g 0 // IsUniUp u.val} = 1 := by
+    haveI : Nonempty {u : GG g 0 // IsUniUp u.val} := ⟨⟨1, hU 1⟩⟩
+    exact Nat.card_unique
+  unfold eps
+  rw [if_pos (hU 1), hc]
+  simp
+
+theorem wh_const_mul (ψ : AddChar (ZMod g) ℂ) {n : ℕ} (c : ℂ) (χ : Gn g n → ℂ) :
+    wh ψ (fun x => c * χ x) = c * wh ψ χ := by
+  unfold wh tr
+  rw [Finset.mul_sum]
+  exact Finset.sum_congr rfl fun x _ => by ring
+
+theorem wh_hcL (ψ : AddChar (ZMod g) ℂ) (hψ : ψ ≠ 1) (L : List (Pc g))
+    (h : ∀ p ∈ L, IsCusp p.2 ∧ p.2 1 = ∏ i ∈ Finset.Ico 1 p.1, ((g : ℂ) ^ i - 1)) :
+    wh ψ (hcL L (degL L)) = 1 := by
+  induction L with
+  | nil => exact wh_one_zero ψ
+  | cons p L ih =>
+    have hp := h p List.mem_cons_self
+    have hL := fun q hq => h q (List.mem_cons_of_mem p hq)
+    have hch : ∀ q : Pc g, IsCusp q.2 → IsChar q.2 := fun q hq => by
+      obtain ⟨V, -, hV⟩ := hq.2.1
+      exact ⟨V, hV⟩
+    have c1 := isClass_of_isChar (hch p hp.1)
+    have c2 := isClass_of_isChar (GlobalTheory.T.harishChandraProductList_isCharacter_and_perm_invariant g L L _ rfl fun q hq => hch q (hL q hq).1).1
+    rw [hcL_cons, hc, GlobalTheory.T.whittakerDimension_harishChandraInduction_mul g ψ hψ p.1 (degL L) _ (by simp [degL]) _
+      (fun y a b => by simp only [c1 a b]) (fun x a b => by simp only [c2 a b])]
+    simp only [wh_const_mul, ih hL, mul_one]
+    exact GlobalTheory.T.whittakerDimension_cuspidal_greenDegree_eq_one g ψ hψ _ _ hp.1 hp.2
+
+theorem isGeneric_of_wh (ψ : AddChar (ZMod g) ℂ) (hψ : ψ ≠ 1) {n : ℕ} (hn : 0 < n) (V : FDRep ℂ (GG g n))
+    (h : wh ψ V.character ≠ 0) : IsGeneric V.ρ := by
+  have hk : 0 + 0 < n := hn
+  refine ⟨levOfChar ψ hψ n false 0 0 hk, rfl, ?_⟩
+  have h1 : op V.ρ (levOfChar ψ hψ n false 0 0 hk).e ≠ 0 := by
+    intro h0
+    apply h
+    have := congrArg (LinearMap.trace ℂ V) h0
+    rw [map_zero, op, map_sum] at this
+    rw [← this]
+    unfold wh tr
+    refine Finset.sum_congr (by congr) fun x _ => ?_
+    rw [coeff_eU ψ hψ 0 0 hk, map_smul, smul_eq_mul]
+    rfl
+  obtain ⟨y, hy⟩ : ∃ y, op V.ρ (levOfChar ψ hψ n false 0 0 hk).e y ≠ 0 := by
+    by_contra hc
+    push_neg at hc
+    exact h1 (LinearMap.ext hc)
+  refine ⟨_, hy, fun u hu => ?_⟩
+  exact (GlobalTheory.BadShare.EpsProj.mem_range_iff V.ρ (mem_one _) (fun _ _ => mem_mul _) (chi_one _) (fun _ _ => chi_mul _) _).1
+    ⟨y, rfl⟩ u ⟨hu, fun hs => absurd hs (by simp [levOfChar])⟩
+
+theorem deg_hcL (L : List (Pc g)) (n : ℕ) (hn : n = degL L)
+    (h : ∀ p ∈ L, 0 < p.1 ∧ p.2 1 = ∏ i ∈ Finset.Ico 1 p.1, ((g : ℂ) ^ i - 1)) :
+    hcL L n 1 * (L.map fun p => ((g : ℂ) ^ p.1 - 1)).prod = ∏ i ∈ Finset.range n, ((g : ℂ) ^ (i + 1) - 1) := by
+  have H := GlobalTheory.T.harishChandraProductList_degree g L n hn
+  have e1 : (L.map fun p => ∏ i ∈ Finset.Icc 1 p.1, ((g : ℂ) ^ i - 1)).prod =
+      (L.map fun p => ((g : ℂ) ^ p.1 - 1)).prod * (L.map fun p => p.2 1).prod := by
+    rw [← List.prod_map_mul]
+    congr 1
+    refine List.map_congr_left fun p hp => ?_
+    rw [(h p hp).2, ← Finset.Ico_add_one_right_eq_Icc, Finset.prod_Ico_succ_top (h p hp).1, mul_comm]
+  have e2 : (L.map fun p => p.2 1).prod ≠ 0 := by
+    refine List.prod_ne_zero fun h0 => ?_
+    obtain ⟨p, hp, h1⟩ := List.mem_map.1 h0
+    rw [(h p hp).2, Finset.prod_eq_zero_iff] at h1
+    obtain ⟨i, hi, h2⟩ := h1
+    have h3 : g ^ i = 1 := by exact_mod_cast sub_eq_zero.1 h2
+    have h4 := (Fact.out : g.Prime).one_lt
+    have h5 := (Finset.mem_Ico.1 hi).1
+    have := Nat.one_lt_pow (n := i) (by omega) h4
+    omega
+  rw [e1, ← mul_assoc] at H
+  rw [mul_right_cancel₀ e2 H, ← Finset.Ico_add_one_right_eq_Icc, Finset.prod_Ico_eq_prod_range]
+  simp [add_comm]
+
+theorem exists_series : GlobalTheory.GLq.Green → ∀ (g : ℕ) [Fact g.Prime] (L : GlobalTheory.GLq.LabelDatum g) (n : ℕ), 5 ≤ g → 0 < n → ∃ τ : (ZMod g)[X] → GlobalTheory.BadShare.GG g n → ℂ, GlobalTheory.BadShare.IsSeries τ ∧ ∀ f ∈ GlobalTheory.BadShare.sqSet g n, ∀ x, (GlobalTheory.GLq.eSerC L n f).coeff x = GlobalTheory.BadShare.zc (τ f) x := by
+  intro hG g _ L n hg hn
+  obtain ⟨H1, -, H3⟩ := GlobalTheory.T.harishChandraSeriesLabel_exists_unique_GLn g L hg hG n
+  have H4 := fun (f : (ZMod g)[X]) (hf : f ∈ sqSet g n) =>
+    H3 f (mem_sqSet.1 hf).1 (mem_sqSet.1 hf).2.1 (mem_sqSet.1 hf).2.2.2 (mem_sqSet.1 hf).2.2.1
+  choose! Q Q1 Q2 Q3 Q4 using H4
+  have hmem : ∀ f ∈ sqSet g n, IsIrr (hcL ((Q f).map Prod.snd) n) ∧ HasLabel L (hcL ((Q f).map Prod.snd) n) f := by
+    intro f hf
+    have : hcL ((Q f).map Prod.snd) n ∈ {χ : Gn g n → ℂ | IsIrr χ ∧ HasLabel L χ f} := by
+      rw [Q4 f hf]; rfl
+    exact this
+  refine ⟨fun f => hcL ((Q f).map Prod.snd) n, ⟨fun f hf f' hf' h => ?_, fun f hf => ?_⟩, fun f hf x => ?_⟩
+  · have a := hmem f hf
+    have b := (hmem f' hf').2
+    have h' : hcL ((Q f).map Prod.snd) n = hcL ((Q f').map Prod.snd) n := h
+    rw [← h'] at b
+    exact (H1 _ a.1).unique a.2 b
+  · obtain ⟨V, hs, hV⟩ := (hmem f hf).1
+    have hV' : V.character = hcL ((Q f).map Prod.snd) n := funext hV
+    have hc : ∀ p ∈ (Q f).map Prod.snd, IsCusp p.2 ∧ p.2 1 = ∏ i ∈ Finset.Ico 1 p.1, ((g : ℂ) ^ i - 1) := by
+      intro p hp
+      obtain ⟨q, hq, rfl⟩ := List.mem_map.1 hp
+      exact ⟨(Q1 f hf q hq).1.2.1, (Q1 f hf q hq).2⟩
+    refine ⟨V, hs, hV', ?_, ?_⟩
+    · have hψ := (levStandard g n false 0 0 hn).hψ
+      refine isGeneric_of_wh _ hψ hn V ?_
+      have h1 := wh_hcL _ hψ _ hc
+      rw [Q3 f hf] at h1
+      rw [hV', h1]
+      exact one_ne_zero
+    · have h1 := deg_hcL _ n (Q3 f hf).symm fun p hp => ⟨(hc p hp).1.1, (hc p hp).2⟩
+      have hpos : ∀ i, 1 ≤ g ^ i := fun i => Nat.one_le_pow _ _ (by omega)
+      have h2 : (torusCard g f : ℂ) = (((Q f).map Prod.snd).map fun p => ((g : ℂ) ^ p.1 - 1)).prod := by
+        rw [torusCard, degType, ← Q2 f hf]
+        simp only [Multiset.map_coe, Multiset.prod_coe, List.map_map, Nat.cast_list_prod]
+        congr 1
+        refine List.map_congr_left fun q hq => ?_
+        simp only [Function.comp]
+        rw [(Q1 f hf q hq).1.1.2.2.2, Nat.cast_sub (hpos _)]
+        simp
+      rw [← hV', FDRep.char_one, ← h2] at h1
+      apply Nat.cast_injective (R := ℂ)
+      rw [Nat.cast_mul, h1, Nat.cast_prod]
+      refine Finset.prod_congr rfl fun i _ => ?_
+      rw [Nat.cast_sub (hpos _)]
+      simp
+  · rw [eSerC, Q4 f hf, finsum_mem_singleton]
+    exact coeff_alg (zc _) x
+
+end GlobalTheory.GLq.SqSeries
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_genericSeries_squarefreeLabels : GlobalTheory.GLq.Green → ∀ (g : ℕ) [Fact g.Prime] (L : GlobalTheory.GLq.LabelDatum g) (n : ℕ), 5 ≤ g → 0 < n → ∃ τ : (ZMod g)[X] → GlobalTheory.BadShare.GG g n → ℂ, GlobalTheory.BadShare.IsSeries τ ∧ ∀ f ∈ GlobalTheory.BadShare.sqSet g n, ∀ x, (GlobalTheory.GLq.eSerC L n f).coeff x = GlobalTheory.BadShare.zc (τ f) x := by
+  atlas_forward_decl GlobalTheory.GLq.SqSeries.exists_series
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+
+namespace GlobalTheory.GoodProjProd
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+theorem monicOf_injective {g N : ℕ} [Fact g.Prime] :
+    Function.Injective fun c : Fin N → ZMod g => (Formalism.CyclotomicNorms.monicOf c : (ZMod g)[X]) := by
+  intro c c' h
+  funext i
+  have key := congrArg (fun p : (ZMod g)[X] => p.coeff (i : ℕ)) h
+  simp only [Formalism.CyclotomicNorms.monicOf, Polynomial.coeff_add, Polynomial.coeff_X_pow, Polynomial.finset_sum_coeff,
+    Polynomial.coeff_C_mul_X_pow, Nat.ne_of_lt i.isLt, if_false, zero_add] at key
+  rwa [Finset.sum_eq_single i (fun j _ hj => if_neg (fun e => hj (Fin.ext e.symm))) (by simp), if_pos rfl,
+    Finset.sum_eq_single i (fun j _ hj => if_neg (fun e => hj (Fin.ext e.symm))) (by simp), if_pos rfl] at key
+
+open Classical in
+
+theorem sum_good {g N m : ℕ} [Fact g.Prime] {ι : Type} [Fintype ι] [Fintype (ι → Fin N → ZMod g)]
+    (ch : ι → Fin m → (ZMod g)ˣ) (h : (ι → (ZMod g)[X]) → ℂ) :
+    (∑ a : ι → Fin N → ZMod g, if GlobalTheory.BadShare.Good g N ch (fun v => Formalism.CyclotomicNorms.monicOf (a v)) then
+      h (fun v => Formalism.CyclotomicNorms.monicOf (a v)) else 0) = ∑ F ∈ GlobalTheory.BadShare.goodSet g N ch, h F := by
+  have hinj : Function.Injective fun (a : ι → Fin N → ZMod g) (v : ι) => (Formalism.CyclotomicNorms.monicOf (a v) : (ZMod g)[X]) :=
+    by
+      intro a b hab
+      funext v
+      have hv : Formalism.CyclotomicNorms.monicOf (a v) = (Formalism.CyclotomicNorms.monicOf (b v) : (ZMod g)[X]) := congrFun hab v
+      exact monicOf_injective (g := g) (N := N) hv
+  have hset : GlobalTheory.BadShare.goodSet g N ch =
+      (Finset.univ.filter fun a : ι → Fin N → ZMod g => GlobalTheory.BadShare.Good g N ch fun v => Formalism.CyclotomicNorms.monicOf (a v)).image
+        fun (a : ι → Fin N → ZMod g) (v : ι) => (Formalism.CyclotomicNorms.monicOf (a v) : (ZMod g)[X]) := by
+    ext F
+    simp only [Finset.mem_image, Finset.mem_filter, Finset.mem_univ, true_and]
+    constructor
+    · intro hF
+      have hG := GlobalTheory.BadShare.mem_goodSet_iff_good.1 hF
+      have hsq := (GlobalTheory.BadShare.good_iff.1 hG).1
+      have hc : ∀ v, ∃ c : Fin N → ZMod g, Formalism.CyclotomicNorms.monicOf c = F v := by
+        intro v
+        have hv := hsq v
+        rw [GlobalTheory.BadShare.sqSet_eq_monicOf, Finset.mem_filter, Finset.mem_image] at hv
+        obtain ⟨c, -, hc⟩ := hv.1
+        exact ⟨c, hc⟩
+      choose a ha using hc
+      have hMa : (fun v => Formalism.CyclotomicNorms.monicOf (a v)) = F := funext ha
+      refine ⟨a, ?_, hMa⟩
+      rw [hMa]
+      exact hG
+    · rintro ⟨a, hG, rfl⟩
+      exact GlobalTheory.BadShare.mem_goodSet_iff_good.2 hG
+  rw [hset, Finset.sum_image (fun a _ b _ e => hinj e), Finset.sum_filter]
+
+theorem sum_sigma_two {P : Fin 2 → Type} {A : Fin 2 → Type} [Fintype (∀ kv : (Σ k : Fin 2, P k), A kv.1)]
+    [Fintype (P 0 → A 0)] [Fintype (P 1 → A 1)] (f0 : (P 0 → A 0) → ℂ) (f1 : (P 1 → A 1) → ℂ) :
+    (∑ a : (∀ kv : (Σ k : Fin 2, P k), A kv.1), f0 (fun v => a ⟨0, v⟩) * f1 (fun v => a ⟨1, v⟩)) =
+      (∑ a, f0 a) * ∑ b, f1 b := by
+  rw [Finset.sum_mul_sum, ← Fintype.sum_prod_type']
+  exact Fintype.sum_equiv ((Equiv.piCurry fun (k : Fin 2) (_ : P k) => A k).trans
+    (piFinTwoEquiv fun k => P k → A k)) _ _ (fun a => rfl)
+
+theorem goodProjector_coeff_eq_prod_at_two_typePrimes : ∀ (D : D7) (τ : ∀ k : Fin 2, (ZMod (D.host.g k))[X] → GlobalTheory.BadShare.GG (D.host.g k) D.R.r → ℂ), (∀ k, ∀ f ∈ GlobalTheory.BadShare.sqSet (D.host.g k) D.R.r, ∀ x, (D.ntypes.eSer k f).coeff x = GlobalTheory.BadShare.zc (τ k f) x) → ∀ γ : G0g D.nd, D.ntypes.e0.coeff γ = GlobalTheory.BadShare.eGood (fun _ => τ 0) (D.nd.chiT 0) (fun v => γ ⟨0, v⟩) * GlobalTheory.BadShare.eGood (fun _ => τ 1) (D.nd.chiT 1) (fun v => γ ⟨1, v⟩) := by
+  intro D τ hτ γ
+  classical
+  have he : D.ntypes.e0.coeff γ = ∑ᶠ a : (∀ kv : (Σ k : Fin 2, D.nd.PlG k), Fin D.R.r → ZMod (D.host.g kv.1)),
+      if D.ntypes.goodTuple (fun k v => Formalism.CyclotomicNorms.monicOf (a ⟨k, v⟩)) then
+        ∏ kv, (D.ntypes.eSer kv.1 (Formalism.CyclotomicNorms.monicOf (a kv))).coeff (γ kv) else 0 := by
+    unfold NTypes.e0
+    rfl
+  let f : ∀ k : Fin 2, (D.nd.PlG k → Fin D.R.r → ZMod (D.host.g k)) → ℂ := fun k b =>
+    if GlobalTheory.BadShare.Good (D.host.g k) D.R.r (D.nd.chiT k) (fun v => Formalism.CyclotomicNorms.monicOf (b v)) then
+      ∏ v, (D.ntypes.eSer k (Formalism.CyclotomicNorms.monicOf (b v))).coeff (γ ⟨k, v⟩) else 0
+  have hsplit : ∀ a : (∀ kv : (Σ k : Fin 2, D.nd.PlG k), Fin D.R.r → ZMod (D.host.g kv.1)),
+      (if D.ntypes.goodTuple (fun k v => Formalism.CyclotomicNorms.monicOf (a ⟨k, v⟩)) then
+        ∏ kv, (D.ntypes.eSer kv.1 (Formalism.CyclotomicNorms.monicOf (a kv))).coeff (γ kv) else 0) =
+        f 0 (fun v => a ⟨0, v⟩) * f 1 (fun v => a ⟨1, v⟩) := by
+    intro a
+    have hg : D.ntypes.goodTuple (fun k v => Formalism.CyclotomicNorms.monicOf (a ⟨k, v⟩)) ↔
+        ∀ k : Fin 2, GlobalTheory.BadShare.Good (D.host.g k) D.R.r (D.nd.chiT k) (fun v => Formalism.CyclotomicNorms.monicOf (a ⟨k, v⟩)) := by
+      unfold NTypes.goodTuple GlobalTheory.BadShare.Good
+      exact Iff.rfl
+    rw [Fintype.prod_sigma, Fin.prod_univ_two]
+    by_cases h0 : GlobalTheory.BadShare.Good (D.host.g 0) D.R.r (D.nd.chiT 0) (fun v => Formalism.CyclotomicNorms.monicOf (a ⟨0, v⟩)) <;>
+      by_cases h1 : GlobalTheory.BadShare.Good (D.host.g 1) D.R.r (D.nd.chiT 1) (fun v => Formalism.CyclotomicNorms.monicOf (a ⟨1, v⟩)) <;>
+      simp [f, hg, Fin.forall_fin_two, h0, h1]
+  have hk : ∀ k : Fin 2, ∑ b, f k b = GlobalTheory.BadShare.eGood (fun _ => τ k) (D.nd.chiT k) (fun v => γ ⟨k, v⟩) := by
+    intro k
+    refine (Eq.trans ?_ (sum_good (g := D.host.g k) (N := D.R.r) (D.nd.chiT k)
+      (fun F => ∏ v, (D.ntypes.eSer k (F v)).coeff (γ ⟨k, v⟩)))).trans ?_
+    · rfl
+    · unfold GlobalTheory.BadShare.eGood
+      rw [Finset.sum_apply]
+      refine Finset.sum_congr rfl (fun F hF => ?_)
+      have hsq := (GlobalTheory.BadShare.good_iff.1 (GlobalTheory.BadShare.mem_goodSet_iff_good.1 hF)).1
+      unfold GlobalTheory.BadShare.tens
+      exact Finset.prod_congr rfl fun v _ => hτ k (F v) (hsq v) (γ ⟨k, v⟩)
+  rw [he, finsum_eq_sum_of_fintype, Fintype.sum_congr _ _ hsplit,
+    sum_sigma_two (P := fun k => D.nd.PlG k) (A := fun k => Fin D.R.r → ZMod (D.host.g k)) (f 0) (f 1), hk 0, hk 1]
+
+end GlobalTheory.GoodProjProd
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeff_e0_eq_eGood_mul_eGood : ∀ (D : D7) (τ : ∀ k : Fin 2, (ZMod (D.host.g k))[X] → GlobalTheory.BadShare.GG (D.host.g k) D.R.r → ℂ), (∀ k, ∀ f ∈ GlobalTheory.BadShare.sqSet (D.host.g k) D.R.r, ∀ x, (D.ntypes.eSer k f).coeff x = GlobalTheory.BadShare.zc (τ k f) x) → ∀ γ : G0g D.nd, D.ntypes.e0.coeff γ = GlobalTheory.BadShare.eGood (fun _ => τ 0) (D.nd.chiT 0) (fun v => γ ⟨0, v⟩) * GlobalTheory.BadShare.eGood (fun _ => τ 1) (D.nd.chiT 1) (fun v => γ ⟨1, v⟩) := by
+  atlas_forward_decl GlobalTheory.GoodProjProd.goodProjector_coeff_eq_prod_at_two_typePrimes
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.LevRange
+
+theorem range_sum_eq_eig {G M : Type} [Group G] [Fintype G] [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ G M)
+    (P : Subgroup G) (χ : P → ℂ) (E : G → ℂ) (k : ℂ) (hk : k ≠ 0) (h0 : ∀ g, g ∉ P → E g = 0)
+    (h1 : ∀ g : P, E g * χ g = k) (hm : ∀ a b : P, χ (a * b) = χ a * χ b) :
+    LinearMap.range (∑ g, E g • ρ g) = eig ρ P χ := by
+  classical
+  have hs : ∀ (p : P) (g : G), E g = χ p * E (p * g) := by
+    intro p g
+    by_cases hg : g ∈ P
+    · have e1 := h1 ⟨g, hg⟩
+      have e2 := h1 (p * ⟨g, hg⟩)
+      rw [hm] at e2
+      have hne : χ ⟨g, hg⟩ ≠ 0 := by
+        intro h; rw [h, mul_zero] at e1; exact hk e1.symm
+      apply mul_right_cancel₀ hne
+      simp only [Subgroup.coe_mul] at e1 e2
+      rw [e1, ← e2]; ring
+    · have : (p : G) * g ∉ P := fun h => hg ((P.mul_mem_cancel_left p.2).1 h)
+      rw [h0 g hg, h0 _ this, mul_zero]
+  apply le_antisymm
+  · rintro _ ⟨y, rfl⟩
+    rw [mem_eig]
+    intro p
+    simp only [LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, Finset.smul_sum]
+    rw [← Equiv.sum_comp (Equiv.mulLeft (p : G)) (fun g => χ p • E g • ρ g y)]
+    refine Finset.sum_congr rfl fun g _ => ?_
+    rw [hs p g, Equiv.coe_mulLeft, map_mul, Module.End.mul_apply, mul_smul]
+  · intro x hx
+    rw [mem_eig] at hx
+    have hT : (∑ g, E g • ρ g) x = (∑ g : G, if g ∈ P then k else 0) • x := by
+      simp only [LinearMap.sum_apply, LinearMap.smul_apply, Finset.sum_smul]
+      refine Finset.sum_congr rfl fun g _ => ?_
+      by_cases hg : g ∈ P
+      · rw [if_pos hg, ← h1 ⟨g, hg⟩, mul_smul, ← hx ⟨g, hg⟩]
+      · rw [if_neg hg, h0 g hg, zero_smul, zero_smul]
+    have hne : (∑ g : G, if g ∈ P then k else 0) ≠ 0 := by
+      rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
+      refine mul_ne_zero ?_ hk
+      have : (Finset.univ.filter fun g : G => g ∈ P).Nonempty := ⟨1, by simp⟩
+      exact_mod_cast this.card_pos.ne'
+    refine ⟨(∑ g : G, if g ∈ P then k else 0)⁻¹ • x, ?_⟩
+    rw [map_smul, hT, smul_smul, inv_mul_cancel₀ hne, one_smul]
+
+theorem range_mul_eq_inf {M : Type} [AddCommGroup M] [Module ℂ M] (C T : Module.End ℂ M) (hC : C * C = C)
+    (hc : C * T = T * C) : LinearMap.range (C * T) = LinearMap.range T ⊓ LinearMap.ker (C - LinearMap.id) := by
+  apply le_antisymm
+  · rintro _ ⟨y, rfl⟩
+    refine ⟨⟨C y, ?_⟩, ?_⟩
+    · rw [hc]; rfl
+    · have : C (C (T y)) = C (T y) := by rw [← Module.End.mul_apply, hC]
+      simp [this]
+  · rintro _ ⟨⟨y, rfl⟩, h⟩
+    refine ⟨y, ?_⟩
+    simpa [sub_eq_zero] using h
+
+theorem op_comp {G H M : Type} [Group G] [Fintype G] [Group H] [Fintype H] [AddCommGroup M] [Module ℂ M]
+    (Φ : G ≃* H) (ρ : Representation ℂ G M) (e : H → ℂ) :
+    GlobalTheory.BadShare.op (M := M) (ρ.comp Φ.symm.toMonoidHom) e = ∑ g, e (Φ g) • ρ g := by
+  unfold GlobalTheory.BadShare.op
+  rw [← Equiv.sum_comp Φ.toEquiv]
+  refine Finset.sum_congr rfl fun g _ => ?_
+  simp
+
+theorem tens_e_mul {g N : ℕ} [Fact g.Prime] {ι : Type} [Fintype ι] (L : ι → GlobalTheory.BadShare.Lev g N)
+    (γ : ι → GlobalTheory.BadShare.GG g N) (h : ∀ v, (L v).Mem (γ v)) :
+    GlobalTheory.BadShare.tens (fun v => (L v).e) γ * ∏ v, (L v).chi (γ v) = ∏ v, (Nat.card {u // (L v).Mem u} : ℂ)⁻¹ := by
+  unfold GlobalTheory.BadShare.tens
+  rw [← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun v _ => ?_
+  have := GlobalTheory.BadShare.Basic.chi_ne (L v) (γ v)
+  simp only [GlobalTheory.BadShare.Lev.e, GlobalTheory.BadShare.eps, if_pos (h v)]
+  field_simp
+
+theorem tens_e_zero {g N : ℕ} [Fact g.Prime] {ι : Type} [Fintype ι] (L : ι → GlobalTheory.BadShare.Lev g N)
+    (γ : ι → GlobalTheory.BadShare.GG g N) (h : ¬ ∀ v, (L v).Mem (γ v)) :
+    GlobalTheory.BadShare.tens (fun v => (L v).e) γ = 0 := by
+  obtain ⟨v, hv⟩ := not_forall.1 h
+  exact Finset.prod_eq_zero (Finset.mem_univ v) (by simp only [GlobalTheory.BadShare.Lev.e, GlobalTheory.BadShare.eps, if_neg hv])
+
+theorem prod_card_ne {g N : ℕ} [Fact g.Prime] {ι : Type} [Fintype ι] (L : ι → GlobalTheory.BadShare.Lev g N) :
+    (∏ v, (Nat.card {u // (L v).Mem u} : ℂ)⁻¹) ≠ 0 := by
+  refine Finset.prod_ne_zero_iff.2 fun v _ => inv_ne_zero ?_
+  haveI : Nonempty {u // (L v).Mem u} := ⟨⟨1, GlobalTheory.BadShare.Basic.mem_one (L v)⟩⟩
+  exact_mod_cast Nat.card_pos.ne'
+
+theorem ranges : ∀ (g₁ g₂ N : ℕ) [Fact g₁.Prime] [Fact g₂.Prime] (ι₁ ι₂ G M : Type) [Fintype ι₁] [Fintype ι₂] [DecidableEq ι₁] [DecidableEq ι₂] [Group G] [Fintype G] [AddCommGroup M] [Module ℂ M] (Φ : G ≃* (ι₁ → GlobalTheory.BadShare.GG g₁ N) × (ι₂ → GlobalTheory.BadShare.GG g₂ N)) (L₁ : ι₁ → GlobalTheory.BadShare.Lev g₁ N) (L₂ : ι₂ → GlobalTheory.BadShare.Lev g₂ N) (P : Subgroup G) (χ : P → ℂ) (ρ : Representation ℂ G M) [Fintype ((ι₁ → GlobalTheory.BadShare.GG g₁ N) × (ι₂ → GlobalTheory.BadShare.GG g₂ N))] (c : (ι₁ → GlobalTheory.BadShare.GG g₁ N) × (ι₂ → GlobalTheory.BadShare.GG g₂ N) → ℂ), (∀ g : G, g ∈ P ↔ (∀ v, (L₁ v).Mem ((Φ g).1 v)) ∧ ∀ v, (L₂ v).Mem ((Φ g).2 v)) → (∀ g : P, χ g = (∏ v, (L₁ v).chi ((Φ g).1 v)) * ∏ v, (L₂ v).chi ((Φ g).2 v)) → GlobalTheory.BadShare.conv c c = c → (∀ a, GlobalTheory.BadShare.conv c a = GlobalTheory.BadShare.conv a c) → LinearMap.range (GlobalTheory.BadShare.op (M := M) (ρ.comp Φ.symm.toMonoidHom) (GlobalTheory.BadShare.tens2 (GlobalTheory.BadShare.tens fun v => (L₁ v).e) (GlobalTheory.BadShare.tens fun v => (L₂ v).e))) = eig ρ P χ ∧ LinearMap.range (GlobalTheory.BadShare.op (M := M) (ρ.comp Φ.symm.toMonoidHom) (GlobalTheory.BadShare.conv c (GlobalTheory.BadShare.tens2 (GlobalTheory.BadShare.tens fun v => (L₁ v).e) (GlobalTheory.BadShare.tens fun v => (L₂ v).e)))) = eig ρ P χ ⊓ LinearMap.ker ((∑ g : G, c (Φ g) • ρ g) - LinearMap.id) := by
+  intro g₁ g₂ N _ _ ι₁ ι₂ G M _ _ _ _ _ _ _ _ Φ L₁ L₂ P χ ρ _ c hP hχ hcc hc
+  have key : LinearMap.range (GlobalTheory.BadShare.op (M := M) (ρ.comp Φ.symm.toMonoidHom) (GlobalTheory.BadShare.tens2 (GlobalTheory.BadShare.tens fun v => (L₁ v).e) (GlobalTheory.BadShare.tens fun v => (L₂ v).e))) = eig ρ P χ := by
+    rw [op_comp]
+    refine range_sum_eq_eig ρ P χ _ _ (mul_ne_zero (prod_card_ne L₁) (prod_card_ne L₂)) ?_ ?_ ?_
+    · intro g hg
+      rw [hP, not_and_or] at hg
+      unfold GlobalTheory.BadShare.tens2
+      rcases hg with h | h
+      · rw [tens_e_zero _ _ h, zero_mul]
+      · rw [tens_e_zero L₂ _ h, mul_zero]
+    · intro g
+      obtain ⟨h1, h2⟩ := (hP g).1 g.2
+      rw [hχ, ← tens_e_mul L₁ _ h1, ← tens_e_mul L₂ _ h2]
+      unfold GlobalTheory.BadShare.tens2
+      ring
+    · intro a b
+      obtain ⟨a1, a2⟩ := (hP a).1 a.2
+      obtain ⟨b1, b2⟩ := (hP b).1 b.2
+      rw [hχ, hχ, hχ]
+      simp only [Subgroup.coe_mul, map_mul, Prod.fst_mul, Prod.snd_mul, Pi.mul_apply]
+      simp only [fun v => GlobalTheory.BadShare.Basic.chi_mul (L₁ v) (a1 v) (b1 v),
+        fun v => GlobalTheory.BadShare.Basic.chi_mul (L₂ v) (a2 v) (b2 v), Finset.prod_mul_distrib]
+      ring
+  refine ⟨key, ?_⟩
+  rw [GlobalTheory.BadShare.Basic.op_conv, range_mul_eq_inf, key, op_comp]
+  · rw [← GlobalTheory.BadShare.Basic.op_conv, hcc]
+  · rw [← GlobalTheory.BadShare.Basic.op_conv, hc, GlobalTheory.BadShare.Basic.op_conv]
+
+end GlobalTheory.LevRange
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.range_levelIdempotentProduct_and_centralProduct : ∀ (g₁ g₂ N : ℕ) [Fact g₁.Prime] [Fact g₂.Prime] (ι₁ ι₂ G M : Type) [Fintype ι₁] [Fintype ι₂] [DecidableEq ι₁] [DecidableEq ι₂] [Group G] [Fintype G] [AddCommGroup M] [Module ℂ M] (Φ : G ≃* (ι₁ → GlobalTheory.BadShare.GG g₁ N) × (ι₂ → GlobalTheory.BadShare.GG g₂ N)) (L₁ : ι₁ → GlobalTheory.BadShare.Lev g₁ N) (L₂ : ι₂ → GlobalTheory.BadShare.Lev g₂ N) (P : Subgroup G) (χ : P → ℂ) (ρ : Representation ℂ G M) [Fintype ((ι₁ → GlobalTheory.BadShare.GG g₁ N) × (ι₂ → GlobalTheory.BadShare.GG g₂ N))] (c : (ι₁ → GlobalTheory.BadShare.GG g₁ N) × (ι₂ → GlobalTheory.BadShare.GG g₂ N) → ℂ), (∀ g : G, g ∈ P ↔ (∀ v, (L₁ v).Mem ((Φ g).1 v)) ∧ ∀ v, (L₂ v).Mem ((Φ g).2 v)) → (∀ g : P, χ g = (∏ v, (L₁ v).chi ((Φ g).1 v)) * ∏ v, (L₂ v).chi ((Φ g).2 v)) → GlobalTheory.BadShare.conv c c = c → (∀ a, GlobalTheory.BadShare.conv c a = GlobalTheory.BadShare.conv a c) → LinearMap.range (GlobalTheory.BadShare.op (M := M) (ρ.comp Φ.symm.toMonoidHom) (GlobalTheory.BadShare.tens2 (GlobalTheory.BadShare.tens fun v => (L₁ v).e) (GlobalTheory.BadShare.tens fun v => (L₂ v).e))) = eig ρ P χ ∧ LinearMap.range (GlobalTheory.BadShare.op (M := M) (ρ.comp Φ.symm.toMonoidHom) (GlobalTheory.BadShare.conv c (GlobalTheory.BadShare.tens2 (GlobalTheory.BadShare.tens fun v => (L₁ v).e) (GlobalTheory.BadShare.tens fun v => (L₂ v).e)))) = eig ρ P χ ⊓ LinearMap.ker ((∑ g : G, c (Φ g) • ρ g) - LinearMap.id) := by
+  atlas_forward_decl GlobalTheory.LevRange.ranges
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.TypePrimeSize
+
+theorem k_pow_le_g {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) (i : Fin 2) : D.R.k ^ 8 ≤ D.host.g i := by
+  obtain ⟨Y, h1, -, -, h4⟩ := P.g_Y
+  have hL : 0 ≤ L.sc.L := by
+    unfold Scale.L; exact Real.rpow_nonneg (by linarith [L.sc.one_lt_alt]) _
+  have hb : 1 ≤ L.sc.b := by unfold Scale.b; exact Real.one_le_exp hL
+  have hk : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
+  have h2 : (D.R.k : ℝ) ≤ D.R.k * L.sc.b := le_mul_of_one_le_right hk hb
+  have h3 : (D.R.k : ℝ) ^ 8 ≤ (D.R.k * L.sc.b) ^ 8 := pow_le_pow_left₀ hk h2 8
+  have : (D.R.k : ℝ) ^ 8 ≤ D.host.g i := h3.trans (h1.trans (h4 i).1)
+  exact_mod_cast this
+
+theorem typePrime_large_and_ok : ∀ (D : D7) (L : SizeData₂ D), ParameterChoice' D L → ∀ k : Fin 2,
+    Module.finrank ℚ D.host.E * D.R.r + 1 < D.host.g k ∧
+      GlobalTheory.BadShare.PrimeOK (D.host.g k) D.host.q D.host.d := by
+  intro D L P i
+  have hg := k_pow_le_g P i
+  have hE : Module.finrank ℚ D.host.E = 4 * D.R.ord := D.host.finrank_cmField
+  have he := D.host.two_le_e
+  have h4 : 2 ^ 2 ≤ 2 ^ D.R.e := Nat.pow_le_pow_right (by norm_num) he
+  have hf := D.R.f_le_k
+  have hfo : D.R.f = 2 * D.R.ord := rfl
+  have ho : 2 ^ D.R.e ≤ D.R.ord := Nat.le_of_dvd D.R.ord_pos D.R.toFrame.two_pow_dvd_ord
+  have hm := D.R.m_add_three_le_k
+  have hm2 := D.R.two_le_m
+  have ht := D.R.rank_add_five_le
+  have hk8 : 8 ≤ D.R.k := by omega
+  have hr : D.R.r ≤ 2 * D.R.k := by unfold Ranks.r; omega
+  have hr1 : 1 ≤ D.R.r := by unfold Ranks.r; omega
+  have hE' : Module.finrank ℚ D.host.E ≤ 2 * D.R.k := by
+    have h2f : D.R.f = 2 * D.R.ord := rfl
+    have hfk : D.R.f ≤ D.R.k := hf
+    omega
+  have hk6 : 8 ^ 6 ≤ D.R.k ^ 6 := Nat.pow_le_pow_left hk8 6
+  have hk2 : 8 ^ 2 ≤ D.R.k ^ 2 := Nat.pow_le_pow_left hk8 2
+  have hpow : 8 ^ 6 * D.R.k ^ 2 ≤ D.R.k ^ 8 := by
+    calc 8 ^ 6 * D.R.k ^ 2 ≤ D.R.k ^ 6 * D.R.k ^ 2 := Nat.mul_le_mul_right _ hk6
+      _ = D.R.k ^ 8 := by ring
+  have hprod : Module.finrank ℚ D.host.E * D.R.r ≤ 4 * D.R.k ^ 2 := by
+    calc Module.finrank ℚ D.host.E * D.R.r ≤ (2 * D.R.k) * (2 * D.R.k) := Nat.mul_le_mul hE' hr
+      _ = 4 * D.R.k ^ 2 := by ring
+  obtain ⟨hq, hd, hq8, hd16, -⟩ := D.host.hyp
+  have hb := D.host.qd_big.1
+  refine ⟨by omega, hq, hd, by omega, by omega, by omega, ?_, ?_, by omega⟩
+  · have h1 : 5 * 1 ≤ D.R.t * D.R.r := Nat.mul_le_mul (by omega) hr1
+    have h2 : 4 * D.R.t * D.R.r = 4 * (D.R.t * D.R.r) := by ring
+    exact le_max_of_le_left (by omega)
+  · have hc := D.ntypes.g_cond i
+    have hdvd : 16 * D.host.q * D.host.d ∣ D.host.QS * D.host.q * D.host.d := by
+      have h16 : 16 ∣ D.host.QS := (pow_dvd_pow 2 (by omega : 4 ≤ D.R.e + 2)).trans D.host.tower_dvd
+      exact Nat.mul_dvd_mul_right (Nat.mul_dvd_mul_right h16 _) _
+    refine hdvd.trans ⟨D.host.g i / (D.host.QS * D.host.q * D.host.d), ?_⟩
+    have := Nat.div_add_mod (D.host.g i) (D.host.QS * D.host.q * D.host.d)
+    omega
+
+end GlobalTheory.TypePrimeSize
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.Links
+open Formalism.IndefR.Datum (InfFam)
+open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.typePrime_large_and_one_mod_sixteen_q_d : ∀ (D : D7) (L : SizeData₂ D), ParameterChoice' D L → ∀ k : Fin 2, Module.finrank ℚ D.host.E * D.R.r + 1 < D.host.g k ∧ GlobalTheory.BadShare.PrimeOK (D.host.g k) D.host.q D.host.d := by
+  atlas_forward_decl GlobalTheory.TypePrimeSize.typePrime_large_and_ok
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField
@@ -433,4 +1433,5 @@ theorem goodVectorsDefinite (hG : GlobalTheory.Published.GreenCuspidal) : GoodVe
 
 end GlobalTheory.DefFree
 
+end
 end

@@ -4,8 +4,175 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleHodgeT
 import Development.AbelianVarietyTheory.Definitions.Foundations.HTPresNuOfPolys
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsLamFR2
 import Development.AbelianVarietyTheory.Definitions.Foundations.ChiProj
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ContinuousOfCg
+import Development.AbelianVarietyTheory.Definitions.Foundations.IsLamF
+import Development.AbelianVarietyTheory.Definitions.Foundations.CoPtMu
+import Development.AbelianVarietyTheory.Definitions.Foundations.IwSys2
+import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormLeOneOfIsIntegral
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsKummerElementFixedFieldClosedSubgroup
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPolynomialPrimitiveRootOfCyclotomicInertia
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsClosedInertiaCyclotomicKernel
+import Development.AbelianVarietyTheory.Definitions.Foundations.NotZeroChi
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIndexStabilizer
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HtPresNu7MonoLoss
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemIntegersOfNormLeOne
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UntwistedRepresentationOrdinaryTriangularShape
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ PowerSeries
+
+namespace GlobalTheory.KumUnit
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {l : ℕ} [Fact l.Prime]
+
+def ValPres (A : ValuationSubring Ω) (m r : ℕ) (ζ : Ω) (z : G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l) : Prop :=
+  ∃ (ι : Type) (_ : Fintype ι) (o : ι → Qbar l) (u : ι → Ω) (n : ι → ℤ) (k : ι → G ℚ Ω → ZMod (l ^ m)),
+    (∀ i, ‖o i‖ ≤ 1) ∧ (∀ i, u i ≠ 0 ∧ A.valuation (u i) ^ (l ^ r).totient = A.valuation (l : Ω) ^ n i) ∧
+    (∀ s ∈ Ine (F := ℚ) A, cycMod ℚ Ω l r s = 1 →
+      (∀ i, GlobalTheory.Col.KumVal (l := l) m ζ (u i) s (k i s)) ∧ Cg m (z s 1) (∑ i, o i * ((k i s).val : Qbar l))) ∧
+    Cg m (∑ i, o i * (((n i : ZMod (l ^ m))).val : Qbar l)) 0
+
+theorem cg_trans {m : ℕ} {x y z : Qbar l} (h : Cg m x y) (h' : Cg m y z) : Cg m x z := by
+  unfold Cg at *
+  have hm := IsUltrametricDist.norm_add_le_max (x - y) (y - z)
+  rw [sub_add_sub_cancel] at hm
+  exact hm.trans (max_le h h')
+
+theorem cg_symm {m : ℕ} {x y : Qbar l} (h : Cg m x y) : Cg m y x := by
+  unfold Cg at *
+  rwa [norm_sub_rev]
+
+theorem cg_sum {m : ℕ} {ι : Type} (S : Finset ι) {x y : ι → Qbar l} (h : ∀ i ∈ S, Cg m (x i) (y i)) :
+    Cg m (∑ i ∈ S, x i) (∑ i ∈ S, y i) := by
+  unfold Cg
+  rw [← Finset.sum_sub_distrib]
+  exact IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (norm_nonneg _) h
+
+theorem cg_mul_left {m : ℕ} {o x y : Qbar l} (ho : ‖o‖ ≤ 1) (h : Cg m x y) : Cg m (o * x) (o * y) := by
+  unfold Cg at *
+  rw [← mul_sub, norm_mul]
+  calc ‖o‖ * ‖x - y‖ ≤ 1 * ‖x - y‖ := mul_le_mul_of_nonneg_right ho (norm_nonneg _)
+    _ = ‖x - y‖ := one_mul _
+    _ ≤ _ := h
+
+end GlobalTheory.KumUnit
+end
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ
+open scoped Matrix
+
+namespace GlobalTheory.KZ.UnitPres
+
+open GlobalTheory.KumUnit
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {l : ℕ} [Fact l.Prime]
+
+theorem kumVal_int {n : ℕ} {ζ u v : Ω} {s : G ℚ Ω} {j : ℤ} (hζ : ζ ^ (l ^ n) = 1) (hv : v ^ (l ^ n) = u)
+    (hs : s v = ζ ^ j * v) : GlobalTheory.Col.KumVal (l := l) n ζ u s (j : ZMod (l ^ n)) := by
+  have hpos : 0 < l ^ n := pow_pos (Fact.out : l.Prime).pos n
+  haveI : NeZero (l ^ n) := ⟨hpos.ne'⟩
+  have h0 : ζ ≠ 0 := by rintro rfl; rw [zero_pow hpos.ne'] at hζ; exact zero_ne_one hζ
+  refine ⟨v, hv, ?_⟩
+  rw [hs, ← zpow_natCast, ZMod.val_intCast]
+  congr 1
+  conv_lhs => rw [← Int.emod_add_mul_ediv j ((l ^ n : ℕ) : ℤ)]
+  rw [zpow_add₀ h0, zpow_mul, zpow_natCast, hζ, one_zpow, mul_one]
+
+theorem cg_intCast (n : ℕ) (j : ℤ) : Cg (l := l) n (((j : ZMod (l ^ n)).val : ℕ) : Qbar l) (j : Qbar l) := by
+  have hpos : 0 < l ^ n := pow_pos (Fact.out : l.Prime).pos n
+  haveI : NeZero (l ^ n) := ⟨hpos.ne'⟩
+  have h1 : (((j : ZMod (l ^ n)).val : ℕ) : ℤ) - j = ((l ^ n : ℕ) : ℤ) * (-(j / ((l ^ n : ℕ) : ℤ))) := by
+    rw [ZMod.val_intCast, Int.emod_def]; ring
+  have e : (((j : ZMod (l ^ n)).val : ℕ) : Qbar l) - (j : Qbar l) =
+      (l : Qbar l) ^ n * ((-(j / ((l ^ n : ℕ) : ℤ)) : ℤ) : Qbar l) := by
+    have := congrArg (Int.cast : ℤ → Qbar l) h1
+    rw [Int.cast_sub, Int.cast_mul, Int.cast_natCast, Int.cast_natCast, Nat.cast_pow] at this
+    exact this
+  rw [Cg, e, norm_mul]
+  exact mul_le_of_le_one_right (norm_nonneg _) (IsUltrametricDist.norm_intCast_le_one (Qbar l) _)
+
+theorem exists_open [IsAlgClosure ℚ Ω] (h : G ℚ Ω → Qbar l) (hc : Continuous h) (h1 : h 1 = 0) (m : ℕ) :
+    ∃ U : Subgroup (G ℚ Ω), IsOpen (U : Set (G ℚ Ω)) ∧ ∀ s ∈ U, Cg m (h s) 0 := by
+  have hl : (0 : ℝ) < ‖((l : ℕ) : Qbar l) ^ m‖ :=
+    norm_pos_iff.2 (pow_ne_zero _ (Nat.cast_ne_zero.2 (Fact.out : l.Prime).ne_zero))
+  have hn : {s | ‖h s‖ < ‖((l : ℕ) : Qbar l) ^ m‖} ∈ nhds (1 : G ℚ Ω) :=
+    (isOpen_lt hc.norm continuous_const).mem_nhds (by simpa [h1] using hl)
+  obtain ⟨E, hE, hsub⟩ := (krullTopology_mem_nhds_one_iff ℚ Ω _).1 hn
+  refine ⟨E.fixingSubgroup, E.fixingSubgroup_isOpen, fun s hs => ?_⟩
+  rw [Cg, sub_zero]
+  exact le_of_lt (hsub hs)
+
+theorem layer_one {c : Coef l} {A : ValuationSubring Ω} {ν : G ℚ Ω → (Qbar l)ˣ} {r : ℕ}
+    {z : G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l} (hz : Layer2 c A ν r z) : z 1 1 = 0 := by
+  have h := hz.2 1 (one_mem _) 1 (one_mem _) 1
+  rw [mul_one, map_one, inv_one, mul_one] at h
+  have h' : (ν 1 : Qbar l) * z 1 1 = 0 := by linear_combination -h
+  exact (mul_eq_zero.1 h').resolve_left (ν 1).ne_zero
+
+theorem layer_add {c : Coef l} {A : ValuationSubring Ω} {ν : G ℚ Ω → (Qbar l)ˣ} {r : ℕ}
+    {z : G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l} (hz : Layer2 c A ν r z) {s t : G ℚ Ω} (hs : s ∈ Dec (F := ℚ) A)
+    (ht : t ∈ Dec (F := ℚ) A) (hc : cycMod ℚ Ω l r s = 1) : z (s * t) 1 = z s 1 + (ν s : Qbar l) * z t 1 := by
+  have h := hz.2 s hs t ht 1
+  rwa [hc, inv_one, mul_one] at h
+
+end GlobalTheory.KZ.UnitPres
+end
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ GlobalTheory.K4
+open scoped Matrix MatrixGroups
+
+namespace GlobalTheory.LambdaValuationPowers.AllRoots
+
+variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {l : ℕ} [Fact l.Prime]
+
+theorem pres_of_vanish (A : ValuationSubring Ω) (c : Coef l) (Z : ∀ r : ℕ, G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l) (m : ℕ) (ζ : Ω)
+    (hζ : IsPrimitiveRoot ζ (l ^ m)) (hZ : ∀ s ∈ Ine (F := ℚ) A, cycMod ℚ Ω l m s = 1 → Z m s 1 = 0) :
+    ∃ (ι : Type) (_ : Fintype ι) (P : ι → Polynomial Ω) (o : ι → Qbar l), HTPresNuOfPolys A c m 0 Z ζ P o := by
+  refine ⟨Empty, inferInstance, fun i => i.elim, fun i => i.elim, hζ, fun i => i.elim, fun i => i.elim, fun i => i.elim, ?_⟩
+  have h := GlobalTheory.Col.kumPres_empty A (n := m - 0) (r := m) (ζ := ζ ^ l ^ 0) (by simpa using hζ) (by omega) (Z m) hZ
+  convert h using 2 <;> exact Empty.elim ‹_›
+
+theorem continuous_of_cg [Algebra.IsAlgebraic ℚ Ω] (f : G ℚ Ω → Qbar l)
+    (h : ∀ n : ℕ, ∃ E0 : Finset Ω, ∀ s s' : G ℚ Ω, (∀ z ∈ E0, s' z = z) → Cg n (f (s * s')) (f s)) : Continuous f := by
+  have hnl : ‖(l : PadicAlgCl l)‖ = (l : ℝ)⁻¹ := by
+    have : (l : PadicAlgCl l) = algebraMap ℚ_[l] (PadicAlgCl l) (l : ℚ_[l]) := by simp
+    rw [this, norm_algebraMap', Padic.norm_p]
+  have hlt1 : (l : ℝ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : l.Prime).one_lt)
+  rw [continuous_iff_continuousAt]
+  intro s
+  rw [ContinuousAt, Metric.tendsto_nhds]
+  intro ε hε
+  obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one hε hlt1
+  obtain ⟨E0, hE⟩ := h n
+  have hopen : ∀ᶠ t in nhds (1 : G ℚ Ω), ∀ z ∈ E0, t z = z := by
+    rw [Filter.eventually_all_finset]
+    intro z _
+    have ho := stabilizer_isOpen_of_isIntegral (K := ℚ) (L := Ω) z
+    exact ho.mem_nhds (one_mem _)
+  have hcont : Filter.Tendsto (fun t : G ℚ Ω => s⁻¹ * t) (nhds s) (nhds 1) := by
+    have := (continuous_const_mul s⁻¹).tendsto s
+    rwa [inv_mul_cancel] at this
+  filter_upwards [hcont.eventually hopen] with t ht
+  have := hE s (s⁻¹ * t) ht
+  rw [mul_inv_cancel_left, Cg, norm_pow, hnl] at this
+  rw [dist_eq_norm]
+  exact this.trans_lt hn
+
+end GlobalTheory.LambdaValuationPowers.AllRoots
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ GlobalTheory.K4
@@ -219,3 +386,5 @@ theorem exists_pres_smoothed : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field �
     simp [hs, hcw]
 
 end GlobalTheory.LambdaValuationPowers.Smooth
+end
+end

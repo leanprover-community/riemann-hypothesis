@@ -1,6 +1,376 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HasRigidCoords
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueFullLevel
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSympLevel
+import BuildAid.ForwardExisting
+
+section
+section
+set_option autoImplicit false
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField GlobalTheory.FullLevel
+
+namespace GlobalTheory.FullLevel.Uniq
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H}
+
+theorem nsmul_cancel {n : ℕ} (hn : n ≠ 0) {x y : D.La} (h : n • x = n • y) : x = y := by
+  apply D.unimod.1
+  ext w
+  have h1 := congrArg (fun t => D.EF t w) h
+  simp only [map_nsmul, LinearMap.smul_apply, nsmul_eq_mul] at h1
+  exact mul_left_cancel₀ (by exact_mod_cast hn) h1
+
+theorem mem_of_dvd {M : ℕ} (hM : M ≠ 0) {x : D.La} (h : ∀ y, (M : ℤ) ∣ D.EF x y) : ∃ u, x = M • u := by
+  have hM' : (M : ℤ) ≠ 0 := by exact_mod_cast hM
+  choose f hf using h
+  let φ : D.La →ₗ[ℤ] ℤ :=
+    { toFun := f
+      map_add' := fun a b => by
+        apply mul_left_cancel₀ hM'
+        rw [mul_add, ← hf, ← hf, ← hf, map_add]
+      map_smul' := fun c a => by
+        apply mul_left_cancel₀ hM'
+        rw [← hf, map_smul, hf]
+        simp only [smul_eq_mul, RingHom.id_apply]
+        ring }
+  obtain ⟨u, hu⟩ := D.unimod.2 φ
+  refine ⟨u, D.unimod.1 ?_⟩
+  ext w
+  rw [map_nsmul, LinearMap.smul_apply, hu, hf, nsmul_eq_mul]
+  rfl
+
+theorem mem_lcm {M A : ℕ} (hM : M ≠ 0) {x u v : D.La} (hu : x = M • u) (hv : x = A • v) :
+    ∃ w, x = Nat.lcm M A • w := by
+  have hg : Nat.gcd M A ≠ 0 := fun h => hM (Nat.eq_zero_of_gcd_eq_zero_left h)
+  refine ⟨Nat.gcdA M A • v + Nat.gcdB M A • u, nsmul_cancel hg ?_⟩
+  rw [← mul_nsmul', Nat.gcd_mul_lcm, ← natCast_zsmul x, Nat.gcd_eq_gcd_ab, add_zsmul, smul_add]
+  congr 1
+  · rw [hv, ← natCast_zsmul, ← natCast_zsmul, smul_smul, smul_smul]
+    congr 1
+    push_cast
+    ring
+  · rw [hu, ← natCast_zsmul, ← natCast_zsmul, smul_smul, smul_smul]
+    congr 1
+    push_cast
+    ring
+
+variable {k : Type} [Field k] {Q : Type} [Group Q] {act : 𝓞 E → Q → Q} {e : ℕ → Q → Q → kˣ → Prop}
+  {N : ℕ} {z : kˣ} {ev : D.La → Q}
+
+theorem ev_zero (h : IsSympLevel D act e N z ev) : ev 0 = 1 := (h.2.2.1 0).2 ⟨0, by simp⟩
+
+theorem ev_nsmul (h : IsSympLevel D act e N z ev) (n : ℕ) (a : D.La) : ev (n • a) = ev a ^ n := by
+  induction n with
+  | zero => simp [ev_zero h]
+  | succ n ih => rw [succ_nsmul, h.1, ih, pow_succ]
+
+theorem ev_eq_iff (h : IsSympLevel D act e N z ev) (x y : D.La) : ev x = ev y ↔ ∃ b, x - y = N • b := by
+  rw [← h.2.2.1]
+  have h1 : ev x = ev (x - y) * ev y := by rw [← h.1, sub_add_cancel]
+  rw [h1]
+  exact mul_eq_right
+
+theorem ev_pow_eq (h : IsSympLevel D act e N z ev) (hN : 0 < N) {A : ℕ} (hA : A ∣ N) {x y : D.La}
+    (hxy : ev x ^ (N / A) = ev y ^ (N / A)) : ∃ b, x - y = A • b := by
+  obtain ⟨m, hm⟩ := hA
+  have hA0 : 0 < A := Nat.pos_of_ne_zero (by rintro rfl; simp at hm; omega)
+  have hm0 : m ≠ 0 := by rintro rfl; simp at hm; omega
+  have hd : N / A = m := by rw [hm, Nat.mul_div_cancel_left _ hA0]
+  rw [hd, ← ev_nsmul h, ← ev_nsmul h, ev_eq_iff h] at hxy
+  obtain ⟨b, hb⟩ := hxy
+  refine ⟨b, nsmul_cancel hm0 ?_⟩
+  rw [smul_sub, hb, hm, smul_smul, mul_comm]
+
+end GlobalTheory.FullLevel.Uniq
+
+namespace GlobalTheory.FullLevel
+
+open Uniq
+
+theorem isSympLevel_unique {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} (l : Level H)
+    {k : Type} [Field k] {Q : Type} [Group Q] {act : 𝓞 E → Q → Q} {e : ℕ → Q → Q → kˣ → Prop}
+    (he : ∀ (g g' : Q) (c c' : kˣ), e l.M' g g' c → e l.M' g g' c' → c = c')
+    {z : kˣ} (hz : IsPrimitiveRoot z l.M') {etaA eta ev ev' : D.La → Q}
+    (h : IsSympLevel D act e l.M' z ev) (hi : Induces l etaA eta ev)
+    (h' : IsSympLevel D act e l.M' z ev') (hi' : Induces l etaA eta ev') : ev = ev' := by
+  have hM' := M'_pos l
+  have hM : l.M ≠ 0 := by have := l.three_le; omega
+  have hex : ∀ a, ∃ x, ev x = ev' a := fun a =>
+    (h.2.2.2.1 _).1 ((h'.2.2.2.1 _).2 ⟨a, rfl⟩)
+  choose g hg using hex
+  have h1 : ∀ a, ∃ b, g a - a = l.A • b := fun a =>
+    ev_pow_eq h hM' (A_dvd_M' l) (by rw [hg, hi'.1, hi.1])
+  have h2 : ∀ c ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E), ∀ a : D.La, ∃ b, g (c • a) - c • a = l.M • b := by
+    intro c hc a
+    have hmem : c • a ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) • (⊤ : Submodule (𝓞 E) D.La) :=
+      Submodule.smul_mem_smul hc Submodule.mem_top
+    exact ev_pow_eq h hM' (M_dvd_M' l) (by rw [hg, hi'.2 _ hmem, hi.2 _ hmem])
+  have h3 : ∀ a b, (l.M : ℤ) ∣ D.EF (g a) (g b) - D.EF a b := by
+    intro a b
+    have e1 := h.2.2.2.2 (g a) (g b)
+    rw [hg, hg] at e1
+    have e2 := he _ _ _ _ e1 (h'.2.2.2.2 a b)
+    have e3 : z ^ (D.EF (g a) (g b) - D.EF a b) = 1 := by rw [zpow_sub, e2, mul_inv_cancel]
+    exact (Int.natCast_dvd_natCast.2 (M_dvd_M' l)).trans ((hz.zpow_eq_one_iff_dvd _).1 e3)
+  obtain ⟨n, hn, m, hm, hnm⟩ := Submodule.mem_sup.1 (show (1 : 𝓞 E) ∈ _ from l.coprime ▸ Submodule.mem_top)
+  funext a
+  have h4 : ∃ u, m • (g a - a) = l.M • u := by
+    obtain ⟨b, hb⟩ := h2 m hm a
+    obtain ⟨c, hc⟩ := (ev_eq_iff h (m • g a) (g (m • a))).1 (by rw [h.2.1, hg, hg, h'.2.1])
+    obtain ⟨t, ht⟩ := M_dvd_M' l
+    refine ⟨t • c + b, ?_⟩
+    rw [smul_add, smul_smul, ← ht, ← hc, ← hb, smul_sub]
+    abel
+  have h5 : ∃ u, n • (g a - a) = l.M • u := by
+    refine mem_of_dvd hM fun y => ?_
+    obtain ⟨b, hb⟩ := h2 (H.bar n) (Ideal.mem_map_of_mem (H.bar : 𝓞 E →+* 𝓞 E) hn) y
+    have h6 := h3 a (H.bar n • y)
+    rw [sub_eq_iff_eq_add] at hb
+    rw [hb, map_add, map_nsmul, nsmul_eq_mul, add_sub_assoc, dvd_add_right (dvd_mul_right _ _)] at h6
+    rw [D.adj, map_sub, LinearMap.sub_apply]
+    exact h6
+  obtain ⟨u, hu⟩ := h4
+  obtain ⟨v, hv⟩ := h5
+  obtain ⟨b, hb⟩ := h1 a
+  have h7 : g a - a = l.M • (v + u) := by rw [smul_add, ← hu, ← hv, ← add_smul, hnm, one_smul]
+  rw [← hg]
+  exact ((ev_eq_iff h _ _).2 (mem_lcm hM h7 hb)).symm
+
+end GlobalTheory.FullLevel
+end
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField GlobalTheory.FullLevel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isFullSymplecticLevelStructure_unique_of_levels : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} (l : Level H) {k : Type} [Field k]
+    {Q : Type} [Group Q] {act : 𝓞 E → Q → Q} {e : ℕ → Q → Q → kˣ → Prop},
+    (∀ (g g' : Q) (c c' : kˣ), e l.M' g g' c → e l.M' g g' c' → c = c') →
+    ∀ {z : kˣ}, IsPrimitiveRoot z l.M' → ∀ {etaA eta ev ev' : D.La → Q},
+    IsSympLevel D act e l.M' z ev → Induces l etaA eta ev →
+    IsSympLevel D act e l.M' z ev' → Induces l etaA eta ev' → ev = ev' := by
+  atlas_forward_decl GlobalTheory.FullLevel.isSympLevel_unique
+end
+
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.FullLevel
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
+
+theorem bar_bar (a : 𝓞 E) : H.bar (H.bar a) = a := by
+  apply RingOfIntegers.ext
+  rw [H.bar_eq, H.bar_eq]
+  exact IsCMField.complexConj_apply_apply E _
+
+theorem exists_twist (l : Level H) (L : ℤ) (hL : (l.A : ℤ) ∣ L - 1) :
+    ∃ u w c : 𝓞 E, c ∈ l.Mb ∧ u = 1 + (l.A : 𝓞 E) * c ∧
+      H.bar u * u = (L : 𝓞 E) + (l.M' : 𝓞 E) * w := by
+  obtain ⟨q, hq⟩ := hL
+  have h1 : (1 : 𝓞 E) ∈ l.Mb ⊔ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := by rw [l.coprime]; trivial
+  obtain ⟨n, hn, m, hm, hnm⟩ := Submodule.mem_sup.1 h1
+  have hbn : H.bar n ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := Ideal.mem_map_of_mem _ hn
+  have hbm : H.bar m ∈ l.Mb := by
+    obtain ⟨m0, hm0, rfl⟩ := (Ideal.mem_map_iff_of_surjective _ H.bar.surjective).1 hm
+    simpa [bar_bar] using hm0
+  have hbar1 : H.bar n + H.bar m = 1 := by rw [← map_add, hnm, map_one]
+  have hxN : H.bar n - m ∈ l.Mb := by
+    have e : H.bar n - m = n - H.bar m := by linear_combination hbar1 - hnm
+    rw [e]; exact sub_mem hn hbm
+  have hxN' : H.bar n - m ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := sub_mem hbn hm
+  have hx : H.bar n - m ∈ l.Mb * l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := by
+    have e : H.bar n - m = n * (H.bar n - m) + (H.bar n - m) * m := by
+      linear_combination -(H.bar n - m) * hnm
+    rw [e]
+    exact add_mem (Ideal.mul_mem_mul hn hxN') (Ideal.mul_mem_mul hxN hm)
+  have hnn : n * H.bar n ∈ l.Mb * l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := Ideal.mul_mem_mul hn hbn
+  rw [l.prod] at hx hnn
+  obtain ⟨y1, hy1⟩ := Ideal.mem_span_singleton'.1 hx
+  obtain ⟨y2, hy2⟩ := Ideal.mem_span_singleton'.1 hnn
+  have hg : ((l.M : ℕ) : 𝓞 E) * l.A = (l.M' : 𝓞 E) * (Nat.gcd l.M l.A : ℕ) := by
+    have := Nat.gcd_mul_lcm l.M l.A
+    unfold Level.M'
+    exact_mod_cast (by rw [mul_comm (Nat.lcm _ _), this] : l.M * l.A = Nat.lcm l.M l.A * Nat.gcd l.M l.A)
+  have hq' : (L : 𝓞 E) - 1 = (l.A : 𝓞 E) * q := by exact_mod_cast hq
+  refine ⟨1 + ((L : 𝓞 E) - 1) * n, (Nat.gcd l.M l.A : 𝓞 E) * q * (y1 + ((L : 𝓞 E) - 1) * y2),
+    (q : 𝓞 E) * n, Ideal.mul_mem_left _ _ hn, ?_, ?_⟩
+  · rw [hq']; ring
+  · have hb : H.bar (1 + ((L : 𝓞 E) - 1) * n) = 1 + ((L : 𝓞 E) - 1) * H.bar n := by
+      simp [map_add, map_mul, map_sub, map_one, map_intCast]
+    rw [hb]
+    linear_combination ((L : 𝓞 E) - 1) * hnm - ((L : 𝓞 E) - 1) * hy1 - ((L : 𝓞 E) - 1) ^ 2 * hy2
+      + (l.M : 𝓞 E) * (y1 + ((L : 𝓞 E) - 1) * y2) * hq' + (q : 𝓞 E) * (y1 + ((L : 𝓞 E) - 1) * y2) * hg
+
+theorem smul_mem_M (l : Level H) {D : Datum H} {c : 𝓞 E} (hc : c ∈ l.Mb) {a : D.La}
+    (ha : a ∈ l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) • (⊤ : Submodule (𝓞 E) D.La)) :
+    ∃ y : D.La, c • a = l.M • y := by
+  refine Submodule.smul_induction_on ha ?_ ?_
+  · intro r hr t _
+    have : c * r ∈ Ideal.span {((l.M : ℕ) : 𝓞 E)} := l.prod ▸ Ideal.mul_mem_mul hc hr
+    obtain ⟨s, hs⟩ := Ideal.mem_span_singleton'.1 this
+    exact ⟨s • t, by rw [← mul_smul, ← hs, mul_comm, mul_smul, Nat.cast_smul_eq_nsmul]⟩
+  · rintro x y ⟨x', hx'⟩ ⟨y', hy'⟩
+    exact ⟨x' + y', by rw [smul_add, hx', hy', smul_add]⟩
+
+theorem exists_sympLevel_of_tate : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} (l : Level H) {k : Type} [Field k]
+    {Q : Type} [Group Q] {act : 𝓞 E → Q → Q} {e : ℕ → Q → Q → kˣ → Prop} (I : TateIso D k Q act e)
+    {z : kˣ}, IsPrimitiveRoot z l.M' → z ^ (l.M' / l.A) = I.ζ l.A →
+    ∃ ev : D.La → Q, IsSympLevel D act e l.M' z ev ∧ Induces l (I.ev l.A) (I.ev l.M) ev := by
+  intro E _ _ _ H D l k _ Q _ act e I z hz hzA
+  have hM' := M'_pos l
+  haveI : NeZero l.M' := ⟨hM'.ne'⟩
+  have hζ := I.ζ_prim l.M' hM'
+  obtain ⟨L, -, hcop, hL⟩ := (hζ.isPrimitiveRoot_iff').1 hz
+  obtain ⟨d, hd⟩ := A_dvd_M' l
+  have hd0 : 0 < d := Nat.pos_of_ne_zero (by rintro rfl; simp at hd; omega)
+  have hdiv : l.M' / l.A = d := by rw [hd, Nat.mul_div_cancel_left _ l.A_pos]
+  have hζA : I.ζ l.M' ^ d = I.ζ l.A := by
+    have := I.ζ_pow l.A d l.A_pos hd0; rwa [← hd] at this
+  have hAL : (l.A : ℤ) ∣ (L : ℤ) - 1 := by
+    have e1 : I.ζ l.M' ^ (L * d) = I.ζ l.M' ^ d := by
+      rw [pow_mul, hL, ← hdiv, hzA, hdiv, hζA]
+    have h2 : I.ζ l.M' ^ (((L : ℤ) - 1) * d) = 1 := by
+      rw [sub_mul, one_mul, zpow_sub, show ((L : ℤ) * d) = ((L * d : ℕ) : ℤ) by push_cast; ring,
+        zpow_natCast, zpow_natCast, e1, mul_inv_cancel]
+    have h3 := (hζ.zpow_eq_one_iff_dvd _).1 h2
+    rw [hd] at h3; push_cast at h3
+    exact (mul_dvd_mul_iff_right (by exact_mod_cast hd0.ne')).1 h3
+  obtain ⟨a', b', hab⟩ := Nat.isCoprime_iff_coprime.2 hcop
+  obtain ⟨u, w, c, hc, hu, hw⟩ := exists_twist l L hAL
+  set v : 𝓞 E := (a' : 𝓞 E) * H.bar u with hv
+  have hvu : v * u = 1 + (l.M' : 𝓞 E) * ((a' : 𝓞 E) * w - b') := by
+    have hab' : (a' : 𝓞 E) * (L : ℤ) + (b' : 𝓞 E) * ((l.M' : ℕ) : ℤ) = 1 := by exact_mod_cast hab
+    push_cast at hab'
+    rw [hv, mul_assoc, hw]
+    push_cast
+    linear_combination hab'
+  have key : ∀ a : D.La, v • u • a = a + l.M' • (((a' : 𝓞 E) * w - b') • a) := by
+    intro a; rw [← mul_smul, hvu, add_smul, one_smul, mul_smul, Nat.cast_smul_eq_nsmul]
+  have key' : ∀ a : D.La, u • v • a = a + l.M' • (((a' : 𝓞 E) * w - b') • a) := by
+    intro a; rw [smul_comm]; exact key a
+  have hcong : ∀ a b : D.La, I.ev l.M' (a + l.M' • b) = I.ev l.M' a := by
+    intro a b; rw [I.add, (I.ker _ hM' _).2 ⟨b, rfl⟩, mul_one]
+  have hEF : ∀ a b : D.La, D.EF (u • a) (u • b) = L * D.EF a b + l.M' * D.EF a (w • b) := by
+    intro a b
+    rw [D.adj, ← mul_smul, hw, add_smul, mul_smul, Nat.cast_smul_eq_nsmul]
+    simp only [Int.cast_natCast, Nat.cast_smul_eq_nsmul, map_add, map_zsmul, map_nsmul, smul_eq_mul, nsmul_eq_mul]
+  refine ⟨fun a => I.ev l.M' (u • a), ⟨?_, ?_, ?_, ?_, ?_⟩, ?_, ?_⟩
+  · intro a b; simp only [smul_add, I.add]
+  · intro c a; try simp only
+    rw [smul_comm, I.lin]
+  · intro a; try simp only
+    rw [I.ker _ hM']
+    constructor
+    · rintro ⟨b, hb⟩
+      refine ⟨v • b - ((a' : 𝓞 E) * w - b') • a, ?_⟩
+      have h := congrArg (v • ·) hb
+      change v • u • a = v • (l.M' • b) at h
+      rw [key, smul_comm v l.M' b] at h
+      rw [smul_sub, ← h]; abel
+    · rintro ⟨b, rfl⟩; exact ⟨u • b, smul_comm _ _ _⟩
+  · intro x; rw [I.onto _ hM']
+    constructor
+    · rintro ⟨a0, rfl⟩; exact ⟨v • a0, by simp only [key', hcong]⟩
+    · rintro ⟨a, rfl⟩; exact ⟨u • a, rfl⟩
+  · intro a b
+    have h := I.isom _ hM' (u • a) (u • b)
+    convert h using 1
+    rw [hEF, zpow_add, zpow_mul, zpow_mul, zpow_natCast, zpow_natCast, hL, hζ.pow_eq_one, one_zpow, mul_one]
+  · intro a
+    have htow : I.ev l.M' (u • a) ^ d = I.ev l.A (u • a) := by
+      have := I.tower l.A d l.A_pos hd0 (u • a); rwa [← hd] at this
+    try simp only
+    rw [hdiv, htow, hu, add_smul, one_smul, mul_smul, Nat.cast_smul_eq_nsmul, I.add,
+      (I.ker _ l.A_pos _).2 ⟨_, rfl⟩, mul_one]
+  · intro a ha
+    obtain ⟨dM, hdM⟩ := M_dvd_M' l
+    have hMp : 0 < l.M := by have := l.three_le; omega
+    have hdM0 : 0 < dM := Nat.pos_of_ne_zero (by rintro rfl; simp at hdM; omega)
+    have hdivM : l.M' / l.M = dM := by rw [hdM, Nat.mul_div_cancel_left _ hMp]
+    have htow : I.ev l.M' (u • a) ^ dM = I.ev l.M (u • a) := by
+      have := I.tower l.M dM hMp hdM0 (u • a); rwa [← hdM] at this
+    obtain ⟨y, hy⟩ := smul_mem_M l hc ha
+    try simp only
+    rw [hdivM, htow, hu, add_smul, one_smul, mul_smul, hy, Nat.cast_smul_eq_nsmul, smul_comm, I.add,
+      (I.ker _ hMp _).2 ⟨_, rfl⟩, mul_one]
+
+end GlobalTheory.FullLevel
+end
+end
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField GlobalTheory.FullLevel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_fullSymplecticLevelStructure_of_tateIso : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} (l : Level H) {k : Type} [Field k]
+    {Q : Type} [Group Q] {act : 𝓞 E → Q → Q} {e : ℕ → Q → Q → kˣ → Prop} (I : TateIso D k Q act e)
+    {z : kˣ}, IsPrimitiveRoot z l.M' → z ^ (l.M' / l.A) = I.ζ l.A →
+    ∃ ev : D.La → Q, IsSympLevel D act e l.M' z ev ∧ Induces l (I.ev l.A) (I.ev l.M) ev := by
+  atlas_forward_decl GlobalTheory.FullLevel.exists_sympLevel_of_tate
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.FullLevel
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
+
+theorem weilIs_unitOn_unique {S : Scheme.{0}} (G : Over S) [GrpObj G] {L : LB G.left} (hL : L.IsLB)
+    {k : Type} [Field k] (x : Sp k ⟶ S) (n : ℤ) (g g' : Over.mk x ⟶ G) (c c' : kˣ)
+    (h : Out.WeilIs G L n g g' (unitOn c)) (h' : Out.WeilIs G L n g g' (unitOn c')) : c = c' := by
+  have hU : Subsingleton (Sp k) := by
+    show Subsingleton (PrimeSpectrum k); infer_instance
+  obtain ⟨p⟩ : Nonempty (Sp k) := by
+    show Nonempty (PrimeSpectrum k); infer_instance
+  have hp : ∀ V : (Over.mk x).left.Opens, p ∈ V → V = ⊤ := by
+    intro V hV
+    apply TopologicalSpace.Opens.ext
+    ext y
+    exact ⟨fun _ => trivial, fun _ => (Subsingleton.elim (α := Sp k) p y) ▸ hV⟩
+  have H := GlobalTheory.ThetaGroupTest.weilIs_unique_of_local p hp hL h h'
+  have hinj : Function.Injective (Units.map ((⊤ : (Over.mk x).left.Opens).ι.appTop.hom.toMonoidHom)) := by
+    apply Units.map_injective
+    haveI : IsIso ((⊤ : (Over.mk x).left.Opens).ι.app ⊤) := Scheme.Hom.isIso_app _ _ (by simp)
+    exact (ConcreteCategory.bijective_of_isIso ((⊤ : (Over.mk x).left.Opens).ι.app ⊤)).1
+  have H2 : unitOn c = unitOn c' := hinj H
+  unfold unitOn at H2
+  have hinj2 : Function.Injective (Units.map (Scheme.ΓSpecIso (CommRingCat.of k)).inv.hom.toMonoidHom) := by
+    apply Units.map_injective
+    exact (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of k)).inv).1
+  exact hinj2 H2
+
+theorem exists_unique_fullLevel {D : Datum H} {l : Level H} {B : Type} [CommRing B] {b : Base l B}
+    {S : Scheme.{0}} {s : S ⟶ Sp B} (o : Obj D l b s) (k : Type) [Field k] [IsAlgClosed k] (x : Sp k ⟶ S)
+    (β : B →+* k) (hx : x ≫ s = spMap β) (z : kˣ) (hz : IsPrimitiveRoot z l.M')
+    (hzA : (z : k) ^ (l.M' / l.A) = β b.ζ) :
+    ∃! ev : D.La → (Over.mk x ⟶ o.t.G),
+      IsSympLevel D (fun a g => g ≫ o.t.act.act a)
+          (fun n g g' c => Out.WeilIs o.t.G o.t.PP.L n g g' (unitOn c)) l.M' z ev ∧
+        Induces l (fun a => toUnit _ ≫ o.etaA a) (fun a => toUnit _ ≫ o.eta a) ev := by
+  obtain ⟨-, I, hIA, hetaA, heta⟩ := o.geom k x β hx
+  have hzA' : z ^ (l.M' / l.A) = I.ζ l.A := Units.ext (by rw [Units.val_pow_eq_pow_val, hzA, hIA])
+  obtain ⟨ev, hev, hA, hM⟩ := GlobalTheory.T.exists_fullSymplecticLevelStructure_of_tateIso l I hz hzA'
+  have hi : Induces l (fun a => toUnit _ ≫ o.etaA a) (fun a => toUnit _ ≫ o.eta a) ev :=
+    ⟨fun a => (hA a).trans (hetaA a).symm, fun a ha => (hM a ha).trans (heta a ha).symm⟩
+  refine ⟨ev, ⟨hev, hi⟩, ?_⟩
+  rintro ev' ⟨h1, h2⟩
+  have := GlobalTheory.T.isFullSymplecticLevelStructure_unique_of_levels l (fun g g' c c' => weilIs_unitOn_unique o.t.G o.t.PP.isLB x _ g g' c c') hz
+    hev hi h1 h2
+  exact this.symm
+
+end GlobalTheory.FullLevel
+end
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.UChart GlobalTheory.UCanon
@@ -128,3 +498,5 @@ theorem torsion_rational : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E
   exact (cancel_epi (spMap κ)).1 (congrArg CommaMorphism.left h)
 
 end GlobalTheory.XFTorsion
+end
+end

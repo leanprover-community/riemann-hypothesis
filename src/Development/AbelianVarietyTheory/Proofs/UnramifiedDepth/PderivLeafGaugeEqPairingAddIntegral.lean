@@ -1,10 +1,35 @@
 import Mathlib
 import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.TwoMulChainStartIndexAddOneOfOdd
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.SubstEqOfCoeffEqOfKilled
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.NatCastMulCoeffOfPderivEq
 import BuildAid.ForwardExisting
 
+section
+namespace GlobalTheory
+
+theorem subst_eq_of_coeff_eq_of_killed :
+    ∀ (C : Type) [Field C] (σ τ : Type) [Fintype σ] [Fintype τ] (P : σ → Prop) (f : σ → MvPowerSeries τ C) (F F' : MvPowerSeries σ C), (∀ w, MvPowerSeries.constantCoeff (f w) = 0) → (∀ w, ¬ P w → f w = 0) → (∀ μ : σ →₀ ℕ, (∀ w ∈ μ.support, P w) → MvPowerSeries.coeff μ F = MvPowerSeries.coeff μ F') → MvPowerSeries.subst f F = MvPowerSeries.subst f F' := by
+  intro C _ σ τ _ _ P f F F' h0 hk hF
+  have hs : MvPowerSeries.HasSubst f := MvPowerSeries.hasSubst_of_constantCoeff_zero h0
+  ext ν
+  rw [MvPowerSeries.coeff_subst hs, MvPowerSeries.coeff_subst hs]
+  refine finsum_congr fun μ => ?_
+  by_cases h : ∀ w ∈ μ.support, P w
+  · rw [hF μ h]
+  · push Not at h
+    obtain ⟨w, hw, hP⟩ := h
+    have hz : (μ.prod fun s e => f s ^ e) = 0 := by
+      refine Finset.prod_eq_zero hw ?_
+      show f w ^ μ w = 0
+      rw [hk w hP]
+      exact zero_pow (Finsupp.mem_support_iff.mp hw)
+    rw [hz]
+    simp
+
+end GlobalTheory
+end
+
+section
 section
 open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds GlobalTheory.MainTerm Classical
 
@@ -186,3 +211,4 @@ open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds GlobalTheory.MainT
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.pderiv_leafGauge_eq_pairing_add_integral : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [NeZero d] (I J : Fin 2 → Type) [∀ g, Fintype (I g)] [∀ g, Fintype (J g)] (X : RowData C V d I J), X.Alt → ∀ (g : Fin 2) (a : ZMod d) (i : ℕ), Odd i → i < d → ∀ (S : ∀ g, Sys (X.G g)) (t : ∀ g, I g → MvPowerSeries (I g) C), (∀ g, (S g).IsT (t g)) → ∀ (ι ι' : Type) [Fintype ι] [Fintype ι'] (e : ι → I g → C) (v' : ι' → I (1 - g) → C), (∀ c x, (X.G g).ty (Sum.inl x) ≠ a → e c x = 0) → (∀ b k, V.Ge 0 (v' b k)) → (∀ b k, (X.G (1 - g)).ty (Sum.inl k) ≠ a + (i : ZMod d) → v' b k = 0) → ∀ b : ι', ∃ γ : MvPowerSeries (WV I) C, (∀ μ, V.Ge 0 (MvPowerSeries.coeff μ γ)) ∧ MvPowerSeries.pderiv C (Sum.inr b) (X.hM g a i e v') = MvPowerSeries.subst (fun w : WV I => hPullW (upG w.1 (t w.1 w.2)) (fun c => toW g (e c)) (fun b => toW (1 - g) (v' b))) γ + ∑ κ : J g, (∑ k, X.pair g κ k * v' b k) • hPullW (upG g ((S g).ze (t g) κ)) (fun c => toW g (e c)) (fun b => toW (1 - g) (v' b)) := by
   atlas_forward_decl GlobalTheory.GaugeDeriv.pderiv_hM
+end

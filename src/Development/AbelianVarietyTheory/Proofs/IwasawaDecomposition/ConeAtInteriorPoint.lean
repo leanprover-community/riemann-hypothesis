@@ -1,8 +1,73 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCompleteLocalEtaleNeighbourhoodStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSemiAbelianPolarizedStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniformizationAbelianStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCompleteLocalEtaleNeighbourhood
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSemiAbelianPolarized
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasConesIff
 
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R Formalism.L2.Pj
+open GlobalTheory.Toroidal GlobalTheory.Models GlobalTheory.LN GlobalTheory.ShFam GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_complete_local_etale_neighbourhood : ∀ (F : Type) [Field F] [NumberField F] (X : Scheme.{0}) (s : X ⟶ Sp F), LocallyOfFiniteType s → ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme X → ∀ x : X, ∃ (R : Type) (_ : CommRing R) (_ : IsDomain R) (_ : IsLocalRing R) (ξ : Sp R ⟶ X), IsCN R ∧ ξ (closedPoint R) = x ∧ IsEtaleCompletion (Scheme.stalkClosedPointTo ξ).hom ∧ ((residue R).comp (Scheme.stalkClosedPointTo ξ).hom).FormallyUnramified ∧ ∀ p, ξ p ⤳ x := by
+  first | exact @GlobalTheory.GenFan.exists_chart | exact GlobalTheory.GenFan.exists_chart | (intros; apply GlobalTheory.GenFan.exists_chart <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R Formalism.L2.Pj
+open GlobalTheory.Toroidal GlobalTheory.Models GlobalTheory.LN GlobalTheory.ShFam GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_semi_abelian_polarized : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H} {Xo : Moduli D l} {c : Coeff l} (Y : Model Xo c (RingHom.id c.F)) (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (ξ : Sp R ⟶ Y.X), IsCN R → Set.range ξ ⊆ Set.range Y.j → ∃ (t : SAB H (Sp R)) (_ : SABMap t Y.t ξ), PolAt t (jK R) ∧ ThetaNZ t.G t.PP.L ∧ ∀ x, x ∈ abLocus t.G := by
+  first | exact @GlobalTheory.GenFan.Tri.exists_sab | exact GlobalTheory.GenFan.Tri.exists_sab | (intros; apply GlobalTheory.GenFan.Tri.exists_sab <;> assumption)
+end
+
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R Formalism.L2.Pj
+open GlobalTheory.Toroidal GlobalTheory.Models GlobalTheory.LN GlobalTheory.ShFam GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef
+
+namespace GlobalTheory.GenFan
+
+theorem exists_pelUnif_torsionIso_subsingleton_of_abLocus {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
+    (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (t : SAB H (Sp R)) (hR : IsCN R) (hpol : PolAt t (jK R))
+    (hth : ThetaNZ t.G t.PP.L) (hab : ∀ x, x ∈ abLocus t.G) :
+    ∃ P : PELUnif (maximalIdeal R) t, P.TorsionIso ∧ Subsingleton P.D.toPre.X := by
+  obtain ⟨hn, hi, hc, hz⟩ := hR
+  obtain ⟨l1, l2, l3, l4, l5, -⟩ := GlobalTheory.allSixLaws
+  have hadm := GlobalTheory.isAdmissibleCompleteLocalDomainPrime_maximalIdeal R hn hi hc
+  have hpir : IsPrincipalIdealRing (R ⧸ maximalIdeal R) := by
+    letI := Ideal.Quotient.field (maximalIdeal R)
+    infer_instance
+  obtain ⟨P, hP⟩ := LN.UnifPrime.exists_pelUnif l1 l2 l3 l4 l5 LN.ega_holds uniformisation_dvr_unconditional
+    LN.pelSt_holds E H R _ hadm hpir t hpol (GoodTrait.splitOver_of_abLocus t.G t.semi hab) hth
+  refine ⟨P, hP, ?_⟩
+  have hmax : (maximalIdeal R ^ (0 + 1)).IsMaximal := by
+    rw [zero_add, pow_one]; infer_instance
+  have hF : IsField (R ⧸ maximalIdeal R ^ (0 + 1)) := (Ideal.Quotient.maximal_ideal_iff_isField_quotient _).1 hmax
+  have p : Spec (CommRingCat.of (R ⧸ maximalIdeal R ^ (0 + 1))) := by
+    letI := hF.toField
+    exact (default : PrimeSpectrum (R ⧸ maximalIdeal R ^ (0 + 1)))
+  let g := P.U.gt 0
+  have : Mono g.i := ⟨fun a b h => g.isKernel.hom_ext h (CartesianMonoidalCategory.toUnit_unique _ _)⟩
+  exact ArcNotAbelian.subsingleton_of_mem_abLocus t.G t.semi _ hF (thick R (maximalIdeal R) 0) p (hab _)
+    P.D.toPre.X g.i g.i_hom
+
+end GlobalTheory.GenFan
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R Formalism.L2.Pj
+open GlobalTheory.Toroidal GlobalTheory.Models GlobalTheory.LN GlobalTheory.ShFam GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_uniformization_abelian : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (t : SAB H (Sp R)), IsCN R → PolAt t (jK R) → ThetaNZ t.G t.PP.L → (∀ x, x ∈ abLocus t.G) → ∃ P : PELUnif (maximalIdeal R) t, P.TorsionIso ∧ Subsingleton P.D.toPre.X := by
+  first | exact @GlobalTheory.GenFan.exists_pelUnif_torsionIso_subsingleton_of_abLocus | exact GlobalTheory.GenFan.exists_pelUnif_torsionIso_subsingleton_of_abLocus | (intros; apply GlobalTheory.GenFan.exists_pelUnif_torsionIso_subsingleton_of_abLocus <;> assumption)
+end
+
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing TopologicalSpace
@@ -70,3 +135,5 @@ theorem coneAt_j (φ : InvFun (𝓞 E)) (Y : Model Xo c (RingHom.id c.F)) (w : X
   exact ⟨R, _, _, _, ξ, t, m, P, 0, Fin.elim0, hR, hξ, he, hu, hP, isCone_empty H φ _, inCone_empty _⟩
 
 end GlobalTheory.GenFan
+end
+end

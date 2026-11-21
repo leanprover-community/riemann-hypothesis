@@ -1,11 +1,790 @@
-import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.MixedFourierArchSchwartz
+import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.HasTemperateGrowthArchPoly
 import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.UnitaryTransvectionZeroSecondMemClosure
-import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.PointwiseThetaExpansion
+import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SExpDefs
 import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.LocalExpansionHolds
 import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.AbsoluteConvergenceHolds
-import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.MeasurePreservingPhiA
-import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.IdeleModuleFiniteEmbeddingUnit
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial
+open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V.Af UpperTheory.V.Base
+open scoped Matrix nonZeroDivisors
+open MeasureTheory GroundTheory.Global GroundTheory.Global.IdeleGroup UpperTheory.V.Sd UpperTheory.V.Published
+
+namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L1
+
+open NumberField.mixedEmbedding NumberField.InfinitePlace Function
+open scoped SchwartzMap FourierTransform Real Classical
+
+variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
+
+theorem mem_units_of_isUnitAt (w : HeightOneSpectrum (𝓞 F)) (x : (w.adicCompletion F)ˣ) (hx : IsUnitAt w x) :
+    x ∈ (Submonoid.ofClass (w.adicCompletionIntegers F)).units := by
+  rw [Submonoid.mem_units_iff]
+  have hx' : Valued.v (x : w.adicCompletion F) = 1 := hx
+  refine ⟨?_, ?_⟩
+  · change (x : w.adicCompletion F) ∈ w.adicCompletionIntegers F
+    rw [HeightOneSpectrum.mem_adicCompletionIntegers, hx']
+  · change ((x⁻¹ : (w.adicCompletion F)ˣ) : w.adicCompletion F) ∈ w.adicCompletionIntegers F
+    rw [HeightOneSpectrum.mem_adicCompletionIntegers, Units.val_inv_eq_inv_val, map_inv₀, hx', inv_one]
+
+theorem integral_arch_one (a y : ℝ) :
+    ∫ t : ℝ, ((𝐞 (-(t * y)) : Circle) : ℂ) *
+        (((a : ℂ) + Complex.I * (t : ℂ)) * Complex.exp (-(π : ℂ) * ((a : ℂ) ^ 2 + (t : ℂ) ^ 2))) =
+      ((a : ℂ) + (y : ℂ)) * Complex.exp (-(π : ℂ) * ((a : ℂ) ^ 2 + (y : ℂ) ^ 2)) := by
+  set c1 : ℂ := (a : ℂ) * Complex.exp (-(π : ℂ) * (a : ℂ) ^ 2)
+  set c2 : ℂ := Complex.I * Complex.exp (-(π : ℂ) * (a : ℂ) ^ 2)
+  have hpt : ∀ t : ℝ, ((𝐞 (-(t * y)) : Circle) : ℂ) *
+      (((a : ℂ) + Complex.I * (t : ℂ)) * Complex.exp (-(π : ℂ) * ((a : ℂ) ^ 2 + (t : ℂ) ^ 2))) =
+      c1 * (((𝐞 (-(t * y)) : Circle) : ℂ) * realGaussian t) +
+        c2 * (((𝐞 (-(t * y)) : Circle) : ℂ) * realGaussianOdd t) := by
+    intro t
+    simp only [c1, c2, realGaussian, realGaussianOdd]
+    have : Complex.exp (-(π : ℂ) * ((a : ℂ) ^ 2 + (t : ℂ) ^ 2)) =
+        Complex.exp (-(π : ℂ) * (a : ℂ) ^ 2) * Complex.exp (-(π : ℂ) * (t : ℂ) ^ 2) := by
+      rw [← Complex.exp_add]; congr 1; ring
+    rw [this]
+    ring
+  have hce : Continuous fun t : ℝ => ((𝐞 (-(t * y)) : Circle) : ℂ) :=
+    continuous_subtype_val.comp (Real.continuous_fourierChar.comp (by fun_prop))
+  have hg : Continuous realGaussian := by unfold realGaussian; fun_prop
+  have hgo : Continuous realGaussianOdd := by unfold realGaussianOdd; fun_prop
+  have hi1 : Integrable fun t : ℝ => ((𝐞 (-(t * y)) : Circle) : ℂ) * realGaussian t :=
+    integrable_realGaussian.norm.mono' (hce.mul hg).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun t => by rw [norm_mul, Circle.norm_coe, one_mul])
+  have hi2 : Integrable fun t : ℝ => ((𝐞 (-(t * y)) : Circle) : ℂ) * realGaussianOdd t :=
+    integrable_realGaussianOdd.norm.mono' (hce.mul hgo).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun t => by rw [norm_mul, Circle.norm_coe, one_mul])
+  have hf1 : 𝓕 realGaussian y = ∫ t : ℝ, ((𝐞 (-(t * y)) : Circle) : ℂ) * realGaussian t := by
+    rw [Real.fourier_real_eq]; simp only [Circle.smul_def, smul_eq_mul]
+  have hf2 : 𝓕 realGaussianOdd y = ∫ t : ℝ, ((𝐞 (-(t * y)) : Circle) : ℂ) * realGaussianOdd t := by
+    rw [Real.fourier_real_eq]; simp only [Circle.smul_def, smul_eq_mul]
+  simp only [hpt]
+  rw [integral_add (hi1.const_mul c1) (hi2.const_mul c2), integral_const_mul, integral_const_mul, ← hf1, ← hf2,
+    fourier_realGaussian, fourier_realGaussianOdd]
+  simp only [c1, c2, realGaussian, realGaussianOdd]
+  have : Complex.exp (-(π : ℂ) * ((a : ℂ) ^ 2 + (y : ℂ) ^ 2)) =
+      Complex.exp (-(π : ℂ) * (a : ℂ) ^ 2) * Complex.exp (-(π : ℂ) * (y : ℂ) ^ 2) := by
+    rw [← Complex.exp_add]; congr 1; ring
+  rw [this]
+  ring_nf
+  rw [Complex.I_sq]
+  ring
+
+theorem mixedFourier_archSchwartz (a : InfinitePlace F → ℝ) (Z : Ad F) :
+    mixedFourier F (archSchwartz a) (homeomorphMixedSpace F Z.1) =
+      ∏ v, (((a v : ℝ) : ℂ) + ((UpperTheory.V.TR.pInf F Z v : ℝ) : ℂ)) *
+        Complex.exp (-(π : ℂ) * (((a v : ℝ) : ℂ) ^ 2 + ((UpperTheory.V.TR.pInf F Z v : ℝ) : ℂ) ^ 2)) := by
+  haveI := isEmpty_complex (F := F)
+  set m := homeomorphMixedSpace F Z.1
+  set A : ∀ w : {w : InfinitePlace F // IsReal w}, ℝ → ℂ := fun w t => ((𝐞 (-(t * m.1 w)) : Circle) : ℂ) *
+    ((((a w.1 : ℝ) : ℂ) + Complex.I * (t : ℂ)) * Complex.exp (-(π : ℂ) * (((a w.1 : ℝ) : ℂ) ^ 2 + (t : ℂ) ^ 2)))
+  set B : ∀ w : {w : InfinitePlace F // IsComplex w}, ℂ → ℂ := fun _ _ => 1
+  have hint : ∀ x : mixedSpace F, 𝐞 (-mixedTraceForm F x m) • archSchwartz a x =
+      (∏ w, A w (x.1 w)) * ∏ w, B w (x.2 w) := by
+    intro x
+    rw [Circle.smul_def, smul_eq_mul, HeckeCharacter.fourierChar_neg_mixedTraceForm, archSchwartz_eq_prod]
+    simp only [A, B, Finset.univ_eq_empty (α := {w : InfinitePlace F // IsComplex w}), Finset.prod_empty,
+      mul_one, Finset.prod_mul_distrib]
+  have hA : ∀ w : {w : InfinitePlace F // IsReal w}, ∫ t, A w t =
+      (((a w.1 : ℝ) : ℂ) + ((UpperTheory.V.TR.pInf F Z w.1 : ℝ) : ℂ)) *
+        Complex.exp (-(π : ℂ) * (((a w.1 : ℝ) : ℂ) ^ 2 + ((UpperTheory.V.TR.pInf F Z w.1 : ℝ) : ℂ) ^ 2)) :=
+    fun w => integral_arch_one (a w.1) (m.1 w)
+  rw [mixedFourier_apply, selfDualMeasure, integral_smul_measure, Measure.volume_eq_prod]
+  simp only [hint]
+  rw [integral_prod_mul (f := fun x : {w : InfinitePlace F // IsReal w} → ℝ ↦ ∏ w, A w (x w))
+    (g := fun z : {w : InfinitePlace F // IsComplex w} → ℂ ↦ ∏ w, B w (z w)),
+    integral_fintype_prod_volume_eq_prod, integral_fintype_prod_volume_eq_prod]
+  simp only [hA, Finset.univ_eq_empty (α := {w : InfinitePlace F // IsComplex w}), Finset.prod_empty, mul_one,
+    IsTotallyReal.nrComplexPlaces_eq_zero, pow_zero, ENNReal.toReal_one, one_smul]
+  exact prod_real (fun v => (((a v : ℝ) : ℂ) + ((UpperTheory.V.TR.pInf F Z v : ℝ) : ℂ)) *
+        Complex.exp (-(π : ℂ) * (((a v : ℝ) : ℂ) ^ 2 + ((UpperTheory.V.TR.pInf F Z v : ℝ) : ℂ) ^ 2)))
+
+theorem adelicFourier_slice {c : HeightOneSpectrum (𝓞 F) → ℕ} (hc : {w | c w ≠ 0}.Finite) (A Z : Ad F) :
+    adelicFourier F (slice c A) Z =
+      ((finiteAdeleMeasure F (idealFiniteAdeles (levelIdeal c))).toReal : ℂ) * kernF c A Z := by
+  classical
+  rw [slice_eq hc A, adelicFourier_smul, Pi.smul_apply, adelicFourier_schwartzBruhatTensor, schwartzBruhatTensor,
+    mixedFourierSchwartz_apply, finiteFourier_cosetIndicator, mixedFourier_archSchwartz, smul_eq_mul, one_mul]
+  unfold kernF
+  rw [Set.indicator_apply]
+  simp only [SetLike.mem_coe, Pi.one_apply]
+  rw [mem_dual_iff hc]
+  have hZ : Z.2 = pFin F Z := rfl
+  rw [hZ]
+  by_cases h1 : ∀ w, Valued.v (pLoc F w (pFin F A)) ≤ WithZero.exp (-(c w : ℤ))
+  · by_cases h2 : ∀ w, Valued.v (pLoc F w (pFin F Z)) ≤ WithZero.exp ((c w : ℤ) + dd w)
+    · simp only [h1, h2, and_self, implies_true, ↓reduceIte]; ring
+    · simp only [h1, h2, implies_true, true_and, ↓reduceIte]; ring
+  · simp only [h1, false_and, ↓reduceIte]; ring
+
+end UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L1
+
+namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+
+open UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L1
+
+theorem finite_expansion_holds : SFin := by
+  intro F _ _ _ ω c H
+  set χ : (FiniteAdeleRing (𝓞 F) F)ˣ →* ℂˣ := ω.1.comp IdeleGroup.ofFinite with hχdef
+  have hχ : Continuous χ := ω.2.1.comp IdeleGroup.continuous_ofFinite
+  refine (IdeleGroup.finite_support_conductorExponentAt Complex.units_noSmallSubgroups χ hχ).subset ?_
+  intro w hw
+  rw [Function.mem_support]
+  intro h0
+  apply hw
+  have hk := (IdeleGroup.conductorExponentAt_eq_zero_iff Complex.units_noSmallSubgroups χ hχ w).1 h0
+  have hmem : (0 : ℕ) ∈ {n : ℕ | ∀ x : (w.adicCompletion F)ˣ, IsUnitAt w x →
+      Valued.v ((x : w.adicCompletion F) - 1) ≤ WithZero.exp (-(n : ℤ)) → ω.loc w x = 1} := by
+    intro x hx _
+    have h1 := hk (mem_units_of_isUnitAt w x hx)
+    rw [MonoidHom.mem_ker] at h1
+    exact h1
+  exact Nat.le_zero.1 ((H.cond w).2 hmem)
+
+theorem kernel_expansion_holds : SKern := by
+  intro F _ _ _ c hc
+  refine ⟨((finiteAdeleMeasure F (idealFiniteAdeles (levelIdeal c))).toReal : ℂ), ?_,
+    fun A Z => adelicFourier_slice hc A Z⟩
+  rw [Complex.ofReal_ne_zero, finiteAdeleMeasure_idealFiniteAdeles_toReal]
+  refine mul_ne_zero (inv_ne_zero ?_) (inv_ne_zero ?_)
+  · rw [Rat.cast_ne_zero, Ne, FractionalIdeal.absNorm_eq_zero_iff]
+    exact (levelIdeal c).ne_zero
+  · rw [NNReal.coe_ne_zero, Ne, NNReal.sqrt_eq_zero, nnnorm_eq_zero]
+    exact_mod_cast NumberField.discr_ne_zero F
+
+end UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+end
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial
+open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V.Af UpperTheory.V.Base
+open scoped Matrix
+open MeasureTheory GroundTheory.Global GroundTheory.Global.IdeleGroup UpperTheory.V.Sd UpperTheory.V.Published
+
+namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L3
+
+variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
+
+def xAd (x : UpperTheory.V.TR.Rinf F) : Ad F := ((UpperTheory.V.TR.infEq F x, 0) : InfiniteAdeleRing F × Af F)
+
+theorem pInf_sInf (z : UpperTheory.V.TR.Rinf F) : UpperTheory.V.TR.pInf F (UpperTheory.V.TR.sInf F z) = z :=
+  (UpperTheory.V.TR.infEq F).symm_apply_apply z
+
+theorem pFin_sInf (z : UpperTheory.V.TR.Rinf F) : pFin F (UpperTheory.V.TR.sInf F z) = 0 := rfl
+
+theorem pInf_sFin (z : Af F) : UpperTheory.V.TR.pInf F (sFin F z) = 0 := map_zero (UpperTheory.V.TR.infEq F).symm
+
+theorem pFin_sFin (z : Af F) : pFin F (sFin F z) = z := rfl
+
+theorem yAd_eq (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) :
+    yAd y yf = (1 - UpperTheory.V.TR.sInf F 1 + UpperTheory.V.TR.sInf F (y : UpperTheory.V.TR.Rinf F)) *
+      (1 - sFin F 1 + sFin F (yf : Af F)) := rfl
+
+theorem pInf_yAd (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) :
+    UpperTheory.V.TR.pInf F (yAd y yf) = (y : UpperTheory.V.TR.Rinf F) := by
+  rw [yAd_eq]; simp [pInf_sInf, pInf_sFin]
+
+theorem pFin_yAd (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) : pFin F (yAd y yf) = (yf : Af F) := by
+  rw [yAd_eq]; simp [pFin_sInf, pFin_sFin]
+
+theorem pInf_xAd (x : UpperTheory.V.TR.Rinf F) : UpperTheory.V.TR.pInf F (xAd x) = x :=
+  (UpperTheory.V.TR.infEq F).symm_apply_apply x
+
+theorem pFin_xAd (x : UpperTheory.V.TR.Rinf F) : pFin F (xAd x) = 0 := rfl
+
+theorem gPt_val (x : UpperTheory.V.TR.Rinf F) (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) :
+    ((gPt x y yf : GA F 2) : Matrix (Fin 2) (Fin 2) (Ad F)) = !![yAd y yf, xAd x; 0, 1] := by
+  have hI : Matrix.GeneralLinearGroup.map (UpperTheory.V.TR.pInf F) (gPt x y yf) = aff y x := by
+    simp [gPt]
+  have hF : Matrix.GeneralLinearGroup.map (pFin F) (gPt x y yf) = aff yf 0 := by
+    simp [gPt]
+  ext i j
+  apply UpperTheory.V.TR.ad_ext
+  · have e1 : UpperTheory.V.TR.pInf F ((gPt x y yf : Matrix (Fin 2) (Fin 2) (Ad F)) i j) =
+        ((Matrix.GeneralLinearGroup.map (UpperTheory.V.TR.pInf F) (gPt x y yf) : GL (Fin 2) (UpperTheory.V.TR.Rinf F)) :
+          Matrix (Fin 2) (Fin 2) (UpperTheory.V.TR.Rinf F)) i j := rfl
+    rw [e1, hI]
+    fin_cases i <;> fin_cases j <;> simp [aff, pInf_yAd, pInf_xAd]
+  · have e1 : pFin F ((gPt x y yf : Matrix (Fin 2) (Fin 2) (Ad F)) i j) =
+        ((Matrix.GeneralLinearGroup.map (pFin F) (gPt x y yf) : GL (Fin 2) (Af F)) :
+          Matrix (Fin 2) (Fin 2) (Af F)) i j := rfl
+    rw [e1, hF]
+    fin_cases i <;> fin_cases j <;> simp [aff, pFin_yAd, pFin_xAd]
+
+theorem row_eq (x : UpperTheory.V.TR.Rinf F) (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) (τ : IdeleGroup F) (ξ : Fin 2 → F) :
+    rowA ξ ᵥ* ((Matrix.GeneralLinearGroup.scalar (Fin 2) τ * gPt x y yf : GA F 2) : Matrix (Fin 2) (Fin 2) (Ad F)) =
+      ![(τ : Ad F) * (algebraMap F (Ad F) (ξ 0) * yAd y yf),
+        (τ : Ad F) * (algebraMap F (Ad F) (ξ 0) * xAd x + algebraMap F (Ad F) (ξ 1))] := by
+  rw [Units.val_mul, gPt_val]
+  funext i
+  fin_cases i <;>
+    simp [Matrix.vecMul, dotProduct, Fin.sum_univ_two, rowA, Matrix.mul_apply, Matrix.GeneralLinearGroup.scalar] <;> ring
+
+theorem translate_mem {f : Ad F → ℂ} (hf : f ∈ schwartzBruhat F) (d : Ad F) :
+    (fun B => f (B + d)) ∈ schwartzBruhat F := by
+  induction hf using Submodule.span_induction with
+  | mem G hG =>
+    obtain ⟨φ, g, hg, rfl⟩ := hG
+    have hg' : (fun z => g (z + d.2)) ∈ finiteSchwartzBruhat F :=
+      ⟨hg.1.comp_continuous (continuous_add_const _), hg.2.comp_homeomorph (Homeomorph.addRight d.2)⟩
+    convert schwartzBruhatTensor_mem (SchwartzMap.compSubConstCLM ℂ (-(homeomorphMixedSpace F d.1)) φ) hg' using 1
+    funext B
+    simp only [schwartzBruhatTensor, SchwartzMap.compSubConstCLM_apply, sub_neg_eq_add]
+    rw [homeomorphMixedSpace_apply, homeomorphMixedSpace_apply, homeomorphMixedSpace_apply]
+    have hB : (B + d).1 = B.1 + d.1 := rfl
+    rw [hB, (InfiniteAdeleRing.ringEquiv_mixedSpace F).map_add]
+    rfl
+  | zero => exact zero_mem _
+  | add G H _ _ hG hH => exact add_mem hG hH
+  | smul r G _ hG => exact Submodule.smul_mem _ r hG
+
+theorem adelicFourier_translate (f : Ad F → ℂ) (d Z : Ad F) :
+    adelicFourier F (fun B => f (B + d)) Z = (adelicChar F (-(d * Z)) : ℂ) * adelicFourier F f Z := by
+  unfold adelicFourier
+  have h := integral_add_right_eq_self (μ := adeleMeasure F)
+    (fun B : Ad F => f B * (adelicChar F ((B - d) * Z) : ℂ)) d
+  simp only [add_sub_cancel_right] at h
+  rw [h, ← integral_const_mul]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun B => ?_)
+  simp only
+  rw [sub_mul, sub_eq_add_neg, ← neg_mul, AddChar.map_add_eq_mul, Circle.coe_mul]
+  ring
+
+theorem ext_pInf (B : Ad F) (w : InfinitePlace F) :
+    InfinitePlace.Completion.extensionEmbedding w (B.1 w) = ((UpperTheory.V.TR.pInf F B w : ℝ) : ℂ) := by
+  rw [← InfinitePlace.Completion.extensionEmbeddingOfIsReal_apply (IsTotallyReal.isReal w)]
+  rfl
+
+theorem char_xAd (ξ : F) (x : UpperTheory.V.TR.Rinf F) :
+    (adelicChar F (-(algebraMap F (Ad F) ξ * xAd x)) : ℂ) = ex ξ x := by
+  have h0 : -(algebraMap F (Ad F) ξ * xAd x) =
+      ((-((algebraMap F (Ad F) ξ).1 * UpperTheory.V.TR.infEq F x), 0) : InfiniteAdeleRing F × Af F) := by
+    refine Prod.ext rfl ?_
+    show -((algebraMap F (Ad F) ξ).2 * 0) = 0
+    simp
+  have hT : infiniteTrace F ((algebraMap F (Ad F) ξ).1 * UpperTheory.V.TR.infEq F x) = ∑ v, reAt v ξ * x v := by
+    show (∑ w : InfinitePlace F, (w.mult : ℝ) * (InfinitePlace.Completion.extensionEmbedding w
+      (((algebraMap F (Ad F) ξ).1 * UpperTheory.V.TR.infEq F x) w)).re) = _
+    refine Finset.sum_congr rfl fun w _ => ?_
+    have hm : (w.mult : ℝ) = 1 := by
+      rw [InfinitePlace.mult, if_pos (IsTotallyReal.isReal w)]; simp
+    have h1 : InfinitePlace.Completion.extensionEmbedding w
+        (((algebraMap F (Ad F) ξ).1 * UpperTheory.V.TR.infEq F x) w) = (w.embedding ξ) * ((x w : ℝ) : ℂ) := by
+      show InfinitePlace.Completion.extensionEmbedding w ((algebraMap F (Ad F) ξ).1 w * UpperTheory.V.TR.infEq F x w) = _
+      rw [map_mul]
+      congr 1
+      · exact InfinitePlace.Completion.extensionEmbedding_coe w _
+      · have := ext_pInf (xAd x) w
+        rw [pInf_xAd] at this
+        exact this
+    rw [hm, h1, one_mul, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero, reAt]
+  rw [h0, adelicChar_infinite, (infiniteTrace F).map_neg, neg_neg, Real.fourierChar_apply, ex, hT]
+  congr 1
+  push_cast
+  ring
+
+theorem tsum_split_zero (g : F → ℂ) (hg : Summable g) : ∑' ξ : F, g ξ = g 0 + ∑' ξ : Fˣ, g ξ := by
+  rw [← hg.tsum_subtype_add_tsum_subtype_compl {0}, tsum_singleton]
+  congr 1
+  let e : Fˣ ≃ ↥({0}ᶜ : Set F) :=
+    { toFun := fun u => ⟨u, by simp [u.ne_zero]⟩
+      invFun := fun z => Units.mk0 z.1 (Set.mem_compl_singleton_iff.mp z.2)
+      left_inv := fun u => by ext; simp
+      right_inv := fun z => by ext; simp }
+  exact (e.tsum_eq (fun z => g z)).symm
+
+theorem arch_le (a z : InfinitePlace F → ℝ) :
+    ‖∏ v, (((a v : ℂ) + (z v : ℂ)) * Complex.exp (-(Real.pi : ℂ) * ((a v : ℂ) ^ 2 + (z v : ℂ) ^ 2)))‖ ≤
+      2 ^ Fintype.card (InfinitePlace F) *
+        ‖∏ v, (((a v : ℂ) + Complex.I * (z v : ℂ)) * Complex.exp (-(Real.pi : ℂ) * ((a v : ℂ) ^ 2 + (z v : ℂ) ^ 2)))‖ := by
+  rw [norm_prod, norm_prod, ← Finset.card_univ, ← Finset.prod_const, ← Finset.prod_mul_distrib]
+  refine Finset.prod_le_prod (fun v _ => norm_nonneg _) fun v _ => ?_
+  rw [norm_mul, norm_mul, ← mul_assoc]
+  refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+  have hre : ((a v : ℂ) + Complex.I * (z v : ℂ)).re = a v := by simp
+  have him : ((a v : ℂ) + Complex.I * (z v : ℂ)).im = z v := by simp
+  have h1 := Complex.abs_re_le_norm ((a v : ℂ) + Complex.I * (z v : ℂ))
+  have h2 := Complex.abs_im_le_norm ((a v : ℂ) + Complex.I * (z v : ℂ))
+  rw [hre] at h1
+  rw [him] at h2
+  calc ‖((a v : ℂ) + (z v : ℂ))‖ ≤ ‖(a v : ℂ)‖ + ‖(z v : ℂ)‖ := norm_add_le _ _
+    _ = |a v| + |z v| := by rw [Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs]
+    _ ≤ 2 * ‖((a v : ℂ) + Complex.I * (z v : ℂ))‖ := by linarith
+
+theorem fin_le (c : HeightOneSpectrum (𝓞 F) → ℕ) (A Z : Ad F) (P Q : Prop) [Decidable P] [Decidable Q]
+    (hP : P ↔ (∀ w, Valued.v (pLoc F w (pFin F A)) ≤ WithZero.exp (-(c w : ℤ))) ∧
+        (∀ w, Valued.v (pLoc F w (pFin F Z)) ≤ WithZero.exp ((c w : ℤ) + dd w)))
+    (hQ : Q ↔ ∀ w, Valued.v (pLoc F w (pFin F A)) ≤ WithZero.exp ((c w : ℤ) + dd w) ∧
+        Valued.v (pLoc F w (pFin F Z)) ≤ WithZero.exp ((c w : ℤ) + dd w)) :
+    ‖(if P then ((finiteAdelicChar F (pFin F Z) : Circle) : ℂ) else 0)‖ ≤
+      ‖(if Q then ((finiteAdelicChar F (pFin F Z) : Circle) : ℂ) else 0)‖ := by
+  by_cases h : P
+  · have hq : Q := by
+      rw [hQ]
+      have h1 := hP.mp h
+      refine fun w => ⟨le_trans (h1.1 w) ?_, h1.2 w⟩
+      rw [WithZero.exp_le_exp]
+      have : (0 : ℤ) ≤ dd w := by unfold dd; positivity
+      omega
+    rw [if_pos h, if_pos hq]
+  · rw [if_neg h, norm_zero]
+    exact norm_nonneg _
+
+theorem kernF_le (c : HeightOneSpectrum (𝓞 F) → ℕ) (A Z : Ad F) :
+    ‖kernF c A Z‖ ≤ 2 ^ Fintype.card (InfinitePlace F) * ‖PhiH c ![A, Z]‖ := by
+  classical
+  unfold kernF PhiH arch
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+  rw [norm_mul, norm_mul, ← mul_assoc]
+  exact mul_le_mul (arch_le _ _) (fin_le c A Z _ _ Iff.rfl Iff.rfl) (norm_nonneg _) (by positivity)
+
+theorem coe_mul_diag (τ : IdeleGroup F) (a : Fˣ) :
+    ((τ * diagonal F a : IdeleGroup F) : Ad F) = (τ : Ad F) * algebraMap F (Ad F) (a : F) := by
+  rw [Units.val_mul, coe_diagonal]
+
+theorem module_mul_diag (τ : IdeleGroup F) (a : Fˣ) :
+    ideleModule F (τ * diagonal F a) = ideleModule F τ := by
+  rw [map_mul, ideleModule_diagonal, mul_one]
+
+theorem inv_smul_diag (τ : IdeleGroup F) (a : Fˣ) (η : F) :
+    (τ * diagonal F a)⁻¹ • algebraMap F (Ad F) ((a : F) * η) = τ⁻¹ • algebraMap F (Ad F) η := by
+  have h : algebraMap F (Ad F) ((a⁻¹ : Fˣ) : F) * algebraMap F (Ad F) (a : F) = 1 := by
+    rw [← (algebraMap F (Ad F)).map_mul, Units.inv_mul, map_one]
+  rw [Units.smul_def, Units.smul_def, mul_inv_rev, Units.val_mul, ← map_inv, coe_diagonal,
+    (algebraMap F (Ad F)).map_mul]
+  linear_combination ((τ⁻¹ : IdeleGroup F) : Ad F) * algebraMap F (Ad F) η * h
+
+theorem row_poisson {c : HeightOneSpectrum (𝓞 F) → ℕ} (hsl : ∀ A : Ad F, slice c A ∈ schwartzBruhat F)
+    (Y X : Ad F) (τ : IdeleGroup F) (a : Fˣ) :
+    ∑' b : F, Phi c ![(τ : Ad F) * (algebraMap F (Ad F) (a : F) * Y),
+        (τ : Ad F) * (algebraMap F (Ad F) (a : F) * X + algebraMap F (Ad F) b)] =
+      ∑' ξ : F, (adelicChar F (-(algebraMap F (Ad F) ξ * X)) : ℂ) * kern c Y (τ * diagonal F a) ξ := by
+  have hRR := tsum_smul_algebraMap_eq τ
+    (translate_mem (hsl ((τ : Ad F) * (algebraMap F (Ad F) (a : F) * Y))) ((τ : Ad F) * (algebraMap F (Ad F) (a : F) * X)))
+  have hL : ∀ b : F, Phi c ![(τ : Ad F) * (algebraMap F (Ad F) (a : F) * Y),
+      (τ : Ad F) * (algebraMap F (Ad F) (a : F) * X + algebraMap F (Ad F) b)] =
+      slice c ((τ : Ad F) * (algebraMap F (Ad F) (a : F) * Y))
+        (τ • algebraMap F (Ad F) b + (τ : Ad F) * (algebraMap F (Ad F) (a : F) * X)) := by
+    intro b
+    simp only [slice, Units.smul_def, smul_eq_mul]
+    congr 3
+    ring
+  calc _ = _ := tsum_congr hL
+    _ = _ := hRR
+    _ = _ := by
+      conv_rhs => rw [← (Equiv.mulLeft₀ (a : F) a.ne_zero).tsum_eq]
+      rw [← tsum_mul_left]
+      refine tsum_congr fun η => ?_
+      have hm : (Equiv.mulLeft₀ (a : F) a.ne_zero) η = (a : F) * η := rfl
+      rw [hm, adelicFourier_translate]
+      unfold kern
+      rw [inv_smul_diag, module_mul_diag, coe_mul_diag]
+      have e1 : (τ : Ad F) * (algebraMap F (Ad F) (a : F) * X) * (τ⁻¹ • algebraMap F (Ad F) η) =
+          algebraMap F (Ad F) ((a : F) * η) * X := by
+        rw [Units.smul_def, (algebraMap F (Ad F)).map_mul]
+        have : (τ : Ad F) * ((τ⁻¹ : IdeleGroup F) : Ad F) = 1 := Units.mul_inv τ
+        linear_combination (algebraMap F (Ad F) (a : F) * X * algebraMap F (Ad F) η) * this
+      have e2 : (τ : Ad F) * algebraMap F (Ad F) (a : F) * Y = (τ : Ad F) * (algebraMap F (Ad F) (a : F) * Y) := by
+        ring
+      rw [e1, e2]
+      ring
+
+def diagU (a b : IdeleGroup F) : GA F 2 where
+  val := Matrix.diagonal ![(a : Ad F), (b : Ad F)]
+  inv := Matrix.diagonal ![((a⁻¹ : IdeleGroup F) : Ad F), ((b⁻¹ : IdeleGroup F) : Ad F)]
+  val_inv := by
+    rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+    congr 1; funext i; fin_cases i <;> simp
+  inv_val := by
+    rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+    congr 1; funext i; fin_cases i <;> simp
+
+theorem summable_kern {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (hP : SPois) (H : Hyp ω c) {κ : ℂ}
+    (hκ : ∀ A Z : Ad F, adelicFourier F (slice c A) Z = κ * kernF c A Z) (Y τ : IdeleGroup F) :
+    Summable (fun p : Fˣ × F => ‖kern c (Y : Ad F) (τ * diagonal F p.1) p.2‖) := by
+  obtain ⟨C, hC⟩ := hP F ω c H
+  have hS := (hC (diagU (τ * Y) τ⁻¹)⁻¹).2.1
+  rw [inv_inv] at hS
+  let ι : Fˣ × F → {ξ : Fin 2 → F // ξ ≠ 0} := fun p =>
+    ⟨![(p.1 : F), p.2], fun h => p.1.ne_zero (by simpa using congrFun h 0)⟩
+  have hι : Function.Injective ι := by
+    intro p q h
+    have h0 := congrFun (congrArg Subtype.val h) 0
+    have h1 := congrFun (congrArg Subtype.val h) 1
+    simp only [ι, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at h0 h1
+    exact Prod.ext (Units.ext h0) h1
+  have hS' := hS.comp_injective hι
+  let e : Fˣ × F ≃ Fˣ × F :=
+    { toFun := fun p => (p.1, (p.1 : F) * p.2)
+      invFun := fun p => (p.1, (p.1 : F)⁻¹ * p.2)
+      left_inv := fun p => Prod.ext rfl (inv_mul_cancel_left₀ p.1.ne_zero p.2)
+      right_inv := fun p => Prod.ext rfl (mul_inv_cancel_left₀ p.1.ne_zero p.2) }
+  rw [← e.summable_iff]
+  refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun p => ?_)
+    (hS'.mul_left (‖((ideleModule F τ : ℝ) : ℂ)⁻¹‖ * ‖κ‖ * 2 ^ Fintype.card (InfinitePlace F)))
+  have hv : (((diagU (τ * Y) τ⁻¹ : GA F 2) : Matrix (Fin 2) (Fin 2) (Ad F)) *ᵥ rowA (ι p).1) =
+      ![(τ : Ad F) * algebraMap F (Ad F) (p.1 : F) * (Y : Ad F), τ⁻¹ • algebraMap F (Ad F) p.2] := by
+    funext i
+    fin_cases i <;> simp [diagU, ι, rowA, Matrix.mulVec_diagonal, Units.smul_def] <;> ring
+  simp only [Function.comp_apply, e, Equiv.coe_fn_mk]
+  rw [hv]
+  unfold kern
+  rw [hκ, inv_smul_diag, module_mul_diag, coe_mul_diag, norm_mul, norm_mul]
+  calc ‖((ideleModule F τ : ℝ) : ℂ)⁻¹‖ * (‖κ‖ * ‖kernF c ((τ : Ad F) * algebraMap F (Ad F) (p.1 : F) * (Y : Ad F))
+        (τ⁻¹ • algebraMap F (Ad F) p.2)‖)
+      ≤ ‖((ideleModule F τ : ℝ) : ℂ)⁻¹‖ * (‖κ‖ * (2 ^ Fintype.card (InfinitePlace F) *
+          ‖PhiH c ![(τ : Ad F) * algebraMap F (Ad F) (p.1 : F) * (Y : Ad F), τ⁻¹ • algebraMap F (Ad F) p.2]‖)) := by
+        gcongr
+        exact kernF_le c _ _
+    _ = _ := by ring
+
+open Classical in
+
+def rowEquiv : Fˣ ⊕ (Fˣ × F) ≃ {ξ : Fin 2 → F // ξ ≠ 0} where
+  toFun s := match s with
+    | Sum.inl b => ⟨![0, (b : F)], fun h => b.ne_zero (by simpa using congrFun h 1)⟩
+    | Sum.inr p => ⟨![(p.1 : F), p.2], fun h => p.1.ne_zero (by simpa using congrFun h 0)⟩
+  invFun ξ := if h : ξ.1 0 = 0 then
+      Sum.inl (Units.mk0 (ξ.1 1) (fun h1 => ξ.2 (by funext i; fin_cases i <;> simp [h, h1])))
+    else Sum.inr (Units.mk0 (ξ.1 0) h, ξ.1 1)
+  left_inv s := by
+    rcases s with b | ⟨a, b⟩
+    · simp
+    · simp [a.ne_zero]
+  right_inv ξ := by
+    by_cases h : ξ.1 0 = 0
+    · simp only [dif_pos h]
+      ext i; fin_cases i <;> simp [h]
+    · simp only [dif_neg h]
+      ext i; fin_cases i <;> simp
+
+theorem main_of (hsl : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (c : HeightOneSpectrum (𝓞 F) → ℕ),
+    {w | c w ≠ 0}.Finite → ∀ A : Ad F, slice c A ∈ schwartzBruhat F) : SPois → SFin → SKern → SPoint := by
+  intro hP hFin hK F _ _ _ ω c H x y hy yf τ
+  have hc := hFin F ω c H
+  obtain ⟨κ, -, hκ⟩ := hK F c hc
+  obtain ⟨C, hC⟩ := hP F ω c H
+  have hsum := (hC (Matrix.GeneralLinearGroup.scalar (Fin 2) τ * gPt x y yf)).1
+  let f : (Fin 2 → F) → ℂ := fun ξ => Phi c ![(τ : Ad F) * (algebraMap F (Ad F) (ξ 0) * yAd y yf),
+    (τ : Ad F) * (algebraMap F (Ad F) (ξ 0) * xAd x + algebraMap F (Ad F) (ξ 1))]
+  have hrow : ∀ ξ : Fin 2 → F, Phi c (rowA ξ ᵥ* ((Matrix.GeneralLinearGroup.scalar (Fin 2) τ * gPt x y yf : GA F 2) :
+      Matrix (Fin 2) (Fin 2) (Ad F))) = f ξ := fun ξ => by rw [row_eq]
+  have hth : thetaS (Phi c) (Matrix.GeneralLinearGroup.scalar (Fin 2) τ * gPt x y yf) =
+      ∑' ξ : {ξ : Fin 2 → F // ξ ≠ 0}, f ξ.1 := tsum_congr fun ξ => hrow ξ.1
+  have hfs : Summable (fun ξ : {ξ : Fin 2 → F // ξ ≠ 0} => f ξ.1) :=
+    Summable.of_norm (by simpa only [hrow] using hsum)
+  have hfe : Summable (fun s => f (rowEquiv s).1) :=
+    (rowEquiv.summable_iff (f := fun ξ : {ξ : Fin 2 → F // ξ ≠ 0} => f ξ.1)).mpr hfs
+  rw [hth, ← rowEquiv.tsum_eq (fun ξ : {ξ : Fin 2 → F // ξ ≠ 0} => f ξ.1),
+    Summable.tsum_sum (hfe.comp_injective Sum.inl_injective) (hfe.comp_injective Sum.inr_injective)]
+  have h1 : ∑' b : Fˣ, f (rowEquiv (Sum.inl b)).1 = zeroRow c τ :=
+    tsum_congr fun b => by simp [f, rowEquiv, zeroRow]
+  have hprod : Summable (fun p : Fˣ × F => f (rowEquiv (Sum.inr p)).1) := hfe.comp_injective Sum.inr_injective
+  have h2 : ∀ a : Fˣ, ∑' b : F, f (rowEquiv (Sum.inr (a, b))).1 =
+      ∑' ξ : F, (adelicChar F (-(algebraMap F (Ad F) ξ * xAd x)) : ℂ) * kern c (yAd y yf) (τ * diagonal F a) ξ :=
+    fun a => by rw [← row_poisson (hsl F c hc) (yAd y yf) (xAd x) τ a]; rfl
+  have hK2 := summable_kern hP H hκ (UpperTheory.V.TR.infId F y * finId F yf) τ
+  have hU : Summable (Function.uncurry fun (a : Fˣ) (ξ : F) =>
+      (adelicChar F (-(algebraMap F (Ad F) ξ * xAd x)) : ℂ) * kern c (yAd y yf) (τ * diagonal F a) ξ) := by
+    refine Summable.of_norm (hK2.congr fun p => ?_)
+    simp only [Function.uncurry, norm_mul, Circle.norm_coe, one_mul]
+    rfl
+  rw [h1, hprod.tsum_prod, tsum_congr h2, ← hU.tsum_comm]
+  have hin : ∀ ξ : F, ∑' a : Fˣ, (adelicChar F (-(algebraMap F (Ad F) ξ * xAd x)) : ℂ) *
+      kern c (yAd y yf) (τ * diagonal F a) ξ =
+      (adelicChar F (-(algebraMap F (Ad F) ξ * xAd x)) : ℂ) * coefK c (yAd y yf) τ ξ := fun ξ => by
+    rw [tsum_mul_left]; rfl
+  have hsξ : Summable (fun ξ : F => (adelicChar F (-(algebraMap F (Ad F) ξ * xAd x)) : ℂ) * coefK c (yAd y yf) τ ξ) := by
+    refine hU.prod_symm.prod.congr fun ξ => ?_
+    exact hin ξ
+  rw [tsum_congr hin, tsum_split_zero _ hsξ]
+  simp only [map_zero, zero_mul, neg_zero, AddChar.map_zero_eq_one, Circle.coe_one, one_mul, char_xAd]
+  ring
+
+end UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L3
+
+namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+
+theorem sPoint_proof_of_slice (hsl : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F]
+    (c : HeightOneSpectrum (𝓞 F) → ℕ), {w | c w ≠ 0}.Finite → ∀ A : Ad F, slice c A ∈ schwartzBruhat F) :
+    SPois → SFin → SKern → SPoint := L3.main_of hsl
+
+end UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+
+namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+
+theorem pointwise_theta_expansion : SPois → SFin → SKern → SPoint :=
+  sPoint_proof_of_slice (by intro F _ _ _ c hc A; exact slice_mem_sb hc A)
+
+end UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+end
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial
+open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V.Af UpperTheory.V.Base
+open scoped Matrix ENNReal
+open MeasureTheory GroundTheory.Global GroundTheory.Global.IdeleGroup UpperTheory.V.Sd UpperTheory.V.Published Filter
+
+namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+
+namespace L6
+
+variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
+
+theorem omega_diagonal (ω : HChar F) (a : Fˣ) : ω.1 (diagonal F a) = 1 := ω.2.2 a
+
+theorem module_tau_diag (t : {r : ℝ // 0 < r}) (u : normOneSubgroup F) (a : Fˣ) :
+    (ideleModule F (tau t u * diagonal F a) : ℝ) = t := by
+  have hu : ideleModule F (u : IdeleGroup F) = 1 := u.2
+  rw [tau, map_mul, map_mul, ideleModule_diagonal, ideleModule_moduleSection, hu, mul_one, mul_one]
+
+theorem G_unfold (ω : HChar F) (c : HeightOneSpectrum (𝓞 F) → ℕ) (Y : Ad F) (ξ : F) (t : {r : ℝ // 0 < r})
+    (u : normOneSubgroup F) (a : Fˣ) :
+    kern c Y (diagonal F a * moduleSection (w0 F) t * (u : IdeleGroup F)) ξ *
+      ((ω.1 (diagonal F a * moduleSection (w0 F) t * (u : IdeleGroup F)) : ℂˣ) : ℂ)⁻¹ *
+      ((ideleModule F (diagonal F a * moduleSection (w0 F) t * (u : IdeleGroup F)) : ℝ) : ℂ) =
+    kern c Y (tau t u * diagonal F a) ξ * wt ω t u := by
+  have he : diagonal F a * moduleSection (w0 F) t * (u : IdeleGroup F) = tau t u * diagonal F a := by
+    rw [tau, mul_assoc, mul_comm]
+  rw [he, module_tau_diag, map_mul, omega_diagonal, mul_one, wt, mul_assoc]
+
+theorem tsum_G (ω : HChar F) (c : HeightOneSpectrum (𝓞 F) → ℕ) (Y : Ad F) (ξ : F) (t : {r : ℝ // 0 < r})
+    (u : normOneSubgroup F) :
+    ∑' a : Fˣ, kern c Y (diagonal F a * moduleSection (w0 F) t * (u : IdeleGroup F)) ξ *
+      ((ω.1 (diagonal F a * moduleSection (w0 F) t * (u : IdeleGroup F)) : ℂˣ) : ℂ)⁻¹ *
+      ((ideleModule F (diagonal F a * moduleSection (w0 F) t * (u : IdeleGroup F)) : ℝ) : ℂ) =
+    coefK c Y (tau t u) ξ * wt ω t u := by
+  simp_rw [G_unfold]
+  rw [coefK, tsum_mul_right]
+
+def phiA (a : Fˣ) (p : {r : ℝ // 0 < r} × normOneSubgroup F) : IdeleGroup F :=
+  diagonal F a * moduleSection (w0 F) p.1 * (p.2 : IdeleGroup F)
+
+theorem continuous_phiA (a : Fˣ) : Continuous (phiA (F := F) a) :=
+  (continuous_const.mul ((continuous_moduleSection (w0 F)).comp continuous_fst)).mul
+    (continuous_subtype_val.comp continuous_snd)
+
+theorem measurePreserving_phiA (a : Fˣ) :
+    MeasurePreserving (phiA (F := F) a) (posRealMeasure.prod (normOneMeasure F)) (ideleMeasure F) := by
+  have h0 : MeasurePreserving (normOneSplitting (w0 F)).toHomeomorph.toMeasurableEquiv (ideleMeasure F)
+      ((normOneMeasure F).prod posRealMeasure) := measurePreserving_normOneSplitting (w0 F)
+  have h1 := (MeasurePreserving.symm _ h0).comp (Measure.measurePreserving_swap
+    (μ := posRealMeasure) (ν := normOneMeasure F))
+  have h3 := (measurePreserving_mul_left (ideleMeasure F) (diagonal F a)).comp h1
+  convert h3 using 1
+  funext p
+  change diagonal F a * moduleSection (w0 F) p.1 * (p.2 : IdeleGroup F) =
+    diagonal F a * ((p.2 : IdeleGroup F) * moduleSection (w0 F) p.1)
+  rw [mul_assoc, mul_comm (moduleSection (w0 F) p.1)]
+
+theorem muE_ac : muE F ≪ posRealMeasure.prod (normOneMeasure F) := by
+  have h : muE F = (posRealMeasure.prod (normOneMeasure F)).restrict (Set.univ ×ˢ normOneFundamentalDomain F) := by
+    rw [← Measure.prod_restrict, Measure.restrict_univ]
+  rw [h]
+  exact Measure.absolutelyContinuous_of_le Measure.restrict_le_self
+
+theorem lintegral_unfold {g : IdeleGroup F → ℝ≥0∞} (hg : Measurable g) :
+    ∫⁻ p, ∑' a : Fˣ, g (phiA a p) ∂(muE F) = ∫⁻ x, g x ∂ideleMeasure F := by
+  have hm : ∀ a : Fˣ, Measurable fun p => g (phiA a p) := fun a => hg.comp (continuous_phiA a).measurable
+  have hin : ∀ t : {r : ℝ // 0 < r}, ∫⁻ u in normOneFundamentalDomain F, ∑' a : Fˣ, g (phiA a (t, u)) ∂normOneMeasure F
+      = ∫⁻ u, g (phiA 1 (t, u)) ∂normOneMeasure F := by
+    intro t
+    have h𝓕 := isFundamentalDomain_normOneFundamentalDomain F (normOneMeasure F)
+    let e : Fˣ ≃ (diagonalNormOne F).op := (diagonalNormOneEquiv F).trans (diagonalNormOne F).equivOp
+    rw [lintegral_tsum (f := fun a u => g (phiA a (t, u))) (fun a => ((hm a).comp measurable_prodMk_left).aemeasurable),
+      h𝓕.lintegral_eq_tsum'',
+      ← e.tsum_eq]
+    refine tsum_congr fun a => lintegral_congr fun u => ?_
+    change g (phiA a (t, u)) = g (phiA 1 (t, u * diagonalToNormOne F a))
+    simp only [phiA, map_one, one_mul, Subgroup.coe_mul, coe_diagonalToNormOne]
+    congr 1
+    ac_rfl
+  rw [lintegral_prod _ (Measurable.tsum hm).aemeasurable]
+  simp_rw [hin]
+  rw [← (measurePreserving_phiA 1).lintegral_comp hg, lintegral_prod _ (hm 1).aemeasurable]
+
+theorem integrable_unfold {G : IdeleGroup F → ℂ} (hG : Integrable G (ideleMeasure F)) :
+    Integrable (fun p : {r : ℝ // 0 < r} × normOneSubgroup F => ∑' a : Fˣ, G (phiA a p)) (muE F) := by
+  set G' := hG.1.mk G
+  have hG'm : StronglyMeasurable G' := hG.1.stronglyMeasurable_mk
+  have hGG' : G =ᵐ[ideleMeasure F] G' := hG.1.ae_eq_mk
+  have hae : ∀ᵐ p ∂(muE F), ∀ a : Fˣ, G (phiA a p) = G' (phiA a p) := by
+    refine ae_all_iff.2 fun a => muE_ac.ae_le ?_
+    exact (measurePreserving_phiA a).quasiMeasurePreserving.ae_eq_comp hGG'
+  have hP' : Integrable (fun p : {r : ℝ // 0 < r} × normOneSubgroup F => ∑' a : Fˣ, G' (phiA a p)) (muE F) := by
+    refine ⟨(Measurable.tsum fun a => hG'm.measurable.comp (continuous_phiA a).measurable).aestronglyMeasurable, ?_⟩
+    unfold HasFiniteIntegral
+    calc ∫⁻ p, ‖∑' a : Fˣ, G' (phiA a p)‖ₑ ∂(muE F)
+        ≤ ∫⁻ p, ∑' a : Fˣ, ‖G' (phiA a p)‖ₑ ∂(muE F) := lintegral_mono fun p => enorm_tsum_le_tsum_enorm
+      _ = ∫⁻ x, ‖G' x‖ₑ ∂ideleMeasure F := lintegral_unfold hG'm.measurable.enorm
+      _ = ∫⁻ x, ‖G x‖ₑ ∂ideleMeasure F := lintegral_congr_ae (hGG'.fun_comp _).symm
+      _ < ∞ := hG.2
+  refine hP'.congr ?_
+  filter_upwards [hae] with p hp
+  exact tsum_congr fun a => (hp a).symm
+
+end L6
+
+open L6 in
+theorem sUnfold_statement : SUnfold := by
+  intro F _ _ _ ω c H Y ξ hG
+  set G : IdeleGroup F → ℂ := fun τ => kern c Y τ ξ * ((ω.1 τ : ℂˣ) : ℂ)⁻¹ * ((ideleModule F τ : ℝ) : ℂ)
+  have hP : ∀ p : {r : ℝ // 0 < r} × normOneSubgroup F,
+      coefK c Y (tau p.1 p.2) ξ * wt ω p.1 p.2 = ∑' a : Fˣ, G (phiA a p) := fun p => (tsum_G ω c Y ξ p.1 p.2).symm
+  simp_rw [hP]
+  rw [integral_prod _ (integrable_unfold hG), integral_ideleMeasure_eq_integral_fundamentalDomain (w0 F) hG]
+  rfl
+
+end UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+end
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial
+open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V.Af UpperTheory.V.Base
+open scoped Matrix
+open MeasureTheory GroundTheory.Global GroundTheory.Global.IdeleGroup UpperTheory.V.Sd UpperTheory.V.Published
+
+namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+
+namespace L7
+
+variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
+
+open Classical in
+theorem slice_congr (c : HeightOneSpectrum (𝓞 F) → ℕ) {A A' : Ad F}
+    (h1 : UpperTheory.V.TR.pInf F A = UpperTheory.V.TR.pInf F A')
+    (h2 : ∀ w, Valued.v (pLoc F w (pFin F A)) = Valued.v (pLoc F w (pFin F A'))) :
+    slice c A = slice c A' := by
+  funext B
+  simp only [slice, Phi, Matrix.cons_val_zero, Matrix.cons_val_one, h1]
+  congr 1
+  exact if_congr (forall_congr' fun w => by rw [h2 w]) rfl rfl
+
+theorem pInf_finiteEmbedding (w : HeightOneSpectrum (𝓞 F)) (x : (w.adicCompletion F)ˣ) :
+    UpperTheory.V.TR.pInf F ((finiteEmbedding w x : IdeleGroup F) : Ad F) = 1 := by
+  show (UpperTheory.V.TR.infEq F).symm ((finiteEmbedding w x : IdeleGroup F) : Ad F).1 = 1
+  rw [coe_finiteEmbedding]
+  exact map_one _
+
+theorem valued_finiteEmbedding (w : HeightOneSpectrum (𝓞 F)) (x : (w.adicCompletion F)ˣ)
+    (hx : IsUnitAt w x) (w' : HeightOneSpectrum (𝓞 F)) :
+    Valued.v (pLoc F w' (pFin F ((finiteEmbedding w x : IdeleGroup F) : Ad F))) = 1 := by
+  show Valued.v ((((finiteEmbedding w x : IdeleGroup F) : Ad F).2) w') = 1
+  rw [coe_finiteEmbedding]
+  by_cases h : w' = w
+  · subst h
+    show Valued.v (finiteAdeleSingle w' (x : w'.adicCompletion F) w') = 1
+    rw [finiteAdeleSingle_apply_self]
+    exact hx
+  · show Valued.v (finiteAdeleSingle w (x : w.adicCompletion F) w') = 1
+    rw [finiteAdeleSingle_apply_of_ne h]
+    exact map_one _
+
+theorem norm_unit (w : HeightOneSpectrum (𝓞 F)) (x : (w.adicCompletion F)ˣ) (hx : IsUnitAt w x) :
+    ‖(x : w.adicCompletion F)‖ = 1 := by
+  have hx' : Valued.v ((x⁻¹ : (w.adicCompletion F)ˣ) : w.adicCompletion F) = 1 := by
+    rw [Units.val_inv_eq_inv_val, map_inv₀, show Valued.v (x : w.adicCompletion F) = 1 from hx, inv_one]
+  refine IdeleGroup.norm_eq_one_of_mul_eq_one (b := ((x⁻¹ : (w.adicCompletion F)ˣ) : w.adicCompletion F))
+    x.mul_inv ?_ ?_
+  · exact (HeightOneSpectrum.mem_adicCompletionIntegers (R := 𝓞 F) F w).2 (le_of_eq hx)
+  · exact (HeightOneSpectrum.mem_adicCompletionIntegers (R := 𝓞 F) F w).2 (le_of_eq hx')
+
+theorem ideleModule_finiteEmbedding_unit (w : HeightOneSpectrum (𝓞 F)) (x : (w.adicCompletion F)ˣ)
+    (hx : IsUnitAt w x) : ideleModule F (finiteEmbedding w x) = 1 :=
+  Subtype.ext (by rw [ideleModule_finiteEmbedding, norm_unit w x hx]; rfl)
+
+theorem kern_mul_unit (c : HeightOneSpectrum (𝓞 F) → ℕ) (Y : Ad F) (σ : IdeleGroup F)
+    (w : HeightOneSpectrum (𝓞 F)) (x : (w.adicCompletion F)ˣ) (hx : IsUnitAt w x) :
+    kern c Y (σ * finiteEmbedding w x) 0 = kern c Y σ 0 := by
+  have hs : slice c (((σ * finiteEmbedding w x : IdeleGroup F) : Ad F) * Y) = slice c ((σ : Ad F) * Y) := by
+    refine slice_congr c ?_ ?_
+    · rw [Units.val_mul, map_mul, map_mul, map_mul, pInf_finiteEmbedding, mul_one]
+    · intro w'
+      simp only [Units.val_mul, map_mul, valued_finiteEmbedding w x hx w', mul_one]
+  unfold kern
+  rw [hs, map_mul, ideleModule_finiteEmbedding_unit w x hx, mul_one, map_zero, smul_zero, smul_zero]
+
+theorem omega_diagonal (ω : HChar F) (δ : Fˣ) : ω.1 (diagonal F δ) = 1 := ω.2.2 δ
+
+theorem coefK_mul_diagonal (c : HeightOneSpectrum (𝓞 F) → ℕ) (Y : Ad F) (τ : IdeleGroup F) (δ : Fˣ) (ξ : F) :
+    coefK c Y (τ * diagonal F δ) ξ = coefK c Y τ ξ := by
+  unfold coefK
+  have := (Equiv.mulLeft δ).tsum_eq (fun a => kern c Y (τ * diagonal F a) ξ)
+  rw [← this]
+  refine tsum_congr fun a => ?_
+  rw [Equiv.coe_mulLeft, map_mul, mul_assoc]
+
+theorem coefK_mul_unit (c : HeightOneSpectrum (𝓞 F) → ℕ) (Y : Ad F) (τ : IdeleGroup F)
+    (w : HeightOneSpectrum (𝓞 F)) (x : (w.adicCompletion F)ˣ) (hx : IsUnitAt w x) :
+    coefK c Y (τ * finiteEmbedding w x) 0 = coefK c Y τ 0 := by
+  unfold coefK
+  refine tsum_congr fun a => ?_
+  rw [mul_right_comm, kern_mul_unit c Y _ w x hx]
+
+theorem exists_unit (ω : HChar F) (c : HeightOneSpectrum (𝓞 F) → ℕ) (H : Hyp ω c) :
+    ∃ (w : HeightOneSpectrum (𝓞 F)) (x : (w.adicCompletion F)ˣ), IsUnitAt w x ∧ ω.loc w x ≠ 1 := by
+  obtain ⟨w, hw⟩ := H.ram
+  refine ⟨w, ?_⟩
+  by_contra hne
+  push Not at hne
+  have h0 : (0 : ℕ) ∈ {n : ℕ | ∀ x : (w.adicCompletion F)ˣ, IsUnitAt w x →
+      Valued.v ((x : w.adicCompletion F) - 1) ≤ WithZero.exp (-(n : ℤ)) → ω.loc w x = 1} :=
+    fun x hx _ => hne x hx
+  exact hw (Nat.le_zero.1 ((H.cond w).2 h0))
+
+theorem loc_eq (ω : HChar F) (w : HeightOneSpectrum (𝓞 F)) (x : (w.adicCompletion F)ˣ) :
+    ω.1 (finiteEmbedding w x) = ω.loc w x := rfl
+
+end L7
+
+open L7 in
+theorem null_term_holds : SFin → SKern → SNull := by
+  intro _ _ F _ _ _ ω c H y yf t _
+  set Y := yAd y yf
+  obtain ⟨w, x, hx, hω⟩ := exists_unit ω c H
+  set h : normOneSubgroup F → ℂ := fun u => coefK c Y (tau t u) 0 * ((ω.1 (tau t u) : ℂˣ) : ℂ)⁻¹ with hdef
+  have hh : ∀ (δ : Fˣ) (u : normOneSubgroup F), h (u * diagonalToNormOne F δ) = h u := by
+    intro δ u
+    have e1 : tau t (u * diagonalToNormOne F δ) = tau t u * diagonal F δ := by
+      simp only [tau, Subgroup.coe_mul, coe_diagonalToNormOne, mul_assoc]
+    simp only [hdef, e1, coefK_mul_diagonal, map_mul, omega_diagonal, mul_one]
+  have he1 : ideleModule F (finiteEmbedding w x) = 1 := ideleModule_finiteEmbedding_unit w x hx
+  let e' : normOneSubgroup F := ⟨finiteEmbedding w x, by rw [normOneSubgroup, MonoidHom.mem_ker]; exact he1⟩
+  have hshift : ∀ u, h (e' * u) = ((ω.1 (finiteEmbedding w x) : ℂˣ) : ℂ)⁻¹ * h u := by
+    intro u
+    have e2 : tau t (e' * u) = tau t u * finiteEmbedding w x := by
+      simp only [tau, Subgroup.coe_mul, e']
+      rw [mul_comm ((finiteEmbedding w x : IdeleGroup F)) (u : IdeleGroup F), mul_assoc]
+    simp only [hdef, e2, coefK_mul_unit c Y _ w x hx, map_mul, Units.val_mul, mul_inv]
+    ring
+  have hI := setIntegral_mul_left_eq hh e'
+  simp only [hshift] at hI
+  rw [integral_const_mul] at hI
+  have hne : ((ω.1 (finiteEmbedding w x) : ℂˣ) : ℂ)⁻¹ ≠ 1 := by
+    rw [Ne, inv_eq_one, loc_eq]
+    intro h1
+    exact hω (Units.ext h1)
+  have h3 : (((ω.1 (finiteEmbedding w x) : ℂˣ) : ℂ)⁻¹ - 1) *
+      ∫ u in normOneFundamentalDomain F, h u ∂normOneMeasure F = 0 := by
+    rw [sub_mul, one_mul, hI, sub_self]
+  exact (mul_eq_zero.1 h3).resolve_left (sub_ne_zero.2 hne)
+
+end UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial
@@ -259,3 +1038,5 @@ theorem fourier_expansion_holds : SPois → SInt → SSmooth → SExp := fun hP 
     (FourierExpansionEisenstein.null_term_holds FourierExpansionEisenstein.finite_expansion_holds FourierExpansionEisenstein.kernel_expansion_holds) (FourierExpansionEisenstein.absolute_convergence_holds FourierExpansionEisenstein.finite_expansion_holds FourierExpansionEisenstein.kernel_expansion_holds) FourierExpansionEisenstein.sUnfold_statement (FourierExpansionEisenstein.local_expansion_holds FourierExpansionEisenstein.finite_expansion_holds FourierExpansionEisenstein.kernel_expansion_holds) hI
 
 end UpperTheory.HilbertEisensteinWeightOne
+end
+end

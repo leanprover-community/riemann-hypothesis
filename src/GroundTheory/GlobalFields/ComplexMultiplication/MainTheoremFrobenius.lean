@@ -1,9 +1,832 @@
 import Mathlib
 import GroundTheory.GlobalFields.ComplexMultiplication.FrobeniusAtPrimes
 import GroundTheory.GlobalFields.ComplexMultiplication.DegreeOneAutomorphismPoints
-import GroundTheory.GlobalFields.ComplexMultiplication.DegreeOneAutomorphismLift
-import GroundTheory.GlobalFields.ComplexMultiplication.MainTheoremPointHom
-import GroundTheory.GlobalFields.ComplexMultiplication.MainTheoremReduction
+import GroundTheory.GlobalFields.ComplexMultiplication.ReductionNumberField
+import GroundTheory.GlobalFields.ComplexMultiplication.ReductionIsogenyMap
+import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeField
+import GroundTheory.GlobalFields.ComplexMultiplication.ReductionPoints
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.SingularCubic
+import GroundTheory.GlobalFields.ComplexMultiplication.InseparableFrobenius
+import GroundTheory.GlobalFields.ComplexMultiplication.ReductionEval
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Global
+
+open Polynomial NumberField IsDedekindDomain IsLocalRing
+
+section Generic
+
+variable {R S : Type*} [CommRing R] [IsDomain R] [CommRing S] [IsDomain S] (f : R →+* S)
+
+theorem isPrimitiveRoot_map_of_natCast_ne_zero {ζ : R} {n : ℕ} (hζ : IsPrimitiveRoot ζ n)
+    (hn : (n : S) ≠ 0) : IsPrimitiveRoot (f ζ) n := by
+  have : NeZero (n : S) := ⟨hn⟩
+  have : NeZero (n : R) := ⟨fun h => hn (by rw [← map_natCast f n, h, map_zero])⟩
+  have hr : eval ζ (cyclotomic n R) = 0 := isRoot_cyclotomic_iff.mpr hζ
+  apply isRoot_cyclotomic_iff.mp
+  show eval (f ζ) (cyclotomic n S) = 0
+  rw [← map_cyclotomic n f, eval_map, eval₂_hom, hr, map_zero]
+
+theorem eq_of_map_eq_of_pow_eq_one {ζ : R} {n : ℕ} [NeZero n] (hζ : IsPrimitiveRoot ζ n)
+    (hn : (n : S) ≠ 0) {η η' : R} (hη : η ^ n = 1) (hη' : η' ^ n = 1) (h : f η = f η') :
+    η = η' := by
+  have hf := isPrimitiveRoot_map_of_natCast_ne_zero f hζ hn
+  obtain ⟨j, hj, rfl⟩ := hζ.eq_pow_of_pow_eq_one hη
+  obtain ⟨k, hk, rfl⟩ := hζ.eq_pow_of_pow_eq_one hη'
+  rw [map_pow, map_pow] at h
+  rw [hf.pow_inj hj hk h]
+
+theorem existsUnique_pow_eq_one_of_isPrimitiveRoot {ζ : R} {n : ℕ} [NeZero n]
+    (hζ : IsPrimitiveRoot ζ n) (hn : (n : S) ≠ 0) {w : S} (hw : w ^ n = 1) :
+    ∃! η : R, η ^ n = 1 ∧ f η = w := by
+  have hf := isPrimitiveRoot_map_of_natCast_ne_zero f hζ hn
+  obtain ⟨i, -, e⟩ := hf.eq_pow_of_pow_eq_one hw
+  have hi : (ζ ^ i) ^ n = 1 := by rw [← pow_mul, mul_comm, pow_mul, hζ.pow_eq_one, one_pow]
+  refine ⟨ζ ^ i, ⟨hi, by rw [map_pow, e]⟩, ?_⟩
+  rintro η ⟨hη, hfη⟩
+  exact eq_of_map_eq_of_pow_eq_one f hζ hn hη hi (by rw [hfη, map_pow, e])
+
+end Generic
+
+theorem two_ne_zero_and_three_ne_zero_of_five_le_ringChar {k : Type*} [Field k]
+    (h : 5 ≤ ringChar k) : (2 : k) ≠ 0 ∧ (3 : k) ≠ 0 := by
+  refine ⟨fun h2 => ?_, fun h3 => ?_⟩
+  · have := Nat.le_of_dvd (by norm_num) ((ringChar.spec k 2).mp (by exact_mod_cast h2))
+    omega
+  · have := Nat.le_of_dvd (by norm_num) ((ringChar.spec k 3).mp (by exact_mod_cast h3))
+    omega
+
+section NumberField
+
+variable {L : Type*} [Field L] [NumberField L] (v : HeightOneSpectrum (𝓞 L))
+
+end NumberField
+
+end GroundTheory.Global
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Global
+
+noncomputable section
+
+open IsLocalRing GroundTheory.Arith.Abelian
+
+section E0
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
+  [(W.map (algebraMap 𝒪 K)).IsElliptic] [DecidableEq K] [DecidableEq (ResidueField 𝒪)]
+
+local notation "ι" => algebraMap 𝒪 K
+local notation "ρ" => residue 𝒪
+
+omit [DecidableEq (ResidueField 𝒪)] in
+
+theorem add_notMem_of_notMem_range {X₁ Y₁ X₂ Y₂ : K} (h₁ : (curveK K W).Nonsingular X₁ Y₁)
+    (hX₁ : X₁ ∉ Set.range ι) (h₂ : (curveK K W).Nonsingular X₂ Y₂) (hX₂ : X₂ ∉ Set.range ι)
+    {x y : 𝒪} (h : (curveK K W).Nonsingular (ι x) (ι y)) :
+    WeierstrassCurve.Affine.Point.some _ _ h₁ + WeierstrassCurve.Affine.Point.some _ _ h₂ ≠
+      WeierstrassCurve.Affine.Point.some _ _ h := by
+  intro hS
+  have hn : (curveK K W).Nonsingular X₂ ((curveK K W).negY X₂ Y₂) :=
+    (WeierstrassCurve.Affine.nonsingular_neg _ _).2 h₂
+  obtain ⟨x₃, y₃, h₃, e, -, -⟩ := add_of_notMem_range' K W hn hX₂ h
+  have hneg : -(WeierstrassCurve.Affine.Point.some _ _ h₂) =
+      WeierstrassCurve.Affine.Point.some _ _ hn := WeierstrassCurve.Affine.Point.neg_some h₂
+  have e' : WeierstrassCurve.Affine.Point.some _ _ h₁ =
+      WeierstrassCurve.Affine.Point.some _ _ h₃ := by
+    rw [← e, ← hS, ← hneg]; abel
+  rw [WeierstrassCurve.Affine.Point.some.injEq] at e'
+  exact hX₁ ⟨x₃, e'.1.symm⟩
+
+theorem add_mem_E0Set_and_reducePoint_add {P Q : (curveK K W).Point} (hP : P ∈ E0Set K W)
+    (hQ : Q ∈ E0Set K W) :
+    P + Q ∈ E0Set K W ∧ reducePoint K W (P + Q) = reducePoint K W P + reducePoint K W Q := by
+  rcases point_cases K W P with rfl | ⟨X₁, Y₁, h₁, rfl, hX₁⟩ | ⟨x₁, y₁, h₁, rfl⟩
+  · rw [zero_add, reducePoint_zero, zero_add]; exact ⟨hQ, rfl⟩
+  · rcases point_cases K W Q with rfl | ⟨X₂, Y₂, h₂, rfl, hX₂⟩ | ⟨x₂, y₂, h₂, rfl⟩
+    · rw [add_zero, reducePoint_zero, add_zero]; exact ⟨hP, rfl⟩
+    · rw [reducePoint_some_notMem K W h₁ hX₁, reducePoint_some_notMem K W h₂ hX₂, add_zero]
+      rcases point_cases K W (WeierstrassCurve.Affine.Point.some _ _ h₁ +
+          WeierstrassCurve.Affine.Point.some _ _ h₂) with h0 | ⟨X, Y, h, hS, hX⟩ | ⟨x, y, h, hS⟩
+      · rw [h0]; exact ⟨zero_mem_E0Set K W, rfl⟩
+      · rw [hS]; exact ⟨mem_E0Set_some_notMem K W h hX, reducePoint_some_notMem K W h hX⟩
+      · exact absurd hS (add_notMem_of_notMem_range K W h₁ hX₁ h₂ hX₂ h)
+    · have n₂ := hQ x₂ y₂ h₂ rfl
+      obtain ⟨x₃, y₃, h₃, e, hx, hy⟩ := add_of_notMem_range' K W h₁ hX₁ h₂
+      refine add_mem_and_reduce_of_exists K W ⟨x₃, y₃, h₃, hx ▸ hy ▸ n₂, e, ?_⟩
+      rw [reducePoint_some_notMem K W h₁ hX₁, zero_add, reducePoint_some_integral K W h₂ n₂,
+        WeierstrassCurve.Affine.Point.some.injEq]
+      exact ⟨hx.symm, hy.symm⟩
+  · have n₁ := hP x₁ y₁ h₁ rfl
+    rcases point_cases K W Q with rfl | ⟨X₂, Y₂, h₂, rfl, hX₂⟩ | ⟨x₂, y₂, h₂, rfl⟩
+    · rw [add_zero, reducePoint_zero, add_zero]; exact ⟨hP, rfl⟩
+    · obtain ⟨x₃, y₃, h₃, e, hx, hy⟩ := add_of_notMem_range' K W h₂ hX₂ h₁
+      rw [add_comm] at e
+      refine add_mem_and_reduce_of_exists K W ⟨x₃, y₃, h₃, hx ▸ hy ▸ n₁, e, ?_⟩
+      rw [reducePoint_some_notMem K W h₂ hX₂, add_zero, reducePoint_some_integral K W h₁ n₁,
+        WeierstrassCurve.Affine.Point.some.injEq]
+      exact ⟨hx.symm, hy.symm⟩
+    · have n₂ := hQ x₂ y₂ h₂ rfl
+      rw [reducePoint_some_integral K W h₁ n₁, reducePoint_some_integral K W h₂ n₂]
+      by_cases hx : ρ x₁ = ρ x₂
+      · by_cases hy : ρ y₁ = (curveRed W).negY (ρ x₂) (ρ y₂)
+        · rw [WeierstrassCurve.Affine.Point.add_of_Y_eq hx hy]
+          rcases add_of_residue_neg K W h₁ h₂ n₁ n₂ hx hy with h0 | ⟨X, Y, h, hS, hX⟩
+          · rw [h0]; exact ⟨zero_mem_E0Set K W, rfl⟩
+          · rw [hS]; exact ⟨mem_E0Set_some_notMem K W h hX, reducePoint_some_notMem K W h hX⟩
+        · have hy' : ρ y₁ = ρ y₂ := by
+            rcases WeierstrassCurve.Affine.Y_eq_of_X_eq n₁.1 n₂.1 hx with h | h
+            · exact h
+            · exact absurd h hy
+          have hD : ρ (y₁ + y₂ + W.a₁ * x₁ + W.a₃) ≠ 0 := by
+            intro h0; apply hy
+            rw [map_add, map_add, map_add, map_mul] at h0
+            simp only [WeierstrassCurve.Affine.negY, WeierstrassCurve.map_a₁,
+              WeierstrassCurve.map_a₃, ← hx]
+            linear_combination h0
+          obtain ⟨x₃, y₃, h₃, n₃, e, e'⟩ := add_of_residue_eq K W h₁ h₂ n₁ n₂ hx hy' hD
+          rw [e, e', reducePoint_some_integral K W h₃ n₃]
+          exact ⟨mem_E0Set_some_integral K W h₃ n₃, rfl⟩
+      · obtain ⟨x₃, y₃, h₃, n₃, e, e'⟩ := add_of_residue_X_ne K W h₁ h₂ n₁ n₂ hx
+        rw [e, e', reducePoint_some_integral K W h₃ n₃]
+        exact ⟨mem_E0Set_some_integral K W h₃ n₃, rfl⟩
+
+def E0Subgroup : AddSubgroup (curveK K W).Point where
+  carrier := E0Set K W
+  zero_mem' := zero_mem_E0Set K W
+  add_mem' hP hQ := (add_mem_E0Set_and_reducePoint_add K W hP hQ).1
+  neg_mem' hP := (neg_mem_and_reduce K W hP).1
+
+
+def reduceE0Hom : E0Subgroup K W →+ (curveRed W).Point where
+  toFun P := reducePoint K W P
+  map_zero' := reducePoint_zero K W
+  map_add' P Q := (add_mem_E0Set_and_reducePoint_add K W P.2 Q.2).2
+
+theorem reduceE0Hom_apply (P : E0Subgroup K W) : reduceE0Hom K W P = reducePoint K W P := rfl
+
+end E0
+
+end
+
+end GroundTheory.Global
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Global
+
+noncomputable section
+
+open IsLocalRing GroundTheory.Arith.Abelian
+
+section Scale
+
+variable {R : Type*} [CommRing R]
+
+def scaleCoeffs (W : WeierstrassCurve R) (a : R) : WeierstrassCurve R :=
+  ⟨a * W.a₁, a ^ 2 * W.a₂, a ^ 3 * W.a₃, a ^ 4 * W.a₄, a ^ 6 * W.a₆⟩
+
+theorem map_scaleCoeffs {S : Type*} [CommRing S] (f : R →+* S) (W : WeierstrassCurve R) (a : R) :
+    (scaleCoeffs W a).map f = scaleCoeffs (W.map f) (f a) := by
+  ext <;> simp [scaleCoeffs]
+
+def scaleVariableChange {F : Type*} [Field F] {c : F} (hc : c ≠ 0) :
+    WeierstrassCurve.VariableChange F :=
+  ⟨(Units.mk0 c hc)⁻¹, 0, 0, 0⟩
+
+theorem scaleVariableChange_smul {F : Type*} [Field F] (W : WeierstrassCurve F) {c : F}
+    (hc : c ≠ 0) : scaleVariableChange hc • W = scaleCoeffs W c := by
+  ext <;> simp [scaleVariableChange, scaleCoeffs, WeierstrassCurve.variableChange_a₁,
+    WeierstrassCurve.variableChange_a₂, WeierstrassCurve.variableChange_a₃,
+    WeierstrassCurve.variableChange_a₄, WeierstrassCurve.variableChange_a₆]
+
+end Scale
+
+section Torsion
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
+  [(W.map (algebraMap 𝒪 K)).IsElliptic] [DecidableEq K] [DecidableEq (ResidueField 𝒪)]
+
+local notation "ι" => algebraMap 𝒪 K
+local notation "ρ" => residue 𝒪
+
+theorem nsmul_ne_zero_of_notMem_range {n : ℕ} (hn : (n : ResidueField 𝒪) ≠ 0) {X Y : K}
+    (h : (curveK K W).Nonsingular X Y) (hX : X ∉ Set.range ι) :
+    n • WeierstrassCurve.Affine.Point.some _ _ h ≠ 0 := by
+  intro hnP
+  have hι := IsFractionRing.injective 𝒪 K
+  obtain ⟨z, w, v, hzm, hz0, -, -, hwv, hvu, hρv, hXz, hYw⟩ :=
+    exists_zw_of_notMem_range K W h.1 hX
+  have hzK : ι z ≠ 0 := (map_ne_zero_iff _ hι).2 hz0
+  set W' := scaleCoeffs W z with hW'
+  have hC : scaleVariableChange hzK • W.map ι = W'.map ι := by
+    rw [scaleVariableChange_smul, hW', map_scaleCoeffs]
+  have : (W'.map ι).IsElliptic := hC ▸ inferInstance
+  set v' : 𝒪 := ↑hvu.unit⁻¹ with hv'
+  have hvv : v * v' = 1 := hvu.mul_val_inv
+  have hvK : ι v * ι v' = 1 := by rw [← map_mul, hvv, map_one]
+  have hwK : ι w = ι z ^ 3 * ι v := by rw [hwv, map_mul, map_pow]
+  have hvK0 : ι v ≠ 0 := left_ne_zero_of_mul_eq_one hvK
+  have hv'K : ι v' = (ι v)⁻¹ := eq_inv_of_mul_eq_one_right hvK
+  have hx' : vcX (scaleVariableChange hzK) X = ι v' := by
+    simp only [vcX, scaleVariableChange, inv_inv, Units.val_mk0, sub_zero]
+    rw [← hXz, hwK, hv'K]
+    field_simp
+  have hy' : vcY (scaleVariableChange hzK) X Y = ι (-v') := by
+    simp only [vcY, scaleVariableChange, inv_inv, Units.val_mk0, sub_zero, zero_mul]
+    rw [← hYw, hwK, map_neg, hv'K]
+    field_simp
+  have h' : (curveK K W').Nonsingular (ι v') (ι (-v')) := by
+    have := (nonsingular_vc (scaleVariableChange hzK) (W.map ι) X Y).2 h
+    rw [hC, hx', hy'] at this
+    exact this
+  set φ := vcPointEquiv (scaleVariableChange hzK) hC
+  have hφ : φ (.some _ _ h) = .some _ _ h' := by
+    rw [vcPointEquiv_apply, vcPoint_some, WeierstrassCurve.Affine.Point.some.injEq]
+    exact ⟨hx', hy'⟩
+
+  have hρz : ρ z = 0 := residue_eq_zero_of_mem hzm
+  have h1 : (W'.map ρ).a₁ = -2 * 0 := by simp [hW', scaleCoeffs, hρz]
+  have h2 : (W'.map ρ).a₂ = -0 ^ 2 := by simp [hW', scaleCoeffs, hρz]
+  have h3 : (W'.map ρ).a₃ = 0 := by simp [hW', scaleCoeffs, hρz]
+  have h4 : (W'.map ρ).a₄ = 0 := by simp [hW', scaleCoeffs, hρz]
+  have h6 : (W'.map ρ).a₆ = 0 := by simp [hW', scaleCoeffs, hρz]
+  have hρv' : ρ v' = 1 := by
+    have := congrArg ρ hvv
+    rwa [map_mul, hρv, one_mul, map_one] at this
+  have n' : (curveRed W').Nonsingular (ρ v') (ρ (-v')) :=
+    origin_nonsingular (W'.map ρ) h3 h4 h6 (equation_residue W' (equation_of_map K W' h'.1))
+      (by rw [hρv']; exact one_ne_zero)
+  have hE0 : φ (.some _ _ h) ∈ E0Subgroup K W' := by
+    rw [hφ]; exact mem_E0Set_some_integral K W' h' n'
+  set Q : E0Subgroup K W' := ⟨_, hE0⟩
+  have hnQ : n • Q = 0 := by
+    apply Subtype.ext
+    rw [AddSubgroup.coe_nsmul, AddSubgroup.coe_zero]
+    change n • φ _ = 0
+    rw [← map_nsmul, hnP, map_zero]
+  have hred : reduceE0Hom K W' Q = .some _ _ n' := by
+    rw [reduceE0Hom_apply]
+    change reducePoint K W' (φ _) = _
+    rw [hφ, reducePoint_some_integral K W' h' n']
+  have key : n • cuspHom (W'.map ρ) h3 h4 h6 0 h1 h2 (reduceE0Hom K W' Q) = 0 := by
+    rw [← map_nsmul, ← map_nsmul, hnQ, map_zero, map_zero]
+  rw [hred] at key
+  change n • (ρ v' / (ρ (-v') - 0 * ρ v')) = 0 at key
+  rw [map_neg, hρv'] at key
+  apply hn
+  simpa using key
+
+end Torsion
+
+section Good
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
+  [W.IsElliptic] [DecidableEq K] [DecidableEq (ResidueField 𝒪)]
+
+theorem eq_zero_of_nsmul_eq_zero_of_reducePoint_eq_zero {n : ℕ}
+    (hn : (n : ResidueField 𝒪) ≠ 0) {P : (curveK K W).Point} (hnP : n • P = 0)
+    (hP : reducePoint K W P = 0) : P = 0 := by
+  rcases point_cases K W P with rfl | ⟨X, Y, h, rfl, hX⟩ | ⟨x, y, h, rfl⟩
+  · rfl
+  · exact absurd hnP (nsmul_ne_zero_of_notMem_range K W hn h hX)
+  · rw [reducePoint_some_integral K W h (nonsingular_residue_of_isElliptic K W h.1)] at hP
+    exact absurd hP (WeierstrassCurve.Affine.Point.some_ne_zero _)
+
+theorem eq_of_reductionHom_eq_of_nsmul {n : ℕ} (hn : (n : ResidueField 𝒪) ≠ 0)
+    {P Q : (curveK K W).Point} (hP : n • P = 0) (hQ : n • Q = 0)
+    (h : reductionHom K W P = reductionHom K W Q) : P = Q :=
+  sub_eq_zero.1 (eq_zero_of_nsmul_eq_zero_of_reducePoint_eq_zero K W hn
+    (by rw [nsmul_sub, hP, hQ, sub_zero])
+    (by rw [← reductionHom_apply, map_sub, h, sub_self]))
+
+
+def reductionTorsionHom (n : ℕ) :
+    AddSubgroup.torsionBy (curveK K W).Point n →+ AddSubgroup.torsionBy (curveRed W).Point n :=
+  ((reductionHom K W).comp (AddSubgroup.torsionBy (curveK K W).Point n).subtype).codRestrict _
+    fun P => by
+      rw [AddSubgroup.torsionBy.nsmul_iff, AddMonoidHom.comp_apply, ← map_nsmul,
+        AddSubgroup.subtype_apply, AddSubgroup.torsionBy.nsmul_iff.mp P.2, map_zero]
+
+
+
+end Good
+
+section Localization
+
+open IsDedekindDomain
+
+variable {R : Type*} [CommRing R] [IsDedekindDomain R] {F : Type*} [Field F] [Algebra R F]
+  [IsFractionRing R F] (v : HeightOneSpectrum R)
+
+instance isDiscreteValuationRing_valuationSubringAtPrime :
+    IsDiscreteValuationRing (v.valuationSubringAtPrime F) :=
+  IsLocalization.AtPrime.isDiscreteValuationRing_of_dedekind_domain R v.ne_bot _
+
+
+
+
+end Localization
+
+section NumberField
+
+open NumberField IsDedekindDomain
+
+variable {F : Type*} [Field F] [NumberField F] (𝔮 : HeightOneSpectrum (𝓞 F))
+  (W : WeierstrassCurve (𝔮.valuationSubringAtPrime F)) [W.IsElliptic] [DecidableEq F]
+  [DecidableEq (ResidueField (𝔮.valuationSubringAtPrime F))]
+
+
+
+end NumberField
+
+end
+
+end GroundTheory.Global
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Global
+
+noncomputable section
+
+open IsLocalRing Polynomial WeierstrassCurve.Affine GroundTheory.Arith.Abelian
+
+universe u
+
+section Translate
+
+variable {F : Type u} [Field F] [DecidableEq F] (E : WeierstrassCurve F) [E.IsElliptic]
+
+theorem isGenPt_genericPoint_add_constMap (R : E.toAffine.Point) :
+    IsGenPt E (genericPoint E + constMap E E.toAffine.FunctionField R) := by
+  have hG : TransOver E F (genericPoint E) := transcendental_genX E
+  have := hG.add_left (M := E.toAffine.FunctionField) R
+  rw [add_comm]
+  exact this.isGenPt
+
+end Translate
+
+section OverF
+
+variable {F : Type u} [Field F] [DecidableEq F] {E E' : WeierstrassCurve F} [E.IsElliptic]
+  [E'.IsElliptic] (Ω : Type u) [Field Ω] [Algebra F Ω] [DecidableEq Ω]
+
+omit [DecidableEq F] in
+
+theorem isogBaseChange_app (φ : Isogeny E E')
+    (X : ((E.baseChange Ω).baseChange (E.baseChange Ω).toAffine.FunctionField).toAffine.Point)
+    (hX : IsGenPt (E.baseChange Ω) X)
+    (hX' : IsGenPt E (X : (E.baseChange (E.baseChange Ω).toAffine.FunctionField).toAffine.Point)) :
+    (isogBaseChange (F' := Ω) φ).app X hX =
+      φ.app (X : (E.baseChange (E.baseChange Ω).toAffine.FunctionField).toAffine.Point) hX' := by
+  have hg : ((genEval (E.baseChange Ω) X hX).restrictScalars F).comp (bcEmb (F' := Ω) E) =
+      genEval E (X : (E.baseChange (E.baseChange Ω).toAffine.FunctionField).toAffine.Point)
+        hX' := by
+    refine eq_genEval E _ ?_ _
+    cases X with
+    | zero => exact hX.elim
+    | some u v hv =>
+      simp only [GroundTheory.Arith.Abelian.genericPoint, Point.map_some]
+      congr 1
+      · show genEval (E.baseChange Ω) _ hX (bcEmb (F' := Ω) E (genX E)) = u
+        rw [bcEmb_genX]; exact genEval_genX (E.baseChange Ω) _ hX
+      · show genEval (E.baseChange Ω) _ hX (bcEmb (F' := Ω) E (genY E)) = v
+        rw [bcEmb_genY]; exact genEval_genY (E.baseChange Ω) _ hX
+  unfold Isogeny.app
+  rw [isogBaseChange_val, ← hg, ← Point.map_map]
+  generalize Point.map (W' := E') (bcEmb (F' := Ω) E) φ.1 = Y
+  cases Y <;> rfl
+
+omit [DecidableEq F] [E.IsElliptic] [DecidableEq Ω] in
+
+theorem isGenPt_of_isGenPt_baseChange
+    (X : ((E.baseChange Ω).baseChange (E.baseChange Ω).toAffine.FunctionField).toAffine.Point)
+    (h : IsGenPt (E.baseChange Ω) X) :
+    IsGenPt E (X : (E.baseChange (E.baseChange Ω).toAffine.FunctionField).toAffine.Point) := by
+  cases X with
+  | zero => exact h.elim
+  | some x y _ => exact Transcendental.restrictScalars (algebraMap F Ω).injective h
+
+omit [E.IsElliptic] in
+
+theorem constMap_constMap_baseChange (V : WeierstrassCurve F) (R : V.toAffine.Point) :
+    (constMap (V.baseChange Ω) (E.baseChange Ω).toAffine.FunctionField (constMap V Ω R) :
+      (V.baseChange (E.baseChange Ω).toAffine.FunctionField).toAffine.Point) =
+      constMap V (E.baseChange Ω).toAffine.FunctionField R := by
+  cases R <;> rfl
+
+theorem app_genericPoint_add_constMap [PerfectField F] [IsAlgClosed Ω] (φ : Isogeny E E')
+    (R : E.toAffine.Point) :
+    φ.app (genericPoint E + constMap E E.toAffine.FunctionField R)
+        (isGenPt_genericPoint_add_constMap E R) =
+      φ.1 + constMap E' E.toAffine.FunctionField (pointHomOver Ω φ R) := by
+  set K' := (E.baseChange Ω).toAffine.FunctionField
+  set ι := bcEmb (F' := Ω) E
+  set Rω := constMap E Ω R
+  set φΩ := isogBaseChange (F' := Ω) φ
+  have hGΩ : IsGenPt (E.baseChange Ω) (genericPoint (E.baseChange Ω)) :=
+    transcendental_genX (E.baseChange Ω)
+  have hX := isGenPt_genericPoint_add_constMap (E.baseChange Ω) Rω
+  have h1 := φΩ.app_add_constMap hGΩ Rω hX
+  rw [φΩ.app_genericPoint hGΩ, ← constMap_pointHomOver] at h1
+  have app_eq : ∀ {P P' : (E.baseChange K').toAffine.Point} (h : P = P') (hP : IsGenPt E P)
+      (hP' : IsGenPt E P'), φ.app P hP = φ.app P' hP' := by
+    intro P P' h hP hP'; subst h; rfl
+  have e1 : Point.map ι (genericPoint E + constMap E E.toAffine.FunctionField R) =
+      ((genericPoint (E.baseChange Ω) + constMap (E.baseChange Ω) K' Rω :
+        ((E.baseChange Ω).baseChange K').toAffine.Point) : (E.baseChange K').toAffine.Point) := by
+    rw [map_add, map_bcEmb_genericPoint, map_constMap, ← constMap_constMap_baseChange Ω E R]
+    rfl
+  have hX' := isGenPt_of_isGenPt_baseChange Ω _ hX
+  apply Point.map_injective (W' := E') ι
+  rw [Isogeny.map_app]
+  refine (app_eq e1 _ hX').trans ?_
+  rw [← isogBaseChange_app Ω φ _ hX hX', h1, map_add, map_constMap,
+    ← constMap_constMap_baseChange Ω (E := E) E' (pointHomOver Ω φ R)]
+  rfl
+
+end OverF
+
+section Reduction
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W W' : WeierstrassCurve 𝒪)
+  [DecidableEq K] [DecidableEq (ResidueField 𝒪)]
+
+theorem reduceFF_constMap (V : WeierstrassCurve 𝒪) [V.IsElliptic]
+    (c : (V.baseChange K).toAffine.Point) :
+    reduceFF K W V (constMap (V.baseChange K) (W.baseChange K).toAffine.FunctionField c) =
+      constMap (V.map (residue 𝒪)) (W.map (residue 𝒪)).toAffine.FunctionField
+        (reducePoint K V c) := by
+  have hσ : (algebraMap K (W.baseChange K).toAffine.FunctionField).comp (algebraMap 𝒪 K) =
+      (algebraMap (gaussRing W) (W.baseChange K).toAffine.FunctionField).comp
+        (algebraMap 𝒪 (gaussRing W)) := by
+    rw [← IsScalarTower.algebraMap_eq, ← IsScalarTower.algebraMap_eq]
+  cases c with
+  | zero => exact (map_zero _).trans (map_zero _).symm
+  | some X Y h =>
+    by_cases hX : X ∈ Set.range (algebraMap 𝒪 K)
+    · obtain ⟨x, rfl⟩ := hX
+      obtain ⟨y, rfl⟩ := exists_y_of_equation K V h.1
+      obtain ⟨h₁, e₁⟩ : ∃ h₁, constMap (V.baseChange K) (W.baseChange K).toAffine.FunctionField
+          (Point.some _ _ h) = Point.some (algebraMap K (W.baseChange K).toAffine.FunctionField
+            (algebraMap 𝒪 K x)) (algebraMap K (W.baseChange K).toAffine.FunctionField
+              (algebraMap 𝒪 K y)) h₁ := ⟨_, rfl⟩
+      have hx := RingHom.congr_fun hσ x
+      have hy := RingHom.congr_fun hσ y
+      simp only [RingHom.comp_apply] at hx hy
+      obtain ⟨h₂, e₂⟩ := exists_some_eq h₁ hx hy
+      obtain ⟨h₃, e₃⟩ := reduceFF_some K W V h₂
+      rw [e₁, e₂, e₃]
+      have e₄ := reducePoint_some_integral K V h (nonsingular_residue_of_isElliptic K V h.1)
+      refine Eq.trans ?_ (congrArg (constMap (V.map (residue 𝒪))
+        (W.map (residue 𝒪)).toAffine.FunctionField) e₄).symm
+      show _ = Point.some _ _ _
+      simp only [Point.some.injEq, gaussResidue_residue_algebraMap]
+      exact ⟨rfl, rfl⟩
+    · have hX' := map_notMem_range K (W.baseChange K).toAffine.FunctionField
+        (f := algebraMap 𝒪 (gaussRing W)) hσ hX
+      have e₄ := reducePoint_some_notMem K V h hX
+      refine Eq.trans ?_ (congrArg (constMap (V.map (residue 𝒪))
+        (W.map (residue 𝒪)).toAffine.FunctionField) e₄).symm
+      obtain ⟨h₁, e₁⟩ : ∃ h₁, constMap (V.baseChange K) (W.baseChange K).toAffine.FunctionField
+          (Point.some X Y h) = Point.some (algebraMap K (W.baseChange K).toAffine.FunctionField X)
+            (algebraMap K (W.baseChange K).toAffine.FunctionField Y) h₁ := ⟨_, rfl⟩
+      rw [e₁, map_zero]
+      simp only [reduceFF, AddMonoidHom.comp_apply, AddEquiv.coe_toAddMonoidHom,
+        reductionHom_apply]
+      rw [pointCongr_some, reducePoint_some_notMem _ (gaussCurve W V) _ hX', map_zero, map_zero]
+
+variable [W.IsElliptic] [W'.IsElliptic]
+
+theorem reduceFF_genericPoint_add_constMap (R : (W.baseChange K).toAffine.Point) :
+    reduceFF K W W (genericPoint (W.baseChange K) +
+        constMap (W.baseChange K) (W.baseChange K).toAffine.FunctionField R) =
+      genericPoint (W.map (residue 𝒪)) +
+        constMap (W.map (residue 𝒪)) (W.map (residue 𝒪)).toAffine.FunctionField
+          (reducePoint K W R) := by
+  rw [map_add, reduceFF_genericPoint, reduceFF_constMap]
+
+set_option maxHeartbeats 1000000 in
+
+theorem reduceIsogeny_app_add_constMap (φ : Isogeny (W.baseChange K) (W'.baseChange K))
+    (R : (W.baseChange K).toAffine.Point) (S : (W'.baseChange K).toAffine.Point)
+    (h : φ.app (genericPoint (W.baseChange K) +
+        constMap (W.baseChange K) (W.baseChange K).toAffine.FunctionField R)
+        (isGenPt_genericPoint_add_constMap _ R) =
+      φ.1 + constMap (W'.baseChange K) (W.baseChange K).toAffine.FunctionField S) :
+    (reduceIsogeny K W W' φ).app (genericPoint (W.map (residue 𝒪)) +
+        constMap (W.map (residue 𝒪)) (W.map (residue 𝒪)).toAffine.FunctionField
+          (reducePoint K W R)) (isGenPt_genericPoint_add_constMap _ _) =
+      (reduceIsogeny K W W' φ).1 + constMap (W'.map (residue 𝒪))
+        (W.map (residue 𝒪)).toAffine.FunctionField (reducePoint K W' S) := by
+  have hR' : IsGenPt (W.map (residue 𝒪)) (reduceFF K W W (genericPoint (W.baseChange K) +
+      constMap (W.baseChange K) (W.baseChange K).toAffine.FunctionField R)) := by
+    rw [reduceFF_genericPoint_add_constMap]
+    exact isGenPt_genericPoint_add_constMap _ _
+  have key := reduceFF_map_genEval K W W W' (isGenPt_genericPoint_add_constMap _ R) hR' φ.1
+  have h2 := congrArg (reduceFF K W W') h
+  rw [map_add, reduceFF_constMap] at h2
+  rw [reduceIsogeny_val, ← h2]
+  unfold Isogeny.app at key ⊢
+  rw [key, reduceIsogeny_val, genEval_congr _ (reduceFF_genericPoint_add_constMap K W R) hR']
+
+end Reduction
+
+section PointsOverPerfect
+
+universe v w
+
+variable {𝒪 : Type w} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type v) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] {W W' : WeierstrassCurve 𝒪}
+  [W.IsElliptic] [W'.IsElliptic] [DecidableEq K] [DecidableEq (ResidueField 𝒪)]
+  [PerfectField K] [PerfectField (ResidueField 𝒪)]
+  (Ω : Type v) [Field Ω] [Algebra K Ω] [IsAlgClosed Ω] [DecidableEq Ω]
+  (Ωk : Type w) [Field Ωk] [Algebra (ResidueField 𝒪) Ωk] [IsAlgClosed Ωk] [DecidableEq Ωk]
+
+theorem reducePoint_pointHomOver (φ : Isogeny (W.baseChange K) (W'.baseChange K))
+    (R : (W.baseChange K).toAffine.Point) :
+    reducePoint K W' (pointHomOver Ω φ R) =
+      pointHomOver Ωk (reduceIsogeny K W W' φ) (reducePoint K W R) := by
+  have h := reduceIsogeny_app_add_constMap K W W' φ R _ (app_genericPoint_add_constMap Ω φ R)
+  rw [app_genericPoint_add_constMap Ωk (reduceIsogeny K W W' φ) (reducePoint K W R),
+    add_right_inj] at h
+  exact (constMap_injective _ _ h).symm
+
+end PointsOverPerfect
+
+end
+
+end GroundTheory.Global
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Global
+
+noncomputable section
+
+open WeierstrassCurve.Affine GroundTheory.Arith.Abelian
+
+universe u
+
+section OverF
+
+variable {F : Type u} [Field F] [DecidableEq F] (Ω : Type u) [Field Ω] [Algebra F Ω]
+  [DecidableEq Ω] [PerfectField F] [IsAlgClosed Ω]
+
+omit [DecidableEq F] [PerfectField F] in
+theorem app_eq_of_eq {E E' : WeierstrassCurve F} [E.IsElliptic] [E'.IsElliptic] (φ : Isogeny E E')
+    {L : Type*} [Field L] [Algebra F L] [DecidableEq L] {P P' : (E.baseChange L).toAffine.Point}
+    (h : P = P') (hP : IsGenPt E P) (hP' : IsGenPt E P') : φ.app P hP = φ.app P' hP' := by
+  subst h
+  rfl
+
+theorem pointHomOver_comp {E E' E'' : WeierstrassCurve F} [E.IsElliptic] [E'.IsElliptic]
+    [E''.IsElliptic] (ψ : Isogeny E' E'') (φ : Isogeny E E') (R : E.toAffine.Point) :
+    pointHomOver Ω (ψ.comp φ) R = pointHomOver Ω ψ (pointHomOver Ω φ R) := by
+  apply constMap_injective E'' E.toAffine.FunctionField
+  set R' := pointHomOver Ω φ R
+  have hX' := isGenPt_genericPoint_add_constMap E' R'
+  have e0 := app_genericPoint_add_constMap Ω φ R
+  have h1 := app_genericPoint_add_constMap Ω (ψ.comp φ) R
+
+  have e : φ.1 + constMap E' E.toAffine.FunctionField R' =
+      Point.map φ.comap (genericPoint E' + constMap E' E'.toAffine.FunctionField R') := by
+    rw [map_add, Isogeny.map_comap_genericPoint, map_constMap]
+  have hY : IsGenPt E' (φ.1 + constMap E' E.toAffine.FunctionField R') := by
+    rw [e]
+    exact isGenPt_map E' φ.comap hX'
+  have h2 : ψ.app (φ.1 + constMap E' E.toAffine.FunctionField R') hY =
+      Point.map φ.comap (ψ.1 + constMap E'' E'.toAffine.FunctionField (pointHomOver Ω ψ R')) := by
+    rw [← app_genericPoint_add_constMap Ω ψ R', Isogeny.map_app]
+    exact app_eq_of_eq ψ e _ _
+  rw [Isogeny.app_comp, app_eq_of_eq ψ e0 _ hY, h2, map_add, map_constMap, ← Isogeny.comp_val,
+    add_right_inj] at h1
+  exact h1.symm
+
+theorem pointHomOver_congr {E E' E₁ E₁' : WeierstrassCurve F} [E.IsElliptic] [E'.IsElliptic]
+    [E₁.IsElliptic] [E₁'.IsElliptic] (φ : Isogeny E E') (hE : E = E₁) (hE' : E' = E₁')
+    (R : E.toAffine.Point) :
+    pointHomOver Ω (φ.congr hE hE') (pointCongr hE R) = pointCongr hE' (pointHomOver Ω φ R) := by
+  subst hE hE'
+  rw [Isogeny.congr_rfl]
+  rfl
+
+end OverF
+
+section Frobenius
+
+variable {F : Type u} [Field F] [DecidableEq F] (Ω : Type u) [Field Ω] [Algebra F Ω]
+  [DecidableEq Ω] [PerfectField F] [IsAlgClosed Ω] (E : WeierstrassCurve F) [E.IsElliptic]
+  (p : ℕ) [Fact p.Prime] [CharP F p]
+
+omit [PerfectField F] [E.IsElliptic] in
+theorem frobeniusPoint_constMap {L : Type*} [Field L] [Algebra F L] [CharP L p] [DecidableEq L]
+    (R : E.toAffine.Point) :
+    frobeniusPoint E p L (constMap E L R) =
+      constMap (frobeniusTwist E p) L (pointMapRing (frobenius F p) E R) := by
+  rcases R with _ | ⟨x, y, h⟩
+  · rfl
+  · obtain ⟨h', e⟩ := pointMapRing_some (frobenius F p) E h
+    rw [e]
+    show Point.some _ _ _ = Point.some _ _ _
+    simp only [Algebra.ofId_apply, frobenius_def, map_pow]
+
+theorem pointHomOver_frobeniusIsogeny (R : E.toAffine.Point) :
+    pointHomOver Ω (frobeniusIsogeny E p) R = pointMapRing (frobenius F p) E R := by
+  have : CharP E.toAffine.FunctionField p :=
+    charP_of_injective_algebraMap (algebraMap F E.toAffine.FunctionField).injective p
+  apply constMap_injective (frobeniusTwist E p) E.toAffine.FunctionField
+  have hX := isGenPt_genericPoint_add_constMap E R
+  have h1 := app_genericPoint_add_constMap Ω (frobeniusIsogeny E p) R
+  rw [frobeniusIsogeny_app, frobeniusPoint_add, frobeniusPoint_constMap] at h1
+  have h2 : frobeniusPoint E p E.toAffine.FunctionField (genericPoint E) = (frobeniusIsogeny E p).1 :=
+    rfl
+  rw [h2, add_right_inj] at h1
+  exact h1.symm
+
+end Frobenius
+
+end
+
+end GroundTheory.Global
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Global
+
+noncomputable section
+
+open IsLocalRing WeierstrassCurve GroundTheory.Arith.Abelian
+
+section VariableChange
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
+  (C : VariableChange 𝒪) [W.IsElliptic] [DecidableEq K]
+
+omit [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪] [IsFractionRing 𝒪 K] [W.IsElliptic] [DecidableEq K] in
+
+theorem vcX_notMem_range {X : K} (hX : X ∉ Set.range (algebraMap 𝒪 K)) :
+    vcX (C.map (algebraMap 𝒪 K)) X ∉ Set.range (algebraMap 𝒪 K) := by
+  rintro ⟨a, ha⟩
+  apply hX
+  refine ⟨vcX' C a, ?_⟩
+  rw [map_vcX', ha]
+  exact vcX'_vcX _ X
+
+theorem reducePoint_vcEquivK (P : (curveK K W).Point) :
+    reducePoint K (C • W) (vcEquivK K W C P) =
+      vcPoint (C.map (residue 𝒪)) (map_vc_eq_residue W C) (reducePoint K W P) := by
+  rcases point_cases K W P with rfl | ⟨X, Y, h, rfl, hX⟩ | ⟨x, y, h, rfl⟩
+  · rw [vcEquivK_zero, reducePoint_zero, reducePoint_zero]
+    rfl
+  · rw [vcEquivK_some K W C h (nonsingular_K_vc K W C h),
+      reducePoint_some_notMem K (C • W) _ (vcX_notMem_range K C hX), reducePoint_some_notMem K W h hX]
+    rfl
+  · have n₁ := nonsingular_residue_of_isElliptic K W h.1
+    have hx : vcX (C.map (algebraMap 𝒪 K)) (algebraMap 𝒪 K x) = algebraMap 𝒪 K (vcX C x) :=
+      (map_vcX C (algebraMap 𝒪 K) x).symm
+    have hy : vcY (C.map (algebraMap 𝒪 K)) (algebraMap 𝒪 K x) (algebraMap 𝒪 K y) =
+        algebraMap 𝒪 K (vcY C x y) :=
+      (map_vcY C (algebraMap 𝒪 K) x y).symm
+    have h₂ : (curveK K (C • W)).Nonsingular (algebraMap 𝒪 K (vcX C x))
+        (algebraMap 𝒪 K (vcY C x y)) := by
+      have := nonsingular_K_vc K W C h
+      rwa [hx, hy] at this
+    have n₂ := nonsingular_residue_of_isElliptic K (C • W) h₂.1
+    have e : vcEquivK K W C (.some _ _ h) = .some _ _ h₂ := by
+      rw [vcEquivK_some K W C h (nonsingular_K_vc K W C h), Affine.Point.some.injEq]
+      exact ⟨hx, hy⟩
+    rw [e, reducePoint_some_integral K (C • W) h₂ n₂, reducePoint_some_integral K W h n₁, vcPoint_some,
+      Affine.Point.some.injEq]
+    exact ⟨map_vcX C (residue 𝒪) x, map_vcY C (residue 𝒪) x y⟩
+
+theorem reducePoint_vcPoint {W' : WeierstrassCurve 𝒪} (hC : C • W = W') (P : (curveK K W).Point) :
+    reducePoint K W' (vcPoint (C.map (algebraMap 𝒪 K)) (by rw [map_vc_eq, hC]) P) =
+      vcPoint (C.map (residue 𝒪)) (by rw [map_vc_eq_residue, hC]) (reducePoint K W P) := by
+  subst hC
+  exact reducePoint_vcEquivK K W C P
+
+end VariableChange
+
+section Frobenius
+
+variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
+  (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
+  (p : ℕ) [Fact p.Prime] [CharP (ResidueField 𝒪) p] {g : 𝒪 →+* 𝒪}
+
+variable [IsLocalHom g]
+
+theorem residueField_map_eq_frobenius (hg : ∀ x, residue 𝒪 (g x) = residue 𝒪 x ^ p) :
+    ResidueField.map g = frobenius (ResidueField 𝒪) p := by
+  ext y
+  obtain ⟨x, rfl⟩ := residue_surjective y
+  rw [ResidueField.map_residue, hg, frobenius_def]
+
+theorem map_residue_eq_frobeniusTwist (hg : ∀ x, residue 𝒪 (g x) = residue 𝒪 x ^ p) :
+    (W.map (residue 𝒪)).map (frobenius (ResidueField 𝒪) p) = (W.map g).map (residue 𝒪) := by
+  rw [← residueField_map_eq_frobenius p hg]
+  exact map_curveRed_eq W
+
+variable [W.IsElliptic] [DecidableEq K] [DecidableEq (ResidueField 𝒪)] {G : K →+* K}
+  (hG : G.comp (algebraMap 𝒪 K) = (algebraMap 𝒪 K).comp g)
+
+include hG in
+
+theorem reducePoint_pointMapRing_frobenius (hg : ∀ x, residue 𝒪 (g x) = residue 𝒪 x ^ p)
+    (P : (curveK K W).Point) :
+    reducePoint K (W.map g) (pointCongr (map_curveK_eq K K hG W)
+        (pointMapRing G (W.map (algebraMap 𝒪 K)) P)) =
+      pointCongr (map_residue_eq_frobeniusTwist W p hg)
+        (pointMapRing (frobenius (ResidueField 𝒪) p) (W.map (residue 𝒪)) (reducePoint K W P)) := by
+  rw [reducePoint_pointMapRing K K hG W P,
+    pointMapRing_congr (residueField_map_eq_frobenius p hg), pointCongr_pointCongr]
+
+end Frobenius
+
+section NumberField
+
+open NumberField IsDedekindDomain
+
+variable {K : Type*} [Field K] {L : Type*} [Field L] [NumberField L] [Algebra K L]
+  (𝔓 : HeightOneSpectrum (𝓞 L)) {τ : L ≃ₐ[K] L} (hτ : IsArithFrobAt (𝓞 K) τ 𝔓.asIdeal)
+
+include hτ in
+theorem mem_localizationAt_of_isArithFrobAt {x : L} (hx : x ∈ localizationAt L 𝔓) :
+    τ x ∈ localizationAt L 𝔓 :=
+  (Elliptic.residue_apply_of_isArithFrobAt 𝔓 hτ hx).1
+
+def localizationAtRingHom : localizationAt L 𝔓 →+* localizationAt L 𝔓 :=
+  ((τ : L →+* L).comp (localizationAt L 𝔓).val.toRingHom).codRestrict (localizationAt L 𝔓).toSubsemiring
+    fun x ↦ mem_localizationAt_of_isArithFrobAt 𝔓 hτ x.2
+
+theorem comp_algebraMap_localizationAtRingHom :
+    (τ : L →+* L).comp (algebraMap (localizationAt L 𝔓) L) =
+      (algebraMap (localizationAt L 𝔓) L).comp (localizationAtRingHom 𝔓 hτ) :=
+  rfl
+
+theorem residue_localizationAtRingHom (x : localizationAt L 𝔓) :
+    residue (localizationAt L 𝔓) (localizationAtRingHom 𝔓 hτ x) =
+      residue (localizationAt L 𝔓) x ^ Nat.card (𝓞 K ⧸ 𝔓.asIdeal.under (𝓞 K)) := by
+  obtain ⟨h, e⟩ := Elliptic.residue_apply_of_isArithFrobAt 𝔓 hτ x.2
+  exact e
+
+theorem residue_localizationAtRingHom_of_absNorm [NumberField K] (𝔭 : HeightOneSpectrum (𝓞 K))
+    [𝔓.asIdeal.LiesOver 𝔭.asIdeal] (x : localizationAt L 𝔓) :
+    residue (localizationAt L 𝔓) (localizationAtRingHom 𝔓 hτ x) =
+      residue (localizationAt L 𝔓) x ^ Ideal.absNorm 𝔭.asIdeal := by
+  rw [residue_localizationAtRingHom]
+  congr 1
+  rw [← Ideal.LiesOver.over (P := 𝔓.asIdeal) (p := 𝔭.asIdeal), Ideal.absNorm_apply,
+    Submodule.cardQuot_apply]
+
+instance : IsLocalHom (localizationAtRingHom 𝔓 hτ) := by
+  refine ⟨fun x hx ↦ ?_⟩
+  rw [← residue_ne_zero_iff_isUnit] at hx ⊢
+  rw [residue_localizationAtRingHom] at hx
+  exact fun h ↦ hx (by rw [h, zero_pow hτ.card_pos.ne'])
+
+theorem reducePoint_pointMapRing_localizationAtRingHom [NumberField K] (𝔭 : HeightOneSpectrum (𝓞 K))
+    [𝔓.asIdeal.LiesOver 𝔭.asIdeal] (p : ℕ) [Fact p.Prime] (hp : Ideal.absNorm 𝔭.asIdeal = p)
+    [CharP (ResidueField (localizationAt L 𝔓)) p] (W : WeierstrassCurve (localizationAt L 𝔓))
+    [W.IsElliptic] [DecidableEq L] [DecidableEq (ResidueField (localizationAt L 𝔓))]
+    (P : (curveK L W).Point) :
+    reducePoint L (W.map (localizationAtRingHom 𝔓 hτ))
+        (pointCongr (map_curveK_eq L L (comp_algebraMap_localizationAtRingHom 𝔓 hτ) W)
+          (pointMapRing (τ : L →+* L) (W.map (algebraMap (localizationAt L 𝔓) L)) P)) =
+      pointCongr (map_residue_eq_frobeniusTwist W p
+          (fun x ↦ by rw [residue_localizationAtRingHom_of_absNorm 𝔓 hτ 𝔭 x, hp]))
+        (pointMapRing (frobenius (ResidueField (localizationAt L 𝔓)) p)
+          (W.map (residue (localizationAt L 𝔓))) (reducePoint L W P)) :=
+  reducePoint_pointMapRing_frobenius L W p (comp_algebraMap_localizationAtRingHom 𝔓 hτ)
+    (fun x ↦ by rw [residue_localizationAtRingHom_of_absNorm 𝔓 hτ 𝔭 x, hp]) P
+
+end NumberField
+
+end
+
+end GroundTheory.Global
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Global
@@ -273,3 +1096,4 @@ end
 
 end Elliptic
 end GroundTheory.Global
+end

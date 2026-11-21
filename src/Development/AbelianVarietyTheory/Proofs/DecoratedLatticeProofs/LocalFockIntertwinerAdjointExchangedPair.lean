@@ -2,10 +2,354 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CartFrSgn
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ChainParSucc
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FockSignTransposeExchangesLocalGlActions
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HasDRepIffHasDerivAt
 import Formalism.LocalToGlobal.IndefiniteReal.GvPairOfOrbitDerivCont
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SmoothVectorsOfLieClosedFamily
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothVectorsSubspaceStableSobolevFormDeriv
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.JacobianCommutation.PCkPartials
+import BuildAid.ForwardExisting
 
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+open GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.PairLift GlobalTheory.Chain.RealIt
+open scoped TensorProduct InnerProductSpace ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.Chain.RealIt.SwapFock
+
+open MvPolynomial
+
+lemma sg_mul_self (e : Bool) : GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn e * GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn e = 1 := by
+  cases e <;> simp [GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn]
+
+lemma conj_sg (e : Bool) : starRingEnd ℂ (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn e) = GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn e := by
+  cases e <;> simp [GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn]
+
+variable {a b : ℕ}
+
+def swSign (ε : Fin a → Bool) (ε' : Fin b → Bool) (n : Fin b × Fin a) : ℂ :=
+  GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε' n.1) * GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε n.2)
+
+variable (ε : Fin a → Bool) (ε' : Fin b → Bool)
+
+lemma swSign_mul_self (n : Fin b × Fin a) : swSign ε ε' n * swSign ε ε' n = 1 := by
+  unfold swSign
+  rw [mul_mul_mul_comm, sg_mul_self, sg_mul_self, one_mul]
+
+lemma conj_swSign (n : Fin b × Fin a) : starRingEnd ℂ (swSign ε ε' n) = swSign ε ε' n := by
+  unfold swSign
+  rw [map_mul, conj_sg, conj_sg]
+
+lemma swSign_swap (n : Fin b × Fin a) : swSign ε' ε n.swap = swSign ε ε' n := by
+  unfold swSign
+  exact mul_comm _ _
+
+lemma C_swSign_mul_self {σ : Type*} (n : Fin b × Fin a) :
+    (C (swSign ε ε' n) : MvPolynomial σ ℂ) * C (swSign ε ε' n) = 1 := by
+  rw [← map_mul, swSign_mul_self, map_one]
+
+lemma C_sg_mul_self {σ : Type*} (e : Bool) :
+    (C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn e) : MvPolynomial σ ℂ) * C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn e) = 1 := by
+  rw [← map_mul, sg_mul_self, map_one]
+
+def swapHom : LPol b a →+* LPol a b :=
+  eval₂Hom ((C : ℂ →+* LPol a b).comp (starRingEnd ℂ)) fun n => C (swSign ε ε' n) * X n.swap
+
+@[simp] lemma swapHom_C (c : ℂ) : swapHom ε ε' (C c) = C (starRingEnd ℂ c) := by
+  simp [swapHom]
+
+@[simp] lemma swapHom_X (n : Fin b × Fin a) : swapHom ε ε' (X n) = C (swSign ε ε' n) * X n.swap := by
+  simp [swapHom]
+
+lemma swapHom_smul (c : ℂ) (P : LPol b a) : swapHom ε ε' (c • P) = starRingEnd ℂ c • swapHom ε ε' P := by
+  rw [smul_eq_C_mul, map_mul, swapHom_C, smul_eq_C_mul]
+
+lemma swapHom_comp : (swapHom ε' ε).comp (swapHom ε ε') = RingHom.id _ := by
+  apply MvPolynomial.ringHom_ext
+  · intro c
+    simp
+  · intro n
+    rw [RingHom.comp_apply, swapHom_X, map_mul, swapHom_C, swapHom_X, conj_swSign, swSign_swap,
+      Prod.swap_swap, ← mul_assoc, C_swSign_mul_self, one_mul, RingHom.id_apply]
+
+lemma swapHom_pderiv (n : Fin b × Fin a) (Q : LPol b a) :
+    swapHom ε ε' (pderiv n Q) = C (swSign ε ε' n) * pderiv n.swap (swapHom ε ε' Q) := by
+  induction Q using MvPolynomial.induction_on with
+  | C c => simp
+  | add p q hp hq => rw [map_add, map_add, hp, hq, map_add, map_add, mul_add]
+  | mul_X p m hp =>
+    have hs := C_swSign_mul_self (σ := Fin a × Fin b) ε ε' n
+    by_cases h : n = m
+    · subst h
+      simp only [pderiv_mul, pderiv_X_self, map_add, map_mul, hp, swapHom_X, pderiv_C, mul_one, zero_mul, zero_add]
+      linear_combination (-(swapHom ε ε' p)) * hs
+    · have h' : m.swap ≠ n.swap := fun e => h (Prod.swap_injective e).symm
+      simp only [pderiv_mul, pderiv_X_of_ne (Ne.symm h), pderiv_X_of_ne h', map_mul, hp, swapHom_X,
+        pderiv_C, mul_zero, zero_mul, add_zero, zero_add]
+      ring
+
+lemma swapHom_rai (i : Fin b) (j : Fin a) (Q : LPol b a) :
+    swapHom ε ε' (rai ε ε' i j Q) = rai ε' ε j i (swapHom ε ε' Q) := by
+  unfold rai
+  have hs := C_sg_mul_self (σ := Fin a × Fin b) (ε j)
+  by_cases h : ε' i = ε j
+  · rw [if_pos h, if_pos h.symm]
+    simp only [LinearMap.smul_apply, LinearMap.mulLeft_apply, swapHom_smul, swapHom_C, map_mul, swapHom_X, conj_sg,
+      swSign, smul_eq_C_mul, Prod.swap_prod_mk]
+    linear_combination (C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε' i)) * X (j, i) * swapHom ε ε' Q) * hs
+  · rw [if_neg h, if_neg (Ne.symm h)]
+    simp only [LinearMap.smul_apply, LinearMap.neg_apply, Derivation.coeFn_coe, map_neg, swapHom_smul, swapHom_C,
+      swapHom_pderiv, map_mul, conj_sg, swSign, smul_eq_C_mul, Prod.swap_prod_mk]
+    linear_combination (-(C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε' i)) * pderiv (j, i) (swapHom ε ε' Q))) * hs
+
+lemma swapHom_low (i : Fin b) (j : Fin a) (Q : LPol b a) :
+    swapHom ε ε' (low ε ε' i j Q) = low ε' ε j i (swapHom ε ε' Q) := by
+  unfold low
+  have hs := C_sg_mul_self (σ := Fin a × Fin b) (ε j)
+  by_cases h : ε' i = ε j
+  · rw [if_pos h, if_pos h.symm]
+    simp only [LinearMap.smul_apply, Derivation.coeFn_coe, swapHom_smul, swapHom_C, swapHom_pderiv, map_mul, conj_sg,
+      swSign, smul_eq_C_mul, Prod.swap_prod_mk]
+    linear_combination (C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε' i)) * pderiv (j, i) (swapHom ε ε' Q)) * hs
+  · rw [if_neg h, if_neg (Ne.symm h)]
+    simp only [LinearMap.smul_apply, LinearMap.mulLeft_apply, swapHom_smul, swapHom_C, map_mul, swapHom_X, conj_sg,
+      swSign, smul_eq_C_mul, Prod.swap_prod_mk]
+    linear_combination (C (GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.sgn (ε' i)) * X (j, i) * swapHom ε ε' Q) * hs
+
+lemma swapHom_half (c : Prop) [Decidable c] (Q : LPol b a) :
+    swapHom ε ε' ((if c then (1 / 2 : ℂ) • (1 : Module.End ℂ (LPol b a)) else 0) Q) =
+      (if c then (1 / 2 : ℂ) • (1 : Module.End ℂ (LPol a b)) else 0) (swapHom ε ε' Q) := by
+  split_ifs
+  · rw [LinearMap.smul_apply, LinearMap.smul_apply, Module.End.one_apply, Module.End.one_apply, swapHom_smul]
+    rw [map_div₀, map_one, map_ofNat]
+  · rw [LinearMap.zero_apply, LinearMap.zero_apply, map_zero]
+
+lemma swapHom_termT (i l : Fin b) (j : Fin a) (Q : LPol b a) :
+    swapHom ε ε' ((rai ε ε' i j * low ε ε' l j + if i = l then (1 / 2 : ℂ) • 1 else 0) Q) =
+      (rai ε' ε j i * low ε' ε j l + if i = l then (1 / 2 : ℂ) • 1 else 0) (swapHom ε ε' Q) := by
+  rw [LinearMap.add_apply, LinearMap.add_apply, map_add, Module.End.mul_apply, Module.End.mul_apply, swapHom_rai,
+    swapHom_low, swapHom_half]
+
+lemma swapHom_termS (i : Fin b) (j k : Fin a) (Q : LPol b a) :
+    swapHom ε ε' ((rai ε ε' i j * low ε ε' i k + if j = k then (1 / 2 : ℂ) • 1 else 0) Q) =
+      (rai ε' ε j i * low ε' ε k i + if j = k then (1 / 2 : ℂ) • 1 else 0) (swapHom ε ε' Q) := by
+  rw [LinearMap.add_apply, LinearMap.add_apply, map_add, Module.End.mul_apply, Module.End.mul_apply, swapHom_rai,
+    swapHom_low, swapHom_half]
+
+def swapEquiv : LPol b a ≃+ LPol a b :=
+  { toFun := swapHom ε ε'
+    invFun := swapHom ε' ε
+    left_inv := fun P => RingHom.congr_fun (swapHom_comp ε ε') P
+    right_inv := fun P => RingHom.congr_fun (swapHom_comp ε' ε) P
+    map_add' := map_add _ }
+
+lemma swapEquiv_apply (P : LPol b a) : swapEquiv ε ε' P = swapHom ε ε' P := rfl
+
+theorem locS_locT_exchange : ∀ (a b : ℕ) (ε : Fin a → Bool) (ε' : Fin b → Bool), ∃ j : LPol b a ≃+ LPol a b,
+    (∀ (c : ℂ) P, j (c • P) = conj c • j P) ∧ ∀ P : LPol b a,
+      (∀ Y : Matrix (Fin b) (Fin b) ℂ, j (locT ε ε' Y P) = locS ε' ε (Y.map (starRingEnd ℂ)) (j P)) ∧
+        ∀ X : Matrix (Fin a) (Fin a) ℂ, j (locS ε ε' (X.map (starRingEnd ℂ)) P) = locT ε' ε X (j P) := by
+  intro a b ε ε'
+  refine ⟨swapEquiv ε ε', fun c P => ?_, fun P => ⟨fun Y => ?_, fun X => ?_⟩⟩
+  · rw [swapEquiv_apply, swapEquiv_apply, swapHom_smul]
+  · rw [swapEquiv_apply, swapEquiv_apply]
+    unfold locT locS
+    simp only [LinearMap.sum_apply, LinearMap.smul_apply, map_sum, swapHom_smul, swapHom_termT, Matrix.map_apply]
+  · rw [swapEquiv_apply, swapEquiv_apply]
+    unfold locT locS
+    simp only [LinearMap.sum_apply, LinearMap.smul_apply, map_sum, swapHom_smul, swapHom_termS, Matrix.map_apply,
+      starRingEnd_self_apply]
+
+end GlobalTheory.Chain.RealIt.SwapFock
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+open GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.PairLift GlobalTheory.Chain.RealIt
+open scoped TensorProduct InnerProductSpace ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fock_sign_transpose_exchanges_local_gl_actions : ∀ (a b : ℕ) (ε : Fin a → Bool) (ε' : Fin b → Bool), ∃ j : LPol b a ≃+ LPol a b, (∀ (c : ℂ) P, j (c • P) = conj c • j P) ∧ ∀ P : LPol b a, (∀ Y : Matrix (Fin b) (Fin b) ℂ, j (locT ε ε' Y P) = locS ε' ε (Y.map (starRingEnd ℂ)) (j P)) ∧ ∀ X : Matrix (Fin a) (Fin a) ℂ, j (locS ε ε' (X.map (starRingEnd ℂ)) P) = locT ε' ε X (j P) := by
+  atlas_forward_decl GlobalTheory.Chain.RealIt.SwapFock.locS_locT_exchange
+end
+
+section
+section
+open Matrix
+open scoped InnerProductSpace ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.SmoothCrit
+
+open GlobalTheory.UnitarySmVec GlobalTheory.HolDict
+
+section Mat
+attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
+
+variable {n : ℕ}
+
+theorem contDiff_expM : ContDiff ℝ ∞ (NormedSpace.exp : Matrix (Fin n) (Fin n) ℂ → _) :=
+  contDiff_iff_contDiffAt.2 fun x => (NormedSpace.exp_analytic (𝕂 := ℝ) x).contDiffAt
+
+theorem contDiff_init {k : ℕ} : ContDiff ℝ ∞ fun t : Fin (k + 1) → ℝ => Fin.init t :=
+  contDiff_pi.2 fun j => contDiff_apply ℝ ℝ (Fin.castSucc j)
+
+theorem contDiff_pr : ∀ {k : ℕ} (Xs : Fin k → Matrix (Fin n) (Fin n) ℂ), ContDiff ℝ ∞ (pr Xs)
+  | 0, Xs => by
+    have e : pr Xs = fun _ => 1 := funext (pr_zero Xs)
+    rw [e]
+    exact contDiff_const
+  | k + 1, Xs => by
+    have e : pr Xs = fun t => pr (Fin.init Xs) (Fin.init t) * NormedSpace.exp (t (Fin.last k) • Xs (Fin.last k)) :=
+      funext (pr_succ Xs)
+    rw [e]
+    exact ((contDiff_pr (Fin.init Xs)).comp contDiff_init).mul
+      (contDiff_expM.comp ((contDiff_apply ℝ ℝ (Fin.last k)).smul contDiff_const))
+
+theorem coord {Hm : Matrix (Fin n) (Fin n) ℂ} (hu : IsUnit Hm.det) : ∀ {k : ℕ} (Xs : Fin k → Matrix (Fin n) (Fin n) ℂ),
+    (∀ j, Xs j ∈ lieH Hm) → ∀ m : Fin k, ∃ Y : (Fin k → ℝ) → Matrix (Fin n) (Fin n) ℂ, ContDiff ℝ ∞ Y ∧
+      (∀ t, Y t ∈ lieH Hm) ∧
+      ∀ (t : Fin k → ℝ) (s : ℝ), pr Xs (t + s • Pi.single m 1) = pr Xs t * NormedSpace.exp (s • Y t)
+  | 0, _, _, m => m.elim0
+  | k + 1, Xs, hX, m => by
+    refine Fin.lastCases ?_ (fun m' => ?_) m
+    · refine ⟨fun _ => Xs (Fin.last k), contDiff_const, fun _ => hX _, fun t s => ?_⟩
+      have e1 : Fin.init (t + s • Pi.single (Fin.last k) (1:ℝ)) = Fin.init t := by
+        funext j
+        simp [Fin.init, Pi.single_apply, Fin.castSucc_ne_last]
+      have e2 : (t + s • Pi.single (Fin.last k) (1:ℝ) : Fin (k + 1) → ℝ) (Fin.last k) = t (Fin.last k) + s := by simp
+      rw [pr_succ, pr_succ Xs t, e1, e2, add_smul,
+        Matrix.exp_add_of_commute _ _ (((Commute.refl (Xs (Fin.last k))).smul_left _).smul_right _), mul_assoc]
+    · obtain ⟨Y', hY', hYl, hYe⟩ := coord hu (Fin.init Xs) (fun j => hX _) m'
+      refine ⟨fun t => NormedSpace.exp (-(t (Fin.last k) • Xs (Fin.last k))) * Y' (Fin.init t) *
+        NormedSpace.exp (t (Fin.last k) • Xs (Fin.last k)), ?_, ?_, ?_⟩
+      · have hl : ContDiff ℝ ∞ fun t : Fin (k+1) → ℝ => t (Fin.last k) • Xs (Fin.last k) :=
+          (contDiff_apply ℝ ℝ (Fin.last k)).smul contDiff_const
+        exact ((contDiff_expM.comp hl.neg).mul (hY'.comp contDiff_init)).mul (contDiff_expM.comp hl)
+      · intro t
+        have hg := exp_mem hu (hX (Fin.last k)) (t (Fin.last k))
+        have := lie_conj hu (hYl (Fin.init t)) hg
+        simpa only [Matrix.exp_neg] using this
+      · intro t s
+        have e1 : Fin.init (t + s • Pi.single (Fin.castSucc m') (1:ℝ)) = Fin.init t + s • Pi.single m' 1 := by
+          funext j
+          simp [Fin.init, Pi.single_apply]
+        have e2 : (t + s • Pi.single (Fin.castSucc m') (1:ℝ) : Fin (k + 1) → ℝ) (Fin.last k) = t (Fin.last k) := by
+          simp [Pi.single_apply, (Fin.castSucc_lt_last m').ne']
+        rw [pr_succ, pr_succ Xs t, e1, e2, hYe]
+        beta_reduce
+        rw [Matrix.exp_neg]
+        have hgd : IsUnit (NormedSpace.exp (t (Fin.last k) • Xs (Fin.last k))).det :=
+          det_unit hu (exp_mem hu (hX (Fin.last k)) (t (Fin.last k)))
+        have hgu : IsUnit (NormedSpace.exp (t (Fin.last k) • Xs (Fin.last k))) := (isUnit_iff_isUnit_det _).2 hgd
+        set g := NormedSpace.exp (t (Fin.last k) • Xs (Fin.last k))
+        rw [show s • (g⁻¹ * Y' (Fin.init t) * g) = g⁻¹ * (s • Y' (Fin.init t)) * g by
+            rw [Matrix.mul_smul, Matrix.smul_mul], Matrix.exp_conj' _ _ hgu, mul_assoc, mul_assoc, mul_assoc,
+          ← mul_assoc g, mul_nonsing_inv _ hgd, one_mul]
+
+end Mat
+
+section Main
+attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
+
+variable {n : ℕ} {Hm : Matrix (Fin n) (Fin n) ℂ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+  {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {ι : Type} {v : ι → H} {δ : Matrix (Fin n) (Fin n) ℂ → ι → ι}
+
+theorem v_zero (hs : ∀ i (c : ℝ) X, v (δ ((c : ℂ) • X) i) = (c : ℂ) • v (δ X i)) (i : ι) : v (δ 0 i) = 0 := by
+  simpa using hs i 0 0
+
+theorem v_sum (ha : ∀ i X Y, v (δ (X + Y) i) = v (δ X i) + v (δ Y i))
+    (hs : ∀ i (c : ℝ) X, v (δ ((c : ℂ) • X) i) = (c : ℂ) • v (δ X i)) {β : Type} (s : Finset β)
+    (f : β → Matrix (Fin n) (Fin n) ℂ) (i : ι) : v (δ (∑ b ∈ s, f b) i) = ∑ b ∈ s, v (δ (f b) i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simpa using v_zero hs i
+  | insert b s hb ih => rw [Finset.sum_insert hb, Finset.sum_insert hb, ha, ih]
+
+theorem v_expand (ha : ∀ i X Y, v (δ (X + Y) i) = v (δ X i) + v (δ Y i))
+    (hs : ∀ i (c : ℝ) X, v (δ ((c : ℂ) • X) i) = (c : ℂ) • v (δ X i)) (Y : Matrix (Fin n) (Fin n) ℂ) (i : ι) :
+    v (δ Y i) = ∑ a, ∑ c, (((Y a c).re : ℂ) • v (δ (single a c 1) i) +
+      ((Y a c).im : ℂ) • v (δ (Complex.I • single a c 1) i)) := by
+  conv_lhs => rw [Matrix.matrix_eq_sum_single Y]
+  rw [v_sum ha hs]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [v_sum ha hs]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  have e : single a c (Y a c) = ((Y a c).re : ℂ) • single a c 1 + ((Y a c).im : ℂ) • (Complex.I • single a c 1) := by
+    rw [smul_smul, ← add_smul, Matrix.smul_single, smul_eq_mul, mul_one, Complex.re_add_im]
+  rw [e, ha, hs, hs]
+
+theorem crit_nat (hu : IsUnit Hm.det) (hσ : Formalism.MainNotions.S.IsURepOn (Formalism.QuantumDeterminants.UH Hm) σ)
+    (ha : ∀ i X Y, v (δ (X + Y) i) = v (δ X i) + v (δ Y i))
+    (hs : ∀ i (c : ℝ) X, v (δ ((c : ℂ) • X) i) = (c : ℂ) • v (δ X i))
+    (hd : ∀ X, Xᴴ * Hm + Hm * X = 0 → ∀ i, HasDerivAt (fun t : ℝ => σ (NormedSpace.exp (t • X)) (v i)) (v (δ X i)) 0)
+    {k : ℕ} (Xs : Fin k → Matrix (Fin n) (Fin n) ℂ) (hX : ∀ j, Xs j ∈ lieH Hm) (N : ℕ) :
+    ∀ i, ContDiff ℝ N fun t => σ (pr Xs t) (v i) := by
+  choose Y hY hYl hYe using coord hu Xs hX
+  induction N with
+  | zero =>
+    intro i
+    simp only [Nat.cast_zero, contDiff_zero]
+    exact (hσ.2.2 (v i)).comp_continuous (contDiff_pr Xs).continuous fun t => pr_mem hu Xs hX t
+  | succ N ih =>
+    intro i
+    let D : Fin k → (Fin k → ℝ) → H := fun m t => ∑ a, ∑ c,
+      ((Y m t a c).re • σ (pr Xs t) (v (δ (single a c 1) i)) +
+        (Y m t a c).im • σ (pr Xs t) (v (δ (Complex.I • single a c 1) i)))
+    have hD : ∀ m, ContDiff ℝ N (D m) := by
+      intro m
+      have he : ∀ a c, ContDiff ℝ ∞ fun t => Y m t a c := fun a c =>
+        (LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ a c)).contDiff.comp (hY m)
+      refine ContDiff.sum fun a _ => ContDiff.sum fun c _ => ?_
+      exact ((contDiff_infty.1 (Complex.reCLM.contDiff.comp (he a c)) N).smul (ih _)).add
+        ((contDiff_infty.1 (Complex.imCLM.contDiff.comp (he a c)) N).smul (ih _))
+    have hpart : ∀ y m, HasDerivAt (fun s : ℝ => σ (pr Xs (y + s • Pi.single m (1:ℝ))) (v i)) (D m y) 0 := by
+      intro y m
+      have e : (fun s : ℝ => σ (pr Xs (y + s • Pi.single m (1:ℝ))) (v i)) =
+          fun s => σ (pr Xs y) (σ (NormedSpace.exp (s • Y m y)) (v i)) := by
+        funext s
+        rw [hYe, hσ.1.2 _ (pr_mem hu Xs hX y) _ (exp_mem hu (hYl m y) s)]
+        rfl
+      rw [e]
+      have h1 : HasDerivAt (fun s : ℝ => σ (pr Xs y) (σ (NormedSpace.exp (s • Y m y)) (v i)))
+          (σ (pr Xs y) (v (δ (Y m y) i))) 0 :=
+        ((σ (pr Xs y)).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) (hd _ (hYl m y) i)
+      convert h1 using 1
+      show _ = σ (pr Xs y) (v (δ (Y m y) i))
+      rw [v_expand ha hs (Y m y) i, map_sum]
+      refine Finset.sum_congr rfl fun a _ => ?_
+      rw [map_sum]
+      refine Finset.sum_congr rfl fun c _ => ?_
+      rw [map_add, map_smul, map_smul, Complex.coe_smul, Complex.coe_smul]
+    rw [Nat.cast_succ, contDiff_succ_iff_hasFDerivAt]
+    refine ⟨fun y => ∑ m, (ContinuousLinearMap.proj m : (Fin k → ℝ) →L[ℝ] ℝ).smulRight (D m y), ?_, fun y => ?_⟩
+    · exact ContDiff.sum fun m _ => contDiff_const.smulRight (hD m)
+    · exact PI.UnitaryGroupMassFormula.JCC.Ck.partials_continuous_differentiable k H Set.univ _ D isOpen_univ (fun m => (hD m).continuous.continuousOn)
+        (fun y _ m => hpart y m) y trivial
+
+end Main
+
+theorem smoothVec_of_closed_family : ∀ (n : ℕ) (Hm : Matrix (Fin n) (Fin n) ℂ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (ι : Type) (v : ι → H) (δ : Matrix (Fin n) (Fin n) ℂ → ι → ι), Hm.det ≠ 0 → Formalism.MainNotions.S.IsURepOn (Formalism.QuantumDeterminants.UH Hm) σ → (∀ i X Y, v (δ (X + Y) i) = v (δ X i) + v (δ Y i)) → (∀ i (c : ℝ) X, v (δ ((c : ℂ) • X) i) = (c : ℂ) • v (δ X i)) → (∀ X, Xᴴ * Hm + Hm * X = 0 → ∀ i, HasDerivAt (fun t : ℝ => σ (NormedSpace.exp (t • X)) (v i)) (v (δ X i)) 0) → ∀ i, Formalism.L2.Theta.SmoothVec {X | Xᴴ * Hm + Hm * X = 0} σ (v i) := by
+  intro n Hm H _ _ σ ι v δ hdet hσ ha hs hd i k Xs hX
+  have hu : IsUnit Hm.det := isUnit_iff_ne_zero.2 hdet
+  exact contDiff_infty.2 fun N => crit_nat hu hσ ha hs hd Xs hX N i
+
+end GlobalTheory.SmoothCrit
+end
+end
+
+open Matrix
+open scoped InnerProductSpace ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smoothVectors_of_lie_closed_family : ∀ (n : ℕ) (Hm : Matrix (Fin n) (Fin n) ℂ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (ι : Type) (v : ι → H) (δ : Matrix (Fin n) (Fin n) ℂ → ι → ι), Hm.det ≠ 0 → Formalism.MainNotions.S.IsURepOn (Formalism.QuantumDeterminants.UH Hm) σ → (∀ i X Y, v (δ (X + Y) i) = v (δ X i) + v (δ Y i)) → (∀ i (c : ℝ) X, v (δ ((c : ℂ) • X) i) = (c : ℂ) • v (δ X i)) → (∀ X, Xᴴ * Hm + Hm * X = 0 → ∀ i, HasDerivAt (fun t : ℝ => σ (NormedSpace.exp (t • X)) (v i)) (v (δ X i)) 0) → ∀ i, Formalism.L2.Theta.SmoothVec {X | Xᴴ * Hm + Hm * X = 0} σ (v i) := by
+  atlas_forward_decl GlobalTheory.SmoothCrit.smoothVec_of_closed_family
+end
+
+section
 section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
 open GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.PairLift GlobalTheory.Chain.RealIt
@@ -315,3 +659,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.localFockIntertwiner_adjoint_exchangedPair : ∀ (D : D7) (V W : HSp D) (S S' : D.what₂.Tau → SPar) (M : DSModel V S) (M' : DSModel W S') (τ : D.what₂.Tau) (aS aT : ℚ) (A : LPol W.rank V.rank →ₗ[ℂ] M'.H τ →ₗ[ℂ] M.H τ), LocIt M M' τ aS aT A → ∃ A' : LPol V.rank W.rank →ₗ[ℂ] M.H τ →ₗ[ℂ] M'.H τ, LocIt M' M τ aT aS A' := by
   atlas_forward_decl GlobalTheory.AdjLocIt.adj_locIt
+end

@@ -1,7 +1,551 @@
-import Formalism.LocalToGlobal.CharacterGerms.CoeffOneSubstCurve
-import Formalism.LocalToGlobal.CharacterGerms.ConstantZeroCompCoordinate
+import Formalism.LocalToGlobal.CharacterGerms.FirstVanishingAt
+import Formalism.LocalToGlobal.CharacterGerms.CoeffLMulCvFrob
+import Formalism.LocalToGlobal.CharacterGerms.PderivDoubleMultiplicationJacobian
+import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePOActSelf
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open scoped BigOperators
+open Classical
+
+namespace Formalism.L2.FormalSeriesBounds
+
+namespace SelfAdjointCongruence
+
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ PartialDerivEval MaximalIdealCongruence FirstVanishing
+
+variable {C : Type} [Field C] [CharZero C] {V : VF C} {dd : ℕ}
+
+def sub1 (γ : Fin dd → PowerSeries C) (P : PS C 1 dd) : PowerSeries C :=
+  MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) P
+
+def FrobX (V : VF C) (P : PS C 1 dd) : Prop :=
+  ∀ μ : Fin 1 × Fin dd →₀ ℕ, (∃ i, ¬ V.l ∣ μ ((0 : Fin 1), i)) → V.MM (MvPowerSeries.coeff μ P)
+
+theorem coeff_l_frob {P : PS C 1 dd} (hP : IntS V P) (hPz : MvPowerSeries.constantCoeff P = 0) (hfrob : FrobX V P)
+    {γ : Fin dd → PowerSeries C} (hγ : IsCv V γ) :
+    V.MM (PowerSeries.coeff V.l (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) P) -
+      ∑ i, MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) V.l) P * (PowerSeries.coeff 1 (γ i)) ^ V.l) := by
+  have hl := V.l_prime.two_le
+  have hγ0 : ∀ j, PowerSeries.constantCoeff (γ j) = 0 := fun j => (hγ j).1
+  have hγI : ∀ j, IntS V (γ j) := fun j => intS_cv (hγ j).2
+  have hG : MvPowerSeries.HasSubst (fun q : Fin 1 × Fin dd => γ q.2) :=
+    MvPowerSeries.hasSubst_of_constantCoeff_zero fun q => hγ0 q.2
+  have hγ0' : ∀ j, MvPowerSeries.constantCoeff (γ j) = 0 := hγ0
+  obtain ⟨D1, hD1def⟩ : ∃ D1 : PS C 1 dd, ∀ μ, MvPowerSeries.coeff μ D1 =
+      if (∃ i, ¬ V.l ∣ μ ((0 : Fin 1), i)) then MvPowerSeries.coeff μ P else 0 :=
+    ⟨fun μ => if (∃ i, ¬ V.l ∣ μ ((0 : Fin 1), i)) then MvPowerSeries.coeff μ P else 0, fun μ => rfl⟩
+  obtain ⟨D3, hD3def⟩ : ∃ D3 : PS C 1 dd, D3 = ∑ i, MvPowerSeries.monomial (Finsupp.single ((0 : Fin 1), i) V.l)
+      (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) V.l) P) := ⟨_, rfl⟩
+  have hD1 : MMS V D1 := fun μ => by
+    rw [hD1def]
+    split_ifs with h
+    · exact hfrob μ h
+    · exact mm_zero
+  have hsq : ∀ (s : Fin 1 × Fin dd), s = ((0 : Fin 1), s.2) := fun s => Prod.ext (Subsingleton.elim _ _) rfl
+  have hD2 : Agr (2 * V.l) (P - D1 - D3) 0 := by
+    intro μ hμ
+    rw [map_sub, map_sub, map_zero, hD1def, hD3def, map_sum]
+    simp only [MvPowerSeries.coeff_monomial]
+    by_cases hex : ∃ i, ¬ V.l ∣ μ ((0 : Fin 1), i)
+    · rw [if_pos hex, sub_self, zero_sub, neg_eq_zero]
+      refine Finset.sum_eq_zero fun i _ => if_neg ?_
+      rintro rfl
+      obtain ⟨i', hi'⟩ := hex
+      apply hi'
+      rw [Finsupp.single_apply]
+      split_ifs
+      · exact dvd_refl _
+      · exact dvd_zero _
+    · rw [if_neg hex, sub_zero]
+      push Not at hex
+      have hdiv : ∀ s, V.l ∣ μ s := fun s => by rw [hsq s]; exact hex s.2
+      rcases FirstVanishing.divisible_small μ hdiv hμ with h0 | ⟨s, hs⟩
+      · subst h0
+        rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hPz, zero_sub, neg_eq_zero]
+        refine Finset.sum_eq_zero fun i _ => if_neg ?_
+        intro h
+        have := congrArg (fun f : Fin 1 × Fin dd →₀ ℕ => f ((0 : Fin 1), i)) h
+        simp only [Finsupp.coe_zero, Pi.zero_apply, Finsupp.single_eq_same] at this
+        omega
+      · subst hs
+        rw [Finset.sum_eq_single s.2, if_pos (by rw [← hsq s]), ← hsq s, sub_self]
+        · intro i _ hi
+          rw [if_neg]
+          intro h
+          apply hi
+          have := (Finsupp.single_left_inj (by omega : V.l ≠ 0)).1 h
+          rw [this]
+        · intro h
+          exact absurd (Finset.mem_univ _) h
+  have hz : MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) (0 : PS C 1 dd) = 0 := by
+    rw [← MvPowerSeries.coe_substAlgHom hG, map_zero]
+  have hsplit : P = D1 + (P - D1 - D3) + D3 := by ring
+  have hdeg : (Finsupp.single () V.l).degree < 2 * V.l := by
+    rw [Finsupp.degree_single]
+    omega
+  have hA2 := (agr_subst_right (a := fun q : Fin 1 × Fin dd => γ q.2) (fun q => hγ0' q.2) hD2)
+    (Finsupp.single () V.l) hdeg
+  rw [hz, map_zero] at hA2
+  have hA2' : PowerSeries.coeff V.l (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) (P - D1 - D3)) = 0 :=
+    hA2
+  have hB1' : MMS V (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D1) :=
+    MMS.subst (a := fun q : Fin 1 × Fin dd => γ q.2) (fun q => hγ0' q.2) (fun q => hγI q.2) hD1
+  have hB1 : V.MM (PowerSeries.coeff V.l (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D1)) :=
+    hB1' (Finsupp.single () V.l)
+  have hD3 : MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D3 =
+      ∑ i, MvPowerSeries.C (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) V.l) P) * γ i ^ V.l := by
+    rw [hD3def, ← MvPowerSeries.coe_substAlgHom hG, map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [MvPowerSeries.coe_substAlgHom hG, MvPowerSeries.subst_monomial hG, Finsupp.prod_single_index (by simp)]
+    rfl
+  have hfr : ∀ i, V.MM (PowerSeries.coeff V.l (γ i ^ V.l) - (PowerSeries.coeff 1 (γ i)) ^ V.l) := by
+    intro i
+    have h := mms_pow_frobTw (hγI i) (Finsupp.single () V.l)
+    rw [map_sub, coeff_frobTw, if_pos (fun s => by simp)] at h
+    have e : (Finsupp.single () V.l).mapRange (fun n => n / V.l) (Nat.zero_div V.l) = Finsupp.single () 1 := by
+      rw [Finsupp.mapRange_single, Nat.div_self (by omega)]
+    rw [e] at h
+    exact h
+  have eP : MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) P =
+      MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D1 +
+        MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) (P - D1 - D3) +
+          MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D3 := by
+    conv_lhs => rw [hsplit]
+    rw [MvPowerSeries.subst_add hG, MvPowerSeries.subst_add hG]
+  rw [eP, map_add, map_add, hA2', add_zero, hD3, map_sum]
+  have e : ∀ (a : C) (s t : Fin dd → C),
+      a + ∑ i, s i - ∑ i, t i = a + ∑ i, (s i - t i) := fun a s t => by
+    rw [Finset.sum_sub_distrib]
+    ring
+  rw [e]
+  refine mm_add hB1 (mm_sum _ _ fun i _ => ?_)
+  rw [show PowerSeries.coeff V.l (MvPowerSeries.C (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) V.l) P) *
+      γ i ^ V.l) = MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) V.l) P * PowerSeries.coeff V.l (γ i ^ V.l) from
+    MvPowerSeries.coeff_C_mul _ _ _, ← mul_sub]
+  exact mm_mul_ge' (hP _) (hfr i)
+
+theorem coeff_lt_frob {P : PS C 1 dd} (hPz : MvPowerSeries.constantCoeff P = 0) (hfrob : FrobX V P)
+    {γ : Fin dd → PowerSeries C} (hγ : IsCv V γ) (n : ℕ) (hn : n < V.l) :
+    V.MM (PowerSeries.coeff n (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) P)) := by
+  have hl := V.l_prime.two_le
+  have hγ0 : ∀ j, MvPowerSeries.constantCoeff (γ j) = 0 := fun j => (hγ j).1
+  have hγI : ∀ j, IntS V (γ j) := fun j => intS_cv (hγ j).2
+  have hG : MvPowerSeries.HasSubst (fun q : Fin 1 × Fin dd => γ q.2) :=
+    MvPowerSeries.hasSubst_of_constantCoeff_zero fun q => hγ0 q.2
+  obtain ⟨D1, hD1def⟩ : ∃ D1 : PS C 1 dd, ∀ μ, MvPowerSeries.coeff μ D1 =
+      if (∃ i, ¬ V.l ∣ μ ((0 : Fin 1), i)) then MvPowerSeries.coeff μ P else 0 :=
+    ⟨fun μ => if (∃ i, ¬ V.l ∣ μ ((0 : Fin 1), i)) then MvPowerSeries.coeff μ P else 0, fun μ => rfl⟩
+  have hD1 : MMS V D1 := fun μ => by
+    rw [hD1def]
+    split_ifs with h
+    · exact hfrob μ h
+    · exact mm_zero
+  have hsq : ∀ (s : Fin 1 × Fin dd), s = ((0 : Fin 1), s.2) := fun s => Prod.ext (Subsingleton.elim _ _) rfl
+  have hD2 : Agr V.l (P - D1) 0 := by
+    intro μ hμ
+    rw [map_sub, map_zero, hD1def]
+    by_cases hex : ∃ i, ¬ V.l ∣ μ ((0 : Fin 1), i)
+    · rw [if_pos hex, sub_self]
+    · rw [if_neg hex, sub_zero]
+      push Not at hex
+      have hdiv : ∀ s, V.l ∣ μ s := fun s => by rw [hsq s]; exact hex s.2
+      rcases FirstVanishing.divisible_small μ hdiv (by omega) with h0 | ⟨s, hs⟩
+      · subst h0
+        rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hPz]
+      · subst hs
+        rw [Finsupp.degree_single] at hμ
+        omega
+  have hz : MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) (0 : PS C 1 dd) = 0 := by
+    rw [← MvPowerSeries.coe_substAlgHom hG, map_zero]
+  have hA2 := (agr_subst_right (a := fun q : Fin 1 × Fin dd => γ q.2) (fun q => hγ0 q.2) hD2)
+    (Finsupp.single () n) (by rw [Finsupp.degree_single]; exact hn)
+  rw [hz, map_zero] at hA2
+  have hA2' : PowerSeries.coeff n (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) (P - D1)) = 0 := hA2
+  have hB1' : MMS V (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D1) :=
+    MMS.subst (a := fun q : Fin 1 × Fin dd => γ q.2) (fun q => hγ0 q.2) (fun q => hγI q.2) hD1
+  have hB1 : V.MM (PowerSeries.coeff n (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D1)) :=
+    hB1' (Finsupp.single () n)
+  have eP : MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) P =
+      MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D1 +
+        MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) (P - D1) := by
+    conv_lhs => rw [show P = D1 + (P - D1) by ring]
+    rw [MvPowerSeries.subst_add hG]
+  rw [eP, map_add, hA2', add_zero]
+  exact hB1
+
+def LowMM (V : VF C) (f : PowerSeries C) : Prop := ∀ n ≤ V.l, V.MM (PowerSeries.coeff n f)
+
+theorem LowMM.mul_int {f g : PowerSeries C} (hf : LowMM V f) (hg : IntS V g) : LowMM V (f * g) := by
+  intro n hn
+  rw [PowerSeries.coeff_mul]
+  refine mm_sum _ _ fun p hp => mm_mul_ge (hf p.1 ?_) (hg (Finsupp.single () p.2))
+  have := Finset.HasAntidiagonal.mem_antidiagonal.1 hp
+  omega
+
+theorem lowMM_subst {σ : Type} [Finite σ] {a : σ → PowerSeries C} (ha0 : ∀ s, MvPowerSeries.constantCoeff (a s) = 0)
+    (haI : ∀ s, IntS V (a s)) (haL : ∀ s, LowMM V (a s)) {f : MvPowerSeries σ C} (hf : IntS V f)
+    (hf0 : MvPowerSeries.constantCoeff f = 0) : LowMM V (MvPowerSeries.subst a f) := by
+  intro n hn
+  change V.MM (MvPowerSeries.coeff (Finsupp.single () n) (MvPowerSeries.subst a f))
+  rw [MvPowerSeries.coeff_subst (MvPowerSeries.hasSubst_of_constantCoeff_zero ha0)]
+  refine finsum_induction (fun x => V.MM x) mm_zero (fun x y hx hy => mm_add hx hy) fun e => ?_
+  rw [smul_eq_mul]
+  by_cases he : e = 0
+  · subst he
+    rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hf0, zero_mul]
+    exact mm_zero
+  · obtain ⟨s, hs⟩ := Finsupp.ne_iff.mp he
+    have hs' : e s ≠ 0 := by simpa using hs
+    have hmem : s ∈ e.support := Finsupp.mem_support_iff.2 hs'
+    have hp : LowMM V (e.prod fun s m => a s ^ m) := by
+      unfold Finsupp.prod
+      rw [← Finset.mul_prod_erase _ _ hmem]
+      obtain ⟨m, hm⟩ : ∃ m, e s = m + 1 := ⟨e s - 1, by omega⟩
+      rw [hm]
+      show LowMM V (a s ^ (m + 1) * ∏ x ∈ e.support.erase s, a x ^ e x)
+      rw [pow_succ', mul_assoc]
+      refine (haL s).mul_int (intS_mul (intS_pow (haI s) _) ?_)
+      exact Finset.prod_induction _ (IntS V) (fun _ _ h1 h2 => intS_mul h1 h2) intS_one fun t _ => intS_pow (haI t) _
+    exact mm_mul_ge' (hf e) (hp n hn)
+
+theorem coeff_one_subst_curve {P : PS C 1 dd} (hPz : MvPowerSeries.constantCoeff P = 0) {γ : Fin dd → PowerSeries C}
+    (hγ0 : ∀ j, MvPowerSeries.constantCoeff (γ j) = 0) :
+    PowerSeries.coeff 1 (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) P) =
+      ∑ j, MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), j) 1) P * PowerSeries.coeff 1 (γ j) := by
+  have hG : MvPowerSeries.HasSubst (fun q : Fin 1 × Fin dd => γ q.2) :=
+    MvPowerSeries.hasSubst_of_constantCoeff_zero fun q => hγ0 q.2
+  have hsq : ∀ (s : Fin 1 × Fin dd), s = ((0 : Fin 1), s.2) := fun s => Prod.ext (Subsingleton.elim _ _) rfl
+  obtain ⟨D3, hD3def⟩ : ∃ D3 : PS C 1 dd, D3 = ∑ i, MvPowerSeries.monomial (Finsupp.single ((0 : Fin 1), i) 1)
+      (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) 1) P) := ⟨_, rfl⟩
+  have hD2 : Agr 2 P D3 := by
+    intro μ hμ
+    rw [hD3def, map_sum]
+    simp only [MvPowerSeries.coeff_monomial]
+    rcases Nat.lt_succ_iff.1 hμ |>.lt_or_eq with h1 | h1
+    · have h0 : μ = 0 := (Finsupp.degree_eq_zero_iff _).1 (by omega)
+      subst h0
+      rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hPz]
+      symm
+      refine Finset.sum_eq_zero fun i _ => if_neg ?_
+      intro h
+      have := congrArg (fun f : Fin 1 × Fin dd →₀ ℕ => f ((0 : Fin 1), i)) h
+      simp at this
+    · obtain ⟨s, hs⟩ := degree_one h1
+      subst hs
+      rw [Finset.sum_eq_single s.2, if_pos (by rw [← hsq s]), ← hsq s]
+      · intro i _ hi
+        rw [if_neg]
+        intro h
+        apply hi
+        have := (Finsupp.single_left_inj (by omega : (1 : ℕ) ≠ 0)).1 h
+        rw [this]
+      · intro h
+        exact absurd (Finset.mem_univ _) h
+  have hA := (agr_subst_right (a := fun q : Fin 1 × Fin dd => γ q.2) (fun q => hγ0 q.2) hD2)
+    (Finsupp.single () 1) (by rw [Finsupp.degree_single]; omega)
+  have hA' : PowerSeries.coeff 1 (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) P) =
+      PowerSeries.coeff 1 (MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D3) := hA
+  have hD3 : MvPowerSeries.subst (fun q : Fin 1 × Fin dd => γ q.2) D3 =
+      ∑ i, MvPowerSeries.C (MvPowerSeries.coeff (Finsupp.single ((0 : Fin 1), i) 1) P) * γ i ^ 1 := by
+    rw [hD3def, ← MvPowerSeries.coe_substAlgHom hG, map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [MvPowerSeries.coe_substAlgHom hG, MvPowerSeries.subst_monomial hG, Finsupp.prod_single_index (by simp)]
+    rfl
+  rw [hA', hD3, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [pow_one]
+  exact MvPowerSeries.coeff_C_mul _ _ _
+
+end SelfAdjointCongruence
+
+end Formalism.L2.FormalSeriesBounds
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open scoped BigOperators
+open Classical
+
+namespace Formalism.L2.FormalSeriesBounds
+
+open Formalism.IncomingBounds ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
+
+def zl {C : Type} [Field C] {dd : ℕ} (v : Fin dd → C) (F : PS C 2 dd) : PS C 1 dd :=
+  ∑ j, MvPowerSeries.C (v j) * ev (n := 1) ![pt C dd 0, 0] (MvPowerSeries.pderiv C ((1 : Fin 2), j) F)
+
+namespace SelfAdjointLinearTerm
+
+open PartialDerivEval FirstUnitSeriesIntegrality MulLFrob LiftedCoordinateEvaluation MvPowerSeries
+
+variable {C : Type} [Field C] {dd : ℕ}
+
+theorem snd_map (ν : Fin 1 × Fin dd →₀ ℕ) :
+    (ν.mapDomain Prod.snd).mapDomain (fun x : Fin dd => ((0 : Fin 1), x)) = ν := by
+  rw [← Finsupp.mapDomain_comp]
+  have e : ((fun x : Fin dd => ((0 : Fin 1), x)) ∘ Prod.snd) = id := by
+    funext p
+    exact Prod.ext (Subsingleton.elim _ _) rfl
+  rw [e, Finsupp.mapDomain_id]
+
+theorem snd_mapDomain_mapDomain (ν : Fin 1 × Fin dd →₀ ℕ) :
+    (ν.mapDomain Prod.snd).mapDomain (fun x : Fin dd => ((0 : Fin 2), x)) =
+      ν.mapDomain (fun q : Fin 1 × Fin dd => ((0 : Fin 2), q.2)) := by
+  rw [← Finsupp.mapDomain_comp]
+  rfl
+
+end SelfAdjointLinearTerm
+
+open SelfAdjointLinearTerm in
+theorem coeff_zl {C : Type} [Field C] {dd : ℕ} (v : Fin dd → C) (F : PS C 2 dd) (ν : Fin 1 × Fin dd →₀ ℕ) :
+    MvPowerSeries.coeff ν (zl v F) = ∑ j, v j * MvPowerSeries.coeff
+      (ν.mapDomain (fun q : Fin 1 × Fin dd => ((0 : Fin 2), q.2)) + Finsupp.single ((1 : Fin 2), j) 1) F := by
+  unfold zl
+  rw [map_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [MvPowerSeries.coeff_C_mul]
+  conv_lhs => rw [← snd_map ν]
+  rw [coeff_eval_second_zero, MvPowerSeries.coeff_pderiv, snd_mapDomain_mapDomain]
+  have h0 : (ν.mapDomain fun q : Fin 1 × Fin dd => ((0 : Fin 2), q.2)) ((1 : Fin 2), j) = 0 := by
+    apply Finsupp.mapDomain_of_notMem_range
+    rintro ⟨x, hx⟩
+    have h01 : (0 : Fin 2) = 1 := congrArg Prod.fst hx
+    exact absurd h01 (by decide)
+  rw [h0]
+  simp
+
+namespace SelfAdjointLinearTerm
+
+open PartialDerivEval FirstUnitSeriesIntegrality MulLFrob LiftedCoordinateEvaluation MvPowerSeries
+
+variable {C : Type} [Field C] [CharZero C] {dd : ℕ}
+
+theorem aux_statement_9 : Z0 (![pt C dd 0, 0] : Fin 2 → Pt C 1 dd) := by
+  intro k i
+  fin_cases k
+  · simp [pt]
+  · simp
+
+theorem zl_sub (v : Fin dd → C) (F G : PS C 2 dd) : zl v (F - G) = zl v F - zl v G := by
+  have hS : MvPowerSeries.HasSubst (fun p : Fin 2 × Fin dd => (![pt C dd 0, 0] : Fin 2 → Pt C 1 dd) p.1 p.2) :=
+    MvPowerSeries.hasSubst_of_constantCoeff_zero (fun p => aux_statement_9 p.1 p.2)
+  simp only [zl, ev, map_sub, MvPowerSeries.subst_sub hS, mul_sub, Finset.sum_sub_distrib]
+
+theorem zl_smul (v : Fin dd → C) (c : C) (F : PS C 2 dd) : zl v (c • F) = c • zl v F := by
+  have hS : MvPowerSeries.HasSubst (fun p : Fin 2 × Fin dd => (![pt C dd 0, 0] : Fin 2 → Pt C 1 dd) p.1 p.2) :=
+    MvPowerSeries.hasSubst_of_constantCoeff_zero (fun p => aux_statement_9 p.1 p.2)
+  simp only [zl, ev, Derivation.map_smul, LinearMap.map_smul, MvPowerSeries.subst_smul hS, Finset.smul_sum,
+    mul_smul_comm]
+
+theorem zl_expS (v : Fin dd → C) {f : PS C 2 dd} (hf : constantCoeff f = 0)
+    (hf0 : ev (n := 1) ![pt C dd 0, 0] f = 0) : zl v (FB.expS C f) = zl v f := by
+  unfold zl
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [pderiv_expS hf, ev_mul aux_statement_9, expS_eq, ev_ex aux_statement_9 f hf, hf0, ex_zero, one_mul]
+
+def PAB (A B : Pt C 1 dd) : Fin 2 → Pt C 2 dd := ![comp1 A (pt C (n := 2) dd 0), comp1 B (pt C (n := 2) dd 1)]
+
+theorem constant_zero_comp_coordinate {n : ℕ} {A : Pt C 1 dd} (hA : ∀ i, constantCoeff (A i) = 0) (k : Fin n) (i : Fin dd) :
+    constantCoeff (comp1 A (pt C (n := n) dd k) i) = 0 := by
+  simp only [comp1, ev]
+  have hc : ∀ p : Fin 1 × Fin dd, constantCoeff ((![pt C dd k] : Fin 1 → Pt C n dd) p.1 p.2) = 0 := by
+    intro p
+    simp only [Matrix.cons_val_fin_one, pt, MvPowerSeries.constantCoeff_X]
+  apply MvPowerSeries.constantCoeff_subst_eq_zero
+  · exact MvPowerSeries.hasSubst_of_constantCoeff_zero hc
+  · exact hc
+  · exact hA i
+
+theorem zPAB {A B : Pt C 1 dd} (hA : ∀ i, constantCoeff (A i) = 0) (hB : ∀ i, constantCoeff (B i) = 0) :
+    Z0 (PAB A B) := by
+  intro k i
+  fin_cases k
+  · simpa [PAB] using constant_zero_comp_coordinate hA 0 i
+  · simpa [PAB] using constant_zero_comp_coordinate hB 1 i
+
+theorem product_points_at_zero {A B : Pt C 1 dd} (hB : ∀ i, constantCoeff (B i) = 0) :
+    (fun k i => ev (n := 1) ![pt C dd 0, 0] (PAB A B k i)) = (![A, 0] : Fin 2 → Pt C 1 dd) := by
+  funext k i
+  fin_cases k
+  · show ev (n := 1) ![pt C dd 0, 0] (ev ![pt C (n := 2) dd 0] (A i)) = A i
+    rw [ev_ev (z0_1 _ fun j => z0_pt 0 j) aux_statement_9]
+    have : (fun (k : Fin 1) (i : Fin dd) => ev (n := 1) ![pt C dd 0, 0] ((![pt C (n := 2) dd 0] : Fin 1 → Pt C 2 dd) k i)) =
+        ![pt C (n := 1) dd 0] := by
+      funext k i
+      fin_cases k
+      exact ev_X aux_statement_9 0 i
+    rw [this, germEval_oneStandardPoint_self]
+  · show ev (n := 1) ![pt C dd 0, 0] (ev ![pt C (n := 2) dd 1] (B i)) = 0
+    rw [ev_ev (z0_1 _ fun j => z0_pt 1 j) aux_statement_9]
+    have : (fun (k : Fin 1) (i : Fin dd) => ev (n := 1) ![pt C dd 0, 0] ((![pt C (n := 2) dd 1] : Fin 1 → Pt C 2 dd) k i)) =
+        ![(0 : Pt C 1 dd)] := by
+      funext k i
+      fin_cases k
+      exact ev_X aux_statement_9 1 i
+    rw [this, ev_zero_pt, hB i, map_zero]
+
+theorem d_A (A : Pt C 1 dd) (j k : Fin dd) :
+    pderiv C ((1 : Fin 2), j) (comp1 A (pt C (n := 2) dd 0) k) = 0 := by
+  show pderiv C ((1 : Fin 2), j) (ev ![pt C (n := 2) dd 0] (A k)) = 0
+  rw [pderiv_eval_single (fun j => z0_pt 0 j)]
+  refine Finset.sum_eq_zero fun m _ => ?_
+  rw [pderiv_pt_ne _ _ _ (show (0 : Fin 2) ≠ 1 by decide), mul_zero]
+
+theorem d_B (B : Pt C 1 dd) (j k : Fin dd) :
+    pderiv C ((1 : Fin 2), j) (comp1 B (pt C (n := 2) dd 1) k) =
+      ev ![pt C (n := 2) dd 1] (pderiv C ((0 : Fin 1), j) (B k)) := by
+  show pderiv C ((1 : Fin 2), j) (ev ![pt C (n := 2) dd 1] (B k)) = _
+  rw [pderiv_eval_single (fun j => z0_pt 1 j), Finset.sum_eq_single j]
+  · rw [pderiv_pt_same, if_pos rfl, mul_one]
+  · intro m _ hm
+    rw [pderiv_pt_same, if_neg hm, mul_zero]
+  · intro h
+    exact absurd (Finset.mem_univ j) h
+
+theorem eval_pderiv_constant_linear (B : Pt C 1 dd) (j k : Fin dd) :
+    ev (n := 1) ![pt C dd 0, 0] (ev ![pt C (n := 2) dd 1] (pderiv C ((0 : Fin 1), j) (B k))) =
+      MvPowerSeries.C (coeff (Finsupp.single ((0 : Fin 1), j) 1) (B k)) := by
+  rw [ev_ev (z0_1 _ fun j => z0_pt 1 j) aux_statement_9]
+  have : (fun (k : Fin 1) (i : Fin dd) => ev (n := 1) ![pt C dd 0, 0] ((![pt C (n := 2) dd 1] : Fin 1 → Pt C 2 dd) k i)) =
+      ![(0 : Pt C 1 dd)] := by
+    funext k i
+    fin_cases k
+    exact ev_X aux_statement_9 1 i
+  rw [this, ev_zero_pt, ← coeff_zero_eq_constantCoeff_apply, coeff_pderiv]
+  simp
+
+variable {V : VF C} {O : Type} [CommRing O] [StarRing O]
+
+theorem zl_hAB (Y : FBChart C V O dd) {A B : Pt C 1 dd} (hA : ∀ i, constantCoeff (A i) = 0)
+    (hB : ∀ i, constantCoeff (B i) = 0) (v : Fin dd → C) :
+    zl v (ev (PAB A B) Y.h) = -ev (n := 1) ![A] (Y.sgP (linAct B v)) := by
+  rw [ev_sgP Y _ A hA, neg_neg]
+  unfold zl
+  have h1 : ∀ j, ev (n := 1) ![pt C dd 0, 0] (pderiv C ((1 : Fin 2), j) (ev (PAB A B) Y.h)) =
+      ∑ k, ev (n := 1) ![A, 0] (pderiv C ((1 : Fin 2), k) Y.h) *
+        MvPowerSeries.C (coeff (Finsupp.single ((0 : Fin 1), j) 1) (B k)) := by
+    intro j
+    rw [pderiv_eval_pair (zPAB hA hB)]
+    have e0 : ∑ k, ev (PAB A B) (pderiv C ((0 : Fin 2), k) Y.h) * pderiv C ((1 : Fin 2), j) (PAB A B 0 k) = 0 :=
+      Finset.sum_eq_zero fun k _ => by
+        rw [show PAB A B 0 k = comp1 A (pt C (n := 2) dd 0) k from rfl, d_A, mul_zero]
+    rw [e0, zero_add, ev_sum aux_statement_9]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [show PAB A B 1 k = comp1 B (pt C (n := 2) dd 1) k from rfl, d_B, ev_mul aux_statement_9, eval_pderiv_constant_linear,
+      ev_ev (zPAB hA hB) aux_statement_9, product_points_at_zero hB]
+  simp only [h1, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  unfold linAct
+  rw [map_sum, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [map_mul]
+  ring
+
+theorem height_at_zero_product (Y : FBChart C V O dd) {A B : Pt C 1 dd} (hA : ∀ i, constantCoeff (A i) = 0)
+    (hB : ∀ i, constantCoeff (B i) = 0) : ev (n := 1) ![pt C dd 0, 0] (ev (PAB A B) Y.h) = 0 := by
+  rw [ev_ev (zPAB hA hB) aux_statement_9, product_points_at_zero hB]
+  have h := congrArg (ev (n := 1) ![A]) Y.gauge.ax1
+  rw [ev_ev aux_statement_9 (z0_1 A hA), ev_zero (z0_1 A hA)] at h
+  have : (fun (k : Fin 2) (i : Fin dd) => ev (n := 1) ![A] ((![pt C dd 0, 0] : Fin 2 → Pt C 1 dd) k i)) =
+      (![A, 0] : Fin 2 → Pt C 1 dd) := by
+    funext k i
+    fin_cases k
+    · exact ev_X (z0_1 A hA) 0 i
+    · exact ev_zero (z0_1 A hA)
+  rw [this] at h
+  exact h
+
+theorem const_hAB (Y : FBChart C V O dd) {A B : Pt C 1 dd} (hA : ∀ i, constantCoeff (A i) = 0)
+    (hB : ∀ i, constantCoeff (B i) = 0) : constantCoeff (ev (PAB A B) Y.h) = 0 :=
+  const_ev (zPAB hA hB) (h_const Y)
+
+theorem comp1_identity_left {n : ℕ} (k : Fin n) : comp1 (pt C (n := 1) dd 0) (pt C (n := n) dd k) = pt C dd k := by
+  funext i
+  simp only [comp1, ev, pt]
+  rw [MvPowerSeries.subst_X (MvPowerSeries.hasSubst_of_constantCoeff_zero (fun p => by
+    simp only [Matrix.cons_val_fin_one, pt, MvPowerSeries.constantCoeff_X]))]
+  rfl
+
+theorem linAct_id (v : Fin dd → C) : linAct (pt C (n := 1) dd 0) v = v := by
+  funext i
+  unfold linAct
+  rw [Finset.sum_eq_single i]
+  · show coeff (Finsupp.single ((0 : Fin 1), i) 1) (X ((0 : Fin 1), i) : PS C 1 dd) * v i = v i
+    rw [coeff_X, if_pos rfl, one_mul]
+  · intro j _ hj
+    show coeff (Finsupp.single ((0 : Fin 1), j) 1) (X ((0 : Fin 1), i) : PS C 1 dd) * v j = 0
+    rw [coeff_X, if_neg, zero_mul]
+    intro h
+    apply hj
+    have := (Finsupp.single_left_inj (one_ne_zero)).1 h
+    exact (Prod.mk.inj this).2
+  · intro h
+    exact absurd (Finset.mem_univ i) h
+
+theorem zId : ∀ i, constantCoeff (pt C (n := 1) dd 0 i) = 0 := fun i => by simp [pt]
+
+end SelfAdjointLinearTerm
+
+open SelfAdjointLinearTerm PartialDerivEval FirstUnitSeriesIntegrality MulLFrob in
+
+theorem linear_part_first_unit {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ}
+    (Y : FBChart C V O dd) (v : Fin dd → C) :
+    zl v Y.u1 = (V.l : C) • Y.sgP v - ev (n := 1) ![mulL Y.B.G.F V.l] (Y.sgP v) := by
+  have hM : ∀ i, MvPowerSeries.constantCoeff (mulL Y.B.G.F V.l i) = 0 := multiplication_constantCoeff_zero Y.B.G V.l
+  have e1 : (![comp1 (mulL Y.B.G.F V.l) (pt C (n := 2) dd 0), pt C dd 1] : Fin 2 → Pt C 2 dd) =
+      PAB (mulL Y.B.G.F V.l) (pt C (n := 1) dd 0) := by
+    unfold PAB
+    rw [comp1_identity_left]
+  have e2 : ev (PAB (pt C (n := 1) dd 0) (pt C (n := 1) dd 0)) Y.h = Y.h := by
+    unfold PAB
+    rw [comp1_identity_left, comp1_identity_left, PartialDerivEval.eval_points_two]
+  have e3 : ev (n := 2) ![comp1 (mulL Y.B.G.F V.l) (pt C (n := 2) dd 0), pt C dd 1] Y.h - (V.l : C) • Y.h =
+      ev (PAB (mulL Y.B.G.F V.l) (pt C (n := 1) dd 0)) Y.h -
+        (V.l : C) • ev (PAB (pt C (n := 1) dd 0) (pt C (n := 1) dd 0)) Y.h := by
+    rw [e1, e2]
+  unfold FBChart.u1
+  rw [e3, zl_expS v
+      (by rw [map_sub, const_hAB Y hM zId, MvPowerSeries.smul_eq_C_mul, map_mul, const_hAB Y zId zId, mul_zero,
+        sub_zero])
+      (by rw [ev_sub aux_statement_9, height_at_zero_product Y hM zId, MvPowerSeries.smul_eq_C_mul, ev_mul aux_statement_9, height_at_zero_product Y zId zId, mul_zero,
+        sub_zero]),
+    zl_sub, zl_smul, zl_hAB Y hM zId, zl_hAB Y zId zId, linAct_id, germEval_oneStandardPoint_self, smul_neg]
+  ring
+
+open SelfAdjointLinearTerm PartialDerivEval FirstUnitSeriesIntegrality MulLFrob in
+
+theorem constant_zero_first_zero_self {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ}
+    (Y : FBChart C V O dd) (e eb : Pt C 1 dd) (he0 : ∀ i, MvPowerSeries.constantCoeff (e i) = 0)
+    (heb0 : ∀ i, MvPowerSeries.constantCoeff (eb i) = 0) (v : Fin dd → C) :
+    zl v (FB.expS C (ev (n := 2) ![comp1 e (pt C dd 0), pt C dd 1] Y.h -
+      ev (n := 2) ![pt C dd 0, comp1 eb (pt C dd 1)] Y.h)) =
+      Y.sgP (linAct eb v) - ev (n := 1) ![e] (Y.sgP v) := by
+  have e1 : (![comp1 e (pt C (n := 2) dd 0), pt C dd 1] : Fin 2 → Pt C 2 dd) = PAB e (pt C (n := 1) dd 0) := by
+    unfold PAB
+    rw [comp1_identity_left]
+  have e2 : (![pt C (n := 2) dd 0, comp1 eb (pt C dd 1)] : Fin 2 → Pt C 2 dd) = PAB (pt C (n := 1) dd 0) eb := by
+    unfold PAB
+    rw [comp1_identity_left]
+  rw [e1, e2, zl_expS v
+      (by rw [map_sub, const_hAB Y he0 zId, const_hAB Y zId heb0, sub_zero])
+      (by rw [ev_sub aux_statement_9, height_at_zero_product Y he0 zId, height_at_zero_product Y zId heb0, sub_zero]),
+    zl_sub, zl_hAB Y he0 zId, zl_hAB Y zId heb0, linAct_id, germEval_oneStandardPoint_self]
+  ring
+
+end Formalism.L2.FormalSeriesBounds
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -269,3 +813,5 @@ theorem aLinAdj_holds : ALinAdjSt := by
   exact mm_add (mm_sub hA3 hA1) (mm_sub hA4 hA2)
 
 end Formalism.L2.FormalSeriesBounds
+end
+end

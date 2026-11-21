@@ -1,5 +1,77 @@
-import Formalism.LocalToGlobal.GenusGluing.GenusApproximation.Statement
+import Formalism.LocalToGlobal.Columns.AdelicLemmas
 
+section
+noncomputable section
+
+namespace Formalism.L2.GenusGluing.Gen
+
+open NumberField IsDedekindDomain Matrix
+open scoped TensorProduct
+
+variable {F : Type} [Field F] [NumberField F] (E : Type) [Field E] [NumberField E] [Algebra F E]
+
+def eP (P : HeightOneSpectrum (𝓞 F) → Prop) : E ⊗[F] Formalism.L2.Herm.Af F :=
+  (1 : E) ⊗ₜ[F] ((Formalism.L2.DIV.idemAd P : Formalism.UG.intAd F) : Formalism.L2.Herm.Af F)
+
+def eAt (v : HeightOneSpectrum (𝓞 F)) : E ⊗[F] Formalism.L2.Herm.Af F := eP E (fun w => w = v)
+
+def complF (v : HeightOneSpectrum (𝓞 F)) : Submonoid (𝓞 E) :=
+  v.asIdeal.primeCompl.map (algebraMap (𝓞 F) (𝓞 E))
+
+variable {E}
+
+def locF {W : Type} [AddCommGroup W] [Module (𝓞 E) W] (v : HeightOneSpectrum (𝓞 F)) (L : Submodule (𝓞 E) W) :
+    Submodule (𝓞 E) W :=
+  Formalism.HermitianLatticesTheory.locS (complF E v) L
+
+def IntAt {n : ℕ} (v : HeightOneSpectrum (𝓞 F)) (y : Matrix (Fin n) (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) : Prop :=
+  ∀ i j, eAt E v * y i j ∈ Formalism.L2.Herm.intAf F E
+
+end Formalism.L2.GenusGluing.Gen
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.GenusGluing.Gen
+
+open NumberField IsDedekindDomain Matrix Formalism.L2.Col
+open scoped TensorProduct
+
+def WeakApproxU {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+    (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) : Prop :=
+  ∀ x ∈ UAd hc n, ∀ v : HeightOneSpectrum (𝓞 F), ∃ γ ∈ URat hc n,
+    IntAt v (((Formalism.UG.bc (iA F E) γ)⁻¹ * x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) : Matrix (Fin n) (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) ∧
+    IntAt v ((x⁻¹ * Formalism.UG.bc (iA F E) γ : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) : Matrix (Fin n) (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))
+
+def GenusToPoint : Prop :=
+  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+    (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) (N : Submodule (𝓞 E) (Sp E n)), Submodule.IsLattice E N →
+    Formalism.HermitianLatticesTheory.SameGenus (hStd E n) (stdLat E n) N → ∃ x ∈ UAd hc n, Formalism.UG.CS.globLat x (stdLat E n) = N
+
+def PointToGenus : Prop :=
+  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+    (hc : Formalism.BasicNotions.CMData F E) (n : ℕ), WeakApproxU hc n → ∀ x ∈ UAd hc n,
+    Formalism.HermitianLatticesTheory.SameGenus (hStd E n) (stdLat E n) (Formalism.UG.CS.globLat x (stdLat E n))
+
+def LocToAd : Prop :=
+  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+    (hc : Formalism.BasicNotions.CMData F E) (n : ℕ), UnimodGenusLoc E n → UnimodGenus hc n
+
+def AdToLoc : Prop :=
+  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+    (hc : Formalism.BasicNotions.CMData F E) (n : ℕ), WeakApproxU hc n → UnimodGenus hc n → UnimodGenusLoc E n
+
+def Bridge : Prop :=
+  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+    (hc : Formalism.BasicNotions.CMData F E) (n : ℕ), WeakApproxU hc n → (UnimodGenusLoc E n ↔ UnimodGenus hc n)
+
+end Formalism.L2.GenusGluing.Gen
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.GenusGluing.Gen
@@ -56,3 +128,5 @@ def Commens : Prop :=
       (∀ y ∈ stdLat E n, algebraMap (𝓞 F) (𝓞 E) D • y ∈ N)
 
 end Formalism.L2.GenusGluing.Gen
+end
+end

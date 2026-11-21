@@ -1,6 +1,19 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CompactCasimirBoundElementaryApply
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CompactCasimirLeTensorOperatorRaise
 
+section
+open Finset BranchingSupport Formalism.REAL Formalism.QuantumDeterminants
+open scoped InnerProductSpace
+
+namespace GlobalTheory.CasKAdjoint
+
+def adMat {n : ℕ} (a b : Fin n) : Matrix (Fin n × Fin n) (Fin n × Fin n) ℂ := fun i j =>
+  (if i.1 = a ∧ j = (b, i.2) then 1 else 0) - (if i.2 = b ∧ j = (i.1, a) then 1 else 0)
+
+end GlobalTheory.CasKAdjoint
+end
+
+section
 open Finset BranchingSupport Formalism.REAL Formalism.QuantumDeterminants
 open scoped InnerProductSpace
 
@@ -161,3 +174,4 @@ theorem _root_.GlobalTheory.lev_E_add_two : ∀ (M : Type) [NormedAddCommGroup M
       isWeight_shift_of_glRel hG hx a b⟩
 
 end GlobalTheory
+end

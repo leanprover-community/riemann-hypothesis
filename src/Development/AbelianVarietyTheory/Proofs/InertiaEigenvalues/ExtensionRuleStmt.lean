@@ -1,8 +1,22 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.InvariantsGenerators
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.JSmul
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DictKFree
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemFixingSubgroupMaxUnramifiedOfMemLocalGalois
 
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
+open TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.ExtDict
+
+
+end GlobalTheory.ExtDict
+end
+end
+
+section
 open GlobalTheory.AdmLoc GlobalTheory.TopSteps Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions
 open TensorProduct
 
@@ -96,3 +110,5 @@ theorem extension_rule (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) :
 
 
 end GlobalTheory.ExtDict
+end
+end

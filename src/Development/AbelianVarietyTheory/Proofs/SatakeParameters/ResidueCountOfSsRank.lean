@@ -1,8 +1,194 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IrrTransferAbsIrr
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ImportsSide
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsCompEq
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HeckeCharEqOfLAdicRealisation
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqBotOrTopOfSpanEqTop
+import BuildAid.ForwardExisting
 
+section
+section
+open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
+
+noncomputable section
+namespace GlobalTheory.IrrTransfer
+
+open Matrix
+
+theorem span_top_of_irred_algClosed {Γ : Type} [Group Γ] {k K : Type} [Field k] [Field K] [IsAlgClosed K]
+    {r : ℕ} (hr : 1 ≤ r) (rb : Γ →* GL (Fin r) k) (ι : k →+* K)
+    (h : ∀ W : Submodule K (Fin r → K), IsInv (mapRep ι rb) W → W = ⊥ ∨ W = ⊤) :
+    Submodule.span k (Set.range fun g => (rb g : Matrix (Fin r) (Fin r) k)) = ⊤ := by
+  letI : Algebra k K := ι.toAlgebra
+  have : Nonempty (Fin r) := ⟨⟨0, hr⟩⟩
+  have hirr : IsIrrSub (mapRep ι rb) ⊤ :=
+    ⟨top_ne_bot, fun _ _ _ => Submodule.mem_top, fun W _ hW => h W hW⟩
+  have hs := GlobalTheory.BurnsideField.span_mat_eq_top_of_isIrrSub _ hirr
+  apply GlobalTheory.BurnsideField.span_eq_top_of_span_map (K := K)
+  convert hs using 3
+  ext g a b
+  simp [GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices.mat, mapRep, RingHom.algebraMap_toAlgebra]
+
+theorem span_image_top (k' : Type) [Field k'] (n : ℕ) :
+    Submodule.span (AlgebraicClosure k')
+      ((fun v : Fin n → k' => (algebraMap k' (AlgebraicClosure k')) ∘ v) ''
+        ((⊤ : Submodule k' (Fin n → k')) : Set (Fin n → k'))) = ⊤ := by
+  rw [eq_top_iff]
+  intro u _
+  rw [pi_eq_sum_univ' u]
+  refine Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨Pi.single a 1, trivial, ?_⟩)
+  ext c
+  by_cases hc : c = a
+  · subst hc; simp
+  · simp [Pi.single_eq_of_ne hc]
+
+theorem absIrr_of_algClosed {Γ : Type} [Group Γ] {k K k' : Type} [Field k] [Field K] [IsAlgClosed K]
+    [Field k'] {r : ℕ} (hr : 1 ≤ r) (rb : Γ →* GL (Fin r) k) (ι : k →+* K)
+    (h : ∀ W : Submodule K (Fin r → K), IsInv (mapRep ι rb) W → W = ⊥ ∨ W = ⊤) (φ : k →+* k') :
+    AbsIrrSub (mapRep φ rb) ⊤ := by
+  have hsp := span_top_of_irred_algClosed hr rb ι h
+  letI : Algebra k (AlgebraicClosure k') := ((algebraMap k' (AlgebraicClosure k')).comp φ).toAlgebra
+  have hirr := GlobalTheory.BurnsideIff.eq_bot_or_top_of_span_eq_top (K := AlgebraicClosure k') _ hsp
+  have : Nonempty (Fin r) := ⟨⟨0, hr⟩⟩
+  rw [AbsIrrSub, span_image_top]
+  refine ⟨top_ne_bot, fun _ _ _ => Submodule.mem_top, fun W _ hW => hirr W fun g v hv => ?_⟩
+  have := hW g v hv
+  simpa [mapRep, Matrix.map_map, RingHom.algebraMap_toAlgebra] using this
+
+end GlobalTheory.IrrTransfer
+
+namespace GlobalTheory.StringRepresentationDecomposition
+
+theorem irr_transfer_absIrr : ∀ {l : ℕ} [Fact l.Prime] {Γ : Type} [Group Γ] {k k' : Type} [Field k] [Field k']
+    {r : ℕ}, 1 ≤ r → ∀ (rb : Γ →* GL (Fin r) k) (ι : k →+* Formalism.CyclotomicNorms.Fbar l),
+    Formalism.CyclotomicNorms.IrredOn (mapRep ι rb) ⊤ → ∀ φ : k →+* k', AbsIrrSub (mapRep φ rb) ⊤ := by
+  intro l _ Γ _ k k' _ _ r hr rb ι h φ
+  exact GlobalTheory.IrrTransfer.absIrr_of_algClosed hr rb ι (fun W hW => h W fun g _ v hv => hW g v hv) φ
+
+end GlobalTheory.StringRepresentationDecomposition
+end
+end
+
+open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absIrrSub_map_of_irredOn_map_Fbar : ∀ {l : ℕ} [Fact l.Prime] {Γ : Type} [Group Γ] {k k' : Type} [Field k] [Field k'] {r : ℕ}, 1 ≤ r → ∀ (rb : Γ →* GL (Fin r) k) (ι : k →+* Formalism.CyclotomicNorms.Fbar l), Formalism.CyclotomicNorms.IrredOn (mapRep ι rb) ⊤ → ∀ φ : k →+* k', AbsIrrSub (mapRep φ rb) ⊤ := by
+  atlas_forward_decl GlobalTheory.StringRepresentationDecomposition.irr_transfer_absIrr
+end
+
+section
+namespace GlobalTheory.SatakeMainTheorem
+
+theorem main {K : Type} [Field K] (W : Submodule K (Fin (1 : ℕ) → K)) : W = ⊥ ∨ W = ⊤ := by
+  by_cases h : W = ⊥
+  · exact Or.inl h
+  · right
+    obtain ⟨v, hv, hv0⟩ := (Submodule.ne_bot_iff W).mp h
+    have h0 : v 0 ≠ 0 := by
+      intro h0
+      apply hv0
+      funext i
+      obtain rfl : i = 0 := Subsingleton.elim _ _
+      simpa using h0
+    rw [eq_top_iff]
+    intro w _
+    have hw : w = (w 0 / v 0) • v := by
+      funext i
+      obtain rfl : i = 0 := Subsingleton.elim _ _
+      simp [div_mul_cancel₀ _ h0]
+    rw [hw]
+    exact W.smul_mem _ hv
+
+end GlobalTheory.SatakeMainTheorem
+end
+
+section
+namespace GlobalTheory.AbsolutelyIrreduciblePullback
+
+open Formalism.MainNotions.N
+
+def pullSub {K L : Type} [Field K] [Field L] (f : K →+* L) {n : ℕ}
+    (W : Submodule L (Fin n → L)) : Submodule K (Fin n → K) where
+  carrier := {v | f ∘ v ∈ W}
+  add_mem' := by
+    intro a b ha hb
+    have : f ∘ (a + b) = f ∘ a + f ∘ b := by
+      funext i; simp
+    show f ∘ (a + b) ∈ W
+    rw [this]
+    exact W.add_mem ha hb
+  zero_mem' := by
+    have : f ∘ (0 : Fin n → K) = 0 := by
+      funext i; simp
+    show f ∘ (0 : Fin n → K) ∈ W
+    rw [this]
+    exact W.zero_mem
+  smul_mem' := by
+    intro c v hv
+    have : f ∘ (c • v) = f c • (f ∘ v) := by
+      funext i; simp
+    show f ∘ (c • v) ∈ W
+    rw [this]
+    exact W.smul_mem _ hv
+
+theorem mem_pullSub {K L : Type} [Field K] [Field L] (f : K →+* L) {n : ℕ}
+    (W : Submodule L (Fin n → L)) (v : Fin n → K) : v ∈ pullSub f W ↔ f ∘ v ∈ W := by
+  exact Iff.rfl
+
+theorem exists_comp_eq {K L : Type} [Field K] [Field L] (f : K →+* L) (hf : Function.Surjective f)
+    {n : ℕ} (w : Fin n → L) : ∃ v : Fin n → K, f ∘ v = w := by
+  choose v hv using fun i => hf (w i)
+  exact ⟨v, funext hv⟩
+
+theorem isInv_pullSub {Γ : Type} [Group Γ] {K L : Type} [Field K] [Field L] (f : K →+* L) {n : ℕ}
+    (ρ : Γ →* GL (Fin n) K) (W : Submodule L (Fin n → L)) (hW : IsInv (mapRep f ρ) W) :
+    IsInv ρ (pullSub f W) := by
+  intro g v hv
+  rw [mem_pullSub] at hv ⊢
+  have heq : f ∘ ((ρ g : Matrix (Fin n) (Fin n) K).mulVec v) =
+      ((mapRep f ρ g : GL (Fin n) L) : Matrix (Fin n) (Fin n) L).mulVec (f ∘ v) := by
+    funext i
+    exact RingHom.map_mulVec f _ v i
+  rw [heq]
+  exact hW g (f ∘ v) hv
+
+theorem absIrrSub_top {Γ : Type} [Group Γ] {K : Type} [Field K] [IsAlgClosed K] {n : ℕ}
+    (hn : 1 ≤ n) (ρ : Γ →* GL (Fin n) K)
+    (h : ∀ W : Submodule K (Fin n → K), IsInv ρ W → W = ⊥ ∨ W = ⊤) : AbsIrrSub ρ ⊤ := by
+  have hsurj : Function.Surjective (algebraMap K (AlgebraicClosure K)) :=
+    (IsAlgClosed.algebraMap_bijective_of_isIntegral (k := K) (K := AlgebraicClosure K)).2
+  have hspan : Submodule.span (AlgebraicClosure K)
+      ((fun v => (algebraMap K (AlgebraicClosure K)) ∘ v) '' ((⊤ : Submodule K (Fin n → K)) : Set (Fin n → K))) = ⊤ := by
+    rw [eq_top_iff]
+    intro w _
+    obtain ⟨v, rfl⟩ := exists_comp_eq (algebraMap K (AlgebraicClosure K)) hsurj w
+    exact Submodule.subset_span ⟨v, Submodule.mem_top, rfl⟩
+  unfold AbsIrrSub IsIrrSub
+  rw [hspan]
+  refine ⟨?_, fun _ _ _ => trivial, ?_⟩
+  · have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+    exact top_ne_bot
+  · intro W' _ hW'
+    rcases h _ (isInv_pullSub (algebraMap K (AlgebraicClosure K)) ρ W' hW') with h0 | h1
+    · left
+      rw [eq_bot_iff]
+      intro w hw
+      obtain ⟨v, rfl⟩ := exists_comp_eq (algebraMap K (AlgebraicClosure K)) hsurj w
+      have hv : v ∈ pullSub (algebraMap K (AlgebraicClosure K)) W' := (mem_pullSub _ _ _).mpr hw
+      rw [h0, Submodule.mem_bot] at hv
+      subst hv
+      rw [Submodule.mem_bot]
+      funext i
+      simp
+    · right
+      rw [eq_top_iff]
+      intro w _
+      obtain ⟨v, rfl⟩ := exists_comp_eq (algebraMap K (AlgebraicClosure K)) hsurj w
+      have hv : v ∈ pullSub (algebraMap K (AlgebraicClosure K)) W' := by
+        rw [h1]
+        trivial
+      exact (mem_pullSub _ _ _).mp hv
+
+end GlobalTheory.AbsolutelyIrreduciblePullback
+end
+
+section
 open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
 
 noncomputable section
@@ -290,3 +476,5 @@ theorem residual_count : ValRingModel → SSList → SSRankUnique → ResCount :
     rw [← e2, ← hrk, e1]
 
 end GlobalTheory.ResidualRankCount
+end
+end

@@ -4,18 +4,538 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.DiscreteSeriesHermi
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiagonalLagrangianInvariantForm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicHeisenbergActsByLocalSchrodinger
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSchwartzRestrictFinitePlaceMemSchwartzBruh
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedProjectionPreservesSchwartzAdm
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzBruhatPartialEvaluation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoxProductDiagonalFunctionalNeZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTranslationInvariantFunctionalStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalCharacterNormOneUnitStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensFormBox
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSchwartzBruhatConvolutionLocalFieldPower
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunctionOnSumCoordsMemAdelicSchwartzSpace
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalCharacterNormOneUnit
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DistribHaarCharSupportedIdeleEqLocalAbsValueStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalNormUnramifiedFactorization
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaActionExistsStatement
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsPairOfIsTriple
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalGLEmbeddingUnitary
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStdCharNegOneOfStandardTraceAdelicAddChar
 
+section
+section
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+noncomputable section
+
+namespace GlobalTheory.MixedForm
+
+variable {F : Type} [Field F] [NumberField F] {κ : Type}
+
+def finRepl (v : Pl F) (z : κ → Af F) (x : κ → Fv F v) : κ → Af F :=
+  fun i => z i - GlobalTheory.AdelicU.singleFin v (evalV F v (z i)) + GlobalTheory.AdelicU.singleFin v (x i)
+
+def finProj (v : Pl F) (φ₀ : (κ → Fv F v) → ℂ) (l : ((κ → Fv F v) → ℂ) →ₗ[ℂ] ℂ) (g : (κ → Af F) → ℂ) :
+    (κ → Af F) → ℂ :=
+  fun z => φ₀ (fun i => evalV F v (z i)) * l fun x => g (finRepl v z x)
+
+theorem evalV_finRepl (v : Pl F) (z : κ → Af F) (x : κ → Fv F v) (i : κ) :
+    evalV F v (finRepl v z x i) = x i := by
+  simp [finRepl, GlobalTheory.AdelicU.evalV_singleFin_self]
+
+theorem finRepl_finRepl (v : Pl F) (z : κ → Af F) (x : κ → Fv F v) :
+    finRepl v (finRepl v z x) (fun i => evalV F v (z i)) = z := by
+  funext i
+  have := evalV_finRepl v z x i
+  simp only [finRepl] at this ⊢
+  rw [this]; abel
+
+theorem continuous_finRepl (v : Pl F) :
+    Continuous fun p : (κ → Af F) × (κ → Fv F v) => finRepl v p.1 p.2 := by
+  refine continuous_pi fun i => ?_
+  have h1 : Continuous fun p : (κ → Af F) × (κ → Fv F v) => p.1 i := (continuous_apply i).comp continuous_fst
+  have h2 : Continuous fun p : (κ → Af F) × (κ → Fv F v) => p.2 i := (continuous_apply i).comp continuous_snd
+  exact (h1.sub ((GlobalTheory.AdelicU.continuous_singleFin v).comp ((RestrictedProduct.continuous_eval v).comp h1))).add
+    ((GlobalTheory.AdelicU.continuous_singleFin v).comp h2)
+
+theorem finProj_mem_SB [Fintype κ] (v : Pl F) {φ₀ : (κ → Fv F v) → ℂ} (hφ₀ : φ₀ ∈ SB (κ → Fv F v))
+    (l : ((κ → Fv F v) → ℂ) →ₗ[ℂ] ℂ) {g : (κ → Af F) → ℂ} (hg : g ∈ SB (κ → Af F)) :
+    finProj v φ₀ l g ∈ SB (κ → Af F) := by
+  haveI : T2Space (Af F) := GlobalTheory.AdelicUnitaryTop.t2Space_finiteAdeleRing_of_numberField F
+  have he : Continuous fun z : κ → Af F => fun i => evalV F v (z i) :=
+    continuous_pi fun i => (RestrictedProduct.continuous_eval v).comp (continuous_apply i)
+  have hs : Continuous fun z : κ → Af F => fun i => GlobalTheory.AdelicU.singleFin v (evalV F v (z i)) :=
+    continuous_pi fun i => (GlobalTheory.AdelicU.continuous_singleFin v).comp
+      ((RestrictedProduct.continuous_eval v).comp (continuous_apply i))
+  refine ⟨?_, ?_⟩
+  · rw [IsLocallyConstant.iff_eventually_eq]
+    intro z₀
+    let δ : (κ → Af F) → (κ → Af F) := fun z =>
+      (z₀ - fun i => GlobalTheory.AdelicU.singleFin v (evalV F v (z₀ i))) -
+        (z - fun i => GlobalTheory.AdelicU.singleFin v (evalV F v (z i)))
+    have hδ : Filter.Tendsto δ (nhds z₀) (nhds 0) := by
+      have hc : Continuous δ := continuous_const.sub (continuous_id.sub hs)
+      simpa [δ] using hc.tendsto z₀
+    have hφe : ∀ᶠ z in nhds z₀, φ₀ (fun i => evalV F v (z i)) = φ₀ (fun i => evalV F v (z₀ i)) :=
+      (hφ₀.1.comp_continuous he).eventually_eq z₀
+    filter_upwards [hδ.eventually (GlobalTheory.SBConv.eventually_translate hg), hφe] with z hz h1
+    simp only [finProj]
+    rw [h1]
+    congr 2
+    funext x
+    have e : finRepl v z x = finRepl v z₀ x - δ z := by
+      funext i; simp only [finRepl, δ, Pi.sub_apply]; abel
+    rw [e, hz]
+  · refine HasCompactSupport.intro ((hg.2.isCompact.prod hφ₀.2.isCompact).image (continuous_finRepl v)) ?_
+    intro z hz
+    by_contra h
+    apply hz
+    simp only [finProj] at h
+    have h1 : φ₀ (fun i => evalV F v (z i)) ≠ 0 := left_ne_zero_of_mul h
+    have h2 := right_ne_zero_of_mul h
+    obtain ⟨x, hx⟩ : ∃ x, g (finRepl v z x) ≠ 0 := by
+      by_contra hc
+      push_neg at hc
+      apply h2
+      have : (fun x => g (finRepl v z x)) = 0 := funext hc
+      rw [this, map_zero]
+    refine ⟨(finRepl v z x, fun i => evalV F v (z i)), ⟨subset_tsupport _ hx, subset_tsupport _ h1⟩, ?_⟩
+    exact finRepl_finRepl v z x
+
+theorem proj_pureA [Fintype κ] (v : Pl F) (φ₀ : (κ → Fv F v) → ℂ) (l : ((κ → Fv F v) → ℂ) →ₗ[ℂ] ℂ)
+    (f : (κ → mixedEmbedding.mixedSpace F) → ℂ) (g : (κ → Af F) → ℂ) :
+    proj v φ₀ l (pureA F f g) = pureA F f (finProj v φ₀ l g) := by
+  funext y
+  have e : (fun x => pureA F f g (repl v y x)) =
+      f (fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (y i).1) • fun x => g (finRepl v (fun i => (y i).2) x) := by
+    funext x
+    have a1 : ∀ i, (repl v y x i).1 = (y i).1 := fun i => by
+      show (y i).1 - (0 : Ainf F) + 0 = (y i).1
+      rw [sub_zero, add_zero]
+    have a2 : ∀ i, (repl v y x i).2 = finRepl v (fun i => (y i).2) x i := fun i => rfl
+    show f (fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (repl v y x i).1) * g (fun i => (repl v y x i).2) = _
+    simp only [a1, a2, Pi.smul_apply, smul_eq_mul]
+  rw [proj_apply, e, map_smul]
+  simp only [pureA, finProj, smul_eq_mul]
+  change φ₀ (fun i => evalV F v (y i).2) * _ = _
+  ring
+
+theorem proj_schA_adm : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (v : Pl F) (φ₀ : (κ → Fv F v) → ℂ), φ₀ ∈ SB (κ → Fv F v) → ∀ l : ((κ → Fv F v) → ℂ) →ₗ[ℂ] ℂ,
+    (∀ Φ ∈ schA F κ, GlobalTheory.MixedForm.proj v φ₀ l Φ ∈ schA F κ) ∧
+      ∀ L ∈ (adeleClass F).adm κ, L ∘ₗ GlobalTheory.MixedForm.proj v φ₀ l ∈ (adeleClass F).adm κ := by
+  intro F _ _ κ _ v φ₀ hφ₀ l
+  refine ⟨fun Φ hΦ => ?_, fun L hL => ?_⟩
+  · induction hΦ using Submodule.span_induction with
+    | mem Φ hΦ =>
+      obtain ⟨f, g, hg, rfl⟩ := hΦ
+      rw [proj_pureA]
+      exact Submodule.subset_span ⟨f, _, finProj_mem_SB v hφ₀ l hg, rfl⟩
+    | zero => rw [map_zero]; exact zero_mem _
+    | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
+    | smul a x _ hx => rw [map_smul]; exact Submodule.smul_mem _ a hx
+  · intro g hg
+    obtain ⟨T, hT⟩ := hL _ (finProj_mem_SB v hφ₀ l hg)
+    exact ⟨T, fun f => by rw [LinearMap.comp_apply, proj_pureA, hT]⟩
+
+end GlobalTheory.MixedForm
+
+end
+end
+
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mixed_projection_preserves_schwartz_adm : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (v : Pl F) (φ₀ : (κ → Fv F v) → ℂ), φ₀ ∈ SB (κ → Fv F v) → ∀ l : ((κ → Fv F v) → ℂ) →ₗ[ℂ] ℂ,
+    (∀ Φ ∈ schA F κ, GlobalTheory.MixedForm.proj v φ₀ l Φ ∈ schA F κ) ∧
+      ∀ L ∈ (adeleClass F).adm κ, L ∘ₗ GlobalTheory.MixedForm.proj v φ₀ l ∈ (adeleClass F).adm κ := by
+  atlas_forward_decl GlobalTheory.MixedForm.proj_schA_adm
+end
+
+section
+section
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.SliceSB
+
+theorem continuous_sumElim {k : Type} [TopologicalSpace k] {κ κ' : Type} :
+    Continuous (fun p : (κ → k) × (κ' → k) => (Sum.elim p.1 p.2 : κ ⊕ κ' → k)) := by
+  refine continuous_pi fun i => ?_
+  cases i with
+  | inl i => exact (continuous_apply i).comp continuous_fst
+  | inr i => exact (continuous_apply i).comp continuous_snd
+
+theorem slice_mem : ∀ (k : Type) [TopologicalSpace k] [T2Space k] (κ κ' : Type) [Fintype κ] [Fintype κ'], ∀ f ∈ SB (κ ⊕ κ' → k),
+    (∀ x₁ : κ → k, (fun x₂ : κ' → k => f (Sum.elim x₁ x₂)) ∈ SB (κ' → k)) ∧
+      ∀ l : ((κ' → k) → ℂ) →ₗ[ℂ] ℂ, (fun x₁ : κ → k => l fun x₂ => f (Sum.elim x₁ x₂)) ∈ SB (κ → k) := by
+  intro k _ _ κ κ' _ _ f hf
+  obtain ⟨hlc, hcs⟩ := hf
+  have hΦ := continuous_sumElim (k := k) (κ := κ) (κ' := κ')
+  refine ⟨fun x₁ => ?_, fun l => ?_⟩
+  · have he : Continuous (fun x₂ : κ' → k => (Sum.elim x₁ x₂ : κ ⊕ κ' → k)) :=
+      hΦ.comp (Continuous.prodMk continuous_const continuous_id)
+    have hli : Function.LeftInverse (fun z : κ ⊕ κ' → k => z ∘ Sum.inr) (fun x₂ : κ' → k => (Sum.elim x₁ x₂ : κ ⊕ κ' → k)) :=
+      fun x₂ => rfl
+    have hce : Topology.IsClosedEmbedding (fun x₂ : κ' → k => (Sum.elim x₁ x₂ : κ ⊕ κ' → k)) :=
+      hli.isClosedEmbedding (continuous_pi fun i => continuous_apply _) he
+    exact ⟨hlc.comp_continuous he, hcs.comp_isClosedEmbedding hce⟩
+  · set K := (fun z : κ ⊕ κ' → k => z ∘ Sum.inr) '' tsupport f
+    have hK : IsCompact K := hcs.isCompact.image (continuous_pi fun i => continuous_apply _)
+    have hloc : IsLocallyConstant (fun x₁ : κ → k => fun x₂ : κ' → k => f (Sum.elim x₁ x₂)) := by
+      rw [IsLocallyConstant.iff_eventually_eq _]
+      intro x₀
+      have hF : IsLocallyConstant (fun p : (κ → k) × (κ' → k) => f (Sum.elim p.1 p.2)) := hlc.comp_continuous hΦ
+      have h1 : ∀ y ∈ K, ∀ᶠ z : (κ → k) × (κ' → k) in nhds (x₀, y),
+          (fun x y => f (Sum.elim x y) = f (Sum.elim x₀ y)) z.1 z.2 := by
+        intro y _
+        have h0 := (IsLocallyConstant.iff_eventually_eq _).mp hF (x₀, y)
+        have hc : Continuous (fun z : (κ → k) × (κ' → k) => (x₀, z.2)) := continuous_const.prodMk continuous_snd
+        have h3 : ∀ᶠ z : (κ → k) × (κ' → k) in nhds (x₀, y), f (Sum.elim x₀ z.2) = f (Sum.elim x₀ y) :=
+          (hc.tendsto (x₀, y)).eventually h0
+        filter_upwards [h0, h3] with z hz hz'
+        exact hz.trans hz'.symm
+      have h2 := hK.eventually_forall_of_forall_eventually (P := fun x y => f (Sum.elim x y) = f (Sum.elim x₀ y)) h1
+      filter_upwards [h2] with x hx
+      funext y
+      by_cases hy : y ∈ K
+      · exact hx y hy
+      · have hz : ∀ x', f (Sum.elim x' y) = 0 := by
+          intro x'
+          by_contra hne
+          exact hy ⟨Sum.elim x' y, subset_tsupport f hne, rfl⟩
+        rw [hz, hz]
+    refine ⟨(hloc.comp l), ?_⟩
+    refine HasCompactSupport.intro (hcs.isCompact.image (f := fun z : κ ⊕ κ' → k => z ∘ Sum.inl) (continuous_pi fun i => continuous_apply _)) ?_
+    intro x hx
+    have : (fun x₂ : κ' → k => f (Sum.elim x x₂)) = 0 := by
+      funext x₂
+      by_contra hne
+      exact hx ⟨Sum.elim x x₂, subset_tsupport f hne, rfl⟩
+    simp only [this, map_zero]
+
+end GlobalTheory.SliceSB
+end
+
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_bruhat_partial_evaluation : ∀ (k : Type) [TopologicalSpace k] [T2Space k] (κ κ' : Type) [Fintype κ] [Fintype κ'], ∀ f ∈ SB (κ ⊕ κ' → k),
+    (∀ x₁ : κ → k, (fun x₂ : κ' → k => f (Sum.elim x₁ x₂)) ∈ SB (κ' → k)) ∧
+      ∀ l : ((κ' → k) → ℂ) →ₗ[ℂ] ℂ, (fun x₁ : κ → k => l fun x₂ => f (Sum.elim x₁ x₂)) ∈ SB (κ → k) := by
+  atlas_forward_decl GlobalTheory.SliceSB.slice_mem
+end
+
+section
+section
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+open MeasureTheory
+
+noncomputable section
+
+namespace GlobalTheory.DiagTens
+
+attribute [local instance] GlobalTheory.AdelicUnitaryTop.locallyCompact_finiteAdele
+  GlobalTheory.AdelicUnitaryTop.secondCountable_finiteAdele GlobalTheory.AdelicUnitaryTop.t2Space_finiteAdeleRing_of_numberField
+  GlobalTheory.DiagForm.measAf GlobalTheory.DiagForm.borelAf
+
+theorem finprod_indicator {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
+    (y : κ → FiniteAdeleRing (𝓞 F) F) :
+    (∏ᶠ w : Pl F, Set.indicator {x : κ → Fv F w | ∀ i, x i ∈ w.adicCompletionIntegers F} (1 : (κ → Fv F w) → ℂ)
+      (fun i => Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F w (y i))) =
+    (Set.univ.pi fun _ : κ => {x : FiniteAdeleRing (𝓞 F) F | ∀ w : Pl F, x w ∈ w.adicCompletionIntegers F}).indicator
+      (fun _ => (1 : ℂ)) y := by
+  by_cases h : ∀ i (w : Pl F), y i w ∈ w.adicCompletionIntegers F
+  · rw [Set.indicator_of_mem (show y ∈ (Set.univ.pi fun _ : κ => {x : FiniteAdeleRing (𝓞 F) F | ∀ w : Pl F, x w ∈ w.adicCompletionIntegers F}) from Set.mem_univ_pi.2 fun i => h i)]
+    refine finprod_eq_one_of_forall_eq_one fun w => ?_
+    rw [Set.indicator_of_mem (show (fun i => Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F w (y i)) ∈
+      {x : κ → Fv F w | ∀ i, x i ∈ w.adicCompletionIntegers F} from fun i => h i w)]
+    rfl
+  · rw [Set.indicator_of_notMem (show y ∉ (Set.univ.pi fun _ : κ => {x : FiniteAdeleRing (𝓞 F) F | ∀ w : Pl F, x w ∈ w.adicCompletionIntegers F}) from fun hy => h fun i => Set.mem_univ_pi.1 hy i)]
+    push_neg at h
+    obtain ⟨i₀, w₀, hw₀⟩ := h
+    have hfin : (Function.mulSupport fun w : Pl F => Set.indicator
+        {x : κ → Fv F w | ∀ i, x i ∈ w.adicCompletionIntegers F} (1 : (κ → Fv F w) → ℂ)
+        (fun i => Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F w (y i))).Finite := by
+      have hx : ∀ᶠ w in Filter.cofinite, ∀ i, (y i) w ∈ w.adicCompletionIntegers F := by
+        rw [Filter.eventually_all]
+        intro i
+        exact (y i).2
+      refine Set.Finite.subset (Filter.eventually_cofinite.1 hx) ?_
+      intro w hw hw'
+      apply hw
+      show Set.indicator _ _ _ = _
+      rw [Set.indicator_of_mem (show (fun i => Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F w (y i)) ∈
+        {x : κ → Fv F w | ∀ i, x i ∈ w.adicCompletionIntegers F} from hw')]
+      rfl
+    refine finprod_eq_zero _ w₀ ?_ hfin
+    exact Set.indicator_of_notMem (show (fun i => Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F w₀ (y i)) ∉
+      {x : κ → Fv F w₀ | ∀ i, x i ∈ w₀.adicCompletionIntegers F} from fun hy => hw₀ (hy i₀)) _
+
+theorem lDiag_box_tens_ne : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (v : Pl F), ∃ φ₀ ∈ SB (κ → Fv F v), boxFun φ₀ φ₀ ∈ SB (κ ⊕ κ → Fv F v) ∧
+    ∃ R R' : (κ → AF F) → ℂ, (∀ φ ∈ SB (κ → Fv F v), Rest (evFin F v) φ R ∧ Rest (evFin F v) φ R') ∧
+      GlobalTheory.DiagForm.lDiag F κ (boxFun (tens (evFin F v) φ₀ R) (tens (evFin F v) φ₀ R')) ≠ 0 := by
+  intro F _ _ κ _ v
+  classical
+  obtain ⟨hO, hK⟩ := PI.IntAdCpctOpenWork.main F
+  set O := {x : FiniteAdeleRing (𝓞 F) F | ∀ w : HeightOneSpectrum (𝓞 F), x w ∈ w.adicCompletionIntegers F} with hOdef
+  let b : ContDiffBump (0 : κ → mixedEmbedding.mixedSpace F) := ⟨1, 2, one_pos, one_lt_two⟩
+  have hc : HasCompactSupport (fun x => ((b x : ℝ) : ℂ)) := b.hasCompactSupport.comp_left Complex.ofReal_zero
+  have hd : ContDiff ℝ (⊤ : ℕ∞) (fun x => ((b x : ℝ) : ℂ)) := Complex.ofRealCLM.contDiff.comp b.contDiff
+  let f : SInf F κ := hc.toSchwartzMap hd
+  have hf : ∀ x, f x = ((b x : ℝ) : ℂ) := fun x => rfl
+  let φs : ∀ w : Pl F, (κ → Fv F w) → ℂ := fun w => Set.indicator {x | ∀ i, x i ∈ w.adicCompletionIntegers F} 1
+  have hstd : ∀ᶠ w in Filter.cofinite, φs w = Set.indicator {x | ∀ i, x i ∈ w.adicCompletionIntegers F} 1 :=
+    Filter.Eventually.of_forall fun _ => rfl
+  obtain ⟨r, hr, hrt⟩ := GlobalTheory.PureFactor.exists_rest_factor v f φs hstd
+  have hRest : ∀ φ ∈ SB (κ → Fv F v), Rest (evFin F v) φ r := fun φ hφ => ⟨hr, by
+    rw [hrt φ]
+    refine GlobalTheory.TensUniq.pure_mem_schA f _ (fun w => ?_) (GlobalTheory.PureFactor.update_eventually φs v φ hstd)
+    by_cases hw : w = v
+    · subst hw; rw [Function.update_self]; exact hφ
+    · rw [Function.update_of_ne hw]; exact GlobalTheory.StdVacuum.indicator_mem_SB w⟩
+  have h0 : φs v ∈ SB (κ → Fv F v) := GlobalTheory.StdVacuum.indicator_mem_SB v
+  refine ⟨φs v, h0, ?_, r, r, fun φ hφ => ⟨hRest φ hφ, hRest φ hφ⟩, ?_⟩
+  · have e : boxFun (φs v) (φs v) = Set.indicator {x : κ ⊕ κ → Fv F v | ∀ i, x i ∈ v.adicCompletionIntegers F} 1 := by
+      funext x
+      simp only [boxFun, φs, Set.indicator_apply, Set.mem_setOf_eq, Function.comp_apply, Sum.forall, Pi.one_apply]
+      split_ifs <;> simp_all
+    rw [e]; exact GlobalTheory.StdVacuum.indicator_mem_SB v
+  · set V : Set (GlobalTheory.DiagForm.Vf F κ) := Set.univ.pi fun _ => O with hVdef
+    set g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ := V.indicator fun _ => (1 : ℂ) with hgdef
+    have hΦ : tens (evFin F v) (φs v) r = pureA F f g := by
+      rw [hrt, Function.update_eq_self]
+      funext x
+      show f _ * _ = f _ * _
+      congr 1
+      exact finprod_indicator _
+    have hΦs : tens (evFin F v) (φs v) r ∈ schA F κ := (hRest _ h0).2
+    have hbox := GlobalTheory.SchwartzBox.boxFun_mem_schA F κ κ _ hΦs _ hΦs
+    have hint := GlobalTheory.DiagForm.integrable_resD hbox
+    have hres : GlobalTheory.DiagForm.resD F κ (boxFun (tens (evFin F v) (φs v) r) (tens (evFin F v) (φs v) r)) =
+        fun p => ((b (GlobalTheory.DiagForm.eI F κ p.1) * b (GlobalTheory.DiagForm.eI F κ p.1) : ℝ) : ℂ) * (g p.2 * g p.2) := by
+      rw [hΦ]
+      funext p
+      show pureA F f g _ * pureA F f g _ = _
+      have e1 : (fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F ((GlobalTheory.DiagForm.glue p) i).1) =
+          GlobalTheory.DiagForm.eI F κ p.1 := by
+        funext i; simp [GlobalTheory.DiagForm.glue]
+      have e2 : (fun i => ((GlobalTheory.DiagForm.glue p) i).2) = p.2 := rfl
+      simp only [pureA, Function.comp_def, Sum.elim_inl, Sum.elim_inr]
+      rw [e1, e2, hf]
+      push_cast
+      ring
+    rw [GlobalTheory.DiagForm.lDiag, LinearMap.comp_apply, GlobalTheory.DiagForm.Lext_apply _ hint, hres, GlobalTheory.DiagForm.mu,
+      integral_prod_mul (fun u => ((b (GlobalTheory.DiagForm.eI F κ u) * b (GlobalTheory.DiagForm.eI F κ u) : ℝ) : ℂ))
+        (fun y => g y * g y)]
+    have h0O : (0 : FiniteAdeleRing (𝓞 F) F) ∈ O := fun w => (w.adicCompletionIntegers F).zero_mem
+    have hVo : IsOpen V := isOpen_set_pi Set.finite_univ fun _ _ => hO
+    have hVc : IsCompact V := isCompact_univ_pi fun _ => hK
+    have hgg : (fun y => g y * g y) = V.indicator fun _ => (1 : ℂ) := by
+      funext y
+      simp only [hgdef, Set.indicator_apply]
+      split_ifs <;> simp
+    have hc2 : (∫ y, g y * g y ∂(Measure.addHaar : Measure (GlobalTheory.DiagForm.Vf F κ))) ≠ 0 := by
+      rw [hgg, integral_indicator_const _ hVo.measurableSet]
+      have hpos : 0 < (Measure.addHaar : Measure (GlobalTheory.DiagForm.Vf F κ)) V := hVo.measure_pos _ ⟨0, fun i _ => h0O⟩
+      have hfin : (Measure.addHaar : Measure (GlobalTheory.DiagForm.Vf F κ)) V < ⊤ := hVc.measure_lt_top
+      have : 0 < (Measure.addHaar : Measure (GlobalTheory.DiagForm.Vf F κ)).real V := ENNReal.toReal_pos hpos.ne' hfin.ne
+      simpa using this.ne'
+    have hc1 : (∫ u, ((b (GlobalTheory.DiagForm.eI F κ u) * b (GlobalTheory.DiagForm.eI F κ u) : ℝ) : ℂ)
+        ∂(volume : Measure (GlobalTheory.DiagForm.Vi F κ))) ≠ 0 := by
+      rw [integral_complex_ofReal]
+      have hcs1 : HasCompactSupport fun u : GlobalTheory.DiagForm.Vi F κ => b (GlobalTheory.DiagForm.eI F κ u) :=
+        b.hasCompactSupport.comp_homeomorph (GlobalTheory.DiagForm.eI F κ).toHomeomorph
+      have hcs : HasCompactSupport fun u : GlobalTheory.DiagForm.Vi F κ =>
+          b (GlobalTheory.DiagForm.eI F κ u) * b (GlobalTheory.DiagForm.eI F κ u) := hcs1.mul_right
+      have hcont : Continuous fun u : GlobalTheory.DiagForm.Vi F κ =>
+          b (GlobalTheory.DiagForm.eI F κ u) * b (GlobalTheory.DiagForm.eI F κ u) :=
+        (b.continuous.comp (GlobalTheory.DiagForm.eI F κ).continuous).mul (b.continuous.comp (GlobalTheory.DiagForm.eI F κ).continuous)
+      have hpos := hcont.integral_pos_of_hasCompactSupport_nonneg_nonzero
+        (μ := (volume : Measure (GlobalTheory.DiagForm.Vi F κ))) (x := 0) hcs (fun u => mul_nonneg b.nonneg b.nonneg) (by
+          simp only [map_zero]
+          rw [b.one_of_mem_closedBall (Metric.mem_closedBall_self zero_le_one)]
+          norm_num)
+      exact_mod_cast hpos.ne'
+    exact mul_ne_zero hc1 hc2
+
+end GlobalTheory.DiagTens
+end
+end
+
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.box_product_diagonal_functional_ne_zero : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (v : Pl F), ∃ φ₀ ∈ SB (κ → Fv F v), boxFun φ₀ φ₀ ∈ SB (κ ⊕ κ → Fv F v) ∧
+    ∃ R R' : (κ → AF F) → ℂ, (∀ φ ∈ SB (κ → Fv F v), Rest (evFin F v) φ R ∧ Rest (evFin F v) φ R') ∧
+      GlobalTheory.DiagForm.lDiag F κ (boxFun (tens (evFin F v) φ₀ R) (tens (evFin F v) φ₀ R')) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.DiagTens.lDiag_box_tens_ne
+end
+
+section
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+open MeasureTheory
+
+noncomputable section
+namespace GlobalTheory.HaarSB
+
+section General
+
+variable (G : Type) [AddCommGroup G] [TopologicalSpace G] [IsTopologicalAddGroup G] [T2Space G]
+  [LocallyCompactSpace G]
+
+def measG : MeasurableSpace G := borel G
+
+attribute [local instance] measG
+
+instance borelG : BorelSpace G := ⟨rfl⟩
+
+def intSub : Submodule ℂ (G → ℂ) where
+  carrier := {h | Integrable h (Measure.addHaar : Measure G)}
+  zero_mem' := integrable_zero _ _ _
+  add_mem' := Integrable.add
+  smul_mem' c _ h := h.smul c
+
+def I0 : intSub G →ₗ[ℂ] ℂ where
+  toFun h := ∫ x, (h : G → ℂ) x ∂(Measure.addHaar : Measure G)
+  map_add' h h' := integral_add h.2 h'.2
+  map_smul' c h := integral_smul c (h : G → ℂ)
+
+def Lext : (G → ℂ) →ₗ[ℂ] ℂ := (LinearMap.exists_extend (I0 G)).choose
+
+variable {G}
+
+theorem Lext_apply (h : G → ℂ) (hh : Integrable h (Measure.addHaar : Measure G)) :
+    Lext G h = ∫ x, h x ∂(Measure.addHaar : Measure G) :=
+  LinearMap.congr_fun (LinearMap.exists_extend (I0 G)).choose_spec ⟨h, hh⟩
+
+theorem integrable_of_SB {f : G → ℂ} (hf : f ∈ SB G) : Integrable f (Measure.addHaar : Measure G) :=
+  hf.1.continuous.integrable_of_hasCompactSupport hf.2
+
+theorem Lext_translate {f : G → ℂ} (hf : f ∈ SB G) (a : G) :
+    Lext G (fun x => f (x + a)) = Lext G f := by
+  have hi := integrable_of_SB hf
+  rw [Lext_apply _ (hi.comp_add_right a), Lext_apply _ hi]
+  exact integral_add_right_eq_self _ _
+
+end General
+
+theorem exists_invariant_form (G : Type) [AddCommGroup G] [TopologicalSpace G] [IsTopologicalAddGroup G]
+    [T2Space G] (K : Set G) (hKc : IsCompact K) (hKo : IsOpen K) (h0 : (0 : G) ∈ K) :
+    ∃ Λ : (G → ℂ) →ₗ[ℂ] ℂ, (∀ f ∈ SB G, ∀ a, Λ (fun Y => f (Y + a)) = Λ f) ∧ ∃ f ∈ SB G, Λ f ≠ 0 := by
+  haveI : LocallyCompactSpace G := hKc.locallyCompactSpace_of_mem_nhds_of_addGroup (hKo.mem_nhds h0)
+  letI := measG G
+  refine ⟨Lext G, fun f hf a => Lext_translate hf a, K.indicator fun _ => 1, ?_, ?_⟩
+  · exact ⟨(LocallyConstant.indicator (1 : LocallyConstant G ℂ) ⟨hKc.isClosed, hKo⟩).isLocallyConstant,
+      HasCompactSupport.intro hKc fun z hz => Set.indicator_of_notMem hz _⟩
+  · have hi : Integrable (K.indicator fun _ => (1 : ℂ)) (Measure.addHaar : Measure G) :=
+      (integrable_indicator_iff hKo.measurableSet).2 (integrableOn_const hKc.measure_lt_top.ne)
+    rw [Lext_apply _ hi, integral_indicator_const _ hKo.measurableSet]
+    have hpos : 0 < (Measure.addHaar : Measure G) K := hKo.measure_pos _ ⟨0, h0⟩
+    have : 0 < (Measure.addHaar : Measure G).real K := ENNReal.toReal_pos hpos.ne' hKc.measure_lt_top.ne
+    simpa using this.ne'
+
+theorem exists_invariant_form_matrix : ∀ (F : Type) [Field F] [NumberField F] (v : Pl F) (n d : ℕ), ∃ Λ : (Matrix (Fin n) (Fin d) (Fv F v) → ℂ) →ₗ[ℂ] ℂ,
+    (∀ f ∈ SB (Matrix (Fin n) (Fin d) (Fv F v)), ∀ a, Λ (fun Y => f (Y + a)) = Λ f) ∧
+      ∃ f ∈ SB (Matrix (Fin n) (Fin d) (Fv F v)), Λ f ≠ 0 := by
+  intro F _ _ v n d
+  set O : Set (Fv F v) := (v.adicCompletionIntegers F : Set (Fv F v))
+  have hO : IsOpen O := Valued.isOpen_valuationSubring _
+  have hOc : IsCompact O := PI.IntAdCpctOpenWork.isCompact_adicCompletionIntegers v
+  have h0 : (0 : Fv F v) ∈ O := (v.adicCompletionIntegers F).zero_mem
+  set K : Set (Matrix (Fin n) (Fin d) (Fv F v)) := Set.univ.pi fun _ => Set.univ.pi fun _ => O
+  exact exists_invariant_form _ K
+    (isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => hOc)
+    (isOpen_set_pi Set.finite_univ fun _ _ => isOpen_set_pi Set.finite_univ fun _ _ => hO)
+    (fun _ _ _ _ => h0)
+
+end GlobalTheory.HaarSB
+end
+end
+
+section
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_translation_invariant_functional : ∀ (F : Type) [Field F] [NumberField F] (v : Pl F) (n d : ℕ), ∃ Λ : (Matrix (Fin n) (Fin d) (Fv F v) → ℂ) →ₗ[ℂ] ℂ,
+    (∀ f ∈ SB (Matrix (Fin n) (Fin d) (Fv F v)), ∀ a, Λ (fun Y => f (Y + a)) = Λ f) ∧
+      ∃ f ∈ SB (Matrix (Fin n) (Fin d) (Fv F v)), Λ f ≠ 0 := by
+  first | exact @GlobalTheory.HaarSB.exists_invariant_form_matrix | exact GlobalTheory.HaarSB.exists_invariant_form_matrix | (intros; apply GlobalTheory.HaarSB.exists_invariant_form_matrix <;> assumption)
+end
+
+section
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_character_norm_one_unit : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (χ : Chr F E) (v : Pl F) (τ : E →ₐ[F] Fv F v) (z : (AE F E)ˣ), At (evFin F v) ((z : AE F E) - 1) →
+    piW (τ.comp σ) (z : AE F E) = 1 → chrW χ τ (Units.map (piW τ).toMonoidHom z) = Circle.toUnits (χ z) := by
+  first | exact @GlobalTheory.ChrLocal.chrW_piW_eq | exact GlobalTheory.ChrLocal.chrW_piW_eq | (intros; apply GlobalTheory.ChrLocal.chrW_piW_eq <;> assumption)
+end
+
+section
+section
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.NormLocSplit
+
+theorem norm_at_split : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (v : Pl F) (τ : E →ₐ[F] Fv F v) (z : AE F E), At (evFin F v) (z - 1) →
+    At (evFin F v) (Algebra.norm (AF F) z - 1) ∧ evFin F v (Algebra.norm (AF F) z) = piW τ z * piW (τ.comp σ) z := by
+  intro F E _ _ _ _ _ σ h v τ z hz
+  have hN : algebraMap (AF F) (AE F E) (Algebra.norm (AF F) z) = z * cA σ z :=
+    GlobalTheory.Doubling.algebraMap_norm_eq h z
+  have hinj : Function.Injective (algebraMap (AF F) (AE F E)) :=
+    Algebra.TensorProduct.includeLeft_injective (S := AF F) (algebraMap F E).injective
+  refine ⟨fun u hu => hinj ?_, ?_⟩
+  · have h1 : u • (z - 1) = 0 := hz u hu
+    have h2 : u • (cA σ z - 1) = 0 := by
+      have := congrArg (cA σ) h1
+      rwa [map_smul, map_sub, map_one, map_zero] at this
+    rw [smul_eq_mul, map_mul, map_sub, map_one, hN, map_zero, ← Algebra.smul_def,
+      show z * cA σ z - 1 = (z - 1) * cA σ z + (cA σ z - 1) by ring, smul_add, ← smul_mul_assoc, h1, h2,
+      zero_mul, add_zero]
+  · have h3 := congrArg (piW τ) hN
+    have hc : piW τ (cA σ z) = piW (τ.comp σ) z := by
+      change splitProj τ (compFin F E v (sigR (AF F) σ z)) = splitProj (τ.comp σ) (compFin F E v z)
+      have hs : ∀ y : AE F E, compFin F E v (sigR (AF F) σ y) = sigR (Fv F v) σ (compFin F E v y) := by
+        intro y
+        induction y using TensorProduct.induction_on with
+        | zero => simp
+        | tmul a x => rfl
+        | add x y hx hy => simp only [map_add, hx, hy]
+      rw [hs, splitProj_comp]
+    have ha : piW τ (algebraMap (AF F) (AE F E) (Algebra.norm (AF F) z)) = evFin F v (Algebra.norm (AF F) z) := by
+      change splitProj τ (compFin F E v (Algebra.norm (AF F) z ⊗ₜ[F] 1)) = _
+      simp [compFin]
+    rw [map_mul, hc, ha] at h3
+    exact h3
+
+end GlobalTheory.NormLocSplit
+end
+
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
+open scoped Matrix GlobalTheory.VacAny
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_norm_unramified_factorization : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (v : Pl F) (τ : E →ₐ[F] Fv F v) (z : AE F E), At (evFin F v) (z - 1) →
+    At (evFin F v) (Algebra.norm (AF F) z - 1) ∧ evFin F v (Algebra.norm (AF F) z) = piW τ z * piW (τ.comp σ) z := by
+  atlas_forward_decl GlobalTheory.NormLocSplit.norm_at_split
+end
+
+section
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LatVac
 open scoped Matrix GlobalTheory.VacAny
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
@@ -485,4 +1005,5 @@ theorem char_eq_local : GlobalTheory.FunPr.Hypotheses₂ → ∀ (F E : Type) [F
 
 end GlobalTheory.MixedForm
 
+end
 end

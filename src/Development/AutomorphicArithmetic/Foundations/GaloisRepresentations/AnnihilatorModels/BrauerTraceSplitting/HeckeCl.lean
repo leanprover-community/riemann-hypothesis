@@ -1,7 +1,10 @@
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.BrauerTraceSplitting.GenFEt
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.BrauerTraceSplitting.TrTot
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.BrauerTraceSplitting.BcSplits
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.BrauerTraceSplitting.TrPush
+import Mathlib
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.HeckeCl
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PBcSplits
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PSplitsBasic
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PSplitsPts
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PPtsOfSplits
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PIsoPts
 import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.DescIsoOfPb
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PHopSpec
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PEtGood
@@ -27,6 +30,136 @@ import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdic
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PMultiSplit
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PFEtInj
 
+section
+set_option backward.isDefEq.respectTransparency false
+
+open CategoryTheory Limits AlgebraicGeometry UpperTheory.Gal.G3
+open UpperTheory.Gal.Int.Geo (FEt gen)
+
+namespace UpperTheory.Gal.crystallineComparison.Br
+
+private theorem range_subset_basicOpen (l : ℕ) {k : Type} [Field k] (hl : (l : k) ≠ 0) {Y P : Scheme.{0}} (a : P ⟶ Y)
+    (c : P ⟶ sp k) : Set.range a ⊆ (Y.basicOpen (l : Γ(Y, ⊤)) : Set Y) := by
+  rintro _ ⟨x, rfl⟩
+  have h1 : IsUnit ((l : Γ(sp k, ⊤))) := by
+    have := (IsUnit.mk0 _ hl).map (Scheme.ΓSpecIso (CommRingCat.of k)).inv.hom
+    simpa using this
+  have h2 : IsUnit ((l : Γ(P, ⊤))) := by
+    have := h1.map (c.app ⊤).hom
+    rwa [map_natCast] at this
+  have hu : IsUnit (a.app ⊤ (l : Γ(Y, ⊤))) := by
+    rw [map_natCast]
+    exact h2
+  have hx : x ∈ a ⁻¹ᵁ Y.basicOpen (l : Γ(Y, ⊤)) := by
+    rw [Scheme.preimage_basicOpen, Scheme.basicOpen_of_isUnit _ hu]
+    trivial
+  exact hx
+
+theorem genFEt : GenFEt := by
+  intro l O k _ _ _ hl Y p T
+  have sY := (IsPullback.of_hasPullback p (gen O k)).flip
+  have sZ := (IsPullback.of_hasPullback (T.p ≫ p) (gen O k)).flip
+  have hsq : IsPullback (pullback.fst (T.p ≫ p) (gen O k)) (bcMap (gen O k) (p := p) T.p rfl)
+      T.p (pullback.fst p (gen O k)) := by
+    have h := IsPullback.of_right (h₁₁ := bcMap (gen O k) (p := p) T.p rfl)
+      (h₁₂ := pullback.snd p (gen O k)) (v₁₁ := pullback.fst (T.p ≫ p) (gen O k))
+      (v₁₂ := pullback.fst p (gen O k)) (h₂₁ := T.p) (h₂₂ := p)
+      (by rw [bcMap_snd]; exact sZ) (bcMap_fst _ _ _) sY
+    exact h.flip
+  show FEt (bcMap (gen O k) (p := p) T.p rfl) T.d
+  refine ⟨?_, ?_, ?_⟩
+  · exact MorphismProperty.of_isPullback (P := @IsFinite) hsq T.fin
+  · have hr : Set.range (pullback.fst p (gen O k)) ⊆ Set.range (Y.basicOpen (l : Γ(Y, ⊤))).ι := by
+      rw [Scheme.Opens.range_ι]
+      exact range_subset_basicOpen l hl _ (pullback.snd p (gen O k))
+    let φ := IsOpenImmersion.lift (Y.basicOpen (l : Γ(Y, ⊤))).ι (pullback.fst p (gen O k)) hr
+    have hφ : φ ≫ (Y.basicOpen (l : Γ(Y, ⊤))).ι = pullback.fst p (gen O k) :=
+      IsOpenImmersion.lift_fac _ _ _
+    have t := (isPullback_morphismRestrict T.p (Y.basicOpen (l : Γ(Y, ⊤)))).flip
+    have w : pullback.fst (T.p ≫ p) (gen O k) ≫ T.p =
+        (bcMap (gen O k) (p := p) T.p rfl ≫ φ) ≫ (Y.basicOpen (l : Γ(Y, ⊤))).ι := by
+      rw [Category.assoc, hφ]
+      exact hsq.w
+    have sq2 : IsPullback (t.lift _ _ w) (bcMap (gen O k) (p := p) T.p rfl)
+        (T.p ∣_ Y.basicOpen (l : Γ(Y, ⊤))) φ := by
+      refine IsPullback.of_right (h₁₂ := (T.p ⁻¹ᵁ Y.basicOpen (l : Γ(Y, ⊤))).ι)
+        (h₂₂ := (Y.basicOpen (l : Γ(Y, ⊤))).ι) (v₁₃ := T.p) ?_ (t.lift_snd _ _ w) t
+      rw [t.lift_fst, hφ]
+      exact hsq
+    exact MorphismProperty.of_isPullback (P := @Etale) sq2 T.et
+  · intro K _ _ x
+    have hlK : (l : K) ≠ 0 := by
+      intro h
+      apply hl
+      apply (Spec.preimage (x ≫ pullback.snd p (gen O k))).hom.injective
+      rw [map_natCast, map_zero]
+      exact h
+    rw [← T.deg K hlK (x ≫ pullback.fst p (gen O k))]
+    exact Nat.card_congr
+      { toFun := fun y => ⟨y.1 ≫ pullback.fst (T.p ≫ p) (gen O k), by
+          rw [Category.assoc, hsq.w, ← Category.assoc, y.2]⟩
+        invFun := fun z => ⟨hsq.lift z.1 x z.2, hsq.lift_snd _ _ _⟩
+        left_inv := fun y => Subtype.ext (hsq.hom_ext (hsq.lift_fst _ _ _)
+          (by rw [hsq.lift_snd]; exact y.2.symm))
+        right_inv := fun z => Subtype.ext (hsq.lift_fst _ _ _) }
+
+end UpperTheory.Gal.crystallineComparison.Br
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC GlobalTheory.GalV CrystallineSemistableComparison UpperTheory.Ru.crystallineComparison UpperTheory.Gal.G3
+
+namespace UpperTheory.Gal.crystallineComparison.Br
+
+theorem trTot : TrTot := by
+  intro l _ B Z Y p q s tr htr W r c hc J _ σ hσ hsp x
+  change Htot l (sch.obj Y) at x
+  change pullTot l (sch.map c) (DirectSum.lmap tr x) = ∑ j, pullTot l (sch.map (σ j)) x
+  ext n
+  rw [DFinsupp.finset_sum_apply]
+  simp only [pullTot, DirectSum.lmap_apply]
+  exact htr n W r c hc J σ hσ hsp (x n)
+
+end UpperTheory.Gal.crystallineComparison.Br
+end
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC GlobalTheory.GalV UpperTheory.Gal.G3
+
+private theorem bcSplits : BcSplits :=
+  pBcSplits (pSplitsBasic (pSplitsPts pIsoPts) pPtsOfSplits)
+
+theorem UpperTheory.Gal.crystallineComparison.Br.trBc :
+    UpperTheory.Gal.crystallineComparison.Br.TrBc := by
+  intro B B' R _ T g Z Y p q s _ _ hs tr htr W r c hc J _ σ hσ hsp x
+  exact htr _ (pullback.snd r g) (UpperTheory.Gal.G3.bcMap g c hc) (bcMap_snd g c hc) J
+    (fun j ↦ UpperTheory.Gal.G3.bcMap g (σ j) ((hσ j).trans rfl)) (fun j ↦ bcMap_snd g (σ j) _)
+    ((bcSplits g p q r s hs c hc J σ hσ).2.2 hsp) x
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC GlobalTheory.GalV CrystallineSemistableComparison UpperTheory.Ru.crystallineComparison UpperTheory.Gal.G3
+
+namespace UpperTheory.Gal.crystallineComparison.Br
+
+theorem trPush : TrPush := by
+  intro l _ B Z Y p q s hs n tr htr W x m σ hσ hiso z
+  exact htr W (x ≫ p) x rfl (Fin m) σ (fun j => by rw [← hs, ← Category.assoc, hσ j]) ⟨hσ, hiso⟩ z
+
+end UpperTheory.Gal.crystallineComparison.Br
+end
+end
+
+section
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -127,3 +260,5 @@ theorem heckeCl : HeckeCl := by
   exact lmap_pull _ trn j v
 
 end UpperTheory.Gal.crystallineComparison.Br
+end
+end

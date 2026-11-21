@@ -3,12 +3,71 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotrop
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinHasTemperateGrowth
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchHeisenbergDerivativesExistStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchActionReadingsCompatibleStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralLatticeLAdicCongruence
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdaptedPlaneModelRestrictionCompatible
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGaussianDerivative
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsProductSchwartzGlue
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunctionOnSumCoordsMemAdelicSchwartzSpace
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsArchimedeanPairNegativeSymplecticPairing
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LagrangianEvaluationTranslation
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LagrangianEvaluationGauss
+
+section
+open scoped TensorProduct Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open GlobalTheory.ThK.EvAt0
+open GlobalTheory.ThK.EvAt0.PolD
+
+noncomputable section
+open scoped Classical
+
+namespace GlobalTheory.ThK.EvAt0.PolD
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem at_mul_right {n d d₁ : ℕ} {u : Matrix (Fin n) (Fin d₁) (AE F E)} (hu : At (evI F) u)
+    (A : Matrix (Fin d₁) (Fin d) (AE F E)) : At (evI F) (u * A) := by
+  intro c hc
+  rw [← Matrix.smul_mul, hu c hc, Matrix.zero_mul]
+
+end GlobalTheory.ThK.EvAt0.PolD
+
+namespace GlobalTheory.ThK.EvAt0.PolD
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+end GlobalTheory.ThK.EvAt0.PolD
+
+namespace GlobalTheory.ThK.EvAt0.PolD
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+end GlobalTheory.ThK.EvAt0.PolD
+end
+end
+
+section
+open scoped TensorProduct Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+open GlobalTheory.ThK.EvAt0
+open GlobalTheory.ThK.EvAt0.PolD
+
+namespace GlobalTheory.ThK.EvAt0.SchwartzProd
+
+open scoped Classical in
+
+theorem exists_prod : ∀ {F : Type} [Field F] [NumberField F] {n d d₁ : ℕ} (h : d = d₁ + 2) (G : SInf F (Fin n × Fin 2))
+    (f : SInf F (Fin n × Fin d₁)), ∃ g : SInf F (Fin n × Fin d), ∀ y,
+      g y = G (fun p => y ((idx h).symm (Sum.inr p))) * f (fun q => y ((idx h).symm (Sum.inl q))) := by
+  intro F _ _ n d d₁ h G f
+  obtain ⟨b, hb⟩ := GlobalTheory.SchwartzBox.exists_schwartz_box f G
+  refine ⟨SchwartzMap.compCLMOfContinuousLinearEquiv ℂ
+    (ContinuousLinearEquiv.piCongrLeft ℝ (fun _ : Fin n × Fin d => mixedEmbedding.mixedSpace F)
+      (idx h).symm).symm b, fun y => ?_⟩
+  rw [SchwartzMap.compCLMOfContinuousLinearEquiv_apply, Function.comp_apply, hb, mul_comm]
+  rfl
+
+end GlobalTheory.ThK.EvAt0.SchwartzProd
+end
+
+section
 open scoped TensorProduct Matrix
 open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
@@ -88,3 +147,5 @@ theorem gauss_mem {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (M : Model σ X W) 
 end Gen
 
 end GlobalTheory.ThK.EvAt0.PolEv
+end
+end

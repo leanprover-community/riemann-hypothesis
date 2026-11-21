@@ -6,9 +6,170 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Polarization
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsNoetherianRingAdicCompletionOfNoetherian
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StalkGenerizationGermCompat
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChevalleyExistsLeSupMaximalIdealPowOfAntitoneStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSpanSupPowOfForallCompleteDvrLocalTest
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GermMemIdealSheafStalkOfClosedFibreUnivClosed
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletionIsDomainAndIsIntegrallyClosed
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DvdOfForallCompleteDvrDominating
 
+section
+open AlgebraicGeometry CategoryTheory IsLocalRing ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef GlobalTheory.Poinc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dvd_of_forall_complete_dvr_dominating : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R] [IsIntegrallyClosed R] [CharZero R] (f g : R), g ≠ 0 → (∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V], IsAdicComplete (maximalIdeal V) V → ∀ ρ : R →+* V, Function.Injective ρ → IsLocalHom ρ → ρ g ∣ ρ f) → g ∣ f := by
+  first | exact @GlobalTheory.Poinc.dvd_of_forall_complete_dvr | exact GlobalTheory.Poinc.dvd_of_forall_complete_dvr | (intros; apply GlobalTheory.Poinc.dvd_of_forall_complete_dvr <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory IsLocalRing ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef GlobalTheory.Poinc
+
+namespace GlobalTheory.Poinc
+
+theorem dvd_of_forall_mem_span_sup_pow {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
+    {x y : V} (hx : x ≠ 0) (h : ∀ e, y ∈ Ideal.span {x} ⊔ maximalIdeal V ^ e) : x ∣ y := by
+  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible V
+  obtain ⟨k, hk⟩ := IsDiscreteValuationRing.associated_pow_irreducible hx hϖ
+  have hs : Ideal.span {x} = maximalIdeal V ^ k := by
+    rw [hϖ.maximalIdeal_eq, Ideal.span_singleton_pow]
+    exact Ideal.span_singleton_eq_span_singleton.mpr hk
+  have := h k
+  rw [← hs, sup_idem] at this
+  exact Ideal.mem_span_singleton.mp this
+
+theorem mem_span_sup_pow_of_forall_complete_dvr : ∀ (O : Type) [CommRing O] [IsDomain O] [IsLocalRing O] [IsIntegrallyClosed O] [CharZero O] [Algebra.EssFiniteType ℤ O] (g : O) (b : ℕ → O), g ≠ 0 → (∀ m n, m ≤ n → b m - b n ∈ maximalIdeal O ^ m) → (∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V], IsAdicComplete (maximalIdeal V) V → ∀ ρ : O →+* V, Function.Injective ρ → IsLocalHom ρ → ∀ e, ρ (b e) ∈ Ideal.span {ρ g} ⊔ maximalIdeal V ^ e) → ∀ n, b n ∈ Ideal.span {g} ⊔ maximalIdeal O ^ n := by
+  intro O _ _ _ _ _ _ g b hg hb hV n
+  haveI : IsNoetherianRing O := Algebra.EssFiniteType.isNoetherianRing ℤ O
+  set m := maximalIdeal O with hm
+  let R := AdicCompletion m O
+  let ι : O →+* R := algebraMap O R
+  haveI : IsNoetherianRing R := GlobalTheory.AdicNoeth.isNoetherianRing_adicCompletion O m
+  obtain ⟨hdom, hic⟩ := GlobalTheory.AnalyticNormality.completion_isDomain_and_isIntegrallyClosed O
+  have fg : m.FG := m.fg_of_isNoetherianRing
+  haveI : Module.Flat O R := AdicCompletion.flat_of_isNoetherian m
+  haveI : IsLocalHom (algebraMap O R) := AdicCompletion.algebraMap_isLocalHom_of_fg fg
+  haveI : Module.FaithfullyFlat O R := Module.FaithfullyFlat.of_flat_of_isLocalHom
+  have hinj : Function.Injective ι := FaithfulSMul.algebraMap_injective O R
+  haveI : CharZero R := charZero_of_injective_ringHom hinj
+  have hmR : maximalIdeal R = m.map ι := AdicCompletion.maximalIdeal_eq_map
+
+  have hc : IsAdicComplete (m.map ι) R := AdicCompletion.isAdicComplete_self m fg
+  obtain ⟨F, hF⟩ := IsPrecomplete.prec hc.toIsPrecomplete (f := fun k => ι (b k)) (by
+    intro k l hkl
+    rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, ← map_sub, ← Ideal.map_pow]
+    exact Ideal.mem_map_of_mem _ (hb k l hkl))
+  have hF' : ∀ k, ι (b k) - F ∈ maximalIdeal R ^ k := by
+    intro k
+    have := hF k
+    rwa [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, ← hmR] at this
+
+  have hgR : ι g ≠ 0 := fun h => hg (hinj (by rw [h, map_zero]))
+  have hdvd : ι g ∣ F := by
+    refine GlobalTheory.T.dvd_of_forall_complete_dvr_dominating R F (ι g) hgR ?_
+    intro V _ _ _ hVc ρ' hρ' _
+    let ρ : O →+* V := ρ'.comp ι
+    have hρ : Function.Injective ρ := hρ'.comp hinj
+    haveI : IsLocalHom ρ := inferInstance
+    haveI : CharZero V := charZero_of_injective_ringHom hρ
+    have hgV : ρ' (ι g) ≠ 0 := fun h => hgR (hρ' (by rw [h, map_zero]))
+    refine dvd_of_forall_mem_span_sup_pow hgV fun e => ?_
+    have h1 : ρ (b e) ∈ Ideal.span {ρ g} ⊔ maximalIdeal V ^ e := hV V hVc ρ hρ inferInstance e
+    have hmap : ∀ x ∈ maximalIdeal R, ρ' x ∈ maximalIdeal V := by
+      intro x hx
+      rw [mem_maximalIdeal, mem_nonunits_iff] at hx ⊢
+      exact fun h => hx (isUnit_of_map_unit ρ' x h)
+    have h2 : ρ' (ι (b e) - F) ∈ maximalIdeal V ^ e := by
+      have hle : (maximalIdeal R ^ e).map ρ' ≤ maximalIdeal V ^ e := by
+        rw [Ideal.map_pow]
+        exact Ideal.pow_right_mono (Ideal.map_le_iff_le_comap.mpr hmap) e
+      exact hle (Ideal.mem_map_of_mem _ (hF' e))
+    have : ρ' F = ρ (b e) - ρ' (ι (b e) - F) := by
+      simp [ρ, map_sub]
+    rw [this]
+    exact Ideal.sub_mem _ h1 (Ideal.mem_sup_right h2)
+
+  have hmem : ι (b n) ∈ (Ideal.span {g} ⊔ m ^ n).map ι := by
+    rw [Ideal.map_sup, Ideal.map_span, Set.image_singleton, Ideal.map_pow, ← hmR]
+    have h3 : F ∈ Ideal.span {ι g} := Ideal.mem_span_singleton.mpr hdvd
+    have : ι (b n) = F + (ι (b n) - F) := by ring
+    rw [this]
+    exact Ideal.add_mem _ (Ideal.mem_sup_left h3) (Ideal.mem_sup_right (hF' n))
+  rwa [← Ideal.mem_comap, Ideal.comap_map_eq_self_of_faithfullyFlat] at hmem
+
+end GlobalTheory.Poinc
+end
+
+open AlgebraicGeometry CategoryTheory IsLocalRing ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef GlobalTheory.Poinc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_span_sup_pow_of_forall_complete_dvr_local_test : ∀ (O : Type) [CommRing O] [IsDomain O] [IsLocalRing O] [IsIntegrallyClosed O] [CharZero O] [Algebra.EssFiniteType ℤ O] (g : O) (b : ℕ → O), g ≠ 0 → (∀ m n, m ≤ n → b m - b n ∈ maximalIdeal O ^ m) → (∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V], IsAdicComplete (maximalIdeal V) V → ∀ ρ : O →+* V, Function.Injective ρ → IsLocalHom ρ → ∀ e, ρ (b e) ∈ Ideal.span {ρ g} ⊔ maximalIdeal V ^ e) → ∀ n, b n ∈ Ideal.span {g} ⊔ maximalIdeal O ^ n := by
+  atlas_forward_decl GlobalTheory.Poinc.mem_span_sup_pow_of_forall_complete_dvr
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory IsLocalRing ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef GlobalTheory.Poinc
+
+namespace GlobalTheory.SpreadIdeal
+
+theorem exists_open_nhds_mem_stalkId (P : Scheme.{0}) (I : P.IdealSheafData) (s : Γ(P, ⊤)) (v : P)
+    (hv : (P.presheaf.germ ⊤ v trivial).hom s ∈ FinalTheorems.stalkId I v) :
+    ∃ O : P.Opens, v ∈ O ∧ ∀ y ∈ O, (P.presheaf.germ ⊤ y trivial).hom s ∈ FinalTheorems.stalkId I y := by
+  obtain ⟨U, hU, hvU, -⟩ := exists_isAffineOpen_mem_and_subset (x := v) (U := ⊤) trivial
+  letI : Algebra Γ(P, U) (P.presheaf.stalk v) := P.presheaf.algebra_section_stalk ⟨v, hvU⟩
+  haveI hlocv := hU.isLocalization_stalk ⟨v, hvU⟩
+  set t : Γ(P, U) := P.presheaf.map (homOfLE le_top).op s with ht
+  have hgerm : ∀ (y : P) (hy : y ∈ U), (P.presheaf.germ ⊤ y trivial).hom s =
+      (P.presheaf.germ U y hy).hom t := fun y hy => by
+    rw [ht, ← CommRingCat.comp_apply, P.presheaf.germ_res]
+  rw [hgerm v hvU, ds_stalkId_eq_map I ⟨U, hU⟩ v hvU] at hv
+  change algebraMap Γ(P, U) (P.presheaf.stalk v) t ∈
+    Ideal.map (algebraMap Γ(P, U) (P.presheaf.stalk v)) (I.ideal ⟨U, hU⟩) at hv
+  obtain ⟨⟨a, w⟩, e⟩ := (IsLocalization.mem_map_algebraMap_iff
+    (hU.primeIdealOf ⟨v, hvU⟩).asIdeal.primeCompl _).mp hv
+  rw [← map_mul] at e
+  obtain ⟨c, hc⟩ := IsLocalization.exists_of_eq (M := (hU.primeIdealOf ⟨v, hvU⟩).asIdeal.primeCompl) e
+  set σ : Γ(P, U) := (c : Γ(P, U)) * w with hσ
+  have hσt : σ * t ∈ I.ideal ⟨U, hU⟩ := by
+    rw [hσ, show (c : Γ(P, U)) * w * t = c * (t * w) by ring, hc]
+    exact Ideal.mul_mem_left _ _ a.2
+  have hσunit : IsUnit (algebraMap Γ(P, U) (P.presheaf.stalk v) σ) :=
+    IsLocalization.map_units (M := (hU.primeIdealOf ⟨v, hvU⟩).asIdeal.primeCompl) _
+      (c * w : (hU.primeIdealOf ⟨v, hvU⟩).asIdeal.primeCompl)
+  refine ⟨P.basicOpen σ, ?_, fun y hy => ?_⟩
+  · exact (P.mem_basicOpen σ v hvU).mpr hσunit
+  · have hyU : y ∈ U := P.basicOpen_le σ hy
+    have hyu : IsUnit ((P.presheaf.germ U y hyU).hom σ) := (P.mem_basicOpen σ y hyU).mp hy
+    rw [hgerm y hyU, ← Ideal.unit_mul_mem_iff_mem _ hyu, ← map_mul,
+      ds_stalkId_eq_map I ⟨U, hU⟩ y hyU]
+    exact Ideal.mem_map_of_mem _ hσt
+
+end GlobalTheory.SpreadIdeal
+
+namespace GlobalTheory.SpreadIdeal
+
+theorem mem_stalkId_of_closedFibre : ∀ (P : Scheme.{0}) (R : Type) [CommRing R] [IsLocalRing R] (p : P ⟶ Sp R) [UniversallyClosed p] (I : P.IdealSheafData) (s : Γ(P, ⊤)), (∀ v : P, p v = closedPoint R → (P.presheaf.germ ⊤ v trivial).hom s ∈ FinalTheorems.stalkId I v) → ∀ v : P, (P.presheaf.germ ⊤ v trivial).hom s ∈ FinalTheorems.stalkId I v := by
+  intro P R _ _ p _ I s hs v
+  by_contra hv
+  set Z : Set P := {y | (P.presheaf.germ ⊤ y trivial).hom s ∉ FinalTheorems.stalkId I y} with hZ
+  have hZc : IsClosed Z := by
+    rw [← isOpen_compl_iff, isOpen_iff_forall_mem_open]
+    intro y hy
+    have hy' : (P.presheaf.germ ⊤ y trivial).hom s ∈ FinalTheorems.stalkId I y := by
+      simpa [hZ] using hy
+    obtain ⟨O, hyO, hO⟩ := exists_open_nhds_mem_stalkId P I s y hy'
+    exact ⟨O, fun z hz => by simpa [hZ] using hO z hz, O.2, hyO⟩
+  have himg : IsClosed (p.base '' Z) := p.isClosedMap _ hZc
+  have hmem : closedPoint R ∈ p.base '' Z :=
+    (IsLocalRing.specializes_closedPoint (p.base v)).mem_closed himg ⟨v, hv, rfl⟩
+  obtain ⟨w, hwZ, hw⟩ := hmem
+  exact hwZ (hs w hw)
+
+end GlobalTheory.SpreadIdeal
+end
+
+open AlgebraicGeometry CategoryTheory IsLocalRing ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef GlobalTheory.Poinc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.germ_mem_idealSheaf_stalk_of_closedFibre_univClosed : ∀ (P : Scheme.{0}) (R : Type) [CommRing R] [IsLocalRing R] (p : P ⟶ Sp R) [UniversallyClosed p] (I : P.IdealSheafData) (s : Γ(P, ⊤)), (∀ v : P, p v = closedPoint R → (P.presheaf.germ ⊤ v trivial).hom s ∈ FinalTheorems.stalkId I v) → ∀ v : P, (P.presheaf.germ ⊤ v trivial).hom s ∈ FinalTheorems.stalkId I v := by
+  atlas_forward_decl GlobalTheory.SpreadIdeal.mem_stalkId_of_closedFibre
+end
+
+section
 open AlgebraicGeometry CategoryTheory IsLocalRing ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.TorRef GlobalTheory.Poinc
 
 namespace GlobalTheory.ApproxCorr
@@ -190,3 +351,4 @@ theorem exists_correction : ∀ (Z S : Scheme.{0}) [IsIntegral Z] [IsIntegral S]
       sup_le_sup_left (Ideal.pow_right_mono (IsLocalRing.map_maximalIdeal_le (ρ.comp ψ)) e) _) h1
 
 end GlobalTheory.ApproxCorr
+end

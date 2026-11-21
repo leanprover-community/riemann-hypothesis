@@ -14,8 +14,16 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModelStatementOfFra
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NumSt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumExpansionStatementStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmallStatementStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylLatticeExactExponentBlockCutStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylLatticeExactExponentBlockCut
 
+section
+open Formalism.CohomologicalDescent Formalism.CohomologicalDescent.LogSmallConstantBounds Formalism.CohomologicalDescent.ShortWeightBounds
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weylLattice_exact_exponent_block_cut : Formalism.CohomologicalDescent.E.ExCut := by
+  first | exact @GlobalTheory.LeviCut.exCut | exact GlobalTheory.LeviCut.exCut | (intros; apply GlobalTheory.LeviCut.exCut <;> assumption)
+end
+
+section
 section
 set_option autoImplicit false
 
@@ -44,3 +52,4 @@ end
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exponent_estimate_from_langlands : GlobalTheory.Published.ClozelCohomological → GlobalTheory.Published.CohomologicalCsdTempered → GlobalTheory.Published.HeckeLAdicCharacter → GlobalTheory.Published.ChebotarevDegreeOne → GlobalTheory.Published.DiscreteSpectrumGL → GlobalTheory.Published.GaloisRepOfPolarizedCuspidal → GlobalTheory.Published.BaseChangeDefiniteUnitary → GlobalTheory.Published.BhattScholzeCrystallineLattices → GlobalTheory.Published.HeckeLAdicCharacterAbove → GlobalTheory.Published.LocalLanglandsGL → GlobalTheory.BigOn.ExpSt := by
   atlas_forward_decl GlobalTheory.BigOn.expSt_of_hypotheses
+end

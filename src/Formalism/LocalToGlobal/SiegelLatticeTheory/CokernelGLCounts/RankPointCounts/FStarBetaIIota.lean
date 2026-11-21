@@ -1,6 +1,207 @@
 import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBetaIIotaB
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBetaIC
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.AdmissibleLocalPartner
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StabIntPfQ
 
+section
+noncomputable section
+
+open scoped Classical
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut Formalism.L2.SG.LsDatumB
+  Formalism.L2.SG.TermLoc Formalism.L2.SG.Pf.PCount Formalism.L2.SG.Pf.FrameGlobalPatching Formalism.L2.SG.Saturated
+
+namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.IotaBP
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) (p : PlF D)
+
+theorem gS_typed (g : Loc.SplitG (Zd.M p).L) (hs : (Zd.M p).split = some g) :
+    ∃ w ∈ (D.s.atP p).O, ∃ w' ∈ (D.s.atP p).O,
+      (D.s.atP p).ιE ((gS D : ℕ) : D.host.E) = algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (g.q : (D.s.atP p).Fp) * w ∧
+        w * w' = 1 := by
+  obtain ⟨sg, hsg, hq, -⟩ := typed_data Zd p g hs
+  refine ⟨(D.s.atP p).ιE ((Formalism.MainNotions.BridgeLemma.oth p : ℕ) : D.host.E), ?_, (D.s.atP p).ιE (uP p : D.host.E),
+    Formalism.L2.SG.Pf.LocFacts.unitPart_mem₂ p, ?_, ?_⟩
+  · rw [map_natCast]; exact natCast_mem _ _
+  · rw [hq, sg.q_eq, ← Formalism.MainNotions.BridgeLemma.gpart_mul_oth p, Formalism.MainNotions.BridgeLemma.gpart_some p sg hsg]
+    simp only [Nat.cast_mul, map_mul, map_natCast]
+  · rw [← map_mul, Formalism.MainNotions.BridgeLemma.unitAt_eq p]
+    have h0 : ((Formalism.MainNotions.BridgeLemma.oth p : ℕ) : D.host.E) ≠ 0 := by
+      exact_mod_cast Formalism.MainNotions.BridgeLemma.oth_ne_zero p
+    push_cast
+    rw [mul_inv_cancel₀ h0, map_one]
+
+theorem localLattice_mono {A B : Submodule (𝓞 D.host.E) (VS D).V} (h : A ≤ B) : lattice₂ D Zd.M p A ≤ lattice₂ D Zd.M p B :=
+  Submodule.span_mono (Set.image_mono h)
+
+theorem mem_O_M {a : (D.s.atP p).Ep} (ha : a ∈ (D.s.atP p).O) : a ∈ (Zd.M p).L.O := by
+  rw [Formalism.L2.SG.Pf.LocalDenominators.hO Zd p]; exact ha
+
+theorem smul_gS_mem {Λ : Submodule (𝓞 D.host.E) (VS D).V} {T T' : D.host.E} (F : LFlag (VS D) D.R.rS T)
+    (F' : LFlag (VS D) D.R.rS T') {v : Vp D p} (hv : v ∈ lattice₂ D Zd.M p Λ) :
+    (D.s.atP p).ιE ((gS D : ℕ) : D.host.E) • v ∈ lattice₂ D Zd.M p (NgX Λ (gS D) F F') := by
+  induction hv using Submodule.span_induction with
+  | mem v hv =>
+    obtain ⟨y, hy, rfl⟩ := hv
+    rw [← Formalism.L2.SG.Pf.LocalDenominators.baseChange_smul₂]
+    refine Submodule.subset_span ⟨_, ?_, rfl⟩
+    have h1 : ((gS D : ℕ) : D.host.E) • y = ((gS D : ℕ) : 𝓞 D.host.E) • y := by
+      rw [← algebraMap_smul D.host.E ((gS D : ℕ) : 𝓞 D.host.E) y, map_natCast]
+    rw [SetLike.mem_coe, h1]
+    refine Submodule.mem_sup_left (Submodule.mem_sup_left ?_)
+    exact Submodule.smul_mem_smul (Ideal.mem_span_singleton_self _) hy
+  | zero => rw [smul_zero]; exact zero_mem _
+  | add a b _ _ ha hb => rw [smul_add]; exact add_mem ha hb
+  | smul o v _ hv =>
+    have e : (D.s.atP p).ιE ((gS D : ℕ) : D.host.E) • (o • v) = o • ((D.s.atP p).ιE ((gS D : ℕ) : D.host.E) • v) := by
+      show _ • ((o : (D.s.atP p).Ep) • v) = (o : (D.s.atP p).Ep) • _
+      rw [smul_smul, smul_smul, mul_comm]
+    rw [e]; exact Submodule.smul_mem _ _ hv
+
+theorem untyped_mem (hs : (Zd.M p).split = none) {Λ : Submodule (𝓞 D.host.E) (VS D).V} {T T' : D.host.E}
+    (F : LFlag (VS D) D.R.rS T) (F' : LFlag (VS D) D.R.rS T') {v : Vp D p} (hv : v ∈ lattice₂ D Zd.M p Λ) :
+    v ∈ lattice₂ D Zd.M p (NgX Λ (gS D) F F') := by
+  have e := Formalism.L2.SG.Pf.StabIntSh.gS_mul_uP Zd.δ Zd.M Zd.agree p hs
+  have hv' : v = (D.s.atP p).ιE (uP p : D.host.E) • ((D.s.atP p).ιE ((gS D : ℕ) : D.host.E) • v) := by
+    rw [smul_smul, mul_comm, e, one_smul]
+  rw [hv']
+  exact Formalism.L2.SG.Pf.LocalDenominators.smul_mem_localLattice Zd p (Formalism.L2.SG.Pf.LocFacts.unitPart_mem₂ p) (smul_gS_mem Zd p F F' hv)
+
+theorem typed_q_mem (g : Loc.SplitG (Zd.M p).L) (hs : (Zd.M p).split = some g) {Λ : Submodule (𝓞 D.host.E) (VS D).V}
+    {T T' : D.host.E} (F : LFlag (VS D) D.R.rS T) (F' : LFlag (VS D) D.R.rS T') {v : Vp D p}
+    (hv : v ∈ lattice₂ D Zd.M p Λ) :
+    algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (g.q : (D.s.atP p).Fp) • v ∈ lattice₂ D Zd.M p (NgX Λ (gS D) F F') := by
+  obtain ⟨w, -, w', hw', he, hww⟩ := gS_typed Zd p g hs
+  have e : algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (g.q : (D.s.atP p).Fp) • v =
+      (D.s.atP p).ιE ((gS D : ℕ) : D.host.E) • (w' • v) := by
+    rw [he, smul_smul, mul_assoc, hww, mul_one]
+  rw [e]
+  exact smul_gS_mem Zd p F F' (Formalism.L2.SG.Pf.LocalDenominators.smul_mem_localLattice Zd p hw' hv)
+
+theorem l1 {Λ : Submodule (𝓞 D.host.E) (VS D).V} {T' : D.host.E} (G : LFlag (VS D) D.R.rS T')
+    (f : Fin (D.R.rS + 1) → Vp D p) (s : Fin (D.R.rS + 1) → (D.s.atP p).Ep) (hs : ∀ a, s a ∈ (D.s.atP p).O)
+    (hf : ∀ i : Fin D.R.rS, f i.castSucc = (s i.castSucc * frFac Zd.δ p i.castSucc) • baseChange₂ D p (G.fl.e i))
+    (hprim : (locH Zd p).Prim (lattice₂ D Zd.M p Λ) f) (hXS : XLam Λ G = XS D G.fl) {v : Vp D p}
+    (hv : v ∈ lattice₂ D Zd.M p Λ) (hvX : v ∈ (locH Zd p).X f) : v ∈ lattice₂ D Zd.M p (XLam Λ G) := by
+  have hvE : v ∈ Submodule.span (D.s.atP p).Ep (Set.range f) :=
+    Submodule.span_mono (Set.range_comp_subset_range _ _) hvX
+  have hvO := hprim.2.2 v hv hvE
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun (Zd.M p).L.O).1 hvO
+  obtain ⟨e, he⟩ := (Submodule.mem_span_range_iff_exists_fun (D.s.atP p).Ep).1 hvX
+  have key : (c (Fin.last D.R.rS) : (D.s.atP p).Ep) = 0 := by
+    have h0 : ∑ a, ((c a : (D.s.atP p).Ep) - Fin.snoc (α := fun _ => (D.s.atP p).Ep) e 0 a) • f a = 0 := by
+      simp_rw [sub_smul]
+      rw [Finset.sum_sub_distrib, Fin.sum_univ_castSucc (f := fun a => Fin.snoc (α := fun _ => (D.s.atP p).Ep) e 0 a • f a)]
+      simp only [Fin.snoc_castSucc, Fin.snoc_last, zero_smul, add_zero]
+      rw [he, ← hc, sub_eq_zero]
+      rfl
+    have := Fintype.linearIndependent_iff.1 hprim.2.1 _ h0 (Fin.last D.R.rS)
+    simpa using this
+  rw [← hc, Fin.sum_univ_castSucc]
+  refine add_mem (Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ ?_) ?_
+  · rw [hf, hXS, Formalism.L2.SG.Pf.BBTie.bt_latP_XS Zd p (Formalism.L2.SG.Pf.locDiffC_holds D Zd) G.fl, mul_smul]
+    have hm : frFac Zd.δ p i.castSucc • baseChange₂ D p (G.fl.e i) ∈ Submodule.span (Zd.M p).L.O
+        (Set.range fun a : Fin D.R.rS => frFac Zd.δ p a.castSucc • baseChange₂ D p (G.fl.e a)) := Submodule.subset_span ⟨i, rfl⟩
+    exact Submodule.smul_mem _ (⟨s i.castSucc, mem_O_M Zd p (hs _)⟩ : (Zd.M p).L.O) hm
+  · have : c (Fin.last D.R.rS) • f (Fin.last D.R.rS) = 0 := by
+      rw [Subring.smul_def, key, zero_smul]
+    rw [this]; exact zero_mem _
+
+end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.IotaBP
+end
+end
+
+section
+noncomputable section
+
+open scoped Classical
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut Formalism.L2.SG.LsDatumB
+  Formalism.L2.SG.TermLoc Formalism.L2.SG.Pf.PCount Formalism.L2.SG.Pf.FrameGlobalPatching Formalism.L2.SG.Saturated
+
+namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.IotaBP
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) (p : PlF D)
+
+theorem xi_mem {Λ : Submodule (𝓞 D.host.E) (VS D).V} {T : D.host.E} {F : LFlag (VS D) D.R.rS T} {x : (VS D).V}
+    (hx : x ∈ XLam Λ F) : x ∈ Λ := (Submodule.mem_inf.1 hx).1
+
+theorem g1 {Λ : Submodule (𝓞 D.host.E) (VS D).V} {T T' : D.host.E} (F : LFlag (VS D) D.R.rS T)
+    (F' : LFlag (VS D) D.R.rS T') (t : Loc.Term (Vp D p) (Zd.M p) D.R.rS) (hLam : t.abelian₂ = lattice₂ D Zd.M p Λ)
+    (g : Loc.SplitG (Zd.M p).L) (hs : (Zd.M p).split = some g) {y y' l ξ ξ' : (VS D).V} (hy : y ∈ Λ) (hy' : y' ∈ Λ)
+    (hl : l ∈ Λ) (hξ : ξ ∈ XLam Λ F) (hξ' : ξ' ∈ XLam Λ F')
+    (heq : y - y' = ((gS D : ℕ) : D.host.E) • l + ξ + ξ')
+    (hp1 : baseChange₂ D p (y - ξ) ∈ (locH Zd p).perp ((locH Zd p).X t.f))
+    (hp2 : baseChange₂ D p (y' + ξ') ∈ (locH Zd p).perp ((locH Zd p).X t.f')) :
+    ((locH Zd p).mkW t.f' ⟨baseChange₂ D p (y' + ξ'), hp2⟩, (locH Zd p).mkW t.f ⟨baseChange₂ D p (y - ξ), hp1⟩) ∈
+      (locH Zd p).iotaGraph g t := by
+  obtain ⟨w, hw, w', -, he, -⟩ := gS_typed Zd p g hs
+  refine ⟨⟨_, hp2⟩, ⟨_, hp1⟩, ?_, ?_, ?_, rfl⟩
+  · rw [hLam]; exact BwdNP.baseChange_mem_localLattice Zd (add_mem hy' (xi_mem hξ')) p
+  · rw [hLam]; exact BwdNP.baseChange_mem_localLattice Zd (sub_mem hy (xi_mem hξ)) p
+  · have hv : y - ξ - (y' + ξ') = ((gS D : ℕ) : D.host.E) • l := by
+      rw [show y - ξ - (y' + ξ') = (y - y') - ξ - ξ' by abel, heq]; abel
+    have e : baseChange₂ D p (y - ξ) - baseChange₂ D p (y' + ξ') =
+        algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (g.q : (D.s.atP p).Fp) • (w • baseChange₂ D p l) := by
+      rw [← map_sub, hv, Formalism.L2.SG.Pf.LocalDenominators.baseChange_smul₂, he, mul_smul]
+    show baseChange₂ D p (y - ξ) - baseChange₂ D p (y' + ξ') ∈ _
+    rw [e, hLam]
+    exact Submodule.subset_span ⟨w • baseChange₂ D p l, Formalism.L2.SG.Pf.LocalDenominators.smul_mem_localLattice Zd p hw (BwdNP.baseChange_mem_localLattice Zd hl p), rfl⟩
+
+theorem g2 {Λ : Submodule (𝓞 D.host.E) (VS D).V} {T T' : D.host.E} (F : LFlag (VS D) D.R.rS T)
+    (F' : LFlag (VS D) D.R.rS T') (t : Loc.Term (Vp D p) (Zd.M p) D.R.rS) (hLam : t.abelian₂ = lattice₂ D Zd.M p Λ)
+    (g : Loc.SplitG (Zd.M p).L) (hs : (Zd.M p).split = some g) {y y' : (VS D).V} (hy : y ∈ Λ) (hy' : y' ∈ Λ)
+    (hp1 : baseChange₂ D p y ∈ (locH Zd p).perp ((locH Zd p).X t.f))
+    (hp2 : baseChange₂ D p y' ∈ (locH Zd p).perp ((locH Zd p).X t.f'))
+    (hmem : ((locH Zd p).mkW t.f' ⟨baseChange₂ D p y', hp2⟩, (locH Zd p).mkW t.f ⟨baseChange₂ D p y, hp1⟩) ∈
+      (locH Zd p).iotaGraph g t)
+    (hA : ∀ v ∈ lattice₂ D Zd.M p Λ, v ∈ (locH Zd p).X t.f → v ∈ lattice₂ D Zd.M p (XLam Λ F))
+    (hB : ∀ v ∈ lattice₂ D Zd.M p Λ, v ∈ (locH Zd p).X t.f' → v ∈ lattice₂ D Zd.M p (XLam Λ F')) :
+    baseChange₂ D p (y - y') ∈ lattice₂ D Zd.M p (NgX Λ (gS D) F F') := by
+  obtain ⟨x'', x, hx''Λ, hxΛ, hdiff, heq⟩ := hmem
+  obtain ⟨h1, h2⟩ := Prod.mk.inj heq
+  rw [hLam] at hx''Λ hxΛ hdiff
+  have d1 : baseChange₂ D p y' - (x'' : Vp D p) ∈ (locH Zd p).X t.f' := by
+    have := (Submodule.Quotient.eq _).1 h1
+    simpa using this
+  have d2 : baseChange₂ D p y - (x : Vp D p) ∈ (locH Zd p).X t.f := by
+    have := (Submodule.Quotient.eq _).1 h2
+    simpa using this
+  have hXA : XLam Λ F ≤ NgX Λ (gS D) F F' := le_sup_right.trans le_sup_left
+  have hXB : XLam Λ F' ≤ NgX Λ (gS D) F F' := le_sup_right
+  have a1 := localLattice_mono Zd p hXA (hA _ (sub_mem (BwdNP.baseChange_mem_localLattice Zd hy p) hxΛ) d2)
+  have a2 := localLattice_mono Zd p hXB (hB _ (sub_mem (BwdNP.baseChange_mem_localLattice Zd hy' p) hx''Λ) d1)
+  have a3 : (x : Vp D p) - x'' ∈ lattice₂ D Zd.M p (NgX Λ (gS D) F F') := by
+    refine (Submodule.span_le.2 ?_) hdiff
+    rintro _ ⟨v, hv, rfl⟩
+    exact typed_q_mem Zd p g hs F F' hv
+  have e : baseChange₂ D p (y - y') = (baseChange₂ D p y - x) + ((x : Vp D p) - x'') - (baseChange₂ D p y' - x'') := by
+    rw [map_sub]; abel
+  rw [e]
+  exact sub_mem (add_mem a1 a3) a2
+
+theorem Xle_tLoc {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (CntLocal.Tn u)}
+    {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)} (γ : TermDef.Term D u u' F0 what₂) :
+    (locH Zd p).X (tLoc Zd p γ).f' ≤ (locH Zd p).X (locF' Zd p (repF γ)) := by
+  obtain ⟨hξ1, hξ2⟩ := inv_unitri _ (admissibility_witness_unitriangular γ.lam (lf D F0) (repF γ)).1 (admissibility_witness_unitriangular γ.lam (lf D F0) (repF γ)).2
+  obtain ⟨hC0, -, -⟩ := Cm_props Zd p (admXi D γ.lam (lf D F0) (repF γ))⁻¹ hξ1 hξ2
+  have hf : ∀ b, (tLoc Zd p γ).f' b = GeneratorChange.comb (Cm Zd p (admXi D γ.lam (lf D F0) (repF γ))⁻¹) (locF' Zd p (repF γ)) b :=
+    fun b => (comb_Cm Zd p (repF γ) _ b).symm
+  rw [Loc.HermSp.X, Submodule.span_le]
+  rintro _ ⟨i, rfl⟩
+  simp only
+  rw [hf, GeneratorChange.comb, Fin.sum_univ_castSucc]
+  refine add_mem (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)) ?_
+  rw [hC0 _ _ (Fin.castSucc_lt_last i), zero_smul]
+  exact zero_mem _
+
+end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.IotaBP
+end
+end
+
+section
 noncomputable section
 
 open scoped Classical
@@ -287,3 +488,5 @@ theorem iotaB_of (hP : PinB Zd u u' F0 what₂) : IotaB Zd u u' F0 what₂ := by
         hx'Λ hx'o hlΛ hlo hl₂Λ hl₂o hll₂ hμ hξ hξ' heq
 
 end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
+end
+end

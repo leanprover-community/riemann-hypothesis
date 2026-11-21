@@ -1,9 +1,593 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionZeroFreeRegion
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionUniqueSimpleExceptionalZero
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionFamilyContinuationGrowthStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassFamilyLogDerivReGtOneStatement
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionLogDerivLocalFormula
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionFamilyLogDerivPositivity
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassFamilyPsiWithExceptionalZero
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsRayClassLFunctionRealZeroFarFromOne
 
+section
+section
+open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk GlobalTheory.Mem
+open scoped Classical
+
+namespace GlobalTheory.Hk.ZeroFree
+
+theorem re_one_div (a b : ℝ) : (1 / ((a : ℂ) + b * I)).re = a / (a ^ 2 + b ^ 2) := by
+  rw [one_div, inv_re, normSq_add_mul_I]
+  simp
+
+theorem re_le_one {𝓕 : LFam} {χ : AddChar 𝓕.G ℂ} {w : ℂ} (hw : 𝓕.F χ w = 0) : w.re ≤ 1 := by
+  by_contra h
+  push_neg at h
+  exact (GlobalTheory.T.rayClassFamily_logDeriv_re_gt_one 𝓕 χ w h).2.2.1 hw
+
+theorem one_le_order {𝓕 : LFam} {χ : AddChar 𝓕.G ℂ} {ρ : ℂ} (h : 1 / 2 < ρ.re)
+    (hρ : 𝓕.F χ ρ = 0) : 1 ≤ analyticOrderNatAt (𝓕.F χ) ρ := by
+  have hU := (GlobalTheory.T.rayClassLFunctionFamily_continuation_growth 𝓕 χ).1
+  have hA : AnalyticAt ℂ (𝓕.F χ) ρ := hU ρ h
+  have htop : analyticOrderAt (𝓕.F χ) ρ ≠ ⊤ := by
+    intro ht
+    rw [analyticOrderAt_eq_top] at ht
+    have hc : Convex ℝ {s : ℂ | 1 / 2 < s.re} := convex_halfSpace_re_gt _
+    have hE := hU.eqOn_zero_of_preconnected_of_eventuallyEq_zero hc.isPreconnected h ht
+    have h2 : (1 : ℝ) < (2 : ℂ).re := by norm_num
+    exact (GlobalTheory.T.rayClassFamily_logDeriv_re_gt_one 𝓕 χ 2 h2).2.2.1 (hE (show (1 : ℝ) / 2 < (2 : ℂ).re by norm_num))
+  have hz : analyticOrderAt (𝓕.F χ) ρ ≠ 0 := hA.analyticOrderAt_ne_zero.mpr hρ
+  rw [Nat.one_le_iff_ne_zero]
+  intro h0
+  apply hz
+  rw [← Nat.cast_analyticOrderNatAt htop, h0]
+  simp
+
+theorem re_LSeries_le : ∃ C : ℝ, 0 < C ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (a t P : ℝ),
+    0 < a → a ≤ 1 / 2 → 0 ≤ P → (χ = 1 → a / (a ^ 2 + t ^ 2) ≤ P) → ∀ S : Finset ℂ,
+    (∀ w ∈ S, ‖w - (5 / 4 + t * I)‖ ≤ 3 / 5 ∧ 𝓕.F χ w = 0) →
+    (LSeries (𝓕.lamChi χ) (((1 + a : ℝ) : ℂ) + t * I)).re
+      ≤ P + C * 𝓕.ell t - ∑ w ∈ S, (1 / (((1 + a : ℝ) : ℂ) + t * I - w)).re := by
+  obtain ⟨C, hC, hCb⟩ := GlobalTheory.T.rayClassLFunction_logDeriv_local_formula
+  refine ⟨C, hC, ?_⟩
+  intro 𝓕 χ a t P ha ha2 hP hχ S hS
+  obtain ⟨hfin, -, hD⟩ := hCb 𝓕 χ t
+  set s : ℂ := ((1 + a : ℝ) : ℂ) + t * I with hs
+  have hsre : s.re = 1 + a := by simp [hs]
+  have hsre1 : 1 < s.re := by rw [hsre]; linarith
+  obtain ⟨-, -, hFne, hL⟩ := GlobalTheory.T.rayClassFamily_logDeriv_re_gt_one 𝓕 χ s hsre1
+  have hsd : ‖s - (5 / 4 + t * I)‖ ≤ 1 / 2 := by
+    have e : s - (5 / 4 + t * I) = ((a - 1 / 4 : ℝ) : ℂ) := by rw [hs]; push_cast; ring
+    rw [e, Complex.norm_real, Real.norm_eq_abs, abs_le]
+    constructor <;> linarith
+  have hE := hD s hsd hFne
+  have hfpos : ∀ w, 𝓕.F χ w = 0 → 0 ≤ (1 / (s - w)).re := by
+    intro w hw
+    rw [one_div, inv_re]
+    apply div_nonneg _ (normSq_nonneg _)
+    rw [sub_re, hsre]
+    linarith [re_le_one hw]
+  have hsum : (∑ᶠ w ∈ {w : ℂ | ‖w - (5 / 4 + t * I)‖ ≤ 3 / 5 ∧ 𝓕.F χ w = 0},
+      (analyticOrderNatAt (𝓕.F χ) w : ℂ) / (s - w)).re
+      = ∑ w ∈ hfin.toFinset, (analyticOrderNatAt (𝓕.F χ) w : ℝ) * (1 / (s - w)).re := by
+    rw [finsum_mem_eq_finite_toFinset_sum _ hfin, re_sum]
+    apply Finset.sum_congr rfl
+    intro w _
+    rw [div_eq_mul_one_div, ← ofReal_natCast, re_ofReal_mul]
+  have hSZ : ∑ w ∈ S, (1 / (s - w)).re
+      ≤ ∑ w ∈ hfin.toFinset, (analyticOrderNatAt (𝓕.F χ) w : ℝ) * (1 / (s - w)).re := by
+    calc ∑ w ∈ S, (1 / (s - w)).re
+        ≤ ∑ w ∈ S, (analyticOrderNatAt (𝓕.F χ) w : ℝ) * (1 / (s - w)).re := by
+          apply Finset.sum_le_sum
+          intro w hw
+          obtain ⟨hw1, hw2⟩ := hS w hw
+          have hre : 1 / 2 < w.re := by
+            have h1 := (abs_le.mp ((abs_re_le_norm _).trans hw1)).1
+            simp only [sub_re, add_re, mul_re, ofReal_re, ofReal_im, I_re, I_im] at h1
+            norm_num at h1
+            linarith
+          have hm : (1 : ℝ) ≤ analyticOrderNatAt (𝓕.F χ) w := by
+            exact_mod_cast one_le_order hre hw2
+          nlinarith [hfpos w hw2]
+      _ ≤ _ := by
+          apply Finset.sum_le_sum_of_subset_of_nonneg
+          · intro w hw
+            rw [Set.Finite.mem_toFinset]
+            exact hS w hw
+          · intro w hw _
+            exact mul_nonneg (Nat.cast_nonneg _) (hfpos w ((Set.Finite.mem_toFinset hfin).mp hw).2)
+  have hpole : (if χ = 1 then 1 / (s - 1) else 0 : ℂ).re ≤ P := by
+    split_ifs with h1
+    · have e : s - 1 = (a : ℂ) + t * I := by rw [hs]; push_cast; ring
+      rw [e, re_one_div]
+      exact hχ h1
+    · simpa using hP
+  rw [← hL, add_re, neg_re]
+  have hre := (abs_le.mp ((abs_re_le_norm _).trans hE)).1
+  rw [sub_re, hsum] at hre
+  linarith
+
+theorem one_le_ell (𝓕 : LFam) (t : ℝ) : 1 ≤ 𝓕.ell t := by
+  have := 𝓕.two_lt_ell t
+  linarith
+
+theorem ell_zero_le (𝓕 : LFam) (t : ℝ) : 𝓕.ell 0 ≤ 𝓕.ell t := by
+  unfold LFam.ell
+  have hB : (0 : ℝ) < 𝓕.B := by linarith [𝓕.B_ge]
+  rw [abs_zero]
+  apply Real.log_le_log
+  · positivity
+  · apply mul_le_mul_of_nonneg_left _ hB.le
+    linarith [abs_nonneg t]
+
+theorem ell_two_le (𝓕 : LFam) (t : ℝ) : 𝓕.ell (2 * t) ≤ 2 * 𝓕.ell t := by
+  unfold LFam.ell
+  have hB : (4 : ℝ) ≤ 𝓕.B := 𝓕.B_ge
+  have hu := abs_nonneg t
+  have e : 2 * Real.log (𝓕.B * (|t| + 2)) = Real.log ((𝓕.B * (|t| + 2)) ^ 2) := by
+    rw [Real.log_pow]
+    norm_num
+  rw [e, abs_mul, abs_two]
+  apply Real.log_le_log
+  · positivity
+  · have h1 : 2 * |t| + 2 ≤ 4 * (|t| + 2) ^ 2 := by nlinarith
+    have h2 : 4 * (|t| + 2) ^ 2 ≤ 𝓕.B * (|t| + 2) ^ 2 := by nlinarith [sq_nonneg (|t| + 2)]
+    calc 𝓕.B * (2 * |t| + 2) ≤ 𝓕.B * (𝓕.B * (|t| + 2) ^ 2) :=
+          mul_le_mul_of_nonneg_left (by linarith) (by linarith)
+      _ = (𝓕.B * (|t| + 2)) ^ 2 := by ring
+
+theorem pole_le {ε y : ℝ} (hε : 0 < ε) (hy : (30 * ε) ^ 2 ≤ y ^ 2) :
+    6 * ε / ((6 * ε) ^ 2 + y ^ 2) ≤ 1 / 156 * (1 / ε) := by
+  have hD : 0 < (6 * ε) ^ 2 + y ^ 2 := by positivity
+  have e : 1 / 156 * (1 / ε) = 1 / (156 * ε) := by ring
+  rw [e, div_le_div_iff₀ hD (by positivity)]
+  nlinarith
+
+private lemma norm_ofReal_add_mul_I_le_abs_add_abs (x y : ℝ) : ‖(x : ℂ) + y * I‖ ≤ |x| + |y| := by
+  simpa using norm_le_abs_re_add_abs_im ((x : ℂ) + y * I)
+
+theorem inv_le_ell : ∃ K : ℝ, 0 < K ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (ε δ γ : ℝ),
+    𝓕.F χ (((1 - δ : ℝ) : ℂ) + γ * I) = 0 → (χ * χ ≠ 1 ∨ γ ≠ 0) →
+    0 < ε → ε ≤ 1 / 400 → 0 ≤ δ → δ ≤ ε → 1 / ε ≤ K * 𝓕.ell γ := by
+  obtain ⟨C, hC, hR⟩ := re_LSeries_le
+  refine ⟨300 * C, by positivity, ?_⟩
+  intro 𝓕 χ ε δ γ hz hχ hε hε1 hδ hδε
+  set ρ : ℂ := ((1 - δ : ℝ) : ℂ) + γ * I with hρ
+  have hℓ0 := ell_zero_le 𝓕 γ
+  have hℓ2 := ell_two_le 𝓕 γ
+  have hℓ1 := one_le_ell 𝓕 γ
+  have hCℓ0 : C * 𝓕.ell 0 ≤ C * 𝓕.ell γ := mul_le_mul_of_nonneg_left hℓ0 hC.le
+  have hCℓ2 : C * 𝓕.ell (2 * γ) ≤ 2 * (C * 𝓕.ell γ) := by nlinarith
+  have hCℓ : 0 ≤ C * 𝓕.ell γ := mul_nonneg hC.le (by linarith)
+  obtain ⟨v, hv⟩ : ∃ v : ℝ, v = 1 / ε := ⟨_, rfl⟩
+  have hv0 : 0 < v := by rw [hv]; positivity
+  rw [← hv]
+  by_cases hB : χ * χ = 1 ∧ γ ^ 2 < (30 * ε) ^ 2
+  · obtain ⟨hχ2, hγ⟩ := hB
+    have hγ0 : γ ≠ 0 := hχ.resolve_left (not_not.mpr hχ2)
+    have ha0 : 0 < 60 * ε := by positivity
+    have ha2 : 60 * ε ≤ 1 / 2 := by linarith
+    set ρ' : ℂ := ((1 - δ : ℝ) : ℂ) + ((-γ : ℝ) : ℂ) * I with hρ'
+    have hz' : 𝓕.F χ ρ' = 0 := by
+      have hc := (GlobalTheory.T.rayClassLFunctionFamily_continuation_growth 𝓕 χ).2.2.2 hχ2 ρ
+      have e : (starRingEnd ℂ) ρ = ρ' := by
+        rw [hρ, hρ']
+        apply Complex.ext <;> simp
+      rw [← e, hc, hz]
+      simp
+    have hne : ρ ≠ ρ' := by
+      intro h
+      have := congrArg Complex.im h
+      simp [hρ, hρ'] at this
+      exact hγ0 (by linarith)
+    have hγa : |γ| < 30 * ε := abs_lt_of_sq_lt_sq hγ (by linarith)
+    have hnorm : ∀ g : ℝ, |g| < 30 * ε →
+        ‖(((1 - δ : ℝ) : ℂ) + g * I) - (5 / 4 + ((0 : ℝ) : ℂ) * I)‖ ≤ 3 / 5 := by
+      intro g hg
+      have e : (((1 - δ : ℝ) : ℂ) + g * I) - (5 / 4 + ((0 : ℝ) : ℂ) * I)
+          = ((-(1 / 4 + δ) : ℝ) : ℂ) + g * I := by push_cast; ring
+      rw [e]
+      refine (norm_ofReal_add_mul_I_le_abs_add_abs _ _).trans ?_
+      rw [abs_neg, abs_of_nonneg (by linarith)]
+      linarith
+    have hnear : ∀ w ∈ ({ρ, ρ'} : Finset ℂ),
+        ‖w - (5 / 4 + ((0 : ℝ) : ℂ) * I)‖ ≤ 3 / 5 ∧ 𝓕.F χ w = 0 := by
+      intro w hw
+      rcases Finset.mem_insert.mp hw with h | h
+      · rw [h]; exact ⟨hnorm γ hγa, hz⟩
+      · rw [Finset.mem_singleton.mp h]
+        exact ⟨hnorm (-γ) (by rwa [abs_neg]), hz'⟩
+    have hsum : ∑ w ∈ ({ρ, ρ'} : Finset ℂ),
+        (1 / (((1 + 60 * ε : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I - w)).re
+        = 2 * ((60 * ε + δ) / ((60 * ε + δ) ^ 2 + γ ^ 2)) := by
+      rw [Finset.sum_pair hne]
+      have e1 : ((1 + 60 * ε : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I - ρ
+          = ((60 * ε + δ : ℝ) : ℂ) + ((-γ : ℝ) : ℂ) * I := by rw [hρ]; push_cast; ring
+      have e2 : ((1 + 60 * ε : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I - ρ'
+          = ((60 * ε + δ : ℝ) : ℂ) + ((γ : ℝ) : ℂ) * I := by rw [hρ']; push_cast; ring
+      rw [e1, e2, re_one_div, re_one_div, neg_sq]
+      ring
+    have hP : 60 * ε / ((60 * ε) ^ 2 + (0 : ℝ) ^ 2) ≤ 1 / (60 * ε) := by
+      apply le_of_eq
+      rw [show (60 * ε) ^ 2 + (0 : ℝ) ^ 2 = 60 * ε * (60 * ε) by ring, div_mul_eq_div_div,
+        div_self ha0.ne']
+    have e0 : ((1 + 60 * ε : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I = ((1 + 60 * ε : ℝ) : ℂ) := by
+      push_cast; ring
+    have hmain : 2 * ((60 * ε + δ) / ((60 * ε + δ) ^ 2 + γ ^ 2))
+        ≤ 1 / (60 * ε) + 2 * (C * 𝓕.ell 0) := by
+      by_cases h1 : χ = 1
+      · have h0 := (GlobalTheory.T.rayClassLFunctionFamily_logDeriv_positivity 𝓕 χ χ (1 + 60 * ε) 0 (by linarith)).2.1
+        have hb := hR 𝓕 χ (60 * ε) 0 (1 / (60 * ε)) ha0 ha2 (by positivity) (fun _ => hP)
+          {ρ, ρ'} hnear
+        rw [hsum, e0, h1] at hb
+        have hC0 : 0 ≤ C * 𝓕.ell 0 := mul_nonneg hC.le (by linarith [one_le_ell 𝓕 0])
+        linarith
+      · have h0 := ((GlobalTheory.T.rayClassLFunctionFamily_logDeriv_positivity 𝓕 χ χ (1 + 60 * ε) 0 (by linarith)).2.2 hχ2 hχ2).1
+        have hb1 := hR 𝓕 1 (60 * ε) 0 (1 / (60 * ε)) ha0 ha2 (by positivity) (fun _ => hP)
+          ∅ (by simp)
+        have hb2 := hR 𝓕 χ (60 * ε) 0 0 ha0 ha2 le_rfl (fun h => absurd h h1) {ρ, ρ'} hnear
+        rw [hsum, e0] at hb2
+        rw [e0, Finset.sum_empty] at hb1
+        linarith
+    have hlow : 60 / (4621 * ε) ≤ (60 * ε + δ) / ((60 * ε + δ) ^ 2 + γ ^ 2) := by
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith [mul_nonneg (show (0 : ℝ) ≤ 60 * ε + δ - 60 * ε by linarith)
+        (show (0 : ℝ) ≤ 61 * ε - (60 * ε + δ) by linarith), mul_pos hε hε]
+    have i1 : 1 / (60 * ε) = v / 60 := by rw [hv]; ring
+    have i2 : 60 / (4621 * ε) = 60 / 4621 * v := by rw [hv]; ring
+    nlinarith
+  · have hcase1 : χ = 1 → (30 * ε) ^ 2 ≤ γ ^ 2 := by
+      intro h
+      by_contra hc
+      push_neg at hc
+      exact hB ⟨by rw [h, mul_one], hc⟩
+    have hcase2 : χ * χ = 1 → (30 * ε) ^ 2 ≤ (2 * γ) ^ 2 := by
+      intro h
+      have : (30 * ε) ^ 2 ≤ γ ^ 2 := by
+        by_contra hc
+        push_neg at hc
+        exact hB ⟨h, hc⟩
+      nlinarith [sq_nonneg γ]
+    have ha0 : 0 < 6 * ε := by positivity
+    have ha2 : 6 * ε ≤ 1 / 2 := by linarith
+    have hP0 : 0 ≤ 1 / 156 * (1 / ε) := by positivity
+    have hP1 : 6 * ε / ((6 * ε) ^ 2 + (0 : ℝ) ^ 2) ≤ 1 / (6 * ε) := by
+      apply le_of_eq
+      rw [show (6 * ε) ^ 2 + (0 : ℝ) ^ 2 = 6 * ε * (6 * ε) by ring, div_mul_eq_div_div,
+        div_self ha0.ne']
+    have h0 := (GlobalTheory.T.rayClassLFunctionFamily_logDeriv_positivity 𝓕 χ χ (1 + 6 * ε) γ (by linarith)).1
+    have hb1 := hR 𝓕 1 (6 * ε) 0 (1 / (6 * ε)) ha0 ha2 (by positivity) (fun _ => hP1) ∅ (by simp)
+    have hρn : ∀ w ∈ ({ρ} : Finset ℂ), ‖w - (5 / 4 + γ * I)‖ ≤ 3 / 5 ∧ 𝓕.F χ w = 0 := by
+      intro w hw
+      rw [Finset.mem_singleton.mp hw]
+      refine ⟨?_, hz⟩
+      have e : ρ - (5 / 4 + γ * I) = ((-(1 / 4 + δ) : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I := by
+        rw [hρ]; push_cast; ring
+      rw [e]
+      refine (norm_ofReal_add_mul_I_le_abs_add_abs _ _).trans ?_
+      rw [abs_neg, abs_of_nonneg (by linarith), abs_zero]
+      linarith
+    have hb2 := hR 𝓕 χ (6 * ε) γ (1 / 156 * (1 / ε)) ha0 ha2 hP0
+      (fun h => pole_le hε (hcase1 h)) {ρ} hρn
+    have hb3 := hR 𝓕 (χ * χ) (6 * ε) (2 * γ) (1 / 156 * (1 / ε)) ha0 ha2 hP0
+      (fun h => pole_le hε (hcase2 h)) ∅ (by simp)
+    have e0 : ((1 + 6 * ε : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I = ((1 + 6 * ε : ℝ) : ℂ) := by
+      push_cast; ring
+    have e2 : ((1 + 6 * ε : ℝ) : ℂ) + ((2 * γ : ℝ) : ℂ) * I
+        = ((1 + 6 * ε : ℝ) : ℂ) + 2 * (γ : ℂ) * I := by push_cast; ring
+    have e1 : ((1 + 6 * ε : ℝ) : ℂ) + (γ : ℂ) * I - ρ
+        = ((6 * ε + δ : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I := by rw [hρ]; push_cast; ring
+    rw [e0, Finset.sum_empty] at hb1
+    rw [e2, Finset.sum_empty] at hb3
+    rw [Finset.sum_singleton, e1, re_one_div] at hb2
+    have hlow : 1 / (7 * ε) ≤ (6 * ε + δ) / ((6 * ε + δ) ^ 2 + (0 : ℝ) ^ 2) := by
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith [mul_le_mul_of_nonneg_left (show 6 * ε + δ ≤ 7 * ε by linarith)
+        (show (0 : ℝ) ≤ 6 * ε + δ by linarith)]
+    have i1 : 1 / (6 * ε) = v / 6 := by rw [hv]; ring
+    have i2 : 1 / (7 * ε) = v / 7 := by rw [hv]; ring
+    have i3 : 1 / 156 * (1 / ε) = v / 156 := by rw [hv]; ring
+    nlinarith
+
+theorem zero_free_region : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (s : ℂ), 3 / 4 ≤ s.re → 𝓕.F χ s = 0 → (χ * χ ≠ 1 ∨ s.im ≠ 0) → s.re < 1 - c / 𝓕.ell s.im := by
+  obtain ⟨K, hK, hKb⟩ := inv_le_ell
+  refine ⟨1 / (4 * K + 400), by positivity, ?_⟩
+  intro 𝓕 χ s _ hs hχ
+  by_contra hlt
+  push_neg at hlt
+  have hℓ2 := 𝓕.two_lt_ell s.im
+  have hℓpos : 0 < 𝓕.ell s.im := by linarith
+  have hpos : 0 < (2 * K + 200) * 𝓕.ell s.im := mul_pos (by linarith) hℓpos
+  have hε : 0 < 1 / ((2 * K + 200) * 𝓕.ell s.im) := by positivity
+  have hε1 : 1 / ((2 * K + 200) * 𝓕.ell s.im) ≤ 1 / 400 := by
+    apply one_div_le_one_div_of_le (by norm_num)
+    nlinarith [mul_pos hK hℓpos]
+  have hδ : 0 ≤ 1 - s.re := by linarith [re_le_one hs]
+  have hδε : 1 - s.re ≤ 1 / ((2 * K + 200) * 𝓕.ell s.im) := by
+    have h1 : 1 - s.re ≤ 1 / (4 * K + 400) / 𝓕.ell s.im := by linarith
+    refine h1.trans ?_
+    rw [div_div]
+    apply one_div_le_one_div_of_le hpos
+    nlinarith [mul_pos hK hℓpos]
+  have hz : 𝓕.F χ (((1 - (1 - s.re) : ℝ) : ℂ) + s.im * I) = 0 := by
+    rw [show (1 - (1 - s.re) : ℝ) = s.re by ring, re_add_im]
+    exact hs
+  have h := hKb 𝓕 χ _ (1 - s.re) s.im hz hχ hε hε1 hδ hδε
+  rw [one_div_one_div] at h
+  nlinarith [mul_pos hK hℓpos]
+
+end GlobalTheory.Hk.ZeroFree
+end
+
+open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk GlobalTheory.Mem
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rayClassLFunction_zero_free_region : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (s : ℂ), 3 / 4 ≤ s.re → 𝓕.F χ s = 0 → (χ * χ ≠ 1 ∨ s.im ≠ 0) → s.re < 1 - c / 𝓕.ell s.im := by
+  atlas_forward_decl GlobalTheory.Hk.ZeroFree.zero_free_region
+end
+
+section
+section
+open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk GlobalTheory.Mem
+open scoped Classical
+
+namespace GlobalTheory.Hk.RealZero
+
+theorem order_ne_top (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) {z : ℂ} (hz : 1 / 2 < z.re) :
+    analyticOrderAt (𝓕.F χ) z ≠ ⊤ := by
+  have hA := (GlobalTheory.T.rayClassLFunctionFamily_continuation_growth 𝓕 χ).1
+  have hU : IsPreconnected {s : ℂ | 1 / 2 < s.re} := (convex_halfSpace_re_gt (1 / 2)).isPreconnected
+  have h2 : (2 : ℂ) ∈ {s : ℂ | 1 / 2 < s.re} := by
+    show (1 : ℝ) / 2 < (2 : ℂ).re
+    norm_num
+  have hF2 : 𝓕.F χ 2 ≠ 0 := (GlobalTheory.T.rayClassFamily_logDeriv_re_gt_one 𝓕 χ 2 (by norm_num)).2.2.1
+  have h2top : analyticOrderAt (𝓕.F χ) 2 ≠ ⊤ := by
+    rw [(hA 2 h2).analyticOrderAt_eq_zero.mpr hF2]
+    exact ENat.zero_ne_top
+  exact hA.analyticOrderAt_ne_top_of_isPreconnected hU h2 hz h2top
+
+theorem le_order (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) {z : ℂ} (hz : 1 / 2 < z.re) (n : ℕ)
+    (hn : ∀ i < n, iteratedDeriv i (𝓕.F χ) z = 0) :
+    n ≤ analyticOrderNatAt (𝓕.F χ) z := by
+  have hA := (GlobalTheory.T.rayClassLFunctionFamily_continuation_growth 𝓕 χ).1 z hz
+  have h := (natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero hA).mpr hn
+  rw [← Nat.cast_analyticOrderNatAt (order_ne_top 𝓕 χ hz)] at h
+  exact_mod_cast h
+
+theorem re_le_one (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) {z : ℂ}
+    (hz : 𝓕.F χ z = 0) : z.re ≤ 1 := by
+  by_contra h
+  exact (GlobalTheory.T.rayClassFamily_logDeriv_re_gt_one 𝓕 χ z (not_le.mp h)).2.2.1 hz
+
+private lemma sum_real_zeros_div_sub_le_re_finsum_div_sub (m : ℂ → ℕ) (σ : ℝ) (S : Set ℂ) (hS : S.Finite) (T : Finset ℝ)
+    (hTS : ∀ β ∈ T, (β : ℂ) ∈ S) (hre : ∀ w ∈ S, w.re < σ) :
+    ∑ β ∈ T, (m β : ℝ) / (σ - β) ≤ (∑ᶠ w ∈ S, (m w : ℂ) / ((σ : ℂ) - w)).re := by
+  rw [finsum_mem_eq_finite_toFinset_sum _ hS, Complex.re_sum]
+  have hnn : ∀ w ∈ hS.toFinset, 0 ≤ ((m w : ℂ) / ((σ : ℂ) - w)).re := by
+    intro w hw
+    rw [Set.Finite.mem_toFinset] at hw
+    have h1 := hre w hw
+    rw [Complex.div_re]
+    simp only [Complex.natCast_re, Complex.natCast_im, zero_mul, zero_div, add_zero,
+      Complex.sub_re, Complex.ofReal_re]
+    exact div_nonneg (mul_nonneg (Nat.cast_nonneg _) (by linarith)) (Complex.normSq_nonneg _)
+  have himg : ∑ β ∈ T, (m β : ℝ) / (σ - β)
+      = ∑ w ∈ T.image (fun β : ℝ => (β : ℂ)), ((m w : ℂ) / ((σ : ℂ) - w)).re := by
+    rw [Finset.sum_image (fun a _ b _ h => Complex.ofReal_injective h)]
+    refine Finset.sum_congr rfl (fun β _ => ?_)
+    have e : (m β : ℂ) / ((σ : ℂ) - β) = (((m β : ℝ) / (σ - β) : ℝ) : ℂ) := by
+      rw [Complex.ofReal_div, Complex.ofReal_sub, Complex.ofReal_natCast]
+    rw [e, Complex.ofReal_re]
+  rw [himg]
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun w hw _ => hnn w hw)
+  intro w hw
+  rw [Finset.mem_image] at hw
+  obtain ⟨β, hβ, rfl⟩ := hw
+  rw [Set.Finite.mem_toFinset]
+  exact hTS β hβ
+
+private lemma neg_re_le_neg_add_of_norm_sub_le_of_le_re (A B : ℂ) (x y : ℝ) (h : ‖A - B‖ ≤ x) (hy : y ≤ B.re) :
+    -A.re ≤ -y + x := by
+  have h1 := Complex.re_le_norm (B - A)
+  rw [norm_sub_rev, Complex.sub_re] at h1
+  linarith
+
+theorem exists_bound : ∃ C : ℝ, 0 < C ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ),
+    ∀ σ : ℝ, 1 < σ → σ ≤ 7 / 4 → ∀ T : Finset ℝ,
+    (∀ β ∈ T, 3 / 4 ≤ β ∧ 𝓕.F χ β = 0) →
+    (LSeries (𝓕.lamChi χ) σ).re ≤ (if χ = 1 then 1 / (σ - 1) else 0) + C * 𝓕.ell 0
+      - ∑ β ∈ T, (analyticOrderNatAt (𝓕.F χ) β : ℝ) / (σ - β) := by
+  obtain ⟨C, hC, hmain⟩ := GlobalTheory.T.rayClassLFunction_logDeriv_local_formula
+  refine ⟨C, hC, fun 𝓕 χ σ hσ1 hσ2 T hT => ?_⟩
+  obtain ⟨hfin, -, happ⟩ := hmain 𝓕 χ 0
+  simp only [Complex.ofReal_zero, zero_mul, add_zero] at hfin happ
+  have hs1 : 1 < (σ : ℂ).re := by simpa using hσ1
+  obtain ⟨-, -, hFs, hL⟩ := GlobalTheory.T.rayClassFamily_logDeriv_re_gt_one 𝓕 χ σ hs1
+  have hnear : ‖(σ : ℂ) - 5 / 4‖ ≤ 1 / 2 := by
+    have e : (σ : ℂ) - 5 / 4 = ((σ - 5 / 4 : ℝ) : ℂ) := by push_cast; ring
+    rw [e, Complex.norm_real, Real.norm_eq_abs, abs_le]
+    constructor <;> linarith
+  have hE := happ σ hnear hFs
+  have hsum := sum_real_zeros_div_sub_le_re_finsum_div_sub (analyticOrderNatAt (𝓕.F χ)) σ _ hfin T ?_ ?_
+  · have h2 := neg_re_le_neg_add_of_norm_sub_le_of_le_re _ _ _ _ hE hsum
+    rw [← hL, Complex.add_re, Complex.neg_re]
+    split_ifs with h1
+    · have e : (1 / ((σ : ℂ) - 1)).re = 1 / (σ - 1) := by
+        rw [show (1 : ℂ) / ((σ : ℂ) - 1) = ((1 / (σ - 1) : ℝ) : ℂ) by
+          rw [Complex.ofReal_div, Complex.ofReal_sub, Complex.ofReal_one], Complex.ofReal_re]
+      rw [e]
+      linarith
+    · rw [Complex.zero_re]
+      linarith
+  · intro β hβ
+    obtain ⟨h34, hz⟩ := hT β hβ
+    have hb1 : β ≤ 1 := by simpa using re_le_one 𝓕 χ hz
+    refine ⟨?_, hz⟩
+    have e : (β : ℂ) - 5 / 4 = ((β - 5 / 4 : ℝ) : ℂ) := by push_cast; ring
+    rw [e, Complex.norm_real, Real.norm_eq_abs, abs_le]
+    constructor <;> linarith
+  · intro w hw
+    have := re_le_one 𝓕 χ hw.2
+    linarith
+
+private lemma term_lemma_3 {c ℓ σ β : ℝ} (m : ℝ) (hm : 0 ≤ m) (hc : 0 < c) (hℓ : 0 < ℓ)
+    (hσ : σ = 1 + 2 * c / ℓ) (h1 : 1 - c / ℓ ≤ β) (h2 : β ≤ 1) :
+    m * (ℓ / (3 * c)) ≤ m / (σ - β) := by
+  subst hσ
+  have h2c : 0 < 2 * c / ℓ := by positivity
+  have hpos : 0 < 1 + 2 * c / ℓ - β := by linarith
+  have hle : 1 + 2 * c / ℓ - β ≤ 3 * c / ℓ := by
+    have : 3 * c / ℓ = c / ℓ + 2 * c / ℓ := by ring
+    linarith
+  have key := one_div_le_one_div_of_le hpos hle
+  rw [one_div_div] at key
+  rw [div_eq_mul_one_div m]
+  exact mul_le_mul_of_nonneg_left key hm
+
+private lemma false_of_le_of_mul_hundred_mul_add_one_eq_one {C c ℓ X : ℝ} (hC : 0 < C) (hℓ : 0 < ℓ) (hcC : c * (100 * (C + 1)) = 1)
+    (hc : 0 < c) (hX : 2 * (ℓ / (3 * c)) ≤ X) (h : 0 ≤ ℓ / (2 * c) + 4 * (C * ℓ) - X) : False := by
+  have h1c : 1 / c = 100 * (C + 1) := by
+    rw [eq_comm, eq_div_iff hc.ne']
+    linear_combination hcC
+  have e2 : ℓ / (2 * c) = ℓ / 2 * (1 / c) := by rw [div_mul_div_comm, mul_one]
+  have e3 : ℓ / (3 * c) = ℓ / 3 * (1 / c) := by rw [div_mul_div_comm, mul_one]
+  rw [e3, h1c] at hX
+  rw [e2, h1c] at h
+  nlinarith [mul_pos hℓ hC]
+
+theorem main : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ ψ : AddChar 𝓕.G ℂ) (β β' : ℝ), χ * χ = 1 → ψ * ψ = 1 → 3 / 4 ≤ β → 3 / 4 ≤ β' → 1 - c / 𝓕.ell 0 ≤ β → 1 - c / 𝓕.ell 0 ≤ β' → 𝓕.F χ β = 0 → 𝓕.F ψ β' = 0 → χ = ψ ∧ β = β' ∧ deriv (𝓕.F χ) β ≠ 0 := by
+  obtain ⟨C, hC, hb⟩ := exists_bound
+  obtain ⟨c, hcdef⟩ : ∃ c : ℝ, c = 1 / (100 * (C + 1)) := ⟨_, rfl⟩
+  have hc : 0 < c := by rw [hcdef]; positivity
+  have hcC : c * (100 * (C + 1)) = 1 := by
+    rw [hcdef, one_div, inv_mul_cancel₀ (by positivity)]
+  refine ⟨c, hc, ?_⟩
+  intro 𝓕 χ ψ β β' hχ hψ hβ hβ' hc1 hc1' hz hz'
+  have hℓ2 : 2 < 𝓕.ell 0 := 𝓕.two_lt_ell 0
+  have hℓ : 0 < 𝓕.ell 0 := by linarith
+  have hCℓ : 0 < C * 𝓕.ell 0 := mul_pos hC hℓ
+  obtain ⟨σ, hσdef⟩ : ∃ σ : ℝ, σ = 1 + 2 * c / 𝓕.ell 0 := ⟨_, rfl⟩
+  have hσ1 : 1 < σ := by
+    have : 0 < 2 * c / 𝓕.ell 0 := by positivity
+    linarith
+  have hσ2 : σ ≤ 7 / 4 := by
+    have hc' : c < 1 / 100 := by nlinarith [mul_pos hc hC]
+    have : 2 * c / 𝓕.ell 0 ≤ 3 / 4 := by
+      rw [div_le_iff₀ hℓ]
+      linarith
+    linarith
+  have hpole : 1 / (σ - 1) = 𝓕.ell 0 / (2 * c) := by
+    rw [hσdef, add_sub_cancel_left, one_div_div]
+  have hq : 0 < 𝓕.ell 0 / (3 * c) := by positivity
+  have tb : ∀ (φ : AddChar 𝓕.G ℂ) (x : ℝ) (k : ℕ), 3 / 4 ≤ x → 1 - c / 𝓕.ell 0 ≤ x →
+      𝓕.F φ x = 0 → (∀ i < k, iteratedDeriv i (𝓕.F φ) x = 0) →
+      k * (𝓕.ell 0 / (3 * c)) ≤ (analyticOrderNatAt (𝓕.F φ) x : ℝ) / (σ - x) := by
+    intro φ x k hx hxc hx0 hk
+    have hx2 : 1 / 2 < (x : ℂ).re := by
+      rw [Complex.ofReal_re]
+      linarith
+    have hx1 : x ≤ 1 := by simpa using re_le_one 𝓕 φ hx0
+    have hm : (k : ℝ) ≤ analyticOrderNatAt (𝓕.F φ) x := by
+      exact_mod_cast le_order 𝓕 φ hx2 k hk
+    have ht := term_lemma_3 (analyticOrderNatAt (𝓕.F φ) x : ℝ) (by positivity) hc hℓ hσdef hxc hx1
+    nlinarith
+  have d1 : ∀ (φ : AddChar 𝓕.G ℂ) (x : ℝ), 𝓕.F φ x = 0 → ∀ i < 1, iteratedDeriv i (𝓕.F φ) x = 0 := by
+    intro φ x h0 i hi
+    interval_cases i
+    simpa using h0
+  have tβ := tb χ β 1 hβ hc1 hz (d1 χ β hz)
+  have tβ' := tb ψ β' 1 hβ' hc1' hz' (d1 ψ β' hz')
+  push_cast at tβ tβ'
+  have sg : ∀ (φ : AddChar 𝓕.G ℂ) (x : ℝ), 3 / 4 ≤ x → 𝓕.F φ x = 0 →
+      ∀ y ∈ ({x} : Finset ℝ), 3 / 4 ≤ y ∧ 𝓕.F φ y = 0 := by
+    intro φ x hx h0 y hy
+    rw [Finset.mem_singleton] at hy
+    rw [hy]
+    exact ⟨hx, h0⟩
+  by_cases hcp : χ = ψ
+  · subst hcp
+    refine ⟨rfl, ?_⟩
+    by_contra hbad
+    obtain ⟨T, hT, hXT⟩ : ∃ T : Finset ℝ, (∀ x ∈ T, 3 / 4 ≤ x ∧ 𝓕.F χ x = 0) ∧
+        2 * (𝓕.ell 0 / (3 * c)) ≤ ∑ x ∈ T, (analyticOrderNatAt (𝓕.F χ) x : ℝ) / (σ - x) := by
+      by_cases hne : β = β'
+      · have hd : deriv (𝓕.F χ) β = 0 := by
+          by_contra hd
+          exact hbad ⟨hne, hd⟩
+        refine ⟨{β}, sg χ β hβ hz, ?_⟩
+        rw [Finset.sum_singleton]
+        have h2 := tb χ β 2 hβ hc1 hz (by
+          intro i hi
+          interval_cases i
+          · simpa using hz
+          · simpa using hd)
+        exact_mod_cast h2
+      · refine ⟨{β, β'}, ?_, ?_⟩
+        · intro x hx
+          rw [Finset.mem_insert, Finset.mem_singleton] at hx
+          rcases hx with rfl | rfl
+          · exact ⟨hβ, hz⟩
+          · exact ⟨hβ', hz'⟩
+        · rw [Finset.sum_pair hne]
+          linarith
+    by_cases h1 : χ = 1
+    · subst h1
+      have hB := hb 𝓕 1 σ hσ1 hσ2 T hT
+      rw [if_pos rfl, hpole] at hB
+      have h0 := (GlobalTheory.T.rayClassLFunctionFamily_logDeriv_positivity 𝓕 1 1 σ 0 hσ1).2.1
+      exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc hXT (by linarith)
+    · have hB := hb 𝓕 χ σ hσ1 hσ2 T hT
+      rw [if_neg h1] at hB
+      have hB1 := hb 𝓕 1 σ hσ1 hσ2 ∅ (by simp)
+      rw [if_pos rfl, hpole, Finset.sum_empty] at hB1
+      have h0 := ((GlobalTheory.T.rayClassLFunctionFamily_logDeriv_positivity 𝓕 χ χ σ 0 hσ1).2.2 hχ hχ).1
+      exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc hXT (by linarith)
+  · exfalso
+    by_cases h1 : χ = 1
+    · subst h1
+      have hψ1 : ψ ≠ 1 := fun h => hcp h.symm
+      have hB1 := hb 𝓕 1 σ hσ1 hσ2 {β} (sg 1 β hβ hz)
+      rw [if_pos rfl, hpole, Finset.sum_singleton] at hB1
+      have hBψ := hb 𝓕 ψ σ hσ1 hσ2 {β'} (sg ψ β' hβ' hz')
+      rw [if_neg hψ1, Finset.sum_singleton] at hBψ
+      have h0 := ((GlobalTheory.T.rayClassLFunctionFamily_logDeriv_positivity 𝓕 ψ ψ σ 0 hσ1).2.2 hψ hψ).1
+      exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc (X := (analyticOrderNatAt (𝓕.F 1) β : ℝ) / (σ - β) +
+        (analyticOrderNatAt (𝓕.F ψ) β' : ℝ) / (σ - β')) (by linarith) (by linarith)
+    · by_cases h2 : ψ = 1
+      · subst h2
+        have hB1 := hb 𝓕 1 σ hσ1 hσ2 {β'} (sg 1 β' hβ' hz')
+        rw [if_pos rfl, hpole, Finset.sum_singleton] at hB1
+        have hBχ := hb 𝓕 χ σ hσ1 hσ2 {β} (sg χ β hβ hz)
+        rw [if_neg h1, Finset.sum_singleton] at hBχ
+        have h0 := ((GlobalTheory.T.rayClassLFunctionFamily_logDeriv_positivity 𝓕 χ χ σ 0 hσ1).2.2 hχ hχ).1
+        exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc (X := (analyticOrderNatAt (𝓕.F χ) β : ℝ) / (σ - β) +
+          (analyticOrderNatAt (𝓕.F 1) β' : ℝ) / (σ - β')) (by linarith) (by linarith)
+      · have hχψ : χ * ψ ≠ 1 := by
+          intro h
+          apply hcp
+          calc χ = χ * (ψ * ψ) := by rw [hψ, mul_one]
+            _ = (χ * ψ) * ψ := (mul_assoc _ _ _).symm
+            _ = ψ := by rw [h, one_mul]
+        have hB1 := hb 𝓕 1 σ hσ1 hσ2 ∅ (by simp)
+        rw [if_pos rfl, hpole, Finset.sum_empty] at hB1
+        have hBχ := hb 𝓕 χ σ hσ1 hσ2 {β} (sg χ β hβ hz)
+        rw [if_neg h1, Finset.sum_singleton] at hBχ
+        have hBψ := hb 𝓕 ψ σ hσ1 hσ2 {β'} (sg ψ β' hβ' hz')
+        rw [if_neg h2, Finset.sum_singleton] at hBψ
+        have hBχψ := hb 𝓕 (χ * ψ) σ hσ1 hσ2 ∅ (by simp)
+        rw [if_neg hχψ, Finset.sum_empty] at hBχψ
+        have h0 := ((GlobalTheory.T.rayClassLFunctionFamily_logDeriv_positivity 𝓕 χ ψ σ 0 hσ1).2.2 hχ hψ).2
+        exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc (X := (analyticOrderNatAt (𝓕.F χ) β : ℝ) / (σ - β) +
+          (analyticOrderNatAt (𝓕.F ψ) β' : ℝ) / (σ - β')) (by linarith) (by linarith)
+
+end GlobalTheory.Hk.RealZero
+end
+
+open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk GlobalTheory.Mem
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rayClassLFunction_unique_simple_exceptional_zero : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ ψ : AddChar 𝓕.G ℂ) (β β' : ℝ), χ * χ = 1 → ψ * ψ = 1 → 3 / 4 ≤ β → 3 / 4 ≤ β' → 1 - c / 𝓕.ell 0 ≤ β → 1 - c / 𝓕.ell 0 ≤ β' → 𝓕.F χ β = 0 → 𝓕.F ψ β' = 0 → χ = ψ ∧ β = β' ∧ deriv (𝓕.F χ) β ≠ 0 := by
+  atlas_forward_decl GlobalTheory.Hk.RealZero.main
+end
+
+section
 section
 open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk GlobalTheory.Mem
 open scoped Classical
@@ -289,3 +873,4 @@ open scoped Classical
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_lam_zero_sum_shortInterval_ge : ∃ A c c' : ℝ, 0 < A ∧ 0 < c ∧ 0 < c' ∧ ∀ (𝓕 : LFam) (X h : ℝ), 1 ≤ X → Real.log 𝓕.B ≤ c * Real.sqrt (Real.log X) → Real.exp (-c * Real.sqrt (Real.log X)) ≤ h → h ≤ 1 → c' * h * X / 𝓕.B ^ A ≤ ∑ n ∈ Finset.Ioc ⌊X⌋₊ ⌊X * (1 + h)⌋₊, 𝓕.lam 0 n := by
   atlas_forward_decl GlobalTheory.Hk.ShortInt.trivialClass_shortInterval
+end

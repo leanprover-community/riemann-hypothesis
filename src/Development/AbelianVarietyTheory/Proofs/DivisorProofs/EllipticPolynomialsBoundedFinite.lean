@@ -1,9 +1,148 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseChangeLevelFamilyIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductOfLocalLevelsUnitaryIsOpenIsCompactIsLeve
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MonicCoeffNatDegreeSubEqMulCmConj
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCommonDenominatorOfValuationLeCofinite
+import BuildAid.ForwardExisting
 
+section
+section
+open NumberField Polynomial
+
+namespace GlobalTheory
+
+theorem coeff_natDegree_sub_eq_of_roots_norm_one (Q : ℂ[X]) (hQ : Q.Monic)
+    (hroots : ∀ z ∈ Q.roots, ‖z‖ = 1) :
+    ∀ i ≤ Q.natDegree, Q.coeff (Q.natDegree - i) = Q.coeff 0 * starRingEnd ℂ (Q.coeff i) := by
+  intro i hi
+  set s := Q.roots with hs
+  have hprod : (s.map fun z => X - C z).prod = Q := by
+    have h := C_leadingCoeff_mul_prod_multiset_X_sub_C (p := Q) IsAlgClosed.card_roots_eq_natDegree
+    rwa [hQ.leadingCoeff, C_1, one_mul] at h
+  have hrevX : ∀ z ∈ s, (X - C z : ℂ[X]).reverse = C (-z) * (X - C (starRingEnd ℂ z)) := by
+    intro z hz
+    have hz1 : z * starRingEnd ℂ z = 1 := by
+      rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hroots z hz]; simp
+    rw [sub_eq_add_neg, ← C_neg, reverse_add_C, natDegree_X, ← one_mul (X : ℂ[X]), reverse_mul_X, ← C_1, reverse_C]
+    rw [mul_sub, ← C_mul, neg_mul, hz1]
+    simp only [C_1, C_neg, one_mul, pow_one]
+    ring
+  have hrev : Q.reverse = C (Q.coeff 0) * Q.map (starRingEnd ℂ) := by
+    have key : ∀ t : Multiset ℂ, (∀ z ∈ t, (X - C z : ℂ[X]).reverse = C (-z) * (X - C (starRingEnd ℂ z))) →
+        (t.map fun z => X - C z).prod.reverse
+          = (t.map fun z => C (-z) * (X - C (starRingEnd ℂ z))).prod := by
+      intro t
+      induction t using Multiset.induction_on with
+      | empty => intro _; simpa using reverse_C (1 : ℂ)
+      | cons a t ih =>
+        intro h
+        rw [Multiset.map_cons, Multiset.map_cons, Multiset.prod_cons, Multiset.prod_cons,
+          reverse_mul_of_domain, ih (fun z hz => h z (Multiset.mem_cons_of_mem hz)),
+          h a (Multiset.mem_cons_self a t)]
+    conv_lhs => rw [← hprod]
+    rw [key s hrevX, Multiset.prod_map_mul]
+    conv_rhs => rw [← hprod]
+    congr 1
+    · rw [coeff_zero_multiset_prod, Multiset.map_map, map_multiset_prod, Multiset.map_map]
+      congr 1
+      apply Multiset.map_congr rfl
+      intro z _
+      simp
+    · rw [Polynomial.map_multiset_prod, Multiset.map_map]
+      congr 1
+      apply Multiset.map_congr rfl
+      intro z _
+      simp
+  have h1 := congrArg (fun p => p.coeff i) hrev
+  simp only [coeff_reverse, coeff_C_mul, coeff_map] at h1
+  rwa [revAt_le hi] at h1
+
+theorem monic_coeff_natDegree_sub_eq_mul_complexConj :
+    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (P : Polynomial E),
+    P.Monic → P.natDegree = n → (∀ (τ : E →+* ℂ), ∀ z ∈ (P.map τ).roots, ‖z‖ = 1) →
+    ∀ i ≤ n, P.coeff (n - i) = P.coeff 0 * IsCMField.complexConj E (P.coeff i) := by
+  intro E _ _ _ n P hP hn hroots i hi
+  let τ : E →+* ℂ := (IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := E)).toRingHom
+  have hQ : (P.map τ).Monic := hP.map τ
+  have hdeg : (P.map τ).natDegree = n := by rw [hP.natDegree_map, hn]
+  have h := coeff_natDegree_sub_eq_of_roots_norm_one (P.map τ) hQ (hroots τ) i (hdeg ▸ hi)
+  rw [hdeg, coeff_map, coeff_map, coeff_map, ← IsCMField.complexEmbedding_complexConj E τ,
+    ← map_mul] at h
+  exact τ.injective h
+
+end GlobalTheory
+end
+
+open NumberField Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monic_coeff_natDegree_sub_eq_mul_cmConj : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (P : Polynomial E),
+    P.Monic → P.natDegree = n → (∀ (τ : E →+* ℂ), ∀ z ∈ (P.map τ).roots, ‖z‖ = 1) →
+    ∀ i ≤ n, P.coeff (n - i) = P.coeff 0 * IsCMField.complexConj E (P.coeff i) := by
+  atlas_forward_decl GlobalTheory.monic_coeff_natDegree_sub_eq_mul_complexConj
+end
+
+section
+section
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory.ValBoundDenom
+
+theorem exists_nat_le_exp (a : WithZero (Multiplicative ℤ)) : ∃ n : ℕ, a ≤ WithZero.exp (n : ℤ) := by
+  induction a using WithZero.recZeroCoe with
+  | zero => exact ⟨0, zero_le'⟩
+  | coe m =>
+    refine ⟨(Multiplicative.toAdd m).toNat, ?_⟩
+    show (m : WithZero (Multiplicative ℤ)) ≤ ((Multiplicative.ofAdd ((Multiplicative.toAdd m).toNat : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ))
+    rw [WithZero.coe_le_coe]
+    exact Int.self_le_toNat (Multiplicative.toAdd m)
+
+theorem exists_common_denominator_of_valuation_le (E : Type) [Field E] [NumberField E]
+    (β : IsDedekindDomain.HeightOneSpectrum (𝓞 E) → WithZero (Multiplicative ℤ))
+    (hβ : ∀ᶠ w in Filter.cofinite, β w ≤ 1) : ∃ D : 𝓞 E, D ≠ 0 ∧
+      ∀ x : E, (∀ w : IsDedekindDomain.HeightOneSpectrum (𝓞 E), w.valuation E x ≤ β w) →
+        IsIntegral ℤ ((D : E) * x) := by
+  classical
+  have hfin : {w | ¬ β w ≤ 1}.Finite := Filter.eventually_cofinite.mp hβ
+  set T := hfin.toFinset with hT
+  choose k hk using fun w => exists_nat_le_exp (β w)
+  set I : Ideal (𝓞 E) := ∏ w ∈ T, w.asIdeal ^ k w with hI
+  have hI0 : I ≠ ⊥ := by
+    rw [hI, ← Ideal.zero_eq_bot, Finset.prod_ne_zero_iff]
+    intro w _
+    exact pow_ne_zero _ (by rw [Ideal.zero_eq_bot]; exact w.ne_bot)
+  obtain ⟨D, hDI, hD0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hI0
+  refine ⟨D, hD0, fun x hx => ?_⟩
+  have hle : ∀ w : IsDedekindDomain.HeightOneSpectrum (𝓞 E), w.valuation E ((D : E) * x) ≤ 1 := by
+    intro w
+    rw [map_mul]
+    by_cases hw : w ∈ T
+    · have hmem : D ∈ w.asIdeal ^ k w :=
+        (Finset.inf_le hw : T.inf (fun w => w.asIdeal ^ k w) ≤ _) (Ideal.prod_le_inf hDI)
+      have h1 : w.valuation E (D : E) ≤ WithZero.exp (-(k w : ℤ)) := by
+        rw [IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap]
+        exact (IsDedekindDomain.HeightOneSpectrum.intValuation_le_pow_iff_mem _ _ _).mpr hmem
+      have h2 : w.valuation E x ≤ WithZero.exp (k w : ℤ) := (hx w).trans (hk w)
+      calc w.valuation E (D : E) * w.valuation E x
+          ≤ WithZero.exp (-(k w : ℤ)) * WithZero.exp (k w : ℤ) := mul_le_mul' h1 h2
+        _ = 1 := by rw [← WithZero.exp_add]; simp
+    · have hw1 : β w ≤ 1 := by
+        by_contra h
+        exact hw (by rw [hT, Set.Finite.mem_toFinset]; exact h)
+      exact mul_le_one' (IsDedekindDomain.HeightOneSpectrum.valuation_le_one _ _) ((hx w).trans hw1)
+  obtain ⟨r, hr⟩ := IsDedekindDomain.HeightOneSpectrum.mem_integers_of_valuation_le_one E _ hle
+  rw [← hr]
+  exact r.isIntegral_coe
+
+end GlobalTheory.ValBoundDenom
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_common_denominator_of_valuation_le_cofinite : ∀ (E : Type) [Field E] [NumberField E] (β : IsDedekindDomain.HeightOneSpectrum (𝓞 E) → WithZero (Multiplicative ℤ)),
+    (∀ᶠ w in Filter.cofinite, β w ≤ 1) → ∃ D : 𝓞 E, D ≠ 0 ∧
+      ∀ x : E, (∀ w : IsDedekindDomain.HeightOneSpectrum (𝓞 E), w.valuation E x ≤ β w) → IsIntegral ℤ ((D : E) * x) := by
+  atlas_forward_decl GlobalTheory.ValBoundDenom.exists_common_denominator_of_valuation_le
+end
+
+section
 open NumberField IsDedekindDomain Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC
 open scoped Classical TensorProduct
@@ -105,3 +244,4 @@ theorem finite_ell_bounded : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
         Polynomial.coeff_eq_zero_of_natDegree_lt (by rw [hQ.1.2.1]; omega)]
 
 end GlobalTheory.BCT.GeoFin
+end

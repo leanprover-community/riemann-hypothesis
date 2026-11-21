@@ -8,16 +8,463 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OpEOmTargetUnipo
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CharEqOneOfOpENeZero
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExDownExUpAndExUpExDown
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousWittExtendByZero
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilFormulaRootExchangeParabolicIntersectionStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilFormulaRootExchangeParabolicIntersection
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QuotientIntegralLinear
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsWeakIntegralOfIsLocallyConstantOfIsCompact
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsMemSBEqOneOnCompact
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchwartzBruhatMatrixExistsOpenAddSubgroupInvariaStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OpECutOmEquivariant
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ColEInvMulAffPt
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RowSupportUniform
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeUnipotentSubgroupSuccDecompositionStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QuotientIntegralWhittakerTwist
+import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchwartzBruhatMatrixExistsOpenAddSubgroupInvaria
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralCompBlocks
+import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
+import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSumRowCol
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QuotientIntegralParabolicUnfolding
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_formula_rootExchange_parabolic_intersection : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (c p : ℕ) (_ : 1 ≤ p) (_ : p < c) (ν : Measure k) [ν.IsAddHaarMeasure] (μX : Measure (GL n k)) [μX.IsHaarMeasure] (μG : Measure (GL (n ⊕ Fin c) k)) [μG.IsHaarMeasure] (f : GL (n ⊕ Fin c) k → ℂ) (_ : IsLocallyConstant f) (_ : ∃ Ω, IsCompact Ω ∧ ∀ h, f h ≠ 0 → ∃ r ∈ R k n c p ⊓ R k n c (p + 1), ∃ w ∈ Ω, h = r * w) (_ : ∀ (x : GL n k), ∀ u ∈ N k n c p ⊓ N k n c (p + 1), ∀ h, f (embX c x * u * h) = ((nabs k (Matrix.GeneralLinearGroup.det x) ^ ((c : ℝ) - 2 * p) : ℝ) : ℂ) * f h), ∃ z, IsQuotInt ν μX μG p (fun h => ∫ β : n → k, f (colE c (p + 1) β * h) ∂(Measure.pi fun _ => ν)) z ∧ IsQuotInt ν μX μG (p + 1) (fun h => ∫ u : n → k, f (rowE c p u * h) ∂(Measure.pi fun _ => ν)) z := by
+  first | exact @GlobalTheory.RootEx.QuotStep.quotInt_step | exact GlobalTheory.RootEx.QuotStep.quotInt_step | (intros; apply GlobalTheory.RootEx.QuotStep.quotInt_step <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
+
+namespace GlobalTheory.RootEx
+
+theorem exists_mem_SB_eq_one_on_compact (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] (C : Set (n → k)) (hC : IsCompact C) :
+    ∃ χ ∈ SB (n → k), ∀ u ∈ C, χ u = 1 := by
+  classical
+  haveI : T2Space k := by
+    letI := IsTopologicalAddGroup.rightUniformSpace k
+    haveI := isUniformAddGroup_of_addCommGroup (G := k)
+    infer_instance
+  have ho : IsOpen (𝒪[k] : Set k) := Valuation.isOpen_integer
+  have hc : IsCompact (𝒪[k] : Set k) := IsNonarchimedeanLocalField.isCompact_closedBall k 1
+  let B : Set (n → k) := Set.univ.pi fun _ => (𝒪[k] : Set k)
+  have hBo : IsOpen B := isOpen_set_pi Set.finite_univ fun _ _ => ho
+  have hBc : IsCompact B := isCompact_univ_pi fun _ => hc
+  let U : (n → k) → Set (n → k) := fun x => (Homeomorph.addLeft x) '' B
+  have hUo : ∀ x, IsOpen (U x) := fun x => (Homeomorph.addLeft x).isOpenMap _ hBo
+  have hUc : ∀ x, IsCompact (U x) := fun x => hBc.image (Homeomorph.addLeft x).continuous
+  obtain ⟨t, ht⟩ := hC.elim_finite_subcover U hUo fun x _ =>
+    Set.mem_iUnion.mpr ⟨x, 0, fun _ _ => zero_mem _, by simp⟩
+  set K : Set (n → k) := ⋃ x ∈ t, U x with hK
+  have hKo : IsOpen K := isOpen_biUnion fun x _ => hUo x
+  have hKc : IsCompact K := t.isCompact_biUnion fun x _ => hUc x
+  have hcl : IsClopen K := ⟨hKc.isClosed, hKo⟩
+  refine ⟨K.indicator fun _ => (1 : ℂ), ⟨?_, ?_⟩, fun u hu => Set.indicator_of_mem (ht hu) _⟩
+  · refine (IsLocallyConstant.iff_eventually_eq _).mpr fun x => ?_
+    by_cases hx : x ∈ K
+    · filter_upwards [hKo.mem_nhds hx] with y hy
+      simp [hx, hy]
+    · filter_upwards [hcl.compl.isOpen.mem_nhds hx] with y hy
+      simp [hx, Set.notMem_of_mem_compl hy]
+  · exact HasCompactSupport.intro hKc fun x hx => Set.indicator_of_notMem hx _
+
+end GlobalTheory.RootEx
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartzBruhat_matrix_exists_open_addSubgroup_invariant : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b : Type) [Fintype a] [Fintype b], ∀ Φ ∈ SB (Matrix a b k), ∃ Λ : AddSubgroup (Matrix a b k), IsOpen (Λ : Set (Matrix a b k)) ∧ ∀ x, ∀ y ∈ Λ, Φ (x + y) = Φ x := by
+  first | exact @GlobalTheory.RootEx.sb_matrix_exists_isOpen_addSubgroup | exact GlobalTheory.RootEx.sb_matrix_exists_isOpen_addSubgroup | (intros; apply GlobalTheory.RootEx.sb_matrix_exists_isOpen_addSubgroup <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
+
+namespace GlobalTheory.RootEx.CutRow
+
+variable {k : Type} [Field k] {n n' : Type} [Fintype n] [DecidableEq n] {c p : ℕ}
+
+end GlobalTheory.RootEx.CutRow
+
+open MeasureTheory ValuativeRel Matrix in
+
+theorem _root_.GlobalTheory.RootEx.opE_cut_om_equivariant : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c p : ℕ) (_ : 1 ≤ p) (_ : p < c) (ψ : AddChar k Circle) (ν : Measure k) [ν.IsAddHaarMeasure] (μ : kˣ →* ℂˣ) (χ : (n' → k) → ℂ) (Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ) (x : GL n k), ∀ u ∈ _root_.GlobalTheory.RootEx.N k n c p ⊓ _root_.GlobalTheory.RootEx.N k n c (p + 1), _root_.GlobalTheory.RootEx.opE ψ ν (p + 1) (fun y => (∑ l : Fin c, if l.val + 1 = p then χ (fun s => y (Sum.inr l) (Sum.inl s)) else 0) * _root_.GlobalTheory.SplitWeil.om μ 1 (_root_.GlobalTheory.RootEx.embX c x * u) Φ y) = (((_root_.GlobalTheory.SplitWeil.nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - ((p + 1 : ℕ) : ℝ)) : ℝ) : ℂ) * (ψ (-_root_.GlobalTheory.RootEx.simpleSum u) : ℂ)) • _root_.GlobalTheory.SplitWeil.om μ 1 x (_root_.GlobalTheory.RootEx.opE ψ ν (p + 1) (fun y => (∑ l : Fin c, if l.val + 1 = p then χ (fun s => y (Sum.inr l) (Sum.inl s)) else 0) * Φ y)) := by
+  intro k _ _ _ _ _ _ n n' _ _ _ _ c p hp1 hpc ψ ν _ μ χ Φ x u hu
+  obtain ⟨huP, huP1⟩ := Subgroup.mem_inf.mp hu
+  set cut : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ := fun y =>
+    ∑ l : Fin c, if l.val + 1 = p then χ (fun s => y (Sum.inr l) (Sum.inl s)) else 0 with hcut
+  have hlevi : ∀ (g : GL n k) (y : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k),
+      cut (((_root_.GlobalTheory.RootEx.embX c g : GL (n ⊕ Fin c) k) : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) * y) = cut y := by
+    intro g y
+    simp only [hcut, _root_.GlobalTheory.RootEx.Radical.embX_val, _root_.GlobalTheory.RootEx.OpELevi.left_inr]
+  have hgen : _root_.GlobalTheory.RootEx.InN p u⁻¹ :=
+    _root_.GlobalTheory.RootEx.Model.mem_N_iff.mp (inv_mem huP)
+  have hunip : ∀ (x₀ : Matrix n n' k) (e : { rs // _root_.GlobalTheory.RootEx.Free (p + 1) rs } → k),
+      cut (((u⁻¹ : GL (n ⊕ Fin c) k) : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) * _root_.GlobalTheory.RootEx.affPt (p + 1) x₀ e) =
+        cut (_root_.GlobalTheory.RootEx.affPt (p + 1) x₀ e) := by
+    intro x₀ e
+    simp only [hcut]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    split_ifs with hl
+    · congr 1
+      funext s
+      rw [_root_.GlobalTheory.RootEx.TargetUnip.mul_apply_of_inN hgen, Finset.sum_eq_zero, add_zero]
+      intro r _
+      split_ifs with hlt
+      · cases r with
+        | inl i =>
+          simp [_root_.GlobalTheory.RootEx.lev] at hlt
+          omega
+        | inr i =>
+          simp [_root_.GlobalTheory.RootEx.lev] at hlt
+          rw [_root_.GlobalTheory.RootEx.TargetUnip.affPt_of_not_free]
+          · simp [_root_.GlobalTheory.RootEx.basePt]
+          · simp [_root_.GlobalTheory.RootEx.Free]
+            omega
+      · rfl
+    · rfl
+  have hmul : _root_.GlobalTheory.SplitWeil.om μ 1 (_root_.GlobalTheory.RootEx.embX c x * u) Φ =
+      _root_.GlobalTheory.SplitWeil.om μ 1 (_root_.GlobalTheory.RootEx.embX c x) (_root_.GlobalTheory.SplitWeil.om μ 1 u Φ) := by
+    have h := _root_.GlobalTheory.SplitWeil.Model.om_mul μ 1 1 (_root_.GlobalTheory.RootEx.embX c x) u Φ
+    rwa [one_mul] at h
+  have hcomm : ∀ Ψ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ,
+      (fun y => cut y * _root_.GlobalTheory.SplitWeil.om μ 1 (_root_.GlobalTheory.RootEx.embX c x) Ψ y) =
+        _root_.GlobalTheory.SplitWeil.om μ 1 (_root_.GlobalTheory.RootEx.embX c x) (fun y => cut y * Ψ y) := by
+    intro Ψ
+    funext y
+    simp only [_root_.GlobalTheory.SplitWeil.om, Units.val_one, Matrix.mul_one, ← map_inv, hlevi]
+    ring
+  have hcut_unip : _root_.GlobalTheory.RootEx.opE ψ ν (p + 1) (fun y => cut y * _root_.GlobalTheory.SplitWeil.om μ 1 u Φ y) =
+      _root_.GlobalTheory.RootEx.opE ψ ν (p + 1) (_root_.GlobalTheory.SplitWeil.om μ 1 u (fun y => cut y * Φ y)) := by
+    funext x₀
+    unfold _root_.GlobalTheory.RootEx.opE
+    congr 1
+    funext e
+    simp only [_root_.GlobalTheory.SplitWeil.om, Units.val_one, Matrix.mul_one, hunip]
+    ring
+  rw [hmul, hcomm, (_root_.GlobalTheory.RootEx.opE_om_embX k n n' c (p + 1) (by omega) (by omega) ψ ν μ _).1 x,
+    hcut_unip, _root_.GlobalTheory.RootEx.opE_om_target_unipotent k n n' c (p + 1) (by omega) (by omega) ψ ν μ _ u huP1]
+  funext y
+  simp only [_root_.GlobalTheory.SplitWeil.om, Pi.smul_apply, smul_eq_mul]
+  ring
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
+
+noncomputable section
+namespace GlobalTheory.RootEx.ColumnSupport
+
+theorem colE_inv_mul_affPt {k : Type} [Field k] {n n' : Type} [Fintype n] [DecidableEq n]
+    {c p : ℕ} (hp : p < c) (β : n → k) (x₀ : Matrix n n' k)
+    (e : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free (p + 1) rs} → k) (r : n) :
+    (((colE c (p + 1) β)⁻¹).val * affPt (p + 1) x₀ e) (Sum.inl r) (Sum.inr ⟨p, by omega⟩) = -β r := by
+  have hv : ((colE c (p + 1) β)⁻¹).val =
+      fromBlocks 1 (-(Matrix.of fun r (i : Fin c) => if i.val + 1 = p + 1 then β r else 0)) 0 1 := rfl
+  have h1 : ∀ s : n, affPt (p + 1) x₀ e (Sum.inl s) (Sum.inr ⟨p, by omega⟩) = 0 := by
+    intro s
+    simp [affPt, basePt, Free]
+  have h2 : affPt (p + 1) x₀ e (Sum.inr ⟨p, hp⟩) (Sum.inr ⟨p, by omega⟩) = 1 := by
+    simp [affPt, basePt, Free]
+  rw [hv, Matrix.mul_apply, Fintype.sum_sum_type]
+  simp only [h1, mul_zero, Finset.sum_const_zero, zero_add, fromBlocks_apply₁₂]
+  rw [Finset.sum_eq_single (⟨p, hp⟩ : Fin c)]
+  · simp [h2]
+  · intro j _ hj
+    have : j.val ≠ p := fun e => hj (Fin.ext e)
+    simp [this]
+  · simp
+
+open MeasureTheory ValuativeRel Matrix in
+
+theorem _root_.GlobalTheory.RootEx.ColumnSupport.opE_colE_eq_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c p : ℕ) (_ : p < c) (ψ : AddChar k Circle) (ν : Measure k) (μ : kˣ →* ℂˣ), ∀ Φ ∈ _root_.GlobalTheory.SplitWeil.SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k), ∃ K : Set (n → k), IsCompact K ∧ ∀ β, β ∉ K → ∀ χ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ, _root_.GlobalTheory.RootEx.opE ψ ν (p + 1) (fun y => χ y * _root_.GlobalTheory.SplitWeil.om μ 1 (_root_.GlobalTheory.RootEx.colE c (p + 1) β) Φ y) = 0 := by
+  intro k _ _ _ _ _ _ n n' _ _ _ _ c p hp ψ ν μ Φ hΦ
+  have hcs : HasCompactSupport Φ := (show IsLocallyConstant Φ ∧ HasCompactSupport Φ from hΦ).2
+  let q : Fin (c + 1) := ⟨p, by omega⟩
+  refine ⟨(fun z : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k => fun r => -z (Sum.inl r) (Sum.inr q)) '' tsupport Φ,
+    hcs.isCompact.image (continuous_pi fun r => (continuous_apply_apply _ _).neg), ?_⟩
+  intro β hβ χ
+  funext x
+  unfold _root_.GlobalTheory.RootEx.opE
+  refine MeasureTheory.integral_eq_zero_of_ae (Filter.Eventually.of_forall fun e => ?_)
+  have hentry : ∀ r, ((((_root_.GlobalTheory.RootEx.colE c (p + 1) β)⁻¹ : GL (n ⊕ Fin c) k) : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) * _root_.GlobalTheory.RootEx.affPt (p + 1) x e) (Sum.inl r) (Sum.inr q) = -β r := by
+    intro r
+    rw [_root_.GlobalTheory.RootEx.ExchangeSupport.colE_inv_val]
+    simp [q, Matrix.mul_apply, Fintype.sum_sum_type, _root_.GlobalTheory.RootEx.affPt, _root_.GlobalTheory.RootEx.basePt, _root_.GlobalTheory.RootEx.Free, _root_.GlobalTheory.RootEx.ExchangeSupport.colM, Matrix.one_apply]
+    rw [Finset.sum_eq_single ⟨p, hp⟩ (fun b _ hb => if_neg (fun h => hb (Fin.ext h))) (by simp)]
+    simp
+  have hzero : Φ ((((_root_.GlobalTheory.RootEx.colE c (p + 1) β)⁻¹ : GL (n ⊕ Fin c) k) : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) * _root_.GlobalTheory.RootEx.affPt (p + 1) x e * ((1 : GL (n' ⊕ Fin (c + 1)) k) : Matrix (n' ⊕ Fin (c + 1)) (n' ⊕ Fin (c + 1)) k)) = 0 := by
+    by_contra h
+    apply hβ
+    refine ⟨_, subset_tsupport _ h, ?_⟩
+    funext r
+    simp only [Units.val_one, Matrix.mul_one]
+    rw [hentry r, neg_neg]
+  unfold _root_.GlobalTheory.SplitWeil.om
+  simp only [Pi.zero_apply]
+  rw [hzero]
+  simp
+
+end GlobalTheory.RootEx.ColumnSupport
+end
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
+open Filter Topology
+
+noncomputable section
+namespace GlobalTheory.RootEx.RowSupport
+open GlobalTheory.RootEx.ExchangeSupport
+
+theorem exists_box {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] {n : Type} [Fintype n] [DecidableEq n]
+    {ψ : AddChar k Circle} (hψ : ψ ≠ 1) (W : Set (n → k)) (hW : W ∈ 𝓝 (0 : n → k)) :
+    ∃ B : Set (n → k), IsCompact B ∧ ∀ u, u ∉ B → ∃ β ∈ W, ψ (u ⬝ᵥ β) ≠ 1 := by
+  classical
+  obtain ⟨a, ha⟩ := AddChar.ne_one_iff.mp hψ
+  have ha0 : a ≠ 0 := by
+    rintro rfl
+    exact ha (AddChar.map_zero_eq_one ψ)
+  have hU : ∀ s : n, {x : k | (Pi.single s x : n → k) ∈ W} ∈ 𝓝 (0 : k) := by
+    intro s
+    have hcont : Continuous fun x : k => (Pi.single s x : n → k) := by
+      refine continuous_pi fun j => ?_
+      simp only [Pi.single_apply]
+      split_ifs
+      · exact continuous_id
+      · exact continuous_const
+    exact hcont.continuousAt.preimage_mem_nhds (by simpa using hW)
+  obtain ⟨γ, hγ⟩ := (IsValuativeTopology.mem_nhds_zero_iff _).mp (Filter.iInter_mem.mpr hU)
+  refine ⟨Set.univ.pi fun _ => {x : k | valuation k x ≤ valuation k a / (γ : ValueGroupWithZero k)},
+    isCompact_univ_pi fun _ => IsNonarchimedeanLocalField.isCompact_closedBall k _, ?_⟩
+  intro u hu
+  simp only [Set.mem_pi, Set.mem_univ, true_implies, Set.mem_ofPred_eq, not_forall, not_le] at hu
+  obtain ⟨s, hs⟩ := hu
+  have hus : u s ≠ 0 := by
+    intro h
+    rw [h, map_zero] at hs
+    exact not_lt.mpr zero_le hs
+  have hv : 0 < valuation k (u s) := by
+    rw [zero_lt_iff]
+    exact (Valuation.ne_zero_iff _).mpr hus
+  refine ⟨Pi.single s (a / u s), ?_, ?_⟩
+  · have hsmall : valuation k (a / u s) < γ := by
+      rw [map_div₀, div_lt_iff₀ hv]
+      have hg : (0 : ValueGroupWithZero k) < γ := by
+        rw [zero_lt_iff]
+        exact γ.ne_zero
+      rw [div_lt_iff₀ hg] at hs
+      simpa [mul_comm] using hs
+    exact Set.mem_iInter.mp (hγ hsmall) s
+  · rw [dotProduct_single, mul_div_cancel₀ _ hus]
+    exact ha
+
+theorem row_support_uniform : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (c p : ℕ) (_ : 1 ≤ p) (_ : p < c) (ψ : AddChar k Circle) (_ : ψ ≠ 1) (A : Type) [AddCommGroup A] [Module ℂ A] (σ : Representation ℂ (GL (n ⊕ Fin c) k) A) (_ : IsSmoothRep σ) (F : A) (Ω : Set (GL (n ⊕ Fin c) k)) (_ : IsCompact Ω), ∃ B : Set (n → k), IsCompact B ∧ ∀ l : A →ₗ[ℂ] ℂ, IsNEquiv ψ p σ l → ∀ w ∈ Ω, ∀ u, u ∉ B → l (σ (rowE c p u) (σ w F)) = 0 := by
+  intro k _ _ _ _ n _ _ c p hp hc ψ hψ A _ _ σ hσ F Ω hΩ
+  set S : Set (GL (n ⊕ Fin c) k) := {g | σ g F = F} with hSdef
+  have hS : IsOpen S := hσ F
+  have hcol : Continuous fun β : n → k => colE (k := k) c (p + 1) β :=
+    ExchangeSupport.continuous_colE
+  have hfix : ∀ᶠ β in 𝓝 (0 : n → k), ∀ w ∈ Ω, σ (colE c (p + 1) β) (σ w F) = σ w F := by
+    refine hΩ.eventually_forall_of_forall_eventually fun w _ => ?_
+    have hc2 : Continuous fun z : (n → k) × GL (n ⊕ Fin c) k => z.2⁻¹ * colE c (p + 1) z.1 * z.2 :=
+      ((continuous_snd.inv).mul (hcol.comp continuous_fst)).mul continuous_snd
+    have hmem : ((0 : n → k), w).2⁻¹ * colE c (p + 1) ((0 : n → k), w).1 * ((0 : n → k), w).2 ∈ S := by
+      simp [hSdef, ExchangeSupport.colE_zero]
+    filter_upwards [hc2.continuousAt.preimage_mem_nhds (hS.mem_nhds hmem)] with z hz
+    have hz' : σ (z.2⁻¹ * colE c (p + 1) z.1 * z.2) F = F := hz
+    calc σ (colE c (p + 1) z.1) (σ z.2 F)
+        = σ (z.2 * (z.2⁻¹ * colE c (p + 1) z.1 * z.2)) F := by
+          rw [map_mul σ z.2, Module.End.mul_apply, map_mul, map_mul, Module.End.mul_apply,
+            Module.End.mul_apply]
+          rw [← Module.End.mul_apply (σ z.2), ← map_mul, mul_inv_cancel, map_one, Module.End.one_apply]
+      _ = σ z.2 F := by rw [map_mul, Module.End.mul_apply, hz']
+  obtain ⟨B, hB, hBout⟩ := exists_box hψ {β | ∀ w ∈ Ω, σ (colE c (p + 1) β) (σ w F) = σ w F} hfix
+  refine ⟨B, hB, fun l hl w hw u hu => ?_⟩
+  obtain ⟨β, hβ, hne⟩ := hBout u hu
+  obtain ⟨hN, hsum⟩ := ExchangeSupport.conj_col (k := k) (n := n) hp hc u β
+  have key := hl _ hN (σ (rowE c p u) (σ w F))
+  rw [hsum] at key
+  have lhs : σ (rowE c p u * colE c (p + 1) β * (rowE c p u)⁻¹) (σ (rowE c p u) (σ w F)) =
+      σ (rowE c p u) (σ w F) := by
+    rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel_right, map_mul, Module.End.mul_apply, hβ w hw]
+  rw [lhs] at key
+  have hne' : (ψ (u ⬝ᵥ β) : ℂ) ≠ 1 := by
+    intro h
+    exact hne (Subtype.ext (by simpa using h))
+  have : (1 - (ψ (u ⬝ᵥ β) : ℂ)) * l (σ (rowE c p u) (σ w F)) = 0 := by
+    rw [sub_mul, one_mul, ← key, sub_self]
+  rcases mul_eq_zero.mp this with h | h
+  · exact absurd (sub_eq_zero.mp h).symm hne'
+  · exact h
+
+end GlobalTheory.RootEx.RowSupport
+end
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
+
+namespace GlobalTheory.RootEx.RadicalDecomp
+open GlobalTheory.RootEx.Radical
+
+variable {k : Type*} [Field k] {n : Type*} [Fintype n] [DecidableEq n] {c p : ℕ}
+
+theorem mem_N_of_succ {g : GL (n ⊕ Fin c) k} (hg : g ∈ N k n c (p + 1))
+    (h0 : ∀ (l : Fin c) (s : n), l.val + 1 = p → g.val (Sum.inr l) (Sum.inl s) = 0) :
+    g ∈ N k n c p := by
+  rw [mem_N_iff] at hg ⊢
+  intro r s hrs
+  rcases r with a | l <;> rcases s with b | j
+  · exact hg _ _ (by simp [lev])
+  · exact hg _ _ (by simp only [lev, Sum.elim_inl, Sum.elim_inr] at hrs ⊢; omega)
+  · simp only [lev, Sum.elim_inl, Sum.elim_inr] at hrs
+    by_cases hp : l.val + 1 = p
+    · rw [h0 l b hp]
+      simp
+    · exact hg _ _ (by simp only [lev, Sum.elim_inl, Sum.elim_inr]; omega)
+  · exact hg _ _ (by simpa [lev] using hrs)
+
+theorem inv_rowE_val (u : n → k) : ((rowE c p u)⁻¹).val =
+    fromBlocks 1 0 (-(Matrix.of fun (l : Fin c) s => if l.val + 1 = p then u s else 0)) 1 := rfl
+
+theorem succ_decomp : ∀ (k : Type) [Field k] (n : Type) [Fintype n] [DecidableEq n] (c p : ℕ), ∀ g ∈ N k n c (p + 1), ∃ g₁ ∈ N k n c p ⊓ N k n c (p + 1), ∃ u : n → k, g = g₁ * rowE c p u := by
+  intro k _ n _ _ c p g hg
+  set u : n → k := fun s => ∑ l : Fin c, if l.val + 1 = p then g.val (Sum.inr l) (Sum.inl s) else 0
+    with hu
+  have hE : rowE c p u ∈ N k n c (p + 1) := rowE_mem u (Nat.lt_succ_self p)
+  have h1 : g * (rowE c p u)⁻¹ ∈ N k n c (p + 1) := Subgroup.mul_mem _ hg (Subgroup.inv_mem _ hE)
+  refine ⟨g * (rowE c p u)⁻¹, ⟨?_, h1⟩, u, by simp⟩
+  refine mem_N_of_succ h1 ?_
+  intro l s hl
+  have hg' := (mem_N_iff g).1 hg
+  have key : ∀ l' : Fin c, (l'.val + 1 = p ↔ l' = l) :=
+    fun l' => ⟨fun h => Fin.ext (by omega), fun h => h ▸ hl⟩
+  have hd : g.val (Sum.inr l) (Sum.inr l) = 1 := by
+    have := hg' (Sum.inr l) (Sum.inr l) le_rfl
+    simpa using this
+  have hus : u s = g.val (Sum.inr l) (Sum.inl s) := by
+    simp only [hu, key, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  rw [Units.val_mul, inv_rowE_val, Matrix.mul_apply, Fintype.sum_sum_type]
+  simp only [fromBlocks_apply₁₁, fromBlocks_apply₂₁, Matrix.one_apply, Matrix.neg_apply,
+    Matrix.of_apply, key, mul_ite, mul_one, mul_zero, mul_neg, Finset.sum_ite_eq',
+    Finset.mem_univ, if_true, hus]
+  simp only [Finset.sum_neg_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true, hd]
+  ring
+
+end GlobalTheory.RootEx.RadicalDecomp
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rootExchangeUnipotentSubgroup_succ_decomposition : ∀ (k : Type) [Field k] (n : Type) [Fintype n] [DecidableEq n] (c p : ℕ), ∀ g ∈ N k n c (p + 1), ∃ g₁ ∈ N k n c p ⊓ N k n c (p + 1), ∃ u : n → k, g = g₁ * rowE c p u := by
+  first | exact @GlobalTheory.RootEx.RadicalDecomp.succ_decomp | exact GlobalTheory.RootEx.RadicalDecomp.succ_decomp | (intros; apply GlobalTheory.RootEx.RadicalDecomp.succ_decomp <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
+open scoped Topology
+
+namespace GlobalTheory.RootEx
+
+private theorem exists_open_translations {M : Type*} [AddCommGroup M] [TopologicalSpace M]
+    [IsTopologicalAddGroup M] {Φ : M → ℂ} (hΦ : Φ ∈ SB M) :
+    ∃ Λ : AddSubgroup M, IsOpen (Λ : Set M) ∧ ∀ x, ∀ y ∈ Λ, Φ (x + y) = Φ x := by
+  obtain ⟨K, hKo, hK⟩ := GlobalTheory.QuotInt.exists_open_stab (G := Multiplicative M)
+    (F := fun x => Φ (Multiplicative.toAdd x)) hΦ
+  refine ⟨{ carrier := {y | Multiplicative.ofAdd y ∈ K}
+            add_mem' := fun hy hz => K.mul_mem hy hz
+            zero_mem' := K.one_mem
+            neg_mem' := fun hy => K.inv_mem hy }, hKo, ?_⟩
+  intro x y hy
+  exact hK (Multiplicative.ofAdd x) (Multiplicative.ofAdd y) hy
+
+theorem exists_isQuotInt_unfolding : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c p : ℕ) (_ : 1 ≤ p) (_ : p ≤ c) (ψ : AddChar k Circle) (_ : Continuous ψ) (_ : ψ ≠ 1) (ν : Measure k) [ν.IsAddHaarMeasure] (μ : kˣ →* ℂˣ) (_ : IsOpen (μ.ker : Set kˣ)) (μX : Measure (GL n k)) [μX.IsHaarMeasure] (μG : Measure (GL (n ⊕ Fin c) k)) [μG.IsHaarMeasure] (A : Type) [AddCommGroup A] [Module ℂ A] (σ : Representation ℂ (GL (n ⊕ Fin c) k) A) (_ : IsSmoothRep σ) (P P' : Type) [AddCommGroup P] [Module ℂ P] [AddCommGroup P'] [Module ℂ P'] (π : Representation ℂ (GL n k) P) (π' : Representation ℂ (GL n' k) P') (θ : P' →ₗ[ℂ] SB (Matrix n n' k) →ₗ[ℂ] P) (_ : ∀ g h φ Ψ Ψ', Ψ'.1 = om μ g h Ψ.1 → θ (π' g φ) Ψ' = π h (θ φ Ψ)) (b : P →ₗ[ℂ] A →ₗ[ℂ] ℂ) (_ : IsPos ψ p π σ b) (φ : P') (F : A) (Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)) (f : GL (n ⊕ Fin c) k → ℂ) (_ : ∀ h Ψ, Ψ.1 = opE ψ ν p (om μ 1 h Φ.1) → f h = b (θ φ Ψ) (σ h F)), ∃ z, IsQuotInt ν μX μG p f z := by
+  intro k _ _ _ _ _ _ n n' _ _ _ _ c p hp1 hpc ψ hψc hψ1 ν _ μ hμ μX _ μG _ A _ _ σ hσ P P' _ _ _ _
+    π π' θ hθ b hb φ F Φ f hf
+  have hom := om_isSmoothRepresentation k (n' ⊕ Fin (c + 1)) (n ⊕ Fin c) μ hμ
+  have hom' := om_isSmoothRepresentation k n' n μ hμ
+  have hE := opE_SB_and_linear k n n' c p ψ hψc ν
+  have hΦ : IsLocallyConstant Φ.1 ∧ HasCompactSupport Φ.1 := Φ.2
+  have hmemΨ : ∀ h : GL (n ⊕ Fin c) k, opE ψ ν p (om μ 1 h Φ.1) ∈ SB (Matrix n n' k) :=
+    fun h => hE.1 _ (hom.2.2.2.1 1 h Φ.1 Φ.2)
+  have om_smul : ∀ {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
+      (g : GL a k) (h : GL b k) (z : ℂ) (G : Matrix b a k → ℂ), om μ g h (z • G) = z • om μ g h G := by
+    intro a b _ _ _ _ g h z G
+    funext y
+    simp only [om, Pi.smul_apply, smul_eq_mul]
+    ring
+  have hloc : IsLocallyConstant f := by
+    rw [IsLocallyConstant.iff_eventually_eq]
+    intro x
+    have hU : {y : GL (n ⊕ Fin c) k | σ y F = F ∧ om μ 1 y Φ.1 = Φ.1} ∈ 𝓝 (1 : GL (n ⊕ Fin c) k) := by
+      refine Filter.inter_mem ((hσ F).mem_nhds (by simp)) ?_
+      have ho : IsOpen {y : GL (n ⊕ Fin c) k | om μ 1 y Φ.1 = Φ.1} :=
+        (hom.2.2.2.2 Φ.1 Φ.2).preimage (continuous_const.prodMk continuous_id)
+      exact ho.mem_nhds (hom.1 Φ.1)
+    have hx : {y | x⁻¹ * y ∈ {y : GL (n ⊕ Fin c) k | σ y F = F ∧ om μ 1 y Φ.1 = Φ.1}} ∈ 𝓝 x := by
+      have hc : Continuous fun y : GL (n ⊕ Fin c) k => x⁻¹ * y := continuous_const.mul continuous_id
+      exact hc.continuousAt.preimage_mem_nhds (by simpa using hU)
+    filter_upwards [hx] with y hy
+    obtain ⟨z, rfl⟩ : ∃ z, y = x * z := ⟨x⁻¹ * y, by group⟩
+    simp only [inv_mul_cancel_left] at hy
+    obtain ⟨h1, h2⟩ := hy
+    have e1 : om μ 1 (x * z) Φ.1 = om μ 1 x Φ.1 := by
+      have := hom.2.1 1 1 x z Φ.1
+      rw [mul_one] at this
+      rw [this, h2]
+    have hσz : σ (x * z) F = σ x F := by
+      rw [map_mul, Module.End.mul_apply, h1]
+    rw [hf (x * z) ⟨_, hmemΨ x⟩ (by rw [e1]), hf x ⟨_, hmemΨ x⟩ rfl, hσz]
+  obtain ⟨Λ, hΛo, hΛ⟩ := exists_open_translations (M := Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k) Φ.2
+  obtain ⟨Ω, hΩ, hΩR⟩ := opE_support_compact_mod_R k n n' c p hp1 hpc ψ hψc hψ1 ν (tsupport Φ.1) hΦ.2
+    Λ hΛo
+  have hsupp : ∀ h, f h ≠ 0 → ∃ r ∈ R k n c p, ∃ w ∈ Ω, h = r * w := by
+    intro h hfh
+    have hne : opE ψ ν p (om μ 1 h Φ.1) ≠ 0 := by
+      intro h0
+      apply hfh
+      rw [hf h 0 (by rw [h0]; rfl)]
+      simp
+    obtain ⟨x₀, hx₀⟩ := Function.ne_iff.mp hne
+    exact hΩR μ Φ.1 (subset_tsupport _) hΛ (fun _ => 1) (IsLocallyConstant.const 1) h x₀
+      (by simpa using hx₀)
+  have hequiv : ∀ (x : GL n k), ∀ u ∈ N k n c p, ∀ h, f (embX c x * u * h) =
+      ((nabs k (Matrix.GeneralLinearGroup.det x) ^ ((c : ℝ) + 1 - 2 * p) : ℝ) : ℂ) * f h := by
+    intro x u hu h
+    let Ψ'' : SB (Matrix n n' k) := ⟨om μ 1 x (opE ψ ν p (om μ 1 h Φ.1)), hom'.2.2.2.1 1 x _ (hmemΨ h)⟩
+    have m1 : om μ 1 (embX c x * u * h) Φ.1 = om μ 1 (embX c x) (om μ 1 u (om μ 1 h Φ.1)) := by
+      have e1 := hom.2.1 1 1 (embX c x * u) h Φ.1
+      have e2 := hom.2.1 1 1 (embX c x) u (om μ 1 h Φ.1)
+      rw [mul_one] at e1 e2
+      rw [e1, e2]
+    have hkey : (((((nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - p) : ℝ) : ℂ) *
+        (ψ (-simpleSum u) : ℂ)) • Ψ'' : SB (Matrix n n' k)) : Matrix n n' k → ℂ) =
+        opE ψ ν p (om μ 1 (embX c x * u * h) Φ.1) := by
+      rw [m1, (opE_om_embX k n n' c p hp1 hpc ψ ν μ _).1 x,
+        opE_om_target_unipotent k n n' c p hp1 hpc ψ ν μ _ u hu, om_smul, Submodule.coe_smul, smul_smul]
+    have hθΨ : θ φ Ψ'' = π x (θ φ ⟨_, hmemΨ h⟩) := by
+      have := hθ 1 x φ ⟨_, hmemΨ h⟩ Ψ'' rfl
+      simpa using this
+    rw [hf _ _ hkey, hf h ⟨_, hmemΨ h⟩ rfl, map_smul, hθΨ, map_smul, LinearMap.smul_apply, map_mul,
+      map_mul, Module.End.mul_apply, Module.End.mul_apply, hb.2 x, hb.1 _ u hu, smul_eq_mul]
+    have hN : 0 < nabs k (Matrix.GeneralLinearGroup.det x) := GlobalTheory.RootEx.OpELevi.nabs_pos _
+    have hpow : (nabs k (Matrix.GeneralLinearGroup.det x) ^ ((c : ℝ) + 1 - 2 * p) : ℝ) =
+        nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - p) *
+          nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - p) := by
+      rw [← Real.rpow_add hN]
+      ring_nf
+    have hψ : (ψ (-simpleSum u) : ℂ) * (ψ (simpleSum u) : ℂ) = 1 := by
+      rw [← Circle.coe_mul, ← AddChar.map_add_eq_mul, neg_add_cancel, AddChar.map_zero_eq_one,
+        Circle.coe_one]
+    rw [hpow, Complex.ofReal_mul]
+    linear_combination
+      ((nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - p) : ℝ) : ℂ) *
+      ((nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - p) : ℝ) : ℂ) *
+      b (θ φ ⟨_, hmemΨ h⟩) (σ h F) * hψ
+  exact (GlobalTheory.QuotInt.quotInt_unique_exists k n c p hp1 hpc ν μX μG f).2 hloc ⟨Ω, hΩ, hsupp⟩ hequiv
+
+end GlobalTheory.RootEx
+end
+
+section
 open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx
 open Filter Topology
 
@@ -318,3 +765,5 @@ theorem step_two (hp : 1 ≤ p) (hc : p < c) (hψ1 : ψ ≠ 1) (hμ : IsOpen (μ
 end Step
 
 end GlobalTheory.RootEx.Unfolding
+end
+end

@@ -1,7 +1,14 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsEqTransposeMulMapOfIdempotent
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteInvolutionFixedUnitEqMulConjStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteInvolutionFixedUnitEqMulConj
 
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_involution_fixed_unit_eq_mul_conj : ∀ (S : Type) [CommRing S] [Finite S] (c : S →+* S), (∀ x, c (c x) = x) → (∃ ω, IsUnit (ω - c ω)) → ∀ u, c u = u → IsUnit u → ∃ x, x * c x = u := by
+  first | exact @GlobalTheory.finite_involution_fixed_unit_isNorm | exact GlobalTheory.finite_involution_fixed_unit_isNorm | (intros; apply GlobalTheory.finite_involution_fixed_unit_isNorm <;> assumption)
+end
+
+section
 open Polynomial
 
 namespace GlobalTheory.HenselianNorm
@@ -106,3 +113,4 @@ theorem exists_norm_eq : ∀ (R : Type) [CommRing R] (I : Ideal R) [HenselianRin
   linear_combination (x₀ * c x₀) * hy + (↑V⁻¹ : R) * hvU + (↑U : R) * V.mul_inv
 
 end GlobalTheory.HenselianNorm
+end

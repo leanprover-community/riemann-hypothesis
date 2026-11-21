@@ -1,11 +1,265 @@
 import Mathlib
 import Formalism.PairingDivisors.StatementA
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniformiserIdeleMultiplicativeOnIdeals
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralResidueSystemFiniteAdelesMod
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralUnitCongruenceSubgroupRelIndexNeZero
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DifferentiableZterm
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteRingClassGroupOfConductorNeZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdelicRingClassLatticeOneEqOrderStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmRingClassOrderUnitsEqMaxRealSubfieldUnits
 
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt UniqueFactorizationMonoid
+
+namespace GlobalTheory.CMVal.IdealIdele
+
+variable {E : Type} [Field E] [NumberField E]
+
+open Classical in
+
+def primeIdele (p : Ideal (𝓞 E)) : (Af E)ˣ :=
+  if h : p.IsPrime ∧ p ≠ ⊥ then unifAt ⟨p, h.1, h.2⟩ else 1
+
+def idl (I : Ideal (𝓞 E)) : (Af E)ˣ := ((normalizedFactors I).map primeIdele).prod
+
+theorem idl_top : idl (⊤ : Ideal (𝓞 E)) = 1 := by
+  rw [idl, ← Ideal.one_eq_top, normalizedFactors_one]; simp
+
+theorem idl_mul {I J : Ideal (𝓞 E)} (hI : I ≠ ⊥) (hJ : J ≠ ⊥) : idl (I * J) = idl I * idl J := by
+  rw [idl, normalizedFactors_mul hI hJ, Multiset.map_add, Multiset.prod_add]; rfl
+
+theorem nf_prime (v : HeightOneSpectrum (𝓞 E)) : normalizedFactors v.asIdeal = {v.asIdeal} := by
+  rw [normalizedFactors_irreducible v.irreducible, normalize_eq]
+
+theorem idl_prime (v : HeightOneSpectrum (𝓞 E)) : idl v.asIdeal = unifAt v := by
+  rw [idl, nf_prime, Multiset.map_singleton, Multiset.prod_singleton, primeIdele,
+    dif_pos ⟨v.isPrime, v.ne_bot⟩]
+
+theorem ind {P : Ideal (𝓞 E) → Prop} (h1 : P ⊤)
+    (h2 : ∀ (v : HeightOneSpectrum (𝓞 E)) (I : Ideal (𝓞 E)), I ≠ ⊥ → P I → P (v.asIdeal * I)) :
+    ∀ I, I ≠ ⊥ → P I := fun I => by
+  refine induction_on_prime (P := fun I => I ≠ ⊥ → P I) I (fun h => absurd rfl h) ?_ ?_
+  · intro x hx _
+    rw [Ideal.isUnit_iff.1 hx]; exact h1
+  · intro a p ha hp h _
+    exact h2 ⟨p, Ideal.isPrime_of_prime hp, hp.ne_zero⟩ a ha (h ha)
+
+theorem mul_apply' (a b : (Af E)ˣ) (w : HeightOneSpectrum (𝓞 E)) :
+    ((a * b : (Af E)ˣ) : Af E) w = (a : Af E) w * (b : Af E) w := rfl
+
+theorem one_apply' (w : HeightOneSpectrum (𝓞 E)) : ((1 : (Af E)ˣ) : Af E) w = 1 := rfl
+
+theorem modF_idl : ∀ I : Ideal (𝓞 E), I ≠ ⊥ → modF (idl I) = ((Ideal.absNorm I : ℕ) : ℝ)⁻¹ := by
+  refine ind ?_ ?_
+  · rw [idl_top, modF_eq_one fun w => by rw [one_apply', map_one]]
+    simp
+  · intro v I hI h
+    rw [idl_mul v.ne_bot hI, ObjModel.modF_mul, h, idl_prime, modF_unifAt, map_mul]
+    push_cast
+    rw [mul_inv]
+
+open Classical in
+theorem val_idl (w : HeightOneSpectrum (𝓞 E)) : ∀ I : Ideal (𝓞 E), I ≠ ⊥ →
+    Valued.v ((idl I : Af E) w) = WithZero.exp (-((normalizedFactors I).count w.asIdeal : ℤ)) := by
+  refine ind ?_ ?_
+  · rw [idl_top, one_apply', map_one, ← Ideal.one_eq_top, normalizedFactors_one]; simp
+  · intro v I hI h
+    rw [idl_mul v.ne_bot hI, mul_apply', map_mul, h, idl_prime, normalizedFactors_mul v.ne_bot hI, nf_prime,
+      Multiset.count_add]
+    by_cases hw : w = v
+    · subst hw
+      rw [(unifAt_spec w).2, ← WithZero.exp_add, Multiset.count_singleton_self]
+      congr 1; push_cast; ring
+    · have : w.asIdeal ≠ v.asIdeal := fun h => hw (HeightOneSpectrum.ext h)
+      rw [(unifAt_spec v).1 w hw, map_one, one_mul, Multiset.count_singleton, if_neg this, zero_add]
+
+theorem idl_eq_one (w : HeightOneSpectrum (𝓞 E)) : ∀ I : Ideal (𝓞 E), I ≠ ⊥ →
+    ¬ w.asIdeal ∣ I → (idl I : Af E) w = 1 := by
+  refine ind ?_ ?_
+  · intro _; rw [idl_top, one_apply']
+  · intro v I hI h hd
+    have hw : w ≠ v := by
+      rintro rfl
+      exact hd (dvd_mul_right _ _)
+    rw [idl_mul v.ne_bot hI, mul_apply', h fun h => hd (h.mul_left _), idl_prime, (unifAt_spec v).1 w hw, one_mul]
+
+theorem mem_nf {w : HeightOneSpectrum (𝓞 E)} {I : Ideal (𝓞 E)} (hI : I ≠ ⊥) (h : w.asIdeal ∣ I) :
+    w.asIdeal ∈ normalizedFactors I :=
+  (mem_normalizedFactors_iff hI).2 ⟨w.prime, h⟩
+
+open Classical in
+theorem exists_count (n : HeightOneSpectrum (𝓞 E) → ℕ) (S : Finset (HeightOneSpectrum (𝓞 E))) :
+    ∃ I : Ideal (𝓞 E), I ≠ ⊥ ∧ ∀ w : HeightOneSpectrum (𝓞 E),
+      (normalizedFactors I).count w.asIdeal = if w ∈ S then n w else 0 := by
+  induction S using Finset.induction_on with
+  | empty => exact ⟨1, one_ne_zero, fun w => by rw [normalizedFactors_one]; simp⟩
+  | insert v S hv ih =>
+    obtain ⟨I, hI, h⟩ := ih
+    have h0 : v.asIdeal ^ n v ≠ 0 := pow_ne_zero _ v.ne_bot
+    refine ⟨v.asIdeal ^ n v * I, mul_ne_zero h0 hI, fun w => ?_⟩
+    rw [normalizedFactors_mul h0 hI, normalizedFactors_pow, nf_prime, Multiset.count_add, h, Multiset.count_nsmul,
+      Multiset.count_singleton]
+    by_cases hw : w = v
+    · subst hw; simp [hv]
+    · have : w.asIdeal ≠ v.asIdeal := fun h => hw (HeightOneSpectrum.ext h)
+      simp [this, hw]
+
+theorem finite_val_ne_one (z : (Af E)ˣ) : {w : HeightOneSpectrum (𝓞 E) | Valued.v ((z : Af E) w) ≠ 1}.Finite :=
+  GlobalTheory.Mem.TupHecke.finite_nonunit z
+
+theorem main : ∀ (E : Type) [Field E] [NumberField E], ∃ t : Ideal (𝓞 E) → (Af E)ˣ, t ⊤ = 1 ∧
+    (∀ I J, I ≠ ⊥ → J ≠ ⊥ → t (I * J) = t I * t J) ∧ (∀ v : HeightOneSpectrum (𝓞 E), t v.asIdeal = unifAt v) ∧
+    (∀ I, I ≠ ⊥ → modF (t I) = ((Ideal.absNorm I : ℕ) : ℝ)⁻¹) ∧
+    (∀ I, I ≠ ⊥ → ∀ w : HeightOneSpectrum (𝓞 E), Valued.v ((t I : Af E) w) ≤ 1 ∧
+      (w.asIdeal ∣ I → Valued.v ((t I : Af E) w) < 1) ∧ (¬ w.asIdeal ∣ I → (t I : Af E) w = 1)) ∧
+    (∀ I J, I ≠ ⊥ → J ≠ ⊥ → (∀ w, Valued.v ((t I : Af E) w) = Valued.v ((t J : Af E) w)) → I = J) ∧
+    ∀ z : (Af E)ˣ, (∀ w, Valued.v ((z : Af E) w) ≤ 1) →
+      ∃ I, I ≠ ⊥ ∧ ∀ w, Valued.v ((t I : Af E) w) = Valued.v ((z : Af E) w) := by
+  intro E _ _
+  classical
+  refine ⟨idl, idl_top, fun _ _ => idl_mul, idl_prime, modF_idl, fun I hI w => ⟨?_, fun hd => ?_, idl_eq_one w I hI⟩,
+    fun I J hI hJ h => ?_, fun z hz => ?_⟩
+  · rw [val_idl w I hI, ← WithZero.exp_zero, WithZero.exp_le_exp]; omega
+  · have := Multiset.count_pos.2 (mem_nf hI hd)
+    rw [val_idl w I hI, ← WithZero.exp_zero, WithZero.exp_lt_exp]
+    omega
+  · have e : normalizedFactors I = normalizedFactors J := by
+      ext p
+      by_cases hp : Prime p
+      · have := h ⟨p, Ideal.isPrime_of_prime hp, hp.ne_zero⟩
+        rw [val_idl _ I hI, val_idl _ J hJ, WithZero.exp_inj] at this
+        simpa using this
+      · rw [Multiset.count_eq_zero.2 fun h => hp (prime_of_normalized_factor _ h),
+          Multiset.count_eq_zero.2 fun h => hp (prime_of_normalized_factor _ h)]
+    rw [← Ideal.prod_normalizedFactors_eq_self hI, e, Ideal.prod_normalizedFactors_eq_self hJ]
+  · obtain ⟨I, hI, h⟩ := exists_count (fun w => (-(Valued.v ((z : Af E) w)).log).toNat)
+      (finite_val_ne_one z).toFinset
+    refine ⟨I, hI, fun w => ?_⟩
+    rw [val_idl w I hI, h]
+    split_ifs with hw
+    · have h0 := ObjModel.coord_ne z w
+      have h1 : (Valued.v ((z : Af E) w)).log ≤ 0 := by
+        rw [← WithZero.exp_le_exp, WithZero.exp_log h0]; exact hz w
+      rw [Int.toNat_of_nonneg (by omega), neg_neg, WithZero.exp_log h0]
+    · have : Valued.v ((z : Af E) w) = 1 := by simpa using hw
+      rw [this]; simp
+
+end GlobalTheory.CMVal.IdealIdele
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_uniformiserIdele_multiplicative_on_ideals : ∀ (E : Type) [Field E] [NumberField E], ∃ t : Ideal (𝓞 E) → (Af E)ˣ, t ⊤ = 1 ∧ (∀ I J, I ≠ ⊥ → J ≠ ⊥ → t (I * J) = t I * t J) ∧ (∀ v : HeightOneSpectrum (𝓞 E), t v.asIdeal = unifAt v) ∧ (∀ I, I ≠ ⊥ → modF (t I) = ((Ideal.absNorm I : ℕ) : ℝ)⁻¹) ∧ (∀ I, I ≠ ⊥ → ∀ w : HeightOneSpectrum (𝓞 E), Valued.v ((t I : Af E) w) ≤ 1 ∧ (w.asIdeal ∣ I → Valued.v ((t I : Af E) w) < 1) ∧ (¬ w.asIdeal ∣ I → (t I : Af E) w = 1)) ∧ (∀ I J, I ≠ ⊥ → J ≠ ⊥ → (∀ w, Valued.v ((t I : Af E) w) = Valued.v ((t J : Af E) w)) → I = J) ∧ ∀ z : (Af E)ˣ, (∀ w, Valued.v ((z : Af E) w) ≤ 1) → ∃ I, I ≠ ⊥ ∧ ∀ w, Valued.v ((t I : Af E) w) = Valued.v ((z : Af E) w) := by
+  atlas_forward_decl GlobalTheory.CMVal.IdealIdele.main
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt
+
+namespace GlobalTheory.CMVal.LatEnt.Res
+
+open GlobalTheory.CMVal.PicFin
+
+theorem mk_eq_iff {E : Type} [Field E] [NumberField E] {N : ℕ} (hN : 0 < N) (z a : intR E) :
+    Ideal.Quotient.mk (Ideal.span {(N : intR E)}) z = Ideal.Quotient.mk _ a ↔
+      ∀ w, Valued.v (z.1 w - a.1 w) ≤ radN E N w := by
+  have hn0 : (N : E) ≠ 0 := Nat.cast_ne_zero.2 hN.ne'
+  rw [Ideal.Quotient.eq, Ideal.mem_span_singleton]
+  constructor
+  · rintro ⟨β, hβ⟩ w
+    have h3 : z.1 - a.1 = (N : Af E) * β.1 := congrArg Subtype.val hβ
+    rw [← map_natCast (algebraMap E (Af E))] at h3
+    have h4 : z.1 w - a.1 w = algebraMap E (w.adicCompletion E) (N : E) * β.1 w := congrArg (fun y : Af E => y w) h3
+    rw [h4, map_mul, map_natCast]
+    exact mul_le_of_le_one_right' ((HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).1 (β.2 w))
+  · intro hz
+    refine ⟨⟨algebraMap E (Af E) (N : E)⁻¹ * (z.1 - a.1), fun P => ?_⟩, Subtype.ext ?_⟩
+    · have h0 := GlobalTheory.AdLat.valued_natCast_ne_zero P hN
+      show Valued.v (algebraMap E (P.adicCompletion E) (N : E)⁻¹ * (z.1 P - a.1 P)) ≤ 1
+      rw [map_mul, map_inv₀, map_inv₀, map_natCast, inv_mul_le_iff₀ (zero_lt_iff.2 h0), mul_one]
+      exact hz P
+    · show z.1 - a.1 = (N : Af E) * (algebraMap E (Af E) (N : E)⁻¹ * (z.1 - a.1))
+      rw [← map_natCast (algebraMap E (Af E)), ← mul_assoc, ← map_mul, mul_inv_cancel₀ hn0, map_one, one_mul]
+
+theorem exists_residues : ∀ (E : Type) [Field E] [NumberField E] (N : ℕ), 0 < N → ∃ R : Finset (Af E),
+    (∀ a ∈ R, ∀ w, Valued.v (a w) ≤ 1) ∧ ∀ z : Af E, (∀ w, Valued.v (z w) ≤ 1) →
+      ∃! a, a ∈ R ∧ ∀ w, Valued.v (z w - a w) ≤ radN E N w := by
+  classical
+  intro E _ _ N hN
+  haveI := finite_quot (E := E) hN.ne'
+  haveI := Fintype.ofFinite (intR E ⧸ Ideal.span {(N : intR E)})
+  choose s hs using Ideal.Quotient.mk_surjective (I := Ideal.span {(N : intR E)})
+  refine ⟨Finset.univ.image fun q => (s q).1, fun a ha w => ?_, fun z hz => ?_⟩
+  · obtain ⟨q, -, rfl⟩ := Finset.mem_image.1 ha
+    exact (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).1 ((s q).2 w)
+  · let z' : intR E := ⟨z, fun w => (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 (hz w)⟩
+    refine ⟨(s (Ideal.Quotient.mk _ z')).1, ⟨Finset.mem_image.2 ⟨_, Finset.mem_univ _, rfl⟩,
+      (mk_eq_iff hN z' _).1 (hs _).symm⟩, ?_⟩
+    rintro a ⟨ha, h⟩
+    obtain ⟨q, -, rfl⟩ := Finset.mem_image.1 ha
+    rw [(mk_eq_iff hN z' (s q)).2 h, hs]
+
+end GlobalTheory.CMVal.LatEnt.Res
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_residue_system_finiteAdeles_mod : ∀ (E : Type) [Field E] [NumberField E] (N : ℕ), 0 < N → ∃ R : Finset (Af E), (∀ a ∈ R, ∀ w, Valued.v (a w) ≤ 1) ∧ ∀ z : Af E, (∀ w, Valued.v (z w) ≤ 1) → ∃! a, a ∈ R ∧ ∀ w, Valued.v (z w - a w) ≤ radN E N w := by
+  atlas_forward_decl GlobalTheory.CMVal.LatEnt.Res.exists_residues
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt
+
+namespace GlobalTheory.CMVal.LatEnt
+
+theorem relIndex_congr_radN_ne_zero : ∀ (E : Type) [Field E] [NumberField E] (N : ℕ), 0 < N →
+    (congr (radN E N)).relIndex (congr (fun _ => 1)) ≠ 0 := by
+  intro E _ _ N hN
+  have := PicFin.finite_quot (E := E) hN.ne'
+  let U : Subgroup (Af E)ˣ := congr (fun _ => 1)
+  let r : U →* PicFin.intR E ⧸ Ideal.span {(N : PicFin.intR E)} :=
+    { toFun := fun u => Ideal.Quotient.mk _ ⟨(u.1 : Af E), fun v =>
+        (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 (u.2 v).1.le⟩
+      map_one' := map_one (Ideal.Quotient.mk _)
+      map_mul' := fun a b => by rw [← map_mul]; rfl }
+  have h1 : r.toHomUnits.ker.FiniteIndex := Subgroup.finiteIndex_ker _
+  have h2 : ((congr (radN E N)).subgroupOf U).FiniteIndex := by
+    refine Subgroup.finiteIndex_of_le (H := r.toHomUnits.ker) fun u hu w => ⟨(u.2 w).1, ?_⟩
+    have h2 : Ideal.Quotient.mk (Ideal.span {(N : PicFin.intR E)}) ⟨(u.1 : Af E), fun v =>
+        (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 (u.2 v).1.le⟩ =
+        Ideal.Quotient.mk _ 1 := congrArg Units.val (MonoidHom.mem_ker.1 hu)
+    rw [Ideal.Quotient.eq, Ideal.mem_span_singleton] at h2
+    obtain ⟨β, hβ⟩ := h2
+    have h3 : ((u.1 : (Af E)ˣ) : Af E) - 1 = (N : Af E) * β.1 := congrArg Subtype.val hβ
+    rw [← map_natCast (algebraMap E (Af E))] at h3
+    have h4 : ((u.1 : (Af E)ˣ) : Af E) w - 1 = algebraMap E (w.adicCompletion E) (N : E) * β.1 w :=
+      congrArg (fun z : Af E => z w) h3
+    show Valued.v (((u.1 : (Af E)ˣ) : Af E) w - 1) ≤ Valued.v (N : w.adicCompletion E)
+    rw [h4, map_mul, map_natCast]
+    exact mul_le_of_le_one_right' ((HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).1 (β.2 w))
+  exact h2.1
+
+end GlobalTheory.CMVal.LatEnt
+end
+end
+
+open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.CMVal.LatEnt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralUnitCongruenceSubgroup_relIndex_ne_zero : ∀ (E : Type) [Field E] [NumberField E] (N : ℕ), 0 < N → (congr (radN E N)).relIndex (congr (fun _ => 1)) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CMVal.LatEnt.relIndex_congr_radN_ne_zero
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CMVal
@@ -448,3 +702,5 @@ theorem exists_isLatSum : (∀ (E : Type) [Field E] [NumberField E] [IsCMField E
       (QuotientGroup.eq_one_iff _).2 (inv_mem hu), one_mul, mul_one]
 
 end GlobalTheory.CMVal.LatEnt
+end
+end

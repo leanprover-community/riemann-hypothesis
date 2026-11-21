@@ -1,12 +1,56 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AffineOpenChartCompStructureEqSpMap
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLeftInverseOfFibrewiseInjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsNormalMvPolynomialOfIsNormalStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AffineChartOfLeftInverseMatrixStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsClosedSubschemeOpenPiecesStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteNormalFlatClosureStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PointsOfClosureInProjectiveSpaceStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLeftInverseOfFibrewiseInjective
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsNormalMvPolynomialOfIsNormal
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AffineChartOfLeftInverseMatrix
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsClosedSubschemeOpenPieces
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteNormalFlatClosure
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PointsOfClosureInProjectiveSpace
 
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_left_inverse_of_fibrewise_injective : ∀ (R : Type) [CommRing R] (m n : ℕ) (Q : Matrix (Fin m) (Fin n) R), (∀ (K : Type) [Field K] (φ : R →+* K), Function.Injective (Q.map φ).mulVec) → ∃ Q' : Matrix (Fin n) (Fin m) R, Q' * Q = 1 := by
+  first | exact @GlobalTheory.matrix_exists_left_inverse_of_forall_field | exact GlobalTheory.matrix_exists_left_inverse_of_forall_field | (intros; apply GlobalTheory.matrix_exists_left_inverse_of_forall_field <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isNormal_mvPolynomial_of_isNormal : ∀ (R : Type) [CommRing R] (r : ℕ), ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme (Sp R) → ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme (Sp (MvPolynomial (Fin r) R)) := by
+  first | exact @GlobalTheory.isNormalScheme_sp_mvPolynomial | exact GlobalTheory.isNormalScheme_sp_mvPolynomial | (intros; apply GlobalTheory.isNormalScheme_sp_mvPolynomial <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.affine_chart_of_left_inverse_matrix : ∀ (O : Type) [CommRing O] (Z P : Scheme.{0}) (s : Z ⟶ Sp O) (N r : ℕ) (p₁ : P ⟶ Z) (p₂ : P ⟶ PSpace O N), IsPullback p₁ p₂ s (PSpace.str O N) → ∀ (R : Type) [CommRing R] (χ : Sp R ⟶ Z) (g : O →+* R) (Q : Matrix (Fin (N + 1)) (Fin (r + 1)) R) (Q' : Matrix (Fin (r + 1)) (Fin (N + 1)) R) (i : Fin (r + 1) → (Sp (MvPolynomial (Fin r) R) ⟶ P)), IsOpenImmersion χ → χ ≫ s = spMap g → Q' * Q = 1 → (∀ c, i c ≫ p₁ = spMap (MvPolynomial.C : R →+* MvPolynomial (Fin r) R) ≫ χ) → (∀ c, ∃ hv, i c ≫ p₂ = GlobalTheory.ProjSpace.pt ((MvPolynomial.C : R →+* MvPolynomial (Fin r) R).comp g) ((Q.map (MvPolynomial.C : R →+* MvPolynomial (Fin r) R)).mulVec (Fin.insertNth (α := fun _ => MvPolynomial (Fin r) R) c 1 MvPolynomial.X)) hv) → (∀ c, IsImmersion (i c)) ∧ (∀ c, ∃ U : P.Opens, Set.range (i c) = (⋃ c', Set.range (i c')) ∩ (U : Set P)) ∧ ∃ T : Set P, IsClosed T ∧ ⋃ c, Set.range (i c) = T ∩ p₁ ⁻¹' Set.range χ := by
+  first | exact @GlobalTheory.SplitCells.cells_locallyClosed | exact GlobalTheory.SplitCells.cells_locallyClosed | (intros; apply GlobalTheory.SplitCells.cells_locallyClosed <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_closed_subscheme_open_pieces : ∀ (P : Scheme.{0}) (J : Type) [Finite J] (T : J → Scheme.{0}) (i : ∀ k, T k ⟶ P) (Ω : P.Opens), (∀ k, IsImmersion (i k)) → (∀ k, IsReduced (T k)) → (∀ k, ∃ U : P.Opens, Set.range (i k) = (⋃ k', Set.range (i k')) ∩ (U : Set P)) → (∃ F : Set P, IsClosed F ∧ ⋃ k, Set.range (i k) = F ∩ (Ω : Set P)) → ∃ (U : Scheme.{0}) (j : U ⟶ Ω.toScheme) (e : ∀ k, T k ⟶ U), IsClosedImmersion j ∧ (∀ k, IsOpenImmersion (e k)) ∧ (∀ k, e k ≫ j ≫ Ω.ι = i k) ∧ ⋃ k, Set.range (e k) = Set.univ := by
+  first | exact @GlobalTheory.ReducedUnion.exists_closed_union | exact GlobalTheory.ReducedUnion.exists_closed_union | (intros; apply GlobalTheory.ReducedUnion.exists_closed_union <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_normal_flat_closure : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero O] (P U : Scheme.{0}) (s : P ⟶ Sp O) (Ω : P.Opens) (j : U ⟶ Ω.toScheme), IsProjOver s → IsClosedImmersion j → ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme U → Flat (j ≫ Ω.ι ≫ s) → ∃ (Z' : Scheme.{0}) (ν : Z' ⟶ P) (e : U ⟶ Z'), IsFinite ν ∧ ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme Z' ∧ IsProjOver (ν ≫ s) ∧ Flat (ν ≫ s) ∧ IsPullback e j ν Ω.ι ∧ Dense (Set.range e) := by
+  first | exact @GlobalTheory.GraphClosure.exists_normalisation_of_locallyClosed | exact GlobalTheory.GraphClosure.exists_normalisation_of_locallyClosed | (intros; apply GlobalTheory.GraphClosure.exists_normalisation_of_locallyClosed <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.LocM GlobalTheory.LieMet GlobalTheory.DRFlag
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.FlagMod (ev tau tau_le spMap_ev ev_res ev_spMap le_preimage_inf le_preimage_map le_preimage_mono le_preimage_comp tanPull initSpan mem_initSpan)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.points_of_closure_in_projective_space : ∀ (O : Type) [CommRing O] (Z Z' : Scheme.{0}) (s : Z ⟶ Sp O) (f : Z' ⟶ Z) (C : Coc Z) (N : ℕ) (Em : C.Emb N) (q : Z' ⟶ PSpace O N) (Ω : Set Z'), q ≫ PSpace.str O N = f ≫ s → IsReduced Z' → Dense Ω → (∀ (K : Type) [Field K] (w : Sp K ⟶ Z'), Set.range w ⊆ Ω → ∀ (α : C.A) (h : ⊤ ≤ (w ≫ f) ⁻¹ᵁ C.B α), ∃ (ξ : Fin (C.n α) → K) (g : O →+* K) (hv : _), w ≫ q = GlobalTheory.ProjSpace.pt g (((Em.A α).map (ev (w ≫ f) _ h)).mulVec ξ) hv) → ∃ L : C.Line f, ∀ (K : Type) [Field K] (w : Sp K ⟶ Z') (α : C.A) (h : ⊤ ≤ (w ≫ f) ⁻¹ᵁ C.B α) (ξ : Fin (C.n α) → K) (g : O →+* K), w ≫ f ≫ s = spMap g → (L.Carries w α h ξ ↔ ∃ hv, w ≫ q = GlobalTheory.ProjSpace.pt g (((Em.A α).map (ev (w ≫ f) _ h)).mulVec ξ) hv) := by
+  first | exact @GlobalTheory.DRFlag.LineOfMap.exists_line | exact GlobalTheory.DRFlag.LineOfMap.exists_line | (intros; apply GlobalTheory.DRFlag.LineOfMap.exists_line <;> assumption)
+end
+
+section
 section
 set_option autoImplicit false
 
@@ -522,3 +566,4 @@ open GlobalTheory.FlagMod (ev tau tau_le spMap_ev ev_res ev_spMap le_preimage_in
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.nonempty_closure_of_embedding : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero O] (Z : Scheme.{0}) (s : Z ⟶ Sp O), IsProjOver s → ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme Z → Flat s → ∀ (C : Coc Z) (N : ℕ), Nonempty (C.Emb N) → ∀ (ch : Charts Z) (r : ℕ) (D : C.Sub ch r), Nonempty (D.Closure s) := by
   atlas_forward_decl GlobalTheory.nonempty_subClosure
+end

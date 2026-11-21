@@ -1,7 +1,41 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaGramDetEqOneOfSelfDualLattice
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GramDetEqNormMulGramDetOneStatement
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnitLemmaGroup
 
+section
+open GlobalTheory.UnitLemma Polynomial
+
+namespace GlobalTheory.UnitLemma.InvAlg
+
+theorem gramDet_eq_norm_mul (K : UQ) (B : InvAlg K) (x : B.A) :
+    B.gramDet x = Algebra.norm K.E x * B.gramDet 1 := by
+  classical
+  set b := Module.finBasis K.E B.A
+  have hM : (Matrix.of fun i j => B.herm x (b i) (b j)) =
+      (Algebra.leftMulMatrix b x).transpose * (Matrix.of fun i j => B.herm 1 (b i) (b j)) := by
+    ext i j
+    simp only [Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, herm, one_mul,
+      Algebra.leftMulMatrix_apply]
+    have h := b.sum_repr (x * b i)
+    conv_lhs => rw [← h]
+    rw [Finset.sum_mul, map_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [smul_mul_assoc, map_smul, smul_eq_mul, LinearMap.toMatrix_apply]
+    simp
+  unfold gramDet
+  rw [hM, Matrix.det_mul, Matrix.det_transpose, Algebra.norm_eq_matrix_det b]
+
+end GlobalTheory.UnitLemma.InvAlg
+end
+
+section
+open GlobalTheory.UnitLemma Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gramDet_eq_norm_mul_gramDet_one : ∀ (K : UQ) (B : InvAlg K) (x : B.A), B.gramDet x = Algebra.norm K.E x * B.gramDet 1 := by
+  first | exact @GlobalTheory.UnitLemma.InvAlg.gramDet_eq_norm_mul | exact GlobalTheory.UnitLemma.InvAlg.gramDet_eq_norm_mul | (intros; apply GlobalTheory.UnitLemma.InvAlg.gramDet_eq_norm_mul <;> assumption)
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.UnitLemma.LieEnd
@@ -195,3 +229,5 @@ theorem unitLemmaLie_of (h1 : CountIdentity) (h2 : UnitaryLimit) (h3 : LinearDes
     rw [hk, ← mul_assoc, ← zpow_add₀ hq0, neg_add_cancel, zpow_zero, one_mul]
 
 end GlobalTheory.UnitLemma.LieEnd
+end
+end

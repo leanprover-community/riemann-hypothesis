@@ -5,12 +5,352 @@ import Development.AbelianVarietyTheory.Definitions.Degenerations.OfDerivationFn
 import Development.AbelianVarietyTheory.Definitions.Degenerations.PlOrdSomeOfAssociated
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUniqueModelHasJacobianOrder
 import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ProdIrrAndWeakNeron
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsEqDivOfIsPullback
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsVf
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsStalkDerivationOfIsPullback
-import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.LeOfZpowMulUnitEq
+import Development.AbelianVarietyTheory.Statements.SemistableTorsion.SemistableFin
 import BuildAid.ForwardExisting
 
+section
+open CategoryTheory Limits AlgebraicGeometry
+
+namespace GlobalTheory.SS
+
+theorem exists_eq_div_of_isPullback : ∀ (P X Y S : Scheme.{0}) [IsAffine S] (p : P ⟶ X) (q : P ⟶ Y) (f : X ⟶ S) (g : Y ⟶ S), IsPullback p q f g → ∀ (z : P) (U : X.Opens) (U' : Y.Opens) (W : P.Opens), p z ∈ U → q z ∈ U' → z ∈ W → ∃ (V : X.Opens) (V' : Y.Opens) (W' : P.Opens) (h₁ : W' ≤ p ⁻¹ᵁ V) (h₂ : W' ≤ q ⁻¹ᵁ V'), V ≤ U ∧ V' ≤ U' ∧ W' ≤ W ∧ z ∈ W' ∧ ∀ τ : Γ(P, W'), ∃ a ∈ Subring.closure (Set.range (p.appLE V W' h₁).hom ∪ Set.range (q.appLE V' W' h₂).hom), ∃ b ∈ Subring.closure (Set.range (p.appLE V W' h₁).hom ∪ Set.range (q.appLE V' W' h₂).hom), IsUnit a ∧ τ * a = b := by
+  intro P X Y S _ p q f g H z U U' W hU hU' hW
+  obtain ⟨V, hV, hpV, hVU⟩ := exists_isAffineOpen_mem_and_subset (X := X) (U := U) hU
+  obtain ⟨V', hV', hpV', hVU'⟩ := exists_isAffineOpen_mem_and_subset (X := Y) (U := U') hU'
+  have hP : IsAffineOpen (p ⁻¹ᵁ V ⊓ q ⁻¹ᵁ V') := by
+    have : IsAffine _ := hV
+    have : IsAffine _ := hV'
+    have : IsAffine _ := isAffineOpen_top S
+    exact .of_isIso (Scheme.Hom.isPullback_resLE H (US := ⊤) (UT := V') (UX := V) le_top le_top
+      rfl).isoPullback.hom
+  have po := (isIso_pushoutSection_iff H (US := ⊤) (UT := V') (UX := V) le_top le_top rfl).1
+    (isIso_pushoutSection_of_isAffineOpen H _ _ _ (isAffineOpen_top _) hV' hV)
+  have hgen := CommRingCat.closure_range_union_range_eq_top_of_isPushout po
+  obtain ⟨r, hrW, hzr⟩ := hP.exists_basicOpen_le (V := W) ⟨z, hW⟩ ⟨hpV, hpV'⟩
+  have hle : P.basicOpen r ≤ p ⁻¹ᵁ V ⊓ q ⁻¹ᵁ V' := P.basicOpen_le r
+  refine ⟨V, V', P.basicOpen r, hle.trans inf_le_left, hle.trans inf_le_right, hVU, hVU', hrW,
+    hzr, fun τ => ?_⟩
+  have key : ∀ x : Γ(P, p ⁻¹ᵁ V ⊓ q ⁻¹ᵁ V'), (P.presheaf.map (homOfLE hle).op).hom x ∈
+      Subring.closure (Set.range (p.appLE V _ (hle.trans inf_le_left)).hom ∪
+        Set.range (q.appLE V' _ (hle.trans inf_le_right)).hom) := by
+    intro x
+    have hx := hgen.ge (Subring.mem_top x)
+    refine Subring.mem_comap.1 (Subring.closure_le.2 ?_ hx)
+    rintro _ (⟨a, rfl⟩ | ⟨a, rfl⟩)
+    · refine Subring.subset_closure (Or.inl ⟨a, ?_⟩)
+      rw [← CommRingCat.comp_apply, Scheme.Hom.appLE_map]
+    · refine Subring.subset_closure (Or.inr ⟨a, ?_⟩)
+      rw [← CommRingCat.comp_apply, Scheme.Hom.appLE_map]
+  have hloc := hP.isLocalization_basicOpen r
+  obtain ⟨⟨b, a⟩, hab⟩ := IsLocalization.surj (Submonoid.powers r) τ
+  exact ⟨_, key a, _, key b, IsLocalization.map_units Γ(P, P.basicOpen r) a, hab⟩
+
+end GlobalTheory.SS
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.SS
+noncomputable section
+namespace GlobalTheory.SS.StalkGlue
+
+theorem sec_ext {X : Scheme.{0}} (U : X.Opens) (s t : Γ(X, U))
+    (h : ∀ (x : X) (hx : x ∈ U), (X.presheaf.germ U x hx).hom s = (X.presheaf.germ U x hx).hom t) :
+    s = t :=
+  TopCat.Presheaf.section_ext X.sheaf U s t h
+
+theorem germ_map {X : Scheme.{0}} {U V : X.Opens} (i : V ⟶ U) (x : X) (hx : x ∈ V) (s : Γ(X, U)) :
+    (X.presheaf.germ V x hx).hom ((X.presheaf.map i.op).hom s) =
+      (X.presheaf.germ U x (i.le hx)).hom s :=
+  TopCat.Presheaf.germ_res_apply X.presheaf i x hx s
+
+theorem exists_section {X : Scheme.{0}} (U : X.Opens) (g : ∀ (x : X), x ∈ U → X.presheaf.stalk x)
+    (H : ∀ x : X, x ∈ U → ∃ (W : X.Opens) (h : W ≤ U) (t : Γ(X, W)), x ∈ W ∧
+      ∀ (y : X) (hy : y ∈ W), g y (h hy) = (X.presheaf.germ W y hy).hom t) :
+    ∃ s : Γ(X, U), ∀ (x : X) (hx : x ∈ U), (X.presheaf.germ U x hx).hom s = g x hx := by
+  choose W hW t hx ht using H
+  have hcov : U ≤ iSup (fun p : U => W p.1 p.2) := fun x hxU =>
+    TopologicalSpace.Opens.mem_iSup.2 ⟨⟨x, hxU⟩, hx x hxU⟩
+  obtain ⟨s, hs, -⟩ := TopCat.Sheaf.existsUnique_gluing' X.sheaf (fun p : U => W p.1 p.2) U
+    (fun p => homOfLE (hW p.1 p.2)) hcov (fun p => t p.1 p.2) (by
+      intro p q
+      apply sec_ext (W p.1 p.2 ⊓ W q.1 q.2)
+      intro y hy
+      exact (germ_map (TopologicalSpace.Opens.infLELeft _ _) y hy _).trans
+        (((ht p.1 p.2 y hy.1).symm.trans (ht q.1 q.2 y hy.2)).trans
+          (germ_map (TopologicalSpace.Opens.infLERight _ _) y hy _).symm))
+  refine ⟨s, fun x hxU => ?_⟩
+  have h1 : (X.presheaf.map (homOfLE (hW x hxU)).op).hom s = t x hxU := hs ⟨x, hxU⟩
+  rw [ht x hxU x (hx x hxU), ← h1]
+  exact (germ_map (homOfLE (hW x hxU)) x (hx x hxU) s).symm
+
+theorem exists_vf : ∀ (K : Type) [Field K] (X : Over (Sp K)) (δ : ∀ x : X.left, X.left.presheaf.stalk x →+ X.left.presheaf.stalk x), (∀ x a b, δ x (a * b) = a * δ x b + b * δ x a) → (∀ (U : X.left.Opens) (x : X.left) (hx : x ∈ U) (c : K), δ x ((X.left.presheaf.germ U x hx).hom (cstK X U c)) = 0) → (∀ (U : X.left.Opens) (s : Γ(X.left, U)) (x : X.left), x ∈ U → ∃ (W : X.left.Opens) (h : W ≤ U) (t : Γ(X.left, W)), x ∈ W ∧ ∀ (y : X.left) (hy : y ∈ W), δ y ((X.left.presheaf.germ U y (h hy)).hom s) = (X.left.presheaf.germ W y hy).hom t) → ∃ D : VF X, ∀ (U : X.left.Opens) (s : Γ(X.left, U)) (x : X.left) (hx : x ∈ U), (X.left.presheaf.germ U x hx).hom (D.D U s) = δ x ((X.left.presheaf.germ U x hx).hom s) := by
+  intro K _ X δ hL hc hloc
+  choose D hD using fun (U : X.left.Opens) (s : Γ(X.left, U)) =>
+    exists_section U (fun x hx => δ x ((X.left.presheaf.germ U x hx).hom s)) (hloc U s)
+  refine ⟨⟨fun U => AddMonoidHom.mk' (D U) (fun a b => ?_), fun U a b => ?_, fun U c => ?_,
+    fun U V h a => ?_⟩, fun U s x hx => hD U s x hx⟩
+  · apply sec_ext
+    intro x hx
+    simp only [map_add, hD]
+  · apply sec_ext
+    intro x hx
+    simp only [AddMonoidHom.mk'_apply, map_add, map_mul, hD, hL]
+  · apply sec_ext
+    intro x hx
+    simp only [AddMonoidHom.mk'_apply, map_zero, hD, hc]
+  · apply sec_ext
+    intro x hx
+    simp only [AddMonoidHom.mk'_apply]
+    rw [hD, germ_map, germ_map, hD]
+
+end GlobalTheory.SS.StalkGlue
+end
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.SS
+noncomputable section
+namespace GlobalTheory.SS.StalkDer
+variable {K : Type} [Field K] {P : Scheme.{0}} {X : Over (Sp K)}
+
+def gm (f : P ⟶ X.left) (z : P) (V : X.left.Opens) (hz : z ∈ f ⁻¹ᵁ V) :
+    Γ(X.left, V) →+* P.presheaf.stalk z :=
+  (P.presheaf.germ (f ⁻¹ᵁ V) z hz).hom.comp (f.app V).hom
+
+theorem germ_appLE (f : P ⟶ X.left) (z : P) (V : X.left.Opens) (W : P.Opens) (h : W ≤ f ⁻¹ᵁ V)
+    (hz : z ∈ W) (u : Γ(X.left, V)) :
+    (P.presheaf.germ W z hz).hom ((f.appLE V W h).hom u) = gm f z V (h hz) u :=
+  TopCat.Presheaf.germ_res_apply P.presheaf (homOfLE h) z hz _
+
+theorem gm_res (f : P ⟶ X.left) (z : P) (V V' : X.left.Opens) (h : V' ≤ V) (hz : z ∈ f ⁻¹ᵁ V')
+    (u : Γ(X.left, V)) :
+    gm f z V' hz ((X.left.presheaf.map (homOfLE h).op).hom u) = gm f z V (h hz) u := by
+  rw [← germ_appLE f z V' _ le_rfl hz, ← germ_appLE f z V (f ⁻¹ᵁ V') (fun _ hx => h hx) hz]
+  congr 1
+  exact congrArg (fun φ => φ.hom u) (f.map_appLE le_rfl (homOfLE h).op)
+
+def gmDual (D : VF X) (f : P ⟶ X.left) (z : P) (V : X.left.Opens) (hz : z ∈ f ⁻¹ᵁ V) :
+    Γ(X.left, V) →+* DualNumber (P.presheaf.stalk z) where
+  toFun b := (gm f z V hz b, gm f z V hz (D.D V b))
+  map_one' := TrivSqZeroExt.ext (map_one _) (by
+    show gm f z V hz (D.D V 1) = 0
+    have := D.const V 1
+    rw [map_one] at this
+    rw [this, map_zero])
+  map_mul' a b := TrivSqZeroExt.ext (map_mul _ a b) (by
+    refine Eq.trans ?_ (DualNumber.snd_mul _ _).symm
+    show gm f z V hz (D.D V (a * b)) = gm f z V hz a * gm f z V hz (D.D V b) +
+      gm f z V hz (D.D V a) * gm f z V hz b
+    rw [D.leibniz, map_add, map_mul, map_mul]; ring)
+  map_zero' := TrivSqZeroExt.ext (map_zero _) (by
+    show gm f z V hz (D.D V 0) = 0
+    rw [map_zero, map_zero])
+  map_add' a b := TrivSqZeroExt.ext (map_add _ a b) (by
+    show gm f z V hz (D.D V (a + b)) = gm f z V hz (D.D V a) + gm f z V hz (D.D V b)
+    rw [map_add, map_add])
+
+theorem gmDual_res (D : VF X) (f : P ⟶ X.left) (z : P) (V V' : X.left.Opens) (h : V' ≤ V)
+    (hz : z ∈ f ⁻¹ᵁ V') (u : Γ(X.left, V)) :
+    gmDual D f z V' hz ((X.left.presheaf.map (homOfLE h).op).hom u) = gmDual D f z V (h hz) u :=
+  TrivSqZeroExt.ext (gm_res f z V V' h hz u) (by
+    show gm f z V' hz (D.D V' _) = gm f z V (h hz) (D.D V u)
+    rw [D.res, gm_res])
+
+theorem extend (D : VF X) (f : P ⟶ X.left) (z : P)
+    (Φ : P.presheaf.stalk z →+* DualNumber (P.presheaf.stalk z)) (V₀ : X.left.Opens)
+    (hV₀ : IsAffineOpen V₀) (hz₀ : z ∈ f ⁻¹ᵁ V₀)
+    (H : ∀ u, Φ (gm f z V₀ hz₀ u) = gmDual D f z V₀ hz₀ u)
+    (V : X.left.Opens) (hz : z ∈ f ⁻¹ᵁ V) (u : Γ(X.left, V)) :
+    Φ (gm f z V hz u) = gmDual D f z V hz u := by
+  obtain ⟨r, hr, hzr⟩ := hV₀.exists_basicOpen_le (V := V) ⟨f z, hz⟩ hz₀
+  have hzr' : z ∈ f ⁻¹ᵁ X.left.basicOpen r := hzr
+  have := hV₀.isLocalization_basicOpen r
+  have e : Φ.comp (gm f z _ hzr') = gmDual D f z _ hzr' := by
+    apply IsLocalization.ringHom_ext (Submonoid.powers r)
+    refine RingHom.ext fun a => ?_
+    have h1 := gm_res f z V₀ _ (X.left.basicOpen_le r) hzr' a
+    have h2 := gmDual_res D f z V₀ _ (X.left.basicOpen_le r) hzr' a
+    exact ((congrArg Φ h1).trans (H a)).trans h2.symm
+  rw [← gm_res f z V _ hr hzr', ← gmDual_res D f z V _ hr hzr']
+  exact RingHom.congr_fun e _
+
+theorem gmDual_const (D : VF X) (f : P ⟶ X.left) (z : P) (V : X.left.Opens) (hz : z ∈ f ⁻¹ᵁ V)
+    (c : Γ(Sp K, ⊤)) :
+    gmDual D f z V hz ((X.hom.appLE ⊤ V le_top).hom c) =
+      TrivSqZeroExt.inl ((P.presheaf.germ ⊤ z trivial).hom (((f ≫ X.hom).appLE ⊤ ⊤ le_top).hom c)) := by
+  refine TrivSqZeroExt.ext ?_ ?_
+  · show gm f z V hz _ = (P.presheaf.germ ⊤ z trivial).hom _
+    rw [← germ_appLE f z V _ le_rfl hz,
+      ← TopCat.Presheaf.germ_res_apply P.presheaf (homOfLE (le_top : f ⁻¹ᵁ V ≤ ⊤)) z hz]
+    congr 1
+    have e1 := Scheme.Hom.appLE_comp_appLE f X.hom ⊤ V (f ⁻¹ᵁ V) le_top le_rfl
+    have e2 := (f ≫ X.hom).appLE_map (U := ⊤) (V := ⊤) le_top (homOfLE (le_top : f ⁻¹ᵁ V ≤ ⊤)).op
+    exact congrArg (fun φ => φ.hom c) (e1.trans e2.symm)
+  · show gm f z V hz (D.D V _) = 0
+    have e : (X.hom.appLE ⊤ V le_top).hom c =
+        cstK X V ((Scheme.ΓSpecIso (CommRingCat.of K)).hom.hom c) := by
+      show _ = (X.hom.appLE ⊤ V le_top).hom ((Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom _)
+      congr 1
+      exact (congrArg (fun φ => φ.hom c) (Scheme.ΓSpecIso (CommRingCat.of K)).hom_inv_id).symm
+    rw [e, D.const, map_zero]
+
+theorem exists_dual {Y : Over (Sp K)} (p : P ⟶ X.left) (q : P ⟶ Y.left)
+    (H : IsPullback p q X.hom Y.hom) (D : VF X) (E : VF Y) (z : P) :
+    ∃ Φ : P.presheaf.stalk z →+* DualNumber (P.presheaf.stalk z), (∀ a, (Φ a).fst = a) ∧
+      (∀ V hz u, Φ (gm p z V hz u) = gmDual D p z V hz u) ∧
+      ∀ V hz u, Φ (gm q z V hz u) = gmDual E q z V hz u := by
+  obtain ⟨_, ⟨U, hU, rfl⟩, hzU, -⟩ := X.left.isBasis_affineOpens.exists_subset_of_mem_open
+    (Set.mem_univ (p z)) isOpen_univ
+  obtain ⟨_, ⟨W, hW, rfl⟩, hzW, -⟩ := Y.left.isBasis_affineOpens.exists_subset_of_mem_open
+    (Set.mem_univ (q z)) isOpen_univ
+  have hU : IsAffineOpen U := hU
+  have hW : IsAffineOpen W := hW
+  have hzU : z ∈ p ⁻¹ᵁ U := hzU
+  have hzW : z ∈ q ⁻¹ᵁ W := hzW
+  have hO : IsAffineOpen (p ⁻¹ᵁ U ⊓ q ⁻¹ᵁ W) := by
+    have : IsAffine _ := isAffineOpen_top (Sp K)
+    have : IsAffine _ := hU
+    have : IsAffine _ := hW
+    exact .of_isIso (Scheme.Hom.isPullback_resLE H (US := ⊤) (UT := W) (UX := U) le_top le_top
+      rfl).isoPullback.hom
+  have po := (isIso_pushoutSection_iff H (US := ⊤) (UT := W) (UX := U) le_top
+    le_top rfl).mp (isIso_pushoutSection_of_isAffineOpen H _ _ _ (isAffineOpen_top _) hW hU)
+  have hz : z ∈ p ⁻¹ᵁ U ⊓ q ⁻¹ᵁ W := ⟨hzU, hzW⟩
+  have w : X.hom.appLE ⊤ U le_top ≫ CommRingCat.ofHom (gmDual D p z U hzU) =
+      Y.hom.appLE ⊤ W le_top ≫ CommRingCat.ofHom (gmDual E q z W hzW) := by
+    refine CommRingCat.hom_ext (RingHom.ext fun c => ?_)
+    refine (gmDual_const D p z U hzU c).trans (Eq.trans ?_ (gmDual_const E q z W hzW c).symm)
+    simp only [H.w]
+  let φ := po.desc _ _ w
+  have h1 : ∀ u, φ.hom ((p.appLE U _ inf_le_left).hom u) = gmDual D p z U hzU u := fun u =>
+    congrArg (fun φ => φ.hom u) (po.inl_desc _ _ w)
+  have h2 : ∀ u, φ.hom ((q.appLE W _ inf_le_right).hom u) = gmDual E q z W hzW u := fun u =>
+    congrArg (fun φ => φ.hom u) (po.inr_desc _ _ w)
+  have hf : φ ≫ CommRingCat.ofHom (TrivSqZeroExt.fstHom (P.presheaf.stalk z) (P.presheaf.stalk z)
+      (P.presheaf.stalk z)).toRingHom = P.presheaf.germ _ z hz := by
+    refine po.hom_ext (CommRingCat.hom_ext (RingHom.ext fun u => ?_))
+      (CommRingCat.hom_ext (RingHom.ext fun u => ?_))
+    · exact (congrArg TrivSqZeroExt.fst (h1 u)).trans (germ_appLE p z U _ inf_le_left hz u).symm
+    · exact (congrArg TrivSqZeroExt.fst (h2 u)).trans (germ_appLE q z W _ inf_le_right hz u).symm
+  have hf' : ∀ b, (φ.hom b).fst = (P.presheaf.germ _ z hz).hom b := fun b =>
+    congrArg (fun φ => φ.hom b) hf
+  letI := P.presheaf.algebra_section_stalk (⟨z, hz⟩ : (p ⁻¹ᵁ U ⊓ q ⁻¹ᵁ W : P.Opens))
+  have loc := hO.isLocalization_stalk ⟨z, hz⟩
+  have hu : ∀ s : (hO.primeIdealOf ⟨z, hz⟩).asIdeal.primeCompl, IsUnit (φ.hom s) := fun s => by
+    rw [TrivSqZeroExt.isUnit_iff_isUnit_fst, hf']
+    exact IsLocalization.map_units (P.presheaf.stalk z) s
+  let Φ : P.presheaf.stalk z →+* DualNumber (P.presheaf.stalk z) := IsLocalization.lift hu
+  have hΦ : ∀ b, Φ ((P.presheaf.germ _ z hz).hom b) = φ.hom b := fun b =>
+    IsLocalization.lift_eq hu b
+  refine ⟨Φ, fun a => ?_, extend D p z Φ U hU hzU fun u => ?_, extend E q z Φ W hW hzW fun u => ?_⟩
+  · have : (TrivSqZeroExt.fstHom (P.presheaf.stalk z) (P.presheaf.stalk z)
+        (P.presheaf.stalk z)).toRingHom.comp Φ = RingHom.id _ := by
+      apply IsLocalization.ringHom_ext (hO.primeIdealOf ⟨z, hz⟩).asIdeal.primeCompl
+      refine RingHom.ext fun b => ?_
+      exact (congrArg TrivSqZeroExt.fst (hΦ b)).trans (hf' b)
+    exact congrArg (fun f => f a) this
+  · rw [← germ_appLE p z U _ inf_le_left hz, hΦ, h1]
+  · rw [← germ_appLE q z W _ inf_le_right hz, hΦ, h2]
+
+end GlobalTheory.SS.StalkDer
+
+namespace GlobalTheory.SS
+open StalkDer in
+
+theorem exists_stalk_derivation_of_isPullback : ∀ (K : Type) [Field K] (P X Y : Over (Sp K)) (p : P.left ⟶ X.left) (q : P.left ⟶ Y.left), IsPullback p q X.hom Y.hom → ∀ (D : VF X) (z : P.left), ∃ δ : P.left.presheaf.stalk z →+ P.left.presheaf.stalk z, (∀ a b, δ (a * b) = a * δ b + b * δ a) ∧ (∀ (V : X.left.Opens) (W : P.left.Opens) (h : W ≤ p ⁻¹ᵁ V) (hz : z ∈ W) (u : Γ(X.left, V)), δ ((P.left.presheaf.germ W z hz).hom ((p.appLE V W h).hom u)) = (P.left.presheaf.germ W z hz).hom ((p.appLE V W h).hom (D.D V u))) ∧ ∀ (V : Y.left.Opens) (W : P.left.Opens) (h : W ≤ q ⁻¹ᵁ V) (hz : z ∈ W) (u : Γ(Y.left, V)), δ ((P.left.presheaf.germ W z hz).hom ((q.appLE V W h).hom u)) = 0 := by
+  intro K _ P X Y p q H D z
+  obtain ⟨Φ, h0, h1, h2⟩ := exists_dual p q H D (VF.zero Y) z
+  refine ⟨⟨⟨fun x => (Φ x).snd, by simp⟩, fun a b => by simp⟩, fun a b => ?_,
+    fun V W h hz u => ?_, fun V W h hz u => ?_⟩
+  · show (Φ (a * b)).snd = a * (Φ b).snd + b * (Φ a).snd
+    rw [map_mul, DualNumber.snd_mul, h0, h0]; ring
+  · rw [germ_appLE, germ_appLE]
+    exact congrArg TrivSqZeroExt.snd (h1 V (h hz) u)
+  · rw [germ_appLE]
+    exact (congrArg TrivSqZeroExt.snd (h2 V (h hz) u)).trans (map_zero (gm q z V (h hz)))
+end GlobalTheory.SS
+end
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.SS
+noncomputable section
+namespace GlobalTheory.SS.PowCmp
+section
+variable {R : Type} [CommRing R] {K : Type} [Field K] [Algebra R K] {A : Over (Sp K)}
+
+def cstR (M : Model R A) (U : M.Y.left.Opens) : R →+* Γ(M.Y.left, U) :=
+  (M.Y.hom.appLE ⊤ U le_top).hom.comp (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom
+
+theorem j_cstR (M : Model R A) (U : M.Y.left.Opens) (r : R) :
+    (M.j.app U).hom (cstR M U r) = cstK A _ (algebraMap R K r) := by
+  have e := congrArg (fun q => q.hom r) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom (algebraMap R K)))
+  have h1 : M.Y.hom.appLE ⊤ U le_top ≫ M.j.app U = (M.j ≫ M.Y.hom).appLE ⊤ (M.j ⁻¹ᵁ U) le_top := by
+    rw [Scheme.Hom.app_eq_appLE]; exact Scheme.Hom.appLE_comp_appLE _ _ _ _ _ _ _
+  have h2 : (spMap (algebraMap R K)).appTop ≫ A.hom.appLE ⊤ (M.j ⁻¹ᵁ U) le_top
+      = (A.hom ≫ spMap (algebraMap R K)).appLE ⊤ (M.j ⁻¹ᵁ U) le_top := by
+    exact (Scheme.Hom.comp_appLE A.hom (spMap (algebraMap R K)) ⊤ _ _).symm
+  have h3 : M.Y.hom.appLE ⊤ U le_top ≫ M.j.app U = (spMap (algebraMap R K)).appTop ≫ A.hom.appLE ⊤ (M.j ⁻¹ᵁ U) le_top := by
+    rw [h1, h2]; simp only [M.j_hom]
+  have h4 := congrArg (fun q => q.hom ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom r)) h3
+  exact h4.trans (congrArg (A.hom.appLE ⊤ (M.j ⁻¹ᵁ U) le_top).hom e.symm)
+
+theorem not_isUnit_cstR [IsLocalRing R] (M : Model R A) (U : M.Y.left.Opens) (h : ((U : Set M.Y.left) ∩ M.sp).Nonempty)
+    {π : R} (hπ : π ∈ IsLocalRing.maximalIdeal R) : ¬ IsUnit (cstR M U π) := by
+  intro hu
+  obtain ⟨y, hy, hs⟩ := h
+  have h1 : M.Y.left.basicOpen (cstR M U π) = U := M.Y.left.basicOpen_of_isUnit hu
+  have h2 : M.Y.left.basicOpen (cstR M U π) = U ⊓ M.Y.hom ⁻¹ᵁ (Sp R).basicOpen ((Scheme.ΓSpecIso (CommRingCat.of R)).inv π) :=
+    Scheme.basicOpen_appLE M.Y.hom U ⊤ le_top ((Scheme.ΓSpecIso (CommRingCat.of R)).inv π)
+  rw [h1, basicOpen_eq_of_affine (R := CommRingCat.of R) π] at h2
+  have h4 := (h2.le hy).2
+  have h6 : M.Y.hom y = IsLocalRing.closedPoint R := hs
+  have h7 : π ∉ PrimeSpectrum.asIdeal (M.Y.hom y) := h4
+  rw [h6] at h7
+  exact h7 hπ
+
+theorem j_app_injective [IsDomain R] [IsFractionRing R K] (M : Model R A) (U : M.Y.left.Opens) :
+    Function.Injective (M.j.app U).hom := by
+  have := M.smooth
+  have : IsDominant (spMap (algebraMap R K)) :=
+    ⟨PrimeSpectrum.denseRange_comap_iff_ker_le_nilRadical _ |>.2 (by
+      exact ((RingHom.injective_iff_ker_eq_bot _).1 (IsFractionRing.injective R K)).le.trans bot_le)⟩
+  have := IsSchemeTheoreticallyDominant.of_isDominant (spMap (algebraMap R K))
+  have : IsSchemeTheoreticallyDominant (pullback.fst M.Y.hom (spMap (algebraMap R K))) :=
+    IsSchemeTheoreticallyDominant.of_isPullback (IsPullback.of_hasPullback M.Y.hom (spMap (algebraMap R K))).flip
+  have : IsIso M.e.inv.left := inferInstanceAs (IsIso ((Over.forget _).map M.e.inv))
+  have : IsSchemeTheoreticallyDominant M.j := by unfold Model.j; infer_instance
+  have : QuasiCompact M.j := by unfold Model.j; infer_instance
+  exact M.j.app_injective U
+
+end
+
+theorem le_of_zpow_mul_unit_eq : ∀ (R K : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K] (π : R), Irreducible π → ∀ (A : Over (Sp K)) (M : Model R A) (W : M.Y.left.Opens), ((W : Set M.Y.left) ∩ M.sp).Nonempty → ∀ (σ s : Γ(M.Y.left, W)) (a b : ℤ), IsUnit σ → cstK A (M.j ⁻¹ᵁ W) (algebraMap R K π ^ a) * (M.j.app W).hom σ = cstK A (M.j ⁻¹ᵁ W) (algebraMap R K π ^ b) * (M.j.app W).hom s → b ≤ a := by
+  intro R K _ _ _ _ _ _ π hirr A M U hU σ s a b hs e'
+  by_contra hlt
+  have hπ : π ∈ IsLocalRing.maximalIdeal R := hirr.not_isUnit
+  obtain ⟨k, hk⟩ : ∃ k : ℕ, b = a + (k + 1 : ℕ) := ⟨(b - a - 1).toNat, by omega⟩
+  have hp : algebraMap R K π ≠ 0 := by simpa using hirr.ne_zero
+  have hu : IsUnit (cstK A (M.j ⁻¹ᵁ U) (algebraMap R K π ^ a)) := (IsUnit.mk0 _ (zpow_ne_zero a hp)).map _
+  rw [hk, zpow_add₀ hp, map_mul, _root_.mul_assoc, zpow_natCast, ← map_pow, ← j_cstR, ← map_mul] at e'
+  have := j_app_injective M U (hu.mul_left_cancel e')
+  rw [this, pow_succ, map_mul] at hs
+  exact not_isUnit_cstR M U hU hπ (isUnit_of_mul_isUnit_right (isUnit_of_mul_isUnit_left hs))
+
+end GlobalTheory.SS.PowCmp
+end
+end
+
+section
 section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
@@ -387,3 +727,4 @@ open GlobalTheory.SS
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.vectorFieldOrder_add_of_prod_strictHenselian : ∀ (R K : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [Field K] [Algebra R K], SH R K → ∀ (π : R), Irreducible π → ∀ (A A' : Over (Sp K)) (I I' : Type) [Fintype I] [DecidableEq I] [Fintype I'] [DecidableEq I'] (D : I → VF A) (D' : I' → VF A'), IsFrame D → IsFrame D' → ∃ D₂ : I ⊕ I' → VF (A ⊗ A'), IsFrame D₂ ∧ ∀ (M : Model R A) (N : Model R A') (m n : ℤ), M.Irr → N.Irr → HasOrd M D π m → HasOrd N D' π n → HasOrd (M.prod N) D₂ π (m + n) := by
   atlas_forward_decl GlobalTheory.SS.OrdProd.ord_prod
+end

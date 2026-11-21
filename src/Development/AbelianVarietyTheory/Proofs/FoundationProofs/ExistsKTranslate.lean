@@ -13,32 +13,951 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockPolynomialsLoca
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockActionPowAnalyticVectorNormLe
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockDerivedActionsTensorMembersStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoverUpqClosureExpTopAndCartanStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsMatrixUnitStableSubspaceOfExtremalStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsMatrixUnitStableSubspaceOfExtremal
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemISupInfWeightSubmoduleOfDiagonalStableStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsKilledByLowerNilradicalActBlockDiagonal
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CasimirScalarOnModuleGeneratedKilledByLower
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CasimirCentralAndOnHighestWeight
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CentredHarishChandraParameterIsParamBlattner
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormSqCentredHarishChandraParameterSubRhoSq
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HarmonicMinorProductDeltaExtremalFirstMember
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HarmonicMinorProductDeltaMemHighestWeightSecond
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HarmonicHighestWeightEqLowestKTypeHighestWeight
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AbsSubOfDisjoint
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSubrepClosureAnalyticVectors
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCentralCircleDistinctGradedEigen
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.TorusWeightVectorIffCartanWeightVector
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsHCModuleOfGradedDenseGK
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IrreducibleCompletionOfGradedIrreducibleGK
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemLpTwoOfCoshDecayUnitaryPQCover
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsEquivariantTensorMapOfCyclicCommuting
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InvariantInnerFormsProportionalWeightLine
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIntertwinerMapHighestWeightVectorCompact
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactCoverUnHcModuleFiniteDimIrreducibleStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsMinf
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLinearEquivOfIrreducibleIsHW
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactCoverUnHcModuleFiniteDimIrreducible
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FockTensorIntertwinerUniqueAndRange
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IrreducibleOfWeightLine
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHighestWeightVectorOfKStableStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSubmodule
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHighestWeightVectorOfKStable
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KTypesUnitaryLowestWeightInCone
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FockIntertwinerCommutesUnitaryAndExtends
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockDerivedActionsTensorMembers
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LowestKTypeOfIrreducibleGeneratedModule
 
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_matrixUnit_stable_subspace_of_extremal : ∀ (p q : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (act : Mat p q →ₗ[ℂ] Module.End ℂ V), IsLieAct act → ∀ (S : Ix p q → Ix p q → Prop), Equivalence S → ∀ (r : Ix p q → ℕ), Function.Injective r → ∀ (μ : Ix p q → ℚ) (v : V), v ∈ wtSub act μ → (∀ a b, S a b → r a < r b → act (Eab a b) v = 0) → ∃ U : Submodule ℂ V, v ∈ U ∧ (∀ a b, S a b → ∀ x ∈ U, act (Eab a b) x ∈ U) ∧ (∀ U' : Submodule ℂ V, v ∈ U' → (∀ a b, S a b → r a < r b → ∀ x ∈ U', act (Eab b a) x ∈ U') → U ≤ U') ∧ (∀ x ∈ U, x ∈ wtSub act μ → ∃ c : ℂ, x = c • v) ∧ ∀ (ν : Ix p q → ℚ), ∀ x ∈ U, x ≠ 0 → x ∈ wtSub act ν → ν = μ ∨ ∑ a, (r a : ℚ) * μ a < ∑ a, (r a : ℚ) * ν a := by
+  first | exact @GlobalTheory.ExtremalGen.exists_generated | exact GlobalTheory.ExtremalGen.exists_generated | (intros; apply GlobalTheory.ExtremalGen.exists_generated <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+
+namespace GlobalTheory.KilledByLowerStable
+
+theorem act_eq_zero_of_lower {p q : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
+    (act : Mat p q →ₗ[ℂ] Module.End ℂ V) (x : V) (hx : KilledByLower act x) (Y : Mat p q)
+    (h1 : ∀ (a : Fin p) (j : Ix p q), Y (Sum.inl a) j = 0)
+    (h2 : ∀ (i : Ix p q) (b : Fin q), Y i (Sum.inr b) = 0) : act Y x = 0 := by
+  have hY : Y = ∑ i, ∑ j, Y i j • Eab i j := by
+    conv_lhs => rw [Matrix.matrix_eq_sum_single Y]
+    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+    simp [Eab, Matrix.smul_single]
+  rw [hY]
+  simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
+  refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
+  rcases i with a | b
+  · rw [h1, zero_smul]
+  · rcases j with a | b'
+    · rw [hx a b, smul_zero]
+    · rw [h2, zero_smul]
+
+theorem killedByLower_act : ∀ (p q : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V]
+    (act : Mat p q →ₗ[ℂ] Module.End ℂ V), IsLieAct act → ∀ Z : Mat p q, IsKC Z →
+    ∀ x : V, KilledByLower act x → KilledByLower act (act Z x) := by
+  intro p q V _ _ act hact Z hZ x hx a b
+  have h := congrArg (fun f : Module.End ℂ V => f x) (hact (Eab (Sum.inr b) (Sum.inl a)) Z)
+  simp only [LinearMap.sub_apply, Module.End.mul_apply] at h
+  rw [hx a b, map_zero, sub_zero] at h
+  rw [← h]
+  apply act_eq_zero_of_lower act x hx
+  · intro a' j
+    have h0 : Z (Sum.inl a') (Sum.inr b) = 0 := hZ _ _ (by simp [sameBlock])
+    by_cases hj : j = Sum.inl a
+    · subst hj
+      simp [Eab, h0]
+    · simp [Eab, hj]
+  · intro i b'
+    have h0 : Z (Sum.inl a) (Sum.inr b') = 0 := hZ _ _ (by simp [sameBlock])
+    by_cases hi : i = Sum.inr b
+    · subst hi
+      simp [Eab, h0]
+    · simp [Eab, hi]
+
+end GlobalTheory.KilledByLowerStable
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isKilledByLowerNilradical_act_blockDiagonal : ∀ (p q : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (act : Mat p q →ₗ[ℂ] Module.End ℂ V), IsLieAct act → ∀ Z : Mat p q, IsKC Z → ∀ x : V, KilledByLower act x → KilledByLower act (act Z x) := by
+  atlas_forward_decl GlobalTheory.KilledByLowerStable.killedByLower_act
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+
+namespace GlobalTheory.CasimirLowest
+
+open GlobalTheory.CasimirHighest
+
+theorem casimir_on_vector {p q : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
+    {act : Mat p q →ₗ[ℂ] Module.End ℂ V} (h : IsLieAct act) (Λ : Ix p q → ℚ) (e : V)
+    (hv : e ∈ hwSub act Λ) (hk : KilledByLower act e) :
+    casimir act e = (((∑ a, Λ a ^ 2 + ∑ i : Fin p, Λ (Sum.inl i) * ((p : ℚ) - q - 1 - 2 * (i : ℕ)) +
+      ∑ j : Fin q, Λ (Sum.inr j) * ((p : ℚ) + q - 1 - 2 * (j : ℕ))) : ℚ) : ℂ) • e := by
+  simp only [hwSub, wtSub, Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker,
+    LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply, sub_eq_zero] at hv
+  obtain ⟨hw, hr⟩ := hv
+  have h1 := casimir_on_highest_rat (fun i j : Fin p => act (Eab (.inl i) (.inl j)))
+    (fun i j => by simpa using act_Eab_comm h (.inl i) (.inl j) (.inl j) (.inl i)) e
+    (fun i => Λ (.inl i)) (fun i j hij => hr _ _ hij) (fun i => hw _)
+  have h2 := casimir_on_highest_rat (fun i j : Fin q => act (Eab (.inr i) (.inr j)))
+    (fun i j => by simpa using act_Eab_comm h (.inr i) (.inr j) (.inr j) (.inr i)) e
+    (fun i => Λ (.inr i)) (fun i j hij => hr _ _ hij) (fun i => hw _)
+  have h3 : ∀ (a : Fin p) (b : Fin q),
+      act (Eab (.inl a) (.inr b)) (act (Eab (.inr b) (.inl a)) e) = 0 := by
+    intro a b; rw [hk a b, map_zero]
+  have h4 : ∀ (b : Fin q) (a : Fin p),
+      act (Eab (.inr b) (.inl a)) (act (Eab (.inl a) (.inr b)) e) =
+        ((Λ (.inr b) - Λ (.inl a) : ℚ) : ℂ) • e := by
+    intro b a
+    have h5 := congrArg (fun f : Module.End ℂ V => f e)
+      (act_Eab_comm h (.inr b) (.inl a) (.inl a) (.inr b))
+    simp only [if_true, LinearMap.sub_apply, Module.End.mul_apply, h3, sub_zero, hw] at h5
+    rw [h5, Rat.cast_sub, sub_smul]
+  have h6 : ∑ b : Fin q, ∑ a : Fin p, ((Λ (.inr b) - Λ (.inl a) : ℚ) : ℂ) • e =
+      ((∑ b : Fin q, ∑ a : Fin p, (Λ (.inr b) - Λ (.inl a)) : ℚ) : ℂ) • e := by
+    simp only [Rat.cast_sum, Finset.sum_smul]
+  simp only [casimir, LinearMap.sum_apply, LinearMap.add_apply, Module.End.mul_apply,
+    Fintype.sum_sum_type, Finset.sum_add_distrib, h3, h4, Finset.sum_const_zero, zero_add]
+  rw [h1, h2, h6, ← add_smul, ← add_smul, ← Rat.cast_add, ← Rat.cast_add]
+  congr 2
+  have e1 : ∑ i : Fin p, Λ (Sum.inl i) * ((p : ℚ) - q - 1 - 2 * (i : ℕ)) =
+      ∑ i : Fin p, Λ (Sum.inl i) * ((p : ℚ) - 1 - 2 * (i : ℕ)) - q * ∑ i : Fin p, Λ (Sum.inl i) := by
+    rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl fun i _ => by ring
+  have e2 : ∑ j : Fin q, Λ (Sum.inr j) * ((p : ℚ) + q - 1 - 2 * (j : ℕ)) =
+      ∑ j : Fin q, Λ (Sum.inr j) * ((q : ℚ) - 1 - 2 * (j : ℕ)) + p * ∑ j : Fin q, Λ (Sum.inr j) := by
+    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun i _ => by ring
+  have e3 : ∑ b : Fin q, ∑ a : Fin p, (Λ (.inr b) - Λ (.inl a)) =
+      p * ∑ j : Fin q, Λ (Sum.inr j) - q * ∑ i : Fin p, Λ (Sum.inl i) := by
+    simp only [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      nsmul_eq_mul, Finset.mul_sum]
+  rw [e1, e2, e3]
+  ring
+
+theorem casimir_on_generated : ∀ (p q : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (act : Mat p q →ₗ[ℂ] Module.End ℂ V), IsLieAct act → ∀ (Λ : Ix p q → ℚ) (e : V), e ∈ hwSub act Λ → KilledByLower act e → genSub act {e} = ⊤ → ∀ x, casimir act x = (((∑ a, Λ a ^ 2 + ∑ i : Fin p, Λ (Sum.inl i) * ((p : ℚ) - q - 1 - 2 * (i : ℕ)) + ∑ j : Fin q, Λ (Sum.inr j) * ((p : ℚ) + q - 1 - 2 * (j : ℕ))) : ℚ) : ℂ) • x := by
+  intro p q V _ _ act h Λ e hv hk hg x
+  have he := casimir_on_vector h Λ e hv hk
+  generalize (((∑ a, Λ a ^ 2 + ∑ i : Fin p, Λ (Sum.inl i) * ((p : ℚ) - q - 1 - 2 * (i : ℕ)) +
+      ∑ j : Fin q, Λ (Sum.inr j) * ((p : ℚ) + q - 1 - 2 * (j : ℕ))) : ℚ) : ℂ) = c at he ⊢
+  have hc := (casimir_central_and_highest p q V act h).1
+  have hle : genSub act {e} ≤ LinearMap.ker (casimir act - c • LinearMap.id) := by
+    refine sInf_le ⟨?_, ?_⟩
+    · rintro y rfl
+      simp [he]
+    · intro Z y hy
+      simp only [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply,
+        sub_eq_zero] at hy ⊢
+      have := congrArg (fun f : Module.End ℂ V => f y) (hc Z)
+      simp only [Module.End.mul_apply] at this
+      rw [this, hy, map_smul]
+  have hx := hle (hg ▸ Submodule.mem_top : x ∈ genSub act {e})
+  simpa [sub_eq_zero] using hx
+
+end GlobalTheory.CasimirLowest
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.casimir_scalar_on_module_generated_killedByLower : ∀ (p q : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (act : Mat p q →ₗ[ℂ] Module.End ℂ V), IsLieAct act → ∀ (Λ : Ix p q → ℚ) (e : V), e ∈ hwSub act Λ → KilledByLower act e → genSub act {e} = ⊤ → ∀ x, casimir act x = (((∑ a, Λ a ^ 2 + ∑ i : Fin p, Λ (Sum.inl i) * ((p : ℚ) - q - 1 - 2 * (i : ℕ)) + ∑ j : Fin q, Λ (Sum.inr j) * ((p : ℚ) + q - 1 - 2 * (j : ℕ))) : ℚ) : ℂ) • x := by
+  atlas_forward_decl GlobalTheory.CasimirLowest.casimir_on_generated
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+
+namespace GlobalTheory
+
+theorem normSq_hcParam_sub_rhoSq (p q n : ℕ) (ap : Fin p → ℕ) (am : Fin q → ℕ) :
+    normSq (hcParam n ap am) - rhoSq (p + q) = (∑ a, wtK n ap am a ^ 2 + ∑ i : Fin p, wtK n ap am (Sum.inl i) * ((p : ℚ) - q - 1 - 2 * (i : ℕ)) + ∑ j : Fin q, wtK n ap am (Sum.inr j) * ((p : ℚ) + q - 1 - 2 * (j : ℕ))) := by
+  have hr : rhoSq (p + q) = ∑ i : Fin p, (((p : ℚ) - q - 1) / 2 - (i : ℕ)) ^ 2
+      + ∑ j : Fin q, (((p : ℚ) + q - 1) / 2 - (j : ℕ)) ^ 2 := by
+    unfold rhoSq
+    rw [Fin.sum_univ_eq_sum_range (fun i : ℕ => (((p : ℚ) - q - 1) / 2 - (i : ℕ)) ^ 2) p,
+      Fin.sum_univ_eq_sum_range (fun i : ℕ => (((p : ℚ) + q - 1) / 2 - (i : ℕ)) ^ 2) q,
+      Nat.add_comm p q, Finset.sum_range_add, add_comm]
+    congr 1 <;> refine Finset.sum_congr rfl fun i _ => ?_ <;> push_cast <;> ring
+  rw [hr]
+  unfold normSq
+  rw [Fintype.sum_sum_type, Fintype.sum_sum_type]
+  have h1 : ∑ i : Fin p, hcParam n ap am (Sum.inl i) ^ 2
+      = ∑ i : Fin p, wtK n ap am (Sum.inl i) ^ 2
+        + ∑ i : Fin p, wtK n ap am (Sum.inl i) * ((p : ℚ) - q - 1 - 2 * (i : ℕ))
+        + ∑ i : Fin p, (((p : ℚ) - q - 1) / 2 - (i : ℕ)) ^ 2 := by
+    rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [hcParam, wtK]
+    ring
+  have h2 : ∑ j : Fin q, hcParam n ap am (Sum.inr j) ^ 2
+      = ∑ j : Fin q, wtK n ap am (Sum.inr j) ^ 2
+        + ∑ j : Fin q, wtK n ap am (Sum.inr j) * ((p : ℚ) + q - 1 - 2 * (j : ℕ))
+        + ∑ j : Fin q, (((p : ℚ) + q - 1) / 2 - (j : ℕ)) ^ 2 := by
+    rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [hcParam, wtK]
+    ring
+  rw [h1, h2]
+  ring
+
+end GlobalTheory
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normSq_centredHarishChandraParameter_sub_rhoSq : ∀ (p q n : ℕ) (ap : Fin p → ℕ) (am : Fin q → ℕ), normSq (hcParam n ap am) - rhoSq (p + q) = (∑ a, wtK n ap am a ^ 2 + ∑ i : Fin p, wtK n ap am (Sum.inl i) * ((p : ℚ) - q - 1 - 2 * (i : ℕ)) + ∑ j : Fin q, wtK n ap am (Sum.inr j) * ((p : ℚ) + q - 1 - 2 * (j : ℕ))) := by
+  atlas_forward_decl GlobalTheory.normSq_hcParam_sub_rhoSq
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts GlobalTheory.JointHarm
+
+namespace GlobalTheory.HarmonicShape
+
+theorem weight_eq_wtK (p q n : ℕ) (hn : p + q < n) (ap : Fin p → ℕ) (am : Fin q → ℕ)
+    (μ : Ix p q → ℚ) (P : Pol p q n 0) (h1 : IsHW (fockAct1 p q n 0) μ P)
+    (h2 : P ∈ hwSub (fockAct2 p q n 0) (wtH n ap am))
+    (h3 : KilledByLower (fockAct1 p q n 0) P) : μ = wtK n ap am := by
+  have hj : P ∈ jointHW μ (wtH n ap am) := by
+    refine ⟨⟨h1.2, h2⟩, ⟨fun a b => ?_, fun a b => by simp⟩, fun _ j => j.elim0, fun i => i.elim0⟩
+    have := h3 a b
+    rw [GlobalTheory.IndefiniteRowSideFullHecke.FockSingularValues.fockAct1_lower, neg_eq_zero] at this
+    exact this
+  obtain ⟨α, β, γ, δ, ⟨-, -, -, -, a1, b1, c1, d1, -, -, -, -, e1, e2, e3, -⟩, -⟩ :=
+    four_of_joint h1.1 hj
+  funext x
+  rcases x with i | j
+  · have hi := i.2
+    have u := e1 i
+    have v := e3 ⟨i.1, by omega⟩
+    rw [b1 _ (by simp)] at u
+    rw [d1 _ ((min_le_left _ _).trans (by rw [Fin.val_rev]; dsimp only; omega))] at v
+    simp only [shiftNu, cPair, wtH, hi, dif_pos, Fin.eta] at u v
+    simp only [wtK]
+    push_cast at u v
+    linarith
+  · have hj := j.2
+    have hr := j.rev.2
+    have u := e2 j
+    have v := e3 (Fin.rev ⟨j.rev.1, by omega⟩)
+    have hp : ¬ (Fin.rev (⟨j.rev.1, by omega⟩ : Fin n)).1 < p := by
+      rw [Fin.val_rev]; dsimp only; omega
+    rw [c1 _ (by simp)] at u
+    rw [a1 _ ((min_le_left _ _).trans (not_lt.1 hp))] at v
+    simp only [shiftNu, cPair, wtH, dif_neg hp, Fin.rev_rev, hr, dif_pos, Fin.eta] at u v
+    simp only [wtK]
+    push_cast at u v
+    linarith
+
+end GlobalTheory.HarmonicShape
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.harmonic_highestWeight_eq_lowestKTypeHighestWeight : ∀ (p q n : ℕ) (hn : p + q < n) (ap : Fin p → ℕ) (am : Fin q → ℕ) (μ : Ix p q → ℚ) (P : Pol p q n 0), IsHW (fockAct1 p q n 0) μ P → P ∈ hwSub (fockAct2 p q n 0) (wtH n ap am) → KilledByLower (fockAct1 p q n 0) P → μ = wtK n ap am := by
+  atlas_forward_decl GlobalTheory.HarmonicShape.weight_eq_wtK
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+
+namespace GlobalTheory.GradedCentralCircle
+
+open GlobalTheory.RealPar
+
+variable {p q : ℕ}
+
+theorem flow_eq {T : GrpData p q} (σ : URep T) {X : Mat p q} (hX : X ∈ upq p q) {w : σ.H} {c : ℂ}
+    (h0 : HasDerivAt (fun t : ℝ => σ.π (T.expt (t • X)) w) (c • w) 0) :
+    σ.π (T.expt X) w = Complex.exp c • w := by
+  set f : ℝ → σ.H := fun t => σ.π (T.expt (t • X)) w with hf
+  have hd : ∀ t, HasDerivAt f (c • f t) t := by
+    intro t
+    have h1 : HasDerivAt (fun s : ℝ => f (s - t)) (c • w) t := by
+      have := HasDerivAt.comp_sub_const t t (f := f) (f' := c • w) (by rw [sub_self]; exact h0)
+      exact this
+    have h2 := ((σ.π (T.expt (t • X))).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt t h1
+    convert h2 using 1
+    · funext s
+      simp only [hf, Function.comp, ContinuousLinearMap.coe_restrictScalars']
+      rw [← ContinuousLinearMap.mul_apply, ← map_mul, ← T.expt_add X hX, add_sub_cancel]
+    · simp [hf]
+  have hg : ∀ t : ℝ, HasDerivAt (fun t : ℝ => Complex.exp (-(c * t)) • f t) 0 t := by
+    intro t
+    have h1 : HasDerivAt (fun t : ℝ => Complex.exp (-(c * t))) (Complex.exp (-(c * t)) * (-c)) t := by
+      have : HasDerivAt (fun t : ℝ => -(c * (t : ℂ))) (-c) t := by
+        simpa using ((Complex.ofRealCLM.hasDerivAt (x := t)).const_mul c).fun_neg
+      exact this.cexp
+    convert h1.fun_smul (hd t) using 1
+    rw [smul_smul, ← add_smul]; simp
+  have hc := is_const_of_deriv_eq_zero (fun t => (hg t).differentiableAt) (fun t => (hg t).deriv) 1 0
+  simp only [hf, one_smul, zero_smul, T.expt_zero, map_one, Complex.ofReal_one, mul_one, Complex.ofReal_zero, mul_zero,
+    neg_zero, Complex.exp_zero, ContinuousLinearMap.one_apply] at hc
+  conv_rhs => rw [← hc, smul_smul, ← Complex.exp_add]
+  simp
+
+theorem exp_injective (c : ℂ) : Function.Injective fun m : ℕ => Complex.exp (Complex.I * (c + m)) := by
+  intro m n h
+  obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.1 h
+  have h1 : ((m : ℝ) : ℂ) - (n : ℝ) = ((k : ℝ) * 2 * Real.pi : ℝ) := by
+    push_cast
+    apply mul_left_cancel₀ Complex.I_ne_zero
+    linear_combination hk
+  have h2 : (m : ℝ) - n = (k : ℝ) * 2 * Real.pi := by exact_mod_cast h1
+  by_cases hk0 : k = 0
+  · subst hk0
+    have : (m : ℝ) = n := by simpa [sub_eq_zero] using h2
+    exact_mod_cast this
+  · exfalso
+    have hi : Irrational (((k * 2 : ℤ) : ℝ) * Real.pi) :=
+      irrational_pi.intCast_mul (by omega)
+    have : ((k * 2 : ℤ) : ℝ) * Real.pi = ((m - n : ℤ) : ℝ) := by push_cast; linarith
+    rw [this] at hi
+    exact Int.not_irrational _ hi
+
+theorem exists_central_eigen : ∀ (p q : ℕ) (T : GrpData p q) (σ : URep T) (M : GKMod p q) (j : M.V →ₗ[ℂ] σ.H), (∀ Y ∈ upq p q, ∀ x, HasDerivAt (fun t : ℝ => σ.π (T.expt (t • Y)) (j x)) (j (M.act Y x)) 0) → ∀ (N : ℕ → Submodule ℂ M.V) (c : ℚ), (∀ m : ℕ, ∀ x ∈ N m, ∑ i : Fin p, M.act (Eab (Sum.inl i) (Sum.inl i)) x = ((c : ℂ) + m) • x) → ∃ k ∈ T.Kset, ∃ lam : ℕ → ℂ, Function.Injective lam ∧ ∀ m, ∀ x ∈ N m, σ.π k (j x) = lam m • j x := by
+  intro p q T σ M j hj N c hN
+  set θ : Ix p q → ℝ := Sum.elim (fun _ => 1) (fun _ => 0) with hθ
+  have hX := TorusWt.torX_mem θ
+  have hK : IsKC (TorusWt.torX θ) := by
+    intro a b hab
+    have : a ≠ b := by
+      rintro rfl
+      cases a <;> simp [sameBlock] at hab
+    simp [TorusWt.torX, this]
+  have hk := KStabLie.expt_mem T hX hK 1
+  rw [one_smul] at hk
+  refine ⟨_, hk, _, exp_injective (c : ℂ), fun m x hx => ?_⟩
+  apply flow_eq σ hX
+  have h0 := hj _ hX x
+  have h1 : M.act (TorusWt.torX θ) x = (Complex.I * ((c : ℂ) + m)) • x := by
+    rw [TorusWt.torX_eq_sum, map_sum, LinearMap.sum_apply, Fintype.sum_sum_type, mul_smul, ← hN m x hx,
+      Finset.smul_sum]
+    simp [hθ]
+  rw [h1, map_smul] at h0
+  exact h0
+
+end GlobalTheory.GradedCentralCircle
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_central_circle_distinct_graded_eigen : ∀ (p q : ℕ) (T : GrpData p q) (σ : URep T) (M : GKMod p q) (j : M.V →ₗ[ℂ] σ.H), (∀ Y ∈ upq p q, ∀ x, HasDerivAt (fun t : ℝ => σ.π (T.expt (t • Y)) (j x)) (j (M.act Y x)) 0) → ∀ (N : ℕ → Submodule ℂ M.V) (c : ℚ), (∀ m : ℕ, ∀ x ∈ N m, ∑ i : Fin p, M.act (Eab (Sum.inl i) (Sum.inl i)) x = ((c : ℂ) + m) • x) → ∃ k ∈ T.Kset, ∃ lam : ℕ → ℂ, Function.Injective lam ∧ ∀ m, ∀ x ∈ N m, σ.π k (j x) = lam m • j x := by
+  atlas_forward_decl GlobalTheory.GradedCentralCircle.exists_central_eigen
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod pOf)
+open GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower Matrix
+
+namespace GlobalTheory.CoshSqInt
+
+variable {p q : ℕ}
+
+theorem pOf_mem_pR (B : Matrix (Fin p) (Fin q) ℂ) : pOf B ∈ pR p q := by
+  refine ⟨?_, ?_⟩
+  · change (pOf B)ᴴ * Jm p q + Jm p q * pOf B = 0
+    rw [(pOf_herm B).eq]
+    simp [pOf, Jm, Formalism.UG.Jpq, Matrix.fromBlocks_multiply, Matrix.fromBlocks_add]
+  · rintro (a | a) (b | b) h <;> simp [sameBlock] at h <;> simp [pOf]
+
+theorem exists_cartan (T : GrpData p q) (g : T.G) :
+    ∃ k ∈ T.Kset, g = k * T.expt (pOf (cartanB (T.covU g))) := by
+  set B := cartanB (T.covU g) with hB
+  refine ⟨g * (T.expt (pOf B))⁻¹, ?_, by simp⟩
+  obtain ⟨k₁, -, k₂, -, h⟩ := isCartan_cartanB (T.covU g)
+  have h1 : ((T.cov g : GL (Ix p q) ℂ) : Mat p q) =
+      Matrix.fromBlocks k₁ 0 0 k₂ * ((T.cov (T.expt (pOf B)) : GL (Ix p q) ℂ) : Mat p q) := by
+    rw [T.expt_cov _ (pOf_mem_pR B).1]; exact h
+  have h2 : ((T.cov (g * (T.expt (pOf B))⁻¹) : GL (Ix p q) ℂ) : Mat p q) = Matrix.fromBlocks k₁ 0 0 k₂ := by
+    rw [map_mul, map_inv, Units.val_mul, h1, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one]
+  change IsKC _
+  rw [h2]
+  rintro (a | a) (b | b) h <;> simp [sameBlock] at h <;> simp
+
+theorem decay_sq (n : ℕ) (g : Formalism.BasicNotions.UpqT p q) :
+    decay n (pOf (cartanB g)) ^ 2 = coshPow (2 * (n : ℝ)) g := by
+  unfold decay coshPow singVal
+  rw [← Finset.prod_pow]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  have : (pOf (cartanB g)).toBlocks₁₂ = cartanB g := by simp [pOf]
+  rw [this, Real.rpow_neg (Real.cosh_pos _).le, inv_pow, ← pow_mul, mul_comm n 2]
+  congr 1
+  rw [← Real.rpow_natCast]; push_cast; rfl
+
+theorem memLp_two_of_decay : GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower.CoshIntegral → ∀ (p q n : ℕ), p + q < n →
+    ∀ (T : GrpData p q) (f : T.G → ℂ) (C : ℝ), Continuous f →
+    (∀ k ∈ T.Kset, ∀ X ∈ pR p q, ‖f (k * T.expt X)‖ ≤ C * decay n X) → MemLp f 2 T.haar := by
+  intro hI p q n hn T f C hf hd
+  obtain ⟨m, hm⟩ := GlobalTheory.MinfMeasure.exists_isMinf p q
+  have hc : 2 * (((p + q : ℕ) : ℝ) - 1) < 2 * (n : ℝ) := by
+    have : ((p + q : ℕ) : ℝ) < n := by exact_mod_cast hn
+    linarith
+  have h1 := hI.1 p q m hm _ hc
+  haveI := hm.1
+  haveI := GlobalTheory.DetSqrtCover.isHaarMeasure_map_covU T
+  haveI : BorelSpace (Formalism.BasicNotions.UpqT p q) := ⟨rfl⟩
+  obtain ⟨t, ht⟩ := GlobalTheory.CompactDualUnique.exists_eq_smul (T.haar.map T.covU) m
+  have h2 : Integrable (coshPow (2 * (n : ℝ))) (T.haar.map T.covU) := by
+    rw [ht]; exact h1.smul_measure_nnreal
+  have h3 : Integrable (coshPow (2 * (n : ℝ)) ∘ T.covU) T.haar :=
+    h2.comp_measurable (GlobalTheory.DetSqrtCover.continuous_covU T).measurable
+  have hfm : AEStronglyMeasurable f T.haar := hf.measurable.aestronglyMeasurable
+  rw [memLp_two_iff_integrable_sq_norm hfm]
+  refine (h3.const_mul (C ^ 2)).mono' (hfm.norm.pow 2) (Filter.Eventually.of_forall fun g => ?_)
+  obtain ⟨k, hk, hg⟩ := exists_cartan T g
+  have h4 := hd k hk _ (pOf_mem_pR (cartanB (T.covU g)))
+  rw [← hg] at h4
+  rw [Real.norm_of_nonneg (by positivity), Function.comp_apply, ← decay_sq, ← mul_pow]
+  exact pow_le_pow_left₀ (norm_nonneg _) h4 2
+
+end GlobalTheory.CoshSqInt
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.memLp_two_of_cosh_decay_unitaryPQCover : GlobalTheory.IndefiniteRowSideFullHecke.CartanCoshPower.CoshIntegral → ∀ (p q n : ℕ), p + q < n → ∀ (T : GrpData p q) (f : T.G → ℂ) (C : ℝ), Continuous f → (∀ k ∈ T.Kset, ∀ X ∈ pR p q, ‖f (k * T.expt X)‖ ≤ C * decay n X) → MemLp f 2 T.haar := by
+  atlas_forward_decl GlobalTheory.CoshSqInt.memLp_two_of_decay
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+
+namespace GlobalTheory.FockBilin
+
+theorem gen_ind {p q : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
+    (act : Mat p q →ₗ[ℂ] Module.End ℂ V) (x₀ : V) (h : genSub act {x₀} = ⊤)
+    (N : Submodule ℂ V) (h0 : x₀ ∈ N) (hs : ∀ Z, ∀ y ∈ N, act Z y ∈ N) (x : V) : x ∈ N := by
+  have hle : genSub act {x₀} ≤ N := sInf_le ⟨by simpa using h0, hs⟩
+  rw [h] at hle
+  exact hle Submodule.mem_top
+
+theorem uniq {p q : ℕ} {U V : Type} [AddCommGroup U] [Module ℂ U] [AddCommGroup V] [Module ℂ V]
+    (act : Mat p q →ₗ[ℂ] Module.End ℂ U) (a : Mat p q →ₗ[ℂ] Module.End ℂ V) (x₀ : U)
+    (h : genSub act {x₀} = ⊤) (f g : U →ₗ[ℂ] V)
+    (hf : ∀ Z x, f (act Z x) = a Z (f x)) (hg : ∀ Z x, g (act Z x) = a Z (g x))
+    (h0 : f x₀ = g x₀) : f = g := by
+  ext x
+  have := gen_ind act x₀ h (LinearMap.eqLocus f g) h0 (fun Z y hy => by
+    rw [LinearMap.mem_eqLocus] at hy ⊢
+    rw [hf, hg, hy]) x
+  exact this
+
+theorem exists_bilin : ∀ (p q r s : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (a₁ : Mat p q →ₗ[ℂ] Module.End ℂ V) (a₂ : Mat r s →ₗ[ℂ] Module.End ℂ V), (∀ Y Z, a₁ Y * a₂ Z = a₂ Z * a₁ Y) → ∀ (M₁ : GKMod p q) (M₂ : GKMod r s) (i₁ : M₁.V →ₗ[ℂ] V) (i₂ : M₂.V →ₗ[ℂ] V), (∀ Z x, i₁ (M₁.act Z x) = a₁ Z (i₁ x)) → (∀ Z y, i₂ (M₂.act Z y) = a₂ Z (i₂ y)) → ∀ (x₀ : M₁.V) (y₀ : M₂.V), genSub M₁.act {x₀} = ⊤ → genSub M₂.act {y₀} = ⊤ → i₁ x₀ = i₂ y₀ → ∃ I : M₁.V ⊗[ℂ] M₂.V →ₗ[ℂ] V, (∀ Z x y, a₁ Z (I (x ⊗ₜ y)) = I (M₁.act Z x ⊗ₜ y)) ∧ (∀ Z x y, a₂ Z (I (x ⊗ₜ y)) = I (x ⊗ₜ M₂.act Z y)) ∧ (∀ x, I (x ⊗ₜ y₀) = i₁ x) ∧ ∀ y, I (x₀ ⊗ₜ y) = i₂ y := by
+  intro p q r s V _ _ a₁ a₂ hc M₁ M₂ i₁ i₂ h₁ h₂ x₀ y₀ g₁ g₂ h0
+  have hc' : ∀ Y Z v, a₁ Y (a₂ Z v) = a₂ Z (a₁ Y v) := fun Y Z v =>
+    LinearMap.congr_fun (hc Y Z) v
+  let N : Submodule ℂ M₂.V :=
+    { carrier := {y | ∃ f : M₁.V →ₗ[ℂ] V, (∀ Z x, f (M₁.act Z x) = a₁ Z (f x)) ∧ f x₀ = i₂ y}
+      add_mem' := by
+        rintro y y' ⟨f, hf, e⟩ ⟨g, hg, e'⟩
+        exact ⟨f + g, fun Z x => by simp [hf, hg], by simp [e, e']⟩
+      zero_mem' := ⟨0, by simp, by simp⟩
+      smul_mem' := by
+        rintro c y ⟨f, hf, e⟩
+        exact ⟨c • f, fun Z x => by simp [hf], by simp [e]⟩ }
+  have hN : ∀ y, ∃ f : M₁.V →ₗ[ℂ] V, (∀ Z x, f (M₁.act Z x) = a₁ Z (f x)) ∧ f x₀ = i₂ y := by
+    intro y
+    refine gen_ind M₂.act y₀ g₂ N ⟨i₁, h₁, h0⟩ ?_ y
+    rintro Z y ⟨f, hf, e⟩
+    exact ⟨a₂ Z ∘ₗ f, fun Y x => by simp [hf, hc'], by simp [e, h₂]⟩
+  choose F hF hF0 using hN
+  have u := uniq M₁.act a₁ x₀ g₁
+  have hadd : ∀ y y', F (y + y') = F y + F y' := fun y y' =>
+    u _ _ (hF _) (fun Z x => by simp [hF]) (by simp [hF0])
+  have hsmul : ∀ (c : ℂ) y, F (c • y) = c • F y := fun c y =>
+    u _ _ (hF _) (fun Z x => by simp [hF]) (by simp [hF0])
+  have hact : ∀ Z y, F (M₂.act Z y) = a₂ Z ∘ₗ F y := fun Z y =>
+    u _ _ (hF _) (fun Y x => by simp [hF, hc']) (by simp [hF0, h₂])
+  have hy0 : F y₀ = i₁ := u _ _ (hF _) h₁ (by rw [hF0, h0])
+  let G : M₂.V →ₗ[ℂ] M₁.V →ₗ[ℂ] V := { toFun := F, map_add' := hadd, map_smul' := hsmul }
+  have hG : ∀ x y, TensorProduct.lift G.flip (x ⊗ₜ y) = F y x := fun x y => by
+    simp [G]
+  refine ⟨TensorProduct.lift G.flip, ?_, ?_, ?_, ?_⟩
+  · intro Z x y; rw [hG, hG, hF]
+  · intro Z x y; rw [hG, hG, hact]; rfl
+  · intro x; rw [hG, hy0]
+  · intro y; rw [hG, hF0]
+
+end GlobalTheory.FockBilin
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_equivariant_tensor_map_of_cyclic_commuting : ∀ (p q r s : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (a₁ : Mat p q →ₗ[ℂ] Module.End ℂ V) (a₂ : Mat r s →ₗ[ℂ] Module.End ℂ V), (∀ Y Z, a₁ Y * a₂ Z = a₂ Z * a₁ Y) → ∀ (M₁ : GKMod p q) (M₂ : GKMod r s) (i₁ : M₁.V →ₗ[ℂ] V) (i₂ : M₂.V →ₗ[ℂ] V), (∀ Z x, i₁ (M₁.act Z x) = a₁ Z (i₁ x)) → (∀ Z y, i₂ (M₂.act Z y) = a₂ Z (i₂ y)) → ∀ (x₀ : M₁.V) (y₀ : M₂.V), genSub M₁.act {x₀} = ⊤ → genSub M₂.act {y₀} = ⊤ → i₁ x₀ = i₂ y₀ → ∃ I : M₁.V ⊗[ℂ] M₂.V →ₗ[ℂ] V, (∀ Z x y, a₁ Z (I (x ⊗ₜ y)) = I (M₁.act Z x ⊗ₜ y)) ∧ (∀ Z x y, a₂ Z (I (x ⊗ₜ y)) = I (x ⊗ₜ M₂.act Z y)) ∧ (∀ x, I (x ⊗ₜ y₀) = i₁ x) ∧ ∀ y, I (x₀ ⊗ₜ y) = i₂ y := by
+  atlas_forward_decl GlobalTheory.FockBilin.exists_bilin
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+
+namespace GlobalTheory.FockForm
+
+theorem act_of_mem_wtSub {p q : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
+    {act : Mat p q →ₗ[ℂ] Module.End ℂ V} {μ : Ix p q → ℚ} {x : V} (h : x ∈ wtSub act μ)
+    (a : Ix p q) : act (Eab a a) x = ((μ a : ℚ) : ℂ) • x := by
+  have := (Submodule.mem_iInf _).1 h a
+  simpa [LinearMap.mem_ker, sub_eq_zero] using this
+
+theorem form_eq_zero {p q : ℕ} (M : GKMod p q) (D : M.V → M.V → ℂ)
+    (hadd₁ : ∀ x x' y, D (x + x') y = D x y + D x' y)
+    (hsmul₁ : ∀ (c : ℂ) x y, D (c • x) y = star c * D x y)
+    (hadd₂ : ∀ x y y', D x (y + y') = D x y + D x y')
+    (hsmul₂ : ∀ (c : ℂ) x y, D x (c • y) = c * D x y)
+    (hinv : ∀ Z x y, D (M.act Z x) y = D x (M.act (adjZ Z) y))
+    (μ : Ix p q → ℚ) (v : M.V) (hv : v ∈ wtSub M.act μ)
+    (hline : ∀ x ∈ wtSub M.act μ, ∃ c : ℂ, x = c • v) (hgen : genSub M.act {v} = ⊤)
+    (hvv : D v v = 0) : ∀ x y, D x y = 0 := by
+  have hv0 : ∀ y, D v y = 0 := by
+    intro y
+    refine Submodule.iSup_induction (motive := fun y => D v y = 0) _ (M.wts y) ?_ ?_ ?_
+    · intro ν y hy
+      by_cases hν : ν = μ
+      · subst hν
+        obtain ⟨c, rfl⟩ := hline y hy
+        rw [hsmul₂, hvv, mul_zero]
+      · obtain ⟨a, ha⟩ := Function.ne_iff.1 hν
+        have h := hinv (Eab a a) v y
+        rw [GlobalTheory.FockTensor.adjZ_Eab, GlobalTheory.FockTensor.sgnIx_mul_self, one_smul,
+          act_of_mem_wtSub hv, act_of_mem_wtSub hy, hsmul₁, hsmul₂] at h
+        have hs : star ((μ a : ℚ) : ℂ) = ((μ a : ℚ) : ℂ) := by simp
+        rw [hs] at h
+        have hne : ((μ a : ℚ) : ℂ) - ((ν a : ℚ) : ℂ) ≠ 0 := by
+          rw [sub_ne_zero]; exact_mod_cast ha.symm
+        have : (((μ a : ℚ) : ℂ) - ((ν a : ℚ) : ℂ)) * D v y = 0 := by linear_combination h
+        exact (mul_eq_zero.1 this).resolve_left hne
+    · have := hsmul₂ 0 v 0
+      simpa using this
+    · intro y y' h h'
+      rw [hadd₂, h, h', add_zero]
+  let N : Submodule ℂ M.V :=
+    { carrier := {x | ∀ y, D x y = 0}
+      add_mem' := fun {x x'} h h' y => by rw [hadd₁, h y, h' y, add_zero]
+      zero_mem' := fun y => by simpa using hsmul₁ 0 0 y
+      smul_mem' := fun c x h y => by rw [hsmul₁, h y, mul_zero] }
+  have hN : genSub M.act {v} ≤ N := by
+    apply sInf_le
+    refine ⟨?_, ?_⟩
+    · intro x hx
+      rw [Set.mem_singleton_iff.1 hx]
+      exact hv0
+    · intro Z x hx y
+      rw [hinv]
+      exact hx _
+  intro x y
+  exact hN (hgen ▸ Submodule.mem_top) y
+
+theorem inner_eq_mul : ∀ (p q : ℕ) (M : GKMod p q) (H₁ : Type) [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] (H₂ : Type) [NormedAddCommGroup H₂] [InnerProductSpace ℂ H₂] (j : M.V →ₗ[ℂ] H₁) (E₁ E₂ : M.V →ₗ[ℂ] H₂), (∀ Z x y, inner ℂ (j (M.act Z x)) (j y) = inner ℂ (j x) (j (M.act (adjZ Z) y))) → (∀ Z x y, inner ℂ (E₁ (M.act Z x)) (E₂ y) = inner ℂ (E₁ x) (E₂ (M.act (adjZ Z) y))) → ∀ (μ : Ix p q → ℚ) (v : M.V), v ∈ wtSub M.act μ → (∀ x ∈ wtSub M.act μ, ∃ c : ℂ, x = c • v) → genSub M.act {v} = ⊤ → ‖j v‖ = 1 → ∀ x y, inner ℂ (E₁ x) (E₂ y) = inner ℂ (E₁ v) (E₂ v) * inner ℂ (j x) (j y) := by
+  intro p q M H₁ _ _ H₂ _ _ j E₁ E₂ hj hE μ v hv hline hgen hnorm x y
+  have := form_eq_zero M
+    (fun x y => inner ℂ (E₁ x) (E₂ y) - inner ℂ (E₁ v) (E₂ v) * inner ℂ (j x) (j y))
+    (fun x x' y => by simp only [map_add, inner_add_left]; ring)
+    (fun c x y => by simp only [map_smul, inner_smul_left, starRingEnd_apply]; ring)
+    (fun x y y' => by simp only [map_add, inner_add_right]; ring)
+    (fun c x y => by simp only [map_smul, inner_smul_right]; ring)
+    (fun Z x y => by simp only [hj, hE])
+    μ v hv hline hgen (by simp [inner_self_eq_norm_sq_to_K, hnorm]) x y
+  exact sub_eq_zero.1 this
+
+end GlobalTheory.FockForm
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.invariant_inner_forms_proportional_weight_line : ∀ (p q : ℕ) (M : GKMod p q) (H₁ : Type) [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] (H₂ : Type) [NormedAddCommGroup H₂] [InnerProductSpace ℂ H₂] (j : M.V →ₗ[ℂ] H₁) (E₁ E₂ : M.V →ₗ[ℂ] H₂), (∀ Z x y, inner ℂ (j (M.act Z x)) (j y) = inner ℂ (j x) (j (M.act (adjZ Z) y))) → (∀ Z x y, inner ℂ (E₁ (M.act Z x)) (E₂ y) = inner ℂ (E₁ x) (E₂ (M.act (adjZ Z) y))) → ∀ (μ : Ix p q → ℚ) (v : M.V), v ∈ wtSub M.act μ → (∀ x ∈ wtSub M.act μ, ∃ c : ℂ, x = c • v) → genSub M.act {v} = ⊤ → ‖j v‖ = 1 → ∀ x y, inner ℂ (E₁ x) (E₂ y) = inner ℂ (E₁ v) (E₂ v) * inner ℂ (j x) (j y) := by
+  atlas_forward_decl GlobalTheory.FockForm.inner_eq_mul
+end
+
+section
+section
+open Formalism.BasicNotions.TH
+
+namespace GlobalTheory
+
+theorem mat_compact_eq_sum_units {n : ℕ} (Z : Mat n 0) :
+    Z = ∑ a : Fin n, ∑ b : Fin n,
+      Z (Sum.inl a) (Sum.inl b) • Eab (Sum.inl a : Ix n 0) (Sum.inl b) := by
+  conv_lhs => rw [Matrix.matrix_eq_sum_single Z]
+  simp only [Fintype.sum_sum_type, Finset.univ_eq_empty, Finset.sum_empty, add_zero, Eab,
+    Matrix.smul_single, smul_eq_mul, mul_one]
+
+theorem gkMod_compact_glRel {n : ℕ} (M : GKMod n 0) :
+    Formalism.REAL.GlRel (fun a b : Fin n => M.act (Eab (Sum.inl a : Ix n 0) (Sum.inl b))) := by
+  intro a b c d
+  show M.act _ * M.act _ - M.act _ * M.act _ = _
+  rw [← M.lie, map_sub]
+  congr 1
+  · split_ifs with h
+    · subst h; simp [Eab]
+    · rw [Eab, Eab, Matrix.single_mul_single_of_ne, map_zero]
+      intro h'; exact h (Sum.inl_injective h')
+  · split_ifs with h
+    · subst h; simp [Eab]
+    · rw [Eab, Eab, Matrix.single_mul_single_of_ne, map_zero]
+      intro h'; exact h (Sum.inl_injective h')
+
+theorem gkMod_compact_irr_units {n : ℕ} (M : GKMod n 0) (h : Formalism.MainNotions.SchurIrreducible.IrrGK M)
+    (S : Submodule ℂ M.V)
+    (hS : ∀ a b : Fin n, ∀ x ∈ S, M.act (Eab (Sum.inl a : Ix n 0) (Sum.inl b)) x ∈ S) :
+    S = ⊥ ∨ S = ⊤ := by
+  refine h.2 S fun Z y hy => ?_
+  rw [mat_compact_eq_sum_units Z]
+  simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
+  exact S.sum_mem fun a _ => S.sum_mem fun b _ => S.smul_mem _ (hS a b y hy)
+
+theorem gkMod_compact_isHW_units {n : ℕ} (M : GKMod n 0) (Λ : Ix n 0 → ℚ) (v : M.V)
+    (h : IsHW M.act Λ v) :
+    Formalism.REAL.IsHW (fun a b : Fin n => M.act (Eab (Sum.inl a : Ix n 0) (Sum.inl b)))
+      (fun a => ((Λ (Sum.inl a) : ℚ) : ℂ)) v := by
+  obtain ⟨-, h1, h2⟩ := h
+  simp only [wtSub, SetLike.mem_coe, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
+    LinearMap.smul_apply, LinearMap.id_apply, sub_eq_zero] at h1 h2
+  exact ⟨fun a => h1 _, fun a b hab => h2 (Sum.inl a) (Sum.inl b) hab⟩
+
+theorem exists_intertwiner_map_highestVector :
+    ∀ (n : ℕ) (M M' : GKMod n 0) (Λ : Ix n 0 → ℚ) (v : M.V) (v' : M'.V),
+      Formalism.MainNotions.SchurIrreducible.IrrGK M → Formalism.MainNotions.SchurIrreducible.IrrGK M' → IsHW M.act Λ v → IsHW M'.act Λ v' →
+      ∃ f : M.V →ₗ[ℂ] M'.V, f v = v' ∧ ∀ Z x, f (M.act Z x) = M'.act Z (f x) := by
+  intro n M M' Λ v v' hM hM' hv hv'
+  have w := gkMod_compact_isHW_units M Λ v hv
+  have w' := gkMod_compact_isHW_units M' Λ v' hv'
+  obtain ⟨T, hT⟩ := exists_linearEquiv_of_irreducible_isHW M.V M'.V n _ _ _ v v'
+    (gkMod_compact_glRel M) (gkMod_compact_glRel M') (gkMod_compact_irr_units M hM)
+    (gkMod_compact_irr_units M' hM') w w' hv.1 hv'.1
+  obtain ⟨S, hS, hvS, htop⟩ :=
+    exists_stable_submodule_topWeight_line M'.V n _ _ v' (gkMod_compact_glRel M') w'
+  have hStop : S = ⊤ := by
+    rcases gkMod_compact_irr_units M' hM' S hS with h | h
+    · rw [h, Submodule.mem_bot] at hvS
+      exact absurd hvS hv'.1
+    · exact h
+  obtain ⟨c, hc⟩ := htop (T v) (by rw [hStop]; trivial) (fun a => by
+    rw [← hT a a v, w.1 a, map_smul])
+  have hc0 : c ≠ 0 := by
+    rintro rfl
+    rw [zero_smul, map_eq_zero_iff T T.injective] at hc
+    exact hv.1 hc
+  refine ⟨c⁻¹ • T.toLinearMap, ?_, fun Z x => ?_⟩
+  · simp [hc, smul_smul, hc0]
+  · have key : T (M.act Z x) = M'.act Z (T x) := by
+      rw [mat_compact_eq_sum_units Z]
+      simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
+      refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+      rw [hT a b x]
+    simp only [LinearMap.smul_apply, LinearEquiv.coe_coe, key, map_smul]
+
+end GlobalTheory
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_intertwiner_map_highestWeightVector_compact : ∀ (n : ℕ) (M M' : GKMod n 0) (Λ : Ix n 0 → ℚ) (v : M.V) (v' : M'.V), IrrGK M → IrrGK M' → IsHW M.act Λ v → IsHW M'.act Λ v' → ∃ f : M.V →ₗ[ℂ] M'.V, f v = v' ∧ ∀ Z x, f (M.act Z x) = M'.act Z (f x) := by
+  atlas_forward_decl GlobalTheory.exists_intertwiner_map_highestVector
+end
+
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compactCoverUn_hcModule_finiteDim_irreducible : ∀ (n : ℕ), 1 ≤ n → ∀ (T : GrpData n 0) (τ : URep T) (M : GKMod n 0) (j : M.V →ₗ[ℂ] τ.H), IrrU τ → IsHCMod τ M j → Nontrivial M.V → FiniteDimensional ℂ M.V ∧ IrrGK M ∧ (∀ h v, ∃ v', j v' = τ.π h (j v)) ∧ ∀ N : Submodule ℂ M.V, (∀ h, ∀ v ∈ N, ∀ v', j v' = τ.π h (j v) → v' ∈ N) → N = ⊥ ∨ N = ⊤ := by
+  first | exact @GlobalTheory.CompactCoverIrr.hcMod_finite_irr | exact GlobalTheory.CompactCoverIrr.hcMod_finite_irr | (intros; apply GlobalTheory.CompactCoverIrr.hcMod_finite_irr <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+
+namespace GlobalTheory.FockIrr
+
+theorem act_diag_of_mem_wtSub {p q : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
+    {act : Mat p q →ₗ[ℂ] Module.End ℂ V} {μ : Ix p q → ℚ} {v : V} (h : v ∈ wtSub act μ)
+    (a : Ix p q) : act (Eab a a) v = ((μ a : ℚ) : ℂ) • v := by
+  have h1 := (Submodule.mem_iInf _).1 h a
+  rw [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply] at h1
+  exact sub_eq_zero.1 h1
+
+theorem irreducible_of_weight_line : ∀ (p q : ℕ) (M : GKMod p q) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (E : M.V →ₗ[ℂ] H), Function.Injective E → (∀ Z x y, inner ℂ (E (M.act Z x)) (E y) = inner ℂ (E x) (E (M.act (adjZ Z) y))) → ∀ (S : Ix p q → Ix p q → Prop), Equivalence S → ∀ (μ : Ix p q → ℚ) (v : M.V) (U : Submodule ℂ M.V), v ∈ wtSub M.act μ → (∀ U' : Submodule ℂ M.V, v ∈ U' → (∀ a b, S a b → ∀ x ∈ U', M.act (Eab a b) x ∈ U') → U ≤ U') → (∀ x ∈ U, x ∈ wtSub M.act μ → ∃ c : ℂ, x = c • v) → ∀ N : Submodule ℂ M.V, N ≤ U → (∀ a b, S a b → ∀ x ∈ N, M.act (Eab a b) x ∈ N) → N = ⊥ ∨ N = U := by
+  intro p q M H _ _ E hE hadj S hS μ v U hv hU hline N hNU hN
+  by_cases hvN : v ∈ N
+  · exact Or.inr (le_antisymm hNU (hU N hvN hN))
+  left
+  have horth : ∀ x ∈ N, inner ℂ (E x) (E v) = 0 := by
+    intro x hx
+    have hx' := GlobalTheory.T.mem_iSup_inf_weightSubmodule_of_diagonal_stable p q M.V M.act N (fun a => hN a a (hS.refl a)) x hx (M.wts x)
+    clear hx
+    induction hx' using Submodule.iSup_induction' with
+    | mem ν y hy =>
+      obtain ⟨hyN, hyν⟩ := hy
+      by_cases hν : ν = μ
+      · subst hν
+        obtain ⟨c, hc⟩ := hline y (hNU hyN) hyν
+        by_cases hc0 : c = 0
+        · simp [hc, hc0]
+        · exfalso
+          apply hvN
+          have : v = c⁻¹ • y := by rw [hc, smul_smul, inv_mul_cancel₀ hc0, one_smul]
+          rw [this]
+          exact N.smul_mem _ hyN
+      · obtain ⟨a, ha⟩ := Function.ne_iff.1 hν
+        have h1 := hadj (Eab a a) y v
+        rw [GlobalTheory.FockTensor.adjZ_Eab, GlobalTheory.FockTensor.sgnIx_mul_self, one_smul,
+          act_diag_of_mem_wtSub hyν, act_diag_of_mem_wtSub hv, map_smul, map_smul,
+          inner_smul_left, inner_smul_right, map_ratCast] at h1
+        have hne : ((ν a : ℚ) : ℂ) - ((μ a : ℚ) : ℂ) ≠ 0 := by
+          rw [sub_ne_zero]; exact_mod_cast ha
+        have h2 : (((ν a : ℚ) : ℂ) - ((μ a : ℚ) : ℂ)) * inner ℂ (E y) (E v) = 0 := by
+          rw [sub_mul, h1, sub_self]
+        exact (mul_eq_zero.1 h2).resolve_left hne
+    | zero => simp
+    | add y z _ _ hy hz => rw [map_add, inner_add_left, hy, hz, add_zero]
+  let U' : Submodule ℂ M.V :=
+    { carrier := {y | ∀ x ∈ N, inner ℂ (E x) (E y) = 0}
+      add_mem' := fun {y z} hy hz x hx => by
+        rw [map_add, inner_add_right, hy x hx, hz x hx, add_zero]
+      zero_mem' := fun x _ => by simp
+      smul_mem' := fun c y hy x hx => by
+        rw [map_smul, inner_smul_right, hy x hx, mul_zero] }
+  have hUU' : U ≤ U' := by
+    refine hU U' horth ?_
+    intro a b hab y hy x hx
+    have h1 := hadj (adjZ (Eab a b)) x y
+    rw [GlobalTheory.FockTensor.adjZ_adjZ] at h1
+    rw [← h1]
+    apply hy
+    rw [GlobalTheory.FockTensor.adjZ_Eab, map_smul, LinearMap.smul_apply]
+    exact N.smul_mem _ (hN b a (hS.symm hab) x hx)
+  rw [eq_bot_iff]
+  intro x hx
+  have h0 : inner ℂ (E x) (E x) = 0 := hUU' (hNU hx) x hx
+  rw [inner_self_eq_zero] at h0
+  exact (Submodule.mem_bot ℂ).2 (hE (by rw [h0, map_zero]))
+
+end GlobalTheory.FockIrr
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_bot_or_eq_of_weight_line_generates : ∀ (p q : ℕ) (M : GKMod p q) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (E : M.V →ₗ[ℂ] H), Function.Injective E → (∀ Z x y, inner ℂ (E (M.act Z x)) (E y) = inner ℂ (E x) (E (M.act (adjZ Z) y))) → ∀ (S : Ix p q → Ix p q → Prop), Equivalence S → ∀ (μ : Ix p q → ℚ) (v : M.V) (U : Submodule ℂ M.V), v ∈ wtSub M.act μ → (∀ U' : Submodule ℂ M.V, v ∈ U' → (∀ a b, S a b → ∀ x ∈ U', M.act (Eab a b) x ∈ U') → U ≤ U') → (∀ x ∈ U, x ∈ wtSub M.act μ → ∃ c : ℂ, x = c • v) → ∀ N : Submodule ℂ M.V, N ≤ U → (∀ a b, S a b → ∀ x ∈ N, M.act (Eab a b) x ∈ N) → N = ⊥ ∨ N = U := by
+  atlas_forward_decl GlobalTheory.FockIrr.irreducible_of_weight_line
+end
+
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_highestWeight_vector_of_KStable : ∀ (p q : ℕ) (M : GKMod p q) (W : Submodule ℂ M.V), FiniteDimensional ℂ W → KStable M.act W → W ≠ ⊥ → ∃ (μ : Ix p q → ℚ) (v : M.V), v ∈ W ∧ IsHW M.act μ v := by
+  first | exact @GlobalTheory.ExistsHW.exists_highestWeight | exact GlobalTheory.ExistsHW.exists_highestWeight | (intros; apply GlobalTheory.ExistsHW.exists_highestWeight <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+
+namespace GlobalTheory.GKSubmodule
+
+noncomputable def resAct {p q : ℕ} (M : GKMod p q) (N : Submodule ℂ M.V)
+    (h : ∀ Z, ∀ x ∈ N, M.act Z x ∈ N) : Mat p q →ₗ[ℂ] Module.End ℂ N where
+  toFun Z := (M.act Z).restrict (h Z)
+  map_add' X Y := by
+    ext x
+    simp [LinearMap.restrict_apply]
+  map_smul' c X := by
+    ext x
+    simp [LinearMap.restrict_apply]
+
+theorem resAct_coe {p q : ℕ} (M : GKMod p q) (N : Submodule ℂ M.V)
+    (h : ∀ Z, ∀ x ∈ N, M.act Z x ∈ N) (Z : Mat p q) (x : N) :
+    ((resAct M N h Z x : N) : M.V) = M.act Z x := rfl
+
+theorem exists_submodule : ∀ (p q : ℕ) (M : GKMod p q) (N : Submodule ℂ M.V), (∀ Z, ∀ x ∈ N, M.act Z x ∈ N) → ∃ (M' : GKMod p q) (i : M'.V →ₗ[ℂ] M.V), Function.Injective i ∧ LinearMap.range i = N ∧ ∀ Z x, i (M'.act Z x) = M.act Z (i x) := by
+  intro p q M N h
+  have hlie : IsLieAct (resAct M N h) := by
+    intro X Y
+    ext x
+    have := congrArg (fun f : Module.End ℂ M.V => f x) (M.lie X Y)
+    simpa [resAct_coe] using this
+  have hk : ∀ v : N, ∃ W : Submodule ℂ N, FiniteDimensional ℂ W ∧ v ∈ W ∧
+      KStable (resAct M N h) W := by
+    intro v
+    obtain ⟨W, hW, hv, hs⟩ := M.kfin v
+    refine ⟨W.comap N.subtype, ?_, hv, ?_⟩
+    · exact Module.Finite.of_injective
+        (N.subtype.restrict (p := W.comap N.subtype) (q := W) (fun x hx => hx))
+        (fun a b hab => Subtype.ext (Subtype.ext (congrArg (fun z : W => (z : M.V)) hab)))
+    · intro X hX w hw
+      exact hs X hX w hw
+  have hw : ∀ v : N, v ∈ ⨆ μ : Ix p q → ℚ, wtSub (resAct M N h) μ := by
+    intro v
+    have h1 := GlobalTheory.T.mem_iSup_inf_weightSubmodule_of_diagonal_stable p q M.V M.act N (fun a => h _) v v.2 (M.wts v)
+    have h2 : (⨆ μ : Ix p q → ℚ, N ⊓ wtSub M.act μ) ≤
+        (⨆ μ : Ix p q → ℚ, wtSub (resAct M N h) μ).map N.subtype := by
+      refine iSup_le fun μ x hx => ?_
+      refine ⟨⟨x, hx.1⟩, ?_, rfl⟩
+      refine Submodule.mem_iSup_of_mem μ ?_
+      have hx2 := hx.2
+      simp only [wtSub, SetLike.mem_coe, Submodule.mem_iInf, LinearMap.mem_ker] at hx2 ⊢
+      intro a
+      apply Subtype.ext
+      simpa [resAct_coe] using hx2 a
+    obtain ⟨y, hy, hyv⟩ := h2 h1
+    have : y = v := Subtype.ext hyv
+    exact this ▸ hy
+  exact ⟨{ V := N, act := resAct M N h, lie := hlie, kfin := hk, wts := hw }, N.subtype,
+    N.injective_subtype, N.range_subtype, fun _ _ => rfl⟩
+
+end GlobalTheory.GKSubmodule
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_gkMod_injective_range_eq_of_act_stable : ∀ (p q : ℕ) (M : GKMod p q) (N : Submodule ℂ M.V), (∀ Z, ∀ x ∈ N, M.act Z x ∈ N) → ∃ (M' : GKMod p q) (i : M'.V →ₗ[ℂ] M.V), Function.Injective i ∧ LinearMap.range i = N ∧ ∀ Z x, i (M'.act Z x) = M.act Z (i x) := by
+  atlas_forward_decl GlobalTheory.GKSubmodule.exists_submodule
+end
+
+section
+section
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+
+namespace GlobalTheory.FockExtGroup
+
+theorem pi_comm {p q r s : ℕ} {T0 : GrpData (p * r + q * s) (p * s + q * r)} {T1 : GrpData p q}
+    {T2 : GrpData r s} (F : FockData T0 T1 T2) (g : T1.G) (h : T2.G) (x : F.H) :
+    F.π (g, 1) (F.π (1, h) x) = F.π (1, h) (F.π (g, 1) x) := by
+  rw [← ContinuousLinearMap.mul_apply, ← ContinuousLinearMap.mul_apply, ← map_mul, ← map_mul]
+  simp
+
+theorem comm_and_extend : ∀ (p q n : ℕ) (T0 : GrpData (p * n + q * 0) (p * 0 + q * n)) (T1 : GrpData p q) (T2 : GrpData n 0) (F : FockData T0 T1 T2), 1 ≤ n → ∀ (D : DSRep T1) (τ : URep T2) (M : GKMod n 0) (j : M.V →ₗ[ℂ] τ.H) (I : D.HK.V ⊗[ℂ] M.V →ₗ[ℂ] Pol p q n 0) (v₀ : M.V), IrrU τ → IsHCMod τ M j → v₀ ≠ 0 → IsGIntw F D.HK M I → (∃ J : D.U.H →L[ℂ] F.H, (∀ x, J (D.ι x) = F.ι (I (x ⊗ₜ v₀))) ∧ ∀ g y, F.π (g, 1) (J y) = J (D.U.π g y)) → (∀ (h : T2.G) (x : D.HK.V) (v v' : M.V), j v' = τ.π h (j v) → F.π (1, h) (F.ι (I (x ⊗ₜ v))) = F.ι (I (x ⊗ₜ v'))) ∧ ∀ v : M.V, ∃ J : D.U.H →L[ℂ] F.H, (∀ x, J (D.ι x) = F.ι (I (x ⊗ₜ v))) ∧ ∀ g y, F.π (g, 1) (J y) = J (D.U.π g y) := by
+  intro p q n T0 T1 T2 F hn D τ M j I v₀ hτ hM hv₀ hI hJ
+  obtain ⟨hfin, -, -, hirr⟩ := GlobalTheory.CompactCoverIrr.hcMod_finite_irr n hn T2 τ M j hτ hM ⟨v₀, 0, hv₀⟩
+  obtain ⟨hF, -, hder⟩ := GlobalTheory.FockEmbExp.fock_derived p q n 0 T0 T1 T2 F
+  let σ : URep T2 :=
+    { H := F.H
+      π := F.π.comp (MonoidHom.inr _ _)
+      isom := fun _ x => F.isom _ x
+      cont := fun x => (F.cont x).comp (hF.comp (continuous_const.prodMk continuous_id)) }
+  have h1 : ∀ (h : T2.G) (x : D.HK.V) (v v' : M.V), j v' = τ.π h (j v) →
+      F.π (1, h) (F.ι (I (x ⊗ₜ v))) = F.ι (I (x ⊗ₜ v')) := by
+    intro h x v v' hv
+    have hK : h ∈ T2.Kset := by
+      rintro (a | a) (b | b) hab
+      · exact (hab trivial).elim
+      · exact b.elim0
+      · exact a.elim0
+      · exact a.elim0
+    let j₂ : M.V →ₗ[ℂ] σ.H := F.ι ∘ₗ I ∘ₗ TensorProduct.mk ℂ D.HK.V M.V x
+    obtain ⟨w, hw1, hw2⟩ := GlobalTheory.RealPar.pair_kEquivariant_of_lie n 0 T2
+      (GlobalTheory.CoverKGen.kset_gen n 0 (by omega) T2) τ σ M.V (fun Y => M.act Y) j j₂
+      (fun Y hY _ w => ⟨hM.2.2 Y hY w, by
+        have h2 := hder Y hY (I (x ⊗ₜ w))
+        have h3 : fockAct2 p q n 0 Y (I (x ⊗ₜ w)) = I (x ⊗ₜ M.act Y w) := hI.2 Y x w
+        rw [h3] at h2
+        exact h2⟩) h hK v
+    obtain rfl : v' = w := hM.1 (hv.trans hw1)
+    exact hw2
+  refine ⟨h1, ?_⟩
+  let N : Submodule ℂ M.V :=
+    { carrier := {v | ∃ J : D.U.H →L[ℂ] F.H, (∀ x, J (D.ι x) = F.ι (I (x ⊗ₜ v))) ∧
+        ∀ g y, F.π (g, 1) (J y) = J (D.U.π g y)}
+      add_mem' := by
+        rintro a b ⟨J, hJ1, hJ2⟩ ⟨J', hJ1', hJ2'⟩
+        exact ⟨J + J', fun x => by simp [hJ1, hJ1', TensorProduct.tmul_add],
+          fun g y => by simp [hJ2, hJ2']⟩
+      zero_mem' := ⟨0, fun x => by simp, fun g y => by simp⟩
+      smul_mem' := by
+        rintro c a ⟨J, hJ1, hJ2⟩
+        exact ⟨c • J, fun x => by simp [hJ1, TensorProduct.tmul_smul],
+          fun g y => by simp [hJ2]⟩ }
+  rcases hirr N (by
+    rintro h v ⟨J, hJ1, hJ2⟩ v' hv
+    refine ⟨F.π (1, h) ∘L J, fun x => ?_, fun g y => ?_⟩
+    · rw [ContinuousLinearMap.comp_apply, hJ1, h1 h x v v' hv]
+    · rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, pi_comm, hJ2]) with h | h
+  · have : v₀ ∈ N := hJ
+    rw [h] at this
+    exact (hv₀ this).elim
+  · intro v
+    have : v ∈ N := h ▸ Submodule.mem_top
+    exact this
+
+end GlobalTheory.FockExtGroup
+end
+
+open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.MatrixMinorProducts MeasureTheory
+open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fock_intertwiner_commutes_unitary_and_extends : ∀ (p q n : ℕ) (T0 : GrpData (p * n + q * 0) (p * 0 + q * n)) (T1 : GrpData p q) (T2 : GrpData n 0) (F : FockData T0 T1 T2), 1 ≤ n → ∀ (D : DSRep T1) (τ : URep T2) (M : GKMod n 0) (j : M.V →ₗ[ℂ] τ.H) (I : D.HK.V ⊗[ℂ] M.V →ₗ[ℂ] Pol p q n 0) (v₀ : M.V), IrrU τ → IsHCMod τ M j → v₀ ≠ 0 → IsGIntw F D.HK M I → (∃ J : D.U.H →L[ℂ] F.H, (∀ x, J (D.ι x) = F.ι (I (x ⊗ₜ v₀))) ∧ ∀ g y, F.π (g, 1) (J y) = J (D.U.π g y)) → (∀ (h : T2.G) (x : D.HK.V) (v v' : M.V), j v' = τ.π h (j v) → F.π (1, h) (F.ι (I (x ⊗ₜ v))) = F.ι (I (x ⊗ₜ v'))) ∧ ∀ v : M.V, ∃ J : D.U.H →L[ℂ] F.H, (∀ x, J (D.ι x) = F.ι (I (x ⊗ₜ v))) ∧ ∀ g y, F.π (g, 1) (J y) = J (D.U.π g y) := by
+  atlas_forward_decl GlobalTheory.FockExtGroup.comm_and_extend
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.HarmModule
@@ -573,4 +1492,5 @@ theorem harmonicModule_of (hdec : GlobalTheory.IndefiniteRowSideFullHecke.FockSi
 
 end GlobalTheory.HarmModule
 
+end
 end

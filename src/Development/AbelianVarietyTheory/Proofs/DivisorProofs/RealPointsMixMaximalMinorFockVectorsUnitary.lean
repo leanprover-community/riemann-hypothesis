@@ -7,10 +7,199 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockPolynomi
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmPureTensorOOfFinite
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TransposeMemUnitary
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.OmPureTensorOReal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubstitutionMaximalMinorProductEqSumCauchyBinet
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryTensorPlacesSlots
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaximalMinorsMatrixMemUnitaryGroup
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TotalDegreeSubstFLe
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumNormRowSubProdMinors
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.SmulOneLeAndLeSmulOneIffEigenvalues
 
+section
+section
+open NumberField MeasureTheory
+open scoped Classical
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum
+open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
+open GlobalTheory.NormDict
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.NormDict
+
+theorem substF_minorPol_eq_sum : ∀ (D : D7) {a d : ℕ} {m : D.what₂.Tau → ℕ} (K : D.what₂.Tau → Matrix (Fin d) (Fin d) ℂ)
+    (T : Tup D a d m), GlobalTheory.CompactHowe.substF K (fun _ => (1 : Matrix (Fin a) (Fin a) ℂ)) (minorPol D T) =
+      ∑ T' : Tup D a d m, (∏ τ, ∏ r, (Matrix.of fun i i' : Fin a => K τ ((T' τ r).1 i') ((T τ r).1 i)).det) •
+        minorPol D T' := by
+  intro D a d m K T
+  have hmin : ∀ τ (s : Fin a → Fin d), GlobalTheory.CompactHowe.substF K (fun _ => (1 : Matrix (Fin a) (Fin a) ℂ))
+      (Matrix.of fun i i' : Fin a => (MvPolynomial.X (τ, s i, i') : MvPolynomial (Formalism.MainNotions.GL3Theta.Idx D a d) ℂ)).det =
+      ∑ s' : {s : Fin a → Fin d // StrictMono s},
+        MvPolynomial.C ((Matrix.of fun i i' : Fin a => K τ (s'.1 i') (s i)).det) *
+        (Matrix.of fun i i' : Fin a => (MvPolynomial.X (τ, s'.1 i, i') : MvPolynomial (Formalism.MainNotions.GL3Theta.Idx D a d) ℂ)).det := by
+    intro τ s
+    rw [AlgHom.map_det]
+    have hM : (GlobalTheory.CompactHowe.substF K (fun _ => (1 : Matrix (Fin a) (Fin a) ℂ))).mapMatrix
+        (Matrix.of fun i i' : Fin a => (MvPolynomial.X (τ, s i, i') : MvPolynomial (Formalism.MainNotions.GL3Theta.Idx D a d) ℂ)) =
+        (Matrix.of fun (i : Fin a) (k : Fin d) => (MvPolynomial.C (K τ k (s i)) : MvPolynomial (Formalism.MainNotions.GL3Theta.Idx D a d) ℂ)) *
+        (Matrix.of fun (k : Fin d) (i' : Fin a) => (MvPolynomial.X (τ, k, i') : MvPolynomial (Formalism.MainNotions.GL3Theta.Idx D a d) ℂ)) := by
+      refine Matrix.ext fun i i' => ?_
+      simp only [RingHom.mapMatrix_apply, AlgHom.coe_toRingHom, Matrix.map_apply, Matrix.of_apply,
+        GlobalTheory.CompactHowe.substF_X, Matrix.mul_apply, Matrix.one_apply]
+      rw [AlgHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, GlobalTheory.CompactHowe.substF_X]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [Finset.sum_eq_single i']
+      · simp
+      · intro l _ hl; simp [Matrix.one_apply_ne hl]
+      · simp
+    rw [hM, GlobalTheory.MinorFrame.det_mul_eq_sum_sm]
+    refine Finset.sum_congr rfl fun s' _ => ?_
+    congr 1
+    rw [show (Matrix.of fun (i : Fin a) (k : Fin d) =>
+        (MvPolynomial.C (K τ k (s i)) : MvPolynomial (Formalism.MainNotions.GL3Theta.Idx D a d) ℂ)).submatrix id s'.1 =
+        (MvPolynomial.C : ℂ →+* MvPolynomial (Formalism.MainNotions.GL3Theta.Idx D a d) ℂ).mapMatrix
+          (Matrix.of fun i i' : Fin a => K τ (s'.1 i') (s i)) from by ext; simp]
+    rw [← RingHom.map_det]
+  unfold minorPol
+  simp only [map_prod, hmin]
+  rw [Finset.prod_congr rfl fun τ _ => Fintype.prod_sum _, Fintype.prod_sum]
+  refine Finset.sum_congr rfl fun T' _ => ?_
+  rw [← MvPolynomial.C_mul']
+  simp only [Finset.prod_mul_distrib, map_prod]
+
+end GlobalTheory.NormDict
+end
+end
+
+open NumberField MeasureTheory
+open scoped Classical
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum
+open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
+open GlobalTheory.NormDict
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.substitution_maximalMinorProduct_eq_sum_cauchyBinet : ∀ (D : D7) {a d : ℕ} {m : D.what₂.Tau → ℕ} (K : D.what₂.Tau → Matrix (Fin d) (Fin d) ℂ) (T : Tup D a d m), GlobalTheory.CompactHowe.substF K (fun _ => (1 : Matrix (Fin a) (Fin a) ℂ)) (minorPol D T) = ∑ T' : Tup D a d m, (∏ τ, ∏ r, (Matrix.of fun i i' : Fin a => K τ ((T' τ r).1 i') ((T τ r).1 i)).det) • minorPol D T' := by
+  atlas_forward_decl GlobalTheory.NormDict.substF_minorPol_eq_sum
+end
+
+section
+section
+open Matrix
+open scoped Classical
+
+namespace GlobalTheory
+
+theorem pi_prod_rows_orthonormal {K : Type} [Fintype K] [DecidableEq K] {κ : K → Type}
+    [∀ k, Fintype (κ k)] [∀ k, DecidableEq (κ k)] [DecidableEq (∀ k, κ k)]
+    (A : ∀ k, Matrix (κ k) (κ k) ℂ)
+    (hA : ∀ k a b, ∑ y, A k a y * star (A k b y) = if a = b then 1 else 0)
+    (T T'' : ∀ k, κ k) :
+    ∑ x : ∀ k, κ k, (∏ k, A k (T k) (x k)) * star (∏ k, A k (T'' k) (x k)) =
+      if T = T'' then 1 else 0 := by
+  simp only [star_prod, ← Finset.prod_mul_distrib]
+  rw [← Fintype.prod_sum (fun k y => A k (T k) y * star (A k (T'' k) y))]
+  rw [Finset.prod_congr rfl (fun k _ => hA k (T k) (T'' k)), Finset.prod_boole]
+  by_cases hT : T = T''
+  · subst hT; simp
+  · rw [if_neg hT, if_neg]
+    intro hall
+    exact hT (funext fun k => hall k (Finset.mem_univ k))
+
+theorem unitary_tensor_places_positions : ∀ (J ι : Type) [Fintype J] [DecidableEq J] [Fintype ι]
+    [DecidableEq ι] (n : J → ℕ) (C : J → Matrix ι ι ℂ), (∀ j, C j ∈ Matrix.unitaryGroup ι ℂ) →
+    (Matrix.of fun T T' : (∀ j, Fin (n j) → ι) => ∏ j, ∏ r, C j (T j r) (T' j r)) ∈
+      Matrix.unitaryGroup (∀ j, Fin (n j) → ι) ℂ := by
+  intro J ι _ _ _ _ n C hC
+  have hC' : ∀ j (a b : ι), ∑ y, C j a y * star (C j b y) = if a = b then 1 else 0 := by
+    intro j a b
+    have := congrFun (congrFun ((mem_unitaryGroup_iff).1 (hC j)) a) b
+    rw [mul_apply, one_apply] at this
+    simp only [star_apply] at this
+    convert this using 1
+  have hD : ∀ j (S S'' : Fin (n j) → ι),
+      ∑ y : Fin (n j) → ι, (∏ r, C j (S r) (y r)) * star (∏ r, C j (S'' r) (y r)) =
+        if S = S'' then 1 else 0 := fun j =>
+    pi_prod_rows_orthonormal (κ := fun _ => ι) (fun _ => C j) (fun _ => hC' j)
+  have key := pi_prod_rows_orthonormal (κ := fun j => Fin (n j) → ι)
+    (fun j => of fun S S' : Fin (n j) → ι => ∏ r, C j (S r) (S' r))
+    (fun j a b => by simpa only [of_apply] using hD j a b)
+  rw [mem_unitaryGroup_iff]
+  ext T T''
+  rw [mul_apply, one_apply]
+  simp only [star_apply, of_apply]
+  simp only [of_apply] at key
+  exact key T T''
+
+end GlobalTheory
+end
+
+open Matrix
+open scoped Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prod_unitary_mem_unitaryGroup_pi : ∀ (J ι : Type) [Fintype J] [DecidableEq J] [Fintype ι] [DecidableEq ι] (n : J → ℕ) (C : J → Matrix ι ι ℂ), (∀ j, C j ∈ Matrix.unitaryGroup ι ℂ) → (Matrix.of fun T T' : (∀ j, Fin (n j) → ι) => ∏ j, ∏ r, C j (T j r) (T' j r)) ∈ Matrix.unitaryGroup (∀ j, Fin (n j) → ι) ℂ := by
+  atlas_forward_decl GlobalTheory.unitary_tensor_places_positions
+end
+
+section
+section
+open Matrix
+open scoped Classical
+
+namespace GlobalTheory
+
+noncomputable def strictMonoEquivPowersetCard (a : ℕ) (n : Type*) [LinearOrder n] :
+    {s : Fin a → n // StrictMono s} ≃ Set.powersetCard n a :=
+  ({ toFun := fun s => OrderEmbedding.ofStrictMono s.1 s.2
+     invFun := fun f => ⟨f, f.strictMono⟩
+     left_inv := fun _ => rfl
+     right_inv := fun _ => by ext; rfl } : {s : Fin a → n // StrictMono s} ≃ (Fin a ↪o n)).trans
+    Set.powersetCard.ofFinEmbEquiv
+
+theorem subsetEnum_strictMonoEquivPowersetCard (a : ℕ) {n : Type*} [LinearOrder n]
+    (s : {s : Fin a → n // StrictMono s}) :
+    subsetEnum (strictMonoEquivPowersetCard a n s) = s.1 := by
+  have h : Set.powersetCard.ofFinEmbEquiv.symm (strictMonoEquivPowersetCard a n s) =
+      OrderEmbedding.ofStrictMono s.1 s.2 := Equiv.symm_apply_apply _ _
+  exact congrArg (fun f : Fin a ↪o n => (f : Fin a → n)) h
+
+theorem minorsMatrix_mem_unitaryGroup : ∀ {N a : ℕ} (M : Matrix (Fin N) (Fin N) ℂ),
+    M ∈ Matrix.unitaryGroup (Fin N) ℂ →
+    (Matrix.of fun s s' : {s : Fin a → Fin N // StrictMono s} =>
+      (Matrix.of fun i i' : Fin a => M (s'.1 i') (s.1 i)).det) ∈
+      Matrix.unitaryGroup {s : Fin a → Fin N // StrictMono s} ℂ := by
+  intro N a M hM
+  set e := strictMonoEquivPowersetCard a (Fin N)
+  have hC : (Matrix.of fun s s' : {s : Fin a → Fin N // StrictMono s} =>
+      (Matrix.of fun i i' : Fin a => M (s'.1 i') (s.1 i)).det) =
+      (compoundMatrix a Mᵀ).submatrix e e := by
+    ext s s'
+    have he : ∀ s, subsetEnum (e s) = s.1 := subsetEnum_strictMonoEquivPowersetCard a
+    simp only [submatrix_apply, compoundMatrix, of_apply, he]
+    rfl
+  have hT : Mᵀ * (Mᵀ)ᴴ = 1 := by
+    rw [mem_unitaryGroup_iff'] at hM
+    have h1 : Mᵀ * (Mᵀ)ᴴ = (star M * M)ᵀ := by
+      ext i j
+      simp [mul_apply, mul_comm]
+    rw [h1, hM, transpose_one]
+  rw [hC, mem_unitaryGroup_iff, star_eq_conjTranspose, conjTranspose_submatrix,
+    submatrix_mul_equiv, ← compoundMatrix_conjTranspose, ← compoundMatrix_mul, hT,
+    compoundMatrix_one, submatrix_one_equiv]
+
+end GlobalTheory
+end
+
+open Matrix
+open scoped Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.maximalMinorsMatrix_mem_unitaryGroup : ∀ {N a : ℕ} (M : Matrix (Fin N) (Fin N) ℂ), M ∈ Matrix.unitaryGroup (Fin N) ℂ → (Matrix.of fun s s' : {s : Fin a → Fin N // StrictMono s} => (Matrix.of fun i i' : Fin a => M (s'.1 i') (s.1 i)).det) ∈ Matrix.unitaryGroup {s : Fin a → Fin N // StrictMono s} ℂ := by
+  atlas_forward_decl GlobalTheory.minorsMatrix_mem_unitaryGroup
+end
+
+section
 section
 open NumberField MeasureTheory
 open scoped Classical ComplexOrder
@@ -99,3 +288,4 @@ theorem _root_.GlobalTheory.T.realPoints_mix_maximalMinorFockVectors_unitary : �
   ∀ k ∈ GinfC X.B, ∃ U : Matrix (Tup D P.a P.d P.n) (Tup D P.a P.d P.n) ℂ, U ∈ Matrix.unitaryGroup (Tup D P.a P.d P.n) ℂ ∧
     ∀ T, X.om (1, k) (X.fock T) = ∑ T', U T T' • X.fock T' := by
   atlas_forward_decl GlobalTheory.NormDict.RealB.real_mix
+end

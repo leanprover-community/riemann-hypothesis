@@ -2,8 +2,25 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.M
 import Formalism.SharpRestriction.CuspSpanNormBounds.FamilyDoubleCosetBesselBoundOfGap
 import Formalism.SharpRestriction.CuspSpanNormBounds.ExpansionFromLemmaB
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.BesselNVGClosed
-import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.MomNorm
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.Admissible
 
+section
+noncomputable section
+
+namespace Formalism.L2.S.Pv.Mom
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
+
+theorem momF' {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (Cg cb Cu cT CT C0 : ℝ)
+    (hBS : Formalism.MainNotions.S.Pv.Mom.BesselSchurF' Fm Cg cb Cu cT CT C0) (hM1 : Formalism.MainNotions.DiscreteSeriesWeylDimension.LowKMultOne) :
+    Formalism.MainNotions.S.Pv.Mom.MomF' Fm Cg cb Cu cT CT C0 :=
+  Formalism.MainNotions.S.Pv.Mom.momF'_of_schur Fm Cg cb Cu cT CT C0 hBS hM1 Formalism.L2.SG.Pf.k_finite_smooth_bessel
+
+end Formalism.L2.S.Pv.Mom
+end
+end
+
+section
 set_option linter.unusedVariables false
 
 open Matrix MeasureTheory
@@ -187,3 +204,5 @@ theorem momF'_of_tie (hI : Formalism.FourierDecayAlt.ThreeDimData.Inputs) (hAt :
   momF' Fm Cg cb Cu cT CT C0 (besselSchurF'_of_tie hI hAt Fm Cg cb Cu cT CT C0 hT) hM1
 
 end Formalism.L2.S.Pv.Mom
+end
+end

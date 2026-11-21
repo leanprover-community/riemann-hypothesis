@@ -6,10 +6,159 @@ import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DictAt
 import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.ThetaIntegralsAgree
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.CuspAlongSmoothRows
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ToricSymbols
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeCharUniformiserValueIsAlgebraicStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeCharLocalValueDivUniformiserPow
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsNumberFieldValuesInEtaCharHalfTwist
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeCharUniformiserValueIsAlgebraic
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesFinite.AlgValsFinMain
+import BuildAid.ForwardExisting
+import Formalism.LocalToGlobal.UnitaryNorms.CharHost
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitaryRationalInfTypeSubgroupAndInfTypeUnique
 
+section
+open NumberField IsDedekindDomain Formalism.L2.Host
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeChar_uniformiser_value_isAlgebraic : ∀ (L : Type) [Field L] [NumberField L] (χ : HChar L) (m : (L →+* ℂ) → ℤ), (∀ k : Lˣ, ((χ.inf k : ℂˣ) : ℂ) = ∏ φ : L →+* ℂ, φ (k : L) ^ m φ) → ∀ w : HeightOneSpectrum (𝓞 L), IsAlgebraic ℚ ((χ.val w : ℂˣ) : ℂ) := by
+  first | exact @GlobalTheory.heckeChar_val_isAlgebraic | exact GlobalTheory.heckeChar_val_isAlgebraic | (intros; apply GlobalTheory.heckeChar_val_isAlgebraic <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.L2.Host
+
+noncomputable section
+
+open Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR
+
+namespace GlobalTheory.HeckeLocDec
+
+theorem localIdele_unitPart_mem (L : Type) [Field L] [NumberField L] (w : HeightOneSpectrum (𝓞 L))
+    (x : (w.adicCompletion L)ˣ) (a : ℤ) (ha : Valued.v (x : w.adicCompletion L) = WithZero.exp (-a)) :
+    localIdele L w (x * (atFin w (unif w)) ^ (-a)) ∈ PI.AlgValsFin.W.UFin L := by
+  refine ⟨?_, fun w' => ?_⟩
+  · funext v
+    exact (localIdele_isSupportedAt L w _).1 v
+  · by_cases h : w' = w
+    · subst h
+      rw [← PI.AlgValsFin.W.evF_val, PI.AlgValsFin.W.evF_localIdele_self]
+      have h1 : Valued.v ((atFin w' (unif w') : (w'.adicCompletion L)ˣ) : w'.adicCompletion L) =
+          WithZero.exp (-1) := unif_spec w'
+      rw [Units.val_mul, Units.val_zpow_eq_zpow_val, map_mul, map_zpow₀, h1, ha,
+        ← WithZero.exp_zsmul, ← WithZero.exp_add]
+      simp
+    · rw [← PI.AlgValsFin.W.evF_val, PI.AlgValsFin.W.evF_localIdele_ne w' w h]
+      simp
+
+theorem loc_div_val_pow (L : Type) [Field L] [NumberField L] (χ : HChar L) :
+    ∃ N : ℕ, 0 < N ∧ ∀ (w : HeightOneSpectrum (𝓞 L)) (x : (w.adicCompletion L)ˣ),
+      ∃ a : ℤ, ((χ.loc w x / χ.val w ^ a : ℂˣ) : ℂ) ^ N = 1 := by
+  obtain ⟨N, hN, hT⟩ := PI.AlgValsFin.W.torsUnits L χ
+  refine ⟨N, hN, fun w x => ?_⟩
+  have hx0 : Valued.v (x : w.adicCompletion L) ≠ 0 := by simp
+  obtain ⟨a, ha⟩ : ∃ a : ℤ, Valued.v (x : w.adicCompletion L) = WithZero.exp (-a) :=
+    ⟨-WithZero.log (Valued.v (x : w.adicCompletion L)), by rw [neg_neg, WithZero.exp_log hx0]⟩
+  refine ⟨a, ?_⟩
+  have hmem := localIdele_unitPart_mem L w x a ha
+  have h := hT _ hmem
+  have e : χ.loc w x / χ.val w ^ a = χ.1 (localIdele L w (x * (atFin w (unif w)) ^ (-a))) := by
+    show χ.loc w x / χ.loc w (atFin w (unif w)) ^ a = χ.loc w (x * (atFin w (unif w)) ^ (-a))
+    rw [map_mul, map_zpow, zpow_neg, div_eq_mul_inv]
+  rw [e, ← Units.val_pow_eq_pow_val, h, Units.val_one]
+
+end GlobalTheory.HeckeLocDec
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Host
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeChar_local_value_div_uniformiser_pow : ∀ (L : Type) [Field L] [NumberField L] (χ : HChar L), ∃ N : ℕ, 0 < N ∧ ∀ (w : HeightOneSpectrum (𝓞 L)) (x : (w.adicCompletion L)ˣ), ∃ a : ℤ, ((χ.loc w x / χ.val w ^ a : ℂˣ) : ℂ) ^ N = 1 := by
+  atlas_forward_decl GlobalTheory.HeckeLocDec.loc_div_val_pow
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.L2.Host
+
+noncomputable section
+
+namespace GlobalTheory.EtaValsNumberField
+
+open Formalism.BasicNotions Formalism.FrobeniusOrbits
+
+variable {R : Ranks} (H : Formalism.BasicNotions.Host R)
+
+def embSum : R.Psi ⊕ R.Psi → (H.E →+* ℂ) :=
+  Sum.elim (embPsi H) fun g => (starRingEnd ℂ).comp (embPsi H g)
+
+theorem embSum_injective : Function.Injective (embSum H) := by
+  rintro (i | i) (j | j) hij
+  · exact congrArg _ (GlobalTheory.HalfIntChars.embPsi_inj H hij)
+  · exact absurd hij (GlobalTheory.HalfIntChars.embPsi_ne_conj H i j)
+  · exact absurd hij.symm (GlobalTheory.HalfIntChars.embPsi_ne_conj H j i)
+  · refine congrArg _ (GlobalTheory.HalfIntChars.embPsi_inj H (RingHom.ext fun x => ?_))
+    have := congrArg (fun f : H.E →+* ℂ => starRingEnd ℂ (f x)) hij
+    simpa [embSum] using this
+
+theorem card_sum : Fintype.card (R.Psi ⊕ R.Psi) = Fintype.card (H.E →+* ℂ) := by
+  rw [Fintype.card_sum, NumberField.Embeddings.card, H.finrank_cmField,
+    ← Nat.card_eq_fintype_card, Formalism.HC.Frame.natCard_Psi]
+  ring
+
+def embEquiv : R.Psi ⊕ R.Psi ≃ (H.E →+* ℂ) :=
+  Equiv.ofBijective _ ((Fintype.bijective_iff_injective_and_card _).mpr ⟨embSum_injective H, card_sum H⟩)
+
+theorem algType_eta : ∃ m : (H.E →+* ℂ) → ℤ, ∀ k : H.Eˣ,
+    (∏ g, (embPsi H g (k : H.E) / ((‖embPsi H g (k : H.E)‖ : ℝ) : ℂ)) ^ (1 : ℤ)) *
+      ∏ φ : H.E →+* ℂ, ((‖φ (k : H.E)‖ : ℝ) : ℂ) ^ (((1 / 2 : ℝ)) : ℂ) = ∏ φ : H.E →+* ℂ, φ (k : H.E) ^ m φ := by
+  set bij := embEquiv H
+  let g : R.Psi ⊕ R.Psi → ℤ := fun x => Sum.elim (fun _ => 1) (fun _ => 0) x
+  refine ⟨fun ψ => g (bij.symm ψ), fun k => ?_⟩
+  have hR : ∏ ψ : H.E →+* ℂ, ψ (k : H.E) ^ g (bij.symm ψ) = ∏ x : R.Psi ⊕ R.Psi, (bij x) (k : H.E) ^ g x :=
+    (Fintype.prod_equiv bij _ _ fun x => by rw [Equiv.symm_apply_apply]).symm
+  have hL : ∏ ψ : H.E →+* ℂ, ((‖ψ (k : H.E)‖ : ℝ) : ℂ) ^ (((1 / 2 : ℝ)) : ℂ) =
+      ∏ x : R.Psi ⊕ R.Psi, ((‖bij x (k : H.E)‖ : ℝ) : ℂ) ^ (((1 / 2 : ℝ)) : ℂ) :=
+    (Fintype.prod_equiv bij _ _ fun x => rfl).symm
+  rw [hR, hL, Fintype.prod_sum_type, Fintype.prod_sum_type, ← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib,
+    ← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun τ _ => ?_
+  set z := embPsi H τ (k : H.E) with hzdef
+  have hz : z ≠ 0 := (map_ne_zero _).2 k.ne_zero
+  have hn : (((‖z‖ : ℝ) : ℂ)) ≠ 0 := by exact_mod_cast (norm_ne_zero_iff.mpr hz)
+  show (z / ((‖z‖ : ℝ) : ℂ)) ^ (1 : ℤ) * ((((‖z‖ : ℝ) : ℂ)) ^ (((1 / 2 : ℝ)) : ℂ) *
+    (((‖starRingEnd ℂ z‖ : ℝ) : ℂ)) ^ (((1 / 2 : ℝ)) : ℂ)) = z ^ (1 : ℤ) * (starRingEnd ℂ z) ^ (0 : ℤ)
+  rw [Complex.norm_conj, ← Complex.cpow_add _ _ hn]
+  norm_num
+  rw [div_mul_cancel₀ _ hn]
+
+theorem etaVals : ∀ {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R) (χ : HChar H.E), IsEtaT H χ →
+    ∃ M : IntermediateField ℚ ℂ, FiniteDimensional ℚ M ∧ χ.ValuesIn (1 / 2) (algebraMap M ℂ) := by
+  intro R H χ hχ
+  obtain ⟨m, hm⟩ := algType_eta H
+  obtain ⟨C, hC, hv⟩ := PI.AlgValsFin.W.algValsFin_main H.E χ (1 / 2) m (fun k => by rw [hχ.inf k]; exact hm k)
+  let M : IntermediateField ℚ ℂ := C.toIntermediateField fun x => by simp
+  let e : C ≃+ M :=
+    { toFun := fun x => ⟨x, x.2⟩
+      invFun := fun x => ⟨x, x.2⟩
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl
+      map_add' := fun _ _ => rfl }
+  have hM : FiniteDimensional ℚ M := LinearEquiv.finiteDimensional
+    { e.toAddMonoidHom.toRatLinearMap with
+      invFun := e.symm
+      left_inv := e.left_inv
+      right_inv := e.right_inv }
+  refine ⟨M, hM, fun v hv' => ?_⟩
+  obtain ⟨y, hy⟩ := hv v hv'
+  exact ⟨e y, hy⟩
+
+end GlobalTheory.EtaValsNumberField
+end
+end
+
+open NumberField IsDedekindDomain Formalism.L2.Host
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_numberField_valuesIn_etaChar_halfTwist : ∀ {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R) (χ : HChar H.E), IsEtaT H χ → ∃ M : IntermediateField ℚ ℂ, FiniteDimensional ℚ M ∧ χ.ValuesIn (1 / 2) (algebraMap M ℂ) := by
+  atlas_forward_decl GlobalTheory.EtaValsNumberField.etaVals
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
@@ -256,4 +405,5 @@ theorem GlobalTheory.RowEx.nfChars : NFChars :=
     haveI := hS.fin
     exact charsIn_nf hS.core.lev ch.G⟩⟩
 
+end
 end

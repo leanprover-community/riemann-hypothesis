@@ -1,7 +1,22 @@
 import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.GalAut
 import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.GalRoots
-import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.LevelLift
+import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.LevelGroupSupLevelInertia
 
+section
+namespace KStar.TotallyRealRoots
+
+variable {l : ℕ} [Fact l.Prime]
+
+
+
+
+
+
+
+end KStar.TotallyRealRoots
+end
+
+section
 namespace KStar.TotallyRealRoots
 
 variable {l : ℕ} [Fact l.Prime]
@@ -15,3 +30,4 @@ variable {N : ℕ} [NeZero N] {K : Type*} [Field K] [NumberField K] [IsCyclotomi
 
 
 end KStar.TotallyRealRoots
+end

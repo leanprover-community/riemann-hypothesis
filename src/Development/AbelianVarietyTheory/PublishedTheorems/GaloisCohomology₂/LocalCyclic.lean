@@ -1,9 +1,27 @@
 import Mathlib
-import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ArthurClozelLocalSC
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Lbc
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LbcOfCharOne
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NcardPrimesOverThreeZ
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExistsSmallStable
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain ValuativeRel
+open GlobalTheory.FunExt
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.Published
+
+def ArthurClozelLocalSC : Prop := LocalBC lbc
+
+end GlobalTheory.Published
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain ValuativeRel Matrix
@@ -94,4 +112,5 @@ theorem lift_char (H : ArthurClozelLocalSC) (χ : (Inhab.place3.adicCompletion �
 
 end GlobalTheory.Published.LocalSCModel
 
+end
 end

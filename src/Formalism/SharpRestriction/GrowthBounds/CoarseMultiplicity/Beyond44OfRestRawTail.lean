@@ -1,9 +1,0 @@
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Lemma44IdentityOfRawTail
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.PolyUpperBoundDelta
-
-noncomputable section
-
-namespace Formalism.MainNotions.ColumnSystems.Pf
-
-
-end Formalism.MainNotions.ColumnSystems.Pf

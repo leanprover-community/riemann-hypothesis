@@ -11,15 +11,494 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwasawaDecompPa
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumOverCompactCosetsJacquetKernel
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreIntegralIntertwinesUnipotent
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UMLeviMulUMLevi
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InducedGeneratedByKFinite
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNormalOpenSubgroupCompactStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteImageCompactRightInvariantStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreSubgroupOpenCompact
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothTensorFixedParabolicNearOne
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreIntegralSupportSubgroup
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreIntegralVanishingSubgroup
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreIntegralVanishingOpenSubgroup
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIrreducibleSecondFactorOfIrreducibleProduct
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HenselianStabilizerConjugacy.LatticeUnfoldingLerayVolume
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirProjEqOneOfMem
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothVectorFixedNearIdentity
 
+section
+section
+namespace GlobalTheory.CompanionTheory.CosetSum
+
+theorem mem_of_translated_bumps : ∀ {Γ J : Type} [Group Γ] [AddCommGroup J] [Module ℂ J] (Q K K₁ : Subgroup Γ) (π : Representation ℂ Q J) (M : Submodule ℂ (Γ → J)) (Gf : Γ → J), K₁ ≤ K → K₁.relIndex K ≠ 0 → (∀ κ ∈ K, ∀ b ∈ K₁, κ * b * κ⁻¹ ∈ K₁) → (∀ g : Γ, ∃ q : Q, ∃ κ ∈ K, g = (q : Γ) * κ) → (∀ φ ∈ M, ∀ x : Γ, (fun g => φ (g * x)) ∈ M) → (∀ φ ∈ M, ∀ (q : Q) (g : Γ), φ ((q : Γ) * g) = π q (φ g)) → (∀ (q : Q) (g : Γ), Gf ((q : Γ) * g) = π q (Gf g)) → (∀ (g : Γ), ∀ b ∈ K₁, Gf (g * b) = Gf g) → (∀ κ ∈ K, ∃ φ ∈ M, (∀ (q : Q), ∀ b ∈ K₁, φ ((q : Γ) * b) = π q (Gf κ)) ∧ ∀ g : Γ, (¬ ∃ q : Q, ∃ b ∈ K₁, g = (q : Γ) * b) → φ g = 0) → Gf ∈ M := by
+  intro Γ J _ _ _ Q K K₁ π M Gf hle hidx hconj hdec htr hlawM hlaw hinv hb
+  classical
+  let H : Subgroup K := K₁.subgroupOf K
+  haveI hHn : H.Normal := ⟨fun n hn g => by
+    have hn' : (n : Γ) ∈ K₁ := Subgroup.mem_subgroupOf.1 hn
+    refine Subgroup.mem_subgroupOf.2 ?_
+    simpa using hconj g g.2 n hn'⟩
+  haveI : H.FiniteIndex := ⟨hidx⟩
+  haveI : Fintype (K ⧸ H) := Fintype.ofFinite _
+  let P : Γ → Prop := fun x => ∃ q : Q, ∃ b ∈ K₁, x = (q : Γ) * b
+  have hPmul : ∀ x, ∀ b ∈ K₁, P x → P (x * b) := by
+    rintro x b hb' ⟨q, c, hc, rfl⟩
+    exact ⟨q, c * b, K₁.mul_mem hc hb', by simp [mul_assoc]⟩
+  have hb2 : ∀ κ : K, ∃ φ ∈ M, (∀ (q : Q), ∀ b ∈ K₁, φ ((q : Γ) * b) = π q (Gf κ)) ∧
+      ∀ g : Γ, (¬ P g) → φ g = 0 := fun κ => hb κ κ.2
+  choose φ hφM hφ1 hφ0 using hb2
+  have key : ∀ κ' κ : K, φ κ ((κ' : Γ) * (κ : Γ)⁻¹) =
+      if P ((κ' : Γ) * (κ : Γ)⁻¹) then Gf κ' else 0 := by
+    intro κ' κ
+    split_ifs with h
+    · obtain ⟨q, b, hbm, e⟩ := h
+      rw [e, hφ1 κ q b hbm, ← hlaw]
+      have hκ' : (κ' : Γ) = q * b * κ := by rw [← e]; group
+      have e2 : (q : Γ) * κ = κ' * ((κ : Γ)⁻¹ * b⁻¹ * κ) := by rw [hκ']; group
+      have hm : (κ : Γ)⁻¹ * b⁻¹ * κ ∈ K₁ := by
+        simpa using hconj _ (K.inv_mem κ.2) _ (K₁.inv_mem hbm)
+      rw [e2, hinv _ _ hm]
+    · exact hφ0 κ _ h
+  let r : K ⧸ H → K := Quotient.out
+  have hr : ∀ δ : K ⧸ H, ((r δ : K) : K ⧸ H) = δ := fun δ => QuotientGroup.out_eq' δ
+  have hPcl : ∀ x y : K, (x : K ⧸ H) = y → P x → P y := by
+    intro x y hxy hx
+    have hm : x⁻¹ * y ∈ H := QuotientGroup.eq.1 hxy
+    have hm' : (x : Γ)⁻¹ * y ∈ K₁ := by simpa using Subgroup.mem_subgroupOf.1 hm
+    have := hPmul _ _ hm' hx
+    simpa using this
+  let Pd : K ⧸ H → Prop := fun ε => P (r ε)
+  have hPd : ∀ x : K, P x ↔ Pd (x : K ⧸ H) := fun x =>
+    ⟨hPcl _ _ (hr _).symm, hPcl _ _ (hr _)⟩
+  let Φ : Γ → J := ∑ δ : K ⧸ H, (fun g => φ (r δ) (g * ((r δ : K) : Γ)⁻¹))
+  have hΦM : Φ ∈ M := M.sum_mem fun δ _ => htr _ (hφM _) _
+  let n : ℕ := (Finset.univ.filter Pd).card
+  have hΦ : ∀ κ' : K, Φ κ' = n • Gf κ' := by
+    intro κ'
+    have h1 : Φ κ' = ∑ δ : K ⧸ H, if Pd ((κ' : K ⧸ H) * δ⁻¹) then Gf κ' else 0 := by
+      simp only [Φ, Finset.sum_apply]
+      refine Finset.sum_congr rfl fun δ _ => ?_
+      rw [key]
+      have hcl : (((κ' * (r δ)⁻¹ : K)) : K ⧸ H) = (κ' : K ⧸ H) * δ⁻¹ := by
+        rw [QuotientGroup.mk_mul, QuotientGroup.mk_inv, hr]
+      have := hPd (κ' * (r δ)⁻¹)
+      rw [hcl] at this
+      simp only [Subgroup.coe_mul, Subgroup.coe_inv] at this
+      simp only [this]
+    rw [h1]
+    have h2 := Equiv.sum_comp ((Equiv.inv (K ⧸ H)).trans (Equiv.mulLeft (κ' : K ⧸ H)))
+      (fun ε => if Pd ε then Gf κ' else 0)
+    simp only [Equiv.trans_apply, Equiv.inv_apply, Equiv.coe_mulLeft] at h2
+    rw [h2, ← Finset.sum_filter, Finset.sum_const]
+  have hn : n ≠ 0 := by
+    have h1 : Pd 1 := by
+      have : (r 1 : Γ) ∈ K₁ := by
+        have : r 1 ∈ H := (QuotientGroup.eq_one_iff _).1 (hr 1)
+        exact Subgroup.mem_subgroupOf.1 this
+      exact ⟨1, _, this, by simp⟩
+    exact (Finset.card_pos.2 ⟨1, by simpa using h1⟩).ne'
+  have hnC : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hn
+  have hΨM : (n : ℂ)⁻¹ • Φ ∈ M := M.smul_mem _ hΦM
+  have hEq : (n : ℂ)⁻¹ • Φ = Gf := by
+    funext g
+    obtain ⟨q, κ, hκ, rfl⟩ := hdec g
+    have hK : ((n : ℂ)⁻¹ • Φ) κ = Gf κ := by
+      have := hΦ ⟨κ, hκ⟩
+      simp only at this
+      rw [Pi.smul_apply, this, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hnC, one_smul]
+    rw [hlawM _ hΨM, hK, hlaw]
+  exact hEq ▸ hΨM
+
+end GlobalTheory.CompanionTheory.CosetSum
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.induced_generated_by_K_finite : ∀ {Γ J : Type} [Group Γ] [AddCommGroup J] [Module ℂ J] (Q K K₁ : Subgroup Γ) (π : Representation ℂ Q J) (M : Submodule ℂ (Γ → J)) (Gf : Γ → J), K₁ ≤ K → K₁.relIndex K ≠ 0 → (∀ κ ∈ K, ∀ b ∈ K₁, κ * b * κ⁻¹ ∈ K₁) → (∀ g : Γ, ∃ q : Q, ∃ κ ∈ K, g = (q : Γ) * κ) → (∀ φ ∈ M, ∀ x : Γ, (fun g => φ (g * x)) ∈ M) → (∀ φ ∈ M, ∀ (q : Q) (g : Γ), φ ((q : Γ) * g) = π q (φ g)) → (∀ (q : Q) (g : Γ), Gf ((q : Γ) * g) = π q (Gf g)) → (∀ (g : Γ), ∀ b ∈ K₁, Gf (g * b) = Gf g) → (∀ κ ∈ K, ∃ φ ∈ M, (∀ (q : Q), ∀ b ∈ K₁, φ ((q : Γ) * b) = π q (Gf κ)) ∧ ∀ g : Γ, (¬ ∃ q : Q, ∃ b ∈ K₁, g = (q : Γ) * b) → φ g = 0) → Gf ∈ M := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.CosetSum.mem_of_translated_bumps
+end
+
+section
+open Matrix
+
+namespace GlobalTheory.CompanionTheory.OpenCore
+
+theorem exists_open_core {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (K S : Subgroup G)
+    (hKo : IsOpen (K : Set G)) (hKc : IsCompact (K : Set G)) (hSo : IsOpen (S : Set G)) :
+    ∃ K₁ : Subgroup G, K₁ ≤ K ∧ IsOpen (K₁ : Set G) ∧ K₁ ≤ S ∧ K₁.relIndex K ≠ 0 ∧
+      ∀ κ ∈ K, ∀ b ∈ K₁, κ * b * κ⁻¹ ∈ K₁ := by
+  haveI : CompactSpace K := isCompact_iff_compactSpace.mp hKc
+  have hHo : IsOpen ((S.subgroupOf K : Subgroup K) : Set K) := hSo.preimage continuous_subtype_val
+  haveI : Finite (K ⧸ S.subgroupOf K) := Subgroup.quotient_finite_of_isOpen _ hHo
+  haveI : (S.subgroupOf K).FiniteIndex := Subgroup.finiteIndex_of_finite_quotient
+  have hN : IsOpen (((S.subgroupOf K).normalCore : Subgroup K) : Set K) :=
+    Subgroup.isOpen_of_isClosed_of_finiteIndex _
+      ((S.subgroupOf K).normalCore_isClosed ((S.subgroupOf K).isClosed_of_isOpen hHo))
+  refine ⟨(S.subgroupOf K).normalCore.map K.subtype, ?_, ?_, ?_, ?_, ?_⟩
+  · rintro _ ⟨x, -, rfl⟩
+    exact x.2
+  · rw [Subgroup.coe_map]
+    exact hKo.isOpenMap_subtype_val _ hN
+  · rintro _ ⟨x, hx, rfl⟩
+    exact Subgroup.mem_subgroupOf.1 (Subgroup.normalCore_le _ hx)
+  · have e : ((S.subgroupOf K).normalCore.map K.subtype).relIndex K = (S.subgroupOf K).normalCore.index := by
+      rw [Subgroup.relIndex, ← Subgroup.comap_subtype,
+        Subgroup.comap_map_eq_self_of_injective (Subgroup.subtype_injective K)]
+    rw [e]
+    exact (inferInstance : (S.subgroupOf K).normalCore.FiniteIndex).1
+  · rintro κ hκ _ ⟨x, hx, rfl⟩
+    refine ⟨⟨κ, hκ⟩ * x * (⟨κ, hκ⟩ : K)⁻¹, (Subgroup.normalCore_normal _).conj_mem x hx ⟨κ, hκ⟩, ?_⟩
+    simp
+
+theorem exists_open_normal_subgroup_KO (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (n : ℕ) (U : Set (GL (Fin n) k)) (hU : U ∈ nhds (1 : GL (Fin n) k)) :
+    ∃ K₁ : Subgroup (GL (Fin n) k), K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin n) ∧ IsOpen (K₁ : Set (GL (Fin n) k)) ∧
+      (K₁ : Set (GL (Fin n) k)) ⊆ U ∧ K₁.relIndex (GlobalTheory.SplitWeil.KO k (Fin n)) ≠ 0 ∧
+      ∀ κ ∈ GlobalTheory.SplitWeil.KO k (Fin n), ∀ b ∈ K₁, κ * b * κ⁻¹ ∈ K₁ := by
+  obtain ⟨S, hSo, hSU⟩ := GlobalTheory.SmGL.ProdIrr.exists_openSubgroup_GL U hU
+  obtain ⟨K₁, h1, h2, h3, h4, h5⟩ := exists_open_core (GlobalTheory.SplitWeil.KO k (Fin n)) S
+    GlobalTheory.SplitFlip.isOpen_KO GlobalTheory.SplitFlip.isCompact_KO hSo
+  exact ⟨K₁, h1, h2, fun g hg => hSU g (h3 hg), h4, h5⟩
+
+end GlobalTheory.CompanionTheory.OpenCore
+end
+
+section
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_normal_open_subgroup_compact : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (U : Set (GL (Fin n) k)), U ∈ nhds (1 : GL (Fin n) k) → ∃ K₁ : Subgroup (GL (Fin n) k), K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin n) ∧ IsOpen (K₁ : Set (GL (Fin n) k)) ∧ (K₁ : Set (GL (Fin n) k)) ⊆ U ∧ K₁.relIndex (GlobalTheory.SplitWeil.KO k (Fin n)) ≠ 0 ∧ ∀ κ ∈ GlobalTheory.SplitWeil.KO k (Fin n), ∀ b ∈ K₁, κ * b * κ⁻¹ ∈ K₁ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.OpenCore.exists_open_normal_subgroup_KO
+end
+
+section
+namespace GlobalTheory.CompanionTheory.TopGroup
+
+theorem finite_image_of_right_invariant_near_one :
+    ∀ {Γ X : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] (K : Set Γ),
+      IsCompact K → ∀ Gf : Γ → X, {s : Γ | ∀ x, Gf (x * s) = Gf x} ∈ nhds (1 : Γ) →
+        (Gf '' K).Finite := by
+  intro Γ X _ _ _ K hK Gf hS
+  have hU : ∀ k ∈ K, {y : Γ | k⁻¹ * y ∈ {s : Γ | ∀ x, Gf (x * s) = Gf x}} ∈ nhds k := by
+    intro k _
+    have hc : Continuous fun y : Γ => k⁻¹ * y := continuous_const.mul continuous_id
+    refine hc.continuousAt.preimage_mem_nhds ?_
+    show _ ∈ nhds (k⁻¹ * k)
+    rw [inv_mul_cancel]
+    exact hS
+  obtain ⟨t, -, hcover⟩ := hK.elim_nhds_subcover _ hU
+  refine (t.finite_toSet.image Gf).subset ?_
+  rintro _ ⟨y, hy, rfl⟩
+  obtain ⟨k, hk, hyk⟩ := Set.mem_iUnion₂.1 (hcover hy)
+  refine ⟨k, hk, ?_⟩
+  have h := hyk k
+  rw [mul_inv_cancel_left] at h
+  exact h.symm
+
+end GlobalTheory.CompanionTheory.TopGroup
+
+alias _root_.GlobalTheory.T.finite_image_compact_right_invariant := _root_.GlobalTheory.CompanionTheory.TopGroup.finite_image_of_right_invariant_near_one
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+
+noncomputable section
+
+open GlobalTheory.SplitWeil
+
+namespace GlobalTheory.CompanionTheory.BZPsiPG.FibOnto
+
+variable {k : Type} [Field k]
+
+theorem colv_uM_mul_levi (n : ℕ) (y : Fin n → k) (b : GL (Fin n) k) :
+    GlobalTheory.CompanionTheory.MirLevi.colv (uM k n y * levi k n b) = y := by
+  have hu : ((GlobalTheory.CompanionTheory.BZPsiPG.uM k n y : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) =
+      1 + GlobalTheory.BZMir.colMat k n y := by
+    first
+    | rfl
+    | (ext a c; simp [GlobalTheory.CompanionTheory.BZPsiPG.uM, GlobalTheory.BZMir.unip])
+  have hL : ((GlobalTheory.BZMir.levi k n b : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) =
+      GlobalTheory.BZMir.glEmbMat k n (b : Matrix (Fin n) (Fin n) k) := rfl
+  funext i
+  simp only [GlobalTheory.CompanionTheory.MirLevi.colv, Subgroup.coe_mul, Units.val_mul, hu, hL]
+  rw [Matrix.mul_apply, Fin.sum_univ_castSucc]
+  simp [GlobalTheory.BZMir.glEmbMat, GlobalTheory.BZMir.colMat, Matrix.one_apply, Fin.castSucc_ne_last]
+
+theorem eq_uM_colv_mul_levi (n : ℕ) (p : Mir k n) :
+    p = uM k n (GlobalTheory.CompanionTheory.MirLevi.colv p) * levi k n (mirabolicProjection k n p) := by
+  have h1 : GlobalTheory.BZMir.mirabolicProjection k n
+      (p * (GlobalTheory.BZMir.levi k n (GlobalTheory.BZMir.mirabolicProjection k n p))⁻¹) = 1 := by
+    rw [map_mul, map_inv, GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.mirProj_levi_eq, mul_inv_cancel]
+  obtain ⟨y, hy⟩ := GlobalTheory.CompanionTheory.BZPsiPG.exists_uM_of_mem k n
+    (GlobalTheory.CompanionTheory.BZMirAdj.mem_of_mirProj_eq_one k n _ h1)
+  have hp : p = GlobalTheory.CompanionTheory.BZPsiPG.uM k n y *
+      GlobalTheory.BZMir.levi k n (GlobalTheory.BZMir.mirabolicProjection k n p) := by
+    rw [← hy, inv_mul_cancel_right]
+  have hy' : GlobalTheory.CompanionTheory.MirLevi.colv p = y := by
+    rw [hp]
+    exact GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.colv_uM_mul_levi n y _
+  rw [hy']
+  exact hp
+
+variable [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem continuous_colv (n : ℕ) : Continuous (GlobalTheory.CompanionTheory.MirLevi.colv : Mir k n → Fin n → k) := by
+  show Continuous fun p : GlobalTheory.BZMir.Mir k n => fun i : Fin n =>
+    ((p : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.castSucc i) (Fin.last n)
+  first
+  | exact continuous_pi fun i =>
+      (Units.continuous_val.comp continuous_subtype_val).matrix_elem (Fin.castSucc i) (Fin.last n)
+  | exact continuous_pi fun i => (continuous_apply (Fin.last n)).comp
+      ((continuous_apply (Fin.castSucc i)).comp (Units.continuous_val.comp continuous_subtype_val))
+  | fun_prop
+
+theorem coe_Bgrp_eq (n : ℕ) (c : kˣ) (K₁ : Subgroup (GL (Fin n) k)) (h : K₁ ≤ KO k (Fin n)) :
+    (Bgrp n c K₁ h : Set (Mir k n)) =
+      GlobalTheory.CompanionTheory.MirLevi.colv ⁻¹' (latt n c : Set (Fin n → k)) ∩ mirabolicProjection k n ⁻¹' (K₁ : Set (GL (Fin n) k)) := by
+  ext p
+  change (∃ y ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt n c, ∃ b ∈ K₁,
+      p = GlobalTheory.CompanionTheory.BZPsiPG.uM k n y * GlobalTheory.BZMir.levi k n b) ↔
+    (GlobalTheory.CompanionTheory.MirLevi.colv p ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt n c ∧ GlobalTheory.BZMir.mirabolicProjection k n p ∈ K₁)
+  constructor
+  · rintro ⟨y, hy, b, hb, rfl⟩
+    refine ⟨?_, ?_⟩
+    · rwa [GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.colv_uM_mul_levi]
+    · rwa [map_mul, GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.mirProj_uM, GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.mirProj_levi_eq, one_mul]
+  · rintro ⟨hy, hb⟩
+    exact ⟨_, hy, _, hb, GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.eq_uM_colv_mul_levi n p⟩
+
+theorem coe_Bgrp_eq_image (n : ℕ) (c : kˣ) (K₁ : Subgroup (GL (Fin n) k)) (h : K₁ ≤ KO k (Fin n)) :
+    (Bgrp n c K₁ h : Set (Mir k n)) =
+      (fun q : (Fin n → k) × GL (Fin n) k => uM k n q.1 * levi k n q.2) ''
+        ((latt n c : Set (Fin n → k)) ×ˢ (K₁ : Set (GL (Fin n) k))) := by
+  ext p
+  change (∃ y ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt n c, ∃ b ∈ K₁,
+      p = GlobalTheory.CompanionTheory.BZPsiPG.uM k n y * GlobalTheory.BZMir.levi k n b) ↔ _
+  constructor
+  · rintro ⟨y, hy, b, hb, rfl⟩
+    exact ⟨(y, b), ⟨hy, hb⟩, rfl⟩
+  · rintro ⟨⟨y, b⟩, ⟨hy, hb⟩, rfl⟩
+    exact ⟨y, hy, b, hb, rfl⟩
+
+theorem isOpen_isCompact_Bgrp : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (n : ℕ) (c : kˣ) (K₁ : Subgroup (GL (Fin n) k))
+    (h : K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin n)), IsOpen (K₁ : Set (GL (Fin n) k)) →
+    IsOpen (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp n c K₁ h : Set (Mir k n)) ∧
+      IsCompact (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp n c K₁ h : Set (Mir k n)) := by
+  intro k _ _ _ _ n c K₁ h hK
+  have hc := GlobalTheory.CompanionTheory.BZPsiPG.continuous_levi_uM_mirProj k n
+  refine ⟨?_, ?_⟩
+  · rw [GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.coe_Bgrp_eq]
+    exact ((GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.isOpen_latt n c).preimage (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.continuous_colv n)).inter
+      (hK.preimage hc.2.2)
+  · rw [GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.coe_Bgrp_eq_image]
+    have hK₁ : IsCompact (K₁ : Set (GL (Fin n) k)) :=
+      (GlobalTheory.SplitFlip.isCompact_KO (k := k) (n := Fin n)).of_isClosed_subset
+        (K₁.isClosed_of_isOpen hK) (SetLike.coe_subset_coe.mpr h)
+    exact ((GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.isCompact_latt n c).prod hK₁).image
+      ((hc.2.1.comp continuous_fst).mul (hc.1.comp continuous_snd))
+
+end GlobalTheory.CompanionTheory.BZPsiPG.FibOnto
+
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fibre_subgroup_open_compact : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (c : kˣ) (K₁ : Subgroup (GL (Fin n) k)) (h : K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin n)), IsOpen (K₁ : Set (GL (Fin n) k)) → IsOpen (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp n c K₁ h : Set (Mir k n)) ∧ IsCompact (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp n c K₁ h : Set (Mir k n)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.isOpen_isCompact_Bgrp
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.BZPsiPG.Stab
+
+theorem hRep_fix : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (τ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin t) k) W), IsSmooth τ → IsSmooth σ → ∀ z : V ⊗[ℂ] W, ∃ U ∈ nhds (1 : Mir k (i + t)), ∀ h : HPG k i t, (h : Mir k (i + t)) ∈ U → hRep τ σ h z = z := by
+  intro k _ _ _ _ i t V W _ _ _ _ τ σ hτ hσ z
+  have hs : IsSmooth (hRep τ σ) :=
+    isSmooth_comp (isSmooth_extTensor hτ hσ) _ (GlobalTheory.CompanionTheory.BZPhiPG.Onto.continuous_pgProj k i t)
+  obtain ⟨O, hO, e⟩ := isOpen_induced_iff.1 (hs z)
+  have hmem : ∀ h : HPG k i t, (h : Mir k (i + t)) ∈ O ↔ hRep τ σ h z = z := fun h =>
+    Set.ext_iff.1 e h
+  have h1 : (1 : Mir k (i + t)) ∈ O := (hmem 1).2 (by simp)
+  exact ⟨O, hO.mem_nhds h1, fun h hh => (hmem h).1 hh⟩
+
+end GlobalTheory.CompanionTheory.BZPsiPG.Stab
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_tensor_fixed_parabolic_near_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (τ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin t) k) W), IsSmooth τ → IsSmooth σ → ∀ z : V ⊗[ℂ] W, ∃ U ∈ nhds (1 : Mir k (i + t)), ∀ h : HPG k i t, (h : Mir k (i + t)) ∈ U → hRep τ σ h z = z := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPsiPG.Stab.hRep_fix
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.BZPsiPG.FibOffQ
+
+theorem smInt_zero_fun {X Z : Type} [MeasurableSpace X] [AddCommGroup Z] [Module ℂ Z]
+    (μ : MeasureTheory.Measure X) (φ : X → Z) (h : ∀ x, φ x = 0) : smInt μ φ = 0 := by
+  unfold smInt
+  apply finsum_eq_zero_of_forall_eq_zero
+  intro v
+  by_cases hv : v = 0
+  · rw [hv, smul_zero]
+  · have hempty : φ ⁻¹' {v} = ∅ := by
+      ext x
+      simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_empty_iff_false, iff_false]
+      intro hx
+      exact hv (hx.symm.trans (h x))
+    rw [hempty]
+    simp
+
+theorem mem_of_eq_mul (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (i t : ℕ) (c : kˣ) (K₁ : Subgroup (GL (Fin (i + t)) k))
+    (hK : K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin (i + t))) (y : Fin (i + t) → k) (g : GL (Fin (i + t)) k)
+    (h : HPG k i t) (β : Mir k (i + t)) (hβ : β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK)
+    (e : uM k (i + t) y * levi k (i + t) g = (h : Mir k (i + t)) * β) :
+    ∃ q : Qp k i t, ∃ b' ∈ K₁, g = (q : GL (Fin (i + t)) k) * b' := by
+  obtain ⟨y', _, b', hb', hβe⟩ := GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.mem_Bgrp.1 hβ
+  obtain ⟨x, q, hx⟩ := GlobalTheory.T.parabolic_unipotent_levi_decomp k i t h
+  have e2 : uM k (i + t) y * levi k (i + t) g =
+      uM k (i + t) (topV k i t x + ((q : GL (Fin (i + t)) k) : Matrix (Fin (i + t)) (Fin (i + t)) k).mulVec y') *
+        levi k (i + t) ((q : GL (Fin (i + t)) k) * b') := by
+    calc uM k (i + t) y * levi k (i + t) g = (h : Mir k (i + t)) * β := e
+      _ = uM k (i + t) (topV k i t x) * levi k (i + t) (q : GL (Fin (i + t)) k) *
+            (uM k (i + t) y' * levi k (i + t) b') := by rw [hx, hβe]
+      _ = _ := GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.uM_levi_mul_uM_levi _ _ _ _ _
+  exact ⟨q, b', hb', (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.uM_levi_inj _ e2).2⟩
+
+theorem main : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (τ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin t) k) W) [MeasurableSpace (Fin t → k)] (μ : MeasureTheory.Measure (Fin t → k)) (c : kˣ) (K₁ : Subgroup (GL (Fin (i + t)) k)) (hK : K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin (i + t))) (b : cIndSpace (HPG k i t) (hRep τ σ)), (∀ p : Mir k (i + t), (¬ ∃ h : HPG k i t, ∃ β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK, p = (h : Mir k (i + t)) * β) → b.1.1.1 p = 0) → ∀ g : GL (Fin (i + t)) k, (¬ ∃ q : Qp k i t, ∃ b' ∈ K₁, g = (q : GL (Fin (i + t)) k) * b') → fibInt μ b g = 0 := by
+  intro k _ _ _ _ i t V W _ _ _ _ τ σ _ μ c K₁ hK b hb g hg
+  have hz : ∀ v, fibV b g v = 0 := by
+    intro v
+    by_contra hne
+    have hex : ∃ h : HPG k i t, ∃ β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK,
+        uM k (i + t) (midV k i t v) * levi k (i + t) g = (h : Mir k (i + t)) * β := by
+      by_contra hno
+      exact hne (hb _ hno)
+    obtain ⟨h, β, hβ, e⟩ := hex
+    exact hg (mem_of_eq_mul k i t c K₁ hK _ g h β hβ e)
+  show clT τ W (smInt μ (fibV b g)) = 0
+  rw [smInt_zero_fun μ _ hz, map_zero]
+
+end GlobalTheory.CompanionTheory.BZPsiPG.FibOffQ
+
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fibre_integral_support_subgroup : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (τ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin t) k) W) [MeasurableSpace (Fin t → k)] (μ : MeasureTheory.Measure (Fin t → k)) (c : kˣ) (K₁ : Subgroup (GL (Fin (i + t)) k)) (hK : K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin (i + t))) (b : cIndSpace (HPG k i t) (hRep τ σ)), (∀ p : Mir k (i + t), (¬ ∃ h : HPG k i t, ∃ β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK, p = (h : Mir k (i + t)) * β) → b.1.1.1 p = 0) → ∀ g : GL (Fin (i + t)) k, (¬ ∃ q : Qp k i t, ∃ b' ∈ K₁, g = (q : GL (Fin (i + t)) k) * b') → fibInt μ b g = 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPsiPG.FibOffQ.main
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.BZPsiPG.FibOnto
+
+theorem fibV_one_bump : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (τ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin t) k) W) (c : kˣ) (K₁ : Subgroup (GL (Fin (i + t)) k)) (hK : K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin (i + t))) (z : V ⊗[ℂ] W) (b : cIndSpace (HPG k i t) (hRep τ σ)), (∀ (h : HPG k i t) (β : Mir k (i + t)), β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK → b.1.1.1 ((h : Mir k (i + t)) * β) = hRep τ σ h z) → (∀ p : Mir k (i + t), (¬ ∃ h : HPG k i t, ∃ β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK, p = (h : Mir k (i + t)) * β) → b.1.1.1 p = 0) → fibV b 1 = (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt t c : Set (Fin t → k)).indicator (fun _ => z) := by
+  intro k _ _ _ _ i t V W _ _ _ _ τ σ c K₁ hK z b h1 h2
+  funext v
+  by_cases hv : v ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt t c
+  · rw [Set.indicator_of_mem (show v ∈ (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt t c : Set (Fin t → k)) from hv)]
+    have hm : midV k i t v ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt (i + t) c := by
+      intro j
+      induction j using Fin.addCases with
+      | left j =>
+        show Fin.append (0 : Fin i → k) v (Fin.castAdd t j) ∈ _
+        rw [Fin.append_left]
+        exact (zero_mem (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt i c)) j
+      | right j =>
+        show Fin.append (0 : Fin i → k) v (Fin.natAdd i j) ∈ _
+        rw [Fin.append_right]
+        exact hv j
+    have hp : uM k (i + t) (midV k i t v) * levi k (i + t) 1 ∈
+        GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK := ⟨_, hm, 1, one_mem _, rfl⟩
+    have e := h1 1 _ hp
+    rw [map_one] at e
+    simpa [fibV] using e
+  · rw [Set.indicator_of_notMem (show v ∉ (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt t c : Set (Fin t → k)) from hv)]
+    apply h2
+    rintro ⟨h, β, hβ, e⟩
+    obtain ⟨x, q, hq⟩ := GlobalTheory.T.parabolic_unipotent_levi_decomp k i t h
+    obtain ⟨y, hy, b', hb', rfl⟩ := hβ
+    rw [hq, uM_levi_mul_uM_levi] at e
+    obtain ⟨e1, e2⟩ := uM_levi_inj _ (show uM k (i + t) (midV k i t v) * levi k (i + t) 1 = _ from e)
+    have hq' : (q : GL (Fin (i + t)) k) = b'⁻¹ := eq_inv_of_mul_eq_one_left e2.symm
+    apply hv
+    intro j
+    have e3 := congrFun e1 (Fin.natAdd i j)
+    have e4 : midV k i t v (Fin.natAdd i j) = v j := Fin.append_right _ _ _
+    have e5 : topV k i t x (Fin.natAdd i j) = 0 := Fin.append_right _ _ _
+    rw [Pi.add_apply, e4, e5, zero_add, hq'] at e3
+    rw [e3]
+    exact mulVec_mem_latt (hK (inv_mem hb')) hy _
+
+end GlobalTheory.CompanionTheory.BZPsiPG.FibOnto
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fibre_integral_vanishing_subgroup : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (τ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin t) k) W) (c : kˣ) (K₁ : Subgroup (GL (Fin (i + t)) k)) (hK : K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin (i + t))) (z : V ⊗[ℂ] W) (b : cIndSpace (HPG k i t) (hRep τ σ)), (∀ (h : HPG k i t) (β : Mir k (i + t)), β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK → b.1.1.1 ((h : Mir k (i + t)) * β) = hRep τ σ h z) → (∀ p : Mir k (i + t), (¬ ∃ h : HPG k i t, ∃ β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK, p = (h : Mir k (i + t)) * β) → b.1.1.1 p = 0) → fibV b 1 = (GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt t c : Set (Fin t → k)).indicator (fun _ => z) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.fibV_one_bump
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.BZPsiPG.FibInvK
+
+theorem fibV_mul_right_eq : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (τ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin t) k) W) (c : kˣ) (K₁ : Subgroup (GL (Fin (i + t)) k)) (hK : K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin (i + t))) (z : V ⊗[ℂ] W) (b : cIndSpace (HPG k i t) (hRep τ σ)), (∀ (h : HPG k i t) (β : Mir k (i + t)), β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK → b.1.1.1 ((h : Mir k (i + t)) * β) = hRep τ σ h z) → (∀ p : Mir k (i + t), (¬ ∃ h : HPG k i t, ∃ β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK, p = (h : Mir k (i + t)) * β) → b.1.1.1 p = 0) → ∀ b' ∈ K₁, ∀ g : GL (Fin (i + t)) k, fibV b (g * b') = fibV b g := by
+  intro k _ _ _ _ i t V W _ _ _ _ τ σ c K₁ hK z b hval hzero b' hb' g
+  have hβ : GlobalTheory.BZMir.levi k (i + t) b' ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK := by
+    show ∃ y ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.latt (i + t) c, ∃ a ∈ K₁,
+      GlobalTheory.BZMir.levi k (i + t) b' = GlobalTheory.CompanionTheory.BZPsiPG.uM k (i + t) y * GlobalTheory.BZMir.levi k (i + t) a
+    exact ⟨0, zero_mem _, b', hb', by rw [GlobalTheory.CompanionTheory.BZPsiPG.uM_zero, one_mul]⟩
+  have key : ∀ p : GlobalTheory.BZMir.Mir k (i + t), ∀ β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK,
+      b.1.1.1 (p * β) = b.1.1.1 p := by
+    intro p β hβ
+    by_cases hp : ∃ h : GlobalTheory.BZMir.Leib.HPG k i t,
+        ∃ β₀ ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK, p = (h : GlobalTheory.BZMir.Mir k (i + t)) * β₀
+    · obtain ⟨h, β₀, hβ₀, rfl⟩ := hp
+      rw [mul_assoc, hval h (β₀ * β) (Subgroup.mul_mem _ hβ₀ hβ), hval h β₀ hβ₀]
+    · have hp' : ¬ ∃ h : GlobalTheory.BZMir.Leib.HPG k i t,
+          ∃ β₀ ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK,
+            p * β = (h : GlobalTheory.BZMir.Mir k (i + t)) * β₀ := by
+        rintro ⟨h, β₀, hβ₀, he⟩
+        refine hp ⟨h, β₀ * β⁻¹, Subgroup.mul_mem _ hβ₀ (Subgroup.inv_mem _ hβ), ?_⟩
+        rw [← mul_assoc, ← he, mul_inv_cancel_right]
+      rw [hzero _ hp', hzero _ hp]
+  funext v
+  unfold GlobalTheory.CompanionTheory.BZPsiPG.fibV
+  rw [map_mul, ← mul_assoc]
+  exact key _ _ hβ
+
+end GlobalTheory.CompanionTheory.BZPsiPG.FibInvK
+
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fibre_integral_vanishing_open_subgroup : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (τ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin t) k) W) (c : kˣ) (K₁ : Subgroup (GL (Fin (i + t)) k)) (hK : K₁ ≤ GlobalTheory.SplitWeil.KO k (Fin (i + t))) (z : V ⊗[ℂ] W) (b : cIndSpace (HPG k i t) (hRep τ σ)), (∀ (h : HPG k i t) (β : Mir k (i + t)), β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK → b.1.1.1 ((h : Mir k (i + t)) * β) = hRep τ σ h z) → (∀ p : Mir k (i + t), (¬ ∃ h : HPG k i t, ∃ β ∈ GlobalTheory.CompanionTheory.BZPsiPG.FibOnto.Bgrp (i + t) c K₁ hK, p = (h : Mir k (i + t)) * β) → b.1.1.1 p = 0) → ∀ b' ∈ K₁, ∀ g : GL (Fin (i + t)) k, fibV b (g * b') = fibV b g := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPsiPG.FibInvK.fibV_mul_right_eq
+end
+
+section
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.BZPsiPG
 open scoped TensorProduct
 
@@ -206,4 +685,5 @@ theorem exists_fibInt_eq : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologica
 
 end GlobalTheory.CompanionTheory.BZPsiPG
 
+end
 end

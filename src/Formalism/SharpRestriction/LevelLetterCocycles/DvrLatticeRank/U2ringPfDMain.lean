@@ -1,6 +1,979 @@
 import Mathlib
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ConstantCoeffUniformiserZero
+import Formalism.SharpRestriction.LevelLetterCocycles.SecondPropositionRingAll
+import Formalism.PadicSubsetSums.StableGradedCounts.ConcreteDictionaryHolds
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DvdOfCoeffSubstXPowNeZero
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfB
 
+section
+namespace DualFramesAlt.EigenUniformiser
+
+open PowerSeries
+
+structure Data (O : Type*) [CommRing O] (Δ : Type*) [Group Δ] [Fintype Δ] where
+  ρ : Δ →* (PowerSeries O ≃ₐ[O] PowerSeries O)
+  ω : Δ →* Oˣ
+  hω : Function.Injective ω
+  v : Δ → PowerSeries O
+  hv : ∀ δ, ρ δ X = X * v δ
+  hv0 : ∀ δ, constantCoeff (v δ) = (ω δ : O)
+
+variable {O : Type*} [CommRing O] [IsDomain O] {Δ : Type*} [Group Δ] [Fintype Δ] [IsCyclic Δ]
+
+noncomputable def piPrime (D : Data O Δ) : PowerSeries O := ∏ δ, D.ρ δ X
+
+noncomputable def pi1 (D : Data O Δ) (hs : IsUnit (Fintype.card Δ : O)) : PowerSeries O :=
+  ((hs.unit⁻¹ : Oˣ) : O) • ∑ δ, (((D.ω δ)⁻¹ : Oˣ) : O) • D.ρ δ X
+
+section Lemmas
+
+variable (D : Data O Δ)
+
+theorem constantCoeff_rho_X (δ : Δ) : constantCoeff (D.ρ δ X) = 0 := by
+  rw [D.hv, map_mul, constantCoeff_X, zero_mul]
+
+theorem rho_rho_X (δ ε : Δ) : D.ρ δ (D.ρ ε X) = D.ρ (δ * ε) X := by
+  rw [map_mul, AlgEquiv.mul_apply]
+
+theorem rho_subst (δ : Δ) {p : PowerSeries O} (hp : constantCoeff p = 0) (g : PowerSeries O) :
+    D.ρ δ (PowerSeries.subst p g) = PowerSeries.subst (D.ρ δ p) g :=
+  algHom_subst (D.ρ δ).toAlgHom (constantCoeff_rho_X D δ) hp g
+
+theorem omega_pow_card (δ : Δ) : ((D.ω δ : Oˣ) : O) ^ Fintype.card Δ = 1 := by
+  rw [← Units.val_pow_eq_pow_val, ← map_pow, pow_card_eq_one, map_one, Units.val_one]
+
+theorem card_ne_zero : Fintype.card Δ ≠ 0 := Fintype.card_ne_zero
+
+theorem piPrime_invariant (δ : Δ) : D.ρ δ (piPrime D) = piPrime D := by
+  unfold piPrime
+  rw [map_prod]
+  simp_rw [rho_rho_X]
+  exact Equiv.prod_comp (Equiv.mulLeft δ) (fun ε => D.ρ ε X)
+
+variable (hs : IsUnit (Fintype.card Δ : O))
+
+theorem coeff_eigen_uniformiser (n : ℕ) : coeff n (pi1 D hs) =
+    ((hs.unit⁻¹ : Oˣ) : O) * ∑ δ, (((D.ω δ)⁻¹ : Oˣ) : O) * coeff n (D.ρ δ X) := by
+  simp [pi1, map_sum, smul_eq_mul]
+
+theorem coeff_zero_eigen_uniformiser : coeff 0 (pi1 D hs) = 0 := by
+  rw [coeff_eigen_uniformiser]
+  simp [D.hv]
+
+theorem coeff_one_eigen_uniformiser : coeff 1 (pi1 D hs) = 1 := by
+  rw [coeff_eigen_uniformiser]
+  have h1 : ∀ δ, coeff 1 (D.ρ δ X) = (D.ω δ : O) := by
+    intro δ
+    rw [D.hv, show (1 : ℕ) = 0 + 1 from rfl, coeff_succ_X_mul, coeff_zero_eq_constantCoeff_apply,
+      D.hv0]
+  simp_rw [h1, Units.inv_mul, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
+  exact hs.val_inv_mul
+
+theorem constantCoeff_eigen_uniformiser : constantCoeff (pi1 D hs) = 0 := by
+  rw [← coeff_zero_eq_constantCoeff_apply, coeff_zero_eigen_uniformiser]
+
+theorem isUnit_coeff_one_eigen_uniformiser : IsUnit (coeff 1 (pi1 D hs)) := by
+  rw [coeff_one_eigen_uniformiser]; exact isUnit_one
+
+theorem rho_eigen_uniformiser (δ : Δ) : D.ρ δ (pi1 D hs) = (D.ω δ : O) • pi1 D hs := by
+  unfold pi1
+  rw [map_smul, map_sum]
+  simp_rw [map_smul, rho_rho_X]
+  have key : ∑ ε, (((D.ω ε)⁻¹ : Oˣ) : O) • D.ρ (δ * ε) X =
+      (D.ω δ : O) • ∑ η, (((D.ω η)⁻¹ : Oˣ) : O) • D.ρ η X := by
+    conv_rhs => rw [Finset.smul_sum, ← Equiv.sum_comp (Equiv.mulLeft δ)]
+    refine Finset.sum_congr rfl fun ε _ => ?_
+    simp only [Equiv.coe_mulLeft]
+    rw [smul_smul]
+    congr 1
+    have hu : (D.ω ε)⁻¹ = D.ω δ * (D.ω (δ * ε))⁻¹ := by
+      rw [map_mul, mul_inv, mul_inv_cancel_left]
+    rw [hu, Units.val_mul]
+  rw [key]
+  exact smul_comm _ _ _
+
+theorem uniformiser_pow_card_subst (g : PowerSeries O) :
+    PowerSeries.subst (pi1 D hs) (PowerSeries.subst (X ^ Fintype.card Δ : PowerSeries O) g) =
+      PowerSeries.subst (pi1 D hs ^ Fintype.card Δ) g := by
+  have hp := HasSubst.of_constantCoeff_zero' (constantCoeff_eigen_uniformiser D hs)
+  rw [subst_comp_subst_apply (HasSubst.X_pow (card_ne_zero (Δ := Δ))) hp, subst_pow hp,
+    subst_X hp]
+
+theorem rho_subst_uniformiser (δ : Δ) (g : PowerSeries O) :
+    D.ρ δ (PowerSeries.subst (pi1 D hs) g) =
+      PowerSeries.subst (pi1 D hs) (rescale (D.ω δ : O) g) := by
+  have hp := HasSubst.of_constantCoeff_zero' (constantCoeff_eigen_uniformiser D hs)
+  rw [rho_subst D δ (constantCoeff_eigen_uniformiser D hs), rho_eigen_uniformiser, rescale_eq_subst,
+    subst_comp_subst_apply (HasSubst.smul_X' _) hp, subst_smul hp, subst_X hp]
+
+theorem invariant_subst_iff_card_dvd (g : PowerSeries O) :
+    (∀ δ, D.ρ δ (PowerSeries.subst (pi1 D hs) g) = PowerSeries.subst (pi1 D hs) g) ↔
+      ∀ k, coeff k g ≠ 0 → Fintype.card Δ ∣ k := by
+  constructor
+  · intro H k hk
+    obtain ⟨δ₀, hδ₀⟩ := IsCyclic.exists_generator (α := Δ)
+    have h := H δ₀
+    rw [rho_subst_uniformiser] at h
+    have h2 := congrArg (coeff k)
+      (subst_injective (constantCoeff_eigen_uniformiser D hs) (isUnit_coeff_one_eigen_uniformiser D hs) h)
+    rw [coeff_rescale] at h2
+    have h3 : (((D.ω δ₀ : Oˣ) : O) ^ k - 1) * coeff k g = 0 := by
+      rw [sub_mul, h2, one_mul, sub_self]
+    have h4 : ((D.ω δ₀ : Oˣ) : O) ^ k = 1 :=
+      sub_eq_zero.mp ((mul_eq_zero.mp h3).resolve_right hk)
+    have h5 : δ₀ ^ k = 1 := by
+      apply D.hω
+      rw [map_pow, map_one]
+      ext
+      rw [Units.val_pow_eq_pow_val, h4, Units.val_one]
+    have h6 := orderOf_dvd_of_pow_eq_one h5
+    rw [orderOf_eq_card_of_forall_mem_zpowers hδ₀] at h6
+    simpa [Nat.card_eq_fintype_card] using h6
+  · intro H δ
+    rw [rho_subst_uniformiser]
+    congr 1
+    ext k
+    rw [coeff_rescale]
+    by_cases hk : coeff k g = 0
+    · rw [hk, mul_zero]
+    · obtain ⟨t, rfl⟩ := H k hk
+      rw [pow_mul, omega_pow_card, one_pow, one_mul]
+
+end Lemmas
+
+theorem piPrime_eq (D : Data O Δ) :
+    ∃ v' : PowerSeries O, IsUnit v' ∧ piPrime D = X ^ Fintype.card Δ * v' ∧
+      constantCoeff v' = ∏ δ, (D.ω δ : O) := by
+  refine ⟨∏ δ, D.v δ, ?_, ?_, ?_⟩
+  · rw [isUnit_iff_constantCoeff, map_prod]
+    simp_rw [D.hv0]
+    rw [← Units.coe_prod]
+    exact Units.isUnit _
+  · unfold piPrime
+    simp_rw [D.hv]
+    rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ]
+  · rw [map_prod]
+    simp_rw [D.hv0]
+
+
+theorem invariants (D : Data O Δ) (hs : IsUnit (Fintype.card Δ : O)) :
+    (∀ f : PowerSeries O, (∀ δ, D.ρ δ f = f) ↔
+        ∃ g : PowerSeries O, f = PowerSeries.subst (pi1 D hs ^ Fintype.card Δ) g) ∧
+    (∀ f : PowerSeries O, (∀ δ, D.ρ δ f = f) ↔
+        ∃ g : PowerSeries O, f = PowerSeries.subst (piPrime D) g) ∧
+    (∀ f : PowerSeries O, ∃! a : Fin (Fintype.card Δ) → PowerSeries O,
+        f = ∑ j : Fin (Fintype.card Δ), pi1 D hs ^ (j : ℕ) * PowerSeries.subst (pi1 D hs ^ Fintype.card Δ) (a j)) ∧
+    (∀ f : PowerSeries O, (∀ δ, D.ρ δ f = f) → constantCoeff f = 0 →
+        ∃ g : PowerSeries O, (∀ δ, D.ρ δ g = g) ∧ f = piPrime D * g) := by
+  have hs0 : Fintype.card Δ ≠ 0 := card_ne_zero
+  have hp0 := constantCoeff_eigen_uniformiser D hs
+  have hp1 := isUnit_coeff_one_eigen_uniformiser D hs
+  have hps0 : constantCoeff (pi1 D hs ^ Fintype.card Δ) = 0 := by
+    rw [map_pow, hp0, zero_pow hs0]
+  have hps := HasSubst.of_constantCoeff_zero' hps0
+  have part1 : ∀ f : PowerSeries O, (∀ δ, D.ρ δ f = f) ↔
+      ∃ g : PowerSeries O, f = PowerSeries.subst (pi1 D hs ^ Fintype.card Δ) g := by
+    intro f
+    obtain ⟨g, rfl⟩ := subst_surjective hp0 hp1 f
+    rw [invariant_subst_iff_card_dvd D hs g]
+    constructor
+    · intro H
+      exact ⟨_, by rw [← uniformiser_pow_card_subst D hs, ← subst_X_pow_of_dvd hs0 g H]⟩
+    · rintro ⟨h, hh⟩ k hk
+      rw [← uniformiser_pow_card_subst D hs] at hh
+      rw [subst_injective hp0 hp1 hh] at hk
+      exact dvd_of_coeff_subst_X_pow_ne_zero hs0 h k hk
+  have hpp0 : constantCoeff (piPrime D) = 0 := by
+    obtain ⟨v', -, hv', -⟩ := piPrime_eq D
+    rw [hv', map_mul, map_pow, constantCoeff_X, zero_pow hs0, zero_mul]
+  obtain ⟨P0, hP0⟩ := (part1 (piPrime D)).mp (piPrime_invariant D)
+  have hP0c : constantCoeff P0 = 0 := by
+    have e := congrArg constantCoeff hP0
+    rw [subst_eq_C_add hps0, map_add, map_mul, hps0, zero_mul, add_zero, constantCoeff_C,
+      hpp0] at e
+    exact e.symm
+  have hP0u : IsUnit (coeff 1 P0) := by
+    obtain ⟨v', -, hv', hv'0⟩ := piPrime_eq D
+    obtain ⟨w, hw⟩ : X ∣ pi1 D hs := X_dvd_iff.mpr hp0
+    have hw0 : constantCoeff w = 1 := by
+      have e := coeff_one_eigen_uniformiser D hs
+      rwa [hw, show (1 : ℕ) = 0 + 1 from rfl, coeff_succ_X_mul,
+        coeff_zero_eq_constantCoeff_apply] at e
+    have e := hP0
+    rw [subst_eq_C_add hps0, hP0c, map_zero, zero_add, subst_eq_C_add hps0, hv', hw] at e
+    have e2 := congrArg (coeff (Fintype.card Δ)) e
+    rw [mul_pow, mul_assoc (X ^ Fintype.card Δ)] at e2
+    simp only [coeff_X_pow_mul', le_refl, ite_true, Nat.sub_self,
+      coeff_zero_eq_constantCoeff_apply, map_mul, map_add, map_pow, hv'0, hw0, constantCoeff_X,
+      zero_pow hs0, one_pow, one_mul, zero_mul, add_zero, constantCoeff_C] at e2
+    have e3 : constantCoeff (mk fun n => coeff (n + 1) P0) = coeff 1 P0 := by
+      rw [← coeff_zero_eq_constantCoeff_apply, coeff_mk]
+    rw [← e3, ← e2, ← Units.coe_prod]
+    exact Units.isUnit _
+  have hP0s : HasSubst P0 := HasSubst.of_constantCoeff_zero' hP0c
+  have part2 : ∀ f : PowerSeries O, (∀ δ, D.ρ δ f = f) ↔
+      ∃ g : PowerSeries O, f = PowerSeries.subst (piPrime D) g := by
+    intro f
+    rw [part1 f]
+    constructor
+    · rintro ⟨g, rfl⟩
+      refine ⟨PowerSeries.subst (substInvOfIsUnit P0 hP0u) g, ?_⟩
+      rw [hP0, ← subst_comp_subst_apply hP0s hps, subst_subst_substInv hP0c hP0u]
+    · rintro ⟨g, rfl⟩
+      exact ⟨PowerSeries.subst P0 g, by rw [hP0, subst_comp_subst_apply hP0s hps]⟩
+  have part3 : ∀ f : PowerSeries O, ∃! a : Fin (Fintype.card Δ) → PowerSeries O,
+      f = ∑ j : Fin (Fintype.card Δ),
+        pi1 D hs ^ (j : ℕ) * PowerSeries.subst (pi1 D hs ^ Fintype.card Δ) (a j) := by
+    intro f
+    have hp := HasSubst.of_constantCoeff_zero' hp0
+    have hE : ∀ a : Fin (Fintype.card Δ) → PowerSeries O,
+        ∑ j : Fin (Fintype.card Δ),
+          pi1 D hs ^ (j : ℕ) * PowerSeries.subst (pi1 D hs ^ Fintype.card Δ) (a j) =
+        PowerSeries.subst (pi1 D hs) (∑ j : Fin (Fintype.card Δ),
+          X ^ (j : ℕ) * PowerSeries.subst (X ^ Fintype.card Δ : PowerSeries O) (a j)) := by
+      intro a
+      rw [← coe_substAlgHom hp, map_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [map_mul, map_pow, coe_substAlgHom, subst_X hp, uniformiser_pow_card_subst]
+    obtain ⟨g, rfl⟩ := subst_surjective hp0 hp1 f
+    obtain ⟨a, ha, hu⟩ := existsUnique_sum_X_pow_mul_subst hs0 g
+    refine ⟨a, ?_, fun b hb => hu b ?_⟩
+    · dsimp only
+      rw [hE, ← ha]
+    · dsimp only at hb ⊢
+      rw [hE] at hb
+      exact subst_injective hp0 hp1 hb
+  have part4 : ∀ f : PowerSeries O, (∀ δ, D.ρ δ f = f) → constantCoeff f = 0 →
+      ∃ g : PowerSeries O, (∀ δ, D.ρ δ g = g) ∧ f = piPrime D * g := by
+    intro f hf hf0
+    obtain ⟨h, rfl⟩ := (part2 f).mp hf
+    refine ⟨PowerSeries.subst (piPrime D) (mk fun n => coeff (n + 1) h), (part2 _).mpr ⟨_, rfl⟩,
+      ?_⟩
+    have e := subst_eq_C_add hpp0 h
+    have e0 := congrArg constantCoeff e
+    rw [hf0, map_add, map_mul, hpp0, zero_mul, add_zero, constantCoeff_C] at e0
+    rw [e, ← e0, map_zero, zero_add]
+  exact ⟨part1, part2, part3, part4⟩
+
+end DualFramesAlt.EigenUniformiser
+end
+
+section
+namespace DualFramesAlt.eigenRingInvariants
+
+open PowerSeries
+
+noncomputable abbrev Ia {O : Type*} [CommRing O] (a : O) : Ideal (PowerSeries O) := Ideal.span {X - C a}
+
+theorem mk_X {O : Type*} [CommRing O] (a : O) : Ideal.Quotient.mk (Ia a) X = Ideal.Quotient.mk (Ia a) (C a) :=
+  Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr dvd_rfl)
+
+section Ev
+
+variable {O : Type*} [CommRing O] [IsLocalRing O]
+
+theorem map_residue_X_sub_C {a : O} (ha : a ∈ IsLocalRing.maximalIdeal O) :
+    (X - C a : PowerSeries O).map (IsLocalRing.residue O) = X := by
+  rw [map_sub, PowerSeries.map_X, PowerSeries.map_C, (IsLocalRing.residue_eq_zero_iff a).mpr ha, map_zero, sub_zero]
+
+theorem order_map_X_sub_C {a : O} (ha : a ∈ IsLocalRing.maximalIdeal O) :
+    ((X - C a : PowerSeries O).map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal O))).order.toNat = 1 := by
+  change ((X - C a : PowerSeries O).map (IsLocalRing.residue O)).order.toNat = 1
+  rw [map_residue_X_sub_C ha, PowerSeries.order_X]
+  rfl
+
+variable [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
+
+theorem ev_exists {a : O} (ha : a ∈ IsLocalRing.maximalIdeal O) (f : PowerSeries O) :
+    ∃ c : O, Ideal.Quotient.mk (Ia a) f = Ideal.Quotient.mk (Ia a) (C c) := by
+  have hg : (X - C a : PowerSeries O).map (IsLocalRing.residue O) ≠ 0 := by
+    rw [map_residue_X_sub_C ha]
+    exact PowerSeries.X_ne_zero
+  obtain ⟨q, r, hW⟩ := f.exists_isWeierstrassDivision hg
+  obtain ⟨hdeg, heq⟩ := hW
+  rw [order_map_X_sub_C ha] at hdeg
+  have hr : r = Polynomial.C (r.coeff 0) :=
+    Polynomial.eq_C_of_degree_le_zero (Nat.WithBot.lt_one_iff_le_zero.mp (by exact_mod_cast hdeg))
+  refine ⟨r.coeff 0, ?_⟩
+  rw [heq, map_add, Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr (dvd_mul_right _ _)),
+    zero_add]
+  congr 1
+  conv_lhs => rw [hr]
+  exact Polynomial.coe_C _
+
+theorem ev_inj {a : O} (ha : a ∈ IsLocalRing.maximalIdeal O) {c c' : O}
+    (h : Ideal.Quotient.mk (Ia a) (C c) = Ideal.Quotient.mk (Ia a) (C c')) : c = c' := by
+  rw [Ideal.Quotient.eq, ← map_sub] at h
+  obtain ⟨H, hH⟩ := Ideal.mem_span_singleton.mp h
+  have hrec : ∀ n, PowerSeries.coeff (R := O) n H = a * PowerSeries.coeff (R := O) (n + 1) H := by
+    intro n
+    have hn := congrArg (PowerSeries.coeff (R := O) (n + 1)) hH
+    rw [PowerSeries.coeff_C, if_neg (by omega : n + 1 ≠ 0), sub_mul, map_sub, PowerSeries.coeff_succ_X_mul,
+      PowerSeries.coeff_C_mul] at hn
+    linear_combination -hn
+  have hmem : ∀ n, PowerSeries.coeff (R := O) 0 H ∈ (IsLocalRing.maximalIdeal O) ^ n := by
+    intro n
+    have hpow : PowerSeries.coeff (R := O) 0 H = a ^ n * PowerSeries.coeff (R := O) n H := by
+      induction n with
+      | zero => simp
+      | succ n ih => rw [ih, hrec n, pow_succ]; ring
+    rw [hpow]
+    exact Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow ha n)
+  have h0 : PowerSeries.coeff (R := O) 0 H = 0 := by
+    apply IsHausdorff.haus' (I := IsLocalRing.maximalIdeal O)
+    intro n
+    rw [SModEq.sub_mem, sub_zero, smul_eq_mul, Ideal.mul_top]
+    exact hmem n
+  have hc := congrArg (PowerSeries.coeff (R := O) 0) hH
+  rw [PowerSeries.coeff_zero_C, sub_mul, map_sub, PowerSeries.coeff_zero_X_mul, PowerSeries.coeff_C_mul, h0,
+    mul_zero, sub_zero] at hc
+  exact sub_eq_zero.mp hc
+
+theorem ev_zero {a : O} (ha : a ∈ IsLocalRing.maximalIdeal O) {c : O}
+    (h : Ideal.Quotient.mk (Ia a) (C c) = 0) : c = 0 := by
+  exact ev_inj ha (by rw [h, map_zero, map_zero])
+
+end Ev
+
+theorem ev_subst {O : Type*} [CommRing O] {P : PowerSeries O} (hP : constantCoeff P = 0) {a b c : O}
+    {F : PowerSeries O}
+    (hPb : Ideal.Quotient.mk (Ideal.span {X - C a}) P = Ideal.Quotient.mk (Ideal.span {X - C a}) (C b))
+    (hF : Ideal.Quotient.mk (Ideal.span {X - C b}) F = Ideal.Quotient.mk (Ideal.span {X - C b}) (C c)) :
+    Ideal.Quotient.mk (Ideal.span {X - C a}) (PowerSeries.subst P F) =
+      Ideal.Quotient.mk (Ideal.span {X - C a}) (C c) := by
+  have hs : HasSubst P := HasSubst.of_constantCoeff_zero' hP
+  rw [Ideal.Quotient.mk_eq_mk_iff_sub_mem, Ideal.mem_span_singleton'] at hF
+  obtain ⟨k, hk⟩ := hF
+  rw [Ideal.Quotient.mk_eq_mk_iff_sub_mem] at hPb ⊢
+  have e : PowerSeries.subst P F - C c = PowerSeries.subst P k * (P - C b) := by
+    have := congrArg (PowerSeries.subst P) hk
+    rw [subst_mul hs, subst_sub hs, subst_sub hs, subst_X hs, subst_C, subst_C] at this
+    exact this.symm
+  rw [e]; exact Ideal.mul_mem_left _ _ hPb
+
+section Dvd
+
+variable {O : Type*} [CommRing O] [IsLocalRing O] [IsDomain O]
+  [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
+
+
+theorem prod_dvd (T : Finset O) (hT : ∀ t ∈ T, t ∈ IsLocalRing.maximalIdeal O) (f : PowerSeries O)
+    (hf : ∀ t ∈ T, Ideal.Quotient.mk (Ia t) f = 0) : (∏ t ∈ T, (X - C t)) ∣ f := by
+  classical
+  induction T using Finset.induction_on generalizing f with
+  | empty => simp
+  | @insert t0 T ht0 ih =>
+    rw [Finset.prod_insert ht0]
+    have h0 : (X - C t0) ∣ f :=
+      Ideal.mem_span_singleton.mp (Ideal.Quotient.eq_zero_iff_mem.mp (hf t0 (Finset.mem_insert_self _ _)))
+    obtain ⟨g, rfl⟩ := h0
+    apply mul_dvd_mul_left
+    apply ih (fun t ht => hT t (Finset.mem_insert_of_mem ht))
+    intro t ht
+    have htm := hT t (Finset.mem_insert_of_mem ht)
+    obtain ⟨c, hc⟩ := ev_exists htm g
+    have hft := hf t (Finset.mem_insert_of_mem ht)
+    have key : Ideal.Quotient.mk (Ia t) (C ((t - t0) * c)) = 0 := by
+      rw [← hft]
+      simp only [map_mul, map_sub, mk_X, hc]
+    have hz := ev_zero htm key
+    have hne : t - t0 ≠ 0 := sub_ne_zero.mpr (fun h => ht0 (h ▸ ht))
+    have hc0 : c = 0 := (mul_eq_zero.mp hz).resolve_left hne
+    rw [hc, hc0, map_zero, map_zero]
+
+end Dvd
+
+section Order
+
+variable {O : Type*} [CommRing O] [IsLocalRing O]
+
+theorem card_le_of_dvd {f v k : PowerSeries O} {s : ℕ} (T : Finset O)
+    (hT : ∀ t ∈ T, t ∈ IsLocalRing.maximalIdeal O) (hv : IsUnit v)
+    (hf : f.map (IsLocalRing.residue O) = (X ^ s * v).map (IsLocalRing.residue O))
+    (hk : f = (∏ t ∈ T, (X - C t)) * k) :
+    T.card ≤ s ∧ (T.card = s → IsUnit k) := by
+  set κ := IsLocalRing.ResidueField O
+  have hprod : (∏ t ∈ T, (X - C t) : PowerSeries O).map (IsLocalRing.residue O) = X ^ T.card := by
+    rw [map_prod]
+    rw [Finset.prod_congr rfl fun t ht => (map_residue_X_sub_C (hT t ht))]
+    rw [Finset.prod_const]
+  have e : (X : PowerSeries κ) ^ s * v.map (IsLocalRing.residue O) =
+      X ^ T.card * k.map (IsLocalRing.residue O) := by
+    rw [← map_X (IsLocalRing.residue O), ← map_pow, ← map_mul, ← hf, hk, map_mul, hprod, map_X]
+  have hv' : constantCoeff (v.map (IsLocalRing.residue O)) ≠ 0 := by
+    have := (hv.map (PowerSeries.map (IsLocalRing.residue O)))
+    rw [isUnit_iff_constantCoeff] at this
+    exact this.ne_zero
+  have hX : (X : PowerSeries κ) ≠ 0 := X_ne_zero
+  by_cases hle : T.card ≤ s
+  · refine ⟨hle, fun hcs => ?_⟩
+    rw [hcs] at e
+    have e2 := mul_left_cancel₀ (pow_ne_zero _ hX) e
+    rw [isUnit_iff_constantCoeff]
+    by_contra hnu
+    apply hv'
+    rw [e2, ← coeff_zero_eq_constantCoeff_apply, coeff_map, coeff_zero_eq_constantCoeff_apply,
+      (IsLocalRing.residue_eq_zero_iff _).mpr ((IsLocalRing.mem_maximalIdeal _).mpr hnu)]
+  · exfalso
+    replace hle := not_le.mp hle
+    have e2 : (X : PowerSeries κ) ^ s * v.map (IsLocalRing.residue O) =
+        X ^ s * (X ^ (T.card - s) * k.map (IsLocalRing.residue O)) := by
+      rw [e, ← mul_assoc, ← pow_add, Nat.add_sub_cancel' hle.le]
+    have e3 := mul_left_cancel₀ (pow_ne_zero _ hX) e2
+    apply hv'
+    rw [e3, map_mul, map_pow, constantCoeff_X, zero_pow (by omega), zero_mul]
+
+end Order
+
+end DualFramesAlt.eigenRingInvariants
+
+namespace DualFramesAlt.eigenRingInvariants
+
+open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums
+
+variable {l : ℕ} [hl : Fact l.Prime]
+
+
+
+section O
+
+variable {O : Type*} [CommRing O] [Algebra ℤ_[l] O] {a ζ : O}
+
+local notation "toO" => PowerSeries.map (algebraMap ℤ_[l] O)
+
+
+
+
+
+
+
+
+end O
+
+end DualFramesAlt.eigenRingInvariants
+
+namespace DualFramesAlt.eigenRingInvariants
+
+open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums Classical
+
+variable {l : ℕ} [hl : Fact l.Prime]
+
+theorem isUnit_of_toZMod_ne_zero {x : ℤ_[l]} (h : PadicInt.toZMod x ≠ 0) : IsUnit x := by
+  by_contra hx
+  apply h
+  have hm : x ∈ IsLocalRing.maximalIdeal ℤ_[l] := (IsLocalRing.mem_maximalIdeal x).mpr (mem_nonunits_iff.mpr hx)
+  rw [← PadicInt.ker_toZMod] at hm
+  exact RingHom.mem_ker.mp hm
+
+theorem natCast_ne_zero_zmod {n : ℕ} (h0 : 0 < n) (hn : n < l) : (n : ZMod l) ≠ 0 := by
+  intro h
+  exact Nat.not_dvd_of_pos_of_lt h0 hn ((CharP.cast_eq_zero_iff (ZMod l) l n).mp h)
+
+theorem isUnit_natCast {n : ℕ} (h0 : 0 < n) (hn : n < l) : IsUnit (n : ℤ_[l]) := by
+  apply isUnit_of_toZMod_ne_zero
+  rw [map_natCast]
+  exact natCast_ne_zero_zmod h0 hn
+
+theorem toZMod_ne_zero_of_pow {s : ℕ} (hs : 0 < s) {ω : ℤ_[l]} (hω : ω ^ s = 1) :
+    PadicInt.toZMod ω ≠ 0 := by
+  intro h
+  have h1 := congrArg PadicInt.toZMod hω
+  rw [map_pow, h, zero_pow hs.ne', map_one] at h1
+  exact zero_ne_one h1
+
+theorem val_pos_of_pow {s : ℕ} (hs : 0 < s) {ω : ℤ_[l]} (hω : ω ^ s = 1) :
+    0 < (PadicInt.toZMod ω).val := by
+  exact ZMod.val_pos.mpr (toZMod_ne_zero_of_pow hs hω)
+
+theorem val_lt (ω : ℤ_[l]) : (PadicInt.toZMod ω).val < l := ZMod.val_lt _
+
+
+theorem natCast_l_ne_zero {O : Type*} [CommRing O] [IsDomain O] {ζ : O} (hζ : IsPrimitiveRoot ζ l) :
+    ((l : ℕ) : O) ≠ 0 := by
+  haveI : NeZero l := ⟨hl.out.ne_zero⟩
+  exact (hζ.neZero').out
+
+theorem algebraMap_injective {O : Type*} [CommRing O] [IsDomain O] [Algebra ℤ_[l] O]
+    (hl0 : ((l : ℕ) : O) ≠ 0) : Function.Injective (algebraMap ℤ_[l] O) := by
+  rw [injective_iff_map_eq_zero]
+  intro x hx
+  by_contra h0
+  rw [PadicInt.unitCoeff_spec h0, map_mul, map_pow, map_natCast] at hx
+  have hu := (PadicInt.unitCoeff h0).isUnit.map (algebraMap ℤ_[l] O)
+  rcases mul_eq_zero.mp hx with h | h
+  · exact hu.ne_zero h
+  · exact absurd h (pow_ne_zero _ hl0)
+
+theorem sub_one_mem {O : Type*} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] {ζ : O}
+    (hζ : IsPrimitiveRoot ζ l) (hmax : (algebraMap ℤ_[l] O) l ∈ IsLocalRing.maximalIdeal O) :
+    ζ - 1 ∈ IsLocalRing.maximalIdeal O := by
+  have hl0 : ((l : ℕ) : IsLocalRing.ResidueField O) = 0 := by
+    rw [← map_natCast (IsLocalRing.residue O), ← map_natCast (algebraMap ℤ_[l] O)]
+    exact (IsLocalRing.residue_eq_zero_iff _).mpr hmax
+  have : CharP (IsLocalRing.ResidueField O) l := (CharP.charP_iff_prime_eq_zero hl.out).mpr hl0
+  have h2 : (IsLocalRing.residue O (ζ - 1)) ^ l = 0 := by
+    rw [map_sub, map_one, sub_pow_char, ← map_pow, hζ.pow_eq_one, map_one, one_pow, sub_self]
+  exact (IsLocalRing.residue_eq_zero_iff _).mp ((pow_eq_zero_iff hl.out.ne_zero).mp h2)
+
+theorem pow_sub_one_mem {O : Type*} [CommRing O] [IsLocalRing O] {ζ : O}
+    (h : ζ - 1 ∈ IsLocalRing.maximalIdeal O) (n : ℕ) : ζ ^ n - 1 ∈ IsLocalRing.maximalIdeal O := by
+  obtain ⟨c, hc⟩ := sub_dvd_pow_sub_pow ζ 1 n
+  rw [one_pow] at hc
+  rw [hc]
+  exact Ideal.mul_mem_right _ _ h
+
+noncomputable instance instFintypeRoots (s : ℕ) [NeZero s] : Fintype (rootsOfUnity s ℤ_[l]) := Fintype.ofFinite _
+
+theorem prod_roots {M : Type*} [CommMonoid M] (s : ℕ) [NeZero s] (hs : 0 < s) (f : ℤ_[l] → M) :
+    ∏ δ : rootsOfUnity s ℤ_[l], f ((δ : ℤ_[l]ˣ) : ℤ_[l]) =
+      ∏ ω ∈ Polynomial.nthRootsFinset s (1 : ℤ_[l]), f ω := by
+  rw [← Finset.prod_image (f := f) (s := Finset.univ)
+    (g := fun δ : rootsOfUnity s ℤ_[l] => ((δ : ℤ_[l]ˣ) : ℤ_[l]))
+    (by intro δ _ ε _ h; exact Subtype.ext (Units.ext h))]
+  congr 1
+  ext x
+  simp only [Finset.mem_image, Finset.mem_univ, true_and, Polynomial.mem_nthRootsFinset hs]
+  constructor
+  · rintro ⟨δ, rfl⟩
+    have h1 := δ.2
+    rw [mem_rootsOfUnity] at h1
+    rw [← Units.val_pow_eq_pow_val, h1, Units.val_one]
+  · intro hx
+    have hu : IsUnit x := IsUnit.of_pow_eq_one hx hs.ne'
+    refine ⟨⟨hu.unit, ?_⟩, rfl⟩
+    rw [mem_rootsOfUnity]; apply Units.ext; simp [hx]
+
+section Act
+
+variable {O : Type*} [CommRing O] [Algebra ℤ_[l] O]
+
+local notation "toO" => PowerSeries.map (algebraMap ℤ_[l] O)
+
+theorem toO_const_zero {a : PowerSeries ℤ_[l]} (ha : constantCoeff a = 0) : constantCoeff (toO a) = 0 := by
+  rw [← coeff_zero_eq_constantCoeff_apply, coeff_map, coeff_zero_eq_constantCoeff_apply, ha, map_zero]
+
+theorem toO_brk_const (a : ℤ_[l]) : constantCoeff (toO (brk l a)) = 0 :=
+  toO_const_zero (by rw [(Classical.choose_spec (ConcreteDictionaryLemmas.brk_factor a)).1, map_mul, constantCoeff_X, zero_mul])
+
+theorem hasSubst_brk (a : ℤ_[l]) : HasSubst (toO (brk l a)) :=
+  HasSubst.of_constantCoeff_zero (toO_brk_const a)
+
+theorem toO_subst {a : PowerSeries ℤ_[l]} (ha : constantCoeff a = 0) (f : PowerSeries ℤ_[l]) :
+    toO (subst a f) = subst (toO a) (toO f) :=
+  map_subst (HasSubst.of_constantCoeff_zero' ha) f
+
+theorem subst_brk_brk (a b : ℤ_[l]) (f : PowerSeries O) :
+    subst (toO (brk l b)) (subst (toO (brk l a)) f) = subst (toO (brk l (a * b))) f := by
+  rw [subst_comp_subst_apply (hasSubst_brk a) (hasSubst_brk b),
+    ← toO_subst (ConcreteDictionaryLemmas.brk_const b), ConcreteDictionaryLemmas.brk_comp]
+
+theorem brk_one : brk l (1 : ℤ_[l]) = X := by
+  unfold brk
+  rw [← Nat.cast_one, PowerSeries.binomialSeries_nat, pow_one, add_sub_cancel_left]
+
+theorem subst_brk_one (f : PowerSeries O) : subst (toO (brk l 1)) f = f := by
+  rw [brk_one, map_X, X_subst]
+
+noncomputable def rhoE (δ : ℤ_[l]ˣ) : PowerSeries O ≃ₐ[O] PowerSeries O :=
+  AlgEquiv.ofAlgHom (substAlgHom (hasSubst_brk (O := O) (δ : ℤ_[l])))
+    (substAlgHom (hasSubst_brk (O := O) ((δ⁻¹ : ℤ_[l]ˣ) : ℤ_[l])))
+    (AlgHom.ext fun f => by
+      simp only [AlgHom.comp_apply, coe_substAlgHom, AlgHom.id_apply]
+      rw [subst_brk_brk, ← Units.val_mul, inv_mul_cancel, Units.val_one, subst_brk_one])
+    (AlgHom.ext fun f => by
+      simp only [AlgHom.comp_apply, coe_substAlgHom, AlgHom.id_apply]
+      rw [subst_brk_brk, ← Units.val_mul, mul_inv_cancel, Units.val_one, subst_brk_one])
+
+theorem rhoE_apply (δ : ℤ_[l]ˣ) (f : PowerSeries O) : rhoE δ f = subst (toO (brk l δ)) f := by
+  exact congrFun (coe_substAlgHom (hasSubst_brk (O := O) (δ : ℤ_[l]))) f
+
+noncomputable def rhoHom (s : ℕ) : rootsOfUnity s ℤ_[l] →* (PowerSeries O ≃ₐ[O] PowerSeries O) where
+  toFun δ := rhoE (δ : ℤ_[l]ˣ)
+  map_one' := AlgEquiv.ext fun f => by
+    rw [rhoE_apply]; simp only [OneMemClass.coe_one, Units.val_one, subst_brk_one, AlgEquiv.one_apply]
+  map_mul' δ ε := AlgEquiv.ext fun f => by
+    simp only [AlgEquiv.mul_apply, rhoE_apply, subst_brk_brk]
+    congr 3
+    simp only [MulMemClass.coe_mul, Units.val_mul]
+    ring
+
+theorem rhoHom_apply (s : ℕ) (δ : rootsOfUnity s ℤ_[l]) (f : PowerSeries O) :
+    rhoHom s δ f = subst (toO (brk l ((δ : ℤ_[l]ˣ) : ℤ_[l]))) f :=
+  rhoE_apply _ f
+
+noncomputable def vS (a : ℤ_[l]) : PowerSeries ℤ_[l] := Classical.choose (ConcreteDictionaryLemmas.brk_factor a)
+
+theorem brk_eq_X_mul (a : ℤ_[l]) : brk l a = X * vS a :=
+  (Classical.choose_spec (ConcreteDictionaryLemmas.brk_factor a)).1
+
+theorem vS_const (a : ℤ_[l]) : constantCoeff (vS a) = a :=
+  (Classical.choose_spec (ConcreteDictionaryLemmas.brk_factor a)).2
+
+variable [IsDomain O]
+
+noncomputable def dataS (s : ℕ) [NeZero s] (hinj : Function.Injective (algebraMap ℤ_[l] O)) :
+    EigenUniformiser.Data O (rootsOfUnity s ℤ_[l]) where
+  ρ := rhoHom s
+  ω := (Units.map (algebraMap ℤ_[l] O).toMonoidHom).comp (rootsOfUnity s ℤ_[l]).subtype
+  hω := by
+    intro δ ε h
+    apply Subtype.ext; apply Units.ext
+    have h2 := congrArg Units.val h
+    exact hinj h2
+  v δ := toO (vS ((δ : ℤ_[l]ˣ) : ℤ_[l]))
+  hv δ := by
+    show rhoHom s δ X = _
+    rw [rhoHom_apply, subst_X (hasSubst_brk _), brk_eq_X_mul, map_mul, map_X]
+  hv0 δ := by
+    rw [← coeff_zero_eq_constantCoeff_apply, coeff_map, coeff_zero_eq_constantCoeff_apply, vS_const]
+    rfl
+
+
+theorem card_roots {s e : ℕ} [NeZero s] (hes : e * s = l - 1) : Fintype.card (rootsOfUnity s ℤ_[l]) = s := by
+  obtain ⟨ω₀, hω₀⟩ := ConcreteDictionaryLemmas.exists_prim (l := l) e s hes
+  rw [← Nat.card_eq_fintype_card]
+  exact hω₀.card_rootsOfUnity
+
+theorem isUnit_card {s e : ℕ} [NeZero s] (hes : e * s = l - 1) :
+    IsUnit ((Fintype.card (rootsOfUnity s ℤ_[l]) : ℕ) : O) := by
+  have hl2 := hl.out.two_le
+  have hs0 : s ≠ 0 := NeZero.ne s
+  have he0 : e ≠ 0 := by
+    rintro rfl
+    omega
+  have hse : s ≤ e * s := Nat.le_mul_of_pos_left s (Nat.pos_of_ne_zero he0)
+  have hsl : s < l := by
+    generalize e * s = q at hes hse
+    omega
+  rw [card_roots hes]
+  have hu := (isUnit_natCast (l := l) (Nat.pos_of_ne_zero hs0) hsl).map (algebraMap ℤ_[l] O)
+  rwa [map_natCast] at hu
+
+end Act
+
+end DualFramesAlt.eigenRingInvariants
+
+namespace DualFramesAlt.eigenRingInvariants
+
+open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums Classical
+
+variable {l : ℕ} [hl : Fact l.Prime]
+
+
+
+
+section Fiber
+
+variable {O : Type*} [CommRing O] [IsDomain O] [IsLocalRing O] [Algebra ℤ_[l] O]
+
+local notation "toO" => PowerSeries.map (algebraMap ℤ_[l] O)
+
+noncomputable def vp (l s : ℕ) [Fact l.Prime] (ζ : O) : O :=
+  ∏ ω ∈ Polynomial.nthRootsFinset s (1 : ℤ_[l]), (ζ ^ (PadicInt.toZMod ω).val - 1)
+
+noncomputable def PRt (l : ℕ) (O : Type*) [CommRing O] [IsDomain O] : Finset O :=
+  (Polynomial.nthRoots l (1 : O)).toFinset.filter fun z => IsPrimitiveRoot z l
+
+
+theorem coprime_val {s : ℕ} (hs : 0 < s) {δ : ℤ_[l]} (hδ : δ ^ s = 1) :
+    (PadicInt.toZMod δ).val.Coprime l :=
+  ((Nat.Prime.coprime_iff_not_dvd hl.out).mpr
+    (Nat.not_dvd_of_pos_of_lt (val_pos_of_pow hs hδ) (val_lt δ))).symm
+
+theorem pow_eq_pow_val {ζ : O} (hζ : IsPrimitiveRoot ζ l) (n : ℕ) :
+    ζ ^ n = ζ ^ ((n : ZMod l).val) := by
+  conv_lhs => rw [← Nat.mod_add_div n l]
+  rw [pow_add, pow_mul, hζ.pow_eq_one, one_pow, mul_one, ZMod.val_natCast]
+
+theorem vp_pow {s : ℕ} (hs : 0 < s) {ζ : O} (hζ : IsPrimitiveRoot ζ l) {δ : ℤ_[l]} (hδ : δ ^ s = 1) :
+    vp l s (ζ ^ (PadicInt.toZMod δ).val) = vp l s ζ := by
+  have : NeZero l := ⟨hl.out.ne_zero⟩
+  unfold vp
+  have key : ∀ ω : ℤ_[l], (ζ ^ (PadicInt.toZMod δ).val) ^ (PadicInt.toZMod ω).val =
+      ζ ^ (PadicInt.toZMod (δ * ω)).val := by
+    intro ω
+    rw [← pow_mul, pow_eq_pow_val hζ, Nat.cast_mul, ZMod.natCast_zmod_val, ZMod.natCast_zmod_val,
+      map_mul]
+  simp_rw [key]
+  have hμ : ∀ ω, ω ∈ Polynomial.nthRootsFinset s (1 : ℤ_[l]) ↔ ω ^ s = 1 := fun ω =>
+    Polynomial.mem_nthRootsFinset hs 1
+  have h02 : δ * δ ^ (s - 1) = 1 := by rw [← pow_succ', Nat.sub_add_cancel hs, hδ]
+  refine Finset.prod_nbij' (fun ω => δ * ω) (fun ω => δ ^ (s - 1) * ω) ?_ ?_ ?_ ?_ ?_
+  · intro ω hω; rw [hμ] at hω ⊢; rw [mul_pow, hω, hδ, one_mul]
+  · intro ω hω
+    rw [hμ] at hω ⊢
+    rw [mul_pow, hω, ← pow_mul, mul_comm (s - 1) s, pow_mul, hδ, one_pow, one_mul]
+  · intro ω _; rw [← mul_assoc, mul_comm (δ ^ (s - 1)) δ, h02, one_mul]
+  · intro ω _; rw [← mul_assoc, h02, one_mul]
+  · intro ω _; rfl
+
+
+
+
+noncomputable def Tp (l s : ℕ) [Fact l.Prime] (ζ : O) : Finset O :=
+  (Polynomial.nthRootsFinset s (1 : ℤ_[l])).image fun δ => ζ ^ (PadicInt.toZMod δ).val - 1
+
+
+
+
+variable [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
+
+
+
+
+end Fiber
+
+end DualFramesAlt.eigenRingInvariants
+end
+
+section
+namespace DualFramesAlt.BlockProductRing
+
+open PowerSeries
+
+theorem prod_div_block {M : Type*} [CommMonoid M] (m : ℕ) (hm : 0 < m) (g : ℕ → M) (e : ℕ) :
+    ∏ k ∈ Finset.range (m * e), g (k / m) = ∏ j ∈ Finset.range e, g j ^ m := by
+  induction e with
+  | zero => simp
+  | succ e ih =>
+    rw [mul_add_one, Finset.prod_range_add, ih, Finset.prod_range_succ]
+    congr 1
+    have hc : ∀ x ∈ Finset.range m, g ((m * e + x) / m) = g e := by
+      intro x hx
+      rw [Finset.mem_range] at hx
+      congr 1
+      rw [Nat.add_comm, Nat.add_mul_div_left _ _ hm, Nat.div_eq_of_lt hx, zero_add]
+    rw [Finset.prod_congr rfl hc, Finset.prod_const, Finset.card_range]
+
+theorem prod_ite_block {M : Type*} [CommMonoid M] (m : ℕ) (hm : 0 < m) (x : M) (k : ℕ) :
+    ∏ i ∈ Finset.range k, (if i / m = k / m then x else 1) = x ^ (k % m) := by
+  rw [Finset.prod_ite, Finset.prod_const_one, mul_one, Finset.prod_const]
+  congr 1
+  have hset : Finset.filter (fun i => i / m = k / m) (Finset.range k) = Finset.Ico (m * (k / m)) k := by
+    ext i
+    simp only [Finset.mem_filter, Finset.mem_range, Finset.mem_Ico]
+    constructor
+    · rintro ⟨hik, hd⟩
+      refine ⟨?_, hik⟩
+      rw [← hd]
+      exact Nat.mul_div_le i m
+    · rintro ⟨hle, hik⟩
+      refine ⟨hik, le_antisymm (Nat.div_le_div_right hik.le) ?_⟩
+      rw [Nat.le_div_iff_mul_le hm, mul_comm]
+      exact hle
+  rw [hset, Nat.card_Ico]
+  have h := Nat.mod_add_div k m
+  generalize m * (k / m) = q at h ⊢
+  generalize k % m = r at h ⊢
+  omega
+
+theorem dvd_of_mk_eq {O : Type*} [CommRing O] {y c : O} {F : PowerSeries O}
+    (h : Ideal.Quotient.mk (DualFramesAlt.eigenRingInvariants.Ia y) F = Ideal.Quotient.mk (DualFramesAlt.eigenRingInvariants.Ia y) (C c)) :
+    ∃ H, F - C c = (X - C y) * H := by
+  obtain ⟨H, hH⟩ := Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp h)
+  exact ⟨H, hH⟩
+
+theorem mk_eq_of_mem {O : Type*} [CommRing O] {y : O} {F G : PowerSeries O} (h : F - G ∈ DualFramesAlt.eigenRingInvariants.Ia y) :
+    Ideal.Quotient.mk (DualFramesAlt.eigenRingInvariants.Ia y) F = Ideal.Quotient.mk (DualFramesAlt.eigenRingInvariants.Ia y) G :=
+  Ideal.Quotient.eq.mpr h
+
+theorem mem_of_factor {O : Type*} [CommRing O] (y : O) (F : PowerSeries O) :
+    (X - C y) * F ∈ DualFramesAlt.eigenRingInvariants.Ia y :=
+  Ideal.mem_span_singleton.mpr (dvd_mul_right _ _)
+
+end DualFramesAlt.BlockProductRing
+end
+
+section
+noncomputable section
+
+open Classical
+
+namespace Formalism.MainNotions.N.Ln34
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module Formalism.MainNotions.ElementDenominator Formalism.MainNotions.ElementDenominator.CongruenceModules
+
+section unitaryAbsoluteValueBounds
+
+variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
+    [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
+    (W : LocWach PD LL O v n)
+
+theorem u2ringPfB_γ₀_comm (g h : W.Gam) (x : PowerSeries O) :
+    W.γ₀ g (W.γ₀ h x) = W.γ₀ h (W.γ₀ g x) := by
+  rw [← AlgHom.mul_apply, ← map_mul, mul_comm, map_mul, AlgHom.mul_apply]
+
+theorem u2ringPfB_single_mem (c : ZMod n) (x : PowerSeries O) (hx : ∀ δ ∈ W.DelF, W.γ₀ δ x = x) :
+    (Pi.single c x : LetA O n) ∈ W.AΔ := by
+  show ∀ δ ∈ W.DelF, W.γA δ (Pi.single c x : LetA O n) = Pi.single c x
+  intro δ hδ
+  funext j
+  show W.γ₀ δ ((Pi.single c x : LetA O n) j) = (Pi.single c x : LetA O n) j
+  by_cases hj : j = c
+  · subst hj
+    simp only [Pi.single_eq_same]
+    exact hx δ hδ
+  · simp only [Pi.single_eq_of_ne hj, map_zero]
+
+theorem u2ringPfB_letter_mem {a : LetA O n} (ha : a ∈ W.AΔ) (i : ZMod n) :
+    ∀ δ ∈ W.DelF, W.γ₀ δ (a i) = a i := by
+  intro δ hδ
+  have h : W.γA δ a = a := ha δ hδ
+  exact congrFun h i
+
+theorem u2ringPfB_q₀_ne_zero [IsDomain O] [CharZero O] (hp : PD.p ≠ 0) : W.q₀ ≠ 0 := by
+  intro h0
+  have h := W.q₀_def
+  rw [h0, mul_zero] at h
+  have h1 := congrArg (PowerSeries.coeff 1) h.symm
+  have e : ((1 + PowerSeries.X : PowerSeries O) ^ PD.p - 1) =
+      ((((Polynomial.X + 1) ^ PD.p - 1 : Polynomial O)) : PowerSeries O) := by
+    push_cast
+    ring
+  rw [e, Polynomial.coeff_coe, map_zero] at h1
+  simp [Polynomial.coeff_X_add_one_pow, Polynomial.coeff_one, hp] at h1
+
+end unitaryAbsoluteValueBounds
+
+end Formalism.MainNotions.N.Ln34
+end
+end
+
+section
+noncomputable section
+
+open Classical
+
+namespace Formalism.MainNotions.N.Ln34
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module Formalism.MainNotions.ElementDenominator Formalism.MainNotions.ElementDenominator.CongruenceModules
+
+section U2C
+
+variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
+    [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
+    (W : LocWach PD LL O v n)
+
+theorem constantCoeff_uniformiser_zero {s' : ℕ} {π' : LetA O n} (w : (LetA O n)ˣ) (hw : π' = (w : LetA O n) * letπ ^ s')
+    (hs : 1 ≤ s') (i : ZMod n) : PowerSeries.constantCoeff (π' i) = 0 := by
+  have : π' i = (w : LetA O n) i * PowerSeries.X ^ s' := by rw [hw]; rfl
+  rw [this, map_mul, map_pow, PowerSeries.constantCoeff_X, zero_pow (by omega), mul_zero]
+
+theorem u2ringPfC_subΔ {π' : LetA O n} (hπΔ : ∀ δ ∈ W.DelF, W.γA δ π' = π')
+    (hπ0 : ∀ i, PowerSeries.constantCoeff (π' i) = 0) :
+    ∀ δ ∈ W.DelF, ∀ i (F : PowerSeries O),
+      W.γ₀ δ (PowerSeries.subst (π' i) F) = PowerSeries.subst (π' i) F := by
+  intro δ hδ i F
+  rw [DualFramesAlt.EigenUniformiser.algHom_subst (W.γ₀ δ) (W.γ₀_X δ).1 (hπ0 i)]
+  congr 1
+  exact congrFun (hπΔ δ hδ) i
+
+theorem u2ringPfC_inj {π' : LetA O n} (hπΔ : ∀ δ ∈ W.DelF, W.γA δ π' = π')
+    (hsub : ∀ a, Formalism.MainNotions.DeltaInvariantLattices.InAΔ W a → ∃! f : ZMod n → PowerSeries O,
+      ∀ i, a i = PowerSeries.subst (π' i) (f i))
+    (hπ0 : ∀ i, PowerSeries.constantCoeff (π' i) = 0) (c : ZMod n) (F F' : PowerSeries O)
+    (hFF : PowerSeries.subst (π' c) F = PowerSeries.subst (π' c) F') : F = F' := by
+  have hsub0 : ∀ i, PowerSeries.subst (π' i) (0 : PowerSeries O) = 0 := fun i => by
+    rw [← PowerSeries.coe_substAlgHom (PowerSeries.HasSubst.of_constantCoeff_zero' (hπ0 i)), map_zero]
+  have hmem := u2ringPfB_single_mem W c (PowerSeries.subst (π' c) F)
+    (fun δ hδ => u2ringPfC_subΔ W hπΔ hπ0 δ hδ c F)
+  obtain ⟨f, -, huniq⟩ := hsub _ hmem
+  have key : ∀ H, PowerSeries.subst (π' c) H = PowerSeries.subst (π' c) F →
+      (Pi.single c H : ZMod n → PowerSeries O) = f := fun H hH => huniq _ (fun i => by
+    by_cases hi : i = c
+    · subst hi; simp only [Pi.single_eq_same]; exact hH.symm
+    · simp only [Pi.single_eq_of_ne hi, hsub0])
+  have := congrFun ((key F rfl).trans (key F' hFF.symm).symm) c
+  simpa using this
+
+theorem u2ringPfC_pre {π' : LetA O n}
+    (hsub : ∀ a, Formalism.MainNotions.DeltaInvariantLattices.InAΔ W a → ∃! f : ZMod n → PowerSeries O,
+      ∀ i, a i = PowerSeries.subst (π' i) (f i)) (c : ZMod n) (x : PowerSeries O)
+    (hx : ∀ δ ∈ W.DelF, W.γ₀ δ x = x) : ∃ F : PowerSeries O, PowerSeries.subst (π' c) F = x := by
+  obtain ⟨f, hf, -⟩ := hsub _ (u2ringPfB_single_mem W c x hx)
+  refine ⟨f c, ?_⟩
+  have := hf c
+  simp only [Pi.single_eq_same] at this
+  exact this.symm
+
+theorem u2ringPfC_nu [IsDomain O] [CharZero O] {e s' : ℕ} {π' : LetA O n} {E : ZMod n → Polynomial O}
+    (hR : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations W e s' π' E) (hs : 1 ≤ s') (hK : W.gamK = W.gam) (h' : ℕ) :
+    ∃ ν : LetA O n, ν ∈ W.AΔ ∧
+      ν * W.γA W.gamK (Formalism.MainNotions.DeltaInvariantLattices.Eat E π' ^ h') = Formalism.MainNotions.DeltaInvariantLattices.Eat E π' ^ h' := by
+  obtain ⟨hπΔ, -, ⟨w, hw⟩, -, ⟨w₁, hq⟩, -, ⟨w₂, hγ⟩, -⟩ := hR
+  have hπ0 := constantCoeff_uniformiser_zero w hw hs
+  set Ê := Formalism.MainNotions.DeltaInvariantLattices.Eat E π' with hÊdef
+  have hq₀ := u2ringPfB_q₀_ne_zero W PD.hp.ne_zero
+  have hÊ0 : ∀ i, Ê i ≠ 0 := by
+    intro i h
+    apply hq₀
+    have e1 : W.q₀ = (w₁ : LetA O n) i * Ê i := congrFun hq i
+    rw [e1, h, mul_zero]
+  have hπΔ' : ∀ δ ∈ W.DelF, ∀ i, W.γ₀ δ (π' i) = π' i := fun δ hδ i => congrFun (hπΔ δ hδ) i
+  have hÊΔ : ∀ δ ∈ W.DelF, ∀ i, W.γ₀ δ (Ê i) = Ê i := by
+    intro δ hδ i
+    show W.γ₀ δ (Polynomial.aeval (π' i) (E i)) = Polynomial.aeval (π' i) (E i)
+    rw [← Polynomial.aeval_algHom_apply, hπΔ' δ hδ i]
+  have hU : ∀ i, ∃ u : PowerSeries O, IsUnit u ∧ W.γ₀ W.gam (Ê i) = Ê i * u := by
+    intro i
+    have hγi : W.γ₀ W.gam (π' i) - π' i = (w₂ : LetA O n) i * π' i * Ê i := congrFun hγ i
+    obtain ⟨D, hD⟩ := Polynomial.sub_dvd_eval_sub (W.γ₀ W.gam (π' i)) (π' i)
+      ((E i).map (algebraMap O (PowerSeries O)))
+    refine ⟨1 + (w₂ : LetA O n) i * π' i * D, ?_, ?_⟩
+    · rw [PowerSeries.isUnit_iff_constantCoeff]
+      simp [hπ0 i]
+    · have e2 : W.γ₀ W.gam (Ê i) = Polynomial.aeval (W.γ₀ W.gam (π' i)) (E i) :=
+        (Polynomial.aeval_algHom_apply (W.γ₀ W.gam) (π' i) (E i)).symm
+      have e3 : Ê i = Polynomial.aeval (π' i) (E i) := rfl
+      have hD' : Polynomial.aeval (W.γ₀ W.gam (π' i)) (E i) - Polynomial.aeval (π' i) (E i) =
+          (W.γ₀ W.gam (π' i) - π' i) * D := by
+        rw [Polynomial.aeval_def, Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map,
+          Polynomial.eval₂_eq_eval_map]
+        exact hD
+      rw [e3] at hγi
+      rw [hγi] at hD'
+      rw [e2, e3]
+      linear_combination hD'
+  choose U hUu hUeq using hU
+  have hUunit : IsUnit (U : LetA O n) := Pi.isUnit_iff.2 hUu
+  set V : LetA O n := ((hUunit.unit⁻¹ : (LetA O n)ˣ) : LetA O n) with hV
+  have hVU : V * U = 1 := by rw [hV]; exact hUunit.val_inv_mul
+  have hUΔ : ∀ δ ∈ W.DelF, ∀ i, W.γ₀ δ (U i) = U i := by
+    intro δ hδ i
+    have h1 := congrArg (W.γ₀ δ) (hUeq i)
+    rw [u2ringPfB_γ₀_comm, map_mul, hÊΔ δ hδ i, hUeq i] at h1
+    exact (mul_left_cancel₀ (hÊ0 i) h1).symm
+  refine ⟨V ^ h', ?_, ?_⟩
+  · intro δ hδ
+    funext i
+    show W.γ₀ δ ((V ^ h') i) = (V ^ h') i
+    rw [Pi.pow_apply, map_pow]
+    congr 1
+    have hVi : V i * U i = 1 := congrFun hVU i
+    have h1 := congrArg (W.γ₀ δ) hVi
+    rw [map_mul, hUΔ δ hδ i, map_one] at h1
+    exact mul_right_cancel₀ (hUu i).ne_zero (h1.trans hVi.symm)
+  · have hγÊ : W.γA W.gam Ê = Ê * U := funext fun i => hUeq i
+    rw [hK, map_pow, hγÊ]
+    calc V ^ h' * (Ê * U) ^ h' = (V * U) ^ h' * Ê ^ h' := by ring
+      _ = Ê ^ h' := by rw [hVU, one_pow, one_mul]
+
+end U2C
+
+end Formalism.MainNotions.N.Ln34
+end
+end
+
+section
 noncomputable section
 
 open Classical
@@ -402,3 +1375,5 @@ theorem u2ringPfD_main [IsDomain O] [IsDiscreteValuationRing O] [CharZero O]
 end U2D
 
 end Formalism.MainNotions.N.Ln34
+end
+end

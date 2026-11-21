@@ -3,9 +3,243 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChar
 import ReciprocityTheory.DualLattices.ProdDvdOfIso
 import Development.AbelianVarietyTheory.BlockTheory.JetGauges.LieMatrixCoordinates
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NotIsUnitNatCastOfIsLocalHom
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.OpExistsEqAdd
+import Development.AbelianVarietyTheory.BlockTheory.JetGauges.SplitUnramifiedPlaces
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StAvDefs
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniqueMaximalAbovePlace
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DifferentPowerUnramifiedIff
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IdempotentEmbeddingsCard
 
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.different_power_unramified_iff : ∀ (p : ℕ) [Fact p.Prime] (R : Type) [CommRing R] [IsDedekindDomain R] [CharZero R] [Module.Finite ℤ R] (w : GlobalTheory.IndefiniteRowSideFullHecke.SplitUnramifiedPlaces.Place p R) (P : Ideal R), P.IsMaximal → (p : R) ∈ P → (P.map w.toOw).IsMaximal → (∀ Q : Ideal R, Q.IsMaximal → Q ≠ P → Q.map w.toOw = ⊤) → (∃ a b : ℕ, 0 < b ∧ (differentIdeal ℤ R).map w.toOw ^ b = Ideal.span {(p : w.Ow) ^ a}) ∧ (w.IsUnramified ↔ (differentIdeal ℤ R).map w.toOw = ⊤) := by
+  first | exact @GlobalTheory.Proof.different_power_unramified_iff.different_pow_and_unramified_iff | exact GlobalTheory.Proof.different_power_unramified_iff.different_pow_and_unramified_iff | (intros; apply GlobalTheory.Proof.different_power_unramified_iff.different_pow_and_unramified_iff <;> assumption)
+end
+
+section
+noncomputable section
+open scoped TensorProduct
+open Matrix
+
+namespace GlobalTheory.CutMultiplicationUnits
+
+section Lin
+
+variable {k A O : Type} [CommRing k] [CommRing A] [Algebra k A] [CommRing O] [Algebra k O]
+
+abbrev cut (k : Type) {A : Type} [CommRing k] [CommRing A] [Algebra k A] (e : A) : Submodule k A :=
+  LinearMap.range (LinearMap.mulLeft k e)
+
+theorem mul_mem_cut {e : A} (y : A) {a : A} (ha : a ∈ cut k e) : y * a ∈ cut k e := by
+  obtain ⟨c, rfl⟩ := ha
+  exact ⟨y * c, by simp [mul_left_comm]⟩
+
+theorem e_mul_of_mem {e : A} (he : e * e = e) {a : A} (ha : a ∈ cut k e) : e * a = a := by
+  obtain ⟨c, rfl⟩ := ha
+  simp [← mul_assoc, he]
+
+def mulCut (e y : A) : cut k e →ₗ[k] cut k e :=
+  (LinearMap.mulLeft k y).restrict (fun _ ha => mul_mem_cut y ha)
+
+variable {n : ℕ} {e : A} (b : Module.Basis (Fin n) k (cut k e))
+
+variable (T : Fin n → (A →ₐ[k] O))
+
+end Lin
+
+section Local
+
+open GlobalTheory.IndefiniteRowSideFullHecke.SplitUnramifiedPlaces
+
+variable {p : ℕ} [Fact p.Prime] {R : Type} [CommRing R]
+
+def extFun (l : R →ₗ[ℤ] ℤ) : Op p R →ₗ[ℤ_[p]] ℤ_[p] :=
+  (TensorProduct.AlgebraTensorModule.rid ℤ ℤ_[p] ℤ_[p]).toLinearMap ∘ₗ l.baseChange ℤ_[p]
+
+variable [IsDedekindDomain R] [CharZero R] [Module.Finite ℤ R]
+  {C : Type} [Field C] {v : Valuation C NNReal} {O : Type} [CommRing O] [Algebra O C]
+  [Algebra ℤ_[p] O]
+
+end Local
+
+section Compare
+
+open GlobalTheory.IndefiniteRowSideFullHecke.SplitUnramifiedPlaces ReciprocityTheory.ChartRestriction.G.Pdiv
+
+variable {p : ℕ} [Fact p.Prime] {R : Type} [CommRing R]
+
+theorem sig_eq_bar [StarRing R] (x : Op p R) : AvDefs.sig p R x = bar p R x := by
+  induction x using TensorProduct.induction_on with
+  | zero => simp
+  | tmul z a => rfl
+  | add x y hx hy => rw [map_add, map_add, hx, hy]
+
+def placeUEquiv : AvDefs.PlaceU p R ≃ Place p R where
+  toFun w := ⟨w.e, w.idem, w.ne_zero, w.prim⟩
+  invFun w := ⟨w.e, w.idem, w.ne_zero, w.primitive⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+def placeEquiv [StarRing R] : AvDefs.Place p R ≃ SplitPlace p R where
+  toFun w := ⟨⟨w.e, w.idem, w.ne_zero, w.prim⟩, fun h =>
+    w.split ((sig_eq_bar w.e).trans (congrArg Place.e h).symm)⟩
+  invFun w := ⟨w.e, w.idem, w.ne_zero, w.primitive, fun h =>
+    w.ne_conj (Place.ext ((sig_eq_bar w.e).symm.trans h).symm)⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+def owEquiv (w : Place p R) : cut ℤ_[p] w.e ≃ₗ[ℤ_[p]] w.Ow :=
+  LinearEquiv.ofBijective
+    ((Ideal.Quotient.mkₐ ℤ_[p] (Ideal.span {1 - w.e})).toLinearMap ∘ₗ (cut ℤ_[p] w.e).subtype) (by
+      constructor
+      · rw [injective_iff_map_eq_zero]
+        intro a ha
+        obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 (Ideal.Quotient.eq_zero_iff_mem.1 ha)
+        have hc' : c * (1 - w.e) = (a : Op p R) := hc
+        apply Subtype.ext
+        rw [← e_mul_of_mem w.idem a.2, ← hc', mul_left_comm, mul_sub, w.idem.eq, mul_one,
+          sub_self, mul_zero]
+        rfl
+      · intro s
+        obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective s
+        refine ⟨⟨w.e * a, a, rfl⟩, Ideal.Quotient.eq.2 ?_⟩
+        exact Ideal.mem_span_singleton'.2 ⟨-a, by
+          show -a * (1 - w.e) = w.e * a - a
+          ring⟩)
+
+def embEquiv (w : Place p R) (O : Type) [CommRing O] [Algebra ℤ_[p] O] :
+    AvDefs.Emb (O := O) w.e ≃ w.Emb O := Equiv.refl _
+
+variable [IsDedekindDomain R] [CharZero R] [Module.Finite ℤ R]
+  {C : Type} [Field C] [CharZero C] {v : Valuation C NNReal} {O : Type} [CommRing O]
+  [Algebra O C] [Algebra ℤ_[p] O]
+
+end Compare
+
+end GlobalTheory.CutMultiplicationUnits
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open scoped TensorProduct
+open NumberField
+
+namespace GlobalTheory.AvChartCompare
+
+open GlobalTheory.IndefiniteRowSideFullHecke.SplitUnramifiedPlaces
+
+variable {p : ℕ} [Fact p.Prime] {R : Type} [CommRing R]
+
+def IsPrimeUnder (w : Place p R) (P : Ideal R) : Prop :=
+  P.IsMaximal ∧ (p : R) ∈ P ∧ (P.map w.toOw).IsMaximal ∧
+    ∀ Q : Ideal R, Q.IsMaximal → Q ≠ P → Q.map w.toOw = ⊤
+
+def liftOw (w : Place p R) {S : Type} [CommRing S] (ψ : Op p R →+* S) (h : ψ w.e = 1) :
+    w.Ow →+* S :=
+  Ideal.Quotient.lift _ ψ (by
+    intro z hz
+    obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 hz
+    simp [h])
+
+namespace IsPrimeUnder
+
+variable {w : Place p R} {P : Ideal R}
+
+theorem p_mem (h : IsPrimeUnder w P) : (p : w.Ow) ∈ P.map w.toOw := by
+  rw [← map_natCast w.toOw]; exact Ideal.mem_map_of_mem _ h.2.1
+
+theorem map_eq_pow [IsDedekindDomain R] (h : IsPrimeUnder w P) {J : Ideal R} (hJ : J ≠ ⊥) :
+    J.map w.toOw =
+      P.map w.toOw ^ (UniqueFactorizationMonoid.normalizedFactors J).count P := by
+  have := h.1
+  obtain ⟨Q, hPQ, hQe⟩ := Ideal.eq_prime_pow_mul_coprime hJ P
+  generalize Multiset.count P _ = e at hQe
+  have hQ0 : Q ≠ ⊥ := by rintro rfl; exact hJ (by simpa using hQe)
+  rw [hQe, Ideal.map_mul, Ideal.map_pow,
+    GlobalTheory.Proof.different_power_unramified_iff.map_eq_top_of_coprime _ P h.1 h.2.2.2 Q hQ0 hPQ, Ideal.mul_top]
+
+variable [IsDedekindDomain R] [CharZero R]
+
+theorem span_p_eq (h : IsPrimeUnder w P) :
+    Ideal.span {(p : w.Ow)} = P.map w.toOw ^
+      (UniqueFactorizationMonoid.normalizedFactors (Ideal.span {(p : R)})).count P := by
+  rw [← h.map_eq_pow (by simpa using (Fact.out : p.Prime).ne_zero), Ideal.map_span,
+    Set.image_singleton, map_natCast]
+
+theorem count_ne_zero (h : IsPrimeUnder w P) :
+    (UniqueFactorizationMonoid.normalizedFactors (Ideal.span {(p : R)})).count P ≠ 0 := by
+  intro h0
+  have h1 := h.span_p_eq
+  rw [h0, pow_zero, Ideal.one_eq_top] at h1
+  exact h.2.2.1.ne_top (eq_top_iff.2 (h1 ▸ (Ideal.span_singleton_le_iff_mem _).2 h.p_mem))
+
+variable [Module.Finite ℤ R]
+
+theorem pow_inj (h : IsPrimeUnder w P) {i j : ℕ}
+    (hij : P.map w.toOw ^ i = P.map w.toOw ^ j) : i = j := by
+  have key : ∀ i j : ℕ, P.map w.toOw ^ i = P.map w.toOw ^ j → ¬ i < j := by
+    intro i j hij hlt
+    have h1 : Ideal.span {(p : w.Ow) ^ i} = Ideal.span {(p : w.Ow) ^ j} := by
+      rw [← Ideal.span_singleton_pow, ← Ideal.span_singleton_pow, h.span_p_eq, ← pow_mul,
+        ← pow_mul, mul_comm _ i, mul_comm _ j, pow_mul, pow_mul, hij]
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_lt hlt
+    obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 (h1 ▸ Ideal.mem_span_singleton_self _)
+    have h2 : ∀ (n : ℕ) (x : w.Ow), (p : w.Ow) ^ n * x = 0 → x = 0 := by
+      intro n
+      induction n with
+      | zero => intro x hx; simpa using hx
+      | succ n ih =>
+        intro x hx
+        exact GlobalTheory.Proof.different_power_unramified_iff.ow_p_torsionFree p R w x (ih _ (by linear_combination hx))
+    have h3 := h2 i (1 - c * p ^ k * p) (by linear_combination -hc)
+    apply h.2.2.1.ne_top
+    rw [Ideal.eq_top_iff_one, sub_eq_zero.1 h3]
+    exact Ideal.mul_mem_left _ _ h.p_mem
+  exact le_antisymm (not_lt.1 (key j i hij.symm)) (not_lt.1 (key i j hij))
+
+attribute [local instance] FractionRing.liftAlgebra FractionRing.isScalarTower_liftAlgebra in
+
+theorem isDiffVal_iff (h : IsPrimeUnder w P) (vd : ℝ) :
+    w.IsDiffVal_vp vd ↔ vd =
+      ((UniqueFactorizationMonoid.normalizedFactors (differentIdeal ℤ R)).count P : ℝ) /
+        ((UniqueFactorizationMonoid.normalizedFactors (Ideal.span {(p : R)})).count P : ℝ) := by
+  have : CharZero (FractionRing R) := inferInstance
+  have : IsLocalization (Algebra.algebraMapSubmonoid R (nonZeroDivisors ℤ)) (FractionRing R) :=
+    IsIntegralClosure.isLocalization _ (FractionRing ℤ) _ _
+  have : FiniteDimensional (FractionRing ℤ) (FractionRing R) :=
+    .of_isLocalization ℤ R (nonZeroDivisors ℤ)
+  have hsep : Algebra.IsSeparable (FractionRing ℤ) (FractionRing R) := inferInstance
+  have hD : differentIdeal ℤ R ≠ ⊥ := differentIdeal_ne_bot
+  have h1 := h.span_p_eq
+  have h2 := h.map_eq_pow hD
+  have he := h.count_ne_zero
+  generalize Multiset.count P (UniqueFactorizationMonoid.normalizedFactors
+    (Ideal.span {(p : R)})) = e at h1 he ⊢
+  generalize Multiset.count P (UniqueFactorizationMonoid.normalizedFactors
+    (differentIdeal ℤ R)) = k at h2 ⊢
+  have he' : (e : ℝ) ≠ 0 := by exact_mod_cast he
+  constructor
+  · rintro ⟨a, b, hb, hvd, hab⟩
+    rw [← Ideal.span_singleton_pow, h1, h2, ← pow_mul, ← pow_mul] at hab
+    have h3 : (k : ℝ) * b = e * a := by exact_mod_cast h.pow_inj hab
+    have hb' : (b : ℝ) ≠ 0 := by exact_mod_cast hb.ne'
+    rw [eq_div_iff he']
+    apply mul_right_cancel₀ hb'
+    rw [h3, ← hvd]; ring
+  · rintro rfl
+    refine ⟨k, e, Nat.pos_of_ne_zero he, div_mul_cancel₀ _ he', ?_⟩
+    rw [← Ideal.span_singleton_pow, h1, h2, ← pow_mul, ← pow_mul, mul_comm]
+
+end IsPrimeUnder
+
+end GlobalTheory.AvChartCompare
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -229,3 +463,5 @@ def FiniteColengthsBounded (p : ℕ) : Conclusion :=
       ∏ τ ∈ Finset.univ.filter (fun τ : E →+* C => Induces v τ w), xs τ
 
 end GlobalTheory.AvChartCompare
+end
+end

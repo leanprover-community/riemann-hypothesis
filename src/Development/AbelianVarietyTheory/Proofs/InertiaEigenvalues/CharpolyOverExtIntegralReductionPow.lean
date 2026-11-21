@@ -1,10 +1,252 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedInvolutionExtMapsIntegersToIntegers
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanPowGeneratorEqTopOfCharpolySeparable
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharpolyMulLeftEqMapOfSpanningLattice
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsNilpotentResidueToMatrixMulLeft
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharpolyNilpotentAddScalarStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OverExtAlgebraMap
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EqZeroOfNotPrimary
 
+section
+section
+noncomputable section
+
+namespace GlobalTheory.UnitLemma.Unr
+
+open GlobalTheory.UnitLemma Polynomial
+
+theorem valuation_le_one_of_val_nonneg (K : UQ) (e : K.E) (he : e ≠ 0) (h : 0 ≤ val K.O e) :
+    (IsDiscreteValuationRing.maximalIdeal K.O).valuation K.E e ≤ 1 := by
+  unfold val at h
+  have h0 : (IsDiscreteValuationRing.maximalIdeal K.O).valuation K.E e ≠ 0 := by simpa using he
+  rw [← WithZero.exp_log h0, ← WithZero.exp_zero, WithZero.exp_le_exp]
+  omega
+
+theorem val_nonneg_of_int (K : UQ) (x : K.O) : 0 ≤ val K.O (algebraMap K.O K.E x) := by
+  by_cases hx : algebraMap K.O K.E x = 0
+  · rw [hx]; unfold val; simp
+  unfold val
+  have h1 := IsDedekindDomain.HeightOneSpectrum.valuation_le_one (IsDiscreteValuationRing.maximalIdeal K.O) (K := K.E) x
+  have h0 : (IsDiscreteValuationRing.maximalIdeal K.O).valuation K.E (algebraMap K.O K.E x) ≠ 0 := by simpa using hx
+  rw [← WithZero.exp_log h0, ← WithZero.exp_zero, WithZero.exp_le_exp] at h1
+  omega
+
+theorem map_int (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E) (hU : IsUnrExt K K' d φ) (x : K.O) :
+    ∃ y : K'.O, algebraMap K'.O K'.E y = φ (algebraMap K.O K.E x) := by
+  by_cases hx : algebraMap K.O K.E x = 0
+  · exact ⟨0, by rw [hx, map_zero, map_zero]⟩
+  have hφ : φ (algebraMap K.O K.E x) ≠ 0 := by simpa using hx
+  have hv : 0 ≤ val K'.O (φ (algebraMap K.O K.E x)) := by
+    rw [hU.2.2.1]; exact val_nonneg_of_int K x
+  exact IsDiscreteValuationRing.exists_lift_of_le_one (valuation_le_one_of_val_nonneg K' _ hφ hv)
+
+end GlobalTheory.UnitLemma.Unr
+end
+end
+
+open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Unr Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramifiedInvolutionExt_maps_integers_to_integers : ∀ (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E), IsUnrExt K K' d φ → ∀ x : K.O, ∃ y : K'.O, algebraMap K'.O K'.E y = φ (algebraMap K.O K.E x) := by
+  atlas_forward_decl GlobalTheory.UnitLemma.Unr.map_int
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.UnitLemma.Unr
+
+open GlobalTheory.UnitLemma Polynomial
+
+theorem span_pow_eq_top_of_separable (K : UQ) (B : InvAlg K) (hs : B.P.Separable) :
+    Submodule.span K.E (Set.range fun i : ℕ => B.g ^ i) = ⊤ := by
+  classical
+  have hP : B.P ≠ 0 := hs.ne_zero
+  have hint : IsIntegral K.E B.g := Algebra.IsIntegral.isIntegral _
+  have hz : minpoly K.E B.g ≠ 0 := minpoly.ne_zero hint
+  have h0 : aeval (LinearMap.mulLeft K.E B.g) (minpoly K.E B.g) = 0 := by
+    have := Polynomial.aeval_algHom_apply (Algebra.lmul K.E B.A) B.g (minpoly K.E B.g)
+    rw [minpoly.aeval, map_zero] at this
+    exact this
+  have hdvd : B.P ∣ minpoly K.E B.g := by
+    rw [UniqueFactorizationMonoid.dvd_iff_normalizedFactors_le_normalizedFactors hP hz,
+      Multiset.le_iff_subset ((UniqueFactorizationMonoid.squarefree_iff_nodup_normalizedFactors hP).1 hs.squarefree)]
+    intro p hp
+    rw [Polynomial.mem_normalizedFactors_iff hP] at hp
+    rw [Polynomial.mem_normalizedFactors_iff hz]
+    exact ⟨hp.1, hp.2.1, GlobalTheory.CuspGL.irreducible_dvd_of_dvd_charpoly_of_aeval_eq_zero _ _ _ hp.1 hp.2.2 h0⟩
+  have hle : Module.finrank K.E B.A ≤ (minpoly K.E B.g).natDegree := by
+    have h1 : B.P.natDegree = Module.finrank K.E B.A := LinearMap.charpoly_natDegree _
+    rw [← h1]
+    exact natDegree_le_of_dvd hdvd hz
+  have hli : LinearIndependent K.E fun i : Fin (minpoly K.E B.g).natDegree => B.g ^ (i : ℕ) :=
+    linearIndependent_pow B.g
+  have hge := hli.fintype_card_le_finrank
+  have htop := hli.span_eq_top_of_card_eq_finrank' (by rw [Fintype.card_fin] at hge ⊢; omega)
+  rw [eq_top_iff, ← htop]
+  exact Submodule.span_mono (by rintro _ ⟨i, rfl⟩; exact ⟨i, rfl⟩)
+
+end GlobalTheory.UnitLemma.Unr
+end
+end
+
+open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Unr Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.span_pow_generator_eq_top_of_charpoly_separable : ∀ (K : UQ) (B : InvAlg K), B.P.Separable → Submodule.span K.E (Set.range fun i : ℕ => B.g ^ i) = ⊤ := by
+  atlas_forward_decl GlobalTheory.UnitLemma.Unr.span_pow_eq_top_of_separable
+end
+
+section
+section
+open Polynomial
+
+namespace GlobalTheory
+
+theorem charpoly_mulLeft_eq_map_of_spanning_lattice (R F A S : Type) [CommRing R] [IsDomain R]
+    [IsDiscreteValuationRing R] [Field F] [Algebra R F] [IsFractionRing R F] [CommRing A]
+    [Algebra F A] [Algebra R A] [IsScalarTower R F A] [Module.Finite F A] [CommRing S]
+    [Algebra R S] [Module.Finite R S] (ι : S →ₐ[R] A) (hι : Function.Injective ι)
+    (hspan : Submodule.span F (Set.range ι) = ⊤) :
+    ∃ (n : ℕ) (b : Module.Basis (Fin n) R S), ∀ x : S, (LinearMap.mulLeft F (ι x)).charpoly =
+      ((LinearMap.toMatrix b b (LinearMap.mulLeft R x)).charpoly).map (algebraMap R F) := by
+  classical
+  have hRF : Function.Injective (algebraMap R F) := IsFractionRing.injective R F
+  haveI : Module.IsTorsionFree R S := by
+    refine Module.IsTorsionFree.of_smul_eq_zero ?_
+    intro r x h
+    by_cases hr : r = 0
+    · exact Or.inl hr
+    · right
+      apply hι
+      have h1 : algebraMap R F r • ι x = 0 := by
+        rw [algebraMap_smul, ← map_smul, h, map_zero]
+      have h2 : algebraMap R F r ≠ 0 := fun h0 => hr (hRF (by simpa using h0))
+      rw [map_zero]
+      exact (smul_eq_zero.mp h1).resolve_left h2
+  haveI : Module.Free R S := Module.free_of_finite_type_torsion_free'
+  let b : Module.Basis (Fin (Module.finrank R S)) R S := Module.finBasis R S
+  refine ⟨_, b, fun x => ?_⟩
+  have hexp : ∀ y : S, ι y = ∑ i, algebraMap R F (b.repr y i) • ι (b i) := by
+    intro y
+    conv_lhs => rw [← b.sum_repr y]
+    simp only [map_sum, map_smul, algebraMap_smul]
+  have hliR : LinearIndependent R (fun i => ι (b i)) :=
+    b.linearIndependent.map' ι.toLinearMap (LinearMap.ker_eq_bot.mpr hι)
+  have hli : LinearIndependent F (fun i => ι (b i)) :=
+    (LinearIndependent.iff_fractionRing R F).mp hliR
+  have hsp : ⊤ ≤ Submodule.span F (Set.range (fun i => ι (b i))) := by
+    rw [← hspan, Submodule.span_le]
+    rintro _ ⟨y, rfl⟩
+    rw [hexp y]
+    exact Submodule.sum_mem _ fun i _ =>
+      Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  let b' : Module.Basis (Fin (Module.finrank R S)) F A := Module.Basis.mk hli hsp
+  have hb' : ∀ i, b' i = ι (b i) := fun i => by simp [b']
+  have hM : LinearMap.toMatrix b' b' (LinearMap.mulLeft F (ι x)) =
+      (LinearMap.toMatrix b b (LinearMap.mulLeft R x)).map (algebraMap R F) := by
+    ext i j
+    rw [Matrix.map_apply, LinearMap.toMatrix_apply, LinearMap.toMatrix_apply,
+      LinearMap.mulLeft_apply, LinearMap.mulLeft_apply, hb', ← map_mul, hexp]
+    simp only [← hb']
+    rw [b'.repr_sum_self]
+  rw [← LinearMap.charpoly_toMatrix _ b', hM, Matrix.charpoly_map]
+
+end GlobalTheory
+end
+
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.charpoly_mulLeft_eq_map_of_span_range_eq : ∀ (R F A S : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field F] [Algebra R F] [IsFractionRing R F] [CommRing A] [Algebra F A] [Algebra R A] [IsScalarTower R F A] [Module.Finite F A] [CommRing S] [Algebra R S] [Module.Finite R S] (ι : S →ₐ[R] A), Function.Injective ι → Submodule.span F (Set.range ι) = ⊤ → ∃ (n : ℕ) (b : Module.Basis (Fin n) R S), ∀ x : S, (LinearMap.mulLeft F (ι x)).charpoly = ((LinearMap.toMatrix b b (LinearMap.mulLeft R x)).charpoly).map (algebraMap R F) := by
+  atlas_forward_decl GlobalTheory.charpoly_mulLeft_eq_map_of_spanning_lattice
+end
+
+section
+section
+open Polynomial
+
+namespace GlobalTheory
+
+theorem isNilpotent_residue_toMatrix_mulLeft : ∀ (R S : Type) [CommRing R] [IsLocalRing R] [CommRing S] [IsLocalRing S] [Algebra R S] (n : ℕ) (b : Module.Basis (Fin n) R S) (t : S), t ∈ IsLocalRing.maximalIdeal S → IsNilpotent ((LinearMap.toMatrix b b (LinearMap.mulLeft R t)).map (IsLocalRing.residue R)) := by
+  intro R S _ _ _ _ _ n b t ht
+  let φ : S →ₐ[R] Matrix (Fin n) (Fin n) R :=
+    (LinearMap.toMatrixAlgEquiv b).toAlgHom.comp (Algebra.lmul R S)
+  have hφ : ∀ s, φ s = LinearMap.toMatrix b b (LinearMap.mulLeft R s) := by
+    intro s; ext i j
+    simp [φ, LinearMap.toMatrixAlgEquiv_apply, LinearMap.toMatrix_apply]
+  set N := LinearMap.toMatrix b b (LinearMap.mulLeft R t) with hN
+  set Nb := N.map (IsLocalRing.residue R) with hNb
+  have hcp : Nb.charpoly ≠ 0 := (Matrix.charpoly_monic Nb).ne_zero
+  obtain ⟨hb, hfac, hndvd⟩ := exists_eq_pow_rootMultiplicity_mul_and_not_dvd Nb.charpoly hcp 0
+  have h0 : hb.eval 0 ≠ 0 := by
+    intro h; apply hndvd; rw [dvd_iff_isRoot]; exact h
+  obtain ⟨h, rfl⟩ := Polynomial.map_surjective (IsLocalRing.residue R)
+    IsLocalRing.residue_surjective hb
+  have hu0 : IsUnit (h.coeff 0) := by
+    by_contra hc
+    apply h0
+    rw [← coeff_zero_eq_eval_zero, coeff_map]
+    exact (IsLocalRing.residue_eq_zero_iff _).2 ((IsLocalRing.mem_maximalIdeal _).2 hc)
+  obtain ⟨q, hq⟩ := X_dvd_sub_C (p := h)
+  have hsplit : aeval t h = algebraMap R S (h.coeff 0) + t * aeval t q := by
+    have : h = C (h.coeff 0) + X * q := by rw [← hq]; ring
+    conv_lhs => rw [this]
+    simp
+  have hut : IsUnit (aeval t h) := by
+    rw [hsplit]
+    by_contra hc
+    have h1 : algebraMap R S (h.coeff 0) + t * aeval t q ∈ IsLocalRing.maximalIdeal S :=
+      (IsLocalRing.mem_maximalIdeal _).2 hc
+    have h2 : t * aeval t q ∈ IsLocalRing.maximalIdeal S :=
+      Ideal.mul_mem_right _ _ ht
+    have h3 : algebraMap R S (h.coeff 0) ∈ IsLocalRing.maximalIdeal S := by
+      have := Ideal.sub_mem _ h1 h2
+      simpa using this
+    exact (IsLocalRing.mem_maximalIdeal _).1 h3 (hu0.map (algebraMap R S))
+  have huN : IsUnit (aeval N h) := by
+    have := hut.map φ
+    rwa [← Polynomial.aeval_algHom_apply, hφ] at this
+  have hmap : (IsLocalRing.residue R).mapMatrix (aeval N h) = aeval Nb (h.map (IsLocalRing.residue R)) := by
+    rw [aeval_def, aeval_def, hom_eval₂, eval₂_map]
+    congr 1
+    ext r i j
+    simp [Matrix.algebraMap_eq_diagonal, Matrix.diagonal_apply]
+    split_ifs <;> simp
+  have huNb : IsUnit (aeval Nb (h.map (IsLocalRing.residue R))) := by
+    rw [← hmap]; exact huN.map _
+  have hCH := Matrix.aeval_self_charpoly Nb
+  rw [hfac, C_0, sub_zero, map_mul, map_pow, aeval_X] at hCH
+  exact ⟨_, (huNb.mul_left_eq_zero).1 hCH⟩
+
+end GlobalTheory
+end
+
+open Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isNilpotent_residue_toMatrix_mulLeft' : ∀ (R S : Type) [CommRing R] [IsLocalRing R] [CommRing S] [IsLocalRing S] [Algebra R S] (n : ℕ) (b : Module.Basis (Fin n) R S) (t : S), t ∈ IsLocalRing.maximalIdeal S → IsNilpotent ((LinearMap.toMatrix b b (LinearMap.mulLeft R t)).map (IsLocalRing.residue R)) := by
+  atlas_forward_decl GlobalTheory.isNilpotent_residue_toMatrix_mulLeft
+end
+
+section
+open Polynomial
+
+namespace GlobalTheory
+
+theorem charpoly_nilpotent_add_scalar : ∀ (k : Type) [Field k] (n : ℕ) (N : Matrix (Fin n) (Fin n) k) (c : k), IsNilpotent N → (N + Matrix.scalar (Fin n) c).charpoly = (X - C c) ^ n := by
+  intro k _ n N c hN
+  have hc : N.charpoly = X ^ n := by
+    have := Matrix.isNilpotent_charpoly_sub_pow_of_isNilpotent hN
+    rw [Fintype.card_fin] at this
+    exact sub_eq_zero.mp this.eq_zero
+  have h1 := Matrix.charpoly_sub_scalar (N + Matrix.scalar (Fin n) c) c
+  rw [add_sub_cancel_right, hc] at h1
+  have hXC : ((X : k[X]) + C c).comp (X - C c) = X := by simp
+  calc (N + Matrix.scalar (Fin n) c).charpoly
+      = ((N + Matrix.scalar (Fin n) c).charpoly.comp (X + C c)).comp (X - C c) := by
+        rw [comp_assoc, hXC, comp_X]
+    _ = (X - C c) ^ n := by rw [← h1]; simp
+
+end GlobalTheory
+
+alias _root_.GlobalTheory.T.charpoly_nilpotent_add_scalar' := _root_.GlobalTheory.charpoly_nilpotent_add_scalar
+end
+
+section
 section
 noncomputable section
 
@@ -82,3 +324,4 @@ open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Unr Polynomial
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.charpoly_overExt_integral_reduction_pow : ∀ (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E), IsUnrExt K K' d φ → ∀ (B : InvAlg K) (ψ : K'.E →+* B.A) (hψ : ∀ e, ψ (φ e) = algebraMap K.E B.A e) (hσ : ∀ e, B.σ (ψ e) = ψ (K'.c e)) (hO : ∀ y : K'.O, ψ (algebraMap K'.O K'.E y) ∈ Algebra.adjoin K.O ({B.g} : Set B.A)) (hl : IsLocalRing (Algebra.adjoin K.O ({B.g} : Set B.A))), B.P.Separable → IsIntegral K.O B.g → ∀ s : K'.O, @IsLocalRing.residue _ _ hl ⟨B.g, Algebra.self_mem_adjoin_singleton K.O B.g⟩ = @IsLocalRing.residue _ _ hl ⟨ψ (algebraMap K'.O K'.E s), hO s⟩ → ∃ Q : K'.O[X], Q.map (algebraMap K'.O K'.E) = (overExt φ B ψ hψ hσ).P ∧ Q.map (IsLocalRing.residue K'.O) = (X - C (IsLocalRing.residue K'.O s)) ^ Q.natDegree := by
   atlas_forward_decl GlobalTheory.UnitLemma.Unr.charpoly_overExt_integral_reduction
+end

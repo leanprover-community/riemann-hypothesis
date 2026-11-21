@@ -1,7 +1,28 @@
 import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.QuotIndepStmt
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.WeilIndicatorMeasures.MeasurableUnitMulIndicator
 
+section
+open MeasureTheory Measure
+open scoped ENNReal
+
+set_option linter.dupNamespace false
+
+namespace Formalism.L2.SG.Pf.QuotIndep
+
+def QuotIndep : Prop :=
+  ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [T2Space G]
+    [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (S : Subgroup G), IsClosed (S : Set G) →
+    ∀ (μS : Measure S) [μS.IsMulLeftInvariant] [μS.IsMulRightInvariant] [IsFiniteMeasureOnCompacts μS]
+      [IsOpenPosMeasure μS] [SFinite μS] (μ ν₁ ν₂ : Measure G),
+      (∀ f : G → ℝ≥0∞, Measurable f → ∫⁻ x, f x ∂μ = ∫⁻ x, ∫⁻ s, f ((s : G) * x) ∂μS ∂ν₁) →
+      (∀ f : G → ℝ≥0∞, Measurable f → ∫⁻ x, f x ∂μ = ∫⁻ x, ∫⁻ s, f ((s : G) * x) ∂μS ∂ν₂) →
+      ∀ f : G → ℝ≥0∞, Measurable f → (∀ (s : S) (x : G), f ((s : G) * x) = f x) →
+        ∫⁻ x, f x ∂ν₁ = ∫⁻ x, f x ∂ν₂
+
+end Formalism.L2.SG.Pf.QuotIndep
+end
+
+section
 open MeasureTheory Measure
 open scoped ENNReal
 
@@ -48,3 +69,4 @@ theorem quotIndep : QuotIndep := by
     lintegral_eq_bruhat S μS μ ν₂ b hbm hb1 h₂ f hf hinv]
 
 end Formalism.L2.SG.Pf.QuotIndep
+end

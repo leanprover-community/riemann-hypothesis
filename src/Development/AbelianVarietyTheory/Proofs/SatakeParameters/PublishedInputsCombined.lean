@@ -14,13 +14,42 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.Cara
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.GaloisRepOfPolarizedPair
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HoweDualityOfMinguezStatement
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AbsPowValEqZpow
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DepthZeroJacquetInjectiveOfAdmissible
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.DepthZeroJacquetInjective
+import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RegularAlgebraicPurityOfClozel
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalGlobalAboveLStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalGlobalAboveL
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeLAdicParameterAboveOfAlgebraicCharacterWD
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CohomologicalCsdTemperedOfSegmentsStatement
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalGlobalOfGelfandKazhdanStatement
 
+section
+namespace GlobalTheory
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead
+
+theorem depthZeroJacquetInjective_of_admissible :
+    GlobalTheory.Published.BernsteinZelevinskyFiniteness → GlobalTheory.Published.MoyPrasadJacquetIso →
+      GlobalTheory.Published.DepthZeroJacquetInjective := by
+  intro hBZ hMP k _ _ _ _ n s d e π v hv h0
+  have hadm := (hBZ k).1 (Fin n) π.V π.π π.smooth π.irr
+  have hb := hMP k n s d e π.V π.π hadm
+  have h00 : (0 : π.V) ∈ fixed π.π (KOne k (Fin n) ⊔ (unipRad k e ⊓ KO k (Fin n))) := by
+    first
+      | exact Submodule.zero_mem _
+      | exact fun _ => map_zero _
+      | simp [fixed]
+  exact hb.injOn hv h00 (by simpa using h0)
+
+end GlobalTheory
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_global_above_l : GlobalTheory.Published.AutomorphicFormsFiniteGL → GlobalTheory.Published.LocalLanglandsGL → GlobalTheory.Published.CaraianiLocalGlobal → GlobalTheory.Published.LocalGlobalAboveL := by
+  first | exact @GlobalTheory.CaraianiAboveL.main | exact GlobalTheory.CaraianiAboveL.main | (intros; apply GlobalTheory.CaraianiAboveL.main <;> assumption)
+end
+
+section
 section
 namespace GlobalTheory.NRows.HypothesesBridge
 
@@ -52,3 +81,4 @@ end
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.published_inputs_combined : GlobalTheory.Published.BernsteinZelevinskyFiniteness → GlobalTheory.Published.BernsteinUnitaryProductIrreducible → GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.TotallyDisjointProductIrreducible → GlobalTheory.Published.MoyPrasadJacquetIso → GlobalTheory.Published.MinguezThetaGL → GlobalTheory.Published.JacquetShalika → GlobalTheory.Published.AutomorphicFormsFiniteGL → GlobalTheory.Published.CaraianiTempered → GlobalTheory.Published.TemperedProductOfSquareIntegrable → GlobalTheory.Published.EssSquareIntegrableSegments → GlobalTheory.Published.GelfandKazhdanDual → GlobalTheory.Published.GaloisRepOfPolarizedPair → GlobalTheory.Published.CaraianiLocalGlobalDual → GlobalTheory.Published.ClozelPurity → GlobalTheory.Published.ClozelCohomological → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.HeckeLAdicCharacterAbove → GlobalTheory.Published.AlgebraicCharacterWD → GlobalTheory.Published.DeRhamPotSemistable → GlobalTheory.Published.ChebotarevDegreeOne → GlobalTheory.Published.LocalLanglandsGL → GlobalTheory.NRows.Hypotheses₂ := by
   atlas_forward_decl GlobalTheory.NRows.HypothesesBridge.main
+end

@@ -1,7 +1,163 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.CobordismLinearRelations.LevSub
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.CobordismLinearRelations.RelPull
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.CobordismLinearRelations.RelLin
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.CobordismLinearRelations.RelKer
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.CobordismLinearRelations.ClozelConjCOfSteps
+import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.PerNat
+import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.ZigClosed
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.CobordismLinearRelations.CobLin
+import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.PerKer
+
+section
+open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.GKCoh GlobalTheory.LFun
+open UpperTheory.V.Af UpperTheory.V.AlgRepEndIrreducible UpperTheory.V.Lit UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Bor UpperTheory.V.Cj
+open scoped TensorProduct
+
+private theorem cob_map {Γ M N : Type} [Group Γ] [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
+    (ρ : Representation ℂ Γ M) (ρ' : Representation ℂ Γ N) (P : M →ₗ[ℂ] N) (hP : ∀ γ m, P (ρ γ m) = ρ' γ (P m))
+    (q : ℕ) (c : List Γ → M) (h : HCob ρ q c) : HCob ρ' q (fun z => P (c z)) := by
+  cases q with
+  | zero =>
+    intro z hz
+    beta_reduce
+    rw [h z hz, map_zero]
+  | succ q =>
+    obtain ⟨b, b1, b2⟩ := h
+    refine ⟨fun z => P (b z), fun γ z hz => ?_, fun z hz => ?_⟩
+    · beta_reduce
+      rw [b1 γ z hz, hP]
+    · beta_reduce
+      rw [b2 z hz]
+      simp only [hd, map_sum, map_zsmul]
+
+private theorem coset_map {G : Type} [Group G] {U U' : Subgroup G} {x : G} (hx : ∀ u ∈ U', x⁻¹ * u * x ∈ U) :
+    ∃ f : G ⧸ U' → G ⧸ U, (∀ y : G, f y = ((y * x : G) : G ⧸ U)) ∧ ∀ (g : G) s, f (g • s) = g • f s := by
+  have wd : ∀ y y' : G, (QuotientGroup.leftRel U') y y' → ((y * x : G) : G ⧸ U) = ((y' * x : G) : G ⧸ U) := by
+    intro y y' hy
+    have h1 := hx _ (QuotientGroup.leftRel_apply.1 hy)
+    refine QuotientGroup.eq.2 ?_
+    convert h1 using 1
+    group
+  refine ⟨Quotient.lift _ wd, fun _ => rfl, fun g s => ?_⟩
+  induction s using QuotientGroup.induction_on with | H y => ?_
+  change ((g * y * x : G) : G ⧸ U) = ((g * (y * x) : G) : G ⧸ U)
+  rw [mul_assoc]
+
+theorem UpperTheory.V.Cj.relPull :
+    UpperTheory.V.Cj.RelPull := by
+  intro E _ _ _ a U U' x hx σ Ξ Ξ' h q α β ⟨hα, hβ, c, c', p, p', hc⟩
+  obtain ⟨f, f1, f2⟩ := coset_map hx
+  obtain ⟨a1, -, a2⟩ := perNat E a U U' x hx Ξ q α hα
+  obtain ⟨b1, -, b2⟩ := perNat E a U U' x hx Ξ' q β hβ
+  refine ⟨a1, b1, fun z s => c z (f s), fun z s => c' z (f s), a2 c _ (fun z y => by rw [f1]) p,
+    b2 c' _ (fun z y => by rw [f1]) p', ?_⟩
+  refine cob_map (levelRep ⊤ U (ratC Ξ')) (levelRep ⊤ U' (ratC Ξ')) (LinearMap.funLeft ℂ _ f) (fun γ m => ?_) q _ hc
+  funext s
+  change _ *ᵥ m (_ • f s) = _ *ᵥ m (f (_ • s))
+  rw [f2]
+end
+
+section
+open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.GKCoh GlobalTheory.LFun
+open UpperTheory.V.Af UpperTheory.V.AlgRepEndIrreducible UpperTheory.V.Lit UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Bor UpperTheory.V.Cj
+open scoped TensorProduct
+
+theorem UpperTheory.V.Cj.relLin :
+    UpperTheory.V.Cj.RelLin := by
+  intro E _ _ _ a U σ Ξ Ξ' h q s α α' β β' ⟨a1, b1, c, d, p1, p2, p3⟩ ⟨a2, b2, c', d', r1, r2, r3⟩
+  refine ⟨(levSub E a Ξ q).1 U s _ _ a1 a2, (levSub E a Ξ' q).1 U (σ s) _ _ b1 b2, s • c + c', σ s • d + d', ?_, ?_, ?_⟩
+  · simpa only [one_smul] using (perEx E a U Ξ q).2.2 α α' c c' s 1 p1 r1
+  · simpa only [one_smul] using (perEx E a U Ξ' q).2.2 β β' d d' (σ s) 1 p2 r2
+  · have e : σ s • d + d' - sigC σ h (s • c + c') = σ s • (d - sigC σ h c) + (d' - sigC σ h c') := by
+      funext z y i
+      simp only [sigC, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, map_add, map_mul]
+      ring
+    rw [e]
+    exact cobLin _ _ _ q (σ s) _ _ p3 r3
+end
+
+section
+open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.GKCoh GlobalTheory.LFun
+open UpperTheory.V.Af UpperTheory.V.AlgRepEndIrreducible UpperTheory.V.Lit UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Bor UpperTheory.V.Cj
+open scoped TensorProduct
+
+private theorem hcob_map {Γ M M' : Type} [Group Γ] [AddCommGroup M] [Module ℂ M] [AddCommGroup M'] [Module ℂ M']
+    (ρ : Representation ℂ Γ M) (ρ' : Representation ℂ Γ M') (T : M →+ M') (hT : ∀ γ m, T (ρ γ m) = ρ' γ (T m))
+    (q : ℕ) (c : List Γ → M) (hc : HCob ρ q c) : HCob ρ' q (fun x => T (c x)) := by
+  cases q with
+  | zero =>
+    intro x hx
+    change T (c x) = 0
+    rw [hc x hx, map_zero]
+  | succ k =>
+    obtain ⟨b, b1, b2⟩ := hc
+    refine ⟨fun x => T (b x), fun γ x hx => ?_, fun x hx => ?_⟩
+    · change T (b _) = _
+      rw [b1 γ x hx, hT]
+    · change T (c x) = _
+      rw [b2 x hx]
+      simp only [hd, map_sum, map_zsmul]
+
+private theorem sigCob_one {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {a : ℕ}
+    (U : Subgroup (GL (Fin a) (Af E))) (σ : ℂ ≃+* ℂ) {Ξ Ξ' : AlgRep E a} (h : Ξ.d = Ξ'.d) (hσ : ConjMat σ h) (q : ℕ)
+    (c : List ↥(⊤ : Subgroup (GL (Fin a) E)) → (GL (Fin a) (Af E) ⧸ U) → Fin Ξ.d → ℂ)
+    (hc : HCob (levelRep ⊤ U (ratC Ξ)) q c) : HCob (levelRep ⊤ U (ratC Ξ')) q (sigC σ h c) := by
+  let T : ((GL (Fin a) (Af E) ⧸ U) → Fin Ξ.d → ℂ) →+ ((GL (Fin a) (Af E) ⧸ U) → Fin Ξ'.d → ℂ) :=
+    { toFun := fun f y i => σ (f y (Fin.cast h.symm i))
+      map_zero' := by ext y i; simp
+      map_add' := fun f g => by ext y i; simp }
+  refine hcob_map _ _ T (fun γ f => ?_) q c hc
+  funext y i
+  change σ ((ratC Ξ γ *ᵥ f _) (Fin.cast h.symm i)) = (ratC Ξ' γ *ᵥ fun j => σ (f _ (Fin.cast h.symm j))) i
+  simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, ← hσ _ _ _]
+  exact Fintype.sum_equiv (finCongr h) _ _ fun j => rfl
+
+theorem UpperTheory.V.Cj.sigCob :
+    UpperTheory.V.Cj.SigCob := by
+  intro E _ _ _ a U σ Ξ Ξ' h hσ q c
+  refine ⟨fun hc => ?_, sigCob_one U σ h hσ q c⟩
+  have hσ' : ConjMat σ.symm h.symm := fun γ i j => by
+    rw [RingEquiv.eq_symm_apply, ← hσ]; rfl
+  have e : sigC σ.symm h.symm (sigC σ h c) = c := by
+    funext z y i
+    exact σ.symm_apply_apply _
+  have := sigCob_one U σ.symm h.symm hσ' q _ hc
+  rwa [e] at this
+end
+
+section
+open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.GKCoh GlobalTheory.LFun
+open UpperTheory.V.Af UpperTheory.V.AlgRepEndIrreducible UpperTheory.V.Lit UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Bor UpperTheory.V.Cj
+open scoped TensorProduct
+
+private theorem cob_sub {Γ M : Type} [Group Γ] [AddCommGroup M] [Module ℂ M] {ρ : Representation ℂ Γ M} {q : ℕ}
+    {c c' : List Γ → M} (h : HCob ρ q c) (h' : HCob ρ q c') : HCob ρ q (c - c') := by
+  have := UpperTheory.V.Cj.cobLin Γ M ρ q (-1) c' c h' h
+  rwa [neg_smul, one_smul, neg_add_eq_sub] at this
+
+private theorem cob_add {Γ M : Type} [Group Γ] [AddCommGroup M] [Module ℂ M] {ρ : Representation ℂ Γ M} {q : ℕ}
+    {c c' : List Γ → M} (h : HCob ρ q c) (h' : HCob ρ q c') : HCob ρ q (c + c') := by
+  have := UpperTheory.V.Cj.cobLin Γ M ρ q 1 c c' h h'
+  rwa [one_smul] at this
+
+theorem UpperTheory.V.Cj.relKer :
+    UpperTheory.V.Cj.RelKer := by
+  intro E _ _ _ a ha U hU σ Ξ Ξ' h hσ q α β
+  have hs := UpperTheory.V.Cj.sigCob E a U σ Ξ Ξ' h hσ q
+  refine ⟨?_, fun a1 b1 a2 b2 a3 b3 => ?_⟩
+  · rintro ⟨a1, b1, c, c', p, p', hc⟩
+    rw [← perKer E a ha U hU Ξ q α c a1 p, ← perKer E a ha U hU Ξ' q β c' b1 p', ← hs c]
+    constructor
+    · intro k
+      have := cob_add hc k
+      rwa [sub_add_cancel] at this
+    · intro k
+      have := cob_sub k hc
+      rwa [sub_sub_cancel] at this
+  · obtain ⟨c, p⟩ := (perEx E a U Ξ q).1 α a1 a2
+    obtain ⟨c', p'⟩ := (perEx E a U Ξ' q).1 β b1 b2
+    exact ⟨a1, b1, c, c', p, p', cob_sub ((perKer E a ha U hU Ξ' q β c' b1 p').2 b3)
+      ((hs c).2 ((perKer E a ha U hU Ξ q α c a1 p).2 a3))⟩
+end
+
+section
 open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.GKCoh GlobalTheory.LFun
 open UpperTheory.V.Af UpperTheory.V.AlgRepEndIrreducible UpperTheory.V.Lit UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Bor UpperTheory.V.Cj
 open scoped TensorProduct
@@ -64,3 +220,4 @@ theorem UpperTheory.V.Cj.relFacts :
       ((L _ _ (inf_le_left.trans (inf_le_left.trans inf_le_left)) α).1 u3)
       ((L' _ _ (inf_le_left.trans (inf_le_left.trans inf_le_right)) β).1 v3) d1 d2
       ((L _ _ (inf_le_left.trans inf_le_right) α).2 x3) ((L' _ _ inf_le_right β).2 y3)⟩
+end

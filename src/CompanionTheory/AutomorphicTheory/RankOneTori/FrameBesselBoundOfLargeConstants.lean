@@ -1,10 +1,324 @@
-import CompanionTheory.AutomorphicTheory.RankOneTori.Factor
-import CompanionTheory.AutomorphicTheory.RankOneTori.BeRankScale
-import CompanionTheory.AutomorphicTheory.RankOneTori.NzTranslate
+import CompanionTheory.AutomorphicTheory.RankOneTori.MatGroupOf
+import CompanionTheory.AutomorphicTheory.RankOneEstimates.RankOne
+import Formalism.SharpRestriction.CuspSpanNormBounds.IsPtRepTrDat
+import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.SigmaFiniteAmplitudes.SigmaFiniteOfUnfold
+import CompanionTheory.AutomorphicTheory.RankOneEstimates.DecSender
+import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.BesselOrbitConvolutions.BeBessel
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.MultiplicityDescent.JScaleMoveB
+import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.SigmaFiniteAmplitudes.NonzeroKFinite
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CompactCellConvergence.GrowthSide
 import CompanionTheory.AutomorphicTheory.RankOneTori.KDense
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.OneBesselTor
 import Formalism.SharpRestriction.CuspSpanNormBounds.KFinOfLowUnitH
 
+section
+open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.Pv.AmpDDPf Formalism.FourierDecayAlt
+open scoped ENNReal InnerProductSpace
+
+noncomputable section
+
+namespace Formalism.MainStatements.RankOne
+
+variable {k r : ℕ}
+
+def lamP (L : LocBessel k r) (l : L.Hs → L.Wp) (P : L.Hs →L[ℂ] L.Wp) : ℂ :=
+  ∑ i, ⟪l (ContinuousLinearMap.adjoint P (stdOrthonormalBasis ℂ L.Wp i)), stdOrthonormalBasis ℂ L.Wp i⟫_ℂ
+
+def lamQ (L : LocBessel k r) (l' : L.Hs → L.Wq) (Q : L.Wq →L[ℂ] L.Hs) : ℂ :=
+  ∑ j, ⟪stdOrthonormalBasis ℂ L.Wq j, l' (Q (stdOrthonormalBasis ℂ L.Wq j))⟫_ℂ
+
+theorem coef_expand (L : LocBessel k r) (P : L.Hs →L[ℂ] L.Wp) (Q : L.Wq →L[ℂ] L.Hs) (x : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) :
+    P.comp ((L.σ x).comp Q) = ∑ i, ∑ j, Pv.AmpDD.coefF L (ContinuousLinearMap.adjoint P (stdOrthonormalBasis ℂ L.Wp i))
+      (Q (stdOrthonormalBasis ℂ L.Wq j)) (stdOrthonormalBasis ℂ L.Wp i) (stdOrthonormalBasis ℂ L.Wq j) x := by
+  ext η
+  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.sum_apply, Pv.AmpDD.coefF,
+    ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, ContinuousLinearMap.adjoint_inner_left, smul_smul]
+  conv_lhs => rw [← (stdOrthonormalBasis ℂ L.Wp).sum_repr' (P (L.σ x (Q η)))]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← Finset.sum_smul]
+  congr 1
+  conv_lhs => rw [← (stdOrthonormalBasis ℂ L.Wq).sum_repr' η]
+  simp only [map_sum, map_smul, inner_sum, inner_smul_right]
+
+theorem int_coefF (L : LocBessel k r) {μG : Measure (Mt k r)} (hμG : IsHaarOn (UH (Hpk k r)) μG) {d : ℝ} (hd : 0 < d)
+    (hSch : ∀ v w v' w' : L.Hs,
+      Integrable (fun x : Mt k r => ⟪w, L.σ (Matrix.of x) v⟫_ℂ * star ⟪w', L.σ (Matrix.of x) v'⟫_ℂ) μG ∧
+      ∫ x, ⟪w, L.σ (Matrix.of x) v⟫_ℂ * star ⟪w', L.σ (Matrix.of x) v'⟫_ℂ ∂μG = ⟪v', v⟫_ℂ * ⟪w, w'⟫_ℂ / (d : ℂ))
+    {w0 : L.Hs} (hw1 : ⟪w0, w0⟫_ℂ = 1) {γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hγ : γ ∈ UH (Hpk k r)) {ν : Measure (PairSp k r)}
+    (hae : ∀ᵐ p ∂ν, InPair L p) {a b C1 C2 : ℝ} (hb : 0 ≤ b) (hab : b ≤ a)
+    (hIG : Integrable (fun x : Mt k r => B.gN (Matrix.of x) ^ (b - a)) μG)
+    (hpm : Integrable (Pv.AmpDD.pairMaj γ b) ν) {v v' : L.Hs}
+    (hC1 : ∀ g ∈ UH (Hpk k r), ‖⟪v, L.σ g w0⟫_ℂ‖ ≤ C1 * B.gN g ^ (-a))
+    (hC2 : ∀ g ∈ UH (Hpk k r), ‖⟪v', L.σ g w0⟫_ℂ‖ ≤ C2 * B.gN g ^ (-a)) (ξ : L.Wp) (ξ' : L.Wq) :
+    Integrable (besselIntg L (Pv.AmpDD.coefF L v v' ξ ξ') γ) ν := by
+  have : SigmaFinite μG := hμG.1
+  set K : ℝ := ‖ξ‖ * ‖ξ'‖ * (|C1| * |C2|) * (∫ x, B.gN (Matrix.of x) ^ (b - a) ∂μG) with hK
+  have hK0 : 0 ≤ K := by
+    have : 0 ≤ ∫ x, B.gN (Matrix.of x) ^ (b - a) ∂μG :=
+      integral_nonneg fun x => Real.rpow_nonneg (P.S3dx6.gN_nonneg _) _
+    positivity
+  have hsm : StronglyMeasurable fun p : PairSp k r => ∫ x, PsiM L w0 v v' ξ ξ' γ (p, x) ∂μG :=
+    (sm_PsiM L w0 v v' ξ ξ' γ).integral_prod_right'
+  have he : ∀ p, InPair L p → ∫ x, PsiM L w0 v v' ξ ξ' γ (p, x) ∂μG = ∫ x, Psi L w0 v v' ξ ξ' γ p x ∂μG := fun p hp =>
+    integral_congr_ae ((ae_mem_sk hμG).mono fun x hx => PsiM_eq L w0 v v' ξ ξ' hγ hp hx)
+  have hI : Integrable (fun p : PairSp k r => ∫ x, PsiM L w0 v v' ξ ξ' γ (p, x) ∂μG) ν := by
+    refine (hpm.const_mul K).mono' hsm.aestronglyMeasurable (hae.mono fun p hp => ?_)
+    rw [he p hp]
+    have h1 := (enorm_integral_le_lintegral_enorm _).trans
+      (lint_G_bound L hμG P.norm_inverse_bound hb hab hIG w0 v v' ξ ξ' hC1 hC2 hγ hp)
+    rw [← ofReal_norm_eq_enorm] at h1
+    exact (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hK0 (pairMaj_nonneg γ b p))).1 h1
+  refine (hI.smul (d : ℂ)).congr (hae.mono fun p hp => ?_)
+  have hd' : (d : ℂ) ≠ 0 := by exact_mod_cast hd.ne'
+  simp only [Pi.smul_apply]
+  rw [he p hp, (schur_step L hμG hd hSch hw1 v v' ξ ξ' hγ hp).2, smul_smul, mul_inv_cancel₀ hd', one_smul]
+
+theorem cell_factor (L : LocBessel k r) {a : ℝ} {w0 : L.Hs} (hw1 : ⟪w0, w0⟫_ℂ = 1) (l : L.Hs → L.Wp) (l' : L.Hs → L.Wq)
+    (Sm : Set L.Hs) (hdec : ∀ v ∈ Sm, ∃ C : ℝ, ∀ g ∈ UH (Hpk k r), ‖⟪v, L.σ g w0⟫_ℂ‖ ≤ C * B.gN g ^ (-a))
+    (hl : ∀ v ∈ Sm, ∀ t ∈ UH (Hpk k r), ThreeDimData.be L.z L.c L.π L.σ L.μW L.μN (L.σ t w0) v =
+      (innerSL ℂ (l v)).smulRight (l (L.σ t w0)))
+    (hl' : ∀ v ∈ Sm, ∀ t ∈ UH (Hpk k r), ThreeDimData.be L.z' L.c L.π' L.σ L.μW' L.μN (L.σ t w0) v =
+      (innerSL ℂ (l' v)).smulRight (l' (L.σ t w0)))
+    {γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} {μR : Measure (Mt k r)} {ν : Measure (PairSp k r)} (hc : Cell L a γ μR ν) :
+    ∃ Ψ : L.Wq →L[ℂ] L.Wp, ∀ (P : L.Hs →L[ℂ] L.Wp) (Q : L.Wq →L[ℂ] L.Hs),
+      (∀ x, ContinuousLinearMap.adjoint P x ∈ Sm) → (∀ w, Q w ∈ Sm) → ∀ F : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (L.Wq →L[ℂ] L.Wp),
+      (∀ x ∈ UH (Hpk k r), F x = P.comp ((L.σ x).comp Q)) → OrbInt L F γ ν = (lamP L l P * lamQ L l' Q) • Ψ := by
+  obtain ⟨hγ, hrel, hR, hq, hinv, b, hb, hab, hpm⟩ := hc
+  obtain ⟨μG, hμG0⟩ := P.unitary_group_haar_exists k r
+  have hμG : IsHaarOn (UH (Hpk k r)) μG := ⟨P.B5.haar_sigmaFinite hμG0, hμG0.ne_zero, hμG0.conc, hμG0.left⟩
+  obtain ⟨νR, hν⟩ := quot_exists hγ hμG hR
+  obtain ⟨d, hd, hSch⟩ := P.schur_hermitian k r L.ε L.lam L.Hs L.σ μG L.hlam L.hσ hμG
+  have hd' : (d : ℂ) ≠ 0 := by exact_mod_cast hd.ne'
+  have hAG0 : 0 ≤ ThreeDimData.AG k r := by unfold ThreeDimData.AG; positivity
+  have hab' : b ≤ a := by linarith
+  have hIG : Integrable (fun x : Mt k r => B.gN (Matrix.of x) ^ (b - a)) μG := by
+    have h1 := P.growth_group_bound k r μG (a - b) hμG (by linarith)
+    simpa only [neg_sub] using h1
+  have hae := ae_inPair_nu L hR hq
+  refine ⟨(d : ℂ) • ampJ νR 1 (fun g => l (L.σ g w0)) (fun g => l' (L.σ g w0)) γ, fun P Q hP hQ F hF => ?_⟩
+  set e := stdOrthonormalBasis ℂ L.Wp with he
+  set e' := stdOrthonormalBasis ℂ L.Wq with he'
+  choose C1 hC1 using fun i => hdec _ (hP (e i))
+  choose C2 hC2 using fun j => hdec _ (hQ (e' j))
+  have hI := fun i j => int_coefF L hμG hd hSch hw1 hγ hae hb hab' hIG hpm (hC1 i) (hC2 j) (e i) (e' j)
+  have hA := fun i j => amp_core' L hμG hd hSch Formalism.FourierDecayAlt.P.norm_inverse_bound hw1 l l' hγ hrel hR hq hν hinv hb hab' hIG hpm
+    (hl _ (hP (e i))) (hl' _ (hQ (e' j))) (hC1 i) (hC2 j) (e i) (e' j)
+  have h1 : OrbInt L F γ ν = ∑ i, ∑ j, OrbInt L (Pv.AmpDD.coefF L (ContinuousLinearMap.adjoint P (e i)) (Q (e' j))
+      (e i) (e' j)) γ ν := by
+    unfold OrbInt
+    simp only [← integral_finsetSum _ fun j _ => hI _ j]
+    rw [← integral_finsetSum _ fun i _ => integrable_finsetSum _ fun j _ => hI i j]
+    refine integral_congr_ae (hae.mono fun p hp => ?_)
+    have hx := WeylGroupFacts.uh_mul (WeylGroupFacts.uh_mul (WeylGroupFacts.uh_mul (WeylGroupFacts.uh_mul (WeylGroupFacts.uh_inv hp.1.1) (WeylGroupFacts.uh_inv hp.2.1.1)) hγ)
+      hp.2.2.2.1) hp.2.2.1.1
+    simp only [besselIntg]
+    rw [hF _ hx, coef_expand]
+    simp only [ContinuousLinearMap.finset_sum_comp, ContinuousLinearMap.comp_finset_sum, Finset.smul_sum]
+    rfl
+  rw [h1, lamP, lamQ, Finset.sum_mul_sum, Finset.sum_smul]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Finset.sum_smul]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [smul_comm, hA i j, smul_smul, mul_inv_cancel₀ hd', one_smul]
+
+end Formalism.MainStatements.RankOne
+end
+end
+
+section
+open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.FrameBoundFromBesselTorus Formalism.FourierDecayAlt.P
+open scoped InnerProductSpace ENNReal
+
+noncomputable section
+
+namespace Formalism.MainStatements.RankOne
+
+variable {k r : ℕ}
+
+theorem be_scale {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) → ℝ}
+    {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {σ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (H →L[ℂ] H)}
+    {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp]
+    {z : Fin (2 * r + k + 1) → ℂ} {π : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (Wp →L[ℂ] Wp)} {μW μN : Measure (Mt k r)} [SFinite μW] [SFinite μN]
+    (hσ : PI.UpqRep.IsDSHpk k r ε lam σ) (hz : inWb k r z)
+    (h1 : ∀ᵐ x ∂μW, Matrix.of x ∈ UWset k r z) (h2 : ∀ᵐ x ∂μN, Matrix.of x ∈ Nset k r)
+    {κ τ : ℝ} (hκ : 0 < κ) (hτ : 0 < τ) (c : ℂ) (u v : H) :
+    Formalism.FourierDecayAlt.ThreeDimData.be ((τ : ℂ) • z) ((κ : ℂ) * c) (fun x => π (cjI k r κ τ x)) σ (μW.map (cjT k r κ τ))
+              (μN.map (cjT k r κ τ)) u v =
+      Formalism.FourierDecayAlt.ThreeDimData.be z c π σ μW μN (σ (dM k r κ τ) u) (σ (dM k r κ τ) v) := by
+  unfold Formalism.FourierDecayAlt.ThreeDimData.be
+  rw [Measure.map_prod_map _ _ measurable_cjT measurable_cjT]
+  have e : Prod.map (cjT k r κ τ) (cjT k r κ τ) = ⇑((cjE (k := k) (r := r) hκ hτ).prodCongr (cjE hκ hτ)) := rfl
+  rw [e, integral_map_equiv]
+  refine integral_congr_ae ?_
+  have a1 : ∀ᵐ p ∂(μW.prod μN), Matrix.of p.1 ∈ UWset k r z := Measure.quasiMeasurePreserving_fst.ae h1
+  have a2 : ∀ᵐ p ∂(μW.prod μN), Matrix.of p.2 ∈ Nset k r := Measure.quasiMeasurePreserving_snd.ae h2
+  filter_upwards [a1, a2] with p hp1 hp2
+  show Formalism.FourierDecayAlt.ThreeDimData.beInt _ _ _ σ u v (cjT k r κ τ p.1, cjT k r κ τ p.2) = _
+  have hd := dM_mem_UH (k := k) (r := r) hκ hτ
+  have hdi := dMi_mem_UH (k := k) (r := r) hκ hτ
+  have hx : Matrix.of p.1 * Matrix.of p.2 ∈ UH (Hpk k r) := WeylGroupFacts.uh_mul hp1.1 hp2.1
+  simp only [Formalism.FourierDecayAlt.ThreeDimData.beInt, of_cjT]
+  rw [psi_cj hκ hτ hz, ← cj_inv hκ hτ, cjI_cj hκ hτ, ← cj_mul hκ hτ]
+  congr 2
+  unfold cj
+  rw [TranslationBesselVanishing.sigma_mul hσ (WeylGroupFacts.uh_mul hdi hx) hd, TranslationBesselVanishing.sigma_mul hσ hdi hx]
+  simp only [ContinuousLinearMap.comp_apply]
+  rw [MatrixMultiplicationContinuity.sigma_inner hσ hdi, dMi_inv hκ hτ]
+
+theorem be_rank_scale (hk : 1 ≤ k) {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) → ℝ} {h : ℝ}
+    {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {σ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (H →L[ℂ] H)}
+    {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp] [FiniteDimensional ℂ Wp]
+    {z : Fin (2 * r + k + 1) → ℂ} {u : Fin k → ℝ} {π : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (Wp →L[ℂ] Wp)} {μW : Measure (Mt k r)}
+    (hl : IsHCParam lam) (hσ : PI.UpqRep.IsDSHpk k r ε lam σ) (hg : Formalism.QuantumDeterminants.GapAtLeast ε lam h)
+    (hh : 120 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 3 ≤ h) (hz : inWb k r z) (hT : 0 < Tz k r z)
+    (hπ : IsHCTypeW k r z u π) (hW : IsHaarOn (UWset k r z) μW) {κN : ℝ≥0∞} (h0 : κN ≠ 0) (h1 : κN ≠ ⊤)
+    {κ₀ : ℝ} (hκ₀ : 0 < κ₀) :
+    ∃ l : H → Wp, ∀ w ∈ PI.UpqRep.smoothVecs (k := k) (r := r) σ, ∀ v ∈ PI.UpqRep.smoothVecs (k := k) (r := r) σ,
+      Formalism.FourierDecayAlt.ThreeDimData.be z (cOfDpsi (κ₀ : ℂ)) π σ μW (haarLie (Nset k r) κN) w v = (innerSL ℂ (l v)).smulRight (l w) := by
+  have hκ : 0 < κ₀⁻¹ := inv_pos.2 hκ₀
+  have hτ : (0 : ℝ) < 1 := one_pos
+  have : SigmaFinite μW := hW.1
+  have : SFinite (haarLie (Nset k r) κN) := sFinite_haarLie _ _
+  have hc : ((κ₀⁻¹ : ℝ) : ℂ) * cOfDpsi (κ₀ : ℂ) = cStd := by
+    have : (κ₀ : ℂ) ≠ 0 := by exact_mod_cast hκ₀.ne'
+    unfold cOfDpsi cStd
+    push_cast
+    field_simp
+  have hN : IsHaarOn (Nset k r) ((haarLie (Nset k r) κN).map (cjT k r κ₀⁻¹ 1)) := by
+    rw [map_haarLie_N hκ hτ]
+    exact Formalism.MainNotions.BridgeCSB.haarLieN k r _ (mul_ne_zero h0 (ENNReal.ofReal_pos.2 (deltaN_pos hκ hτ)).ne')
+      (ENNReal.mul_ne_top h1 ENNReal.ofReal_ne_top)
+  obtain ⟨L, hL⟩ := CompanionTheory.FamilyDerivativeExpansion.M1.be_rank_one (z := ((1 : ℝ) : ℂ) • z) (π := fun x => π (cjI k r κ₀⁻¹ 1 x)) hk hl hσ hg hh
+    (inWb_smul hz _) (by rw [Tz_smul]; simpa using hT) (isHCTypeW_cjI hκ hτ hz hπ) (isHaarOn_map_cjT hκ hτ hz hW) hN
+  have hd := dM_mem_UH (k := k) (r := r) hκ hτ
+  have hdi := dMi_mem_UH (k := k) (r := r) hκ hτ
+  have hcan : ∀ x : H, σ (dM k r κ₀⁻¹ 1) (σ (dMi k r κ₀⁻¹ 1) x) = x := fun x => by
+    rw [← ContinuousLinearMap.comp_apply, ← TranslationBesselVanishing.sigma_mul hσ hd hdi, dM_mul_dMi hκ hτ, (MatrixMultiplicationContinuity.sigma_facts hσ).1]
+    rfl
+  refine ⟨fun x => L (σ (dMi k r κ₀⁻¹ 1) x), fun w hw v hv => ?_⟩
+  have e := be_scale (π := π) hσ hz (Formalism.MainNotions.S.Pv.AmpDDPf.ae_mem_sk hW) (Formalism.MainNotions.S.Pv.AmpDDPf.ae_mem_haarLieN κN) hκ hτ
+    (cOfDpsi (κ₀ : ℂ)) (σ (dMi k r κ₀⁻¹ 1) w) (σ (dMi k r κ₀⁻¹ 1) v)
+  rw [hcan, hcan, hc] at e
+  rw [← e]
+  exact (hL _ (TranslationBesselVanishing.smooth_translate hσ hw hdi) _ (TranslationBesselVanishing.smooth_translate hσ hv hdi)).2
+
+end Formalism.MainStatements.RankOne
+end
+end
+
+section
+open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P
+open scoped ENNReal InnerProductSpace
+
+noncomputable section
+
+namespace Formalism.MainStatements.RankOne
+
+variable {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) → ℝ}
+  {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {σ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (H →L[ℂ] H)}
+
+theorem dsigW_conj (hσ : IsURepOn (UH (Hpk k r)) σ) {t : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ht : t ∈ UH (Hpk k r)) :
+    ∀ ws : List (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ), (∀ X ∈ ws, PI.UpqRep.InLieHpk k r X) → ∀ u : H,
+      PI.UpqRep.dsigW (k := k) (r := r) σ ws (σ t u) =
+        σ t (PI.UpqRep.dsigW (k := k) (r := r) σ (ws.map fun X => t⁻¹ * X * t) u)
+  | [], _, _ => rfl
+  | X :: w, hw, u => by
+    simp only [PI.UpqRep.dsigW, List.map_cons]
+    rw [dsigW_conj hσ ht w (fun Y hY => hw Y (List.mem_cons_of_mem X hY)) u]
+    exact ReciprocityTheory.ChartRestriction.DS.Mult1.Down.ScaleMoveB.dsig_conj hσ ht (hw X List.mem_cons_self) _
+
+theorem nz_translate (hKD : Pv.AmpDD.KDense) (hlam : IsHCParam lam) (hσ : PI.UpqRep.IsDSHpk k r ε lam σ)
+    {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] {z : Fin (2 * r + k + 1) → ℂ} {ψ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → ℂ}
+    {π : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (Wp →L[ℂ] Wp)} {Bm : H → Wp} (hB : PI.BesselMapUniq.IsBesselMapSm (k := k) (r := r) z ψ σ π Bm)
+    {t : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ht : t ∈ UH (Hpk k r)) {v : H} (hv : v ∈ PI.UpqRep.smoothVecs (k := k) (r := r) σ) (hBv : Bm v ≠ 0) :
+    ∃ u : H, PI.UpqRep.IsKFinHpk (k := k) (r := r) σ u ∧ Bm (σ t u) ≠ 0 := by
+  have hU : IsURepOn (UH (Hpk k r)) σ := Formalism.MainNotions.LowestKTypeMultiplicity.urep_of_DS hσ
+  have hti := WeylGroupFacts.uh_inv ht
+  have hu : IsUnit t.det := (unitary_group_closed k r).unit t ht
+  set x := σ t⁻¹ v with hx
+  have hxs : x ∈ PI.UpqRep.smoothVecs (k := k) (r := r) σ := TranslationBesselVanishing.smooth_translate hσ hv hti
+  have htx : σ t x = v := by
+    rw [hx, ← ContinuousLinearMap.comp_apply, ← TranslationBesselVanishing.sigma_mul hσ ht hti, Matrix.mul_nonsing_inv _ hu,
+      (MatrixMultiplicationContinuity.sigma_facts hσ).1]
+    rfl
+  obtain ⟨hadd, -, -, C, Ws, hWs, hbd⟩ := hB
+  have hpos : 0 < ‖Bm v‖ := norm_pos_iff.mpr hBv
+  set e : ℝ := ‖Bm v‖ / (|C| + 1) with he
+  have he0 : 0 < e := div_pos hpos (by positivity)
+  obtain ⟨u, huK, hue⟩ := hKD k r ε lam H σ hlam hσ x hxs (Ws.map (List.map fun X => t⁻¹ * X * t))
+    (fun w hw X hX => by
+      obtain ⟨w0, hw0, rfl⟩ := List.mem_map.1 hw
+      obtain ⟨X0, hX0, rfl⟩ := List.mem_map.1 hX
+      exact ReciprocityTheory.ChartRestriction.DS.Mult1.Down.ScaleMoveB.lie_conj ht (hWs w0 hw0 X0 hX0)) e he0
+  refine ⟨u, huK, fun h0 => ?_⟩
+  have hus : u ∈ PI.UpqRep.smoothVecs (k := k) (r := r) σ := CompanionTheory.D.gk.admitted.k_finite_smooth k r ε lam H σ hlam hσ u huK
+  have hds : x - u ∈ PI.UpqRep.smoothVecs (k := k) (r := r) σ := by
+    rw [sub_eq_add_neg, ← neg_one_smul ℂ u]
+    exact DDSmoothness.smooth_add hxs (DDSmoothness.smooth_smul (-1) hus)
+  have hsplit : Bm v = Bm (σ t (x - u)) := by
+    have := hadd _ (TranslationBesselVanishing.smooth_translate hσ hds ht) _ (TranslationBesselVanishing.smooth_translate hσ hus ht)
+    rw [← map_add, sub_add_cancel, htx, h0, add_zero] at this
+    exact this
+  have hb := hbd _ (TranslationBesselVanishing.smooth_translate hσ hds ht)
+  have hmap : (Ws.map fun w => ‖PI.UpqRep.dsigW (k := k) (r := r) σ w (σ t (x - u))‖) =
+      (Ws.map (List.map fun X => t⁻¹ * X * t)).map fun w => ‖PI.UpqRep.dsigW (k := k) (r := r) σ w (x - u)‖ := by
+    rw [List.map_map]
+    refine List.map_congr_left fun w hw => ?_
+    rw [dsigW_conj hU ht w (hWs w hw), (MatrixMultiplicationContinuity.sigma_facts hσ).2 t ht]
+    rfl
+  rw [hmap, ← hsplit] at hb
+  set S := ((Ws.map (List.map fun X => t⁻¹ * X * t)).map
+    fun w => ‖PI.UpqRep.dsigW (k := k) (r := r) σ w (x - u)‖).sum with hS
+  have hS0 : 0 ≤ S := by
+    rw [hS]; apply List.sum_nonneg; intro y hy
+    obtain ⟨w, -, rfl⟩ := List.mem_map.1 hy; exact norm_nonneg _
+  have h1 : ‖Bm v‖ ≤ |C| * S := hb.trans (mul_le_mul_of_nonneg_right (le_abs_self C) hS0)
+  have h2 : |C| * S ≤ |C| * e := mul_le_mul_of_nonneg_left hue.le (abs_nonneg C)
+  have h3 : |C| * e < ‖Bm v‖ := by
+    rw [he, mul_div_assoc', div_lt_iff₀ (by positivity)]
+    nlinarith [abs_nonneg C]
+  linarith
+
+theorem side_nz (hKD : Pv.AmpDD.KDense) {h : ℝ} (hlam : IsHCParam lam) (hσ : PI.UpqRep.IsDSHpk k r ε lam σ)
+    (hg : Formalism.QuantumDeterminants.GapAtLeast ε lam h) (hO : ThreeDimData.GapOK k r h) {w0 : H} (hw0 : PI.UpqRep.IsLowUnitH k r ε lam σ w0)
+    {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp] [FiniteDimensional ℂ Wp]
+    {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < Tz k r z) {c : ℂ} (hc : c ≠ 0) {u : Fin k → ℝ}
+    {π : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (Wp →L[ℂ] Wp)} (hπ : IsHCTypeW k r z u π) {μW : Measure (Mt k r)} (hW : IsHaarOn (UWset k r z) μW)
+    (hW1 : μW Set.univ = 1) {κ : ℝ≥0∞} (h0 : κ ≠ 0) (h1 : κ ≠ ⊤) {l : H → Wp}
+    (hl : ∀ w ∈ PI.UpqRep.smoothVecs (k := k) (r := r) σ, ∀ v ∈ PI.UpqRep.smoothVecs (k := k) (r := r) σ,
+      ThreeDimData.be z c π σ μW (haarLie (Nset k r) κ) w v = (innerSL ℂ (l v)).smulRight (l w))
+    {v : H} (hv : PI.UpqRep.IsKFinHpk (k := k) (r := r) σ v) (hlv : l v ≠ 0) {t : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ht : t ∈ UH (Hpk k r)) :
+    ∃ y : H, PI.UpqRep.IsKFinHpk (k := k) (r := r) σ y ∧ l (σ t y) ≠ 0 ∧ ∀ a : ℂ, l (a • σ t y) = a • l (σ t y) := by
+  obtain ⟨μG, hμG⟩ := unitary_group_haar_exists k r
+  have hGsk : IsHaarOn (UH (Hpk k r)) μG := ⟨B5.haar_sigmaFinite hμG, hμG.ne_zero, hμG.conc, hμG.left⟩
+  have hS := Formalism.L2.SG.Pf.Choice.isHaarOn_muS hz hT hW hW1 h0 h1
+  obtain ⟨νq, hq⟩ := Formalism.L2.SG.Pf.QuotMeasExists.quotMeasExists k r z hz hT μG _ hGsk hS
+  have hN : IsHaarOn (Nset k r) (haarLie (Nset k r) κ) := Formalism.MainNotions.BridgeCSB.haarLieN k r κ h0 h1
+  have hB := PI.WBL.S5.G.beBessel_of growth_spherical_bound
+    ⟨CompanionTheory.FamilyDerivativeExpansion.DecS.decay_low_range, CompanionTheory.FamilyDerivativeExpansion.DecS.decay_infinite_range, CompanionTheory.D.gk.admitted.k_finite_smooth, trivial⟩
+    k r ε lam h H σ w0 Wp z c u π μW _ μG νq ⟨hlam, hσ, hg, hO, hw0, hz, hT, hc, hπ, hW, hN, hGsk, hq⟩ v (Or.inr hv) (l v)
+  have hvs := CompanionTheory.D.gk.admitted.k_finite_smooth k r ε lam H σ hlam hσ v hv
+  have hn : ⟪l v, l v⟫_ℂ ≠ 0 := inner_self_ne_zero.2 hlv
+  have he : ∀ x ∈ PI.UpqRep.smoothVecs (k := k) (r := r) σ,
+      ThreeDimData.be z c π σ μW (haarLie (Nset k r) κ) x v (l v) = ⟪l v, l v⟫_ℂ • l x := fun x hx => by
+    rw [hl x hx v hvs]; rfl
+  obtain ⟨y, hy, hne⟩ := nz_translate hKD hlam hσ hB ht hvs (by
+    show ThreeDimData.be z c π σ μW (haarLie (Nset k r) κ) v v (l v) ≠ 0
+    rw [he v hvs]; exact smul_ne_zero hn hlv)
+  have hys := TranslationBesselVanishing.smooth_translate hσ (CompanionTheory.D.gk.admitted.k_finite_smooth k r ε lam H σ hlam hσ y hy) ht
+  refine ⟨y, hy, fun h0 => hne ?_, fun a => ?_⟩
+  · show ThreeDimData.be z c π σ μW (haarLie (Nset k r) κ) _ v (l v) = 0
+    rw [he _ hys, h0, smul_zero]
+  · have h2 : ThreeDimData.be z c π σ μW (haarLie (Nset k r) κ) (a • σ t y) v (l v) =
+        a • ThreeDimData.be z c π σ μW (haarLie (Nset k r) κ) (σ t y) v (l v) := hB.2.1 a _ hys
+    rw [he _ hys, he _ (DDSmoothness.smooth_smul a hys), smul_comm] at h2
+    exact smul_right_injective _ hn h2
+
+end Formalism.MainStatements.RankOne
+end
+end
+
+section
 open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.Pv.AmpDDPf Formalism.FourierDecayAlt Formalism.MainNotions.FrameBoundFromBesselTorus Formalism.L2.SG.Pf.OBT Formalism.BasicNotions
 open scoped ENNReal InnerProductSpace
 
@@ -224,3 +538,5 @@ theorem one_bessel_torus_bound (D : D7) {Cgf : ℝ} (hC : 100 ≤ Cgf) : OneBess
   oneBesselTor_of_rankOne D Cgf (rank_one_torus_bound D hC)
 
 end Formalism.MainStatements.RankOne
+end
+end

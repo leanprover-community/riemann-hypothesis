@@ -3,8 +3,18 @@ import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CentralProd
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CentralProducts.PositiveProducts.PosProdOf
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CentralProducts.SubquotientBounds.LeOfSubsingletonSubQuot
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CentralProducts.UnitarisableHypotheses.NormEqOneOfUnitarisable
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CentralProducts.CentralSub
+import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CentralProducts.CentralGenerators.CentralSubGen
 
+section
+namespace PositivityTheory.RgUd.Prod.CSel
+
+theorem centralSub (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] :
+    CentralSub k := PositivityTheory.RgUd.Prod.CS.centralSub k
+
+end PositivityTheory.RgUd.Prod.CSel
+end
+
+section
 noncomputable section
 
 namespace PositivityTheory.RgUd.Prod.Final
@@ -17,3 +27,5 @@ theorem bern_of (hT : DerivTop k) (hP : DerivPos k) (hL : GlobalTheory.RgGu.Leib
     (Pos2.topProd_of k hT hP hL (LF.lfDeriv k) (CSel.centralSub k) (Eig.eigProd k) (Eig.eigFilt k))
 
 end PositivityTheory.RgUd.Prod.Final
+end
+end

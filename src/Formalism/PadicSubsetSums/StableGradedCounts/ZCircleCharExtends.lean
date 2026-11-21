@@ -1,7 +1,0 @@
-import Formalism.PadicSubsetSums.CentralIdempotents.PrimitiveRootFifteenSubOneUnit
-
-namespace Formalism.IrreducibleCountingLemmas.Z
-
-
-
-end Formalism.IrreducibleCountingLemmas.Z

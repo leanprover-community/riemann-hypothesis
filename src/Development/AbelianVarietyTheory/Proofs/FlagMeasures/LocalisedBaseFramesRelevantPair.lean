@@ -3,10 +3,324 @@ import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AtBase
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocalDiscriminantIsUnit
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocalSplitTypeMixedSecond
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramePairRelevantOfPoint
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalisedBaseFramesRationalPointIsPoint
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotField
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SpanToZero
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesCharactersAgreeCommonStabiliser
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.LocFacts
 import BuildAid.ForwardExisting
 
+section
+open ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG GlobalTheory.LocOver GlobalTheory.HL
+open scoped Classical
+
+namespace GlobalTheory.RelGPoint
+
+open GlobalTheory.HL.CoordExist
+
+theorem exists_coord_of_point {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E]
+    [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E) (hM : M.OK) {V : Type}
+    [AddCommGroup V] [Module E V] (H : HermSp M V) (r k : ℕ) (P : LocNG.FPair H r)
+    (hrk : Module.finrank E V = k + 2 * r + 1) (hpt : P.IsPoint) (hN : P.NormsOK) (hG : P.Gv ≠ 0) :
+    ∃ S : Frames M.L r k, Nonempty (Coord P S) := by
+  obtain ⟨w, hw⟩ := hpt
+  obtain ⟨hTo, hT, hTo', hT', hgg⟩ := hN
+  have := hM.loc
+  have := nontriv M.L
+  have := H.free
+  have := H.fin
+  let b := Module.finBasisOfFinrankEq E V hrk
+  obtain ⟨ϖ, hϖ, hϖg⟩ : ∃ ϖ : 𝒪[F], Irreducible ϖ ∧ ∀ g, M.split = some g → ϖ = g.q := by
+    rcases h : M.split with _ | g
+    · obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪[F]
+      exact ⟨ϖ, hϖ, fun g hg => by cases hg⟩
+    · exact ⟨g.q, g.q_irr, fun g' hg => by cases hg; rfl⟩
+  refine ⟨
+    { ϖ := ϖ
+      ϖ_irr := hϖ
+      Hm := Matrix.of fun i j => H.h (b i) (b j)
+      herm := hermND H b
+      T := Units.mk0 _ hT
+      T' := Units.mk0 _ hT'
+      f := fun a => b.equivFun (P.A.f a)
+      f' := fun a => b.equivFun (P.B.f a)
+      es := fun a => b.equivFun (P.A.es a)
+      es' := fun a => b.equivFun (P.B.es a)
+      gram := fun a c => by rw [hf_basis]; exact gram_eq _ _ _
+      gram' := fun a c => by rw [hf_basis]; exact gram_eq _ _ _
+      dual := fun a c => by rw [hf_basis]; exact dual_eq _ _ _
+      dual' := fun a c => by rw [hf_basis]; exact dual_eq _ _ _
+      iso := fun a c => by rw [hf_basis]; exact P.A.h_ss _ _
+      iso' := fun a c => by rw [hf_basis]; exact P.B.h_ss _ _
+      w := w
+      relevant := fun a c => ?_
+      G_ne := ?_
+      gg := M.split.isSome
+      gg_ok := fun h => ?_ }, ⟨
+    { e := b.equivFun
+      h_eq := fun x y => hf_basis H b x y
+      f_eq := fun _ => rfl
+      f'_eq := fun _ => rfl
+      es_eq := fun _ => rfl
+      es'_eq := fun _ => rfl
+      T_eq := rfl
+      T'_eq := rfl
+      gg_none := fun h => by simp only [h, Option.isSome_none]
+      gg_some := fun g h => ⟨by simp only [h, Option.isSome_some], hϖg g h⟩ }⟩⟩
+  · rw [hf_basis, ← hw, mul_right_comm, ← mul_pow]
+    simp [HermSp.Zhat]
+  · simp only [hf_basis]
+    have h1 : H.Dl P.A.f P.B.f (r + 1) =
+        lead (Matrix.of fun a c => H.h (P.B.f c) (P.A.f a)) (Fin.last (r + 1)) := by
+      unfold HermSp.Dl; rw [dif_pos le_rfl]; rfl
+    have h2 : H.Dl P.A.f P.B.f r =
+        lead (Matrix.of fun a c => H.h (P.B.f c) (P.A.f a)) (Fin.last r).castSucc := by
+      unfold HermSp.Dl; rw [dif_pos (Nat.le_succ r)]; rfl
+    rw [← h1, ← h2]
+    exact hG
+  · obtain ⟨g, hg⟩ := Option.isSome_iff_exists.1 h
+    obtain ⟨⟨u, v, hu, hv⟩, -⟩ := hgg g hg
+    exact ⟨not_field M.L g, unit_of hTo u hu, unit_of hTo' v hv⟩
+
+theorem relG_of_point : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → ∀ {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V) (r : ℕ), ∀ (k : ℕ) (P : FPair H r), Module.finrank E V = k + 2 * r + 1 → P.IsPoint → P.NormsOK → P.Gv ≠ 0 → P.RelG (theta M) := by
+  intro F _ _ _ E _ _ _ _ M hM V _ _ H r k P hrk hpt hN hG
+  obtain ⟨S, ⟨c⟩⟩ := exists_coord_of_point M hM H r k P hrk hpt hN hG
+  haveI := hM.loc
+  haveI := hM.char0
+  obtain ⟨hli, -, -, hD, hDl, -⟩ := GlobalTheory.FrameBasic.main M.L r k S
+  obtain ⟨-, -, -, hSt, hpsi, -⟩ := GlobalTheory.HL.CoordUnip.transport M hM H r k P S c
+  have hZm : S.Zh = H.Zhat P.A.f P.B.f := by
+    ext a b
+    show S.h (S.f' b) (S.f a) = H.h (P.B.f b) (P.A.f a)
+    rw [c.f_eq, c.f'_eq, c.h_eq]
+  have hDm : ∀ l (hl : l ≤ r + 1), P.Dm l = S.D ⟨l, Nat.lt_succ_of_le hl⟩ := by
+    intro l hl
+    unfold FPair.Dm HermSp.Dl
+    rw [dif_pos hl]
+    unfold Frames.D lead
+    rw [hZm]
+  have hmap : ∀ (f : Fin (r + 1) → V) (g : Fin (r + 1) → S.V), (∀ a, g a = c.e (f a)) →
+      ∀ x ∈ H.Xp f, c.e x ∈ Submodule.span E (Set.range g) := by
+    intro f g hg x hx
+    have hgf : g = (c.e : V →ₗ[E] S.V) ∘ f := funext hg
+    rw [hgf, Set.range_comp, ← Submodule.map_span]
+    exact Submodule.mem_map_of_mem hx
+  have hdisj := (linearIndependent_sum.1 hli).2.2
+  refine ⟨?_, ?_, hG, ?_, ?_, hpt, hN⟩
+  · rw [eq_bot_iff]
+    intro x hx
+    have h0 : c.e x = 0 :=
+      (Submodule.disjoint_def.1 hdisj) _ (hmap _ _ c.f_eq x hx.1) (hmap _ _ c.f'_eq x hx.2)
+    rw [Submodule.mem_bot]
+    exact c.e.map_eq_zero_iff.1 h0
+  · rw [hDm (r + 1) le_rfl]
+    exact hD
+  · intro l hl
+    rw [hDm l hl]
+    by_cases h : S.D ⟨l, Nat.lt_succ_of_le hl⟩ = 0
+    · exact Or.inl h
+    · exact Or.inr (hDl _ h)
+  · intro g hg
+    rw [(hpsi g).1, (hpsi g).2]
+    exact GlobalTheory.HL.CharAgree.psi_eq_psi' M.L r k S _ ((hSt g).1 hg)
+
+end GlobalTheory.RelGPoint
+end
+
+section
+noncomputable section
+
+open ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG GlobalTheory.LocOver
+open scoped Classical
+
+namespace GlobalTheory.LocDual
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+  {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+  {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
+
+private lemma h_add_right (H : HermSp M V) (x y y' : V) : H.h x (y + y') = H.h x y + H.h x y' := by
+  rw [H.h_herm (y + y') x, H.h_add_left, map_add, ← H.h_herm y x, ← H.h_herm y' x]
+
+private lemma h_smul_right (H : HermSp M V) (a : E) (x y : V) : H.h x (a • y) = M.L.cj a * H.h x y := by
+  rw [H.h_herm (a • y) x, H.h_smul_left, map_mul, ← H.h_herm y x]
+
+private lemma h_neg_left (H : HermSp M V) (x y : V) : H.h (-x) y = - H.h x y := by
+  have := H.h_smul_left (-1) x y
+  simpa using this
+
+private lemma h_sub_left (H : HermSp M V) (x x' y : V) : H.h (x - x') y = H.h x y - H.h x' y := by
+  rw [sub_eq_add_neg, H.h_add_left, h_neg_left, ← sub_eq_add_neg]
+
+private lemma h_sub_right (H : HermSp M V) (x y y' : V) : H.h x (y - y') = H.h x y - H.h x y' := by
+  rw [H.h_herm (y - y') x, h_sub_left, map_sub, ← H.h_herm y x, ← H.h_herm y' x]
+
+private lemma h_sum_left (H : HermSp M V) {ι : Type} (s : Finset ι) (v : ι → V) (y : V) :
+    H.h (∑ i ∈ s, v i) y = ∑ i ∈ s, H.h (v i) y := by
+  let φ : V →+ E := AddMonoidHom.mk' (fun x => H.h x y) (fun a b => H.h_add_left a b y)
+  exact map_sum φ v s
+
+private lemma h_sum_right (H : HermSp M V) {ι : Type} (s : Finset ι) (v : ι → V) (x : V) :
+    H.h x (∑ i ∈ s, v i) = ∑ i ∈ s, H.h x (v i) := by
+  let φ : V →+ E := AddMonoidHom.mk' (fun y => H.h x y) (fun a b => h_add_right H x a b)
+  exact map_sum φ v s
+
+end GlobalTheory.LocDual
+
+open GlobalTheory.LocDual in
+
+theorem GlobalTheory.LocDual.frameD_exists : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → ∀ {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V) (r : ℕ), ∀ (f : Fin (r + 1) → V) (T : F), T ≠ 0 → (∀ a b : Fin (r + 1), (a ≠ Fin.last r ∨ b ≠ Fin.last r) → H.h (f a) (f b) = 0) → H.h (f (Fin.last r)) (f (Fin.last r)) = -(algebraMap F E T) → (∃ y : Fin r → V, ∀ i j : Fin r, H.h (f i.castSucc) (y j) = if i = j then 1 else 0) → ∃ Fr : FrameD H r, Fr.f = f ∧ Fr.T = T := by
+  intro F _ _ _ E _ _ _ _ M hM V _ _ H r f T hT hiso hzz hy
+  obtain ⟨y, hy⟩ := hy
+  haveI := hM.char0
+  set z := f (Fin.last r) with hz
+  set e : Fin r → V := fun i => f i.castSucc with he
+  have hez : ∀ k, H.h (e k) z = 0 := fun k => hiso _ _ (Or.inl (Fin.castSucc_ne_last k))
+  have hze : ∀ k, H.h z (e k) = 0 := fun k => hiso _ _ (Or.inr (Fin.castSucc_ne_last k))
+  have hee : ∀ k l, H.h (e k) (e l) = 0 := fun k l => hiso _ _ (Or.inl (Fin.castSucc_ne_last k))
+  let y' : Fin r → V := fun j => y j + (H.h (y j) z * algebraMap F E T⁻¹) • z
+  have hy'z : ∀ j, H.h (y' j) z = 0 := by
+    intro j
+    simp only [y', H.h_add_left, H.h_smul_left, hzz]
+    rw [show H.h (y j) z * algebraMap F E T⁻¹ * -algebraMap F E T
+        = - (H.h (y j) z * algebraMap F E (T⁻¹ * T)) by rw [map_mul]; ring]
+    rw [inv_mul_cancel₀ hT, map_one, mul_one, add_neg_cancel]
+  have hey' : ∀ k j, H.h (e k) (y' j) = if k = j then 1 else 0 := by
+    intro k j
+    simp only [y', h_add_right, h_smul_right, hez, mul_zero, add_zero, e]
+    exact hy k j
+  let half : E := algebraMap F E (1 / 2)
+  have hhalf : M.L.cj half = half := M.L.cj.commutes _
+  have hhalf2 : half + half = 1 := by
+    simp only [half, ← map_add, add_halves, map_one]
+  let b : Fin r → Fin r → E := fun j k => half * H.h (y' j) (y' k)
+  let es : Fin r → V := fun j => y' j - ∑ k, b j k • e k
+  have hesL : ∀ i v, H.h (es i) v = H.h (y' i) v - ∑ k, b i k * H.h (e k) v := by
+    intro i v
+    simp only [es, h_sub_left, h_sum_left, H.h_smul_left]
+  have hesR : ∀ v j, H.h v (es j) = H.h v (y' j) - ∑ k, M.L.cj (b j k) * H.h v (e k) := by
+    intro v j
+    simp only [es, h_sub_right, h_sum_right, h_smul_right]
+  have hy'e : ∀ i k, H.h (y' i) (e k) = if k = i then 1 else 0 := by
+    intro i k
+    rw [H.h_herm, hey' k i]
+    split_ifs <;> simp
+  refine ⟨⟨f, es, T, hiso, hzz, ?_, ?_, ?_⟩, rfl, rfl⟩
+  · intro i j
+    rw [hesR]
+    simp only [hesL, hey', hy'e, hee, mul_zero, Finset.sum_const_zero, sub_zero, mul_ite, mul_one,
+      Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [b, map_mul, hhalf]
+    rw [← H.h_herm (y' j) (y' i)]
+    linear_combination (-H.h (y' i) (y' j)) * hhalf2
+  · intro i j
+    show H.h (e i) (es j) = _
+    rw [hesR]
+    simp only [hey', hee, mul_zero, Finset.sum_const_zero, sub_zero]
+  · intro i
+    show H.h (es i) z = 0
+    rw [hesL]
+    simp only [hy'z, hez, mul_zero, Finset.sum_const_zero, sub_zero]
+end
+end
+
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
+open scoped Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.LocalBlockEntries
+
+open Formalism.L2.SG.Pf.AtPt
+
+theorem ptEntryL_eq' {S : Type} [CommRing S] (L : List (Sˣ × ℕ+)) : ∀ i j : ℕ,
+    Formalism.MainNotions.S.Loc.ptEntryL L i j = ptEntry (L.map fun b => ((b.1 : S), (b.2 : ℕ))) i j := by
+  induction L with
+  | nil => intro i j; rfl
+  | cons b L ih =>
+    intro i j
+    obtain ⟨t, s⟩ := b
+    simp only [Formalism.MainNotions.S.Loc.ptEntryL, List.map_cons, ptEntry]
+    split_ifs <;> first | rfl | exact ih _ _
+
+theorem modBlocks_map' {A S : Type} [CommRing S] (f : ℕ → ℕ → A → S) :
+    ∀ (l : List (A × ℕ)) (a : ℕ) (L : List (Sˣ × ℕ+)),
+    modBlocks f a l = some L → L.map (fun b => ((b.1 : S), (b.2 : ℕ))) = mapBlocks f a l
+  | [], a, L, h => by
+    simp only [modBlocks, Option.some.injEq] at h
+    subst h; rfl
+  | (t, s) :: l, a, L, h => by
+    simp only [modBlocks] at h
+    split_ifs at h with hu
+    obtain ⟨L1, hL1, rfl⟩ := Option.map_eq_some_iff.1 h
+    simp only [List.map_cons, mapBlocks, modBlocks_map' f l (a + s) L1 hL1]
+    rfl
+
+theorem mapBlocks_snd' {A B : Type} (f : ℕ → ℕ → A → B) : ∀ (l : List (A × ℕ)) (a : ℕ),
+    (mapBlocks f a l).map Prod.snd = l.map Prod.snd
+  | [], _ => rfl
+  | (t, s) :: l, a => by simp [mapBlocks, mapBlocks_snd' f l (a + s)]
+
+theorem modBlocks_some {A S : Type} [CommRing S] (f : ℕ → ℕ → A → S) :
+    ∀ (l : List (A × ℕ)) (a : ℕ), (∀ b ∈ l, 0 < b.2) → (∀ b ∈ l, ∀ a' s, IsUnit (f a' s b.1)) →
+      ∃ L, modBlocks f a l = some L
+  | [], a, _, _ => ⟨[], rfl⟩
+  | (t, s) :: l, a, h1, h2 => by
+    obtain ⟨L1, hL1⟩ := modBlocks_some f l (a + s) (fun b hb => h1 b (List.mem_cons_of_mem _ hb))
+      (fun b hb => h2 b (List.mem_cons_of_mem _ hb))
+    have hu : IsUnit (f a s t) ∧ 0 < s := ⟨h2 (t, s) List.mem_cons_self a s, h1 (t, s) List.mem_cons_self⟩
+    rw [modBlocks, dif_pos hu, hL1]
+    exact ⟨_, rfl⟩
+
+end GlobalTheory.LocalBlockEntries
+
+end
+
+open Formalism.L2.SG.Pf.AtPt in
+theorem GlobalTheory.LocOver.isPoint_of_scaled : ∀ (D : D7) (Z : LocDat D) (p : PlF D) {T T' : D.host.E} (F : LFlag (VS D) D.R.rS T) (F' : LFlag (VS D) D.R.rS T') (w : Point D.host.E (D.R.rS + 1)) (P : Formalism.MainNotions.S.LocNG.FPair (locH Z p) D.R.rS), ZhatOM (ZhatL F F') = ptMat w → P.A.f = scaled Z p (frame F) → P.B.f = scaled Z p (frame F') → P.IsPoint := by
+  intro D Z p T T' F F' w P hZ hA hB
+  let fB : ℕ → ℕ → D.host.E → (D.s.atP p).Ep := fun a s t =>
+    algebraMap (D.s.atP p).Fp (D.s.atP p).Ep ((yP Z p)⁻¹ ^ nu D.R.rS a (a + s - 1)) * (D.s.atP p).ιE t
+  have hunit : ∀ b ∈ w.1, ∀ a' s, IsUnit (fB a' s b.1) := fun b hb a' s =>
+    (Formalism.L2.SG.Pf.BBTie.bt_alg_unit p (pow_ne_zero _ (inv_ne_zero (yP_ne Z p)))).mul
+      (Formalism.L2.SG.Pf.BBTie.bt_iota_unit p (w.2.1 b hb).1)
+  obtain ⟨L, hL⟩ := GlobalTheory.LocalBlockEntries.modBlocks_some fB w.1 1 (fun b hb => (w.2.1 b hb).2) hunit
+  have hLm := GlobalTheory.LocalBlockEntries.modBlocks_map' fB w.1 1 L hL
+  have hsize : (L.map (fun b => (b.2 : ℕ))).sum = D.R.rS + 1 := by
+    have := congrArg (List.map Prod.snd) hLm
+    rw [List.map_map, GlobalTheory.LocalBlockEntries.mapBlocks_snd'] at this
+    rw [← w.2.2, ← this]; rfl
+  refine ⟨⟨L, hsize⟩, fun a b => ?_⟩
+  have hR : (⟨L, hsize⟩ : Formalism.MainNotions.S.Loc.Pt (D.s.atP p).Ep (D.R.rS + 1)).mat a b =
+      if b = sgF w a then fB (1 + pSt w.1 a.val) (pSz w.1 a.val) (pTau w.1 a.val) else 0 := by
+    simp only [Formalism.MainNotions.S.Loc.Pt.mat]
+    rw [GlobalTheory.LocalBlockEntries.ptEntryL_eq', hLm, ptEntry_eq, pSig_map, pTau_map _ _ _ _ (by rw [w.2.2]; exact a.2)]
+    simp only [sgF, Fin.ext_iff]
+  rw [hR]
+  have hZab := congrFun (congrFun hZ a) b
+  rw [zhatOM_eq, ptMat_apply'] at hZab
+  simp only [Sg, Matrix.mul_diagonal] at hZab
+  have hL1 : (locH Z p).Zhat P.A.f P.B.f a b =
+      frFac Z.δ p b * (D.s.atP p).cj (frFac Z.δ p a) * (D.s.atP p).ιE (ZhatL F F' a b) := by
+    simp only [Formalism.MainNotions.S.Loc.HermSp.Zhat, Matrix.of_apply, locH, locHerm, hA, hB, GlobalTheory.LocOver.scaled]
+    rw [Formalism.L2.SG.Pf.BBTie.formP_bc, Z.hcj p]
+    rfl
+  rw [hL1, frFac_eq, frFac_eq, cj_alg]
+  have key : ∀ (X Y : (D.s.atP p).Ep) (z : D.host.E), (-1 : (D.s.atP p).Ep) ^ (D.R.rS - b.val) * (X * Y * (D.s.atP p).ιE z) =
+      X * Y * (D.s.atP p).ιE (z * (-1) ^ (D.R.rS - b.val)) := by
+    intro X Y z; rw [map_mul, map_pow, map_neg, map_one]; ring
+  rw [key, hZab]
+  split_ifs with hb
+  · subst hb
+    simp only [fB]
+    rw [nu_eq, pow_add, map_mul]
+    ring
+  · rw [map_zero, mul_zero]
+end
+
+section
 section
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
 open scoped Classical
@@ -348,3 +662,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.localisedBaseFrames_relevantPair : ∀ (D : D7) (Z : LocDat D), ∀ (u u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (F00 : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F'0 : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)), ZhatOM (ZhatL F00 F'0) = ptMat w → Gval F00 F'0 ≠ 0 → ∀ p : PlF D, (∃ P, AtBase Z p F00 F'0 (Tu D u) (Tu D u') P) ∧ ∀ P, AtBase Z p F00 F'0 (Tu D u) (Tu D u') P → P.RelG (LocNG.theta (Z.M p)) := by
   atlas_forward_decl GlobalTheory.LocBaseRel.atBase_relG
+end

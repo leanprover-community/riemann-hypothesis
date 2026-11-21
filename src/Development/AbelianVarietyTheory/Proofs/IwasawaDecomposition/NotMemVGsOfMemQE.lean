@@ -2,23 +2,718 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsAdmissibleIntegralBasisChangeOne
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AbsNormEqOfSplitFactor
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PhiMapsAndOmegaLaw
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdmissibleRepresentativesFiniteLevelCosets
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeNormalFormModuloUnipotentSemidirect
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasLatticeNormalFormOfBetween
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LatticeNormalFormUnipotent
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowTypeMulOnLevelAtTwistPrime
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowTypeMulOnSymmetricLevelAtTypePrimeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowTypeOneAddPrimeSmulEqOneStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StepDatumBoundedAtTypePrimeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AffineEigenvalueEqOneOfBoxSumNeZero
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnfoldingCharArgMulLeftUnipotent
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormOneDetEqOne
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLevelGroupModTypePrimeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelGroupReductionStepZeroTypePrimeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelCharacterStepZeroTypePrime
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelStepZeroAtTwistPrimeFull
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProjConjLevelLeIntegralGLAtTypePrimeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeNormalFormViaMatrix
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowTypeMulOnSymmetricLevelAtTypePrime
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowTypeOneAddPrimeSmulEqOne
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StepDatumBoundedAtTypePrime
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLevelGroupModTypePrime
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelGroupReductionStepZeroTypePrime
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProjConjLevelLeIntegralGLAtTypePrime
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ToLinNfMatEqSumNfGen
 
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+
+noncomputable section
+
+namespace GlobalTheory.Mem.Col2.IdxFin
+
+open GlobalTheory.Mem.LevFin
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)}
+
+theorem exists_classes {N q : ℕ} (hq : (q : E) ≠ 0) (e : ℕ → ℤ) (j : ℕ) :
+    ∃ (ι : Type) (_ : Finite ι) (f : (Sp E N ≃ₗ[E] Sp E N) → ι), ∀ h h' : Sp E N ≃ₗ[E] Sp E N,
+      (∀ x ∈ LocE.sclLat P q N e, h⁻¹ x ∈ LocE.sclLat P q N e ∧ ((q : E) ^ j) • h x ∈ LocE.sclLat P q N e) →
+      (∀ x ∈ LocE.sclLat P q N e, h'⁻¹ x ∈ LocE.sclLat P q N e ∧ ((q : E) ^ j) • h' x ∈ LocE.sclLat P q N e) →
+      f h = f h' → ∀ x ∈ LocE.sclLat P q N e, (q : E)⁻¹ • ((h⁻¹ * h') x - x) ∈ LocE.sclLat P q N e := by
+  classical
+  have hc : ((q ^ (j + 1) : ℕ) : E) ≠ 0 := by rw [Nat.cast_pow]; exact pow_ne_zero _ hq
+  have hq' : ((q ^ (j + 1) : ℕ) : 𝓞 E) ≠ 0 := fun h0 => hc (by simpa using congrArg (algebraMap (𝓞 E) E) h0)
+  have hfin : Finite (𝓞 E ⧸ Ideal.span {((q ^ (j + 1) : ℕ) : 𝓞 E)}) :=
+    Ideal.finiteQuotientOfFreeOfNeBot _ (by simpa only [Ne, Ideal.span_singleton_eq_bot] using hq')
+  have hz : ∀ l : ℕ, (q : E) ^ e l ≠ 0 := fun l => zpow_ne_zero _ hq
+  have he : ∀ i : Fin N, (Pi.single i ((q : E) ^ e i.1) : Sp E N) ∈ LocE.sclLat P q N e := by
+    intro i
+    rw [GlobalTheory.CongLevel.mem_sclLat]
+    intro l
+    rw [Pi.single_apply]
+    split_ifs with hl
+    · rw [hl, inv_mul_cancel₀ (hz _)]
+      exact GlobalTheory.GO.ChRoot.intAt_one'
+    · rw [mul_zero]
+      exact GlobalTheory.GO.ChRoot.intAt_zero'
+  let m : (Sp E N ≃ₗ[E] Sp E N) → Fin N → Fin N → E :=
+    fun h i l => ((q : E) ^ e l.1)⁻¹ * ((q : E) ^ j * h (Pi.single i ((q : E) ^ e i.1)) l)
+  have hex : ∀ a : E, ∃ r : 𝓞 E, IntAt P a → IntAt P (((q ^ (j + 1) : ℕ) : E)⁻¹ * (a - algebraMap (𝓞 E) E r)) := by
+    intro a
+    by_cases ha : IntAt P a
+    · obtain ⟨r, hr⟩ := exists_int_congr hc ha
+      exact ⟨r, fun _ => hr⟩
+    · exact ⟨0, fun h => (ha h).elim⟩
+  choose r hr using hex
+  refine ⟨Fin N → Fin N → 𝓞 E ⧸ Ideal.span {((q ^ (j + 1) : ℕ) : 𝓞 E)}, inferInstance,
+    fun h i l => Ideal.Quotient.mk _ (r (m h i l)), fun a b ha hb hab x hx => ?_⟩
+  have hma : ∀ i l, IntAt P (m a i l) := fun i l => (GlobalTheory.CongLevel.mem_sclLat P q N e _).1 (ha _ (he i)).2 l
+  have hmb : ∀ i l, IntAt P (m b i l) := fun i l => (GlobalTheory.CongLevel.mem_sclLat P q N e _).1 (hb _ (he i)).2 l
+  have h1 : ∀ i l, IntAt P (((q ^ (j + 1) : ℕ) : E)⁻¹ * (m b i l - m a i l)) := by
+    intro i l
+    obtain ⟨t, ht⟩ := Ideal.mem_span_singleton'.1 (Ideal.Quotient.eq.1 (congrFun (congrFun hab i) l))
+    have ht' := congrArg (algebraMap (𝓞 E) E) ht
+    simp only [map_mul, map_natCast, map_sub] at ht'
+    have := ((hr _ (hmb i l)).add (intAt_neg (hr _ (hma i l)))).add (intAt_neg (IntAt.coe P t))
+    convert this using 1
+    generalize ((q ^ (j + 1) : ℕ) : E) = c at *
+    field_simp
+    linear_combination ht'
+  have e1 : (q : E)⁻¹ • ((a⁻¹ * b) x - x) = a⁻¹ ((q : E)⁻¹ • (b x - a x)) := by
+    rw [map_smul, map_sub, show a⁻¹ (a x) = x from LinearEquiv.symm_apply_apply _ x]
+    rfl
+  rw [e1]
+  refine (ha _ ?_).1
+  rw [GlobalTheory.CongLevel.mem_sclLat] at hx ⊢
+  intro l
+  have ex : x = ∑ i, (((q : E) ^ e i.1)⁻¹ * x i) • (Pi.single i ((q : E) ^ e i.1) : Sp E N) := by
+    funext l
+    have := hz l.1
+    simp [Finset.sum_apply, Pi.single_apply]
+    field_simp
+  have e2 : ((q : E) ^ e l.1)⁻¹ * ((q : E)⁻¹ • (b x - a x)) l =
+      ∑ i, (((q : E) ^ e i.1)⁻¹ * x i) * (((q ^ (j + 1) : ℕ) : E)⁻¹ * (m b i l - m a i l)) := by
+    conv_lhs => rw [ex]
+    simp only [map_sum, map_smul, Pi.smul_apply, Pi.sub_apply, Finset.sum_apply, smul_eq_mul, ← Finset.sum_sub_distrib,
+      Finset.mul_sum, m]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    have := hz l.1
+    have := hz i.1
+    push_cast
+    field_simp
+    ring
+  rw [e2]
+  exact Finset.sum_induction _ (IntAt P) (fun _ _ => IntAt.add) GlobalTheory.GO.ChRoot.intAt_zero' fun i _ =>
+    (hx i).mul (h1 i l)
+
+theorem exists_finite_index_of_adm_cosets : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (sharp : Bool) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), ∃ (ι : Type) (_ : Finite ι) (f : AutY X R j → ι), ∀ h h' : AutY X R j, admitted Pr j P h → admitted Pr j P h' → f h = f h' → h⁻¹ * h' ∈ Jat (Pr := Pr) sharp j P := by
+  intro X Pr R sharp j P
+  classical
+  have hq := qOf_ne P
+  have hb : ∀ h : AutY X R j, admitted Pr j P h → ∀ x ∈ lamYat (Pr := Pr) (R := R) j P,
+      h⁻¹ x ∈ lamYat (Pr := Pr) (R := R) j P ∧ ((qOf P : X.E) ^ j) • h x ∈ lamYat (Pr := Pr) (R := R) j P := by
+    intro h hh
+    by_cases hP : P ∈ Pr.vGs
+    · have hs := hh.1 hP
+      intro x hx
+      refine ⟨((inv_mem hs) x).2 hx, ?_⟩
+      rw [← Nat.cast_pow]
+      exact natCast_smul_mem _ _ ((hs x).2 hx)
+    · exact (between_iff hP h).2 (hh.2 hP)
+  obtain ⟨ι, hι, f, hf⟩ := exists_classes (P := P) (N := R.N j + cOf R j) hq
+    (LocE.scE (R.N j) (if P ∈ Pr.vGs then fun i => i + 1 else 0)) j
+  refine ⟨ι, hι, f, fun h h' hh hh' e => ?_⟩
+  have h1 := hf h h' (hb h hh) (hb h' hh') e
+  have h2 := hf h' h (hb h' hh') (hb h hh) e.symm
+  refine mem_Jat _ _ _ _ (stab_of_cong hq _ _ h1 ?_) h1
+  rw [mul_inv_rev, inv_inv]
+  exact h2
+
+end GlobalTheory.Mem.Col2.IdxFin
+
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.admissibleRepresentatives_finite_level_cosets : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (sharp : Bool) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), ∃ (ι : Type) (_ : Finite ι) (f : AutY X R j → ι), ∀ h h' : AutY X R j, admitted Pr j P h → admitted Pr j P h' → f h = f h' → h⁻¹ * h' ∈ Jat (Pr := Pr) sharp j P := by
+  atlas_forward_decl GlobalTheory.Mem.Col2.IdxFin.exists_finite_index_of_adm_cosets
+end
+
+section
+section
+namespace GlobalTheory.Proof.latticeNormalForm_modulo_unipotentSemidirect
+
+theorem latticeNormalForm : GlobalTheory.IndefiniteRowSideFullHecke.FlagUnipotentSemidirect.LatticeNormalForm :=
+  GlobalTheory.Proof.LatticeNormalFormUnipotent.latticeNormalForm
+
+end GlobalTheory.Proof.latticeNormalForm_modulo_unipotentSemidirect
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.latticeNormalForm_modulo_unipotentSemidirect : GlobalTheory.IndefiniteRowSideFullHecke.FlagUnipotentSemidirect.LatticeNormalForm := by
+  atlas_forward_decl GlobalTheory.Proof.latticeNormalForm_modulo_unipotentSemidirect.latticeNormalForm
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+
+noncomputable section
+
+namespace GlobalTheory.Proof.hasLatticeNormalForm_of_between
+
+open GlobalTheory.IndefiniteRowSideFullHecke.SandwichNormalForm GlobalTheory.Proof.normal_form_bounds_unfolding
+
+section General
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {n c : ℕ}
+
+omit [StarRing E] in
+theorem intV_eN (P : HeightOneSpectrum (𝓞 E)) (N s : ℕ) : IntV P (Loc.eN E N s) := by
+  intro l
+  unfold Loc.eN
+  split_ifs
+  · exact intAt_one P
+  · exact IndefiniteRowSideFullHecke.SourceLatticeInvariance.intAt_zero P
+
+theorem read_bounds (P : HeightOneSpectrum (𝓞 E)) (j : ℕ) (h ρ : (Fin (n + c) → E) ≃ₗ[E] (Fin (n + c) → E))
+    (e : Fin c → ℤ) (z : Fin n → E) (hρ : ρ ∈ Loc.R1 E n c) (h1 : IntHom P h.symm.toLinearMap)
+    (h2 : IntHom P (((qOf P : E) ^ j) • h.toLinearMap)) (hL : (ρ * h) '' {v | IntV P v} = nfLat P n c e z) :
+    (∀ i, -(j : ℤ) ≤ e i ∧ e i ≤ 0) ∧ (1 ≤ c → IntV P z) := by
+  have hq := Proof.NormalFormAtPrime.qOf_ne_zero P
+  have hmem : ∀ v, IntV P v → ρ v ∈ nfLat P n c e z := fun v hv => by
+    rw [← hL]
+    refine ⟨h.symm v, h1 v hv, ?_⟩
+    change ρ (h (h.symm v)) = ρ v
+    rw [h.apply_symm_apply]
+  refine ⟨fun i => ⟨?_, ?_⟩, fun hc a => ?_⟩
+  · obtain ⟨v, hv, hrv⟩ : nfGen (qOf P) n c e z i ∈ (ρ * h) '' {v | IntV P v} := hL ▸ nfGen_mem P e z i
+    change ρ (h v) = _ at hrv
+    have hU : h v ∈ Loc.Ufl E n c (i.1 + 1) := by
+      have := hρ.2.1 _ _ (hrv ▸ nfGen_mem_Ufl (qOf P) e z i)
+      change ρ.symm (ρ (h v)) ∈ _ at this
+      rwa [ρ.symm_apply_apply] at this
+    have h3 : h v (Fin.natAdd n i) = (qOf P : E) ^ e i := by
+      rw [← atN_natAdd (h v) i, ← atN_of_R1cond hρ.1 hU, hrv, atN_natAdd, nfGen_natAdd, if_pos rfl]
+    have h4 : IntAt P ((qOf P : E) ^ j * h v (Fin.natAdd n i)) := h2 v hv (Fin.natAdd n i)
+    rw [h3, ← zpow_natCast, ← zpow_add₀ hq] at h4
+    have := nonneg_of_intAt_zpow h4
+    omega
+  · have hc : 1 ≤ c := by have := i.2; omega
+    obtain ⟨u, hu, h'⟩ := (coords_of_mem hc (hmem _ (intV_eN P (n + c) (n + i.1)))).1 i
+    refine le_of_zpow_eq hu ?_
+    rw [← h', ← atN_natAdd (ρ _) i, atN_of_R1cond hρ.1 (eN_mem_Ufl (by omega)), atN_natAdd]
+    simp [Loc.eN]
+  · have h3 := (coords_of_mem hc (hmem _ (intV_eN P (n + c) n))).2 a
+    have h4 : Loc.eN E (n + c) n (Fin.castAdd c a) = 0 := by
+      unfold Loc.eN
+      rw [if_neg (by have := a.2; simp; omega)]
+    have h5 : Loc.eN E (n + c) n (Fin.natAdd n ⟨0, hc⟩) = 1 := by simp [Loc.eN]
+    rw [hρ.1.2.1, h4, h5, one_mul, zero_sub] at h3
+    simpa using IndefiniteRowSideFullHecke.SourceLatticeInvariance.intAt_neg h3
+
+theorem nfLat_of_eq_zero (P : HeightOneSpectrum (𝓞 E)) (hc : c = 0) (e : Fin c → ℤ) (z z' : Fin n → E) :
+    nfLat P n c e z = nfLat P n c e z' := by
+  subst hc
+  simp [nfLat]
+
+end General
+
+theorem nf_of_between : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), P ∉ Pr.vGs → ∀ (h ρ : AutY X R j) (e : Fin (cOf R j) → ℤ) (z : Sp X.E (R.N j)), ρ ∈ Loc.R1 X.E (R.N j) (cOf R j) → Between j P h → (ρ * h) '' {v | IntV P v} = GlobalTheory.IndefiniteRowSideFullHecke.SandwichNormalForm.nfLat P (R.N j) (cOf R j) e z → GlobalTheory.IndefiniteRowSideFullHecke.SandwichNormalForm.NF Pr j P (ρ * h) := by
+  intro X Pr R j P hP h ρ e z hρ hb hL
+  obtain ⟨he, hz⟩ := read_bounds P j h ρ e z hρ hb.1 hb.2 hL
+  rcases Nat.eq_zero_or_pos (cOf R j) with hc | hc
+  · exact ⟨e, 0, he, zero_mem _, by rw [lamYat_coe hP, hL, nfLat_of_eq_zero P hc e z 0]⟩
+  · exact ⟨e, z, he, (mem_stdAt_iff _).2 (hz hc), by rw [lamYat_coe hP, hL]⟩
+
+end GlobalTheory.Proof.hasLatticeNormalForm_of_between
+
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasLatticeNormalForm_of_between : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), P ∉ Pr.vGs → ∀ (h ρ : AutY X R j) (e : Fin (cOf R j) → ℤ) (z : Sp X.E (R.N j)), ρ ∈ Loc.R1 X.E (R.N j) (cOf R j) → Between j P h → (ρ * h) '' {v | IntV P v} = GlobalTheory.IndefiniteRowSideFullHecke.SandwichNormalForm.nfLat P (R.N j) (cOf R j) e z → GlobalTheory.IndefiniteRowSideFullHecke.SandwichNormalForm.NF Pr j P (ρ * h) := by
+  atlas_forward_decl GlobalTheory.Proof.hasLatticeNormalForm_of_between.nf_of_between
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowType_mul_on_symmetricLevel_at_typePrime : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), j < R.m → P ∈ Pr.vGs → ∀ g ∈ Jat (Pr := Pr) (R := R) true j P, ∀ g' ∈ Jat (Pr := Pr) (R := R) true j P, lamRow Ch mu true j P (g * g').toLinearMap = lamRow Ch mu true j P g.toLinearMap * lamRow Ch mu true j P g'.toLinearMap := by
+  first | exact @GlobalTheory.SymLevelMul.lamRow_mul | exact GlobalTheory.SymLevelMul.lamRow_mul | (intros; apply GlobalTheory.SymLevelMul.lamRow_mul <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rowType_one_add_prime_smul_eq_one : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (sharp : Bool) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), j < R.m → ∀ y : HomE X.E (R.N j + cOf R j) (R.N j + cOf R j), (∀ x ∈ lamYat (Pr := Pr) (R := R) j P, y x ∈ lamYat (Pr := Pr) (R := R) j P) → lamRow Ch mu sharp j P (LinearMap.id + (qOf P : X.E) • y) = 1 := by
+  first | exact @GlobalTheory.Mem.Col2.IdxEx.Cong.lamRow_cong | exact GlobalTheory.Mem.Col2.IdxEx.Cong.lamRow_cong | (intros; apply GlobalTheory.Mem.Col2.IdxEx.Cong.lamRow_cong <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stepDatum_bounded_at_typePrime : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (i : ℕ) (P : rowSG Pr sel mu), i + 2 ≤ R.m → P.1 ∈ Pr.vGs → ∀ (hal : AutY X R i) (h : AutY X R (i + 1)), hal ∈ stabL X.E _ (lamYat (Pr := Pr) (R := R) i P.1) → h ∈ stabL X.E _ (lamYat (Pr := Pr) (R := R) (i + 1) P.1) → HomBdd P.1 R.m (omPhi Ch sel mu cst i P hal h) ∧ ∀ x, omPhi Ch sel mu cst i P hal h x ≠ 0 → IntAt P.1 ((qOf P.1 : X.E) * Loc.chArg x) := by
+  first | exact @GlobalTheory.Mem.Col2.BddG.omPhi_bdd_type | exact GlobalTheory.Mem.Col2.BddG.omPhi_bdd_type | (intros; apply GlobalTheory.Mem.Col2.BddG.omPhi_bdd_type <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+
+namespace GlobalTheory.Proof.affine_eigenvalue_eq_one_of_boxSum_ne_zero
+
+def periods {V K : Type} [AddCommGroup V] (f : V → K) : AddSubgroup V where
+  carrier := {u | ∀ t, f (t + u) = f t}
+  zero_mem' := fun t => by simp
+  add_mem' := fun {a b} ha hb t => by rw [← add_assoc, hb, ha]
+  neg_mem' := fun {a} ha t => by rw [← ha (t + -a)]; simp
+
+theorem eigen_eq_one_of_reps {V K : Type} [AddCommGroup V] [Field K] [CharZero K] (f : V → K) (L : AddSubgroup V)
+    (S : Finset V) (hf : ∀ v, ∀ u ∈ L, f (v + u) = f v) (hinj : ∀ s ∈ S, ∀ s' ∈ S, s - s' ∈ L → s = s')
+    (hcov : ∀ v, f v ≠ 0 → ∃ s ∈ S, v - s ∈ L) (T : V ≃+ V) (b : V) (χ : K) (hT : ∀ t, f (T t + b) = χ * f t)
+    (hS : ∑ s ∈ S, f s ≠ 0) : χ = 1 := by
+  classical
+  obtain ⟨t₀, -, ht₀⟩ := Finset.exists_ne_zero_of_sum_ne_zero hS
+  have hsurj : ∀ v, ∃ t, T t + b = v := fun v => ⟨T.symm (v - b), by simp⟩
+  have hχ : χ ≠ 0 := by
+    rintro rfl
+    obtain ⟨t, rfl⟩ := hsurj t₀
+    exact ht₀ (by rw [hT, zero_mul])
+  set M := periods f with hM
+  have hMf : ∀ v, ∀ u ∈ M, f (v + u) = f v := fun v u hu => hu v
+  have hLM : L ≤ M := fun u hu t => hf t u hu
+  have hTM : ∀ u, T u ∈ M ↔ u ∈ M := fun u => by
+    have e : ∀ t, f (T t + b + T u) = χ * f (t + u) := fun t => by
+      rw [← hT, map_add]; congr 1; abel
+    constructor
+    · intro h t
+      apply mul_left_cancel₀ hχ
+      rw [← e, hMf _ _ h, hT]
+    · intro h v
+      obtain ⟨t, rfl⟩ := hsurj v
+      rw [e, hMf _ _ h, hT]
+  have hmap : M.map (T : V →+ V) = M := by
+    ext v
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      exact (hTM u).2 hu
+    · intro hv
+      exact ⟨T.symm v, (hTM _).1 (by simpa using hv), by simp⟩
+  have hout : ∀ v : V, f (QuotientAddGroup.mk v : V ⧸ M).out = f v := fun v => by
+    have h : -v + (QuotientAddGroup.mk v : V ⧸ M).out ∈ M := by
+      rw [← QuotientAddGroup.eq]; simp
+    simpa using hMf v _ h
+  let S' : Finset V := S.image fun s => (QuotientAddGroup.mk s : V ⧸ M).out
+  have hinj' : ∀ s ∈ S', ∀ s' ∈ S', s - s' ∈ M → s = s' := fun s hs s' hs' h => by
+    obtain ⟨a, -, rfl⟩ := Finset.mem_image.1 hs
+    obtain ⟨a', -, rfl⟩ := Finset.mem_image.1 hs'
+    have := QuotientAddGroup.eq_iff_sub_mem.2 h
+    simp only [QuotientAddGroup.out_eq'] at this
+    rw [this]
+  have hcov' : ∀ v, f v ≠ 0 → ∃ s ∈ S', v - s ∈ M := fun v hv => by
+    obtain ⟨s, hs, e⟩ := hcov v hv
+    refine ⟨_, Finset.mem_image_of_mem _ hs, ?_⟩
+    rw [← QuotientAddGroup.eq_iff_sub_mem, QuotientAddGroup.out_eq', QuotientAddGroup.eq_iff_sub_mem]
+    exact hLM e
+  have i1 : M.relIndex L ≠ 0 := by rw [AddSubgroup.relIndex_eq_one.2 hLM]; exact one_ne_zero
+  have i2 : L.relIndex M ≠ 0 :=
+    boxSum_ne_zero_invariant_affineChange.relIndex_ne_zero_of_cover L M (S.image fun s => s - t₀) fun k hk => by
+      obtain ⟨s, hs, e⟩ := hcov (t₀ + k) (by rwa [hMf _ _ hk])
+      refine ⟨_, Finset.mem_image_of_mem _ hs, ?_⟩
+      convert e using 1
+      abel
+  have h1 := (sum_coset_reps_ne_zero_iff_commensurable.sum_reps_ne_zero_iff V K f L M S S' i1 i2 hf hMf hinj hcov hinj' hcov').1 hS
+  have h2 := sum_coset_reps_ne_zero_iff_commensurable.finsum_quot_eq f M M S' le_rfl (by simp) hMf hinj' hcov'
+  rw [AddSubgroup.relIndex_self, Nat.cast_one, one_mul] at h2
+  rw [← h2] at h1
+  let e : V ⧸ M ≃ V ⧸ M := (QuotientAddGroup.congr M M T hmap).toEquiv.trans (Equiv.addRight (QuotientAddGroup.mk b))
+  have he : ∀ c : V ⧸ M, f (e c).out = χ * f c.out := fun c => by
+    obtain ⟨v, rfl⟩ := QuotientAddGroup.mk_surjective c
+    have : e (QuotientAddGroup.mk v) = QuotientAddGroup.mk (T v + b) := rfl
+    rw [this, hout, hout, hT]
+  have h3 : ∑ᶠ c : V ⧸ M, f (e c).out = ∑ᶠ c : V ⧸ M, f c.out := finsum_comp_equiv (f := fun c : V ⧸ M => f c.out) e
+  simp only [he] at h3
+  rw [← mul_finsum] at h3
+  exact mul_right_cancel₀ h1 (by rw [h3, one_mul])
+
+theorem eigen_eq_one : ∀ (E : Type) [Field E] [NumberField E] (K : Type) [Field K] [CharZero K] (P : HeightOneSpectrum (𝓞 E)), GlobalTheory.IndefiniteRowSideFullHecke.SourceLatticeInvariance.DegOneUnram P → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (f : (ι → E) → K) (N : ℕ), FunBdd P N f → ∀ (T : (ι → E) ≃ₗ[E] (ι → E)) (b : ι → E) (χ : K), (∀ t, f (T t + b) = χ * f t) → boxSum P N N f ≠ 0 → χ = 1 := by
+  intro E _ _ K _ _ P hP ι _ _ f N hf T b χ hT hS
+  have hq := NormalFormAtPrime.qOf_ne_zero P
+  have h3 := rationalFractions_represent_primeNormQuotient.valsQ_reps E P hP N N
+  refine eigen_eq_one_of_reps f (boxSum_ne_zero_invariant_affineChange.lat P ι ((qOf P : E) ^ N)⁻¹)
+    (Fintype.piFinset fun _ : ι => LocE.valsQ E (qOf P) N N) (fun v u hu => ?_) (fun s hs s' hs' h => ?_)
+    (fun v hv => ?_) T.toAddEquiv b χ hT (right_ne_zero_of_mul hS)
+  · have := hf.2 v (((qOf P : E) ^ N)⁻¹ • u) hu
+    rwa [smul_smul, mul_inv_cancel₀ (pow_ne_zero _ hq), one_smul] at this
+  · funext i
+    exact h3.1 _ (Fintype.mem_piFinset.1 hs i) _ (Fintype.mem_piFinset.1 hs' i) (h i)
+  · choose s hs hs' using fun i => h3.2 (v i) (hf.1 v hv i)
+    exact ⟨s, Fintype.mem_piFinset.2 hs, hs'⟩
+
+end GlobalTheory.Proof.affine_eigenvalue_eq_one_of_boxSum_ne_zero
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.affine_eigenvalue_eq_one_of_boxSum_ne_zero : ∀ (E : Type) [Field E] [NumberField E] (K : Type) [Field K] [CharZero K] (P : HeightOneSpectrum (𝓞 E)), GlobalTheory.IndefiniteRowSideFullHecke.SourceLatticeInvariance.DegOneUnram P → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (f : (ι → E) → K) (N : ℕ), FunBdd P N f → ∀ (T : (ι → E) ≃ₗ[E] (ι → E)) (b : ι → E) (χ : K), (∀ t, f (T t + b) = χ * f t) → boxSum P N N f ≠ 0 → χ = 1 := by
+  atlas_forward_decl GlobalTheory.Proof.affine_eigenvalue_eq_one_of_boxSum_ne_zero.eigen_eq_one
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+
+namespace GlobalTheory.Proof.unfoldingCharArg_mul_left_unipotent
+
+theorem chArg_left : ∀ (F : Type) [Field F] (n' c' n c : ℕ), 1 ≤ c → c' = c + 1 → ∀ r ∈ Loc.R1 F n c, ∀ (xj : (Fin n' → F) →ₗ[F] (Fin n → F)) (t : Loc.FC n' c' n c → F), Loc.chArg (r.toLinearMap ∘ₗ Loc.xx1 xj t) = Loc.chArg (Loc.xx1 xj t) + Loc.n1Arg r := by
+  intro F _ n' c' n c hc hc' r hr xj t
+  obtain ⟨-, -, h3⟩ := (GlobalTheory.Proof.exists_xx1_eq_iff_inX_eN_Ufl_conditions.unfoldingAffineSpace_mem_iff_intrinsic F n' c' n c hc hc' xj (Loc.xx1 xj t)).1 ⟨t, rfl⟩
+  generalize Loc.xx1 xj t = x at h3
+  have e : Loc.n1Arg r = ∑ i ∈ Finset.range c, Loc.atN (r (Loc.eN F (n + c) (n + (i + 1)))) (n + i) := by
+    obtain ⟨d, rfl⟩ : ∃ d, c = d + 1 := ⟨c - 1, by omega⟩
+    rw [Finset.sum_range_succ, GlobalTheory.Proof.exists_xx1_eq_iff_inX_eN_Ufl_conditions.eN_eq_zero (F := F) (N := n + (d + 1)) (i := n + (d + 1)) (by omega),
+      map_zero]
+    have z : Loc.atN (0 : Fin (n + (d + 1)) → F) (n + d) = 0 := by
+      unfold Loc.atN
+      split_ifs <;> rfl
+    rw [z, add_zero]
+    rfl
+  rw [e]
+  unfold Loc.chArg
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have b3 := atN_of_R1cond hr.1 (h3 (i + 1))
+  have b4 : Loc.atN (Loc.eN F (n + c) (n + (i + 1))) (n + i) = 0 := GlobalTheory.Proof.unfoldingCharacterArgument_comp_unipotentRadicals.atN_eN_succ _ _
+  simp only [map_sub, atN_sub, b4] at b3
+  change Loc.atN (r (x (Loc.eN F (n' + c') (n' + (i + 1))))) (n + i) =
+    Loc.atN (x (Loc.eN F (n' + c') (n' + (i + 1)))) (n + i) + _
+  linear_combination b3
+
+end GlobalTheory.Proof.unfoldingCharArg_mul_left_unipotent
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unfoldingCharArg_mul_left_unipotent : ∀ (F : Type) [Field F] (n' c' n c : ℕ), 1 ≤ c → c' = c + 1 → ∀ r ∈ Loc.R1 F n c, ∀ (xj : (Fin n' → F) →ₗ[F] (Fin n → F)) (t : Loc.FC n' c' n c → F), Loc.chArg (r.toLinearMap ∘ₗ Loc.xx1 xj t) = Loc.chArg (Loc.xx1 xj t) + Loc.n1Arg r := by
+  atlas_forward_decl GlobalTheory.Proof.unfoldingCharArg_mul_left_unipotent.chArg_left
+end
+
+section
+section
+namespace GlobalTheory.Mem.Col2.IdxEx
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+
+theorem apply_single_of_mem_unip {F : Type} [Field F] {n c : ℕ} {r : (Fin (n + c) → F) ≃ₗ[F] (Fin (n + c) → F)}
+    (hr : r ∈ Loc.N1 F n c) (s l : Fin (n + c)) (hl : s ≤ l) :
+    r (Pi.single s 1) l = (Pi.single s 1 : Fin (n + c) → F) l := by
+  obtain ⟨h1, h2⟩ := hr
+  by_cases hs : s.1 < n
+  · have e : (Pi.single s 1 : Fin (n + c) → F) = Loc.inX F n c (Pi.single ⟨s.1, hs⟩ 1) := by
+      funext m
+      by_cases hm : m.1 < n
+      · simp [Loc.inX, hm, Pi.single_apply, Fin.ext_iff]
+      · have : m ≠ s := fun h => hm (h ▸ hs)
+        simp [Loc.inX, hm, this]
+    rw [e, h2]
+  · have e : (Pi.single s 1 : Fin (n + c) → F) = Loc.eN F (n + c) (n + (s.1 - n)) := by
+      funext m
+      have : n + (s.1 - n) = s.1 := by omega
+      simp [Loc.eN, this, Pi.single_apply, Fin.ext_iff]
+    have h3 := h1.1.2.2 (s.1 - n) l (by
+      have : s.1 ≤ l.1 := hl
+      simp only [Set.mem_setOf_eq]
+      omega)
+    rw [e]
+    exact sub_eq_zero.1 h3
+
+theorem det_eq_one_of_mem_unip :
+    ∀ (F : Type) [Field F] (n c : ℕ), ∀ r ∈ Loc.N1 F n c, LinearEquiv.det r = 1 := by
+  intro F _ n c r hr
+  apply Units.ext
+  rw [LinearEquiv.coe_det, ← LinearMap.det_toMatrix', Matrix.det_of_upperTriangular]
+  · refine Finset.prod_eq_one fun s _ => ?_
+    have := apply_single_of_mem_unip hr s s le_rfl
+    rw [LinearMap.toMatrix'_apply]
+    simpa using this
+  · intro l s hls
+    have hls' : s < l := hls
+    have := apply_single_of_mem_unip hr s l hls'.le
+    rw [LinearMap.toMatrix'_apply]
+    simpa [hls'.ne'] using this
+
+end GlobalTheory.Mem.Col2.IdxEx
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_one_det_eq_one : ∀ (F : Type) [Field F] (n c : ℕ), ∀ r ∈ Loc.N1 F n c, LinearEquiv.det r = 1 := by
+  atlas_forward_decl GlobalTheory.Mem.Col2.IdxEx.det_eq_one_of_mem_unip
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_levelGroup_mod_typePrime : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (j : ℕ) (P : rowSG Pr sel mu) (h : AutY X R j), cst.Ok → P.1 ∈ Pr.vGs → GlobalTheory.IndefiniteRowSideFullHecke.SourceLatticeInvariance.DegOneUnram P.1 → h ∈ stabL X.E _ (lamYat (Pr := Pr) (R := R) j P.1) → prCat (Pr := Pr) cst.sharp j P.1 h ≤ GLint X.E (R.N j) P.1 → (∀ y : HomE X.E (R.N j + cOf R j) (R.N j + cOf R j), (∀ x ∈ lamYat (Pr := Pr) (R := R) j P.1, y x ∈ lamYat (Pr := Pr) (R := R) j P.1) → lamRow Ch mu cst.sharp j P.1 (LinearMap.id + (qOf P.1 : X.E) • y) = 1) → ChiMul Ch sel mu cst j P h → ChiTriv Ch sel mu cst j P h → ∃ lev : Lev (𝓞 X.E ⧸ P.1.asIdeal) X.K (R.N j), GrpG sel mu cst j P h lev ∧ ChrG Ch sel mu cst j P h lev := by
+  first | exact @GlobalTheory.Mem.Col2.LevMod.exists_levG | exact GlobalTheory.Mem.Col2.LevMod.exists_levG | (intros; apply GlobalTheory.Mem.Col2.LevMod.exists_levG <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levelGroupReduction_stepZero_typePrime : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (P : rowSG Pr sel mu) (hP : P.1 ∈ Pr.vGs), cst.sharp = true → GlobalTheory.IndefiniteRowSideFullHecke.SourceLatticeInvariance.DegOneUnram P.1 → GrpG sel mu cst 0 P 1 (colLev Ch 0 ⟨P.1, hP⟩) := by
+  first | exact @GlobalTheory.Mem.ZeroGrp.grpG_zero | exact GlobalTheory.Mem.ZeroGrp.grpG_zero | (intros; apply GlobalTheory.Mem.ZeroGrp.grpG_zero <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.Proof.levelCharacter_stepZero_typePrime
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+
+theorem supSum_range {κ : Type} [CommRing κ] {n a k : ℕ} (hn : k ≤ n) (ha : k ≤ a) (M : Matrix (Fin n) (Fin n) κ) (f : ℕ → κ)
+    (hf : ∀ (i : ℕ) (h : i + 1 < k), f i = M ⟨i, by omega⟩ ⟨i + 1, by omega⟩) :
+    supSum a (Finset.range (k - 1)) M = ∑ i ∈ Finset.range (k - 1), f i := by
+  unfold supSum
+  have h1 : ∀ i : Fin n, (∑ j : Fin n, if i.val + 1 = j.val ∧ j.val < a ∧ i.val ∈ Finset.range (k - 1) then M i j else 0) =
+      if i.val ∈ Finset.range (k - 1) then f i.val else 0 := by
+    intro i
+    by_cases hi : i.val ∈ Finset.range (k - 1)
+    · have hi' := Finset.mem_range.1 hi
+      rw [if_pos hi, Finset.sum_eq_single (⟨i.val + 1, by omega⟩ : Fin n), if_pos ⟨rfl, by dsimp only; omega, hi⟩,
+        hf _ (by omega)]
+      · intro j _ hj
+        exact if_neg fun h => hj (Fin.ext h.1.symm)
+      · intro h
+        exact absurd (Finset.mem_univ _) h
+    · simp [hi]
+  rw [Finset.sum_congr rfl fun i _ => h1 i, Fin.sum_univ_eq_sum_range (fun i => if i ∈ Finset.range (k - 1) then f i else 0) n,
+    ← Finset.sum_filter]
+  congr 1
+  ext i
+  simp only [Finset.mem_filter, Finset.mem_range]
+  omega
+
+variable {E : Type} [Field E]
+
+theorem entB_X (q : ℕ) {k n c i : ℕ} (hn : k ≤ n) (hi : i + 1 < k) (ex : ℕ → ℕ) (x : HomE E (n + c) (n + c)) :
+    LocE.entB q k c n c n ex ex x i (i + 1) = Loc.atN (x (Loc.eN E (n + c) (i + 1))) i := by
+  have e1 : LocE.fIdx k c n i = i := if_pos (by omega)
+  have e2 : LocE.fIdx k c n (i + 1) = i + 1 := if_pos hi
+  have e3 : LocE.scE n ex i = 0 := if_pos (by omega)
+  have e4 : LocE.scE n ex (i + 1) = 0 := if_pos (by omega)
+  unfold LocE.entB
+  rw [e1, e2, e3, e4]
+  simp
+
+theorem symLevelFrameEntry_superdiag_second_block (q : ℕ) {k n c i : ℕ} (hi : i + 1 < c) (x : HomE E (n + c) (n + c)) :
+    LocE.entB q k c n c n (fun i => i + 1) (fun i => i + 1) x (k + i) (k + i + 1) =
+      (q : E) * Loc.atN (x (Loc.eN E (n + c) (n + i + 1))) (n + i) := by
+  have e1 : LocE.fIdx k c n (k + i) = n + i := by
+    unfold LocE.fIdx
+    rw [if_neg (by omega), if_pos (by omega)]
+    omega
+  have e2 : LocE.fIdx k c n (k + i + 1) = n + i + 1 := by
+    unfold LocE.fIdx
+    rw [if_neg (by omega), if_pos (by omega)]
+    omega
+  have e3 : LocE.scE n (fun i => i + 1) (n + i + 1) - LocE.scE n (fun i => i + 1) (n + i) = 1 := by
+    unfold LocE.scE
+    rw [if_neg (by omega), if_neg (by omega)]
+    beta_reduce
+    omega
+  unfold LocE.entB
+  rw [e1, e2, e3, zpow_one, mul_comm]
+
+theorem chrG_zero {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
+    (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
+    (cst : LocCst X (rowSG Pr sel mu)) (P : rowSG Pr sel mu) (hP : P.1 ∈ Pr.vGs) (hs : cst.sharp = true)
+    (hψ : ∀ a : X.E, IntAt P.1 a → cst.psi P (a / (qOf P.1 : X.E)) = psi0P Ch P.1 (redP P.1 a)) :
+    ChrG Ch sel mu cst 0 P 1 (colLev Ch 0 ⟨P.1, hP⟩) := by
+  have hm := R.two_le_m
+  have hN : R.N 0 = R.k := by simp [Ranks.N]
+  have hc : R.r - R.k - 1 = cOf R 0 - 1 := by unfold Ranks.r cOf; omega
+  have hl : colLev Ch 0 ⟨P.1, hP⟩ = ⟨HX (𝓞 X.E ⧸ P.1.asIdeal) (R.N 0) R.k R.t 0,
+      lamX (Ch.psi0 ⟨P.1, hP⟩) (extChi fun s => Ch.chi s ⟨P.1, hP⟩) (R.N 0) R.k R.m R.t 0⟩ := if_pos (by omega)
+  rw [hl]
+  intro hbar g r hr hrg hg
+  have hq : (qOf P.1 : X.E) ≠ 0 := GlobalTheory.TopStep.qOf_ne_zero
+  have hp0 : psi0P Ch P.1 = Ch.psi0 ⟨P.1, hP⟩ := dif_pos hP
+  have hJ := hr.2
+  simp only [Jat, hP, hs, if_true] at hJ
+  have hst : r ∈ stabL X.E _ (LocE.lamY P.1 (qOf P.1) (R.N 0) (cOf R 0) fun i => i + 1) := by
+    have h1 := hJ.1
+    simpa using h1
+  have hint := fun p p' => GlobalTheory.LastSteps.entB_int (P := P.1) R.k (x := r.toLinearMap) (fun y hy => (hst y).2 hy) p p'
+  have ha := GlobalTheory.Mem.LevFin.intAt_n1Arg_G hq r hst
+  have h2 : ∑ i ∈ Finset.range (R.r - R.k - 1), LocE.entB (qOf P.1) R.k (cOf R 0) (R.N 0) (cOf R 0) (R.N 0)
+      (fun i => i + 1) (fun i => i + 1) r.toLinearMap (R.k + i) (R.k + i + 1) = (qOf P.1 : X.E) * Loc.n1Arg r := by
+    rw [hc, Loc.n1Arg, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i hi => ?_
+    have := Finset.mem_range.1 hi
+    exact symLevelFrameEntry_superdiag_second_block _ (by omega) _
+  have h3 : cst.psi P (Loc.n1Arg r) = psi0P Ch P.1 (redP P.1 ((qOf P.1 : X.E) * Loc.n1Arg r)) := by
+    rw [← hψ _ ha, mul_div_cancel_left₀ _ hq]
+  have h4 : ((lamX (Ch.psi0 ⟨P.1, hP⟩) (extChi fun s => Ch.chi s ⟨P.1, hP⟩) (R.N 0) R.k R.m R.t 0 hbar : X.Kˣ) : X.K) =
+      Ch.psi0 ⟨P.1, hP⟩ (supSum R.k (Finset.range (R.k - 1)) hbar.1.1) := by
+    show ((lamGen _ _ _ R.k [] (SX R.k R.m 0) hbar : X.Kˣ) : X.K) = _
+    rw [lamGen_nil, SX_zero]
+    rfl
+  refine h4.trans ?_
+  simp only [chiInv, lamRow, hP, hs, if_true, LocE.lamGBS, LocE.lamGvS, inv_one, one_mul, mul_one, Finset.range_zero,
+    Finset.prod_empty]
+  rw [h2, h3, hp0, reduction_add (GlobalTheory.TopStep.intAt_sum _ fun i _ => hint _ _) ha, AddChar.map_add_eq_mul,
+    GlobalTheory.TopStep.reduction_sum₂ _ fun i _ => hint _ _, mul_comm, mul_inv_cancel_right₀ (AddChar.val_isUnit _ _).ne_zero]
+  congr 1
+  refine supSum_range hN.ge le_rfl _ _ fun i hi => ?_
+  have hi1 : i + 1 < R.N 0 := by omega
+  have hi0 : i < R.N 0 := by omega
+  have he : Loc.eN X.E (R.N 0 + cOf R 0) (i + 1) = Loc.inX X.E (R.N 0) (cOf R 0) (Loc.eN X.E (R.N 0) (i + 1)) := by
+    funext l
+    rw [GlobalTheory.QNormal.inX_apply]
+    unfold Loc.eN
+    split_ifs <;> first | rfl | omega
+  have hv : redV P.1 (Loc.eN X.E (R.N 0) (i + 1)) = Pi.single ⟨i + 1, hi1⟩ 1 := by
+    funext l
+    simp only [redV, Loc.eN, Pi.single_apply, Fin.ext_iff]
+    split_ifs
+    · exact GlobalTheory.TopStep.reduction_one₂
+    · exact GlobalTheory.TopStep.reduction_zero
+  have h5 := congrFun (hg _ (GlobalTheory.GO.ChRoot.eN_mem (i := i + 1))) ⟨i, hi0⟩
+  rw [hv, Matrix.mulVec_single_one] at h5
+  rw [entB_X _ hN.ge hi, he, LinearEquiv.coe_coe, hrg, Loc.atN, dif_pos (by omega), GlobalTheory.QNormal.inX_apply, dif_pos hi0]
+  exact h5
+
+end GlobalTheory.Proof.levelCharacter_stepZero_typePrime
+
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levelCharacter_stepZero_typePrime : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (P : rowSG Pr sel mu) (hP : P.1 ∈ Pr.vGs), cst.sharp = true → (∀ a : X.E, IntAt P.1 a → cst.psi P (a / (qOf P.1 : X.E)) = psi0P Ch P.1 (redP P.1 a)) → ChrG Ch sel mu cst 0 P 1 (colLev Ch 0 ⟨P.1, hP⟩) := by
+  atlas_forward_decl GlobalTheory.Proof.levelCharacter_stepZero_typePrime.chrG_zero
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+
+namespace GlobalTheory.Mem.Col2.IdxExZeroQ
+
+section Loc
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)}
+
+theorem parL_self (q kj n c : ℕ) (h : n ≤ kj) : LocE.parL P q kj n c = stdAt E (n + c) P := by
+  ext x
+  unfold LocE.parL
+  rw [GlobalTheory.CongLevel.mem_sclLat, GlobalTheory.GO.ChRoot.mem_stdAt']
+  refine forall_congr' fun l => ?_
+  rw [if_neg (by omega)]
+  simp
+
+theorem lamY_zero (q n c : ℕ) : LocE.lamY P q n c 0 = stdAt E (n + c) P :=
+  Submodule.ext fun _ => GlobalTheory.GO.ChRoot.mem_lamY_zero
+
+omit [StarRing E] in
+
+theorem lamQB_empty {K : Type} [Field K] (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (kj n : ℕ) (hn : n ≤ kj) {N : ℕ}
+    (h : HomE E N N) : LocE.lamQB ξ kj n h = 1 := by
+  unfold LocE.lamQB
+  haveI : IsEmpty (Fin (n - kj)) := ⟨fun i => by have := i.2; omega⟩
+  have h1 : redP P (1 : E) = 1 := by simpa using reduction_coe P 1
+  rw [Matrix.det_isEmpty]
+  unfold LocE.unitV
+  rw [dif_pos (by rw [h1]; exact isUnit_one)]
+  have : ∀ hu : IsUnit (redP P (1 : E)), hu.unit = 1 := fun hu => Units.ext (by simp [h1])
+  rw [this, map_one]
+  simp
+
+end Loc
+
+theorem zero_level : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (P : rowSG Pr sel mu), P.1 ∉ Pr.vGs → cst.Ok → GrpQ (R := R) sel mu cst 0 P 1 ⟨⊤, 1⟩ ∧ ChrQ Ch sel mu cst 0 P 1 ⟨⊤, 1⟩ := by
+  intro X Pr R Ch sel S mu cst P hP hc
+  have hN : R.N 0 ≤ R.k + 0 := by rw [Ranks.N_zero]; omega
+  have hJ : Jat (Pr := Pr) (R := R) cst.sharp 0 P.1 = stabL X.E _ (stdAt X.E (R.N 0 + cOf R 0) P.1) := by
+    unfold Jat
+    rw [if_neg hP]
+    unfold LocE.JQ
+    rw [parL_self _ _ _ _ hN, inf_idem]
+  have e : ∀ r : AutY X R 0, (MulAut.conj (1 : AutY X R 0)⁻¹).toMonoidHom r = r := by
+    intro r
+    simp
+  constructor
+  · unfold GrpQ
+    symm
+    rw [eq_top_iff]
+    intro g _
+    rw [Subgroup.mem_subgroupOf]
+    refine ⟨GlobalTheory.CongLevel.extE _ g.1, ⟨GlobalTheory.CongLevel.extendByIdOnLastCoordsLinearEquiv_mem_firstRowGroup _ g.1, ?_⟩, GlobalTheory.CongLevel.extE_inX _ g.1⟩
+    show (MulAut.conj (1 : AutY X R 0)⁻¹).toMonoidHom (GlobalTheory.CongLevel.extE (cOf R 0) g.1) ∈ Jat (Pr := Pr) cst.sharp 0 P.1
+    rw [e, hJ, ← lamY_zero (qOf P.1)]
+    exact GlobalTheory.CongLevel.extE_stab _ _ _ _ _ g.2
+  · intro g r hr _
+    have h2 : (MulAut.conj (1 : AutY X R 0)⁻¹).toMonoidHom r ∈ Jat (Pr := Pr) cst.sharp 0 P.1 := hr.2
+    rw [e, hJ] at h2
+    have hint : IntAt P.1 (1 * Loc.n1Arg r) :=
+      GlobalTheory.GO.ChRoot.intAt_n1Arg 1 r fun x hx => by rw [one_smul]; exact (h2 x).2 hx
+    rw [one_mul] at hint
+    unfold chiInv lamRow
+    rw [if_neg hP, hc.psi_int P _ hint, lamQB_empty _ _ _ hN]
+    simp
+
+end GlobalTheory.Mem.Col2.IdxExZeroQ
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_stepZero_at_twistPrime_full : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (P : rowSG Pr sel mu), P.1 ∉ Pr.vGs → cst.Ok → GrpQ (R := R) sel mu cst 0 P 1 ⟨⊤, 1⟩ ∧ ChrQ Ch sel mu cst 0 P 1 ⟨⊤, 1⟩ := by
+  atlas_forward_decl GlobalTheory.Mem.Col2.IdxExZeroQ.zero_level
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projConjLevel_le_integralGL_at_typePrime : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (sharp : Bool) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), P ∈ Pr.vGs → ∀ h ∈ stabL X.E _ (lamYat (Pr := Pr) (R := R) j P), prCat (Pr := Pr) sharp j P h ≤ GLint X.E (R.N j) P := by
+  first | exact @GlobalTheory.Mem.Col2.IdxEx.prCat_le_GLint | exact GlobalTheory.Mem.Col2.IdxEx.prCat_le_GLint | (intros; apply GlobalTheory.Mem.Col2.IdxEx.prCat_le_GLint <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.Mem.Col2.IdxEx
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal
+
+theorem nfMat_eq_qnf {E : Type} [Field E] (n c : ℕ) (q : E) (e : Fin c → ℤ) (z : Fin n → E) :
+    nfMat n c q e z = GlobalTheory.QNF.nfMat n c q e z := by
+  funext l s
+  unfold nfMat GlobalTheory.QNF.nfMat
+  by_cases hs : s.1 < n
+  · simp [hs]
+  · by_cases hls : l = s
+    · subst hls
+      simp [hs, Loc.inX]
+    · by_cases hn : s.1 = n
+      · by_cases hl : l.1 < n
+        · simp [hls, hn, hl, Loc.inX]
+        · simp [hls, hn, hl, Loc.inX]
+      · simp [hs, hls, hn]
+
+theorem nf_matrix : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), P ∉ Pr.vGs → ∀ h : AutY X R j, GlobalTheory.IndefiniteRowSideFullHecke.SandwichNormalForm.NF Pr j P h → ∃ (e : Fin (cOf R j) → ℤ) (z : Fin (R.N j) → X.E), (∀ i, -(j : ℤ) ≤ e i ∧ e i ≤ 0) ∧ (fun l : Fin (R.N j + cOf R j) => if hl : l.1 < R.N j then z ⟨l.1, hl⟩ else 0) ∈ lamYat (Pr := Pr) (R := R) j P ∧ (lamYat (Pr := Pr) (R := R) j P).map (h.toLinearMap.restrictScalars (𝓞 X.E)) = (lamYat (Pr := Pr) (R := R) j P).map ((Matrix.toLin' (nfMat (R.N j) (cOf R j) (qOf P : X.E) e z)).restrictScalars (𝓞 X.E)) := by
+  intro X Pr R j P hP h hh
+  obtain ⟨e, z, h1, h2, h3⟩ := (GlobalTheory.QNF.nf_iff_matNF X Pr R j P hP h).1 hh
+  exact ⟨e, z, h1, h2, by rw [nfMat_eq_qnf]; exact h3⟩
+
+end GlobalTheory.Mem.Col2.IdxEx
+
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV GlobalTheory.QNormal GlobalTheory.Mem.Col2.IdxEx
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.latticeNormalForm_via_matrix : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (j : ℕ) (P : HeightOneSpectrum (𝓞 X.E)), P ∉ Pr.vGs → ∀ h : AutY X R j, GlobalTheory.IndefiniteRowSideFullHecke.SandwichNormalForm.NF Pr j P h → ∃ (e : Fin (cOf R j) → ℤ) (z : Fin (R.N j) → X.E), (∀ i, -(j : ℤ) ≤ e i ∧ e i ≤ 0) ∧ (fun l : Fin (R.N j + cOf R j) => if hl : l.1 < R.N j then z ⟨l.1, hl⟩ else 0) ∈ lamYat (Pr := Pr) (R := R) j P ∧ (lamYat (Pr := Pr) (R := R) j P).map (h.toLinearMap.restrictScalars (𝓞 X.E)) = (lamYat (Pr := Pr) (R := R) j P).map ((Matrix.toLin' (nfMat (R.N j) (cOf R j) (qOf P : X.E) e z)).restrictScalars (𝓞 X.E)) := by
+  atlas_forward_decl GlobalTheory.Mem.Col2.IdxEx.nf_matrix
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.Mem.Col2.IdxEx
@@ -626,4 +1321,5 @@ theorem exists_chIdx {X : Fields} {Pr : Primes X} {R : Ranks} (hX : X.Ok) (hPr :
 
 end GlobalTheory.Mem.Col2
 
+end
 end

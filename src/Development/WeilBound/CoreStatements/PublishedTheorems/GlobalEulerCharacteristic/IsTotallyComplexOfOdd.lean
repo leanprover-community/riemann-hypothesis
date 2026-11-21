@@ -1,8 +1,0 @@
-import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.GlobalEulerFormulaInf
-
-open NumberField GroundTheory.Global
-
-namespace PositivityTheory.Lit1.GEN.TotallyComplexOfOdd
-
-
-end PositivityTheory.Lit1.GEN.TotallyComplexOfOdd

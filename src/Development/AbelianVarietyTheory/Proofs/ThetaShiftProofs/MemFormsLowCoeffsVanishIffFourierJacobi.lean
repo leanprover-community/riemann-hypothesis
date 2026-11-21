@@ -6,9 +6,228 @@ import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.Maxim
 import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkFD
 import Formalism.LocalToGlobal.LatticeGeometry.CmTypeMeetsConjugatePair
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.MaxCuspsIffKilledCoeffVanish
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsIsMaximalMemSpan
+import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.MaxCuspsSt
+import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.MaxCuspsPfA
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.MaxCuspKilledCoefficientEqZero
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.MaxCuspMemCuspFormsOfKilledCoefZero
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsIsLZBasis
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HyperbolicFlagDataBasePoint
 
+section
+open ReciprocityTheory.ChartRestriction.G.FD NumberField Formalism.L2.Pj.FJ Formalism.L2.Pj.QAt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.maxCusp_killedCoefficient_eq_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r ρ : ℕ) (X : Data E r), (∀ cu : CuspFD X ρ, ∃ bs, IsZBasis X cu bs) → ∀ (la : Wt X.Ψ r), (∀ (cu : CuspFD X ρ) (β : Matrix (Fin ρ) (Fin ρ) E), β ∈ zGam X cu → ∀ γ ∈ X.Γ, (γ : Matrix (Fin r) (Fin r) E) = zMatE X cu.e β → X.χ la γ = 1) → ∀ (c : ℝ) (P : Frame X.Ψ r → ℂ), P ∈ X.SSgt la c → ∀ (cu : CuspFD X ρ) (χ : Matrix (Fin ρ) (Fin ρ) E), IsExpoFD X cu χ → KilledFD X cu χ c → ∀ x ∈ X.dom, coefFn (zAct X cu) (phZ X cu χ) P x = 0 := by
+  first | exact @GlobalTheory.MaxCuspKilled.coefFn_eq_zero_of_killed | exact GlobalTheory.MaxCuspKilled.coefFn_eq_zero_of_killed | (intros; apply GlobalTheory.MaxCuspKilled.coefFn_eq_zero_of_killed <;> assumption)
+end
+
+section
+open ReciprocityTheory.ChartRestriction.G.FD NumberField Formalism.L2.Pj.FJ Formalism.L2.Pj.QAt
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.maxCusp_mem_cuspForms_of_killedCoef_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r ρ : ℕ) (X : Data E r), (∀ ξ, X.IsIso ξ → ∃ cu : CuspFD X ρ, ξ ∈ Submodule.span E (Set.range cu.e)) → (∀ cu : CuspFD X ρ, ∃ bs, IsZBasis X cu bs) → ∀ (la : Wt X.Ψ r), (∀ (cu : CuspFD X ρ) (β : Matrix (Fin ρ) (Fin ρ) E), β ∈ zGam X cu → ∀ γ ∈ X.Γ, (γ : Matrix (Fin r) (Fin r) E) = zMatE X cu.e β → X.χ la γ = 1) → ∀ (c : ℝ) (P : Frame X.Ψ r → ℂ), P ∈ X.SS la → (∀ (cu : CuspFD X ρ) (χ : Matrix (Fin ρ) (Fin ρ) E), IsExpoFD X cu χ → KilledFD X cu χ c → ∀ x ∈ X.dom, coefFn (zAct X cu) (phZ X cu χ) P x = 0) → P ∈ X.SSgt la c := by
+  first | exact @GlobalTheory.maxCusps_mem_SSgt_of_coef_eq_zero | exact GlobalTheory.maxCusps_mem_SSgt_of_coef_eq_zero | (intros; apply GlobalTheory.maxCusps_mem_SSgt_of_coef_eq_zero <;> assumption)
+end
+
+section
+open ReciprocityTheory.ChartRestriction.G.FD NumberField Formalism.L2.Pj.FJ Formalism.L2.Pj.QAt
+
+namespace GlobalTheory
+
+theorem maxCusps_iff_killed_coeff_vanish : MaxCuspsStatement := by
+  intro E _ _ _ r ρ X hspan hbas la hχ c P hP
+  exact ⟨fun h => GlobalTheory.T.maxCusp_killedCoefficient_eq_zero E r ρ X hbas la hχ c P h,
+    fun h => GlobalTheory.T.maxCusp_mem_cuspForms_of_killedCoef_zero E r ρ X hspan hbas la hχ c P hP h⟩
+
+end GlobalTheory
+end
+
+section
+namespace GlobalTheory.SubmoduleScalarClosure
+
+open NumberField
+
+theorem int_smul_mem_submodule {E : Type} [Field E] [NumberField E] {r : ℕ}
+    (L : Submodule (𝓞 E) (Fin r → E)) {x : Fin r → E} (hx : x ∈ L) (m : ℤ) :
+    (m : E) • x ∈ L := by
+  have h := L.smul_mem (m : 𝓞 E) hx
+  rwa [← algebraMap_smul E (m : 𝓞 E) x, map_intCast] at h
+
+theorem integer_ring_smul_mem_submodule {E : Type} [Field E] [NumberField E] {r : ℕ}
+    (L : Submodule (𝓞 E) (Fin r → E)) {x : Fin r → E} (hx : x ∈ L) (a : 𝓞 E) :
+    (a : E) • x ∈ L := by
+  have h := L.smul_mem a hx
+  rwa [← algebraMap_smul E a x] at h
+
+theorem main {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {r : ℕ}
+    (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (v : Fin r → E) :
+    ∃ (n : ℤ), n ≠ (0 : ℤ) ∧ (↑n : E) • v ∈ ReciprocityTheory.ChartRestriction.G.FD.Data.Λ X := by
+
+  let S : Submodule E (Fin r → E) :=
+    { carrier := {w | ∃ n : ℤ, n ≠ 0 ∧ (n : E) • w ∈ X.Λ}
+      add_mem' := by
+        rintro a b ⟨n, hn, ha⟩ ⟨k, hk, hb⟩
+        refine ⟨n * k, mul_ne_zero hn hk, ?_⟩
+        have h := X.Λ.add_mem (int_smul_mem_submodule X.Λ ha k) (int_smul_mem_submodule X.Λ hb n)
+        convert h using 1
+        rw [smul_add, smul_smul, smul_smul, Int.cast_mul, mul_comm (k : E) (n : E)]
+      zero_mem' := ⟨1, one_ne_zero, by simp⟩
+      smul_mem' := by
+        rintro c w ⟨n, hn, hw⟩
+
+        have hc : IsAlgebraic ℤ c := (IsFractionRing.isAlgebraic_iff ℤ ℚ E).mpr (.of_finite ℚ c)
+        obtain ⟨d, hd, hint⟩ := hc.exists_integral_multiple
+        refine ⟨d * n, mul_ne_zero hd hn, ?_⟩
+        have h := integer_ring_smul_mem_submodule X.Λ hw ⟨d • c, hint⟩
+        convert h using 1
+        show _ = (d • c) • ((n : E) • w)
+        rw [smul_smul, smul_smul, zsmul_eq_mul]
+        congr 1
+        push_cast
+        ring }
+  have hle : Submodule.span E (X.Λ : Set (Fin r → E)) ≤ S :=
+    Submodule.span_le.mpr fun x hx => ⟨1, one_ne_zero, by simpa using hx⟩
+  rw [X.Λ_span] at hle
+  obtain ⟨n, hn, h⟩ := hle (Submodule.mem_top : v ∈ ⊤)
+  exact ⟨n, hn, h⟩
+
+end GlobalTheory.SubmoduleScalarClosure
+end
+
+section
+namespace GlobalTheory.MaxCusp
+
+open NumberField Complex MeasureTheory Module ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.TorusFourier
+open scoped ComplexConjugate
+
+noncomputable section
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r d : ℕ}
+
+def IsIsotropicSub (G : Matrix (Fin r) (Fin r) E) (V : Submodule E (Fin r → E)) : Prop :=
+  ∀ v ∈ V, ∀ w ∈ V, herm G v w = 0
+
+def IsMaximal (X : Data E r) (u : Fin d → Fin r → E) : Prop :=
+  IsIsoFam X.Gm u ∧ (∀ i, u i ∈ X.Λ) ∧
+    Maximal (IsIsotropicSub X.Gm) (Submodule.span E (Set.range u))
+
+theorem isIsotropicSub_span {G : Matrix (Fin r) (Fin r) E} {s : Set (Fin r → E)}
+    (h : ∀ v ∈ s, ∀ w ∈ s, herm G v w = 0) : IsIsotropicSub G (Submodule.span E s) := by
+  intro v hv w hw
+  induction hv using Submodule.span_induction with
+  | mem x hx =>
+    induction hw using Submodule.span_induction with
+    | mem y hy => exact h x hx y hy
+    | zero => simp [herm, cc]
+    | add y z _ _ hy hz =>
+      have : herm G x (y + z) = herm G x y + herm G x z := by
+        simp [herm, cc, mul_add, Finset.sum_add_distrib]
+      rw [this, hy, hz, add_zero]
+    | smul c y _ hy =>
+      have : herm G x (c • y) = cc c * herm G x y := by
+        simp only [herm, cc, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
+        exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
+      rw [this, hy, mul_zero]
+  | zero => simp [herm]
+  | add x y _ _ hx hy =>
+    have : herm G (x + y) w = herm G x w + herm G y w := by
+      simp [herm, add_mul, Finset.sum_add_distrib]
+    rw [this, hx, hy, add_zero]
+  | smul c x _ hx => rw [herm_smul_left', hx, mul_zero]
+
+
+theorem exists_smul_mem (X : Data E r) (v : Fin r → E) : ∃ n : ℤ, n ≠ 0 ∧ (n : E) • v ∈ X.Λ := by
+  first
+  | exact @_root_.GlobalTheory.SubmoduleScalarClosure.main
+  | exact _root_.GlobalTheory.SubmoduleScalarClosure.main
+  | (apply _root_.GlobalTheory.SubmoduleScalarClosure.main <;> assumption)
+  | (intros; apply _root_.GlobalTheory.SubmoduleScalarClosure.main <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.SubmoduleScalarClosure.main <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.SubmoduleScalarClosure.main ..)
+
+
+
+
+
+section Torus
+
+variable (X : Data E r)
+
+def orb (u : Fin d → Fin r → E) (G : Frame X.Ψ r → ℂ) (x : Frame X.Ψ r) (b : hermSub X.Ψ d) : ℂ :=
+  G (Zb X u b.1 x)
+
+def lineMap (a : X.Ψ → Fin d → ℂ) : (X.Ψ → ℝ) →ₗ[ℝ] hermSub X.Ψ d where
+  toFun s := ⟨fun τ i k => (s τ : ℂ) * a τ i * conj (a τ k), fun τ i k => by
+    simp only [map_mul, Complex.conj_ofReal, Complex.conj_conj]; ring⟩
+  map_add' s t := by apply Subtype.ext; funext τ i k; simp; ring
+  map_smul' c s := by apply Subtype.ext; funext τ i k; simp; ring
+
+def nuForm (ν : X.Ψ → ℝ) : (X.Ψ → ℝ) →ₗ[ℝ] ℝ where
+  toFun s := 2 * ∑ τ, ν τ * s τ
+  map_add' s t := by simp [mul_add, Finset.sum_add_distrib]
+  map_smul' c s := by
+    simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun _ _ => by ring
+
+theorem nuForm_apply (ν s : X.Ψ → ℝ) : nuForm X ν s = 2 * ∑ τ, ν τ * s τ := rfl
+
+theorem nuForm_injective : Function.Injective (nuForm X) := by
+  classical
+  intro ν ν' h
+  funext τ
+  simpa [nuForm_apply, Pi.single_apply] using LinearMap.congr_fun h (Pi.single τ 1)
+
+theorem form_comp_lineMap (χ : X.Ψ → Fin d → Fin d → ℂ) (a : X.Ψ → Fin d → ℂ) :
+    form X χ ∘ₗ lineMap X a = nuForm X fun τ => (chiAt X χ a τ).re := by
+  refine LinearMap.ext fun s => ?_
+  rw [LinearMap.comp_apply, form_apply, nuForm_apply, pairR, Complex.re_sum]
+  congr 1
+  refine Finset.sum_congr rfl fun τ _ => ?_
+  rw [← Complex.re_mul_ofReal, chiAt]
+  congr 1
+  simp only [lineMap, LinearMap.coe_mk, AddHom.coe_mk, Finset.sum_mul]
+  exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
+
+
+theorem form_comp_eq_iff (χ : X.Ψ → Fin d → Fin d → ℂ) (a : X.Ψ → Fin d → ℂ) (ν : X.Ψ → ℝ) :
+    form X χ ∘ₗ lineMap X a = nuForm X ν ↔ ∀ τ, (chiAt X χ a τ).re = ν τ := by
+  rw [form_comp_lineMap, (nuForm_injective X).eq_iff, funext_iff]
+
+
+
+
+theorem orb_add {u : Fin d → Fin r → E} (hu : ∀ i k, herm X.Gm (u i) (u k) = 0)
+    (G : Frame X.Ψ r → ℂ) (x : Frame X.Ψ r) (b l : hermSub X.Ψ d) :
+    orb X u G x (b + l) = G (Zb X u l.1 (Zb X u b.1 x)) := by
+  rw [orb, Zb_Zb X u hu, add_comm]; rfl
+
+
+
+
+
+
+
+end Torus
+
+section Main
+
+variable (X : DataX E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (hP : X.IsSec la P)
+  (hχ : ∀ γ ∈ X.Γ, (∀ v ∈ X.Λ, ∃ y ∈ X.Λ,
+    Matrix.mulVec (γ : Matrix (Fin r) (Fin r) E) v - v = (X.g : E) • y) → X.χ la γ = 1)
+
+include hP hχ
+
+
+
+
+
+
+end Main
+
+end
+
+end GlobalTheory.MaxCusp
+end
+
+section
 section
 set_option autoImplicit false
 
@@ -328,3 +547,4 @@ open Formalism.L2.Pj Formalism.L2.Pj.QAt Formalism.MainNotions Formalism.BasicNo
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.mem_forms_low_coeffs_vanish_iff_fourierJacobi : ∀ (D : D7) (T : Core D) (h : LawsCore T) (j : ℕ) (ka : WeightFamilies.Wt D j) (CR Tt cc : ℝ), InR D j → j < D.R.m → ∀ F : (recB h).Cusp j ka, (∀ k, rdU (T.U j T.σ₀) F.1 k ∈ ((T.U j T.σ₀).X k).SS (laU (T.U j T.σ₀) (wtA ka) ka.n k)) ∧ (F ∈ WeightFamilies.MggK (recB h) CR Tt cc j ka ↔ ∀ k, rdU (T.U j T.σ₀) F.1 k ∈ ((T.U j T.σ₀).X k).SSgt (laU (T.U j T.σ₀) (wtA ka) ka.n k) (WeightFamilies.c1 D CR Tt cc j)) := by
   atlas_forward_decl GlobalTheory.LowCoeff.mem_iff_low_coeff_vanish
+end

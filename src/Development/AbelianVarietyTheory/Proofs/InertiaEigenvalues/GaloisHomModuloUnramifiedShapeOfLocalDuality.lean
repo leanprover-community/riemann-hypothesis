@@ -11,10 +11,447 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HcLCExistsPowS
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivFractionRingQuotPiProdFinite
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TorsionShapeOfTorsionCounts
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardH1LevelRepFormula
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PowMulEqZeroOfMul
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.H2BoundedTwist
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGaloisPowMovesPadicRootOfUnity
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1H2Local
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardUnramifiedLevelTrivialAction
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnramA
 
+section
+open ReciprocityTheory.Gal
+
+noncomputable section
+
+namespace GlobalTheory.UnramifiedH2Bound
+
+open GlobalTheory.ShapeNeg GlobalTheory.CyclotomicH2Bound
+
+theorem pow_mul_eq_zero_of_mul {p : ℕ} (hp : p.Prime) {n m : ℕ} {b : ℤ} (hb : ¬ ((p : ℤ) ^ m ∣ b))
+    {x : ZMod (p ^ n)} (hx : (b : ZMod (p ^ n)) * x = 0) : ((p ^ m : ℕ) : ZMod (p ^ n)) * x = 0 := by
+  have : NeZero (p ^ n) := ⟨pow_ne_zero _ hp.ne_zero⟩
+
+  have hbx : b • x = 0 := by rwa [zsmul_eq_mul]
+  have h1 : (addOrderOf x : ℤ) ∣ b := addOrderOf_dvd_iff_zsmul_eq_zero.mpr hbx
+  have h2 : addOrderOf x ∣ p ^ n := by
+    have := addOrderOf_dvd_card (x := x)
+    rwa [ZMod.card] at this
+  obtain ⟨j, -, hjx⟩ := (Nat.dvd_prime_pow hp).mp h2
+  have hjm : j < m := by
+    by_contra hcon
+    push Not at hcon
+    apply hb
+    rw [hjx] at h1
+    exact (pow_dvd_pow (p : ℤ) hcon).trans (by exact_mod_cast h1)
+  have h3 : addOrderOf x ∣ p ^ m := by
+    rw [hjx]; exact pow_dvd_pow _ hjm.le
+  have h4 : (p ^ m : ℕ) • x = 0 := addOrderOf_dvd_iff_nsmul_eq_zero.mp h3
+  rwa [nsmul_eq_mul] at h4
+
+theorem h2_bounded_of_trivial_action : Formalism.GaloisCohomology.LocalTateDualityK → ∀ {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)},
+    FiniteDimensional ℚ_[p] K → ∀ {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+    [Finite (IsLocalRing.ResidueField O)] {ϖ : O}, Irreducible ϖ → (p : O) ∈ Ideal.span {ϖ} → (p : O) ≠ 0 →
+    ∀ {M : Type} [AddCommGroup M] [Module O M], (M ≃ₗ[O] Formalism.NG.KO O) →
+    ∀ (ρ : Representation O (Formalism.GaloisCohomology.GK p K) M), (∀ g m, ρ g m = m) →
+    (∀ (n : ℕ) (h : ((p : O) ^ n) ∈ Ideal.span {ϖ ^ n}),
+      letI := GlobalTheory.ShapeNeg.levZ (M := M) p n h
+      ReciprocityTheory.Gal.ContAction (GlobalTheory.ShapeNeg.levRepZ p n h ρ)) →
+    ∃ C : ℕ, ∀ (n : ℕ), 0 < n → ∀ (h : ((p : O) ^ n) ∈ Ideal.span {ϖ ^ n}),
+      letI := GlobalTheory.ShapeNeg.levZ (M := M) p n h
+      Nat.card (ReciprocityTheory.Gal.H2 (GlobalTheory.ShapeNeg.levRepZ p n h ρ)) ≤ C := by
+  intro hTD p _ K hK O _ _ _ _ ϖ hϖ hpϖ hp0 M _ _ eM ρ hρ hcont
+  have hp : p.Prime := Fact.out
+
+  obtain ⟨σ, N, ζ', hζ'1, hσζ'⟩ :=
+    GlobalTheory.ShapeNeg.exists_pow_ne_rootOfUnity (p := p) (K := K) hK 1 Nat.one_pos
+  rw [pow_one] at hσζ'
+
+  obtain ⟨k, hk⟩ := IsDiscreteValuationRing.ideal_eq_span_pow_irreducible
+    (s := Ideal.span {(p : O) ^ N}) (by rw [Ne, Ideal.span_singleton_eq_bot]; exact pow_ne_zero N hp0) hϖ
+  have hfinQ : Finite (O ⧸ Ideal.span {(p : O) ^ N}) := by
+    rw [hk]; exact finite_quot hϖ k
+  refine ⟨(p ^ N) ^ ((p ^ N) ^ Nat.card (O ⧸ Ideal.span {(p : O) ^ N})), ?_⟩
+  intro n hn h
+  letI := GlobalTheory.ShapeNeg.levZ (M := M) p n h
+  have htriv : ∀ (g : Formalism.GaloisCohomology.GK p K) (m : Lev M (ϖ ^ n)), levRepZ p n h ρ g m = m := by
+    intro g m
+    rw [levRepZ_apply]
+    exact Lev.ext (by rw [levRep_val, hρ])
+
+  obtain ⟨x₀, hx₀⟩ := lev_cyclic eM hϖ n
+  have hx₀k : (ϖ ^ n) • x₀ = 0 := Lev.ext (by rw [Lev.val_smul, Lev.smul_val, Lev.val_zero])
+  have hfinL : Finite (Lev M (ϖ ^ n)) := by
+    have := finite_quot hϖ n
+    refine Finite.of_surjective (fun q : O ⧸ Ideal.span {ϖ ^ n} => q.out • x₀) ?_
+    intro y
+    obtain ⟨t, rfl⟩ := hx₀ y
+    exact ⟨Ideal.Quotient.mk _ t, out_smul n hx₀k t⟩
+  obtain ⟨⟨e⟩, -, -, -, hcup⟩ :=
+    hTD p K hK n (Lev M (ϖ ^ n)) (levRepZ p n h ρ) hn (hcont n h)
+
+  have hkill : ∀ (φ : H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K)))) (m : Lev M (ϖ ^ n)), ((p ^ N : ℕ) : ZMod (p ^ n)) * φ.1 m = 0 := by
+    intro φ m
+    by_cases hnN : n ≤ N
+    · rw [(ZMod.natCast_eq_zero_iff _ _).mpr (pow_dvd_pow p hnN), zero_mul]
+    push Not at hnN
+    obtain ⟨ζ, hζ⟩ := exists_prim p n
+    have hσζn : (σ ζ) ^ (p ^ n) = 1 := by rw [← map_pow, hζ.pow_eq_one, map_one]
+    obtain ⟨a, -, ha⟩ := hζ.eq_pow_of_pow_eq_one hσζn
+    have hcyc := cycK_eq_of_prim n σ hζ a ha.symm
+    have hfixm : ((Formalism.GaloisCohomology.cycK p K n σ : (ZMod (p ^ n))ˣ) : ZMod (p ^ n)) *
+        φ.1 (levRepZ p n h ρ σ⁻¹ m) = φ.1 m := by
+      rw [← twDual_apply]
+      exact DFunLike.congr_fun ((mem_riemannRochSpace_iff_regularAt_everywhere _ _).mp φ.2 σ) m
+    rw [htriv, hcyc] at hfixm
+    have hnd : ¬ ((p : ℤ) ^ N ∣ (a : ℤ) - 1) := by
+      rintro ⟨d, hd⟩
+      apply hσζ'
+      have hζ'n : ζ' ^ (p ^ n) = 1 := by
+        obtain ⟨c, hc⟩ := pow_dvd_pow p hnN.le
+        rw [hc, pow_mul, hζ'1, one_pow]
+      obtain ⟨j, -, hj⟩ := hζ.eq_pow_of_pow_eq_one hζ'n
+      have hσ' : σ ζ' = ζ' ^ a := by
+        rw [← hj, map_pow, ← ha, ← pow_mul, ← pow_mul, mul_comm]
+      have hne : ζ' ≠ 0 := by
+        rintro rfl
+        rw [zero_pow (pow_ne_zero N hp.ne_zero)] at hζ'1
+        exact zero_ne_one hζ'1
+      have ha' : (a : ℤ) = 1 + ((p ^ N : ℕ) : ℤ) * d := by push_cast; linarith
+      rw [hσ', ← zpow_natCast, ha', zpow_add₀ hne, zpow_one, zpow_mul, zpow_natCast, hζ'1,
+        one_zpow, mul_one]
+    have hb : (((a : ℤ) - 1 : ℤ) : ZMod (p ^ n)) * φ.1 m = 0 := by
+      push_cast
+      rw [sub_mul, one_mul, hfixm, sub_self]
+    exact pow_mul_eq_zero_of_mul hp hnd hb
+
+  have hTcard : Nat.card {z : ZMod (p ^ n) // ((p ^ N : ℕ) : ZMod (p ^ n)) * z = 0} ≤ p ^ N := by
+    have key : ∀ z : {z : ZMod (p ^ n) // ((p ^ N : ℕ) : ZMod (p ^ n)) * z = 0},
+        z.1.val = p ^ (n - N) * (z.1.val / p ^ (n - N)) ∧ z.1.val / p ^ (n - N) < p ^ N := by
+      intro z
+      have hlt : z.1.val < p ^ (n - N) * p ^ N := by
+        calc z.1.val < p ^ n := ZMod.val_lt _
+          _ ≤ p ^ (n - N + N) := Nat.pow_le_pow_right hp.pos (by omega)
+          _ = _ := pow_add _ _ _
+      have hdvd : p ^ (n - N) ∣ z.1.val := by
+        by_cases hnN : n ≤ N
+        · rw [Nat.sub_eq_zero_of_le hnN, pow_zero]; exact one_dvd _
+        · push Not at hnN
+          have h1 : ((p ^ N * z.1.val : ℕ) : ZMod (p ^ n)) = 0 := by
+            rw [Nat.cast_mul, ZMod.natCast_zmod_val]; exact z.2
+          rw [ZMod.natCast_eq_zero_iff] at h1
+          have h2 : p ^ n = p ^ N * p ^ (n - N) := by rw [← pow_add]; congr 1; omega
+          have h1' : p ^ N * p ^ (n - N) ∣ p ^ N * z.1.val := by rw [← h2]; exact h1
+          exact Nat.dvd_of_mul_dvd_mul_left (pow_pos hp.pos N) h1'
+      exact ⟨(Nat.mul_div_cancel' hdvd).symm, Nat.div_lt_of_lt_mul hlt⟩
+    have hinj : Function.Injective
+        (fun z : {z : ZMod (p ^ n) // ((p ^ N : ℕ) : ZMod (p ^ n)) * z = 0} => ((z.1.val / p ^ (n - N) : ℕ) : ZMod (p ^ N))) := by
+      intro z w hzw
+      have hz := key z
+      have hw := key w
+      have hv := congrArg ZMod.val hzw
+      simp only [ZMod.val_cast_of_lt hz.2, ZMod.val_cast_of_lt hw.2] at hv
+      apply Subtype.ext
+      apply ZMod.val_injective
+      rw [hz.1, hw.1, hv]
+    have : NeZero (p ^ N) := ⟨pow_ne_zero _ hp.ne_zero⟩
+    calc _ ≤ Nat.card (ZMod (p ^ N)) := Nat.card_le_card_of_injective _ hinj
+      _ = p ^ N := Nat.card_zmod _
+
+  have hval : ∀ (φ : H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K)))) (t : O),
+      φ.1 (t • x₀) = φ.1 ((Ideal.Quotient.mk (Ideal.span {(p : O) ^ N}) t).out • x₀) := by
+    intro φ t
+    have hmem : (Ideal.Quotient.mk (Ideal.span {(p : O) ^ N}) t).out - t ∈
+        Ideal.span {(p : O) ^ N} :=
+      Ideal.Quotient.eq.mp (by rw [Ideal.Quotient.mk_out])
+    obtain ⟨s, hs⟩ := Ideal.mem_span_singleton'.mp hmem
+    have hout : (Ideal.Quotient.mk (Ideal.span {(p : O) ^ N}) t).out = t + ((p ^ N : ℕ) : O) * s := by
+      rw [Nat.cast_pow]; linear_combination -hs
+    rw [hout, add_smul, mul_smul, Nat.cast_smul_eq_nsmul, td_add, td_nsmul, nsmul_eq_mul,
+      hkill φ, add_zero]
+  have hΦ : Function.Injective (fun (φ : H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K)))) (q : O ⧸ Ideal.span {(p : O) ^ N}) =>
+      (⟨φ.1 (q.out • x₀), hkill φ _⟩ : {z : ZMod (p ^ n) // ((p ^ N : ℕ) : ZMod (p ^ n)) * z = 0})) := by
+    intro φ ψ hφψ
+    apply Subtype.ext
+    apply TDual.ext
+    intro m
+    obtain ⟨t, rfl⟩ := hx₀ m
+    rw [hval φ t, hval ψ t]
+    exact congrArg Subtype.val (congrFun hφψ (Ideal.Quotient.mk _ t))
+  have hfinH0 : Finite (H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K)))) := Finite.of_injective _ hΦ
+  have hH0card : Nat.card (H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K)))) ≤ (p ^ N) ^ Nat.card (O ⧸ Ideal.span {(p : O) ^ N}) := by
+    calc _ ≤ Nat.card (O ⧸ Ideal.span {(p : O) ^ N} → {z : ZMod (p ^ n) // ((p ^ N : ℕ) : ZMod (p ^ n)) * z = 0}) :=
+          Nat.card_le_card_of_injective _ hΦ
+      _ = Nat.card {z : ZMod (p ^ n) // ((p ^ N : ℕ) : ZMod (p ^ n)) * z = 0} ^ Nat.card (O ⧸ Ideal.span {(p : O) ^ N}) := Nat.card_fun
+      _ ≤ _ := Nat.pow_le_pow_left hTcard _
+
+  have hsmul0 : ∀ φ : H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K))), ((p ^ N : ℕ) : ZMod (p ^ n)) • φ = 0 := by
+    intro φ
+    apply Subtype.ext
+    apply TDual.ext
+    intro m
+    rw [Submodule.coe_smul, TDual.smul_apply, hkill φ m]
+    rfl
+  have hΨ : Function.Injective (fun (x : H2 ((levRepZ p n h ρ).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K))))
+      (φ : H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K)))) =>
+      (⟨e (cup20 (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ) (MonoidHom.id _) x φ), by
+        have h0 := congrArg e (congrArg
+          (cup20 (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ) (MonoidHom.id _) x) (hsmul0 φ))
+        rw [LinearMap.map_smul, LinearEquiv.map_smul, LinearMap.map_zero, LinearEquiv.map_zero,
+          smul_eq_mul] at h0
+        exact h0⟩ : {z : ZMod (p ^ n) // ((p ^ N : ℕ) : ZMod (p ^ n)) * z = 0})) := by
+    intro x y hxy
+    apply hcup.1
+    apply LinearMap.ext
+    intro φ
+    apply e.injective
+    exact congrArg Subtype.val (congrFun hxy φ)
+  calc Nat.card (H2 (levRepZ p n h ρ))
+      = Nat.card (H2 ((levRepZ p n h ρ).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K)))) := rfl
+    _ ≤ Nat.card (H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K))) → {z : ZMod (p ^ n) // ((p ^ N : ℕ) : ZMod (p ^ n)) * z = 0}) := Nat.card_le_card_of_injective _ hΨ
+    _ = Nat.card {z : ZMod (p ^ n) // ((p ^ N : ℕ) : ZMod (p ^ n)) * z = 0} ^ Nat.card (H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K)))) := Nat.card_fun
+    _ ≤ (p ^ N) ^ Nat.card (H0 ((twDual (Formalism.GaloisCohomology.cycK p K n) (levRepZ p n h ρ)).comp (MonoidHom.id (Formalism.GaloisCohomology.GK p K)))) := Nat.pow_le_pow_left hTcard _
+    _ ≤ _ := Nat.pow_le_pow_right (pow_pos hp.pos N) hH0card
+
+end GlobalTheory.UnramifiedH2Bound
+end
+end
+
+section
+open ReciprocityTheory.Gal
+
+noncomputable section
+
+namespace GlobalTheory.ShapeNeg
+
+def LCHomLev {O : Type} [CommRing O] {G : Type} [Group G] [TopologicalSpace G] (M : Type)
+    [AddCommGroup M] [Module O M] (c : O) (I : Subgroup G) : Type :=
+  {f : G → Lev M c // IsLocallyConstant f ∧ (∀ a b, f (a * b) = f a + f b) ∧ ∀ g ∈ I, f g = 0}
+
+section Triv
+
+variable {O : Type} [CommRing O] {G : Type} [Group G] {M : Type} [AddCommGroup M] [Module O M]
+
+theorem mem_coboundaries_of_trivial {ρ : Representation O G M} (hρ : ∀ g m, ρ g m = m) (x : G → M) :
+    x ∈ Formalism.NG.coB1 ρ ↔ x = 0 := by
+  constructor
+  · rintro ⟨v, rfl⟩
+    funext g
+    show ρ g v - v = 0
+    rw [hρ, sub_self]
+  · rintro rfl
+    exact zero_mem _
+
+theorem mk_eq_zero_of_triv {ρ : Representation O G M} (hρ : ∀ g m, ρ g m = m)
+    (z : Formalism.NG.coZ1s ρ) : (Submodule.Quotient.mk z : Formalism.NG.H1z ρ) = 0 ↔ (z : G → M) = 0 := by
+  rw [Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, Submodule.coe_subtype,
+    mem_coboundaries_of_trivial hρ]
+
+variable [TopologicalSpace G]
+
+theorem card_torsion_eq_locConstHom_trivial_action (ρ : Representation O G M) (hρ : ∀ g m, ρ g m = m)
+    (I : Subgroup G) (c : O) :
+    Nat.card (LinearMap.ker (c • LinearMap.id :
+      ↥((Formalism.RepresentationBoundsCohomology.BR.unrH1 ρ I).comap (ReciprocityTheory.ChartRestriction.T2.HcLC ρ).subtype) →ₗ[O]
+      ↥((Formalism.RepresentationBoundsCohomology.BR.unrH1 ρ I).comap (ReciprocityTheory.ChartRestriction.T2.HcLC ρ).subtype))) =
+      Nat.card (LCHomLev M c I) := by
+  have hres : ∀ (g : I) (m : M), Formalism.NG.resRep ρ I g m = m := fun g m => hρ g m
+  let coc : LCHomLev M c I → Formalism.NG.coZ1s ρ := fun f =>
+    ⟨fun g => (f.1 g).val, fun a b => by
+      show (f.1 (a * b)).val = (f.1 a).val + ρ a (f.1 b).val
+      rw [hρ, f.2.2.1, Lev.val_add]⟩
+  let F : LCHomLev M c I → LinearMap.ker (c • LinearMap.id :
+      ↥((Formalism.RepresentationBoundsCohomology.BR.unrH1 ρ I).comap (ReciprocityTheory.ChartRestriction.T2.HcLC ρ).subtype) →ₗ[O]
+      ↥((Formalism.RepresentationBoundsCohomology.BR.unrH1 ρ I).comap (ReciprocityTheory.ChartRestriction.T2.HcLC ρ).subtype)) := fun f =>
+    ⟨⟨⟨Submodule.Quotient.mk (coc f),
+        Submodule.mem_map.2 ⟨coc f, f.2.1.comp Lev.val, rfl⟩⟩,
+      by
+        change (Submodule.Quotient.mk (Formalism.NG.restrictCocycles1 ρ I (coc f)) :
+          Formalism.NG.H1z (Formalism.NG.resRep ρ I)) = 0
+        rw [mk_eq_zero_of_triv hres]
+        funext g
+        show (f.1 g.1).val = 0
+        rw [f.2.2.2 g.1 g.2]
+        rfl⟩,
+      by
+        rw [LinearMap.mem_ker, LinearMap.smul_apply, LinearMap.id_apply]
+        apply Subtype.ext
+        apply Subtype.ext
+        show c • (Submodule.Quotient.mk (coc f) : Formalism.NG.H1z ρ) = 0
+        rw [← Submodule.Quotient.mk_smul, mk_eq_zero_of_triv hρ]
+        funext g
+        exact Lev.smul_val (f.1 g)⟩
+  have hinj : ∀ f f' : LCHomLev M c I, (Submodule.Quotient.mk (coc f) : Formalism.NG.H1z ρ) =
+      Submodule.Quotient.mk (coc f') → f = f' := by
+    intro f f' h
+    rw [← sub_eq_zero, ← Submodule.Quotient.mk_sub, mk_eq_zero_of_triv hρ] at h
+    apply Subtype.ext
+    funext g
+    apply Lev.ext
+    have h1 : (f.1 g).val - (f'.1 g).val = 0 := congrFun h g
+    exact sub_eq_zero.1 h1
+  refine (Nat.card_eq_of_bijective F ⟨fun f f' h => hinj f f' ?_, fun y => ?_⟩).symm
+  · exact congrArg (fun y => y.1.1.1) h
+  · obtain ⟨z, hz, hzy⟩ := Submodule.mem_map.1 y.1.1.2
+    have hk : (Submodule.Quotient.mk (c • z) : Formalism.NG.H1z ρ) = 0 := by
+      rw [Submodule.Quotient.mk_smul]
+      change c • Submodule.mkQ _ z = 0
+      rw [hzy]
+      exact congrArg (fun w => w.1.1) (LinearMap.mem_ker.1 y.2)
+    rw [mk_eq_zero_of_triv hρ] at hk
+    have hz0 : ∀ g, c • (z : G → M) g = 0 := fun g => congrFun hk g
+    have hu : Formalism.NG.resH1 ρ I (Submodule.mkQ _ z) = 0 := by
+      rw [hzy]
+      exact y.1.2
+    have hu' : (Submodule.Quotient.mk (Formalism.NG.restrictCocycles1 ρ I z) :
+        Formalism.NG.H1z (Formalism.NG.resRep ρ I)) = 0 := hu
+    rw [mk_eq_zero_of_triv hres] at hu'
+    have hI0 : ∀ g ∈ I, (z : G → M) g = 0 := fun g hg => congrFun hu' ⟨g, hg⟩
+    let f : LCHomLev M c I := ⟨fun g => Lev.mk ((z : G → M) g) (hz0 g),
+      IsLocallyConstant.desc _ Lev.val hz (fun a b h => Lev.ext h),
+      fun a b => Lev.ext (by rw [Lev.val_add, Lev.val_mk, Lev.val_mk, Lev.val_mk, z.2 a b, hρ]),
+      fun g hg => Lev.ext (by rw [Lev.val_mk, hI0 g hg]; rfl)⟩
+    refine ⟨f, ?_⟩
+    apply Subtype.ext
+    apply Subtype.ext
+    apply Subtype.ext
+    change Submodule.Quotient.mk (coc f) = y.1.1.1
+    rw [← hzy]
+    rfl
+
+end Triv
+
+section H1Triv
+
+variable {R : Type} [CommRing R] {Γ : Type} [Group Γ] [TopologicalSpace Γ] {N : Type}
+  [AddCommGroup N] [Module R N] [TopologicalSpace N] [IsTopologicalAddGroup N]
+  [ContinuousConstSMul R N]
+
+theorem H1_mk_eq_zero_iff_of_trivial {rho : Representation R Γ N} (hrho : ∀ g m, rho g m = m)
+    (z : Z1 rho) : (Submodule.Quotient.mk z : H1 rho) = 0 ↔ z = 0 := by
+  rw [Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, Submodule.coe_subtype, mem_coboundaries1]
+  constructor
+  · rintro ⟨m, hm⟩
+    apply Subtype.ext
+    funext g
+    rw [hm g, hrho, sub_self]
+    rfl
+  · rintro rfl
+    exact ⟨0, fun g => by rw [map_zero, sub_zero]; rfl⟩
+
+theorem mk_mem_H1ur_of_vanish (rho : Representation R Γ N) (J : Subgroup Γ) (z : Z1 rho)
+    (hz : ∀ g ∈ J, z.1 g = 0) : (Submodule.Quotient.mk z : H1 rho) ∈ H1ur rho J := by
+  change (Submodule.Quotient.mk (restrictCocycles1 rho J.subtype continuous_subtype_val z) :
+    H1 (rho.comp J.subtype)) = 0
+  rw [Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, Submodule.coe_subtype]
+  exact (mem_coboundaries1 _ _).2 ⟨0, fun g => by rw [map_zero, sub_zero]; exact hz g.1 g.2⟩
+
+theorem vanish_of_mk_mem_H1ur (rho : Representation R Γ N) (J : Subgroup Γ)
+    (hJ : ∀ g ∈ J, ∀ m, rho g m = m) (z : Z1 rho)
+    (hz : (Submodule.Quotient.mk z : H1 rho) ∈ H1ur rho J) (g : Γ) (hg : g ∈ J) : z.1 g = 0 := by
+  have h1 : (Submodule.Quotient.mk (restrictCocycles1 rho J.subtype continuous_subtype_val z) :
+      H1 (rho.comp J.subtype)) = 0 := hz
+  rw [Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, Submodule.coe_subtype] at h1
+  obtain ⟨m, hm⟩ := (mem_coboundaries1 _ _).1 h1
+  have h3 : z.1 g = rho g m - m := hm ⟨g, hg⟩
+  rw [h3, hJ g hg, sub_self]
+
+end H1Triv
+
+theorem card_LCHomLev_eq_unrK {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
+    {O : Type} [CommRing O] {G : Type} [Group G] [TopologicalSpace G]
+    (i : G ≃ₜ* Formalism.GaloisCohomology.GK p K) {M : Type} [AddCommGroup M] [Module O M]
+    (ρ : Representation O G M) (hρ : ∀ g m, ρ g m = m) (I : Subgroup G)
+    (hI : ∀ g, g ∈ I ↔ i g ∈ Formalism.GaloisCohomology.inertiaK p K) (r : ℕ) [NeZero (p ^ r)] (c : O)
+    (h : ((p : O) ^ r) ∈ Ideal.span {c}) :
+    letI := levZ (M := M) p r h
+    Nat.card (LCHomLev M c I) =
+      Nat.card (Formalism.GaloisCohomology.unrK (levRepZ p r h (ρ.comp i.symm.toMulEquiv.toMonoidHom))) := by
+  letI := levZ (M := M) p r h
+  let ρ' := levRepZ p r h (ρ.comp i.symm.toMulEquiv.toMonoidHom)
+  have hρ' : ∀ g x, ρ' g x = x := fun g x => Lev.ext (hρ _ _)
+  let F : LCHomLev M c I → Formalism.GaloisCohomology.unrK ρ' := fun f =>
+    ⟨Submodule.Quotient.mk ⟨f.1 ∘ i.symm, (f.2.1.comp_continuous i.symm.continuous).continuous,
+        fun a b => by
+          show f.1 (i.symm (a * b)) = f.1 (i.symm a) + ρ' a (f.1 (i.symm b))
+          rw [hρ', map_mul, f.2.2.1]⟩,
+      mk_mem_H1ur_of_vanish ρ' _ _ fun g hg => by
+        show f.1 (i.symm g) = 0
+        exact f.2.2.2 _ ((hI _).2 (by rw [ContinuousMulEquiv.apply_symm_apply]; exact hg))⟩
+  refine Nat.card_eq_of_bijective F ⟨fun f f' hff => ?_, fun x => ?_⟩
+  · have h1 := congrArg Subtype.val hff
+    rw [← sub_eq_zero, ← Submodule.Quotient.mk_sub, H1_mk_eq_zero_iff_of_trivial hρ', sub_eq_zero] at h1
+    have h2 := congrArg Subtype.val h1
+    apply Subtype.ext
+    funext g
+    have h3 := congrFun h2 (i g)
+    simpa only [Function.comp_apply, ContinuousMulEquiv.symm_apply_apply] using h3
+  · obtain ⟨z, hz⟩ := Submodule.Quotient.mk_surjective _ x.1
+    have hx : (Submodule.Quotient.mk z : H1 ρ') ∈ H1ur ρ' (Formalism.GaloisCohomology.inertiaK p K) := by
+      rw [hz]; exact x.2
+    let f : LCHomLev M c I := ⟨fun g => z.1 (i g),
+      ((IsLocallyConstant.iff_continuous _).2 z.2.1).comp_continuous i.continuous,
+      fun a b => by
+        show z.1 (i (a * b)) = z.1 (i a) + z.1 (i b)
+        rw [map_mul, z.2.2, hρ'],
+      fun g hg => vanish_of_mk_mem_H1ur ρ' _ (fun σ _ m => hρ' σ m) z hx (i g) ((hI g).1 hg)⟩
+    refine ⟨f, ?_⟩
+    apply Subtype.ext
+    change Submodule.Quotient.mk _ = x.1
+    rw [← hz]
+    congr 1
+    apply Subtype.ext
+    funext g
+    show z.1 (i (i.symm g)) = z.1 g
+    rw [ContinuousMulEquiv.apply_symm_apply]
+
+open scoped ReciprocityTheory.DiscreteGroups.LocalClassField in
+
+theorem card_unramifiedClasses_eq_card_invariants_localGalois {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
+    (hK : FiniteDimensional ℚ_[p] K) {R : Type} [CommRing R] {N : Type} [AddCommGroup N] [Module R N]
+    [Finite N] [TopologicalSpace N] [DiscreteTopology N]
+    (rho : Representation R (Formalism.GaloisCohomology.GK p K) N) (hrho : ReciprocityTheory.Gal.ContAction rho)
+    (hI : ∀ σ ∈ Formalism.GaloisCohomology.inertiaK p K, ∀ m, rho σ m = m) :
+    Nat.card (Formalism.GaloisCohomology.unrK rho) = Nat.card (H0 rho) := by
+  change Nat.card (Neutral.B1.H1ur rho (Neutral.B1.inertiaK p K)) = Nat.card (Neutral.B1.H0 rho)
+  replace hI : ∀ σ ∈ Neutral.B1.inertiaK p K, ∀ m, rho σ m = m := hI
+  rw [← ReciprocityTheory.DiscreteGroups.LocalClassField.subG_Kur_eq_inertiaK hK] at hI ⊢
+  exact ReciprocityTheory.DiscreteGroups.LocalClassField.InflationOneCocycles.card_H1ur hrho hI (s := ReciprocityTheory.DiscreteGroups.LocalClassField.frobK p K)
+    (ReciprocityTheory.DiscreteGroups.LocalClassField.isZHat_GalKur hK)
+
+theorem card_unr_lev_of_triv : ∀ {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)}, FiniteDimensional ℚ_[p] K →
+    ∀ {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Finite (IsLocalRing.ResidueField O)] {ϖ : O},
+    Irreducible ϖ → (p : O) ∈ Ideal.span {ϖ} →
+    ∀ {G : Type} [Group G] [TopologicalSpace G] (i : G ≃ₜ* Formalism.GaloisCohomology.GK p K) {M : Type} [AddCommGroup M] [Module O M],
+    (M ≃ₗ[O] Formalism.NG.KO O) → ∀ (ρ : Representation O G M), (∀ g m, ρ g m = m) →
+    ∀ I : Subgroup G, (∀ g, g ∈ I ↔ i g ∈ Formalism.GaloisCohomology.inertiaK p K) → ∀ n : ℕ,
+    Nat.card (LinearMap.ker (ϖ ^ n • LinearMap.id :
+      ↥((Formalism.RepresentationBoundsCohomology.BR.unrH1 ρ I).comap (ReciprocityTheory.ChartRestriction.T2.HcLC ρ).subtype) →ₗ[O]
+      ↥((Formalism.RepresentationBoundsCohomology.BR.unrH1 ρ I).comap (ReciprocityTheory.ChartRestriction.T2.HcLC ρ).subtype))) =
+      Nat.card (IsLocalRing.ResidueField O) ^ n := by
+  intro p _ K hK O _ _ _ _ ϖ hϖ hp G _ _ i M _ _ e ρ hρ I hI n
+  have hpn : ((p : O) ^ n) ∈ Ideal.span {ϖ ^ n} :=
+    Ideal.mem_span_singleton.2 (pow_dvd_pow_of_dvd (Ideal.mem_span_singleton.1 hp) n)
+  haveI : NeZero (p ^ n) := ⟨pow_ne_zero _ (Fact.out : p.Prime).ne_zero⟩
+  letI := levZ (M := M) p n hpn
+  obtain ⟨hfin, hcard⟩ := levKO_card hϖ e n
+  haveI := hfin
+  let ρ' := levRepZ p n hpn (ρ.comp i.symm.toMulEquiv.toMonoidHom)
+  have hρ' : ∀ g x, ρ' g x = x := fun g x => Lev.ext (hρ _ _)
+  have hcont : ReciprocityTheory.Gal.ContAction ρ' := by
+    unfold ReciprocityTheory.Gal.ContAction
+    simp only [hρ']
+    exact continuous_snd
+  calc _ = Nat.card (LCHomLev M (ϖ ^ n) I) := card_torsion_eq_locConstHom_trivial_action ρ hρ I (ϖ ^ n)
+    _ = Nat.card (Formalism.GaloisCohomology.unrK ρ') := card_LCHomLev_eq_unrK i ρ hρ I hI n (ϖ ^ n) hpn
+    _ = Nat.card (H0 ρ') :=
+        card_unramifiedClasses_eq_card_invariants_localGalois hK ρ' hcont (fun σ _ m => hρ' σ m)
+    _ = Nat.card (Lev M (ϖ ^ n)) := Nat.card_congr (Equiv.subtypeUnivEquiv fun x g => hρ' g x)
+    _ = _ := hcard
+
+end GlobalTheory.ShapeNeg
+end
+end
+
+section
 section
 namespace GlobalTheory.ShapeUnrTriv
 
@@ -331,3 +768,4 @@ end
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.galoisHom_modulo_unramified_shape_of_localDuality : Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK → ReciprocityTheory.ChartRestriction.T2.ShapeUnr := by
   atlas_forward_decl GlobalTheory.ShapeUnrTriv.shapeUnr_of_localDuality
+end

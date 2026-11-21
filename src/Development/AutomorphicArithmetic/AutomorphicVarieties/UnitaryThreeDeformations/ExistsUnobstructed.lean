@@ -1,13 +1,1159 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.ExistsSetLift
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.IsCharZeroPt
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.AdRepBaseLiftApply
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.TriangularConditionAtLOfFirstOrderDeformation
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.LocAtDeformD
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.LocAtDeformU
 import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.ExistsGradedLiftUnitaryLocalTame
 import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.ExistsLiftD
-import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.ExistsLiftU
-import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.ExistsSmallExtensionFactorizationOfFunctional
-import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.LiftAlongSurjectionGraded
-import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.CardDualResidueFieldEqCardOfMaximalIdealSmulEqZe
-import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.GradedMatrixMulInv
-import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.LocAtPushOfLocAt
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.CondConj
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.NormEx
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.NormUniq
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MapTor
+import Mathlib.Algebra.Module.Torsion.Basic
+import Mathlib.LinearAlgebra.Dual.Lemmas
+import Mathlib.FieldTheory.Finiteness
 
+section
+noncomputable section
+
+open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
+
+namespace UpperTheory.V.UnitaryThreeInertia.Obs
+
+variable {O R N : Type} [CommRing O] [CommRing R] [IsLocalRing R] [Algebra O R] [AddCommGroup N] [Module O N]
+  {D : Type} [Group D]
+
+structure Sm (ε : N →ₗ[O] R) : Prop where
+  mem : ∀ y, ε y ∈ maximalIdeal R
+  kill : ∀ x ∈ maximalIdeal R, ∀ y, x * ε y = 0
+
+def act (η : D →* ℤˣ) (Ψ : D →* Oˣ) (g : D) (Y : Matrix (Fin 3) (Fin 3) N) : Matrix (Fin 3) (Fin 3) N :=
+  fun a b => ((Ψ g ^ wt a b : Oˣ) : O) • (if η g = 1 then Y a b else -Y b.rev a.rev)
+
+theorem act_map {N' : Type} [AddCommGroup N'] [Module O N'] (φ : N →ₗ[O] N') (η : D →* ℤˣ) (Ψ : D →* Oˣ) (g : D)
+    (Y : Matrix (Fin 3) (Fin 3) N) : (act η Ψ g Y).map φ = act η Ψ g (Y.map φ) := by
+  ext a b
+  simp only [act, Matrix.map_apply]
+  split_ifs <;> simp [map_smul, map_neg]
+
+theorem act_neg (η : D →* ℤˣ) (Ψ : D →* Oˣ) (g : D)
+    (Y : Matrix (Fin 3) (Fin 3) N) : act η Ψ g (-Y) = -act η Ψ g Y := by
+  ext a b
+  simp only [act, Matrix.neg_apply]
+  split_ifs <;> simp
+
+theorem act_val [IsLocalRing O] (η : D →* ℤˣ) (Ψ : D →* Oˣ) (j : ℤ) (g : D) (y : Gb (ResidueField O) j) :
+    (gRep η ((Units.map (residue O).toMonoidHom).comp Ψ) j g y).val = act η Ψ g y.val := by
+  have key : ∀ (u : Oˣ) (n : ℤ), residue O ↑(u ^ n) = (residue O ↑u) ^ n := by
+    intro u n
+    calc residue O ↑(u ^ n) = ↑(Units.map (residue O).toMonoidHom (u ^ n)) := rfl
+      _ = ↑((Units.map (residue O).toMonoidHom u) ^ n) := by rw [map_zpow]
+      _ = (residue O ↑u) ^ n := by rw [Units.val_zpow_eq_zpow_val]; rfl
+  ext a b
+  rw [gRep_val, adRep_baseLift_apply]
+  simp only [act, MonoidHom.coe_comp, Function.comp_apply, Algebra.smul_def]
+  simp [IsLocalRing.ResidueField.algebraMap_eq, key]
+
+variable {ε : N →ₗ[O] R}
+
+theorem Sm.mul_zero (h : Sm ε) {X : Matrix (Fin 3) (Fin 3) R} (hX : EntIn (maximalIdeal R) X)
+    (Y : Matrix (Fin 3) (Fin 3) N) : X * Y.map ε = 0 := by
+  ext a b
+  simp [Matrix.mul_apply, h.kill _ (hX _ _)]
+
+theorem Sm.zero_mul (h : Sm ε) {X : Matrix (Fin 3) (Fin 3) R} (hX : EntIn (maximalIdeal R) X)
+    (Y : Matrix (Fin 3) (Fin 3) N) : Y.map ε * X = 0 := by
+  ext a b
+  simp [Matrix.mul_apply, mul_comm, h.kill _ (hX _ _)]
+
+theorem Sm.sq (h : Sm ε) (X Y : Matrix (Fin 3) (Fin 3) N) : X.map ε * Y.map ε = 0 := by
+  ext a b
+  simp [Matrix.mul_apply, h.kill _ (h.mem _)]
+
+def Sm.exGL (h : Sm ε) (Y : Matrix (Fin 3) (Fin 3) N) : GL (Fin 3) R where
+  val := 1 + Y.map ε
+  inv := 1 - Y.map ε
+  val_inv := by simp [Matrix.add_mul, Matrix.mul_sub, h.sq]
+  inv_val := by simp [Matrix.mul_add, Matrix.sub_mul, h.sq]
+
+def Sm.ex (h : Sm ε) (Y : Matrix (Fin 3) (Fin 3) N) : GG 3 R := GG.ofGL (h.exGL Y)
+
+theorem Sm.ex_mat (h : Sm ε) (Y : Matrix (Fin 3) (Fin 3) N) : (h.ex Y).mat = 1 + Y.map ε := rfl
+
+theorem Sm.ex_mul_mat (h : Sm ε) (Y : Matrix (Fin 3) (Fin 3) N) (x : GG 3 R) :
+    (h.ex Y * x).mat = (1 + Y.map ε) * x.mat := by
+  simp [GG.mat, Sm.ex, Sm.exGL]
+
+theorem Sm.ex_mul_right (h : Sm ε) (Y : Matrix (Fin 3) (Fin 3) N) (x : GG 3 R) :
+    (h.ex Y * x).right = x.right := by
+  simp [Sm.ex]
+
+theorem Sm.ex_add (h : Sm ε) (X Y : Matrix (Fin 3) (Fin 3) N) : h.ex (X + Y) = h.ex X * h.ex Y := by
+  have hadd : (X + Y).map ε = X.map ε + Y.map ε := Matrix.map_add _ (map_add ε) X Y
+  apply SemidirectProduct.ext
+  · apply Units.ext
+    simp [Sm.ex, Sm.exGL, hadd, Matrix.add_mul, Matrix.mul_add, h.sq, sgnAct_one, add_assoc]
+  · simp [Sm.ex]
+
+theorem Sm.ex_inj (h : Sm ε) (hε : Function.Injective ε) {X Y : Matrix (Fin 3) (Fin 3) N}
+    (e : h.ex X = h.ex Y) : X = Y := by
+  have hm := congrArg GG.mat e
+  rw [h.ex_mat, h.ex_mat] at hm
+  have hm' : X.map ε = Y.map ε := add_left_cancel hm
+  ext a b
+  exact hε (congrFun (congrFun hm' a) b)
+
+theorem Sm.eq_ex (h : Sm ε) {x : GG 3 R} {Y : Matrix (Fin 3) (Fin 3) N} (h1 : x.right = 1)
+    (h2 : x.mat = 1 + Y.map ε) : x = h.ex Y := by
+  apply SemidirectProduct.ext
+  · apply Units.ext
+    exact h2
+  · simpa [Sm.ex] using h1
+
+theorem Sm.conj (h : Sm ε) (η : D →* ℤˣ) (Ψ : D →* Oˣ) (g : D) (z : GG 3 R) (hz : z.right = η g)
+    (hr : EntIn (maximalIdeal R) (z.mat - ((r0 η Ψ g).mat).map (algebraMap O R))) (Y : Matrix (Fin 3) (Fin 3) N) :
+    z * h.ex Y = h.ex (act η Ψ g Y) * z := by
+  have hD : ∀ Y' : Matrix (Fin 3) (Fin 3) N, ((r0 η Ψ g).mat).map (algebraMap O R) * Y'.map ε =
+      (Matrix.of fun a b => ((Ψ g ^ wt a b : Oˣ) : O) • Y' a b).map ε *
+        ((r0 η Ψ g).mat).map (algebraMap O R) := by
+    intro Y'
+    ext a b
+    simp only [GG.mat, unitaryThreeReflection_left, tor_val, Matrix.diagonal_map (map_zero _), Matrix.diagonal_mul,
+      Matrix.mul_diagonal, Matrix.map_apply, Matrix.of_apply, LinearMap.map_smul, Algebra.smul_def]
+    rw [mul_right_comm, ← map_mul, ← Units.val_mul, ← _root_.zpow_add, wt, sub_add_cancel]
+  have hT : ∀ Y' : Matrix (Fin 3) (Fin 3) N,
+      z.mat * Y'.map ε = ((r0 η Ψ g).mat).map (algebraMap O R) * Y'.map ε := by
+    intro Y'
+    have hE := h.mul_zero hr Y'
+    rwa [Matrix.sub_mul, sub_eq_zero] at hE
+  have hT' : ∀ Y' : Matrix (Fin 3) (Fin 3) N,
+      Y'.map ε * z.mat = Y'.map ε * ((r0 η Ψ g).mat).map (algebraMap O R) := by
+    intro Y'
+    have hE := h.zero_mul hr Y'
+    rwa [Matrix.mul_sub, sub_eq_zero] at hE
+  have key : ∀ Y' : Matrix (Fin 3) (Fin 3) N,
+      z.mat * Y'.map ε = (Matrix.of fun a b => ((Ψ g ^ wt a b : Oˣ) : O) • Y' a b).map ε * z.mat := by
+    intro Y'
+    rw [hT, hD, hT']
+  apply SemidirectProduct.ext
+  · apply Units.ext
+    simp only [SemidirectProduct.mul_left, Sm.ex, GG.ofGL, SemidirectProduct.left_inl,
+      SemidirectProduct.right_inl, map_one, MulAut.one_apply, Units.val_mul, hz]
+    change z.mat * _ = _ * z.mat
+    rcases Int.units_eq_one_or (η g) with he | he
+    · rw [he, sgnAct_one]
+      change z.mat * (1 + Y.map ε) = (1 + (act η Ψ g Y).map ε) * z.mat
+      have ha : act η Ψ g Y = Matrix.of fun a b => ((Ψ g ^ wt a b : Oˣ) : O) • Y a b := by
+        ext a b
+        simp [act, he]
+      rw [mul_add, add_mul, mul_one, one_mul, key, ha]
+    · rw [he, sgnAct_neg_one, theta_val]
+      have hrev : ∀ b j : Fin 3, (b = j.rev) ↔ (j = b.rev) := fun b j => by
+        constructor <;> rintro rfl <;> simp
+      have hJ : ∀ M : Matrix (Fin 3) (Fin 3) R,
+          Jmat R 3 * M * Jmat R 3 = Matrix.of fun a b => M a.rev b.rev := by
+        intro M
+        ext a b
+        simp [Jmat, Matrix.mul_apply, hrev]
+      have hinv : (((h.exGL Y)⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) = 1 - Y.map ε := rfl
+      have h1 : (Matrix.of fun (a b : Fin 3) => (1 : Matrix (Fin 3) (Fin 3) R) a.rev b.rev) = 1 := by
+        ext a b
+        simp [Matrix.one_apply]
+      have h2 : (Matrix.of fun (a b : Fin 3) => (Y.map ε)ᵀ a.rev b.rev) =
+          (Matrix.of fun (a b : Fin 3) => Y b.rev a.rev).map ε := by
+        ext a b
+        simp
+      have ha : (act η Ψ g Y).map ε =
+          -(Matrix.of fun a b => ((Ψ g ^ wt a b : Oˣ) : O) •
+            (Matrix.of fun (a b : Fin 3) => Y b.rev a.rev) a b).map ε := by
+        ext a b
+        simp [act, he]
+      rw [hinv, Matrix.transpose_sub, Matrix.transpose_one, Matrix.mul_sub, Matrix.sub_mul, hJ, hJ, h1, h2]
+      change _ = (1 + (act η Ψ g Y).map ε) * z.mat
+      rw [ha, mul_sub, mul_one, key, add_mul, one_mul, Matrix.neg_mul, ← sub_eq_add_neg]
+  · simp [Sm.ex, GG.ofGL]
+
+section Coc
+
+variable (h : Sm ε) (η : D →* ℤˣ) (Ψ : D →* Oˣ)
+
+theorem Sm.coc (hε : Function.Injective ε) (s : D → GG 3 R) (hs : ∀ g, (s g).right = η g)
+    (hr : ∀ g, EntIn (maximalIdeal R) ((s g).mat - ((r0 η Ψ g).mat).map (algebraMap O R)))
+    (K : D × D → Matrix (Fin 3) (Fin 3) N) (hK : ∀ g g', s g * s g' = h.ex (K (g, g')) * s (g * g')) (g g' k : D) :
+    act η Ψ g (K (g', k)) - K (g * g', k) + K (g, g' * k) - K (g, g') = 0 := by
+  have e1 : s g * s g' * s k = h.ex (K (g, g') + K (g * g', k)) * s (g * (g' * k)) := by
+    rw [hK g g', mul_assoc, hK (g * g') k, ← mul_assoc, ← h.ex_add, mul_assoc g g' k]
+  have e2 : s g * (s g' * s k) = h.ex (act η Ψ g (K (g', k)) + K (g, g' * k)) * s (g * (g' * k)) := by
+    rw [hK g' k, ← mul_assoc, h.conj η Ψ g (s g) (hs g) (hr g), mul_assoc, hK g (g' * k), ← mul_assoc,
+      ← h.ex_add]
+  have e3 : h.ex (K (g, g') + K (g * g', k)) = h.ex (act η Ψ g (K (g', k)) + K (g, g' * k)) := by
+    apply mul_right_cancel (b := s (g * (g' * k)))
+    rw [← e1, ← e2, mul_assoc]
+  have e4 := h.ex_inj hε e3
+  rw [show act η Ψ g (K (g', k)) - K (g * g', k) + K (g, g' * k) - K (g, g') =
+      act η Ψ g (K (g', k)) + K (g, g' * k) - (K (g, g') + K (g * g', k)) by abel, ← e4, sub_self]
+
+theorem Sm.cob (hε : Function.Injective ε) (s : D → GG 3 R) (ρ : D →* GG 3 R) (hρ : Red η Ψ ρ)
+    (K : D × D → Matrix (Fin 3) (Fin 3) N) (hK : ∀ g g', s g * s g' = h.ex (K (g, g')) * s (g * g'))
+    (A : D → Matrix (Fin 3) (Fin 3) N) (hA : ∀ g, s g = h.ex (A g) * ρ g) (g g' : D) :
+    act η Ψ g (A g') - A (g * g') + A g = K (g, g') := by
+  have e1 : s g * s g' = h.ex (A g + act η Ψ g (A g')) * ρ (g * g') := by
+    rw [hA g, hA g', mul_assoc, ← mul_assoc (ρ g), h.conj η Ψ g (ρ g) (hρ.mult g) (hρ.red g),
+      mul_assoc, ← map_mul, ← mul_assoc, ← h.ex_add]
+  have e2 : s g * s g' = h.ex (K (g, g') + A (g * g')) * ρ (g * g') := by
+    rw [hK g g', hA (g * g'), ← mul_assoc, ← h.ex_add]
+  have e3 := h.ex_inj hε (mul_right_cancel (e1.symm.trans e2))
+  rw [show act η Ψ g (A g') - A (g * g') + A g = A g + act η Ψ g (A g') - A (g * g') by abel, e3,
+    add_sub_cancel_right]
+
+theorem Sm.hom (s : D → GG 3 R) (hs : ∀ g, (s g).right = η g)
+    (hr : ∀ g, EntIn (maximalIdeal R) ((s g).mat - ((r0 η Ψ g).mat).map (algebraMap O R)))
+    (b : D → Matrix (Fin 3) (Fin 3) N)
+    (hK : ∀ g g', s g * s g' = h.ex (act η Ψ g (b g') - b (g * g') + b g) * s (g * g')) :
+    ∃ r : D →* GG 3 R, ∀ g, r g = h.ex (-b g) * s g := by
+  have h0 : h.ex 0 = 1 := by
+    have e := h.ex_add 0 0
+    rw [add_zero] at e
+    simpa using e
+  have hact1 : ∀ Y : Matrix (Fin 3) (Fin 3) N, act η Ψ 1 Y = Y := by
+    intro Y
+    ext a b
+    simp [act]
+  refine ⟨{ toFun := fun g => h.ex (-b g) * s g, map_one' := ?_, map_mul' := ?_ }, fun g => rfl⟩
+  · have e := hK 1 1
+    rw [mul_one, hact1, sub_add_cancel] at e
+    have e' : s 1 = h.ex (b 1) := mul_right_cancel e
+    show h.ex (-b 1) * s 1 = 1
+    rw [e', ← h.ex_add, neg_add_cancel, h0]
+  · intro g g'
+    show h.ex (-b (g * g')) * s (g * g') = h.ex (-b g) * s g * (h.ex (-b g') * s g')
+    rw [mul_assoc, ← mul_assoc (s g), h.conj η Ψ g (s g) (hs g) (hr g), mul_assoc, hK g g', ← mul_assoc,
+      ← mul_assoc, ← h.ex_add, ← h.ex_add, act_neg]
+    congr 2
+    abel
+
+end Coc
+
+theorem unobs {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O]
+    [CharZero O] [Finite (ResidueField O)] {G Γ ι : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
+    [CompactSpace Γ] [T2Space Γ] [TotallyDisconnectedSpace Γ] [Finite ι] (F : Frame O G Γ ι) (hF : F.Ok)
+    (hV : F.LocVan) {R : Type} [CommRing R] [Algebra O R] [IsCO O R] {ε : ResidueField O →ₗ[O] R} (h : Sm ε) (j : ℤ)
+    (s : Γ → GG 3 R) (hs : ∀ g, (s g).right = F.η g)
+    (hr : ∀ g, EntIn (maximalIdeal R) ((s g).mat - ((r0 F.η F.Ψ g).mat).map (algebraMap O R)))
+    (hc : IsLocallyConstant fun g => (s g).mat)
+    (ρ : ∀ v, F.D v →* GG 3 R) (hρ : ∀ v, Red (F.ηv v) (F.Ψv v) (ρ v)) (hl : ∀ v, F.LocAt v (ρ v))
+    (κ : Γ × Γ → Gb (ResidueField O) j) (a : ∀ v, F.D v → Gb (ResidueField O) j)
+    (hK : ∀ g g', s g * s g' = h.ex (κ (g, g')).val * s (g * g'))
+    (hA : ∀ v g, s (F.loc v g) = h.ex (a v g).val * ρ v g) (hB : (κ, a) ∈ F.framedTwoCoboundaries j) :
+    ∃ r : Γ →* GG 3 R, F.Cond r ∧ IsLocallyConstant (mats r) ∧ ∀ g, ∃ Y, r g = h.ex Y * s g := by
+  classical
+  obtain ⟨y, hy, z, hz, hyz⟩ := Submodule.mem_sup.1 hB
+  obtain ⟨f, hf, rfl⟩ := Submodule.mem_map.1 hy
+  obtain ⟨w, hw, rfl⟩ := Submodule.mem_map.1 hz
+  have hva : ∀ x x' : Gb (ResidueField O) j, (x + x').val = x.val + x'.val := fun _ _ => rfl
+  have hvs : ∀ x x' : Gb (ResidueField O) j, (x - x').val = x.val - x'.val := fun _ _ => rfl
+  have hκ : κ = d1 (F.gbar j) f := by
+    have e := congrArg Prod.fst hyz
+    simpa using e.symm
+  have ha : ∀ v g, a v g = f (F.loc v g) + w v g := by
+    intro v g
+    have e := congrArg (fun p => p.2 v g) hyz
+    simpa [Frame.res1] using e.symm
+  have hwv : ∀ v, w v ∈ F.ZL j v := fun v => hw v (Set.mem_univ v)
+  let b : Γ → Matrix (Fin 3) (Fin 3) (ResidueField O) := fun g => (f g).val
+  have hK' : ∀ g g', s g * s g' = h.ex (act F.η F.Ψ g (b g') - b (g * g') + b g) * s (g * g') := by
+    intro g g'
+    rw [hK, hκ]
+    congr 2
+    simp only [d1, LinearMap.coe_mk, AddHom.coe_mk, b, hva, hvs, Frame.gbar, Frame.Ψbar, act_val]
+  obtain ⟨r, hrg⟩ := h.hom F.η F.Ψ s hs hr b hK'
+  have hred : Red F.η F.Ψ r := by
+    refine ⟨fun g => by rw [hrg, h.ex_mul_right, hs], fun g => ?_⟩
+    intro p q
+    rw [hrg, h.ex_mul_mat, add_mul, one_mul, add_sub_right_comm, Matrix.add_apply]
+    refine Ideal.add_mem _ (hr g p q) ?_
+    rw [Matrix.mul_apply]
+    exact Ideal.sum_mem _ fun k _ => Ideal.mul_mem_right _ _ (h.mem _)
+  have hf0 : ε 1 ∈ maximalIdeal R := h.mem 1
+  have hk0 : ∀ x ∈ maximalIdeal R, x * ε 1 = 0 := fun x hx => h.kill x hx 1
+  have hloc : ∀ v, F.LocAt v (r.comp (F.loc v)) := by
+    intro v
+    have hdef : IsDeform (ρ v) (fun g => ((w v g).val).map ε) (r.comp (F.loc v)) := by
+      intro g
+      have e1 : (r.comp (F.loc v)) g = h.ex (w v g).val * ρ v g := by
+        rw [MonoidHom.comp_apply, hrg, hA, ← mul_assoc, ← h.ex_add, ha, hva]
+        congr 2
+        abel
+      rw [e1]
+      exact ⟨h.ex_mul_right _ _, h.ex_mul_mat _ _⟩
+    have hcoef : ∀ (g : F.D v) (p q : Fin 3), ∃ o, residue O o = (w v g).val p q ∧
+        (fun g => ((w v g).val).map ε) g p q = o • ε 1 := by
+      intro g p q
+      obtain ⟨o, ho⟩ := IsLocalRing.residue_surjective ((w v g).val p q)
+      refine ⟨o, ho, ?_⟩
+      simp only [Matrix.map_apply]
+      rw [← ho, ← map_smul, Algebra.smul_def, mul_one]
+      rfl
+    by_cases hv : v = F.vl
+    · exact triangular_condition_at_l_of_first_order_deformation F hF hV (ε 1) hk0 hf0 j v hv (ρ v) _ (w v) _ (hρ v) (hl v) (hwv v) hcoef hdef
+    · by_cases hS : v ∈ F.Sb
+      · exact locAt_deform_d F hF hV (ε 1) hk0 hf0 j v hS (ρ v) _ (w v) _ (hρ v) (hl v) (hwv v) hcoef hdef
+      · have hT : v ∉ F.Tb := by simp [Frame.Tb, hv, hS]
+        exact locAt_deform_u F hF hV (ε 1) hk0 hf0 j v hT (ρ v) _ (w v) _ (hρ v) (hl v) (hwv v) hcoef hdef
+  have hbl : IsLocallyConstant f := (IsLocallyConstant.iff_continuous f).2 hf
+  refine ⟨r, ⟨hred, hloc⟩, ?_, fun g => ⟨-b g, hrg g⟩⟩
+  have e2 : mats r = fun g => (1 + (-(f g).val).map ε) * (s g).mat := funext fun g => by
+    simp only [mats]
+    rw [hrg, h.ex_mul_mat]
+  rw [e2]
+  exact IsLocallyConstant.comp₂ hbl hc (fun x y => (1 + (-x.val).map ε) * y)
+
+section Lift
+
+variable {O R R' : Type} [CommRing O] [CommRing R] [IsLocalRing R] [Algebra O R] [CommRing R'] [IsLocalRing R']
+  [Algebra O R']
+
+theorem red_of_map {D : Type} [Group D] (p : R →ₐ[O] R') (η : D →* ℤˣ) (Ψ : D →* Oˣ) (g : D) (x : GG 3 R)
+    (hx : EntIn (maximalIdeal R') ((GG.map (p : R →+* R') x).mat - ((r0 η Ψ g).mat).map (algebraMap O R'))) :
+    EntIn (maximalIdeal R) (x.mat - ((r0 η Ψ g).mat).map (algebraMap O R)) := by
+  intro a b
+  have h := hx a b
+  rw [GG.map_mat] at h
+  simp only [Matrix.sub_apply, Matrix.map_apply] at h ⊢
+  by_contra hn
+  have hu : IsUnit (x.mat a b - algebraMap O R ((r0 η Ψ g).mat a b)) :=
+    (IsLocalRing.notMem_maximalIdeal).1 hn
+  have hu' := hu.map (p : R →+* R')
+  rw [map_sub, RingHom.coe_coe, AlgHom.commutes] at hu'
+  exact (IsLocalRing.notMem_maximalIdeal).2 hu' h
+
+theorem lc_of_mat {D : Type} [TopologicalSpace D] (s : D → GG 3 R) (h1 : IsLocallyConstant fun g => (s g).mat)
+    (h2 : IsLocallyConstant fun g => (s g).right) : IsLocallyConstant s := by
+  rw [IsLocallyConstant.iff_eventually_eq] at h1 h2 ⊢
+  intro x
+  filter_upwards [h1 x, h2 x] with y hy1 hy2
+  exact SemidirectProduct.ext (Units.ext hy1) hy2
+
+theorem lc_mats {D : Type} [Group D] [TopologicalSpace D] [Finite R'] (r : D →* GG 3 R')
+    (h : UnitaryThreeInertia.AdicCont (maximalIdeal R') r) : IsLocallyConstant (mats r) := by
+  have hnil : IsNilpotent (maximalIdeal R') := by
+    have := IsArtinianRing.isNilpotent_jacobson_bot (R := R')
+    rwa [IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top] at this
+  obtain ⟨n, hn⟩ := hnil
+  have hinj : Function.Injective
+      (fun X : Matrix (Fin 3) (Fin 3) R' => X.map (Ideal.Quotient.mk (maximalIdeal R' ^ n))) := by
+    intro X Y hXY
+    ext a b
+    have hab := congrFun (congrFun hXY a) b
+    simp only [Matrix.map_apply] at hab
+    rw [Ideal.Quotient.eq, hn, Submodule.zero_eq_bot, Ideal.mem_bot, sub_eq_zero] at hab
+    exact hab
+  exact IsLocallyConstant.desc (mats r)
+    (fun X : Matrix (Fin 3) (Fin 3) R' => X.map (Ideal.Quotient.mk (maximalIdeal R' ^ n))) (h n) hinj
+
+theorem exists_setLift {D : Type} [Group D] [TopologicalSpace D] (𝒜 : ℤ → Submodule O R) (p : R →ₐ[O] R')
+    (hp : Function.Surjective p) (r : D →* GG 3 R') (hc : IsLocallyConstant (mats r))
+    (hg : ∀ g, ∃ X, GrMat 𝒜 X ∧ X.map p = (r g).mat) :
+    ∃ s : D → GG 3 R, (∀ g, GG.map (p : R →+* R') (s g) = r g) ∧ (IsLocallyConstant fun g => (s g).mat) ∧
+      ∀ g, GrMat 𝒜 (s g).mat := by
+  classical
+  have hloc : IsLocalHom (p : R →+* R') := IsLocalHom.of_surjective _ hp
+  let X : Matrix (Fin 3) (Fin 3) R' → Matrix (Fin 3) (Fin 3) R := fun M =>
+    if hM : ∃ g, (r g).mat = M then Classical.choose (hg (Classical.choose hM)) else 0
+  have hX : ∀ g, GrMat 𝒜 (X (r g).mat) ∧ (X (r g).mat).map (p : R →+* R') = (r g).mat := by
+    intro g
+    have hM : ∃ g', (r g').mat = (r g).mat := ⟨g, rfl⟩
+    simp only [X, dif_pos hM]
+    refine ⟨(Classical.choose_spec (hg (Classical.choose hM))).1, ?_⟩
+    exact (Classical.choose_spec (hg (Classical.choose hM))).2.trans (Classical.choose_spec hM)
+  have hdet : ∀ g, IsUnit (X (r g).mat).det := by
+    intro g
+    apply isUnit_of_map_unit (p : R →+* R')
+    rw [RingHom.map_det, RingHom.mapMatrix_apply, (hX g).2]
+    exact (Matrix.isUnit_iff_isUnit_det _).1 (r g).left.isUnit
+  let s : D → GG 3 R := fun g => ⟨Matrix.nonsingInvUnit _ (hdet g), (r g).right⟩
+  refine ⟨s, fun g => ?_, ?_, fun g => (hX g).1⟩
+  · apply SemidirectProduct.ext
+    · apply Units.ext
+      change (GG.map (p : R →+* R') (s g)).mat = (r g).mat
+      rw [GG.map_mat]
+      exact (hX g).2
+    · simp [s, GG.map]
+  · exact hc.comp X
+
+abbrev incl (O : Type) [CommRing O] [Algebra O R] (I : Ideal R) : I →ₗ[O] R := I.subtype.restrictScalars O
+
+theorem exists_ex (𝒜 : ℤ → Submodule O R) [GradedAlgebra 𝒜] (p : R →ₐ[O] R') (j : ℤ)
+    (hw : ∀ x ∈ RingHom.ker p, x ∈ 𝒜 j) (h : Sm (incl O (RingHom.ker p))) (x y : GG 3 R)
+    (e : GG.map (p : R →+* R') x = GG.map (p : R →+* R') y) (hg : GrMat 𝒜 (x * y⁻¹).mat) :
+    ∃ Y : Matrix (Fin 3) (Fin 3) (RingHom.ker p), x = h.ex Y * y ∧ ∀ a b, wt a b ≠ j → Y a b = 0 := by
+  classical
+  set z := x * y⁻¹ with hz
+  have hz1 : GG.map (p : R →+* R') z = 1 := by
+    rw [hz, map_mul, map_inv, e, mul_inv_cancel]
+  have hright : z.right = 1 := by
+    have := congrArg SemidirectProduct.right hz1
+    simpa [GG.map] using this
+  have hmat : z.mat.map (p : R →+* R') = 1 := by
+    have := congrArg GG.mat hz1
+    rwa [GG.map_mat] at this
+  have hker : ∀ a b, (z.mat - 1) a b ∈ RingHom.ker p := by
+    intro a b
+    rw [RingHom.mem_ker]
+    have hab := congrFun (congrFun hmat a) b
+    simp only [Matrix.map_apply, RingHom.coe_coe] at hab
+    rw [Matrix.sub_apply, map_sub, hab]
+    by_cases hab' : a = b
+    · subst hab'
+      simp
+    · simp [Matrix.one_apply, hab']
+  let Y : Matrix (Fin 3) (Fin 3) (RingHom.ker p) := fun a b => ⟨(z.mat - 1) a b, hker a b⟩
+  have hY : z.mat = 1 + Y.map (incl O (RingHom.ker p)) := by
+    ext a b
+    change z.mat a b = (1 : Matrix (Fin 3) (Fin 3) R) a b + (z.mat a b - (1 : Matrix (Fin 3) (Fin 3) R) a b)
+    abel
+  refine ⟨Y, ?_, ?_⟩
+  · rw [← h.eq_ex hright hY, hz, inv_mul_cancel_right]
+  · intro a b hab
+    apply Subtype.ext
+    show (z.mat - 1) a b = 0
+    have h1 : (z.mat - 1) a b ∈ 𝒜 j := hw _ (hker a b)
+    have h2 : (z.mat - 1) a b ∈ 𝒜 (wt a b) := by
+      rw [Matrix.sub_apply]
+      refine Submodule.sub_mem _ (hg a b) ?_
+      rw [Matrix.one_apply]
+      split_ifs with hab'
+      · subst hab'
+        simpa [wt] using SetLike.one_mem_graded 𝒜
+      · exact Submodule.zero_mem _
+    rw [← DirectSum.decompose_of_mem_same 𝒜 h1]
+    exact DirectSum.decompose_of_mem_ne 𝒜 h2 hab
+
+theorem map_ex {N N' : Type} [AddCommGroup N] [Module O N] [AddCommGroup N'] [Module O N'] {ε : N →ₗ[O] R}
+    {ε' : N' →ₗ[O] R'} (h : Sm ε) (h' : Sm ε') (p : R →ₐ[O] R') (φ : N →ₗ[O] N') (e : ∀ y, p (ε y) = ε' (φ y))
+    (Y : Matrix (Fin 3) (Fin 3) N) : GG.map (p : R →+* R') (h.ex Y) = h'.ex (Y.map φ) := by
+  apply SemidirectProduct.ext
+  · apply Units.ext
+    change (GG.map (p : R →+* R') (h.ex Y)).mat = (h'.ex (Y.map φ)).mat
+    rw [GG.map_mat, h.ex_mat, h'.ex_mat, Matrix.map_add _ (map_add _),
+      Matrix.map_one _ (map_zero _) (map_one _), Matrix.map_map, Matrix.map_map]
+    congr 1
+    ext a b
+    simp [e]
+  · simp [Sm.ex, GG.map]
+
+theorem map_ex_one {N : Type} [AddCommGroup N] [Module O N] {ε : N →ₗ[O] R}
+    (h : Sm ε) (p : R →ₐ[O] R') (e : ∀ y, p (ε y) = 0)
+    (Y : Matrix (Fin 3) (Fin 3) N) : GG.map (p : R →+* R') (h.ex Y) = 1 := by
+  apply SemidirectProduct.ext
+  · apply Units.ext
+    change (GG.map (p : R →+* R') (h.ex Y)).mat = (1 : GG 3 R').mat
+    rw [GG.map_mat, h.ex_mat, Matrix.map_add _ (map_add _),
+      Matrix.map_one _ (map_zero _) (map_one _), Matrix.map_map]
+    have h0 : Y.map ((p : R →+* R') ∘ ε) = 0 := by
+      ext a b
+      simp [e]
+    rw [h0, add_zero]
+    rfl
+  · simp [Sm.ex, GG.map]
+
+end Lift
+
+end UpperTheory.V.UnitaryThreeInertia.Obs
+end
+end
+
+section
+open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
+
+private theorem lu_section {G A : Type} [Group G] [Finite G] [Group A] (g : G →* A) (hg : Function.Surjective g)
+    (hc : Nat.Coprime (Nat.card g.ker) (Nat.card A)) : ∃ σ : A →* G, ∀ a, g (σ a) = a := by
+  have hi : g.ker.index = Nat.card A := by
+    rw [Subgroup.index_ker, MonoidHom.range_eq_top.2 hg, Subgroup.card_top]
+  obtain ⟨C, hC⟩ := Subgroup.exists_right_complement'_of_coprime (N := g.ker) (by rwa [hi])
+  have hb : Function.Bijective (g.comp C.subtype) := by
+    constructor
+    · rw [injective_iff_map_eq_one]
+      intro c hc
+      have : (c : G) ∈ g.ker ⊓ C := ⟨hc, c.2⟩
+      rw [hC.disjoint.eq_bot] at this
+      exact Subtype.ext this
+    · intro a
+      obtain ⟨x, rfl⟩ := hg a
+      obtain ⟨⟨k, c⟩, rfl⟩ := hC.2 x
+      refine ⟨c, ?_⟩
+      have hk : g k = 1 := k.2
+      simp [hk]
+  exact ⟨C.subtype.comp (MulEquiv.ofBijective _ hb).symm.toMonoidHom,
+    fun a => (MulEquiv.ofBijective _ hb).apply_symm_apply a⟩
+
+private theorem lu_conj {H H' A : Type} [Group H] [Finite H] [Group H'] [Group A] [Finite A] (f : H →* H')
+    (hK : ∀ a b, f a = 1 → f b = 1 → a * b = b * a) (hc : Nat.Coprime (Nat.card f.ker) (Nat.card A))
+    (σ τ : A →* H) (h : ∀ a, f (σ a) = f (τ a)) : ∃ k, f k = 1 ∧ ∀ a, τ a = k * σ a * k⁻¹ := by
+  classical
+  letI := Fintype.ofFinite A
+  letI : CommGroup f.ker := { (inferInstance : Group f.ker) with
+    mul_comm := fun a b => Subtype.ext (hK _ _ a.2 b.2) }
+  let c : A → f.ker := fun a => ⟨τ a * (σ a)⁻¹, by simp [h a]⟩
+  let act : A → f.ker →* f.ker := fun a => (MulAut.conjNormal (σ a) : MulAut f.ker).toMonoidHom
+  have hact : ∀ a (k : f.ker), (act a k : H) = σ a * k * (σ a)⁻¹ := fun a k => rfl
+  have hcoc : ∀ a b, c (a * b) = c a * act a (c b) := fun a b => by
+    apply Subtype.ext
+    rw [Subgroup.coe_mul, hact]
+    simp [c, mul_assoc]
+  have hbij := (powCoprime hc).bijective
+  obtain ⟨k, hk⟩ := hbij.2 (∏ b, c b)
+  rw [powCoprime_apply] at hk
+  refine ⟨k, k.2, fun a => ?_⟩
+  have h1 : ∏ b, c b = c a ^ Nat.card A * act a (∏ b, c b) := by
+    refine (Equiv.prod_comp (Equiv.mulLeft a) c).symm.trans ?_
+    simp only [Equiv.coe_mulLeft, hcoc, Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ,
+      Nat.card_eq_fintype_card, map_prod]
+  have h2 : k = c a * act a k := by
+    apply hbij.1
+    rw [powCoprime_apply, powCoprime_apply, mul_pow, ← map_pow, hk]
+    exact h1
+  have h3 := congrArg Subtype.val h2
+  rw [Subgroup.coe_mul, hact] at h3
+  simp only [c] at h3
+  calc τ a = (τ a * (σ a)⁻¹ * (σ a * k * (σ a)⁻¹)) * σ a * (k : H)⁻¹ := by group
+    _ = _ := by rw [← h3]
+
+private theorem lu_abs {D H H' : Type} [Group D] [TopologicalSpace D] [IsTopologicalGroup D] [Group H] [Finite H]
+    [Group H'] (f : H →* H') (hK : ∀ a b, f a = 1 → f b = 1 → a * b = b * a) (l e : ℕ) (hl : l.Prime)
+    (hle : ¬ l ∣ e) (hKl : ∀ a, f a = 1 → a ^ l = 1) (I : Subgroup D) (hI : I.Normal) (φ : D)
+    (hφ : (I ⊔ Subgroup.zpowers φ).topologicalClosure = ⊤)
+    (hd : ∀ n : ℕ, 0 < n → ∃ d : D →* Multiplicative (ZMod n), IsLocallyConstant d ∧ (∀ s ∈ I, d s = 1) ∧
+      d φ = Multiplicative.ofAdd 1)
+    (r' : D →* H') (hlc : IsLocallyConstant r') (hs : ∀ g, ∃ h, f h = r' g) (he : ∀ s ∈ I, r' s ^ e = 1) :
+    ∃ r : D →* H, (∀ g, f (r g) = r' g) ∧ IsLocallyConstant r ∧ ∀ s ∈ I, r' s = 1 → r s = 1 := by
+  haveI := Fact.mk hl
+  let A : Subgroup H' := I.map r'
+  have hsurj : Function.Surjective (f.subgroupComap A) := by
+    rintro ⟨_, s, hsI, rfl⟩
+    obtain ⟨h, hh⟩ := hs s
+    exact ⟨⟨h, show f h ∈ A from hh ▸ ⟨s, hsI, rfl⟩⟩, Subtype.ext hh⟩
+  haveI : Finite A := Finite.of_surjective _ hsurj
+  have hA : Nat.Coprime l (Nat.card A) := by
+    rw [hl.coprime_iff_not_dvd]
+    intro hdv
+    obtain ⟨⟨_, s, hsI, rfl⟩, ha⟩ := exists_prime_orderOf_dvd_card' l hdv
+    exact hle (ha ▸ orderOf_dvd_of_pow_eq_one (Subtype.ext (he s hsI)))
+  have hP : ∀ {G : Type} [Group G] [Finite G], (∀ a : G, a ^ l = 1) → Nat.Coprime (Nat.card G) (Nat.card A) := by
+    intro G _ _ hG
+    have : IsPGroup l G := fun a => ⟨1, by simpa using hG a⟩
+    obtain ⟨n, hn⟩ := IsPGroup.iff_card.1 this
+    rw [hn]
+    exact Nat.Coprime.pow_left n hA
+  obtain ⟨σ₀, hσ₀⟩ := lu_section (f.subgroupComap A) hsurj (hP fun a =>
+    Subtype.ext (Subtype.ext (hKl _ (congrArg Subtype.val a.2))))
+  let σ : A →* H := (Subgroup.subtype _).comp σ₀
+  have hσ : ∀ a, f (σ a) = a := fun a => congrArg Subtype.val (hσ₀ a)
+  have hn : ∀ g : D, ∀ a : A, (r' g)⁻¹ * a * r' g ∈ A := by
+    rintro g ⟨_, s, hsI, rfl⟩
+    exact ⟨g⁻¹ * s * g, hI.conj_mem' s hsI g, by simp⟩
+  let cj : D → A →* A := fun g =>
+    { toFun := fun a => ⟨_, hn g a⟩
+      map_one' := Subtype.ext (by simp)
+      map_mul' := fun a b => Subtype.ext (by simp [mul_assoc]) }
+  have hcj : ∀ g a, (cj g a : H') = (r' g)⁻¹ * a * r' g := fun _ _ => rfl
+  obtain ⟨x₀, hx₀⟩ := hs φ
+  obtain ⟨k, hk, hkc⟩ := lu_conj f hK (hP fun a => Subtype.ext (hKl _ a.2)) σ
+    ((MulAut.conj x₀).toMonoidHom.comp (σ.comp (cj φ))) (fun a => by simp [hσ, hcj, hx₀, mul_assoc])
+  set x := k⁻¹ * x₀ with hxdef
+  have hx : f x = r' φ := by simp [hxdef, hk, hx₀]
+  have hxa : ∀ a, x * σ (cj φ a) * x⁻¹ = σ a := fun a => by
+    have := hkc a
+    simp only [MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom, MulAut.conj_apply] at this
+    calc x * σ (cj φ a) * x⁻¹ = k⁻¹ * (x₀ * σ (cj φ a) * x₀⁻¹) * k := by rw [hxdef]; group
+      _ = σ a := by rw [this]; group
+  have hnorm : x ∈ Subgroup.normalizer (σ.range : Set H) := by
+    rw [Subgroup.mem_normalizer_iff]
+    intro h
+    constructor
+    · rintro ⟨a, rfl⟩
+      refine ⟨cj φ⁻¹ a, ?_⟩
+      rw [← hxa]
+      congr 3
+      exact Subtype.ext (by simp [hcj, mul_assoc])
+    · rintro ⟨a, ha⟩
+      refine ⟨cj φ a, ?_⟩
+      rw [← hxa] at ha
+      simpa using ha
+  have hz : ∀ (m : ℤ) (t : H), t ∈ σ.range → x ^ m * t * (x ^ m)⁻¹ ∈ σ.range := fun m t ht =>
+    (Subgroup.mem_normalizer_iff.1 (Subgroup.zpow_mem _ hnorm m) t).1 ht
+  obtain ⟨d, hdl, hdI, hdφ⟩ := hd (orderOf x) (orderOf_pos x)
+  let L : Subgroup (H × Multiplicative (ZMod (orderOf x))) :=
+    { carrier := {z | ∃ m : ℤ, z.1 * (x ^ m)⁻¹ ∈ σ.range ∧ z.2 = Multiplicative.ofAdd (m : ZMod (orderOf x))}
+      one_mem' := ⟨0, by simp, by simp⟩
+      mul_mem' := by
+        rintro z w ⟨m, h1, h2⟩ ⟨m', h1', h2'⟩
+        refine ⟨m + m', ?_, by simp [h2, h2', ofAdd_add]⟩
+        have := mul_mem h1 (hz m _ h1')
+        convert this using 1
+        simp only [Prod.fst_mul]; group
+      inv_mem' := by
+        rintro z ⟨m, h1, h2⟩
+        refine ⟨-m, ?_, by simp [h2]⟩
+        have := hz (-m) _ (inv_mem h1)
+        convert this using 1
+        simp only [Prod.fst_inv]; group }
+  let Φ : L →* H' × Multiplicative (ZMod (orderOf x)) := (f.prodMap (MonoidHom.id _)).comp L.subtype
+  have hΦ : Function.Injective Φ := by
+    rw [injective_iff_map_eq_one]
+    rintro ⟨⟨z, u⟩, m, ⟨a, ha⟩, h2⟩ h
+    have e1 : f z = 1 := congrArg Prod.fst h
+    have e2 : u = 1 := congrArg Prod.snd h
+    have e3 : x ^ m = 1 := by
+      rw [← orderOf_dvd_iff_zpow_eq_one, ← ZMod.intCast_zmod_eq_zero_iff_dvd]
+      simp only [e2] at h2
+      exact (ofAdd_eq_one.1 h2.symm)
+    simp only [e3, inv_one, mul_one] at ha
+    have e4 : a = 1 := Subtype.ext (by rw [← hσ, ha, e1]; rfl)
+    have e5 : z = 1 := by rw [← ha, e4, map_one]
+    exact Subtype.ext (Prod.ext e5 e2)
+  have hlc2 : IsLocallyConstant (r'.prod d) := hlc.prodMk hdl
+  have hr : ∀ g, (r'.prod d) g ∈ Φ.range := by
+    have hcl : IsClosed ((Φ.range.comap (r'.prod d) : Subgroup D) : Set D) :=
+      ⟨hlc2 ((Φ.range : Set (H' × Multiplicative (ZMod (orderOf x))))ᶜ)⟩
+    have hle : I ⊔ Subgroup.zpowers φ ≤ Φ.range.comap (r'.prod d) := by
+      refine sup_le (fun s hsI => ?_) ((Subgroup.zpowers_le).2 ?_)
+      · exact ⟨⟨(σ ⟨_, s, hsI, rfl⟩, 1), 0, by simp, by simp⟩, Prod.ext (hσ _) (hdI s hsI).symm⟩
+      · exact ⟨⟨(x, Multiplicative.ofAdd 1), 1, by simp, by simp⟩, Prod.ext hx hdφ.symm⟩
+    intro g
+    have := Subgroup.topologicalClosure_minimal _ hle hcl
+    rw [hφ] at this
+    exact this (Subgroup.mem_top g)
+  let ρ : D →* L := (MonoidHom.ofInjective hΦ).symm.toMonoidHom.comp ((r'.prod d).codRestrict _ hr)
+  have hρ : ∀ g, Φ (ρ g) = (r'.prod d) g := fun g => MonoidHom.apply_ofInjective_symm hΦ _
+  refine ⟨(MonoidHom.fst _ _).comp (L.subtype.comp ρ), fun g => congrArg Prod.fst (hρ g), ?_, fun s hsI h1 => ?_⟩
+  · have : IsLocallyConstant ρ := IsLocallyConstant.desc ρ Φ (by
+      have : Φ ∘ ρ = r'.prod d := funext hρ
+      rw [this]; exact hlc2) hΦ
+    exact this.comp fun z : L => z.1.1
+  · have : ρ s = 1 := hΦ (by rw [hρ, map_one]; exact Prod.ext h1 (hdI s hsI))
+    simp [this]
+
+private theorem lu_inv_mem {M : Type} [Group M] [Finite M] (S : Submonoid M) {x : M} (hx : x ∈ S) : x⁻¹ ∈ S := by
+  have : x⁻¹ = x ^ (orderOf x - 1) := by
+    rw [inv_eq_iff_mul_eq_one, ← pow_succ', Nat.sub_add_cancel (orderOf_pos x), pow_orderOf_eq_one]
+  rw [this]
+  exact pow_mem hx _
+
+private theorem lu_sub {O R : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] [Finite R]
+    (𝒜 : ℤ → Submodule O R) [GradedAlgebra 𝒜] : ∃ S : Subgroup (GG 3 R), ∀ x, x ∈ S ↔ GrMat 𝒜 x.mat := by
+  have h1 : GrMat 𝒜 (1 : Matrix (Fin 3) (Fin 3) R) := fun a b => by
+    by_cases h : a = b
+    · subst h
+      simp only [wt, sub_self, Matrix.one_apply_eq]
+      exact SetLike.GradedOne.one_mem
+    · simp [Matrix.one_apply_ne h]
+  have hm : ∀ X Y : Matrix (Fin 3) (Fin 3) R, GrMat 𝒜 X → GrMat 𝒜 Y → GrMat 𝒜 (X * Y) := fun X Y hX hY a b => by
+    rw [Matrix.mul_apply]
+    refine Submodule.sum_mem _ fun c _ => ?_
+    have := SetLike.GradedMul.mul_mem (hX a c) (hY c b)
+    rwa [show wt a c + wt c b = wt a b by simp [wt]] at this
+  let S₀ : Submonoid (GL (Fin 3) R) :=
+    { carrier := {x | GrMat 𝒜 (x : Matrix (Fin 3) (Fin 3) R)}
+      one_mem' := h1
+      mul_mem' := fun ha hb => hm _ _ ha hb }
+  have hθ : ∀ g : GL (Fin 3) R, g ∈ S₀ → theta g ∈ S₀ := fun g hg a b => by
+    have hi : GrMat 𝒜 ((g⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) := lu_inv_mem S₀ hg
+    rw [theta_val]
+    generalize ((g⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) = X at hi
+    have e : (Jmat R 3 * Xᵀ * Jmat R 3) a b = X b.rev a.rev := by
+      fin_cases a <;> fin_cases b <;> simp [Matrix.mul_apply, Fin.sum_univ_three, Jmat, Fin.rev]
+    have e' : wt b.rev a.rev = wt a b := by fin_cases a <;> fin_cases b <;> rfl
+    rw [e, ← e']
+    exact hi _ _
+  let S₁ : Submonoid (GG 3 R) :=
+    { carrier := {x | x.left ∈ S₀}
+      one_mem' := S₀.one_mem
+      mul_mem' := fun {x y} hx hy => by
+        show x.left * sgnAct 3 R x.right y.left ∈ S₀
+        refine mul_mem hx ?_
+        rcases Int.units_eq_one_or x.right with h | h <;> rw [h]
+        · rw [sgnAct_one]; exact hy
+        · rw [sgnAct_neg_one]; exact hθ _ hy }
+  haveI : Finite (GG 3 R) := Finite.of_equiv _ SemidirectProduct.equivProd.symm
+  exact ⟨{ S₁ with inv_mem' := fun hx => lu_inv_mem S₁ hx }, fun _ => Iff.rfl⟩
+
+private theorem lu_ker {R R' : Type} [CommRing R] [CommRing R'] (p : R →+* R')
+    (hp : ∀ x y, p x = 0 → p y = 0 → x * y = 0) (l : ℕ) (hl : ∀ x, p x = 0 → (l : R) * x = 0) :
+    (∀ a b : GG 3 R, GG.map p a = 1 → GG.map p b = 1 → a * b = b * a) ∧
+      ∀ a : GG 3 R, GG.map p a = 1 → a ^ l = 1 := by
+  have hk : ∀ a : GG 3 R, GG.map p a = 1 → ∃ u : GL (Fin 3) R, a = GG.ofGL u ∧
+      ∃ X : Matrix (Fin 3) (Fin 3) R, (u : Matrix (Fin 3) (Fin 3) R) = 1 + X ∧ ∀ i j, p (X i j) = 0 := by
+    intro a ha
+    have h1 : a.right = 1 := congrArg SemidirectProduct.right ha
+    have h2 : a.mat.map p = 1 := congrArg GG.mat ha
+    refine ⟨a.left, SemidirectProduct.ext rfl h1, a.mat - 1, by simp [GG.mat], fun i j => ?_⟩
+    have := congrFun (congrFun h2 i) j
+    rw [Matrix.map_apply] at this
+    rw [Matrix.sub_apply, map_sub, this]
+    by_cases h : i = j <;> simp [Matrix.one_apply, h]
+  have hz : ∀ X Y : Matrix (Fin 3) (Fin 3) R, (∀ i j, p (X i j) = 0) → (∀ i j, p (Y i j) = 0) → X * Y = 0 :=
+    fun X Y hX hY => by
+      ext i j
+      rw [Matrix.mul_apply]
+      exact Finset.sum_eq_zero fun c _ => hp _ _ (hX _ _) (hY _ _)
+  constructor
+  · intro a b ha hb
+    obtain ⟨u, rfl, X, hu, hX⟩ := hk a ha
+    obtain ⟨w, rfl, Y, hw, hY⟩ := hk b hb
+    rw [← map_mul, ← map_mul]
+    congr 1
+    apply Units.ext
+    rw [Units.val_mul, Units.val_mul, hu, hw]
+    simp only [add_mul, mul_add, hz X Y hX hY, hz Y X hY hX, one_mul, mul_one]
+    abel
+  · intro a ha
+    obtain ⟨u, rfl, X, hu, hX⟩ := hk a ha
+    have hn : ∀ n : ℕ, (1 + X) ^ n = 1 + (n : R) • X := fun n => by
+      induction n with
+      | zero => simp
+      | succ n ih =>
+        rw [pow_succ, ih]
+        simp only [add_mul, mul_add, smul_mul_assoc, hz X X hX hX, one_mul, mul_one, smul_zero, Nat.cast_succ,
+          add_smul, one_smul]
+        abel
+    have : u ^ l = 1 := by
+      apply Units.ext
+      rw [Units.val_pow_eq_pow_val, hu, hn, Units.val_one, add_eq_left]
+      ext i j
+      exact hl _ (hX i j)
+    rw [← map_pow, this, map_one]
+
+theorem UpperTheory.V.UnitaryThreeInertia.exists_lift_u :
+    ∀ {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [CharZero O] [Finite (ResidueField O)]
+      {G Γ ι : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G]
+      [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ] [T2Space Γ] [TotallyDisconnectedSpace Γ] [Finite ι] (F : Frame O G Γ ι), F.Ok →
+    F.LocVan → ∀ {R R' : Type} [CommRing R] [Algebra O R] [IsCO O R] [CommRing R'] [Algebra O R'] [IsCO O R'] (𝒜 : ℤ → Submodule O R) [GradedAlgebra 𝒜] (p : R →ₐ[O] R') (j : ℤ), Function.Surjective p → SmallExt O 𝒜 (RingHom.ker p) j →
+    ∀ (v : ι), v ∉ F.Tb → ∀ (r' : F.D v →* GG 3 R'), Red (F.ηv v) (F.Ψv v) r' → F.LocAt v r' → IsLocallyConstant (mats r') →
+      (∀ g, ∃ X, GrMat 𝒜 X ∧ X.map p = (r' g).mat) →
+      ∃ r : F.D v →* GG 3 R, push p r = r' ∧ F.LocAt v r ∧ IsLocallyConstant (mats r) ∧ ∀ g, GrMat 𝒜 (r g).mat := by
+  intro O _ _ _ _ _ _ G Γ ι _ _ _ _ _ _ _ _ _ _ _ _ _ F hF _ R R' _ _ _ _ _ _ 𝒜 _ p j hp hS v hv r' hred hloc hlc hgr
+  haveI := hS.fin
+  haveI : Finite (GG 3 R) := Finite.of_equiv _ SemidirectProduct.equivProd.symm
+  obtain ⟨S, hSm⟩ := lu_sub 𝒜
+  letI := Fintype.ofFinite (ResidueField O)
+  obtain ⟨l, hchar, n, hl, hcard⟩ := FiniteField.card' (ResidueField O)
+  have hkill : ∀ x y : R, x ∈ maximalIdeal R → p y = 0 → x * y = 0 := fun x y hx hy => by
+    have := Ideal.mul_mem_mul hx (show y ∈ RingHom.ker p from hy)
+    rwa [hS.kill] at this
+  have hlm : (l : R) ∈ maximalIdeal R := by
+    rw [← res_eq_zero_iff O, map_natCast]
+    exact CharP.cast_eq_zero _ l
+  obtain ⟨hK, hKl⟩ := lu_ker (p : R →+* R') (fun x y hx hy => hkill x y (hS.le hx) hy) l
+    (fun x hx => hkill _ x hlm hx)
+  have hle : ¬ l ∣ 2 * Nat.card (ResidueField O)ˣ := by
+    rw [hl.dvd_mul, Nat.card_units, Nat.card_eq_fintype_card, hcard]
+    rintro (h | h)
+    · have h2 : ((2 : ℕ) : ResidueField O) = 0 := (CharP.cast_eq_zero_iff _ l 2).2 h
+      have h3 := hF.two.map (residue O)
+      rw [map_ofNat] at h3
+      exact h3.ne_zero (by exact_mod_cast h2)
+    · have h1 : l ∣ l ^ (n : ℕ) := dvd_pow_self l n.ne_zero
+      have h2 : l ∣ l ^ (n : ℕ) - (l ^ (n : ℕ) - 1) := Nat.dvd_sub h1 h
+      rw [Nat.sub_sub_self (Nat.one_le_pow _ _ hl.pos)] at h2
+      exact hl.one_lt.ne' (Nat.dvd_one.1 h2)
+  obtain ⟨φ, hφ, hd⟩ := hF.frob v
+  have hU := hloc.2.2 hv
+  have hlc' : IsLocallyConstant r' := by
+    have h1 : IsLocallyConstant (F.ηv v) :=
+      hF.η_cont.comp_continuous (hF.π_cont.comp continuous_subtype_val)
+    refine IsLocallyConstant.desc r' (fun x : GG 3 R' => (x.mat, x.right)) ?_ ?_
+    · have := hlc.prodMk h1
+      convert this using 1
+      funext g
+      exact Prod.ext rfl (hred.mult g)
+    · intro x y h
+      exact SemidirectProduct.ext (Units.ext (congrArg Prod.fst h)) (congrArg Prod.snd h)
+  have hs : ∀ g, ∃ h : S, ((GG.map (p : R →+* R')).comp S.subtype) h = r' g := by
+    intro g
+    obtain ⟨X, hX, hXp⟩ := hgr g
+    have hu : IsUnit X := by
+      rw [Matrix.isUnit_iff_isUnit_det]
+      have h1 : IsUnit (p X.det) := by
+        have : p X.det = (r' g).mat.det := by
+          rw [← hXp]; exact (p : R →+* R').map_det X
+        rw [this, ← Matrix.isUnit_iff_isUnit_det]
+        exact (r' g).left.isUnit
+      by_contra hn
+      have h2 : X.det ∈ maximalIdeal R := hn
+      rw [← res_eq_zero_iff O, ← res_map p, res_eq_zero_iff] at h2
+      exact h2 h1
+    exact ⟨⟨⟨hu.unit, (r' g).right⟩, (hSm _).2 hX⟩, SemidirectProduct.ext (Units.ext hXp) rfl⟩
+  have he : ∀ s ∈ F.Iv v, r' s ^ (2 * Nat.card (ResidueField O)ˣ) = 1 := fun s hs => by
+    rw [← map_pow]
+    refine hU _ ⟨⟨pow_mem hs _, ?_⟩, ?_⟩
+    · show F.ηv v _ = 1
+      rw [map_pow, pow_mul, Int.units_sq, one_pow]
+    · show ((Units.map (residue O).toMonoidHom).comp (F.Ψv v)) _ = 1
+      rw [map_pow, pow_mul', pow_card_eq_one', one_pow]
+  obtain ⟨r, hr, hrl, hrI⟩ := lu_abs ((GG.map (p : R →+* R')).comp S.subtype)
+    (fun a b ha hb => Subtype.ext (hK _ _ ha hb)) l _ hl hle (fun a ha => Subtype.ext (hKl _ ha))
+    (F.Iv v) (hF.I_normal v) φ hφ hd r' hlc' hs he
+  refine ⟨S.subtype.comp r, MonoidHom.ext hr, ⟨fun h => ?_, fun h => ?_, fun _ s hs => ?_⟩,
+    hrl.comp fun x : S => x.1.mat, fun g => (hSm _).1 (r g).2⟩
+  · exact (hv (Or.inl h)).elim
+  · exact (hv (Or.inr h)).elim
+  · exact congrArg Subtype.val (hrI s hs.1.1 (hU s hs))
+end
+
+section
+open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
+
+private theorem isCO_of_surj {O : Type} [CommRing O] [IsLocalRing O] {R S : Type} [CommRing R] [Algebra O R]
+    [IsCO O R] [Finite R] [CommRing S] [Algebra O S] [Nontrivial S] (f : R →ₐ[O] S)
+    (hf : Function.Surjective f) :
+    ∃ _ : IsCO O S, ∀ x : R, f x ∈ maximalIdeal S ↔ x ∈ maximalIdeal R := by
+  haveI : IsLocalRing S := IsLocalRing.of_surjective' (f : R →+* S) hf
+  haveI : Finite S := Finite.of_surjective f hf
+  haveI hl : IsLocalHom (f : R →+* S) := IsLocalHom.of_surjective (f : R →+* S) hf
+  have hm : ∀ x : R, f x ∈ maximalIdeal S ↔ x ∈ maximalIdeal R := fun x =>
+    ⟨fun h hu => h (hu.map f), fun h hu => h (hl.map_nonunit x hu)⟩
+  haveI : IsArtinianRing S := inferInstance
+  refine ⟨{ complete := inferInstance, isLocalHom := ⟨fun a ha => ?_⟩, res_surj := fun y => ?_ }, hm⟩
+  · rw [← f.commutes] at ha
+    exact IsLocalHom.map_nonunit (f := algebraMap O R) a (hl.map_nonunit _ ha)
+  · obtain ⟨x, rfl⟩ := hf y
+    obtain ⟨a, ha⟩ := IsCO.res_surj (O := O) x
+    refine ⟨a, ?_⟩
+    rw [← f.commutes, ← map_sub]
+    exact (hm _).2 ha
+
+theorem UpperTheory.exists_small_extension_factorization_of_functional :
+    ∀ {O : Type} [CommRing O] [IsLocalRing O] {R R' : Type} [CommRing R] [Algebra O R] [IsCO O R] [Finite R] [CommRing R'] [Algebra O R'] (p : R →ₐ[O] R'), maximalIdeal R * RingHom.ker p = ⊥ → RingHom.ker p ≤ maximalIdeal R → ∀ φ : RingHom.ker p →ₗ[O] ResidueField O, φ ≠ 0 →
+     ∃ (R'' : Type) (_ : CommRing R'') (_ : Algebra O R'') (_ : IsCO O R'') (p₁ : R →ₐ[O] R'') (q : R'' →ₐ[O] R') (ε : ResidueField O →ₗ[O] R''), Function.Surjective p₁ ∧ q.comp p₁ = p ∧ ¬ Function.Injective q ∧ (∀ x : RingHom.ker p, p₁ x = ε (φ x)) ∧ (∀ y, q (ε y) = 0) ∧ (∀ y, ε y ∈ maximalIdeal R'') ∧ ∀ x ∈ maximalIdeal R'', ∀ y, x * ε y = 0 := by
+  intro O _ _ R R' _ _ _ _ _ _ p hmul hle φ hφ
+  have hz : ∀ m ∈ maximalIdeal R, ∀ x ∈ RingHom.ker p, m * x = 0 := fun m hm x hx => by
+    have := Ideal.mul_mem_mul hm hx
+    rwa [hmul, Ideal.mem_bot] at this
+  let J : Ideal R :=
+    { carrier := {x | ∃ h : x ∈ RingHom.ker p, φ ⟨x, h⟩ = 0}
+      add_mem' := by
+        rintro a b ⟨ha, ha'⟩ ⟨hb, hb'⟩
+        refine ⟨add_mem ha hb, ?_⟩
+        have : (⟨a + b, add_mem ha hb⟩ : RingHom.ker p) = ⟨a, ha⟩ + ⟨b, hb⟩ := rfl
+        rw [this, map_add, ha', hb', add_zero]
+      zero_mem' := ⟨zero_mem _, map_zero φ⟩
+      smul_mem' := by
+        rintro r x ⟨hx, hx'⟩
+        refine ⟨Ideal.mul_mem_left _ r hx, ?_⟩
+        obtain ⟨a, ha⟩ := IsCO.res_surj (O := O) r
+        have : (⟨r • x, Ideal.mul_mem_left _ r hx⟩ : RingHom.ker p) = a • ⟨x, hx⟩ := by
+          apply Subtype.ext
+          have h := hz _ ha x hx
+          rw [sub_mul, sub_eq_zero] at h
+          show r * x = a • x
+          rw [h, Algebra.smul_def]
+        rw [this, map_smul, hx', smul_zero] }
+  have hJ : ∀ x : RingHom.ker p, (x : R) ∈ J ↔ φ x = 0 := fun x =>
+    ⟨fun ⟨_, h⟩ => h, fun h => ⟨x.2, h⟩⟩
+  have hJp : ∀ x ∈ J, p x = 0 := fun x ⟨h, _⟩ => h
+  obtain ⟨x0, hx0⟩ : ∃ x, φ x ≠ 0 := by
+    by_contra h
+    push Not at h
+    exact hφ (LinearMap.ext h)
+  have hsurj : Function.Surjective φ := fun y => by
+    obtain ⟨a, ha⟩ := residue_surjective (y * (φ x0)⁻¹)
+    refine ⟨a • x0, ?_⟩
+    rw [map_smul, Algebra.smul_def, ResidueField.algebraMap_eq, ha, inv_mul_cancel_right₀ hx0]
+  have hJtop : J ≠ ⊤ := fun h => hx0 ((hJ x0).1 (h ▸ Submodule.mem_top))
+  haveI : Nontrivial (R ⧸ J) := Ideal.Quotient.nontrivial_iff.2 hJtop
+  have hp1 : Function.Surjective (Ideal.Quotient.mkₐ O J) := Ideal.Quotient.mkₐ_surjective O J
+  obtain ⟨inst, hm⟩ := isCO_of_surj (Ideal.Quotient.mkₐ O J) hp1
+  let ψ : RingHom.ker p →ₗ[O] R ⧸ J :=
+    (Ideal.Quotient.mkₐ O J).toLinearMap ∘ₗ ((RingHom.ker p).subtype.restrictScalars O)
+  have hψ : ∀ x : RingHom.ker p, ψ x = Ideal.Quotient.mkₐ O J x := fun _ => rfl
+  have hker : LinearMap.ker φ ≤ LinearMap.ker ψ := fun x hx =>
+    Ideal.Quotient.eq_zero_iff_mem.2 ((hJ x).2 hx)
+  let ε : ResidueField O →ₗ[O] R ⧸ J :=
+    (LinearMap.ker φ).liftQ ψ hker ∘ₗ (φ.quotKerEquivOfSurjective hsurj).symm.toLinearMap
+  have hε : ∀ x : RingHom.ker p, ε (φ x) = Ideal.Quotient.mkₐ O J x := fun x => by
+    have : (φ.quotKerEquivOfSurjective hsurj).symm (φ x) = Submodule.Quotient.mk x := by
+      rw [LinearEquiv.symm_apply_eq]; rfl
+    show (LinearMap.ker φ).liftQ ψ hker ((φ.quotKerEquivOfSurjective hsurj).symm (φ x)) = _
+    rw [this, Submodule.liftQ_apply, hψ]
+  have hq : ∀ x : R, Ideal.Quotient.liftₐ J p hJp (Ideal.Quotient.mkₐ O J x) = p x := fun _ => rfl
+  refine ⟨R ⧸ J, inferInstance, inferInstance, inst, Ideal.Quotient.mkₐ O J, Ideal.Quotient.liftₐ J p hJp, ε,
+    hp1, AlgHom.ext hq, fun hinj => ?_, fun x => (hε x).symm, fun y => ?_, fun y => ?_, fun x hx y => ?_⟩
+  · have h : Ideal.Quotient.mkₐ O J (x0 : R) = 0 := hinj (by rw [hq, map_zero]; exact x0.2)
+    exact hx0 ((hJ x0).1 (Ideal.Quotient.eq_zero_iff_mem.1 h))
+  · obtain ⟨x, rfl⟩ := hsurj y
+    rw [hε, hq]; exact x.2
+  · obtain ⟨x, rfl⟩ := hsurj y
+    rw [hε]; exact (hm _).2 (hle x.2)
+  · obtain ⟨z, rfl⟩ := hsurj y
+    obtain ⟨w, rfl⟩ := hp1 x
+    rw [hε, ← map_mul, hz w ((hm w).1 hx) _ z.2, map_zero]
+end
+
+section
+open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
+
+private theorem map_tor {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (t : Aˣ) :
+    GeneralLinearGroup.map f (tor A t) = tor B (Units.map f.toMonoidHom t) :=
+  _root_.UpperTheory.Reformulated.B.H71.map_tor f t
+
+private theorem map_conjBy {A B D : Type} [CommRing A] [CommRing B] [Group D] (f : A →+* B) (h : GL (Fin 3) A)
+    (r : D →* GG 3 A) :
+    (GG.map f).comp (conjBy h r) = conjBy (GeneralLinearGroup.map f h) ((GG.map f).comp r) := by
+  have e : GG.map f (GG.ofGL h) = GG.ofGL (GeneralLinearGroup.map f h) := by
+    unfold GG.map
+    rw [SemidirectProduct.map_inl]
+  refine MonoidHom.ext fun g => ?_
+  simp only [conjBy, MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom, MulAut.conj_apply, map_mul, map_inv, e]
+
+private theorem conj_conj {A D : Type} [CommRing A] [Group D] (h h' : GL (Fin 3) A) (r : D →* GG 3 A) :
+    conjBy (h * h') r = conjBy h (conjBy h' r) := by
+  ext1 g
+  simp only [conjBy, MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom, MulAut.conj_apply, map_mul,
+    _root_.mul_inv_rev, mul_assoc, MulAut.mul_apply]
+
+private theorem conj_one {A D : Type} [CommRing A] [Group D] (r : D →* GG 3 A) : conjBy 1 r = r := by
+  ext1 g
+  simp [conjBy]
+
+private theorem conj_mat {A D : Type} [CommRing A] [Group D] (h : GL (Fin 3) A) (r : D →* GG 3 A) (g : D) :
+    (conjBy h r g).mat = (h : Matrix _ _ A) * (r g).mat *
+      ((sgnAct 3 A (r g).right h⁻¹ : GL (Fin 3) A) : Matrix _ _ A) := by
+  have : (conjBy h r g).left = h * (r g).left * sgnAct 3 A (r g).right h⁻¹ := by
+    simp [conjBy, SemidirectProduct.mul_left, SemidirectProduct.inv_left]
+  simp only [GG.mat, this, Units.val_mul]
+
+private theorem setup {O : Type} [CommRing O] [IsLocalRing O] {G Γ ι : Type} [Group G] [TopologicalSpace G]
+    [IsTopologicalGroup G] [Group Γ] [TopologicalSpace Γ] (F : Frame O G Γ ι) (hF : F.Ok) (g₁ : Γ)
+    (hg : F.Marked g₁) {R : Type} [CommRing R] [Algebra O R] [IsLocalRing R] (r : Γ →* GG 3 R)
+    (hr : Red F.η F.Ψ r) :
+    ∃ Ψ : Γ →* (ResidueField R)ˣ, IsUnit (2 : R) ∧ Marks F.η Ψ F.c g₁ ∧
+      (GG.map (residue R)).comp r = r0 F.η Ψ := by
+  refine ⟨(Units.map ((residue R).comp (algebraMap O R)).toMonoidHom).comp F.Ψ, ?_,
+    ⟨hF.csq, hF.ηc, by simp [hF.Ψc], hg.1, ?_⟩, ?_⟩
+  · simpa [map_ofNat] using hF.two.map (algebraMap O R)
+  · simpa using hg.2.map ((residue R).comp (algebraMap O R))
+  · refine MonoidHom.ext fun g => SemidirectProduct.ext (Units.ext ?_) (hr.mult g)
+    rw [unitaryThreeReflection_left, MonoidHom.comp_apply, MonoidHom.comp_apply, ← map_tor]
+    ext a b
+    exact Ideal.Quotient.eq.2 (hr.red g a b)
+
+theorem UpperTheory.lift_along_surjection_graded :
+    ∀ {O : Type} [CommRing O] [IsLocalRing O] {G Γ ι : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group Γ] [TopologicalSpace Γ] (F : Frame O G Γ ι), F.Ok → ∀ g₁, F.Marked g₁ → ∀ {R R' : Type} [CommRing R] [Algebra O R] [IsCO O R] [CommRing R'] [Algebra O R'] [IsCO O R'] (q : R →ₐ[O] R'), Function.Surjective q → ∀ (r : Γ →* GG 3 R) (r' : Γ →* GG 3 R'), F.Cond r → IsLocallyConstant (mats r) → push q r = r' → F.CondN g₁ r' →
+     ∃ r₂ : Γ →* GG 3 R, F.IsPt g₁ r₂ ∧ push q r₂ = r' := by
+  intro O _ _ G Γ ι _ _ _ _ _ F hF g₁ hg R R' _ _ _ _ _ _ q hq r r' hr hlc hp hr'
+  haveI : IsAdicComplete (maximalIdeal R) R := IsCO.complete (O := O)
+  have hm : ∀ x : R, q x ∈ maximalIdeal R' ↔ x ∈ maximalIdeal R := fun x => by
+    rw [← res_eq_zero_iff O, res_map, res_eq_zero_iff]
+  have hent : ∀ (h : GL (Fin 3) R), InHat (GeneralLinearGroup.map (q : R →+* R') h) ↔ InHat h := fun h => by
+    refine forall_congr' fun a => forall_congr' fun b => ?_
+    rw [← hm]
+    refine iff_of_eq (congrArg (· ∈ maximalIdeal R') ?_)
+    by_cases hab : a = b <;> simp [Matrix.one_apply, hab]
+  obtain ⟨Ψ, h2, hM, hred⟩ := setup F hF g₁ hg r hr.toRed
+  obtain ⟨Ψ', h2', hM', hred'⟩ := setup F hF g₁ hg r' hr'.toRed
+  obtain ⟨h, hh, hN⟩ := exists_normalised F.η Ψ F.c g₁ r h2 hM hred
+  have hpush : ∀ H : GL (Fin 3) R, push q (conjBy H r) =
+      conjBy (GeneralLinearGroup.map (q : R →+* R') H) r' := fun H => by
+    rw [← hp]; exact map_conjBy _ _ _
+  have hN' : Normalised F.c g₁ (conjBy (GeneralLinearGroup.map (q : R →+* R') h) r') := by
+    rw [← hpush]
+    refine ⟨?_, ?_, ?_⟩
+    · rw [MonoidHom.comp_apply, GG.map_mat, hN.atc, Matrix.map_one _ (map_zero _) (map_one _)]
+    · have := congrArg q hN.z12
+      simpa [zmat] using this
+    · have := congrArg q hN.z21
+      simpa [zmat] using this
+  obtain ⟨t', -, ht'⟩ := normalised_unique F.η Ψ' F.c g₁ r' _ h2' hM' hred' ((hent h).2 hh) hr'.norm hN'
+  obtain ⟨t₀, ht₀⟩ := hq t'
+  obtain ⟨t, rfl⟩ : IsUnit t₀ := by
+    by_contra hn
+    have := (hm t₀).2 hn
+    rw [ht₀] at this
+    exact this t'.isUnit
+  have ht : Units.map (q : R →+* R').toMonoidHom t = t' := Units.ext ht₀
+  have hH : GeneralLinearGroup.map (q : R →+* R') (tor R t⁻¹ * h) = 1 := by
+    rw [map_mul, ht', map_tor, map_inv, ht, map_inv, inv_mul_cancel]
+  have hHhat : InHat (tor R t⁻¹ * h) := by
+    rw [← hent, hH]
+    intro a b
+    simp
+  refine ⟨conjBy (tor R t⁻¹ * h) r, ⟨⟨(cond_conj F _ hHhat).2 r hr, ?_⟩, fun n => ?_⟩, ?_⟩
+  · rw [conj_conj]
+    exact (conjBy_tor _ _).2.2.1 _ _ hN
+  · generalize tor R t⁻¹ * h = H
+    have := (hlc.prodMk hF.η_cont).comp fun p : Matrix (Fin 3) (Fin 3) R × ℤˣ =>
+      ((H : Matrix _ _ R) * p.1 * ((sgnAct 3 R p.2 H⁻¹ : GL (Fin 3) R) : Matrix _ _ R)).map
+        (Ideal.Quotient.mk (maximalIdeal R ^ n))
+    convert this using 1
+    funext g
+    rw [conj_mat, hr.mult g]
+    rfl
+  · rw [hpush, hH, conj_one]
+end
+
+section
+open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
+
+theorem UpperTheory.card_dual_residueField_eq_card_of_maximalIdeal_smul_eq_zero :
+    ∀ {O N : Type} [CommRing O] [IsLocalRing O] [Finite (ResidueField O)] [AddCommGroup N] [Module O N] [Finite N], (∀ a ∈ maximalIdeal O, ∀ x : N, a • x = 0) → Nat.card (N →ₗ[O] ResidueField O) = Nat.card N := by
+  intro O N _ _ _ _ _ _ h
+  classical
+  have hM : Module.IsTorsionBySet O N (maximalIdeal O) := fun x a => h a a.2 x
+  letI : Module (ResidueField O) N := hM.module
+  haveI : IsScalarTower O (ResidueField O) N := hM.isScalarTower
+  have e := LinearMap.extendScalarsOfSurjectiveEquiv (R := O) (S := ResidueField O) (M := N)
+    (N := ResidueField O) IsLocalRing.residue_surjective
+  rw [Nat.card_congr e.toEquiv]
+  let b := Module.Free.chooseBasis (ResidueField O) N
+  exact (Nat.card_congr b.toDualEquiv.toEquiv).symm
+end
+
+section
+open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
+
+section
+variable {O R : Type} [CommRing O] [CommRing R] [Algebra O R] (𝒜 : ℤ → Submodule O R) [GradedAlgebra 𝒜]
+
+private theorem gr_mul {X Y : Matrix (Fin 3) (Fin 3) R} (hX : GrMat 𝒜 X) (hY : GrMat 𝒜 Y) :
+    GrMat 𝒜 (X * Y) := by
+  intro a b
+  simp only [Matrix.mul_apply]
+  refine Submodule.sum_mem _ fun c _ => ?_
+  have h := SetLike.GradedMul.mul_mem (hX a c) (hY c b)
+  have e : wt a c + wt c b = wt a b := by simp only [wt]; ring
+  rwa [e] at h
+
+private theorem gr_one : GrMat 𝒜 (1 : Matrix (Fin 3) (Fin 3) R) := by
+  intro a b
+  by_cases h : a = b
+  · subst h
+    rw [Matrix.one_apply_eq]
+    have e : wt a a = 0 := by simp [wt]
+    rw [e]
+    exact SetLike.GradedOne.one_mem
+  · rw [Matrix.one_apply_ne h]
+    exact zero_mem _
+
+private theorem gr_pow {g : GL (Fin 3) R} (hg : GrMat 𝒜 (g : Matrix (Fin 3) (Fin 3) R)) (n : ℕ) :
+    GrMat 𝒜 ((g ^ n : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) := by
+  induction n with
+  | zero => rw [pow_zero]; exact gr_one 𝒜
+  | succ n ih => rw [pow_succ, Units.val_mul]; exact gr_mul 𝒜 ih hg
+
+private theorem gr_inv [Finite R] {g : GL (Fin 3) R} (hg : GrMat 𝒜 (g : Matrix (Fin 3) (Fin 3) R)) :
+    GrMat 𝒜 ((g⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) := by
+  have hn := orderOf_pos g
+  have e : g⁻¹ = g ^ (orderOf g - 1) := by
+    symm
+    apply eq_inv_of_mul_eq_one_left
+    rw [← pow_succ, Nat.sub_add_cancel hn, pow_orderOf_eq_one]
+  rw [e]
+  exact gr_pow 𝒜 hg _
+
+private theorem gr_theta [Finite R] {g : GL (Fin 3) R} (hg : GrMat 𝒜 (g : Matrix (Fin 3) (Fin 3) R)) :
+    GrMat 𝒜 ((theta g : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) := by
+  rw [theta_val]
+  have hi := gr_inv 𝒜 hg
+  have key : ∀ (M : Matrix (Fin 3) (Fin 3) R) (a b : Fin 3),
+      (Jmat R 3 * Mᵀ * Jmat R 3) a b = M b.rev a.rev := by
+    intro M a b
+    fin_cases a <;> fin_cases b <;> simp [Matrix.mul_apply, Jmat, Fin.sum_univ_three, Fin.rev]
+  intro a b
+  rw [key]
+  have e : wt b.rev a.rev = wt a b := by fin_cases a <;> fin_cases b <;> rfl
+  rw [← e]
+  exact hi _ _
+
+private theorem gr_act [Finite R] (s : ℤˣ) {g : GL (Fin 3) R} (hg : GrMat 𝒜 (g : Matrix (Fin 3) (Fin 3) R)) :
+    GrMat 𝒜 ((sgnAct 3 R s g : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) := by
+  rcases Int.units_eq_one_or s with rfl | rfl
+  · rw [sgnAct_one]; exact hg
+  · rw [sgnAct_neg_one]; exact gr_theta 𝒜 hg
+
+end
+
+theorem UpperTheory.graded_matrix_mul_inv :
+    ∀ {O R : Type} [CommRing O] [CommRing R] [Algebra O R] [Finite R] (𝒜 : ℤ → Submodule O R) [GradedAlgebra 𝒜] (x y : GG 3 R), GrMat 𝒜 x.mat → GrMat 𝒜 y.mat → GrMat 𝒜 (x * y).mat ∧ GrMat 𝒜 (x⁻¹).mat := by
+  intro O R _ _ _ _ 𝒜 _ x y hx hy
+  unfold GG.mat at *
+  constructor
+  · rw [SemidirectProduct.mul_left, Units.val_mul]
+    exact gr_mul 𝒜 hx (gr_act 𝒜 _ hy)
+  · rw [SemidirectProduct.inv_left]
+    exact gr_act 𝒜 _ (gr_inv 𝒜 hx)
+end
+
+section
+open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
+
+section SlopeTestRemainingChoices
+
+variable {O R R' D : Type} [CommRing O] [CommRing R] [Algebra O R] [CommRing R'] [Algebra O R'] [Group D]
+
+private theorem map_ofGL (f : R →+* R') (h : GL (Fin 3) R) :
+    GG.map f (GG.ofGL h) = GG.ofGL (GeneralLinearGroup.map f h) := by
+  simp only [GG.map, GG.ofGL, SemidirectProduct.map_inl]
+
+private theorem conj_push (φ : R →ₐ[O] R') (h : GL (Fin 3) R) (r : D →* GG 3 R) (g : D) :
+    conjBy (GeneralLinearGroup.map (φ : R →+* R') h)⁻¹ (push φ r) g =
+      GG.map (φ : R →+* R') (conjBy h⁻¹ r g) := by
+  simp only [conjBy, push, MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom, MulAut.conj_apply,
+    MulAut.conj_inv_apply, map_mul, map_inv, map_ofGL]
+
+private theorem conj_push_mat (φ : R →ₐ[O] R') (h : GL (Fin 3) R) (r : D →* GG 3 R) (g : D) (a b : Fin 3) :
+    (conjBy (GeneralLinearGroup.map (φ : R →+* R') h)⁻¹ (push φ r) g).mat a b =
+      φ ((conjBy h⁻¹ r g).mat a b) := by
+  rw [conj_push]
+  simp [GG.mat, GG.map, SemidirectProduct.map_left]
+
+private theorem triIn_push (φ : R →ₐ[O] R') {η : D →* ℤˣ} {Ψ : D →* Oˣ} {I : Subgroup D}
+    {r : D →* GG 3 R} {h : GL (Fin 3) R} (H : TriIn η Ψ I r h) :
+    TriIn η Ψ I (push φ r) (GeneralLinearGroup.map (φ : R →+* R') h) where
+  tri g hg a b hab := by rw [conj_push_mat, H.tri g hg a b hab, map_zero]
+  ine s hs hη a := by rw [conj_push_mat, H.ine s hs hη a, AlgHom.commutes]
+
+private theorem diagIn_push (φ : R →ₐ[O] R') {η : D →* ℤˣ} {Ψ : D →* Oˣ} {I : Subgroup D}
+    {r : D →* GG 3 R} {h : GL (Fin 3) R} (H : DiagIn η Ψ I r h) :
+    DiagIn η Ψ I (push φ r) (GeneralLinearGroup.map (φ : R →+* R') h) where
+  toTriIn := triIn_push φ H.toTriIn
+  low g hg a b hab := by rw [conj_push_mat, H.low g hg a b hab, map_zero]
+
+variable [IsLocalRing O] [IsCO O R] [IsCO O R']
+
+private theorem inHat_push (φ : R →ₐ[O] R') {h : GL (Fin 3) R} (H : InHat h) :
+    InHat (GeneralLinearGroup.map (φ : R →+* R') h) := by
+  have hm : ∀ x ∈ maximalIdeal R, φ x ∈ maximalIdeal R' := by
+    intro x hx
+    rw [← res_eq_zero_iff O R', res_map, res_eq_zero_iff O R]
+    exact hx
+  unfold InHat CongOne EntIn at H ⊢
+  intro a b
+  have e : ((GeneralLinearGroup.map (φ : R →+* R') h : Matrix (Fin 3) (Fin 3) R') - 1) a b =
+      φ (((h : Matrix (Fin 3) (Fin 3) R) - 1) a b) := by
+    by_cases hab : a = b <;> simp [Matrix.sub_apply, Matrix.one_apply, hab]
+  rw [e]
+  exact hm _ (H a b)
+
+end SlopeTestRemainingChoices
+
+theorem UpperTheory.locAt_push_of_locAt :
+    ∀ {O : Type} [CommRing O] [IsLocalRing O] {G Γ ι : Type} [Group G] [Group Γ] (F : Frame O G Γ ι) {R R' : Type} [CommRing R] [Algebra O R] [IsCO O R] [CommRing R'] [Algebra O R'] [IsCO O R'] (φ : R →ₐ[O] R') (v : ι) (r : F.D v →* GG 3 R), F.LocAt v r → F.LocAt v (push φ r) := by
+  intro O _ _ G Γ ι _ _ F R R' _ _ _ _ _ _ φ v r hr
+  unfold Frame.LocAt at hr ⊢
+  obtain ⟨hT, hD, hU⟩ := hr
+  refine ⟨fun hv => ?_, fun hv => ?_, fun hv => ?_⟩
+  · obtain ⟨h, hh, ht⟩ := hT hv
+    exact ⟨_, inHat_push φ hh, triIn_push φ ht⟩
+  · obtain ⟨h, hh, ht⟩ := hD hv
+    exact ⟨_, inHat_push φ hh, diagIn_push φ ht⟩
+  · intro s hs
+    have h1 := hU hv s hs
+    simp only [push, MonoidHom.comp_apply, h1, map_one]
+end
+
+section
 open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
 
 open UpperTheory.V.UnitaryThreeInertia.Obs in
@@ -125,3 +1271,4 @@ theorem UpperTheory.V.UnitaryThreeInertia.exists_unobstructed :
     obtain ⟨Y, hY⟩ := hrs g
     rw [MonoidHom.comp_apply, hY, map_mul, map_ex_one hS' q hqε, one_mul, hqp, hs]) hr'.toCondN
   exact ⟨R'', inferInstance, inferInstance, inferInstance, p₁, q, r₂, hp₁, hq, hqi, h1, h2⟩
+end

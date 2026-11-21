@@ -1,13 +1,964 @@
 import Mathlib
 import Formalism.SharpRestriction.CuspSpanNormBounds.PsiEDef
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlobalHermitianFramesTermsOrbitsLocal
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFacts
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalExtend
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NumberFieldLatticeDeterminedByLocalLatticesStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniqueGlobalLatticeOfLocalLattices
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StrongApproxStab
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoordinateLatticeUniqueTermAlmostAllPlacesStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeMassEqFinprodLocalStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetMassLeAndFinite
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesComplementUnitaryNormalisesStabil
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AmplitudeMassEqOneOfSingleOrbit
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalAmplitudeSummandAtTermOrbit
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumProdOfLocalChoicesBijection
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesStabilizerActsOnTerms
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesStabilizerActsOnTermsStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CommonStabilizerStabilizersCommensurableVolumeStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDoubleCosetTermBasicFactsStatement
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EichlerIsometry
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormAdditiveCharacterTypePrimeEqOne
+import BuildAid.ForwardExisting
 
+section
+section
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL NumberField IsDedekindDomain
+open scoped Pointwise ENNReal Classical
+
+noncomputable section
+
+namespace GlobalTheory.HL.GlobalOrbits
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E}
+  {A : Places F E sig} {r k : ℕ}
+
+theorem mem_rat {n : ℕ}
+    {K : ∀ p, Subgroup ((Fin n → (A.loc p).Ep) ≃ₗ[(A.loc p).Ep] (Fin n → (A.loc p).Ep))}
+    {g : (Fin n → E) ≃ₗ[E] (Fin n → E)} (hg : g ∈ A.rat K) : ∀ p, ∃ g' ∈ K p, A.Ext p g g' := hg
+
+theorem lrel_equivalence (G : GFrames A r k) : Equivalence G.LRel := by
+  refine ⟨fun Λ => ⟨1, G.St.one_mem, ?_⟩, ?_, ?_⟩
+  · ext x; simp
+  · rintro Λ Λ' ⟨g, hg, rfl⟩
+    refine ⟨g⁻¹, G.St.inv_mem hg, ?_⟩
+    rw [← Submodule.map_comp]
+    ext x; simp
+  · rintro a b c ⟨g, hg, rfl⟩ ⟨g2, hg2, rfl⟩
+    refine ⟨g2 * g, G.St.mul_mem hg2 hg, ?_⟩
+    rw [← Submodule.map_comp]
+    rfl
+
+theorem drel_equivalence (G : GFrames A r k) : Equivalence G.DRel := by
+  refine ⟨fun d => ⟨1, fun p => ⟨1, (G.S p).H0.one_mem, fun _ => rfl, one_smul _ _⟩⟩, ?_, ?_⟩
+  · rintro d d' ⟨g, hg⟩
+    refine ⟨g⁻¹, fun p => ?_⟩
+    obtain ⟨g', h0, he, hd⟩ := hg p
+    refine ⟨g'⁻¹, (G.S p).H0.inv_mem h0, fun x => ?_, ?_⟩
+    · have h := he (g.symm x)
+      rw [LinearEquiv.apply_symm_apply] at h
+      change g'.symm (A.bc p x) = A.bc p (g.symm x)
+      rw [← h, LinearEquiv.symm_apply_apply]
+    · rw [← hd, inv_smul_smul]
+  · rintro a b c ⟨g, hg⟩ ⟨g2, hg2⟩
+    refine ⟨g2 * g, fun p => ?_⟩
+    obtain ⟨g', h0, he, hd⟩ := hg p
+    obtain ⟨g2', h20, he2, hd2⟩ := hg2 p
+    refine ⟨g2' * g', (G.S p).H0.mul_mem h20 h0, fun x => ?_, ?_⟩
+    · change g2' (g' (A.bc p x)) = A.bc p (g2 (g x))
+      rw [he x, he2 (g x)]
+    · rw [mul_smul, hd, hd2]
+
+theorem local_of_lrel (G : GFrames A r k) {Γ Γ' : G.Lt} (h : G.LRel Γ Γ') :
+    ∀ p, ∃ h ∈ (G.S p).St, A.lat p Γ' = h • A.lat p Γ := by
+  obtain ⟨g, hg, rfl⟩ := h
+  intro p
+  obtain ⟨g', hg', he⟩ := mem_rat hg p
+  exact ⟨g', hg', (RatExt.rational_extend A _ p).2.2.2.1 g g' Γ he⟩
+
+end GlobalTheory.HL.GlobalOrbits
+
+namespace GlobalTheory.HL.GlobalOrbits
+
+theorem smul_eq_of_le {F' E' : Type} [Field F'] [ValuativeRel F'] [TopologicalSpace F'] [CommRing E']
+    [Algebra F' E'] [TopologicalSpace E'] (L : LocE F' E') {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E')
+    (Λ : Submodule L.O (Fin n → E')) (hΛ : IsSD L Hm Λ) (u : (Fin n → E') ≃ₗ[E'] (Fin n → E'))
+    (hu : u ∈ isomG L Hm) (hle : ∀ x ∈ Λ, u x ∈ Λ) : u • Λ = Λ := by
+  have hu' : ∀ x y, hf L Hm (u x) (u y) = hf L Hm x y := hu
+  ext y
+  constructor
+  · intro hy
+    obtain ⟨x, hx, rfl⟩ := (Submodule.mem_smul_pointwise_iff_exists _ _ _).1 hy
+    exact hle x hx
+  · intro hy
+    have h1 : u.symm y ∈ Λ := by
+      refine (hΛ.2 _).1 fun x hx => ?_
+      have := hu' x (u.symm y)
+      rw [LinearEquiv.apply_symm_apply] at this
+      rw [← this]
+      exact (hΛ.2 y).2 hy (u x) (hle x hx)
+    have h2 : y = u • u.symm y := by simp
+    rw [h2]
+    exact Submodule.smul_mem_pointwise_smul _ _ _ h1
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E}
+  {A : Places F E sig} {r k : ℕ}
+
+theorem lrel_of_local (G : GFrames A r k) {d : G.Dat} {Γ Γ' : G.Lt} (hT : G.IsTerm d Γ)
+    (hL' : Submodule.IsLattice E Γ') (H : ∀ p, ∃ h ∈ (G.S p).St, A.lat p Γ' = h • A.lat p Γ) :
+    G.LRel Γ Γ' := by
+  have recΓ := GlobalTheory.T.numberField_lattice_determined_by_local_lattices A _ Γ hT.1
+  have recΓ' := GlobalTheory.T.numberField_lattice_determined_by_local_lattices A _ Γ' hL'
+  let n : ∀ p, (G.S p).GLV := fun p => if A.lat p Γ' = A.lat p Γ then 1 else (H p).choose
+  have hn : ∀ p, n p ∈ (G.S p).St ∧ A.lat p Γ' = n p • A.lat p Γ := by
+    intro p
+    by_cases hp : A.lat p Γ' = A.lat p Γ
+    · simp only [n, if_pos hp]; exact ⟨(G.S p).St.one_mem, by rw [one_smul]; exact hp⟩
+    · simp only [n, if_neg hp]; exact (H p).choose_spec
+  have hfin : {p | n p ∉ (G.S p).K0}.Finite := by
+    refine (recΓ.2.2.union recΓ'.2.2).subset fun p hp => ?_
+    by_contra hc
+    simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not] at hc
+    apply hp
+    have : A.lat p Γ' = A.lat p Γ := by rw [hc.1, hc.2]
+    simp only [n, if_pos this]
+    exact (G.S p).K0.one_mem
+  have hc : {p | ¬ ∃ u : (𝒪[(A.loc p).Fp])ˣ,
+      ((u : 𝒪[(A.loc p).Fp]) : (A.loc p).Fp) = (((fun _ => 1 : ∀ p, ((A.loc p).Fp)ˣ) p) : (A.loc p).Fp)}.Finite :=
+    Set.finite_empty.subset fun p hp => hp ⟨1, by simp⟩
+  obtain ⟨g, hg, hgp⟩ := GlobalTheory.T.exists_mem_St_approximating_local_elements A r k G Γ hT.1 (fun _ => 1) hc n (fun p => (hn p).1) hfin
+  have hloc : ∀ p, A.lat p Γ' = A.lat p (Γ.map ((g : G.V →ₗ[E] G.V).restrictScalars (𝓞 E))) := by
+    intro p
+    haveI := (A.loc p).lf
+    haveI := (A.loc p).char0
+    obtain ⟨g', hg'St, he⟩ := mem_rat hg p
+    obtain ⟨-, hsub⟩ := hgp p g' he
+    have hSD := (TermBasic.term_basic _ _ _ _ _ _ (hT.2 p)).1
+    have hmem : (n p)⁻¹ * g' ∈ (G.S p).St := (G.S p).St.mul_mem ((G.S p).St.inv_mem (hn p).1) hg'St
+    have hu : (n p)⁻¹ * g' ∈ isomG (A.L p) (G.S p).Hm :=
+      (Subgroup.mem_inf.1 (Subgroup.mem_inf.1 (Subgroup.mem_inf.1 hmem).1).1).1
+    have hle : ∀ x ∈ A.lat p Γ, ((n p)⁻¹ * g') x ∈ A.lat p Γ := by
+      intro x hx
+      obtain ⟨y, hy, hxy⟩ := hsub x hx
+      have h2 : ((n p)⁻¹ * g') x = x + y := by
+        have h3 : (n p).symm (g' x) = ((n p)⁻¹ * g') x := rfl
+        rw [← h3, ← sub_eq_iff_eq_add', hxy]
+        simp
+      rw [h2]
+      exact add_mem hx hy
+    have hst := smul_eq_of_le (A.L p) _ _ hSD _ hu hle
+    rw [(RatExt.rational_extend A _ p).2.2.2.1 g g' Γ he, (hn p).2]
+    rw [show g' • A.lat p Γ = n p • (((n p)⁻¹ * g') • A.lat p Γ) by
+      rw [← mul_smul, mul_inv_cancel_left], hst]
+  refine ⟨g, hg, le_antisymm ?_ ?_⟩
+  · intro x hx
+    refine (recΓ'.1 x).2 fun p => ?_
+    rw [hloc p]
+    exact Submodule.subset_span ⟨x, hx, rfl⟩
+  · intro x hx
+    have hx' := (recΓ'.1 x).1 hx
+    refine ⟨g.symm x, (recΓ.1 _).2 fun p => ?_, by simp⟩
+    obtain ⟨g', -, he⟩ := mem_rat hg p
+    have h1 := hx' p
+    rw [hloc p, (RatExt.rational_extend A _ p).2.2.2.1 g g' Γ he] at h1
+    have h2 : A.bc p x = g' • A.bc p (g.symm x) := by
+      change _ = g' (A.bc p (g.symm x))
+      rw [he, LinearEquiv.apply_symm_apply]
+    rw [h2] at h1
+    obtain ⟨y, hy, hy'⟩ := (Submodule.mem_smul_pointwise_iff_exists _ _ _).1 h1
+    rw [smul_left_cancel_iff] at hy'
+    exact hy' ▸ hy
+
+end GlobalTheory.HL.GlobalOrbits
+
+namespace GlobalTheory.HL.GlobalOrbits
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E}
+  {A : Places F E sig} {r k : ℕ}
+
+theorem glue_terms (G : GFrames A r k) (hk : 4 * r + 7 ≤ k) {d : G.Dat} {Λ₀ : G.Lt}
+    (h₀ : G.IsTerm d Λ₀) (Λ : ∀ p, Submodule (A.L p).O (G.S p).V)
+    (hΛ : ∀ p, (G.S p).IsTerm (d p) (Λ p)) :
+    ∃ Γ, G.IsTerm d Γ ∧ ∀ p, ∃ h ∈ (G.S p).St, A.lat p Γ = h • Λ p := by
+  have hstd := GlobalTheory.T.coordinateLattice_unique_term_almost_all_places A r k G hk
+  have rec₀ := GlobalTheory.T.numberField_lattice_determined_by_local_lattices A _ Λ₀ h₀.1
+  obtain ⟨B, hBfin, hB⟩ : ∃ B : Set (HeightOneSpectrum (𝓞 F)), B.Finite ∧ ∀ p ∉ B,
+      A.lat p Λ₀ = Submodule.span (A.L p).O (Set.range fun i => (Pi.single i 1 : (G.S p).V)) ∧
+      ∃ h ∈ (G.S p).St, Λ p = h • Submodule.span (A.L p).O (Set.range fun i => (Pi.single i 1 : (G.S p).V)) := by
+    refine ⟨_, hstd.union rec₀.2.2, fun p hp => ?_⟩
+    haveI := (A.loc p).lf
+    haveI := (A.loc p).char0
+    simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not] at hp
+    obtain ⟨⟨-, -, -, d₀, hW, -, -, hT1, -, -⟩, hl⟩ := hp
+    have hTp : (G.S p).IsTerm (d p) (Submodule.span (A.L p).O (Set.range fun i => (Pi.single i 1 : (G.S p).V))) := by
+      rw [← hl]; exact h₀.2 p
+    have hd : d₀ = d p :=
+      (TermBasic.term_basic _ _ _ _ _ _ hTp).2.2.2.2.2.2.2 d₀ ⟨(1, 1), hW⟩
+    refine ⟨hl, hT1 (Λ p) ?_⟩
+    rw [hd]; exact hΛ p
+  let Λ' : ∀ p, Submodule (A.L p).O (G.S p).V := fun p => if p ∈ B then Λ p else
+    Submodule.span (A.L p).O (Set.range fun i => (Pi.single i 1 : (G.S p).V))
+  have hterm : ∀ p, (G.S p).IsTerm (d p) (Λ' p) := by
+    intro p
+    by_cases hp : p ∈ B
+    · simp only [Λ', if_pos hp]; exact hΛ p
+    · simp only [Λ', if_neg hp]; rw [← (hB p hp).1]; exact h₀.2 p
+  have hlat : ∀ p, IsLat (A.L p) (Λ' p) := by
+    intro p
+    haveI := (A.loc p).lf
+    haveI := (A.loc p).char0
+    exact (TermBasic.term_basic _ _ _ _ _ _ (hterm p)).1.1
+  have hfin : {p | Λ' p ≠ Submodule.span (A.L p).O
+      (Set.range fun i => (Pi.single i 1 : Fin (k + 2 * r + 1) → (A.loc p).Ep))}.Finite := by
+    refine hBfin.subset fun p hp => ?_
+    by_contra hc
+    apply hp
+    simp only [Λ', if_neg hc]
+  obtain ⟨Γ, ⟨hL, hlatΓ⟩, -⟩ := GlobalTheory.T.exists_unique_global_lattice_of_local_lattices A _ Λ' hlat hfin
+  refine ⟨Γ, ⟨hL, fun p => (hlatΓ p).symm ▸ hterm p⟩, fun p => ?_⟩
+  by_cases hp : p ∈ B
+  · refine ⟨1, (G.S p).St.one_mem, ?_⟩
+    rw [hlatΓ p, one_smul]
+    simp only [Λ', if_pos hp]
+  · obtain ⟨h, hh, he⟩ := (hB p hp).2
+    refine ⟨h⁻¹, (G.S p).St.inv_mem hh, ?_⟩
+    rw [hlatΓ p, he, inv_smul_smul]
+    simp only [Λ', if_neg hp]
+
+end GlobalTheory.HL.GlobalOrbits
+
+open GlobalTheory.HL.GlobalOrbits in
+
+theorem GlobalTheory.HL.GlobalOrbits.global_terms_orbits : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E} (A : Places F E sig), ∀ (r k : ℕ) (G : GFrames A r k), 4 * r + 7 ≤ k → ∀ d : G.Dat, (∃ Λ₀, G.IsTerm d Λ₀) → (∀ Λ : ∀ p, Submodule (A.L p).O (G.S p).V, (∀ p, (G.S p).IsTerm (d p) (Λ p)) → ∃ Γ, G.IsTerm d Γ ∧ ∀ p, ∃ h ∈ (G.S p).St, A.lat p Γ = h • Λ p) ∧ (∀ Γ Γ', G.IsTerm d Γ → Submodule.IsLattice E Γ' → (G.LRel Γ Γ' ↔ ∀ p, ∃ h ∈ (G.S p).St, A.lat p Γ' = h • A.lat p Γ)) ∧ Equivalence G.LRel ∧ Equivalence G.DRel := by
+  intro F E _ _ _ _ _ sig A r k G hk d hex
+  obtain ⟨Λ₀, h₀⟩ := hex
+  exact ⟨fun Λ hΛ => glue_terms G hk h₀ Λ hΛ,
+    fun Γ Γ' hT hL' => ⟨fun h => local_of_lrel G h, fun H => lrel_of_local G hT hL' H⟩,
+    lrel_equivalence G, drel_equivalence G⟩
+end
+end
+
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL NumberField IsDedekindDomain
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.globalHermitianFrames_terms_orbits_local : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E} (A : Places F E sig), ∀ (r k : ℕ) (G : GFrames A r k), 4 * r + 7 ≤ k → ∀ d : G.Dat, (∃ Λ₀, G.IsTerm d Λ₀) → (∀ Λ : ∀ p, Submodule (A.L p).O (G.S p).V, (∀ p, (G.S p).IsTerm (d p) (Λ p)) → ∃ Γ, G.IsTerm d Γ ∧ ∀ p, ∃ h ∈ (G.S p).St, A.lat p Γ = h • Λ p) ∧ (∀ Γ Γ', G.IsTerm d Γ → Submodule.IsLattice E Γ' → (G.LRel Γ Γ' ↔ ∀ p, ∃ h ∈ (G.S p).St, A.lat p Γ' = h • A.lat p Γ)) ∧ Equivalence G.LRel ∧ Equivalence G.DRel := by
+  atlas_forward_decl GlobalTheory.HL.GlobalOrbits.global_terms_orbits
+end
+
+section
+section
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL
+open scoped Pointwise ENNReal Classical
+
+namespace GlobalTheory.FrameDual
+
+open GlobalTheory.HL.Eichler
+
+section
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
+variable (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)
+
+theorem hf_sum_l {ι : Type} (s : Finset ι) (a : ι → Fin n → E) (y : Fin n → E) :
+    hf L Hm (∑ i ∈ s, a i) y = ∑ i ∈ s, hf L Hm (a i) y := by
+  induction s using Finset.induction_on with
+  | empty => simp [hf]
+  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, hf_add_l, ih]
+
+theorem hf_sum_r {ι : Type} (s : Finset ι) (a : ι → Fin n → E) (y : Fin n → E) :
+    hf L Hm y (∑ i ∈ s, a i) = ∑ i ∈ s, hf L Hm y (a i) := by
+  induction s using Finset.induction_on with
+  | empty => simp [hf]
+  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, hf_add_r, ih]
+
+end
+
+theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k) (g : Fin (r + 1) → S.V) (t : E) (gs gs2 : Fin r → S.V), (∀ a b, hf L S.Hm (g a) (g b) = if a = Fin.last r ∧ b = Fin.last r then t else 0) → (∀ a j, hf L S.Hm (g a) (gs j) = if a = j.castSucc then 1 else 0) → (∀ a j, hf L S.Hm (g a) (gs2 j) = if a = j.castSucc then 1 else 0) → (∀ i j, hf L S.Hm (gs i) (gs j) = 0) → (∀ i j, hf L S.Hm (gs2 i) (gs2 j) = 0) → ∃ m ∈ S.Nof g, (∀ a, m (g a) = g a) ∧ (∀ j, m (gs j) = gs2 j) ∧ ∀ A : Submodule L.O S.V, (∀ x ∈ S.spanTo g r, x ∈ A) → (∀ x ∈ A, x ∈ perp L S.Hm (S.spanTo g r)) → m • (A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs))).restrictScalars L.O) = A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs2))).restrictScalars L.O := by
+  intro F _ _ _ _ _ E _ _ _ L r k S g t gs gs2 hg hd hd2 hi hi2
+  have hcj := hf_cj L S.herm.1
+  obtain ⟨G, hG⟩ : ∃ G : Fin r → S.V, ∀ j, G j = g j.castSucc := ⟨_, fun _ => rfl⟩
+  obtain ⟨w, hw⟩ : ∃ w : Fin r → S.V, ∀ j, w j = gs2 j - gs j := ⟨_, fun _ => rfl⟩
+  obtain ⟨u, hu⟩ : ∃ u : Fin r → S.V, ∀ j, u j = w j + ∑ i, hf L S.Hm (gs j) (w i) • G i :=
+    ⟨_, fun _ => rfl⟩
+  have hGa : ∀ i a, hf L S.Hm (G i) (g a) = 0 := fun i a => by
+    rw [hG, hg, if_neg]; rintro ⟨h, -⟩; exact Fin.castSucc_ne_last i h
+  have haG : ∀ a i, hf L S.Hm (g a) (G i) = 0 := fun a i => by
+    rw [hG, hg, if_neg]; rintro ⟨-, h⟩; exact Fin.castSucc_ne_last i h
+  have hGG : ∀ i j, hf L S.Hm (G i) (G j) = 0 := fun i j => by rw [hG j]; exact hGa i _
+  have hgw : ∀ a i, hf L S.Hm (g a) (w i) = 0 := fun a i => by rw [hw, hf_sub_r, hd, hd2, sub_self]
+  have hwg : ∀ i a, hf L S.Hm (w i) (g a) = 0 := fun i a => by rw [← hcj, hgw, map_zero]
+  have hGw : ∀ i j, hf L S.Hm (G i) (w j) = 0 := fun i j => by rw [hG i]; exact hgw _ _
+  have hwG : ∀ i j, hf L S.Hm (w i) (G j) = 0 := fun i j => by rw [hG j]; exact hwg _ _
+  have hGu : ∀ i j, hf L S.Hm (G i) (u j) = 0 := fun i j => by
+    simp only [hu, hf_add_r, hf_sum_r, hf_smul_r, hGw, hGG, mul_zero, Finset.sum_const_zero, add_zero]
+  have huG : ∀ j i, hf L S.Hm (u j) (G i) = 0 := fun j i => by
+    simp only [hu, hf_add_l, hf_sum_l, hf_smul_l, hwG, hGG, mul_zero, Finset.sum_const_zero, add_zero]
+  have huw : ∀ j i, hf L S.Hm (u j) (w i) = hf L S.Hm (w j) (w i) := fun j i => by
+    simp only [hu, hf_add_l, hf_sum_l, hf_smul_l, hGw, mul_zero, Finset.sum_const_zero, add_zero]
+  have huu : ∀ j l, hf L S.Hm (u j) (u l) = hf L S.Hm (w j) (w l) := fun j l => by
+    conv_lhs => rw [hu l]
+    simp only [hf_add_r, hf_sum_r, hf_smul_r, huG, huw, mul_zero, Finset.sum_const_zero, add_zero]
+  have hgsG : ∀ j l, hf L S.Hm (gs j) (G l) = if l = j then 1 else 0 := fun j l => by
+    rw [← hcj, hG, hd]
+    by_cases h : l = j
+    · subst h; simp
+    · rw [if_neg (fun e => h (Fin.castSucc_injective _ e)), if_neg h, map_zero]
+  have K : ∀ j i, hf L S.Hm (gs j) (w i) + hf L S.Hm (w j) (gs i) + hf L S.Hm (w j) (w i) = 0 := by
+    intro j i
+    have e : ∀ j, gs2 j = gs j + w j := fun j => by rw [hw]; abel
+    have h2 := hi2 j i
+    rw [e, e, hf_add_l, hf_add_r, hf_add_r, hi] at h2
+    linear_combination h2
+
+  obtain ⟨ff, hff⟩ : ∃ ff : S.V → S.V, ∀ v, ff v = v + ∑ j, hf L S.Hm v (G j) • u j -
+      ∑ i, hf L S.Hm v (w i) • G i := ⟨_, fun _ => rfl⟩
+  obtain ⟨fi, hfi⟩ : ∃ fi : S.V → S.V, ∀ v, fi v = v - ∑ j, hf L S.Hm v (G j) • u j +
+      ∑ i, (hf L S.Hm v (w i) - ∑ j, hf L S.Hm v (G j) * hf L S.Hm (w j) (w i)) • G i :=
+    ⟨_, fun _ => rfl⟩
+  have hff_l : ∀ v y, hf L S.Hm (ff v) y = hf L S.Hm v y + ∑ j, hf L S.Hm v (G j) * hf L S.Hm (u j) y -
+      ∑ i, hf L S.Hm v (w i) * hf L S.Hm (G i) y := fun v y => by
+    rw [hff]; simp only [hf_add_l, hf_sub_l, hf_sum_l, hf_smul_l]
+  have hff_r : ∀ y v, hf L S.Hm y (ff v) = hf L S.Hm y v + ∑ j, hf L S.Hm (G j) v * hf L S.Hm y (u j) -
+      ∑ i, hf L S.Hm (w i) v * hf L S.Hm y (G i) := fun y v => by
+    rw [hff]; simp only [hf_add_r, hf_sub_r, hf_sum_r, hf_smul_r, hcj]
+  have hfi_l : ∀ v y, hf L S.Hm (fi v) y = hf L S.Hm v y - ∑ j, hf L S.Hm v (G j) * hf L S.Hm (u j) y +
+      ∑ i, (hf L S.Hm v (w i) - ∑ j, hf L S.Hm v (G j) * hf L S.Hm (w j) (w i)) * hf L S.Hm (G i) y :=
+    fun v y => by
+    rw [hfi]; simp only [hf_add_l, hf_sub_l, hf_sum_l, hf_smul_l]
+  have h1 : ∀ v, ff (fi v) = v := fun v => by
+    have eG : ∀ l, hf L S.Hm (fi v) (G l) = hf L S.Hm v (G l) := fun l => by
+      simp only [hfi_l, huG, hGG, mul_zero, Finset.sum_const_zero, sub_zero, add_zero]
+    have ew : ∀ l, hf L S.Hm (fi v) (w l) =
+        hf L S.Hm v (w l) - ∑ j, hf L S.Hm v (G j) * hf L S.Hm (w j) (w l) := fun l => by
+      simp only [hfi_l, huw, hGw, mul_zero, Finset.sum_const_zero, add_zero]
+    rw [hff]; simp only [eG, ew]; rw [hfi]; abel
+  have h2 : ∀ v, fi (ff v) = v := fun v => by
+    have eG : ∀ l, hf L S.Hm (ff v) (G l) = hf L S.Hm v (G l) := fun l => by
+      simp only [hff_l, huG, hGG, mul_zero, Finset.sum_const_zero, sub_zero, add_zero]
+    have ew : ∀ l, hf L S.Hm (ff v) (w l) =
+        hf L S.Hm v (w l) + ∑ j, hf L S.Hm v (G j) * hf L S.Hm (w j) (w l) := fun l => by
+      simp only [hff_l, huw, hGw, mul_zero, Finset.sum_const_zero, sub_zero]
+    rw [hfi]; simp only [eG, ew, add_sub_cancel_right]; rw [hff]; abel
+  obtain ⟨m, hm⟩ : ∃ m : S.GLV, ∀ v, m v = ff v := by
+    refine ⟨{ toFun := ff, invFun := fi, left_inv := h2, right_inv := h1, map_add' := ?_, map_smul' := ?_ }, fun _ => rfl⟩
+    · intro x y; simp only [hff, hf_add_l, add_smul, Finset.sum_add_distrib]; abel
+    · intro c x; simp only [hff, hf_smul_l, smul_add, smul_sub, Finset.smul_sum, mul_smul, RingHom.id_apply]
+  have iso : ∀ v v', hf L S.Hm (ff v) (ff v') = hf L S.Hm v v' := by
+    intro v v'
+    rw [hff_l]
+    simp only [hff_r, huu, huG, hGu, hGG, mul_zero, Finset.sum_const_zero, sub_zero, add_zero]
+
+    have hvu : ∀ j, hf L S.Hm v (u j) = hf L S.Hm v (w j) + ∑ i, hf L S.Hm (w i) (gs j) * hf L S.Hm v (G i) := by
+      intro j; rw [hu, hf_add_r, hf_sum_r]; simp only [hf_smul_r, hcj]
+    have huv : ∀ j, hf L S.Hm (u j) v' = hf L S.Hm (w j) v' + ∑ i, hf L S.Hm (gs j) (w i) * hf L S.Hm (G i) v' := by
+      intro j; rw [hu, hf_add_l, hf_sum_l]; simp only [hf_smul_l]
+    simp only [hvu, huv]
+    have e1 : ∑ j, hf L S.Hm (G j) v' * (hf L S.Hm v (w j) + ∑ i, hf L S.Hm (w i) (gs j) * hf L S.Hm v (G i)) =
+        ∑ j, hf L S.Hm v (w j) * hf L S.Hm (G j) v' +
+          ∑ j, ∑ i, hf L S.Hm v (G j) * hf L S.Hm (G i) v' * hf L S.Hm (w j) (gs i) := by
+      simp only [mul_add, Finset.sum_add_distrib, Finset.mul_sum]
+      congr 1
+      · exact Finset.sum_congr rfl fun _ _ => mul_comm _ _
+      · rw [Finset.sum_comm]
+        exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
+    have e2 : ∑ x, hf L S.Hm v (G x) * (hf L S.Hm (w x) v' + ∑ i, hf L S.Hm (gs x) (w i) * hf L S.Hm (G i) v' +
+          ∑ l, hf L S.Hm (G l) v' * hf L S.Hm (w x) (w l)) =
+        ∑ x, hf L S.Hm (w x) v' * hf L S.Hm v (G x) +
+          ∑ j, ∑ i, hf L S.Hm v (G j) * hf L S.Hm (G i) v' * (hf L S.Hm (gs j) (w i) + hf L S.Hm (w j) (w i)) := by
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      rw [mul_add, mul_add, mul_comm (hf L S.Hm v (G x)), add_assoc]
+      congr 1
+      rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun _ _ => by ring
+    have key : (∑ j, ∑ i, hf L S.Hm v (G j) * hf L S.Hm (G i) v' * hf L S.Hm (w j) (gs i)) +
+        ∑ j, ∑ i, hf L S.Hm v (G j) * hf L S.Hm (G i) v' * (hf L S.Hm (gs j) (w i) + hf L S.Hm (w j) (w i)) = 0 := by
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_eq_zero fun j _ => ?_
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_eq_zero fun i _ => ?_
+      linear_combination hf L S.Hm v (G j) * hf L S.Hm (G i) v' * K j i
+    rw [e1, e2]
+    linear_combination key
+
+  have hiso : ∀ x y, hf L S.Hm (m x) (m y) = hf L S.Hm x y := by simp only [hm]; exact iso
+  have hmg : ∀ a, m (g a) = g a := fun a => by
+    rw [hm, hff]; simp only [haG, hgw, zero_smul, Finset.sum_const_zero, add_zero, sub_zero]
+  have hmgs : ∀ j, m (gs j) = gs2 j := fun j => by
+    rw [hm, hff]
+    simp only [hgsG, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    rw [hu, hw]; abel
+  have hX : ∀ i, G i ∈ S.spanTo g r := fun i => by
+    rw [hG]; exact Submodule.subset_span ⟨i.castSucc, by simp, rfl⟩
+  have hfix : ∀ J, ∀ v ∈ S.spanTo g J, m v = v := by
+    intro J v hv
+    induction hv using Submodule.span_induction with
+    | mem y hy => obtain ⟨a, -, rfl⟩ := hy; exact hmg a
+    | zero => exact map_zero m
+    | add a b _ _ ha hb => rw [map_add, ha, hb]
+    | smul c a _ ha => rw [map_smul, ha]
+  have hspan : ∀ J v, m v ∈ S.spanTo g J ↔ v ∈ S.spanTo g J := fun J v =>
+    ⟨fun h => by
+      have e : m (m v) = m v := hfix J _ h
+      rw [m.injective e] at h; exact h,
+     fun h => by rw [hfix J v h]; exact h⟩
+  have hmperp : ∀ v ∈ perp L S.Hm (S.spanTo g r), m v = v - ∑ i, hf L S.Hm v (w i) • G i := by
+    intro v hv
+    rw [hm, hff]
+    simp only [hv _ (hX _), zero_smul, Finset.sum_const_zero, add_zero]
+  have hperp : ∀ v, m v ∈ perp L S.Hm (S.spanTo g r) ↔ v ∈ perp L S.Hm (S.spanTo g r) := fun v =>
+    ⟨fun h y hy => by
+      have := h y hy
+      rwa [← hfix r y hy, hiso] at this,
+     fun h y hy => by
+      rw [← hfix r y hy, hiso]; exact h y hy⟩
+  have hpspan : ∀ (f : Fin r → S.V) x,
+      x ∈ perp L S.Hm (Submodule.span E (Set.range f)) ↔ ∀ l, hf L S.Hm x (f l) = 0 := fun f x =>
+    ⟨fun h l => h _ (Submodule.subset_span ⟨l, rfl⟩),
+     fun h => GlobalTheory.FramePsi.hf_span_right L S.Hm x _ (by rintro _ ⟨l, rfl⟩; exact h l)⟩
+  refine ⟨m, ?_, hmg, hmgs, ?_⟩
+  · simp only [Frames.Nof, Subgroup.mem_inf, Subgroup.mem_iInf]
+    refine ⟨⟨hiso, fun j => ⟨fun v => hspan _ v, fun v hv => ?_⟩⟩, hperp, fun v hv => ?_⟩
+    · rw [hfix _ v hv, sub_self]; exact Submodule.zero_mem _
+    · rw [hmperp v hv, sub_sub_cancel_left]
+      exact Submodule.neg_mem _ (Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hX i))
+  · intro A hXA hAp
+    have hsum : ∀ x, ∑ i, hf L S.Hm x (w i) • G i ∈ A := fun x =>
+      hXA _ (Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hX i))
+    have hAm : ∀ x, m x ∈ A ↔ x ∈ A := fun x =>
+      ⟨fun h => by
+        have hp : x ∈ perp L S.Hm (S.spanTo g r) := (hperp x).1 (hAp _ h)
+        have e : x = m x + ∑ i, hf L S.Hm x (w i) • G i := by rw [hmperp x hp]; abel
+        rw [e]; exact A.add_mem h (hsum x),
+       fun h => by rw [hmperp x (hAp x h)]; exact A.sub_mem h (hsum x)⟩
+    have hPm : ∀ x, m x ∈ perp L S.Hm (Submodule.span E (Set.range gs2)) ↔
+        x ∈ perp L S.Hm (Submodule.span E (Set.range gs)) := fun x => by
+      rw [hpspan, hpspan]
+      simp only [← hmgs, hiso]
+    have hsm : ∀ (Λ : Submodule L.O S.V) x, m x ∈ m • Λ ↔ x ∈ Λ := fun Λ x => by
+      rw [Submodule.mem_smul_pointwise_iff_exists]
+      exact ⟨fun ⟨y, hy, e⟩ => (m.injective e) ▸ hy, fun hx => ⟨x, hx, rfl⟩⟩
+    ext y
+    obtain ⟨x, rfl⟩ := m.surjective y
+    rw [hsm]
+    simp only [Submodule.mem_inf, Submodule.restrictScalars_mem, hAm, hPm]
+
+end GlobalTheory.FrameDual
+end
+
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_frameUnipotent_exchanging_dual_isotropic : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k) (g : Fin (r + 1) → S.V) (t : E) (gs gs2 : Fin r → S.V), (∀ a b, hf L S.Hm (g a) (g b) = if a = Fin.last r ∧ b = Fin.last r then t else 0) → (∀ a j, hf L S.Hm (g a) (gs j) = if a = j.castSucc then 1 else 0) → (∀ a j, hf L S.Hm (g a) (gs2 j) = if a = j.castSucc then 1 else 0) → (∀ i j, hf L S.Hm (gs i) (gs j) = 0) → (∀ i j, hf L S.Hm (gs2 i) (gs2 j) = 0) → ∃ m ∈ S.Nof g, (∀ a, m (g a) = g a) ∧ (∀ j, m (gs j) = gs2 j) ∧ ∀ A : Submodule L.O S.V, (∀ x ∈ S.spanTo g r, x ∈ A) → (∀ x ∈ A, x ∈ perp L S.Hm (S.spanTo g r)) → m • (A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs))).restrictScalars L.O) = A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs2))).restrictScalars L.O := by
+  atlas_forward_decl GlobalTheory.FrameDual.exists_unip_change_dual
+end
+
+section
+section
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL
+open scoped Pointwise ENNReal Classical
+
+namespace GlobalTheory.HL.FixFrames
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
+variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
+
+theorem inv_apply (h : S.GLV) (v : S.V) : h⁻¹ v = h.symm v := rfl
+
+theorem fix {h : S.GLV} (hh : h ∈ S.H0) {v : S.V} (hv : v ∈ S.ME) : h v = v := by
+  have := hh.2.2 v hv
+  rw [Submodule.mem_bot, sub_eq_zero] at this
+  exact this
+
+theorem spanTo_le (g : Fin (r + 1) → S.V) (j : ℕ) : S.spanTo g j ≤ S.spanTo g (r + 1) :=
+  Submodule.span_mono (Set.image_mono fun i _ => i.2)
+
+theorem spanTo_le_ME (j : ℕ) : S.spanTo S.f j ≤ S.ME := (spanTo_le S S.f j).trans le_sup_left
+
+theorem spanTo_le_ME' (j : ℕ) : S.spanTo S.f' j ≤ S.ME := (spanTo_le S S.f' j).trans le_sup_right
+
+theorem f_mem (a : Fin (r + 1)) : S.f a ∈ S.ME :=
+  spanTo_le_ME S (r + 1) (Submodule.subset_span ⟨a, a.2, rfl⟩)
+
+theorem f'_mem (a : Fin (r + 1)) : S.f' a ∈ S.ME :=
+  spanTo_le_ME' S (r + 1) (Submodule.subset_span ⟨a, a.2, rfl⟩)
+
+theorem mem_iff {h : S.GLV} (hh : h ∈ S.H0) (A : Submodule E S.V) (hA : A ≤ S.ME) (v : S.V) :
+    h v ∈ A ↔ v ∈ A := by
+  constructor
+  · intro H
+    have : v ∈ S.ME := (hh.2.1 v).1 (hA H)
+    rwa [fix S hh this] at H
+  · intro H
+    rwa [fix S hh (hA H)]
+
+theorem perp_mem_iff {h : S.GLV} (hh : h ∈ S.H0) (A : Submodule E S.V) (hA : A ≤ S.ME) (v : S.V) :
+    h v ∈ perp L S.Hm A ↔ v ∈ perp L S.Hm A := by
+  constructor
+  · intro H y hy
+    rw [← hh.1 v y, fix S hh (hA hy)]
+    exact H y hy
+  · intro H y hy
+    rw [← fix S hh (hA hy), hh.1 v y]
+    exact H y hy
+
+theorem conj_unipOn (h : S.GLV) (A B : Submodule E S.V) (hA : ∀ v, h v ∈ A ↔ v ∈ A)
+    (hB : ∀ v, h v ∈ B ↔ v ∈ B) (s : S.GLV) (hs : s ∈ unipOn A B) : h * s * h⁻¹ ∈ unipOn A B := by
+  have hA' : ∀ v, h⁻¹ v ∈ A ↔ v ∈ A := fun v => by
+    rw [← hA (h⁻¹ v), inv_apply, LinearEquiv.apply_symm_apply]
+  refine ⟨fun v => ?_, fun v hv => ?_⟩
+  · change h (s (h⁻¹ v)) ∈ A ↔ v ∈ A
+    rw [hA, hs.1, hA']
+  · change h (s (h⁻¹ v)) - v ∈ B
+    have e : h (s (h⁻¹ v)) - v = h (s (h⁻¹ v) - h⁻¹ v) := by
+      rw [map_sub, inv_apply, LinearEquiv.apply_symm_apply]
+    rw [e, hB]
+    exact hs.2 _ ((hA' v).2 hv)
+
+theorem nof_conj (g : Fin (r + 1) → S.V) (hg : ∀ j, S.spanTo g j ≤ S.ME) {h : S.GLV} (hh : h ∈ S.H0)
+    (s : S.GLV) (hs : s ∈ S.Nof g) : h * s * h⁻¹ ∈ S.Nof g := by
+  simp only [Frames.Nof, Subgroup.mem_inf, Subgroup.mem_iInf] at hs ⊢
+  obtain ⟨⟨h1, h2⟩, h3⟩ := hs
+  have hI : h ∈ isomG L S.Hm := hh.1
+  refine ⟨⟨(isomG L S.Hm).mul_mem ((isomG L S.Hm).mul_mem hI h1) ((isomG L S.Hm).inv_mem hI),
+    fun j => ?_⟩, ?_⟩
+  · exact conj_unipOn S h _ _ (mem_iff S hh _ (hg _)) (mem_iff S hh _ (hg _)) s (h2 j)
+  · exact conj_unipOn S h _ _ (perp_mem_iff S hh _ (hg _)) (mem_iff S hh _ (hg _)) s h3
+
+theorem normalises {h : S.GLV} (hh : h ∈ S.H0) :
+    (∀ s ∈ S.N, h * s * h⁻¹ ∈ S.N) ∧ (∀ s ∈ S.N', h * s * h⁻¹ ∈ S.N') ∧
+      ∀ s ∈ S.St, h * s * h⁻¹ ∈ S.St :=
+  ⟨fun s hs => nof_conj S S.f (spanTo_le_ME S) hh s hs,
+    fun s hs => nof_conj S S.f' (spanTo_le_ME' S) hh s hs,
+    fun s hs => ⟨nof_conj S S.f (spanTo_le_ME S) hh s hs.1, nof_conj S S.f' (spanTo_le_ME' S) hh s hs.2⟩⟩
+
+end GlobalTheory.HL.FixFrames
+
+namespace GlobalTheory.HL.FixFrames
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
+variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
+
+open GlobalTheory.FrameAct in
+theorem graph_sub {h : S.GLV} (hh : h ∈ S.H0) (Λ : Submodule L.O S.V) (p : S.V × S.V)
+    (hp : p ∈ S.graphOf Λ) : (h p.1, h p.2) ∈ S.graphOf (h • Λ) := by
+  obtain ⟨y', hy', y, hy, a', a, b', b, c⟩ := hp
+  refine ⟨h y', (mem_smul_iff S h Λ _).2 hy', h y, (mem_smul_iff S h Λ _).2 hy,
+    (perp_mem_iff S hh S.X' (spanTo_le_ME' S r) _).2 a', (perp_mem_iff S hh S.X (spanTo_le_ME S r) _).2 a,
+    ?_, ?_, ?_⟩
+  · rw [← map_sub]; exact (mem_iff S hh S.X' (spanTo_le_ME' S r) _).2 b'
+  · rw [← map_sub]; exact (mem_iff S hh S.X (spanTo_le_ME S r) _).2 b
+  · rw [← map_sub, inTh_iff]; exact c
+
+theorem graph_move {h : S.GLV} (hh : h ∈ S.H0) (Λ : Submodule L.O S.V) :
+    S.graphOf (h • Λ) = h • S.graphOf Λ := by
+  have hh' : h⁻¹ ∈ S.H0 := S.H0.inv_mem hh
+  ext p
+  rw [Set.mem_smul_set_iff_inv_smul_mem]
+  constructor
+  · intro H
+    have := graph_sub S hh' (h • Λ) p H
+    rwa [inv_smul_smul] at this
+  · intro H
+    have := graph_sub S hh Λ _ H
+    simpa [LinearEquiv.smul_def] using this
+
+theorem conj_stab (h x : S.GLV) (P : Submodule L.O S.V) :
+    h⁻¹ * x * h ∈ MulAction.stabilizer S.GLV P ↔ x ∈ MulAction.stabilizer S.GLV (h • P) := by
+  simp only [MulAction.mem_stabilizer_iff, mul_smul, inv_smul_eq_iff]
+
+theorem conj_St {h : S.GLV} (hh : h ∈ S.H0) (x : S.GLV) : h⁻¹ * x * h ∈ S.St ↔ x ∈ S.St := by
+  constructor
+  · intro H
+    have := (normalises S hh).2.2 _ H
+    simpa [mul_assoc] using this
+  · intro H
+    have := (normalises S (S.H0.inv_mem hh)).2.2 _ H
+    simpa using this
+
+theorem mu_move {h : S.GLV} (hh : h ∈ S.H0) (Λ : Submodule L.O S.V) : S.mu (h • Λ) = S.mu Λ := by
+  have hfixf : ∀ a, h (S.f a) = S.f a := fun a => fix S hh (f_mem S a)
+  have hfixf' : ∀ a, h (S.f' a) = S.f' a := fun a => fix S hh (f'_mem S a)
+  have sf : h • Submodule.span L.O (Set.range S.f) = Submodule.span L.O (Set.range S.f) := by
+    rw [GlobalTheory.FrameAct.smul_span, ← Set.range_comp]
+    congr 2
+    funext a
+    exact hfixf a
+  have sf' : h • Submodule.span L.O (Set.range S.f') = Submodule.span L.O (Set.range S.f') := by
+    rw [GlobalTheory.FrameAct.smul_span, ← Set.range_comp]
+    congr 2
+    funext a
+    exact hfixf' a
+  have e1 : (S.St ⊓ MulAction.stabilizer S.GLV Λ).map (MulAut.conj h).toMonoidHom =
+      S.St ⊓ MulAction.stabilizer S.GLV (h • Λ) := by
+    ext x
+    rw [Subgroup.mem_map_equiv, MulAut.conj_symm_apply, Subgroup.mem_inf, Subgroup.mem_inf, conj_St S hh,
+      conj_stab]
+  have e0 : S.K0.map (MulAut.conj h).toMonoidHom = S.K0 := by
+    ext x
+    unfold Frames.K0
+    rw [Subgroup.mem_map_equiv, MulAut.conj_symm_apply]
+    simp only [Subgroup.mem_inf, conj_St S hh, conj_stab, sf, sf']
+  have inj : Function.Injective (MulAut.conj h).toMonoidHom := (MulAut.conj h).injective
+  unfold Frames.mu invVol
+  rw [← e1, ← e0, Subgroup.relIndex_map_map_of_injective _ _ inj,
+    Subgroup.relIndex_map_map_of_injective _ _ inj, e0]
+
+end GlobalTheory.HL.FixFrames
+
+namespace GlobalTheory.HL.FixFrames
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
+variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
+
+open GlobalTheory.FrameAct in
+theorem mem_perp_span (s : Set S.V) (x : S.V) :
+    x ∈ perp L S.Hm (Submodule.span E s) ↔ ∀ y ∈ s, hf L S.Hm x y = 0 :=
+  ⟨fun H y hy => H y (Submodule.subset_span hy), fun H => GlobalTheory.FramePsi.hf_span_right L S.Hm x s H⟩
+
+theorem fix_span (g : Fin (r + 1) → S.V) (h : S.GLV) (hfix : ∀ a, h (g a) = g a) (j : ℕ) (v : S.V)
+    (hv : v ∈ S.spanTo g j) : h v = v := by
+  induction hv using Submodule.span_induction with
+  | mem x hx => obtain ⟨a, -, rfl⟩ := hx; exact hfix a
+  | zero => simp
+  | add x y _ _ hx hy => rw [map_add, hx, hy]
+  | smul c x _ hx => rw [map_smul, hx]
+
+theorem perp_spanTo_iff (g : Fin (r + 1) → S.V) (h : S.GLV) (hI : h ∈ isomG L S.Hm)
+    (hfix : ∀ a, h (g a) = g a) (j : ℕ) (v : S.V) :
+    h v ∈ perp L S.Hm (S.spanTo g j) ↔ v ∈ perp L S.Hm (S.spanTo g j) := by
+  constructor
+  · intro H y hy
+    rw [← hI v y, fix_span S g h hfix j y hy]
+    exact H y hy
+  · intro H y hy
+    rw [← fix_span S g h hfix j y hy, hI v y]
+    exact H y hy
+
+theorem perp_range_iff (gs : Fin r → S.V) (h : S.GLV) (hI : h ∈ isomG L S.Hm) (x : S.V) :
+    h x ∈ perp L S.Hm (Submodule.span E (Set.range fun j => h (gs j))) ↔
+      x ∈ perp L S.Hm (Submodule.span E (Set.range gs)) := by
+  have hI' : ∀ a b, hf L S.Hm (h a) (h b) = hf L S.Hm a b := hI
+  rw [mem_perp_span, mem_perp_span, Set.forall_mem_range, Set.forall_mem_range]
+  simp only [hI']
+
+theorem fg_smul (a : S.GLV) (N : Submodule L.O S.V) (hN : N.FG) : (a • N).FG := by
+  rw [Submodule.pointwise_smul_def]
+  exact hN.map _
+
+end GlobalTheory.HL.FixFrames
+
+namespace GlobalTheory.HL.FixFrames
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
+variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
+
+open GlobalTheory.FrameAct in
+
+theorem inner_transport (g : Fin (r + 1) → S.V) (gs : Fin r → S.V) (t : E)
+    (hg : ∀ a b, hf L S.Hm (g a) (g b) = if a = Fin.last r ∧ b = Fin.last r then t else 0)
+    (hd : ∀ a j, hf L S.Hm (g a) (gs j) = if a = j.castSucc then 1 else 0)
+    (hi : ∀ i j, hf L S.Hm (gs i) (gs j) = 0)
+    (h : S.GLV) (hI : h ∈ isomG L S.Hm) (hfix : ∀ a, h (g a) = g a)
+    (A : Submodule L.O S.V) (hA : S.IsInner g gs A) :
+    S.IsInner g gs (h • A) ∧ ∃ m ∈ S.Nof g, (∀ a, m (g a) = g a) ∧
+      m • S.stdLat g gs (h • A) = h • S.stdLat g gs A := by
+  have hI' : ∀ a b, hf L S.Hm (h a) (h b) = hf L S.Hm a b := hI
+  obtain ⟨a1, a2, a3, a4, a5, y, hy, a6⟩ := hA
+  have hd2 : ∀ a j, hf L S.Hm (g a) (h (gs j)) = if a = j.castSucc then 1 else 0 := fun a j => by
+    rw [← hfix a, hI', hd]
+  have hi2 : ∀ i j, hf L S.Hm (h (gs i)) (h (gs j)) = 0 := fun i j => by rw [hI']; exact hi i j
+  obtain ⟨m, hm, mfix, mgs, mA⟩ := GlobalTheory.T.exists_frameUnipotent_exchanging_dual_isotropic L r k S g t gs (fun j => h (gs j)) hg hd hd2 hi hi2
+  have b1 : ∀ x ∈ S.spanTo g r, x ∈ h • A := fun x hx => by
+    rw [← fix_span S g h hfix r x hx]
+    exact (mem_smul_iff S h A x).2 (a1 x hx)
+  have b2 : ∀ x ∈ h • A, x ∈ perp L S.Hm (S.spanTo g r) := fun x hx => by
+    obtain ⟨x0, rfl⟩ := h.surjective x
+    exact (perp_spanTo_iff S g h hI hfix r x0).2 (a2 x0 ((mem_smul_iff S h A x0).1 hx))
+  have key := mA (h • A) b1 b2
+  have eA : (h • A) ⊓ (perp L S.Hm (Submodule.span E (Set.range fun j => h (gs j)))).restrictScalars L.O =
+      h • (A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs))).restrictScalars L.O) := by
+    refine eq_smul_of S h _ _ fun x => ?_
+    simp only [Submodule.mem_inf, Submodule.restrictScalars_mem, mem_smul_iff, perp_range_iff S gs h hI]
+  have hfg : (h • A) ⊓ (perp L S.Hm (Submodule.span E (Set.range gs))).restrictScalars L.O =
+      m⁻¹ • (h • (A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs))).restrictScalars L.O)) := by
+    rw [← eA, ← key, inv_smul_smul]
+  refine ⟨⟨b1, b2, ?_, fun z hz => ?_, ?_, h y, (mem_smul_iff S h A y).2 hy, ?_⟩, m, hm, mfix, ?_⟩
+  · rw [hfg]
+    exact fg_smul S _ _ (fg_smul S _ _ a3)
+  · obtain ⟨z0, rfl⟩ := h.surjective z
+    have hz0 := (perp_spanTo_iff S g h hI hfix r z0).1 hz
+    rw [mem_smul_iff, ← a4 z0 hz0]
+    constructor
+    · intro H x hx
+      have := H (h x) ((mem_smul_iff S h A x).2 hx)
+      simpa only [Frames.h, hI'] using this
+    · intro H x hx
+      obtain ⟨x0, rfl⟩ := h.surjective x
+      have := H x0 ((mem_smul_iff S h A x0).1 hx)
+      simpa only [Frames.h, hI'] using this
+  · rw [← hfix (Fin.last r)]
+    exact (mem_smul_iff S h A _).2 a5
+  · show hf L S.Hm (g (Fin.last r)) (h y) = 1
+    rw [← hfix (Fin.last r), hI']
+    exact a6
+  · have s1 : h • Submodule.span L.O (Set.range fun j : Fin r => g j.castSucc) =
+        Submodule.span L.O (Set.range fun j : Fin r => g j.castSucc) := by
+      rw [smul_span, ← Set.range_comp]
+      congr 2
+      funext j
+      exact hfix _
+    have s2 : m • Submodule.span L.O (Set.range fun j : Fin r => g j.castSucc) =
+        Submodule.span L.O (Set.range fun j : Fin r => g j.castSucc) := by
+      rw [smul_span, ← Set.range_comp]
+      congr 2
+      funext j
+      exact mfix _
+    have s3 : h • Submodule.span L.O (Set.range gs) =
+        Submodule.span L.O (Set.range fun j => h (gs j)) := by
+      rw [smul_span, ← Set.range_comp]
+      rfl
+    have s4 : m • Submodule.span L.O (Set.range gs) =
+        Submodule.span L.O (Set.range fun j => h (gs j)) := by
+      rw [smul_span, ← Set.range_comp]
+      congr 2
+      funext j
+      exact mgs _
+    unfold Frames.stdLat
+    rw [Submodule.smul_sup', Submodule.smul_sup', Submodule.smul_sup', Submodule.smul_sup', s1, s2, s3, s4,
+      key, eA]
+
+end GlobalTheory.HL.FixFrames
+
+namespace GlobalTheory.HL.FixFrames
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
+variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
+
+theorem psiOf_conj (g : Fin (r + 1) → S.V) (gs : Fin r → S.V) (h n : S.GLV)
+    (H : ∀ b, (h * n * h⁻¹) (g b) = n (g b)) : S.psiOf g gs (h * n * h⁻¹) = S.psiOf g gs n := by
+  unfold Frames.psiOf Frames.coef
+  simp only [H]
+
+theorem psiOf_fix (g : Fin (r + 1) → S.V) (gs : Fin r → S.V)
+    (hd : ∀ a j, hf L S.Hm (g a) (gs j) = if a = j.castSucc then 1 else 0)
+    (m : S.GLV) (mfix : ∀ a, m (g a) = g a) : S.psiOf g gs m = 1 := by
+  have ne : ∀ j : Fin r, j.succ ≠ j.castSucc := fun j e => by
+    have := congrArg Fin.val e
+    simp at this
+  unfold Frames.psiOf Frames.coef
+  simp only [mfix, Frames.h, hd, ne, if_false, Finset.sum_const_zero, mul_zero, AddChar.map_zero_eq_one]
+
+end GlobalTheory.HL.FixFrames
+
+open GlobalTheory.HL.FixFrames GlobalTheory.FrameAct in
+
+theorem GlobalTheory.HL.FixFrames.unitary_complement_acts : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k), ∀ h ∈ S.H0, (∀ s ∈ S.St, h * s * h⁻¹ ∈ S.St) ∧ ∀ (d : S.Datum) (Λ : Submodule L.O S.V), S.IsTerm d Λ → S.IsTerm (h • d) (h • Λ) ∧ S.om (h • d) (h • Λ) = S.om d Λ ∧ S.mu (h • Λ) = S.mu Λ := by
+  intro F _ _ _ _ _ E _ _ _ L r k S h hh
+  obtain ⟨nN, nN', nSt⟩ := normalises S hh
+  refine ⟨nSt, fun d Λ H => ?_⟩
+  have hh' : h⁻¹ ∈ S.H0 := S.H0.inv_mem hh
+  have hfixf : ∀ a, h (S.f a) = S.f a := fun a => fix S hh (f_mem S a)
+  have hfixf' : ∀ a, h (S.f' a) = S.f' a := fun a => fix S hh (f'_mem S a)
+  have ifixf : ∀ a, h⁻¹ (S.f a) = S.f a := fun a => fix S hh' (f_mem S a)
+  have ifixf' : ∀ a, h⁻¹ (S.f' a) = S.f' a := fun a => fix S hh' (f'_mem S a)
+  have W0 := wit_spec S d Λ H
+  obtain ⟨iA, iA', hn, hn', e1, e2, cg, gr⟩ := W0
+  obtain ⟨jA, m, hm, mfix, em⟩ :=
+    inner_transport S S.f S.es _ S.gram S.dual S.iso h hh.1 hfixf d.1 iA
+  obtain ⟨jA', m', hm', mfix', em'⟩ :=
+    inner_transport S S.f' S.es' _ S.gram' S.dual' S.iso' h hh.1 hfixf' d.2.1 iA'
+  have W1 : S.IsTermW (h • d) (h • Λ) (h * (S.wit d Λ).1 * h⁻¹ * m) (h * (S.wit d Λ).2 * h⁻¹ * m') := by
+    refine ⟨jA, jA', S.N.mul_mem (nN _ hn) hm, S.N'.mul_mem (nN' _ hn') hm', ?_, ?_, fun b => ?_, ?_⟩
+    · show h • Λ = (h * (S.wit d Λ).1 * h⁻¹ * m) • S.stdLat S.f S.es (h • d.1)
+      rw [mul_smul, em, mul_smul, inv_smul_smul, mul_smul, ← e1]
+    · show h • Λ = (h * (S.wit d Λ).2 * h⁻¹ * m') • S.stdLat S.f' S.es' (h • d.2.1)
+      rw [mul_smul, em', mul_smul, inv_smul_smul, mul_smul, ← e2]
+    · have e : (h * (S.wit d Λ).2 * h⁻¹ * m') (S.f' b) - (h * (S.wit d Λ).1 * h⁻¹ * m) (S.f b) =
+          h ((S.wit d Λ).2 (S.f' b) - (S.wit d Λ).1 (S.f b)) := by
+        change h ((S.wit d Λ).2 (h⁻¹ (m' (S.f' b)))) - h ((S.wit d Λ).1 (h⁻¹ (m (S.f b)))) = _
+        rw [mfix', mfix, ifixf', ifixf, map_sub]
+      rw [e, inTh_iff]
+      exact cg b
+    · show h • d.2.2 = S.graphOf (h • Λ)
+      rw [gr, graph_move S hh Λ]
+  have hmemN : ∀ b, (h * (S.wit d Λ).1 * h⁻¹) (S.f b) = (S.wit d Λ).1 (S.f b) := fun b => by
+    change h ((S.wit d Λ).1 (h⁻¹ (S.f b))) = _
+    rw [ifixf]
+    exact fix S hh (spanTo_le_ME S (r + 1)
+      (spanTo_map S S.f _ S.gram _ hn (r + 1) _ (Submodule.subset_span ⟨b, b.2, rfl⟩)))
+  have hmemN' : ∀ b, (h * (S.wit d Λ).2 * h⁻¹) (S.f' b) = (S.wit d Λ).2 (S.f' b) := fun b => by
+    change h ((S.wit d Λ).2 (h⁻¹ (S.f' b))) = _
+    rw [ifixf']
+    exact fix S hh (spanTo_le_ME' S (r + 1)
+      (spanTo_map S S.f' _ S.gram' _ hn' (r + 1) _ (Submodule.subset_span ⟨b, b.2, rfl⟩)))
+  obtain ⟨o1, -⟩ := GlobalTheory.T.term_invariants_independent_of_witnesses L r k S _ _ _ _ W1
+  obtain ⟨o0, -⟩ := GlobalTheory.T.term_invariants_independent_of_witnesses L r k S _ _ _ _ (wit_spec S d Λ H)
+  obtain ⟨p1, p2, -⟩ := GlobalTheory.FramePsi.psi_unitary_character L r k S
+  have q1 : S.psi (h * (S.wit d Λ).1 * h⁻¹ * m) = S.psi (S.wit d Λ).1 := by
+    rw [p1 _ (nN _ hn) _ hm]
+    unfold Frames.psi
+    rw [psiOf_conj S _ _ _ _ hmemN, psiOf_fix S _ _ S.dual m mfix, mul_one]
+  have q2 : S.psi' (h * (S.wit d Λ).2 * h⁻¹ * m') = S.psi' (S.wit d Λ).2 := by
+    rw [p2 _ (nN' _ hn') _ hm']
+    unfold Frames.psi'
+    rw [psiOf_conj S _ _ _ _ hmemN', psiOf_fix S _ _ S.dual' m' mfix', mul_one]
+  refine ⟨⟨(_, _), W1⟩, ?_, mu_move S hh Λ⟩
+  rw [o1, o0, q1, q2]
+end
+
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitianFrames_complementUnitary_normalises_stabiliser : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k), ∀ h ∈ S.H0, (∀ s ∈ S.St, h * s * h⁻¹ ∈ S.St) ∧ ∀ (d : S.Datum) (Λ : Submodule L.O S.V), S.IsTerm d Λ → S.IsTerm (h • d) (h • Λ) ∧ S.om (h • d) (h • Λ) = S.om d Λ ∧ S.mu (h • Λ) = S.mu Λ := by
+  atlas_forward_decl GlobalTheory.HL.FixFrames.unitary_complement_acts
+end
+
+section
+section
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL
+open scoped Pointwise ENNReal Classical
+
+theorem GlobalTheory.HL.Frames.amp_mass_eq_one_of_one_orbit : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k), ∀ (d : S.Datum) (P : Submodule L.O S.V → Prop), (∃ Λ, S.IsTerm d Λ) → (∀ Λ Λ', S.IsTerm d Λ → S.IsTerm d Λ' → ∃ h ∈ S.St, Λ' = h • Λ) → (∀ Λ, S.IsTerm d Λ → P Λ ∧ S.mu Λ = 1 ∧ S.om d Λ = 1) → S.amp d P = 1 ∧ S.mass d P = 1 := by
+  intro F _ _ _ _ _ E _ _ _ L r k S d P hex huniq hall
+  obtain ⟨Λ, hΛ⟩ := hex
+  let o₀ : MulAction.orbitRel.Quotient S.St (Submodule L.O S.V) := Quotient.mk'' Λ
+  have hout : S.IsTerm d o₀.out := by
+    have hm : o₀.out ∈ MulAction.orbit S.St Λ :=
+      MulAction.orbitRel_apply.1 (Quotient.mk_out (s := MulAction.orbitRel S.St _) Λ)
+    obtain ⟨g, hg⟩ := hm
+    rw [← hg]
+    exact (GlobalTheory.T.hermitianFrames_stabilizer_acts_on_terms L r k S d Λ hΛ g.1 g.2).1
+  have hother : ∀ o : MulAction.orbitRel.Quotient S.St (Submodule L.O S.V), o ≠ o₀ →
+      ¬ S.IsTerm d o.out := by
+    intro o ho ht
+    obtain ⟨h, hh, e⟩ := huniq Λ o.out hΛ ht
+    apply ho
+    rw [← Quotient.out_eq' o]
+    apply Quotient.sound'
+    exact MulAction.orbitRel_apply.2 ⟨⟨h, hh⟩, e.symm⟩
+  obtain ⟨hP, hmu, hom⟩ := hall _ hout
+  constructor
+  · unfold GlobalTheory.HL.Frames.amp
+    rw [tsum_eq_single o₀]
+    · rw [if_pos ⟨hout, hP⟩, hmu, hom]; simp
+    · intro o ho
+      exact if_neg fun hc => hother o ho hc.1
+  · unfold GlobalTheory.HL.Frames.mass
+    rw [tsum_eq_single o₀]
+    · rw [if_pos ⟨hout, hP⟩, hmu]; simp
+    · intro o ho
+      exact if_neg fun hc => hother o ho hc.1
+end
+
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.amplitude_mass_eq_one_of_single_orbit : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k), ∀ (d : S.Datum) (P : Submodule L.O S.V → Prop), (∃ Λ, S.IsTerm d Λ) → (∀ Λ Λ', S.IsTerm d Λ → S.IsTerm d Λ' → ∃ h ∈ S.St, Λ' = h • Λ) → (∀ Λ, S.IsTerm d Λ → P Λ ∧ S.mu Λ = 1 ∧ S.om d Λ = 1) → S.amp d P = 1 ∧ S.mass d P = 1 := by
+  atlas_forward_decl GlobalTheory.HL.Frames.amp_mass_eq_one_of_one_orbit
+end
+
+section
+section
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL
+open scoped Pointwise ENNReal Classical
+
+theorem GlobalTheory.HL.amp_summand_orbit : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k), ∀ (d : S.Datum) (P : Submodule L.O S.V → Prop), (∀ Λ, ∀ h ∈ S.St, P (h • Λ) ↔ P Λ) → ∀ Λ, S.IsTerm d Λ → IsLat L Λ → ∀ o : MulAction.orbitRel.Quotient S.St (Submodule L.O S.V), o = Quotient.mk'' Λ → S.IsTerm d o.out ∧ (∃ h ∈ S.St, o.out = h • Λ) ∧ (if S.IsTerm d o.out ∧ P o.out then (S.mu o.out : ℂ) * S.om d o.out else 0) = (if P Λ then (S.mu Λ : ℂ) * S.om d Λ else 0) ∧ (if S.IsTerm d o.out ∧ P o.out then ENNReal.ofReal (S.mu o.out) else 0) = (if P Λ then ENNReal.ofReal (S.mu Λ) else 0) := by
+  intro F _ _ _ _ _ E _ _ _ L r k S d P hP Λ hT hL o ho
+  have hrel : MulAction.orbitRel S.St (Submodule L.O S.V) o.out Λ := by
+    have h1 : (Quotient.mk'' o.out : MulAction.orbitRel.Quotient S.St (Submodule L.O S.V)) = Quotient.mk'' Λ :=
+      (Quotient.out_eq' o).trans ho
+    exact Quotient.exact' h1
+  obtain ⟨g, hg⟩ := hrel
+  have hout : o.out = (g : S.GLV) • Λ := by rw [← hg]; rfl
+  have hgm : (g : S.GLV) ∈ S.St := g.2
+  obtain ⟨hT', hom, -⟩ := GlobalTheory.T.hermitianFrames_stabilizer_acts_on_terms L r k S d Λ hT _ hgm
+  have hmu : S.mu ((g : S.GLV) • Λ) = S.mu Λ := (GlobalTheory.T.commonStabilizer_stabilizers_commensurable_volume L r k S).1 Λ hL |>.2.2 _ hgm
+  have hPg : P ((g : S.GLV) • Λ) ↔ P Λ := hP Λ _ hgm
+  refine ⟨hout ▸ hT', ⟨_, hgm, hout⟩, ?_, ?_⟩
+  · rw [hout]; simp only [hT', true_and, hPg, hmu, hom]
+  · rw [hout]; simp only [hT', true_and, hPg, hmu]
+end
+
+open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localAmplitude_summand_at_term_orbit : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k), ∀ (d : S.Datum) (P : Submodule L.O S.V → Prop), (∀ Λ, ∀ h ∈ S.St, P (h • Λ) ↔ P Λ) → ∀ Λ, S.IsTerm d Λ → IsLat L Λ → ∀ o : MulAction.orbitRel.Quotient S.St (Submodule L.O S.V), o = Quotient.mk'' Λ → S.IsTerm d o.out ∧ (∃ h ∈ S.St, o.out = h • Λ) ∧ (if S.IsTerm d o.out ∧ P o.out then (S.mu o.out : ℂ) * S.om d o.out else 0) = (if P Λ then (S.mu Λ : ℂ) * S.om d Λ else 0) ∧ (if S.IsTerm d o.out ∧ P o.out then ENNReal.ofReal (S.mu o.out) else 0) = (if P Λ then ENNReal.ofReal (S.mu Λ) else 0) := by
+  atlas_forward_decl GlobalTheory.HL.amp_summand_orbit
+end
+
+section
+section
+open scoped Classical
+
+namespace GlobalTheory
+
+theorem prod_sum_of_local_choices {ι Q R : Type} {O : ι → Type} [CommSemiring R] [TopologicalSpace R] [∀ p, Nonempty (O p)]
+    (s : Finset ι) (Φ : Q → ∀ p, O p) (Tq : Set Q) (U : ∀ p, Set (O p))
+    (hU : ∀ p ∈ s, (U p).Finite)
+    (hinj : ∀ c ∈ Tq, ∀ c' ∈ Tq, (∀ p ∈ s, Φ c p = Φ c' p) → c = c')
+    (hmem : ∀ c ∈ Tq, ∀ p ∈ s, Φ c p ∈ U p)
+    (hsurj : ∀ x : ∀ p, O p, (∀ p ∈ s, x p ∈ U p) → ∃ c ∈ Tq, ∀ p ∈ s, Φ c p = x p)
+    (g : ∀ p, O p → R) :
+    Tq.Finite ∧ (∑' c : Q, if c ∈ Tq then ∏ p ∈ s, g p (Φ c p) else 0)
+      = ∏ p ∈ s, ∑' o : O p, if o ∈ U p then g p o else 0 := by
+  have hT : Tq.Finite := by
+    let e : Q → ∀ p : s, O p := fun c p => Φ c p
+    have hfin : (Set.pi Set.univ (fun p : s => U p)).Finite :=
+      Set.Finite.pi (fun p => hU p p.2)
+    refine Set.Finite.of_finite_image (f := e) (hfin.subset ?_) ?_
+    · rintro _ ⟨c, hc, rfl⟩ p _
+      exact hmem c hc p p.2
+    · intro c hc c' hc' h
+      exact hinj c hc c' hc' (fun p hp => congrFun h ⟨p, hp⟩)
+  refine ⟨hT, ?_⟩
+  let t : ∀ p, Finset (O p) := fun p => if h : p ∈ s then (hU p h).toFinset else ∅
+  have ht : ∀ p ∈ s, ∀ o, o ∈ t p ↔ o ∈ U p := by
+    intro p hp o; simp [t, hp]
+  rw [tsum_eq_sum (s := hT.toFinset) (fun c hc => by
+    rw [Set.Finite.mem_toFinset] at hc; simp [hc])]
+  have hR : ∀ p ∈ s, (∑' o : O p, if o ∈ U p then g p o else 0) = ∑ o ∈ t p, g p o := by
+    intro p hp
+    rw [tsum_eq_sum (s := t p) (fun o ho => by rw [ht p hp] at ho; simp [ho])]
+    refine Finset.sum_congr rfl (fun o ho => ?_)
+    rw [ht p hp] at ho; simp [ho]
+  rw [Finset.prod_congr rfl hR, Finset.prod_sum]
+  have hL : (∑ c ∈ hT.toFinset, if c ∈ Tq then ∏ p ∈ s, g p (Φ c p) else 0)
+      = ∑ c ∈ hT.toFinset, ∏ p ∈ s, g p (Φ c p) :=
+    Finset.sum_congr rfl (fun c hc => by rw [Set.Finite.mem_toFinset] at hc; simp [hc])
+  rw [hL]
+  refine Finset.sum_bij (fun c _ => fun p _ => Φ c p) ?_ ?_ ?_ ?_
+  · intro c hc
+    rw [Set.Finite.mem_toFinset] at hc
+    rw [Finset.mem_pi]
+    intro p hp
+    exact (ht p hp _).2 (hmem c hc p hp)
+  · intro c hc c' hc' h
+    rw [Set.Finite.mem_toFinset] at hc hc'
+    exact hinj c hc c' hc' (fun p hp => congrFun (congrFun h p) hp)
+  · intro x hx
+    rw [Finset.mem_pi] at hx
+    let y : ∀ p, O p := fun p => if h : p ∈ s then x p h else Classical.arbitrary (O p)
+    obtain ⟨c, hc, hcy⟩ := hsurj y (fun p hp => by
+      simp only [y, dif_pos hp]; exact (ht p hp _).1 (hx p hp))
+    refine ⟨c, (Set.Finite.mem_toFinset hT).2 hc, ?_⟩
+    funext p hp
+    rw [hcy p hp]; simp [y, hp]
+  · intro c _
+    exact (Finset.prod_attach s (fun p => g p (Φ c p))).symm
+
+end GlobalTheory
+end
+
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_prod_of_local_choices_bijection : ∀ {ι Q R : Type} {O : ι → Type} [CommSemiring R] [TopologicalSpace R] [∀ p, Nonempty (O p)] (s : Finset ι) (Φ : Q → ∀ p, O p) (Tq : Set Q) (U : ∀ p, Set (O p)), (∀ p ∈ s, (U p).Finite) → (∀ c ∈ Tq, ∀ c' ∈ Tq, (∀ p ∈ s, Φ c p = Φ c' p) → c = c') → (∀ c ∈ Tq, ∀ p ∈ s, Φ c p ∈ U p) → (∀ x : ∀ p, O p, (∀ p ∈ s, x p ∈ U p) → ∃ c ∈ Tq, ∀ p ∈ s, Φ c p = x p) → ∀ g : ∀ p, O p → R, Tq.Finite ∧ (∑' c : Q, if c ∈ Tq then ∏ p ∈ s, g p (Φ c p) else 0) = ∏ p ∈ s, ∑' o : O p, if o ∈ U p then g p o else 0 := by
+  atlas_forward_decl GlobalTheory.prod_sum_of_local_choices
+end
+
+section
 section
 open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL NumberField IsDedekindDomain
 open scoped Pointwise ENNReal Classical
@@ -259,3 +1210,4 @@ open scoped Pointwise ENNReal Classical
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.hermitian_amplitude_mass_product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E} (A : Places F E sig), ∀ (r k : ℕ) (G : GFrames A r k), 4 * r + 7 ≤ k → ∀ d : G.Dat, (∃ Λ₀, G.IsTerm d Λ₀) → ∀ P : ∀ p, Submodule (A.L p).O (G.S p).V → Prop, (∀ p, ∀ h ∈ (G.S p).St, ∀ Λ, (G.S p).IsTerm (d p) Λ → P p Λ → P p (h • Λ)) → {p | ∃ Λ, (G.S p).IsTerm (d p) Λ ∧ ¬ P p Λ}.Finite → G.amp d (fun Λ => ∀ p, P p (A.lat p Λ)) = ∏ᶠ p, (G.S p).amp (d p) (P p) ∧ G.mass d (fun Λ => ∀ p, P p (A.lat p Λ)) = ∏ᶠ p, (G.S p).mass (d p) (P p) ∧ {p | (G.S p).amp (d p) (P p) ≠ 1 ∨ (G.S p).mass (d p) (P p) ≠ 1}.Finite ∧ {o : Quot G.LRel | G.IsTerm d o.out}.Finite := by
   atlas_forward_decl GlobalTheory.HL.ProdStruct.product_structure
+end

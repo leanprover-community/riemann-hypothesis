@@ -5,10 +5,135 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StabiliserEqCent
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSmoothAutomorphicFunctionStar
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsLowerWittTowerIsotropicSplitEmbedding
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ComplexConjugationMapsMultiplicitySpace
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MaximalCompactSortedFrameActsThroughModelCompact
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MultiplicityMapRightTranslateRealPointStatement
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FiniteDimensionalSpanMultilinearValuesStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SignEquivInl
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MultiplicityMapRightTranslateRealPoint
 
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open scoped TensorProduct InnerProductSpace ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.ChainOnto.RealData
+
+theorem isKC_comm_Jpq {p q : ℕ} {b : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ} (hb : IsKC b) :
+    b * Formalism.UG.Jpq p q = Formalism.UG.Jpq p q * b := by
+  ext a c
+  rcases a with i | i <;> rcases c with j | j <;>
+    simp [Formalism.UG.Jpq, Matrix.mul_apply, Fintype.sum_sum_type, Matrix.fromBlocks, Matrix.one_apply]
+  · rw [hb (Sum.inl i) (Sum.inr j) (by simp [sameBlock]), neg_zero]
+  · rw [hb (Sum.inr i) (Sum.inl j) (by simp [sameBlock]), neg_zero]
+
+theorem conj_mem_Kset {n p q : ℕ} (ε : Fin n → Bool) (e : Fin n ≃ Fin p ⊕ Fin q)
+    (hJ : (Formalism.UG.Jpq p q).submatrix e e = Formalism.REAL.Jm ε) (fr g : Matrix (Fin n) (Fin n) ℂ) (hfr : IsUnit fr)
+    (hg : gᴴ * (frᴴ * Formalism.REAL.Jm ε * fr) * g = frᴴ * Formalism.REAL.Jm ε * fr)
+    (b : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ) (hb : IsKC b)
+    (hbA : b * fr.submatrix e.symm id = fr.submatrix e.symm id * g) :
+    fr * g * fr⁻¹ ∈ Formalism.REAL.Kset ε := by
+  have hdet : IsUnit fr.det := (Matrix.isUnit_iff_isUnit_det _).1 hfr
+  have hinv : fr * fr⁻¹ = 1 := Matrix.mul_nonsing_inv _ hdet
+
+  set X := b.submatrix e e with hX
+  have hXfr : X * fr = fr * g := by
+    have h1 := congrArg (fun N => N.submatrix e id) hbA
+    rw [Matrix.submatrix_mul _ _ _ _ _ e.bijective, Matrix.submatrix_mul _ _ _ id _ Function.bijective_id] at h1
+    simpa [Matrix.submatrix_submatrix] using h1
+  have hXe : fr * g * fr⁻¹ = X := by
+    rw [← hXfr, Matrix.mul_assoc, hinv, Matrix.mul_one]
+  rw [hXe]
+  have hcomm : X * Formalism.REAL.Jm ε = Formalism.REAL.Jm ε * X := by
+    rw [← hJ, hX, ← Matrix.submatrix_mul _ _ _ _ _ e.bijective, ← Matrix.submatrix_mul _ _ _ _ _ e.bijective,
+      isKC_comm_Jpq hb]
+
+  have hiso : Xᴴ * Formalism.REAL.Jm ε * X = Formalism.REAL.Jm ε := by
+    have hgX : g = fr⁻¹ * X * fr := by
+      rw [Matrix.mul_assoc, hXfr, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hdet, Matrix.one_mul]
+    have hinvH : (fr⁻¹)ᴴ * frᴴ = 1 := by
+      rw [← Matrix.conjTranspose_mul, hinv, Matrix.conjTranspose_one]
+    have key : X = fr * g * fr⁻¹ := hXe.symm
+    calc Xᴴ * Formalism.REAL.Jm ε * X
+        = (fr⁻¹)ᴴ * (gᴴ * (frᴴ * Formalism.REAL.Jm ε * fr) * g) * fr⁻¹ := by
+          rw [key]; simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
+      _ = (fr⁻¹)ᴴ * frᴴ * Formalism.REAL.Jm ε * (fr * fr⁻¹) := by
+          rw [hg]; simp only [Matrix.mul_assoc]
+      _ = Formalism.REAL.Jm ε := by rw [hinvH, hinv, Matrix.one_mul, Matrix.mul_one]
+  refine ⟨?_, hcomm⟩
+  rw [Matrix.mem_unitaryGroup_iff']
+  change Xᴴ * X = 1
+  calc Xᴴ * X = Xᴴ * (Formalism.REAL.Jm ε * Formalism.REAL.Jm ε) * X := by rw [Formalism.REAL.Jm_mul_self, Matrix.mul_one]
+    _ = Xᴴ * Formalism.REAL.Jm ε * X * Formalism.REAL.Jm ε := by
+        rw [Matrix.mul_assoc (Xᴴ * Formalism.REAL.Jm ε) X, hcomm]; simp only [Matrix.mul_assoc]
+    _ = 1 := by rw [hiso, Formalism.REAL.Jm_mul_self]
+
+theorem conj_mem_Kset_of_mem_Kinf : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (hV : V.SigOK) (k : GA D V), IsInfFam θ → k ∈ GlobalTheory.Cusp.Kinf θ V (GlobalTheory.ChainOnto.RealData.sortedFrame M hV) → ∀ τ, M.fr τ * infMat D.sp.cm.sig V.gram (θ τ) k * (M.fr τ)⁻¹ ∈ Formalism.REAL.Kset (M.ε τ) := by
+  intro D θ V S M hV k hθ hk τ
+  obtain ⟨-, hkτ⟩ := GlobalTheory.Cusp.mem_Kinf.1 hk
+  obtain ⟨b, hb, hbA⟩ := hkτ τ
+  have hU := GlobalTheory.FockCompare.RealAction.infMat_mem_UH hθ V k τ
+  have hU' : (infMat D.sp.cm.sig V.gram (θ τ) k)ᴴ * ((M.fr τ)ᴴ * Formalism.REAL.Jm (M.ε τ) * M.fr τ) *
+      infMat D.sp.cm.sig V.gram (θ τ) k = (M.fr τ)ᴴ * Formalism.REAL.Jm (M.ε τ) * M.fr τ := by
+    rw [M.fr_gram τ]; exact hU
+  exact conj_mem_Kset (M.ε τ) (signEquiv (M.ε τ) (card_true M hV τ) (card_false M hV τ))
+    (Jpq_submatrix _ _) (M.fr τ) _ (M.fr_unit τ) hU' b hb hbA
+
+end GlobalTheory.ChainOnto.RealData
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open scoped TensorProduct InnerProductSpace ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.maximal_compact_sorted_frame_acts_through_model_compact : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (hV : V.SigOK) (k : GA D V), IsInfFam θ → k ∈ GlobalTheory.Cusp.Kinf θ V (GlobalTheory.ChainOnto.RealData.sortedFrame M hV) → ∀ τ, M.fr τ * infMat D.sp.cm.sig V.gram (θ τ) k * (M.fr τ)⁻¹ ∈ Formalism.REAL.Kset (M.ε τ) := by
+  atlas_forward_decl GlobalTheory.ChainOnto.RealData.conj_mem_Kset_of_mem_Kinf
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open scoped TensorProduct InnerProductSpace ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.multiplicity_map_right_translate_real_point : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) (T : MMap M), IsMultMap θ M J χ T → ∀ k ∈ GinfC V, ∀ v : M.Vec, ∃ v' : M.Vec, (∀ τ, (v' τ : M.H τ) = M.rep τ (infMat D.sp.cm.sig V.gram (θ τ) k) (v τ)) ∧ ∀ x, T v (x * k) = T v' x := by
+  first | exact @GlobalTheory.RealPointMove.translate_eq_move | exact GlobalTheory.RealPointMove.translate_eq_move | (intros; apply GlobalTheory.RealPointMove.translate_eq_move <;> assumption)
+end
+
+section
+namespace GlobalTheory
+
+theorem finiteDimensional_span_multilinear_values :
+    ∀ {ι : Type} [Fintype ι] (E : ι → Type) [∀ i, AddCommGroup (E i)] [∀ i, Module ℂ (E i)]
+      (F : Type) [AddCommGroup F] [Module ℂ F] (T : MultilinearMap ℂ E F)
+      (W : ∀ i, Submodule ℂ (E i)), (∀ i, FiniteDimensional ℂ (W i)) →
+      FiniteDimensional ℂ (Submodule.span ℂ {f | ∃ v : ∀ i, E i, (∀ i, v i ∈ W i) ∧ f = T v}) := by
+  intro ι _ E _ _ F _ _ T W hW
+  have := hW
+  let T' : MultilinearMap ℂ (fun i => W i) F := T.compLinearMap (fun i => (W i).subtype)
+  have hset : {f | ∃ v : ∀ i, E i, (∀ i, v i ∈ W i) ∧ f = T v} = Set.range T' := by
+    ext f
+    constructor
+    · rintro ⟨v, hv, rfl⟩
+      exact ⟨fun i => ⟨v i, hv i⟩, rfl⟩
+    · rintro ⟨w, rfl⟩
+      exact ⟨fun i => (w i : E i), fun i => (w i).2, rfl⟩
+  have hle : Submodule.span ℂ (Set.range T') ≤ LinearMap.range (PiTensorProduct.lift T') := by
+    rw [Submodule.span_le]
+    rintro _ ⟨w, rfl⟩
+    exact ⟨PiTensorProduct.tprod ℂ w, by simp⟩
+  rw [hset]
+  exact Submodule.finiteDimensional_of_le hle
+
+end GlobalTheory
+
+alias _root_.GlobalTheory.T.finiteDimensional_span_multilinear_values' := _root_.GlobalTheory.finiteDimensional_span_multilinear_values
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open scoped TensorProduct InnerProductSpace ComplexConjugate
@@ -166,4 +291,5 @@ theorem GlobalTheory.ChainOnto.conj_stage_val_mem_A0_and_cartan_frame : ∀ (D :
   exact ⟨RealData.sortedFrame s.M hs.sigOK, a, RealData.isCartanFrame_sortedFrame _ _, fun τ => RealData.isCartanInv_cart _ τ,
     fun τ => RealData.sortedFrame_cart _ _ τ, ha, hmaj, fun u v hv => RealData.conj_multiplicityValue_mem_cuspFormsArchimedeanKFinite c.θ hc.inf s.M hs.sigOK u.1 u.2 v hv⟩
 
+end
 end

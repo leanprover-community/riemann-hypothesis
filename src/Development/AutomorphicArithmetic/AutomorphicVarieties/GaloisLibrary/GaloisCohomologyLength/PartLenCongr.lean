@@ -1,7 +1,254 @@
 import Mathlib
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LengthEqAddEigen
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.MemShaIffResMemAbsoluteSha
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.ShaLenEqShaInv
 
+section
+open NumberField IsDedekindDomain ReciprocityTheory.Gal Formalism.ConjugateSelfDual Formalism.GaloisCohomology UpperTheory.V.LDataCardLeFinrank
+
+private theorem UpperTheory.V.LDataCardLeFinrank.transport_mem_NS
+    {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {F' Ω' : Type} [Field F']
+    [NumberField F'] [Field Ω'] [Algebra F' Ω'] [IsAlgClosure F' Ω'] {l : ℕ} [Fact l.Prime] (f : F →+* F')
+    (σ : Ω ≃+* Ω') (hσ : ∀ x, σ (algebraMap F Ω x) = algebraMap F' Ω' (f x)) (φ : G F' Ω' →* G F Ω)
+    (h1 : Continuous φ) (h2 : ∀ g x, σ (φ g x) = g (σ x))
+    {S : Set (HeightOneSpectrum (𝓞 F))} (hS : S = Above F l) {S' : Set (HeightOneSpectrum (𝓞 F'))}
+    (hS' : S' = Above F' l) : NS Ω' S' ≤ (NS Ω S).comap φ := by
+  have hN : (NS Ω S).Normal := Subgroup.is_normal_topologicalClosure _
+  have hclosed : IsClosed ((NS Ω S).comap φ : Set (G F' Ω')) := (isClosed_NS Ω S).preimage h1
+  haveI : ((NS Ω S).comap φ).Normal := hN.comap φ
+  apply Subgroup.topologicalClosure_minimal _ _ hclosed
+  apply Subgroup.normalClosure_le_normal
+  intro g hg
+  simp only [Set.mem_iUnion, Set.mem_compl_iff, Set.mem_setOf_eq] at hg
+  obtain ⟨v', hv', A', hA', hgA⟩ := hg
+  obtain ⟨v, A, hA, habove, -, -, hine⟩ := placeTransport F Ω F' Ω' f σ hσ φ h2 v' A' hA'
+  have hgi : φ g ∈ Ine A := (hine g).2 hgA
+  show φ g ∈ NS Ω S
+  apply Subgroup.le_topologicalClosure
+  apply Subgroup.subset_normalClosure
+  simp only [Set.mem_iUnion, Set.mem_compl_iff, Set.mem_setOf_eq]
+  refine ⟨v, ?_, A, hA, hgi⟩
+  rw [hS]
+  rw [hS'] at hv'
+  exact fun h => hv' ((habove l).1 h)
+
+theorem UpperTheory.V.LDataCardLeFinrank.gsTransport :
+    ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (F' Ω' : Type) [Field F'] [NumberField F'] [Field Ω'] [Algebra F' Ω'] [IsAlgClosure F' Ω'] (l : ℕ) [Fact l.Prime] (D : LData F Ω l) (D' : LData F' Ω' l) (f : F ≃+* F') (σ : Ω ≃+* Ω'), (∀ x, σ (algebraMap F Ω x) = algebraMap F' Ω' (f x)) →
+      ∃ (φ : G F' Ω' ≃* G F Ω) (ψ : GS Ω' (D'.S : Set (HeightOneSpectrum (𝓞 F'))) ≃* GS Ω (D.S : Set (HeightOneSpectrum (𝓞 F)))),
+        Continuous φ ∧ Continuous φ.symm ∧ Continuous ψ ∧ Continuous ψ.symm ∧ (∀ g x, σ (φ g x) = g (σ x)) ∧
+        (∀ g, ψ (toGS Ω' _ g) = toGS Ω _ (φ g)) ∧ ∀ g, D.chi (ψ g) = D'.chi g := by
+  intro F Ω _ _ _ _ _ F' Ω' _ _ _ _ _ l _ D D' f σ hσ
+  obtain ⟨φ, hφc, hφact, hφcyc, -, -⟩ := galTransport F Ω F' Ω' (f : F →+* F') σ hσ
+  have hσ' : ∀ x : F', σ.symm (algebraMap F' Ω' x) = algebraMap F Ω ((f.symm : F' →+* F) x) := by
+    intro x
+    apply σ.injective
+    rw [RingEquiv.apply_symm_apply, hσ]
+    simp
+  obtain ⟨φ', hφ'c, hφ'act, -, -, -⟩ := galTransport F' Ω' F Ω (f.symm : F' →+* F) σ.symm hσ'
+  have hleft : ∀ g, φ' (φ g) = g := by
+    intro g
+    refine AlgEquiv.ext fun y => ?_
+    apply σ.symm.injective
+    rw [hφ'act]
+    apply σ.injective
+    rw [hφact, RingEquiv.apply_symm_apply, RingEquiv.apply_symm_apply]
+  have hright : ∀ g, φ (φ' g) = g := by
+    intro g
+    refine AlgEquiv.ext fun x => ?_
+    apply σ.injective
+    rw [hφact]
+    apply σ.symm.injective
+    rw [hφ'act, RingEquiv.symm_apply_apply, RingEquiv.symm_apply_apply]
+  let Φ : G F' Ω' ≃* G F Ω :=
+    { toFun := φ, invFun := φ', left_inv := hleft, right_inv := hright, map_mul' := φ.map_mul }
+  haveI : (NS Ω' (D'.S : Set (HeightOneSpectrum (𝓞 F')))).Normal :=
+    Subgroup.is_normal_topologicalClosure _
+  haveI : (NS Ω (D.S : Set (HeightOneSpectrum (𝓞 F)))).Normal :=
+    Subgroup.is_normal_topologicalClosure _
+  have hmap : (NS Ω' (D'.S : Set (HeightOneSpectrum (𝓞 F')))).map (Φ : G F' Ω' →* G F Ω) =
+      NS Ω (D.S : Set (HeightOneSpectrum (𝓞 F))) := by
+    apply le_antisymm
+    · rw [Subgroup.map_le_iff_le_comap]
+      exact UpperTheory.V.LDataCardLeFinrank.transport_mem_NS (f : F →+* F') σ hσ φ hφc hφact D.hS D'.hS
+    · intro h hh
+      refine ⟨φ' h, ?_, hright h⟩
+      exact UpperTheory.V.LDataCardLeFinrank.transport_mem_NS (f.symm : F' →+* F) σ.symm hσ' φ' hφ'c hφ'act D'.hS D.hS hh
+  let Ψ : GS Ω' (D'.S : Set (HeightOneSpectrum (𝓞 F'))) ≃* GS Ω (D.S : Set (HeightOneSpectrum (𝓞 F))) :=
+    QuotientGroup.congr _ _ Φ hmap
+  have hΨmk : ∀ g : G F' Ω', Ψ (QuotientGroup.mk g) = QuotientGroup.mk (φ g) :=
+    fun g => QuotientGroup.congr_mk _ _ Φ hmap g
+  have hΨsmk : ∀ g : G F Ω, Ψ.symm (QuotientGroup.mk g) = QuotientGroup.mk (φ' g) := by
+    intro g
+    apply Ψ.injective
+    rw [MulEquiv.apply_symm_apply, hΨmk, hright]
+  have hΨc : Continuous Ψ := by
+    rw [(QuotientGroup.isQuotientMap_mk _).continuous_iff]
+    have : (Ψ ∘ QuotientGroup.mk) = (QuotientGroup.mk ∘ φ) := funext hΨmk
+    rw [this]
+    exact QuotientGroup.continuous_mk.comp hφc
+  have hΨsc : Continuous Ψ.symm := by
+    rw [(QuotientGroup.isQuotientMap_mk _).continuous_iff]
+    have : (Ψ.symm ∘ QuotientGroup.mk) = (QuotientGroup.mk ∘ φ') := funext hΨsmk
+    rw [this]
+    exact QuotientGroup.continuous_mk.comp hφ'c
+  refine ⟨Φ, Ψ, hφc, hφ'c, hΨc, hΨsc, hφact, fun g => hΨmk g, ?_⟩
+  intro g
+  obtain ⟨h, rfl⟩ := QuotientGroup.mk_surjective g
+  rw [hΨmk]
+  show D.chi (toGS Ω _ (φ h)) = D'.chi (toGS Ω' _ h)
+  have e1 : D.chi (toGS Ω _ (φ h)) = cycZ F Ω l (φ h) := by
+    rw [← D.hchi]
+    rfl
+  have e2 : D'.chi (toGS Ω' _ h) = cycZ F' Ω' l h := by
+    rw [← D'.hchi]
+    rfl
+  exact e1.trans ((hφcyc l h).trans e2.symm)
+end
+
+section
+open NumberField IsDedekindDomain ReciprocityTheory.Gal Formalism.ConjugateSelfDual Formalism.GaloisCohomology UpperTheory.V.LDataCardLeFinrank
+
+section
+
+variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
+  {F' Ω' : Type} [Field F'] [NumberField F'] [Field Ω'] [Algebra F' Ω'] [IsAlgClosure F' Ω']
+  {l : ℕ} [Fact l.Prime]
+
+private theorem mem_sha_iff_res_mem_absolute_sha (D : LData F Ω l) (e : ℤ) (x : H1 (qzTw D e)) :
+    x ∈ Sha D e ↔ resH1 (qzTw D e) (toGS Ω _) (continuous_toGS Ω _) x ∈
+      ShaAbs ((qzTw D e).comp (toGS Ω _)) (Above F l) := by
+  constructor
+  · intro hx
+    rw [← map_Sha D e]
+    exact Submodule.mem_map_of_mem hx
+  · intro hx
+    rw [← map_Sha D e] at hx
+    obtain ⟨y, hy, hyx⟩ := hx
+    rwa [← injective_infl D e hyx]
+
+private theorem pairH1DecompositionMap_qzTw_mem_sha (D : LData F Ω l) (D' : LData F' Ω' l) (e : ℤ) (f : F →+* F') (σ : Ω ≃+* Ω')
+    (hσ : ∀ x, σ (algebraMap F Ω x) = algebraMap F' Ω' (f x)) (φ : G F' Ω' →* G F Ω)
+    (hφ : ∀ g x, σ (φ g x) = g (σ x))
+    (ψ : GS Ω' (D'.S : Set (HeightOneSpectrum (𝓞 F'))) →* GS Ω (D.S : Set (HeightOneSpectrum (𝓞 F))))
+    (hψ : Continuous ψ) (hc : ∀ g, ψ (toGS Ω' _ g) = toGS Ω _ (φ g))
+    (hq : ∀ g m, (LinearMap.id : QZ l →ₗ[ℤ_[l]] QZ l) (qzTw D e (ψ g) m) = qzTw D' e g (LinearMap.id (R := ℤ_[l]) m))
+    (x : H1 (qzTw D e)) (hx : x ∈ Sha D e) :
+    pairH1DecompositionMap (qzTw D e) (qzTw D' e) ψ hψ LinearMap.id continuous_id hq x ∈ Sha D' e := by
+  obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+  rw [mem_sha_iff_res_mem_absolute_sha] at hx ⊢
+  simp only [resH1, pairH1DecompositionMap, Submodule.mapQ_apply] at hx ⊢
+  rw [mk_mem_ShaAbs] at hx ⊢
+  obtain ⟨hxa, hxb⟩ := hx
+  constructor
+  · intro v' hv' A' hA'
+    obtain ⟨v, A, hA, hab, -, hdec, hine⟩ := placeTransport F Ω F' Ω' f σ hσ φ hφ v' A' hA'
+    obtain ⟨m, hm⟩ := hxa v ((hab l).2 hv') A hA
+    refine ⟨m, fun g hg => ?_⟩
+    have h1 := hm (φ g) ((hdec g).2 hg)
+    have h2 := hq (toGS Ω' (↑D'.S : Set (HeightOneSpectrum (𝓞 F'))) g) m
+    simp only [LinearMap.id_apply] at h2
+    change (z : GS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) → QZ l) (toGS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) (φ g)) = qzTw D e (toGS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) (φ g)) m - m at h1
+    change LinearMap.id ((z : GS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) → QZ l) (ψ (toGS Ω' (↑D'.S : Set (HeightOneSpectrum (𝓞 F'))) g))) = qzTw D' e (toGS Ω' (↑D'.S : Set (HeightOneSpectrum (𝓞 F'))) g) m - m
+    rw [LinearMap.id_apply, hc, h1, ← hc, h2]
+  · intro v' hv' A' hA'
+    obtain ⟨v, A, hA, hab, -, hdec, hine⟩ := placeTransport F Ω F' Ω' f σ hσ φ hφ v' A' hA'
+    obtain ⟨m, hm⟩ := hxb v (fun h => hv' ((hab l).1 h)) A hA
+    refine ⟨m, fun g hg => ?_⟩
+    have h1 := hm (φ g) ((hine g).2 hg)
+    have h2 := hq (toGS Ω' (↑D'.S : Set (HeightOneSpectrum (𝓞 F'))) g) m
+    simp only [LinearMap.id_apply] at h2
+    change (z : GS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) → QZ l) (toGS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) (φ g)) = qzTw D e (toGS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) (φ g)) m - m at h1
+    change LinearMap.id ((z : GS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) → QZ l) (ψ (toGS Ω' (↑D'.S : Set (HeightOneSpectrum (𝓞 F'))) g))) = qzTw D' e (toGS Ω' (↑D'.S : Set (HeightOneSpectrum (𝓞 F'))) g) m - m
+    rw [LinearMap.id_apply, hc, h1, ← hc, h2]
+
+end
+
+theorem UpperTheory.V.LDataCardLeFinrank.H1_transport_field_iso :
+    ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (F' Ω' : Type) [Field F'] [NumberField F'] [Field Ω'] [Algebra F' Ω'] [IsAlgClosure F' Ω'] (l : ℕ) [Fact l.Prime] (D : LData F Ω l) (D' : LData F' Ω' l) (f : F ≃+* F') (e : ℤ), ∃ Φ : H1 (qzTw D e) ≃ₗ[ℤ_[l]] H1 (qzTw D' e),
+      (Sha D e).map Φ.toLinearMap = Sha D' e ∧ ∀ (τ : F ≃+* F) (τ' : F' ≃+* F'), (∀ x, f (τ x) = τ' (f x)) → ∀ x, Φ (UpperTheory.V.galoisActionOnCohomology D e τ x) = UpperTheory.V.galoisActionOnCohomology D' e τ' (Φ x) := by
+  intro F Ω _ _ _ _ _ F' Ω' _ _ _ _ _ l _ D D' f e
+  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed F
+  haveI : IsAlgClosed Ω' := IsAlgClosure.isAlgClosed F'
+  haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap F Ω).injective
+  haveI : CharZero Ω' := charZero_of_injective_algebraMap (algebraMap F' Ω').injective
+  let σ : Ω ≃+* Ω' := IsAlgClosure.equivOfEquiv Ω Ω' f
+  have hσ : ∀ x, σ (algebraMap F Ω x) = algebraMap F' Ω' (f x) :=
+    fun x => IsAlgClosure.equivOfEquiv_algebraMap Ω Ω' f x
+  obtain ⟨φ, ψ, -, -, hψ, hψs, hφ, hc, hchi⟩ := gsTransport F Ω F' Ω' l D D' f σ hσ
+  have hq : ∀ g m, (LinearMap.id : QZ l →ₗ[ℤ_[l]] QZ l) (qzTw D e ((ψ : GS Ω' (D'.S : Set (HeightOneSpectrum (𝓞 F'))) →* GS Ω (D.S : Set (HeightOneSpectrum (𝓞 F)))) g) m) = qzTw D' e g (LinearMap.id (R := ℤ_[l]) m) := by
+    intro g m
+    simp only [LinearMap.id_apply, UpperTheory.V.qzTw_apply, MonoidHom.coe_coe, hchi]
+  have hq' : ∀ g m, (LinearMap.id : QZ l →ₗ[ℤ_[l]] QZ l) (qzTw D' e ((ψ.symm : GS Ω (D.S : Set (HeightOneSpectrum (𝓞 F))) →* GS Ω' (D'.S : Set (HeightOneSpectrum (𝓞 F')))) g) m) = qzTw D e g (LinearMap.id (R := ℤ_[l]) m) := by
+    intro g m
+    simp only [LinearMap.id_apply, UpperTheory.V.qzTw_apply, MonoidHom.coe_coe, ← hchi, MulEquiv.apply_symm_apply]
+  let Φ := pairH1DecompositionMap (qzTw D e) (qzTw D' e) (ψ : GS Ω' (D'.S : Set (HeightOneSpectrum (𝓞 F'))) →* GS Ω (D.S : Set (HeightOneSpectrum (𝓞 F)))) hψ LinearMap.id continuous_id hq
+  let Ψ := pairH1DecompositionMap (qzTw D' e) (qzTw D e) (ψ.symm : GS Ω (D.S : Set (HeightOneSpectrum (𝓞 F))) →* GS Ω' (D'.S : Set (HeightOneSpectrum (𝓞 F')))) hψs LinearMap.id continuous_id hq'
+  have hΦΨ : Φ.comp Ψ = LinearMap.id := by
+    apply Submodule.linearMap_qext
+    ext z g
+    simp [Φ, Ψ, pairH1DecompositionMap, compatiblePairCocycles1]
+  have hΨΦ : Ψ.comp Φ = LinearMap.id := by
+    apply Submodule.linearMap_qext
+    ext z g
+    simp [Φ, Ψ, pairH1DecompositionMap, compatiblePairCocycles1]
+  have hσ' : ∀ x, σ.symm (algebraMap F' Ω' x) = algebraMap F Ω (f.symm x) := by
+    intro x
+    rw [RingEquiv.symm_apply_eq, hσ, RingEquiv.apply_symm_apply]
+  have hφ' : ∀ g x, σ.symm (φ.symm g x) = g (σ.symm x) := by
+    intro g x
+    have h := hφ (φ.symm g) (σ.symm x)
+    rw [MulEquiv.apply_symm_apply, RingEquiv.apply_symm_apply] at h
+    rw [← h, RingEquiv.symm_apply_apply]
+  have hc' : ∀ g, ψ.symm (toGS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) g) = toGS Ω' (↑D'.S : Set (HeightOneSpectrum (𝓞 F'))) (φ.symm g) := by
+    intro g
+    rw [MulEquiv.symm_apply_eq, hc, MulEquiv.apply_symm_apply]
+  refine ⟨LinearEquiv.ofLinear Φ Ψ hΦΨ hΨΦ, ?_, ?_⟩
+  · apply le_antisymm
+    · rintro _ ⟨x, hx, rfl⟩
+      exact pairH1DecompositionMap_qzTw_mem_sha D D' e f.toRingHom σ hσ φ.toMonoidHom hφ _ hψ (fun g => hc g) hq x hx
+    · intro y hy
+      refine ⟨Ψ y, ?_, ?_⟩
+      · exact pairH1DecompositionMap_qzTw_mem_sha D' D e f.symm.toRingHom σ.symm hσ' φ.symm.toMonoidHom hφ' _ hψs (fun g => hc' g) hq' y hy
+      · exact LinearMap.congr_fun hΦΨ y
+  · intro τ τ' hτ x
+    obtain ⟨σ1, h1⟩ := UpperTheory.V.exists_isLift (Ω := Ω) τ
+    let σ1' : Ω' ≃+* Ω' := σ.symm.trans (σ1.trans σ)
+    have h1' : UpperTheory.V.IsLift τ' σ1' := by
+      intro y
+      obtain ⟨y0, rfl⟩ := f.surjective y
+      show σ (σ1 (σ.symm (algebraMap F' Ω' (f y0)))) = algebraMap F' Ω' (τ' (f y0))
+      rw [← hσ, RingEquiv.symm_apply_apply, h1, hσ, hτ]
+    rw [UpperTheory.V.galois_action_cohomology_eq_conj D e h1, UpperTheory.V.galois_action_cohomology_eq_conj D' e h1']
+    obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+    obtain ⟨z1, hz1, hz1v⟩ := UpperTheory.V.exists_cocycle_h1TwistConjByLift_mk_eq_mk D e h1 z
+    simp only [LinearEquiv.ofLinear_apply]
+    rw [hz1]
+    have hΦmk : ∀ w, Φ (Submodule.Quotient.mk w) = Submodule.Quotient.mk (compatiblePairCocycles1 (qzTw D e) (qzTw D' e) _ hψ LinearMap.id continuous_id hq w) := fun w => rfl
+    rw [hΦmk, hΦmk]
+    obtain ⟨z2, hz2, hz2v⟩ := UpperTheory.V.exists_cocycle_h1TwistConjByLift_mk_eq_mk D' e h1' (compatiblePairCocycles1 (qzTw D e) (qzTw D' e) _ hψ LinearMap.id continuous_id hq z)
+    rw [hz2]
+    congr 1
+    apply Subtype.ext
+    funext g'
+    rw [hz2v]
+    show LinearMap.id ((z1 : GS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) → QZ l) (ψ g')) = UpperTheory.V.twScal l σ1' e • LinearMap.id ((z : GS Ω (↑D.S : Set (HeightOneSpectrum (𝓞 F))) → QZ l) (ψ (UpperTheory.V.conjGS D' h1' g')))
+    rw [LinearMap.id_apply, LinearMap.id_apply, hz1v]
+    have htw : UpperTheory.V.twScal l σ1' e = UpperTheory.V.twScal l σ1 e := by
+      unfold UpperTheory.V.twScal
+      rw [KStar.TotallyRealRoots.cyclotomicCharacter_conj (l := l) σ σ1 σ1' (fun x => by simp [σ1'])]
+    have hsurj : Function.Surjective (toGS Ω' (↑D'.S : Set (HeightOneSpectrum (𝓞 F')))) := QuotientGroup.mk'_surjective _
+    have hconj : UpperTheory.V.conjGS D h1 (ψ g') = ψ (UpperTheory.V.conjGS D' h1' g') := by
+      obtain ⟨g0, rfl⟩ := hsurj g'
+      rw [hc, UpperTheory.V.conjGS_toGS, UpperTheory.V.conjGS_toGS, hc]
+      congr 1
+      have key : ∀ y, φ g0 y = σ.symm (g0 (σ y)) := fun y => by rw [RingEquiv.eq_symm_apply, hφ]
+      ext x
+      apply σ.injective
+      rw [hφ, UpperTheory.V.conjGal_apply, UpperTheory.V.conjGal_apply, key]
+      simp [σ1']
+    rw [htw, hconj]
+end
+
+section
 open NumberField IsDedekindDomain ReciprocityTheory.Gal Formalism.ConjugateSelfDual Formalism.GaloisCohomology UpperTheory.V.LDataCardLeFinrank
 
 private theorem cE_comm {F F' : Type} [Field F] [NumberField F] [IsCMField F] [Field F'] [NumberField F']
@@ -42,3 +289,4 @@ theorem UpperTheory.V.LDataCardLeFinrank.partLenCongr :
   have hc := hact (UpperTheory.V.cE F) (UpperTheory.V.cE F') (cE_comm f)
   unfold UpperTheory.V.plusLen UpperTheory.V.minusLen UpperTheory.V.ShaPlus UpperTheory.V.ShaMinus UpperTheory.V.cAct
   exact ⟨length_inf_eigen Φ _ _ hΦ _ _ hc _, length_inf_eigen Φ _ _ hΦ _ _ hc _⟩
+end

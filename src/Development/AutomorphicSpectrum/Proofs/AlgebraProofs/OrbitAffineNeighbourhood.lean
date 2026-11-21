@@ -1,15 +1,489 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HasAffineChartId
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShearIsoActionProjection
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MemOrbitSelf
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.OrbitTrans
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteSetBasicOpenAffine
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFlatLocallyFreeAffineStatement
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFreePullbackAffine
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PullbackRestrictOpen
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.NormNotMemPrimeIff
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BasicOpenNormFibreIff
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFreeHom
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFlatLocallyFreeAffine
 
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.FreeQuotProof
+
+theorem action_eq_fst_smul_snd {S : Scheme.{0}} (G X : Over S) [GrpObj G] [ModObj G X] :
+    (γ[G, X] : G ⊗ X ⟶ X) = (fst G X) • (snd G X) := by
+  rw [CategoryTheory.Hom.smul_def, lift_fst_snd, Category.id_comp]
+
+theorem exists_iso_swap_action_snd : ∀ {S : Scheme.{0}} (G X : Over S) [GrpObj G] [ModObj G X], ∃ σ : G ⊗ X ⟶ G ⊗ X, IsIso σ ∧ σ ≫ snd G X = γ[G, X] ∧ σ ≫ γ[G, X] = snd G X := by
+  intro S G X _ _
+  have hγ : (γ[G, X] : G ⊗ X ⟶ X) = fst G X • snd G X := GlobalTheory.CompanionTheory.FreeQuotProof.action_eq_fst_smul_snd G X
+  obtain ⟨σ, h₁, h₂⟩ : ∃ σ : G ⊗ X ⟶ G ⊗ X,
+      σ ≫ snd G X = fst G X • snd G X ∧ σ ≫ fst G X = (fst G X)⁻¹ :=
+    ⟨lift (fst G X)⁻¹ (fst G X • snd G X), lift_snd _ _, lift_fst _ _⟩
+  have h₃ : σ ≫ (fst G X • snd G X) = snd G X := by
+    rw [CategoryTheory.ModObj.comp_smul, h₂, h₁, inv_smul_smul]
+  have h₄ : σ ≫ σ = 𝟙 _ := by
+    apply CartesianMonoidalCategory.hom_ext
+    · rw [Category.assoc, h₂, CategoryTheory.Hom.inv_def, ← Category.assoc, h₂,
+        ← CategoryTheory.Hom.inv_def, inv_inv, Category.id_comp]
+    · rw [Category.assoc, h₁, h₃, Category.id_comp]
+  exact ⟨σ, ⟨σ, h₄, h₄⟩, by rw [hγ]; exact h₁, by rw [hγ]; exact h₃⟩
+
+end GlobalTheory.CompanionTheory.FreeQuotProof
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shear_iso_action_projection : ∀ {S : Scheme.{0}} (G X : Over S) [GrpObj G] [ModObj G X], ∃ σ : G ⊗ X ⟶ G ⊗ X, IsIso σ ∧ σ ≫ snd G X = γ[G, X] ∧ σ ≫ γ[G, X] = snd G X := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FreeQuotProof.exists_iso_swap_action_snd
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+namespace GlobalTheory.CompanionTheory.FreeQuotProof
+
+theorem mem_orbit_self {S : Scheme.{0}} (G X : Over S) [GrpObj G] [ModObj G X] (x : X.left) :
+    x ∈ orbit G X x := by
+  have h1 : lift (1 : X ⟶ G) (𝟙 X) ≫ snd G X = 𝟙 X := lift_snd _ _
+  have h2 : lift (1 : X ⟶ G) (𝟙 X) ≫ (γ[G, X] : G ⊗ X ⟶ X) = 𝟙 X := by
+    have := one_smul (X ⟶ G) (𝟙 X)
+    rwa [Hom.smul_def] at this
+  have h1' : (lift (1 : X ⟶ G) (𝟙 X)).left ≫ (snd G X).left = 𝟙 X.left := by
+    rw [← Over.comp_left, h1, Over.id_left]
+  have h2' : (lift (1 : X ⟶ G) (𝟙 X)).left ≫ (γ[G, X] : G ⊗ X ⟶ X).left = 𝟙 X.left := by
+    rw [← Over.comp_left, h2, Over.id_left]
+  refine ⟨(lift (1 : X ⟶ G) (𝟙 X)).left x, ?_, ?_⟩
+  · change (snd G X).left ((lift (1 : X ⟶ G) (𝟙 X)).left x) = x
+    rw [← Scheme.Hom.comp_apply, h1']; rfl
+  · rw [← Scheme.Hom.comp_apply, h2']; rfl
+
+end GlobalTheory.CompanionTheory.FreeQuotProof
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_orbit_self' : ∀ {S : Scheme.{0}} (G X : Over S) [GrpObj G] [ModObj G X] (x : X.left), x ∈ orbit G X x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FreeQuotProof.mem_orbit_self
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+namespace GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd
+
+private theorem exists_hom_of_comp_snd_eq_comp_smul {C : Type*} [Category C] [CartesianMonoidalCategory C]
+    {M X Y : C} [MonObj M] [ModObj M X] (a b : Y ⟶ M ⊗ X)
+    (h : b ≫ SemiCartesianMonoidalCategory.snd M X = a ≫ ModObj.smul (M := M) (X := X)) :
+    ∃ r : Y ⟶ M ⊗ X, r ≫ SemiCartesianMonoidalCategory.snd M X = a ≫ SemiCartesianMonoidalCategory.snd M X ∧
+      r ≫ ModObj.smul (M := M) (X := X) = b ≫ ModObj.smul (M := M) (X := X) := by
+  have key : ∀ c : Y ⟶ M ⊗ X, c ≫ ModObj.smul (M := M) (X := X) =
+      (c ≫ SemiCartesianMonoidalCategory.fst M X) • (c ≫ SemiCartesianMonoidalCategory.snd M X) := by
+    intro c
+    rw [CategoryTheory.Hom.smul_def, CartesianMonoidalCategory.lift_comp_fst_snd]
+  refine ⟨CartesianMonoidalCategory.lift
+    ((b ≫ SemiCartesianMonoidalCategory.fst M X) * (a ≫ SemiCartesianMonoidalCategory.fst M X))
+    (a ≫ SemiCartesianMonoidalCategory.snd M X), CartesianMonoidalCategory.lift_snd _ _, ?_⟩
+  rw [← CategoryTheory.Hom.smul_def, mul_smul, ← key a, ← h, ← key b]
+
+theorem orbit_trans {S : Scheme.{0}} (G X : Over S) [GrpObj G] [ModObj G X] (x y w : X.left) :
+    y ∈ orbit G X x → w ∈ orbit G X y → w ∈ orbit G X x := by
+  simp only [GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot.orbit, Set.mem_image, Set.mem_preimage, Set.mem_singleton_iff]
+  rintro ⟨p, hp, rfl⟩ ⟨q, hq, rfl⟩
+  obtain ⟨z, hz₁, hz₂⟩ := Scheme.Pullback.exists_preimage_pullback
+    (f := (ModObj.smul (M := G) (X := X)).left) (g := (SemiCartesianMonoidalCategory.snd G X).left)
+    p q hq.symm
+  have e₁ : (SemiCartesianMonoidalCategory.snd G X).left ≫ X.hom = (G ⊗ X).hom := Over.w _
+  have e₂ : (ModObj.smul (M := G) (X := X)).left ≫ X.hom = (G ⊗ X).hom := Over.w _
+  have hw : pullback.snd (ModObj.smul (M := G) (X := X)).left (SemiCartesianMonoidalCategory.snd G X).left ≫
+      (G ⊗ X).hom =
+      pullback.fst (ModObj.smul (M := G) (X := X)).left (SemiCartesianMonoidalCategory.snd G X).left ≫
+      (G ⊗ X).hom := by
+    rw [← e₂, pullback.condition_assoc, e₁, e₂]
+  obtain ⟨r, hr₁, hr₂⟩ := exists_hom_of_comp_snd_eq_comp_smul
+    (Y := Over.mk (pullback.fst (ModObj.smul (M := G) (X := X)).left
+      (SemiCartesianMonoidalCategory.snd G X).left ≫ (G ⊗ X).hom))
+    (Over.homMk (pullback.fst (ModObj.smul (M := G) (X := X)).left
+      (SemiCartesianMonoidalCategory.snd G X).left) rfl)
+    (Over.homMk (pullback.snd (ModObj.smul (M := G) (X := X)).left
+      (SemiCartesianMonoidalCategory.snd G X).left) hw)
+    (Over.OverMorphism.ext (by
+      simp only [Over.comp_left, Over.homMk_left]
+      exact pullback.condition.symm))
+  refine ⟨r.left z, ?_, ?_⟩
+  · have h₁ := congrArg Over.Hom.left hr₁
+    simp only [Over.comp_left, Over.homMk_left] at h₁
+    rw [← Scheme.Hom.comp_apply, h₁, Scheme.Hom.comp_apply, hz₁, hp]
+  · have h₂ := congrArg Over.Hom.left hr₂
+    simp only [Over.comp_left, Over.homMk_left] at h₂
+    rw [← Scheme.Hom.comp_apply, h₂, Scheme.Hom.comp_apply, hz₂]
+
+end GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_orbit_trans : ∀ {S : Scheme.{0}} (G X : Over S) [GrpObj G] [ModObj G X] (x y w : X.left), y ∈ orbit G X x → w ∈ orbit G X y → w ∈ orbit G X x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.orbit_trans
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+namespace GlobalTheory.CompanionTheory.PrimeAvoid
+
+theorem exists_basicOpen_between {X : Scheme.{0}} (U V₀ : X.Opens) (hU : IsAffineOpen U)
+    (hV : V₀ ≤ U) (K : Set X) (hK : K.Finite) (hKV : K ⊆ V₀) :
+    ∃ f : Γ(X, U), K ⊆ X.basicOpen f ∧ X.basicOpen f ≤ V₀ := by
+  classical
+  let W : Set (PrimeSpectrum Γ(X, U)) := hU.fromSpec ⁻¹' (V₀ : Set X)
+  have hWo : IsOpen W := (hU.fromSpec ⁻¹ᵁ V₀).isOpen
+  let I : Ideal Γ(X, U) := PrimeSpectrum.vanishingIdeal Wᶜ
+  let s : Set (Ideal Γ(X, U)) := PrimeSpectrum.asIdeal '' (hU.fromSpec ⁻¹' K)
+  have hs : s.Finite := (hK.preimage hU.fromSpec.isOpenEmbedding.injective.injOn).image _
+  have hnot : ¬ ((I : Set Γ(X, U)) ⊆ ⋃ P ∈ s, (P : Set Γ(X, U))) := by
+    intro h
+    obtain ⟨P, ⟨p, hpK, rfl⟩, hIp⟩ :=
+      (Ideal.subset_union_prime_finite (f := fun P : Ideal Γ(X, U) => P) hs ⊥ ⊥
+        (fun P hP _ _ => by obtain ⟨p, -, rfl⟩ := hP; exact p.isPrime)).1 h
+    have hpW : p ∈ W := hKV hpK
+    have hcl : p ∈ closure Wᶜ := by
+      rw [← PrimeSpectrum.zeroLocus_vanishingIdeal_eq_closure]
+      exact (PrimeSpectrum.mem_zeroLocus _ _).2 hIp
+    rw [hWo.isClosed_compl.closure_eq] at hcl
+    exact hcl hpW
+  obtain ⟨g, hgI, hgs⟩ := Set.not_subset.1 hnot
+  refine ⟨g, ?_, ?_⟩
+  · intro x hx
+    obtain ⟨p, rfl⟩ : x ∈ Set.range hU.fromSpec := by
+      rw [hU.range_fromSpec]
+      exact hV (hKV hx)
+    have hp : p ∈ hU.fromSpec ⁻¹ᵁ X.basicOpen g := by
+      rw [hU.fromSpec_preimage_basicOpen]
+      exact (PrimeSpectrum.mem_basicOpen g p).2 fun hg => hgs (Set.mem_biUnion ⟨p, hx, rfl⟩ hg)
+    exact hp
+  · intro x hx
+    obtain ⟨p, rfl⟩ : x ∈ Set.range hU.fromSpec := by
+      rw [hU.range_fromSpec]
+      exact X.basicOpen_le g hx
+    have hp : p ∈ hU.fromSpec ⁻¹ᵁ X.basicOpen g := hx
+    rw [hU.fromSpec_preimage_basicOpen] at hp
+    have hp' := (PrimeSpectrum.mem_basicOpen g p).1 hp
+    by_contra hpV
+    exact hp' ((PrimeSpectrum.mem_vanishingIdeal _ _).1 hgI p hpV)
+
+end GlobalTheory.CompanionTheory.PrimeAvoid
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_set_basic_open_affine : ∀ {X : Scheme.{0}} (U V₀ : X.Opens), IsAffineOpen U → V₀ ≤ U → ∀ K : Set X, K.Finite → K ⊆ V₀ → ∃ f : Γ(X, U), K ⊆ X.basicOpen f ∧ X.basicOpen f ≤ V₀ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PrimeAvoid.exists_basicOpen_between
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_flat_locally_free_affine : ∀ {Y S : Scheme.{0}} (g : Y ⟶ S) [IsFinite g] [Flat g] [LocallyOfFinitePresentation g] (s : S), ∃ W : S.Opens, s ∈ W ∧ IsAffineOpen W ∧ GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.FiniteFreeHom (g ∣_ W).appTop.hom := by
+  first | exact @GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.exists_affine_finiteFreeHom | exact GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.exists_affine_finiteFreeHom | (intros; apply GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.exists_affine_finiteFreeHom <;> assumption)
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd
+
+theorem finiteFreeHom_algebraMap_iff {A B : Type} [CommRing A] [CommRing B] [Algebra A B] :
+    FiniteFreeHom (algebraMap A B) ↔ Module.Free A B ∧ Module.Finite A B := by
+  have h : (algebraMap A B).toAlgebra = ‹Algebra A B› := Algebra.algebra_ext _ _ fun _ => rfl
+  simp only [GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.FiniteFreeHom]
+  rw [h]
+
+theorem finiteFreeHom_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C]
+    (f : A →+* B) (g : B →+* C) (hf : FiniteFreeHom f) (hg : FiniteFreeHom g) :
+    FiniteFreeHom (g.comp f) := by
+  letI := f.toAlgebra
+  letI := g.toAlgebra
+  letI := (g.comp f).toAlgebra
+  haveI : IsScalarTower A B C := IsScalarTower.of_algebraMap_eq fun _ => rfl
+  obtain ⟨hf₁, hf₂⟩ := hf
+  obtain ⟨hg₁, hg₂⟩ := hg
+  exact ⟨Module.Free.trans (S := B), Module.Finite.trans B C⟩
+
+theorem finiteFreeHom_ringEquiv {A B : Type} [CommRing A] [CommRing B] (e : A ≃+* B) :
+    FiniteFreeHom e.toRingHom := by
+  letI := e.toRingHom.toAlgebra
+  let l : A ≃ₗ[A] B := { e with map_smul' := fun a x => map_mul e a x }
+  exact ⟨Module.Free.of_equiv l, Module.Finite.equiv l⟩
+
+theorem finiteFreeHom_stableUnderComposition :
+    RingHom.StableUnderComposition (fun {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) =>
+      FiniteFreeHom f) := by
+  intro A B C _ _ _ f g hf hg
+  exact GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_comp f g hf hg
+
+theorem finiteFreeHom_respectsIso :
+    RingHom.RespectsIso (fun {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) =>
+      FiniteFreeHom f) :=
+  RingHom.StableUnderComposition.respectsIso GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_stableUnderComposition
+    fun e => GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_ringEquiv e
+
+theorem finiteFreeHom_isStableUnderBaseChange :
+    RingHom.IsStableUnderBaseChange (fun {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) =>
+      FiniteFreeHom f) := by
+  refine RingHom.IsStableUnderBaseChange.mk GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_respectsIso ?_
+  intro R S T _ _ _ _ _ h
+  obtain ⟨h₁, h₂⟩ := GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_algebraMap_iff.1 h
+  exact GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_algebraMap_iff.2 ⟨inferInstance, inferInstance⟩
+
+theorem finiteFreeHom_appTop_of_isPullback :
+    ∀ {P Q D W : Scheme.{0}} {u : P ⟶ Q} {v : P ⟶ D} {g : Q ⟶ W} {h : D ⟶ W} [IsAffine P] [IsAffine Q] [IsAffine D] [IsAffine W], IsPullback u v g h → GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.FiniteFreeHom g.appTop.hom → GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.FiniteFreeHom v.appTop.hom := by
+  intro P Q D W u v g h _ _ _ _ hpb hg
+  have hbc := RingHom.IsStableUnderBaseChange.pullback_fst_appTop @GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.FiniteFreeHom
+    GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_isStableUnderBaseChange GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_respectsIso h g hg
+  haveI : IsIso hpb.flip.isoPullback.hom.appTop := by
+    rw [← Scheme.Γ_map_op]
+    exact (Scheme.Γ.mapIso hpb.flip.isoPullback.op).isIso_hom
+  rw [← hpb.flip.isoPullback_hom_fst, Scheme.Hom.comp_appTop, CommRingCat.hom_comp]
+  exact (RingHom.RespectsIso.cancel_right_isIso GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_respectsIso _ _).2 hbc
+
+end GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_free_pullback_affine : ∀ {P Q D W : Scheme.{0}} {u : P ⟶ Q} {v : P ⟶ D} {g : Q ⟶ W} {h : D ⟶ W} [IsAffine P] [IsAffine Q] [IsAffine D] [IsAffine W], IsPullback u v g h → GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.FiniteFreeHom g.appTop.hom → GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.FiniteFreeHom v.appTop.hom := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.finiteFreeHom_appTop_of_isPullback
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+namespace GlobalTheory.CompanionTheory.PullbackRestrict
+
+theorem isPullback_restrict_opens :
+    ∀ {P Q Y S : Scheme.{0}} {c : P ⟶ Q} {v : P ⟶ Y} {g : Q ⟶ S} {p : Y ⟶ S},
+      IsPullback c v g p → ∀ (W : S.Opens) (D : Y.Opens), D ≤ p ⁻¹ᵁ W →
+        ∃ (h : D.toScheme ⟶ W.toScheme) (u : (v ⁻¹ᵁ D).toScheme ⟶ (g ⁻¹ᵁ W).toScheme),
+          IsPullback u (v ∣_ D) (g ∣_ W) h := by
+  intro P Q Y S c v g p H W D hD
+  have hbot : (Y.homOfLE hD ≫ p ∣_ W) ≫ W.ι = D.ι ≫ p := by
+    rw [Category.assoc, morphismRestrict_ι, ← Category.assoc, Scheme.homOfLE_ι]
+  have s : IsPullback ((v ⁻¹ᵁ D).ι ≫ c) (v ∣_ D) g ((Y.homOfLE hD ≫ p ∣_ W) ≫ W.ι) := by
+    rw [hbot]
+    exact (isPullback_morphismRestrict v D).flip.paste_horiz H
+  exact ⟨_, _, IsPullback.of_right' s (isPullback_morphismRestrict g W).flip⟩
+
+end GlobalTheory.CompanionTheory.PullbackRestrict
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pullback_restrict_open : ∀ {P Q Y S : Scheme.{0}} {c : P ⟶ Q} {v : P ⟶ Y} {g : Q ⟶ S} {p : Y ⟶ S}, IsPullback c v g p → ∀ (W : S.Opens) (D : Y.Opens), D ≤ p ⁻¹ᵁ W → ∃ (h : D.toScheme ⟶ W.toScheme) (u : (v ⁻¹ᵁ D).toScheme ⟶ (g ⁻¹ᵁ W).toScheme), IsPullback u (v ∣_ D) (g ∣_ W) h := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PullbackRestrict.isPullback_restrict_opens
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+namespace GlobalTheory.CompanionTheory.NormPrime
+
+open TensorProduct in
+
+theorem norm_one_tmul {A B K : Type} [CommRing A] [CommRing B] [Algebra A B] [Module.Free A B]
+    [Module.Finite A B] [Field K] [Algebra A K] (e : B) :
+    Algebra.norm K ((1 : K) ⊗ₜ[A] e : K ⊗[A] B) = algebraMap A K (Algebra.norm A e) := by
+  rw [Algebra.norm_apply, Algebra.norm_apply, ← LinearMap.det_baseChange]
+  congr 1
+  refine LinearMap.ext fun z => ?_
+  induction z using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x y => simp [LinearMap.baseChange_tmul]
+  | add x y hx hy => simp only [map_add, hx, hy]
+
+theorem norm_mem_comap {A B : Type} [CommRing A] [CommRing B] [Algebra A B] [Module.Free A B]
+    [Module.Finite A B] (e : B) (q : Ideal B) (he : e ∈ q) :
+    Algebra.norm A e ∈ q.comap (algebraMap A B) := by
+  set χ := (Algebra.lmul A B e).charpoly with hχ
+  have h2 : Polynomial.aeval e χ = 0 := by
+    apply Algebra.lmul_injective (R := A)
+    rw [map_zero, ← Polynomial.aeval_algHom_apply]
+    exact LinearMap.aeval_self_charpoly _
+  have h3 := congrArg (Polynomial.aeval e) (Polynomial.divX_mul_X_add χ)
+  rw [h2, map_add, map_mul, Polynomial.aeval_X, Polynomial.aeval_C] at h3
+  have h4 : algebraMap A B (χ.coeff 0) ∈ q := by
+    have h5 : algebraMap A B (χ.coeff 0) = -(Polynomial.aeval e χ.divX * e) :=
+      eq_neg_of_add_eq_zero_right h3
+    rw [h5]
+    exact q.neg_mem (q.mul_mem_left _ he)
+  rw [Algebra.norm_apply, LinearMap.det_eq_sign_charpoly_coeff]
+  exact Ideal.mul_mem_left _ _ (Ideal.mem_comap.2 h4)
+
+open TensorProduct in
+
+theorem norm_notMem_iff {A B : Type} [CommRing A] [CommRing B] [Algebra A B] [Module.Free A B]
+    [Module.Finite A B] (e : B) (p : Ideal A) (hp : p.IsPrime) :
+    Algebra.norm A e ∉ p ↔ ∀ q : Ideal B, q.IsPrime → q.comap (algebraMap A B) = p → e ∉ q := by
+  constructor
+  · intro hN q _ hc he
+    exact hN (hc ▸ norm_mem_comap e q he)
+  · intro H hN
+    have h0 : Algebra.norm p.ResidueField ((1 : p.ResidueField) ⊗ₜ[A] e : p.ResidueField ⊗[A] B) = 0 := by
+      rw [norm_one_tmul]
+      exact (Ideal.algebraMap_residueField_eq_zero).2 hN
+    have hnu : ¬ IsUnit ((1 : p.ResidueField) ⊗ₜ[A] e : p.ResidueField ⊗[A] B) := fun hu => by
+      have := hu.map (Algebra.norm p.ResidueField)
+      rw [h0] at this
+      exact not_isUnit_zero this
+    obtain ⟨m, hm, hem⟩ := exists_max_ideal_of_mem_nonunits hnu
+    let f : B →ₐ[A] p.ResidueField ⊗[A] B := Algebra.TensorProduct.includeRight
+    have hmp : m.IsPrime := hm.isPrime
+    refine H (m.comap f) (Ideal.comap_isPrime f m) ?_ (Ideal.mem_comap.2 hem)
+    ext a
+    have hfa : f (algebraMap A B a) =
+        algebraMap p.ResidueField (p.ResidueField ⊗[A] B) (algebraMap A p.ResidueField a) := by
+      rw [f.commutes, IsScalarTower.algebraMap_apply A p.ResidueField]
+    rw [Ideal.mem_comap, Ideal.mem_comap, hfa]
+    constructor
+    · intro ha
+      by_contra hap
+      have hne : algebraMap A p.ResidueField a ≠ 0 :=
+        fun h => hap ((Ideal.algebraMap_residueField_eq_zero).1 h)
+      exact hm.ne_top (Ideal.eq_top_of_isUnit_mem _ ha ((isUnit_iff_ne_zero.2 hne).map _))
+    · intro ha
+      rw [(Ideal.algebraMap_residueField_eq_zero).2 ha, map_zero]
+      exact m.zero_mem
+
+end GlobalTheory.CompanionTheory.NormPrime
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_not_mem_prime_iff : ∀ {A B : Type} [CommRing A] [CommRing B] [Algebra A B] [Module.Free A B] [Module.Finite A B] (e : B) (p : Ideal A), p.IsPrime → (Algebra.norm A e ∉ p ↔ ∀ q : Ideal B, q.IsPrime → q.comap (algebraMap A B) = p → e ∉ q) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.NormPrime.norm_notMem_iff
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+namespace GlobalTheory.CompanionTheory.PrimesToPts
+
+private theorem to_spec_gamma_bijective (X : Scheme.{0}) [IsAffine X] : Function.Bijective X.toSpecΓ := by
+  rw [← Scheme.isoSpec_hom]
+  refine ⟨fun a b h => ?_, fun y => ⟨X.isoSpec.inv y, Scheme.inv_hom_apply _ _⟩⟩
+  have h' := congrArg X.isoSpec.inv h
+  rwa [Scheme.hom_inv_apply, Scheme.hom_inv_apply] at h'
+
+theorem mem_basicOpen_iff_toSpecΓ {X : Scheme.{0}} (f : Γ(X, ⊤)) (x : X) :
+    x ∈ X.basicOpen f ↔ f ∉ (X.toSpecΓ x : PrimeSpectrum Γ(X, ⊤)).asIdeal := by
+  rw [← X.toSpecΓ_preimage_basicOpen f]
+  exact Iff.rfl
+
+theorem comap_toSpecΓ {P D : Scheme.{0}} (v : P ⟶ D) (z : P) :
+    (P.toSpecΓ z : PrimeSpectrum Γ(P, ⊤)).asIdeal.comap v.appTop.hom =
+      (D.toSpecΓ (v z) : PrimeSpectrum Γ(D, ⊤)).asIdeal := by
+  have h : D.toSpecΓ (v z) = Spec.map v.appTop (P.toSpecΓ z) := by
+    rw [← Scheme.Hom.comp_apply, Scheme.toSpecΓ_naturality, Scheme.Hom.comp_apply]
+  rw [h]
+  rfl
+
+theorem primes_to_pts : ∀ {P D : Scheme.{0}} [IsAffine P] [IsAffine D] (v : P ⟶ D) (N : Γ(D, ⊤)) (e : Γ(P, ⊤)), (∀ p : PrimeSpectrum Γ(D, ⊤), N ∉ p.asIdeal ↔ ∀ q : PrimeSpectrum Γ(P, ⊤), q.asIdeal.comap v.appTop.hom = p.asIdeal → e ∉ q.asIdeal) → ∀ y : D, y ∈ D.basicOpen N ↔ ∀ z : P, v z = y → z ∈ P.basicOpen e := by
+  intro P D _ _ v N e hN y
+  refine (GlobalTheory.CompanionTheory.PrimesToPts.mem_basicOpen_iff_toSpecΓ N y).trans ((hN (D.toSpecΓ y)).trans ?_)
+  constructor
+  · intro H z hz
+    refine (GlobalTheory.CompanionTheory.PrimesToPts.mem_basicOpen_iff_toSpecΓ e z).2 (H _ ?_)
+    exact (GlobalTheory.CompanionTheory.PrimesToPts.comap_toSpecΓ v z).trans (by rw [hz])
+  · intro H q hq
+    obtain ⟨z, rfl⟩ := (to_spec_gamma_bijective P).2 q
+    have hz : v z = y := by
+      apply (to_spec_gamma_bijective D).1
+      apply PrimeSpectrum.ext
+      exact (GlobalTheory.CompanionTheory.PrimesToPts.comap_toSpecΓ v z).symm.trans hq
+    exact (GlobalTheory.CompanionTheory.PrimesToPts.mem_basicOpen_iff_toSpecΓ e z).1 (H z hz)
+
+end GlobalTheory.CompanionTheory.PrimesToPts
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
+open scoped CategoryTheory.MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.FreeQuot
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.basic_open_norm_fibre_iff : ∀ {P D : Scheme.{0}} [IsAffine P] [IsAffine D] (v : P ⟶ D) (N : Γ(D, ⊤)) (e : Γ(P, ⊤)), (∀ p : PrimeSpectrum Γ(D, ⊤), N ∉ p.asIdeal ↔ ∀ q : PrimeSpectrum Γ(P, ⊤), q.asIdeal.comap v.appTop.hom = p.asIdeal → e ∉ q.asIdeal) → ∀ y : D, y ∈ D.basicOpen N ↔ ∀ z : P, v z = y → z ∈ P.basicOpen e := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.PrimesToPts.primes_to_pts
+end
+
+section
 section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry Opposite
 open scoped CategoryTheory.MonObj
@@ -171,3 +645,4 @@ open GlobalTheory.CompanionTheory.FreeQuotProof GlobalTheory.CompanionTheory.Hyp
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.orbit_affine_neighbourhood : ∀ {S : Scheme.{0}} (G X : Over S) [GrpObj G] [ModObj G X], IsFiniteLocallyFree G.hom → ∀ (x : X.left) (U : X.left.Opens), IsAffineOpen U → orbit G X x ⊆ U → ∃ (V : X.left.Opens) (W : S.Opens), x ∈ V ∧ IsAffineOpen V ∧ IsAffineOpen W ∧ V ≤ X.hom ⁻¹ᵁ W ∧ (γ[G, X] : G ⊗ X ⟶ X).left ⁻¹ᵁ V = (snd G X).left ⁻¹ᵁ V := by
   atlas_forward_decl GlobalTheory.CompanionTheory.FreeQuotProof.Nbhd.exists_stable_affine_nbhd
+end

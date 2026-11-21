@@ -1,6 +1,21 @@
 import Development.EtaleCohomology.EtaleSheaves.LCBijPf
-import Development.EtaleCohomology.EtaleSheaves.LSecGluePf
+import Development.EtaleCohomology.EtaleSheaves.LeafKumSpecPf
 
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
+
+namespace LateralTheory.E.L_sec_gluePf
+
+theorem typeSheaf {R : Type} [CommRing R] (F : Shv R) :
+    Presieve.IsSheaf Scheme.etaleTopology (F.obj ⋙ forget (ModuleCat.{1} (ULift.{1} R))) :=
+  (isSheaf_iff_isSheaf_of_type _ _).1 ((sheafCompose Scheme.etaleTopology (forget (ModuleCat.{1} (ULift.{1} R)))).obj F).cond
+
+end LateralTheory.E.L_sec_gluePf
+end
+end
+
+section
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTheory.E.t_E1Cut LateralTheory.E.LocallyConstantH0
 
@@ -26,3 +41,5 @@ theorem LCSurj_of (hL : LocForm) (hD : Descent) : LateralTheory.E.LCBijPf.LCSurj
   exact ⟨ψ, (sec_sep _ _ _ _ hψ).symm⟩
 
 end LateralTheory.E.LCSurjPf
+end
+end

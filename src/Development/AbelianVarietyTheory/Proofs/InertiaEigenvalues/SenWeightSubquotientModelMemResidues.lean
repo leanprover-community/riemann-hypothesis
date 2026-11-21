@@ -3,10 +3,46 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistedMode
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModelPushOfSurjective
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModelPreimageOfInjectiveFinDimRepModelHom
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModelObjAndAbc
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ModelSenWeightMemWeightResidues
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SenMultiplicitySubquotientLatticeLe
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SenWeightsCloseOfHeightGammaConditions
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmissibleLetterDataWindowArithmeticStatement
 
+section
+section
+open GlobalTheory.PhiGam GlobalTheory.AdmLoc GlobalTheory.Models
+open scoped LaurentSeries PowerSeries
+
+namespace GlobalTheory.Models
+
+theorem model_sen_mem : ∀ {k G : Type} [Field k] [Group G] {l n : ℕ} [Fact l.Prime] [CharP k l] [NeZero n] {R : RingPG k l} (F : DFun R n G) {r : ℕ} {Dt : TopData n r} (M : ModTh F Dt) (A : Ob k G) (N : Lats k n A.m), M.Model A N → ∀ i x, sen ((F.D A).γ i) (N i) x ≠ 0 → ∃ u ∈ Dt.Ut i, ((u - Dt.w i : ℤ) : k) = x := by
+  intro k G _ _ l n _ _ _ R F r Dt M A N hN i x hx
+  obtain ⟨B, Nb, A₁, j, p, hB, hj, hji, hp, hps, rfl⟩ := hN
+  have hle := GlobalTheory.T.senMultiplicity_subquotient_lattice_le F B A₁ A j p Dt.w Dt.wst Nb (M.base_obj B Nb hB) hj hji hp hps
+    (M.base_abc B Nb hB) i x
+  obtain ⟨μ, -, hs⟩ := M.base_sen B Nb hB
+  rw [hs i x] at hle
+  have h0 : resCount (Dt.Ut i) (Dt.w i) x ≠ 0 := by
+    intro h
+    rw [h] at hle
+    apply hx
+    simpa using hle
+  unfold resCount at h0
+  obtain ⟨u, hu⟩ := Multiset.card_pos_iff_exists_mem.1 (Nat.pos_of_ne_zero h0)
+  classical
+  rw [Multiset.mem_filter] at hu
+  exact ⟨u, hu.1, hu.2⟩
+
+end GlobalTheory.Models
+end
+
+open GlobalTheory.PhiGam GlobalTheory.AdmLoc GlobalTheory.Models
+open scoped LaurentSeries PowerSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.model_senWeight_mem_weight_residues : ∀ {k G : Type} [Field k] [Group G] {l n : ℕ} [Fact l.Prime] [CharP k l] [NeZero n] {R : RingPG k l} (F : DFun R n G) {r : ℕ} {Dt : TopData n r} (M : ModTh F Dt) (A : Ob k G) (N : Lats k n A.m), M.Model A N → ∀ i x, sen ((F.D A).γ i) (N i) x ≠ 0 → ∃ u ∈ Dt.Ut i, ((u - Dt.w i : ℤ) : k) = x := by
+  atlas_forward_decl GlobalTheory.Models.model_sen_mem
+end
+
+section
 section
 namespace GlobalTheory.Models
 open GlobalTheory.PhiGam GlobalTheory.AdmLoc GlobalTheory.Models
@@ -53,3 +89,4 @@ open scoped LaurentSeries PowerSeries
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.senWeight_subquotient_model_mem_residues : ∀ {k G : Type} [Field k] [Group G] {l n : ℕ} [Fact l.Prime] [CharP k l] [NeZero n] {R : RingPG k l} (F : DFun R n G) {r : ℕ} {Dt : TopData n r} (M : ModTh F Dt), Dt.T1 l → Dt.T2 l → Dt.T3 l → ∀ (A₁ A : Ob k G) (j : (Fin A₁.m → k) →ₗ[k] (Fin M.T.m → k)) (p : (Fin A₁.m → k) →ₗ[k] (Fin A.m → k)) (N : Lats k n A.m), IsHom A₁ M.T j → Function.Injective j → IsHom A₁ A p → Function.Surjective p → M.Model A N → ∀ i x, sen ((F.D A).γ i) (N i) x ≠ 0 → ∃ u ∈ Dt.U i, ((u - Dt.w i : ℤ) : k) = x := by
   atlas_forward_decl GlobalTheory.Models.ModTh.sen_model_subquot_mem_U
+end

@@ -7,15 +7,863 @@ import Development.AutomorphicSpectrum.Statements.GeometryStatements.PadicIntege
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.HodgeComparisonCompatibility
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.CmpSt
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.NumberField
-import Development.WeilBound.CoreStatements.FlagImmersions.GeoNumOneLinear
-import Development.WeilBound.CoreStatements.FlagImmersions.InvNatCastMem
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsMultiProjPrimeImageZ
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ProjDeg
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ProjContract
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFnDegRelDeg
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.GeoNum
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ExistsUnique
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PContractRelDimLe
+import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.FieldNumbersProjectionFormulaDegree
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualMapComp
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DiscriminantEigenProjector
 import Development.WeilBound.CoreStatements.FlagImmersions.ExistsResDegree
-import Development.WeilBound.CoreStatements.FlagImmersions.ValNeOfIntegral
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSmoothHermTrivLine
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValuationCoordsComplexPoint
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogResolutionPotentialPullback
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogResolutionReindexed
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsHermLineOfLocalSmooth
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FubiniStudyMetricSmooth
 import Development.WeilBound.CoreStatements.FlagImmersions.VertCloseStep
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HasReferenceOfSandwichAllPrimes
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerM1Nef
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.RealisationPullbackCompatible
 
+section
+noncomputable section
+
+namespace RootFieldNumerics.Ref
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar
+open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap pullDeg)
+open ReciprocityTheory.ChartRestriction.G.AI.I4 (imageZ IsPullHerm)
+
+section SlopeTestRemainingChoices
+
+open ReciprocityTheory.ChartRestriction.G.AI.I1 GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.Inter.PointVertical
+
+theorem image_dim_le_one {K K' : Type} [Fintype K] [Fintype K'] {ι : K → Type} {ι' : K' → Type} [∀ k, Fintype (ι k)]
+    [∀ k, Fintype (ι' k)] {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hv : IsBlockMap κ v) {F : Type} [Field F]
+    {V : Ideal (MRingOver F ι')} (hV : IsProjVarF V 1) {e : ℕ} (he : IsProjVarF (imageVar F v V) e) : e ≤ 1 := by
+  classical
+  have h1 : FieldNumbers.relDim V = ((1 : ℕ) : WithBot (WithTop ℤ)) :=
+    (FieldNumbers.relDim_eq_iff_hasRelDim V 1).mpr hV.2
+  have h2 : FieldNumbers.relDim (FieldNumbers.contractPrime (Targets.ProjContract.emb hv) V) =
+      ((e : ℕ) : WithBot (WithTop ℤ)) := by
+    refine (FieldNumbers.relDim_eq_iff_hasRelDim _ e).mpr ?_
+    show ringKrullDim _ = _
+    rw [← Targets.ProjContract.ringKrullDim_imageVar hv]
+    exact he.2
+  have h3 := FieldNumbers.ContractRelDimLe.proof F K K' (Targets.ProjContract.emb hv) ι' V
+    ((Bridge.isMultiProjPrime_iff V).mpr hV.1)
+  rw [h1, h2] at h3
+  exact_mod_cast h3
+
+theorem geoNum_one_linear {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (W : Ideal (MRing ι)) :
+    ∃ w : K → ℤ, (∀ k, 0 ≤ w k) ∧ ∀ a : K → ℤ, geoNum 1 W (fun _ => a) = ∑ k, a k * w k := by
+  by_cases h : IsRelevant W
+  · refine ⟨fun k => ∑ᶠ V ∈ divSupp W (X ⟨k, (h k).choose⟩),
+      (multAt (W ⊔ Ideal.span {(X ⟨k, (h k).choose⟩ : MRing ι)}) V : ℤ) * geoNum 0 V Fin.elim0, fun k => ?_, fun a => ?_⟩
+    · refine finsum_nonneg fun V => finsum_nonneg fun _ => mul_nonneg (Int.natCast_nonneg _) ?_
+      unfold geoNum
+      split_ifs
+      · exact Int.natCast_nonneg _
+      · exact le_rfl
+    · rw [geoNum, dif_pos h]
+      rfl
+  · refine ⟨0, fun _ => le_rfl, fun a => ?_⟩
+    rw [geoNum, dif_neg h]
+    simp
+
+end SlopeTestRemainingChoices
+
+open ReciprocityTheory.ChartRestriction.G.AI.I1 GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.Inter.PointVertical in
+
+theorem nefAt_pull {K K' : Type} [Fintype K] [Fintype K'] {ι : K → Type} {ι' : K' → Type} [∀ k, Fintype (ι k)]
+    [∀ k, Fintype (ι' k)] {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (hv : IsBlockMap κ v) {P : Ideal (MRing ι)}
+    {P' : Ideal (MRing ι')} (hP : P ≤ imageZ v P') {p : ℕ} (hp : p.Prime) {a : K → ℤ} (h : PB.NefAt P p a) :
+    PB.NefAt P' p (pullDeg κ a) := by
+  intro W hWm hPW hch hWd
+  have : Fact p.Prime := ⟨hp⟩
+  have hpW : ((p : ℕ) : MRing ι') ∈ W := hch ▸ ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.natCast_mem_of_charOf W
+  have hWp : IsProjVarF (W.map (red p)) 1 :=
+    ⟨isMultiProjPrime_red p hWm hpW, by rw [ringKrullDim_red p hpW, hWd]⟩
+  have hImm : IsMultiProjPrime (imageZ v W) := isMultiProjPrime_imageZ hv hWm
+  have hpI : ((p : ℕ) : MRing ι) ∈ imageZ v W := by
+    show rename v ((p : ℕ) : MRing ι) ∈ W
+    simpa using hpW
+  have hVm := isMultiProjPrime_red p hImm hpI
+  obtain ⟨D, hKD, hD⟩ := exists_dim_F p _ hVm
+  have hVi : IsProjVarF (imageVar (ZMod p) v (W.map (red p))) (D - Fintype.card K) := by
+    rw [imageVar_red p v hpW]
+    refine ⟨hVm, ?_⟩
+    rw [hD, Nat.sub_add_cancel hKD]
+  have hle := image_dim_le_one hv hWp hVi
+  obtain ⟨I', hI', -⟩ := Targets.ExistsUnique.full (ZMod p) ι'
+  obtain ⟨I, hI, -⟩ := Targets.ExistsUnique.full (ZMod p) ι
+  rw [geoNumStatement ι' p I' hI' W 1 _ hWm hpW hWp]
+  rcases hle.lt_or_eq with hlt | heq
+  · exact (Targets.ProjContract.full (ZMod p) K ι K' ι' I' hI' κ v _ 1 _ (fun _ => a) hv hWp hVi hlt).ge
+  · rw [heq] at hVi
+    choose i' hi' using hWp.1.2.2
+    rw [Targets.ProjDeg.of_found AutoClose.FieldNumbers_ProjectionFormulaDegree Targets.FnDegRelDeg.proof (ZMod p) ι ι'
+      I I' hI hI' κ v _ 1 (fun _ => a) i' hv hWp hVi hi']
+    refine mul_nonneg (Int.natCast_nonneg _) ?_
+    rw [imageVar_red p v hpW] at hVi ⊢
+    rw [← geoNumStatement ι p I hI (imageZ v W) 1 _ hImm hpI hVi]
+    refine h _ hImm (hP.trans (Ideal.comap_mono hPW)) ?_ ?_
+    · rw [← hch]
+      have e : (imageZ v W).comap (C : ℤ →+* MRing ι) = W.comap (C : ℤ →+* MRing ι') := by
+        ext n
+        show rename v (C n) ∈ W ↔ C n ∈ W
+        rw [rename_C]
+      exact congrArg (fun J : Ideal ℤ => (Submodule.IsPrincipal.generator J).natAbs) e
+    · rw [← ringKrullDim_red p hpI]
+      exact hVi.2
+
+theorem nefAt_of_nonneg {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (P : Ideal (MRing ι)) (p : ℕ)
+    {a : K → ℤ} (ha : ∀ k, 0 ≤ a k) : PB.NefAt P p a := by
+  intro W _ _ _ _
+  obtain ⟨w, hw, e⟩ := geoNum_one_linear W
+  rw [e]
+  exact Finset.sum_nonneg fun k _ => mul_nonneg (ha k) (hw k)
+
+theorem nefAt_add {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {P : Ideal (MRing ι)} {p : ℕ}
+    {a b : K → ℤ} (ha : PB.NefAt P p a) (hb : PB.NefAt P p b) : PB.NefAt P p (a + b) := by
+  intro W h1 h2 h3 h4
+  have ha' := ha W h1 h2 h3 h4
+  have hb' := hb W h1 h2 h3 h4
+  obtain ⟨w, -, e⟩ := geoNum_one_linear W
+  rw [e] at ha' hb' ⊢
+  simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
+  exact add_nonneg ha' hb'
+
+theorem nefAt_step {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ} (M : Top.RootModel Ψ N) (p : ℕ)
+    (h : ∀ mu : Top.Wt Ψ N, Top.Dominant mu → M.NefAt p mu 0) (τ : Ψ) (i : Fin N) :
+    PB.NefAt M.P p (-∑ k ∈ Finset.Iic i, M.xdeg (τ, k)) := by
+  intro W h1 h2 h3 h4
+  let mu : Top.Wt Ψ N := fun σ k => if σ = τ ∧ k ≤ i then 1 else 0
+  have hmu : Top.Dominant mu := by
+    intro σ a b hab
+    simp only [mu]
+    split_ifs with c1 c2
+    · exact le_rfl
+    · exact absurd ⟨c1.1, hab.trans c1.2⟩ c2
+    · exact zero_le_one
+    · exact le_rfl
+  have key := h mu hmu W ⟨h1, h2, h3, h4⟩
+  obtain ⟨w, -, e⟩ := geoNum_one_linear W
+  unfold Top.RootModel.curveDeg at key
+  rw [Fintype.sum_option, Fintype.sum_prod_type] at key
+  simp only [Top.RootModel.coef, Top.RootModel.line, zero_div, zero_mul, zero_add, M.x_deg] at key
+  rw [Finset.sum_eq_single τ (fun σ _ hσ => by simp [mu, hσ]) (by simp)] at key
+  have e2 : ∑ k : Fin N, -mu τ k * (geoNum 1 W (fun _ => M.xdeg (τ, k)) : ℝ) =
+      ((-∑ k ∈ Finset.Iic i, geoNum 1 W (fun _ => M.xdeg (τ, k)) : ℤ) : ℝ) := by
+    push_cast
+    rw [← Finset.sum_neg_distrib, ← Finset.sum_subset (Finset.subset_univ (Finset.Iic i))]
+    · refine Finset.sum_congr rfl fun k hk => ?_
+      simp [mu, Finset.mem_Iic.1 hk]
+    · intro k _ hk
+      have : ¬ k ≤ i := fun c => hk (Finset.mem_Iic.2 c)
+      simp [mu, this]
+  rw [e2] at key
+  have key' : 0 ≤ -∑ k ∈ Finset.Iic i, geoNum 1 W (fun _ => M.xdeg (τ, k)) := by exact_mod_cast key
+  simp only [e] at key' ⊢
+  convert key' using 1
+  simp only [Pi.neg_apply, Finset.sum_apply, neg_mul, Finset.sum_neg_distrib, Finset.sum_mul]
+  rw [Finset.sum_comm]
+
+end RootFieldNumerics.Ref
+end
+end
+
+section
+noncomputable section
+
+namespace RootFieldNumerics.Ref
+
+open AlgebraicGeometry CategoryTheory NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+
+section Proj
+
+open GlobalTheory.CompanionTheory.Ar.OrVert
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
+  {Xo : Moduli D l} {c : Coeff l} {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {S : Finset ℕ} {Ω : Type} [Field Ω]
+  {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {y : (Σ k, J k) → Ω}
+
+theorem exists_proj (𝔐 : HodgeCpt Y S y) (s : CMType H ⊕ CMType H) (q : Cpt 𝔐.ξ)
+    (hq : ∀ p ∈ S, ¬ InFibre 𝔐.ξ p q) (hd : ((discr E : ℤ) : Ω)⁻¹ ∈ regAt 𝔐.ξ q) :
+    ∃ T : Module.End Ω 𝔐.Li, (∀ v ∈ eigSp 𝔐.ρ (𝔐.emb s), T v = v) ∧ (∀ e ∈ 𝔐.M.lat q, T e ∈ 𝔐.V s q) ∧
+      ∀ e ∈ 𝔐.V s q, e ∈ 𝔐.M.lat q := by
+  haveI := Sandwich.charZero_of_hodgeCpt 𝔐
+  obtain ⟨n, a, cc, hsum, heq⟩ := ScaledCasimir.exists_scaledCasimir E
+  have hV : 𝔐.V s q = 𝔐.dR s q := Lat.patch_of_not S _ _ hq
+  have hd0 : ((discr E : ℤ) : Ω) ≠ 0 := Int.cast_ne_zero.2 (discr_ne_zero E)
+  have hσd : 𝔐.emb s (∑ m, cc m * a m) = ((discr E : ℤ) : Ω) := by rw [hsum, map_intCast]
+  have mem_iff : ∀ x : 𝔐.Li, x ∈ eigSp 𝔐.ρ (𝔐.emb s) ↔ ∀ b, 𝔐.ρ b x = 𝔐.emb s b • x := fun x => by
+    simp [eigSp, sub_eq_zero]
+  let T : Module.End Ω 𝔐.Li := ((discr E : ℤ) : Ω)⁻¹ • ∑ m, 𝔐.emb s (cc m) • 𝔐.ρ (a m)
+  have hT : ∀ x, T x = ((discr E : ℤ) : Ω)⁻¹ • ∑ m, 𝔐.emb s (cc m) • 𝔐.ρ (a m) x := fun x => by
+    simp [T, LinearMap.sum_apply]
+  refine ⟨T, fun v hv => ?_, fun e he => ?_, fun e he => ?_⟩
+  · have h1 : ∑ m, 𝔐.emb s (cc m) • 𝔐.ρ (a m) v = 𝔐.emb s (∑ m, cc m * a m) • v := by
+      simp only [(mem_iff v).1 hv, smul_smul, map_sum, map_mul, Finset.sum_smul]
+    rw [hT, h1, hσd, smul_smul, inv_mul_cancel₀ hd0, one_smul]
+  · rw [hV]
+    refine ⟨?_, ?_⟩
+    · rw [hT]
+      refine (𝔐.M.lat q).smul_mem ⟨_, hd⟩ (Submodule.sum_mem _ fun m _ => ?_)
+      exact (𝔐.M.lat q).smul_mem ⟨_, Sandwich.emb_mem 𝔐 s q (cc m)⟩ (Sandwich.lat_act 𝔐 q _ e he)
+    · show T e ∈ eigSp 𝔐.ρ (𝔐.emb s)
+      refine (mem_iff _).2 fun b => ?_
+      rw [hT, map_smul, heq Ω 𝔐.Li 𝔐.ρ (𝔐.emb s) b e, smul_comm]
+  · rw [hV] at he
+    exact he.1
+
+end Proj
+
+theorem exists_dual {Ω V : Type} [Field Ω] [AddCommGroup V] [Module Ω V] {r : ℕ} {b : Fin r → V}
+    (hb : LinearIndependent Ω b) : ∃ φ : Fin r → Module.Dual Ω V, ∀ a j, φ a (b j) = if a = j then 1 else 0 := by
+  have h := fun a : Fin r => LinearMap.exists_extend ((Finsupp.lapply a).comp hb.repr)
+  choose φ hφ using h
+  refine ⟨φ, fun a j => ?_⟩
+  have h1 := congrArg (fun f => f ⟨b j, Submodule.subset_span ⟨j, rfl⟩⟩) (hφ a)
+  simp only [LinearMap.comp_apply, Submodule.subtype_apply, Finsupp.lapply_apply] at h1
+  rw [h1, hb.repr_eq_single j _ rfl, Finsupp.single_apply]
+  simp [eq_comm]
+
+theorem dual_mem {Ω V : Type} [Field Ω] [AddCommGroup V] [Module Ω V] {r : ℕ} {b : Fin r → V} (A : Subring Ω)
+    (φ : Module.Dual Ω V) (hφ : ∀ j, φ (b j) ∈ A) {x : V} (hx : x ∈ Submodule.span A (Set.range b)) : φ x ∈ A := by
+  induction hx using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨j, rfl⟩ := hx
+    exact hφ j
+  | zero => simp
+  | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
+  | smul a x _ hx =>
+    rw [Subring.smul_def, map_smul, smul_eq_mul]
+    exact mul_mem a.2 hx
+
+theorem ratio_mem {Ω : Type} [Field Ω] (W : ValuationSubring Ω) {A A₀ t t₀ : Ω} {n : ℤ} (hn : n = 1 ∨ n = -1)
+    (n1 : A / t ^ n ≠ 0) (n0 : A₀ / t₀ ^ n ≠ 0) (v1 : A / t ^ n ∈ W) (v2 : (A / t ^ n)⁻¹ ∈ W)
+    (v3 : A₀ / t₀ ^ n ∈ W) (v4 : (A₀ / t₀ ^ n)⁻¹ ∈ W) (x1 : t₀ / t ∈ W) (x2 : t / t₀ ∈ W) :
+    A₀ / A ∈ W ∧ A / A₀ ∈ W := by
+  rcases hn with rfl | rfl
+  · simp only [zpow_one] at v1 v2 v3 v4 n1 n0
+    have a0 : A ≠ 0 := fun h => n1 (by simp [h])
+    have t0 : t ≠ 0 := fun h => n1 (by simp [h])
+    have a1 : A₀ ≠ 0 := fun h => n0 (by simp [h])
+    have t1 : t₀ ≠ 0 := fun h => n0 (by simp [h])
+    constructor
+    · have e : A₀ / A = (A₀ / t₀) * (A / t)⁻¹ * (t₀ / t) := by field_simp
+      rw [e]
+      exact mul_mem (mul_mem v3 v2) x1
+    · have e : A / A₀ = (A / t) * (A₀ / t₀)⁻¹ * (t / t₀) := by field_simp
+      rw [e]
+      exact mul_mem (mul_mem v1 v4) x2
+  · simp only [zpow_neg_one] at v1 v2 v3 v4 n1 n0
+    have a0 : A ≠ 0 := fun h => n1 (by simp [h])
+    have t0 : t ≠ 0 := fun h => n1 (by simp [h])
+    have a1 : A₀ ≠ 0 := fun h => n0 (by simp [h])
+    have t1 : t₀ ≠ 0 := fun h => n0 (by simp [h])
+    constructor
+    · have e : A₀ / A = (A₀ / t₀⁻¹) * (A / t⁻¹)⁻¹ * (t / t₀) := by field_simp
+      rw [e]
+      exact mul_mem (mul_mem v3 v2) x2
+    · have e : A / A₀ = (A / t⁻¹) * (A₀ / t₀⁻¹)⁻¹ * (t₀ / t) := by field_simp
+      rw [e]
+      exact mul_mem (mul_mem v1 v4) x1
+
+theorem inv_natCast_mem {Ω : Type} [Field Ω] (W : ValuationSubring Ω) (n : ℕ)
+    (h : ∀ p : ℕ, p.Prime → p ∣ n → (p : Ω)⁻¹ ∈ W) : (n : Ω)⁻¹ ∈ W := by
+  induction n using Nat.recOnMul with
+  | zero => simp
+  | one => simp
+  | prime p hp => exact h p hp dvd_rfl
+  | mul a b ha hb =>
+    rw [Nat.cast_mul, mul_inv]
+    exact mul_mem (ha fun p hp hd => h p hp (hd.mul_right b)) (hb fun p hp hd => h p hp (hd.mul_left a))
+
+theorem inv_mem_of_ne {Ω : Type} [Field Ω] [CharZero Ω] (W : ValuationSubring Ω) {p r : ℕ} (hp : p.Prime) (hr : r.Prime)
+    (hne : p ≠ r) (h : (p : Ω)⁻¹ ∉ W) : (r : Ω)⁻¹ ∈ W := by
+  by_contra h'
+  have key : ∀ n : ℕ, n ≠ 0 → (n : Ω)⁻¹ ∉ W → W.valuation (n : Ω) < 1 := by
+    intro n hn hW
+    have h0 : (n : Ω) ≠ 0 := Nat.cast_ne_zero.2 hn
+    by_contra hlt
+    apply hW
+    rw [← W.valuation_le_one_iff, map_inv₀]
+    exact inv_le_one_of_one_le₀ (not_lt.1 hlt)
+  have h1 := key p hp.ne_zero h
+  have h2 := key r hr.ne_zero h'
+  have hco : IsCoprime (p : ℤ) (r : ℤ) := Nat.isCoprime_iff_coprime.2 ((Nat.coprime_primes hp hr).2 hne)
+  obtain ⟨a, b, hab⟩ := hco
+  have e : (a : Ω) * p + b * r = 1 := by exact_mod_cast congrArg (Int.cast : ℤ → Ω) hab
+  have ha : W.valuation (a : Ω) ≤ 1 := (W.valuation_le_one_iff _).2 (intCast_mem W a)
+  have hb : W.valuation (b : Ω) ≤ 1 := (W.valuation_le_one_iff _).2 (intCast_mem W b)
+  have h3 : W.valuation ((a : Ω) * p + b * r) < 1 := by
+    refine Valuation.map_add_lt _ ?_ ?_
+    · rw [map_mul]; exact mul_lt_one_of_nonneg_of_lt_one_right ha zero_le h1
+    · rw [map_mul]; exact mul_lt_one_of_nonneg_of_lt_one_right hb zero_le h2
+  rw [e, map_one] at h3
+  exact lt_irrefl _ h3
+
+theorem exists_split (S : Finset ℕ) (m : ℕ) (hm : 0 < m) :
+    ∃ a b : ℕ, m = a * b ∧ (∀ p : ℕ, p.Prime → p ∣ a → p ∈ S) ∧ ∀ p : ℕ, p.Prime → p ∣ b → p ∉ S := by
+  induction m using Nat.recOnMul with
+  | zero => omega
+  | one => exact ⟨1, 1, rfl, fun p hp h => absurd (Nat.dvd_one.1 h) hp.ne_one,
+      fun p hp h => absurd (Nat.dvd_one.1 h) hp.ne_one⟩
+  | prime r hr =>
+    by_cases h : r ∈ S
+    · exact ⟨r, 1, (mul_one r).symm, fun p hp hd => ((Nat.prime_dvd_prime_iff_eq hp hr).1 hd) ▸ h,
+        fun p hp h => absurd (Nat.dvd_one.1 h) hp.ne_one⟩
+    · exact ⟨1, r, (one_mul r).symm, fun p hp h => absurd (Nat.dvd_one.1 h) hp.ne_one,
+        fun p hp hd => ((Nat.prime_dvd_prime_iff_eq hp hr).1 hd) ▸ h⟩
+  | mul x y hx hy =>
+    obtain ⟨a, b, e, h1, h2⟩ := hx (Nat.pos_of_mul_pos_right hm)
+    obtain ⟨a', b', e', h1', h2'⟩ := hy (Nat.pos_of_mul_pos_left hm)
+    refine ⟨a * a', b * b', by rw [e, e']; ring, fun p hp hd => ?_, fun p hp hd => ?_⟩
+    · exact ((Nat.Prime.dvd_mul hp).1 hd).elim (h1 p hp) (h1' p hp)
+    · exact ((Nat.Prime.dvd_mul hp).1 hd).elim (h2 p hp) (h2' p hp)
+
+open GlobalTheory.CompanionTheory.Ar.OrVert Top HodgeCpt in
+set_option maxHeartbeats 1000000 in
+
+theorem unit_off (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H)
+    (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F))
+    (Sys : PB.AnSys (Top.dimFl (CMType H) (D.p + D.q)) (Option (RootIx D))) (Fx : FixedData Y Sys)
+    (R : Top.RootModel (CMType H) (D.p + D.q)) (o₀ : RootOrigin Y ∅ R Fx)
+    (S : Finset ℕ) (M : Top.RootModel (CMType H) (D.p + D.q)) (o : RootOrigin Y S M Fx)
+    (i : R.Ω →+* M.Ω) (hi : i.comp o₀.g = o.g) (hdisc : ∀ p : ℕ, p.Prime → (p : ℤ) ∣ discr E → p ∈ S)
+    (r : RootIx D) (cM : (k : M.K) → M.ι k) (cR : (k : R.K) → R.ι k) (W : ValuationSubring M.Ω)
+    (h1 : ∀ k, M.y ⟨k, cM k⟩ ≠ 0) (h2 : ∀ k, R.y ⟨k, cR k⟩ ≠ 0) (h3 : ∀ k j, M.y ⟨k, j⟩ / M.y ⟨k, cM k⟩ ∈ W)
+    (h4 : ∀ k j, i (R.y ⟨k, j⟩ / R.y ⟨k, cR k⟩) ∈ W) (hS : ∀ p ∈ S, (p : M.Ω)⁻¹ ∈ W) :
+    i ((∏ k, R.y ⟨k, cR k⟩ ^ R.xdeg r k) * o₀.e r) / ((∏ k, M.y ⟨k, cM k⟩ ^ M.xdeg r k) * o.e r) ∈ W ∧
+      ((∏ k, M.y ⟨k, cM k⟩ ^ M.xdeg r k) * o.e r) / i ((∏ k, R.y ⟨k, cR k⟩ ^ R.xdeg r k) * o₀.e r) ∈ W := by
+  haveI : CharZero M.Ω := Sandwich.charZero_of_hodgeCpt o.𝔐
+  haveI : CharZero R.Ω := Sandwich.charZero_of_hodgeCpt o₀.𝔐
+  obtain ⟨q, hqc, hq⟩ := GlobalTheory.T.valuation_ring_centre_in_chart M.K M.ι M.Ω M.Ω M.y o.𝔐.X o.𝔐.ξ o.𝔐.all o.𝔐.tie (RingHom.id _) W cM h1 h3
+  obtain ⟨q₀, hqc₀, hq₀⟩ := GlobalTheory.T.valuation_ring_centre_in_chart R.K R.ι R.Ω M.Ω R.y o₀.𝔐.X o₀.𝔐.ξ o₀.𝔐.all o₀.𝔐.tie i W cR h2 h4
+  have hξ : o.𝔐.ξ ≫ o.𝔐.f = spMap i ≫ o₀.𝔐.ξ ≫ o₀.𝔐.f := by
+    rw [o.g_over, o₀.g_over, ← hi, OrVert.spMap_comp', Category.assoc]
+  have hy := GlobalTheory.T.hodge_comp_compare_generic E H D l Xo c Y S ∅ M.Ω R.Ω M.K R.K M.ι R.ι M.y R.y o.𝔐 o₀.𝔐 i hξ W q q₀ hq hq₀
+  obtain ⟨ι, hext, hspan, hpt, hW⟩ :=
+    GlobalTheory.T.hodge_comp_compare_flag E H D l Xo c Y S ∅ M.Ω R.Ω M.K R.K M.ι R.ι M.y R.y o.𝔐 o₀.𝔐 o₀.Fl i hξ
+  have hsl := hext.1
+  have hspanW := hW W.toSubring q q₀ hq.1 hq₀.1 hy
+  have hFl : ∀ s j, o.Fl.b s j = ι (o₀.Fl.b s j) := fun s j => (hpt _ _).1 (by
+    rw [o.g_flag, o₀.g_flag, ← hi, OrVert.dualMap_comp', OrVert.spMap_comp', Category.assoc])
+  have hWq : ∀ a ∈ regAt o.𝔐.ξ q, a ∈ W := hq.1
+  have hdW : ((discr E : ℤ) : M.Ω)⁻¹ ∈ W := by
+    have h := inv_natCast_mem W (discr E).natAbs fun p hp hd => hS p (hdisc p hp (Int.natCast_dvd.2 hd))
+    rcases Int.natAbs_eq (discr E) with e | e
+    · rw [e, Int.cast_natCast]; exact h
+    · rw [e, Int.cast_neg, Int.cast_natCast, inv_neg]; exact neg_mem h
+  have hdq : ((discr E : ℤ) : M.Ω)⁻¹ ∈ regAt o.𝔐.ξ q :=
+    hq.2 _ (intCast_mem _ _) (Int.cast_ne_zero.2 (discr_ne_zero E)) hdW
+  have hdq₀ : ((discr E : ℤ) : R.Ω)⁻¹ ∈ regAt o₀.𝔐.ξ q₀ :=
+    hq₀.2 _ (intCast_mem _ _) (Int.cast_ne_zero.2 (discr_ne_zero E)) (by rw [map_intCast]; exact hdW)
+  have hfib : ∀ p ∈ S, ¬ InFibre o.𝔐.ξ p q := fun p hp hin => by
+    have hp0 : (p : M.Ω) ≠ 0 := Nat.cast_ne_zero.2 (o.𝔐.S_prime p hp).ne_zero
+    exact hin ⟨hp0, natCast_mem _ p, hq.2 _ (natCast_mem _ p) hp0 (hS p hp)⟩
+  have key : ∀ (s : CMType H ⊕ CMType H) (k : Fin (labelRk D s)), ∃ (b : Fin (labelRk D s) → o.𝔐.Li)
+      (b₀ : Fin (labelRk D s) → o₀.𝔐.Li) (t : M.Ω) (t₀ : R.Ω),
+      (∀ j, flagStep M.Ω b j = flagStep M.Ω (o.Fl.b s) j) ∧ (o.𝔐.V s).IsFrameAt b q ∧
+      (∀ j, flagStep R.Ω b₀ j = flagStep R.Ω (o₀.Fl.b s) j) ∧ (o₀.𝔐.V s).IsFrameAt b₀ q₀ ∧
+      b k - t • o.Fl.b s k ∈ flagStep M.Ω (o.Fl.b s) k ∧ b₀ k - t₀ • o₀.Fl.b s k ∈ flagStep R.Ω (o₀.Fl.b s) k ∧
+      i t₀ / t ∈ W ∧ t / i t₀ ∈ W := by
+    intro s k
+    obtain ⟨T, hTe, hTq, hVl⟩ := exists_proj o.𝔐 s q hfib hdq
+    obtain ⟨T₀, hTe₀, hTq₀, hVl₀⟩ := exists_proj o₀.𝔐 s q₀ (fun p hp => absurd hp (Finset.notMem_empty p)) hdq₀
+    obtain ⟨U₀, hU₀, b₀, hf₀, hfr₀⟩ := o₀.Fl.sub s q₀ (Set.mem_univ _)
+    have hfr₀ := hfr₀ q₀ (Set.mem_univ _) hU₀
+    obtain ⟨U, hU, b, hf, hfr⟩ := o.Fl.sub s q (Set.mem_univ _)
+    have hfr := hfr q (Set.mem_univ _) hU
+    obtain ⟨φ, hφ⟩ := exists_dual hfr₀.1
+    have hbe₀ : ∀ j, b₀ j ∈ eigSp o₀.𝔐.ρ (o₀.𝔐.emb s) := fun j =>
+      flag_mem_eig o₀.𝔐 o₀.Fl s (hf₀ _ ▸ top_flag b₀ j)
+    have hbF : o.Fl.b s = fun a => ι (o₀.Fl.b s a) := funext (hFl s)
+    have hf' : ∀ j, flagStep M.Ω (fun a => ι (b₀ a)) j = flagStep M.Ω (o.Fl.b s) j := by
+      intro j
+      rw [hbF]
+      exact flagStep_map_eq hsl _ _ j (hf₀ j)
+    have hbe : ∀ j, ι (b₀ j) ∈ eigSp o.𝔐.ρ (o.𝔐.emb s) := fun j =>
+      flag_mem_eig o.𝔐 o.Fl s (hf' _ ▸ top_flag (fun a => ι (b₀ a)) j)
+    have hbin : ∀ j, b j ∈ Submodule.span M.Ω (Set.range fun a => ι (b₀ a)) := fun j =>
+      mem_span_of_flag _ (labelRk D s) (by rw [hf', ← hf]; exact top_flag b j)
+    obtain ⟨C1, C2⟩ := GlobalTheory.T.lattice_span_projection_bound M.Ω R.Ω i _ _ ι hext hspan W.toSubring (o₀.𝔐.M.lat q₀ : Set o₀.𝔐.Li)
+      (o.𝔐.M.lat q : Set o.𝔐.Li) _ b b₀ (fun a => (φ a).comp T₀) T 1 1 1 hspanW
+      (fun e he => by
+        have h := hTq e he
+        rw [hfr.2] at h
+        exact span_mono_ring hWq h)
+      (fun j => by rw [one_smul]; exact hTe _ (hbe j))
+      (fun j => by
+        rw [one_smul]
+        exact hVl₀ _ (by rw [hfr₀.2]; exact Submodule.subset_span ⟨j, rfl⟩))
+      (fun a j => by rw [LinearMap.comp_apply, hTe₀ _ (hbe₀ j), hφ])
+      (fun a e he => by
+        rw [one_mul]
+        refine hq₀.1 _ ?_
+        have h := hTq₀ e he
+        rw [hfr₀.2] at h
+        refine dual_mem _ (φ a) (fun j => ?_) h
+        rw [hφ]
+        split_ifs
+        · exact one_mem _
+        · exact zero_mem _)
+      (fun j => by
+        rw [one_smul]
+        exact hVl _ (by rw [hfr.2]; exact Submodule.subset_span ⟨j, rfl⟩)) hbin
+    obtain ⟨t, ht⟩ := flag_coef b (o.Fl.b s) hf k
+    obtain ⟨t₀, ht₀⟩ := flag_coef b₀ (o₀.Fl.b s) hf₀ k
+    have ht' : ι (b₀ k) - i t₀ • o.Fl.b s k ∈ flagStep M.Ω (o.Fl.b s) k := by
+      have h := mem_flagStep_map hsl (o₀.Fl.b s) k ht₀
+      rw [map_sub, hsl] at h
+      rw [hbF]
+      exact h
+    have c1 := GlobalTheory.T.flag_coefficient_ratio_integral M.Ω _ W.toSubring _ (o.Fl.b s) b (fun a => ι (b₀ a)) _ k t (i t₀) hfr.1 hf hf' C1 ht ht'
+    have c2 := GlobalTheory.T.flag_coefficient_ratio_integral M.Ω _ W.toSubring _ (o.Fl.b s) (fun a => ι (b₀ a)) b _ k (i t₀) t
+      (hext.2 _ b₀ hfr₀.1) hf' hf C2 ht' ht
+    simp only [map_one, one_mul] at c1 c2
+    exact ⟨b, b₀, t, t₀, hf, hfr, hf₀, hfr₀, ht, ht₀, c1, c2⟩
+  obtain ⟨b, b₀, t, t₀, hf, hfr, hf₀, hfr₀, ht, ht₀, x1, x2⟩ := key (rootIdx D r).1 (rootIdx D r).2
+  have u1 := GlobalTheory.T.root_lines_flag_degree E H D l Xo c Y S M.Ω M.K M.ι M.y o.𝔐 o.Fl M.xdeg o.e r q cM b t o.lines hqc hf hfr ht
+  have u0 := GlobalTheory.T.root_lines_flag_degree E H D l Xo c Y ∅ R.Ω R.K R.ι R.y o₀.𝔐 o₀.Fl R.xdeg o₀.e r q₀ cR b₀ t₀ o₀.lines hqc₀ hf₀
+    hfr₀ ht₀
+  generalize (∏ k, M.y ⟨k, cM k⟩ ^ M.xdeg r k) * o.e r = A at u1 ⊢
+  generalize (∏ k, R.y ⟨k, cR k⟩ ^ R.xdeg r k) * o₀.e r = A₀ at u0 ⊢
+  have v3 : i (A₀ / t₀ ^ rootSgn D r) ∈ W := hq₀.1 _ u0.2.1
+  have v4 : i ((A₀ / t₀ ^ rootSgn D r)⁻¹) ∈ W := hq₀.1 _ u0.2.2
+  have hsg : rootSgn D r = 1 ∨ rootSgn D r = -1 := by
+    unfold rootSgn
+    split_ifs <;> simp
+  rw [map_inv₀, map_div₀, map_zpow₀] at v4
+  rw [map_div₀, map_zpow₀] at v3
+  have n0' : i A₀ / i t₀ ^ rootSgn D r ≠ 0 := by
+    rw [← map_zpow₀, ← map_div₀]
+    exact (map_ne_zero i).2 u0.1
+  exact ratio_mem W hsg u1.1 n0' (hWq _ u1.2.1) (hWq _ u1.2.2) v3 v4 x1 x2
+
+theorem val_bound (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H)
+    (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F))
+    (Sys : PB.AnSys (Top.dimFl (CMType H) (D.p + D.q)) (Option (RootIx D))) (Fx : FixedData Y Sys)
+    (R : Top.RootModel (CMType H) (D.p + D.q)) (o₀ : RootOrigin Y ∅ R Fx) :
+    ∃ C₀ : ℝ, ∀ (S : Finset ℕ) (M : Top.RootModel (CMType H) (D.p + D.q)) (o : RootOrigin Y S M Fx)
+      (i : R.Ω →+* M.Ω), i.comp o₀.g = o.g → (∀ p : ℕ, p.Prime → (p : ℤ) ∣ discr E → p ∈ S) →
+      (∀ p ∈ S, ∃ κ, HT.IsCp p κ ∧ HT.Sandwich o.𝔐 p κ) →
+      ∃ q m : ℕ, 0 < q ∧ 0 < m ∧ (∀ p : ℕ, p.Prime → p ∣ m → p ∈ S) ∧
+        Real.log m ≤ q * (C₀ + ∑ p ∈ S, (if p = 2 then 2 else 1 / ((p : ℝ) - 1)) * Real.log p) ∧
+        ∀ (r : RootIx D) (cM : (k : M.K) → M.ι k) (cR : (k : R.K) → R.ι k) (W : ValuationSubring M.Ω),
+          (∀ k, M.y ⟨k, cM k⟩ ≠ 0) → (∀ k, R.y ⟨k, cR k⟩ ≠ 0) → (∀ k j, M.y ⟨k, j⟩ / M.y ⟨k, cM k⟩ ∈ W) →
+          (∀ k j, i (R.y ⟨k, j⟩ / R.y ⟨k, cR k⟩) ∈ W) →
+          (m : M.Ω) * (i ((∏ k, R.y ⟨k, cR k⟩ ^ R.xdeg r k) * o₀.e r) /
+            ((∏ k, M.y ⟨k, cM k⟩ ^ M.xdeg r k) * o.e r)) ^ q ∈ W ∧
+          (m : M.Ω) * (((∏ k, M.y ⟨k, cM k⟩ ^ M.xdeg r k) * o.e r) /
+            i ((∏ k, R.y ⟨k, cR k⟩ ^ R.xdeg r k) * o₀.e r)) ^ q ∈ W := by
+  obtain ⟨m₀, hm₀, hcore⟩ := OrVert.core E H D l Xo c Y Sys Fx R o₀
+  refine ⟨Real.log m₀, ?_⟩
+  intro S M o i hi hdisc hS
+  haveI : CharZero M.Ω := Sandwich.charZero_of_hodgeCpt o.𝔐
+  obtain ⟨q, m, hq, hm, hlog, hnum⟩ := GlobalTheory.T.log_denominator_bound_primes S m₀ o.𝔐.S_prime hm₀
+  obtain ⟨a, b, e, ha, hb⟩ := exists_split S m hm
+  have ha0 : 0 < a := Nat.pos_of_mul_pos_right (e ▸ hm)
+  have hb0 : 0 < b := Nat.pos_of_mul_pos_left (e ▸ hm)
+  have ham : a ≤ m := e ▸ Nat.le_mul_of_pos_right a hb0
+  refine ⟨q, a, hq, ha0, ha, le_trans (Real.log_le_log (by exact_mod_cast ha0) (by exact_mod_cast ham)) hlog, ?_⟩
+  intro r cM cR W h1 h2 h3 h4
+  by_cases hW : ∀ p ∈ S, (p : M.Ω)⁻¹ ∈ W
+  · obtain ⟨u1, u2⟩ := unit_off E H D l Xo c Y Sys Fx R o₀ S M o i hi hdisc r cM cR W h1 h2 h3 h4 hW
+    exact ⟨mul_mem (natCast_mem W a) (pow_mem u1 q), mul_mem (natCast_mem W a) (pow_mem u2 q)⟩
+  · push Not at hW
+    obtain ⟨p, hp, hpW⟩ := hW
+    have hbW : (b : M.Ω)⁻¹ ∈ W := inv_natCast_mem W b fun p' hp' hd =>
+      inv_mem_of_ne W (o.𝔐.S_prime p hp) hp' (fun h => hb p' hp' hd (h ▸ hp)) hpW
+    have hb' : (b : M.Ω) ≠ 0 := Nat.cast_ne_zero.2 hb0.ne'
+    have conv : ∀ x : M.Ω, (m : M.Ω) * x ∈ W → (a : M.Ω) * x ∈ W := fun x hx => by
+      have e' : (a : M.Ω) * x = (b : M.Ω)⁻¹ * ((m : M.Ω) * x) := by
+        rw [e]; push_cast; field_simp
+      rw [e']
+      exact mul_mem hbW hx
+    obtain ⟨κ, hκ, a1, a2⟩ := hcore S M o i hi hS r cM cR W h1 h2 h3 h4
+    exact ⟨conv _ (hnum M.Ω W κ hκ _ a1), conv _ (hnum M.Ω W κ hκ _ a2)⟩
+
+end RootFieldNumerics.Ref
+end
+end
+
+section
+noncomputable section
+
+namespace RootFieldNumerics.Ref
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar
+open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap pullDeg)
+open ReciprocityTheory.ChartRestriction.G.AI.I4 (imageZ IsPullHerm)
+open ReciprocityTheory.AnForm.M
+open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter (pullHerm)
+
+namespace Flat
+
+open GlobalTheory.CompanionTheory.Ar.LocVal
+
+variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
+
+theorem aeval_eq_eval (z : (Σ k, ι k) → ℂ) (f : MRing ι) :
+    aeval z f = eval z (map (Int.castRingHom ℂ) f) := by
+  rw [eval_map, aeval_def]
+  rfl
+
+theorem mem_ptsOver {P : Ideal (MRing ι)} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts P) : z ∈ Small.ptsOver ℂ P :=
+  ⟨hz.1, fun f hf => by rw [aeval_eq_eval]; exact hz.2 f hf⟩
+
+theorem analytic_aeval (f : MRing ι) (z : (Σ k, ι k) → ℂ) :
+    AnalyticAt ℂ (fun z : (Σ k, ι k) → ℂ => aeval z f) z := by
+  simp only [aeval_eq_eval]
+  exact AnalyticOnNhd.eval_mvPolynomial _ _ (Set.mem_univ _)
+
+def Rep (y : (Σ k, ι k) → Ω) (a : K → ℤ) (ks : K) (d : ι ks × MRing ι × MRing ι) : Prop :=
+  ∃ dg dh : K → ℕ, IsMultiHomog d.2.1 dg ∧ IsMultiHomog d.2.2 dh ∧ (∀ k, (dg k : ℤ) = dh k + a k) ∧
+    aeval y d.2.1 = y ⟨ks, d.1⟩ * aeval y d.2.2
+
+def NZ {ks : K} (d : ι ks × MRing ι × MRing ι) (z : (Σ k, ι k) → ℂ) : Prop :=
+  z ⟨ks, d.1⟩ ≠ 0 ∧ aeval z d.2.1 ≠ 0 ∧ aeval z d.2.2 ≠ 0
+
+def rho {ks : K} (d : ι ks × MRing ι × MRing ι) (z : (Σ k, ι k) → ℂ) : ℂ :=
+  z ⟨ks, d.1⟩ * aeval z d.2.2 / aeval z d.2.1
+
+theorem rho_ne {ks : K} {d : ι ks × MRing ι × MRing ι} {z : (Σ k, ι k) → ℂ} (h : NZ d z) : rho d z ≠ 0 :=
+  div_ne_zero (mul_ne_zero h.1 h.2.2) h.2.1
+
+theorem isOpen_NZ {ks : K} (d : ι ks × MRing ι × MRing ι) : IsOpen {z | NZ d z} := by
+  have c1 : Continuous fun z : (Σ k, ι k) → ℂ => aeval z d.2.1 :=
+    continuous_iff_continuousAt.2 fun z => (analytic_aeval _ z).continuousAt
+  have c2 : Continuous fun z : (Σ k, ι k) → ℂ => aeval z d.2.2 :=
+    continuous_iff_continuousAt.2 fun z => (analytic_aeval _ z).continuousAt
+  exact (isOpen_ne_fun (continuous_apply _) continuous_const).inter
+    ((isOpen_ne_fun c1 continuous_const).inter (isOpen_ne_fun c2 continuous_const))
+
+theorem analytic_rho {ks : K} {d : ι ks × MRing ι × MRing ι} {z : (Σ k, ι k) → ℂ} (h : NZ d z) :
+    AnalyticAt ℂ (rho d) z := by
+  have a0 : AnalyticAt ℂ (fun z : (Σ k, ι k) → ℂ => z ⟨ks, d.1⟩) z :=
+    (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Σ k, ι k => ℂ) ⟨ks, d.1⟩).analyticAt z
+  exact (a0.mul (analytic_aeval _ z)).div (analytic_aeval _ z) h.2.1
+
+theorem rho_eq {y : (Σ k, ι k) → Ω} {a : K → ℤ} {ks : K} {d d' : ι ks × MRing ι × MRing ι}
+    (h : Rep y a ks d) (h' : Rep y a ks d') {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y))
+    (n : NZ d z) (n' : NZ d' z) : rho d z = rho d' z := by
+  obtain ⟨dg, dh, hg, hh, hd, e⟩ := h
+  obtain ⟨dg', dh', hg', hh', hd', e'⟩ := h'
+  have h1 := homog_mul (homog_mul (homog_X ks d.1) hh) hg'
+  have h2 := homog_neg (homog_mul (homog_mul (homog_X ks d'.1) hh') hg)
+  have h3 := homog_add h1 (by
+    convert h2 using 1
+    funext k
+    have a1 := hd k
+    have a2 := hd' k
+    simp only [Pi.add_apply]
+    omega)
+  have h4 := aeval_eq_zero_of (mem_ptsOver hz) h3 (by
+    simp only [map_add, map_neg, map_mul, aeval_X, e, e']
+    ring)
+  simp only [map_add, map_neg, map_mul, aeval_X] at h4
+  unfold rho
+  rw [div_eq_div_iff n.2.1 n'.2.1]
+  linear_combination h4
+
+theorem NZ_smul {y : (Σ k, ι k) → Ω} {a : K → ℤ} {ks : K} {d : ι ks × MRing ι × MRing ι}
+    (h : Rep y a ks d) {z : (Σ k, ι k) → ℂ} (n : NZ d z) {c : K → ℂ} (hc : ∀ k, c k ≠ 0) :
+    NZ d (fun p => c p.1 * z p) ∧ Real.log ‖rho d (fun p => c p.1 * z p)‖ =
+      Real.log ‖rho d z‖ + ∑ k, (((Pi.single ks 1 - a : K → ℤ) k : ℤ) : ℝ) * Real.log ‖c k‖ := by
+  obtain ⟨dg, dh, hg, hh, hd, e⟩ := h
+  have p1 : (∏ k, c k ^ dg k) ≠ 0 := Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (hc k)
+  have p2 : (∏ k, c k ^ dh k) ≠ 0 := Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (hc k)
+  have e1 := aeval_scale hg c z
+  have e2 := aeval_scale hh c z
+  refine ⟨⟨mul_ne_zero (hc _) n.1, by rw [e1]; exact mul_ne_zero p1 n.2.1, by rw [e2]; exact mul_ne_zero p2 n.2.2⟩, ?_⟩
+  have e3 : rho d (fun p => c p.1 * z p) = rho d z * (c ks * (∏ k, c k ^ dh k) / ∏ k, c k ^ dg k) := by
+    unfold rho
+    rw [e1, e2]
+    have := n.2.1
+    field_simp
+  have hl : ∀ w : K → ℕ, Real.log ‖∏ k, c k ^ w k‖ = ∑ k, (w k : ℝ) * Real.log ‖c k‖ := fun w => by
+    rw [norm_prod, Real.log_prod (fun k _ => norm_ne_zero_iff.2 (pow_ne_zero _ (hc k)))]
+    simp only [norm_pow, Real.log_pow]
+  rw [e3, norm_mul, Real.log_mul (norm_ne_zero_iff.2 (rho_ne n))
+    (norm_ne_zero_iff.2 (div_ne_zero (mul_ne_zero (hc _) p2) p1)), norm_div, norm_mul,
+    Real.log_div (mul_ne_zero (norm_ne_zero_iff.2 (hc _)) (norm_ne_zero_iff.2 p2)) (norm_ne_zero_iff.2 p1),
+    Real.log_mul (norm_ne_zero_iff.2 (hc _)) (norm_ne_zero_iff.2 p2), hl, hl]
+  congr 1
+  have e4 : ∀ k, (((Pi.single ks 1 - a : K → ℤ) k : ℤ) : ℝ) * Real.log ‖c k‖ =
+      (if k = ks then Real.log ‖c k‖ else 0) + (dh k : ℝ) * Real.log ‖c k‖ - (dg k : ℝ) * Real.log ‖c k‖ := by
+    intro k
+    have a1 : (dg k : ℝ) = dh k + a k := by exact_mod_cast hd k
+    rw [a1]
+    by_cases hk : k = ks
+    · subst hk
+      simp
+      ring
+    · simp [hk]
+      ring
+  simp only [e4, Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+
+theorem exists_flat (y : (Σ k, ι k) → Ω) (hP : IsMultiHomogIdeal (mCoordIdeal y)) (a : K → ℤ) (ks : K)
+    (hcov : ∀ z ∈ mcPts (mCoordIdeal y), ∃ d, Rep y a ks d ∧ NZ d z) :
+    ∃ T : HermLine ι, IsSmoothHerm T ∧ T.a = Pi.single ks 1 - a ∧
+      ∀ (D : ℕ) (J : Ideal (MRing ι)) (R : AnLogRes (mCoordIdeal y) J D), Chg.IsFlatOn R T := by
+  classical
+  let F : HermLine ι := GroundTheory.Heights₂.Heights.LowerBoundFree.fsHerm ι (Pi.single ks 1 - a)
+  have hF : IsSmoothHerm F := GlobalTheory.CompanionTheory.Ar.PB.StepW.fsHerm_isSmoothHerm K ι _
+  have hFa : F.a = Pi.single ks 1 - a := rfl
+  let ψ : ((Σ k, ι k) → ℂ) → ℝ := fun z =>
+    if h : ∃ d, Rep y a ks d ∧ NZ d z then Real.log ‖rho h.choose z‖ else 0
+  have hψ : ∀ z ∈ mcPts (mCoordIdeal y), ∀ d, Rep y a ks d → NZ d z → ψ z = Real.log ‖rho d z‖ := by
+    intro z hz d h1 h2
+    have h : ∃ d, Rep y a ks d ∧ NZ d z := ⟨d, h1, h2⟩
+    simp only [ψ, dif_pos h]
+    rw [rho_eq h.choose_spec.1 h1 hz h.choose_spec.2 h2]
+  obtain ⟨B, hBa, hBs, hB⟩ := GlobalTheory.CompanionTheory.Ar.PB.exists_hermLine_of_local_smooth K ι (mCoordIdeal y)
+    (fun z => ψ z - Real.log (F.h z)) hP (by
+      rintro z hz z' ⟨c, hc, rfl⟩
+      obtain ⟨d, h1, h2⟩ := hcov z hz
+      obtain ⟨n1, n2⟩ := NZ_smul h1 h2 hc
+      have hz' := mcPts_smul hP c hc hz
+      beta_reduce
+      rw [hψ _ hz' d h1 n1, hψ _ hz d h1 h2, n2, Chg.log_h_smul F hc hz.1, hFa]
+      ring) (by
+      intro z hz
+      obtain ⟨d, h1, h2⟩ := hcov z hz
+      have ho : IsOpen {z : (Σ k, ι k) → ℂ | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} := by
+        rw [Set.setOf_forall]
+        refine isOpen_iInter_of_finite fun k => ?_
+        rw [Set.setOf_exists]
+        exact isOpen_iUnion fun i => isOpen_ne_fun (continuous_apply _) continuous_const
+      refine ⟨{z | NZ d z} ∩ {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0}, fun z => Real.log ‖rho d z‖ - Real.log (F.h z),
+        (isOpen_NZ d).inter ho, ⟨h2, hz.1⟩, ?_, ?_⟩
+      · refine ContDiffOn.sub ?_ ((hF.mono Set.inter_subset_right).log fun w hw => (F.pos w hw.2).ne')
+        intro w hw
+        have a1 : ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (rho d) w :=
+          ((analytic_rho hw.1).contDiffAt (n := ((⊤ : ℕ∞) : WithTop ℕ∞))).restrict_scalars ℝ
+        exact ((a1.norm ℝ (rho_ne hw.1)).log (norm_ne_zero_iff.2 (rho_ne hw.1))).contDiffWithinAt
+      · intro w hw
+        beta_reduce
+        rw [hψ w hw.2 d h1 hw.1.1])
+  refine ⟨B.tensor F, ContDiffOn.mul hBs hF, by show B.a + F.a = _; rw [hBa, zero_add, hFa], ?_⟩
+  intro D J R x _
+  have hx := R.mem x x (R.mem_U x)
+  obtain ⟨d, h1, h2⟩ := hcov _ hx
+  have hl : ∀ j z, z ∈ (R.A.chart j).target ∩ (R.A.chart j).symm ⁻¹' R.U x →
+      AnalyticAt ℂ (fun z => R.lift x ((R.A.chart j).symm z)) z := fun j z hz =>
+    AnalyticAt.pi fun p => R.holo x p j z hz
+  have hf : ∀ f : MRing ι, R.A.HoloOn (R.U x) fun w => aeval (R.lift x w) f := fun f j z hz =>
+    (analytic_aeval f _).comp (hl j z hz)
+  obtain ⟨V0, o0, m0, s0, L0, l0, e0⟩ := Chg.Twist.exists_log R.A (R.isOpen_U x) (R.holo x ⟨ks, d.1⟩) (R.mem_U x) h2.1
+  obtain ⟨V1, o1, m1, -, L1, l1, e1⟩ := Chg.Twist.exists_log R.A (R.isOpen_U x) (hf d.2.1) (R.mem_U x) h2.2.1
+  obtain ⟨V2, o2, m2, -, L2, l2, e2⟩ := Chg.Twist.exists_log R.A (R.isOpen_U x) (hf d.2.2) (R.mem_U x) h2.2.2
+  refine ⟨V0 ∩ V1 ∩ V2, (o0.inter o1).inter o2, ⟨⟨m0, m1⟩, m2⟩, fun w => L0 w + L2 w - L1 w, ?_, ?_⟩
+  · rintro j z ⟨hz, ⟨z0, z1⟩, z2⟩
+    exact ((l0 j z ⟨hz, z0⟩).add (l2 j z ⟨hz, z2⟩)).sub (l1 j z ⟨hz, z1⟩)
+  · rintro w ⟨⟨w0, w1⟩, w2⟩
+    have hw := R.mem x w (s0 w0)
+    obtain ⟨n0, f0⟩ := e0 w w0
+    obtain ⟨n1, f1⟩ := e1 w w1
+    obtain ⟨n2, f2⟩ := e2 w w2
+    have hn : NZ d (R.lift x w) := ⟨n0, n1, n2⟩
+    show Real.log (B.h (R.lift x w) * F.h (R.lift x w)) - 0 = _
+    rw [Real.log_mul (B.pos _ hw.1).ne' (F.pos _ hw.1).ne', hB _ hw, hψ _ hw d h1 hn]
+    simp only [Complex.sub_re, Complex.add_re, f0, f1, f2, rho]
+    rw [norm_div, norm_mul, Real.log_div (mul_ne_zero (norm_ne_zero_iff.2 n0) (norm_ne_zero_iff.2 n2))
+      (norm_ne_zero_iff.2 n1), Real.log_mul (norm_ne_zero_iff.2 n0) (norm_ne_zero_iff.2 n2)]
+    ring
+
+theorem val_ne_of_integral {A : Type} [CommRing A] [Algebra A Ω] (W : Subring Ω) (φ : W →+* ℂ)
+    (hφ : ∀ a : W, φ a ≠ 0 → IsUnit a) (hA : ∀ a : A, algebraMap A Ω a ∈ W) {r t : Ω} (hr : r ∈ W)
+    (ht : IsIntegral A t) (hrt : r * t ∈ W) (h : φ ⟨_, hrt⟩ ≠ 0) : φ ⟨r, hr⟩ ≠ 0 := by
+  intro h0
+  let ρ : A →+* W := (algebraMap A Ω).codRestrict W hA
+  obtain ⟨p, hp, e⟩ := ht
+  have e1 : (p.map ρ).eval₂ W.subtype t = 0 := by
+    rw [Polynomial.eval₂_map]
+    exact e
+  have e2 := Polynomial.scaleRoots_eval₂_eq_zero W.subtype (s := (⟨r, hr⟩ : W)) e1
+  have e3 : ((p.map ρ).scaleRoots ⟨r, hr⟩).eval (⟨_, hrt⟩ : W) = 0 := by
+    apply Subtype.ext
+    have := Polynomial.eval₂_at_apply (p := (p.map ρ).scaleRoots ⟨r, hr⟩) W.subtype (⟨_, hrt⟩ : W)
+    exact this.symm.trans e2
+  have e4 := congrArg φ e3
+  rw [← Polynomial.eval₂_at_apply, Polynomial.eval₂_eq_eval_map, Polynomial.map_scaleRoots _ _ _
+    (by simp [(hp.map ρ).leadingCoeff]), h0, Polynomial.scaleRoots_zero] at e4
+  simp [((hp.map ρ).map φ).leadingCoeff, h] at e4
+
+end Flat
+
+theorem exists_line {K₀ K : Type} [Fintype K₀] [Fintype K] [DecidableEq K] {ι₀ : K₀ → Type}
+    {ι : K → Type} [∀ k, Fintype (ι₀ k)] [∀ k, Fintype (ι k)] {Ω₀ Ω : Type} [Field Ω₀] [Field Ω]
+    (y₀ : (Σ k, ι₀ k) → Ω₀) (y : (Σ k, ι k) → Ω) (i : Ω₀ →+* Ω) {κ : K₀ → K} {v : (Σ k, ι₀ k) → Σ k, ι k}
+    (hv : IsBlockMap κ v) (hy : ∀ p, y (v p) = i (y₀ p)) {D : ℕ} (hA : IsArithVar (mCoordIdeal y) (D + 1))
+    (A : HermLine ι₀) (hAs : IsSmoothHerm A) {m l : ℕ} (s : Fin l → Ω₀)
+    (hs : ∀ j, s j ∈ chartLatNm y₀ (fun k => m * A.a k - 1) 1)
+    (hs' : ∀ z ∈ Small.ptsOver ℂ (mCoordIdeal y₀),
+      ∃ (j : Fin l) (val : ℂ), val ≠ 0 ∧ Small.HasVal y₀ (fun k => m * A.a k - 1) (s j) z val)
+    (ks : K) (hks : ks ∉ Set.range κ) (e : Fin l ≃ ι ks) (he : ∀ j, y ⟨ks, e j⟩ = i (s j)) (n : ℕ) :
+    ∃ H : HermLine ι, IsSmoothHerm H ∧ H.a = (n : ℤ) • (pullDeg κ 1 + Pi.single ks 1) ∧
+      ∀ (J : Ideal (MRing ι)) (R : AnLogRes (mCoordIdeal y) J D),
+        PB.SamePot R.A Set.univ (potOf R H) ((potOf R (pullHerm hv A)).rsmul ((n : ℝ) * m)) := by
+  classical
+  have hP : IsMultiHomogIdeal (mCoordIdeal y) := hA.2.1.2.1
+  have hren : ∀ f : MRing ι₀, aeval y (rename v f) = i (aeval y₀ f) := fun f => by
+    induction f using MvPolynomial.induction_on with
+    | C a => simp
+    | add p q hp hq => simp only [map_add, hp, hq]
+    | mul_X p n hp => simp only [map_mul, hp, rename_X, aeval_X, hy]
+  have hle : mCoordIdeal y₀ ≤ imageZ v (mCoordIdeal y) := by
+    intro f hf
+    let Φ : MvPolynomial K₀ Ω₀ →+* MvPolynomial K Ω :=
+      MvPolynomial.eval₂Hom (MvPolynomial.C.comp i) fun k => MvPolynomial.X (κ k)
+    have key : ∀ f : MRing ι₀, mConeMap y (rename v f) = Φ (mConeMap y₀ f) := by
+      intro f
+      induction f using MvPolynomial.induction_on with
+      | C a => simp [mConeMap, Φ]
+      | add p q hp hq => simp only [map_add, hp, hq]
+      | mul_X p n hp =>
+        simp only [map_mul, hp, rename_X]
+        congr 1
+        simp [mConeMap, Φ, hy, hv.2.2.1]
+    have hf' : mConeMap y₀ f = 0 := hf
+    show mConeMap y (rename v f) = 0
+    rw [key, hf', map_zero]
+  set a₀ : K₀ → ℤ := fun k => m * A.a k - 1 with ha₀
+  have hprod : ∀ {G : Type} [Field G] (x : K → G) (b : K₀ → ℤ), ∏ k, x k ^ pullDeg κ b k = ∏ k, x (κ k) ^ b k := by
+    intro G _ x b
+    symm
+    refine Finset.prod_of_injOn κ hv.1.injOn (by simp) (fun k _ hk => ?_) fun k _ => ?_
+    · rw [pullDeg, Function.extend_apply' _ _ _ (by simpa using hk)]
+      simp
+    · rw [pullDeg, hv.1.extend_apply]
+  have hcov : ∀ z ∈ mcPts (mCoordIdeal y), ∃ d, Flat.Rep y (pullDeg κ a₀) ks d ∧ Flat.NZ d z := by
+    intro z hz
+    have hz₀ := Chg.mem_mcPts_restr hv hle hz
+    obtain ⟨j, val, hval, dg, dh, g, h, hg, hh, hd, e1, e2, e3⟩ := hs' _ (Flat.mem_ptsOver hz₀)
+    have hG := Chg.DegBlock.isMultiHomog_rename' hv hg
+    have hH := Chg.DegBlock.isMultiHomog_rename' hv hh
+    have hD : ∀ k, ((Function.extend κ dg 0 k : ℕ) : ℤ) = (Function.extend κ dh 0 k : ℕ) + pullDeg κ a₀ k := by
+      intro k
+      by_cases hk : ∃ b, κ b = k
+      · obtain ⟨b, rfl⟩ := hk
+        simp only [pullDeg, hv.1.extend_apply]
+        exact hd b
+      · simp [pullDeg, Function.extend_apply' _ _ _ hk]
+    have hE : aeval y (rename v g) = y ⟨ks, e j⟩ * aeval y (rename v h) := by
+      rw [hren, hren, e1, map_mul, he]
+    have z2 : aeval z (rename v h) ≠ 0 := by rw [aeval_rename]; exact e2
+    have z3 : aeval z (rename v g) = val * aeval z (rename v h) := by
+      rw [aeval_rename, aeval_rename]; exact e3
+    refine ⟨⟨e j, rename v g, rename v h⟩, ⟨_, _, hG, hH, hD, hE⟩, ?_, by rw [z3]; exact mul_ne_zero hval z2, z2⟩
+    obtain ⟨W, φ, hφ, hW1, hW2⟩ := LocVal.exists_locRing_val K ι Ω y z (Flat.mem_ptsOver hz)
+    choose C hC using hz.1
+    have hyC : ∀ q, z q ≠ 0 → y q ≠ 0 := fun q hq h0 => by
+      apply hq
+      have hm : (X q : MRing ι) ∈ mCoordIdeal y := by
+        show mConeMap y (X q) = 0
+        simp [mConeMap, h0]
+      simpa using hz.2 _ hm
+    have hC₀ : ∀ k : K₀, ∃ b : ι₀ k, v ⟨k, b⟩ = ⟨κ k, C (κ k)⟩ := fun k => by
+      obtain ⟨⟨pk, pi⟩, hp⟩ := hv.2.2.2 ⟨κ k, C (κ k)⟩ ⟨k, rfl⟩
+      have h2 : pk = k := hv.1 (by rw [← hv.2.2.1 ⟨pk, pi⟩, hp])
+      subst h2
+      exact ⟨pi, hp⟩
+    choose C₀ hC₀ using hC₀
+    have hy₀ : ∀ k, y₀ ⟨k, C₀ k⟩ ≠ 0 := fun k h0 => hyC _ (hC (κ k)) (by rw [← hC₀, hy, h0, map_zero])
+    obtain ⟨w1, w2⟩ := hW2 (pullDeg κ a₀) (y ⟨ks, e j⟩) val C ⟨_, _, _, _, hG, hH, hD, hE, z2, z3⟩ hC
+    obtain ⟨r1, r2⟩ := hW1 ks (C ks) (e j) (hC ks)
+    have hint : IsIntegral (chartRingZ y₀ C₀) _ := hs (e.symm (C ks)) C₀ hy₀
+    letI : Algebra (chartRingZ y₀ C₀) Ω := (i.comp (chartRingZ y₀ C₀).val.toRingHom).toAlgebra
+    let i' : Ω₀ →ₐ[chartRingZ y₀ C₀] Ω := { i with commutes' := fun _ => rfl }
+    have hint' := hint.map i'
+    have hAW : ∀ x : chartRingZ y₀ C₀, algebraMap (chartRingZ y₀ C₀) Ω x ∈ W := by
+      rintro ⟨x, hx⟩
+      show i x ∈ W
+      induction hx using Algebra.adjoin_induction with
+      | mem x hx =>
+        obtain ⟨⟨k, b⟩, rfl⟩ := hx
+        rw [map_div₀, ← hy, ← hy, hC₀]
+        have hq := hv.2.2.1 ⟨k, b⟩
+        generalize v ⟨k, b⟩ = q at hq
+        obtain ⟨k', b'⟩ := q
+        simp only at hq
+        subst hq
+        exact (hW1 _ _ b' (hC _)).1
+      | algebraMap r => simp
+      | add _ _ _ _ h1 h2 => rw [map_add]; exact add_mem h1 h2
+      | mul _ _ _ _ h1 h2 => rw [map_mul]; exact mul_mem h1 h2
+    have heq : y ⟨ks, e j⟩ / y ⟨ks, C ks⟩ *
+        i' (s (e.symm (C ks)) * ∏ k, y₀ ⟨k, C₀ k⟩ ^ (-(((1 : ℕ) : ℤ) * a₀ k))) =
+        y ⟨ks, e j⟩ * ∏ k, y ⟨k, C k⟩ ^ (-pullDeg κ a₀ k) := by
+      have q1 : i (s (e.symm (C ks))) = y ⟨ks, C ks⟩ := by rw [← he, Equiv.apply_symm_apply]
+      have q2 : ∏ k, y ⟨k, C k⟩ ^ (-pullDeg κ a₀ k) = ∏ k, i (y₀ ⟨k, C₀ k⟩) ^ (-a₀ k) := by
+        simp only [zpow_neg, Finset.prod_inv_distrib]
+        rw [hprod (fun k => y ⟨k, C k⟩) a₀]
+        simp only [← hy, hC₀]
+      show _ * i _ = _
+      rw [map_mul, map_prod, q1, q2, ← mul_assoc, div_mul_cancel₀ _ (hyC _ (hC ks))]
+      simp only [map_zpow₀, Nat.cast_one, one_mul]
+    have key := Flat.val_ne_of_integral W φ hφ hAW r1 hint' (heq ▸ w1) (by
+      intro h0
+      apply hval
+      rw [← w2]
+      have : φ ⟨_, w1⟩ = 0 := by
+        rw [← h0]
+        congr 2
+        exact heq.symm
+      rw [this, zero_mul])
+    show z ⟨ks, e j⟩ ≠ 0
+    rw [← r2]
+    exact mul_ne_zero key (hC ks)
+  obtain ⟨T, hT, hTa, hTf⟩ := Flat.exists_flat y hP (pullDeg κ a₀) ks hcov
+  have hpA := Chg.isSmoothHerm_pull hv hAs
+  refine ⟨PB.combLine ![pullHerm hv A, T] ![((n * m : ℕ) : ℤ), (n : ℤ)], ?_, ?_, ?_⟩
+  · have : (PB.combLine ![pullHerm hv A, T] ![((n * m : ℕ) : ℤ), (n : ℤ)]).h =
+        fun z => (pullHerm hv A).h z ^ (n * m) * T.h z ^ n := by
+      funext z
+      simp only [PB.combLine_h, Fin.prod_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, zpow_natCast]
+    unfold IsSmoothHerm
+    rw [this]
+    exact (ContDiffOn.pow hpA _).mul (ContDiffOn.pow hT _)
+  · funext k
+    simp only [PB.combLine_a, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, hTa]
+    show _ * pullDeg κ A.a k + _ = _
+    by_cases hk : ∃ b, κ b = k
+    · obtain ⟨b, rfl⟩ := hk
+      simp only [pullDeg, hv.1.extend_apply, Pi.sub_apply, Pi.smul_apply, Pi.add_apply, ha₀, Pi.one_apply, smul_eq_mul]
+      push_cast
+      ring
+    · simp [pullDeg, Function.extend_apply' _ _ _ hk]
+  · intro J R x _
+    obtain ⟨V, oV, mV, G, hG, eG⟩ := hTf D J R x trivial
+    refine ⟨V ∩ R.U x, oV.inter (R.isOpen_U x), ⟨mV, R.mem_U x⟩, fun w => ((n : ℝ) : ℂ) * G w, ?_, ?_⟩
+    · rintro j z ⟨hz, hz', -⟩
+      exact analyticAt_const.mul (hG j z ⟨hz, hz'⟩)
+    · rintro w ⟨w1, w2⟩
+      have hw := (R.mem x w w2).1
+      have E : Real.log (T.h (R.lift x w)) - 0 = (G w).re := eG w w1
+      show Real.log ((PB.combLine ![pullHerm hv A, T] ![((n * m : ℕ) : ℤ), (n : ℤ)]).h (R.lift x w)) -
+        (n : ℝ) * m * Real.log ((pullHerm hv A).h (R.lift x w)) = _
+      simp only [PB.combLine_h, Fin.prod_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, zpow_natCast]
+      rw [Real.log_mul (pow_ne_zero _ ((pullHerm hv A).pos _ hw).ne') (pow_ne_zero _ (T.pos _ hw).ne'),
+        Real.log_pow, Real.log_pow, Complex.re_ofReal_mul, ← E]
+      push_cast
+      ring
+
+end RootFieldNumerics.Ref
+end
+end
+
+section
 noncomputable section
 
 namespace RootFieldNumerics.Ref
@@ -233,3 +1081,5 @@ theorem RootFieldNumerics.global_model_real_tower_smooth : Given → ∀ (E : Ty
   have := mul_le_mul_of_nonneg_left h₆ (Nat.cast_nonneg (D.p + D.q) : (0 : ℝ) ≤ _)
   refine this.trans (le_of_eq ?_)
   ring
+end
+end

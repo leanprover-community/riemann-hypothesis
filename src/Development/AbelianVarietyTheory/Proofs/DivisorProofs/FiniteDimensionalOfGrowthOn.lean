@@ -1,10 +1,99 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConeDegreeGrowthChowFormIntegralityStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SecZEqZeroOfGenVal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnfoldingSectionsFiniteTypeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralDegreeOfNormBound
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnfoldingSectionsFiniteType
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
 
+section
+open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Indef.Tree
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unfolding_sections_finite_type : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (σ : c.F →+* ℂ) (U : Unf Xo c σ r), IsUnf U → ∀ Z : Comp Xo c, ∃ (R : Subalgebra c.F (Om Z)) (_ : Algebra.FiniteType c.F R) (t : Formalism.L2.Pj.Ix Dw → (Om Z)ˣ), (∀ (e : Formalism.L2.Pj.Ix Dw → ℤ), ∀ f ∈ secZ Xo c e, ((∏ i, t i ^ e i : (Om Z)ˣ) : Om Z) * genVal Z f ∈ R) ∧ ∀ φ : R →+* ℂ, φ.comp (algebraMap c.F R) = σ → ∃ z ∈ framesOn U Z, ∃ s : Formalism.L2.Pj.Ix Dw → ℂˣ, ∀ (e : Formalism.L2.Pj.Ix Dw → ℤ), ∀ f ∈ secZ Xo c e, ∀ b : R, (b : Om Z) = ((∏ i, t i ^ e i : (Om Z)ˣ) : Om Z) * genVal Z f → φ b = ((∏ i, s i ^ e i : ℂˣ) : ℂ) * rdU U f z.1 z.2 := by
+  first | exact @GlobalTheory.DegCmp.exists_chart_read_at_frames | exact GlobalTheory.DegCmp.exists_chart_read_at_frames | (intros; apply GlobalTheory.DegCmp.exists_chart_read_at_frames <;> assumption)
+end
+
+section
+section
+set_option autoImplicit false
+
+namespace GlobalTheory.DegCmp
+
+open Polynomial
+
+theorem le_sqrt_mul_pow_of_sq_le {n : ℕ} (τ : ℕ) (x y C : ℝ) (u : Fin n → ℝ) (hx : 0 ≤ x) (hu : ∀ i, 0 ≤ u i)
+    (h : y ^ 2 ≤ C * (∑ i, u i ^ 2) ^ τ) :
+    x ^ τ * y ≤ Real.sqrt (max C 0) * (1 + ∑ i, x * u i) ^ τ := by
+  have hS : 0 ≤ ∑ i, u i := Finset.sum_nonneg fun i _ => hu i
+  have h1 : ∑ i, u i ^ 2 ≤ (∑ i, u i) ^ 2 := Finset.sum_sq_le_sq_sum_of_nonneg fun i _ => hu i
+  have h0 : 0 ≤ ∑ i, u i ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
+  have h2 : y ^ 2 ≤ (Real.sqrt (max C 0) * (∑ i, u i) ^ τ) ^ 2 := by
+    rw [mul_pow, Real.sq_sqrt (le_max_right _ _), ← pow_mul, mul_comm τ 2, pow_mul]
+    exact h.trans (mul_le_mul (le_max_left _ _) (pow_le_pow_left₀ h0 h1 τ) (pow_nonneg h0 τ) (le_max_right _ _))
+  have h3 : y ≤ Real.sqrt (max C 0) * (∑ i, u i) ^ τ :=
+    (abs_le_of_sq_le_sq' h2 (by positivity)).2
+  calc x ^ τ * y ≤ x ^ τ * (Real.sqrt (max C 0) * (∑ i, u i) ^ τ) := by gcongr
+    _ = Real.sqrt (max C 0) * (∑ i, x * u i) ^ τ := by rw [← Finset.mul_sum, mul_pow]; ring
+    _ ≤ Real.sqrt (max C 0) * (1 + ∑ i, x * u i) ^ τ := by
+      have : 0 ≤ ∑ i, x * u i := Finset.sum_nonneg fun i _ => mul_nonneg hx (hu i)
+      gcongr
+      linarith
+
+theorem isIntDeg_of_bounded_of_algHom (K V Ω R : Type) [Field K] [AddCommGroup V] [Module K V] [Field Ω] [Algebra K Ω]
+    (ev : V →ₗ[K] Ω) [CommRing R] [IsDomain R] [Algebra K R] [Algebra.FiniteType K R] (ι : R →ₐ[K] Ω) (σ : K →+* ℂ) (a : Ωˣ) (n τ : ℕ) (w : Fin n → V)
+    (w' : Fin n → R) (t : Ω) (t' : R) (C : ℝ) (hw : ∀ i, ι (w' i) = (a : Ω) * ev (w i))
+    (ht : ι t' = (a : Ω) ^ τ * t)
+    (hb : ∀ φ : R →+* ℂ, φ.comp (algebraMap K R) = σ → ‖φ t'‖ ^ 2 ≤ C * (∑ i, ‖φ (w' i)‖ ^ 2) ^ τ) :
+    IsIntDeg ev τ t := by
+  have hint : IsIntegral (Algebra.adjoin K (Set.range fun i => (X * Polynomial.C (w' i) : Polynomial R)))
+      (X ^ τ * Polynomial.C t' : Polynomial R) := by
+    refine GlobalTheory.T.cone_degree_growth_chowForm_integrality.2.2.2 K (Polynomial R) σ n τ _ _ (Real.sqrt (max C 0)) fun φ hφ => ?_
+    have h := hb (φ.comp Polynomial.C) hφ
+    simp only [map_mul, map_pow, norm_mul, norm_pow]
+    exact le_sqrt_mul_pow_of_sq_le τ _ _ C (fun i => ‖φ (Polynomial.C (w' i))‖) (norm_nonneg _)
+      (fun _ => norm_nonneg _) h
+  let f : Polynomial R →ₐ[K] Polynomial Ω :=
+    Polynomial.eval₂AlgHom ((Polynomial.CAlgHom : Ω →ₐ[K] Polynomial Ω).comp ι) (X * Polynomial.C ((a⁻¹ : Ωˣ) : Ω))
+      fun _ => Commute.all _ _
+  have hfX : f X = X * Polynomial.C ((a⁻¹ : Ωˣ) : Ω) := by simp [f]
+  have hfC : ∀ b : R, f (Polynomial.C b) = Polynomial.C (ι b) := fun b => by simp [f]
+  have hfw : ∀ i, f (X * Polynomial.C (w' i)) = X * Polynomial.C (ev (w i)) := fun i => by
+    rw [map_mul, hfX, hfC, hw, mul_assoc, ← map_mul, ← mul_assoc, Units.inv_mul, one_mul]
+  have hft : f (X ^ τ * Polynomial.C t') = X ^ τ * Polynomial.C t := by
+    rw [map_mul, map_pow, hfX, hfC, ht, mul_pow, mul_assoc, ← map_pow, ← map_mul, ← mul_assoc, ← mul_pow,
+      Units.inv_mul, one_pow, one_mul]
+  have hmem : ∀ x ∈ Algebra.adjoin K (Set.range fun i => (X * Polynomial.C (w' i) : Polynomial R)), f x ∈ coneAlg ev := by
+    intro x hx
+    have : Algebra.adjoin K (Set.range fun i => (X * Polynomial.C (w' i) : Polynomial R)) ≤ (coneAlg ev).comap f := by
+      refine Algebra.adjoin_le ?_
+      rintro _ ⟨i, rfl⟩
+      change f _ ∈ coneAlg ev
+      rw [hfw]
+      exact Algebra.subset_adjoin ⟨w i, rfl⟩
+    exact this hx
+  rw [IsIntDeg, ← hft]
+  exact hint.map_of_comp_eq
+    ((f.toRingHom.comp (Algebra.adjoin K (Set.range fun i => (X * Polynomial.C (w' i) : Polynomial R))).val.toRingHom).codRestrict
+      (coneAlg ev) fun x => hmem x.1 x.2) f.toRingHom (RingHom.ext fun _ => rfl)
+
+theorem isIntDeg_of_bounded (K V Ω : Type) [Field K] [AddCommGroup V] [Module K V] [Field Ω] [Algebra K Ω]
+    (ev : V →ₗ[K] Ω) (R : Subalgebra K Ω) [Algebra.FiniteType K R] (σ : K →+* ℂ) (a : Ωˣ) (n τ : ℕ) (w : Fin n → V)
+    (w' : Fin n → R) (t : Ω) (t' : R) (C : ℝ) (hw : ∀ i, (w' i : Ω) = (a : Ω) * ev (w i))
+    (ht : (t' : Ω) = (a : Ω) ^ τ * t)
+    (hb : ∀ φ : R →+* ℂ, φ.comp (algebraMap K R) = σ → ‖φ t'‖ ^ 2 ≤ C * (∑ i, ‖φ (w' i)‖ ^ 2) ^ τ) :
+    IsIntDeg ev τ t :=
+  isIntDeg_of_bounded_of_algHom K V Ω R ev R.val σ a n τ w w' t t' C hw ht hb
+
+end GlobalTheory.DegCmp
+end
+
+open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Indef.Tree
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_degree_of_norm_bound : ∀ (K V Ω : Type) [Field K] [AddCommGroup V] [Module K V] [Field Ω] [Algebra K Ω] (ev : V →ₗ[K] Ω) (R : Subalgebra K Ω) [Algebra.FiniteType K R] (σ : K →+* ℂ) (a : Ωˣ) (n τ : ℕ) (w : Fin n → V) (w' : Fin n → R) (t : Ω) (t' : R) (C : ℝ), (∀ i, (w' i : Ω) = (a : Ω) * ev (w i)) → (t' : Ω) = (a : Ω) ^ τ * t → (∀ φ : R →+* ℂ, φ.comp (algebraMap K R) = σ → ‖φ t'‖ ^ 2 ≤ C * (∑ i, ‖φ (w' i)‖ ^ 2) ^ τ) → IsIntDeg ev τ t := by
+  atlas_forward_decl GlobalTheory.DegCmp.isIntDeg_of_bounded
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -229,3 +318,5 @@ theorem prod_exZ_nsmul {M : Type} [CommGroup M] (t : Formalism.L2.Pj.Ix Dw → M
 
 
 end GlobalTheory.DegTop
+end
+end

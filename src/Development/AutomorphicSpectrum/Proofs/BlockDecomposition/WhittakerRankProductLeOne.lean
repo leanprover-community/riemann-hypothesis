@@ -1,6 +1,40 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TensorProductRankLeOne
+import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.GenericUnlinkedGL.UnlinkedRealize
+import BuildAid.ForwardExisting
 
+section
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.TensorRank
+
+theorem rank_piTensorProduct_le_one {α : Type} [Fintype α] (M : α → Type)
+    [∀ a, AddCommGroup (M a)] [∀ a, Module ℂ (M a)]
+    (h : ∀ a, Module.rank ℂ (M a) ≤ 1) : Module.rank ℂ (⨂[ℂ] a, M a) ≤ 1 := by
+  choose v₀ hv₀ using fun a => rank_le_one_iff.mp (h a)
+  rw [rank_le_one_iff]
+  refine ⟨PiTensorProduct.tprod ℂ v₀, fun x => ?_⟩
+  refine PiTensorProduct.induction_on x ?_ ?_
+  · intro r f
+    choose c hc using fun a => hv₀ a (f a)
+    refine ⟨r * ∏ a, c a, ?_⟩
+    have hf : f = fun a => c a • v₀ a := funext fun a => (hc a).symm
+    rw [hf, MultilinearMap.map_smul_univ, mul_smul]
+  · rintro x y ⟨r, hr⟩ ⟨s, hs⟩
+    exact ⟨r + s, by rw [add_smul, hr, hs]⟩
+
+end GlobalTheory.CompanionTheory.TensorRank
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensor_product_rank_le_one : ∀ {α : Type} [Fintype α] (M : α → Type) [∀ a, AddCommGroup (M a)] [∀ a, Module ℂ (M a)], (∀ a, Module.rank ℂ (M a) ≤ 1) → Module.rank ℂ (⨂[ℂ] a, M a) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TensorRank.rank_piTensorProduct_le_one
+end
+
+section
 section
 noncomputable section
 
@@ -38,3 +72,4 @@ open scoped TensorProduct
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.whittaker_rank_product_le_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.BZMir.Leib.WhitHeredity k → GlobalTheory.BZSeg.WhitRankIrr k → ∀ (ψ : AddChar k Circle), Continuous ψ → ψ ≠ 1 → ∀ (h N : ℕ) (x : Fin h → IrrGL k) (hd : ∑ a, (x a).1 = N), Module.rank ℂ (TwJacquet (prodIrr x hd) (unipB k (Fin N)) (whitChar ψ N)) ≤ 1 := by
   atlas_forward_decl GlobalTheory.CompanionTheory.RgGu.rank_twJacquet_prodIrr_le_one
+end

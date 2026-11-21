@@ -1,9 +1,263 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SignatureBlockDiagonal
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.HermitianPositiveSymplectic
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.TraceEqSumReCmType
 
+section
+open Matrix
+
+open scoped MatrixOrder ComplexOrder in
+private theorem UpperTheory.frame_pos {N j : ℕ} (S : Matrix (Fin N) (Fin N) ℂ)
+    (K : Submodule ℂ (Fin N → ℂ)) (hS : S.IsHermitian) (hj : j ≤ Module.finrank ℂ K)
+    (hK : ∀ y ∈ K, y ≠ 0 → 0 < (dotProduct (star y) (S.mulVec y)).re) :
+    ∃ B : Matrix (Fin N) (Fin j) ℂ, Bᴴ * S * B = 1 ∧ ∀ v, B.mulVec v ∈ K := by
+  obtain ⟨b, hb⟩ := exists_linearIndependent_of_le_finrank hj
+  have hb' : LinearIndependent ℂ (fun i => (b i : Fin N → ℂ)) :=
+    hb.map' K.subtype (Submodule.ker_subtype K)
+  let C : Matrix (Fin N) (Fin j) ℂ := Matrix.of fun r i => (b i : Fin N → ℂ) r
+  have hC : ∀ v, C.mulVec v = ∑ i, v i • (b i : Fin N → ℂ) := by
+    intro v
+    ext r
+    simp [C, Matrix.mulVec, dotProduct, mul_comm]
+  have hmem : ∀ v, C.mulVec v ∈ K := fun v => by
+    rw [hC]
+    exact K.sum_mem fun i _ => K.smul_mem _ (b i).2
+  have hne : ∀ v, v ≠ 0 → C.mulVec v ≠ 0 := fun v hv h => by
+    rw [hC] at h
+    exact hv (funext (Fintype.linearIndependent_iff.mp hb' v h))
+  have hH : (Cᴴ * S * C).IsHermitian := isHermitian_conjTranspose_mul_mul C hS
+  have hG : (Cᴴ * S * C).PosDef := by
+    refine PosDef.of_dotProduct_mulVec_pos hH fun x hx => ?_
+    have h1 := hK _ (hmem x) (hne x hx)
+    have h2 := hH.im_star_dotProduct_mulVec_self x
+    have h3 : star x ⬝ᵥ (Cᴴ * S * C) *ᵥ x = star (C *ᵥ x) ⬝ᵥ S *ᵥ C *ᵥ x := by
+      rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, mulVec_mulVec]
+    rw [← h3] at h1
+    exact Complex.pos_iff.mpr ⟨h1, Eq.symm h2⟩
+  obtain ⟨D, hD, hGD⟩ :=
+    CStarAlgebra.isStrictlyPositive_iff_eq_star_mul_self.mp hG.isStrictlyPositive
+  obtain ⟨E, hE⟩ := hD.exists_right_inv
+  refine ⟨C * E, ?_, fun v => ?_⟩
+  · calc (C * E)ᴴ * S * (C * E) = Eᴴ * (Cᴴ * S * C) * E := by
+          simp only [conjTranspose_mul, Matrix.mul_assoc]
+      _ = (D * E)ᴴ * (D * E) := by
+          rw [hGD, star_eq_conjTranspose]
+          simp only [conjTranspose_mul, Matrix.mul_assoc]
+      _ = 1 := by rw [hE]; simp
+  · rw [← mulVec_mulVec]
+    exact hmem _
+
+theorem UpperTheory.signature_block_diagonal :
+    ∀ {N j j' : ℕ} (S : Matrix (Fin N) (Fin N) ℂ) (K K' : Submodule ℂ (Fin N → ℂ)),
+        S.IsHermitian → j ≤ Module.finrank ℂ K → j' ≤ Module.finrank ℂ K' →
+        (∀ y ∈ K, y ≠ 0 → 0 < (dotProduct (star y) (S.mulVec y)).re) →
+        (∀ y ∈ K', y ≠ 0 → (dotProduct (star y) (S.mulVec y)).re < 0) →
+        (∀ y ∈ K, ∀ y' ∈ K', dotProduct (star y') (S.mulVec y) = 0) →
+        ∃ A : Matrix (Fin N) (Fin j ⊕ Fin j') ℂ,
+          A.conjTranspose * S * A = Matrix.fromBlocks 1 0 0 (-1) ∧
+          (∀ v : Fin j → ℂ, A.mulVec (Sum.elim v (0 : Fin j' → ℂ)) ∈ K) ∧
+          ∀ v : Fin j' → ℂ, A.mulVec (Sum.elim (0 : Fin j → ℂ) v) ∈ K' := by
+  intro N j j' S K K' hS hj hj' hK hK' hO
+  obtain ⟨B, hB, hBK⟩ := UpperTheory.frame_pos S K hS hj hK
+  obtain ⟨B', hB', hBK'⟩ := UpperTheory.frame_pos (-S) K' hS.neg hj' (fun y hy h0 => by
+    have := hK' y hy h0
+    simpa [neg_mulVec] using this)
+  have h22 : B'ᴴ * S * B' = -1 := by
+    rw [← hB']
+    simp
+  have h21 : B'ᴴ * S * B = 0 := by
+    ext a c
+    have h := hO _ (hBK (Pi.single c 1)) _ (hBK' (Pi.single a 1))
+    rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, mulVec_mulVec] at h
+    simpa [← Pi.single_star] using h
+  have h12 : Bᴴ * S * B' = 0 := by
+    have h := congrArg conjTranspose h21
+    simpa [conjTranspose_mul, hS.eq, Matrix.mul_assoc] using h
+  refine ⟨fromCols B B', ?_, fun v => ?_, fun v => ?_⟩
+  · rw [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul, fromRows_mul_fromCols,
+      hB, h12, h21, h22]
+  · simpa using hBK v
+  · simpa using hBK' v
+end
+
+section
+private theorem exists_ker {n g : ℕ} (f : (Fin n → ℂ) →ₗ[ℝ] (Fin g → ℂ))
+    (U : Submodule ℂ (Fin g → ℂ)) (hU : ∀ y, f y ∈ U)
+    (hI : ∀ y, f y = 0 → f (Complex.I • y) = 0) :
+    ∃ K : Submodule ℂ (Fin n → ℂ), (∀ y, y ∈ K ↔ f y = 0) ∧
+      n ≤ Module.finrank ℂ K + Module.finrank ℂ U := by
+  let K : Submodule ℂ (Fin n → ℂ) :=
+    { carrier := {y | f y = 0}
+      add_mem' := fun {a b} ha hb => by
+        simp only [Set.mem_setOf_eq] at ha hb ⊢
+        rw [map_add, ha, hb, add_zero]
+      zero_mem' := by simp
+      smul_mem' := fun z y hy => by
+        simp only [Set.mem_setOf_eq] at hy ⊢
+        have hz : z • y = z.re • y + z.im • (Complex.I • y) := by
+          ext i
+          simp only [Pi.smul_apply, Pi.add_apply, smul_eq_mul, Complex.real_smul]
+          conv_lhs => rw [← Complex.re_add_im z]
+          ring
+        rw [hz, map_add, map_smul, map_smul, hy, hI y hy, smul_zero, smul_zero, add_zero] }
+  refine ⟨K, fun y => Iff.rfl, ?_⟩
+  have h1 := LinearMap.finrank_range_add_finrank_ker f
+  have h2 : LinearMap.ker f = K.restrictScalars ℝ := by
+    ext y
+    rfl
+  have h3 : LinearMap.range f ≤ U.restrictScalars ℝ := by
+    rintro _ ⟨y, rfl⟩
+    exact hU y
+  have h4 := Submodule.finrank_mono h3
+  have h5 : Module.finrank ℝ (U.restrictScalars ℝ) = 2 * Module.finrank ℂ U :=
+    finrank_real_of_complex U
+  have h6 : Module.finrank ℝ (K.restrictScalars ℝ) = 2 * Module.finrank ℂ K :=
+    finrank_real_of_complex K
+  have h7 : Module.finrank ℝ (Fin n → ℂ) = 2 * n := by
+    rw [finrank_real_of_complex]; simp
+  rw [h2, h6, h7] at h1
+  omega
+
+theorem UpperTheory.hermitian_positive_symplectic :
+    ∀ {g j j' : ℕ} (p : (Fin (j + j') → ℂ) →ₗ[ℝ] (Fin g → ℂ)) (H : Matrix (Fin g) (Fin g) ℂ)
+        (S : Matrix (Fin (j + j')) (Fin (j + j')) ℂ) (c : ℝ) (U U' : Submodule ℂ (Fin g → ℂ)),
+        (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (dotProduct z (H.mulVec (star z))).re) →
+        IsUnit S.det → 0 < c →
+        (∀ y y', (dotProduct (p y) (H.mulVec (star (p y')))).im =
+          2 * (Complex.I * (c : ℂ) * dotProduct (star y') (S.mulVec y)).re) →
+        Module.finrank ℂ U = j' → Module.finrank ℂ U' = j →
+        (∀ y, p y - Complex.I • p (Complex.I • y) ∈ U) →
+        (∀ y, p y + Complex.I • p (Complex.I • y) ∈ U') →
+        ∃ K K' : Submodule ℂ (Fin (j + j') → ℂ),
+          j ≤ Module.finrank ℂ K ∧ j' ≤ Module.finrank ℂ K' ∧
+          (∀ y ∈ K, p y - Complex.I • p (Complex.I • y) = 0) ∧
+          (∀ y ∈ K', p y + Complex.I • p (Complex.I • y) = 0) ∧
+          (∀ y ∈ K, y ≠ 0 → 0 < (dotProduct (star y) (S.mulVec y)).re) ∧
+          (∀ y ∈ K', y ≠ 0 → (dotProduct (star y) (S.mulVec y)).re < 0) ∧
+          ∀ y ∈ K, ∀ y' ∈ K', dotProduct (star y') (S.mulVec y) = 0 := by
+  intro g j j' p H S c U U' hH hS hc hp hU hU' hA hB
+  let Q : (Fin (j + j') → ℂ) →ₗ[ℝ] (Fin g → ℂ) :=
+    { toFun := fun y => Complex.I • p (Complex.I • y)
+      map_add' := fun a b => by rw [smul_add, map_add, smul_add]
+      map_smul' := fun r a => by
+        rw [smul_comm Complex.I r a, map_smul, smul_comm Complex.I r]; rfl }
+  have hII : ∀ {m : ℕ} (v : Fin m → ℂ), Complex.I • Complex.I • v = -v := by
+    intro m v
+    rw [smul_smul, Complex.I_mul_I, neg_smul, one_smul]
+  have eA : ∀ y, p y - Complex.I • p (Complex.I • y) = 0 →
+      p (Complex.I • y) = -(Complex.I • p y) := by
+    intro y hy
+    rw [sub_eq_zero.mp hy, hII, neg_neg]
+  have eB : ∀ y, p y + Complex.I • p (Complex.I • y) = 0 →
+      p (Complex.I • y) = Complex.I • p y := by
+    intro y hy
+    rw [eq_neg_of_add_eq_zero_left hy, smul_neg, hII, neg_neg]
+  obtain ⟨K, hK, dK⟩ := exists_ker (p - Q) U hA (by
+    intro y hy
+    change p (Complex.I • y) - Complex.I • p (Complex.I • Complex.I • y) = 0
+    rw [hII, map_neg, eA y hy, smul_neg, sub_self])
+  obtain ⟨K', hK', dK'⟩ := exists_ker (p + Q) U' hB (by
+    intro y hy
+    change p (Complex.I • y) + Complex.I • p (Complex.I • Complex.I • y) = 0
+    rw [hII, map_neg, eB y hy, smul_neg, add_neg_cancel])
+  have hp' : ∀ y y', (dotProduct (p y) (H.mulVec (star (p y')))).im =
+      -(2 * c * (dotProduct (star y') (S.mulVec y)).im) := by
+    intro y y'
+    rw [hp]
+    simp
+    ring
+  have hinj : ∀ y, y ≠ 0 → p y ≠ 0 := by
+    intro y hy h0
+    apply hy
+    have hz : ∀ y', (dotProduct (star y') (S.mulVec y)).im = 0 := by
+      intro y'
+      have h := hp' y y'
+      rw [h0, zero_dotProduct, Complex.zero_im] at h
+      have : c * (dotProduct (star y') (S.mulVec y)).im = 0 := by linarith
+      exact (mul_eq_zero.mp this).resolve_left hc.ne'
+    have hSy : S.mulVec y = 0 := by
+      ext i
+      have h1 := hz (Pi.single i 1)
+      have h2 := hz (Pi.single i Complex.I)
+      simp [← Pi.single_star] at h1 h2
+      apply Complex.ext <;> simp [h1, h2]
+    exact Matrix.eq_zero_of_mulVec_eq_zero hS.ne_zero hSy
+  refine ⟨K, K', by omega, by omega, fun y hy => (hK y).mp hy, fun y hy => (hK' y).mp hy,
+    ?_, ?_, ?_⟩
+  · intro y hy h0
+    have h1 := hH _ (hinj y h0)
+    have h2 := hp' (Complex.I • y) y
+    rw [eA y ((hK y).mp hy)] at h2
+    simp [Matrix.mulVec_smul] at h2
+    by_contra hn
+    have := mul_nonneg hc.le (neg_nonneg.mpr (not_lt.mp hn))
+    linarith
+  · intro y hy h0
+    have h1 := hH _ (hinj y h0)
+    have h2 := hp' (Complex.I • y) y
+    rw [eB y ((hK' y).mp hy)] at h2
+    simp [Matrix.mulVec_smul] at h2
+    by_contra hn
+    have := mul_nonneg hc.le (not_lt.mp hn)
+    linarith
+  · intro y hy y' hy'
+    have e1 := eA y ((hK y).mp hy)
+    have e2 := eB y' ((hK' y').mp hy')
+    have h1 := hp' y y'
+    have h2 := hp' (Complex.I • y) y'
+    have h3 := hp' y (Complex.I • y')
+    have h4 := hp' (Complex.I • y) (Complex.I • y')
+    rw [e1] at h2 h4
+    rw [e2] at h3 h4
+    simp [Matrix.mulVec_smul, Matrix.mulVec_neg] at h2 h3 h4
+    have r1 : c * (dotProduct (star y') (S.mulVec y)).re = 0 := by linarith
+    have r2 : c * (dotProduct (star y') (S.mulVec y)).im = 0 := by linarith
+    exact Complex.ext ((mul_eq_zero.mp r1).resolve_left hc.ne')
+      ((mul_eq_zero.mp r2).resolve_left hc.ne')
+end
+
+section
+theorem UpperTheory.trace_eq_sum_re_cm_type :
+    ∀ {E : Type} [Field E] [NumberField E] {Ψ : Type} [Fintype Ψ] (φ : Ψ → (E →+* ℂ)),
+        Function.Injective φ →
+        (∀ s : E →+* ℂ, (∃ τ, φ τ = s) ↔ ¬ ∃ τ, φ τ = (starRingEnd ℂ).comp s) →
+        ∀ x : E, ((Algebra.trace ℚ E x : ℚ) : ℝ) = ∑ τ, 2 * (φ τ x).re := by
+  intro E _ _ Ψ _ φ hinj h x
+  classical
+  have hcc : ∀ s : E →+* ℂ, (starRingEnd ℂ).comp ((starRingEnd ℂ).comp s) = s := by
+    intro s
+    ext y
+    simp
+  let g : Ψ ⊕ Ψ → (E →+* ℂ) := Sum.elim φ (fun τ => (starRingEnd ℂ).comp (φ τ))
+  have hg : Function.Bijective g := by
+    constructor
+    · rintro (a | a) (b | b) hab
+      · exact congrArg Sum.inl (hinj hab)
+      · exact absurd ⟨a, hab⟩ ((h (φ b)).1 ⟨b, rfl⟩)
+      · exact absurd ⟨b, hab.symm⟩ ((h (φ a)).1 ⟨a, rfl⟩)
+      · have h2 := congrArg (fun s => (starRingEnd ℂ).comp s) hab
+        simp only [g, Sum.elim_inr, hcc] at h2
+        exact congrArg Sum.inr (hinj h2)
+    · intro s
+      by_cases hs : ∃ τ, φ τ = s
+      · obtain ⟨τ, hτ⟩ := hs
+        exact ⟨Sum.inl τ, hτ⟩
+      · obtain ⟨τ, hτ⟩ := not_not.1 (fun hn => hs ((h s).2 hn))
+        refine ⟨Sum.inr τ, ?_⟩
+        simp only [g, Sum.elim_inr, hτ, hcc]
+  have h1 : ((Algebra.trace ℚ E x : ℚ) : ℂ) = ∑ s : E →+* ℂ, s x := by
+    have h0 := trace_eq_sum_embeddings ℂ (K := ℚ) (L := E) (x := x)
+    rw [eq_ratCast] at h0
+    rw [h0]
+    exact (Fintype.sum_equiv (RingHom.equivRatAlgHom E ℂ) _ _ (fun s => rfl)).symm
+  rw [← Fintype.sum_bijective g hg (fun t => g t x) (fun s => s x) (fun _ => rfl),
+    Fintype.sum_sum_type, ← Finset.sum_add_distrib] at h1
+  have h2 := congrArg Complex.re h1
+  rw [Complex.ratCast_re, Complex.re_sum] at h2
+  rw [h2]
+  refine Finset.sum_congr rfl fun τ _ => ?_
+  simp [g, two_mul]
+end
+
+section
 namespace UpperTheory.Reformulated.B.Gwb8
 
 open NumberField Matrix GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GlobalTheory.CompanionTheory.Ar.Cusp.Dict GroundTheory.Automorphic
@@ -215,3 +469,4 @@ theorem UpperTheory.Reformulated.B.Gwb8.exists_adapted_at :
     rw [hp, hp] at this
     rw [LatEmb.pBar]
     convert smul_zero (1 / 2 : ℂ)
+end

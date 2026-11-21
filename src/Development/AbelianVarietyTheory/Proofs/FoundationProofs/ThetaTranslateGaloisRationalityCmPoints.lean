@@ -4,18 +4,776 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DifferentiableCo
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutesStatement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaloisConjTorsionTranslatesOddThetaProduct
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLineStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsComplexEndomorphismEqOnCountable
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ImaginaryQuadraticFieldStructureStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TaylorConjugateTangentSpacePadZeroColumnsStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SignedTranslationAddSelfDualLattice
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNonzeroThetaOfFiniteLevelAverage
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TranslateLevelFour
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNsmulPaddedLatticeMemBasisProductStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AdaptedTorsionLiftDeeperLevel
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AdaptedPointChangeOfRationalBasis
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaTranslationCombPeriodicTwiceLevel
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaOddPrimePhaseConjInvariantStatement
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsRingEquivOfIsTranscendenceBasis
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ImaginaryQuadraticFieldStructure
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TaylorConjugateTangentSpacePadZeroColumns
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPeriodPairIdealCurveLatticeStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoordsAlongOrthonormalRealSubfieldBasis
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddThetaFunctionExistenceUniqueness
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaSpaceSelfDualPairAtMostLine
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsNsmulPaddedLatticeMemBasisProduct
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatum
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaOddPrimePhaseConjInvariant
 
+section
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+
+namespace GlobalTheory.GalTheta
+
+theorem exists_top_embedding_eq_on_countable (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ) (S : Set ℂ)
+    (hS : S.Countable) :
+    ∃ σ : (⊤ : IntermediateField ℚ ℂ) →ₐ[ℚ] ℂ, ∀ x ∈ S, x ∈ M → cj ⊤ σ x = cj M ρ x := by
+  let A : Set M := {y | (y : ℂ) ∈ S}
+  have hA : A.Countable := hS.preimage Subtype.val_injective
+  let k : Subfield M := Subfield.closure A
+  haveI : Countable k := by
+    rw [← Cardinal.mk_le_aleph0_iff]
+    refine (Subfield.cardinalMk_closure_le_max A).trans (max_le ?_ le_rfl)
+    exact Cardinal.mk_le_aleph0_iff.2 hA.to_subtype
+  obtain ⟨τ, hτ⟩ := GlobalTheory.GaloisDescent.exists_complex_ringEquiv_comp_eq (K := k)
+    ((M.val : M →+* ℂ).comp k.subtype) ((ρ : M →+* ℂ).comp k.subtype)
+  refine ⟨(τ.toRingHom.toRatAlgHom).comp (⊤ : IntermediateField ℚ ℂ).val, fun x hx hxM => ?_⟩
+  have h := hτ ⟨⟨x, hxM⟩, Subfield.subset_closure hx⟩
+  have h1 : liftM ⊤ x = ⟨x, IntermediateField.mem_top⟩ := dif_pos IntermediateField.mem_top
+  have h2 : liftM M x = ⟨x, hxM⟩ := dif_pos hxM
+  unfold cj
+  rw [h1, h2]
+  exact h
+
+end GlobalTheory.GalTheta
+end
+
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_complexEndomorphism_eq_on_countable : ∀ (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ) (S : Set ℂ), S.Countable → ∃ σ : (⊤ : IntermediateField ℚ ℂ) →ₐ[ℚ] ℂ, ∀ x ∈ S, x ∈ M → cj ⊤ σ x = cj M ρ x := by
+  atlas_forward_decl GlobalTheory.GalTheta.exists_top_embedding_eq_on_countable
+end
+
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_orthonormal_frame_var : ∀ (D : D7) (N N' : ℕ), ∃ (m r : ℕ) (b : Fin r → Matrix (Fin N') (Fin (N + m)) D.host.E), OnB D b := by
+  first | exact @GlobalTheory.FourCopies.exists_onB_four | exact GlobalTheory.FourCopies.exists_onB_four | (intros; apply GlobalTheory.FourCopies.exists_onB_four <;> assumption)
+end
+
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.taylorConjugate_tangentSpacePadZeroColumns : ∀ (D : D7) (N N' m : ℕ) (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ) (G : VC D (N + m) N' → ℂ), Differentiable ℂ G → fnConj D M ρ (fun z : VC D N N' => G (pad D m z)) = fun z => fnConj D M ρ G (pad D m z) := by
+  first | exact @GlobalTheory.ConjRestrict.fnConj_pad | exact GlobalTheory.ConjRestrict.fnConj_pad | (intros; apply GlobalTheory.ConjRestrict.fnConj_pad <;> assumption)
+end
+
+section
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+
+namespace GlobalTheory.GalTheta
+
+theorem al_add (D : D7) (T : Tor D) (N N' : ℕ) (A : AddSubgroup (VC D N N'))
+    (h1 : ∀ x ∈ A, ∀ y ∈ A, ∃ m : ℤ, (Hf D T x y).im = m) (h2 : ∀ x ∈ A, ∃ m : ℤ, qH D T x = m)
+    (h3 : ∀ x ∈ A, w0 D • x ∈ A) : ∀ x ∈ A, ∀ y ∈ A, al D T (x + y) =
+      al D T x * al D T y * Complex.exp (-(Real.pi : ℂ) * Complex.I * ((Hf D T x y).im : ℂ)) := by
+  intro x hx y hy
+  obtain ⟨a, ha⟩ := h2 x hx
+  obtain ⟨c, hc⟩ := h2 y hy
+  obtain ⟨b, hb⟩ := h1 x hx y hy
+  obtain ⟨k, hk⟩ := h1 _ (h3 x hx) y hy
+  have hal : ∀ z : VC D N N', ∀ m : ℤ, qH D T z = m → al D T z = (-1 : ℂ) ^ m := by
+    intro z m hm
+    have e : al D T z = (-1 : ℂ) ^ (round (qH D T z)) := rfl
+    rw [e, hm, round_intCast]
+  have hk' : Real.sqrt D.host.d * (Hf D T x y).re = 2 * k - b := by
+    rw [Hf_smul_left] at hk
+    rw [← hk, ← hb]
+    simp [w0, Complex.mul_im]
+    ring
+  have hs : qH D T (x + y) = ((a + c + (2 * k - b) : ℤ) : ℝ) := by
+    push_cast
+    rw [← ha, ← hc, ← hk']
+    simp only [qH, Hf_add_left, Hf_add_right, Complex.add_re, Hf_re_swap D T x y]
+    ring
+  have he : Complex.exp (-(Real.pi : ℂ) * Complex.I * ((Hf D T x y).im : ℂ)) = (-1 : ℂ) ^ (-b) := by
+    rw [hb, ← Complex.exp_pi_mul_I, ← Complex.exp_int_mul]
+    congr 1
+    push_cast
+    ring
+  have hn : (-1 : ℂ) ≠ 0 := by norm_num
+  rw [hal _ _ hs, hal _ _ ha, hal _ _ hc, he, sub_eq_add_neg, zpow_add₀ hn, zpow_add₀ hn, zpow_add₀ hn,
+    zpow_mul]
+  simp
+
+end GlobalTheory.GalTheta
+end
+
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.signedTranslation_add_selfDual_lattice : ∀ (D : D7) (T : Tor D) (N N' : ℕ) (A : AddSubgroup (VC D N N')), (∀ x ∈ A, ∀ y ∈ A, ∃ m : ℤ, (Hf D T x y).im = m) → (∀ x ∈ A, ∃ m : ℤ, qH D T x = m) → (∀ x ∈ A, w0 D • x ∈ A) → ∀ x ∈ A, ∀ y ∈ A, al D T (x + y) = al D T x * al D T y * Complex.exp (-(Real.pi : ℂ) * Complex.I * ((Hf D T x y).im : ℂ)) := by
+  atlas_forward_decl GlobalTheory.GalTheta.al_add
+end
+
+section
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+
+noncomputable section
+
+namespace GlobalTheory.GalTheta.Avg
+
+theorem sum_out_translate {A M : Type*} [AddCommGroup A] [AddCommMonoid M] (S : AddSubgroup A) [Fintype (A ⧸ S)]
+    (f : A → M) (hf : ∀ a, ∀ s ∈ S, f (a + s) = f a) (x : A) :
+    ∑ q : A ⧸ S, f (x + q.out) = ∑ q : A ⧸ S, f q.out := by
+  rw [← Equiv.sum_comp (Equiv.addLeft (x : A ⧸ S)) (fun q : A ⧸ S => f q.out)]
+  refine Finset.sum_congr rfl fun q _ => ?_
+  have h : ((x + q.out : A) : A ⧸ S) = (((x : A ⧸ S) + q).out : A) := by simp
+  rw [QuotientAddGroup.eq] at h
+  have := hf (x + q.out) _ h
+  simp only [Equiv.coe_addLeft]
+  rw [← this]
+  congr 1
+  abel
+
+variable (D : D7) (T : Tor D) {N N' : ℕ}
+
+def W (x : VC D N N') (G : VC D N N' → ℂ) : VC D N N' → ℂ := fun z => al D T x * U D T x G z
+
+theorem Wm_mul_Wm_comm {x y : VC D N N'}
+    (h : al D T (x + y) = al D T x * al D T y *
+      Complex.exp (-(Real.pi : ℂ) * Complex.I * ((Hf D T x y).im : ℂ))) (G : VC D N N' → ℂ) :
+    W D T x (W D T y G) = W D T (x + y) G := by
+  funext z
+  have := U_mul D T x (al D T y) (U D T y G) z
+  unfold W
+  rw [this, U_U, h]
+  ring
+
+theorem U_comm (x y : VC D N N') (G : VC D N N' → ℂ) (z : VC D N N') :
+    U D T x (U D T y G) z =
+      Complex.exp (-(2 * Real.pi * Complex.I) * ((Hf D T x y).im : ℂ)) * U D T y (U D T x G) z := by
+  rw [U_U, U_U, add_comm y x, Hf_im_swap D T x y, ← mul_assoc, ← Complex.exp_add]
+  congr 2
+  push_cast
+  ring
+
+theorem eq_zero_of_U {x : VC D N N'} {G : VC D N N' → ℂ} (h : ∀ z, U D T x G z = 0) (z : VC D N N') :
+    G z = 0 := by
+  have := h (z - x)
+  simpa [U] using this
+
+theorem al_two_mul {x : VC D N N'} (hx : ∃ m : ℤ, qH D T x = m) (n : ℕ) : al D T ((2 * n) • x) = 1 := by
+  obtain ⟨m, hm⟩ := hx
+  unfold qH at hm
+  have : √↑D.host.d / 2 * (Hf D T ((2 * n) • x) ((2 * n) • x)).re = ((2 * (2 * n * n * m) : ℤ) : ℝ) := by
+    rw [Hf_nsmul_left, Hf_nsmul_right, ← mul_assoc, ← Nat.cast_mul, ← Complex.ofReal_natCast,
+      Complex.re_ofReal_mul, mul_left_comm, hm]
+    push_cast
+    ring
+  unfold al
+  rw [this, round_intCast, zpow_mul]
+  norm_num
+
+theorem im_smul_right (c : ℝ) (x y : VC D N N') : (Hf D T x ((c : ℂ) • y)).im = c * (Hf D T x y).im := by
+  rw [Hf_smul_right, Complex.conj_ofReal, Complex.im_ofReal_mul]
+
+theorem im_smul_left (c : ℝ) (x y : VC D N N') : (Hf D T ((c : ℂ) • x) y).im = c * (Hf D T x y).im := by
+  rw [Hf_smul_left, Complex.im_ofReal_mul]
+
+theorem im_nsmul_right (c : ℕ) (x y : VC D N N') : (Hf D T x (c • y)).im = c * (Hf D T x y).im := by
+  rw [← im_smul_right, Complex.ofReal_natCast, Nat.cast_smul_eq_nsmul]
+
+theorem im_nsmul_left (c : ℕ) (x y : VC D N N') : (Hf D T (c • x) y).im = c * (Hf D T x y).im := by
+  rw [← im_smul_left, Complex.ofReal_natCast, Nat.cast_smul_eq_nsmul]
+
+theorem exp_int (t : ℝ) (m : ℤ) (h : t = m) : Complex.exp (-(2 * Real.pi * Complex.I) * (t : ℂ)) = 1 := by
+  rw [Complex.exp_eq_one_iff]
+  exact ⟨-m, by rw [h]; push_cast; ring⟩
+
+theorem int_of_exp (t : ℝ) (h : Complex.exp (-(2 * Real.pi * Complex.I) * (t : ℂ)) = 1) : ∃ m : ℤ, t = m := by
+  rw [Complex.exp_eq_one_iff] at h
+  obtain ⟨m, hm⟩ := h
+  refine ⟨-m, ?_⟩
+  have h2 : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := Complex.two_pi_I_ne_zero
+  have : (t : ℂ) = ((-m : ℤ) : ℝ) := by
+    apply mul_left_cancel₀ h2
+    push_cast
+    linear_combination -hm
+  exact_mod_cast this
+
+end GlobalTheory.GalTheta.Avg
+
+namespace GlobalTheory.GalTheta
+
+open Avg
+
+theorem exists_theta_of_level : ∀ (D : D7) (T : Tor D) (N N' : ℕ) (A : AddSubgroup (VC D N N')), A.FG → (∀ x ∈ A, ∀ y ∈ A, ∃ m : ℤ, (Hf D T x y).im = m) → (∀ x, (∀ y ∈ A, ∃ m : ℤ, (Hf D T x y).im = m) → x ∈ A) → (∀ x ∈ A, ∃ m : ℤ, qH D T x = m) → (∀ x ∈ A, ∀ y ∈ A, al D T (x + y) = al D T x * al D T y * Complex.exp (-(Real.pi : ℂ) * Complex.I * ((Hf D T x y).im : ℂ))) → ∀ F : VC D N N' → ℂ, Differentiable ℂ F → F ≠ 0 → ∀ n : ℕ, 0 < n → (∀ x ∈ A, U D T (n • x) F = F) → ∃ P, IsTr D T A F P ∧ P ∈ ThSp D T A ∧ P ≠ 0 := by
+  intro D T N N' A hfg hint hdual hq hal F hF hF0 n hn hlev
+  have hn2 : 0 < 2 * n := by omega
+  haveI : AddGroup.FG A := (AddGroup.fg_iff_addSubgroup_fg A).2 hfg
+  set S : AddSubgroup A := (nsmulAddMonoidHom (α := A) (2 * n)).range with hS
+  haveI : S.FiniteIndex := AddSubgroup.finiteIndex_range_nsmulAddMonoidHom_of_fg A hn2.ne'
+  letI : Fintype (A ⧸ S) := Fintype.ofFinite _
+  set c : ℝ := ((2 * n : ℕ) : ℝ)⁻¹ with hc
+  have hcn : ((2 * n : ℕ) : ℝ) * c = 1 := mul_inv_cancel₀ (by exact_mod_cast hn2.ne')
+  have hcs : ∀ y : VC D N N', (2 * n) • ((c : ℂ) • y) = y := by
+    intro y
+    rw [← Nat.cast_smul_eq_nsmul ℂ, smul_smul, ← Complex.ofReal_natCast, ← Complex.ofReal_mul, hcn]
+    simp
+  have hUF : ∀ x ∈ A, U D T ((2 * n) • x) F = F := by
+    intro x hx
+    rw [mul_comm, mul_smul]
+    exact hlev _ (A.nsmul_mem hx 2)
+
+  have hfix : ∀ y ∈ A, ∀ x ∈ A, W D T ((2 * n) • x) (U D T ((c : ℂ) • y) F) = U D T ((c : ℂ) • y) F := by
+    intro y hy x hx
+    funext z
+    obtain ⟨m, hm⟩ := hint x hx y hy
+    unfold W
+    rw [al_two_mul D T (hq x hx), one_mul, U_comm, hUF x hx, exp_int _ m, one_mul]
+    rw [im_nsmul_left, im_smul_right, ← mul_assoc, hcn, one_mul, hm]
+  have hcls : ∀ y ∈ A, ∀ a : A, ∀ s ∈ S,
+      W D T ((a + s : A) : VC D N N') (U D T ((c : ℂ) • y) F) = W D T a (U D T ((c : ℂ) • y) F) := by
+    rintro y hy a s ⟨b, rfl⟩
+    have e : ((a + nsmulAddMonoidHom (2 * n) b : A) : VC D N N') = (a : VC D N N') + (2 * n) • (b : VC D N N') := by
+      simp
+    rw [e, ← Wm_mul_Wm_comm D T (hal _ a.2 _ (A.nsmul_mem b.2 _)), hfix y hy b b.2]
+
+  set P : VC D N N' → VC D N N' → ℂ :=
+    fun y z => ∑ q : A ⧸ S, W D T (q.out : A) (U D T ((c : ℂ) • y) F) z with hP
+  have hTr : ∀ y ∈ A, IsTr D T A F (P y) := by
+    intro y hy
+    refine IsTr.trans D T (IsTr.single D T F 1 ((c : ℂ) • y) (2 * n) hn2 (by rw [hcs]; exact hy)) ?_
+    let e := Fintype.equivFin (A ⧸ S)
+    refine ⟨_, fun i => al D T (((e.symm i).out : A) : VC D N N'), fun i => (((e.symm i).out : A) : VC D N N'), 1, one_pos,
+      fun i => by simp, ?_⟩
+    funext z
+    simp only [hP, comb, one_mul, W]
+    exact (Equiv.sum_comp e.symm _).symm
+  have hTh : ∀ y ∈ A, P y ∈ ThSp D T A := by
+    intro y hy
+    refine ⟨?_, fun x hx z => ?_⟩
+    · exact Differentiable.fun_sum fun q _ =>
+        (differentiable_U D T _ (differentiable_U D T ((c : ℂ) • y) hF)).const_mul _
+    · have h1 := sum_out_translate S (fun a : A => W D T (a : VC D N N') (U D T ((c : ℂ) • y) F) z)
+        (fun a s hs => by simp only [hcls y hy a s hs]) ⟨x, hx⟩
+      simp only [hP]
+      rw [← h1, U_sum, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun q _ => ?_
+      exact congrFun (Wm_mul_Wm_comm D T (hal x hx _ (q.out).2) _) z
+  by_contra hcon
+  push Not at hcon
+  have hP0 : ∀ y ∈ A, P y = 0 := fun y hy => hcon _ (hTr y hy) (hTh y hy)
+
+  set χ : A → A → ℂ := fun a y =>
+    Complex.exp (-(2 * Real.pi * Complex.I) * ((c * (Hf D T (a : VC D N N') y).im : ℝ) : ℂ)) with hχ
+  have hsum : ∀ y : A, ∀ z, ∑ q : A ⧸ S, χ q.out y * W D T (q.out : A) F z = 0 := by
+    intro y
+    apply eq_zero_of_U D T (x := (c : ℂ) • (y : VC D N N'))
+    intro z
+    have h0 := congrFun (hP0 y y.2) z
+    simp only [hP, Pi.zero_apply] at h0
+    rw [U_sum, ← h0]
+    refine Finset.sum_congr rfl fun q _ => ?_
+    have h2 := U_mul D T ((c : ℂ) • (y : VC D N N')) (al D T ((q.out : A) : VC D N N')) (U D T (q.out : A) F) z
+    rw [U_mul]
+    unfold W
+    rw [h2, U_comm D T ((q.out : A) : VC D N N'), im_smul_right]
+    simp only [hχ]
+    ring
+  have hadd : ∀ a x y : A, χ a (x + y) = χ a x * χ a y := by
+    intro a x y
+    simp only [hχ]
+    rw [← Complex.exp_add, AddSubgroup.coe_add, Hf_add_right, Complex.add_im]
+    congr 1
+    push_cast
+    ring
+  have hS1 : ∀ a : A, ∀ s ∈ S, χ a s = 1 := by
+    rintro a s ⟨b, rfl⟩
+    obtain ⟨m, hm⟩ := hint a a.2 b b.2
+    have e : ((nsmulAddMonoidHom (2 * n) b : A) : VC D N N') = (2 * n) • (b : VC D N N') := by simp
+    refine exp_int _ m ?_
+    rw [e, im_nsmul_right, ← mul_assoc, mul_comm c, hcn, one_mul, hm]
+  have hS2 : ∀ s ∈ S, ∀ a : A, χ s a = 1 := by
+    rintro s ⟨b, rfl⟩ a
+    obtain ⟨m, hm⟩ := hint b b.2 a a.2
+    have e : ((nsmulAddMonoidHom (2 * n) b : A) : VC D N N') = (2 * n) • (b : VC D N N') := by simp
+    refine exp_int _ m ?_
+    rw [e, im_nsmul_left, ← mul_assoc, mul_comm c, hcn, one_mul, hm]
+  have hvan : ∀ q : A ⧸ S, q ≠ 0 → ∑ r : A ⧸ S, χ q.out r.out = 0 := by
+    intro q hq0
+    by_contra hne
+    apply hq0
+    have hall : ∀ y : A, χ q.out y = 1 := by
+      intro y
+      have h1 := sum_out_translate S (χ q.out) (fun a s hs => by rw [hadd, hS1 _ s hs, mul_one]) y
+      simp only [hadd, ← Finset.mul_sum] at h1
+      exact mul_right_cancel₀ hne (by rw [h1, one_mul])
+    have hmem : (c : ℂ) • ((q.out : A) : VC D N N') ∈ A := by
+      refine hdual _ fun y hy => ?_
+      rw [im_smul_left]
+      exact int_of_exp _ (hall ⟨y, hy⟩)
+    rw [← QuotientAddGroup.out_eq' q, QuotientAddGroup.eq_zero_iff]
+    exact ⟨⟨_, hmem⟩, Subtype.ext (by simpa using hcs _)⟩
+  have h0S : (0 : A ⧸ S).out ∈ S := by
+    rw [← QuotientAddGroup.eq_zero_iff, QuotientAddGroup.out_eq']
+  have hW0 : W D T ((0 : A ⧸ S).out : A) F = F := by
+    obtain ⟨b, hb⟩ := h0S
+    have := hfix 0 A.zero_mem b b.2
+    rw [smul_zero, U_zero] at this
+    rw [← hb]
+    simpa using this
+  apply hF0
+  funext z
+  have h3 : ∑ r : A ⧸ S, ∑ q : A ⧸ S, χ q.out r.out * W D T (q.out : A) F z = 0 :=
+    Finset.sum_eq_zero fun r _ => hsum _ z
+  rw [Finset.sum_comm, Finset.sum_eq_single 0 (fun q _ hq0 => by rw [← Finset.sum_mul, hvan q hq0, zero_mul])
+    (by simp)] at h3
+  simp only [hS2 _ h0S, hW0, one_mul, Finset.sum_const, nsmul_eq_mul, mul_eq_zero, Nat.cast_eq_zero,
+    Finset.card_univ, Fintype.card_ne_zero, false_or] at h3
+  exact h3
+
+end GlobalTheory.GalTheta
+end
+end
+
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nonzero_theta_of_finite_level_average : ∀ (D : D7) (T : Tor D) (N N' : ℕ) (A : AddSubgroup (VC D N N')), A.FG → (∀ x ∈ A, ∀ y ∈ A, ∃ m : ℤ, (Hf D T x y).im = m) → (∀ x, (∀ y ∈ A, ∃ m : ℤ, (Hf D T x y).im = m) → x ∈ A) → (∀ x ∈ A, ∃ m : ℤ, qH D T x = m) → (∀ x ∈ A, ∀ y ∈ A, al D T (x + y) = al D T x * al D T y * Complex.exp (-(Real.pi : ℂ) * Complex.I * ((Hf D T x y).im : ℂ))) → ∀ F : VC D N N' → ℂ, Differentiable ℂ F → F ≠ 0 → ∀ n : ℕ, 0 < n → (∀ x ∈ A, U D T (n • x) F = F) → ∃ P, IsTr D T A F P ∧ P ∈ ThSp D T A ∧ P ≠ 0 := by
+  atlas_forward_decl GlobalTheory.GalTheta.exists_theta_of_level
+end
+
+section
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+
+namespace GlobalTheory.OddThetaTranslate
+
+theorem coordB_add (D : D7) (T : Tor D) {N N' r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (k : Fin r)
+    (z x : VC D N N') : coordB D T b k (z + x) = coordB D T b k z + coordB D T b k x := by
+  simp only [coordB, Pi.add_apply, add_mul, Finset.sum_add_distrib]
+
+theorem coordB_nsmul (D : D7) (T : Tor D) {N N' r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (k : Fin r)
+    (n : ℕ) (z : VC D N N') : coordB D T b k (n • z) = n * coordB D T b k z := by
+  simp only [coordB, Pi.smul_apply, nsmul_eq_mul, mul_assoc, Finset.mul_sum]
+
+
+theorem U_pullB (D : D7) (T : Tor D) {N N' r : ℕ} (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (g : ℂ → ℂ)
+    (hP : ∀ z w : VC D N N', ∑ τ, ∑ i, ∑ j, z τ i j * (starRingEnd ℂ) (w τ i j) =
+      ∑ k, coordB D T b k z * (starRingEnd ℂ) (coordB D T b k w)) (x z : VC D N N') :
+    U D T x (pullB D T b g) z = ∏ k, U1 T.abelian₂ (coordB D T b k x) g (coordB D T b k z) := by
+  unfold U U1 pullB Hf
+  rw [Finset.prod_mul_distrib, ← Complex.exp_sum, hP, hP]
+  simp only [coordB_add]
+  congr 2
+  rw [Finset.sum_div, Finset.sum_div, Finset.mul_sum, Finset.mul_sum, Finset.sum_div, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  ring
+
+theorem half_not_mem {w₁ w₂ : ℂ} (h : LinearIndependent ℝ ![w₁, w₂]) :
+    w₁ / 2 ∉ AddSubgroup.closure ({w₁, w₂} : Set ℂ) := by
+  rw [AddSubgroup.mem_closure_pair]
+  rintro ⟨m, n, hmn⟩
+  have h0 := (LinearIndependent.pair_iff.1 h) (2 * (m : ℝ) - 1) (2 * (n : ℝ)) (by
+    simp only [zsmul_eq_mul] at hmn
+    simp only [Complex.real_smul]
+    push_cast
+    linear_combination 2 * hmn)
+  have h1 : (2 * m - 1 : ℤ) = 0 := by exact_mod_cast h0.1
+  omega
+
+theorem exp_neg_pi_I_even (m : ℤ) (a : ℝ) (ha : a = 2 * m) :
+    Complex.exp (-(Real.pi : ℂ) * Complex.I * (a : ℂ)) = 1 := by
+  rw [ha, ← Complex.exp_int_mul_two_pi_mul_I (-m)]
+  congr 1
+  push_cast
+  ring
+
+theorem translate_level_four : ∀ (D : D7), admG1 D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Crv D cc δ → ∀ (N N' r : ℕ) (b : Fin r → Matrix (Fin N') (Fin N) D.host.E), OnB D b → Differentiable ℂ (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ))) ∧ ∃ t : VC D N N', 2 • t ∈ LaB D (tor0 D cc δ) b ∧ U D (tor0 D cc δ) t (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ))) 0 ≠ 0 ∧ ∀ ω ∈ LaB D (tor0 D cc δ) b, U D (tor0 D cc δ) (4 • ω) (U D (tor0 D cc δ) t (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ)))) = U D (tor0 D cc δ) t (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ))) := by
+  intro D hG cc δ hC N N' r b hb
+  obtain ⟨w₁, w₂, hli, hΛ⟩ : ∃ w₁ w₂ : ℂ, LinearIndependent ℝ ![w₁, w₂] ∧
+      lamOf D cc δ = AddSubgroup.closure {w₁, w₂} := by
+    obtain ⟨L, hL⟩ := GlobalTheory.T.exists_periodPair_idealCurveLattice D cc δ hC
+    refine ⟨L.ω₁, L.ω₂, L.indep, ?_⟩
+    ext z
+    rw [hL, PeriodPair.mem_lattice, AddSubgroup.mem_closure_pair]
+    simp only [zsmul_eq_mul]
+  obtain ⟨-, -, hP, hL, hbij⟩ := GlobalTheory.OnCoord.coords_of_orthonormal_basis D hG cc δ N N' r b hb
+  obtain ⟨⟨hd, -, -, hU⟩, hz, -⟩ := GlobalTheory.OddTheta.sgStar_laws (lamOf D cc δ) ⟨w₁, w₂, hli, hΛ⟩
+  obtain ⟨-, -, hint, -⟩ := GlobalTheory.ThetaLine.theta_line D hG cc δ hC N N' (LaB D (tor0 D cc δ) b)
+    (Or.inl ⟨r, b, hb, rfl⟩)
+  have hw : w₁ ∈ lamOf D cc δ := by rw [hΛ]; exact AddSubgroup.subset_closure (by simp)
+  have hw2 : w₁ / 2 ∉ lamOf D cc δ := by rw [hΛ]; exact half_not_mem hli
+  obtain ⟨t, ht⟩ := hbij.2 (fun _ => w₁ / 2)
+  have ht' : ∀ k, coordB D (tor0 D cc δ) b k t = w₁ / 2 := fun k => congrFun ht k
+  have h2t : 2 • t ∈ LaB D (tor0 D cc δ) b := by
+    rw [hL]
+    intro k
+    rw [coordB_nsmul, ht']
+    have : ((2 : ℕ) : ℂ) * (w₁ / 2) = w₁ := by push_cast; ring
+    rw [this]; exact hw
+  refine ⟨?_, t, h2t, ?_, ?_⟩
+  · have hc : ∀ k, Differentiable ℂ (coordB D (tor0 D cc δ) b k) := by
+      intro k
+      unfold coordB
+      fun_prop
+    unfold pullB
+    fun_prop
+  · simp only [U, zero_add, pullB, ht']
+    refine mul_ne_zero (Finset.prod_ne_zero_iff.2 fun k _ => ?_) (Complex.exp_ne_zero _)
+    exact fun h => hw2 ((hz _).1 h)
+  · intro ω hω
+    have hfix : U D (tor0 D cc δ) (4 • ω) (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ))) =
+        pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ)) := by
+      funext z
+      rw [U_pullB D _ b _ hP]
+      refine Finset.prod_congr rfl fun k _ => ?_
+      have hk := (hL ω).1 hω k
+      have h4 : coordB D (tor0 D cc δ) b k (4 • ω) ∈ lamOf D cc δ :=
+        (hL _).1 (AddSubgroup.nsmul_mem _ hω 4) k
+      have h2 : coordB D (tor0 D cc δ) b k (4 • ω) / 2 ∈ lamOf D cc δ := by
+        have : coordB D (tor0 D cc δ) b k (4 • ω) / 2 =
+            coordB D (tor0 D cc δ) b k ω + coordB D (tor0 D cc δ) b k ω := by
+          rw [coordB_nsmul]; push_cast; ring
+        rw [this]; exact add_mem hk hk
+      have := hU _ h4 (coordB D (tor0 D cc δ) b k z)
+      rw [if_pos h2, one_mul] at this
+      exact this
+    obtain ⟨m, hm⟩ := hint ω hω _ h2t
+    have ha : (Hf D (tor0 D cc δ) (4 • ω) t).im = 2 * m := by
+      rw [Hf_nsmul_right] at hm
+      rw [Hf_nsmul_left, ← hm]
+      simp
+      ring
+    have hb' : (Hf D (tor0 D cc δ) t (4 • ω)).im = 2 * ((-m : ℤ) : ℝ) := by
+      rw [Hf_im_swap, ha]; push_cast; ring
+    funext z
+    have e := U_U D (tor0 D cc δ) t (4 • ω) (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ))) z
+    rw [hfix, exp_neg_pi_I_even _ _ hb', one_mul] at e
+    rw [U_U, exp_neg_pi_I_even _ _ ha, one_mul, e, add_comm]
+
+end GlobalTheory.OddThetaTranslate
+end
+
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.U_pullB_ne_zero_and_invariant_four_smul : ∀ (D : D7), admG1 D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Crv D cc δ → ∀ (N N' r : ℕ) (b : Fin r → Matrix (Fin N') (Fin N) D.host.E), OnB D b → Differentiable ℂ (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ))) ∧ ∃ t : VC D N N', 2 • t ∈ LaB D (tor0 D cc δ) b ∧ U D (tor0 D cc δ) t (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ))) 0 ≠ 0 ∧ ∀ ω ∈ LaB D (tor0 D cc δ) b, U D (tor0 D cc δ) (4 • ω) (U D (tor0 D cc δ) t (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ)))) = U D (tor0 D cc δ) t (pullB D (tor0 D cc δ) b (sgStar (lamOf D cc δ))) := by
+  atlas_forward_decl GlobalTheory.OddThetaTranslate.translate_level_four
+end
+
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nsmul_padded_lattice_mem_basis_product : ∀ (D : D7), admG1 D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Crv D cc δ → ∀ (N N' m r : ℕ) (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) (b : Fin r → Matrix (Fin N') (Fin (N + m)) D.host.E), OnB D b → (La D (tor0 D cc δ) L L').FG → ∃ R : ℕ, 0 < R ∧ ∀ y ∈ La D (tor0 D cc δ) L L', R • pad D m y ∈ LaB D (tor0 D cc δ) b := by
+  first | exact @GlobalTheory.PadCommensurable.nsmul_pad_mem | exact GlobalTheory.PadCommensurable.nsmul_pad_mem | (intros; apply GlobalTheory.PadCommensurable.nsmul_pad_mem <;> assumption)
+end
+
+section
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+
+namespace GlobalTheory.GalTheta
+
+theorem adapted_lift_deeper : ∀ (D : D7), galStar D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Crv D cc δ → ∀ σ : (⊤ : IntermediateField ℚ ℂ) →ₐ[ℚ] ℂ, FixK D ⊤ σ → ∀ (c c' : ℂ) (n₀ n : ℕ), 0 < n₀ → 0 < n → InRationalLattice (lamOf D cc δ) c → Adp1 ⊤ σ (lamOf D cc δ) n₀ c c' → ∃ ω ∈ lamOf D cc δ, Adp1 ⊤ σ (lamOf D cc δ) (n₀ * n) (c + (n₀ : ℂ) * ω) c' := by
+  intro D hS cc δ hC σ hσ c c' n₀ n h₀ hn hc hA
+  obtain ⟨-, -, -, h4, h5, h6, h7⟩ := hS cc δ hC ⊤ σ hσ IntermediateField.mem_top IntermediateField.mem_top
+  obtain ⟨k, hk, hkc⟩ := hc
+  have e₀ : (n₀ : ℂ) ≠ 0 := by exact_mod_cast h₀.ne'
+  have e₁ : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
+  unfold Adp1 at hA ⊢
+  have a1 : ((k * n₀ : ℕ) : ℂ) * (c / (n₀ : ℂ)) ∈ lamOf D cc δ := by
+    have : ((k * n₀ : ℕ) : ℂ) * (c / (n₀ : ℂ)) = (k : ℂ) * c := by
+      push_cast; field_simp
+    rw [this]; exact hkc
+  have a2 := (h6 _ _ _ hA).1 a1
+  have a3 : ((k * n₀ * n : ℕ) : ℂ) * (c' / ((n₀ * n : ℕ) : ℂ)) ∈ lamConj ⊤ σ (lamOf D cc δ) := by
+    have : ((k * n₀ * n : ℕ) : ℂ) * (c' / ((n₀ * n : ℕ) : ℂ)) = ((k * n₀ : ℕ) : ℂ) * (c' / (n₀ : ℂ)) := by
+      push_cast; field_simp
+    rw [this]; exact a2
+  obtain ⟨u, -, hu⟩ := h7 (k * n₀ * n) (by positivity)
+    (fun _ _ _ => ⟨IntermediateField.mem_top, IntermediateField.mem_top⟩) _ a3
+  have b1 := h5 (n : 𝓞 D.host.K) _ _ hu
+  have b2 := h5 (-1 : 𝓞 D.host.K) _ _ hA
+  have c1 : D.host.φ₀ ((((n : 𝓞 D.host.K) : D.host.K) : D.host.E)) = (n : ℂ) := by simp
+  have c2 : D.host.φ₀ ((((-1 : 𝓞 D.host.K) : D.host.K) : D.host.E)) = (-1 : ℂ) := by simp
+  rw [c1] at b1
+  rw [c2] at b2
+  have b3 := h4 _ _ _ _ b1 b2
+  have z : (n : ℂ) * (c' / ((n₀ * n : ℕ) : ℂ)) + -1 * (c' / (n₀ : ℂ)) = 0 := by
+    push_cast; field_simp; ring
+  rw [z] at b3
+  have b4 := (h6 1 _ _ b3).2 (by simp)
+  rw [Nat.cast_one, one_mul] at b4
+  refine ⟨_, b4, ?_⟩
+  have : (c + (n₀ : ℂ) * ((n : ℂ) * u + -1 * (c / (n₀ : ℂ)))) / ((n₀ * n : ℕ) : ℂ) = u := by
+    push_cast; field_simp; ring
+  rw [this]; exact hu
+
+end GlobalTheory.GalTheta
+end
+
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adapted_torsion_lift_deeper_level : ∀ (D : D7), galStar D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Crv D cc δ → ∀ σ : (⊤ : IntermediateField ℚ ℂ) →ₐ[ℚ] ℂ, FixK D ⊤ σ → ∀ (c c' : ℂ) (n₀ n : ℕ), 0 < n₀ → 0 < n → InRationalLattice (lamOf D cc δ) c → Adp1 ⊤ σ (lamOf D cc δ) n₀ c c' → ∃ ω ∈ lamOf D cc δ, Adp1 ⊤ σ (lamOf D cc δ) (n₀ * n) (c + (n₀ : ℂ) * ω) c' := by
+  atlas_forward_decl GlobalTheory.GalTheta.adapted_lift_deeper
+end
+
+section
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+
+noncomputable section
+
+namespace GlobalTheory.AdaptedBasis
+
+theorem exists_denominator {K : Type*} [Field K] [NumberField K] {ι : Type*} [Fintype ι] (κ : ι → K) :
+    ∃ R : ℕ, 0 < R ∧ ∃ a : ι → 𝓞 K, ∀ i, (a i : K) = (R : K) * κ i := by
+  obtain ⟨y, hy, h⟩ := exists_integral_multiples ℤ ℚ (L := K) (Finset.univ.image κ)
+  have h' : ∀ i, IsIntegral ℤ (((y.natAbs : ℕ) : K) * κ i) := by
+    intro i
+    have hi := h (κ i) (Finset.mem_image_of_mem κ (Finset.mem_univ i))
+    rw [zsmul_eq_mul] at hi
+    rcases Int.natAbs_eq y with e | e
+    · have : ((y.natAbs : ℕ) : K) = (y : K) := by
+        conv_rhs => rw [e]
+        simp only [Int.cast_natCast]
+      rw [this]; exact hi
+    · have : ((y.natAbs : ℕ) : K) = -(y : K) := by
+        conv_rhs => rw [e]
+        simp only [Int.cast_neg, Int.cast_natCast, neg_neg]
+      rw [this, neg_mul]; exact hi.neg
+  exact ⟨y.natAbs, Int.natAbs_pos.2 hy, fun i => ⟨_, h' i⟩, fun i => rfl⟩
+
+theorem embV_sum (D : D7) (T : Tor D) (h0 : ∀ τ, T.emb τ 0 = 0)
+    (hadd : ∀ τ x y, T.emb τ (x + y) = T.emb τ x + T.emb τ y)
+    (hmul : ∀ τ (a : D.host.K) y, T.emb τ ((a : D.host.E) * y) = D.host.φ₀ (a : D.host.E) * T.emb τ y)
+    {N N' r : ℕ} (B : Fin r → Matrix (Fin N') (Fin N) D.host.E) (κ : Fin r → D.host.K) :
+    embV D T (∑ i, κ i • B i) = ∑ i, D.host.φ₀ (κ i : D.host.E) • embV D T (B i) := by
+  funext τ p q
+  let f : D.host.E →+ ℂ := ⟨⟨T.emb τ, h0 τ⟩, hadd τ⟩
+  have e : (∑ i, κ i • B i) p q = ∑ i, (κ i : D.host.E) * B i p q := by
+    rw [Matrix.sum_apply]
+    rfl
+  have e2 : T.emb τ (∑ i, (κ i : D.host.E) * B i p q) = ∑ i, T.emb τ ((κ i : D.host.E) * B i p q) :=
+    map_sum f _ _
+  simp only [embV, e, e2, hmul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+
+theorem liftM_of_mem (M : IntermediateField ℚ ℂ) {x : ℂ} (h : x ∈ M) : liftM M x = ⟨x, h⟩ := dif_pos h
+
+theorem sum_smul_comm {V : Type*} [AddCommGroup V] [Module ℂ V] {r s : ℕ} (c : Fin s → ℂ) (k : Fin s → Fin r → ℂ)
+    (v : Fin r → V) : ∑ j, c j • ∑ i, k j i • v i = ∑ i, (∑ j, k j i * c j) • v i := by
+  simp only [Finset.smul_sum, Finset.sum_smul, smul_smul]
+  rw [Finset.sum_comm]
+  simp only [mul_comm]
+
+theorem rationalLatticePoint_add {Λ : AddSubgroup ℂ} {x y : ℂ} (hx : InRationalLattice Λ x) (hy : InRationalLattice Λ y) : InRationalLattice Λ (x + y) := by
+  obtain ⟨m, hm, hx⟩ := hx
+  obtain ⟨n, hn, hy⟩ := hy
+  refine ⟨m * n, Nat.mul_pos hm hn, ?_⟩
+  have : ((m * n : ℕ) : ℂ) * (x + y) = n • ((m : ℂ) * x) + m • ((n : ℂ) * y) := by
+    simp only [nsmul_eq_mul]; push_cast; ring
+  rw [this]
+  exact Λ.add_mem (Λ.nsmul_mem hx n) (Λ.nsmul_mem hy m)
+
+theorem adpB_of_family : ∀ (D : D7), admG1 D → galStar D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Crv D cc δ → ∀ (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ), FixK D M ρ → DataIn D (tor0 D cc δ) M → ∀ (N N' r s : ℕ) (B : Fin r → Matrix (Fin N') (Fin N) D.host.E) (b : Fin s → Matrix (Fin N') (Fin N) D.host.E), OnB D B → ∃ R : ℕ, 0 < R ∧ ∀ (n : ℕ) (c c' : Fin s → ℂ), 0 < n → (∀ j, InRationalLattice (lamOf D cc δ) (c j)) → (∀ j, Adp1 M ρ (lamOf D cc δ) (n * R) (c j) (c' j)) → AdpB D (tor0 D cc δ) M ρ B n (∑ j, c j • embV D (tor0 D cc δ) (b j)) (∑ j, c' j • embV D (torConj D (tor0 D cc δ) M ρ) (b j)) := by
+  intro D hG hS cc δ hC M ρ hF hD N N' r s B b hB
+  have hspan : ∀ j, ∃ κ : Fin r → D.host.K, ∑ i, κ i • B i = b j := fun j =>
+    (Submodule.mem_span_range_iff_exists_fun D.host.K).1 (by rw [hB.2]; trivial)
+  choose κ hκ using hspan
+  obtain ⟨R, hR, a, ha⟩ := exists_denominator (fun p : Fin s × Fin r => κ p.1 p.2)
+  have hR' : (R : ℂ) ≠ 0 := by exact_mod_cast hR.ne'
+  have haφ : ∀ j i, D.host.φ₀ (((a (j, i) : D.host.K) : D.host.E)) = R * D.host.φ₀ (κ j i : D.host.E) := by
+    intro j i
+    rw [ha]
+    push_cast
+    rw [map_mul, map_natCast]
+  have hΛ := (GlobalTheory.CurveLattice.lattice_of_curve D hG cc δ hC).2.2.2.2
+  obtain ⟨-, -, -, hadd, hmul, -⟩ := hS cc δ hC M ρ hF hD.2.1 hD.2.2
+  have hM : ∀ τ x, embT D τ x ∈ M := hD.1
+  have hψ := hG.1
+  have e1 : ∀ j, embV D (tor0 D cc δ) (b j) =
+      ∑ i, D.host.φ₀ (κ j i : D.host.E) • embV D (tor0 D cc δ) (B i) := by
+    intro j
+    rw [← hκ j]
+    refine embV_sum D _ (fun τ => map_zero (embT D τ)) (fun τ => map_add (embT D τ)) (fun τ k y => ?_) B _
+    show embT D τ _ = _ * embT D τ y
+    rw [map_mul, hψ]
+  have e2 : ∀ j, embV D (torConj D (tor0 D cc δ) M ρ) (b j) =
+      ∑ i, D.host.φ₀ (κ j i : D.host.E) • embV D (torConj D (tor0 D cc δ) M ρ) (B i) := by
+    intro j
+    rw [← hκ j]
+    refine embV_sum D _ (fun τ => ?_) (fun τ x y => ?_) (fun τ k y => ?_) B _
+    · show ρ (liftM M (embT D τ 0)) = 0
+      rw [map_zero, liftM_of_mem M (zero_mem M)]
+      exact map_zero ρ
+    · show ρ (liftM M (embT D τ (x + y))) = ρ (liftM M (embT D τ x)) + ρ (liftM M (embT D τ y))
+      rw [liftM_of_mem M (hM τ _), liftM_of_mem M (hM τ _), liftM_of_mem M (hM τ _), ← map_add ρ]
+      congr 1
+      exact Subtype.ext (map_add (embT D τ) x y)
+    · show ρ (liftM M (embT D τ (_ * y))) = _ * ρ (liftM M (embT D τ y))
+      rw [← (hF k).2, cj, liftM_of_mem M (hM τ _), liftM_of_mem M (hM τ _), liftM_of_mem M (hF k).1, ← map_mul ρ]
+      congr 1
+      apply Subtype.ext
+      show embT D τ (_ * y) = D.host.φ₀ _ * embT D τ y
+      rw [map_mul, hψ]
+  refine ⟨R, hR, fun n c c' hn hc hA => ⟨fun i => ∑ j, D.host.φ₀ (κ j i : D.host.E) * c j,
+    fun i => ∑ j, D.host.φ₀ (κ j i : D.host.E) * c' j, fun i => ?_, ?_, ?_, fun i => ?_⟩⟩
+  · refine Finset.sum_induction _ (InRationalLattice (lamOf D cc δ)) (fun x y => rationalLatticePoint_add)
+      ⟨1, one_pos, by simp⟩ (fun j _ => ?_)
+    obtain ⟨m, hm, hj⟩ := hc j
+    refine ⟨R * m, Nat.mul_pos hR hm, ?_⟩
+    have := hΛ (a (j, i)) _ hj
+    rw [haφ] at this
+    convert this using 1
+    push_cast; ring
+  · simp only [e1]; exact sum_smul_comm _ _ _
+  · simp only [e2]; exact sum_smul_comm _ _ _
+  · have hn' : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
+    have key : ∀ t : Finset (Fin s), StarPt M ρ (lamOf D cc δ)
+        ((∑ j ∈ t, D.host.φ₀ (κ j i : D.host.E) * c j) / n) ((∑ j ∈ t, D.host.φ₀ (κ j i : D.host.E) * c' j) / n) := by
+      intro t
+      induction t using Finset.induction_on with
+      | empty => left; simp
+      | insert j t hj ih =>
+        rw [Finset.sum_insert hj, Finset.sum_insert hj, add_div, add_div]
+        refine hadd _ _ _ _ ?_ ih
+        have := hmul (a (j, i)) _ _ (hA j)
+        rw [haφ] at this
+        convert this using 1 <;> (push_cast; field_simp)
+    exact key Finset.univ
+
+end GlobalTheory.AdaptedBasis
+end
+end
+
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adapted_point_change_of_rational_basis : ∀ (D : D7), admG1 D → galStar D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Crv D cc δ → ∀ (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ), FixK D M ρ → DataIn D (tor0 D cc δ) M → ∀ (N N' r s : ℕ) (B : Fin r → Matrix (Fin N') (Fin N) D.host.E) (b : Fin s → Matrix (Fin N') (Fin N) D.host.E), OnB D B → ∃ R : ℕ, 0 < R ∧ ∀ (n : ℕ) (c c' : Fin s → ℂ), 0 < n → (∀ j, InRationalLattice (lamOf D cc δ) (c j)) → (∀ j, Adp1 M ρ (lamOf D cc δ) (n * R) (c j) (c' j)) → AdpB D (tor0 D cc δ) M ρ B n (∑ j, c j • embV D (tor0 D cc δ) (b j)) (∑ j, c' j • embV D (torConj D (tor0 D cc δ) M ρ) (b j)) := by
+  atlas_forward_decl GlobalTheory.AdaptedBasis.adpB_of_family
+end
+
+section
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+
+noncomputable section
+
+namespace GlobalTheory.GalTheta.Period
+
+variable (D : D7) (T : Tor D) {N N' : ℕ}
+
+theorem Hf_two_mul (m : ℕ) (y l : VC D N N') : Hf D T y ((2 * m) • l) = 2 * Hf D T (m • y) l := by
+  rw [Hf_nsmul_right, Hf_nsmul_left]; push_cast; ring
+
+theorem qH_add (a b : VC D N N') :
+    qH D T (a + b) = qH D T a + qH D T b + Real.sqrt D.host.d * (Hf D T a b).re := by
+  simp only [qH, Hf_add_left, Hf_add_right, Complex.add_re, Hf_re_swap D T a b]
+  ring
+
+theorem qH_nsmul (n : ℕ) (a : VC D N N') : qH D T (n • a) = (n : ℝ) ^ 2 * qH D T a := by
+  simp only [qH, Hf_nsmul_left, Hf_nsmul_right]
+  have : ((n : ℂ) * ((n : ℂ) * Hf D T a a)).re = (n : ℝ) ^ 2 * (Hf D T a a).re := by
+    simp; ring
+  rw [this]; ring
+
+theorem exp_even (r : ℝ) (m : ℤ) (h : r = 2 * m) :
+    Complex.exp (-(Real.pi : ℂ) * Complex.I * (r : ℂ)) = 1 := by
+  rw [h, Complex.exp_eq_one_iff]
+  exact ⟨-m, by push_cast; ring⟩
+
+theorem period (D : D7) (T : Tor D) (N N' : ℕ) (A : AddSubgroup (VC D N N'))
+    (hIm : ∀ x ∈ A, ∀ y ∈ A, ∃ m : ℤ, (Hf D T x y).im = m) (hq : ∀ x ∈ A, ∃ m : ℤ, qH D T x = m)
+    (k : ℕ) (c : Fin k → ℂ) (t : Fin k → VC D N N') (e₀ : VC D N N' → ℂ) (x : VC D N N') (m₀ : ℕ)
+    (he : e₀ ∈ ThSp D T A) (hx : m₀ • x ∈ A) (ht : ∀ i, m₀ • t i ∈ A) (l : VC D N N') (hl : l ∈ A) :
+    U D T (x + (2 * m₀) • l) (comb D T c t e₀) = U D T x (comb D T c t e₀) ∧
+      wdPh D T (x + (2 * m₀) • l) = wdPh D T x := by
+  obtain ⟨ql, hql⟩ := hq l hl
+  have hqμ : qH D T ((2 * m₀) • l) = ((2 * (2 * (m₀ : ℤ) ^ 2 * ql) : ℤ) : ℝ) := by
+    rw [qH_nsmul, hql]; push_cast; ring
+  have hμ : U D T ((2 * m₀) • l) e₀ = e₀ := by
+    funext z
+    have h := he.2 _ (A.nsmul_mem hl (2 * m₀)) z
+    have hal : al D T ((2 * m₀) • l) = 1 := by
+      change (-1 : ℂ) ^ (round (qH D T ((2 * m₀) • l))) = 1
+      rw [hqμ, round_intCast, zpow_mul]
+      norm_num
+    rwa [hal, one_mul] at h
+  have hev : ∀ y : VC D N N', m₀ • y ∈ A → ∃ m : ℤ, (Hf D T y ((2 * m₀) • l)).im = 2 * m := by
+    intro y hy
+    obtain ⟨m, hm⟩ := hIm _ hy _ hl
+    exact ⟨m, by rw [Hf_two_mul, ← hm]; simp⟩
+  refine ⟨?_, ?_⟩
+  · have key : ∀ (s : VC D N N'), m₀ • s ∈ A → ∀ z,
+        U D T (x + (2 * m₀) • l) (U D T s e₀) z = U D T x (U D T s e₀) z := by
+      intro s hs z
+      have h1 : U D T (x + s) e₀ z = U D T (x + (2 * m₀) • l + s) e₀ z := by
+        obtain ⟨m, hm⟩ := hev (x + s) (by rw [smul_add]; exact A.add_mem hx hs)
+        conv_lhs => rw [← hμ]
+        rw [U_U, exp_even _ m hm, one_mul, add_right_comm]
+      obtain ⟨m, hm⟩ := hev s hs
+      have h2 : (Hf D T ((2 * m₀) • l) s).im = 2 * ((-m : ℤ) : ℝ) := by
+        rw [Hf_im_swap, hm]; push_cast; ring
+      rw [U_U, U_U, h1, Hf_add_left, Complex.add_im, Complex.ofReal_add, mul_add, Complex.exp_add,
+        exp_even _ _ h2, mul_one]
+    have h : ∀ y z, U D T y (comb D T c t e₀) z = ∑ j, c j * U D T y (U D T (t j) e₀) z := by
+      intro y z
+      have := U_sum D T Finset.univ y (fun j w => c j * U D T (t j) e₀ w) z
+      simp only [U_mul] at this
+      exact this
+    funext z
+    rw [h, h]
+    exact Finset.sum_congr rfl fun j _ => by rw [key _ (ht j)]
+  · obtain ⟨a, ha⟩ := hq _ hx
+    obtain ⟨b, hb⟩ := hq _ (A.add_mem hx hl)
+    have h1 := qH_add D T (m₀ • x) l
+    have h2 := qH_add D T x ((2 * m₀) • l)
+    have h3 : (Hf D T x ((2 * m₀) • l)).re = 2 * (Hf D T (m₀ • x) l).re := by
+      rw [Hf_two_mul]; simp
+    have h4 : qH D T (x + (2 * m₀) • l) / 2 =
+        qH D T x / 2 + ((2 * (m₀ : ℤ) ^ 2 * ql + (b - a - ql) : ℤ) : ℝ) := by
+      rw [h2, hqμ, h3]
+      rw [ha, hb, hql] at h1
+      push_cast
+      linarith
+    unfold wdPh ee
+    rw [h4, Complex.ofReal_add, mul_add, Complex.exp_add, Complex.ofReal_intCast,
+      mul_comm _ ((_ : ℤ) : ℂ), Complex.exp_int_mul_two_pi_mul_I, mul_one]
+
+end GlobalTheory.GalTheta.Period
+end
+end
+
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaTranslation_comb_periodic_twice_level : ∀ (D : D7) (T : Tor D) (N N' : ℕ) (A : AddSubgroup (VC D N N')), (∀ x ∈ A, ∀ y ∈ A, ∃ m : ℤ, (Hf D T x y).im = m) → (∀ x ∈ A, ∃ m : ℤ, qH D T x = m) → ∀ (k : ℕ) (c : Fin k → ℂ) (t : Fin k → VC D N N') (e₀ : VC D N N' → ℂ) (x : VC D N N') (m₀ : ℕ), e₀ ∈ ThSp D T A → m₀ • x ∈ A → (∀ i, m₀ • t i ∈ A) → ∀ l ∈ A, U D T (x + (2 * m₀) • l) (comb D T c t e₀) = U D T x (comb D T c t e₀) ∧ wdPh D T (x + (2 * m₀) • l) = wdPh D T x := by
+  atlas_forward_decl GlobalTheory.GalTheta.Period.period
+end
+
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
+open scoped BigOperators
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaOddPrimePhase_conj_invariant : ∀ (D : D7) (T T' : Tor D) (N N' : ℕ) (x x' : VC D N N') (σ : (⊤ : IntermediateField ℚ ℂ) →ₐ[ℚ] ℂ) (p k : ℕ) (m : ℤ), p.Prime → p ≠ 2 → (p : ℝ) ^ k * qH D T x = (m : ℝ) → cj ⊤ σ (wdPh D T x) = wdPh D T' x' → wPh D T p x = (-1 : ℂ) ^ m ∧ wPh D T' p x' = (-1 : ℂ) ^ m := by
+  first | exact @GlobalTheory.GalThetaSign.wPh_conj | exact GlobalTheory.GalThetaSign.wPh_conj | (intros; apply GlobalTheory.GalThetaSign.wPh_conj <;> assumption)
+end
+
+section
 open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.GalTheta
 open scoped BigOperators
 
@@ -260,3 +1018,4 @@ theorem gal_all : ∀ D : D7, gal D := by
     rw [h4, h5, fnConj_mul D M ρ _ (cj_neg_one_zpow M ρ m).1 _ hd hU, h1, (cj_neg_one_zpow M ρ m).2]
 
 end GlobalTheory.GalTheta
+end

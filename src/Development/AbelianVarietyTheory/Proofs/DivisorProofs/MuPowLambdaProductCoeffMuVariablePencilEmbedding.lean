@@ -1,15 +1,564 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PscoTCore
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TDualProd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BarMSingle
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DMBlockEntries
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DMDetbPEqZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LambdaCoeffCommutesModeDerivation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LambdaMonomialCoeffDualNumberProductEq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DMuEqExtDerivation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MuCoeffPartialDerivMuEqSuccMul
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoefMPencil
 import Mathlib
+import Development.AbelianVarietyTheory.Definitions.Divisors.TCoefMInMMul
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivationDetEqDoubleSumAdjugateEntry
+import BuildAid.ForwardExisting
 
+section
+open MvPolynomial
+
+namespace GlobalTheory
+
+theorem dualProd_logDeriv_modSq : ∀ {K R : Type} [CommRing K] [CommRing R] [Algebra K R] (δ : Derivation K R R) {N : ℕ} (e f : Fin N → R) (I : Ideal R), (∀ i, δ (e i) = 0) → (∀ i, e i ^ 2 ∈ I) → δ (∏ i, (1 + e i * f i)) - (∏ i, (1 + e i * f i)) * ∑ i, e i * δ (f i) ∈ I := by
+  intro K R _ _ _ δ N
+  induction N with
+  | zero => intro e f I _ _; simp
+  | succ n ih =>
+    intro e f I he he2
+    rw [Fin.prod_univ_succ, Fin.sum_univ_succ]
+    have h := ih (fun i => e i.succ) (fun i => f i.succ) I (fun i => he _) (fun i => he2 _)
+    set P := ∏ i : Fin n, (1 + e i.succ * f i.succ)
+    set S := ∑ i : Fin n, e i.succ * δ (f i.succ)
+    have key : δ ((1 + e 0 * f 0) * P) - (1 + e 0 * f 0) * P * (e 0 * δ (f 0) + S)
+        = (1 + e 0 * f 0) * (δ P - P * S) - e 0 ^ 2 * (f 0 * P * δ (f 0)) := by
+      simp only [Derivation.leibniz, map_add, Derivation.map_one_eq_zero, he 0, smul_eq_mul]
+      ring
+    rw [key]
+    exact I.sub_mem (I.mul_mem_left _ h) (I.mul_mem_right _ (he2 0))
+
+end GlobalTheory
+end
+
+section
+open MvPolynomial GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc1.A
+
+namespace GlobalTheory.PsCo.Cw2a
+
+theorem t_dual_prod : T_dual_prod := by
+  intro A _ _ D L la m J hD hsq
+  exact GlobalTheory.dualProd_logDeriv_modSq (K := ℂ) D la m J hD hsq
+
+end GlobalTheory.PsCo.Cw2a
+end
+
+section
+open MvPolynomial GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc1.A
+
+namespace GlobalTheory.PsCo.DMComm
+
+variable {n : ℕ}
+
+theorem barM_single (ε : Fin n → Bool) (x : Mode ε) :
+    barM ε (Matrix.single x.1.2 x.1.1 1) = Matrix.single x.1.1 x.1.2 1 := by
+  obtain ⟨⟨a, b⟩, ha, hb⟩ := x
+  ext i j
+  simp only [barM, Matrix.single_apply]
+  by_cases h : b = j ∧ a = i
+  · obtain ⟨rfl, rfl⟩ := h
+    simp only at ha hb
+    simp [sg, ha, hb]
+  · have h' : ¬ (a = i ∧ b = j) := fun h2 => h ⟨h2.2, h2.1⟩
+    simp [h, h']
+
+theorem dM_inl (ε : Fin n → Bool) (x : Mode ε) (i j : Fin n) :
+    dM ε x (X (Sum.inl (i, j))) = (if j = x.1.1 then X (Sum.inl (i, x.1.2)) else 0)
+      - (if i = x.1.2 then X (Sum.inl (x.1.1, j)) else 0) := by
+  simp only [dM, dZ, mkDerivation_X, Sum.elim_inl, Finset.sum_sub_distrib]
+  congr 1
+  · by_cases h : j = x.1.1
+    · subst h
+      simp [Matrix.single_apply, apply_ite]
+    · simp [Matrix.single_apply, h, Ne.symm h]
+  · by_cases h : i = x.1.2
+    · subst h
+      simp [Matrix.single_apply, apply_ite]
+    · simp [Matrix.single_apply, h, Ne.symm h]
+
+theorem dM_inr (ε : Fin n → Bool) (x : Mode ε) (i j : Fin n) :
+    dM ε x (X (Sum.inr (i, j))) = (if j = x.1.2 then X (Sum.inr (i, x.1.1)) else 0)
+      - (if i = x.1.1 then X (Sum.inr (x.1.2, j)) else 0) := by
+  simp only [dM, dZ, mkDerivation_X, Sum.elim_inr, Finset.sum_sub_distrib, barM_single]
+  congr 1
+  · by_cases h : j = x.1.2
+    · subst h
+      simp [Matrix.single_apply, apply_ite]
+    · simp [Matrix.single_apply, h, Ne.symm h]
+  · by_cases h : i = x.1.1
+    · subst h
+      simp [Matrix.single_apply, apply_ite]
+    · simp [Matrix.single_apply, h, Ne.symm h]
+
+theorem mode_ne (ε : Fin n → Bool) (w x : Mode ε) : x.1.2 ≠ w.1.1 := by
+  intro h
+  have h1 := x.2.2
+  rw [h, w.2.1] at h1
+  exact absurd h1 (by simp)
+
+theorem dM_comm_X (ε : Fin n → Bool) (w x : Mode ε) (v : (Fin n × Fin n) ⊕ (Fin n × Fin n)) :
+    dM ε w (dM ε x (X v)) = dM ε x (dM ε w (X v)) := by
+  have h1 := mode_ne ε w x
+  have h2 := mode_ne ε x w
+  have h3 := h1.symm
+  have h4 := h2.symm
+  rcases v with ⟨i, j⟩ | ⟨i, j⟩
+  · simp only [dM_inl, map_sub, apply_ite (dM ε w), apply_ite (dM ε x), map_zero, h1, h2, h3, h4, if_false]
+    split_ifs <;> simp_all
+  · simp only [dM_inr, map_sub, apply_ite (dM ε w), apply_ite (dM ε x), map_zero, h1, h2, h3, h4, if_false]
+    split_ifs <;> simp_all
+
+theorem dM_comm : GlobalTheory.PsCo.Cw2a.T_dM_comm := by
+  intro n ε w x P
+  have h : ⁅dM ε w, dM ε x⁆ = 0 := by
+    apply MvPolynomial.derivation_ext
+    intro v
+    rw [Derivation.commutator_apply, dM_comm_X, sub_self]
+    rfl
+  have h2 := congrArg (fun D : Derivation ℂ (Poly n) (Poly n) => D P) h
+  simpa [Derivation.commutator_apply, sub_eq_zero] using h2
+
+end GlobalTheory.PsCo.DMComm
+end
+
+section
+open MvPolynomial GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc1.A
+
+namespace GlobalTheory.PsCo.Cw2a
+
+theorem dM_X_inl_entry {n : ℕ} (ε : Fin n → Bool) (x : Mode ε) (a b : Fin n) :
+    dM ε x (X (Sum.inl (a, b))) =
+      (if x.1.1 = b then X (Sum.inl (a, x.1.2)) else 0) - (if a = x.1.2 then X (Sum.inl (x.1.1, b)) else 0) := by
+  classical
+  simp only [dM, dZ, mkDerivation_X, Sum.elim_inl]
+  rw [Finset.sum_sub_distrib]
+  congr 1
+  · rw [Finset.sum_eq_single x.1.2]
+    · by_cases h : x.1.1 = b <;> simp [Matrix.single_apply, h]
+    · intro c _ hc
+      simp [Matrix.single_apply, Ne.symm hc]
+    · simp
+  · rw [Finset.sum_eq_single x.1.1]
+    · by_cases h : a = x.1.2
+      · simp [Matrix.single_apply, h]
+      · simp [Matrix.single_apply, h, Ne.symm h]
+    · intro c _ hc
+      simp [Matrix.single_apply, Ne.symm hc]
+    · simp
+
+theorem dM_block_entries : BlockDeterminantCondition := by
+  intro n ε a b hab
+  classical
+  cases ha : ε a with
+  | true =>
+    refine ⟨fun x y => if x.1.1 = b ∧ y = ⟨(a, x.1.2), ha, x.2.2⟩ then 1 else 0, fun x => ?_⟩
+    have hne : a ≠ x.1.2 := by
+      intro h
+      have := x.2.2
+      rw [← h, ha] at this
+      exact Bool.noConfusion this
+    rw [dM_X_inl_entry, if_neg hne, sub_zero, Finset.sum_eq_single (⟨(a, x.1.2), ha, x.2.2⟩ : Mode ε)]
+    · by_cases h : x.1.1 = b <;> simp [h]
+    · intro y _ hy
+      simp [hy]
+    · simp
+  | false =>
+    have hb : ε b = false := by rw [← hab, ha]
+    refine ⟨fun x y => if a = x.1.2 ∧ y = ⟨(x.1.1, b), x.2.1, hb⟩ then -1 else 0, fun x => ?_⟩
+    have hne : x.1.1 ≠ b := by
+      intro h
+      have := x.2.1
+      rw [h, hb] at this
+      exact Bool.noConfusion this
+    rw [dM_X_inl_entry, if_neg hne, zero_sub, Finset.sum_eq_single (⟨(x.1.1, b), x.2.1, hb⟩ : Mode ε)]
+    · by_cases h : a = x.1.2 <;> simp [h]
+    · intro y _ hy
+      simp [hy]
+    · simp
+
+end GlobalTheory.PsCo.Cw2a
+end
+
+section
+open MvPolynomial GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc1.A
+
+namespace GlobalTheory.PsCo.Cw2a
+
+theorem modeDerivation_det_eq_zero : GlobalTheory.PsCo.Cw2a.T_dM_detb := by
+  intro n ε x
+  let Mx : Matrix (Fin n) (Fin n) (Poly n) := Matrix.of fun a b => X (Sum.inr (a, b))
+  let W : Matrix (Fin n) (Fin n) (Poly n) := (barM ε (Matrix.single x.1.2 x.1.1 1)).map C
+  have hD : ∀ i j, dM ε x (Mx i j) = (Mx * W - W * Mx) i j := by
+    intro i j
+    simp only [dM, dZ, Mx, W, Matrix.of_apply, mkDerivation_X, Sum.elim_inr, Matrix.sub_apply,
+      Matrix.mul_apply, Matrix.map_apply, Finset.sum_sub_distrib]
+  have key := GlobalTheory.T.derivation_det_eq_double_sum_adjugate_entry (dM ε x) Mx
+  have hdet : detbP n = Mx.det := rfl
+  rw [hdet, key]
+  simp_rw [hD]
+  have htr : ∑ i, ∑ j, Mx.adjugate j i * (Mx * W - W * Mx) i j
+      = Matrix.trace (Mx.adjugate * (Mx * W - W * Mx)) := by
+    simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply]
+    rw [Finset.sum_comm]
+  rw [htr, Matrix.mul_sub, Matrix.trace_sub, ← Matrix.mul_assoc Mx.adjugate Mx W, Matrix.adjugate_mul,
+    ← Matrix.mul_assoc Mx.adjugate W Mx, Matrix.trace_mul_comm (Mx.adjugate * W) Mx,
+    ← Matrix.mul_assoc Mx Mx.adjugate W, Matrix.mul_adjugate, sub_self]
+
+end GlobalTheory.PsCo.Cw2a
+end
+
+section
+section
+open MvPolynomial
+
+namespace GlobalTheory
+
+theorem sumAlgEquiv_rename_inr_eq_C {σ : Type} {L : ℕ} (q : MvPolynomial σ ℂ) :
+    MvPolynomial.sumAlgEquiv ℂ (Fin L) σ (MvPolynomial.rename Sum.inr q) = MvPolynomial.C q := by
+  induction q using MvPolynomial.induction_on with
+  | C a => simp [sumAlgEquiv_C_inl]
+  | add p q hp hq => simp only [map_add, hp, hq]
+  | mul_X p v hp => simp only [map_mul, hp, rename_X, sumAlgEquiv_X_inr]
+
+theorem coeff_sumAlgEquiv_mkDerivation_gen {σ : Type} {L : ℕ}
+    (D : Derivation ℂ (MvPolynomial σ ℂ) (MvPolynomial σ ℂ))
+    (b : MvPolynomial (Fin L ⊕ σ) ℂ) (m : Fin L →₀ ℕ) :
+    MvPolynomial.coeff m (MvPolynomial.sumAlgEquiv ℂ (Fin L) σ
+      (MvPolynomial.mkDerivation ℂ (Sum.elim (fun _ : Fin L => (0 : MvPolynomial (Fin L ⊕ σ) ℂ))
+        (fun v : σ => MvPolynomial.rename Sum.inr (D (MvPolynomial.X v)))) b)) =
+      D (MvPolynomial.coeff m (MvPolynomial.sumAlgEquiv ℂ (Fin L) σ b)) := by
+  induction b using MvPolynomial.induction_on generalizing m with
+  | C a =>
+    have h1 : (MvPolynomial.C a : MvPolynomial (Fin L ⊕ σ) ℂ) = algebraMap ℂ _ a := rfl
+    rw [h1, Derivation.map_algebraMap, map_zero, coeff_zero, AlgEquiv.commutes]
+    rw [MvPolynomial.algebraMap_apply, MvPolynomial.coeff_C]
+    split_ifs
+    · exact (D.map_algebraMap a).symm
+    · simp
+  | add p q hp hq => simp only [map_add, coeff_add, hp, hq]
+  | mul_X p i hp =>
+    rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul, map_add, map_mul, map_mul, map_mul, coeff_add]
+    rcases i with j | v
+    · simp only [mkDerivation_X, Sum.elim_inl, map_zero, mul_zero, coeff_zero, zero_add,
+        sumAlgEquiv_X_inl]
+      rw [mul_comm (X j), coeff_mul_X', coeff_mul_X']
+      split_ifs
+      · exact hp _
+      · exact (D.map_zero).symm
+    · simp only [mkDerivation_X, Sum.elim_inr, sumAlgEquiv_X_inr, sumAlgEquiv_rename_inr_eq_C,
+        coeff_C_mul, hp]
+      rw [mul_comm ((sumAlgEquiv ℂ (Fin L) σ) p) (C (D (X v))),
+        mul_comm ((sumAlgEquiv ℂ (Fin L) σ) p) (C (X v)), coeff_C_mul, coeff_C_mul,
+        Derivation.leibniz, smul_eq_mul, smul_eq_mul]
+      ring
+
+theorem coeff_allOnes_sumAlgEquiv_mkDerivation :
+    ∀ {σ : Type} {L : ℕ} (D : Derivation ℂ (MvPolynomial σ ℂ) (MvPolynomial σ ℂ)) (b : MvPolynomial (Fin L ⊕ σ) ℂ), MvPolynomial.coeff (Finsupp.equivFunOnFinite.symm fun _ : Fin L => (1 : ℕ)) (MvPolynomial.sumAlgEquiv ℂ (Fin L) σ (MvPolynomial.mkDerivation ℂ (Sum.elim (fun _ : Fin L => (0 : MvPolynomial (Fin L ⊕ σ) ℂ)) (fun v : σ => MvPolynomial.rename Sum.inr (D (MvPolynomial.X v)))) b)) = D (MvPolynomial.coeff (Finsupp.equivFunOnFinite.symm fun _ : Fin L => (1 : ℕ)) (MvPolynomial.sumAlgEquiv ℂ (Fin L) σ (b))) :=
+  fun D b => coeff_sumAlgEquiv_mkDerivation_gen D b _
+
+end GlobalTheory
+end
+
+open MvPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeff_allOnes_sumAlgEquiv_derivation_eq : ∀ {σ : Type} {L : ℕ} (D : Derivation ℂ (MvPolynomial σ ℂ) (MvPolynomial σ ℂ)) (b : MvPolynomial (Fin L ⊕ σ) ℂ), MvPolynomial.coeff (Finsupp.equivFunOnFinite.symm fun _ : Fin L => (1 : ℕ)) (MvPolynomial.sumAlgEquiv ℂ (Fin L) σ (MvPolynomial.mkDerivation ℂ (Sum.elim (fun _ : Fin L => (0 : MvPolynomial (Fin L ⊕ σ) ℂ)) (fun v : σ => MvPolynomial.rename Sum.inr (D (MvPolynomial.X v)))) b)) = D (MvPolynomial.coeff (Finsupp.equivFunOnFinite.symm fun _ : Fin L => (1 : ℕ)) (MvPolynomial.sumAlgEquiv ℂ (Fin L) σ (b))) := by
+  atlas_forward_decl GlobalTheory.coeff_allOnes_sumAlgEquiv_mkDerivation
+end
+
+section
+open MvPolynomial GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc1.A
+
+namespace GlobalTheory.PsCo.Cw2a
+
+theorem exL_dL_holds : GlobalTheory.PsCo.Cw2a.T_exL_dL := by
+  intro n L ε x b
+  have h := GlobalTheory.T.coeff_allOnes_sumAlgEquiv_derivation_eq (σ := EntIdx n) (L := L) (dM ε x) b
+  simpa [exL, dL, inL, allOnes] using h
+
+end GlobalTheory.PsCo.Cw2a
+end
+
+section
+open MvPolynomial
+
+namespace GlobalTheory
+
+theorem coeff_allOnes_prod_one_add_mul {σ : Type} {L : ℕ} (m : Fin L → MvPolynomial σ ℂ)
+    (a : MvPolynomial σ ℂ) :
+    MvPolynomial.coeff (Finsupp.equivFunOnFinite.symm fun _ : Fin L => (1 : ℕ))
+      (MvPolynomial.sumAlgEquiv ℂ (Fin L) σ ((∏ i, (1 + MvPolynomial.X (Sum.inl i) *
+        MvPolynomial.rename Sum.inr (m i))) * MvPolynomial.rename Sum.inr a)) = (∏ i, m i) * a := by
+  have hr : ∀ q : MvPolynomial σ ℂ, sumAlgEquiv ℂ (Fin L) σ (rename Sum.inr q) = C q := by
+    intro q
+    induction q using MvPolynomial.induction_on with
+    | C r => simp [sumAlgEquiv_C_inl]
+    | add p q hp hq => simp only [map_add, hp, hq]
+    | mul_X p c hp => rw [map_mul, map_mul, hp, rename_X, sumAlgEquiv_X_inr, map_mul]
+  have hx : ∀ i : Fin L, sumAlgEquiv ℂ (Fin L) σ (X (Sum.inl i)) = X i := fun i =>
+    sumAlgEquiv_X_inl ℂ (Fin L) σ i
+  have cmC : ∀ {τ : Type} (n : τ →₀ ℕ) (p : MvPolynomial τ (MvPolynomial σ ℂ)) (c : MvPolynomial σ ℂ),
+      coeff n (p * C c) = coeff n p * c := by
+    intro τ n p c; rw [mul_comm, coeff_C_mul, mul_comm]
+  set e : Fin L →₀ ℕ := Finsupp.equivFunOnFinite.symm fun _ : Fin L => (1 : ℕ) with he
+  have hmono : ∀ t : Finset (Fin L),
+      coeff e (∏ i ∈ t, (X i * C (m i) : MvPolynomial (Fin L) (MvPolynomial σ ℂ))) =
+        if t = Finset.univ then ∏ i, m i else 0 := by
+    intro t
+    rw [Finset.prod_mul_distrib, ← map_prod, cmC]
+    have hX : (∏ i ∈ t, (X i : MvPolynomial (Fin L) (MvPolynomial σ ℂ))) =
+        monomial (∑ i ∈ t, Finsupp.single i 1) 1 := by
+      rw [monomial_sum_one]; rfl
+    rw [hX, coeff_monomial]
+    by_cases ht : t = Finset.univ
+    · subst ht
+      have : (∑ i ∈ (Finset.univ : Finset (Fin L)), Finsupp.single i 1) = e := by
+        ext j; simp [he, Finsupp.finset_sum_apply, Finsupp.single_apply]
+      simp [this]
+    · obtain ⟨j, hj⟩ : ∃ j, j ∉ t := by
+        by_contra h; push_neg at h; exact ht (Finset.eq_univ_iff_forall.mpr h)
+      have : (∑ i ∈ t, Finsupp.single i 1) ≠ e := by
+        intro h
+        have := congrArg (fun f => f j) h
+        simp [he, Finsupp.finset_sum_apply, Finsupp.single_apply, hj] at this
+      simp [this, ht]
+  rw [map_mul, hr, cmC, map_prod]
+  simp_rw [map_add, map_one, map_mul, hr, hx]
+  rw [Finset.prod_one_add, coeff_sum, Finset.sum_eq_single Finset.univ]
+  · rw [hmono]; simp
+  · intro t _ ht; rw [hmono, if_neg ht]
+  · intro h; exact absurd (Finset.mem_powerset.mpr (Finset.Subset.refl _)) h
+
+end GlobalTheory
+end
+
+section
+open MvPolynomial GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc1.A
+
+namespace GlobalTheory.PsCo.Cw2a
+
+theorem t_exL_dual : T_exL_dual := by
+  intro n L m a
+  exact GlobalTheory.coeff_allOnes_prod_one_add_mul (σ := EntIdx n) m a
+
+end GlobalTheory.PsCo.Cw2a
+end
+
+section
+open MvPolynomial
+
+namespace GlobalTheory
+
+theorem optionEquivLeft_rename_some_complex_eq_C {τ : Type} (c : MvPolynomial τ ℂ) :
+    MvPolynomial.optionEquivLeft ℂ τ (MvPolynomial.rename some c) = Polynomial.C c := by
+  induction c using MvPolynomial.induction_on with
+  | C a => rw [MvPolynomial.rename_C, MvPolynomial.optionEquivLeft_C, Polynomial.C_eq_algebraMap]
+  | add p q hp hq => rw [map_add, map_add, hp, hq, Polynomial.C_add]
+  | mul_X p n hp => rw [map_mul, map_mul, hp, MvPolynomial.rename_X, MvPolynomial.optionEquivLeft_X_some, Polynomial.C_mul]
+
+theorem coeff_optionEquivLeft_extDerivation {τ : Type}
+    (E : Derivation ℂ (MvPolynomial τ ℂ) (MvPolynomial τ ℂ)) (k : ℕ) (s : MvPolynomial (Option τ) ℂ) :
+    (MvPolynomial.optionEquivLeft ℂ τ (MvPolynomial.mkDerivation ℂ (fun w : Option τ => match w with
+      | none => (0 : MvPolynomial (Option τ) ℂ)
+      | some v => MvPolynomial.rename some (E (MvPolynomial.X v))) s)).coeff k
+      = E ((MvPolynomial.optionEquivLeft ℂ τ (s)).coeff k) := by
+  induction s using MvPolynomial.induction_on generalizing k with
+  | C a =>
+    have h1 : (MvPolynomial.C a : MvPolynomial (Option τ) ℂ) = algebraMap ℂ _ a := rfl
+    have h2 : (MvPolynomial.C a : MvPolynomial τ ℂ) = algebraMap ℂ _ a := rfl
+    rw [h1, Derivation.map_algebraMap, ← h1, MvPolynomial.optionEquivLeft_C, Polynomial.coeff_C]
+    split_ifs <;> simp [h2, Derivation.map_algebraMap]
+  | add p q hp hq => simp only [map_add, Polynomial.coeff_add, hp, hq]
+  | mul_X p n hp =>
+    rw [Derivation.leibniz, MvPolynomial.mkDerivation_X]
+    rcases n with _ | v
+    · simp only [smul_zero, zero_add, smul_eq_mul, mul_zero, map_mul, MvPolynomial.optionEquivLeft_X_none]
+      rcases k with _ | k
+      · simp [Polynomial.coeff_mul_X_zero, mul_comm (Polynomial.X) _]
+      · rw [mul_comm Polynomial.X, Polynomial.coeff_mul_X, Polynomial.coeff_mul_X, hp]
+    · simp only [smul_eq_mul, map_add, map_mul, MvPolynomial.optionEquivLeft_X_some, optionEquivLeft_rename_some_complex_eq_C,
+        Polynomial.coeff_add, Polynomial.coeff_mul_C, Polynomial.coeff_C_mul, hp, Derivation.leibniz]
+
+end GlobalTheory
+end
+
+section
+open MvPolynomial GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc1.A
+
+namespace GlobalTheory.PsCo.Cw2a
+
+theorem coefM_apply_eq_coeff {n L : ℕ} (k : ℕ) (s : PolyM n L) :
+    coefM n L k s = (optionEquivLeft ℂ (Fin L ⊕ EntIdx n) s).coeff k := by
+  simp only [coefM, LinearMap.comp_apply, LinearMap.restrictScalars_apply, AlgEquiv.toLinearMap_apply,
+    Polynomial.lcoeff_apply]
+
+theorem dMu_eq_extDerivation {n L : ℕ} (ε : Fin n → Bool) (x : Mode ε) :
+    dMu L ε x = mkDerivation ℂ (fun w : Option (Fin L ⊕ EntIdx n) => match w with
+      | none => (0 : MvPolynomial (Option (Fin L ⊕ EntIdx n)) ℂ)
+      | some v => rename some (dL L ε x (X v))) := by
+  unfold dMu
+  refine congrArg _ (funext fun w => ?_)
+  cases w with
+  | none => rfl
+  | some v => simp only [inM]
+
+theorem coefM_dMu : T_coefM_dMu := by
+  intro n L ε x k s
+  have h := GlobalTheory.coeff_optionEquivLeft_extDerivation (dL L ε x) k s
+  rw [coefM_apply_eq_coeff, coefM_apply_eq_coeff, ← h]
+  have e : dMu L ε x = mkDerivation ℂ (fun w : Option (Fin L ⊕ EntIdx n) => match w with
+      | none => (0 : MvPolynomial (Option (Fin L ⊕ EntIdx n)) ℂ)
+      | some v => rename some (dL L ε x (X v))) := dMu_eq_extDerivation ε x
+  refine congrArg (fun D : Derivation ℂ (PolyM n L) (PolyM n L) => (optionEquivLeft ℂ (Fin L ⊕ EntIdx n) (D s)).coeff k) (e.trans ?_)
+  refine congrArg _ (funext fun w => ?_)
+  cases w <;> rfl
+
+end GlobalTheory.PsCo.Cw2a
+end
+
+section
+open MvPolynomial
+
+namespace GlobalTheory
+
+theorem optionEquivLeft_pderiv_none_gen {τ : Type} [DecidableEq τ]
+    (p : MvPolynomial (Option τ) ℂ) :
+    optionEquivLeft ℂ τ (pderiv none p) = Polynomial.derivative (optionEquivLeft ℂ τ p) := by
+  induction p using MvPolynomial.induction_on with
+  | C a => simp [optionEquivLeft_C]
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p i hp =>
+    rcases i with _ | j
+    · simp [Derivation.leibniz, hp, optionEquivLeft_X_none, mul_comm]
+    · simp [Derivation.leibniz, hp, optionEquivLeft_X_some, pderiv_X, mul_comm]
+
+theorem optionEquivLeft_pderiv_none_coeff :
+    ∀ {τ : Type} [DecidableEq τ] (k : ℕ) (s : MvPolynomial (Option τ) ℂ),
+      (MvPolynomial.optionEquivLeft ℂ τ (MvPolynomial.pderiv none s)).coeff k =
+        ((k : ℂ) + 1) • (MvPolynomial.optionEquivLeft ℂ τ (s)).coeff (k + 1) := by
+  intro τ _ k s
+  rw [optionEquivLeft_pderiv_none_gen, Polynomial.coeff_derivative, MvPolynomial.smul_eq_C_mul,
+    mul_comm]
+  congr 1
+  simp
+
+end GlobalTheory
+end
+
+section
+open MvPolynomial GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc1.A
+
+namespace GlobalTheory.PsCo.Cw2a
+
+theorem t_coefM_pderiv : T_coefM_pderiv := by
+  intro n L k s
+  simp only [coefM, LinearMap.coe_comp, Function.comp_apply, LinearMap.coe_restrictScalars,
+    Polynomial.lcoeff_apply, AlgEquiv.toLinearMap_apply]
+  exact GlobalTheory.optionEquivLeft_pderiv_none_coeff k s
+
+end GlobalTheory.PsCo.Cw2a
+end
+
+section
+open MvPolynomial
+
+namespace GlobalTheory
+
+theorem pencil_optionEquivLeft_rename_some {τ : Type} (a : MvPolynomial τ ℂ) :
+    MvPolynomial.optionEquivLeft ℂ τ (MvPolynomial.rename some a) = Polynomial.C a := by
+  induction a using MvPolynomial.induction_on with
+  | C r => simp [MvPolynomial.optionEquivLeft_C]
+  | add p q hp hq => simp [map_add, hp, hq]
+  | mul_X p x hp => simp [map_mul, hp, MvPolynomial.optionEquivLeft_X_some]
+
+theorem pencil_natDegree_det_le_rowSum {R : Type} [CommRing R] {ι : Type} [Fintype ι] [DecidableEq ι]
+    (M : Matrix ι ι (Polynomial R)) (d : ι → ℕ) (h : ∀ i j, (M i j).natDegree ≤ d i) :
+    M.det.natDegree ≤ ∑ i, d i := by
+  rw [Matrix.det_apply]
+  refine Polynomial.natDegree_sum_le_of_forall_le _ _ ?_
+  intro g _
+  calc (Equiv.Perm.sign g • ∏ i, M (g i) i).natDegree ≤ (∏ i, M (g i) i).natDegree := by
+        rcases Int.units_eq_one_or (Equiv.Perm.sign g) with sg | sg
+        · rw [sg, one_smul]
+        · rw [sg, Units.neg_smul, one_smul, Polynomial.natDegree_neg]
+    _ ≤ ∑ i, (M (g i) i).natDegree := Polynomial.natDegree_prod_le _ _
+    _ ≤ ∑ i, d (g i) := Finset.sum_le_sum fun i _ => h _ _
+    _ = ∑ i, d i := Equiv.sum_comp g d
+
+theorem pencil_map_entry {τ : Type} (a b : MvPolynomial τ ℂ) :
+    MvPolynomial.optionEquivLeft ℂ τ
+      (MvPolynomial.X none * MvPolynomial.rename some a + MvPolynomial.rename some b) =
+      Polynomial.X * Polynomial.C a + Polynomial.C b := by
+  simp [map_add, map_mul, MvPolynomial.optionEquivLeft_X_none, pencil_optionEquivLeft_rename_some]
+
+theorem pencil_det_adjugate_coeff :
+    ∀ {τ : Type} {ι : Type} [Fintype ι] [DecidableEq ι] (A B : Matrix ι ι (MvPolynomial τ ℂ)),
+      let Z : Matrix ι ι (MvPolynomial (Option τ) ℂ) := fun i j =>
+        MvPolynomial.X none * MvPolynomial.rename some (A i j) + MvPolynomial.rename some (B i j);
+      (∀ k, Fintype.card ι < k → (MvPolynomial.optionEquivLeft ℂ τ (Z.det)).coeff k = 0) ∧
+      (MvPolynomial.optionEquivLeft ℂ τ (Z.det)).coeff (Fintype.card ι) = A.det ∧
+      ∀ k i j, Fintype.card ι ≤ k →
+        (MvPolynomial.optionEquivLeft ℂ τ (Z.adjugate j i)).coeff k = 0 := by
+  intro τ ι _ _ A B Z
+  set e : MvPolynomial (Option τ) ℂ →+* Polynomial (MvPolynomial τ ℂ) :=
+    (MvPolynomial.optionEquivLeft ℂ τ).toRingEquiv.toRingHom with he
+  have hZ : e.mapMatrix Z = (Polynomial.X : Polynomial (MvPolynomial τ ℂ)) • A.map Polynomial.C +
+      B.map Polynomial.C := by
+    refine Matrix.ext fun i j => ?_
+    simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.add_apply, Matrix.smul_apply,
+      smul_eq_mul, Z, he]
+    exact pencil_map_entry (A i j) (B i j)
+  have hdet : MvPolynomial.optionEquivLeft ℂ τ Z.det =
+      ((Polynomial.X : Polynomial (MvPolynomial τ ℂ)) • A.map Polynomial.C + B.map Polynomial.C).det := by
+    rw [← hZ, ← RingHom.map_det]; rfl
+  refine ⟨?_, ?_, ?_⟩
+  · intro k hk
+    rw [hdet]
+    exact Polynomial.coeff_eq_zero_of_natDegree_lt
+      ((Polynomial.natDegree_det_X_add_C_le A B).trans_lt hk)
+  · rw [hdet, Polynomial.coeff_det_X_add_C_card]
+  · intro k i j hk
+    have hadj : MvPolynomial.optionEquivLeft ℂ τ (Z.adjugate j i) =
+        (((Polynomial.X : Polynomial (MvPolynomial τ ℂ)) • A.map Polynomial.C +
+          B.map Polynomial.C).updateRow i (Pi.single j 1)).det := by
+      have := congrFun (congrFun (RingHom.map_adjugate e Z) j) i
+      rw [RingHom.mapMatrix_apply, Matrix.map_apply] at this
+      change e (Z.adjugate j i) = _
+      rw [this, hZ, Matrix.adjugate_apply]
+    rw [hadj]
+    apply Polynomial.coeff_eq_zero_of_natDegree_lt
+    have hcard : 0 < Fintype.card ι := Fintype.card_pos_iff.mpr ⟨i⟩
+    refine lt_of_le_of_lt (pencil_natDegree_det_le_rowSum _ (fun r => if r = i then 0 else 1) ?_) ?_
+    · intro r c
+      by_cases hr : r = i
+      · subst hr
+        simp only [Matrix.updateRow_self, if_true]
+        by_cases hc : c = j
+        · subst hc; simp
+        · simp [Pi.single_apply, hc]
+      · simp only [Matrix.updateRow_ne hr, if_neg hr, Matrix.add_apply, Matrix.smul_apply,
+          Matrix.map_apply, smul_eq_mul]
+        compute_degree
+    · have : (∑ r, if r = i then 0 else 1 : ℕ) = Fintype.card ι - 1 := by
+        rw [Finset.sum_ite, Finset.sum_const_zero, zero_add, Finset.sum_const, smul_eq_mul, mul_one,
+          Finset.filter_ne' , Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ]
+      omega
+
+end GlobalTheory
+end
+
+section
+open MvPolynomial GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc1.A
+
+namespace GlobalTheory
+
+theorem coefM_pencil : GlobalTheory.PsCo.Cw2a.T_coefM_pencil := by
+  intro n L I _ _ A0 B0
+  have h := pencil_det_adjugate_coeff (τ := Fin L ⊕ EntIdx n) A0 B0
+  simpa only [coefM, muM, inM, LinearMap.comp_apply, LinearMap.restrictScalars_apply,
+    Polynomial.lcoeff_apply, AlgEquiv.toLinearMap_apply, AlgHom.coe_coe] using h
+
+end GlobalTheory
+end
+
+section
 section
 
 noncomputable section
@@ -527,5 +1076,6 @@ theorem _root_.GlobalTheory.PsCo.Pc1.A.stAlg : _root_.GlobalTheory.PsCo.Pc1.StAl
 
 end GlobalTheory.PsCo.Pc1.A
 
+end
 end
 end

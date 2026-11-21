@@ -3,10 +3,19 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntegralSmulOfCha
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedHeckeTestFunctionSupportCompactStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompactConjCharpolyBoundedDenominatorsAwayPStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitNormBoundsStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoundedEigenvaluesClassesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoundedEigenvaluesClasses
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicCoeffDenominatorBoundOfBoundedRootsStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DenBoundCombinePadicPrimeToPStatement
 
+section
+open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
+open scoped TensorProduct Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bounded_eigenvalues_classes : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), IsSimple G → ∀ (β y : G.Cˣ) (c : ℚˣ), (y : G.C) * β * sh G y = algebraMap ℚ G.C c * β → ∀ B : ℝ, ‖((c : ℚ) : ℚ_[p])‖ ≤ B → ‖(((c⁻¹ : ℚˣ) : ℚ) : ℚ_[p])‖ ≤ B → (∀ (w : Fin G.m) (μ : PadicAlgCl p), ((G.rho w (y : G.C)).charpoly.map (algebraMap (G.Fw w) (PadicAlgCl p))).IsRoot μ → ‖μ‖ ≤ B) → (∀ (w : Fin G.m) (μ : PadicAlgCl p), ((G.rho w ((y⁻¹ : G.Cˣ) : G.C)).charpoly.map (algebraMap (G.Fw w) (PadicAlgCl p))).IsRoot μ → ‖μ‖ ≤ B) → ∀ μ : PadicAlgCl p, ((LinearMap.mulLeft ℚ (y : G.C)).charpoly.map (algebraMap ℚ (PadicAlgCl p))).IsRoot μ → ‖μ‖ ≤ B * B := by
+  first | (exact @GlobalTheory.GlobEig.root_norm_le) | (exact GlobalTheory.GlobEig.root_norm_le) | (intros; apply GlobalTheory.GlobEig.root_norm_le  <;> assumption)
+end
+
+section
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount
 open scoped TensorProduct Classical
 
@@ -92,3 +101,4 @@ theorem integral_of_term_ne_zero : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) 
       (fun w μ hμ => hk3 w μ (by rw [hw1, ← inv_inv P.γ]; exact hμ)) hA'⟩
 
 end GlobalTheory.LKBound
+end

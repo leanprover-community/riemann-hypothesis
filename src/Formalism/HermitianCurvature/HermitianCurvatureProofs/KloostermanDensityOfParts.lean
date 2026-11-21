@@ -1,7 +1,167 @@
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.FubiniHeadLastPart
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeBoundInBanachSpace
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.InnerAveragingInputOfSliceData
+import Formalism.HermitianCurvature.OrbitalIntegralDiagonalSlice
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChangeOfVariablesXy
+import Formalism.HermitianCurvature.LemmaDensOfSteps
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LUFactorOrbitBounds
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellVanishingOfCommute
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LduDecompositionExists
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AveragingVanishes
 
+section
+open Matrix MeasureTheory
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
+
+
+
+end Formalism.FourierDecayAlt.P
+end
+end
+
+section
+open Matrix MeasureTheory
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
+
+theorem xi_eq_xiTau_one_one {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
+    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (D : B.RealPlaceData k r Wp Wq) (p : B.SS k r) :
+    JF.xiP D p = B.xiTau D (1, 1) p := by
+  have hs : ∀ x : ℝ, star (Complex.exp (Complex.I * (x : ℂ))) = Complex.exp (-(Complex.I * (x : ℂ))) := by
+    intro x
+    show (starRingEnd ℂ) (Complex.exp (Complex.I * (x : ℂ))) = _
+    rw [← Complex.exp_conj]
+    congr 1
+    simp [Complex.conj_ofReal]
+  simp only [JF.xiP, B.xiTau, psi, B.lam, hs]
+  rw [← Complex.exp_add]
+  congr 1
+  push_cast
+  ring
+
+
+
+end Formalism.FourierDecayAlt.P
+end
+end
+
+section
+open Matrix
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
+open Formalism.DoubleCosetMeasures (IsUpUni IsLowUni isUpUni_mul isLowUni_mul isLowUni_det)
+
+
+
+end Formalism.FourierDecayAlt.P
+end
+end
+
+section
+open Matrix
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
+
+
+
+def averagingDatumInhabited {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
+    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
+    (D : B.RealPlaceData k r Wp Wq) (F' : B.Mat k r → (Wq →L[ℂ] Wp)) (γ : B.Mat k r) : Formalism.FourierDecayAlt.DensityAveraging.AvgDatum D F' γ where
+  V := ℂ
+  p := normSeminorm ℂ ℂ
+  β := 1
+  β_ne := one_ne_zero
+  s := 1
+  w := fun _ => 0
+  w_inj := fun i j _ => Subsingleton.elim i j
+  a := fun _ => 1
+  k₀ := 0
+  tie := fun h => absurd h (by simp)
+
+end Formalism.FourierDecayAlt.P
+end
+end
+
+section
+open Matrix
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6 Formalism.FourierDecayAlt.DensityAveraging Formalism.FourierDecayAlt.OrbitalSlices
+
+theorem norm_eq_of_pow_eq_same {s : ℕ} (hs : 0 < s) {a z z₀ : ℂ} (hz : z ^ s = a) (hz₀ : z₀ ^ s = a) : ‖z‖ = ‖z₀‖ := by
+  have h : ‖z‖ ^ s = ‖z₀‖ ^ s := by rw [← norm_pow, ← norm_pow, hz, hz₀]
+  exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) hs.ne').mp h
+
+theorem mem_rootSet_iff_pow_eq {s : ℕ} (hs : 0 < s) {a z : ℂ} : z ∈ G.rootSet s a ↔ z ^ s = a := by
+  rw [G.rootSet, Multiset.mem_toFinset, Polynomial.mem_nthRoots hs]
+
+theorem germ_leading_term_root_sum {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] (β : ℂ) (m : ℕ)
+    (Ψ : G.Mat (m + 1 + 1) → V) (t Dd z₀ : ℂ) (hz₀ : z₀ ^ (m + 2) = (-1) ^ (m + 3) * Dd) :
+    G.mainTerm β m (fun _ => 1) Ψ t Dd =
+      (((m : ℂ) + 2)⁻¹ * ((‖z₀‖ ^ ((m + 1) ^ 2) : ℝ) : ℂ)) •
+        ∑ z ∈ G.rootSet (m + 2) ((-1) ^ (m + 3) * Dd), G.psi β (((m : ℂ) + 2) * z / t) • G.OmLong β (m + 1) Ψ z := by
+  unfold G.mainTerm
+  rw [mul_smul]
+  congr 1
+  rw [Finset.smul_sum]
+  refine Finset.sum_congr rfl fun z hz => ?_
+  rw [mem_rootSet_iff_pow_eq (by omega)] at hz
+  rw [norm_eq_of_pow_eq_same (by omega) hz hz₀, mul_one, mul_smul]
+
+def germDecayRateAt (C₁ C₂ : ℕ) : Prop :=
+  ∀ (m : ℕ) (β : ℂ), β ≠ 0 → ∀ Kc : Set ℂ, IsCompact Kc → (0 : ℂ) ∉ Kc →
+    ∃ Cst : ℝ, ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V]
+      (Φ : G.Mat (m + 1 + 1) → V) (A K : ℝ) (k : ℕ),
+      (C₁ : ℝ) * ((m : ℝ) + 2) ^ 2 ≤ A → C₂ * (m + 2) ^ 2 ≤ k →
+      G.DerivBound k (G.detSet (m + 1) Kc) (fun Z => K * min 1 (‖Z‖ ^ (-A))) Φ →
+      ∀ t c : ℂ, t ≠ 0 → c * t ^ (m + 1) ∈ Kc → ‖G.remainder β m (fun _ => 1) Φ t c‖ ≤ Cst * K * ‖t‖
+
+
+
+
+
+
+
+def slicePointInhabited {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
+    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
+    (D : B.RealPlaceData k r Wp Wq) (F' : B.Mat k r → (Wq →L[ℂ] Wp)) (γ : B.Mat k r) : Formalism.FourierDecayAlt.OrbitalSlices.SlicePt D F' γ where
+  m := 0
+  β := 1
+  β_ne := one_ne_zero
+  Dd := -1
+  Dd_ne := by norm_num
+  z₀ := 1
+  z₀_pow := by norm_num
+  Ψ := fun _ => 0
+  pt := fun _ _ => γ
+  δ := 1
+  δ_pos := one_pos
+
+end Formalism.FourierDecayAlt.P
+end
+end
+
+section
 open Matrix MeasureTheory Formalism.FourierDecayAlt
 
 noncomputable section
@@ -396,3 +556,5 @@ theorem kloosterman_density_of_parts : KloostDensOfParts := by
   exact main hFub hFr hOL hOB U.betaU Formalism.FourierDecayAlt.P.scale_matching.2.1 n V Ψ ⟨hs, hc, hdet⟩ hbig a σ d ha hM
 
 end Formalism.FourierDecayAlt.P.PBJ.Asm
+end
+end

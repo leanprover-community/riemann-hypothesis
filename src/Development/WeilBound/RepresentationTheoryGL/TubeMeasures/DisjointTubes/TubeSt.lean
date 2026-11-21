@@ -1,8 +1,27 @@
 import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.TubeMeasures.DisjointTubes.MassLev2
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PermMMulTranspose
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.VolUFactProdMulLe
 
+section
+open NumberField
+
+noncomputable section
+
+namespace MainStatements.Tam
+
+def massB (E : Type) [Field E] [NumberField E] (r : ℕ) : ℝ :=
+  (3 * ((Module.finrank ℚ E : ℝ) ^ 2 * (r : ℝ) ^ 4 *
+    (|(discr E : ℝ)| ^ ((1 : ℝ) / (Module.finrank ℚ E : ℝ))) ^ 2)) ^ (3 * Module.finrank ℚ E * r ^ 2)
+
+def massLev2 (E : Type) [Field E] [NumberField E] (r M : ℕ) : ℝ :=
+  (M : ℝ) ^ (Module.finrank ℚ E * r ^ 2) * 15 ^ (Module.finrank ℚ E * r ^ 2) * massB E r
+
+end MainStatements.Tam
+
+end
+end
+
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
 open GlobalTheory.CovTop.VolUp
@@ -70,4 +89,5 @@ def SizeSt : Prop :=
 
 end MainStatements.Tam
 
+end
 end

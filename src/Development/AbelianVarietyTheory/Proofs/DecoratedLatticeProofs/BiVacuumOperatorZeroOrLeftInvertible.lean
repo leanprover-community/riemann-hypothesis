@@ -4,9 +4,290 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisOFinse
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HomLatticeCompletionSelfAnnihilatorAtPlaces
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.BiCombEqLOpROp
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HomLatticeCompletionSplitPlacesActsBySigns
-import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsolateAbstractStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CompletedHomLatticeStableSplitIdempotent
 
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
+open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.FinPl ValuativeRel
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.FinPl.VacSign
+
+theorem af_ext' {D : D7} {x y : Af D.host.F} (h : ∀ w, evalV D.host.F w x = evalV D.host.F w y) : x = y :=
+  Subtype.ext (funext fun w => h w)
+
+theorem latO_acts_by_signs : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : Type) (p : ι → SplitPt D k) (I : List ι) (P : Pl D → Prop), Places p I P → ∀ (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (LS : Lat S) (LT : Lat T), IsSelfDualC S LS → IsSelfDualC T LT → ∀ x ∈ latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) P, ∃ ε : ℂ, ε * ε = 1 ∧ ∀ f, Vac ψ S T LS LT P f → heisO ψ S T x f = ε • f := by
+  intro D k _ _ _ _ ι p I P hP ψ hψ S T LS LT hS hT x hx
+  classical
+  have hΛ : ∀ u ∈ latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) P,
+      ∀ u' ∈ latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) P,
+        ψ (symplO S T u u') = 1 := fun u hu u' hu' =>
+    (GlobalTheory.SelfDualAt.latO_ann_at D ψ hψ S T LS LT hS hT P u (GlobalTheory.FinPl.LatMem.latO_mxAt hu)).1 hu u' hu'
+  let G := GlobalTheory.LatVac.signGroup ψ _ hΛ
+    (IsLatVac (heisO ψ S T) (latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) P))
+  have half : ∀ e, IsSplitIdem D e →
+      ∀ u ∈ latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) P, IsHalf e u → u ∈ G :=
+    fun e he u hu hh => ⟨hu, 1, one_mul _, fun f hf => by rw [hf.2 e he u hu hh, one_smul]⟩
+  have splitC : ∀ e, IsSplitIdem D e → IsSplitIdem D (cA D e) := by
+    rintro e ⟨he1, he2, v, ε, hpl, he3⟩
+    exact ⟨by rw [← RingHom.map_mul, he1], by rw [GlobalTheory.LatVac.cA_cA, mul_comm, he2], v, ε, hpl,
+      by rw [GlobalTheory.LatVac.cA_cA, add_comm, he3]⟩
+  have hsub : ∀ i, latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) (· = (p i).v) ≤
+      latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) P := by
+    intro i
+    apply AddSubgroup.closure_mono
+    rintro w ⟨α, hα, hs, rest⟩
+    exact ⟨α, hα, fun v hv => hs v fun h => hv ((hP.mem v).2 ⟨i, h⟩), rest⟩
+  have piece : ∀ i, ∀ w ∈ latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) (· = (p i).v),
+      w ∈ G := by
+    intro i w hw
+    obtain ⟨h1, h2⟩ := GlobalTheory.SplitVac.idem_latO D k (p i) S T LS LT w hw
+    have he := (p i).split
+    have hee : (p i).e * (p i).e = (p i).e := he.1
+    have hz : (Matrix.of fun a b => cA D (p i).e * w a b : WO S T) = w - Matrix.of fun a b => (p i).e * w a b := by
+      ext a b
+      rw [Matrix.of_apply, Matrix.sub_apply, Matrix.of_apply, eq_sub_iff_add_eq', ← add_mul, h2]
+    have hyG : (Matrix.of fun a b => (p i).e * w a b : WO S T) ∈ G :=
+      half _ he _ (hsub i h1) fun a b => by rw [Matrix.of_apply, ← mul_assoc, hee]
+    have hzG : (Matrix.of fun a b => cA D (p i).e * w a b : WO S T) ∈ G := by
+      refine half _ (splitC _ he) _ ?_ fun a b => ?_
+      · rw [hz]; exact sub_mem (hsub i hw) (hsub i h1)
+      · rw [Matrix.of_apply, ← mul_assoc, ← RingHom.map_mul, hee]
+    rw [hz] at hzG
+    simpa using add_mem hyG hzG
+  have hxG : x ∈ G := by
+    induction hx using AddSubgroup.closure_induction with
+    | mem w hw =>
+      obtain ⟨α, hα, hsupp, a, ha, s, hs, t, ht, rfl⟩ := hw
+      have hdec : α = ∑ i ∈ I.toFinset, GlobalTheory.FinPl.LatMem.indP D.host.F (· = (p i).v) * α := by
+        apply af_ext'
+        intro v
+        rw [map_sum]
+        simp only [map_mul, GlobalTheory.FinPl.LatMem.evalV_indP]
+        by_cases hv : P v
+        · obtain ⟨i, rfl⟩ := (hP.mem v).1 hv
+          rw [Finset.sum_eq_single i]
+          · simp
+          · intro j _ hj
+            rw [if_neg (fun h => hj (hP.inj h).symm), zero_mul]
+          · intro h
+            exact absurd (List.mem_toFinset.2 (hP.all i)) h
+        · rw [hsupp v hv]
+          simp
+      rw [hdec]
+      refine Finset.sum_induction _ (fun β : Af D.host.F => (Matrix.of fun i j =>
+          (pairA D.host.F 0 β) ⊗ₜ[D.host.F] (a * t i * ∑ k, star (s k) * S.gram k j) : WO S T) ∈ G)
+        (fun β γ hβ hγ => ?_) ?_ (fun i _ => ?_)
+      · have e : (Matrix.of fun i j => (pairA D.host.F 0 (β + γ)) ⊗ₜ[D.host.F] (a * t i * ∑ k, star (s k) * S.gram k j) :
+            WO S T) = (Matrix.of fun i j => (pairA D.host.F 0 β) ⊗ₜ[D.host.F] (a * t i * ∑ k, star (s k) * S.gram k j)) +
+            Matrix.of fun i j => (pairA D.host.F 0 γ) ⊗ₜ[D.host.F] (a * t i * ∑ k, star (s k) * S.gram k j) := by
+          ext i j
+          rw [Matrix.add_apply, Matrix.of_apply, Matrix.of_apply, Matrix.of_apply, GlobalTheory.LatVac.pair_add,
+            TensorProduct.add_tmul]
+        rw [e]
+        exact add_mem hβ hγ
+      · have e : (Matrix.of fun i j => (pairA D.host.F 0 (0 : Af D.host.F)) ⊗ₜ[D.host.F]
+            (a * t i * ∑ k, star (s k) * S.gram k j) : WO S T) = 0 := by
+          ext i j
+          rw [Matrix.of_apply, Matrix.zero_apply]
+          exact TensorProduct.zero_tmul _ _
+        rw [e]
+        exact zero_mem _
+      · refine piece i _ (AddSubgroup.subset_closure ⟨_, GlobalTheory.LatVac.mul_mem_intAf
+          (GlobalTheory.FinPl.LatMem.indicatorAdele_mem_integralAdeles' D.host.F _) hα, fun v hv => ?_, a, ha, s, hs, t, ht, rfl⟩)
+        rw [map_mul, GlobalTheory.FinPl.LatMem.indicatorAdele_supported D.host.F _ v hv, zero_mul]
+    | zero => exact zero_mem _
+    | add x y _ _ hx hy => exact add_mem hx hy
+    | neg x _ hx => exact neg_mem hx
+  obtain ⟨-, ε, hε, h⟩ := hxG
+  exact ⟨ε, hε, fun f hf => h f hf.2⟩
+
+end GlobalTheory.FinPl.VacSign
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
+open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.FinPl ValuativeRel
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.homLatticeCompletion_splitPlaces_acts_by_signs : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : Type) (p : ι → SplitPt D k) (I : List ι) (P : Pl D → Prop), Places p I P → ∀ (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (LS : Lat S) (LT : Lat T), IsSelfDualC S LS → IsSelfDualC T LT → ∀ x ∈ latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) P, ∃ ε : ℂ, ε * ε = 1 ∧ ∀ f, Vac ψ S T LS LT P f → heisO ψ S T x f = ε • f := by
+  atlas_forward_decl GlobalTheory.FinPl.VacSign.latO_acts_by_signs
+end
+
+section
+namespace GlobalTheory
+
+theorem isolate_abstract : ∀ (X : Type) [AddCommGroup X] (Γ G : AddSubgroup X) (V : Type) [AddCommGroup V] [Module ℂ V] (T : X → V →ₗ[ℂ] V) (W : Set V) (β : X → X → ℂ) (a : X → ℂ) (χ : X → X → ℂ), Γ ≤ G → (∀ v, T 0 v = v) → (∀ x y v, T x (T y v) = β x y • T (x + y) v) → (∀ x y, β x y ≠ 0) → (∀ γ ∈ Γ, a γ ≠ 0 ∧ ∀ v ∈ W, T γ v = a γ • v) → (∀ γ ∈ Γ, ∀ x v, T γ (T x v) = χ x γ • T x (T γ v)) → (∀ x, ∀ γ ∈ Γ, ∀ γ' ∈ Γ, χ (x + γ') γ = χ x γ) → (∀ x ∈ G, ∀ y ∈ G, x - y ∉ Γ → ∃ γ ∈ Γ, χ x γ ≠ χ y γ) → ∀ (J : Finset X) (c : X → ℂ), (∀ x ∈ J, x ∈ G) → (∀ v ∈ W, ∑ x ∈ J, c x • T x v = 0) ∨ ∃ κ : X →₀ ℂ, (∀ y ∈ κ.support, y ∈ G) ∧ ∀ v ∈ W, ∑ y ∈ κ.support, κ y • T y (∑ x ∈ J, c x • T x v) = v := by
+  intro X _ Γ G V _ _ T W β a χ hΓG hT0 hTT hβ ha hχ hχc hsep J c hJ
+  classical
+  obtain ⟨A, hA⟩ : ∃ A : Submodule ℂ (V →ₗ[ℂ] V), A = Submodule.span ℂ (T '' (G : Set X)) := ⟨_, rfl⟩
+  have hTA : ∀ y ∈ G, T y ∈ A := fun y hy => hA ▸ Submodule.subset_span ⟨y, hy, rfl⟩
+  have hmulT : ∀ y ∈ G, ∀ g ∈ A, T y * g ∈ A := by
+    intro y hy g hg
+    rw [hA] at hg
+    induction hg using Submodule.span_induction with
+    | mem g hg =>
+      obtain ⟨z, hz, rfl⟩ := hg
+      have e : T y * T z = β y z • T (y + z) := by ext v; simp [hTT]
+      rw [e]; exact A.smul_mem _ (hTA _ (G.add_mem hy hz))
+    | zero => simp
+    | add f g _ _ hf hg => rw [mul_add]; exact A.add_mem hf hg
+    | smul r f _ hf => rw [mul_smul_comm]; exact A.smul_mem r hf
+  have hmul : ∀ f ∈ A, ∀ g ∈ A, f * g ∈ A := by
+    intro f hf g hg
+    rw [hA] at hf
+    induction hf using Submodule.span_induction with
+    | mem f hf => obtain ⟨y, hy, rfl⟩ := hf; exact hmulT y hy g hg
+    | zero => simp
+    | add f f' _ _ h h' => rw [add_mul]; exact A.add_mem h h'
+    | smul r f _ h => rw [smul_mul_assoc]; exact A.smul_mem r h
+  have hone : (1 : V →ₗ[ℂ] V) ∈ A := by
+    have e : (1 : V →ₗ[ℂ] V) = T 0 := by ext v; simp [hT0]
+    rw [e]; exact hTA 0 G.zero_mem
+  have hκ : ∀ L ∈ A, ∃ κ : X →₀ ℂ, (∀ y ∈ κ.support, y ∈ G) ∧ ∀ u, ∑ y ∈ κ.support, κ y • T y u = L u := by
+    intro L hL
+    rw [hA, Finsupp.mem_span_image_iff_linearCombination] at hL
+    obtain ⟨l, hl, rfl⟩ := hL
+    refine ⟨l, fun y hy => (Finsupp.mem_supported _ _).1 hl hy, fun u => ?_⟩
+    simp [Finsupp.linearCombination_apply, Finsupp.sum, LinearMap.sum_apply]
+  have hshift : ∀ x0 x, x - x0 ∈ Γ → ∀ v ∈ W, T x v = ((β x0 (x - x0))⁻¹ * a (x - x0)) • T x0 v := by
+    intro x0 x h v hv
+    have h1 := hTT x0 (x - x0) v
+    have e : x0 + (x - x0) = x := by abel
+    rw [(ha _ h).2 v hv, map_smul, e] at h1
+    rw [mul_smul, h1, smul_smul, inv_mul_cancel₀ (hβ _ _), one_smul]
+  have hcls : ∀ x0 (c : X → ℂ), ∀ v ∈ W, ∑ x ∈ J, (if x - x0 ∈ Γ then c x else 0) • T x v
+      = (∑ x ∈ J, if x - x0 ∈ Γ then c x * ((β x0 (x - x0))⁻¹ * a (x - x0)) else 0) • T x0 v := by
+    intro x0 c v hv
+    rw [Finset.sum_smul]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    split_ifs with h
+    · rw [mul_smul, ← hshift x0 x h v hv]
+    · simp
+  have hQ : ∀ γ ∈ Γ, ∀ k : ℂ, ∀ c : X → ℂ, ∀ v ∈ W,
+      ((a γ)⁻¹ • T γ - k • (1 : V →ₗ[ℂ] V)) (∑ x ∈ J, c x • T x v) = ∑ x ∈ J, (c x * (χ x γ - k)) • T x v := by
+    intro γ hγ k c v hv
+    have hb : ∀ x, T γ (T x v) = (χ x γ * a γ) • T x v := by
+      intro x; rw [hχ γ hγ x v, (ha γ hγ).2 v hv, map_smul, smul_smul]
+    simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, map_sum, map_smul, hb,
+      Finset.smul_sum, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    simp only [smul_smul, ← sub_smul]
+    congr 1
+    have := (ha γ hγ).1
+    field_simp
+  have hQA : ∀ γ ∈ Γ, ∀ k : ℂ, ((a γ)⁻¹ • T γ - k • (1 : V →ₗ[ℂ] V)) ∈ A := fun γ hγ k =>
+    A.sub_mem (A.smul_mem _ (hTA γ (hΓG hγ))) (A.smul_mem _ hone)
+  have hproj : ∀ x0 ∈ G, ∀ n : ℕ, ∀ c : X → ℂ, (J.filter (fun x => c x ≠ 0 ∧ x - x0 ∉ Γ)).card = n →
+      ∃ L ∈ A, ∃ s : ℂ, s ≠ 0 ∧ ∀ v ∈ W,
+        L (∑ x ∈ J, c x • T x v) = s • ∑ x ∈ J, (if x - x0 ∈ Γ then c x else 0) • T x v := by
+    intro x0 hx0 n
+    induction n using Nat.strong_induction_on with
+    | _ n ih =>
+    intro c hn
+    by_cases hS : ∃ x1 ∈ J, c x1 ≠ 0 ∧ x1 - x0 ∉ Γ
+    · obtain ⟨x1, hx1J, hcx1, hx1⟩ := hS
+      obtain ⟨γ, hγ, hne⟩ := hsep x1 (hJ x1 hx1J) x0 hx0 hx1
+      obtain ⟨c', hc'⟩ : ∃ c' : X → ℂ, c' = fun x => c x * (χ x γ - χ x1 γ) := ⟨_, rfl⟩
+      have hsub : J.filter (fun x => c' x ≠ 0 ∧ x - x0 ∉ Γ) ⊂ J.filter (fun x => c x ≠ 0 ∧ x - x0 ∉ Γ) := by
+        rw [Finset.ssubset_iff_of_subset]
+        · refine ⟨x1, by simp [hx1J, hcx1, hx1], ?_⟩
+          simp [hc']
+        · intro x hx
+          simp only [Finset.mem_filter] at hx ⊢
+          exact ⟨hx.1, fun h => hx.2.1 (by simp [hc', h]), hx.2.2⟩
+      obtain ⟨L', hL', s', hs', hL'eq⟩ := ih _ (hn ▸ Finset.card_lt_card hsub) c' rfl
+      refine ⟨L' * ((a γ)⁻¹ • T γ - χ x1 γ • (1 : V →ₗ[ℂ] V)), hmul _ hL' _ (hQA γ hγ _),
+        s' * (χ x0 γ - χ x1 γ), mul_ne_zero hs' (sub_ne_zero.2 (Ne.symm hne)), fun v hv => ?_⟩
+      rw [Module.End.mul_apply, hQ γ hγ _ c v hv,
+        show (∑ x ∈ J, (c x * (χ x γ - χ x1 γ)) • T x v) = ∑ x ∈ J, c' x • T x v by rw [hc'],
+        hL'eq v hv, mul_smul]
+      congr 1
+      rw [Finset.smul_sum]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      split_ifs with h
+      · have hχx : χ x γ = χ x0 γ := by simpa using hχc x0 γ hγ (x - x0) h
+        simp only [hc', smul_smul, hχx, mul_comm]
+      · simp
+    · push_neg at hS
+      refine ⟨1, hone, 1, one_ne_zero, fun v hv => ?_⟩
+      rw [Module.End.one_apply, one_smul]
+      refine Finset.sum_congr rfl fun x hx => ?_
+      split_ifs with h
+      · rfl
+      · by_cases hc : c x = 0
+        · simp [hc]
+        · exact absurd (hS x hx hc) h
+  have main : ∀ n : ℕ, ∀ c : X → ℂ, (J.filter (fun x => c x ≠ 0)).card = n →
+      (∀ v ∈ W, ∑ x ∈ J, c x • T x v = 0) ∨ ∃ L ∈ A, ∀ v ∈ W, L (∑ x ∈ J, c x • T x v) = v := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | _ n ih =>
+    intro c hn
+    by_cases hS : ∃ x0 ∈ J, c x0 ≠ 0
+    · obtain ⟨x0, hx0J, hcx0⟩ := hS
+      have hx0 := hJ x0 hx0J
+      obtain ⟨d, hd⟩ : ∃ d : ℂ, d = ∑ x ∈ J, if x - x0 ∈ Γ then c x * ((β x0 (x - x0))⁻¹ * a (x - x0)) else 0 :=
+        ⟨_, rfl⟩
+      by_cases hd0 : d = 0
+      · obtain ⟨c'', hc''⟩ : ∃ c'' : X → ℂ, c'' = fun x => if x - x0 ∈ Γ then 0 else c x := ⟨_, rfl⟩
+        have hsub : J.filter (fun x => c'' x ≠ 0) ⊂ J.filter (fun x => c x ≠ 0) := by
+          rw [Finset.ssubset_iff_of_subset]
+          · refine ⟨x0, by simp [hx0J, hcx0], ?_⟩
+            simp [hc'']
+          · intro x hx
+            simp only [Finset.mem_filter] at hx ⊢
+            refine ⟨hx.1, fun h => hx.2 ?_⟩
+            simp [hc'', h]
+        have heq : ∀ v ∈ W, ∑ x ∈ J, c x • T x v = ∑ x ∈ J, c'' x • T x v := by
+          intro v hv
+          have h1 := hcls x0 c v hv
+          rw [← hd, hd0, zero_smul] at h1
+          calc ∑ x ∈ J, c x • T x v
+              = ∑ x ∈ J, ((if x - x0 ∈ Γ then c x else 0) • T x v + c'' x • T x v) :=
+                Finset.sum_congr rfl fun x _ => by simp only [hc'']; split_ifs <;> simp
+            _ = ∑ x ∈ J, c'' x • T x v := by rw [Finset.sum_add_distrib, h1, zero_add]
+        rcases ih _ (hn ▸ Finset.card_lt_card hsub) c'' rfl with h | ⟨L, hL, hLeq⟩
+        · exact Or.inl fun v hv => by rw [heq v hv]; exact h v hv
+        · exact Or.inr ⟨L, hL, fun v hv => by rw [heq v hv]; exact hLeq v hv⟩
+      · obtain ⟨L, hL, s, hs, hLeq⟩ := hproj x0 hx0 _ c rfl
+        refine Or.inr ⟨(((s * d) * β (-x0) x0)⁻¹ • T (-x0)) * L,
+          hmul _ (A.smul_mem _ (hTA _ (G.neg_mem hx0))) _ hL, fun v hv => ?_⟩
+        rw [Module.End.mul_apply, LinearMap.smul_apply, hLeq v hv, hcls x0 c v hv, ← hd, map_smul, map_smul,
+          hTT, neg_add_cancel, hT0, smul_smul, smul_smul, smul_smul]
+        have hβ' := hβ (-x0) x0
+        have e : ((s * d) * β (-x0) x0)⁻¹ * s * d * β (-x0) x0 = 1 := by
+          field_simp
+        rw [e, one_smul]
+    · push_neg at hS
+      exact Or.inl fun v _ => Finset.sum_eq_zero fun x hx => by simp [hS x hx]
+  rcases main _ c rfl with h | ⟨L, hL, hLeq⟩
+  · exact Or.inl h
+  · obtain ⟨κ, hκG, hκeq⟩ := hκ L hL
+    exact Or.inr ⟨κ, hκG, fun v hv => by rw [hκeq, hLeq v hv]⟩
+
+end GlobalTheory
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
+open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.FinPl ValuativeRel
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_zero_or_exists_inverse_combination_of_separating : ∀ (X : Type) [AddCommGroup X] (Γ G : AddSubgroup X) (V : Type) [AddCommGroup V] [Module ℂ V] (T : X → V →ₗ[ℂ] V) (W : Set V) (β : X → X → ℂ) (a : X → ℂ) (χ : X → X → ℂ), Γ ≤ G → (∀ v, T 0 v = v) → (∀ x y v, T x (T y v) = β x y • T (x + y) v) → (∀ x y, β x y ≠ 0) → (∀ γ ∈ Γ, a γ ≠ 0 ∧ ∀ v ∈ W, T γ v = a γ • v) → (∀ γ ∈ Γ, ∀ x v, T γ (T x v) = χ x γ • T x (T γ v)) → (∀ x, ∀ γ ∈ Γ, ∀ γ' ∈ Γ, χ (x + γ') γ = χ x γ) → (∀ x ∈ G, ∀ y ∈ G, x - y ∉ Γ → ∃ γ ∈ Γ, χ x γ ≠ χ y γ) → ∀ (J : Finset X) (c : X → ℂ), (∀ x ∈ J, x ∈ G) → (∀ v ∈ W, ∑ x ∈ J, c x • T x v = 0) ∨ ∃ κ : X →₀ ℂ, (∀ y ∈ κ.support, y ∈ G) ∧ ∀ v ∈ W, ∑ y ∈ κ.support, κ y • T y (∑ x ∈ J, c x • T x v) = v := by
+  first | exact @GlobalTheory.isolate_abstract | exact GlobalTheory.isolate_abstract | (intros; apply GlobalTheory.isolate_abstract <;> assumption)
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
@@ -263,3 +544,5 @@ theorem GlobalTheory.FinPl.biInv_main : ∀ D : D7, GlobalTheory.FinPl.BiInv D :
     exact h C hC
   · right
     exact ⟨ofK A S A' κ, ofK_at A S A' P κ hκ, fun C hC => by rw [ofK_app, app_eq]; exact hinv C hC⟩
+end
+end

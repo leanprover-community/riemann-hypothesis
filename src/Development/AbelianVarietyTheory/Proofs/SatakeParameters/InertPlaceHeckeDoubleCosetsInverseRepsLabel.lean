@@ -5,15 +5,414 @@ import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Formalism.LocalToGlobal.Columns.HeckeSp
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsIdemOfAlgebraMap
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsDvrFrobeniusLift
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemIntegralFiniteAdelesTensorIffLocalOrdersStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AdelicUnitarySupportedAtFinitePlaceEqLocalUnitarStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.StabilisesCompletedLatticeIffLocalMatrixIntegral
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalMatrixDoubleCosetOfElementaryDivisorsStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsInertAtOfUniqueUnramifiedPrime
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsComplexConjIsometryInertCompletionStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsRingEquivTensorInertAdicCompletion
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitaryMemIntegralUnitaryDoubleCosetOfGLnDoubleCStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemIntegralFiniteAdelesTensorIffLocalOrders
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AdelicUnitarySupportedAtFinitePlaceEqLocalUnitar
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalMatrixDoubleCosetOfElementaryDivisors
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsComplexConjIsometryInertCompletion
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFieldAdicCompletionTensorOfInert
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnitaryMemIntegralUnitaryDoubleCosetOfGLnDoubleC
 
+section
+open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField GlobalTheory.PlaceComp
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_integralFiniteAdelesTensor_iff_localOrders : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (z : Af F ⊗[F] E), z ∈ intA F E ↔ ∀ v : HeightOneSpectrum (𝓞 F), evF E v z ∈ ordAt E v := by
+  first | exact @GlobalTheory.PlaceComp.IntLocal.mem_intA_iff | exact GlobalTheory.PlaceComp.IntLocal.mem_intA_iff | (intros; apply GlobalTheory.PlaceComp.IntLocal.mem_intA_iff <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField GlobalTheory.PlaceComp
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicUnitary_supportedAtFinitePlace_eq_localUnitary : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E] (hc : CMData F E) (V : HSpace E) (v : HeightOneSpectrum (𝓞 F)) (e : AF F ⊗[F] E), IsIdemOf E v e → (∀ g, Supp hc V e g ↔ IsFin hc V g ∧ ∀ w, w ≠ v → locMat hc V w g = 1) ∧ (∀ g g', Supp hc V e g → Supp hc V e g' → locMat hc V v g = locMat hc V v g' → g = g') ∧ ∀ u ∈ HR (Fv F v) hc.sig V.gram, ∃ g, Supp hc V e g ∧ locMat hc V v g = u := by
+  first | exact @GlobalTheory.SuppLocal.supp_local | exact GlobalTheory.SuppLocal.supp_local | (intros; apply GlobalTheory.SuppLocal.supp_local <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField GlobalTheory.PlaceComp
+open scoped TensorProduct Matrix
+
+namespace GlobalTheory.PlaceComp.StabLoc
+
+section Ring
+
+variable {R : Type} [CommRing R] {n : Type} [Fintype n] [DecidableEq n] (O : Subring R)
+
+theorem mem_range_iff (m : GL n R) :
+    m ∈ (Formalism.UG.bc (n := n) O.subtype).range ↔
+      ∀ y : n → R, (∀ i, y i ∈ O) ↔ ∀ i, m.1.mulVec y i ∈ O := by
+  have key : ∀ (A : Matrix n n R), (∀ i j, A i j ∈ O) → ∀ y : n → R, (∀ i, y i ∈ O) →
+      ∀ i, A.mulVec y i ∈ O := fun A hA y hy i =>
+    O.sum_mem fun j _ => O.mul_mem (hA i j) (hy j)
+  have hs : ∀ j i : n, (Pi.single j (1 : R) : n → R) i ∈ O := by
+    intro j i
+    by_cases h : i = j
+    · subst h; simp [O.one_mem]
+    · simp [h, O.zero_mem]
+  constructor
+  · rintro ⟨k, rfl⟩ y
+    refine ⟨key _ (fun i j => (k.1 i j).2) y, fun h => ?_⟩
+    have := key (Formalism.UG.bc (n := n) O.subtype k⁻¹).1 (fun i j => ((k⁻¹).1 i j).2) _ h
+    rwa [Matrix.mulVec_mulVec, ← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one,
+      Matrix.one_mulVec] at this
+  · intro h
+    have h1 : ∀ i j, m.1 i j ∈ O := fun i j => by
+      simpa using (h (Pi.single j 1)).1 (hs j) i
+    have h2 : ∀ i j, (m⁻¹).1 i j ∈ O := fun i j => by
+      have := (h ((m⁻¹).1.mulVec (Pi.single j 1))).2 (by
+        rw [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec]
+        exact hs j) i
+      rwa [Matrix.mulVec_single_one] at this
+    let A : Matrix n n O := Matrix.of fun i j => ⟨m.1 i j, h1 i j⟩
+    let B : Matrix n n O := Matrix.of fun i j => ⟨(m⁻¹).1 i j, h2 i j⟩
+    have hA : O.subtype.mapMatrix A = m.1 := rfl
+    have hB : O.subtype.mapMatrix B = (m⁻¹).1 := rfl
+    have hinj : Function.Injective (O.subtype.mapMatrix : Matrix n n O →+* Matrix n n R) :=
+      fun X Y hXY => Matrix.ext fun i j => Subtype.ext (congrFun (congrFun hXY i) j)
+    refine ⟨⟨A, B, hinj ?_, hinj ?_⟩, Units.ext rfl⟩
+    · rw [map_mul, hA, hB, map_one, ← Units.val_mul, mul_inv_cancel, Units.val_one]
+    · rw [map_mul, hA, hB, map_one, ← Units.val_mul, inv_mul_cancel, Units.val_one]
+
+end Ring
+
+theorem stab_iff (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E]
+    (hc : CMData F E) (V : HSpace E) (v : HeightOneSpectrum (𝓞 F)) (h : GL (Fin V.rank) (Fv F v ⊗[F] E))
+    (hh : IsFrameAt V v h) (g : HA (AF F) hc.sig V.gram) (hg : ∀ w, w ≠ v → locMat hc V w g = 1) :
+    Stab hc V g ↔
+      h⁻¹ * locMat hc V v g * h ∈ (Formalism.UG.bc (n := Fin V.rank) (ordAt E v).subtype).range := by
+  have hev : ∀ w (y : Fin V.rank → Af F ⊗[F] E),
+      (fun i => evF E w ((finMat hc.sig V.gram g).mulVec y i)) =
+        (locMat hc V w g).1.mulVec fun i => evF E w (y i) := fun w y => by
+    funext i
+    rw [locMat_val]
+    exact RingHom.map_mulVec (evF E w) _ y i
+  have hloc : Stab hc V g ↔ ∀ x, x ∈ GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.latLoc (F := F) V v ↔
+      (locMat hc V v g).1.mulVec x ∈ GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.latLoc (F := F) V v := by
+    constructor
+    · intro hs x
+      have hx : ∀ w, w ≠ v → (fun i => evF E w (sgT E v (x i))) = 0 := fun w hw =>
+        funext fun i => evF_sgT_ne hw _
+      have hxv : (fun i => evF E v (sgT E v (x i))) = x := funext fun i => evF_sgT_self v _
+      have := hs fun i => sgT E v (x i)
+      rw [mem_lamHat_iff, mem_lamHat_iff] at this
+      simp only [hev] at this
+      constructor
+      · intro h0
+        have h1 := this.1 (fun w => by
+          by_cases hw : w = v
+          · subst hw; rw [hxv]; exact h0
+          · rw [hx w hw]; exact zero_mem _) v
+        rwa [hxv] at h1
+      · intro h0
+        have h1 := this.2 (fun w => by
+          by_cases hw : w = v
+          · subst hw; rw [hxv]; exact h0
+          · rw [hx w hw, Matrix.mulVec_zero]; exact zero_mem _) v
+        rwa [hxv] at h1
+    · intro hs y
+      rw [mem_lamHat_iff, mem_lamHat_iff]
+      refine forall_congr' fun w => ?_
+      rw [hev]
+      by_cases hw : w = v
+      · subst hw; exact hs _
+      · rw [hg w hw, Units.val_one, Matrix.one_mulVec]
+  rw [hloc, mem_range_iff]
+  constructor
+  · intro hs y
+    have := hs (h.1.mulVec y)
+    rw [hh, hh, Matrix.mulVec_mulVec, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.one_mulVec,
+      Matrix.mulVec_mulVec, Matrix.mulVec_mulVec] at this
+    rwa [Units.val_mul, Units.val_mul]
+  · intro hs x
+    have := hs ((h⁻¹).1.mulVec x)
+    rw [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel_right, Units.val_mul,
+      ← Matrix.mulVec_mulVec] at this
+    rw [hh, hh]
+    exact this
+
+end GlobalTheory.PlaceComp.StabLoc
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField GlobalTheory.PlaceComp
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stabilises_completedLattice_iff_localMatrix_integral : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E] (hc : CMData F E) (V : HSpace E) (v : HeightOneSpectrum (𝓞 F)) (h : GL (Fin V.rank) (Fv F v ⊗[F] E)), IsFrameAt V v h → ∀ g, (∀ w, w ≠ v → locMat hc V w g = 1) → (Stab hc V g ↔ h⁻¹ * locMat hc V v g * h ∈ (Formalism.UG.bc (n := Fin V.rank) (ordAt E v).subtype).range) := by
+  atlas_forward_decl GlobalTheory.PlaceComp.StabLoc.stab_iff
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField GlobalTheory.PlaceComp
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localMatrix_doubleCoset_of_elementaryDivisors : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E] (hc : CMData F E) (V : HSpace E) (v : HeightOneSpectrum (𝓞 F)) (e : AF F ⊗[F] E) (h : GL (Fin V.rank) (Fv F v ⊗[F] E)) (ϖ : E) (d : Fin V.rank → ℤ) (g : HA (AF F) hc.sig V.gram), IsIdemOf E v e → IsFrameAt V v h → ϖ ≠ 0 → DivG hc V e ϖ d g → ∃ k₁ ∈ (Formalism.UG.bc (n := Fin V.rank) (ordAt E v).subtype).range, ∃ k₂ ∈ (Formalism.UG.bc (n := Fin V.rank) (ordAt E v).subtype).range, (h⁻¹ * locMat hc V v g * h).1 = k₁.1 * Matrix.diagonal (fun i => inclR (Fv F v) (ϖ ^ d i)) * k₂.1 := by
+  first | exact @GlobalTheory.PlaceDiv.double_coset_of_divG | exact GlobalTheory.PlaceDiv.double_coset_of_divG | (intros; apply GlobalTheory.PlaceDiv.double_coset_of_divG <;> assumption)
+end
+
+section
+section
+open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SelfDualGenus
+open scoped TensorProduct Matrix
+
+namespace GlobalTheory.SelfDualGenus
+
+open IsDedekindDomain NumberField in
+open scoped TensorProduct Matrix in
+
+theorem _root_.GlobalTheory.SelfDualGenus.isInertAt_of_unique_unramified (E : Type) [Field E] [NumberField E] [IsCMField E]
+    (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (P : HeightOneSpectrum (𝓞 E))
+    (hP : ∀ x : 𝓞 E, x ≠ 0 → (x ∈ P.asIdeal ↔ (x : E)⁻¹ ∉ _root_.GlobalTheory.SelfDualGenus.semiLoc v))
+    (hx : ∃ x : 𝓞 (maximalRealSubfield E), ∃ y : 𝓞 E,
+      (y : E) = algebraMap (maximalRealSubfield E) E (x : maximalRealSubfield E) ∧
+        y ∈ P.asIdeal ∧ y ∉ P.asIdeal ^ 2) :
+    _root_.Formalism.UG.IsInertAt (maximalRealSubfield E) E v P := by
+  unfold _root_.Formalism.UG.IsInertAt
+  have key : ∀ P' : Ideal (𝓞 E), P'.IsMaximal →
+      Ideal.comap (algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E)) P' = v.asIdeal → P' ≤ P.asIdeal := by
+    intro P' hP' hcomap z hz
+    by_cases hz0 : z = 0
+    · rw [hz0]; exact P.asIdeal.zero_mem
+    rw [hP z hz0]
+    intro hmem
+    rw [_root_.GlobalTheory.SelfDualGenus.mem_semiLoc_iff] at hmem
+    obtain ⟨t, ht, hint⟩ := hmem
+    have hzE : (z : E) ≠ 0 := by exact_mod_cast hz0
+    let w : 𝓞 E := ⟨_, hint⟩
+    have hzw : z * w = algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E) t := by
+      apply NumberField.RingOfIntegers.ext
+      show (z : E) * (((algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E) t : 𝓞 E) : E) * (z : E)⁻¹) = _
+      field_simp
+    apply ht
+    rw [← hcomap, Ideal.mem_comap, ← hzw]
+    exact P'.mul_mem_right _ hz
+  have hker : RingHom.ker (algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E)) ≤ v.asIdeal := by
+    intro a ha
+    rw [RingHom.mem_ker] at ha
+    have ha0 : a = 0 := FaithfulSMul.algebraMap_injective (𝓞 (maximalRealSubfield E)) (𝓞 E)
+      (by rw [ha, map_zero])
+    rw [ha0]; exact v.asIdeal.zero_mem
+  obtain ⟨P0, hP0, hP0c⟩ := Ideal.exists_ideal_over_maximal_of_isIntegral v.asIdeal hker
+  have hP0P : P0 = P.asIdeal := hP0.eq_of_le P.isPrime.ne_top (key P0 hP0 hP0c)
+  have hcP : Ideal.comap (algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E)) P.asIdeal = v.asIdeal := by
+    rw [← hP0P, hP0c]
+  have hQP : Ideal.map (algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E)) v.asIdeal ≤ P.asIdeal := by
+    rw [Ideal.map_le_iff_le_comap, hcP]
+  obtain ⟨x, y, hyx, hyP, hyP2⟩ := hx
+  have hyx' : y = algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E) x := by
+    apply NumberField.RingOfIntegers.ext
+    rw [hyx]
+    rfl
+  have hxv : x ∈ v.asIdeal := by
+    rw [← hcP, Ideal.mem_comap, ← hyx']; exact hyP
+  have hyQ : y ∈ Ideal.map (algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E)) v.asIdeal := by
+    rw [hyx']; exact Ideal.mem_map_of_mem _ hxv
+  obtain ⟨J, hJ⟩ := Ideal.dvd_iff_le.2 hQP
+  by_cases hJtop : J = ⊤
+  · rw [hJ, hJtop, Ideal.mul_top]
+  exfalso
+  obtain ⟨P'', hP'', hJP''⟩ := Ideal.exists_le_maximal J hJtop
+  have hQP'' : Ideal.map (algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E)) v.asIdeal ≤ P'' := by
+    rw [hJ]; exact Ideal.mul_le_right.trans hJP''
+  have hcP'' : Ideal.comap (algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E)) P'' = v.asIdeal := by
+    refine (v.isMaximal.eq_of_le (Ideal.comap_ne_top _ hP''.ne_top) ?_).symm
+    rw [← Ideal.map_le_iff_le_comap]; exact hQP''
+  have hJP : J ≤ P.asIdeal := hJP''.trans (key P'' hP'' hcP'')
+  apply hyP2
+  rw [pow_two]
+  have := hJ ▸ hyQ
+  exact Ideal.mul_mono_right hJP this
+
+end GlobalTheory.SelfDualGenus
+end
+
+open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SelfDualGenus
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isInertAt_of_unique_unramified_prime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (P : HeightOneSpectrum (𝓞 E)), (∀ x : 𝓞 E, x ≠ 0 → (x ∈ P.asIdeal ↔ (x : E)⁻¹ ∉ semiLoc v)) → (∃ x : 𝓞 (maximalRealSubfield E), ∃ y : 𝓞 E, (y : E) = algebraMap (maximalRealSubfield E) E (x : maximalRealSubfield E) ∧ y ∈ P.asIdeal ∧ y ∉ P.asIdeal ^ 2) → IsInertAt (maximalRealSubfield E) E v P := by
+  atlas_forward_decl GlobalTheory.SelfDualGenus.isInertAt_of_unique_unramified
+end
+
+section
+open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SelfDualGenus
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_complexConj_isometry_inert_completion : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [Algebra.Unramified (𝓞 (maximalRealSubfield E)) (𝓞 E)] (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (P : HeightOneSpectrum (𝓞 E)), IsInertAt (maximalRealSubfield E) E v P → ∃ (σ : P.adicCompletion E →+* P.adicCompletion E) (ϖ : P.adicCompletion E), (∀ x : E, σ (algebraMap E (P.adicCompletion E) x) = algebraMap E (P.adicCompletion E) (ReciprocityTheory.ChartRestriction.G.FD.cc x)) ∧ (∀ x, σ (σ x) = x) ∧ (∀ x, Valued.v (σ x) = Valued.v x) ∧ (∃ x, Valued.v x ≤ 1 ∧ Valued.v (σ x - x) = 1) ∧ σ ϖ = ϖ ∧ IsUnifV E P ϖ := by
+  first | exact @GlobalTheory.InertConj.exists_conj_completion | exact GlobalTheory.InertConj.exists_conj_completion | (intros; apply GlobalTheory.InertConj.exists_conj_completion <;> assumption)
+end
+
+section
+section
+open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SelfDualGenus
+open scoped TensorProduct Matrix
+
+namespace GlobalTheory.InertCompletion
+
+open scoped WithZeroTopology in
+
+theorem exists_completion_map {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
+    [Algebra F E] (v : HeightOneSpectrum (𝓞 F)) (P : HeightOneSpectrum (𝓞 E))
+    (h : IsInertAt F E v P) :
+    ∃ φ : v.adicCompletion F →+* P.adicCompletion E, Continuous φ ∧
+      (∀ x : F, φ (algebraMap F _ x) = algebraMap E _ (algebraMap F E x)) ∧
+      ∀ x, Valued.v (φ x) = Valued.v x := by
+  have h' : Ideal.map (algebraMap (𝓞 F) (𝓞 E)) v.asIdeal = P.asIdeal := h
+  have : P.asIdeal.LiesOver v.asIdeal := ⟨v.isMaximal.eq_of_le
+    (Ideal.comap_ne_top _ P.isPrime.ne_top) (h' ▸ Ideal.le_comap_map)⟩
+  have he : Ideal.ramificationIdx' v.asIdeal P.asIdeal = 1 := by
+    by_contra hne
+    have := (Ideal.ramificationIdx'_ne_one_iff h'.le).1 hne
+    rw [h'] at this
+    exact absurd this (not_le_of_gt (Ideal.pow_lt_self _ P.ne_bot P.isPrime.ne_top 2 le_rfl))
+  have hc := (HeightOneSpectrum.uniformContinuous_algebraMap_liesOver F E v P).continuous
+  let φ : v.adicCompletion F →+* P.adicCompletion E :=
+    ((HeightOneSpectrum.adicCompletion.equiv E P).symm.toRingHom.comp
+    (UniformSpace.Completion.mapRingHom
+      (algebraMap (WithVal (v.valuation F)) (WithVal (P.valuation E))) hc)).comp
+      (HeightOneSpectrum.adicCompletion.equiv F v).toRingHom
+  have hφ : ∀ x : F, φ (algebraMap F _ x) = algebraMap E _ (algebraMap F E x) := fun x => by
+    apply HeightOneSpectrum.adicCompletion.ext
+    exact UniformSpace.Completion.mapRingHom_coe hc (WithVal.toVal _ x)
+  have hcont : Continuous φ :=
+    (HeightOneSpectrum.adicCompletion.continuous_ofCompletion E P).comp
+      ((UniformSpace.Completion.continuous_map
+        (f := algebraMap (WithVal (v.valuation F)) (WithVal (P.valuation E)))).comp
+        (HeightOneSpectrum.adicCompletion.continuous_toCompletion F v))
+  refine ⟨φ, hcont, hφ, fun x => ?_⟩
+  refine (HeightOneSpectrum.denseRange_algebraMap F v).induction_on
+    (p := fun x => Valued.v (φ x) = Valued.v x) x
+    (isClosed_eq
+      ((Valued.continuous_valuation_of_surjective (P.valuedAdicCompletion_surjective E)).comp hcont)
+      (Valued.continuous_valuation_of_surjective (v.valuedAdicCompletion_surjective F))) fun k => ?_
+  rw [hφ, Idele.valued_algebraMap, Idele.valued_algebraMap,
+    ← HeightOneSpectrum.valuation_liesOver E v P, he, pow_one]
+
+theorem continuous_of_valued_eq {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E))
+    (σ : P.adicCompletion E →+* P.adicCompletion E) (h : ∀ x, Valued.v (σ x) = Valued.v x) :
+    Continuous σ := by
+  refine (AddMonoidHomClass.isometry_of_norm σ fun x => ?_).continuous
+  exact le_antisymm (Valued.toNormedField.norm_le_iff.2 (h x).le) (Valued.toNormedField.norm_le_iff.2 (h x).ge)
+
+theorem surjective_of_continuous {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
+    [Algebra F E] (v : HeightOneSpectrum (𝓞 F)) (P : HeightOneSpectrum (𝓞 E))
+    (φ : v.adicCompletion F →+* P.adicCompletion E) (hc : Continuous φ)
+    (ψ : v.adicCompletion F ⊗[F] E →+* P.adicCompletion E)
+    (hψ : ∀ a x, ψ (a ⊗ₜ x) = φ a * algebraMap E _ x) : Function.Surjective ψ := by
+  letI : Algebra (v.adicCompletion F) (P.adicCompletion E) := φ.toAlgebra
+  haveI : ContinuousSMul (v.adicCompletion F) (P.adicCompletion E) :=
+    continuousSMul_of_algebraMap _ _ hc
+  letI : NontriviallyNormedField (v.adicCompletion F) := Valued.toNontriviallyNormedField _ _
+  let f : v.adicCompletion F ⊗[F] E →ₐ[v.adicCompletion F] P.adicCompletion E :=
+    ⟨ψ, fun a => (hψ a 1).trans (by rw [map_one, mul_one]; rfl)⟩
+  have hcl : IsClosed (LinearMap.range f.toLinearMap : Set (P.adicCompletion E)) :=
+    Submodule.closed_of_finiteDimensional _
+  intro y
+  refine (HeightOneSpectrum.denseRange_algebraMap E P).induction_on
+    (p := fun y => y ∈ (LinearMap.range f.toLinearMap : Set (P.adicCompletion E))) y hcl fun x => ?_
+  exact ⟨1 ⊗ₜ x, (hψ 1 x).trans (by rw [map_one, one_mul])⟩
+
+theorem exists_ringEquiv_completion : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [Algebra.Unramified (𝓞 (maximalRealSubfield E)) (𝓞 E)] (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (P : HeightOneSpectrum (𝓞 E)), IsInertAt (maximalRealSubfield E) E v P → ∀ σ : P.adicCompletion E →+* P.adicCompletion E, (∀ x : E, σ (algebraMap E (P.adicCompletion E) x) = algebraMap E (P.adicCompletion E) (ReciprocityTheory.ChartRestriction.G.FD.cc x)) → (∀ x, Valued.v (σ x) = Valued.v x) → ∃ ψ : LocAlg v ≃+* P.adicCompletion E, (∀ x : E, ψ (locEmb v x) = algebraMap E (P.adicCompletion E) x) ∧ (∀ z, ψ (locConj v z) = σ (ψ z)) ∧ ∀ z, z ∈ locOrder v ↔ Valued.v (ψ z) ≤ 1 := by
+  intro E _ _ _ _ v P h σ hσ hσv
+  obtain ⟨φ, hc, hφ, hv⟩ := exists_completion_map v P h
+  obtain ⟨ψ, hψ⟩ : ∃ ψ : LocAlg v →+* P.adicCompletion E,
+      ∀ a x, ψ (a ⊗ₜ x) = φ a * algebraMap E _ x := by
+    letI : Algebra (maximalRealSubfield E) (P.adicCompletion E) :=
+      ((algebraMap E (P.adicCompletion E)).comp (algebraMap (maximalRealSubfield E) E)).toAlgebra
+    let f : E →ₐ[maximalRealSubfield E] P.adicCompletion E := ⟨algebraMap E _, fun _ => rfl⟩
+    let g : v.adicCompletion (maximalRealSubfield E) →ₐ[maximalRealSubfield E] P.adicCompletion E :=
+      ⟨φ, hφ⟩
+    exact ⟨(Algebra.TensorProduct.productMap g f).toRingHom, fun a x => rfl⟩
+  have hF : IsField (LocAlg v) := InertField.isField_of_inert _ E
+    (Algebra.IsQuadraticExtension.finrank_eq_two _ E) v (by
+      rw [show Ideal.map _ v.asIdeal = P.asIdeal from h]; exact P.isPrime)
+  have hinj : Function.Injective ψ := by
+    letI := hF.toField
+    exact ψ.injective
+  have hE : ∀ x : E, ψ (locEmb v x) = algebraMap E _ x := fun x =>
+    (hψ 1 x).trans (by rw [map_one, one_mul])
+  have hA : ∀ a, ψ (algebraMap _ (LocAlg v) a) = φ a := fun a =>
+    (hψ a 1).trans (by rw [map_one, mul_one])
+  have hσφ : ∀ a, σ (φ a) = φ a := fun a =>
+    congrFun ((HeightOneSpectrum.denseRange_algebraMap (maximalRealSubfield E) v).equalizer
+      ((continuous_of_valued_eq P σ hσv).comp hc) hc (funext fun x => by
+        simp only [Function.comp_apply, hφ, hσ]
+        exact congrArg _ ((IsCMField.complexConj E).commutes x))) a
+  have hconj : ∀ z, ψ (locConj v z) = σ (ψ z) := fun z => by
+    induction z using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a x => rw [locConj_tmul, hψ, hψ, map_mul, hσφ, hσ]
+    | add x y hx hy => simp only [map_add, hx, hy]
+  have hint : ∀ s : 𝓞 E, Valued.v (algebraMap E (P.adicCompletion E) (s : E)) ≤ 1 := fun s =>
+    (Idele.valued_algebraMap P (s : E)).trans_le (P.valuation_le_one s)
+  refine ⟨RingEquiv.ofBijective ψ ⟨hinj, surjective_of_continuous v P φ hc ψ hψ⟩, hE, hconj,
+    fun z => ⟨fun hz => ?_, fun hz => ?_⟩⟩
+  · change Valued.v (ψ z) ≤ 1
+    induction hz using Algebra.adjoin_induction with
+    | mem x hx =>
+      obtain ⟨a, rfl⟩ := hx
+      exact (congrArg Valued.v (hE a)).trans_le (hint a)
+    | algebraMap a => exact ((congrArg Valued.v (hA a)).trans (hv a)).trans_le a.2
+    | add x y _ _ hx hy => rw [map_add]; exact Valuation.map_add_le _ hx hy
+    | mul x y _ _ hx hy => rw [map_mul, map_mul]; exact mul_le_one' hx hy
+  · replace hz : Valued.v (ψ z) ≤ 1 := hz
+    have fix : ∀ w : LocAlg v, locConj v w = w → Valued.v (ψ w) ≤ 1 → w ∈ locOrder v := by
+      intro w hw hw1
+      obtain ⟨a, rfl⟩ := exists_of_locConj_eq v hw
+      rw [hA, hv] at hw1
+      exact (locOrder v).algebraMap_mem ⟨a, hw1⟩
+    obtain ⟨θ, hθ⟩ := exists_sub_conj_notMem P.asIdeal P.isPrime.ne_top
+    have hδ1 : P.valuation E ((θ : E) - ReciprocityTheory.ChartRestriction.G.FD.cc (θ : E)) = 1 :=
+      (HeightOneSpectrum.valuation_eq_one_iff_notMem (K := E) P).2 hθ
+    set δ : E := (θ : E) - ReciprocityTheory.ChartRestriction.G.FD.cc (θ : E) with hδ
+    have hδ0 : δ ≠ 0 := by
+      intro h0
+      rw [h0, map_zero] at hδ1
+      exact zero_ne_one hδ1
+    have hcδ : ReciprocityTheory.ChartRestriction.G.FD.cc δ⁻¹ = -δ⁻¹ := by
+      have : ReciprocityTheory.ChartRestriction.G.FD.cc δ = -δ := by simp [hδ, ReciprocityTheory.ChartRestriction.G.FD.cc]
+      rw [← inv_neg, ← this]
+      exact map_inv₀ (IsCMField.complexConj E) δ
+    have hone : locEmb v δ⁻¹ * (locEmb v θ - locEmb v (ReciprocityTheory.ChartRestriction.G.FD.cc (θ : E))) = 1 := by
+      rw [← map_sub, ← map_mul, inv_mul_cancel₀ hδ0, map_one]
+    set b : LocAlg v := (z - locConj v z) * locEmb v δ⁻¹ with hb
+    have hb1 : locConj v b = b := by
+      rw [hb, map_mul, map_sub, locConj_locConj, locConj_locEmb, hcδ, map_neg]; ring
+    have hb2 : Valued.v (ψ b) ≤ 1 := by
+      rw [hb, map_mul, map_mul, hE, Idele.valued_algebraMap, map_inv₀, hδ1, inv_one, mul_one,
+        map_sub, hconj]
+      exact Valuation.map_sub_le _ hz ((hσv _).trans_le hz)
+    have ha1 : locConj v (z - b * locEmb v θ) = z - b * locEmb v θ := by
+      rw [map_sub, map_mul, hb1, locConj_locEmb, hb]
+      linear_combination (z - locConj v z) * hone
+    have ha2 : Valued.v (ψ (z - b * locEmb v θ)) ≤ 1 := by
+      rw [map_sub, map_mul, hE]
+      refine Valuation.map_sub_le _ hz ?_
+      rw [map_mul]
+      exact mul_le_one' hb2 (hint θ)
+    rw [← sub_add_cancel z (b * locEmb v θ)]
+    exact add_mem (fix _ ha1 ha2) (mul_mem (fix _ hb1 hb2) (locEmb_mem_locOrder v θ))
+
+end GlobalTheory.InertCompletion
+end
+
+open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SelfDualGenus
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ringEquiv_tensor_inert_adicCompletion : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [Algebra.Unramified (𝓞 (maximalRealSubfield E)) (𝓞 E)] (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (P : HeightOneSpectrum (𝓞 E)), IsInertAt (maximalRealSubfield E) E v P → ∀ σ : P.adicCompletion E →+* P.adicCompletion E, (∀ x : E, σ (algebraMap E (P.adicCompletion E) x) = algebraMap E (P.adicCompletion E) (ReciprocityTheory.ChartRestriction.G.FD.cc x)) → (∀ x, Valued.v (σ x) = Valued.v x) → ∃ ψ : LocAlg v ≃+* P.adicCompletion E, (∀ x : E, ψ (locEmb v x) = algebraMap E (P.adicCompletion E) x) ∧ (∀ z, ψ (locConj v z) = σ (ψ z)) ∧ ∀ z, z ∈ locOrder v ↔ Valued.v (ψ z) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.InertCompletion.exists_ringEquiv_completion
+end
+
+section
+open IsDedekindDomain NumberField Formalism.UG GlobalTheory.SelfDualGenus
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_mem_integralUnitary_doubleCoset_of_GLn_doubleCoset : ∀ (K : Type) [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) (σ : v.adicCompletion K →+* v.adicCompletion K) (n : ℕ), (∀ x, σ (σ x) = x) → (∀ x, Valued.v (σ x) = Valued.v x) → (∃ x, Valued.v x ≤ 1 ∧ Valued.v (σ x - x) = 1) → ∀ g ∈ UJ σ (1 : Matrix (Fin n) (Fin n) (v.adicCompletion K)), ∀ g' ∈ UJ σ (1 : Matrix (Fin n) (Fin n) (v.adicCompletion K)), ∀ h ∈ GLint (Fin n) (Ov K v), ∀ k ∈ GLint (Fin n) (Ov K v), g' = h * g * k → ∃ k₁ ∈ UJ σ (1 : Matrix (Fin n) (Fin n) (v.adicCompletion K)) ⊓ GLint (Fin n) (Ov K v), ∃ k₂ ∈ UJ σ (1 : Matrix (Fin n) (Fin n) (v.adicCompletion K)) ⊓ GLint (Fin n) (Ov K v), g' = k₁ * g * k₂ := by
+  first | exact @GlobalTheory.UnitaryDoubleCoset.doubleCoset_unitary_of_GL | exact GlobalTheory.UnitaryDoubleCoset.doubleCoset_unitary_of_GL | (intros; apply GlobalTheory.UnitaryDoubleCoset.doubleCoset_unitary_of_GL <;> assumption)
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.InertDoubleCoset
@@ -379,3 +778,5 @@ theorem inert_double_cosets : ∀ {D : D7} (V : HSp D) (P : HeightOneSpectrum (�
 end Host
 
 end GlobalTheory.InertDoubleCoset
+end
+end

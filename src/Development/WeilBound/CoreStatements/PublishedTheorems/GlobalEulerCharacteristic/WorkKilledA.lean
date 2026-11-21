@@ -2,8 +2,18 @@ import Development.WeilBound.CoreStatements.PublishedTheorems.GlobalEulerCharact
 import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.Shapiro
 import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ApplySubrepresentationCongr
 import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ToFunEqZeroOfForallIsCyclic
-import Development.WeilBound.CoreStatements.PublishedTheorems.GlobalEulerCharacteristic.IsTotallyComplexOfOdd
+import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.GlobalEulerFormulaInf
 
+section
+open NumberField GroundTheory.Global
+
+namespace PositivityTheory.Lit1.GEN.TotallyComplexOfOdd
+
+
+end PositivityTheory.Lit1.GEN.TotallyComplexOfOdd
+end
+
+section
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheory.Global
 
 namespace PositivityTheory.Lit1.GEN.W_killed_a
@@ -25,3 +35,4 @@ instance isDiscreteRep_resTo {K : FiniteSubfield} (S : Set (HeightOneSpectrum (ð
 
 
 end PositivityTheory.Lit1.GEN.W_killed_a
+end

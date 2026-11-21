@@ -1,13 +1,557 @@
 import Mathlib
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.QuotientEigenDifference
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HerbrandQuotientEigenDet
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemFiltrationPreimageIffEvalMem
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemPolynomialEvalFreeLatticeIffExistsEval
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EvalQuotientRingVectorAtPointsInjective
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigenSublatticeFreeLatticeIffEval
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemFiltrationOfComponentsMemEigenSpan
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieEigenSublatticeIffEvalFlat
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemAddValuationIntegerRingNormalizedIff
+import BuildAid.ForwardExisting
 
+section
+section
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+
+namespace GlobalTheory.FilPreMem
+
+theorem poly_mem (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ))
+    (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S]
+    (a : S → w.valuationSubring) (N : ℕ) (F : Submodule w.valuationSubring (S → Fin N → C))
+    (hF : ∀ x ∈ F, GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.unif a x ∈ F) (f : Polynomial (Int0 v)) :
+    ∀ y ∈ F, (fun s i => ((f.eval (liftA hv a s) : Int0 v) : C) * y s i) ∈ F := by
+  induction f using Polynomial.induction_on with
+  | C c =>
+    intro y hy
+    have := F.smul_mem (⟨(c : C), (hv _).1 c.2⟩ : w.valuationSubring) hy
+    convert this using 1
+    funext s i
+    simp only [Polynomial.eval_C]
+    rfl
+  | add p q hp hq =>
+    intro y hy
+    have := F.add_mem (hp y hy) (hq y hy)
+    convert this using 1
+    funext s i
+    simp only [Polynomial.eval_add, Subring.coe_add, Pi.add_apply, add_mul]
+  | monomial n c h =>
+    intro y hy
+    have := hF _ (h y hy)
+    convert this using 1
+    funext s i
+    simp only [GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.unif, Pi.smul_apply, smul_eq_mul, Polynomial.eval_mul,
+      Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X, Subring.coe_mul,
+      Subring.coe_pow, pow_succ, liftA]
+    ring
+
+theorem filPre_mem_iff : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ)) (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) (F : Submodule w.valuationSubring (S → Fin N → C)), (∀ x ∈ F, GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.unif a x ∈ F) → ∀ x, x ∈ filPre (liftA hv a) F ↔ evalVec (liftA hv a) N x ∈ F := by
+  intro C _ w v hv S _ _ a N F hF x
+  let T : Submodule (RS (liftA hv a)) (Fin N → RS (liftA hv a)) :=
+    { carrier := {x | evalVec (liftA hv a) N x ∈ F}
+      zero_mem' := by
+        show evalVec (liftA hv a) N 0 ∈ F
+        have : evalVec (liftA hv a) N 0 = 0 := by
+          funext s i; simp [evalVec]
+        rw [this]; exact F.zero_mem
+      add_mem' := by
+        intro x y hx hy
+        show evalVec (liftA hv a) N (x + y) ∈ F
+        rw [evalVec_add]; exact F.add_mem hx hy
+      smul_mem' := by
+        intro r x hx
+        show evalVec (liftA hv a) N (r • x) ∈ F
+        induction r using AdjoinRoot.induction_on with
+        | ih f =>
+          have := poly_mem C w v hv S a N F hF f _ hx
+          convert this using 1
+          funext s i
+          simp [evalVec, ev] }
+  constructor
+  · intro hx
+    have : filPre (liftA hv a) F ≤ T := Submodule.span_le.2 (fun y hy => hy)
+    exact this hx
+  · intro hx
+    exact Submodule.subset_span hx
+
+end GlobalTheory.FilPreMem
+end
+
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_filtrationPreimage_iff_eval_mem : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ)) (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) (F : Submodule w.valuationSubring (S → Fin N → C)), (∀ x ∈ F, GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.unif a x ∈ F) → ∀ x, x ∈ filPre (liftA hv a) F ↔ evalVec (liftA hv a) N x ∈ F := by
+  atlas_forward_decl GlobalTheory.FilPreMem.filPre_mem_iff
+end
+
+section
+section
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+
+namespace GlobalTheory.EvalVecRange
+
+def toW {C : Type} [Field C] {w : Valuation C ℝ≥0} {v : AddValuation C (WithTop ℝ)}
+    (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) : Int0 v →+* w.valuationSubring where
+  toFun x := ⟨x, (hv x).1 x.2⟩
+  map_one' := rfl
+  map_mul' _ _ := rfl
+  map_zero' := rfl
+  map_add' _ _ := rfl
+
+def toV {C : Type} [Field C] {w : Valuation C ℝ≥0} {v : AddValuation C (WithTop ℝ)}
+    (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) : w.valuationSubring →+* Int0 v where
+  toFun x := ⟨x, (hv x).2 x.2⟩
+  map_one' := rfl
+  map_mul' _ _ := rfl
+  map_zero' := rfl
+  map_add' _ _ := rfl
+
+theorem ev_mk {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {S : Type} [Fintype S]
+    [DecidableEq S] (b : S → Int0 v) (s : S) (g : Polynomial (Int0 v)) :
+    ev b s (AdjoinRoot.mk _ g) = g.eval (b s) := by
+  unfold ev
+  rw [AdjoinRoot.liftAlgHom_mk]
+  rfl
+
+theorem evalVec_range : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ))
+    (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S]
+    (a : S → w.valuationSubring) (N : ℕ) (y : S → Fin N → C),
+    y ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N ↔ ∃ x, evalVec (liftA hv a) N x = y := by
+  intro C _ w v hv S _ _ a N y
+  constructor
+  · intro hy
+    choose f hf using hy
+    refine ⟨fun i => AdjoinRoot.mk _ ((f i).map (toV hv)), ?_⟩
+    funext s i
+    simp only [evalVec]
+    rw [ev_mk, Polynomial.eval_map, hf i s]
+    have : liftA hv a s = toV hv (a s) := rfl
+    rw [this, Polynomial.eval₂_hom]
+    rfl
+  · rintro ⟨x, rfl⟩ i
+    obtain ⟨g, hg⟩ := AdjoinRoot.mk_surjective (x i)
+    refine ⟨g.map (toW hv), fun s => ?_⟩
+    simp only [evalVec]
+    rw [← hg, ev_mk, Polynomial.eval_map]
+    have : a s = toW hv (liftA hv a s) := rfl
+    rw [this, Polynomial.eval₂_hom]
+    rfl
+
+end GlobalTheory.EvalVecRange
+end
+
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_polynomialEvalFreeLattice_iff_exists_eval : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ)) (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) (y : S → Fin N → C), y ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N ↔ ∃ x, evalVec (liftA hv a) N x = y := by
+  atlas_forward_decl GlobalTheory.EvalVecRange.evalVec_range
+end
+
+section
+section
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+
+namespace GlobalTheory.HerbrandBridge
+
+open Polynomial
+
+theorem prod_X_sub_C_dvd_of_eval_zero {O S : Type} [CommRing O] [IsDomain O] [Fintype S]
+    (b : S → O) (hb : Function.Injective b) (g : O[X]) (hg : ∀ s, g.eval (b s) = 0) :
+    (∏ s, (X - C (b s))) ∣ g := by
+  by_cases h0 : g = 0
+  · simp [h0]
+  have hprod : (∏ s, (X - C (b s))) = ((Finset.univ.val.map b).map (fun t => X - C t)).prod := by
+    rw [Multiset.map_map]; rfl
+  rw [hprod, Multiset.prod_X_sub_C_dvd_iff_le_roots h0]
+  rw [Multiset.le_iff_subset (Multiset.Nodup.map hb Finset.univ.nodup)]
+  intro t ht
+  obtain ⟨s, -, rfl⟩ := Multiset.mem_map.1 ht
+  exact (mem_roots h0).2 (hg s)
+
+theorem evalVec_injective_of_injective (C : Type) [Field C] (w : Valuation C ℝ≥0)
+    (v : AddValuation C (WithTop ℝ)) (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring)
+    (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) :
+    Function.Injective a → Function.Injective (evalVec (liftA hv a) N) := by
+  intro ha
+  have hinj : Function.Injective (liftA hv a) := by
+    intro s t hst
+    apply ha
+    apply Subtype.ext
+    have := congrArg (fun u : Int0 v => (u : C)) hst
+    exact this
+  have key : ∀ x : Fin N → RS (liftA hv a), evalVec (liftA hv a) N x = 0 → x = 0 := by
+    intro x hx
+    funext i
+    obtain ⟨g, hg⟩ := AdjoinRoot.mk_surjective (x i)
+    rw [Pi.zero_apply, ← hg, AdjoinRoot.mk_eq_zero]
+    apply prod_X_sub_C_dvd_of_eval_zero _ hinj
+    intro s
+    have h1 := congrFun (congrFun hx s) i
+    simp only [evalVec, Pi.zero_apply, ← hg] at h1
+    apply Subtype.ext
+    rw [show ((0 : Int0 v) : C) = 0 from rfl, ← h1]
+    congr 1
+  intro x y hxy
+  have := key (x - y) (by rw [evalVec_sub, hxy, sub_self])
+  exact sub_eq_zero.1 this
+
+end GlobalTheory.HerbrandBridge
+end
+
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.evalQuotientRingVectorAtPoints_injective : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ)) (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ), Function.Injective a → Function.Injective (evalVec (liftA hv a) N) := by
+  atlas_forward_decl GlobalTheory.HerbrandBridge.evalVec_injective_of_injective
+end
+
+section
+section
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+
+namespace GlobalTheory.EigenSubEval
+
+variable {C : Type} [Field C] {w : Valuation C ℝ≥0} {v : AddValuation C (WithTop ℝ)}
+  {S : Type} [Fintype S] [DecidableEq S]
+
+theorem evalVec_rsmul (b : S → Int0 v) (N : ℕ) (r : RS b) (z : Fin N → RS b) (s : S) (i : Fin N) :
+    evalVec b N (r • z) s i = ((ev b s r : Int0 v) : C) * evalVec b N z s i := by
+  simp only [evalVec, Pi.smul_apply, smul_eq_mul, map_mul, Subring.coe_mul]
+
+theorem mem_eigSub_iff (b : S → Int0 v) (N : ℕ) (τ : S) (z : Fin N → RS b) :
+    z ∈ eigSub b τ (Fin N → RS b) ↔ lin b τ • z = 0 := Iff.rfl
+
+theorem eigenSub_iff_eval (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ))
+    (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S]
+    (a : S → w.valuationSubring) (N : ℕ) (τ : S) (ha : Function.Injective a)
+    (hinj : Function.Injective (evalVec (liftA hv a) N))
+    (hrange : ∀ y, y ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N ↔ ∃ x, evalVec (liftA hv a) N x = y)
+    (y : Fin N → C) :
+    y ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (W := fun _ => Fin N → C) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N) τ ↔
+      ∃ z ∈ eigSub (liftA hv a) τ (Fin N → RS (liftA hv a)),
+        (fun i => ((comp (liftA hv a) N τ z i : Int0 v) : C)) = y := by
+  have hev : ∀ s t, ((ev (liftA hv a) s (lin (liftA hv a) t) : Int0 v) : C) = (a s : C) - a t := by
+    intro s t
+    rw [ev_lin]; rfl
+  have hne : ∀ s, s ≠ τ → (a s : C) - a τ ≠ 0 := by
+    intro s hs h
+    exact hs (ha (Subtype.ext (sub_eq_zero.1 h)))
+  have hmem : y ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (W := fun _ => Fin N → C)
+      (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N) τ ↔
+      (Pi.single τ y : S → Fin N → C) ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N := Iff.rfl
+  rw [hmem]
+  constructor
+  · intro h
+    obtain ⟨x, hx⟩ := (hrange _).1 h
+    refine ⟨x, ?_, ?_⟩
+    · rw [mem_eigSub_iff]
+      apply hinj
+      funext s i
+      rw [evalVec_rsmul, hev, hx]
+      have h0 : evalVec (liftA hv a) N (0 : Fin N → RS (liftA hv a)) s i = 0 := by
+        simp [evalVec]
+      rw [h0]
+      by_cases e : s = τ
+      · subst e; simp
+      · simp [e]
+    · rw [comp_coe, hx]; simp
+  · rintro ⟨z, hz, rfl⟩
+    rw [mem_eigSub_iff] at hz
+    have key : evalVec (liftA hv a) N z = Pi.single τ (evalVec (liftA hv a) N z τ) := by
+      funext s i
+      by_cases e : s = τ
+      · subst e; simp
+      · have h1 := congrFun (congrFun (congrArg (evalVec (liftA hv a) N) hz) s) i
+        rw [evalVec_rsmul, hev] at h1
+        have h0 : evalVec (liftA hv a) N (0 : Fin N → RS (liftA hv a)) s i = 0 := by
+          simp [evalVec]
+        rw [h0] at h1
+        rw [Pi.single_eq_of_ne e]
+        exact (mul_eq_zero.1 h1).resolve_left (hne s e)
+    rw [comp_coe, ← key]
+    exact (hrange _).2 ⟨z, rfl⟩
+
+end GlobalTheory.EigenSubEval
+end
+
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eigenSublattice_freeLattice_iff_eval : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ)) (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) (τ : S), Function.Injective a → Function.Injective (evalVec (liftA hv a) N) → (∀ y, y ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N ↔ ∃ x, evalVec (liftA hv a) N x = y) → ∀ y : Fin N → C, y ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (W := fun _ => Fin N → C) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N) τ ↔ ∃ z ∈ eigSub (liftA hv a) τ (Fin N → RS (liftA hv a)), (fun i => ((comp (liftA hv a) N τ z i : Int0 v) : C)) = y := by
+  atlas_forward_decl GlobalTheory.EigenSubEval.eigenSub_iff_eval
+end
+
+section
+open scoped NNReal
+
+namespace GlobalTheory.Div.KerFil
+open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference
+
+variable {C : Type} [Field C] {w : Valuation C ℝ≥0}
+
+theorem smul_vec_apply {r : ℕ} (b : w.valuationSubring) (v : Fin r → C) (i : Fin r) :
+    (b • v) i = (b : C) * v i := rfl
+
+theorem smul_C (b : w.valuationSubring) (z : C) : b • z = (b : C) * z := rfl
+
+theorem smul_pi_apply {S : Type} {r : ℕ} (b : w.valuationSubring) (x : S → Fin r → C) (s : S)
+    (i : Fin r) : (b • x) s i = (b : C) * x s i := rfl
+
+theorem exists_prod_apply {S : Type} [DecidableEq S] {r : ℕ} (a : S → w.valuationSubring)
+    (Fil : Submodule w.valuationSubring (S → Fin r → C))
+    (hst : ∀ x ∈ Fil, unif a x ∈ Fil) (x : S → Fin r → C) (hx : x ∈ Fil) (T : Finset S) :
+    ∃ y ∈ Fil, ∀ s' i, y s' i = (∏ s ∈ T, ((a s' : C) - a s)) * x s' i := by
+  induction T using Finset.induction_on with
+  | empty => exact ⟨x, hx, fun _ _ => by simp⟩
+  | insert s0 T hs0 ih =>
+    obtain ⟨y, hy, hyv⟩ := ih
+    refine ⟨unif a y - a s0 • y, sub_mem (hst y hy) (Fil.smul_mem _ hy), fun s' i => ?_⟩
+    rw [Finset.prod_insert hs0]
+    simp only [Pi.sub_apply, unif, Pi.smul_apply, smul_eq_mul]
+    rw [smul_C, hyv]
+    ring
+
+theorem single_mem_of_mem {S : Type} [Fintype S] [DecidableEq S] {r : ℕ}
+    (a : S → w.valuationSubring) (Fil : Submodule w.valuationSubring (S → Fin r → C))
+    (hst : ∀ x ∈ Fil, unif a x ∈ Fil) (τ : S) (x : S → Fin r → C) (hx : x ∈ Fil) :
+    (Pi.single τ (diffGen a τ • x τ) : S → Fin r → C) ∈ Fil := by
+  obtain ⟨y, hy, hyv⟩ := exists_prod_apply a Fil hst x hx (Finset.univ.erase τ)
+  convert hy using 1
+  funext s' i
+  rw [hyv]
+  by_cases e : s' = τ
+  · subst e
+    simp only [Pi.single_eq_same, smul_vec_apply, diffGen]
+    push_cast
+    rfl
+  · rw [Finset.prod_eq_zero (i := s') (Finset.mem_erase.2 ⟨e, Finset.mem_univ _⟩) (sub_self _)]
+    simp [e]
+
+theorem diffGen_ne_zero {S : Type} [Fintype S] [DecidableEq S] (a : S → w.valuationSubring)
+    (ha : Function.Injective a) (τ : S) : diffGen a τ ≠ 0 := by
+  rw [diffGen, Finset.prod_ne_zero_iff]
+  intro s hs e
+  exact (Finset.mem_erase.1 hs).1 (ha (sub_eq_zero.1 e)).symm
+
+end GlobalTheory.Div.KerFil
+
+namespace GlobalTheory.Div.KerFil
+open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference
+
+variable {C : Type} [Field C] {w : Valuation C ℝ≥0}
+
+def clearDen {S : Type} [DecidableEq S] {r : ℕ}
+    (Fil : Submodule w.valuationSubring (S → Fin r → C)) (τ : S) : Submodule C (Fin r → C) where
+  carrier := {v | ∃ b : w.valuationSubring, b ≠ 0 ∧ (Pi.single τ (b • v) : S → Fin r → C) ∈ Fil}
+  zero_mem' := ⟨1, one_ne_zero, by simp⟩
+  add_mem' := by
+    rintro v v' ⟨b, hb, h⟩ ⟨b', hb', h'⟩
+    refine ⟨b * b', mul_ne_zero hb hb', ?_⟩
+    have : (Pi.single τ ((b * b') • (v + v')) : S → Fin r → C) =
+        b' • (Pi.single τ (b • v) : S → Fin r → C) + b • (Pi.single τ (b' • v') : S → Fin r → C) := by
+      funext s i
+      by_cases e : s = τ
+      · subst e; simp only [Pi.single_eq_same, Pi.add_apply, smul_pi_apply, smul_vec_apply]
+        push_cast; ring
+      · simp [e]
+    rw [this]
+    exact add_mem (Fil.smul_mem _ h) (Fil.smul_mem _ h')
+  smul_mem' := by
+    rintro c v ⟨b, hb, h⟩
+    by_cases hc0 : c = 0
+    · exact ⟨1, one_ne_zero, by simp [hc0]⟩
+    rcases w.valuationSubring.mem_or_inv_mem c with hc | hc
+    · refine ⟨b, hb, ?_⟩
+      have : (Pi.single τ (b • c • v) : S → Fin r → C) =
+          (⟨c, hc⟩ : w.valuationSubring) • (Pi.single τ (b • v) : S → Fin r → C) := by
+        funext s i
+        by_cases e : s = τ
+        · subst e; simp only [Pi.single_eq_same, smul_pi_apply, smul_vec_apply, Pi.smul_apply,
+            smul_eq_mul, smul_C]
+          ring
+        · simp [e]
+      rw [this]
+      exact Fil.smul_mem _ h
+    · have hne : (⟨c⁻¹, hc⟩ : w.valuationSubring) ≠ 0 := by
+        intro e
+        exact hc0 (inv_eq_zero.1 (congrArg Subtype.val e))
+      refine ⟨b * ⟨c⁻¹, hc⟩, mul_ne_zero hb hne, ?_⟩
+      have : (b * ⟨c⁻¹, hc⟩ : w.valuationSubring) • c • v = b • v := by
+        funext i
+        simp only [smul_vec_apply, Pi.smul_apply, smul_eq_mul, smul_C]
+        push_cast
+        field_simp
+      rw [this]
+      exact h
+
+theorem ker_eq (C : Type) [Field C] (w : Valuation C ℝ≥0) (S : Type) [Fintype S] [DecidableEq S]
+    (a : S → w.valuationSubring) (r : ℕ) (Fil : Submodule w.valuationSubring (S → Fin r → C))
+    (τ : S) (ha : Function.Injective a) (hF : IsFiltration a Fil) :
+    eigenSub (W := fun _ => Fin r → C) (freeLattice a r) τ ⊓
+        LinearMap.ker (quotMap (w := w) (filSpace Fil τ)) =
+      eigenSub (W := fun _ => Fin r → C) Fil τ := by
+  apply le_antisymm
+  · rintro v ⟨hH, hK⟩
+    have hH' : (Pi.single τ v : S → Fin r → C) ∈ freeLattice a r := by
+      simpa [eigenSub] using hH
+    have hK' : v ∈ filSpace Fil τ := by
+      simpa [quotMap, Submodule.Quotient.mk_eq_zero] using hK
+    have hle : filSpace Fil τ ≤ clearDen Fil τ := by
+      refine Submodule.span_le.2 ?_
+      rintro _ ⟨x, hx, rfl⟩
+      exact ⟨diffGen a τ, diffGen_ne_zero a ha τ, single_mem_of_mem a Fil hF.stable τ x hx⟩
+    obtain ⟨b, hb, hbv⟩ := hle hK'
+    show (Pi.single τ v : S → Fin r → C) ∈ Fil
+    refine hF.saturated _ hH' b hb ?_
+    convert hbv using 1
+    funext s i
+    by_cases e : s = τ
+    · subst e; simp [smul_pi_apply, smul_vec_apply, smul_C]
+    · simp [smul_pi_apply, e]
+  · intro v hv
+    have hv' : (Pi.single τ v : S → Fin r → C) ∈ Fil := by simpa [eigenSub] using hv
+    refine ⟨?_, ?_⟩
+    · show (Pi.single τ v : S → Fin r → C) ∈ freeLattice a r
+      exact hF.le hv'
+    · show quotMap (w := w) (filSpace Fil τ) v = 0
+      simp only [quotMap, LinearMap.restrictScalars_apply, Submodule.mkQ_apply,
+        Submodule.Quotient.mk_eq_zero]
+      refine Submodule.subset_span ⟨_, hv', ?_⟩
+      simp
+
+end GlobalTheory.Div.KerFil
+
+theorem GlobalTheory.Div.kerFil : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (r : ℕ) (Fil : Submodule w.valuationSubring (S → Fin r → C)) (τ : S), Function.Injective a → GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.IsFiltration a Fil → GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (W := fun _ => Fin r → C) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a r) τ ⊓ LinearMap.ker (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.quotMap (w := w) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace Fil τ)) = GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (W := fun _ => Fin r → C) Fil τ :=
+  fun C _ w S _ _ a r Fil τ ha hF => GlobalTheory.Div.KerFil.ker_eq C w S a r Fil τ ha hF
+end
+
+section
+section
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+
+namespace GlobalTheory.Div.KerFil
+open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference
+
+theorem mem_of_components : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (S : Type) [Fintype S]
+    [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ)
+    (F : Submodule w.valuationSubring (S → Fin N → C)), Function.Injective a →
+    GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.IsFiltration a F → ∀ x ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N,
+    (∀ s, x s ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F s) → x ∈ F := by
+  intro C _ w S _ _ a N F ha hF x hx hc
+  have hle : ∀ s, filSpace F s ≤ clearDen F s := fun s => by
+    refine Submodule.span_le.2 ?_
+    rintro _ ⟨y, hy, rfl⟩
+    exact ⟨diffGen a s, diffGen_ne_zero a ha s, single_mem_of_mem a F hF.stable s y hy⟩
+  choose b hb hbx using fun s => hle s (hc s)
+  have hB : (∏ s, b s) ≠ 0 := Finset.prod_ne_zero_iff.2 fun s _ => hb s
+  refine hF.saturated x hx (∏ s, b s) hB ?_
+  have key : (∏ s, b s) • x = ∑ s, (∏ t ∈ Finset.univ.erase s, b t) •
+      (Pi.single s (b s • x s) : S → Fin N → C) := by
+    funext s' i
+    rw [Finset.sum_apply, Finset.sum_apply, Finset.sum_eq_single s']
+    · simp only [smul_pi_apply, Pi.single_eq_same, smul_vec_apply]
+      rw [← mul_assoc, ← Subring.coe_mul, Finset.prod_erase_mul _ _ (Finset.mem_univ s')]
+    · intro s _ e
+      simp [smul_pi_apply, Pi.single_apply, Ne.symm e]
+    · simp
+  rw [key]
+  exact sum_mem fun s _ => F.smul_mem _ (hbx s)
+
+end GlobalTheory.Div.KerFil
+end
+
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_filtration_of_components_mem_eigenSpan : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) (F : Submodule w.valuationSubring (S → Fin N → C)), Function.Injective a → GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.IsFiltration a F → ∀ x ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N, (∀ s, x s ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F s) → x ∈ F := by
+  atlas_forward_decl GlobalTheory.Div.KerFil.mem_of_components
+end
+
+section
+section
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+
+namespace GlobalTheory
+
+theorem lie_eigenSub_iff_flat : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ)) (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) (F : Submodule w.valuationSubring (S → Fin N → C)) (τ : S), Function.Injective a → GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.IsFiltration a F → Function.Injective (evalVec (liftA hv a) N) → (∀ y, y ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N ↔ ∃ x, evalVec (liftA hv a) N x = y) → (∀ x, x ∈ filPre (liftA hv a) F ↔ evalVec (liftA hv a) N x ∈ F) → (∀ x ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N, (∀ s, x s ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F s) → x ∈ F) → ∀ z : (Fin N → C) ⧸ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F τ, z ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.lie (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N) F) τ ↔ ∃ x : Fin N → RS (liftA hv a), proj (liftA hv a) (filPre (liftA hv a) F) x ∈ eigSub (liftA hv a) τ ((Fin N → RS (liftA hv a)) ⧸ filPre (liftA hv a) F) ∧ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.quotMap (w := w) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F τ) (fun i => ((comp (liftA hv a) N τ x i : Int0 v) : C)) = z := by
+  intro C _ w v hv S _ _ a N F τ hinj _hfilt _hevinj hrange hmem hlast z
+  have hev : ∀ x : Fin N → RS (liftA hv a), ∀ s i,
+      evalVec (liftA hv a) N (lin (liftA hv a) τ • x) s i
+        = ((a s : C) - a τ) * evalVec (liftA hv a) N x s i := by
+    intro x s i
+    simp only [evalVec, Pi.smul_apply, smul_eq_mul, map_mul, ev_lin]
+    rfl
+  have hevs : ∀ x : Fin N → RS (liftA hv a), ∀ s,
+      evalVec (liftA hv a) N (lin (liftA hv a) τ • x) s
+        = ((a s : C) - a τ) • evalVec (liftA hv a) N x s := by
+    intro x s; funext i; rw [hev]; rfl
+  have heig : ∀ x : Fin N → RS (liftA hv a),
+      proj (liftA hv a) (filPre (liftA hv a) F) x ∈
+          eigSub (liftA hv a) τ ((Fin N → RS (liftA hv a)) ⧸ filPre (liftA hv a) F) ↔
+        evalVec (liftA hv a) N (lin (liftA hv a) τ • x) ∈ F := by
+    intro x
+    rw [← hmem]
+    show lin (liftA hv a) τ • (filPre (liftA hv a) F).mkQ x = 0 ↔ _
+    rw [← map_smul, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
+  have hlie : z ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub
+        (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.lie (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N) F) τ ↔
+      ∃ h ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N, ∀ s,
+        (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F s).mkQ (h s) =
+          (Pi.single τ z : ∀ s, (Fin N → C) ⧸ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F s) s := by
+    simp only [GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub, GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.lie, Submodule.mem_comap,
+      Submodule.mem_map]
+    constructor
+    · rintro ⟨h, hh, he⟩
+      exact ⟨h, hh, fun s => congrFun he s⟩
+    · rintro ⟨h, hh, he⟩
+      exact ⟨h, hh, funext he⟩
+  rw [hlie]
+  constructor
+  · rintro ⟨h, hh, he⟩
+    obtain ⟨x, rfl⟩ := (hrange h).1 hh
+    refine ⟨x, (heig x).2 ?_, ?_⟩
+    · apply hlast _ ((hrange _).2 ⟨_, rfl⟩)
+      intro s
+      rw [hevs]
+      by_cases hs : s = τ
+      · rw [hs, sub_self, zero_smul]; exact zero_mem _
+      · have h1 : evalVec (liftA hv a) N x s ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F s := by
+          have := he s
+          rw [Pi.single_eq_of_ne hs, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at this
+          exact this
+        exact Submodule.smul_mem _ _ h1
+    · have := he τ
+      rw [Pi.single_eq_same] at this
+      exact this
+  · rintro ⟨x, hx, rfl⟩
+    refine ⟨evalVec (liftA hv a) N x, (hrange _).2 ⟨x, rfl⟩, fun s => ?_⟩
+    by_cases hs : s = τ
+    · subst hs
+      rw [Pi.single_eq_same]
+      rfl
+    · rw [Pi.single_eq_of_ne hs, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
+      have hy := (heig x).1 hx
+      have hys : evalVec (liftA hv a) N (lin (liftA hv a) τ • x) s ∈
+          GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F s :=
+        Submodule.subset_span ⟨_, hy, rfl⟩
+      have hne : (a s : C) - a τ ≠ 0 := sub_ne_zero.2 fun e => hs (hinj (Subtype.ext e))
+      have : evalVec (liftA hv a) N x s =
+          ((a s : C) - a τ)⁻¹ • evalVec (liftA hv a) N (lin (liftA hv a) τ • x) s := by
+        rw [hevs, smul_smul, inv_mul_cancel₀ hne, one_smul]
+      rw [this]
+      exact Submodule.smul_mem _ _ hys
+
+end GlobalTheory
+end
+
+open scoped NNReal
+open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity GlobalTheory.HerbrandBridge
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lieEigenSublattice_iff_eval_flat : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (v : AddValuation C (WithTop ℝ)) (hv : ∀ x, x ∈ Int0 v ↔ x ∈ w.valuationSubring) (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (N : ℕ) (F : Submodule w.valuationSubring (S → Fin N → C)) (τ : S), Function.Injective a → GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.IsFiltration a F → Function.Injective (evalVec (liftA hv a) N) → (∀ y, y ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N ↔ ∃ x, evalVec (liftA hv a) N x = y) → (∀ x, x ∈ filPre (liftA hv a) F ↔ evalVec (liftA hv a) N x ∈ F) → (∀ x ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N, (∀ s, x s ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F s) → x ∈ F) → ∀ z : (Fin N → C) ⧸ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F τ, z ∈ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.lie (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a N) F) τ ↔ ∃ x : Fin N → RS (liftA hv a), proj (liftA hv a) (filPre (liftA hv a) F) x ∈ eigSub (liftA hv a) τ ((Fin N → RS (liftA hv a)) ⧸ filPre (liftA hv a) F) ∧ GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.quotMap (w := w) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace F τ) (fun i => ((comp (liftA hv a) N τ x i : Int0 v) : C)) = z := by
+  atlas_forward_decl GlobalTheory.lie_eigenSub_iff_flat
+end
+
+section
 section
 open scoped NNReal
 open GlobalTheory.IndefiniteRowSideFullHecke.MultiplicationKernelIdentity
@@ -355,3 +899,4 @@ open scoped NNReal
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.latticeDetRelation_herbrand_eigenspace : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (ℓ : C), 0 < w ℓ → w ℓ < 1 → ∀ (S : Type) [Fintype S] [DecidableEq S] (a : S → w.valuationSubring) (p q : ℕ) (Fil : Submodule w.valuationSubring (S → Fin (p + q) → C)) (τ : S), Function.Injective a → GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.IsFiltration a Fil → Module.finrank C (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace Fil τ) = q → GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.DetRel w ℓ (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace Fil τ) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (W := fun _ => Fin (p + q) → C) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a (p + q)) τ) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenSub (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.lie (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.freeLattice a (p + q)) Fil) τ) (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.eigenQuot (W := fun _ => Fin (p + q) → C) Fil τ) (∑ s ∈ Finset.univ.erase τ, (Module.finrank C (GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.filSpace Fil s) : ℝ) * GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.addVal w ℓ ((a τ : C) - (a s : C))) := by
   atlas_forward_decl GlobalTheory.HerbrandBridge.exForm
+end

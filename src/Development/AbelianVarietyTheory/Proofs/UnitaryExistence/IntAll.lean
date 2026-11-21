@@ -9,9 +9,18 @@ import Formalism.LocalToGlobal.ProjectiveLattices.GenFrPf
 import Formalism.LocalToGlobal.ProjectiveLattices.ReadAlg
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntFrExtOfGoodLevelStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFrameChangeIntegralInvertibleMatrixStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFrameChangeIntegralInvertibleMatrix
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsCombAtGMulVec
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralFrame_change_integral_invertible_matrix : Out.SecBaseChangeSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), Formalism.L2.PjFree.IntRebase Xo c := by
+  first | exact @GlobalTheory.IntRebase.intRebase | exact GlobalTheory.IntRebase.intRebase | (intros; apply GlobalTheory.IntRebase.intRebase <;> assumption)
+end
+
+section
 namespace GlobalTheory.IntegralFrames
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
@@ -25,3 +34,4 @@ theorem intAll : PartI → N1ab → Out.SecBaseChangeSt → Out.SecTwistSt → �
     (GlobalTheory.T.integralFrame_change_integral_invertible_matrix hB E H Dw l Xo c)
 
 end GlobalTheory.IntegralFrames
+end

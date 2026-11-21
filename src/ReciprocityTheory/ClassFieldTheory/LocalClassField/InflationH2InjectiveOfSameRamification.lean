@@ -2,9 +2,458 @@ import Mathlib
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.GalBasic
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
 import ReciprocityTheory.ClassFieldTheory.LocalClassField.HSubsingletonOfUniquelyDivisible
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnitsCT
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.BrUnrA
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.FinCoh
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.RestrictedMultiplicativeH1Subsingleton
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.ValUnitsG
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnitsHerbrand
+import ReciprocityTheory.ClassFieldTheory.LocalClassField.EqZeroOfResEqZeroOfCoprime
+import ReciprocityTheory.GroupCohomology.FiniteLevel
+import ReciprocityTheory.GroupCohomology.ImportsAlt
 
+section
+namespace ReciprocityTheory.DiscreteGroups.LocalClassField
+
+open _root_.Neutral.B1 ReciprocityTheory.Coh Function
+
+section Cyclic
+
+variable {R : Type} [CommRing R] {C : Type} [Group C] [Fintype C] [TopologicalSpace C] [IsTopologicalGroup C] [DiscreteTopology C]
+
+theorem cyc_odd (M : TRep R C) (g : C) (hg : ∀ x, x ∈ Subgroup.zpowers g) (i : ℕ) (hi : Odd i) :
+    Nonempty (M.H i ≃ₗ[R] (LinearMap.ker M.rho.norm ⧸
+      (LinearMap.range (M.rho g - LinearMap.id)).comap (LinearMap.ker M.rho.norm).subtype)) := by
+  have : IsCyclic C := ⟨g, hg⟩
+  let : CommGroup C := IsCyclic.commGroup
+  exact nonempty_cyclic_odd M g hg i hi
+
+theorem cyc_even (M : TRep R C) (g : C) (hg : ∀ x, x ∈ Subgroup.zpowers g) (i : ℕ) (h0 : i ≠ 0)
+    (hi : Even i) :
+    Nonempty (M.H i ≃ₗ[R] (M.rho.invariants ⧸
+      (LinearMap.range M.rho.norm).comap M.rho.invariants.subtype)) := by
+  have : IsCyclic C := ⟨g, hg⟩
+  let : CommGroup C := IsCyclic.commGroup
+  exact nonempty_cyclic_even M g hg i h0 hi
+
+theorem norm_apply' (M : TRep R C) (u : M.V) : M.rho.norm u = ∑ c, M.rho c u := by
+  simp [Representation.norm]
+
+theorem exists_sub_eq_of_cyclic_of_h1_subsingleton (M : TRep R C) (g : C) (hg : ∀ x, x ∈ Subgroup.zpowers g) (h1 : Subsingleton (M.H 1))
+    (u : M.V) (hu : ∑ c, M.rho c u = 0) : ∃ w, M.rho g w - w = u := by
+  obtain ⟨e⟩ := cyc_odd M g hg 1 (by decide)
+  have hs := e.symm.injective.subsingleton
+  rw [Submodule.Quotient.subsingleton_iff] at hs
+  have hk : u ∈ LinearMap.ker M.rho.norm := by rw [LinearMap.mem_ker, norm_apply', hu]
+  have hm : (⟨u, hk⟩ : LinearMap.ker M.rho.norm) ∈
+      (LinearMap.range (M.rho g - LinearMap.id)).comap (LinearMap.ker M.rho.norm).subtype := by
+    rw [hs]; exact Submodule.mem_top
+  obtain ⟨w, hw⟩ := hm
+  exact ⟨w, hw⟩
+
+theorem cyc_subsingleton (M : TRep R C) (g : C) (hg : ∀ x, x ∈ Subgroup.zpowers g)
+    (hN : ∀ u, (∀ c, M.rho c u = u) → ∃ w, ∑ c, M.rho c w = u)
+    (hD : ∀ u, ∑ c, M.rho c u = 0 → ∃ w, M.rho g w - w = u) (i : ℕ) (hi : 0 < i) :
+    Subsingleton (M.H i) := by
+  rcases Nat.even_or_odd i with h | h
+  · obtain ⟨e⟩ := cyc_even M g hg i hi.ne' h
+    have : Subsingleton (M.rho.invariants ⧸
+        (LinearMap.range M.rho.norm).comap M.rho.invariants.subtype) := by
+      rw [Submodule.Quotient.subsingleton_iff, eq_top_iff]
+      rintro ⟨u, hu⟩ -
+      obtain ⟨w, hw⟩ := hN u hu
+      exact ⟨w, by rw [norm_apply', hw]; rfl⟩
+    exact e.injective.subsingleton
+  · obtain ⟨e⟩ := cyc_odd M g hg i h
+    have : Subsingleton (LinearMap.ker M.rho.norm ⧸
+        (LinearMap.range (M.rho g - LinearMap.id)).comap (LinearMap.ker M.rho.norm).subtype) := by
+      rw [Submodule.Quotient.subsingleton_iff, eq_top_iff]
+      rintro ⟨u, hu⟩ -
+      obtain ⟨w, hw⟩ := hD u (by rw [← norm_apply']; exact hu)
+      exact ⟨w, hw⟩
+    exact e.injective.subsingleton
+
+end Cyclic
+
+variable (p : ℕ) [Fact p.Prime] (K L : IntermediateField ℚ_[p] (PadicAlgCl p))
+
+variable {p K}
+
+theorem exists_frob_sub_eq_of_sum_eq_zero_layerU (hK : FiniteDimensional ℚ_[p] K) {n : ℕ} (hn : 0 < n)
+    [Fintype (GalLK p K (Kn p K n))] (u : (layerU p K (Kn p K n)).V)
+    (hu : ∑ g, (layerU p K (Kn p K n)).rho g u = 0) :
+    ∃ w, (layerU p K (Kn p K n)).rho (frobLK p K (Kn p K n)) w - w = u := by
+  have hL := finiteDimensional_Kn p K hK hn
+  have hKL : K ≤ Kn p K n := le_sup_left
+  have := discreteTopology_GalLK (K := K) hL
+  have hg := mem_zpowers_frobLK_Kn hK hn
+  have h1 : Subsingleton ((layer p K (Kn p K n)).H 1) :=
+    quotient_multiplicative_h1_subsingleton p K _ _ _ (InflationRestrictionInvariants.invariants_isInvRep _ _)
+  have hI : ∀ g x, (layerUIncl p K (Kn p K n)).u ((layerU p K (Kn p K n)).rho g x) =
+      (layer p K (Kn p K n)).rho g ((layerUIncl p K (Kn p K n)).u x) :=
+    (layerUIncl p K (Kn p K n)).equiv
+  obtain ⟨w, hw⟩ := exists_sub_eq_of_cyclic_of_h1_subsingleton (layer p K (Kn p K n)) _ hg h1 ((layerUIncl p K (Kn p K n)).u u) (by
+    simp only [← hI]
+    rw [← map_sum, hu, map_zero])
+  obtain ⟨π, hπ⟩ := vOn_surjective p K hK 1
+  have hπL : π.1 ∈ multOf p (Kn p K n) := hKL π.2
+  let π' : (layer p K (Kn p K n)).V := toLayer p ⟨π.1, hπL⟩
+  have hπ' : vLayerMap p K (Kn p K n) π' = 1 := by
+    rw [vLayerMap_of_mem p hL hKL π' π.2, eLK_Kn p hK hn]
+    show ((1 : ℕ) : ℤ) * vOn p K π = 1
+    rw [hπ]; simp
+  have hfix : ∀ g, (layer p K (Kn p K n)).rho g π' = π' := (layer_invariant_iff π').2 π.2
+  have he : 0 < eK p (Kn p K n) := eK_pos p _ hL
+  have h0 : vLayerMap p K (Kn p K n) (w - vLayerMap p K (Kn p K n) w • π') = 0 := by
+    rw [map_sub, map_zsmul, hπ']; simp
+  obtain ⟨w', hw'⟩ := (vLayerMap_eq_zero_iff p he hKL _).1 h0
+  refine ⟨w', layerUIncl_injective p ?_⟩
+  rw [map_sub, hI, hw', map_sub, map_zsmul, hfix, ← hw]
+  abel
+
+theorem layerU_Kn_norm_surjective (hK : FiniteDimensional ℚ_[p] K) {n : ℕ} (hn : 0 < n)
+    [Fintype (GalLK p K (Kn p K n))] (u : (layerU p K (Kn p K n)).V)
+    (hu : ∀ g, (layerU p K (Kn p K n)).rho g u = u) :
+    ∃ w, ∑ g, (layerU p K (Kn p K n)).rho g w = u := by
+  have hL := finiteDimensional_Kn p K hK hn
+  have hKL : K ≤ Kn p K n := le_sup_left
+  have hg := mem_zpowers_frobLK_Kn hK hn
+  obtain ⟨hfin, h1⟩ := herbrand_layerU hK hL hKL _ hg
+  have : Subsingleton (Herbrand.H1 (layerU p K (Kn p K n)).rho (frobLK p K (Kn p K n))) := by
+    refine ⟨fun x y => ?_⟩
+    obtain ⟨x, rfl⟩ := QuotientAddGroup.mk_surjective x
+    obtain ⟨y, rfl⟩ := QuotientAddGroup.mk_surjective y
+    rw [Herbrand.mk_eq_mk_iff]
+    have hxy : ∑ g, (layerU p K (Kn p K n)).rho g ((x : (layerU p K (Kn p K n)).V) - y) = 0 := by
+      rw [← Herbrand.nHom_apply, map_sub]
+      rw [show Herbrand.nHom (layerU p K (Kn p K n)).rho x = 0 from x.2,
+        show Herbrand.nHom (layerU p K (Kn p K n)).rho y = 0 from y.2, sub_zero]
+    obtain ⟨w, hw⟩ := exists_frob_sub_eq_of_sum_eq_zero_layerU hK hn _ hxy
+    exact ⟨w, hw⟩
+  rw [Herbrand.h_eq_card_H0hat] at h1
+  have h2 : Nat.card (Herbrand.TateZerothCohomology (layerU p K (Kn p K n)).rho (frobLK p K (Kn p K n))) = 1 := by
+    exact_mod_cast h1
+  have := hfin.1
+  have h3 := (Nat.card_eq_one_iff_unique.1 h2).1
+  have hk : u ∈ (Herbrand.dHom (layerU p K (Kn p K n)).rho (frobLK p K (Kn p K n))).ker :=
+    (Herbrand.mem_ker_dHom_iff _ _ hg u).2 hu
+  have h4 := (Herbrand.mk_eq_zero_iff (N := Herbrand.nHom (layerU p K (Kn p K n)).rho) ⟨u, hk⟩).1
+    (Subsingleton.elim _ _)
+  obtain ⟨w, hw⟩ := h4
+  exact ⟨w, by rw [← Herbrand.nHom_apply]; exact hw⟩
+
+theorem layerU_Kn_H_subsingleton (hK : FiniteDimensional ℚ_[p] K) {n : ℕ} (hn : 0 < n) (i : ℕ) (hi : 0 < i) :
+    Subsingleton ((layerU p K (Kn p K n)).H i) := by
+  have hL := finiteDimensional_Kn p K hK hn
+  have := discreteTopology_GalLK (K := K) hL
+  have := finite_GalLK (K := K) hL
+  let := Fintype.ofFinite (GalLK p K (Kn p K n))
+  exact cyc_subsingleton _ _ (mem_zpowers_frobLK_Kn hK hn) (layerU_Kn_norm_surjective hK hn)
+    (exists_frob_sub_eq_of_sum_eq_zero_layerU hK hn) i hi
+
+theorem layerU_Kur_level (hK : FiniteDimensional ℚ_[p] K) (N : Subgroup (GalLK p K (MaximalUnramifiedExtension p K))) [N.Normal]
+    (hN : IsOpen (N : Set (GalLK p K (MaximalUnramifiedExtension p K)))) (i : ℕ) (hi : 0 < i) :
+    Subsingleton ((InflationRestrictionInvariants.invQ (layerU p K (MaximalUnramifiedExtension p K)) N).H i) := by
+  obtain ⟨n, hn, hU⟩ := exists_Kn_of_isOpen hK (N.comap (QuotientGroup.mk' (subG p K (MaximalUnramifiedExtension p K))))
+    (hN.preimage continuous_quot_mk) (fun σ hσ => by
+      show (QuotientGroup.mk σ : GalLK p K (MaximalUnramifiedExtension p K)) ∈ N
+      rw [(QuotientGroup.eq_one_iff σ).2 hσ]
+      exact N.one_mem)
+  have hU' : ∀ σ : GK p K, (QuotientGroup.mk σ : GalLK p K (MaximalUnramifiedExtension p K)) ∈ N ↔ σ ∈ subG p K (Kn p K n) :=
+    fun σ => by rw [← hU]; rfl
+  have hL := finiteDimensional_Kn p K hK hn
+  have := discreteTopology_GalLK (K := K) hL
+  have := QuotientGroup.discreteTopology hN
+  have : DiscreteTopology (InflationRestrictionInvariants.invQ (layerU p K (MaximalUnramifiedExtension p K)) N).V :=
+    (InflationRestrictionInvariants.invariants_isInvRep (layerU p K (MaximalUnramifiedExtension p K)) N).2.1.discreteTopology
+  let θ : GalLK p K (Kn p K n) →* GalLK p K (MaximalUnramifiedExtension p K) ⧸ N :=
+    QuotientGroup.lift (subG p K (Kn p K n))
+      ((QuotientGroup.mk' N).comp (QuotientGroup.mk' (subG p K (MaximalUnramifiedExtension p K))))
+      (fun σ hσ => (QuotientGroup.eq_one_iff _).2 ((hU' σ).2 hσ))
+  have hθ : Bijective θ := by
+    constructor
+    · rw [injective_iff_map_eq_one]
+      intro g hg
+      induction g using QuotientGroup.induction_on with
+      | H σ => exact (QuotientGroup.eq_one_iff σ).2 ((hU' σ).1 ((QuotientGroup.eq_one_iff _).1 hg))
+    · intro g
+      induction g using QuotientGroup.induction_on with
+      | H g =>
+        induction g using QuotientGroup.induction_on with
+        | H σ => exact ⟨QuotientGroup.mk σ, rfl⟩
+  let u : (InflationRestrictionInvariants.invQ (layerU p K (MaximalUnramifiedExtension p K)) N).V →+ (layerU p K (Kn p K n)).V :=
+    { toFun := fun x => ⟨x.1.1, fun σ => congrArg Subtype.val (x.2 ⟨QuotientGroup.mk σ.1, (hU' σ.1).2 σ.2⟩)⟩
+      map_zero' := rfl
+      map_add' := fun _ _ => rfl }
+  have hu : Bijective u := by
+    constructor
+    · intro x y hxy
+      exact Subtype.ext (Subtype.ext (congrArg (fun z : (layerU p K (Kn p K n)).V => z.1) hxy))
+    · intro z
+      refine ⟨⟨⟨z.1, fun σ => z.2 ⟨σ.1, subG_anti (Kn_le_Kur hn) σ.2⟩⟩, fun g => ?_⟩, rfl⟩
+      obtain ⟨g, hg⟩ := g
+      induction g using QuotientGroup.induction_on with
+      | H σ => exact Subtype.ext (z.2 ⟨σ, (hU' σ).1 hg⟩)
+  let R : Pair (InflationRestrictionInvariants.invQ (layerU p K (MaximalUnramifiedExtension p K)) N) (layerU p K (Kn p K n)) :=
+    { φ := θ
+      u := mkLin (A := InflationRestrictionInvariants.invQ (layerU p K (MaximalUnramifiedExtension p K)) N) (B := layerU p K (Kn p K n)) u
+      φ_cont := continuous_of_discreteTopology
+      u_cont := continuous_of_discreteTopology
+      equiv := fun g m => by
+        induction g using QuotientGroup.induction_on with
+        | H σ => rfl }
+  have hb := pair_H_bijective R ⟨continuous_of_discreteTopology, fun _ _ => isOpen_discrete _, hθ⟩
+    ⟨continuous_of_discreteTopology, fun _ _ => isOpen_discrete _, hu⟩ i
+  have := layerU_Kn_H_subsingleton hK hn i hi
+  exact hb.1.subsingleton
+
+theorem layerU_Kur_H_subsingleton (hK : FiniteDimensional ℚ_[p] K) (i : ℕ) (hi : 0 < i) :
+    Subsingleton ((layerU p K (MaximalUnramifiedExtension p K)).H i) := by
+  have h0 : ∀ x : (layerU p K (MaximalUnramifiedExtension p K)).H i, x = 0 := fun x => by
+    obtain ⟨⟨N, hNn, hNo, h⟩, -⟩ := finiteLevel_holds ℤ (GalLK p K (MaximalUnramifiedExtension p K)) (layerU p K (MaximalUnramifiedExtension p K)) i x
+    obtain ⟨y, rfl⟩ := h _ _ (InflationRestrictionInvariants.invariants_isInvRep (layerU p K (MaximalUnramifiedExtension p K)) N)
+    have := layerU_Kur_level hK N hNo i hi
+    rw [Subsingleton.elim y 0, map_zero]
+  exact ⟨fun x y => by rw [h0 x, h0 y]⟩
+
+end ReciprocityTheory.DiscreteGroups.LocalClassField
+end
+
+section
+namespace ReciprocityTheory.DiscreteGroups.LocalClassField
+
+open _root_.Neutral.B1 ReciprocityTheory.Coh ReciprocityTheory.Gal Function
+
+noncomputable section
+
+theorem bijective_H_of_adm {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {A B C : TRep ℤ G}
+    {i : Pair A B} {q : Pair B C} (h : admitted i q) (n : ℕ) (h1 : Subsingleton (A.H n))
+    (h2 : Subsingleton (A.H (n + 1))) : Bijective (q.hom.H n) := by
+  have hs := admissibility_holds ℤ G _ _ _ _ _ h
+  obtain ⟨⟨δ, -, hl⟩, -⟩ := lES_holds ℤ _ _ _ _ _ hs
+  constructor
+  · rw [injective_iff_map_eq_zero]
+    intro x hx
+    obtain ⟨y, rfl⟩ := (hl.exB n x).1 hx
+    rw [Subsingleton.elim y 0, map_zero]
+  · intro y
+    exact (hl.exC n y).1 (Subsingleton.elim _ _)
+
+theorem card_QZ_torsion (n : ℕ) (hn : 0 < n) : Nat.card {a : QZ // n • a = 0} = n := by
+  have hn' : (n : ℚ) ≠ 0 := by exact_mod_cast hn.ne'
+  let f : ℤ →+ QZ := (QuotientAddGroup.mk' (Int.castAddHom ℚ).range).comp
+    ((AddMonoidHom.mulRight (1 / (n : ℚ))).comp (Int.castAddHom ℚ))
+  have hf : ∀ k : ℤ, f k = QuotientAddGroup.mk ((k : ℚ) * (1 / (n : ℚ))) := fun _ => rfl
+  have hker : f.ker = AddSubgroup.zmultiples (n : ℤ) := by
+    ext k
+    rw [AddMonoidHom.mem_ker, hf, QuotientAddGroup.eq_zero_iff, Int.mem_zmultiples_iff]
+    constructor
+    · rintro ⟨j, hj⟩
+      refine ⟨j, ?_⟩
+      have hj' : (j : ℚ) = (k : ℚ) * (1 / (n : ℚ)) := hj
+      have : (k : ℚ) = (n : ℚ) * j := by rw [hj']; field_simp
+      exact_mod_cast this
+    · rintro ⟨j, rfl⟩
+      refine ⟨j, ?_⟩
+      show (j : ℚ) = (((n : ℤ) * j : ℤ) : ℚ) * (1 / (n : ℚ))
+      push_cast
+      field_simp
+  have hr : ∀ a : QZ, n • a = 0 ↔ a ∈ f.range := by
+    intro a
+    constructor
+    · intro ha
+      obtain ⟨q, rfl⟩ := QuotientAddGroup.mk_surjective a
+      have h1 : ((n • q : ℚ) : QZ) = 0 := ha
+      rw [QuotientAddGroup.eq_zero_iff] at h1
+      obtain ⟨j, hj⟩ := h1
+      have hj' : (j : ℚ) = n • q := hj
+      refine ⟨j, ?_⟩
+      rw [hf, hj', nsmul_eq_mul]
+      congr 1
+      field_simp
+    · rintro ⟨k, rfl⟩
+      rw [hf]
+      show ((n • ((k : ℚ) * (1 / (n : ℚ))) : ℚ) : QZ) = 0
+      rw [QuotientAddGroup.eq_zero_iff]
+      refine ⟨k, ?_⟩
+      show (k : ℚ) = n • ((k : ℚ) * (1 / (n : ℚ)))
+      rw [nsmul_eq_mul]
+      field_simp
+  have hc : Nat.card f.range = n := by
+    rw [← AddSubgroup.index_ker, hker, Int.index_zmultiples]
+    simp
+  exact (Nat.card_congr (Equiv.subtypeEquivRight hr)).trans hc
+
+theorem card_h2_trivial_int_cyclic (C : Type) [Group C] [Finite C] [TopologicalSpace C] [IsTopologicalGroup C]
+    [DiscreteTopology C] (g : C) (hg : ∀ x, x ∈ Subgroup.zpowers g) :
+    Nat.card ((trivRep C ℤ).H 2) = Nat.card C := by
+  let _ : CommGroup C :=
+    { (inferInstance : Group C) with
+      mul_comm := fun a b => by
+        obtain ⟨i, rfl⟩ := Subgroup.mem_zpowers_iff.1 (hg a)
+        obtain ⟨j, rfl⟩ := Subgroup.mem_zpowers_iff.1 (hg b)
+        rw [← zpow_add, ← zpow_add, add_comm] }
+  let _ : Fintype C := Fintype.ofFinite C
+  obtain ⟨e⟩ := nonempty_cyclic_even (trivRep C ℤ) g hg 2 two_ne_zero even_two
+  rw [Nat.card_congr e.toEquiv]
+  have hinv : ∀ k : ℤ, (k : (trivRep C ℤ).V) ∈ (trivRep C ℤ).rho.invariants := fun k _ => rfl
+  let f : ℤ →+ ((trivRep C ℤ).rho.invariants ⧸
+      (LinearMap.range (trivRep C ℤ).rho.norm).comap (trivRep C ℤ).rho.invariants.subtype) :=
+    { toFun := fun k => Submodule.Quotient.mk ⟨k, hinv k⟩
+      map_zero' := rfl
+      map_add' := fun _ _ => rfl }
+  have hnorm : ∀ k : (trivRep C ℤ).V, (trivRep C ℤ).rho.norm k = ((Nat.card C : ℤ) * (show ℤ from k) : ℤ) := by
+    intro k
+    have h0 : ∀ g : C, (trivRep C ℤ).rho g k = k := fun _ => rfl
+    rw [Representation.norm, LinearMap.sum_apply, Finset.sum_congr rfl (fun g _ => h0 g), Finset.sum_const,
+      Finset.card_univ, Nat.card_eq_fintype_card]
+    exact nsmul_eq_mul (Fintype.card C) (show ℤ from k)
+  have hsurj : Surjective f := by
+    intro y
+    obtain ⟨⟨k, hk⟩, rfl⟩ := Submodule.Quotient.mk_surjective _ y
+    exact ⟨k, rfl⟩
+  have hker : f.ker = AddSubgroup.zmultiples (Nat.card C : ℤ) := by
+    ext k
+    rw [AddMonoidHom.mem_ker, Int.mem_zmultiples_iff]
+    show Submodule.Quotient.mk _ = 0 ↔ _
+    rw [Submodule.Quotient.mk_eq_zero]
+    constructor
+    · rintro ⟨j, hj⟩
+      exact ⟨j, ((hnorm j).symm.trans hj).symm⟩
+    · rintro ⟨j, hj⟩
+      exact ⟨j, (hnorm j).trans hj.symm⟩
+  have h1 : Nat.card f.range = Nat.card C := by
+    rw [← AddSubgroup.index_ker, hker, Int.index_zmultiples]
+    simp
+  rw [← h1, AddMonoidHom.range_eq_top.2 hsurj]
+  exact (Nat.card_congr (Equiv.Set.univ _)).symm
+
+variable {G G' : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group G'] [TopologicalSpace G']
+  [IsTopologicalGroup G']
+
+def trivInfl (φ : G' →* G) (hφ : Continuous φ) (A : Type) [AddCommGroup A] :
+    Pair (trivRep G A) (trivRep G' A) where
+  φ := φ
+  u := (LinearMap.id : A →ₗ[ℤ] A)
+  φ_cont := hφ
+  u_cont := continuous_of_discreteTopology
+  equiv _ _ := rfl
+
+theorem trivial_inflation_h1_rat_mod_int_injective (φ : G' →* G) (hφ : Continuous φ) (hs : Surjective φ) :
+    Injective ((trivInfl φ hφ QZ).hom.H 1) := by
+  rw [injective_iff_map_eq_zero]
+  intro c hc
+  obtain ⟨x, hx, rfl⟩ := Cx.exists_cls c
+  obtain ⟨e, he⟩ := exists_h1_equiv_characters G
+  obtain ⟨e', he'⟩ := exists_h1_equiv_characters G'
+  apply e.injective
+  rw [map_zero]
+  refine Subtype.ext (AddMonoidHom.ext fun a => ?_)
+  obtain ⟨g', hg'⟩ := hs a.toMul
+  rw [Cx.Hom.H_cls] at hc
+  have h1 := he' _ ((trivInfl φ hφ QZ).hom.d_f_eq_zero hx) g'
+  rw [hc, map_zero] at h1
+  have h2 := he x hx (φ g')
+  rw [hg'] at h2
+  have h3 : (fun i => φ ((![g'] : Fin 1 → G') i)) = ![a.toMul] := by
+    funext i; fin_cases i; exact hg'
+  have h4 : (((trivInfl φ hφ QZ).hom.f 1 x).1 ![g'] : QZ) = x.1 ![a.toMul] := congrArg x.1 h3
+  exact h2.trans (h4.symm.trans h1.symm)
+
+theorem trivial_inflation_h2_int_injective [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] [CompactSpace G']
+    [T2Space G'] [TotallyDisconnectedSpace G'] (φ : G' →* G) (hφ : Continuous φ) (hs : Surjective φ) :
+    Injective ((trivInfl φ hφ ℤ).hom.H 2) := by
+  have s := admissibility_holds ℤ G _ _ _ _ _ (admissible_int_rat_sequence G)
+  have s' := admissibility_holds ℤ G' _ _ _ _ _ (admissible_int_rat_sequence G')
+  obtain ⟨⟨δ, h1, -⟩, -⟩ := lES_holds ℤ _ _ _ _ _ s
+  obtain ⟨⟨δ', h1', -⟩, -⟩ := lES_holds ℤ _ _ _ _ _ s'
+  have hnat := connNat_holds ℤ _ _ _ _ _ _ _ _ _ _ (trivInfl φ hφ ℤ).hom (trivInfl φ hφ ℚ).hom
+    (trivInfl φ hφ QZ).hom δ δ' s s' (fun _ _ => rfl) (fun _ _ => rfl) h1 h1' 1
+  intro a b hab
+  obtain ⟨a', rfl⟩ := (conn_int_rat_bijective G δ h1 1 one_pos).2 a
+  obtain ⟨b', rfl⟩ := (conn_int_rat_bijective G δ h1 1 one_pos).2 b
+  have hab' : δ' 1 ((trivInfl φ hφ QZ).hom.H 1 a') = δ' 1 ((trivInfl φ hφ QZ).hom.H 1 b') :=
+    (hnat a').trans (hab.trans (hnat b').symm)
+  rw [trivial_inflation_h1_rat_mod_int_injective φ hφ hs ((conn_int_rat_bijective G' δ' h1' 1 one_pos).1 hab')]
+
+theorem conn_cls_of_lift (δ)
+    (hδ : Cx.IsConn (trivMap G (Int.castAddHom ℚ)).hom
+      (trivMap G (QuotientAddGroup.mk' (Int.castAddHom ℚ).range)).hom δ)
+    (t : G → ℚ) (ht : IsLocallyConstant t) (m : (Fin 2 → G) → ℤ)
+    (hm : ∀ g, (m g : ℚ) = t (g 0) + t (g 1) - t (g 0 * g 1)) :
+    ∃ (x : (trivRep G QZ).coch.X 1) (hx : (trivRep G QZ).coch.d 1 x = 0) (y : (trivRep G ℤ).coch.X 2)
+      (hy : (trivRep G ℤ).coch.d 2 y = 0), (∀ g, x.1 g = (QuotientAddGroup.mk (t (g 0)) : QZ)) ∧ y.1 = m ∧
+      δ 1 ((trivRep G QZ).coch.cls 1 x hx) = (trivRep G ℤ).coch.cls 2 y hy := by
+  have hs := admissibility_holds ℤ G _ _ _ _ _ (admissible_int_rat_sequence G)
+  have hb : @Continuous _ (trivRep G ℚ).V _ _ (fun g : Fin 1 → G => t (g 0)) :=
+    IsLocallyConstant.continuous (Y := (trivRep G ℚ).V) (ht.comp_continuous (continuous_apply 0))
+  let b : (trivRep G ℚ).coch.X 1 := ⟨fun g => t (g 0), hb⟩
+  have hmc : IsLocallyConstant m := by
+    apply IsLocallyConstant.desc m (Int.cast : ℤ → ℚ) _ Int.cast_injective
+    have h0 : ((Int.cast : ℤ → ℚ) ∘ m) = fun g => t (g 0) + t (g 1) - t (g 0 * g 1) := funext hm
+    rw [h0]
+    exact ((ht.comp_continuous (continuous_apply 0)).add (ht.comp_continuous (continuous_apply 1))).sub
+      (ht.comp_continuous ((continuous_apply 0).mul (continuous_apply 1)))
+  let a : (trivRep G ℤ).coch.X 2 := ⟨m, hmc.continuous⟩
+  have hba : (trivRep G ℚ).coch.d 1 b = (trivMap G (Int.castAddHom ℚ)).hom.f 2 a := by
+    apply Subtype.ext
+    funext g
+    show Gal.dn (trivRep G ℚ).rho 1 b.1 g = ((m (fun i => g i) : ℤ) : ℚ)
+    rw [LowDeg.dn_one_apply]
+    show t (g 1) - t (g 0 * g 1) + t (g 0) = _
+    rw [hm]; ring
+  have ha : (trivRep G ℤ).coch.d 2 a = 0 := by
+    apply hs.inj 3
+    rw [map_zero, (trivMap G (Int.castAddHom ℚ)).hom.comm, ← hba, (trivRep G ℚ).coch.dd]
+  have hc : (trivRep G QZ).coch.d 1 ((trivMap G (QuotientAddGroup.mk' (Int.castAddHom ℚ).range)).hom.f 1 b) = 0 := by
+    rw [← (trivMap G (QuotientAddGroup.mk' (Int.castAddHom ℚ).range)).hom.comm, hba]
+    exact (hs.exact 2 _).2 ⟨a, rfl⟩
+  exact ⟨_, hc, a, ha, fun g => rfl, rfl, hδ 1 b a hc ha hba⟩
+
+theorem exists_cocycle_form [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] (c : (trivRep G ℤ).H 2) :
+    ∃ (t : G → ℚ) (m : (Fin 2 → G) → ℤ) (y : (trivRep G ℤ).coch.X 2) (hy : (trivRep G ℤ).coch.d 2 y = 0),
+      IsLocallyConstant t ∧ (∀ g, (m g : ℚ) = t (g 0) + t (g 1) - t (g 0 * g 1)) ∧ y.1 = m ∧
+      c = (trivRep G ℤ).coch.cls 2 y hy := by
+  have s := admissibility_holds ℤ G _ _ _ _ _ (admissible_int_rat_sequence G)
+  obtain ⟨⟨δ, h1, -⟩, -⟩ := lES_holds ℤ _ _ _ _ _ s
+  obtain ⟨c', rfl⟩ := (conn_int_rat_bijective G δ h1 1 one_pos).2 c
+  obtain ⟨x, hx, rfl⟩ := Cx.exists_cls c'
+  let sec : QZ → ℚ := Function.surjInv (QuotientAddGroup.mk'_surjective (Int.castAddHom ℚ).range)
+  have hsec : ∀ q : QZ, (QuotientAddGroup.mk (sec q) : QZ) = q :=
+    Function.surjInv_eq (QuotientAddGroup.mk'_surjective (Int.castAddHom ℚ).range)
+  let t : G → ℚ := fun g => sec (x.1 ![g])
+  have hx1 : Continuous x.1 := x.2
+  have ht : IsLocallyConstant t := by
+    have h0 : IsLocallyConstant fun g : G => x.1 ![g] :=
+      (IsLocallyConstant.iff_continuous _).2 (hx1.comp (continuous_pi fun i => by fin_cases i; exact continuous_id))
+    exact h0.comp sec
+  obtain ⟨χ, hχ⟩ : ∃ χ : G → QZ, ∀ g, χ g = x.1 ![g] := ⟨fun g => x.1 ![g], fun _ => rfl⟩
+  have ht' : ∀ g, (QuotientAddGroup.mk (t g) : QZ) = χ g := fun g => (hsec _).trans (hχ g).symm
+  have hcoc : ∀ g : Fin 2 → G, χ (g 1) - χ (g 0 * g 1) + χ (g 0) = 0 := by
+    intro g
+    have h0 := congrFun (LowDeg.dn_eq_zero _ hx) g
+    rw [LowDeg.dn_one_apply] at h0
+    rw [hχ, hχ, hχ]
+    exact h0
+  have hex : ∀ g : Fin 2 → G, ∃ k : ℤ, (k : ℚ) = t (g 0) + t (g 1) - t (g 0 * g 1) := by
+    intro g
+    have h0 : (QuotientAddGroup.mk (t (g 0) + t (g 1) - t (g 0 * g 1)) : QZ) = 0 := by
+      rw [QuotientAddGroup.mk_sub, QuotientAddGroup.mk_add, ht', ht', ht', ← hcoc g]
+      abel
+    exact (QuotientAddGroup.eq_zero_iff _).1 h0
+  choose m hm using hex
+  obtain ⟨x', hx', y, hy, e1, e2, e3⟩ := conn_cls_of_lift δ h1 t ht m hm
+  have hxx : x' = x := by
+    apply Subtype.ext
+    funext g
+    exact (e1 g).trans ((ht' (g 0)).trans ((hχ (g 0)).trans (congrArg x.1 (by funext i; fin_cases i; rfl))))
+  subst hxx
+  exact ⟨t, m, y, hy, ht, hm, e2, e3⟩
+
+end
+
+end ReciprocityTheory.DiscreteGroups.LocalClassField
+end
+
+section
 namespace ReciprocityTheory.DiscreteGroups.LocalClassField
 
 open _root_.Neutral.B1 ReciprocityTheory.Coh Function
@@ -227,3 +676,4 @@ theorem mem_range_layerInfl_Kn_iff (hK : FiniteDimensional ℚ_[p] K) {n : ℕ} 
   rfl
 
 end ReciprocityTheory.DiscreteGroups.LocalClassField
+end

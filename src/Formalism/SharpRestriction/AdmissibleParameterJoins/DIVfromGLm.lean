@@ -1,8 +1,22 @@
 import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLb
 import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLd
-import Formalism.SharpRestriction.AdmissibleParameterJoins.LenAtT
+import Formalism.LocalRingCardinality.Lemmas
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.SevenLogLeLOfPowerBound
 
+section
+namespace Formalism.MainNotions.J
+
+open Formalism.BasicNotions
+
+theorem lenAtT (D : D7) (L : SizeData₂ D) (hAtT : NuAtTDef D L) : LenAtT D L :=
+  fun u w hw => D.lenLoc_atT hAtT u w hw
+
+theorem locSpan (D : D7) : LocSpan D := fun u w y hy => D.locSpan u w y hy
+
+end Formalism.MainNotions.J
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.J
@@ -56,4 +70,5 @@ theorem family_levelPrime_summary_simple {eps : ℝ} (Fm : FamP eps) (C C1 : ℝ
 
 end Formalism.MainNotions.J
 
+end
 end

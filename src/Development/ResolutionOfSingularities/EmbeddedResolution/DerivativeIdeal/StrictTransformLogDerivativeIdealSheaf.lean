@@ -4,8 +4,408 @@ import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformC
 import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.StrictTransformChart
 import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.StrictTransformSubscheme
 import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.BlowupDerivativeIdealBound
-import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.ControlledTransformLogDerivativesInCharts
+import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.LogDerivativesInBlowupCharts
+import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.EtaleCoordinates
+import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.LogDerivativeIdeal
+import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.OrderAtMultiplicativity
 import Development.ResolutionOfSingularities.EmbeddedResolution.DerivativeIdeal.LogDerivativeIdealSheaf
+
+section
+namespace FunctorialResolution.EmbeddedResolution
+
+namespace EtaleCoordinates
+
+variable (k : Type*) [CommRing k] (ι : Type*) (S : Type*) [CommRing S]
+  [Algebra (MvPolynomial ι k) S] [Algebra k S] [IsScalarTower k (MvPolynomial ι k) S]
+  [Algebra.FormallyEtale (MvPolynomial ι k) S]
+
+theorem coord_smul_partialDeriv_mem_tangentDerivations (h : ι) :
+    coord k ι S h • partialDeriv k ι S h ∈
+      tangentDerivations k (Ideal.span ({coord k ι S h} : Set S)) :=
+  smul_mem_tangentDerivations k (Ideal.span ({coord k ι S h} : Set S))
+    (Ideal.mem_span_singleton_self (coord k ι S h)) (partialDeriv k ι S h)
+
+theorem partialDeriv_mem_tangentDerivations_of_ne {i h : ι} (hih : i ≠ h) :
+    partialDeriv k ι S i ∈ tangentDerivations k (Ideal.span ({coord k ι S h} : Set S)) := by
+  rw [mem_tangentDerivations_span_singleton, partialDeriv_coord_of_ne k ι S i h hih]
+  exact Submodule.zero_mem _
+
+theorem coord_mul_partialDeriv_mem_logDerivIdeal (h : ι) (J : Ideal S) {g : S} (hg : g ∈ J) :
+    coord k ι S h * partialDeriv k ι S h g ∈
+      logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S)) J := by
+  have hmem := derivation_apply_mem_logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S)) J
+    (coord k ι S h • partialDeriv k ι S h)
+    (coord_smul_partialDeriv_mem_tangentDerivations k ι S h) hg
+  simpa [smul_eq_mul] using hmem
+
+theorem partialDeriv_mem_logDerivIdeal_of_ne {i h : ι} (hih : i ≠ h) (J : Ideal S) {g : S}
+    (hg : g ∈ J) :
+    partialDeriv k ι S i g ∈ logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S)) J :=
+  derivation_apply_mem_logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S)) J
+    (partialDeriv k ι S i) (partialDeriv_mem_tangentDerivations_of_ne k ι S hih) hg
+
+def partialDerivIdeal (h : ι) (J : Ideal S) : Ideal S :=
+  J ⊔ Ideal.span {x : S | ∃ g ∈ J, partialDeriv k ι S h g = x}
+
+private theorem partialDerivIdeal_def (h : ι) (J : Ideal S) :
+    partialDerivIdeal k ι S h J =
+      J ⊔ Ideal.span {x : S | ∃ g ∈ J, partialDeriv k ι S h g = x} := rfl
+
+theorem le_partialDerivIdeal (h : ι) (J : Ideal S) : J ≤ partialDerivIdeal k ι S h J := by
+  rw [partialDerivIdeal_def]
+  exact le_sup_left
+
+theorem partialDeriv_mem_partialDerivIdeal (h : ι) (J : Ideal S) {g : S} (hg : g ∈ J) :
+    partialDeriv k ι S h g ∈ partialDerivIdeal k ι S h J := by
+  rw [partialDerivIdeal_def]
+  exact Submodule.mem_sup_right (Ideal.subset_span ⟨g, hg, rfl⟩)
+
+theorem partialDerivIdeal_le_iff (h : ι) (J K : Ideal S) :
+    partialDerivIdeal k ι S h J ≤ K ↔ J ≤ K ∧ ∀ g ∈ J, partialDeriv k ι S h g ∈ K := by
+  rw [partialDerivIdeal_def, sup_le_iff, Ideal.span_le]
+  constructor
+  · rintro ⟨h1, h2⟩
+    exact ⟨h1, fun g hg => h2 ⟨g, hg, rfl⟩⟩
+  · rintro ⟨h1, h2⟩
+    refine ⟨h1, ?_⟩
+    intro x hx
+    obtain ⟨g, hg, rfl⟩ := hx
+    exact h2 g hg
+
+theorem partialDerivIdeal_le (h : ι) {J K : Ideal S} (hJK : J ≤ K)
+    (hD : ∀ g ∈ J, partialDeriv k ι S h g ∈ K) : partialDerivIdeal k ι S h J ≤ K :=
+  (partialDerivIdeal_le_iff k ι S h J K).mpr ⟨hJK, hD⟩
+
+theorem partialDerivIdeal_mono (h : ι) : Monotone (partialDerivIdeal k ι S h) := by
+  intro I J hIJ
+  rw [partialDerivIdeal_le_iff]
+  refine ⟨hIJ.trans (le_partialDerivIdeal k ι S h J), fun g hg => ?_⟩
+  exact partialDeriv_mem_partialDerivIdeal k ι S h J (hIJ hg)
+
+def partialDerivIdealIterate (h : ι) : ℕ → Ideal S → Ideal S
+  | 0, J => J
+  | l + 1, J => partialDerivIdeal k ι S h (partialDerivIdealIterate h l J)
+
+theorem partialDerivIdealIterate_zero (h : ι) (J : Ideal S) :
+    partialDerivIdealIterate k ι S h 0 J = J := rfl
+
+theorem partialDerivIdealIterate_succ (h : ι) (l : ℕ) (J : Ideal S) :
+    partialDerivIdealIterate k ι S h (l + 1) J =
+      partialDerivIdeal k ι S h (partialDerivIdealIterate k ι S h l J) := rfl
+
+
+private def evalDerivationAddHom (g : S) : Derivation k S S →+ S where
+  toFun D := D g
+  map_zero' := rfl
+  map_add' _ _ := rfl
+
+omit [Algebra (MvPolynomial ι k) S] [IsScalarTower k (MvPolynomial ι k) S]
+  [Algebra.FormallyEtale (MvPolynomial ι k) S] in
+private theorem derivation_sum_apply (s : Finset ι) (f : ι → Derivation k S S) (g : S) :
+    (∑ i ∈ s, f i) g = ∑ i ∈ s, f i g :=
+  map_sum (evalDerivationAddHom k S g) f s
+
+theorem derivation_apply_eq_sum_partialDeriv [Fintype ι] (D : Derivation k S S) (g : S) :
+    D g = ∑ i, D (coord k ι S i) * partialDeriv k ι S i g := by
+  have h1 : D g = (∑ i, D (coord k ι S i) • partialDeriv k ι S i : Derivation k S S) g :=
+    congrArg (fun E : Derivation k S S => E g) (eq_sum_smul_partialDeriv k ι S D)
+  have h2 : (∑ i, D (coord k ι S i) • partialDeriv k ι S i : Derivation k S S) g
+      = ∑ i, D (coord k ι S i) * partialDeriv k ι S i g :=
+    derivation_sum_apply k ι S Finset.univ (fun i => D (coord k ι S i) • partialDeriv k ι S i) g
+  exact h1.trans h2
+
+private theorem derivIdeal_le_logDerivIdeal_sup_partialDerivIdeal [Fintype ι] (h : ι) (I : Ideal S) :
+    derivIdeal k I ≤
+      logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S)) I ⊔ partialDerivIdeal k ι S h I := by
+  rw [derivIdeal_le_iff]
+  refine ⟨(le_logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S)) I).trans le_sup_left, ?_⟩
+  intro D g hg
+  rw [derivation_apply_eq_sum_partialDeriv k ι S D g]
+  refine Ideal.sum_mem _ ?_
+  intro i _
+  by_cases hi : i = h
+  · rw [hi]
+    exact Submodule.mem_sup_right
+      (Ideal.mul_mem_left _ _ (partialDeriv_mem_partialDerivIdeal k ι S h I hg))
+  · exact Submodule.mem_sup_left
+      (Ideal.mul_mem_left _ _ (partialDeriv_mem_logDerivIdeal_of_ne k ι S hi I hg))
+
+private def idealInfComapPartialDeriv (h : ι) (K : Ideal S) : Ideal S where
+  carrier := {g : S | g ∈ K ∧ partialDeriv k ι S h g ∈ K}
+  add_mem' := by
+    intro a b ha hb
+    obtain ⟨ha1, ha2⟩ := ha
+    obtain ⟨hb1, hb2⟩ := hb
+    refine ⟨Submodule.add_mem K ha1 hb1, ?_⟩
+    rw [map_add]
+    exact Submodule.add_mem K ha2 hb2
+  zero_mem' := by
+    refine ⟨Submodule.zero_mem K, ?_⟩
+    rw [map_zero]
+    exact Submodule.zero_mem K
+  smul_mem' := by
+    intro c x hx
+    obtain ⟨hx1, hx2⟩ := hx
+    refine ⟨Ideal.mul_mem_left K c hx1, ?_⟩
+    have hl : partialDeriv k ι S h (c * x)
+        = c * partialDeriv k ι S h x + x * partialDeriv k ι S h c := by
+      rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul]
+    show partialDeriv k ι S h (c * x) ∈ K
+    rw [hl]
+    exact Submodule.add_mem K (Ideal.mul_mem_left K c hx2) (Ideal.mul_mem_right _ K hx1)
+
+private theorem mem_idealInfComapPartialDeriv_iff (h : ι) (K : Ideal S) (g : S) :
+    g ∈ idealInfComapPartialDeriv k ι S h K ↔ g ∈ K ∧ partialDeriv k ι S h g ∈ K := Iff.rfl
+
+private theorem partialDerivIdeal_logDerivIdeal_le [Fintype ι] [DecidableEq ι] (h : ι) (I : Ideal S) :
+    partialDerivIdeal k ι S h
+        (logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S)) I) ≤
+      logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S)) (partialDerivIdeal k ι S h I) := by
+  have key : logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S)) I ≤
+      idealInfComapPartialDeriv k ι S h
+        (logDerivIdeal k (Ideal.span ({coord k ι S h} : Set S))
+          (partialDerivIdeal k ι S h I)) := by
+    rw [logDerivIdeal_le_iff]
+    constructor
+    · intro g hg
+      rw [mem_idealInfComapPartialDeriv_iff]
+      refine ⟨?_, ?_⟩
+      · exact le_logDerivIdeal k _ _ (le_partialDerivIdeal k ι S h I hg)
+      · exact le_logDerivIdeal k _ _ (partialDeriv_mem_partialDerivIdeal k ι S h I hg)
+    · intro D hD y hy
+      rw [mem_idealInfComapPartialDeriv_iff]
+      have hDmem : D (coord k ι S h) ∈ Ideal.span ({coord k ι S h} : Set S) :=
+        (mem_tangentDerivations_span_singleton k (coord k ι S h) D).mp hD
+      obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.mp hDmem
+      refine ⟨?_, ?_⟩
+      · exact logDerivIdeal_mono k _ (le_partialDerivIdeal k ι S h I)
+          (derivation_apply_mem_logDerivIdeal k _ I D hD hy)
+      · rw [derivation_apply_eq_sum_partialDeriv k ι S D y]
+        rw [map_sum]
+        refine Ideal.sum_mem _ ?_
+        intro i _
+        rw [Derivation.leibniz]
+        refine Submodule.add_mem _ ?_ ?_
+        · by_cases hi : i = h
+          · rw [hi, smul_eq_mul, ← hc, mul_assoc]
+            refine Ideal.mul_mem_left _ _ ?_
+            exact coord_mul_partialDeriv_mem_logDerivIdeal k ι S h
+              (partialDerivIdeal k ι S h I)
+              (partialDeriv_mem_partialDerivIdeal k ι S h I hy)
+          · rw [smul_eq_mul, partialDeriv_comm k ι S h i y]
+            refine Ideal.mul_mem_left _ _ ?_
+            exact partialDeriv_mem_logDerivIdeal_of_ne k ι S hi
+              (partialDerivIdeal k ι S h I)
+              (partialDeriv_mem_partialDerivIdeal k ι S h I hy)
+        · by_cases hi : i = h
+          · rw [hi, smul_eq_mul]
+            refine Ideal.mul_mem_right _ _ ?_
+            exact le_logDerivIdeal k _ _ (partialDeriv_mem_partialDerivIdeal k ι S h I hy)
+          · rw [smul_eq_mul]
+            refine Ideal.mul_mem_right _ _ ?_
+            exact logDerivIdeal_mono k _ (le_partialDerivIdeal k ι S h I)
+              (partialDeriv_mem_logDerivIdeal_of_ne k ι S hi I hy)
+  refine partialDerivIdeal_le k ι S h ?_ ?_
+  · intro g hg
+    exact ((mem_idealInfComapPartialDeriv_iff k ι S h _ g).mp (key hg)).1
+  · intro g hg
+    exact ((mem_idealInfComapPartialDeriv_iff k ι S h _ g).mp (key hg)).2
+
+private theorem partialDerivIdeal_logDerivIdealIterate_le [Fintype ι] [DecidableEq ι] (h : ι) (m : ℕ)
+    (I : Ideal S) :
+    partialDerivIdeal k ι S h
+        (logDerivIdealIterate k (Ideal.span ({coord k ι S h} : Set S)) m I) ≤
+      logDerivIdealIterate k (Ideal.span ({coord k ι S h} : Set S)) m
+        (partialDerivIdeal k ι S h I) := by
+  induction m with
+  | zero => exact le_of_eq (by simp only [logDerivIdealIterate_zero])
+  | succ m ih =>
+      rw [logDerivIdealIterate_succ, logDerivIdealIterate_succ]
+      exact (partialDerivIdeal_logDerivIdeal_le k ι S h _).trans (logDerivIdeal_mono k _ ih)
+
+theorem derivIdealIterate_le_iSup_logDerivIdealIterate_partialDerivIdealIterate [Fintype ι] [DecidableEq ι]
+    (h : ι) (n : ℕ) (J : Ideal S) :
+    derivIdealIterate k n J ≤
+      ⨆ l, ⨆ _ : l ≤ n,
+        logDerivIdealIterate k (Ideal.span ({coord k ι S h} : Set S)) (n - l)
+          (partialDerivIdealIterate k ι S h l J) := by
+  induction n with
+  | zero =>
+      rw [derivIdealIterate_zero]
+      exact le_iSup₂ (f := fun m (_ : m ≤ 0) =>
+        logDerivIdealIterate k (Ideal.span ({coord k ι S h} : Set S)) (0 - m)
+          (partialDerivIdealIterate k ι S h m J)) 0 le_rfl
+  | succ n ih =>
+      rw [derivIdealIterate_succ]
+      refine le_trans (derivIdeal_mono k ih) ?_
+      refine le_trans (derivIdeal_iSup_le k _) ?_
+      refine iSup_le fun l => ?_
+      refine le_trans (derivIdeal_iSup_le k _) ?_
+      refine iSup_le fun hl => ?_
+      refine le_trans (derivIdeal_le_logDerivIdeal_sup_partialDerivIdeal k ι S h _) ?_
+      refine sup_le ?_ ?_
+      · rw [← logDerivIdealIterate_succ, show n - l + 1 = n + 1 - l from by omega]
+        exact le_iSup₂ (f := fun m (_ : m ≤ n + 1) =>
+          logDerivIdealIterate k (Ideal.span ({coord k ι S h} : Set S)) (n + 1 - m)
+            (partialDerivIdealIterate k ι S h m J)) l (by omega)
+      · refine le_trans (partialDerivIdeal_logDerivIdealIterate_le k ι S h (n - l) _) ?_
+        rw [← partialDerivIdealIterate_succ, show n - l = n + 1 - (l + 1) from by omega]
+        exact le_iSup₂ (f := fun m (_ : m ≤ n + 1) =>
+          logDerivIdealIterate k (Ideal.span ({coord k ι S h} : Set S)) (n + 1 - m)
+            (partialDerivIdealIterate k ι S h m J)) (l + 1) (by omega)
+
+end EtaleCoordinates
+
+end FunctorialResolution.EmbeddedResolution
+end
+
+section
+namespace FunctorialResolution.EmbeddedResolution
+namespace EtaleCoordinates
+
+section
+
+variable (k : Type*) [CommRing k] (ι : Type*)
+  (S : Type*) [CommRing S] [Algebra k S] [Algebra (MvPolynomial ι k) S]
+  [IsScalarTower k (MvPolynomial ι k) S] [Algebra.FormallyEtale (MvPolynomial ι k) S]
+
+theorem partialDerivIdeal_iSup_le {κ : Sort*} (h : ι) (F : κ → Ideal S) :
+    partialDerivIdeal k ι S h (⨆ j, F j) ≤ ⨆ j, partialDerivIdeal k ι S h (F j) := by
+  refine partialDerivIdeal_le k ι S h (iSup_mono fun j => le_partialDerivIdeal k ι S h (F j)) ?_
+  intro g hg
+  refine Submodule.iSup_induction (motive := fun x =>
+      partialDeriv k ι S h x ∈ ⨆ j, partialDerivIdeal k ι S h (F j)) (fun j => F j) hg ?_ ?_ ?_
+  · intro j x hx
+    exact le_iSup (fun j => partialDerivIdeal k ι S h (F j)) j
+      (partialDeriv_mem_partialDerivIdeal k ι S h (F j) hx)
+  · simp only [map_zero]
+    exact Submodule.zero_mem _
+  · intro x y hx hy
+    simp only [map_add]
+    exact Submodule.add_mem _ hx hy
+
+theorem partialDerivIdeal_biSup_le (h : ι) (n : ℕ) (F : ℕ → Ideal S) :
+    partialDerivIdeal k ι S h (⨆ i, ⨆ _ : i ≤ n, F i) ≤
+      ⨆ i, ⨆ _ : i ≤ n, partialDerivIdeal k ι S h (F i) :=
+  (partialDerivIdeal_iSup_le k ι S h (fun i => ⨆ _ : i ≤ n, F i)).trans
+    (iSup_mono fun i => partialDerivIdeal_iSup_le k ι S h (fun _ : i ≤ n => F i))
+
+end
+
+section
+
+variable (k : Type*) [CommRing k] (ι : Type*) [DecidableEq ι]
+  (S : Type*) [CommRing S] [Algebra k S] [Algebra (MvPolynomial ι k) S]
+  [IsScalarTower k (MvPolynomial ι k) S] [Algebra.FormallyEtale (MvPolynomial ι k) S]
+  (S₁ : Type*) [CommRing S₁] [Algebra k S₁] [Algebra (MvPolynomial ι k) S₁]
+  [IsScalarTower k (MvPolynomial ι k) S₁] [Algebra.FormallyEtale (MvPolynomial ι k) S₁]
+  (φ : S →ₐ[k] S₁) (T : Finset ι) (s h : ι)
+
+theorem partialDerivIdeal_controlledTransform_le_sup
+    (_hsT : s ∈ T)
+    (hin : ∀ i ∈ T, i ≠ s → φ (coord k ι S i) = coord k ι S₁ i * coord k ι S₁ s)
+    (hs : φ (coord k ι S s) = coord k ι S₁ s)
+    (hout : ∀ i ∉ T, φ (coord k ι S i) = coord k ι S₁ i)
+    (hnzd : coord k ι S₁ s ∈ nonZeroDivisors S₁)
+    (hhT : h ∈ T) (hhs : h ≠ s)
+    (J : Ideal S) (L : ℕ → Ideal S₁) (m : ℕ)
+    (hL : ∀ i ≤ m,
+      Ideal.span {coord k ι S₁ s ^ (m - i)} * L i = Ideal.map φ (derivIdealIterate k i J))
+    (i : ℕ) (hi : i < m) :
+    partialDerivIdeal k ι S₁ h (L i) ≤ L i ⊔ L (i + 1) := by
+  refine partialDerivIdeal_le k ι S₁ h le_sup_left ?_
+  intro g hg
+  have hc : m - i = (m - i - 1) + 1 := by omega
+  have hJ : Ideal.span {coord k ι S₁ s ^ ((m - i - 1) + 1)} * L i
+      = Ideal.map φ (derivIdealIterate k i J) := by
+    rw [← hc]
+    exact hL i (le_of_lt hi)
+  have hD : Ideal.map φ (derivIdeal k (derivIdealIterate k i J)) ≤
+      Ideal.span {coord k ι S₁ s ^ (m - i - 1)} * L (i + 1) := by
+    have h2 := hL (i + 1) (by omega)
+    have h3 : m - (i + 1) = m - i - 1 := by omega
+    rw [h3] at h2
+    rw [← derivIdealIterate_succ]
+    exact le_of_eq h2.symm
+  exact partialDeriv_mem_sup_of_span_pow_mul_eq_map k ι S S₁ φ T s hin hs hout hnzd h hhT hhs
+    (derivIdealIterate k i J) (L i) (L (i + 1)) (m - i - 1) hJ hD g hg
+
+theorem partialDerivIdealIterate_controlledTransform_le_iSup
+    (hsT : s ∈ T)
+    (hin : ∀ i ∈ T, i ≠ s → φ (coord k ι S i) = coord k ι S₁ i * coord k ι S₁ s)
+    (hs : φ (coord k ι S s) = coord k ι S₁ s)
+    (hout : ∀ i ∉ T, φ (coord k ι S i) = coord k ι S₁ i)
+    (hnzd : coord k ι S₁ s ∈ nonZeroDivisors S₁)
+    (hhT : h ∈ T) (hhs : h ≠ s)
+    (J : Ideal S) (L : ℕ → Ideal S₁) (m : ℕ)
+    (hL : ∀ i ≤ m,
+      Ideal.span {coord k ι S₁ s ^ (m - i)} * L i = Ideal.map φ (derivIdealIterate k i J))
+    (l : ℕ) (hl : l ≤ m) :
+    partialDerivIdealIterate k ι S₁ h l (L 0) ≤ ⨆ i, ⨆ _ : i ≤ l, L i := by
+  revert hl
+  induction l with
+  | zero =>
+      intro _
+      rw [partialDerivIdealIterate_zero]
+      exact le_iSup₂ (f := fun i (_ : i ≤ 0) => L i) 0 le_rfl
+  | succ l ih =>
+      intro hl
+      rw [partialDerivIdealIterate_succ]
+      have hlm : l ≤ m := Nat.le_of_succ_le hl
+      have h1 := ih hlm
+      refine le_trans (partialDerivIdeal_mono k ι S₁ h h1) ?_
+      refine le_trans (partialDerivIdeal_biSup_le k ι S₁ h l L) ?_
+      refine iSup_le fun i => iSup_le fun hi => ?_
+      have him : i < m := lt_of_le_of_lt hi (by omega)
+      have hstep := partialDerivIdeal_controlledTransform_le_sup k ι S S₁ φ T s h
+        hsT hin hs hout hnzd hhT hhs J L m hL i him
+      refine hstep.trans (sup_le ?_ ?_)
+      · exact le_iSup₂ (f := fun j (_ : j ≤ l + 1) => L j) i (by omega)
+      · exact le_iSup₂ (f := fun j (_ : j ≤ l + 1) => L j) (i + 1) (by omega)
+
+theorem derivIdealIterate_le_iSup_logDerivIdealIterate_controlledTransform [Fintype ι]
+    (hsT : s ∈ T)
+    (hin : ∀ i ∈ T, i ≠ s → φ (coord k ι S i) = coord k ι S₁ i * coord k ι S₁ s)
+    (hs : φ (coord k ι S s) = coord k ι S₁ s)
+    (hout : ∀ i ∉ T, φ (coord k ι S i) = coord k ι S₁ i)
+    (hnzd : coord k ι S₁ s ∈ nonZeroDivisors S₁)
+    (hhT : h ∈ T) (hhs : h ≠ s)
+    (J : Ideal S) (L : ℕ → Ideal S₁) (m : ℕ)
+    (hL : ∀ i ≤ m,
+      Ideal.span {coord k ι S₁ s ^ (m - i)} * L i = Ideal.map φ (derivIdealIterate k i J))
+    (n : ℕ) (hn : n ≤ m) :
+    derivIdealIterate k n (L 0) ≤
+      ⨆ i, ⨆ _ : i ≤ n,
+        logDerivIdealIterate k (Ideal.span ({coord k ι S₁ h} : Set S₁)) (n - i) (L i) := by
+  refine (derivIdealIterate_le_iSup_logDerivIdealIterate_partialDerivIdealIterate k ι S₁ h n (L 0)).trans ?_
+  refine iSup_le fun l => iSup_le fun hln => ?_
+  have hlm : l ≤ m := hln.trans hn
+  have h1 : partialDerivIdealIterate k ι S₁ h l (L 0) ≤ ⨆ i, ⨆ _ : i ≤ l, L i :=
+    partialDerivIdealIterate_controlledTransform_le_iSup k ι S S₁ φ T s h
+      hsT hin hs hout hnzd hhT hhs J L m hL l hlm
+  refine (logDerivIdealIterate_mono k (Ideal.span ({coord k ι S₁ h} : Set S₁)) (n - l) h1).trans ?_
+  refine (logDerivIdealIterate_iSup_le k (Ideal.span ({coord k ι S₁ h} : Set S₁)) (n - l)
+    (fun i => ⨆ _ : i ≤ l, L i)).trans ?_
+  refine iSup_le fun i => ?_
+  refine (logDerivIdealIterate_iSup_le k (Ideal.span ({coord k ι S₁ h} : Set S₁)) (n - l)
+    (fun _ : i ≤ l => L i)).trans ?_
+  refine iSup_le fun hi => ?_
+  have h2 : logDerivIdealIterate k (Ideal.span ({coord k ι S₁ h} : Set S₁)) (n - l) (L i) ≤
+      logDerivIdealIterate k (Ideal.span ({coord k ι S₁ h} : Set S₁)) (n - i) (L i) :=
+    logDerivIdealIterate_le_of_le k (Ideal.span ({coord k ι S₁ h} : Set S₁))
+      (by omega : n - l ≤ n - i) (L i)
+  exact h2.trans (le_iSup₂
+    (f := fun j (_ : j ≤ n) =>
+      logDerivIdealIterate k (Ideal.span ({coord k ι S₁ h} : Set S₁)) (n - j) (L j))
+    i (hi.trans hln))
+
+end
+
+end EtaleCoordinates
+end FunctorialResolution.EmbeddedResolution
+end
+
+section
 universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
@@ -258,3 +658,4 @@ theorem derivIdealSheafIterate_le_biSup_logDerivIdealSheafIterate_strictTransfor
   exact le_of_forall_exists_affineOpen main
 
 end FunctorialResolution.EmbeddedResolution
+end

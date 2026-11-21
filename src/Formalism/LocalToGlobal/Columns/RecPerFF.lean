@@ -1,5 +1,156 @@
-import Formalism.LocalToGlobal.Columns.FirstKernelEqLastComponentKernel
+import Formalism.LocalToGlobal.Columns.GFamEv
+import Formalism.LocalToGlobal.Columns.StabMapRLInjective
+import Formalism.LocalToGlobal.Columns.RecChainCUnfPol
+import Formalism.LocalToGlobal.Columns.RefXi1Above
+import Formalism.LocalToGlobal.Columns.RecChainYUnfPol
+import Mathlib
 
+section
+open NumberField IsDedekindDomain Module Matrix
+
+noncomputable section
+
+namespace Formalism.L2.Col
+
+open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Ker
+
+section Vec
+
+variable {E K : Type} [Field E] [NumberField E] [Field K] {n : ℕ} {SG : Finset (HeightOneSpectrum (𝓞 E))}
+
+def VecAt (E : Type) [Field E] [NumberField E] (n : ℕ) (SG : Finset (HeightOneSpectrum (𝓞 E))) (all : Prop) : Type :=
+  {v : ∀ w : SG, Fin n → 𝓞 E ⧸ w.1.asIdeal // all ∨ v = 0}
+
+instance (all : Prop) : Finite (VecAt E n SG all) := Subtype.finite
+
+instance vecAct (Λ : LevFam E K n SG) (all : Prop) : MulAction ↥Λ.grp (VecAt E n SG all) where
+  smul h v := ⟨fun w => ((h.1 w : GL (Fin n) (𝓞 E ⧸ w.1.asIdeal)) : Matrix (Fin n) (Fin n) (𝓞 E ⧸ w.1.asIdeal)).mulVec (v.1 w), by
+    rcases v.2 with h1 | h1
+    · exact Or.inl h1
+    · right
+      funext w
+      rw [h1]
+      exact Matrix.mulVec_zero _⟩
+  one_smul v := Subtype.ext (funext fun w => Matrix.one_mulVec _)
+  mul_smul g h v := Subtype.ext (funext fun w => by
+    show ((((g * h : ↥Λ.grp) : GLG E n SG) w : GL (Fin n) (𝓞 E ⧸ w.1.asIdeal)) : Matrix (Fin n) (Fin n) (𝓞 E ⧸ w.1.asIdeal)).mulVec (v.1 w) =
+      ((g.1 w : GL (Fin n) (𝓞 E ⧸ w.1.asIdeal)) : Matrix (Fin n) (Fin n) (𝓞 E ⧸ w.1.asIdeal)).mulVec
+        (((h.1 w : GL (Fin n) (𝓞 E ⧸ w.1.asIdeal)) : Matrix (Fin n) (Fin n) (𝓞 E ⧸ w.1.asIdeal)).mulVec (v.1 w))
+    rw [Matrix.mulVec_mulVec]
+    rfl)
+
+abbrev yIdx (Λ : LevFam E K n SG) (all : Prop) : Type := MulAction.orbitRel.Quotient ↥Λ.grp (VecAt E n SG all)
+
+def yIdx.vec {Λ : LevFam E K n SG} {all : Prop} (o : yIdx Λ all) : ∀ w : SG, Fin n → 𝓞 E ⧸ w.1.asIdeal := (Quotient.out o).1
+
+def stabLev (Λ : LevFam E K n SG) (v : ∀ w : SG, Fin n → 𝓞 E ⧸ w.1.asIdeal) : LevFam E K n SG := fun w =>
+  { H := (Λ w).H ⊓
+      { carrier := {h | (h : Matrix (Fin n) (Fin n) (𝓞 E ⧸ w.1.asIdeal)).mulVec (v w) = v w}
+        one_mem' := Matrix.one_mulVec _
+        mul_mem' := fun {a b} ha hb => by
+          show ((a * b : GL (Fin n) (𝓞 E ⧸ w.1.asIdeal)) : Matrix (Fin n) (Fin n) (𝓞 E ⧸ w.1.asIdeal)).mulVec (v w) = v w
+          rw [Units.val_mul, ← Matrix.mulVec_mulVec, hb, ha]
+        inv_mem' := fun {a} ha => by
+          show ((a⁻¹ : GL (Fin n) (𝓞 E ⧸ w.1.asIdeal)) : Matrix (Fin n) (Fin n) (𝓞 E ⧸ w.1.asIdeal)).mulVec (v w) = v w
+          conv_lhs => rw [← show (a : Matrix (Fin n) (Fin n) (𝓞 E ⧸ w.1.asIdeal)).mulVec (v w) = v w from ha]
+          rw [Matrix.mulVec_mulVec, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.one_mulVec] }
+    lam := (Λ w).lam.comp (Subgroup.inclusion inf_le_left) }
+
+end Vec
+
+section Ref
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
+  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
+  (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
+
+open Classical in
+
+def refLevCh (m2 : ℕ) : LevCh X Pr R where
+  β j := Σ b : L.β j, yIdx (L.levG j b) (j = m2 + 1)
+  finβ _ := Fintype.ofFinite _
+  decβ _ := Classical.decEq _
+  lev j b := stabLev (L.levG j b.1) b.2.vec
+
+def refXi (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) (m2 : ℕ) (u : Pr.Word) : XiFamC (refLevCh sel mu L m2) u :=
+  fun i b b' p p' x =>
+    if i < m2 then XiEntry Ch sel mu cst L i b.1 b'.1 (liftQ hQ p) (liftQ hQ p') x
+    else if i = m2 then XiCpl1 Ch sel mu cst L i b.1 (liftQ hQ p) (liftQ hQ p') (p'.1.yOf b'.2.vec) x
+    else if i = m2 + 1 then XiTop Ch sel mu cst i (liftQ hQ p) (p.1.yOf b.2.vec) (liftQ hQ p') x
+    else 0
+
+end Ref
+
+end Formalism.L2.Col
+end
+end
+
+section
+open NumberField IsDedekindDomain Module Matrix
+
+noncomputable section
+
+namespace Formalism.L2.Col
+
+open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Ker
+
+section Defs
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs) (Ch : Chars X Pr R.m)
+  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
+  (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
+  (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) (m2 : ℕ) (al : ∀ j, j ≤ m2 + 1 → L.β j) (Am : Amb X) (u : Pr.Word)
+
+variable {W Λ u} in
+
+def rcol1To (kk : ∀ i, ClsKer (stepGSD W Λ u i) (stepGSD W Λ u (i + 1))) (hX : X.Ok) :
+    ∀ j, (stepGSD W Λ u 0).EqFun →ₗ[X.K] (stepGSD W Λ u j).EqFun
+  | 0 => LinearMap.id
+  | j + 1 => (kk j).op (stepOk W Λ hX u j) ∘ₗ rcol1To kk hX j
+
+def rcol1Start (h0 : Λ 0 = colLev Ch 0) : MfV W Ch u →ₗ[X.K] (stepGSD W Λ u 0).EqFun where
+  toFun φ := ⟨φ.1, show φ.1 ∈ (formGSD (colVal W u 0 (Pr.vT u) Pr.vGs) (Λ 0)).EqFun by rw [h0]; exact φ.2⟩
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+def OneYbKer : Prop :=
+  ∀ (a : L.β m2) (q₀ : ChPt (R := R) sel mu u m2) (q : ChPt (R := R) sel mu u (m2 + 1)) (Y : Set (Sp X.E (R.N (m2 + 1)))),
+    Y ∈ ybSet sel mu cst q.deco.1.N → Y ≠ q.deco.1.y0 R.k → cp1K W Ch sel mu cst L (chTh W Ch sel mu cst Am u m2) a q₀ q Y = 0
+
+include hQ in
+theorem rcol_rowSG_eq : Pr.vGs = rowSG Pr sel mu := by
+  classical
+  unfold rowSG uSG
+  rw [hQ, Finset.union_empty]
+
+def rcolRow {n : ℕ} (d : DecoSet X.E n ∅ Pr.vGs) : DecoSet X.E n ∅ (rowSG Pr sel mu) := rcol_rowSG_eq sel mu hQ ▸ d
+
+def basisCoordinatesModPlace (Pr : Primes X) (R : Ranks) (n : ℕ) : ∀ w : Pr.vGs, Fin n → 𝓞 X.E ⧸ w.1.asIdeal := fun w => Loc.eN (𝓞 X.E ⧸ w.1.asIdeal) n R.k
+
+end Defs
+
+section Main
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs} {Ch : Chars X Pr R.m}
+  {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
+  {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))}
+  {hQ : QE sel (mu : Chr X.F X.E X.K) = ∅} {m2 : ℕ} {al : ∀ j, j ≤ m2 + 1 → L.β j} {Am : Amb X} {u : Pr.Word}
+  (hX : X.Ok) {Gc : ChGlob X R.m} (hL : L.Ok Ch sel mu cst Gc m2) (h0 : Λ 0 = colLev Ch 0)
+  (hΛ : ∀ j, j ≤ m2 + 1 → ∀ b : L.β j, L.levG j b = Λ j) (h1 : ∀ j, j ≤ m2 + 1 → ∀ b b' : L.β j, b = b')
+  (hE : XiEquiv W Λ Ch sel mu cst Am u (refXi1 Ch sel mu cst L hQ m2 al u))
+  {b₁ : L.β (m2 + 1)} {hY : YbHyp (R := R) sel mu cst L u m2 b₁} {P : LevFam X.E X.K R.r Pr.vGs}
+  (hK : KerEquivC W Ch sel mu cst L Am u m2 b₁ hY P) (hF : ∀ j, (chF W sel mu L u j).Ok)
+  (φ : MfV W Ch u)
+
+abbrev rcol1Rec (j : ℕ) : (stepGSD W Λ u j).EqFun := rcol1To (xiKK hE) hX j (rcol1Start W Λ Ch u h0 φ)
+
+end Main
+
+end Formalism.L2.Col
+end
+end
+
+section
 open NumberField IsDedekindDomain Module Matrix
 
 noncomputable section
@@ -60,3 +211,5 @@ def zOfRow (σ₀ : X.K →+* ℂ) (hM : (rowGSD W (rowTyG Ch P).inv).Ok) (F : M
 end Main
 
 end Formalism.L2.Col
+end
+end

@@ -1,9 +1,111 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HostFieldImageMemUnramifiedAdjoinRootsOfUnity
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInertiaCycZEq
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormSubLtOneOfFixAlt
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsRhoPtOfSplitting
+import Development.AutomorphicArithmetic.CyclotomicBounds.ZmodTwoQuadraticNeZero
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankCyclotomicExtAndCyclotomicCharSurjective
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsTopologicalClosureZpowersSupInertia
 import Development.AutomorphicArithmetic.CyclotomicBounds.FactorizationConductorLeLocalLevel
 
+section
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.PtCore
+
+noncomputable section
+
+namespace GlobalTheory.HostImage
+
+theorem host_image_mem : ∀ (D : D7) (i : D.nd.Loc) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i)) (x : D.host.E), (D.nbr i w hw).j (algebraMap D.host.E D.nd.Om x) ∈ MaximalUnramifiedExtension (D.nd.l i) ⊔ IntermediateField.adjoin ℚ_[D.nd.l i] {y : Om (D.nd.l i) | y ^ (D.nd.l i ^ D.nd.s0 i) = 1} := by
+  intro D i w hw x
+  have h := UpperTheory.Small.factorization_condN_le D.host (D.nd.lPrime i).out
+  refine UpperTheory.Small.image_mem_Kur_sup D.host ((D.nbr i w hw).j.comp (algebraMap D.host.E D.nd.Om)) ?_ x
+  by_cases h2 : D.nd.l i = 2
+  · rw [D.nd.restNLevelExponent_of_two i h2, ← h2]
+    exact h.2 h2
+  · rw [D.nd.restNLevelExponent_of_odd i h2]
+    exact h.1
+
+end GlobalTheory.HostImage
+end
+end
+
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.PtCore
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hostField_image_mem_unramified_adjoin_rootsOfUnity : ∀ (D : D7) (i : D.nd.Loc) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i)) (x : D.host.E), (D.nbr i w hw).j (algebraMap D.host.E D.nd.Om x) ∈ MaximalUnramifiedExtension (D.nd.l i) ⊔ IntermediateField.adjoin ℚ_[D.nd.l i] {y : Om (D.nd.l i) | y ^ (D.nd.l i ^ D.nd.s0 i) = 1} := by
+  atlas_forward_decl GlobalTheory.HostImage.host_image_mem
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.PtCore
+
+namespace GlobalTheory.Cyc
+
+theorem isCyc_map_cycZ (l : ℕ) [Fact l.Prime] :
+    IsCyc ((Units.map (PadicInt.Coe.ringHom (p := l)).toMonoidHom).comp
+      (cycZ (F := ℚ_[l]) (Ω := Om l) l)) := by
+  intro g m ζ hζ
+  haveI : ∀ i : ℕ, NeZero ((l ^ i : ℕ) : Om l) := fun i =>
+    ⟨by exact_mod_cast pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
+  refine ⟨_, ?_, cyclotomicCharacter.spec l (n := m)
+    (MulSemiringAction.toRingAut (GQ l) (Om l) g) ζ hζ⟩
+  set z : ℤ_[l] := ((cycZ (F := ℚ_[l]) (Ω := Om l) l g : ℤ_[l]ˣ) : ℤ_[l]) with hz
+  change ‖(z : ℚ_[l]) - (((PadicInt.toZModPow m z).val : ℕ) : ℚ_[l])‖ ≤ _
+  have h : z - (((PadicInt.toZModPow m z).val : ℕ) : ℤ_[l]) ∈
+      Ideal.span {(l : ℤ_[l]) ^ m} := by
+    haveI : NeZero (l ^ m) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
+    rw [← PadicInt.ker_toZModPow, RingHom.mem_ker, map_sub, map_natCast, ZMod.natCast_zmod_val,
+      sub_self]
+  have := (PadicInt.norm_le_pow_iff_mem_span_pow _ m).2 h
+  rwa [PadicInt.norm_def, PadicInt.coe_sub, PadicInt.coe_natCast] at this
+
+theorem exists_inertia_cycZ_eq : ∀ (l : ℕ) [Fact l.Prime] (u : ℤ_[l]ˣ), ∃ σ : GQ l, (∀ x ∈ MaximalUnramifiedExtension l, σ x = x) ∧ cycZ (F := ℚ_[l]) (Ω := Om l) l σ = u := by
+  intro l _ u
+  have hχ := isCyc_map_cycZ l
+  set χ := (Units.map (PadicInt.Coe.ringHom (p := l)).toMonoidHom).comp
+      (cycZ (F := ℚ_[l]) (Ω := Om l) l) with hχdef
+  have hu1 : ‖((u : ℤ_[l]) : ℚ_[l])‖ = 1 := PadicInt.norm_units u
+  have hs : IsClosed {g : GQ l | (χ g : ℚ_[l]) = ((u : ℤ_[l]) : ℚ_[l])} :=
+    isClosed_eq hχ.continuous continuous_const
+  have key := hs.isCompact.inter_iInter_nonempty
+    (fun x : MaximalUnramifiedExtension l => ((IntermediateField.adjoin ℚ_[l] {(x : Om l)}).fixingSubgroup : Set (GQ l)))
+    (fun x => by
+      haveI := IntermediateField.adjoin.finiteDimensional
+        (Algebra.IsIntegral.isIntegral (R := ℚ_[l]) (x : Om l))
+      exact IntermediateField.fixingSubgroup_isClosed _)
+    (fun t => by
+      let S : Set (Om l) := (fun x : MaximalUnramifiedExtension l => (x : Om l)) '' (t : Set (MaximalUnramifiedExtension l))
+      haveI : Finite S := (t.finite_toSet.image _).to_subtype
+      let K : FinExt l := ⟨IntermediateField.adjoin ℚ_[l] S,
+        IntermediateField.finiteDimensional_adjoin
+          (fun x _ => Algebra.IsIntegral.isIntegral x)⟩
+      obtain ⟨g, hg, hgu⟩ := exists_chi_eq K χ hχ _ hu1
+      refine ⟨g, hgu, Set.mem_iInter₂.2 fun x hx => ?_⟩
+      refine (mem_fixingSubgroup_adjoin_iff _ g).2 ?_
+      rintro y rfl
+      exact (IntermediateField.mem_fixingSubgroup_iff _ _).1 hg _
+        ⟨IntermediateField.subset_adjoin _ _ ⟨x, hx, rfl⟩, x.2⟩)
+  obtain ⟨g, hgu, hg⟩ := key
+  refine ⟨g, fun x hx => ?_, Units.ext (Subtype.ext hgu)⟩
+  exact (mem_fixingSubgroup_adjoin_iff _ g).1 (Set.mem_iInter.1 hg ⟨x, hx⟩) x rfl
+
+end GlobalTheory.Cyc
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.PtCore
+
+namespace GlobalTheory.UnramInertia
+
+theorem norm_sub_lt_one_of_fix : ∀ (l : ℕ) [Fact l.Prime] (σ : GQ l), (∀ x ∈ MaximalUnramifiedExtension l, σ x = x) →
+    ∀ x : Om l, ‖x‖ ≤ 1 → ‖σ x - x‖ < 1 := by
+  intro l _ σ hσ x hx
+  have hmem : σ ∈ (MaximalUnramifiedExtension l).fixingSubgroup := by
+    exact (IntermediateField.mem_fixingSubgroup_iff _ _).2 hσ
+  exact GlobalTheory.FrobGen.norm_sub_lt hmem x hx
+
+end GlobalTheory.UnramInertia
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations GlobalTheory.PtCore
@@ -100,4 +202,5 @@ theorem epsAll : ∀ (D : D7) (i : D.nd.Loc), EpsAll D i := by
 
 end GlobalTheory.EpsInertia
 
+end
 end

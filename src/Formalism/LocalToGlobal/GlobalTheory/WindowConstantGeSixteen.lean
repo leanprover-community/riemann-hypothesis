@@ -1,5 +1,161 @@
-import Formalism.LocalToGlobal.GlobalTheory.VandNHcSeqEq
+import Formalism.LocalToGlobal.Columns.ReferenceActionRationalLevels
+import Formalism.LocalToGlobal.Columns.InputsWeyl
+import Formalism.LocalToGlobal.Columns.BrwLastNeZero
+import Formalism.GL3MeanSquares.UnitaryConjugateDiagonalMoments
+import Mathlib
+import Formalism.GL3MeanSquares.HookFormulaTorsion.HilbertSchmidtHalfBound
+import Formalism.GL3MeanSquares.HookFormulaTorsion.WeightShiftProduct
+import Formalism.LogVandermondeBounds.LogVandermondeProofs.LogRatioLowerBoundOfLogVandermondeGap
+import Formalism.GL3MeanSquares.HookFormulaTorsion.IndicatorValueMemUnitInterval
+import Formalism.LogVandermondeBounds.LogVandermondeProofs.UpperPlaceHolds
+import Formalism.LogVandermondeBounds.LogVandermondeProofs.VandNSuccRight
 
+section
+open NumberField IsDedekindDomain Module
+
+noncomputable section
+
+namespace Formalism.L2.GlobalTheoryTheory.ColOpen
+
+open Formalism.BasicNotions Formalism.L2.Col Formalism.LogVandermondeBounds.StandardLattice Formalism.HermitianLattices.FormalDegreeBoundsAlt
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks}
+
+section Seq
+
+variable (W : Wts X Pr.Word R)
+
+def vSeq (τ : X.Tau) : ℕ → ℝ := fun i => if h : i < R.k - 1 then (((W.row τ).v ⟨i, h⟩ : ℚ) : ℝ) else 0
+
+def bSeq (τ : X.Tau) : ℕ → ℝ := fun j => (((W.row τ).bAt j : ℚ) : ℝ)
+
+def eSeq (τ : X.Tau) : ℕ → ℝ := fun j => (((W.row τ).eAt j : ℚ) : ℝ)
+
+def lamSeq (τ : X.Tau) : ℕ → ℝ := rowPar R.k (vSeq W τ) (bSeq W τ)
+
+end Seq
+
+structure Grid (W : Wts X Pr.Word R) (Δ S : ℝ) (c : X.Tau → ℝ) (code : Pr.Word → ℕ → ℕ) : Prop where
+  one_le_Δ : 1 ≤ Δ
+  S_eq : S = (R.k : ℝ) * (4 * Δ)
+  cloud : ∀ τ i, i < R.k - 1 → vSeq W τ i = cloudV (c τ) Δ i
+  cloud_nonneg : ∀ τ i, i < R.k - 1 → 0 ≤ vSeq W τ i
+  cloud_le : ∀ τ i, i < R.k - 1 → vSeq W τ i ≤ S
+  word : ∀ u τ l, l < R.k - 2 → hcSeq W u τ (l + 1) = vSeq W τ l - 1 / 2 - (code u l : ℝ) * Δ
+  code_le : ∀ u l, code u l ≤ 1
+
+structure Ends (W : Wts X Pr.Word R) (a b' S : ℝ) : Prop where
+  top : ∀ u, ∀ τ ∈ W.tops, a ≤ (W.aTop u τ : ℝ) ∧ (W.aTop u τ : ℝ) ≤ a * (1 + 1 / (R.k : ℝ)) ∧
+    b' ≤ (W.bTop u τ : ℝ) ∧ (W.bTop u τ : ℝ) ≤ 2 * b'
+  b'_le : 2 * b' ≤ a / 4
+  oth_first : ∀ u τ, τ ∉ W.tops → S ≤ hcSeq W u τ 0 - vSeq W τ 0 ∧ hcSeq W u τ 0 - vSeq W τ 0 ≤ 2 * S
+  oth_last : ∀ u τ, τ ∉ W.tops → hcSeq W u τ (R.k - 1) = vSeq W τ (R.k - 2) - 1 / 2
+  kS_le : (R.k : ℝ) * S ≤ b'
+
+structure Nodes (W : Wts X Pr.Word R) (x L eta S : ℝ) : Prop where
+  b_ge : ∀ τ j, j < R.m → 1 ≤ bSeq W τ j
+  b_log : ∀ τ j, j < R.m → Real.log (bSeq W τ j) ≤ 2 * L
+  e_le : ∀ τ j, j < R.m → eSeq W τ j - bSeq W τ j ≤ eta
+  eta_le : ∀ τ j, j < R.m → eta ≤ bSeq W τ j / x
+  S_le : ∀ τ j, j < R.m → S ≤ bSeq W τ j / x
+
+variable (X Pr R) in
+
+structure Nums5 (n : ScNum) : Prop where
+  pi_le_v : Real.pi ≤ vC X
+  log_2v : Real.log (2 * vC X) ≤ n.sc.L
+  log_g : ∀ i, Real.log (Pr.g i) ≤ n.CY * n.sc.L
+  m_ge : 44 ≤ R.m
+  m_le_alt : (R.m : ℝ) ≤ n.sc.x
+  log_2k : Real.log (2 * (R.k : ℝ)) ≤ n.sc.L
+  log_2a : Real.log (2 * n.sc.a) ≤ 2 * n.sc.L
+  log_S : Real.log n.Sc ≤ n.sc.L
+
+def DsigLow (W : Wts X Pr.Word R) (dsig : X.Tau → ℝ) : Prop :=
+  ∀ τ, (1 - 1 / 3 : ℝ) * dimVN (lamSeq W τ) (R.k - 1 + R.m) ≤ dsig τ
+
+def DsigUp (W : Wts X Pr.Word R) (dsig : X.Tau → ℝ) : Prop :=
+  ∀ τ, dsig τ ≤ 4 * dTau R.k R.m (lamSeq W τ) *
+    (3 * (((R.k - 1 + R.m / 2) * (R.m / 2) : ℕ) : ℝ) * (vSeq W τ 0 + bSeq W τ (R.m - 1))) ^ ((R.k - 1 + R.m / 2) * (R.m / 2))
+
+end Formalism.L2.GlobalTheoryTheory.ColOpen
+end
+end
+
+section
+open NumberField IsDedekindDomain Module
+
+noncomputable section
+
+namespace Formalism.L2.GlobalTheoryTheory.ColOpen
+
+open Formalism.BasicNotions Formalism.L2.Col Formalism.LogVandermondeBounds.StandardLattice Formalism.HermitianLattices.FormalDegreeBoundsAlt Formalism.HermitianLatticesTheory Finset
+
+variable {X : Fields} {Pr : Primes X} {R : Ranks}
+
+theorem k_ge (R : Ranks) : 5 ≤ R.k := by
+  have h1 := R.m_add_three_le_k
+  have h2 := R.two_le_m
+  omega
+
+theorem one_lt_L (sc : Scale) : 1 < sc.L := Real.one_lt_rpow sc.one_lt_alt sc.eps_pos
+
+section Shape
+
+variable {W : Wts X Pr.Word R} {Δ S : ℝ} {c : X.Tau → ℝ} {code : Pr.Word → ℕ → ℕ}
+
+theorem hcSeq_eq_colU (G : Grid W Δ S c code) (u : Pr.Word) (τ : X.Tau) {i : ℕ} (hi : i < R.k) :
+    hcSeq W u τ i = colU R.k (c τ) Δ (code u) (hcSeq W u τ 0) (hcSeq W u τ (R.k - 1)) i := by
+  unfold colU
+  by_cases h0 : i = 0
+  · rw [if_pos h0, h0]
+  · rw [if_neg h0]
+    by_cases h1 : i = R.k - 1
+    · rw [if_pos h1, h1]
+    · rw [if_neg h1]
+      have hl : i - 1 < R.k - 2 := by omega
+      have h2 := G.word u τ (i - 1) hl
+      rw [show i - 1 + 1 = i by omega, G.cloud τ (i - 1) (by omega)] at h2
+      rw [h2]
+      rfl
+
+theorem vandN_hcSeq_eq (G : Grid W Δ S c code) (u : Pr.Word) (τ : X.Tau) :
+    vandN (hcSeq W u τ) R.k = vandN (colU R.k (c τ) Δ (code u) (hcSeq W u τ 0) (hcSeq W u τ (R.k - 1))) R.k :=
+  Formalism.LogVandermondeBounds.StandardLattice.vandN_congr _ _ _ fun _ hi => hcSeq_eq_colU G u τ hi
+
+theorem hcSeq_zero (W : Wts X Pr.Word R) (u : Pr.Word) (τ : X.Tau) :
+    hcSeq W u τ 0 = (W.aTop u τ : ℝ) + ((R.k : ℝ) - 1) / 2 := by
+  have h := aTop_eq_hc W u τ
+  have hk := k_ge R
+  unfold hcSeq
+  rw [dif_pos (by omega)]
+  exact h
+
+theorem hcSeq_last (W : Wts X Pr.Word R) (u : Pr.Word) (τ : X.Tau) :
+    hcSeq W u τ (R.k - 1) = -(W.bTop u τ : ℝ) - ((R.k : ℝ) - 1) / 2 := by
+  have h := bTop_eq_hc W u τ
+  have hk := k_ge R
+  unfold hcSeq
+  rw [dif_pos (by omega)]
+  exact h
+
+theorem hcSeq_zero_eq (hW : W.Ok) (u u' : Pr.Word) (τ : X.Tau) : hcSeq W u τ 0 = hcSeq W u' τ 0 := by
+  have hk := k_ge R
+  unfold hcSeq
+  rw [dif_pos (by omega), dif_pos (by omega), hW.u_first u u' τ (by omega)]
+
+theorem hcSeq_last_eq (hW : W.Ok) (u u' : Pr.Word) (τ : X.Tau) : hcSeq W u τ (R.k - 1) = hcSeq W u' τ (R.k - 1) := by
+  have hk := k_ge R
+  unfold hcSeq
+  rw [dif_pos (by omega), dif_pos (by omega), hW.u_last u u' τ (by omega)]
+
+end Shape
+
+end Formalism.L2.GlobalTheoryTheory.ColOpen
+end
+end
+
+section
 open NumberField IsDedekindDomain Module
 
 noncomputable section
@@ -323,3 +479,5 @@ example (hX : X.Ok) (hPr : Pr.Ok) (hW : W.Ok) (A : ColArg W Ch) (hS : Sizes Pr W
 end Numbers
 
 end Formalism.L2.GlobalTheoryTheory.ColOpen
+end
+end

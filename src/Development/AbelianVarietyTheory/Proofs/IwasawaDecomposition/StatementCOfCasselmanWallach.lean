@@ -8,29 +8,1203 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemParahoric
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceEqOfAutomorphismMapsParahoric
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdditiveCharacterEqOfCommonUnipotentLevelEigenve
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterSplitPlaceComponentUnique
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ProductLevelEqOfLocalAgreement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpperParahoricLowerDetUnitAndSuperdiagIntegral
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsClassTrivialStabiliserAtTypePlace
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNeZeroAlgebraicModularFormOfTrivialStabili
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExpectedShapeLevelIntegralAndUnipotentAtTypePlac
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TypePlacesUnionRamifiedPlacesFinite
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSplitOfGPl
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLocalUnitCharacterNontrivial
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankAlgebraicModularFormsComplexification
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsProductLevelDefiniteFormsRealisationAtTwist
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsProdLevelStdFrameTwoBlockUnipotentLevel
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GoodPlacesAllStatesStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BadPlacesSubOfAdmissibleTwistStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SideReadHeckeOfAdmissibleTwist
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceOfAdmissibleTwist
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.JointEtaOfAdmissibleTwist
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellWeightOfAdmissibleTwist
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TwistConductorsAvoidExcludedPrimes
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsGaloisCharacterOfFiniteOrderHeckeCharacter
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GaloisCharacterAntiRamifiedExactly
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRingClassGroupDescentOfCoeffFieldTwist
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RingClassGroupDescentsDifferByPowerPrimeToL
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TwistReadingInducesSideEmbeddingFixedField
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsComplexEmbeddingReadingFractionRingOverCoe
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AlgClosedContinuumRingEquivComplexExtending
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CardPadicAlgClPadicComplexEqComplex
 
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+noncomputable section
+
+open scoped TensorProduct
+
+namespace GlobalTheory.LevCmp
+
+section Glue
+
+variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
+
+def compHom (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) :
+    GAf L n →* GL (Fin n) (L ⊗[maximalRealSubfield L] v.adicCompletion (maximalRealSubfield L)) :=
+  (Matrix.GeneralLinearGroup.map (compAt L v)).comp (ReciprocityTheory.Aut.GA L n).subtype
+
+theorem compHom_eq_one_iff (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (x : GAf L n) :
+    compHom v x = 1 ↔ (x.1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L v) = 1 := by
+  constructor
+  · intro h
+    have := congrArg Units.val h
+    simpa [compHom] using this
+  · intro h
+    ext i j
+    have := congrFun (congrFun h i) j
+    simpa [compHom] using this
+
+theorem compHom_eq_iff (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (x y : GAf L n) :
+    compHom v x = compHom v y ↔
+      (x.1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L v) = (y.1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L v) := by
+  constructor
+  · intro h
+    have := congrArg Units.val h
+    simpa [compHom] using this
+  · intro h
+    ext i j
+    have := congrFun (congrFun h i) j
+    simpa [compHom] using this
+
+theorem mem_of_agree {J J' : Subgroup (GAf L n)} {χ : J →* ℂˣ} {χ' : J' →* ℂˣ}
+    {S : Set (HeightOneSpectrum (𝓞 (maximalRealSubfield L)))} (hS : S.Finite) (hJ : NG.IsProdLevel J)
+    (hO : NG.HypOutside J χ S) (hO' : NG.HypOutside J' χ' S)
+    (hloc : ∀ u ∈ S, ∀ κ, TrivOutside {u} κ → (κ ∈ J ↔ κ ∈ J') ∧ ∀ (h : κ ∈ J) (h' : κ ∈ J'), χ ⟨κ, h⟩ = χ' ⟨κ, h'⟩)
+    (κ : GAf L n) (hκ : κ ∈ J) : ∃ h' : κ ∈ J', χ ⟨κ, hκ⟩ = χ' ⟨κ, h'⟩ := by
+
+  have hone : ∀ u κ, TrivOutside {u} κ → ∀ hκ : κ ∈ J, ∃ h' : κ ∈ J', χ ⟨κ, hκ⟩ = χ' ⟨κ, h'⟩ := by
+    intro u κ hu hκ
+    by_cases huS : u ∈ S
+    · obtain ⟨h1, h2⟩ := hloc u huS κ hu
+      exact ⟨h1.mp hκ, h2 hκ (h1.mp hκ)⟩
+    · have ht : TrivOutside Sᶜ κ := by
+        intro v hv
+        apply hu v
+        rintro rfl
+        exact huS (not_not.mp hv)
+      obtain ⟨a1, a2⟩ := hO κ ht
+      obtain ⟨b1, b2⟩ := hO' κ ht
+      have h' : κ ∈ J' := b1.mpr (a1.mp hκ)
+      exact ⟨h', by rw [a2 hκ, b2 h']⟩
+  have key : ∀ T : Finset (HeightOneSpectrum (𝓞 (maximalRealSubfield L))), ∀ κ (hκ : κ ∈ J),
+      TrivOutside (Sᶜ ∪ (T : Set _)) κ → ∃ h' : κ ∈ J', χ ⟨κ, hκ⟩ = χ' ⟨κ, h'⟩ := by
+    intro T
+    classical
+    induction T using Finset.induction_on with
+    | empty =>
+      intro κ hκ ht
+      have ht' : TrivOutside Sᶜ κ := by
+        intro v hv
+        exact ht v (by simpa using hv)
+      obtain ⟨a1, a2⟩ := hO κ ht'
+      obtain ⟨b1, b2⟩ := hO' κ ht'
+      have h' : κ ∈ J' := b1.mpr (a1.mp hκ)
+      exact ⟨h', by rw [a2 hκ, b2 h']⟩
+    | insert u T huT ih =>
+      intro κ hκ ht
+      obtain ⟨κu, hκu, hu, hcomp⟩ := hJ κ hκ u
+      have hκ1 : κ * κu⁻¹ ∈ J := J.mul_mem hκ (J.inv_mem hκu)
+      have ht1 : TrivOutside (Sᶜ ∪ (T : Set _)) (κ * κu⁻¹) := by
+        intro v hv
+        rw [← compHom_eq_one_iff, map_mul, map_inv, mul_inv_eq_one]
+        by_cases hvu : v = u
+        · subst hvu
+          exact ((compHom_eq_iff v κ κu).mpr hcomp.symm)
+        · have e1 : compHom v κ = 1 := by
+            rw [compHom_eq_one_iff]
+            apply ht v
+            simp only [Finset.coe_insert, Set.mem_union, Set.mem_insert_iff, not_or] at hv ⊢
+            exact ⟨hv.1, hvu, hv.2⟩
+          have e2 : compHom v κu = 1 := by
+            rw [compHom_eq_one_iff]
+            exact hu v (by simpa using hvu)
+          rw [e1, e2]
+      obtain ⟨h1', e1⟩ := ih (κ * κu⁻¹) hκ1 ht1
+      obtain ⟨h2', e2⟩ := hone u κu hu hκu
+      have hprod : κ = κ * κu⁻¹ * κu := by group
+      have h' : κ ∈ J' := by
+        rw [hprod]; exact J'.mul_mem h1' h2'
+      refine ⟨h', ?_⟩
+      have s1 : (⟨κ, hκ⟩ : J) = ⟨κ * κu⁻¹, hκ1⟩ * ⟨κu, hκu⟩ := Subtype.ext hprod
+      have s2 : (⟨κ, h'⟩ : J') = ⟨κ * κu⁻¹, h1'⟩ * ⟨κu, h2'⟩ := Subtype.ext hprod
+      rw [s1, s2, map_mul, map_mul, e1, e2]
+  apply key hS.toFinset κ hκ
+  intro v hv
+  exfalso
+  apply hv
+  by_cases h : v ∈ S
+  · right; simpa using h
+  · left; exact h
+
+theorem levEq_of_agree : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (J J' : Subgroup (GAf L n)) (χ : J →* ℂˣ) (χ' : J' →* ℂˣ) (S : Set (HeightOneSpectrum (𝓞 (maximalRealSubfield L)))), S.Finite → NG.IsProdLevel J → NG.IsProdLevel J' → NG.HypOutside J χ S → NG.HypOutside J' χ' S → (∀ u ∈ S, ∀ κ, TrivOutside {u} κ → (κ ∈ J ↔ κ ∈ J') ∧ ∀ (h : κ ∈ J) (h' : κ ∈ J'), χ ⟨κ, h⟩ = χ' ⟨κ, h'⟩) → LevEq J χ J' χ' := by
+  intro L _ _ _ n J J' χ χ' S hS hJ hJ' hO hO' hloc
+  have hloc' : ∀ u ∈ S, ∀ κ, TrivOutside {u} κ → (κ ∈ J' ↔ κ ∈ J) ∧ ∀ (h : κ ∈ J') (h' : κ ∈ J), χ' ⟨κ, h⟩ = χ ⟨κ, h'⟩ :=
+    fun u hu κ hκ => ⟨(hloc u hu κ hκ).1.symm, fun h h' => ((hloc u hu κ hκ).2 h' h).symm⟩
+  refine ⟨le_antisymm (fun κ hκ => (mem_of_agree hS hJ hO hO' hloc κ hκ).1)
+    (fun κ hκ => (mem_of_agree hS hJ' hO' hO hloc' κ hκ).1), fun κ h h' => ?_⟩
+  obtain ⟨h'', e⟩ := mem_of_agree hS hJ hO hO' hloc κ h
+  exact e
+
+end Glue
+
+end GlobalTheory.LevCmp
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.productLevel_eq_of_local_agreement : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (J J' : Subgroup (GAf L n)) (χ : J →* ℂˣ) (χ' : J' →* ℂˣ) (S : Set (HeightOneSpectrum (𝓞 (maximalRealSubfield L)))), S.Finite → NG.IsProdLevel J → NG.IsProdLevel J' → NG.HypOutside J χ S → NG.HypOutside J' χ' S → (∀ u ∈ S, ∀ κ, TrivOutside {u} κ → (κ ∈ J ↔ κ ∈ J') ∧ ∀ (h : κ ∈ J) (h' : κ ∈ J'), χ ⟨κ, h⟩ = χ' ⟨κ, h'⟩) → LevEq J χ J' χ' := by
+  atlas_forward_decl GlobalTheory.LevCmp.levEq_of_agree
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+namespace GlobalTheory.ParaUnit
+
+theorem val_det_block {K Γ ι : Type*} [Field K] [LinearOrderedCommGroupWithZero Γ] [Fintype ι] [DecidableEq ι]
+    (v : Valuation K Γ) (p : ι → Prop) [DecidablePred p] (A B : Matrix ι ι K)
+    (hA : ∀ a b, v (A a b) ≤ 1) (hB : ∀ a b, v (B a b) ≤ 1) (hAB : A * B = 1)
+    (hlow : ∀ a b, p a → ¬ p b → v (A a b) < 1) :
+    v (Matrix.of fun a b : {x // p x} => A a.1 b.1).det = 1 := by
+  let O := v.valuationSubring
+  let A' : Matrix ι ι O := Matrix.of fun a b => ⟨A a b, hA a b⟩
+  let B' : Matrix ι ι O := Matrix.of fun a b => ⟨B a b, hB a b⟩
+  have hAB' : A' * B' = 1 := by
+    ext a b
+    have := congrFun (congrFun hAB a) b
+    rw [Matrix.mul_apply] at this
+    simp only [Matrix.mul_apply, Matrix.one_apply] at this ⊢
+    rw [AddSubmonoidClass.coe_finsetSum, apply_ite (fun x : O => (x : K))]
+    simpa [A', B'] using this
+  let f := IsLocalRing.residue O
+  have hf : ∀ a b, p a → ¬ p b → f (A' a b) = 0 := by
+    intro a b ha hb
+    rw [IsLocalRing.residue_eq_zero_iff, Valuation.mem_maximalIdeal_iff]
+    exact hlow a b ha hb
+  let A₁ : Matrix {x // p x} {x // p x} O := Matrix.of fun a b => A' a.1 b.1
+  let B₁ : Matrix {x // p x} {x // p x} O := Matrix.of fun a b => B' a.1 b.1
+  have h1 : f.mapMatrix A₁ * f.mapMatrix B₁ = 1 := by
+    ext a b
+    have h := congrArg f (congrFun (congrFun hAB' a.1) b.1)
+    rw [Matrix.mul_apply, map_sum, ← Fintype.sum_subtype_add_sum_subtype p] at h
+    rw [Finset.sum_eq_zero (s := (Finset.univ : Finset {x // ¬ p x}))
+      (fun c _ => by rw [map_mul, hf a.1 c.1 a.2 c.2, zero_mul]), add_zero] at h
+    rw [Matrix.mul_apply]
+    simp only [map_mul] at h
+    refine Eq.trans h ?_
+    simp only [Matrix.one_apply, Subtype.ext_iff]
+    split_ifs <;> simp
+  have h2 : f A₁.det ≠ 0 := by
+    intro h0
+    have := congrArg Matrix.det h1
+    rw [Matrix.det_mul, ← RingHom.map_det, h0, zero_mul, Matrix.det_one] at this
+    exact zero_ne_one this
+  have h3 : ((A₁.det : O) : K) = (Matrix.of fun a b : {x // p x} => A a.1 b.1).det := by
+    have := RingHom.map_det O.subtype A₁
+    exact this
+  rw [← h3]
+  refine le_antisymm A₁.det.2 (not_lt.1 fun hlt => h2 ?_)
+  rw [IsLocalRing.residue_eq_zero_iff, Valuation.mem_maximalIdeal_iff]
+  exact hlt
+
+theorem detDD_unit_supDiag_int : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (r : ℕ) (s : SplitPlace L) (h : GL (Fin n) (s.v.adicCompletion (maximalRealSubfield L))), NG.ParaRT s r h → Valued.v (NG.detDD s r h) = 1 ∧ Valued.v (NG.supDiag s r h) ≤ 1 := by
+  intro L _ _ _ n r s h hp
+  have key : ∀ g : GL (Fin n) (s.v.adicCompletion (maximalRealSubfield L)),
+      g ∈ Formalism.UG.GLint (Fin n) (s.v.adicCompletionIntegers (maximalRealSubfield L)).toSubring →
+      ∀ a b, Valued.v (g.val a b) ≤ 1 := by
+    rintro g ⟨x, rfl⟩ a b
+    exact (x.val a b).2
+  have hA := key h hp.1
+  have hB := key h⁻¹ (inv_mem hp.1)
+  refine ⟨?_, ?_⟩
+  · exact val_det_block Valued.v (fun x : Fin n => r ≤ x.val) h.val (h⁻¹).val hA hB (by simp)
+      (fun a b ha hb => hp.2 a b ha (not_le.1 hb))
+  · unfold NG.supDiag
+    refine Valuation.map_sum_le _ fun a _ => Valuation.map_sum_le _ fun b _ => ?_
+    split_ifs
+    · exact hA a b
+    · simp
+
+end GlobalTheory.ParaUnit
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.upperParahoric_lowerDet_unit_and_superdiag_integral : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (r : ℕ) (s : SplitPlace L) (h : GL (Fin n) (s.v.adicCompletion (maximalRealSubfield L))), NG.ParaRT s r h → Valued.v (NG.detDD s r h) = 1 ∧ Valued.v (NG.supDiag s r h) ≤ 1 := by
+  atlas_forward_decl GlobalTheory.ParaUnit.detDD_unit_supDiag_int
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+namespace GlobalTheory.ClassForm
+
+theorem double_coset_unique {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
+    {J : Subgroup (GAf L n)} {g : GAf L n}
+    (hg : ∀ γ ∈ GQ L n, g⁻¹ * γ * g ∈ J → γ = 1)
+    {γ γ' : GQ L n} {κ κ' : J} (h : (γ : GAf L n) * g * κ = (γ' : GAf L n) * g * κ') : γ = γ' ∧ κ = κ' := by
+  have key : g⁻¹ * ((γ' : GAf L n)⁻¹ * γ) * g = (κ' : GAf L n) * (κ : GAf L n)⁻¹ := by
+    calc g⁻¹ * ((γ' : GAf L n)⁻¹ * γ) * g
+        = g⁻¹ * (γ' : GAf L n)⁻¹ * ((γ : GAf L n) * g * κ) * (κ : GAf L n)⁻¹ := by group
+      _ = g⁻¹ * (γ' : GAf L n)⁻¹ * ((γ' : GAf L n) * g * κ') * (κ : GAf L n)⁻¹ := by rw [h]
+      _ = (κ' : GAf L n) * (κ : GAf L n)⁻¹ := by group
+  have hmem : (γ' : GAf L n)⁻¹ * γ ∈ GQ L n := (GQ L n).mul_mem ((GQ L n).inv_mem γ'.2) γ.2
+  have h1 := hg _ hmem (key ▸ J.mul_mem κ'.2 (J.inv_mem κ.2))
+  have hγ : (γ : GAf L n) = γ' := by
+    rw [inv_mul_eq_one] at h1; exact h1.symm
+  refine ⟨Subtype.ext hγ, Subtype.ext ?_⟩
+  rw [hγ, mul_assoc, mul_assoc] at h
+  exact (mul_left_cancel (mul_left_cancel h))
+
+open Classical in
+
+noncomputable def cosetForm {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {K : Type} [Field K] {W : Type}
+    [AddCommGroup W] [Module K W] (ρ : Representation K (GQ L n) W) (J : Subgroup (GAf L n)) (χ : J →* Kˣ)
+    (g : GAf L n) (w : W) (x : GAf L n) : W :=
+  if h : ∃ p : GQ L n × J, x = (p.1 : GAf L n) * g * p.2 then ((χ h.choose.2 : Kˣ) : K) • ρ h.choose.1 w else 0
+
+theorem cosetForm_apply {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {K : Type} [Field K] {W : Type}
+    [AddCommGroup W] [Module K W] (ρ : Representation K (GQ L n) W) (J : Subgroup (GAf L n)) (χ : J →* Kˣ)
+    (g : GAf L n) (hg : ∀ γ ∈ GQ L n, g⁻¹ * γ * g ∈ J → γ = 1) (w : W) (γ : GQ L n) (κ : J) :
+    cosetForm ρ J χ g w ((γ : GAf L n) * g * κ) = ((χ κ : Kˣ) : K) • ρ γ w := by
+  have hex : ∃ p : GQ L n × J, (γ : GAf L n) * g * κ = (p.1 : GAf L n) * g * p.2 := ⟨(γ, κ), rfl⟩
+  unfold cosetForm
+  rw [dif_pos hex]
+  obtain ⟨h1, h2⟩ := double_coset_unique hg hex.choose_spec
+  rw [← h1, ← h2]
+
+theorem cosetForm_not {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {K : Type} [Field K] {W : Type}
+    [AddCommGroup W] [Module K W] (ρ : Representation K (GQ L n) W) (J : Subgroup (GAf L n)) (χ : J →* Kˣ)
+    (g : GAf L n) (w : W) (x : GAf L n) (hx : ¬ ∃ p : GQ L n × J, x = (p.1 : GAf L n) * g * p.2) :
+    cosetForm ρ J χ g w x = 0 := by
+  unfold cosetForm; rw [dif_neg hx]
+
+theorem exists_form_of_trivial_stabiliser : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (K : Type) [Field K] (W : Type) [AddCommGroup W] [Module K W] [Nontrivial W] (ρ : Representation K (GQ L n) W) (J : Subgroup (GAf L n)) (χ : J →* Kˣ) (g : GAf L n), (∀ γ ∈ GQ L n, g⁻¹ * γ * g ∈ J → γ = 1) → ∃ f ∈ NX.TypeSpF L n K ρ J χ, f ≠ 0 := by
+  intro L _ _ _ n K _ W _ _ _ ρ J χ g hg
+  obtain ⟨w, hw⟩ := exists_ne (0 : W)
+  refine ⟨cosetForm ρ J χ g w, ⟨fun δ x => ?_, fun μ x => ?_⟩, fun h0 => hw ?_⟩
+  · by_cases hx : ∃ p : GQ L n × J, x = (p.1 : GAf L n) * g * p.2
+    · obtain ⟨⟨γ, κ⟩, rfl⟩ := hx
+      have e : (δ : GAf L n) * ((γ : GAf L n) * g * κ) = ((δ * γ : GQ L n) : GAf L n) * g * κ := by
+        simp [mul_assoc]
+      rw [e, cosetForm_apply ρ J χ g hg, cosetForm_apply ρ J χ g hg, map_smul, map_mul, Module.End.mul_apply]
+    · have hx' : ¬ ∃ p : GQ L n × J, (δ : GAf L n) * x = (p.1 : GAf L n) * g * p.2 := by
+        rintro ⟨⟨γ, κ⟩, hp⟩
+        refine hx ⟨(δ⁻¹ * γ, κ), ?_⟩
+        simp only [Subgroup.coe_mul, Subgroup.coe_inv, mul_assoc] at hp ⊢
+        rw [← hp]; group
+      rw [cosetForm_not ρ J χ g w _ hx, cosetForm_not ρ J χ g w _ hx', map_zero]
+  · by_cases hx : ∃ p : GQ L n × J, x = (p.1 : GAf L n) * g * p.2
+    · obtain ⟨⟨γ, κ⟩, rfl⟩ := hx
+      have e : (γ : GAf L n) * g * κ * μ = (γ : GAf L n) * g * ((κ * μ : J) : GAf L n) := by
+        simp [mul_assoc]
+      rw [e, cosetForm_apply ρ J χ g hg, cosetForm_apply ρ J χ g hg, map_mul, Units.val_mul, mul_comm, mul_smul]
+    · have hx' : ¬ ∃ p : GQ L n × J, x * μ = (p.1 : GAf L n) * g * p.2 := by
+        rintro ⟨⟨γ, κ⟩, hp⟩
+        refine hx ⟨(γ, κ * μ⁻¹), ?_⟩
+        simp only [Subgroup.coe_mul, Subgroup.coe_inv] at hp ⊢
+        rw [← mul_assoc, ← hp]; group
+      rw [cosetForm_not ρ J χ g w _ hx, cosetForm_not ρ J χ g w _ hx', smul_zero]
+  · have := congrFun h0 g
+    have e := cosetForm_apply ρ J χ g hg w 1 1
+    simp only [OneMemClass.coe_one, one_mul, mul_one, map_one, Units.val_one, one_smul] at e
+    rw [e, Module.End.one_apply] at this
+    simpa using this
+
+end GlobalTheory.ClassForm
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ne_zero_algebraicModularForm_of_trivial_stabiliser : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (K : Type) [Field K] (W : Type) [AddCommGroup W] [Module K W] [Nontrivial W] (ρ : Representation K (GQ L n) W) (J : Subgroup (GAf L n)) (χ : J →* Kˣ) (g : GAf L n), (∀ γ ∈ GQ L n, g⁻¹ * γ * g ∈ J → γ = 1) → ∃ f ∈ NX.TypeSpF L n K ρ J χ, f ≠ 0 := by
+  atlas_forward_decl GlobalTheory.ClassForm.exists_form_of_trivial_stabiliser
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+noncomputable section
+
+namespace GlobalTheory.LevShapeBound
+
+section Gen
+
+variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
+
+theorem proj_eq_of_compAt (s : SplitPlace L) {x y : AL L}
+    (h : compAt L s.v x = compAt L s.v y) : s.proj x = s.proj y := by
+  have key : ∀ z : AL L, s.proj z =
+      (Algebra.TensorProduct.lift s.i (AlgHom.id _ (s.v.adicCompletion (maximalRealSubfield L)))
+        (fun _ _ => Commute.all _ _)) (compAt L s.v z) := by
+    intro z
+    induction z using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a b => rfl
+    | add a b ha hb => rw [map_add, map_add, ha, hb, map_add]
+  rw [key, key, h]
+
+theorem loc_eq_of_comp (s : SplitPlace L) {x y : GAf L n}
+    (h : (x.1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L s.v) = (y.1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L s.v)) :
+    s.loc n x = s.loc n y := by
+  apply Units.ext
+  refine Matrix.ext fun i j => ?_
+  have hij := congrFun (congrFun h i) j
+  simp only [Matrix.map_apply] at hij
+  exact proj_eq_of_compAt s hij
+
+end Gen
+
+theorem bound : ∀ (D : D7) (η : HChar D.host.E) (J : Subgroup (GAf D.host.E D.R.nV)), GPlaces D → GrpShape D η J → ∀ κ ∈ J, κ ∈ Umax D.host.E D.R.nV ∧ ∀ k v (s : SplitPlace D.host.E), s.w = D.naut.plGw k v → NG.UniRT s D.R.r (s.loc _ κ) := by
+  intro D η J hG hS κ hκ
+  obtain ⟨hprod, hpara, huni, hhyp⟩ := hS
+
+  have hloc : ∀ w, ∃ κ' ∈ J, κ' ∈ Umax D.host.E D.R.nV ∧
+      (κ'.1 : Matrix (Fin D.R.nV) (Fin D.R.nV) (AL D.host.E)).map (compAt D.host.E w) =
+        (κ.1 : Matrix (Fin D.R.nV) (Fin D.R.nV) (AL D.host.E)).map (compAt D.host.E w) := by
+    intro w
+    obtain ⟨κ', hκ', htr, heq⟩ := hprod κ hκ w
+    refine ⟨κ', hκ', ?_, heq⟩
+    by_cases hg : w ∈ gPl D
+    · obtain ⟨k, v, s, hsv, hsw⟩ := hG.2.1 w hg
+      subst hsv
+      have hu := (huni k v s hsw κ' htr).1 hκ'
+      exact (GlobalTheory.HeckeStdFacts.loc_mem_GLint_iff s htr).1 hu.1.1
+    · by_cases hq : w ∈ qPl D η
+      · obtain ⟨s, hsv, hs⟩ := hpara w hq
+        subst hsv
+        have hp := (hs κ' htr).1 hκ'
+        exact (GlobalTheory.HeckeStdFacts.loc_mem_GLint_iff s htr).1 hp.1
+      · refine (hhyp κ' ?_).1 hκ'
+        intro u hu
+        apply htr u
+        rintro rfl
+        simp only [Set.mem_compl_iff, not_not, Set.mem_union] at hu
+        rcases hu with h | h
+        · exact hg h
+        · exact hq h
+  refine ⟨?_, ?_⟩
+  · intro i j
+    apply GlobalTheory.FormInner.mem_ALint_of_comp
+    intro w
+    obtain ⟨κ', -, hU, heq⟩ := hloc w
+    refine ⟨(κ'.1 : Matrix (Fin D.R.nV) (Fin D.R.nV) (AL D.host.E)) i j, hU i j, ?_⟩
+    have := congrFun (congrFun heq i) j
+    simpa only [Matrix.map_apply] using this
+  · intro k v s hsw
+    obtain ⟨κ', hκ', htr, heq⟩ := hprod κ hκ s.v
+    have hu := (huni k v s hsw κ' htr).1 hκ'
+    rwa [loc_eq_of_comp s heq] at hu
+
+end GlobalTheory.LevShapeBound
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.expectedShapeLevel_integral_and_unipotent_at_typePlaces : ∀ (D : D7) (η : HChar D.host.E) (J : Subgroup (GAf D.host.E D.R.nV)), GPlaces D → GrpShape D η J → ∀ κ ∈ J, κ ∈ Umax D.host.E D.R.nV ∧ ∀ k v (s : SplitPlace D.host.E), s.w = D.naut.plGw k v → NG.UniRT s D.R.r (s.loc _ κ) := by
+  atlas_forward_decl GlobalTheory.LevShapeBound.bound
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+namespace GlobalTheory.LevCmp
+
+theorem overPl_subsingleton {L : Type} [Field L] (w : HeightOneSpectrum (𝓞 L)) :
+    {v : HeightOneSpectrum (𝓞 (maximalRealSubfield L)) | NG.OverPl w v}.Subsingleton := by
+  intro v hv v' hv'
+  exact HeightOneSpectrum.ext (hv.symm.trans hv')
+
+theorem placesOver_finite_of_ne_zero (E : Type) [Field E] [NumberField E] (p : ℕ) (hp : p ≠ 0) :
+    (placesOver E p).Finite := by
+  have h0 : Ideal.span {((p : ℕ) : 𝓞 E)} ≠ 0 := by
+    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
+    exact_mod_cast hp
+  refine (Ideal.finite_factors h0).subset fun v hv => ?_
+  show v.asIdeal ∣ _
+  rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
+  exact hv
+
+theorem gPl_union_qPl_finite : ∀ (D : D7) (η : HChar D.host.E), (gPl D ∪ qPl D η).Finite := by
+  intro D η
+  have hS : (⋃ k : Fin 2, placesOver D.host.E (D.host.g k)).Finite :=
+    Set.finite_iUnion fun k => placesOver_finite_of_ne_zero _ _ (D.host.g_prime k).ne_zero
+  have hR : {w | ¬ η.UnrAt w}.Finite := GlobalTheory.Mem.UnrAe.finite_ramified η
+  refine Set.Finite.union ?_ ?_
+  · refine (hS.biUnion fun w _ => (overPl_subsingleton w).finite).subset ?_
+    rintro v ⟨w, hw, k, hk⟩
+    exact Set.mem_biUnion (Set.mem_iUnion.2 ⟨k, hk⟩) hw
+  · refine (hR.biUnion fun w _ => (overPl_subsingleton w).finite).subset ?_
+    rintro v ⟨_, w, hw, hu⟩
+    exact Set.mem_biUnion (x := w) hu hw
+
+end GlobalTheory.LevCmp
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.typePlaces_union_ramifiedPlaces_finite : ∀ (D : D7) (η : HChar D.host.E), (gPl D ∪ qPl D η).Finite := by
+  atlas_forward_decl GlobalTheory.LevCmp.gPl_union_qPl_finite
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+noncomputable section
+
+namespace GlobalTheory.LevProd
+
+open GlobalTheory.MtInProd
+open Formalism.L2.NX (locM InLevG InParah inParah_one)
+open Classical
+
+section Gen
+
+variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
+
+theorem proj_eA (s : SplitPlace L) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) :
+    s.proj (eA L v) = if s.v = v then 1 else 0 := by
+  show s.i 1 * (idemF (L := L) v) s.v = _
+  rw [map_one, one_mul, idemF_apply]
+
+theorem locM_cut (s : SplitPlace L) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (κ : GAf L n) :
+    locM s (cutGA (eA_mul v) (conj_eA v) κ) = if s.v = v then locM s κ else 1 := by
+  show ((cutGA (eA_mul v) (conj_eA v) κ).1 : Matrix (Fin n) (Fin n) (AL L)).map s.proj = _
+  rw [cutGA_val, map_cutMat, proj_eA]
+  split_ifs
+  · rw [cutMat_one_left]; rfl
+  · rw [cutMat_zero_left]
+
+theorem inLevG_one (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (r : ℕ) :
+    InLevG v r (1 : Matrix (Fin n) (Fin n) (v.adicCompletion (maximalRealSubfield L))) := by
+  refine ⟨inParah_one v r, fun a b _ _ => ⟨fun hba => ?_, fun hab => ?_⟩⟩
+  · have h : a ≠ b := fun e => by subst e; exact lt_irrefl _ hba
+    rw [Matrix.one_apply_ne h, map_zero]
+    exact WithZero.zero_lt_coe _
+  · subst hab
+    rw [Matrix.one_apply_eq, sub_self, map_zero]
+    exact WithZero.zero_lt_coe _
+
+end Gen
+
+theorem main : ∀ (D : D7) (X : NExpTied D) (i : D.ntw.Tw) (b : Bool) (k : ℕ) (Q : Finset (PlE D.host))
+    (ψ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ) (hA : NX.AdmTw D i k Q ψ) (j : Fin D.R.m), NG.IsProdLevel (cell X b hA j).J := by
+  intro D X i b k Q ψ hA j κ hκ v
+  obtain ⟨hU, hG, hQ, hD⟩ := ((cell X b hA j).J_mem κ).1 hκ
+  refine ⟨cutGA (eA_mul v) (conj_eA v) κ, ((cell X b hA j).J_mem _).2 ⟨cutGA_mem_Umax _ _ (eA_mem v) hU, fun kv => ?_,
+    fun P hP => ?_, fun P hP => ?_⟩, triv_cut_eA v κ, cut_eA_at v κ⟩
+  · rw [locM_cut]; split_ifs
+    · exact hG kv
+    · exact inLevG_one _ _
+  · rw [locM_cut]; split_ifs
+    · exact hQ P hP
+    · exact inParah_one _ _
+  · rw [locM_cut]; split_ifs
+    · exact hD P hP
+    · exact inParah_one _ _
+
+end GlobalTheory.LevProd
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isProductLevel_definiteFormsRealisationAtTwist : ∀ (D : D7) (X : NExpTied D) (i : D.ntw.Tw) (b : Bool) (k : ℕ) (Q : Finset (PlE D.host)) (ψ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ) (hA : NX.AdmTw D i k Q ψ) (j : Fin D.R.m), NG.IsProdLevel (cell X b hA j).J := by
+  atlas_forward_decl GlobalTheory.LevProd.main
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.LowAvoid
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+def lowPre (P : Pre) : Finset ℕ := by
+  classical
+  exact if h : ∃ X : Stages, X.B.toPre = P then lowAll h.choose.toD7 else ∅
+
+theorem lowAll_congr {s s' : Stages} (h : s.B.toPre = s'.B.toPre) : lowAll s.toD7 = lowAll s'.toD7 := by
+  obtain ⟨B, C, W, V, S, N, Gj⟩ := s
+  obtain ⟨B', C', W', V', S', N', Gj'⟩ := s'
+  cases B
+  cases B'
+  dsimp only at h
+  subst h
+  rfl
+
+theorem lowAll_eq_lowPre (s : Stages) : lowAll s.toD7 = lowPre s.B.toPre := by
+  have h : ∃ X : Stages, X.B.toPre = s.B.toPre := ⟨s, rfl⟩
+  simp only [lowPre, dif_pos h]
+  exact lowAll_congr h.choose_spec.symm
+
+theorem prime_of_mem_lowAll (D : D7) {p : ℕ} (hp : p ∈ lowAll D) : p.Prime := by
+  simp only [lowAll, lowPr, Finset.mem_union, Finset.mem_insert, Finset.mem_singleton] at hp
+  rcases hp with ((rfl | rfl | hp | hp) | rfl | rfl | rfl | rfl)
+  · exact Nat.prime_two
+  · exact (Formalism.L2.Host.leastSplitAuxiliaryPrimeThetaChain_spec D).1
+  · exact Nat.prime_of_mem_primeFactors hp
+  · exact Nat.prime_of_mem_primeFactors hp
+  · exact D.host.g_prime 0
+  · exact D.host.g_prime 1
+  · exact D.host.pde_prime
+  · exact D.host.pde'_prime
+
+theorem eq_of_mem_placesOver {E : Type} [Field E] [NumberField E] (u : HeightOneSpectrum (𝓞 E)) {p : ℕ} (hp : p.Prime)
+    (hu : (Ideal.absNorm u.asIdeal).Prime) (h : u ∈ placesOver E p) : Ideal.absNorm u.asIdeal = p := by
+  by_contra e
+  have h3 : ((Ideal.absNorm u.asIdeal : ℕ) : 𝓞 E) ∈ u.asIdeal := Ideal.absNorm_mem _
+  obtain ⟨a, b, hab⟩ : IsCoprime ((Ideal.absNorm u.asIdeal : ℕ) : 𝓞 E) ((p : ℕ) : 𝓞 E) :=
+    Nat.Coprime.cast ((Nat.coprime_primes hu hp).2 e)
+  exact u.isPrime.ne_top ((Ideal.eq_top_iff_one _).2
+    (hab ▸ Ideal.add_mem _ (Ideal.mul_mem_left _ _ h3) (Ideal.mul_mem_left _ _ (show ((p : ℕ) : 𝓞 E) ∈ u.asIdeal from h))))
+
+theorem conductors_avoid_lowAll :
+    AllSt fun _ _ _ T _ _ x => ∀ v, ∀ u ∈ T.Q v, ∀ p ∈ lowAll (Dof x), u ∉ placesOver (Dof x).host.E p := by
+  refine evG_all fun K => ?_
+  refine large₂.imp (p := fun B _ T => T.Avoids fun _ => lowPre B.toPre)
+    ⟨fun _ _ _ => ∅, fun _ _ _ _ => ∅, fun B _ _ _ _ => lowPre B, fun _ _ _ _ _ => ∅, by simp, by simp,
+      fun _ _ _ _ _ _ h => h⟩ ?_
+  intro B f T _ hA _ _ _ w _ P x v u hu p hp hup
+  have hl : lowAll (Dof x) = lowPre B.toPre := lowAll_eq_lowPre (w.st x.o.Z)
+  obtain ⟨-, h1, -, -⟩ := (T.psi_tw v).2.2.2 u fun h => ((T.psi_is v).ram u).1 h hu
+  have e : Ideal.absNorm u.asIdeal = p := eq_of_mem_placesOver u (prime_of_mem_lowAll _ hp) h1 hup
+  exact hA v u hu (by rw [e, ← hl]; exact hp)
+
+end GlobalTheory.LowAvoid
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twistConductors_avoid_excludedPrimes : AllSt fun _ _ _ T _ _ x => ∀ v, ∀ u ∈ T.Q v, ∀ p ∈ lowAll (Dof x), u ∉ placesOver (Dof x).host.E p := by
+  atlas_forward_decl GlobalTheory.LowAvoid.conductors_avoid_lowAll
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+namespace GlobalTheory.LevCmp
+
+theorem galOf_of_orderDvd : GlobalTheory.Published.GlobalArtinReciprocity → ∀ (D : D7) (χ : HChar D.host.E) (n : ℕ), 0 < n → χ.OrderDvd n → (∃ z : D.what₂.LL, IsPrimitiveRoot z n) → ∃ ψ₀, GalOf D χ ψ₀ ∧ ∀ g, ψ₀ g ^ n = 1 := by
+  intro hGAR D χ n hn hχ hz
+  obtain ⟨art, ha⟩ := hGAR D.host.E D.nd.Om
+  have h1 : ∀ x, χ.1 x ^ n = 1 := fun x => congrArg (fun ξ : HChar D.host.E => ξ.1 x) hχ
+  have hko : IsOpen (χ.1.ker : Set (Ideles D.host.E)) := GlobalTheory.HeckeGal.isOpen_ker_of_pow χ.1 χ.2.1 hn h1
+  have hkc : IsClosed (χ.1.ker : Set (Ideles D.host.E)) := Subgroup.isClosed_of_isOpen _ hko
+  have hle : art.ker ≤ χ.1.ker := by
+    rw [ha.ker]
+    refine Subgroup.topologicalClosure_minimal _ (sup_le ?_ ?_) hkc
+    · rintro _ ⟨k, rfl⟩
+      exact χ.2.2 k
+    · rw [GlobalTheory.HeckeGal.infConn, Subgroup.map_le_iff_le_comap]
+      intro y hy
+      have hinl : Continuous (Units.map (MonoidHom.inl (InfiniteAdeleRing D.host.E) (FiniteAdeleRing (𝓞 D.host.E) D.host.E))) :=
+        Continuous.units_map _ (continuous_id.prodMk continuous_const)
+      have hcl : IsClopen ((Subgroup.comap (Units.map (MonoidHom.inl (InfiniteAdeleRing D.host.E) (FiniteAdeleRing (𝓞 D.host.E) D.host.E))) χ.1.ker : Subgroup _) : Set (InfiniteAdeleRing D.host.E)ˣ) :=
+        ⟨hkc.preimage hinl, hko.preimage hinl⟩
+      exact hcl.connectedComponent_subset (Subgroup.one_mem _) hy
+  let e := QuotientGroup.quotientKerEquivOfSurjective art ha.quot.surjective
+  let c : Gab D.host.E D.nd.Om →* ℂˣ := (QuotientGroup.lift art.ker χ.1 hle).comp e.symm.toMonoidHom
+  have hc : ∀ x, c (art x) = χ.1 x := fun x => by
+    show QuotientGroup.lift art.ker χ.1 hle (e.symm (art x)) = χ.1 x
+    have : e.symm (art x) = QuotientGroup.mk x := e.symm_apply_eq.mpr rfl
+    rw [this]; rfl
+  have hcc : Continuous c := by
+    rw [ha.quot.isQuotientMap.continuous_iff]
+    have : (c ∘ art) = χ.1 := funext hc
+    rw [this]; exact χ.2.1
+  let r : G D.host.E D.nd.Om →* ℂˣ := c.comp (GlobalTheory.HeckeGal.toAb D.host.E D.nd.Om)
+  have hrc : Continuous r := hcc.comp continuous_quot_mk
+  have hrn : ∀ g, r g ^ n = 1 := fun g => by
+    obtain ⟨x, hx⟩ := ha.quot.surjective (GlobalTheory.HeckeGal.toAb D.host.E D.nd.Om g)
+    show c _ ^ n = 1
+    rw [← hx, hc, h1]
+  have hro : IsOpen (r.ker : Set (G D.host.E D.nd.Om)) := GlobalTheory.HeckeGal.isOpen_ker_of_pow r hrc hn hrn
+  obtain ⟨z, hz⟩ := hz
+  obtain ⟨ψ, hψ⟩ := GlobalTheory.TwistChoice.exists_char_descent D.what₂.embLL hn hz r hrn
+  have hψr : (Units.map D.what₂.embLL.toMonoidHom).comp ψ = r := MonoidHom.ext fun g => Units.ext (hψ g)
+  have hker : ψ.ker = r.ker := by
+    ext g
+    simp only [MonoidHom.mem_ker]
+    rw [← hψr, MonoidHom.comp_apply]
+    constructor
+    · intro h; rw [h, map_one]
+    · intro h
+      apply Units.ext
+      apply D.what₂.embLL.injective
+      have := congrArg Units.val h
+      simpa using this
+  refine ⟨ψ, ⟨by rw [hker]; exact hro, art, ha, ?_⟩, fun g => ?_⟩
+  · rw [hψr]
+    intro x σ hσ
+    show χ.1 x = c (GlobalTheory.HeckeGal.toAb D.host.E D.nd.Om σ)
+    rw [← hσ, hc]
+  · apply Units.ext
+    apply D.what₂.embLL.injective
+    have := congrArg Units.val (hrn g)
+    rw [← hψr] at this
+    simpa using this
+
+end GlobalTheory.LevCmp
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_galoisCharacter_of_finiteOrder_heckeCharacter : GlobalTheory.Published.GlobalArtinReciprocity → ∀ (D : D7) (χ : HChar D.host.E) (n : ℕ), 0 < n → χ.OrderDvd n → (∃ z : D.what₂.LL, IsPrimitiveRoot z n) → ∃ ψ₀, GalOf D χ ψ₀ ∧ ∀ g, ψ₀ g ^ n = 1 := by
+  atlas_forward_decl GlobalTheory.LevCmp.galOf_of_orderDvd
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+noncomputable section
+
+namespace GlobalTheory.TwistDescent
+
+variable {D : D7} {i : D.ntw.Tw} {k : ℕ} {b : Bool} {v : D.what₂.places.Pl}
+
+abbrev rd (ρ : Reading i k b v) : D.ntw.Ok i k →+* FractionRing ρ.Oe :=
+  (algebraMap ρ.Oe (FractionRing ρ.Oe)).comp (algebraMap (D.ntw.Ok i k) ρ.Oe)
+
+theorem rd_injective (ρ : Reading i k b v) : Function.Injective (rd ρ) :=
+  (IsFractionRing.injective ρ.Oe (FractionRing ρ.Oe)).comp ρ.inj
+
+theorem eq_iff_of_reads {ρ : Reading i k b v} {χ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ}
+    {ψ₀ : G D.host.E D.nd.Om →* (D.what₂.LL)ˣ}
+    (h : ∀ g, ρ.emb ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL) = rd ρ ((χ g : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k))
+    (g g' : G D.host.E D.nd.Om) : χ g = χ g' ↔ ψ₀ g = ψ₀ g' := by
+  constructor
+  · intro he
+    apply Units.ext
+    apply ρ.emb.injective
+    rw [h g, h g', he]
+  · intro he
+    apply Units.ext
+    apply rd_injective ρ
+    rw [← h g, ← h g', he]
+
+theorem one_iff_of_reads {ρ : Reading i k b v} {χ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ}
+    {ψ₀ : G D.host.E D.nd.Om →* (D.what₂.LL)ˣ}
+    (h : ∀ g, ρ.emb ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL) = rd ρ ((χ g : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k))
+    (g : G D.host.E D.nd.Om) : χ g = 1 ↔ ψ₀ g = 1 := by
+  simpa using eq_iff_of_reads h g 1
+
+theorem twOK_of_reads {ρ : Reading i k b v} {Q : Finset (PlE D.host)} {χ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ}
+    {ψ₀ : G D.host.E D.nd.Om →* (D.what₂.LL)ˣ}
+    (h : ∀ g, ρ.emb ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL) = rd ρ ((χ g : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k))
+    (hs : ∀ u ∈ Q, IsSplitPl D.host u) (hd : Disjoint Q (D.ntw.S0 i))
+    (ho : IsOpen (ψ₀.ker : Set (G D.host.E D.nd.Om))) (ha : AntiHom D.ntw.cc ψ₀)
+    (hp : ∀ g, ψ₀ g ^ (D.ntw.l i ^ k) = 1) (hr : RamExactly ψ₀ (↑Q : Set (PlE D.host)))
+    (ht : BlochKatoReduction.Gen.TrivAbove ψ₀ (D.ntw.l i)) : IntegralHeckeForms.TwOK i k Q χ := by
+  have hker : (χ.ker : Set (G D.host.E D.nd.Om)) = ψ₀.ker := Set.ext fun g => by
+    simp only [SetLike.mem_coe, MonoidHom.mem_ker]
+    exact one_iff_of_reads h g
+  refine ⟨hs, hd, hker ▸ ho, fun g g' hg => ?_, fun g => ?_, fun w A hA => ?_, fun w hw A hA σ hσ => ?_⟩
+  · rw [← map_inv, eq_iff_of_reads h, map_inv]
+    exact ha g g' hg
+  · have h1 : χ g ^ (D.ntw.l i ^ k) = 1 := by
+      rw [← map_pow, one_iff_of_reads h, map_pow]
+      exact hp g
+    have h2 : ((χ g : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k) ^ (D.ntw.l i ^ k) = 1 := by
+      rw [← Units.val_pow_eq_pow_val, h1, Units.val_one]
+    obtain ⟨a, -, h3⟩ := (D.ntw.zk_prim i k).eq_pow_of_pow_eq_one h2
+    refine Subgroup.mem_zpowers_iff.2 ⟨(a : ℤ), ?_⟩
+    rw [zpow_natCast]
+    exact Units.ext (by rw [Units.val_pow_eq_pow_val]; exact h3)
+  · rw [← hr w A hA]
+    simp only [ne_eq, one_iff_of_reads h]
+  · exact (one_iff_of_reads h σ).2 (ht w hw A hA σ hσ)
+
+theorem exists_reads {ρ : Reading i k b v} (ψ₀ : G D.host.E D.nd.Om →* (D.what₂.LL)ˣ)
+    (hp : ∀ g, ψ₀ g ^ (D.ntw.l i ^ k) = 1) :
+    ∃ χ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ, (∀ g, χ g ∈ Subgroup.zpowers (D.ntw.zk i k)) ∧
+      ∀ g, ρ.emb ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL) = rd ρ ((χ g : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k) := by
+  have hz : IsPrimitiveRoot (rd ρ (D.ntw.zk i k : D.ntw.Ok i k)) (D.ntw.l i ^ k) :=
+    (D.ntw.zk_prim i k).map_of_injective (rd_injective ρ)
+  have hx : ∀ g, ∃ a : ℕ, rd ρ (((D.ntw.zk i k) ^ a : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k) =
+      ρ.emb ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL) := fun g => by
+    have h1 : (ρ.emb ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL)) ^ (D.ntw.l i ^ k) = 1 := by
+      rw [← map_pow, ← Units.val_pow_eq_pow_val, hp g, Units.val_one, map_one]
+    obtain ⟨a, -, ha⟩ := hz.eq_pow_of_pow_eq_one h1
+    exact ⟨a, by rw [Units.val_pow_eq_pow_val, map_pow]; exact ha⟩
+  choose a ha using hx
+  let χ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ := MonoidHom.mk' (fun g => D.ntw.zk i k ^ a g) fun g g' => by
+    apply Units.ext
+    apply rd_injective ρ
+    rw [ha (g * g'), map_mul ψ₀, Units.val_mul, map_mul ρ.emb, Units.val_mul, map_mul (rd ρ), ha, ha]
+  refine ⟨χ, fun g => ⟨(a g : ℤ), by simp [χ]⟩, fun g => (ha g).symm⟩
+
+theorem exists_pulls_twOK : ∀ (D : D7) (i : D.ntw.Tw) (k : ℕ) (b : Bool) (v : D.what₂.places.Pl) (ρ : Reading i k b v) (Q : Finset (PlE D.host)) (ψ₀ : G D.host.E D.nd.Om →* (D.what₂.LL)ˣ), (∀ u ∈ Q, IsSplitPl D.host u) → Disjoint Q (D.ntw.S0 i) → IsOpen (ψ₀.ker : Set (G D.host.E D.nd.Om)) → AntiHom D.ntw.cc ψ₀ → (∀ g, ψ₀ g ^ (D.ntw.l i ^ k) = 1) → RamExactly ψ₀ (↑Q : Set (PlE D.host)) → BlochKatoReduction.Gen.TrivAbove ψ₀ (D.ntw.l i) → (∃ ψ : D.ntw.RCG i Q →* (D.ntw.Ok i k)ˣ, ρ.Pulls ψ ψ₀) ∧ ∀ ψ : D.ntw.RCG i Q →* (D.ntw.Ok i k)ˣ, ρ.Pulls ψ ψ₀ → IntegralHeckeForms.TwOK i k Q (ψ.comp (D.ntw.art i Q)) := by
+  intro D i k b v ρ Q ψ₀ hs hd ho ha hp hr ht
+  refine ⟨?_, fun ψ hψ => twOK_of_reads (ρ := ρ) (fun g => hψ g) hs hd ho ha hp hr ht⟩
+  obtain ⟨χ, hv, hχ⟩ := exists_reads (ρ := ρ) ψ₀ hp
+  have hfin : IsOfFinOrder (D.ntw.zk i k) := isOfFinOrder_iff_pow_eq_one.2
+    ⟨_, pow_pos (D.ntw.lPrime i).out.pos k, (IsPrimitiveRoot.coe_units_iff.mp (D.ntw.zk_prim i k)).pow_eq_one⟩
+  haveI : Finite (Subgroup.zpowers (D.ntw.zk i k)) := (finite_zpowers.2 hfin).to_subtype
+  have hker : (χ.ker : Set (G D.host.E D.nd.Om)) = ψ₀.ker := Set.ext fun g => by
+    simp only [SetLike.mem_coe, MonoidHom.mem_ker]
+    exact one_iff_of_reads hχ g
+  obtain ⟨f, hf⟩ := D.ntw.art_univ i Q
+    (fun u hu hl => Finset.disjoint_left.1 hd hu (D.ntw.twistExcludedPlaces_contains_residueChar i hl)) (Subgroup.zpowers (D.ntw.zk i k))
+    (by
+      rintro ⟨x, n, rfl⟩
+      refine ⟨k, Subtype.ext ?_⟩
+      change (D.ntw.zk i k ^ n) ^ (D.ntw.l i ^ k) = 1
+      rw [← zpow_natCast, ← zpow_mul, mul_comm, zpow_mul, zpow_natCast,
+        (IsPrimitiveRoot.coe_units_iff.mp (D.ntw.zk_prim i k)).pow_eq_one, one_zpow])
+    (χ.codRestrict _ hv) (by rw [MonoidHom.ker_codRestrict, hker]; exact ho)
+    (fun g g' h => Subtype.ext (by
+      change χ g' = (χ g)⁻¹
+      rw [← map_inv, eq_iff_of_reads hχ, map_inv]
+      exact ha g g' h))
+    (fun u hu A hA σ hσ => Subtype.ext (by
+      change χ σ = 1
+      rw [one_iff_of_reads hχ]
+      by_contra hne
+      exact hu ((hr u A hA).1 ⟨σ, hσ, hne⟩)))
+  refine ⟨(Subgroup.zpowers (D.ntw.zk i k)).subtype.comp f, fun g => ?_⟩
+  have h1 : f (D.ntw.art i Q g) = χ.codRestrict _ hv g := by rw [← hf]; rfl
+  change ρ.emb _ = rd ρ (((f (D.ntw.art i Q g) : Subgroup.zpowers (D.ntw.zk i k)) : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k)
+  rw [h1]
+  exact hχ g
+
+end GlobalTheory.TwistDescent
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ringClassGroup_descent_of_coeffFieldTwist : ∀ (D : D7) (i : D.ntw.Tw) (k : ℕ) (b : Bool) (v : D.what₂.places.Pl) (ρ : Reading i k b v) (Q : Finset (PlE D.host)) (ψ₀ : G D.host.E D.nd.Om →* (D.what₂.LL)ˣ), (∀ u ∈ Q, IsSplitPl D.host u) → Disjoint Q (D.ntw.S0 i) → IsOpen (ψ₀.ker : Set (G D.host.E D.nd.Om)) → AntiHom D.ntw.cc ψ₀ → (∀ g, ψ₀ g ^ (D.ntw.l i ^ k) = 1) → RamExactly ψ₀ (↑Q : Set (PlE D.host)) → BlochKatoReduction.Gen.TrivAbove ψ₀ (D.ntw.l i) → (∃ ψ : D.ntw.RCG i Q →* (D.ntw.Ok i k)ˣ, ρ.Pulls ψ ψ₀) ∧ ∀ ψ : D.ntw.RCG i Q →* (D.ntw.Ok i k)ˣ, ρ.Pulls ψ ψ₀ → IntegralHeckeForms.TwOK i k Q (ψ.comp (D.ntw.art i Q)) := by
+  atlas_forward_decl GlobalTheory.TwistDescent.exists_pulls_twOK
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+namespace GlobalTheory.LevCmp
+
+theorem pulls_eq_zpow : ∀ (D : D7) (i : D.ntw.Tw) (k : ℕ) (b b' : Bool) (v v' : D.what₂.places.Pl) (ρ : Reading i k b v) (ρ' : Reading i k b' v') (Q : Finset (PlE D.host)) (ψ ψ' : D.ntw.RCG i Q →* (D.ntw.Ok i k)ˣ) (ψ₀ : G D.host.E D.nd.Om →* (D.what₂.LL)ˣ), (∃ z : D.what₂.LL, IsPrimitiveRoot z (D.ntw.l i ^ k)) → (∀ g, ψ₀ g ^ (D.ntw.l i ^ k) = 1) → ρ.Pulls ψ ψ₀ → ρ'.Pulls ψ' ψ₀ → ∃ a : ℤ, Nat.Coprime a.natAbs (D.ntw.l i) ∧ ψ' = ψ ^ a := by
+  intro D i k b b' v v' ρ ρ' Q ψ ψ' ψ₀ ⟨z, hz⟩ hpow hρ hρ'
+  have hl := (D.ntw.lPrime i).out
+  let ι : D.ntw.Ok i k →+* FractionRing ρ.Oe := (algebraMap ρ.Oe (FractionRing ρ.Oe)).comp (algebraMap _ ρ.Oe)
+  let ι' : D.ntw.Ok i k →+* FractionRing ρ'.Oe := (algebraMap ρ'.Oe (FractionRing ρ'.Oe)).comp (algebraMap _ ρ'.Oe)
+  have hι : Function.Injective ι := (IsFractionRing.injective ρ.Oe (FractionRing ρ.Oe)).comp ρ.inj
+  have hι' : Function.Injective ι' := (IsFractionRing.injective ρ'.Oe (FractionRing ρ'.Oe)).comp ρ'.inj
+  have e1 : ∀ g, ι ((ψ (D.ntw.art i Q g) : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k) = ρ.emb ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL) :=
+    fun g => (hρ g).symm
+  have e1' : ∀ g, ι' ((ψ' (D.ntw.art i Q g) : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k) = ρ'.emb ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL) :=
+    fun g => (hρ' g).symm
+  have hp : ∀ g, ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL) ^ (D.ntw.l i ^ k) = 1 := fun g => by
+    rw [← Units.val_pow_eq_pow_val, hpow g, Units.val_one]
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · refine ⟨1, by simp, ?_⟩
+    ext x
+    obtain ⟨g, rfl⟩ := D.ntw.art_surj i Q x
+    have h1 : ((ψ₀ g : (D.what₂.LL)ˣ) : D.what₂.LL) = 1 := by simpa using hp g
+    have h2 := e1 g
+    have h2' := e1' g
+    rw [h1, map_one, ← map_one ι] at h2
+    rw [h1, map_one, ← map_one ι'] at h2'
+    rw [hι' h2', zpow_one, hι h2]
+  · have hN : 0 < D.ntw.l i ^ k := pow_pos hl.pos k
+    haveI : NeZero (D.ntw.l i ^ k) := ⟨hN.ne'⟩
+    have hζ := D.ntw.zk_prim i k
+    have he : IsPrimitiveRoot (ρ.emb z) (D.ntw.l i ^ k) := hz.map_of_injective ρ.emb.injective
+    have he' : IsPrimitiveRoot (ρ'.emb z) (D.ntw.l i ^ k) := hz.map_of_injective ρ'.emb.injective
+    have hζe : IsPrimitiveRoot (ι (D.ntw.zk i k : D.ntw.Ok i k)) (D.ntw.l i ^ k) := hζ.map_of_injective hι
+    have hζe' : IsPrimitiveRoot (ι' (D.ntw.zk i k : D.ntw.Ok i k)) (D.ntw.l i ^ k) := hζ.map_of_injective hι'
+    obtain ⟨c, -, hc⟩ := he.eq_pow_of_pow_eq_one hζe.pow_eq_one
+    obtain ⟨a, -, ha⟩ := hζe'.eq_pow_of_pow_eq_one he'.pow_eq_one
+    have hcc : c.Coprime (D.ntw.l i ^ k) := (he.pow_iff_coprime hN c).1 (hc ▸ hζe)
+    have hac : a.Coprime (D.ntw.l i ^ k) := (hζe'.pow_iff_coprime hN a).1 (ha ▸ he')
+    refine ⟨((c * a : ℕ) : ℤ), ?_, ?_⟩
+    · rw [Int.natAbs_natCast]
+      exact (Nat.Coprime.mul hcc hac).coprime_dvd_right (dvd_pow_self _ hk.ne')
+    · ext x
+      obtain ⟨g, rfl⟩ := D.ntw.art_surj i Q x
+      obtain ⟨n, -, hn⟩ := hz.eq_pow_of_pow_eq_one (hp g)
+      have k1 : ι ((ψ (D.ntw.art i Q g) : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k) ^ (c * a) =
+          ι ((D.ntw.zk i k : D.ntw.Ok i k) ^ (n * a)) := by
+        rw [e1 g, ← hn, map_pow, map_pow, ← hc, ← pow_mul, ← pow_mul]
+        ring_nf
+      have k2 : ι' ((ψ' (D.ntw.art i Q g) : (D.ntw.Ok i k)ˣ) : D.ntw.Ok i k) =
+          ι' ((D.ntw.zk i k : D.ntw.Ok i k) ^ (n * a)) := by
+        rw [e1' g, ← hn, map_pow, map_pow, ← ha, ← pow_mul]
+        ring_nf
+      rw [← map_pow] at k1
+      rw [hι' k2, zpow_natCast, MonoidHom.pow_apply, Units.val_pow_eq_pow_val, hι k1]
+
+end GlobalTheory.LevCmp
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ringClassGroup_descents_differ_by_power_prime_to_l : ∀ (D : D7) (i : D.ntw.Tw) (k : ℕ) (b b' : Bool) (v v' : D.what₂.places.Pl) (ρ : Reading i k b v) (ρ' : Reading i k b' v') (Q : Finset (PlE D.host)) (ψ ψ' : D.ntw.RCG i Q →* (D.ntw.Ok i k)ˣ) (ψ₀ : G D.host.E D.nd.Om →* (D.what₂.LL)ˣ), (∃ z : D.what₂.LL, IsPrimitiveRoot z (D.ntw.l i ^ k)) → (∀ g, ψ₀ g ^ (D.ntw.l i ^ k) = 1) → ρ.Pulls ψ ψ₀ → ρ'.Pulls ψ' ψ₀ → ∃ a : ℤ, Nat.Coprime a.natAbs (D.ntw.l i) ∧ ψ' = ψ ^ a := by
+  atlas_forward_decl GlobalTheory.LevCmp.pulls_eq_zpow
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+namespace GlobalTheory.LevCmp
+
+theorem mem_range_map_iff_of_isLocalHom {A B : Type} [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
+    [CommRing B] [IsDomain B] (f : A →+* B) [IsLocalHom f] (hf : Function.Injective f) (t : FractionRing A) :
+    IsFractionRing.map (K := FractionRing A) (L := FractionRing B) hf t ∈ (algebraMap B (FractionRing B)).range ↔
+      t ∈ (algebraMap A (FractionRing A)).range := by
+  have hmap : ∀ a : A, IsFractionRing.map (K := FractionRing A) (L := FractionRing B) hf (algebraMap A _ a) =
+      algebraMap B _ (f a) := fun a => by simp [IsFractionRing.map]
+  constructor
+  · rintro ⟨c, hc⟩
+    by_cases ht : t = 0
+    · exact ⟨0, by rw [ht, map_zero]⟩
+    rcases ValuationRing.isInteger_or_isInteger A t with ⟨a, ha⟩ | ⟨m, hm⟩
+    · exact ⟨a, ha⟩
+    · have h1 : IsFractionRing.map (K := FractionRing A) (L := FractionRing B) hf t *
+          IsFractionRing.map (K := FractionRing A) (L := FractionRing B) hf t⁻¹ = 1 := by
+        rw [← map_mul, mul_inv_cancel₀ ht, map_one]
+      rw [← hc, ← hm, hmap, ← map_mul] at h1
+      have h2 : c * f m = 1 := IsFractionRing.injective B (FractionRing B) (by rw [h1, map_one])
+      have hu : IsUnit m := (isUnit_map_iff f m).1 (IsUnit.of_mul_eq_one_right c h2)
+      refine ⟨((hu.unit⁻¹ : Aˣ) : A), ?_⟩
+      rw [← inv_inv t, ← hm]
+      refine eq_inv_of_mul_eq_one_left ?_
+      rw [← map_mul]
+      simp
+  · rintro ⟨a, rfl⟩
+    exact ⟨f a, (hmap a).symm⟩
+
+end GlobalTheory.LevCmp
+
+namespace GlobalTheory.LevCmp
+
+theorem reading_sidePl_emb : ∀ (D : D7) (i : D.ntw.Tw) (k : ℕ) (b : Bool) (v : D.what₂.places.Pl) (ρ : Reading i k b v), GlobalTheory.HeightCounting.SidePl D v i b ∧ (∀ x : ↥D.LL0, ρ.emb (x : D.what₂.LL) = IsFractionRing.map (K := FractionRing (D.ntw.Ok i k)) (L := FractionRing ρ.Oe) ρ.inj (NX.toKk D i k (GlobalTheory.SeriesTie.sideEmb D.ntw i b x))) ∧ ∀ (h : Function.Injective ((algebraMap (D.ntw.Ok i k) ρ.Oe).comp ((algebraMap (D.ntw.O i) (D.ntw.Ok i k)).comp (algebraMap (D.ntw.O0 i) (D.ntw.O i))))) (x : ↥D.LL0), ρ.emb (x : D.what₂.LL) = IsFractionRing.map (K := FractionRing (D.ntw.O0 i)) (L := FractionRing ρ.Oe) h (if b then D.ntw.emb0 i x else D.ntw.emb0b i x) := by
+  intro D i k b v ρ
+  haveI := GlobalTheory.TwistChoice.isLocalHom_phiK i k
+  haveI := ρ.loc
+  have hinj : Function.Injective ((algebraMap (D.ntw.Ok i k) ρ.Oe).comp (BlochKatoReduction.Gen.phiK D.ntw i k)) :=
+    ρ.inj.comp ((D.ntw.Ok_inj i k).comp (D.ntw.O_inj i))
+  have hmap : ∀ a : D.ntw.O0 i, IsFractionRing.map (K := FractionRing (D.ntw.O0 i)) (L := FractionRing ρ.Oe) hinj
+      (algebraMap _ _ a) = algebraMap ρ.Oe _ (algebraMap _ ρ.Oe (BlochKatoReduction.Gen.phiK D.ntw i k a)) := fun a => by
+    simp [IsFractionRing.map]
+  have key : ∀ x : ↥D.LL0, ρ.emb (x : D.what₂.LL) =
+      IsFractionRing.map (K := FractionRing (D.ntw.O0 i)) (L := FractionRing ρ.Oe) hinj
+        (GlobalTheory.TwistChoice.sideEmb i b x) := by
+    intro x
+    obtain ⟨y, z, hz, hyz⟩ := IsFractionRing.div_surjective (A := D.ntw.O0 i) (GlobalTheory.TwistChoice.sideEmb i b x)
+    have hz0 : algebraMap (D.ntw.O0 i) (FractionRing (D.ntw.O0 i)) z ≠ 0 :=
+      IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors hz
+    have hside : GlobalTheory.TwistChoice.sideEmb i b x * algebraMap _ (FractionRing (D.ntw.O0 i)) z =
+        algebraMap _ (FractionRing (D.ntw.O0 i)) y := by
+      rw [← hyz, div_mul_cancel₀ _ hz0]
+    have h1 := ρ.emb_side x y z hside
+    have hz' : algebraMap ρ.Oe (FractionRing ρ.Oe) (algebraMap _ ρ.Oe (BlochKatoReduction.Gen.phiK D.ntw i k z)) ≠ 0 := by
+      rw [Ne, map_eq_zero_iff _ (IsFractionRing.injective _ _), ← RingHom.comp_apply,
+        map_eq_zero_iff _ hinj]
+      exact nonZeroDivisors.ne_zero hz
+    rw [← hyz, map_div₀, hmap, hmap, eq_div_iff hz']
+    exact h1
+  have hside : ∀ x : ↥D.LL0, GlobalTheory.TwistChoice.sideEmb i b x =
+      (if b then D.ntw.emb0 i x else D.ntw.emb0b i x) := fun x => by
+    cases b <;> rfl
+  refine ⟨fun x => ?_, fun x => ?_, fun h x => ?_⟩
+  · rw [ρ.emb_w, key, ← hside]
+    exact mem_range_map_iff_of_isLocalHom _ hinj _
+  · rw [key]
+    obtain ⟨y, z, hz, hyz⟩ := IsFractionRing.div_surjective (A := D.ntw.O0 i) (GlobalTheory.TwistChoice.sideEmb i b x)
+    have e : GlobalTheory.SeriesTie.sideEmb D.ntw i b x = IsFractionRing.map (K := FractionRing (D.ntw.O0 i))
+        (L := FractionRing (D.ntw.O i)) (D.ntw.O_inj i) (GlobalTheory.TwistChoice.sideEmb i b x) := by
+      cases b <;> rfl
+    rw [e, ← hyz]
+    simp [map_div₀, IsFractionRing.map, NX.toKk, BlochKatoReduction.Gen.phiK]
+  · rw [key, ← hside]
+    rfl
+
+end GlobalTheory.LevCmp
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twistReading_induces_sideEmbedding_fixedField : ∀ (D : D7) (i : D.ntw.Tw) (k : ℕ) (b : Bool) (v : D.what₂.places.Pl) (ρ : Reading i k b v), GlobalTheory.HeightCounting.SidePl D v i b ∧ (∀ x : ↥D.LL0, ρ.emb (x : D.what₂.LL) = IsFractionRing.map (K := FractionRing (D.ntw.Ok i k)) (L := FractionRing ρ.Oe) ρ.inj (NX.toKk D i k (GlobalTheory.SeriesTie.sideEmb D.ntw i b x))) ∧ ∀ (h : Function.Injective ((algebraMap (D.ntw.Ok i k) ρ.Oe).comp ((algebraMap (D.ntw.O i) (D.ntw.Ok i k)).comp (algebraMap (D.ntw.O0 i) (D.ntw.O i))))) (x : ↥D.LL0), ρ.emb (x : D.what₂.LL) = IsFractionRing.map (K := FractionRing (D.ntw.O0 i)) (L := FractionRing ρ.Oe) h (if b then D.ntw.emb0 i x else D.ntw.emb0b i x) := by
+  atlas_forward_decl GlobalTheory.LevCmp.reading_sidePl_emb
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+namespace GlobalTheory.ReadingEmb
+
+theorem exists_ringHom_complex_extending (A : Type) [Field A] (hA : Cardinal.mk A ≤ Cardinal.continuum)
+    (K : Type) [Field K] [NumberField K] (i : K →+* A) (s : K →+* ℂ) :
+    ∃ ι : A →+* ℂ, ∀ x, ι (i x) = s x := by
+  haveI : CharZero A := (RingHom.charZero_iff i.injective).1 inferInstance
+  let B := FractionRing (MvPolynomial ℝ A)
+  have hB : Cardinal.mk B = Cardinal.continuum := by
+    rw [Cardinal.mk_fractionRing, MvPolynomial.cardinalMk_eq_max, Cardinal.mk_real, max_eq_right hA,
+      max_eq_left Cardinal.aleph0_le_continuum]
+  let C := AlgebraicClosure B
+  have hC : Cardinal.mk C = Cardinal.continuum := by
+    refine le_antisymm ((Algebra.IsAlgebraic.cardinalMk_le_max B C).trans
+      (max_le hB.le Cardinal.aleph0_le_continuum)) ?_
+    rw [← hB]
+    exact Cardinal.mk_le_of_injective (algebraMap B C).injective
+  let j : A →+* C := (algebraMap B C).comp ((algebraMap (MvPolynomial ℝ A) B).comp MvPolynomial.C)
+  haveI : CharZero C := (RingHom.charZero_iff j.injective).1 inferInstance
+  obtain ⟨e, he⟩ := GlobalTheory.algClosed_continuum_ringEquiv_complex_extending C hC K (j.comp i) s
+  exact ⟨e.toRingHom.comp j, fun x => he x⟩
+
+theorem mk_le_of_finite (R S : Type) [CommRing R] [AddCommGroup S] [Module R S] [Module.Finite R S]
+    (h : Cardinal.mk R ≤ Cardinal.continuum) : Cardinal.mk S ≤ Cardinal.continuum := by
+  obtain ⟨n, f, hf⟩ := Module.Finite.exists_fin' R S
+  refine (Cardinal.mk_le_of_surjective hf).trans ?_
+  rw [← Cardinal.power_def, Cardinal.mk_fin]
+  calc Cardinal.mk R ^ (n : Cardinal) ≤ Cardinal.continuum ^ (n : Cardinal) := Cardinal.power_le_power_right h
+    _ ≤ Cardinal.continuum ^ Cardinal.aleph0 :=
+        Cardinal.power_le_power_left Cardinal.continuum_ne_zero (Cardinal.natCast_le_aleph0)
+    _ = Cardinal.continuum := Cardinal.continuum_power_aleph0
+
+theorem exists_complex_emb : ∀ (D : D7) (F : TwFrameC D) (i : D.ntw.Tw) (k : ℕ) (b : Bool) (v : D.what₂.places.Pl) (ρ : Reading i k b v), ∃ ι : FractionRing ρ.Oe →+* ℂ, ∀ x, ι (ρ.emb x) = D.what₂.embLL x := by
+  intro D F i k b v ρ
+  haveI := D.ntw.lPrime i
+  have h1 : Cardinal.mk (D.ntw.Ok i k) ≤ Cardinal.continuum := by
+    have hinj : Function.Injective (fun x : D.ntw.Ok i k => ((F.eOk i k x : _) : ℂ_[D.ntw.l i])) :=
+      Subtype.val_injective.comp (F.eOk i k).injective
+    refine (Cardinal.mk_le_of_injective hinj).trans ?_
+    rw [(GlobalTheory.PadicCard.card_padicAlgCl_padicComplex (D.ntw.l i)).2, Cardinal.mk_complex]
+  haveI := ρ.fin
+  have h2 : Cardinal.mk ρ.Oe ≤ Cardinal.continuum := mk_le_of_finite (D.ntw.Ok i k) ρ.Oe h1
+  exact exists_ringHom_complex_extending (FractionRing ρ.Oe) (by rw [Cardinal.mk_fractionRing]; exact h2)
+    D.what₂.LL ρ.emb D.what₂.embLL
+
+end GlobalTheory.ReadingEmb
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
+open Formalism.AUTREP (GAf)
+open Neutral.B1 (Ideles)
+open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1000000
+open GlobalTheory.LevCmp
+open GlobalTheory.TwistChoice (Reading ReadsAt)
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_complexEmbedding_readingFractionRing_over_coeffField : ∀ (D : D7) (F : TwFrameC D) (i : D.ntw.Tw) (k : ℕ) (b : Bool) (v : D.what₂.places.Pl) (ρ : Reading i k b v), ∃ ι : FractionRing ρ.Oe →+* ℂ, ∀ x, ι (ρ.emb x) = D.what₂.embLL x := by
+  atlas_forward_decl GlobalTheory.ReadingEmb.exists_complex_emb
+end
+
+section
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 open Formalism.AUTREP (GAf)
@@ -412,3 +1586,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.statement_c_of_casselman_wallach : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.CasselmanWallach → GlobalTheory.Published.HarishChandraModules → PrN → SerN → ∀ hL : GlobalTheory.Published.LocalLanglandsGL, SCk hL := by
   atlas_forward_decl GlobalTheory.LevCmp.choices_exist_for
+end

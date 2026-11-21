@@ -2,9 +2,574 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RevPosRevPos
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsArchimedeanLiftUnitaryGroupProduct
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.CircleHomEqZpow
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CharEqOneOfDetEqOne
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealIsotropicOrOneClass
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitaryTransvectionSubmonoidNormalDetOne
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.QuasiReflectionEqUnitaryTransvectionMul
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TransvectionIdentitiesUnitary
+import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.ExistsOrthogonalBasisDotProductApplyEq
+import BuildAid.ForwardExisting
 
+section
+section
+open scoped Matrix
+
+namespace GlobalTheory.UTrans.ReflChar0
+
+open GlobalTheory.UTrans.Calc
+
+variable {E : Type} [Field E] {n : ℕ} {σ : E →+* E} {G : Matrix (Fin n) (Fin n) E}
+
+theorem hf_sub_smul_left (z x w : Fin n → E) (e : E) :
+    hf σ G (z - e • x) w = hf σ G z w - e * hf σ G x w := by
+  rw [sub_eq_add_neg, ← neg_smul, hf_add_left, hf_smul_left]
+  ring
+
+theorem hf_sub_smul_right (z x w : Fin n → E) (e : E) :
+    hf σ G w (z - e • x) = hf σ G w z - σ e * hf σ G w x := by
+  rw [sub_eq_add_neg, ← neg_smul, hf_add_right, hf_smul_right, map_neg]
+  ring
+
+theorem isU_refl (h : IsHerm σ G) {x : Fin n → E} (hx : hf σ G x x ≠ 0) {u : E} (hu : u * σ u = 1) :
+    IsU σ G (tv σ G x ((u - 1) / hf σ G x x)) := by
+  apply isU_tv σ G h.invol h.herm
+  rw [map_div₀, hf_conj σ G h.invol h.herm, map_sub, map_one]
+  field_simp
+  linear_combination hu
+
+theorem refl_inv {x : Fin n → E} (hx : hf σ G x x ≠ 0) {u : E} (hu : u * σ u = 1) :
+    tv σ G x ((σ u - 1) / hf σ G x x) * tv σ G x ((u - 1) / hf σ G x x) = 1 := by
+  rw [tv_mul]
+  have : (σ u - 1) / hf σ G x x + (u - 1) / hf σ G x x +
+      (σ u - 1) / hf σ G x x * ((u - 1) / hf σ G x x) * hf σ G x x = 0 := by
+    field_simp
+    linear_combination hu
+  rw [this]
+  ext a b
+  simp [tv]
+
+theorem exists_refl (h : IsHerm σ G) (x z : Fin n → E) (hz : hf σ G z z = hf σ G x x) (e : E)
+    (he : σ e = e) (he2 : e * e = 1) (hy : hf σ G (z - e • x) (z - e • x) ≠ 0) :
+    ∃ u : E, u * σ u = 1 ∧
+      tv σ G (z - e • x) ((u - 1) / hf σ G (z - e • x) (z - e • x)) *ᵥ z = e • x := by
+  obtain ⟨a, ha⟩ : ∃ a, a = hf σ G z (z - e • x) := ⟨_, rfl⟩
+  have hyy : hf σ G (z - e • x) (z - e • x) = a + σ a := by
+    rw [ha, hf_conj σ G h.invol h.herm, hf_sub_smul_left z x (z - e • x), hf_sub_smul_left z x z,
+      hf_sub_smul_right z x x, he, hz]
+    linear_combination (hf σ G x x) * he2
+  have ha0 : a ≠ 0 := by
+    intro h0
+    exact hy (by rw [hyy, h0]; simp)
+  have hca : σ a ≠ 0 := by simpa using ha0
+  refine ⟨-σ a / a, ?_, ?_⟩
+  · rw [map_div₀, map_neg, h.invol]
+    field_simp
+  · rw [tv_mulVec, ← ha]
+    have : (-σ a / a - 1) / hf σ G (z - e • x) (z - e • x) * a = -1 := by
+      rw [div_mul_eq_mul_div, div_eq_iff hy, hyy]
+      field_simp
+      ring
+    rw [this]
+    simp
+
+theorem exists_prod_mulVec_eq [CharZero E] (h : IsHerm σ G) (x z : Fin n → E) (hx : hf σ G x x ≠ 0)
+    (hz : hf σ G z z = hf σ G x x) :
+    ∃ l : List ((Fin n → E) × E),
+      (∀ p ∈ l, hf σ G p.1 p.1 ≠ 0 ∧ p.2 * σ p.2 = 1 ∧ p.1 ∈ Submodule.span E {x, z}) ∧
+      (l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod *ᵥ z = x := by
+  have hxs : x ∈ Submodule.span E ({x, z} : Set (Fin n → E)) := Submodule.subset_span (by simp)
+  have hzs : z ∈ Submodule.span E ({x, z} : Set (Fin n → E)) := Submodule.subset_span (by simp)
+  have hmem : ∀ e : E, z - e • x ∈ Submodule.span E ({x, z} : Set (Fin n → E)) := fun e =>
+    Submodule.sub_mem _ hzs (Submodule.smul_mem _ _ hxs)
+  by_cases h1 : hf σ G (z - (1 : E) • x) (z - (1 : E) • x) = 0
+  · have h2 : hf σ G (z - (-1 : E) • x) (z - (-1 : E) • x) ≠ 0 := by
+      intro h2
+      rw [hf_sub_smul_left, hf_sub_smul_right, hf_sub_smul_right] at h1 h2
+      simp only [map_one, map_neg, hz] at h1 h2
+      apply hx
+      have h4 : (4 : E) * hf σ G x x = 0 := by linear_combination h1 + h2
+      exact (mul_eq_zero.1 h4).resolve_left (by norm_num)
+    obtain ⟨u, hu, hu'⟩ := exists_refl h x z hz (-1) (by simp) (by simp) h2
+    refine ⟨[(x, -1), (z - (-1 : E) • x, u)], ?_, ?_⟩
+    · intro p hp
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl
+      · exact ⟨hx, by simp, hxs⟩
+      · exact ⟨h2, hu, hmem _⟩
+    · simp only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one]
+      rw [← Matrix.mulVec_mulVec, hu', tv_mulVec, hf_smul_left, ← add_smul]
+      have : (-1 : E) + (-1 - 1) / hf σ G x x * (-1 * hf σ G x x) = 1 := by
+        field_simp
+        ring
+      rw [this, one_smul]
+  · obtain ⟨u, hu, hu'⟩ := exists_refl h x z hz 1 (by simp) (by simp) h1
+    refine ⟨[(z - (1 : E) • x, u)], ?_, ?_⟩
+    · intro p hp
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      subst hp
+      exact ⟨h1, hu, hmem _⟩
+    · simp only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one]
+      rw [hu', one_smul]
+
+theorem exists_basis [CharZero E] (h : IsHerm σ G) :
+    ∃ x : Fin n → Fin n → E, (∀ i, hf σ G (x i) (x i) ≠ 0) ∧
+      (∀ i j, i ≠ j → hf σ G (x i) (x j) = 0) ∧ Submodule.span E (Set.range x) = ⊤ := by
+  have he : ∀ x y : Fin n → E, hf σ G x y = x ⬝ᵥ G *ᵥ (σ ∘ y) := fun x y =>
+    (GlobalTheory.HermDiag.dotProduct_mulVec_comp_eq_sum σ G x y).symm
+  obtain ⟨v, hv⟩ :=
+    GlobalTheory.HermDiag.exists_orthogonal_basis_dotProduct (c := σ) two_ne_zero h.invol h.herm
+  have hd := GlobalTheory.HermDiag.congr_diagonal_of_orthogonal σ v hv
+  refine ⟨v, fun i => ?_, fun i j hij => ?_, v.span_eq⟩
+  · rw [he]
+    exact GlobalTheory.HermDiag.ne_zero_of_congr_diagonal (GlobalTheory.HermDiag.det_of_basis_ne_zero v) hd h.det_ne i
+  · rw [he]
+    exact hv i j hij
+
+theorem isU_prod (hG : IsHerm σ G) (l : List ((Fin n → E) × E))
+    (hl : ∀ p ∈ l, hf σ G p.1 p.1 ≠ 0 ∧ p.2 * σ p.2 = 1) :
+    IsU σ G (l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod := by
+  induction l with
+  | nil => intro x y; simp
+  | cons p l ih =>
+    rw [List.map_cons, List.prod_cons]
+    have hp := hl p List.mem_cons_self
+    exact isU_mul σ G _ _ (isU_refl hG hp.1 hp.2) (ih fun q hq => hl q (List.mem_cons_of_mem _ hq))
+
+theorem exists_inv (hG : IsHerm σ G) (l : List ((Fin n → E) × E))
+    (hl : ∀ p ∈ l, hf σ G p.1 p.1 ≠ 0 ∧ p.2 * σ p.2 = 1) :
+    ∃ l' : List ((Fin n → E) × E), (∀ p ∈ l', hf σ G p.1 p.1 ≠ 0 ∧ p.2 * σ p.2 = 1) ∧
+      (l'.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod *
+        (l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod = 1 := by
+  induction l with
+  | nil => exact ⟨[], by simp, by simp⟩
+  | cons p l ih =>
+    obtain ⟨l', h1, h2⟩ := ih fun q hq => hl q (List.mem_cons_of_mem _ hq)
+    have hp := hl p List.mem_cons_self
+    refine ⟨l' ++ [(p.1, σ p.2)], ?_, ?_⟩
+    · intro q hq
+      rcases List.mem_append.1 hq with hq | hq
+      · exact h1 q hq
+      · rw [List.mem_singleton] at hq
+        subst hq
+        refine ⟨hp.1, ?_⟩
+        show σ p.2 * σ (σ p.2) = 1
+        rw [hG.invol, mul_comm]
+        exact hp.2
+    · rw [List.map_append, List.prod_append, List.map_cons, List.map_cons, List.prod_cons,
+        List.prod_cons, List.map_nil, List.prod_nil, mul_one, mul_assoc,
+        ← mul_assoc (tv σ G _ _), refl_inv hp.1 hp.2, one_mul, h2]
+
+theorem prod_fix (v : Fin n → E) (l : List ((Fin n → E) × E))
+    (hl : ∀ p ∈ l, hf σ G v p.1 = 0) :
+    (l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod *ᵥ v = v := by
+  induction l with
+  | nil => simp
+  | cons p l ih =>
+    have hp := hl p List.mem_cons_self
+    rw [List.map_cons, List.prod_cons, ← Matrix.mulVec_mulVec,
+      ih fun q hq => hl q (List.mem_cons_of_mem _ hq), tv_mulVec, hp]
+    simp
+
+theorem hf_span {v x z y : Fin n → E} (hx : hf σ G v x = 0) (hz : hf σ G v z = 0)
+    (hy : y ∈ Submodule.span E {x, z}) : hf σ G v y = 0 := by
+  obtain ⟨a, b, rfl⟩ := Submodule.mem_span_pair.1 hy
+  rw [hf_add_right, hf_smul_right, hf_smul_right, hx, hz]
+  simp
+
+theorem exists_fix [CharZero E] (hG : IsHerm σ G) {γ : Matrix (Fin n) (Fin n) E} (hγ : IsU σ G γ)
+    (x : Fin n → Fin n → E) (h1 : ∀ i, hf σ G (x i) (x i) ≠ 0)
+    (h2 : ∀ i j, i ≠ j → hf σ G (x i) (x j) = 0) (k : ℕ) :
+    ∃ l : List ((Fin n → E) × E), (∀ p ∈ l, hf σ G p.1 p.1 ≠ 0 ∧ p.2 * σ p.2 = 1) ∧
+      ∀ i : Fin n, i.val < k →
+        ((l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod * γ) *ᵥ x i = x i := by
+  induction k with
+  | zero => exact ⟨[], by simp, by simp⟩
+  | succ k ih =>
+    obtain ⟨l, hl, hfix⟩ := ih
+    by_cases hk : k < n
+    · have hU := isU_mul σ G _ _ (isU_prod hG l hl) hγ
+      set δ := (l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod * γ with hδ
+      obtain ⟨m, hm, hmx⟩ :=
+        exists_prod_mulVec_eq hG (x ⟨k, hk⟩) (δ *ᵥ x ⟨k, hk⟩) (h1 _) (hU _ _)
+      refine ⟨m ++ l, ?_, ?_⟩
+      · intro p hp
+        rcases List.mem_append.1 hp with hp | hp
+        · exact ⟨(hm p hp).1, (hm p hp).2.1⟩
+        · exact hl p hp
+      · intro i hi
+        rw [List.map_append, List.prod_append, mul_assoc, ← hδ, ← Matrix.mulVec_mulVec]
+        rcases Nat.lt_succ_iff_lt_or_eq.1 hi with hi | hi
+        · have hne : i ≠ ⟨k, hk⟩ := fun h => by simp [h] at hi
+          rw [hfix i hi]
+          refine prod_fix _ m fun p hp => hf_span (h2 _ _ hne) ?_ (hm p hp).2.2
+          rw [← h2 _ _ hne, ← hU (x i) (x ⟨k, hk⟩), hfix i hi]
+        · have : i = ⟨k, hk⟩ := Fin.ext hi
+          rw [this]
+          exact hmx
+    · exact ⟨l, hl, fun i _ => hfix i (lt_of_lt_of_le i.2 (not_lt.1 hk))⟩
+
+theorem gen_and_witt : ∀ (E : Type) [Field E] [CharZero E] (n : ℕ) (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E), GlobalTheory.UTrans.IsHerm σ G → (∀ γ, GlobalTheory.UTrans.IsU σ G γ → ∃ l : List ((Fin n → E) × E), (∀ p ∈ l, GlobalTheory.UTrans.hf σ G p.1 p.1 ≠ 0 ∧ p.2 * σ p.2 = 1) ∧ γ = (l.map fun p => GlobalTheory.UTrans.tv σ G p.1 ((p.2 - 1) / GlobalTheory.UTrans.hf σ G p.1 p.1)).prod) ∧ ∀ x z : Fin n → E, GlobalTheory.UTrans.hf σ G x x ≠ 0 → GlobalTheory.UTrans.hf σ G z z = GlobalTheory.UTrans.hf σ G x x → ∃ γ, GlobalTheory.UTrans.IsU σ G γ ∧ γ *ᵥ z = x := by
+  intro E _ _ n σ G hG
+  refine ⟨fun γ hγ => ?_, fun x z hx hz => ?_⟩
+  · obtain ⟨x, h1, h2, h3⟩ := exists_basis hG
+    obtain ⟨l, hl, hfix⟩ := exists_fix hG hγ x h1 h2 n
+    obtain ⟨l', hl', hinv⟩ := exists_inv hG l hl
+    refine ⟨l', hl', ?_⟩
+    have hone : (l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod * γ = 1 := by
+      apply Matrix.toLin'.injective
+      refine LinearMap.ext_on_range h3 fun i => ?_
+      rw [Matrix.toLin'_apply, Matrix.toLin'_apply, hfix i i.2, Matrix.one_mulVec]
+    rw [← one_mul γ, ← hinv, mul_assoc, hone, mul_one]
+  · obtain ⟨l, hl, e⟩ := exists_prod_mulVec_eq hG x z hx hz
+    exact ⟨_, isU_prod hG l fun p hp => ⟨(hl p hp).1, (hl p hp).2.1⟩, e⟩
+
+end GlobalTheory.UTrans.ReflChar0
+end
+
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_generated_by_quasiReflections_and_witt : ∀ (E : Type) [Field E] [CharZero E] (n : ℕ) (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E), GlobalTheory.UTrans.IsHerm σ G → (∀ γ, GlobalTheory.UTrans.IsU σ G γ → ∃ l : List ((Fin n → E) × E), (∀ p ∈ l, GlobalTheory.UTrans.hf σ G p.1 p.1 ≠ 0 ∧ p.2 * σ p.2 = 1) ∧ γ = (l.map fun p => GlobalTheory.UTrans.tv σ G p.1 ((p.2 - 1) / GlobalTheory.UTrans.hf σ G p.1 p.1)).prod) ∧ ∀ x z : Fin n → E, GlobalTheory.UTrans.hf σ G x x ≠ 0 → GlobalTheory.UTrans.hf σ G z z = GlobalTheory.UTrans.hf σ G x x → ∃ γ, GlobalTheory.UTrans.IsU σ G γ ∧ γ *ᵥ z = x := by
+  atlas_forward_decl GlobalTheory.UTrans.ReflChar0.gen_and_witt
+end
+
+section
+section
+open scoped Matrix
+
+namespace GlobalTheory.UTrans.TvKill
+
+open GlobalTheory.UTrans GlobalTheory.UTrans.Calc
+
+variable {E : Type} [Field E] {n : ℕ} {σ : E →+* E} {G : Matrix (Fin n) (Fin n) E}
+
+def rk (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E) (x y : Fin n → E) : Matrix (Fin n) (Fin n) E :=
+  Matrix.of fun a b => x a * ∑ e, G b e * σ (y e)
+
+theorem rk_mulVec (x y v : Fin n → E) : rk σ G x y *ᵥ v = hf σ G v y • x := by
+  funext a
+  simp only [rk, Matrix.mulVec, dotProduct, Matrix.of_apply, hf, Pi.smul_apply, smul_eq_mul,
+    Finset.mul_sum, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun e _ => ?_
+  ring
+
+theorem exists_dual (hG : IsHerm σ G) {x : Fin n → E} (hx : x ≠ 0) : ∃ y, hf σ G x y = 1 := by
+  have h1 : Matrix.vecMul x G ≠ 0 := fun h => hx (Matrix.eq_zero_of_vecMul_eq_zero hG.det_ne h)
+  obtain ⟨b, hb⟩ := Function.ne_iff.mp h1
+  refine ⟨Pi.single b (σ (Matrix.vecMul x G b)⁻¹), ?_⟩
+  have : hf σ G x (Pi.single b (σ (Matrix.vecMul x G b)⁻¹)) =
+      Matrix.vecMul x G b * (Matrix.vecMul x G b)⁻¹ := by
+    simp only [hf, Pi.single_apply, apply_ite σ, map_zero, mul_ite, mul_zero, Finset.sum_ite_eq',
+      Finset.mem_univ, if_true, hG.invol, ← Finset.sum_mul]
+    rfl
+  rw [this, mul_inv_cancel₀ hb]
+
+theorem exists_dual_iso [CharZero E] (hG : IsHerm σ G) {x : Fin n → E} (hx : x ≠ 0)
+    (hxx : hf σ G x x = 0) : ∃ y, hf σ G x y = 1 ∧ hf σ G y y = 0 := by
+  obtain ⟨y, hy⟩ := exists_dual hG hx
+  have hyx : hf σ G y x = 1 := by rw [← hf_conj σ G hG.invol hG.herm, hy, map_one]
+  have hc : σ (-(hf σ G y y / 2)) = -(hf σ G y y / 2) := by
+    rw [map_neg, map_div₀, hf_conj σ G hG.invol hG.herm, map_ofNat]
+  refine ⟨y + (-(hf σ G y y / 2)) • x, ?_, ?_⟩
+  · rw [hf_add_right, hf_smul_right, hxx, hy]; ring
+  · simp only [hf_add_left, hf_add_right, hf_smul_left, hf_smul_right, hc, hxx, hy, hyx]
+    ring
+
+theorem exists_double [CharZero E] (hG : IsHerm σ G) {x : Fin n → E} (hx : x ≠ 0)
+    (hxx : hf σ G x x = 0) : ∃ γ, IsU σ G γ ∧ γ *ᵥ x = (2 : E) • x := by
+  obtain ⟨y, hy, hyy⟩ := exists_dual_iso hG hx hxx
+  have hyx : hf σ G y x = 1 := by rw [← hf_conj σ G hG.invol hG.herm, hy, map_one]
+  have hc : σ (-(1 / 2)) = -(1 / 2) := by
+    rw [map_neg, map_div₀, map_one, map_ofNat]
+  have hm : ∀ v, (1 + rk σ G x y + (-(1 / 2) : E) • rk σ G y x) *ᵥ v =
+      v + hf σ G v y • x + (-(1 / 2) : E) • hf σ G v x • y := by
+    intro v
+    rw [Matrix.add_mulVec, Matrix.add_mulVec, Matrix.one_mulVec, Matrix.smul_mulVec, rk_mulVec,
+      rk_mulVec]
+  refine ⟨1 + rk σ G x y + (-(1 / 2) : E) • rk σ G y x, ?_, ?_⟩
+  · intro v w
+    rw [hm, hm]
+    simp only [hf_add_left, hf_add_right, hf_smul_left, hf_smul_right, hc, hxx, hy, hyx, hyy,
+      hf_conj σ G hG.invol hG.herm]
+    ring
+  · rw [hm, hy, hxx, zero_smul, smul_zero, add_zero, one_smul, two_smul]
+
+theorem char_tvGen : ∀ (E : Type) [Field E] [CharZero E] (n : ℕ) (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E), GlobalTheory.UTrans.IsHerm σ G → ∀ (A : Type) [CommGroup A] (X : Matrix (Fin n) (Fin n) E → A), (∀ a b, GlobalTheory.UTrans.IsU σ G a → GlobalTheory.UTrans.IsU σ G b → X (a * b) = X a * X b) → ∀ m ∈ GlobalTheory.UTrans.TvGen σ G, X m = 1 := by
+  intro E _ _ n σ G hG A _ X hX
+  have hU1 : IsU σ G 1 := fun x y => by simp
+  have hX1 : X 1 = 1 := by
+    have := hX 1 1 hU1 hU1
+    rw [mul_one] at this
+    exact mul_eq_left.mp this.symm
+  have key : ∀ m ∈ TvGen σ G, IsU σ G m ∧ X m = 1 := by
+    intro m hm
+    induction hm using Submonoid.closure_induction with
+    | mem m hm =>
+      obtain ⟨x, t, hx, ht, rfl⟩ := hm
+      have hUq : ∀ q : ℚ, IsU σ G (tv σ G x (q * t)) := by
+        intro q
+        refine isU_tv σ G hG.invol hG.herm x _ ?_
+        rw [hx, map_mul, map_ratCast]
+        linear_combination (q : E) * ht
+      have hUt : IsU σ G (tv σ G x t) := by simpa using hUq 1
+      refine ⟨hUt, ?_⟩
+      by_cases hx0 : x = 0
+      · subst hx0
+        have : tv σ G 0 t = 1 := by
+          ext a b
+          simp [tv]
+        rw [this, hX1]
+      · obtain ⟨γ, hγ, hγx⟩ := exists_double hG hx0 hx
+        have h3 : IsU σ G (tv σ G x (1 / 3 * t)) := by
+          have := hUq (1 / 3)
+          push_cast at this
+          exact this
+        have hc := conj_tv σ G γ x (1 / 3 * t) hγ
+        have he : tv σ G (γ *ᵥ x) (1 / 3 * t) = tv σ G x (1 / 3 * t) * tv σ G x t := by
+          rw [hγx, tv_smul, tv_mul, hx, map_ofNat]
+          congr 1
+          ring
+        rw [he] at hc
+        have h4 := congrArg X hc
+        rw [hX _ _ hγ h3, hX _ _ (isU_mul σ G _ _ h3 hUt) hγ, hX _ _ h3 hUt, mul_comm (X γ)] at h4
+        exact mul_eq_left.mp (mul_right_cancel h4).symm
+    | one => exact ⟨hU1, hX1⟩
+    | mul a b _ _ ha hb =>
+      exact ⟨isU_mul σ G _ _ ha.1 hb.1, by rw [hX _ _ ha.1 hb.1, ha.2, hb.2, mul_one]⟩
+  exact fun m hm => (key m hm).2
+
+end GlobalTheory.UTrans.TvKill
+end
+
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryCharacter_kills_unitaryTransvections : ∀ (E : Type) [Field E] [CharZero E] (n : ℕ) (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E), GlobalTheory.UTrans.IsHerm σ G → ∀ (A : Type) [CommGroup A] (X : Matrix (Fin n) (Fin n) E → A), (∀ a b, GlobalTheory.UTrans.IsU σ G a → GlobalTheory.UTrans.IsU σ G b → X (a * b) = X a * X b) → ∀ m ∈ GlobalTheory.UTrans.TvGen σ G, X m = 1 := by
+  atlas_forward_decl GlobalTheory.UTrans.TvKill.char_tvGen
+end
+
+section
+open scoped Matrix
+
+namespace GlobalTheory.UTrans.CharDet
+
+variable {E : Type} [Field E] {n : ℕ} {σ : E →+* E} {G : Matrix (Fin n) (Fin n) E}
+
+theorem isU_one : IsU σ G 1 := fun x y => by simp
+
+theorem isU_refl (hG : IsHerm σ G) {x : Fin n → E} {u : E} (hx : hf σ G x x ≠ 0) (hu : u * σ u = 1) :
+    IsU σ G (tv σ G x ((u - 1) / hf σ G x x)) := by
+  apply Calc.isU_tv σ G hG.invol hG.herm
+  rw [map_div₀, Calc.hf_conj σ G hG.invol hG.herm, map_sub, map_one]
+  field_simp
+  linear_combination hu
+
+theorem refl_mul {x : Fin n → E} (u v : E) (hx : hf σ G x x ≠ 0) :
+    tv σ G x ((u - 1) / hf σ G x x) * tv σ G x ((v - 1) / hf σ G x x) =
+      tv σ G x ((u * v - 1) / hf σ G x x) := by
+  rw [Calc.tv_mul]
+  congr 1
+  field_simp
+  ring
+
+theorem refl_det {x : Fin n → E} (u : E) (hx : hf σ G x x ≠ 0) :
+    (tv σ G x ((u - 1) / hf σ G x x)).det = u := by
+  rw [Calc.tv_det]
+  field_simp
+  ring
+
+theorem refl_one (x : Fin n → E) : tv σ G x ((1 - 1) / hf σ G x x) = 1 := by
+  ext a b
+  simp [tv]
+
+variable [CharZero E] {A : Type} [CommGroup A] {X : Matrix (Fin n) (Fin n) E → A}
+
+theorem char_refl_eq (hG : IsHerm σ G)
+    (h : (∃ z : Fin n → E, z ≠ 0 ∧ hf σ G z z = 0) ∨ ∀ x y : Fin n → E, hf σ G x x ≠ 0 → hf σ G y y ≠ 0 →
+      ∃ a : E, hf σ G y y = σ a * a * hf σ G x x)
+    (hX : ∀ a b, IsU σ G a → IsU σ G b → X (a * b) = X a * X b)
+    {x y : Fin n → E} {u : E} (hx : hf σ G x x ≠ 0) (hy : hf σ G y y ≠ 0) (hu : u * σ u = 1) :
+    X (tv σ G x ((u - 1) / hf σ G x x)) = X (tv σ G y ((u - 1) / hf σ G y y)) := by
+  rcases h with h | h
+  · obtain ⟨m, hm, e⟩ := quasiReflection_eq_tvGen_mul E n σ G hG h x y u hx hy hu
+    rw [e, hX _ _ ((tvGen_normal E n σ G hG).2 m hm).1 (isU_refl hG hy hu),
+      GlobalTheory.T.unitaryCharacter_kills_unitaryTransvections E n σ G hG A X hX m hm, one_mul]
+  · obtain ⟨a, ha⟩ := h x y hx hy
+    have h1 : hf σ G (a • x) (a • x) = hf σ G y y := by
+      rw [Calc.hf_smul_left, Calc.hf_smul_right, ha]; ring
+    obtain ⟨γ, hγ, e⟩ := (GlobalTheory.T.unitary_generated_by_quasiReflections_and_witt E n σ G hG).2 y (a • x) hy h1
+    have ha0 : a ≠ 0 := by
+      rintro rfl
+      simp at ha
+      exact hy ha
+    have ha1 : σ a ≠ 0 := (map_ne_zero σ).2 ha0
+    have h2 : tv σ G x ((u - 1) / hf σ G x x) = tv σ G (a • x) ((u - 1) / hf σ G y y) := by
+      rw [Calc.tv_smul, ha]
+      congr 1
+      field_simp
+    have h3 : γ * tv σ G x ((u - 1) / hf σ G x x) = tv σ G y ((u - 1) / hf σ G y y) * γ := by
+      rw [h2, Calc.conj_tv σ G γ _ _ hγ, e]
+    have h4 := congrArg X h3
+    rw [hX _ _ hγ (isU_refl hG hx hu), hX _ _ (isU_refl hG hy hu) hγ, mul_comm] at h4
+    exact mul_right_cancel h4
+
+theorem char_prod (hG : IsHerm σ G)
+    (h : (∃ z : Fin n → E, z ≠ 0 ∧ hf σ G z z = 0) ∨ ∀ x y : Fin n → E, hf σ G x x ≠ 0 → hf σ G y y ≠ 0 →
+      ∃ a : E, hf σ G y y = σ a * a * hf σ G x x)
+    (hX : ∀ a b, IsU σ G a → IsU σ G b → X (a * b) = X a * X b)
+    {x : Fin n → E} (hx : hf σ G x x ≠ 0) (l : List ((Fin n → E) × E))
+    (hl : ∀ p ∈ l, hf σ G p.1 p.1 ≠ 0 ∧ p.2 * σ p.2 = 1) :
+    IsU σ G (l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod ∧
+      X (l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod =
+        X (tv σ G x (((l.map fun p => tv σ G p.1 ((p.2 - 1) / hf σ G p.1 p.1)).prod.det - 1) / hf σ G x x)) := by
+  induction l with
+  | nil => exact ⟨isU_one, by simp only [List.map_nil, List.prod_nil, Matrix.det_one, refl_one]⟩
+  | cons p l ih =>
+    obtain ⟨h1, h2⟩ := ih fun q hq => hl q (List.mem_cons_of_mem _ hq)
+    obtain ⟨hp, hv⟩ := hl p List.mem_cons_self
+    rw [List.map_cons, List.prod_cons]
+    refine ⟨Calc.isU_mul σ G _ _ (isU_refl hG hp hv) h1, ?_⟩
+    rw [hX _ _ (isU_refl hG hp hv) h1, h2, char_refl_eq hG h hX hp hx hv, Matrix.det_mul, refl_det _ hp,
+      ← refl_mul _ _ hx, hX _ _ (isU_refl hG hx hv) (isU_refl hG hx (h1.det_mul_conj_det hG.det_ne))]
+
+end GlobalTheory.UTrans.CharDet
+
+theorem GlobalTheory.UTrans.char_eq_one_of_det_eq_one : ∀ (E : Type) [Field E] [CharZero E] (n : ℕ) (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E), GlobalTheory.UTrans.IsHerm σ G → ((∃ z : Fin n → E, z ≠ 0 ∧ GlobalTheory.UTrans.hf σ G z z = 0) ∨ ∀ x y : Fin n → E, GlobalTheory.UTrans.hf σ G x x ≠ 0 → GlobalTheory.UTrans.hf σ G y y ≠ 0 → ∃ a : E, GlobalTheory.UTrans.hf σ G y y = σ a * a * GlobalTheory.UTrans.hf σ G x x) → ∀ (A : Type) [CommGroup A] (X : Matrix (Fin n) (Fin n) E → A), (∀ a b, GlobalTheory.UTrans.IsU σ G a → GlobalTheory.UTrans.IsU σ G b → X (a * b) = X a * X b) → ∀ γ, GlobalTheory.UTrans.IsU σ G γ → γ.det = 1 → X γ = 1 := by
+  intro E _ _ n σ G hG h A _ X hX γ hγ hd
+  have h1 : X 1 = 1 := by
+    have := hX 1 1 CharDet.isU_one CharDet.isU_one
+    rw [mul_one] at this
+    exact left_eq_mul.1 this
+  obtain ⟨l, hl, e⟩ := (GlobalTheory.T.unitary_generated_by_quasiReflections_and_witt E n σ G hG).1 γ hγ
+  cases l with
+  | nil => rw [e]; simpa using h1
+  | cons p l =>
+    have h2 := (CharDet.char_prod hG h hX (hl p List.mem_cons_self).1 _ hl).2
+    rw [← e, hd, CharDet.refl_one] at h2
+    rw [h2, h1]
+end
+
+section
+open scoped Matrix
+
+namespace GlobalTheory.UTrans
+
+open GlobalTheory.UTrans.Calc
+
+private theorem sigma_hf_eq_hf_swap {R : Type} [CommRing R] {n : ℕ} (σ : R →+* R)
+    (G : Matrix (Fin n) (Fin n) R) (hσ : ∀ a, σ (σ a) = a) (hG : ∀ a b, σ (G a b) = G b a)
+    (x y : Fin n → R) : σ (GlobalTheory.UTrans.hf σ G x y) = GlobalTheory.UTrans.hf σ G y x := by
+  unfold GlobalTheory.UTrans.hf
+  simp only [map_sum, map_mul, hσ, hG]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+  ring
+
+private theorem hf_add_smul_self {R : Type} [CommRing R] {n : ℕ} (σ : R →+* R)
+    (G : Matrix (Fin n) (Fin n) R) (x y : Fin n → R) (c : R) (hc : σ c = c) :
+    GlobalTheory.UTrans.hf σ G (x + c • y) (x + c • y) = GlobalTheory.UTrans.hf σ G x x
+      + c * (GlobalTheory.UTrans.hf σ G y x + GlobalTheory.UTrans.hf σ G x y) + c * c * GlobalTheory.UTrans.hf σ G y y := by
+  unfold GlobalTheory.UTrans.hf
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, map_add, map_mul, hc, Finset.mul_sum,
+    ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+  ring
+
+private theorem exists_eq_algebraMap_of_fixed' {K L : Type} [Field K] [Field L] [CharZero L] [Algebra K L]
+    (σ : L →+* L) (δ : L) (hK : ∀ a : K, σ (algebraMap K L a) = algebraMap K L a)
+    (hσδ : σ δ = -δ) (hspan : ∀ x : L, ∃ a b : K, x = algebraMap K L a + algebraMap K L b * δ)
+    (z : L) (hz : σ z = z) : ∃ k : K, z = algebraMap K L k := by
+  obtain ⟨a, b, rfl⟩ := hspan z
+  refine ⟨a, ?_⟩
+  rw [map_add, map_mul, hK, hK, hσδ] at hz
+  have h2 : (2 : L) * (algebraMap K L b * δ) = 0 := by linear_combination -hz
+  rcases mul_eq_zero.mp h2 with h | h
+  · exact absurd h two_ne_zero
+  · rw [h, add_zero]
+
+private theorem involutive_of_anti_fixed_generator {K L : Type} [Field K] [Field L] [Algebra K L]
+    (σ : L →+* L) (δ : L) (hK : ∀ a : K, σ (algebraMap K L a) = algebraMap K L a)
+    (hσδ : σ δ = -δ) (hspan : ∀ x : L, ∃ a b : K, x = algebraMap K L a + algebraMap K L b * δ)
+    (x : L) : σ (σ x) = x := by
+  obtain ⟨a, b, rfl⟩ := hspan x
+  simp only [map_add, map_mul, hK, hσδ, map_neg, neg_neg]
+
+private theorem hf_smul_smul' {R : Type} [CommRing R] {n : ℕ} (σ : R →+* R)
+    (G : Matrix (Fin n) (Fin n) R) (y : Fin n → R) (c : R) (hc : σ c = c) :
+    GlobalTheory.UTrans.hf σ G (c • y) (c • y) = c * c * GlobalTheory.UTrans.hf σ G y y := by
+  unfold GlobalTheory.UTrans.hf
+  simp only [Pi.smul_apply, smul_eq_mul, map_mul, hc, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+  ring
+
+theorem real_isotropic_or_one_class : ∀ (K L : Type) [Field K] [Field L] [CharZero L] [Algebra K L] (σ : L →+* L) (δ : L), (∀ a : K, σ (algebraMap K L a) = algebraMap K L a) → δ ≠ 0 → σ δ = -δ → (∀ x : L, ∃ a b : K, x = algebraMap K L a + algebraMap K L b * δ) → Nonempty (K ≃+* ℝ) → ∀ (n : ℕ) (G : Matrix (Fin n) (Fin n) L), (∀ a b, σ (G a b) = G b a) → (∃ z : Fin n → L, z ≠ 0 ∧ GlobalTheory.UTrans.hf σ G z z = 0) ∨ ∀ x y : Fin n → L, GlobalTheory.UTrans.hf σ G x x ≠ 0 → GlobalTheory.UTrans.hf σ G y y ≠ 0 → ∃ a : L, GlobalTheory.UTrans.hf σ G y y = σ a * a * GlobalTheory.UTrans.hf σ G x x := by
+  intro K L _ _ _ _ σ δ hK hδ hσδ hspan ⟨e⟩ n G hG
+  have hσ : ∀ a : L, σ (σ a) = a := involutive_of_anti_fixed_generator σ δ hK hσδ hspan
+  have hfix : ∀ z : L, σ z = z → ∃ k : K, z = algebraMap K L k :=
+    exists_eq_algebraMap_of_fixed' σ δ hK hσδ hspan
+  by_cases hiso : ∃ z : Fin n → L, z ≠ 0 ∧ GlobalTheory.UTrans.hf σ G z z = 0
+  · exact Or.inl hiso
+  right
+  push_neg at hiso
+  intro x y hx hy
+  obtain ⟨p, hp⟩ := hfix _ (sigma_hf_eq_hf_swap σ G hσ hG x x)
+  obtain ⟨q, hq⟩ := hfix _ (sigma_hf_eq_hf_swap σ G hσ hG y y)
+  obtain ⟨m, hm⟩ := hfix (GlobalTheory.UTrans.hf σ G y x + GlobalTheory.UTrans.hf σ G x y)
+    (by rw [map_add, sigma_hf_eq_hf_swap σ G hσ hG, sigma_hf_eq_hf_swap σ G hσ hG, add_comm])
+  have hp0 : e p ≠ 0 := by
+    intro h
+    apply hx
+    rw [hp, (map_eq_zero_iff e e.injective).mp h, map_zero]
+  have hq0 : e q ≠ 0 := by
+    intro h
+    apply hy
+    rw [hq, (map_eq_zero_iff e e.injective).mp h, map_zero]
+
+  have hpos : 0 < e q / e p := by
+    by_contra hneg
+    push_neg at hneg
+    have hlt : e q * e p < 0 := by
+      have h1 : e q / e p < 0 := lt_of_le_of_ne hneg (div_ne_zero hq0 hp0)
+      have h2 : e q * e p = e q / e p * (e p * e p) := by field_simp
+      rw [h2]
+      exact mul_neg_of_neg_of_pos h1 (mul_self_pos.mpr hp0)
+    have hd : 0 ≤ discrim (e q) (e m) (e p) := by
+      unfold discrim
+      nlinarith [sq_nonneg (e m)]
+    have hs : discrim (e q) (e m) (e p) = Real.sqrt (discrim (e q) (e m) (e p))
+        * Real.sqrt (discrim (e q) (e m) (e p)) := (Real.mul_self_sqrt hd).symm
+    have ht := (quadratic_eq_zero_iff hq0 hs ((-(e m) + Real.sqrt (discrim (e q) (e m) (e p)))
+      / (2 * e q))).mpr (Or.inl rfl)
+    set t : ℝ := (-(e m) + Real.sqrt (discrim (e q) (e m) (e p))) / (2 * e q) with ht_def
+    have hT : q * (e.symm t * e.symm t) + m * e.symm t + p = 0 := by
+      apply e.injective
+      simp only [map_add, map_mul, RingEquiv.apply_symm_apply, map_zero]
+      linear_combination ht
+    have hTK : σ (algebraMap K L (e.symm t)) = algebraMap K L (e.symm t) := hK _
+    apply hiso (x + algebraMap K L (e.symm t) • y)
+    · intro h0
+      have hx' : x = (-(algebraMap K L (e.symm t))) • y := by
+        rw [neg_smul]
+        exact eq_neg_of_add_eq_zero_left h0
+      have hxx := hf_smul_smul' σ G y (-(algebraMap K L (e.symm t))) (by rw [map_neg, hTK])
+      rw [← hx', hp, hq, neg_mul_neg, ← map_mul, ← map_mul] at hxx
+      have hpk := congrArg e ((algebraMap K L).injective hxx)
+      simp only [map_mul, RingEquiv.apply_symm_apply] at hpk
+      rw [hpk] at hlt
+      nlinarith [mul_self_nonneg (t * e q)]
+    · rw [hf_add_smul_self σ G x y _ hTK, hm, hp, hq, ← map_mul, ← map_mul, ← map_mul, ← map_add,
+        ← map_add, ← map_zero (algebraMap K L)]
+      congr 1
+      linear_combination hT
+
+  refine ⟨algebraMap K L (e.symm (Real.sqrt (e q / e p))), ?_⟩
+  rw [hK, hp, hq, ← map_mul, ← map_mul]
+  congr 1
+  apply e.injective
+  simp only [map_mul, RingEquiv.apply_symm_apply]
+  rw [Real.mul_self_sqrt hpos.le]
+  field_simp
+
+end GlobalTheory.UTrans
+end
+
+section
 section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
 open MeasureTheory IsDedekindDomain NumberField Matrix Complex
@@ -280,3 +845,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.realPoints_unitaryCharacter_eq_detPower : ∀ (D : D7) (θ : InfFam D) (V : HSp D), IsInfFam θ → V.SigOK → ∀ z : GA D V → ℂ, (∀ a ∈ GinfC V, ∀ a' ∈ GinfC V, z (a * a') = z a * z a') → (∀ a ∈ GinfC V, ‖z a‖ = 1) → ContinuousOn z (GinfC V : Set (GA D V)) → ∃ m : D.what₂.Tau → ℤ, ∀ a ∈ GinfC V, z a = detPow θ V m a := by
   atlas_forward_decl GlobalTheory.AdSpan.char_eq_detPow
+end

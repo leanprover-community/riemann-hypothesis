@@ -3,8 +3,42 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinEvWIsUnitInjectiveDvd
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinOEModPrimeLaurentField
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusIntegralityWittTiltAinf
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SmodEqIffDvd
 
+section
+namespace GlobalTheory.ModularLimit
+
+theorem smodEq_iff_dvd {W : Type} [CommRing W] (x a b : W) (k : ℕ) :
+    a ≡ b [SMOD ((Ideal.span {x}) ^ k • ⊤ : Submodule W W)] ↔ x ^ k ∣ a - b := by
+  rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow,
+    Ideal.mem_span_singleton]
+
+theorem dvd_sub_of_le {W : Type} [CommRing W] (x : W) (f : ℕ → W)
+    (hf : ∀ k : ℕ, x ^ k ∣ f (k + 1) - f k) {m n : ℕ} (hmn : m ≤ n) :
+    x ^ m ∣ f n - f m := by
+  induction n, hmn using Nat.le_induction with
+  | base => simp
+  | succ n hmn ih =>
+    have hstep : x ^ m ∣ f (n + 1) - f n := (pow_dvd_pow x hmn).trans (hf n)
+    have hsplit : f (n + 1) - f m = (f (n + 1) - f n) + (f n - f m) := by ring
+    rw [hsplit]
+    exact dvd_add hstep ih
+
+theorem exists_limit {W : Type} [inst : CommRing W] (x : W)
+    [h : IsPrecomplete (Ideal.span {x}) W] (f : ℕ → W)
+    (hf : ∀ (k : ℕ), x ^ k ∣ f (k + (1 : ℕ)) - f k) :
+    ∃ (z : W), ∀ (k : ℕ), x ^ k ∣ z - f k := by
+  obtain ⟨z, hz⟩ := h.prec (f := f) (fun {m n} hmn => by
+    rw [smodEq_iff_dvd, dvd_sub_comm]
+    exact dvd_sub_of_le x f hf hmn)
+  refine ⟨z, fun k => ?_⟩
+  have hk := hz k
+  rw [smodEq_iff_dvd] at hk
+  rwa [dvd_sub_comm]
+
+end GlobalTheory.ModularLimit
+end
+
+section
 section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP
 open scoped Formalism.Per NNReal
@@ -320,3 +354,4 @@ open Matrix
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.ainf_closed_membership_limit : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (d : ℕ) (mem : (Fin d → Ainf l) → Prop), mem 0 → (∀ y z, mem y → mem z → mem (y + z)) → (∀ (c : bk.S) y, mem y → mem (fun a => bk.ev c * y a)) → (∀ y, mem (fun a => (l : Ainf l) * y a) → mem y) → (∀ y : ℕ → Fin d → Ainf l, (∀ n, mem (y n)) → (∀ n a, (l : Ainf l) ^ n ∣ y (n + 1) a - y n a) → ∀ z : Fin d → Ainf l, (∀ n a, (l : Ainf l) ^ n ∣ z a - y n a) → mem z) → ∀ (Y1 : Matrix (Fin d) (Fin d) (Ainf l)) (Y' : Matrix (Fin d) (Fin d) (WCb l)), (Y1.map (inclW l)).det ≠ 0 → IsUnit Y' → (∀ c : Fin d → bk.S, mem (Y1 *ᵥ fun a => bk.ev (c a))) → (∀ y, mem y → ∃ w : Fin d → WCb l, (∀ i, w i ∈ bk.OE) ∧ (fun a => inclW l (y a)) = Y' *ᵥ w) → ∃ Y : Matrix (Fin d) (Fin d) (Ainf l), IsUnit (Y.map (inclW l)) ∧ ∀ y, mem y ↔ ∃ c : Fin d → bk.S, y = Y *ᵥ fun a => bk.ev (c a) := by
   atlas_forward_decl GlobalTheory.BSP.saturated_module_free
+end

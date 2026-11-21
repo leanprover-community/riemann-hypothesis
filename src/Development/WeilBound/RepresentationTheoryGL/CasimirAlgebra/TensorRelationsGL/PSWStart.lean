@@ -1,5 +1,281 @@
-import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.PSWStartB
+import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.LiftCommEAt
 
+section
+noncomputable section
+
+open Formalism.REAL Matrix
+
+namespace PositivityTheory.Rg.Cz
+
+namespace SWS
+
+variable {n : ℕ} {ι Γ : Type} [Fintype ι] [DecidableEq ι] [Group Γ] [TopologicalSpace Γ]
+
+def mono (κ : ι → Γ → Matrix (Fin n) (Fin n) ℂ) {m : ℕ} (lab : Fin m → ι) (c : ι → ℤ) (I K : Fin m → Fin n) :
+    Γ → ℂ :=
+  fun k => (∏ τ, (κ τ k).det ^ c τ) * ∏ p, κ (lab p) k (I p) (K p)
+
+def Mono (κ : ι → Γ → Matrix (Fin n) (Fin n) ℂ) (H : Set ι) : Set (Γ → ℂ) :=
+  {g | ∃ (m : ℕ) (lab : Fin m → ι) (c : ι → ℤ) (I K : Fin m → Fin n), (∀ p, lab p ∈ H) ∧ g = mono κ lab c I K}
+
+theorem exists_half (bar : ι → ι) (h1 : ∀ τ, bar (bar τ) = τ) (h2 : ∀ τ, bar τ ≠ τ) :
+    ∃ H : Set ι, ∀ τ, τ ∈ H ↔ bar τ ∉ H := by
+  classical
+  let e := Fintype.equivFin ι
+  refine ⟨{τ | e τ < e (bar τ)}, fun τ => ?_⟩
+  simp only [Set.mem_setOf_eq, h1, not_lt]
+  have hne : e τ ≠ e (bar τ) := fun h => h2 τ (e.injective h).symm
+  constructor
+  · intro h
+    exact h.le
+  · intro h
+    exact lt_of_le_of_ne h hne
+
+variable {bar : ι → ι} {κ : ι → Γ → Matrix (Fin n) (Fin n) ℂ}
+
+theorem det_ne (hK : IsKD bar κ) (τ : ι) (γ : Γ) : (κ τ γ).det ≠ 0 := by
+  intro h
+  have := congrArg Matrix.det (hK.unit τ γ)
+  rw [Matrix.det_mul, h, zero_mul, Matrix.det_one] at this
+  exact zero_ne_one this
+
+theorem mono_cont (hK : IsKD bar κ) {m : ℕ} (lab : Fin m → ι) (c : ι → ℤ) (I K : Fin m → Fin n) :
+    Continuous (mono κ lab c I K) := by
+  have hent : ∀ τ, Continuous fun k => κ τ k :=
+    fun τ => continuous_pi fun i => continuous_pi fun j => hK.cont τ i j
+  unfold mono
+  refine Continuous.mul ?_ ?_
+  · refine continuous_finset_prod _ fun τ _ => ?_
+    exact ((hent τ).matrix_det).zpow₀ (c τ) fun k => Or.inl (det_ne hK τ k)
+  · exact continuous_finset_prod _ fun p _ => hK.cont (lab p) (I p) (K p)
+
+theorem one_mem_Mono (H : Set ι) : (1 : Γ → ℂ) ∈ Mono κ H := by
+  refine ⟨0, Fin.elim0, 0, Fin.elim0, Fin.elim0, fun p => p.elim0, ?_⟩
+  funext k
+  simp [mono]
+
+theorem mul_mem_Mono (hK : IsKD bar κ) (H : Set ι) {g g' : Γ → ℂ} (hg : g ∈ Mono κ H) (hg' : g' ∈ Mono κ H) :
+    g * g' ∈ Mono κ H := by
+  obtain ⟨m1, l1, c1, I1, K1, hl1, rfl⟩ := hg
+  obtain ⟨m2, l2, c2, I2, K2, hl2, rfl⟩ := hg'
+  refine ⟨m1 + m2, Fin.append l1 l2, c1 + c2, Fin.append I1 I2, Fin.append K1 K2, ?_, ?_⟩
+  · intro p
+    refine Fin.addCases (fun i => ?_) (fun i => ?_) p
+    · simpa [Fin.append_left] using hl1 i
+    · simpa [Fin.append_right] using hl2 i
+  · funext k
+    simp only [mono, Pi.mul_apply, Fin.prod_univ_add, Fin.append_left, Fin.append_right, Pi.add_apply]
+    rw [show (∏ τ, (κ τ k).det ^ (c1 τ + c2 τ)) =
+        (∏ τ, (κ τ k).det ^ c1 τ) * ∏ τ, (κ τ k).det ^ c2 τ by
+      rw [← Finset.prod_mul_distrib]
+      exact Finset.prod_congr rfl fun τ _ => zpow_add₀ (det_ne hK τ k) _ _]
+    ring
+
+def monoAlg (hK : IsKD bar κ) (H : Set ι) : Subalgebra ℂ (Γ → ℂ) :=
+  (Submodule.span ℂ (Mono κ H)).toSubalgebra (Submodule.subset_span (one_mem_Mono H)) (by
+    intro x y hx hy
+    have := Submodule.mul_mem_mul hx hy
+    rw [Submodule.span_mul_span] at this
+    refine Submodule.span_le.2 ?_ this
+    rintro _ ⟨a, ha, b, hb, rfl⟩
+    exact Submodule.subset_span (mul_mem_Mono hK H ha hb))
+
+theorem integrable_of_cont [MeasurableSpace Γ] [BorelSpace Γ] [CompactSpace Γ] (μ : MeasureTheory.Measure Γ)
+    [MeasureTheory.IsFiniteMeasure μ] {f : Γ → ℂ} (hf : Continuous f) : MeasureTheory.Integrable f μ := by
+  exact hf.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace f)
+
+theorem entry_mem (hK : IsKD bar κ) {H : Set ι} (hH : ∀ τ, τ ∈ H ↔ bar τ ∉ H) (τ : ι) (i j : Fin n) :
+    (fun k => κ τ k i j) ∈ Submodule.span ℂ (Mono κ H) := by
+  classical
+  change (fun k => κ τ k i j) ∈ monoAlg hK H
+  have hent : ∀ σ ∈ H, ∀ a b : Fin n, (fun k => κ σ k a b) ∈ monoAlg hK H := by
+    intro σ hσ a b
+    apply Submodule.subset_span
+    refine ⟨1, fun _ => σ, 0, fun _ => a, fun _ => b, fun _ => hσ, ?_⟩
+    funext k
+    simp [mono]
+  by_cases hτ : τ ∈ H
+  · exact hent τ hτ i j
+  · have hσ : bar τ ∈ H := by
+      by_contra h
+      exact hτ ((hH τ).2 h)
+    have hinv : ∀ z : ℤ, (fun k => (κ (bar τ) k).det ^ z) ∈ monoAlg hK H := by
+      intro z
+      apply Submodule.subset_span
+      refine ⟨0, Fin.elim0, Pi.single (bar τ) z, Fin.elim0, Fin.elim0, fun p => p.elim0, ?_⟩
+      funext k
+      symm
+      simp only [mono, Fin.prod_univ_zero, mul_one]
+      rw [Finset.prod_eq_single (bar τ)]
+      · simp
+      · intro b _ hb
+        simp [Pi.single_apply, hb]
+      · intro h
+        exact absurd (Finset.mem_univ _) h
+    have hadj : (fun k => (κ (bar τ) k).adjugate j i) ∈ monoAlg hK H := by
+      have hfun : (fun k => (κ (bar τ) k).adjugate j i) = ∑ p : Equiv.Perm (Fin n),
+          (Equiv.Perm.sign p : ℤ) • ∏ r, (fun k => ((κ (bar τ) k).updateRow i (Pi.single j 1)) (p r) r) := by
+        funext k
+        simp [Matrix.adjugate_apply, Matrix.det_apply, Finset.sum_apply, Finset.prod_apply, Units.smul_def]
+      rw [hfun]
+      refine Subalgebra.sum_mem _ fun p _ => zsmul_mem (Subalgebra.prod_mem _ fun r _ => ?_) _
+      by_cases h : p r = i
+      · simp only [h, Matrix.updateRow_self]
+        exact Subalgebra.algebraMap_mem (monoAlg hK H) ((Pi.single j (1 : ℂ) : Fin n → ℂ) r)
+      · simp only [Matrix.updateRow_ne h]
+        exact hent _ hσ _ _
+    have hkey : (fun k => κ τ k i j) =
+        (fun k => (κ (bar τ) k).det ^ (-1 : ℤ)) * (fun k => (κ (bar τ) k).adjugate j i) := by
+      funext k
+      have hinvM : (κ (bar τ) k)⁻¹ = (κ (bar τ) k)ᴴ := Matrix.inv_eq_right_inv (hK.unit (bar τ) k)
+      have e1 : κ τ k i j = star (κ (bar τ) k i j) := by
+        have := hK.conj (bar τ) k i j
+        rwa [hK.invol] at this
+      have e2 : star (κ (bar τ) k i j) = ((κ (bar τ) k)ᴴ) j i := by
+        simp [Matrix.conjTranspose_apply]
+      rw [Pi.mul_apply, e1, e2, ← hinvM]
+      simp [Matrix.inv_def, Ring.inverse_eq_inv', _root_.zpow_neg_one]
+    rw [hkey]
+    exact Subalgebra.mul_mem _ (hinv (-1)) hadj
+
+end SWS
+
+end PositivityTheory.Rg.Cz
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.REAL Matrix MeasureTheory
+
+namespace PositivityTheory.Rg.Cz
+
+namespace SWS
+
+variable {n : ℕ} {ι Γ : Type} [Fintype ι] [DecidableEq ι] [Group Γ] [TopologicalSpace Γ]
+  {bar : ι → ι} {κ : ι → Γ → Matrix (Fin n) (Fin n) ℂ}
+
+theorem dense [CompactSpace Γ] [T2Space Γ] (hK : IsKD bar κ) {H : Set ι} (hH : ∀ τ, τ ∈ H ↔ bar τ ∉ H)
+    (g : C(Γ, ℂ)) : g ∈ closure {h : C(Γ, ℂ) | ⇑h ∈ Submodule.span ℂ (Mono κ H)} := by
+  let S : Set C(Γ, ℂ) := {g | ∃ τ i j, (g : Γ → ℂ) = fun k => κ τ k i j}
+  let A : StarSubalgebra ℂ C(Γ, ℂ) := StarAlgebra.adjoin ℂ S
+  have hsep : A.SeparatesPoints := by
+    intro x y hxy
+    obtain ⟨τ, hτ⟩ : ∃ τ, κ τ x ≠ κ τ y := by
+      by_contra h
+      push Not at h
+      exact hxy (hK.sep x y h)
+    obtain ⟨i, j, hij⟩ : ∃ i j, κ τ x i j ≠ κ τ y i j := by
+      by_contra h
+      push Not at h
+      exact hτ (Matrix.ext h)
+    exact ⟨fun k => κ τ k i j, ⟨⟨fun k => κ τ k i j, hK.cont τ i j⟩,
+      StarAlgebra.subset_adjoin ℂ S ⟨τ, i, j, rfl⟩, rfl⟩, hij⟩
+  have hsub : A.toSubalgebra ≤ (monoAlg hK H).comap (ContinuousMap.coeFnAlgHom ℂ) := by
+    rw [StarAlgebra.adjoin_toSubalgebra]
+    apply Algebra.adjoin_le
+    rintro g (hg | hg)
+    · obtain ⟨τ, i, j, hg⟩ := hg
+      show (g : Γ → ℂ) ∈ Submodule.span ℂ (Mono κ H)
+      rw [hg]
+      exact entry_mem hK hH τ i j
+    · obtain ⟨τ, i, j, hg⟩ := Set.mem_star.1 hg
+      show (g : Γ → ℂ) ∈ Submodule.span ℂ (Mono κ H)
+      have : (g : Γ → ℂ) = fun k => κ (bar τ) k i j := by
+        funext k
+        have h1 := congrFun hg k
+        simp only [ContinuousMap.star_apply] at h1
+        rw [hK.conj, ← h1, star_star]
+      rw [this]
+      exact entry_mem hK hH (bar τ) i j
+  have hle : ∀ h ∈ A, ⇑h ∈ Submodule.span ℂ (Mono κ H) := fun h hh => hsub hh
+  have htop := ContinuousMap.starSubalgebra_topologicalClosure_eq_top_of_separatesPoints A hsep
+  have hg : g ∈ A.topologicalClosure := by rw [htop]; exact StarSubalgebra.mem_top
+  rw [← SetLike.mem_coe, StarSubalgebra.topologicalClosure_coe] at hg
+  exact closure_mono (fun h hh => hle h hh) hg
+
+theorem nonvanish [MeasurableSpace Γ] [BorelSpace Γ] [CompactSpace Γ] [T2Space Γ] (μ : Measure Γ) [IsFiniteMeasure μ]
+    [μ.IsOpenPosMeasure] (hK : IsKD bar κ) {H : Set ι} (hH : ∀ τ, τ ∈ H ↔ bar τ ∉ H)
+    {f : Γ → ℂ} (hf : Continuous f) (x : Γ) (hx : f x ≠ 0) : ∃ g ∈ Mono κ H, ∫ k, g k * f k ∂μ ≠ 0 := by
+  by_contra hcon
+  push Not at hcon
+  have hspan : ∀ g ∈ Submodule.span ℂ (Mono κ H), Continuous g ∧ ∫ k, g k * f k ∂μ = 0 := by
+    intro g hg
+    induction hg using Submodule.span_induction with
+    | mem g hg =>
+      refine ⟨?_, hcon g hg⟩
+      obtain ⟨m, lab, c, I, K, -, rfl⟩ := hg
+      exact mono_cont hK lab c I K
+    | zero => exact ⟨continuous_const, by simp⟩
+    | add g g' _ _ h h' =>
+      refine ⟨h.1.add h'.1, ?_⟩
+      simp only [Pi.add_apply, add_mul]
+      rw [integral_add (integrable_of_cont μ (f := fun k => g k * f k) (h.1.mul hf))
+        (integrable_of_cont μ (f := fun k => g' k * f k) (h'.1.mul hf)), h.2, h'.2,
+        add_zero]
+    | smul a g _ h =>
+      refine ⟨h.1.const_smul a, ?_⟩
+      simp only [Pi.smul_apply, smul_eq_mul, mul_assoc]
+      rw [integral_const_mul, h.2, mul_zero]
+  let F : C(Γ, ℂ) := ⟨fun k => star (f k), hf.star⟩
+  let f' : C(Γ, ℂ) := ⟨f, hf⟩
+  have hclose := dense hK hH F
+  have hbound : ∀ ε > 0, ‖∫ k, F k * f k ∂μ‖ ≤ ε * (‖f'‖ * μ.real Set.univ) := by
+    intro ε hε
+    obtain ⟨b, hb, hdist⟩ := Metric.mem_closure_iff.1 hclose ε hε
+    have hb' := hspan b hb
+    have heq : ∫ k, F k * f k ∂μ = ∫ k, (F k - b k) * f k ∂μ := by
+      rw [← sub_zero (∫ k, F k * f k ∂μ), ← hb'.2, ← integral_sub
+        (integrable_of_cont μ (f := fun k => F k * f k) (F.continuous.mul hf))
+        (integrable_of_cont μ (f := fun k => b k * f k) (b.continuous.mul hf))]
+      congr 1
+      funext k
+      ring
+    rw [heq, ← mul_assoc]
+    refine norm_integral_le_of_norm_le_const (Filter.Eventually.of_forall fun k => ?_)
+    rw [norm_mul]
+    have h1 : ‖F k - b k‖ ≤ ε := by
+      have := ContinuousMap.norm_coe_le_norm (F - b) k
+      rw [dist_eq_norm] at hdist
+      simp only [ContinuousMap.sub_apply] at this
+      linarith
+    have h2 : ‖f k‖ ≤ ‖f'‖ := ContinuousMap.norm_coe_le_norm f' k
+    exact mul_le_mul h1 h2 (norm_nonneg _) hε.le
+  have hzero : ∫ k, F k * f k ∂μ = 0 := by
+    by_contra hne
+    have hpos : 0 < ‖∫ k, F k * f k ∂μ‖ := norm_pos_iff.2 hne
+    set C := ‖f'‖ * μ.real Set.univ
+    have hC : 0 ≤ C := mul_nonneg (norm_nonneg _) measureReal_nonneg
+    set x := ‖∫ k, F k * f k ∂μ‖
+    have := hbound (x / (2 * (C + 1))) (by positivity)
+    have h3 : x / (2 * (C + 1)) * C ≤ x / 2 := by
+      rw [div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]
+      nlinarith
+    linarith
+  have hre : ∀ k, F k * f k = ((‖f k‖ ^ 2 : ℝ) : ℂ) := by
+    intro k
+    simp only [F, ContinuousMap.coe_mk]
+    rw [Complex.ofReal_pow]
+    exact RCLike.conj_mul (f k)
+  simp_rw [hre, integral_complex_ofReal, Complex.ofReal_eq_zero] at hzero
+  have hint : Integrable (fun k => ‖f k‖ ^ 2) μ := by
+    have := (integrable_of_cont μ (f := fun k => ((‖f k‖ ^ 2 : ℝ) : ℂ)) (by fun_prop)).re
+    exact this
+  have hae := (integral_eq_zero_iff_of_nonneg (fun k => sq_nonneg ‖f k‖) hint).1 hzero
+  have hfun := (Continuous.ae_eq_iff_eq μ (by fun_prop) continuous_const).1 hae
+  have h0 : ‖f x‖ ^ 2 = 0 := congrFun hfun x
+  exact hx (norm_eq_zero.1 ((pow_eq_zero_iff two_ne_zero).1 h0))
+
+end SWS
+
+end PositivityTheory.Rg.Cz
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.REAL Matrix MeasureTheory
@@ -139,4 +415,5 @@ theorem swStart_holds : SWStart := by
 
 end PositivityTheory.Rg.Cz
 
+end
 end

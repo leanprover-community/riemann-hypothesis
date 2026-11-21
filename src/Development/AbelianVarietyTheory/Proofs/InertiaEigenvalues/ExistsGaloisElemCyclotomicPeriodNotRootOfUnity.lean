@@ -6,10 +6,218 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BreuilKisinPri
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BezoutEisensteinDerivativePrimePow
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaAinfPeriodPowNeZero
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsOneAddPrimePowMulNotRootOfUnityStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RootOfUnityPadicComplexMemRangeAlgClosureStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGaloisMovesFlatByUnitRootStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UntiltOfTiltRootFlatAlgebraicAndGaloisFix
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisTransitiveOnPrimePowerRootSystems
 
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+
+namespace GlobalTheory.SmallRootCl
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem norm_one_add_pow_sub_one_le (x : ℂ_[l]) (hx : ‖x‖ ≤ 1) (m : ℕ) :
+    ‖(1 + x) ^ m - 1‖ ≤ ‖x‖ := by
+  induction m with
+  | zero => simp
+  | succ m ih =>
+    have h1 : ‖1 + x‖ ≤ 1 :=
+      (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (by simp) hx)
+    have e : (1 + x) ^ (m + 1) - 1 = ((1 + x) ^ m - 1) * (1 + x) + x := by ring
+    rw [e]
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ le_rfl)
+    rw [norm_mul]
+    calc ‖(1 + x) ^ m - 1‖ * ‖1 + x‖ ≤ ‖x‖ * 1 :=
+          mul_le_mul ih h1 (norm_nonneg _) (norm_nonneg _)
+      _ = ‖x‖ := mul_one _
+
+theorem inv_le_norm_prime (q : ℕ) (hq : q.Prime) : (l : ℝ)⁻¹ ≤ ‖(q : ℂ_[l])‖ := by
+  have hl : l.Prime := Fact.out
+  have h := PadicComplex.norm_extends' l (q : ℚ_[l])
+  rw [map_natCast, PadicComplex.coe_natCast] at h
+  rw [h]
+  by_cases hql : q = l
+  · subst hql; rw [Padic.norm_p]
+  · have hc : Nat.Coprime l q := (Nat.coprime_primes hl hq).2 (Ne.symm hql)
+    rw [(Padic.norm_natCast_eq_one_iff).2 hc]
+    exact inv_le_one_of_one_le₀ (by exact_mod_cast hl.one_lt.le)
+
+theorem not_root (x : ℂ_[l]) (hx0 : x ≠ 0) (hx : ‖x‖ < (l : ℝ)⁻¹) (i : ℕ) (hi : 1 ≤ i) :
+    (1 + x) ^ i ≠ 1 := by
+  intro hpow
+  have hl : l.Prime := Fact.out
+  have hx1 : ‖x‖ ≤ 1 := hx.le.trans (inv_le_one_of_one_le₀ (by exact_mod_cast hl.one_lt.le))
+  set ζ := 1 + x with hζ
+  have hfin : IsOfFinOrder ζ := isOfFinOrder_iff_pow_eq_one.2 ⟨i, by omega, hpow⟩
+  set d := orderOf ζ with hd
+  have hdpos : 0 < d := hfin.orderOf_pos
+  have hd1 : d ≠ 1 := by
+    intro h
+    rw [hd, orderOf_eq_one_iff, hζ] at h
+    exact hx0 (by linear_combination h)
+  set q := d.minFac with hqdef
+  have hq : q.Prime := Nat.minFac_prime hd1
+  have hqd : q ∣ d := Nat.minFac_dvd d
+  set η := ζ ^ (d / q) with hη
+  have hηq : η ^ q = 1 := by
+    rw [hη, ← pow_mul, Nat.div_mul_cancel hqd, hd]; exact pow_orderOf_eq_one ζ
+  have hη1 : η ≠ 1 := by
+    apply pow_ne_one_of_lt_orderOf
+    · exact (Nat.div_pos (Nat.le_of_dvd hdpos hqd) hq.pos).ne'
+    · exact Nat.div_lt_self hdpos hq.one_lt
+  have hsum : ∑ j ∈ Finset.range q, η ^ j = 0 := by
+    have h := geom_sum_mul η q
+    rw [hηq, sub_self] at h
+    exact (mul_eq_zero.1 h).resolve_right (sub_ne_zero.2 hη1)
+  have hsmall : ∀ j, ‖η ^ j - 1‖ ≤ ‖x‖ := fun j => by
+    rw [hη, ← pow_mul]; exact norm_one_add_pow_sub_one_le x hx1 _
+  have hqeq : (q : ℂ_[l]) = -∑ j ∈ Finset.range q, (η ^ j - 1) := by
+    rw [Finset.sum_sub_distrib, hsum]; simp
+  have hle : ‖(q : ℂ_[l])‖ ≤ ‖x‖ := by
+    rw [hqeq, norm_neg]
+    exact IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (norm_nonneg _) fun j _ => hsmall j
+  have := inv_le_norm_prime (l := l) q hq
+  linarith
+
+theorem exists_one_add_pow_mul_not_root : ∀ (l : ℕ) [Fact l.Prime] (a : ℂ_[l]), a ≠ 0 → ∃ k : ℕ, 1 + (l : ℂ_[l]) ^ k * a ≠ 0 ∧ ∀ i : ℕ, 1 ≤ i → (1 + (l : ℂ_[l]) ^ k * a) ^ i ≠ 1 := by
+  intro l _ a ha
+  have hl : l.Prime := Fact.out
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast hl.one_lt
+  have hl0 : (0 : ℝ) < l := by linarith
+  have hnl : ‖(l : ℂ_[l])‖ = (l : ℝ)⁻¹ := by
+    have h := PadicComplex.norm_extends' l (l : ℚ_[l])
+    rw [Padic.norm_p, map_natCast, PadicComplex.coe_natCast] at h
+    exact h
+  have ha0 : 0 < ‖a‖ := norm_pos_iff.2 ha
+  obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one (div_pos (inv_pos.2 hl0) ha0)
+    (inv_lt_one_of_one_lt₀ hl1)
+  set x := (l : ℂ_[l]) ^ k * a with hxdef
+  have hxn : ‖x‖ < (l : ℝ)⁻¹ := by
+    rw [hxdef, norm_mul, norm_pow, hnl]
+    exact (lt_div_iff₀ ha0).1 hk
+  have hl0' : (l : ℂ_[l]) ≠ 0 := by exact_mod_cast hl.ne_zero
+  have hx0 : x ≠ 0 := mul_ne_zero (pow_ne_zero _ hl0') ha
+  refine ⟨k, ?_, fun i hi => not_root x hx0 hxn i hi⟩
+  intro h
+  have : x = -1 := by linear_combination h
+  have h1 : ‖x‖ = 1 := by rw [this, norm_neg, norm_one]
+  have : (l : ℝ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ hl1
+  linarith
+
+end GlobalTheory.SmallRootCl
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_one_add_primePow_mul_not_rootOfUnity : ∀ (l : ℕ) [Fact l.Prime] (a : ℂ_[l]), a ≠ 0 → ∃ k : ℕ, 1 + (l : ℂ_[l]) ^ k * a ≠ 0 ∧ ∀ i : ℕ, 1 ≤ i → (1 + (l : ℂ_[l]) ^ k * a) ^ i ≠ 1 := by
+  first | exact @GlobalTheory.SmallRootCl.exists_one_add_pow_mul_not_root | exact GlobalTheory.SmallRootCl.exists_one_add_pow_mul_not_root | (intros; apply GlobalTheory.SmallRootCl.exists_one_add_pow_mul_not_root; all_goals assumption)
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+
+namespace GlobalTheory
+
+theorem rootOfUnity_mem_range_Om : ∀ (l : ℕ) [Fact l.Prime] (x : ℂ_[l]) (m : ℕ), 0 < m → x ^ m = 1 → ∃ z : Om l, (z : ℂ_[l]) = x := by
+  intro l _ x m hm hx
+  haveI : NeZero m := ⟨hm.ne'⟩
+  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot (Om l) m
+  have hζ' : IsPrimitiveRoot (algebraMap (Om l) ℂ_[l] ζ) m :=
+    hζ.map_of_injective (algebraMap (Om l) ℂ_[l]).injective
+  obtain ⟨i, -, hi⟩ := hζ'.eq_pow_of_pow_eq_one hx
+  exact ⟨ζ ^ i, by rw [← hi]; exact map_pow (algebraMap (Om l) ℂ_[l]) ζ i⟩
+
+end GlobalTheory
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rootOfUnity_padicComplex_mem_range_algClosure : ∀ (l : ℕ) [Fact l.Prime] (x : ℂ_[l]) (m : ℕ), 0 < m → x ^ m = 1 → ∃ z : Om l, (z : ℂ_[l]) = x := by
+  first | exact @GlobalTheory.rootOfUnity_mem_range_Om | exact GlobalTheory.rootOfUnity_mem_range_Om | (intros; apply GlobalTheory.rootOfUnity_mem_range_Om; all_goals assumption)
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+
+namespace GlobalTheory.BSP
+
+theorem rootT_mul' {l : ℕ} [Fact l.Prime] (a b : Per.Fl l) (n : ℕ) :
+    GlobalTheory.MemLoc.rootT (a * b) n = GlobalTheory.MemLoc.rootT a n * GlobalTheory.MemLoc.rootT b n := by
+  unfold GlobalTheory.MemLoc.rootT
+  rw [← map_mul]
+  congr 1
+  induction n with
+  | zero => rfl
+  | succ n ih => rw [Function.iterate_succ_apply', Function.iterate_succ_apply',
+      Function.iterate_succ_apply', ih, map_mul]
+
+theorem rootT_succ_pow' {l : ℕ} [Fact l.Prime] (a : Per.Fl l) (n : ℕ) :
+    GlobalTheory.MemLoc.rootT a (n + 1) ^ l = GlobalTheory.MemLoc.rootT a n := by
+  unfold GlobalTheory.MemLoc.rootT
+  rw [Function.iterate_succ_apply', ← map_pow, frobeniusEquiv_symm_pow_p]
+
+theorem galois_moves_flat_by_unit_root : ∀ (l : ℕ) [Fact l.Prime], (∀ (x : ℂ_[l]) (m : ℕ), 0 < m → x ^ m = 1 → ∃ z : Om l, (z : ℂ_[l]) = x) → ∀ (K : FinExt l) (bk : BK K) (e : OCb l), e.untilt = 1 → ∃ g : ↥(GK K), Per.σF (g : GQ l) bk.flat = e * bk.flat := by
+  intro l _ hroots K bk e he
+  obtain ⟨hπ, hπu⟩ := GlobalTheory.BSP.BK.prime_unif l K bk
+  obtain ⟨halg, hfix⟩ := GlobalTheory.BSP.rootT_flat_alg_and_fix l K bk
+  choose y hy using halg
+  have hc : ∀ n : ℕ, ∃ c : Om l, (c : ℂ_[l]) = ((GlobalTheory.MemLoc.rootT e n : OC l) : ℂ_[l]) := by
+    intro n
+    refine hroots _ (l ^ n) (pow_pos (Fact.out : l.Prime).pos n) ?_
+    have h := congrArg (fun x : OC l => (x : ℂ_[l])) (GlobalTheory.MemLoc.rootT_pow_eq_untilt e n)
+    simpa [he] using h
+  choose c hc using hc
+  have hcoe : ∀ x : Om l, (x : ℂ_[l]) = algebraMap (Om l) ℂ_[l] x := fun _ => rfl
+  have hinj : Function.Injective (fun x : Om l => (x : ℂ_[l])) := (algebraMap (Om l) ℂ_[l]).injective
+  have hy0 : y 0 = (((bk.str.symm (Ideal.Quotient.mk _ (X : bk.S)) : ↥(OL K)) : ↥K.1) : Om l) := by
+    apply hinj
+    beta_reduce
+    rw [← hy 0, ← coe_intToOC, hπu]
+    rfl
+  have hc0 : c 0 = 1 := by
+    apply hinj
+    beta_reduce
+    rw [hc 0, hcoe, map_one]
+    show ((PreTilt.untilt e : OC l) : ℂ_[l]) = 1
+    rw [he]
+    rfl
+  have hys : ∀ n, y (n + 1) ^ l = y n := by
+    intro n
+    apply hinj
+    show ((y (n + 1) ^ l : Om l) : ℂ_[l]) = (y n : ℂ_[l])
+    rw [hcoe, map_pow, ← hcoe, ← hy, ← hy, ← SubmonoidClass.coe_pow, rootT_succ_pow']
+  have hcs : ∀ n, c (n + 1) ^ l = c n := by
+    intro n
+    apply hinj
+    show ((c (n + 1) ^ l : Om l) : ℂ_[l]) = (c n : ℂ_[l])
+    rw [hcoe, map_pow, ← hcoe, hc, hc, ← SubmonoidClass.coe_pow, rootT_succ_pow']
+  obtain ⟨g, hg⟩ := GlobalTheory.galois_transitive_on_root_systems_of_prime l K _ hπ y (fun n => c n * y n) hy0
+    (by rw [hc0, one_mul, hy0]) hys (fun n => by rw [mul_pow, hcs, hys])
+  refine ⟨g, hfix _ _ fun n => ?_⟩
+  apply Subtype.ext
+  refine (GlobalTheory.RingIface.sigO_coe l (g : GQ l) (GlobalTheory.MemLoc.rootT bk.flat n)).trans ?_
+  rw [hy n, GlobalTheory.RingBasics.σC_coe, hg n, rootT_mul']
+  rw [MulMemClass.coe_mul, hcoe, map_mul, ← hcoe, ← hcoe, hc n, hy n]
+
+end GlobalTheory.BSP
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_galois_moves_flat_by_unit_root : ∀ (l : ℕ) [Fact l.Prime], (∀ (x : ℂ_[l]) (m : ℕ), 0 < m → x ^ m = 1 → ∃ z : Om l, (z : ℂ_[l]) = x) → ∀ (K : FinExt l) (bk : BK K) (e : OCb l), e.untilt = 1 → ∃ g : ↥(GK K), Per.σF (g : GQ l) bk.flat = e * bk.flat := by
+  first | exact @GlobalTheory.BSP.galois_moves_flat_by_unit_root | exact GlobalTheory.BSP.galois_moves_flat_by_unit_root | (intros; apply GlobalTheory.BSP.galois_moves_flat_by_unit_root; all_goals assumption)
+end
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
 open scoped Formalism.Per NNReal
 
@@ -158,4 +366,5 @@ theorem GlobalTheory.BKLim.exists_isZ_not_root : ∀ (l : ℕ) [Fact l.Prime] (K
   · rw [inv_pow, Ne, inv_eq_one, hΘw]
     exact hk i hi
 
+end
 end

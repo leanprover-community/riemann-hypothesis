@@ -6,16 +6,631 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SphericalHeckeValue
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIdempotentElemCharIdem
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsAntiJFrame
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSubquotientOfSameSphericalHeckeEigenvaluesStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CommutativeHeckeActsByScalarOnFixedVectorsStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactUnitaryIntegralPointsStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LaurentFiniteOfTriangularSignedIndicators
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitarySatakeTransformIsLaurentPolynomialStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryIwasawaCellBoundSmallTorusDoubleCosetStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryDoubleCosetOfGLintDoubleCosetStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSymmetricElementaryDivisorsUnitaryStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsMultisetSatakeEigenvalueEq
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSubquotientOfSameSphericalHeckeEigenvalues
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CommutativeHeckeActsByScalarOnFixedVectors
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsCompactUnitaryIntegralPoints
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryDoubleCosetOfGLintDoubleCoset
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSymmetricElementaryDivisorsUnitary
+import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
 
+section
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isSubquotient_of_same_spherical_hecke_eigenvalues : ∀ (G V W : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (π : Representation ℂ G V) (ρ : Representation ℂ G W) (K : Subgroup G), IsCompact (K : Set G) → IsCommensurated K → GlobalTheory.LGrp.IsIrrSmooth π → IsSmooth ρ → ∀ x ∈ fixed π K, x ≠ 0 → ∀ y ∈ fixed ρ K, y ≠ 0 → (∀ h ∈ Hecke ℂ K, ∃ c : ℂ, heckeVec π K h x = c • x ∧ heckeVec ρ K h y = c • y) → GlobalTheory.LGrp.IsSubquot π ρ := by
+  first | exact @GlobalTheory.LGrp.Zonal.isSubquot_of_hecke_eigenvalues | exact GlobalTheory.LGrp.Zonal.isSubquot_of_hecke_eigenvalues | (intros; apply GlobalTheory.LGrp.Zonal.isSubquot_of_hecke_eigenvalues <;> assumption)
+end
+
+section
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.commutative_hecke_acts_by_scalar_on_fixed_vectors : ∀ (G V : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V] (π : Representation ℂ G V) (K : Subgroup G), IsCompact (K : Set G) → IsCommensurated K → (∀ f₁ ∈ Hecke ℂ K, ∀ f₂ ∈ Hecke ℂ K, conv K f₁ f₂ = conv K f₂ f₁) → GlobalTheory.LGrp.IsIrrSmooth π → FiniteDimensional ℂ (fixed π K) → ∀ h ∈ Hecke ℂ K, ∃ c : ℂ, ∀ x ∈ fixed π K, heckeVec π K h x = c • x := by
+  first | exact @GlobalTheory.LFun.HeckeScalar.exists_scalar | exact GlobalTheory.LFun.HeckeScalar.exists_scalar | (intros; apply GlobalTheory.LFun.HeckeScalar.exists_scalar <;> assumption)
+end
+
+section
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isOpen_isCompact_unitaryIntegralPoints : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : L) (σ : L →+* L) (q n : ℕ), IsUnramInv ϖ σ q → IsOpen (KU σ n : Set (GU σ n)) ∧ IsCompact (KU σ n : Set (GU σ n)) := by
+  first | exact @GlobalTheory.LFun.IntPtsUnitary.isOpen_isCompact_KU | exact GlobalTheory.LFun.IntPtsUnitary.isOpen_isCompact_KU | (intros; apply GlobalTheory.LFun.IntPtsUnitary.isOpen_isCompact_KU <;> assumption)
+end
+
+section
+section
+namespace GlobalTheory.LaurentFinite
+
+open AddMonoidAlgebra
+
+def cut (j n : ℤ) : ℤ := if j ≤ |n| then Int.sign n else 0
+
+theorem abs_cut_le (j n : ℤ) : |cut j n| ≤ 1 := by
+  unfold cut
+  split_ifs
+  · rcases lt_trichotomy n 0 with h | h | h
+    · simp [Int.sign_eq_neg_one_of_neg h]
+    · simp [h]
+    · simp [Int.sign_eq_one_of_pos h]
+  · simp
+
+theorem pointwise_lt (j n k : ℤ) (hj : 2 ≤ j) (hn : |n| ≠ j - 1) (hk : |k| ≤ 1)
+    (hne : k ≠ cut j n) :
+    (2 * j - 2) * (|cut j n| - |k|) < n ^ 2 - (n - cut j n + k) ^ 2 := by
+  have hk' : k = -1 ∨ k = 0 ∨ k = 1 := by
+    rw [abs_le] at hk; omega
+  unfold cut at *
+  split_ifs at * with h
+  · rcases lt_trichotomy n 0 with h0 | h0 | h0
+    · rw [Int.sign_eq_neg_one_of_neg h0] at *
+      rw [abs_of_neg h0] at h hn
+      rcases hk' with rfl | rfl | rfl
+      · exact absurd rfl hne
+      · norm_num; nlinarith
+      · norm_num; nlinarith
+    · subst h0; simp at h; omega
+    · rw [Int.sign_eq_one_of_pos h0] at *
+      rw [abs_of_pos h0] at h hn
+      rcases hk' with rfl | rfl | rfl
+      · norm_num; nlinarith
+      · norm_num; nlinarith
+      · exact absurd rfl hne
+  · have h2 : |n| ≤ j - 2 := by omega
+    rw [abs_le] at h2
+    rcases hk' with rfl | rfl | rfl
+    · norm_num; nlinarith [h2.1, h2.2]
+    · exact absurd rfl hne
+    · norm_num; nlinarith [h2.1, h2.2]
+
+theorem sum_sq_lt {m : ℕ} (j : ℤ) (ν κ : Fin m → ℤ) (hj : 2 ≤ j) (hν : ∀ i, |ν i| ≠ j - 1)
+    (hκ : ∀ i, |κ i| ≤ 1) (hs : ∑ i, |κ i| ≤ ∑ i, |cut j (ν i)|)
+    (hne : κ ≠ fun i => cut j (ν i)) :
+    ∑ i, (ν i - cut j (ν i) + κ i) ^ 2 < ∑ i, ν i ^ 2 := by
+  obtain ⟨i0, hi0⟩ := Function.ne_iff.mp hne
+  have h1 : ∑ i, (2 * j - 2) * (|cut j (ν i)| - |κ i|)
+      < ∑ i, (ν i ^ 2 - (ν i - cut j (ν i) + κ i) ^ 2) := by
+    apply Finset.sum_lt_sum
+    · intro i _
+      by_cases h : κ i = cut j (ν i)
+      · rw [h]; simp
+      · exact (pointwise_lt j _ _ hj (hν i) (hκ i) h).le
+    · exact ⟨i0, Finset.mem_univ _, pointwise_lt j _ _ hj (hν i0) (hκ i0) hi0⟩
+  rw [← Finset.mul_sum, Finset.sum_sub_distrib, Finset.sum_sub_distrib] at h1
+  have : 0 ≤ (2 * j - 2) * (∑ i, |cut j (ν i)| - ∑ i, |κ i|) :=
+    mul_nonneg (by omega) (by omega)
+  omega
+
+theorem exists_gap {m : ℕ} (ν : Fin m → ℤ) (i0 : Fin m) (h : (m : ℤ) < |ν i0|) :
+    ∃ j : ℤ, 2 ≤ j ∧ j ≤ |ν i0| ∧ ∀ i, |ν i| ≠ j - 1 := by
+  have hcard : ((Finset.univ.erase i0).image fun i => |ν i|).card < (Finset.Icc (1 : ℤ) m).card := by
+    refine lt_of_le_of_lt Finset.card_image_le ?_
+    have := i0.pos
+    simp
+    omega
+  obtain ⟨t, ht, ht'⟩ := Finset.exists_mem_notMem_of_card_lt_card hcard
+  rw [Finset.mem_Icc] at ht
+  refine ⟨t + 1, by omega, by omega, fun i hi => ?_⟩
+  by_cases h0 : i = i0
+  · subst h0; omega
+  · exact ht' (Finset.mem_image.mpr ⟨i, by simp [h0], by omega⟩)
+
+theorem finite_of_triangular (m : ℕ) (B : Subalgebra ℂ (AddMonoidAlgebra ℂ (Fin m → ℤ)))
+    (hB : ∀ ε : Fin m → ℤ, (∀ i, |ε i| ≤ 1) → ∃ s ∈ B, s.coeff ε ≠ 0 ∧
+      ∀ κ, s.coeff κ ≠ 0 → (∀ i, |κ i| ≤ 1) ∧ ∑ i, |κ i| ≤ ∑ i, |ε i|) :
+    Module.Finite B (AddMonoidAlgebra ℂ (Fin m → ℤ)) := by
+  classical
+  set S : Finset (AddMonoidAlgebra ℂ (Fin m → ℤ)) :=
+    (Fintype.piFinset fun _ : Fin m => Finset.Icc (-(m : ℤ)) m).image fun ν => single ν 1 with hS
+  set N : Submodule B (AddMonoidAlgebra ℂ (Fin m → ℤ)) := Submodule.span B (S : Set _) with hN
+  have hsm : ∀ (ν : Fin m → ℤ) (c : ℂ), single ν 1 ∈ N → single ν c ∈ N := by
+    intro ν c h
+    have := N.smul_of_tower_mem c h
+    rwa [smul_single', mul_one] at this
+  have key : ∀ (n : ℕ) (ν : Fin m → ℤ), ∑ i, ν i ^ 2 < n → single ν (1 : ℂ) ∈ N := by
+    intro n
+    induction n with
+    | zero =>
+      intro ν h
+      have : 0 ≤ ∑ i, ν i ^ 2 := Finset.sum_nonneg fun i _ => sq_nonneg _
+      simp at h
+      omega
+    | succ n ih =>
+      intro ν h
+      by_cases hb : ∀ i, |ν i| ≤ m
+      · apply Submodule.subset_span
+        refine Finset.mem_coe.mpr (Finset.mem_image.mpr ⟨ν, ?_, rfl⟩)
+        rw [Fintype.mem_piFinset]
+        intro i
+        exact Finset.mem_Icc.mpr (abs_le.mp (hb i))
+      · push Not at hb
+        obtain ⟨i0, hi0⟩ := hb
+        obtain ⟨j, hj, hj0, hν⟩ := exists_gap ν i0 hi0
+        set ε : Fin m → ℤ := fun i => cut j (ν i) with hε
+        obtain ⟨s, hsB, hs0, hs⟩ := hB ε fun i => abs_cut_le _ _
+        have step : ∀ κ : Fin m → ℤ, (∀ i, |κ i| ≤ 1) → ∑ i, |κ i| ≤ ∑ i, |ε i| → κ ≠ ε →
+            single (κ + (ν - ε)) (1 : ℂ) ∈ N := by
+          intro κ h1 h2 h3
+          apply ih
+          have := sum_sq_lt j ν κ hj hν h1 h2 h3
+          have e : ∑ i, (κ + (ν - ε)) i ^ 2 = ∑ i, (ν i - cut j (ν i) + κ i) ^ 2 :=
+            Finset.sum_congr rfl fun i _ => by simp [hε, add_comm]
+          push_cast at h
+          omega
+        have h0 : single (ν - ε) (1 : ℂ) ∈ N := by
+          have := step 0 (by simp) (by simpa using Finset.sum_nonneg fun i _ => abs_nonneg (ε i)) (by
+            intro h0
+            have h1 : ε i0 = 0 := by rw [← h0]; rfl
+            simp only [hε, cut, hj0, if_true, Int.sign_eq_zero_iff_zero] at h1
+            rw [h1] at hj0
+            simp at hj0
+            omega)
+          rwa [zero_add] at this
+        have h1 : s * single (ν - ε) (1 : ℂ) ∈ N := N.smul_mem ⟨s, hsB⟩ h0
+        have h2 : s * single (ν - ε) (1 : ℂ)
+            = ∑ κ ∈ s.coeff.support, single (κ + (ν - ε)) (s.coeff κ) := by
+          conv_lhs => rw [← sum_coeff_single s, Finsupp.sum, Finset.sum_mul]
+          exact Finset.sum_congr rfl fun κ _ => by rw [single_mul_single, mul_one]
+        rw [h2, ← Finset.add_sum_erase _ _ (Finsupp.mem_support_iff.mpr hs0)] at h1
+        have h3 : ∑ κ ∈ s.coeff.support.erase ε, single (κ + (ν - ε)) (s.coeff κ) ∈ N := by
+          refine N.sum_mem fun κ hκ => hsm _ _ ?_
+          rw [Finset.mem_erase, Finsupp.mem_support_iff] at hκ
+          exact step κ (hs κ hκ.2).1 (hs κ hκ.2).2 hκ.1
+        have h4 := N.smul_of_tower_mem (s.coeff ε)⁻¹ ((N.add_mem_iff_left h3).mp h1)
+        rwa [smul_single', inv_mul_cancel₀ hs0, add_sub_cancel] at h4
+  refine Module.Finite.of_fg_top ⟨S, ?_⟩
+  rw [eq_top_iff]
+  intro x _
+  change x ∈ N
+  induction x using induction_linear with
+  | zero => exact N.zero_mem
+  | add x y hx hy => exact N.add_mem (hx trivial) (hy trivial)
+  | single ν c =>
+    refine hsm _ _ (key ((∑ i, ν i ^ 2).toNat + 1) ν ?_)
+    push_cast
+    omega
+
+end GlobalTheory.LaurentFinite
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.laurent_finite_of_triangular_signed_indicators : ∀ (m : ℕ) (B : Subalgebra ℂ (AddMonoidAlgebra ℂ (Fin m → ℤ))), (∀ ε : Fin m → ℤ, (∀ i, |ε i| ≤ 1) → ∃ s ∈ B, s.coeff ε ≠ 0 ∧ ∀ κ, s.coeff κ ≠ 0 → (∀ i, |κ i| ≤ 1) ∧ ∑ i, |κ i| ≤ ∑ i, |ε i|) → Module.Finite B (AddMonoidAlgebra ℂ (Fin m → ℤ)) := by
+  atlas_forward_decl GlobalTheory.LaurentFinite.finite_of_triangular
+end
+
+section
+noncomputable section
+
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+
+namespace GlobalTheory.LFun.SatCoef
+
+open GlobalTheory.InertThetaCompare
+
+variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {n q : ℕ} {ϖ : L}
+
+open Classical in
+
+def cellSum (ϖ : L) (h : GU σ n → ℂ) (a : Fin (n / 2) → ℤ) : ℂ :=
+  ∑ᶠ x : GU σ n ⧸ KU σ n, if Cell ϖ a x then h x.out else 0
+
+theorem exists_of_cellSum {h : GU σ n → ℂ} {a : Fin (n / 2) → ℤ} (ha : cellSum ϖ h a ≠ 0) :
+    ∃ x : GU σ n ⧸ KU σ n, h x.out ≠ 0 ∧ Cell ϖ a x := by
+  classical
+  by_contra hne
+  push Not at hne
+  refine ha (finsum_eq_zero_of_forall_eq_zero fun x => ?_)
+  split_ifs with hx
+  · by_contra h0
+    exact hne x h0 hx
+  · rfl
+
+theorem finite_supp (hU : IsUnramInv ϖ σ q) {h : GU σ n → ℂ} (hh : h ∈ Hecke ℂ (KU σ n)) :
+    {x : GU σ n ⧸ KU σ n | h x.out ≠ 0}.Finite :=
+  P.finite_support_cosets (P.isCommensurated_integral_unitary_of_unramified hU n) hh.2
+
+theorem finite_cellSum (hU : IsUnramInv ϖ σ q) {h : GU σ n → ℂ} (hh : h ∈ Hecke ℂ (KU σ n)) :
+    {a | cellSum ϖ h a ≠ 0}.Finite := by
+  refine ((finite_supp hU hh).biUnion (t := fun x => {a | Cell ϖ a x}) fun x _ => Set.Subsingleton.finite ?_).subset ?_
+  · rintro a ⟨u, hu, k, hk, e⟩ a' ⟨u', hu', k', hk', e'⟩
+    exact P.fSatake_cell_unique hU (Nat.mul_div_le n 2) hu hu' hk hk' (e.symm.trans e')
+  · intro a ha
+    obtain ⟨x, hx⟩ := exists_of_cellSum ha
+    exact Set.mem_biUnion hx.1 hx.2
+
+theorem cellSum_dosetInd (hU : IsUnramInv ϖ σ q) (t : GU σ n) (ε : Fin (n / 2) → ℤ)
+    (ht : ((t : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = tMat ϖ n (n / 2) ε) :
+    cellSum ϖ (dosetInd ℂ (KU σ n) t) ε ≠ 0 := by
+  classical
+  have hf : {x : GU σ n ⧸ KU σ n | Cell ϖ ε x ∧ dosetInd ℂ (KU σ n) t x.out ≠ 0}.Finite :=
+    (finite_supp hU (Final.DosetIndMem _ _ ℂ t)).subset fun x hx => hx.2
+  have key : ∀ x : GU σ n ⧸ KU σ n, ∀ [Decidable (Cell ϖ ε x)],
+      (if Cell ϖ ε x then dosetInd ℂ (KU σ n) t x.out else 0) = if x ∈ hf.toFinset then 1 else 0 := by
+    intro x _
+    simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq]
+    by_cases h1 : Cell ϖ ε x
+    · by_cases h2 : dosetInd ℂ (KU σ n) t x.out = 0
+      · simp [h1, h2]
+      · rw [if_pos h1, if_pos ⟨h1, h2⟩]
+        unfold dosetInd at h2 ⊢
+        exact Set.indicator_of_mem (Set.mem_of_indicator_ne_zero h2) _
+    · simp [h1]
+  unfold cellSum
+  rw [finsum_congr fun x => @key x _, finsum_eq_sum_of_support_subset (s := hf.toFinset) _ (fun x hx => by
+    by_contra h
+    exact hx (if_neg h)), Finset.sum_congr rfl fun x hx => if_pos hx]
+  simp only [Finset.sum_const, nsmul_eq_mul, mul_one, ne_eq, Nat.cast_eq_zero, Finset.card_eq_zero]
+  refine Finset.ne_empty_of_mem (a := (QuotientGroup.mk t : GU σ n ⧸ KU σ n)) ?_
+  rw [Set.Finite.mem_toFinset]
+  obtain ⟨k, hk⟩ := QuotientGroup.mk_out_eq_mul (KU σ n) t
+  refine ⟨⟨1, ⟨P.fSatake_borel_one, fun i => by simp⟩, k, k.2, ?_⟩, ?_⟩
+  · rw [hk]
+    simp only [Subgroup.coe_mul, Units.val_mul, ht, OneMemClass.coe_one, Units.val_one, Matrix.mul_one]
+  · rw [hk]
+    unfold dosetInd
+    rw [Set.indicator_of_mem (DoubleCoset.mem_doubleCoset.2 ⟨1, one_mem _, k.1, k.2, by rw [one_mul]⟩ :
+      t * k.1 ∈ DoubleCoset.doubleCoset t (KU σ n : Set (GU σ n)) (KU σ n : Set (GU σ n)))]
+    exact one_ne_zero
+
+theorem satU_laurent : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q n : ℕ), IsUnramInv ϖ σ q → ∀ h ∈ Hecke ℂ (KU σ n), ∃ s : (Fin (n / 2) → ℤ) →₀ ℂ, (∀ α : Fin (n / 2) → ℂ, SatU ϖ q h α = s.sum fun a c => c * ∏ i, α i ^ a i) ∧ (∀ κ, s κ ≠ 0 → ∃ g : GU σ n, h g ≠ 0 ∧ ∃ u : GU σ n, IsUnipU u ∧ ∃ k ∈ KU σ n, ((g : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = tMat ϖ n (n / 2) κ * ((u : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) * ((k : GL (Fin n) L) : Matrix (Fin n) (Fin n) L)) ∧ ∀ (t : GU σ n) (ε : Fin (n / 2) → ℤ), ((t : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = tMat ϖ n (n / 2) ε → h = dosetInd ℂ (KU σ n) t → s ε ≠ 0 := by
+  intro L _ _ ϖ σ q n hU h hh
+  have hq : (q : ℂ) ≠ 0 := by
+    have := hU.2.2.2.2.2.1
+    exact_mod_cast (by omega : q ≠ 0)
+  let f : (Fin (n / 2) → ℤ) → ℂ := fun a =>
+    (∏ i : Fin (n / 2), (q : ℂ) ^ (-(a i) * ((n : ℤ) - 1 - 2 * (i.val : ℤ)))) * cellSum ϖ h a
+  have hf : (Function.support f).Finite := (finite_cellSum hU hh).subset fun a ha => right_ne_zero_of_mul ha
+  refine ⟨Finsupp.ofSupportFinite f hf, fun α => ?_, fun κ hκ => ?_, fun t ε ht e => ?_⟩
+  · have e : SatU ϖ q h α = ∑ᶠ a, f a * ∏ i, α i ^ a i := by
+      unfold SatU
+      refine finsum_congr fun a => ?_
+      rw [Finset.prod_mul_distrib, mul_comm (∏ i, α i ^ a i), mul_right_comm]
+      rfl
+    rw [e, Finsupp.sum]
+    exact finsum_eq_sum_of_support_subset _ fun a ha =>
+      Finset.mem_coe.2 (Finsupp.mem_support_iff.2 (left_ne_zero_of_mul ha))
+  · obtain ⟨x, h1, h2⟩ := exists_of_cellSum (right_ne_zero_of_mul (show f κ ≠ 0 from hκ))
+    exact ⟨x.out, h1, h2⟩
+  · subst e
+    exact mul_ne_zero (Finset.prod_ne_zero_iff.2 fun i _ => zpow_ne_zero _ hq) (cellSum_dosetInd hU t ε ht)
+
+end GlobalTheory.LFun.SatCoef
+
+end
+end
+
+section
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitarySatakeTransform_isLaurentPolynomial : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q n : ℕ), IsUnramInv ϖ σ q → ∀ h ∈ Hecke ℂ (KU σ n), ∃ s : (Fin (n / 2) → ℤ) →₀ ℂ, (∀ α : Fin (n / 2) → ℂ, SatU ϖ q h α = s.sum fun a c => c * ∏ i, α i ^ a i) ∧ (∀ κ, s κ ≠ 0 → ∃ g : GU σ n, h g ≠ 0 ∧ ∃ u : GU σ n, IsUnipU u ∧ ∃ k ∈ KU σ n, ((g : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = tMat ϖ n (n / 2) κ * ((u : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) * ((k : GL (Fin n) L) : Matrix (Fin n) (Fin n) L)) ∧ ∀ (t : GU σ n) (ε : Fin (n / 2) → ℤ), ((t : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = tMat ϖ n (n / 2) ε → h = dosetInd ℂ (KU σ n) t → s ε ≠ 0 := by
+  first | exact @GlobalTheory.LFun.SatCoef.satU_laurent | exact GlobalTheory.LFun.SatCoef.satU_laurent | (intros; apply GlobalTheory.LFun.SatCoef.satU_laurent <;> assumption)
+end
+
+section
+noncomputable section
+
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun GlobalTheory.InertThetaCompare
+
+namespace GlobalTheory.LFun.CellBound
+
+section Local
+
+variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {n : ℕ}
+
+private theorem det_mem_foundation {m : Type} [Fintype m] [DecidableEq m] (M : Matrix m m L)
+    (h : ∀ i j, M i j ∈ intL L) : M.det ∈ intL L := by
+  rw [Matrix.det_apply]
+  refine sum_mem fun σ _ => ?_
+  rw [Units.smul_def]
+  exact zsmul_mem (prod_mem fun i _ => h _ _) _
+
+private theorem valuation_zpow_uniformizer' {ϖ : L} (hϖ : Valued.v ϖ = WithZero.exp (-1 : ℤ)) (m : ℤ) :
+    Valued.v (ϖ ^ m) = WithZero.exp (-m) := by
+  rw [map_zpow₀, hϖ, ← WithZero.exp_zsmul]
+  congr 1
+  simp
+
+private theorem valuation_prod_zpow_uniformizer {ϖ : L} (hϖ : Valued.v ϖ = WithZero.exp (-1 : ℤ)) {ι : Type}
+    (s : Finset ι) (m : ι → ℤ) :
+    Valued.v (∏ i ∈ s, ϖ ^ m i) = WithZero.exp (-∑ i ∈ s, m i) := by
+  classical
+  refine Finset.induction_on s ?_ ?_
+  · simp
+  · intro j s hj ih
+    rw [Finset.prod_insert hj, Finset.sum_insert hj, map_mul, ih, valuation_zpow_uniformizer' hϖ, ← WithZero.exp_add]
+    congr 1
+    ring
+
+theorem minor_le {ϖ : L} (hϖ : Valued.v ϖ = WithZero.exp (-1 : ℤ)) {a μ : Fin n → ℤ}
+    {b k₁ k₂ : Matrix (Fin n) (Fin n) L} (hb : b.BlockTriangular id) (hd : ∀ i, b i i = ϖ ^ a i)
+    (h₁ : ∀ i j, k₁ i j ∈ intL L) (h₂ : ∀ i j, k₂ i j ∈ intL L)
+    (e : b = k₁ * Matrix.diagonal (fun i => ϖ ^ μ i) * k₂) (I : Finset (Fin n)) (c : ℤ)
+    (hc : ∀ S : Finset (Fin n), S.card = I.card → c ≤ ∑ i ∈ S, μ i) :
+    c ≤ ∑ i ∈ I, a i := by
+  classical
+  have hint : ∀ x : L, x ∈ intL L ↔ Valued.v x ≤ 1 := fun x => Iff.rfl
+  let A : Matrix I (Fin n) L := fun i s => k₁ i s * ϖ ^ μ s
+  let B : Matrix (Fin n) I L := fun s j => k₂ s j
+  have hM : b.submatrix (fun i : I => (i : Fin n)) (fun i : I => (i : Fin n)) = A * B := by
+    ext i j
+    rw [Matrix.mul_apply]
+    simp [A, B, e, Matrix.mul_apply, Matrix.diagonal_apply]
+  have hdet : (b.submatrix (fun i : I => (i : Fin n)) (fun i : I => (i : Fin n))).det =
+      ∏ i : I, ϖ ^ a i := by
+    have ht : (b.submatrix (fun i : I => (i : Fin n)) (fun i : I => (i : Fin n))).BlockTriangular id :=
+      fun i j hij => hb (show (j : Fin n) < i from hij)
+    rw [Matrix.det_of_upperTriangular ht]
+    simp [hd]
+  have hexp : (A * B).det = ∑ f : I → Fin n, (∏ i, B (f i) i) * (A.submatrix id f).det := by
+    simp only [Matrix.det_apply, Matrix.mul_apply, Finset.prod_univ_sum, Fintype.piFinset_univ,
+      Finset.smul_sum, Finset.mul_sum, Matrix.submatrix_apply, id]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun f _ => Finset.sum_congr rfl fun σ _ => ?_
+    simp only [Units.smul_def, zsmul_eq_mul, Finset.prod_mul_distrib]
+    ring
+  have hterm : ∀ f : I → Fin n,
+      Valued.v ((∏ i, B (f i) i) * (A.submatrix id f).det) ≤ WithZero.exp (-c) := by
+    intro f
+    by_cases hf : Function.Injective f
+    · have hA : A.submatrix id f = k₁.submatrix (fun i : I => (i : Fin n)) f *
+          Matrix.diagonal (fun j => ϖ ^ μ (f j)) := by
+        ext i j
+        simp only [Matrix.submatrix_apply, Matrix.mul_diagonal, id]
+        rfl
+      rw [hA, Matrix.det_mul, Matrix.det_diagonal, map_mul, map_mul, valuation_prod_zpow_uniformizer hϖ]
+      have h1 : Valued.v (∏ i, B (f i) i) ≤ 1 := (hint _).mp (prod_mem fun i _ => h₂ _ _)
+      have h2 : Valued.v (k₁.submatrix (fun i : I => (i : Fin n)) f).det ≤ 1 :=
+        (hint _).mp (det_mem_foundation _ fun i j => h₁ _ _)
+      have h3 : c ≤ ∑ i, μ (f i) := by
+        have := hc (Finset.univ.image f)
+          (by rw [Finset.card_image_of_injective _ hf, Finset.card_univ, Fintype.card_coe])
+        rwa [Finset.sum_image (fun x _ y _ h => hf h)] at this
+      calc Valued.v (∏ i, B (f i) i) *
+            (Valued.v (k₁.submatrix (fun i : I => (i : Fin n)) f).det * WithZero.exp (-∑ i, μ (f i)))
+          ≤ 1 * (1 * WithZero.exp (-∑ i, μ (f i))) := mul_le_mul' h1 (mul_le_mul' h2 le_rfl)
+        _ ≤ WithZero.exp (-c) := by rw [one_mul, one_mul, WithZero.exp_le_exp]; omega
+    · obtain ⟨i, j, hij, hne⟩ : ∃ i j, f i = f j ∧ i ≠ j := by
+        simp only [Function.Injective, not_forall] at hf
+        obtain ⟨i, j, h, hne⟩ := hf
+        exact ⟨i, j, h, hne⟩
+      rw [Matrix.det_zero_of_column_eq hne (fun r => by simp [hij]), mul_zero, map_zero]
+      exact zero_le'
+  have hle : Valued.v (∏ i : I, ϖ ^ a i) ≤ WithZero.exp (-c) := by
+    rw [← hdet, hM, hexp]
+    exact Valuation.map_sum_le _ fun f _ => hterm f
+  rw [valuation_prod_zpow_uniformizer hϖ, WithZero.exp_le_exp] at hle
+  have : ∑ i : I, a i = ∑ i ∈ I, a i := Finset.sum_coe_sort I a
+  omega
+
+end Local
+
+theorem tExp_lo {n : ℕ} (a : Fin (n / 2) → ℤ) (i : Fin (n / 2)) :
+    tExp n (n / 2) a ⟨i.1, by omega⟩ = a i := by
+  unfold tExp
+  split_ifs with h h'
+  · rfl
+  · exact absurd i.2 h
+  · exact absurd i.2 h
+
+theorem tExp_hi {n : ℕ} (a : Fin (n / 2) → ℤ) (i : Fin (n / 2)) :
+    tExp n (n / 2) a ⟨n - 1 - i.1, by omega⟩ = -a i := by
+  have hi := i.2
+  have e : n - 1 - (n - 1 - i.1) = i.1 := by omega
+  unfold tExp
+  split_ifs with h h'
+  · exfalso
+    have h2 : n - 1 - i.1 < n / 2 := h
+    omega
+  · rw [neg_inj]
+    congr 1
+    apply Fin.ext
+    exact e
+  · exfalso
+    exact h' ⟨by show n - n / 2 ≤ n - 1 - i.1; omega, by show n - 1 - (n - 1 - i.1) < n / 2; omega⟩
+
+theorem sum_min_tExp {n : ℕ} (a : Fin (n / 2) → ℤ) :
+    ∑ j, min (tExp n (n / 2) a j) 0 = -∑ i, |a i| := by
+  set f : Fin n → ℤ := fun j => min (tExp n (n / 2) a j) 0 with hf
+  let lo : Fin (n / 2) → Fin n := fun i => ⟨i.1, by omega⟩
+  let hi : Fin (n / 2) → Fin n := fun i => ⟨n - 1 - i.1, by omega⟩
+  have hlo : Function.Injective lo := fun i i' h => Fin.ext (by simpa [lo] using congrArg Fin.val h)
+  have hhi : Function.Injective hi := by
+    intro i i' h
+    have := congrArg Fin.val h
+    simp only [hi] at this
+    have := i.2; have := i'.2
+    exact Fin.ext (by omega)
+  have hdisj : Disjoint (Finset.univ.image lo) (Finset.univ.image hi) := by
+    rw [Finset.disjoint_left]
+    intro j hj hj'
+    obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hj
+    obtain ⟨i', -, h⟩ := Finset.mem_image.mp hj'
+    have := congrArg Fin.val h
+    simp only [lo, hi] at this
+    have := i.2; have := i'.2
+    omega
+  have hzero : ∀ j ∉ Finset.univ.image lo ∪ Finset.univ.image hi, f j = 0 := by
+    intro j hj
+    rw [Finset.mem_union, not_or] at hj
+    simp only [hf]
+    unfold tExp
+    split_ifs with h1 h2
+    · exact (hj.1 (Finset.mem_image.mpr ⟨⟨j.1, h1⟩, Finset.mem_univ _, rfl⟩)).elim
+    · exfalso
+      apply hj.2
+      refine Finset.mem_image.mpr ⟨⟨n - 1 - j.1, h2.2⟩, Finset.mem_univ _, ?_⟩
+      exact Fin.ext (by show n - 1 - (n - 1 - j.1) = j.1; have := j.2; omega)
+    · simp
+  rw [← Finset.sum_subset (Finset.subset_univ _) (fun j _ hj => hzero j hj),
+    Finset.sum_union hdisj, Finset.sum_image (fun x _ y _ h => hlo h),
+    Finset.sum_image (fun x _ y _ h => hhi h), ← Finset.sum_add_distrib, ← Finset.sum_neg_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp only [hf, lo, hi, tExp_lo, tExp_hi]
+  rcases le_total (a i) 0 with h | h
+  · rw [abs_of_nonpos h, min_eq_left h, min_eq_right (by omega)]; ring
+  · rw [abs_of_nonneg h, min_eq_right h, min_eq_left (by omega)]; ring
+
+theorem neg_one_le_tExp {n : ℕ} {a : Fin (n / 2) → ℤ} (h : ∀ i, |a i| ≤ 1) (j : Fin n) :
+    -1 ≤ tExp n (n / 2) a j := by
+  unfold tExp
+  split_ifs with h1 h2
+  · exact (abs_le.mp (h _)).1
+  · have := (abs_le.mp (h ⟨n - 1 - j.1, h2.2⟩)).2
+    omega
+  · norm_num
+
+private theorem entries_mem_intL_of_mem_KU {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
+    {σ : L →+* L} {n : ℕ} {k : GU σ n} (hk : k ∈ KU σ n) (i j : Fin n) :
+    ((k : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j ∈ intL L := by
+  rw [KU, Subgroup.mem_subgroupOf] at hk
+  unfold intPts at hk
+  obtain ⟨g, hg⟩ := (Subgroup.mem_inf.mp hk).2
+  rw [← hg]
+  unfold bc
+  exact ((g : Matrix (Fin n) (Fin n) (intL L)) i j).2
+
+private theorem tMat_eq_diagonal_pow_tExp {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L)
+    (n : ℕ) (a : Fin (n / 2) → ℤ) :
+    tMat ϖ n (n / 2) a = Matrix.diagonal (fun j => ϖ ^ tExp n (n / 2) a j) := by
+  unfold tMat tExp
+  congr 1
+  funext j
+  split_ifs <;> simp
+
+theorem cell_bound : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q n : ℕ), IsUnramInv ϖ σ q → ∀ (ε κ : Fin (n / 2) → ℤ) (u k k₁ k₂ : GU σ n), (∀ i, |ε i| ≤ 1) → IsUnipU u → k ∈ KU σ n → k₁ ∈ KU σ n → k₂ ∈ KU σ n → tMat ϖ n (n / 2) κ * ((u : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) * ((k : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = ((k₁ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) * tMat ϖ n (n / 2) ε * ((k₂ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) → (∀ i, |κ i| ≤ 1) ∧ ∑ i, |κ i| ≤ ∑ i, |ε i| := by
+  intro L _ _ ϖ σ q n hU ε κ u k k₁ k₂ hε hu hk hk₁ hk₂ e
+  classical
+  have hϖ : Valued.v ϖ = WithZero.exp (-1 : ℤ) := hU.2.2.2.1
+  set U := ((u : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) with hU'
+  set K := ((k : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) with hK
+  set K₁ := ((k₁ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) with hK₁
+  set K₂ := ((k₂ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) with hK₂
+  set Ki := (((k⁻¹ : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) with hKi
+  have hKK : K * Ki = 1 := by
+    show ((k : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) *
+      (((k : GL (Fin n) L)⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = 1
+    exact Units.mul_inv _
+  have hint₂ : ∀ i j, (K₂ * Ki) i j ∈ intL L := fun i j =>
+    entries_mem_intL_of_mem_KU (mul_mem hk₂ (inv_mem hk)) i j
+  set b := tMat ϖ n (n / 2) κ * U with hbdef
+  have hbe : b = K₁ * Matrix.diagonal (fun j => ϖ ^ tExp n (n / 2) ε j) * (K₂ * Ki) := by
+    calc b = b * (K * Ki) := by rw [hKK, Matrix.mul_one]
+      _ = (b * K) * Ki := (Matrix.mul_assoc b K Ki).symm
+      _ = K₁ * tMat ϖ n (n / 2) ε * K₂ * Ki := by rw [e]
+      _ = _ := by rw [tMat_eq_diagonal_pow_tExp, Matrix.mul_assoc]
+  have hbT : b.BlockTriangular id := by
+    intro i j hij
+    rw [hbdef, tMat_eq_diagonal_pow_tExp, Matrix.diagonal_mul]
+    exact mul_eq_zero_of_right _ (show U i j = 0 from hu.1 i j hij)
+  have hbd : ∀ j, b j j = ϖ ^ tExp n (n / 2) κ j := by
+    intro j
+    rw [hbdef, tMat_eq_diagonal_pow_tExp, Matrix.diagonal_mul, show U j j = 1 from hu.2 j, mul_one]
+  have key := fun I c hc => minor_le hϖ hbT hbd (fun i j => entries_mem_intL_of_mem_KU hk₁ i j) hint₂ hbe I c hc
+  have hlow : ∀ j, -1 ≤ tExp n (n / 2) κ j := by
+    intro j
+    have := key {j} (-1) (by
+      intro S hS
+      obtain ⟨s, rfl⟩ := Finset.card_eq_one.mp (by rw [hS, Finset.card_singleton])
+      rw [Finset.sum_singleton]
+      exact neg_one_le_tExp hε s)
+    rwa [Finset.sum_singleton] at this
+  refine ⟨fun i => abs_le.mpr ⟨?_, ?_⟩, ?_⟩
+  · have := hlow ⟨i.1, by omega⟩
+    rwa [tExp_lo] at this
+  · have := hlow ⟨n - 1 - i.1, by omega⟩
+    rw [tExp_hi] at this
+    linarith
+  · have hS : ∀ S : Finset (Fin n), -∑ i, |ε i| ≤ ∑ i ∈ S, tExp n (n / 2) ε i := by
+      intro S
+      rw [← sum_min_tExp, ← Finset.sum_sdiff (Finset.subset_univ S)]
+      have h1 : ∑ i ∈ Finset.univ \ S, min (tExp n (n / 2) ε i) 0 ≤ 0 :=
+        Finset.sum_nonpos fun i _ => min_le_right _ _
+      have h2 : ∑ i ∈ S, min (tExp n (n / 2) ε i) 0 ≤ ∑ i ∈ S, tExp n (n / 2) ε i :=
+        Finset.sum_le_sum fun i _ => min_le_left _ _
+      linarith
+    have := key (Finset.univ.filter fun j => tExp n (n / 2) κ j < 0) _ (fun S _ => hS S)
+    rw [Finset.sum_filter] at this
+    have h3 : ∑ j, (if tExp n (n / 2) κ j < 0 then tExp n (n / 2) κ j else 0) =
+        ∑ j, min (tExp n (n / 2) κ j) 0 := by
+      refine Finset.sum_congr rfl fun j _ => ?_
+      split_ifs with h
+      · exact (min_eq_left h.le).symm
+      · exact (min_eq_right (not_lt.mp h)).symm
+    rw [h3, sum_min_tExp] at this
+    linarith
+
+end GlobalTheory.LFun.CellBound
+
+end
+end
+
+section
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryIwasawaCell_bound_small_torusDoubleCoset : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q n : ℕ), IsUnramInv ϖ σ q → ∀ (ε κ : Fin (n / 2) → ℤ) (u k k₁ k₂ : GU σ n), (∀ i, |ε i| ≤ 1) → IsUnipU u → k ∈ KU σ n → k₁ ∈ KU σ n → k₂ ∈ KU σ n → tMat ϖ n (n / 2) κ * ((u : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) * ((k : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = ((k₁ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) * tMat ϖ n (n / 2) ε * ((k₂ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) → (∀ i, |κ i| ≤ 1) ∧ ∑ i, |κ i| ≤ ∑ i, |ε i| := by
+  first | exact @GlobalTheory.LFun.CellBound.cell_bound | exact GlobalTheory.LFun.CellBound.cell_bound | (intros; apply GlobalTheory.LFun.CellBound.cell_bound <;> assumption)
+end
+
+section
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryDoubleCoset_of_GLintDoubleCoset : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : L) (σ : L →+* L) (q n : ℕ), IsUnramInv ϖ σ q → ∀ (g g' : GU σ n) (a b : GL (Fin n) L), a ∈ GLint (Fin n) (intL L) → b ∈ GLint (Fin n) (intL L) → (g' : GL (Fin n) L) = a * g * b → ∃ k₁ ∈ KU σ n, ∃ k₂ ∈ KU σ n, g' = k₁ * g * k₂ := by
+  first | exact @GlobalTheory.UnramDoubleCoset.doubleCoset_GU_of_GL | exact GlobalTheory.UnramDoubleCoset.doubleCoset_GU_of_GL | (intros; apply GlobalTheory.UnramDoubleCoset.doubleCoset_GU_of_GL <;> assumption)
+end
+
+section
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_symmetric_elementaryDivisors_unitary : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q n : ℕ), IsUnramInv ϖ σ q → ∀ g : GU σ n, ∃ d : List ℤ, GlobalTheory.InertThetaCompare.Good n d ∧ ∃ a ∈ GLint (Fin n) (intL L), ∃ b ∈ GLint (Fin n) (intL L), ((g : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = (a : Matrix (Fin n) (Fin n) L) * Matrix.diagonal (fun i : Fin n => ϖ ^ d.getD i.1 0) * (b : Matrix (Fin n) (Fin n) L) := by
+  first | exact @GlobalTheory.LFun.UnitaryDiv.exists_good_div | exact GlobalTheory.LFun.UnitaryDiv.exists_good_div | (intros; apply GlobalTheory.LFun.UnitaryDiv.exists_good_div <;> assumption)
+end
+
+section
+section
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+
+namespace GlobalTheory.LFun
+
+open Polynomial in
+
+theorem exists_multiset_esymm_eq (n : ℕ) (e : ℕ → ℂ) (h0 : e 0 = 1) (hn : e n ≠ 0) :
+    ∃ A : Multiset ℂ, A.card = n ∧ (0 : ℂ) ∉ A ∧ ∀ j ≤ n, A.esymm j = e j := by
+  set p : ℂ[X] := ∑ k ∈ Finset.range (n + 1), monomial k ((-1) ^ (n - k) * e (n - k)) with hp
+  have hc : ∀ k, p.coeff k = if k ≤ n then (-1) ^ (n - k) * e (n - k) else 0 := fun k => by
+    simp [hp, coeff_monomial]
+  have hle : p.natDegree ≤ n := natDegree_le_iff_coeff_eq_zero.2 fun k hk => by rw [hc, if_neg (by omega)]
+  have hcn : p.coeff n = 1 := by simp [hc, h0]
+  have hd : p.natDegree = n := natDegree_eq_of_le_of_coeff_ne_zero hle (by simp [hcn])
+  have hl : p.leadingCoeff = 1 := by rw [leadingCoeff, hd, hcn]
+  have hr : p.roots.card = p.natDegree := (IsAlgClosed.splits p).natDegree_eq_card_roots.symm
+  refine ⟨p.roots, hr.trans hd, fun hz => ?_, fun j hj => ?_⟩
+  · have := isRoot_of_mem_roots hz
+    rw [IsRoot, ← coeff_zero_eq_eval_zero, hc] at this
+    simp [hn] at this
+  · have := coeff_eq_esymm_roots_of_card hr (k := n - j) (by omega)
+    rw [hc, if_pos (by omega), hl, hd, one_mul, Nat.sub_sub_self hj] at this
+    exact (mul_left_cancel₀ (pow_ne_zero _ (by norm_num)) this).symm
+
+theorem exists_satEig_eq : ∀ (q n : ℕ), q ≠ 0 → ∀ c : ℕ → ℂ, c 0 = 1 → c n ≠ 0 →
+    ∃ B : Multiset ℂˣ, B.card = n ∧ ∀ j ≤ n, satEig q n B j = c j := by
+  intro q n hq c h0 hn
+  have hw : ∀ j : ℕ, (q : ℂ) ^ (((j : ℂ) * ((n : ℂ) - j)) / 2) ≠ 0 := fun j h =>
+    hq (by exact_mod_cast ((Complex.cpow_eq_zero_iff _ _).1 h).1)
+  obtain ⟨A, hA, hz, he⟩ := exists_multiset_esymm_eq n
+    (fun j => c j / (q : ℂ) ^ (((j : ℂ) * ((n : ℂ) - j)) / 2)) (by simp [h0]) (div_ne_zero hn (hw n))
+  refine ⟨A.pmap (fun a (h : a ≠ 0) => Units.mk0 a h) (fun a ha h => hz (h ▸ ha)), by simp [hA], fun j hj => ?_⟩
+  rw [satEig, Multiset.map_pmap]
+  simp only [Units.val_mk0, Multiset.pmap_eq_map, Multiset.map_id']
+  rw [he j hj]
+  exact mul_div_cancel₀ _ (hw j)
+
+end GlobalTheory.LFun
+end
+
+open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_multiset_satakeEigenvalue_eq : ∀ (q n : ℕ), q ≠ 0 → ∀ c : ℕ → ℂ, c 0 = 1 → c n ≠ 0 → ∃ B : Multiset ℂˣ, B.card = n ∧ ∀ j ≤ n, satEig q n B j = c j := by
+  atlas_forward_decl GlobalTheory.LFun.exists_satEig_eq
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.LFun.SatCompare
@@ -470,4 +1085,5 @@ end Existence
 
 end GlobalTheory.LFun.SatCompare
 
+end
 end

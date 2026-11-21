@@ -24,10 +24,38 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularRingDetermin
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularRingsEqualImagesEqual
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CharZeroCentreOfComplexStatement
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsSingleBlockSegre
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SmoothOpenImmersionRange
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
+import BuildAid.ForwardExisting
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SncPatchAtEachComponent
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsSncModelOfPatches
 
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.SncBase
+
+namespace GlobalTheory.CompanionTheory.Ar.SncBase
+
+theorem smoothOfRelativeDimension_opensRange_ι_comp
+    (A B T : Scheme.{0}) (j : A ⟶ B) [IsOpenImmersion j] (g : B ⟶ T) (n : ℕ)
+    (h : SmoothOfRelativeDimension n (j ≫ g)) :
+    SmoothOfRelativeDimension n (j.opensRange.ι ≫ g) := by
+  have e : j.opensRange.ι = j.isoOpensRange.inv ≫ j :=
+    (Iso.eq_inv_comp _).mpr j.isoOpensRange_hom_ι
+  rw [e, Category.assoc, ← zero_add n]
+  exact smoothOfRelativeDimension_comp 0 n _ _
+
+end GlobalTheory.CompanionTheory.Ar.SncBase
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.SncBase
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_open_immersion_range : ∀ (A B T : Scheme.{0}) (j : A ⟶ B) [IsOpenImmersion j] (g : B ⟶ T) (n : ℕ), SmoothOfRelativeDimension n (j ≫ g) → SmoothOfRelativeDimension n (j.opensRange.ι ≫ g) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.SncBase.smoothOfRelativeDimension_opensRange_ι_comp
+end
+
+section
 section
 noncomputable section
 
@@ -174,3 +202,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_coords_of_generic_point : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (Ω : Type) [Field Ω] [CharZero Ω] (ξ₀ : Spec (CommRingCat.of Ω) ⟶ Y.X), IsCptGen ξ₀ → ∃ (K : Type) (_ : Fintype K) (J : K → Type) (_ : ∀ k, Fintype (J k)) (y : (Σ k, J k) → Ω) (X : Scheme.{0}) (ξ : Spec (CommRingCat.of Ω) ⟶ X) (f : X ⟶ Y.X) (bd : Ideal (MRing J)), Nonempty K ∧ (∀ q : X, genPt ξ ⤳ q) ∧ CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, y ⟨k, c' k⟩) ∧ ξ ≫ f = ξ₀ ∧ Cmp.IsSncModel y D.dim bd ∧ ∀ (z : Spec (CommRingCat.of ℂ) ⟶ X) w, CoordsAt ξ y z w → (w ∈ mcPts bd ↔ f (centre z) ∉ abLocus Y.t.G) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.SncBase.exists_sncBase
+end

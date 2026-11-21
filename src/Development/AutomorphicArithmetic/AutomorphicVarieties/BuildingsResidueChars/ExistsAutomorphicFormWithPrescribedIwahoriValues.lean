@@ -1,6 +1,102 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.CtrlDefs
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.ExistsIwahoriCharacterExtendingTorusCharacter
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.ExistsAutomorphicFunctionWithValuesOnCosetReps
+import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.IwMemMul
+import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.ExistsIwahoriTorusProjection
+import Mathlib
+
+section
+open IsLocalRing Matrix UpperTheory.V.Hi
+
+theorem UpperTheory.exists_iwahori_character_extending_torus_character :
+    ∀ (G : Type) [Group G] (I : Iwa G) (B : Type) [CommGroup B] (c : ℕ) (φ : I.T →* B), (∀ t : I.T, (t : G) ∈ I.Tc c → φ t = 1) → ∃ ψ : I.Iw c →* B, ∀ b : I.Iw c, ((b : G) ∈ I.N → ψ b = 1) ∧ ((b : G) ∈ I.Nm c → ψ b = 1) ∧ ∀ hb : (b : G) ∈ I.T, ψ b = φ ⟨b, hb⟩ := by
+  intro G _ I B _ c φ hφ
+  obtain ⟨tt, h1, htt⟩ := UpperTheory.exists_iwahori_torus_projection G I
+  have hle : ∀ b ∈ I.Iw c, b ∈ I.Iw 0 := by
+    intro b hb
+    obtain ⟨x, hx, t, ht, y, hy, h⟩ := (UpperTheory.V.Hi.iwMem G I c b).1.1 hb
+    exact (UpperTheory.V.Hi.iwMem G I 0 b).1.2 ⟨x, hx, t, ht, y, I.Nm_anti (Nat.zero_le c) hy, h⟩
+  have key : ∀ b ∈ I.Iw 0, ∀ x ∈ I.N, ∀ t : I.T, ∀ y ∈ I.Nm c,
+      φ (tt (b * (x * t * y))) = φ (tt b) * φ t := by
+    intro b hb x hx t y hy
+    have hx0 : x ∈ I.Iw 0 :=
+      (UpperTheory.V.Hi.iwMem G I 0 x).1.2 ⟨x, hx, 1, one_mem _, 1, one_mem _, by simp⟩
+    have ht0 : (t : G) ∈ I.Iw 0 :=
+      (UpperTheory.V.Hi.iwMem G I 0 t).1.2 ⟨1, one_mem _, t, t.2, 1, one_mem _, by simp⟩
+    have hbx := mul_mem hb hx0
+    obtain ⟨s, hs, e⟩ := (htt _ (mul_mem hbx ht0)).2.2 c y hy
+    have e0 : b * (x * t * y) = b * x * t * y := by group
+    rw [e0, e, map_mul, hφ s hs, mul_one, ((htt _ hbx).1 t).2, (htt b hb).2.1 x hx, map_mul]
+  have key1 : ∀ x ∈ I.N, ∀ t : I.T, ∀ y ∈ I.Nm c, φ (tt (x * t * y)) = φ t := by
+    intro x hx t y hy
+    have := key 1 (one_mem _) x hx t y hy
+    rwa [one_mul, h1, map_one, one_mul] at this
+  refine ⟨MonoidHom.mk' (fun b => φ (tt b)) ?_, fun b => ⟨fun hb => ?_, fun hb => ?_, fun hb => ?_⟩⟩
+  · intro a b
+    obtain ⟨x, hx, t, ht, y, hy, h⟩ := (UpperTheory.V.Hi.iwMem G I c b).1.1 b.2
+    have e1 := key a (hle _ a.2) x hx ⟨t, ht⟩ y hy
+    have e2 := key1 x hx ⟨t, ht⟩ y hy
+    show φ (tt ((a : G) * b)) = φ (tt a) * φ (tt b)
+    rw [h, e2]
+    exact e1
+  · simpa using key1 b hb 1 1 (one_mem _)
+  · simpa using key1 1 (one_mem _) 1 b hb
+  · simpa using key1 1 (one_mem _) ⟨b, hb⟩ 1 (one_mem _)
+end
+
+section
+theorem UpperTheory.exists_automorphic_function_with_values_on_coset_reps :
+    ∀ (Γ G K A M ι : Type) [Group Γ] [Group G] [Group K] [CommRing A] [AddCommGroup M] [Module A M] (gl : Γ →* G) (j : K →* G) (ρ : Representation A K M) (x : ι → G), (∀ g, ∃ γ i k, g = gl γ * x i * j k) → (∀ i i' γ k, x i' = gl γ * x i * j k → i = i') → (∀ i γ k, gl γ * x i = x i * j k → ρ k = 1) → ∀ v : ι → M, ∃ Φ : G → M, (∀ γ g, Φ (gl γ * g) = Φ g) ∧ (∀ g k, Φ (g * j k) = ρ k⁻¹ (Φ g)) ∧ ∀ i, Φ (x i) = v i := by
+  intro Γ G K A M ι _ _ _ _ _ _ gl j ρ x hcov huniq hstab v
+  have key : ∀ γ i k γ' i' k', gl γ * x i * j k = gl γ' * x i' * j k' →
+      i = i' ∧ ρ k⁻¹ (v i) = ρ k'⁻¹ (v i') := by
+    intro γ i k γ' i' k' h
+    have e : x i' = gl (γ'⁻¹ * γ) * x i * j (k * k'⁻¹) := by
+      calc x i' = (gl γ')⁻¹ * (gl γ' * x i' * j k') * (j k')⁻¹ := by group
+        _ = (gl γ')⁻¹ * (gl γ * x i * j k) * (j k')⁻¹ := by rw [h]
+        _ = gl (γ'⁻¹ * γ) * x i * j (k * k'⁻¹) := by
+          simp only [map_mul, map_inv]
+          group
+    have hii : i = i' := huniq i i' _ _ e
+    subst hii
+    refine ⟨rfl, ?_⟩
+    have e2 : gl (γ'⁻¹ * γ) * x i = x i * j (k' * k⁻¹) := by
+      calc gl (γ'⁻¹ * γ) * x i = (gl (γ'⁻¹ * γ) * x i * j (k * k'⁻¹)) * (j (k * k'⁻¹))⁻¹ := by group
+        _ = x i * j (k' * k⁻¹) := by
+          rw [← e]
+          simp only [map_mul, map_inv]
+          group
+    have hρ : ρ (k' * k⁻¹) = 1 := hstab i _ _ e2
+    have : ρ k⁻¹ = ρ k'⁻¹ := by
+      calc ρ k⁻¹ = ρ (k'⁻¹ * (k' * k⁻¹)) := by group
+        _ = ρ k'⁻¹ * ρ (k' * k⁻¹) := map_mul _ _ _
+        _ = ρ k'⁻¹ := by rw [hρ, mul_one]
+    rw [this]
+  choose γf iF kF hg using hcov
+  refine ⟨fun g => ρ (kF g)⁻¹ (v (iF g)), ?_, ?_, ?_⟩
+  · intro γ g
+    have h : gl (γf (gl γ * g)) * x (iF (gl γ * g)) * j (kF (gl γ * g)) =
+        gl (γ * γf g) * x (iF g) * j (kF g) := by
+      rw [← hg (gl γ * g)]
+      conv_lhs => rw [hg g]
+      simp only [map_mul, mul_assoc]
+    exact (key _ _ _ _ _ _ h).2
+  · intro g k
+    have h : gl (γf (g * j k)) * x (iF (g * j k)) * j (kF (g * j k)) =
+        gl (γf g) * x (iF g) * j (kF g * k) := by
+      rw [← hg (g * j k)]
+      conv_lhs => rw [hg g]
+      simp only [map_mul, mul_assoc]
+    dsimp only
+    rw [(key _ _ _ _ _ _ h).2, mul_inv_rev, map_mul]
+    rfl
+  · intro i
+    have h : gl (γf (x i)) * x (iF (x i)) * j (kF (x i)) = gl 1 * x i * j 1 := by
+      rw [← hg (x i), map_one, map_one, one_mul, mul_one]
+    dsimp only
+    rw [(key _ _ _ _ _ _ h).2, inv_one, map_one]
+    rfl
+end
+
+section
 open IsLocalRing Matrix UpperTheory.V.Hi
 
 private noncomputable def rhoT {A B Ω m n : Type} [Group A] [Group B] [Field Ω] [Fintype m] [DecidableEq m]
@@ -104,3 +200,4 @@ theorem UpperTheory.exists_automorphicForm_with_prescribed_iwahori_values :
     show (_ *ᵥ (Φ (x n) * (W.ξ (x n).2 : Matrix (Fin (W.d + 1)) (Fin (W.d + 1)) Ω)ᵀ) i) k = _
     rw [mulVec_row, Matrix.mul_assoc, ← transpose_mul, Units.inv_mul, transpose_one, Matrix.mul_one, h3]
     rfl
+end

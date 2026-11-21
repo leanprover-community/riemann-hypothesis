@@ -1,9 +1,42 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsUnitarySiegelThetaTransformationLawStandarStatement
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SiegelThetaTransformationLawMulStatement
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SymplecticEqParabolicJParabolicJParabolicStatement
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SiegelThetaTransformationSiegelParabolicStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsUnitarySiegelThetaTransformationLawStandar
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SiegelThetaTransformationLawMul
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SymplecticEqParabolicJParabolicJParabolic
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SiegelThetaTransformationSiegelParabolic
 
+section
+open Matrix Complex GlobalTheory.SW
+open scoped ComplexConjugate Real
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unitary_siegelThetaTransformationLaw_standardJ : ∀ (κ ι : Type) [Fintype κ] [Fintype ι] [DecidableEq ι], Even (Fintype.card κ) → ∃ ω : (Matrix κ ι ℚ → ℂ) → (Matrix κ ι ℚ → ℂ), ∀ φ, IsSB φ → IsSB (ω φ) ∧ TransS (Matrix.J ι ℚ) φ (ω φ) ∧ ∀ φ', IsSB φ' → ip (ω φ) (ω φ') = ip φ φ' := by
+  first | exact @GlobalTheory.SW.FourierJ.exists_trans_J | exact GlobalTheory.SW.FourierJ.exists_trans_J | (intros; apply GlobalTheory.SW.FourierJ.exists_trans_J <;> assumption)
+end
+
+section
+open Matrix Complex GlobalTheory.SW
+open scoped ComplexConjugate Real
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.siegelThetaTransformationLaw_mul : ∀ (κ ι : Type) [Fintype κ] [Fintype ι] [DecidableEq ι] (σ σ' : Matrix (ι ⊕ ι) (ι ⊕ ι) ℚ), σ ∈ Matrix.symplecticGroup ι ℚ → σ' ∈ Matrix.symplecticGroup ι ℚ → ∀ φ ψ χ : Matrix κ ι ℚ → ℂ, TransS σ φ ψ → TransS σ' ψ χ → TransS (σ' * σ) φ χ := by
+  first | exact @GlobalTheory.SW.transS_comp | exact GlobalTheory.SW.transS_comp | (intros; apply GlobalTheory.SW.transS_comp <;> assumption)
+end
+
+section
+open Matrix Complex GlobalTheory.SW
+open scoped ComplexConjugate Real
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symplectic_eq_parabolic_J_parabolic_J_parabolic' : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (σ : Matrix (ι ⊕ ι) (ι ⊕ ι) ℚ), σ ∈ Matrix.symplecticGroup ι ℚ → ∃ p₁ ∈ Matrix.symplecticGroup ι ℚ, ∃ p₂ ∈ Matrix.symplecticGroup ι ℚ, ∃ p₃ ∈ Matrix.symplecticGroup ι ℚ, p₁.toBlocks₂₁ = 0 ∧ p₂.toBlocks₂₁ = 0 ∧ p₃.toBlocks₂₁ = 0 ∧ σ = p₁ * Matrix.J ι ℚ * p₂ * Matrix.J ι ℚ * p₃ := by
+  first | exact @GlobalTheory.SW.symplectic_eq_parabolic_J_parabolic_J_parabolic | exact GlobalTheory.SW.symplectic_eq_parabolic_J_parabolic_J_parabolic | (intros; apply GlobalTheory.SW.symplectic_eq_parabolic_J_parabolic_J_parabolic <;> assumption)
+end
+
+section
+open Matrix Complex GlobalTheory.SW
+open scoped ComplexConjugate Real
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.siegelTheta_transformation_siegelParabolic : ∀ (κ ι : Type) [Fintype κ] [Fintype ι] [DecidableEq ι] (σ : Matrix (ι ⊕ ι) (ι ⊕ ι) ℚ), Even (Fintype.card κ) → σ ∈ Matrix.symplecticGroup ι ℚ → σ.toBlocks₂₁ = 0 → ∃ ω : (Matrix κ ι ℚ → ℂ) → (Matrix κ ι ℚ → ℂ), ∀ φ, IsSB φ → IsSB (ω φ) ∧ TransS σ φ (ω φ) ∧ ∀ φ', IsSB φ' → ip (ω φ) (ω φ') = ip φ φ' := by
+  first | exact @GlobalTheory.SW.Parab.trans_parabolic | exact GlobalTheory.SW.Parab.trans_parabolic | (intros; apply GlobalTheory.SW.Parab.trans_parabolic <;> assumption)
+end
+
+section
 open Matrix Complex GlobalTheory.SW
 open scoped ComplexConjugate Real
 
@@ -42,3 +75,4 @@ theorem exists_weil_of_symplectic :
     (exists_weil_mul a₂ hJ (exists_weil_mul a₁ h₂ (exists_weil_mul h₁ hJ w₁ wJ) w₂) wJ) w₃
 
 end GlobalTheory.SW
+end

@@ -2,10 +2,344 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NotDvdCondN
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Formalism.SharpRestriction.ParConsts
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TwistedDualPageWordJumpsInWindows
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TwistedDualPageWordSmallJumpsCard
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Alternates
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TwistedDualOrbitPageWordBox
+import BuildAid.ForwardExisting
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TwistedDualSizeWordLetterEqPageWord
 
+section
+section
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+
+namespace GlobalTheory
+
+theorem jT1_mem_window_of_bounded_v : ∀ {R : Ranks} (P : HCParam R) (j : Fin R.m) (s : Bool) (S η : ℝ),
+    (∀ i, 0 ≤ ((P.v i : ℚ) : ℝ) ∧ ((P.v i : ℚ) : ℝ) ≤ S) →
+    (∀ i, |((P.b i - P.e j : ℚ) : ℝ)| ≤ η) → ∀ u ∈ jT1 P j s,
+    (if (!s) = true then szT P j s ≤ u ∧ u ≤ szT P j s + (⌊S⌋₊ : ℕ)
+      else -szT P j s - (⌊S⌋₊ : ℕ) ≤ u ∧ u ≤ -szT P j s) ∨
+    |u| ≤ ((⌊η⌋₊ + R.t + 2 : ℕ) : ℤ) := by
+  intro R P j s S η hv hb u hu
+  obtain ⟨c, hc⟩ := R.t_odd
+  have ht1 : ((R.t : ℤ) - 1) / 2 = c := by rw [hc]; push_cast; omega
+  have ht2 : ((R.t : ℤ) + 1) / 2 = c + 1 := by rw [hc]; push_cast; omega
+  have htc : (R.t : ℤ) = 2 * c + 1 := by rw [hc]; push_cast; ring
+  obtain ⟨E, hE⟩ := P.e_int j
+  have hEf : ⌊P.e j⌋ = E := by rw [hE]; simp
+  have hV : ∀ i, 0 ≤ ⌊P.v i⌋ ∧ ⌊P.v i⌋ ≤ ((⌊S⌋₊ : ℕ) : ℤ) := by
+    intro i
+    obtain ⟨V, hVi⟩ := P.v_int i
+    obtain ⟨h0, h1⟩ := hv i
+    rw [hVi] at h0 h1 ⊢
+    simp only [Int.floor_intCast]
+    push_cast at h0 h1
+    have h0' : (0:ℤ) ≤ V := by exact_mod_cast h0
+    refine ⟨h0', ?_⟩
+    have h2 : ((V.toNat : ℕ) : ℝ) ≤ S := by
+      have : ((V.toNat : ℕ) : ℝ) = (V : ℝ) := by exact_mod_cast Int.toNat_of_nonneg h0'
+      rw [this]; exact h1
+    have := Nat.le_floor h2
+    omega
+  have hB : ∀ i, -((⌊η⌋₊ : ℕ) : ℤ) ≤ ⌊P.b i⌋ - E ∧ ⌊P.b i⌋ - E ≤ ((⌊η⌋₊ : ℕ) : ℤ) := by
+    intro i
+    obtain ⟨B, hBi⟩ := P.b_int i
+    have h1 := hb i
+    rw [hBi, hE] at h1
+    rw [hBi]
+    simp only [Int.floor_intCast]
+    have h2 : (((B - E).natAbs : ℕ) : ℝ) ≤ η := by
+      rw [Nat.cast_natAbs]; push_cast at h1 ⊢; exact h1
+    have h3 := Nat.le_floor h2
+    have h4 : |B - E| ≤ ((⌊η⌋₊ : ℕ) : ℤ) := by rw [Int.abs_eq_natAbs]; exact_mod_cast h3
+    exact abs_le.mp h4
+  simp only [jT1, jR, jW, cloud, lows, block, Multiset.mem_map, Multiset.mem_add, Finset.mem_val,
+    Finset.mem_univ, true_and, Multiset.mem_range] at hu
+  cases s with
+  | true =>
+    simp only [szT, if_true, Bool.not_true, Bool.false_eq_true, if_false, ht2, hEf]
+    simp only [if_true, Multiset.mem_map, Multiset.mem_add, Finset.mem_val, Finset.mem_univ,
+      true_and] at hu
+    obtain ⟨x, (hx | hx) | hx, rfl⟩ := hu
+    · obtain ⟨i, rfl⟩ := hx
+      obtain ⟨a, b⟩ := hV i
+      left; rw [hEf, ht1]; constructor <;> omega
+    · obtain ⟨i, rfl⟩ := hx
+      obtain ⟨a, b⟩ := hB i
+      right; rw [abs_le, hEf, ht1]; push_cast; constructor <;> omega
+    · obtain ⟨a, ha, rfl⟩ := hx
+      right; rw [abs_le]; push_cast; constructor <;> omega
+  | false =>
+    simp only [szT, Bool.not_false, if_true, Bool.false_eq_true, if_false, ht2, hEf]
+    simp only [Bool.false_eq_true, if_false, Multiset.mem_map, Multiset.mem_add, Finset.mem_val,
+      Finset.mem_univ, true_and] at hu
+    obtain ⟨x, hx | hx, rfl⟩ := hu
+    · obtain ⟨y, hy | hy, rfl⟩ := hx
+      · obtain ⟨i, rfl⟩ := hy
+        obtain ⟨a, b⟩ := hV i
+        left; rw [hEf, ht1]; constructor <;> omega
+      · obtain ⟨i, rfl⟩ := hy
+        obtain ⟨a, b⟩ := hB i
+        right; rw [abs_le, hEf, ht1]; push_cast; constructor <;> omega
+    · obtain ⟨a, ha, rfl⟩ := hx
+      right; rw [abs_le]; push_cast; constructor <;> omega
+
+end GlobalTheory
+end
+
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twistedDualJumps_mem_windows : ∀ {R : Ranks} (P : HCParam R) (j : Fin R.m) (s : Bool) (S η : ℝ), (∀ i, 0 ≤ ((P.v i : ℚ) : ℝ) ∧ ((P.v i : ℚ) : ℝ) ≤ S) → (∀ i, |((P.b i - P.e j : ℚ) : ℝ)| ≤ η) → ∀ u ∈ jT1 P j s, (if (!s) = true then szT P j s ≤ u ∧ u ≤ szT P j s + (⌊S⌋₊ : ℕ) else -szT P j s - (⌊S⌋₊ : ℕ) ≤ u ∧ u ≤ -szT P j s) ∨ |u| ≤ ((⌊η⌋₊ + R.t + 2 : ℕ) : ℤ) := by
+  atlas_forward_decl GlobalTheory.jT1_mem_window_of_bounded_v
+end
+
+section
+section
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+
+namespace GlobalTheory
+
+theorem HTW.WordData.jumps_mem_box {n : ℕ} (W : WordData n) (hsz : ∀ i, 0 ≤ W.sz i) (hT : W.T1) :
+    ∀ i, ∀ u ∈ W.J1 i, -(W.Mi i : ℤ) ≤ u ∧ u ≤ W.hi i := by
+  intro i u hu
+  have h0 := hsz i
+  have ht := Int.self_le_toNat (W.sz i + W.S)
+  have hT' := hT i u hu
+  have hm1 : (W.η : ℤ) ≤ max (W.η : ℤ) ((W.sz i + W.S).toNat : ℤ) := le_max_left _ _
+  have hm2 : (((W.sz i + W.S).toNat : ℕ) : ℤ) ≤ max (W.η : ℤ) ((W.sz i + W.S).toNat : ℤ) :=
+    le_max_right _ _
+  rcases hT' with h | h
+  · by_cases hup : W.up i
+    · rw [if_pos hup] at h
+      simp only [WordData.Mi, WordData.hi, if_pos hup, Nat.cast_max]
+      omega
+    · rw [if_neg hup] at h
+      simp only [WordData.Mi, WordData.hi, if_neg hup, Nat.cast_max]
+      omega
+  · have h' := abs_le.mp h
+    by_cases hup : W.up i
+    · simp only [WordData.Mi, WordData.hi, if_pos hup, Nat.cast_max]
+      omega
+    · simp only [WordData.Mi, WordData.hi, if_neg hup, Nat.cast_max]
+      omega
+
+end GlobalTheory
+end
+
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jumps_mem_box_neg_M_h : ∀ {n : ℕ} (W : WordData n), (∀ i, 0 ≤ W.sz i) → W.T1 → ∀ i, ∀ u ∈ W.J1 i, -(W.Mi i : ℤ) ≤ u ∧ u ≤ W.hi i := by
+  atlas_forward_decl GlobalTheory.HTW.WordData.jumps_mem_box
+end
+
+section
+section
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+
+namespace GlobalTheory.HTW
+
+theorem pageWord_T1_and_J1_mem_window_of_roomy : ∀ {D : D7} (L : SizeData₂ D) (C : ℝ) (j : Fin D.R.m) (ε : ℤˣ) (τ φ : D.R.GG), Roomy L C → (pageWord L j ε τ φ).T1 ∧ ∀ i, ∀ u ∈ (pageWord L j ε τ φ).J1 i, -((pageWord L j ε τ φ).Mi i : ℤ) ≤ u ∧ u ≤ (pageWord L j ε τ φ).hi i := by
+  intro D L C j ε τ φ hR
+  have hT : (pageWord L j ε τ φ).T1 := by
+    intro i u hu
+    exact GlobalTheory.T.twistedDualJumps_mem_windows (hcAt D (letter τ φ i)) j (pos ε (letter τ φ i)) L.Sc L.etaSz
+      (fun a => L.cloud_v _ a) (fun a => L.be_close _ a j) u hu
+  refine ⟨hT, GlobalTheory.T.jumps_mem_box_neg_M_h _ (fun i => ?_) hT⟩
+  have h := (GlobalTheory.T.twistedDualOrbitPageWord_box L C j ε τ φ hR).2.2.2.2.2 i
+  exact le_trans (Int.natCast_nonneg _) h.le
+
+end GlobalTheory.HTW
+end
+
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twistedDualPageWord_jumps_in_windows : ∀ {D : D7} (L : SizeData₂ D) (C : ℝ) (j : Fin D.R.m) (ε : ℤˣ) (τ φ : D.R.GG), Roomy L C → (pageWord L j ε τ φ).T1 ∧ ∀ i, ∀ u ∈ (pageWord L j ε τ φ).J1 i, -((pageWord L j ε τ φ).Mi i : ℤ) ≤ u ∧ u ≤ (pageWord L j ε τ φ).hi i := by
+  atlas_forward_decl GlobalTheory.HTW.pageWord_T1_and_J1_mem_window_of_roomy
+end
+
+section
+section
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+
+namespace GlobalTheory.HTW
+
+theorem block_map_reflect (R : Ranks) :
+    (block R).map (fun u => (R.t : ℤ) - 1 - u) = block R := by
+  have hnd : (block R).Nodup := by
+    unfold block
+    exact (Multiset.nodup_range R.t).map (fun a b h => by exact_mod_cast h)
+  have hmem : ∀ x : ℤ, x ∈ block R ↔ 0 ≤ x ∧ x < R.t := by
+    intro x
+    unfold block
+    simp only [Multiset.mem_map, Multiset.mem_range]
+    constructor
+    · rintro ⟨c, hc, rfl⟩
+      exact ⟨by positivity, by exact_mod_cast hc⟩
+    · rintro ⟨h0, h1⟩
+      exact ⟨x.toNat, by omega, by omega⟩
+  refine (Multiset.Nodup.ext (hnd.map (fun a b h => by simpa using h)) hnd).2 ?_
+  · intro x
+    rw [Multiset.mem_map, hmem]
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      rw [hmem] at hy
+      omega
+    · rintro ⟨h0, h1⟩
+      exact ⟨(R.t : ℤ) - 1 - x, by rw [hmem]; omega, by ring⟩
+
+theorem jR_symm_card {R : Ranks} (P : HCParam R) (j : Fin R.m) :
+    jR P j false = (jR P j true).map (fun u => (R.t : ℤ) - 1 - u) ∧ ∀ s, (jW P j s).card = R.r ∧
+      (jR P j s).card = R.nV ∧ (jT2 P j s).card = R.r ∧ jT2 P j s ≤ jT1 P j s := by
+  have hk : 1 ≤ R.k := by have := R.m_add_three_le_k; omega
+  have hW : ∀ s, (jW P j s).card = R.r := by
+    intro s
+    have h : (cloud P j + lows P j).card = R.r := by
+      simp only [Multiset.card_add, cloud, lows, Multiset.card_map, Finset.card_val,
+        Finset.card_univ, Fintype.card_fin, Ranks.r]
+      omega
+    cases s
+    · simp only [jW, Bool.false_eq_true, if_false, Multiset.card_map, h]
+    · simp only [jW, if_true, h]
+  refine ⟨?_, fun s => ?_⟩
+  · simp only [jR, jW, if_true, Bool.false_eq_true, if_false, Multiset.map_add, block_map_reflect]
+  · have hR : (jR P j s).card = R.nV := by
+      simp only [jR, Multiset.card_add, hW s, block, Multiset.card_map, Multiset.card_range, Ranks.nV]
+    refine ⟨hW s, hR, ?_, ?_⟩
+    · simp only [jT2, Multiset.card_map, hW s]
+    · unfold jT2 jT1 jR
+      exact Multiset.map_le_map (Multiset.le_add_right _ _)
+
+end GlobalTheory.HTW
+end
+
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cloudLowJumps_reflect_and_card : ∀ {R : Ranks} (P : HCParam R) (j : Fin R.m), jR P j false = (jR P j true).map (fun u => (R.t : ℤ) - 1 - u) ∧ ∀ s, (jW P j s).card = R.r ∧ (jR P j s).card = R.nV ∧ (jT2 P j s).card = R.r ∧ jT2 P j s ≤ jT1 P j s := by
+  atlas_forward_decl GlobalTheory.HTW.jR_symm_card
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.HTW
+
+open Formalism.BasicNotions Formalism.FrobeniusOrbits
+
+section Count
+
+variable {R : Ranks} (P : HCParam R) (j : Fin R.m) (s : Bool)
+
+def twistedJump (y : ℤ) : ℤ :=
+  if s then -(⌊P.e j⌋ + y + ((R.t : ℤ) + 1) / 2) else ⌊P.e j⌋ + y - ((R.t : ℤ) + 1) / 2
+
+theorem twistedDualJumps_eq_hodgeTateJump_images : jT2 P j s =
+    (Finset.univ : Finset (Fin (R.k - 1))).val.map (fun i => twistedJump P j s ⌊P.v i⌋) +
+      (Finset.univ : Finset (Fin R.m)).val.map (fun i => twistedJump P j s (-⌊P.b i⌋)) := by
+  obtain ⟨q, hq⟩ := R.t_odd
+  cases s <;>
+    simp only [jT2, jW, cloud, lows, twistedJump, Multiset.map_add, Multiset.map_map,
+      Function.comp_def, ↓reduceIte, Bool.false_eq_true] <;>
+    congr 1 <;>
+    refine Multiset.map_congr rfl fun i _ => ?_ <;>
+    omega
+
+theorem twistedJump_low_small (η : ℝ) (h : ∀ i, |((P.b i - P.e j : ℚ) : ℝ)| ≤ η) (i : Fin R.m) :
+    |twistedJump P j s (-⌊P.b i⌋)| ≤ ((⌊η⌋₊ + R.t + 2 : ℕ) : ℤ) := by
+  obtain ⟨zb, hzb⟩ := P.b_int i
+  obtain ⟨ze, hze⟩ := P.e_int j
+  obtain ⟨q, hq⟩ := R.t_odd
+  have hb : ⌊P.b i⌋ = zb := by rw [hzb]; exact Int.floor_intCast zb
+  have he : ⌊P.e j⌋ = ze := by rw [hze]; exact Int.floor_intCast ze
+  have hr : (((zb - ze : ℤ) : ℝ)) = (((P.b i - P.e j : ℚ) : ℝ)) := by
+    rw [hzb, hze]; push_cast; ring
+  have hn : (zb - ze).natAbs ≤ ⌊η⌋₊ := by
+    apply Nat.le_floor
+    rw [Nat.cast_natAbs, Int.cast_abs, hr]
+    exact h i
+  have habs : |zb - ze| ≤ (⌊η⌋₊ : ℤ) := by
+    rw [Int.abs_eq_natAbs]; exact_mod_cast hn
+  rw [abs_le] at habs ⊢
+  unfold twistedJump
+  rw [hb, he]
+  cases s <;> simp only [↓reduceIte, Bool.false_eq_true] <;> push_cast <;> constructor <;> omega
+
+theorem twistedJump_cloud_large (n : ℕ) (hv : ∀ i, 0 ≤ P.v i) (h : (n : ℤ) < szT P j s)
+    (i : Fin (R.k - 1)) : ¬ |twistedJump P j s ⌊P.v i⌋| ≤ (n : ℤ) := by
+  obtain ⟨q, hq⟩ := R.t_odd
+  have hV : 0 ≤ ⌊P.v i⌋ := Int.floor_nonneg.mpr (hv i)
+  unfold twistedJump
+  unfold szT at h
+  rw [abs_le]
+  cases s <;> simp only [↓reduceIte, Bool.false_eq_true] at h ⊢ <;> omega
+
+end Count
+
+theorem card_small_twistedDualJumps_eq_rank {R : Ranks} (P : HCParam R) (j : Fin R.m) (s : Bool) (η : ℝ)
+    (hv : ∀ i, 0 ≤ P.v i) (hb : ∀ i, |((P.b i - P.e j : ℚ) : ℝ)| ≤ η)
+    (hs : ((⌊η⌋₊ + R.t + 2 : ℕ) : ℤ) < szT P j s) :
+    ((jT2 P j s).filter fun u : ℤ => |u| ≤ ((⌊η⌋₊ + R.t + 2 : ℕ) : ℤ)).card = R.m := by
+  rw [twistedDualJumps_eq_hodgeTateJump_images, Multiset.filter_add, Multiset.card_add]
+  have hc : ((Finset.univ : Finset (Fin (R.k - 1))).val.map
+      (fun i => twistedJump P j s ⌊P.v i⌋)).filter
+        (fun u : ℤ => |u| ≤ ((⌊η⌋₊ + R.t + 2 : ℕ) : ℤ)) = 0 := by
+    rw [Multiset.filter_eq_nil]
+    intro u hu
+    obtain ⟨i, _, rfl⟩ := Multiset.mem_map.mp hu
+    exact twistedJump_cloud_large P j s _ hv hs i
+  have hl : ((Finset.univ : Finset (Fin R.m)).val.map
+      (fun i => twistedJump P j s (-⌊P.b i⌋))).filter
+        (fun u : ℤ => |u| ≤ ((⌊η⌋₊ + R.t + 2 : ℕ) : ℤ)) =
+      (Finset.univ : Finset (Fin R.m)).val.map (fun i => twistedJump P j s (-⌊P.b i⌋)) := by
+    rw [Multiset.filter_eq_self]
+    intro u hu
+    obtain ⟨i, _, rfl⟩ := Multiset.mem_map.mp hu
+    exact twistedJump_low_small P j s η hb i
+  rw [hc, hl]
+  simp
+
+end GlobalTheory.HTW
+end
+end
+
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_filter_abs_le_jT2_eq_rank : ∀ {R : Ranks} (P : HCParam R) (j : Fin R.m) (s : Bool) (η : ℝ), (∀ i, 0 ≤ P.v i) → (∀ i, |((P.b i - P.e j : ℚ) : ℝ)| ≤ η) → ((⌊η⌋₊ + R.t + 2 : ℕ) : ℤ) < szT P j s → ((jT2 P j s).filter fun u : ℤ => |u| ≤ ((⌊η⌋₊ + R.t + 2 : ℕ) : ℤ)).card = R.m := by
+  atlas_forward_decl GlobalTheory.HTW.card_small_twistedDualJumps_eq_rank
+end
+
+section
+section
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+
+namespace GlobalTheory.HTW
+
+theorem twistedDualPageWord_small_jumps_card : ∀ {D : D7} (L : SizeData₂ D) (C : ℝ) (j : Fin D.R.m) (ε : ℤˣ) (τ φ : D.R.GG), Roomy L C → (pageWord L j ε τ φ).T2 ∧ ∀ i, ((pageWord L j ε τ φ).J2 i).card = D.R.r ∧ (((pageWord L j ε τ φ).J2 i).filter fun u : ℤ => |u| ≤ (etaHat L : ℤ)).card = D.R.m := by
+  intro D L C j ε τ φ hR
+  have hbox := (GlobalTheory.T.twistedDualOrbitPageWord_box L C j ε τ φ hR).2.2.2.2.2
+  have hcount : ∀ i, (((pageWord L j ε τ φ).J2 i).filter
+      fun u : ℤ => |u| ≤ (etaHat L : ℤ)).card = D.R.m := by
+    intro i
+    refine GlobalTheory.T.card_filter_abs_le_jT2_eq_rank (hcAt D (letter τ φ i)) j (pos ε (letter τ φ i)) L.etaSz ?_ ?_ (hbox i)
+    · intro a
+      have h := (L.cloud_v (D.eTau.symm ⟨plc (letter τ φ i), plc_mem _⟩) a).1
+      exact_mod_cast h
+    · intro a
+      exact L.be_close _ a j
+  refine ⟨fun i => ⟨fun u hu => ?_, (hcount i).le⟩, fun i => ⟨?_, hcount i⟩⟩
+  · exact Multiset.mem_of_le
+      ((GlobalTheory.T.cloudLowJumps_reflect_and_card (hcAt D (letter τ φ i)) j).2 (pos ε (letter τ φ i))).2.2.2 hu
+  · exact ((GlobalTheory.T.cloudLowJumps_reflect_and_card (hcAt D (letter τ φ i)) j).2 (pos ε (letter τ φ i))).2.2.1
+
+end GlobalTheory.HTW
+end
+
+open GlobalTheory.HTW Formalism.BasicNotions Formalism.FrobeniusOrbits
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pageWord_T2_and_J2_card_of_roomy : ∀ {D : D7} (L : SizeData₂ D) (C : ℝ) (j : Fin D.R.m) (ε : ℤˣ) (τ φ : D.R.GG), Roomy L C → (pageWord L j ε τ φ).T2 ∧ ∀ i, ((pageWord L j ε τ φ).J2 i).card = D.R.r ∧ (((pageWord L j ε τ φ).J2 i).filter fun u : ℤ => |u| ≤ (etaHat L : ℤ)).card = D.R.m := by
+  atlas_forward_decl GlobalTheory.HTW.twistedDualPageWord_small_jumps_card
+end
+
+section
 section
 open NumberField IsDedekindDomain GlobalTheory.HTW GlobalTheory.HTW.Rec Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.FrobeniusOrbits
 
@@ -67,3 +401,4 @@ open NumberField IsDedekindDomain GlobalTheory.HTW GlobalTheory.HTW.Rec Formalis
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.twistedDualJumps_mem_window_box : ∀ {D : D7} (L : SizeData₂ D) (C : ℝ) (j : Fin D.R.m) (ε : ℤˣ) {n : ℕ} (g : ZMod n → D.R.GG), Roomy L C → ∀ a, (∀ u ∈ jT1 (hcAt D (g a)) j (pos ε (g a)), u ∈ (recWord L j ε g).win a ∧ u ∈ Set.Icc (-((recWord L j ε g).Mi a : ℤ)) ((recWord L j ε g).hi a : ℤ)) ∧ (∀ u ∈ jT2 (hcAt D (g a)) j (pos ε (g a)), u ∈ jT1 (hcAt D (g a)) j (pos ε (g a))) ∧ ∑ u ∈ Finset.Icc (-(etaHat L : ℤ)) (etaHat L), (((jT2 (hcAt D (g a)) j (pos ε (g a))).count u : ℕ) : ℤ) ≤ D.R.m := by
   atlas_forward_decl GlobalTheory.HTW.Rec.recWord_jumps
+end

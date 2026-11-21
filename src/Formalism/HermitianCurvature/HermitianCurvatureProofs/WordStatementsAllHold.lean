@@ -4,8 +4,18 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.SecondEmbedMulFirst
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferMatrixFactorization
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMatrixTransferConjTransposeCommute
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PartialFlipCommuteDiagScalarOfFree
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WordsAssembleHolds
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagScalarCommuteTransposedRMatrix
 
+section
+namespace Formalism.FourierDecayAlt.P
+
+open Formalism.FourierDecayAlt.Wd
+
+
+end Formalism.FourierDecayAlt.P
+end
+
+section
 namespace Formalism.FourierDecayAlt.P.Wd13
 
 open Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P
@@ -16,3 +26,4 @@ namespace Formalism.FourierDecayAlt.P
 
 
 end Formalism.FourierDecayAlt.P
+end

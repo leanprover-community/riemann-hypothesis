@@ -1,10 +1,585 @@
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousFrameEquivSymm
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteKTypeDecomposition
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardCompactFrameEquiv
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ParabolicIffFrameParabolic
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockDetParabolicFrame
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockDeterminantLaw
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviDecompOfBlockDet
 
+section
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SiegelRep
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl PositivityTheory.RgEis GlobalTheory.CompanionTheory.SiegelFrame
+
+section Rep
+
+variable {G : Type} [Group G] {K : Subgroup G} {V : Submodule ℂ (G → ℂ)}
+
+def rt (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V) : K →* Module.End ℂ V where
+  toFun k :=
+    { toFun := fun v => ⟨fun x => v.1 (x * (k : G)), hV v.1 v.2 k⟩
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  map_one' := by
+    apply LinearMap.ext
+    intro v
+    apply Subtype.ext
+    funext x
+    simp
+  map_mul' a b := by
+    apply LinearMap.ext
+    intro v
+    apply Subtype.ext
+    funext x
+    simp [mul_assoc]
+
+theorem rt_apply (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V) (k : K) (v : V) (x : G) :
+    (rt hV k v).1 x = v.1 (x * (k : G)) := rfl
+
+variable [FiniteDimensional ℂ V]
+
+def mat (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V) (k : K) :
+    Matrix (Fin (Module.finrank ℂ V)) (Fin (Module.finrank ℂ V)) ℂ :=
+  LinearMap.toMatrix (Module.finBasis ℂ V) (Module.finBasis ℂ V) (rt hV k)
+
+theorem mat_mul (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V) (a b : K) :
+    mat hV (a * b) = mat hV a * mat hV b := by
+  simp only [mat, map_mul]
+  exact LinearMap.toMatrix_mul _ _ _
+
+theorem mat_one (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V) : mat hV 1 = 1 := by
+  simp only [mat, map_one]
+  exact LinearMap.toMatrix_one _
+
+def rho (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V) :
+    K →* ((Fin (Module.finrank ℂ V) → ℂ) →L[ℂ] (Fin (Module.finrank ℂ V) → ℂ)) where
+  toFun k := LinearMap.toContinuousLinearMap (Matrix.toLin' (mat hV k⁻¹)ᵀ)
+  map_one' := by
+    apply ContinuousLinearMap.ext
+    intro a
+    simp [mat_one]
+  map_mul' a b := by
+    apply ContinuousLinearMap.ext
+    intro x
+    simp [mul_inv_rev, mat_mul, Matrix.transpose_mul, Matrix.mulVec_mulVec]
+
+theorem rho_apply (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V) (k : K)
+    (a : Fin (Module.finrank ℂ V) → ℂ) (i : Fin (Module.finrank ℂ V)) :
+    rho hV k a i = ∑ j, (Module.finBasis ℂ V).repr (rt hV k⁻¹ (Module.finBasis ℂ V i)) j * a j := by
+  change ((mat hV k⁻¹)ᵀ *ᵥ a) i = _
+  simp [Matrix.mulVec, dotProduct, mat, LinearMap.toMatrix_apply]
+
+theorem sum_repr_apply (z : V) (x : G) :
+    ∑ j, (Module.finBasis ℂ V).repr z j * (Module.finBasis ℂ V j).1 x = z.1 x := by
+  have h := congrArg (fun y : V => y.1 x) ((Module.finBasis ℂ V).sum_repr z)
+  simp only [AddSubmonoidClass.coe_finset_sum, Submodule.coe_smul, Finset.sum_apply, Pi.smul_apply,
+    smul_eq_mul] at h
+  exact h
+
+def w₀ (V : Submodule ℂ (G → ℂ)) [FiniteDimensional ℂ V] : Fin (Module.finrank ℂ V) → ℂ :=
+  fun j => (Module.finBasis ℂ V j).1 1
+
+theorem rho_w₀ (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V) (k : K)
+    (i : Fin (Module.finrank ℂ V)) : rho hV k (w₀ V) i = (Module.finBasis ℂ V i).1 ((k : G)⁻¹) := by
+  rw [rho_apply]
+  simp only [w₀]
+  rw [sum_repr_apply, rt_apply]
+  simp
+
+end Rep
+
+section Cont
+
+variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {K : Subgroup G}
+  {V : Submodule ℂ (G → ℂ)} [FiniteDimensional ℂ V]
+
+def evl (V : Submodule ℂ (G → ℂ)) (x : G) : Module.Dual ℂ V := (LinearMap.proj x).comp V.subtype
+
+theorem span_evl : Submodule.span ℂ (Set.range (evl V)) = ⊤ := by
+  have h : (Submodule.span ℂ (Set.range (evl V))).dualCoannihilator = ⊥ := by
+    rw [eq_bot_iff]
+    intro v hv
+    rw [Submodule.mem_dualCoannihilator] at hv
+    have : v = 0 := by
+      apply Subtype.ext
+      funext x
+      exact hv _ (Submodule.subset_span ⟨x, rfl⟩)
+    simp [this]
+  have h2 := Subspace.dualCoannihilator_dualAnnihilator_eq
+    (W := Submodule.span ℂ (Set.range (evl V)))
+  rw [h] at h2
+  simpa using h2.symm
+
+theorem cont_coef (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V)
+    (hc : ∀ v ∈ V, Continuous v) (ℓ : Module.Dual ℂ V) (v : V) :
+    Continuous fun k : K => ℓ (rt hV k⁻¹ v) := by
+  have hℓ : ℓ ∈ Submodule.span ℂ (Set.range (evl V)) := by
+    rw [span_evl]
+    trivial
+  induction hℓ using Submodule.span_induction with
+  | mem ℓ h =>
+    obtain ⟨x, rfl⟩ := h
+    have h1 : Continuous fun k : K => x * (((k⁻¹ : K)) : G) :=
+      continuous_const.mul (continuous_subtype_val.comp continuous_inv)
+    exact (hc v.1 v.2).comp h1
+  | zero => simpa using continuous_const
+  | add a b _ _ ha hb => exact ha.add hb
+  | smul a ℓ _ h => exact continuous_const.mul h
+
+theorem rho_cont (hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V)
+    (hc : ∀ v ∈ V, Continuous v) : Continuous (rho hV) := by
+  rw [continuous_clm_apply]
+  intro a
+  refine continuous_pi fun i => ?_
+  simp only [rho_apply]
+  refine continuous_finset_sum _ fun j _ => ?_
+  exact (cont_coef hV hc ((Module.finBasis ℂ V).coord j) _).mul continuous_const
+
+end Cont
+
+theorem ch_one {G : Type} [Group G] [TopologicalSpace G] {Γ P : Subgroup G} {c : G → ℂ}
+    (h : IsCh Γ P c) : c 1 = 1 := by
+  have h1 := h.mul 1 P.one_mem 1 P.one_mem
+  have h2 := h.norm 1 P.one_mem
+  have h0 : c 1 ≠ 0 := by
+    intro h0
+    simp [h0] at h2
+  rw [mul_one] at h1
+  exact mul_left_cancel₀ h0 (by rw [mul_one]; exact h1.symm)
+
+theorem exists_rep : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (Γ K P : Subgroup G) (c : G → ℂ) (η : G → ℝ), IsCh Γ P c → (∀ r ∈ P, r ∈ K → η r = 0) → (∀ p ∈ P, ∀ q ∈ P, η (p * q) = η p + η q) → ∀ (f : G → ℂ) (u : ℂ), Continuous f → (∀ p ∈ P, ∀ x, f (p * x) = c p * Complex.exp (u * η p) * f x) → FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k : K => fun x => f (x * (k : G)))) → ∃ (d : ℕ) (ρ : K →* ((Fin d → ℂ) →L[ℂ] (Fin d → ℂ))) (w : Fin d → ℂ) (e : (Fin d → ℂ) →L[ℂ] ℂ), Continuous ρ ∧ w ∈ secSp K P c ρ ∧ ∀ k : K, e (ρ k⁻¹ w) = f k := by
+  intro G _ _ _ Γ K P c η hch hηK _ f u hf hlaw hfd
+  obtain ⟨V, hVdef⟩ : ∃ V : Submodule ℂ (G → ℂ),
+      V = Submodule.span ℂ (Set.range fun k : K => fun x => f (x * (k : G))) := ⟨_, rfl⟩
+  rw [← hVdef] at hfd
+  have hV : ∀ v ∈ V, ∀ k : K, (fun x => v (x * (k : G))) ∈ V := by
+    intro v hv k
+    rw [hVdef] at hv ⊢
+    induction hv using Submodule.span_induction with
+    | mem v hv =>
+      obtain ⟨k', rfl⟩ := hv
+      exact Submodule.subset_span ⟨k * k', by funext x; simp [mul_assoc]⟩
+    | zero => exact Submodule.zero_mem _
+    | add a b _ _ ha hb => exact Submodule.add_mem _ ha hb
+    | smul a v _ hv => exact Submodule.smul_mem _ a hv
+  have hcont : ∀ v ∈ V, Continuous v := by
+    intro v hv
+    rw [hVdef] at hv
+    induction hv using Submodule.span_induction with
+    | mem v hv =>
+      obtain ⟨k', rfl⟩ := hv
+      exact hf.comp (continuous_id.mul continuous_const)
+    | zero => exact continuous_const
+    | add a b _ _ ha hb => exact ha.add hb
+    | smul a v _ hv => exact continuous_const.smul hv
+  have hl : ∀ v ∈ V, ∀ p ∈ P, ∀ x, v (p * x) = c p * Complex.exp (u * η p) * v x := by
+    intro v hv p hp x
+    rw [hVdef] at hv
+    induction hv using Submodule.span_induction generalizing x with
+    | mem v hv =>
+      obtain ⟨k', rfl⟩ := hv
+      change f (p * x * (k' : G)) = c p * Complex.exp (u * η p) * f (x * (k' : G))
+      rw [mul_assoc, hlaw p hp]
+    | zero => simp
+    | add a b _ _ ha hb => simp only [Pi.add_apply, ha, hb]; ring
+    | smul a v _ hv => simp only [Pi.smul_apply, hv, smul_eq_mul]; ring
+  have hfV : f ∈ V := by
+    rw [hVdef]
+    exact Submodule.subset_span ⟨1, by funext x; simp⟩
+  refine ⟨Module.finrank ℂ V, rho hV, w₀ V,
+    ∑ i, (Module.finBasis ℂ V).repr ⟨f, hfV⟩ i •
+      (ContinuousLinearMap.proj i : (Fin (Module.finrank ℂ V) → ℂ) →L[ℂ] ℂ),
+    rho_cont hV hcont, ?_, ?_⟩
+  · intro r hr
+    funext i
+    have hri : ((r : G))⁻¹ ∈ P := P.inv_mem hr
+    have hrK : ((r : G))⁻¹ ∈ K := K.inv_mem r.2
+    have h1 := hl _ (Module.finBasis ℂ V i).2 _ hri 1
+    have h2 : c r * c ((r : G))⁻¹ = 1 := by
+      rw [← hch.mul _ hr _ hri, mul_inv_cancel, ch_one hch]
+    simp only [Pi.smul_apply, smul_eq_mul]
+    rw [rho_w₀]
+    rw [mul_one, hηK _ hri hrK] at h1
+    rw [h1]
+    simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one]
+    rw [← mul_assoc, h2, one_mul]
+    rfl
+  · intro k
+    have h := sum_repr_apply (V := V) ⟨f, hfV⟩ (k : G)
+    simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply, ContinuousLinearMap.coe_smul',
+      Pi.smul_apply, ContinuousLinearMap.proj_apply, smul_eq_mul]
+    simp only [rho_w₀]
+    simpa using h
+
+end GlobalTheory.CompanionTheory.SiegelRep
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl PositivityTheory.RgEis GlobalTheory.CompanionTheory.SiegelFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_K_type_decomposition : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (Γ K P : Subgroup G) (c : G → ℂ) (η : G → ℝ), IsCh Γ P c → (∀ r ∈ P, r ∈ K → η r = 0) → (∀ p ∈ P, ∀ q ∈ P, η (p * q) = η p + η q) → ∀ (f : G → ℂ) (u : ℂ), Continuous f → (∀ p ∈ P, ∀ x, f (p * x) = c p * Complex.exp (u * η p) * f x) → FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k : K => fun x => f (x * (k : G)))) → ∃ (d : ℕ) (ρ : K →* ((Fin d → ℂ) →L[ℂ] (Fin d → ℂ))) (w : Fin d → ℂ) (e : (Fin d → ℂ) →L[ℂ] ℂ), Continuous ρ ∧ w ∈ secSp K P c ρ ∧ ∀ k : K, e (ρ k⁻¹ w) = f k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelRep.exists_rep
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl PositivityTheory.RgEis GlobalTheory.CompanionTheory.SiegelFrame
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SiegelFrame.StdCompact
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ} {Y : Spc F E n}
+
+theorem conj_unit_iff {ι : Type} [Fintype ι] [DecidableEq ι] (U : Matrix ι ι ℂ) :
+    U.map (starRingEnd ℂ) * (U.map (starRingEnd ℂ))ᴴ = 1 ↔ U * Uᴴ = 1 := by
+  have e : U.map (starRingEnd ℂ) * (U.map (starRingEnd ℂ))ᴴ = (U * Uᴴ).map (starRingEnd ℂ) := by
+    rw [Matrix.map_mul]
+    congr 1
+  constructor
+  · intro h
+    rw [e] at h
+    have h2 : ((U * Uᴴ).map (starRingEnd ℂ)).map (starRingEnd ℂ) = (1 : Matrix ι ι ℂ).map (starRingEnd ℂ) := by rw [h]
+    have e2 : ((U * Uᴴ).map (starRingEnd ℂ)).map (starRingEnd ℂ) = U * Uᴴ := by
+      ext i j
+      simp only [Matrix.map_apply, Complex.conj_conj]
+    rw [e2, Matrix.map_one _ (map_zero _) (map_one _)] at h2
+    exact h2
+  · intro h
+    rw [e, h]
+    exact Matrix.map_one _ (map_zero _) (map_one _)
+
+theorem inFrame_eq (χ : Chr F E) (ε : ℤˣ) (b : GL (Fin n ⊕ Fin n) E)
+    (hb : b.1ᵀ * dbl Y.J * b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (x : G2 σ Y) :
+    inFrame b x = (((frameEquiv χ ε b hb x).1 : GL (Fin n ⊕ Fin n) (AE F E)) :
+      Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (AE F E)) := by
+  have hinv : (bA (F := F) b)⁻¹ = bA (F := F) b⁻¹ :=
+    (map_inv (Matrix.GeneralLinearGroup.map (n := Fin n ⊕ Fin n) (inclR (F := F) (E := E) (AF F))) b).symm
+  rw [frameEquiv_val, hinv]
+  rfl
+
+theorem mem_O_iff (hD : Dict) (χ : Chr F E) (y : AE F E) :
+    y ∈ (adCM σ χ).O ↔ finOne F • y ∈ intHat F E :=
+  (hD F E).2.2.2.1 y
+
+theorem unit_iff (hI : DictInf) (hcm : IsCMExt F E σ) (χ : Chr F E) (B : Base F E)
+    (M : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (AE F E)) :
+    (∀ w, M.map (piInf (B.emb w)) * (M.map (piInf (B.emb w)))ᴴ = 1) ↔
+      ∀ w, M.map ((adCM σ χ).φ w) ∈ Matrix.unitaryGroup (Fin n ⊕ Fin n) ℂ := by
+  have key : ∀ (τ : AE F E →+* ℂ) (w' : InfinitePlace E),
+      ((∀ z, τ z = (adStd E).φ w' (eqv F E z)) ∨ ∀ z, τ z = starRingEnd ℂ ((adStd E).φ w' (eqv F E z))) →
+      (M.map τ * (M.map τ)ᴴ = 1 ↔ M.map ((adCM σ χ).φ w') ∈ Matrix.unitaryGroup (Fin n ⊕ Fin n) ℂ) := by
+    intro τ w' h
+    rw [Matrix.mem_unitaryGroup_iff, Matrix.star_eq_conjTranspose]
+    rcases h with h | h
+    · have e : M.map τ = M.map ((adCM σ χ).φ w') := by
+        ext i j
+        exact h _
+      rw [e]
+    · have e : M.map τ = (M.map ((adCM σ χ).φ w')).map (starRingEnd ℂ) := by
+        ext i j
+        exact h _
+      rw [e]
+      exact conj_unit_iff _
+  obtain ⟨h1, h2⟩ := (hI F E σ hcm).2 B.emb
+  constructor
+  · intro h w'
+    obtain ⟨w, hw⟩ := h2 w'
+    exact (key _ w' hw).1 (h w)
+  · intro h w
+    obtain ⟨w', hw⟩ := h1 w
+    exact (key _ w' hw).2 (h w')
+
+theorem mem_isStdK_iff : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (Y : Spc F E n), Dict → DictInf → IsCMExt F E σ → ∀ (χ : Chr F E) (ε : ℤˣ) (b : GL (Fin n ⊕ Fin n) E) (hb : b.1ᵀ * dbl Y.J * b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (B : Base F E) (K : Subgroup (G2 σ Y)), IsStdK (σ := σ) (Y := Y) B b K → ∀ x : G2 σ Y, x ∈ K ↔ frameEquiv χ ε b hb x ∈ (adCM σ χ).uK ε (Fin n) := by
+  intro F E _ _ _ _ _ σ n Y hD hI hcm χ ε b hb B K hK x
+  have hinv : inFrame b x⁻¹ = ((((frameEquiv χ ε b hb x).1)⁻¹ : GL (Fin n ⊕ Fin n) (AE F E)) :
+      Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (AE F E)) := by
+    rw [inFrame_eq χ ε b hb x⁻¹, map_inv]
+    rfl
+  have hx := inFrame_eq χ ε b hb x
+  rw [hK x]
+  show _ ↔ (frameEquiv χ ε b hb x).1 ∈ (adCM σ χ).kGL (Fin n ⊕ Fin n)
+  show _ ↔ (∀ r c, (((frameEquiv χ ε b hb x).1 : GL (Fin n ⊕ Fin n) (AE F E)) :
+        Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (AE F E)) r c ∈ (adCM σ χ).O ∧
+      (((((frameEquiv χ ε b hb x).1)⁻¹ : GL (Fin n ⊕ Fin n) (AE F E))) :
+        Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (AE F E)) r c ∈ (adCM σ χ).O) ∧
+      ∀ w, (((frameEquiv χ ε b hb x).1 : GL (Fin n ⊕ Fin n) (AE F E)) :
+        Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (AE F E)).map ((adCM σ χ).φ w) ∈ Matrix.unitaryGroup (Fin n ⊕ Fin n) ℂ
+  rw [← hinv, ← hx, ← unit_iff hI hcm χ B, and_comm]
+  refine and_congr ?_ Iff.rfl
+  simp only [mem_O_iff (σ := σ) hD χ]
+  constructor
+  · intro h r c
+    exact ⟨h x (by simp) r c, h x⁻¹ (by simp) r c⟩
+  · intro h k' hk' r c
+    rcases hk' with rfl | hk'
+    · exact (h r c).1
+    · rw [Set.mem_singleton_iff] at hk'
+      subst hk'
+      exact (h r c).2
+
+end GlobalTheory.CompanionTheory.SiegelFrame.StdCompact
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl PositivityTheory.RgEis GlobalTheory.CompanionTheory.SiegelFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.standard_compact_frame_equiv : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (Y : Spc F E n), Dict → DictInf → IsCMExt F E σ → ∀ (χ : Chr F E) (ε : ℤˣ) (b : GL (Fin n ⊕ Fin n) E) (hb : b.1ᵀ * dbl Y.J * b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (B : Base F E) (K : Subgroup (G2 σ Y)), IsStdK (σ := σ) (Y := Y) B b K → ∀ x : G2 σ Y, x ∈ K ↔ frameEquiv χ ε b hb x ∈ (adCM σ χ).uK ε (Fin n) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelFrame.StdCompact.mem_isStdK_iff
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl PositivityTheory.RgEis GlobalTheory.CompanionTheory.SiegelFrame
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SiegelFrame.ParStab
+
+section Linear
+
+variable {R : Type} [CommRing R] {ι : Type} [Fintype ι] [DecidableEq ι]
+
+def firstCols (R : Type) [CommRing R] (ι : Type) [DecidableEq ι] : Matrix (ι ⊕ ι) ι R := Matrix.fromRows 1 0
+
+theorem mul_firstCols (g : Matrix (ι ⊕ ι) (ι ⊕ ι) R) : g * firstCols R ι = g.toCols₁ := by
+  ext r j
+  simp [firstCols, Matrix.mul_apply, Fintype.sum_sum_type, Matrix.one_apply, Matrix.toCols₁]
+
+theorem firstCols_mul_apply_inl (m : Matrix ι ι R) (i j : ι) : (firstCols R ι * m) (Sum.inl i) j = m i j := by
+  simp [firstCols, Matrix.mul_apply, Matrix.one_apply]
+
+theorem firstCols_mul_apply_inr (m : Matrix ι ι R) (i j : ι) : (firstCols R ι * m) (Sum.inr i) j = 0 := by
+  simp [firstCols, Matrix.mul_apply]
+
+theorem firstCols_cancel {m m' : Matrix ι ι R} (h : firstCols R ι * m = firstCols R ι * m') : m = m' := by
+  ext i j
+  rw [← firstCols_mul_apply_inl m, h, firstCols_mul_apply_inl]
+
+theorem low_zero_of_mul {g : Matrix (ι ⊕ ι) (ι ⊕ ι) R} {m : Matrix ι ι R} (h : g * firstCols R ι = firstCols R ι * m)
+    (i j : ι) : g (Sum.inr i) (Sum.inl j) = 0 := by
+  have := congrFun (congrFun h (Sum.inr i)) j
+  rwa [mul_firstCols, firstCols_mul_apply_inr] at this
+
+theorem mul_eq_of_low_zero {g : Matrix (ι ⊕ ι) (ι ⊕ ι) R} (h : ∀ i j, g (Sum.inr i) (Sum.inl j) = 0) :
+    g * firstCols R ι = firstCols R ι * g.toBlocks₁₁ := by
+  ext r j
+  rcases r with i | i
+  · rw [firstCols_mul_apply_inl, mul_firstCols]; rfl
+  · rw [firstCols_mul_apply_inr, mul_firstCols]; exact h i j
+
+theorem mem_stab_iff (g : GL (ι ⊕ ι) R) : g ∈ stab R (Sum.inl '' (Set.univ : Set ι)) ↔
+    ∀ i j, (g : Matrix (ι ⊕ ι) (ι ⊕ ι) R) (Sum.inr i) (Sum.inl j) = 0 ∧
+      ((g⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) (Sum.inr i) (Sum.inl j) = 0 := by
+  constructor
+  · intro h i j
+    exact h (Sum.inr i) (by simp) (Sum.inl j) (by simp)
+  · intro h r hr c hc
+    obtain ⟨j, -, rfl⟩ := hc
+    rcases r with i | i
+    · exact absurd ⟨i, Set.mem_univ _, rfl⟩ hr
+    · exact h i j
+
+theorem exists_mul_eq_iff_mem_stab (B x : GL (ι ⊕ ι) R) (D : Matrix (ι ⊕ ι) ι R) (T : GL ι R)
+    (hB : (B : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * firstCols R ι = D * (T : Matrix ι ι R)) :
+    (∃ t : GL ι R, (x : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * D = D * (t : Matrix ι ι R)) ↔
+      B⁻¹ * x * B ∈ stab R (Sum.inl '' (Set.univ : Set ι)) := by
+  have hBi : ((B⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * (B : Matrix (ι ⊕ ι) (ι ⊕ ι) R) = 1 := by
+    rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
+  have hTi : (T : Matrix ι ι R) * ((T⁻¹ : GL ι R) : Matrix ι ι R) = 1 := by
+    rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
+  have hD : D = (B : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * firstCols R ι * ((T⁻¹ : GL ι R) : Matrix ι ι R) := by
+    rw [hB, Matrix.mul_assoc, hTi, Matrix.mul_one]
+  have hC : ((B⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * D * (T : Matrix ι ι R) = firstCols R ι := by
+    rw [Matrix.mul_assoc, ← hB, ← Matrix.mul_assoc, hBi, Matrix.one_mul]
+  have hinv : (B⁻¹ * x * B)⁻¹ = B⁻¹ * x⁻¹ * B := by group
+  have key : ∀ (g : GL (ι ⊕ ι) R) (s : Matrix ι ι R), (g : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * D = D * s →
+      ((B⁻¹ * g * B : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * firstCols R ι =
+        firstCols R ι * (((T⁻¹ : GL ι R) : Matrix ι ι R) * s * (T : Matrix ι ι R)) := by
+    intro g s hg
+    calc _ = ((B⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * ((g : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * D) * (T : Matrix ι ι R) := by
+          simp only [Units.val_mul, Matrix.mul_assoc]
+          rw [hB]
+      _ = ((B⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * D * (s * (T : Matrix ι ι R)) := by
+          rw [hg]; simp only [Matrix.mul_assoc]
+      _ = (((B⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * D * (T : Matrix ι ι R)) *
+            (((T⁻¹ : GL ι R) : Matrix ι ι R) * s * (T : Matrix ι ι R)) := by
+          simp only [Matrix.mul_assoc]
+          rw [← Matrix.mul_assoc (T : Matrix ι ι R) (((T⁻¹ : GL ι R) : Matrix ι ι R)), hTi, Matrix.one_mul]
+      _ = _ := by rw [hC]
+  constructor
+  · rintro ⟨t, ht⟩
+    have hx' : ((x⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * D = D * ((t⁻¹ : GL ι R) : Matrix ι ι R) := by
+      have h1 : ((x⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * (x : Matrix (ι ⊕ ι) (ι ⊕ ι) R) = 1 := by
+        rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
+      have h2 : (t : Matrix ι ι R) * ((t⁻¹ : GL ι R) : Matrix ι ι R) = 1 := by
+        rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
+      calc _ = ((x⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * (D * ((t : Matrix ι ι R) * ((t⁻¹ : GL ι R) : Matrix ι ι R))) := by
+            rw [h2, Matrix.mul_one]
+        _ = ((x⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * ((x : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * D) * ((t⁻¹ : GL ι R) : Matrix ι ι R) := by
+            rw [ht]; simp only [Matrix.mul_assoc]
+        _ = _ := by rw [← Matrix.mul_assoc, h1, Matrix.one_mul]
+    rw [mem_stab_iff]
+    intro i j
+    refine ⟨low_zero_of_mul (key x _ ht) i j, ?_⟩
+    rw [hinv]
+    exact low_zero_of_mul (key x⁻¹ _ hx') i j
+  · intro hy
+    rw [mem_stab_iff] at hy
+    set y : GL (ι ⊕ ι) R := B⁻¹ * x * B with hydef
+    have e1 := mul_eq_of_low_zero fun i j => (hy i j).1
+    have e2 := mul_eq_of_low_zero fun i j => (hy i j).2
+    set m := (y : Matrix (ι ⊕ ι) (ι ⊕ ι) R).toBlocks₁₁ with hm
+    set m' := ((y⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R).toBlocks₁₁ with hm'
+    have hyy : (y : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * ((y⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) = 1 := by
+      rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
+    have hyy' : ((y⁻¹ : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * (y : Matrix (ι ⊕ ι) (ι ⊕ ι) R) = 1 := by
+      rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
+    have hmm : m * m' = 1 := by
+      apply firstCols_cancel
+      rw [← Matrix.mul_assoc, ← e1, Matrix.mul_assoc, ← e2, ← Matrix.mul_assoc, hyy, Matrix.one_mul, Matrix.mul_one]
+    have hmm' : m' * m = 1 := by
+      apply firstCols_cancel
+      rw [← Matrix.mul_assoc, ← e2, Matrix.mul_assoc, ← e1, ← Matrix.mul_assoc, hyy', Matrix.one_mul, Matrix.mul_one]
+    let u : GL ι R := ⟨m, m', hmm, hmm'⟩
+    refine ⟨T * u * T⁻¹, ?_⟩
+    have hx : (x : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * (B : Matrix (ι ⊕ ι) (ι ⊕ ι) R) =
+        (B : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * (y : Matrix (ι ⊕ ι) (ι ⊕ ι) R) := by
+      rw [← Units.val_mul, ← Units.val_mul]
+      congr 1
+      rw [hydef]
+      group
+    calc _ = (x : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * (B : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * firstCols R ι * ((T⁻¹ : GL ι R) : Matrix ι ι R) := by
+          conv_lhs => rw [hD]
+          simp only [Matrix.mul_assoc]
+      _ = (B : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * ((y : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * firstCols R ι) * ((T⁻¹ : GL ι R) : Matrix ι ι R) := by
+          rw [hx]; simp only [Matrix.mul_assoc]
+      _ = (B : Matrix (ι ⊕ ι) (ι ⊕ ι) R) * firstCols R ι * (m * ((T⁻¹ : GL ι R) : Matrix ι ι R)) := by
+          rw [e1]; simp only [Matrix.mul_assoc]
+      _ = D * (T : Matrix ι ι R) * (m * ((T⁻¹ : GL ι R) : Matrix ι ι R)) := by rw [hB]
+      _ = _ := by
+          simp only [Units.val_mul, Matrix.mul_assoc]
+          rfl
+
+end Linear
+
+theorem exists_isPar_iff_mem_uQ : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (Y : Spc F E n), ∀ (χ : Chr F E) (ε : ℤˣ) (b : GL (Fin n ⊕ Fin n) E) (hb : b.1ᵀ * dbl Y.J * b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (t₀ : GL (Fin n) E), b.1.toCols₁ = diagCols (Fin n) * t₀.1 → ∀ x : G2 σ Y, (∃ t, IsPar x t) ↔ frameEquiv χ ε b hb x ∈ (adCM σ χ).uQ ε (Set.univ : Set (Fin n)) := by
+  intro F E _ _ _ _ _ σ n Y χ ε b hb t₀ ht x
+  have hdiag : (diagCols (Fin n) : Matrix (Fin n ⊕ Fin n) (Fin n) E).map (inclR (F := F) (E := E) (AF F)) =
+      diagCols (Fin n) := by
+    ext r j
+    rcases r with i | i <;> by_cases h : i = j <;> simp [diagCols, Matrix.one_apply, h]
+  have hB : ((bA (F := F) b : GL (Fin n ⊕ Fin n) (AE F E)) : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (AE F E)) * firstCols (AE F E) (Fin n) =
+      (diagCols (Fin n) : Matrix (Fin n ⊕ Fin n) (Fin n) (AE F E)) * ((Matrix.GeneralLinearGroup.map (n := Fin n) (inclR (F := F) (E := E) (AF F)) t₀ : GL (Fin n) (AE F E)) : Matrix (Fin n) (Fin n) (AE F E)) := by
+    rw [mul_firstCols, ← hdiag]
+    have ht' : b.1.toCols₁ = (diagCols (Fin n) : Matrix (Fin n ⊕ Fin n) (Fin n) E) * (t₀.1 : Matrix (Fin n) (Fin n) E) := ht
+    have := congrArg (fun M : Matrix (Fin n ⊕ Fin n) (Fin n) E => M.map (inclR (F := F) (E := E) (AF F))) ht'
+    simp only [Matrix.map_mul] at this
+    exact this
+  have h := exists_mul_eq_iff_mem_stab (bA (F := F) b) x.1 (diagCols (Fin n)) _ hB
+  rw [PositivityTheory.RgEis.Ad.uQ, Subgroup.mem_subgroupOf, frameEquiv_val]
+  exact h
+
+end GlobalTheory.CompanionTheory.SiegelFrame.ParStab
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl PositivityTheory.RgEis GlobalTheory.CompanionTheory.SiegelFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.parabolic_iff_frame_parabolic : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (Y : Spc F E n), ∀ (χ : Chr F E) (ε : ℤˣ) (b : GL (Fin n ⊕ Fin n) E) (hb : b.1ᵀ * dbl Y.J * b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (t₀ : GL (Fin n) E), b.1.toCols₁ = diagCols (Fin n) * t₀.1 → ∀ x : G2 σ Y, (∃ t, IsPar x t) ↔ frameEquiv χ ε b hb x ∈ (adCM σ χ).uQ ε (Set.univ : Set (Fin n)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelFrame.ParStab.exists_isPar_iff_mem_uQ
+end
+
+section
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl PositivityTheory.RgEis GlobalTheory.CompanionTheory.SiegelFrame
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SiegelFrameDet
+
+theorem mul_fromRows_apply {R : Type} [CommRing R] {β : Type} [Fintype β] [DecidableEq β]
+    (M : Matrix (β ⊕ β) (β ⊕ β) R) (C : Matrix (β ⊕ β) β R) (hC : C = Matrix.fromRows (1 : Matrix β β R) 0)
+    (i : β ⊕ β) (j : β) : (M * C : Matrix (β ⊕ β) β R) i j = M i (Sum.inl j) := by
+  subst hC
+  simp [Matrix.mul_apply, Fintype.sum_sum_type, Matrix.one_apply]
+
+theorem corner_conj {R : Type} [CommRing R] {β : Type} [Fintype β] [DecidableEq β]
+    (B P Bi : Matrix (β ⊕ β) (β ⊕ β) R) (T Ti s : Matrix β β R) (C D : Matrix (β ⊕ β) β R)
+    (hC : C = Matrix.fromRows (1 : Matrix β β R) 0)
+    (hBi : Bi * B = 1) (hTi : T * Ti = 1)
+    (hB : (B * C : Matrix (β ⊕ β) β R) = (D * T : Matrix (β ⊕ β) β R))
+    (hP : (P * D : Matrix (β ⊕ β) β R) = (D * s : Matrix (β ⊕ β) β R)) (r c : β) :
+    (Bi * P * B) (Sum.inl r) (Sum.inl c) = (Ti * s * T) r c := by
+  have hD : D = B * C * Ti := by rw [hB, Matrix.mul_assoc, hTi, Matrix.mul_one]
+  have key : Bi * P * B * C = C * (Ti * s * T) := by
+    calc Bi * P * B * C = Bi * ((P * D) * T) := by
+          rw [Matrix.mul_assoc (Bi * P) B C, hB]; simp only [Matrix.mul_assoc]
+      _ = Bi * (D * s * T) := by rw [hP]
+      _ = Bi * (B * C * Ti * s * T) := by rw [← hD]
+      _ = (Bi * B) * C * (Ti * s * T) := by simp only [Matrix.mul_assoc]
+      _ = C * (Ti * s * T) := by rw [hBi, Matrix.one_mul]
+  have h1 := congrFun (congrFun key (Sum.inl r)) c
+  rw [mul_fromRows_apply _ C hC] at h1
+  rw [h1, hC, Matrix.fromRows_mul, Matrix.fromRows_apply_inl, Matrix.one_mul]
+
+theorem bdet_frameEquiv : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (Y : Spc F E n), ∀ (χ : Chr F E) (ε : ℤˣ) (b : GL (Fin n ⊕ Fin n) E) (hb : b.1ᵀ * dbl Y.J * b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (t₀ : GL (Fin n) E), b.1.toCols₁ = diagCols (Fin n) * t₀.1 → ∀ (p : G2 σ Y) (t : GL (Fin n) (AE F E)), IsPar p t → bdet (Sum.inl '' (Set.univ : Set (Fin n))) (frameEquiv χ ε b hb p).1 = Matrix.GeneralLinearGroup.det t := by
+  intro F E _ _ _ _ _ σ n Y χ ε b hb t₀ ht₀ p t hp
+  obtain ⟨t₀A, ht₀A⟩ : ∃ g : GL (Fin n) (AE F E),
+      g = Matrix.GeneralLinearGroup.map (inclR (F := F) (E := E) (AF F)) t₀ := ⟨_, rfl⟩
+  have hent : ∀ r c : Fin n, (((frameEquiv χ ε b hb p).1 : GL (Fin n ⊕ Fin n) (AE F E)) :
+      Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (AE F E)) (Sum.inl r) (Sum.inl c) =
+      ((t₀A⁻¹ * t * t₀A : GL (Fin n) (AE F E)) : Matrix (Fin n) (Fin n) (AE F E)) r c := by
+    intro r c
+    rw [frameEquiv_val]
+    simp only [Units.val_mul]
+    refine corner_conj _ _ _ _ _ _ _ _ rfl (Units.inv_mul _) (Units.mul_inv _) ?_ hp r c
+    refine Matrix.ext fun i j => ?_
+    rw [mul_fromRows_apply _ _ rfl, bA_val]
+    have hij := congrFun (congrFun ht₀ i) j
+    rw [Matrix.toCols₁_apply] at hij
+    subst ht₀A
+    show inclR (F := F) (E := E) (AF F) (b.1 i (Sum.inl j)) = _
+    rw [hij]
+    cases i with
+    | inl r' =>
+      show inclR (F := F) (E := E) (AF F)
+        (∑ k, Matrix.fromRows (1 : Matrix (Fin n) (Fin n) E) 1 (Sum.inl r') k * t₀.1 k j) = _
+      simp [diagCols, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_sum_type]
+    | inr r' =>
+      show inclR (F := F) (E := E) (AF F)
+        (∑ k, Matrix.fromRows (1 : Matrix (Fin n) (Fin n) E) 1 (Sum.inr r') k * t₀.1 k j) = _
+      simp [diagCols, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_sum_type]
+  rw [GlobalTheory.CompanionTheory.RgEisLevi.bdet_inl Set.univ _ (t₀A⁻¹ * t * t₀A) hent, GlobalTheory.CompanionTheory.RgEis.bdet_univ,
+    map_mul, map_mul, mul_comm, ← mul_assoc, map_inv, mul_inv_cancel, one_mul]
+
+end GlobalTheory.CompanionTheory.SiegelFrameDet
+end
+end
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl PositivityTheory.RgEis GlobalTheory.CompanionTheory.SiegelFrame
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.block_det_parabolic_frame : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (Y : Spc F E n), ∀ (χ : Chr F E) (ε : ℤˣ) (b : GL (Fin n ⊕ Fin n) E) (hb : b.1ᵀ * dbl Y.J * b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (t₀ : GL (Fin n) E), b.1.toCols₁ = diagCols (Fin n) * t₀.1 → ∀ (p : G2 σ Y) (t : GL (Fin n) (AE F E)), IsPar p t → bdet (Sum.inl '' (Set.univ : Set (Fin n))) (frameEquiv χ ε b hb p).1 = Matrix.GeneralLinearGroup.det t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegelFrameDet.bdet_frameEquiv
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.SiegelFrame
@@ -392,3 +967,5 @@ theorem siegelMult_of : SecLaw → WallLaw → Dict → DictInf → CMGood → G
     exact ⟨C, N, fun x => (h x).2⟩
 
 end GlobalTheory.CompanionTheory.SiegelFrame
+end
+end

@@ -7,10 +7,52 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralCharacte
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetMultiplicityPosOfSocleStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormLtOneOfPowTendstoZeroStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExponentLtOfPrecedes
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProdLeRevEqProdGeStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultisetAntitoneEnumerationStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AntitoneWeightedSumZeroStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProdLeRevEqProdGe
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultisetAntitoneEnumeration
 
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.prod_le_rev_eq_prod_ge : ∀ {M : Type*} [CommMonoid M] (h : ℕ) (f : Fin h → M) (j : Fin h), ∏ a ∈ Finset.univ.filter (fun a => a ≤ j), f (Fin.rev a) = ∏ i ∈ Finset.univ.filter (fun i => Fin.rev j ≤ i), f i := by
+  first | exact @GlobalTheory.CompanionTheory.FinReversal.prod_filter_le_rev | exact GlobalTheory.CompanionTheory.FinReversal.prod_filter_le_rev | (intros; apply GlobalTheory.CompanionTheory.FinReversal.prod_filter_le_rev <;> assumption)
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.multiset_antitone_enumeration : ∀ {α : Type*} (m : Multiset α) (f : α → ℝ) (P : α → α → Prop), (∀ a b, P a b → f a < f b) → ∃ (h : ℕ) (Δ : Fin h → α), Finset.univ.val.map Δ = m ∧ Antitone (f ∘ Δ) ∧ ∀ i j, i < j → ¬ P (Δ i) (Δ j) := by
+  first | exact @GlobalTheory.CompanionTheory.Multiset.exists_antitone_listing | exact GlobalTheory.CompanionTheory.Multiset.exists_antitone_listing | (intros; apply GlobalTheory.CompanionTheory.Multiset.exists_antitone_listing <;> assumption)
+end
+
+section
+namespace GlobalTheory.CompanionTheory.Tempered
+
+theorem weighted_antitone_eq_zero_of_tails_nonneg :
+    ∀ (h : ℕ) (d e : Fin h → ℝ), (∀ i, 0 < d i) → Antitone e → ∑ i, d i * e i = 0 →
+      (∀ j : Fin h, 0 ≤ ∑ i ∈ Finset.univ.filter (fun i => j ≤ i), d i * e i) →
+      ∀ i, e i = 0 := by
+  intro h d e hd he hsum htail
+  have hnn : ∀ i, 0 ≤ e i := by
+    intro i
+    by_contra hneg
+    rw [not_le] at hneg
+    have hlt : ∑ k ∈ Finset.univ.filter (fun k => i ≤ k), d k * e k < 0 := by
+      apply Finset.sum_neg
+      · intro k hk
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk
+        exact mul_neg_of_pos_of_neg (hd k) (lt_of_le_of_lt (he hk) hneg)
+      · exact ⟨i, by simp⟩
+    linarith [htail i]
+  have hz := (Finset.sum_eq_zero_iff_of_nonneg fun k _ => mul_nonneg (hd k).le (hnn k)).1 hsum
+  intro i
+  rcases mul_eq_zero.1 (hz i (Finset.mem_univ i)) with h1 | h1
+  · exact absurd h1 (hd i).ne'
+  · exact h1
+
+end GlobalTheory.CompanionTheory.Tempered
+
+alias _root_.GlobalTheory.T.antitone_weighted_sum_zero := _root_.GlobalTheory.CompanionTheory.Tempered.weighted_antitone_eq_zero_of_tails_nonneg
+end
+
+section
 section
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL Filter Topology
 
@@ -104,3 +146,4 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Loc
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.tempered_langlands_factors_square_integrable : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], Zc.LSocleGL k → Zl.CasselmanNecTemp k → Zc.LSegExists k → ∀ (𝔪 : Multiset (Segment k)) (N : ℕ) {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), 1 ≤ N → IsSmooth π → π.IsIrreducible → IsTemperedCoeff π → IsL 𝔪 π → ∃ (h : ℕ) (x : Fin h → IrrGL k) (hd : ∑ a, (x a).1 = N), LFactors 𝔪 x ∧ ∀ (a : Fin h) (t : kˣ) (c : ℂ), Zl.ScalarBy (x a) t c → ‖c‖ = 1 := by
   atlas_forward_decl GlobalTheory.CompanionTheory.TemperedCore.exists_lFactors_unitary
+end

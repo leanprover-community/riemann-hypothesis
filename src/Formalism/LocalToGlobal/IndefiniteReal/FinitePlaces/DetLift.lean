@@ -1,7 +1,22 @@
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.DetLiftA
+import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ContinuousCoB
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GinfCSecondCountable
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 
+section
+noncomputable section
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes NumberField IsDedekindDomain Filter
+
+namespace Formalism.IndefR.Fin.DL
+
+
+
+end Formalism.IndefR.Fin.DL
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.InjectiveDecompositionAction Formalism.IndefR.Fin.U1
@@ -76,4 +91,5 @@ variable {D : D7}
 
 end Formalism.IndefR.Fin
 
+end
 end

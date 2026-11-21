@@ -6,13 +6,984 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsComplementUnit
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TsumTransversalEqTsumOrbitQuotientGeneral
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalIsometryExtendsLocalIsometryStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryComplementMovesHermitianTerms
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TsumInvStabilizerEqTsumMulFiber
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GluedLatticesLocalDataUnimodular
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GluedUnimodularLatticeIffLocalCompletions
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GenericLocalTermsSelfDualLattices
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianOrbitUniqueLatticeIntegralFrames
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitriangularFrameChangeLocalScalings
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameDualUnipotentGroupActsUnitriangularOntoStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianDatumOfTermReadOnLattice
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeLocalGlobalPrinciple
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GlobalLatticesCountEqProdLocalCountsBadPlaces
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TsumRationalClassesEqProdLocalSums
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsometryFixingSpanPreservesGluedLattices
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteRationalStabiliserGluedLatticeLocalData
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OrbitRepsOver
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TsumPiProdEnnreal
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteIsometriesFixingBothFramesStabilizingLatti
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TotallyPositiveOrthogonalOfTwoFlagExtendedSpaces
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.DensFrame
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.IsUnitaryAndFixesFramesOfMemComplementUnitary
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.DetNeOfTotPos
 
+section
+section
+open scoped ENNReal
+
+namespace GlobalTheory
+
+open MulAction
+
+theorem encard_fiber_orbit_mul_stabilizer {Γ L Y : Type} [Group Γ] [MulAction Γ L] [MulAction Γ Y]
+    (π : L → Y) (hπ : ∀ (g : Γ) (x : L), π (g • x) = g • π x) (x : L) (y : Y) (g : Γ)
+    (hg : g • π x = y) :
+    ({z : L | π z = y ∧ z ∈ orbit Γ x}).encard * (stabilizer Γ x : Set Γ).encard
+      = (stabilizer Γ y : Set Γ).encard := by
+  classical
+  have hx0 : π (g • x) = y := by rw [hπ, hg]
+  have hset : (orbit (stabilizer Γ y) (g • x) : Set L) = {z : L | π z = y ∧ z ∈ orbit Γ x} := by
+    ext z
+    constructor
+    · rintro ⟨h, rfl⟩
+      have hh : (h : Γ) • y = y := mem_stabilizer_iff.mp h.2
+      refine ⟨?_, (h : Γ) * g, ?_⟩
+      · show π ((h : Γ) • g • x) = y
+        rw [hπ, hx0, hh]
+      · show ((h : Γ) * g) • x = (h : Γ) • g • x
+        rw [mul_smul]
+    · rintro ⟨hz, k, rfl⟩
+      have hk : k * g⁻¹ ∈ stabilizer Γ y := by
+        rw [mem_stabilizer_iff]
+        calc (k * g⁻¹) • y = (k * g⁻¹) • g • π x := by rw [hg]
+          _ = π (k • x) := by rw [mul_smul, inv_smul_smul, hπ]
+          _ = y := hz
+      exact ⟨⟨k * g⁻¹, hk⟩, show (k * g⁻¹) • g • x = k • x by rw [mul_smul, inv_smul_smul]⟩
+  have e : stabilizer (stabilizer Γ y) (g • x) ≃ stabilizer Γ x :=
+    { toFun := fun s => ⟨g⁻¹ * ((s : stabilizer Γ y) : Γ) * g, by
+        have hs : ((s : stabilizer Γ y) : Γ) • g • x = g • x := mem_stabilizer_iff.mp s.2
+        rw [mem_stabilizer_iff, mul_smul, mul_smul, hs, inv_smul_smul]⟩
+      invFun := fun t => ⟨⟨g * (t : Γ) * g⁻¹, by
+          have ht : (t : Γ) • x = x := mem_stabilizer_iff.mp t.2
+          rw [mem_stabilizer_iff, ← hg, mul_smul, mul_smul, inv_smul_smul, ← hπ, ht]⟩, by
+          have ht : (t : Γ) • x = x := mem_stabilizer_iff.mp t.2
+          show (g * (t : Γ) * g⁻¹) • g • x = g • x
+          rw [mul_smul, mul_smul, inv_smul_smul, ht]⟩
+      left_inv := fun s => by
+        apply Subtype.ext; apply Subtype.ext
+        show g * (g⁻¹ * ((s : stabilizer Γ y) : Γ) * g) * g⁻¹ = ((s : stabilizer Γ y) : Γ)
+        group
+      right_inv := fun t => by
+        apply Subtype.ext
+        show g⁻¹ * (g * (t : Γ) * g⁻¹) * g = (t : Γ)
+        group }
+  have key := ENat.card_congr
+    (Subgroup.groupEquivQuotientProdSubgroup (s := stabilizer (stabilizer Γ y) (g • x)))
+  rw [ENat.card_prod, ← ENat.card_congr (orbitEquivQuotientStabilizer (stabilizer Γ y) (g • x)),
+    ENat.card_congr e] at key
+  rw [← hset]
+  exact key.symm
+
+theorem encard_eq_tsum_fibers {L Q : Type} (F : Set L) (q : L → Q) :
+    (F.encard : ℝ≥0∞) = ∑' o : Q, (({z | z ∈ F ∧ q z = o}).encard : ℝ≥0∞) := by
+  classical
+  have h1 : ∑' _ : F, (1 : ℝ≥0∞) = ∑' _ : (Σ o : Q, {z : F // q z = o}), (1 : ℝ≥0∞) :=
+    ((Equiv.sigmaFiberEquiv (fun z : F => q z)).tsum_eq (fun _ => (1 : ℝ≥0∞))).symm
+  rw [← ENNReal.tsum_set_one F, h1, ENNReal.tsum_sigma']
+  refine tsum_congr fun o => ?_
+  simp only [ENNReal.tsum_one]
+  congr 1
+  exact ENat.card_congr
+    { toFun := fun z => ⟨z.1.1, z.1.2, z.2⟩
+      invFun := fun z => ⟨⟨z.1, z.2.1⟩, z.2.2⟩
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl }
+
+private lemma inv_coe_mul_mul_coe_eq_inv_coe (a b : ℕ∞) (h0 : a * b ≠ 0) (ht : a * b ≠ ⊤) :
+    (((a * b : ℕ∞) : ℝ≥0∞))⁻¹ * (a : ℝ≥0∞) = (b : ℝ≥0∞)⁻¹ := by
+  have ha0 : a ≠ 0 := left_ne_zero_of_mul h0
+  have hb0 : b ≠ 0 := right_ne_zero_of_mul h0
+  induction a using ENat.recTopCoe with
+  | top => exact absurd (ENat.top_mul hb0) ht
+  | coe m =>
+    induction b using ENat.recTopCoe with
+    | top => exact absurd (by rw [mul_comm]; exact ENat.top_mul ha0) ht
+    | coe k =>
+      have hm : (m : ℝ≥0∞) ≠ 0 := by exact_mod_cast ha0
+      have hk : (k : ℝ≥0∞) ≠ 0 := by exact_mod_cast hb0
+      rw [ENat.toENNReal_mul, ENat.toENNReal_coe, ENat.toENNReal_coe,
+        ENNReal.mul_inv (Or.inl hm) (Or.inr hk), mul_comm (m : ℝ≥0∞)⁻¹, mul_assoc,
+        ENNReal.inv_mul_cancel hm (ENNReal.natCast_ne_top m), mul_one]
+
+private lemma quotient_mk_map_eq_of_mem_orbit {Γ L Y : Type} [Group Γ] [MulAction Γ L] [MulAction Γ Y]
+    (π : L → Y) (hπ : ∀ (g : Γ) (x : L), π (g • x) = g • π x) {a b : L} (h : a ∈ orbit Γ b) :
+    Quotient.mk (orbitRel Γ Y) (π a) = Quotient.mk (orbitRel Γ Y) (π b) := by
+  obtain ⟨g, rfl⟩ := h
+  apply Quotient.sound
+  show π (g • b) ∈ orbit Γ (π b)
+  rw [hπ]
+  exact mem_orbit _ g
+
+theorem tsum_inv_stabilizer_eq_tsum_mul_fiber {Γ L Y : Type} [Group Γ] [MulAction Γ L]
+    [MulAction Γ Y] (π : L → Y) (hπ : ∀ (g : Γ) (x : L), π (g • x) = g • π x)
+    (hfin : ∀ y : Y, (∃ x, π x = y) → Finite (MulAction.stabilizer Γ y)) :
+    (∑' o : MulAction.orbitRel.Quotient Γ L,
+        (((MulAction.stabilizer Γ o.out : Set Γ).encard : ℝ≥0∞))⁻¹)
+      = ∑' o : MulAction.orbitRel.Quotient Γ Y,
+        (((MulAction.stabilizer Γ o.out : Set Γ).encard : ℝ≥0∞))⁻¹
+          * (((π ⁻¹' {o.out}).encard : ℝ≥0∞)) := by
+  classical
+  set φ : orbitRel.Quotient Γ L → orbitRel.Quotient Γ Y :=
+    fun o => Quotient.mk (orbitRel Γ Y) (π o.out) with hφ
+  have hsplit := ((Equiv.sigmaFiberEquiv φ).tsum_eq
+      (fun o : orbitRel.Quotient Γ L => (((stabilizer Γ o.out : Set Γ).encard : ℝ≥0∞))⁻¹)).symm.trans
+    (ENNReal.tsum_sigma' _)
+  refine hsplit.trans (tsum_congr fun O => ?_)
+  change ∑' o : {o // φ o = O}, (((stabilizer Γ o.1.out : Set Γ).encard : ℝ≥0∞))⁻¹ = _
+  have hsupp : Function.support (fun o : orbitRel.Quotient Γ L =>
+      ((({z | z ∈ π ⁻¹' {O.out} ∧ Quotient.mk (orbitRel Γ L) z = o}).encard : ℕ∞) : ℝ≥0∞))
+      ⊆ {o | φ o = O} := by
+    intro o ho
+    obtain ⟨z, hz, hzo⟩ : ({z | z ∈ π ⁻¹' {O.out} ∧ Quotient.mk (orbitRel Γ L) z = o}).Nonempty := by
+      rw [← Set.encard_pos, pos_iff_ne_zero]
+      intro h0
+      exact ho (by simp only [h0, ENat.toENNReal_zero])
+    have hzo' : o.out ∈ orbit Γ z := by
+      apply orbitRel_apply.mp
+      apply Quotient.exact
+      rw [Quotient.out_eq]
+      exact hzo.symm
+    show Quotient.mk (orbitRel Γ Y) (π o.out) = O
+    rw [quotient_mk_map_eq_of_mem_orbit π hπ hzo', show π z = O.out from hz]
+    exact Quotient.out_eq O
+  rw [encard_eq_tsum_fibers (π ⁻¹' {O.out}) (Quotient.mk (orbitRel Γ L)),
+    ← tsum_subtype_eq_of_support_subset hsupp, ← ENNReal.tsum_mul_left]
+  refine tsum_congr fun o => ?_
+  have hx : Quotient.mk (orbitRel Γ Y) (π o.1.out) = Quotient.mk (orbitRel Γ Y) O.out := by
+    rw [Quotient.out_eq O]
+    exact o.2
+  obtain ⟨h, hh⟩ : π o.1.out ∈ orbit Γ O.out := orbitRel_apply.mp (Quotient.exact hx)
+  have hg : h⁻¹ • π o.1.out = O.out := by rw [← hh, inv_smul_smul]
+  have hF : {z | z ∈ π ⁻¹' {O.out} ∧ Quotient.mk (orbitRel Γ L) z = o.1}
+      = {z : L | π z = O.out ∧ z ∈ orbit Γ o.1.out} := by
+    ext z
+    simp only [Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_singleton_iff]
+    refine and_congr Iff.rfl ⟨fun hz => ?_, fun hz => ?_⟩
+    · apply orbitRel_apply.mp
+      apply Quotient.exact
+      rw [Quotient.out_eq]
+      exact hz
+    · rw [← Quotient.out_eq o.1]
+      exact Quotient.sound (orbitRel_apply.mpr hz)
+  have hmul := encard_fiber_orbit_mul_stabilizer π hπ o.1.out O.out h⁻¹ hg
+  have hfinY : Finite (stabilizer Γ O.out) := hfin O.out ⟨h⁻¹ • o.1.out, by rw [hπ, hg]⟩
+  have hY0 : (stabilizer Γ O.out : Set Γ).encard ≠ 0 := by
+    rw [Ne, Set.encard_eq_zero]
+    exact Set.nonempty_iff_ne_empty.mp ⟨1, (stabilizer Γ O.out).one_mem⟩
+  have hYt : (stabilizer Γ O.out : Set Γ).encard ≠ ⊤ := by
+    rw [Ne, Set.encard_eq_top_iff, Set.not_infinite]
+    exact Set.toFinite _
+  rw [hF, ← hmul]
+  rw [← hmul] at hY0 hYt
+  exact (inv_coe_mul_mul_coe_eq_inv_coe _ _ hY0 hYt).symm
+
+end GlobalTheory
+end
+
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tsum_inv_card_stabilizer_eq_tsum_mul_card_fiber : ∀ {Γ L Y : Type} [Group Γ] [MulAction Γ L] [MulAction Γ Y] (π : L → Y), (∀ (g : Γ) (x : L), π (g • x) = g • π x) → (∀ y : Y, (∃ x, π x = y) → Finite (MulAction.stabilizer Γ y)) → (∑' o : MulAction.orbitRel.Quotient Γ L, (((MulAction.stabilizer Γ o.out : Set Γ).encard : ℝ≥0∞))⁻¹) = ∑' o : MulAction.orbitRel.Quotient Γ Y, (((MulAction.stabilizer Γ o.out : Set Γ).encard : ℝ≥0∞))⁻¹ * (((π ⁻¹' {o.out}).encard : ℝ≥0∞)) := by
+  atlas_forward_decl GlobalTheory.tsum_inv_stabilizer_eq_tsum_mul_fiber
+end
+
+section
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.glued_unimodular_lattice_iff_local_completions : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (G : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (G' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)), LinearIndependent D.host.E (Sum.elim (frame G) (frame G')) → ∀ Λ : LV D, Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT (Formalism.L2.SG.Pf.Cnt.UPair D G.fl G') (Formalism.L2.SG.Pf.Cnt.MMof D G.fl G') ↔ Submodule.IsLattice D.host.E Λ ∧ ∀ p, (locH Z p).IsSelfDual (lattice₂ D Z.M p Λ) ∧ (∀ i, (locH Z p).MMfam (tm FP G G' p (lattice₂ D Z.M p Λ)) i ∈ lattice₂ D Z.M p Λ) ∧ ¬ LocNG.BBne (H := locH Z p) (tm FP G G' p (lattice₂ D Z.M p Λ)) := by
+  first | exact @GlobalTheory.GenMass.GlueLoc.glue_iff_local | exact GlobalTheory.GenMass.GlueLoc.glue_iff_local | (intros; apply GlobalTheory.GenMass.GlueLoc.glue_iff_local <;> assumption)
+end
+
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc Formalism.L2.SG.TermDef GlobalTheory.LocOver
+open scoped Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rational_unitriangular_frame_change_local_scalings : ∀ (D : D7) (Z : LocDat D), ∀ (f g : Fin (D.R.rS + 1) → (VS D).V) (A : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E), Uni A → Chg f A g → ∃ Ap : ∀ p : PlF D, Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (D.s.atP p).Ep, (∀ p, Uni (Ap p) ∧ Chg (scaled Z p f) (Ap p) (scaled Z p g)) ∧ {p : PlF D | ¬ ∀ a b, Ap p a b ∈ (Z.M p).L.O}.Finite := by
+  first | exact @GlobalTheory.LocOver.tri_scaled | exact GlobalTheory.LocOver.tri_scaled | (intros; apply GlobalTheory.LocOver.tri_scaled <;> assumption)
+end
+
+section
+open ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG GlobalTheory.LocOver
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitianDatum_of_term_read_on_lattice : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → ∀ {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V) (r : ℕ), ∀ (k : ℕ) (P : FPair H r), Module.finrank E V = k + 2 * r + 1 → P.RelG (theta M) → (∀ (d : Datum P) (t : Term V M r), IsTermOver P d t → H.IsTerm t ∧ (d.L : Set (H.Wb P.A.f)) = H.Lset t.abelian₂ P.A.f ∧ (d.L' : Set (H.Wb P.B.f)) = H.Lset t.abelian₂ P.B.f) ∧ ∀ (d d' : Datum P) (t t' : Term V M r), IsTermOver P d t → IsTermOver P d' t' → H.Lset t.abelian₂ P.A.f = H.Lset t'.abelian₂ P.A.f → H.Lset t.abelian₂ P.B.f = H.Lset t'.abelian₂ P.B.f → (∀ g, M.split = some g → H.iotaGraph g ⟨t.abelian₂, P.A.f, P.B.f, t.T, t.T'⟩ = H.iotaGraph g ⟨t'.abelian₂, P.A.f, P.B.f, t'.T, t'.T'⟩) → d = d' := by
+  first | exact @GlobalTheory.LocOver.TermLat.datum_of_lattice | exact GlobalTheory.LocOver.TermLat.datum_of_lattice | (intros; apply GlobalTheory.LocOver.TermLat.datum_of_lattice <;> assumption)
+end
+
+section
+section
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.GenMass
+
+open Formalism.MainNotions.S.Loc
+
+section General
+
+theorem linInd_of_change {R W ι : Type} [CommRing R] [AddCommGroup W] [Module R W] [Fintype ι] [DecidableEq ι]
+    {v w : ι → W} (B : Matrix ι ι R) (hB : IsUnit B.det) (hv : LinearIndependent R v)
+    (hw : ∀ j, w j = ∑ i, B i j • v i) : LinearIndependent R w := by
+  rw [Fintype.linearIndependent_iff] at hv ⊢
+  intro g hg
+  have h1 : ∑ i, (B.mulVec g) i • v i = 0 := by
+    rw [← hg]
+    simp only [Matrix.mulVec, dotProduct, Finset.sum_smul, hw, Finset.smul_sum, smul_smul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
+    rw [mul_comm]
+  have h2 : B.mulVec g = 0 := funext (hv _ h1)
+  have h3 : g = B⁻¹.mulVec (B.mulVec g) := by
+    rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hB, Matrix.one_mulVec]
+  intro i
+  rw [h3, h2, Matrix.mulVec_zero, Pi.zero_apply]
+
+theorem isUnit_ringInverse_of_ne {R : Type} [CommRing R] {y : R} (h : Ring.inverse y ≠ 0) :
+    IsUnit (Ring.inverse y) := by
+  by_cases hy : IsUnit y
+  · obtain ⟨u, rfl⟩ := hy
+    rw [Ring.inverse_unit]
+    exact Units.isUnit _
+  · exact absurd (Ring.inverse_non_unit y hy) h
+
+theorem det_uni_eq_one {K : Type} [CommRing K] {n : ℕ} {A : Matrix (Fin n) (Fin n) K} (hA : Uni A) :
+    A.det = 1 := by
+  obtain ⟨hlow, hdiag⟩ := hA
+  rw [Matrix.det_of_isUpperTriangular (fun i j hij => hlow i j hij)]
+  simp [hdiag]
+
+end General
+
+section Main
+
+variable {D : D7}
+
+theorem exists_place (D : D7) : Nonempty (PlF D) := by
+  obtain ⟨P, hne, hP⟩ :=
+    Ring.not_isField_iff_exists_prime.1 (NumberField.RingOfIntegers.not_isField D.host.F)
+  exact ⟨⟨P, hP, hne⟩⟩
+
+private theorem linearIndependent_frameD_of_T_ne_zero {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+    {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
+    {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : HermSp M V} {r : ℕ}
+    (Fr : LocNG.FrameD H r) (hT : Fr.T ≠ 0) : LinearIndependent E Fr.f := by
+  rw [Fintype.linearIndependent_iff]
+  intro g hg
+  have key : ∀ y, H.h (∑ i, g i • Fr.f i) y = ∑ i, g i * H.h (Fr.f i) y := by
+    intro y
+    have hs : ∀ s : Finset (Fin (r + 1)),
+        H.h (∑ i ∈ s, g i • Fr.f i) y = ∑ i ∈ s, g i * H.h (Fr.f i) y := by
+      intro s
+      refine Finset.induction_on s (by simp [H.h_zero_left]) ?_
+      intro a s ha ih
+      rw [Finset.sum_insert ha, Finset.sum_insert ha, H.h_add_left, H.h_smul_left, ih]
+    exact hs Finset.univ
+  have hlast : g (Fin.last r) = 0 := by
+    have hz := key (Fr.f (Fin.last r))
+    rw [hg, H.h_zero_left, Fin.sum_univ_castSucc] at hz
+    have hoff : ∀ i : Fin r, H.h (Fr.f i.castSucc) (Fr.f (Fin.last r)) = 0 :=
+      fun i => Fr.h_iso _ _ (Or.inl (Fin.castSucc_ne_last i))
+    simp only [hoff, mul_zero, Finset.sum_const_zero, zero_add, Fr.h_zz] at hz
+    have hu : IsUnit (-(algebraMap F E Fr.T)) := ((Ne.isUnit hT).map (algebraMap F E)).neg
+    exact hu.mul_left_eq_zero.1 hz.symm
+  intro i
+  refine Fin.lastCases hlast (fun j => ?_) i
+  have he := key (Fr.es j)
+  rw [hg, H.h_zero_left, Fin.sum_univ_castSucc, hlast, zero_mul, add_zero] at he
+  simp only [Fr.h_es, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
+    Finset.mem_univ, if_true] at he
+  exact he.symm
+
+theorem local_pair_linInd (Z : LocDat D) (p : PlF D) (P : LocNG.FPair (locH Z p) D.R.rS)
+    (hR : P.RelG (LocNG.theta (Z.M p))) :
+    LinearIndependent (D.s.atP p).Ep (Sum.elim P.A.f P.B.f) := by
+  obtain ⟨hX, -, -, -, -, -, hN⟩ := hR
+  obtain ⟨-, hT, -, hT', -⟩ := hN
+  exact LinearIndependent.sum_type (linearIndependent_frameD_of_T_ne_zero P.A hT) (linearIndependent_frameD_of_T_ne_zero P.B hT')
+    (disjoint_iff.2 hX)
+
+end Main
+
+section Final
+
+variable {D : D7}
+
+theorem base_frames_linInd (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (Tn T'n : ℕ)
+    (F : LFlag (VS D) D.R.rS (Tn : D.host.E)) (F' : LFlag (VS D) D.R.rS (T'n : D.host.E))
+    (hB : Based Z FP Tn T'n F F') (hR : ∀ p, (FP p).RelG (LocNG.theta (Z.M p))) :
+    LinearIndependent D.host.E (Sum.elim (frame F) (frame F')) := by
+  obtain ⟨p⟩ := exists_place D
+  have hloc := local_pair_linInd Z p (FP p) (hR p)
+  obtain ⟨hA, hA', -, -⟩ := hB p
+  have hu : ∀ i, Sum.elim (FP p).A.f (FP p).B.f i =
+      Sum.elim (frFac Z.δ p) (frFac Z.δ p) i • baseChange₂ D p (Sum.elim (frame F) (frame F') i) := by
+    rintro (a | a)
+    · simp only [Sum.elim_inl, hA]
+    · simp only [Sum.elim_inr, hA']
+  have hs : ∀ i, Ring.inverse (Sum.elim (frFac Z.δ p) (frFac Z.δ p) i) *
+      Sum.elim (frFac Z.δ p) (frFac Z.δ p) i = 1 := by
+    intro i
+    have hne : Sum.elim (frFac Z.δ p) (frFac Z.δ p) i ≠ 0 := by
+      intro h0
+      apply hloc.ne_zero i
+      rw [hu i, h0, zero_smul]
+    refine Ring.inverse_mul_cancel _ ?_
+    rcases i with a | a
+    · exact isUnit_ringInverse_of_ne hne
+    · exact isUnit_ringInverse_of_ne hne
+  rw [Fintype.linearIndependent_iff] at hloc ⊢
+  intro g hg
+  have h1 : ∑ i, ((D.s.atP p).ιE (g i) * Ring.inverse (Sum.elim (frFac Z.δ p) (frFac Z.δ p) i)) •
+      Sum.elim (FP p).A.f (FP p).B.f i = 0 := by
+    have hmap := congrArg (baseChange₂ D p) hg
+    rw [map_sum, map_zero] at hmap
+    rw [← hmap]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hu i, smul_smul, mul_assoc, hs i, mul_one, baseChange_smul₂]
+  intro i
+  have h2 := hloc _ h1 i
+  have h3 : (D.s.atP p).ιE (g i) = 0 := by
+    have h4 := congrArg (· * Sum.elim (frFac Z.δ p) (frFac Z.δ p) i) h2
+    simpa only [mul_assoc, hs i, mul_one, zero_mul] using h4
+  exact (map_eq_zero_iff _ (D.s.atP p).ιE.injective).1 h3
+
+theorem changed_frames_linInd : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (Tn T'n : ℕ) (F G : LFlag (VS D) D.R.rS (Tn : D.host.E)) (F' G' : LFlag (VS D) D.R.rS (T'n : D.host.E)), Based Z FP Tn T'n F F' → (∀ p, (FP p).RelG (LocNG.theta (Z.M p))) → Tri D.host.E (frame F) (frame G) → Tri D.host.E (frame F') (frame G') → LinearIndependent D.host.E (Sum.elim (frame G) (frame G')) := by
+  intro D Z FP Tn T'n F G F' G' hB hR hG hG'
+  have hbase := base_frames_linInd Z FP Tn T'n F F' hB hR
+  obtain ⟨A, hA, hcA⟩ := hG
+  obtain ⟨A', hA', hcA'⟩ := hG'
+  refine linInd_of_change (Matrix.fromBlocks A 0 0 A') ?_ hbase ?_
+  · rw [Matrix.det_fromBlocks_zero₂₁, det_uni_eq_one hA, det_uni_eq_one hA', mul_one]
+    exact isUnit_one
+  · rintro (b | b)
+    · simp only [Sum.elim_inl, Fintype.sum_sum_type, Sum.elim_inr, Matrix.fromBlocks_apply₁₁,
+        Matrix.fromBlocks_apply₂₁, Matrix.zero_apply, zero_smul, Finset.sum_const_zero, add_zero]
+      exact hcA b
+    · simp only [Sum.elim_inr, Fintype.sum_sum_type, Sum.elim_inl, Matrix.fromBlocks_apply₁₂,
+        Matrix.fromBlocks_apply₂₂, Matrix.zero_apply, zero_smul, Finset.sum_const_zero, zero_add]
+      exact hcA' b
+
+end Final
+end GlobalTheory.GenMass
+end
+end
+
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linearIndependent_changedRationalFrames_of_unitriangular : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (Tn T'n : ℕ) (F G : LFlag (VS D) D.R.rS (Tn : D.host.E)) (F' G' : LFlag (VS D) D.R.rS (T'n : D.host.E)), Based Z FP Tn T'n F F' → (∀ p, (FP p).RelG (LocNG.theta (Z.M p))) → Tri D.host.E (frame F) (frame G) → Tri D.host.E (frame F') (frame G') → LinearIndependent D.host.E (Sum.elim (frame G) (frame G')) := by
+  atlas_forward_decl GlobalTheory.GenMass.changed_frames_linInd
+end
+
+section
+section
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.GlueDat
+
+variable {D : D7}
+
+theorem finrank_loc (p : PlF D) :
+    Module.finrank (D.s.atP p).Ep (Vp D p) = D.R.k + 2 * D.R.rS + 1 := by
+  rw [finrank_Vp]
+  have h1 := D.R.m_even
+  have h2 := D.R.two_le_m
+  have h3 := D.R.m_add_three_le_k
+  obtain ⟨c, hc⟩ := h1
+  simp only [Ranks.r, Ranks.rS]
+  omega
+
+theorem localLattice_fg (Z : LocDat D) (Λ : LV D) (h : Submodule.IsLattice D.host.E Λ) (p : PlF D) :
+    (lattice₂ D Z.M p Λ).FG := by
+  have := (GlobalTheory.HL.PlacesRec.lattice_local (GlobalTheory.HL.placesOf Z) (nV D) (LatLoc.cL Λ)
+    (LatLoc.isLattice_map _ _ h)).2.1 p
+  rw [LatLoc.localLattice_eq]
+  exact this.1
+
+theorem orbit (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) {Tn T'n : ℕ}
+    (F G : LFlag (VS D) D.R.rS (Tn : D.host.E)) (F' G' : LFlag (VS D) D.R.rS (T'n : D.host.E))
+    (hB : Based Z FP Tn T'n F F') (hR : ∀ p, (FP p).RelG (LocNG.theta (Z.M p)))
+    (hG : Tri D.host.E (frame F) (frame G)) (hG' : Tri D.host.E (frame F') (frame G')) (p : PlF D) :
+    (∃ n ∈ (FP p).A.N, scaled Z p (frame G) = fun b => n ((FP p).A.f b)) ∧
+    (∃ n ∈ (FP p).B.N, scaled Z p (frame G') = fun b => n ((FP p).B.f b)) := by
+  obtain ⟨A, hA, hAc⟩ := hG
+  obtain ⟨A', hA', hAc'⟩ := hG'
+  obtain ⟨Ap, hAp, -⟩ := GlobalTheory.T.rational_unitriangular_frame_change_local_scalings D Z _ _ A hA hAc
+  obtain ⟨Ap', hAp', -⟩ := GlobalTheory.T.rational_unitriangular_frame_change_local_scalings D Z _ _ A' hA' hAc'
+  have hN := (hR p).2.2.2.2.2.2
+  have hfA : (FP p).A.f = scaled Z p (frame F) := (hB p).1
+  have hfB : (FP p).B.f = scaled Z p (frame F') := (hB p).2.1
+  refine ⟨?_, ?_⟩
+  · exact (GlobalTheory.T.frameDual_unipotentGroup_acts_unitriangular_onto (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS (FP p).A hN.2.1).2.2 (scaled Z p (frame G))
+      (by rw [hfA]; exact ⟨Ap p, (hAp p).1, (hAp p).2⟩)
+  · exact (GlobalTheory.T.frameDual_unipotentGroup_acts_unitriangular_onto (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS (FP p).B hN.2.2.2.1).2.2 (scaled Z p (frame G'))
+      (by rw [hfB]; exact ⟨Ap' p, (hAp' p).1, (hAp' p).2⟩)
+
+theorem mem_iff_of_img {α : Type*} {S S' : Set α} {f : α → α} (hf : Function.Injective f) (hS : f '' S = S')
+    {a b : α} (hb : b = f a) : a ∈ S ↔ b ∈ S' := by
+  subst hb; rw [← hS]; exact (hf.mem_set_image).symm
+
+end GlobalTheory.GlueDat
+
+open GlobalTheory.GlueDat in
+
+theorem GlobalTheory.GlueDat.glued_data : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (F G : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' G' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (P : Finset (PlF D)) (d0 : Dat Z FP), 4 * D.R.rS + 7 ≤ D.R.k → BaseOK (Tu D u) (Tu D u') F F' P d0 → StdOff Z P F G F' G' → ∀ Λ : LV D, (Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT (Formalism.L2.SG.Pf.Cnt.UPair D G.fl G') (Formalism.L2.SG.Pf.Cnt.MMof D G.fl G') ↔ ∃ y : Dat Z FP, Λ ∈ globSet G G' y) ∧ (∀ y y' : Dat Z FP, Λ ∈ globSet G G' y → Λ ∈ globSet G G' y' → y = y') ∧ (∀ y : Dat Z FP, Λ ∈ globSet G G' y → (∀ p, p ∉ P → LocNG.Datum.Rel (d0 p) (y p)) ∧ {p | y p ≠ d0 p}.Finite) ∧ ∀ (y y' : Dat Z FP), ∀ h ∈ H0 F F', RMoves h y y' → (Λ ∈ globSet G G' y ↔ Formalism.HermitianLatticesTheory.gmap h Λ ∈ globSet G G' y') := by
+  intro D Z FP u u' F G F' G' P d0 hk hB hS Λ
+  have hOK : ∀ p, (Z.M p).OK := fun p => (Z.agree p).1
+  have hR := hB.2.1
+  have hO := fun p => orbit Z FP F G F' G' hB.1 hR hS.1 hS.2.1 p
+  have hLM := fun p (L : Submodule (Z.M p).L.O (Vp D p)) =>
+    GlobalTheory.T.generic_local_terms_selfDual_lattices (Z.M p) (hOK p) (locH Z p) D.R.rS D.R.k (FP p) (finrank_loc p) (hR p)
+      (scaled Z p (frame G)) (scaled Z p (frame G')) (hO p).1 (hO p).2 L
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rw [GlobalTheory.T.glued_unimodular_lattice_iff_local_completions D Z FP u u' G G' (GlobalTheory.T.linearIndependent_changedRationalFrames_of_unitriangular D Z FP _ _ F G F' G' hB.1 hR hS.1 hS.2.1) Λ]
+    constructor
+    · rintro ⟨hL, hp⟩
+      have : ∀ p, ∃ d, lattice₂ D Z.M p Λ ∈ locSet G G' p d := fun p =>
+        (hLM p _).1.1 ⟨(hp p).1, localLattice_fg Z Λ hL p, (hp p).2.1, (hp p).2.2⟩
+      choose y hy using this
+      exact ⟨y, hL, hy⟩
+    · rintro ⟨y, hL, hy⟩
+      refine ⟨hL, fun p => ?_⟩
+      obtain ⟨h1, -, h3, h4⟩ := (hLM p _).1.2 ⟨y p, hy p⟩
+      exact ⟨h1, h3, h4⟩
+  · intro y y' h h'
+    funext p
+    exact (hLM p _).2 (y p) (y' p) (h.2 p).1 (h'.2 p).1
+  · intro y hy
+    refine ⟨fun p hp => ?_, ?_⟩
+    · obtain ⟨A, A', hA, hA', hint, hc, hc'⟩ := hS.2.2.2.2 p hp
+      have := GlobalTheory.T.hermitian_orbit_unique_lattice_integral_frames (Z.M p) (hOK p) (locH Z p) D.R.rS D.R.k (FP p) hk (finrank_loc p) (hR p)
+        (hB.2.2.1 p hp) A A' (fun a b hab => ⟨hA.1 a b hab, hA'.1 a b hab⟩) (fun a => ⟨hA.2 a, hA'.2 a⟩) hint
+        (scaled Z p (frame G)) (scaled Z p (frame G'))
+        (fun j => by rw [(hB.1 p).1]; exact hc j) (fun j => by rw [(hB.1 p).2.1]; exact hc' j)
+        (d0 p) (hB.2.2.2.1 p) (y p)
+      exact this.2 ⟨_, (hy.2 p).1⟩
+    · obtain ⟨Λ₀, hΛ₀, hΛ₀p⟩ := hB.2.2.2.2
+      refine (((LatLoc.lattices_local_global D Z).1 Λ Λ₀ hy.1 hΛ₀).1.union P.finite_toSet).subset ?_
+      intro p hp
+      by_contra hc
+      simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not, Finset.mem_coe] at hc
+      apply hp
+      exact (GlobalTheory.T.hermitianDatum_of_term_read_on_lattice (Z.M p) (hOK p) (locH Z p) D.R.rS D.R.k (FP p) (finrank_loc p) (hR p)).2
+        (y p) (d0 p) _ _ (hy.2 p).1 (hΛ₀p p hc.2) (by dsimp only [tm]; rw [hc.1]) (by dsimp only [tm]; rw [hc.1])
+        (fun g _ => by dsimp only [tm]; rw [hc.1])
+  · intro y y' h hh hmv
+    have hloc : ∀ p, ∃ g : Vp D p ≃ₗ[(D.s.atP p).Ep] Vp D p, g ∈ (FP p).UW0 ∧
+        LocNG.Datum.Moves g (y p) (y' p) ∧
+        lattice₂ D Z.M p (Formalism.HermitianLatticesTheory.gmap h Λ) = LocNG.img g (lattice₂ D Z.M p Λ) := by
+      intro p
+      obtain ⟨g, hext, hU, huniq, himg, -⟩ := GlobalTheory.T.rational_isometry_extends_local_isometry D Z p h hh.1
+      obtain ⟨g', hext', hm⟩ := hmv p
+      obtain rfl : g' = g := huniq g' hext'
+      refine ⟨g', Subgroup.subset_closure ⟨hU, fun b => ⟨?_, ?_⟩⟩, hm, (himg Λ).symm⟩
+      · rw [(hB.1 p).1]
+        show g' (frFac Z.δ p b • baseChange₂ D p (frame F b)) = _
+        rw [map_smul, hext', hh.2.1 b]
+      · rw [(hB.1 p).2.1]
+        show g' (frFac Z.δ p b • baseChange₂ D p (frame F' b)) = _
+        rw [map_smul, hext', hh.2.2 b]
+    choose g hgU hgm hgimg using hloc
+    have hset := fun p => (GlobalTheory.T.unitaryComplement_moves_hermitianTerms (Z.M p) (hOK p) (locH Z p) D.R.rS D.R.k (FP p) (finrank_loc p) (hR p)
+      (scaled Z p (frame G)) (scaled Z p (frame G')) (hO p).1 (hO p).2 (g p) (hgU p) (y p) (y' p) (hgm p)).2
+    have hlat : Submodule.IsLattice D.host.E (Formalism.HermitianLatticesTheory.gmap h Λ) ↔ Submodule.IsLattice D.host.E Λ := by
+      constructor
+      · intro hl
+        have e : Λ = Formalism.HermitianLatticesTheory.gmap h.symm (Formalism.HermitianLatticesTheory.gmap h Λ) := by
+          ext x; simp [Formalism.HermitianLatticesTheory.gmap]
+        rw [e]; exact LatLoc.isLattice_map _ _ hl
+      · exact LatLoc.isLattice_map _ _
+    show (Submodule.IsLattice D.host.E Λ ∧ ∀ p, lattice₂ D Z.M p Λ ∈ locSet G G' p (y p)) ↔
+      (Submodule.IsLattice D.host.E (Formalism.HermitianLatticesTheory.gmap h Λ) ∧ ∀ p, lattice₂ D Z.M p (Formalism.HermitianLatticesTheory.gmap h Λ) ∈ locSet G G' p (y' p))
+    rw [hlat]
+    refine and_congr_right fun _ => forall_congr' fun p => ?_
+    have e := hgimg p
+    have key : ∀ L, L ∈ LocNG.img (g p) '' locSet G G' p (y p) ↔ L ∈ locSet G G' p (y' p) :=
+      fun L => Set.ext_iff.mp (hset p) L
+    have hinj : Function.Injective (LocNG.img (M := Z.M p) (g p)) := fun L₁ L₂ e =>
+      Submodule.map_injective_of_injective (f := ((g p : Vp D p →ₗ[(D.s.atP p).Ep] Vp D p).restrictScalars (Z.M p).L.O))
+        (g p).injective e
+    exact mem_iff_of_img hinj (Set.ext key) e
+end
+
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_gluedLattices_iff_existsUnique_localDatum : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (F G : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' G' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (P : Finset (PlF D)) (d0 : Dat Z FP), 4 * D.R.rS + 7 ≤ D.R.k → BaseOK (Tu D u) (Tu D u') F F' P d0 → StdOff Z P F G F' G' → ∀ Λ : LV D, (Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT (Formalism.L2.SG.Pf.Cnt.UPair D G.fl G') (Formalism.L2.SG.Pf.Cnt.MMof D G.fl G') ↔ ∃ y : Dat Z FP, Λ ∈ globSet G G' y) ∧ (∀ y y' : Dat Z FP, Λ ∈ globSet G G' y → Λ ∈ globSet G G' y' → y = y') ∧ (∀ y : Dat Z FP, Λ ∈ globSet G G' y → (∀ p, p ∉ P → LocNG.Datum.Rel (d0 p) (y p)) ∧ {p | y p ≠ d0 p}.Finite) ∧ ∀ (y y' : Dat Z FP), ∀ h ∈ H0 F F', RMoves h y y' → (Λ ∈ globSet G G' y ↔ Formalism.HermitianLatticesTheory.gmap h Λ ∈ globSet G G' y') := by
+  atlas_forward_decl GlobalTheory.GlueDat.glued_data
+end
+
+section
+section
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.GenMass
+
+theorem datum_wt_nonneg {D : D7} {Z : LocDat D} {FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS} (p : PlF D)
+    (a b : LocNG.Datum (FP p)) : 0 ≤ LocNG.Datum.wt a b := by
+  unfold LocNG.Datum.wt LocNG.volRel
+  exact div_nonneg zero_le_one (div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))
+
+theorem tsum_classes_eq_prod_locSums : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (P : Finset (PlF D)) (d0 : Dat Z FP) (R : ∀ p, LocNG.Reps (FP p)) (V : ℝ), 0 ≤ V → BaseOK (Tu D u) (Tu D u') F F' P d0 → MassLaw F F' P d0 V → ∀ φ : ∀ p, LocNG.Datum (FP p) → ℝ≥0∞, (∀ p d d', LocNG.Datum.Rel d d' → φ p d = φ p d') → (∀ p d, (¬ ∃ τ, LocNG.IsTermOver (FP p) d τ) → φ p d = 0) → (∑' o : Quot (GRel (Z := Z) (FP := FP) F F'), if (∀ p, p ∉ P → LocNG.Datum.Rel (d0 p) (o.out p)) ∧ {p | o.out p ≠ d0 p}.Finite then (((stabY F F' o.out).encard : ℝ≥0∞))⁻¹ * ∏ p ∈ P, φ p (o.out p) else 0) = ENNReal.ofReal V * ∏ p ∈ P, ∑' d : (R p).RD, ENNReal.ofReal (LocNG.Datum.wt (d0 p) d.1) * φ p d.1 := by
+  intro D Z FP u u' F F' P d0 R V hV hB hM φ hφ hφ0
+  have hEq : ∀ p, Equivalence (LocNG.Datum.Rel (P := FP p)) := fun p => GlobalTheory.NonGenericLocalCheck.rel_equiv (FP p)
+  let rep : ∀ p, LocNG.Datum (FP p) → (R p).RD := fun p y =>
+    ⟨Classical.choose ((R p).hRD.2.1 y (Set.mem_univ y)), (Classical.choose_spec ((R p).hRD.2.1 y (Set.mem_univ y))).1⟩
+  have hrep : ∀ p y, LocNG.Datum.Rel (rep p y).1 y := fun p y =>
+    (Classical.choose_spec ((R p).hRD.2.1 y (Set.mem_univ y))).2
+  have huniq : ∀ p y (a : (R p).RD), LocNG.Datum.Rel a.1 y → a = rep p y := fun p y a ha =>
+    Subtype.ext ((R p).hRD.2.2 _ a.2 _ (rep p y).2 ((hEq p).trans ha ((hEq p).symm (hrep p y))))
+  let ext : (∀ p : P, (R p.1).RD) → Dat Z FP := fun x p => if h : p ∈ P then (x ⟨p, h⟩).1 else d0 p
+  have ext_in : ∀ x (p : P), ext x p.1 = (x p).1 := fun x p => by simp [ext, p.2]
+  have ext_out : ∀ x p, p ∉ P → ext x p = d0 p := fun x p hp => by simp [ext, hp]
+  let g : ∀ p : P, (R p.1).RD → ℝ≥0∞ := fun p d => ENNReal.ofReal (LocNG.Datum.wt (d0 p.1) d.1) * φ p.1 d.1
+
+  have hR : ENNReal.ofReal V * ∏ p ∈ P, ∑' d : (R p).RD, ENNReal.ofReal (LocNG.Datum.wt (d0 p) d.1) * φ p d.1
+      = ∑' x : (∀ p : P, (R p.1).RD), ENNReal.ofReal V * ∏ p : P, g p (x p) := by
+    rw [ENNReal.tsum_mul_left, GlobalTheory.HL.tsum_pi_prod_ennreal g, ← Finset.prod_coe_sort P]
+
+  rw [hR]
+  let c : Quot (GRel (Z := Z) (FP := FP) F F') → ℝ≥0∞ := fun o =>
+    (((stabY F F' o.out).encard : ℝ≥0∞))⁻¹ * ∏ p ∈ P, φ p (o.out p)
+
+  have hx : ∀ x : (∀ p : P, (R p.1).RD), ENNReal.ofReal V * ∏ p : P, g p (x p)
+      = ∑' o : Quot (GRel (Z := Z) (FP := FP) F F'), if InGen (ext x) o.out then c o else 0 := by
+    intro x
+    have h1 : ENNReal.ofReal V * ∏ p : P, g p (x p) = massA F F' (ext x) * ∏ p : P, φ p.1 (x p).1 := by
+      by_cases hT : ∀ p : P, ∃ τ, LocNG.IsTermOver (FP p.1) (x p).1 τ
+      · have hTall : ∀ p, ∃ τ, LocNG.IsTermOver (FP p) (ext x p) τ := by
+          intro p
+          by_cases hp : p ∈ P
+          · rw [ext_in x ⟨p, hp⟩]; exact hT ⟨p, hp⟩
+          · rw [ext_out x p hp]; exact hB.2.2.2.1 p
+        rw [hM (ext x) (ext_out x) hTall, ENNReal.ofReal_mul hV,
+          ENNReal.ofReal_prod_of_nonneg (fun p _ => datum_wt_nonneg p _ _), ← Finset.prod_coe_sort P, mul_assoc,
+          ← Finset.prod_mul_distrib]
+        congr 1
+        refine Finset.prod_congr rfl (fun p _ => ?_)
+        simp only [g, ext_in x p]
+      · push_neg at hT
+        obtain ⟨p, hp⟩ := hT
+        have h0 : φ p.1 (x p).1 = 0 := hφ0 p.1 _ (by push_neg; exact hp)
+        rw [Finset.prod_eq_zero (Finset.mem_univ p) (by simp [g, h0]),
+          Finset.prod_eq_zero (Finset.mem_univ p) h0, mul_zero, mul_zero]
+    rw [h1, massA, ← ENNReal.tsum_mul_right]
+    refine tsum_congr (fun o => ?_)
+    split_ifs with hI
+    · simp only [c]
+      rw [← Finset.prod_coe_sort P (fun p => φ p (o.out p))]
+      congr 1
+      refine Finset.prod_congr rfl (fun p _ => ?_)
+      have := hI.1 p.1
+      rw [ext_in x p] at this
+      exact hφ p.1 _ _ this
+    · exact zero_mul _
+  rw [tsum_congr hx, ENNReal.tsum_comm]
+  refine tsum_congr (fun o => ?_)
+  let x0 : ∀ p : P, (R p.1).RD := fun p => rep p.1 (o.out p.1)
+  have hfin : ∀ x, {p | o.out p ≠ ext x p} ⊆ {p | o.out p ≠ d0 p} ∪ (P : Set (PlF D)) ∧
+      {p | o.out p ≠ d0 p} ⊆ {p | o.out p ≠ ext x p} ∪ (P : Set (PlF D)) := by
+    intro x
+    constructor
+    · intro p hp
+      by_cases hpP : p ∈ P
+      · exact Or.inr hpP
+      · left; simpa [Set.mem_setOf_eq, ext_out x p hpP] using hp
+    · intro p hp
+      by_cases hpP : p ∈ P
+      · exact Or.inr hpP
+      · left; simpa [Set.mem_setOf_eq, ext_out x p hpP] using hp
+  rw [tsum_eq_single x0]
+  · have hiff : InGen (ext x0) o.out ↔ ((∀ p, p ∉ P → LocNG.Datum.Rel (d0 p) (o.out p)) ∧ {p | o.out p ≠ d0 p}.Finite) := by
+      constructor
+      · rintro ⟨hr, hf⟩
+        refine ⟨fun p hp => ?_, ((hf.union P.finite_toSet).subset (hfin x0).2)⟩
+        have := hr p; rwa [ext_out x0 p hp] at this
+      · rintro ⟨hr, hf⟩
+        refine ⟨fun p => ?_, ((hf.union P.finite_toSet).subset (hfin x0).1)⟩
+        by_cases hp : p ∈ P
+        · rw [ext_in x0 ⟨p, hp⟩]; exact hrep p _
+        · rw [ext_out x0 p hp]; exact hr p hp
+    simp only [hiff, c]
+  · intro x hx
+    rw [if_neg]
+    rintro ⟨hr, _⟩
+    apply hx
+    funext p
+    have := hr p.1
+    rw [ext_in x p] at this
+    exact huniq p.1 _ (x p) this
+
+end GlobalTheory.GenMass
+end
+end
+
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tsum_rationalClasses_eq_prod_localSums : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (P : Finset (PlF D)) (d0 : Dat Z FP) (R : ∀ p, LocNG.Reps (FP p)) (V : ℝ), 0 ≤ V → BaseOK (Tu D u) (Tu D u') F F' P d0 → MassLaw F F' P d0 V → ∀ φ : ∀ p, LocNG.Datum (FP p) → ℝ≥0∞, (∀ p d d', LocNG.Datum.Rel d d' → φ p d = φ p d') → (∀ p d, (¬ ∃ τ, LocNG.IsTermOver (FP p) d τ) → φ p d = 0) → (∑' o : Quot (GRel (Z := Z) (FP := FP) F F'), if (∀ p, p ∉ P → LocNG.Datum.Rel (d0 p) (o.out p)) ∧ {p | o.out p ≠ d0 p}.Finite then (((stabY F F' o.out).encard : ℝ≥0∞))⁻¹ * ∏ p ∈ P, φ p (o.out p) else 0) = ENNReal.ofReal V * ∏ p ∈ P, ∑' d : (R p).RD, ENNReal.ofReal (LocNG.Datum.wt (d0 p) d.1) * φ p d.1 := by
+  atlas_forward_decl GlobalTheory.GenMass.tsum_classes_eq_prod_locSums
+end
+
+section
+section
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.GlueStable
+
+theorem glueSet_gmap_mem : ∀ (D : D7) (U : Submodule D.host.E (VS D).V) (M : Submodule (𝓞 D.host.E) (VS D).V), ∀ g ∈ Formalism.L2.SG.Pf.Cnt.isomFix (VS D).hT U, ∀ Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT U M, Formalism.HermitianLatticesTheory.gmap g Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT U M := by
+  intro D U M g hg Λ hΛ
+  obtain ⟨hgI, hgU⟩ := hg
+  obtain ⟨hlat, huni, hcap⟩ := hΛ
+  have H := Formalism.HermitianLatticesTheory.isomAct _ _ _ (VS D).hT g hgI Λ
+  refine ⟨H.2.2.2.2.mpr hlat, H.2.2.2.1.mpr huni, ?_⟩
+  rw [← hcap]
+  ext x
+  simp only [Submodule.mem_inf, Submodule.restrictScalars_mem, Formalism.HermitianLatticesTheory.isomAct_mem_gmap]
+  constructor
+  · rintro ⟨h1, h2⟩
+    have e : g.symm x = x := by
+      conv_lhs => rw [← hgU x h2]
+      simp
+    exact ⟨e ▸ h1, h2⟩
+  · rintro ⟨h1, h2⟩
+    have e : g.symm x = x := by
+      conv_lhs => rw [← hgU x h2]
+      simp
+    exact ⟨e.symm ▸ h1, h2⟩
+
+end GlobalTheory.GlueStable
+end
+
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isometryFixingSpan_preserves_gluedLattices : ∀ (D : D7) (U : Submodule D.host.E (VS D).V) (M : Submodule (𝓞 D.host.E) (VS D).V), ∀ g ∈ Formalism.L2.SG.Pf.Cnt.isomFix (VS D).hT U, ∀ Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT U M, Formalism.HermitianLatticesTheory.gmap g Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT U M := by
+  atlas_forward_decl GlobalTheory.GlueStable.glueSet_gmap_mem
+end
+
+section
+section
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.StabYFin
+
+open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.Cnt
+
+theorem pos_compl (D : D7) (u u' : D.what₂.Word) (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
+    (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (hTP : TotPos (Gval F F')) :
+    ∀ x ∈ orth (VS D) (Xplus F ⊔ Xplus F'), x ≠ 0 → 0 < Algebra.trace ℚ D.host.E ((VS D).hT x x) := by
+  intro x hx hx0
+  have hdet0 : (ZhatL F F').det ≠ 0 := Formalism.L2.SG.Pf.Cnt.R1.det_ne_of_totPos D (ZhatL F F') hTP
+  have hdet : (ZhatOM (Zhat F.fl F'.fl)).det ≠ 0 := by
+    have e : ZhatOM (Zhat F.fl F'.fl) = Zhat F.fl F'.fl *
+        Matrix.diagonal (fun b : Fin (D.R.rS + 1) => ((-1 : D.host.E) ^ (D.R.rS - b.val))) := by
+      ext a b
+      simp [ZhatOM, Matrix.mul_diagonal, mul_comm]
+    rw [e, Matrix.det_mul, Matrix.det_diagonal]
+    exact mul_ne_zero hdet0 (Finset.prod_ne_zero_iff.2 fun b _ => pow_ne_zero _ (by norm_num))
+  by_cases hxX : x ∈ Xsp F
+  · exact absurd (GlobalTheory.ComplPos.eq_zero_of_mem_X F.fl F'.fl hdet hxX (GlobalTheory.ComplPos.mem_orth_right hx)) hx0
+  · have hT : 0 < Tu D u := (D.mem u).A.T_prime.pos
+    exact GlobalTheory.LoopC.PerpPos.trace_pos_perp D (Tu D u) F hT x (GlobalTheory.ComplPos.mem_orth_left hx) hxX
+
+theorem baseChange_mem_perp_sup (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (Tn T'n : ℕ)
+    (F : LFlag (VS D) D.R.rS (Tn : D.host.E)) (F' : LFlag (VS D) D.R.rS (T'n : D.host.E))
+    (hB : Based Z FP Tn T'n F F') (p : PlF D) (w : (VS D).V) (hw : w ∈ orth (VS D) (Xplus F ⊔ Xplus F')) :
+    baseChange₂ D p w ∈ (locH Z p).perp ((locH Z p).X (FP p).A.f) := by
+  intro x hx
+  have hU : ∀ a : Fin D.R.rS, (VS D).hT (frame F a.castSucc) w = 0 := by
+    intro a
+    have hmem : frame F a.castSucc ∈ Xplus F ⊔ Xplus F' := by
+      apply Submodule.mem_sup_left
+      show F.fl.fvec a.castSucc ∈ F.fl.X ⊔ _
+      apply Submodule.mem_sup_left
+      simp only [FlagG.fvec, Fin.snoc_castSucc]
+      exact Submodule.subset_span ⟨a, rfl⟩
+    have := (Submodule.mem_iInf _).1 hw (frame F a.castSucc)
+    exact (Submodule.mem_iInf _).1 this hmem
+  have hX : (locH Z p).X (FP p).A.f = Submodule.span (D.s.atP p).Ep
+      (Set.range fun a : Fin D.R.rS => frFac Z.δ p a.castSucc • baseChange₂ D p (frame F a.castSucc)) := by
+    rw [show (locH Z p).X (FP p).A.f = Submodule.span (D.s.atP p).Ep (Set.range fun a : Fin D.R.rS => (FP p).A.f a.castSucc) from rfl,
+      (hB p).1]
+  rw [hX] at hx
+  induction hx using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨a, rfl⟩ := hx
+    show LocFacts₂ Z.M p (baseChange₂ D p w) (frFac Z.δ p a.castSucc • baseChange₂ D p (frame F a.castSucc)) = 0
+    rw [LocFacts.localForm_smul_right, baseChangeAt_form Z.M p (Z.hcj p), brS, hU a, map_zero, mul_zero]
+  | zero =>
+    show LocFacts₂ Z.M p (baseChange₂ D p w) 0 = 0
+    have := LocFacts.localForm_smul_right Z p 0 (baseChange₂ D p w) 0
+    rw [zero_smul] at this
+    rw [this, map_zero, zero_mul]
+  | add x y _ _ hx hy =>
+    show LocFacts₂ Z.M p (baseChange₂ D p w) (x + y) = 0
+    rw [LocFacts.localForm_add_right]
+    exact (congrArg₂ (· + ·) hx hy).trans (add_zero 0)
+  | smul c x _ hx =>
+    show LocFacts₂ Z.M p (baseChange₂ D p w) (c • x) = 0
+    rw [LocFacts.localForm_smul_right]
+    exact (congrArg _ hx).trans (mul_zero _)
+
+theorem span_top_of_mul {E V : Type} [Field E] [NumberField E] [AddCommGroup V] [Module E V]
+    [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V] (N : Submodule (𝓞 E) V)
+    (h : ∀ v : V, ∃ d : 𝓞 E, d ≠ 0 ∧ d • v ∈ N) : Submodule.span E (N : Set V) = ⊤ := by
+  rw [eq_top_iff]
+  intro v _
+  obtain ⟨d, hd0, hd⟩ := h v
+  have := Submodule.smul_mem (Submodule.span E (N : Set V)) (algebraMap (𝓞 E) E d)⁻¹
+    (Submodule.subset_span hd)
+  rwa [← algebraMap_smul E d v, inv_smul_smul₀
+    ((map_ne_zero_iff _ (IsFractionRing.injective (𝓞 E) E)).mpr hd0)] at this
+
+theorem fg_of_int {E V : Type} [Field E] [NumberField E] [StarRing E] [AddCommGroup V] [Module E V]
+    [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V] (hT : V →ₗ⋆[E] V →ₗ[E] E) (hnd : hT.Nondegenerate)
+    (s : Finset V) (hs : Submodule.span E (s : Set V) = ⊤) (Θ : Submodule (𝓞 E) V)
+    (hΘ : ∀ w ∈ Θ, ∀ l ∈ s, hT l w ∈ (1 : Submodule (𝓞 E) E)) : Θ.FG := by
+  let Φ : V →ₗ[𝓞 E] (s → E) := LinearMap.pi fun l => ((hT l.1).restrictScalars (𝓞 E))
+  have hΦ : Function.Injective Φ := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro y hy
+    apply hnd.2 y
+    intro v
+    have hv : v ∈ Submodule.span E (s : Set V) := by rw [hs]; trivial
+    refine Submodule.span_induction (p := fun v _ => hT v y = 0) ?_ ?_ ?_ ?_ hv
+    · intro l hl
+      exact congrFun hy ⟨l, hl⟩
+    · simp
+    · intro a c _ _ ha hc
+      rw [map_add, LinearMap.add_apply, ha, hc, add_zero]
+    · intro e a _ ha
+      rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, ha, smul_zero]
+  apply Submodule.fg_of_fg_map_injective Φ hΦ
+  let P : Submodule (𝓞 E) (s → E) := LinearMap.range ((Algebra.linearMap (𝓞 E) E).compLeft s)
+  have hP : P.FG := Module.Finite.iff_fg.mp inferInstance
+  refine hP.of_le ?_
+  rintro _ ⟨w, hw, rfl⟩
+  have h1 : ∀ l : s, ∃ o : 𝓞 E, algebraMap (𝓞 E) E o = hT l.1 w := fun l =>
+    Submodule.mem_one.1 (hΘ w hw l.1 l.2)
+  choose o ho using h1
+  exact ⟨o, funext fun l => ho l⟩
+
+set_option maxHeartbeats 1000000 in
+
+theorem stabY_finite : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (F G : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' G' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (P : Finset (PlF D)) (d0 : Dat Z FP), 4 * D.R.rS + 7 ≤ D.R.k → BaseOK (Tu D u) (Tu D u') F F' P d0 → StdOff Z P F G F' G' → TotPos (Gval F F') → ∀ (Λ : LV D) (y : Dat Z FP), Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT (Formalism.L2.SG.Pf.Cnt.UPair D G.fl G') (Formalism.L2.SG.Pf.Cnt.MMof D G.fl G') → Λ ∈ globSet G G' y → (stabY F F' y).Finite := by
+  intro D Z FP u u' F G F' G' P d0 _hk hB _hS hTP Λ y _hGl hΛ
+  have hBased : Based Z FP (Tu D u) (Tu D u') F F' := hB.1
+  set U : Submodule D.host.E (VS D).V := Xplus F ⊔ Xplus F' with hUdef
+  set W : Submodule D.host.E (VS D).V := orth (VS D) U with hWdef
+  have hpos : ∀ x ∈ W, x ≠ 0 → 0 < Algebra.trace ℚ D.host.E ((VS D).hT x x) := pos_compl D u u' F F' hTP
+  have memW : ∀ v, v ∈ W ↔ ∀ x ∈ U, (VS D).hT x v = 0 := fun v => by
+    simp [hWdef, orth, Submodule.mem_iInf]
+
+  have hdisj : U ⊓ W = ⊥ := by
+    rw [eq_bot_iff]
+    rintro x ⟨hxU, hxW⟩
+    by_contra hx0
+    have := hpos x hxW hx0
+    rw [(memW x).1 hxW x hxU] at this
+    simp at this
+  have hsup : U ⊔ W = ⊤ := by
+    let b := Module.finBasis D.host.E U
+    let φ : (VS D).V →ₗ[D.host.E] (Fin (Module.finrank D.host.E U) → D.host.E) :=
+      LinearMap.pi fun i => (VS D).hT (b i : (VS D).V)
+    have hker : LinearMap.ker φ ≤ W := by
+      intro y hy
+      rw [memW]
+      intro x hx
+      have hy' : ∀ i, (VS D).hT (b i : (VS D).V) y = 0 := fun i => congrFun (LinearMap.mem_ker.1 hy) i
+      have hx' : x = ∑ i, (b.repr ⟨x, hx⟩ i) • (b i : (VS D).V) := by
+        have := congrArg Subtype.val (b.sum_repr ⟨x, hx⟩)
+        rw [Submodule.coe_sum] at this
+        simp only [Submodule.coe_smul] at this
+        exact this.symm
+      rw [hx', map_sum, LinearMap.sum_apply]
+      refine Finset.sum_eq_zero fun i _ => ?_
+      rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, hy' i, smul_zero]
+    have h1 := LinearMap.finrank_range_add_finrank_ker φ
+    have h2 : Module.finrank D.host.E (LinearMap.range φ) ≤ Module.finrank D.host.E U := by
+      refine (Submodule.finrank_le _).trans ?_
+      simp
+    have h3 := Submodule.finrank_mono hker
+    have h4 := Submodule.finrank_sup_add_finrank_inf_eq U W
+    rw [hdisj, finrank_bot] at h4
+    apply Submodule.eq_top_of_finrank_eq
+    have h5 := Submodule.finrank_le (U ⊔ W)
+    omega
+  have hΛlat : Submodule.IsLattice D.host.E Λ := hΛ.1
+  have hmul : ∀ v : (VS D).V, ∃ d : 𝓞 D.host.E, d ≠ 0 ∧ d • v ∈ Λ := fun v => by
+    have hv : v ∈ Submodule.span D.host.E (Λ : Set (VS D).V) := by rw [hΛlat.span_eq_top]; trivial
+    obtain ⟨t, ht⟩ := multiple_mem_span_of_mem_localization_span (nonZeroDivisors (𝓞 D.host.E)) D.host.E _ v hv
+    rw [Submodule.span_eq] at ht
+    exact ⟨t, nonZeroDivisors.ne_zero t.2, ht⟩
+
+  let ΛW : LV D := Λ ⊓ W.restrictScalars (𝓞 D.host.E)
+  let ΛU : LV D := Λ ⊓ U.restrictScalars (𝓞 D.host.E)
+  have hmul2 : ∀ v : (VS D).V, ∃ d : 𝓞 D.host.E, d ≠ 0 ∧ d • v ∈ ΛW ⊔ ΛU := by
+    intro v
+    have hv : v ∈ U ⊔ W := by rw [hsup]; trivial
+    obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.1 hv
+    obtain ⟨d1, hd1, ha1⟩ := hmul a
+    obtain ⟨d2, hd2, hb2⟩ := hmul b
+    refine ⟨d1 * d2, mul_ne_zero hd1 hd2, ?_⟩
+    rw [smul_add]
+    refine add_mem (Submodule.mem_sup_right ⟨?_, ?_⟩) (Submodule.mem_sup_left ⟨?_, ?_⟩)
+    · rw [mul_comm, mul_smul]; exact Λ.smul_mem d2 ha1
+    · exact U.smul_of_tower_mem _ ha
+    · rw [mul_smul]; exact Λ.smul_mem d1 hb2
+    · exact W.smul_of_tower_mem _ hb
+
+  let Θs : Set (VS D).V := {w | ∃ hw : w ∈ W, ∀ p, (locH Z p).mkW (FP p).A.f
+    ⟨baseChange₂ D p w, baseChange_mem_perp_sup D Z FP _ _ F F' hBased p w hw⟩ ∈ (y p).L}
+  have hΛW : ∀ w ∈ Λ, w ∈ W → w ∈ Θs := by
+    intro w hwΛ hw
+    refine ⟨hw, fun p => ?_⟩
+    refine ((Formalism.L2.SG.GoodFamilyMass.lset_term (hΛ.2 p).1).1 _).2 ?_
+    exact ⟨⟨baseChange₂ D p w, baseChange_mem_perp_sup D Z FP _ _ F F' hBased p w hw⟩, Submodule.subset_span ⟨w, hwΛ, rfl⟩, rfl⟩
+  have hint : ∀ w ∈ Θs, ∀ l ∈ Λ, l ∈ W → (VS D).hT l w ∈ (1 : Submodule (𝓞 D.host.E) D.host.E) := by
+    rintro w ⟨hw, hwL⟩ l hlΛ hl
+    have hlL := (hΛW l hlΛ hl).2
+    refine DualityBasisChange.locGlobIntE D _ fun p => ?_
+    have hf := baseChangeAt_form Z.M p (Z.hcj p) w l
+    rw [brS] at hf
+    rw [← hf, ← (Z.agree p).2.2.2.1]
+    exact (((y p).hL.2.1 ⟨baseChange₂ D p w, baseChange_mem_perp_sup D Z FP _ _ F F' hBased p w hw⟩).1 (hwL p))
+      ⟨baseChange₂ D p l, baseChange_mem_perp_sup D Z FP _ _ F F' hBased p l hl⟩ (hlL p)
+  let Θ : LV D := Submodule.span (𝓞 D.host.E) Θs
+
+  have hΛ1fg : (ΛW ⊔ ΛU).FG := (hΛlat.fg.of_le inf_le_left).sup (hΛlat.fg.of_le inf_le_left)
+  obtain ⟨s, hs⟩ := hΛ1fg
+  have hsE : Submodule.span D.host.E (s : Set (VS D).V) = ⊤ := by
+    rw [← Submodule.span_span_of_tower (𝓞 D.host.E) D.host.E, hs]
+    exact span_top_of_mul _ hmul2
+  have hΘfg : Θ.FG := by
+    refine fg_of_int (VS D).hT (VS D).nondeg s hsE Θ fun w hwΘ l hl => ?_
+    have hl1 : l ∈ ΛW ⊔ ΛU := hs ▸ Submodule.subset_span hl
+    induction hwΘ using Submodule.span_induction with
+    | mem w hw =>
+      obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.1 hl1
+      rw [map_add, LinearMap.add_apply]
+      refine add_mem (hint w hw a ha.1 ha.2) ?_
+      rw [(memW w).1 hw.1 b hb.2]
+      exact zero_mem _
+    | zero => rw [map_zero]; exact zero_mem _
+    | add a c _ _ ha hc => rw [map_add]; exact add_mem ha hc
+    | smul o a _ ha =>
+      rw [← algebraMap_smul D.host.E o a, map_smul, smul_eq_mul]
+      exact Submodule.mul_mem_mul (Submodule.mem_one.2 ⟨o, rfl⟩) ha |> fun h => by simpa using h
+
+  let Λ₀ : LV D := Θ ⊔ ΛU
+  have hΛ₀ : Submodule.IsLattice D.host.E Λ₀ := by
+    refine ⟨hΘfg.sup (hΛlat.fg.of_le inf_le_left), span_top_of_mul _ fun v => ?_⟩
+    obtain ⟨d, hd0, hd⟩ := hmul2 v
+    have hle : ΛW ⊔ ΛU ≤ Λ₀ :=
+      sup_le (fun x hx => Submodule.mem_sup_left (Submodule.subset_span (hΛW x hx.1 hx.2))) le_sup_right
+    exact ⟨d, hd0, hle hd⟩
+  refine (GlobalTheory.StabFin.finite_of_fix (VS D).hT U hpos Λ₀ hΛ₀).subset ?_
+  rintro h ⟨hh, hm⟩
+
+  have hfixU : ∀ x ∈ U, h x = x := by
+    have key : ∀ {T0 : D.host.E} (G0 : LFlag (VS D) D.R.rS T0), (∀ a, h (frame G0 a) = frame G0 a) →
+        Xplus G0 ≤ LinearMap.ker ((h : (VS D).V →ₗ[D.host.E] (VS D).V) - LinearMap.id) := by
+      intro T0 G0 hG
+      have he : ∀ i, h (G0.fl.e i) = G0.fl.e i := fun i => by
+        have := hG (Fin.castSucc i)
+        simpa [frame, FlagG.fvec] using this
+      have hz : h G0.fl.z = G0.fl.z := by
+        have := hG (Fin.last _)
+        simpa [frame, FlagG.fvec] using this
+      show Submodule.span D.host.E (Set.range G0.fl.e) ⊔ Submodule.span D.host.E {G0.fl.z} ≤ _
+      refine sup_le (Submodule.span_le.2 ?_) (Submodule.span_le.2 ?_)
+      · rintro _ ⟨i, rfl⟩
+        simp [he i]
+      · intro x hx
+        rw [Set.mem_singleton_iff] at hx
+        subst hx
+        simp [hz]
+    intro x hx
+    have := (sup_le (key F hh.2.1) (key F' hh.2.2)) hx
+    rw [LinearMap.mem_ker, LinearMap.sub_apply, sub_eq_zero] at this
+    exact this
+  have hWiff : ∀ v, h v ∈ W ↔ v ∈ W := by
+    intro v
+    rw [memW, memW]
+    refine forall₂_congr fun x hx => ?_
+    conv_lhs => rw [← hfixU x hx]
+    rw [hh.1 x v]
+  have hΘiff : ∀ v, h v ∈ Θs ↔ v ∈ Θs := by
+    intro v
+    constructor
+    · rintro ⟨hw', hL'⟩
+      have hw := (hWiff v).1 hw'
+      refine ⟨hw, fun p => ?_⟩
+      obtain ⟨g', hE, hMv⟩ := hm p
+      exact (hMv.1 ⟨baseChange₂ D p v, baseChange_mem_perp_sup D Z FP _ _ F F' hBased p v hw⟩
+        ⟨baseChange₂ D p (h v), baseChange_mem_perp_sup D Z FP _ _ F F' hBased p (h v) hw'⟩ (hE v).symm).2 (hL' p)
+    · rintro ⟨hw, hL⟩
+      have hw' := (hWiff v).2 hw
+      refine ⟨hw', fun p => ?_⟩
+      obtain ⟨g', hE, hMv⟩ := hm p
+      exact (hMv.1 ⟨baseChange₂ D p v, baseChange_mem_perp_sup D Z FP _ _ F F' hBased p v hw⟩
+        ⟨baseChange₂ D p (h v), baseChange_mem_perp_sup D Z FP _ _ F F' hBased p (h v) hw'⟩ (hE v).symm).1 (hL p)
+  have himg : (h : (VS D).V → (VS D).V) '' Θs = Θs := by
+    ext v
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact (hΘiff x).2 hx
+    · intro hv
+      refine ⟨h.symm v, (hΘiff _).1 ?_, h.apply_symm_apply v⟩
+      rwa [h.apply_symm_apply]
+  have hU' : Submodule.map ((h : (VS D).V →ₗ[D.host.E] (VS D).V).restrictScalars (𝓞 D.host.E)) ΛU = ΛU := by
+    apply le_antisymm
+    · rintro _ ⟨x, hx, rfl⟩
+      show h x ∈ ΛU
+      rw [hfixU x hx.2]
+      exact hx
+    · intro x hx
+      exact ⟨x, hx, hfixU x hx.2⟩
+  refine ⟨hh.1, hfixU, ?_⟩
+  show Submodule.map ((h : (VS D).V →ₗ[D.host.E] (VS D).V).restrictScalars (𝓞 D.host.E)) (Θ ⊔ ΛU) = Θ ⊔ ΛU
+  rw [Submodule.map_sup, hU', Submodule.map_span]
+  congr 2
+
+end GlobalTheory.StabYFin
+end
+
+open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
+open scoped Classical ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_rationalStabiliser_gluedLattice_localData : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (F G : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' G' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (P : Finset (PlF D)) (d0 : Dat Z FP), 4 * D.R.rS + 7 ≤ D.R.k → BaseOK (Tu D u) (Tu D u') F F' P d0 → StdOff Z P F G F' G' → TotPos (Gval F F') → ∀ (Λ : LV D) (y : Dat Z FP), Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT (Formalism.L2.SG.Pf.Cnt.UPair D G.fl G') (Formalism.L2.SG.Pf.Cnt.MMof D G.fl G') → Λ ∈ globSet G G' y → (stabY F F' y).Finite := by
+  atlas_forward_decl GlobalTheory.StabYFin.stabY_finite
+end
+
+section
 section
 open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.TermLoc Formalism.L2.SG.RowsConc Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic Formalism.FourierDecayAlt GlobalTheory.Unfold GlobalTheory.LocOver GlobalTheory.GenMass
 open scoped Classical ENNReal
@@ -365,3 +1336,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.weighted_count_glued_lattices_eq_mass_mul_local : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (F G : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' G' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (P : Finset (PlF D)) (d0 : Dat Z FP), 4 * D.R.rS + 7 ≤ D.R.k → BaseOK (Tu D u) (Tu D u') F F' P d0 → StdOff Z P F G F' G' → TotPos (Gval F F') → ∀ (R : ∀ p, LocNG.Reps (FP p)) (V : ℝ), 0 ≤ V → MassLaw F F' P d0 V → ∀ s : Finset (LV D), Glue G G' s → ENNReal.ofReal (glueSum G G' s) = ENNReal.ofReal V * ∏ p ∈ P, locSum G G' p (R p) (d0 p) := by
   atlas_forward_decl GlobalTheory.GlueCount.glue_count
+end

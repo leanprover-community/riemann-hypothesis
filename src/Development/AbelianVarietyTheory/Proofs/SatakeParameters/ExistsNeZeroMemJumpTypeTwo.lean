@@ -4,7 +4,7 @@ import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 import Formalism.LocalRingCardinality.DataParams
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NotDvdCondN
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLetterOfLocalEmbedding
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardTargetJumpsEqRank
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Alternates
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JumpIffMultNeZero
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DirectSumDeRhamCrystallineJumpsAdd
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CycZpowCrysDRJump
@@ -12,6 +12,51 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfIsCr
 import Development.AbelianVarietyTheory.Counterexamples.NonGaloisSurvey.ReindexedFiltrationComparison
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankSplit
 
+section
+namespace GlobalTheory.HTW.Model
+
+def WA : WordData 3 where
+  up i := i = 1
+  sz i := if i = 2 then 3 else 10000
+  b := 10000
+  w := 3
+  S := 1
+  η := 1
+  m := 1
+  J1 i := if i = 1 then {10001, 0} else if i = 2 then {-4, 1} else {-10000, -1}
+  J2 i := if i = 1 then {10001, 0} else if i = 2 then {-4} else {-10000, -1}
+
+instance decThickWA : DecidablePred WA.thick := fun i => by unfold WordData.thick; infer_instance
+
+def WB : WordData 2 where
+  up i := i = 1
+  sz i := if i = 1 then 5 else 100
+  b := 100
+  w := 5
+  S := 1
+  η := 1
+  m := 1
+  J1 i := if i = 1 then {6, 0} else {-100, 1}
+  J2 i := if i = 1 then {6, 0} else {-100, -100, 1}
+
+instance decThickWB : DecidablePred WB.thick := fun i => by unfold WordData.thick; infer_instance
+
+def WC : WordData 2 where
+  up i := i = 1
+  sz _ := 500
+  b := 500
+  w := 1
+  S := 1
+  η := 1
+  m := 1
+  J1 i := if i = 1 then {501, 0} else {-500, 1}
+  J2 i := if i = 1 then {501, 0} else {-500, 1}
+
+
+end GlobalTheory.HTW.Model
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.HTW.Rec.Model
@@ -59,3 +104,5 @@ variable (D : D7) (j : Fin D.R.m) (ε : ℤˣ) {l : ℕ} [Fact l.Prime] {K LL : 
 end Input
 
 end GlobalTheory.HTW.Rec.Model
+end
+end

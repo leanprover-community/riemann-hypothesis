@@ -1,6 +1,237 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDIdentOfAB
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERD
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_JA_LocLemmas
 
+section
+open MeasureTheory
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P.CutSE
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
+
+theorem radial_wave_identity : RDWave := by
+  intro k r Wp Wq _ _ _ _ _ _ D hr ε s G
+  have h1 : 1 < r + 2 := by omega
+  refine ⟨fun hG => Formalism.FourierDecayAlt.P.PBFV.good_fsv_dmin D ε s h1 G hG, fun y hy => ?_⟩
+  have hinv : ∀ p : B.SS k r, D.inSS p → ∀ g,
+      fsv s (Dmin k r D.z D.z' (B.sgs p g) ⟨1, h1⟩) = fsv s (Dmin k r D.z D.z' g ⟨1, h1⟩) := fun p hp g => by
+    rw [Formalism.FourierDecayAlt.P.BigCellZetaMinors.dmin_sgs D hp g]
+  simp only [resG]
+  rw [show wvG D.z D.z' s G = fun g => fsv s (Dmin k r D.z D.z' g ⟨1, h1⟩) • G g from rfl,
+    Formalism.FourierDecayAlt.P.PBFV.JF_mul_inv D _ hinv G]
+  rw [Formalism.FourierDecayAlt.P.PBFV.first_minor_cell_eq_coord D.z_mem D.z'_mem hr y.1 hy.2.1 h1]
+  exact smul_comm _ _ _
+
+end Formalism.FourierDecayAlt.P.CutSE
+end
+end
+
+section
+open MeasureTheory
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P.CutSE
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
+
+theorem radial_beta_identity : RDBeta := by
+  intro k r Wp Wq _ _ _ _ _ _ D μ hμ
+  obtain ⟨C1, hC1, hpair⟩ := Formalism.FourierDecayAlt.P.JCx2.rb_pairAt D μ hμ
+  refine ⟨(C1 : ℂ), by exact_mod_cast hC1.ne', fun F H Φ Ψ hF hH hΦ hΨ c => ?_⟩
+  have h := Formalism.FourierDecayAlt.P.JCx2.rb_main D μ C1 hpair (n := 0) (fun _ => F) (fun _ => H) (fun _ => Φ) (fun _ => Ψ)
+    (fun _ => hF) (fun _ => hH) (fun _ => hΦ) (fun _ => hΨ)
+  have hsum : ∑ _a : Wd.Ix (Fin 0), B.beta D F H = B.beta D F H := by simp
+  rw [hsum] at h
+  rw [← h]
+  unfold LocFacts₂ P5.form
+  refine integral_congr_ae (Filter.Eventually.of_forall fun c' => ?_)
+  have hg : glue (0 : Fin (r + 1)) c c' = glue 0 0 c' := by
+    funext l
+    simp only [glue]
+    have h0 : ((0 : Fin (r + 1)) : ℕ) ≤ (l : ℕ) := Nat.zero_le _
+    rw [dif_pos h0, dif_pos h0]
+  simp only [hg, Finset.univ_unique, Finset.sum_singleton]
+
+end Formalism.FourierDecayAlt.P.CutSE
+end
+end
+
+section
+open MeasureTheory
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P.CutSE
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
+
+theorem norm_fsv_rd (s t : ℂ) : ‖fsv s t‖ = 1 := by
+  unfold fsv
+  rw [Complex.norm_exp]
+  have h : (s * t - (starRingEnd ℂ) s * (starRingEnd ℂ) t).re = 0 := by
+    rw [← map_mul, Complex.sub_re, Complex.conj_re, sub_self]
+  rw [h, Real.exp_zero]
+
+theorem hsVec_smul_rd {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (c : ℂ) (A : Wq →L[ℂ] Wp) :
+    B.hsVec (c • A) = c • B.hsVec A := by
+  unfold B.hsVec
+  rfl
+
+theorem radial_boundedness : RDBdd := by
+  intro k r Wp Wq _ _ _ _ _ _ D F H _ _
+  refine ⟨∫ q, ‖(bcWeight k r (Tz k r D.z) (Tz k r D.z') q : ℂ) *
+      inner ℂ (B.hsVec (B.JF D H (B.gq D q))) (B.hsVec (B.JF D F (B.gq D q)))‖, fun s => ?_⟩
+  have h1 : 1 < r + 2 := by omega
+  have hinv : ∀ p : B.SS k r, D.inSS p → ∀ g,
+      fsv s (Dmin k r D.z D.z' (B.sgs p g) ⟨1, h1⟩) = fsv s (Dmin k r D.z D.z' g ⟨1, h1⟩) := fun p hp g => by
+    rw [Formalism.FourierDecayAlt.P.BigCellZetaMinors.dmin_sgs D hp g]
+  have hJ : ∀ g, B.JF D (wvG D.z D.z' s F) g = fsv s (Dmin k r D.z D.z' g ⟨1, h1⟩) • B.JF D F g := fun g =>
+    Formalism.FourierDecayAlt.P.PBFV.JF_mul_inv D _ hinv F g
+  unfold B.beta betaBig
+  refine (norm_integral_le_integral_norm _).trans
+    (le_of_eq (integral_congr_ae (Filter.Eventually.of_forall fun q => ?_)))
+  show ‖(bcWeight k r (Tz k r D.z) (Tz k r D.z') q : ℂ) *
+      inner ℂ (B.hsVec (B.JF D H (B.gq D q))) (B.hsVec (B.JF D (wvG D.z D.z' s F) (B.gq D q)))‖ = _
+  rw [hJ, hsVec_smul_rd, inner_smul_right]
+  simp only [norm_mul, norm_fsv_rd, one_mul]
+
+end Formalism.FourierDecayAlt.P.CutSE
+end
+end
+
+section
+open MeasureTheory
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P.CutSE
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
+
+theorem rd_iter_pow (hI : RDIdent) : RDHyp fun k r Wp Wq _ _ _ _ _ _ D =>
+    ∀ (M : ℕ) (F F' : B.Mat k r → (Wq →L[ℂ] Wp)), NiceAll D F → NiceAll D F' →
+      ∃ K : ℝ, ∀ s : ℂ, ‖s‖ ^ M * ‖B.beta D (wvG D.z D.z' s F) F'‖ ≤ K := by
+  intro Wp Wq _ _ _ _ _ _ P z z' π π' X μ L st l0 D hD hl1 hl2 hz hz' hπ hπ' hr M
+  obtain ⟨Θ, hΘ, hid⟩ := hI Wp Wq P z z' π π' X μ L st l0 D hD hl1 hl2 hz hz' hπ hπ' hr
+  induction M with
+  | zero =>
+    intro F F' hF hF'
+    obtain ⟨_, _, -, hFc, -⟩ := hF
+    obtain ⟨_, _, -, hFc', -⟩ := hF'
+    obtain ⟨K, hK⟩ := radial_boundedness P.k P.r Wp Wq D F F' hFc hFc'
+    exact ⟨K, fun s => by simpa using hK s⟩
+  | succ M ih =>
+    intro F F' hF hF'
+    obtain ⟨K1, hK1⟩ := ih (Θ 1 F) (Θ 0 F') (hΘ 1 F hF) (hΘ 0 F' hF')
+    obtain ⟨K2, hK2⟩ := ih (Θ 3 F) (Θ 2 F') (hΘ 3 F hF) (hΘ 2 F' hF')
+    refine ⟨K1 + K2, fun s => ?_⟩
+    have e := hid s F F' hF hF'
+    calc ‖s‖ ^ (M + 1) * ‖B.beta D (wvG D.z D.z' s F) F'‖
+        = ‖s‖ ^ M * ‖s * B.beta D (wvG D.z D.z' s F) F'‖ := by rw [norm_mul, pow_succ]; ring
+      _ = ‖s‖ ^ M * ‖B.beta D (wvG D.z D.z' s (Θ 1 F)) (Θ 0 F') -
+            B.beta D (wvG D.z D.z' s (Θ 3 F)) (Θ 2 F')‖ := by rw [e]
+      _ ≤ ‖s‖ ^ M * (‖B.beta D (wvG D.z D.z' s (Θ 1 F)) (Θ 0 F')‖ +
+            ‖B.beta D (wvG D.z D.z' s (Θ 3 F)) (Θ 2 F')‖) :=
+        mul_le_mul_of_nonneg_left (norm_sub_le _ _) (by positivity)
+      _ ≤ K1 + K2 := by rw [mul_add]; exact add_le_add (hK1 s) (hK2 s)
+
+theorem rd_pow_le (x : ℝ) (hx : 0 ≤ x) (N : ℕ) : (1 + x) ^ N ≤ 2 ^ N * (1 + x ^ N) := by
+  rcases le_total x 1 with h | h
+  · calc (1 + x) ^ N ≤ 2 ^ N := pow_le_pow_left₀ (by linarith) (by linarith) N
+      _ ≤ 2 ^ N * (1 + x ^ N) := le_mul_of_one_le_right (by positivity) (by linarith [pow_nonneg hx N])
+  · calc (1 + x) ^ N ≤ (2 * x) ^ N := pow_le_pow_left₀ (by linarith) (by linarith) N
+      _ = 2 ^ N * x ^ N := mul_pow _ _ _
+      _ ≤ 2 ^ N * (1 + x ^ N) := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+
+theorem rd_decay (hI : RDIdent) : RDHyp fun k r Wp Wq _ _ _ _ _ _ D =>
+    ∀ (F F' : B.Mat k r → (Wq →L[ℂ] Wp)), NiceAll D F → NiceAll D F' → ∀ n : ℕ,
+      ∃ C : ℝ, ∀ s : ℂ, ‖B.beta D (wvG D.z D.z' s F) F'‖ ≤ C * (1 + ‖s‖) ^ (-((n : ℝ) + 3)) := by
+  intro Wp Wq _ _ _ _ _ _ P z z' π π' X μ L st l0 D hD hl1 hl2 hz hz' hπ hπ' hr F F' hF hF' n
+  have hp := rd_iter_pow hI Wp Wq P z z' π π' X μ L st l0 D hD hl1 hl2 hz hz' hπ hπ' hr
+  obtain ⟨K0, hK0⟩ := hp 0 F F' hF hF'
+  obtain ⟨KN, hKN⟩ := hp (n + 3) F F' hF hF'
+  refine ⟨2 ^ (n + 3) * (K0 + KN), fun s => ?_⟩
+  have hx : 0 ≤ ‖s‖ := norm_nonneg _
+  have hb : 0 ≤ ‖B.beta D (wvG D.z D.z' s F) F'‖ := norm_nonneg _
+  have hb0 : ‖B.beta D (wvG D.z D.z' s F) F'‖ ≤ K0 := by simpa using hK0 s
+  have hbN := hKN s
+  have hpos : 0 < 1 + ‖s‖ := by linarith
+  have main : (1 + ‖s‖) ^ (n + 3) * ‖B.beta D (wvG D.z D.z' s F) F'‖ ≤ 2 ^ (n + 3) * (K0 + KN) := by
+    calc (1 + ‖s‖) ^ (n + 3) * ‖B.beta D (wvG D.z D.z' s F) F'‖
+        ≤ 2 ^ (n + 3) * (1 + ‖s‖ ^ (n + 3)) * ‖B.beta D (wvG D.z D.z' s F) F'‖ :=
+          mul_le_mul_of_nonneg_right (rd_pow_le _ hx _) hb
+      _ = 2 ^ (n + 3) * (‖B.beta D (wvG D.z D.z' s F) F'‖ +
+            ‖s‖ ^ (n + 3) * ‖B.beta D (wvG D.z D.z' s F) F'‖) := by ring
+      _ ≤ 2 ^ (n + 3) * (K0 + KN) := mul_le_mul_of_nonneg_left (add_le_add hb0 hbN) (by positivity)
+  have hr' : (1 + ‖s‖) ^ (-((n : ℝ) + 3)) = ((1 + ‖s‖) ^ (n + 3))⁻¹ := by
+    rw [Real.rpow_neg hpos.le]
+    congr 1
+    rw [show ((n : ℝ) + 3) = ((n + 3 : ℕ) : ℝ) by push_cast; ring, Real.rpow_natCast]
+  rw [hr', ← div_eq_mul_inv, le_div_iff₀ (by positivity)]
+  linarith [main]
+
+theorem radDecay_of_cut (hI : RDIdent) : RadDecay := by
+  intro Wp Wq _ _ _ _ _ _ S _ _ P z z' π π' X μ L st l0 D hD hl1 hl2 hz hz' hπ hπ' l hl ε G H hε hG hH Φ Ψ hΦ hΨ
+    c hc n
+  have hr : 0 < P.r := lt_of_le_of_lt (Nat.zero_le _) l.isLt
+  have hl' : l = ⟨0, hr⟩ := Fin.ext hl
+  have hl0 : l.castSucc = (0 : Fin (P.r + 1)) := Fin.ext (by simp [hl])
+  obtain ⟨C', hC'⟩ := rd_decay hI Wp Wq P z z' π π' X μ L st l0 D hD hl1 hl2 hz hz' hπ hπ' hr G H
+    ⟨ε, hε, hG⟩ ⟨ε, hε, hH⟩ n
+  subst hz hz' hπ hπ'
+  obtain ⟨C1, -, hC1⟩ := radial_beta_identity P.k P.r Wp Wq D μ hD.2.1
+  refine ⟨‖C1‖ * C', fun s Wv hW => ?_⟩
+  have hwv := radial_wave_identity P.k P.r Wp Wq D hr ε s G
+  have hΦ' : ∀ y ∈ DomR P.k P.r D.z D.z', ((Wv Φ : RadSp P.k P.r D.z D.z' D.π D.π') :
+      Fn P.k P.r (Wq →L[ℂ] Wp)) y.1 y.2 = resG P.k P.r (Fin.last P.r) (B.JF D (wvG D.z D.z' s G)) y.1 y.2 := by
+    intro y hy
+    rw [hW Φ y.1 y.2, hΦ y hy, hwv.2 y hy, hl']
+  rw [hl0, hC1 (wvG D.z D.z' s G) H (Wv Φ) Ψ (hwv.1 hG).2.1 hH.2.1 hΦ' hΨ c, norm_mul, mul_assoc]
+  exact mul_le_mul_of_nonneg_left (hC' s) (norm_nonneg _)
+
+end Formalism.FourierDecayAlt.P.CutSE
+end
+end
+
+section
+open MeasureTheory
+
+noncomputable section
+
+namespace Formalism.FourierDecayAlt.P.CutSE
+
+open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
+
+section Lin
+
+variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
+
+theorem hsVec_sub_rd (A A' : Wq →L[ℂ] Wp) : B.hsVec (A - A') = B.hsVec A - B.hsVec A' := by
+  unfold B.hsVec
+  ext i
+  simp
+
+theorem beta_conj_rd (D : B.RealPlaceData k r Wp Wq) (F F' : B.Mat k r → (Wq →L[ℂ] Wp)) :
+    B.beta D F F' = starRingEnd ℂ (B.beta D F' F) := by
+  unfold B.beta Formalism.QuantumDeterminants.betaBig
+  rw [← integral_conj]
+  congr 1
+  funext p
+  rw [map_mul, Complex.conj_ofReal, inner_conj_symm]
+
+variable [FiniteDimensional ℂ Wp]
+
+end Lin
+
+end Formalism.FourierDecayAlt.P.CutSE
+end
+end
+
+section
 open MeasureTheory Filter Topology
 open scoped Matrix
 
@@ -374,3 +605,5 @@ theorem rDGrpIdOfSpec_of_radIdAlg (hA : RDRadIdAlg) (hSC : RDStartCoord) (hWR : 
   exact hmain.symm
 
 end Formalism.FourierDecayAlt.P.CutSE
+end
+end

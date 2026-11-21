@@ -1,8 +1,16 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.SumExpSt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumExactExponentsSmulMemLocalizedCoeffLatticeStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumExactExponentsSmulMemLocalizedCoeffLattice
 import Formalism.PieriBlockIdeals.PieriColumnMinors.HighestWeightShiftEqDetMul
 
+section
+open NumberField IsDedekindDomain Formalism.L2.DIV
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sum_exactExponents_smul_mem_localizedCoeffLattice : ∀ (E K : Type) [Field E] [NumberField E] [Field K] [NumberField K] [StarRing K] (ι : Type) [Fintype ι] (n : ℕ) (emb : ι → E →+* K) (lam : ι → Formalism.BasicNotions.DomWeight n) (L : Submodule (𝓞 E) (Fin n → E)), Submodule.IsLattice E L → ∀ (w : HeightOneSpectrum (𝓞 K)), ∀ x ∈ nabAtr emb lam L, (((Formalism.EigenvalueLevelCeiling.plc w : ℕ) : 𝓞 K) ^ (∑ τ, Formalism.CohomologicalDescent.LA.exZ n n le_rfl (lam τ).natW (Formalism.EigenvalueLevelCeiling.plc w))) • x ∈ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (delAtr emb lam L) := by
+  first | exact @GlobalTheory.OntoExponentsLat.exZ_sum_smul_mem_locP_delAtr | exact GlobalTheory.OntoExponentsLat.exZ_sum_smul_mem_locP_delAtr | (intros; apply GlobalTheory.OntoExponentsLat.exZ_sum_smul_mem_locP_delAtr <;> assumption)
+end
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.L2.Pj GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.ExpTie Formalism.CohomologicalDescent.LogSmallConstantBounds Formalism.CohomologicalDescent.ShortWeightBounds
 
 set_option autoImplicit false
@@ -126,4 +134,5 @@ theorem sumExpSt : SumExpSt :=
   ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun _ _ _ _ => EvPt.of_forall fun _ _ _ p _ _ j P W hD _ t w => lIncl_sumExp p j P W hD t w⟩⟩
 end GlobalTheory.ExpTie
 
+end
 end

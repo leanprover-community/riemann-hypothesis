@@ -2,21 +2,1006 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FontaineAinfLocalDomainXiAdicOrder
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniquePadicOfFrobeniusEigenAinf
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobeniusXiEqPMulUnit
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAinfFrameLiftTwistedFrobenius
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIsoWindowsOfMatrixCongrModTau
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfFrobeniusSemilinearEquationExistsUnique
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfSquareZeroFrameInvariantEqZeroOfTauDvd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitMatrixLiftModTauAinf
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsNilpotentInvTransposeBlockFrobeniusAinfOfFrame
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsNilpotentBlockFrobeniusXiAinfOfFrameBlockP
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAinfSolutionOfApproxModPhiXiMu
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MuDvdLiftOfFrameMatrixEquation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobeniusLiftSolvesModFrobXiMu
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransposeLiftSolvesModFrobXiMu
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobXiEigenvectorEqOfFrameImageEq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfFrameSolutionCongrEqTransposeMul
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfFrameSolutionMulCongrGmTranspose
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MuDvdFrobXiSub
 
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+noncomputable section
+
+namespace GlobalTheory.QLog.BFrame
+
+variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
+  [IsAdicComplete (Ideal.span {(p : O)}) O]
+
+theorem frobenius_xi (ε : PreTilt O p) :
+    WittVector.frobenius (Sandwich.xi ε) = ∑ i ∈ Finset.range p, (1 + Sandwich.mu ε) ^ i := by
+  rw [Sandwich.xi, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [map_pow, WittVector.frobenius_eq_map_frobenius, WittVector.map_teichmuller, Sandwich.mu,
+    add_sub_cancel]
+  congr 2
+  exact (_root_.frobeniusEquiv (PreTilt O p) p).apply_symm_apply ε
+
+theorem one_add_pow {ε : PreTilt O p} (F : BFrame ε) (i : ℕ) :
+    (1 + (p : F.B) * F.τ) ^ i = 1 + (i : F.B) * ((p : F.B) * F.τ) := by
+  induction i with
+  | zero => simp
+  | succ n ih =>
+    rw [pow_succ, ih]
+    push_cast
+    linear_combination ((n : F.B) * (p : F.B) ^ 2) * F.τ_sq
+
+theorem a_frobenius_xi {ε : PreTilt O p} (F : BFrame ε) :
+    F.a (WittVector.frobenius (Sandwich.xi ε)) = p * (1 + ((p.choose 2 : ℕ) : F.B) * F.τ) := by
+  rw [frobenius_xi, map_sum]
+  have h1 : ∀ i ∈ Finset.range p, F.a ((1 + Sandwich.mu ε) ^ i) = 1 + (i : F.B) * ((p : F.B) * F.τ) :=
+    fun i _ => by rw [map_pow, map_add, map_one, ← F.p_τ, one_add_pow]
+  rw [Finset.sum_congr rfl h1, Finset.sum_add_distrib, ← Finset.sum_mul, Finset.sum_const,
+    Finset.card_range, nsmul_eq_mul, mul_one]
+  have h2 : (∑ i ∈ Finset.range p, (i : F.B)) = ((p.choose 2 : ℕ) : F.B) := by
+    rw [← Nat.cast_sum, Finset.sum_range_id, Nat.choose_two_right]
+  rw [h2]
+  ring
+
+theorem frobenius_xi_unit : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∃ u : F.B, IsUnit u ∧ F.τ ∣ u - 1 ∧ F.a (WittVector.frobenius (xi ε)) = p * u := by
+  intro p _ C _ _ _ v O _ _ _ _ _ _ ε _ F
+  refine ⟨1 + ((p.choose 2 : ℕ) : F.B) * F.τ, ?_, ⟨((p.choose 2 : ℕ) : F.B), by ring⟩,
+    a_frobenius_xi F⟩
+  have h : (1 + ((p.choose 2 : ℕ) : F.B) * F.τ) * (1 - ((p.choose 2 : ℕ) : F.B) * F.τ) = 1 := by
+    linear_combination (-(((p.choose 2 : ℕ) : F.B)) ^ 2) * F.τ_sq
+  exact ⟨⟨_, _, h, by rw [mul_comm]; exact h⟩, rfl⟩
+
+end GlobalTheory.QLog.BFrame
+end
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_xi_eq_p_mul_unit : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∃ u : F.B, IsUnit u ∧ F.τ ∣ u - 1 ∧ F.a (WittVector.frobenius (xi ε)) = p * u := by
+  atlas_forward_decl GlobalTheory.QLog.BFrame.frobenius_xi_unit
+end
+
+section
+namespace GlobalTheory.FixedPointApproximation
+
+noncomputable def approx {B : Type} [CommRing B] (q : B) (σ : B →+* B) (w : B) : ℕ → B
+  | 0 => 0
+  | n + 1 => -w + q * σ (approx q σ w n)
+
+theorem approx_step {B : Type} [CommRing B] (q : B) (σ : B →+* B) (hq : σ q = q) (w : B) (n : ℕ) :
+    q ^ n ∣ approx q σ w (n + 1) - approx q σ w n := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    obtain ⟨t, ht⟩ := ih
+    refine ⟨σ t, ?_⟩
+    have e : approx q σ w (n + 1 + 1) - approx q σ w (n + 1) =
+        q * σ (approx q σ w (n + 1) - approx q σ w n) := by
+      rw [map_sub]
+      show -w + q * σ (approx q σ w (n + 1)) - (-w + q * σ (approx q σ w n)) = _
+      ring
+    rw [e, ht, map_mul, map_pow, hq]
+    ring
+
+theorem approx_dvd {B : Type} [CommRing B] (q : B) (σ : B →+* B) (hq : σ q = q) (w : B)
+    (m n : ℕ) (h : m ≤ n) : q ^ m ∣ approx q σ w m - approx q σ w n := by
+  induction n, h using Nat.le_induction with
+  | base => simp
+  | succ n hmn ih =>
+    have h2 : q ^ m ∣ approx q σ w (n + 1) - approx q σ w n :=
+      (pow_dvd_pow q hmn).trans (approx_step q σ hq w n)
+    have e : approx q σ w m - approx q σ w (n + 1) =
+        (approx q σ w m - approx q σ w n) - (approx q σ w (n + 1) - approx q σ w n) := by ring
+    rw [e]
+    exact dvd_sub ih h2
+
+theorem smodEq_iff {B : Type} [CommRing B] (q : B) (n : ℕ) (x y : B) :
+    x ≡ y [SMOD ((Ideal.span {q}) ^ n • ⊤ : Submodule B B)] ↔ q ^ n ∣ x - y := by
+  rw [SModEq.sub_mem, Ideal.smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow,
+    Ideal.mem_span_singleton]
+
+theorem exists_fixed {B : Type} [inst : CommRing B] (q : B)
+    [h : IsAdicComplete (Ideal.span {q}) B] (σ : B →+* B) (hq : σ q = q) (w : B) :
+    ∃ c : B, c = -w + q * σ c := by
+  obtain ⟨c, hc⟩ := h.toIsPrecomplete.prec (f := approx q σ w) fun {m n} hmn =>
+    (smodEq_iff q m _ _).mpr (approx_dvd q σ hq w m n hmn)
+  refine ⟨c, ?_⟩
+  have hd : ∀ n, q ^ n ∣ c - (-w + q * σ c) := by
+    intro n
+    have h1 : q ^ n ∣ approx q σ w n - c := (smodEq_iff q n _ _).mp (hc n)
+    have h2 : q ^ (n + 1) ∣ approx q σ w (n + 1) - c := (smodEq_iff q (n + 1) _ _).mp (hc (n + 1))
+    obtain ⟨t, ht⟩ := h1
+    have e : c - (-w + q * σ c) = -(approx q σ w (n + 1) - c) + q * σ (approx q σ w n - c) := by
+      rw [map_sub]
+      show _ = -((-w + q * σ (approx q σ w n)) - c) + q * (σ (approx q σ w n) - σ c)
+      ring
+    rw [e, ht, map_mul, map_pow, hq]
+    exact dvd_add (dvd_neg.mpr ((pow_dvd_pow q (Nat.le_succ n)).trans h2)) ⟨q * σ t, by ring⟩
+  have h0 := h.toIsHausdorff.haus (c - (-w + q * σ c)) fun n =>
+    (smodEq_iff q n _ _).mpr (by simpa using hd n)
+  exact sub_eq_zero.mp h0
+
+end GlobalTheory.FixedPointApproximation
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+namespace GlobalTheory.FLam
+
+theorem exists_fixed {B : Type} [CommRing B] (q : B) [h : IsAdicComplete (Ideal.span {q}) B]
+    (σ : B →+* B) (hσ : σ q = q) (w : B) : ∃ c : B, c = -w + q * σ c := by
+  first
+  | exact @_root_.GlobalTheory.FixedPointApproximation.exists_fixed
+  | exact _root_.GlobalTheory.FixedPointApproximation.exists_fixed
+  | (apply _root_.GlobalTheory.FixedPointApproximation.exists_fixed <;> assumption)
+  | (intros; apply _root_.GlobalTheory.FixedPointApproximation.exists_fixed <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.FixedPointApproximation.exists_fixed <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.FixedPointApproximation.exists_fixed ..)
+
+theorem one_add_pow_of_sq {B : Type} [CommRing B] (x : B) (hx : x * x = 0) (n : ℕ) :
+    (1 + x) ^ n = 1 + n * x := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [pow_succ, ih]; push_cast
+    linear_combination (n : B) * hx
+
+theorem frobenius_mu (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [Fact ¬IsUnit (p : O)]
+    [IsAdicComplete (Ideal.span {(p : O)}) O] (ε : PreTilt O p) :
+    WittVector.frobenius (Sandwich.mu ε) = (Sandwich.mu ε + 1) ^ p - 1 := by
+  unfold Sandwich.mu
+  rw [WittVector.frobenius_eq_map_frobenius, map_sub, map_one, WittVector.map_teichmuller,
+    frobenius_def, map_pow]
+  ring
+
+theorem σ_τ {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
+    [IsAdicComplete (Ideal.span {(p : O)}) O] {ε : PreTilt O p} (F : BFrame ε) :
+    F.σ F.τ = p * F.τ := by
+  have tf : ∀ x : F.B, (p : F.B) * x = 0 → x = 0 := by
+    intro x hx
+    have h1 : (p : F.Q) * algebraMap F.B F.Q x = 0 := by
+      rw [← map_natCast (algebraMap F.B F.Q), ← map_mul, hx, map_zero]
+    have h2 := (F.frame.unit_p.mul_right_eq_zero).1 h1
+    exact F.frame.inj (by rw [h2, map_zero])
+  apply sub_eq_zero.1
+  apply tf
+  have e1 : (p : F.B) * F.σ F.τ = F.a (WittVector.frobenius (Sandwich.mu ε)) := by
+    rw [← F.σ_a, ← F.p_τ, map_mul, map_natCast]
+  have e2 : F.a (WittVector.frobenius (Sandwich.mu ε)) = p * (p * F.τ) := by
+    have hsq : (p * F.τ) * (p * F.τ) = 0 := by
+      rw [show (p : F.B) * F.τ * (p * F.τ) = p * p * (F.τ * F.τ) by ring, F.τ_sq, mul_zero]
+    rw [frobenius_mu, map_sub, map_pow, map_add, map_one, ← F.p_τ, add_comm,
+      one_add_pow_of_sq _ hsq]
+    ring
+  rw [mul_sub, e1, e2, sub_self]
+
+end GlobalTheory.FLam
+
+open GlobalTheory.FLam in
+
+theorem GlobalTheory.FLam.exists_lam : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ u : F.B, F.τ ∣ u - 1 → ∃ l : F.B, F.τ ∣ l - 1 ∧ F.σ l = u * l := by
+  intro p _ C _ _ _ v O _ _ _ _ _ _ ε _ F u hu
+  obtain ⟨w, hw⟩ := hu
+  haveI : IsAdicComplete (Ideal.span {(p : F.B)}) F.B := F.frame.complete
+  obtain ⟨c, hc⟩ := exists_fixed (p : F.B) F.σ (map_natCast F.σ p) w
+  refine ⟨1 + F.τ * c, ⟨c, by ring⟩, ?_⟩
+  have hu' : u = 1 + F.τ * w := by rw [← hw]; ring
+  rw [map_add, map_one, map_mul, σ_τ, hu']
+  have hτ := F.τ_sq
+  linear_combination (-(w * c)) * hτ - F.τ * hc
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ainf_frame_lift_twisted_frobenius : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ u : F.B, F.τ ∣ u - 1 → ∃ l : F.B, F.τ ∣ l - 1 ∧ F.σ l = u * l := by
+  atlas_forward_decl GlobalTheory.FLam.exists_lam
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+namespace GlobalTheory.WindowIso
+
+section Gen
+
+variable {B : Type} [CommRing B] {ι : Type} [Fintype ι] [DecidableEq ι]
+
+noncomputable def lft (σ : B →+* B) (M : Matrix ι ι B) : ℕ → Matrix ι ι B
+  | 0 => 1
+  | n + 1 => M * (lft σ M n).map σ
+
+noncomputable def rgt (σ : B →+* B) (N : Matrix ι ι B) : ℕ → Matrix ι ι B
+  | 0 => 1
+  | n + 1 => (rgt σ N n).map σ * N
+
+theorem iter_vec (σ : B →+* B) (M : Matrix ι ι B) (n : ℕ) (w : ι → B) :
+    (fun w : ι → B => M.mulVec fun j => σ (w j))^[n] w =
+      (lft σ M n).mulVec fun j => σ^[n] (w j) := by
+  induction n with
+  | zero => simp [lft]
+  | succ n ih =>
+    rw [Function.iterate_succ_apply', ih, lft, ← Matrix.mulVec_mulVec]
+    congr 1
+    funext j
+    simp [Matrix.mulVec, dotProduct, map_sum, map_mul, Function.iterate_succ_apply']
+
+theorem iter_mat (σ : B →+* B) (M N : Matrix ι ι B) (n : ℕ) (Y : Matrix ι ι B) :
+    (fun Y : Matrix ι ι B => M * Y.map σ * N)^[n] Y =
+      lft σ M n * Y.map σ^[n] * rgt σ N n := by
+  induction n with
+  | zero => simp [lft, rgt]
+  | succ n ih =>
+    rw [Function.iterate_succ_apply', ih, lft, rgt, Matrix.map_mul, Matrix.map_mul, Matrix.map_map]
+    rw [Function.iterate_succ']
+    simp only [Matrix.mul_assoc]
+
+noncomputable def kron (M N : Matrix ι ι B) : Matrix (ι × ι) (ι × ι) B :=
+  Matrix.of fun x y => M x.1 y.1 * N y.2 x.2
+
+theorem kron_mulVec (σ : B →+* B) (M N Y : Matrix ι ι B) (x : ι × ι) :
+    (kron M N).mulVec (fun y => σ (Y y.1 y.2)) x = (M * Y.map σ * N) x.1 x.2 := by
+  simp only [kron, Matrix.mulVec, dotProduct, Matrix.of_apply, Matrix.mul_apply, Matrix.map_apply,
+    Fintype.sum_prod_type, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun j _ => ?_
+  ring
+
+theorem kron_iter (σ : B →+* B) (M N : Matrix ι ι B) (n : ℕ) (v : ι × ι → B) (x : ι × ι) :
+    (fun w : ι × ι → B => (kron M N).mulVec fun j => σ (w j))^[n] v x =
+      (lft σ M n * (Matrix.of fun j m => v (j, m)).map σ^[n] * rgt σ N n) x.1 x.2 := by
+  rw [← iter_mat]
+  induction n generalizing x with
+  | zero => rfl
+  | succ n ih =>
+    rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
+    have : (fun w : ι × ι → B => (kron M N).mulVec fun j => σ (w j))^[n] v =
+        fun y => ((fun Y : Matrix ι ι B => M * Y.map σ * N)^[n] (Matrix.of fun j m => v (j, m))) y.1 y.2 :=
+      funext ih
+    rw [this, kron_mulVec]
+
+end Gen
+
+end GlobalTheory.WindowIso
+
+namespace GlobalTheory.WindowIso
+
+section Nil
+
+theorem isNil_kron {B O ι : Type} [CommRing B] [CommRing O] [IsLocalRing O] [Fintype ι] [DecidableEq ι]
+    (θ : B →+* O) (σ : B →+* B) (M N : Matrix ι ι B) (h : IsNil θ σ M) : IsNil θ σ (kron M N) := by
+  obtain ⟨n, hn⟩ := h
+  have hL : ∀ i j, θ (lft σ M n i j) ∈ IsLocalRing.maximalIdeal O := by
+    intro i j
+    have h1 := hn (Pi.single j 1) i
+    rw [iter_vec] at h1
+    have h2 : (fun m => σ^[n] ((Pi.single j (1 : B) : ι → B) m)) = Pi.single j 1 := by
+      funext m
+      by_cases hm : m = j
+      · subst hm; simp [Function.iterate_fixed (map_one σ)]
+      · simp [hm, Function.iterate_fixed (map_zero σ)]
+    rw [h2] at h1
+    simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1
+    exact (IsLocalRing.mem_maximalIdeal _).2 h1
+  refine ⟨n, fun v x => ?_⟩
+  rw [kron_iter]
+  refine (IsLocalRing.mem_maximalIdeal _).1 ?_
+  simp only [Matrix.mul_apply, map_sum, map_mul]
+  exact Ideal.sum_mem _ fun m _ => Ideal.mul_mem_right _ _ (Ideal.sum_mem _ fun j _ =>
+    Ideal.mul_mem_right _ _ (hL _ _))
+
+theorem isNil_lift {A B O ι : Type} [CommRing A] [CommRing B] [CommRing O] [Fintype ι]
+    (θB : B →+* O) (σB : B →+* B) (θA : A →+* O) (φ : A →+* A) (a : A →+* B) (I : Ideal B)
+    (hθ : ∀ x, θB (a x) = θA x) (hσ : ∀ x, σB (a x) = a (φ x)) (hI : ∀ x ∈ I, θB x = 0)
+    (hσI : ∀ x ∈ I, σB x ∈ I) (K : Matrix ι ι B) (KA : Matrix ι ι A)
+    (hK : ∀ i j, K i j - a (KA i j) ∈ I) (h : IsNil θB σB K) : IsNil θA φ KA := by
+  obtain ⟨n, hn⟩ := h
+  have key : ∀ (m : ℕ) (v : ι → A) (i : ι),
+      (fun w : ι → B => K.mulVec fun j => σB (w j))^[m] (fun j => a (v j)) i -
+        a ((fun w : ι → A => KA.mulVec fun j => φ (w j))^[m] v i) ∈ I := by
+    intro m v
+    induction m with
+    | zero => intro i; simp
+    | succ m ih =>
+      intro i
+      rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
+      set w := (fun w : ι → B => K.mulVec fun j => σB (w j))^[m] (fun j => a (v j))
+      set u := (fun w : ι → A => KA.mulVec fun j => φ (w j))^[m] v
+      simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, ← Finset.sum_sub_distrib]
+      refine Ideal.sum_mem _ fun j _ => ?_
+      have e : K i j * σB (w j) - a (KA i j) * a (φ (u j)) =
+          (K i j - a (KA i j)) * σB (w j) + a (KA i j) * σB (w j - a (u j)) := by
+        rw [map_sub, hσ]; ring
+      rw [e]
+      exact I.add_mem (I.mul_mem_right _ (hK i j)) (I.mul_mem_left _ (hσI _ (ih j)))
+  refine ⟨n, fun v i => ?_⟩
+  have h1 := hn (fun j => a (v j)) i
+  have h2 := hI _ (key n v i)
+  rw [map_sub, sub_eq_zero, hθ] at h2
+  rwa [h2] at h1
+
+end Nil
+
+section Frame
+
+variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
+  [IsAdicComplete (Ideal.span {(p : O)}) O] {ε : PreTilt O p} (F : BFrame ε)
+
+theorem p_cancel {x y : F.B} (h : (p : F.B) * x = p * y) : x = y := by
+  apply F.frame.inj
+  have h' := congrArg (algebraMap F.B F.Q) h
+  simp only [map_mul, map_natCast] at h'
+  exact F.frame.unit_p.mul_left_cancel h'
+
+theorem σ_τ : F.σ F.τ = p * F.τ := by
+  apply p_cancel F
+  have h1 : (p : F.B) * F.σ F.τ = F.σ (p * F.τ) := by rw [map_mul, map_natCast]
+  rw [h1, F.p_τ, F.σ_a]
+  set x : Ainf p O := WittVector.teichmuller p ε
+  have hφ : WittVector.frobenius (Sandwich.mu ε) = (∑ i ∈ Finset.range p, x ^ i) * (x - 1) := by
+    rw [geom_sum_mul, Sandwich.mu, map_sub, map_one, WittVector.frobenius_eq_map_frobenius,
+      WittVector.map_teichmuller, frobenius_def, map_pow]
+  have hd : x - 1 ∣ (∑ i ∈ Finset.range p, x ^ i) - p := by
+    have : (∑ i ∈ Finset.range p, x ^ i) - p = ∑ i ∈ Finset.range p, (x ^ i - 1 ^ i) := by
+      simp [Finset.sum_sub_distrib]
+    rw [this]
+    exact Finset.dvd_sum fun i _ => sub_dvd_pow_sub_pow x 1 i
+  obtain ⟨w, hw⟩ := hd
+  have hS : (∑ i ∈ Finset.range p, x ^ i) = p + (x - 1) * w := by rw [← hw]; ring
+  rw [hφ, hS, map_mul, map_add, map_mul, map_natCast, show x - 1 = Sandwich.mu ε from rfl, ← F.p_τ]
+  linear_combination ((p : F.B) * p * F.a w) * F.τ_sq
+
+theorem θ_τ (hε : IsPrimitiveSystem ε) : F.θ F.τ = 0 := by
+  apply F.frame.sat
+  rw [← map_natCast F.θ p, ← map_mul, F.p_τ, F.θ_a, Sandwich.mu, map_sub, map_one,
+    WittVector.fontaineTheta_teichmuller]
+  have := hε.zeta_zero
+  simp only [zeta, Function.iterate_zero, id] at this
+  rw [this, sub_self]
+
+end Frame
+
+end GlobalTheory.WindowIso
+
+namespace GlobalTheory.WindowIso
+
+theorem window_iso : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k : ℕ) (U U' : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B), IsUnit U → IsUnit U' → (∀ i j, F.τ ∣ U i j - U' i j) → IsNil F.θ F.σ (U * blk d k (p : F.B) 1) → ∃ X : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B, (∀ i j, F.τ ∣ X i j - (1 : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) i j) ∧ X * (U' * blk d k (p : F.B) 1) = U * blk d k (p : F.B) 1 * X.map F.σ := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F d k U U' hU _ hUU' hnil
+  classical
+  haveI : Nontrivial O := ⟨⟨p, 1, fun h => (Fact.out : ¬IsUnit (p : O)) (h ▸ isUnit_one)⟩⟩
+  haveI : IsLocalRing O := by
+    refine IsLocalRing.of_nonunits_add fun x y hx hy => ?_
+    rw [mem_nonunits_iff, hv.isUnit_iff_valuation_eq_one] at hx hy ⊢
+    have hx' := lt_of_le_of_ne (hv.map_le_one x) hx
+    have hy' := lt_of_le_of_ne (hv.map_le_one y) hy
+    rw [map_add]
+    exact ne_of_lt (lt_of_le_of_lt (v.map_add _ _) (max_lt hx' hy'))
+  set P : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B := blk d k (p : F.B) 1 with hP
+  set Pd : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B := blk d k 1 (p : F.B) with hPd
+  have hPP : Pd * P = (p : F.B) • 1 := by
+    ext i j
+    rcases i with i | i <;> rcases j with j | j <;>
+      simp [hP, hPd, blk, Matrix.diagonal_mul_diagonal, Matrix.diagonal_apply, Matrix.one_apply]
+  have hUi : U⁻¹ * U = 1 := Matrix.nonsing_inv_mul U ((Matrix.isUnit_iff_isUnit_det U).1 hU)
+  choose E hE using hUU'
+  set M := U * P with hM
+  set N := Pd * U⁻¹ with hN
+  set c := Matrix.of E * U⁻¹ with hc
+  set K := kron M N with hK
+  set I : Ideal F.B := Ideal.span {F.τ} with hI
+  have hσI : ∀ x ∈ I, F.σ x ∈ I := by
+    intro x hx
+    obtain ⟨y, rfl⟩ := Ideal.mem_span_singleton'.1 hx
+    rw [map_mul, σ_τ F]
+    exact Ideal.mem_span_singleton'.2 ⟨F.σ y * p, by ring⟩
+  have hθI : ∀ x ∈ I, F.θ x = 0 := by
+    intro x hx
+    obtain ⟨y, rfl⟩ := Ideal.mem_span_singleton'.1 hx
+    rw [map_mul, θ_τ F hε, mul_zero]
+  have hτI : ∀ x ∈ I, F.τ * x = 0 := by
+    intro x hx
+    obtain ⟨y, rfl⟩ := Ideal.mem_span_singleton'.1 hx
+    linear_combination y * F.τ_sq
+  choose g h hg using F.gen
+  have hgI : ∀ b, b - F.a (g b) ∈ I := fun b => by
+    rw [show b - F.a (g b) = F.a (h b) * F.τ by linear_combination hg b]
+    exact Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self _)
+  set KA : Matrix (_ × _) (_ × _) (Ainf p O) := Matrix.of fun x y => g (K x y) with hKA
+  have hnilA : IsNil (WittVector.fontaineTheta O p) (WittVector.frobenius : Ainf p O →+* Ainf p O) KA :=
+    isNil_lift F.θ F.σ _ _ F.a I F.θ_a F.σ_a hθI hσI K KA (fun i j => hgI _)
+      (isNil_kron F.θ F.σ M N hnil)
+  obtain ⟨vA, hvA⟩ := (GlobalTheory.T.ainf_frobenius_semilinear_equation_existsUnique p C v O hv ε hε _ KA hnilA).1 (fun y => g (c y.1 y.2))
+  set Z : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B := Matrix.of fun j m => F.a (vA (j, m)) with hZ
+  have hΔ : ∀ i l, (Z - M * Z.map F.σ * N - c) i l ∈ I := by
+    intro i l
+    have h1 := congrArg F.a (hvA (i, l))
+    have h2 : F.a ((KA.mulVec fun j => WittVector.frobenius (vA j)) (i, l)) =
+        (KA.map F.a).mulVec (fun j => F.σ (F.a (vA j))) (i, l) := by
+      simp [Matrix.mulVec, dotProduct, map_sum, map_mul, F.σ_a]
+    have h3 : (M * Z.map F.σ * N) i l = K.mulVec (fun y => F.σ (F.a (vA y))) (i, l) :=
+      (kron_mulVec F.σ M N Z (i, l)).symm
+    rw [map_sub, h2] at h1
+    have e : (Z - M * Z.map F.σ * N - c) i l =
+        (F.a (vA (i, l)) - (KA.map F.a).mulVec (fun j => F.σ (F.a (vA j))) (i, l) - F.a (g (c i l)))
+          - (K - KA.map F.a).mulVec (fun j => F.σ (F.a (vA j))) (i, l) + (F.a (g (c i l)) - c i l) := by
+      rw [Matrix.sub_apply, Matrix.sub_apply, h3, Matrix.sub_mulVec, Pi.sub_apply]
+      simp only [hZ, Matrix.of_apply]
+      ring
+    rw [e, h1, sub_self, zero_sub]
+    refine I.add_mem (I.neg_mem ?_) ?_
+    · simp only [Matrix.mulVec, dotProduct]
+      exact Ideal.sum_mem _ fun y _ => I.mul_mem_right _ (by simpa [hKA] using hgI (K (i, l) y))
+    · have := I.neg_mem (hgI (c i l))
+      rwa [neg_sub] at this
+  set R := Z * (U * P) - (p : F.B) • (M * Z.map F.σ) - Matrix.of E * P with hR
+  have hDR : (Z - M * Z.map F.σ * N - c) * (U * P) = R := by
+    have hN' : N * (U * P) = (p : F.B) • 1 := by
+      rw [hN, Matrix.mul_assoc, ← Matrix.mul_assoc U⁻¹ U P, hUi, Matrix.one_mul, hPP]
+    have hc' : c * (U * P) = Matrix.of E * P := by
+      rw [hc, Matrix.mul_assoc, ← Matrix.mul_assoc U⁻¹ U P, hUi, Matrix.one_mul]
+    rw [Matrix.sub_mul, Matrix.sub_mul, Matrix.mul_assoc (M * Z.map F.σ), hN', hc', Matrix.mul_smul,
+      Matrix.mul_one]
+  have hR0 : F.τ • R = 0 := by
+    ext i j
+    rw [Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, ← hDR]
+    apply hτI
+    rw [Matrix.mul_apply]
+    exact Ideal.sum_mem _ fun m _ => I.mul_mem_right _ (hΔ i m)
+  refine ⟨1 + F.τ • Z, fun i j => ⟨Z i j, by simp⟩, ?_⟩
+  have hU' : U' = U - F.τ • Matrix.of E := by
+    ext i j
+    simp only [Matrix.sub_apply, Matrix.smul_apply, Matrix.of_apply, smul_eq_mul]
+    linear_combination -(hE i j)
+  have hXσ : (1 + F.τ • Z).map F.σ = 1 + ((p : F.B) * F.τ) • Z.map F.σ := by
+    ext i j
+    simp [Matrix.one_apply, apply_ite F.σ, σ_τ F]
+  rw [hU', hXσ, ← sub_eq_zero]
+  have e : (1 + F.τ • Z) * ((U - F.τ • Matrix.of E) * P) - U * P * (1 + ((p : F.B) * F.τ) • Z.map F.σ) =
+      F.τ • R - (F.τ * F.τ) • (Z * (Matrix.of E * P)) := by
+    simp only [hR, hM, mul_add, add_mul, mul_sub, sub_mul, Matrix.smul_mul, Matrix.mul_smul,
+      Matrix.mul_one, Matrix.one_mul, Matrix.mul_assoc, smul_sub, smul_smul]
+    module
+  rw [e, hR0, F.τ_sq, zero_smul, sub_zero]
+
+end GlobalTheory.WindowIso
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIso_windows_of_matrix_congr_mod_tau : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k : ℕ) (U U' : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B), IsUnit U → IsUnit U' → (∀ i j, F.τ ∣ U i j - U' i j) → IsNil F.θ F.σ (U * blk d k (p : F.B) 1) → ∃ X : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B, (∀ i j, F.τ ∣ X i j - (1 : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) i j) ∧ X * (U' * blk d k (p : F.B) 1) = U * blk d k (p : F.B) 1 * X.map F.σ := by
+  atlas_forward_decl GlobalTheory.WindowIso.window_iso
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+noncomputable section
+
+namespace GlobalTheory.WinLift
+
+theorem isUnit_of_isUnit_theta {p : ℕ} [Fact p.Prime] {C : Type} [Field C] [IsAlgClosed C]
+    [CharZero C] {v : Valuation C NNReal} {O : Type} [CommRing O] [Algebra O C]
+    [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] (hv : v.Integers O)
+    (z : Ainf p O) (hz : IsUnit (WittVector.fontaineTheta O p z)) : IsUnit z := by
+  haveI := GlobalTheory.AinfXi.isLocalRing_ainf (p := p) hv
+  haveI := ReciprocityTheory.PGsh.Ainf.O_local O hv
+  by_contra hn
+  obtain ⟨w, hw⟩ := ReciprocityTheory.PGsh.Ainf.theta_surj p O hv (↑hz.unit⁻¹ : O)
+  have hm : z ∈ IsLocalRing.maximalIdeal (Ainf p O) := (IsLocalRing.mem_maximalIdeal _).2 hn
+  have hk : z * w - 1 ∈ IsLocalRing.maximalIdeal (Ainf p O) := by
+    apply IsLocalRing.le_maximalIdeal (RingHom.ker_ne_top (WittVector.fontaineTheta O p))
+    rw [RingHom.mem_ker, map_sub, map_mul, hw, map_one, IsUnit.mul_val_inv, sub_self]
+  have h1 := Ideal.sub_mem _ (Ideal.mul_mem_right w _ hm) hk
+  rw [sub_sub_cancel] at h1
+  exact (IsLocalRing.maximalIdeal.isMaximal (Ainf p O)).ne_top ((Ideal.eq_top_iff_one _).2 h1)
+
+theorem exists_unit_lift_mod_tau : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (U : Matrix ι ι F.B), IsUnit U → ∃ V : Matrix ι ι (Ainf p O), IsUnit V ∧ ∀ i j, F.τ ∣ U i j - F.a (V i j) := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F ι _ _ U hU
+  choose x y hxy using fun i j => F.gen (U i j)
+  refine ⟨Matrix.of x, ?_, fun i j => ⟨F.a (y i j), by rw [hxy i j]; simp⟩⟩
+  have hτ := GlobalTheory.WinLift.theta_tau F hv hε
+  have e : F.θ.mapMatrix (F.a.mapMatrix (Matrix.of x)) = F.θ.mapMatrix U :=
+    Matrix.ext fun i j => by simp [hxy i j, hτ]
+  have hdet : WittVector.fontaineTheta O p (Matrix.of x).det = F.θ U.det := by
+    rw [← F.θ_a, RingHom.map_det, RingHom.map_det, e, ← RingHom.map_det]
+  rw [Matrix.isUnit_iff_isUnit_det]
+  apply isUnit_of_isUnit_theta hv
+  rw [hdet]
+  exact ((Matrix.isUnit_iff_isUnit_det U).1 hU).map F.θ
+
+end GlobalTheory.WinLift
+end
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_matrix_lift_mod_tau_ainf : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (U : Matrix ι ι F.B), IsUnit U → ∃ V : Matrix ι ι (Ainf p O), IsUnit V ∧ ∀ i j, F.τ ∣ U i j - F.a (V i j) := by
+  atlas_forward_decl GlobalTheory.WinLift.exists_unit_lift_mod_tau
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.WinLift.NilF
+
+theorem map_inv_transpose_blk {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (d k : ℕ)
+    (M : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) R) (hM : IsUnit M) (a b : R) (i j : Fin d ⊕ Fin k) :
+    f ((M.transpose⁻¹ * blk d k a b) i j) = (((M.map f).transpose)⁻¹ * blk d k (f a) (f b)) i j := by
+  have hMt : IsUnit M.transpose := (Matrix.isUnit_iff_isUnit_det _).2
+    (by rw [Matrix.det_transpose]; exact (Matrix.isUnit_iff_isUnit_det _).1 hM)
+  have hb : (blk d k a b).map f = blk d k (f a) (f b) := by
+    rw [blk, blk, Matrix.diagonal_map (map_zero f)]
+    congr 1
+    funext l
+    rcases l with l | l <;> rfl
+  have := congr_fun (congr_fun (Matrix.map_mul (f := f) (L := M.transpose⁻¹)
+    (M := blk d k a b)) i) j
+  rw [Matrix.map_apply] at this
+  rw [this, ← map_inv_of_isUnit f _ hMt, Matrix.transpose_map, hb]
+
+theorem isNil_frob : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k : ℕ) (U : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) (V : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)), IsUnit U → IsUnit V → (∀ i j, F.τ ∣ U i j - F.a (V i j)) → IsNil F.θ F.σ (U.transpose⁻¹ * blk d k 1 (p : F.B)) → IsNil (WittVector.fontaineTheta O p) WittVector.frobenius (V.transpose⁻¹ * blk d k 1 (WittVector.frobenius (xi ε))) := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F d k U V hU hV hUV hN
+  haveI : IsLocalRing O := ReciprocityTheory.PGsh.Ainf.O_local O hv
+  have hp : ¬IsUnit (p : O) := Fact.out
+  have hθτ := theta_tau F hv hε
+  have hUV' : U.map F.θ = V.map (WittVector.fontaineTheta O p) := by
+    refine Matrix.ext fun i j => ?_
+    obtain ⟨c, hc⟩ := hUV i j
+    rw [Matrix.map_apply, Matrix.map_apply, ← F.θ_a, ← sub_eq_zero, ← map_sub, hc, map_mul, hθτ,
+      zero_mul]
+  refine isNil_of_map F.a (WittVector.fontaineTheta O p) F.θ WittVector.frobenius F.σ F.θ_a F.σ_a _ ?_
+  refine isNil_of_theta_eq p F.θ F.σ hp F.σ_pow _ _ (fun i j => ?_) hN
+  rw [Matrix.map_apply, F.θ_a, map_inv_transpose_blk F.θ d k U hU, map_inv_transpose_blk _ d k V hV,
+    hUV', map_one, map_one, map_natCast, theta_frob_xi hv hε]
+
+end GlobalTheory.WinLift.NilF
+end
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isNilpotent_invTranspose_blockFrobenius_ainf_of_frameNil : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k : ℕ) (U : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) (V : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)), IsUnit U → IsUnit V → (∀ i j, F.τ ∣ U i j - F.a (V i j)) → IsNil F.θ F.σ (U.transpose⁻¹ * blk d k 1 (p : F.B)) → IsNil (WittVector.fontaineTheta O p) WittVector.frobenius (V.transpose⁻¹ * blk d k 1 (WittVector.frobenius (xi ε))) := by
+  atlas_forward_decl GlobalTheory.WinLift.NilF.isNil_frob
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.WinLift
+
+theorem isNil_V_blk_frob_xi :
+    ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k : ℕ) (U : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) (V : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)), (∀ i j, F.τ ∣ U i j - F.a (V i j)) → IsNil F.θ F.σ (U * blk d k (p : F.B) 1) → IsNil (WittVector.fontaineTheta O p) WittVector.frobenius (V * blk d k (WittVector.frobenius (xi ε)) 1) := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F d k U V hUV hnil
+  haveI : IsLocalRing O := ReciprocityTheory.PGsh.Ainf.O_local O hv
+  apply isNil_of_map F.a (WittVector.fontaineTheta O p) F.θ WittVector.frobenius F.σ F.θ_a F.σ_a
+  refine isNil_of_theta_eq p F.θ F.σ (Fact.out) F.σ_pow _ _ ?_ hnil
+  intro i j
+  have hU : F.θ (U i j) = F.θ (F.a (V i j)) := by
+    obtain ⟨c, hc⟩ := hUV i j
+    have h := congrArg F.θ hc
+    rw [map_sub, map_mul, theta_tau F hv hε, zero_mul, sub_eq_zero] at h
+    exact h
+  simp only [blk, Matrix.mul_diagonal, Matrix.map_apply]
+  rcases j with j | j
+  · simp only [Sum.elim_inl, map_mul, map_natCast, hU, F.θ_a, theta_frob_xi hv hε]
+  · simp only [Sum.elim_inr, map_mul, map_one, mul_one, hU]
+
+end GlobalTheory.WinLift
+end
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isNilpotent_blockFrobeniusXi_ainf_of_frameBlockP : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k : ℕ) (U : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) (V : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)), (∀ i j, F.τ ∣ U i j - F.a (V i j)) → IsNil F.θ F.σ (U * blk d k (p : F.B) 1) → IsNil (WittVector.fontaineTheta O p) WittVector.frobenius (V * blk d k (WittVector.frobenius (xi ε)) 1) := by
+  atlas_forward_decl GlobalTheory.WinLift.isNil_V_blk_frob_xi
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+namespace GlobalTheory.WTop
+
+theorem mulVec_add_mul {R ι : Type} [CommRing R] [Fintype ι] (N : Matrix ι ι R) (a b : ι → R) (s : R) (i : ι) :
+    N.mulVec (fun j => a j + s * b j) i = N.mulVec a i + s * N.mulVec b i := by
+  simp only [Matrix.mulVec, dotProduct, mul_add, Finset.sum_add_distrib, Finset.mul_sum]
+  congr 1
+  exact Finset.sum_congr rfl fun j _ => by ring
+
+set_option maxHeartbeats 1000000 in
+
+theorem main : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ (ι : Type) [Fintype ι] (N : Matrix ι ι (Ainf p O)) (v0 : ι → Ainf p O), IsNil (WittVector.fontaineTheta O p) WittVector.frobenius N → (∀ i, WittVector.frobenius (xi ε) * Sandwich.mu ε ∣ N.mulVec (fun j => WittVector.frobenius (v0 j)) i - WittVector.frobenius (xi ε) * v0 i) → ∃ w : ι → Ainf p O, (∀ i, Sandwich.mu ε ∣ w i - v0 i) ∧ ∀ i, WittVector.frobenius (xi ε) * w i = N.mulVec (fun j => WittVector.frobenius (w j)) i := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε ι _ N v0 hN h
+  choose c hc using h
+  obtain ⟨z, hz⟩ := (GlobalTheory.T.ainf_frobenius_semilinear_equation_existsUnique p C v O hv ε hε ι N hN).1 c
+  refine ⟨fun i => v0 i + Sandwich.mu ε * z i, fun i => ⟨z i, by ring⟩, fun i => ?_⟩
+  have hw : (fun j => WittVector.frobenius (v0 j + Sandwich.mu ε * z j)) =
+      fun j => WittVector.frobenius (v0 j) +
+        (WittVector.frobenius (xi ε) * Sandwich.mu ε) * WittVector.frobenius (z j) := by
+    funext j
+    rw [map_add, map_mul, GlobalTheory.WinLift.frob_mu]
+  rw [hw, mulVec_add_mul]
+  linear_combination (-1 : Ainf p O) * hc i + WittVector.frobenius (xi ε) * Sandwich.mu ε * hz i
+
+end GlobalTheory.WTop
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ainf_solution_of_approx_mod_phi_xi_mu : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ (ι : Type) [Fintype ι] (N : Matrix ι ι (Ainf p O)) (v0 : ι → Ainf p O), IsNil (WittVector.fontaineTheta O p) WittVector.frobenius N → (∀ i, WittVector.frobenius (xi ε) * Sandwich.mu ε ∣ N.mulVec (fun j => WittVector.frobenius (v0 j)) i - WittVector.frobenius (xi ε) * v0 i) → ∃ w : ι → Ainf p O, (∀ i, Sandwich.mu ε ∣ w i - v0 i) ∧ ∀ i, WittVector.frobenius (xi ε) * w i = N.mulVec (fun j => WittVector.frobenius (w j)) i := by
+  atlas_forward_decl GlobalTheory.WTop.main
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.WinLift
+
+theorem mu_dvd_of_mod_tau : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (ι κ : Type) [Fintype ι] (R S : Matrix ι ι F.B) (R0 S0 : Matrix ι ι (Ainf p O)) (Y : Matrix ι κ F.B) (F0 : Matrix ι κ (Ainf p O)), (∀ i j, F.τ ∣ R i j - F.a (R0 i j)) → (∀ i j, F.τ ∣ S i j - F.a (S0 i j)) → (∀ i m, F.τ ∣ Y i m - F.a (F0 i m)) → R * Y.map F.σ = S * Y → ∀ i m, Sandwich.mu ε ∣ (R0 * F0.map WittVector.frobenius - S0 * F0) i m := by
+  intro p _ C _ _ _ v O _ _ _ _ _ _ ε _ F ι κ _ R S R0 S0 Y F0 hR hS hY hRS i m
+  apply (F.a_dvd _).1
+  set q := Ideal.Quotient.mk (Ideal.span {F.τ})
+  have key : ∀ x y : F.B, F.τ ∣ x - y → q x = q y := fun x y h =>
+    Ideal.Quotient.eq.2 (Ideal.mem_span_singleton.2 h)
+  have hR' : ∀ i j, q (R i j) = q (F.a (R0 i j)) := fun i j => key _ _ (hR i j)
+  have hS' : ∀ i j, q (S i j) = q (F.a (S0 i j)) := fun i j => key _ _ (hS i j)
+  have hY' : ∀ i m, q (Y i m) = q (F.a (F0 i m)) := fun i m => key _ _ (hY i m)
+  have hYσ : ∀ i m, q (F.σ (Y i m)) = q (F.a (WittVector.frobenius (F0 i m))) := fun i m => by
+    apply key
+    rw [← F.σ_a, ← map_sub]
+    exact tau_dvd_sigma F _ (hY i m)
+  have h := congrArg (fun M => q (M i m)) hRS
+  simp only [Matrix.mul_apply, Matrix.map_apply, map_sum, map_mul] at h
+  rw [← Ideal.mem_span_singleton, ← Ideal.Quotient.eq_zero_iff_mem]
+  change q _ = 0
+  rw [Matrix.sub_apply, map_sub, map_sub, sub_eq_zero, Matrix.mul_apply, Matrix.mul_apply]
+  simp only [map_sum, map_mul, Matrix.map_apply, ← hR', ← hS', ← hYσ, ← hY']
+  exact h
+
+end GlobalTheory.WinLift
+end
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mu_dvd_lift_of_frame_matrix_equation : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (ι κ : Type) [Fintype ι] (R S : Matrix ι ι F.B) (R0 S0 : Matrix ι ι (Ainf p O)) (Y : Matrix ι κ F.B) (F0 : Matrix ι κ (Ainf p O)), (∀ i j, F.τ ∣ R i j - F.a (R0 i j)) → (∀ i j, F.τ ∣ S i j - F.a (S0 i j)) → (∀ i m, F.τ ∣ Y i m - F.a (F0 i m)) → R * Y.map F.σ = S * Y → ∀ i m, Sandwich.mu ε ∣ (R0 * F0.map WittVector.frobenius - S0 * F0) i m := by
+  atlas_forward_decl GlobalTheory.WinLift.mu_dvd_of_mod_tau
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+set_option autoImplicit false
+
+theorem GlobalTheory.WinLift.frob_lift_dvd : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k h : ℕ) (V : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)) (F0 : Matrix (Fin d ⊕ Fin k) (Fin h) (Ainf p O)), IsUnit V → (∀ i m, Sandwich.mu ε ∣ (F0.map WittVector.frobenius - blk d k (p : Ainf p O) 1 * V.transpose * F0) i m) → (∀ i m, WittVector.fontaineTheta O p (F0 (Sum.inl i) m) = 0) → ∀ i m, WittVector.frobenius (xi ε) * Sandwich.mu ε ∣ (V.transpose⁻¹ * blk d k 1 (WittVector.frobenius (xi ε)) * F0.map WittVector.frobenius) i m - WittVector.frobenius (xi ε) * F0 i m := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F d k h V F0 hV hF hθ i m
+  set ξ' : Ainf p O := WittVector.frobenius (xi ε) with hξ'
+  set μ : Ainf p O := Sandwich.mu ε with hμ
+  set G : Matrix (Fin d ⊕ Fin k) (Fin h) (Ainf p O) := V.transpose * F0 with hG
+  set E : Matrix (Fin d ⊕ Fin k) (Fin h) (Ainf p O) :=
+    blk d k 1 ξ' * F0.map WittVector.frobenius - ξ' • G with hEdef
+  have hVt : IsUnit V.transpose.det := by
+    rw [Matrix.det_transpose]; exact (Matrix.isUnit_iff_isUnit_det V).1 hV
+  have key : V.transpose⁻¹ * blk d k 1 ξ' * F0.map WittVector.frobenius - ξ' • F0 =
+      V.transpose⁻¹ * E := by
+    rw [hEdef, hG, Matrix.mul_sub, Matrix.mul_smul, ← Matrix.mul_assoc, ← Matrix.mul_assoc (V.transpose⁻¹),
+      Matrix.nonsing_inv_mul _ hVt, Matrix.one_mul]
+  have hEe : ∀ j n, E j n = Sum.elim (fun _ => (1 : Ainf p O)) (fun _ => ξ') j *
+      WittVector.frobenius (F0 j n) - ξ' * G j n := by
+    intro j n
+    simp [hEdef, blk, Matrix.diagonal_mul]
+  have hyp : ∀ j n, μ ∣ WittVector.frobenius (F0 j n) -
+      Sum.elim (fun _ => (p : Ainf p O)) (fun _ => 1) j * G j n := by
+    intro j n
+    have := hF j n
+    rw [Matrix.mul_assoc, ← hG] at this
+    simpa [blk, Matrix.diagonal_mul] using this
+  have hE : ∀ j n, ξ' * μ ∣ E j n := by
+    intro j n
+    rw [hEe]
+    rcases j with j | j
+    · obtain ⟨w, hw⟩ := (Ideal.mem_span_singleton').1
+        (show F0 (Sum.inl j) n ∈ Ideal.span {xi ε} by
+          rw [← AinfXi.ker_theta hv ε (root_prim hε)]; exact hθ j n)
+      have h1 : μ ∣ ξ' * (WittVector.frobenius w - G (Sum.inl j) n) := by
+        have := dvd_sub (hyp (Sum.inl j) n) ((mu_dvd_frob_xi_sub ε).mul_right (G (Sum.inl j) n))
+        convert this using 1
+        simp only [Sum.elim_inl]
+        rw [← hw, map_mul, ← hξ']
+        ring
+      have h2 := mul_dvd_mul_left ξ' (mu_dvd_of_xi_mul F _ h1)
+      convert h2 using 1
+      simp only [Sum.elim_inl]
+      rw [← hw, map_mul, ← hξ']
+      ring
+    · have := mul_dvd_mul_left ξ' (hyp (Sum.inr j) n)
+      convert this using 1
+      simp only [Sum.elim_inr]
+      ring
+  have e := congrFun (congrFun key i) m
+  simp only [Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul] at e
+  rw [e, Matrix.mul_apply]
+  exact Finset.dvd_sum fun j _ => (hE j m).mul_left _
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_lift_solves_mod_frobXi_mu : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k h : ℕ) (V : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)) (F0 : Matrix (Fin d ⊕ Fin k) (Fin h) (Ainf p O)), IsUnit V → (∀ i m, Sandwich.mu ε ∣ (F0.map WittVector.frobenius - blk d k (p : Ainf p O) 1 * V.transpose * F0) i m) → (∀ i m, WittVector.fontaineTheta O p (F0 (Sum.inl i) m) = 0) → ∀ i m, WittVector.frobenius (xi ε) * Sandwich.mu ε ∣ (V.transpose⁻¹ * blk d k 1 (WittVector.frobenius (xi ε)) * F0.map WittVector.frobenius) i m - WittVector.frobenius (xi ε) * F0 i m := by
+  atlas_forward_decl GlobalTheory.WinLift.frob_lift_dvd
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+namespace GlobalTheory.WinLift
+
+theorem lift_solves_div_frob_xi_mu : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k h : ℕ) (V : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)) (G0 : Matrix (Fin d ⊕ Fin k) (Fin h) (Ainf p O)), (∀ i m, Sandwich.mu ε ∣ (V * blk d k (p : Ainf p O) 1 * G0.map WittVector.frobenius - (p : Ainf p O) • G0) i m) → (∀ j m, WittVector.fontaineTheta O p (G0 (Sum.inr j) m) = 0) → ∀ i m, WittVector.frobenius (xi ε) * Sandwich.mu ε ∣ (V * blk d k (WittVector.frobenius (xi ε)) 1 * G0.map WittVector.frobenius) i m - WittVector.frobenius (xi ε) * G0 i m := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F d k h V G0 hP hθ i m
+  have ent : ∀ (c : Ainf p O) (i : Fin d ⊕ Fin k) (m : Fin h),
+      (V * blk d k c 1 * G0.map WittVector.frobenius) i m =
+        ∑ l, V i l * (Sum.elim (fun _ => c) (fun _ => (1 : Ainf p O)) l *
+          WittVector.frobenius (G0 l m)) := by
+    intro c i m
+    rw [Matrix.mul_apply]
+    simp only [blk, Matrix.mul_diagonal, Matrix.map_apply]
+    exact Finset.sum_congr rfl fun l _ => by ring
+  have h1 : ∀ l, ∃ w : Ainf p O,
+      Sum.elim (fun _ => WittVector.frobenius (xi ε)) (fun _ => (1 : Ainf p O)) l *
+        WittVector.frobenius (G0 l m) = WittVector.frobenius (xi ε) * w := by
+    rintro (l | l)
+    · exact ⟨_, rfl⟩
+    · have hmem : G0 (Sum.inr l) m ∈ RingHom.ker (WittVector.fontaineTheta O p) := hθ l m
+      rw [AinfXi.ker_theta hv ε (root_prim hε), Ideal.mem_span_singleton'] at hmem
+      obtain ⟨w, hw⟩ := hmem
+      exact ⟨WittVector.frobenius w, by rw [← hw, map_mul]; simp; ring⟩
+  choose w hw using h1
+  have hE : (V * blk d k (WittVector.frobenius (xi ε)) 1 * G0.map WittVector.frobenius) i m -
+      WittVector.frobenius (xi ε) * G0 i m =
+        WittVector.frobenius (xi ε) * ((∑ l, V i l * w l) - G0 i m) := by
+    rw [ent]
+    simp_rw [hw]
+    rw [mul_sub, Finset.mul_sum]
+    congr 1
+    exact Finset.sum_congr rfl fun l _ => by ring
+  have hdiff : ∀ l : Fin d ⊕ Fin k, Sandwich.mu ε ∣
+      Sum.elim (fun _ => WittVector.frobenius (xi ε)) (fun _ => (1 : Ainf p O)) l -
+        Sum.elim (fun _ => (p : Ainf p O)) (fun _ => (1 : Ainf p O)) l := by
+    rintro (l | l)
+    · exact mu_dvd_frob_xi_sub ε
+    · simp
+  have hmu : Sandwich.mu ε ∣
+      (V * blk d k (WittVector.frobenius (xi ε)) 1 * G0.map WittVector.frobenius) i m -
+        WittVector.frobenius (xi ε) * G0 i m := by
+    have hPim := hP i m
+    simp only [Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul] at hPim
+    have key : (V * blk d k (WittVector.frobenius (xi ε)) 1 * G0.map WittVector.frobenius) i m -
+        WittVector.frobenius (xi ε) * G0 i m -
+        ((V * blk d k (p : Ainf p O) 1 * G0.map WittVector.frobenius) i m - (p : Ainf p O) * G0 i m) =
+        (∑ l, V i l * ((Sum.elim (fun _ => WittVector.frobenius (xi ε)) (fun _ => (1 : Ainf p O)) l -
+          Sum.elim (fun _ => (p : Ainf p O)) (fun _ => (1 : Ainf p O)) l) *
+            WittVector.frobenius (G0 l m))) -
+        (WittVector.frobenius (xi ε) - p) * G0 i m := by
+      rw [ent, ent]
+      simp only [sub_mul, mul_sub, Finset.sum_sub_distrib]
+      ring
+    have hR : Sandwich.mu ε ∣ (∑ l, V i l * ((Sum.elim (fun _ => WittVector.frobenius (xi ε))
+        (fun _ => (1 : Ainf p O)) l - Sum.elim (fun _ => (p : Ainf p O)) (fun _ => (1 : Ainf p O)) l) *
+          WittVector.frobenius (G0 l m))) - (WittVector.frobenius (xi ε) - p) * G0 i m :=
+      dvd_sub (Finset.dvd_sum fun l _ => Dvd.dvd.mul_left ((hdiff l).mul_right _) _)
+        ((mu_dvd_frob_xi_sub ε).mul_right _)
+    rw [← key] at hR
+    have := dvd_add hR hPim
+    rwa [sub_add_cancel] at this
+  rw [hE] at hmu ⊢
+  exact mul_dvd_mul_left _ (mu_dvd_of_xi_mul F _ hmu)
+
+end GlobalTheory.WinLift
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.transpose_lift_solves_mod_frobXi_mu : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k h : ℕ) (V : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)) (G0 : Matrix (Fin d ⊕ Fin k) (Fin h) (Ainf p O)), (∀ i m, Sandwich.mu ε ∣ (V * blk d k (p : Ainf p O) 1 * G0.map WittVector.frobenius - (p : Ainf p O) • G0) i m) → (∀ j m, WittVector.fontaineTheta O p (G0 (Sum.inr j) m) = 0) → ∀ i m, WittVector.frobenius (xi ε) * Sandwich.mu ε ∣ (V * blk d k (WittVector.frobenius (xi ε)) 1 * G0.map WittVector.frobenius) i m - WittVector.frobenius (xi ε) * G0 i m := by
+  atlas_forward_decl GlobalTheory.WinLift.lift_solves_div_frob_xi_mu
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.WinLift
+
+theorem eigen_eq_of_frame_eq : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ x y : Ainf p O, WittVector.frobenius x = WittVector.frobenius (xi ε) * x → WittVector.frobenius y = WittVector.frobenius (xi ε) * y → F.a x = F.a y → x = y := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F x y hx hy hxy
+  have hsub : WittVector.frobenius (x - y) = WittVector.frobenius (xi ε) * (x - y) := by
+    rw [map_sub, hx, hy, mul_sub]
+  obtain ⟨c, hc, -⟩ := GlobalTheory.PDivLat.existsUnique_padic_of_eigen p C v O hv ε hε (x - y) hsub
+  have h0 : F.a (x - y) = 0 := by rw [map_sub, hxy, sub_self]
+  rw [← hc, map_mul, ← F.p_τ] at h0
+  have h1 : F.τ * F.a (ofPadic p O c) = 0 := by
+    apply tf F
+    rw [← h0]; ring
+  have h2 : Sandwich.mu ε ∣ ofPadic p O c := (F.τ_mul _).1 h1
+  have h3 : WittVector.fontaineTheta O p (ofPadic p O c) = 0 := by
+    obtain ⟨w, hw⟩ := h2
+    rw [hw, map_mul, theta_mu hv hε, zero_mul]
+  have hc0 : c = 0 := by
+    by_contra hne
+    have hs := PadicInt.unitCoeff_spec hne
+    rw [hs, map_mul, map_pow, map_natCast, map_mul, map_pow, map_natCast] at h3
+    have hp : (p : O) ≠ 0 := by
+      intro h
+      have := congrArg (algebraMap O C) h
+      rw [map_natCast, map_zero] at this
+      exact (Nat.cast_ne_zero.2 (Fact.out : p.Prime).ne_zero) this
+    have hu : IsUnit (WittVector.fontaineTheta O p (ofPadic p O (PadicInt.unitCoeff hne : ℤ_[p]))) :=
+      ((PadicInt.unitCoeff hne).isUnit.map (ofPadic p O)).map _
+    rcases mul_eq_zero.1 h3 with h | h
+    · exact hu.ne_zero h
+    · exact hp (pow_eq_zero_iff'.1 h).1
+  rw [← sub_eq_zero, ← hc, hc0, map_zero, zero_mul]
+
+end GlobalTheory.WinLift
+end
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobXi_eigenvector_eq_of_frame_image_eq : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ x y : Ainf p O, WittVector.frobenius x = WittVector.frobenius (xi ε) * x → WittVector.frobenius y = WittVector.frobenius (xi ε) * y → F.a x = F.a y → x = y := by
+  atlas_forward_decl GlobalTheory.WinLift.eigen_eq_of_frame_eq
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+namespace GlobalTheory.CmpB
+
+theorem blk_transpose {R : Type} [CommRing R] (d k : ℕ) (u v : R) :
+    (blk d k u v).transpose = blk d k u v := Matrix.diagonal_transpose _
+
+theorem tau_dvd_entry {R : Type} [CommRing R] (t : R) {m n h : Type} [Fintype n]
+    (A : Matrix m n R) (Y : Matrix n h R) (hA : ∀ i j, t ∣ A i j) (i : m) (j : h) :
+    t ∣ (A * Y) i j := by
+  rw [Matrix.mul_apply]
+  exact Finset.dvd_sum fun l _ => dvd_mul_of_dvd_left (hA i l) _
+
+theorem comparison : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k h : ℕ) (U U' X : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) (Y Z : Matrix (Fin d ⊕ Fin k) (Fin h) F.B), IsUnit U' → IsNil F.θ F.σ (U'.transpose⁻¹ * blk d k 1 (p : F.B)) → IsNil F.θ F.σ (U' * blk d k (p : F.B) 1) → X * (U' * blk d k (p : F.B) 1) = U * blk d k (p : F.B) 1 * X.map F.σ → (∀ i j, F.τ ∣ X i j - (1 : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) i j) → Y.map F.σ = blk d k (p : F.B) 1 * U.transpose * Y → Z.map F.σ = blk d k (p : F.B) 1 * U'.transpose * Z → (∀ i m, F.τ ∣ Z i m - Y i m) → Z = X.transpose * Y := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F d k h U U' X Y Z hU' hn1 hn2 hX hX1 hY hZ hZY
+  set P := blk d k (p : F.B) 1 with hP
+
+  have hT : P * U'.transpose * X.transpose = (X.map F.σ).transpose * P * U.transpose := by
+    have := congrArg Matrix.transpose hX
+    simp only [Matrix.transpose_mul, hP, blk_transpose] at this
+    simpa only [Matrix.mul_assoc] using this
+  have hΔ : (Z - X.transpose * Y).map F.σ = P * U'.transpose * (Z - X.transpose * Y) := by
+    have e1 : (X.transpose * Y).map F.σ = P * U'.transpose * (X.transpose * Y) := by
+      rw [Matrix.map_mul, Matrix.transpose_map, hY, ← Matrix.mul_assoc, ← Matrix.mul_assoc,
+        ← Matrix.mul_assoc, ← hT, Matrix.mul_assoc (P * U'.transpose)]
+    rw [Matrix.map_sub _ (map_sub F.σ), hZ, e1, Matrix.mul_sub]
+  have hdiv : ∀ i m, F.τ ∣ (Z - X.transpose * Y) i m := by
+    intro i m
+    have e : Z - X.transpose * Y = (Z - Y) - (X.transpose - 1) * Y := by
+      rw [Matrix.sub_mul, Matrix.one_mul]; abel
+    rw [e, Matrix.sub_apply]
+    refine dvd_sub (by simpa using hZY i m) (tau_dvd_entry _ _ _ (fun a b => ?_) i m)
+    have h1 : (1 : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) a b = (1 : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) b a := by
+      simp only [Matrix.one_apply, eq_comm]
+    rw [Matrix.sub_apply, Matrix.transpose_apply, h1]
+    exact hX1 b a
+  have := (GlobalTheory.T.ainfSquareZeroFrame_invariant_eq_zero_of_tau_dvd p C v O hv ε hε F d k h U' hU' hn1 hn2).1 _ hΔ hdiv
+  exact (sub_eq_zero.1 this)
+
+end GlobalTheory.CmpB
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ainfFrame_solution_congr_eq_transpose_mul : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k h : ℕ) (U U' X : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) (Y Z : Matrix (Fin d ⊕ Fin k) (Fin h) F.B), IsUnit U' → IsNil F.θ F.σ (U'.transpose⁻¹ * blk d k 1 (p : F.B)) → IsNil F.θ F.σ (U' * blk d k (p : F.B) 1) → X * (U' * blk d k (p : F.B) 1) = U * blk d k (p : F.B) 1 * X.map F.σ → (∀ i j, F.τ ∣ X i j - (1 : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) i j) → Y.map F.σ = blk d k (p : F.B) 1 * U.transpose * Y → Z.map F.σ = blk d k (p : F.B) 1 * U'.transpose * Z → (∀ i m, F.τ ∣ Z i m - Y i m) → Z = X.transpose * Y := by
+  atlas_forward_decl GlobalTheory.CmpB.comparison
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+set_option maxHeartbeats 1000000 in
+
+theorem GlobalTheory.CmpG.comparison : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k h : ℕ) (U U' X : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) (u l : F.B) (Gm : Matrix (Fin h) (Fin d ⊕ Fin k) F.B) (W : Matrix (Fin d ⊕ Fin k) (Fin h) F.B), IsUnit U → IsNil F.θ F.σ (U.transpose⁻¹ * blk d k 1 (p : F.B)) → IsNil F.θ F.σ (U * blk d k (p : F.B) 1) → F.τ ∣ u - 1 → X * (U' * blk d k (p : F.B) 1) = U * blk d k (p : F.B) 1 * X.map F.σ → (∀ i j, F.τ ∣ X i j - (1 : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) i j) → F.σ l = u * l → F.τ ∣ l - 1 → U * blk d k (p : F.B) 1 * Gm.transpose.map F.σ = (p : F.B) • Gm.transpose → U' * blk d k (p : F.B) 1 * W.map F.σ = ((p : F.B) * u) • W → (∀ i m, F.τ ∣ W i m - Gm m i) → X * W = l • Gm.transpose := by
+  intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε F d k h U U' X u l Gm W hU hN1 hN2 hu hX hXc hl hlc hG hW hWc
+  classical
+  haveI := ReciprocityTheory.PGsh.Ainf.O_local O hv
+  obtain ⟨c, hc⟩ := hu
+  have hue : u = 1 + F.τ * c := by rw [← hc]; ring
+  set w : F.B := 1 - F.τ * c with hwdef
+  have hwu : w * u = 1 := by rw [hue, hwdef]; linear_combination (-(c * c)) * F.τ_sq
+  have hτ0 : F.θ F.τ = 0 := GlobalTheory.WinLift.theta_tau F hv hε
+  have hθu : F.θ u = 1 := by rw [hue, map_add, map_one, map_mul, hτ0, zero_mul, add_zero]
+  have hθw : F.θ w = 1 := by rw [hwdef, map_sub, map_one, map_mul, hτ0, zero_mul, sub_zero]
+  have hwU : IsUnit w := ⟨⟨w, u, hwu, by rw [mul_comm]; exact hwu⟩, rfl⟩
+  set P := blk d k (p : F.B) 1 with hP
+  set D : Matrix (Fin d ⊕ Fin k) (Fin h) F.B := X * W - l • Gm.transpose with hDdef
+  have hsm : (l • Gm.transpose).map F.σ = F.σ l • Gm.transpose.map F.σ :=
+    Matrix.ext fun i j => by simp
+  have hsub : D.map F.σ = (X * W).map F.σ - (l • Gm.transpose).map F.σ :=
+    by rw [hDdef]; exact Matrix.ext fun i j => by simp only [Matrix.map_apply, Matrix.sub_apply, map_sub]
+  have hD : U * P * D.map F.σ = ((p : F.B) * u) • D := by
+    rw [hsub, Matrix.map_mul, hsm, Matrix.mul_sub, Matrix.mul_smul, ← Matrix.mul_assoc, ← hX,
+      Matrix.mul_assoc, hW, hG, hl, Matrix.mul_smul, smul_smul, hDdef, smul_sub, smul_smul]
+    congr 1
+    rw [show u * l * (p : F.B) = p * u * l by ring]
+  set U₁ := w • U with hU₁
+  have hD1 : U₁ * P * D.map F.σ = (p : F.B) • D := by
+    rw [hU₁, Matrix.smul_mul, Matrix.smul_mul, hD, smul_smul,
+      show w * ((p : F.B) * u) = p by linear_combination (p : F.B) * hwu]
+  have hUdet : IsUnit U.det := (Matrix.isUnit_iff_isUnit_det U).1 hU
+  have hU₁u : IsUnit U₁ := by
+    rw [Matrix.isUnit_iff_isUnit_det, hU₁, Matrix.det_smul]
+    exact (hwU.pow _).mul hUdet
+  have hinv : U₁.transpose⁻¹ = u • U.transpose⁻¹ := by
+    apply Matrix.inv_eq_right_inv
+    rw [hU₁, Matrix.transpose_smul, Matrix.smul_mul, Matrix.mul_smul, smul_smul, hwu, one_smul,
+      Matrix.mul_nonsing_inv _ (by rw [Matrix.det_transpose]; exact hUdet)]
+  have hp : ¬IsUnit (p : O) := Fact.out
+  have hN1' : IsNil F.θ F.σ (U₁.transpose⁻¹ * blk d k 1 (p : F.B)) := by
+    refine GlobalTheory.WinLift.isNil_of_theta_eq p F.θ F.σ hp F.σ_pow _ _ (fun i j => ?_) hN1
+    rw [hinv, Matrix.smul_mul, Matrix.smul_apply, smul_eq_mul, map_mul, hθu, one_mul]
+  have hN2' : IsNil F.θ F.σ (U₁ * P) := by
+    refine GlobalTheory.WinLift.isNil_of_theta_eq p F.θ F.σ hp F.σ_pow _ _ (fun i j => ?_) hN2
+    rw [hU₁, Matrix.smul_mul, Matrix.smul_apply, smul_eq_mul, map_mul, hθw, one_mul]
+  have key := (GlobalTheory.TauUniq.eq_zero_of_tau_dvd p C v O hv ε hε F d k h U₁ hU₁u hN1' hN2').2
+  have hdec : D = (X - 1) * W + (W - Gm.transpose) - (l - 1) • Gm.transpose := by
+    rw [hDdef, Matrix.sub_mul, Matrix.one_mul, sub_smul, one_smul]; abel
+  have hτD : ∀ i m, F.τ ∣ D i m := by
+    intro i m
+    rw [hdec, Matrix.sub_apply, Matrix.add_apply, Matrix.mul_apply, Matrix.sub_apply,
+      Matrix.smul_apply, smul_eq_mul, Matrix.transpose_apply]
+    refine dvd_sub (dvd_add (Finset.dvd_sum fun j _ => ?_) (hWc i m)) (Dvd.dvd.mul_right hlc _)
+    exact Dvd.dvd.mul_right (hXc i j) _
+  have hD0 : D = 0 := by
+    refine Matrix.ext fun i m => ?_
+    have hcol := key (fun i => D i m) (funext fun i => by
+      have := congrArg (fun M => M i m) hD1
+      simpa [Matrix.mul_apply, Matrix.mulVec, dotProduct] using this) (fun i => hτD i m)
+    exact congrFun hcol i
+  exact sub_eq_zero.1 hD0
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ainfFrame_solution_mul_congr_Gm_transpose : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k h : ℕ) (U U' X : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) (u l : F.B) (Gm : Matrix (Fin h) (Fin d ⊕ Fin k) F.B) (W : Matrix (Fin d ⊕ Fin k) (Fin h) F.B), IsUnit U → IsNil F.θ F.σ (U.transpose⁻¹ * blk d k 1 (p : F.B)) → IsNil F.θ F.σ (U * blk d k (p : F.B) 1) → F.τ ∣ u - 1 → X * (U' * blk d k (p : F.B) 1) = U * blk d k (p : F.B) 1 * X.map F.σ → (∀ i j, F.τ ∣ X i j - (1 : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) i j) → F.σ l = u * l → F.τ ∣ l - 1 → U * blk d k (p : F.B) 1 * Gm.transpose.map F.σ = (p : F.B) • Gm.transpose → U' * blk d k (p : F.B) 1 * W.map F.σ = ((p : F.B) * u) • W → (∀ i m, F.τ ∣ W i m - Gm m i) → X * W = l • Gm.transpose := by
+  atlas_forward_decl GlobalTheory.CmpG.comparison
+end
+
+section
 section
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 
@@ -332,3 +1317,4 @@ open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.window_lift_to_fontaineAinf_matrices : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (d k h : ℕ) (U : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) F.B) (Y : Matrix (Fin d ⊕ Fin k) (Fin h) F.B) (Gm : Matrix (Fin h) (Fin d ⊕ Fin k) F.B), IsUnit U ∧ Y.map F.σ = blk d k (p : F.B) 1 * U.transpose * Y ∧ U * blk d k (p : F.B) 1 * (Gm.transpose.map F.σ) = (p : F.B) • Gm.transpose ∧ Gm * Y = F.a (Sandwich.mu ε) • (1 : Matrix (Fin h) (Fin h) F.B) ∧ (∀ i m, F.θ (Y (Sum.inl i) m) = 0) ∧ (∀ m j, F.θ (Gm m (Sum.inr j)) = 0) ∧ IsNil F.θ F.σ (U * blk d k (p : F.B) 1) ∧ IsNil F.θ F.σ (U.transpose⁻¹ * blk d k 1 (p : F.B)) → ∃ (Fa : Matrix (Fin d ⊕ Fin k) (Fin h) (Ainf p O)) (Ga : Matrix (Fin h) (Fin d ⊕ Fin k) (Ainf p O)) (Ψ Ψ' : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)), Ga * Fa = Sandwich.mu ε • (1 : Matrix (Fin h) (Fin h) (Ainf p O)) ∧ Fa = Ψ * Fa.map (phiInv p O) ∧ Ψ * Ψ' = xi ε • (1 : Matrix (Fin d ⊕ Fin k) (Fin d ⊕ Fin k) (Ainf p O)) ∧ (∀ i m, WittVector.fontaineTheta O p (Fa i m) = F.θ (Y i m)) ∧ ∀ m i, WittVector.fontaineTheta O p (Ga m i) = F.θ (Gm m i) := by
   atlas_forward_decl GlobalTheory.WinLift.Top.window_lift
+end

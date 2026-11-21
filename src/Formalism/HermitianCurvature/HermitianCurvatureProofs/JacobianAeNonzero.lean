@@ -1,6 +1,17 @@
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LinearChangeOfVariablesBis
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FourthWeightDensityOfParts
+import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 
+section
+open Matrix Formalism.FourierDecayAlt MeasureTheory
+open scoped ENNReal
+
+namespace Formalism.FourierDecayAlt.P
+
+
+end Formalism.FourierDecayAlt.P
+end
+
+section
 open Matrix Formalism.FourierDecayAlt MeasureTheory
 open scoped ENNReal
 
@@ -28,3 +39,4 @@ open RootChangeOfVariables
 
 
 end Formalism.FourierDecayAlt.P
+end

@@ -1,9 +1,160 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IncludeLInjective
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CayleyTransformMemRationalUnitaryGroup
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFinBasisCoeffsEmbeddingsEval
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNormOneCmFieldDetOneAddNeZeroCharZero
+import BuildAid.ForwardExisting
 
+section
+section
+open NumberField
+
+namespace GlobalTheory
+
+theorem embeddings_eval_onto (L : Type) [Field L] [NumberField L] (K : Type) [Field K] [CharZero K]
+    (z : (L →+* K) → K) :
+    ∃ y : Fin (Module.finrank ℚ L) → K, ∀ σ : L →+* K,
+      ∑ i, σ (Module.finBasis ℚ L i) * y i = z σ := by
+  classical
+  set b := Module.finBasis ℚ L
+  let M : Matrix (L →+* K) (Fin (Module.finrank ℚ L)) K := Matrix.of fun σ i => σ (b i)
+
+  have hD : LinearIndependent K (fun σ : L →+* K => (σ : L → K)) := by
+    have h := linearIndependent_monoidHom L K
+    have hinj : Function.Injective (fun σ : L →+* K => (σ.toMonoidHom : L →* K)) := by
+      intro σ τ h'
+      ext x
+      exact DFunLike.congr_fun h' x
+    exact h.comp _ hinj
+  have hrow : LinearIndependent K M.row := by
+    rw [Fintype.linearIndependent_iff] at hD ⊢
+    intro g hg
+    apply hD g
+    have hb : ∀ i, ∑ σ, g σ * σ (b i) = 0 := by
+      intro i
+      have := congr_fun hg i
+      simpa [M, Matrix.row, Finset.sum_apply] using this
+    funext x
+    rw [← b.sum_repr x]
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply, map_sum]
+    have : ∀ σ : L →+* K, ∀ i, σ (b.repr x i • b i) = (b.repr x i : K) * σ (b i) := by
+      intro σ i
+      rw [Algebra.smul_def, map_mul]
+      simp
+    simp_rw [this, Finset.mul_sum]
+    rw [Finset.sum_comm]
+    refine Finset.sum_eq_zero fun i _ => ?_
+    have h2 : ∑ σ : L →+* K, g σ * ((b.repr x i : K) * σ (b i)) =
+        (b.repr x i : K) * ∑ σ : L →+* K, g σ * σ (b i) := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun σ _ => by ring
+    rw [h2, hb i, mul_zero]
+  have hrank : M.rank = Fintype.card (L →+* K) := hrow.rank_matrix
+  have htop : LinearMap.range M.mulVecLin = ⊤ := by
+    apply Submodule.eq_top_of_finrank_eq
+    rw [← Matrix.rank, hrank, Module.finrank_fintype_fun_eq_card]
+  have hz : z ∈ LinearMap.range M.mulVecLin := by rw [htop]; trivial
+  obtain ⟨y, hy⟩ := hz
+  refine ⟨y, fun σ => ?_⟩
+  have := congr_fun hy σ
+  simpa [M, Matrix.mulVec, dotProduct] using this
+
+end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finBasis_coeffs_embeddings_eval : ∀ (L : Type) [Field L] [NumberField L] (K : Type) [Field K] [CharZero K] (z : (L →+* K) → K), ∃ y : Fin (Module.finrank ℚ L) → K, ∀ σ : L →+* K, ∑ i, σ (Module.finBasis ℚ L i) * y i = z σ := by
+  atlas_forward_decl GlobalTheory.embeddings_eval_onto
+end
+
+section
+section
+open NumberField
+
+namespace GlobalTheory.CMScalar
+open Matrix Polynomial
+
+theorem eval_charpolyRev_neg {K : Type} [Field K] {n : ℕ} (A : Matrix (Fin n) (Fin n) K) (w : K) :
+    (-A).charpolyRev.eval w = (1 + w • A).det := by
+  rw [Matrix.charpolyRev, ← coe_evalRingHom, RingHom.map_det]
+  congr 1
+  ext a b : 2
+  by_cases h : a = b <;> simp [h, mul_comm w, sub_eq_add_neg]
+
+theorem exists_unit_norm_one_det_ne_zero (L : Type) [Field L] [NumberField L] [IsCMField L] (K : Type) [Field K]
+    [CharZero K] (n : ℕ) (M : (L →+* K) → Matrix (Fin n) (Fin n) K) :
+    ∃ u : L, u * (IsCMField.complexConj L : L →+* L) u = 1 ∧ ∀ σ : L →+* K, (1 + σ u • M σ).det ≠ 0 := by
+  classical
+  set c : L →+* L := (IsCMField.complexConj L : L →+* L) with hc
+  have hcc : ∀ x, c (c x) = x := fun x => IsCMField.complexConj_apply_apply L x
+  obtain ⟨y, hy⟩ : ∃ y : L, c y ≠ y := by
+    by_contra h
+    push_neg at h
+    apply IsCMField.complexConj_ne_one L
+    ext x
+    exact h x
+  set i : L := y - c y with hi
+  have hi0 : i ≠ 0 := sub_ne_zero.2 (Ne.symm hy)
+  have hci : c i = -i := by rw [hi, map_sub, hcc]; ring
+  have hden : ∀ t : ℚ, (1 : L) + (t : L) * i ≠ 0 := by
+    intro t h
+    have h1 : (t : L) * i = -1 := by linear_combination h
+    have h2 := congrArg c h1
+    rw [map_mul, map_ratCast, hci, map_neg, map_one] at h2
+    have : (2 : L) = 0 := by linear_combination h1 + h2
+    exact two_ne_zero this
+  let f : ℚ → L := fun t => (1 - (t : L) * i) / (1 + (t : L) * i)
+  have hfu : ∀ t, f t * c (f t) = 1 := by
+    intro t
+    have hd := hden t
+    have hd' : (1 : L) - (t : L) * i ≠ 0 := by
+      intro h; apply hden (-t); push_cast; linear_combination h
+    have e : c (f t) = (1 + (t : L) * i) / (1 - (t : L) * i) := by
+      simp only [f, map_div₀, map_sub, map_add, map_one, map_mul, map_ratCast, hci]
+      congr 1 <;> ring
+    rw [e, div_mul_div_comm]
+    exact (div_eq_one_iff_eq (mul_ne_zero hd hd')).2 (by ring)
+  have hfinj : Function.Injective f := by
+    intro s t hst
+    simp only [f] at hst
+    rw [div_eq_div_iff (hden s) (hden t)] at hst
+    have h2 : (2 : L) * ((t : L) - s) * i = 0 := by linear_combination hst
+    have : ((t : L) - s) = 0 := by
+      rcases mul_eq_zero.1 h2 with h | h
+      · rcases mul_eq_zero.1 h with h | h
+        · exact absurd h two_ne_zero
+        · exact h
+      · exact absurd h hi0
+    have : ((t - s : ℚ) : L) = 0 := by push_cast; exact this
+    exact (sub_eq_zero.1 (Rat.cast_eq_zero.1 this)).symm
+  have hp : ∀ σ : L →+* K, (-(M σ)).charpolyRev ≠ 0 := by
+    intro σ h
+    have := Matrix.eval_charpolyRev (M := -(M σ))
+    rw [h, Polynomial.eval_zero] at this
+    exact zero_ne_one this
+  let B : Set L := ⋃ σ : L →+* K, σ ⁻¹' ((-(M σ)).charpolyRev.roots.toFinset : Set K)
+  have hB : B.Finite := by
+    apply Set.finite_iUnion
+    intro σ
+    exact (Finset.finite_toSet _).preimage σ.injective.injOn
+  have hS : (f ⁻¹' B).Finite := hB.preimage hfinj.injOn
+  obtain ⟨t, ht⟩ := (Set.infinite_univ (α := ℚ)).diff hS |>.nonempty
+  refine ⟨f t, hfu t, fun σ hσ => ht.2 ?_⟩
+  simp only [Set.mem_preimage, B, Set.mem_iUnion]
+  refine ⟨σ, ?_⟩
+  simp only [Set.mem_preimage, Finset.mem_coe, Multiset.mem_toFinset]
+  rw [Polynomial.mem_roots (hp σ), Polynomial.IsRoot, eval_charpolyRev_neg]
+  exact hσ
+
+end GlobalTheory.CMScalar
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_normOne_cmField_det_one_add_ne_zero_charZero : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (K : Type) [Field K] [CharZero K] (n : ℕ) (M : (L →+* K) → Matrix (Fin n) (Fin n) K), ∃ u : L, u * (IsCMField.complexConj L : L →+* L) u = 1 ∧ ∀ σ : L →+* K, (1 + σ u • M σ).det ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CMScalar.exists_unit_norm_one_det_ne_zero
+end
+
+section
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting GlobalTheory.HeightCounting.FormsStep NumberField IsDedekindDomain Polynomial
 open scoped TensorProduct
@@ -374,3 +525,4 @@ theorem _root_.GlobalTheory.T.zariskiDense_rationalPoints_definiteUnitary_charZe
         Matrix.transpose (((B σ)⁻¹ : GL (Fin n) K) : Matrix (Fin n) (Fin n) K)) →
       MvPolynomial.eval (fun p : (L →+* K) × Fin n × Fin n => ((B p.1 : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) p.2.1 p.2.2) P = 0 := by
   atlas_forward_decl GlobalTheory.UnitaryDense.unitary_points_dense
+end

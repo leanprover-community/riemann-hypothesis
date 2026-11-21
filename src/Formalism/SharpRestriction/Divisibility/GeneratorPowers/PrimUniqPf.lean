@@ -1,7 +1,33 @@
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PrimUniqSt
+import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBTransport
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+namespace Formalism.MainNotions.ModuliIntegralCharts.H1
+
+open AlgebraicGeometry CategoryTheory NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+
+def PrimUniqSt : Prop :=
+  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H)
+    (Xo : Moduli Dw l) (wP wP' : PrimTy H Xo), IsPrim wP → IsPrim wP' → wP = wP'
+
+def PrimUniqOfGlobalSt : Prop :=
+  GlobalFnsSt →
+  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H)
+    (Xo : Moduli Dw l), IsAbelianScheme Xo.univ.t.G →
+    ∀ wP wP' : PrimTy H Xo, IsPrim wP → IsPrim wP' → wP = wP'
+
+end Formalism.MainNotions.ModuliIntegralCharts.H1
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -171,3 +197,5 @@ theorem primUniq_of_global (hglob : GlobalFnsSt) : PrimUniqSt := fun E _ _ _ H D
   primUniqOfGlobal_holds hglob E H Dw l Xo (isAbelianScheme_univ Xo) wP wP' hP hP'
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1
+end
+end

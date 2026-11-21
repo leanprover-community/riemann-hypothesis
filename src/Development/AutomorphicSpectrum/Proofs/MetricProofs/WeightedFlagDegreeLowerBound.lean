@@ -1,7 +1,106 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormDegreeStepZero
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormalizedDegreeLeRankMulSlope
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsOrthFull
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FibrePowerMapOfTotalSpacesIsPullback
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CentralizerCmFieldInvolution
+import BuildAid.ForwardExisting
 
+section
+open GroundTheory.Heights₂.Heights NumberField TensorProduct ComplexAt GlobalTheory.CompanionTheory.Ar Matrix
+open scoped BigOperators ComplexOrder
+
+namespace GlobalTheory.CompanionTheory.Ar.Decomp
+
+theorem normDegree_step_zero {K : Type} [Field K] [NumberField K] {E : HermitianBundle.{0} K} {r : ℕ}
+    (A : SatFlag E r) : E.normDegree (A.F 0) = 0 := by
+  have h : A.F 0 = ⊥ := (Submodule.finrank_eq_zero (R := 𝓞 K) (S := A.F 0)).mp (A.rank 0)
+  rw [HermitianBundle.normDegree, h, HermitianBundle.degree_bot, zero_div]
+
+theorem lamDeg_eq : ∀ (K : Type) [Field K] [NumberField K] (E : HermitianBundle.{0} K) (Ψ : Type) [Fintype Ψ] (j k : ℕ) (A : FlagPair E Ψ (j + 1) (k + 1)) (lam : Ψ → Fin (j + 1 + (k + 1)) → ℝ), A.lamDeg lam = ∑ τ, ((∑ i : Fin j, (lam τ (Fin.castAdd (k + 1) i.castSucc) - lam τ (Fin.castAdd (k + 1) i.succ)) * (-E.normDegree ((A.W τ).F i.succ.castSucc))) + (lam τ (Fin.castAdd (k + 1) (Fin.last j)) - lam τ (Fin.natAdd (j + 1) 0)) * (-E.normDegree (A.W τ).top) + (∑ i : Fin k, (lam τ (Fin.natAdd (j + 1) i.castSucc) - lam τ (Fin.natAdd (j + 1) i.succ)) * (-E.normDegree ((A.S τ).F i.rev.succ.castSucc))) - lam τ (Fin.natAdd (j + 1) 0) * A.flatDeg τ) := by
+  intro K _ _ E Ψ _ j k A lam
+  unfold FlagPair.lamDeg
+  refine Finset.sum_congr rfl fun τ _ => ?_
+  have hW := GlobalTheory.CompanionTheory.AbelFlag.abel_summation_flag j (fun i => lam τ (Fin.castAdd (k + 1) i))
+    (fun i => E.normDegree ((A.W τ).F i)) (normDegree_step_zero (A.W τ))
+  have hS := GlobalTheory.CompanionTheory.DualFlag.abel_sum_rev k (fun i => lam τ (Fin.natAdd (j + 1) i))
+    (fun i => E.normDegree ((A.S τ).F i)) (normDegree_step_zero (A.S τ))
+  simp only [SatFlag.grDeg, FlagPair.flatDeg, SatFlag.top]
+  linear_combination hW + hS
+
+end GlobalTheory.CompanionTheory.Ar.Decomp
+end
+
+section
+section
+open GroundTheory.Heights₂.Heights NumberField TensorProduct ComplexAt GlobalTheory.CompanionTheory.Ar Matrix
+open scoped BigOperators ComplexOrder
+
+namespace GlobalTheory.CompanionTheory.Ar.DegSlope
+
+private lemma degreeWith_bot {K : Type} [Field K] [NumberField K] (E : HermitianBundle.{0} K)
+    {r : ℕ} (f : Fin r → ↥(⊥ : Submodule (𝓞 K) E.carrier)) : E.degreeWith ⊥ f = 0 := by
+  unfold HermitianBundle.degreeWith
+  have h0 : ∀ i, ((f i : E.carrier)) = 0 := fun i => (Submodule.mem_bot _).1 (f i).2
+  have hcard : Nat.card (↥(⊥ : Submodule (𝓞 K) E.carrier) ⧸ Submodule.span (𝓞 K) (Set.range f)) = 1 := by
+    rw [Nat.card_eq_one_iff_unique]
+    refine ⟨⟨fun a b => Quotient.inductionOn₂' a b (fun x y => congrArg _ (Subsingleton.elim x y))⟩, ⟨0⟩⟩
+  have hdet : ∀ σ : K →+* ℂ, Real.log ‖E.gramDet σ (fun i => ((f i : E.carrier)))‖ = 0 := by
+    intro σ
+    unfold HermitianBundle.gramDet
+    simp only [h0, TensorProduct.tmul_zero, inner_zero_left]
+    rcases Nat.eq_zero_or_pos r with rfl | hr
+    · simp
+    · haveI : Nonempty (Fin r) := ⟨⟨0, hr⟩⟩
+      have hc : (@inner ℂ _ (E.metric.form σ).toInner (0 : Fibre σ E.carrier) (0 : Fibre σ E.carrier)) = 0 := by
+        have h : @inner ℂ _ (E.metric.form σ).toInner ((0 : Fibre σ E.carrier) + 0) 0 =
+            @inner ℂ _ (E.metric.form σ).toInner (0 : Fibre σ E.carrier) 0 +
+              @inner ℂ _ (E.metric.form σ).toInner (0 : Fibre σ E.carrier) 0 :=
+          (E.metric.form σ).add_left 0 0 0
+        rw [add_zero] at h
+        linear_combination -h
+      have hdet0 : (Matrix.of fun (_ : Fin r) (_ : Fin r) =>
+          (@inner ℂ _ (E.metric.form σ).toInner (0 : Fibre σ E.carrier) (0 : Fibre σ E.carrier))).det = 0 := by
+        rw [show (Matrix.of fun (_ : Fin r) (_ : Fin r) =>
+            (@inner ℂ _ (E.metric.form σ).toInner (0 : Fibre σ E.carrier) (0 : Fibre σ E.carrier))) = 0 from
+          Matrix.ext fun _ _ => hc]
+        exact Matrix.det_zero
+      have hgoal : Real.log ‖(Matrix.of fun (_ : Fin r) (_ : Fin r) =>
+          (@inner ℂ _ (E.metric.form σ).toInner (0 : Fibre σ E.carrier) (0 : Fibre σ E.carrier))).det‖ = 0 := by
+        rw [hdet0, norm_zero, Real.log_zero]
+      exact hgoal
+  rw [hcard]
+  simp [hdet]
+
+theorem normDegree_le_rank_mul_of_slopeMax_le : ∀ (K : Type) [Field K] [NumberField K] (E : HermitianBundle.{0} K) (μ : ℝ), E.slopeMax ≤ (μ : EReal) → ∀ F : Submodule (𝓞 K) E.carrier, E.normDegree F ≤ E.rank F * μ := by
+  intro K _ _ E μ hμ F
+  by_cases hF : F = ⊥
+  · subst hF
+    have hr : E.rank ⊥ = 0 := by
+      simp [HermitianBundle.rank]
+    rw [hr, Nat.cast_zero, zero_mul]
+    unfold HermitianBundle.normDegree HermitianBundle.degree
+    rw [degreeWith_bot, zero_div]
+  · have hpos : 0 < E.rank F := by
+      unfold HermitianBundle.rank
+      obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hF
+      exact Module.finrank_pos_iff_exists_ne_zero.2 ⟨⟨x, hx⟩, by simpa using hx0⟩
+    have h1 : (E.slope F : EReal) ≤ E.slopeMax :=
+      le_iSup₂ (f := fun G (_ : G ≠ ⊥) => (E.slope G : EReal)) F hF
+    have h2 : E.slope F ≤ μ := EReal.coe_le_coe_iff.1 (h1.trans hμ)
+    unfold HermitianBundle.slope at h2
+    rw [div_le_iff₀ (by exact_mod_cast hpos)] at h2
+    linarith
+
+end GlobalTheory.CompanionTheory.Ar.DegSlope
+end
+
+open GroundTheory.Heights₂.Heights NumberField TensorProduct ComplexAt GlobalTheory.CompanionTheory.Ar Matrix
+open scoped BigOperators ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalized_degree_le_rank_mul_slope : ∀ (K : Type) [Field K] [NumberField K] (E : HermitianBundle.{0} K) (μ : ℝ), E.slopeMax ≤ (μ : EReal) → ∀ F : Submodule (𝓞 K) E.carrier, E.normDegree F ≤ E.rank F * μ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.DegSlope.normDegree_le_rank_mul_of_slopeMax_le
+end
+
+section
 section
 open GroundTheory.Heights₂.Heights NumberField TensorProduct ComplexAt GlobalTheory.CompanionTheory.Ar Matrix
 open scoped BigOperators ComplexOrder
@@ -108,3 +207,4 @@ open scoped BigOperators ComplexOrder
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.weighted_flag_degree_lower_bound : ∀ (K : Type) [Field K] [NumberField K] (E : HermitianBundle.{0} K) (Ψ : Type) [Fintype Ψ] (j k : ℕ) (A : FlagPair E Ψ (j + 1) (k + 1)) (lam : Ψ → Fin (j + 1 + (k + 1)) → ℝ) (Λ μ C : ℝ), (∀ τ, Antitone (lam τ)) → (∀ τ i, |lam τ i| ≤ Λ) → 0 ≤ μ → E.slopeMax ≤ (μ : EReal) → (∀ τ, |A.flatDeg τ| ≤ C) → -(Fintype.card Ψ * (2 * Λ * (j + 1 + (k + 1)) * μ + Λ * C)) ≤ A.lamDeg lam := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.LowerAny.lamDeg_lower
+end

@@ -1,13 +1,124 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.AlgebraStatements.HodgeTateNormComparison
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPolLatticePlane
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartDualPairing
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartTestPoint
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartNonUnitP
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartDifferentBound
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateChartDivisibility
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProjectiveSplitModuloElement
+import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LeadMinor
+import Development.WeilBound.CoreStatements.HodgeTatePoints.GdChartFin
+import BuildAid.ForwardExisting
+import Development.WeilBound.CoreStatements.HodgeTatePoints.GcChart
+import Development.WeilBound.CoreStatements.HodgeTatePoints.RedOmHTBc
+import Development.WeilBound.CoreStatements.HodgeTatePoints.DualUnique
+import Development.WeilBound.CoreStatements.HodgeTatePoints.GaSurj
+import Development.WeilBound.CoreStatements.HodgeTatePoints.GdSplit
 
+section
+section
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+
+namespace GlobalTheory.CompanionTheory.Ar.HT
+
+theorem chart_comp_zero_mod : ∀ (A K : Type) [CommRing A] [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] [Field K] [Algebra A K] [IsFractionRing A K] [CharZero K] (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A) (σ : E →+* K) (d d' : A) (m : ℕ) (i : Module.Dual A (D.omHT (σ.comp c.toRingHom)) →ₗ[A] (Fin N → A)), κ * (p : A) ^ m ∣ (p : A) ^ R → GeneratesDiff σ d → GeneratesDiff (σ.comp c.toRingHom) d' → (∀ x ∈ D.om, κ • x ∈ D.om') → Module.Projective A (D.omHT σ) → Module.Projective A (D.omHT (σ.comp c.toRingHom)) → D.HasTestPoints κ → D.IsDualMap σ d m i → ∀ w, ∃ y ∈ D.omHT σ, D.q σ (i w) = ((p : A) ^ m) • y :=
+  @PositivityTheory.HtPt.Gd.chart_comp_zero
+
+end GlobalTheory.CompanionTheory.Ar.HT
+end
+
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_tate_chart_dual_pairing : ∀ (A K : Type) [CommRing A] [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] [Field K] [Algebra A K] [IsFractionRing A K] [CharZero K] (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A) (σ : E →+* K) (d d' : A) (m : ℕ) (i : Module.Dual A (D.omHT (σ.comp c.toRingHom)) →ₗ[A] (Fin N → A)), κ * (p : A) ^ m ∣ (p : A) ^ R → GeneratesDiff σ d → GeneratesDiff (σ.comp c.toRingHom) d' → (∀ x ∈ D.om, κ • x ∈ D.om') → Module.Projective A (D.omHT σ) → Module.Projective A (D.omHT (σ.comp c.toRingHom)) → D.HasTestPoints κ → D.IsDualMap σ d m i → ∀ w, ∃ y ∈ D.omHT σ, D.q σ (i w) = ((p : A) ^ m) • y := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.chart_comp_zero_mod
+end
+
+section
+section
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+
+namespace GlobalTheory.CompanionTheory.Ar.HT
+
+theorem om'_between_of_testPoints : ∀ (A K : Type) [CommRing A] [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] [Field K] [Algebra A K] [IsFractionRing A K] [CharZero K] (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A), κ ∣ (p : A) ^ R → Module.Projective A D.om' → D.HasTestPoints κ → D.om' ≤ D.om ∧ (∀ x ∈ D.om, κ • x ∈ D.om') :=
+  @PositivityTheory.HtPt.Gc.chart_ii
+
+end GlobalTheory.CompanionTheory.Ar.HT
+end
+
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_tate_chart_test_point : ∀ (A K : Type) [CommRing A] [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] [Field K] [Algebra A K] [IsFractionRing A K] [CharZero K] (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A), κ ∣ (p : A) ^ R → Module.Projective A D.om' → D.HasTestPoints κ → D.om' ≤ D.om ∧ (∀ x ∈ D.om, κ • x ∈ D.om') := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.om'_between_of_testPoints
+end
+
+section
+section
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+
+namespace GlobalTheory.CompanionTheory.Ar.HT
+
+theorem chart_rank_add_conj : ∀ (A K : Type) [CommRing A] [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] [Field K] [Algebra A K] [IsFractionRing A K] [CharZero K] (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A) (σ : E →+* K) (d d' : A), ¬ IsUnit (p : A) → κ ∣ (p : A) ^ R → GeneratesDiff σ d → GeneratesDiff (σ.comp c.toRingHom) d' → Module.Projective A (D.omHT σ) → Module.Projective A (D.omHT (σ.comp c.toRingHom)) → D.HasTestPoints κ → Module.finrank A (D.omHT σ) + Module.finrank A (D.omHT (σ.comp c.toRingHom)) = N :=
+  @PositivityTheory.HtPt.Gb.chart_rank
+
+end GlobalTheory.CompanionTheory.Ar.HT
+end
+
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_tate_chart_non_unit_p : ∀ (A K : Type) [CommRing A] [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] [Field K] [Algebra A K] [IsFractionRing A K] [CharZero K] (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A) (σ : E →+* K) (d d' : A), ¬ IsUnit (p : A) → κ ∣ (p : A) ^ R → GeneratesDiff σ d → GeneratesDiff (σ.comp c.toRingHom) d' → Module.Projective A (D.omHT σ) → Module.Projective A (D.omHT (σ.comp c.toRingHom)) → D.HasTestPoints κ → Module.finrank A (D.omHT σ) + Module.finrank A (D.omHT (σ.comp c.toRingHom)) = N := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.chart_rank_add_conj
+end
+
+section
+section
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+
+namespace GlobalTheory.CompanionTheory.Ar.HT
+
+theorem dualMap_exists_unique_split : ∀ (A K : Type) [CommRing A] [Field K] [Algebra A K] [CharZero K] (hAK : Function.Injective (algebraMap A K)) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A) (σ : E →+* K) (d : A) (m : ℕ), (∀ (σ : E →+* K) (a : 𝓞 E), σ (a : E) ∈ (algebraMap A K).range) → GeneratesDiff σ d → κ * (p : A) ^ m ∣ (p : A) ^ R → (∀ x ∈ D.om, κ • x ∈ D.om') → Module.Projective A (D.omHT (σ.comp c.toRingHom)) → (∃ (i : Module.Dual A (D.omHT (σ.comp c.toRingHom)) →ₗ[A] (Fin N → A)), D.IsDualMap σ d m i) ∧ (∀ i i', D.IsDualMap σ d m i → D.IsDualMap σ d m i' → ∀ w, ∃ x : Fin N → A, i w = i' w + ((p : A) ^ m) • x) ∧ ∀ i, D.IsDualMap σ d m i → ∃ r : (Fin N → A) →ₗ[A] Module.Dual A (D.omHT (σ.comp c.toRingHom)), ∀ w, ∃ w', r (i w) = w + ((p : A) ^ m) • w' :=
+  @PositivityTheory.HtPt.Ga.dual_map
+
+end GlobalTheory.CompanionTheory.Ar.HT
+end
+
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_tate_chart_different_bound : ∀ (A K : Type) [CommRing A] [Field K] [Algebra A K] [CharZero K] (hAK : Function.Injective (algebraMap A K)) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A) (σ : E →+* K) (d : A) (m : ℕ), (∀ (σ : E →+* K) (a : 𝓞 E), σ (a : E) ∈ (algebraMap A K).range) → GeneratesDiff σ d → κ * (p : A) ^ m ∣ (p : A) ^ R → (∀ x ∈ D.om, κ • x ∈ D.om') → Module.Projective A (D.omHT (σ.comp c.toRingHom)) → (∃ (i : Module.Dual A (D.omHT (σ.comp c.toRingHom)) →ₗ[A] (Fin N → A)), D.IsDualMap σ d m i) ∧ (∀ i i', D.IsDualMap σ d m i → D.IsDualMap σ d m i' → ∀ w, ∃ x : Fin N → A, i w = i' w + ((p : A) ^ m) • x) ∧ ∀ i, D.IsDualMap σ d m i → ∃ r : (Fin N → A) →ₗ[A] Module.Dual A (D.omHT (σ.comp c.toRingHom)), ∀ w, ∃ w', r (i w) = w + ((p : A) ^ m) • w' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.dualMap_exists_unique_split
+end
+
+section
+section
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+
+namespace GlobalTheory.CompanionTheory.Ar.HT
+
+theorem q_onto_eigenpart_mod_pow : ∀ (A K : Type) [CommRing A] [Field K] [Algebra A K] [CharZero K] (hAK : Function.Injective (algebraMap A K)) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A) (σ : E →+* K) (m : ℕ), (∀ a : 𝓞 E, σ (a : E) ∈ (algebraMap A K).range) → κ * (p : A) ^ m ∣ (p : A) ^ R → (∀ x ∈ D.om, κ • x ∈ D.om') → (∀ x, D.q σ x ∈ D.omHT σ) ∧ (D.omHT σ).FG ∧ ∀ y ∈ D.omHT σ, ∃ x : Fin N → A, ∃ y' ∈ D.omHT σ, y = D.q σ x + ((p : A) ^ m) • y' :=
+  PositivityTheory.HtPt.Ga.q_surj
+
+end GlobalTheory.CompanionTheory.Ar.HT
+end
+
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_tate_chart_divisibility : ∀ (A K : Type) [CommRing A] [Field K] [Algebra A K] [CharZero K] (hAK : Function.Injective (algebraMap A K)) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (p R N : ℕ) [Fact p.Prime] (Ω : Type) [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω] (D : HTChart A K c p R N Ω) (κ : A) (σ : E →+* K) (m : ℕ), (∀ a : 𝓞 E, σ (a : E) ∈ (algebraMap A K).range) → κ * (p : A) ^ m ∣ (p : A) ^ R → (∀ x ∈ D.om, κ • x ∈ D.om') → (∀ x, D.q σ x ∈ D.omHT σ) ∧ (D.omHT σ).FG ∧ ∀ y ∈ D.omHT σ, ∃ x : Fin N → A, ∃ y' ∈ D.omHT σ, y = D.q σ x + ((p : A) ^ m) • y' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.q_onto_eigenpart_mod_pow
+end
+
+section
+section
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+
+namespace GlobalTheory.CompanionTheory.Ar.HT
+
+theorem split_exact_mod : ∀ (A : Type) [CommRing A] [IsDomain A] (P₁ P₂ : Type) [AddCommGroup P₁] [Module A P₁] [Module.Finite A P₁] [Module.Projective A P₁] [AddCommGroup P₂] [Module A P₂] [Module.Finite A P₂] [Module.Projective A P₂] (N : ℕ) (a : A) (i : P₁ →ₗ[A] (Fin N → A)) (r : (Fin N → A) →ₗ[A] P₁) (q : (Fin N → A) →ₗ[A] P₂), Module.finrank A P₁ + Module.finrank A P₂ = N → (∀ w, ∃ w', r (i w) = w + a • w') → (∀ y, ∃ x y', y = q x + a • y') → (∀ w, ∃ y, q (i w) = a • y) → ∀ x, (∃ y, q x = a • y) → ∃ w x', x = i w + a • x' :=
+  @PositivityTheory.HtPt.Gd.split_exact
+
+end GlobalTheory.CompanionTheory.Ar.HT
+end
+
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projective_split_modulo_element : ∀ (A : Type) [CommRing A] [IsDomain A] (P₁ P₂ : Type) [AddCommGroup P₁] [Module A P₁] [Module.Finite A P₁] [Module.Projective A P₁] [AddCommGroup P₂] [Module A P₂] [Module.Finite A P₂] [Module.Projective A P₂] (N : ℕ) (a : A) (i : P₁ →ₗ[A] (Fin N → A)) (r : (Fin N → A) →ₗ[A] P₁) (q : (Fin N → A) →ₗ[A] P₂), Module.finrank A P₁ + Module.finrank A P₂ = N → (∀ w, ∃ w', r (i w) = w + a • w') → (∀ y, ∃ x y', y = q x + a • y') → (∀ w, ∃ y, q (i w) = a • y) → ∀ x, (∃ y, q x = a • y) → ∃ w x', x = i w + a • x' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.split_exact_mod
+end
+
+section
 section
 open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
 
@@ -94,3 +205,4 @@ open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.chart_sequence_holds : ChartSequence := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.FinrankDualChartSequence.chartSequence
+end

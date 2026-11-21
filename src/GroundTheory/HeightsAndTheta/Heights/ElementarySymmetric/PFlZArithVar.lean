@@ -1,8 +1,27 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StatementsFlZArithVar
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.ImportsAlt
 import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StatementsFlZIdealEqCoord
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFlagArithVar
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PBlockRatioAlg
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.LowerBoundFree
+
+open ReciprocityTheory.ChartRestriction.G.Geo
+
+def FlZArithVar.Statement : Prop :=
+  ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] [Nonempty Ψ] (N : ℕ), 2 ≤ N →
+    IsArithVar (IndefiniteRowSideFullHecke.LowerBoundFree.Nine.FlZIdeal Ψ N) (IndefiniteRowSideFullHecke.LowerBoundFree.Nine.dimFl Ψ N + 1)
+
+end GroundTheory.Heights₂.Heights.LowerBoundFree
+end
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -110,3 +129,5 @@ theorem FlZArithVar.proof (h : FlZIdealEqCoord.Statement) : FlZArithVar.Statemen
   exact FlZArithVar.isArithVar_comap_rename_sigma (FlZArithVar.setIncrEquiv Ψ N) hA
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree
+end
+end

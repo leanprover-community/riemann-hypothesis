@@ -1,7 +1,237 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CharacterIntegralOrthogonality
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PeriodizationIntegralUnfolding
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ColJoinColLColR
 
+section
+section
+noncomputable section
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.EC GlobalTheory.CompanionTheory.EisUnfold
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.EisUnfold.Orth
+
+variable {D : D7}
+
+theorem trA_incA_eq (e : D.host.E) :
+    trA (incA D e) =
+      algebraMap D.host.F (AF D.host.F) (Algebra.trace D.host.F D.host.E e) := by
+  have h : LinearMap.mulLeft (AF D.host.F) (incA D e) =
+      LinearMap.baseChange (AF D.host.F) (LinearMap.mulLeft D.host.F e) := by
+    ext b
+    simp [TensorProduct.AlgebraTensorModule.curry_apply, incA, inclR, LinearMap.baseChange_tmul,
+      Algebra.TensorProduct.tmul_mul_tmul]
+  simp only [trA, Algebra.trace_apply]
+  change LinearMap.trace _ _ (LinearMap.mulLeft (AF D.host.F) (incA D e)) =
+    algebraMap _ _ (LinearMap.trace _ _ (LinearMap.mulLeft D.host.F e))
+  rw [h, LinearMap.trace_baseChange]
+
+theorem trA_smul_half (x : AF D.host.F) :
+    trA (x • half D) = x := by
+  have hE := D.host.toHostAx.der.finrank_E
+  have hF := D.host.toHostAx.der.finrank_F
+  have hpos : 0 < Module.finrank ℚ D.host.F := Module.finrank_pos
+  have htow := Module.finrank_mul_finrank ℚ D.host.F D.host.E
+  have h2 : Module.finrank D.host.F D.host.E = 2 := by
+    rw [hF] at hpos htow
+    rw [hE] at htow
+    have h4 : 2 * D.R.ord * Module.finrank D.host.F D.host.E = 2 * D.R.ord * 2 := by
+      rw [htow]; ring
+    exact Nat.eq_of_mul_eq_mul_left hpos h4
+  have hhalf : trA (half D) = 1 := by
+    rw [half, trA_incA_eq]
+    have : (1 / 2 : D.host.E) = algebraMap D.host.F D.host.E (1 / 2) := by
+      rw [map_div₀, map_one, map_ofNat]
+    rw [this, Algebra.trace_algebraMap, h2]
+    norm_num
+  have hlin : trA (x • half D) = x * trA (half D) := by
+    simp only [trA, map_smul, smul_eq_mul]
+  rw [hlin, hhalf, mul_one]
+
+theorem inner_rat_eq (V : HSp D) {s : ℕ} (q : Matrix (Fin V.rank) (Fin s) D.host.E) (y : Mx D V.rank s) :
+    GlobalTheory.StdUnn.inner V (rat q) y = rat (qᴴ * V.gram) ⬝ y := by
+  simp only [GlobalTheory.StdUnn.inner]
+  rw [← rat_conjTranspose, gA, ← Matrix.mul_assoc, ← rat_mul]
+
+theorem chi_add (ψ : AddChar (AF D.host.F) ℂ) (V : HSp D) {s : ℕ} (x y u : Mx D V.rank s) :
+    ψ (trA (Matrix.trace (GlobalTheory.StdUnn.inner V x (y + u)))) =
+      ψ (trA (Matrix.trace (GlobalTheory.StdUnn.inner V x y))) * ψ (trA (Matrix.trace (GlobalTheory.StdUnn.inner V x u))) := by
+  simp only [GlobalTheory.StdUnn.inner, Matrix.mul_add, Matrix.trace_add, trA, map_add, AddChar.map_add_eq_mul]
+
+theorem chi_rat {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) (V : HSp D) {s : ℕ}
+    (q : Matrix (Fin V.rank) (Fin s) D.host.E) {γ : Mx D V.rank s} (hγ : γ ∈ ratMx D V.rank s) :
+    ψ (trA (Matrix.trace (GlobalTheory.StdUnn.inner V (rat q) γ))) = 1 := by
+  obtain ⟨g, rfl⟩ := mem_ratMx.mp hγ
+  have htr : ∀ {n : ℕ} (M : Matrix (Fin n) (Fin n) D.host.E), Matrix.trace (rat M) = incA D (Matrix.trace M) := by
+    intro n M
+    simp [rat, Matrix.trace, map_sum]
+  rw [inner_rat_eq]
+  change ψ (trA (Matrix.trace (rat (qᴴ * V.gram) * rat g))) = 1
+  rw [← rat_mul, htr, trA_incA_eq]
+  exact hψ.2.2.1 _
+
+theorem exists_chi_ne_one {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) (V : HSp D) {s : ℕ}
+    {q : Matrix (Fin V.rank) (Fin s) D.host.E} (hq : q ≠ 0) :
+    ∃ u : Mx D V.rank s, ψ (trA (Matrix.trace (GlobalTheory.StdUnn.inner V (rat q) u))) ≠ 1 := by
+  obtain ⟨x, hx⟩ := hψ.2.2.2
+  have hM : qᴴ * V.gram ≠ 0 := by
+    intro h
+    apply hq
+    have h1 : qᴴ = 0 := by
+      rw [← Matrix.mul_nonsing_inv_cancel_right V.gram qᴴ (gram_isUnit_det V), h, Matrix.zero_mul]
+    simpa using congrArg Matrix.conjTranspose h1
+  obtain ⟨i, j, hij⟩ : ∃ i j, (qᴴ * V.gram) i j ≠ 0 := by
+    by_contra hne
+    push Not at hne
+    exact hM (Matrix.ext hne)
+  have key : ∀ (A : Mx D s V.rank) (c : AE D), Matrix.trace (A * Matrix.single j i c) = A i j * c := by
+    intro A c
+    simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.single_apply, ite_and, mul_ite, mul_zero]
+    simp [Finset.sum_ite_eq, Finset.sum_ite_eq']
+  refine ⟨Matrix.single j i (incA D ((qᴴ * V.gram) i j)⁻¹ * (x • half D)), ?_⟩
+  rw [inner_rat_eq]
+  change ψ (trA (Matrix.trace (rat (qᴴ * V.gram) *
+      Matrix.single j i (incA D ((qᴴ * V.gram) i j)⁻¹ * (x • half D))))) ≠ 1
+  rw [key, show rat (qᴴ * V.gram) i j = incA D ((qᴴ * V.gram) i j) from rfl, ← mul_assoc, ← map_mul,
+    mul_inv_cancel₀ hij, map_one, one_mul, trA_smul_half]
+  exact hx
+
+theorem orthogonality : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ (V : HSp D) (s : ℕ)
+    (μs : Measure (Mx D V.rank s)) (𝓕s : Set (Mx D V.rank s)), IsCovolOne (ratMx D V.rank s) μs 𝓕s →
+    ∀ q : Matrix (Fin V.rank) (Fin s) D.host.E,
+      (q = 0 → ∫ y in 𝓕s, ψ (trA (Matrix.trace (inner V (rat q) y))) ∂μs = 1) ∧
+      (q ≠ 0 → ∫ y in 𝓕s, ψ (trA (Matrix.trace (inner V (rat q) y))) ∂μs = 0) := by
+  intro D ψ hψ V s μs 𝓕s hcov q
+  constructor
+  · rintro rfl
+    have h0 : ∀ y : Mx D V.rank s, ψ (trA (Matrix.trace (inner V (rat (0 : Matrix (Fin V.rank) (Fin s) D.host.E)) y))) = 1 := by
+      intro y
+      simp [GlobalTheory.StdUnn.inner, rat_zero, adj_zero, trA]
+    simp_rw [h0]
+    rw [MeasureTheory.setIntegral_const]
+    simp [Measure.real, hcov.2.2]
+  · intro hq
+    obtain ⟨u, hu⟩ := exists_chi_ne_one hψ V hq
+    set φ : Mx D V.rank s → ℂ := fun y => ψ (trA (Matrix.trace (inner V (rat q) y))) with hφ
+    have hper : ∀ γ ∈ ratMx D V.rank s, ∀ a, φ (γ + a) = φ a := by
+      intro γ hγ a
+      simp only [hφ]
+      rw [chi_add, chi_rat hψ V q hγ, one_mul]
+    have h1 := covolOne_integral_add hcov φ hper u
+    have h2 : ∀ a, φ (a + u) = φ u * φ a := by
+      intro a
+      simp only [hφ]
+      rw [chi_add, mul_comm]
+    simp only [h2] at h1
+    rw [MeasureTheory.integral_const_mul] at h1
+    have h3 : (φ u - 1) * ∫ y in 𝓕s, φ y ∂μs = 0 := by rw [sub_mul, h1, one_mul, sub_self]
+    rcases mul_eq_zero.mp h3 with h | h
+    · exact absurd (sub_eq_zero.mp h) hu
+    · exact h
+
+end GlobalTheory.CompanionTheory.EisUnfold.Orth
+
+end
+end
+
+noncomputable section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.EC GlobalTheory.CompanionTheory.EisUnfold
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.character_integral_orthogonality : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ (V : HSp D) (s : ℕ)
+    (μs : Measure (Mx D V.rank s)) (𝓕s : Set (Mx D V.rank s)), IsCovolOne (ratMx D V.rank s) μs 𝓕s →
+    ∀ q : Matrix (Fin V.rank) (Fin s) D.host.E,
+      (q = 0 → ∫ y in 𝓕s, ψ (trA (Matrix.trace (inner V (rat q) y))) ∂μs = 1) ∧
+      (q ≠ 0 → ∫ y in 𝓕s, ψ (trA (Matrix.trace (inner V (rat q) y))) ∂μs = 0) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EisUnfold.Orth.orthogonality
+end
+end
+
+section
+section
+noncomputable section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.EC GlobalTheory.CompanionTheory.EisUnfold
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.EisUnfold.Lattice
+
+theorem tsum_setIntegral_sub_rat : ∀ (D : D7) (m r : ℕ) (μr : Measure (Mx D m r)) (𝓕r : Set (Mx D m r)), IsCovolOne (ratMx D m r) μr 𝓕r →
+    ∀ f : Mx D m r → ℂ, Continuous f → ∀ B : ℝ≥0, (∀ y, ∑' p : Matrix (Fin m) (Fin r) D.host.E, ‖f (y - rat p)‖ₑ ≤ B) →
+      Integrable f μr ∧ ∑' p : Matrix (Fin m) (Fin r) D.host.E, ∫ y in 𝓕r, f (y - rat p) ∂μr = ∫ t, f t ∂μr := by
+  intro D m r μr 𝓕r h f hf B hB
+  obtain ⟨hHaar, hFD, hvol⟩ := h
+  haveI := hHaar
+  haveI : BorelSpace (Mx D m r) := ⟨rfl⟩
+  haveI : Countable D.host.E :=
+    Countable.of_equiv _ (Module.finBasis ℚ D.host.E).equivFun.toEquiv.symm
+  haveI : Countable (Matrix (Fin m) (Fin r) D.host.E) :=
+    inferInstanceAs (Countable (Fin m → Fin r → D.host.E))
+  have hinc : Function.Injective (Formalism.L2.Theta.incA D) := by
+    have h0 : Function.Injective (algebraMap ↥D.host.F (AF ↥D.host.F)) :=
+      NumberField.AdeleRing.algebraMap_injective _ _
+    exact Algebra.TensorProduct.includeRight_injective h0
+  have hmem : ∀ p : Matrix (Fin m) (Fin r) D.host.E, rat p ∈ ratMx D m r :=
+    fun p => AddMonoidHom.mem_range.mpr ⟨p, rfl⟩
+  obtain ⟨e, he⟩ : ∃ e : Matrix (Fin m) (Fin r) D.host.E ≃ ratMx D m r,
+      ∀ p, ((e p : ratMx D m r) : Mx D m r) = rat p := by
+    refine ⟨Equiv.ofBijective (fun p => ⟨rat p, hmem p⟩) ⟨fun p q hpq => ?_, fun g => ?_⟩, fun p => rfl⟩
+    · have h2 : p.map (Formalism.L2.Theta.incA D) = q.map (Formalism.L2.Theta.incA D) :=
+        congrArg Subtype.val hpq
+      exact Matrix.map_injective hinc h2
+    · obtain ⟨p, hp⟩ := AddMonoidHom.mem_range.mp g.2
+      exact ⟨p, Subtype.ext hp⟩
+  haveI : Countable (ratMx D m r) := Countable.of_equiv _ e
+  haveI : VAddInvariantMeasure (ratMx D m r) (Mx D m r) μr :=
+    ⟨fun c s _ => measure_preimage_add μr (c : Mx D m r) s⟩
+  have hv : ∀ (p : Matrix (Fin m) (Fin r) D.host.E) (x : Mx D m r), -(e p) +ᵥ x = x - rat p := by
+    intro p x
+    change ((-(e p) : ratMx D m r) : Mx D m r) + x = x - rat p
+    rw [AddSubgroup.coe_neg, he]
+    exact neg_add_eq_sub (rat p) x
+  have hmeas : ∀ p : Matrix (Fin m) (Fin r) D.host.E, Measurable (fun x => ‖f (x - rat p)‖ₑ) :=
+    fun p => (hf.comp (continuous_id.sub continuous_const)).measurable.enorm
+  have hlin : ∫⁻ x, ‖f x‖ₑ ∂μr ≤ B := by
+    rw [hFD.lintegral_eq_tsum', ← e.tsum_eq]
+    simp_rw [hv]
+    rw [← lintegral_tsum (fun p => (hmeas p).aemeasurable)]
+    calc ∫⁻ x in 𝓕r, ∑' p, ‖f (x - rat p)‖ₑ ∂μr ≤ ∫⁻ _ in 𝓕r, (B : ℝ≥0∞) ∂μr :=
+          lintegral_mono fun x => hB x
+      _ = B := by rw [lintegral_const, Measure.restrict_apply_univ, hvol, mul_one]
+  have hint : Integrable f μr := ⟨hf.aestronglyMeasurable, lt_of_le_of_lt hlin ENNReal.coe_lt_top⟩
+  refine ⟨hint, ?_⟩
+  rw [hFD.integral_eq_tsum' f hint, ← e.tsum_eq]
+  simp_rw [hv]
+
+end GlobalTheory.CompanionTheory.EisUnfold.Lattice
+end
+end
+
+noncomputable section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.EC GlobalTheory.CompanionTheory.EisUnfold
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.periodization_integral_unfolding : ∀ (D : D7) (m r : ℕ) (μr : Measure (Mx D m r)) (𝓕r : Set (Mx D m r)), IsCovolOne (ratMx D m r) μr 𝓕r →
+    ∀ f : Mx D m r → ℂ, Continuous f → ∀ B : ℝ≥0, (∀ y, ∑' p : Matrix (Fin m) (Fin r) D.host.E, ‖f (y - rat p)‖ₑ ≤ B) →
+      Integrable f μr ∧ ∑' p : Matrix (Fin m) (Fin r) D.host.E, ∫ y in 𝓕r, f (y - rat p) ∂μr = ∫ t, f t ∂μr := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.EisUnfold.Lattice.tsum_setIntegral_sub_rat
+end
+end
+
+section
 noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
@@ -220,4 +450,5 @@ theorem integral_cells_eq : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsCha
 
 end GlobalTheory.CompanionTheory.EisUnfold
 
+end
 end

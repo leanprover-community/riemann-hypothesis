@@ -1,11 +1,285 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.TorMatch
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueStalkHomPadicAlgClosureValuationStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAffineOpenFiniteTypeIntOfModelStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StalkNoetherianPadicImageFiniteExtension
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsLocalHomAdicCompletionExtendStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdicCompletionRingHomExtPadicAlgClosure
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueStalkHomPadicAlgClosureValuation
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAffineOpenFiniteTypeIntOfModel
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PadicIntermediateFieldIntRingCompleteDvr
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
+open scoped TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unique_stalkHom_padicAlgClosure_valuation : ∀ (X : Scheme.{0}) (x : X) (p : ℕ) [Fact p.Prime] (y : Sp (OO p) ⟶ X), y (cPt p) = x → ∃ φ : X.presheaf.stalk x →+* OO p, IsLocalHom φ ∧ spMap φ ≫ X.fromSpecStalk x = y ∧ ∀ g : X.presheaf.stalk x →+* OO p, spMap g ≫ X.fromSpecStalk x = y → g = φ := by
+  first | exact @GlobalTheory.ValPt.exists_unique_stalk_hom | exact GlobalTheory.ValPt.exists_unique_stalk_hom | (intros; apply GlobalTheory.ValPt.exists_unique_stalk_hom <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
+open scoped TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_affineOpen_finiteType_int_of_model : ∀ (o' Ω : Type) [CommRing o'] [Field Ω] [Algebra o' Ω] [ArithBase o' Ω] (M : RatModel o' Ω) (x : M.Z), ∃ U : M.Z.Opens, IsAffineOpen U ∧ x ∈ U ∧ Algebra.FiniteType ℤ Γ(M.Z, U) := by
+  first | exact @GlobalTheory.RatModel.exists_affineOpen_finiteType_int | exact GlobalTheory.RatModel.exists_affineOpen_finiteType_int | (intros; apply GlobalTheory.RatModel.exists_affineOpen_finiteType_int <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
+open scoped TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open Classical
+
+namespace GlobalTheory
+
+theorem stalk_noetherian_and_finite_image :
+    ∀ (X : Scheme.{0}) (U : X.Opens), IsAffineOpen U → ∀ x ∈ U, Algebra.FiniteType ℤ Γ(X, U) → ∀ (p : ℕ) [Fact p.Prime] (φ : X.presheaf.stalk x →+* OO p), IsNoetherianRing (X.presheaf.stalk x) ∧ ∃ K : IntermediateField ℚ_[p] (PadicAlgCl p), FiniteDimensional ℚ_[p] K ∧ ∀ a, ((φ a : OO p) : PadicAlgCl p) ∈ K := by
+  intro X U hU x hx hft p _ φ
+  letI : Algebra Γ(X, U) (X.presheaf.stalk x) := X.presheaf.algebra_section_stalk ⟨x, hx⟩
+  have hloc := hU.isLocalization_stalk ⟨x, hx⟩
+  haveI : IsNoetherianRing Γ(X, U) := Algebra.FiniteType.isNoetherianRing ℤ Γ(X, U)
+  refine ⟨IsLocalization.isNoetherianRing (hU.primeIdealOf ⟨x, hx⟩).asIdeal.primeCompl _ this, ?_⟩
+  let ψ : X.presheaf.stalk x →+* PadicAlgCl p := (OO p).subtype.comp φ
+  let f : Γ(X, U) →+* PadicAlgCl p := ψ.comp (algebraMap Γ(X, U) (X.presheaf.stalk x))
+  obtain ⟨s, hs⟩ := hft.out
+  let K : IntermediateField ℚ_[p] (PadicAlgCl p) :=
+    IntermediateField.adjoin ℚ_[p] ((s.image f : Finset (PadicAlgCl p)) : Set (PadicAlgCl p))
+  refine ⟨K, ?_, ?_⟩
+  · exact IntermediateField.finiteDimensional_adjoin (fun y _ => Algebra.IsIntegral.isIntegral y)
+  · have hgen : ∀ r : Γ(X, U), f r ∈ K := by
+      intro r
+      have hr : r ∈ Algebra.adjoin ℤ (s : Set Γ(X, U)) := by rw [hs]; trivial
+      induction hr using Algebra.adjoin_induction with
+      | mem y hy =>
+        apply IntermediateField.subset_adjoin
+        simp only [Finset.coe_image]
+        exact Set.mem_image_of_mem f hy
+      | algebraMap n =>
+        have : f (algebraMap ℤ Γ(X, U) n) = (n : PadicAlgCl p) := by simp
+        rw [this]; exact K.intCast_mem n
+      | add a b _ _ ha hb => rw [map_add]; exact K.add_mem ha hb
+      | mul a b _ _ ha hb => rw [map_mul]; exact K.mul_mem ha hb
+    intro a
+    obtain ⟨⟨r, t⟩, rfl⟩ := IsLocalization.mk'_surjective
+      (hU.primeIdealOf ⟨x, hx⟩).asIdeal.primeCompl a
+    have hspec := IsLocalization.mk'_spec (X.presheaf.stalk x) r t
+    have hunit : IsUnit (algebraMap Γ(X, U) (X.presheaf.stalk x) t) := IsLocalization.map_units _ t
+    have hne : f t ≠ 0 := (hunit.map ψ).ne_zero
+    have heq : ψ (IsLocalization.mk' (X.presheaf.stalk x) r t) =
+        f r * (f t)⁻¹ := by
+      have h2 := congrArg ψ hspec
+      rw [map_mul] at h2
+      change ψ _ * f t = f r at h2
+      rw [← h2, _root_.mul_assoc, mul_inv_cancel₀ hne, _root_.mul_one]
+    change ψ _ ∈ K
+    rw [heq]
+    exact K.mul_mem (hgen r) (K.inv_mem (hgen t))
+
+end GlobalTheory
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
+open scoped TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stalk_noetherian_padicImage_finiteExtension : ∀ (X : Scheme.{0}) (U : X.Opens), IsAffineOpen U → ∀ x ∈ U, Algebra.FiniteType ℤ Γ(X, U) → ∀ (p : ℕ) [Fact p.Prime] (φ : X.presheaf.stalk x →+* OO p), IsNoetherianRing (X.presheaf.stalk x) ∧ ∃ K : IntermediateField ℚ_[p] (PadicAlgCl p), FiniteDimensional ℚ_[p] K ∧ ∀ a, ((φ a : OO p) : PadicAlgCl p) ∈ K := by
+  atlas_forward_decl GlobalTheory.stalk_noetherian_and_finite_image
+end
+
+section
+open IsLocalRing
+
+namespace GlobalTheory
+
+theorem exists_isLocalHom_adicCompletion_extend (O : Type) [CommRing O] [IsLocalRing O]
+    [IsNoetherianRing O] (V : Type) [CommRing V] [IsLocalRing V]
+    [IsAdicComplete (maximalIdeal V) V] (ψ : O →+* V) (hψ : IsLocalHom ψ) :
+    ∃ ev₀ : AdicCompletion (maximalIdeal O) O →+* V,
+      IsLocalHom ev₀ ∧ ∀ a, ev₀ (algebraMap O _ a) = ψ a := by
+  have h1 : maximalIdeal O ≤ (maximalIdeal V).comap ψ :=
+    (IsLocalRing.maximalIdeal_comap ψ).ge
+  have hn : ∀ n : ℕ, maximalIdeal O ^ n ≤ (maximalIdeal V ^ n).comap ψ := fun n =>
+    (Ideal.pow_right_mono h1 n).trans (Ideal.le_comap_pow ψ n)
+  let f : (n : ℕ) → AdicCompletion (maximalIdeal O) O →+* V ⧸ maximalIdeal V ^ n := fun n =>
+    (Ideal.quotientMap _ ψ (hn n)).comp (AdicCompletion.evalₐ (maximalIdeal O) n : _ →+* _)
+  have hf : ∀ {m n : ℕ} (hle : m ≤ n),
+      (Ideal.Quotient.factorPow (maximalIdeal V) hle).comp (f n) = f m := by
+    intro m n hle
+    refine RingHom.ext fun x => ?_
+    obtain ⟨c, rfl⟩ := AdicCompletion.mk_surjective _ _ x
+    simp only [f, RingHom.comp_apply, RingHom.coe_coe, AdicCompletion.evalₐ_mk,
+      Ideal.quotientMap_mk, Ideal.Quotient.factorPow, Ideal.Quotient.factor_mk]
+    rw [Ideal.Quotient.eq, ← map_sub]
+    apply hn m
+    have := c.2 hle
+    rw [SModEq.sub_mem] at this
+    have h2 := neg_mem this
+    simpa using h2
+  have hev : ∀ a, IsAdicComplete.liftRingHom (maximalIdeal V) f hf (algebraMap O _ a) = ψ a := by
+    intro a
+    refine congrFun (IsHausdorff.funext' (maximalIdeal V)
+      (f := fun a => IsAdicComplete.liftRingHom (maximalIdeal V) f hf (algebraMap O _ a))
+      (g := fun a => ψ a) fun n b => ?_) a
+    rw [IsAdicComplete.mk_liftRingHom]
+    simp only [f, RingHom.comp_apply, RingHom.coe_coe, AlgHom.commutes]
+    exact Ideal.quotientMap_mk
+  refine ⟨IsAdicComplete.liftRingHom (maximalIdeal V) f hf, ?_, hev⟩
+  apply ((IsLocalRing.local_hom_TFAE _).out 0 2).mpr
+  rw [AdicCompletion.maximalIdeal_eq_map, Ideal.map_map, Ideal.map_le_iff_le_comap]
+  intro a ha
+  rw [Ideal.mem_comap, RingHom.comp_apply, hev]
+  exact h1 ha
+
+end GlobalTheory
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
+open scoped TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isLocalHom_adicCompletion_extension_apply : ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] (V : Type) [CommRing V] [IsLocalRing V] [IsAdicComplete (maximalIdeal V) V] (ψ : O →+* V), IsLocalHom ψ → ∃ ev₀ : AdicCompletion (maximalIdeal O) O →+* V, IsLocalHom ev₀ ∧ ∀ a, ev₀ (algebraMap O _ a) = ψ a := by
+  atlas_forward_decl GlobalTheory.exists_isLocalHom_adicCompletion_extend
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
+open scoped TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open Classical
+
+namespace GlobalTheory.AdicExt
+
+def ballIdeal {R K : Type} [CommRing R] [NormedField K] [IsUltrametricDist K] (φ : R →+* K)
+    (hφ : ∀ x, ‖φ x‖ ≤ 1) (c : ℝ) (hc : 0 ≤ c) : Ideal R where
+  carrier := {x | ‖φ x‖ ≤ c}
+  zero_mem' := by simpa using hc
+  add_mem' := fun {a b} ha hb => by
+    simp only [Set.mem_ofPred_eq, map_add] at *
+    exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ha hb)
+  smul_mem' := fun a b hb => by
+    simp only [Set.mem_ofPred_eq, smul_eq_mul, map_mul, norm_mul] at *
+    exact (mul_le_of_le_one_left (norm_nonneg _) (hφ a)).trans hb
+
+theorem mem_ballIdeal {R K : Type} [CommRing R] [NormedField K] [IsUltrametricDist K] {φ : R →+* K}
+    {hφ : ∀ x, ‖φ x‖ ≤ 1} {c : ℝ} {hc : 0 ≤ c} {x : R} : x ∈ ballIdeal φ hφ c hc ↔ ‖φ x‖ ≤ c := Iff.rfl
+
+theorem exists_bound {R K : Type} [CommRing R] [NormedField K] [IsUltrametricDist K] (φ : R →+* K)
+    (hφ : ∀ x, ‖φ x‖ ≤ 1) (I : Ideal R) (hI : I.FG) (h : ∀ x ∈ I, ‖φ x‖ < 1) :
+    ∃ c : ℝ, 0 ≤ c ∧ c < 1 ∧ ∀ n : ℕ, ∀ x ∈ I ^ n, ‖φ x‖ ≤ c ^ n := by
+  obtain ⟨s, rfl⟩ := hI
+  obtain ⟨c, hc0, hc1, hs⟩ : ∃ c : ℝ, 0 ≤ c ∧ c < 1 ∧ ∀ x ∈ s, ‖φ x‖ ≤ c := by
+    refine ⟨(s.sup fun x => ‖φ x‖₊ : NNReal), NNReal.coe_nonneg _, ?_, fun x hx => ?_⟩
+    · have : (s.sup fun x => ‖φ x‖₊ : NNReal) < 1 :=
+        (Finset.sup_lt_iff (by simp)).2 fun x hx => h x (Ideal.subset_span hx)
+      exact_mod_cast this
+    · have : ‖φ x‖₊ ≤ (s.sup fun x => ‖φ x‖₊ : NNReal) := Finset.le_sup (f := fun x => ‖φ x‖₊) hx
+      exact_mod_cast this
+  have h1 : Ideal.span (s : Set R) ≤ ballIdeal φ hφ c hc0 := Ideal.span_le.2 fun x hx => hs x hx
+  refine ⟨c, hc0, hc1, fun n => ?_⟩
+  induction n with
+  | zero => intro x _; simpa using hφ x
+  | succ n ih =>
+    have : Ideal.span (s : Set R) ^ (n + 1) ≤ ballIdeal φ hφ (c ^ (n + 1)) (pow_nonneg hc0 _) := by
+      rw [pow_succ, Ideal.mul_le]
+      intro a ha b hb
+      rw [mem_ballIdeal, map_mul, norm_mul, pow_succ]
+      exact mul_le_mul (ih a ha) (h1 hb) (norm_nonneg _) (pow_nonneg hc0 _)
+    exact fun x hx => this hx
+
+theorem norm_le_of_mem_smul_top {R A K : Type} [CommRing R] [CommRing A] [Algebra R A] [NormedField K]
+    [IsUltrametricDist K] (F : A →+* K) (hF : ∀ x, ‖F x‖ ≤ 1) (J : Ideal R) (c : ℝ) (hc : 0 ≤ c)
+    (h : ∀ x ∈ J, ‖F (algebraMap R A x)‖ ≤ c) (y : A) (hy : y ∈ J • (⊤ : Submodule R A)) :
+    ‖F y‖ ≤ c := by
+  refine Submodule.smul_induction_on (p := fun y => ‖F y‖ ≤ c) hy (fun a ha w _ => ?_) (fun a b ha hb => ?_)
+  · rw [Algebra.smul_def, map_mul, norm_mul]
+    exact (mul_le_of_le_one_right (norm_nonneg _) (hF w)).trans (h a ha)
+  · rw [map_add]
+    exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ha hb)
+
+theorem ringHom_ext_of_norm {R K : Type} [CommRing R] [NormedField K] [IsUltrametricDist K]
+    (I : Ideal R) (hI : I.FG) (F G : AdicCompletion I R →+* K) (hF : ∀ x, ‖F x‖ ≤ 1) (hG : ∀ x, ‖G x‖ ≤ 1)
+    (h : ∀ x ∈ I, ‖F (algebraMap R _ x)‖ < 1) (e : ∀ a, F (algebraMap R _ a) = G (algebraMap R _ a)) :
+    F = G := by
+  obtain ⟨c, hc0, hc1, hc⟩ := exists_bound (F.comp (algebraMap R _)) (fun x => hF _) I hI h
+  ext r
+  have key : ∀ n : ℕ, ‖F r - G r‖ ≤ c ^ n := by
+    intro n
+    obtain ⟨a, ha⟩ := Submodule.Quotient.mk_surjective _ (AdicCompletion.eval I R n r)
+    have hm : r - algebraMap R _ a ∈ I ^ n • (⊤ : Submodule R (AdicCompletion I R)) := by
+      rw [AdicCompletion.pow_smul_top_eq_ker_eval hI, LinearMap.mem_ker, map_sub, ← ha, sub_eq_zero]
+      rfl
+    have h1 := norm_le_of_mem_smul_top F hF _ _ (pow_nonneg hc0 n) (hc n) _ hm
+    have h2 := norm_le_of_mem_smul_top G hG _ _ (pow_nonneg hc0 n)
+      (fun x hx => by rw [← e]; exact hc n x hx) _ hm
+    have : F r - G r = F (r - algebraMap R _ a) + - G (r - algebraMap R _ a) := by
+      rw [map_sub, map_sub, e]; ring
+    rw [this]
+    exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le h1 (by rwa [norm_neg]))
+  have := ge_of_tendsto' (tendsto_pow_atTop_nhds_zero_of_lt_one hc0 hc1) key
+  exact sub_eq_zero.1 (norm_le_zero_iff.1 this)
+
+theorem completion_ringHom_ext : ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] (p : ℕ) [Fact p.Prime] (f g : AdicCompletion (maximalIdeal O) O →+* OO p), IsLocalHom (f.comp (algebraMap O _)) → (∀ a, f (algebraMap O _ a) = g (algebraMap O _ a)) → f = g := by
+  intro O _ _ _ p _ f g hf e
+  have := ringHom_ext_of_norm (maximalIdeal O) (maximalIdeal O).fg_of_isNoetherianRing
+    ((OO p).subtype.comp f) ((OO p).subtype.comp g)
+    (fun x => (mem_OO_iff _).1 (f x).2) (fun x => (mem_OO_iff _).1 (g x).2)
+    (fun x hx => (not_isUnit_OO_iff _).1 fun hu =>
+      (IsLocalRing.mem_maximalIdeal x).1 hx (hf.map_nonunit x hu))
+    (fun a => congrArg Subtype.val (e a))
+  ext r
+  exact RingHom.congr_fun this r
+
+end GlobalTheory.AdicExt
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
+open scoped CategoryTheory.Obj
+open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
+open scoped TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adicCompletion_ringHom_ext_padicAlgClosure : ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] (p : ℕ) [Fact p.Prime] (f g : AdicCompletion (maximalIdeal O) O →+* OO p), IsLocalHom (f.comp (algebraMap O _)) → (∀ a, f (algebraMap O _ a) = g (algebraMap O _ a)) → f = g := by
+  atlas_forward_decl GlobalTheory.AdicExt.completion_ringHom_ext
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
@@ -79,3 +353,4 @@ theorem extend_completion : ∀ (o' Ω : Type) [CommRing o'] [Field Ω] [Algebra
     simpa using this
 
 end GlobalTheory.ClassicalPt
+end

@@ -1,8 +1,29 @@
 import Formalism.GaussJetBounds.StatementO
 import Formalism.GaussJetBounds.OneLetterRadius
 import Formalism.GaussJetBounds.GaussJetProofs.LemmaRA
-import Formalism.GaussJetBounds.GaussJetProofs.WeightsAddOverOrbits
+import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
+import Formalism.IncomingBounds.WeightIdentities
 
+section
+noncomputable section
+open scoped BigOperators
+
+universe u v w
+
+namespace Formalism.DworkPowerSeriesWeights
+
+open Formalism.IncomingBounds
+
+theorem coreL_dot_fintype {ι : Type v} [Fintype ι] (n : ι →₀ ℕ) (r : ι → ℝ) :
+    dot n r = ∑ i, (n i : ℝ) * r i := by
+  unfold dot
+  exact Finsupp.sum_fintype _ _ (by simp)
+
+end Formalism.DworkPowerSeriesWeights
+end
+end
+
+section
 noncomputable section
 open scoped BigOperators
 
@@ -87,3 +108,5 @@ theorem lemma_R_core_log_loss : RCoreA.{u, v} := by
       linarith
 
 end Formalism.DworkPowerSeriesWeights
+end
+end

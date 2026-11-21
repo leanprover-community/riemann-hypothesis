@@ -1,6 +1,179 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.StepChartsPlacesFirstFactorEqStepZero
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsUnifAt
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SameOffRefl
+import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtOne
+import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.ToLEInvApply
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsMidLevIff
+import BuildAid.ForwardExisting
 
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.UG Formalism.L2.DIV Formalism.L2.G.Pend Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat GlobalTheory.TwV GlobalTheory.TwV.Xc TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.TwV.Xc
+
+open Topology Filter
+
+theorem adic_ringEquiv_eq_self {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F))
+    (ψ : w.adicCompletion F ≃+* w.adicCompletion F)
+    (hF : ∀ a : F, ψ (algebraMap F _ a) = algebraMap F _ a)
+    (hO : ∀ y, y ∈ w.adicCompletionIntegers F ↔ ψ y ∈ w.adicCompletionIntegers F) (y : w.adicCompletion F) :
+    ψ y = y := by
+  have hval : ∀ b : F, Valued.v (algebraMap F (w.adicCompletion F) b) = w.valuation F b := by
+    intro b
+    rw [HeightOneSpectrum.algebraMap_adicCompletion]
+    simp [HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
+
+  have hcmp : ∀ (b : F) (u : w.adicCompletion F), b ≠ 0 →
+      (Valued.v u ≤ Valued.v (algebraMap F (w.adicCompletion F) b) ↔
+        Valued.v (ψ u) ≤ Valued.v (algebraMap F (w.adicCompletion F) b)) := by
+    intro b u hb
+    have hb' : (algebraMap F (w.adicCompletion F) b) ≠ 0 := by simpa using hb
+    have hpos : 0 < Valued.v (algebraMap F (w.adicCompletion F) b) :=
+      zero_lt_iff.2 ((Valuation.ne_zero_iff _).2 hb')
+    have h1 := hO (u / algebraMap F _ b)
+    rw [map_div₀, hF, HeightOneSpectrum.mem_adicCompletionIntegers,
+      HeightOneSpectrum.mem_adicCompletionIntegers, map_div₀, map_div₀, div_le_one₀ hpos,
+      div_le_one₀ hpos] at h1
+    exact h1
+
+  have hball : ∀ (b : F) (z : w.adicCompletion F), b ≠ 0 →
+      {x : w.adicCompletion F | Valued.v (x - z) ≤ Valued.v (algebraMap F (w.adicCompletion F) b)} ∈ 𝓝 z := by
+    intro b z hb
+    set t := algebraMap F (w.adicCompletion F) b
+    have ht : t ≠ 0 := by simpa [t] using hb
+    have hpos : 0 < Valued.v t := zero_lt_iff.2 ((Valuation.ne_zero_iff _).2 ht)
+    have hc : Continuous fun x : w.adicCompletion F => (x - z) / t := by fun_prop
+    have ho := (Valued.isOpen_valuationSubring (w.adicCompletion F)).preimage hc
+    refine mem_of_superset (ho.mem_nhds ?_) ?_
+    · show (z - z) / t ∈ Valued.v.valuationSubring
+      rw [sub_self, zero_div]; exact zero_mem _
+    · intro x hx
+      have hx' : Valued.v ((x - z) / t) ≤ 1 := hx
+      rw [map_div₀, div_le_one₀ hpos] at hx'
+      exact hx'
+  by_contra hne
+  have hz0 : ψ y - y ≠ 0 := sub_ne_zero.mpr hne
+  have hvz : Valued.v (ψ y - y) ≠ 0 := (Valuation.ne_zero_iff _).2 hz0
+  obtain ⟨b, hb⟩ := HeightOneSpectrum.valuation_surjective F w (Valued.v (ψ y - y) * WithZero.exp (-1 : ℤ))
+  have hb0 : b ≠ 0 := by
+    rintro rfl
+    simp only [map_zero] at hb
+    exact (mul_ne_zero hvz WithZero.exp_ne_zero) hb.symm
+  have hbv : Valued.v (algebraMap F (w.adicCompletion F) b) < Valued.v (ψ y - y) := by
+    rw [hval, hb]
+    exact mul_lt_of_lt_one_right (zero_lt_iff.2 hvz) (by have h : (WithZero.exp (1:ℤ))⁻¹ < 1 := compareOfLessAndEq_eq_lt.mp rfl; simpa using h)
+  obtain ⟨_, hx, a, rfl⟩ := mem_closure_iff_nhds.1
+    ((HeightOneSpectrum.denseRange_algebraMap F w) y) _ (hball b y hb0)
+  have h1 : Valued.v (y - algebraMap F _ a) ≤ Valued.v (algebraMap F (w.adicCompletion F) b) := by
+    rw [← Valuation.map_neg, neg_sub]; exact hx
+  have h2 := (hcmp b _ hb0).1 h1
+  rw [map_sub, hF] at h2
+  have h3 : ψ y - y = (ψ y - algebraMap F _ a) - (y - algebraMap F _ a) := by ring
+  have h4 := Valuation.map_sub Valued.v (ψ y - algebraMap F _ a) (y - algebraMap F _ a)
+  rw [← h3] at h4
+  exact absurd (h4.trans (max_le h2 h1)) (not_le.2 hbv)
+
+end GlobalTheory.TwV.Xc
+
+namespace GlobalTheory.TwV.Xc
+
+theorem firstFactor_agree : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (W Q : Type) [CommRing W] [Field Q] [Algebra W Q] (w w' : HeightOneSpectrum (𝓞 F)) (e : Q ≃+* w.adicCompletion F) (e' : Q ≃+* w'.adicCompletion F) (φ : E ⊗[F] w.adicCompletion F →+* w.adicCompletion F) (φ' : E ⊗[F] w'.adicCompletion F →+* w'.adicCompletion F), (∀ c, φ ((1 : E) ⊗ₜ[F] c) = c) → (∀ c, φ' ((1 : E) ⊗ₜ[F] c) = c) → (∀ x : Q, x ∈ Set.range (algebraMap W Q) ↔ e x ∈ w.adicCompletionIntegers F) → (∀ x : Q, x ∈ Set.range (algebraMap W Q) ↔ e' x ∈ w'.adicCompletionIntegers F) → (∀ a : E, e.symm (φ (a ⊗ₜ[F] 1)) = e'.symm (φ' (a ⊗ₜ[F] 1))) → w = w' ∧ ∀ x : AfE F E, e.symm (φ (prV (E := E) w x)) = e'.symm (φ' (prV (E := E) w' x)) := by
+  intro F E _ _ _ _ _ W Q _ _ _ w w' e e' φ φ' hφ hφ' hW hW' hE
+  have hF : ∀ a : F, e.symm (algebraMap F _ a) = e'.symm (algebraMap F _ a) := by
+    intro a
+    have h := hE (algebraMap F E a)
+    have h1 : (algebraMap F E a) ⊗ₜ[F] (1 : w.adicCompletion F) = (1 : E) ⊗ₜ[F] algebraMap F _ a := by
+      rw [Algebra.algebraMap_eq_smul_one, TensorProduct.smul_tmul, Algebra.algebraMap_eq_smul_one]
+    have h2 : (algebraMap F E a) ⊗ₜ[F] (1 : w'.adicCompletion F) = (1 : E) ⊗ₜ[F] algebraMap F _ a := by
+      rw [Algebra.algebraMap_eq_smul_one, TensorProduct.smul_tmul, Algebra.algebraMap_eq_smul_one]
+    rwa [h1, h2, hφ, hφ'] at h
+  have hO : ∀ x : Q, e x ∈ w.adicCompletionIntegers F ↔ e' x ∈ w'.adicCompletionIntegers F :=
+    fun x => (hW x).symm.trans (hW' x)
+  have hval : ∀ (v : HeightOneSpectrum (𝓞 F)) (b : F),
+      Valued.v (algebraMap F (v.adicCompletion F) b) = v.valuation F b := by
+    intro v b
+    rw [HeightOneSpectrum.algebraMap_adicCompletion]
+    simp [HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
+  have hww : w = w' := by
+    by_contra hne
+    have hle : ¬ w.asIdeal ≤ w'.asIdeal := fun h =>
+      hne (HeightOneSpectrum.ext (w.isMaximal.eq_of_le w'.isPrime.ne_top h))
+    obtain ⟨b, hbw, hbw'⟩ := Set.not_subset.1 hle
+    have key := hO (e.symm (algebraMap F _ (algebraMap (𝓞 F) F b)⁻¹))
+    rw [RingEquiv.apply_symm_apply, hF, RingEquiv.apply_symm_apply,
+      HeightOneSpectrum.mem_adicCompletionIntegers, HeightOneSpectrum.mem_adicCompletionIntegers,
+      hval, hval, map_inv₀, map_inv₀, HeightOneSpectrum.valuation_of_algebraMap,
+      HeightOneSpectrum.valuation_of_algebraMap, HeightOneSpectrum.intValuation_eq_one_iff.2 hbw', inv_one] at key
+    have h1 : w.intValuation b < 1 := (HeightOneSpectrum.intValuation_lt_one_iff_mem w b).2 hbw
+    have h0 : w.intValuation b ≠ 0 :=
+      HeightOneSpectrum.intValuation_ne_zero w b (fun h => hbw' (h ▸ w'.asIdeal.zero_mem))
+    have := key.2 le_rfl
+    exact absurd this (not_le.2 ((one_lt_inv₀ (zero_lt_iff.2 h0)).2 h1))
+  subst hww
+  refine ⟨rfl, ?_⟩
+  have hψ := adic_ringEquiv_eq_self w (e.symm.trans e') (fun a => by simp [hF a])
+    (fun y => by simpa using hO (e.symm y))
+  have hc : ∀ c, e.symm c = e'.symm c := fun c => by
+    have h := hψ c
+    simp only [RingEquiv.trans_apply] at h
+    rw [← e'.symm_apply_apply (e.symm c), h]
+  intro x
+  generalize prV (E := E) w x = t
+  induction t using TensorProduct.induction_on with
+  | zero => simp
+  | tmul a c =>
+      have : a ⊗ₜ[F] c = (a ⊗ₜ[F] (1 : w.adicCompletion F)) * ((1 : E) ⊗ₜ[F] c) := by
+        simp [Algebra.TensorProduct.tmul_mul_tmul]
+      rw [this, map_mul, map_mul, map_mul, map_mul, hφ, hφ', hE a, hc]
+  | add x y hx hy => simp [map_add, hx, hy]
+
+end GlobalTheory.TwV.Xc
+
+end
+end
+
+section
+section
+open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.MainNotions.G.KAat Formalism.MainNotions.G.CmpJ Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.L2.DIV Formalism.UG Formalism.L2.Ker Formalism.L2.G.Pend Formalism.L2.PairingIndexBounds.F Formalism.L2.KerInert GlobalTheory.TwV GlobalTheory.TwV.Xc TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.TwV.Xc
+
+set_option maxHeartbeats 4000000 in
+
+theorem chart_places_firstFactor_eq_zero :
+    Sites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fact (D.what₂.places.resChar w).Prime] {std t J} S =>
+      ∀ j (hj : j + 1 ≤ D.R.m) (β : (I.at' j hj).st.Ch) v, ((I.at' j hj).st.loc β).pl v = (A0 J).pl v ∧
+        ∀ x, phiA ((I.at' j hj).st.loc β) v x = phiA (A0 J) v x) := by
+  intro D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X _ std t J S _hD _hS j hj β v
+  refine ⟨J.pl j hj β v, ?_⟩
+  have h := firstFactor_agree D.host.F D.host.E _ _ (((I.at' j hj).st.loc β).pl v).1 ((A0 J).pl v).1
+    (((I.at' j hj).st.loc β).eQ v) ((A0 J).eQ v) (((I.at' j hj).st.loc β).ph v) ((A0 J).ph v)
+    (fun c => by
+      show ((((I.at' j hj).st.loc β).spl v) ((1 : D.host.E) ⊗ₜ[D.host.F] c)).1 = c
+      rw [J.alg j hj β v c])
+    (fun c => by
+      show (((A0 J).spl v) ((1 : D.host.E) ⊗ₜ[D.host.F] c)).1 = c
+      rw [J.alg0 v c])
+    ((H.core j hj β).int v) (J.one.int v)
+    (fun a => by
+      have h1 := RingHom.congr_fun (J.iw j hj β v) a
+      exact h1)
+  exact h.2
+
+end GlobalTheory.TwV.Xc
+end
+
+open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.MainNotions.G.KAat Formalism.MainNotions.G.CmpJ Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.L2.DIV Formalism.UG Formalism.L2.Ker Formalism.L2.G.Pend Formalism.L2.PairingIndexBounds.F Formalism.L2.KerInert GlobalTheory.TwV GlobalTheory.TwV.Xc TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stepCharts_places_firstFactor_eq_stepZero : Sites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fact (D.what₂.places.resChar w).Prime] {std t J} S => ∀ j (hj : j + 1 ≤ D.R.m) (β : (I.at' j hj).st.Ch) v, ((I.at' j hj).st.loc β).pl v = (A0 J).pl v ∧ ∀ x, phiA ((I.at' j hj).st.loc β) v x = phiA (A0 J) v x) := by
+  atlas_forward_decl GlobalTheory.TwV.Xc.chart_places_firstFactor_eq_zero
+end
+
+section
 section
 open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.MainNotions.G.KAat Formalism.MainNotions.G.CmpJ Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.L2.DIV Formalism.UG Formalism.L2.Ker Formalism.L2.G.Pend Formalism.L2.PairingIndexBounds.F Formalism.L2.KerInert GlobalTheory.TwV GlobalTheory.TwV.Xc TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -134,3 +307,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.lattice_det_mem_U1_and_ordA_eq_neg_len : Sites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fact (D.what₂.places.resChar w).Prime] {std t J} S => ∀ j (hj : j ≤ D.R.m) (La : (sysS H X std).Lt j), ((sysS H X std).Pj j).IsLatTup La.2 → (J.fd std).dt j La ∈ U1 (sigD D) ∧ ∀ v : (sysS H X std).Pl, ordA (A0 J) v ((J.fd std).dt j La) = -len (sysS H X std) v j La.2) := by
   atlas_forward_decl GlobalTheory.TwV.Xc.latticeTuplePoint_det_normOne_order_eq_neg_length
+end

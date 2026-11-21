@@ -1,11 +1,1339 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.PartFixed
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockGaussianReadingDifferentiable
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockGaussianJetsAtOriginEqFockVectors
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockBargmannReproducingFormula
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralBargmannEqZeroOfMoments
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockRealPointTransportContinuousIntegralStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LamF
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FoldrHolDEqIteratedFDeriv
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LieAlgebrasAtPlaceActFockVectorsByFockOperators
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PureTensorOZeroEqJetP
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConjMono
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormFockLSqLe
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSumTaylorCoordinateSpaceEntire
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegrableMonomialMulConjComplexGaussian
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockRealPointTransportContinuousIntegral
 
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+noncomputable section
+
+namespace GlobalTheory.FockTransl.Jet
+
+open Complex
+
+variable {D : D7}
+
+theorem map_inv_ringHom {K L : Type} [Field K] [Field L] (f : K →+* L) {n : ℕ} (M : Matrix (Fin n) (Fin n) K) :
+    (M⁻¹).map f = (M.map f)⁻¹ := by
+  have h1 : M.adjugate.map f = (M.map f).adjugate := by
+    have := RingHom.map_adjugate f M; simpa [RingHom.mapMatrix_apply] using this
+  have h2 : (M.map f).det = f M.det := by
+    have := RingHom.map_det f M; simpa [RingHom.mapMatrix_apply] using this.symm
+  rw [Matrix.inv_def, Matrix.inv_def, Matrix.map_smul' _ _ _ (map_mul f), h1, h2, Ring.inverse_eq_inv',
+    Ring.inverse_eq_inv', map_inv₀]
+
+theorem formAt_eq_omAt (S T : HSp D) (τ : D.what₂.Tau) (x y : Matrix (Fin T.rank) (Fin S.rank) ℂ) :
+    GlobalTheory.OrientedHeis.formAt S T τ x y = GlobalTheory.VacUnique.omAt S T τ x y := by
+  unfold GlobalTheory.OrientedHeis.formAt GlobalTheory.VacUnique.omAt GlobalTheory.VacUnique.hAt
+  congr 3
+  rw [gramAt, gramAt, ← map_inv_ringHom]
+  simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.map_apply, Matrix.conjTranspose_apply,
+    Finset.sum_mul, RCLike.star_def]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [Finset.sum_comm]
+  conv_rhs => rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  rw [Finset.sum_comm]
+
+theorem omF_eq {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (z e : VCx D.what₂.Tau S.rank T.rank) :
+    omF A B z e = GlobalTheory.VacUnique.omO S T (fmR A B z) (fmR A B e) := by
+  rw [GlobalTheory.VacUnique.omO_apply]
+  exact Finset.sum_congr rfl fun τ _ => formAt_eq_omAt S T τ _ _
+
+theorem cplxO_smulC' {m n : ℕ} (s : Matrix (Fin n) (Fin n) ℂ) (t : Matrix (Fin m) (Fin m) ℂ) (c : ℂ)
+    (x : Matrix (Fin m) (Fin n) ℂ) : cplxO s t (c • x) = c • cplxO s t x := by
+  simp only [cplxO, Matrix.mul_smul, Matrix.smul_mul]
+  exact smul_comm _ _ _
+
+theorem cplxO_sum' {m n p q : ℕ} (s : Matrix (Fin n) (Fin n) ℂ) (t : Matrix (Fin m) (Fin m) ℂ)
+    (x : Fin p → Fin q → Matrix (Fin m) (Fin n) ℂ) :
+    cplxO s t (∑ i, ∑ j, x i j) = ∑ i, ∑ j, cplxO s t (x i j) := by
+  simp only [cplxO, Matrix.mul_sum, Matrix.sum_mul, Finset.smul_sum]
+
+theorem fmR_I {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (z : VCx D.what₂.Tau S.rank T.rank) :
+    fmR A B (I • z) = GlobalTheory.VacUnique.jO S T A.cart B.cart (fmR A B z) := by
+  funext τ
+  show fockMat A B τ ((I • z) τ) = cplxO (A.cart τ) (B.cart τ) (fockMat A B τ (z τ))
+  have hs := (GlobalTheory.ArchRec.LieAtPlace.cart_isCartanInv A τ).1
+  have ht := (GlobalTheory.ArchRec.LieAtPlace.cart_isCartanInv B τ).1
+  unfold fockMat
+  rw [cplxO_sum']
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  rw [GlobalTheory.VacUnique.cplxO_add, cplxO_smulC', cplxO_smulC', GlobalTheory.RealSymplForm.cplxO_cplxO hs ht]
+  have e1 : ((I • z) τ i j).re = -(z τ i j).im := by simp
+  have e2 : ((I • z) τ i j).im = (z τ i j).re := by simp
+  rw [e1, e2]
+  simp only [smul_neg, Complex.ofReal_neg, neg_smul]
+  abel
+
+theorem fmR_add {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (z w : VCx D.what₂.Tau S.rank T.rank) :
+    fmR A B (z + w) = fmR A B z + fmR A B w := by
+  funext τ
+  show fockMat A B τ (z τ + w τ) = fockMat A B τ (z τ) + fockMat A B τ (w τ)
+  simp only [fockMat, Pi.add_apply, Complex.add_re, Complex.add_im, Complex.ofReal_add, add_smul,
+    ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  abel
+
+theorem fmR_smul {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (c : ℝ) (z : VCx D.what₂.Tau S.rank T.rank) :
+    fmR A B (c • z) = c • fmR A B z := by
+  funext τ
+  show fockMat A B τ (c • z τ) = c • fockMat A B τ (z τ)
+  simp only [fockMat, Pi.smul_apply, Complex.smul_re, Complex.smul_im, smul_eq_mul, Complex.ofReal_mul,
+    mul_smul, Finset.smul_sum, smul_add]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  simp only [Complex.coe_smul]
+
+theorem omF_add {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (z w e : VCx D.what₂.Tau S.rank T.rank) :
+    omF A B (z + w) e = omF A B z e + omF A B w e := by
+  rw [omF_eq, omF_eq, omF_eq, fmR_add, map_add, LinearMap.add_apply]
+
+theorem omF_smul {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (c : ℝ) (z e : VCx D.what₂.Tau S.rank T.rank) :
+    omF A B (c • z) e = c * omF A B z e := by
+  rw [omF_eq, omF_eq, fmR_smul, map_smul, LinearMap.smul_apply, smul_eq_mul]
+
+theorem omF_I {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (z e : VCx D.what₂.Tau S.rank T.rank) :
+    omF A B (I • z) e = -omF A B z (I • e) := by
+  obtain ⟨hJJ, -, hinv, -⟩ := GlobalTheory.RealSymplForm.form_alt_inv_def D S T A.cart B.cart
+    (GlobalTheory.ArchRec.LieAtPlace.cart_isCartanInv A) (GlobalTheory.ArchRec.LieAtPlace.cart_isCartanInv B)
+  rw [omF_eq, omF_eq, fmR_I, fmR_I]
+  set J := GlobalTheory.VacUnique.jO S T A.cart B.cart
+  set x := fmR A B z
+  set y := fmR A B e
+  have hy : y = -J (J y) := by rw [hJJ, neg_neg]
+  conv_lhs => rw [hy]
+  rw [map_neg, hinv]
+
+theorem omF_I_I {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (z e : VCx D.what₂.Tau S.rank T.rank) :
+    omF A B (I • z) (I • e) = omF A B z e := by
+  rw [omF_I, smul_smul, I_mul_I, neg_one_smul, omF_eq, omF_eq]
+  have : fmR A B (-e) = -fmR A B e := by
+    have h := fmR_smul A B (-1) e
+    rw [neg_one_smul, neg_one_smul] at h
+    exact h
+  rw [this, map_neg, neg_neg]
+
+variable {ι : Type} [Fintype ι] {a b : ℕ}
+
+theorem gD_add (c : ι → ℝ) (z w e : VCx ι a b) : gD c (z + w) e = gD c z e + gD c w e := by
+  simp only [gD, Pi.add_apply, add_mul, Complex.add_re, mul_add, Finset.sum_add_distrib]
+
+theorem gD_smul (c : ι → ℝ) (r : ℝ) (z e : VCx ι a b) : gD c (r • z) e = r * gD c z e := by
+  simp only [gD, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  simp only [Pi.smul_apply, Complex.real_smul, mul_assoc, Complex.re_ofReal_mul]
+  ring
+
+theorem gD_I (c : ι → ℝ) (z e : VCx ι a b) : gD c (I • z) e = -gD c z (I • e) := by
+  simp only [gD, ← mul_neg, ← Finset.sum_neg_distrib]
+  congr 1
+  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  simp only [Pi.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, Complex.mul_re, Complex.mul_im, Complex.I_re,
+    Complex.I_im, Complex.conj_re, Complex.conj_im, Complex.neg_re, Complex.neg_im]
+  ring
+
+theorem gD_I_I (c : ι → ℝ) (z e : VCx ι a b) : gD c (I • z) (I • e) = gD c z e := by
+  simp only [gD]
+  congr 1
+  refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  simp only [Pi.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, Complex.mul_re, Complex.mul_im, Complex.I_re,
+    Complex.I_im, Complex.conj_re, Complex.conj_im, Complex.neg_re, Complex.neg_im]
+  ring
+
+end GlobalTheory.FockTransl.Jet
+
+namespace GlobalTheory.FockTransl.Jet
+
+open Complex
+
+variable {D : D7}
+
+theorem lamF_add {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank)
+    (z w : VCx D.what₂.Tau S.rank T.rank) : lamF A B l (z + w) = lamF A B l z + lamF A B l w := by
+  simp only [lamF, omF_add, gD_add]
+  push_cast
+  ring
+
+theorem lamF_smul {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank)
+    (r : ℝ) (z : VCx D.what₂.Tau S.rank T.rank) : lamF A B l (r • z) = r * lamF A B l z := by
+  simp only [lamF, omF_smul, gD_smul]
+  push_cast
+  ring
+
+theorem lamF_I {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank)
+    (z : VCx D.what₂.Tau S.rank T.rank) : lamF A B l (I • z) = -I * lamF A B l z := by
+  simp only [lamF]
+  rw [omF_I_I, omF_I, gD_I_I, gD_I]
+  push_cast
+  linear_combination (-(1 / 2 : ℂ) * (Real.pi : ℂ) * (omF A B z (Formalism.L2.Ker.coordX l) : ℂ) +
+    (1 / 4 : ℂ) * (gD (fw D) z (I • Formalism.L2.Ker.coordX l) : ℂ)) * Complex.I_sq
+
+theorem lamF_antilinear : ∀ (D : D7) (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank), (∀ a b, GlobalTheory.FockTransl.Jet.lamF A B l (a + b) = GlobalTheory.FockTransl.Jet.lamF A B l a + GlobalTheory.FockTransl.Jet.lamF A B l b) ∧ ∀ (t : ℂ) a, GlobalTheory.FockTransl.Jet.lamF A B l (t • a) = conj t * GlobalTheory.FockTransl.Jet.lamF A B l a := by
+  intro D S T A B l
+  refine ⟨fun a b => lamF_add A B l a b, fun t a => ?_⟩
+  have e : t • a = (t.re : ℝ) • a + (t.im : ℝ) • (I • a) := by
+    funext τ i j
+    simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Complex.real_smul]
+    conv_lhs => rw [← Complex.re_add_im t]
+    ring
+  have hc : conj t = (t.re : ℂ) - t.im * I := by apply Complex.ext <;> simp
+  rw [e, lamF_add, lamF_smul, lamF_smul, lamF_I, hc]
+  ring
+
+end GlobalTheory.FockTransl.Jet
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockCreationOperatorMultiplier_antilinear : ∀ (D : D7) (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank), (∀ a b, GlobalTheory.FockTransl.Jet.lamF A B l (a + b) = GlobalTheory.FockTransl.Jet.lamF A B l a + GlobalTheory.FockTransl.Jet.lamF A B l b) ∧ ∀ (t : ℂ) a, GlobalTheory.FockTransl.Jet.lamF A B l (t • a) = conj t * GlobalTheory.FockTransl.Jet.lamF A B l a := by
+  atlas_forward_decl GlobalTheory.FockTransl.Jet.lamF_antilinear
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+noncomputable section
+
+namespace GlobalTheory.FockTransl.Jet
+
+open Complex GlobalTheory.FockCompare GlobalTheory.OrientedHeis
+
+variable {D : D7}
+
+theorem sum_re_im_add_smul {m n a b : ℕ} (U V : Fin a → Fin b → Matrix (Fin m) (Fin n) ℂ) (z e : Fin a → Fin b → ℂ)
+    (t : ℝ) :
+    ∑ i, ∑ j, ((((z i j + t • e i j).re : ℝ) : ℂ) • U i j + (((z i j + t • e i j).im : ℝ) : ℂ) • V i j) =
+      ∑ i, ∑ j, ((((z i j).re : ℝ) : ℂ) • U i j + (((z i j).im : ℝ) : ℂ) • V i j) +
+        t • ∑ i, ∑ j, ((((e i j).re : ℝ) : ℂ) • U i j + (((e i j).im : ℝ) : ℂ) • V i j) := by
+  rw [Finset.smul_sum, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Finset.smul_sum, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  simp only [Complex.add_re, Complex.add_im, Complex.real_smul, Complex.re_ofReal_mul, Complex.im_ofReal_mul,
+    Complex.ofReal_add, Complex.ofReal_mul, add_smul, smul_add, mul_smul, Complex.coe_smul]
+  abel
+
+theorem fmR_add_smul {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (z e : VCx D.what₂.Tau S.rank T.rank)
+    (t : ℝ) : fmR A B (z + t • e) = fmR A B z + t • fmR A B e := by
+  funext τ
+  exact sum_re_im_add_smul _ _ (z τ) (e τ) t
+
+theorem heis_dRho_fock : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D), IsStdChar D ψ (-1) → GlobalTheory.FockCompare.Chart θ σ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (h : WO S T → ℂ) (x : WO S T) (z e : VCx D.what₂.Tau S.rank T.rank) (τ : D.what₂.Tau) (v : Matrix (Fin T.rank) (Fin S.rank) ℂ), GlobalTheory.FockTransl.Jet.fmR A B e τ = v → (∀ τ', τ' ≠ τ → GlobalTheory.FockTransl.Jet.fmR A B e τ' = 0) → heisO ψ S T (fockPt σ A B z) (Formalism.IndefR.Datum.dRho (heisO ψ S T) θ τ v h) x = deriv (fun t : ℝ => Complex.exp (-((Real.pi : ℂ) * Complex.I) * ((t * GlobalTheory.FockTransl.Jet.omF A B z e : ℝ) : ℂ)) * heisO ψ S T (fockPt σ A B (z + t • e)) h x) 0 := by
+  intro D ψ θ σ hψ hC S T A B h x z e τ v hv h0
+  have hux : GlobalTheory.AdForm.JetRead.ux τ v = fmR A B e := by
+    funext τ' i j
+    unfold GlobalTheory.AdForm.JetRead.ux
+    split_ifs with hτ
+    · subst hτ; rw [← hv]
+    · rw [h0 τ' hτ]; rfl
+  have hline : ∀ t : ℝ, (lineAt θ τ v t : WO S T) = iotaW σ T S (t • fmR A B e) := fun t => by
+    rw [GlobalTheory.AdForm.JetRead.lineAt_eq hC, hux]
+  have hfun : (fun t : ℝ => ψ (symplOH S T x (fockPt σ A B z)) *
+      heisO ψ S T (lineAt θ τ v t) h (x + fockPt σ A B z)) = fun t : ℝ =>
+      Complex.exp (-((Real.pi : ℂ) * Complex.I) * ((t * omF A B z e : ℝ) : ℂ)) *
+        heisO ψ S T (fockPt σ A B (z + t • e)) h x := by
+    funext t
+    have e1 : ψ (symplOH S T x (fockPt σ A B z)) * heisO ψ S T (lineAt θ τ v t) h (x + fockPt σ A B z) =
+        heisO ψ S T (fockPt σ A B z) (heisO ψ S T (lineAt θ τ v t) h) x := rfl
+    have e2 : fockPt σ A B z = iotaW σ T S (fmR A B z) := rfl
+    have e3 : fockPt σ A B (z + t • e) = iotaW σ T S (fmR A B z) + iotaW σ T S (t • fmR A B e) := by
+      rw [← AddMonoidHom.map_add, ← fmR_add_smul]; rfl
+    rw [e1, GlobalTheory.OrientedHeis.heisO_heisO, Pi.smul_apply, smul_eq_mul, hline, e3, e2,
+      GlobalTheory.OrientedHeis.psi_symplOH hC hψ, hC.pi_iota, LinearMap.map_smul, smul_eq_mul]
+    rfl
+  show ψ (symplOH S T x (fockPt σ A B z)) *
+      deriv (fun t : ℝ => heisO ψ S T (lineAt θ τ v t) h (x + fockPt σ A B z)) 0 = _
+  rw [← deriv_const_mul_field, hfun]
+
+end GlobalTheory.FockTransl.Jet
+
+end
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+noncomputable section
+
+namespace GlobalTheory.FockTransl.Jet
+
+open Complex
+
+variable {D : D7}
+
+theorem fmR_coordX_self {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank) :
+    fmR A B (Formalism.L2.Ker.coordX l) l.1 = unitMap (A.onb l.1) (B.onb l.1) l.2.1 l.2.2 := by
+  unfold fmR fockMat Formalism.L2.Ker.coordX
+  rw [Finset.sum_eq_single l.2.1, Finset.sum_eq_single l.2.2]
+  · simp; rfl
+  · intro j _ hj; simp [hj]
+  · simp
+  · intro i _ hi; refine Finset.sum_eq_zero fun j _ => ?_; simp [hi]
+  · simp
+
+theorem fmR_coordX_ne {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank)
+    (τ' : D.what₂.Tau) (h : τ' ≠ l.1) : fmR A B (Formalism.L2.Ker.coordX l) τ' = 0 := by
+  unfold fmR fockMat Formalism.L2.Ker.coordX
+  refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
+  simp [h]; rfl
+
+theorem fmR_I_coordX_self {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank) :
+    fmR A B (I • Formalism.L2.Ker.coordX l) l.1 =
+      cplxO (A.cart l.1) (B.cart l.1) (unitMap (A.onb l.1) (B.onb l.1) l.2.1 l.2.2) := by
+  unfold fmR fockMat Formalism.L2.Ker.coordX
+  rw [Finset.sum_eq_single l.2.1, Finset.sum_eq_single l.2.2]
+  · simp; rfl
+  · intro j _ hj; simp [hj]
+  · simp
+  · intro i _ hi; refine Finset.sum_eq_zero fun j _ => ?_; simp [hi]
+  · simp
+
+theorem fmR_I_coordX_ne {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank)
+    (τ' : D.what₂.Tau) (h : τ' ≠ l.1) : fmR A B (I • Formalism.L2.Ker.coordX l) τ' = 0 := by
+  unfold fmR fockMat Formalism.L2.Ker.coordX
+  refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
+  simp [h]; rfl
+
+theorem gq_add_smul {ι : Type} [Fintype ι] {a b : ℕ} (c : ι → ℝ) (z e : VCx ι a b) (t : ℝ) :
+    gq c (z + t • e) = gq c z + t * gD c z e + t ^ 2 * gq c e := by
+  have key : ∀ (k : ℝ) (p q : ℂ), k * ‖p + t • q‖ ^ 2 =
+      k * ‖p‖ ^ 2 + t * (2 * (k * (p * conj q).re)) + t ^ 2 * (k * ‖q‖ ^ 2) := by
+    intro k p q
+    rw [Complex.sq_norm, Complex.sq_norm, Complex.sq_norm]
+    simp [Complex.normSq_apply]
+    ring
+  unfold gq gD
+  simp only [Pi.add_apply, Pi.smul_apply, key, Finset.sum_add_distrib, Finset.mul_sum]
+
+theorem heisO_eq_exp_rd (ψ : AddChar (AF D.host.F) ℂ) (σ : (D.what₂.Tau → ℂ) →+ AE D) {S T : HSp D}
+    (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (h : WO S T → ℂ) (x : WO S T) (w : VCx D.what₂.Tau S.rank T.rank) :
+    heisO ψ S T (fockPt σ A B w) h x = Complex.exp (-((gq (fw D) w : ℂ) / 2)) * rd ψ σ A B h x w := by
+  unfold rd
+  rw [Complex.ofReal_exp, ← mul_assoc, ← Complex.exp_add]
+  push_cast
+  ring_nf
+  simp
+
+theorem heis_dRho_fock_eval (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D)
+    (hψ : IsStdChar D ψ (-1)) (hC : GlobalTheory.FockCompare.Chart θ σ) (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S)
+    (B : GlobalTheory.ChainFr.Fr T) (h : WO S T → ℂ) (x : WO S T) (z e : VCx D.what₂.Tau S.rank T.rank) (τ : D.what₂.Tau)
+    (v : Matrix (Fin T.rank) (Fin S.rank) ℂ) (hv : fmR A B e τ = v) (h0 : ∀ τ', τ' ≠ τ → fmR A B e τ' = 0)
+    (hd : DifferentiableAt ℝ (rd ψ σ A B h x) z) :
+    heisO ψ S T (fockPt σ A B z) (Formalism.IndefR.Datum.dRho (heisO ψ S T) θ τ v h) x =
+      Complex.exp (-((gq (fw D) z : ℂ) / 2)) *
+        ((-((Real.pi : ℂ) * I) * (omF A B z e : ℂ) - (gD (fw D) z e : ℂ) / 2) * rd ψ σ A B h x z +
+          fderiv ℝ (rd ψ σ A B h x) z e) := by
+  rw [heis_dRho_fock D ψ θ σ hψ hC S T A B h x z e τ v hv h0]
+  have hfun : (fun t : ℝ => Complex.exp (-((Real.pi : ℂ) * I) * ((t * omF A B z e : ℝ) : ℂ)) *
+      heisO ψ S T (fockPt σ A B (z + t • e)) h x) = fun t : ℝ =>
+      Complex.exp (-((Real.pi : ℂ) * I) * ((t : ℂ) * (omF A B z e : ℂ)) - ((gq (fw D) z : ℂ) +
+        (t : ℂ) * (gD (fw D) z e : ℂ) + (t : ℂ) ^ 2 * (gq (fw D) e : ℂ)) / 2) * rd ψ σ A B h x (z + t • e) := by
+    funext t
+    rw [heisO_eq_exp_rd, gq_add_smul, ← mul_assoc, ← Complex.exp_add]
+    push_cast
+    ring_nf
+  rw [hfun]
+  have hline : HasDerivAt (fun t : ℝ => z + t • e) e 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const e).const_add z
+  have hRd : HasDerivAt (fun t : ℝ => rd ψ σ A B h x (z + t • e)) (fderiv ℝ (rd ψ σ A B h x) z e) 0 := by
+    have := hd.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hline (by simp)
+    exact this
+  have hid : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 0 := (hasDerivAt_id (0 : ℝ)).ofReal_comp
+  have hP : HasDerivAt (fun t : ℝ => -((Real.pi : ℂ) * I) * ((t : ℂ) * (omF A B z e : ℂ)) - ((gq (fw D) z : ℂ) +
+        (t : ℂ) * (gD (fw D) z e : ℂ) + (t : ℂ) ^ 2 * (gq (fw D) e : ℂ)) / 2)
+      (-((Real.pi : ℂ) * I) * (omF A B z e : ℂ) - (gD (fw D) z e : ℂ) / 2) 0 := by
+    have h1 := (hid.mul_const (omF A B z e : ℂ)).const_mul (-((Real.pi : ℂ) * I))
+    have h2 := ((hid.mul_const (gD (fw D) z e : ℂ)).const_add (gq (fw D) z : ℂ)).add
+      ((hid.pow 2).mul_const (gq (fw D) e : ℂ))
+    have h3 := h1.sub (h2.div_const 2)
+    convert h3 using 1
+    all_goals first | rfl | (funext t; rfl) | simp
+  have hD : HasDerivAt (fun t : ℝ => Complex.exp (-((Real.pi : ℂ) * I) * ((t : ℂ) * (omF A B z e : ℂ)) -
+      ((gq (fw D) z : ℂ) + (t : ℂ) * (gD (fw D) z e : ℂ) + (t : ℂ) ^ 2 * (gq (fw D) e : ℂ)) / 2) *
+        rd ψ σ A B h x (z + t • e)) _ 0 := hP.cexp.mul hRd
+  rw [hD.deriv]
+  simp
+  ring
+
+theorem rd_aPlusAll : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D), IsStdChar D ψ (-1) → GlobalTheory.FockCompare.Chart θ σ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (h : WO S T → ℂ) (x : WO S T) (l : FVar D T.rank S.rank) (z : VCx D.what₂.Tau S.rank T.rank), DifferentiableAt ℝ (rd ψ σ A B h x) z → rd ψ σ A B (aPlusAll (heisO ψ S T) θ (fun τ => cplxO (A.cart τ) (B.cart τ)) A.onb B.onb l h) x z = (2 / (fockScale D l.1 : ℂ)) * GlobalTheory.FockTransl.Jet.crOp A B l (rd ψ σ A B h x) z := by
+  intro D ψ θ σ hψ hC S T A B h x l z hd
+  have h1 := heis_dRho_fock_eval D ψ θ σ hψ hC S T A B h x z (Formalism.L2.Ker.coordX l) l.1 _
+    (fmR_coordX_self A B l) (fmR_coordX_ne A B l) hd
+  have h2 := heis_dRho_fock_eval D ψ θ σ hψ hC S T A B h x z (I • Formalism.L2.Ker.coordX l) l.1 _
+    (fmR_I_coordX_self A B l) (fmR_I_coordX_ne A B l) hd
+  have hlin : heisO ψ S T (fockPt σ A B z)
+      (aPlusAll (heisO ψ S T) θ (fun τ => cplxO (A.cart τ) (B.cart τ)) A.onb B.onb l h) x =
+      (fockScale D l.1 : ℂ)⁻¹ *
+        (heisO ψ S T (fockPt σ A B z) (Formalism.IndefR.Datum.dRho (heisO ψ S T) θ l.1
+            (unitMap (A.onb l.1) (B.onb l.1) l.2.1 l.2.2) h) x -
+          I * heisO ψ S T (fockPt σ A B z) (Formalism.IndefR.Datum.dRho (heisO ψ S T) θ l.1
+            (cplxO (A.cart l.1) (B.cart l.1) (unitMap (A.onb l.1) (B.onb l.1) l.2.1 l.2.2)) h) x) := by
+    simp only [aPlusAll, aPlus, crea, heisO, Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
+    ring
+  have hexp : (Real.exp (gq (fw D) z / 2) : ℂ) * Complex.exp (-((gq (fw D) z : ℂ) / 2)) = 1 := by
+    rw [Complex.ofReal_exp, ← Complex.exp_add]
+    push_cast
+    simp
+  have hrd : rd ψ σ A B (aPlusAll (heisO ψ S T) θ (fun τ => cplxO (A.cart τ) (B.cart τ)) A.onb B.onb l h) x z =
+      (Real.exp (gq (fw D) z / 2) : ℂ) * heisO ψ S T (fockPt σ A B z)
+        (aPlusAll (heisO ψ S T) θ (fun τ => cplxO (A.cart τ) (B.cart τ)) A.onb B.onb l h) x := rfl
+  rw [hrd, hlin, h1, h2]
+  unfold crOp lamF
+  linear_combination (↑(fockScale D l.1))⁻¹ *
+    ((-((Real.pi : ℂ) * I) * (omF A B z (Formalism.L2.Ker.coordX l) : ℂ) - (gD (fw D) z (Formalism.L2.Ker.coordX l) : ℂ) / 2) *
+        rd ψ σ A B h x z + fderiv ℝ (rd ψ σ A B h x) z (Formalism.L2.Ker.coordX l) -
+      I * ((-((Real.pi : ℂ) * I) * (omF A B z (I • Formalism.L2.Ker.coordX l) : ℂ) -
+        (gD (fw D) z (I • Formalism.L2.Ker.coordX l) : ℂ) / 2) * rd ψ σ A B h x z +
+        fderiv ℝ (rd ψ σ A B h x) z (I • Formalism.L2.Ker.coordX l))) * hexp +
+    (↑(fockScale D l.1))⁻¹ * (Real.pi : ℂ) * (omF A B z (I • Formalism.L2.Ker.coordX l) : ℂ) * rd ψ σ A B h x z * I_sq
+
+end GlobalTheory.FockTransl.Jet
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fock_creation_operator_reading : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D), IsStdChar D ψ (-1) → GlobalTheory.FockCompare.Chart θ σ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (h : WO S T → ℂ) (x : WO S T) (l : FVar D T.rank S.rank) (z : VCx D.what₂.Tau S.rank T.rank), DifferentiableAt ℝ (rd ψ σ A B h x) z → rd ψ σ A B (aPlusAll (heisO ψ S T) θ (fun τ => cplxO (A.cart τ) (B.cart τ)) A.onb B.onb l h) x z = (2 / (fockScale D l.1 : ℂ)) * GlobalTheory.FockTransl.Jet.crOp A B l (rd ψ σ A B h x) z := by
+  atlas_forward_decl GlobalTheory.FockTransl.Jet.rd_aPlusAll
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+noncomputable section
+
+namespace GlobalTheory.FockTransl.Jet
+
+open Complex
+
+variable {D : D7}
+
+theorem list_prod_toMultiset {ι : Type} (m : ι →₀ ℕ) (g : ι → ℂ) :
+    ((Finsupp.toMultiset m).toList.map g).prod = m.prod fun l n => g l ^ n := by
+  rw [Multiset.prod_map_toList]
+  induction m using Finsupp.induction with
+  | zero => simp
+  | single_add a n g' ha hn ih =>
+    rw [map_add, Multiset.map_add, Multiset.prod_add, ih, Finsupp.toMultiset_single, Finsupp.prod_add_index']
+    · simp [Multiset.map_nsmul, Multiset.prod_nsmul]
+    · simp
+    · intro a b c; rw [pow_add]
+
+theorem crOp_const_mul {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank)
+    (c : ℂ) (Φ : VCx D.what₂.Tau S.rank T.rank → ℂ) (z : VCx D.what₂.Tau S.rank T.rank) (hΦ : DifferentiableAt ℝ Φ z) :
+    crOp A B l (fun z => c * Φ z) z = c * crOp A B l Φ z := by
+  unfold crOp
+  rw [fderiv_const_mul hΦ]
+  simp only [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  ring
+
+theorem jet_eq_fock : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D), IsStdChar D ψ (-1) → GlobalTheory.FockCompare.Chart θ σ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T), ∃ C : (FVar D T.rank S.rank →₀ ℕ) → ℂ, ∀ f : WO S T → ℂ, GlobalTheory.ChainFr.IsVacF ψ θ A B f → ∀ (x : WO S T) (m : FVar D T.rank S.rank →₀ ℕ), derivAt0 (rd ψ σ A B f x) m = C m * GlobalTheory.ChainFr.ptF ψ θ A B f (MvPolynomial.monomial m 1) x := by
+  intro D ψ θ σ hψ hσ S T A B
+  have L1 : ∀ (D : D7) (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (l : DVar D.what₂.Tau S.rank T.rank), (∀ a b, GlobalTheory.FockTransl.Jet.lamF A B l (a + b) = GlobalTheory.FockTransl.Jet.lamF A B l a + GlobalTheory.FockTransl.Jet.lamF A B l b) ∧ ∀ (t : ℂ) a, GlobalTheory.FockTransl.Jet.lamF A B l (t • a) = conj t * GlobalTheory.FockTransl.Jet.lamF A B l a := GlobalTheory.T.fockCreationOperatorMultiplier_antilinear
+  have L2 : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D), IsStdChar D ψ (-1) → GlobalTheory.FockCompare.Chart θ σ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (h : WO S T → ℂ) (x : WO S T) (l : FVar D T.rank S.rank) (z : VCx D.what₂.Tau S.rank T.rank), DifferentiableAt ℝ (rd ψ σ A B h x) z → rd ψ σ A B (aPlusAll (heisO ψ S T) θ (fun τ => cplxO (A.cart τ) (B.cart τ)) A.onb B.onb l h) x z = (2 / (fockScale D l.1 : ℂ)) * GlobalTheory.FockTransl.Jet.crOp A B l (rd ψ σ A B h x) z := GlobalTheory.T.fock_creation_operator_reading
+  refine ⟨fun m => m.prod fun l n => ((fockScale D l.1 : ℂ) / 2) ^ n, fun f hf x m => ?_⟩
+  set Aop := aPlusAll (heisO ψ S T) θ (fun τ => cplxO (A.cart τ) (B.cart τ)) A.onb B.onb with hAop
+  have hent : Differentiable ℂ (rd ψ σ A B f x) := GlobalTheory.T.fockGaussianReading_differentiable D ψ θ σ hψ hσ S T A B f hf x
+  have hops := GlobalTheory.Ker.CreOp.foldr_creation_zero _ _ Formalism.L2.Ker.coordX (GlobalTheory.FockTransl.Jet.lamF A B) (rd ψ σ A B f x)
+    (fun l => L1 D S T A B l) hent (GlobalTheory.FockTransl.Jet.crOp A B) (fun _ _ _ => rfl)
+  have key : ∀ L : List (FVar D T.rank S.rank), rd ψ σ A B (L.foldr (fun i g => Aop i g) f) x =
+      fun z => (L.map fun l => 2 / (fockScale D l.1 : ℂ)).prod * L.foldr (GlobalTheory.FockTransl.Jet.crOp A B) (rd ψ σ A B f x) z := by
+    intro L
+    induction L with
+    | nil => funext z; simp
+    | cons l L ih =>
+      funext z
+      have hd0 : Differentiable ℝ (L.foldr (GlobalTheory.FockTransl.Jet.crOp A B) (rd ψ σ A B f x)) :=
+        (hops L).1.differentiable (by simp)
+      have hd : DifferentiableAt ℝ (rd ψ σ A B (L.foldr (fun i g => Aop i g) f) x) z := by
+        rw [ih]; exact ((hd0.const_mul _) z)
+      rw [List.foldr_cons, L2 D ψ θ σ hψ hσ S T A B _ x l z hd, ih, GlobalTheory.FockTransl.Jet.crOp_const_mul A B l _ _ z (hd0 z),
+        List.foldr_cons, List.map_cons, List.prod_cons]
+      ring
+  have h0 : ∀ h : WO S T → ℂ, rd ψ σ A B h x 0 = h x := by
+    intro h
+    have hz : fockPt σ A B (0 : VCx D.what₂.Tau S.rank T.rank) = 0 := by
+      have e : (fun τ => fockMat A B τ ((0 : VCx D.what₂.Tau S.rank T.rank) τ)) = 0 := by
+        funext τ; simp [fockMat]
+      rw [fockPt, e]; exact (FockCompare.iotaW σ T S).map_zero
+    simp [rd, gq, hz, GlobalTheory.OrientedHeis.heisO_zero]
+  have hfs : ∀ l : FVar D T.rank S.rank, (fockScale D l.1 : ℂ) ≠ 0 := fun l => GlobalTheory.VacuumFockLaws.fockScale_ne l.1
+  have hval : opPow Aop m f x = (m.prod fun l n => (2 / (fockScale D l.1 : ℂ)) ^ n) * derivAt0 (rd ψ σ A B f x) m := by
+    rw [opPow, ← h0 (List.foldr _ f _), key]
+    beta_reduce
+    rw [(hops _).2, derivAt0, GlobalTheory.AdForm.JetRead.iter_cast _ _ _ (Multiset.length_toList _) Formalism.L2.Ker.coordX,
+      list_prod_toMultiset]
+  have hpt : GlobalTheory.ChainFr.ptF ψ θ A B f (MvPolynomial.monomial m 1) x = opPow Aop m f x := by
+    have e : MvPolynomial.basisMonomials (FVar D T.rank S.rank) ℂ m = MvPolynomial.monomial m 1 := by
+      rw [MvPolynomial.coe_basisMonomials]
+    rw [GlobalTheory.ChainFr.ptF, pureTensorO, pureTensorL, ← e, Module.Basis.constr_basis]
+  rw [hpt, hval, ← mul_assoc, ← Finsupp.prod_mul]
+  have e1 : (m.prod fun l n => ((fockScale D l.1 : ℂ) / 2) ^ n * (2 / (fockScale D l.1 : ℂ)) ^ n) = 1 := by
+    refine Finset.prod_eq_one fun l _ => ?_
+    beta_reduce
+    rw [← mul_pow, div_mul_div_comm, mul_comm (fockScale D l.1 : ℂ) 2, div_self (mul_ne_zero two_ne_zero (hfs l)), one_pow]
+  rw [e1, one_mul]
+
+end GlobalTheory.FockTransl.Jet
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fock_gaussian_jets_at_origin_eq_fock_vectors : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D), IsStdChar D ψ (-1) → GlobalTheory.FockCompare.Chart θ σ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T), ∃ C : (FVar D T.rank S.rank →₀ ℕ) → ℂ, ∀ f : WO S T → ℂ, GlobalTheory.ChainFr.IsVacF ψ θ A B f → ∀ (x : WO S T) (m : FVar D T.rank S.rank →₀ ℕ), derivAt0 (rd ψ σ A B f x) m = C m * GlobalTheory.ChainFr.ptF ψ θ A B f (MvPolynomial.monomial m 1) x := by
+  atlas_forward_decl GlobalTheory.FockTransl.Jet.jet_eq_fock
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+noncomputable section
+
+namespace GlobalTheory.FockMoment
+
+variable {ι : Type} [Fintype ι] {a b : ℕ}
+
+def unitPt (r : ι → ℝ) (u : DVar ι a b → ℂ) : VCx ι a b := fun τ β α => (r τ : ℂ)⁻¹ * u (τ, β, α)
+
+def scalePt (r : ι → ℝ) (z : VCx ι a b) : DVar ι a b → ℂ := fun x => (r x.1 : ℂ) * z x.1 x.2.1 x.2.2
+
+def scaleEquiv (r : ι → ℝ) (hr : ∀ τ, 0 < r τ) : VCx ι a b ≃ᵐ (DVar ι a b → ℂ) where
+  toFun := scalePt r
+  invFun := unitPt r
+  left_inv z := by
+    funext τ β α
+    have : (r τ : ℂ) ≠ 0 := by exact_mod_cast (hr τ).ne'
+    simp [unitPt, scalePt, this]
+  right_inv u := by
+    funext x
+    have : (r x.1 : ℂ) ≠ 0 := by exact_mod_cast (hr x.1).ne'
+    simp [unitPt, scalePt, this]
+  measurable_toFun := (show Continuous (scalePt (a := a) (b := b) r) by unfold scalePt; fun_prop).measurable
+  measurable_invFun := (show Continuous (unitPt (a := a) (b := b) r) by unfold unitPt; fun_prop).measurable
+
+theorem scaleEquiv_apply (r : ι → ℝ) (hr : ∀ τ, 0 < r τ) (z : VCx ι a b) :
+    scaleEquiv r hr z = scalePt r z := rfl
+
+theorem unitPt_scalePt (r : ι → ℝ) (hr : ∀ τ, 0 < r τ) (z : VCx ι a b) :
+    unitPt r (scalePt r z) = z := (scaleEquiv r hr).symm_apply_apply z
+
+theorem volume_eq_smul_map (r : ι → ℝ) (hr : ∀ τ, 0 < r τ) :
+    (volume : Measure (DVar ι a b → ℂ)) =
+      ENNReal.ofReal (∏ x : DVar ι a b, r x.1 ^ 2) • (volume : Measure (VCx ι a b)).map (scaleEquiv r hr) := by
+  rw [volume_pi]
+  refine Measure.pi_eq fun s hs => ?_
+  rw [Measure.smul_apply, Measure.map_apply (scaleEquiv r hr).measurable (MeasurableSet.univ_pi hs), smul_eq_mul]
+  have e : (scaleEquiv r hr) ⁻¹' Set.univ.pi s = Set.univ.pi fun τ => Set.univ.pi fun β => Set.univ.pi fun α =>
+      (fun w : ℂ => r τ • w) ⁻¹' s (τ, β, α) := by
+    ext z
+    simp [scaleEquiv_apply, scalePt, Set.mem_univ_pi, Prod.forall, Complex.real_smul]
+  rw [e, volume_pi, Measure.pi_pi]
+  simp_rw [volume_pi, Measure.pi_pi]
+  rw [ENNReal.ofReal_prod_of_nonneg (fun x _ => sq_nonneg _)]
+  simp_rw [Fintype.prod_prod_type]
+  rw [← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun τ _ => ?_
+  rw [← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun β _ => ?_
+  rw [← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun α _ => ?_
+  rw [Measure.addHaar_preimage_smul _ (hr τ).ne', Complex.finrank_real_complex, ← mul_assoc,
+    ← ENNReal.ofReal_mul (sq_nonneg _), abs_of_pos (by have := hr τ; positivity), mul_inv_cancel₀ (by have := hr τ; positivity),
+    ENNReal.ofReal_one, one_mul]
+
+theorem integral_unitPt (r : ι → ℝ) (hr : ∀ τ, 0 < r τ) (h : VCx ι a b → ℂ) :
+    ∫ u : DVar ι a b → ℂ, h (unitPt r u) = ((∏ x : DVar ι a b, r x.1 ^ 2 : ℝ) : ℂ) * ∫ z, h z := by
+  rw [volume_eq_smul_map r hr, integral_smul_measure, integral_map_equiv]
+  have hP : 0 ≤ ∏ x : DVar ι a b, r x.1 ^ 2 := Finset.prod_nonneg fun _ _ => sq_nonneg _
+  rw [ENNReal.toReal_ofReal hP, Complex.real_smul]
+  simp only [scaleEquiv_apply, unitPt_scalePt r hr]
+
+end GlobalTheory.FockMoment
+
+namespace GlobalTheory.FockMoment
+
+open Formalism.DimensionVariation (nsq mono cj mfact)
+
+theorem gaussMoment : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ), (∀ τ, 0 < c τ) → ∀ G : VCx ι a b → ℂ, Differentiable ℂ G → (∃ M : ℝ, ∀ z, ‖G z‖ ≤ M * Real.exp (gq c z / 2)) → ∀ m : DVar ι a b →₀ ℕ, ∫ z, conjMono m z * (Real.exp (-gq c z) : ℂ) * G z = ((∏ τ, (Real.pi / c τ) ^ (a * b) : ℝ) : ℂ) * ((m.prod fun k n => (c k.1)⁻¹ ^ n : ℝ) : ℂ) * derivAt0 G m := by
+  intro ι _ a b c hc G hG ⟨M, hM⟩ m
+  classical
+  set r : ι → ℝ := fun τ => Real.sqrt (c τ) with hr_def
+  have hr : ∀ τ, 0 < r τ := fun τ => Real.sqrt_pos.2 (hc τ)
+  have hr2 : ∀ τ, r τ ^ 2 = c τ := fun τ => Real.sq_sqrt (hc τ).le
+  have hrC : ∀ τ, (r τ : ℂ) ≠ 0 := fun τ => by exact_mod_cast (hr τ).ne'
+  set F : (DVar ι a b → ℂ) → ℂ := fun u => G fun τ β α => (r τ : ℂ)⁻¹ * u (τ, β, α) with hF_def
+  have hFd : Differentiable ℂ F := hG.comp (by fun_prop)
+  have hgq : ∀ u : DVar ι a b → ℂ, gq c (unitPt r u) = nsq u := by
+    intro u
+    simp only [gq, unitPt, nsq, Fintype.sum_prod_type]
+    refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun β _ => Finset.sum_congr rfl fun α _ => ?_
+    rw [norm_mul, mul_pow, norm_inv, Complex.norm_real, Real.norm_eq_abs, inv_pow, sq_abs, hr2, ← mul_assoc,
+      mul_inv_cancel₀ (hc τ).ne', one_mul]
+  have hmono : ∀ u : DVar ι a b → ℂ, conjMono m (unitPt r u) =
+      (∏ x : DVar ι a b, ((r x.1 : ℂ)⁻¹) ^ m x) * mono (Formalism.DimensionVariation.cj u) m := by
+    intro u
+    rw [conjMono, Finsupp.prod_fintype _ _ (fun _ => pow_zero _), mono, ← Finset.prod_mul_distrib]
+    refine Finset.prod_congr rfl fun x _ => ?_
+    simp [unitPt, Formalism.DimensionVariation.cj, mul_pow, Complex.conj_ofReal]
+  have hgrow : ∀ u : DVar ι a b → ℂ, ‖F u‖ ≤ M * Real.exp (nsq u / 2) := fun u => by
+    rw [← hgq u]; exact hM _
+  have hfj := (Formalism.DimensionVariation.gaussianCoeffIntegral (DVar ι a b) F (GlobalTheory.IndefiniteRowSideFullHecke.TaylorCoefficientForms.taylorCoeff F) M hFd.continuous
+    (GlobalTheory.JetFrameCompare.hasSum_taylorCoeff hFd) hgrow m).2
+  have htj := GlobalTheory.JetBlock.taylor_jetC hG r hr (fun _ => 1) m
+  simp only [Formalism.L2.Ker.jetC, one_pow, one_mul] at htj
+  rw [Finsupp.prod_fintype _ _ (fun _ => rfl), Finset.prod_const_one, one_mul] at htj
+  have hcov := integral_unitPt r hr (fun z => conjMono m z * (Real.exp (-gq c z) : ℂ) * G z)
+  have hint : ∫ u : DVar ι a b → ℂ, conjMono m (unitPt r u) * (Real.exp (-gq c (unitPt r u)) : ℂ) * G (unitPt r u) =
+      (∏ x : DVar ι a b, ((r x.1 : ℂ)⁻¹) ^ m x) * ∫ u, F u * mono (Formalism.DimensionVariation.cj u) m * (Real.exp (-(nsq u)) : ℂ) := by
+    rw [← integral_const_mul]
+    congr 1
+    funext u
+    have hFu : F u = G (unitPt r u) := rfl
+    rw [hmono, hgq, hFu]
+    ring
+  rw [hint, hfj] at hcov
+  have htj' : GlobalTheory.IndefiniteRowSideFullHecke.TaylorCoefficientForms.taylorCoeff F m * (mfact m : ℂ) * ∏ x : DVar ι a b, (r x.1 : ℂ) ^ m x = derivAt0 G m := htj
+  have hPpos : 0 < ∏ x : DVar ι a b, r x.1 ^ 2 := Finset.prod_pos fun x _ => by have := hr x.1; positivity
+  have hP : (∏ x : DVar ι a b, r x.1 ^ 2) = ∏ x : DVar ι a b, c x.1 := Finset.prod_congr rfl fun x _ => hr2 x.1
+  have hpi : (∏ τ, (Real.pi / c τ) ^ (a * b) : ℝ) =
+      Real.pi ^ Fintype.card (DVar ι a b) * (∏ x : DVar ι a b, r x.1 ^ 2)⁻¹ := by
+    rw [hP]
+    simp only [Fintype.prod_prod_type, Finset.prod_const, Finset.card_univ, Fintype.card_fin, Fintype.card_prod]
+    simp_rw [div_pow]
+    rw [Finset.prod_div_distrib, Finset.prod_const, Finset.card_univ, ← pow_mul, div_eq_mul_inv, mul_comm b a,
+      mul_comm (a * b) (Fintype.card ι)]
+  have hmp : ((m.prod fun k n => (c k.1)⁻¹ ^ n : ℝ) : ℂ) = (∏ x : DVar ι a b, ((r x.1 : ℂ)⁻¹) ^ m x) ^ 2 := by
+    rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
+    push_cast
+    rw [← Finset.prod_pow]
+    refine Finset.prod_congr rfl fun x _ => ?_
+    rw [← hr2 x.1]
+    push_cast
+    ring
+  have hPC : ((∏ x : DVar ι a b, r x.1 ^ 2 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hPpos.ne'
+  have hRR : (∏ x : DVar ι a b, (r x.1 : ℂ) ^ m x) * (∏ x : DVar ι a b, ((r x.1 : ℂ)⁻¹) ^ m x) = 1 := by
+    rw [← Finset.prod_mul_distrib]
+    exact Finset.prod_eq_one fun x _ => by rw [← mul_pow, mul_inv_cancel₀ (hrC x.1), one_pow]
+  have hPinv := mul_inv_cancel₀ hPC
+  rw [hpi, hmp, ← htj']
+  apply mul_left_cancel₀ hPC
+  rw [← hcov, Complex.ofReal_mul, Complex.ofReal_inv, Complex.ofReal_pow]
+  set P := ((∏ x : DVar ι a b, r x.1 ^ 2 : ℝ) : ℂ) with hP_def
+  set R := ∏ x : DVar ι a b, (r x.1 : ℂ) ^ m x with hR_def
+  set Ri := ∏ x : DVar ι a b, ((r x.1 : ℂ)⁻¹) ^ m x with hRi_def
+  set TM := GlobalTheory.IndefiniteRowSideFullHecke.TaylorCoefficientForms.taylorCoeff F m * (mfact m : ℂ) with hTM
+  set K := (Real.pi : ℂ) ^ Fintype.card (DVar ι a b) with hK
+  linear_combination (-(K * TM * Ri)) * hRR + (-(K * TM * Ri ^ 2 * R)) * hPinv
+end GlobalTheory.FockMoment
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gaussian_conjMonomial_moment_eq_taylor_coefficient : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ), (∀ τ, 0 < c τ) → ∀ G : VCx ι a b → ℂ, Differentiable ℂ G → (∃ M : ℝ, ∀ z, ‖G z‖ ≤ M * Real.exp (gq c z / 2)) → ∀ m : DVar ι a b →₀ ℕ, ∫ z, conjMono m z * (Real.exp (-gq c z) : ℂ) * G z = ((∏ τ, (Real.pi / c τ) ^ (a * b) : ℝ) : ℂ) * ((m.prod fun k n => (c k.1)⁻¹ ^ n : ℝ) : ℂ) * derivAt0 G m := by
+  atlas_forward_decl GlobalTheory.FockMoment.gaussMoment
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+namespace GlobalTheory
+
+theorem hasSum_pow_div_factorial_exp (z : ℂ) :
+    HasSum (fun n : ℕ => z ^ n / (n.factorial : ℂ)) (Complex.exp z) := by
+  rw [Complex.exp_eq_exp_ℂ]
+  exact NormedSpace.expSeries_div_hasSum_exp z
+
+theorem hasSum_fin_prod_pow_div_factorial_exp : ∀ (n : ℕ) (x : Fin n → ℂ),
+    HasSum (fun f : Fin n → ℕ => ∏ k, x k ^ f k / ((f k).factorial : ℂ))
+      (Complex.exp (∑ k, x k)) := by
+  intro n
+  induction n with
+  | zero =>
+    intro x
+    have := hasSum_unique (fun f : Fin 0 → ℕ => ∏ k, x k ^ f k / ((f k).factorial : ℂ))
+    simpa using this
+  | succ n ih =>
+    intro x
+    have h := hasSum_pow_div_factorial_exp (x 0)
+    have ht := ih (Fin.tail x)
+    have h1 : Summable (fun i => ‖x 0 ^ i / (i.factorial : ℂ)‖) :=
+      (summable_norm_iff (E := ℂ)).2 h.summable
+    have h2 : Summable (fun f : Fin n → ℕ => ‖∏ k, Fin.tail x k ^ f k / ((f k).factorial : ℂ)‖) :=
+      (summable_norm_iff (E := ℂ)).2 ht.summable
+    have h0 := summable_mul_of_summable_norm h1 h2
+    have h3 := HasSum.mul h ht h0
+    rw [← (Fin.consEquiv (fun _ : Fin (n + 1) => ℕ)).hasSum_iff, Fin.sum_univ_succ,
+      Complex.exp_add]
+    convert h3 using 1
+    all_goals first
+      | rfl
+      | (funext p; simp [Fin.prod_univ_succ, Fin.consEquiv, Fin.tail] <;> ring)
+
+theorem hasSum_finsupp_prod_pow_div_factorial_exp : ∀ (κ : Type) [Fintype κ] (x : κ → ℂ),
+    HasSum (fun m : κ →₀ ℕ => m.prod fun k n => x k ^ n / (n.factorial : ℂ))
+      (Complex.exp (∑ k, x k)) := by
+  intro κ _ x
+  classical
+  let e : κ ≃ Fin (Fintype.card κ) := Fintype.equivFin κ
+  have hA := hasSum_fin_prod_pow_div_factorial_exp (Fintype.card κ) (fun i => x (e.symm i))
+  have hsum : (∑ i, x (e.symm i)) = ∑ k, x k := Equiv.sum_comp e.symm x
+  rw [hsum] at hA
+  have hB : HasSum (fun f : κ → ℕ => ∏ k, x k ^ f k / ((f k).factorial : ℂ))
+      (Complex.exp (∑ k, x k)) := by
+    rw [← ((Equiv.arrowCongr e (Equiv.refl ℕ)).symm).hasSum_iff]
+    convert hA using 1
+    funext g
+    simp only [Function.comp_apply, Equiv.arrowCongr_symm, Equiv.arrowCongr_apply,
+      Equiv.symm_symm, Equiv.refl_symm, Equiv.coe_refl, Function.comp_def, id]
+    exact (Equiv.prod_comp e.symm (fun k => x k ^ g (e k) / ((g (e k)).factorial : ℂ))).symm.trans
+      (by simp)
+  rw [← (Finsupp.equivFunOnFinite (α := κ) (M := ℕ)).symm.hasSum_iff]
+  convert hB using 1
+  funext f
+  simp only [Function.comp_apply]
+  rw [Finsupp.prod_fintype]
+  · simp
+  · intro i; simp
+
+end GlobalTheory
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasSum_finsupp_prod_pow_div_factorial_exp_sum : ∀ (κ : Type) [Fintype κ] (x : κ → ℂ), HasSum (fun m : κ →₀ ℕ => m.prod fun k n => x k ^ n / (n.factorial : ℂ)) (Complex.exp (∑ k, x k)) := by
+  atlas_forward_decl GlobalTheory.hasSum_finsupp_prod_pow_div_factorial_exp
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+namespace GlobalTheory.FockTaylor
+
+def curryL (ι : Type) (a b : ℕ) : (DVar ι a b → ℂ) →ₗ[ℂ] VCx ι a b where
+  toFun w := fun τ i j => w (τ, i, j)
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+theorem curryL_single {ι : Type} [DecidableEq ι] {a b : ℕ} (k : DVar ι a b) :
+    curryL ι a b (Pi.single k 1) = Formalism.L2.Ker.coordX k := by
+  funext τ i j
+  obtain ⟨x, y, z⟩ := k
+  simp [curryL, Formalism.L2.Ker.coordX, Pi.single_apply, Prod.ext_iff]
+
+theorem derivAt0_eq_pderivIter {ι : Type} [Fintype ι] [DecidableEq ι] {a b : ℕ}
+    (G : VCx ι a b → ℂ) (hG : Differentiable ℂ G) (m : DVar ι a b →₀ ℕ) :
+    derivAt0 G m = GlobalTheory.pderivIter m (fun w => G (curryL ι a b w)) 0 := by
+  have han : AnalyticAt ℂ G 0 := SCV.analyticOnNhd_of_differentiable hG Set.univ 0 (Set.mem_univ _)
+  rw [derivAt0, GlobalTheory.pderivIter, GlobalTheory.pderivList, GlobalTheory.lineDerivList_comp_linearMap,
+    ← GlobalTheory.lineDerivList_ofFn han]
+  simp only [map_zero, List.map_map]
+  congr 1
+  apply List.ext_getElem
+  · simp
+  · intro i h1 h2
+    simp [curryL_single]
+
+theorem coeff_taylor_eq_pderivIter {σ : Type} [Fintype σ] [DecidableEq σ] {f : (σ → ℂ) → ℂ}
+    (hf : AnalyticAt ℂ f 0) (α : σ →₀ ℕ) :
+    MvPowerSeries.coeff α (GlobalTheory.taylor f) = GlobalTheory.pderivIter α f 0 / ∏ j, ((α j).factorial : ℂ) := by
+  rw [GlobalTheory.coeff_taylor, GlobalTheory.dirPolyDeriv_monomial_eq_lineDerivList (l := α.toMultiset.toList)
+    (by simp) _ hf, Nat.cast_prod, div_eq_inv_mul]
+  rfl
+
+end GlobalTheory.FockTaylor
+
+open GlobalTheory.FockTaylor in
+
+theorem GlobalTheory.FockTaylor.hasSum_derivAt0 : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (G : VCx ι a b → ℂ), Differentiable ℂ G → ∀ z₀ : VCx ι a b, HasSum (fun m : DVar ι a b →₀ ℕ => (m.prod fun k n => z₀ k.1 k.2.1 k.2.2 ^ n / (n.factorial : ℂ)) * derivAt0 G m) (G z₀) := by
+  intro ι _ a b G hG z₀
+  classical
+  let L := LinearMap.toContinuousLinearMap (curryL ι a b)
+  have hf : Differentiable ℂ (fun w => G (L w)) := hG.comp L.differentiable
+  have hfa : AnalyticAt ℂ (fun w => G (L w)) 0 :=
+    SCV.analyticOnNhd_of_differentiable hf Set.univ 0 (Set.mem_univ _)
+  let c : (DVar ι a b →₀ ℕ) → ℂ := fun m => derivAt0 G m / ∏ j, ((m j).factorial : ℂ)
+  have hne : ∀ m : DVar ι a b →₀ ℕ, (∏ j, ((m j).factorial : ℂ)) ≠ 0 := fun m =>
+    Finset.prod_ne_zero_iff.mpr fun k _ => Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
+  have hc : ∀ m, (∏ j, ((m j).factorial : ℂ)) * c m = GlobalTheory.pderivIter m (fun w => G (L w)) 0 :=
+    fun m => by
+      rw [mul_div_cancel₀ _ (hne m), derivAt0_eq_pderivIter G hG m]
+      rfl
+  have hc' : ∀ m, c m = MvPowerSeries.coeff m (GlobalTheory.taylor fun w => G (L w)) := fun m => by
+    rw [coeff_taylor_eq_pderivIter hfa]
+    show derivAt0 G m / _ = _
+    rw [derivAt0_eq_pderivIter G hG m]
+    rfl
+  let w : DVar ι a b → ℂ := fun k => z₀ k.1 k.2.1 k.2.2
+  have hs := GlobalTheory.EntireTaylor.summable_of_entire hf c hc w
+  have ht := GlobalTheory.ProdThetaConj.tsum_of_entire hf c hc hc' w
+  have hterm : ∀ m : DVar ι a b →₀ ℕ,
+      (m.prod fun k n => z₀ k.1 k.2.1 k.2.2 ^ n / (n.factorial : ℂ)) * derivAt0 G m
+        = c m * ∏ j, w j ^ m j := fun m => by
+    rw [Finsupp.prod_fintype _ _ (by simp), Finset.prod_div_distrib]
+    simp only [c, w]
+    ring
+  have hGz : G z₀ = G (L w) := rfl
+  rw [hGz, ← ht]
+  exact (hs.hasSum).congr_fun hterm
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasSum_taylorSeries_derivAtOrigin_coordinateSpace : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (G : VCx ι a b → ℂ), Differentiable ℂ G → ∀ z₀ : VCx ι a b, HasSum (fun m : DVar ι a b →₀ ℕ => (m.prod fun k n => z₀ k.1 k.2.1 k.2.2 ^ n / (n.factorial : ℂ)) * derivAt0 G m) (G z₀) := by
+  atlas_forward_decl GlobalTheory.FockTaylor.hasSum_derivAt0
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+noncomputable section
+
+namespace GlobalTheory.FockTransl
+
+theorem integrable_exp_lin_sub_sq_norm_complex {c r : ℝ} (hc : 0 < c) (hr : 0 ≤ r) :
+    Integrable fun w : ℂ => Real.exp (r * ‖w‖ - c * ‖w‖ ^ 2 / 2) := by
+  have hg : Integrable fun w : ℂ => Real.exp (-(c / 4) * ‖w‖ ^ 2) := by
+    have h := (GaussianFourier.integrable_cexp_neg_mul_sq_norm_add (V := ℂ) (b := ((c / 4 : ℝ) : ℂ))
+      (by simp; linarith) 0 0).norm
+    refine h.congr (Filter.Eventually.of_forall fun w => ?_)
+    simp [Complex.norm_exp, ← Complex.ofReal_pow]
+  refine (hg.const_mul (Real.exp (r ^ 2 / c))).mono' (by fun_prop)
+    (Filter.Eventually.of_forall fun w => ?_)
+  rw [Real.norm_of_nonneg (Real.exp_pos _).le, ← Real.exp_add]
+  apply Real.exp_le_exp.mpr
+  have key : r ^ 2 / c + -(c / 4) * ‖w‖ ^ 2 - (r * ‖w‖ - c * ‖w‖ ^ 2 / 2)
+      = (r - c * ‖w‖ / 2) ^ 2 / c := by
+    field_simp
+    ring
+  have : 0 ≤ (r - c * ‖w‖ / 2) ^ 2 / c := by positivity
+  linarith
+
+theorem integrable_exp_lin_sub_gq (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ) (hc : ∀ τ, 0 < c τ)
+    (z₀ : VCx ι a b) :
+    Integrable fun z : VCx ι a b => Real.exp ((∑ k : DVar ι a b,
+      ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) - gq c z / 2) := by
+  have key : ∀ z : VCx ι a b, Real.exp ((∑ k : DVar ι a b,
+      ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) - gq c z / 2)
+      = ∏ τ, ∏ i, ∏ j, Real.exp (‖(c τ : ℂ) * z₀ τ i j‖ * ‖z τ i j‖ - c τ * ‖z τ i j‖ ^ 2 / 2) := by
+    intro z
+    simp only [← Real.exp_sum, gq, DVar, Fintype.sum_prod_type, Finset.sum_div,
+      ← Finset.sum_sub_distrib]
+  simp_rw [key]
+  refine Integrable.fintype_prod (f := fun τ (x : Fin b → Fin a → ℂ) =>
+    ∏ i, ∏ j, Real.exp (‖(c τ : ℂ) * z₀ τ i j‖ * ‖x i j‖ - c τ * ‖x i j‖ ^ 2 / 2)) fun τ => ?_
+  refine Integrable.fintype_prod (f := fun i (y : Fin a → ℂ) =>
+    ∏ j, Real.exp (‖(c τ : ℂ) * z₀ τ i j‖ * ‖y j‖ - c τ * ‖y j‖ ^ 2 / 2)) fun i => ?_
+  refine Integrable.fintype_prod (f := fun j (w : ℂ) =>
+    Real.exp (‖(c τ : ℂ) * z₀ τ i j‖ * ‖w‖ - c τ * ‖w‖ ^ 2 / 2)) fun j => ?_
+  exact integrable_exp_lin_sub_sq_norm_complex (hc τ) (norm_nonneg _)
+
+end GlobalTheory.FockTransl
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integrable_gaussian_exp_linear_norm_term_complex_matrix : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ), (∀ τ, 0 < c τ) → ∀ z₀ : VCx ι a b, Integrable fun z : VCx ι a b => Real.exp ((∑ k : DVar ι a b, ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) - gq c z / 2) := by
+  atlas_forward_decl GlobalTheory.FockTransl.integrable_exp_lin_sub_gq
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+namespace GlobalTheory.FockRepr
+
+theorem expand_real (κ : Type) [Fintype κ] (x : κ → ℝ) :
+    HasSum (fun m : κ →₀ ℕ => m.prod fun k n => x k ^ n / (n.factorial : ℝ)) (Real.exp (∑ k, x k)) := by
+  have h := GlobalTheory.T.hasSum_finsupp_prod_pow_div_factorial_exp_sum κ (fun k => (x k : ℂ))
+  rw [← Complex.ofReal_sum, ← Complex.ofReal_exp] at h
+  refine Complex.hasSum_ofReal.mp ?_
+  convert h using 1
+  funext m
+  simp only [Finsupp.prod, Complex.ofReal_prod, Complex.ofReal_div, Complex.ofReal_pow, Complex.ofReal_natCast]
+
+theorem conjMono_continuous {ι : Type} [Fintype ι] {a b : ℕ} (m : DVar ι a b →₀ ℕ) : Continuous (conjMono m) := by
+  unfold conjMono Finsupp.prod; fun_prop
+
+theorem gq_continuous {ι : Type} [Fintype ι] {a b : ℕ} (c : ι → ℝ) : Continuous (gq (a := a) (b := b) c) := by
+  unfold gq; fun_prop
+
+theorem bargmann_repr : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ), (∀ τ, 0 < c τ) → ∀ G : VCx ι a b → ℂ, Differentiable ℂ G → (∃ M : ℝ, ∀ z, ‖G z‖ ≤ M * Real.exp (gq c z / 2)) → ∀ z₀, G z₀ = ((∏ τ, (c τ / Real.pi) ^ (a * b) : ℝ) : ℂ) * ∫ z, Complex.exp (bk c z₀ z) * (Real.exp (-gq c z) : ℂ) * G z := by
+  intro ι _ a b c hc G hG ⟨M, hM⟩ z₀
+  have hbk : ∀ z, bk c z₀ z = ∑ k : DVar ι a b, (c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2 * conj (z k.1 k.2.1 k.2.2) := by
+    intro z; simp only [bk, Fintype.sum_prod_type]
+  let coef : (DVar ι a b →₀ ℕ) → ℂ := fun m => m.prod fun k n => ((c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2) ^ n / (n.factorial : ℂ)
+  have hcm : ∀ (m : DVar ι a b →₀ ℕ) z, coef m * conjMono m z = m.prod fun k n => ((c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2 * conj (z k.1 k.2.1 k.2.2)) ^ n / (n.factorial : ℂ) := by
+    intro m z
+    simp only [coef, conjMono, ← Finsupp.prod_mul]
+    refine Finset.prod_congr rfl fun k _ => ?_
+    ring
+  let F : (DVar ι a b →₀ ℕ) → VCx ι a b → ℂ := fun m z => coef m * (conjMono m z * (Real.exp (-gq c z) : ℂ) * G z)
+  have hlim : ∀ z, HasSum (fun m => F m z) (Complex.exp (bk c z₀ z) * (Real.exp (-gq c z) : ℂ) * G z) := by
+    intro z
+    have := (GlobalTheory.T.hasSum_finsupp_prod_pow_div_factorial_exp_sum (DVar ι a b) (fun k => (c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2 * conj (z k.1 k.2.1 k.2.2))).mul_right ((Real.exp (-gq c z) : ℂ) * G z)
+    rw [← hbk] at this
+    have e : (fun m => F m z) = fun m => (m.prod fun k n => ((c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2 * conj (z k.1 k.2.1 k.2.2)) ^ n / (n.factorial : ℂ)) * ((Real.exp (-gq c z) : ℂ) * G z) := by
+      funext m
+      rw [← hcm]
+      simp only [F]
+      ring
+    rw [e, mul_assoc]
+    exact this
+  have hnorm : ∀ m z, ‖F m z‖ = (m.prod fun k n => (‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) ^ n / (n.factorial : ℝ)) * (Real.exp (-gq c z) * ‖G z‖) := by
+    intro m z
+    have e1 : F m z = (coef m * conjMono m z) * ((Real.exp (-gq c z) : ℂ) * G z) := by simp only [F]; ring
+    rw [e1, hcm, norm_mul, norm_mul, Finsupp.prod, Finsupp.prod, norm_prod, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (Real.exp_pos _)]
+    congr 1
+    refine Finset.prod_congr rfl fun k _ => ?_
+    rw [norm_div, norm_pow, norm_mul, Complex.norm_natCast, RCLike.norm_conj]
+  have hnsum : ∀ z, HasSum (fun m => ‖F m z‖) (Real.exp (∑ k : DVar ι a b, ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) * (Real.exp (-gq c z) * ‖G z‖)) := by
+    intro z
+    simp only [hnorm]
+    exact (expand_real (DVar ι a b) _).mul_right _
+  have hGc : Continuous G := hG.continuous
+  have hFc : ∀ m, Continuous (F m) := by
+    intro m
+    have h1 := conjMono_continuous m
+    have h2 := gq_continuous (a := a) (b := b) c
+    simp only [F]
+    fun_prop
+  have hS : Continuous fun z : VCx ι a b => ∑ k : DVar ι a b, ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖ := by
+    fun_prop
+  have hint : Integrable (fun z => ∑' m, ‖F m z‖) := by
+    have e : (fun z => ∑' m, ‖F m z‖) = fun z => Real.exp (∑ k : DVar ι a b, ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) * (Real.exp (-gq c z) * ‖G z‖) := by
+      funext z; exact (hnsum z).tsum_eq
+    rw [e]
+    refine ((GlobalTheory.T.integrable_gaussian_exp_linear_norm_term_complex_matrix ι a b c hc z₀).const_mul M).mono' ?_ (Filter.Eventually.of_forall fun z => ?_)
+    · have h2 := gq_continuous (a := a) (b := b) c
+      exact Continuous.aestronglyMeasurable (by fun_prop)
+    · rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+      have hz := hM z
+      calc Real.exp (∑ k : DVar ι a b, ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) * (Real.exp (-gq c z) * ‖G z‖)
+          ≤ Real.exp (∑ k : DVar ι a b, ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) * (Real.exp (-gq c z) * (M * Real.exp (gq c z / 2))) := by
+            gcongr
+        _ = M * Real.exp ((∑ k : DVar ι a b, ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) - gq c z / 2) := by
+            rw [show (∑ k : DVar ι a b, ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) - gq c z / 2
+              = (∑ k : DVar ι a b, ‖(c k.1 : ℂ) * z₀ k.1 k.2.1 k.2.2‖ * ‖z k.1 k.2.1 k.2.2‖) + (-gq c z) + gq c z / 2 by ring,
+              Real.exp_add, Real.exp_add]
+            ring
+  have hsumI : HasSum (fun m => ∫ z, F m z) (∫ z, Complex.exp (bk c z₀ z) * (Real.exp (-gq c z) : ℂ) * G z) :=
+    hasSum_integral_of_dominated_convergence (fun m z => ‖F m z‖) (fun m => (hFc m).aestronglyMeasurable)
+      (fun m => Filter.Eventually.of_forall fun z => le_rfl) (Filter.Eventually.of_forall fun z => (hnsum z).summable)
+      hint (Filter.Eventually.of_forall hlim)
+  set P : ℝ := ∏ τ, (Real.pi / c τ) ^ (a * b) with hP
+  have hFm : ∀ m, ∫ z, F m z = (P : ℂ) * ((m.prod fun k n => z₀ k.1 k.2.1 k.2.2 ^ n / (n.factorial : ℂ)) * derivAt0 G m) := by
+    intro m
+    simp only [F]
+    rw [MeasureTheory.integral_const_mul, GlobalTheory.T.gaussian_conjMonomial_moment_eq_taylor_coefficient ι a b c hc G hG ⟨M, hM⟩ m]
+    have hc' : coef m * (((m.prod fun k n => (c k.1)⁻¹ ^ n : ℝ)) : ℂ) = m.prod fun k n => z₀ k.1 k.2.1 k.2.2 ^ n / (n.factorial : ℂ) := by
+      simp only [coef, Finsupp.prod, Complex.ofReal_prod, ← Finset.prod_mul_distrib]
+      refine Finset.prod_congr rfl fun k _ => ?_
+      have : (c k.1 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (hc k.1).ne'
+      push_cast
+      rw [mul_pow, mul_div_assoc, mul_comm, ← mul_assoc, ← mul_pow, inv_mul_cancel₀ this, one_pow, one_mul]
+    rw [← hc']
+    ring
+  have hT := (GlobalTheory.T.hasSum_taylorSeries_derivAtOrigin_coordinateSpace ι a b G hG z₀).mul_left (P : ℂ)
+  simp only [← hFm] at hT
+  have heq := hsumI.unique hT
+  rw [heq, ← mul_assoc]
+  have h1 : (∏ τ, (c τ / Real.pi) ^ (a * b) : ℝ) * P = 1 := by
+    rw [hP, ← Finset.prod_mul_distrib]
+    refine Finset.prod_eq_one fun τ _ => ?_
+    rw [← mul_pow]
+    have : c τ ≠ 0 := (hc τ).ne'
+    have : Real.pi ≠ 0 := Real.pi_ne_zero
+    rw [show c τ / Real.pi * (Real.pi / c τ) = 1 by field_simp, one_pow]
+  rw [← Complex.ofReal_mul, h1, Complex.ofReal_one, one_mul]
+
+end GlobalTheory.FockRepr
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fock_bargmann_reproducing_formula : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ), (∀ τ, 0 < c τ) → ∀ G : VCx ι a b → ℂ, Differentiable ℂ G → (∃ M : ℝ, ∀ z, ‖G z‖ ≤ M * Real.exp (gq c z / 2)) → ∀ z₀, G z₀ = ((∏ τ, (c τ / Real.pi) ^ (a * b) : ℝ) : ℂ) * ∫ z, Complex.exp (bk c z₀ z) * (Real.exp (-gq c z) : ℂ) * G z := by
+  atlas_forward_decl GlobalTheory.FockRepr.bargmann_repr
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+noncomputable section
+
+namespace GlobalTheory.FockTransl
+
+theorem integrable_vcx_prod {ι : Type} [Fintype ι] {a b : ℕ} (g : ι → Fin b → Fin a → ℂ → ℂ)
+    (hg : ∀ τ i j, Integrable (g τ i j)) :
+    Integrable fun z : VCx ι a b => ∏ τ, ∏ i, ∏ j, g τ i j (z τ i j) := by
+  have h1 : ∀ τ i, Integrable (fun w : Fin a → ℂ => ∏ j, g τ i j (w j)) := fun τ i =>
+    Integrable.fintype_prod (f := fun j (w : ℂ) => g τ i j w) (hg τ i)
+  have h2 : ∀ τ, Integrable (fun w : Fin b → Fin a → ℂ => ∏ i, ∏ j, g τ i j (w i j)) := fun τ =>
+    Integrable.fintype_prod (f := fun i (w : Fin a → ℂ) => ∏ j, g τ i j (w j)) (h1 τ)
+  exact Integrable.fintype_prod (f := fun τ (w : Fin b → Fin a → ℂ) => ∏ i, ∏ j, g τ i j (w i j)) h2
+
+theorem exp_gq_eq_prod {ι : Type} [Fintype ι] {a b : ℕ} (c : ι → ℝ) (z : VCx ι a b) :
+    (Real.exp (-gq c z / 2) : ℂ) = ∏ τ, ∏ i, ∏ j, (Real.exp (-(c τ * ‖z τ i j‖ ^ 2) / 2) : ℂ) := by
+  have h : -gq c z / 2 = ∑ τ, ∑ i, ∑ j, (-(c τ * ‖z τ i j‖ ^ 2) / 2) := by
+    simp [gq, Finset.sum_div, Finset.sum_neg_distrib, neg_div]
+  rw [h]
+  simp only [Real.exp_sum]
+  push_cast
+  rfl
+
+theorem integrable_conj_pow_mul_gauss (n : ℕ) {c : ℝ} (hc : 0 < c) :
+    Integrable fun w : ℂ => conj w ^ n * (Real.exp (-(c * ‖w‖ ^ 2) / 2) : ℂ) := by
+  have h := GlobalTheory.integrable_norm_pow_mul_exp_neg_mul_norm_sq (E := ℂ) n (b := c / 2) (by positivity)
+  refine h.mono' (Continuous.aestronglyMeasurable (by fun_prop)) (ae_of_all _ fun w => ?_)
+  rw [norm_mul, norm_pow, Complex.norm_conj, Complex.norm_real,
+    Real.norm_of_nonneg (Real.exp_pos _).le]
+  apply le_of_eq
+  congr 2
+  ring
+
+theorem integrable_exp_bargmann_mul_gauss (u : ℂ) {c : ℝ} (hc : 0 < c) :
+    Integrable fun w : ℂ => Complex.exp ((c : ℂ) * u * conj w) * (Real.exp (-(c * ‖w‖ ^ 2) / 2) : ℂ) := by
+  have h := (GlobalTheory.integrable_exp_neg_mul_norm_sq (E := ℂ) (b := c / 4) (by positivity)).const_mul
+    (Real.exp (c * ‖u‖ ^ 2))
+  refine h.mono' (Continuous.aestronglyMeasurable (by fun_prop)) (ae_of_all _ fun w => ?_)
+  rw [norm_mul, Complex.norm_exp, Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos _).le,
+    ← Real.exp_add, ← Real.exp_add]
+  apply Real.exp_le_exp.2
+  have h1 : ((c : ℂ) * u * conj w).re ≤ c * (‖u‖ * ‖w‖) := by
+    calc _ ≤ ‖(c : ℂ) * u * conj w‖ := Complex.re_le_norm _
+      _ = c * (‖u‖ * ‖w‖) := by
+        rw [norm_mul, norm_mul, Complex.norm_conj, Complex.norm_real, Real.norm_of_nonneg hc.le]
+        ring
+  have h2 : ‖u‖ * ‖w‖ ≤ ‖u‖ ^ 2 + ‖w‖ ^ 2 / 4 := by nlinarith [sq_nonneg (‖u‖ - ‖w‖ / 2)]
+  have h3 := mul_le_mul_of_nonneg_left h2 hc.le
+  nlinarith
+
+theorem integrable_conjMono_bargmann_gauss : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ), (∀ τ, 0 < c τ) →
+    (∀ m : DVar ι a b →₀ ℕ, Integrable fun z => conjMono m z * (Real.exp (-gq c z / 2) : ℂ)) ∧
+      ∀ z₀ : VCx ι a b, Integrable fun z => Complex.exp (bk c z₀ z) * (Real.exp (-gq c z / 2) : ℂ) := by
+  intro ι _ a b c hc
+  constructor
+  · intro m
+    have h := integrable_vcx_prod (fun τ i j w => conj w ^ m (τ, i, j) * (Real.exp (-(c τ * ‖w‖ ^ 2) / 2) : ℂ))
+      (fun τ i j => integrable_conj_pow_mul_gauss _ (hc τ))
+    refine h.congr (ae_of_all _ fun z => ?_)
+    dsimp only
+    rw [conjMono, exp_gq_eq_prod, Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
+    simp only [Fintype.prod_prod_type, Finset.prod_mul_distrib]
+  · intro z₀
+    have h := integrable_vcx_prod (fun τ i j w => Complex.exp ((c τ : ℂ) * z₀ τ i j * conj w) *
+      (Real.exp (-(c τ * ‖w‖ ^ 2) / 2) : ℂ)) (fun τ i j => integrable_exp_bargmann_mul_gauss _ (hc τ))
+    refine h.congr (ae_of_all _ fun z => ?_)
+    dsimp only
+    rw [bk, exp_gq_eq_prod]
+    simp only [Complex.exp_sum, Finset.prod_mul_distrib]
+
+end GlobalTheory.FockTransl
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integrable_conjMonomial_bargmann_gaussian : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ), (∀ τ, 0 < c τ) → (∀ m : DVar ι a b →₀ ℕ, Integrable fun z => conjMono m z * (Real.exp (-gq c z / 2) : ℂ)) ∧ ∀ z₀ : VCx ι a b, Integrable fun z => Complex.exp (bk c z₀ z) * (Real.exp (-gq c z / 2) : ℂ) := by
+  atlas_forward_decl GlobalTheory.FockTransl.integrable_conjMono_bargmann_gauss
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+
+noncomputable section
+
+namespace GlobalTheory.FockTransl
+
+section BargmannUnique
+
+variable {ι : Type} [Fintype ι] {a b : ℕ}
+
+theorem bk_smul_left (c : ι → ℝ) (u : ℂ) (z₀ z : VCx ι a b) : bk c (u • z₀) z = u * bk c z₀ z := by
+  unfold bk
+  simp only [Finset.mul_sum, Pi.smul_apply, smul_eq_mul]
+  refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
+  ring
+
+theorem conjMono_add (m m' : DVar ι a b →₀ ℕ) (z : VCx ι a b) :
+    conjMono (m + m') z = conjMono m z * conjMono m' z := by
+  unfold conjMono
+  exact Finsupp.prod_add_index' (fun _ => pow_zero _) (fun _ _ _ => pow_add _ _ _)
+
+theorem conjMono_single_one (k : DVar ι a b) (z : VCx ι a b) :
+    conjMono (Finsupp.single k 1) z = conj (z k.1 k.2.1 k.2.2) := by
+  unfold conjMono; simp [Finsupp.prod_single_index]
+
+abbrev monoSpan (ι : Type) [Fintype ι] (a b : ℕ) : Submodule ℂ (VCx ι a b → ℂ) :=
+  Submodule.span ℂ (Set.range fun m : DVar ι a b →₀ ℕ => conjMono m)
+
+theorem monoSpan_mul {P Q : VCx ι a b → ℂ} (hP : P ∈ monoSpan ι a b) (hQ : Q ∈ monoSpan ι a b) :
+    P * Q ∈ monoSpan ι a b := by
+  have h := Submodule.mul_mem_mul hP hQ
+  rw [Submodule.span_mul_span] at h
+  refine Submodule.span_mono ?_ h
+  rintro _ ⟨_, ⟨m, rfl⟩, _, ⟨m', rfl⟩, rfl⟩
+  exact ⟨m + m', funext fun z => conjMono_add m m' z⟩
+
+theorem bk_mem_monoSpan (c : ι → ℝ) (z₀ : VCx ι a b) : (fun z => bk c z₀ z) ∈ monoSpan ι a b := by
+  have : (fun z => bk c z₀ z) = ∑ τ, ∑ i, ∑ j,
+      ((c τ : ℂ) * z₀ τ i j) • conjMono (Finsupp.single (τ, i, j) 1) := by
+    funext z
+    simp only [bk, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, conjMono_single_one]
+  rw [this]
+  exact Submodule.sum_mem _ fun τ _ => Submodule.sum_mem _ fun i _ => Submodule.sum_mem _ fun j _ =>
+    Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, rfl⟩)
+
+theorem bk_pow_mem_monoSpan (c : ι → ℝ) (z₀ : VCx ι a b) (n : ℕ) :
+    (fun z => bk c z₀ z ^ n) ∈ monoSpan ι a b := by
+  induction n with
+  | zero =>
+    have : (fun z : VCx ι a b => bk c z₀ z ^ 0) = conjMono 0 := by funext z; simp [conjMono]
+    rw [this]; exact Submodule.subset_span ⟨0, rfl⟩
+  | succ n ih =>
+    have := monoSpan_mul ih (bk_mem_monoSpan c z₀)
+    convert this using 1
+    funext z; simp [pow_succ]
+
+theorem exp_norm_le_four (w : ℂ) : Real.exp ‖w‖ ≤ Real.exp ((1 - Complex.I) * w).re +
+    Real.exp ((1 + Complex.I) * w).re + Real.exp ((-1 - Complex.I) * w).re + Real.exp ((-1 + Complex.I) * w).re := by
+  have h1 : ((1 - Complex.I) * w).re = w.re + w.im := by simp [Complex.mul_re] <;> ring
+  have h2 : ((1 + Complex.I) * w).re = w.re + -w.im := by simp [Complex.mul_re] <;> ring
+  have h3 : ((-1 - Complex.I) * w).re = -w.re + w.im := by simp [Complex.mul_re] <;> ring
+  have h4 : ((-1 + Complex.I) * w).re = -w.re + -w.im := by simp [Complex.mul_re] <;> ring
+  rw [h1, h2, h3, h4]
+  have key : Real.exp ‖w‖ ≤ Real.exp |w.re| * Real.exp |w.im| := by
+    rw [← Real.exp_add]; exact Real.exp_le_exp.2 (Complex.norm_le_abs_re_add_abs_im w)
+  have hre : Real.exp |w.re| ≤ Real.exp w.re + Real.exp (-w.re) := by
+    rcases abs_cases w.re with ⟨h, _⟩ | ⟨h, _⟩ <;> rw [h] <;> linarith [Real.exp_pos w.re, Real.exp_pos (-w.re)]
+  have him : Real.exp |w.im| ≤ Real.exp w.im + Real.exp (-w.im) := by
+    rcases abs_cases w.im with ⟨h, _⟩ | ⟨h, _⟩ <;> rw [h] <;> linarith [Real.exp_pos w.im, Real.exp_pos (-w.im)]
+  calc Real.exp ‖w‖ ≤ (Real.exp w.re + Real.exp (-w.re)) * (Real.exp w.im + Real.exp (-w.im)) :=
+        key.trans (mul_le_mul hre him (by positivity) (by positivity))
+    _ = _ := by simp only [add_mul, mul_add, ← Real.exp_add]; ring
+
+theorem integral_moment_span_eq_zero {c : ι → ℝ} (hc : ∀ τ, 0 < c τ) {F : VCx ι a b → ℂ}
+    (hF : Continuous F) {M : ℝ} (hM : ∀ z, ‖F z‖ ≤ M)
+    (hmom : ∀ m : DVar ι a b →₀ ℕ, ∫ z, conjMono m z * (Real.exp (-gq c z / 2) : ℂ) * F z = 0)
+    {P : VCx ι a b → ℂ} (hP : P ∈ monoSpan ι a b) :
+    Integrable (fun z => P z * (Real.exp (-gq c z / 2) : ℂ) * F z) ∧
+      ∫ z, P z * (Real.exp (-gq c z / 2) : ℂ) * F z = 0 := by
+  induction hP using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨m, rfl⟩ := hx
+    exact ⟨((GlobalTheory.T.integrable_conjMonomial_bargmann_gaussian ι a b c hc).1 m).mul_bdd hF.aestronglyMeasurable
+      (Filter.Eventually.of_forall hM), hmom m⟩
+  | zero => simp
+  | add x y _ _ hx hy =>
+    have e : (fun z => (x + y) z * (Real.exp (-gq c z / 2) : ℂ) * F z) =
+        fun z => x z * (Real.exp (-gq c z / 2) : ℂ) * F z + y z * (Real.exp (-gq c z / 2) : ℂ) * F z := by
+      funext z; simp only [Pi.add_apply]; ring
+    rw [e]
+    exact ⟨hx.1.add hy.1, by rw [integral_add hx.1 hy.1, hx.2, hy.2, add_zero]⟩
+  | smul r x _ hx =>
+    have e : (fun z => (r • x) z * (Real.exp (-gq c z / 2) : ℂ) * F z) =
+        fun z => r * (x z * (Real.exp (-gq c z / 2) : ℂ) * F z) := by
+      funext z; simp only [Pi.smul_apply, smul_eq_mul]; ring
+    rw [e]
+    exact ⟨hx.1.const_mul r, by rw [integral_const_mul, hx.2, mul_zero]⟩
+
+theorem integral_bargmann_eq_zero_of_moments : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ), (∀ τ, 0 < c τ) → ∀ F : VCx ι a b → ℂ, Continuous F → (∃ M : ℝ, ∀ z, ‖F z‖ ≤ M) → (∀ m : DVar ι a b →₀ ℕ, ∫ z, conjMono m z * (Real.exp (-gq c z / 2) : ℂ) * F z = 0) → ∀ z₀, ∫ z, Complex.exp (bk c z₀ z) * (Real.exp (-gq c z / 2) : ℂ) * F z = 0 := by
+  intro ι _ a b c hc F hF hMex hmom z₀
+  obtain ⟨M, hM⟩ := hMex
+  have hexpR : ∀ x : ℝ, HasSum (fun n : ℕ => x ^ n / (Nat.factorial n : ℝ)) (Real.exp x) := fun x => by
+    rw [Real.exp_eq_exp_ℝ]; exact NormedSpace.expSeries_div_hasSum_exp _
+  have hexpC : ∀ x : ℂ, HasSum (fun n : ℕ => x ^ n / (Nat.factorial n : ℂ)) (Complex.exp x) := fun x => by
+    rw [Complex.exp_eq_exp_ℂ]; exact NormedSpace.expSeries_div_hasSum_exp _
+  have hgq : Continuous (fun z : VCx ι a b => gq c z) := by unfold gq; fun_prop
+  have hbk : Continuous (fun z : VCx ι a b => bk c z₀ z) := by unfold bk; fun_prop
+  have hg : Continuous (fun z : VCx ι a b => ((Real.exp (-gq c z / 2) : ℝ) : ℂ)) :=
+    Complex.continuous_ofReal.comp (Real.continuous_exp.comp (hgq.neg.div_const 2))
+  have hsum := hasSum_integral_of_dominated_convergence (μ := volume)
+    (F := fun (n : ℕ) z => bk c z₀ z ^ n / (Nat.factorial n : ℂ) * (Real.exp (-gq c z / 2) : ℂ) * F z)
+    (f := fun z => Complex.exp (bk c z₀ z) * (Real.exp (-gq c z / 2) : ℂ) * F z)
+    (fun n z => ‖bk c z₀ z‖ ^ n / (Nat.factorial n : ℝ) * (Real.exp (-gq c z / 2) * M))
+    (fun n => ((((hbk.pow n).div_const _).mul hg).mul hF).aestronglyMeasurable)
+    (fun n => Filter.Eventually.of_forall fun z => by
+      simp only [norm_mul, norm_div, norm_pow, Complex.norm_natCast, Complex.norm_real,
+        Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+      rw [mul_assoc]
+      gcongr
+      exact hM z)
+    (Filter.Eventually.of_forall fun z => (hexpR ‖bk c z₀ z‖).summable.mul_right _)
+    (by
+      have htsum : (fun z => ∑' n : ℕ, ‖bk c z₀ z‖ ^ n / (Nat.factorial n : ℝ) * (Real.exp (-gq c z / 2) * M)) =
+          fun z => Real.exp ‖bk c z₀ z‖ * (Real.exp (-gq c z / 2) * M) := by
+        funext z; rw [tsum_mul_right, (hexpR _).tsum_eq]
+      rw [htsum]
+      have hI : ∀ u : ℂ, Integrable fun z : VCx ι a b =>
+          ‖Complex.exp (bk c (u • z₀) z) * (Real.exp (-gq c z / 2) : ℂ)‖ :=
+        fun u => ((GlobalTheory.T.integrable_conjMonomial_bargmann_gaussian ι a b c hc).2 (u • z₀)).norm
+      have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+      refine Integrable.mono' ((((hI (1 - Complex.I)).add (hI (1 + Complex.I))).add
+        (hI (-1 - Complex.I))).add (hI (-1 + Complex.I)) |>.const_mul M)
+        ((Real.continuous_exp.comp (continuous_norm.comp hbk)).mul
+          ((Real.continuous_exp.comp (hgq.neg.div_const 2)).mul continuous_const)).aestronglyMeasurable
+        (Filter.Eventually.of_forall fun z => ?_)
+      simp only [Pi.add_apply, bk_smul_left, norm_mul, Complex.norm_exp, Complex.norm_real,
+        Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+      rw [abs_of_nonneg (by positivity)]
+      have h4 := exp_norm_le_four (bk c z₀ z)
+      have he := Real.exp_pos (-gq c z / 2)
+      calc Real.exp ‖bk c z₀ z‖ * (Real.exp (-gq c z / 2) * M)
+          = (M * Real.exp (-gq c z / 2)) * Real.exp ‖bk c z₀ z‖ := by ring
+        _ ≤ (M * Real.exp (-gq c z / 2)) * (Real.exp ((1 - Complex.I) * bk c z₀ z).re +
+            Real.exp ((1 + Complex.I) * bk c z₀ z).re + Real.exp ((-1 - Complex.I) * bk c z₀ z).re +
+            Real.exp ((-1 + Complex.I) * bk c z₀ z).re) :=
+          mul_le_mul_of_nonneg_left h4 (by positivity)
+        _ = _ := by ring)
+    (Filter.Eventually.of_forall fun z => by
+      simpa only [mul_assoc] using (hexpC (bk c z₀ z)).mul_right ((Real.exp (-gq c z / 2) : ℂ) * F z))
+  have h0 : ∀ n : ℕ, ∫ z, bk c z₀ z ^ n / (Nat.factorial n : ℂ) * (Real.exp (-gq c z / 2) : ℂ) * F z = 0 := by
+    intro n
+    have := (integral_moment_span_eq_zero hc hF hM hmom
+      (Submodule.smul_mem _ ((Nat.factorial n : ℂ)⁻¹) (bk_pow_mem_monoSpan c z₀ n))).2
+    have e : (fun z => bk c z₀ z ^ n / (Nat.factorial n : ℂ) * (Real.exp (-gq c z / 2) : ℂ) * F z) =
+        fun z => ((Nat.factorial n : ℂ)⁻¹ • fun z => bk c z₀ z ^ n) z * (Real.exp (-gq c z / 2) : ℂ) * F z := by
+      funext z; simp only [Pi.smul_apply, smul_eq_mul]; ring
+    rw [e]; exact this
+  simp only [h0] at hsum
+  exact hsum.unique hasSum_zero
+
+end BargmannUnique
+
+end GlobalTheory.FockTransl
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_exp_bk_mul_eq_zero_of_moments_zero : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (c : ι → ℝ), (∀ τ, 0 < c τ) → ∀ F : VCx ι a b → ℂ, Continuous F → (∃ M : ℝ, ∀ z, ‖F z‖ ≤ M) → (∀ m : DVar ι a b →₀ ℕ, ∫ z, conjMono m z * (Real.exp (-gq c z / 2) : ℂ) * F z = 0) → ∀ z₀, ∫ z, Complex.exp (bk c z₀ z) * (Real.exp (-gq c z / 2) : ℂ) * F z = 0 := by
+  atlas_forward_decl GlobalTheory.FockTransl.integral_bargmann_eq_zero_of_moments
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
+open scoped TensorProduct ComplexConjugate
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.FockTransl
+open Formalism.L2.Ker (VCx DVar derivAt0)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockRealPoint_transport_continuous_integral : ∀ (D : D7) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D), GlobalTheory.FockCompare.Chart θ σ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T), Continuous (fockPt σ A B) ∧ (∀ w : WO S T, w.map (finPart D) = 0 → ∃ z, fockPt σ A B z = w) ∧ ∀ g : VCx D.what₂.Tau S.rank T.rank → ℂ, Integrable g → ∃ (m : Measure (WO S T)) (α : WO S T → ℂ), SFinite m ∧ Integrable α m ∧ ∀ H : WO S T → ℂ, ∫ w, α w * H w ∂m = ∫ z, g z * H (fockPt σ A B z) := by
+  first | exact @GlobalTheory.FockTransport.fockPt_transport | exact GlobalTheory.FockTransport.fockPt_transport | (intros; apply GlobalTheory.FockTransport.fockPt_transport <;> assumption)
+end
+
+section
 section
 noncomputable section
 
@@ -125,3 +1453,4 @@ open GlobalTheory.Asc
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.tameFunctional_kills_fockVacuum_realTranslates : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsStdChar D ψ (-1) → IsInfFam θ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (ℓ : (WO S T → ℂ) → ℂ), Tame ψ S T ℓ → ∀ f, GlobalTheory.ChainFr.IsVacF ψ θ A B f → (∀ P, ℓ (GlobalTheory.ChainFr.ptF ψ θ A B f P) = 0) → ∀ w : WO S T, w.map (finPart D) = 0 → ℓ (heisO ψ S T w f) = 0 := by
   atlas_forward_decl GlobalTheory.FockTransl.tame_kills_real_translates
+end

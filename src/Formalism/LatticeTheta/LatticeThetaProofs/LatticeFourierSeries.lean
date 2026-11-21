@@ -1,5 +1,279 @@
-import Formalism.LatticeTheta.LatticeThetaProofs.TorusProjIsOpenQuotientMap
+import Formalism.LatticeTheta.LatticeSummableDecay
 
+section
+open MeasureTheory Filter Complex
+open scoped RealInnerProductSpace
+
+noncomputable section
+
+namespace Formalism.H
+
+variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
+
+theorem innerₗ_nondegenerate : (innerₗ V : LinearMap.BilinForm ℝ V).Nondegenerate := by
+  constructor <;> intro m hm <;> simpa using hm m
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+abbrev dualB (e : Module.Basis ι ℝ V) : Module.Basis ι ℝ V :=
+  LinearMap.BilinForm.dualBasis (innerₗ V) innerₗ_nondegenerate e
+
+theorem inner_dualB (e : Module.Basis ι ℝ V) (i j : ι) :
+    ⟪dualB e i, e j⟫ = if j = i then 1 else 0 := by
+  have h := LinearMap.BilinForm.apply_dualBasis_left (innerₗ_nondegenerate (V := V)) e i j
+  simpa using h
+
+def dualVec (e : Module.Basis ι ℝ V) (m : ι → ℤ) : V := ∑ i, m i • dualB e i
+
+theorem dualVec_eq (e : Module.Basis ι ℝ V) (m : ι → ℤ) :
+    dualVec e m = ∑ i, (m i : ℝ) • dualB e i := by
+  unfold dualVec
+  exact Finset.sum_congr rfl fun i _ => (Int.cast_smul_eq_zsmul ℝ (m i) _).symm
+
+theorem inner_dualVec_basis (e : Module.Basis ι ℝ V) (m : ι → ℤ) (j : ι) :
+    ⟪dualVec e m, e j⟫ = m j := by
+  rw [dualVec_eq, sum_inner]
+  simp_rw [real_inner_smul_left, inner_dualB]
+  simp
+
+theorem dual_span_eq (e : Module.Basis ι ℝ V) :
+    dual (Submodule.span ℤ (Set.range e)) = Submodule.span ℤ (Set.range (dualB e)) := by
+  exact LinearMap.BilinForm.dualSubmodule_span_of_basis (innerₗ V) innerₗ_nondegenerate e
+
+theorem dualVec_mem (e : Module.Basis ι ℝ V) (m : ι → ℤ) :
+    dualVec e m ∈ dual (Submodule.span ℤ (Set.range e)) := by
+  rw [dual_span_eq]
+  exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+
+theorem dualVec_injective (e : Module.Basis ι ℝ V) : Function.Injective (dualVec e) := by
+  intro m n h
+  funext j
+  have h1 := congrArg (fun x => ⟪x, e j⟫) h
+  simp only [inner_dualVec_basis] at h1
+  exact_mod_cast h1
+
+theorem dualVec_surjective (e : Module.Basis ι ℝ V) (μ : V)
+    (hμ : μ ∈ dual (Submodule.span ℤ (Set.range e))) : ∃ m, dualVec e m = μ := by
+  rw [dual_span_eq] at hμ
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ).mp hμ
+  exact ⟨c, hc⟩
+
+def dualEquiv (e : Module.Basis ι ℝ V) : (ι → ℤ) ≃ dual (Submodule.span ℤ (Set.range e)) :=
+  Equiv.ofBijective (fun m => ⟨dualVec e m, dualVec_mem e m⟩)
+    ⟨fun m n h => dualVec_injective e (congrArg Subtype.val h),
+     fun μ => by
+      obtain ⟨m, hm⟩ := dualVec_surjective e μ μ.2
+      exact ⟨m, Subtype.ext hm⟩⟩
+
+@[simp] theorem dualEquiv_apply (e : Module.Basis ι ℝ V) (m : ι → ℤ) :
+    ((dualEquiv e m : dual (Submodule.span ℤ (Set.range e))) : V) = dualVec e m := rfl
+
+end Formalism.H
+end
+end
+
+section
+open MeasureTheory Set
+open scoped NNReal ENNReal
+
+noncomputable section
+
+namespace Formalism.H
+
+variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
+  [MeasurableSpace V] [BorelSpace V]
+variable {ι : Type*} [Fintype ι]
+
+abbrev boxIco (ι : Type*) : Set (ι → ℝ) := Set.univ.pi fun _ => Set.Ico (0 : ℝ) 1
+
+theorem volume_boxIco : volume (boxIco ι) = 1 := by
+  rw [volume_pi_pi]
+  simp [Real.volume_Ico]
+
+theorem fundamentalDomain_eq_preimage (e : Module.Basis ι ℝ V) :
+    ZSpan.fundamentalDomain e = e.equivFunL ⁻¹' boxIco ι := by
+  ext x
+  simp [ZSpan.mem_fundamentalDomain, boxIco, Set.mem_pi]
+
+theorem integral_fundamentalDomain_eq (e : Module.Basis ι ℝ V) (H : V → ℂ) :
+    ∫ y in ZSpan.fundamentalDomain e, H y =
+      (volume.real (ZSpan.fundamentalDomain e) : ℂ) * ∫ t in boxIco ι, H (e.equivFunL.symm t) := by
+  let ψ : V ≃ᵐ (ι → ℝ) := e.equivFunL.toHomeomorph.toMeasurableEquiv
+  have hψ : (ψ : V → ι → ℝ) = e.equivFunL := rfl
+  set ν : Measure (ι → ℝ) := Measure.map ψ (volume : Measure V) with hνdef
+  haveI : ν.IsAddHaarMeasure := by
+    rw [hνdef, hψ]; exact e.equivFunL.isAddHaarMeasure_map volume
+  have hν : ν = ν.addHaarScalarFactor volume • volume := Measure.isAddLeftInvariant_eq_smul ν volume
+  have hbox : ν (boxIco ι) = volume (ZSpan.fundamentalDomain e) := by
+    rw [hνdef, MeasurableEquiv.map_apply, hψ, fundamentalDomain_eq_preimage]
+  have hc : ((ν.addHaarScalarFactor volume : ℝ≥0) : ℝ≥0∞) = volume (ZSpan.fundamentalDomain e) := by
+    rw [← hbox]
+    conv_rhs => rw [hν]
+    simp [volume_boxIco]
+  have hint : ∫ y in ZSpan.fundamentalDomain e, H y = ∫ t in boxIco ι, H (e.equivFunL.symm t) ∂ν := by
+    rw [hνdef, MeasurableEquiv.restrict_map, integral_map_equiv, fundamentalDomain_eq_preimage]
+    simp only [hψ, ContinuousLinearEquiv.symm_apply_apply]
+  rw [hint, hν, Measure.restrict_smul, integral_smul_nnreal_measure, measureReal_def, ← hc,
+    ENNReal.coe_toReal, NNReal.smul_def, Complex.real_smul]
+
+end Formalism.H
+end
+end
+
+section
+open MeasureTheory Set Complex
+open scoped RealInnerProductSpace
+
+noncomputable section
+
+namespace Formalism.H
+
+variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
+  [MeasurableSpace V] [BorelSpace V]
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def torusProj (ι : Type*) : (ι → ℝ) → UnitAddTorus ι := fun t i => (t i : UnitAddCircle)
+
+theorem torusProj_isOpenQuotientMap : IsOpenQuotientMap (torusProj ι) :=
+  IsOpenQuotientMap.piMap fun _ => QuotientAddGroup.isOpenQuotientMap_mk
+
+theorem torusProj_surjective : Function.Surjective (torusProj ι) := by
+  intro θ
+  choose t ht using fun i => QuotientAddGroup.mk_surjective (θ i)
+  exact ⟨t, funext ht⟩
+
+theorem torusProj_eq (s t : ι → ℝ) (h : torusProj ι s = torusProj ι t) :
+    ∃ n : ι → ℤ, t = s + fun i => (n i : ℝ) := by
+  have hi : ∀ i, ∃ k : ℤ, t i = s i + (k : ℝ) := by
+    intro i
+    have h1 := congrFun h i
+    obtain ⟨k, hk⟩ := AddSubgroup.mem_zmultiples_iff.mp (QuotientAddGroup.eq.mp h1)
+    refine ⟨k, ?_⟩
+    simp only [zsmul_eq_mul, mul_one] at hk
+    linarith
+  choose n hn using hi
+  exact ⟨n, funext fun i => by simp [hn i]⟩
+
+theorem equivFunL_symm_eq (e : Module.Basis ι ℝ V) (t : ι → ℝ) :
+    e.equivFunL.symm t = ∑ i, t i • e i := by
+  first
+  | exact e.equivFun_symm_apply t
+  | simp [Module.Basis.equivFunL, Module.Basis.equivFun_symm_apply]
+
+theorem periodic_comp (e : Module.Basis ι ℝ V) (G : V → ℂ)
+    (hper : ∀ l ∈ Submodule.span ℤ (Set.range e), ∀ x, G (l + x) = G x)
+    (s : ι → ℝ) (n : ι → ℤ) :
+    G (e.equivFunL.symm (s + fun i => (n i : ℝ))) = G (e.equivFunL.symm s) := by
+  rw [map_add, add_comm]
+  apply hper
+  rw [equivFunL_symm_eq]
+  refine Submodule.sum_mem _ fun i _ => ?_
+  show ((n i : ℝ)) • e i ∈ _
+  rw [Int.cast_smul_eq_zsmul ℝ]
+  exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+
+def torusFun (e : Module.Basis ι ℝ V) (G : V → ℂ) : UnitAddTorus ι → ℂ :=
+  fun θ => G (e.equivFunL.symm (Function.surjInv (torusProj_surjective (ι := ι)) θ))
+
+theorem torusFun_proj (e : Module.Basis ι ℝ V) (G : V → ℂ)
+    (hper : ∀ l ∈ Submodule.span ℤ (Set.range e), ∀ x, G (l + x) = G x) (t : ι → ℝ) :
+    torusFun e G (torusProj ι t) = G (e.equivFunL.symm t) := by
+  obtain ⟨n, hn⟩ := torusProj_eq _ t
+    (Function.surjInv_eq (torusProj_surjective (ι := ι)) (torusProj ι t))
+  have h1 := periodic_comp e G hper (Function.surjInv (torusProj_surjective (ι := ι)) (torusProj ι t)) n
+  rw [← hn] at h1
+  exact h1.symm
+
+theorem torusFun_continuous (e : Module.Basis ι ℝ V) (G : V → ℂ) (hG : Continuous G)
+    (hper : ∀ l ∈ Submodule.span ℤ (Set.range e), ∀ x, G (l + x) = G x) :
+    Continuous (torusFun e G) := by
+  rw [torusProj_isOpenQuotientMap.isQuotientMap.continuous_iff]
+  have h1 : torusFun e G ∘ torusProj ι = fun t => G (e.equivFunL.symm t) :=
+    funext (torusFun_proj e G hper)
+  rw [h1]
+  exact hG.comp e.equivFunL.symm.continuous
+
+def torusFunC (e : Module.Basis ι ℝ V) (G : V → ℂ) (hG : Continuous G)
+    (hper : ∀ l ∈ Submodule.span ℤ (Set.range e), ∀ x, G (l + x) = G x) :
+    C(UnitAddTorus ι, ℂ) :=
+  ⟨torusFun e G, torusFun_continuous e G hG hper⟩
+
+theorem mFourier_torusProj (e : Module.Basis ι ℝ V) (m : ι → ℤ) (t : ι → ℝ) :
+    UnitAddTorus.mFourier m (torusProj ι t) =
+      Complex.exp (2 * Real.pi * Complex.I * (⟪dualVec e m, e.equivFunL.symm t⟫ : ℝ)) := by
+  have hinner : (⟪dualVec e m, e.equivFunL.symm t⟫ : ℝ) = ∑ i, (m i : ℝ) * t i := by
+    rw [equivFunL_symm_eq, inner_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [real_inner_smul_right, inner_dualVec_basis, mul_comm]
+  rw [hinner]
+  show (∏ i, fourier (m i) ((t i : ℝ) : UnitAddCircle)) = _
+  rw [Complex.ofReal_sum, Finset.mul_sum, Complex.exp_sum]
+  refine Finset.prod_congr rfl fun i _ => ?_
+  rw [fourier_coe_apply]
+  congr 1
+  push_cast
+  ring
+
+theorem boxIoc_ae_eq :
+    ({x : ι → ℝ | ∀ i, x i ∈ Ioc ((0 : ι → ℝ) i) ((0 : ι → ℝ) i + 1)} : Set (ι → ℝ))
+      =ᵐ[volume] boxIco ι := by
+  have h1 : ({x : ι → ℝ | ∀ i, x i ∈ Ioc ((0 : ι → ℝ) i) ((0 : ι → ℝ) i + 1)} : Set (ι → ℝ)) =
+      Set.univ.pi fun i => Ioc ((0 : ι → ℝ) i) ((1 : ι → ℝ) i) := by
+    ext x
+    simp [Set.mem_univ_pi]
+  rw [h1]
+  show _ =ᵐ[Measure.pi fun _ => volume] _
+  exact Measure.univ_pi_Ioc_ae_eq_Icc.trans Measure.univ_pi_Ico_ae_eq_Icc.symm
+
+theorem mFourierCoeff_torusFunC (e : Module.Basis ι ℝ V) (G : V → ℂ) (hG : Continuous G)
+    (hper : ∀ l ∈ Submodule.span ℤ (Set.range e), ∀ x, G (l + x) = G x) (m : ι → ℤ) :
+    UnitAddTorus.mFourierCoeff (torusFunC e G hG hper) m =
+      ∫ t in boxIco ι, G (e.equivFunL.symm t) *
+        Complex.exp (-(2 * Real.pi * Complex.I * (⟪dualVec e m, e.equivFunL.symm t⟫ : ℝ))) := by
+  have hS : (Set.univ.pi fun _ : ι => Ioc (0 : ℝ) (0 + 1)) =
+      {x : ι → ℝ | ∀ i, x i ∈ Ioc ((0 : ι → ℝ) i) ((0 : ι → ℝ) i + 1)} := by
+    ext x
+    simp [Set.mem_univ_pi]
+  have hmp : MeasurePreserving (torusProj ι)
+      (volume.restrict {x : ι → ℝ | ∀ i, x i ∈ Ioc ((0 : ι → ℝ) i) ((0 : ι → ℝ) i + 1)})
+      (@volume (UnitAddTorus ι)
+        (@MeasureSpace.pi ι _ (fun _ => UnitAddCircle) fun _ => instMeasureSpaceUnitAddCircle)) := by
+    have hvol : @volume UnitAddCircle instMeasureSpaceUnitAddCircle =
+        @volume UnitAddCircle (AddCircle.measureSpace 1) := by
+      first
+      | rfl
+      | (rw [AddCircle.volume_eq_smul_haarAddCircle]; simp; rfl)
+      | (simp [AddCircle.volume_eq_smul_haarAddCircle])
+      | (rw [AddCircle.volume_eq_smul_haarAddCircle]; simp)
+    rw [← hS]
+    show MeasurePreserving _ ((Measure.pi fun _ => volume).restrict _)
+      (Measure.pi fun _ => @volume UnitAddCircle instMeasureSpaceUnitAddCircle)
+    rw [Measure.restrict_pi_pi, hvol]
+    exact measurePreserving_pi (μ := fun _ => volume.restrict (Ioc (0 : ℝ) (0 + 1)))
+      (ν := fun _ => @volume UnitAddCircle (AddCircle.measureSpace 1))
+      (fun _ => AddCircle.measurePreserving_mk 1 0)
+  have hneg : dualVec e (-m) = -dualVec e m := by
+    simp only [dualVec, Pi.neg_apply, neg_smul, Finset.sum_neg_distrib]
+  have hmap := integral_map (f := fun θ => UnitAddTorus.mFourier (-m) θ • torusFunC e G hG hper θ)
+    hmp.aemeasurable
+    ((UnitAddTorus.mFourier (-m)).continuous.smul (torusFunC e G hG hper).continuous).aestronglyMeasurable
+  rw [hmp.map_eq] at hmap
+  rw [UnitAddTorus.mFourierCoeff]
+  refine hmap.trans ?_
+  rw [Measure.restrict_congr_set boxIoc_ae_eq]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+  show UnitAddTorus.mFourier (-m) (torusProj ι t) * torusFun e G (torusProj ι t) = _
+  rw [torusFun_proj e G hper, mFourier_torusProj e (-m) t, mul_comm, hneg, inner_neg_left]
+  congr 1
+  push_cast
+  ring
+  all_goals first | infer_instance | assumption
+
+end Formalism.H
+end
+end
+
+section
 open MeasureTheory Set Complex
 open scoped RealInnerProductSpace
 
@@ -86,3 +360,5 @@ theorem lattice_fourier_series (V : Type*) [NormedAddCommGroup V] [InnerProductS
   rw [this, ← mul_assoc, inv_mul_cancel₀ hcov0, one_mul]
 
 end Formalism.H
+end
+end

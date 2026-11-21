@@ -1,9 +1,478 @@
-import Development.WeilBound.ThetaLifts.TowerModels.PlanePair
+import Development.WeilBound.ThetaLifts.TowerModels.PlaneForm
 import Development.WeilBound.ThetaLifts.TowerModels.PlaneIso
-import Development.WeilBound.ThetaLifts.TowerModels.PlaneBas
-import Development.WeilBound.ThetaLifts.TowerModels.PlaneComp
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIntegerAddConjEqOneOfFormallyUnramified
 
+section
+noncomputable section
+
+namespace PositivityTheory.ThKG.Tow.Pln
+
+open scoped TensorProduct Matrix nonZeroDivisors
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.AdelicU
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+
+theorem exists_partner (h : IsCMExt F E σ) {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {ε : E} (hε : ε = 1 ∨ ε = -1)
+    (hJ : ∀ i j, σ (J j i) = ε * J i j) (D : Submodule (𝓞 E) E) (L : Submodule (𝓞 E) (Fin n → E)) (hfg : L.FG)
+    (hd : ∀ y, y ∈ L ↔ ∀ x ∈ L, form σ J y x ∈ D) (θ : 𝓞 E) (hθ : (θ : E) + σ θ = 1) (x : Fin n → E)
+    (hxx : form σ J x x = 0) (z₀ : Fin n → E) (hz₀ : z₀ ∈ L) (hz₀x : form σ J z₀ x ≠ 0) :
+    ∃ y, form σ J y y = 0 ∧ form σ J x y = 1 ∧ ∀ z ∈ L, form σ J z x • y ∈ L ∧ form σ J z y • x ∈ L := by
+  have hεε : ε * ε = 1 := by rcases hε with rfl | rfl <;> simp
+  have hσε : σ ε = ε := by rcases hε with rfl | rfl <;> simp
+  have hεD : ∀ a ∈ D, ε * a ∈ D := fun a ha => by
+    rcases hε with rfl | rfl
+    · simpa using ha
+    · simpa using ha
+  have hεL : ∀ a ∈ L, ε • a ∈ L := fun a ha => by
+    rcases hε with rfl | rfl
+    · simpa using ha
+    · simpa using ha
+  have sw : ∀ a b, form σ J b a = ε * σ (form σ J a b) := fun a b => by
+    rw [form_swap h hJ, ← mul_assoc, hεε, one_mul]
+  let C₀ : Submodule (𝓞 E) E := L.map ((formL (σ := σ) J x).restrictScalars (𝓞 E))
+  let C : FractionalIdeal (𝓞 E)⁰ E := ⟨C₀, FractionalIdeal.isFractional_of_fg (hfg.map _)⟩
+  have hC : ∀ z ∈ L, form σ J z x ∈ C := fun z hz => ⟨z, hz, rfl⟩
+  have hC0 : C ≠ 0 := fun e => hz₀x (by simpa [e] using hC z₀ hz₀)
+  have hinv : C * C⁻¹ = 1 := mul_inv_cancel₀ hC0
+  have key : ∀ t ∈ C * C⁻¹, ∃ y, form σ J y x = t ∧ ∀ c ∈ C, c • y ∈ L := fun t ht => by
+    refine FractionalIdeal.mul_induction_on ht (fun a ha b hb => ?_) ?_
+    · obtain ⟨z, hz, rfl⟩ := ha
+      refine ⟨b • z, by rw [form_smul_left, mul_comm]; rfl, fun c hc => ?_⟩
+      have := FractionalIdeal.mul_mem_mul hc hb
+      rw [hinv, FractionalIdeal.mem_one_iff] at this
+      obtain ⟨o, ho⟩ := this
+      rw [smul_smul, ← ho, algebraMap_smul]
+      exact L.smul_mem o hz
+    · rintro _ _ ⟨y, rfl, hy⟩ ⟨y', rfl, hy'⟩
+      exact ⟨y + y', form_add_left _ _ _ _, fun c hc => by rw [smul_add]; exact L.add_mem (hy c hc) (hy' c hc)⟩
+  obtain ⟨y₁, hy₁, hy₁L⟩ := key 1 (by rw [hinv]; exact FractionalIdeal.one_mem_one _)
+  obtain ⟨y₀, hy₀x, hy₀L⟩ : ∃ y₀, form σ J y₀ x = ε ∧ ∀ c ∈ C, c • y₀ ∈ L :=
+    ⟨ε • y₁, by rw [form_smul_left, hy₁, mul_one], fun c hc => by rw [smul_comm]; exact hεL _ (hy₁L c hc)⟩
+  have hxy₀ : form σ J x y₀ = 1 := by rw [sw, hy₀x, hσε, hεε]
+  have crit : ∀ y, (∀ c ∈ C, c • y ∈ L) → ∀ z ∈ L, form σ J z y • x ∈ L := fun y hy z hz => by
+    refine (hd _).2 fun z' hz' => ?_
+    have := hεD _ ((hd z).1 hz _ (hy _ (hC z' hz')))
+    rw [form_smul_right] at this
+    rw [form_smul_left, sw z' x]
+    convert this using 1
+    ring
+  set q := form σ J y₀ y₀ with hq
+  have hqq : ε * σ q = q := (sw y₀ y₀).symm
+  have hyL : ∀ c ∈ C, c • (y₀ - ((θ : E) * q) • x) ∈ L := fun c hc => by
+    have := L.smul_mem θ (crit y₀ hy₀L _ (hy₀L c hc))
+    rw [form_smul_left, ← algebraMap_smul E θ, smul_smul] at this
+    rw [smul_sub, smul_smul]
+    refine L.sub_mem (hy₀L c hc) ?_
+    convert this using 2
+    change _ = (θ : E) * _
+    ring
+  refine ⟨y₀ - ((θ : E) * q) • x, ?_, ?_, fun z hz => ⟨hyL _ (hC z hz), crit _ hyL z hz⟩⟩
+  · rw [form_sub_left, form_sub_right, form_sub_right, form_smul_left, form_smul_left, form_smul_right, form_smul_right,
+      hxx, hxy₀, hy₀x, ← hq, map_mul]
+    linear_combination -q * hθ - σ θ * hqq
+  · rw [form_sub_right, form_smul_right, hxx, hxy₀]; ring
+
+theorem exists_max_val {V : Type} [AddCommGroup V] [Module E V] [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V]
+    (L : Submodule (𝓞 E) V) (hfg : L.FG) (f : V →ₗ[E] E) (hf : ∃ z ∈ L, f z ≠ 0)
+    (S : Finset (HeightOneSpectrum (𝓞 E))) :
+    ∃ z₀ ∈ L, f z₀ ≠ 0 ∧ ∀ w ∈ S, ∀ z ∈ L, w.valuation E (f z) ≤ w.valuation E (f z₀) := by
+  classical
+  rcases S.eq_empty_or_nonempty with rfl | ⟨w₀, hw₀⟩
+  · obtain ⟨z, hz, hz0⟩ := hf
+    exact ⟨z, hz, hz0, by simp⟩
+  have h1 : ∀ w : HeightOneSpectrum (𝓞 E), ∃ c ∈ L, ∀ z ∈ L, w.valuation E (f z) ≤ w.valuation E (f c) := fun w => by
+    obtain ⟨G, rfl⟩ := hfg
+    obtain ⟨c, hc, hmax⟩ := (insert 0 G).exists_max_image (fun z => w.valuation E (f z)) (by simp)
+    refine ⟨c, ?_, fun z hz => ?_⟩
+    · rcases Finset.mem_insert.1 hc with rfl | hc
+      · exact zero_mem _
+      · exact Submodule.subset_span hc
+    · induction hz using Submodule.span_induction with
+      | mem x hx => exact hmax x (Finset.mem_insert_of_mem hx)
+      | zero => simp
+      | add x y _ _ hx hy => rw [map_add]; exact (Valuation.map_add _ _ _).trans (max_le hx hy)
+      | smul a x _ hx =>
+        rw [← algebraMap_smul E a, map_smul, smul_eq_mul, map_mul]
+        exact (mul_le_of_le_one_left' (w.valuation_le_one a)).trans hx
+  choose c hcL hc using h1
+  have hc0 : ∀ w : HeightOneSpectrum (𝓞 E), 0 < w.valuation E (f (c w)) := fun w => by
+    obtain ⟨z, hz, hz0⟩ := hf
+    exact lt_of_lt_of_le (zero_lt_iff.2 ((map_ne_zero _).2 hz0)) (hc w z hz)
+  have h2 : ∀ w w' : HeightOneSpectrum (𝓞 E), ∃ p : 𝓞 E, p ∉ w.asIdeal ∧ (w' ≠ w → p ∈ w'.asIdeal) := fun w w' => by
+    by_cases e : w' = w
+    · exact ⟨1, (Ideal.ne_top_iff_one _).1 w.isPrime.ne_top, fun h => absurd e h⟩
+    · have : ¬ w'.asIdeal ≤ w.asIdeal := fun hle =>
+        e (HeightOneSpectrum.ext (w'.isMaximal.eq_of_le w.isPrime.ne_top hle))
+      obtain ⟨p, hp, hp'⟩ := Set.not_subset.1 this
+      exact ⟨p, hp', fun _ => hp⟩
+  choose p hp hp' using h2
+  let e : HeightOneSpectrum (𝓞 E) → 𝓞 E := fun w => ∏ w' ∈ S, p w w'
+  have he : ∀ w : HeightOneSpectrum (𝓞 E), w.valuation E (algebraMap _ E (e w)) = 1 := fun w => by
+    simp only [e, map_prod]
+    exact Finset.prod_eq_one fun w' _ => (w.valuation_eq_one_iff_notMem (K := E)).2 (hp w w')
+  have he' : ∀ w, ∀ w' ∈ S, w' ≠ w → w'.valuation E (algebraMap _ E (e w)) < 1 := fun w w' hw' hne =>
+    (w'.valuation_lt_one_iff_mem (K := E) _).2 (Ideal.mem_of_dvd _ (Finset.dvd_prod_of_mem _ hw') (hp' w w' hne))
+  have hval : ∀ w ∈ S, w.valuation E (f (∑ w' ∈ S, e w' • c w')) = w.valuation E (f (c w)) := fun w hw => by
+    have t : ∀ w', f (e w' • c w') = algebraMap _ E (e w') * f (c w') := fun w' => by
+      rw [← algebraMap_smul E (e w'), map_smul, smul_eq_mul]
+    rw [← Finset.add_sum_erase S _ hw, map_add, map_sum]
+    have a1 : w.valuation E (f (e w • c w)) = w.valuation E (f (c w)) := by rw [t, map_mul, he, one_mul]
+    rw [Valuation.map_add_eq_of_lt_left, a1]
+    rw [a1]
+    refine Valuation.map_sum_lt _ (hc0 w).ne' fun w' hw' => ?_
+    rw [t, map_mul]
+    calc _ ≤ w.valuation E (algebraMap _ E (e w')) * w.valuation E (f (c w)) := by
+          gcongr; exact hc w _ (hcL w')
+      _ < _ := mul_lt_of_lt_one_left (hc0 w) (he' w' w hw (Finset.ne_of_mem_erase hw').symm)
+  refine ⟨∑ w' ∈ S, e w' • c w', L.sum_mem fun w _ => L.smul_mem _ (hcL w), fun h0 => ?_, fun w hw z hz => ?_⟩
+  · have := hval w₀ hw₀
+    rw [h0, map_zero] at this
+    exact (hc0 w₀).ne this
+  · rw [hval w hw]; exact hc w z hz
+
+theorem exists_denom (C : Submodule (𝓞 E) E) (hfg : C.FG) (w : HeightOneSpectrum (𝓞 E))
+    (hC : ∀ c ∈ C, w.valuation E c ≤ 1) : ∃ d : 𝓞 E, d ∉ w.asIdeal ∧ ∀ c ∈ C, ∃ o : 𝓞 E, (d : E) * c = o := by
+  classical
+  obtain ⟨G, rfl⟩ := hfg
+  have h1 : ∀ c : E, ∃ d : 𝓞 E, d ∉ w.asIdeal ∧ (w.valuation E c ≤ 1 → ∃ o : 𝓞 E, (d : E) * c = o) := fun c => by
+    by_cases hc : w.valuation E c ≤ 1
+    · obtain ⟨o, ⟨d, hd⟩, e⟩ := w.exists_primeCompl_mul_eq_of_integer c hc
+      exact ⟨d, hd, fun _ => ⟨o, by rw [mul_comm]; exact e⟩⟩
+    · exact ⟨1, (Ideal.ne_top_iff_one _).1 w.isPrime.ne_top, fun h => absurd h hc⟩
+  choose d hd hd' using h1
+  refine ⟨∏ c ∈ G, d c, fun hm => ?_, fun c hc => ?_⟩
+  · obtain ⟨c, -, hc⟩ := (Ideal.IsPrime.prod_mem_iff (hp := w.isPrime)).1 hm
+    exact hd c hc
+  · induction hc using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨o, ho⟩ := hd' x (hC x (Submodule.subset_span hx))
+      obtain ⟨k, hk⟩ := Finset.dvd_prod_of_mem d hx
+      refine ⟨k * o, ?_⟩
+      rw [hk]; push_cast; linear_combination (k : E) * ho
+    | zero => exact ⟨0, by simp⟩
+    | add x y _ _ hx hy =>
+      obtain ⟨a, ha⟩ := hx
+      obtain ⟨b, hb⟩ := hy
+      exact ⟨a + b, by push_cast; rw [mul_add]; push_cast at ha hb; rw [ha, hb]⟩
+    | smul a x _ hx =>
+      obtain ⟨b, hb⟩ := hx
+      refine ⟨a * b, ?_⟩
+      change _ * ((a : E) * x) = (a : E) * (b : E)
+      rw [← hb]
+      ring
+
+end PositivityTheory.ThKG.Tow.Pln
+
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.ThKG.Tow.Pln
+
+open scoped TensorProduct Matrix nonZeroDivisors
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.AdelicU
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+
+theorem exists_adapted_pair (h : IsCMExt F E σ) {n : ℕ} {J : Matrix (Fin n) (Fin n) E} (hdet : J.det ≠ 0) {ε : E}
+    (hε : ε = 1 ∨ ε = -1) (hJ : ∀ i j, σ (J j i) = ε * J i j) (D : Submodule (𝓞 E) E) (hD1 : (1 : E) ∈ D)
+    (L : Submodule (𝓞 E) (Fin n → E)) (hlat : L.IsLattice E) (hd : ∀ y, y ∈ L ↔ ∀ x ∈ L, form σ J y x ∈ D)
+    (θ : 𝓞 E) (hθ : (θ : E) + σ θ = 1) (P : Finset (Pl F)) (τ : ∀ v : P, E →ₐ[F] Fv F v)
+    (hDτ : ∀ v, ∀ c ∈ D, Valued.v (τ v c) ≤ 1) (x₀ : Fin n → E) (hx₀ : x₀ ≠ 0) (hxx₀ : form σ J x₀ x₀ = 0) :
+    ∃ x y : Fin n → E, form σ J x x = 0 ∧ form σ J y y = 0 ∧ form σ J x y = 1 ∧
+      (∀ z ∈ L, form σ J z x • y ∈ L ∧ form σ J z y • x ∈ L) ∧
+      ∀ v : P, ((∀ c : E, c • x ∈ L → Valued.v (τ v c) ≤ 1) ∧ ∃ c : E, c • x ∈ L ∧ Valued.v (τ v c) = 1) ∧
+        ((∀ c : E, c • y ∈ L → Valued.v (τ v c) ≤ 1) ∧ ∃ c : E, c • y ∈ L ∧ Valued.v (τ v c) = 1) := by
+  classical
+  have hεε : ε * ε = 1 := by rcases hε with rfl | rfl <;> simp
+  have hεv : ∀ v, Valued.v (τ v ε) = 1 := fun v => by rcases hε with rfl | rfl <;> simp
+  have hεD : ∀ a ∈ D, ε * a ∈ D := fun a ha => by
+    rcases hε with rfl | rfl
+    · simpa using ha
+    · simpa using ha
+  have sw : ∀ a b, form σ J b a = ε * σ (form σ J a b) := fun a b => by
+    rw [form_swap h hJ, ← mul_assoc, hεε, one_mul]
+  have hne : ∃ z ∈ L, formL (σ := σ) J x₀ z ≠ 0 := by
+    by_contra H
+    push Not at H
+    have h0 : formL (σ := σ) J x₀ = 0 := LinearMap.ext_on hlat.span_eq_top fun z hz => H z hz
+    have h1 : J *ᵥ (fun i => σ (x₀ i)) = 0 := by
+      funext k
+      have := LinearMap.congr_fun h0 (Pi.single k 1)
+      simpa [formL, form] using this
+    have h2 := Matrix.eq_zero_of_mulVec_eq_zero hdet h1
+    exact hx₀ (funext fun i => by simpa using congrFun h2 i)
+  let S : Finset (HeightOneSpectrum (𝓞 E)) :=
+    Finset.univ.image (fun v : P => splitPrime (τ v)) ∪ Finset.univ.image (fun v : P => splitPrime ((τ v).comp σ))
+  obtain ⟨z₀, hz₀, hc0, hmax⟩ := exists_max_val L hlat.fg (formL (σ := σ) J x₀) hne S
+  change form σ J z₀ x₀ ≠ 0 at hc0
+  set c₀ := form σ J z₀ x₀ with hc₀
+  obtain ⟨x, hxx, hz₀x, hle⟩ : ∃ x, form σ J x x = 0 ∧ form σ J z₀ x = 1 ∧
+      ∀ w ∈ S, ∀ z ∈ L, w.valuation E (form σ J z x) ≤ 1 := by
+    refine ⟨σ c₀⁻¹ • x₀, by rw [form_smul_left, form_smul_right, hxx₀]; simp,
+      by rw [form_smul_right, sigma_sigma h, inv_mul_cancel₀ hc0], fun w hw z hz => ?_⟩
+    rw [form_smul_right, sigma_sigma h, map_mul, map_inv₀]
+    exact inv_mul_le_one_of_le₀ (hmax w hw z hz) zero_le
+  obtain ⟨y, hyy, hxy, hL⟩ := exists_partner h hε hJ D L hlat.fg hd θ hθ x hxx z₀ hz₀ (by rw [hz₀x]; exact one_ne_zero)
+  have hyx : form σ J y x = ε := by rw [sw, hxy, map_one, mul_one]
+  refine ⟨x, y, hxx, hyy, hxy, hL, fun v => ⟨⟨fun c hc => ?_, ?_⟩, fun c hc => ?_, 1, ?_, by simp⟩⟩
+  · have := hεD _ ((hd _).1 hc z₀ hz₀)
+    rw [form_smul_left, sw z₀ x, hz₀x, map_one, mul_one, mul_left_comm, hεε, mul_one] at this
+    exact hDτ v c this
+  · obtain ⟨d, hdw, hdC⟩ := exists_denom (L.map ((formL (σ := σ) J x).restrictScalars (𝓞 E))) (hlat.fg.map _)
+      (splitPrime ((τ v).comp σ)) (by
+        rintro _ ⟨z, hz, rfl⟩
+        exact hle _ (by simp [S]) z hz)
+    refine ⟨σ d, (hd _).2 fun z hz => ?_, ?_⟩
+    · obtain ⟨o, ho⟩ := hdC _ ⟨z, hz, rfl⟩
+      change (d : E) * form σ J z x = o at ho
+      rw [form_smul_left, sw z x, mul_left_comm, ← map_mul, ho]
+      refine hεD _ ?_
+      have := D.smul_mem (conjInt σ o) hD1
+      rwa [← algebraMap_smul E, smul_eq_mul, mul_one] at this
+    · change Valued.v (((τ v).comp σ) d) = 1
+      rw [valued_apply_eq_valuation]
+      exact ((splitPrime ((τ v).comp σ)).valuation_eq_one_iff_notMem (K := E)).2 hdw
+  · have := hle (splitPrime (τ v)) (by simp [S]) _ hc
+    rwa [form_smul_left, hyx, ← valued_apply_eq_valuation, map_mul, map_mul, hεv, mul_one] at this
+  · have := (hL z₀ hz₀).1
+    rwa [hz₀x] at this
+
+end PositivityTheory.ThKG.Tow.Pln
+
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.ThKG.Tow.Pln
+
+open scoped TensorProduct Matrix nonZeroDivisors
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.AdelicU
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+
+variable {v : Pl F} (τ : E →ₐ[F] Fv F v)
+
+theorem map_mem_splitLat {n : ℕ} {L : Submodule (𝓞 E) (Fin n → E)} {z : Fin n → E} (hz : z ∈ L) :
+    (fun i => τ (z i)) ∈ splitLat τ L :=
+  ⟨fun i => (1 : Fv F v) ⊗ₜ[F] z i, AddSubgroup.subset_closure ⟨1, one_mem _, z, hz, rfl⟩,
+    funext fun i => by simp [splitVec, splitProj_tmul]⟩
+
+theorem splitLat_le {n : ℕ} {L : Submodule (𝓞 E) (Fin n → E)}
+    (N : Submodule (v.adicCompletionIntegers F) (Fin n → Fv F v)) (hN : ∀ z ∈ L, (fun i => τ (z i)) ∈ N) :
+    splitLat τ L ≤ N := by
+  rintro _ ⟨y, hy, rfl⟩
+  refine latLoc_induction (p := fun y => splitVec τ y ∈ N) (fun a ha x hx => ?_) ?_ (fun y z hy hz => ?_)
+    (fun y hy => ?_) hy
+  · have := N.smul_mem ⟨a, ha⟩ (hN x hx)
+    convert this using 1
+    funext i
+    simp only [splitVec, splitProj_tmul]
+    rfl
+  · have : splitVec τ (0 : Fin n → Fv F v ⊗[F] E) = 0 := funext fun _ => map_zero _
+    rw [this]; exact zero_mem _
+  · rw [splitVec_add]; exact add_mem hy hz
+  · have : splitVec τ (-y) = -splitVec τ y := funext fun _ => map_neg _ _
+    rw [this]; exact neg_mem hy
+
+theorem map_mem_of_unit {n : ℕ} {L : Submodule (𝓞 E) (Fin n → E)} {x : Fin n → E} {c : E} (hc : c • x ∈ L)
+    (hv : Valued.v (τ c) = 1) {a : Fv F v} (ha : a ∈ v.adicCompletionIntegers F) :
+    (a • fun i => τ (x i)) ∈ splitLat τ L := by
+  have h0 : τ c ≠ 0 := fun e => by simp [e] at hv
+  have h1 : a * (τ c)⁻¹ ∈ v.adicCompletionIntegers F :=
+    mul_mem ha (by rw [HeightOneSpectrum.mem_adicCompletionIntegers, map_inv₀, hv, inv_one])
+  have := (splitLat τ L).smul_mem ⟨_, h1⟩ (map_mem_splitLat τ hc)
+  convert this using 1
+  funext i
+  change a * τ (x i) = a * (τ c)⁻¹ * τ (c * x i)
+  rw [map_mul]
+  field_simp
+
+theorem exists_basis (n n₁ : ℕ) (L : Submodule (𝓞 E) (Fin n → E)) (x y : Fin n → E) (ι : Matrix (Fin n) (Fin n₁) E)
+    (β₁ : GL (Fin n₁) (Fv F v)) (i₀ i₁ : ℕ) (hn : n = n₁ + 2) (h01 : i₀ < i₁) (h1n : i₁ < n) (hlat : L.IsLattice E)
+    (hsplit : ∀ z ∈ L, ∃ (s t : E) (u : Fin n₁ → E), s • x ∈ L ∧ t • y ∈ L ∧ ι *ᵥ u ∈ L ∧ z = s • x + ι *ᵥ u + t • y)
+    (hx : (∀ c : E, c • x ∈ L → Valued.v (τ c) ≤ 1) ∧ ∃ c : E, c • x ∈ L ∧ Valued.v (τ c) = 1)
+    (hy : (∀ c : E, c • y ∈ L → Valued.v (τ c) ≤ 1) ∧ ∃ c : E, c • y ∈ L ∧ Valued.v (τ c) = 1)
+    (hβ₁ : IsSplitBasis τ (L.comap ((Matrix.mulVecLin ι).restrictScalars (𝓞 E))) β₁) :
+    ∃ β : GL (Fin n) (Fv F v), (∀ i : Fin n, (i.1 = i₀ → ∀ r, β.1 r i = τ (x r)) ∧
+      (i.1 = i₁ → ∀ r, β.1 r i = τ (y r)) ∧ ∀ j : Fin n₁, i.1 = skip i₀ i₁ j → ∀ r, β.1 r i = (ι.map τ * β₁.1) r j) ∧
+      IsSplitBasis τ L β := by
+  classical
+  have hsk : ∀ j : Fin n₁, skip i₀ i₁ j < n := fun j => by
+    have := j.2
+    unfold skip; split_ifs <;> omega
+  let f : Fin n₁ ⊕ Bool → Fin n := Sum.elim (fun j => ⟨skip i₀ i₁ j, hsk j⟩)
+    fun b => cond b ⟨i₁, h1n⟩ ⟨i₀, h01.trans h1n⟩
+  have hf : Function.Bijective f := by
+    rw [Fintype.bijective_iff_injective_and_card]
+    refine ⟨?_, by simp [hn]⟩
+    rintro (a | _ | _) (b | _ | _) e <;>
+      simp only [f, Sum.elim_inl, Sum.elim_inr, cond, Fin.mk.injEq, skip, Sum.inl.injEq, Fin.ext_iff] at e ⊢ <;>
+      first | omega | (split_ifs at e <;> omega)
+  let e := Equiv.ofBijective f hf
+  let c : Fin n₁ ⊕ Bool → Fin n → Fv F v := Sum.elim (fun j r => (ι.map τ * β₁.1) r j)
+    fun b => cond b (fun r => τ (y r)) fun r => τ (x r)
+  let b : Matrix (Fin n) (Fin n) (Fv F v) := Matrix.of fun r i => c (e.symm i) r
+  have hb : ∀ u : Fin n → Fv F v, b *ᵥ u = (u (e (.inr false)) • fun r => τ (x r)) +
+      ι.map τ *ᵥ β₁.1 *ᵥ (fun j => u (e (.inl j))) + u (e (.inr true)) • fun r => τ (y r) := fun u => by
+    funext r
+    rw [Matrix.mulVec_mulVec]
+    simp only [Matrix.mulVec, dotProduct, b, Matrix.of_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+    rw [← e.sum_comp]
+    simp only [Equiv.symm_apply_apply, Fintype.sum_sum_type, Fintype.sum_bool, c, Sum.elim_inl, Sum.elim_inr, cond]
+    ring
+  have hmv : ∀ u : Fin n₁ → E, (fun i => τ ((ι *ᵥ u) i)) = ι.map τ *ᵥ fun j => τ (u j) := fun u =>
+    funext fun i => RingHom.map_mulVec (τ : E →+* Fv F v) ι u i
+  have hsurj : ∀ w ∈ splitLat τ L, ∃ u : Fin n → Fv F v, (∀ i, u i ∈ v.adicCompletionIntegers F) ∧ b *ᵥ u = w := by
+    let N : Submodule (v.adicCompletionIntegers F) (Fin n → Fv F v) :=
+      { carrier := {w | ∃ u : Fin n → Fv F v, (∀ i, u i ∈ v.adicCompletionIntegers F) ∧ b *ᵥ u = w}
+        zero_mem' := ⟨0, fun _ => zero_mem _, Matrix.mulVec_zero _⟩
+        add_mem' := by
+          rintro _ _ ⟨u, hu, rfl⟩ ⟨u', hu', rfl⟩
+          exact ⟨u + u', fun i => add_mem (hu i) (hu' i), Matrix.mulVec_add _ _ _⟩
+        smul_mem' := by
+          rintro a _ ⟨u, hu, rfl⟩
+          exact ⟨(a : Fv F v) • u, fun i => mul_mem a.2 (hu i), Matrix.mulVec_smul _ _ _⟩ }
+    refine fun w hw => splitLat_le τ N (fun z hz => ?_) hw
+    obtain ⟨s, t, u, hs, ht, hu, rfl⟩ := hsplit z hz
+    have hu' := hβ₁.mem_iff.1 (map_mem_splitLat τ (L := L.comap ((Matrix.mulVecLin ι).restrictScalars (𝓞 E))) hu)
+    refine ⟨fun i => Sum.elim ((β₁⁻¹).1 *ᵥ fun j => τ (u j)) (fun b => cond b (τ t) (τ s)) (e.symm i), fun i => ?_, ?_⟩
+    · beta_reduce
+      rcases e.symm i with j | _ | _
+      · exact hu' j
+      · exact hx.1 s hs
+      · exact hy.1 t ht
+    · rw [hb]
+      simp only [Equiv.symm_apply_apply, Sum.elim_inl, Sum.elim_inr, cond]
+      rw [Matrix.mulVec_mulVec _ β₁.1, Units.mul_inv, Matrix.one_mulVec, ← hmv]
+      funext r
+      simp
+  have hunit : IsUnit b := by
+    rw [← Matrix.mulVec_surjective_iff_isUnit]
+    have h1 : ∀ z : Fin n → E, (fun i => τ (z i)) ∈ LinearMap.range b.mulVecLin := fun z => by
+      have hz : z ∈ Submodule.span E (L : Set (Fin n → E)) := by rw [hlat.span_eq_top]; trivial
+      induction hz using Submodule.span_induction with
+      | mem z hz => obtain ⟨u, -, hu⟩ := hsurj _ (map_mem_splitLat τ hz); exact ⟨u, hu⟩
+      | zero => simp only [Pi.zero_apply, map_zero]; exact zero_mem _
+      | add a a' _ _ ha ha' => simp only [Pi.add_apply, map_add]; exact add_mem ha ha'
+      | smul a z _ hz => simp only [Pi.smul_apply, smul_eq_mul, map_mul]; exact Submodule.smul_mem _ (τ a) hz
+    intro w
+    have : w = ∑ i, w i • fun k => τ ((Pi.single i 1 : Fin n → E) k) := by
+      funext k
+      simp [Pi.single_apply, apply_ite]
+    rw [this]
+    exact (Submodule.sum_mem (LinearMap.range b.mulVecLin) fun i _ => Submodule.smul_mem _ _ (h1 _))
+  obtain ⟨β, hβ⟩ := hunit
+  have col : ∀ k r, β.1 r (e k) = c k r := fun k r => by rw [hβ]; simp [b]
+  refine ⟨β, fun i => ⟨fun hi r => ?_, fun hi r => ?_, fun j hi r => ?_⟩, fun u => ⟨fun hu => ?_, fun hu => ?_⟩⟩
+  · rw [show i = e (.inr false) from Fin.ext hi, col]; rfl
+  · rw [show i = e (.inr true) from Fin.ext hi, col]; rfl
+  · rw [show i = e (.inl j) from Fin.ext hi, col]; rfl
+  · rw [hβ, hb]
+    obtain ⟨s, hs, hs'⟩ := hx.2
+    obtain ⟨t, ht, ht'⟩ := hy.2
+    refine add_mem (add_mem (map_mem_of_unit τ hs hs' (hu _)) ?_) (map_mem_of_unit τ ht ht' (hu _))
+    refine splitLat_le τ ((splitLat τ L).comap ((ι.map τ).mulVecLin.restrictScalars (v.adicCompletionIntegers F)))
+      (fun z hz => ?_) ((hβ₁ _).1 fun j => hu _)
+    change ι.map τ *ᵥ (fun j => τ (z j)) ∈ splitLat τ L
+    rw [← hmv]
+    exact map_mem_splitLat τ hz
+  · obtain ⟨u', hu', e'⟩ := hsurj _ hu
+    rw [← hβ] at e'
+    rw [← Matrix.mulVec_injective_iff_isUnit.2 β.isUnit e']
+    exact hu'
+
+end PositivityTheory.ThKG.Tow.Pln
+
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.ThKG.Tow.Pln
+
+open scoped TensorProduct Matrix nonZeroDivisors
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.AdelicU
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
+
+theorem exists_compl (n n₁ : ℕ) (J : Matrix (Fin n) (Fin n) E) (x y : Fin n → E) (hn : n = n₁ + 2)
+    (hxx : form σ J x x = 0) (hyy : form σ J y y = 0) (hxy : form σ J x y = 1) (hyx : form σ J y x ≠ 0) :
+    ∃ (ι : Matrix (Fin n) (Fin n₁) E) (P : Matrix (Fin n₁) (Fin n) E), P * ι = 1 ∧
+      (∀ u, form σ J (ι *ᵥ u) x = 0 ∧ form σ J (ι *ᵥ u) y = 0) ∧
+      ∀ z, form σ J z x = 0 → form σ J z y = 0 → ∃ u, z = ι *ᵥ u := by
+  let f : (Fin n → E) →ₗ[E] E × E := (formL (σ := σ) J x).prod (formL (σ := σ) J y)
+  have hf : LinearMap.range f = ⊤ := by
+    rw [LinearMap.range_eq_top]
+    rintro ⟨a, b⟩
+    refine ⟨(a / form σ J y x) • y + b • x, Prod.ext ?_ ?_⟩
+    · change form σ J _ x = a
+      rw [form_add_left, form_smul_left, form_smul_left, hxx, div_mul_cancel₀ _ hyx, mul_zero, add_zero]
+    · change form σ J _ y = b
+      rw [form_add_left, form_smul_left, form_smul_left, hyy, hxy, mul_zero, mul_one, zero_add]
+  have hk : Module.finrank E (LinearMap.ker f) = n₁ := by
+    have := f.finrank_range_add_finrank_ker
+    rw [hf, finrank_top] at this
+    simp only [Module.finrank_prod, Module.finrank_self, Module.finrank_fintype_fun_eq_card, Fintype.card_fin] at this
+    omega
+  let b := Module.finBasisOfFinrankEq E (LinearMap.ker f) hk
+  let g : (Fin n₁ → E) →ₗ[E] (Fin n → E) := (LinearMap.ker f).subtype ∘ₗ b.equivFun.symm.toLinearMap
+  obtain ⟨p, hp⟩ := g.exists_leftInverse_of_injective (LinearMap.ker_eq_bot.2
+    ((LinearMap.ker f).injective_subtype.comp b.equivFun.symm.injective))
+  refine ⟨LinearMap.toMatrix' g, LinearMap.toMatrix' p, by rw [← LinearMap.toMatrix'_comp, hp, LinearMap.toMatrix'_id],
+    fun u => ?_, fun z h1 h2 => ?_⟩
+  · rw [LinearMap.toMatrix'_mulVec]
+    have := (b.equivFun.symm u).2
+    exact Prod.mk_eq_zero.1 this
+  · refine ⟨b.equivFun ⟨z, Prod.mk_eq_zero.2 ⟨h1, h2⟩⟩, ?_⟩
+    rw [LinearMap.toMatrix'_mulVec]
+    change z = (b.equivFun.symm (b.equivFun _) : LinearMap.ker f)
+    rw [LinearEquiv.symm_apply_apply]
+
+theorem fg_comap {V W : Type} [AddCommGroup V] [Module (𝓞 E) V] [AddCommGroup W] [Module (𝓞 E) W]
+    (f : V →ₗ[𝓞 E] W) (hf : Function.Injective f) (L : Submodule (𝓞 E) W) (hL : L.FG) : (L.comap f).FG :=
+  Submodule.fg_of_fg_map_injective f hf (hL.of_le (Submodule.map_comap_le f L))
+
+theorem isLattice_comap (n n₁ : ℕ) (L : Submodule (𝓞 E) (Fin n → E)) (ι : Matrix (Fin n) (Fin n₁) E)
+    (P : Matrix (Fin n₁) (Fin n) E) (hP : P * ι = 1) (hL : L.IsLattice E) :
+    (L.comap ((Matrix.mulVecLin ι).restrictScalars (𝓞 E))).IsLattice E where
+  fg := fg_comap _ (fun u u' e => by
+    have := congrArg (P *ᵥ ·) (show ι *ᵥ u = ι *ᵥ u' from e)
+    simpa [Matrix.mulVec_mulVec, hP] using this) L hL.fg
+  span_eq_top := by
+    rw [eq_top_iff]
+    intro u _
+    obtain ⟨t, ht⟩ := multiple_mem_span_of_mem_localization_span (𝓞 E)⁰ E (L : Set (Fin n → E)) (ι *ᵥ u)
+      (by rw [hL.span_eq_top]; trivial)
+    rw [Submodule.span_eq] at ht
+    have h0 : ((t : 𝓞 E) : E) ≠ 0 := by simpa using nonZeroDivisors.coe_ne_zero t
+    have : u = ((t : 𝓞 E) : E)⁻¹ • (((t : 𝓞 E) : E) • u) := by rw [inv_smul_smul₀ h0]
+    rw [this]
+    refine Submodule.smul_mem _ _ (Submodule.subset_span ?_)
+    change ι *ᵥ (((t : 𝓞 E) : E) • u) ∈ L
+    rw [Matrix.mulVec_smul]
+    exact ht
+
+theorem exists_ideal (n : ℕ) (L : Submodule (𝓞 E) (Fin n → E)) (hL : L.IsLattice E) (x : Fin n → E) (hx : x ≠ 0) :
+    ∃ 𝔟 : FractionalIdeal (𝓞 E)⁰ E, ∀ s : E, s ∈ 𝔟 ↔ s • x ∈ L :=
+  ⟨⟨L.comap ((LinearMap.toSpanSingleton E _ x).restrictScalars (𝓞 E)), FractionalIdeal.isFractional_of_fg
+    (fg_comap _ (smul_left_injective E hx) L hL.fg)⟩, fun _ => Iff.rfl⟩
+
+end PositivityTheory.ThKG.Tow.Pln
+
+end
+end
+
+section
 noncomputable section
 
 namespace PositivityTheory.ThKG.Tow.Pln
@@ -146,4 +615,5 @@ theorem isSkew_iff {B : Base F E} {n : ℕ} {X : Spc F E n} {r s : ℕ} :
 
 end PositivityTheory.ThKG.Tow.Pln
 
+end
 end

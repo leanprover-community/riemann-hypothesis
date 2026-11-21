@@ -4,7 +4,17 @@ import GroundTheory.GlobalFields.TateThesis.RootNumberLocalFinite
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardOpenSubgroupLeKerInv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InfiniteEmbeddingMemStandardOpenSubgroup
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DiscrNormConductorEqDFOfUnramified
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RootNumberEqDifferentCoeffStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RootNumberEqDifferentCoeff
+
+section
+open NumberField GroundTheory.Global GroundTheory.Global.IdeleGroup
+open scoped nonZeroDivisors
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.root_number_eq_different_coeff : ∀ (F : Type) [Field F] [NumberField F] (χ : HeckeCharacter F), standardOpenSubgroup F ≤ χ.toIdele.ker → χ.rootNumber = χ.coeff (differentIdeal ℤ (𝓞 F)) := by
+  first | exact @GlobalTheory.CompanionTheory.PartialZeta.rootNumber_eq_coeff_different | exact GlobalTheory.CompanionTheory.PartialZeta.rootNumber_eq_coeff_different | (intros; apply GlobalTheory.CompanionTheory.PartialZeta.rootNumber_eq_coeff_different <;> assumption)
+end
+
+section
 open NumberField GroundTheory.Global GroundTheory.Global.IdeleGroup
 open scoped nonZeroDivisors
 
@@ -31,3 +41,4 @@ theorem fe_of_parts (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (χ :
 
 
 end GlobalTheory.CompanionTheory.PartialZeta
+end

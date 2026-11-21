@@ -3,8 +3,24 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.BetaInt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.HStable
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.CoeffSyGauge
 
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Conj
+
+open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.TB ReciprocityTheory.ChartRestriction.G.TB.WickVanishing
+
+variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
+variable (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k]
+
+
+
+end GlobalTheory.CompanionTheory.Ar.Conj
+end
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Conj
@@ -304,3 +320,5 @@ example (c : R) : bil (1 + C c * X ((0 : Fin 2), (0 : Fin 1)) * X ((1 : Fin 2), 
   simp
 
 end GlobalTheory.CompanionTheory.Ar.Conj
+end
+end

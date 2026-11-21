@@ -1,5 +1,121 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SmoothTranslationMeasure.ContDiffMulRight
+import Formalism.PeriodIntegrals.PhMeasCore
 
+section
+open MeasureTheory Matrix Filter Topology
+open scoped InnerProductSpace ContDiff
+
+noncomputable section
+
+namespace PI.PhMeasCore.UnitaryGroupMassFormula
+
+open PI.PhMeasCore
+
+def MulOnUH {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (Hm : Matrix (Fin n) (Fin n) ℂ) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) : Prop :=
+  σ 1 = 1 ∧ ∀ a ∈ UH Hm, ∀ b ∈ UH Hm, σ (a * b) = (σ a).comp (σ b)
+
+def StepRed : Prop :=
+  ∀ (n : ℕ) (ε : Fin n → Bool) (Hm : Matrix (Fin n) (Fin n) ℂ) (H : Type) [NormedAddCommGroup H]
+    [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (P : Matrix (Fin n) (Fin n) ℂ),
+    IsUnit P → Pᴴ * Jm ε * P = Hm →
+    (σ (P⁻¹ * 1 * P) = 1 ∧ ∀ a ∈ UJset ε, ∀ b ∈ UJset ε,
+      σ (P⁻¹ * (a * b) * P) = (σ (P⁻¹ * a * P)).comp (σ (P⁻¹ * b * P))) →
+    IsUnit Hm ∧ MulOnUH Hm σ
+
+def StepExp : Prop :=
+  ∀ (n : ℕ) (Hm X : Matrix (Fin n) (Fin n) ℂ), IsUnit Hm → InLie Hm X →
+    ∀ t : ℝ, NormedSpace.exp ((t : ℂ) • X) ∈ UH Hm
+
+def StepSub : Prop :=
+  ∀ (n : ℕ) (Hm : Matrix (Fin n) (Fin n) ℂ) (H : Type) [NormedAddCommGroup H]
+    [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (w : H),
+    MulOnUH Hm σ → w ∈ smoothVecs Hm σ →
+    (∀ g ∈ UH Hm, σ g w ∈ smoothVecs Hm σ) ∧
+    ∀ v ∈ smoothVecs Hm σ, ∀ v' ∈ smoothVecs Hm σ, v - v' ∈ smoothVecs Hm σ
+
+section Deriv
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+def StepExpDeriv : Prop :=
+  ∀ (n : ℕ) (X : Matrix (Fin n) (Fin n) ℂ),
+    HasDerivAt (fun t : ℝ => NormedSpace.exp ((t : ℂ) • X)) X 0
+
+end Deriv
+
+def StepWord : Prop :=
+  ∀ (n : ℕ) (Hm : Matrix (Fin n) (Fin n) ℂ) (H : Type) [NormedAddCommGroup H]
+    [InnerProductSpace ℂ H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (w : H),
+    MulOnUH Hm σ → (∀ X, InLie Hm X → ∀ t : ℝ, NormedSpace.exp ((t : ℂ) • X) ∈ UH Hm) →
+    w ∈ smoothVecs Hm σ →
+    ∀ ws : List (Matrix (Fin n) (Fin n) ℂ), (∀ X ∈ ws, InLie Hm X) →
+      ContinuousOn (fun g => dsigW σ ws (σ g w)) (UH Hm) ∧
+      ∀ g ∈ UH Hm, ∀ g₀ ∈ UH Hm,
+        dsigW σ ws (σ g w - σ g₀ w) = dsigW σ ws (σ g w) - dsigW σ ws (σ g₀ w)
+
+theorem isClosed_UH {n : ℕ} (Hm : Matrix (Fin n) (Fin n) ℂ) : IsClosed (UH Hm) := isClosed_eq ((continuous_id.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul
+  continuous_id) continuous_const
+
+
+
+end PI.PhMeasCore.UnitaryGroupMassFormula
+
+end
+end
+
+section
+open Matrix
+open scoped ContDiff
+
+noncomputable section
+
+namespace PI.PhMeasCore.UnitaryGroupMassFormula
+
+open PI.PhMeasCore
+
+theorem mul_mem_UH {n : ℕ} {Hm a b : Matrix (Fin n) (Fin n) ℂ} (ha : a ∈ UH Hm) (hb : b ∈ UH Hm) :
+    a * b ∈ UH Hm := by
+  have ha' : aᴴ * Hm * a = Hm := ha
+  have hb' : bᴴ * Hm * b = Hm := hb
+  show (a * b)ᴴ * Hm * (a * b) = Hm
+  calc (a * b)ᴴ * Hm * (a * b) = bᴴ * (aᴴ * Hm * a) * b := by
+        simp only [conjTranspose_mul, Matrix.mul_assoc]
+    _ = Hm := by rw [ha', hb']
+
+section Smooth
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+theorem contDiff_matMul {n : ℕ} :
+    ContDiff ℝ ∞ (fun p : Matrix (Fin n) (Fin n) ℂ × Matrix (Fin n) (Fin n) ℂ => p.1 * p.2) := by
+  let L : Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
+    LinearMap.toContinuousLinearMap
+      { toFun := fun a => LinearMap.toContinuousLinearMap
+          { toFun := fun b => a * b
+            map_add' := fun b c => Matrix.mul_add a b c
+            map_smul' := fun r b => by simp }
+        map_add' := fun a b => by
+          ext c : 1
+          simp [Matrix.add_mul]
+        map_smul' := fun r a => by
+          ext c : 1
+          simp }
+  have h : ContDiff ℝ ∞ (fun p : Matrix (Fin n) (Fin n) ℂ × Matrix (Fin n) (Fin n) ℂ => L p.1 p.2) :=
+    L.isBoundedBilinearMap.contDiff
+  exact h
+
+theorem contDiff_mulRight {n : ℕ} (g : Matrix (Fin n) (Fin n) ℂ) :
+    ContDiff ℝ ∞ (fun x : Matrix (Fin n) (Fin n) ℂ => x * g) :=
+  (@contDiff_matMul n).comp (contDiff_id.prodMk contDiff_const)
+
+end Smooth
+
+end PI.PhMeasCore.UnitaryGroupMassFormula
+
+end
+end
+
+section
 open Matrix
 open scoped ContDiff
 
@@ -46,4 +162,5 @@ theorem smooth_sub {v v' : H} (hv : v ∈ smoothVecs Hm σ) (hv' : v' ∈ smooth
 
 end PI.PhMeasCore.UnitaryGroupMassFormula
 
+end
 end

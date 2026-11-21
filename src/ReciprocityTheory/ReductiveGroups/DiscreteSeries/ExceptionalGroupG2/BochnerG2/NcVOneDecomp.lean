@@ -1,6 +1,174 @@
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.NcVOneDecomp
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.BochnerG2.CrossOpEigGap
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CrossOpEigGap
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Numerics
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.StdGap
 
+section
+noncomputable section
+
+open Finset
+
+namespace ReciprocityTheory.ChartRestriction.DS.G2
+variable {n : ℕ}
+
+section Num
+
+variable {ε : Fin n → Bool}
+
+private theorem dot_add_l (u v w : Fin n → ℝ) : dot (u + v) w = dot u w + dot v w := by
+  simp only [dot, Pi.add_apply, add_mul, Finset.sum_add_distrib]
+
+private theorem dot_add_r (u v w : Fin n → ℝ) : dot u (v + w) = dot u v + dot u w := by
+  simp only [dot, Pi.add_apply, mul_add, Finset.sum_add_distrib]
+
+private theorem dot_comm' (u v : Fin n → ℝ) : dot u v = dot v u := by
+  simp only [dot, mul_comm]
+
+
+private theorem dot_sum_r {k : ℕ} (u : Fin n → ℝ) (f : Fin k → Fin n → ℝ) :
+    dot u (∑ i, f i) = ∑ i, dot u (f i) := by
+  simp only [dot, Finset.sum_apply, Finset.mul_sum]
+  exact Finset.sum_comm
+
+private theorem dot_root_r (u : Fin n → ℝ) (a b : Fin n) : dot u (root a b) = u a - u b := by
+  simp [dot, root, mul_sub, Finset.sum_sub_distrib, Pi.single_apply]
+
+
+
+private theorem nsq_add'' (u v : Fin n → ℝ) : nsq (u + v) = nsq u + 2 * dot u v + nsq v := by
+  unfold nsq
+  rw [dot_add_l, dot_add_r, dot_add_r, dot_comm' v u]
+  ring
+
+
+
+
+
+theorem gap_gt {a b : Fin n} (hε : ε a ≠ ε b) {h : ℝ}
+    (hbig : 2 * (n : ℝ) < h) :
+    2 * (n : ℝ) - 3 < h ∧ (n : ℝ) - 1 < h := by
+  have := (Nat.cast_nonneg n : (0 : ℝ) ≤ n)
+  constructor <;> linarith
+
+theorem vogan_num {Λ ν : Fin n → ℝ} {j : ℕ} (hj : 1 ≤ j) (hν : IsNCSum ε j ν) {h : ℝ}
+    (hbig : 2 * (n : ℝ) < h)
+    (hc : casValK ε Λ + 2 * (j : ℝ) * (h - n + 1) ≤ casValK ε (Λ + ν)) :
+    nsq (Λ + (2 : ℝ) • rhoC ε) ≤ nsq (Λ + ν + (2 : ℝ) • rhoC ε) := by
+  obtain ⟨γ, -, hνeq⟩ := hν
+  have hcard : ∀ s : Finset (Fin n), (s.card : ℝ) ≤ n := fun s => by
+    have := Finset.card_le_univ s
+    rw [Fintype.card_fin] at this
+    exact_mod_cast this
+  have hbound : ∀ a, -(n : ℝ) / 2 ≤ rhoC ε a ∧ rhoC ε a ≤ (n : ℝ) / 2 := by
+    intro a
+    have h1 := hcard (univ.filter fun b => a < b ∧ ε b = ε a)
+    have h2 := hcard (univ.filter fun b => b < a ∧ ε b = ε a)
+    have h3 := (Nat.cast_nonneg (univ.filter fun b => a < b ∧ ε b = ε a).card : (0 : ℝ) ≤ _)
+    have h4 := (Nat.cast_nonneg (univ.filter fun b => b < a ∧ ε b = ε a).card : (0 : ℝ) ≤ _)
+    simp only [rhoC]
+    constructor <;> linarith
+  have hdot : -((j : ℝ) * n) ≤ dot (rhoC ε) ν := by
+    rw [hνeq, dot_sum_r]
+    simp only [dot_root_r]
+    have hle : ∀ i ∈ (univ : Finset (Fin j)), -(n : ℝ) ≤ rhoC ε (γ i).1 - rhoC ε (γ i).2 :=
+      fun i _ => by
+        have := hbound (γ i).1
+        have := hbound (γ i).2
+        linarith
+    have := Finset.sum_le_sum hle
+    simpa using this
+  have hjn : (j : ℝ) * n ≤ j * (h - n + 1) :=
+    mul_le_mul_of_nonneg_left (by linarith) (Nat.cast_nonneg j)
+  unfold casValK at hc
+  have e1 : Λ + (2 : ℝ) • rhoC ε = (Λ + rhoC ε) + rhoC ε := by rw [two_smul]; abel
+  have e2 : Λ + ν + (2 : ℝ) • rhoC ε = ((Λ + rhoC ε) + rhoC ε) + ν := by rw [two_smul]; abel
+  have e3 : Λ + ν + rhoC ε = (Λ + rhoC ε) + ν := by abel
+  rw [e3, nsq_add'' (Λ + rhoC ε) ν] at hc
+  rw [e1, e2, nsq_add'' ((Λ + rhoC ε) + rhoC ε) ν, dot_add_l (Λ + rhoC ε) (rhoC ε) ν]
+  linarith
+
+end Num
+
+end ReciprocityTheory.ChartRestriction.DS.G2
+end
+end
+
+section
+noncomputable section
+
+open Finset
+
+namespace ReciprocityTheory.ChartRestriction.DS.G2
+variable {n : ℕ}
+
+section OneBAux
+
+variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M] {ε : Fin n → Bool}
+  {E : Fin n → Fin n → Module.End ℂ M} {V : Submodule ℂ M} {lam : Fin n → ℝ}
+
+theorem crossOp_eig_gap (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E (lowK ε lam) V)
+    (hmono : StrictAnti lam) {h : ℝ} (hh : GapAtLeast ε lam h)
+    (hbig : 2 * (n : ℝ) < h) {θ : ℝ} {y : Big n 1 M}
+    (hy : y ∈ Module.End.eigenspace (crossOp ε E 1 0) (θ : ℂ) ⊓ ncV ε V 1) (hy0 : y ≠ 0) :
+    (0 < h - n + 1 ∧ h - n + 1 ≤ θ) ∨ (θ ≤ -h - 1 ∧ -h - 1 < 0) := by
+  classical
+  set S : Submodule ℂ (Big n 1 M) :=
+    Module.End.eigenspace (crossOp ε E 1 0) (θ : ℂ) ⊓ ncV ε V 1 with hSdef
+  haveI hfdN : FiniteDimensional ℂ (ncV ε V 1) :=
+    ReciprocityTheory.ChartRestriction.DS.finiteDimensional_ncV hV.1 1
+  haveI hfd : FiniteDimensional ℂ S :=
+    Submodule.finiteDimensional_of_le (inf_le_right : S ≤ ncV ε V 1)
+
+  have hS : ReciprocityTheory.ChartRestriction.DS.IsKStableSub ε (ReciprocityTheory.ChartRestriction.DS.bAct E 1) S := by
+    intro a b hab v hv
+    rw [Submodule.mem_inf] at hv ⊢
+    refine ⟨?_, ReciprocityTheory.ChartRestriction.DS.ncV_kStable hV.2.1 1 a b hab v hv.2⟩
+    rw [Module.End.mem_eigenspace_iff] at hv ⊢
+    have hc : crossOp ε E 1 0 (ReciprocityTheory.ChartRestriction.DS.bAct E 1 a b v) =
+        ReciprocityTheory.ChartRestriction.DS.bAct E 1 a b (crossOp ε E 1 0 v) :=
+      LinearMap.congr_fun (ReciprocityTheory.ChartRestriction.DS.crossOp_comm hE 1 0 hab) v
+    rw [hc, hv.1, map_smul]
+  have hne : S ≠ ⊥ := by
+    intro h0
+    apply hy0
+    have hyS : y ∈ S := hy
+    rw [h0] at hyS
+    exact (Submodule.mem_bot ℂ).1 hyS
+
+  obtain ⟨w, hwS, hw0, μ, hμ⟩ :=
+    ReciprocityTheory.ChartRestriction.DS.exists_khw (ReciprocityTheory.ChartRestriction.DS.bAct_isGlRep hE 1)
+      (ReciprocityTheory.ChartRestriction.DS.bAct_isKUnitary hU 1) hfd hS hne
+  have hwS' := Submodule.mem_inf.1 hwS
+  obtain ⟨r, s, hrs, hμeq, h2⟩ :=
+    ReciprocityTheory.ChartRestriction.DS.crossOp_khw hE hU hV hwS'.2 hw0 hμ
+  have hθw : crossOp ε E 1 0 w = (θ : ℂ) • w := Module.End.mem_eigenspace_iff.1 hwS'.1
+  rw [hθw, smul_smul] at h2
+  have hc : ((2 : ℂ) * (θ : ℂ)) =
+      ((ReciprocityTheory.ChartRestriction.DS.casValK ε μ - n -
+        ReciprocityTheory.ChartRestriction.DS.casValK ε (ReciprocityTheory.ChartRestriction.DS.lowK ε lam) : ℝ) : ℂ) :=
+    smul_left_injective ℂ hw0 h2
+  have hcR : 2 * θ = ReciprocityTheory.ChartRestriction.DS.casValK ε μ - n -
+      ReciprocityTheory.ChartRestriction.DS.casValK ε (ReciprocityTheory.ChartRestriction.DS.lowK ε lam) := by
+    exact_mod_cast hc
+  subst hμeq
+  have hgap := ReciprocityTheory.ChartRestriction.DS.G2.gap_gt hrs hbig
+  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hne' : r ≠ s := fun h => hrs (congrArg ε h)
+  rcases lt_or_gt_of_ne hne' with hlt | hgt
+  · left
+    have hp := ReciprocityTheory.ChartRestriction.DS.crossVal_pos hmono hh hlt hrs
+    constructor <;> linarith [hgap.2]
+  · right
+    have hq := ReciprocityTheory.ChartRestriction.DS.crossVal_neg hmono hh hgt hrs.symm
+    constructor <;> linarith
+
+end OneBAux
+
+end ReciprocityTheory.ChartRestriction.DS.G2
+end
+end
+
+section
 noncomputable section
 
 open Finset
@@ -223,3 +391,5 @@ theorem Wp_bound (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E (
 end OneB
 
 end ReciprocityTheory.ChartRestriction.DS.G2
+end
+end

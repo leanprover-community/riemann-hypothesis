@@ -2,10 +2,118 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HidaC
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CoefSup
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoEvLow
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.LocalRingsCompletion.dvrFinite
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HidaCompleteRings.OneVar
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HidaCompleteRings.ExistsPt
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.LocalRingsCompletion.Weier
 import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.CopNormLt
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoMvps
+
+section
+open IsLocalRing
+
+theorem UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.oneVar :
+    ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [Field K] (ι : O →+* K), Function.Injective ι → ∀ (g : PowerSeries O) (Z : Set K), Z.Infinite → (∀ z ∈ Z, ∃ y : PowerSeries O →+* K, (∀ a, y (PowerSeries.C a) = ι a) ∧ y PowerSeries.X = z ∧ y g = 0) → g = 0 := by
+  intro O K _ _ _ _ _ ι hι g Z hZ h
+  by_contra hg
+  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
+  obtain ⟨m, P, U, -, hP, -, hU, hfac⟩ := UpperTheory.V.abelian₂.weier O ϖ hϖ g hg
+  have hmon : (P.map ι).Monic := hP.monic.map ι
+  have hϖ0 : ι ϖ ≠ 0 := fun h0 => hϖ.ne_zero (hι (by rw [h0, map_zero]))
+  refine hmon.ne_zero (Polynomial.eq_zero_of_infinite_isRoot _ (hZ.mono ?_))
+  intro z hz
+  obtain ⟨y, hyC, hyX, hy0⟩ := h z hz
+  have hyP : y (P : PowerSeries O) = (P.map ι).eval z := by
+    have e : y.comp Polynomial.coeToPowerSeries.ringHom = Polynomial.eval₂RingHom ι z := by
+      apply Polynomial.ringHom_ext
+      · intro a
+        simp [hyC]
+      · simp [hyX]
+    have := RingHom.congr_fun e P
+    simpa [Polynomial.eval_map] using this
+  rw [hfac, map_mul, map_mul, map_pow, hyC, hyP] at hy0
+  have hyU : y U ≠ 0 := (hU.map y).ne_zero
+  show (P.map ι).IsRoot z
+  rcases mul_eq_zero.1 hy0 with h1 | h1
+  · rcases mul_eq_zero.1 h1 with h2 | h2
+    · exact absurd h2 (pow_ne_zero m hϖ0)
+    · exact h2
+  · exact absurd h1 hyU
+end
+
+section
+open IsLocalRing UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite UpperTheory.V.HV UpperTheory.V.Alg
+
+section SlopeTestRemainingChoices
+
+open Polynomial
+
+private theorem exPt_intIff {l : ℕ} [Fact l.Prime] (x : PadicAlgCl l) : IsIntegral ℤ_[l] x ↔ ‖x‖ ≤ 1 := by
+  have hi : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x
+  have h0 : ‖x‖ = spectralValue (minpoly ℚ_[l] x) := rfl
+  rw [h0, spectralValue_le_one_iff (minpoly.monic hi)]
+  constructor
+  · intro h n
+    rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] h, coeff_map]
+    exact PadicInt.norm_le_one _
+  · intro h
+    have hl' : minpoly ℚ_[l] x ∈ lifts (algebraMap ℤ_[l] ℚ_[l]) :=
+      (lifts_iff_coeff_lifts _).mpr fun n => ⟨⟨_, h n⟩, rfl⟩
+    obtain ⟨q, hq, -, hqm⟩ := lifts_and_degree_eq_and_monic hl' (minpoly.monic hi)
+    exact ⟨q, hqm, by rw [← aeval_def, ← aeval_map_algebraMap ℚ_[l], hq, minpoly.aeval]⟩
+
+end SlopeTestRemainingChoices
+
+private theorem exPt_coef {l : ℕ} [Fact l.Prime] (c : Coef l) (s : Finset (PadicAlgCl l))
+    (hs : ∀ x ∈ s, IsIntegral ℤ_[l] x) : ∃ c' : Coef l, c.O ≤ c'.O ∧ ∀ x ∈ s, x ∈ c'.O := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => exact ⟨c, le_rfl, by simp⟩
+  | insert a s _ ih =>
+    obtain ⟨d, hd, hd'⟩ := ih fun x hx => hs x (Finset.mem_insert_of_mem hx)
+    obtain ⟨e, he, he'⟩ := (coefSup l).2.2.1 d a (hs a (Finset.mem_insert_self _ _))
+    refine ⟨e, hd.trans he, fun x hx => ?_⟩
+    rcases Finset.mem_insert.1 hx with rfl | hx
+    · exact he'
+    · exact he (hd' x hx)
+
+private theorem exPt_nonunit {l : ℕ} [Fact l.Prime] (c : Coef l) (x : c.O) (hx : ‖(x : PadicAlgCl l)‖ < 1) :
+    ¬ IsUnit x := by
+  intro hu
+  obtain ⟨w, hw⟩ := hu.exists_right_inv
+  have hi : IsIntegral ℤ_[l] (w : PadicAlgCl l) :=
+    (Algebra.IsIntegral.isIntegral (R := ℤ_[l]) w).map c.O.val
+  have h1 := (exPt_intIff _).1 hi
+  have h2 : (x : PadicAlgCl l) * w = 1 := congrArg Subtype.val hw
+  have h3 := congrArg norm h2
+  rw [norm_mul, norm_one] at h3
+  nlinarith [norm_nonneg (x : PadicAlgCl l), norm_nonneg (w : PadicAlgCl l)]
+
+private theorem exPt_ev (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+    [CharZero O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] {R σ : Type} [CommRing R] [Finite σ] (f : R →+* O)
+    (a : σ → O) (ha : ∀ i, ¬ IsUnit (a i)) :
+    ∃ G : MvPowerSeries σ R →+* O, (∀ r, G (MvPowerSeries.C r) = f r) ∧ ∀ i, G (MvPowerSeries.X i) = a i := by
+  haveI : IsAdicComplete (maximalIdeal O) O := (UpperTheory.V.abelian₂.dvr_finite l O).1
+  obtain ⟨F, ⟨hC, hX⟩, -⟩ := co_ev O O O σ (AlgHom.id _ _) a ha
+  refine ⟨(F : MvPowerSeries σ O →+* O).comp (MvPowerSeries.map f), fun r => ?_, fun i => ?_⟩
+  · rw [RingHom.comp_apply, MvPowerSeries.map_C, RingHom.coe_coe, hC]
+    rfl
+  · rw [RingHom.comp_apply, MvPowerSeries.map_X, RingHom.coe_coe, hX]
+
+theorem UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.existsPt :
+    ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (σ : Type) [Finite σ] (z : σ → PadicAlgCl l), (∀ i, ‖z i‖ < 1) → ∃ (c' : Coef l) (y : MvPowerSeries σ c.O →ₐ[c.O] PadicAlgCl l), c.O ≤ c'.O ∧ (∀ f, y f ∈ c'.O) ∧ ∀ i, y (MvPowerSeries.X i) = z i := by
+  intro l _ c σ _ z hz
+  classical
+  haveI := Fintype.ofFinite σ
+  obtain ⟨c', hc, hm⟩ := exPt_coef c (Finset.univ.image z) fun x hx => by
+    obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 hx
+    exact (exPt_intIff _).2 (hz i).le
+  have hm' : ∀ i, z i ∈ c'.O := fun i => hm _ (Finset.mem_image_of_mem _ (Finset.mem_univ i))
+  obtain ⟨G, hC, hX⟩ := exPt_ev l c'.O (Subalgebra.inclusion hc).toRingHom (fun i => ⟨z i, hm' i⟩)
+    fun i => exPt_nonunit c' _ (hz i)
+  refine ⟨c', ⟨c'.O.val.toRingHom.comp G, fun r => ?_⟩, hc, fun f => (G f).2, fun i => ?_⟩
+  · exact congrArg Subtype.val (hC r)
+  · exact congrArg Subtype.val (hX i)
+end
+
+section
 open IsLocalRing UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite UpperTheory.V.HV UpperTheory.V.Alg
 
 private theorem algHom_mvPowerSeries_C_eq_algebraMap {A K : Type} [CommRing A] [CommRing K] [Algebra A K] {σ : Type}
@@ -147,3 +255,4 @@ theorem UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.denseBox :
     ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (D : ℕ) (Z : Fin D → Set (PadicAlgCl l)), (∀ i, (Z i).Infinite) → (∀ i, ∀ z ∈ Z i, ‖z‖ < 1) → Sep {y : MvPowerSeries (Fin D) c.O →ₐ[c.O] PadicAlgCl l | ∀ i, y (MvPowerSeries.X i) ∈ Z i} := by
   intro l _ c D Z hZ hn f hf
   exact eq_zero_of_eval_eq_zero_on_infinite_unit_ball l D c Z hZ hn f (fun c' y _ hX => hf y hX)
+end

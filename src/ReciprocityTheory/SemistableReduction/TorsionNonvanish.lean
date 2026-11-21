@@ -1,9 +1,0 @@
-import ReciprocityTheory.SemistableReduction.TorsionNonvanishStatement
-
-namespace ReciprocityTheory.MultiplicativeHeights
-
-open Metric
-open scoped InnerProductSpace
-
-
-end ReciprocityTheory.MultiplicativeHeights

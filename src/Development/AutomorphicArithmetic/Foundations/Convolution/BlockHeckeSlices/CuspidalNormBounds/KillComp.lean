@@ -1,8 +1,227 @@
 import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.HkApply
 import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.BandOps
 import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.CompBound
-import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.KillOne
+import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CommuteCenterRtInfGL
+import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.AbsTaylor
+import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.LiftSingle
+import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.SubEqZeroIff
+import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.ExistsFinMap
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CoeffProdOneAdd
 
+section
+open NumberField MvPolynomial PositivityTheory.Rg.Fx
+
+private theorem vars_pieceK {ι κ : Type} [Fintype ι] (k : ℕ) (F : KF ι κ) : ∀ j ∈ (pieceK k F).vars, j ∈ F.vars := by
+  classical
+  intro j hj
+  rw [mem_vars_iff_mem_support] at hj ⊢
+  obtain ⟨d, hd, hjd⟩ := hj
+  refine ⟨d, ?_, hjd⟩
+  by_contra hn
+  apply mem_support_iff.mp hd
+  unfold pieceK
+  rw [coeff_sum]
+  refine Finset.sum_eq_zero fun β hβ => ?_
+  rw [coeff_monomial, if_neg]
+  rintro rfl
+  exact hn hβ
+
+private theorem congr_mod {σ κ A : Type} [CommRing A] [Algebra ℂ A] (J : Ideal A) (Z X : σ → A) (e : σ → MvPolynomial σ ℂ)
+    (H H' : κ → A) (G P : MvPolynomial κ (MvPolynomial σ ℂ)) (hZ : ∀ p, Z p - aeval X (e p) ∈ J)
+    (hH : ∀ k ∈ P.vars, H k - H' k ∈ J)
+    (hG : map (aeval e : MvPolynomial σ ℂ →ₐ[ℂ] MvPolynomial σ ℂ).toRingHom G = P) :
+    eval₂ (aeval Z).toRingHom H G - eval₂ (aeval X).toRingHom H' P ∈ J := by
+  rw [← Ideal.Quotient.eq]
+  have h1 : (Ideal.Quotient.mkₐ ℂ J).comp (aeval Z) = ((Ideal.Quotient.mkₐ ℂ J).comp (aeval X)).comp (aeval e) := by
+    apply MvPolynomial.algHom_ext
+    intro p
+    simp only [AlgHom.comp_apply, aeval_X, Ideal.Quotient.mkₐ_eq_mk]
+    exact Ideal.Quotient.eq.mpr (hZ p)
+  have h2 : (Ideal.Quotient.mk J).comp (aeval Z).toRingHom =
+      ((Ideal.Quotient.mk J).comp (aeval X).toRingHom).comp
+        (aeval e : MvPolynomial σ ℂ →ₐ[ℂ] MvPolynomial σ ℂ).toRingHom :=
+    RingHom.ext fun p => DFunLike.congr_fun h1 p
+  rw [eval₂_comp_left, eval₂_comp_left, h2, ← eval₂_map, hG]
+  refine eval₂Hom_congr' rfl (fun j hj _ => ?_) rfl
+  exact Ideal.Quotient.eq.mpr (hH j hj)
+
+theorem UpperTheory.ConvolutionTheory.BW.absKill :
+    UpperTheory.ConvolutionTheory.BW.AbsKill := by
+  intro τ κ A V _ _ n r _ _ _ _ _ _ Z H I t c idx Λ h good C hS F G hgood hev hG φ x
+  classical
+  obtain ⟨τ₀⟩ := ‹Nonempty τ›
+  choose s hs using hS.surj
+  let b : Fam (τ × Fin n) κ :=
+    { r := r
+      Λ := Λ
+      emb := Matrix.of fun p j => if idx p.2 = j then 1 else 0
+      pr := Matrix.of fun j p => if p = (τ₀, s j) then 1 else 0
+      pr_emb := by
+        ext i j
+        rw [Matrix.mul_apply, Finset.sum_eq_single (τ₀, s i) (fun p _ hp => by simp [hp]) (by simp)]
+        simp [hs, Matrix.one_apply]
+      h := h }
+  have hsub : b.sub F = 0 := by
+    rw [UpperTheory.ConvolutionTheory.FX.sub_eq_zero_iff]
+    rintro Λ' h' ⟨z, h1, h2⟩
+    have e1 : Λ' = fun p => Λ p + z (idx p.2) := by
+      funext p
+      rw [h1]
+      simp [b, apply_ite ((↑) : ℝ → ℂ)]
+    have e2 : h' = fun k => ev z (h k) := funext h2
+    rw [e1, e2]
+    exact hev z
+  have key := UpperTheory.ConvolutionTheory.FX.rearrange (τ × Fin n) κ b A V I t ((LinearMap.proj x).comp c)
+    (fun v m => UpperTheory.ConvolutionTheory.FX.abs_taylor τ κ A V n r Z H I t c idx Λ h good C hS v x m) F φ
+  rw [hsub, map_zero, zero_smul, map_zero] at key
+  let J : Ideal A :=
+    { carrier := {a | ∀ ψ, c (a • ψ) = 0}
+      add_mem' := fun {a a'} ha ha' ψ => by rw [add_smul, map_add, ha, ha', add_zero]
+      zero_mem' := fun ψ => by rw [zero_smul, map_zero]
+      smul_mem' := fun a a' ha ψ => by rw [smul_eq_mul, mul_comm, mul_smul]; exact ha _ }
+  have hJ : ∀ a a' : A, a - a' ∈ J ↔ ∀ ψ, c (a • ψ) = c (a' • ψ) := fun a a' =>
+    forall_congr' fun ψ => by rw [sub_smul, map_sub, sub_eq_zero]
+  have hX : (fun i : τ × Fin n => algebraMap ℂ A (b.Λ i) + ∑ j, (b.emb i j : ℂ) • I j) =
+      fun q => algebraMap ℂ A (Λ q) + I (idx q.2) := by
+    funext p
+    simp [b, apply_ite ((↑) : ℝ → ℂ)]
+  rw [hX] at key
+  convert key using 2 with k
+  have := congr_mod J Z (fun q => algebraMap ℂ A (Λ q) + I (idx q.2)) blockE H (fun k' => lift I t (h k')) (G k)
+    (pieceK k F) (fun p => (hJ _ _).mpr (hS.cen p))
+    (fun j hj => (hJ _ _).mpr (hS.hecke j (hgood j (vars_pieceK k F j hj)))) (hG k)
+  exact congrFun ((hJ _ _).mp this φ) x
+end
+
+section
+open NumberField
+
+noncomputable section
+
+namespace UpperTheory.ConvolutionTheory.BW
+
+open GlobalTheory.CuspRep PositivityTheory.Rg.Fx UpperTheory.V.Cm
+
+private theorem sum_pi {m j : ℕ} (F : (Fin (m + 1) → ℕ) → ℂ) :
+    ∑ A ∈ Finset.piAntidiag Finset.univ j, F A =
+      ∑ a ∈ Finset.range (j + 1), ∑ A ∈ Finset.piAntidiag Finset.univ (j - a), F (Fin.cons a A) := by
+  rw [Finset.sum_sigma']
+  refine Finset.sum_bij' (fun A _ => ⟨A 0, Fin.tail A⟩) (fun p _ => Fin.cons p.1 p.2) ?_ ?_ ?_ ?_ ?_
+  · intro A hA
+    simp only [Finset.mem_piAntidiag, Finset.mem_univ, implies_true, and_true, Fin.sum_univ_succ, Finset.mem_sigma,
+      Finset.mem_range] at hA ⊢
+    refine ⟨by omega, ?_⟩
+    change ∑ i : Fin m, A i.succ = _
+    omega
+  · intro p hp
+    simp only [Finset.mem_piAntidiag, Finset.mem_univ, implies_true, and_true, Fin.sum_univ_succ, Finset.mem_sigma,
+      Finset.mem_range, Fin.cons_zero, Fin.cons_succ] at hp ⊢
+    have h2 : ∑ i, p.2 i = j - p.1 := hp.2
+    omega
+  · intro A _
+    exact Fin.cons_self_tail A
+  · intro p _
+    simp
+  · intro A _
+    simp
+
+private theorem esymm_zero' (s : Multiset ℂ) : s.esymm 0 = 1 := by simp [Multiset.esymm]
+
+private theorem esymm_add' (s t : Multiset ℂ) (j : ℕ) :
+    (s + t).esymm j = ∑ a ∈ Finset.range (j + 1), s.esymm a * t.esymm (j - a) :=
+  _root_.UpperTheory.Reformulated.B.Qk43.esymm_add s t j
+
+private theorem esymm_sum : ∀ (m : ℕ) (M : Fin m → Multiset ℂ) (j : ℕ),
+    (∑ l, M l).esymm j = ∑ a ∈ Finset.piAntidiag Finset.univ j, ∏ l, (M l).esymm (a l)
+  | 0, M, 0 => by simp [esymm_zero']
+  | 0, M, j + 1 => by simp [Multiset.esymm, Multiset.powersetCard_zero_right]
+  | m + 1, M, j => by
+    rw [Fin.sum_univ_succ, esymm_add', sum_pi]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [esymm_sum m, Finset.mul_sum]
+    simp only [Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ]
+
+variable {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {S : Set (Pl E)} {n : ℕ}
+
+private theorem ev_hEP (d : Dat S n) (z : Fin d.len → ℂ) (k : Pl E × Fin n) :
+    ev z (d.hEP k) = d.ptH (fun l => z l + d.rho l) k := by
+  have hq : qc k.1 ≠ 0 := Nat.cast_ne_zero.2 (GlobalTheory.LFun.qV_ne_zero k.1)
+  rw [Dat.hEP, map_sum, Dat.ptH, Dat.ptS, esymm_sum]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  have e : ∀ (v : Fin d.len → ℝ) (c : ℂ), ev z (AddMonoidAlgebra.single v (MvPolynomial.C c)) =
+      c * Complex.exp (∑ l, (v l : ℂ) * z l) := fun v c => by
+    simp [ev, lift, AddMonoidAlgebra.liftNCRingHom, expChar]
+  rw [e, Complex.exp_sum, ← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun l _ => ?_
+  have h := Multiset.pow_smul_esymm (qc k.1 ^ (-(z l + d.rho l))) (a l) ((d.sat l k.1).map fun x : ℂˣ => (x : ℂ))
+  simp only [smul_eq_mul, Multiset.map_map, Function.comp_def] at h
+  simp only [mul_comm _ (qc k.1 ^ (-(z l + d.rho l)))]
+  rw [← h, mul_assoc, mul_comm]
+  congr 1
+  rw [← Complex.cpow_natCast, Complex.cpow_def_of_ne_zero hq, Complex.cpow_natCast, Complex.cpow_def_of_ne_zero hq,
+    ← Complex.exp_nat_mul, ← Complex.exp_add]
+  congr 1
+  simp only [Pi.neg_apply]
+  push_cast
+  unfold qc
+  ring
+
+private theorem supp_good {F : KF ((E →+* ℂ) × Fin n) (Pl E × Fin n)}
+    {G : ℕ → MvPolynomial (Pl E × Fin n) (MvPolynomial ((E →+* ℂ) × Fin n) ℂ)} (hF : ∀ x ∈ F.vars, x.1 ∉ S) (hG : Gen F G)
+    (k : ℕ) {β : (Pl E × Fin n) →₀ ℕ} (hβ : β ∈ (G k).support) : ∀ x ∈ β.support, x.1 ∉ S := by
+  classical
+  intro x hx
+  refine hF x ((MvPolynomial.mem_vars_iff_mem_support x).2 ⟨β, ?_, hx⟩)
+  by_contra hn
+  have h := congrArg (MvPolynomial.coeff β) (hG k)
+  rw [MvPolynomial.coeff_map, pieceK, MvPolynomial.coeff_sum, Finset.sum_eq_zero fun γ hγ => by
+    rw [MvPolynomial.coeff_monomial, if_neg fun e : γ = β => hn (e ▸ hγ)]] at h
+  exact MvPolynomial.mem_support_iff.1 hβ (UpperTheory.ConvolutionTheory.FX.blockE_inj (E →+* ℂ) n (h.trans (map_zero _).symm))
+
+private theorem list_rel {M A ι : Type} [AddCommGroup M] [Module ℂ M] {V : Submodule ℂ M} [CommRing A] [Module A V]
+    (f : ι → A) (g : ι → Module.End ℂ M) (e : ι → ℕ) (l : List ι) (h : ∀ i ∈ l, ∀ v : V, ((f i • v : V) : M) = g i v) :
+    ∀ v : V, (((l.map fun i => f i ^ e i).prod • v : V) : M) = (l.map fun i => g i ^ e i).prod v := by
+  induction l with
+  | nil => simp
+  | cons i l ih =>
+    intro v
+    have hp : ∀ (m : ℕ) (v : V), ((f i ^ m • v : V) : M) = (g i ^ m) v := fun m => by
+      induction m with
+      | zero => simp
+      | succ m ih => intro v; rw [pow_succ', pow_succ', mul_smul, h i (by simp), ih, Module.End.mul_apply]
+    rw [List.map_cons, List.map_cons, List.prod_cons, List.prod_cons, mul_smul, hp, Module.End.mul_apply,
+      ih fun j hj => h j (List.mem_cons_of_mem _ hj)]
+
+end UpperTheory.ConvolutionTheory.BW
+
+open UpperTheory.ConvolutionTheory.BW GlobalTheory.CuspRep PositivityTheory.Rg.Fx in
+theorem UpperTheory.ConvolutionTheory.BW.killOne :
+    ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E], UpperTheory.ConvolutionTheory.BW.KillOne E := by
+  intro E _ _ _ S n C d φ F G hC hb hs hF hK hG t
+  obtain ⟨A, _, _, _, _, Z, H, I, T, hZ, hH, hsys⟩ := exists_sys d hC
+  have h := absKill (E →+* ℂ) (Pl E × Fin n) A (bsp S n hC) n d.len Z H I T (cmp d hC) d.idx d.lamR d.hEP _ C hsys F G hF
+    (fun z => by
+      have := hK fun l => z l + d.rho l
+      rw [← this]
+      congr 2
+      · funext p
+        simp only [Dat.lamR, Dat.ptL]
+        ring
+      · funext k
+        exact ev_hEP d z k) hG ⟨φ, hb, hs⟩ t
+  have e : ∀ k (v : bsp S n hC), ((MvPolynomial.eval₂ (MvPolynomial.aeval Z).toRingHom H (G k) • v : bsp S n hC) : Sm E n) =
+      app (G k) v := fun k v => by
+    rw [MvPolynomial.eval₂_eq, Finset.sum_smul, Submodule.coe_sum, app, LinearMap.sum_apply]
+    refine Finset.sum_congr rfl fun β hβ => ?_
+    rw [mul_smul, Module.End.mul_apply, hmon, ← Finset.prod_map_toList,
+      ← list_rel H (fun p => hk n p.1 (p.2 + 1)) β _ fun p hp => hH p (supp_good hF hG k hβ p (Finset.mem_toList.1 hp))]
+    exact hZ _ _
+  convert h using 2 with k
+  exact congrArg (fun ψ : Sm E n => d.comp ψ.1 t) (e k ⟨φ, hb, hs⟩).symm
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GroundTheory.Automorphic PositivityTheory.Rg.Fx UpperTheory.V.Cm
@@ -264,3 +483,5 @@ theorem UpperTheory.ConvolutionTheory.BW.killComp :
     have h6 : δ / (2 * A) * A = δ / 2 := by field_simp
     linarith
   exact tendsto_nhds_unique hconv hlim
+end
+end

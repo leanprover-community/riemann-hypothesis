@@ -1,12 +1,354 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GradedSeriesContinuationDominated
+import BuildAid.ForwardExisting
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSumHeckeEigenvalueGeneratingSeriesGLStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSatakeParamTrivialBoundUnitaryGLStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeVectorHeckeEigenvalue
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSumCardCosetsDiagonalDoubleCosetGL
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SatakeParametersOfTwist
 
+section
+section
+open Filter Topology Metric Set
+
+namespace GlobalTheory
+
+theorem gradedSeries_regroup {ι : Type} (deg : ι → ℕ) (c : ι → ℂ) (x s : ℂ)
+    (hs : HasSum (fun i => c i * x ^ deg i) s) :
+    HasSum (fun k => (∑' i : deg ⁻¹' {k}, c i) * x ^ k) s := by
+  have h1 := hs.tsum_fiberwise deg
+  have e : (fun k => (∑' i : deg ⁻¹' {k}, c i) * x ^ k) =
+      (fun k => ∑' i : deg ⁻¹' {k}, c i * x ^ deg i) := by
+    funext k
+    rw [← tsum_mul_right]
+    apply tsum_congr
+    rintro ⟨i, hi⟩
+    simp only [mem_preimage, mem_singleton_iff] at hi
+    simp [hi]
+  rw [e]
+  exact h1
+
+theorem gradedSeries_continue {ι : Type} (deg : ι → ℕ) (c : ι → ℂ) (δ ρ : ℝ) (Q : ℂ → ℂ)
+    (hδ : 0 < δ) (hQ : DifferentiableOn ℂ Q (ball 0 ρ))
+    (h : ∀ x : ℝ, 0 < x → x < δ → HasSum (fun i => c i * (x : ℂ) ^ deg i) (Q x))
+    (X : ℂ) (hX : ‖X‖ < ρ) :
+    HasSum (fun k => (∑' i : deg ⁻¹' {k}, c i) * X ^ k) (Q X) := by
+  set A : ℕ → ℂ := fun k => ∑' i : deg ⁻¹' {k}, c i with hAdef
+  set p : FormalMultilinearSeries ℂ ℂ ℂ := FormalMultilinearSeries.ofScalars ℂ A with hpdef
+  have hx0 : 0 < δ / 2 := by positivity
+  set x0 : NNReal := ⟨δ / 2, hx0.le⟩ with hx0def
+  have hrad : (x0 : ENNReal) ≤ p.radius := by
+    apply p.le_radius_of_summable_norm
+    have hs := (gradedSeries_regroup deg c _ _ (h (δ / 2) hx0 (by linarith))).summable
+    have hs' := summable_norm_iff.mpr hs
+    refine hs'.congr fun n => ?_
+    simp only [p, FormalMultilinearSeries.ofScalars_norm, norm_mul, norm_pow, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos hx0]
+    rfl
+  have hF := p.hasFPowerSeriesOnBall (lt_of_lt_of_le (ENNReal.coe_pos.2 (by rw [← NNReal.coe_pos]; exact hx0)) hrad)
+  have hρ : 0 < ρ := lt_of_le_of_lt (norm_nonneg _) hX
+  have hs0 : 0 < min (δ / 2) ρ := lt_min hx0 hρ
+  have hQan : AnalyticOnNhd ℂ Q (ball 0 ρ) := hQ.analyticOnNhd isOpen_ball
+  have hmem : ∀ z : ℂ, ‖z‖ < δ / 2 → z ∈ EMetric.ball (0 : ℂ) p.radius := by
+    intro z hz
+    change edist _ (0 : ℂ) < _
+    rw [edist_zero_right]
+    refine lt_of_lt_of_le ?_ hrad
+    exact ENNReal.coe_lt_coe.2 (by rw [← NNReal.coe_lt_coe, coe_nnnorm]; exact hz)
+  have hFan : AnalyticOnNhd ℂ p.sum (ball 0 (min (δ / 2) ρ)) := fun z hz =>
+    hF.analyticAt_of_mem (hmem z (lt_of_lt_of_le (by simpa using hz) (min_le_left _ _)))
+  have ht : Tendsto (fun x : ℝ => (x : ℂ)) (𝓝[>] 0) (𝓝[≠] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+      ((Complex.continuous_ofReal.tendsto' 0 0 (by simp)).mono_left nhdsWithin_le_nhds)
+      (eventually_nhdsWithin_of_forall fun x hx => by simpa using (ne_of_gt hx))
+  have hfreq : ∃ᶠ z in 𝓝[≠] (0 : ℂ), p.sum z = Q z := by
+    refine ht.frequently (Filter.Eventually.frequently ?_)
+    filter_upwards [Ioo_mem_nhdsGT hx0] with x hx
+    have h1 := gradedSeries_regroup deg c _ _ (h x hx.1 (by linarith [hx.2]))
+    simp only [p, FormalMultilinearSeries.sum, FormalMultilinearSeries.ofScalars_apply_eq,
+      smul_eq_mul]
+    exact h1.tsum_eq
+  have heq : EqOn p.sum Q (ball 0 (min (δ / 2) ρ)) :=
+    hFan.eqOn_of_preconnected_of_frequently_eq
+      (hQan.mono (ball_subset_ball (min_le_right _ _)))
+      (convex_ball _ _).isPreconnected (mem_ball_self hs0) hfreq
+  have hQp : HasFPowerSeriesAt Q p 0 :=
+    hF.hasFPowerSeriesAt.congr (Filter.eventuallyEq_of_mem (ball_mem_nhds 0 hs0) heq)
+  have hR0 : 0 < (‖X‖ + ρ) / 2 := by positivity
+  set R : NNReal := ⟨(‖X‖ + ρ) / 2, hR0.le⟩ with hRdef
+  have hR : 0 < R := by rw [← NNReal.coe_pos]; exact hR0
+  have hdR : DifferentiableOn ℂ Q (closedBall 0 R) :=
+    hQ.mono (closedBall_subset_ball (by change (‖X‖ + ρ) / 2 < ρ; linarith))
+  have hC := hdR.hasFPowerSeriesOnBall hR
+  have hCp : cauchyPowerSeries Q 0 R = p := hC.hasFPowerSeriesAt.eq_formalMultilinearSeries hQp
+  rw [hCp] at hC
+  have hXm : X ∈ EMetric.ball (0 : ℂ) R := by
+    change edist _ (0 : ℂ) < _
+    rw [edist_zero_right]
+    exact ENNReal.coe_lt_coe.2 (by rw [← NNReal.coe_lt_coe, coe_nnnorm]; change ‖X‖ < (‖X‖ + ρ) / 2; linarith)
+  have := hC.hasSum hXm
+  simp only [p, FormalMultilinearSeries.ofScalars_apply_eq, smul_eq_mul, zero_add] at this
+  exact this
+
+theorem gradedSeries_continuation_dominated : ∀ {ι : Type} (deg : ι → ℕ),
+    (∀ k, {i | deg i = k}.Finite) → ∀ (a : ι → ℂ) (b : ι → ℝ) (C δ ρ : ℝ) (P P' : ℂ → ℂ),
+    0 < δ → (∀ i, 0 ≤ b i) → (∀ i, ‖a i‖ ≤ C * b i) →
+    DifferentiableOn ℂ P (Metric.ball 0 ρ) → DifferentiableOn ℂ P' (Metric.ball 0 ρ) →
+    (∀ x : ℝ, 0 < x → x < δ → HasSum (fun i => a i * (x : ℂ) ^ deg i) (P x) ∧
+      HasSum (fun i => (b i : ℂ) * (x : ℂ) ^ deg i) (P' x)) →
+    ∀ X : ℂ, ‖X‖ < ρ → HasSum (fun i => a i * X ^ deg i) (P X) ∧
+      Summable (fun i => b i * ‖X‖ ^ deg i) := by
+  intro ι deg hfin a b C δ ρ P P' hδ hb hab hP hP' h X hX
+  have hA := gradedSeries_continue deg a δ ρ P hδ hP (fun x h1 h2 => (h x h1 h2).1) X hX
+  have hB := gradedSeries_continue deg (fun i => (b i : ℂ)) δ ρ P' hδ hP'
+    (fun x h1 h2 => (h x h1 h2).2) ((‖X‖ : ℝ) : ℂ) (by simpa using hX)
+  have hBr : Summable (fun k => (∑' i : deg ⁻¹' {k}, b i) * ‖X‖ ^ k) := by
+    rw [← Complex.summable_ofReal]
+    refine hB.summable.congr fun k => ?_
+    push_cast [Complex.ofReal_tsum]
+    rfl
+  have hsb : Summable (fun i => b i * ‖X‖ ^ deg i) := by
+    rw [← (Equiv.sigmaFiberEquiv deg).summable_iff]
+    rw [summable_sigma_of_nonneg (f := (fun i => b i * ‖X‖ ^ deg i) ∘ (Equiv.sigmaFiberEquiv deg))
+      (fun _ => mul_nonneg (hb _) (pow_nonneg (norm_nonneg _) _))]
+    refine ⟨fun k => ?_, ?_⟩
+    · have : Finite {i // deg i = k} := (hfin k).to_subtype
+      exact Summable.of_finite
+    · refine hBr.congr fun k => ?_
+      rw [← tsum_mul_right]
+      exact tsum_congr fun y => by
+        simp [Equiv.sigmaFiberEquiv, show deg y.1 = k from y.2]
+  have hsa : Summable (fun i => a i * X ^ deg i) := by
+    refine Summable.of_norm_bounded (hsb.mul_left C) fun i => ?_
+    rw [norm_mul, norm_pow, ← mul_assoc]
+    exact mul_le_mul_of_nonneg_right (hab i) (pow_nonneg (norm_nonneg _) _)
+  refine ⟨?_, hsb⟩
+  have h3 := hsa.hasSum
+  have h4 := (gradedSeries_regroup deg a X _ h3).unique hA
+  rw [h4] at h3
+  exact h3
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasSum_and_summable_on_ball_of_hasSum_on_interval : ∀ {ι : Type} (deg : ι → ℕ), (∀ k, {i | deg i = k}.Finite) → ∀ (a : ι → ℂ) (b : ι → ℝ) (C δ ρ : ℝ) (P P' : ℂ → ℂ), 0 < δ → (∀ i, 0 ≤ b i) → (∀ i, ‖a i‖ ≤ C * b i) → DifferentiableOn ℂ P (Metric.ball 0 ρ) → DifferentiableOn ℂ P' (Metric.ball 0 ρ) → (∀ x : ℝ, 0 < x → x < δ → HasSum (fun i => a i * (x : ℂ) ^ deg i) (P x) ∧ HasSum (fun i => (b i : ℂ) * (x : ℂ) ^ deg i) (P' x)) → ∀ X : ℂ, ‖X‖ < ρ → HasSum (fun i => a i * X ^ deg i) (P X) ∧ Summable (fun i => b i * ‖X‖ ^ deg i) := by
+  atlas_forward_decl GlobalTheory.gradedSeries_continuation_dominated
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.LFun GlobalTheory.AdelicU GlobalTheory.PRep GlobalTheory.FinZeta GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.LiftRows
+open Formalism.IndefR.Lev (levG levChi IsBaseFrame)
+open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommensurated)
+open Formalism.MainNotions.SchurIrreducible (IsSplit)
+open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.FinZeta.GLTwist
+
+open Formalism.UG (Tj Ov)
+
+section Twist
+
+variable {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {r : ℕ}
+  {V : Type} [AddCommGroup V] [Module ℂ V]
+
+theorem ordV_mul {x y : w.adicCompletion E} (hx : x ≠ 0) (hy : y ≠ 0) :
+    Formalism.UG.ordV E w (x * y) = Formalism.UG.ordV E w x + Formalism.UG.ordV E w y := by
+  have hx' : Valued.v x ≠ 0 := (Valuation.ne_zero_iff _).2 hx
+  have hy' : Valued.v y ≠ 0 := (Valuation.ne_zero_iff _).2 hy
+  rw [GlobalTheory.LGrp.BorelCompletion.ordV_eq, GlobalTheory.LGrp.BorelCompletion.ordV_eq, GlobalTheory.LGrp.BorelCompletion.ordV_eq, map_mul,
+    WithZero.log_mul hx' hy']
+  ring
+
+theorem ordV_zpow {ϖ : w.adicCompletion E} (hϖ : IsUnifV E w ϖ) (k : ℤ) : Formalism.UG.ordV E w (ϖ ^ k) = k := by
+  rw [GlobalTheory.LGrp.BorelCompletion.ordV_eq, map_zpow₀, show Valued.v ϖ = _ from hϖ, WithZero.log_zpow,
+    show WithZero.log (((Multiplicative.ofAdd (-1 : ℤ) : Multiplicative ℤ)) : WithZero (Multiplicative ℤ)) = -1 from rfl]
+  simp
+
+def ordDet (g : GL (Fin r) (w.adicCompletion E)) : ℤ := Formalism.UG.ordV E w g.val.det
+
+theorem det_ne_zero (g : GL (Fin r) (w.adicCompletion E)) : g.val.det ≠ 0 :=
+  (Matrix.GeneralLinearGroup.det g).ne_zero
+
+theorem ordDet_mul (g h : GL (Fin r) (w.adicCompletion E)) : ordDet (g * h) = ordDet g + ordDet h := by
+  rw [ordDet, Units.val_mul, Matrix.det_mul, ordV_mul (det_ne_zero g) (det_ne_zero h)]
+  rfl
+
+theorem ordDet_of_mem {k : GL (Fin r) (w.adicCompletion E)} (hk : k ∈ KGL w r) : ordDet k = 0 := by
+  have h : Valued.v k.val.det = 1 := GlobalTheory.SphGal.isUnitAt_det_of_mem hk
+  rw [ordDet, GlobalTheory.LGrp.BorelCompletion.ordV_eq, h]
+  simp
+
+theorem ordDet_one : ordDet (1 : GL (Fin r) (w.adicCompletion E)) = 0 := ordDet_of_mem (one_mem _)
+
+theorem prod_zpow_eq {ι : Type} {ϖ : w.adicCompletion E} (h0 : ϖ ≠ 0) (d : ι → ℤ) (s : Finset ι) :
+    ∏ i ∈ s, ϖ ^ d i = ϖ ^ ∑ i ∈ s, d i := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih => rw [Finset.prod_insert ha, Finset.sum_insert ha, ih, zpow_add₀ h0]
+
+theorem ordDet_of_diagonal {ϖ : w.adicCompletion E} (hϖ : IsUnifV E w ϖ) {t : GL (Fin r) (w.adicCompletion E)}
+    {d : Fin r → ℤ} (ht : t.1 = Matrix.diagonal fun i => ϖ ^ d i) : ordDet t = ∑ i, d i := by
+  have h0 : ϖ ≠ 0 := fun h0 => by simp [IsUnifV, h0] at hϖ
+  rw [ordDet, ht, Matrix.det_diagonal, prod_zpow_eq h0, ordV_zpow hϖ]
+
+def twistRep (ρ : Representation ℂ (GL (Fin r) (w.adicCompletion E)) V) (z : ℂˣ) :
+    Representation ℂ (GL (Fin r) (w.adicCompletion E)) V where
+  toFun g := ((z : ℂ) ^ ordDet g) • ρ g
+  map_one' := by simp [ordDet_one]
+  map_mul' g h := by
+    rw [ordDet_mul, zpow_add₀ z.ne_zero, map_mul]
+    refine LinearMap.ext fun y => ?_
+    simp only [Module.End.mul_apply, LinearMap.smul_apply, map_smul, mul_smul]
+    exact smul_comm _ _ _
+
+theorem twistRep_apply (ρ : Representation ℂ (GL (Fin r) (w.adicCompletion E)) V) (z : ℂˣ)
+    (g : GL (Fin r) (w.adicCompletion E)) (y : V) : twistRep ρ z g y = ((z : ℂ) ^ ordDet g) • ρ g y := rfl
+
+theorem heckeVec_twistRep (ρ : Representation ℂ (GL (Fin r) (w.adicCompletion E)) V) (z : ℂˣ)
+    (t : GL (Fin r) (w.adicCompletion E)) (x : V) :
+    heckeVec (twistRep ρ z) (KGL w r) (dosetInd ℂ (KGL w r) t) x =
+      ((z : ℂ) ^ ordDet t) • heckeVec ρ (KGL w r) (dosetInd ℂ (KGL w r) t) x := by
+  rw [heckeVec, heckeVec, smul_finsum]
+  refine finsum_congr fun c => ?_
+  by_cases hc : ∃ a ∈ KGL w r, ∃ b ∈ KGL w r, c.out = a * t * b
+  · obtain ⟨a, ha, b, hb, e⟩ := id hc
+    have h : ordDet c.out = ordDet t := by
+      rw [e, ordDet_mul, ordDet_mul, ordDet_of_mem ha, ordDet_of_mem hb]
+      simp
+    rw [twistRep_apply, h, smul_comm]
+  · rw [GlobalTheory.WeylGL.dosetInd_of_not hc]
+    simp
+
+theorem isSatVecGL_twistRep {ρ : Representation ℂ (GL (Fin r) (w.adicCompletion E)) V} {x : V} {B : Multiset ℂˣ}
+    (hx : IsSatVecGL w ρ x B) (z : ℂˣ) : IsSatVecGL w (twistRep ρ z) x (B.map (z * ·)) := by
+  refine ⟨hx.1, GlobalTheory.LGrp.mem_fixed.2 fun k hk => ?_, by rw [Multiset.card_map, hx.2.2.1], fun ϖ hϖ j hj => ?_⟩
+  · rw [twistRep_apply, ordDet_of_mem hk, zpow_zero, one_smul]
+    exact GlobalTheory.LGrp.mem_fixed.1 hx.2.1 k hk
+  · have h0 : ϖ ≠ 0 := fun h0 => by simp [IsUnifV, h0] at hϖ
+    have em : B.map (z * ·) = B.map (· * z) := Multiset.map_congr rfl fun b _ => mul_comm _ _
+    have ho : ordDet (GlobalTheory.WeylGL.tor h0 fun i : Fin r => if (i : ℕ) < j then 1 else 0) = j := by
+      rw [ordDet_of_diagonal hϖ (GlobalTheory.WeylGL.tor_val h0 _)]
+      simp [Finset.sum_boole, Fin.card_filter_val_lt, min_eq_right hj]
+    rw [GlobalTheory.WeylGL.Tj_eq h0, heckeVec_twistRep, ← GlobalTheory.WeylGL.Tj_eq h0, hx.2.2.2 ϖ hϖ j hj, em,
+      GlobalTheory.SphGal.satEig_map_mul, ho, zpow_natCast, smul_smul]
+
+end Twist
+
+theorem hasSum_twisted_hecke_eigenvalues : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (r : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin r) (w.adicCompletion E)) V) (x : V) (B : Multiset ℂˣ), IsSatVecGL w ρ x B → ∀ (z : ℂˣ) (ϖ : w.adicCompletion E), IsUnifV E w ϖ → ∀ T : (Fin r → ℤ) → GL (Fin r) (w.adicCompletion E), (∀ d, (T d).1 = Matrix.diagonal fun i => ϖ ^ d i) → ∀ c : (Fin r → ℤ) → ℂ, (∀ d, heckeVec ρ (KGL w r) (dosetInd ℂ (KGL w r) (T d)) x = c d • x) → ∃ δ : ℝ, 0 < δ ∧ ∀ X : ℝ, 0 < X → X < δ → HasSum (fun d : {d : Fin r → ℤ // Antitone d} => (z : ℂ) ^ (∑ i, d.1 i) * c d.1 * (X : ℂ) ^ (∑ i, |d.1 i|).toNat) (eulerFac (B.map (z * ·)) ((qV E w : ℂ) ^ (((r : ℂ) - 1) / 2) * X) * eulerFac (B.map fun β => (z * β)⁻¹) ((qV E w : ℂ) ^ (((r : ℂ) - 1) / 2) * X) * ∏ i ∈ Finset.range r, (1 - (qV E w : ℂ) ^ i * (X : ℂ) ^ 2)) := by
+  intro hP E _ _ w r V _ _ ρ x B hx z ϖ hϖ T hT c hc
+  have hc' : ∀ d, heckeVec (twistRep ρ z) (KGL w r) (dosetInd ℂ (KGL w r) (T d)) x =
+      ((z : ℂ) ^ (∑ i, d i) * c d) • x := fun d => by
+    rw [heckeVec_twistRep, hc d, ordDet_of_diagonal hϖ (hT d), smul_smul]
+  obtain ⟨δ, h0, h⟩ := GlobalTheory.T.hasSum_heckeEigenvalue_generatingSeries_GL hP E w r V (twistRep ρ z) x _ (isSatVecGL_twistRep hx z) ϖ hϖ T hT _ hc'
+  refine ⟨δ, h0, fun X h1 h2 => ?_⟩
+  have := h X h1 h2
+  rw [Multiset.map_map] at this
+  exact this
+
+end GlobalTheory.FinZeta.GLTwist
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.LFun GlobalTheory.AdelicU GlobalTheory.PRep GlobalTheory.FinZeta GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.LiftRows
+open Formalism.IndefR.Lev (levG levChi IsBaseFrame)
+open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommensurated)
+open Formalism.MainNotions.SchurIrreducible (IsSplit)
+open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.satake_vector_hecke_eigenvalue : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (r : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin r) (w.adicCompletion E)) V) (x : V) (B : Multiset ℂˣ), IsSatVecGL w ρ x B → ∀ (z : ℂˣ) (ϖ : w.adicCompletion E), IsUnifV E w ϖ → ∀ T : (Fin r → ℤ) → GL (Fin r) (w.adicCompletion E), (∀ d, (T d).1 = Matrix.diagonal fun i => ϖ ^ d i) → ∀ c : (Fin r → ℤ) → ℂ, (∀ d, heckeVec ρ (KGL w r) (dosetInd ℂ (KGL w r) (T d)) x = c d • x) → ∃ δ : ℝ, 0 < δ ∧ ∀ X : ℝ, 0 < X → X < δ → HasSum (fun d : {d : Fin r → ℤ // Antitone d} => (z : ℂ) ^ (∑ i, d.1 i) * c d.1 * (X : ℂ) ^ (∑ i, |d.1 i|).toNat) (eulerFac (B.map (z * ·)) ((qV E w : ℂ) ^ (((r : ℂ) - 1) / 2) * X) * eulerFac (B.map fun β => (z * β)⁻¹) ((qV E w : ℂ) ^ (((r : ℂ) - 1) / 2) * X) * ∏ i ∈ Finset.range r, (1 - (qV E w : ℂ) ^ i * (X : ℂ) ^ 2)) := by
+  atlas_forward_decl GlobalTheory.FinZeta.GLTwist.hasSum_twisted_hecke_eigenvalues
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.LFun GlobalTheory.AdelicU GlobalTheory.PRep GlobalTheory.FinZeta GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.LiftRows
+open Formalism.IndefR.Lev (levG levChi IsBaseFrame)
+open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommensurated)
+open Formalism.MainNotions.SchurIrreducible (IsSplit)
+open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+namespace GlobalTheory.FinZeta.TrivCount
+
+theorem trivial_isUnitarisable {G : Type} [Group G] :
+    IsUnitarisable (Representation.trivial ℂ G ℂ) := by
+  refine ⟨LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ) (fun x y => x * starRingEnd ℂ y)
+      (fun _ _ _ => add_mul _ _ _) (fun _ _ _ => by simp [mul_assoc])
+      (fun _ _ _ => by simp [mul_add]) (fun _ _ _ => by simp [mul_left_comm]), ?_, ?_, ?_⟩
+  · intro v w; simp [mul_comm]
+  · intro v hv; simpa [Complex.mul_conj] using hv
+  · intro g v w; simp
+
+theorem heckeVec_trivial_dosetInd {G : Type} [Group G] {K : Subgroup G} (hK : IsCommensurated K) (t : G) :
+    heckeVec (Representation.trivial ℂ G ℂ) K (dosetInd ℂ K t) 1 =
+      ((Nat.card {a : G ⧸ K // a.out ∈ DoubleCoset.doubleCoset t (K : Set G) K} : ℝ) : ℂ) • 1 := by
+  classical
+  set D := DoubleCoset.doubleCoset t (K : Set G) K
+  have hfin : {a : G ⧸ K | a.out ∈ D}.Finite := by
+    refine (Formalism.UG.P.finite_support_cosets hK (Formalism.UG.Final.DosetIndMem G K ℂ t).2).subset ?_
+    intro a ha
+    have h' : a.out ∈ D := ha
+    simp only [Set.mem_setOf_eq, dosetInd]
+    rw [Set.indicator_of_mem h']
+    simp
+  have e : (fun c : G ⧸ K => dosetInd ℂ K t c.out • (Representation.trivial ℂ G ℂ) c.out (1 : ℂ)) =
+      Set.indicator {a : G ⧸ K | a.out ∈ D} 1 := by
+    funext c
+    by_cases h : c.out ∈ D <;> simp [dosetInd, D, h, Set.indicator]
+  rw [heckeVec, e, ← finsum_mem_def, finsum_mem_eq_finite_toFinset_sum _ hfin]
+  have hc : Nat.card {a : G ⧸ K // a.out ∈ D} = hfin.toFinset.card := by
+    rw [← Set.ncard_eq_toFinset_card _ hfin]
+    exact Nat.card_coe_set_eq {a : G ⧸ K | a.out ∈ D}
+  rw [hc]
+  simp
+
+theorem hasSum_card_cosets_diag : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (r : ℕ) (ϖ : w.adicCompletion E), IsUnifV E w ϖ → ∀ T : (Fin r → ℤ) → GL (Fin r) (w.adicCompletion E), (∀ d, (T d).1 = Matrix.diagonal fun i => ϖ ^ d i) → ∃ B₀ : Multiset ℂˣ, (∀ β ∈ B₀, ‖(β : ℂ)‖ ≤ (qV E w : ℝ) ^ (((r : ℝ) - 1) / 2) ∧ ‖((β⁻¹ : ℂˣ) : ℂ)‖ ≤ (qV E w : ℝ) ^ (((r : ℝ) - 1) / 2)) ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ X : ℝ, 0 < X → X < δ → HasSum (fun d : {d : Fin r → ℤ // Antitone d} => ((Nat.card {a : GL (Fin r) (w.adicCompletion E) ⧸ KGL w r // a.out ∈ DoubleCoset.doubleCoset (T d.1) (KGL w r : Set (GL (Fin r) (w.adicCompletion E))) (KGL w r)} : ℝ) : ℂ) * (X : ℂ) ^ (∑ i, |d.1 i|).toNat) (eulerFac B₀ ((qV E w : ℂ) ^ (((r : ℂ) - 1) / 2) * X) * eulerFac (B₀.map (·⁻¹)) ((qV E w : ℂ) ^ (((r : ℂ) - 1) / 2) * X) * ∏ i ∈ Finset.range r, (1 - (qV E w : ℂ) ^ i * (X : ℂ) ^ 2)) := by
+  intro hP E _ _ w r ϖ hϖ T hT
+  have hK : IsCommensurated (KGL w r) := Formalism.UG.Final.GLintComm E w r
+  let ρ := Representation.trivial ℂ (GL (Fin r) (w.adicCompletion E)) ℂ
+  have hu : IsUnitarisable ρ := trivial_isUnitarisable
+  have hfix : (1 : ℂ) ∈ fixed ρ (KGL w r) := GlobalTheory.LGrp.mem_fixed.2 fun _ _ => rfl
+  have heig : ∀ h ∈ Hecke ℂ (KGL w r), ∃ c : ℂ, heckeVec ρ (KGL w r) h 1 = c • (1 : ℂ) :=
+    fun h _ => ⟨heckeVec ρ (KGL w r) h 1, by rw [smul_eq_mul, mul_one]⟩
+  obtain ⟨B, hB, hbd⟩ := GlobalTheory.T.exists_satakeParam_trivialBound_unitaryGL E w r ℂ ρ hu 1 one_ne_zero hfix heig
+  have hc : ∀ d, heckeVec ρ (KGL w r) (dosetInd ℂ (KGL w r) (T d)) 1 =
+      (fun d => ((Nat.card {a : GL (Fin r) (w.adicCompletion E) ⧸ KGL w r // a.out ∈
+        DoubleCoset.doubleCoset (T d) (KGL w r : Set (GL (Fin r) (w.adicCompletion E))) (KGL w r)} : ℝ) : ℂ)) d
+        • (1 : ℂ) := fun d => heckeVec_trivial_dosetInd hK (T d)
+  refine ⟨B, hbd, ?_⟩
+  have key := GlobalTheory.T.hasSum_heckeEigenvalue_generatingSeries_GL hP E w r ℂ ρ 1 B hB ϖ hϖ T hT _ hc
+  beta_reduce at key
+  exact key
+
+end GlobalTheory.FinZeta.TrivCount
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.LFun GlobalTheory.AdelicU GlobalTheory.PRep GlobalTheory.FinZeta GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.LiftRows
+open Formalism.IndefR.Lev (levG levChi IsBaseFrame)
+open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommensurated)
+open Formalism.MainNotions.SchurIrreducible (IsSplit)
+open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasSum_card_cosets_diagonalDoubleCoset_GL : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (r : ℕ) (ϖ : w.adicCompletion E), IsUnifV E w ϖ → ∀ T : (Fin r → ℤ) → GL (Fin r) (w.adicCompletion E), (∀ d, (T d).1 = Matrix.diagonal fun i => ϖ ^ d i) → ∃ B₀ : Multiset ℂˣ, (∀ β ∈ B₀, ‖(β : ℂ)‖ ≤ (qV E w : ℝ) ^ (((r : ℝ) - 1) / 2) ∧ ‖((β⁻¹ : ℂˣ) : ℂ)‖ ≤ (qV E w : ℝ) ^ (((r : ℝ) - 1) / 2)) ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ X : ℝ, 0 < X → X < δ → HasSum (fun d : {d : Fin r → ℤ // Antitone d} => ((Nat.card {a : GL (Fin r) (w.adicCompletion E) ⧸ KGL w r // a.out ∈ DoubleCoset.doubleCoset (T d.1) (KGL w r : Set (GL (Fin r) (w.adicCompletion E))) (KGL w r)} : ℝ) : ℂ) * (X : ℂ) ^ (∑ i, |d.1 i|).toNat) (eulerFac B₀ ((qV E w : ℂ) ^ (((r : ℂ) - 1) / 2) * X) * eulerFac (B₀.map (·⁻¹)) ((qV E w : ℂ) ^ (((r : ℂ) - 1) / 2) * X) * ∏ i ∈ Finset.range r, (1 - (qV E w : ℂ) ^ i * (X : ℂ) ^ 2)) := by
+  atlas_forward_decl GlobalTheory.FinZeta.TrivCount.hasSum_card_cosets_diag
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.LFun GlobalTheory.AdelicU GlobalTheory.PRep GlobalTheory.FinZeta GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.LiftRows
 open Formalism.IndefR.Lev (levG levChi IsBaseFrame)
@@ -271,3 +613,4 @@ theorem zeta_sum_GL : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (E : T
   exact hfin
 
 end GlobalTheory.ZetaGL
+end

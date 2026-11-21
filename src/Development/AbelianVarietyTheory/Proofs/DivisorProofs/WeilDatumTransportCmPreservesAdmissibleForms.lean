@@ -11,11 +11,84 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivedActionIntert
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousOfLieIntertwineL2Statement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLinearModelArchimedeanSchroedingerStandardStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralSqCompContinuousLinearEquivMixedSpaceStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAdelicAddCharFiniteRationalEqExp
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAddCharArchimedeanEqExpNondegenerate
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicCharacterNontrivialAtPlaces
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulRealAdEqZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilDatumTransportCmExtensionIsUnitaryOnStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransportedWeilDatumCMPreservesSchwartzHeisenberStatement
 
+section
+section
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+
+namespace GlobalTheory.StdFinRat
+
+theorem std_fin_rat : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ), IsStd ψ → ∀ x : F,
+    ψ (pairA F 0 (algebraMap F (Af F) x)) = Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ F x : ℚ) : ℂ)) :=
+  fun _ _ _ _ hψ x => GlobalTheory.PsiNontriv.isStd_fin_rat hψ x
+
+end GlobalTheory.StdFinRat
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.standardTraceAdelicAddChar_finite_rational_eq_exp : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ), IsStd ψ → ∀ x : F,
+    ψ (pairA F 0 (algebraMap F (Af F) x)) = Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ F x : ℚ) : ℂ)) := by
+  atlas_forward_decl GlobalTheory.StdFinRat.std_fin_rat
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+
+namespace GlobalTheory.StdBeta
+
+theorem at_arch (F : Type) [Field F] [NumberField F] (a : mixedEmbedding.mixedSpace F) :
+    At (M := AF F) (evI F) (((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm a, 0) : AdeleRing (𝓞 F) F) := by
+  intro u hu
+  have h : u.1 = 0 := (InfiniteAdeleRing.ringEquiv_mixedSpace F).map_eq_zero_iff.1 hu
+  refine Prod.ext ?_ ?_
+  · change u.1 * _ = 0
+    rw [h, zero_mul]
+  · exact mul_zero u.2
+
+theorem evI_arch (F : Type) [Field F] [NumberField F] (a : mixedEmbedding.mixedSpace F) :
+    evI F (((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm a, 0) : AdeleRing (𝓞 F) F) = a :=
+  (InfiniteAdeleRing.ringEquiv_mixedSpace F).apply_symm_apply a
+
+theorem stdBeta : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ), IsStd ψ →
+    ∃ β : mixedEmbedding.mixedSpace F →ₗ[ℝ] ℝ,
+      (∀ a, ψ (((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm a, 0) : AdeleRing (𝓞 F) F) =
+        Complex.exp (2 * Real.pi * Complex.I * β a)) ∧ ∀ a, a ≠ 0 → ∃ b, β (a * b) ≠ 0 := by
+  intro F _ _ ψ hψ
+  refine ⟨-(Algebra.trace ℝ (mixedEmbedding.mixedSpace F)), fun a => ?_, fun a ha => ?_⟩
+  · rw [hψ.2.2 _ (at_arch F a), evI_arch]
+    simp only [LinearMap.neg_apply, Complex.ofReal_neg]
+    ring_nf
+  · by_contra h
+    push_neg at h
+    exact ha (GlobalTheory.ArchUniq.Coord.eq_zero_of_trace a fun b => by
+      have := h b
+      rw [LinearMap.neg_apply, neg_eq_zero] at this
+      exact this)
+
+end GlobalTheory.StdBeta
+
+end
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.standardAddChar_archimedean_eq_exp_nondegenerate : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ), IsStd ψ →
+    ∃ β : mixedEmbedding.mixedSpace F →ₗ[ℝ] ℝ,
+      (∀ a, ψ (((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm a, 0) : AdeleRing (𝓞 F) F) =
+        Complex.exp (2 * Real.pi * Complex.I * β a)) ∧ ∀ a, a ≠ 0 → ∃ b, β (a * b) ≠ 0 := by
+  atlas_forward_decl GlobalTheory.StdBeta.stdBeta
+end
+
+section
 noncomputable section
 
 open scoped TensorProduct Matrix ENNReal Classical
@@ -200,4 +273,5 @@ theorem transport_adm : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Nu
 
 end GlobalTheory.WeilAdmCM
 
+end
 end

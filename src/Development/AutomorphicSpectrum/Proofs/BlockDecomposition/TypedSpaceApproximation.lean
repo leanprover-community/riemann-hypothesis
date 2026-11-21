@@ -8,21 +8,909 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UpdateLeUpdate
 import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.NormalisedExistence.ExistsNormed
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiscreteAutomorphicRepGLLocalComponentIsUnitaris
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformBoundConstantTerm
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformBoundOfArchimedeanLipschitz
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousArchimedeanSmoothing
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothingLipschitzBound
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformFamilySmoothing
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformBoundSmoothing
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KilledByPolynomialSmoothing
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.InfinitesimalCharacterLimits.AllLeaves
+import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.ConjugationDifferences.ExpDivExpEq
+import BuildAid.ForwardExisting
+import GroundTheory.AutomorphicForms.FourierWhittaker.PartialCoeffDiagonalBlockGLEqVecCoeff
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformBoundSiegelSet
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KernelEigenfunctionBound
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteLatticePointsSiegel
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsExponentPolynomialDiscrete
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothingFundamentalDomainIntegral
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothingFundamentalDomainBound
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarRightInvariantTotallyComplex
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.KernelEigenfunctionEquicontinuous
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOpenIntegralSubgroup
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsOpenLevel
 
+section
+section
+noncomputable section
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open scoped NumberField.AdeleRing Pointwise
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+  GroundTheory.Automorphic.CuspidalSpectrum
+
+namespace GlobalTheory.CompanionTheory.Conc
+
+open PositivityTheory.Rg.Rs.diffstep in
+
+theorem diffStepU (K : Type) [Field K] [NumberField K] (n : ℕ) (ι : Type)
+    (f₀ f₁ : ι → AdelicGLn.AdelicGL K n → ℂ) (m : ℕ → ℝ) (r : ℕ) (hr : 0 < r) (hrn : r < n) (hN : UFam f₁)
+    (hlip' : ∀ R : ℝ, ∃ (Q₀ : Set (AdelicGLn.AdelicGL K n)) (C : ℝ), IsCompact Q₀ ∧ 0 ≤ C ∧
+      ∀ i g (Y : ArchMatrix K n) (M : ℝ), Y * Y = 0 → ‖Y‖ ≤ R →
+        (∀ q ∈ Q₀, ‖f₀ i (g * q)‖ ≤ M) → ‖f₁ i (g * CuspidalSpectrum.archExp Y) - f₁ i g‖ ≤ C * ‖Y‖ * M)
+    (hB : UBnd f₀ m) :
+    UBnd (fun i g => f₁ i g - An.ctn r (f₁ i) g) (Function.update m r (m r - 1)) := by
+  intro ω hω hωB t₀ Q hQ
+  obtain ⟨U, hU, hlev⟩ := hN.level
+  obtain ⟨M, hM, hMc⟩ := exists_natCast_conj_mem U hU hω hQ r
+  obtain ⟨C₁, hC₁0, hC₁⟩ := exists_norm_conjArch_le hω hωB hQ (Real.exp_pos (-t₀)) hr hrn
+    (isCompact_scaledInfSet (K := K) M)
+  obtain ⟨Q₀, C₂, hQ₀, hC₂, hlip⟩ := hlip' (C₁ * Real.exp t₀)
+  obtain ⟨C₃, hC₃⟩ := hB ω hω hωB t₀ (Q * Q₀) (hQ.mul hQ₀)
+  set C₃' := max C₃ 0 with hC₃'
+  have hC₃'0 : 0 ≤ C₃' := le_max_right _ _
+  refine ⟨C₂ * C₁ * C₃', ?_⟩
+  intro i b hb x hx q hq
+  set g := b * An.tor K x * q with hg
+  set S := ∑ i ∈ Finset.range n, m i * An.sr x i with hS
+  have hsieg := siegel_of_sr hx
+  have hpt : ∀ X ∈ scaledUnipFD K n r M, ‖f₁ i g - f₁ i (unipGL X * g)‖ ≤
+      C₂ * (C₁ * Real.exp (-An.sr x r)) * (C₃' * Real.exp S) := by
+    intro X hX
+    set Y := conjArch K n g (truncInf X) with hY
+    have hYn : ‖Y‖ ≤ C₁ * Real.exp (-An.sr x r) := by
+      have h := hC₁ b hb (fun i => Real.exp (x i)) (fun i => Real.exp_pos _) hsieg q hq (truncInf X)
+        (fun p => rfl) (fun p => infinite_mem_scaledInfSet hM hX p)
+      rw [exp_div_exp_eq hr hrn x] at h
+      exact h
+    have hYR : ‖Y‖ ≤ C₁ * Real.exp t₀ :=
+      hYn.trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.2 (by linarith [hx r])) hC₁0)
+    obtain ⟨u, hu⟩ := hMc b hb (fun i => Real.exp (x i)) (fun i => Real.exp_pos _) q hq (truncFin X)
+      (fun p => rfl) (fun p => exists_finite_eq_natCast_mul hM hX p)
+    have hu' : g⁻¹ * unipGL (truncFin X) * g =
+        finEmb K n ((u : AdelicGLn.integralFiniteGL K n) : AdelicGLn.FiniteAdelicGL K n) := hu
+    have hdecomp : unipGL X * g = g * archExp Y * (g⁻¹ * unipGL (truncFin X) * g) := by
+      rw [hY, ← conj_unipGL_eq_archExp g (truncInf X) (fun p => rfl)]
+      conv_lhs => rw [← truncInf_add_truncFin X, unipGL_add]
+      group
+    have heq : f₁ i (unipGL X * g) = f₁ i (g * archExp Y) := by rw [hdecomp, hu', hlev]
+    have hMg : ∀ q' ∈ Q₀, ‖f₀ i (g * q')‖ ≤ C₃' * Real.exp S := by
+      intro q' hq'
+      have h := hC₃ i b hb x hx (q * q') (Set.mul_mem_mul hq hq')
+      rw [show g * q' = b * An.tor K x * (q * q') by rw [hg, mul_assoc]]
+      exact h.trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le)
+    have hl := hlip i g Y (C₃' * Real.exp S) (conjArch_mul_conjArch _ _ _) hYR hMg
+    rw [norm_sub_rev, heq]
+    calc _ ≤ C₂ * ‖Y‖ * (C₃' * Real.exp S) := hl
+      _ ≤ _ := by gcongr
+  have hD := isAddFundamentalDomain_scaledUnipFD (K := K) (n := n) (r := r) hM
+  have hD1 := unipMeasure_scaledUnipFD (K := K) (n := n) (r := r) hM
+  obtain ⟨Cc, hCc, hDC⟩ := exists_isCompact_superset_scaledUnipFD (K := K) (n := n) r hM
+  have hint : IntegrableOn (fun X => f₁ i (unipGL X * g)) (scaledUnipFD K n r M) (unipMeasure K n r) :=
+    (((hN.cont i).comp (continuous_unipGL.mul continuous_const)).continuousOn.integrableOn_compact
+      hCc).mono_set hDC
+  have hfin : unipMeasure K n r (scaledUnipFD K n r M) < ⊤ := by
+    rw [hD1]
+    exact ENNReal.one_lt_top
+  have hct : An.ctn r (f₁ i) g = ∫ X in scaledUnipFD K n r M, f₁ i (unipGL X * g) ∂unipMeasure K n r := by
+    rw [An.ctn, measureReal_def, unipMeasure_unipFundamentalDomain, ENNReal.toReal_one,
+      Complex.ofReal_one, inv_one, one_mul]
+    exact constantTerm_eq_setIntegral (hN.left i) hD g
+  have hdiff : f₁ i g - An.ctn r (f₁ i) g =
+      ∫ X in scaledUnipFD K n r M, (f₁ i g - f₁ i (unipGL X * g)) ∂unipMeasure K n r := by
+    have hconst : IntegrableOn (fun _ => f₁ i g) (scaledUnipFD K n r M) (unipMeasure K n r) :=
+      integrableOn_const hfin.ne enorm_ne_top
+    rw [hct, integral_sub hconst hint, setIntegral_const, measureReal_def, hD1,
+      ENNReal.toReal_one, one_smul]
+  change ‖f₁ i g - An.ctn r (f₁ i) g‖ ≤ _
+  rw [hdiff]
+  refine (norm_setIntegral_le_of_norm_le_const hfin hpt).trans (le_of_eq ?_)
+  rw [measureReal_def, hD1, ENNReal.toReal_one, mul_one, sum_update_sub hrn, ← hS, sub_eq_add_neg,
+    Real.exp_add]
+  ring
+
+end GlobalTheory.CompanionTheory.Conc
+
+end
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniform_bound_of_archimedean_lipschitz : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (ι : Type) (f₀ f₁ : ι → AdelicGLn.AdelicGL K n → ℂ) (m : ℕ → ℝ) (r : ℕ), 0 < r → r < n → UFam f₁ →
+  (∀ R : ℝ, ∃ (Q₀ : Set (AdelicGLn.AdelicGL K n)) (C : ℝ), IsCompact Q₀ ∧ 0 ≤ C ∧ ∀ i g (Y : ArchMatrix K n) (M : ℝ), Y * Y = 0 → ‖Y‖ ≤ R →
+    (∀ q ∈ Q₀, ‖f₀ i (g * q)‖ ≤ M) → ‖f₁ i (g * CuspidalSpectrum.archExp Y) - f₁ i g‖ ≤ C * ‖Y‖ * M) →
+  UBnd f₀ m → UBnd (fun i g => f₁ i g - An.ctn r (f₁ i) g) (Function.update m r (m r - 1)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.diffStepU
+end
+
+section
+section
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+
+namespace GlobalTheory.CompanionTheory.Conc
+
+theorem continuous_sm_of_ker : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ)
+    [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n))
+    [ν.IsHaarMeasure] (β : archGroup K n → ℝ) (f : AdelicGLn.AdelicGL K n → ℂ),
+    Ker ν β → Continuous f → Continuous (sm ν β f) := by
+  intro K _ _ n _ _ ν _ β f hβ hf
+  have hs : IsCompact (tsupport β) := hβ.cpt
+  set F : AdelicGLn.AdelicGL K n × archGroup K n → ℂ :=
+    fun p => (β p.2 : ℂ) * f (p.1 * infEmb K n p.2) with hFdef
+  have hF : Continuous F :=
+    (Complex.continuous_ofReal.comp (hβ.cont.comp continuous_snd)).mul
+      (hf.comp (continuous_fst.mul (continuous_infEmb.comp continuous_snd)))
+  have hFx : ∀ x, Continuous fun y => F (x, y) := fun x =>
+    hF.comp (continuous_const.prodMk continuous_id)
+  have hint : ∀ x, IntegrableOn (fun y => F (x, y)) (tsupport β) ν := fun x =>
+    (hFx x).continuousOn.integrableOn_compact hs
+  have e : ∀ x, sm ν β f x = ∫ y in tsupport β, F (x, y) ∂ν := fun x =>
+    (setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by
+      simp [hFdef, image_eq_zero_of_notMem_tsupport hy]).symm
+  rw [continuous_iff_continuousAt]
+  intro x₀
+  rw [Metric.continuousAt_iff']
+  intro ε hε
+  have hc : 0 ≤ ν.real (tsupport β) := measureReal_nonneg
+  set δ : ℝ := ε / (ν.real (tsupport β) + 1) with hδdef
+  have hδ : 0 < δ := div_pos hε (by linarith)
+  have hopen : IsOpen {p : AdelicGLn.AdelicGL K n × archGroup K n | dist (F p) (F (x₀, p.2)) < δ} :=
+    isOpen_lt (hF.dist (hF.comp (continuous_const.prodMk continuous_snd))) continuous_const
+  obtain ⟨u, v, hu, -, hxu, hsv, huv⟩ := generalized_tube_lemma (isCompact_singleton (x := x₀)) hs hopen (by
+    rintro ⟨x, y⟩ ⟨hx, -⟩
+    obtain rfl : x = x₀ := hx
+    simpa using hδ)
+  filter_upwards [hu.mem_nhds (hxu rfl)] with x hx
+  rw [e, e, dist_eq_norm, ← integral_sub (hint x) (hint x₀)]
+  have hb : ‖∫ y in tsupport β, (F (x, y) - F (x₀, y)) ∂ν‖ ≤ δ * ν.real (tsupport β) := by
+    refine norm_setIntegral_le_of_norm_le_const hs.measure_lt_top fun y hy => ?_
+    have := huv (Set.mk_mem_prod hx (hsv hy))
+    simp only [Set.mem_setOf_eq, dist_eq_norm] at this
+    exact this.le
+  refine lt_of_le_of_lt hb ?_
+  rw [hδdef, div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+  nlinarith
+
+end GlobalTheory.CompanionTheory.Conc
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_archimedean_smoothing : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ) (f : AdelicGLn.AdelicGL K n → ℂ), Ker ν β → Continuous f → Continuous (sm ν β f) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.continuous_sm_of_ker
+end
+
+section
+section
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+
+namespace GlobalTheory.CompanionTheory.Conc
+
+open scoped Pointwise
+
+theorem sm_lip_of_sq_zero : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ), Ker ν β → ∀ R : ℝ, ∃ (Q₀ : Set (AdelicGLn.AdelicGL K n)) (C : ℝ), IsCompact Q₀ ∧ 0 ≤ C ∧
+  ∀ (f : AdelicGLn.AdelicGL K n → ℂ), Continuous f → ∀ g (Y : ArchMatrix K n) (M : ℝ), Y * Y = 0 → ‖Y‖ ≤ R → (∀ q ∈ Q₀, ‖f (g * q)‖ ≤ M) →
+    ‖sm ν β f (g * CuspidalSpectrum.archExp Y) - sm ν β f g‖ ≤ C * ‖Y‖ * M := by
+  intro K _ _ n _ _ ν _ β hβ R
+  obtain ⟨L, hL0, hL⟩ := hβ.lip
+  set e : ArchMatrix K n → archGroup K n :=
+    fun Y => (isExpLieAlgebra K n).expG ⟨Y, Submodule.mem_top⟩ with he
+  have hec : Continuous e :=
+    (isExpLieAlgebra K n).continuous_expG.comp (continuous_id.subtype_mk _)
+  have hT₀ : IsCompact (tsupport β) := hβ.cpt
+  haveI : ProperSpace (ArchMatrix K n) := FiniteDimensional.proper ℝ _
+  have hB : IsCompact (e '' Metric.closedBall 0 R) := (isCompact_closedBall 0 R).image hec
+  set T : Set (archGroup K n) := tsupport β ∪ (e '' Metric.closedBall 0 R) * tsupport β with hTdef
+  have hT : IsCompact T := hT₀.union (hB.mul hT₀)
+  obtain ⟨S, hS0, hS⟩ := (hT.image continuous_mat).isBounded.exists_pos_norm_le
+  have hne : (tsupport β).Nonempty := by
+    rcases Set.eq_empty_or_nonempty (tsupport β) with h0 | h0
+    · exfalso
+      have hz : ∀ y, β y = 0 := fun y => image_eq_zero_of_notMem_tsupport (by simp [h0])
+      have := hβ.mass
+      simp [hz] at this
+    · exact h0
+  refine ⟨infEmb K n '' T, L * S * ν.real T, hT.image continuous_infEmb, by positivity, ?_⟩
+  intro f hf g Y M hYY hYR hM
+  obtain ⟨t₀, ht₀⟩ := hne
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM _ ⟨t₀, Or.inl ht₀, rfl⟩)
+  set h : archGroup K n → ℂ := fun y => f (g * infEmb K n y) with hh
+  have hhc : Continuous h := hf.comp (continuous_const.mul continuous_infEmb)
+
+  have hexp : mat (e Y) = 1 + Y :=
+    (CuspidalSpectrum.coe_expG_top Y).trans (CuspidalSpectrum.exp_eq_one_add_of_mul_self_eq_zero hYY)
+  have hmul : ∀ a b : archGroup K n, mat (a * b) = mat a * mat b := fun _ _ => rfl
+  have hinv : mat (e Y)⁻¹ = 1 - Y := by
+    have h1 : mat (e Y) * (1 - Y) = 1 := by
+      have : (1 + Y) * (1 - Y) = 1 - Y * Y := by noncomm_ring
+      rw [hexp, this, hYY, sub_zero]
+    have h2 : mat (e Y)⁻¹ * mat (e Y) = 1 := by
+      rw [← hmul, inv_mul_cancel]; rfl
+    calc mat (e Y)⁻¹ = mat (e Y)⁻¹ * (mat (e Y) * (1 - Y)) := by rw [h1, mul_one]
+      _ = 1 - Y := by rw [← mul_assoc, h2, one_mul]
+
+  have hz2 : ∀ u, u ∉ T → β u = 0 := fun u hu =>
+    image_eq_zero_of_notMem_tsupport fun hc => hu (Or.inl hc)
+  have hz1 : ∀ u, u ∉ T → β ((e Y)⁻¹ * u) = 0 := fun u hu =>
+    image_eq_zero_of_notMem_tsupport fun hc => hu (Or.inr
+      ⟨e Y, ⟨Y, by simpa using hYR, rfl⟩, _, hc, by simp⟩)
+  set F₁ : archGroup K n → ℂ := fun u => (β ((e Y)⁻¹ * u) : ℂ) * h u with hF₁
+  set F₂ : archGroup K n → ℂ := fun u => (β u : ℂ) * h u with hF₂
+  have hF₁c : Continuous F₁ :=
+    (Complex.continuous_ofReal.comp (hβ.cont.comp (continuous_const.mul continuous_id))).mul hhc
+  have hF₂c : Continuous F₂ := (Complex.continuous_ofReal.comp hβ.cont).mul hhc
+  have hF₁z : ∀ u, u ∉ T → F₁ u = 0 := fun u hu => by simp [hF₁, hz1 u hu]
+  have hF₂z : ∀ u, u ∉ T → F₂ u = 0 := fun u hu => by simp [hF₂, hz2 u hu]
+  have hF₁i : Integrable F₁ ν :=
+    hF₁c.integrable_of_hasCompactSupport (HasCompactSupport.intro hT hF₁z)
+  have hF₂i : Integrable F₂ ν :=
+    hF₂c.integrable_of_hasCompactSupport (HasCompactSupport.intro hT hF₂z)
+  have hsm1 : sm ν β f (g * CuspidalSpectrum.archExp Y) = ∫ u, F₁ u ∂ν := by
+    rw [← integral_mul_left_eq_self (μ := ν) F₁ (e Y)]
+    unfold sm
+    refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+    simp only [hF₁, hh, inv_mul_cancel_left, map_mul]
+    rw [CuspidalSpectrum.archExp, mul_assoc]
+  have hsm2 : sm ν β f g = ∫ u, F₂ u ∂ν := rfl
+  rw [hsm1, hsm2, ← integral_sub hF₁i hF₂i,
+    ← setIntegral_eq_integral_of_forall_compl_eq_zero (s := T)
+      (fun u hu => by rw [hF₁z u hu, hF₂z u hu, sub_zero])]
+  have hpt : ∀ u ∈ T, ‖F₁ u - F₂ u‖ ≤ L * S * ‖Y‖ * M := by
+    intro u hu
+    have hd : F₁ u - F₂ u = ((β ((e Y)⁻¹ * u) - β u : ℝ) : ℂ) * h u := by
+      simp only [hF₁, hF₂]; push_cast; ring
+    have hm : mat ((e Y)⁻¹ * u) - mat u = -(Y * mat u) := by
+      rw [hmul, hinv]; noncomm_ring
+    have h1 : |β ((e Y)⁻¹ * u) - β u| ≤ L * (‖Y‖ * S) := by
+      refine (hL _ _).trans (mul_le_mul_of_nonneg_left ?_ hL0)
+      rw [hm, norm_neg]
+      exact (norm_mul_le _ _).trans
+        (mul_le_mul_of_nonneg_left (hS _ ⟨u, hu, rfl⟩) (norm_nonneg _))
+    have h2 : ‖h u‖ ≤ M := hM _ ⟨u, hu, rfl⟩
+    rw [hd, norm_mul, Complex.norm_real, Real.norm_eq_abs]
+    calc |β ((e Y)⁻¹ * u) - β u| * ‖h u‖ ≤ (L * (‖Y‖ * S)) * M :=
+          mul_le_mul h1 h2 (norm_nonneg _) (by positivity)
+      _ = L * S * ‖Y‖ * M := by ring
+  have := norm_setIntegral_le_of_norm_le_const (μ := ν) (s := T) hT.measure_lt_top hpt
+  refine this.trans (le_of_eq ?_)
+  ring
+
+end GlobalTheory.CompanionTheory.Conc
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smoothing_lipschitz_bound : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ), Ker ν β → ∀ R : ℝ, ∃ (Q₀ : Set (AdelicGLn.AdelicGL K n)) (C : ℝ), IsCompact Q₀ ∧ 0 ≤ C ∧
+  ∀ (f : AdelicGLn.AdelicGL K n → ℂ), Continuous f → ∀ g (Y : ArchMatrix K n) (M : ℝ), Y * Y = 0 → ‖Y‖ ≤ R → (∀ q ∈ Q₀, ‖f (g * q)‖ ≤ M) →
+    ‖sm ν β f (g * CuspidalSpectrum.archExp Y) - sm ν β f g‖ ≤ C * ‖Y‖ * M := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.sm_lip_of_sq_zero
+end
+
+section
+section
+noncomputable section
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+
+namespace GlobalTheory.CompanionTheory.Conc
+
+theorem continuous_sm_uFam {K : Type} [Field K] [NumberField K] {n : ℕ}
+    [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n))
+    [ν.IsHaarMeasure] {β : archGroup K n → ℝ} (hβ : Ker ν β) {f : AdelicGLn.AdelicGL K n → ℂ}
+    (hf : Continuous f) : Continuous (sm ν β f) := by
+  have hF : Continuous (Function.uncurry fun (x : AdelicGLn.AdelicGL K n) (y : archGroup K n) =>
+      (β y : ℂ) * f (x * infEmb K n y)) := by
+    refine (Complex.continuous_ofReal.comp (hβ.cont.comp continuous_snd)).mul (hf.comp ?_)
+    exact continuous_fst.mul (continuous_infEmb.comp continuous_snd)
+  have h := continuous_parametric_integral_of_continuous (μ := ν) hF hβ.cpt.isCompact
+  refine h.congr fun x => ?_
+  refine setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => ?_
+  have : β y = 0 := image_eq_zero_of_notMem_tsupport hy
+  simp [this]
+
+theorem uFam_sm : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [MeasurableSpace (archGroup K n)]
+    [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ)
+    (ι : Type) (f : ι → AdelicGLn.AdelicGL K n → ℂ), Ker ν β → UFam f → UFam (fun i => sm ν β (f i)) := by
+  intro K _ _ n _ _ ν _ β ι f hβ hf
+  refine ⟨fun i => continuous_sm_uFam ν hβ (hf.cont i), fun i γ x => ?_, ?_⟩
+  · simp only [sm, mul_assoc]
+    refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+    simp only
+    rw [hf.left i γ (x * infEmb K n y)]
+  · obtain ⟨U, hU, hlev⟩ := hf.level
+    refine ⟨U, hU, fun i g u => ?_⟩
+    simp only [sm]
+    refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+    simp only
+    rw [mul_assoc g, ← infEmb_mul_finEmb_comm, ← mul_assoc, hlev i (g * infEmb K n y) u]
+
+end GlobalTheory.CompanionTheory.Conc
+
+end
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniform_family_smoothing : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ) (ι : Type) (f : ι → AdelicGLn.AdelicGL K n → ℂ), Ker ν β → UFam f → UFam (fun i => sm ν β (f i)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.uFam_sm
+end
+
+section
+section
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+
+open scoped Pointwise
+
+namespace GlobalTheory.CompanionTheory.Conc
+
+theorem norm_integral_ker_le {K : Type} [Field K] [NumberField K] {n : ℕ}
+    [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)]
+    (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] {β : archGroup K n → ℝ} (hk : Ker ν β)
+    (g : archGroup K n → ℂ) {M : ℝ} (hg : ∀ y ∈ tsupport β, ‖g y‖ ≤ M) :
+    ‖∫ y, (β y : ℂ) * g y ∂ν‖ ≤ M := by
+  have hint : Integrable (fun y => β y * M) ν :=
+    (hk.cont.integrable_of_hasCompactSupport hk.cpt).mul_const M
+  have hpt : ∀ y, ‖(β y : ℂ) * g y‖ ≤ β y * M := by
+    intro y
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (hk.nonneg y)]
+    by_cases hy : y ∈ tsupport β
+    · exact mul_le_mul_of_nonneg_left (hg y hy) (hk.nonneg y)
+    · rw [image_eq_zero_of_notMem_tsupport hy]
+      simp
+  have h := norm_integral_le_of_norm_le hint (Eventually.of_forall hpt)
+  rwa [integral_mul_const, hk.mass, one_mul] at h
+
+theorem uBnd_sm (K : Type) [Field K] [NumberField K] (n : ℕ)
+    [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)]
+    (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ) (ι : Type)
+    (f : ι → AdelicGLn.AdelicGL K n → ℂ) (m : ℕ → ℝ) (hk : Ker ν β) (_hf : ∀ i, Continuous (f i))
+    (hb : UBnd f m) : UBnd (fun i => sm ν β (f i)) m := by
+  intro ω hω hsub t₀ Q hQ
+  have hQ' : IsCompact (Q * infEmb K n '' tsupport β) :=
+    hQ.mul (hk.cpt.isCompact.image continuous_infEmb)
+  obtain ⟨C, hC⟩ := hb ω hω hsub t₀ _ hQ'
+  refine ⟨max C 0, fun i b hbω x hx q hq => ?_⟩
+  refine norm_integral_ker_le ν hk _ ?_
+  intro y hy
+  rw [mul_assoc (b * _) q]
+  refine (hC i b hbω x hx _ (Set.mul_mem_mul hq (Set.mem_image_of_mem _ hy))).trans ?_
+  exact mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le
+
+end GlobalTheory.CompanionTheory.Conc
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.uniform_bound_smoothing : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ) (ι : Type) (f : ι → AdelicGLn.AdelicGL K n → ℂ) (m : ℕ → ℝ), Ker ν β → (∀ i, Continuous (f i)) →
+  UBnd f m → UBnd (fun i => sm ν β (f i)) m := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.uBnd_sm
+end
+
+section
+section
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Conc.SmKill
+
+theorem ctn_sm {K : Type} [Field K] [NumberField K] {n : ℕ} [MeasurableSpace (archGroup K n)]
+    [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] {β : archGroup K n → ℝ}
+    (hβ : Continuous β) (hβc : HasCompactSupport β) {f : AdelicGLn.AdelicGL K n → ℂ} (hf : Continuous f)
+    (r : ℕ) (g : AdelicGLn.AdelicGL K n) :
+    Integrable (fun y => (β y : ℂ) * An.ctn r f (g * infEmb K n y)) ν ∧
+      An.ctn r (sm ν β f) g = ∫ y, (β y : ℂ) * An.ctn r f (g * infEmb K n y) ∂ν := by
+  obtain ⟨C, hC, hDC⟩ := exists_isCompact_superset_unipFundamentalDomain (K := K) (n := n) (r := r)
+  obtain ⟨c, hc⟩ : ∃ c : ℂ, ∀ (φ : AdelicGLn.AdelicGL K n → ℂ) (h : AdelicGLn.AdelicGL K n),
+      An.ctn r φ h = c * constantTerm r φ h := ⟨_, fun _ _ => rfl⟩
+  set F : (UPos n r → AdeleRing (𝓞 K) K) × archGroup K n → ℂ :=
+    fun p => c * ((β p.2 : ℂ) * f (unipGL p.1 * g * infEmb K n p.2)) with hF
+  have hFc : Continuous F :=
+    continuous_const.mul ((Complex.continuous_ofReal.comp (hβ.comp continuous_snd)).mul
+      (hf.comp ((continuous_unipGL.comp continuous_fst).mul continuous_const |>.mul
+        (continuous_infEmb.comp continuous_snd))))
+  have hint : Integrable F ((unipMeasure K n r).restrict (unipFundamentalDomain K n r) |>.prod ν) := by
+    have e : ((unipMeasure K n r).restrict (unipFundamentalDomain K n r)).prod ν =
+        ((unipMeasure K n r).prod ν).restrict (unipFundamentalDomain K n r ×ˢ Set.univ) := by
+      rw [← Measure.restrict_univ (μ := ν), Measure.prod_restrict, Measure.restrict_univ]
+    rw [e]
+    refine IntegrableOn.of_forall_sdiff_eq_zero
+      (hFc.continuousOn.integrableOn_compact (hC.prod hβc.isCompact))
+      (measurableSet_unipFundamentalDomain.prod MeasurableSet.univ) fun p hp => ?_
+    have hy : p.2 ∉ tsupport β := fun hy => hp.2 ⟨hDC hp.1.1, hy⟩
+    simp [hF, image_eq_zero_of_notMem_tsupport hy]
+  have hval : ∀ y, ∫ X in unipFundamentalDomain K n r, F (X, y) ∂unipMeasure K n r =
+      (β y : ℂ) * An.ctn r f (g * infEmb K n y) := fun y => by
+    simp only [hF, hc, constantTerm, mul_assoc]
+    rw [integral_const_mul, integral_const_mul]
+    ring
+  constructor
+  · have := hint.swap.integral_prod_left
+    refine this.congr (Eventually.of_forall fun y => ?_)
+    exact hval y
+  · have h := integral_integral_swap (f := fun X y => F (X, y)) hint
+    simp only [hval] at h
+    rw [← h]
+    simp only [hc, constantTerm, sm, hF]
+    rw [← integral_const_mul]
+    refine integral_congr_ae (Eventually.of_forall fun X => ?_)
+    simp only [integral_const_mul]
+
+end GlobalTheory.CompanionTheory.Conc.SmKill
+
+open GlobalTheory.CompanionTheory.Conc.SmKill in
+
+theorem GlobalTheory.CompanionTheory.Conc.kill_sm : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ) (f : AdelicGLn.AdelicGL K n → ℂ) (r : ℕ) (p : ℂ[X]), Ker ν β → 0 < r → r < n → Continuous f →
+    An.Kill r f p → An.Kill r (sm ν β f) p := by
+  intro K _ _ n _ _ ν _ β f r p hk _ _ hf hkill g
+  have h1 : ∀ j ∈ Finset.range (p.natDegree + 1),
+      p.coeff j * An.ctn r (sm ν β f) (An.aR K n r j * g) =
+        ∫ y, p.coeff j * ((β y : ℂ) * An.ctn r f (An.aR K n r j * g * infEmb K n y)) ∂ν := fun j _ => by
+    rw [(ctn_sm ν hk.cont hk.cpt hf r _).2, integral_const_mul]
+  rw [Finset.sum_congr rfl h1, ← integral_finset_sum _ fun j _ =>
+    ((ctn_sm ν hk.cont hk.cpt hf r _).1).const_mul _]
+  refine integral_eq_zero_of_ae (Eventually.of_forall fun y => ?_)
+  have h2 := hkill (g * infEmb K n y)
+  have h3 : ∑ j ∈ Finset.range (p.natDegree + 1),
+      p.coeff j * ((β y : ℂ) * An.ctn r f (An.aR K n r j * g * infEmb K n y)) =
+      (β y : ℂ) * ∑ j ∈ Finset.range (p.natDegree + 1),
+        p.coeff j * An.ctn r f (An.aR K n r j * (g * infEmb K n y)) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [mul_assoc (An.aR K n r j)]
+    ring
+  simp only [Pi.zero_apply]
+  rw [h3, h2, mul_zero]
+
+end
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.killed_by_polynomial_smoothing : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ) (f : AdelicGLn.AdelicGL K n → ℂ) (r : ℕ) (p : ℂ[X]), Ker ν β → 0 < r → r < n → Continuous f →
+  An.Kill r f p → An.Kill r (sm ν β f) p := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.kill_sm
+end
+
+section
+section
+open scoped ENNReal NNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+
+namespace GlobalTheory.CompanionTheory.Conc.BesselPt
+
+theorem sq_tsum_le {ι : Type*} (t : ι → ℝ≥0) (k : ℕ) (h : (Function.support t).encard ≤ k) :
+    (∑' i, (t i : ℝ≥0∞)) ^ 2 ≤ k * ∑' i, (t i : ℝ≥0∞) ^ 2 := by
+  have hfin : (Function.support t).Finite := Set.finite_of_encard_le_coe h
+  set S := hfin.toFinset with hS
+  have hcard : S.card ≤ k := by
+    have : (S.card : ℕ∞) ≤ k := by
+      rw [← Set.encard_coe_eq_coe_finsetCard, hS, hfin.coe_toFinset]; exact h
+    exact_mod_cast this
+  have hz : ∀ i, i ∉ S → t i = 0 := fun i hi => by simpa [hS] using hi
+  have e1 : ∑' i, (t i : ℝ≥0∞) = ∑ i ∈ S, (t i : ℝ≥0∞) :=
+    tsum_eq_sum (fun i hi => by simp [hz i hi])
+  have e2 : ∑' i, (t i : ℝ≥0∞) ^ 2 = ∑ i ∈ S, (t i : ℝ≥0∞) ^ 2 :=
+    tsum_eq_sum (fun i hi => by simp [hz i hi])
+  rw [e1, e2]
+  have h3 : (∑ i ∈ S, t i) ^ 2 ≤ k * ∑ i ∈ S, t i ^ 2 := by
+    have h4 : ((∑ i ∈ S, (t i : ℝ)) ^ 2) ≤ S.card * ∑ i ∈ S, (t i : ℝ) ^ 2 :=
+      sq_sum_le_card_mul_sum_sq
+    have h5 : (∑ i ∈ S, t i) ^ 2 ≤ S.card * ∑ i ∈ S, t i ^ 2 := by exact_mod_cast h4
+    exact h5.trans (by gcongr)
+  exact_mod_cast h3
+
+theorem sq_lintegral_mul_le {X : Type*} [MeasurableSpace X] (ν : Measure X) {f g : X → ℝ≥0∞}
+    (hf : AEMeasurable f ν) (hg : AEMeasurable g ν) :
+    (∫⁻ a, f a * g a ∂ν) ^ 2 ≤ (∫⁻ a, f a ^ 2 ∂ν) * ∫⁻ a, g a ^ 2 ∂ν := by
+  have h := ENNReal.lintegral_mul_le_Lp_mul_Lq ν Real.HolderConjugate.two_two hf hg
+  simp only [Pi.mul_apply, ENNReal.rpow_ofNat] at h
+  refine (pow_le_pow_left' h 2).trans (le_of_eq ?_)
+  rw [mul_pow, ← ENNReal.rpow_natCast, ← ENNReal.rpow_natCast (_ ^ _), ← ENNReal.rpow_mul,
+    ← ENNReal.rpow_mul]
+  norm_num
+
+theorem encard_support_le {G : Type*} [Group G] [TopologicalSpace G] (Γ : Subgroup G) (α : G → ℂ) (x w : G)
+    (k : ℕ)
+    (hk : {γ : G | γ ∈ Γ ∧ ∃ a ∈ tsupport α, ∃ b ∈ tsupport α, γ = x * a * b⁻¹ * x⁻¹}.encard ≤ k) :
+    (Function.support fun γ : Γ => ‖α (x⁻¹ * ((γ : G) * w))‖₊).encard ≤ k := by
+  rcases (Function.support fun γ : Γ => ‖α (x⁻¹ * ((γ : G) * w))‖₊).eq_empty_or_nonempty with h0 | ⟨γ₀, h₀⟩
+  · simp [h0]
+  refine le_trans ?_ hk
+  have hinj : Set.InjOn (fun γ : Γ => (γ : G) * (γ₀ : G)⁻¹)
+      (Function.support fun γ : Γ => ‖α (x⁻¹ * ((γ : G) * w))‖₊) := by
+    intro a _ b _ hab
+    exact Subtype.ext (mul_right_cancel hab)
+  rw [← hinj.encard_image]
+  refine Set.encard_le_encard ?_
+  rintro _ ⟨γ, hγ, rfl⟩
+  have mem : ∀ c : Γ, c ∈ (Function.support fun γ : Γ => ‖α (x⁻¹ * ((γ : G) * w))‖₊) →
+      x⁻¹ * ((c : G) * w) ∈ tsupport α := fun c hc => by
+    apply subset_tsupport
+    simpa [Function.mem_support] using hc
+  refine ⟨Γ.mul_mem γ.2 (Γ.inv_mem γ₀.2), _, mem γ hγ, _, mem γ₀ h₀, ?_⟩
+  group
+
+variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
+
+theorem sq_lintegral_le (μ : Measure G) [μ.IsMulLeftInvariant] (Γ : Subgroup G) [Countable Γ] {F : Set G}
+    (hF : IsFundamentalDomain Γ F μ) {α ψ : G → ℂ} (hα : Continuous α) (hψ : Continuous ψ)
+    (hinv : ∀ γ ∈ Γ, ∀ g, ψ (γ * g) = ψ g) (hn : (∫⁻ x in F, ‖ψ x‖ₑ ^ 2 ∂μ) = 1) (x : G) (k : ℕ)
+    (hk : {γ : G | γ ∈ Γ ∧ ∃ a ∈ tsupport α, ∃ b ∈ tsupport α, γ = x * a * b⁻¹ * x⁻¹}.encard ≤ k) :
+    (∫⁻ y, ‖α y‖ₑ * ‖ψ (x * y)‖ₑ ∂μ) ^ 2 ≤ k * ∫⁻ y, ‖α y‖ₑ ^ 2 ∂μ := by
+  set a : G → ℝ≥0∞ := fun w => ‖α (x⁻¹ * w)‖ₑ with ha
+  have ham : Measurable a := (hα.comp (continuous_const.mul continuous_id)).enorm.measurable
+  have hψm : Measurable fun w => ‖ψ w‖ₑ := hψ.enorm.measurable
+  have htr : ∀ γ : Γ, Measurable fun w => a ((γ : G) * w) :=
+    fun γ => ham.comp (measurable_const_mul _)
+  have e1 : ∫⁻ y, ‖α y‖ₑ * ‖ψ (x * y)‖ₑ ∂μ = ∫⁻ w in F, (∑' γ : Γ, a ((γ : G) * w)) * ‖ψ w‖ₑ ∂μ := by
+    have h1 := lintegral_mul_left_eq_self (μ := μ) (fun w => a w * ‖ψ w‖ₑ) x
+    simp only [ha, inv_mul_cancel_left] at h1
+    rw [h1, hF.lintegral_eq_tsum'', ← lintegral_tsum]
+    · refine lintegral_congr fun w => ?_
+      rw [← ENNReal.tsum_mul_right]
+      refine tsum_congr fun γ => ?_
+      rw [Subgroup.smul_def, smul_eq_mul, hinv _ γ.2]
+    · intro γ
+      simp only [Subgroup.smul_def, smul_eq_mul, hinv _ γ.2]
+      exact ((htr γ).mul hψm).aemeasurable
+  have e2 : ∫⁻ y, ‖α y‖ₑ ^ 2 ∂μ = ∫⁻ w in F, ∑' γ : Γ, a ((γ : G) * w) ^ 2 ∂μ := by
+    have h1 := lintegral_mul_left_eq_self (μ := μ) (fun w => a w ^ 2) x
+    simp only [ha, inv_mul_cancel_left] at h1
+    rw [h1, hF.lintegral_eq_tsum'', ← lintegral_tsum]
+    · rfl
+    · intro γ
+      exact ((htr γ).pow_const 2).aemeasurable
+  have hK : Measurable fun w => ∑' γ : Γ, a ((γ : G) * w) := Measurable.ennreal_tsum htr
+  rw [e1, e2, ← lintegral_const_mul' _ _ (ENNReal.natCast_ne_top k)]
+  refine (sq_lintegral_mul_le _ hK.aemeasurable hψm.aemeasurable).trans ?_
+  rw [hn, mul_one]
+  refine lintegral_mono fun w => ?_
+  have := sq_tsum_le (fun γ : Γ => ‖α (x⁻¹ * ((γ : G) * w))‖₊) k (encard_support_le Γ α x w k hk)
+  simpa [ha, enorm_eq_nnnorm] using this
+
+theorem pointwise (μ : Measure G) [μ.IsMulLeftInvariant] [IsFiniteMeasureOnCompacts μ] (Γ : Subgroup G) [Countable Γ]
+    {α : G → ℂ} {δ : ℝ} {F : Set G} (hα : Continuous α) (hc : HasCompactSupport α) (hδ : 0 < δ)
+    (hF : IsFundamentalDomain Γ F μ) : ∃ C₀ : ℝ, ∀ ψ : G → ℂ, Continuous ψ → (∀ γ ∈ Γ, ∀ g, ψ (γ * g) = ψ g) →
+      (∃ s : ℂ, δ ≤ ‖s‖ ∧ ∀ x, ∫ y, α y * ψ (x * y) ∂μ = s * ψ x) → (∫⁻ x in F, ‖ψ x‖ₑ ^ 2 ∂μ) = 1 →
+      ∀ (x : G) (k : ℕ), {γ : G | γ ∈ Γ ∧ ∃ a ∈ tsupport α, ∃ b ∈ tsupport α, γ = x * a * b⁻¹ * x⁻¹}.encard ≤ k →
+        ‖ψ x‖ ^ 2 ≤ C₀ * k := by
+  refine ⟨(δ ^ 2)⁻¹ * (∫⁻ y, ‖α y‖ₑ ^ 2 ∂μ).toReal, ?_⟩
+  rintro ψ hψ hinv ⟨s, hs, hrep⟩ hn x k hk
+  have hA : (∫⁻ y, ‖α y‖ₑ ^ 2 ∂μ) ≠ ⊤ := by
+    have hc2 : HasCompactSupport ((fun z : ℂ => ‖z‖ ^ 2) ∘ α) :=
+      HasCompactSupport.comp_left (g := fun z : ℂ => ‖z‖ ^ 2) hc (by simp)
+    have hi : Integrable ((fun z : ℂ => ‖z‖ ^ 2) ∘ α) μ :=
+      Continuous.integrable_of_hasCompactSupport ((continuous_norm.pow 2).comp hα) hc2
+    have := hi.2.ne
+    simpa [HasFiniteIntegral, enorm_pow] using this
+  have h1 : ‖s‖ₑ * ‖ψ x‖ₑ ≤ ∫⁻ y, ‖α y‖ₑ * ‖ψ (x * y)‖ₑ ∂μ := by
+    rw [← enorm_mul, ← hrep x]
+    exact (enorm_integral_le_lintegral_enorm _).trans (le_of_eq (by simp only [enorm_mul]))
+  have h3 : (‖s‖ₑ * ‖ψ x‖ₑ) ^ 2 ≤ k * ∫⁻ y, ‖α y‖ₑ ^ 2 ∂μ :=
+    (pow_le_pow_left' h1 2).trans (sq_lintegral_le μ _ hF hα hψ hinv hn x k hk)
+  have h4 : (‖s‖ * ‖ψ x‖) ^ 2 ≤ k * (∫⁻ y, ‖α y‖ₑ ^ 2 ∂μ).toReal := by
+    have := ENNReal.toReal_mono (ENNReal.mul_ne_top (ENNReal.natCast_ne_top k) hA) h3
+    simpa [ENNReal.toReal_mul, ENNReal.toReal_pow, toReal_enorm] using this
+  have hδ2 : 0 < δ ^ 2 := by positivity
+  have h5 : δ ^ 2 * ‖ψ x‖ ^ 2 ≤ (‖s‖ * ‖ψ x‖) ^ 2 := by
+    rw [mul_pow]
+    gcongr
+  have h6 := h5.trans h4
+  rw [mul_assoc, inv_mul_eq_div, le_div_iff₀ hδ2]
+  nlinarith [h6]
+
+end GlobalTheory.CompanionTheory.Conc.BesselPt
+
+open GlobalTheory.CompanionTheory.Conc.BesselPt in
+
+theorem GlobalTheory.CompanionTheory.Conc.besselPt : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ) [MeasurableSpace (GA E N)] [BorelSpace (GA E N)] (μ : Measure (GA E N)) [μ.IsHaarMeasure] (α : GA E N → ℂ) (δ : ℝ) (F : Set (GA E N)), Continuous α → HasCompactSupport α → 0 < δ →
+  IsFundamentalDomain (latticeGL E N) F μ → ∃ C₀ : ℝ, ∀ ψ : GA E N → ℂ, Continuous ψ → (∀ γ ∈ latticeGL E N, ∀ g, ψ (γ * g) = ψ g) →
+  (∃ s : ℂ, δ ≤ ‖s‖ ∧ ∀ x, ∫ y, α y * ψ (x * y) ∂μ = s * ψ x) → (∫⁻ x in F, ‖ψ x‖ₑ ^ 2 ∂μ) = 1 →
+  ∀ (x : GA E N) (k : ℕ), {γ : GA E N | γ ∈ latticeGL E N ∧ ∃ a ∈ tsupport α, ∃ b ∈ tsupport α, γ = x * a * b⁻¹ * x⁻¹}.encard ≤ k →
+    ‖ψ x‖ ^ 2 ≤ C₀ * k := by
+  intro E _ _ _ N _ _ μ _ α δ F hα hc hδ hF
+  haveI : Countable (latticeGL E N) := GlobalTheory.DiscreteUnit.countable_latticeGL
+  exact pointwise μ (latticeGL E N) hα hc hδ hF
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernel_eigenfunction_bound : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ) [MeasurableSpace (GA E N)] [BorelSpace (GA E N)] (μ : Measure (GA E N)) [μ.IsHaarMeasure] (α : GA E N → ℂ) (δ : ℝ) (F : Set (GA E N)), Continuous α → HasCompactSupport α → 0 < δ →
+  IsFundamentalDomain (latticeGL E N) F μ → ∃ C₀ : ℝ, ∀ ψ : GA E N → ℂ, Continuous ψ → (∀ γ ∈ latticeGL E N, ∀ g, ψ (γ * g) = ψ g) →
+  (∃ s : ℂ, δ ≤ ‖s‖ ∧ ∀ x, ∫ y, α y * ψ (x * y) ∂μ = s * ψ x) → (∫⁻ x in F, ‖ψ x‖ₑ ^ 2 ∂μ) = 1 →
+  ∀ (x : GA E N) (k : ℕ), {γ : GA E N | γ ∈ latticeGL E N ∧ ∃ a ∈ tsupport α, ∃ b ∈ tsupport α, γ = x * a * b⁻¹ * x⁻¹}.encard ≤ k →
+    ‖ψ x‖ ^ 2 ≤ C₀ * k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.besselPt
+end
+
+section
+section
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+open scoped Pointwise
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Conc
+
+theorem lintegral_sq_le_of_average {G Y : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] [TopologicalSpace Y] [MeasurableSpace Y]
+    [OpensMeasurableSpace Y] (μ : Measure G) [SFinite μ] [μ.IsMulLeftInvariant] [μ.IsMulRightInvariant]
+    (Γ : Subgroup G) [Countable Γ] (F : Set G) (hF : IsFundamentalDomain Γ F μ)
+    (ν : Measure Y) (b : Y → ℝ≥0∞) (hb : Measurable b) (hmass : ∫⁻ y, b y ∂ν = 1)
+    (k : Y → G) (hk : Continuous k) (f : G → ℂ) (hf : Continuous f)
+    (hinv : ∀ γ ∈ Γ, ∀ g, f (γ * g) = f g) (s : G → ℂ)
+    (hs : ∀ x, ‖s x‖ₑ ≤ ∫⁻ y, b y * ‖f (x * k y)‖ₑ ∂ν) :
+    ∫⁻ x in F, ‖s x‖ₑ ^ 2 ∂μ ≤ ∫⁻ x in F, ‖f x‖ₑ ^ 2 ∂μ := by
+  set p := ν.withDensity b with hp
+  haveI : IsProbabilityMeasure p := ⟨by rw [hp, withDensity_apply _ MeasurableSet.univ]; simpa using hmass⟩
+  have hm : ∀ x, Continuous fun y => f (x * k y) := fun x => hf.comp (continuous_const.mul hk)
+  have hsq : ∀ {X : Type _} [MeasurableSpace X] (m : Measure X) (g : X → ℂ),
+      eLpNorm g 2 m ^ 2 = ∫⁻ x, ‖g x‖ₑ ^ 2 ∂m := by
+    intro X _ m g
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal two_ne_zero ENNReal.ofNat_ne_top,
+      ENNReal.toReal_ofNat, ← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
+    norm_num [ENNReal.rpow_two]
+  have hpt : ∀ x, ‖s x‖ₑ ^ 2 ≤ ∫⁻ y, ‖f (x * k y)‖ₑ ^ 2 ∂p := by
+    intro x
+    have h1 : ∫⁻ y, b y * ‖f (x * k y)‖ₑ ∂ν = ∫⁻ y, ‖f (x * k y)‖ₑ ∂p := by
+      rw [hp, lintegral_withDensity_eq_lintegral_mul ν hb (hm x).measurable.enorm]
+      rfl
+    have h2 := eLpNorm_le_eLpNorm_of_exponent_le (p := 1) (q := 2) (μ := p) (by norm_num)
+      (hm x).measurable.aestronglyMeasurable
+    rw [eLpNorm_one_eq_lintegral_enorm] at h2
+    rw [← hsq p]
+    exact pow_le_pow_left' ((hs x).trans (h1.le.trans h2)) 2
+  have hΓ : ∀ (γ : Γ) (x : G), ‖f (γ • x)‖ₑ ^ 2 = ‖f x‖ₑ ^ 2 := fun γ x => by
+    rw [Subgroup.smul_def, smul_eq_mul, hinv _ γ.2]
+  have htr : ∀ h : G, ∫⁻ x in F, ‖f (x * h)‖ₑ ^ 2 ∂μ = ∫⁻ x in F, ‖f x‖ₑ ^ 2 ∂μ := by
+    intro h
+    have hF' : IsFundamentalDomain Γ (MulOpposite.op h • F) μ := hF.smul_of_comm _
+    have e1 := (measurePreserving_mul_right μ h).setLIntegral_comp_preimage_emb
+      (MeasurableEquiv.mulRight h).measurableEmbedding (fun z => ‖f z‖ₑ ^ 2) (MulOpposite.op h • F)
+    have e2 : (fun x => x * h) ⁻¹' (MulOpposite.op h • F) = F := by
+      ext x
+      simp [Set.mem_smul_set_iff_inv_smul_mem]
+    rw [e2] at e1
+    rw [e1]
+    exact hF'.setLIntegral_eq hF _ hΓ
+  have hjoint : Measurable (Function.uncurry fun (x : G) (y : Y) => ‖f (x * k y)‖ₑ ^ 2) :=
+    ((hf.comp (continuous_fst.mul (hk.comp continuous_snd))).measurable.enorm).pow_const 2
+  calc ∫⁻ x in F, ‖s x‖ₑ ^ 2 ∂μ ≤ ∫⁻ x in F, ∫⁻ y, ‖f (x * k y)‖ₑ ^ 2 ∂p ∂μ := lintegral_mono hpt
+    _ = ∫⁻ y, ∫⁻ x in F, ‖f (x * k y)‖ₑ ^ 2 ∂μ ∂p := lintegral_lintegral_swap hjoint.aemeasurable
+    _ = ∫⁻ _y, ∫⁻ x in F, ‖f x‖ₑ ^ 2 ∂μ ∂p := lintegral_congr fun y => htr (k y)
+    _ = ∫⁻ x in F, ‖f x‖ₑ ^ 2 ∂μ := by simp
+
+theorem sm_sq_mass_le : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ) [MeasurableSpace (GA E N)] [BorelSpace (GA E N)] (μ : Measure (GA E N)) [μ.IsHaarMeasure] [MeasurableSpace (archGroup E N)] [BorelSpace (archGroup E N)] (ν : Measure (archGroup E N)) [ν.IsHaarMeasure] (F : Set (GA E N)) (β : archGroup E N → ℝ), IsFundamentalDomain (latticeGL E N) F μ → Ker ν β →
+  ∀ f : GA E N → ℂ, Continuous f → (∀ γ ∈ latticeGL E N, ∀ g, f (γ * g) = f g) →
+  ∫⁻ x in F, ‖sm ν β f x‖ₑ ^ 2 ∂μ ≤ ∫⁻ x in F, ‖f x‖ₑ ^ 2 ∂μ := by
+  intro E _ _ _ N _ _ μ _ _ _ ν _ F β hF hβ f hf hinv
+  haveI : Countable (latticeGL E N) := GlobalTheory.DiscreteUnit.countable_latticeGL
+  haveI : SecondCountableTopology (GA E N) := GlobalTheory.CuspRep.CuspidalL2GL.secondCountableTopology_GA E N
+  haveI : LocallyCompactSpace (GA E N) := GlobalTheory.CuspRep.CuspidalL2GL.locallyCompactSpace_GA E N
+  haveI : μ.IsMulRightInvariant := GlobalTheory.T.haar_right_invariant_totally_complex E N μ
+  refine lintegral_sq_le_of_average μ (latticeGL E N) F hF ν (fun y => ENNReal.ofReal (β y))
+    hβ.cont.measurable.ennreal_ofReal ?_ (infEmb E N) continuous_infEmb f hf hinv (sm ν β f) ?_
+  · rw [← ofReal_integral_eq_lintegral_ofReal
+      (hβ.cont.integrable_of_hasCompactSupport hβ.cpt) (Eventually.of_forall hβ.nonneg), hβ.mass]
+    simp
+  · intro x
+    refine (enorm_integral_le_lintegral_enorm _).trans (le_of_eq (lintegral_congr fun y => ?_))
+    rw [enorm_mul]
+    congr 1
+    rw [← ofReal_norm_eq_enorm, Complex.norm_real, Real.norm_of_nonneg (hβ.nonneg y)]
+
+end GlobalTheory.CompanionTheory.Conc
+
+end
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smoothing_fundamental_domain_integral : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ) [MeasurableSpace (GA E N)] [BorelSpace (GA E N)] (μ : Measure (GA E N)) [μ.IsHaarMeasure] [MeasurableSpace (archGroup E N)] [BorelSpace (archGroup E N)] (ν : Measure (archGroup E N)) [ν.IsHaarMeasure] (F : Set (GA E N)) (β : archGroup E N → ℝ), IsFundamentalDomain (latticeGL E N) F μ → Ker ν β →
+  ∀ f : GA E N → ℂ, Continuous f → (∀ γ ∈ latticeGL E N, ∀ g, f (γ * g) = f g) →
+  ∫⁻ x in F, ‖sm ν β f x‖ₑ ^ 2 ∂μ ≤ ∫⁻ x in F, ‖f x‖ₑ ^ 2 ∂μ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.sm_sq_mass_le
+end
+
+section
+section
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Conc
+
+theorem lintegral_sq_le {Y : Type*} [MeasurableSpace Y] (P : Measure Y) [IsProbabilityMeasure P]
+    (g : Y → ℝ≥0∞) (hg : AEMeasurable g P) : (∫⁻ y, g y ∂P) ^ 2 ≤ ∫⁻ y, g y ^ 2 ∂P := by
+  have h := ENNReal.lintegral_mul_le_Lp_mul_Lq P Real.HolderConjugate.two_two hg
+    (aemeasurable_const (b := (1 : ℝ≥0∞)))
+  simp only [Pi.mul_apply, mul_one, ENNReal.one_rpow, lintegral_const, measure_univ] at h
+  have h2 := pow_le_pow_left' h 2
+  have h3 : ((∫⁻ y, g y ^ (2 : ℝ) ∂P) ^ (1 / (2 : ℝ))) ^ 2 = ∫⁻ y, g y ^ (2 : ℝ) ∂P := by
+    rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
+    norm_num
+  rw [h3] at h2
+  simpa [ENNReal.rpow_ofNat] using h2
+
+theorem enorm_sub_sm_sq_le (E : Type) [Field E] [NumberField E] (N : ℕ)
+    [MeasurableSpace (archGroup E N)] [BorelSpace (archGroup E N)]
+    (ν : Measure (archGroup E N)) [ν.IsHaarMeasure] (β : archGroup E N → ℝ) (hk : Ker ν β)
+    (f : AdelicGLn.AdelicGL E N → ℂ) (hf : Continuous f) (x : AdelicGLn.AdelicGL E N) :
+    ‖f x - sm ν β f x‖ₑ ^ 2 ≤ ∫⁻ y, ‖f (x * infEmb E N y) - f x‖ₑ ^ 2
+      ∂(ν.withDensity fun y => ENNReal.ofReal (β y)) := by
+  have hwm : Measurable fun y => ENNReal.ofReal (β y) := hk.cont.measurable.ennreal_ofReal
+  have : IsProbabilityMeasure (ν.withDensity fun y => ENNReal.ofReal (β y)) := by
+    refine ⟨?_⟩
+    rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ,
+      ← ofReal_integral_eq_lintegral_ofReal (hk.cont.integrable_of_hasCompactSupport hk.cpt)
+        (Eventually.of_forall hk.nonneg), hk.mass, ENNReal.ofReal_one]
+  have hc1 : Continuous fun y => f (x * infEmb E N y) :=
+    hf.comp (continuous_const.mul continuous_infEmb)
+  have hi1 : Integrable (fun y => (β y : ℂ) * f (x * infEmb E N y)) ν :=
+    ((Complex.continuous_ofReal.comp hk.cont).mul hc1).integrable_of_hasCompactSupport
+      (hk.cpt.comp_left Complex.ofReal_zero |>.mul_right)
+  have hi2 : Integrable (fun y => (β y : ℂ) * f x) ν :=
+    ((Complex.continuous_ofReal.comp hk.cont).mul continuous_const).integrable_of_hasCompactSupport
+      (hk.cpt.comp_left Complex.ofReal_zero |>.mul_right)
+  have hmass : ∫ y, (β y : ℂ) * f x ∂ν = f x := by
+    rw [integral_mul_const, integral_complex_ofReal, hk.mass]
+    simp
+  have heq : f x - sm ν β f x = ∫ y, (β y : ℂ) * (f x - f (x * infEmb E N y)) ∂ν := by
+    simp only [mul_sub]
+    rw [integral_sub hi2 hi1, hmass]
+    rfl
+  have hgm : Measurable fun y => ‖f (x * infEmb E N y) - f x‖ₑ :=
+    (continuous_enorm.comp (hc1.sub continuous_const)).measurable
+  have hle : ‖f x - sm ν β f x‖ₑ ≤ ∫⁻ y, ‖f (x * infEmb E N y) - f x‖ₑ
+      ∂(ν.withDensity fun y => ENNReal.ofReal (β y)) := by
+    rw [heq, lintegral_withDensity_eq_lintegral_mul ν hwm hgm]
+    refine (enorm_integral_le_lintegral_enorm _).trans (le_of_eq ?_)
+    refine lintegral_congr fun y => ?_
+    have hb : ‖(β y : ℂ)‖ₑ = ENNReal.ofReal (β y) := by
+      rw [← ofReal_norm, Complex.norm_real, Real.norm_of_nonneg (hk.nonneg y)]
+    rw [enorm_mul, hb, enorm_sub_rev]
+    rfl
+  exact (pow_le_pow_left' hle 2).trans (lintegral_sq_le _ _ hgm.aemeasurable)
+
+end GlobalTheory.CompanionTheory.Conc
+
+theorem GlobalTheory.CompanionTheory.Conc.smNear : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ) [MeasurableSpace (GA E N)] [BorelSpace (GA E N)] (μ : Measure (GA E N)) [μ.IsHaarMeasure] [MeasurableSpace (archGroup E N)] [BorelSpace (archGroup E N)] (ν : Measure (archGroup E N)) [ν.IsHaarMeasure] (F : Set (GA E N)) (β : archGroup E N → ℝ) (c : ℝ≥0∞), IsFundamentalDomain (latticeGL E N) F μ → Ker ν β →
+  ∀ f : GA E N → ℂ, Continuous f → (∀ y ∈ tsupport β, ∫⁻ x in F, ‖f (x * infEmb E N y) - f x‖ₑ ^ 2 ∂μ ≤ c) →
+  ∫⁻ x in F, ‖f x - sm ν β f x‖ₑ ^ 2 ∂μ ≤ c := by
+  intro E _ _ _ N _ _ μ _ _ _ ν _ F β c _ hk f hf hc
+  have := GlobalTheory.AdelicUnitaryTop.locallyCompact_adele E
+  have := GlobalTheory.AdelicUnitaryTop.t2Space_adeleRing_numberField E
+  have := GlobalTheory.AdelicUnitaryTop.secondCountable_adele E
+  have : LocallyCompactSpace (Matrix (Fin N) (Fin N) (Ad E)) :=
+    inferInstanceAs (LocallyCompactSpace (Fin N → Fin N → Ad E))
+  have : LocallyCompactSpace (Matrix (Fin N) (Fin N) (Ad E))ᵐᵒᵖ :=
+    MulOpposite.opHomeomorph.symm.isClosedEmbedding.locallyCompactSpace
+  have : LocallyCompactSpace (GA E N) := Units.isClosedEmbedding_embedProduct.locallyCompactSpace
+  have : SecondCountableTopology (Matrix (Fin N) (Fin N) (Ad E)) :=
+    inferInstanceAs (SecondCountableTopology (Fin N → Fin N → Ad E))
+  have : SecondCountableTopology (Matrix (Fin N) (Fin N) (Ad E))ᵐᵒᵖ :=
+    MulOpposite.opHomeomorph.symm.isEmbedding.secondCountableTopology
+  have : SecondCountableTopology (GA E N) := Units.isEmbedding_embedProduct.secondCountableTopology
+  have : SigmaCompactSpace (GA E N) := sigmaCompactSpace_of_locallyCompact_secondCountable
+  have : SFinite μ := inferInstance
+  have hwm : Measurable fun y => ENNReal.ofReal (β y) := hk.cont.measurable.ennreal_ofReal
+  set P : Measure (archGroup E N) := ν.withDensity fun y => ENNReal.ofReal (β y) with hP
+  have : IsProbabilityMeasure P := by
+    refine ⟨?_⟩
+    rw [hP, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ,
+      ← ofReal_integral_eq_lintegral_ofReal (hk.cont.integrable_of_hasCompactSupport hk.cpt)
+        (Eventually.of_forall hk.nonneg), hk.mass, ENNReal.ofReal_one]
+  have hG : Continuous fun p : GA E N × archGroup E N => ‖f (p.1 * infEmb E N p.2) - f p.1‖ₑ ^ 2 :=
+    (ENNReal.continuous_pow 2).comp (continuous_enorm.comp
+      ((hf.comp (continuous_fst.mul (continuous_infEmb.comp continuous_snd))).sub
+        (hf.comp continuous_fst)))
+  have hae : ∀ᵐ y ∂P, y ∈ tsupport β := by
+    rw [hP, ae_withDensity_iff hwm]
+    refine Eventually.of_forall fun y hy => subset_tsupport _ ?_
+    intro h0
+    exact hy (by rw [h0, ENNReal.ofReal_zero])
+  calc ∫⁻ x in F, ‖f x - sm ν β f x‖ₑ ^ 2 ∂μ
+      ≤ ∫⁻ x in F, ∫⁻ y, ‖f (x * infEmb E N y) - f x‖ₑ ^ 2 ∂P ∂μ :=
+        lintegral_mono fun x => enorm_sub_sm_sq_le E N ν β hk f hf x
+    _ = ∫⁻ y, ∫⁻ x in F, ‖f (x * infEmb E N y) - f x‖ₑ ^ 2 ∂μ ∂P :=
+        lintegral_lintegral_swap hG.measurable.aemeasurable
+    _ ≤ ∫⁻ _, c ∂P := lintegral_mono_ae (hae.mono fun y hy => hc y hy)
+    _ = c := by simp
+end
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smoothing_fundamental_domain_bound : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ) [MeasurableSpace (GA E N)] [BorelSpace (GA E N)] (μ : Measure (GA E N)) [μ.IsHaarMeasure] [MeasurableSpace (archGroup E N)] [BorelSpace (archGroup E N)] (ν : Measure (archGroup E N)) [ν.IsHaarMeasure] (F : Set (GA E N)) (β : archGroup E N → ℝ) (c : ℝ≥0∞), IsFundamentalDomain (latticeGL E N) F μ → Ker ν β →
+  ∀ f : GA E N → ℂ, Continuous f → (∀ y ∈ tsupport β, ∫⁻ x in F, ‖f (x * infEmb E N y) - f x‖ₑ ^ 2 ∂μ ≤ c) →
+  ∫⁻ x in F, ‖f x - sm ν β f x‖ₑ ^ 2 ∂μ ≤ c := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.smNear
+end
+
+section
+section
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+
+namespace GlobalTheory.CompanionTheory.Conc.LevelU
+
+theorem exists_level : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ) (L : Subgroup (GL (Fin N) (Af E))), IsOpen (L : Set (GL (Fin N) (Af E))) →
+  ∃ U : Subgroup (AdelicGLn.integralFiniteGL E N), IsOpen (U : Set (AdelicGLn.integralFiniteGL E N)) ∧ ∀ u : U, ∃ k ∈ L,
+    finEmb E N ((u : AdelicGLn.integralFiniteGL E N) : AdelicGLn.FiniteAdelicGL E N) = finGL E N k := by
+  intro E _ _ _ N L hL
+  refine ⟨L.subgroupOf (AdelicGLn.integralFiniteGL E N), hL.preimage continuous_subtype_val, ?_⟩
+  intro u
+  exact ⟨_, Subgroup.mem_subgroupOf.1 u.2, GlobalTheory.CompanionTheory.AutLevel.finEmb_eq_finGL E N _⟩
+
+end GlobalTheory.CompanionTheory.Conc.LevelU
+end
+
+open scoped ENNReal
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_open_integral_subgroup : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (N : ℕ) (L : Subgroup (GL (Fin N) (Af E))), IsOpen (L : Set (GL (Fin N) (Af E))) →
+  ∃ U : Subgroup (AdelicGLn.integralFiniteGL E N), IsOpen (U : Set (AdelicGLn.integralFiniteGL E N)) ∧ ∀ u : U, ∃ k ∈ L,
+    finEmb E N ((u : AdelicGLn.integralFiniteGL E N) : AdelicGLn.FiniteAdelicGL E N) = finGL E N k := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Conc.LevelU.exists_level
+end
+
+section
 open scoped ENNReal
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter Topology Polynomial
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.Conc
@@ -580,4 +1468,5 @@ theorem conc : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) 
 
 end GlobalTheory.CompanionTheory.Conc
 
+end
 end

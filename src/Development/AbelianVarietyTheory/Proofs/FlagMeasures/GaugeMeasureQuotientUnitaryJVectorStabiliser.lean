@@ -13,14 +13,747 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HermitianNorm
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.InvariantMeasureQuadricMulHaarStabilizer
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OrthogonalComplementUnitaryEmbeddingConjBlock
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GaussianQuadricDensityExistsPosContinuousStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HsDistSectionMulBlock
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PolarSqCompare
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BallVolSuccSq
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuadricPointGaugePolarCoordinatesCompareTangentG
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegrableMonomialMulConjComplexGaussian
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LintegralGaussianHermitianNormFibreEqDeriv
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSignatureBlocksOfVectorAndFrameStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlockPerpEmbeddingOfDiagonalFrame
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RiemannianHaarGaugeTransportBlockModel
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSignatureBlocksOfVectorAndFrame
 
+section
+section
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+
+namespace GlobalTheory.SectionHsCompare
+
+variable {P Q P' Q' : ℕ}
+
+section Frob
+open scoped Matrix.Norms.Frobenius
+
+theorem frob_sq (A : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :
+    ‖A‖ ^ 2 = ∑ i, ∑ j, ‖A i j‖ ^ 2 := by
+  rw [Matrix.frobenius_norm_def, ← Real.sqrt_eq_rpow, Real.sq_sqrt (by positivity)]
+  simp only [Real.rpow_two]
+
+theorem frob_split (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q))
+    (Z : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) :
+    ‖Z‖ ^ 2 = ‖Z (e none) (e none)‖ ^ 2 + ∑ b, ‖Z (e none) (e (some b))‖ ^ 2 +
+      ∑ i, ‖Z (e (some i)) (e none)‖ ^ 2 + ∑ i, ∑ b, ‖Z (e (some i)) (e (some b))‖ ^ 2 := by
+  have h : ∀ x, ∑ w, ‖Z x w‖ ^ 2 = ∑ o, ‖Z x (e o)‖ ^ 2 := fun x =>
+    (e.sum_comp (fun w => ‖Z x w‖ ^ 2)).symm
+  rw [frob_sq, Finset.sum_congr rfl (fun x _ => h x),
+    ← e.sum_comp (fun x => ∑ o, ‖Z x (e o)‖ ^ 2)]
+  simp only [Fintype.sum_option, Finset.sum_add_distrib]
+  ring
+
+theorem add_le_mul_pow_of_sq_le_of_le_mul {t η R W : ℝ} (ht : 1 < t) (hη : η = (t - 1) / (3 * t)) (hR : 0 ≤ R)
+    (hW : 0 ≤ W) (h1 : W ≤ R + η * R) (h2 : R ≤ W + η * R) :
+    R ^ 2 ≤ t * W ^ 2 ∧ W ^ 2 ≤ t * R ^ 2 := by
+  have h3 : 0 < 3 * t := by linarith
+  have hη0 : 0 ≤ η := by rw [hη]; exact div_nonneg (by linarith) h3.le
+  have key : η * (3 * t) = t - 1 := by rw [hη]; field_simp
+  have hηt : η < 1 / 3 := by nlinarith
+  constructor
+  ·
+    have hW' : (1 - η) * R ≤ W := by linarith
+    have hsq : ((1 - η) * R) ^ 2 ≤ W ^ 2 := pow_le_pow_left₀ (by nlinarith) hW' 2
+    have hge : 1 ≤ t * (1 - η) ^ 2 := by nlinarith
+    nlinarith [mul_le_mul_of_nonneg_left hsq (by linarith : (0 : ℝ) ≤ t), sq_nonneg R]
+  ·
+    have hW' : W ≤ (1 + η) * R := by linarith
+    have hsq : W ^ 2 ≤ ((1 + η) * R) ^ 2 := pow_le_pow_left₀ hW hW' 2
+    have hle : (1 + η) ^ 2 ≤ t := by nlinarith
+    nlinarith [mul_le_mul_of_nonneg_right hle (sq_nonneg R)]
+
+private lemma le_of_sq_le_sq_of_nonneg {a b : ℝ} (hb : 0 ≤ b) (h : a ^ 2 ≤ b ^ 2) : a ≤ b := by
+  by_contra hab
+  rw [not_le] at hab
+  nlinarith
+
+theorem hsDist_section_mul_block : ∀ (P Q P' Q' : ℕ) (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (j : UpqT P' Q' → UpqT P Q), IsBlockEmb e j → ∀ t : ℝ, 1 < t → ∃ δ : ℝ, 0 < δ ∧ ∀ (y : Sp P Q) (a : UpqT P Q), ptSq e y < δ → act a (baseVec e) = y → (∀ b, ‖UpqT.mat a (e none) (e (some b))‖ = ‖y (e (some b))‖) → (∀ i b, ‖(UpqT.mat a - 1) (e (some i)) (e (some b))‖ = ‖y (e (some i))‖ * ‖y (e (some b))‖ / ‖1 + y (e none)‖) → ∀ g : UpqT P' Q', ptSq e y + hsDist g ≤ t * hsDist (a * j g) ∧ hsDist (a * j g) ≤ t * (ptSq e y + hsDist g) := by
+  intro P Q P' Q' e j hj t ht
+  set η : ℝ := (t - 1) / (3 * t) with hη
+  have hηpos : 0 < η := div_pos (by linarith) (by linarith)
+  have hη3 : η < 1 / 3 := by
+    rw [hη, div_lt_iff₀ (by linarith)]; linarith
+  set c : ℝ := η / 3 with hc
+  have hcpos : 0 < c := by positivity
+  have hc1 : c < 1 := by linarith
+  refine ⟨min 1 (c ^ 2), lt_min one_pos (by positivity), ?_⟩
+  intro y a hy hya hrow hblk g
+  have hyc : ptSq e y < c ^ 2 := lt_of_lt_of_le hy (min_le_right _ _)
+  have hy1 : ptSq e y < 1 := lt_of_lt_of_le hy (min_le_left _ _)
+  obtain ⟨h00, h0b, ha0, hab⟩ := hj g
+
+  have hcol : ∀ x, UpqT.mat a x (e none) = y x := by
+    intro x
+    have := congrFun hya x
+    simpa [act, baseVec, Matrix.mulVec, dotProduct, Pi.single_apply] using this
+  set S : ℝ := ∑ i, ‖y (e (some i))‖ ^ 2 with hS
+  have hS0 : 0 ≤ S := by positivity
+  have hpt : ptSq e y = ‖y (e none) - 1‖ ^ 2 + 2 * S := rfl
+  have hSpt : S ≤ ptSq e y := by nlinarith [sq_nonneg ‖y (e none) - 1‖]
+  have hSc : S < c ^ 2 := lt_of_le_of_lt hSpt hyc
+  have hS1 : S < 1 := lt_of_le_of_lt hSpt hy1
+
+  have hn1 : 1 ≤ ‖1 + y (e none)‖ := by
+    have h1 : ‖y (e none) - 1‖ < 1 := by
+      nlinarith [norm_nonneg (y (e none) - 1), sq_nonneg ‖y (e none) - 1‖]
+    have h2 : (2 : ℂ) = (1 + y (e none)) - (y (e none) - 1) := by ring
+    have h3 : ‖(2 : ℂ)‖ ≤ ‖1 + y (e none)‖ + ‖y (e none) - 1‖ := by
+      rw [h2]; exact norm_sub_le _ _
+    have h4 : ‖(2 : ℂ)‖ = 2 := by simp
+    linarith
+
+  set M := UpqT.mat a with hM
+  set K := UpqT.mat (j g) - 1 with hK
+  set Ep : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ := Matrix.of fun x w =>
+    (e.symm x).elim 0 (fun _ => (e.symm w).elim 0 (fun _ => (M - 1) x w)) with hEp
+  set Z0 := (M - 1) + K - Ep with hZ0
+  set Z := UpqT.mat (a * j g) - 1 with hZ
+  have hmul : UpqT.mat (a * j g) = M * UpqT.mat (j g) := rfl
+  have hZe : Z = (M - 1) + K + (M - 1) * K := by
+    rw [hZ, hmul, hK]; noncomm_ring
+  have hdiff : Z - Z0 = Ep + (M - 1) * K := by
+    rw [hZe, hZ0]; abel
+
+  have hK2 : ‖K‖ ^ 2 = hsDist g := by
+    rw [frob_split e K]
+    simp [hK, Matrix.sub_apply, Matrix.one_apply, h00, h0b, ha0, hab, hsDist]
+  have hEp2 : ‖Ep‖ ^ 2 = ∑ i, ∑ b, ‖(M - 1) (e (some i)) (e (some b))‖ ^ 2 := by
+    rw [frob_split e Ep]
+    simp [hEp, Matrix.of_apply]
+  have hEpS : ‖Ep‖ ^ 2 ≤ S ^ 2 := by
+    rw [hEp2, sq, hS, Finset.sum_mul_sum]
+    refine Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun b _ => ?_
+    rw [hblk i b, div_pow, ← mul_pow]
+    have hp : 0 ≤ (‖y (e (some i))‖ * ‖y (e (some b))‖) ^ 2 := sq_nonneg _
+    calc (‖y (e (some i))‖ * ‖y (e (some b))‖) ^ 2 / ‖1 + y (e none)‖ ^ 2
+        ≤ (‖y (e (some i))‖ * ‖y (e (some b))‖) ^ 2 / 1 :=
+          div_le_div_of_nonneg_left hp one_pos (by nlinarith)
+      _ = (‖y (e (some i))‖ * ‖y (e (some b))‖) ^ 2 := div_one _
+  have hM2 : ‖M - 1‖ ^ 2 = ptSq e y + ‖Ep‖ ^ 2 := by
+    rw [frob_split e (M - 1), hEp2, hpt]
+    simp [Matrix.sub_apply, Matrix.one_apply, hcol, hrow]
+    rw [hS, Fintype.sum_sum_type]
+    ring
+  have e00 : Z0 (e none) (e none) = y (e none) - 1 := by
+    simp [hZ0, hK, hEp, Matrix.of_apply, Matrix.sub_apply, Matrix.add_apply, hcol, h00]
+  have e0b : ∀ b, Z0 (e none) (e (some b)) = M (e none) (e (some b)) := by
+    intro b
+    simp [hZ0, hK, hEp, Matrix.of_apply, Matrix.sub_apply, Matrix.add_apply, Matrix.one_apply, h0b]
+  have ei0 : ∀ i, Z0 (e (some i)) (e none) = y (e (some i)) := by
+    intro i
+    simp [hZ0, hK, hEp, Matrix.of_apply, Matrix.sub_apply, Matrix.add_apply, Matrix.one_apply, hcol, ha0]
+  have eib : ∀ i b, Z0 (e (some i)) (e (some b)) = (UpqT.mat g - 1) i b := by
+    intro i b
+    simp [hZ0, hK, hEp, Matrix.of_apply, Matrix.sub_apply, Matrix.add_apply, Matrix.one_apply, hab]
+  have hZ02 : ‖Z0‖ ^ 2 = ptSq e y + hsDist g := by
+    rw [frob_split e Z0, e00]
+    simp only [e0b, ei0, eib, hrow]
+    rw [hpt, hS]
+    unfold hsDist
+    ring
+  have hZ2 : ‖Z‖ ^ 2 = hsDist (a * j g) := by
+    rw [frob_sq]; rfl
+
+  have hR0 : 0 ≤ ‖Z0‖ := norm_nonneg _
+  have hEpb : ‖Ep‖ ≤ c * ‖Z0‖ := by
+    apply le_of_sq_le_sq_of_nonneg (by positivity)
+    rw [mul_pow, hZ02]
+    have hg : 0 ≤ hsDist g := by rw [← hK2]; positivity
+    calc ‖Ep‖ ^ 2 ≤ S ^ 2 := hEpS
+      _ = S * S := sq S
+      _ ≤ S * c ^ 2 := mul_le_mul_of_nonneg_left hSc.le hS0
+      _ ≤ ptSq e y * c ^ 2 := mul_le_mul_of_nonneg_right hSpt (sq_nonneg c)
+      _ ≤ c ^ 2 * (ptSq e y + hsDist g) := by
+        rw [mul_comm, mul_add]; exact le_add_of_nonneg_right (mul_nonneg (sq_nonneg c) hg)
+  have hMb : ‖M - 1‖ ≤ 2 * c := by
+    apply le_of_sq_le_sq_of_nonneg (by positivity)
+    rw [hM2]
+    have h1 : ‖Ep‖ ^ 2 ≤ c ^ 2 :=
+      calc ‖Ep‖ ^ 2 ≤ S ^ 2 := hEpS
+        _ = S * S := sq S
+        _ ≤ S * c ^ 2 := mul_le_mul_of_nonneg_left hSc.le hS0
+        _ ≤ 1 * c ^ 2 := mul_le_mul_of_nonneg_right hS1.le (sq_nonneg c)
+        _ = c ^ 2 := one_mul _
+    have h2 : (2 * c) ^ 2 = 4 * c ^ 2 := by ring
+    rw [h2]
+    linarith [sq_nonneg c]
+  have hKb : ‖K‖ ≤ ‖Z0‖ := by
+    apply le_of_sq_le_sq_of_nonneg hR0
+    rw [hK2, hZ02]
+    have : 0 ≤ ptSq e y := by rw [hpt]; positivity
+    linarith
+  have hdb : ‖Z - Z0‖ ≤ η * ‖Z0‖ := by
+    rw [hdiff]
+    calc ‖Ep + (M - 1) * K‖ ≤ ‖Ep‖ + ‖(M - 1) * K‖ := norm_add_le _ _
+      _ ≤ ‖Ep‖ + ‖M - 1‖ * ‖K‖ := by gcongr; exact Matrix.frobenius_norm_mul _ _
+      _ ≤ c * ‖Z0‖ + 2 * c * ‖Z0‖ := by gcongr
+      _ = η * ‖Z0‖ := by rw [hc]; ring
+  have h1 : ‖Z‖ ≤ ‖Z0‖ + η * ‖Z0‖ := by
+    calc ‖Z‖ = ‖Z0 + (Z - Z0)‖ := by rw [add_sub_cancel]
+      _ ≤ ‖Z0‖ + ‖Z - Z0‖ := norm_add_le _ _
+      _ ≤ ‖Z0‖ + η * ‖Z0‖ := by gcongr
+  have h2 : ‖Z0‖ ≤ ‖Z‖ + η * ‖Z0‖ := by
+    calc ‖Z0‖ = ‖Z - (Z - Z0)‖ := by rw [sub_sub_cancel]
+      _ ≤ ‖Z‖ + ‖Z - Z0‖ := norm_sub_le _ _
+      _ ≤ ‖Z‖ + η * ‖Z0‖ := by gcongr
+  obtain ⟨hA, hB⟩ := add_le_mul_pow_of_sq_le_of_le_mul ht hη hR0 (norm_nonneg _) h1 h2
+  rw [hZ02, hZ2] at hA hB
+  exact ⟨hA, hB⟩
+
+end Frob
+
+end GlobalTheory.SectionHsCompare
+end
+
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ptSq_add_hsDist_comparable_hsDist_mul : ∀ (P Q P' Q' : ℕ) (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (j : UpqT P' Q' → UpqT P Q), IsBlockEmb e j → ∀ t : ℝ, 1 < t → ∃ δ : ℝ, 0 < δ ∧ ∀ (y : Sp P Q) (a : UpqT P Q), ptSq e y < δ → act a (baseVec e) = y → (∀ b, ‖UpqT.mat a (e none) (e (some b))‖ = ‖y (e (some b))‖) → (∀ i b, ‖(UpqT.mat a - 1) (e (some i)) (e (some b))‖ = ‖y (e (some i))‖ * ‖y (e (some b))‖ / ‖1 + y (e none)‖) → ∀ g : UpqT P' Q', ptSq e y + hsDist g ≤ t * hsDist (a * j g) ∧ hsDist (a * j g) ≤ t * (ptSq e y + hsDist g) := by
+  atlas_forward_decl GlobalTheory.SectionHsCompare.hsDist_section_mul_block
+end
+
+section
+section
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+
+namespace GlobalTheory.PolarCompare
+
+theorem abs_qf_le_sum_sq {P Q : ℕ} (z : Sp P Q) : |qf z| ≤ ∑ i, ‖z i‖ ^ 2 := by
+  have h1 : 0 ≤ ∑ i : Fin P, ‖z (Sum.inl i)‖ ^ 2 := Finset.sum_nonneg fun i _ => by positivity
+  have h2 : 0 ≤ ∑ j : Fin Q, ‖z (Sum.inr j)‖ ^ 2 := Finset.sum_nonneg fun j _ => by positivity
+  rw [Fintype.sum_sum_type]
+  simp only [qf, Complex.normSq_eq_norm_sq]
+  rw [abs_le]
+  constructor <;> linarith
+
+theorem sq_compare_left {T S N r s : ℝ} (hT : 0 ≤ T) (hS : 0 ≤ S) (hN : 0 ≤ N)
+    (hr0 : 0 < r) (hr1 : r < 1 / 2) (hr : 3 * r < 1 - s) (h1 : N ≤ T + S)
+    (h : T ^ 2 + 2 * S < s * r ^ 2) : N ^ 2 + 2 * S < r ^ 2 := by
+
+  have hr2 : 0 < r ^ 2 := by positivity
+  have hs : s < 1 := by linarith
+  have hsr : s * r ^ 2 < r ^ 2 := by nlinarith
+  have hS2 : 2 * S < r ^ 2 := by nlinarith
+  have hT2 : T ^ 2 < r ^ 2 := by nlinarith
+  have hTr : T < r := by nlinarith
+  have hN2 : N * N ≤ (T + S) * (T + S) := mul_self_le_mul_self hN h1
+  have a1 : T * S ≤ r * S := mul_le_mul_of_nonneg_right hTr.le hS
+  have a2 : r * (2 * S) ≤ r * r ^ 2 := mul_le_mul_of_nonneg_left hS2.le hr0.le
+  have a3 : (2 * S) * (2 * S) ≤ r ^ 2 * r ^ 2 := mul_self_le_mul_self (by linarith) hS2.le
+  have a4 : r * r ^ 2 * r ≤ r * r ^ 2 * (1 / 2) :=
+    mul_le_mul_of_nonneg_left hr1.le (by positivity)
+  have a5 : 3 * r * r ^ 2 < (1 - s) * r ^ 2 := mul_lt_mul_of_pos_right hr hr2
+  nlinarith [mul_pos hr0 hr2]
+
+theorem sq_compare_right {T S N E r s : ℝ} (hT : 0 ≤ T) (hS : 0 ≤ S) (hN : 0 ≤ N)
+    (hr0 : 0 < r) (hr1 : r < 1 / 2) (hr : 11 * r < s - 1) (h1 : E ≤ N + S) (h2 : T ≤ 2 * E)
+    (h3 : T ≤ 2 → T - T ^ 3 / 16 ≤ E)
+    (h : N ^ 2 + 2 * S < r ^ 2) : T ^ 2 + 2 * S < s * r ^ 2 := by
+
+  have hr2 : 0 < r ^ 2 := by positivity
+  have hS2 : 2 * S < r ^ 2 := by nlinarith
+  have hNr : N < r := by nlinarith
+  have hrr : r ^ 2 < r / 2 := by nlinarith [mul_pos hr0 (sub_pos.mpr hr1)]
+  have hT3r : T ≤ 3 * r := by linarith
+  have hTE : T - T ^ 3 / 16 ≤ E := h3 (by linarith)
+  have hc1 : T * T ≤ 3 * r * (3 * r) := mul_self_le_mul_self hT hT3r
+  have hc2 : T * T * T ≤ 3 * r * (3 * r) * (3 * r) := mul_le_mul hc1 hT3r hT (by positivity)
+  have hr3 : r ^ 2 * r ≤ r ^ 2 * (1 / 2) := mul_le_mul_of_nonneg_left hr1.le (sq_nonneg r)
+  have hb0 : 0 ≤ S + T ^ 3 / 16 := by positivity
+  have hb2 : S + T ^ 3 / 16 ≤ 2 * r ^ 2 := by nlinarith
+  have hTNb : T ≤ N + (S + T ^ 3 / 16) := by linarith
+  have hT2 : T * T ≤ (N + (S + T ^ 3 / 16)) * (N + (S + T ^ 3 / 16)) :=
+    mul_self_le_mul_self hT hTNb
+  have a1 : N * (S + T ^ 3 / 16) ≤ r * (S + T ^ 3 / 16) :=
+    mul_le_mul_of_nonneg_right hNr.le hb0
+  have a2 : r * (S + T ^ 3 / 16) ≤ r * (2 * r ^ 2) := mul_le_mul_of_nonneg_left hb2 hr0.le
+  have a3 : (S + T ^ 3 / 16) * (S + T ^ 3 / 16) ≤ (2 * r ^ 2) * (2 * r ^ 2) :=
+    mul_self_le_mul_self hb0 hb2
+  have a4 : r * r ^ 2 * r ≤ r * r ^ 2 * (1 / 2) :=
+    mul_le_mul_of_nonneg_left hr1.le (by positivity)
+  have a5 : 11 * r * r ^ 2 < (s - 1) * r ^ 2 := mul_lt_mul_of_pos_right hr hr2
+  nlinarith [mul_pos hr0 hr2]
+
+theorem polar_sq_compare : ∀ (P Q P' Q' : ℕ) (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (t : ℝ), 1 < t → ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ u : ℝ × Sp P' Q', u.1 ∈ Set.Ioo (-Real.pi) Real.pi → (tanSq u < (t⁻¹ * r) ^ 2 → ptSq e (polarPt e u) < r ^ 2) ∧ (ptSq e (polarPt e u) < r ^ 2 → tanSq u < (t * r) ^ 2) := by
+  intro P Q P' Q' e t ht
+  have ht0 : 0 < t := by linarith
+  have hA : 0 < 1 - t⁻¹ ^ 2 := by
+    have h1 : t⁻¹ < 1 := inv_lt_one_of_one_lt₀ ht
+    have h2 : 0 < t⁻¹ := inv_pos.mpr ht0
+    nlinarith
+  have hB : 0 < t ^ 2 - 1 := by nlinarith
+  have hc : 0 < min (1 / 2 : ℝ) (min ((1 - t⁻¹ ^ 2) / 3) ((t ^ 2 - 1) / 11)) :=
+    lt_min (by norm_num) (lt_min (div_pos hA (by norm_num)) (div_pos hB (by norm_num)))
+  filter_upwards [inter_mem_nhdsWithin (Set.Ioi (0 : ℝ)) (Iio_mem_nhds hc)] with r hr
+  obtain ⟨hr0, hrc⟩ := hr
+  simp only [Set.mem_Ioi, Set.mem_Iio] at hr0 hrc
+  have hr1 : r < 1 / 2 := lt_of_lt_of_le hrc (min_le_left _ _)
+  have hr2 : 3 * r < 1 - t⁻¹ ^ 2 := by
+    have := lt_of_lt_of_le hrc ((min_le_right _ _).trans (min_le_left _ _))
+    linarith
+  have hr3 : 11 * r < t ^ 2 - 1 := by
+    have := lt_of_lt_of_le hrc ((min_le_right _ _).trans (min_le_right _ _))
+    linarith
+  rintro ⟨θ, z⟩ hu
+  simp only [Set.mem_Ioo] at hu
+  have hθ : |θ| ≤ Real.pi := abs_le.mpr ⟨hu.1.le, hu.2.le⟩
+
+  have hq : |sg (e none) * qf z| ≤ ∑ i, ‖z i‖ ^ 2 := by
+    rw [abs_mul]
+    rcases sg_eq (e none) with h | h <;> rw [h] <;> simpa using abs_qf_le_sum_sq z
+  have hρ1 := (abs_sqrt_sub_one_le (sg (e none) * qf z)).trans hq
+  have hw1 : ‖Complex.exp ((θ : ℂ) * Complex.I)‖ = 1 := Complex.norm_exp_ofReal_mul_I θ
+  have hpt : ptSq e (polarPt e (θ, z)) =
+      ‖(Real.sqrt (1 - sg (e none) * qf z) : ℂ) * Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ^ 2 +
+        2 * ∑ i, ‖z i‖ ^ 2 := by
+    simp only [ptSq, polarPt_none, polarPt_some]
+  have htan : tanSq (θ, z) = |θ| ^ 2 + 2 * ∑ i, ‖z i‖ ^ 2 := by
+    simp only [tanSq, sq_abs]
+  obtain ⟨hb1, hb2, hb3⟩ := exp_bounds θ hθ
+  rw [hpt, htan]
+  generalize Real.sqrt (1 - sg (e none) * qf z) = ρ at hρ1 ⊢
+  generalize Complex.exp ((θ : ℂ) * Complex.I) = w at hw1 hb1 hb2 hb3 ⊢
+  generalize ∑ i, ‖z i‖ ^ 2 = S at hρ1 ⊢
+  have hS0 : 0 ≤ S := (abs_nonneg _).trans hρ1
+  have hdiff : ‖(ρ : ℂ) * w - w‖ = |ρ - 1| := by
+    have : (ρ : ℂ) * w - w = ((ρ - 1 : ℝ) : ℂ) * w := by push_cast; ring
+    rw [this, norm_mul, hw1, mul_one, Complex.norm_real, Real.norm_eq_abs]
+  have hNE : ‖(ρ : ℂ) * w - 1‖ ≤ |θ| + S := by
+    have := norm_sub_le_norm_sub_add_norm_sub ((ρ : ℂ) * w) w 1
+    rw [hdiff] at this
+    linarith
+  have hEN : ‖w - 1‖ ≤ ‖(ρ : ℂ) * w - 1‖ + S := by
+    have := norm_sub_le_norm_sub_add_norm_sub w ((ρ : ℂ) * w) 1
+    rw [norm_sub_rev w ((ρ : ℂ) * w), hdiff] at this
+    linarith
+  constructor
+  · intro h
+    rw [mul_pow] at h
+    exact sq_compare_left (abs_nonneg θ) hS0 (norm_nonneg _) hr0 hr1 hr2 hNE h
+  · intro h
+    rw [mul_pow]
+    exact sq_compare_right (abs_nonneg θ) hS0 (norm_nonneg _) hr0 hr1 hr3 hEN hb2 hb3 h
+
+end GlobalTheory.PolarCompare
+end
+
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polar_tanSq_ptSq_compare : ∀ (P Q P' Q' : ℕ) (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (t : ℝ), 1 < t → ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ u : ℝ × Sp P' Q', u.1 ∈ Set.Ioo (-Real.pi) Real.pi → (tanSq u < (t⁻¹ * r) ^ 2 → ptSq e (polarPt e u) < r ^ 2) ∧ (ptSq e (polarPt e u) < r ^ 2 → tanSq u < (t * r) ^ 2) := by
+  atlas_forward_decl GlobalTheory.PolarCompare.polar_sq_compare
+end
+
+section
+section
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+
+noncomputable section
+
+namespace GlobalTheory.GaugeQuot.BallProd
+
+theorem volume_ball_eq_ballVol {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    [FiniteDimensional ℝ F] [MeasurableSpace F] [BorelSpace F] {d : ℕ}
+    (hd : Module.finrank ℝ F = d) (r : ℝ) :
+    (volume : Measure F) (Metric.ball 0 r) = ballVol d r := by
+  subst hd
+  unfold ballVol
+  have h := (stdOrthonormalBasis ℝ F).measurePreserving_repr
+  rw [← h.measure_preimage measurableSet_ball.nullMeasurableSet]
+  congr 1
+  ext x
+  simp
+
+theorem prod_region_eq_ballVol (P Q : ℕ) (r : ℝ) (hr : 0 < r) :
+    ((volume : Measure (ℝ × Sp P Q)).prod
+      (volume : Measure (EuclideanSpace ℝ (Fin ((P + Q) ^ 2)))))
+      {p | p.1.1 ^ 2 + ∑ i, ‖p.1.2 i‖ ^ 2 + ‖p.2‖ ^ 2 < r ^ 2} = ballVol ((P + Q + 1) ^ 2) r := by
+  have h0 := GlobalTheory.volume_preserving_ofLp_complex (Fin P ⊕ Fin Q)
+  have h1 := ((MeasurePreserving.id (volume : Measure ℝ)).prod h0).comp
+    (WithLp.volume_preserving_ofLp ℝ (EuclideanSpace ℂ (Fin P ⊕ Fin Q)))
+  have h2 := (h1.prod (MeasurePreserving.id
+      (volume : Measure (EuclideanSpace ℝ (Fin ((P + Q) ^ 2)))))).comp
+    (WithLp.volume_preserving_ofLp (WithLp 2 (ℝ × EuclideanSpace ℂ (Fin P ⊕ Fin Q)))
+      (EuclideanSpace ℝ (Fin ((P + Q) ^ 2))))
+  have hm : MeasurableSet {p : (ℝ × Sp P Q) × EuclideanSpace ℝ (Fin ((P + Q) ^ 2)) |
+      p.1.1 ^ 2 + ∑ i, ‖p.1.2 i‖ ^ 2 + ‖p.2‖ ^ 2 < r ^ 2} :=
+    (isOpen_lt (by fun_prop) continuous_const).measurableSet
+  rw [Measure.volume_eq_prod, ← h2.measure_preimage hm.nullMeasurableSet,
+    ← volume_ball_eq_ballVol (F := WithLp 2 (WithLp 2 (ℝ × EuclideanSpace ℂ (Fin P ⊕ Fin Q)) ×
+      EuclideanSpace ℝ (Fin ((P + Q) ^ 2))))]
+  · congr 1
+    ext x
+    rw [mem_ball_zero_iff, ← sq_lt_sq₀ (norm_nonneg _) hr.le, WithLp.prod_norm_sq_eq_of_L2,
+      WithLp.prod_norm_sq_eq_of_L2, EuclideanSpace.norm_sq_eq]
+    simp
+  · rw [(WithLp.linearEquiv 2 ℝ _).finrank_eq, Module.finrank_prod,
+      (WithLp.linearEquiv 2 ℝ _).finrank_eq, Module.finrank_prod,
+      (WithLp.linearEquiv 2 ℝ (Fin P ⊕ Fin Q → ℂ)).finrank_eq, Module.finrank_pi_fintype]
+    simp [Complex.finrank_real_complex]
+    ring
+
+theorem ballVol_succ_sq (P Q : ℕ) (r : ℝ) (hr : 0 < r) :
+    ballVol ((P + Q + 1) ^ 2) r = (2 : ℝ≥0∞) ^ (P + Q) *
+      ((volume : Measure (ℝ × Sp P Q)).prod
+        (volume : Measure (EuclideanSpace ℝ (Fin ((P + Q) ^ 2)))))
+        {p | tanSq p.1 + ‖p.2‖ ^ 2 < r ^ 2} := by
+  have hs : (√2 : ℝ) ≠ 0 := by positivity
+  have hfin : Module.finrank ℝ (Sp P Q) = 2 * (P + Q) := by
+    rw [Module.finrank_pi_fintype]; simp [Complex.finrank_real_complex]; ring
+  have h0 : MeasurePreserving (fun y : Sp P Q => (√2 : ℝ) • y) volume
+      (((2 : ℝ≥0∞) ^ (P + Q))⁻¹ • volume) := by
+    refine ⟨by fun_prop, ?_⟩
+    rw [Measure.map_addHaar_smul _ hs, hfin, pow_mul, Real.sq_sqrt (by norm_num),
+      abs_of_pos (by positivity), ENNReal.ofReal_inv_of_pos (by positivity),
+      ENNReal.ofReal_pow (by norm_num)]
+    simp
+  have hne : ((2 : ℝ≥0∞) ^ (P + Q)) ≠ 0 := by simp
+  have hnt : ((2 : ℝ≥0∞) ^ (P + Q)) ≠ ⊤ := by simp
+  haveI : SFinite (((2 : ℝ≥0∞) ^ (P + Q))⁻¹ • (volume : Measure (Sp P Q))) := inferInstance
+  have h1 := ((MeasurePreserving.id (volume : Measure ℝ)).prod h0).prod (MeasurePreserving.id
+      (volume : Measure (EuclideanSpace ℝ (Fin ((P + Q) ^ 2)))))
+  have hm : MeasurableSet {p : (ℝ × Sp P Q) × EuclideanSpace ℝ (Fin ((P + Q) ^ 2)) |
+      p.1.1 ^ 2 + ∑ i, ‖p.1.2 i‖ ^ 2 + ‖p.2‖ ^ 2 < r ^ 2} :=
+    (isOpen_lt (by fun_prop) continuous_const).measurableSet
+  have h2 := h1.measure_preimage hm.nullMeasurableSet
+  rw [Measure.prod_smul_right, Measure.prod_smul_left, Measure.smul_apply,
+    ← Measure.volume_eq_prod, prod_region_eq_ballVol P Q r hr, smul_eq_mul] at h2
+  have h3 : {p : (ℝ × Sp P Q) × EuclideanSpace ℝ (Fin ((P + Q) ^ 2)) |
+      tanSq p.1 + ‖p.2‖ ^ 2 < r ^ 2} =
+      Prod.map (Prod.map id fun y : Sp P Q => (√2 : ℝ) • y) id ⁻¹'
+      {p | p.1.1 ^ 2 + ∑ i, ‖p.1.2 i‖ ^ 2 + ‖p.2‖ ^ 2 < r ^ 2} := by
+    ext p
+    simp [tanSq, norm_smul, mul_pow, Finset.mul_sum, mul_add]
+  rw [h3, h2, ← mul_assoc, ENNReal.mul_inv_cancel hne hnt, one_mul]
+
+end GlobalTheory.GaugeQuot.BallProd
+end
+end
+
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ballVol_succ_sq_eq_pow_mul_prod : ∀ (P Q : ℕ) (r : ℝ), 0 < r → ballVol ((P + Q + 1) ^ 2) r = (2 : ℝ≥0∞) ^ (P + Q) * ((volume : Measure (ℝ × Sp P Q)).prod (volume : Measure (EuclideanSpace ℝ (Fin ((P + Q) ^ 2))))) {p | tanSq p.1 + ‖p.2‖ ^ 2 < r ^ 2} := by
+  atlas_forward_decl GlobalTheory.GaugeQuot.BallProd.ballVol_succ_sq
+end
+
+section
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_signature_blocks_of_vector_and_frame : ∀ (n : ℕ) (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool) (s : Bool) (x₀ : Fin (n + 1) → ℂ) (B : Matrix (Fin (n + 1)) (Fin n) ℂ), GlobalTheory.GaussMean.qEps ε x₀ = GlobalTheory.GaussMean.sgn ℝ s → star x₀ ᵥ* (Formalism.REAL.Jm ε * B) = 0 → Bᴴ * Formalism.REAL.Jm ε * B = Formalism.REAL.Jm ε' → ∀ (P Q P' Q' : ℕ) (f : Fin P ⊕ Fin Q ≃ Fin (n + 1)) (f' : Fin P' ⊕ Fin Q' ≃ Fin n), Sorts ε f → Sorts ε' f' → ∃ e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q), SignCompat e ∧ sg (e none) = GlobalTheory.GaussMean.sgn ℝ s := by
+  first | exact @GlobalTheory.SignCount.exists_signCompat | exact GlobalTheory.SignCount.exists_signCompat | (intros; apply GlobalTheory.SignCount.exists_signCompat <;> assumption)
+end
+
+section
+section
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+
+namespace GlobalTheory.PerpSort
+
+theorem herm_comp {n P Q : ℕ} {ε : Fin n → Bool} {f : Fin P ⊕ Fin Q ≃ Fin n} (hf : Sorts ε f)
+    (x y : Fin n → ℂ) : herm (x ∘ f) (y ∘ f) = star y ⬝ᵥ (Formalism.REAL.Jm ε *ᵥ x) := by
+  obtain ⟨h1, h2⟩ := hf
+  rw [dotProduct, ← Equiv.sum_comp f, Fintype.sum_sum_type, herm]
+  simp only [Function.comp_apply, Pi.star_apply, Formalism.REAL.Jm, mulVec_diagonal, h1, h2, if_true,
+    Bool.false_eq_true, if_false, one_mul, neg_one_mul, mul_neg, Finset.sum_neg_distrib, ← sub_eq_add_neg]
+  congr 1 <;> exact Finset.sum_congr rfl fun i _ => mul_comm _ _
+
+theorem form_self {n : ℕ} (ε : Fin n → Bool) (x : Fin n → ℂ) :
+    star x ⬝ᵥ (Formalism.REAL.Jm ε *ᵥ x) = (GlobalTheory.GaussMean.qEps ε x : ℂ) := by
+  simp only [dotProduct, Pi.star_apply, Formalism.REAL.Jm, mulVec_diagonal, GlobalTheory.GaussMean.qEps]
+  push_cast
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have hx : star (x i) * x i = ((‖x i‖ ^ 2 : ℝ) : ℂ) := by
+    rw [Complex.star_def, Complex.conj_mul']
+    push_cast; ring
+  rw [mul_left_comm, hx]
+  split_ifs <;> push_cast <;> ring
+
+theorem mat_symm {n P Q : ℕ} {ε : Fin n → Bool} {f : Fin P ⊕ Fin Q ≃ Fin n} (hf : Sorts ε f)
+    (k : Formalism.REAL.UJ ε) : (hf.equiv.symm k).mat = (Formalism.MainNotions.S.uMat k).submatrix f f := by
+  have h := hf.umat_equiv (hf.equiv.symm k)
+  rw [ContinuousMulEquiv.apply_symm_apply] at h
+  ext i j
+  have e := congrFun (congrFun h (f i)) (f j)
+  simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply] at e
+  exact e.symm
+
+theorem act_symm {n P Q : ℕ} {ε : Fin n → Bool} {f : Fin P ⊕ Fin Q ≃ Fin n} (hf : Sorts ε f)
+    (k : Formalism.REAL.UJ ε) (x : Fin n → ℂ) :
+    act (hf.equiv.symm k) (x ∘ f) = (Formalism.MainNotions.S.uMat k *ᵥ x) ∘ f := by
+  rw [act, mat_symm hf, Matrix.submatrix_mulVec_equiv, Function.comp_assoc, f.self_comp_symm,
+    Function.comp_id]
+
+private theorem of_fin_cases_mulVec {n : ℕ} (x₀ : Fin (n + 1) → ℂ) (B : Matrix (Fin (n + 1)) (Fin n) ℂ)
+    (w : Fin (n + 1) → ℂ) :
+    (Matrix.of fun i j => Fin.cases (motive := fun _ => ℂ) (x₀ i) (fun k => B i k) j) *ᵥ w =
+      w 0 • x₀ + B *ᵥ fun k => w k.succ := by
+  ext i
+  simp only [mulVec, dotProduct, Fin.sum_univ_succ, Matrix.of_apply, Fin.cases_zero, Fin.cases_succ,
+    Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  ring
+
+theorem exists_mulVec_eq {n : ℕ} (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool)
+    (x₀ : Fin (n + 1) → ℂ) (B : Matrix (Fin (n + 1)) (Fin n) ℂ)
+    (h0 : star x₀ ⬝ᵥ (Formalism.REAL.Jm ε *ᵥ x₀) ≠ 0) (h1 : star x₀ ᵥ* (Formalism.REAL.Jm ε * B) = 0)
+    (h2 : Bᴴ * Formalism.REAL.Jm ε * B = Formalism.REAL.Jm ε') (y : Fin (n + 1) → ℂ)
+    (hy : star x₀ ⬝ᵥ (Formalism.REAL.Jm ε *ᵥ y) = 0) : ∃ u, B *ᵥ u = y := by
+  set J := Formalism.REAL.Jm ε
+  set M : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ :=
+    Matrix.of fun i j => Fin.cases (motive := fun _ => ℂ) (x₀ i) (fun k => B i k) j with hM
+  have hMv : ∀ w, M *ᵥ w = w 0 • x₀ + B *ᵥ fun k : Fin n => w k.succ := fun w => of_fin_cases_mulVec x₀ B w
+  have key : ∀ t : Fin n → ℂ, star x₀ ⬝ᵥ (J *ᵥ (B *ᵥ t)) = 0 := by
+    intro t
+    rw [Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, h1, zero_dotProduct]
+  have hval : ∀ w, star x₀ ⬝ᵥ (J *ᵥ (M *ᵥ w)) = w 0 * (star x₀ ⬝ᵥ (J *ᵥ x₀)) := by
+    intro w
+    rw [hMv, Matrix.mulVec_add, dotProduct_add, key, add_zero, Matrix.mulVec_smul,
+      dotProduct_smul, smul_eq_mul]
+  have hinj : Function.Injective M.mulVec := by
+    intro a b hab
+    have hz : M *ᵥ (a - b) = 0 := by
+      rw [Matrix.mulVec_sub]; exact sub_eq_zero.mpr hab
+    have hw0 : (a - b) 0 = 0 := by
+      have e := hval (a - b)
+      rw [hz, Matrix.mulVec_zero, dotProduct_zero] at e
+      exact (mul_eq_zero.mp e.symm).resolve_right h0
+    have hBt : B *ᵥ (fun k : Fin n => (a - b) k.succ) = 0 := by
+      have e := hMv (a - b)
+      rw [hz, hw0, zero_smul, zero_add] at e
+      exact e.symm
+    have ht : (fun k : Fin n => (a - b) k.succ) = 0 := by
+      have hJ' : Formalism.REAL.Jm ε' *ᵥ (fun k : Fin n => (a - b) k.succ) = 0 := by
+        rw [← h2, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hBt, Matrix.mulVec_zero,
+          Matrix.mulVec_zero]
+      rw [← Matrix.one_mulVec (fun k : Fin n => (a - b) k.succ), ← Formalism.REAL.Jm_mul_self ε',
+        ← Matrix.mulVec_mulVec, hJ', Matrix.mulVec_zero]
+    rw [← sub_eq_zero]
+    funext i
+    refine Fin.cases hw0 (fun k => ?_) i
+    exact congrFun ht k
+  have hsurj : Function.Surjective M.mulVec :=
+    Matrix.mulVec_surjective_iff_isUnit.mpr (Matrix.mulVec_injective_iff_isUnit.mp hinj)
+  obtain ⟨w, hw⟩ := hsurj y
+  have hw0 : w 0 = 0 := by
+    have e := hval w
+    rw [hw, hy] at e
+    exact (mul_eq_zero.mp e.symm).resolve_right h0
+  refine ⟨fun k : Fin n => w k.succ, ?_⟩
+  rw [← hw, hMv, hw0, zero_smul, zero_add]
+
+theorem isPerpEmb_of_sorts : ∀ (n : ℕ) (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool) (s : Bool) (x₀ : Fin (n + 1) → ℂ) (B : Matrix (Fin (n + 1)) (Fin n) ℂ) (j : Formalism.REAL.UJ ε' → Formalism.REAL.UJ ε), GlobalTheory.GaussMean.qEps ε x₀ = GlobalTheory.GaussMean.sgn ℝ s → star x₀ ᵥ* (Formalism.REAL.Jm ε * B) = 0 → Bᴴ * Formalism.REAL.Jm ε * B = Formalism.REAL.Jm ε' → (∀ g, Formalism.MainNotions.S.uMat (j g) *ᵥ x₀ = x₀ ∧ Formalism.MainNotions.S.uMat (j g) * B = B * Formalism.MainNotions.S.uMat g) → ∀ (P Q P' Q' : ℕ) (f : Fin P ⊕ Fin Q ≃ Fin (n + 1)) (f' : Fin P' ⊕ Fin Q' ≃ Fin n) (hf : Sorts ε f) (hf' : Sorts ε' f'), IsPerpEmb (fun i => x₀ (f i)) (B.submatrix f f') (fun g => hf.equiv.symm (j (hf'.equiv g))) := by
+  intro n ε ε' s x₀ B j hq h1 h2 hj P Q P' Q' f f' hf hf'
+  change IsPerpEmb (x₀ ∘ f) _ _
+  have hsub : ∀ u : Fin P' ⊕ Fin Q' → ℂ, B.submatrix f f' *ᵥ u = (B *ᵥ (u ∘ f'.symm)) ∘ f :=
+    fun u => Matrix.submatrix_mulVec_equiv _ _ _ _
+  have hc : star x₀ ⬝ᵥ (Formalism.REAL.Jm ε *ᵥ x₀) ≠ 0 := by
+    rw [form_self, hq]
+    cases s <;> simp [GlobalTheory.GaussMean.sgn]
+  refine ⟨fun u v => ?_, fun y => ⟨fun h0 => ?_, ?_⟩, fun g => ?_⟩
+  · have e := herm_comp hf' (u ∘ f'.symm) (v ∘ f'.symm)
+    rw [Function.comp_assoc, f'.symm_comp_self, Function.comp_id, Function.comp_assoc,
+      f'.symm_comp_self, Function.comp_id] at e
+    rw [e, hsub, hsub, herm_comp hf, ← h2, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec,
+      Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, Matrix.mul_assoc]
+  · have e := herm_comp hf (y ∘ f.symm) x₀
+    rw [Function.comp_assoc, f.symm_comp_self, Function.comp_id] at e
+    rw [e] at h0
+    obtain ⟨u, hu⟩ := exists_mulVec_eq ε ε' x₀ B hc h1 h2 _ h0
+    refine ⟨u ∘ f', ?_⟩
+    rw [hsub, Function.comp_assoc, f'.self_comp_symm, Function.comp_id, hu, Function.comp_assoc,
+      f.symm_comp_self, Function.comp_id]
+  · rintro ⟨u, rfl⟩
+    rw [hsub, herm_comp hf, Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, h1,
+      zero_dotProduct]
+  · obtain ⟨hfix, hcomm⟩ := hj (hf'.equiv g)
+    refine ⟨?_, fun u => ?_⟩
+    · show act (hf.equiv.symm (j (hf'.equiv g))) (x₀ ∘ f) = x₀ ∘ f
+      rw [act_symm hf, hfix]
+    · show act (hf.equiv.symm (j (hf'.equiv g))) _ = _
+      have e := act_symm hf' (hf'.equiv g) (u ∘ f'.symm)
+      rw [ContinuousMulEquiv.symm_apply_apply, Function.comp_assoc, f'.symm_comp_self,
+        Function.comp_id] at e
+      rw [hsub, hsub, act_symm hf, Matrix.mulVec_mulVec, hcomm, ← Matrix.mulVec_mulVec, e,
+        Function.comp_assoc, f'.self_comp_symm, Function.comp_id]
+
+end GlobalTheory.PerpSort
+end
+
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.blockPerpEmbedding_of_diagonal_frame : ∀ (n : ℕ) (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool) (s : Bool) (x₀ : Fin (n + 1) → ℂ) (B : Matrix (Fin (n + 1)) (Fin n) ℂ) (j : Formalism.REAL.UJ ε' → Formalism.REAL.UJ ε), GlobalTheory.GaussMean.qEps ε x₀ = GlobalTheory.GaussMean.sgn ℝ s → star x₀ ᵥ* (Formalism.REAL.Jm ε * B) = 0 → Bᴴ * Formalism.REAL.Jm ε * B = Formalism.REAL.Jm ε' → (∀ g, Formalism.MainNotions.S.uMat (j g) *ᵥ x₀ = x₀ ∧ Formalism.MainNotions.S.uMat (j g) * B = B * Formalism.MainNotions.S.uMat g) → ∀ (P Q P' Q' : ℕ) (f : Fin P ⊕ Fin Q ≃ Fin (n + 1)) (f' : Fin P' ⊕ Fin Q' ≃ Fin n) (hf : Sorts ε f) (hf' : Sorts ε' f'), IsPerpEmb (fun i => x₀ (f i)) (B.submatrix f f') (fun g => hf.equiv.symm (j (hf'.equiv g))) := by
+  atlas_forward_decl GlobalTheory.PerpSort.isPerpEmb_of_sorts
+end
+
+section
+section
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+
+noncomputable section
+
+namespace GlobalTheory.GaugeQuot
+
+theorem hsDist_equiv_symm {n P Q : ℕ} {ε : Fin n → Bool} {f : Fin P ⊕ Fin Q ≃ Fin n} (hf : Sorts ε f)
+    (k : Formalism.REAL.UJ ε) : hsDist (hf.equiv.symm k) = Formalism.REAL.hs (Formalism.MainNotions.S.uMat k - 1) := by
+  have h := hf.umat_equiv (hf.equiv.symm k)
+  rw [ContinuousMulEquiv.apply_symm_apply] at h
+  have h' : Formalism.MainNotions.S.uMat k - 1 = Matrix.reindex f f (UpqT.mat (hf.equiv.symm k) - 1) := by
+    rw [show Formalism.MainNotions.S.uMat k = Formalism.MainNotions.S.umat k from rfl, h]
+    ext i j
+    simp [Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.one_apply]
+  unfold hsDist Formalism.REAL.hs
+  rw [h']
+  simp only [Matrix.reindex_apply, Matrix.submatrix_apply]
+  symm
+  rw [← f.sum_comp]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← f.sum_comp]
+  simp
+
+private theorem pos_of_isGauge' {n : ℕ} {ε : Fin n → Bool} {c : ℝ} (hc : GlobalTheory.Count.IsGauge ε c) :
+    0 < c := by
+  have hV : 0 < (volume (Metric.ball (0 : EuclideanSpace ℝ (Fin (n ^ 2))) 1)).toReal :=
+    ENNReal.toReal_pos (Metric.measure_ball_pos _ _ one_pos).ne' measure_ball_lt_top.ne
+  by_contra hneg'
+  have hneg : c ≤ 0 := not_lt.1 hneg'
+  have hle : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      c * (Formalism.REAL.muG ε {g | Real.sqrt (Formalism.REAL.hs (Formalism.MainNotions.S.uMat g - 1)) ≤ r}).toReal / r ^ (n ^ 2)
+        ≤ 0 := by
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    have hr' : (0 : ℝ) < r := hr
+    exact div_nonpos_iff.2 (Or.inr ⟨mul_nonpos_iff.2 (Or.inr ⟨hneg, ENNReal.toReal_nonneg⟩),
+      (pow_pos hr' _).le⟩)
+  have := le_of_tendsto hc hle
+  linarith
+
+private theorem tendsto_gauge_ratio_volume_ball {n : ℕ} {ε : Fin n → Bool} {c : ℝ} (hc : GlobalTheory.Count.IsGauge ε c)
+    (hc0 : 0 < c) :
+    Tendsto (fun r : ℝ =>
+        c * (Formalism.REAL.muG ε {g | Formalism.REAL.hs (Formalism.MainNotions.S.uMat g - 1) < r ^ 2}).toReal / r ^ (n ^ 2))
+      (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : EuclideanSpace ℝ (Fin (n ^ 2))) 1)).toReal) := by
+  set V := (volume (Metric.ball (0 : EuclideanSpace ℝ (Fin (n ^ 2))) 1)).toReal with hVdef
+  set A : ℝ → ℝ≥0∞ := fun r =>
+    Formalism.REAL.muG ε {g | Real.sqrt (Formalism.REAL.hs (Formalism.MainNotions.S.uMat g - 1)) ≤ r} with hAdef
+  set B : ℝ → ℝ≥0∞ := fun r =>
+    Formalism.REAL.muG ε {g | Formalism.REAL.hs (Formalism.MainNotions.S.uMat g - 1) < r ^ 2} with hBdef
+  have hV : 0 < V :=
+    ENNReal.toReal_pos (Metric.measure_ball_pos _ _ one_pos).ne' measure_ball_lt_top.ne
+  have hc' : Tendsto (fun r => c * (A r).toReal / r ^ (n ^ 2)) (𝓝[>] 0) (𝓝 V) := hc
+  have hBA : ∀ r : ℝ, 0 < r → B r ≤ A r := by
+    intro r hr
+    apply measure_mono
+    intro g hg
+    exact ((Real.sqrt_lt' hr).2 hg).le
+  have hAB : ∀ r s : ℝ, 0 < r → s < r → A s ≤ B r := by
+    intro r s hr hs
+    apply measure_mono
+    intro g hg
+    exact (Real.sqrt_lt' hr).1 (lt_of_le_of_lt hg hs)
+  have hfin : ∀ᶠ r in 𝓝[>] (0 : ℝ), A r ≠ ⊤ := by
+    filter_upwards [hc'.eventually (lt_mem_nhds hV)] with r hr htop
+    rw [htop] at hr
+    simp at hr
+  have h1 : Tendsto (fun r : ℝ => (1 - r) ^ (n ^ 2)) (𝓝[>] 0) (𝓝 1) := by
+    have : Tendsto (fun r : ℝ => (1 - r) ^ (n ^ 2)) (𝓝 0) (𝓝 ((1 - 0) ^ (n ^ 2))) :=
+      ((continuous_const.sub continuous_id).pow _).tendsto 0
+    simpa using this.mono_left nhdsWithin_le_nhds
+  have h2 : Tendsto (fun r : ℝ => (1 - r) * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    apply tendsto_nhdsWithin_iff.2
+    constructor
+    · have : Tendsto (fun r : ℝ => (1 - r) * r) (𝓝 0) (𝓝 ((1 - 0) * 0)) :=
+        ((continuous_const.sub continuous_id).mul continuous_id).tendsto 0
+      simpa using this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 by norm_num)] with r hr
+      exact mul_pos (by linarith [hr.2]) hr.1
+  have hlow : Tendsto (fun r : ℝ => (1 - r) ^ (n ^ 2) *
+      (c * (A ((1 - r) * r)).toReal / ((1 - r) * r) ^ (n ^ 2))) (𝓝[>] 0) (𝓝 V) := by
+    simpa using h1.mul (hc'.comp h2)
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlow hc' ?_ ?_
+  · filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 by norm_num), hfin] with r hr hAr
+    have hr0 : 0 < r := hr.1
+    have h1r : 0 < 1 - r := by linarith [hr.2]
+    have hBfin : B r ≠ ⊤ := ne_top_of_le_ne_top hAr (hBA r hr0)
+    have hle : (A ((1 - r) * r)).toReal ≤ (B r).toReal :=
+      ENNReal.toReal_mono hBfin (hAB r _ hr0 (by nlinarith))
+    have hne1 : (1 - r) ^ (n ^ 2) ≠ 0 := pow_ne_zero _ h1r.ne'
+    have hne2 : r ^ (n ^ 2) ≠ 0 := pow_ne_zero _ hr0.ne'
+    have heq : (1 - r) ^ (n ^ 2) * (c * (A ((1 - r) * r)).toReal / ((1 - r) * r) ^ (n ^ 2)) =
+        c * (A ((1 - r) * r)).toReal / r ^ (n ^ 2) := by
+      rw [mul_pow]
+      field_simp
+    rw [heq]
+    exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hle hc0.le) (pow_pos hr0 _).le
+  · filter_upwards [self_mem_nhdsWithin, hfin] with r hr hAr
+    have hr0 : (0 : ℝ) < r := hr
+    exact div_le_div_of_nonneg_right
+      (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hAr (hBA r hr0)) hc0.le) (pow_pos hr0 _).le
+
+theorem gauge_transport : ∀ (n : ℕ) (ε : Fin n → Bool) (c : ℝ) (P Q : ℕ) (f : Fin P ⊕ Fin Q ≃ Fin n) (hf : Sorts ε f), GlobalTheory.Count.IsGauge ε c → 0 < c ∧ HasEuclDensity ((ENNReal.ofReal c • Formalism.REAL.muG ε).map hf.equiv.symm) := by
+  intro n ε c P Q f hf hc
+  have hc0 : 0 < c := pos_of_isGauge' hc
+  refine ⟨hc0, ?_⟩
+  have : BorelSpace (UpqT P Q) := ⟨rfl⟩
+  have hPQ : P + Q = n := Sorts.add_eq f
+  have hVfin : volume (Metric.ball (0 : EuclideanSpace ℝ (Fin (n ^ 2))) 1) ≠ ⊤ :=
+    measure_ball_lt_top.ne
+  set V := (volume (Metric.ball (0 : EuclideanSpace ℝ (Fin (n ^ 2))) 1)).toReal with hVdef
+  have hV : 0 < V :=
+    ENNReal.toReal_pos (Metric.measure_ball_pos _ _ one_pos).ne' hVfin
+  have hlim := tendsto_gauge_ratio_volume_ball hc hc0
+  have key : ∀ r : ℝ, ((ENNReal.ofReal c • Formalism.REAL.muG ε).map hf.equiv.symm) {g | hsDist g < r ^ 2} =
+      ENNReal.ofReal c * Formalism.REAL.muG ε {k | Formalism.REAL.hs (Formalism.MainNotions.S.uMat k - 1) < r ^ 2} := by
+    intro r
+    rw [Measure.map_apply (show Measurable (hf.equiv.symm : Formalism.REAL.UJ ε → UpqT P Q) from
+        hf.equiv.symm.continuous.measurable)
+      (measurableSet_lt continuous_hsDist.measurable measurable_const), Measure.smul_apply, smul_eq_mul]
+    congr 2
+    ext k
+    simp [hsDist_equiv_symm hf k]
+  have hBfin : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      Formalism.REAL.muG ε {k | Formalism.REAL.hs (Formalism.MainNotions.S.uMat k - 1) < r ^ 2} ≠ ⊤ := by
+    filter_upwards [hlim.eventually (lt_mem_nhds hV)] with r hr htop
+    rw [htop] at hr
+    simp at hr
+  have hlim' : Tendsto (fun r : ℝ => ENNReal.ofReal
+      (c * (Formalism.REAL.muG ε {k | Formalism.REAL.hs (Formalism.MainNotions.S.uMat k - 1) < r ^ 2}).toReal / r ^ (n ^ 2) / V))
+      (𝓝[>] 0) (𝓝 1) := by
+    have := ENNReal.tendsto_ofReal (hlim.div_const V)
+    rwa [div_self hV.ne', ENNReal.ofReal_one] at this
+  unfold HasEuclDensity
+  refine hlim'.congr' ?_
+  filter_upwards [self_mem_nhdsWithin, hBfin] with r hr hB
+  have hr0 : (0 : ℝ) < r := hr
+  have hball : ballVol ((P + Q) ^ 2) r = ENNReal.ofReal (r ^ (n ^ 2)) * ENNReal.ofReal V := by
+    have := ballVol_mul ((P + Q) ^ 2) r 1 hr0 one_pos
+    rw [mul_one] at this
+    rw [this, hPQ, hVdef, ENNReal.ofReal_toReal hVfin]
+    rfl
+  rw [key r, hball, ← ENNReal.ofReal_mul (pow_nonneg hr0.le _), div_div,
+    ENNReal.ofReal_div_of_pos (mul_pos (pow_pos hr0 _) hV), ENNReal.ofReal_mul hc0.le,
+    ENNReal.ofReal_toReal hB]
+
+end GlobalTheory.GaugeQuot
+end
+end
+
+open MeasureTheory Matrix Filter Topology Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding GlobalTheory.CompactDualQuot GlobalTheory.GaugeQuot GlobalTheory.Mem.Vol.Scale
+open scoped ENNReal NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.riemannianHaarGauge_transport_block_model : ∀ (n : ℕ) (ε : Fin n → Bool) (c : ℝ) (P Q : ℕ) (f : Fin P ⊕ Fin Q ≃ Fin n) (hf : Sorts ε f), GlobalTheory.Count.IsGauge ε c → 0 < c ∧ HasEuclDensity ((ENNReal.ofReal c • Formalism.REAL.muG ε).map hf.equiv.symm) := by
+  atlas_forward_decl GlobalTheory.GaugeQuot.gauge_transport
+end
+
+section
 section
 noncomputable section
 
@@ -560,3 +1293,4 @@ open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheor
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.gauge_measure_quotient_unitaryJ_vector_stabiliser : ∀ (n : ℕ) (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool) (s : Bool) (x₀ : Fin (n + 1) → ℂ) (B : Matrix (Fin (n + 1)) (Fin n) ℂ) (j : Formalism.REAL.UJ ε' →* Formalism.REAL.UJ ε), qEps ε x₀ = sgn ℝ s → star x₀ ᵥ* (Formalism.REAL.Jm ε * B) = 0 → Bᴴ * Formalism.REAL.Jm ε * B = Formalism.REAL.Jm ε' → (∀ g, uMat (j g) *ᵥ x₀ = x₀ ∧ uMat (j g) * B = B * uMat g) → ∀ c c' : ℝ, IsGauge ε c → IsGauge ε' c' → ∀ b : Formalism.REAL.UJ ε → ENNReal, Measurable b → (∀ g, ENNReal.ofReal c' * ∫⁻ h, b (j h * g) ∂(Formalism.REAL.muG ε') = 1) → ENNReal.ofReal c * ∫⁻ g, ENNReal.ofReal (gauss ((uMat g)⁻¹ *ᵥ x₀)) * b g ∂(Formalism.REAL.muG ε) = ENNReal.ofReal (2 ^ (n + 1) * gaussDens ε (sgn ℝ s)) := by
   atlas_forward_decl GlobalTheory.GaugeQuot.gauge_quotient
+end

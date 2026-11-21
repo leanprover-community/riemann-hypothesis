@@ -1,15 +1,617 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommutingOperatorsPolynomialEvalPderivStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InjectiveOfMapPderivEqAndMapOneNeZeroStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorPolynomialsToProductVariablesInjective
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorPolynomialsToProductVariablesCompMulLeftX
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorPolynomialsToProductVariablesCompPderiv
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergCreationOperatorsCommuteOfCcr
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergAnnihilationCreationCommutatorEqDelta
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergFamilyExpandCreationAnnihilation
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockHeisenbergOperatorOfCoordsEqSumMulLeftPderivStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolEval
 
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+
+namespace GlobalTheory.CCRFock
+
+theorem polEval_pderiv :
+    ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {ι : Type} [DecidableEq ι] (m d : ι → Module.End ℂ V)
+    (hm : ∀ i j, m i * m j = m j * m i) (f₀ : V), (∀ i j, d i * m j - m j * d i = if i = j then 1 else 0) →
+    (∀ i, d i f₀ = 0) → ∀ (i : ι) (p : MvPolynomial ι ℂ),
+      GlobalTheory.CCRFock.polEval m hm f₀ (MvPolynomial.pderiv i p) = d i (GlobalTheory.CCRFock.polEval m hm f₀ p) := by
+  intro V _ _ ι _ m d hm f₀ hc h0 i p
+  have hX : ∀ (j : ι) (q : MvPolynomial ι ℂ),
+      polEval m hm f₀ (MvPolynomial.X j * q) = m j (polEval m hm f₀ q) := by
+    intro j q
+    simp [polEval, Module.End.mul_apply]
+  have h1 : polEval m hm f₀ 1 = f₀ := by simp [polEval]
+  induction p using MvPolynomial.induction_on with
+  | C a =>
+    have hC : (MvPolynomial.C a : MvPolynomial ι ℂ) = a • (1 : MvPolynomial ι ℂ) := by
+      rw [MvPolynomial.smul_eq_C_mul, mul_one]
+    rw [MvPolynomial.pderiv_C, map_zero, hC, map_smul, h1, map_smul, h0, smul_zero]
+  | add p q hp hq => simp only [map_add, hp, hq]
+  | mul_X q j hq =>
+    have hv := LinearMap.congr_fun (hc i j) (polEval m hm f₀ q)
+    rw [LinearMap.sub_apply, Module.End.mul_apply, Module.End.mul_apply, sub_eq_iff_eq_add] at hv
+    rw [mul_comm q, MvPolynomial.pderiv_mul, map_add, hX, hX, hq, hv]
+    congr 1
+    by_cases hij : i = j
+    · subst hij
+      simp
+    · rw [MvPolynomial.pderiv_X_of_ne (Ne.symm hij)]
+      simp [hij]
+
+end GlobalTheory.CCRFock
+end
+
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.commutingOperatorsPolynomialEval_pderiv : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {ι : Type} [DecidableEq ι] (m d : ι → Module.End ℂ V)
+    (hm : ∀ i j, m i * m j = m j * m i) (f₀ : V), (∀ i j, d i * m j - m j * d i = if i = j then 1 else 0) →
+    (∀ i, d i f₀ = 0) → ∀ (i : ι) (p : MvPolynomial ι ℂ),
+      GlobalTheory.CCRFock.polEval m hm f₀ (MvPolynomial.pderiv i p) = d i (GlobalTheory.CCRFock.polEval m hm f₀ p) := by
+  first | exact @GlobalTheory.CCRFock.polEval_pderiv | exact GlobalTheory.CCRFock.polEval_pderiv | (intros; apply GlobalTheory.CCRFock.polEval_pderiv <;> assumption)
+end
+
+section
+namespace GlobalTheory.FockAlg
+
+open MvPolynomial in
+
+theorem injective_of_pderiv {V : Type} [AddCommGroup V] [Module ℂ V] {ι : Type}
+    (Φ₀ : MvPolynomial ι ℂ →ₗ[ℂ] V) (d : ι → Module.End ℂ V)
+    (hd : ∀ (i : ι) (p : MvPolynomial ι ℂ), Φ₀ (MvPolynomial.pderiv i p) = d i (Φ₀ p))
+    (h1 : Φ₀ 1 ≠ 0) : Function.Injective Φ₀ := by
+  classical
+  have hC : ∀ p : MvPolynomial ι ℂ, Φ₀ p = 0 → (∀ m ∈ p.support, m = 0) → p = 0 := by
+    intro p hp hs
+    have e : p = (coeff 0 p) • (1 : MvPolynomial ι ℂ) := by
+      ext m
+      by_cases hm : m = 0
+      · subst hm; simp
+      · have : coeff m p = 0 := by
+          by_contra h
+          exact hm (hs m (mem_support_iff.2 h))
+        rw [this, coeff_smul, coeff_one, if_neg (Ne.symm hm), smul_zero]
+    rw [e, map_smul, smul_eq_zero] at hp
+    rcases hp with hp | hp
+    · rw [e, hp, zero_smul]
+    · exact absurd hp h1
+  have key : ∀ n : ℕ, ∀ p : MvPolynomial ι ℂ, (∀ m ∈ p.support, m.degree ≤ n) →
+      Φ₀ p = 0 → p = 0 := by
+    intro n
+    induction n with
+    | zero =>
+      intro p hs hp
+      exact hC p hp (fun m hm => (Finsupp.degree_eq_zero_iff m).1 (Nat.le_zero.1 (hs m hm)))
+    | succ n ih =>
+      intro p hs hp
+      have hz : ∀ i, pderiv i p = 0 := by
+        intro i
+        apply ih
+        · intro m hm
+          rw [mem_support_iff, coeff_pderiv] at hm
+          have h2 := hs _ (mem_support_iff.2 (left_ne_zero_of_mul hm))
+          rw [map_add, Finsupp.degree_single] at h2
+          omega
+        · rw [hd, hp, map_zero]
+      apply hC p hp
+      intro m hm
+      by_contra hm0
+      obtain ⟨i, hi⟩ : ∃ i, m i ≠ 0 := by
+        by_contra h
+        push Not at h
+        exact hm0 (Finsupp.ext h)
+      have hle : Finsupp.single i 1 ≤ m := by
+        rw [Finsupp.single_le_iff]; omega
+      have hc := congrArg (coeff (m - Finsupp.single i 1)) (hz i)
+      rw [coeff_pderiv, tsub_add_cancel_of_le hle, coeff_zero, mul_eq_zero] at hc
+      rcases hc with hc | hc
+      · exact (mem_support_iff.1 hm) hc
+      · exact (Nat.cast_add_one_ne_zero _) hc
+  rw [injective_iff_map_eq_zero]
+  intro p hp
+  exact key (p.support.sup fun m => m.degree) p
+    (fun m hm => Finset.le_sup (f := fun m : ι →₀ ℕ => m.degree) hm) hp
+
+end GlobalTheory.FockAlg
+end
+
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.injective_of_map_pderiv_eq_and_map_one_ne_zero : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {ι : Type} (Φ₀ : MvPolynomial ι ℂ →ₗ[ℂ] V)
+    (d : ι → Module.End ℂ V), (∀ (i : ι) (p : MvPolynomial ι ℂ), Φ₀ (MvPolynomial.pderiv i p) = d i (Φ₀ p)) →
+    Φ₀ 1 ≠ 0 → Function.Injective Φ₀ := by
+  first | exact @GlobalTheory.FockAlg.injective_of_pderiv | exact GlobalTheory.FockAlg.injective_of_pderiv | (intros; apply GlobalTheory.FockAlg.injective_of_pderiv <;> assumption)
+end
+
+section
+section
+open scoped TensorProduct Matrix Classical
+
+noncomputable section
+
+namespace GlobalTheory.CCRFock
+
+open MvPolynomial
+
+theorem polMap_index_injective (W Λ : Type) [Fintype W] :
+    Function.Injective (fun f : W → (Λ →₀ ℕ) => ∑ w, Finsupp.mapDomain (Prod.mk w) (f w)) := by
+  have key : ∀ (f : W → (Λ →₀ ℕ)) (w : W) (l : Λ),
+      (∑ w, Finsupp.mapDomain (Prod.mk w) (f w)) (w, l) = f w l := by
+    intro f w l
+    rw [Finsupp.finset_sum_apply, Finset.sum_eq_single w]
+    · exact Finsupp.mapDomain_apply (Prod.mk_right_injective w) _ _
+    · intro v _ hv
+      apply Finsupp.mapDomain_notin_range
+      rintro ⟨x, hx⟩
+      exact hv (congrArg Prod.fst hx)
+    · intro h
+      exact absurd (Finset.mem_univ w) h
+  intro f g h
+  funext w
+  ext l
+  rw [← key f w l, ← key g w l]
+  exact congrArg (fun F : (W × Λ) →₀ ℕ => F (w, l)) h
+
+theorem polMap_tprod_monomial (W Λ : Type) [Fintype W] [DecidableEq W] (f : W → (Λ →₀ ℕ)) :
+    polMap W Λ (PiTensorProduct.tprod ℂ (fun w => (monomial (f w) (1 : ℂ) : MvPolynomial Λ ℂ))) =
+      monomial (∑ w, Finsupp.mapDomain (Prod.mk w) (f w)) 1 := by
+  rw [monomial_sum_one]
+  simp only [polMap, PiTensorProduct.lift.tprod, MultilinearMap.compLinearMap_apply,
+    MultilinearMap.mkPiAlgebra_apply, AlgHom.toLinearMap_apply, rename_monomial]
+
+theorem polMap_injective (W Λ : Type) [Fintype W] [DecidableEq W] :
+    Function.Injective (polMap W Λ) := by
+  let B := Basis.piTensorProduct (fun _ : W => basisMonomials Λ ℂ)
+  have hli : LinearIndependent ℂ (polMap W Λ ∘ B) := by
+    have h := (basisMonomials (W × Λ) ℂ).linearIndependent.comp _ (polMap_index_injective W Λ)
+    have e : polMap W Λ ∘ B = (basisMonomials (W × Λ) ℂ) ∘
+        (fun f : W → (Λ →₀ ℕ) => ∑ w, Finsupp.mapDomain (Prod.mk w) (f w)) := by
+      funext f
+      simp only [Function.comp, B, Basis.piTensorProduct_apply, coe_basisMonomials]
+      exact polMap_tprod_monomial W Λ f
+    rw [e]
+    exact h
+  have h1 : polMap W Λ ∘ₗ Finsupp.linearCombination ℂ B = Finsupp.linearCombination ℂ (polMap W Λ ∘ B) := by
+    ext f
+    simp
+  intro x y hxy
+  apply B.repr.injective
+  apply hli
+  rw [← h1]
+  simp only [LinearMap.comp_apply, Module.Basis.linearCombination_repr, hxy]
+
+end GlobalTheory.CCRFock
+end
+end
+
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensorPolynomialsToProductVariables_injective : ∀ (W Λ : Type) [Fintype W] [DecidableEq W], Function.Injective (GlobalTheory.CCRFock.polMap W Λ) := by
+  atlas_forward_decl GlobalTheory.CCRFock.polMap_injective
+end
+
+section
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+
+namespace GlobalTheory.CCRFock
+
+theorem polMap_tprod_eq_prod_rename_mulX (W Λ : Type) [Fintype W] [DecidableEq W] (q : W → MvPolynomial Λ ℂ) :
+    GlobalTheory.CCRFock.polMap W Λ (PiTensorProduct.tprod ℂ q) =
+      ∏ v, MvPolynomial.rename (Prod.mk v) (q v) := by
+  simp [GlobalTheory.CCRFock.polMap]
+
+theorem polMap_comp_atPl_mulLeft_X : ∀ (W Λ : Type) [Fintype W] [DecidableEq W] (w : W) (l : Λ),
+    GlobalTheory.CCRFock.polMap W Λ ∘ₗ GlobalTheory.RealLift.atPl (V := fun _ : W => MvPolynomial Λ ℂ) w
+                 (LinearMap.mulLeft ℂ (MvPolynomial.X l)) =
+      LinearMap.mulLeft ℂ (MvPolynomial.X (w, l)) ∘ₗ GlobalTheory.CCRFock.polMap W Λ := by
+  intro W Λ _ _ w l
+  apply PiTensorProduct.ext
+  apply MultilinearMap.ext
+  intro p
+  have h : GlobalTheory.RealLift.atPl (V := fun _ : W => MvPolynomial Λ ℂ) w
+        (LinearMap.mulLeft ℂ (MvPolynomial.X l)) (PiTensorProduct.tprod ℂ p) =
+      PiTensorProduct.tprod ℂ (Function.update p w (MvPolynomial.X l * p w)) := by
+    unfold GlobalTheory.RealLift.atPl
+    rw [PiTensorProduct.map_tprod]
+    congr 1
+    funext v
+    by_cases hv : v = w
+    · subst hv; simp
+    · simp [Function.update_of_ne hv]
+  simp only [LinearMap.compMultilinearMap_apply, LinearMap.comp_apply, h, polMap_tprod_eq_prod_rename_mulX,
+    LinearMap.mulLeft_apply]
+  rw [Fintype.prod_eq_mul_prod_compl w, Fintype.prod_eq_mul_prod_compl w
+    (fun v => MvPolynomial.rename (Prod.mk v) (p v)), ← mul_assoc]
+  congr 1
+  · simp
+  · refine Finset.prod_congr rfl fun v hv => ?_
+    have hv' : v ≠ w := by simpa using hv
+    rw [Function.update_of_ne hv']
+
+end GlobalTheory.CCRFock
+end
+
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensorPolynomialsToProductVariables_comp_mulLeft_X : ∀ (W Λ : Type) [Fintype W] [DecidableEq W] (w : W) (l : Λ),
+    GlobalTheory.CCRFock.polMap W Λ ∘ₗ GlobalTheory.RealLift.atPl (V := fun _ : W => MvPolynomial Λ ℂ) w
+                 (LinearMap.mulLeft ℂ (MvPolynomial.X l)) =
+      LinearMap.mulLeft ℂ (MvPolynomial.X (w, l)) ∘ₗ GlobalTheory.CCRFock.polMap W Λ := by
+  atlas_forward_decl GlobalTheory.CCRFock.polMap_comp_atPl_mulLeft_X
+end
+
+section
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+
+noncomputable section
+namespace GlobalTheory.CCRFock
+
+theorem pderiv_rename_prodMk_of_ne {W Λ : Type} {v w : W} (h : v ≠ w) (l : Λ) (r : MvPolynomial Λ ℂ) :
+    MvPolynomial.pderiv (w, l) (MvPolynomial.rename (Prod.mk v) r) = 0 := by
+  induction r using MvPolynomial.induction_on with
+  | C a => simp
+  | add p q hp hq => simp [hp, hq]
+  | mul_X p i hp =>
+    rw [map_mul, MvPolynomial.rename_X, Derivation.leibniz, hp, MvPolynomial.pderiv_X_of_ne]
+    · simp
+    · intro e; exact h (congrArg Prod.fst e)
+
+theorem pderiv_prod_rename_of_notMem {W Λ : Type} {w : W} (l : Λ) (q : W → MvPolynomial Λ ℂ) (s : Finset W)
+    (hs : w ∉ s) :
+    MvPolynomial.pderiv (w, l) (∏ v ∈ s, MvPolynomial.rename (Prod.mk v) (q v)) = 0 := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [Finset.mem_insert, not_or] at hs
+    rw [Finset.prod_insert ha, Derivation.leibniz, ih hs.2,
+      pderiv_rename_prodMk_of_ne (fun e => hs.1 e.symm)]
+    simp
+
+theorem polMap_comp_atPl_pderiv (W Λ : Type) [Fintype W] [DecidableEq W] (w : W) (l : Λ) :
+    GlobalTheory.CCRFock.polMap W Λ ∘ₗ GlobalTheory.RealLift.atPl (V := fun _ : W => MvPolynomial Λ ℂ) w
+                 (MvPolynomial.pderiv l).toLinearMap =
+      (MvPolynomial.pderiv (w, l)).toLinearMap ∘ₗ GlobalTheory.CCRFock.polMap W Λ := by
+  apply PiTensorProduct.ext
+  ext1 q
+  simp only [LinearMap.compMultilinearMap_apply, LinearMap.comp_apply, polMap, atPl, PiTensorProduct.map_tprod,
+    PiTensorProduct.lift.tprod, MultilinearMap.compLinearMap_apply, MultilinearMap.mkPiAlgebra_apply,
+    AlgHom.toLinearMap_apply]
+  rw [← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ w),
+    ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ w)]
+  have h1 : ∏ i ∈ Finset.univ.erase w, MvPolynomial.rename (Prod.mk i)
+      ((Function.update (fun _ : W => (LinearMap.id : MvPolynomial Λ ℂ →ₗ[ℂ] MvPolynomial Λ ℂ)) w
+        (MvPolynomial.pderiv l).toLinearMap i) (q i)) =
+      ∏ i ∈ Finset.univ.erase w, MvPolynomial.rename (Prod.mk i) (q i) :=
+    Finset.prod_congr rfl fun i hi => by
+      rw [Function.update_of_ne (Finset.ne_of_mem_erase hi), LinearMap.id_apply]
+  rw [h1, Function.update_self, Derivation.coeFn_coe, Derivation.coeFn_coe, Derivation.leibniz,
+    pderiv_prod_rename_of_notMem l q _ (Finset.notMem_erase w _),
+    MvPolynomial.pderiv_rename (Prod.mk_right_injective w) l (q w)]
+  simp [mul_comm]
+
+end GlobalTheory.CCRFock
+end
+end
+
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensorPolynomialsToProductVariables_comp_pderiv : ∀ (W Λ : Type) [Fintype W] [DecidableEq W] (w : W) (l : Λ),
+    GlobalTheory.CCRFock.polMap W Λ ∘ₗ GlobalTheory.RealLift.atPl (V := fun _ : W => MvPolynomial Λ ℂ) w
+                 (MvPolynomial.pderiv l).toLinearMap =
+      (MvPolynomial.pderiv (w, l)).toLinearMap ∘ₗ GlobalTheory.CCRFock.polMap W Λ := by
+  atlas_forward_decl GlobalTheory.CCRFock.polMap_comp_atPl_pderiv
+end
+
+section
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+
+namespace GlobalTheory.CCRFock
+
+theorem fockM_comm_sum {W : Type} [Fintype W] [DecidableEq W] {P Q R S : ℕ} (j k : W × (Ix P Q × Ix R S)) (z z' : ℂ) :
+    (∑ w, ∑ a, ∑ b, lineSign a b * unitAt j z w a b * star (unitAt k z' w a b)) =
+      if j = k then lineSign j.2.1 j.2.2 * z * star z' else 0 := by
+  obtain ⟨w, a, b⟩ := j
+  obtain ⟨w', a', b'⟩ := k
+  rw [Finset.sum_eq_single w, Finset.sum_eq_single a, Finset.sum_eq_single b]
+  · by_cases hw : w = w'
+    · subst hw
+      by_cases ha : a = a'
+      · subst ha
+        by_cases hb : b = b'
+        · subst hb; simp [unitAt]
+        · simp [unitAt, hb, Ne.symm hb]
+      · simp [unitAt, ha, Ne.symm ha]
+    · simp [unitAt, hw]
+  · intro c _ hc; simp [unitAt, Ne.symm hc]
+  · simp
+  · intro c _ hc; simp [unitAt, Ne.symm hc]
+  · simp
+  · intro c _ hc; simp [unitAt, hc]
+  · simp
+
+theorem fockM_comm : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {W : Type} [Fintype W] [DecidableEq W] {P Q R S : ℕ}
+    (H : (W → Matrix (Ix P Q) (Ix R S) ℂ) → Module.End ℂ V),
+    (∀ c c', H (c + c') = H c + H c') → (∀ (r : ℝ) c, H ((r : ℂ) • c) = (r : ℂ) • H c) →
+    (∀ c c', H c * H c' - H c' * H c =
+      ((4 * Real.pi : ℂ) * Complex.I * ((∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (c' w a b)).im : ℂ)) • 1) →
+    ∀ j k : W × (Ix P Q × Ix R S), GlobalTheory.CCRFock.fockM H j * GlobalTheory.CCRFock.fockM H k = GlobalTheory.CCRFock.fockM H k * GlobalTheory.CCRFock.fockM H j := by
+  intro V _ _ W _ _ P Q R S H _ _ hc j k
+  have h11 := hc (unitAt j 1) (unitAt k 1)
+  have h1i := hc (unitAt j 1) (unitAt k Complex.I)
+  have hi1 := hc (unitAt j Complex.I) (unitAt k 1)
+  have hii := hc (unitAt j Complex.I) (unitAt k Complex.I)
+  rw [fockM_comm_sum] at h11 h1i hi1 hii
+  by_cases hjk : j = k
+  · rw [hjk]
+  · simp only [if_neg hjk, Complex.zero_im, Complex.ofReal_zero, mul_zero, zero_smul, sub_eq_zero] at h11 h1i hi1 hii
+    unfold fockM
+    have c : Commute (H (unitAt j 1) - (lineSign j.2.1 j.2.2 * Complex.I) • H (unitAt j Complex.I))
+        (H (unitAt k 1) - (lineSign k.2.1 k.2.2 * Complex.I) • H (unitAt k Complex.I)) :=
+      Commute.sub_left (Commute.sub_right h11 (Commute.smul_right h1i _))
+        (Commute.smul_left (Commute.sub_right hi1 (Commute.smul_right hii _)) _)
+    exact ((c.smul_left _).smul_right _).eq
+
+end GlobalTheory.CCRFock
+end
+
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heisenberg_creation_operators_commute_of_ccr : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {W : Type} [Fintype W] [DecidableEq W] {P Q R S : ℕ}
+    (H : (W → Matrix (Ix P Q) (Ix R S) ℂ) → Module.End ℂ V),
+    (∀ c c', H (c + c') = H c + H c') → (∀ (r : ℝ) c, H ((r : ℂ) • c) = (r : ℂ) • H c) →
+    (∀ c c', H c * H c' - H c' * H c =
+      ((4 * Real.pi : ℂ) * Complex.I * ((∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (c' w a b)).im : ℂ)) • 1) →
+    ∀ j k : W × (Ix P Q × Ix R S), GlobalTheory.CCRFock.fockM H j * GlobalTheory.CCRFock.fockM H k = GlobalTheory.CCRFock.fockM H k * GlobalTheory.CCRFock.fockM H j := by
+  atlas_forward_decl GlobalTheory.CCRFock.fockM_comm
+end
+
+section
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+
+namespace GlobalTheory.CCRFock.CommDM
+open GlobalTheory.CCRFock
+
+private lemma unitAt_apply_eq_ite {W : Type} [DecidableEq W] {P Q R S : ℕ} (j : W × (Ix P Q × Ix R S)) (z : ℂ)
+    (w : W) (a : Ix P Q) (b : Ix R S) : unitAt j z w a b = if (w, (a, b)) = j then z else 0 := by
+  obtain ⟨j1, j2, j3⟩ := j
+  by_cases h1 : w = j1
+  · subst h1
+    by_cases h2 : a = j2
+    · subst h2
+      by_cases h3 : b = j3
+      · subst h3
+        simp [unitAt]
+      · simp [unitAt, h3, Ne.symm h3]
+    · simp [unitAt, h2, Ne.symm h2]
+  · simp [unitAt, h1]
+
+theorem sum_unitAt {W : Type} [Fintype W] [DecidableEq W] {P Q R S : ℕ} (j k : W × (Ix P Q × Ix R S)) (z z' : ℂ) :
+    (∑ w, ∑ a, ∑ b, lineSign a b * unitAt j z w a b * star (unitAt k z' w a b)) =
+      if j = k then lineSign j.2.1 j.2.2 * z * star z' else 0 := by
+  have key : ∀ (w : W) (a : Ix P Q) (b : Ix R S), lineSign a b * unitAt j z w a b * star (unitAt k z' w a b) =
+      if (w, (a, b)) = j then (if j = k then lineSign j.2.1 j.2.2 * z * star z' else 0) else 0 := by
+    intro w a b
+    rw [unitAt_apply_eq_ite, unitAt_apply_eq_ite]
+    by_cases hj : (w, (a, b)) = j
+    · subst hj
+      by_cases hk : (w, (a, b)) = k
+      · subst hk
+        simp
+      · simp [hk]
+    · simp [hj]
+  simp only [key]
+  rw [Fintype.sum_eq_single j.1, Fintype.sum_eq_single j.2.1, Fintype.sum_eq_single j.2.2]
+  all_goals first
+    | (intro x hx; simp [Prod.ext_iff, hx])
+    | simp
+
+theorem lineSign_cases {P Q R S : ℕ} (a : Ix P Q) (b : Ix R S) : (lineSign a b : ℂ) = 1 ∨ (lineSign a b : ℂ) = -1 := by
+  rcases a with a | a <;> rcases b with b | b <;> simp [lineSign]
+
+theorem comm_expand {V : Type} [AddCommGroup V] [Module ℂ V] (A A' B B' : Module.End ℂ V) (c u v : ℂ) :
+    -(c • (A + u • A')) * (c • (B - v • B')) - (c • (B - v • B')) * -(c • (A + u • A')) =
+      -((c * c) • ((A * B - B * A) - v • (A * B' - B' * A) + u • (A' * B - B * A') - (u * v) • (A' * B' - B' * A'))) := by
+  simp only [neg_mul, mul_neg, smul_mul_assoc, mul_smul_comm, smul_smul, mul_add, add_mul, mul_sub, sub_mul,
+    smul_add, smul_sub, smul_neg]
+  module
+
+theorem inv_sq : (2 * ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ))⁻¹ * (2 * ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ))⁻¹ =
+    (8 * (Real.pi : ℂ))⁻¹ := by
+  rw [← mul_inv]
+  congr 1
+  have h : ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) = 2 * (Real.pi : ℂ) := by
+    rw [← Complex.ofReal_mul, Real.mul_self_sqrt (by positivity)]
+    push_cast
+    ring
+  linear_combination 4 * h
+
+theorem fockD_fockM_comm : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {W : Type} [Fintype W] [DecidableEq W] {P Q R S : ℕ}
+    (H : (W → Matrix (Ix P Q) (Ix R S) ℂ) → Module.End ℂ V),
+    (∀ c c', H (c + c') = H c + H c') → (∀ (r : ℝ) c, H ((r : ℂ) • c) = (r : ℂ) • H c) →
+    (∀ c c', H c * H c' - H c' * H c =
+      ((4 * Real.pi : ℂ) * Complex.I * ((∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (c' w a b)).im : ℂ)) • 1) →
+    ∀ j k : W × (Ix P Q × Ix R S), GlobalTheory.CCRFock.fockD H j * GlobalTheory.CCRFock.fockM H k - GlobalTheory.CCRFock.fockM H k * GlobalTheory.CCRFock.fockD H j =
+      if j = k then 1 else 0 := by
+  intro V _ _ W _ _ P Q R S H _ _ hcomm j k
+  simp only [GlobalTheory.CCRFock.fockD, GlobalTheory.CCRFock.fockM]
+  rw [comm_expand, hcomm, hcomm, hcomm, hcomm, sum_unitAt, sum_unitAt, sum_unitAt, sum_unitAt, inv_sq]
+  by_cases hjk : j = k
+  · subst hjk
+    rcases lineSign_cases j.2.1 j.2.2 with h | h
+    · simp only [if_true, h]
+      match_scalars
+      simp
+      field_simp
+      ring_nf
+      simp [Complex.I_sq]
+    · simp only [if_true, h]
+      match_scalars
+      simp
+      field_simp
+      ring_nf
+      simp [Complex.I_sq]
+  · simp [hjk]
+
+end GlobalTheory.CCRFock.CommDM
+end
+
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heisenberg_annihilation_creation_commutator_eq_delta : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {W : Type} [Fintype W] [DecidableEq W] {P Q R S : ℕ}
+    (H : (W → Matrix (Ix P Q) (Ix R S) ℂ) → Module.End ℂ V),
+    (∀ c c', H (c + c') = H c + H c') → (∀ (r : ℝ) c, H ((r : ℂ) • c) = (r : ℂ) • H c) →
+    (∀ c c', H c * H c' - H c' * H c =
+      ((4 * Real.pi : ℂ) * Complex.I * ((∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (c' w a b)).im : ℂ)) • 1) →
+    ∀ j k : W × (Ix P Q × Ix R S), GlobalTheory.CCRFock.fockD H j * GlobalTheory.CCRFock.fockM H k - GlobalTheory.CCRFock.fockM H k * GlobalTheory.CCRFock.fockD H j =
+      if j = k then 1 else 0 := by
+  atlas_forward_decl GlobalTheory.CCRFock.CommDM.fockD_fockM_comm
+end
+
+section
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+
+namespace GlobalTheory.CCRFock
+
+theorem lineSign_mul_self {P Q R S : ℕ} (a : Ix P Q) (b : Ix R S) : lineSign a b * lineSign a b = 1 := by
+  rcases a with a | a <;> rcases b with b | b <;> simp [lineSign]
+
+theorem sum_unitAt {W : Type} [Fintype W] [DecidableEq W] {P Q R S : ℕ} (c : W → Matrix (Ix P Q) (Ix R S) ℂ) :
+    c = ∑ j : W × (Ix P Q × Ix R S), unitAt j (c j.1 j.2.1 j.2.2) := by
+  rw [Fintype.sum_prod_type]
+  conv_lhs => rw [← Finset.univ_sum_single c]
+  refine Finset.sum_congr rfl fun w _ => ?_
+  rw [Fintype.sum_prod_type]
+  conv_lhs => rw [Matrix.matrix_eq_sum_single (c w)]
+  funext v
+  simp only [unitAt, Finset.sum_apply]
+  by_cases h : v = w
+  · subst h
+    simp
+  · simp [h]
+
+theorem unitAt_re_im {W : Type} [DecidableEq W] {P Q R S : ℕ} (j : W × (Ix P Q × Ix R S)) (z : ℂ) :
+    unitAt j z = ((z.re : ℝ) : ℂ) • unitAt j 1 + ((z.im : ℝ) : ℂ) • unitAt j Complex.I := by
+  simp only [unitAt, ← Pi.single_smul', ← Pi.single_add, Matrix.smul_single, ← Matrix.single_add, smul_eq_mul, mul_one,
+    Complex.re_add_im]
+
+theorem heis_expand : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {W : Type} [Fintype W] [DecidableEq W] {P Q R S : ℕ}
+    (H : (W → Matrix (Ix P Q) (Ix R S) ℂ) → Module.End ℂ V),
+    (∀ c c', H (c + c') = H c + H c') → (∀ (r : ℝ) c, H ((r : ℂ) • c) = (r : ℂ) • H c) →
+    ∀ c : W → Matrix (Ix P Q) (Ix R S) ℂ, H c = ∑ j : W × (Ix P Q × Ix R S),
+      ((((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefM (c j.1 j.2.1 j.2.2) (lineSign j.2.1 j.2.2)) • GlobalTheory.CCRFock.fockM H j +
+        (((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefD (c j.1 j.2.1 j.2.2) (lineSign j.2.1 j.2.2)) • GlobalTheory.CCRFock.fockD H j) := by
+  intro V _ _ W _ _ P Q R S H hadd hsmul c
+  have h0 : H 0 = 0 := by
+    have := hadd 0 0
+    rw [add_zero] at this
+    exact left_eq_add.mp this
+  let H' : (W → Matrix (Ix P Q) (Ix R S) ℂ) →+ Module.End ℂ V := ⟨⟨H, h0⟩, hadd⟩
+  have hsum : H c = ∑ j : W × (Ix P Q × Ix R S), H (unitAt j (c j.1 j.2.1 j.2.2)) := by
+    conv_lhs => rw [sum_unitAt c]
+    exact map_sum H' _ _
+  rw [hsum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [unitAt_re_im, hadd, hsmul, hsmul]
+  have hs : ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) ≠ 0 := by
+    have : 0 < Real.sqrt (2 * Real.pi) := Real.sqrt_pos.mpr (by positivity)
+    exact_mod_cast this.ne'
+  have he := lineSign_mul_self j.2.1 j.2.2
+  unfold fockM fockD coefM coefD
+  generalize ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) = s at hs ⊢
+  generalize lineSign j.2.1 j.2.2 = e at he ⊢
+  generalize H (unitAt j 1) = A
+  generalize H (unitAt j Complex.I) = B
+  generalize ((c j.1 j.2.1 j.2.2).re : ℂ) = x
+  generalize ((c j.1 j.2.1 j.2.2).im : ℂ) = y
+  have hI := Complex.I_mul_I
+  match_scalars
+  · field_simp
+    ring
+  · field_simp
+    linear_combination (2 * y * e * e) * hI - 2 * y * he
+
+end GlobalTheory.CCRFock
+end
+
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heisenberg_family_expand_creation_annihilation : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {W : Type} [Fintype W] [DecidableEq W] {P Q R S : ℕ}
+    (H : (W → Matrix (Ix P Q) (Ix R S) ℂ) → Module.End ℂ V),
+    (∀ c c', H (c + c') = H c + H c') → (∀ (r : ℝ) c, H ((r : ℂ) • c) = (r : ℂ) • H c) →
+    ∀ c : W → Matrix (Ix P Q) (Ix R S) ℂ, H c = ∑ j : W × (Ix P Q × Ix R S),
+      ((((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefM (c j.1 j.2.1 j.2.2) (lineSign j.2.1 j.2.2)) • GlobalTheory.CCRFock.fockM H j +
+        (((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefD (c j.1 j.2.1 j.2.2) (lineSign j.2.1 j.2.2)) • GlobalTheory.CCRFock.fockD H j) := by
+  atlas_forward_decl GlobalTheory.CCRFock.heis_expand
+end
+
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+
+namespace GlobalTheory.CCRFock
+
+theorem coefM_one (z : ℂ) : coefM z 1 = z := by
+  simp [coefM, Complex.ext_iff]
+
+theorem coefM_neg_one (z : ℂ) : coefM z (-1) = star z := by
+  simp [coefM, Complex.ext_iff]
+
+theorem coefD_one (z : ℂ) : coefD z 1 = -star z := by
+  simp [coefD, Complex.ext_iff]
+
+theorem coefD_neg_one (z : ℂ) : coefD z (-1) = -z := by
+  simp [coefD, Complex.ext_iff]
+
+theorem heisOp_eq_sum_mul_pderiv : ∀ {P Q R S : ℕ} (c : Matrix (Ix P Q) (Ix R S) ℂ),
+    heisOp c = ∑ l : Ix P Q × Ix R S,
+      ((((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefM (c l.1 l.2) (lineSign l.1 l.2)) •
+          LinearMap.mulLeft ℂ (MvPolynomial.X l) +
+        (((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefD (c l.1 l.2) (lineSign l.1 l.2)) •
+          (MvPolynomial.pderiv l).toLinearMap) := by
+  intro P Q R S c
+  unfold heisOp
+  rw [Finset.smul_sum]
+  refine Finset.sum_congr rfl ?_
+  rintro ⟨a, b⟩ -
+  rcases a with a | a <;> rcases b with b | b <;>
+    simp only [raiB, lowB, linePos, lineSign, coefM_one, coefM_neg_one, coefD_one, coefD_neg_one, if_true,
+      Bool.false_eq_true, if_false] <;>
+    module
+
+end GlobalTheory.CCRFock
+end
+
+section
+open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockHeisenbergOperatorOfCoords_eq_sum_mulLeft_pderiv : ∀ {P Q R S : ℕ} (c : Matrix (Ix P Q) (Ix R S) ℂ),
+    heisOp c = ∑ l : Ix P Q × Ix R S,
+      ((((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefM (c l.1 l.2) (lineSign l.1 l.2)) •
+          LinearMap.mulLeft ℂ (MvPolynomial.X l) +
+        (((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefD (c l.1 l.2) (lineSign l.1 l.2)) •
+          (MvPolynomial.pderiv l).toLinearMap) := by
+  first | exact @GlobalTheory.CCRFock.heisOp_eq_sum_mul_pderiv | exact GlobalTheory.CCRFock.heisOp_eq_sum_mul_pderiv | (intros; apply GlobalTheory.CCRFock.heisOp_eq_sum_mul_pderiv <;> assumption)
+end
+
+section
 open scoped TensorProduct Matrix Classical GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.FockAlg GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
 
@@ -106,3 +708,5 @@ theorem fock_map_of_ccr : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {W : Ty
   conv_rhs => rw [Fintype.sum_prod_type]
 
 end GlobalTheory.CCRFock
+end
+end

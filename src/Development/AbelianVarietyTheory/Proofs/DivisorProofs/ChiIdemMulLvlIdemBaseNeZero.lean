@@ -6,10 +6,427 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinRepApply
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DimPartsAtIffBadAndOff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumCoeffChiIdemMul
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCuspProdCharTransport
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCuspIndProdCharOfIsProdCuspChar
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GoodCharsGoodFamilyOfProductIrreducible
+import Formalism.LocalToGlobal.IndefiniteReal.LinksChar
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.CuspidalProductMultiplicity
+import Formalism.LocalToGlobal.Divisibility.DefGroup
+import Formalism.LocalToGlobal.Divisibility.GoodPartHermitianSpec
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.GenericMultiplicityOne
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspidalIdempotentCharacters
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviWhittakerEqOneOfCuspidal
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DegenerateWhittakerDimParabolicInductionCuspidal
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneVectorOfMultiplicityOne
+import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.BlockEmbeddingFactors
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspidalCharacterFormula
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharacterOverSubfieldAbelianByPrimePower
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsCharacterOverSubfieldOfVirtualAndCharacter
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.MemVirtualCharactersOfAbelianByPrimePower
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.AsAlgebraHomSurjectiveOfFinrankIntertwiningMapEq
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FiniteGroupFunctionPairingSelfIrreducibleAlgClos
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.VirtualCharactersMulComapConjIndLinear
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FiniteGroupFunctionPairingEqZeroOfDistinctIrredu
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TraceCompLeftFunLeft
 
+section
+noncomputable section
+
+namespace GlobalTheory.GenericProduct
+
+open Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.IndefiniteRowSideFullHecke.GenericMultiplicityOne NumberField Module
+
+def OneGenericVector : Prop :=
+  ∀ (F : Type) [Field F] [Fintype F] (ψ : AddChar F ℂ), ψ ≠ 1 →
+    ∀ (r : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (b : Fin r → ℕ)
+      (σ : Representation ℂ (blockTri (κ := F) b) V), IsCuspDatum b σ → whDim ψ (parInd b σ) = 1
+
+section Twist
+
+variable {K P V : Type} [Field K] [Group P] [AddCommGroup V] [Module K V]
+
+def twistInv (τ : Representation K P V) (c : P →* Kˣ) : Representation K P V where
+  toFun h := (((c h)⁻¹ : Kˣ) : K) • τ h
+  map_one' := by simp
+  map_mul' x y := by
+    rw [map_mul, map_mul, mul_inv, Units.val_mul, smul_mul_smul_comm]
+
+theorem twistInv_apply (τ : Representation K P V) (c : P →* Kˣ) (h : P) :
+    twistInv τ c h = (((c h)⁻¹ : Kˣ) : K) • τ h := rfl
+
+theorem sum_trace_mul_inv [Fintype P] [CharZero K] [FiniteDimensional K V] (τ : Representation K P V) (c : P →* Kˣ) :
+    ∑ h : P, LinearMap.trace K V (τ h) * (((c h)⁻¹ : Kˣ) : K) =
+      (Nat.card P : K) * (finrank K (twistInv τ c).invariants : K) := by
+  have hc : (Nat.card P : K) ≠ 0 := Nat.cast_ne_zero.2 Nat.card_pos.ne'
+  letI : Invertible (Nat.card P : K) := invertibleOfNonzero hc
+  letI : Invertible (Fintype.card P : K) := invertibleOfNonzero (by rw [← Nat.card_eq_fintype_card]; exact hc)
+  have h := Representation.card_inv_mul_sum_char_eq_finrank (twistInv τ c)
+  rw [← h, mul_inv_cancel_left₀ hc]
+  refine Finset.sum_congr rfl fun x _ => ?_
+  rw [Representation.character, twistInv_apply, map_smul, smul_eq_mul, mul_comm]
+
+end Twist
+
+theorem sum_unip_eq {F : Type} [Field F] {r : ℕ} [Fintype (unip F r)] {V : Type} [AddCommGroup V] [Module ℂ V]
+    [FiniteDimensional ℂ V] (ψ : AddChar F ℂ) (τ : Representation ℂ (GL (Fin r) F) V) :
+    ∑ h : unip F r, LinearMap.trace ℂ V (τ h) * (((addCharHom ψ (supHom F r) h)⁻¹ : ℂˣ) : ℂ) =
+      (Nat.card (unip F r) : ℂ) * (whDim ψ τ : ℂ) := by
+  have h := sum_trace_mul_inv (τ.comp (unip F r).subtype) (addCharHom ψ (supHom F r))
+  have e : (twistInv (τ.comp (unip F r).subtype) (addCharHom ψ (supHom F r))).invariants =
+      eig τ (unip F r : Set (GL (Fin r) F)) fun g => ψ (edgeSum supEdge g) := by
+    ext v
+    simp only [Representation.mem_invariants, eig, Submodule.mem_iInf, LinearMap.mem_ker, twistInv_apply,
+      LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply, sub_eq_zero]
+    have key : ∀ g : unip F r, ((((addCharHom ψ (supHom F r) g)⁻¹ : ℂˣ) : ℂ) • (τ.comp (unip F r).subtype g) v = v ↔
+        τ g v = ψ (edgeSum supEdge (g : GL (Fin r) F)) • v) := by
+      intro g
+      have hv : ψ (edgeSum supEdge (g : GL (Fin r) F)) = ((addCharHom ψ (supHom F r) g : ℂˣ) : ℂ) := rfl
+      rw [hv, Units.val_inv_eq_inv_val, inv_smul_eq_iff₀ (Units.ne_zero _)]
+      rfl
+    exact ⟨fun H g hg => (key ⟨g, hg⟩).1 (H ⟨g, hg⟩), fun H g => (key g).2 (H g.1 g.2)⟩
+  rw [e] at h
+  exact h
+
+def piEquiv {ι : Type} {G : ι → Type} [∀ i, Group (G i)] (H : ∀ i, Subgroup (G i)) :
+    (Subgroup.pi Set.univ H) ≃ ∀ i, H i where
+  toFun x i := ⟨x.1 i, x.2 i (Set.mem_univ _)⟩
+  invFun y := ⟨fun i => (y i).1, fun i _ => (y i).2⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+attribute [local instance] resField finite_res
+
+theorem genericMultOne (hL : OneGenericVector) : GenericMultOne := by
+  classical
+  intro E _ _ Pg r K _ _ s ψ hψ χ hχ
+  obtain ⟨b, V, i1, i2, i3, σ, hσ, hs⟩ := hχ
+  letI : Fintype (P0 Pg r ψ).H := Fintype.ofFinite _
+  letI : ∀ PP : ↥Pg, Fintype (unip (kP PP.1) r) := fun PP => Fintype.ofFinite _
+  apply s.injective
+  let ψ' : ∀ PP : ↥Pg, AddChar (kP PP.1) ℂ := fun PP => s.toMonoidHom.compAddChar (ψ PP.1)
+  have hψ' : ∀ PP : ↥Pg, ψ' PP ≠ 1 := by
+    intro PP h
+    refine hψ PP.1 PP.2 ?_
+    ext x
+    apply s.injective
+    have := DFunLike.congr_fun h x
+    simpa [ψ'] using this
+  let e : (P0 Pg r ψ).H ≃ ∀ PP : ↥Pg, unip (kP PP.1) r := piEquiv fun PP : ↥Pg => unip (kP PP.1) r
+  let f : ∀ PP : ↥Pg, unip (kP PP.1) r → ℂ := fun PP h =>
+    LinearMap.trace ℂ _ (parInd (F := kP PP.1) (b PP) (σ PP) h) *
+      (((addCharHom (ψ' PP) (supHom (kP PP.1) r) h)⁻¹ : ℂˣ) : ℂ)
+  have hf : ∀ PP : ↥Pg, ∑ h, f PP h = (Nat.card (unip (kP PP.1) r) : ℂ) := by
+    intro PP
+    letI : Fintype (kP PP.1) := Fintype.ofFinite _
+    haveI := finite_parInd (b PP) (σ PP)
+    have h1 := sum_unip_eq (ψ' PP) (parInd (F := kP PP.1) (b PP) (σ PP))
+    rw [hL (kP PP.1) (ψ' PP) (hψ' PP) r (V PP) (b PP) (σ PP) (hσ PP), Nat.cast_one, mul_one] at h1
+    exact h1
+  have hterm : ∀ h : (P0 Pg r ψ).H, s (χ (h : G0 Pg r) * ((((P0 Pg r ψ).chi h)⁻¹ : Kˣ) : K)) = ∏ PP, f PP (e h PP) := by
+    intro h
+    have hchi : (P0 Pg r ψ).chi h = ∏ PP : ↥Pg, addCharHom (ψ PP.1) (supHom (kP PP.1) r) (e h PP) := by
+      exact MonoidHom.finset_prod_apply (fun PP : ↥Pg => (addCharHom (ψ PP.1) (supHom (kP PP.1) r)).comp
+        (LevelP.prj (fun PP : ↥Pg => unip (kP PP.1) r) PP)) Finset.univ h
+    rw [map_mul, hs, hchi, Units.val_inv_eq_inv_val, map_inv₀, Units.coe_prod, map_prod, ← Finset.prod_inv_distrib,
+      ← Finset.prod_mul_distrib]
+    refine Finset.prod_congr rfl fun PP _ => ?_
+    simp only [f, Units.val_inv_eq_inv_val]
+    rfl
+  rw [map_sum, Finset.sum_congr rfl fun h _ => hterm h, map_natCast, Nat.card_congr e, Nat.card_pi, Nat.cast_prod,
+    ← Finset.prod_congr rfl fun PP _ => hf PP, Fintype.prod_sum]
+  exact Fintype.sum_equiv e _ _ fun _ => rfl
+
+end GlobalTheory.GenericProduct
+end
+end
+
+section
+section
+open GlobalTheory.FinGL Formalism.L2.DIV Module
+
+namespace GlobalTheory.FinGL
+
+theorem degenerateWhittakerDim_zero_eq_whittakerDim {F : Type} [Field F] {r : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
+    (ψ : AddChar F ℂ) (τ : Representation ℂ (GL (Fin r) F) V) : whCut ψ τ 0 = whDim ψ τ := by
+  have h : ∀ g : GL (Fin r) F, edgeSum (cutEdge 0) g = edgeSum supEdge g := by
+    intro g
+    unfold edgeSum
+    exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
+      if_congr (by simp [cutEdge, supEdge]) rfl rfl
+  unfold whCut whDim
+  rw [show (fun g : GL (Fin r) F => ψ (edgeSum (cutEdge 0) g)) = fun g => ψ (edgeSum supEdge g) from
+    funext fun g => by rw [h]]
+
+theorem numBlockSetsOfTotalSize_zero_eq_one {r : ℕ} (b : Fin r → ℕ) : splitDoublingNBlock b 0 = 1 := by
+  unfold splitDoublingNBlock
+  rw [Finset.card_eq_one]
+  refine ⟨∅, ?_⟩
+  ext J
+  simp only [Finset.mem_filter, Finset.mem_powerset, Finset.card_eq_zero, Finset.mem_singleton]
+  constructor
+  · rintro ⟨h1, h2⟩
+    rw [Finset.eq_empty_iff_forall_notMem]
+    intro x hx
+    obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 (h1 hx)
+    have : i ∈ Finset.univ.filter fun i => b i ∈ J := by simp [hx]
+    rw [h2] at this
+    simp at this
+  · rintro rfl
+    simp
+
+theorem whDim_parInd_eq_one : ∀ (F : Type) [Field F] [Fintype F] (ψ : AddChar F ℂ), ψ ≠ 1 → ∀ (r : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (b : Fin r → ℕ) (σ : Representation ℂ (blockTri (κ := F) b) V), IsCuspDatum b σ → whDim ψ (parInd b σ) = 1 := by
+  intro F _ _ ψ hψ r V _ _ _ b σ hσ
+  rw [← degenerateWhittakerDim_zero_eq_whittakerDim, GlobalTheory.T.degenerateWhittakerDim_parabolicInduction_cuspidal F ψ hψ r V b σ hσ 0 (Or.inr rfl), numBlockSetsOfTotalSize_zero_eq_one,
+    GlobalTheory.T.levi_whittaker_eq_one_of_cuspidal F ψ hψ r V b σ hσ]
+
+end GlobalTheory.FinGL
+end
+
+open GlobalTheory.FinGL Formalism.L2.DIV Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.whittakerSpaceDim_parabolicInduction_cuspidal_eq_one : ∀ (F : Type) [Field F] [Fintype F] (ψ : AddChar F ℂ), ψ ≠ 1 → ∀ (r : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (b : Fin r → ℕ) (σ : Representation ℂ (blockTri (κ := F) b) V), IsCuspDatum b σ → whDim ψ (parInd b σ) = 1 := by
+  atlas_forward_decl GlobalTheory.FinGL.whDim_parInd_eq_one
+end
+
+section
+namespace GlobalTheory.GenericProduct
+
+theorem oneGenericVector : OneGenericVector := GlobalTheory.T.whittakerSpaceDim_parabolicInduction_cuspidal_eq_one
+
+theorem genericMultOne_holds : GlobalTheory.IndefiniteRowSideFullHecke.GenericMultiplicityOne.GenericMultOne := genericMultOne oneGenericVector
+
+theorem oneWhittakerVector_holds : GlobalTheory.IndefiniteRowSideFullHecke.CuspidalInducedCharacter.OneWhittakerVector :=
+  GlobalTheory.CuspidalIdempotentCharacters.genericMultOne_iff.1 genericMultOne_holds
+
+end GlobalTheory.GenericProduct
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.L2.DIV Formalism.IndefR.Links NumberField
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.RealOneVector
+
+theorem isCuspIndProdChar_of_isProdCuspChar {E : Type} [Field E] [NumberField E] {K : Type} [Field K] (s : K →+* ℂ)
+    (Pg : Finset (Pl E)) (r : ℕ) (χ : G0 Pg r → K) (h : GlobalTheory.IndefiniteRowSideFullHecke.CuspidalProductMultiplicity.IsProdCuspChar s Pg r χ) :
+    GlobalTheory.IndefiniteRowSideFullHecke.CuspidalInducedCharacter.IsCuspIndProdChar Pg r s χ := by
+  obtain ⟨θ, hθ, hχ⟩ := h
+  refine ⟨θ, fun PP => ?_, hχ⟩
+  obtain ⟨d, b, σ, hσ, hx⟩ := hθ PP
+  exact ⟨b, Fin d → ℂ, inferInstance, inferInstance, inferInstance, σ, hσ, hx⟩
+
+theorem typeSum_base_eq_card : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), R.grp_levels F → (∀ χ ∈ A.X, GlobalTheory.IndefiniteRowSideFullHecke.CuspidalProductMultiplicity.IsProdCuspChar D.what₂.embLL R.Pg D.R.r fun g => χ (R.eG.symm g)) → ∀ [Fintype F.P0], ∀ χ ∈ A.X, ∑ h : F.P0, χ (h : G) * (((F.ψ0 h)⁻¹ : D.what₂.LLˣ) : D.what₂.LL) = (Fintype.card F.P0 : D.what₂.LL) := by
+  intro D G _ _ Pl0 T A Ks _ _ _ R F hlev hind _ χ hχ
+  have h := GlobalTheory.OneForm.oneVector_of_whittaker R F GlobalTheory.GenericProduct.oneWhittakerVector_holds hlev
+    (fun χ hχ => isCuspIndProdChar_of_isProdCuspChar _ _ _ _ (hind χ hχ)) χ hχ
+  rw [← Nat.card_eq_fintype_card, ← h, GlobalTheory.OneForm.typeSum]
+  congr 1
+  exact congrArg (fun i => @Finset.univ _ i) (Subsingleton.elim _ _)
+
+end GlobalTheory.RealOneVector
+end
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.GoodCharsCompare
+
+open Polynomial NumberField Formalism.CyclotomicNorms Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.IndefiniteRowSideFullHecke.CuspValueComparison GlobalTheory.IndefiniteRowSideFullHecke.TameCharacterTorusValues Formalism.MainNotions.PrimeDegreeVariant
+
+section Conclusion
+
+variable {K G : Type} [Field K] [Group G]
+
+def ConclFinset (emb : K →+* ℂ) (Y : Set (G → ℂ)) : Prop :=
+  ∃ Xg : Finset (G → K), (∀ ch, ch ∈ Y ↔ ∃ c ∈ Xg, ∀ t, ch t = emb (c t)) ∧ (∀ c ∈ Xg, IsAbsIrrChar c) ∧
+    ∃ T : GoodSet K G, ∀ c, c ∈ Xg ↔ ∃ s : T.S, ∀ t, c t = LinearMap.trace K (T.W s) (T.tau s t)
+
+def ConclRange (σ : K →+* ℂ) (Y : Set (G → ℂ)) : Prop :=
+  (∀ Θ ∈ Y, ∃ ΘK : G → K, (∀ t, σ (ΘK t) = Θ t) ∧ IsAbsIrrChar ΘK) ∧
+    ∃ T : GoodSet K G, (Set.range fun (s : T.S) (t : G) => σ (LinearMap.trace K (T.W s) (T.tau s t))) = Y
+
+theorem ConclRange.mono {σ : K →+* ℂ} {Y Y' : Set (G → ℂ)} (h : ConclRange σ Y) (hY : Y' ⊆ Y) : ConclRange σ Y' := by
+  classical
+  obtain ⟨h1, T, rfl⟩ := h
+  let T' : GoodSet K G :=
+    { S := {s : T.S // (fun t => σ (LinearMap.trace K (T.W s) (T.tau s t))) ∈ Y'}
+      W := fun s => T.W s.1
+      tau := fun s => T.tau s.1
+      irr := fun s => T.irr s.1
+      inj := fun s s' e => Subtype.ext (T.inj e) }
+  refine ⟨fun Θ hΘ => h1 Θ (hY hΘ), T', Set.ext fun Θ => ⟨?_, fun hΘ => ?_⟩⟩
+  · rintro ⟨s, rfl⟩
+    exact s.2
+  · obtain ⟨s, rfl⟩ := hY hΘ
+    exact ⟨⟨s, hΘ⟩, rfl⟩
+
+end Conclusion
+
+section OnePrime
+
+variable {g : ℕ} [Fact g.Prime] {P : Type} {r m : ℕ}
+
+def FullGood (ω : P → Fbar g →*₀ ℂ) (η : P → Fin m → (ZMod g)ˣ → ℂ) (τ : P → GL (Fin r) (ZMod g) → ℂ) : Prop :=
+  ∃ (f : P → (ZMod g)[X]) (c : P → Fin m → (ZMod g)ˣ), (∀ v j, IsTameLabel (ω v) (η v j) (c v j)) ∧
+    IsGood r g f (fun v (js : Fin m × Bool) => if js.2 then c v js.1 else (c v js.1)⁻¹) ∧
+    ∀ v, IndefiniteRowSideFullHecke.CuspValueComparison.IsTypeChar (ω v) (f v) (τ v)
+
+def TorusGood (ι : P → (Fbar g)ˣ →* ℂˣ) (η : P → Fin m × Bool → (ZMod g)ˣ → ℂ)
+    (τ : P → GL (Fin r) (ZMod g) → ℂ) : Prop :=
+  ∃ (f : P → (ZMod g)[X]) (c : P → Fin m × Bool → (ZMod g)ˣ), (∀ v j, IsCharLabel (ι v) (η v j) (c v j)) ∧
+    IsGood r g f c ∧ ∀ v, IndefiniteRowSideFullHecke.TameCharacterTorusValues.IsTypeChar (ι v) (f v) (τ v)
+
+theorem FullGood.change {ω ω' : P → Fbar g →*₀ ℂ} (hω : ∀ v, Function.Injective (ω v))
+    (hω' : ∀ v, Function.Injective (ω' v)) {η : P → Fin m → (ZMod g)ˣ → ℂ} {τ : P → GL (Fin r) (ZMod g) → ℂ}
+    (h : FullGood ω' η τ) : FullGood ω η τ := by
+  obtain ⟨f, c, h1, h2, h3⟩ := h
+  choose β hβ using fun v => exists_beta (hω v) (hω' v)
+  choose f' hf' using fun v => exists_tr (β v) _ (f v) (h2.1 v).1 rfl
+  choose c' hc' using fun v j => exists_unit_of_pow (y := β v (algebraMap (ZMod g) (Fbar g) (c v j)))
+    (by rw [← map_pow, unit_pow, map_one])
+  refine ⟨f', c', fun v j z => ?_, isGood_tr β hf' (fun v js => ?_) h2,
+    fun v => isTypeChar_tr (hβ v) (h2.1 v).2.2 (hf' v) (h3 v)⟩
+  · rw [h1 v j z, hβ v 1 one_pos _ _ (unit_pow _) (unit_pow _), hc']
+  · split_ifs
+    · exact hc' v js.1
+    · rw [Units.val_inv_eq_inv_val, Units.val_inv_eq_inv_val, map_inv₀, map_inv₀, map_inv₀, hc']
+
+theorem FullGood.reindex {P' : Type} (e : P' ≃ P) {ω : P → Fbar g →*₀ ℂ} {η : P → Fin m → (ZMod g)ˣ → ℂ}
+    {τ : P → GL (Fin r) (ZMod g) → ℂ} (h : FullGood ω η τ) :
+    FullGood (fun v => ω (e v)) (fun v => η (e v)) (fun v => τ (e v)) := by
+  obtain ⟨f, c, h0, ⟨h1, h2, h3, h4, h5, v, h6⟩, h7⟩ := h
+  refine ⟨fun v => f (e v), fun v => c (e v), fun v => h0 _, ⟨fun v => h1 _, fun v => h2 _,
+    fun l hl hb v => h3 l hl hb _, fun l hl hb v => h4 l hl hb _, fun a ha hb => ?_, e.symm v, by simpa using h6⟩,
+    fun v => h7 _⟩
+  obtain ⟨v, hv⟩ := h5 a ha hb
+  exact ⟨e.symm v, by simpa using hv⟩
+
+theorem TorusGood.full (H : CuspidalCharacterFormula) {ι : P → (Fbar g)ˣ →* ℂˣ} {ω : P → Fbar g →*₀ ℂ}
+    (hι : ∀ v, Function.Injective (ι v))
+    (hω : ∀ v, Function.Injective (ω v)) {η : P → Fin m → (ZMod g)ˣ → ℂ} {η' : P → Fin m × Bool → (ZMod g)ˣ → ℂ}
+    (ht : ∀ v j, η' v (j, true) = η v j) (hf : ∀ v j, η' v (j, false) = fun z => (η v j z)⁻¹)
+    {τ : P → GL (Fin r) (ZMod g) → ℂ} (h : TorusGood ι η' τ) : FullGood ω η τ := by
+  choose ω' hω' he using fun v => exists_ext (hι v)
+  obtain ⟨f, c, h1, h2, h3⟩ := h
+  have a1 : ∀ v j, IsTameLabel (ω' v) (η v j) (c v (j, true)) := fun v j => ht v j ▸ (label_iff (he v) _ _).1 (h1 v _)
+  refine FullGood.change hω hω' ⟨f, fun v j => c v (j, true), a1, ?_,
+    fun v => typeChar_full_of_torus H (hω' v) (he v) (h3 v)⟩
+  convert h2 using 3 with v js
+  obtain ⟨j, _ | _⟩ := js
+  · exact label_unique (hω' v) (label_inv (a1 v j)) (hf v j ▸ (label_iff (he v) _ _).1 (h1 v _))
+  · rfl
+
+end OnePrime
+
+section Global
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {gp : Fin 2 → ℕ} [∀ i, Fact (gp i).Prime]
+  {pb : Fin 2 → 𝓞 E} {K : Type} [Field K]
+
+def placeEquiv (hT : IsTypeDatum gp pb) (i : Fin 2) : PlacesOver pb i ≃ ↥(primesOf (pb i)) where
+  toFun v := ⟨v.1.1, mem_primesOf.2 ⟨pb_ne_zero hT i, v.2⟩⟩
+  invFun v := ⟨toBoth hT i v, (mem_primesOf.1 v.2).2⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+def eta (hT : IsTypeDatum gp pb) (m : ℕ) (σ : K →+* ℂ) (χ : ℕ → ∀ PP : Pl E, (kP PP)ˣ →* Kˣ) (i : Fin 2)
+    (v : ↥(primesOf (pb i))) (j : Fin m) (z : (ZMod (gp i))ˣ) : ℂ :=
+  σ (χ (j.val + 1) v.1 (Units.map ((resIso hT i v : ZMod (gp i) →+* kP v.1) : ZMod (gp i) →* kP v.1) z) : Kˣ)
+
+end Global
+
+end GlobalTheory.GoodCharsCompare
+end
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.GoodFamily
+
+open Polynomial NumberField Formalism.CyclotomicNorms Formalism.L2.DIV GlobalTheory.FinGL GlobalTheory.BI GlobalTheory.GoodCharsCompare Formalism.MainNotions.PrimeDegreeVariant
+open scoped MonoidAlgebra
+
+section Characters
+
+theorem irreducible_of_surjective {k G V : Type} [Field k] [Group G] [AddCommGroup V] [Module k V] [Nontrivial V]
+    (ρ : Representation k G V) (h : Function.Surjective ρ.asAlgebraHom) : ρ.IsIrreducible := by
+  have hnt : Nontrivial (Subrepresentation ρ) :=
+    ⟨⊥, ⊤, fun h => bot_ne_top (congrArg Subrepresentation.toSubmodule h)⟩
+  refine ⟨fun S => ?_⟩
+  by_cases hS : S.toSubmodule = ⊥
+  · exact Or.inl (Subrepresentation.toSubmodule_injective hS)
+  · refine Or.inr (Subrepresentation.toSubmodule_injective (eq_top_iff.2 fun w _ => ?_))
+    obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hS
+    obtain ⟨φ, hφ⟩ := Module.Projective.exists_dual_eq_one k hv0
+    obtain ⟨a, ha⟩ := h (LinearMap.smulRight φ w)
+    have hw : ρ.asAlgebraHom a v = w := by rw [ha]; simp [hφ]
+    rw [← hw]
+    clear hw ha
+    induction a using MonoidAlgebra.induction_linear with
+    | zero => simp
+    | add x y hx hy => rw [map_add, LinearMap.add_apply]; exact S.toSubmodule.add_mem hx hy
+    | single t c =>
+      rw [Representation.asAlgebraHom_single, LinearMap.smul_apply]
+      exact S.toSubmodule.smul_mem _ (S.apply_mem_toSubmodule t hv)
+
+theorem irreducible_extend (K L : Type) [Field K] [Field L] [Algebra K L] [CharZero K] [CharZero L] {G : Type} [Group G]
+    [Finite G] {n : ℕ} (ρ : Representation K G (Fin n → K))
+    (h : Module.finrank K (Representation.IntertwiningMap ρ ρ) = 1) : (extendScalarsRep K L ρ).IsIrreducible := by
+  have h1 := pair_character_eq_finrank K L G _ _ ρ ρ
+  have h2 := pair_character_eq_finrank L L G _ _ (extendScalarsRep K L ρ) (extendScalarsRep K L ρ)
+  simp only [character_extendScalarsRep, Algebra.algebraMap_self, RingHom.id_apply] at h2
+  rw [h1, h] at h2
+  obtain ⟨h3, h4⟩ := GlobalTheory.asAlgebraHom_surjective_of_finrank_intertwiningMap_eq_one L G _ (extendScalarsRep K L ρ)
+    (by exact_mod_cast h2.symm)
+  exact irreducible_of_surjective _ h4
+
+theorem norm_one_prod {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (G i)] [∀ i, Finite (G i)] {χ : ∀ i, G i → ℂ}
+    (h : ∀ i, IsChar ℂ ℂ (χ i) ∧ pair (χ i) (χ i) = 1) :
+    IsChar ℂ ℂ (fun t : ∀ i, G i => ∏ i, χ i (t i)) ∧
+      pair (fun t : ∀ i, G i => ∏ i, χ i (t i)) (fun t => ∏ i, χ i (t i)) = 1 := by
+  classical
+  constructor
+  · have : ∀ s : Finset ι, IsChar ℂ ℂ (fun t : ∀ i, G i => ∏ i ∈ s, χ i (t i)) := by
+      intro s
+      induction s using Finset.induction with
+      | empty => simpa using isChar_one ℂ ℂ (∀ i, G i)
+      | insert a s ha ih =>
+        obtain ⟨n, ρ, hρ⟩ := (h a).1
+        have h1 : IsChar ℂ ℂ (fun t : ∀ i, G i => χ a (t a)) := ⟨n, ρ.comp (Pi.evalMonoidHom G a), fun t => hρ (t a)⟩
+        have := isChar_mul_complex h1 ih
+        convert this using 1
+        funext t
+        rw [Finset.prod_insert ha]; rfl
+    exact this _
+  · letI : ∀ i, Fintype (G i) := fun i => Fintype.ofFinite _
+    have h2 : ∏ i, pair (χ i) (χ i) = 1 := Finset.prod_eq_one fun i _ => (h i).2
+    rw [← h2]
+    simp only [pair, finsum_eq_sum_of_fintype, Finset.prod_mul_distrib, Finset.prod_inv_distrib]
+    rw [Nat.card_pi, Nat.cast_prod, Fintype.prod_sum]
+    simp only [Finset.prod_mul_distrib, Pi.inv_apply]
+
+end Characters
+
+section Local
+
+open GlobalTheory.IndefiniteRowSideFullHecke.BlockEmbeddingFactors GlobalTheory.IndefiniteRowSideFullHecke.CuspValueComparison GlobalTheory.IndefiniteRowSideFullHecke.TameCharacterTorusValues
+
+variable {g : ℕ} [Fact g.Prime] {r : ℕ}
+
+end Local
+
+section Global
+
+open GlobalTheory.IndefiniteRowSideFullHecke.BlockEmbeddingFactors GlobalTheory.IndefiniteRowSideFullHecke.TameCharacterTorusValues
+
+end Global
+
+end GlobalTheory.GoodFamily
+end
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.GoodTypeGeneric
@@ -444,4 +861,5 @@ theorem chiIdem_mul_lvlIdem_base_ne_zero : ∀ {D : D7} {G : Type} [Group G] [Fi
 
 end GlobalTheory.GoodTypeGeneric
 
+end
 end

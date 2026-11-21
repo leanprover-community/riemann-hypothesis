@@ -5,9 +5,430 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralOfUnimodular
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowLatticesSameInnerDifferByRationalUnipotent
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AutLzFinite
 import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.LiftsConjugateUnderStabilizer
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsLatticeRepresentativeNormalised
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsIsometryUnitriangularizingFlagStabilizer
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LinearFormsBoundedRepresentatives
+import BuildAid.ForwardExisting
 
+section
+open NumberField
+
+namespace GlobalTheory.NonzeroIntegerSmulMem
+
+theorem exists_ne_zero_smul_mem {E : Type} [Field E] [NumberField E] [StarRing E]
+    {S : Formalism.BasicNotions.HSpace E} (L : Submodule (RingOfIntegers E) (Formalism.BasicNotions.HSpace.V S))
+    (hL : Submodule.IsLattice E L) (x : Formalism.BasicNotions.HSpace.V S) :
+    ∃ r : RingOfIntegers E, r ≠ (0 : RingOfIntegers E) ∧ r • x ∈ L := by
+
+  have hx : x ∈ Submodule.span E (L : Set (Formalism.BasicNotions.HSpace.V S)) := by
+    rw [hL.span_eq_top]
+    exact Submodule.mem_top
+  induction hx using Submodule.span_induction with
+  | mem y hy => exact ⟨1, one_ne_zero, by simpa using hy⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add y z _ _ hy hz =>
+    obtain ⟨r, hr, hrL⟩ := hy
+    obtain ⟨t, ht, htL⟩ := hz
+    refine ⟨r * t, mul_ne_zero hr ht, ?_⟩
+    have e : (r * t) • (y + z) = t • (r • y) + r • (t • z) := by
+      rw [smul_add, mul_smul, mul_smul, smul_comm r t y]
+    rw [e]
+    exact L.add_mem (L.smul_mem t hrL) (L.smul_mem r htL)
+  | smul a y _ hy =>
+    obtain ⟨r, hr, hrL⟩ := hy
+
+    obtain ⟨⟨n, d⟩, hnd⟩ := IsLocalization.surj (nonZeroDivisors (RingOfIntegers E)) a
+    refine ⟨r * (d : RingOfIntegers E), mul_ne_zero hr (nonZeroDivisors.coe_ne_zero d), ?_⟩
+    have e1 : (d : RingOfIntegers E) • a = algebraMap (RingOfIntegers E) E n := by
+      rw [Algebra.smul_def, mul_comm]
+      exact hnd
+    have e : (r * (d : RingOfIntegers E)) • (a • y) = n • (r • y) := by
+      rw [mul_smul, ← smul_assoc (d : RingOfIntegers E) a y, e1, algebraMap_smul E n y,
+        smul_comm r n y]
+    rw [e]
+    exact L.smul_mem n hrL
+
+end GlobalTheory.NonzeroIntegerSmulMem
+end
+
+section
+section
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.RowPartner
+
+section Gen
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
+
+theorem mem_orth_iff (U : Submodule E S.V) (y : S.V) : y ∈ orth S U ↔ ∀ x ∈ U, S.hT x y = 0 := by
+  simp [orth, Submodule.mem_iInf]
+
+theorem X_iso (F : LFlag S r T) {x y : S.V} (hx : x ∈ Xsp F) (hy : y ∈ Xsp F) : S.hT x y = 0 := by
+  induction hx using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨a, rfl⟩ := hx
+    induction hy using Submodule.span_induction with
+    | mem y hy => obtain ⟨b, rfl⟩ := hy; exact F.fl.e_iso a b
+    | zero => simp
+    | add u v _ _ hu hv => simp [hu, hv]
+    | smul c u _ hu => simp [hu]
+  | zero => simp
+  | add u v _ _ hu hv => simp [hu, hv]
+  | smul c u _ hu => simp [hu]
+
+theorem z_mem_orth (F : LFlag S r T) : F.fl.z ∈ orth S (Xsp F) := by
+  rw [mem_orth_iff]
+  intro x hx
+  induction hx using Submodule.span_induction with
+  | mem x hx => obtain ⟨a, rfl⟩ := hx; exact F.fl.z_orth a
+  | zero => simp
+  | add u v _ _ hu hv => simp [hu, hv]
+  | smul c u _ hu => simp [hu]
+
+theorem X_le_orth (F : LFlag S r T) : Xsp F ≤ orth S (Xsp F) := fun y hy =>
+  (mem_orth_iff _ _).2 fun x hx => X_iso F hx hy
+
+theorem half_not_int : ¬ ∃ o : 𝓞 E, (o : E) = algebraMap ℚ E (1 / 2) := by
+  rintro ⟨o, ho⟩
+  have h1 : IsIntegral ℤ (algebraMap ℚ E (1 / 2)) := by rw [← ho]; exact o.2
+  rw [isIntegral_algebraMap_iff (algebraMap ℚ E).injective] at h1
+  obtain ⟨n, hn⟩ := IsIntegrallyClosed.isIntegral_iff.mp h1
+  have h2 : ((2 * n : ℤ) : ℚ) = 1 := by push_cast; rw [show (algebraMap ℤ ℚ n) = (n : ℚ) from rfl] at hn; rw [hn]; norm_num
+  have h3 : 2 * n = 1 := by exact_mod_cast h2
+  omega
+
+end Gen
+
+end GlobalTheory.RowPartner
+
+namespace GlobalTheory.RowPartner
+
+section Gen
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
+
+theorem exists_smul_mem_lat (L : Submodule (𝓞 E) S.V) (hL : Submodule.IsLattice E L) (x : S.V) :
+    ∃ r : 𝓞 E, r ≠ 0 ∧ r • x ∈ L := by
+  first
+  | exact @_root_.GlobalTheory.NonzeroIntegerSmulMem.exists_ne_zero_smul_mem
+  | exact _root_.GlobalTheory.NonzeroIntegerSmulMem.exists_ne_zero_smul_mem
+  | (apply _root_.GlobalTheory.NonzeroIntegerSmulMem.exists_ne_zero_smul_mem <;> assumption)
+  | (intros; apply _root_.GlobalTheory.NonzeroIntegerSmulMem.exists_ne_zero_smul_mem <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.NonzeroIntegerSmulMem.exists_ne_zero_smul_mem <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.NonzeroIntegerSmulMem.exists_ne_zero_smul_mem ..)
+
+theorem z_not_mem_X (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T)
+    (hprim : ∀ c : E, c • F.fl.z ∈ Lsub Λ F → ∃ o : 𝓞 E, (o : E) = c) : F.fl.z ∉ Xsp F := by
+  intro hz
+  apply half_not_int (E := E)
+  apply hprim
+  have hc : algebraMap ℚ E (1 / 2) • F.fl.z ∈ Xsp F := (Xsp F).smul_mem _ hz
+  exact ⟨Submodule.mem_sup_right hc, X_le_orth F hc⟩
+
+theorem exists_partner_rep (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T)
+    (hlat : Submodule.IsLattice E Λ) (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (hz : F.fl.z ∈ Λ)
+    (hprim : ∀ c : E, c • F.fl.z ∈ Lsub Λ F → ∃ o : 𝓞 E, (o : E) = c) :
+    ∃ σ ∈ Lrep Λ F, S.hT σ F.fl.z = 1 := by
+  have hzX := z_not_mem_X Λ F hprim
+  obtain ⟨φ, hφX, hφz⟩ := LinearMap.exists_extend_of_notMem (0 : Xsp F →ₗ[E] E) hzX 1
+  have hφ0 : ∀ y ∈ Xsp F, φ y = 0 := fun y hy => by simpa using congr($hφX ⟨y, hy⟩)
+  set U : Submodule E S.V := Xsp F ⊔ Submodule.span E {F.fl.z} with hUdef
+  set M0 : Submodule (𝓞 E) S.V := Λ ⊓ toO S U with hM0
+  have hUo : U ≤ orth S (Xsp F) := sup_le (X_le_orth F)
+    ((Submodule.span_singleton_le_iff_mem _ _).2 (z_mem_orth F))
+  have hprimM : IsPrimitiveSub M0 Λ := by
+    refine ⟨inf_le_left, le_antisymm (le_inf inf_le_left fun x hx => Submodule.subset_span hx) ?_⟩
+    refine inf_le_inf_left _ ?_
+    intro x hx
+    exact (Submodule.span_le (p := U)).2 (fun y hy => hy.2) hx
+  have hint : ∀ x : M0, ∃ o : 𝓞 E, (o : E) = φ x := by
+    rintro ⟨x, hxΛ, hxU⟩
+    obtain ⟨y, hy, w, hw, rfl⟩ := Submodule.mem_sup.1 (show x ∈ U from hxU)
+    obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.1 hw
+    have hxo : y + a • F.fl.z ∈ orth S (Xsp F) := hUo hxU
+    obtain ⟨o, ho⟩ := hprim a ⟨by
+        have h1 : y + a • F.fl.z ∈ Lrep Λ F := ⟨hxΛ, hxo⟩
+        have h2 : -y ∈ toO S (Xsp F) := (Xsp F).neg_mem hy
+        have := Submodule.add_mem_sup h1 h2
+        simpa using this, (orth S (Xsp F)).smul_mem a (z_mem_orth F)⟩
+    refine ⟨o, ?_⟩
+    simp [map_add, hφ0 y hy, hφz, ho]
+  choose ψ hψ using hint
+  let ψ' : M0 →ₗ[𝓞 E] 𝓞 E :=
+    { toFun := ψ
+      map_add' := fun x y => by
+        apply RingOfIntegers.ext
+        simp [hψ]
+      map_smul' := fun c x => by
+        apply RingOfIntegers.ext
+        simp only [hψ, RingHom.id_apply, smul_eq_mul, map_mul, Submodule.coe_smul]
+        rw [← algebraMap_smul E c (x : S.V), map_smul]
+        simp [hψ] }
+  obtain ⟨w, hw⟩ := GlobalTheory.LoopC.FunIdx.exists_dual_vec S M0 Λ hlat hprimM ψ'
+  have hwM : ∀ x (hx : x ∈ M0), S.hT w x = φ x := fun x hx => by
+    rw [← hw ⟨x, hx⟩]; exact hψ ⟨x, hx⟩
+  have hwΛ : (w : S.V) ∈ Λ := by
+    have := w.2.1
+    rwa [hU] at this
+  refine ⟨w, ⟨hwΛ, ?_⟩, ?_⟩
+  · show (w : S.V) ∈ orth S (Xsp F)
+    rw [mem_orth_iff]
+    intro x hx
+    obtain ⟨c, hc0, hcx⟩ := exists_smul_mem_lat Λ hlat x
+    have hcX : c • x ∈ Xsp F := by
+      rw [← algebraMap_smul E c x]; exact (Xsp F).smul_mem _ hx
+    have hm : c • x ∈ M0 := ⟨hcx, Submodule.mem_sup_left hcX⟩
+    have h1 := hwM _ hm
+    rw [hφ0 _ hcX] at h1
+    have h2 : S.hT w x = 0 := by
+      rw [← algebraMap_smul E c x, map_smul, smul_eq_mul] at h1
+      exact (mul_eq_zero.1 h1).resolve_left (by simpa using hc0)
+    rw [← S.herm.eq, h2]; simp
+  · rw [hwM _ ⟨hz, Submodule.mem_sup_right (Submodule.mem_span_singleton_self _)⟩, hφz]
+
+end Gen
+
+end GlobalTheory.RowPartner
+
+namespace GlobalTheory.RowPartner
+
+theorem exists_partner_rowLat : ∀ (D : D7) (T : D.host.E) (F0 : FlagG (VS D) D.R.rS T) (Λ : LV D),
+    IsRowLat D F0 Λ → ∃ σ ∈ Lrep Λ (lf D F0), (VS D).hT σ F0.z = 1 := by
+  intro D T F0 Λ h
+  obtain ⟨_, ⟨hlat, hU, ⟨hz, _⟩, ⟨_, hprim⟩⟩, _⟩ := h
+  exact exists_partner_rep Λ (lf D F0) hlat hU hz hprim
+
+end GlobalTheory.RowPartner
+end
+end
+
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_lattice_representative_normalised : ∀ (D : D7) (T : D.host.E) (F0 : FlagG (VS D) D.R.rS T) (Λ : LV D), IsRowLat D F0 Λ → ∃ σ ∈ Lrep Λ (lf D F0), (VS D).hT σ F0.z = 1 := by
+  atlas_forward_decl GlobalTheory.RowPartner.exists_partner_rowLat
+end
+
+section
+section
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.FlagTorus
+
+theorem witt_partners {E V : Type} [Field E] [CharZero E] [StarRing E] [AddCommGroup V] [Module E V]
+    (h : V →ₗ⋆[E] V →ₗ[E] E) (hsymm : ∀ x y, star (h x y) = h y x)
+    (hnd : ∀ x, (∀ y, h x y = 0) → x = 0) {r : ℕ} (e : Fin r → V) (he : LinearIndependent E e)
+    (hee : ∀ a b, h (e a) (e b) = 0) :
+    ∃ f : Fin r → V, (∀ a b, h (e a) (f b) = if a = b then 1 else 0) ∧ ∀ a b, h (f a) (f b) = 0 := by
+  classical
+  let Φ : V →ₗ[E] (Fin r → E) := LinearMap.pi (fun a => h (e a))
+  have hΦ : ∀ y a, Φ y a = h (e a) y := fun y a => rfl
+  have hsurj : Function.Surjective Φ := by
+    rw [← LinearMap.range_eq_top]
+    by_contra hne
+    obtain ⟨φ, hφ0, hφ⟩ :=
+      Submodule.exists_dual_map_eq_bot_of_lt_top (lt_top_iff_ne_top.2 hne) inferInstance
+    apply hφ0
+    have hvan : ∀ y, ∑ a, φ (Pi.single a 1) * h (e a) y = 0 := by
+      intro y
+      have hcomp : φ ∘ₗ Φ = 0 := by
+        rw [← LinearMap.range_eq_bot, LinearMap.range_comp, hφ]
+      have h0 : φ (Φ y) = 0 := LinearMap.congr_fun hcomp y
+      rw [← h0]
+      conv_rhs => rw [pi_eq_sum_univ (Φ y)]
+      simp only [map_sum, map_smul, smul_eq_mul, hΦ, mul_comm]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      congr 2; ext j; simp [Pi.single_apply, eq_comm]
+    have hz : ∑ a, star (φ (Pi.single a 1)) • e a = 0 := hnd _ (fun y => by
+      simp only [map_sum, map_smulₛₗ, LinearMap.sum_apply, RingHom.id_apply, Finset.sum_apply, LinearMap.smul_apply,
+        smul_eq_mul, starRingEnd_apply, star_star]
+      exact hvan y)
+    have hc := Fintype.linearIndependent_iff.1 he _ hz
+    ext a
+    have := hc a
+    simpa using this
+  choose g hg using fun b : Fin r => hsurj (Pi.single b 1)
+  have hge : ∀ a b, h (e a) (g b) = if a = b then 1 else 0 := by
+    intro a b
+    rw [← hΦ, hg b, Pi.single_apply]
+  have hg'e : ∀ a b, h (g a) (e b) = if b = a then 1 else 0 := by
+    intro a b; rw [← hsymm, hge b a]; split_ifs <;> simp
+  refine ⟨fun b => g b - ∑ c, (h (g c) (g b) / 2) • e c, ?_, ?_⟩
+  · intro a b
+    simp only [map_sub, map_sum, map_smul, smul_eq_mul, hee, mul_zero, Finset.sum_const_zero, sub_zero, hge]
+  · intro a b
+    simp only [map_sub, map_sum, map_smulₛₗ, LinearMap.sub_apply, LinearMap.sum_apply, RingHom.id_apply, Finset.sum_apply,
+      LinearMap.smul_apply, smul_eq_mul, hee, hge, hg'e, mul_zero, Finset.sum_const_zero, sub_zero,
+      mul_ite, mul_one, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true, starRingEnd_apply]
+    have hM : star (h (g b) (g a)) = h (g a) (g b) := hsymm _ _
+    have h2 : star (2 : E) = 2 := by simp
+    rw [star_div₀, hM, h2]
+    have : (2 : E) ≠ 0 := two_ne_zero
+    field_simp
+    ring
+
+theorem diag_isometry {E V : Type} [Field E] [StarRing E] [AddCommGroup V] [Module E V]
+    [FiniteDimensional E V] (h : V →ₗ⋆[E] V →ₗ[E] E) (hsymm : ∀ x y, star (h x y) = h y x)
+    (hnd : ∀ x, (∀ y, h x y = 0) → x = 0) {r : ℕ} (e f : Fin r → V)
+    (hee : ∀ a b, h (e a) (e b) = 0) (hef : ∀ a b, h (e a) (f b) = if a = b then 1 else 0)
+    (hff : ∀ a b, h (f a) (f b) = 0) (α : Fin r → E) (hα : ∀ a, α a ≠ 0) :
+    ∃ t : V ≃ₗ[E] V, (∀ x y, h (t x) (t y) = h x y) ∧ (∀ a, t (e a) = α a • e a) ∧
+      ∀ x, (∀ a, h (e a) x = 0) → t x - x ∈ Submodule.span E (Set.range e) := by
+  classical
+  set β : Fin r → E := fun a => (star (α a))⁻¹ with hβ
+  have hβ1 : ∀ a, star (β a) * α a = 1 := by
+    intro a; simp only [hβ, star_inv₀, star_star]; exact inv_mul_cancel₀ (hα a)
+  have hβ2 : ∀ a, star (α a) * β a = 1 := by
+    intro a; simp only [hβ]; exact mul_inv_cancel₀ (star_ne_zero.2 (hα a))
+  have hfe : ∀ a b, h (f a) (e b) = if a = b then 1 else 0 := by
+    intro a b; rw [← hsymm, hef b a]
+    by_cases hab : a = b
+    · subst hab; simp
+    · simp [hab, Ne.symm hab]
+  let L : V →ₗ[E] V := LinearMap.id + ∑ a, (α a - 1) • (h (f a)).smulRight (e a) +
+    ∑ a, (β a - 1) • (h (e a)).smulRight (f a)
+  have hL : ∀ x, L x = x + ∑ a, ((α a - 1) * h (f a) x) • e a + ∑ a, ((β a - 1) * h (e a) x) • f a := by
+    intro x; simp [L, LinearMap.sum_apply, mul_smul]
+  have key_e : ∀ b y, h (e b) (L y) = β b * h (e b) y := by
+    intro b y
+    rw [hL]
+    simp only [map_add, map_sum, map_smul, smul_eq_mul, hee, hef, mul_zero, Finset.sum_const_zero, add_zero,
+      mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    ring
+  have key_f : ∀ b y, h (f b) (L y) = α b * h (f b) y := by
+    intro b y
+    rw [hL]
+    simp only [map_add, map_sum, map_smul, smul_eq_mul, hff, hfe, mul_zero, Finset.sum_const_zero, add_zero,
+      mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    ring
+  have key_x : ∀ x y, h x (L y) = h x y + ∑ a, ((α a - 1) * h (f a) y) * star (h (e a) x) +
+      ∑ a, ((β a - 1) * h (e a) y) * star (h (f a) x) := by
+    intro x y
+    rw [hL]
+    simp only [map_add, map_sum, map_smul, smul_eq_mul, hsymm]
+  have hiso : ∀ x y, h (L x) (L y) = h x y := by
+    intro x y
+    rw [hL x]
+    simp only [map_add, LinearMap.add_apply, map_sum, Finset.sum_apply, LinearMap.sum_apply, map_smulₛₗ,
+      LinearMap.smul_apply, smul_eq_mul, key_e, key_f, key_x, RingHom.id_apply, starRingEnd_apply]
+    have : ∀ a, ((α a - 1) * h (f a) y) * star (h (e a) x) + ((β a - 1) * h (e a) y) * star (h (f a) x) +
+        star ((α a - 1) * h (f a) x) * (β a * h (e a) y) + star ((β a - 1) * h (e a) x) * (α a * h (f a) y) = 0 := by
+      intro a
+      simp only [star_mul', star_sub, star_one]
+      linear_combination (star (h (e a) x) * h (f a) y) * hβ1 a + (star (h (f a) x) * h (e a) y) * hβ2 a
+    have hsum := Finset.sum_eq_zero (s := Finset.univ) (fun a _ => this a)
+    simp only [Finset.sum_add_distrib] at hsum
+    linear_combination hsum
+  have hinj : Function.Injective L := by
+    intro x y hxy
+    have : x - y = 0 := hnd _ (fun z => by
+      rw [← hiso, map_sub, hxy, sub_self, map_zero, LinearMap.zero_apply])
+    exact sub_eq_zero.1 this
+  refine ⟨LinearEquiv.ofInjectiveEndo L hinj, ?_, ?_, ?_⟩
+  · intro x y; simpa using hiso x y
+  · intro a
+    simp only [LinearEquiv.coe_ofInjectiveEndo]
+    rw [hL]
+    simp only [hfe, hee, mul_zero, zero_smul, Finset.sum_const_zero, add_zero, mul_ite, mul_one,
+      ite_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    rw [sub_smul, one_smul]; abel
+  · intro x hx
+    simp only [LinearEquiv.coe_ofInjectiveEndo]
+    rw [hL]
+    simp only [hx, mul_zero, zero_smul, Finset.sum_const_zero, add_zero, add_sub_cancel_left]
+    exact Submodule.sum_mem _ (fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩))
+
+theorem flag_torus (D : D7) (T : D.host.E) (F0 : FlagG (VS D) D.R.rS T) (γ : GV D) (hγ : γ ∈ stabF D F0) :
+    ∃ t ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT, (∀ x ∈ perpS (VS D) F0.X, t x - x ∈ F0.X) ∧
+      Adapt (t * γ) (lf D F0) (lf D F0) := by
+  obtain ⟨hγi, hγX, hγz⟩ := hγ
+  have hsymm : ∀ x y, star ((VS D).hT x y) = (VS D).hT y x := fun x y => (VS D).herm.eq x y
+  have hnd : ∀ x, (∀ y, (VS D).hT x y = 0) → x = 0 := fun x hx => (VS D).nondeg.1 x hx
+  obtain ⟨f, hef, hff⟩ := witt_partners (VS D).hT hsymm hnd F0.e F0.e_indep F0.e_iso
+
+  have hXa_succ : ∀ i : Fin D.R.rS, F0.Xa ((i : ℕ) + 1) = F0.Xa i ⊔ Submodule.span D.host.E {F0.e i} := by
+    intro i
+    have : {j : Fin D.R.rS | (j : ℕ) < (i : ℕ) + 1} = {j : Fin D.R.rS | (j : ℕ) < i} ∪ ({i} : Set (Fin D.R.rS)) := by
+      ext j; simp only [Set.mem_setOf_eq, Set.mem_union, Set.mem_singleton_iff]
+      constructor
+      · intro hj; rcases Nat.lt_succ_iff_lt_or_eq.1 hj with h | h
+        · exact Or.inl h
+        · exact Or.inr (Fin.ext h)
+      · rintro (h | rfl) <;> omega
+    simp only [FlagG.Xa, this, Set.image_union, Set.image_singleton, Submodule.span_union]
+  have hXa_top : F0.Xa D.R.rS = F0.X := by
+    have : {j : Fin D.R.rS | (j : ℕ) < D.R.rS} = Set.univ := by ext j; simp [j.2]
+    simp only [FlagG.Xa, FlagG.X, this, Set.image_univ]
+  have he_mem : ∀ i : Fin D.R.rS, F0.e i ∈ F0.Xa ((i : ℕ) + 1) := fun i =>
+    Submodule.subset_span ⟨i, by simp, rfl⟩
+  have he_not : ∀ i : Fin D.R.rS, F0.e i ∉ F0.Xa i := fun i =>
+    F0.e_indep.notMem_span_image (s := {j | (j : ℕ) < i}) (x := i) (by simp)
+  have hdiag : ∀ i : Fin D.R.rS, ∃ u : D.host.E, u ≠ 0 ∧ γ (F0.e i) - u • F0.e i ∈ F0.Xa i := by
+    intro i
+    have h1 : γ (F0.e i) ∈ F0.Xa ((i : ℕ) + 1) := by
+      rw [← hγX ((i : ℕ) + 1)]; exact Submodule.mem_map_of_mem (he_mem i)
+    rw [hXa_succ i, Submodule.mem_sup] at h1
+    obtain ⟨y, hy, w, hw, hyw⟩ := h1
+    obtain ⟨u, rfl⟩ := Submodule.mem_span_singleton.1 hw
+    refine ⟨u, ?_, ?_⟩
+    · rintro rfl
+      apply he_not i
+      have : γ (F0.e i) ∈ (F0.Xa i).map (γ : (VS D).V →ₗ[D.host.E] (VS D).V) := by
+        rw [hγX i, ← hyw]; simpa using hy
+      obtain ⟨w', hw', hw'e⟩ := Submodule.mem_map.1 this
+      have : w' = F0.e i := γ.injective hw'e
+      exact this ▸ hw'
+    · rw [← hyw]; simpa using hy
+  choose u hu0 hu using hdiag
+  obtain ⟨t, ht_iso, ht_e, ht_perp⟩ := diag_isometry (VS D).hT hsymm hnd F0.e f F0.e_iso hef hff
+    (fun i => (u i)⁻¹) (fun i => inv_ne_zero (hu0 i))
+  have ht_mem : t ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := fun x y => ht_iso x y
+  have ht_Xa : ∀ (j : ℕ), ∀ y ∈ F0.Xa j, t y ∈ F0.Xa j := by
+    intro j y hy
+    have : F0.Xa j ≤ (F0.Xa j).comap (t : (VS D).V →ₗ[D.host.E] (VS D).V) := by
+      rw [FlagG.Xa, Submodule.span_le]
+      rintro _ ⟨k, hk, rfl⟩
+      simp only [SetLike.mem_coe, Submodule.mem_comap, LinearEquiv.coe_coe, ht_e]
+      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, hk, rfl⟩)
+    exact this hy
+  have hperp : ∀ x ∈ perpS (VS D) F0.X, t x - x ∈ F0.X := by
+    intro x hx
+    exact ht_perp x (fun a => hx (F0.e a) (Submodule.subset_span ⟨a, rfl⟩))
+  refine ⟨t, ht_mem, hperp, Subgroup.mul_mem _ ht_mem hγi, ?_⟩
+  intro a
+  induction a using Fin.lastCases with
+  | last =>
+    simp only [frame, lf, FlagG.fvec, Fin.snoc_last, Fin.val_last, LinearEquiv.mul_apply, hγz, Xflag]
+    rw [hXa_top]
+    exact hperp _ (fun x hx => by
+      have := Submodule.span_le (p := LinearMap.ker ((VS D).hT.flip F0.z)) |>.2 (by
+        rintro _ ⟨a, rfl⟩; simpa using F0.z_orth a) hx
+      simpa using this)
+  | cast i =>
+    simp only [frame, lf, FlagG.fvec, Fin.snoc_castSucc, Fin.coe_castSucc, LinearEquiv.mul_apply, Xflag]
+    have : γ (F0.e i) = (γ (F0.e i) - u i • F0.e i) + u i • F0.e i := by abel
+    rw [this, map_add, map_smul, ht_e, smul_smul, mul_inv_cancel₀ (hu0 i), one_smul, add_sub_cancel_right]
+    exact ht_Xa _ _ (hu i)
+
+end GlobalTheory.FlagTorus
+end
+
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_isometry_unitriangularizing_flag_stabilizer : ∀ (D : D7) (T : D.host.E) (F0 : FlagG (VS D) D.R.rS T) (γ : GV D), γ ∈ stabF D F0 → ∃ t ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT, (∀ x ∈ perpS (VS D) F0.X, t x - x ∈ F0.X) ∧ Adapt (t * γ) (lf D F0) (lf D F0) := by
+  atlas_forward_decl GlobalTheory.FlagTorus.flag_torus
+end
+
+section
 section
 noncomputable section
 
@@ -420,3 +841,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.rowLattice_automorphisms_eq_adapted_mod_unipotent : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ Λ ∈ Y.what₂ u, ∃ A N : Subgroup (GV D), (A : Set (GV D)) = Aut0 (lf D (X.Fu u)) Λ ∧ (N : Set (GV D)) = NLam Λ (lf D (X.Fu u)) ∧ N ≤ A ∧ (∀ a ∈ A, ∀ n ∈ N, a * n * a⁻¹ ∈ N) ∧ N.relIndex A = Nat.card (autLz D (X.Fu u) Λ) ∧ 0 < Nat.card (autLz D (X.Fu u) Λ) := by
   atlas_forward_decl GlobalTheory.AutQuot.autQuot
+end

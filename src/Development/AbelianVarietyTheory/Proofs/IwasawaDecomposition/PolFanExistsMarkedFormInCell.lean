@@ -5,10 +5,174 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InRealConeCe
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellLeastDimVanishesWhereFormVanishesDiagonalStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InvFunEvalZAddOfLinearOnRealCone
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InRealConeSummandsOfEvalZAdditiveCell
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteBilinFormAbsLe
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BilinFormExistsPrimitiveOfNeZero
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemClosureSumIndecomposableFaceOfAdditive
 
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan GlobalTheory.PolFan.Mark
+
+namespace GlobalTheory.PolFan.Mark
+
+theorem finite_bilinForm_abs_le (X : Type) [AddCommGroup X] [Module.Finite ℤ X] (B : X → X → ℤ) :
+    {x : LinearMap.BilinForm ℤ X | ∀ a b, |x a b| ≤ B a b}.Finite := by
+  classical
+  obtain ⟨s, hs⟩ := Module.Finite.fg_top (R := ℤ) (M := X)
+  let f : LinearMap.BilinForm ℤ X → (s × s → ℤ) := fun x p => x p.1 p.2
+  have hf : Function.Injective f := fun x y h =>
+    LinearMap.ext_on hs fun a ha => LinearMap.ext_on hs fun b hb => congrFun h (⟨a, ha⟩, ⟨b, hb⟩)
+  have hfin : (Set.pi Set.univ fun p : s × s => Set.Icc (-B p.1 p.2) (B p.1 p.2)).Finite :=
+    Set.Finite.pi' (fun p : s × s => Set.finite_Icc (-B p.1 p.2) (B p.1 p.2)) |>.subset fun g hg p => hg p trivial
+  exact (hfin.preimage hf.injOn).subset fun x hx p _ => abs_le.1 (hx p.1 p.2)
+
+theorem abs_le_of_indec {X : Type} [AddCommGroup X] {m : ℕ} (τ : Fin m → LinearMap.BilinForm ℤ X)
+    {x : LinearMap.BilinForm ℤ X} (hx : InRCone τ x)
+    (hind : ∀ y z, InRCone τ y → InRCone τ z → y ≠ 0 → z ≠ 0 → y + z ≠ x) (a b : X) :
+    |x a b| ≤ ∑ j, |τ j a b| := by
+  classical
+  obtain ⟨c, hc, h⟩ := hx
+  have hv : ∀ a b, ((x a b : ℤ) : ℝ) = ∑ i, c i * (τ i a b : ℝ) := fun a b => by
+    have := LinearMap.congr_fun₂ h a b
+    simpa [toReal, LinearMap.sum_apply] using this
+  by_cases hex : ∃ j, τ j ≠ 0 ∧ 1 ≤ c j
+  · obtain ⟨j, hj, hcj⟩ := hex
+    have hin : InRCone τ (x - τ j) := by
+      refine ⟨c - Pi.single j 1, fun i => ?_, LinearMap.ext₂ fun a b => ?_⟩
+      · by_cases hi : i = j
+        · subst hi; simpa using hcj
+        · simpa [Pi.single_apply, hi] using hc i
+      · simp [toReal, LinearMap.sum_apply, sub_mul, Finset.sum_sub_distrib, Pi.single_apply, hv]
+    have hx0 : x - τ j = 0 := by
+      by_contra h0
+      exact hind _ _ hin (inRCone_self τ j) h0 hj (by simp)
+    rw [sub_eq_zero.1 hx0]
+    exact Finset.single_le_sum (f := fun j => |τ j a b|) (fun i _ => abs_nonneg _) (Finset.mem_univ j)
+  · push Not at hex
+    have : ((|x a b| : ℤ) : ℝ) ≤ ((∑ j, |τ j a b| : ℤ) : ℝ) := by
+      push_cast
+      rw [hv]
+      refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun i _ => ?_)
+      by_cases hi : τ i = 0
+      · simp [hi]
+      · rw [abs_mul, abs_of_nonneg (hc i)]
+        exact mul_le_of_le_one_left (abs_nonneg _) (hex i hi).le
+    exact_mod_cast this
+
+theorem finite_indec_inRCone (X : Type) [AddCommGroup X] [Module.Finite ℤ X] (m : ℕ)
+    (τ : Fin m → LinearMap.BilinForm ℤ X) :
+    {x : LinearMap.BilinForm ℤ X | InRCone τ x ∧ x ≠ 0 ∧
+      ∀ y z, InRCone τ y → InRCone τ z → y ≠ 0 → z ≠ 0 → y + z ≠ x}.Finite :=
+  (finite_bilinForm_abs_le X fun a b => ∑ j, |τ j a b|).subset fun _ hx => abs_le_of_indec τ hx.1 hx.2.2
+
+end GlobalTheory.PolFan.Mark
+end
+
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan GlobalTheory.PolFan.Mark
+
+namespace GlobalTheory
+
+theorem bilinForm_exists_primitive_of_ne_zero (X : Type) [AddCommGroup X]
+    (σ : LinearMap.BilinForm ℤ X) (hσ : σ ≠ 0) :
+    ∃ (g : ℕ) (β₀ : LinearMap.BilinForm ℤ X), 0 < g ∧ (g : ℤ) • β₀ = σ ∧
+      ∀ (k : ℕ) (β' : LinearMap.BilinForm ℤ X), (k : ℤ) • β' = β₀ → k = 1 := by
+  classical
+  obtain ⟨a, b, hab⟩ : ∃ a b, σ a b ≠ 0 := by
+    by_contra h
+    apply hσ
+    ext a b
+    by_contra h'
+    exact h ⟨a, b, by simpa using h'⟩
+  have hbound : ∀ k : ℕ, (∃ β' : LinearMap.BilinForm ℤ X, (k : ℤ) • β' = σ) →
+      k ≤ (σ a b).natAbs := by
+    rintro k ⟨β', hβ'⟩
+    have h1 : σ a b = (k : ℤ) * β' a b := by
+      rw [← hβ']
+      simp
+    have h2 : k ∣ (σ a b).natAbs := Int.natCast_dvd.mp ⟨β' a b, h1⟩
+    exact Nat.le_of_dvd (Int.natAbs_pos.mpr hab) h2
+  let P : ℕ → Prop := fun k => ∃ β' : LinearMap.BilinForm ℤ X, (k : ℤ) • β' = σ
+  have hP1 : P 1 := ⟨σ, by simp⟩
+  have h1le : 1 ≤ (σ a b).natAbs := hbound 1 hP1
+  have hg : P (Nat.findGreatest P (σ a b).natAbs) := Nat.findGreatest_spec h1le hP1
+  have hg1 : 1 ≤ Nat.findGreatest P (σ a b).natAbs := Nat.le_findGreatest h1le hP1
+  have hmax : ∀ k, P k → k ≤ Nat.findGreatest P (σ a b).natAbs :=
+    fun k hk => Nat.le_findGreatest (hbound k hk) hk
+  generalize Nat.findGreatest P (σ a b).natAbs = g at hg hg1 hmax
+  obtain ⟨β₀, hβ₀⟩ := hg
+  refine ⟨g, β₀, hg1, hβ₀, ?_⟩
+  intro k β' hk
+  have hgk : P (g * k) := ⟨β', by rw [Nat.cast_mul, mul_smul, hk, hβ₀]⟩
+  have hle := hmax _ hgk
+  have hk0 : k ≠ 0 := by
+    rintro rfl
+    apply hσ
+    rw [← hβ₀, ← hk]
+    simp
+  have hk1 : k ≤ 1 := by
+    have : g * k ≤ g * 1 := by simpa using hle
+    exact Nat.le_of_mul_le_mul_left this hg1
+  omega
+
+end GlobalTheory
+end
+
+section
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan GlobalTheory.PolFan.Mark
+
+namespace GlobalTheory.PolFan.Mark
+
+theorem mem_closure_isIndec (O : Type) [CommRing O] (bar : O → O) (ψ lab : InvFun O) (X : Type) [AddCommGroup X]
+    [Module O X] [Module.Finite O X] (β : LinearMap.BilinForm ℤ X)
+    (hadd : ∀ x y, InFace bar ψ lab β x → InFace bar ψ lab β y →
+      InFace bar ψ lab β (x + y) ∧ ψ.evalZ (x + y) = ψ.evalZ x + ψ.evalZ y)
+    (hint : ∀ x, InFace bar ψ lab β x → ∃ n : ℤ, ψ.evalZ x = n)
+    (hpos : ∀ x, InFace bar ψ lab β x → x ≠ 0 → 0 < ψ.evalZ x) :
+    ∀ x, InFace bar ψ lab β x → x ∈ AddSubmonoid.closure {y | IsIndec bar ψ lab β y} := by
+  have hone : ∀ x, InFace bar ψ lab β x → x ≠ 0 → 1 ≤ ψ.evalZ x := by
+    intro x hx h0
+    obtain ⟨n, hn⟩ := hint x hx
+    have hp := hpos x hx h0
+    rw [hn] at hp ⊢
+    have : (0 : ℤ) < n := by exact_mod_cast hp
+    exact_mod_cast this
+  have key : ∀ N : ℕ, ∀ x, InFace bar ψ lab β x → x ≠ 0 → ψ.evalZ x < N →
+      x ∈ AddSubmonoid.closure {y | IsIndec bar ψ lab β y} := by
+    intro N
+    induction N with
+    | zero =>
+      intro x hx h0 hN
+      have := hpos x hx h0
+      simp only [Nat.cast_zero] at hN
+      linarith
+    | succ N ih =>
+      intro x hx h0 hN
+      by_cases hI : IsIndec bar ψ lab β x
+      · exact AddSubmonoid.subset_closure hI
+      · have : ∃ y z, InFace bar ψ lab β y ∧ InFace bar ψ lab β z ∧ y ≠ 0 ∧ z ≠ 0 ∧ y + z = x := by
+          by_contra hc
+          exact hI ⟨hx, h0, fun y z hy hz hy0 hz0 e => hc ⟨y, z, hy, hz, hy0, hz0, e⟩⟩
+        obtain ⟨y, z, hy, hz, hy0, hz0, rfl⟩ := this
+        have hs := (hadd y z hy hz).2
+        have h1 := hone y hy hy0
+        have h2 := hone z hz hz0
+        push_cast at hN
+        exact add_mem (ih y hy hy0 (by linarith)) (ih z hz hz0 (by linarith))
+  intro x hx
+  by_cases h0 : x = 0
+  · rw [h0]; exact zero_mem _
+  · obtain ⟨N, hN⟩ := exists_nat_gt (ψ.evalZ x)
+    exact key N x hx h0 hN
+
+end GlobalTheory.PolFan.Mark
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan GlobalTheory.PolFan.Mark
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_closure_sum_indecomposable_face_of_additive : ∀ (O : Type) [CommRing O] (bar : O → O) (ψ lab : InvFun O) (X : Type) [AddCommGroup X] [Module O X] [Module.Finite O X] (β : LinearMap.BilinForm ℤ X), (∀ x y, InFace bar ψ lab β x → InFace bar ψ lab β y → InFace bar ψ lab β (x + y) ∧ ψ.evalZ (x + y) = ψ.evalZ x + ψ.evalZ y) → (∀ x, InFace bar ψ lab β x → ∃ n : ℤ, ψ.evalZ x = n) → (∀ x, InFace bar ψ lab β x → x ≠ 0 → 0 < ψ.evalZ x) → ∀ x, InFace bar ψ lab β x → x ∈ AddSubmonoid.closure {y | IsIndec bar ψ lab β y} := by
+  atlas_forward_decl GlobalTheory.PolFan.Mark.mem_closure_isIndec
+end
+
+section
 noncomputable section
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.TorRef GlobalTheory.PolFan GlobalTheory.PolFan.Mark
@@ -318,3 +482,5 @@ theorem exists_isMarked_inRCone (E : Type) [Field E] [NumberField E] [IsCMField 
 end Mark
 
 end GlobalTheory.PolFan
+end
+end

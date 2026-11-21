@@ -1,5 +1,27 @@
-import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.SiegelWeilSchrodingerOfGeneration
-import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.WhitGenLt
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaCoefficientOfConvergenceStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnfoldingHoldsStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NondegenerateOfWhittakerStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerNondegenerateOfIwasawa
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FockSplittingMaximalCompact
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerAdditivityStatement
+import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.SphericalBigCell.IfrBAddOfWeilThetaConvergence
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchingMonomial
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DictionaryMaximalCompactParts
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AnisotropyOfRange
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerMaximalCompactGeneral
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.VanishTop2
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.Top7
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerGlobalFactors.WXMain
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalCharacterIntegrals.LocFin2
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.UnrWhitOf
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.RealGaussianTraces.CpowProdOfReal
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerGlobalFactors.FactorCore
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.Imports
+import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.LowRankSiegelDensities.ChapterTop
+
+section
+noncomputable section
 
 namespace PositivityTheory.PfSWUS
 
@@ -7,3 +29,40 @@ open PositivityTheory.Rg.Sw.Glob
 
 
 end PositivityTheory.PfSWUS
+
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.PfSWUS
+
+open PositivityTheory.Rg.Sw.Glob
+
+
+end PositivityTheory.PfSWUS
+
+end
+end
+
+section
+namespace PositivityTheory.PfSWUS
+
+open PositivityTheory.SiegelWeilFormula
+
+theorem whitGenLt : PositivityTheory.SiegelWeilFormula.Gen.WhitGenLt :=
+  Gen.whitGenLtOf SwLocFin.locFin2 Gunr.unrWhit (GReal.realWhit_of PositivityTheory.Rg.Sw.WR.wr) GFac.factorX
+    PositivityTheory.PfSWUS.HMass.siegelDensitiesLowA
+
+end PositivityTheory.PfSWUS
+end
+
+section
+namespace PositivityTheory.PfSWUS
+
+open PositivityTheory.Rg.Sw.Glob
+
+
+end PositivityTheory.PfSWUS
+end

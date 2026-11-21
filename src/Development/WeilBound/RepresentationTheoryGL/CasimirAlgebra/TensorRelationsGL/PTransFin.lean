@@ -1,6 +1,278 @@
-import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.PTransFinA
-import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.PTransFinF
+import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.LiftCommEAt
 
+section
+noncomputable section
+
+namespace PositivityTheory.Rg.Cz
+
+namespace TF
+
+theorem pow_mem' {U : Type*} [AddCommGroup U] [Module ℂ U] (T : Module.End ℂ U) (Z : Submodule ℂ U)
+    (hZ : ∀ z ∈ Z, T z ∈ Z) : ∀ k : ℕ, ∀ z ∈ Z, (T ^ k) z ∈ Z := by
+  intro k
+  induction k with
+  | zero => intro z hz; simpa using hz
+  | succ k ih => intro z hz; rw [pow_succ', Module.End.mul_apply]; exact hZ _ (ih z hz)
+
+theorem restrict_pow_coe {U : Type*} [AddCommGroup U] [Module ℂ U] (T : Module.End ℂ U) (Z : Submodule ℂ U)
+    (hZ : ∀ z ∈ Z, T z ∈ Z) : ∀ (k : ℕ) (w : Z), (((T.restrict hZ) ^ k) w : U) = (T ^ k) (w : U) := by
+  intro k
+  induction k with
+  | zero => intro w; simp
+  | succ k ih => intro w; rw [pow_succ', Module.End.mul_apply, LinearMap.coe_restrict_apply, ih, ← Module.End.mul_apply, ← pow_succ']
+
+theorem fit_step {U : Type*} [AddCommGroup U] [Module ℂ U] (T : Module.End ℂ U) (e : U →ₗ[ℂ] ℂ)
+    (Z : Submodule ℂ U) [FiniteDimensional ℂ Z] (hZ : ∀ z ∈ Z, T z ∈ Z) (he : ∀ z ∈ Z, e (T z) = 0)
+    (z0 : U) (hz0 : z0 ∈ Z) (hez : e z0 ≠ 0) : ∃ N : ℕ, ∃ a ∈ Z, (T ^ N) a = 0 ∧ e a ≠ 0 := by
+  obtain ⟨N, hN⟩ := Filter.eventually_atTop.1 (LinearMap.eventually_isCompl_ker_pow_range_pow (T.restrict hZ))
+  have hc := hN (N + 1) (by omega)
+  have hmem : (⟨z0, hz0⟩ : Z) ∈ LinearMap.ker ((T.restrict hZ) ^ (N + 1)) ⊔
+      LinearMap.range ((T.restrict hZ) ^ (N + 1)) := by
+    rw [hc.codisjoint.eq_top]; trivial
+  obtain ⟨a, ha, b, hb, hab⟩ := Submodule.mem_sup.1 hmem
+  obtain ⟨w, rfl⟩ := hb
+  refine ⟨N + 1, a, a.2, ?_, ?_⟩
+  · rw [← restrict_pow_coe T Z hZ, LinearMap.mem_ker.1 ha]; rfl
+  · have h1 : (z0 : U) = (a : U) + (T ^ (N + 1)) (w : U) := by
+      rw [← restrict_pow_coe T Z hZ, ← Submodule.coe_add, hab]
+    have h2 : e ((T ^ (N + 1)) (w : U)) = 0 := by
+      rw [pow_succ', Module.End.mul_apply]
+      exact he _ (pow_mem' T Z hZ N _ w.2)
+    intro h0
+    apply hez
+    rw [h1, map_add, h0, h2, add_zero]
+
+theorem common_ker {U : Type*} [AddCommGroup U] [Module ℂ U] (T : ℕ → Module.End ℂ U)
+    (hT : ∀ i j, Commute (T i) (T j)) (e : U →ₗ[ℂ] ℂ) (s : Finset ℕ) :
+    ∀ Z : Submodule ℂ U, FiniteDimensional ℂ Z → (∀ i ∈ s, ∀ z ∈ Z, T i z ∈ Z) →
+      (∀ i ∈ s, ∀ z ∈ Z, e (T i z) = 0) → (∃ z ∈ Z, e z ≠ 0) → ∃ z ∈ Z, z ≠ 0 ∧ ∀ i ∈ s, T i z = 0 := by
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+    rintro Z - - - ⟨z, hz, hez⟩
+    exact ⟨z, hz, fun h => hez (by rw [h, map_zero]), by simp⟩
+  | @insert i0 s hi0 ih =>
+    rintro Z hfd hZ he ⟨z0, hz0, hez⟩
+    have hZ0 := hZ i0 (Finset.mem_insert_self _ _)
+    obtain ⟨N, a, haZ, haN, hea⟩ :=
+      fit_step (T i0) e Z hZ0 (he i0 (Finset.mem_insert_self _ _)) z0 hz0 hez
+    have hfd' : FiniteDimensional ℂ ↥(Z ⊓ LinearMap.ker (T i0 ^ N)) :=
+      Submodule.finiteDimensional_of_le inf_le_left
+    obtain ⟨z1, hz1, hz1ne, hz1s⟩ := ih (Z ⊓ LinearMap.ker (T i0 ^ N)) hfd'
+      (fun i hi z hz => by
+        refine ⟨hZ i (Finset.mem_insert_of_mem hi) z hz.1, ?_⟩
+        have hk : (T i0 ^ N) z = 0 := hz.2
+        show (T i0 ^ N) (T i z) = 0
+        rw [← Module.End.mul_apply, ((hT i i0).pow_right N).eq.symm,
+          Module.End.mul_apply, hk, map_zero])
+      (fun i hi z hz => he i (Finset.mem_insert_of_mem hi) z hz.1) ⟨a, ⟨haZ, haN⟩, hea⟩
+    have hex : ∃ k, (T i0 ^ k) z1 = 0 := ⟨N, hz1.2⟩
+    have hk0 : Nat.find hex ≠ 0 := by
+      intro h
+      have := Nat.find_spec hex
+      rw [h, pow_zero, Module.End.one_apply] at this
+      exact hz1ne this
+    refine ⟨(T i0 ^ (Nat.find hex - 1)) z1, pow_mem' _ _ hZ0 _ _ hz1.1, Nat.find_min hex (by omega), ?_⟩
+    intro i hi
+    rcases Finset.mem_insert.1 hi with rfl | hi
+    · rw [← Module.End.mul_apply, ← pow_succ', Nat.sub_add_cancel (Nat.pos_of_ne_zero hk0)]
+      exact Nat.find_spec hex
+    · rw [← Module.End.mul_apply, ((hT i i0).pow_right _).eq, Module.End.mul_apply, hz1s i hi, map_zero]
+
+end TF
+
+end PositivityTheory.Rg.Cz
+end
+end
+
+section
+noncomputable section
+
+open Formalism.REAL Matrix
+
+namespace PositivityTheory.Rg.Cz
+
+namespace TF
+
+theorem coef {Y : Type*} [AddCommGroup Y] [Module ℂ Y] (d : ℕ) (y : ℕ → Y) (S : Set ℂ) (hS : S.Infinite)
+    (h : ∀ u ∈ S, ∑ i ∈ Finset.range d, u ^ i • y i = 0) : ∀ i ∈ Finset.range d, y i = 0 := by
+  intro i hi
+  rw [← Module.forall_dual_apply_eq_zero_iff ℂ]
+  intro f
+  set p : Polynomial ℂ := ∑ j ∈ Finset.range d, Polynomial.C (f (y j)) * Polynomial.X ^ j with hp
+  have hroot : p = 0 := by
+    apply Polynomial.eq_zero_of_infinite_isRoot
+    apply hS.mono
+    intro u hu
+    have hfu := congrArg f (h u hu)
+    simp only [map_sum, map_smul, smul_eq_mul, map_zero] at hfu
+    show Polynomial.eval u p = 0
+    simp only [hp, Polynomial.eval_finset_sum, Polynomial.eval_mul,
+      Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
+    rw [← hfu]
+    exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+  have hc := congrArg (fun q => Polynomial.coeff q i) hroot
+  simp only [hp, Polynomial.finset_sum_coeff, Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_zero] at hc
+  rw [Finset.sum_ite_eq] at hc
+  simpa [hi] using hc
+
+theorem pow_mem {U : Type*} [AddCommGroup U] [Module ℂ U] (T : Module.End ℂ U) (Z : Submodule ℂ U)
+    (hZ : ∀ z ∈ Z, T z ∈ Z) : ∀ k : ℕ, ∀ z ∈ Z, (T ^ k) z ∈ Z := by
+  intro k
+  induction k with
+  | zero => intro z hz; simpa using hz
+  | succ k ih => intro z hz; rw [pow_succ', Module.End.mul_apply]; exact hZ _ (ih z hz)
+
+theorem qdet_mem {A : Type*} [Ring A] [Algebra ℂ A] {n : ℕ} (F : Fin n → Fin n → A) (B : Subalgebra ℂ A)
+    (hF : ∀ a b, F a b ∈ B) (u : ℂ) : qdet F u ∈ B := by
+  unfold qdet qminor
+  refine B.sum_mem fun σ _ => B.mul_mem ?_ (B.list_prod_mem ?_)
+  · exact intCast_mem B _
+  · intro z hz
+    rw [List.mem_ofFn] at hz
+    obtain ⟨k, rfl⟩ := hz
+    unfold Tm
+    refine B.add_mem ?_ (hF _ _)
+    split_ifs
+    · exact B.algebraMap_mem _
+    · exact B.zero_mem
+
+theorem inv_aux {A : Type*} [Ring A] [Algebra ℂ A] (B : Subalgebra ℂ A) (x : A) (hx : x ∈ B) (u : ℂ) :
+    ∀ L : List ℂ, (∀ c ∈ L, u + c ≠ 0) → ∃ h ∈ B, Commute h x ∧ ∃ β : ℂ, β ≠ 0 ∧
+      (L.map fun c => x - algebraMap ℂ A c).prod = (algebraMap ℂ A u + x) * h + algebraMap ℂ A β := by
+  intro L
+  induction L with
+  | nil =>
+    intro _
+    refine ⟨0, B.zero_mem, Commute.zero_left x, 1, one_ne_zero, ?_⟩
+    simp
+  | cons c L ih =>
+    intro hL
+    obtain ⟨h, hB, hc, β, hβ, heq⟩ := ih (fun d hd => hL d (List.mem_cons_of_mem _ hd))
+    have hs : u + c ≠ 0 := hL c (by simp)
+    have hcm : Commute ((x - algebraMap ℂ A c) * h + algebraMap ℂ A β) x :=
+      (((Commute.refl x).sub_left (Algebra.commute_algebraMap_left c x)).mul_left hc).add_left
+        (Algebra.commute_algebraMap_left β x)
+    refine ⟨(x - algebraMap ℂ A c) * h + algebraMap ℂ A β,
+      B.add_mem (B.mul_mem (B.sub_mem hx (B.algebraMap_mem c)) hB) (B.algebraMap_mem β),
+      hcm, -((u + c) * β), neg_ne_zero.mpr (mul_ne_zero hs hβ), ?_⟩
+    rw [List.map_cons, List.prod_cons, heq]
+    have hq : x - algebraMap ℂ A c = (algebraMap ℂ A u + x) - algebraMap ℂ A (u + c) := by
+      rw [map_add]; abel
+    rw [hq, map_neg, map_mul]
+    have ht := Algebra.commutes (u + c) (algebraMap ℂ A u + x)
+    generalize algebraMap ℂ A u + x = v at ht ⊢
+    generalize algebraMap ℂ A (u + c) = t at ht ⊢
+    generalize algebraMap ℂ A β = w
+    calc (v - t) * (v * h + w) = v * v * h + v * w - t * v * h - t * w := by noncomm_ring
+      _ = v * v * h + v * w - v * t * h - t * w := by rw [ht]
+      _ = v * ((v - t) * h + w) + -(t * w) := by noncomm_ring
+
+theorem inv_of_alg {A : Type*} [Ring A] [Algebra ℂ A] (B : Subalgebra ℂ A) (x : A) (hx : x ∈ B) (u : ℂ)
+    (L : List ℂ) (h0 : (L.map fun c => x - algebraMap ℂ A c).prod = 0) (hu : ∀ c ∈ L, u + c ≠ 0) :
+    ∃ h ∈ B, h * (algebraMap ℂ A u + x) = 1 := by
+  obtain ⟨h, hB, hc, β, hβ, heq⟩ := inv_aux B x hx u L hu
+  rw [h0] at heq
+  have hv : h * (algebraMap ℂ A u + x) = (algebraMap ℂ A u + x) * h :=
+    ((Algebra.commute_algebraMap_left u h).symm.add_right hc).eq
+  have hvh : (algebraMap ℂ A u + x) * h = -algebraMap ℂ A β := eq_neg_of_add_eq_zero_left heq.symm
+  refine ⟨algebraMap ℂ A (-β⁻¹) * h, B.mul_mem (B.algebraMap_mem _) hB, ?_⟩
+  rw [mul_assoc, hv, hvh, mul_neg, ← map_mul]
+  simp [hβ]
+
+theorem left_inv_prod {A : Type*} [Ring A] (B : Subring A) :
+    ∀ l : List A, (∀ a ∈ l, ∃ h ∈ B, h * a = 1) → ∃ h ∈ B, h * l.prod = 1 := by
+  intro l
+  induction l with
+  | nil => intro _; exact ⟨1, B.one_mem, by simp⟩
+  | cons a l ih =>
+    intro hl
+    obtain ⟨ha, hB, hae⟩ := hl a (List.mem_cons_self ..)
+    obtain ⟨h, hB', he⟩ := ih fun b hb => hl b (List.mem_cons_of_mem _ hb)
+    refine ⟨h * ha, B.mul_mem hB' hB, ?_⟩
+    rw [List.prod_cons, mul_assoc, ← mul_assoc ha, hae, one_mul, he]
+
+theorem eig_prod {W : Type*} [AddCommGroup W] [Module ℂ W] (φ : W →ₗ[ℂ] ℂ) :
+    ∀ l : List (Module.End ℂ W), (∀ a ∈ l, ∃ μ : ℂ, μ ≠ 0 ∧ φ ∘ₗ a = μ • φ) →
+      ∃ μ : ℂ, μ ≠ 0 ∧ φ ∘ₗ l.prod = μ • φ := by
+  intro l hl
+  induction l with
+  | nil => exact ⟨1, one_ne_zero, by ext; simp⟩
+  | cons a l ih =>
+    obtain ⟨μa, hμa, ha⟩ := hl a (by simp)
+    obtain ⟨μl, hμl, hl1⟩ := ih (fun b hb => hl b (List.mem_cons_of_mem _ hb))
+    refine ⟨μa * μl, mul_ne_zero hμa hμl, LinearMap.ext fun w => ?_⟩
+    have e1 := LinearMap.congr_fun ha (l.prod w)
+    have e2 := LinearMap.congr_fun hl1 w
+    simp only [LinearMap.comp_apply, LinearMap.smul_apply, smul_eq_mul] at e1 e2 ⊢
+    rw [List.prod_cons, Module.End.mul_apply, e1, e2, mul_assoc]
+
+end TF
+
+end PositivityTheory.Rg.Cz
+end
+end
+
+section
+noncomputable section
+
+namespace PositivityTheory.Rg.Cz
+
+namespace TF
+
+theorem monic_lprod (L : List ℂ) : (L.map fun c => Polynomial.X - Polynomial.C c).prod.Monic := by
+  induction L with
+  | nil => simp
+  | cons c L ih =>
+    rw [List.map_cons, List.prod_cons]
+    exact (Polynomial.monic_X_sub_C c).mul ih
+
+theorem fin_adjoin {A : Type*} [Ring A] [Algebra ℂ A] {ι : Type*} [Finite ι] (x : ι → A)
+    (hc : ∀ i j, Commute (x i) (x j)) (hL : ∀ i, ∃ L : List ℂ, (L.map fun c => x i - algebraMap ℂ A c).prod = 0) :
+    FiniteDimensional ℂ (Subalgebra.toSubmodule (Algebra.adjoin ℂ (Set.range x))) := by
+  classical
+  have hcomm : ∀ a ∈ Set.range x, ∀ b ∈ Set.range x, a * b = b * a := by
+    rintro _ ⟨i, rfl⟩ _ ⟨j, rfl⟩
+    exact hc i j
+  letI : CommRing (Algebra.adjoin ℂ (Set.range x)) := Algebra.adjoinCommRingOfComm ℂ hcomm
+  have hint : ∀ i, IsIntegral ℂ (x i) := by
+    intro i
+    obtain ⟨L, hL⟩ := hL i
+    refine ⟨(L.map fun c => Polynomial.X - Polynomial.C c).prod, monic_lprod L, ?_⟩
+    rw [← Polynomial.aeval_def, map_list_prod, List.map_map]
+    have hf : (⇑(Polynomial.aeval (x i)) ∘ fun c => Polynomial.X - Polynomial.C c) =
+        fun c => x i - algebraMap ℂ A c := by
+      funext c
+      simp [Polynomial.aeval_X, Polynomial.aeval_C]
+    rw [hf]
+    exact hL
+  let y : ι → Algebra.adjoin ℂ (Set.range x) := fun i => ⟨x i, Algebra.subset_adjoin ⟨i, rfl⟩⟩
+  have hyint : ∀ z ∈ Set.range y, IsIntegral ℂ z := by
+    rintro _ ⟨i, rfl⟩
+    exact (isIntegral_algHom_iff (Algebra.adjoin ℂ (Set.range x)).val Subtype.val_injective).1 (hint i)
+  have hfin := Algebra.finite_adjoin_of_finite_of_isIntegral (Set.finite_range y) hyint
+  have hset : Set.range y = Subtype.val ⁻¹' (Set.range x) := by
+    ext z
+    constructor
+    · rintro ⟨i, rfl⟩
+      exact ⟨i, rfl⟩
+    · rintro ⟨i, hi⟩
+      exact ⟨i, Subtype.ext hi⟩
+  have htop : Algebra.adjoin ℂ (Set.range y) = ⊤ := by
+    rw [hset]
+    exact Algebra.adjoin_adjoin_coe_preimage
+  rw [htop] at hfin
+  have hS : Module.Finite ℂ (Algebra.adjoin ℂ (Set.range x)) :=
+    Module.Finite.equiv Subalgebra.topEquiv.toLinearEquiv
+  exact Subalgebra.finiteDimensional_toSubmodule.2 hS
+
+end TF
+
+end PositivityTheory.Rg.Cz
+end
+end
+
+section
 noncomputable section
 
 open Formalism.REAL Matrix
@@ -278,3 +550,5 @@ theorem transFin_of : TensorGl → JMComm → StepFormula → QdetFacts → Spec
   rw [LinearMap.comp_smul, hψ i hi, smul_smul, mul_comm]
 
 end PositivityTheory.Rg.Cz
+end
+end

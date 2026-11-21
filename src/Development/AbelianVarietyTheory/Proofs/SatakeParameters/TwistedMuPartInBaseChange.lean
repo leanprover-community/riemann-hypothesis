@@ -2,8 +2,23 @@ import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsobaricDiscreteSelfDualStrongMultiplicityOne
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitBCOfGalIso
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnramifiedFrobeniusEigenUnitStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SegmentEigenvalueSumFormulaStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.UnramifiedFrobeniusEigenUnit
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SegmentEigenvalueSumFormula
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_frobenius_eigen_unit : ∀ (D : D7), SumRepresentations.tie0 D → SumRepresentations.adm7 D → ∀ (i : D.nd.Loc) (P : D.naut.AV i) (Pa : List (Part D.naut.CG)), IsBCV D.nd D.naut i P Pa → ∀ p ∈ Pa, ∀ w : PlE D.host, D.naut.unr (D.naut.locG p.π w) → ∀ α ∈ D.naut.frobEig (D.naut.locG p.π w), ‖α‖ = 1 := by
+  first | exact @GlobalTheory.PartUnitary.part_frobEig_norm | exact GlobalTheory.PartUnitary.part_frobEig_norm | (intros; apply GlobalTheory.PartUnitary.part_frobEig_norm <;> assumption)
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.segment_eigenvalue_sum_formula : ∀ (q t : ℕ) (L : List (ℕ × Multiset ℂ)) (Rw : Multiset ℂ) (c : ℂ), 1 < q → 1 ≤ t → ‖c‖ = 1 → (∀ x ∈ Rw, ‖x‖ < (q : ℝ) ^ (((t : ℝ) - 1) / 2)) → (∀ e ∈ L, 1 ≤ e.1 ∧ e.2 ≠ 0 ∧ ∀ α ∈ e.2, ‖α‖ = 1) → (L.map fun e => ((List.range e.1).map fun k => e.2.map (· * (q : ℂ) ^ (((((e.1 : ℝ) - 1) / 2 - (k : ℝ) : ℝ)) : ℂ))).sum).sum = Rw + ((List.range t).map fun k => ({c * (q : ℂ) ^ (((((t : ℝ) - 1) / 2 - (k : ℝ) : ℝ)) : ℂ)} : Multiset ℂ)).sum → (∃ e ∈ L, t ≤ e.1) ∧ ∀ e ∈ L, t ≤ e.1 → e.1 = t ∧ e.2 = {c} := by
+  first | exact @GlobalTheory.longest_segment_unique_of_bounded_remainder | exact GlobalTheory.longest_segment_unique_of_bounded_remainder | (intros; apply GlobalTheory.longest_segment_unique_of_bounded_remainder <;> assumption)
+end
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain Polynomial
 
 noncomputable section
@@ -201,3 +216,5 @@ theorem mu_block_mem : ∀ D : D7, SumRepresentations.tie0 D → SumRepresentati
   exact hp0
 
 end GlobalTheory.MuBlock
+end
+end

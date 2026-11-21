@@ -1,7 +1,21 @@
 import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.UniformBoundAllData
-import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.LogbAddOneNonneg
+import Formalism.SharpRestriction.Divisibility.ProductZerothFirstParts
 import Formalism.GaussJetBounds.OneLetterGaussJets.GainDominatesOddLevelSum
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.product_zeroth_first_parts
+
+
+
+
+end Formalism.MainNotions.product_zeroth_first_parts
+
+end
+end
+
+section
 noncomputable section
 
 open scoped BigOperators
@@ -68,4 +82,5 @@ theorem split_bound_eleven_one : product_zeroth_first_parts.SplitConstantsUnifor
 
 end Formalism.MainNotions.DIV.Bridge.DworkPowerSeriesWeights
 
+end
 end

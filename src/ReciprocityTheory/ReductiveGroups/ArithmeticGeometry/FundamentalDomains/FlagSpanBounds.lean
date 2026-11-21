@@ -1,5 +1,19 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.NonvanishingNearMaximumHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.NonvanishingNearMaximum
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.BoundedSectionAlgebra
 
+section
+namespace ReciprocityTheory.ChartRestriction.G.FD
+
+open NumberField Complex Metric
+
+variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
+
+
+end ReciprocityTheory.ChartRestriction.G.FD
+end
+
+section
 namespace ReciprocityTheory.ChartRestriction.G.FD.FlagSpanBounds
 
 open NumberField Complex Matrix ReciprocityTheory.ChartRestriction.G.FD
@@ -84,3 +98,4 @@ variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
 
 
 end ReciprocityTheory.ChartRestriction.G.FD
+end

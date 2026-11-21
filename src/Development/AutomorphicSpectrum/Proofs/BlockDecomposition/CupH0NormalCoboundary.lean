@@ -4,7 +4,642 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivi
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.RelativeLiftCosieves.ZarAbs
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.GrCechFin
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitLogRepresentativeCompat
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsUnitOfBasicOpenTop
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.KatzMessingTheorem.BaseChange
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NegOnePowBoundaryTermsCancel
+import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.TwistingSheafOneChartEqPreimageStandardChart
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.Coords
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.LocalisationLadders.CriterionTruncation
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.PolynomialSiteTraces.AdmissibleMap
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ToH0BijectiveOfInitial
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MapHBijOfRes
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatBaseChangeCohomology
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CechRefinementCohomologyBijective
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatOfEtalePoly
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartIsGood
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSmoothCoordinateCover
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoordinatesRestrictAffineOpen
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedCohomologyOfFrame
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DividedPowerEnvelopeUniversal
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DividedPowerEnvelopeExpansion
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TruncatedEnvelopeFiltrationQuotient
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TruncatedEnvelopeTorsionFree
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StdSomeZero
+
+section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.B DividedPowers CompanionTheory.KM.G4
+
+namespace GlobalTheory.CompanionTheory.KMGys
+
+variable {k : Type} [Field k] (b : Base) (ht : b.t = 1) (κ : k →+* b.R ⧸ b.I)
+
+def covFun (Y : SmV k) {ι : Type} (U : ι → Y.X.Opens) : b.Fun where
+  ι := Empty
+  A := ι
+  Pt := (schFn Y.q).ptK κ
+  str y := y.1.1
+  str_map _ _ := rfl
+  In i _ y := ⊤ ≤ y.1.2 ⁻¹ᵁ U i
+  in_map := @fun _ _ _ φ y h => le_preimage_map φ y.1.2 h
+  f _ i := i.elim
+  f_map i := i.elim
+  g _ _ i := i.elim
+  g_map i := i.elim
+  f_eq i := i.elim
+  g_self i := i.elim
+  g_comp i := i.elim
+  prod_f {_ _ y} _ := by simp [ht]
+  prod_g _ _ := by simp
+
+def toCov (Y : SmV k) {ι : Type} (U : ι → Y.X.Opens) :
+    GlobalTheory.LogCris.Mor ((schFn Y.q).cr b ht κ) (covFun b ht κ Y U) (RingHom.id b.R) where
+  hp := rfl
+  hI := ⟨by rw [Ideal.map_id], fun _ _ => rfl⟩
+  a := 1
+  ha := by simp
+  m := 1
+  ht := by simp [ht]
+  e i := i.elim
+  he j := j.elim
+  c _ := ()
+  pt := 𝟙 _
+  str y r := rfl
+  inc _ := trivial
+  w _ i := i.elim
+  w_map i := i.elim
+  hf i := i.elim
+  hg i := i.elim
+  hw _ := Finset.prod_of_isEmpty (ι := Empty) _
+
+open ReciprocityTheory.ChartRestriction.G.Semi in
+open Classical in
+
+def lbOn (Y : SmV k) (L : LB Y.X) (hL : L.IsLB) : GlobalTheory.LogCris.LB (covFun b ht κ Y L.U) where
+  g i j B y := if h : ⊤ ≤ y.1.2 ⁻¹ᵁ (L.U i ⊓ L.U j) then
+      Units.map (GlobalTheory.Cris.evalAt (B := B) y.1.2 (L.U i ⊓ L.U j) h : Γ(Y.X, L.U i ⊓ L.U j) →* B) (L.g i j) else 1
+  g_map := @fun i j B B' φ y hi hj => by
+    have h := le_preimage_inf y.1.2 hi hj
+    rw [dif_pos h, dif_pos (show ⊤ ≤ (((covFun b ht κ Y L.U).Pt.map φ y)).1.2 ⁻¹ᵁ (L.U i ⊓ L.U j) from le_preimage_map φ y.1.2 h)]
+    ext
+    exact evalAt_map φ y.1.2 h _ _
+  g_self := @fun i B y hi => by
+    have h := le_preimage_inf y.1.2 hi hi
+    rw [dif_pos h]
+    ext
+    have e := congrArg (fun u : Γ(Y.X, L.U i)ˣ => (u : Γ(Y.X, L.U i))) (hL.g_self i)
+    simp only [Units.coe_map, MonoidHom.coe_coe, Units.val_one]
+    rw [← evalAt_res y.1.2 (le_inf le_rfl le_rfl) h hi]
+    exact (congrArg _ e).trans (map_one _)
+  g_comp := @fun i j l B y hi hj hl => by
+    have h12 := le_preimage_inf y.1.2 hi hj
+    have h23 := le_preimage_inf y.1.2 hj hl
+    have h13 := le_preimage_inf y.1.2 hi hl
+    have h123 := le_preimage_inf y.1.2 h12 hl
+    rw [dif_pos h12, dif_pos h23, dif_pos h13]
+    ext
+    have e := congrArg (fun u : Γ(Y.X, L.U i ⊓ L.U j ⊓ L.U l)ˣ => (u : Γ(Y.X, L.U i ⊓ L.U j ⊓ L.U l))) (hL.cocycle i j l)
+    simp only [Units.val_mul, Units.coe_map, MonoidHom.coe_coe] at e ⊢
+    rw [← evalAt_res y.1.2 inf_le_left h12 h123, ← evalAt_res y.1.2 (le_inf (inf_le_left.trans inf_le_right) inf_le_right) h23 h123,
+      ← evalAt_res y.1.2 (le_inf (inf_le_left.trans inf_le_left) inf_le_right) h13 h123, ← map_mul]
+    exact congrArg _ e
+
+def IsFirstChernClassOnThickenings (Y : SmV k) (L : ReciprocityTheory.ChartRestriction.G.Semi.LB Y.X) (hL : L.IsLB) (z : Hc b ht κ Y 2) : Prop :=
+  GlobalTheory.LogCris.IsFirstChernClassOfLineBundle (lbOn b ht κ Y L hL) ((toCov b ht κ Y L.U).pull 2 z)
+
+def powH {Y : SmV k} (x : Hc b ht κ Y 2) (j : ℕ) : Hc b ht κ Y (2 * j) :=
+  Nat.rec (motive := fun j => Hc b ht κ Y (2 * j)) (one b ht κ Y) (fun _ y => cup b ht κ y x) j
+
+end GlobalTheory.CompanionTheory.KMGys
+end
+end
+
+section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.B DividedPowers CompanionTheory.KM.G4 GlobalTheory.CompanionTheory.KMGys ReciprocityTheory.ChartRestriction.G.Geo.Tor
+
+namespace GlobalTheory.CompanionTheory.KMGys.Trace
+
+variable {k : Type} [Field k]
+
+def CutsOut {X D : Scheme.{0}} {L : ReciprocityTheory.ChartRestriction.G.Semi.LB X} (s : L.Sec) (j : D ⟶ X) : Prop :=
+  IsClosedImmersion j ∧ ∀ (T : Scheme.{0}) (g : T ⟶ X) (i : L.ι) (h : ⊤ ≤ g ⁻¹ᵁ L.U i),
+    (g.appLE (L.U i) ⊤ h).hom (s.f i) = 0 ↔ ∃ g' : T ⟶ D, g' ≫ j = g
+
+def cupTop (b : Base) (ht : b.t = 1) (κ : k →+* b.R ⧸ b.I) {Y : SmV k} {e : ℕ} (hd : 2 + 2 * e = 2 * Y.d)
+    (z : Hc b ht κ Y 2) (x : Hc b ht κ Y (2 * e)) : Hc b ht κ Y (2 * Y.d) :=
+  (CH.mulP (OY b ht κ Y)).cup hd z x
+
+abbrev TrAt (b : Base) (ht : b.t = 1) (κ : k →+* b.R ⧸ b.I) : Type 1 :=
+  ∀ Y : SmV k, Hc b ht κ Y (2 * Y.d) →ₗ[b.R] b.R
+
+abbrev TrFam (k : Type) [Field k] : Type 1 :=
+  ∀ (b : Base) (ht : b.t = 1) (κ : k →+* b.R ⧸ b.I), TrAt b ht κ
+
+structure IsTraceAt (b : Base) (ht : b.t = 1) (κ : k →+* b.R ⧸ b.I) (tr : TrAt b ht κ) : Prop where
+  proj : ∀ (Y : SmV k) (e : Y.X ≅ PSpace k Y.d), e.hom ≫ PSpace.str k Y.d = Y.q → ∀ h : Hc b ht κ Y 2,
+    IsFirstChernClassOnThickenings b ht κ Y ((GlobalTheory.ProjSpace.O1 k Y.d).pull e.hom)
+      (ReciprocityTheory.ChartRestriction.G.Semi.LB.isLB_pull (GlobalTheory.ProjSpace.O1_isLB k Y.d) e.hom) h →
+    tr Y (powH b ht κ h Y.d) = 1
+  point : ∀ Y : SmV k, IsProjOver Y.q → ∀ hd : 0 = 2 * Y.d, tr Y (hd ▸ one b ht κ Y) = (degZ Y.q : b.R)
+  pointTr : ∀ Y : SmV k, IsProjOver Y.q → ∀ (hd : 0 = 2 * Y.d) (x : Hc b ht κ Y 0)
+    (m : Hc b ht κ Y 0 →ₗ[b.R] Hc b ht κ Y 0), (∀ y, m y = cup b ht κ x y) →
+    tr Y (hd ▸ x) = LinearMap.trace b.R (Hc b ht κ Y 0) m
+  div : ∀ (D Y : SmV k) (j : D.X ⟶ Y.X) (hj : j ≫ Y.q = D.q),
+    IsProjOver Y.q → ∀ (hd : 2 + 2 * D.d = 2 * Y.d) (L : ReciprocityTheory.ChartRestriction.G.Semi.LB Y.X) (hL : L.IsLB) (s : L.Sec), CutsOut s j →
+    ∀ z : Hc b ht κ Y 2, IsFirstChernClassOnThickenings b ht κ Y L hL z → ∀ x : Hc b ht κ Y (2 * D.d),
+    tr Y (cupTop b ht κ hd z x) = tr D (pull b ht κ j hj (2 * D.d) x)
+
+def BaseCompat (b b' : Base) (ht : b.t = 1) (ht' : b'.t = 1) (κ : k →+* b.R ⧸ b.I) (κ' : k →+* b'.R ⧸ b'.I)
+    (t : TrAt b ht κ) (t' : TrAt b' ht' κ') : Prop :=
+  ∀ (σ : b.R →+* b'.R) (hp : b.p = b'.p) (hD : IsDPMorphism b.γ b'.γ σ)
+    (hκ : ∀ a, κ' a = Ideal.quotientMap b'.I σ (Ideal.map_le_iff_le_comap.1 hD.1) (κ a)) (Y : SmV k),
+    IsProjOver Y.q → ∀ x : Hc b ht κ Y (2 * Y.d),
+    t' Y (baseChange (ht' := ht') b ht κ σ hp hD hκ Y (2 * Y.d) x) = σ (t Y x)
+
+structure IsTrace (tr : TrFam k) : Prop where
+  atBase : ∀ (b : Base) (ht : b.t = 1) (κ : k →+* b.R ⧸ b.I), admitted b κ → IsTraceAt b ht κ (tr b ht κ)
+  base : ∀ (b b' : Base) (ht : b.t = 1) (ht' : b'.t = 1) (κ : k →+* b.R ⧸ b.I) (κ' : k →+* b'.R ⧸ b'.I),
+    admitted b κ → admitted b' κ' → BaseCompat b b' ht ht' κ κ' (tr b ht κ) (tr b' ht' κ')
+
+end GlobalTheory.CompanionTheory.KMGys.Trace
+end
+end
+
+section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+set_option linter.unusedVariables false
+noncomputable section
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.B CrystallineSemistableComparison.Pb DividedPowers CompanionTheory.KM.G4 GlobalTheory.CompanionTheory.KMGys ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.KMGys.Trace
+
+namespace GlobalTheory.CompanionTheory.KMVan
+
+section Sc
+
+variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
+
+structure Sc (Φ : PDF R C) (Λ : Type) [CommRing Λ] where
+  ρ : ∀ T : C, Λ →+* Φ.A.obj T
+  nat : ∀ {T T' : C} (φ : T ⟶ T') (a : Λ), (Φ.A.map φ).hom (ρ T a) = ρ T' a
+
+variable {Φ : PDF R C} {Λ : Type} [CommRing Λ]
+
+def Sc.A (S : Sc Φ Λ) : C ⥤ CommAlgCat.{0} Λ where
+  obj T := letI := (S.ρ T).toAlgebra; CommAlgCat.of Λ (Φ.A.obj T)
+  map {T T'} f :=
+    letI := (S.ρ T).toAlgebra; letI := (S.ρ T').toAlgebra
+    CommAlgCat.ofHom { (Φ.A.map f).hom.toRingHom with commutes' := S.nat f }
+  map_id T := by
+    letI := (S.ρ T).toAlgebra
+    ext x
+    exact congrArg (fun g => g.hom x) (Φ.A.map_id T)
+  map_comp {T T' T''} f g := by
+    letI := (S.ρ T).toAlgebra; letI := (S.ρ T'').toAlgebra
+    ext x
+    exact congrArg (fun g => g.hom x) (Φ.A.map_comp f g)
+
+def Sc.site (S : Sc Φ Λ) : PDF Λ C where
+  A := S.A
+  J := ⟨fun T => Φ.J.S T, fun φ _ hx => Φ.J.map_mem φ hx⟩
+  dp {T} k x := Φ.dp (T := T) k x
+  dp_zero := Φ.dp_zero
+  dp_one := Φ.dp_one
+  dp_zero_right := Φ.dp_zero_right
+  dp_add := Φ.dp_add
+  dp_map φ := Φ.dp_map φ
+
+def Sc.poly (S : Sc Φ Λ) (Q : Poly Φ) : Poly S.site where
+  P := Q.P
+  j := Q.j
+  X := Q.X
+  X_mem := Q.X_mem
+  univ := Q.univ
+  span := Q.span
+
+def Sc.frame (S : Sc Φ Λ) {d : ℕ} (E : Frame Φ d) : Frame S.site d where
+  D := E.D
+  ne := E.ne
+  τ := E.τ
+  mem := E.mem
+  add := E.add
+  nat := E.nat
+  bij := E.bij
+
+def Sc.res (S : Sc Φ Λ) (G : C' ⥤ C) : Sc (Φ.res G) Λ where
+  ρ T := S.ρ (G.obj T)
+  nat φ a := S.nat (G.map φ) a
+
+def Sc.loc (S : Sc Φ Λ) (Y : Λ) (G : C' ⥤ C) (hu : ∀ T, IsUnit (S.ρ (G.obj T) Y)) :
+    Sc (Φ.res G) (Localization.Away Y) where
+  ρ T := IsLocalization.Away.lift Y (hu T)
+  nat {T T'} φ a := by
+    have e : ((Φ.A.map (G.map φ)).hom.toRingHom).comp (IsLocalization.Away.lift Y (hu T)) =
+        IsLocalization.Away.lift (S := Localization.Away Y) Y (hu T') := by
+      refine IsLocalization.ringHom_ext (Submonoid.powers Y) (RingHom.ext fun a => ?_)
+      simp only [RingHom.comp_apply, IsLocalization.Away.lift_eq]
+      exact S.nat (G.map φ) a
+    exact RingHom.congr_fun e a
+
+def Sc.mor (S : Sc Φ Λ) (Y : Λ) (G : C' ⥤ C) (hu : ∀ T, IsUnit (S.ρ (G.obj T) Y)) :
+    SMor S.site (S.loc Y G hu).site (algebraMap Λ (Localization.Away Y)) where
+  G := G
+  ρ T := RingHom.id _
+  comm T a := (IsLocalization.Away.lift_eq Y (hu T) a).symm
+  nat _ _ := rfl
+  mem _ _ hx := hx
+  dp _ _ _ _ := rfl
+
+end Sc
+
+end GlobalTheory.CompanionTheory.KMVan
+
+namespace GlobalTheory.CompanionTheory.KMVan
+section Loc
+open TensorProduct
+variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
+  {Φ : PDF R C} {Λ : Type} [CommRing Λ]
+
+abbrev Fs (S : Sc Φ Λ) : C ⥤ ModuleCat.{0} Λ := sq (IdF.top S.site.A) (IdF.bot S.site.A)
+
+theorem le_top' (S : Sc Φ Λ) (Y : Λ) (G : C' ⥤ C) (hu : ∀ T, IsUnit (S.ρ (G.obj T) Y)) (c : Localization.Away Y) :
+    (S.mor Y G hu).LeC c (IdF.top S.site.A) (IdF.top (S.loc Y G hu).site.A) := fun _ _ _ => trivial
+
+theorem le_bot' (S : Sc Φ Λ) (Y : Λ) (G : C' ⥤ C) (hu : ∀ T, IsUnit (S.ρ (G.obj T) Y)) (c : Localization.Away Y) :
+    (S.mor Y G hu).LeC c (IdF.bot S.site.A) (IdF.bot (S.loc Y G hu).site.A) := fun T x hx => by
+  have h : x = 0 := hx
+  subst h
+  rw [map_zero, mul_zero]
+  exact Ideal.zero_mem _
+
+def mc (S : Sc Φ Λ) (Y : Λ) (G : C' ⥤ C) (hu : ∀ T, IsUnit (S.ρ (G.obj T) Y)) (c : Localization.Away Y) :
+    CH.Mor (Fs S) (Fs (S.loc Y G hu)) (algebraMap Λ (Localization.Away Y)) :=
+  (S.mor Y G hu).sqC c (le_top' S Y G hu c) (le_bot' S Y G hu c)
+
+end Loc
+end GlobalTheory.CompanionTheory.KMVan
+
+namespace GlobalTheory.CompanionTheory.KMVan
+open TensorProduct
+
+theorem tens_of_loc {Λ : Type} [CommRing Λ] (Y : Λ) {M M' : Type*} [AddCommGroup M] [Module Λ M] [AddCommGroup M']
+    [Module (Localization.Away Y) M'] (f : Localization.Away Y → M → M')
+    (f0 : M →+ M') (hf0 : ∀ n x, f n x = n • f0 x) (hs : ∀ (a : Λ) x, f0 (a • x) = algebraMap Λ (Localization.Away Y) a • f0 x)
+    (h0 : ∀ x, f0 x = 0 → ∃ n : ℕ, Y ^ n • x = 0)
+    (h1 : ∀ y, ∃ (n : ℕ) (x : M), f0 x = algebraMap Λ (Localization.Away Y) (Y ^ n) • y) :
+    Tens Λ (N := fun _ : Unit => Localization.Away Y) (M := fun _ => M) (M' := M') fun _ n x => f n x := by
+  letI : Module Λ M' := Module.compHom M' (algebraMap Λ (Localization.Away Y))
+  haveI : IsScalarTower Λ (Localization.Away Y) M' := ⟨fun a b x => by
+    change (a • b) • x = algebraMap Λ (Localization.Away Y) a • b • x
+    rw [Algebra.smul_def, mul_smul]⟩
+  let g : M →ₗ[Λ] M' := { f0 with map_smul' := fun a x => hs a x }
+  have hunit : ∀ x : Submonoid.powers Y, IsUnit (algebraMap Λ (Module.End Λ M') x) := by
+    rintro ⟨_, n, rfl⟩
+    have hu : IsUnit (algebraMap Λ (Localization.Away Y) (Y ^ n)) := by
+      rw [map_pow]; exact (IsLocalization.Away.algebraMap_isUnit Y).pow n
+    obtain ⟨u, hu⟩ := hu
+    refine (Module.End.isUnit_iff _).2 ⟨fun a b h => ?_, fun b => ⟨(↑u⁻¹ : Localization.Away Y) • b, ?_⟩⟩
+    · have h' : algebraMap Λ (Localization.Away Y) (Y ^ n) • a = algebraMap Λ (Localization.Away Y) (Y ^ n) • b := h
+      rw [← hu] at h'
+      have h2 := congrArg (fun z => (↑u⁻¹ : Localization.Away Y) • z) h'
+      simp only [smul_smul, Units.inv_mul, one_smul] at h2
+      exact h2
+    · change algebraMap Λ (Localization.Away Y) (Y ^ n) • (↑u⁻¹ : Localization.Away Y) • b = b
+      rw [← hu, smul_smul, Units.mul_inv, one_smul]
+  haveI : IsLocalizedModule (Submonoid.powers Y) g :=
+    { map_units := hunit
+      surj := fun y => by
+        obtain ⟨n, x, hx⟩ := h1 y
+        exact ⟨⟨x, ⟨Y ^ n, n, rfl⟩⟩, hx.symm⟩
+      exists_of_eq := fun {x y} h => by
+        have : f0 (x - y) = 0 := by rw [map_sub]; exact sub_eq_zero.2 h
+        obtain ⟨n, hn⟩ := h0 _ this
+        refine ⟨⟨Y ^ n, n, rfl⟩, ?_⟩
+        change Y ^ n • x = Y ^ n • y
+        rw [smul_sub] at hn
+        exact sub_eq_zero.1 hn }
+  have hb := IsLocalizedModule.isBaseChange (Submonoid.powers Y) (Localization.Away Y) g
+  refine ⟨(LinearEquiv.funUnique Unit Λ (Localization.Away Y ⊗[Λ] M)).toAddEquiv.trans hb.equiv.toAddEquiv, fun i n x => ?_⟩
+  have e : (LinearEquiv.funUnique Unit Λ (Localization.Away Y ⊗[Λ] M)) (Pi.single i (n ⊗ₜ x)) = n ⊗ₜ x := by
+    simp [LinearEquiv.funUnique, Pi.single]
+  change hb.equiv ((LinearEquiv.funUnique Unit Λ (Localization.Away Y ⊗[Λ] M)) (Pi.single i (n ⊗ₜ x))) = f n x
+  rw [e, IsBaseChange.equiv_tmul, hf0]
+  rfl
+end GlobalTheory.CompanionTheory.KMVan
+
+namespace GlobalTheory.CompanionTheory.KMVan
+open TensorProduct
+section D
+variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
+  {Φ : PDF R C} {Λ : Type} [CommRing Λ]
+
+theorem tensD (S : Sc Φ Λ) (Y : Λ) (G : C' ⥤ C) (hu : ∀ T, IsUnit (S.ρ (G.obj T) Y)) {D : C} {D' : C'} (e : D ⟶ G.obj D')
+    (h0 : ∀ x, (Φ.A.map e).hom x = 0 → ∃ n : ℕ, S.ρ _ Y ^ n * x = 0)
+    (h1 : ∀ y : Φ.A.obj (G.obj D'), ∃ (n : ℕ) (x : Φ.A.obj D), (Φ.A.map e).hom x = S.ρ _ Y ^ n * y) :
+    Tens Λ (N := fun _ : Unit => Localization.Away Y) (M := fun _ => (Fs S).obj D) (M' := (Fs (S.loc Y G hu)).obj D')
+      fun _ n x => (mc S Y G hu n).τ D' (((Fs S).map e).hom x) := by
+  have key : ∀ (n : Localization.Away Y) (a : S.site.A.obj D),
+      (((mc S Y G hu n).τ D' (((Fs S).map e).hom (GlobalTheory.CompanionTheory.LocCmp.qE S.site.A D a)) : sqM _ _ D').1) =
+      Ideal.Quotient.mk _ ((S.loc Y G hu).ρ D' n * (show (Φ.res G).A.obj D' from (Φ.A.map e).hom a)) := fun n a => rfl
+  refine tens_of_loc Y _ (((mc S Y G hu 1).τ D').toAddMonoidHom.comp ((Fs S).map e).hom.toAddMonoidHom) ?_ ?_ ?_ ?_
+  · intro n x
+    obtain ⟨a, rfl⟩ := (GlobalTheory.CompanionTheory.LocCmp.qE S.site.A D).surjective x
+    refine Subtype.ext ?_
+    change _ = n • ((mc S Y G hu 1).τ D' (((Fs S).map e).hom (GlobalTheory.CompanionTheory.LocCmp.qE S.site.A D a)) : sqM _ _ D').1
+    rw [key, key, map_one, one_mul]
+    rfl
+  · intro b x
+    change (mc S Y G hu 1).τ D' (((Fs S).map e).hom (b • x)) = _
+    rw [map_smul, LinearMap.map_smulₛₗ]
+    rfl
+  · intro x hx
+    obtain ⟨a, rfl⟩ := (GlobalTheory.CompanionTheory.LocCmp.qE S.site.A D).surjective x
+    have h2 := congrArg (fun z : sqM _ _ D' => z.1) hx
+    change ((mc S Y G hu 1).τ D' (((Fs S).map e).hom (GlobalTheory.CompanionTheory.LocCmp.qE S.site.A D a)) : sqM _ _ D').1 = 0 at h2
+    rw [key, map_one, one_mul] at h2
+    have h3 : (Φ.A.map e).hom a = 0 := Ideal.mem_bot.1 (Ideal.Quotient.eq_zero_iff_mem.1 h2)
+    obtain ⟨n, hn⟩ := h0 a h3
+    refine ⟨n, ?_⟩
+    have h4 := (GlobalTheory.CompanionTheory.LocCmp.qE S.site.A D).map_smul (Y ^ n) a
+    refine h4.symm.trans ?_
+    have : Y ^ n • a = 0 := by
+      rw [Algebra.smul_def]
+      have e2 : algebraMap Λ (S.site.A.obj D) (Y ^ n) = S.ρ D Y ^ n := map_pow (S.ρ D) Y n
+      rw [e2]
+      exact hn
+    rw [this, map_zero]
+  · intro y
+    obtain ⟨b, rfl⟩ := (GlobalTheory.CompanionTheory.LocCmp.qE (S.loc Y G hu).site.A D').surjective y
+    obtain ⟨n, x, hx⟩ := h1 b
+    refine ⟨n, GlobalTheory.CompanionTheory.LocCmp.qE S.site.A D x, Subtype.ext ?_⟩
+    change ((mc S Y G hu 1).τ D' (((Fs S).map e).hom (GlobalTheory.CompanionTheory.LocCmp.qE S.site.A D x)) : sqM _ _ D').1 = _
+    rw [key, map_one, one_mul]
+    have e3 : (S.loc Y G hu).ρ D' (algebraMap Λ (Localization.Away Y) (Y ^ n)) = S.ρ (G.obj D') Y ^ n :=
+      (IsLocalization.Away.lift_eq Y (hu D') (Y ^ n)).trans (map_pow _ _ _)
+    change Ideal.Quotient.mk _ (show (Φ.res G).A.obj D' from (Φ.A.map e).hom x) = _
+    rw [show (show (Φ.res G).A.obj D' from (Φ.A.map e).hom x) = (S.loc Y G hu).ρ D' (algebraMap Λ (Localization.Away Y) (Y ^ n)) * (show (Φ.res G).A.obj D' from b) from hx.trans (by rw [e3])]
+    rfl
+end D
+end GlobalTheory.CompanionTheory.KMVan
+
+namespace GlobalTheory.CompanionTheory.KMVan
+open TensorProduct
+section LT
+variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
+  {Φ : PDF R C} {Λ : Type} [CommRing Λ]
+
+
+end LT
+end GlobalTheory.CompanionTheory.KMVan
+
+namespace GlobalTheory.CompanionTheory.KMVan
+section FV
+variable {R : Type} [CommRing R]
+
+end FV
+end GlobalTheory.CompanionTheory.KMVan
+
+namespace GlobalTheory.CompanionTheory.KMVan
+section PS
+open CrystallineSemistableComparison.Pb.Site GlobalTheory.PDA GlobalTheory.CompanionTheory.ChartLocBc
+variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
+  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I}
+
+
+end PS
+
+section Res
+variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C}
+
+def polyRes (Q : Poly Φ) (W : ObjectProperty C) (hW : Cosieve W) : Poly (Φ.res W.ι) where
+  P T := ⟨Q.P T.obj, hW (Q.j T.obj) T.property⟩
+  j T := ObjectProperty.homMk (Q.j T.obj)
+  X T := Q.X T.obj
+  X_mem T := Q.X_mem T.obj
+  univ {T T'} φ x hx := by
+    obtain ⟨ψ, ⟨h1, h2⟩, hu⟩ := Q.univ φ.hom x hx
+    refine ⟨ObjectProperty.homMk ψ, ⟨ObjectProperty.hom_ext _ h1, h2⟩, ?_⟩
+    rintro ψ' ⟨h3, h4⟩
+    exact ObjectProperty.hom_ext _ (hu ψ'.hom ⟨congrArg (fun f => f.hom) h3, h4⟩)
+  span T z := Q.span T.obj z
+
+
+end Res
+
+section Fr
+open CrystallineSemistableComparison.Pb.Site
+variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
+  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I} {V : X.Opens} {d : ℕ}
+
+def chFrame (c : Chart γ p q κ V d) (h : c.Good) {C₀ : Type 1} [Category.{0} C₀] (G : C₀ ⥤ Thick (nlFun γ p X q κ))
+    [G.Full] [G.Faithful] (hV : ∀ T, InU V (G.obj T)) (D₀ : C₀) (ε : c.D ⟶ G.obj D₀) [IsIso ε] :
+    Frame ((thP (nlFun γ p X q κ)).res G) d where
+  D := D₀
+  ne T := (h.1 _ (hV T)).map fun s => G.preimage (inv ε ≫ s)
+  τ i {T} σ σ' := ((ε ≫ G.map σ').φ (c.t i) - (ε ≫ G.map σ).φ (c.t i) : (G.obj T).B)
+  mem i {T} σ σ' := by
+    obtain ⟨φ, -, hu⟩ := c.rep (CommRingCat.of ((G.obj T).B ⧸ (G.obj T).J)) (G.obj T).y (hV T)
+    have e := (hu _ (ε ≫ G.map σ').pt).trans (hu _ (ε ≫ G.map σ).pt).symm
+    exact Ideal.Quotient.eq.1 (RingHom.congr_fun e (Ideal.Quotient.mk _ (c.t i)))
+  add i {T} σ σ' σ'' := by
+    change (_ : (G.obj T).B) = (_ - _ : (G.obj T).B) + (_ - _ : (G.obj T).B)
+    ring
+  nat i {T T'} σ σ' φ := by
+    rw [G.map_comp, G.map_comp, ← Category.assoc, ← Category.assoc]
+    exact (map_sub (G.map φ).φ _ _).symm
+  bij {T} σ y hy := by
+    obtain ⟨σ', h1, h2⟩ := h.2 (G.obj T) (ε ≫ G.map σ) y hy
+    refine ⟨G.preimage (inv ε ≫ σ'), fun i => ?_, fun τ hτ => G.map_injective ?_⟩
+    · have : ε ≫ G.map (G.preimage (inv ε ≫ σ')) = σ' := by simp
+      change ((ε ≫ G.map (G.preimage (inv ε ≫ σ'))).φ (c.t i) - _ : (G.obj T).B) = _
+      rw [this]
+      exact h1 i
+    · have e := h2 (ε ≫ G.map τ) hτ
+      simp [← e]
+
+end Fr
+end GlobalTheory.CompanionTheory.KMVan
+
+namespace GlobalTheory.CompanionTheory.KMVan
+section CL
+open CrystallineSemistableComparison.Pb.Site
+variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
+  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I} {V V' : X.Opens} {d : ℕ}
+
+theorem chart_loc (c : Chart γ p q κ V d) (c' : Chart γ p q κ V' d) (e : c.D ⟶ c'.D) (he : ∀ i, e.φ (c.t i) = c'.t i)
+    (g : c.D.B) (hg : IsUnit (e.φ g))
+    (hT : ∀ (T : Thick (nlFun γ p X q κ)) (σ : c.D ⟶ T), IsUnit (σ.φ g) → InU V' T) :
+    (∀ x, e.φ x = 0 → ∃ n : ℕ, g ^ n * x = 0) ∧ ∀ y, ∃ (n : ℕ) (x : c.D.B), e.φ x = e.φ g ^ n * y := by
+  have hc := GlobalTheory.CompanionTheory.ChartMaps.good c
+  have hc' := GlobalTheory.CompanionTheory.ChartMaps.good c'
+  let σ := locH c.D g
+  have hgL : IsUnit (σ.φ g) := IsLocalization.Away.algebraMap_isUnit (S := Localization.Away g) g
+  have hL : InU V' (locT c.D g) := hT _ σ hgL
+  have hLV : InU V (locT c.D g) := inU_hom σ c.inV
+  obtain ⟨s₀⟩ := hc'.1 _ hL
+  have hy : ∀ i, σ.φ (c.t i) - s₀.φ (c'.t i) ∈ (locT c.D g).J := fun i => by
+    obtain ⟨φ, -, hu⟩ := c.rep (CommRingCat.of ((locT c.D g).B ⧸ (locT c.D g).J)) (locT c.D g).y hLV
+    have e1 := (hu _ σ.pt).trans (hu _ (e ≫ s₀).pt).symm
+    have e2 := Ideal.Quotient.eq.1 (RingHom.congr_fun e1 (Ideal.Quotient.mk _ (c.t i)))
+    have e3 : (e ≫ s₀).φ (c.t i) = s₀.φ (c'.t i) := (congrArg s₀.φ (he i))
+    rw [← e3]
+    exact e2
+  obtain ⟨s₁, h1, -⟩ := hc'.2 _ s₀ _ hy
+  have hs₁ : ∀ i, s₁.φ (c'.t i) = σ.φ (c.t i) := fun i => by
+    have := h1 i
+    linear_combination this
+  have hes : e ≫ s₁ = σ := by
+    have h0 : ∀ i : Fin d, (0 : (locT c.D g).B) ∈ (locT c.D g).J := fun _ => Ideal.zero_mem _
+    refine (hc.2 _ σ (fun _ => 0) h0).unique (fun i => ?_) (fun i => sub_self _)
+    have e3 : (e ≫ s₁).φ (c.t i) = s₁.φ (c'.t i) := congrArg s₁.φ (he i)
+    rw [e3, hs₁, sub_self]
+  let ℓ : Localization.Away g →+* c'.D.B := IsLocalization.Away.lift g hg
+  have hℓ : ∀ x, ℓ (algebraMap c.D.B (Localization.Away g) x) = e.φ x := fun x => IsLocalization.Away.lift_eq g hg x
+  have hcomp : ℓ.comp (algebraMap c.D.B (Localization.Away g)) = e.φ := RingHom.ext hℓ
+  have hdp : (locD c.D g).IsDPMorphism c'.D.δ ℓ := by
+    refine IsDPMorphism.on_span _ _ (S := algebraMap c.D.B (Localization.Away g) '' (c.D.J : Set c.D.B)) rfl ?_ ?_
+    · rintro _ ⟨a, ha, rfl⟩
+      rw [hℓ]
+      exact e.hle ha
+    · rintro n _ ⟨a, ha, rfl⟩
+      rw [(locD_dp c.D g).dpow_comp a ha, hℓ, hℓ]
+      exact (e.dp.dpow_comp a ha).symm
+  have hle : (c.D.J.map (algebraMap c.D.B (Localization.Away g))) ≤ c'.D.J.comap ℓ := Ideal.map_le_iff_le_comap.1 hdp.ideal_comp
+  let ℓ' : locT c.D g ⟶ c'.D := descOf e ℓ hcomp hdp hle
+  have hu : s₁ ≫ ℓ' = 𝟙 c'.D := by
+    have h0 : ∀ i : Fin d, (0 : c'.D.B) ∈ c'.D.J := fun _ => Ideal.zero_mem _
+    refine (hc'.2 _ (𝟙 c'.D) (fun _ => 0) h0).unique (fun i => ?_) (fun i => sub_self _)
+    have e3 : (s₁ ≫ ℓ').φ (c'.t i) = ℓ (σ.φ (c.t i)) := congrArg ℓ (hs₁ i)
+    rw [e3]
+    have e4 : ℓ (σ.φ (c.t i)) = e.φ (c.t i) := hℓ _
+    rw [e4, he]
+    exact sub_self _
+  have hv : ∀ z, s₁.φ (ℓ z) = z := by
+    have : s₁.φ.comp ℓ = RingHom.id _ := by
+      refine IsLocalization.ringHom_ext (Submonoid.powers g) (RingHom.ext fun x => ?_)
+      simp only [RingHom.comp_apply, RingHom.id_apply, hℓ]
+      exact congrArg (fun f => f.φ x) hes
+    exact fun z => RingHom.congr_fun this z
+  have hw : ∀ y, ℓ (s₁.φ y) = y := fun y => congrArg (fun f => f.φ y) hu
+  refine ⟨fun x hx => ?_, fun y => ?_⟩
+  · have h2 : algebraMap c.D.B (Localization.Away g) x = 0 := by
+      rw [← hv (algebraMap c.D.B (Localization.Away g) x), hℓ, hx, map_zero]
+    obtain ⟨⟨_, n, rfl⟩, hm⟩ := (IsLocalization.map_eq_zero_iff (Submonoid.powers g) _ x).1 h2
+    exact ⟨n, hm⟩
+  · obtain ⟨n, a, ha⟩ := IsLocalization.Away.surj (S := Localization.Away g) g (s₁.φ y)
+    refine ⟨n, a, ?_⟩
+    have := congrArg ℓ ha
+    rw [map_mul, hw, map_pow, hℓ, hℓ] at this
+    rw [← this, mul_comm]
+end CL
+end GlobalTheory.CompanionTheory.KMVan
+
+namespace GlobalTheory.CompanionTheory.KMVan
+section TAU
+open CrystallineSemistableComparison.Pb.Site
+variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
+  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I}
+
+theorem inU_top (T : Thick (nlFun γ p X q κ)) : InU (⊤ : X.Opens) T := fun _ _ => trivial
+
+def evT (T : Thick (nlFun γ p X q κ)) : Γ(X, ⊤) →+* T.B ⧸ T.J := ev T (inU_top T)
+
+theorem evT_nat {T T' : Thick (nlFun γ p X q κ)} (φ : T ⟶ T') (f : Γ(X, ⊤)) :
+    evT T' f = Ideal.quotientMap T'.J φ.φ φ.hle (evT T f) := by
+  have key : ∀ (y : Spec (CommRingCat.of (T'.B ⧸ T'.J)) ⟶ X)
+      (hy : y = Spec.map (CommRingCat.ofHom (Ideal.quotientMap T'.J φ.φ φ.hle)) ≫ pt T)
+      (hh : ⊤ ≤ y ⁻¹ᵁ ⊤), GlobalTheory.Cris.evalAt y ⊤ hh f = Ideal.quotientMap T'.J φ.φ φ.hle (evT T f) := by
+    intro y hy hh
+    subst hy
+    exact evalAt_map (B := CommRingCat.of (T.B ⧸ T.J)) (B' := CommRingCat.of (T'.B ⧸ T'.J)) _ (pt T) (inU_top T) hh f
+  exact key _ (pt_hom φ) (inU_top T')
+
+theorem isUnit_of_basicOpen_top {B : Type} [CommRing B] (u : B)
+    (h : (⊤ : (Spec (CommRingCat.of B)).Opens) ≤ (Spec (CommRingCat.of B)).basicOpen ((Scheme.ΓSpecIso (CommRingCat.of B)).inv.hom u)) :
+    IsUnit u := by
+  by_contra hu
+  obtain ⟨m, hm, hum⟩ := exists_max_ideal_of_mem_nonunits hu
+  have h1 := h (show (⟨m, hm.isPrime⟩ : Spec (CommRingCat.of B)) ∈ (⊤ : (Spec (CommRingCat.of B)).Opens) from trivial)
+  rw [basicOpen_eq_of_affine, PrimeSpectrum.mem_basicOpen] at h1
+  exact h1 hum
+
+end TAU
+end GlobalTheory.CompanionTheory.KMVan
+
+namespace GlobalTheory.CompanionTheory.KMVan
+section TAU2
+open CrystallineSemistableComparison.Pb.Site
+variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
+  {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I}
+
+theorem pow_eq_of_sub_mem {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) {n : ℕ} (hn : (n : B) = 0) {a b : B}
+    (h : a - b ∈ J) : a ^ n = b ^ n := by
+  obtain ⟨j, hj, rfl⟩ : ∃ j ∈ J, a = j + b := ⟨a - b, h, by ring⟩
+  rw [add_pow, Finset.sum_range_succ']
+  have : ∀ m ∈ Finset.range n, j ^ (m + 1) * b ^ (n - (m + 1)) * (n.choose (m + 1) : B) = 0 := by
+    intro m _
+    rw [← δ.factorial_mul_dpow_eq_pow hj]
+    have e : ((m + 1).factorial : B) * (n.choose (m + 1) : B) = (n.descFactorial (m + 1) : B) := by
+      rw [Nat.descFactorial_eq_factorial_mul_choose]; push_cast; ring
+    have e2 : (n.descFactorial (m + 1) : B) = 0 := by
+      cases n with
+      | zero => simp
+      | succ n =>
+        rw [Nat.succ_descFactorial_succ, Nat.cast_mul, hn, zero_mul]
+    calc _ = ((m + 1).factorial : B) * (n.choose (m + 1) : B) * (δ.dpow (m + 1) j * b ^ (n - (m + 1))) := by ring
+      _ = 0 := by rw [e, e2, zero_mul]
+  rw [Finset.sum_eq_zero this]
+  simp
+
+theorem pow_eq_zero_of_mem {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) {n : ℕ} (h0 : n ≠ 0) (hn : (n : B) = 0)
+    {a : B} (h : a ∈ J) : a ^ n = 0 := by
+  have := pow_eq_of_sub_mem δ hn (a := a) (b := 0) (by simpa using h)
+  rw [this, zero_pow h0]
+
+theorem isUnit_of_mk {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) {n : ℕ} (h0 : n ≠ 0) (hn : (n : B) = 0)
+    {a : B} (h : IsUnit (Ideal.Quotient.mk J a)) : IsUnit a := by
+  obtain ⟨b, hb⟩ := h.exists_right_inv
+  obtain ⟨c, rfl⟩ := Ideal.Quotient.mk_surjective b
+  have h1 : a * c - 1 ∈ J := Ideal.Quotient.eq.1 (by rw [map_mul, hb, map_one])
+  have h2 : IsNilpotent (a * c - 1) := ⟨n, pow_eq_zero_of_mem δ h0 hn h1⟩
+  have h3 : IsUnit (a * c) := by
+    have := h2.isUnit_add_one
+    simpa using this
+  exact isUnit_of_mul_isUnit_left h3
+
+def lftT (T : Thick (nlFun γ p X q κ)) (f : Γ(X, ⊤)) : T.B :=
+  Function.surjInv Ideal.Quotient.mk_surjective (evT T f)
+
+theorem mk_lftT (T : Thick (nlFun γ p X q κ)) (f : Γ(X, ⊤)) : Ideal.Quotient.mk T.J (lftT T f) = evT T f :=
+  Function.surjInv_eq _ _
+
+def tau (n : ℕ) (f : Γ(X, ⊤)) (T : Thick (nlFun γ p X q κ)) : T.B := lftT T f ^ n
+
+theorem n_zero (T : Thick (nlFun γ p X q κ)) {n : ℕ} (hn : (n : R) = 0) : (n : T.B) = 0 := by
+  rw [← map_natCast T.i, hn, map_zero]
+
+
+theorem tau_nat {n : ℕ} (hn : (n : R) = 0) {T T' : Thick (nlFun γ p X q κ)} (φ : T ⟶ T') (f : Γ(X, ⊤)) :
+    φ.φ (tau n f T) = tau n f T' := by
+  rw [tau, tau, map_pow]
+  refine pow_eq_of_sub_mem T'.δ (n_zero T' hn) (Ideal.Quotient.eq.1 ?_)
+  rw [mk_lftT, evT_nat φ f, ← mk_lftT T f]
+  rfl
+
+
+end TAU2
+end GlobalTheory.CompanionTheory.KMVan
+end
+end
+
+section
 set_option backward.isDefEq.respectTransparency false
 set_option autoImplicit false
 set_option linter.unusedVariables false
@@ -280,3 +915,5 @@ theorem main : ∀ {K : Type} [CommRing K] {X : Scheme.{0}} (q : X ⟶ Spec (Com
   exact fm_change hF (lifts_nr Λ g₀) (fun k => lifts_nr _ _) (lifts_sub _ _ _) (fun k => lifts_sub _ _ _) hc
 
 end GlobalTheory.CompanionTheory.OmCls
+end
+end

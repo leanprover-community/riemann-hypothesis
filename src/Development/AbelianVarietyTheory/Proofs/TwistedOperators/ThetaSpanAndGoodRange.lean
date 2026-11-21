@@ -11,19 +11,1248 @@ import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.WeakWei
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.RationalUnitaryGroupStructure
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.OmegaFormIntegrality
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemSpanThetaSeriesOfBoundedHolomorphic
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsContinuousRealScalarCharacterWeakWeilStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsContinuousRealScalarCharacterWeakWeil
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealPointsUnitaryCharacterEqDetPower
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompactTorusActsFockVectorRowHighest
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RevPosRevPos
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsTestFunctionOfFockVacuumThetaFunctionStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockPolynomialVectorTestThetaZeroEqThetaSeriesStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.FockPolynomialVectorLawsStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.WeakWeilRepCarriesDerivativesVacuaFockVectorsStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaKernelTestFunctionMapLinearInjectiveEquivarStatement
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaSeriesTestFunctionHolomorphicWeightStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HolomorphicUpToFactorOfLoweringKilledTorusWeight
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.StableFockSpanContainsRowHighestPolynomials
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaLiftFiniteVectorEqTranslateLevelDatum
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFrameChangeWeakWeilRepresentation
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockPolynomialVectorsReframeSource
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsVolumeTransportOfLatticeIsometry
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasDerivAtZeroAndIsTheta
+import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.InfFam
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ReframeVacuumAndLiftVector
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaSeriesEqThetaLiftDefiniteGroupFormStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExtremalVectorValuesLoweringAndTorus
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelCharacterPlacesOddAndPrincipalLevel
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaSeriesEqThetaLiftDefiniteGroupForm
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalVectorAnnihilated
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelCharactersUnramifiedOffLevelPlaces
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelCharacterTrivialOnSubgroup
 
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_continuous_realScalar_character_weakWeil : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeak C.ψ S T om → ContT C.ψ om → ∃ z : GA D T → ℂ, (∀ a ∈ GinfC T, ∀ a' ∈ GinfC T, z (a * a') = z a * z a') ∧ (∀ a ∈ GinfC T, ‖z a‖ = 1) ∧ ContinuousOn z (GinfC T : Set (GA D T)) ∧ ∀ B, C.IsB B → ∀ a ∈ GinfC T, RealScal C om B a (z a) := by
+  first | exact @GlobalTheory.AdSpan.RealChar.realScal_character | exact GlobalTheory.AdSpan.RealChar.realScal_character | (intros; apply GlobalTheory.AdSpan.RealChar.realScal_character <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.AdSpan.TorWt
+
+variable {D : D7} {S T : HSp D}
+
+theorem eq_zero_of_rho_finW_zero (C : Ctx S T) {F : WO S T → ℂ} (hF : C.IsTh F)
+    (h0 : ∀ y : Matrix (Fin S.rank) (Fin T.rank) D.host.E, C.rho (finW S T y) F 0 = 0) : F = 0 := by
+  obtain ⟨h0th, hlin, hfl⟩ := GlobalTheory.T.thetaFunction_space_heisenberg_laws D S T C
+  have key := (hfl F hF).2.2.2.1
+  have r0 : IsRealPt (0 : WO S T) := by
+    ext i j
+    simp
+  have hv : ∀ y : Matrix (Fin S.rank) (Fin T.rank) D.host.E, F (-(ratW T S yᵀ - finW S T y)) = 0 := by
+    intro y
+    have e := key y 0 r0
+    rw [h0 y, zero_sub] at e
+    exact (mul_eq_zero.1 e.symm).resolve_left (Complex.exp_ne_zero _)
+  obtain ⟨R, hRc, -, hadd, -, hR2, -, hfin, -⟩ := GlobalTheory.T.realPoints_classicalModel_realVectorSpace D S T C
+  have hrat := (GlobalTheory.T.symplecticCharacter_real_finite_points_match D S T C).2.2.2.2.2.2.2
+  obtain ⟨B, hB⟩ := (GlobalTheory.T.thetaKernel_orthonormalFrame_inDomain_periodLinear D S T C).1
+  have hdom := ((GlobalTheory.T.thetaKernel_orthonormalFrame_inDomain_periodLinear D S T C).2 B hB).2.1
+  have hd := (GlobalTheory.T.realPeriodMap_homeomorph_riemannForm_density D.host.E T.rank C.X C.g C.q0 C.hr C.bas C.idx S.rank C.sympl C.even _ hdom).2.2.2.1
+  have hRe : ∀ y : Matrix (Fin S.rank) (Fin T.rank) D.host.E, R (embR C.X y) = ratW T S yᵀ - finW S T y := by
+    intro y
+    obtain ⟨h1, h2, h3, -⟩ := hrat y
+    have e : C.realPt (ratW T S yᵀ - finW S T y) = embR C.X y := by
+      have := hadd (ratW T S yᵀ - finW S T y) (finW S T y)
+      rw [sub_add_cancel, h1, hfin _ h2, add_zero] at this
+      exact this.symm
+    rw [← e, hR2 _ h3]
+  have hG : (fun v => F (-(R v))) = fun _ => (0 : ℂ) := by
+    refine hd.equalizer (hF.cont.comp (continuous_neg.comp hRc)) continuous_const (funext fun y => ?_)
+    simp only [Function.comp_apply]
+    rw [hRe y]
+    exact hv y
+  refine (hlin F 0 hF h0th).2 fun w hw => ?_
+  have e := congrFun hG (-(C.realPt w))
+  rw [map_neg, neg_neg, hR2 w hw] at e
+  rw [e]
+  rfl
+
+end GlobalTheory.AdSpan.TorWt
+
+namespace GlobalTheory.AdSpan.TorWt
+
+variable {D : D7} {S T : HSp D}
+
+theorem rho_add_smul (C : Ctx S T) (w : WO S T) (F G : WO S T → ℂ) (a : ℂ) :
+    C.rho w (F + a • G) = C.rho w F + a • C.rho w G := by
+  funext x
+  simp only [Ctx.rho, heisO, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  ring
+
+theorem fvec_Th_rmul (C : Ctx S T) {B B' : C.Bas} (hB : C.IsB B) (hB' : C.IsB B') {b : Frame C.X.Ψ T.rank}
+    (hb : b ∈ Bor C.X.Ψ T.rank) (hx : C.xB B' = rmul (C.xB B) b)
+    (c : C.X.Ψ → Fin C.q0 → ℕ) (c' : C.X.Ψ → Fin C.X.p0 → ℕ) (Q : MvPolynomial (FVar D T.rank S.rank) ℂ)
+    (hQ : C.toH Q ∈ Harm.rowHighest ℂ c c') (φ : TF S.rank C.g) (hφ : SW.IsSB φ) :
+    C.fvec B' (C.Th (C.xB B') φ) Q = bchar (wtOf C.X C.hr c c' S.rank) b • C.fvec B (C.Th (C.xB B) φ) Q := by
+  obtain ⟨h0th, hlin, hfl⟩ := GlobalTheory.T.thetaFunction_space_heisenberg_laws D S T C
+  have hdom := ((GlobalTheory.T.thetaKernel_orthonormalFrame_inDomain_periodLinear D S T C).2 B hB).2.1
+  have hdom' := ((GlobalTheory.T.thetaKernel_orthonormalFrame_inDomain_periodLinear D S T C).2 B' hB').2.1
+  have hth : ∀ x ∈ C.X.dom, ∀ ψ : TF S.rank C.g, SW.IsSB ψ → C.IsTh (C.Th x ψ) :=
+    fun x hx ψ hψ => (GlobalTheory.T.adelicZakTheta_exists_unique D S T C x hx ψ hψ).1.1
+  have hhe : ∀ (y : Matrix (Fin S.rank) (Fin T.rank) D.host.E) (ψ : TF S.rank C.g), SW.IsSB ψ →
+      SW.IsSB (heisG C.X C.bas y ψ) := fun y ψ h =>
+    ((GlobalTheory.SW.heisG_laws D.host.E T.rank C.X C.g C.bas C.idx S.rank C.sympl C.even).2.2.2 y ψ h).1
+  have hw := (GlobalTheory.T.thetaSeries_testFunction_holomorphic_weight D.host.E T.rank C.X C.g C.q0 C.hr C.bas C.idx S.rank C.sympl C.even c c')
+  set la := bchar (wtOf C.X C.hr c c' S.rank) b
+  have t1 : C.IsTh (C.fvec B' (C.Th (C.xB B') φ) Q) :=
+    (GlobalTheory.T.fockPolynomialVector_laws D S T C B' hB' (fun _ => 1) _ (hth _ hdom' φ hφ) Q).1
+  have t2 : C.IsTh (C.fvec B (C.Th (C.xB B) φ) Q) :=
+    (GlobalTheory.T.fockPolynomialVector_laws D S T C B hB (fun _ => 1) _ (hth _ hdom φ hφ) Q).1
+  have tG : C.IsTh (C.fvec B' (C.Th (C.xB B') φ) Q + (-la) • C.fvec B (C.Th (C.xB B) φ) Q) :=
+    ((hlin _ _ t1 ((hfl _ t2).1 (-la))).1)
+
+  have val : ∀ (B₀ : C.Bas), C.IsB B₀ → C.xB B₀ ∈ C.X.dom → ∀ y : Matrix (Fin S.rank) (Fin T.rank) D.host.E,
+      C.rho (finW S T y) (C.fvec B₀ (C.Th (C.xB B₀) φ) Q) 0 =
+        thP C.X C.hr C.bas C.idx (heisG C.X C.bas (-y) φ) (C.toH Q) (C.xB B₀) := by
+    intro B₀ hB₀ hd₀ y
+    have e1 := (GlobalTheory.T.fockPolynomialVector_laws D S T C B₀ hB₀ (fun _ => 1) _ (hth _ hd₀ φ hφ) Q).2.2.2.2.2 (finW S T y)
+      ((GlobalTheory.T.symplecticCharacter_real_finite_points_match D S T C).2.2.2.2.2.2.2 y).2.1
+    rw [← e1, ((GlobalTheory.T.thetaKernel_testFunction_map_linear_injective_equivariant D S T C _ hd₀ φ hφ).2.2.1 y)]
+    exact ((GlobalTheory.T.fockPolynomialVector_testTheta_zero_eq_thetaSeries D S T C).2 B₀ hB₀ _ (hhe (-y) φ hφ)).2 Q
+  have hG := eq_zero_of_rho_finW_zero C tG fun y => by
+    rw [rho_add_smul, Pi.add_apply, Pi.smul_apply, val B' hB' hdom' y, val B hB hdom y, hx,
+      (hw _ (hhe (-y) φ hφ) _ hQ).2.1 _ hdom b hb, smul_eq_mul]
+    ring
+  rw [neg_smul, ← sub_eq_add_neg, sub_eq_zero] at hG
+  exact hG
+
+end GlobalTheory.AdSpan.TorWt
+
+namespace GlobalTheory.AdSpan.TorWt
+
+variable {D : D7} {S T : HSp D}
+
+theorem conj_exp_mul_exp (x : ℝ) : conj (cexp ((x : ℂ) * I)) * cexp ((x : ℂ) * I) = 1 := by
+  rw [← Complex.exp_conj, map_mul, Complex.conj_ofReal, Complex.conj_I, ← Complex.exp_add]
+  convert Complex.exp_zero using 2
+  ring
+
+theorem conj_exp (x : ℝ) : conj (cexp ((x : ℂ) * I)) = cexp (-((x : ℂ) * I)) := by
+  rw [← Complex.exp_conj, map_mul, Complex.conj_ofReal, Complex.conj_I]
+  congr 1
+  ring
+
+theorem det_sgnM_ne (C : Ctx S T) : (sgnM C.X).det ≠ 0 := by
+  rw [sgnM, det_diagonal]
+  refine Finset.prod_ne_zero_iff.2 fun a _ => ?_
+  unfold sgn
+  split_ifs <;> norm_num
+
+theorem mem_UH_tor (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) :
+    B ρ * diagonal (fun a => cexp ((t a : ℂ) * I)) * (B ρ)⁻¹ ∈ Formalism.QuantumDeterminants.UH (gramAt D T ρ) := by
+  set P := B ρ
+  set d : Matrix (Fin T.rank) (Fin T.rank) ℂ := diagonal (fun a => cexp ((t a : ℂ) * I))
+  set G := gramAt D T ρ
+  have hP : Pᴴ * G * P = sgnM C.X := hB ρ
+  have hdet : IsUnit P.det := by
+    have h := congrArg Matrix.det hP
+    rw [det_mul, det_mul] at h
+    refine isUnit_iff_ne_zero.2 fun h0 => det_sgnM_ne C ?_
+    rw [← h, h0, mul_zero]
+  have hdd : dᴴ * sgnM C.X * d = sgnM C.X := by
+    simp only [d, sgnM, diagonal_conjTranspose, diagonal_mul_diagonal]
+    congr 1
+    funext a
+    simp only [Pi.star_apply, RCLike.star_def]
+    rw [mul_comm, ← mul_assoc, mul_comm _ (conj _), conj_exp_mul_exp, one_mul]
+  show (P * d * P⁻¹)ᴴ * G * (P * d * P⁻¹) = G
+  calc (P * d * P⁻¹)ᴴ * G * (P * d * P⁻¹) = (P⁻¹)ᴴ * (dᴴ * (Pᴴ * G * P) * d) * P⁻¹ := by
+        simp only [conjTranspose_mul, Matrix.mul_assoc]
+    _ = (P⁻¹)ᴴ * (Pᴴ * G * P) * P⁻¹ := by rw [hP, hdd]
+    _ = (P * P⁻¹)ᴴ * G * (P * P⁻¹) := by simp only [conjTranspose_mul, Matrix.mul_assoc]
+    _ = G := by rw [mul_nonsing_inv _ hdet]; simp
+
+theorem compAt_torAt (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ)
+    (τ : D.what₂.Tau) : compAt C.θ τ (mt T (torAt C.θ T B ρ t)) =
+      if τ = ρ then B ρ * diagonal (fun a => cexp ((t a : ℂ) * I)) * (B ρ)⁻¹ else 1 := by
+  have h := GlobalTheory.PointAtPlaceHom.atTau_spec C.inf T ρ (mem_UH_tor C hB ρ t)
+  split_ifs with e
+  · subst e
+    exact h.2.1
+  · exact h.2.2 τ e
+
+end GlobalTheory.AdSpan.TorWt
+
+namespace GlobalTheory.AdSpan.TorWt
+
+variable {D : D7} {S T : HSp D}
+
+theorem mvB_torAt (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) :
+    C.mvB (torAt C.θ T B ρ t) B = fun τ => if τ = ρ then B ρ * diagonal (fun a => cexp ((t a : ℂ) * I)) else B τ := by
+  have hdet : IsUnit (B ρ).det := by
+    have h := congrArg Matrix.det (hB ρ)
+    rw [det_mul, det_mul] at h
+    refine isUnit_iff_ne_zero.2 fun h0 => det_sgnM_ne C ?_
+    rw [← h, h0, mul_zero]
+  funext τ
+  simp only [Ctx.mvB, compAt_torAt C hB ρ t τ]
+  split_ifs with e
+  · subst e
+    rw [Matrix.mul_assoc, nonsing_inv_mul _ hdet, Matrix.mul_one]
+  · rw [Matrix.one_mul]
+
+def bT (C : Ctx S T) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) : Frame C.X.Ψ T.rank := fun σ =>
+  if σ = C.m.e ρ then (diagonal (fun a => cexp (-((t a : ℂ) * I))) : Matrix (Fin T.rank) (Fin T.rank) ℂ)
+  else (1 : Matrix (Fin T.rank) (Fin T.rank) ℂ)
+
+theorem mat_bT (C : Ctx S T) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) (σ : C.X.Ψ) :
+    mat (bT C ρ t) σ = if σ = C.m.e ρ then diagonal (fun a => cexp (-((t a : ℂ) * I))) else 1 := by
+  funext a c
+  by_cases e : σ = C.m.e ρ <;> simp [mat, bT, e] <;> rfl
+
+theorem bT_mem (C : Ctx S T) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) : bT C ρ t ∈ Bor C.X.Ψ T.rank := by
+  intro σ
+  by_cases e : σ = C.m.e ρ
+  · have h : mat (bT C ρ t) σ = diagonal (fun a => cexp (-((t a : ℂ) * I))) := by
+      rw [mat_bT, if_pos e]
+    refine ⟨?_, fun a c hca => ?_⟩
+    · rw [h, det_diagonal]
+      exact Finset.prod_ne_zero_iff.2 fun a _ => Complex.exp_ne_zero _
+    · have := congrFun (congrFun h a) c
+      simp only [mat, Matrix.of_apply] at this
+      rw [this, diagonal_apply_ne _ (ne_of_gt hca)]
+  · have h : mat (bT C ρ t) σ = 1 := by
+      rw [mat_bT, if_neg e]
+    refine ⟨by rw [h, det_one]; exact one_ne_zero, fun a c hca => ?_⟩
+    have := congrFun (congrFun h a) c
+    simp only [mat, Matrix.of_apply] at this
+    rw [this, one_apply_ne (ne_of_gt hca)]
+
+theorem xB_mvB_torAt (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) :
+    C.xB (C.mvB (torAt C.θ T B ρ t) B) = rmul (C.xB B) (bT C ρ t) := by
+  rw [mvB_torAt C hB ρ t]
+  funext σ a c
+  show conj ((if C.m.e.symm σ = ρ then B ρ * diagonal (fun a => cexp ((t a : ℂ) * I)) else B (C.m.e.symm σ)) a c) =
+    (mat (C.xB B) σ * mat (bT C ρ t) σ) a c
+  rw [mat_bT]
+  by_cases e : σ = C.m.e ρ
+  · subst e
+    rw [if_pos (Equiv.symm_apply_apply _ _), if_pos rfl, mul_diagonal, mul_diagonal, map_mul, conj_exp]
+    simp [mat, Ctx.xB]
+  · have e' : C.m.e.symm σ ≠ ρ := fun h => e (by rw [← h, Equiv.apply_symm_apply])
+    rw [if_neg e', if_neg e, Matrix.mul_one]
+    rfl
+
+end GlobalTheory.AdSpan.TorWt
+
+namespace GlobalTheory.AdSpan.TorWt
+
+variable {D : D7} {S T : HSp D}
+
+theorem bchar_bT (C : Ctx S T) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) (la : Wt C.X.Ψ T.rank) :
+    bchar la (bT C ρ t) = ∏ a, cexp (-((t a : ℂ) * I)) ^ la (C.m.e ρ) a := by
+  have hb : ∀ σ i, bT C ρ t σ i i = if σ = C.m.e ρ then cexp (-((t i : ℂ) * I)) else 1 := by
+    intro σ i
+    have := congrFun (congrFun (mat_bT C ρ t σ) i) i
+    simp only [mat, Matrix.of_apply] at this
+    rw [this]
+    split_ifs <;> simp
+  unfold bchar
+  rw [Finset.prod_eq_single (C.m.e ρ) (fun σ _ hσ => Finset.prod_eq_one fun i _ => by
+    rw [hb, if_neg hσ, _root_.one_zpow]) (fun h => absurd (Finset.mem_univ _) h)]
+  exact Finset.prod_congr rfl fun i _ => by rw [hb, if_pos rfl]
+
+theorem detPow_torAt (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ)
+    (m : D.what₂.Tau → ℤ) : detPow C.θ T m (torAt C.θ T B ρ t) = (∏ a, cexp ((t a : ℂ) * I)) ^ m ρ := by
+  have hdet : IsUnit (B ρ).det := by
+    have h := congrArg Matrix.det (hB ρ)
+    rw [det_mul, det_mul] at h
+    refine isUnit_iff_ne_zero.2 fun h0 => det_sgnM_ne C ?_
+    rw [← h, h0, mul_zero]
+  unfold detPow
+  rw [Finset.prod_eq_single ρ (fun τ _ hτ => by rw [compAt_torAt C hB ρ t τ, if_neg hτ, det_one, _root_.one_zpow])
+    (fun h => absurd (Finset.mem_univ _) h), compAt_torAt C hB ρ t ρ, if_pos rfl, det_mul, det_mul,
+    det_diagonal, mul_comm, ← mul_assoc, ← det_mul, nonsing_inv_mul _ hdet, det_one, one_mul]
+
+theorem scalar_eq (t : Fin T.rank → ℝ) (k : ℤ) (w : Fin T.rank → ℤ) :
+    cexp (((∑ a, ((k - w a : ℤ) : ℝ) * t a : ℝ) : ℂ) * I) =
+      (∏ a, cexp ((t a : ℂ) * I)) ^ k * ∏ a, cexp (-((t a : ℂ) * I)) ^ w a := by
+  simp only [← Complex.exp_int_mul, ← Complex.exp_sum, ← Complex.exp_add]
+  congr 1
+  push_cast
+  rw [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun a _ => by ring
+
+end GlobalTheory.AdSpan.TorWt
+
+namespace GlobalTheory.AdSpan.TorWt
+
+theorem torAt_fvec : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeak C.ψ S T om → ∀ B, C.IsB B → ∀ f, C.IsTh f → C.IsFock B f → ∀ (c : C.X.Ψ → Fin C.q0 → ℕ) (c' : C.X.Ψ → Fin C.X.p0 → ℕ) (Q : MvPolynomial (FVar D T.rank S.rank) ℂ), C.toH Q ∈ Harm.rowHighest ℂ c c' → ∀ (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) (m : D.what₂.Tau → ℤ), RealScal C om B (torAt C.θ T B ρ t) (detPow C.θ T m (torAt C.θ T B ρ t)) → torAt C.θ T B ρ t ∈ GinfC T ∧ om (1, torAt C.θ T B ρ t) (C.fvec B f Q) = cexp (((∑ a, ((m ρ - ThFr.wtOf C.X C.hr c c' S.rank (C.m.e ρ) a : ℤ) : ℝ) * t a : ℝ) : ℂ) * I) • C.fvec B f Q := by
+  intro D S T C om hom B hB f hf hF c c' Q hQ ρ t m hz
+  refine ⟨GlobalTheory.PointAtPlaceHom.atTau_mem T ρ _, ?_⟩
+  obtain ⟨φ, hφ, rfl⟩ := GlobalTheory.T.exists_testFunction_of_fockVacuum_thetaFunction D S T C B hB f hf hF
+  have hB' : C.IsB (C.mvB (torAt C.θ T B ρ t) B) := (((GlobalTheory.T.thetaKernel_orthonormalFrame_inDomain_periodLinear D S T C).2 B hB).2.2.2.2.2 _).1
+  have hdom' := ((GlobalTheory.T.thetaKernel_orthonormalFrame_inDomain_periodLinear D S T C).2 _ hB').2.1
+  have hth' : C.IsTh (C.Th (C.xB (C.mvB (torAt C.θ T B ρ t) B)) φ) := (GlobalTheory.T.adelicZakTheta_exists_unique D S T C _ hdom' φ hφ).1.1
+  have e1 := ((GlobalTheory.T.weakWeilRep_carries_derivatives_vacua_fockVectors D S T C om hom 1 (torAt C.θ T B ρ t) _ hf).2 B hB).2 Q
+  have h1 : (fun τ => compAt C.θ τ (mt S (1 : GA D S))) = fun _ => 1 :=
+    funext fun τ => GlobalTheory.PointAtPlaceHom.infMat_one S (C.θ τ)
+  rw [h1] at e1
+  have e2 : om (1, torAt C.θ T B ρ t) (C.fvec B (C.Th (C.xB B) φ) Q) =
+      C.fvec (C.mvB (torAt C.θ T B ρ t) B) (om (1, torAt C.θ T B ρ t) (C.Th (C.xB B) φ)) Q := e1
+  rw [e2, hz φ hφ, (GlobalTheory.T.fockPolynomialVector_laws D S T C _ hB' (fun _ => 1) _ hth' Q).2.2.2.2.1,
+    fvec_Th_rmul C hB hB' (bT_mem C ρ t) (xB_mvB_torAt C hB ρ t) c c' Q hQ φ hφ, smul_smul,
+    detPow_torAt C hB ρ t m, bchar_bT, scalar_eq t (m ρ) (ThFr.wtOf C.X C.hr c c' S.rank (C.m.e ρ))]
+
+end GlobalTheory.AdSpan.TorWt
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.compactTorus_acts_fockVector_rowHighest : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeak C.ψ S T om → ∀ B, C.IsB B → ∀ f, C.IsTh f → C.IsFock B f → ∀ (c : C.X.Ψ → Fin C.q0 → ℕ) (c' : C.X.Ψ → Fin C.X.p0 → ℕ) (Q : MvPolynomial (FVar D T.rank S.rank) ℂ), C.toH Q ∈ Harm.rowHighest ℂ c c' → ∀ (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) (m : D.what₂.Tau → ℤ), RealScal C om B (torAt C.θ T B ρ t) (detPow C.θ T m (torAt C.θ T B ρ t)) → torAt C.θ T B ρ t ∈ GinfC T ∧ om (1, torAt C.θ T B ρ t) (C.fvec B f Q) = cexp (((∑ a, ((m ρ - ThFr.wtOf C.X C.hr c c' S.rank (C.m.e ρ) a : ℤ) : ℝ) * t a : ℝ) : ℂ) * I) • C.fvec B f Q := by
+  atlas_forward_decl GlobalTheory.AdSpan.TorWt.torAt_fvec
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.AdSpan
+
+variable {D : D7}
+
+theorem frameMatrix_mul_frameMatrixInv (S : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) : frP S b * frPinv S b = 1 :=
+  Module.Basis.toMatrix_mul_toMatrix_flip _ _
+
+theorem frPinv_mul_frP (S : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) : frPinv S b * frP S b = 1 :=
+  Module.Basis.toMatrix_mul_toMatrix_flip _ _
+
+theorem isoPair_re (S : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) :
+    GlobalTheory.VolTransport.IsoPair (D.sp.cm.sig : D.host.E →+* D.host.E) (reS S b).gram S.gram (frP S b) (frPinv S b) := by
+  refine ⟨frameMatrix_mul_frameMatrixInv S b, frPinv_mul_frP S b, ?_, ?_⟩
+  · have := GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.embMat_isom D.sp.cm (reS S b) S LinearMap.id (fun x y => rfl)
+    have e : (LinearMap.toMatrix (reS S b).frame S.frame) LinearMap.id = frP S b :=
+      LinearMap.toMatrix_id_eq_basis_toMatrix b S.frame
+    rw [← e]; exact this
+  · have := GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.embMat_isom D.sp.cm S (reS S b) LinearMap.id (fun x y => rfl)
+    have e : (LinearMap.toMatrix S.frame (reS S b).frame) LinearMap.id = frPinv S b :=
+      LinearMap.toMatrix_id_eq_basis_toMatrix S.frame b
+    rw [← e]; exact this
+
+def reGrp (S : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) : GA D (reS S b) ≃* GA D S :=
+  GlobalTheory.VolTransport.conjA (isoPair_re S b)
+
+theorem mt_reGrp (S : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) (h : GA D (reS S b)) :
+    mt S (reGrp S b h) = HMul.hMul (α := Matrix (Fin S.rank) (Fin S.rank) (AE D))
+      (β := Matrix (Fin S.rank) (Fin S.rank) (AE D)) (γ := Matrix (Fin S.rank) (Fin S.rank) (AE D))
+      (HMul.hMul (α := Matrix (Fin S.rank) (Fin S.rank) (AE D)) (β := Matrix (Fin S.rank) (Fin S.rank) (AE D))
+        (γ := Matrix (Fin S.rank) (Fin S.rank) (AE D)) ((frP S b).map (incA D)) (mt (reS S b) h))
+      ((frPinv S b).map (incA D)) :=
+  GlobalTheory.VolTransport.conjA_mat (isoPair_re S b) h
+
+theorem finHom_eq (V : HSp D) (g : GA D V) :
+    ((finHom V g : GL _ _) : Matrix (Fin V.rank) (Fin V.rank) _) = finMat D.sp.cm.sig V.gram g := rfl
+
+theorem reW_continuous (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) : Continuous (reW S T b) := by
+  haveI : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
+  unfold reW
+  exact continuous_id.matrix_mul continuous_const
+
+set_option synthInstance.maxHeartbeats 200000 in
+theorem mul_mul_cancel {m n : ℕ} (x : Matrix (Fin m) (Fin n) (AE D)) (A B : Matrix (Fin n) (Fin n) (AE D))
+    (h : A * B = 1) : x * A * B = x := by
+  rw [Matrix.mul_assoc, h, Matrix.mul_one]
+
+variable (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V)
+
+def reWinv (x : WO S T) : WO (reS S b) T :=
+  HMul.hMul (α := Matrix (Fin T.rank) (Fin S.rank) (AE D)) x ((frP S b).map (incA D))
+
+theorem frPinv_frP_A : HMul.hMul (α := Matrix (Fin S.rank) (Fin S.rank) (AE D)) ((frPinv S b).map (incA D))
+    ((frP S b).map (incA D)) = 1 := by
+  rw [← Matrix.map_mul, frPinv_mul_frP, Matrix.map_one _ (map_zero _) (map_one _)]
+
+theorem map_frameMatrix_mul_map_frameMatrixInv : HMul.hMul (α := Matrix (Fin S.rank) (Fin S.rank) (AE D)) ((frP S b).map (incA D))
+    ((frPinv S b).map (incA D)) = 1 := by
+  rw [← Matrix.map_mul, frameMatrix_mul_frameMatrixInv, Matrix.map_one _ (map_zero _) (map_one _)]
+
+theorem reW_reWinv (x : WO S T) : reW S T b (reWinv S T b x) = x :=
+  mul_mul_cancel x _ _ (map_frameMatrix_mul_map_frameMatrixInv S b)
+
+theorem reWinv_reW (x : WO (reS S b) T) : reWinv S T b (reW S T b x) = x :=
+  mul_mul_cancel x _ _ (frPinv_frP_A S b)
+
+theorem reW_add (x y : WO (reS S b) T) : reW S T b (x + y) = reW S T b x + reW S T b y :=
+  Matrix.add_mul (x : Matrix (Fin T.rank) (Fin S.rank) (AE D)) y _
+
+theorem reW_zero : reW S T b 0 = 0 :=
+  Matrix.zero_mul (α := AE D) (l := Fin T.rank) ((frPinv S b).map (incA D))
+
+theorem reWinv_add (x y : WO S T) : reWinv S T b (x + y) = reWinv S T b x + reWinv S T b y :=
+  Matrix.add_mul (x : Matrix (Fin T.rank) (Fin S.rank) (AE D)) y _
+
+theorem reWinv_continuous : Continuous (reWinv S T b) := by
+  haveI : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
+  unfold reWinv
+  exact continuous_id.matrix_mul continuous_const
+
+def reWAdd : WO (reS S b) T →+ WO S T where
+  toFun := reW S T b
+  map_zero' := reW_zero S T b
+  map_add' := reW_add S T b
+
+def reWHomeo : WO (reS S b) T ≃ₜ WO S T where
+  toFun := reW S T b
+  invFun := reWinv S T b
+  left_inv := reWinv_reW S T b
+  right_inv := reW_reWinv S T b
+  continuous_toFun := reW_continuous S T b
+  continuous_invFun := reWinv_continuous S T b
+
+def reFEquiv : (WO S T → ℂ) ≃ₗ[ℂ] (WO (reS S b) T → ℂ) :=
+  { reF S T b with
+    invFun := fun f x => f (reWinv S T b x)
+    left_inv := fun f => funext fun x => by
+      show f (reW S T b (reWinv S T b x)) = f x
+      rw [reW_reWinv]
+    right_inv := fun f => funext fun x => by
+      show f (reWinv S T b (reW S T b x)) = f x
+      rw [reWinv_reW] }
+
+theorem hO_eq_trace (V : HSp D) (x y : WO V T) :
+    hO V T x y = Matrix.trace (((V.gram⁻¹).map (incA D) * (y.map (cA D))ᵀ * T.gram.map (incA D)) * x) := by
+  simp only [hO, Matrix.trace, Matrix.mul_apply, Matrix.diag, Matrix.map_apply, Matrix.transpose_apply,
+    Finset.sum_mul]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  refine (Finset.sum_congr rfl fun b _ => Finset.sum_comm).trans ?_
+  refine Finset.sum_comm.trans ?_
+  exact Finset.sum_congr rfl fun d _ => Finset.sum_comm
+
+theorem inv_gram_re : ((reS S b).gram⁻¹ : Matrix (Fin S.rank) (Fin S.rank) D.host.E) =
+    frPinv S b * S.gram⁻¹ * Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) (frPinv S b) := by
+  have h := (isoPair_re S b).2.2.1
+  have e1 : (frP S b)⁻¹ = frPinv S b := Matrix.inv_eq_left_inv (frPinv_mul_frP S b)
+  have e2 : (Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) (frP S b))⁻¹ =
+      Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) (frPinv S b) := by
+    refine Matrix.inv_eq_left_inv ?_
+    rw [← Formalism.UG.cT_mul, frameMatrix_mul_frameMatrixInv, Formalism.UG.cT_one]
+  have h' : ((reS S b).gram : Matrix (Fin S.rank) (Fin S.rank) D.host.E) =
+      Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) (frP S b) * S.gram * frP S b := h.symm
+  rw [h', Matrix.mul_inv_rev, Matrix.mul_inv_rev, e1, e2, Matrix.mul_assoc]
+
+theorem trace_inverseGram_conj_smul_eq {R : Type*} [CommRing R] (c : R →+* R) {m n : ℕ} (Gi Gi' P : Matrix (Fin n) (Fin n) R)
+    (GT : Matrix (Fin m) (Fin m) R)
+    (x y : Matrix (Fin m) (Fin n) R) (h : P * Gi * (P.map c)ᵀ = Gi') :
+    Matrix.trace (Gi * ((y * P).map c)ᵀ * GT * (x * P)) = Matrix.trace (Gi' * (y.map c)ᵀ * GT * x) := by
+  rw [Matrix.map_mul, Matrix.transpose_mul, ← h]
+  rw [show Gi * ((P.map c)ᵀ * (y.map c)ᵀ) * GT * (x * P) =
+    (Gi * (P.map c)ᵀ * ((y.map c)ᵀ * GT * x)) * P by simp only [Matrix.mul_assoc]]
+  rw [Matrix.trace_mul_comm]
+  simp only [Matrix.mul_assoc]
+
+theorem gram_key : HMul.hMul (α := Matrix (Fin S.rank) (Fin S.rank) (AE D))
+    (HMul.hMul (α := Matrix (Fin S.rank) (Fin S.rank) (AE D)) ((frPinv S b).map (incA D)) ((S.gram⁻¹).map (incA D)))
+      ((((frPinv S b).map (incA D)).map (cA D))ᵀ) =
+    (((reS S b).gram⁻¹ : Matrix (Fin S.rank) (Fin S.rank) D.host.E)).map (incA D) := by
+  rw [inv_gram_re]
+  have e : (((frPinv S b).map (incA D)).map (cA D))ᵀ =
+      (Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) (frPinv S b)).map (incA D) := by
+    ext i j; rfl
+  rw [e, Matrix.map_mul, Matrix.map_mul]
+
+theorem hO_reW (x y : WO (reS S b) T) : hO S T (reW S T b x) (reW S T b y) = hO (reS S b) T x y := by
+  rw [hO_eq_trace, hO_eq_trace]
+  exact trace_inverseGram_conj_smul_eq (cA D) _ _ _ _ x y (gram_key S b)
+
+theorem symplOH_reW (x y : WO (reS S b) T) :
+    symplOH S T (reW S T b x) (reW S T b y) = symplOH (reS S b) T x y := by
+  simp only [symplOH, symplO, hO_reW]
+
+theorem heisO_reF (ψ : AddChar (AF D.host.F) ℂ) (w : WO (reS S b) T) (f : WO S T → ℂ) :
+    heisO ψ (reS S b) T w (reF S T b f) = reF S T b (heisO ψ S T (reW S T b w) f) := by
+  funext x
+  simp only [heisO, reF_apply, reW_add, symplOH_reW]
+
+theorem reW_ratW (γ : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
+    reW S T b (ratW T (reS S b) γ) = ratW T S (γ * frPinv S b) :=
+  (Matrix.map_mul (f := incA D) (L := γ) (M := frPinv S b)).symm
+
+theorem reWinv_ratW (γ : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
+    reWinv S T b (ratW T S γ) = ratW T (reS S b) (γ * frP S b) :=
+  (Matrix.map_mul (f := incA D) (L := γ) (M := frP S b)).symm
+
+theorem mem_ratL_reW (x : WO (reS S b) T) : reW S T b x ∈ ratL T S ↔ x ∈ ratL T (reS S b) := by
+  constructor
+  · rintro ⟨γ, hγ⟩
+    refine ⟨γ * frP S b, ?_⟩
+    have h1 : reWinv S T b (ratW T S γ) = x := by
+      rw [← reWinv_reW S T b x]; exact congrArg (reWinv S T b) hγ
+    rw [reWinv_ratW] at h1
+    exact h1
+  · rintro ⟨γ, hγ⟩
+    refine ⟨HMul.hMul (α := Matrix (Fin T.rank) (Fin S.rank) D.host.E) γ (frPinv S b), ?_⟩
+    have h1 : reW S T b (ratW T (reS S b) γ) = reW S T b x := congrArg (reW S T b) hγ
+    exact (reW_ratW S T b γ).symm.trans h1
+
+theorem block_frame_conjugation_identity {R : Type*} [Ring R] {m n : ℕ} (A : Matrix (Fin m) (Fin m) R) (x : Matrix (Fin m) (Fin n) R)
+    (M P Pi : Matrix (Fin n) (Fin n) R) (h : Pi * P = 1) : A * x * M * Pi = A * (x * Pi) * (P * M * Pi) := by
+  rw [show A * (x * Pi) * (P * M * Pi) = A * x * (Pi * P) * M * Pi by simp only [Matrix.mul_assoc], h,
+    Matrix.mul_one]
+
+theorem reW_actO (h : GA D (reS S b)) (g : GA D T) (x : WO (reS S b) T) :
+    reW S T b (actO (reS S b) T h g x) = actO S T (reGrp S b h) g (reW S T b x) := by
+  unfold actO reW
+  rw [← map_inv, mt_reGrp]
+  exact block_frame_conjugation_identity _ _ _ _ _ (frPinv_frP_A S b)
+
+theorem map_mul_one {R : Type*} [Semiring R] (f : D.host.E →+* R) {n : ℕ} (A B : Matrix (Fin n) (Fin n) D.host.E)
+    (h : A * B = 1) : A.map f * B.map f = 1 := by
+  rw [← Matrix.map_mul, h, Matrix.map_one _ (map_zero _) (map_one _)]
+
+theorem conj_eq_one_iff {R : Type*} [Ring R] {n : ℕ} (X P Pi : Matrix (Fin n) (Fin n) R) (h1 : P * Pi = 1)
+    (h2 : Pi * P = 1) : P * X * Pi = 1 ↔ X = 1 := by
+  constructor
+  · intro h
+    calc X = Pi * (P * X * Pi) * P := by simp only [← Matrix.mul_assoc, h2, Matrix.one_mul]; rw [Matrix.mul_assoc, h2, Matrix.mul_one]
+      _ = 1 := by rw [h, Matrix.mul_one, h2]
+  · rintro rfl
+    rw [Matrix.mul_one, h1]
+
+theorem reGrp_mem_GinfC (h : GA D (reS S b)) : reGrp S b h ∈ GinfC S ↔ h ∈ GinfC (reS S b) := by
+  have e := GlobalTheory.VolTransport.conjA_finMat (isoPair_re S b) h
+  simp only [GinfC, MonoidHom.mem_ker, Units.ext_iff, finHom_eq, Units.val_one]
+  refine Iff.trans (Eq.to_iff (congrArg (· = (1 : Matrix (Fin S.rank) (Fin S.rank) _)) e)) ?_
+  exact conj_eq_one_iff _ _ _ (map_mul_one _ _ _ (frameMatrix_mul_frameMatrixInv S b)) (map_mul_one _ _ _ (frPinv_mul_frP S b))
+
+theorem reGrp_mem_GQ (h : GA D (reS S b)) (hh : h ∈ GQ (reS S b)) : reGrp S b h ∈ GQ S :=
+  GlobalTheory.VolTransport.conjA_rat (isoPair_re S b) h hh
+
+set_option synthInstance.maxHeartbeats 200000 in
+theorem map_mul_eq_zero_iff {R : Type*} [Ring R] {m n : ℕ} (φ : AE D →+* R) (x : Matrix (Fin m) (Fin n) (AE D))
+    (P Pi : Matrix (Fin n) (Fin n) D.host.E) (h : Pi * P = 1) :
+    (x * Pi.map (incA D)).map φ = 0 ↔ x.map φ = 0 := by
+  rw [Matrix.map_mul]
+  constructor
+  · intro hx
+    have hP : (Pi.map (incA D)).map φ * (P.map (incA D)).map φ = 1 := by
+      rw [Matrix.map_map, Matrix.map_map]
+      exact map_mul_one (φ.comp (incA D)) Pi P h
+    have e : x.map φ * (Pi.map (incA D)).map φ * (P.map (incA D)).map φ = x.map φ := by
+      rw [Matrix.mul_assoc, hP, Matrix.mul_one]
+    rw [← e, hx, Matrix.zero_mul]
+  · intro hx; rw [hx, Matrix.zero_mul]
+
+theorem reW_map_eq_zero {R : Type*} [Ring R] (φ : AE D →+* R) (x : WO (reS S b) T) :
+    (reW S T b x).map φ = 0 ↔ x.map φ = 0 :=
+  map_mul_eq_zero_iff φ x (frP S b) (frPinv S b) (frPinv_mul_frP S b)
+
+end GlobalTheory.AdSpan
+end
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.AdSpan
+
+variable {D : D7} (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V)
+
+theorem isThetaFunO_reF (ψ : AddChar (AF D.host.F) ℂ) (f : WO S T → ℂ) (hf : IsThetaFunO ψ S T f) :
+    IsThetaFunO ψ (reS S b) T (reF S T b f) where
+  quasi γ w := by
+    show f (reW S T b (ratW T (reS S b) γ + w)) = ψ (-(symplOH (reS S b) T (ratW T (reS S b) γ) w)) * f (reW S T b w)
+    rw [reW_add, ← symplOH_reW, reW_ratW S T b γ]
+    exact hf.quasi _ _
+  level := by
+    obtain ⟨U, hU, hfU⟩ := hf.level
+    refine ⟨U.comap (reWAdd S T b), hU.preimage (reW_continuous S T b), fun u hu hu0 => ?_⟩
+    rw [heisO_reF]
+    exact congrArg (reF S T b) (hfU _ hu ((reW_map_eq_zero S T b _ u).2 hu0))
+  cont := hf.cont.comp (reW_continuous S T b)
+  smooth k L hL hL0 w := by
+    have := hf.smooth k ((reWAdd S T b).comp L) ((reW_continuous S T b).comp hL)
+      (fun t => (reW_map_eq_zero S T b _ (L t)).2 (hL0 t)) (reW S T b w)
+    have e : (fun t => reF S T b f (w + L t)) = fun t => f (reW S T b w + (reWAdd S T b).comp L t) :=
+      funext fun t => by rw [reF_apply, reW_add]; rfl
+    rw [e]; exact this
+
+theorem isThetaFunO_of_reF (ψ : AddChar (AF D.host.F) ℂ) (f : WO S T → ℂ)
+    (hf : IsThetaFunO ψ (reS S b) T (reF S T b f)) : IsThetaFunO ψ S T f := by
+  have h := isThetaFunO_reF (reS S b) T S.frame ψ _ hf
+  have e : reF (reS S b) T S.frame (reF S T b f) = f := by
+    funext x
+    exact congrArg f (reW_reWinv S T b x)
+  rw [e] at h
+  exact h
+
+section Meas
+
+theorem reW_fd (μ : Measure (WO (reS S b) T)) (𝓕 : Set (WO (reS S b) T)) (hμ : μ.IsAddHaarMeasure)
+    (h𝓕 : IsAddFundamentalDomain (ratL T (reS S b)) 𝓕 μ) :
+    (μ.map (reW S T b)).IsAddHaarMeasure ∧
+      IsAddFundamentalDomain (ratL T S) (reWinv S T b ⁻¹' 𝓕) (μ.map (reW S T b)) := by
+  have hTR : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
+  have : BorelSpace (WO S T) := ⟨rfl⟩
+  have : BorelSpace (WO (reS S b) T) := ⟨rfl⟩
+  let eA : WO (reS S b) T ≃+ WO S T :=
+    { toFun := reW S T b
+      invFun := reWinv S T b
+      left_inv := reWinv_reW S T b
+      right_inv := reW_reWinv S T b
+      map_add' := reW_add S T b }
+  let eM : WO (reS S b) T ≃ᵐ WO S T := (reWHomeo S T b).toMeasurableEquiv
+  refine ⟨AddEquiv.isAddHaarMeasure_map μ eA (reW_continuous S T b) (reWinv_continuous S T b), ?_⟩
+  have hmp : MeasurePreserving eM μ (μ.map eM) := ⟨eM.measurable, rfl⟩
+  have hmp' : MeasurePreserving eM.symm (μ.map eM) μ := MeasurePreserving.symm eM hmp
+  let eG : ratL T (reS S b) → ratL T S := fun g => ⟨reW S T b g, (mem_ratL_reW S T b _).2 g.2⟩
+  have hbij : Function.Bijective eG := by
+    refine ⟨fun g g' hg => ?_, fun g => ⟨⟨reWinv S T b g, (mem_ratL_reW S T b _).1 (by rw [reW_reWinv]; exact g.2)⟩, ?_⟩⟩
+    · have e := congrArg (fun x : ratL T S => reWinv S T b (x : WO S T)) hg
+      simp only [eG, reWinv_reW] at e
+      exact Subtype.ext e
+    · exact Subtype.ext (reW_reWinv S T b _)
+  refine h𝓕.preimage_of_equiv hmp'.quasiMeasurePreserving hbij fun g x => ?_
+  show reWinv S T b (reW S T b g + x) = (g : WO (reS S b) T) + reWinv S T b x
+  rw [reWinv_add, reWinv_reW]
+
+theorem setLIntegral_reW (μ : Measure (WO (reS S b) T)) (𝓕 : Set (WO (reS S b) T))
+    (F : WO S T → ENNReal) :
+    ∫⁻ w in 𝓕, F (reW S T b w) ∂μ = ∫⁻ x in reWinv S T b ⁻¹' 𝓕, F x ∂(μ.map (reW S T b)) := by
+  have : BorelSpace (WO S T) := ⟨rfl⟩
+  have : BorelSpace (WO (reS S b) T) := ⟨rfl⟩
+  let eM : WO (reS S b) T ≃ᵐ WO S T := (reWHomeo S T b).toMeasurableEquiv
+  have hmp : MeasurePreserving eM μ (μ.map eM) := ⟨eM.measurable, rfl⟩
+  have e1 := hmp.setLIntegral_comp_preimage_emb eM.measurableEmbedding F (reWinv S T b ⁻¹' 𝓕)
+  have hpre : eM ⁻¹' (reWinv S T b ⁻¹' 𝓕) = 𝓕 := by
+    ext w
+    show reWinv S T b (reW S T b w) ∈ 𝓕 ↔ w ∈ 𝓕
+    rw [reWinv_reW]
+  rw [hpre] at e1
+  exact e1
+
+end Meas
+
+section Weil
+
+def omRe (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) :
+    GA D (reS S b) × GA D T →* Module.End ℂ (WO (reS S b) T → ℂ) where
+  toFun p := (reFEquiv S T b).toLinearMap ∘ₗ om (reGrp S b p.1, p.2) ∘ₗ (reFEquiv S T b).symm.toLinearMap
+  map_one' := by
+    ext f x
+    show (reFEquiv S T b) ((om (reGrp S b 1, 1)) ((reFEquiv S T b).symm f)) x = f x
+    rw [map_one, Prod.mk_one_one, map_one, Module.End.one_apply, LinearEquiv.apply_symm_apply]
+  map_mul' p q := by
+    ext f x
+    simp [Prod.fst_mul, Prod.snd_mul, ← Prod.mk_mul_mk, map_mul, Module.End.mul_apply]
+
+theorem omRe_apply (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (h : GA D (reS S b)) (g : GA D T)
+    (f' : WO (reS S b) T → ℂ) :
+    omRe S T b om (h, g) f' = reF S T b (om (reGrp S b h, g) ((reFEquiv S T b).symm f')) := rfl
+
+theorem omRe_reF (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (h : GA D (reS S b)) (g : GA D T)
+    (f : WO S T → ℂ) : omRe S T b om (h, g) (reF S T b f) = reF S T b (om (reGrp S b h, g) f) := by
+  have e : (reFEquiv S T b).symm (reF S T b f) = f := (reFEquiv S T b).symm_apply_apply f
+  rw [omRe_apply, e]
+
+theorem reF_symm (f' : WO (reS S b) T → ℂ) : reF S T b ((reFEquiv S T b).symm f') = f' :=
+  (reFEquiv S T b).apply_symm_apply f'
+
+theorem isWeak_omRe (ψ : AddChar (AF D.host.F) ℂ) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ))
+    (hom : IsWeak ψ S T om) : IsWeak ψ (reS S b) T (omRe S T b om) where
+  om_pres p f' hf' := by
+    obtain ⟨h, g⟩ := p
+    rw [omRe_apply]
+    refine isThetaFunO_reF S T b ψ _ (hom.om_pres _ _ (isThetaFunO_of_reF S T b ψ _ ?_))
+    rw [reF_symm]; exact hf'
+  om_heis h g w₀ f' hf' := by
+    set f := (reFEquiv S T b).symm f' with hf
+    have hf1 : f' = reF S T b f := (reF_symm S T b f').symm
+    have hth : IsThetaFunO ψ S T f := isThetaFunO_of_reF S T b ψ _ (by rw [← hf1]; exact hf')
+    rw [hf1, heisO_reF, omRe_reF, omRe_reF, hom.om_heis _ _ _ _ hth, ← reW_actO, heisO_reF]
+  om_aut γ hγ γ' hγ' f' hf' := by
+    have hth : IsThetaFunO ψ S T ((reFEquiv S T b).symm f') :=
+      isThetaFunO_of_reF S T b ψ _ (by rw [reF_symm]; exact hf')
+    rw [omRe_apply, reF_apply, reW_zero, hom.om_aut _ (reGrp_mem_GQ S b γ hγ) _ hγ' _ hth]
+    conv_rhs => rw [← reF_symm S T b f']
+    exact (reF_zero b _).symm
+  om_unit μ 𝓕 hμ h𝓕 p f' hf' := by
+    obtain ⟨h, g⟩ := p
+    have hth : IsThetaFunO ψ S T ((reFEquiv S T b).symm f') :=
+      isThetaFunO_of_reF S T b ψ _ (by rw [reF_symm]; exact hf')
+    obtain ⟨hν, h𝓕'⟩ := reW_fd S T b μ 𝓕 hμ h𝓕
+    have e1 := setLIntegral_reW S T b μ 𝓕 fun x => ‖om (reGrp S b h, g) ((reFEquiv S T b).symm f') x‖ₑ ^ 2
+    have e2 := setLIntegral_reW S T b μ 𝓕 fun x => ‖(reFEquiv S T b).symm f' x‖ₑ ^ 2
+    have e3 := hom.om_unit _ _ hν h𝓕' (reGrp S b h, g) _ hth
+    have e4 : (fun w => ‖f' w‖ₑ ^ 2) = fun w => ‖(reFEquiv S T b).symm f' (reW S T b w)‖ₑ ^ 2 := by
+      funext w
+      conv_lhs => rw [← reF_symm S T b f']
+      rfl
+    rw [e4]
+    exact e1.trans (e3.trans e2.symm)
+
+theorem contT_omRe (ψ : AddChar (AF D.host.F) ℂ) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ))
+    (hc : ContT ψ om) : ContT ψ (omRe S T b om) := by
+  intro f' hf' w
+  have hth : IsThetaFunO ψ S T ((reFEquiv S T b).symm f') :=
+    isThetaFunO_of_reF S T b ψ _ (by rw [reF_symm]; exact hf')
+  have e : (fun g : GA D T => omRe S T b om (1, g) f' w) =
+      fun g => om (1, g) ((reFEquiv S T b).symm f') (reW S T b w) := by
+    funext g
+    rw [omRe_apply, reF_apply, map_one]
+  rw [e]
+  exact hc _ hth _
+
+end Weil
+
+theorem reframe_weil : ∀ (D : D7) (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V),
+    ∃ e : GA D (reS S b) ≃* GA D S, (∀ h, e h ∈ GinfC S ↔ h ∈ GinfC (reS S b)) ∧
+      ∀ (ψ : AddChar (AF D.host.F) ℂ) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)),
+        IsWeak ψ S T om → ContT ψ om →
+        ∃ om' : GA D (reS S b) × GA D T →* Module.End ℂ (WO (reS S b) T → ℂ),
+          IsWeak ψ (reS S b) T om' ∧ ContT ψ om' ∧
+            ∀ h g f, om' (h, g) (reF S T b f) = reF S T b (om (e h, g) f) := by
+  intro D S T b
+  exact ⟨reGrp S b, reGrp_mem_GinfC S b, fun ψ om hom hc =>
+    ⟨omRe S T b om, isWeak_omRe S T b ψ om hom, contT_omRe S T b ψ om hc, fun h g f => omRe_reF S T b om h g f⟩⟩
+
+end GlobalTheory.AdSpan
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_frameChange_weakWeilRepresentation : ∀ (D : D7) (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V), ∃ e : GA D (reS S b) ≃* GA D S, (∀ h, e h ∈ GinfC S ↔ h ∈ GinfC (reS S b)) ∧ ∀ (ψ : AddChar (AF D.host.F) ℂ) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeak ψ S T om → ContT ψ om → ∃ om' : GA D (reS S b) × GA D T →* Module.End ℂ (WO (reS S b) T → ℂ), IsWeak ψ (reS S b) T om' ∧ ContT ψ om' ∧ ∀ h g f, om' (h, g) (reF S T b f) = reF S T b (om (e h, g) f) := by
+  atlas_forward_decl GlobalTheory.AdSpan.reframe_weil
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.AdSpan.Refock
+
+variable {D : D7} {S T : HSp D} (b : Module.Basis (Fin S.rank) D.host.E S.V)
+
+theorem frameMatrix_mul_frameMatrixInv : frP S b * frPinv S b = 1 := Module.Basis.toMatrix_mul_toMatrix_flip _ _
+
+theorem gram_reS : (reS S b).gram = (frP S b)ᴴ * S.gram * frP S b := by
+  refine Matrix.ext fun (i j : Fin S.rank) => ?_
+  have hb : ∀ k, b k = ∑ l, frP S b l k • S.frame l := fun k =>
+    (Module.Basis.sum_toMatrix_smul_self S.frame b k).symm
+  show S.hT (b i) (b j) = ∑ k, (∑ l, star (frP S b l i) * S.gram l k) * frP S b k j
+  rw [hb i, hb j]
+  simp only [map_sum, LinearMap.map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
+    HSpace.gram, Finset.sum_mul, Finset.mul_sum, RingHom.id_apply, starRingEnd_apply]
+  refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
+  ring
+
+end GlobalTheory.AdSpan.Refock
+
+namespace GlobalTheory.AdSpan.Refock
+variable {D : D7} {S T : HSp D} (b : Module.Basis (Fin S.rank) D.host.E S.V)
+
+theorem hO_trace (S T : HSp D) (x y : WO S T) : hO S T x y =
+    trace ((S.gram⁻¹).map (incA D) * (y.map (cA D))ᵀ * T.gram.map (incA D) * x) := by
+  simp only [hO, Matrix.trace, Matrix.diag, Matrix.mul_apply, Finset.sum_mul, Matrix.map_apply, Matrix.transpose_apply]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [Finset.sum_comm]
+  conv_lhs => enter [2, c]; rw [Finset.sum_comm]
+  rw [Finset.sum_comm]
+end GlobalTheory.AdSpan.Refock
+
+namespace GlobalTheory.AdSpan.Refock
+variable {D : D7} {S T : HSp D} (b : Module.Basis (Fin S.rank) D.host.E S.V)
+
+theorem inv_eq_of_gram_conjTranspose_change {n : ℕ} {G' G P Pinv : Matrix (Fin n) (Fin n) D.host.E} (h : G' = Pᴴ * G * P)
+    (hP : P * Pinv = 1) : G'⁻¹ = Pinv * G⁻¹ * Pinvᴴ := by
+  rw [h, Matrix.mul_inv_rev, Matrix.mul_inv_rev, ← Matrix.conjTranspose_nonsing_inv,
+    Matrix.inv_eq_right_inv hP, Matrix.mul_assoc]
+
+theorem gram_reS_inv : (reS S b).gram⁻¹ = frPinv S b * S.gram⁻¹ * (frPinv S b)ᴴ :=
+  inv_eq_of_gram_conjTranspose_change (gram_reS b) (frameMatrix_mul_frameMatrixInv b)
+
+theorem map_conjTranspose_incA {n : ℕ} (M : Matrix (Fin n) (Fin n) D.host.E) :
+    Mᴴ.map (incA D) = ((M.map (incA D)).map (cA D))ᵀ := by
+  refine Matrix.ext fun i j => ?_
+  simp only [Matrix.map_apply, conjTranspose_apply, Matrix.transpose_apply]
+  rfl
+
+theorem adelicMap_inv_conjTranspose_congruence {n : ℕ} {G' G Pinv : Matrix (Fin n) (Fin n) D.host.E} (h : G'⁻¹ = Pinv * G⁻¹ * Pinvᴴ) :
+    G'⁻¹.map (incA D) = Pinv.map (incA D) * G⁻¹.map (incA D) * ((Pinv.map (incA D)).map (cA D))ᵀ := by
+  rw [h, Matrix.map_mul, Matrix.map_mul, map_conjTranspose_incA]
+
+theorem trace_inverseGram_conj_smul_eq {R : Type} [CommRing R] (c : R →+* R) {n m : ℕ} (A Q : Matrix (Fin n) (Fin n) R)
+    (Y X : Matrix (Fin m) (Fin n) R) (C : Matrix (Fin m) (Fin m) R) :
+    trace (Q * A * (Q.map c)ᵀ * (Y.map c)ᵀ * C * X) = trace (A * ((Y * Q).map c)ᵀ * C * (X * Q)) := by
+  rw [Matrix.map_mul, Matrix.transpose_mul]
+  simp only [Matrix.mul_assoc]
+  rw [Matrix.trace_mul_comm Q]
+  simp only [Matrix.mul_assoc]
+
+theorem hO_reW (x y : WO (reS S b) T) : hO (reS S b) T x y = hO S T (reW S T b x) (reW S T b y) := by
+  rw [hO_trace, hO_trace, adelicMap_inv_conjTranspose_congruence (gram_reS_inv b)]
+  exact trace_inverseGram_conj_smul_eq (R := AE D) (cA D) (n := S.rank) (m := T.rank) _ _ _ _ _
+end GlobalTheory.AdSpan.Refock
+
+namespace GlobalTheory.AdSpan.Refock
+variable {D : D7} {S T : HSp D} (b : Module.Basis (Fin S.rank) D.host.E S.V)
+
+theorem reW_add (x y : WO (reS S b) T) : reW S T b (x + y) = reW S T b x + reW S T b y :=
+  Matrix.add_mul _ _ _
+
+def reWHom : WO (reS S b) T →+ WO S T where
+  toFun := reW S T b
+  map_zero' := Matrix.zero_mul _
+  map_add' := reW_add b
+
+theorem heisO_reF (ψ : AddChar (AF D.host.F) ℂ) (w₀ : WO (reS S b) T) (f : WO S T → ℂ) :
+    heisO ψ (reS S b) T w₀ (reF S T b f) = reF S T b (heisO ψ S T (reW S T b w₀) f) := by
+  funext w
+  simp only [heisO, reF_apply, symplOH, symplO, hO_reW, reW_add]
+
+theorem theta_incA {θ : InfFam D} (hθ : IsInfFam θ) (τ : D.what₂.Tau) (e : D.host.E) :
+    θ τ (infPart D (incA D e)) = tauE D τ e := by
+  show θ τ ((Algebra.TensorProduct.map (fstA D.host.F) (AlgHom.id D.host.F D.host.E)) ((1 : AF D.host.F) ⊗ₜ e)) = _
+  rw [Algebra.TensorProduct.map_tmul, map_one]
+  exact (hθ τ).1 e
+
+theorem compAt_reW {θ : InfFam D} (hθ : IsInfFam θ) (τ : D.what₂.Tau) (x : Mx D T.rank S.rank) :
+    compAt θ τ (reW S T b x) = compAt θ τ x * (frPinv S b).map (tauE D τ) := by
+  have e1 : ∀ {m n : ℕ} (w : Mx D m n), compAt θ τ w = w.map ((θ τ).comp (infPart D)) := fun _ => rfl
+  show compAt θ τ (HMul.hMul (α := Matrix (Fin T.rank) (Fin S.rank) (AE D)) x ((frPinv S b).map (incA D))) = _
+  rw [e1, e1, Matrix.map_mul, Matrix.map_map]
+  congr 2
+  funext e
+  exact theta_incA hθ τ e
+
+theorem finPart_reW (x : Mx D T.rank S.rank) (hx : x.map (finPart D) = 0) :
+    (reW S T b x).map (finPart D) = 0 := by
+  show (HMul.hMul (α := Matrix (Fin T.rank) (Fin S.rank) (AE D)) x ((frPinv S b).map (incA D))).map (finPart D) = 0
+  rw [Matrix.map_mul, hx, Matrix.zero_mul]
+
+end GlobalTheory.AdSpan.Refock
+
+namespace GlobalTheory.AdSpan.Refock
+variable {D : D7} {S T : HSp D} (b : Module.Basis (Fin S.rank) D.host.E S.V)
+
+theorem tauFrame_mul_tauFrameInv (τ : D.what₂.Tau) :
+    (frP S b).map (tauE D τ) * (frPinv S b).map (tauE D τ) = 1 := by
+  rw [← Matrix.map_mul, frameMatrix_mul_frameMatrixInv, Matrix.map_one _ (map_zero _) (map_one _)]
+
+theorem cplxO_mul {m n : ℕ} (s : Matrix (Fin m) (Fin m) ℂ) (z : Matrix (Fin m) (Fin n) ℂ)
+    (M : Matrix (Fin n) (Fin n) ℂ) : cplxO 1 s (z * M) = cplxO 1 s z * M := by
+  simp only [cplxO, Matrix.mul_one, Matrix.smul_mul, Matrix.mul_assoc]
+
+theorem continuous_reW : Continuous (reW S T b) :=
+  continuous_id.matrix_mul continuous_const
+
+theorem lineAt_reW {θ : InfFam D} (hθ : IsInfFam θ) (τ : D.what₂.Tau) (z : Matrix (Fin T.rank) (Fin S.rank) ℂ) (t : ℝ) :
+    reW S T b (lineAt θ τ (z * (frP S b).map (tauE D τ)) t) = lineAt θ τ z t := by
+  have hL := GlobalTheory.WeilVacMove.isLineAt_lineAt hθ τ (z * (frP S b).map (tauE D τ))
+  have key := GlobalTheory.RealLineAt.lineAt_unique D θ hθ T.rank S.rank τ z
+    ((reWHom (T := T) b).comp (lineAt θ τ (z * (frP S b).map (tauE D τ)))) (lineAt θ τ z)
+    ⟨(continuous_reW b).comp hL.1, fun s => finPart_reW b _ (hL.2.1 s), fun s τ' => ?_⟩
+    (GlobalTheory.WeilVacMove.isLineAt_lineAt hθ τ z)
+  · exact DFunLike.congr_fun key t
+  · refine (compAt_reW b hθ τ' (lineAt θ τ (z * (frP S b).map (tauE D τ)) s)).trans ?_
+    rw [hL.2.2 s τ']
+    split_ifs
+    · subst τ'
+      rw [Matrix.smul_mul, Matrix.mul_assoc, tauFrame_mul_tauFrameInv, Matrix.mul_one]
+    · exact Matrix.zero_mul _
+
+end GlobalTheory.AdSpan.Refock
+
+namespace GlobalTheory.AdSpan.Refock
+variable {D : D7} {S T : HSp D} (b : Module.Basis (Fin S.rank) D.host.E S.V)
+variable (ψ : AddChar (AF D.host.F) ℂ) {θ : InfFam D} (hθ : IsInfFam θ)
+include hθ
+
+theorem dRho_reF (τ : D.what₂.Tau) (z : Matrix (Fin T.rank) (Fin S.rank) ℂ) (f : WO S T → ℂ) :
+    dRho (heisO ψ (reS S b) T) θ τ (z * (frP S b).map (tauE D τ)) (reF S T b f) =
+      reF S T b (dRho (heisO ψ S T) θ τ z f) := by
+  funext x
+  have h : ∀ t : ℝ, heisO ψ (reS S b) T (lineAt θ τ (z * (frP S b).map (tauE D τ)) t) (reF S T b f) x =
+      heisO ψ S T (lineAt θ τ z t) f (reW S T b x) := fun t => by
+    exact (congrFun (heisO_reF b ψ _ f) x).trans
+      (congrArg (fun w => heisO ψ S T w f (reW S T b x)) (lineAt_reW b hθ τ z t))
+  show deriv (fun t : ℝ => heisO ψ (reS S b) T (lineAt θ τ (z * (frP S b).map (tauE D τ)) t) (reF S T b f) x) 0 =
+    deriv (fun t : ℝ => heisO ψ S T (lineAt θ τ z t) f (reW S T b x)) 0
+  simp only [h]
+
+theorem aPlus_reF (τ : D.what₂.Tau) (s : Matrix (Fin T.rank) (Fin T.rank) ℂ) (z : Matrix (Fin T.rank) (Fin S.rank) ℂ)
+    (f : WO S T → ℂ) :
+    aPlus (heisO ψ (reS S b) T) θ τ (cplxO 1 s) (z * (frP S b).map (tauE D τ)) (reF S T b f) =
+      reF S T b (aPlus (heisO ψ S T) θ τ (cplxO 1 s) z f) := by
+  have h1 := dRho_reF b ψ hθ τ z f
+  have h2 : dRho (heisO ψ (reS S b) T) θ τ (cplxO 1 s (z * (frP S b).map (tauE D τ))) (reF S T b f) =
+      reF S T b (dRho (heisO ψ S T) θ τ (cplxO 1 s z) f) :=
+    (congrArg (fun w => dRho (heisO ψ (reS S b) T) θ τ w (reF S T b f)) (cplxO_mul s z _)).trans
+      (dRho_reF b ψ hθ τ (cplxO 1 s z) f)
+  simp only [aPlus, crea]
+  rw [h1, h2, LinearMap.map_smul, LinearMap.map_sub, LinearMap.map_smul]
+
+end GlobalTheory.AdSpan.Refock
+
+namespace GlobalTheory.AdSpan.Refock
+variable {D : D7} {S T : HSp D} (b : Module.Basis (Fin S.rank) D.host.E S.V)
+
+theorem unitMap_re {m : ℕ} (τ : D.what₂.Tau) (B : Matrix (Fin S.rank) (Fin S.rank) ℂ) (B' : Matrix (Fin m) (Fin m) ℂ)
+    (i : Fin m) (j : Fin S.rank) :
+    unitMap ((frPinv S b).map (tauE D τ) * B) B' i j = unitMap B B' i j * (frP S b).map (tauE D τ) := by
+  unfold unitMap
+  rw [Matrix.mul_inv_rev, Matrix.inv_eq_left_inv (tauFrame_mul_tauFrameInv b τ)]
+  simp only [Matrix.mul_assoc]
+
+theorem gramAt_reS (τ : D.what₂.Tau) :
+    gramAt D (reS S b) τ = ((frP S b).map (tauE D τ))ᴴ * gramAt D S τ * (frP S b).map (tauE D τ) := by
+  have e : ((frP S b).map (tauE D τ))ᴴ = (frP S b)ᴴ.map (tauE D τ) :=
+    Matrix.ext fun i j => by simp [conjTranspose_apply, Formalism.IndefR.Eqv.tauE_star]
+  refine (congrArg (fun M : Matrix (Fin S.rank) (Fin S.rank) D.host.E => M.map (tauE D τ)) (gram_reS b)).trans ?_
+  show _ = _ * (S.gram).map (tauE D τ) * _
+  rw [Matrix.map_mul, Matrix.map_mul, e]
+
+theorem conjTranspose_gram_congruence_cancel {n : ℕ} (B P Pinv G : Matrix (Fin n) (Fin n) ℂ) (h : P * Pinv = 1) :
+    (Pinv * B)ᴴ * (Pᴴ * G * P) * (Pinv * B) = Bᴴ * G * B := by
+  have h' : Pinvᴴ * Pᴴ = 1 := by rw [← conjTranspose_mul, h, conjTranspose_one]
+  rw [conjTranspose_mul]
+  simp only [Matrix.mul_assoc]
+  rw [← Matrix.mul_assoc P Pinv, h, Matrix.one_mul, ← Matrix.mul_assoc Pinvᴴ, h', Matrix.one_mul]
+
+theorem opPow_comm {ι X Y : Type} (A : ι → (X → ℂ) → (X → ℂ)) (A' : ι → (Y → ℂ) → (Y → ℂ))
+    (H : (X → ℂ) → (Y → ℂ)) (hA : ∀ i g, A' i (H g) = H (A i g)) (k : ι →₀ ℕ) (f : X → ℂ) :
+    opPow A' k (H f) = H (opPow A k f) := by
+  unfold opPow
+  induction (Multiset.toList (Finsupp.toMultiset k)) with
+  | nil => rfl
+  | cons i l ih => simp only [List.foldr_cons, ih, hA]
+
+theorem pureTensorL_comm' {ι X Y : Type} (A : ι → (X → ℂ) → (X → ℂ)) (A' : ι → (Y → ℂ) → (Y → ℂ))
+    (H : (X → ℂ) →ₗ[ℂ] (Y → ℂ)) (hA : ∀ i g, A' i (H g) = H (A i g)) (f : X → ℂ) (P : MvPolynomial ι ℂ) :
+    pureTensorL A' (H f) P = H (pureTensorL A f P) := by
+  have e : pureTensorL A' (H f) = H ∘ₗ pureTensorL A f := (MvPolynomial.basisMonomials ι ℂ).ext fun k => by
+    rw [LinearMap.comp_apply, pureTensorL, pureTensorL, Module.Basis.constr_basis, Module.Basis.constr_basis]
+    exact opPow_comm A A' H hA k f
+  rw [e, LinearMap.comp_apply]
+
+theorem aPlusAll_reF (ψ : AddChar (AF D.host.F) ℂ) {θ : InfFam D} (hθ : IsInfFam θ)
+    (sT BT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ) (BS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ)
+    (k : FVar D T.rank S.rank) (g : WO S T → ℂ) :
+    aPlusAll (heisO ψ (reS S b) T) θ (fun τ => cplxO 1 (sT τ)) (fun τ => (frPinv S b).map (tauE D τ) * BS τ) BT k
+        (reF S T b g) = reF S T b (aPlusAll (heisO ψ S T) θ (fun τ => cplxO 1 (sT τ)) BS BT k g) :=
+  (congrArg (fun w => aPlus (heisO ψ (reS S b) T) θ k.1 (cplxO 1 (sT k.1)) w (reF S T b g))
+    (unitMap_re b k.1 (BS k.1) (BT k.1) k.2.1 k.2.2)).trans
+    (aPlus_reF b ψ hθ k.1 (sT k.1) (unitMap (BS k.1) (BT k.1) k.2.1 k.2.2) g)
+
+end GlobalTheory.AdSpan.Refock
+
+namespace GlobalTheory.AdSpan
+
+open Refock in
+
+theorem pureTensorO_reF : ∀ (D : D7) (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V), ∀ (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsInfFam θ → ∀ BS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ, ∃ BS' : D.what₂.Tau → Matrix (Fin (reS S b).rank) (Fin (reS S b).rank) ℂ, (∀ τ, (BS' τ)ᴴ * gramAt D (reS S b) τ * BS' τ = (BS τ)ᴴ * gramAt D S τ * BS τ) ∧ ∀ (sT BT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ) (f : WO S T → ℂ) (P : MvPolynomial (FVar D T.rank S.rank) ℂ), pureTensorO ψ θ (reS S b) T (fun _ => 1) sT BS' BT (reF S T b f) P = reF S T b (pureTensorO ψ θ S T (fun _ => 1) sT BS BT f P) := by
+  intro D S T b ψ θ hθ BS
+  refine ⟨fun τ => (frPinv S b).map (tauE D τ) * BS τ, fun τ => ?_, fun sT BT f P => ?_⟩
+  · rw [gramAt_reS b τ]
+    exact conjTranspose_gram_congruence_cancel _ _ _ _ (tauFrame_mul_tauFrameInv b τ)
+  · exact pureTensorL_comm' _ _ (reF S T b) (fun k g => aPlusAll_reF b ψ hθ sT BT BS k g) f P
+
+end GlobalTheory.AdSpan
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fockPolynomialVectors_reframeSource : ∀ (D : D7) (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V), ∀ (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsInfFam θ → ∀ BS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ, ∃ BS' : D.what₂.Tau → Matrix (Fin (reS S b).rank) (Fin (reS S b).rank) ℂ, (∀ τ, (BS' τ)ᴴ * gramAt D (reS S b) τ * BS' τ = (BS τ)ᴴ * gramAt D S τ * BS τ) ∧ ∀ (sT BT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ) (f : WO S T → ℂ) (P : MvPolynomial (FVar D T.rank S.rank) ℂ), pureTensorO ψ θ (reS S b) T (fun _ => 1) sT BS' BT (reF S T b f) P = reF S T b (pureTensorO ψ θ S T (fun _ => 1) sT BS BT f P) := by
+  atlas_forward_decl GlobalTheory.AdSpan.pureTensorO_reF
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaSeries_eq_thetaLift_definiteGroup_form : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks), R.toLevCh.Is A.μ0 → R.IsModels → R.IsThP → ∀ (i : Fin D.R.m) (t : T0) (h : GA D (Vc D i)) (w : (R.cV i).W), ∃ x : (R.HV i t).H, ∀ (u : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ) (g : GA D (Wc D i)), R.thF i t x (fun ρ => u ρ) g = thetaKO (R.ωP i t) h g (R.ptP i t (R.ioP i (PiTensorProduct.tprod ℂ u) w)) := by
+  first | exact @GlobalTheory.TraceLift.exists_thF_eq_thetaKO | exact GlobalTheory.TraceLift.exists_thF_eq_thetaKO | (intros; apply GlobalTheory.TraceLift.exists_thF_eq_thetaKO <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.ExtFock
+
+section Perm
+
+variable {n : ℕ} (π : Fin n → Fin n)
+
+theorem submatrix_eq_mul (P : Matrix (Fin n) (Fin n) ℂ) :
+    P.submatrix id π = P * (1 : Matrix (Fin n) (Fin n) ℂ).submatrix id π := by
+  ext a b
+  simp [Matrix.mul_apply, Matrix.one_apply]
+
+variable {π}
+
+theorem perm_mul_self (hπ : ∀ a, π (π a) = a) :
+    (1 : Matrix (Fin n) (Fin n) ℂ).submatrix id π * (1 : Matrix (Fin n) (Fin n) ℂ).submatrix id π = 1 := by
+  ext a b
+  simp only [Matrix.mul_apply, Matrix.submatrix_apply, id, Matrix.one_apply]
+  simp [mul_ite, Finset.sum_ite_eq', hπ]
+
+theorem perm_single_perm (hπ : ∀ a, π (π a) = a) (c d : Fin n) :
+    (1 : Matrix (Fin n) (Fin n) ℂ).submatrix id π * Matrix.single c d 1 * (1 : Matrix (Fin n) (Fin n) ℂ).submatrix id π =
+      Matrix.single (π c) (π d) 1 := by
+  ext a b
+  simp only [Matrix.mul_apply, Matrix.submatrix_apply, id, Matrix.one_apply, Matrix.single_apply]
+  simp [mul_ite, ite_mul, Finset.sum_ite_eq', Finset.sum_ite_eq, hπ]
+  have key : ∀ x y, x = π y ↔ π x = y := fun x y => ⟨fun h => by rw [h, hπ], fun h => by rw [← h, hπ]⟩
+  simp only [ite_and, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [key d b]
+  by_cases h1 : π c = a
+  · subst h1; simp
+  · have h2 : ¬ a = π c := fun h => h1 h.symm
+    simp [h1, h2]
+
+theorem perm_diag_perm (hπ : ∀ a, π (π a) = a) (t : Fin n → ℂ) :
+    (1 : Matrix (Fin n) (Fin n) ℂ).submatrix id π * Matrix.diagonal t * (1 : Matrix (Fin n) (Fin n) ℂ).submatrix id π =
+      Matrix.diagonal (fun a => t (π a)) := by
+  ext a b
+  simp only [Matrix.mul_apply, Matrix.submatrix_apply, id, Matrix.one_apply, Matrix.diagonal_apply]
+  simp [mul_ite, ite_mul, Finset.sum_ite_eq', Finset.sum_ite_eq, hπ]
+  split_ifs with h
+  · rw [h]
+  · rfl
+
+theorem conj_submatrix (hπ : ∀ a, π (π a) = a) (P X : Matrix (Fin n) (Fin n) ℂ) :
+    P.submatrix id π * X * (P.submatrix id π)⁻¹ =
+      P * ((1 : Matrix (Fin n) (Fin n) ℂ).submatrix id π * X * (1 : Matrix (Fin n) (Fin n) ℂ).submatrix id π) * P⁻¹ := by
+  rw [submatrix_eq_mul π P, Matrix.mul_inv_rev, Matrix.inv_eq_left_inv (perm_mul_self hπ)]
+  simp only [Matrix.mul_assoc]
+
+end Perm
+
+theorem killPair_rev {n p : ℕ} (hpn : p ≤ n) {c d : Fin n} (h : d < c) :
+    GlobalTheory.HolRead.KillPair (fun a : Fin n => decide ((a : ℕ) < p)) (GlobalTheory.AdSpan.revPos p c) (GlobalTheory.AdSpan.revPos p d) := by
+  have hdc : (d : ℕ) < c := h
+  unfold GlobalTheory.HolRead.KillPair GlobalTheory.AdSpan.revPos
+  by_cases hc : (c : ℕ) < p <;> by_cases hd : (d : ℕ) < p
+  · left
+    simp only [dif_pos (And.intro hc hpn), dif_pos (And.intro hd hpn), Fin.lt_def]
+    refine ⟨by simp; omega, by simp; omega, by omega⟩
+  · omega
+  · right; right
+    simp only [dif_neg (fun h' : (c : ℕ) < p ∧ p ≤ n => hc h'.1), dif_pos (And.intro hd hpn), Fin.lt_def]
+    refine ⟨by simp; omega, by omega⟩
+  · right; left
+    simp only [dif_neg (fun h' : (c : ℕ) < p ∧ p ≤ n => hc h'.1), dif_neg (fun h' : (d : ℕ) < p ∧ p ≤ n => hd h'.1), Fin.lt_def]
+    refine ⟨by simp; omega, by simp; omega, hdc⟩
+
+end GlobalTheory.ExtFock
+
+namespace GlobalTheory.ExtFock
+
+set_option maxHeartbeats 4000000 in
+
+theorem ext_values : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks), R.IsModels → R.IsThP → ∀ (i : Fin D.R.m) (t : T0) (u : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ) (w : (R.cV i).W) (p : ℕ), (∀ τ, ((Wc D i).sig (tauE D τ)).1 = p) → p ≤ (Wc D i).rank → IsExtVec (R.MW i (sg0 D A)) (fun ρ => u ρ) → ∀ T ∈ R.Wall i (sg0 D A), LowKilled R.θ (Wc D i) (revB p (onb (R.MW i (sg0 D A)))) (T fun ρ => u ρ) ∧ ∀ (ρ : D.what₂.Tau) (s : Fin (Wc D i).rank → ℝ), ∃ l : ℂ, R.ωP i t (1, torAt R.θ (Wc D i) (revB p (onb (R.MW i (sg0 D A)))) ρ s) (R.ptP i t (R.ioP i (PiTensorProduct.tprod ℂ u) w)) = l • R.ptP i t (R.ioP i (PiTensorProduct.tprod ℂ u) w) ∧ ∀ g, T (fun ρ => u ρ) (g * torAt R.θ (Wc D i) (revB p (onb (R.MW i (sg0 D A)))) ρ s) = l * T (fun ρ => u ρ) g := by
+  intro D G _ _ Pl0 T0 A Ks _ _ _ R hM hP i t u w p hp hpn hext T hT
+  have hTm := (GlobalTheory.MultMem.mem_mult_iff _ _ _ _ _ _ _ _).1 hT
+  have hθ : IsInfFam R.θ := hM.inf
+  have hεd : ∀ ρ, (R.MW i (sg0 D A)).ε ρ = fun a : Fin (Wc D i).rank => decide ((a : ℕ) < p) := by
+    intro ρ; funext a; rw [hM.order i ρ a, hp ρ]
+  have hε : ∀ ρ (a : Fin (Wc D i).rank), (R.MW i (sg0 D A)).ε ρ a = if (a : ℕ) < p then true else !true := by
+    intro ρ a; rw [hεd ρ]; by_cases h : (a : ℕ) < p <;> simp [h]
+  have KW := fun ρ => GlobalTheory.HolRead.ExtKill.kill_and_weight D R.θ (Wc D i) _ (R.MW i (sg0 D A)) _ _ T hθ hTm
+    (fun ρ => (u ρ : (R.MW i (sg0 D A)).sm ρ)) hext ρ p true (hε ρ)
+  have hπ : ∀ a : Fin (Wc D i).rank, revPos p (revPos p a) = a := revPos_revPos p
+  have hinv : ∀ ρ, ((onb (R.MW i (sg0 D A)) ρ))⁻¹ = (R.MW i (sg0 D A)).fr ρ := fun ρ =>
+    Matrix.nonsing_inv_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 ((R.MW i (sg0 D A)).fr_unit ρ))
+  refine ⟨⟨(hTm.aut _).smooth, fun ρ c d hdc => ?_⟩, fun ρ s => ?_⟩
+  · have e : revB p (onb (R.MW i (sg0 D A))) ρ * Matrix.single c d 1 * (revB p (onb (R.MW i (sg0 D A))) ρ)⁻¹ =
+        ((R.MW i (sg0 D A)).fr ρ)⁻¹ * Matrix.single (revPos p c) (revPos p d) 1 * (R.MW i (sg0 D A)).fr ρ := by
+      show (onb (R.MW i (sg0 D A)) ρ).submatrix id (revPos p) * _ * ((onb (R.MW i (sg0 D A)) ρ).submatrix id (revPos p))⁻¹ = _
+      rw [conj_submatrix hπ, perm_single_perm hπ, hinv]
+      rfl
+    rw [e]
+    apply (KW ρ).1
+    rw [hεd ρ]
+    exact killPair_rev hpn hdc
+  · set l : ℂ := Complex.exp (((∑ a, extWt (R.MW i (sg0 D A)) ρ a * s (revPos p a) : ℝ) : ℂ) * Complex.I) with hl
+    have e : revB p (onb (R.MW i (sg0 D A))) ρ * Matrix.diagonal (fun a => Complex.exp ((s a : ℂ) * Complex.I)) *
+        (revB p (onb (R.MW i (sg0 D A))) ρ)⁻¹ =
+        ((R.MW i (sg0 D A)).fr ρ)⁻¹ * Matrix.diagonal (fun a => Complex.exp ((s (revPos p a) : ℂ) * Complex.I)) *
+          (R.MW i (sg0 D A)).fr ρ := by
+      show (onb (R.MW i (sg0 D A)) ρ).submatrix id (revPos p) * _ * ((onb (R.MW i (sg0 D A)) ρ).submatrix id (revPos p))⁻¹ = _
+      rw [conj_submatrix hπ, perm_diag_perm hπ, hinv]
+      rfl
+    have htor : torAt R.θ (Wc D i) (revB p (onb (R.MW i (sg0 D A)))) ρ s =
+        atTau R.θ (Wc D i) ρ (((R.MW i (sg0 D A)).fr ρ)⁻¹ *
+          Matrix.diagonal (fun a => Complex.exp ((s (revPos p a) : ℂ) * Complex.I)) * (R.MW i (sg0 D A)).fr ρ) := by
+      unfold torAt; rw [e]
+    refine ⟨l, ?_, fun g => ?_⟩
+    · have hK := Formalism.IndefR.FWT.diag_mem (ε := (R.MW i (sg0 D A)).ε ρ) (fun a => s (revPos p a))
+      obtain ⟨-, -, hwt⟩ := hext ρ
+      have h2 := (hP.ioP i t).2.1 ρ _ hK u (l • u ρ) (by
+        show l • (((u ρ : (R.MW i (sg0 D A)).sm ρ)) : (R.MW i (sg0 D A)).H ρ) = _
+        rw [hwt _ hK]) w
+      rw [htor, h2, MultilinearMap.map_update_smul, Function.update_eq_self, map_smul, LinearMap.smul_apply]
+      unfold RealDat.ptP
+      exact map_smul _ _ _
+    · rw [htor]
+      exact (KW ρ).2 _ g
+
+end GlobalTheory.ExtFock
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.extremalVector_values_lowering_and_torus : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks), R.IsModels → R.IsThP → ∀ (i : Fin D.R.m) (t : T0) (u : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ) (w : (R.cV i).W) (p : ℕ), (∀ τ, ((Wc D i).sig (tauE D τ)).1 = p) → p ≤ (Wc D i).rank → IsExtVec (R.MW i (sg0 D A)) (fun ρ => u ρ) → ∀ T ∈ R.Wall i (sg0 D A), LowKilled R.θ (Wc D i) (revB p (onb (R.MW i (sg0 D A)))) (T fun ρ => u ρ) ∧ ∀ (ρ : D.what₂.Tau) (s : Fin (Wc D i).rank → ℝ), ∃ l : ℂ, R.ωP i t (1, torAt R.θ (Wc D i) (revB p (onb (R.MW i (sg0 D A)))) ρ s) (R.ptP i t (R.ioP i (PiTensorProduct.tprod ℂ u) w)) = l • R.ptP i t (R.ioP i (PiTensorProduct.tprod ℂ u) w) ∧ ∀ g, T (fun ρ => u ρ) (g * torAt R.θ (Wc D i) (revB p (onb (R.MW i (sg0 D A)))) ρ s) = l * T (fun ρ => u ρ) g := by
+  atlas_forward_decl GlobalTheory.ExtFock.ext_values
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.SpanPlaces
+
+theorem pg_nonempty {D : D7} {T0 : Type} {L : LevCh D T0} {μ0 : T0} (hL : L.Is μ0) : L.Pg.Nonempty := by
+  obtain ⟨⟨W, hW, hWQ⟩⟩ := (inferInstance : Nonempty ((L.C.P.pb 0).asIdeal.primesOver (𝓞 D.host.E)))
+  have hne : W ≠ ⊥ := by
+    rintro rfl
+    have := hWQ.over
+    rw [Ideal.under_def, Ideal.comap_bot_of_injective _ (FaithfulSMul.algebraMap_injective _ _)] at this
+    exact (L.C.P.pb 0).ne_bot this
+  exact ⟨⟨W, hW, hne⟩, (hL.Pg _).2 ⟨0, HeightOneSpectrum.ext hWQ.over.symm⟩⟩
+
+theorem two_not_mem {D : D7} {T0 : Type} {L : LevCh D T0} {μ0 : T0} (hL : L.Is μ0) (t : T0) (PP : Formalism.L2.DIV.Pl D.host.E)
+    (h : PP ∈ L.Pg ∨ PP ∈ L.Q t) : (2 : 𝓞 D.host.E) ∉ PP.asIdeal := by
+  rcases h with hm | hm
+  · obtain ⟨k, hk⟩ := (hL.Pg PP).1 hm
+    have hgk := GlobalTheory.LevelPlaces.mem_of_div _ k PP hk
+    have hn := GlobalTheory.LevelPlaces.not_mem_of_prime PP.isPrime.ne_top Nat.prime_two (D.host.g_prime k)
+      (Formalism.L2.Pj.g_ne_two D k) hgk
+    simpa using hn
+  · intro h2
+    apply (hL.Q_off t PP hm).1
+    push_cast
+    have hQS : ((D.host.QS : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := by
+      obtain ⟨c, hc⟩ := D.host.two_dvd_QS
+      rw [hc]
+      push_cast
+      exact Ideal.mul_mem_right _ _ h2
+    exact Ideal.mul_mem_right _ _ (Ideal.mul_mem_right _ _ (Ideal.mul_mem_right _ _ hQS))
+
+theorem mem_levG {D : D7} {T0 : Type} (L : LevCh D T0) (i : Fin D.R.m) (k : GA D (Wc D i))
+    (hk : k ∈ GfC (Wc D i)) (hS : Lev.finE (Wc D i) k ∈ Formalism.L2.DIV.St (L.βW i))
+    (hr : ∀ PP ∈ L.Pg, Formalism.L2.DIV.redFn (L.βW i) PP (Lev.finE (Wc D i) k) = 1) :
+    k ∈ Lev.levG (Wc D i) (L.βW i) (L.datWp i L.triv) := by
+  refine Subgroup.mem_inf.2 ⟨hk, ?_⟩
+  show Lev.finE (Wc D i) k ∈ Formalism.L2.DIV.lev D.sp.cm (Wc D i).gram (L.βW i) (L.datWp i L.triv)
+  refine GlobalTheory.LevSplit.mem_lev_of_red D.sp.cm (Wc D i).gram (L.βW i) (L.datWp i L.triv) _
+    (GlobalTheory.LevSplit.finE_mem_UA _ k) hS (fun PP hP => ?_)
+  rcases hP with hP | hP
+  · exact hr PP hP
+  · exact absurd hP (Finset.notMem_empty _)
+
+theorem places_level : ∀ (D : D7) (T0 : Type) (L : LevCh D T0) (μ0 : T0), L.Is μ0 → L.Pg.Nonempty ∧ (∀ t PP, PP ∈ L.Pg ∨ PP ∈ L.Q t → (2 : 𝓞 D.host.E) ∉ PP.asIdeal) ∧ ∀ (i : Fin D.R.m) (k : GA D (Wc D i)), k ∈ GfC (Wc D i) → Lev.finE (Wc D i) k ∈ Formalism.L2.DIV.St (L.βW i) → (∀ PP ∈ L.Pg, Formalism.L2.DIV.redFn (L.βW i) PP (Lev.finE (Wc D i) k) = 1) → k ∈ Lev.levG (Wc D i) (L.βW i) (L.datWp i L.triv) ∧ Lev.levChi (Wc D i) (L.βW i) (L.datWp i L.triv) k = 1 := by
+  intro D T0 L μ0 hL
+  refine ⟨pg_nonempty hL, fun t PP h => two_not_mem hL t PP h, fun i k hk hS hr => ⟨mem_levG L i k hk hS hr, ?_⟩⟩
+  exact GlobalTheory.HolRead.PrincLevelSub.levChi_triv L i k
+
+end GlobalTheory.SpanPlaces
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
+open MeasureTheory IsDedekindDomain NumberField Matrix Complex
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
+open GlobalTheory.SW hiding Level
+open scoped TensorProduct ComplexConjugate Classical
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levelCharacter_places_odd_and_principal_level : ∀ (D : D7) (T0 : Type) (L : LevCh D T0) (μ0 : T0), L.Is μ0 → L.Pg.Nonempty ∧ (∀ t PP, PP ∈ L.Pg ∨ PP ∈ L.Q t → (2 : 𝓞 D.host.E) ∉ PP.asIdeal) ∧ ∀ (i : Fin D.R.m) (k : GA D (Wc D i)), k ∈ GfC (Wc D i) → Lev.finE (Wc D i) k ∈ Formalism.L2.DIV.St (L.βW i) → (∀ PP ∈ L.Pg, Formalism.L2.DIV.redFn (L.βW i) PP (Lev.finE (Wc D i) k) = 1) → k ∈ Lev.levG (Wc D i) (L.βW i) (L.datWp i L.triv) ∧ Lev.levChi (Wc D i) (L.βW i) (L.datWp i L.triv) k = 1 := by
+  atlas_forward_decl GlobalTheory.SpanPlaces.places_level
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
 open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
@@ -357,4 +1586,5 @@ theorem goodRangeAt (hP : GlobalTheory.Published.CuspRapidDecay) (hsz : SizeOK D
 
 end GlobalTheory.AdSpan
 
+end
 end

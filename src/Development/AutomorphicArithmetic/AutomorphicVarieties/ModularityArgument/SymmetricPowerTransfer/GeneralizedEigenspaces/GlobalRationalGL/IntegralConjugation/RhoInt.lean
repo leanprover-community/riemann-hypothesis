@@ -1,7 +1,89 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.GlobalRationalGL.IntegralConjugation.RhoDiv
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.GlobalRationalGL.IntegralConjugation.RhoStar
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.GlobalRationalGL.EStar
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteAdelicUnitaryPointEqOfSectionComponentsEq
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.GlobalRationalGL.IntegralConjugation.RhoBij
 
+section
+open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.SplitWeil Formalism.BasicNotions Matrix
+open UpperTheory.V UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict UpperTheory.V.Z.Sym.Dict.Br UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob
+open UpperTheory.V.W (Plc Lp)
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+theorem UpperTheory.V.Z.Sym.Dict.Br.rhoDiv :
+    ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (P : Pre L), ∀ v w h (a : Kv v), P.φ v w h a ∈ w.adicCompletionIntegers L ↔ a ∈ v.adicCompletionIntegers (Lp L) := by
+  intro L _ _ _ P v w h a
+  subst h
+  have hval : ∀ (F : Type) [Field F] [NumberField F] (u : Pl F) (x : F),
+      Valued.v (algebraMap F (u.adicCompletion F) x) = u.valuation F x := fun F _ _ u x =>
+    IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' u x
+  have he : (un w).asIdeal.ramificationIdx' w.asIdeal ≠ 0 :=
+    Ideal.IsDedekindDomain.ramificationIdx'_ne_zero_of_liesOver w.asIdeal (un w).ne_bot
+  have key : ∀ x : Lp L, P.φ (un w) w rfl (cv (un w) x) ∈ w.adicCompletionIntegers L ↔
+      cv (un w) x ∈ (un w).adicCompletionIntegers (Lp L) := by
+    intro x
+    have h1 := hval (Lp L) (un w) x
+    have h2 := hval L w (algebraMap (Lp L) L x)
+    rw [P.φ_alg, IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers,
+      IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers, cv, h1, h2,
+      ← IsDedekindDomain.HeightOneSpectrum.valuation_liesOver L (un w) w x]
+    first
+      | exact pow_le_one_iff he
+      | exact pow_le_one_iff_of_nonneg zero_le' he
+      | exact pow_le_one_iff_of_nonneg (zero_le' (a := _)) he
+  have hd : DenseRange (cv (un w)) :=
+    IsDedekindDomain.HeightOneSpectrum.denseRange_algebraMap (Lp L) (un w)
+  have hc := P.φ_cont (un w) w rfl
+  have o1 : IsClopen ((P.φ (un w) w rfl) ⁻¹' (w.adicCompletionIntegers L : Set (Kw w))) :=
+    (Valued.isClopen_integer (Kw w)).preimage hc
+  have o2 : IsClopen ((un w).adicCompletionIntegers (Lp L) : Set (Kv (un w))) :=
+    Valued.isClopen_integer (Kv (un w))
+  constructor
+  · intro ha
+    by_contra hb
+    obtain ⟨x, hx⟩ := hd.exists_mem_open (o1.isOpen.inter o2.compl.isOpen) ⟨a, ha, hb⟩
+    exact hx.2 ((key x).1 hx.1)
+  · intro ha
+    by_contra hb
+    obtain ⟨x, hx⟩ := hd.exists_mem_open (o2.isOpen.inter o1.compl.isOpen) ⟨a, ha, hb⟩
+    exact hx.2 ((key x).2 hx.1)
+end
+
+section
+open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.SplitWeil Formalism.BasicNotions Matrix
+open UpperTheory.V UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict UpperTheory.V.Z.Sym.Dict.Br UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob
+open UpperTheory.V.W (Plc Lp)
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+theorem UpperTheory.V.Z.Sym.Dict.Br.rhoStar :
+    ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (P : Pre L), ∀ v (x : Lsq (Kv v) (cv v P.Δ)) (a : Af L), (∀ w h, P.rho v w h x = pLoc L w a) → ∀ w h, P.rho v w h (star x) = pLoc L w (cjF a) := by
+  intro L _ _ _ P v x a hx w h
+  have hu : un (conjSrc (IsCMField.complexConj L).toRingEquiv w) = v := by
+    rw [← h]; exact GlobalTheory.LocInj.under_conjSrc w
+  have hφ : ∀ y : Kv v, conjLoc (IsCMField.complexConj L).toRingEquiv w
+      (P.φ v _ hu y) = P.φ v w h y := by
+    intro y
+    refine congrFun ((HeightOneSpectrum.denseRange_algebraMap (Lp L) v).equalizer
+      ((conjLoc_spec _ w).1.comp (P.φ_cont v _ hu)) (P.φ_cont v w h) (funext fun b => ?_)) y
+    simp only [Function.comp_apply]
+    rw [P.φ_alg, P.φ_alg, (conjLoc_spec _ w).2.1]
+    congr 1
+    exact AlgEquiv.commutes (IsCMField.complexConj L) b
+  have hrt : conjLoc (IsCMField.complexConj L).toRingEquiv w (P.rt (conjSrc (IsCMField.complexConj L).toRingEquiv w)) = - P.rt w := by
+    rw [Pre.rt, (conjLoc_spec _ w).2.1, Pre.rt, ← map_neg, ← map_neg]
+    congr 1
+    have hs : star (QuadraticAlgebra.omega : Lsq (Lp L) P.Δ) = - QuadraticAlgebra.omega := by
+      ext <;> simp
+    change IsCMField.complexConj L (P.e QuadraticAlgebra.omega) = _
+    rw [← P.e_star, hs]
+  rw [cjF, pLoc_conjFin, ← hx _ hu]
+  change P.φ v w h (star x).re + P.φ v w h (star x).im * P.rt w =
+    conjLoc (IsCMField.complexConj L).toRingEquiv w (P.φ v _ hu x.re + P.φ v _ hu x.im * P.rt _)
+  rw [map_add, map_mul, hφ, hφ, hrt]
+  simp
+end
+
+section
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.SplitWeil Formalism.BasicNotions Matrix
 open UpperTheory.V UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict UpperTheory.V.Z.Sym.Dict.Br UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob
 open UpperTheory.V.W (Plc Lp)
@@ -88,3 +170,4 @@ theorem UpperTheory.V.Z.Sym.Dict.Br.rhoInt :
     have e2 : algebraMap (Ov v) (Lsq (Kv v) (cv v P.Δ)) (-n) = ⟨-(x.re * x.re - cv v P.Δ * (x.im * x.im)), 0⟩ := rfl
     simp only [Polynomial.eval₂_sub, Polynomial.eval₂_add, Polynomial.eval₂_mul, Polynomial.eval₂_pow, Polynomial.eval₂_X, Polynomial.eval₂_C, e1, e2]
     apply QuadraticAlgebra.ext <;> simp [pow_two] <;> ring
+end

@@ -3,20 +3,884 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InstAddCommGroup
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RadfordShufflePolynomialHolds
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ExponentSeparation
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JacquetModuleMapInjectiveOfInjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicProductTwoRepsEquivTwoBlockInductionStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicProductTwoRepsEquivTwoBlockInduction
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEquivDetCharacterOfIrreducibleRankLeOneStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParabolicInductionDetCharactersRankOneEquiv
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DetTensorEquivLeviCharacterStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JordanHolderMultiplicityJacquetEqBorelJacquetOfSStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CountBindWordShuffleByPositions
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubsingletonBorelJacquetOfCuspidalSegmentJacquet
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JordanHolderMultiplicityNormalizedBorelJacquetUnStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsUnramifiedExponentOfIwahoriFixedVector
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnramifiedCharSumsStrictConeVanishEach
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ShuffleCountLinearIndependentClassesStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JacquetWordMultiplicityAdditiveJordanHolderStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JordanHolderMultiplicityLeviCharGeometricLemmaCe
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DetTensorEquivLeviCharacter
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JordanHolderMultiplicityJacquetEqBorelJacquetOfS
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubsingletonJacquetOfPerm
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JordanHolderMultiplicityNormalizedBorelJacquetUn
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BorelCasselmanHolds
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsCharacterEigenvectorOfCommutingRepresentat
+import Development.AbelianVarietyTheory.Counterexamples.DegenerateExamples.ExistsStrictAnti
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JacquetWordMultiplicityAdditiveJordanHolder
 
+section
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.parabolicProductTwoReps_equiv_two_block_induction : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (r t : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (W : Type) [AddCommGroup W] [Module ℂ W] (π₁ : Representation ℂ (GL (Fin r) k) V) (π₂ : Representation ℂ (GL (Fin t) k) W), Nonempty ((prod₂ π₁ π₂).Equiv (multiProd (two (stdSum (rfl : r + t = r + t))) (twoRep π₁ π₂))) := by
+  first | exact @GlobalTheory.SmGL.Exponents.prod₂_equiv_multiProd | exact GlobalTheory.SmGL.Exponents.prod₂_equiv_multiProd | (intros; apply GlobalTheory.SmGL.Exponents.prod₂_equiv_multiProd <;> assumption)
+end
+
+section
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_tensor_equiv_levi_character : ∀ (R β : Type) [CommRing R] [Fintype β] (c : β → Type) [∀ j, Fintype (c j)] [∀ j, DecidableEq (c j)] (χ : β → Rˣ →* ℂˣ), Nonempty ((piTensor fun j => detRep (c j) (χ j)).Equiv (ofChar (leviChar c χ))) := by
+  first | exact @GlobalTheory.SmGL.Exponents.nonempty_piTensor_detRep_equiv | exact GlobalTheory.SmGL.Exponents.nonempty_piTensor_detRep_equiv | (intros; apply GlobalTheory.SmGL.Exponents.nonempty_piTensor_detRep_equiv <;> assumption)
+end
+
+section
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jordanHolderMultiplicity_jacquet_eq_borelJacquet_of_small : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (β n : Type) [Fintype β] [LinearOrder β] [Fintype n] [DecidableEq n] [LinearOrder n] (c : β → Type) [∀ j, Fintype (c j)] [∀ j, DecidableEq (c j)] (f : (Σ j, c j) ≃ n), StrictMono (blk f) → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL n k) V) (χ : β → kˣ →* ℂˣ), jhMult (ofChar (leviChar c χ)) (jac f π) = jhMult (ofChar (torusChar fun i => χ (blk f i))) (jacB π) := by
+  first | exact @GlobalTheory.SmGL.EmptyBlocks.jhMult_jac_eq_jacB | exact GlobalTheory.SmGL.EmptyBlocks.jhMult_jac_eq_jacB | (intros; apply GlobalTheory.SmGL.EmptyBlocks.jhMult_jac_eq_jacB <;> assumption)
+end
+
+section
+section
+open GlobalTheory
+
+namespace GlobalTheory
+namespace ShufflePositions
+
+variable {A : Type} [DecidableEq A]
+
+theorem count_cons_map (a b : A) (x : List A) (s : Multiset (List A)) :
+    (s.map (List.cons b)).count (a :: x) = if a = b then s.count x else 0 := by
+  by_cases hab : a = b
+  · subst hab
+    rw [if_pos rfl]
+    exact Multiset.count_map_eq_count' (List.cons a) s List.cons_injective x
+  · rw [if_neg hab, Multiset.count_eq_zero]
+    intro hmem
+    obtain ⟨y, -, hy⟩ := Multiset.mem_map.1 hmem
+    exact hab (List.cons.inj hy).1.symm
+
+omit [DecidableEq A] in
+theorem pos_cons {n : ℕ} (w : Fin (n + 1) → A) (p : Fin (n + 1) → Bool) :
+    ((List.finRange (n + 1)).filter p).map w =
+      (if p 0 then [w 0] else []) ++
+        ((List.finRange n).filter fun j => p j.succ).map (fun j => w j.succ) := by
+  rw [List.finRange_succ, List.filter_cons, List.filter_map]
+  cases h0 : p 0
+  · simp [List.map_map, Function.comp_def]
+  · simp [List.map_map, Function.comp_def]
+
+private theorem sum_filter_sub_sum_filter_and_not_eq_sum {M : Type} [AddCommMonoid M] (n : ℕ) (f : (Fin (n + 1) → Bool) → M) :
+    ∑ ε, f ε = ∑ ε : Fin n → Bool, (f (Fin.cons true ε) + f (Fin.cons false ε)) := by
+  rw [← (Fin.consEquiv fun _ => Bool).sum_comp, Fintype.sum_prod_type, Fintype.sum_bool,
+    ← Finset.sum_add_distrib]
+  rfl
+
+private theorem count_cons_singleton_cons (c a : A) (x u : List A) :
+    ({a :: u} : Multiset (List A)).count (c :: x) =
+      if c = a then ({u} : Multiset (List A)).count x else 0 := by
+  rw [← Multiset.map_singleton (List.cons a) u]
+  exact count_cons_map c a x {u}
+
+private theorem count_cons_singleton_nil (c : A) (x : List A) :
+    ({[]} : Multiset (List A)).count (c :: x) = 0 := by
+  simp
+
+theorem count_single (n : ℕ) : ∀ (w : Fin n → A) (u v : List A),
+    (Shuffle.shuffle u v).count (List.ofFn w) =
+      ∑ ε : Fin n → Bool,
+        ({u} : Multiset (List A)).count (((List.finRange n).filter fun j => !ε j).map w) *
+        ({v} : Multiset (List A)).count (((List.finRange n).filter ε).map w) := by
+  induction n with
+  | zero =>
+    intro w u v
+    simp only [List.ofFn_zero, List.finRange_zero, List.filter_nil, List.map_nil,
+      Finset.univ_unique, Finset.sum_singleton]
+    rcases u with _ | ⟨a, u⟩ <;> rcases v with _ | ⟨b, v⟩
+    · simp
+    · simp
+    · simp [Shuffle.shuffle_nil_right]
+    · rw [Shuffle.shuffle_cons_cons]
+      simp [Multiset.mem_map]
+  | succ n ih =>
+    intro w u v
+    rw [sum_filter_sub_sum_filter_and_not_eq_sum, List.ofFn_succ]
+    simp only [pos_cons, Fin.cons_zero, Fin.cons_succ, Bool.not_true, Bool.not_false,
+      Bool.false_eq_true, if_true, if_false, List.nil_append, List.singleton_append]
+    set w' : Fin n → A := fun j => w j.succ with hw'
+    rcases u with _ | ⟨a, u⟩ <;> rcases v with _ | ⟨b, v⟩
+    · simp
+    · have h := ih w' [] v
+      rw [Shuffle.shuffle_nil_left] at h
+      rw [Shuffle.shuffle_nil_left, count_cons_singleton_cons]
+      simp only [count_cons_singleton_cons, count_cons_singleton_nil, zero_mul, add_zero]
+      by_cases hc : w 0 = b
+      · simp only [if_pos hc, h]
+      · simp [if_neg hc]
+    · have h := ih w' u []
+      rw [Shuffle.shuffle_nil_right] at h
+      rw [Shuffle.shuffle_nil_right, count_cons_singleton_cons]
+      simp only [count_cons_singleton_cons, count_cons_singleton_nil, mul_zero, zero_add]
+      by_cases hc : w 0 = a
+      · simp only [if_pos hc, h]
+      · simp [if_neg hc]
+    · have h1 := ih w' u (b :: v)
+      have h2 := ih w' (a :: u) v
+      rw [Shuffle.shuffle_cons_cons, Multiset.count_add, count_cons_map, count_cons_map]
+      simp only [count_cons_singleton_cons, Finset.sum_add_distrib]
+      rw [add_comm]
+      congr 1
+      · by_cases hc : w 0 = b
+        · simp only [if_pos hc, h2]
+        · simp [if_neg hc]
+      · by_cases hc : w 0 = a
+        · simp only [if_pos hc, h1]
+        · simp [if_neg hc]
+
+private theorem sum_map_count_singleton (X : List A) (s : Multiset (List A)) :
+    (s.map fun v => ({v} : Multiset (List A)).count X).sum = s.count X := by
+  induction s using Multiset.induction_on with
+  | empty => simp
+  | cons a s ih =>
+    rw [Multiset.map_cons, Multiset.sum_cons, ih, Multiset.count_cons, Multiset.count_singleton,
+      add_comm]
+
+theorem count_bind_shuffle (A : Type) [DecidableEq A] (n : ℕ) (w : Fin n → A)
+    (s₁ s₂ : Multiset (List A)) :
+    (s₁.bind fun u => s₂.bind fun v => Shuffle.shuffle u v).count (List.ofFn w) =
+      ∑ ε : Fin n → Bool, s₁.count (((List.finRange n).filter fun j => !ε j).map w) *
+        s₂.count (((List.finRange n).filter ε).map w) := by
+  simp only [Multiset.count_bind, count_single n w, Multiset.sum_map_sum]
+  refine Finset.sum_congr rfl fun ε _ => ?_
+  simp only [Multiset.sum_map_mul_left, Multiset.sum_map_mul_right, sum_map_count_singleton]
+
+end ShufflePositions
+end GlobalTheory
+end
+
+open GlobalTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.count_bind_wordShuffle_by_positions : ∀ (A : Type) [DecidableEq A] (n : ℕ) (w : Fin n → A) (s₁ s₂ : Multiset (List A)), (s₁.bind fun u => s₂.bind fun v => Shuffle.shuffle u v).count (List.ofFn w) = ∑ ε : Fin n → Bool, s₁.count (((List.finRange n).filter fun j => !ε j).map w) * s₂.count (((List.finRange n).filter ε).map w) := by
+  atlas_forward_decl GlobalTheory.ShufflePositions.count_bind_shuffle
+end
+
+section
+section
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+open scoped TensorProduct
+
+namespace GlobalTheory.SmGL.CuspSegment
+
+def intervals (l d : ℕ) : (Σ _ : Fin l, Fin d) ≃ Fin (l * d) :=
+  (Equiv.sigmaEquivProd _ _).trans finProdFinEquiv
+
+theorem intervals_lt {l d : ℕ} {a b : Fin l} {i j : Fin d}
+    (h : intervals l d ⟨a, i⟩ < intervals l d ⟨b, j⟩) : a < b ∨ (a = b ∧ i < j) := by
+  have key : (i : ℕ) + d * a < j + d * b := by
+    simpa [intervals, finProdFinEquiv, Fin.lt_def] using h
+  rcases lt_trichotomy a b with hab | rfl | hab
+  · exact Or.inl hab
+  · exact Or.inr ⟨rfl, Fin.lt_def.2 (by omega)⟩
+  · exfalso
+    have h1 : (b : ℕ) + 1 ≤ a := hab
+    have h2 : d * ((b : ℕ) + 1) ≤ d * a := Nat.mul_le_mul_left d h1
+    have hj := j.isLt
+    rw [Nat.mul_succ] at h2
+    omega
+
+variable {R : Type} [CommRing R]
+
+theorem unipRad_intervals_le (l d : ℕ) : unipRad R (intervals l d) ≤ unipB R (Fin (l * d)) := by
+  intro g hg
+  obtain ⟨hpar, hdiag⟩ := mem_unipRad.1 hg
+  rw [mem_parab] at hpar
+  rw [mem_unipB]
+  refine ⟨fun p q hqp => ?_, fun p => ?_⟩
+  · obtain ⟨⟨a, i⟩, rfl⟩ := (intervals l d).surjective p
+    obtain ⟨⟨b, j⟩, rfl⟩ := (intervals l d).surjective q
+    rcases intervals_lt hqp with hba | ⟨rfl, hji⟩
+    · exact hpar _ _ (by simpa using hba)
+    · rw [hdiag]
+      exact Matrix.one_apply_ne hji.ne'
+  · obtain ⟨⟨a, i⟩, rfl⟩ := (intervals l d).surjective p
+    rw [hdiag]
+    exact Matrix.one_apply_eq i
+
+theorem leviEmb_intervals_mem {l d : ℕ} (g : Levi R fun _ : Fin l => Fin d)
+    (hg : ∀ a, g a ∈ unipB R (Fin d)) : leviEmb R (intervals l d) g ∈ unipB R (Fin (l * d)) := by
+  rw [mem_unipB]
+  refine ⟨fun p q hqp => ?_, fun p => ?_⟩
+  · obtain ⟨⟨a, i⟩, rfl⟩ := (intervals l d).surjective p
+    obtain ⟨⟨b, j⟩, rfl⟩ := (intervals l d).surjective q
+    rcases intervals_lt hqp with hba | ⟨rfl, hji⟩
+    · exact leviEmb_apply_ne _ _ _ hba.ne' _ _
+    · rw [leviEmb_apply_same]
+      exact ((mem_unipB (R := R)).1 (hg b)).1 i j hji
+  · obtain ⟨⟨a, i⟩, rfl⟩ := (intervals l d).surjective p
+    rw [leviEmb_apply_same]
+    exact ((mem_unipB (R := R)).1 (hg a)).2 i
+
+theorem twKer_unipB_eq_top {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] {d : ℕ} (hd : 1 < d) {W : Type} [AddCommGroup W] [Module ℂ W]
+    {σ : Representation ℂ (GL (Fin d) k) W} (hσ : IsCuspidal σ) :
+    twKer σ (unipB k (Fin d)) 1 = ⊤ := by
+  classical
+  obtain ⟨-, hcusp⟩ := hσ
+
+  let e : (Σ _ : Fin d, Fin 1) ≃ Fin d := Equiv.sigmaUnique (Fin d) fun _ => Fin 1
+  have hblk : ∀ i, blk e i = i := fun i => rfl
+  have hne : unipRad k e ≠ ⊥ := by
+    rw [CuspMax.unipRad_ne_bot_iff]
+    refine ⟨⟨0, by omega⟩, ⟨1, hd⟩, ?_⟩
+    rw [hblk, hblk]
+    exact Fin.mk_lt_mk.2 Nat.zero_lt_one
+  have hsub : Subsingleton (Jacquet σ (unipRad k e)) := hcusp d (fun _ => 1) e hne
+  have hB : Subsingleton (Jacquet σ (unipRad k (points (Fin d)))) :=
+    CuspMax.subsingleton_jacquet_of_perm σ (e := e) (e' := points (Fin d)) (Equiv.refl _)
+      (fun i j h => h) hsub
+  exact Submodule.Quotient.subsingleton_iff.1 hB
+
+private theorem deltaHalf_eq_one_of_unipB {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] {l d : ℕ} (g : Levi k fun _ : Fin l => Fin d)
+    (hg : ∀ a, g a ∈ unipB k (Fin d)) : deltaHalf k (fun _ : Fin l => Fin d) g = 1 := by
+  rw [deltaHalf_apply]
+  refine Finset.prod_eq_one fun a _ => ?_
+  rw [det_eq_one_of_mem_unipRad (hu := (show g a ∈ unipRad k (points (Fin d)) from hg a)), map_one]
+
+theorem subsingleton_jacquet_unipB (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (l d : ℕ) (hl : 0 < l) (hd : 1 < d) (V : Type) [AddCommGroup V]
+    [Module ℂ V] (W : Type) [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GL (Fin d) k) W)
+    (π : Representation ℂ (GL (Fin (l * d)) k) V) (hσ : IsCuspidal σ)
+    (h : ∀ e : (Σ _ : Fin l, Fin d) ≃ Fin (l * d),
+      Nonempty ((jac e π).Equiv (piTensor (segTerm σ l)))) :
+    Subsingleton (Jacquet π (unipB k (Fin (l * d)))) := by
+  classical
+  obtain ⟨φ⟩ := h (intervals l d)
+  obtain ⟨a₀⟩ : Nonempty (Fin l) := ⟨⟨0, hl⟩⟩
+  set K := twKer π (unipB k (Fin (l * d))) 1 with hK
+
+  have hgen : ∀ u ∈ unipB k (Fin (l * d)), ∀ v : V, π u v - v ∈ K := by
+    intro u hu v
+    exact Submodule.subset_span ⟨⟨u, hu⟩, v, by simp⟩
+
+  have hUK : twKer π (unipRad k (intervals l d)) 1 ≤ K := by
+    refine Submodule.span_le.2 ?_
+    rintro w ⟨n, v, rfl⟩
+    simpa using hgen n (unipRad_intervals_le l d n.2) v
+  let P := Submodule.factor hUK
+  have hP : ∀ v : V, P (Submodule.Quotient.mk v) = Submodule.Quotient.mk v := fun v =>
+    Submodule.factor_mk hUK v
+
+  have hlevi : ∀ g : Levi k (fun _ : Fin l => Fin d), (∀ a, g a ∈ unipB k (Fin d)) →
+      ∀ q, P (jac (intervals l d) π g q) = P q := by
+    intro g hg q
+    obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ q
+    rw [jac_mk, deltaHalf_eq_one_of_unipB g hg, inv_one, Units.val_one, one_smul, hP, hP]
+    exact (Submodule.Quotient.eq _).2 (hgen _ (leviEmb_intervals_mem g hg) v)
+
+  have hfwd : ∀ g z, φ (jac (intervals l d) π g z) = piTensor (segTerm σ l) g (φ z) := by
+    intro g z
+    have := LinearMap.congr_fun (φ.isIntertwining' g) z
+    simpa using this
+  have hint : ∀ g y, φ.symm (piTensor (segTerm σ l) g y) = jac (intervals l d) π g (φ.symm y) := by
+    intro g y
+    apply EquivLike.injective φ
+    rw [hfwd, Representation.Equiv.apply_symm_apply, Representation.Equiv.apply_symm_apply]
+  let F : (⨂[ℂ] _ : Fin l, W) →ₗ[ℂ] V ⧸ K := P ∘ₗ φ.symm.toLinearMap
+  have hFapp : ∀ y, F y = P (φ.symm y) := fun y => rfl
+  have hF : ∀ g : Levi k (fun _ : Fin l => Fin d), (∀ a, g a ∈ unipB k (Fin d)) →
+      ∀ y, F (piTensor (segTerm σ l) g y) = F y := by
+    intro g hg y
+    rw [hFapp, hFapp, hint]
+    exact hlevi g hg _
+
+  have htop : twKer (segTerm σ l a₀) (unipB k (Fin d)) 1 = ⊤ :=
+    twKer_unipB_eq_top hd (LocGL.isCuspidal_twist hσ (LocGL.isSmoothChar_absPow _))
+  have htens : ∀ x : Fin l → W, F (PiTensorProduct.tprod ℂ x) = 0 := by
+    intro x
+    let Lx := (PiTensorProduct.tprod ℂ).toLinearMap x a₀
+    have hker : twKer (segTerm σ l a₀) (unipB k (Fin d)) 1 ≤ LinearMap.ker (F ∘ₗ Lx) := by
+      refine Submodule.span_le.2 ?_
+      rintro w ⟨u, v, rfl⟩
+      have hg : ∀ a, (Pi.mulSingle a₀ (u : GL (Fin d) k) : Levi k fun _ : Fin l => Fin d) a ∈
+          unipB k (Fin d) := by
+        intro a
+        by_cases ha : a = a₀
+        · rw [ha, Pi.mulSingle_eq_same]
+          exact u.2
+        · rw [Pi.mulSingle_eq_of_ne ha]
+          exact one_mem _
+      have hact : Lx (segTerm σ l a₀ u v) =
+          piTensor (segTerm σ l) (Pi.mulSingle a₀ (u : GL (Fin d) k)) (Lx v) := by
+        simp only [Lx, MultilinearMap.toLinearMap_apply, piTensor_tprod]
+        congr 1
+        funext a
+        by_cases ha : a = a₀
+        · rw [ha]
+          simp
+        · simp [ha]
+      simp only [SetLike.mem_coe, LinearMap.mem_ker, LinearMap.comp_apply, MonoidHom.one_apply,
+        Units.val_one, one_smul, map_sub, hact, hF _ hg, sub_self]
+    have hx : Lx (x a₀) = PiTensorProduct.tprod ℂ x := by
+      simp [Lx]
+    rw [← hx]
+    exact LinearMap.mem_ker.1 (hker (by rw [htop]; exact Submodule.mem_top))
+  have hF0 : F = 0 := PiTensorProduct.ext (MultilinearMap.ext fun x => by simpa using htens x)
+
+  have hv : ∀ v : V, (Submodule.Quotient.mk v : V ⧸ K) = 0 := by
+    intro v
+    rw [← hP v]
+    have hPF : P (Submodule.Quotient.mk v) = F (φ (Submodule.Quotient.mk v)) := by
+      rw [hFapp, Representation.Equiv.symm_apply_apply]
+    rw [hPF, hF0, LinearMap.zero_apply]
+  refine ⟨fun a b => ?_⟩
+  obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ a
+  obtain ⟨w, rfl⟩ := Submodule.Quotient.mk_surjective _ b
+  exact (hv v).trans (hv w).symm
+
+end GlobalTheory.SmGL.CuspSegment
+end
+
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.subsingleton_borelJacquet_of_cuspidal_segment_jacquet : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (l d : ℕ), 0 < l → 1 < d → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (W : Type) [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GL (Fin d) k) W) (π : Representation ℂ (GL (Fin (l * d)) k) V), IsCuspidal σ → (∀ e : (Σ _ : Fin l, Fin d) ≃ Fin (l * d), Nonempty ((jac e π).Equiv (piTensor (segTerm σ l)))) → Subsingleton (Jacquet π (unipB k (Fin (l * d)))) := by
+  atlas_forward_decl GlobalTheory.SmGL.CuspSegment.subsingleton_jacquet_unipB
+end
+
+section
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jordanHolderMultiplicity_normalizedBorelJacquet_unramified : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V), IsSmooth π → ∀ θ : (Fin n → kˣ) →* ℂˣ, (∀ t ∈ torusO k (Fin n), θ t = 1) → jhMult (ofChar θ) (jacB π) = expMult π (θ * (deltaHalf k fun _ : Fin n => Unit).comp (leviTorus k (Fin n)).toMonoidHom) := by
+  first | exact @GlobalTheory.SmGL.UnramFixed.jhMult_jacB_eq_expMult | exact GlobalTheory.SmGL.UnramFixed.jhMult_jacB_eq_expMult | (intros; apply GlobalTheory.SmGL.UnramFixed.jhMult_jacB_eq_expMult <;> assumption)
+end
+
+section
+section
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+
+namespace GlobalTheory.SmGL
+
+theorem exists_expMult_ne_zero_of_fixed_iwahori (k : Type) [Field k] [ValuativeRel k]
+    [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (V : Type) [AddCommGroup V]
+    [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V) (hπ : IsAdmissible π)
+    (h : fixed π (iwahori k (Fin n)) ≠ ⊥) : ∃ χ : (Fin n → kˣ) →* ℂˣ, expMult π χ ≠ 0 := by
+  haveI := hπ.2 _ (IwahoriOnto.isOpen_iwahori k (Fin n)) (IwahoriOnto.isCompact_iwahori k (Fin n))
+  have hb := GlobalTheory.Published.BorelCasselman_holds k (Fin n) V π hπ
+  haveI : FiniteDimensional ℂ (fixed (jacBU π) (torusO k (Fin n))) :=
+    Module.Finite.of_surjective _ hb.2
+  haveI : Nontrivial (fixed π (iwahori k (Fin n))) := Submodule.nontrivial_iff_ne_bot.2 h
+  haveI : Nontrivial (fixed (jacBU π) (torusO k (Fin n))) := hb.1.nontrivial
+  obtain ⟨ψ, v, hv, hψ⟩ := GlobalTheory.exists_character_eigenvector_of_commute ℂ (Fin n → kˣ) _
+    (jacBUFixed π) fun a b => by rw [← map_mul, mul_comm, map_mul]
+  let ι : (ofChar ψ).IntertwiningMap (jacBUFixed π) :=
+    ⟨LinearMap.toSpanSingleton ℂ _ v, fun g => by
+      refine LinearMap.ext_ring ?_
+      simp [hψ]⟩
+  exact ⟨ψ, JHMult.jhMult_ne_zero_iff.2 (IsSubquotient.of_injective ι (smul_left_injective ℂ hv))⟩
+
+end GlobalTheory.SmGL
+end
+
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_exponent_of_iwahori_fixed_vector : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V), IsAdmissible π → fixed π (iwahori k (Fin n)) ≠ ⊥ → ∃ χ : (Fin n → kˣ) →* ℂˣ, expMult π χ ≠ 0 := by
+  atlas_forward_decl GlobalTheory.SmGL.exists_expMult_ne_zero_of_fixed_iwahori
+end
+
+section
+section
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL ValuativeRel
+
+namespace GlobalTheory.ConeCount
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+private theorem ord_zpow_twisted_operators (x : kˣ) (n : ℤ) : ord k (x ^ n) = n * ord k x := by
+  let f : kˣ →* Multiplicative ℤ :=
+    MonoidHom.mk' (fun y => Multiplicative.ofAdd (ord k y)) fun a b => by
+      rw [ord_mul, ofAdd_add]
+  have hf := congrArg Multiplicative.toAdd (map_zpow f x n)
+  simpa [f, smul_eq_mul] using hf
+
+theorem valuation_div_zpow_ord {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) (x : kˣ) :
+    valuation k ((x / ϖ ^ ord k x : kˣ) : k) = 1 := by
+  rw [← ord_eq_zero_iff, div_eq_mul_inv, ord_mul, ← zpow_neg, ord_zpow_twisted_operators, ord_eq_one hϖ]
+  ring
+
+def powHom {G : Type} [CommGroup G] (ϖ : G) (r : ℕ) :
+    Multiplicative (Fin r → ℤ) →* (Fin r → G) :=
+  MonoidHom.mk' (fun a i => ϖ ^ (Multiplicative.toAdd a) i) fun a b => by
+    funext i
+    simp [zpow_add]
+
+theorem eq_of_comp_powHom {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) {r : ℕ}
+    {χ ψ : (Fin r → kˣ) →* ℂˣ} (hχ : ∀ t ∈ torusO k (Fin r), χ t = 1)
+    (hψ : ∀ t ∈ torusO k (Fin r), ψ t = 1)
+    (h : χ.comp (powHom ϖ r) = ψ.comp (powHom ϖ r)) : χ = ψ := by
+  refine MonoidHom.ext fun t => ?_
+
+  have hu : (fun i => t i / ϖ ^ ord k (t i)) ∈ torusO k (Fin r) := by
+    show ∀ i, valuation k ((t i / ϖ ^ ord k (t i) : kˣ) : k) = 1
+    exact fun i => valuation_div_zpow_ord hϖ (t i)
+  have ht : t = (fun i => t i / ϖ ^ ord k (t i)) *
+      powHom ϖ r (Multiplicative.ofAdd fun i => ord k (t i)) := by
+    funext i
+    show t i = t i / ϖ ^ ord k (t i) * ϖ ^ ord k (t i)
+    rw [div_mul_cancel]
+  have hp := DFunLike.congr_fun h (Multiplicative.ofAdd fun i => ord k (t i))
+  rw [MonoidHom.comp_apply, MonoidHom.comp_apply] at hp
+  rw [ht, map_mul, map_mul, hχ _ hu, hψ _ hu, one_mul, one_mul, hp]
+
+theorem sum_count_eq_zero (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (ϖ : kˣ) (hϖ : valuation k (ϖ : k) = uniformizer k) (r n : ℕ)
+    (E : Fin n → Multiset ((Fin r → kˣ) →* ℂˣ)) (c : Fin n → ℂ)
+    (hE : ∀ i, ∀ χ ∈ E i, ∀ t ∈ torusO k (Fin r), χ t = 1)
+    (h : ∀ t ∈ IndefiniteRowSideFullHecke.ExponentSeparationTwistedDiscreteSeries.strictCone ϖ r, ∑ i, c i * IndefiniteRowSideFullHecke.ExponentSeparationTwistedDiscreteSeries.charSum (E i) t = 0)
+    [DecidableEq ((Fin r → kˣ) →* ℂˣ)] (χ : (Fin r → kˣ) →* ℂˣ) :
+    ∑ i, c i * ((E i).count χ : ℂ) = 0 := by
+
+  let M : Submonoid (Multiplicative (Fin r → ℤ)) :=
+    { carrier := {a | Antitone (Multiplicative.toAdd a)}
+      mul_mem' := by
+        intro a b ha hb i j hij
+        exact add_le_add (ha hij) (hb hij)
+      one_mem' := by
+        intro i j _
+        exact le_rfl }
+  let φ : M →* (Fin r → kˣ) := (powHom ϖ r).comp M.subtype
+
+  let t₀ : Fin r → kˣ := fun i => ϖ ^ (-((i : ℕ) : ℤ))
+  have hcone : ∀ m : M, t₀ * φ m ∈ IndefiniteRowSideFullHecke.ExponentSeparationTwistedDiscreteSeries.strictCone ϖ r := by
+    intro m
+    have hm : Antitone (Multiplicative.toAdd (m : Multiplicative (Fin r → ℤ))) := m.2
+    refine ⟨fun i => -((i : ℕ) : ℤ) + Multiplicative.toAdd (m : Multiplicative (Fin r → ℤ)) i, ?_, ?_⟩
+    · intro i j hij
+      have h1 := hm hij.le
+      have h2 : (i : ℕ) < j := hij
+      simp only
+      omega
+    · funext i
+      show ϖ ^ (-((i : ℕ) : ℤ)) * ϖ ^ (Multiplicative.toAdd (m : Multiplicative (Fin r → ℤ)) i) = _
+      rw [← zpow_add]
+
+  have hdiff : ∀ a : Multiplicative (Fin r → ℤ), ∃ m₁ m₂ : M,
+      a = (m₁ : Multiplicative (Fin r → ℤ)) * (m₂ : Multiplicative (Fin r → ℤ))⁻¹ := by
+    intro a
+    set K : ℤ := ∑ l, |Multiplicative.toAdd a l| with hK
+    have hK0 : 0 ≤ K := Finset.sum_nonneg fun l _ => abs_nonneg _
+    have hKl : ∀ l, |Multiplicative.toAdd a l| ≤ K := fun l =>
+      Finset.single_le_sum (f := fun l => |Multiplicative.toAdd a l|)
+        (fun l _ => abs_nonneg _) (Finset.mem_univ l)
+    let b : Multiplicative (Fin r → ℤ) := Multiplicative.ofAdd fun i => 2 * K * (-((i : ℕ) : ℤ))
+    have hb : b ∈ M := by
+      intro i j hij
+      have h1 : ((i : ℕ) : ℤ) ≤ ((j : ℕ) : ℤ) := by exact_mod_cast hij
+      show 2 * K * (-((j : ℕ) : ℤ)) ≤ 2 * K * (-((i : ℕ) : ℤ))
+      nlinarith
+    have hab : a * b ∈ M := by
+      intro i j hij
+      show Multiplicative.toAdd a j + 2 * K * (-((j : ℕ) : ℤ))
+        ≤ Multiplicative.toAdd a i + 2 * K * (-((i : ℕ) : ℤ))
+      rcases eq_or_lt_of_le hij with h | h
+      · rw [h]
+      · have h1 : ((i : ℕ) : ℤ) + 1 ≤ ((j : ℕ) : ℤ) := by
+          have : (i : ℕ) < j := h
+          omega
+        have h2 := hKl i
+        have h3 := hKl j
+        have h4 := le_abs_self (Multiplicative.toAdd a j)
+        have h5 := neg_abs_le (Multiplicative.toAdd a i)
+        nlinarith
+    exact ⟨⟨a * b, hab⟩, ⟨b, hb⟩, by simp⟩
+
+  let S : Finset ((Fin r → kˣ) →* ℂˣ) := Finset.univ.biUnion fun i => (E i).toFinset
+  have hS : ∀ ψ ∈ S, ∀ t ∈ torusO k (Fin r), ψ t = 1 := by
+    intro ψ hψ t ht
+    obtain ⟨i, -, hi⟩ := Finset.mem_biUnion.1 hψ
+    exact hE i ψ (Multiset.mem_toFinset.1 hi) t ht
+
+  let G : ((Fin r → kˣ) →* ℂˣ) → (M →* ℂ) := fun ψ => (Units.coeHom ℂ).comp (ψ.comp φ)
+  have hinj : Function.Injective fun ψ : S => G ψ := by
+    rintro ⟨ψ₁, h₁⟩ ⟨ψ₂, h₂⟩ h
+    apply Subtype.ext
+    have hM : ∀ m : M, ψ₁ (φ m) = ψ₂ (φ m) := fun m => Units.ext (DFunLike.congr_fun h m)
+    refine eq_of_comp_powHom hϖ (hS ψ₁ h₁) (hS ψ₂ h₂) (MonoidHom.ext fun a => ?_)
+    obtain ⟨m₁, m₂, rfl⟩ := hdiff a
+    have e₁ := hM m₁
+    have e₂ := hM m₂
+    simp only [φ, MonoidHom.comp_apply, Submonoid.coe_subtype] at e₁ e₂
+    simp only [MonoidHom.comp_apply, map_mul, map_inv, e₁, e₂]
+  have hli := (linearIndependent_monoidHom M ℂ).comp (fun ψ : S => G ψ) hinj
+  rw [Fintype.linearIndependent_iff] at hli
+
+  have hsum : ∀ i t, IndefiniteRowSideFullHecke.ExponentSeparationTwistedDiscreteSeries.charSum (E i) t = ∑ ψ ∈ S, ((E i).count ψ : ℂ) * (ψ t : ℂ) := by
+    intro i t
+    unfold IndefiniteRowSideFullHecke.ExponentSeparationTwistedDiscreteSeries.charSum
+    rw [Finset.sum_multiset_map_count]
+    simp only [nsmul_eq_mul]
+    refine Finset.sum_subset (fun ψ hψ => Finset.mem_biUnion.2 ⟨i, Finset.mem_univ _, hψ⟩) ?_
+    intro ψ _ hψ
+    rw [Multiset.count_eq_zero.2 fun h' => hψ (Multiset.mem_toFinset.2 h'), Nat.cast_zero, zero_mul]
+  have hw := hli (fun ψ => (∑ i, c i * ((E i).count (ψ : (Fin r → kˣ) →* ℂˣ) : ℂ)) * (ψ.1 t₀ : ℂ))
+    (by
+      funext m
+      have hm := h _ (hcone m)
+      simp only [hsum, Finset.mul_sum] at hm
+      rw [Finset.sum_comm, ← Finset.sum_coe_sort S] at hm
+      rw [Finset.sum_apply, Pi.zero_apply, ← hm]
+      refine Finset.sum_congr rfl fun ψ _ => ?_
+      simp only [Function.comp_apply, Pi.smul_apply, smul_eq_mul, G, φ, MonoidHom.comp_apply,
+        Units.coeHom_apply, map_mul, Units.val_mul, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      ring)
+  by_cases hχ : χ ∈ S
+  · have h0 := hw ⟨χ, hχ⟩
+    exact (mul_eq_zero.1 h0).resolve_right (Units.ne_zero _)
+  · refine Finset.sum_eq_zero fun i _ => ?_
+    rw [Multiset.count_eq_zero.2 fun h' =>
+      hχ (Finset.mem_biUnion.2 ⟨i, Finset.mem_univ _, Multiset.mem_toFinset.2 h'⟩)]
+    simp
+
+end GlobalTheory.ConeCount
+end
+
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_char_sums_strict_cone_vanish_each : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ϖ : kˣ), valuation k (ϖ : k) = uniformizer k → ∀ (r n : ℕ) (E : Fin n → Multiset ((Fin r → kˣ) →* ℂˣ)) (c : Fin n → ℂ), (∀ i, ∀ χ ∈ E i, ∀ t ∈ torusO k (Fin r), χ t = 1) → (∀ t ∈ IndefiniteRowSideFullHecke.ExponentSeparationTwistedDiscreteSeries.strictCone ϖ r, ∑ i, c i * IndefiniteRowSideFullHecke.ExponentSeparationTwistedDiscreteSeries.charSum (E i) t = 0) → ∀ [DecidableEq ((Fin r → kˣ) →* ℂˣ)] (χ : (Fin r → kˣ) →* ℂˣ), ∑ i, c i * ((E i).count χ : ℂ) = 0 := by
+  atlas_forward_decl GlobalTheory.ConeCount.sum_count_eq_zero
+end
+
+section
+open GlobalTheory
+
+namespace GlobalTheory.ShuffleCount
+
+open MvPolynomial
+
+private theorem aeval_killCompl {S B : Type*} [CommRing B] [Algebra ℚ B] (U : Set S)
+    (φ : S → B) (h0 : ∀ Δ ∉ U, φ Δ = 0) (P : MvPolynomial S ℚ) :
+    aeval (fun Δ : U => φ Δ) (killCompl (R := ℚ) (Subtype.val_injective : Function.Injective (Subtype.val : U → S)) P) = aeval φ P := by
+  classical
+  have key : (aeval (fun Δ : U => φ Δ)).comp (killCompl (R := ℚ) (Subtype.val_injective : Function.Injective (Subtype.val : U → S))) = aeval φ := by
+    apply MvPolynomial.algHom_ext
+    intro Δ
+    by_cases hΔ : Δ ∈ U
+    · have hX : (X Δ : MvPolynomial S ℚ) = rename Subtype.val (X (⟨Δ, hΔ⟩ : U)) := by rw [rename_X]
+      rw [AlgHom.comp_apply]
+      conv_lhs => rw [hX]
+      rw [killCompl_rename_app, aeval_X, aeval_X]
+    · rw [AlgHom.comp_apply, aeval_X, h0 Δ hΔ, X, killCompl_monomial_eq_zero_of_not_subset, map_zero]
+      intro h
+      obtain ⟨⟨_, hmem⟩, rfl⟩ := h (by simp : Δ ∈ (↑(Finsupp.single Δ 1).support : Set S))
+      exact hΔ hmem
+  exact AlgHom.congr_fun key P
+
+private theorem coeff_killCompl_comapDomain {S : Type*} (U : Set S) (P : MvPolynomial S ℚ) (m : S →₀ ℕ)
+    (hm : ↑m.support ⊆ Set.range (Subtype.val : U → S)) :
+    coeff (m.comapDomain (Subtype.val : U → S) (Subtype.val_injective : Function.Injective (Subtype.val : U → S)).injOn)
+      (killCompl (R := ℚ) (Subtype.val_injective : Function.Injective (Subtype.val : U → S)) P) = coeff m P := by
+  classical
+  induction P using MvPolynomial.induction_on' with
+  | monomial n r =>
+    by_cases hn : ↑n.support ⊆ Set.range (Subtype.val : U → S)
+    · rw [killCompl_monomial_eq_monomial_comapDomain_of_subset _ _ hn, coeff_monomial, coeff_monomial]
+      have hiff : n.comapDomain (Subtype.val : U → S) (Subtype.val_injective : Function.Injective (Subtype.val : U → S)).injOn =
+          m.comapDomain (Subtype.val : U → S) (Subtype.val_injective : Function.Injective (Subtype.val : U → S)).injOn ↔ n = m := by
+        constructor
+        · intro h
+          rw [← Finsupp.mapDomain_comapDomain _ Subtype.val_injective n hn,
+            ← Finsupp.mapDomain_comapDomain _ Subtype.val_injective m hm, h]
+        · rintro rfl
+          rfl
+      simp only [hiff]
+    · rw [killCompl_monomial_eq_zero_of_not_subset _ _ hn, coeff_zero, coeff_monomial, if_neg]
+      rintro rfl
+      exact hn hm
+  | add P Q hP hQ => rw [map_add, coeff_add, coeff_add, hP, hQ]
+
+theorem coeff_eq_zero_of_aeval_eq_zero {S B : Type*} [CommRing B] [Algebra ℚ B] (U : Set S)
+    (φ : S → B) (hind : AlgebraicIndependent ℚ (fun Δ : U => φ Δ)) (h0 : ∀ Δ ∉ U, φ Δ = 0)
+    (P : MvPolynomial S ℚ) (hP : aeval φ P = 0) (m : S →₀ ℕ) (hm : ∀ Δ ∈ m.support, Δ ∈ U) :
+    coeff m P = 0 := by
+  classical
+  have hm' : ↑m.support ⊆ Set.range (Subtype.val : U → S) := fun Δ hΔ =>
+    ⟨⟨Δ, hm Δ (Finset.mem_coe.1 hΔ)⟩, rfl⟩
+  rw [← coeff_killCompl_comapDomain U P m hm']
+  have hQ : killCompl (R := ℚ) (Subtype.val_injective : Function.Injective (Subtype.val : U → S)) P = 0 := by
+    apply algebraicIndependent_iff_injective_aeval.1 hind
+    rw [map_zero, aeval_killCompl U φ h0 P, hP]
+  rw [hQ, coeff_zero]
+
+theorem separates_of_shuffle_count : ∀ (I S : Type 1) (A : Type) [DecidableEq A] [LinearOrder A] (Ψ : (I →₀ ℤ) ≃+ MvPolynomial S ℤ) (M : I → List A → ℕ∞) (U : Set S) (ℓ : S → List A) (φ : S → ShuffleAlgebra ℚ A), Set.InjOn ℓ U → (∀ Δ ∈ U, IsLyndon (ℓ Δ) ∧ φ Δ = ShuffleAlgebra.word ℚ (ℓ Δ)) → (∀ Δ ∉ U, φ Δ = 0) → (∀ m : S →₀ ℕ, 0 ≤ Ψ.symm (MvPolynomial.monomial m 1) ∧ ∃ s : Multiset (List A), (∀ w, ((Ψ.symm (MvPolynomial.monomial m 1)).sum fun x a => (a.toNat : ℕ∞) * M x w) = (s.count w : ℕ∞)) ∧ (s.map (ShuffleAlgebra.word ℚ)).sum = m.prod fun Δ e => φ Δ ^ e) → ∀ (n : ℕ) (p : Fin n → I) (c : Fin n → ℂ), Function.Injective p → (∀ i, ∃ w, M (p i) w ≠ 0) → (∀ w, ∑ i, c i * ((M (p i) w).toNat : ℂ) = 0) → ∀ i, c i = 0 := by
+  intro I S A _ _ Ψ M U ℓ φ hinj hU hφ0 hcnt n p c hp hne hc
+  classical
+  let Rh : List A → (I →₀ ℤ) →+ ℤ := fun w =>
+    Finsupp.liftAddHom fun x => AddMonoidHom.mulRight ((M x w).toNat : ℤ)
+  have hRs : ∀ w x a, Rh w (Finsupp.single x a) = a * ((M x w).toNat : ℤ) := fun w x a => by
+    simp [Rh]
+  have hRsum : ∀ w (y : I →₀ ℤ), Rh w y = y.sum fun x a => a * ((M x w).toNat : ℤ) := fun w y => by
+    simp [Rh, Finsupp.liftAddHom_apply]
+  have K0 : ∀ (y : I →₀ ℤ) (w : List A) (N : ℕ), 0 ≤ y →
+      (y.sum fun x a => (a.toNat : ℕ∞) * M x w) = (N : ℕ∞) → Rh w y = N := by
+    intro y w N hy hN
+    rw [Finsupp.sum] at hN
+    have hfin : ∀ x ∈ y.support, ((y x).toNat : ℕ∞) * M x w ≠ ⊤ := by
+      intro x hx htop
+      have hle : ((y x).toNat : ℕ∞) * M x w ≤ ∑ x ∈ y.support, ((y x).toNat : ℕ∞) * M x w :=
+        Finset.single_le_sum (f := fun x => ((y x).toNat : ℕ∞) * M x w) (fun _ _ => zero_le) hx
+      rw [hN, htop] at hle
+      exact ENat.natCast_ne_top N (top_le_iff.1 hle)
+    have h1 := congrArg ENat.toNat hN
+    rw [ENat.toNat_sum hfin, ENat.toNat_natCast] at h1
+    simp only [ENat.toNat_mul, ENat.toNat_natCast] at h1
+    rw [hRsum, Finsupp.sum, ← h1, Nat.cast_sum]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [Nat.cast_mul, Int.toNat_of_nonneg (Finsupp.le_def.1 hy x)]
+  have K1 : ∀ (w : List A) (P : MvPolynomial S ℤ),
+      (ShuffleAlgebra.wordBasis ℚ A).repr (aeval φ (MvPolynomial.map (Int.castRingHom ℚ) P)) w =
+        ((Rh w (Ψ.symm P) : ℤ) : ℚ) := by
+    intro w P
+    induction P using MvPolynomial.induction_on' with
+    | monomial m r =>
+      obtain ⟨hpos, s, hs1, hs2⟩ := hcnt m
+      have hmr : (MvPolynomial.monomial m r : MvPolynomial S ℤ) = r • MvPolynomial.monomial m 1 := by
+        rw [MvPolynomial.smul_monomial, smul_eq_mul, mul_one]
+      rw [MvPolynomial.map_monomial, MvPolynomial.aeval_monomial, ← hs2, ← Algebra.smul_def, map_smul,
+        Finsupp.smul_apply, Lyndon.repr_sum_word, hmr, map_zsmul, map_zsmul, K0 _ w _ hpos (hs1 w),
+        smul_eq_mul, smul_eq_mul]
+      simp only [eq_intCast, Int.cast_mul, Int.cast_natCast]
+      congr
+    | add P Q hP hQ =>
+      simp only [map_add, Finsupp.add_apply, hP, hQ, Int.cast_add]
+  have K2 : ∀ m : S →₀ ℕ, (∃ Δ ∈ m.support, Δ ∉ U) →
+      ∀ x, Ψ.symm (MvPolynomial.monomial m 1) x ≠ 0 → ∀ w, M x w = 0 := by
+    rintro m ⟨Δ, hΔ, hΔU⟩ x hx w
+    obtain ⟨hpos, s, hs1, hs2⟩ := hcnt m
+    have hprod : (m.prod fun Δ e => φ Δ ^ e) = 0 :=
+      Finset.prod_eq_zero hΔ (by show φ Δ ^ m Δ = 0; rw [hφ0 Δ hΔU, zero_pow (Finsupp.mem_support_iff.1 hΔ)])
+    have hcount : s.count w = 0 := by
+      have h := Lyndon.repr_sum_word ℚ s w
+      rw [hs2, hprod, map_zero, Finsupp.zero_apply] at h
+      have h'' := Nat.cast_eq_zero.1 h.symm
+      convert h''
+    have h1 := hs1 w
+    rw [hcount, Finsupp.sum, Nat.cast_zero, Finset.sum_eq_zero_iff] at h1
+    have h2 := h1 x (Finsupp.mem_support_iff.2 hx)
+    rcases mul_eq_zero.1 h2 with h | h
+    · exfalso
+      have hnn := Finsupp.le_def.1 hpos x
+      have h0 : (Ψ.symm (MvPolynomial.monomial m 1) x).toNat = 0 := by exact_mod_cast h
+      simp only [Finsupp.coe_zero, Pi.zero_apply] at hnn
+      omega
+    · exact h
+  have hind : AlgebraicIndependent ℚ (fun Δ : U => φ Δ) := by
+    have hR := Published.radfordShufflePolynomial_holds.algebraicIndependent ℚ A
+    have he : Function.Injective
+        (fun Δ : U => (⟨ℓ Δ, (hU Δ Δ.2).1⟩ : {w : List A // IsLyndon w})) := by
+      intro a b hab
+      exact Subtype.ext (hinj a.2 b.2 (congrArg Subtype.val hab))
+    have hcomp := hR.comp _ he
+    have heq : (fun Δ : U => φ Δ) =
+        (fun l : {w : List A // IsLyndon w} => ShuffleAlgebra.word ℚ l.1) ∘
+          (fun Δ : U => (⟨ℓ Δ, (hU Δ Δ.2).1⟩ : {w : List A // IsLyndon w})) := by
+      funext Δ
+      exact (hU Δ Δ.2).2
+    rw [heq]
+    exact hcomp
+  have K3 : ∀ k : Fin n → ℤ, (∀ w, ∑ j, k j * ((M (p j) w).toNat : ℤ) = 0) → ∀ i, k i = 0 := by
+    intro k hk i
+    by_contra hki
+    set y : I →₀ ℤ := ∑ j, Finsupp.single (p j) (k j) with hy
+    have hRy : ∀ w, Rh w y = 0 := fun w => by
+      rw [hy, map_sum]
+      simp only [hRs]
+      exact hk w
+    set P := Ψ y with hPdef
+    have hEv : aeval φ (MvPolynomial.map (Int.castRingHom ℚ) P) = 0 := by
+      apply (ShuffleAlgebra.wordBasis ℚ A).repr.injective
+      rw [map_zero]
+      ext w
+      rw [K1, hPdef, AddEquiv.symm_apply_apply, hRy, Int.cast_zero, Finsupp.zero_apply]
+    have hcoef : ∀ m : S →₀ ℕ, (∀ Δ ∈ m.support, Δ ∈ U) → P.coeff m = 0 := by
+      intro m hm
+      have h := coeff_eq_zero_of_aeval_eq_zero U φ hind hφ0 _ hEv m hm
+      rw [MvPolynomial.coeff_map, eq_intCast, Int.cast_eq_zero] at h
+      exact h
+    have hyP : y = ∑ m ∈ P.support, P.coeff m • Ψ.symm (MvPolynomial.monomial m 1) := by
+      have h : y = Ψ.symm P := by rw [hPdef, AddEquiv.symm_apply_apply]
+      conv_lhs => rw [h, P.as_sum]
+      rw [map_sum]
+      refine Finset.sum_congr rfl fun m _ => ?_
+      rw [← map_zsmul, MvPolynomial.smul_monomial, smul_eq_mul, mul_one]
+    have hyi : y (p i) = k i := by
+      rw [hy, Finsupp.finsetSum_apply, Finset.sum_eq_single i]
+      · simp
+      · intro j _ hji
+        rw [Finsupp.single_apply, if_neg]
+        exact fun h => hji (hp h)
+      · intro h
+        exact absurd (Finset.mem_univ i) h
+    have hne0 : (∑ m ∈ P.support, P.coeff m • Ψ.symm (MvPolynomial.monomial m 1)) (p i) ≠ 0 := by
+      rw [← hyP, hyi]
+      exact hki
+    rw [Finsupp.finsetSum_apply] at hne0
+    obtain ⟨m, _, hm0⟩ := Finset.exists_ne_zero_of_sum_ne_zero hne0
+    rw [Finsupp.smul_apply, smul_eq_mul] at hm0
+    have hc0 : P.coeff m ≠ 0 := left_ne_zero_of_mul hm0
+    have hx0 : Ψ.symm (MvPolynomial.monomial m 1) (p i) ≠ 0 := right_ne_zero_of_mul hm0
+    have hout : ∃ Δ ∈ m.support, Δ ∉ U := by
+      by_contra h
+      push_neg at h
+      exact hc0 (hcoef m h)
+    obtain ⟨w, hw⟩ := hne i
+    exact hw (K2 m hout (p i) hx0 w)
+  have KQ : ∀ q : Fin n → ℚ, (∀ w, ∑ j, q j * ((M (p j) w).toNat : ℚ) = 0) → ∀ i, q i = 0 := by
+    intro q hq i
+    obtain ⟨b, hb⟩ := IsLocalization.exist_integer_multiples (nonZeroDivisors ℤ)
+      (Finset.univ : Finset (Fin n)) q
+    choose k hk using fun j => RingHom.mem_rangeS.1 (hb j (Finset.mem_univ j))
+    have hk' : ∀ j, (k j : ℚ) = ((b : ℤ) : ℚ) * q j := fun j => by
+      simpa [Algebra.smul_def] using hk j
+    have hkrel : ∀ w, ∑ j, k j * ((M (p j) w).toNat : ℤ) = 0 := by
+      intro w
+      have h : ((∑ j, k j * ((M (p j) w).toNat : ℤ) : ℤ) : ℚ) = 0 := by
+        push_cast
+        simp only [hk', mul_assoc, ← Finset.mul_sum, hq w, mul_zero]
+      exact_mod_cast h
+    have hki := K3 k hkrel i
+    have hb0 : ((b : ℤ) : ℚ) ≠ 0 := by exact_mod_cast nonZeroDivisors.coe_ne_zero b
+    have h2 := hk' i
+    rw [hki, Int.cast_zero] at h2
+    exact (mul_eq_zero.1 h2.symm).resolve_left hb0
+  intro i
+  have hq : ∀ ψ : Module.Dual ℚ ℂ, ∀ j, ψ (c j) = 0 := by
+    intro ψ
+    apply KQ (fun j => ψ (c j))
+    intro w
+    have h := congrArg ψ (hc w)
+    rw [map_sum, map_zero] at h
+    rw [← h]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    show ψ (c j) * _ = ψ (c j * _)
+    rw [mul_comm (c j), ← nsmul_eq_mul, map_nsmul, nsmul_eq_mul, mul_comm]
+  exact (Module.forall_dual_apply_eq_zero_iff ℚ (c i)).1 fun ψ => hq ψ i
+
+end GlobalTheory.ShuffleCount
+end
+
+section
+open GlobalTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shuffle_count_linearIndependent_classes : ∀ (I S : Type 1) (A : Type) [DecidableEq A] [LinearOrder A] (Ψ : (I →₀ ℤ) ≃+ MvPolynomial S ℤ) (M : I → List A → ℕ∞) (U : Set S) (ℓ : S → List A) (φ : S → ShuffleAlgebra ℚ A), Set.InjOn ℓ U → (∀ Δ ∈ U, IsLyndon (ℓ Δ) ∧ φ Δ = ShuffleAlgebra.word ℚ (ℓ Δ)) → (∀ Δ ∉ U, φ Δ = 0) → (∀ m : S →₀ ℕ, 0 ≤ Ψ.symm (MvPolynomial.monomial m 1) ∧ ∃ s : Multiset (List A), (∀ w, ((Ψ.symm (MvPolynomial.monomial m 1)).sum fun x a => (a.toNat : ℕ∞) * M x w) = (s.count w : ℕ∞)) ∧ (s.map (ShuffleAlgebra.word ℚ)).sum = m.prod fun Δ e => φ Δ ^ e) → ∀ (n : ℕ) (p : Fin n → I) (c : Fin n → ℂ), Function.Injective p → (∀ i, ∃ w, M (p i) w ≠ 0) → (∀ w, ∑ i, c i * ((M (p i) w).toNat : ℂ) = 0) → ∀ i, c i = 0 := by
+  first | exact @GlobalTheory.ShuffleCount.separates_of_shuffle_count | exact GlobalTheory.ShuffleCount.separates_of_shuffle_count | (intros; apply GlobalTheory.ShuffleCount.separates_of_shuffle_count <;> assumption)
+end
+
+section
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jacquetWordMultiplicity_additive_jordanHolder : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V) (h : HasFiniteLength π), IsSmooth π → ∀ w : List ℂˣ, wordMult π w = (cls π h).sum fun c a => (a.toNat : ℕ∞) * wordMult c.rep.ρ w := by
+  first | exact @GlobalTheory.SmGL.Exponents.Additive.wordMult_additive | exact GlobalTheory.SmGL.Exponents.Additive.wordMult_additive | (intros; apply GlobalTheory.SmGL.Exponents.Additive.wordMult_additive <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+
+namespace GlobalTheory.SmGL.Exponents
+
+theorem leviChar_unit_injective {R β : Type} [CommRing R] [Fintype β] {χ ψ : β → Rˣ →* ℂˣ}
+    (h : leviChar (fun _ : β => Unit) χ = leviChar (fun _ : β => Unit) ψ) : χ = ψ := by
+  classical
+  funext j
+  ext1 x
+  have key : ∀ φ : β → Rˣ →* ℂˣ, leviChar (fun _ : β => Unit) φ
+      (Pi.mulSingle j (Matrix.GeneralLinearGroup.scalar Unit x)) = φ j x := by
+    intro φ
+    rw [leviChar_apply, Finset.prod_eq_single j]
+    · rw [Pi.mulSingle_eq_same]
+      congr 1
+      ext
+      simp
+    · intro b _ hb
+      rw [Pi.mulSingle_eq_of_ne hb, map_one, map_one]
+    · simp
+  rw [← key χ, ← key ψ, h]
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem isSmoothChar_leviChar_of_smooth {β : Type} [Fintype β] (c : β → Type) [∀ j, Fintype (c j)]
+    [∀ j, DecidableEq (c j)] {χ : β → kˣ →* ℂˣ} (h : ∀ j, IsSmoothChar (χ j)) :
+    IsSmoothChar (leviChar c χ) := by
+  unfold leviChar
+  refine Finset.prod_induction _ IsSmoothChar (fun _ _ => IsSmoothChar.mul) isSmoothChar_one
+    fun a _ => ?_
+  exact (h a).detChar.comp _ (continuous_apply a)
+
+theorem nonempty_cell_term_equiv {α β : Type} [Fintype α] [LinearOrder α] [Fintype β]
+    {c : α → β → Type} [∀ i j, Fintype (c i j)] [∀ i j, DecidableEq (c i j)]
+    (g : ∀ j, (Σ i, c i j) ≃ Unit) (s : ∀ i j, IrrRep (GL (c i j) k)) (ψ : α → β → kˣ →* ℂˣ)
+    (hψ : ∀ i j, IsSmoothChar (ψ i j)) (e : ∀ i j, Nonempty ((s i j).ρ.Equiv (detRep (c i j) (ψ i j)))) :
+    Nonempty ((piTensor fun j => multiProd (g j) fun i => (s i j).ρ).Equiv
+      (ofChar (leviChar (fun _ : β => Unit) fun j => ψ ((g j).symm ()).1 j))) := by
+  obtain ⟨a⟩ := nonempty_piTensor_detRep_equiv k β (fun _ => Unit) fun j => ψ ((g j).symm ()).1 j
+  refine ⟨Representation.Equiv.trans (LocGL.piTensorEquiv fun j => ?_) a⟩
+  exact (LocGL.multiProdEquiv (g j) fun i => (e i j).some).trans
+    (GlobalTheory.T.parabolicInduction_detCharacters_rank_one_equiv k α (fun i => c i j) (g j) (fun i => ψ i j) (fun i => hψ i j)).some
+
+theorem jhMult_leviChar_cellFunctor : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], CellSemisimplification k → ∀ (α β : Type) [Fintype α] [LinearOrder α] [Fintype β] [LinearOrder β] (m : α → Type) [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)] (c : α → β → Type) [∀ i j, Fintype (c i j)] [∀ i j, DecidableEq (c i j)] (f : ∀ i, (Σ j, c i j) ≃ m i) (g : ∀ j, (Σ i, c i j) ≃ Unit) (X : α → Type) [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)] (ρ : ∀ i, Representation ℂ (GL (m i) k) (X i)), (∀ i, IsSmooth (ρ i)) → (∀ i, HasFiniteLength (ρ i)) → ∀ χ : β → kˣ →* ℂˣ, (∀ j, IsSmoothChar (χ j)) → jhMult (ofChar (leviChar (fun _ : β => Unit) χ)) (cellFunctor (m' := fun _ : β => Unit) f g (piTensor ρ)) = ∏ i, jhMult (ofChar (leviChar (c i) χ)) (jac (f i) (ρ i)) := by
+  intro k _ _ _ _ hC α β _ _ _ _ m _ _ c _ _ f g X _ _ ρ hρ hl χ hχ
+  obtain ⟨T, hT0, hT⟩ := hC α β m (fun _ => Unit) c f g X ρ hρ hl
+  have h1 := hT (IrrRep.ofChar (leviChar (fun _ : β => Unit) χ) (isSmoothChar_leviChar_of_smooth _ hχ))
+  refine Eq.trans h1 ?_
+  let s₀ : ∀ i j, IrrCl (GL (c i j) k) := fun i j => (IrrRep.det (c i j) (χ j) (hχ j)).cl
+  have e₀ : ∀ i j, Nonempty ((s₀ i j).rep.ρ.Equiv (detRep (c i j) (χ j))) := fun i j =>
+    (IrrRep.det (c i j) (χ j) (hχ j)).nonempty_equiv_rep
+  have hfac : ∀ i, jhMult (piTensor fun j => (s₀ i j).rep.ρ) (jac (f i) (ρ i)) =
+      jhMult (ofChar (leviChar (c i) χ)) (jac (f i) (ρ i)) := fun i =>
+    jhMult_congr_left ((LocGL.piTensorEquiv fun j => (e₀ i j).some).trans
+      (nonempty_piTensor_detRep_equiv k β (c i) χ).some) _
+  rw [Finset.sum_eq_single s₀]
+  · obtain ⟨a⟩ := nonempty_cell_term_equiv g (fun i j => (s₀ i j).rep) (fun _ j => χ j)
+      (fun _ j => hχ j) e₀
+    have h2 : jhMult (ofChar (leviChar (fun _ : β => Unit) χ))
+        (piTensor fun j => multiProd (g j) fun i => (s₀ i j).rep.ρ) = 1 :=
+      (jhMult_congr_right _ a).trans (jhMult_self (isIrreducible_ofChar _))
+    exact (congrArg₂ (· * ·) (Finset.prod_congr rfl fun i _ => hfac i) h2).trans (mul_one _)
+  · intro s _ hs
+    have hsub : ∀ i j, Subsingleton (c i j) := fun i j =>
+      ⟨fun x y => sigma_mk_injective (β := fun i => c i j) ((g j).injective (Subsingleton.elim _ _))⟩
+    choose ψ hψ e using fun i j =>
+      GlobalTheory.T.exists_equiv_detCharacter_of_irreducible_rank_le_one k (c i j) _ (s i j).rep.ρ (s i j).rep.smooth (s i j).rep.irr
+    obtain ⟨a⟩ := nonempty_cell_term_equiv g (fun i j => (s i j).rep) ψ hψ e
+    refine mul_eq_zero_of_right _ ((jhMult_congr_right _ a).trans (Model.jhMult_ofChar_ne fun h => hs ?_))
+    have h3 := leviChar_unit_injective h
+    funext i j
+    have h4 : detChar (c i j) (ψ i j) = detChar (c i j) (χ j) := by
+      rcases isEmpty_or_nonempty (c i j) with hc | ⟨⟨x⟩⟩
+      · ext1 y
+        rw [detChar_apply, detChar_apply, show Matrix.GeneralLinearGroup.det y = 1 from
+          Units.ext (by simp), map_one, map_one]
+      · have : (g j).symm () = ⟨i, x⟩ := (g j).injective (Subsingleton.elim _ _)
+        rw [congrFun h3 j, this]
+    rw [← (s i j).cl_rep]
+    refine IrrRep.cl_eq_iff.2 ⟨(e i j).some.trans ?_⟩
+    show (ofChar (detChar (c i j) (ψ i j))).Equiv (ofChar (detChar (c i j) (χ j)))
+    rw [h4]
+    exact .refl _
+  · intro hs
+    obtain ⟨i, hi⟩ := hT0 s₀ hs
+    exact mul_eq_zero_of_left (Finset.prod_eq_zero (Finset.mem_univ i) hi) _
+
+end GlobalTheory.SmGL.Exponents
+end
+end
+
+open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.jordanHolderMultiplicity_leviChar_geometricLemmaCell : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], CellSemisimplification k → ∀ (α β : Type) [Fintype α] [LinearOrder α] [Fintype β] [LinearOrder β] (m : α → Type) [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)] (c : α → β → Type) [∀ i j, Fintype (c i j)] [∀ i j, DecidableEq (c i j)] (f : ∀ i, (Σ j, c i j) ≃ m i) (g : ∀ j, (Σ i, c i j) ≃ Unit) (X : α → Type) [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)] (ρ : ∀ i, Representation ℂ (GL (m i) k) (X i)), (∀ i, IsSmooth (ρ i)) → (∀ i, HasFiniteLength (ρ i)) → ∀ χ : β → kˣ →* ℂˣ, (∀ j, IsSmoothChar (χ j)) → jhMult (ofChar (leviChar (fun _ : β => Unit) χ)) (cellFunctor (m' := fun _ : β => Unit) f g (piTensor ρ)) = ∏ i, jhMult (ofChar (leviChar (c i) χ)) (jac (f i) (ρ i)) := by
+  atlas_forward_decl GlobalTheory.SmGL.Exponents.jhMult_leviChar_cellFunctor
+end
+
+section
 open GlobalTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SmGL.Exponents ValuativeRel
 
 noncomputable section
@@ -447,3 +1311,5 @@ theorem exponentsSeparate (hG : Published.GeometricLemma) (hZ : Published.Zelevi
     · simp [wordMult_of_ne _ hw]
 
 end GlobalTheory.SmGL.Exponents
+end
+end

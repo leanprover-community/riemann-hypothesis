@@ -1,7 +1,15 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCmConjugationOmegaStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCmConjugationOmega
 import BuildAid.ForwardExisting
 
+section
+open Formalism.BasicNotions GlobalTheory.Mem GlobalTheory.MemN NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cm_conjugation_omega : ∀ (R : Ranks) (H : Host R) (what₂ : Rows.Data R) (nd : NData R H what₂), ∃ c : nd.Om ≃+* nd.Om, IsCMConjOm H.E nd.Om c := by
+  first | exact @GlobalTheory.MemN.exists_isCMConjOm_nData | exact GlobalTheory.MemN.exists_isCMConjOm_nData | (intros; apply GlobalTheory.MemN.exists_isCMConjOm_nData <;> assumption)
+end
+
+section
 section
 open Formalism.BasicNotions GlobalTheory.Mem GlobalTheory.MemN NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
 
@@ -134,3 +142,4 @@ open Formalism.BasicNotions GlobalTheory.Mem GlobalTheory.MemN NumberField IsDed
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_twist_empty_local : ∀ (B : Base) (C : Cols B) (W : RowsRest B C) (nd : NData B.R B.host W.what₂), IsEmpty nd.Loc → ∃ tw : NTw B.R B.host W.what₂ B.LL0 nd, IsEmpty tw.Tw := by
   atlas_forward_decl GlobalTheory.MemN.exists_nTw_empty
+end

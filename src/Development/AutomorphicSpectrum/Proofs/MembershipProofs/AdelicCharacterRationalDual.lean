@@ -1,5 +1,5 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MembershipProofs.AdelicCharacterRationalDualImports
+import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumAdmissibility
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
@@ -7,6 +7,24 @@ import GroundTheory.AutomorphicForms.GL2.GJMatrixFinite
 import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionHeisenbergInvariant
 import Development.AutomorphicSpectrum.Proofs.MembershipProofs.DenseHasCompactSupport
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory.CompanionTheory.ThetaUniq
+
+def cosetInd (F : Type) [Field F] [NumberField F] {κ : Type} (N : ℕ) (d : κ → F) :
+    (κ → FiniteAdeleRing (𝓞 F) F) → ℂ :=
+  Set.indicator {x | ∀ i, ∃ u : FiniteAdeleRing (𝓞 F) F, (∀ v, u v ∈ v.adicCompletionIntegers F) ∧
+    x i = algebraMap F (FiniteAdeleRing (𝓞 F) F) (d i) + N • u} 1
+
+end GlobalTheory.CompanionTheory.ThetaUniq
+
+end
+end
+
+section
 noncomputable section
 
 open Matrix NumberField IsDedekindDomain GlobalTheory.WeilM MeasureTheory Complex
@@ -527,4 +545,5 @@ theorem theta_unique : ∀ (F : Type) [Field F] [NumberField F] [LocallyCompactS
 
 end GlobalTheory.CompanionTheory.ThetaUniq
 
+end
 end

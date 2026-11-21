@@ -1,7 +1,423 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsComplSpace
+import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsotropicComplGram
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnipotentFundamentalDomain
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnipotentRadicalRationalTranslate
+import Development.AbelianVarietyTheory.Definitions.Divisors.WeilRangeOfAll
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsHermNDNegGram
+import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ConclusionZero
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPreHasLetters
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdelicSchwartzNeZeroAtOrigin
 
+section
+noncomputable section
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.Doubling
+open Formalism.UG (cT)
+
+namespace GlobalTheory.SWInt
+
+open GlobalTheory.SWLit GlobalTheory.SWWeil
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
+  {J₂ : Matrix (Fin (n + n)) (Fin (n + n)) E}
+
+def blockColumnMatrix {R : Type} {k : ℕ} (a b : Matrix (Fin n) (Fin k) R) : Matrix (Fin (n + n)) (Fin k) R :=
+  (Matrix.fromRows a b).submatrix finSumFinEquiv.symm id
+
+omit [NumberField E] in
+
+theorem mem_unipN_iff (g : UA σ J₂) : g ∈ unipN σ J₂ ↔ (mat g - 1) * blockColumnMatrix (1 : Matrix (Fin n) (Fin n) (AE F E)) 1 = 0 := by
+  have e : ∀ i j, (mat g * blockColumnMatrix (1 : Matrix (Fin n) (Fin n) (AE F E)) 1) i j =
+      mat g i (finSumFinEquiv (.inl j)) + mat g i (finSumFinEquiv (.inr j)) := fun i j => by
+    rw [Matrix.mul_apply, ← finSumFinEquiv.sum_comp, Fintype.sum_sum_type]
+    simp only [blockColumnMatrix, Matrix.submatrix_apply, Equiv.symm_apply_apply, id]
+    simp [Matrix.one_apply]
+  rw [Matrix.sub_mul, Matrix.one_mul, sub_eq_zero, mem_unipOf, mem_siegelOf, keepsDiag_iff]
+  constructor
+  · rintro ⟨h1, h2⟩
+    ext i j
+    have h3 : ∀ i, mat g (finSumFinEquiv (.inl i)) (finSumFinEquiv (.inl j)) +
+      mat g (finSumFinEquiv (.inl i)) (finSumFinEquiv (.inr j)) = (1 : Matrix (Fin n) (Fin n) (AE F E)) i j :=
+      fun i => congrFun (congrFun h2 i) j
+    obtain ⟨i | i, rfl⟩ := finSumFinEquiv.surjective i <;> rw [e] <;>
+      simp only [blockColumnMatrix, Matrix.submatrix_apply, Equiv.symm_apply_apply, id]
+    · exact h3 i
+    · exact (h1 i j).trans (h3 i)
+  · intro h
+    have h3 : ∀ i j, mat g (finSumFinEquiv i) (finSumFinEquiv (.inl j)) +
+      mat g (finSumFinEquiv i) (finSumFinEquiv (.inr j)) = Matrix.fromRows (1 : Matrix (Fin n) (Fin n) (AE F E)) 1 i j :=
+      fun i j => by
+        rw [← e, h]
+        simp only [blockColumnMatrix, Matrix.submatrix_apply, Equiv.symm_apply_apply, id]
+    exact ⟨fun i j => (h3 (.inr i) j).trans (h3 (.inl i) j).symm, Matrix.ext fun i j => h3 (.inl i) j⟩
+
+theorem cocompact_unipN (hcm : IsCMExt F E σ) {J : Matrix (Fin n) (Fin n) E} {l : E} (hl : l ≠ 0)
+    (hJ : ∀ i j, σ ((l⁻¹ • J) j i) = -(l⁻¹ • J) i j) (hdet : J.det ≠ 0) (h₂ : J₂ = dblGram finSumFinEquiv J) :
+    LocallyCompactSpace (unipN σ J₂) ∧
+      ∃ C : Set (unipN σ J₂), IsCompact C ∧ ∀ g : unipN σ J₂, ∃ γ : ratN σ J₂, γ • g ∈ C := by
+  have hσ : ∀ x, σ (σ x) = x := GlobalTheory.SiegelSet.sigma_sigma hcm
+  obtain ⟨δ, hδ, hδs⟩ := GlobalTheory.CMImag.exists_imag_ne_zero F E σ hcm
+  have hc : δ * σ l⁻¹ ≠ 0 := mul_ne_zero hδ ((map_ne_zero σ).2 (inv_ne_zero hl))
+  set c := δ * σ l⁻¹ with hcd
+  set H : Matrix (Fin n) (Fin n) E := c • J.map σ with hH
+  have hHd : H.det ≠ 0 := by
+    rw [hH, Matrix.det_smul]
+    refine mul_ne_zero (pow_ne_zero _ hc) ?_
+    rw [show (J.map σ).det = σ J.det from ((σ : E →+* E).map_det J).symm]
+    exact (map_ne_zero σ).2 hdet
+  have hHh : ∀ i j, σ (H j i) = H i j := fun i j => by
+    have h := congrArg σ (hJ i j)
+    simp only [Matrix.smul_apply, smul_eq_mul, map_mul, map_neg, hσ] at h
+    simp only [hH, hcd, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul, map_mul, hσ, hδs]
+    linear_combination (-δ) * h
+  have hG : c • J₂.map σ = dblGram finSumFinEquiv H := by
+    rw [h₂, dblGram, dblGram, blkMat_map _ _ (map_zero σ), Matrix.map_neg _ (map_neg σ), hH]
+    change (c • Matrix.fromBlocks (J.map σ) 0 0 (-J.map σ)).submatrix _ _ = _
+    rw [Matrix.fromBlocks_smul, smul_zero, smul_neg, blkMat]
+  have hN : IsHermND σ (c • J₂.map σ) := by
+    rw [hG]
+    refine ⟨fun i j => ?_, ?_⟩
+    · obtain ⟨i | i, rfl⟩ := finSumFinEquiv.surjective i <;> obtain ⟨j | j, rfl⟩ := finSumFinEquiv.surjective j <;>
+        simp only [dblGram, blkMat, Matrix.submatrix_apply, Equiv.symm_apply_apply, Matrix.fromBlocks_apply₁₁,
+          Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.zero_apply, map_zero,
+          Matrix.neg_apply, map_neg, hHh]
+    · rw [dblGram, det_blkMat, Matrix.det_neg]
+      exact mul_ne_zero hHd (mul_ne_zero (pow_ne_zero _ (neg_ne_zero.2 one_ne_zero)) hHd)
+  let C : Matrix (Fin (n + n)) (Fin n) E := blockColumnMatrix 1 1
+  let D : Matrix (Fin (n + n)) (Fin n) E := blockColumnMatrix H⁻¹ 0
+  have hi : H * H⁻¹ = 1 := Matrix.mul_nonsing_inv _ (IsUnit.mk0 _ hHd)
+  have hi' : H⁻¹ * H = 1 := mul_eq_one_comm.1 hi
+  have hCJ : cT (σ : E →+* E) C * (c • J₂.map σ) = (Matrix.fromCols H (-H)).submatrix id finSumFinEquiv.symm := by
+    have : cT (σ : E →+* E) C = (Matrix.fromCols 1 1).submatrix id finSumFinEquiv.symm := by
+      ext i j
+      obtain ⟨j | j, rfl⟩ := finSumFinEquiv.surjective j <;>
+        simp only [C, cT, blockColumnMatrix, Matrix.transpose_apply, Matrix.map_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply,
+          id, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr,
+          Matrix.one_apply, apply_ite (σ : E →+* E), map_one, map_zero, eq_comm (a := i)]
+    rw [this, hG, dblGram, blkMat, Matrix.submatrix_mul_equiv, Matrix.fromCols_mul_fromBlocks]
+    simp
+  have xy : cT (σ : E →+* E) C * (c • J₂.map σ) * D = 1 := by
+    rw [hCJ]
+    simp only [D, blockColumnMatrix]
+    rw [Matrix.submatrix_mul_equiv, Matrix.fromCols_mul_fromRows, hi]
+    simp
+  have xx : cT (σ : E →+* E) C * (c • J₂.map σ) * C = 0 := by
+    rw [hCJ]
+    simp only [C, blockColumnMatrix]
+    rw [Matrix.submatrix_mul_equiv, Matrix.fromCols_mul_fromRows]
+    simp
+  have hP : 1 - D * (cT (σ : E →+* E) C * (c • J₂.map σ)) =
+      C * ((Matrix.fromCols (0 : Matrix (Fin n) (Fin n) E) (1 : Matrix (Fin n) (Fin n) E)).submatrix id finSumFinEquiv.symm :
+        Matrix (Fin n) (Fin (n + n)) E) := by
+    rw [hCJ]
+    simp only [C, D, blockColumnMatrix]
+    rw [← Matrix.submatrix_mul _ _ _ _ _ Function.bijective_id, ← Matrix.submatrix_mul _ _ _ _ _ Function.bijective_id,
+      Matrix.fromRows_mul_fromCols, Matrix.fromRows_mul_fromCols, ← Matrix.submatrix_one_equiv finSumFinEquiv.symm,
+      ← Matrix.fromBlocks_one]
+    ext i j
+    obtain ⟨i | i, rfl⟩ := finSumFinEquiv.surjective i <;> obtain ⟨j | j, rfl⟩ := finSumFinEquiv.surjective j <;>
+      simp only [Matrix.sub_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply] <;> simp [hi']
+  have hC : GlobalTheory.UAut.IsIsoCols σ (c • J₂.map σ) C := by
+    refine ⟨Matrix.mulVec_injective_iff.1 fun x y h => funext fun i => ?_, xx⟩
+    have := congrFun h (finSumFinEquiv (.inl i))
+    simpa only [C, blockColumnMatrix, Matrix.submatrix_mulVec_equiv, Matrix.mulVec, Matrix.submatrix_apply, Equiv.symm_apply_apply, id,
+      Matrix.fromRows_apply_inl, Matrix.one_apply, dotProduct, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
+      Finset.mem_univ, if_true] using this
+  have hCa : GlobalTheory.SiegelSet.adMat F C = blockColumnMatrix (1 : Matrix (Fin n) (Fin n) (AE F E)) 1 := by
+    simp only [C, blockColumnMatrix, GlobalTheory.SiegelSet.adMat, ← Matrix.submatrix_map, Matrix.fromRows_map,
+      Matrix.map_one _ (map_zero _) (map_one _)]
+  set e := GlobalTheory.ThK.SquareIntegrability.toGAd hσ J₂ hc with he
+  have hmem : ∀ g : UA σ J₂, g ∈ unipN σ J₂ ↔ e g ∈ GlobalTheory.SiegelSet.unipRad σ (c • J₂.map σ) C := fun g => by
+    rw [mem_unipN_iff, GlobalTheory.EisCT.mem_unipRad_iff_dual xy, hP, ← hCa]
+    refine ⟨fun h => ⟨h, 0, ?_⟩, fun h => h.1⟩
+    rw [GlobalTheory.SiegelSet.adMat, Matrix.map_mul, ← Matrix.mul_assoc, Matrix.mul_zero]
+    exact (congrArg (· * _) h).trans (Matrix.zero_mul _)
+  have hrat := GlobalTheory.RatCorr.ratU_iff_ratPts F E σ hσ _ J₂ c hc
+  haveI := GlobalTheory.UAut.locallyCompact_unipRad hcm hN hC
+  obtain ⟨K', hK', hcov'⟩ := GlobalTheory.UAut.cocompact_unipRad hcm hN hC
+  have hec : Continuous e := continuous_subtype_val.subtype_mk _
+  have hes : Continuous e.symm := continuous_subtype_val.subtype_mk _
+  let eH : unipN σ J₂ ≃ₜ GlobalTheory.SiegelSet.unipRad σ (c • J₂.map σ) C :=
+    { toFun := fun x => ⟨e x, (hmem x).1 x.2⟩
+      invFun := fun y => ⟨e.symm y, (hmem _).2 (by rw [e.apply_symm_apply]; exact y.2)⟩
+      left_inv := fun x => by ext; simp
+      right_inv := fun y => by ext; simp
+      continuous_toFun := (hec.comp continuous_subtype_val).subtype_mk _
+      continuous_invFun := (hes.comp continuous_subtype_val).subtype_mk _ }
+  refine ⟨eH.isClosedEmbedding.locallyCompactSpace, eH ⁻¹' K', eH.isCompact_preimage.2 hK', fun g => ?_⟩
+  obtain ⟨γ', hγ', hK⟩ := hcov' (eH g)
+  refine ⟨⟨eH.symm γ', ?_⟩, ?_⟩
+  · show e.symm (γ' : _) ∈ ratU σ J₂
+    rw [hrat, MulEquiv.apply_symm_apply]
+    exact Subgroup.mem_subgroupOf.1 hγ'
+  · show eH (eH.symm γ' * g) ∈ K'
+    have : eH (eH.symm γ' * g) = γ' * eH g := by
+      apply Subtype.ext
+      show e (e.symm (γ' : _) * (g : _)) = (γ' : _) * e g
+      rw [map_mul, MulEquiv.apply_symm_apply]
+    rw [this]
+    exact hK
+
+theorem existsUnique_isNormN (hcm : IsCMExt F E σ) {J : Matrix (Fin n) (Fin n) E} {l : E} (hl : l ≠ 0)
+    (hJ : ∀ i j, σ ((l⁻¹ • J) j i) = -(l⁻¹ • J) i j) (hdet : J.det ≠ 0) (h₂ : J₂ = dblGram finSumFinEquiv J) :
+    ∃! νN : Measure (unipN σ J₂), IsNormN σ νN := by
+  obtain ⟨hLC, C, hC, hcov⟩ := cocompact_unipN hcm hl hJ hdet h₂
+  obtain ⟨hTG, -, hSC, hT2⟩ := GlobalTheory.UnipMass.topUA σ J₂
+  haveI : BorelSpace (UA σ J₂) := ⟨rfl⟩
+  haveI : Countable (ratN σ J₂) := GlobalTheory.UnipMass.countable_ratU' σ J₂ (unipN σ J₂)
+  haveI : DiscreteTopology (ratN σ J₂) := GlobalTheory.T.discrete_rational_points_subgroup F E σ _ J₂ (unipN σ J₂)
+  obtain ⟨ν, 𝓓, h1, h2, h3⟩ := GlobalTheory.T.cocompact_lattice_unit_covolume _ (ratN σ J₂) C hC hcov
+  refine ⟨ν, ⟨h1, 𝓓, h2, h3⟩, ?_⟩
+  rintro ν' ⟨h1', 𝓓', h2', h3'⟩
+  have e := Measure.isMulLeftInvariant_eq_smul ν' ν
+  haveI : MeasurableConstSMul (ratN σ J₂) (unipN σ J₂) :=
+    ⟨fun γ => (continuous_const.mul continuous_id : Continuous fun x : unipN σ J₂ => (γ : unipN σ J₂) * x).measurable⟩
+  haveI : SMulInvariantMeasure (ratN σ J₂) (unipN σ J₂) ν' := ⟨fun γ A _ => measure_preimage_mul ν' (γ : unipN σ J₂) A⟩
+  have h4 : IsFundamentalDomain (ratN σ J₂) 𝓓 ν' := h2.mono (by rw [e]; exact Measure.smul_absolutelyContinuous)
+  have h5 : ν' 𝓓 = 1 := (h4.measure_eq h2').trans h3'
+  rw [e, Measure.smul_apply, h3, ENNReal.smul_def, smul_eq_mul, mul_one, ENNReal.coe_eq_one] at h5
+  rw [e, h5, one_smul]
+
+end GlobalTheory.SWInt
+
+end
+end
+
+section
+noncomputable section
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.MixModel GlobalTheory.SWLit GlobalTheory.SWLink
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (UA incM ratU)
+open GlobalTheory.WeilM (Darboux symp schA thetaSum UG)
+open GlobalTheory.SiegelFormula (coord)
+open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.SWACase.Model
+
+section
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+
+def HypsMet (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
+    (n m : ℕ) : Prop :=
+  IsCMExt F E σ ∧ Algebra.Unramified (𝓞 F) (𝓞 E) ∧
+  ∃ ψ : AddChar (AF F) ℂ, IsCharAF F ψ ∧
+  ∃ (l : E) (JV : Matrix (Fin m) (Fin m) E) (J : Matrix (Fin n) (Fin n) E) (J₂ : Matrix (Fin (n + n)) (Fin (n + n)) E),
+    l ≠ 0 ∧ IsHermND σ (l • JV) ∧ (∀ x, form σ JV x x = 0 → x = 0) ∧
+    (∀ i j, σ ((l⁻¹ • J) j i) = -(l⁻¹ • J) i j) ∧ J₂ = dblGram finSumFinEquiv J ∧
+  ∃ T : GL (Fin (n + n)) E, IsWittBasis σ J l T ∧
+  ∃ (κ : Type) (_ : Fintype κ) (co : Darboux (symp (R := AF F) (cA σ) (-1) (incM F JV) (incM F J₂)) κ), IsAdapted σ co ∧
+  ∃ (_ : MeasurableSpace (κ → AF F)) (_ : BorelSpace (κ → AF F)) (μ : Measure (κ → AF F)), IsTamagawa F κ μ ∧
+  ∃ χ : Chr F E, IsHecke F E χ ∧ ResEtaPow (Units.map (algebraMap F (AF F)).toMonoidHom).range χ m ∧
+  ∃ om : UA σ JV × UA σ J₂ →* Module.End ℂ ((κ → AF F) → ℂ), IsWeilFormulas σ ψ χ T co μ om ∧
+  ∃ K : Subgroup (UA σ J₂), IsStdK σ T K ∧ IwasawaOf finSumFinEquiv (UG (cA σ) (incM F J₂)).subtype (absE F E) K ∧
+  ∃ Φ ∈ schA F κ, Φ ≠ 0 ∧ FiniteDimensional ℂ (Submodule.span ℂ {Ψ | ∃ k ∈ K, Ψ = om (1, k) Φ}) ∧
+  ∃ (ν : Measure (UA σ JV)) (𝓕 : Set (UA σ JV)), ν.IsHaarMeasure ∧ IsFundamentalDomain (ratU σ JV) 𝓕 ν
+end
+
+set_option maxHeartbeats 4000000 in
+theorem hypsMet_of (D : D7) (A V : HSp D) (han : IsAniso V) :
+    HypsMet D.host.F D.host.E D.sp.cm.sig A.rank V.rank := by
+  obtain ⟨ψ, χ, θ, μ, 𝓕, ω, H, ν, Φ, hψ, hχ, hres, hθ, hμ, hω, hH, hν, hΦ, hΦ0, -⟩ := GlobalTheory.AnisoStdModel.data D A V
+  let n := A.rank
+  have hCM := GlobalTheory.AdelicU.isCMExt_host D
+  obtain ⟨δ, hδ0, hδ⟩ := skew_xi D
+  let J : Matrix (Fin n) (Fin n) D.host.E := δ • 1
+  have hJ : ∀ i j, D.sp.cm.sig (J j i) = -J i j := fun i j => by
+    by_cases h : i = j
+    · subst h; simp [J, hδ]
+    · simp [J, h, Ne.symm h]
+  have hJ0 : J.det ≠ 0 := by simp [J, hδ0]
+  obtain ⟨T, K, hT, hK, -⟩ := GlobalTheory.T.exists_witt_basis_compact_stabiliser D.host.F D.host.E D.sp.cm.sig hCM n 1 J _ one_ne_zero hJ0 rfl
+  have hG := gram_witt hJ hT
+  obtain ⟨κ, hκ⟩ := GlobalTheory.T.witt_change_basis_unitary_iso D n _ T hG
+  obtain ⟨hP, ha⟩ := GlobalTheory.T.siegel_parabolic_chart_levi_block D n _ T κ hκ J hT
+  have hK' := GlobalTheory.T.standard_compact_under_witt_chart D n _ T κ hκ K hK
+  obtain ⟨ι, hι, hιQ⟩ := GlobalTheory.T.unitary_group_conj_hermitian_automorphisms D V
+  haveI : Module.Finite D.host.F D.host.E := Module.Finite.of_restrictScalars_finite ℚ _ _
+  let ε := Module.finBasis D.host.F D.host.E
+  obtain ⟨co, had, hco⟩ := GlobalTheory.T.darboux_basis_adapted_coordinates D n V J _ T hT hG _ ε
+  letI : MeasurableSpace (Fin V.rank × Fin n × Fin (Module.finrank D.host.F D.host.E) → AF D.host.F) := borel _
+  haveI : BorelSpace (Fin V.rank × Fin n × Fin (Module.finrank D.host.F D.host.E) → AF D.host.F) := ⟨rfl⟩
+  obtain ⟨μ', hμ', hint⟩ := GlobalTheory.T.tamagawa_measure_matrix_adeles D V.rank n _ ε μ 𝓕 hμ
+  obtain ⟨om, hom⟩ := GlobalTheory.T.weil_representation_seesaw_schwartz D n V ψ χ θ hθ μ 𝓕 hμ ω hω _ _ ε ι κ
+  obtain ⟨ν', 𝓖, hν', h𝓖, -⟩ := GlobalTheory.T.haar_average_fundamental_domain_descent D V ι hιQ ν hν
+  obtain ⟨⟨φ, hφ⟩, e⟩ := GlobalTheory.SchwartzCoord.exists_schA_comp_coord_eq D θ hθ V.rank n _ ε Φ.1 Φ.2
+  obtain ⟨hI, -⟩ := height hH hP ha hK'
+  have hF := formulas hθ hω hT hG hκ hι hco hint hom
+  have hR := GlobalTheory.LFun.resEtaPow_of_resEta D.host.F D.host.E hCM.2.2.1 χ V.rank hres
+  have h0 : φ ≠ 0 := fun h => hΦ0 (Subtype.ext (by
+    have e' : φ ∘ coord ε = Φ.1 := e
+    rw [← e', h]; rfl))
+  exact ⟨hCM, unramified_host D, ψ, hψ, 1, -V.gram, J, _, one_ne_zero, isHermND_neg_gram V, aniso_neg_gram han,
+    by rw [inv_one, one_smul]; exact hJ, rfl, T, hT, _, inferInstance, co, had, inferInstance, inferInstance, μ', hμ', χ, hχ, hR,
+    om, hF, K, hK, hI, φ, hφ, h0, kfin hom hK' hφ Φ e hΦ, ν', 𝓖, hν', h𝓖⟩
+
+theorem hypsMet (D : D7) (n m : ℕ) : HypsMet D.host.F D.host.E D.sp.cm.sig n m := by
+  obtain ⟨A, V, rfl, rfl, h⟩ := GlobalTheory.AnisoStdModel.ranks D n m
+  exact hypsMet_of D A V h
+
+
+theorem exists_field : ∃ (F E : Type) (_ : Field F) (_ : NumberField F) (_ : Field E) (_ : NumberField E) (_ : Algebra F E)
+    (σ : E →ₐ[F] E), ∀ n m, HypsMet F E σ n m := by
+  obtain ⟨D⟩ := GlobalTheory.Mem.nonempty_record
+  exact ⟨_, _, _, _, _, _, _, D.sp.cm.sig, hypsMet D⟩
+
+end GlobalTheory.SWACase.Model
+
+end
+end
+
+section
+noncomputable section
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.MixModel GlobalTheory.SWLit GlobalTheory.SWLink
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (UA incM ratU)
+open GlobalTheory.WeilM (Darboux symp schA thetaSum UG)
+open GlobalTheory.SiegelFormula (coord)
+open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.SWInt
+
+section
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {n m : ℕ}
+
+def HasWeilModel (ψ : AddChar (AF F) ℂ) (χ : Chr F E) {J₂ : Matrix (Fin (n + n)) (Fin (n + n)) E} (T : GL (Fin (n + n)) E)
+    (K : Subgroup (UA σ J₂)) (JV : Matrix (Fin m) (Fin m) E) (P : Submodule ℂ (UA σ J₂ → ℂ) → Prop) : Prop :=
+  ∃ (κ : Type) (_ : Fintype κ) (co : Darboux (symp (R := AF F) (cA σ) (-1) (incM F JV) (incM F J₂)) κ), IsAdapted σ co ∧
+  ∃ (_ : MeasurableSpace (κ → AF F)) (_ : BorelSpace (κ → AF F)) (μ : Measure (κ → AF F)), IsTamagawa F κ μ ∧
+  ∃ om : UA σ JV × UA σ J₂ →* Module.End ℂ ((κ → AF F) → ℂ), IsWeilFormulas σ ψ χ T co μ om ∧ P (secSpace om K)
+
+def ComplMet (m t : ℕ) (b : Prop) : Prop :=
+  IsCMExt F E σ ∧ Algebra.Unramified (𝓞 F) (𝓞 E) ∧
+  ∃ ψ : AddChar (AF F) ℂ, IsCharAF F ψ ∧
+  ∃ (l : E) (JV : Matrix (Fin m) (Fin m) E) (J : Matrix (Fin (m + t)) (Fin (m + t)) E)
+    (J₂ : Matrix (Fin (m + t + (m + t))) (Fin (m + t + (m + t))) E),
+    l ≠ 0 ∧ IsHermND σ (l • JV) ∧ (∀ x, form σ JV x x = 0 → x = 0) ∧
+    (∀ i j, σ ((l⁻¹ • J) j i) = -(l⁻¹ • J) i j) ∧ J₂ = dblGram finSumFinEquiv J ∧
+  ∃ T : GL (Fin (m + t + (m + t))) E, IsWittBasis σ J l T ∧
+  ∃ χ : Chr F E, IsHecke F E χ ∧ ResEtaPow (Units.map (algebraMap F (AF F)).toMonoidHom).range χ m ∧
+  ∃ K : Subgroup (UA σ J₂), IsStdK σ T K ∧ IwasawaOf finSumFinEquiv (UG (cA σ) (incM F J₂)).subtype (absE F E) K ∧
+    (∃ w : UA σ J₂, IsWeylElt σ T w) ∧ (∃ νN : Measure (GlobalTheory.SWWeil.unipN σ J₂), IsNormN σ νN) ∧
+    HasWeilModel σ ψ χ T K JV (fun R => b → R ≠ ⊥) ∧ HasWeilModel σ ψ χ T K (complGram l JV t) fun R => b → R ≠ ⊥
+
+end
+
+theorem exists_frame_hyp (D : D7) (t : ℕ) : ∃ b : Module.Basis (Fin (t + t)) D.host.E (GlobalTheory.OrthSumSp.hypSp D t).V,
+    ∀ i j, (GlobalTheory.OrthSumSp.hypSp D t).hT (b i) (b j) = -blk (0 : Matrix (Fin t) (Fin t) D.host.E) 1 1 0 i j := by
+  let P : Matrix (Fin (t + t)) (Fin (t + t)) D.host.E := blk 1 (-((2 : D.host.E)⁻¹ • 1)) 1 ((2 : D.host.E)⁻¹ • 1)
+  have hP : P * blk ((2 : D.host.E)⁻¹ • 1) ((2 : D.host.E)⁻¹ • 1) (-1) 1 = 1 := by
+    rw [WittModel.blk_mul, ← WittModel.blk_one]
+    congr 1 <;> simp only [Matrix.one_mul, Matrix.mul_one, Matrix.smul_mul, Matrix.mul_smul, Matrix.neg_mul, Matrix.mul_neg] <;>
+      match_scalars <;> norm_num
+  let f := (GlobalTheory.OrthSumSp.hypSp D t).frame
+  let b := f.map (Matrix.toLinearEquiv f P (Matrix.isUnit_det_of_right_inverse hP))
+  have hb : ∀ j, b j = ∑ i, P i j • f i := fun j => by
+    simp only [b, Module.Basis.map_apply, Matrix.toLinearEquiv_apply, Matrix.toLin_self]
+  have hG : ∀ i j, (GlobalTheory.OrthSumSp.hypSp D t).hT (f i) (f j) =
+      dblGram finSumFinEquiv (1 : Matrix (Fin t) (Fin t) D.host.E) i j := fun i j => by
+    have := gram_hdbl (GlobalTheory.OrthSumSp.posSp D t)
+    rw [GlobalTheory.OrthSumSp.posSp_gram D t] at this
+    exact congrFun (congrFun this i) j
+  refine ⟨b, fun i j => ?_⟩
+  have e : (GlobalTheory.OrthSumSp.hypSp D t).hT (b i) (b j) =
+      (Pᴴ * dblGram finSumFinEquiv (1 : Matrix (Fin t) (Fin t) D.host.E) * P) i j := by
+    simp only [hb, map_sum, LinearMap.sum_apply, LinearMap.map_smulₛₗ, LinearMap.smul_apply, hG, smul_eq_mul,
+      Matrix.mul_apply, Matrix.conjTranspose_apply, Finset.sum_mul, Finset.mul_sum, RingHom.id_apply, starRingEnd_apply]
+    exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
+  have e1 : Pᴴ = blk 1 1 (-((2 : D.host.E)⁻¹ • 1)) ((2 : D.host.E)⁻¹ • 1) := by
+    simp [P, blk, Matrix.fromBlocks_conjTranspose]
+  have e2 : dblGram finSumFinEquiv (1 : Matrix (Fin t) (Fin t) D.host.E) = blk 1 0 0 (-1) := rfl
+  have e3 : -blk (0 : Matrix (Fin t) (Fin t) D.host.E) 1 1 0 = blk 0 (-1) (-1) 0 := by
+    change (-Matrix.fromBlocks (0 : Matrix (Fin t) (Fin t) D.host.E) 1 1 0).submatrix _ _ = _
+    rw [Matrix.fromBlocks_neg, neg_zero, blk]
+  rw [e, ← Matrix.neg_apply, e3, e1, e2, WittModel.blk_mul, WittModel.blk_mul]
+  congr 1 <;> simp only [Matrix.one_mul, Matrix.mul_one, Matrix.smul_mul, Matrix.mul_smul, Matrix.neg_mul, Matrix.mul_neg,
+      Matrix.mul_zero, add_zero, zero_add] <;>
+    match_scalars <;> norm_num
+
+theorem exists_compl_space (D : D7) (V : HSp D) (t : ℕ) :
+    ∃ b : Module.Basis (Fin (t + t)) D.host.E (GlobalTheory.OrthSumSp.hypSp D t).V,
+      -(hsum V { GlobalTheory.OrthSumSp.hypSp D t with frame := b }).gram = complGram 1 (-V.gram) t := by
+  obtain ⟨b, hb⟩ := exists_frame_hyp D t
+  refine ⟨b, ?_⟩
+  have e : HSpace.gram { GlobalTheory.OrthSumSp.hypSp D t with frame := b } = -blk (0 : Matrix (Fin t) (Fin t) D.host.E) 1 1 0 :=
+    Matrix.ext hb
+  rw [gram_hsum, e, complGram, inv_one, one_smul]
+  change (-Matrix.fromBlocks V.gram 0 0 (-blk (0 : Matrix (Fin t) (Fin t) D.host.E) 1 1 0)).submatrix _ _ = _
+  rw [Matrix.fromBlocks_neg, neg_zero, neg_zero, neg_neg, blkMat]
+
+set_option maxHeartbeats 4000000 in
+
+theorem complMet_of (D : D7) (V : HSp D) (han : IsAniso V) (t : ℕ) : ComplMet D.sp.cm.sig V.rank t False := by
+  let n := V.rank + t
+  obtain ⟨-, ψ, χ, omh, -, -, -, -, hω, -, -, -⟩ :=
+    GlobalTheory.SiegelFormula.Model.data_exist GlobalTheory.weilRepresentationUnitaryPair V V
+  obtain ⟨θ, hθ⟩ := hω.std.2.1
+  have hxi : D.host.xi0 ≠ 0 := GlobalTheory.DualPairCompare.embedding_xi_zero_ne_zero D
+  obtain ⟨lam, hlam, hψ, -⟩ :=
+    GlobalTheory.StdUnn.shift_char_realPar D ψ hω.std θ hθ D.host.xi0 ⟨hxi, GlobalTheory.DualPairCheck.star_purely_imaginary_eq_neg D⟩
+  have hl : lam ≠ 0 := fun h => by
+    rw [h, map_zero] at hlam
+    exact div_ne_zero (neg_ne_zero.2 hxi) hxi hlam.symm
+  have hCM := GlobalTheory.AdelicU.isCMExt_host D
+  obtain ⟨δ, hδ0, hδ⟩ := skew_xi D
+  let J : Matrix (Fin n) (Fin n) D.host.E := δ • 1
+  have hJ : ∀ i j, D.sp.cm.sig (J j i) = -J i j := fun i j => by
+    by_cases h : i = j
+    · subst h; simp [J, hδ]
+    · simp [J, h, Ne.symm h]
+  have hJ' : ∀ i j, D.sp.cm.sig (((1 : D.host.E)⁻¹ • J) j i) = -((1 : D.host.E)⁻¹ • J) i j := by
+    rw [inv_one, one_smul]; exact hJ
+  have hJ0 : J.det ≠ 0 := by simp [J, hδ0]
+  obtain ⟨T, K, hT, hK, -⟩ := GlobalTheory.T.exists_witt_basis_compact_stabiliser D.host.F D.host.E D.sp.cm.sig hCM n 1 J _ one_ne_zero hJ0 rfl
+  have hG := gram_witt hJ hT
+  obtain ⟨κ, hκ⟩ := GlobalTheory.T.witt_change_basis_unitary_iso D n _ T hG
+  obtain ⟨hP, ha⟩ := GlobalTheory.T.siegel_parabolic_chart_levi_block D n _ T κ hκ J hT
+  have hK' := GlobalTheory.T.standard_compact_under_witt_chart D n _ T κ hκ K hK
+  obtain ⟨H, hH⟩ := GlobalTheory.StdUnn.exists_height D n
+  obtain ⟨hI, -⟩ := height hH hP ha hK'
+  haveI : Module.Finite D.host.F D.host.E := Module.Finite.of_restrictScalars_finite ℚ _ _
+  let ε := Module.finBasis D.host.F D.host.E
+  have key : ∀ B : HSp D, ResEta D χ B.rank →
+      HasWeilModel D.sp.cm.sig (GlobalTheory.StdUnn.shift ψ lam) χ T K (-B.gram) fun R => False → R ≠ ⊥ := fun B hB => by
+    obtain ⟨μ, 𝓕, hμ⟩ := GlobalTheory.MixModel.exists_isCovolOne D B.rank n
+    obtain ⟨ω, hW⟩ := GlobalTheory.StdUnn.Inhab.weil_exists D n B ψ hω.std lam hl χ hω.hecT hB θ hθ μ 𝓕 hμ
+    obtain ⟨ι, hι, -⟩ := GlobalTheory.T.unitary_group_conj_hermitian_automorphisms D B
+    obtain ⟨co, had, hco⟩ := GlobalTheory.T.darboux_basis_adapted_coordinates D n B J _ T hT hG _ ε
+    letI : MeasurableSpace (Fin B.rank × Fin n × Fin (Module.finrank D.host.F D.host.E) → AF D.host.F) := borel _
+    haveI : BorelSpace (Fin B.rank × Fin n × Fin (Module.finrank D.host.F D.host.E) → AF D.host.F) := ⟨rfl⟩
+    obtain ⟨μ', hμ', hint⟩ := GlobalTheory.T.tamagawa_measure_matrix_adeles D B.rank n _ ε μ 𝓕 hμ
+    obtain ⟨om, hom⟩ := GlobalTheory.T.weil_representation_seesaw_schwartz D n B _ χ θ hθ μ 𝓕 hμ ω hW _ _ ε ι κ
+    exact ⟨_, inferInstance, co, had, inferInstance, inferInstance, μ', hμ', om, formulas hθ hW hT hG hκ hι hco hint hom,
+      False.elim⟩
+  obtain ⟨b, hb⟩ := exists_compl_space D V t
+  have hres : ResEta D χ (V.rank + (t + t)) := resEta_parity hω.resT (by omega)
+  have h2 := key (hsum V { GlobalTheory.OrthSumSp.hypSp D t with frame := b }) hres
+  rw [hb] at h2
+  obtain ⟨w, -, hw⟩ := exists_isWeylElt (GlobalTheory.SiegelSet.sigma_sigma hCM) one_ne_zero hJ' rfl hT
+  exact ⟨hCM, unramified_host D, _, hψ, 1, -V.gram, J, _, one_ne_zero, isHermND_neg_gram V, aniso_neg_gram han, hJ', rfl,
+    T, hT, χ, hω.hecT, GlobalTheory.LFun.resEtaPow_of_resEta D.host.F D.host.E hCM.2.2.1 χ V.rank hω.resT, K, hK, hI, ⟨w, hw⟩,
+    (existsUnique_isNormN hCM one_ne_zero hJ' hJ0 rfl).exists, key V hω.resT, h2⟩
+
+
+end GlobalTheory.SWInt
+
+end
+end
+
+section
 noncomputable section
 
 open scoped TensorProduct NNReal Matrix Topology
@@ -179,4 +595,5 @@ theorem secSpace_bot_ne_bot {JV : Matrix (Fin m) (Fin m) E} {κ : Type} [Fintype
 
 end GlobalTheory.SWInt.Model
 
+end
 end

@@ -4,10 +4,255 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfMemWeakIn
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SetIntegralNormRmulLe
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ContinuousIntegralInvMulOfLocallyIntegrable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealLieSmoothingMemSlowlyIncreasing
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalGLBoundedSizeCompactFinitePolynomialCoun
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsSplitCentreExponentLeOfConjMemCompact
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCommonDenominatorCompactFiniteAdeles
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousGLAdelicProjectionsInclusionsStatement
 
+section
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_common_denominator_compact_finiteAdeles : ∀ (E : Type) [Field E] [NumberField E] (Kf : Set (Af E)), IsCompact Kf → ∃ n : ℕ, 0 < n ∧ ∀ ξ : E, algebraMap E (Af E) ξ ∈ Kf → IsIntegral ℤ ((n : E) * ξ) := by
+  first | exact @GlobalTheory.AdeleDenom.exists_common_denom | exact GlobalTheory.AdeleDenom.exists_common_denom | (intros; apply GlobalTheory.AdeleDenom.exists_common_denom <;> assumption)
+end
+
+section
+section
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
+
+namespace GlobalTheory.IntCount
+
+theorem exists_abs_repr_le_mul_house (E : Type) [Field E] [NumberField E] :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (x : 𝓞 E) (j : Module.Free.ChooseBasisIndex ℤ (𝓞 E)),
+      |(((RingOfIntegers.basis E).repr x j : ℤ) : ℝ)| ≤ C * house (x : E) := by
+  let L := (canonicalEmbedding.latticeBasis E).equivFun.toLinearMap.toContinuousLinearMap
+  refine ⟨‖L‖, norm_nonneg _, fun x j => ?_⟩
+  have h1 := L.le_opNorm (canonicalEmbedding E x)
+  have h2 := norm_le_pi_norm (L (canonicalEmbedding E x)) j
+  have h3 : L (canonicalEmbedding E x) j = (((RingOfIntegers.basis E).repr x j : ℤ) : ℂ) := by
+    have := canonicalEmbedding.integralBasis_repr_apply E (x : E) j
+    rw [NumberField.integralBasis_repr_apply] at this
+    simpa [L] using this
+  rw [h3, Complex.norm_intCast] at h2
+  exact h2.trans h1
+
+theorem card_bounded_integers_le (E : Type) [Field E] [NumberField E] :
+    ∃ (m : ℕ) (C : ℝ), 0 ≤ C ∧ ∀ T : ℝ, 1 ≤ T →
+      {ξ : 𝓞 E | ∀ w : InfinitePlace E, w (ξ : E) ≤ T}.Finite ∧
+      ({ξ : 𝓞 E | ∀ w : InfinitePlace E, w (ξ : E) ≤ T}.ncard : ℝ) ≤ C * T ^ m := by
+  classical
+  obtain ⟨c, hc, hb⟩ := exists_abs_repr_le_mul_house E
+  let ι := Module.Free.ChooseBasisIndex ℤ (𝓞 E)
+  refine ⟨Fintype.card ι, (2 * c + 3) ^ Fintype.card ι, by positivity, fun T hT => ?_⟩
+  set S := {ξ : 𝓞 E | ∀ w : InfinitePlace E, w (ξ : E) ≤ T} with hS
+  let M : ℕ := ⌈c * T⌉₊
+  let s : Finset (ι → ℤ) := Fintype.piFinset fun _ => Finset.Icc (-(M : ℤ)) M
+  let f : 𝓞 E → (ι → ℤ) := fun ξ j => (RingOfIntegers.basis E).repr ξ j
+  have hf : Function.Injective f := fun ξ η h =>
+    (RingOfIntegers.basis E).ext_elem fun j => congrFun h j
+  have hmaps : ∀ ξ ∈ S, f ξ ∈ s := by
+    intro ξ hξ
+    refine Fintype.mem_piFinset.2 fun j => Finset.mem_Icc.2 (abs_le.1 ?_)
+    have hh : house (ξ : E) ≤ T := by
+      refine (pi_norm_le_iff_of_nonneg (by linarith)).2 fun φ => ?_
+      have := hξ (InfinitePlace.mk φ)
+      rwa [InfinitePlace.apply] at this
+    have h1 := hb ξ j
+    have h2 : c * house (ξ : E) ≤ (M : ℝ) :=
+      (mul_le_mul_of_nonneg_left hh hc).trans (Nat.le_ceil _)
+    exact_mod_cast h1.trans h2
+  have hsub : S ⊆ f ⁻¹' (s : Set (ι → ℤ)) := fun ξ hξ => hmaps ξ hξ
+  have hfin : S.Finite := ((s.finite_toSet).preimage hf.injOn).subset hsub
+  refine ⟨hfin, ?_⟩
+  have hcard : S.ncard ≤ s.card := by
+    rw [← Set.ncard_coe_finset s]
+    exact Set.ncard_le_ncard_of_injOn f (fun ξ hξ => hmaps ξ hξ) hf.injOn s.finite_toSet
+  have hs : (s.card : ℝ) = (2 * (M : ℝ) + 1) ^ Fintype.card ι := by
+    simp only [s, Fintype.card_piFinset, Finset.prod_const, Finset.card_univ, Int.card_Icc]
+    push_cast
+    congr 1
+    have : (↑M + 1 - -↑M : ℤ).toNat = 2 * M + 1 := by omega
+    rw [this]; push_cast; ring
+  have hM : (M : ℝ) ≤ c * T + 1 := (Nat.ceil_lt_add_one (by positivity)).le
+  have hbase : 2 * (M : ℝ) + 1 ≤ (2 * c + 3) * T := by nlinarith
+  calc (S.ncard : ℝ) ≤ s.card := by exact_mod_cast hcard
+    _ = (2 * (M : ℝ) + 1) ^ Fintype.card ι := hs
+    _ ≤ ((2 * c + 3) * T) ^ Fintype.card ι := by gcongr
+    _ = (2 * c + 3) ^ Fintype.card ι * T ^ Fintype.card ι := mul_pow _ _ _
+
+end GlobalTheory.IntCount
+end
+
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_algebraic_integers_bounded_archimedean_le : ∀ (E : Type) [Field E] [NumberField E], ∃ (m : ℕ) (C : ℝ), 0 ≤ C ∧ ∀ T : ℝ, 1 ≤ T → {ξ : 𝓞 E | ∀ w : InfinitePlace E, w (ξ : E) ≤ T}.Finite ∧ ({ξ : 𝓞 E | ∀ w : InfinitePlace E, w (ξ : E) ≤ T}.ncard : ℝ) ≤ C * T ^ m := by
+  atlas_forward_decl GlobalTheory.IntCount.card_bounded_integers_le
+end
+
+section
+section
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
+
+namespace GlobalTheory
+
+theorem place_le_norm_pInf {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] (ξ : E)
+    (w : InfinitePlace E) : w ξ ≤ ‖pInf E (algebraMap E (Ad E) ξ)‖ := by
+  have h := norm_le_pi_norm (pInf E (algebraMap E (Ad E) ξ)) w
+  rw [pInf_algebraMap, InfinitePlace.norm_embedding_eq] at h
+  exact h
+
+theorem rat_bounded_compact_polynomial : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E], ∃ m : ℕ,
+    ∀ Kf : Set (Af E), IsCompact Kf → ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 1 ≤ T →
+      {ξ : E | ‖pInf E (algebraMap E (Ad E) ξ)‖ ≤ T ∧ pFin E (algebraMap E (Ad E) ξ) ∈ Kf}.Finite ∧
+      ({ξ : E | ‖pInf E (algebraMap E (Ad E) ξ)‖ ≤ T ∧ pFin E (algebraMap E (Ad E) ξ) ∈ Kf}.ncard : ℝ)
+        ≤ C * T ^ m := by
+  intro E _ _ _
+  obtain ⟨m, C₀, hC₀, hcount⟩ := GlobalTheory.T.card_algebraic_integers_bounded_archimedean_le E
+  refine ⟨m, fun Kf hKf => ?_⟩
+  obtain ⟨n, hn, hint⟩ := GlobalTheory.T.exists_common_denominator_compact_finiteAdeles E Kf hKf
+  have hn' : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  refine ⟨C₀ * (n : ℝ) ^ m, by positivity, fun T hT => ?_⟩
+  have hnT : (1 : ℝ) ≤ n * T := by nlinarith
+  obtain ⟨hAfin, hAcard⟩ := hcount (n * T) hnT
+  set A := {x : 𝓞 E | ∀ w : InfinitePlace E, w (x : E) ≤ n * T}
+  set S := {ξ : E | ‖pInf E (algebraMap E (Ad E) ξ)‖ ≤ T ∧ pFin E (algebraMap E (Ad E) ξ) ∈ Kf}
+  have hnE : (n : E) ≠ 0 := by exact_mod_cast hn.ne'
+  have hsub : S ⊆ (fun x : 𝓞 E => (x : E) / n) '' A := by
+    intro ξ hξ
+    have hi : IsIntegral ℤ ((n : E) * ξ) := hint ξ hξ.2
+    refine ⟨⟨(n : E) * ξ, hi⟩, fun w => ?_, ?_⟩
+    · show w ((n : E) * ξ) ≤ n * T
+      rw [← InfinitePlace.norm_embedding_eq, map_mul, map_natCast, norm_mul, Complex.norm_natCast,
+        InfinitePlace.norm_embedding_eq]
+      exact mul_le_mul_of_nonneg_left ((place_le_norm_pInf ξ w).trans hξ.1) (Nat.cast_nonneg n)
+    · show (n : E) * ξ / n = ξ
+      field_simp
+  have hSfin : S.Finite := (hAfin.image _).subset hsub
+  refine ⟨hSfin, ?_⟩
+  have h1 : S.ncard ≤ A.ncard :=
+    (Set.ncard_le_ncard hsub (hAfin.image _)).trans (Set.ncard_image_le hAfin)
+  calc (S.ncard : ℝ) ≤ A.ncard := by exact_mod_cast h1
+    _ ≤ C₀ * (n * T) ^ m := hAcard
+    _ = C₀ * (n : ℝ) ^ m * T ^ m := by rw [mul_pow]; ring
+
+end GlobalTheory
+end
+
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rational_boundedInfinite_compactFinite_polyCount : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E], ∃ m : ℕ, ∀ Kf : Set (Af E), IsCompact Kf → ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 1 ≤ T → {ξ : E | ‖pInf E (algebraMap E (Ad E) ξ)‖ ≤ T ∧ pFin E (algebraMap E (Ad E) ξ) ∈ Kf}.Finite ∧ ({ξ : E | ‖pInf E (algebraMap E (Ad E) ξ)‖ ≤ T ∧ pFin E (algebraMap E (Ad E) ξ) ∈ Kf}.ncard : ℝ) ≤ C * T ^ m := by
+  atlas_forward_decl GlobalTheory.rat_bounded_compact_polynomial
+end
+
+section
+section
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
+
+namespace GlobalTheory
+
+theorem ratGL_bounded_count : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), ∃ m : ℕ, ∀ Kf : Set (GL (Fin a) (Af E)), IsCompact Kf → ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 1 ≤ T → {γ : GL (Fin a) E | ‖toL (Matrix.GeneralLinearGroup.map (pInf E) (ratGL E a γ)).val‖ ≤ T ∧ Matrix.GeneralLinearGroup.map (pFin E) (ratGL E a γ) ∈ Kf}.Finite ∧ ({γ : GL (Fin a) E | ‖toL (Matrix.GeneralLinearGroup.map (pInf E) (ratGL E a γ)).val‖ ≤ T ∧ Matrix.GeneralLinearGroup.map (pFin E) (ratGL E a γ) ∈ Kf}.ncard : ℝ) ≤ C * T ^ m := by
+  intro E _ _ _ a
+  obtain ⟨m, hm⟩ := GlobalTheory.T.rational_boundedInfinite_compactFinite_polyCount E
+  refine ⟨m * (a * a), fun Kf hKf => ?_⟩
+  let Kf' : Set (Af E) := ⋃ i : Fin a, ⋃ j : Fin a, (fun g : GL (Fin a) (Af E) => g.val i j) '' Kf
+  have hc : IsCompact Kf' := by
+    refine isCompact_iUnion fun i => isCompact_iUnion fun j => hKf.image ?_
+    exact (Units.continuous_val (M := Matrix (Fin a) (Fin a) (Af E))).matrix_elem i j
+  obtain ⟨C, hC0, hC⟩ := hm Kf' hc
+  refine ⟨C ^ (a * a), pow_nonneg hC0 _, fun T hT => ?_⟩
+  obtain ⟨hNf, hNc⟩ := hC T hT
+  let N : Set E := {ξ : E | ‖pInf E (algebraMap E (Ad E) ξ)‖ ≤ T ∧ pFin E (algebraMap E (Ad E) ξ) ∈ Kf'}
+  let S : Set (GL (Fin a) E) := {γ : GL (Fin a) E | ‖toL (Matrix.GeneralLinearGroup.map (pInf E) (ratGL E a γ)).val‖ ≤ T ∧ Matrix.GeneralLinearGroup.map (pFin E) (ratGL E a γ) ∈ Kf}
+  change S.Finite ∧ (S.ncard : ℝ) ≤ C ^ (a * a) * T ^ (m * (a * a))
+  have hsub : ∀ γ ∈ S, ∀ i j, γ.val i j ∈ N := by
+    intro γ hγ i j
+    obtain ⟨h1, h2⟩ := hγ
+    refine ⟨?_, ?_⟩
+    · have he : pInf E (algebraMap E (Ad E) (γ.val i j)) = (toL (Matrix.GeneralLinearGroup.map (pInf E) (ratGL E a γ)).val) i j := rfl
+      rw [he]
+      exact ((norm_le_pi_norm _ j).trans (norm_le_pi_norm _ i)).trans h1
+    · exact Set.mem_iUnion.2 ⟨i, Set.mem_iUnion.2 ⟨j, ⟨_, h2, rfl⟩⟩⟩
+  classical
+  let F : Finset E := hNf.toFinset
+  let P : Finset (Fin a → Fin a → E) := Fintype.piFinset fun _ => Fintype.piFinset fun _ => F
+  let f : GL (Fin a) E → (Fin a → Fin a → E) := fun γ => γ.val
+  have hf : Function.Injective f := fun x y h => Units.ext h
+  have himg : f '' S ⊆ (P : Set (Fin a → Fin a → E)) := by
+    rintro _ ⟨γ, hγ, rfl⟩
+    simp only [P, F, Finset.mem_coe, Fintype.mem_piFinset, Set.Finite.mem_toFinset]
+    exact fun i j => hsub γ hγ i j
+  have hSfin : S.Finite := Set.Finite.of_finite_image ((P.finite_toSet).subset himg) hf.injOn
+  refine ⟨hSfin, ?_⟩
+  have hcardP : P.card = (F.card ^ a) ^ a := by
+    simp [P, Fintype.card_piFinset, Finset.prod_const]
+  have hS : S.ncard ≤ (F.card ^ a) ^ a := by
+    rw [← Set.ncard_image_of_injective S hf, ← hcardP, ← Set.ncard_coe_finset]
+    exact Set.ncard_le_ncard himg P.finite_toSet
+  have hF : (F.card : ℝ) ≤ C * T ^ m := by
+    rw [← Set.ncard_eq_toFinset_card N hNf]; exact hNc
+  calc (S.ncard : ℝ) ≤ ((F.card ^ a) ^ a : ℕ) := by exact_mod_cast hS
+    _ = (F.card : ℝ) ^ (a * a) := by push_cast; rw [← pow_mul]
+    _ ≤ (C * T ^ m) ^ (a * a) := pow_le_pow_left₀ (Nat.cast_nonneg _) hF _
+    _ = C ^ (a * a) * T ^ (m * (a * a)) := by rw [mul_pow, ← pow_mul]
+
+end GlobalTheory
+end
+
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rationalGL_boundedSize_compactFinite_polynomialCount : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), ∃ m : ℕ, ∀ Kf : Set (GL (Fin a) (Af E)), IsCompact Kf → ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 1 ≤ T → {γ : GL (Fin a) E | ‖toL (Matrix.GeneralLinearGroup.map (pInf E) (ratGL E a γ)).val‖ ≤ T ∧ Matrix.GeneralLinearGroup.map (pFin E) (ratGL E a γ) ∈ Kf}.Finite ∧ ({γ : GL (Fin a) E | ‖toL (Matrix.GeneralLinearGroup.map (pInf E) (ratGL E a γ)).val‖ ≤ T ∧ Matrix.GeneralLinearGroup.map (pFin E) (ratGL E a γ) ∈ Kf}.ncard : ℝ) ≤ C * T ^ m := by
+  atlas_forward_decl GlobalTheory.ratGL_bounded_count
+end
+
+section
+section
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
+
+noncomputable section
+
+namespace GlobalTheory.CentralExponent
+
+open Matrix GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele GlobalTheory.IdeleCovolume GlobalTheory.UnitaryBC
+
+theorem abs_le_of_conj_mem : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), 0 < a →
+    ∀ W : Set (GA E a), IsCompact W → ∃ n₀ : ℕ, ∀ (γ : GL (Fin a) E) (n : ℤ) (g : GA E a),
+      g⁻¹ * (ratGL E a γ * GlobalTheory.UnitaryBC.splitCentre E a 1 ^ n) * g ∈ W → |n| ≤ n₀ := by
+  intro E _ _ _ a ha W hW
+  have hL : 0 < Real.log (ideleNorm (E := E) (eIdele E)) := Real.log_pos (one_lt_ideleNorm_eIdele E)
+  have hc : Continuous fun x : GA E a => Real.log (ideleNorm (E := E) (GeneralLinearGroup.det x)) :=
+    (continuous_ideleNorm.comp GeneralLinearGroup.continuous_det).log fun _ => ideleNorm_ne_zero _
+  obtain ⟨C, hC⟩ := hW.exists_bound_of_continuousOn hc.continuousOn
+  refine ⟨⌈C / Real.log (ideleNorm (E := E) (eIdele E))⌉₊, fun γ n g hmem => ?_⟩
+  have hd : GeneralLinearGroup.det (ratGL E a γ) = diag E (GeneralLinearGroup.det γ) :=
+    Units.ext (by rw [ratGL, GlobalTheory.CuspRep.det_map]; rfl)
+  have e : GeneralLinearGroup.det (g⁻¹ * (ratGL E a γ * splitCentre E a 1 ^ n) * g) =
+      diag E (GeneralLinearGroup.det γ) * eIdele E ^ ((a : ℤ) * n) := by
+    rw [map_mul, map_mul, map_mul, map_inv, map_zpow, hd, det_splitCentre_one, ← zpow_natCast, ← _root_.zpow_mul,
+      mul_comm _ (GeneralLinearGroup.det g), mul_inv_cancel_left]
+  have key : Real.log (ideleNorm (E := E) (GeneralLinearGroup.det
+      (g⁻¹ * (ratGL E a γ * splitCentre E a 1 ^ n) * g))) =
+      ((a : ℤ) * n : ℤ) * Real.log (ideleNorm (E := E) (eIdele E)) := by
+    rw [e, map_mul, show ideleNorm (E := E) (diag E _) = 1 from ideleNorm_principalIdele _, one_mul, map_zpow,
+      Real.log_zpow]
+  have h1 := hC _ hmem
+  rw [key, Real.norm_eq_abs, abs_mul, abs_of_pos hL] at h1
+  have h2 : (|n| : ℝ) ≤ |(((a : ℤ) * n : ℤ) : ℝ)| := by
+    push_cast
+    rw [abs_mul, Nat.abs_cast]
+    exact le_mul_of_one_le_left (abs_nonneg _) (by exact_mod_cast ha)
+  have h3 : (|n| : ℝ) ≤ ⌈C / Real.log (ideleNorm (E := E) (eIdele E))⌉₊ :=
+    (h2.trans ((le_div_iff₀ hL).2 h1)).trans (Nat.le_ceil _)
+  exact_mod_cast h3
+
+end GlobalTheory.CentralExponent
+end
+end
+
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.abs_splitCentre_exponent_le_of_conj_mem_compact : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ), 0 < a → ∀ W : Set (GA E a), IsCompact W → ∃ n₀ : ℕ, ∀ (γ : GL (Fin a) E) (n : ℤ) (g : GA E a), g⁻¹ * (ratGL E a γ * GlobalTheory.UnitaryBC.splitCentre E a 1 ^ n) * g ∈ W → |n| ≤ n₀ := by
+  atlas_forward_decl GlobalTheory.CentralExponent.abs_le_of_conj_mem
+end
+
+section
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CuspQuot GlobalTheory.AutomorphicL2Unitary GlobalTheory.OpTrace MeasureTheory
 
 namespace GlobalTheory
@@ -121,3 +366,4 @@ theorem card_latticeGL_conj_le : ∀ (E : Type) [Field E] [NumberField E] [IsTot
     _ = C₁ * c ^ m * N * height y ^ (2 * m) := by rw [hT, mul_pow, ← pow_mul, mul_comm 2 m]; ring
 
 end GlobalTheory
+end

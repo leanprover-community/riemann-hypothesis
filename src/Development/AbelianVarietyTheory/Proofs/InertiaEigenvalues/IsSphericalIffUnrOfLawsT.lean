@@ -5,13 +5,34 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SphericalSatak
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedWeilDeligneEqDiagonalInv
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsRecTOfIsRec
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LanglandsExhaustionGLHolds
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LanglandsMultisegmentsOutright
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.StandardCosocleGLHolds
+import CompanionTheory.AutomorphicTheory.ProductFormulaTheory.CuspidalExhaustion.LanglandsMultisegmentsOfSeg
+import CompanionTheory.AutomorphicTheory.ProductFormulaTheory.GrothendieckRingPolynomial.GrothendieckRingPolynomialOfSeg
+import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.SegmentSubquotients.SegmentRepresentation
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SegmentRepresentation
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GrothendieckRingPolynomialOutright
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BernsteinZelevinskyFinitenessHolds
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ZelevinskyGrothendieckPolynomialRingOfSegments
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeometricLemmaFiltrationHolds
+
+section
+namespace GlobalTheory
+
+theorem langlandsMultisegments_outright : GlobalTheory.Published.LanglandsMultisegments :=
+  CompanionTheory.Exh.langlandsMultisegments_of_seg CompanionTheory.RgGu.segmentRepresentation
+
+end GlobalTheory
+end
+
+section
+namespace GlobalTheory
+
+theorem standardCosocleGL_holds : GlobalTheory.Published.StandardCosocleGL :=
+  CompanionTheory.Exh.standardCosocleGL_of_seg CompanionTheory.RgGu.segmentRepresentation
+
+end GlobalTheory
+end
+
+section
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.RecT
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
@@ -109,3 +130,5 @@ theorem isSpherical_iff_unr_of_lawsT : ∀ (E Ω : Type) [Field E] [NumberField 
     exact hπ'.2.1
 
 end GlobalTheory.RecT
+end
+end

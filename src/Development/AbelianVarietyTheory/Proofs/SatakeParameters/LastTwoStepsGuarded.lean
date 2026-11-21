@@ -1,9 +1,82 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.RedPEqZeroOfDiv
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemZmuOfPowPred
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ChainDataGuarded
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousOfInvariant
+import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.FourierColumnIndicator
 
+section
+open NumberField IsDedekindDomain
+open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col GlobalTheory.IndefiniteRowSideFullHecke.FourierColumnIndicator
+
+noncomputable section
+
+namespace GlobalTheory.LastSteps
+
+def ChainDataGuarded : Prop :=
+  ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X Pr R.m)
+    (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ) (mu : Tup X.F X.E X.K S)
+    (cst : LocCst X (rowSG Pr sel mu)) (m2 : ℕ), Pr.Ok → cst.Ok → R.m = m2 + 2 →
+    ∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs →
+      (∀ hal ∈ stabL X.E _ (lamYat (Pr := Pr) (R := R) m2 P.1), SplitAt Ch sel mu cst m2 P hal) ∧
+      (∀ f : Sp X.E (R.N (m2 + 1)) → X.K, ColFn P.1 f → DualFn P.1 (fhat sel mu cst P f)) ∧
+      (∀ f : Sp X.E (R.N (m2 + 1)) → X.K, ColFn P.1 f → FnMod P.1 (topDatum Ch sel mu cst m2 P f)) ∧
+      (∀ (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) (al : L.β m2),
+        L.h m2 al P ∈ stabL X.E _ (lamYat (Pr := Pr) (R := R) m2 P.1) →
+        ∀ (u : Pr.Word) (p₀ : ChPt (R := R) sel mu u m2) (p : ChPt (R := R) sel mu u (m2 + 1)),
+        ∀ Y ∈ ybSet sel mu cst p.deco.1.N,
+          FnModAt P.1 p₀.deco.1.N p.deco.1.N (facPen Ch sel mu cst L m2 al p₀ p Y P)) ∧
+      (∀ (u : Pr.Word), (∀ w : rowSG Pr sel mu, Pr.piT u ∉ w.1.asIdeal) →
+        ∀ (p : ChPt (R := R) sel mu u (m2 + 1)) (d : RowPt Pr R sel mu),
+        ∀ Y ∈ ybSet sel mu cst p.deco.1.N,
+          FnModAt P.1 p.deco.1.N (tilQ sel mu u d).1.N (facTop Ch sel mu cst m2 p Y d P))
+
+def LastTwoStepsGuarded : Prop := FourierLattice ∧ ChainDataGuarded
+
+end GlobalTheory.LastSteps
+end
+end
+
+section
+open MeasureTheory
+
+noncomputable section
+
+namespace GlobalTheory.PadicFourierLattice
+
+open GlobalTheory.IndefiniteRowSideFullHecke.FourierColumnIndicator
+
+variable {g : ℕ} [hg : Fact g.Prime] {n : ℕ}
+
+lemma g_ne : (g : ℚ_[g]) ≠ 0 := by exact_mod_cast hg.out.ne_zero
+
+lemma gR_pos : (0 : ℝ) < g := by exact_mod_cast hg.out.pos
+
+lemma norm_g : ‖(g : ℚ_[g])‖ = (g : ℝ)⁻¹ := Padic.norm_p
+
+lemma norm_le_inv {x : ℚ_[g]} (h : ‖x‖ < 1) : ‖x‖ ≤ (g : ℝ)⁻¹ := by
+  have := (Padic.norm_le_pow_iff_norm_lt_pow_add_one x (-1)).2 (by simpa using h)
+  simpa using this
+
+lemma norm_div_g_le {x : ℚ_[g]} (h : ‖x‖ < 1) : ‖x / (g : ℚ_[g])‖ ≤ 1 := by
+  rw [norm_div, norm_g, div_le_one (inv_pos.2 gR_pos)]
+  exact norm_le_inv h
+
+lemma exists_rep (x : ℚ_[g]) (h : ‖(g : ℚ_[g]) * x‖ ≤ 1) :
+    ∃ t : Fin g, ‖x - ((t : ℕ) : ℚ_[g]) / (g : ℚ_[g])‖ ≤ 1 := by
+  let z : ℤ_[g] := ⟨(g : ℚ_[g]) * x, h⟩
+  refine ⟨⟨PadicInt.zmodRepr z, PadicInt.zmodRepr_lt_p z⟩, ?_⟩
+  have h1 := PadicInt.sub_zmodRepr_mem z
+  rw [IsLocalRing.mem_maximalIdeal, PadicInt.mem_nonunits] at h1
+  have h2 : ‖(g : ℚ_[g]) * x - ((PadicInt.zmodRepr z : ℕ) : ℚ_[g])‖ < 1 := by
+    rw [PadicInt.norm_def, PadicInt.coe_sub, PadicInt.coe_natCast] at h1
+    exact h1
+  have h3 := norm_div_g_le h2
+  rwa [sub_div, mul_div_cancel_left₀ _ g_ne] at h3
+
+end GlobalTheory.PadicFourierLattice
+end
+end
+
+section
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col GlobalTheory.TopStep GlobalTheory.IndefiniteRowSideFullHecke.FourierColumnIndicator
 
@@ -269,3 +342,5 @@ theorem chainDataGuarded : ChainDataGuarded := fun _ _ _ Ch sel _ mu cst _ hPr h
     fun _ hu p d _ hY => fnModAt_facTop Ch sel mu cst hPr hc hm P hP hu p d hY⟩
 
 end GlobalTheory.LastSteps
+end
+end

@@ -1,7 +1,33 @@
 import Mathlib
-import GroundTheory.AutomorphicForms.MultiplicityOne.GL2BumpFunctions.Parametrix
+import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ContinuousMultilinearOfFiniteDimensional
+import GroundTheory.AutomorphicForms.DixmierMalliavinProducts
 import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.Density
 
+section
+open MeasureTheory Set Filter Topology
+open scoped ContDiff
+
+namespace GroundTheory.Automorphic
+
+noncomputable section
+
+namespace Parametrix
+
+variable (χ : ContDiffBump (0 : ℝ))
+
+def kernel : Fin 3 → ℝ → ℝ :=
+  ![fun t => max t 0 * deriv (deriv χ) t, fun t => 2 * max t 0 * deriv χ t, fun t => max t 0 * χ t]
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+
+end Parametrix
+
+end
+
+end GroundTheory.Automorphic
+end
+
+section
 open MeasureTheory Set Filter Topology
 open scoped ContDiff
 
@@ -61,3 +87,4 @@ end IsExpLieAlgebra
 end
 
 end GroundTheory.Automorphic
+end

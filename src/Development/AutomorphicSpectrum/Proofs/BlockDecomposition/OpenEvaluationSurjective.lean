@@ -6,18 +6,992 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicDouble
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicCellStructureDataStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EvaluationMapsLinearStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenEvaluationInducedStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemSubmoduleOfBumps
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BumpTranslateMemSubmodule
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSmallCompactOpenBetween
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LastRowUpdateNhdsGeneration
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousOpenCellRetraction
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenCellParabolicNearIdentity
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeylNotMemClosedCell
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClosedCellRightStable
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousShiftedOrbitMap
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothVectorFixedParabolicNearOne
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarMeasureOpenNonemptyNeZero
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirProjEqOneOfMem
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicDoubleCosetDecomposition
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenRightInvarianceLocalCoefficient
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothVectorFixedNearIdentity
 
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+theorem mem_of_bumps {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup W] [Module ℂ W]
+    (H : Subgroup G) (ρ : Representation ℂ H W) (K : Subgroup G) (hKo : IsOpen (K : Set G))
+    (hKc : IsCompact (K : Set G)) (y : cIndSpace H ρ) (hy : ∀ g, ∀ x ∈ K, y.1.1.1 (g * x) = y.1.1.1 g)
+    (S : Submodule ℂ (cIndSpace H ρ)) (hS : ∀ c B, IsBump H ρ K c (y.1.1.1 c) B → B ∈ S) : y ∈ S := by
+  classical
+  obtain ⟨C, hC, hsupp⟩ := y.2
+  have hyeq : ∀ (a : H) (g : G), y.1.1.1 ((a : G) * g) = ρ a (y.1.1.1 g) := y.1.1.2
+  obtain ⟨t, -, ht⟩ := hC.elim_nhds_subcover (fun c => (fun x => c * x) '' (K : Set G)) (fun c _ => by
+    have : (fun y => c⁻¹ * y) ⁻¹' (K : Set G) ∈ 𝓝 c :=
+      (hKo.preimage (continuous_const.mul continuous_id)).mem_nhds (by simp [one_mem])
+    filter_upwards [this] with y hy
+    exact ⟨c⁻¹ * y, hy, by group⟩)
+  let T : Finset (DoubleCoset.Quotient (H : Set G) (K : Set G)) := t.image (DoubleCoset.mk H K)
+  have hres := fun d : DoubleCoset.Quotient (H : Set G) (K : Set G) =>
+    GlobalTheory.CompanionTheory.LeibPhi.exists_indicator H ρ (GlobalTheory.CompanionTheory.LeibPhi.isHK_doubleCoset H K hKo (Quotient.out d)) y
+  choose f hf1 hf0 using hres
+  have hbump : ∀ d, IsBump H ρ K (Quotient.out d) (y.1.1.1 (Quotient.out d)) (f d) := by
+    intro d
+    refine ⟨fun a x hx => ?_, fun g hg => hf0 d g ?_⟩
+    · rw [hf1 d _ ⟨a, a.2, x, hx, rfl⟩, hy _ x hx, hyeq]
+    · rintro ⟨a, ha, x, hx, e⟩
+      exact hg ⟨⟨a, ha⟩, x, hx, e⟩
+  have hoff : ∀ (d : DoubleCoset.Quotient (H : Set G) (K : Set G)) (g : G), DoubleCoset.mk H K g ≠ d →
+      (f d).1.1.1 g = 0 := by
+    intro d g hne
+    apply hf0
+    rintro ⟨a, ha, x, hx, e⟩
+    apply hne
+    rw [← DoubleCoset.out_eq' H K d]
+    exact ((DoubleCoset.eq H K _ _).2 ⟨a, ha, x, hx, e⟩).symm
+  have hmem : ∑ d ∈ T, f d ∈ S := S.sum_mem fun d _ => hS _ _ (hbump d)
+  have hval : ∀ g, y.1.1.1 g = (∑ d ∈ T, f d).1.1.1 g := by
+    intro g
+    let ev : cIndSpace H ρ →ₗ[ℂ] W :=
+      (LinearMap.proj g) ∘ₗ (indSpace H ρ).subtype ∘ₗ (smoothPart (ind H ρ)).subtype ∘ₗ (cIndSpace H ρ).subtype
+    have hsum : (∑ d ∈ T, f d).1.1.1 g = ∑ d ∈ T, (f d).1.1.1 g := map_sum ev _ _
+    rw [hsum]
+    by_cases hg : DoubleCoset.mk H K g ∈ T
+    · rw [Finset.sum_eq_single_of_mem _ hg (fun d _ hd => hoff d g (Ne.symm hd))]
+      obtain ⟨a, ha, x, hx, e⟩ := (DoubleCoset.eq H K _ _).1 (DoubleCoset.out_eq' H K (DoubleCoset.mk H K g))
+      exact (hf1 _ g ⟨a, ha, x, hx, e⟩).symm
+    · rw [Finset.sum_eq_zero (fun d hd => hoff d g (fun h => hg (h ▸ hd)))]
+      by_contra hne
+      obtain ⟨a, ha, c', hc', e⟩ := hsupp g hne
+      obtain ⟨c, hc, hcc⟩ := Set.mem_iUnion₂.1 (ht hc')
+      obtain ⟨x, hx, rfl⟩ := hcc
+      apply hg
+      have : DoubleCoset.mk H K c = DoubleCoset.mk H K g :=
+        (DoubleCoset.eq H K _ _).2 ⟨a, ha, x, hx, by rw [e]; group⟩
+      rw [← this]
+      exact Finset.mem_image_of_mem _ hc
+  have e : y = ∑ d ∈ T, f d := by
+    apply Subtype.ext
+    apply Subtype.ext
+    apply Subtype.ext
+    funext g
+    exact hval g
+  rw [e]
+  exact hmem
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_submodule_of_bumps : ∀ {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup W] [Module ℂ W] (H : Subgroup G) (ρ : Representation ℂ H W) (K : Subgroup G) (hKo : IsOpen (K : Set G))
+    (hKc : IsCompact (K : Set G)) (y : cIndSpace H ρ) (hy : ∀ g, ∀ x ∈ K, y.1.1.1 (g * x) = y.1.1.1 g)
+    (S : Submodule ℂ (cIndSpace H ρ)) (hS : ∀ c B, IsBump H ρ K c (y.1.1.1 c) B → B ∈ S), y ∈ S := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.mem_of_bumps
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Avg
+
+variable {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup W] [Module ℂ W]
+
+def evL (H : Subgroup G) (ρ : Representation ℂ H W) (g : G) : cIndSpace H ρ →ₗ[ℂ] W :=
+  (LinearMap.proj g) ∘ₗ (indSpace H ρ).subtype ∘ₗ (smoothPart (ind H ρ)).subtype ∘ₗ (cIndSpace H ρ).subtype
+
+theorem bump_right_inv {H : Subgroup G} {ρ : Representation ℂ H W} {K : Subgroup G} {v : W} {b : cIndSpace H ρ}
+    (hb : IsBump H ρ K 1 v b) (g z : G) (hz : z ∈ K) : b.1.1.1 (g * z) = b.1.1.1 g := by
+  by_cases h : ∃ a : H, ∃ x ∈ K, g = (a : G) * 1 * x
+  · obtain ⟨a, x, hx, rfl⟩ := h
+    rw [hb.1 a x hx, mul_assoc, hb.1 a (x * z) (mul_mem hx hz)]
+  · rw [hb.2 g h, hb.2]
+    rintro ⟨a, x, hx, e⟩
+    exact h ⟨a, x * z⁻¹, mul_mem hx (inv_mem hz), by rw [← mul_assoc, ← e]; group⟩
+
+theorem sum_translate {M : Type} [AddCommMonoid M] (K₁ K₂ : Subgroup G) (h₂₁ : K₂ ≤ K₁) (φ : G → M)
+    (hφ : ∀ g, ∀ z ∈ K₂, φ (g * z) = φ g) [Fintype (K₁ ⧸ K₂.subgroupOf K₁)] (y : K₁) :
+    ∑ x : K₁ ⧸ K₂.subgroupOf K₁, φ ((y : G) * ((x.out : K₁) : G)) =
+      ∑ x : K₁ ⧸ K₂.subgroupOf K₁, φ ((x.out : K₁) : G) := by
+  have key : ∀ k : K₁, φ ((((k : K₁ ⧸ K₂.subgroupOf K₁).out : K₁)) : G) = φ (k : G) := by
+    intro k
+    obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul (K₂.subgroupOf K₁) k
+    rw [hh]
+    exact hφ _ _ h.2
+  calc ∑ x : K₁ ⧸ K₂.subgroupOf K₁, φ ((y : G) * ((x.out : K₁) : G))
+      = ∑ x : K₁ ⧸ K₂.subgroupOf K₁, φ (((MulAction.toPerm y x).out : K₁) : G) := by
+        refine Finset.sum_congr rfl fun x _ => ?_
+        have e : MulAction.toPerm y x = ((y * x.out : K₁) : K₁ ⧸ K₂.subgroupOf K₁) := by
+          conv_lhs => rw [← QuotientGroup.out_eq' x]
+          rfl
+        rw [e, key]
+        rfl
+    _ = ∑ x : K₁ ⧸ K₂.subgroupOf K₁, φ ((x.out : K₁) : G) :=
+        Equiv.sum_comp (MulAction.toPerm y) (fun x : K₁ ⧸ K₂.subgroupOf K₁ => φ ((x.out : K₁) : G))
+
+theorem bump_mem_of_bump {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup W] [Module ℂ W]
+    (H : Subgroup G) (ρ : Representation ℂ H W) (K₁ K₂ : Subgroup G) (h₂₁ : K₂ ≤ K₁)
+    (hK₁c : IsCompact (K₁ : Set G)) (hK₂o : IsOpen (K₂ : Set G)) (v : W)
+    (hv : ∀ a : H, (a : G) ∈ K₁ → ρ a v = v) (S : Submodule ℂ (cIndSpace H ρ))
+    (hS : ∀ g, ∀ b ∈ S, cInd H ρ g b ∈ S) (b : cIndSpace H ρ) (hb : IsBump H ρ K₂ 1 v b) (hbS : b ∈ S)
+    (B : cIndSpace H ρ) (hB : IsBump H ρ K₁ 1 v B) : B ∈ S := by
+  classical
+  haveI : CompactSpace K₁ := isCompact_iff_compactSpace.1 hK₁c
+  haveI : Finite (K₁ ⧸ K₂.subgroupOf K₁) :=
+    Subgroup.quotient_finite_of_isOpen _ (hK₂o.preimage continuous_subtype_val)
+  letI : Fintype (K₁ ⧸ K₂.subgroupOf K₁) := Fintype.ofFinite _
+  set T : cIndSpace H ρ := ∑ x : K₁ ⧸ K₂.subgroupOf K₁, cInd H ρ ((x.out : K₁) : G) b with hT
+  have hTS : T ∈ S := S.sum_mem fun x _ => hS _ _ hbS
+  have hTv : ∀ g, T.1.1.1 g = ∑ x : K₁ ⧸ K₂.subgroupOf K₁, b.1.1.1 (g * ((x.out : K₁) : G)) := by
+    intro g
+    have e : evL H ρ g T = ∑ x : K₁ ⧸ K₂.subgroupOf K₁, evL H ρ g (cInd H ρ ((x.out : K₁) : G) b) := by
+      rw [hT, map_sum]
+    exact e
+  have hTr : ∀ g, ∀ y ∈ K₁, T.1.1.1 (g * y) = T.1.1.1 g := by
+    intro g y hy
+    rw [hTv, hTv]
+    have := sum_translate K₁ K₂ h₂₁ (fun u => b.1.1.1 (g * u))
+      (fun u z hz => by
+        show b.1.1.1 (g * (u * z)) = b.1.1.1 (g * u)
+        rw [← mul_assoc]; exact bump_right_inv hb _ z hz) ⟨y, hy⟩
+    simpa only [mul_assoc] using this
+  let P : K₁ ⧸ K₂.subgroupOf K₁ → Prop := fun x => ∃ a : H, ∃ z ∈ K₂, ((x.out : K₁) : G) = (a : G) * 1 * z
+  have hval : ∀ x, b.1.1.1 ((x.out : K₁) : G) = if P x then v else 0 := by
+    intro x
+    by_cases hx : P x
+    · rw [if_pos hx]
+      obtain ⟨a, z, hz, e⟩ := hx
+      have ha : (a : G) ∈ K₁ := by
+        have : (a : G) = ((x.out : K₁) : G) * z⁻¹ := by rw [e]; group
+        rw [this]
+        exact mul_mem (x.out).2 (inv_mem (h₂₁ hz))
+      rw [e, hb.1 a z hz, hv a ha]
+    · rw [if_neg hx]
+      exact hb.2 _ hx
+  set N : ℕ := (Finset.univ.filter P).card with hN
+  have hT1 : T.1.1.1 1 = (N : ℂ) • v := by
+    rw [hTv]
+    simp only [one_mul, hval]
+    rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, Nat.cast_smul_eq_nsmul]
+  have hN0 : (N : ℂ) ≠ 0 := by
+    have : N ≠ 0 := by
+      rw [hN, Finset.card_ne_zero]
+      refine ⟨((1 : K₁) : K₁ ⧸ K₂.subgroupOf K₁), Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩⟩
+      obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul (K₂.subgroupOf K₁) (1 : K₁)
+      refine ⟨1, ((h : K₁) : G), h.2, ?_⟩
+      rw [hh]
+      simp
+    exact_mod_cast this
+  have hBT : B = (N : ℂ)⁻¹ • T := by
+    apply Subtype.ext
+    apply Subtype.ext
+    apply Subtype.ext
+    funext g
+    show B.1.1.1 g = (N : ℂ)⁻¹ • T.1.1.1 g
+    by_cases hg : ∃ a : H, ∃ x ∈ K₁, g = (a : G) * 1 * x
+    · obtain ⟨a, y, hy, rfl⟩ := hg
+      have e1 : T.1.1.1 ((a : G) * 1 * y) = ρ a ((N : ℂ) • v) := by
+        rw [hTr _ y hy, mul_one, ← hT1]
+        have := T.1.1.2 a 1
+        rwa [mul_one] at this
+      rw [hB.1 a y hy, e1, map_smul, smul_smul, inv_mul_cancel₀ hN0, one_smul]
+    · have e1 : T.1.1.1 g = 0 := by
+        rw [hTv]
+        refine Finset.sum_eq_zero fun x _ => hb.2 _ ?_
+        rintro ⟨a, z, hz, e⟩
+        refine hg ⟨a, z * ((x.out : K₁) : G)⁻¹, mul_mem (h₂₁ hz) (inv_mem (x.out).2), ?_⟩
+        rw [← mul_assoc, ← e]
+        group
+      rw [hB.2 g hg, e1, smul_zero]
+  rw [hBT]
+  exact S.smul_mem _ hTS
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Avg
+
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bump_translate_mem_submodule : ∀ {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup W] [Module ℂ W] (H : Subgroup G) (ρ : Representation ℂ H W) (K₁ K₂ : Subgroup G) (h₂₁ : K₂ ≤ K₁)
+    (hK₁c : IsCompact (K₁ : Set G)) (hK₂o : IsOpen (K₂ : Set G)) (v : W)
+    (hv : ∀ a : H, (a : G) ∈ K₁ → ρ a v = v) (S : Submodule ℂ (cIndSpace H ρ))
+    (hS : ∀ g, ∀ b ∈ S, cInd H ρ g b ∈ S) (b : cIndSpace H ρ) (hb : IsBump H ρ K₂ 1 v b) (hbS : b ∈ S)
+    (B : cIndSpace H ρ) (hB : IsBump H ρ K₁ 1 v B), B ∈ S := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Avg.bump_mem_of_bump
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+theorem exists_compactOpen_between_mul_small
+    {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    (hbase : ∀ O ∈ 𝓝 (1 : G), ∃ K : Subgroup G, IsOpen (K : Set G) ∧ IsCompact (K : Set G) ∧ (K : Set G) ⊆ O)
+    (K₀ C : Subgroup G) (hK₀o : IsOpen (K₀ : Set G)) (hK₀c : IsCompact (K₀ : Set G)) (hC : C ≤ K₀)
+    (N : Set G) (hN : N ∈ 𝓝 (1 : G)) :
+    ∃ K : Subgroup G, IsOpen (K : Set G) ∧ IsCompact (K : Set G) ∧ C ≤ K ∧ K ≤ K₀ ∧
+      ∀ x ∈ K, ∃ n ∈ N, ∃ c ∈ C, x = n * c := by
+  obtain ⟨K₆, hK₆o, -, hK₆s⟩ := hbase ((K₀ : Set G) ∩ N)
+    (Filter.inter_mem (hK₀o.mem_nhds K₀.one_mem) hN)
+  haveI : CompactSpace K₀ := isCompact_iff_compactSpace.mp hK₀c
+
+  set H : Subgroup K₀ := K₆.subgroupOf K₀ with hH
+  have hHo : IsOpen (H : Set K₀) := hK₆o.preimage continuous_subtype_val
+  haveI : Finite (K₀ ⧸ H) := H.quotient_finite_of_isOpen hHo
+  haveI : H.FiniteIndex := Subgroup.finiteIndex_of_finite_quotient
+  set M : Subgroup K₀ := H.normalCore with hM
+  have hMH : M ≤ H := Subgroup.normalCore_le H
+  have hHc : IsClosed (H : Set K₀) := OpenSubgroup.isClosed ⟨H, hHo⟩
+  have hMc : IsClosed (M : Set K₀) := by
+    have : (M : Set K₀) = ⋂ b : K₀, (fun a : K₀ => b * a * b⁻¹) ⁻¹' (H : Set K₀) := by
+      ext a
+      simp only [Set.mem_iInter, Set.mem_preimage, SetLike.mem_coe]
+      exact Iff.rfl
+    rw [this]
+    exact isClosed_iInter fun b => hHc.preimage (by fun_prop)
+  haveI : M.FiniteIndex := Subgroup.finiteIndex_normalCore H
+  have hMo : IsOpen (M : Set K₀) := Subgroup.isOpen_of_isClosed_of_finiteIndex M hMc
+
+  set D : Subgroup K₀ := C.subgroupOf K₀ with hD
+  set L : Subgroup K₀ := M ⊔ D with hL
+  have hLo : IsOpen (L : Set K₀) := Subgroup.isOpen_mono (le_sup_left : M ≤ L) hMo
+  have hLc : IsClosed (L : Set K₀) := OpenSubgroup.isClosed ⟨L, hLo⟩
+  have himg : ((L.map K₀.subtype : Subgroup G) : Set G) = Subtype.val '' (L : Set K₀) := by
+    ext x; simp [Subgroup.mem_map]
+  refine ⟨L.map K₀.subtype, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [himg]
+    exact hK₀o.isOpenMap_subtype_val _ hLo
+  · rw [himg]
+    exact hLc.isCompact.image continuous_subtype_val
+  · intro c hc
+    refine ⟨⟨c, hC hc⟩, ?_, rfl⟩
+    exact (le_sup_right : D ≤ L) (by simpa [hD, Subgroup.mem_subgroupOf] using hc)
+  · exact Subgroup.map_subtype_le L
+  · rintro x ⟨y, hy, rfl⟩
+    have hy' : y ∈ ((M ⊔ D : Subgroup K₀) : Set K₀) := hy
+    rw [Subgroup.normal_mul] at hy'
+    obtain ⟨m, hm, d, hd, rfl⟩ := Set.mem_mul.mp hy'
+    refine ⟨(m : G), (hK₆s (hMH hm)).2, (d : G), hd, rfl⟩
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_small_compact_open_between : ∀ {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (hbase : ∀ O ∈ 𝓝 (1 : G), ∃ K : Subgroup G, IsOpen (K : Set G) ∧ IsCompact (K : Set G) ∧ (K : Set G) ⊆ O)
+    (K₀ C : Subgroup G) (hK₀o : IsOpen (K₀ : Set G)) (hK₀c : IsCompact (K₀ : Set G)) (hC : C ≤ K₀)
+    (N : Set G) (hN : N ∈ 𝓝 (1 : G)),
+    ∃ K : Subgroup G, IsOpen (K : Set G) ∧ IsCompact (K : Set G) ∧ C ≤ K ∧ K ≤ K₀ ∧
+      ∀ x ∈ K, ∃ n ∈ N, ∃ c ∈ C, x = n * c := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.exists_compactOpen_between_mul_small
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep
+
+variable {k : Type} [Field k] {n : ℕ}
+
+def lastRowMat (r : Fin (n + 1) → k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k :=
+  (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) k).updateRow (Fin.last n) r
+
+def rowInv (r : Fin (n + 1) → k) : Fin (n + 1) → k :=
+  fun j => if j = Fin.last n then (r (Fin.last n))⁻¹ else -r j * (r (Fin.last n))⁻¹
+
+theorem lastRowMat_mul_last (r s : Fin (n + 1) → k) (j : Fin (n + 1)) :
+    (lastRowMat r * lastRowMat s) (Fin.last n) j =
+      (if j = Fin.last n then 0 else r j) + r (Fin.last n) * s j := by
+  rw [Matrix.mul_apply, Fin.sum_univ_castSucc]
+  simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat, Matrix.updateRow_self,
+    Matrix.updateRow_ne (Fin.castSucc_ne_last _), Matrix.one_apply]
+  congr 1
+  first
+  | refine Fin.lastCases ?_ (fun j => ?_) j
+    · simp [Fin.castSucc_ne_last]
+    · simp [Fin.castSucc_ne_last]
+  | induction j using Fin.lastCases with
+    | last => simp [Fin.castSucc_ne_last]
+    | cast j => simp [Fin.castSucc_ne_last]
+
+theorem lastRowMat_mul_rowInv {r : Fin (n + 1) → k} (hr : r (Fin.last n) ≠ 0) :
+    lastRowMat r * lastRowMat (rowInv r) = 1 := by
+  ext i j
+  by_cases hi : i = Fin.last n
+  · subst hi
+    rw [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat_mul_last]
+    by_cases hj : j = Fin.last n
+    · subst hj
+      first
+      | simp [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, hr]
+      | (simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, if_true, ite_true, zero_add, Matrix.one_apply_eq]
+         exact mul_inv_cancel₀ hr)
+    · rw [Matrix.one_apply_ne (Ne.symm hj), if_neg hj]
+      simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, if_neg hj]
+      linear_combination (-r j) * mul_inv_cancel₀ hr
+  · first
+    | (rw [Matrix.mul_apply]
+       simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat, Matrix.updateRow_ne hi]
+       rw [← Matrix.mul_apply, Matrix.one_mul, Matrix.updateRow_ne hi])
+    | simp [Matrix.mul_apply, GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat, Matrix.updateRow_ne hi, Matrix.one_apply,
+        Matrix.updateRow_apply, hi]
+
+def lastRowGL (r : Fin (n + 1) → k) (hr : r (Fin.last n) ≠ 0) : GL (Fin (n + 1)) k where
+  val := lastRowMat r
+  inv := lastRowMat (rowInv r)
+  val_inv := lastRowMat_mul_rowInv hr
+  inv_val := mul_eq_one_comm.1 (lastRowMat_mul_rowInv hr)
+
+def invRow (x : GL (Fin (n + 1)) k) : Fin (n + 1) → k :=
+  fun j => ((x⁻¹ : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.last n) j
+
+theorem invRow_one : invRow (1 : GL (Fin (n + 1)) k) (Fin.last n) = 1 := by
+  simp [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow]
+
+theorem vecMul_eLast (x : GL (Fin (n + 1)) k) :
+    vecMul (eLast k n) (lastRowMat (invRow x) * (x : Matrix (Fin (n + 1)) (Fin (n + 1)) k)) = eLast k n := by
+  have h : vecMul (GlobalTheory.BZMir.eLast k n) (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x)) =
+      vecMul (GlobalTheory.BZMir.eLast k n)
+        ((x⁻¹ : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) := by
+    ext j
+    first
+    | simp [GlobalTheory.BZMir.eLast, Matrix.single_vecMul, GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat, GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow]
+    | simp [GlobalTheory.BZMir.eLast, Matrix.vecMul, dotProduct, Pi.single_apply,
+        GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat, GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow, Matrix.updateRow_apply]
+  rw [← Matrix.vecMul_vecMul, h, Matrix.vecMul_vecMul, Units.inv_mul, Matrix.vecMul_one]
+
+section Top
+
+variable [TopologicalSpace k] [IsTopologicalDivisionRing k] [T1Space k]
+
+theorem continuous_invRow : Continuous (invRow : GL (Fin (n + 1)) k → _) := by
+  have hc : Continuous fun x : GL (Fin (n + 1)) k =>
+      ((x⁻¹ : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) :=
+    Units.continuous_coe_inv (M := Matrix (Fin (n + 1)) (Fin (n + 1)) k)
+  unfold GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow
+  first
+  | exact continuous_pi fun j => hc.matrix_elem (Fin.last n) j
+  | exact continuous_pi fun j => (continuous_apply j).comp ((continuous_apply (Fin.last n)).comp hc)
+
+theorem continuous_lastRowMat : Continuous (lastRowMat : (Fin (n + 1) → k) → _) := by
+  unfold GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat
+  exact continuous_const.matrix_updateRow (Fin.last n) continuous_id
+
+theorem continuousAt_rowInv : ContinuousAt (fun x : GL (Fin (n + 1)) k => rowInv (invRow x)) 1 := by
+  have hv : Continuous (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow : GL (Fin (n + 1)) k → _) := GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.continuous_invRow
+  have hl : ContinuousAt (fun x : GL (Fin (n + 1)) k => (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x (Fin.last n))⁻¹) 1 :=
+    ((continuous_apply (Fin.last n)).comp hv).continuousAt.inv₀
+      (show GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow (1 : GL (Fin (n + 1)) k) (Fin.last n) ≠ 0 by
+        rw [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow_one]; exact one_ne_zero)
+  refine continuousAt_pi.2 fun j => ?_
+  by_cases hj : j = Fin.last n
+  · simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, if_pos hj]
+    exact hl
+  · simp only [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv, if_neg hj]
+    exact (((continuous_apply j).comp hv).continuousAt.neg).mul hl
+
+theorem exists_nhd {V : Set (GL (Fin (n + 1)) k)} (hV : V ∈ 𝓝 (1 : GL (Fin (n + 1)) k)) :
+    ∃ N ∈ 𝓝 (1 : GL (Fin (n + 1)) k), ∀ x ∈ N, ∃ hr : invRow x (Fin.last n) ≠ 0,
+      lastRowGL (invRow x) hr * x ∈ V := by
+  have h1 : GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow (1 : GL (Fin (n + 1)) k) (Fin.last n) ≠ 0 := by
+    rw [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow_one]; exact one_ne_zero
+  have hv1 : GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow (1 : GL (Fin (n + 1)) k) =
+      (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.last n) := by
+    funext j; simp [GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow]
+  have hg1 : GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowGL (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow (1 : GL (Fin (n + 1)) k)) h1 = 1 := by
+    apply Units.ext
+    show GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow (1 : GL (Fin (n + 1)) k)) = 1
+    rw [hv1]
+    exact Matrix.updateRow_eq_self _ _
+  let ψ : GL (Fin (n + 1)) k →
+      Matrix (Fin (n + 1)) (Fin (n + 1)) k × (Matrix (Fin (n + 1)) (Fin (n + 1)) k)ᵐᵒᵖ :=
+    fun x => (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x) * (x : Matrix (Fin (n + 1)) (Fin (n + 1)) k),
+      MulOpposite.op (((x⁻¹ : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) *
+        GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x))))
+  have hψ : ∀ x (hr : GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x (Fin.last n) ≠ 0),
+      Units.embedProduct (Matrix (Fin (n + 1)) (Fin (n + 1)) k)
+        (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowGL (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x) hr * x) = ψ x := fun x hr => by
+    first
+    | rfl
+    | (rw [Units.embedProduct_apply]; rfl)
+  have hfst : ContinuousAt (fun x : GL (Fin (n + 1)) k =>
+      GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x) * (x : Matrix (Fin (n + 1)) (Fin (n + 1)) k)) 1 := by
+    first
+    | exact ((GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.continuous_lastRowMat.comp GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.continuous_invRow).mul
+        Units.continuous_val).continuousAt
+    | exact ((GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.continuous_lastRowMat.comp GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.continuous_invRow).matrix_mul
+        Units.continuous_val).continuousAt
+  have hsnd : ContinuousAt (fun x : GL (Fin (n + 1)) k =>
+      MulOpposite.op (((x⁻¹ : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) *
+        GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowMat (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.rowInv (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x)))) 1 :=
+    MulOpposite.continuous_op.continuousAt.comp
+      ((Units.continuous_coe_inv (M := Matrix (Fin (n + 1)) (Fin (n + 1)) k)).continuousAt.mul
+        (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.continuous_lastRowMat.continuousAt.comp
+          GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.continuousAt_rowInv))
+  have hψc : ContinuousAt ψ 1 := hfst.prodMk hsnd
+  have hψ1 : ψ 1 = Units.embedProduct (Matrix (Fin (n + 1)) (Fin (n + 1)) k) 1 := by
+    rw [← hψ 1 h1, hg1, mul_one]
+  obtain ⟨U, hU, hUV⟩ : ∃ U ∈ 𝓝 (Units.embedProduct (Matrix (Fin (n + 1)) (Fin (n + 1)) k) 1),
+      Units.embedProduct (Matrix (Fin (n + 1)) (Fin (n + 1)) k) ⁻¹' U ⊆ V := by
+    rw [Units.isEmbedding_embedProduct.toIsInducing.nhds_eq_comap] at hV
+    exact Filter.mem_comap.1 hV
+  have hne : ∀ᶠ x in 𝓝 (1 : GL (Fin (n + 1)) k), GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x (Fin.last n) ≠ 0 :=
+    ((continuous_apply (Fin.last n)).comp GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.continuous_invRow).continuousAt.eventually_ne h1
+  refine ⟨ψ ⁻¹' U ∩ {x | GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x (Fin.last n) ≠ 0},
+    Filter.inter_mem (hψc.preimage_mem_nhds (by rw [hψ1]; exact hU)) hne, ?_⟩
+  rintro x ⟨hxU, hx⟩
+  refine ⟨hx, hUV ?_⟩
+  show Units.embedProduct (Matrix (Fin (n + 1)) (Fin (n + 1)) k)
+    (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowGL (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x) hx * x) ∈ U
+  rw [hψ x hx]
+  exact hxU
+
+end Top
+
+theorem row_replacement (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ)
+    (S : Subgroup (GL (Fin (n + 1)) k))
+    (hS : ∀ (r : Fin (n + 1) → k), r (Fin.last n) ≠ 0 → ∀ g : GL (Fin (n + 1)) k,
+      (g : Matrix (Fin (n + 1)) (Fin (n + 1)) k) = (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) k).updateRow (Fin.last n) r → g ∈ S)
+    (O : Set (Mir k n)) (hO : O ∈ 𝓝 (1 : Mir k n)) :
+    ∃ N ∈ 𝓝 (1 : GL (Fin (n + 1)) k), ∀ p ∈ S, ∀ x ∈ N, ∀ m : Mir k n, (m : GL (Fin (n + 1)) k) = p * x →
+      ∃ a : Mir k n, (a : GL (Fin (n + 1)) k) ∈ S ∧ ∃ x' ∈ O, m = a * x' := by
+  obtain ⟨V, hV, hVO⟩ := (mem_nhds_subtype _ _ _).1 hO
+  obtain ⟨N, hN, hNV⟩ := GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.exists_nhd (k := k) (n := n) hV
+  refine ⟨N, hN, fun p hp x hx m hm => ?_⟩
+  obtain ⟨hr, hgx⟩ := hNV x hx
+  have hgS : GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowGL (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x) hr ∈ S := hS _ hr _ rfl
+  have hmir : GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowGL (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x) hr * x ∈ GlobalTheory.BZMir.Mir k n :=
+    GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.vecMul_eLast x
+  refine ⟨m * ⟨GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowGL (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x) hr * x, hmir⟩⁻¹, ?_,
+    ⟨GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowGL (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x) hr * x, hmir⟩, hVO hgx, (inv_mul_cancel_right _ _).symm⟩
+  show (m : GL (Fin (n + 1)) k) * (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.lastRowGL (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.invRow x) hr * x)⁻¹ ∈ S
+  rw [hm, _root_.mul_inv_rev, ← mul_assoc, mul_inv_cancel_right]
+  exact S.mul_mem hp (S.inv_mem hgS)
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep
+
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.last_row_update_nhds_generation : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (S : Subgroup (GL (Fin (n + 1)) k))
+    (hS : ∀ (r : Fin (n + 1) → k), r (Fin.last n) ≠ 0 → ∀ g : GL (Fin (n + 1)) k,
+      (g : Matrix (Fin (n + 1)) (Fin (n + 1)) k) = (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) k).updateRow (Fin.last n) r → g ∈ S)
+    (O : Set (Mir k n)) (hO : O ∈ 𝓝 (1 : Mir k n)),
+    ∃ N ∈ 𝓝 (1 : GL (Fin (n + 1)) k), ∀ p ∈ S, ∀ x ∈ N, ∀ m : Mir k n, (m : GL (Fin (n + 1)) k) = p * x →
+      ∃ a : Mir k n, (a : GL (Fin (n + 1)) k) ∈ S ∧ ∃ x' ∈ O, m = a * x' := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.RowRep.row_replacement
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Proj
+
+section Alg
+
+variable (k : Type) [Field k]
+
+def rGL {a b : ℕ} (h : a = b) : GL (Fin a) k ≃* GL (Fin b) k := h ▸ MulEquiv.refl _
+
+theorem rGL_apply {a b : ℕ} (h : a = b) (g : GL (Fin a) k) (r c : Fin b) :
+    ((rGL k h g : GL (Fin b) k) : Matrix (Fin b) (Fin b) k) r c =
+      (g : Matrix (Fin a) (Fin a) k) (Fin.cast h.symm r) (Fin.cast h.symm c) := by
+  subst h
+  rfl
+
+theorem rGL_rGL {a b : ℕ} (h : a = b) (h' : b = a) (g : GL (Fin a) k) : rGL k h' (rGL k h g) = g := by
+  subst h
+  rfl
+
+theorem continuous_rGL [TopologicalSpace k] {a b : ℕ} (h : a = b) : Continuous (rGL k h) := by
+  subst h
+  exact continuous_id
+
+theorem castM_val {a b : ℕ} (h : a = b) (h' : a + 1 = b + 1) (M : Mir k a) :
+    ((castM k h M : Mir k b) : GL (Fin (b + 1)) k) = rGL k h' (M : GL (Fin (a + 1)) k) := by
+  subst h
+  rfl
+
+theorem mirProj_eq_one_of_unip (n : ℕ) (u : Mir k n) (v : Multiplicative (Fin n → k))
+    (hu : (u : GL (Fin (n + 1)) k) = unip k n v) : mirabolicProjection k n u = 1 := by
+  ext i j
+  show blockMat k n ((u : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) i j = _
+  rw [hu]
+  simp [blockMat, unip, colMat, Fin.castSucc_ne_last, one_apply]
+
+theorem ePG_true_val (i t : ℕ) (b : Fin t) : ((ePG i t ⟨true, b⟩ : Fin (i + t + 1)) : ℕ) = i + b := by
+  simp [ePG]
+
+theorem ePG_false_castSucc_val (i t : ℕ) (a : Fin i) :
+    ((ePG i t ⟨false, Fin.castSucc a⟩ : Fin (i + t + 1)) : ℕ) = a := by
+  simp [ePG, finSumFinEquiv_symm_apply_castSucc]
+
+theorem wGL_conj_apply (i t : ℕ) (A : GL (Fin ((i + 1) + t + 1)) k) (r c : Fin ((i + 1) + t + 1)) :
+    (((wGL k i t)⁻¹ * A * wGL k i t : GL (Fin ((i + 1) + t + 1)) k) :
+      Matrix (Fin ((i + 1) + t + 1)) (Fin ((i + 1) + t + 1)) k) r c =
+      (A : Matrix (Fin ((i + 1) + t + 1)) (Fin ((i + 1) + t + 1)) k) (piPerm i t r) (piPerm i t c) := by
+  have e1 : (((wGL k i t)⁻¹ : GL (Fin ((i + 1) + t + 1)) k) :
+      Matrix (Fin ((i + 1) + t + 1)) (Fin ((i + 1) + t + 1)) k) = Equiv.Perm.permMatrix k (piPerm i t) := rfl
+  have e2 : ((wGL k i t : GL (Fin ((i + 1) + t + 1)) k) :
+      Matrix (Fin ((i + 1) + t + 1)) (Fin ((i + 1) + t + 1)) k) = Equiv.Perm.permMatrix k (piPerm i t)⁻¹ := rfl
+  rw [Units.val_mul, Units.val_mul, e1, e2, Equiv.Perm.permMatrix, Equiv.Perm.permMatrix,
+    PEquiv.toMatrix_toPEquiv_mul, PEquiv.mul_toMatrix_toPEquiv]
+  simp [Matrix.submatrix_apply, Equiv.Perm.inv_def]
+
+theorem piPerm_cast (i t : ℕ) (s : Σ x, Two (Fin (i + 1)) (Fin (t + 1)) x) (h : i + (t + 1) + 1 = (i + 1) + t + 1) :
+    piPerm i t (Fin.cast h (ePG i (t + 1) s)) = eGP (i + 1) t s := by
+  simp [piPerm]
+
+theorem proj_eq (i t : ℕ) (h : Mir k ((i + 1) + t + 1)) (d : Fin (t + 1) → k) (M : Mir k ((i + 1) + t))
+    (x : Mir k ((i + 1) + t + 1))
+    (e : dEmb k i t d * wEl k i t * sEmb k _ M = h * wEl k i t * x) :
+    (M : GL (Fin ((i + 1) + t + 1)) k) =
+      ((wGL k i t)⁻¹ * mirabolicProjection k _ h * wGL k i t) * mirabolicProjection k _ x := by
+  have e1 := congrArg (mirabolicProjection k ((i + 1) + t + 1)) e
+  rw [map_mul, map_mul, map_mul, map_mul] at e1
+  have h1 : mirabolicProjection k ((i + 1) + t + 1) (dEmb k i t d) = 1 := mirProj_eq_one_of_unip k _ _ _ rfl
+  have h2 : mirabolicProjection k ((i + 1) + t + 1) (wEl k i t) = wGL k i t := GlobalTheory.CompanionTheory.BZMirAdj.mirProj_levi k _ _
+  have h3 : mirabolicProjection k ((i + 1) + t + 1) (sEmb k _ M) = (M : GL (Fin ((i + 1) + t + 1)) k) :=
+    GlobalTheory.CompanionTheory.BZMirAdj.mirProj_levi k _ _
+  rw [h1, h2, h3, one_mul] at e1
+  rw [mul_assoc, mul_assoc, eq_inv_mul_iff_mul_eq, e1, mul_assoc]
+
+end Alg
+
+theorem exists_parab_mul : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ), ∃ Θ : Mir k ((i + 1) + t + 1) → GL (Fin (i + (t + 1) + 1)) k, Continuous Θ ∧ Θ 1 = 1 ∧
+    ∀ (h : Mir k ((i + 1) + (t + 1))), h ∈ HPG k (i + 1) (t + 1) → ∀ (d : Fin (t + 1) → k) (m : Mir k (i + (t + 1)))
+      (x : Mir k ((i + 1) + t + 1)), dEmb k i t d * wEl k i t * sO k i t m = h * wEl k i t * x →
+      ∃ p ∈ parab k (ePG i (t + 1)), (m : GL (Fin (i + (t + 1) + 1)) k) = p * Θ x := by
+  intro k _ _ _ _ i t
+  have hn : (i + 1) + t + 1 = i + (t + 1) + 1 := by omega
+  refine ⟨fun x => rGL k hn (mirabolicProjection k _ x),
+    (continuous_rGL k hn).comp (GlobalTheory.CompanionTheory.BZMirFun.continuous_mirProj k _), by simp, ?_⟩
+  intro h hh d m x e
+  have e2 := proj_eq k i t h d (castM k (by omega) m) x e
+  rw [castM_val k _ hn.symm] at e2
+  refine ⟨rGL k hn ((wGL k i t)⁻¹ * mirabolicProjection k _ h * wGL k i t), ?_, ?_⟩
+  · rw [mem_parab_iff]
+    intro a b u v hab
+    cases a <;> cases b <;> first | exact absurd hab (by decide) | skip
+    rw [rGL_apply, wGL_conj_apply, piPerm_cast, piPerm_cast]
+    have hh' : ((h : Mir k ((i + 1) + (t + 1))) : GL (Fin ((i + 1) + (t + 1) + 1)) k) ∈ parab k (ePG (i + 1) (t + 1)) := hh
+    have h0 := mem_parab_iff.1 hh' true false u (Fin.castSucc v) (by decide)
+    have e3 : Fin.castSucc (eGP (i + 1) t ⟨true, u⟩) = ePG (i + 1) (t + 1) ⟨true, u⟩ :=
+      Fin.ext (by rw [Fin.val_castSucc, GlobalTheory.CompanionTheory.LeibPhi.blockIndex_true_val, ePG_true_val])
+    have e4 : Fin.castSucc (eGP (i + 1) t ⟨false, v⟩) = ePG (i + 1) (t + 1) ⟨false, Fin.castSucc v⟩ :=
+      Fin.ext (by rw [Fin.val_castSucc, GlobalTheory.CompanionTheory.LeibPhi.blockIndex_false_val, ePG_false_castSucc_val])
+    show ((h : Mir k ((i + 1) + (t + 1))) : GL (Fin ((i + 1) + (t + 1) + 1)) k).val
+      (Fin.castSucc (eGP (i + 1) t ⟨true, u⟩)) (Fin.castSucc (eGP (i + 1) t ⟨false, v⟩)) = 0
+    rw [e3, e4]
+    exact h0
+  · have e5 := congrArg (rGL k hn) e2
+    rw [rGL_rGL, map_mul] at e5
+    exact e5
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Proj
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_open_cell_retraction : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ), ∃ Θ : Mir k ((i + 1) + t + 1) → GL (Fin (i + (t + 1) + 1)) k, Continuous Θ ∧ Θ 1 = 1 ∧
+    ∀ (h : Mir k ((i + 1) + (t + 1))), h ∈ HPG k (i + 1) (t + 1) → ∀ (d : Fin (t + 1) → k) (m : Mir k (i + (t + 1)))
+      (x : Mir k ((i + 1) + t + 1)), dEmb k i t d * wEl k i t * sO k i t m = h * wEl k i t * x →
+      ∃ p ∈ parab k (ePG i (t + 1)), (m : GL (Fin (i + (t + 1) + 1)) k) = p * Θ x := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Proj.exists_parab_mul
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Small
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+def rowD (i t : ℕ) (b : Fin (t + 1)) : Fin ((i + 1) + (t + 1) + 1) := Fin.castSucc (Fin.natAdd (i + 1) b)
+
+theorem ePG_true_rowD (i t : ℕ) (b : Fin (t + 1)) : ePG (i + 1) (t + 1) ⟨true, b⟩ = rowD i t b :=
+  Fin.ext (by simp [rowD, GlobalTheory.CompanionTheory.BZPhiPG.Cells.ePG_true_val])
+
+def ent {n : ℕ} (a b : Fin (n + 1)) (p : Mir k n) : k :=
+  ((p : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) a b
+
+theorem continuous_ent {n : ℕ} (a b : Fin (n + 1)) : Continuous (ent (k := k) a b) :=
+  (Units.continuous_val.comp continuous_subtype_val).matrix_elem a b
+
+theorem ent_last_last {n : ℕ} (p : Mir k n) : ent (Fin.last n) (Fin.last n) p = 1 := by
+  have hh := (mem_Mir_iff k _).1 p.2
+  show ((p : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.last n) (Fin.last n) = 1
+  rw [hh]
+  simp [eLast]
+
+theorem colMat_mul_castSucc {n : ℕ} (v : Fin n → k) (A : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (a : Fin n)
+    (c : Fin (n + 1)) : (colMat k n v * A) (Fin.castSucc a) c = v a * A (Fin.last n) c := by
+  rw [Matrix.mul_apply, Finset.sum_eq_single (Fin.last n)]
+  · simp [colMat]
+  · intro l _ hl
+    simp [colMat, hl]
+  · simp
+
+theorem continuous_colMat_append (i t : ℕ) :
+    Continuous fun d : Fin (t + 1) → k => colMat k ((i + 1) + (t + 1)) (Fin.append (0 : Fin (i + 1) → k) d) := by
+  refine continuous_matrix fun a b => ?_
+  by_cases hb : b = Fin.last _
+  · subst hb
+    induction a using Fin.lastCases with
+    | last => simpa [colMat] using continuous_const
+    | cast a =>
+      induction a using Fin.addCases with
+      | left a => simpa [colMat] using continuous_const
+      | right a =>
+        have e : ∀ d : Fin (t + 1) → k, colMat k ((i + 1) + (t + 1)) (Fin.append (0 : Fin (i + 1) → k) d)
+            (Fin.castSucc (Fin.natAdd (i + 1) a)) (Fin.last _) = d a := by
+          intro d
+          unfold colMat
+          rw [if_pos rfl, Fin.lastCases_castSucc, Fin.append_right]
+        exact (continuous_apply a).congr fun d => (e d).symm
+  · simpa [colMat, hb] using continuous_const
+
+theorem continuous_dEmb (i t : ℕ) : Continuous (dEmb k i t) := by
+  refine Continuous.subtype_mk (Units.continuous_iff.2 ⟨?_, ?_⟩) _
+  · exact continuous_const.add (continuous_colMat_append i t)
+  · exact continuous_const.sub (continuous_colMat_append i t)
+
+theorem dEmb_zero (i t : ℕ) : dEmb k i t 0 = 1 := by
+  apply Subtype.ext
+  apply Units.ext
+  show (1 + colMat k ((i + 1) + (t + 1)) (Fin.append (0 : Fin (i + 1) → k) 0) : Matrix _ _ k) = 1
+  have : Fin.append (0 : Fin (i + 1) → k) (0 : Fin (t + 1) → k) = 0 := by
+    funext a
+    induction a using Fin.addCases <;> simp
+  rw [this, colMat_zero, add_zero]
+
+def delta (i t : ℕ) (u : Mir k ((i + 1) + (t + 1))) : Fin (t + 1) → k :=
+  fun b => - ent (rowD i t b) (Fin.last _) u
+
+theorem continuous_delta (i t : ℕ) : Continuous (delta (k := k) i t) :=
+  continuous_pi fun b => (continuous_ent _ _).neg
+
+theorem delta_one (i t : ℕ) : delta (k := k) i t 1 = 0 := by
+  funext b
+  have h0 : (1 : Matrix (Fin ((i + 1) + (t + 1) + 1)) (Fin ((i + 1) + (t + 1) + 1)) k) (rowD i t b) (Fin.last _) = 0 :=
+    Matrix.one_apply_ne (Fin.castSucc_ne_last _)
+  show - ((1 : Matrix (Fin ((i + 1) + (t + 1) + 1)) (Fin ((i + 1) + (t + 1) + 1)) k) (rowD i t b) (Fin.last _)) = 0
+  rw [h0, neg_zero]
+
+theorem eq_delta (i t : ℕ) (h u : Mir k ((i + 1) + (t + 1))) (hH : h ∈ HPG k (i + 1) (t + 1))
+    (d : Fin (t + 1) → k) (e : h = dEmb k i t d * u) : d = delta i t u := by
+  funext b
+  have hp : ((h : Mir k ((i + 1) + (t + 1))) : GL (Fin ((i + 1) + (t + 1) + 1)) k) ∈ parab k (ePG (i + 1) (t + 1)) := hH
+  have hz := mem_parab_iff.1 hp true false b (Fin.last (i + 1)) (by decide)
+  rw [ePG_true_rowD, ePG_false_last] at hz
+  have hv : ((h : Mir k ((i + 1) + (t + 1))) : GL (Fin ((i + 1) + (t + 1) + 1)) k).val =
+      (1 + colMat k ((i + 1) + (t + 1)) (Fin.append (0 : Fin (i + 1) → k) d)) *
+        ((u : Mir k ((i + 1) + (t + 1))) : GL (Fin ((i + 1) + (t + 1) + 1)) k).val := by
+    rw [e]; rfl
+  have hz' : ((h : Mir k ((i + 1) + (t + 1))) : GL (Fin ((i + 1) + (t + 1) + 1)) k).val
+      (rowD i t b) (Fin.last _) = 0 := hz
+  rw [hv, add_mul, one_mul, Matrix.add_apply, rowD, colMat_mul_castSucc] at hz'
+  have h1 : ((u : Mir k ((i + 1) + (t + 1))) : GL (Fin ((i + 1) + (t + 1) + 1)) k).val (Fin.last _) (Fin.last _) = 1 :=
+    ent_last_last u
+  rw [h1, mul_one, Fin.append_right] at hz'
+  show d b = - ent (rowD i t b) (Fin.last _) u
+  exact eq_neg_of_add_eq_zero_right hz'
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Small
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+open Small in
+theorem h_small : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (O : Set (Mir k ((i + 1) + t + 1))) (hO : O ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1))),
+    ∃ N ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1)), ∀ (h : Mir k ((i + 1) + (t + 1))), h ∈ HPG k (i + 1) (t + 1) →
+      ∀ (d : Fin (t + 1) → k) (x : Mir k ((i + 1) + t + 1)), x ∈ N →
+        dEmb k i t d * wEl k i t = h * wEl k i t * x → h ∈ O := by
+  intro k _ _ _ _ i t O hO
+  let w : Mir k ((i + 1) + (t + 1)) := wEl k i t
+  let f : Mir k ((i + 1) + (t + 1)) → Mir k ((i + 1) + (t + 1)) :=
+    fun x => dEmb k i t (delta i t (w * x⁻¹ * w⁻¹)) * (w * x⁻¹ * w⁻¹)
+  have hu : Continuous fun x : Mir k ((i + 1) + (t + 1)) => w * x⁻¹ * w⁻¹ :=
+    (continuous_const.mul continuous_inv).mul continuous_const
+  have hf : Continuous f :=
+    ((continuous_dEmb i t).comp ((continuous_delta i t).comp hu)).mul hu
+  have f1 : f 1 = 1 := by
+    have e : w * (1 : Mir k ((i + 1) + (t + 1)))⁻¹ * w⁻¹ = 1 := by group
+    show dEmb k i t (delta i t (w * (1 : Mir k ((i + 1) + (t + 1)))⁻¹ * w⁻¹)) * (w * (1 : Mir k ((i + 1) + (t + 1)))⁻¹ * w⁻¹) = 1
+    rw [e, delta_one, dEmb_zero, one_mul]
+  refine ⟨f ⁻¹' O, hf.continuousAt.preimage_mem_nhds (by rw [f1]; exact hO), ?_⟩
+  intro h hH d x hx e
+  have e' : h = dEmb k i t d * (w * x⁻¹ * w⁻¹) := by
+    have e2 : dEmb k i t d * w = h * w * x := e
+    calc h = (h * w * x) * x⁻¹ * w⁻¹ := by group
+      _ = (dEmb k i t d * w) * x⁻¹ * w⁻¹ := by rw [e2]
+      _ = dEmb k i t d * (w * x⁻¹ * w⁻¹) := by group
+  have hd := eq_delta i t h _ hH d e'
+  have hfx : f x = h := by
+    show dEmb k i t (delta i t (w * x⁻¹ * w⁻¹)) * (w * x⁻¹ * w⁻¹) = h
+    rw [← hd, ← e']
+  have : f x ∈ O := hx
+  rwa [hfx] at this
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.open_cell_parabolic_near_identity : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (O : Set (Mir k ((i + 1) + t + 1))) (hO : O ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1))),
+    ∃ N ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1)), ∀ (h : Mir k ((i + 1) + (t + 1))), h ∈ HPG k (i + 1) (t + 1) →
+      ∀ (d : Fin (t + 1) → k) (x : Mir k ((i + 1) + t + 1)), x ∈ N →
+        dEmb k i t d * wEl k i t = h * wEl k i t * x → h ∈ O := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.h_small
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+theorem piPerm_last_val (i t : ℕ) : ((piPerm i t (Fin.last ((i + 1) + t)) : Fin ((i + 1) + t + 1)) : ℕ) = i := by
+  have key : ∀ x : Fin (i + (t + 1) + 1), (x : ℕ) = i + 1 + t →
+      ((GlobalTheory.BZMir.Leib.eGP (i + 1) t ((GlobalTheory.BZMir.Leib.ePG i (t + 1)).symm x) :
+        Fin ((i + 1) + t + 1)) : ℕ) = i := by
+    intro x hx
+    have hxl : x = Fin.last (i + (t + 1)) := Fin.ext (by rw [Fin.val_last]; omega)
+    subst hxl
+    have h2 : (GlobalTheory.BZMir.Leib.ePG i (t + 1)).symm (Fin.last (i + (t + 1))) =
+        ⟨false, Fin.last i⟩ := by
+      rw [Equiv.symm_apply_eq, GlobalTheory.BZMir.Leib.ePG_false_last]
+    rw [h2]
+    exact GlobalTheory.CompanionTheory.LeibPhi.blockIndex_false_val (i + 1) t (Fin.last i)
+  first
+    | (simp only [GlobalTheory.CompanionTheory.BZPhiPG.piPerm, Equiv.trans_apply]; exact key _ rfl)
+    | exact key _ rfl
+
+variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem wEl_inv_entry (i t : ℕ) (c : Fin ((i + 1) + t + 1)) (hc : (c : ℕ) = i) :
+    ((((wEl k i t)⁻¹ : Mir k ((i + 1) + t + 1)) : GL (Fin ((i + 1) + t + 2)) k) :
+      Matrix (Fin ((i + 1) + t + 2)) (Fin ((i + 1) + t + 2)) k)
+      (Fin.castSucc (Fin.last ((i + 1) + t))) (Fin.castSucc c) = 1 := by
+  have hσ : GlobalTheory.CompanionTheory.BZPhiPG.piPerm i t (Fin.last ((i + 1) + t)) = c :=
+    Fin.ext ((GlobalTheory.CompanionTheory.BZPhiPG.OntoO.piPerm_last_val i t).trans hc.symm)
+  rw [GlobalTheory.CompanionTheory.BZPhiPG.wEl, ← map_inv]
+  change GlobalTheory.BZMir.glEmbMat k ((i + 1) + t + 1)
+      (((GlobalTheory.CompanionTheory.BZPhiPG.wGL k i t)⁻¹ : GL (Fin ((i + 1) + t + 1)) k) :
+        Matrix (Fin ((i + 1) + t + 1)) (Fin ((i + 1) + t + 1)) k)
+      (Fin.castSucc (Fin.last ((i + 1) + t))) (Fin.castSucc c) = 1
+  simp only [GlobalTheory.BZMir.glEmbMat, Fin.lastCases_castSucc]
+  change Equiv.Perm.permMatrix k (GlobalTheory.CompanionTheory.BZPhiPG.piPerm i t) (Fin.last ((i + 1) + t)) c = 1
+  simp [Equiv.Perm.permMatrix, PEquiv.toMatrix_apply, hσ]
+
+theorem dEmb_zero (i t : ℕ) : dEmb k i t 0 = 1 := by
+  have h : Fin.append (0 : Fin (i + 1) → k) (0 : Fin (t + 1) → k) = 0 := by
+    funext j
+    refine Fin.addCases (fun a => ?_) (fun b => ?_) j
+    · rw [Fin.append_left]; rfl
+    · rw [Fin.append_right]; rfl
+  apply Subtype.ext
+  change GlobalTheory.BZMir.unip k ((i + 1) + (t + 1))
+      (Multiplicative.ofAdd (Fin.append (0 : Fin (i + 1) → k) (0 : Fin (t + 1) → k))) = 1
+  rw [h, ofAdd_zero, map_one]
+
+theorem wEl_notMem_Cl (i t : ℕ) : wEl k i t ∉ Cl k i t := by
+  intro hmem
+  simp only [GlobalTheory.CompanionTheory.BZPhiPG.Cl, Set.mem_setOf_eq] at hmem
+  have h := hmem (Fin.last i)
+  have hc : (Fin.castLE (by omega) (Fin.last i) : Fin ((i + 1) + t + 1 + 1)) =
+      Fin.castSucc (⟨i, by omega⟩ : Fin ((i + 1) + t + 1)) := Fin.ext rfl
+  rw [hc, GlobalTheory.CompanionTheory.BZPhiPG.OntoO.wEl_inv_entry k i t ⟨i, by omega⟩ rfl] at h
+  exact one_ne_zero h
+
+theorem wEl_notMem_Cl_and_dEmb_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (i t : ℕ), wEl k i t ∉ Cl k i t ∧ dEmb k i t 0 = 1 := by
+  intro k _ _ _ _ i t
+  exact ⟨GlobalTheory.CompanionTheory.BZPhiPG.OntoO.wEl_notMem_Cl k i t, GlobalTheory.CompanionTheory.BZPhiPG.OntoO.dEmb_zero k i t⟩
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weyl_not_mem_closed_cell : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ), wEl k i t ∉ Cl k i t ∧ dEmb k i t 0 = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.wEl_notMem_Cl_and_dEmb_zero
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+variable {k : Type} [Field k]
+
+theorem sEmb_mul_row (n : ℕ) (m : Mir k n) (q : Mir k (n + 1)) (j : Fin (n + 1 + 1)) :
+    (((sEmb k n m * q : Mir k (n + 1)) : GL (Fin (n + 1 + 1)) k) : Matrix (Fin (n + 1 + 1)) (Fin (n + 1 + 1)) k)
+        (Fin.castSucc (Fin.last n)) j =
+      ((q : GL (Fin (n + 1 + 1)) k) : Matrix (Fin (n + 1 + 1)) (Fin (n + 1 + 1)) k) (Fin.castSucc (Fin.last n)) j := by
+  have hm : ((m : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.last n) =
+      GlobalTheory.BZMir.eLast k n :=
+    (GlobalTheory.BZMir.mem_Mir_iff k (m : GL (Fin (n + 1)) k)).1 m.2
+  have hm' : ∀ x, ((m : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.last n) x =
+      GlobalTheory.BZMir.eLast k n x := fun x => congrFun hm x
+  have he : (((GlobalTheory.CompanionTheory.BZPhiPG.sEmb k n m : GlobalTheory.BZMir.Mir k (n + 1)) : GL (Fin (n + 1 + 1)) k) :
+      Matrix (Fin (n + 1 + 1)) (Fin (n + 1 + 1)) k) =
+      GlobalTheory.BZMir.glEmbMat k (n + 1) ((m : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) :=
+    rfl
+  simp only [Subgroup.coe_mul, Units.val_mul]
+  rw [he, Matrix.mul_apply, Fin.sum_univ_castSucc]
+  simp only [GlobalTheory.BZMir.glEmbMat, Fin.lastCases_castSucc, Fin.lastCases_last, hm', zero_mul,
+    add_zero, GlobalTheory.BZMir.eLast]
+  simp [Pi.single_apply]
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+end
+
+theorem GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Cl_mul_sO (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) :
+    ∀ p ∈ Cl k i t, ∀ m, p * sO k i t m ∈ Cl k i t := by
+  intro p hp m
+  have key : ∀ j, (((GlobalTheory.CompanionTheory.BZPhiPG.OntoO.sO k i t m⁻¹ * p⁻¹ : GlobalTheory.BZMir.Mir k (i + 1 + t + 1)) :
+      GL (Fin (i + 1 + t + 1 + 1)) k) : Matrix (Fin (i + 1 + t + 1 + 1)) (Fin (i + 1 + t + 1 + 1)) k)
+        (Fin.castSucc (Fin.last (i + 1 + t))) j =
+      (((p⁻¹ : GlobalTheory.BZMir.Mir k (i + 1 + t + 1)) : GL (Fin (i + 1 + t + 1 + 1)) k) :
+        Matrix (Fin (i + 1 + t + 1 + 1)) (Fin (i + 1 + t + 1 + 1)) k) (Fin.castSucc (Fin.last (i + 1 + t))) j :=
+    fun j => GlobalTheory.CompanionTheory.BZPhiPG.OntoO.sEmb_mul_row (i + 1 + t)
+      (GlobalTheory.CompanionTheory.BZPhiPG.castM k (by omega) m⁻¹) p⁻¹ j
+  simp only [GlobalTheory.CompanionTheory.BZPhiPG.Cl, Set.mem_setOf_eq] at hp ⊢
+  intro c
+  rw [_root_.mul_inv_rev, ← map_inv (GlobalTheory.CompanionTheory.BZPhiPG.OntoO.sO k i t) m]
+  exact (key _).trans (hp c)
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.closed_cell_right_stable : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ), ∀ p ∈ Cl k i t, ∀ m, p * sO k i t m ∈ Cl k i t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Cl_mul_sO
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+theorem continuous_castM (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    {a b : ℕ} (h : a = b) : Continuous (castM k h) := by
+  subst h
+  exact continuous_id
+
+theorem continuous_sO : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (i t : ℕ), Continuous (sO k i t) := by
+  intro k _ _ _ _ i t
+  exact (GlobalTheory.CompanionTheory.BZPhiPG.EcSmooth.continuous_sEmb k ((i + 1) + t)).comp (continuous_castM k _)
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_shifted_orbit_map : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ), Continuous (sO k i t) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.continuous_sO
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+theorem sigX_fix_nhds : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (hτ : IsSmooth τ.ρ) (hσ : IsSmooth σ.ρ)
+    (v : τ.V ⊗[ℂ] σ.V), ∃ O ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1)), ∀ a : HPG k (i + 1) (t + 1),
+      (a : Mir k ((i + 1) + (t + 1))) ∈ O → sigX τ σ a v = v :=
+  GlobalTheory.CompanionTheory.BZPhiPG.Onto.sigX_fix
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.smooth_vector_fixed_parabolic_near_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (hτ : IsSmooth τ.ρ) (hσ : IsSmooth σ.ρ)
+    (v : τ.V ⊗[ℂ] σ.V), ∃ O ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1)), ∀ a : HPG k (i + 1) (t + 1),
+      (a : Mir k ((i + 1) + (t + 1))) ∈ O → sigX τ σ a v = v := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.sigX_fix_nhds
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+
+theorem muD_toReal_ne_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (t : ℕ) (E C : Set (Fin t → k)) (hE : IsOpen E) (hn : E.Nonempty) (hC : IsCompact C) (hEC : E ⊆ C),
+    ((muD k t) E).toReal ≠ 0 := by
+  intro k _ _ _ _ t E C hE hn hC hEC
+  unfold muD
+  rw [ENNReal.toReal_ne_zero]
+  exact ⟨(hE.measure_pos _ hn).ne',
+    ((MeasureTheory.measure_mono hEC).trans_lt hC.measure_lt_top).ne⟩
+
+end GlobalTheory.CompanionTheory.BZPhiPG.OntoO
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG GlobalTheory.CompanionTheory.BZPhiPG.OntoO Topology
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.haar_measure_open_nonempty_ne_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (t : ℕ) (E C : Set (Fin t → k)) (hE : IsOpen E) (hn : E.Nonempty) (hC : IsCompact C) (hEC : E ⊆ C),
+    ((muD k t) E).toReal ≠ 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.muD_toReal_ne_zero
+end
+
+section
 section
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib GlobalTheory.CompanionTheory.BZPhiPG Topology
 open scoped TensorProduct
@@ -397,3 +1371,4 @@ set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.open_evaluation_surjective : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (ψ : AddChar k Circle) (hψ : Continuous ψ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (hτ : IsSmooth τ.ρ) (hσ : IsSmooth σ.ρ) (y : cIndSpace (HPG k i (t + 1)) (sigO τ σ ψ)),
   ∃ f : XS τ σ, (∀ x ∈ Cl k i t, evX f x = 0) ∧ eO ψ f = (y : smoothPart (ind (HPG k i (t + 1)) (sigO τ σ ψ))).1.1 := by
   atlas_forward_decl GlobalTheory.CompanionTheory.BZPhiPG.OntoO.onto
+end

@@ -3,11 +3,932 @@ import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.DiscreteSpec
 import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.OrbitStepSpace
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSmoothCompactSupportFixLowestKType
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SqrtNsqLeOfAbsLe
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsContDiffExtension
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.KTypeGeneratedByHighest
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumNormSqOfIsometry
+import Formalism.RealPlaceAnalysis.SmoothOnGVIff
+import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffSetIntegralNat
+import Formalism.RealPlaceAnalysis.StatementU
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactCasimirHighestWeight
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GelfValTwoEqCvalR
 
+section
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants
+open scoped InnerProductSpace ContDiff Topology Manifold
+
+noncomputable section
+
+namespace GlobalTheory.GardingSmooth
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+theorem contDiff_matrix_mul {n : ℕ} {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P]
+    {f g : P → Matrix (Fin n) (Fin n) ℂ} (hf : ContDiff ℝ ∞ f) (hg : ContDiff ℝ ∞ g) :
+    ContDiff ℝ ∞ fun p => f p * g p := by
+  let B : Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
+    LinearMap.toContinuousLinearMap
+      ((LinearMap.toContinuousLinearMap :
+          (Matrix (Fin n) (Fin n) ℂ →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ) ≃ₗ[ℝ]
+            (Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ)).toLinearMap ∘ₗ
+        LinearMap.mul ℝ (Matrix (Fin n) (Fin n) ℂ))
+  exact (B.contDiff.comp hf).clm_apply hg
+
+theorem contDiff_adjoint {n : ℕ} : ContDiff ℝ ∞ fun x : Matrix (Fin n) (Fin n) ℂ => xᴴ := by
+  let L : Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
+    AddMonoidHom.toRealLinearMap (Matrix.conjTransposeAddEquiv (Fin n) (Fin n) ℂ).toAddMonoidHom
+      continuous_id.matrix_conjTranspose
+  exact L.contDiff
+
+private theorem exists_contDiff_eq_on_closed_of_local {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] {S : Set E} (hS : IsClosed S) (β : E → ℂ)
+    (hβ : ∀ x ∈ S, ∃ (U : Set E) (F : E → ℂ), IsOpen U ∧ x ∈ U ∧ ContDiffOn ℝ ∞ F U ∧
+      ∀ g ∈ U, g ∈ S → β g = F g) :
+    ∃ φ : E → ℂ, ContDiff ℝ ∞ φ ∧ ∀ g ∈ S, φ g = β g := by
+  classical
+  have hloc : ∀ x : E, ∃ (U : Set E) (F : E → ℂ), IsOpen U ∧ x ∈ U ∧ ContDiffOn ℝ ∞ F U ∧
+      ∀ g ∈ U, g ∈ S → β g = F g := by
+    intro x
+    by_cases hx : x ∈ S
+    · exact hβ x hx
+    · exact ⟨Sᶜ, fun _ => 0, hS.isOpen_compl, hx, contDiffOn_const, fun g hg hg' => (hg hg').elim⟩
+  choose U F hUo hxU hFU hβF using hloc
+  obtain ⟨ρ, hρ⟩ := SmoothPartitionOfUnity.exists_isSubordinate 𝓘(ℝ, E) isClosed_univ U hUo
+    (fun x _ => Set.mem_iUnion.2 ⟨x, hxU x⟩)
+  refine ⟨fun g => ∑ᶠ i, ρ i g • F i g, ?_, ?_⟩
+  · rw [← contMDiff_iff_contDiff]
+    refine ρ.contMDiff_finsum_smul fun i x hx => ?_
+    exact ((hFU i).contDiffAt ((hUo i).mem_nhds (hρ i hx))).contMDiffAt
+  · intro g hg
+    have hterm : ∀ i, ρ i g • F i g = ρ i g • β g := by
+      intro i
+      by_cases h : ρ i g = 0
+      · simp [h]
+      · rw [hβF i g (hρ i (subset_tsupport _ h)) hg]
+    simp_rw [hterm]
+    rw [← finsum_smul, ρ.sum_eq_one (Set.mem_univ g), one_smul]
+
+theorem exists_contDiff_extension {n : ℕ} {ε : Fin n → Bool} {β : Matrix (Fin n) (Fin n) ℂ → ℂ}
+    (hβ : SmoothOnG ε β) :
+    ∃ φ : Matrix (Fin n) (Fin n) ℂ → ℂ, ContDiff ℝ ∞ φ ∧ ∀ g, inUJ ε g → φ g = β g := by
+  have hclosed : IsClosed {g : Matrix (Fin n) (Fin n) ℂ | inUJ ε g} := by
+    have hc : Continuous fun g : Matrix (Fin n) (Fin n) ℂ => gᴴ * Jm ε * g :=
+      (contDiff_matrix_mul (contDiff_matrix_mul contDiff_adjoint contDiff_const) contDiff_id).continuous
+    exact isClosed_eq hc continuous_const
+  exact exists_contDiff_eq_on_closed_of_local hclosed β (fun x hx => hβ x hx)
+
+private theorem hasFDerivAt_integral_lemma {X : Type} [TopologicalSpace X] [MeasurableSpace X]
+    [OpensMeasurableSpace X] [SecondCountableTopology X] [T2Space X] (μ : Measure X)
+    [IsFiniteMeasureOnCompacts μ] {P Z V E W : Type} [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [ProperSpace P] [NormedAddCommGroup Z] [NormedSpace ℝ Z] [NormedAddCommGroup V] [NormedSpace ℝ V]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
+    (e : X → Z) (he : Continuous e) {K : Set X} (hK : IsCompact K) {s : Set P} (hs : IsOpen s)
+    (B : V →L[ℝ] E →L[ℝ] W) (Ψ : P → Z → V) (w : X → E)
+    (hΨ : ContDiff ℝ ∞ (Function.uncurry Ψ)) (hw : Continuous w)
+    (hsupp : ∀ p ∈ s, ∀ y ∉ K, Ψ p (e y) = 0) {p₀ : P} (hp₀ : p₀ ∈ s) :
+    HasFDerivAt (fun p => ∫ y, B (Ψ p (e y)) (w y) ∂μ)
+      (∫ y, ((ContinuousLinearMap.compL ℝ P V W).comp B.flip).flip
+        (fderiv ℝ (fun q => Ψ q (e y)) p₀) (w y) ∂μ) p₀ := by
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hs p₀ hp₀
+  set B' := ((ContinuousLinearMap.compL ℝ P V W).comp B.flip).flip
+  have hB' : ∀ L h, B' L h = (B.flip h).comp L := fun _ _ => rfl
+
+  have hDs : ContDiff ℝ ∞ (fun x : P × Z => fderiv ℝ (fun q => Ψ q x.2) x.1) := by
+    have hf' := hΨ.comp ((contDiff_snd (E := P × Z) (F := P)).prodMk
+      ((contDiff_snd (E := P) (F := Z)).comp (contDiff_fst (E := P × Z) (F := P))))
+    exact ContDiff.fderiv (f := fun (x : P × Z) (q : P) => Ψ q x.2) (g := Prod.fst) hf' contDiff_fst
+      (le_of_eq ENat.coe_top_add_one)
+  have hDc : Continuous (fun x : P × Z => fderiv ℝ (fun q => Ψ q x.2) x.1) := hDs.continuous
+  have hpart : ∀ z, ContDiff ℝ ∞ (fun q => Ψ q z) := fun z =>
+    hΨ.comp (contDiff_id.prodMk (contDiff_const (c := z)))
+  have hderiv : ∀ y p, HasFDerivAt (fun q => B (Ψ q (e y)) (w y))
+      (B' (fderiv ℝ (fun q => Ψ q (e y)) p) (w y)) p := by
+    intro y p
+    have h1 : HasFDerivAt (fun q => Ψ q (e y)) (fderiv ℝ (fun q => Ψ q (e y)) p) p :=
+      ((hpart (e y)).differentiable (by simp) p).hasFDerivAt
+    rw [hB']
+    exact (B.flip (w y)).hasFDerivAt.comp p h1
+  have hzero : ∀ p ∈ s, ∀ y ∉ K, fderiv ℝ (fun q => Ψ q (e y)) p = 0 := by
+    intro p hp y hy
+    have hev : (fun q => Ψ q (e y)) =ᶠ[nhds p] fun _ => 0 :=
+      Filter.eventually_of_mem (hs.mem_nhds hp) fun q hq => hsupp q hq y hy
+    rw [hev.fderiv_eq]
+    simp
+  have hΨc : ∀ p, Continuous fun y => Ψ p (e y) := fun p =>
+    hΨ.continuous.comp (continuous_const.prodMk he)
+  have hFc : ∀ p, Continuous fun y => B (Ψ p (e y)) (w y) := fun p =>
+    (B.continuous.comp (hΨc p)).clm_apply hw
+  have hF'c : Continuous fun y => B' (fderiv ℝ (fun q => Ψ q (e y)) p₀) (w y) :=
+    (B'.continuous.comp (hDc.comp (continuous_const.prodMk he))).clm_apply hw
+
+  have hcpt : IsCompact (Metric.closedBall p₀ (δ / 2) ×ˢ (e '' K)) :=
+    (isCompact_closedBall _ _).prod (hK.image he)
+  obtain ⟨C₁, hC₁⟩ := hcpt.exists_bound_of_continuousOn hDc.continuousOn
+  obtain ⟨C₂, hC₂⟩ := hK.exists_bound_of_continuousOn hw.continuousOn
+  have hsub : Metric.ball p₀ (δ / 2) ⊆ s := fun p hp =>
+    hball (Metric.ball_subset_ball (by linarith) hp)
+  have hKm : MeasurableSet K := hK.isClosed.measurableSet
+  have hint : Integrable (fun y => B (Ψ p₀ (e y)) (w y)) μ := by
+    rw [← integrableOn_iff_integrable_of_support_subset (s := K)]
+    · exact (hFc p₀).continuousOn.integrableOn_compact hK
+    · intro y hy
+      by_contra hyK
+      apply hy
+      simp [hsupp p₀ hp₀ y hyK]
+  have hbint : Integrable (K.indicator fun _ => ‖B'‖ * C₁ * C₂) μ :=
+    (integrableOn_const hK.measure_lt_top.ne).integrable_indicator hKm
+  refine hasFDerivAt_integral_of_dominated_of_fderiv_le (Metric.ball_mem_nhds p₀ (half_pos hδ))
+    (Filter.Eventually.of_forall fun p => (hFc p).aestronglyMeasurable) hint
+    hF'c.aestronglyMeasurable ?_ hbint (Filter.Eventually.of_forall fun y p _ => hderiv y p)
+  refine Filter.Eventually.of_forall fun y p hp => ?_
+  by_cases hy : y ∈ K
+  · rw [Set.indicator_of_mem hy]
+    have hL : ‖fderiv ℝ (fun q => Ψ q (e y)) p‖ ≤ C₁ :=
+      hC₁ (p, e y) ⟨Metric.ball_subset_closedBall hp, Set.mem_image_of_mem e hy⟩
+    have hh : ‖w y‖ ≤ C₂ := hC₂ y hy
+    calc ‖B' (fderiv ℝ (fun q => Ψ q (e y)) p) (w y)‖
+        ≤ ‖B'‖ * ‖fderiv ℝ (fun q => Ψ q (e y)) p‖ * ‖w y‖ := B'.le_opNorm₂ _ _
+      _ ≤ ‖B'‖ * C₁ * C₂ :=
+        mul_le_mul (mul_le_mul_of_nonneg_left hL (norm_nonneg _)) hh (norm_nonneg _)
+          (mul_nonneg (norm_nonneg _) ((norm_nonneg _).trans hL))
+  · rw [hzero p (hsub hp) y hy]
+    simp [hy]
+
+private theorem contDiffOn_integral_lemma_2 {X : Type} [TopologicalSpace X] [MeasurableSpace X]
+    [OpensMeasurableSpace X] [SecondCountableTopology X] [T2Space X] (μ : Measure X)
+    [IsFiniteMeasureOnCompacts μ] {P Z : Type} [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [ProperSpace P] [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    (e : X → Z) (he : Continuous e) {K : Set X} (hK : IsCompact K) {s : Set P} (hs : IsOpen s)
+    (m : ℕ) :
+    ∀ (V E W : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [NormedAddCommGroup E]
+      [NormedSpace ℝ E] [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
+      (B : V →L[ℝ] E →L[ℝ] W) (Ψ : P → Z → V) (w : X → E),
+      ContDiff ℝ ∞ (Function.uncurry Ψ) → Continuous w → (∀ p ∈ s, ∀ y ∉ K, Ψ p (e y) = 0) →
+      ContDiffOn ℝ m (fun p => ∫ y, B (Ψ p (e y)) (w y) ∂μ) s := by
+  induction m with
+  | zero =>
+    intro V E W _ _ _ _ _ _ _ B Ψ w hΨ hw hsupp
+    simp only [Nat.cast_zero, contDiffOn_zero]
+    intro p hp
+    exact (hasFDerivAt_integral_lemma μ e he hK hs B Ψ w hΨ hw hsupp hp).continuousAt.continuousWithinAt
+  | succ m ih =>
+    intro V E W _ _ _ _ _ _ _ B Ψ w hΨ hw hsupp
+    have hcast : ((m + 1 : ℕ) : WithTop ℕ∞) = (m : WithTop ℕ∞) + 1 := by norm_cast
+    rw [hcast, contDiffOn_succ_iff_fderiv_of_isOpen hs]
+    refine ⟨fun p hp =>
+      (hasFDerivAt_integral_lemma μ e he hK hs B Ψ w hΨ hw hsupp hp).differentiableAt.differentiableWithinAt,
+      fun h => absurd h (by simp), ?_⟩
+    have hD : ContDiff ℝ ∞ (Function.uncurry fun (p : P) (z : Z) => fderiv ℝ (fun q => Ψ q z) p) := by
+      have hf' := hΨ.comp ((contDiff_snd (E := P × Z) (F := P)).prodMk
+        ((contDiff_snd (E := P) (F := Z)).comp (contDiff_fst (E := P × Z) (F := P))))
+      exact ContDiff.fderiv (f := fun (x : P × Z) (q : P) => Ψ q x.2) (g := Prod.fst) hf' contDiff_fst
+        (le_of_eq ENat.coe_top_add_one)
+    have hDz : ∀ p ∈ s, ∀ y ∉ K, fderiv ℝ (fun q => Ψ q (e y)) p = 0 := by
+      intro p hp y hy
+      have hev : (fun q => Ψ q (e y)) =ᶠ[nhds p] fun _ => 0 :=
+        Filter.eventually_of_mem (hs.mem_nhds hp) fun q hq => hsupp q hq y hy
+      rw [hev.fderiv_eq]
+      simp
+    refine (ih (P →L[ℝ] V) E (P →L[ℝ] W) (((ContinuousLinearMap.compL ℝ P V W).comp B.flip).flip)
+      (fun p z => fderiv ℝ (fun q => Ψ q z) p) w hD hw hDz).congr fun p hp => ?_
+    exact (hasFDerivAt_integral_lemma μ e he hK hs B Ψ w hΨ hw hsupp hp).fderiv
+
+theorem garding_smooth : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsURepOn (UJset ε) σ →
+    ∀ β : Matrix (Fin n) (Fin n) ℂ → ℂ, SmoothOnG ε β → HasCompactSupport (fun g : UJ ε => β (umat g)) →
+    ∀ u : H, SmoothOnGV ε (fun g => σ g (∫ y : UJ ε, β (umat y) • σ (umat y) u ∂(muG ε))) := by
+  intro n ε H _ _ _ σ hσ β hβ hβc u g₀ _
+  obtain ⟨⟨_, hσmul⟩, _, hσcont⟩ := hσ
+  obtain ⟨φ, hφ, hφβ⟩ := exists_contDiff_extension hβ
+  have hemb := (isClosedEmbeddingMatrix n ε).1
+  have hum : Continuous (fun y : UJ ε => umat y) := hemb.continuous
+
+  set T := tsupport (fun g : UJ ε => β (umat g)) with hT
+  have hmulc : Continuous fun q : Matrix (Fin n) (Fin n) ℂ × Matrix (Fin n) (Fin n) ℂ => q.1 * q.2 :=
+    (contDiff_matrix_mul contDiff_fst contDiff_snd).continuous
+  have hcpt : IsCompact (Metric.closedBall g₀ 1 ×ˢ T) := (isCompact_closedBall _ _).prod hβc
+  obtain ⟨R, hR⟩ := hcpt.exists_bound_of_continuousOn
+    (f := fun q : Matrix (Fin n) (Fin n) ℂ × UJ ε => q.1 * umat q.2)
+    (hmulc.comp (continuous_fst.prodMk (hum.comp continuous_snd))).continuousOn
+  set R' := max R 0 with hR'
+  have hR'0 : 0 ≤ R' := le_max_right _ _
+  have hRR : R ≤ R' := le_max_left _ _
+  let χ : ContDiffBump (0 : Matrix (Fin n) (Fin n) ℂ) := ⟨R' + 1, R' + 2, by linarith, by linarith⟩
+  have hχsupp : Function.support χ = Metric.ball 0 (R' + 2) := χ.support_eq
+  have hχone : ∀ Y : Matrix (Fin n) (Fin n) ℂ, ‖Y‖ ≤ R' + 1 → χ Y = 1 := fun Y hY =>
+    χ.one_of_mem_closedBall (mem_closedBall_zero_iff.2 hY)
+
+  let Ψ : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ → ℂ := fun p Y =>
+    ((χ Y : ℝ) : ℂ) * φ (Jm ε * pᴴ * Jm ε * Y)
+  have hΨ : ContDiff ℝ ∞ (Function.uncurry Ψ) := by
+    have h1 : ContDiff ℝ ∞ fun x : Matrix (Fin n) (Fin n) ℂ × Matrix (Fin n) (Fin n) ℂ =>
+        ((χ x.2 : ℝ) : ℂ) :=
+      Complex.ofRealCLM.contDiff.comp (χ.contDiff.comp contDiff_snd)
+    have h2 : ContDiff ℝ ∞ fun x : Matrix (Fin n) (Fin n) ℂ × Matrix (Fin n) (Fin n) ℂ =>
+        φ (Jm ε * x.1ᴴ * Jm ε * x.2) :=
+      hφ.comp (contDiff_matrix_mul (contDiff_matrix_mul (contDiff_matrix_mul (contDiff_const (c := Jm ε))
+        (contDiff_adjoint.comp contDiff_fst)) (contDiff_const (c := Jm ε))) contDiff_snd)
+    exact h1.mul h2
+  set K := (fun y : UJ ε => umat y) ⁻¹' Metric.closedBall 0 (R' + 2) with hKeq
+  have hK : IsCompact K := hemb.isCompact_preimage (isCompact_closedBall _ _)
+  have hsupp : ∀ p ∈ Metric.ball g₀ 1, ∀ y ∉ K, Ψ p (umat y) = 0 := by
+    intro p _ y hy
+    have h0 : χ (umat y) = 0 := by
+      by_contra h
+      have h' : umat y ∈ Function.support χ := h
+      rw [hχsupp] at h'
+      exact hy (Metric.ball_subset_closedBall h')
+    simp [Ψ, h0]
+  have hw : Continuous fun y : UJ ε => σ (umat y) u :=
+    (hσcont u).comp_continuous hum (fun y => y.2)
+  have hsmooth := contDiffOn_infty.2 fun m => contDiffOn_integral_lemma_2 (muG ε)
+    (fun y : UJ ε => umat y) hum hK Metric.isOpen_ball m ℂ H H
+    (ContinuousLinearMap.lsmul ℝ ℂ) Ψ (fun y => σ (umat y) u) hΨ hw hsupp
+  refine ⟨Metric.ball g₀ 1, _, Metric.isOpen_ball, Metric.mem_ball_self one_pos, hsmooth, ?_⟩
+  intro g hg hgG
+
+  have hgG' : gᴴ * Jm ε * g = Jm ε := hgG
+  have hinv : Jm ε * gᴴ * Jm ε * g = 1 := by
+    calc Jm ε * gᴴ * Jm ε * g = Jm ε * (gᴴ * Jm ε * g) := by simp only [Matrix.mul_assoc]
+      _ = 1 := by rw [hgG', Jm_mul_self]
+  let gu : (Matrix (Fin n) (Fin n) ℂ)ˣ := ⟨g, Jm ε * gᴴ * Jm ε, mul_eq_one_comm.1 hinv, hinv⟩
+  let g' : UJ ε := ⟨gu, hgG⟩
+  have hg'm : umat g' = g := rfl
+  have hg'inv : umat g'⁻¹ = Jm ε * gᴴ * Jm ε := rfl
+  have hφcomp : ∀ y : UJ ε, β (umat y) = φ (umat y) := fun y => (hφβ _ y.2).symm
+  have hint : Integrable (fun y : UJ ε => β (umat y) • σ (umat y) u) (muG ε) := by
+    refine Continuous.integrable_of_hasCompactSupport ?_ (hβc.smul_right (f' := fun y => σ (umat y) u))
+    have hβu : Continuous fun y : UJ ε => β (umat y) := by
+      simp_rw [hφcomp]
+      exact hφ.continuous.comp hum
+    exact hβu.smul hw
+  have hgl : g ∈ Metric.closedBall g₀ 1 := Metric.ball_subset_closedBall hg
+  calc σ g (∫ y, β (umat y) • σ (umat y) u ∂muG ε)
+      = ∫ y, σ g (β (umat y) • σ (umat y) u) ∂muG ε := ((σ g).integral_comp_comm hint).symm
+    _ = ∫ y, β (umat (g'⁻¹ * (g' * y))) • σ (umat (g' * y)) u ∂muG ε := by
+        congr 1
+        funext y
+        rw [inv_mul_cancel_left, map_smul]
+        congr 1
+        change σ g (σ (umat y) u) = σ (g * umat y) u
+        rw [hσmul g hgG (umat y) y.2]
+        try rfl
+    _ = ∫ y, β (umat (g'⁻¹ * y)) • σ (umat y) u ∂muG ε :=
+        integral_mul_left_eq_self (fun y => β (umat (g'⁻¹ * y)) • σ (umat y) u) g'
+    _ = ∫ y, ContinuousLinearMap.lsmul ℝ ℂ (Ψ g (umat y)) (σ (umat y) u) ∂muG ε := by
+        congr 1
+        funext y
+        rw [ContinuousLinearMap.lsmul_apply]
+        congr 1
+        have hprod : umat (g'⁻¹ * y) = Jm ε * gᴴ * Jm ε * umat y := rfl
+        have hφy : φ (Jm ε * gᴴ * Jm ε * umat y) = β (umat (g'⁻¹ * y)) := by
+          rw [← hprod]; exact (hφcomp _).symm
+        simp only [Ψ, hφy]
+        by_cases h0 : β (umat (g'⁻¹ * y)) = 0
+        · simp [h0]
+        · have hyT : g'⁻¹ * y ∈ T := subset_tsupport _ h0
+          have hbd : ‖g * umat (g'⁻¹ * y)‖ ≤ R := hR (g, g'⁻¹ * y) ⟨hgl, hyT⟩
+          have hY : g * umat (g'⁻¹ * y) = umat y := by
+            rw [← hg'm]
+            change umat (g' * (g'⁻¹ * y)) = umat y
+            rw [mul_inv_cancel_left]
+          rw [hY] at hbd
+          rw [hχone (umat y) (by linarith), Complex.ofReal_one, one_mul]
+
+end GlobalTheory.GardingSmooth
+end
+end
+
+section
+open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants
+open scoped InnerProductSpace ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.KTypeHighest
+
+section OneParam
+
+variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+
+private theorem hasDerivAt_of_hasDerivAt_shift (U : ℝ → H →L[ℂ] H) (hadd : ∀ s t v, U (s + t) v = U s (U t v))
+    (v w : H) (t : ℝ) (hd : HasDerivAt (fun s => U s (U t v)) w 0) :
+    HasDerivAt (fun s => U s v) w t := by
+  have h1 : HasDerivAt (fun s => U s (U t v)) w (t - t) := by rw [sub_self]; exact hd
+  have h2 := HasDerivAt.comp_sub_const t t h1
+  convert h2 using 1
+  funext s
+  show U s v = U (s - t) (U t v)
+  rw [← hadd, sub_add_cancel]
+
+theorem eigen (U : ℝ → H →L[ℂ] H) (h0 : ∀ v, U 0 v = v)
+    (hadd : ∀ s t v, U (s + t) v = U s (U t v)) (v : H) (c : ℂ)
+    (hd : HasDerivAt (fun t => U t v) (c • v) 0) : U 1 v = Complex.exp c • v := by
+  have hder : ∀ t, HasDerivAt (fun s => U s v) (c • U t v) t := by
+    intro t
+    apply hasDerivAt_of_hasDerivAt_shift U hadd v _ t
+    have h1 : (fun s => U s (U t v)) = fun s => U t (U s v) := by
+      funext s; rw [← hadd, ← hadd, add_comm]
+    rw [h1]
+    have h2 := ((U t).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) hd
+    simp only [ContinuousLinearMap.coe_restrictScalars'] at h2
+    rw [map_smul] at h2
+    exact h2
+  let L : H →L[ℂ] H := c • ContinuousLinearMap.id ℂ H
+  have hL : ∀ x, L x = c • x := fun x => rfl
+  let g : ℝ → H := fun t => Complex.exp (c * t) • v
+  have hg : ∀ t, HasDerivAt g (c • g t) t := by
+    intro t
+    have h1 : HasDerivAt (fun t : ℝ => c * (t : ℂ)) c t := by
+      simpa using ((hasDerivAt_id t).ofReal_comp).const_mul c
+    have h2 := h1.cexp.smul_const v
+    convert h2 using 1
+    simp only [g, smul_smul, mul_comm]
+  have heq : (fun s => U s v) = g := by
+    apply ODE_solution_unique_univ (v := fun _ x => L x) (s := fun _ => Set.univ) (K := ‖L‖₊)
+      (t₀ := 0)
+    · intro _; exact L.lipschitz.lipschitzOnWith
+    · intro t; exact ⟨by simpa [hL] using hder t, trivial⟩
+    · intro t; exact ⟨by simpa [hL] using hg t, trivial⟩
+    · simp [g, h0]
+  have := congrFun heq 1
+  simpa [g] using this
+
+theorem deriv_mem (S : Submodule ℂ H) [FiniteDimensional ℂ S] (f : ℝ → H) (hf : ∀ t, f t ∈ S) (w : H)
+    (hd : HasDerivAt f w 0) : w ∈ S := by
+  have hc : IsClosed (S : Set H) := S.closed_of_finiteDimensional
+  rw [hasDerivAt_iff_tendsto_slope] at hd
+  refine hc.mem_of_tendsto hd (Filter.Eventually.of_forall fun t => ?_)
+  rw [slope_def_module]
+  exact S.smul_mem _ (S.sub_mem (hf t) (hf 0))
+
+private theorem mem_of_hasDerivAt_linear_of_invariant {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+    (T : Submodule ℂ E) [FiniteDimensional ℂ T] (L : E →ₗ[ℂ] E) (hLT : ∀ x ∈ T, L x ∈ T)
+    (s : Set E) (hTs : ∀ x ∈ T, x ∈ s) (K : NNReal) (hK : LipschitzOnWith K L s)
+    (f : ℝ → E) (hfs : ∀ t, f t ∈ s) (hf : ∀ t, HasDerivAt f (L (f t)) t) (h0 : f 0 ∈ T)
+    (t : ℝ) : f t ∈ T := by
+  haveI : CompleteSpace T := FiniteDimensional.complete ℂ T
+  let B : T →L[ℂ] T := LinearMap.toContinuousLinearMap (L.restrict hLT)
+  have hB : ∀ y : T, ((B y : T) : E) = L y := fun y => rfl
+  let x0 : T := ⟨f 0, h0⟩
+  let g : ℝ → E := fun t => ((NormedSpace.exp ((t : ℂ) • B) x0 : T) : E)
+  have hg : ∀ t, HasDerivAt g (L (g t)) t := by
+    intro t
+    have h1 : HasDerivAt (fun u : ℂ => ((NormedSpace.exp (u • B) x0 : T) : E))
+        (((B * NormedSpace.exp ((t : ℂ) • B)) x0 : T) : E) (t : ℂ) := by
+      have h0 := T.subtypeL.hasFDerivAt.comp_hasDerivAt (t : ℂ)
+        ((hasDerivAt_exp_smul_const' B (t : ℂ)).clm_apply (hasDerivAt_const (t : ℂ) x0))
+      convert h0 using 1 <;> first | rfl | simp
+    have h2 := (h1.hasFDerivAt.restrictScalars ℝ).comp_hasDerivAt t ((hasDerivAt_id t).ofReal_comp)
+    have h3 : HasDerivAt (fun u : ℝ => ((NormedSpace.exp ((u : ℂ) • B) x0 : T) : E))
+        (((B * NormedSpace.exp ((t : ℂ) • B)) x0 : T) : E) t := by
+      convert h2 using 1 <;> first | rfl | simp
+    have h4 : L (g t) = (((B * NormedSpace.exp ((t : ℂ) • B)) x0 : T) : E) := by
+      rw [ContinuousLinearMap.mul_apply, hB]
+    rw [h4]
+    exact h3
+  have heq : f = g := by
+    apply ODE_solution_unique_univ (v := fun _ x => L x) (s := fun _ => s) (K := K) (t₀ := 0)
+    · intro _; exact hK
+    · intro t; exact ⟨hf t, hfs t⟩
+    · intro t; exact ⟨hg t, hTs _ (NormedSpace.exp ((t : ℂ) • B) x0).2⟩
+    · simp [g, x0]
+  rw [heq]
+  exact (NormedSpace.exp ((t : ℂ) • B) x0).2
+
+private theorem sign_mul_self' {n : ℕ} (ε : Fin n → Bool) (a : Fin n) :
+    (if ε a then (1 : ℂ) else -1) * (if ε a then 1 else -1) = 1 := by
+  split <;> norm_num
+
+private theorem sign_eq_neg_of_ne {n : ℕ} (ε : Fin n → Bool) (a b : Fin n) (h : ε a ≠ ε b) :
+    (if ε a then (1 : ℂ) else -1) = -(if ε b then 1 else -1) := by
+  cases ha : ε a <;> cases hb : ε b <;> simp_all
+
+private theorem sign_eq_of_eq {n : ℕ} (ε : Fin n → Bool) (a b : Fin n) (h : ε a = ε b) :
+    (if ε a then (1 : ℂ) else -1) = (if ε b then 1 else -1) := by
+  rw [h]
+
+end OneParam
+
+section Alg
+
+variable {n : ℕ} {ε : Fin n → Bool}
+
+theorem inK_iff (X : Matrix (Fin n) (Fin n) ℂ) :
+    inK ε X ↔ Xᴴ = -X ∧ ∀ a b, ε a ≠ ε b → X a b = 0 := by
+  constructor
+  · rintro ⟨h1, h2⟩
+    have hc : ∀ a b, X a b * (if ε b then (1 : ℂ) else -1) = (if ε a then (1 : ℂ) else -1) * X a b := by
+      intro a b
+      have := congrFun (congrFun h2 a) b
+      simpa [Formalism.REAL.Jm, Matrix.mul_diagonal, Matrix.diagonal_mul] using this
+    have hg : ∀ a b, star (X b a) * (if ε b then (1 : ℂ) else -1) +
+        (if ε a then (1 : ℂ) else -1) * X a b = 0 := by
+      intro a b
+      have := congrFun (congrFun h1 a) b
+      simpa [Formalism.REAL.Jm, Matrix.mul_diagonal, Matrix.diagonal_mul] using this
+    have hz : ∀ a b, ε a ≠ ε b → X a b = 0 := by
+      intro a b hab
+      have e1 := hc a b
+      have e2 := sign_eq_neg_of_ne ε a b hab
+      have e3 := sign_mul_self' ε b
+      linear_combination ((if ε b then (1 : ℂ) else -1) / 2) * e1 +
+        ((if ε b then (1 : ℂ) else -1) * X a b / 2) * e2 - X a b * e3
+    refine ⟨?_, hz⟩
+    ext a b
+    rw [Matrix.conjTranspose_apply, Matrix.neg_apply]
+    by_cases hab : ε a = ε b
+    · have e1 := hg a b
+      have e2 := sign_eq_of_eq ε a b hab
+      have e3 := sign_mul_self' ε b
+      linear_combination (if ε b then (1 : ℂ) else -1) * e1 -
+        ((if ε b then (1 : ℂ) else -1) * X a b) * e2 - (star (X b a) + X a b) * e3
+    · rw [hz a b hab, hz b a (Ne.symm hab)]
+      simp
+  · rintro ⟨hX, hz⟩
+    have hcomm : X * Formalism.REAL.Jm ε = Formalism.REAL.Jm ε * X := by
+      ext a b
+      simp only [Formalism.REAL.Jm, Matrix.mul_diagonal, Matrix.diagonal_mul]
+      by_cases hab : ε a = ε b
+      · rw [sign_eq_of_eq ε a b hab]; ring
+      · rw [hz a b hab]; ring
+    refine ⟨?_, hcomm⟩
+    show Xᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * X = 0
+    rw [hX, neg_mul, hcomm, neg_add_cancel]
+
+theorem inK_diag (θ : Fin n → ℝ) : inK ε (Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) := by
+  rw [inK_iff]
+  refine ⟨?_, fun a b hab => ?_⟩
+  · rw [Matrix.diagonal_conjTranspose, Matrix.diagonal_neg]
+    congr 1
+    funext a
+    simp
+  · have hne : a ≠ b := fun h => hab (h ▸ rfl)
+    exact Matrix.diagonal_apply_ne _ hne
+
+theorem inK_single {a b : Fin n} (hab : ε a = ε b) (c : ℂ) :
+    inK ε (Matrix.single a b c - Matrix.single b a (star c)) := by
+  rw [inK_iff]
+  refine ⟨?_, fun i j hij => ?_⟩
+  · ext i j
+    simp only [Matrix.conjTranspose_apply, Matrix.sub_apply, Matrix.neg_apply, Matrix.single_apply]
+    have e1 : (a = j ∧ b = i) ↔ (b = i ∧ a = j) := and_comm
+    have e2 : (b = j ∧ a = i) ↔ (a = i ∧ b = j) := and_comm
+    simp only [e1, e2]
+    split_ifs <;> simp [star_sub]
+  · simp only [Matrix.sub_apply, Matrix.single_apply]
+    rw [if_neg, if_neg, sub_zero]
+    · rintro ⟨rfl, rfl⟩; simp_all
+    · rintro ⟨rfl, rfl⟩; simp_all
+
+theorem exp_diag (θ : Fin n → ℝ) (t : ℝ) :
+    NormedSpace.exp ((t : ℂ) • Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) =
+      Matrix.diagonal fun a => Complex.exp (((t * θ a : ℝ) : ℂ) * Complex.I) := by
+  rw [← Matrix.diagonal_smul, Matrix.exp_diagonal]
+  congr 1
+  funext a
+  rw [Pi.coe_exp, Pi.smul_apply, smul_eq_mul, ← Complex.exp_eq_exp_ℂ]
+  congr 1
+  push_cast
+  ring
+
+theorem exp_mem_K {X : Matrix (Fin n) (Fin n) ℂ} (hX : inK ε X) (t : ℝ) :
+    NormedSpace.exp ((t : ℂ) • X) ∈ Kset ε := by
+  have hXs := ((inK_iff X).1 hX).1
+  have hcomm : X * Formalism.REAL.Jm ε = Formalism.REAL.Jm ε * X := hX.2
+  refine ⟨?_, ?_⟩
+  · rw [Matrix.mem_unitaryGroup_iff]
+    have hs : star (NormedSpace.exp ((t : ℂ) • X)) = NormedSpace.exp (-((t : ℂ) • X)) := by
+      rw [Matrix.star_eq_conjTranspose, ← Matrix.exp_conjTranspose, Matrix.conjTranspose_smul, hXs,
+        smul_neg]
+      simp
+    rw [hs, ← Matrix.exp_add_of_commute _ _ ((Commute.refl ((t : ℂ) • X)).neg_right), add_neg_cancel,
+      NormedSpace.exp_zero]
+  · have hc : Commute (Formalism.REAL.Jm ε) ((t : ℂ) • X) := (Commute.smul_right hcomm.symm _)
+    exact hc.exp_right.eq.symm
+
+variable {W : Type} [AddCommGroup W] [Module ℂ W]
+
+theorem sum_diag (E : Fin n → Fin n → Module.End ℂ W) (d : Fin n → ℂ) (v : W) :
+    ∑ a, ∑ b, Matrix.diagonal d a b • E a b v = ∑ a, d a • E a a v := by
+  simp [Matrix.diagonal_apply, ite_smul, Finset.sum_ite_eq]
+
+theorem sum_single (E : Fin n → Fin n → Module.End ℂ W) (a b : Fin n) (c : ℂ) (v : W) :
+    ∑ i, ∑ j, Matrix.single a b c i j • E i j v = c • E a b v := by
+  simp [Matrix.single_apply, ite_and, ite_smul, Finset.sum_ite_eq, Finset.sum_ite_eq']
+
+theorem isWeight_root {E : Fin n → Fin n → Module.End ℂ W} (hE : GlRel E) {μ : Fin n → ℝ} {u : W}
+    (hu : IsWeight E μ u) (a b : Fin n) : IsWeight E (μ + root a b) (E a b u) := by
+  intro c
+  have h : E c c (E a b u) - E a b (E c c u) =
+      (if c = a then E c b else 0) u - (if b = c then E a c else 0) u :=
+    LinearMap.congr_fun (hE c c a b) u
+  have hu' : ∀ d, E d d u = (μ d : ℂ) • u := hu
+  rw [hu' c, map_smul] at h
+  have key : (if c = a then E c b else 0) u - (if b = c then E a c else 0) u =
+      ((((if c = a then 1 else 0) - (if c = b then 1 else 0) : ℝ)) : ℂ) • E a b u := by
+    split_ifs <;> subst_vars <;> simp_all
+  have hr : (((μ + Formalism.REAL.root a b) c : ℝ) : ℂ) =
+      (μ c : ℂ) + ((((if c = a then 1 else 0) - (if c = b then 1 else 0) : ℝ)) : ℂ) := by
+    simp [Formalism.REAL.root, Pi.single_apply]
+  rw [sub_eq_iff_eq_add'] at h
+  rw [h, key, hr, add_smul]
+
+private theorem sum_mul_root_eq_sub' {n : ℕ} (i j : Fin n) :
+    ∑ k : Fin n, ((k : ℕ) : ℝ) * Formalism.REAL.root i j k = ((i : ℕ) : ℝ) - ((j : ℕ) : ℝ) := by
+  simp [Formalism.REAL.root, Pi.single_apply, mul_sub, Finset.sum_sub_distrib]
+
+theorem not_cdom (Λ : Fin n → ℝ) {a b : Fin n} (hab : a < b) : ¬ CDom ε (Λ + root a b) Λ := by
+  rintro ⟨c, hc, heq⟩
+  let φ : (Fin n → ℝ) →ₗ[ℝ] ℝ := ∑ k : Fin n, ((k : ℕ) : ℝ) • LinearMap.proj k
+  have hφx : ∀ x, φ x = ∑ k : Fin n, ((k : ℕ) : ℝ) * x k := by
+    intro x; simp [φ]
+  have hφr : ∀ i j, φ (Formalism.REAL.root i j) = ((i : ℕ) : ℝ) - ((j : ℕ) : ℝ) := by
+    intro i j; rw [hφx]; exact sum_mul_root_eq_sub' i j
+  have hneg : Λ - (Λ + Formalism.REAL.root a b) = -Formalism.REAL.root a b := by abel
+  have key : -(((a : ℕ) : ℝ) - ((b : ℕ) : ℝ)) =
+      ∑ i, ∑ j, ((c i j : ℕ) : ℝ) * (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) := by
+    have h1 := congrArg φ heq
+    rw [hneg, map_neg, hφr] at h1
+    rw [h1, map_sum]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [map_sum]
+    refine Finset.sum_congr rfl (fun j _ => ?_)
+    rw [map_smul, hφr, smul_eq_mul]
+  have hle : ∑ i, ∑ j, ((c i j : ℕ) : ℝ) * (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) ≤ 0 := by
+    apply Finset.sum_nonpos
+    intro i _
+    apply Finset.sum_nonpos
+    intro j _
+    by_cases h : c i j = 0
+    · simp [h]
+    · have hij := (hc i j h).1
+      have : ((i : ℕ) : ℝ) < ((j : ℕ) : ℝ) := by exact_mod_cast hij
+      exact mul_nonpos_of_nonneg_of_nonpos (by positivity) (by linarith)
+  have hab' : ((a : ℕ) : ℝ) < ((b : ℕ) : ℝ) := by exact_mod_cast hab
+  linarith
+
+end Alg
+
+section Rep
+
+variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+  {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {Vs : Submodule ℂ H} {E : Fin n → Fin n → Module.End ℂ Vs}
+
+theorem group_zero (hσ : IsURepOn (UJset ε) σ) (Z : Matrix (Fin n) (Fin n) ℂ) (v : H) :
+    σ (NormedSpace.exp (((0 : ℝ) : ℂ) • Z)) v = v := by
+  rw [Complex.ofReal_zero, zero_smul, NormedSpace.exp_zero, hσ.1.1]
+  rfl
+
+private theorem Jm_mul_JmFlagMeasures (ε : Fin n → Bool) : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := by
+  simp only [Formalism.REAL.Jm, Matrix.diagonal_mul_diagonal]
+  rw [← Matrix.diagonal_one]
+  congr 1
+  funext a
+  split <;> norm_num
+
+private theorem inUJ_exp_smul_of_inG {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : inG ε Z) (t : ℝ) :
+    Formalism.REAL.inUJ ε (NormedSpace.exp ((t : ℂ) • Z)) := by
+  have hJJ := Jm_mul_JmFlagMeasures ε
+  have hst : star (t : ℂ) = t := by simp
+  have hAg : ((t : ℂ) • Z)ᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * ((t : ℂ) • Z) = 0 := by
+    have hZ' : Zᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * Z = 0 := hZ
+    rw [Matrix.conjTranspose_smul, hst, Matrix.smul_mul, Matrix.mul_smul, ← smul_add, hZ', smul_zero]
+  have hA : ((t : ℂ) • Z)ᴴ = Formalism.REAL.Jm ε * (-((t : ℂ) • Z)) * Formalism.REAL.Jm ε := by
+    calc ((t : ℂ) • Z)ᴴ = ((t : ℂ) • Z)ᴴ * (Formalism.REAL.Jm ε * Formalism.REAL.Jm ε) := by rw [hJJ, mul_one]
+      _ = (((t : ℂ) • Z)ᴴ * Formalism.REAL.Jm ε) * Formalism.REAL.Jm ε := by rw [mul_assoc]
+      _ = (-(Formalism.REAL.Jm ε * ((t : ℂ) • Z))) * Formalism.REAL.Jm ε := by
+        rw [eq_neg_of_add_eq_zero_left hAg]
+      _ = Formalism.REAL.Jm ε * (-((t : ℂ) • Z)) * Formalism.REAL.Jm ε := by rw [mul_neg, neg_mul]
+  have hconj : NormedSpace.exp (Formalism.REAL.Jm ε * (-((t : ℂ) • Z)) * Formalism.REAL.Jm ε) =
+      Formalism.REAL.Jm ε * NormedSpace.exp (-((t : ℂ) • Z)) * Formalism.REAL.Jm ε :=
+    Matrix.exp_units_conj ⟨Formalism.REAL.Jm ε, Formalism.REAL.Jm ε, hJJ, hJJ⟩ (-((t : ℂ) • Z))
+  show (NormedSpace.exp ((t : ℂ) • Z))ᴴ * Formalism.REAL.Jm ε * NormedSpace.exp ((t : ℂ) • Z) = Formalism.REAL.Jm ε
+  rw [← Matrix.exp_conjTranspose, hA, hconj]
+  calc Formalism.REAL.Jm ε * NormedSpace.exp (-((t : ℂ) • Z)) * Formalism.REAL.Jm ε * Formalism.REAL.Jm ε *
+        NormedSpace.exp ((t : ℂ) • Z)
+      = Formalism.REAL.Jm ε * (NormedSpace.exp (-((t : ℂ) • Z)) * (Formalism.REAL.Jm ε * Formalism.REAL.Jm ε) *
+        NormedSpace.exp ((t : ℂ) • Z)) := by simp only [mul_assoc]
+    _ = Formalism.REAL.Jm ε := by
+      rw [hJJ, mul_one, ← Matrix.exp_add_of_commute _ _ ((Commute.refl ((t : ℂ) • Z)).neg_left), neg_add_cancel,
+        NormedSpace.exp_zero, mul_one]
+
+theorem group_add (hσ : IsURepOn (UJset ε) σ) {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : inG ε Z)
+    (s t : ℝ) (v : H) :
+    σ (NormedSpace.exp (((s + t : ℝ) : ℂ) • Z)) v =
+      σ (NormedSpace.exp ((s : ℂ) • Z)) (σ (NormedSpace.exp ((t : ℂ) • Z)) v) := by
+  have hs := inUJ_exp_smul_of_inG hZ s
+  have ht := inUJ_exp_smul_of_inG hZ t
+  rw [Complex.ofReal_add, add_smul,
+    Matrix.exp_add_of_commute _ _ (((Commute.refl Z).smul_left (s : ℂ)).smul_right (t : ℂ)),
+    hσ.1.2 _ hs _ ht]
+  rfl
+
+theorem isWtOn_of_isWeight (hσ : IsURepOn (UJset ε) σ)
+    (hE : ∀ X, inG ε X → ∀ u : Vs,
+      HasDerivAt (GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.orbit σ X u) ((∑ a, ∑ b, X a b • E a b u : Vs) : H) 0)
+    (μ : Fin n → ℝ) (v : Vs) (hv : IsWeight E μ v) : IsWtOn (Kset ε) σ μ (v : H) := by
+  intro θ _
+  have hK := inK_diag (ε := ε) θ
+  have hv' : ∀ a, E a a v = (μ a : ℂ) • v := hv
+  have hsum : ((∑ a, ∑ b, (Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) a b • E a b v : Vs) : H) =
+      (((∑ a, μ a * θ a : ℝ) : ℂ) * Complex.I) • (v : H) := by
+    rw [sum_diag]
+    simp only [hv', smul_smul, ← Finset.sum_smul, Submodule.coe_smul]
+    congr 1
+    push_cast
+    rw [Finset.sum_mul]
+    exact Finset.sum_congr rfl (fun a _ => by ring)
+  have hder : HasDerivAt (fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) •
+      Matrix.diagonal fun a => (θ a : ℂ) * Complex.I)) (v : H))
+      ((((∑ a, μ a * θ a : ℝ) : ℂ) * Complex.I) • (v : H)) 0 := by
+    rw [← hsum]; exact hE _ hK.1 v
+  have h1 := eigen (fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) •
+      Matrix.diagonal fun a => (θ a : ℂ) * Complex.I))) (fun w => group_zero hσ _ w)
+    (group_add hσ hK.1) (v : H) _ hder
+  have hx : NormedSpace.exp (((1 : ℝ) : ℂ) • Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) =
+      Matrix.diagonal (fun a => Complex.exp ((θ a : ℂ) * Complex.I)) := by
+    rw [exp_diag]; simp only [one_mul]
+  rw [← hx]
+  exact h1
+
+theorem isWeight_of_isWtOn
+    (hE : ∀ X, inG ε X → ∀ u : Vs,
+      HasDerivAt (GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.orbit σ X u) ((∑ a, ∑ b, X a b • E a b u : Vs) : H) 0)
+    (μ : Fin n → ℝ) (v : Vs) (hv : IsWtOn (Kset ε) σ μ (v : H)) : IsWeight E μ v := by
+  intro a
+  have hK := inK_diag (ε := ε) (Pi.single a (1 : ℝ) : Fin n → ℝ)
+  have hder := hE _ hK.1 v
+  have hs0 : ∀ t : ℝ, ∑ b, μ b * (t * (Pi.single a (1 : ℝ) : Fin n → ℝ) b) = t * μ a := by
+    intro t
+    rw [Finset.sum_eq_single a]
+    · simp; ring
+    · intro b _ hb; simp [Pi.single_apply, hb]
+    · simp
+  have hf : GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.orbit σ (Matrix.diagonal fun b => (((Pi.single a (1 : ℝ) : Fin n → ℝ) b : ℝ) : ℂ) *
+      Complex.I) (v : H) = fun t : ℝ => Complex.exp ((t : ℂ) * ((μ a : ℂ) * Complex.I)) • (v : H) := by
+    funext t
+    have hm := exp_mem_K hK t
+    rw [exp_diag] at hm
+    show σ (NormedSpace.exp ((t : ℂ) • Matrix.diagonal fun b => (((Pi.single a (1 : ℝ) : Fin n → ℝ) b : ℝ) : ℂ) *
+      Complex.I)) (v : H) = _
+    rw [exp_diag, hv _ hm, hs0]
+    congr 2
+    push_cast
+    ring
+  have h2 : HasDerivAt (fun t : ℝ => Complex.exp ((t : ℂ) * ((μ a : ℂ) * Complex.I)) • (v : H))
+      (((μ a : ℂ) * Complex.I) • (v : H)) 0 := by
+    have h1 : HasDerivAt (fun t : ℝ => (t : ℂ) * ((μ a : ℂ) * Complex.I)) ((μ a : ℂ) * Complex.I) 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).ofReal_comp).mul_const ((μ a : ℂ) * Complex.I)
+    simpa using h1.cexp.smul_const (v : H)
+  rw [hf] at hder
+  have h3 := hder.unique h2
+  rw [sum_diag] at h3
+  have hs : ∑ b, ((((Pi.single a (1 : ℝ) : Fin n → ℝ) b : ℝ) : ℂ) * Complex.I) • E b b v = Complex.I • E a a v := by
+    rw [Finset.sum_eq_single a]
+    · simp
+    · intro b _ hb; simp [Pi.single_apply, hb]
+    · simp
+  rw [hs] at h3
+  apply Subtype.ext
+  rw [Submodule.coe_smul]
+  have h4 : Complex.I • ((E a a v : Vs) : H) = Complex.I • ((μ a : ℂ) • (v : H)) := by
+    rw [← Submodule.coe_smul, h3, smul_smul, mul_comm]
+  exact smul_right_injective H Complex.I_ne_zero h4
+
+private theorem sum_smul_E_mem_of_isKStableOn {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H]
+    [InnerProductSpace ℂ H] {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {Vs : Submodule ℂ H}
+    {E : Fin n → Fin n → Module.End ℂ Vs}
+    (hE : ∀ X, inG ε X → ∀ u : Vs,
+      HasDerivAt (GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.orbit σ X u) ((∑ a, ∑ b, X a b • E a b u : Vs) : H) 0)
+    (S : Submodule ℂ H) [FiniteDimensional ℂ S] (hS : IsKStableOn ε σ S)
+    (X : Matrix (Fin n) (Fin n) ℂ) (hX : inK ε X) (u : Vs) (hu : (u : H) ∈ S) :
+    ((∑ a, ∑ b, X a b • E a b u : Vs) : H) ∈ S :=
+  deriv_mem S (GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.orbit σ X u) (fun t => hS _ (exp_mem_K hX t) _ hu) _ (hE X hX.1 u)
+
+private theorem sum_single_sub_single_star_smul_E {n : ℕ} {W : Type} [AddCommGroup W] [Module ℂ W]
+    (E : Fin n → Fin n → Module.End ℂ W) (a b : Fin n) (c : ℂ) (v : W) :
+    ∑ i, ∑ j, (Matrix.single a b c - Matrix.single b a (star c)) i j • E i j v =
+      c • E a b v - star c • E b a v := by
+  simp only [Matrix.sub_apply, sub_smul, Finset.sum_sub_distrib, sum_single]
+
+theorem kStable_comap
+    (hE : ∀ X, inG ε X → ∀ u : Vs,
+      HasDerivAt (GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.orbit σ X u) ((∑ a, ∑ b, X a b • E a b u : Vs) : H) 0)
+    (S : Submodule ℂ H) [FiniteDimensional ℂ S] (hS : IsKStableOn ε σ S) :
+    KStable ε E (S.comap Vs.subtype) := by
+  intro a b hab x hx
+  have hx' : (x : H) ∈ S := hx
+  have h1 := sum_smul_E_mem_of_isKStableOn hE S hS _ (inK_single hab (1 : ℂ)) x hx'
+  have h2 := sum_smul_E_mem_of_isKStableOn hE S hS _ (inK_single hab Complex.I) x hx'
+  rw [sum_single_sub_single_star_smul_E] at h1 h2
+  have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
+  have key : ((E a b x : Vs) : H) =
+      (1 / 2 : ℂ) • (((1 : ℂ) • E a b x - star (1 : ℂ) • E b a x : Vs) : H) +
+      (-(Complex.I / 2)) • ((Complex.I • E a b x - star Complex.I • E b a x : Vs) : H) := by
+    simp only [Submodule.coe_sub, Submodule.coe_smul, star_one, Complex.star_def, Complex.conj_I]
+    match_scalars <;> first
+      | linear_combination (1 / 2 : ℂ) * hI
+      | linear_combination (-1 / 2 : ℂ) * hI
+  show ((E a b x : Vs) : H) ∈ S
+  rw [key]
+  exact S.add_mem (S.smul_mem _ h1) (S.smul_mem _ h2)
+
+private theorem hasDerivAt_of_hasDerivAt_coe {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (Vs : Submodule ℂ H) (g : ℝ → Vs) (w : Vs) (t : ℝ)
+    (h : HasDerivAt (fun s => (g s : H)) (w : H) t) : HasDerivAt g w t := by
+  rw [hasDerivAt_iff_tendsto_slope] at h ⊢
+  rw [Topology.IsInducing.subtypeVal.tendsto_nhds_iff]
+  refine h.congr (fun s => ?_)
+  simp [slope_def_module]
+
+theorem kStableOn_map (hσ : IsURepOn (UJset ε) σ)
+    (hE : ∀ X, inG ε X → ∀ u : Vs,
+      HasDerivAt (GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.orbit σ X u) ((∑ a, ∑ b, X a b • E a b u : Vs) : H) 0)
+    (S : Submodule ℂ H) [FiniteDimensional ℂ S] (hS : IsKStableOn ε σ S) (hle : S ≤ Vs)
+    (T : Submodule ℂ Vs) (hT : KStable ε E T) (hTS : T.map Vs.subtype ≤ S) :
+    IsKStableOn ε σ (T.map Vs.subtype) := by
+  intro g hg w hw
+  obtain ⟨Y, hY, hexp, -⟩ := Formalism.REAL.compact_exists_log_bounded ε g hg
+  obtain ⟨u, hu, rfl⟩ := hw
+  haveI hS' : FiniteDimensional ℂ (S.comap Vs.subtype) :=
+    (Submodule.comapSubtypeEquivOfLe hle).symm.finiteDimensional
+  have hTle : T ≤ S.comap Vs.subtype := fun x hx => hTS ⟨x, hx, rfl⟩
+  haveI : FiniteDimensional ℂ T := Submodule.finiteDimensional_of_le hTle
+  let L : Module.End ℂ Vs := ∑ i, ∑ j, Y i j • E i j
+  have hL : ∀ x, L x = ∑ i, ∑ j, Y i j • E i j x := by
+    intro x; simp [L]
+  have hLT : ∀ x ∈ T, L x ∈ T := by
+    intro x hx
+    rw [hL]
+    refine T.sum_mem (fun i _ => T.sum_mem (fun j _ => ?_))
+    by_cases hij : ε i = ε j
+    · exact T.smul_mem _ (hT i j hij x hx)
+    · rw [((inK_iff Y).1 hY).2 i j hij, zero_smul]
+      exact T.zero_mem
+  let C : (S.comap Vs.subtype) →L[ℂ] Vs :=
+    LinearMap.toContinuousLinearMap (L ∘ₗ (S.comap Vs.subtype).subtype)
+  have hK : LipschitzOnWith ‖C‖₊ L (S.comap Vs.subtype) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    intro x hx y hy
+    have hC : L x - L y = C (⟨x, hx⟩ - ⟨y, hy⟩) := by
+      rw [map_sub]; rfl
+    rw [dist_eq_norm, dist_eq_norm, hC, coe_nnnorm]
+    refine (C.le_opNorm _).trans (le_of_eq ?_)
+    rfl
+  have hmemS : ∀ t : ℝ, σ (NormedSpace.exp ((t : ℂ) • Y)) (u : H) ∈ S :=
+    fun t => hS _ (exp_mem_K hY t) _ (hTS ⟨u, hu, rfl⟩)
+  let f : ℝ → Vs := fun t => ⟨σ (NormedSpace.exp ((t : ℂ) • Y)) (u : H), hle (hmemS t)⟩
+  have hf : ∀ t, HasDerivAt f (L (f t)) t := by
+    intro t
+    apply hasDerivAt_of_hasDerivAt_coe Vs f (L (f t)) t
+    rw [hL]
+    exact hasDerivAt_of_hasDerivAt_shift (fun s : ℝ => σ (NormedSpace.exp ((s : ℂ) • Y))) (group_add hσ hY.1) (u : H) _ t
+      (hE Y hY.1 (f t))
+  have h0 : f 0 ∈ T := by
+    have : f 0 = u := Subtype.ext (group_zero hσ Y u)
+    rw [this]; exact hu
+  have key := mem_of_hasDerivAt_linear_of_invariant T L hLT (S.comap Vs.subtype) (fun x hx => hTle hx) ‖C‖₊ hK f
+    (fun t => hmemS t) hf h0 1
+  refine ⟨f 1, key, ?_⟩
+  show σ (NormedSpace.exp (((1 : ℝ) : ℂ) • Y)) (u : H) = σ g (u : H)
+  rw [Complex.ofReal_one, one_smul, hexp]
+
+end Rep
+
+theorem kType_generated_by_highest : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (Vs : Submodule ℂ H) (E : Fin n → Fin n → Module.End ℂ Vs), IsURepOn (UJset ε) σ → ((∀ u, u ∈ Vs ↔ SmoothOnGV ε (fun g => σ g u)) ∧ GlRel E ∧ IsUnitary ε E ∧ (∀ X, inG ε X → ∀ u : Vs, HasDerivAt (GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.orbit σ X u) ((∑ a, ∑ b, X a b • E a b u : Vs) : H) 0) ∧ ∀ a b (u : Vs), ∀ g ∈ UJset ε, σ g (E a b u) = EabV ε a b (fun g => σ g u) g) → ∀ (Λ : Fin n → ℝ) (S : Submodule ℂ H), IsKTypeOf ε σ Λ S → S ≤ Vs → ∃ u : Vs, u ≠ 0 ∧ KHighest ε E Λ u ∧ (kSpan ε E u).map Vs.subtype = S ∧ FiniteDimensional ℂ (kSpan ε E u) := by
+  intro n ε H _ _ _ σ Vs E hσ hc Λ S hS hle
+  obtain ⟨_, hgl, _, hE, _⟩ := hc
+  obtain ⟨hfin, hKS, hirr, ⟨v, hvS, hv0, hvw⟩, hdom⟩ := hS
+  haveI := hfin
+  let u : Vs := ⟨v, hle hvS⟩
+  have hwt : IsWeight E Λ u := isWeight_of_isWtOn hE Λ u hvw
+  have hS' : KStable ε E (S.comap Vs.subtype) := kStable_comap hE S hKS
+  have hhigh : KHighest ε E Λ u := by
+    refine ⟨hwt, fun a b hab hε => ?_⟩
+    by_contra hne
+    have hmem : ((E a b u : Vs) : H) ∈ S := hS' a b hε u hvS
+    have hw2 : IsWeight E (Λ + root a b) (E a b u) := isWeight_root hgl hwt a b
+    have hw3 := isWtOn_of_isWeight hσ hE (Λ + root a b) (E a b u) hw2
+    have hne' : ((E a b u : Vs) : H) ≠ 0 := by
+      rwa [ne_eq, Submodule.coe_eq_zero]
+    exact not_cdom (ε := ε) Λ hab (hdom _ _ hmem hne' hw3)
+  have hKle : kSpan ε E u ≤ S.comap Vs.subtype := sInf_le ⟨hvS, hS'⟩
+  have hKst : KStable ε E (kSpan ε E u) := by
+    intro a b hab x hx
+    simp only [Formalism.REAL.kSpan, Submodule.mem_sInf] at hx ⊢
+    intro T hT
+    exact hT.2 a b hab x (hx T hT)
+  have hum : u ∈ kSpan ε E u := by
+    simp only [Formalism.REAL.kSpan, Submodule.mem_sInf]
+    intro T hT
+    exact hT.1
+  haveI : FiniteDimensional ℂ (S.comap Vs.subtype) :=
+    (Submodule.comapSubtypeEquivOfLe hle).symm.finiteDimensional
+  have hfinK : FiniteDimensional ℂ (kSpan ε E u) := Submodule.finiteDimensional_of_le hKle
+  have hmapS : (kSpan ε E u).map Vs.subtype ≤ S := Submodule.map_le_iff_le_comap.2 hKle
+  have hKS2 := kStableOn_map hσ hE S hKS hle (kSpan ε E u) hKst hmapS
+  refine ⟨u, ?_, hhigh, ?_, hfinK⟩
+  · intro h
+    apply hv0
+    have := congrArg Subtype.val h
+    simpa [u] using this
+  · rcases hirr _ hmapS hKS2 with h | h
+    · exfalso
+      have hvm : v ∈ (kSpan ε E u).map Vs.subtype := ⟨u, hum, rfl⟩
+      rw [h, Submodule.mem_bot] at hvm
+      exact hv0 hvm
+    · exact h
+
+end GlobalTheory.KTypeHighest
+end
+end
+
+section
+open Formalism.REAL Matrix
+
+namespace GlobalTheory.OnbSum
+
+theorem conjTranspose_eq_of_inG {n : ℕ} {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ}
+    (h : inG ε X) : Xᴴ = -(Jm ε * X * Jm ε) := by
+  have h' : Xᴴ * Jm ε + Jm ε * X = 0 := h
+  have h1 : Xᴴ * Jm ε = -(Jm ε * X) := eq_neg_of_add_eq_zero_left h'
+  calc Xᴴ = Xᴴ * (Jm ε * Jm ε) := by rw [Jm_mul_self, Matrix.mul_one]
+    _ = Xᴴ * Jm ε * Jm ε := (Matrix.mul_assoc _ _ _).symm
+    _ = -(Jm ε * X * Jm ε) := by rw [h1, Matrix.neg_mul]
+
+theorem trace_im_eq_zero {n : ℕ} {ε : Fin n → Bool} {A B : Matrix (Fin n) (Fin n) ℂ}
+    (hA : inG ε A) (hB : inG ε B) : (Matrix.trace (A * Bᴴ)).im = 0 := by
+  have hA' := conjTranspose_eq_of_inG hA
+  have hB' := conjTranspose_eq_of_inG hB
+  have swap : Matrix.trace (B * Aᴴ) = Matrix.trace (A * Bᴴ) := by
+    rw [hA', hB', Matrix.mul_neg, Matrix.mul_neg, Matrix.trace_neg, Matrix.trace_neg, neg_inj]
+    calc Matrix.trace (B * (Jm ε * A * Jm ε)) = Matrix.trace ((B * Jm ε * A) * Jm ε) := by
+          simp only [Matrix.mul_assoc]
+      _ = Matrix.trace (Jm ε * (B * Jm ε * A)) := Matrix.trace_mul_comm _ _
+      _ = Matrix.trace ((Jm ε * B * Jm ε) * A) := by simp only [Matrix.mul_assoc]
+      _ = Matrix.trace (A * (Jm ε * B * Jm ε)) := Matrix.trace_mul_comm _ _
+  have hstar : (starRingEnd ℂ) (Matrix.trace (A * Bᴴ)) = Matrix.trace (A * Bᴴ) := by
+    rw [← Complex.star_def, ← Matrix.trace_conjTranspose, Matrix.conjTranspose_mul,
+      Matrix.conjTranspose_conjTranspose, swap]
+  exact Complex.conj_eq_iff_im.mp hstar
+
+theorem sum_norm_sq_of_isometry {ι κ : Type} [Fintype ι] [Fintype κ] [DecidableEq κ]
+    {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] (M : Matrix ι κ ℂ) (hM : Mᴴ * M = 1)
+    (y : κ → V) : ∑ i, ‖∑ p, M i p • y p‖ ^ 2 = ∑ p, ‖y p‖ ^ 2 := by
+  have key : ∀ p q, ∑ i, (starRingEnd ℂ) (M i p) * M i q = if p = q then (1 : ℂ) else 0 := by
+    intro p q
+    have h := congrFun (congrFun hM p) q
+    rw [Matrix.mul_apply, Matrix.one_apply] at h
+    simpa only [Matrix.conjTranspose_apply, Complex.star_def] using h
+  have hsq : ∀ v : V, (‖v‖ : ℂ) ^ 2 = inner ℂ v v := fun v => (inner_self_eq_norm_sq_to_K v).symm
+  have expand : ∀ i, inner ℂ (∑ p, M i p • y p) (∑ q, M i q • y q) =
+      ∑ p, ∑ q, (starRingEnd ℂ) (M i p) * M i q * inner ℂ (y p) (y q) := by
+    intro i
+    rw [sum_inner]
+    refine Finset.sum_congr rfl fun p _ => ?_
+    rw [inner_sum]
+    refine Finset.sum_congr rfl fun q _ => ?_
+    rw [inner_smul_left, inner_smul_right, mul_assoc]
+  apply Complex.ofReal_injective
+  push_cast
+  simp_rw [hsq, expand]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [Finset.sum_comm]
+  simp_rw [← Finset.sum_mul, key]
+  simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+
+theorem onb_sum : ∀ (n : ℕ) (ε : Fin n → Bool) (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] (y : Fin n → Fin n → V), (∀ F : Fin (n ^ 2) → Matrix (Fin n) (Fin n) ℂ, GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.IsONFamily ε F → ∑ i, ‖∑ a, ∑ b, F i a b • y a b‖ ^ 2 = ∑ a, ∑ b, ‖y a b‖ ^ 2) ∧ ∀ X : Matrix (Fin n) (Fin n) ℂ, ‖∑ a, ∑ b, X a b • y a b‖ ^ 2 ≤ hs X * ∑ a, ∑ b, ‖y a b‖ ^ 2 := by
+  intro n ε V _ _ y
+  refine ⟨fun F hF => ?_, fun X => ?_⟩
+  · let M : Matrix (Fin (n ^ 2)) (Fin n × Fin n) ℂ := fun i p => F i p.1 p.2
+    have hrow : M * Mᴴ = 1 := by
+      ext i j
+      have hre := hF.2 i j
+      have him := trace_im_eq_zero (hF.1 i) (hF.1 j)
+      have htr : Matrix.trace (F i * (F j)ᴴ) = (M * Mᴴ) i j := by
+        simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.conjTranspose_apply]
+        rw [Fintype.sum_prod_type]
+      rw [← htr, Matrix.one_apply]
+      apply Complex.ext
+      · rw [hre]; split_ifs <;> simp
+      · rw [him]; split_ifs <;> simp
+    have e : Fin n × Fin n ≃ Fin (n ^ 2) := Fintype.equivOfCardEq (by simp [sq])
+    have hcol : Mᴴ * M = 1 := (Matrix.mul_eq_one_comm_of_equiv e.symm).mp hrow
+    have hiso := sum_norm_sq_of_isometry M hcol (fun p => y p.1 p.2)
+    simpa only [M, Fintype.sum_prod_type] using hiso
+  · have h1 : ‖∑ a, ∑ b, X a b • y a b‖ ≤ ∑ a, ∑ b, ‖X a b‖ * ‖y a b‖ :=
+      (norm_sum_le _ _).trans (Finset.sum_le_sum fun a _ =>
+        (norm_sum_le _ _).trans (Finset.sum_le_sum fun b _ => (norm_smul (X a b) (y a b)).le))
+    have h2 : (∑ a, ∑ b, ‖X a b‖ * ‖y a b‖) ^ 2 ≤ hs X * ∑ a, ∑ b, ‖y a b‖ ^ 2 := by
+      have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset (Fin n × Fin n))
+        (fun p => ‖X p.1 p.2‖) (fun p => ‖y p.1 p.2‖)
+      simpa only [hs, Fintype.sum_prod_type] using hcs
+    exact (pow_le_pow_left₀ (norm_nonneg _) h1 2).trans h2
+
+end GlobalTheory.OnbSum
+end
+
+section
 open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec
 open scoped InnerProductSpace ContDiff
 
@@ -146,3 +1067,4 @@ theorem stepBound_of_eigen : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [Nor
     nlinarith [norm_nonneg (GlobalTheory.IndefiniteRowSideFullHecke.OrbitDifferenceSpace.dAct σ X (x : H))]
 
 end GlobalTheory.StepBoundOneRep
+end

@@ -3,10 +3,36 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareI
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.StandardFunctorsFiniteLength
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CartanExists
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsFractionRingInteger
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteCosetsPrincipalCongruence
 import BuildAid.ForwardExisting
 
+section
+namespace GlobalTheory.CompanionTheory.LocalFieldValuationRing
+
+theorem isFractionRing_integer (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] : IsFractionRing (ValuativeRel.valuation k).integer k :=
+  (Valuation.integer.integers (ValuativeRel.valuation k)).isFractionRing
+
+end GlobalTheory.CompanionTheory.LocalFieldValuationRing
+end
+
+section
+namespace GlobalTheory.CompanionTheory.Congruence
+
+open Matrix
+
+theorem finite_quotient_span_pow (R : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
+    [Finite (IsLocalRing.ResidueField R)] (ϖ : R) (m : ℕ) (hϖ : Irreducible ϖ) :
+    Finite (R ⧸ Ideal.span {ϖ ^ m}) := by
+  rw [← Ideal.span_singleton_pow, ← hϖ.maximalIdeal_eq]
+  haveI : Finite (R ⧸ IsLocalRing.maximalIdeal R) :=
+    (inferInstance : Finite (IsLocalRing.ResidueField R))
+  exact Ideal.finite_quotient_pow (IsNoetherian.noetherian _) m
+
+
+end GlobalTheory.CompanionTheory.Congruence
+end
+
+section
 section
 open Filter Topology MeasureTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult ValuativeRel
 
@@ -139,3 +165,4 @@ open Filter Topology MeasureTheory GlobalTheory.PRep GlobalTheory.SplitWeil Glob
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.cartan_decomposition_congruence : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (N m : ℕ), 1 ≤ m → 1 ≤ N → ∃ s : Finset (GL (Fin N) k × GL (Fin N) k), (∀ p ∈ s, p.1 ∈ KO k (Fin N) ∧ p.2 ∈ KO k (Fin N)) ∧ ∀ h : GL (Fin N) k, ∃ p ∈ s, ∃ g : Fin (N - 1) → ℕ, ∃ x ∈ Zls.Km k N m, ∃ y ∈ Zls.Km k N m, ∃ z ∈ Subgroup.center (GL (Fin N) k), h = p.1 * x * Zls.diagPow k N (Zls.lamOf g) * y * p.2 * z := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Dblock.CartanCover.cartan_cover
+end

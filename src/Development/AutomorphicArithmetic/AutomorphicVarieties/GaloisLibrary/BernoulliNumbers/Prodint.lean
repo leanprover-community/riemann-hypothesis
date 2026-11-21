@@ -1,10 +1,96 @@
 import Mathlib
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.Ratprod
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.Charbij
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.Primmap
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.Primmem
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.Denupper
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.BUpper
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.BNzC
 
+section
+open Finset UpperTheory.V.Bern
+
+theorem UpperTheory.V.Bern.b_ratprod :
+    ∀ {N : ℕ} [NeZero N] (P : Set (Subgroup (ZMod N)ˣ)) (F : ∀ (Ω : Type) [Field Ω] [CharZero Ω], DirichletCharacter Ω N → Ω), (∀ (K Ω : Type) [Field K] [CharZero K] [Field Ω] [CharZero Ω] (f : K →+* Ω) (χ : DirichletCharacter K N), f (F K χ) = F Ω (χ.ringHomComp f)) → ∃ q : ℚ, ∀ (Ω : Type) [Field Ω] [CharZero Ω] [HasEnoughRootsOfUnity Ω (Monoid.exponent (ZMod N)ˣ)], ∏ᶠ χ ∈ charSet Ω P, F Ω χ = (q : Ω) := by
+  intro N _ P F hF
+  set e := Monoid.exponent (ZMod N)ˣ with he_def
+  haveI he : NeZero e := ⟨Monoid.exponent_ne_zero_of_finite⟩
+  haveI : NeZero (e : ℚ) := ⟨by exact_mod_cast he.out⟩
+  haveI hcyc : IsCyclotomicExtension {e} ℚ (CyclotomicField e ℚ) :=
+    CyclotomicField.isCyclotomicExtension e ℚ
+  haveI : IsGalois ℚ (CyclotomicField e ℚ) := IsCyclotomicExtension.isGalois {e} ℚ _
+  haveI : FiniteDimensional ℚ (CyclotomicField e ℚ) :=
+    IsCyclotomicExtension.finiteDimensional {e} ℚ _
+  have hζ := IsCyclotomicExtension.zeta_spec e ℚ (CyclotomicField e ℚ)
+  haveI : HasEnoughRootsOfUnity (CyclotomicField e ℚ) e :=
+    ⟨⟨_, hζ⟩, rootsOfUnity.isCyclic (CyclotomicField e ℚ) e⟩
+  have hfin : ∀ (Ω : Type) [Field Ω], (charSet Ω P).Finite := fun Ω _ => Set.toFinite _
+  have hfix : ∀ σ : CyclotomicField e ℚ ≃ₐ[ℚ] CyclotomicField e ℚ,
+      σ (∏ᶠ χ ∈ charSet (CyclotomicField e ℚ) P, F (CyclotomicField e ℚ) χ) =
+        ∏ᶠ χ ∈ charSet (CyclotomicField e ℚ) P, F (CyclotomicField e ℚ) χ := by
+    intro σ
+    have h1 := (σ.toRingHom.toMonoidHom).map_finprod_mem
+      (fun χ => F (CyclotomicField e ℚ) χ) (hfin (CyclotomicField e ℚ))
+    refine h1.trans ?_
+    exact finprod_mem_eq_of_bijOn _ (b_charbij σ.toRingHom P)
+      (fun χ _ => hF _ _ σ.toRingHom χ)
+  have hbot := (IsGalois.mem_bot_iff_fixed _).2 hfix
+  obtain ⟨q, hq⟩ := IntermediateField.mem_bot.1 hbot
+  refine ⟨q, fun Ω _ _ _ => ?_⟩
+  obtain ⟨ω, hω⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω e
+  have hmin : Polynomial.aeval ω (minpoly ℚ (hζ.powerBasis ℚ).gen) = 0 := by
+    rw [IsPrimitiveRoot.powerBasis_gen, ← hζ.minpoly_eq_cyclotomic_of_irreducible
+      (Polynomial.cyclotomic.irreducible_rat (NeZero.pos e)), Polynomial.aeval_def,
+      Polynomial.eval₂_eq_eval_map, Polynomial.map_cyclotomic]
+    exact hω.isRoot_cyclotomic (NeZero.pos e)
+  let g := (hζ.powerBasis ℚ).lift ω hmin
+  calc ∏ᶠ χ ∈ charSet Ω P, F Ω χ
+      = ∏ᶠ χ ∈ charSet (CyclotomicField e ℚ) P, g.toRingHom (F (CyclotomicField e ℚ) χ) :=
+        (finprod_mem_eq_of_bijOn _ (b_charbij g.toRingHom P)
+          (fun χ _ => hF _ _ g.toRingHom χ)).symm
+    _ = g.toRingHom (∏ᶠ χ ∈ charSet (CyclotomicField e ℚ) P, F (CyclotomicField e ℚ) χ) :=
+        (g.toRingHom.toMonoidHom.map_finprod_mem _ (hfin _)).symm
+    _ = (q : Ω) := by
+        rw [← hq]
+        exact g.commutes q |>.trans (eq_ratCast _ q)
+end
+
+section
+open Finset UpperTheory.V.Bern
+
+private theorem bernoulli_denominator_bound {N M : ℕ} (k : ℕ) (Φ : ZMod M → ℂ) (hM : 0 < M) (hMN : M ≤ N)
+    (hΦ : ∀ a, ‖Φ a‖ ≤ 1) : ‖(den N k : ℂ) * genB k Φ‖ ≤ bnd N k := by
+  have hb := b_upper k Φ hM hΦ
+  have hp : (primorial (k + 1) : ℝ) ≤ 4 ^ (k + 1) := by exact_mod_cast primorial_le_4_pow (k + 1)
+  have h4 : (4 : ℝ) ^ k ≤ (2 * Real.pi) ^ k :=
+    pow_le_pow_left₀ (by norm_num) (by linarith [Real.pi_gt_three]) k
+  have hpi : 0 < (2 * Real.pi) ^ k := by positivity
+  have hMN' : (M : ℝ) ≤ N := by exact_mod_cast hMN
+  rw [norm_mul, Complex.norm_natCast, den, bnd]
+  push_cast
+  calc (N : ℝ) * (primorial (k + 1) : ℝ) * ‖genB k Φ‖
+      ≤ N * 4 ^ (k + 1) * (4 * (N : ℝ) ^ k * k.factorial / (2 * Real.pi) ^ k) := by
+        gcongr
+        exact hb.trans (by gcongr)
+    _ = 16 * (N : ℝ) ^ (k + 1) * k.factorial * (4 ^ k / (2 * Real.pi) ^ k) := by ring
+    _ ≤ 16 * (N : ℝ) ^ (k + 1) * k.factorial * 1 := by
+        gcongr
+        rw [div_le_one hpi]
+        exact h4
+    _ = _ := mul_one _
+
+theorem UpperTheory.V.Bern.b_denupper :
+    ∀ {N : ℕ} [NeZero N] (k : ℕ) (χ : DirichletCharacter ℂ N), ‖(den N k : ℂ) * genB k χ‖ ≤ bnd N k ∧ ‖(den N k : ℂ) * Bprim k χ‖ ≤ bnd N k ∧ 1 ≤ bnd N k := by
+  intro N _ k χ
+  have hN : 0 < N := Nat.pos_of_ne_zero (NeZero.ne N)
+  refine ⟨bernoulli_denominator_bound k _ hN le_rfl (fun a => χ.norm_le_one a), ?_, ?_⟩
+  · exact bernoulli_denominator_bound k _ (Nat.pos_of_ne_zero χ.conductor_ne_zero)
+      (Nat.le_of_dvd hN χ.conductor_dvd_level) (fun a => χ.primitiveCharacter.norm_le_one a)
+  · have h1 : (1 : ℝ) ≤ (N : ℝ) ^ (k + 1) := one_le_pow₀ (by exact_mod_cast hN)
+    have h2 : (1 : ℝ) ≤ (k.factorial : ℝ) := by exact_mod_cast k.factorial_pos
+    unfold bnd
+    nlinarith [mul_le_mul h1 h2 zero_le_one (zero_le_one.trans h1)]
+end
+
+section
 open Finset UpperTheory.V.Bern
 
 theorem UpperTheory.V.Bern.b_prodint :
@@ -46,3 +132,4 @@ theorem UpperTheory.V.Bern.b_prodint :
     rw [← Real.log_pow]
     exact Real.log_le_log (abs_pos.mpr (Int.cast_ne_zero.mpr hM0)) hle
   · rw [hq Ω]; simp
+end

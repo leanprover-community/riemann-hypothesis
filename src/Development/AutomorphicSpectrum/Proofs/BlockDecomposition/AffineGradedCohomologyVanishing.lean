@@ -16,18 +16,204 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartDividedPow
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatBaseChangeCohomologyStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InOpenOfThickeningMorphismStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InOpenFiniteInfIffStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormCocycleStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormExistsOfCocycleStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormAddStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormSmul
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormRestrictStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormActionStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormFrameStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormLocalOfFrameStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormVanishOfFrameStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormVectorBundleStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormCover
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormCocycle
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormExistsOfCocycle
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormAdd
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StCocycle
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SheafFiltrationProperty
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormRestrict
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormAction
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormFrame
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormLocalOfFrame
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormVanishOfFrame
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GradedFormVectorBundle
 
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_cocycle : GlobalTheory.CompanionTheory.GrForm.StCocycle := by
+  first | exact @GlobalTheory.CompanionTheory.GrForm.stCocycle | exact GlobalTheory.CompanionTheory.GrForm.stCocycle | (intros; apply GlobalTheory.CompanionTheory.GrForm.stCocycle <;> assumption)
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_exists_of_cocycle : GlobalTheory.CompanionTheory.GrForm.StCocycle → GlobalTheory.CompanionTheory.GrForm.StExists := by
+  first | exact @GlobalTheory.CompanionTheory.GrForm.exists_of_cocycle | exact GlobalTheory.CompanionTheory.GrForm.exists_of_cocycle | (intros; apply GlobalTheory.CompanionTheory.GrForm.exists_of_cocycle <;> assumption)
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_add : GlobalTheory.CompanionTheory.GrForm.StAdd := by
+  first | exact @GlobalTheory.CompanionTheory.GrForm.stAdd | exact GlobalTheory.CompanionTheory.GrForm.stAdd | (intros; apply GlobalTheory.CompanionTheory.GrForm.stAdd <;> assumption)
+end
+
+section
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+
+namespace GlobalTheory.CompanionTheory.GrFormSmul
+open GlobalTheory.CompanionTheory.GrForm
+
+theorem rep_smul {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {A : C ⥤ CommAlgCat.{0} R} (a b : IdF A) {j : ℕ}
+    {z z' : ∀ s : ComposableArrows C j, A.obj (s.obj (Fin.last j))} {c : CH.H (sq a b) j} (r : R)
+    (h : Rep a b z c) (hz : ∀ s, z' s - r • z s ∈ b.S _) : Rep a b z' (r • c) := by
+  obtain ⟨f, hf, rfl, hfz⟩ := h
+  refine ⟨r • f, by rw [map_smul, hf, smul_zero], rfl, fun s => ?_⟩
+  rw [Ideal.Quotient.eq.mpr (hz s), ← Ideal.Quotient.mkₐ_eq_mk R, map_smul, Ideal.Quotient.mkₐ_eq_mk, ← hfz s]
+  rfl
+
+variable {O : Type} [CommRing O] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)}
+
+theorem lft_str_sub {W : X.Opens} (T : Thick (LL q)) (h : InU W T) (a : O) (f : Γ(X, W)) :
+    lft W T (strV q W a * f) - T.i a * lft W T f ∈ T.J := by
+  rw [← Ideal.Quotient.eq, lft_spec T h, map_mul, map_mul, lft_spec T h, ev_str T h]
+
+theorem lift_nat {W : X.Opens} {d : ℕ} {t : Fin d → Γ(X, W)} {u : Fin d → ∀ T : Thick (LL q), T.B}
+    (hu : IsLift W t u) (i : Fin d) {T T' : Thick (LL q)} (φ : T ⟶ T') (h : InU W T) (h' : InU W T') :
+    u i T' - φ.φ (u i T) ∈ T'.J := by
+  rw [← Ideal.Quotient.eq, hu i T' h', ev_nat φ h h', ← hu i T h, Ideal.quotientMap_mk]
+
+private theorem mul_mem_sFil_succ_of_mem_sFil_of_mem_J {P : ObjectProperty (Thick (LL q))} {r : ℕ} (T : P.FullSubcategory)
+    {y z : T.obj.B} (hy : y ∈ (sFil P (r : ℤ)).S T) (hz : z ∈ T.obj.J) :
+    y * z ∈ (sFil P ((r : ℤ) + 1)).S T := by
+  have h1 : z ∈ pdP T.obj.δ 1 := by
+    have := GlobalTheory.CompanionTheory.DPFil.dpow_mem_pdP T.obj.δ 1 hz
+    rwa [T.obj.δ.dpow_one hz] at this
+  exact GlobalTheory.CompanionTheory.DPFil.dividedPowerFiltration_mul_le T.obj.δ r 1 (Ideal.mul_mem_mul (show y ∈ pdP T.obj.δ r from hy) h1)
+
+theorem stSmul : StSmul := by
+  intro O _ X q W d t u hu P hP r x c a hc
+  unfold Rp at hc ⊢
+  refine rep_smul _ _ a hc (fun s => ?_)
+  have hw : ∀ I : Fin r → Fin d, wz (Φ := sP P) (fun i T => u i T.obj) I s ∈ (sFil P (r : ℤ)).S (s.obj (Fin.last r)) :=
+    fun I => wz_mem (GlobalTheory.CompanionTheory.DPFil.isFil_sFil P) _
+      (fun i T T' φ => lift_nat hu i (P.ι.map φ) (hP _ T.property) (hP _ T'.property)) I s
+  simp only [Finset.smul_sum, ← Finset.sum_sub_distrib]
+  refine Ideal.sum_mem _ (fun I _ => ?_)
+  rw [← mul_smul_comm, ← mul_sub]
+  exact mul_mem_sFil_succ_of_mem_sFil_of_mem_J _ (hw _) (lft_str_sub _ (hP _ (s.obj (Fin.last r)).property) a (x I))
+
+end GlobalTheory.CompanionTheory.GrFormSmul
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_smul : GlobalTheory.CompanionTheory.GrForm.StSmul := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GrFormSmul.stSmul
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_restrict : GlobalTheory.CompanionTheory.GrForm.StRes := by
+  first | exact @GlobalTheory.CompanionTheory.GrForm.stRes | exact GlobalTheory.CompanionTheory.GrForm.stRes | (intros; apply GlobalTheory.CompanionTheory.GrForm.stRes <;> assumption)
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_action : GlobalTheory.CompanionTheory.GrForm.StAct := by
+  first | exact @GlobalTheory.CompanionTheory.GrForm.stAct | exact GlobalTheory.CompanionTheory.GrForm.stAct | (intros; apply GlobalTheory.CompanionTheory.GrForm.stAct <;> assumption)
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_frame : GlobalTheory.CompanionTheory.GrForm.StFrame := by
+  first | exact @GlobalTheory.CompanionTheory.GrForm.stFrame | exact GlobalTheory.CompanionTheory.GrForm.stFrame | (intros; apply GlobalTheory.CompanionTheory.GrForm.stFrame <;> assumption)
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_local_of_frame : GlobalTheory.CompanionTheory.GrForm.StFrame → CrystallineSemistableComparison.Pb.KH.LocGr → CrystallineSemistableComparison.Pb.KH.PolyTf → GlobalTheory.CompanionTheory.GrForm.StLoc := by
+  first | exact @GlobalTheory.CompanionTheory.GrForm.stLoc | exact GlobalTheory.CompanionTheory.GrForm.stLoc | (intros; apply GlobalTheory.CompanionTheory.GrForm.stLoc <;> assumption)
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_vanish_of_frame : GlobalTheory.CompanionTheory.GrForm.StFrame → CrystallineSemistableComparison.Pb.KH.LocGr → CrystallineSemistableComparison.Pb.KH.PolyTf → GlobalTheory.CompanionTheory.GrForm.StVan := by
+  first | exact @GlobalTheory.CompanionTheory.GrForm.van | exact GlobalTheory.CompanionTheory.GrForm.van | (intros; apply GlobalTheory.CompanionTheory.GrForm.van <;> assumption)
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_vector_bundle : GlobalTheory.CompanionTheory.GrForm.StExists → GlobalTheory.CompanionTheory.GrForm.StAdd → GlobalTheory.CompanionTheory.GrForm.StSmul → GlobalTheory.CompanionTheory.GrForm.StRes → GlobalTheory.CompanionTheory.GrForm.StAct → GlobalTheory.CompanionTheory.GrForm.StLoc → GlobalTheory.CompanionTheory.GrForm.StVB := by
+  first | exact @GlobalTheory.CompanionTheory.GrVB.main | exact GlobalTheory.CompanionTheory.GrVB.main | (intros; apply GlobalTheory.CompanionTheory.GrVB.main <;> assumption)
+end
+
+section
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+
+namespace GlobalTheory.CompanionTheory.GrForm.AffCover
+
+theorem iInf_basicOpen {X : Scheme.{0}} {V : X.Opens} : ∀ (n : ℕ) (g : Fin (n + 1) → Γ(X, V)),
+    (⨅ a, X.basicOpen (g a)) = X.basicOpen (∏ k, g k) := by
+  intro n
+  induction n with
+  | zero =>
+    intro g
+    simp
+  | succ n ih =>
+    intro g
+    rw [Fin.prod_univ_succ, Scheme.basicOpen_mul, ← ih (fun k => g k.succ)]
+    exact le_antisymm (le_inf (iInf_le _ 0) (le_iInf fun a => iInf_le _ a.succ))
+      (le_iInf fun a => Fin.cases inf_le_left (fun b => inf_le_right.trans (iInf_le _ b)) a)
+
+theorem stCover : GlobalTheory.CompanionTheory.GrForm.StCover := by
+  intro O _ X q _ V hV
+  classical
+  have loc : ∀ x : V, ∃ (f : Γ(X, V)) (d : ℕ), x.1 ∈ X.basicOpen f ∧ Nonempty (Coord q (X.basicOpen f) d) := by
+    intro x
+    have h : RingHom.Locally RingHom.IsStandardSmooth (q.appLE ⊤ V le_top).hom :=
+      RingHom.smooth_iff_locally_isStandardSmooth.1 (q.smooth_appLE (isAffineOpen_top _) hV le_top)
+    obtain ⟨f, hf, hst⟩ := GlobalTheory.CompanionTheory.CovEx.exists_basicOpen RingHom.IsStandardSmooth
+      RingHom.isStandardSmooth_respectsIso q hV h x.2
+    obtain ⟨n, g, hg, he⟩ := hst.exists_etale_mvPolynomial
+    exact ⟨f, n, hf, GlobalTheory.CompanionTheory.CovEx.coord_basicOpen q hV f g hg he⟩
+  choose f d hx hc using loc
+  obtain ⟨t, ht⟩ := hV.isCompact.elim_finite_subcover (fun x : V => (X.basicOpen (f x) : Set X))
+    (fun x => (X.basicOpen (f x)).2) (fun x hxV => Set.mem_iUnion.2 ⟨⟨x, hxV⟩, hx _⟩)
+  refine ⟨t, inferInstance, fun a => X.basicOpen (f a.1), fun a => d a.1, fun a => (hc a.1).some, ?_, ?_⟩
+  · refine le_antisymm (iSup_le fun a => X.basicOpen_le _) fun x hxV => ?_
+    obtain ⟨y, hy⟩ := Set.mem_iUnion.1 (ht hxV)
+    obtain ⟨hy, hxy⟩ := Set.mem_iUnion.1 hy
+    exact TopologicalSpace.Opens.mem_iSup.2 ⟨⟨y, hy⟩, hxy⟩
+  · intro n i
+    have e : capO (fun a : t => X.basicOpen (f a.1)) i = X.basicOpen (∏ k, f (i k).1) :=
+      iInf_basicOpen n (fun k => f (i k).1)
+    rw [e]
+    exact hV.basicOpen _
+
+end GlobalTheory.CompanionTheory.GrForm.AffCover
+end
+
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.graded_form_cover : GlobalTheory.CompanionTheory.GrForm.StCover := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GrForm.AffCover.stCover
+end
+
+section
 section
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb
@@ -161,3 +347,4 @@ set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.affine_graded_cohomology_vanishing : KH.LocGr → KH.LocVan → KH.PolyTf → KH.GlobSerreSt → KH.GlobVanSt → ∀ {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [Smooth q]
     (V : X.Opens) (hV : IsAffineOpen V) (s r j : ℕ), r < s → j ≠ r → Subsingleton (HQ (KS q s {V}) r ((r : ℤ) + 1) j) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.GrForm.gr_aff
+end

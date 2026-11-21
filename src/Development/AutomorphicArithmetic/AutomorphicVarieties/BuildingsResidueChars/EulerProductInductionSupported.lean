@@ -1,9 +1,179 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.EulerProductInductionUnramified
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.SatakeParametersTwistedAutomorphic
+import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.ExistsPolynomialPairFunctionalEq
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LocalEmbeddingNorms.RegroupBC
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LocalEmbeddingNorms.PairGOps
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.AdjointEta.EtaOK
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.PrincipalSeriesMatching.EulerdShift
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.PrincipalSeriesMatching.NormVal
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LocalEmbeddingNorms.CrossGOf
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LocalEmbeddingNorms.SecDiff
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LocalEmbeddingNorms.NormLoc
 
+section
+open NumberField IsDedekindDomain Polynomial Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.LocGL GlobalTheory.SplitWeil GlobalTheory.SmGL
+open UpperTheory.V.Z.Gam UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter GlobalTheory.HenQ UpperTheory.V.Z.Inf UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.Ad
+open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.LocalField
+open GroundTheory.Automorphic.GodementSection (localChar)
+open Ad3P.DihedralUnramifiedPlaces (toH)
+open scoped Classical
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
+
+private theorem sign_ex (c : HeckeCharacter ℚ) :
+    ∃ δ : Bool, ∀ w : InfinitePlace ℚ, (c.infiniteComponent w (-1) : ℂ) = if δ then -1 else 1 := by
+  have hsq : ∀ w : InfinitePlace ℚ, (c.infiniteComponent w (-1) : ℂ) * (c.infiniteComponent w (-1) : ℂ) = 1 := by
+    intro w
+    rw [← Circle.coe_mul, ← map_mul, neg_mul_neg, one_mul, map_one, Circle.coe_one]
+  rcases mul_self_eq_one_iff.1 (hsq default) with h | h
+  · exact ⟨false, fun w => by rw [Subsingleton.elim w default, h]; rfl⟩
+  · exact ⟨true, fun w => by rw [Subsingleton.elim w default, h]; rfl⟩
+
+private theorem unr_of {η : HeckeCharacter ℚ} {v : Ad3.Pl} (h : (toH η).UnrAt v) :
+    IsUnramifiedChar (localChar η v) := by
+  refine isUnramifiedChar_iff.2 fun x hx => ?_
+  rw [← Ad3P.DihedralUnramifiedPlaces.loc_eq]
+  apply h x
+  show Valued.v (x : Ad3.Qv v) = 1
+  rw [Ad3P.DihedralUnramifiedPlaces.ord_eq v x.ne_zero, neg_eq_zero] at hx
+  have h0 : Valued.v (x : Ad3.Qv v) ≠ 0 := (Valuation.ne_zero_iff _).2 x.ne_zero
+  rw [← WithZero.exp_log h0, hx, WithZero.exp_zero]
+
+private theorem unr_mul {c η : HeckeCharacter ℚ} {v : Ad3.Pl} (h₁ : IsUnramifiedChar (localChar c v))
+    (h₂ : IsUnramifiedChar (localChar η v)) : IsUnramifiedChar (localChar (c * η) v) := by
+  refine isUnramifiedChar_iff.2 fun x hx => ?_
+  have e : localChar (c * η) v x = localChar c v x * localChar η v x := Units.ext rfl
+  rw [e, isUnramifiedChar_iff.1 h₁ x hx, isUnramifiedChar_iff.1 h₂ x hx, one_mul]
+
+private theorem val_mul' (c η : HeckeCharacter ℚ) (v : Ad3.Pl) :
+    (toH (c * η)).val v = (toH c).val v * (toH η).val v := Units.ext rfl
+
+private theorem norm_val (c : HeckeCharacter ℚ) (v : Ad3.Pl) : ‖((toH c).val v : ℂ)‖ = 1 :=
+  Circle.norm_coe _
+
+private theorem tri_mul (a x y : ℂˣ) : tri a (x * y) = (tri a x).map (· * (y : ℂ)) := by
+  simp [tri, mul_assoc]
+
+private theorem tri_norm {a x : ℂˣ} (ha : ‖(a : ℂ)‖ = 1) (hx : ‖(x : ℂ)‖ = 1) : ∀ b ∈ tri a x, ‖b‖ = 1 := by
+  intro b hb
+  simp only [tri, Multiset.insert_eq_cons, Multiset.map_cons, Multiset.map_singleton, Multiset.mem_cons,
+    Multiset.mem_singleton] at hb
+  rcases hb with rfl | rfl | rfl <;> simp [ha, hx]
+
+theorem UpperTheory.euler_product_induction_unramified :
+    ∀ (K : Type) [Field K] [NumberField K] [IsTotallyComplex K], Module.finrank ℚ K = 2 → ∀ D : Ad3.Dat, Ad3.An D →
+        ∀ (η c : HeckeCharacter ℚ), EtaOK K η → IsOfFinOrder c → ∀ (S : Finset Ad3.Pl) (v : Ad3.Pl), D.bad ⊆ S → v ∈ S →
+        (∀ u ∉ S, IsUnramifiedChar (localChar c u)) →
+        (∀ u ∉ S, (toH η).UnrAt u ∧ ∀ w : PlacesOver K u, IsPrimitiveRoot ((toH η).val u) (fdeg w) ∧
+          Fintype.card (PlacesOver K u) * fdeg w = 2) →
+        (∀ u ∈ S, u ≠ v → Ram3 (D.ν u) (localChar c u) ∧ Ram3 (D.ν u) (localChar (c * η) u)) →
+        ∀ (MainNotions : Set (HeightOneSpectrum (𝓞 K))) (BL : HeightOneSpectrum (𝓞 K) → Multiset ℂ),
+        (∀ w, w ∈ MainNotions ↔ w.under (𝓞 ℚ) ∈ (S : Set Ad3.Pl)) →
+        (∀ p ∉ S, ∀ w : PlacesOver K p, BL w.1 = (par D (toH c) p).map (· ^ fdeg w)) →
+        ∃ β : ℂ[X], β ≠ 0 ∧ PairG (eulerL K BL MainNotions) (eulerLd K BL MainNotions) β (Ideal.absNorm v.asIdeal : ℝ)
+          (lin3 (D.ν v) (localChar c v) * lin3 (D.ν v) (localChar (c * η) v)) := by
+  intro K _ _ _ _ D hD η c hη hc S v hbad hv hcu hηu hram MainNotions BL hSK hBL
+  obtain ⟨δ, hδ⟩ := sign_ex c
+  have A₁ : Ad3.admitted D c δ S := ⟨hc, hδ, hbad, hcu⟩
+  have A₂ : Ad3.admitted D (c * η) (!δ) S := by
+    refine ⟨hc.mul hη.fin, fun w => ?_, hbad, fun u hu => unr_mul (hcu u hu) (unr_of (hηu u hu).1)⟩
+    have e : ((c * η).infiniteComponent w (-1) : ℂ) =
+        (c.infiniteComponent w (-1) : ℂ) * (η.infiniteComponent w (-1) : ℂ) := rfl
+    rw [e, hδ w, hη.sgn w]
+    cases δ <;> simp
+  obtain ⟨β, hβ, hP⟩ := UpperTheory.exists_polynomial_pair_functional_eq D hD c (c * η) δ S v A₁ A₂ hv hram
+  obtain ⟨a, ha⟩ := UpperTheory.V.Z.Gam.regroupBC ℚ K 2 (S : Set Ad3.Pl) MainNotions (par D (toH c)) BL
+    (fun p => ((toH η).val p : ℂ)) 0 3 Nat.prime_two hSK (by
+      intro p hp
+      have hp' : p ∉ S := fun h => hp (Finset.mem_coe.2 h)
+      refine ⟨by simp [par, tri], fun b hb => ?_, fun w => ⟨?_, ((hηu p hp').2 w).2, hBL p hp' w⟩⟩
+      · have hb1 : ‖b‖ = 1 := tri_norm ((D.unit p).2 _) (norm_val c p) b hb
+        rw [norm_inv, hb1, Real.rpow_zero, inv_one]
+        exact ⟨le_rfl, le_rfl⟩
+      · exact IsPrimitiveRoot.coe_units_iff.2 ((hηu p hp').2 w).1)
+  have e0 : (fun p => (par D (toH c) p).map (· * ((toH η).val p : ℂ) ^ 0)) = par D (toH c) := by
+    funext p
+    simp
+  have e1 : (fun p => (par D (toH c) p).map (· * ((toH η).val p : ℂ) ^ 1)) = par D (toH (c * η)) := by
+    funext p
+    simp only [pow_one]
+    unfold par
+    rw [val_mul', tri_mul]
+  refine ⟨β, hβ, UpperTheory.V.Z.Gam.pairGOps.2.2.1 _ _ _ _ β _ _ a hP (fun s hs => ?_) (fun s hs => ?_)⟩
+  · rw [← (ha s).1 hs, Finset.prod_range_succ, Finset.prod_range_one, e0, e1,
+      (UpperTheory.euler_product_adjoint_eq_standard D c δ S A₁ s).1, (UpperTheory.euler_product_adjoint_eq_standard D (c * η) _ S A₂ s).1]
+  · rw [← (ha s).2 hs, Finset.prod_range_succ, Finset.prod_range_one, e0, e1,
+      (UpperTheory.euler_product_adjoint_eq_standard D c δ S A₁ s).2, (UpperTheory.euler_product_adjoint_eq_standard D (c * η) _ S A₂ s).2]
+end
+
+section
+open NumberField IsDedekindDomain Polynomial Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.LocGL GlobalTheory.SplitWeil GlobalTheory.SmGL
+open UpperTheory.V.Z.Gam UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter GlobalTheory.HenQ UpperTheory.V.Z.Inf UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.Ad
+open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.LocalField
+open GroundTheory.Automorphic.GodementSection (localChar)
+open Ad3P.DihedralUnramifiedPlaces (toH)
+open scoped Classical
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
+
+private theorem cnt_zero {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (s : Multiset (IrrGL k)) (χ : kˣ →* ℂˣ) (h : ∀ ζ ∈ chars s, ¬ IsUnram (ζ * χ)) : cnt s χ = 0 := by
+  unfold cnt
+  rw [Multiset.card_eq_zero, Multiset.filter_eq_nil]
+  rintro y hy ⟨ζ, hζ, rfl, hu⟩
+  exact h ζ ⟨hζ, hy⟩ hu
+
+private theorem pol_one {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (s : Multiset (IrrGL k)) (χ : kˣ →* ℂˣ) (h : cnt s χ = 0) : pol s χ = 1 := by
+  obtain ⟨h0, hd, -⟩ := (polFacts k).2.2.2 s χ
+  have e := eq_C_of_natDegree_eq_zero (hd.trans h)
+  rw [e, eval_C] at h0
+  rw [e, h0, C_1]
+
+private theorem prod_sub {α M : Type} [CommMonoid M] (p : α → Prop) [Fintype {a // p a}] (S : Finset α) (g : α → M)
+    (h1 : ∀ w : {a // p a}, w.1 ∈ S) (h2 : ∀ a ∈ S, ¬ p a → g a = 1) : ∏ a ∈ S, g a = ∏ w : {a // p a}, g w.1 := by
+  rw [← Finset.prod_subtype (S.filter p) (p := p) (fun a => ⟨fun h => (Finset.mem_filter.1 h).2,
+    fun h => Finset.mem_filter.2 ⟨h1 ⟨a, h⟩, h⟩⟩) g]
+  refine (Finset.prod_subset (Finset.filter_subset _ _) fun a ha hn => h2 a ha fun hp => hn ?_).symm
+  exact Finset.mem_filter.2 ⟨ha, hp⟩
+
+theorem UpperTheory.satake_parameters_twisted_automorphic :
+    ∀ (K : Type) [Field K] [NumberField K] [IsTotallyComplex K] (P : CuspSub K 3) (ξ : HChar K)
+        (MainNotions : Finset (HeightOneSpectrum (𝓞 K))) (B : HeightOneSpectrum (𝓞 K) → Multiset ℂˣ) (v : Ad3.Pl)
+        (s : ∀ w : HeightOneSpectrum (𝓞 K), Multiset (IrrGL (w.adicCompletion K))),
+        GroundTheory.Automorphic.GJStandardL.ramifiedPlaces K ⊆ MainNotions →
+        (∀ w ∉ MainNotions, (CG.mk (P.twist ξ)).HasSat w (B w)) → (∀ w, SuppAt P w (s w)) → (∀ w : PlacesOver K v, w.1 ∈ MainNotions) →
+        (∀ w ∈ MainNotions, w.under (𝓞 ℚ) ≠ v → ∀ ζ ∈ chars (s w), ¬ IsUnram (ζ * ξ.loc w)) →
+        ∃ β : ℂ[X], β ≠ 0 ∧ PairG (eulerL K (cx B) MainNotions) (eulerLd K (cx B) MainNotions) β (Ideal.absNorm v.asIdeal : ℝ)
+          (∏ w : PlacesOver K v, (pol (s w.1) (ξ.loc w.1)).comp (X ^ fdeg w)) := by
+  intro K _ _ _ P ξ MainNotions B v s hS hB hs hv hr
+  have hex : ∀ w, ∃ s', SuppAt (P.twist ξ) w s' ∧ pol s' 1 = pol (s w) (ξ.loc w) ∧ cnt s' 1 = cnt (s w) (ξ.loc w) := fun w => by
+    obtain ⟨s', h1, h2, -⟩ := suppTw K 3 (by omega) P w ξ (s w) (hs w)
+    have hF := (polFacts (w.adicCompletion K)).2.2.2
+    have e : pol s' 1 = pol (s w) (ξ.loc w) := by rw [h2, mul_one]
+    exact ⟨s', h1, e, by rw [← (hF s' 1).2.1, e, (hF _ _).2.1]⟩
+  choose s' h1 h2 h3 using hex
+  have hz : ∀ w ∈ MainNotions, ¬ w.asIdeal.LiesOver v.asIdeal → cnt (s w) (ξ.loc w) = 0 := fun w hw hn =>
+    cnt_zero _ _ (hr w hw fun e => hn (by subst e; exact ⟨rfl⟩))
+  have hq : 1 < Ideal.absNorm v.asIdeal := NumberField.HeightOneSpectrum.one_lt_absNorm v
+  obtain ⟨β, hβ, hP⟩ := sideX K 3 (by omega) (P.twist ξ) MainNotions hS B hB s' (Ideal.absNorm v.asIdeal)
+    (fun w => v.asIdeal.inertiaDeg' w.asIdeal) hq (fun w hw => ⟨h1 w, fun hc => by
+      have hl : w.asIdeal.LiesOver v.asIdeal := by
+        by_contra hn
+        exact hc ((h3 w).trans (hz w hw hn))
+      exact (normVal ℚ K v ⟨w, hl⟩ 1).2.2.2⟩)
+  refine ⟨β, hβ, ?_⟩
+  have e : (∏ w ∈ MainNotions, (pol (s' w) 1).comp (X ^ v.asIdeal.inertiaDeg' w.asIdeal)) =
+      ∏ w : PlacesOver K v, (pol (s w.1) (ξ.loc w.1)).comp (X ^ fdeg w) := by
+    simp only [h2]
+    exact prod_sub (fun w : HeightOneSpectrum (𝓞 K) => w.asIdeal.LiesOver v.asIdeal) MainNotions
+      (fun w => (pol (s w) (ξ.loc w)).comp (X ^ v.asIdeal.inertiaDeg' w.asIdeal)) hv
+      (fun w hw hn => by rw [pol_one _ _ (hz w hw hn), one_comp])
+  rw [← e]
+  exact hP
+end
+
+section
 open NumberField IsDedekindDomain Polynomial Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.LocGL GlobalTheory.SplitWeil GlobalTheory.SmGL
 open UpperTheory.V.Z.Gam UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter GlobalTheory.HenQ UpperTheory.V.Z.Inf UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.Ad
 open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.LocalField
@@ -172,3 +342,4 @@ theorem UpperTheory.euler_product_induction_supported :
     refine Finset.prod_eq_one fun w _ => ?_
     rw [eval_comp, eval_pow, eval_X, zero_pow (normVal ℚ K v w 1).2.2.1.ne']
     exact ((polFacts _).2.2.2 _ _).1
+end

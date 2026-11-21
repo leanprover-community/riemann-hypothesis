@@ -3,9 +3,41 @@ import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CutPMulCutP
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AutomorphicFunctionTwistBounded
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetBlockLeviCongrModUpperBlockIdeal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolynomialProductCoeffsCentral
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShiftedCapelliDeterminantSubleadingCoeffTraceStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffMemSubmoduleOfComplexPolyValuesMem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShiftedCapelliDeterminantSubleadingCoeffTrace
 
+section
+open Matrix GlobalTheory.TorFin
+
+noncomputable section
+
+namespace GlobalTheory.IntModFac
+
+open Polynomial
+
+def sumPoly {S : Type} [Semiring S] (n : ℕ) (f : ℕ → S) : S[X] :=
+  ∑ k ∈ Finset.range (n + 1), C (f k) * X ^ k
+
+end GlobalTheory.IntModFac
+
+namespace GlobalTheory
+
+open Polynomial GlobalTheory.IntModFac
+
+end GlobalTheory
+end
+end
+
+section
+open Matrix GlobalTheory.TorFin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.shifted_capelli_determinant_subleading_coeff_trace : ∀ (A : Type) [Ring A] [Algebra ℂ A] (m : ℕ) (E : Fin (m + 1) → Fin (m + 1) → A) (s : ℂ), ∃ (c : ℕ → A) (t : ℂ),
+    c (m + 1) = 1 ∧ c m = ∑ i, E i i + t • (1 : A) ∧
+      ∀ u : ℂ, Formalism.REAL.qdet E (u - s) = ∑ k ∈ Finset.range (m + 1 + 1), u ^ k • c k := by
+  first | exact @GlobalTheory.CapelliNext.qdet_shift_next_coeff | exact GlobalTheory.CapelliNext.qdet_shift_next_coeff | (intros; apply GlobalTheory.CapelliNext.qdet_shift_next_coeff <;> assumption)
+end
+
+section
 noncomputable section
 
 open Matrix GlobalTheory.TorFin Formalism.REAL
@@ -56,4 +88,5 @@ end Loc
 
 end GlobalTheory.CentreFin
 
+end
 end

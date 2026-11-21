@@ -2,16 +2,331 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsDPModel
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRuleUnitObjOfCovers
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFlatCoverWithLevel
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidConstantStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidCubeStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidFiniteOrderStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidSeparatedStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidSerreAmpleStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidLevelRigidStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelStructurePowerSplit
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelStructureCrtCombine
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetGeneratorPullbackRule
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidConstant
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidCube
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidFiniteOrder
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidSeparated
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidSerreAmple
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleRigidLevelRigid
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RTensorEqZeroOfRestrictAffineInf
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueDetGen
 
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.AmpleRigid
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ample_rigid_constant : GlobalTheory.AmpleRigid.ConstSt := by
+  first | exact @GlobalTheory.AmpleRigid.constSt | exact GlobalTheory.AmpleRigid.constSt | (intros; apply GlobalTheory.AmpleRigid.constSt <;> assumption)
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.AmpleRigid
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ample_rigid_cube : GlobalTheory.AmpleRigid.CubeSt := by
+  first | exact @GlobalTheory.AmpleCube.cubeSt | exact GlobalTheory.AmpleCube.cubeSt | (intros; apply GlobalTheory.AmpleCube.cubeSt <;> assumption)
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.AmpleRigid
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ample_rigid_finite_order : GlobalTheory.AmpleRigid.ConstSt → GlobalTheory.AmpleRigid.CubeSt → GlobalTheory.AmpleRigid.FiniteOrderSt := by
+  first | exact @GlobalTheory.AmpleFiniteOrder.finiteOrder_of_const_of_cube | exact GlobalTheory.AmpleFiniteOrder.finiteOrder_of_const_of_cube | (intros; apply GlobalTheory.AmpleFiniteOrder.finiteOrder_of_const_of_cube <;> assumption)
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.AmpleRigid
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ample_rigid_separated : GlobalTheory.AmpleRigid.ConstSt → GlobalTheory.AmpleRigid.CubeSt → GlobalTheory.AmpleRigid.SeparatedSt := by
+  first | exact @GlobalTheory.AmpleRigid.separatedSt_of_const_cube | exact GlobalTheory.AmpleRigid.separatedSt_of_const_cube | (intros; apply GlobalTheory.AmpleRigid.separatedSt_of_const_cube <;> assumption)
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.AmpleRigid
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ample_rigid_serre_ample : GlobalTheory.AmpleRigid.FiniteOrderSt → GlobalTheory.AmpleRigid.SeparatedSt → GlobalTheory.AmpleRigid.SerreAmpleSt := by
+  first | exact @GlobalTheory.AmpleRigid.serreAmple_of_finiteOrder_of_separated | exact GlobalTheory.AmpleRigid.serreAmple_of_finiteOrder_of_separated | (intros; apply GlobalTheory.AmpleRigid.serreAmple_of_finiteOrder_of_separated <;> assumption)
+end
+
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.AmpleRigid
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ample_rigid_level_rigid : GlobalTheory.AmpleRigid.SerreAmpleSt → GlobalTheory.AmpleRigid.LevelRigidSt := by
+  first | exact @GlobalTheory.AmpleRigid.levelRigid_of_serreAmple | exact GlobalTheory.AmpleRigid.levelRigid_of_serreAmple | (intros; apply GlobalTheory.AmpleRigid.levelRigid_of_serreAmple <;> assumption)
+end
+
+section
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+noncomputable section
+
+namespace GlobalTheory.RealMult.LevelPow
+
+variable {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {S : Scheme.{0}}
+
+theorem comp_act_natCast_mul (X : Obj F 𝔠 S) {T : Over S} (x : T ⟶ X.A) (k : ℕ) (a : 𝓞 F) :
+    x ≫ X.rm.act ((k : 𝓞 F) * a) = (x ≫ X.rm.act a) ^ k := by
+  induction k with
+  | zero =>
+    have h0 : X.rm.act 0 = 1 := by
+      have h := X.rm.add 0 0
+      rw [add_zero] at h
+      exact (mul_eq_left.1 h.symm)
+    rw [Nat.cast_zero, zero_mul, h0, pow_zero, MonObj.comp_one]
+  | succ k ih =>
+    rw [Nat.cast_succ, add_mul, _root_.one_mul, X.rm.add, MonObj.comp_mul, ih, pow_succ]
+
+theorem pow_comp_act (X : Obj F 𝔠 S) {T : Over S} (x : T ⟶ X.A) (k : ℕ) (a : 𝓞 F) :
+    (x ^ k) ≫ X.rm.act a = x ≫ X.rm.act ((k : 𝓞 F) * a) := by
+  haveI := X.rm.hom a
+  rw [MonObj.pow_comp, comp_act_natCast_mul]
+
+theorem natCast_ne_zero {n : ℕ} (hn : n ≠ 0) : (n : 𝓞 F) ≠ 0 := Nat.cast_ne_zero.2 hn
+
+theorem dvd_of_mul_dvd_mul {M M' : ℕ} (hM' : M' ≠ 0) {a : 𝓞 F}
+    (h : ((M * M' : ℕ) : 𝓞 F) ∣ (M' : 𝓞 F) * a) : (M : 𝓞 F) ∣ a := by
+  rw [Nat.cast_mul, mul_comm] at h
+  exact (mul_dvd_mul_iff_left (natCast_ne_zero hM')).1 h
+
+theorem exists_level_pow {X : Obj F 𝔠 S} {L M M' : ℕ} (hL : L = M * M') (hM : M ≠ 0) (hM' : M' ≠ 0)
+    (ξ : X.Level L) : ∃ β : X.Level M, ∀ i, β.pt i = ξ.pt i ^ M' := by
+  subst hL
+  refine ⟨{ pt := fun i ↦ ξ.pt i ^ M', tors := ?_, inj := ?_, surj := ?_ }, fun _ ↦ rfl⟩
+  · intro i
+    rw [← pow_mul, mul_comm M' M, ξ.tors i]
+  · intro Ω _ _ t a b h
+    simp only [pow_comp_act] at h
+    obtain ⟨ha, hb⟩ := ξ.inj Ω t _ _ h
+    exact ⟨dvd_of_mul_dvd_mul hM' ha, dvd_of_mul_dvd_mul hM' hb⟩
+  · intro Ω _ _ t y hy
+    have hy' : y ^ (M * M') = 1 := by rw [pow_mul, hy, one_pow]
+    obtain ⟨a, b, hab⟩ := ξ.surj Ω t y hy'
+    have hN : (toUnit (Over.mk t) ≫ ξ.pt 0 ≫ X.rm.act ((M : 𝓞 F) * a)) *
+        (toUnit (Over.mk t) ≫ ξ.pt 1 ≫ X.rm.act ((M : 𝓞 F) * b)) = 1 := by
+      rw [← hy, hab, mul_pow]
+      simp only [← Category.assoc, comp_act_natCast_mul, MonObj.comp_pow]
+    obtain ⟨ha, hb⟩ := ξ.inj Ω t _ _ hN
+    rw [mul_comm M M'] at ha hb
+    obtain ⟨a', rfl⟩ := dvd_of_mul_dvd_mul hM ha
+    obtain ⟨b', rfl⟩ := dvd_of_mul_dvd_mul hM hb
+    refine ⟨a', b', ?_⟩
+    rw [hab, pow_comp_act, pow_comp_act]
+
+end GlobalTheory.RealMult.LevelPow
+
+open GlobalTheory.RealMult.LevelPow in
+
+theorem GlobalTheory.RealMult.Obj.Level.exists_pow_levels : ∀ {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {S : Scheme.{0}} {X : Obj F 𝔠 S} {N N' : ℕ}, N ≠ 0 → N' ≠ 0 → ∀ ξ : X.Level (N * N'),
+    (∃ β : X.Level N, ∀ i, β.pt i = ξ.pt i ^ N') ∧ ∃ β' : X.Level N', ∀ i, β'.pt i = ξ.pt i ^ N := by
+  intro F _ _ 𝔠 S X N N' hN hN' ξ
+  exact ⟨exists_level_pow rfl hN hN' ξ, exists_level_pow (mul_comm N N') hN' hN ξ⟩
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_structure_power_split : ∀ {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {S : Scheme.{0}} {X : Obj F 𝔠 S} {N N' : ℕ}, N ≠ 0 → N' ≠ 0 → ∀ ξ : X.Level (N * N'),
+    (∃ β : X.Level N, ∀ i, β.pt i = ξ.pt i ^ N') ∧ ∃ β' : X.Level N', ∀ i, β'.pt i = ξ.pt i ^ N := by
+  atlas_forward_decl GlobalTheory.RealMult.Obj.Level.exists_pow_levels
+end
+
+section
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult
+attribute [local instance] Over.cartesianMonoidalCategory
+
+noncomputable section
+
+attribute [local instance] CategoryTheory.Hom.group CategoryTheory.Hom.commGroup
+
+namespace GlobalTheory.RealMult.LevelComb
+
+variable {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {S : Scheme.{0}}
+
+def actHom (X : Obj F 𝔠 S) {T : Over S} (u : T ⟶ 𝟙_ (Over S)) (z : 𝟙_ (Over S) ⟶ X.A) :
+    𝓞 F →+ Additive (T ⟶ X.A) :=
+  AddMonoidHom.mk' (fun c ↦ Additive.ofMul (u ≫ z ≫ X.rm.act c)) (fun a b ↦ by
+    simp only [X.rm.add, comp_mul]; rfl)
+
+theorem comp_act_add (X : Obj F 𝔠 S) {T : Over S} (u : T ⟶ 𝟙_ (Over S)) (z : 𝟙_ (Over S) ⟶ X.A) (a b : 𝓞 F) :
+    u ≫ z ≫ X.rm.act (a + b) = (u ≫ z ≫ X.rm.act a) * (u ≫ z ≫ X.rm.act b) := by
+  simp only [X.rm.add, comp_mul]
+
+theorem comp_act_zsmul (X : Obj F 𝔠 S) {T : Over S} (u : T ⟶ 𝟙_ (Over S)) (z : 𝟙_ (Over S) ⟶ X.A) (n : ℤ)
+    (c : 𝓞 F) : u ≫ z ≫ X.rm.act (n • c) = (u ≫ z ≫ X.rm.act c) ^ n := by
+  have h := map_zsmul (actHom X u z) n c
+  exact congrArg Additive.toMul h
+
+theorem comp_pow_act (X : Obj F 𝔠 S) {T : Over S} (u : T ⟶ 𝟙_ (Over S)) (z : 𝟙_ (Over S) ⟶ X.A) (m : ℕ)
+    (c : 𝓞 F) : u ≫ (z ^ m) ≫ X.rm.act c = (u ≫ z ≫ X.rm.act c) ^ m := by
+  haveI := X.rm.hom c
+  rw [pow_comp, comp_pow]
+
+end GlobalTheory.RealMult.LevelComb
+
+open GlobalTheory.RealMult.LevelComb in
+
+theorem GlobalTheory.RealMult.Obj.Level.comb : ∀ {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {S : Scheme.{0}} {X : Obj F 𝔠 S} {N N' : ℕ}, Nat.Coprime N N' → ∀ (β : X.Level N) (β' : X.Level N'),
+    ∃ ξ : X.Level (N * N'), (∀ i, ξ.pt i ^ N' = β.pt i) ∧ ∀ i, ξ.pt i ^ N = β'.pt i := by
+  intro F _ _ 𝔠 S X N N' hc β β'
+  obtain ⟨p, q, hpq⟩ : IsCoprime (N : ℤ) (N' : ℤ) := Nat.isCoprime_iff_coprime.2 hc
+  let pt : Fin 2 → (𝟙_ (Over S) ⟶ X.A) := fun i ↦ β.pt i ^ q * β'.pt i ^ p
+  have h1 : ∀ i, pt i ^ N' = β.pt i := by
+    intro i
+    have hb : β.pt i ^ (q * (N' : ℤ)) = β.pt i := by
+      rw [show q * (N' : ℤ) = 1 - (N : ℤ) * p by linarith, zpow_sub, zpow_one, zpow_mul, zpow_natCast,
+        β.tors i, one_zpow, inv_one, _root_.mul_one]
+    have hb' : β'.pt i ^ (p * (N' : ℤ)) = 1 := by
+      rw [mul_comm, zpow_mul, zpow_natCast, β'.tors i, one_zpow]
+    show (β.pt i ^ q * β'.pt i ^ p) ^ N' = β.pt i
+    rw [← zpow_natCast, mul_zpow, ← zpow_mul, ← zpow_mul, hb, hb', _root_.mul_one]
+  have h2 : ∀ i, pt i ^ N = β'.pt i := by
+    intro i
+    have hb : β'.pt i ^ (p * (N : ℤ)) = β'.pt i := by
+      rw [show p * (N : ℤ) = 1 - (N' : ℤ) * q by linarith, zpow_sub, zpow_one, zpow_mul, zpow_natCast,
+        β'.tors i, one_zpow, inv_one, _root_.mul_one]
+    have hb' : β.pt i ^ (q * (N : ℤ)) = 1 := by
+      rw [mul_comm, zpow_mul, zpow_natCast, β.tors i, one_zpow]
+    show (β.pt i ^ q * β'.pt i ^ p) ^ N = β'.pt i
+    rw [← zpow_natCast, mul_zpow, ← zpow_mul, ← zpow_mul, hb, hb', _root_.one_mul]
+  refine ⟨{ pt := pt, tors := ?_, inj := ?_, surj := ?_ }, h1, h2⟩
+  · intro i
+    rw [mul_comm, pow_mul, h1, β.tors]
+  · intro Ω _ _ t a b h
+    set u := toUnit (Over.mk t)
+    have hβ : (u ≫ β.pt 0 ≫ X.rm.act a) * (u ≫ β.pt 1 ≫ X.rm.act b) = 1 := by
+      rw [← h1, ← h1, comp_pow_act, comp_pow_act, ← mul_pow, h, one_pow]
+    have hβ' : (u ≫ β'.pt 0 ≫ X.rm.act a) * (u ≫ β'.pt 1 ≫ X.rm.act b) = 1 := by
+      rw [← h2, ← h2, comp_pow_act, comp_pow_act, ← mul_pow, h, one_pow]
+    obtain ⟨ha, hb⟩ := β.inj Ω t a b hβ
+    obtain ⟨ha', hb'⟩ := β'.inj Ω t a b hβ'
+    have hco : IsCoprime ((N : 𝓞 F)) ((N' : 𝓞 F)) := by
+      simpa using (Nat.isCoprime_iff_coprime.2 hc).map (Int.castRingHom (𝓞 F))
+    rw [Nat.cast_mul]
+    exact ⟨hco.mul_dvd ha ha', hco.mul_dvd hb hb'⟩
+  · intro Ω _ _ t y hy
+    set u := toUnit (Over.mk t)
+    have hy1 : (y ^ N') ^ N = 1 := by rw [← pow_mul, mul_comm, hy]
+    have hy2 : (y ^ N) ^ N' = 1 := by rw [← pow_mul, hy]
+    obtain ⟨a, b, hab⟩ := β.surj Ω t (y ^ N') hy1
+    obtain ⟨a', b', hab'⟩ := β'.surj Ω t (y ^ N) hy2
+    rw [← h1, ← h1, comp_pow_act, comp_pow_act] at hab
+    rw [← h2, ← h2, comp_pow_act, comp_pow_act] at hab'
+    refine ⟨((N : ℤ) * p) • a' + ((N' : ℤ) * q) • a, ((N : ℤ) * p) • b' + ((N' : ℤ) * q) • b, ?_⟩
+    rw [comp_act_add, comp_act_add, comp_act_zsmul, comp_act_zsmul, comp_act_zsmul, comp_act_zsmul]
+    have hy0 : y = y ^ ((N : ℤ) * p + (N' : ℤ) * q) := by
+      rw [show (N : ℤ) * p + (N' : ℤ) * q = 1 by linarith, zpow_one]
+    rw [hy0, zpow_add, zpow_mul, zpow_mul, zpow_natCast, zpow_natCast, hab, hab', mul_zpow, mul_zpow,
+      zpow_mul, zpow_mul, zpow_mul, zpow_mul, zpow_natCast, zpow_natCast, zpow_natCast, zpow_natCast]
+    exact mul_mul_mul_comm _ _ _ _
+
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_structure_crt_combine : ∀ {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {S : Scheme.{0}} {X : Obj F 𝔠 S} {N N' : ℕ}, Nat.Coprime N N' → ∀ (β : X.Level N) (β' : X.Level N'),
+    ∃ ξ : X.Level (N * N'), (∀ i, ξ.pt i ^ N' = β.pt i) ∧ ∀ i, ξ.pt i ^ N = β'.pt i := by
+  atlas_forward_decl GlobalTheory.RealMult.Obj.Level.comb
+end
+
+section
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.RealMult
+
+theorem tensorEval_includeRight_comp {R₀ A B : Type} [CommRing R₀] [CommRing A] [CommRing B] (ρ : A →+* B)
+    (d : R₀ ⊗[ℤ] A) :
+    tensorEval ((Algebra.TensorProduct.includeRight (R := ℤ) (A := R₀) (B := B)).toRingHom.comp ρ) d =
+      TensorProduct.comm ℤ B R₀
+        (LinearMap.rTensor R₀ ρ.toAddMonoidHom.toIntLinearMap (TensorProduct.comm ℤ R₀ A d)) := by
+  induction d using TensorProduct.induction_on with
+  | zero => simp
+  | tmul r a =>
+    simp [tensorEval_tmul, Algebra.TensorProduct.algebraMap_apply, Algebra.TensorProduct.tmul_mul_tmul]
+  | add x y hx hy => simp only [map_add, hx, hy]
+
+theorem isChartFun_unique : ∀ {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {N : ℕ} {M : Scheme.{0}}
+    {s : M ⟶ Sp (Localization.Away (N : ℤ))} {U : Obj F 𝔠 M} {α : U.Level N} {V : M.Opens},
+    IsDPModel N s U α V → ∀ {R₀ : Type} [CommRing R₀] {k : ℕ} (r₀ : Rule (rapObj 𝔠) R₀ k)
+    {W : M.Opens} (hW : IsAffineOpen W) {Y : Obj F 𝔠 (Sp Γ(M, W))} {φY : Y.A.left ⟶ U.A.left}, Y.IsPullBy U hW.fromSpec φY →
+    ∀ {δY : Y.DetGen} {h h' : R₀ ⊗[ℤ] Γ(M, W)}, IsChartFun r₀ Y δY h → IsChartFun r₀ Y δY h' → h = h' := by
+  intro F _ _ 𝔠 N M s U α V hDP R₀ _ k r₀ W hW Y φY hY δY h h' hh hh'
+  obtain ⟨-, -, hflat, hV, hnorm, hcod⟩ := hDP
+  rw [← sub_eq_zero]
+  have key := rTensor_eq_zero_of_restrict_affine_inf N M s V hflat hnorm hcod W hW R₀
+    (TensorProduct.comm ℤ R₀ Γ(M, W) (h - h')) ?_
+  · exact (TensorProduct.comm ℤ R₀ Γ(M, W)).map_eq_zero_iff.1 key
+  intro W' hW' hle
+  let ρ : Γ(M, W) →+* Γ(M, W') := (M.presheaf.map (homOfLE (hle.trans inf_le_left)).op).hom
+  let ψ : Γ(M, W) →+* R₀ ⊗[ℤ] Γ(M, W') :=
+    (Algebra.TensorProduct.includeRight (R := ℤ) (A := R₀) (B := Γ(M, W'))).toRingHom.comp ρ
+  obtain ⟨X, φ, hX⟩ := Obj.exists_isPullBy Y (spMap ψ)
+  obtain ⟨δ, hδ, -⟩ := hX.existsUnique_detGen ψ δY
+
+  have hmap : spMap ψ ≫ hW.fromSpec =
+      spMap (Algebra.TensorProduct.includeRight (R := ℤ) (A := R₀) (B := Γ(M, W'))).toRingHom ≫ hW'.fromSpec := by
+    rw [← hW.map_fromSpec hW' (homOfLE (hle.trans inf_le_left)).op]
+    simp [ψ, ρ, spMap, Spec.map_comp]
+  have hXr : X.IsRapoport := by
+    rw [Obj.isRapoport_iff]
+    refine Set.eq_univ_of_forall fun x K _ t hx Z χ hZ ↦ ?_
+    have hZU : Z.IsPullBy U (t ≫ spMap ψ ≫ hW.fromSpec) (χ ≫ φ ≫ φY) := hZ.comp (hX.comp hY)
+    obtain ⟨z, rfl⟩ := hx
+    have hmem : (t ≫ spMap ψ ≫ hW.fromSpec) z ∈ (V : Set M) := by
+      rw [hmap]
+      have : (hW'.fromSpec) ((t ≫ spMap (Algebra.TensorProduct.includeRight (R := ℤ) (A := R₀) (B := Γ(M, W'))).toRingHom) z) ∈ (W' : Set M) := by
+        rw [← hW'.range_fromSpec]; exact ⟨_, rfl⟩
+      exact (hle.trans inf_le_right) (by simpa using this)
+    rw [hV] at hmem
+    exact hmem K _ ⟨z, rfl⟩ Z _ hZU
+  have e1 := hh _ ψ X φ hXr δ hX hδ
+  have e2 := hh' _ ψ X φ hXr δ hX hδ
+  have e : tensorEval ψ (h - h') = 0 := by rw [map_sub, ← e1, ← e2, sub_self]
+  rw [tensorEval_includeRight_comp, LinearEquiv.map_eq_zero_iff] at e
+  exact e
+
+end GlobalTheory.RealMult
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_generator_pullback_rule : ∀ {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {N : ℕ} {M : Scheme.{0}} {s : M ⟶ Sp (Localization.Away (N : ℤ))} {U : Obj F 𝔠 M} {α : U.Level N} {V : M.Opens},
+    IsDPModel N s U α V → ∀ {R₀ : Type} [CommRing R₀] {k : ℕ} (r₀ : Rule (rapObj 𝔠) R₀ k)
+    {W : M.Opens} (hW : IsAffineOpen W) {Y : Obj F 𝔠 (Sp Γ(M, W))} {φY : Y.A.left ⟶ U.A.left}, Y.IsPullBy U hW.fromSpec φY →
+    ∀ {δY : Y.DetGen} {h h' : R₀ ⊗[ℤ] Γ(M, W)}, IsChartFun r₀ Y δY h → IsChartFun r₀ Y δY h' → h = h' := by
+  atlas_forward_decl GlobalTheory.RealMult.isChartFun_unique
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -403,3 +718,5 @@ theorem presVal_indep : GlobalTheory.Published.DelignePappasModel → ∀ (F : T
   exact hσ (by rw [map_sub]; exact sub_eq_zero.2 (e₁.trans e₂.symm))
 
 end GlobalTheory.RealMult.ChartIndep
+end
+end

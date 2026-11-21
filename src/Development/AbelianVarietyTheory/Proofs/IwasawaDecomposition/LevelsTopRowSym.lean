@@ -2,8 +2,204 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPtOfOfDecoRaw
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemHJsymIffJSymG
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CoarseLast
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LamJsymRead
+import Formalism.LocalToGlobal.Columns.LevGSym
+import Formalism.LocalToGlobal.HermitianForms.DefsSym
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CongruenceLevelEqDepthSucc
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PhiTopTargetSym
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.JoinForms
+
+section
+open Formalism.L2.Col
+
+namespace GlobalTheory.MemXSym
+
+open Formalism.L2.Forms
+
+theorem facts {n k r t m rS : ℕ} (hr : r = k + 2 * rS + 1) (ht : 0 < t) (hn : n = r + m * t + 1) (x : ℕ) (hx : x < n) :
+    (x < r ∧ coarse r (List.replicate m t) x = 0 ∧ lvSym k rS t x = symIdx k rS x ∧ symIdx k rS x < r) ∨
+    (r ≤ x ∧ lvSym k rS t x + 1 = r + coarse r (List.replicate m t) x ∧ 1 ≤ coarse r (List.replicate m t) x) := by
+  rcases Nat.lt_or_ge x r with h1 | h1
+  · refine Or.inl ⟨h1, coarse_of_lt h1, ?_, ?_⟩
+    · have : x < rSym k rS := by unfold rSym; omega
+      rw [lvSym_of_lt this]; unfold posSym symIdx; split_ifs <;> omega
+    · unfold symIdx; split_ifs <;> omega
+  · refine Or.inr ⟨h1, ?_, by rw [coarse_of_le h1]; omega⟩
+    have hx' : ¬ x < rSym k rS := by unfold rSym; omega
+    have hs : rSym k rS = r := by unfold rSym; omega
+    unfold lvSym; rw [if_neg hx', hs]
+    rcases Nat.lt_or_ge x (r + m * t) with h2 | h2
+    · rw [GlobalTheory.TopLawSym.coarse_eq ht h1 h2, Nat.add_assoc]
+    · have hx2 : x = r + m * t := by omega
+      subst hx2
+      rw [coarse_of_le h1, blkIdx_replicate_of_le t m (r + m * t - r) (by omega), Nat.add_sub_cancel_left,
+        Nat.mul_div_cancel _ ht, Nat.add_assoc]
+
+theorem facts_lt {k r t rS x : ℕ} (hr : r = k + 2 * rS + 1) (hx : x < r) :
+    lvSym k rS t x = symIdx k rS x := by
+  have : x < rSym k rS := by unfold rSym; omega
+  rw [lvSym_of_lt this]; unfold posSym symIdx; split_ifs <;> omega
+
+theorem coarse_last {r t m x : ℕ} (hx : x < r + m * t) :
+    coarse r (List.replicate m t) x < coarse r (List.replicate m t) (r + m * t) := by
+  have cN : coarse r (List.replicate m t) (r + m * t) = m + 1 := by
+    rw [coarse_of_le (by omega), blkIdx_replicate_of_le t m (r + m * t - r) (by omega)]
+  rw [cN]
+  rcases Nat.lt_or_ge x r with h1 | h1
+  · rw [coarse_of_lt h1]; omega
+  · rw [coarse_of_le h1]; have := blkIdx_replicate_lt t m (x - r) (by omega); omega
+
+variable {κ : Type} [Field κ]
+
+theorem inJ_of_mem {n k r t m rS : ℕ} (h : r ≤ n) (hr : r = k + 2 * rS + 1) (ht : 0 < t) (hn : n = r + m * t + 1)
+    {M : GL (Fin n) κ} (hM : M ∈ HXmsym κ n k r t m rS h) : InJSym k rS t true (M : Matrix (Fin n) (Fin n) κ) := by
+  obtain ⟨hJ, hF⟩ := Subgroup.mem_inf.mp hM
+  have hF' : ∀ i j : Fin n, j.val = r + m * t → (M : Matrix (Fin n) (Fin n) κ) i j = (1 : Matrix (Fin n) (Fin n) κ) i j := hF
+  obtain ⟨hB, h0⟩ := mem_HPar.mp hJ
+  have hkr : k + rS ≤ r := by omega
+  rw [mem_HPsymF_iff hkr] at h0
+  obtain ⟨p1, p2, p3⟩ := h0
+  refine ⟨fun x y hxy => ?_, fun x hx => ?_, fun x y hx hy => ?_, fun _ x y hy => ?_⟩
+  · rcases facts hr ht hn x.val x.2 with ⟨hx, cx, lx, sx⟩ | ⟨hx, lx, cx⟩ <;>
+      rcases facts hr ht hn y.val y.2 with ⟨hy, cy, ly, sy⟩ | ⟨hy, ly, cy⟩
+    · rw [lx, ly] at hxy
+      exact p1 ⟨x, hx⟩ ⟨y, hy⟩ hxy
+    · exfalso; omega
+    · exact (mem_btG.mp hB) x y (by omega)
+    · exact (mem_btG.mp hB) x y (by omega)
+  · exact p2 ⟨x, by unfold rSym at hx; omega⟩
+  · exact p3 ⟨x, by omega⟩ ⟨y, by omega⟩ hx hy
+  · have hy' : y.val = r + m * t := by omega
+    constructor
+    · rw [hF' x y hy', Matrix.one_apply]
+    · by_cases hxy : x = y
+      · subst hxy; rw [hF' x x hy', Matrix.one_apply]
+      · rw [if_neg hxy]
+        apply (mem_btG.mp hB) y x
+        have hx1 : x.val < r + m * t := by
+          have := x.2; have : x.val ≠ y.val := fun e => hxy (Fin.ext e); omega
+        rw [hy']
+        exact coarse_last hx1
+
+theorem mem_of_inJ {n k r t m rS : ℕ} (h : r ≤ n) (hr : r = k + 2 * rS + 1) (ht : 0 < t) (hn : n = r + m * t + 1)
+    {M : GL (Fin n) κ} (hM : InJSym k rS t true (M : Matrix (Fin n) (Fin n) κ)) : M ∈ HXmsym κ n k r t m rS h := by
+  obtain ⟨q1, q2, q3, q4⟩ := hM
+  have hkr : k + rS ≤ r := by omega
+  have hB : M ∈ blockUT n κ r (List.replicate m t) := mem_btG.mpr fun x y hxy => q1 x y (by
+    rcases facts hr ht hn x.val x.2 with ⟨hx, cx, lx, sx⟩ | ⟨hx, lx, cx⟩ <;>
+      rcases facts hr ht hn y.val y.2 with ⟨hy, cy, ly, sy⟩ | ⟨hy, ly, cy⟩ <;> omega)
+  refine Subgroup.mem_inf.mpr ⟨mem_HPar.mpr ⟨hB, ?_⟩, ?_⟩
+  · rw [mem_HPsymF_iff hkr]
+    refine ⟨fun i j hij => ?_, fun i => ?_, fun i j hi hj => ?_⟩
+    · refine q1 (Fin.castLE h i) (Fin.castLE h j) ?_
+      simp only [Fin.coe_castLE]
+      rw [facts_lt hr i.2, facts_lt hr j.2]
+      exact hij
+    · exact q2 (Fin.castLE h i) (by simp only [Fin.coe_castLE]; unfold rSym; omega)
+    · exact q3 (Fin.castLE h i) (Fin.castLE h j) (by simpa using hi) (by simpa using hj)
+  · intro x y hy
+    rw [(q4 rfl x y (by omega)).1, Matrix.one_apply]
+
+theorem memX (κ : Type) [Field κ] (n k r t m rS : ℕ) (h : r ≤ n) (hr : r = k + 2 * rS + 1) (ht : 0 < t)
+    (hn : n = r + m * t + 1) (M : GL (Fin n) κ) :
+    M ∈ HXmsym κ n k r t m rS h ↔ M ∈ Formalism.L2.Forms.JSymG κ n k rS t true := by
+  constructor
+  · intro hM
+    show InJSym k rS t true _ ∧ InJSym k rS t true _
+    exact ⟨inJ_of_mem h hr ht hn hM, inJ_of_mem h hr ht hn (Subgroup.inv_mem _ hM)⟩
+  · intro hM
+    exact mem_of_inJ h hr ht hn hM.1
+
+end GlobalTheory.MemXSym
+end
+
+section
+open Formalism.L2.Col
+
+noncomputable section
+
+namespace GlobalTheory.LamRead
+
+theorem sum_skip {F : Type} [Field F] {n r k : ℕ} (hr : r ≤ n) (hk : k ≤ r) (N : Matrix (Fin n) (Fin n) F) (f : ℕ → ℕ → F)
+    (hf : ∀ i j : Fin n, f i.1 j.1 = N i j) :
+    (∑ x : Fin n, ∑ y : Fin n, if (x : ℕ) + 1 = y ∧ (y : ℕ) < r ∧ (y : ℕ) ≠ k then N x y else 0) =
+      ∑ i ∈ Finset.range (k - 1), f i (i + 1) + ∑ i ∈ Finset.range (r - k - 1), f (k + i) (k + i + 1) := by
+  rw [Formalism.L2.G.sum_sup hr k ((Finset.range r).filter (fun x => x + 1 ≠ k))
+    (fun x hx => by simp only [Finset.mem_filter, Finset.mem_range]; constructor <;> intro h <;> first | exact h.2 | exact ⟨by omega, h⟩) N,
+    Finset.filter_filter, Finset.sum_filter]
+  have h1 : ∀ x ∈ Finset.range r, (if x + 1 ≠ k ∧ x + 1 < r then Formalism.L2.G.entN N x (x + 1) else 0) =
+      if x + 1 < r ∧ x + 1 ≠ k then f x (x + 1) else 0 := fun x hx => by
+    by_cases hx' : x + 1 < r ∧ x + 1 ≠ k
+    · rw [if_pos hx', if_pos ⟨hx'.2, hx'.1⟩]
+      have a1 : x < n := by omega
+      have a2 : x + 1 < n := by omega
+      unfold Formalism.L2.G.entN
+      rw [dif_pos ⟨a1, a2⟩]
+      exact (hf ⟨x, a1⟩ ⟨x + 1, a2⟩).symm
+    · rw [if_neg hx', if_neg (fun h => hx' ⟨h.2, h.1⟩)]
+  rw [Finset.sum_congr rfl h1]
+  obtain ⟨d, rfl⟩ : ∃ d, r = k + d := ⟨r - k, by omega⟩
+  rw [Finset.sum_range_add, Nat.add_sub_cancel_left]
+  by_cases hd : d = 0
+  · subst hd
+    rw [GlobalTheory.TopLawSym.sum_pred k _ _ fun p hp => by omega]
+    simp
+  · rw [GlobalTheory.TopLawSym.sum_pred k _ _ fun p hp => by omega,
+      GlobalTheory.TopLawSym.sum_pred d (fun p => f (k + p) (k + p + 1)) (fun p => k + p + 1 < k + d ∧ k + p + 1 ≠ k) fun p hp => by omega]
+
+theorem coarse_iff {r m t s i : ℕ} (ht : 0 < t) (hs : s < m) :
+    coarse r (List.replicate m t) i = s + 1 ↔ r + s * t ≤ i ∧ i < r + s * t + t := by
+  have hb := GlobalTheory.DatumLaw.blk_le (r := r) (a := r + m * t) hs le_rfl
+  by_cases hir : i < r
+  · rw [coarse_of_lt hir]
+    omega
+  · by_cases h2 : i < r + m * t
+    · rw [GlobalTheory.TopLawSym.coarse_eq ht (by omega) h2, Nat.add_right_cancel_iff, Nat.div_eq_iff ht]
+      omega
+    · rw [coarse_of_le (by omega), blkIdx_replicate_of_le t m _ (by
+        have := Nat.sub_le_sub_right (Nat.not_lt.1 h2) r
+        rwa [Nat.add_sub_cancel_left] at this)]
+      omega
+
+theorem lamJsym_read (κ κ' K : Type) [CommRing κ] [Field κ'] [Field K] (e : κ →+* κ') (emb : K →+* ℂ) (ψ : AddChar κ K)
+    (χ : ℕ → κˣ →* Kˣ) (ψ' : AddChar κ' ℂ) (χ' : ℕ → MulChar κ' ℂ) (n k r t m rS : ℕ) (h : r ≤ n) (hr : r = k + 2 * rS + 1)
+    (ht : 0 < t) (hn : r + m * t ≤ n) (hψ : ∀ x, ψ' (e x) = emb (ψ x))
+    (hχ : ∀ s, s < m → ∀ c : κˣ, χ' s (e c) = emb ((χ s c : Kˣ) : K)) (M : HJsym κ n k r t m rS h) :
+    emb ((lamJsym ψ χ n k r t m rS h M : Kˣ) : K) =
+      Formalism.L2.Forms.lamSym ψ' χ' k rS t m ((M.1 : Matrix (Fin n) (Fin n) κ).map e) := by
+  let A : ℕ → ℕ → κ := fun i j => if h' : i < n ∧ j < n then (M.1 : Matrix (Fin n) (Fin n) κ) ⟨i, h'.1⟩ ⟨j, h'.2⟩ else 0
+  have hA : ∀ i j : Fin n, A i.1 j.1 = (M.1 : Matrix (Fin n) (Fin n) κ) i j := fun i j => dif_pos ⟨i.2, j.2⟩
+  have h0 : ((lamJsym ψ χ n k r t m rS h M : Kˣ) : K) =
+      ((chiSymF ψ r k rS (HPar0 h _ _ M) : Kˣ) : K) *
+        ((detChar χ n r (List.replicate m t) ⟨M.1, HPar_le h _ _ M.2⟩ : Kˣ) : K) := rfl
+  have hrS : Formalism.L2.Forms.rSym k rS = r := hr.symm
+  rw [h0, GlobalTheory.TopLawSym.chiSymF_val ψ (by omega) (HPar0 h _ _ M) A fun i j => hA (Fin.castLE h i) (Fin.castLE h j), detChar_apply,
+    List.length_replicate, Units.coe_prod, map_mul, map_prod, ← hψ]
+  unfold Formalism.L2.Forms.lamSym Formalism.L2.Forms.lamJ
+  rw [hrS]
+  congr 1
+  · congr 1
+    rw [sum_skip h (by omega) _ (fun i j => e (A i j)) fun i j => by rw [hA]; rfl, map_add, map_sum, map_sum]
+  · refine Finset.prod_congr rfl fun s hs => ?_
+    rw [Finset.mem_range] at hs
+    rw [← hχ s hs, GlobalTheory.TopLaw.blkDet_eq_dB (coarse r (List.replicate m t)) (s + 1) (r + s * t) t (GlobalTheory.DatumLaw.blk_le hs hn)
+      (fun i _ => coarse_iff ht hs) ⟨M.1, HPar_le h _ _ M.2⟩ A hA]
+    unfold GlobalTheory.DatumLaw.dB
+    rw [RingHom.map_det]
+    congr 2
+    ext u v
+    have hb := GlobalTheory.DatumLaw.blk_le hs hn
+    have a1 : r + s * t + u.1 < n := by have := u.2; omega
+    have a2 : r + s * t + v.1 < n := by have := v.2; omega
+    show e (A (r + s * t + u.1) (r + s * t + v.1)) = Formalism.L2.Forms.entN _ (r + s * t + u.1) (r + s * t + v.1)
+    unfold Formalism.L2.Forms.entN
+    rw [dif_pos ⟨a1, a2⟩]
+    exact congrArg e (hA ⟨_, a1⟩ ⟨_, a2⟩)
+
+end GlobalTheory.LamRead
+end
+end
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
@@ -221,3 +417,4 @@ theorem GlobalTheory.Mem.Col2.TC.levels_top_row_sym : ∀ {B : Base} {X : PreX B
   obtain ⟨lamM, lamP, VM, VP, h1, h2, h3, h4⟩ := TypeLev.main_base I l.pr u G hG.piG hG.psi hG.chi (hN _ le_rfl).1 gP K.lev KP.lev
     (hK.lb ()) hKP.lb (TypeLev.rdM I l.pr u hK c) (TypeLev.rdP I hKP c')
   exact ⟨lamM, lamP, VM, VP, h1, h2, h3, TypeLev.frExt_of (D := I.rec7 l Z) hiX _ G h3 h4⟩
+end

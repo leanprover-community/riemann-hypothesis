@@ -1,6 +1,14 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
-import Development.EtaleCohomology.TateTwists.EtaleTensorPairQuasiIsoOfFlatQuasiIso
+import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
+
+def LateralTheory.EtaleFoundations.EtaleTensorPairQuasiIsoOfFlatQuasiIso : Prop :=
+  ∀ (R : Type) [CommRing R] {I I' J T T' : Cx R} [I.IsStrictlyGE 0] [I'.IsStrictlyGE 0] [J.IsStrictlyGE 0] (τ : Pair I J T) (τ' : Pair I' J T'), τ.IsTensor → τ'.IsTensor → (∀ t, FlatS (J.X t)) → ∀ (f : I ⟶ I') [QuasiIso f] (u : T ⟶ T'), τ.Compat τ' f (𝟙 J) u → QuasiIso u
+end
+
+section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
 namespace LateralTheory.EtaleFoundations.tqis
@@ -35,3 +43,4 @@ theorem LateralTheory.EtaleFoundations.etale_tensor_preserves_quasiIso_of_acycli
   have := cone_ge f
   rw [qis_iff_cone]
   exact hA R (-1) 0 σ hσ hJ ((qis_iff_cone f).1 inferInstance)
+end

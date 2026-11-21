@@ -1,14 +1,441 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SpecStalkSpecializesComp
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianLieLatticeEq
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocharLie
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtFractionNoetherianClosed
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianGenericIsoExtends
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteProjective
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularLocalRingFractionField
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HeightOnePrimeDvrStalk
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelDescendsBaseChange
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeRangeOfStalk
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelIsBaseChangeStatement
+import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.NormalLatticeRange
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PLatticesAgree
 import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PHeightOneIntersection
 
+section
+section
+noncomputable section
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
+
+namespace GlobalTheory.CompanionTheory.Ar.DvrExtension
+
+variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X}
+
+theorem spMap_genMap_comp (p : Cpt ξ) : spMap (genMap ξ p) ≫ X.fromSpecStalk p.1 = ξ := by
+  have h : spMap (genMap ξ p) =
+      Spec.map (Scheme.stalkClosedPointTo ξ) ≫ Spec.map (X.presheaf.stalkSpecializes p.2) := by
+    rw [← Spec.map_comp]
+    rfl
+  have h₁ : Spec.map (X.presheaf.stalkSpecializes p.2) ≫ X.fromSpecStalk p.1 = X.fromSpecStalk (genPt ξ) :=
+    Scheme.SpecMap_stalkSpecializes_fromSpecStalk p.2
+  rw [h, Category.assoc]
+  exact (congrArg (Spec.map (Scheme.stalkClosedPointTo ξ) ≫ ·) h₁).trans
+    (Scheme.Spec_stalkClosedPointTo_fromSpecStalk ξ)
+
+theorem isFractionRing_genMap (h : IsCptGen ξ) (p : Cpt ξ) :
+    letI := (genMap ξ p).toAlgebra
+    IsFractionRing (X.presheaf.stalk p.1) Ω := by
+  letI := (genMap ξ p).toAlgebra
+  haveI : FaithfulSMul (X.presheaf.stalk p.1) Ω :=
+    (faithfulSMul_iff_algebraMap_injective _ _).2 (h.inj p)
+  refine IsFractionRing.of_field _ _ fun z => ?_
+  obtain ⟨⟨_, a, rfl⟩, ⟨_, b, rfl⟩, e⟩ := RegAtRing.exists_div h p z
+  exact ⟨a, b, e⟩
+
+theorem spec_dualMap_alg {R R' : Type} [CommRing R] [CommRing R'] (k : R →+* R') :
+    Spec.map (CommRingCat.ofHom (dualMap k)) ≫ Spec.map (CommRingCat.ofHom (algebraMap R (DualNumber R))) =
+      Spec.map (CommRingCat.ofHom (algebraMap R' (DualNumber R'))) ≫ Spec.map (CommRingCat.ofHom k) := by
+  have e : (dualMap k).comp (algebraMap R (DualNumber R)) = (algebraMap R' (DualNumber R')).comp k := by
+    ext r <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  rw [← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp, ← CommRingCat.ofHom_comp, e]
+
+section Move
+
+variable {R : Type} [CommRing R] {x : Sp R ⟶ X} {k : R →+* Ω} {G G' : Over X} [GrpObj G] [GrpObj G']
+  {GΩ : Over (Sp Ω)} [GrpObj GΩ] {φ : GΩ.left ⟶ G.left} {φ' : GΩ.left ⟶ G'.left}
+  {G₀ : Over (Sp R)} [GrpObj G₀] {ψ : G₀.left ⟶ G.left} {ψ' : G₀.left ⟶ G'.left} {κ : GΩ.left ⟶ G₀.left}
+  {E : Type} [AddCommGroup E] [Module Ω E]
+
+theorem tangent_transport_dvr (hψ : IsGrpPullback G₀ G x ψ) (hψ' : IsGrpPullback G₀ G' x ψ')
+    (hκ : κ ≫ G₀.hom = GΩ.hom ≫ spMap k) (e₁ : κ ≫ ψ = φ) (e₂ : κ ≫ ψ' = φ')
+    (M : LieModel G ξ E) (M' : LieModel G' ξ E) (e : E)
+    (tie : ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ GΩ, v.left ≫ φ = (M.pt e).left ∧ v.left ≫ φ' = (M'.pt e).left)
+    (y : Sp R ⟶ X) (hy : 𝟙 _ ≫ x = y) (v : epsAt y ⟶ G) (hv : IsTanAt G y v)
+    (hve : (M.pt e).left = Spec.map (CommRingCat.ofHom (dualMap k)) ≫ v.left) :
+    ∃ v' : epsAt y ⟶ G', IsTanAt G' y v' ∧
+      (M'.pt e).left = Spec.map (CommRingCat.ofHom (dualMap k)) ≫ v'.left := by
+  subst hy
+  obtain ⟨w, hw, hw'⟩ := tie
+  let v₀ : epsAt (𝟙 (Sp R)) ⟶ G₀ := LieMove.liftEps hψ v
+  have hv₀ : v₀.left ≫ ψ = v.left := LieMove.liftEps_left hψ v
+  have t₀ : IsTanAt G₀ (𝟙 _) v₀ := (LieMove.tan_iff hψ v₀).2 (by
+    rw [show LieMove.pushEps hψ v₀ = v from LieMove.push_lift hψ v]; exact hv)
+  have key : Spec.map (CommRingCat.ofHom (dualMap k)) ≫ v₀.left = w.left ≫ κ := by
+    refine hψ.1.hom_ext ?_ ?_
+    · rw [Category.assoc, Category.assoc, hv₀, e₁, hw, hve]
+    · have a := Over.w v₀
+      have b := Over.w w
+      dsimp at a b
+      rw [Category.assoc, Category.assoc, a, hκ, ← Category.assoc (Over.Hom.left w), b]
+      simp only [Category.comp_id]
+      exact spec_dualMap_alg k
+  refine ⟨LieMove.pushEps hψ' v₀, (LieMove.tan_iff hψ' v₀).1 t₀, ?_⟩
+  rw [LieMove.pushEps_left, ← Category.assoc, key, Category.assoc, e₂, hw']
+
+theorem tan_move_of_dvr [IsDomain R] [IsDiscreteValuationRing R]
+    (hk : letI := k.toAlgebra; IsFractionRing R Ω) (hx : spMap k ≫ x = ξ) (hG : IsSemiAbelian G)
+    (hG' : IsSemiAbelian G') (hφ : IsGrpPullback GΩ G ξ φ) (hφ' : IsGrpPullback GΩ G' ξ φ')
+    (M : LieModel G ξ E) (M' : LieModel G' ξ E) (e : E)
+    (tie : ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ GΩ, v.left ≫ φ = (M.pt e).left ∧ v.left ≫ φ' = (M'.pt e).left)
+    (v : epsAt x ⟶ G) (hv : IsTanAt G x v)
+    (hve : (M.pt e).left = Spec.map (CommRingCat.ofHom (dualMap k)) ≫ v.left) :
+    ∃ v' : epsAt x ⟶ G', IsTanAt G' x v' ∧
+      (M'.pt e).left = Spec.map (CommRingCat.ofHom (dualMap k)) ≫ v'.left := by
+  subst hx
+  letI := k.toAlgebra
+  haveI : IsFractionRing R Ω := hk
+  obtain ⟨G₀, _, ψ, ψ', κ, hψ, hψ', hκ, e₁, e₂⟩ := GlobalTheory.T.semiabelian_generic_iso_extends R Ω X X x x G G' GΩ φ φ' hG hG' hφ hφ'
+  exact tangent_transport_dvr hψ hψ' hκ.1.w e₁ e₂ M M' e tie x (Category.id_comp x) v hv hve
+
+theorem extends_move (hξ : IsCptGen ξ) (hG : IsSemiAbelian G) (hG' : IsSemiAbelian G')
+    (hφ : IsGrpPullback GΩ G ξ φ) (hφ' : IsGrpPullback GΩ G' ξ φ')
+    (M : LieModel G ξ E) (M' : LieModel G' ξ E)
+    (tie : ∀ e, ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ GΩ, v.left ≫ φ = (M.pt e).left ∧ v.left ≫ φ' = (M'.pt e).left)
+    (p : Cpt ξ) [IsDomain (X.presheaf.stalk p.1)] [IsDiscreteValuationRing (X.presheaf.stalk p.1)]
+    (e : E) (h : ∃ v, M.Extends p e v) : ∃ v, M'.Extends p e v := by
+  obtain ⟨v, hv, hve⟩ := h
+  exact tan_move_of_dvr (isFractionRing_genMap hξ p) (spMap_genMap_comp p) hG hG' hφ hφ' M M' e (tie e) v hv hve
+
+end Move
+
+theorem lat_eq_of_dvr : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X), IsCptGen ξ → ∀ (G G' : Over X) [GrpObj G] [GrpObj G'] (GΩ : Over (Sp Ω)) [GrpObj GΩ] (φ : GΩ.left ⟶ G.left) (φ' : GΩ.left ⟶ G'.left), IsSemiAbelian G → IsSemiAbelian G' → IsGrpPullback GΩ G ξ φ → IsGrpPullback GΩ G' ξ φ' → ∀ (E : Type) [AddCommGroup E] [Module Ω E] (M : LieModel G ξ E) (M' : LieModel G' ξ E), (∀ e, ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ GΩ, v.left ≫ φ = (M.pt e).left ∧ v.left ≫ φ' = (M'.pt e).left) → ∀ p : Cpt ξ, (∃ _ : IsDomain (X.presheaf.stalk p.1), IsDiscreteValuationRing (X.presheaf.stalk p.1)) → M.lat p = M'.lat p := by
+  intro X Ω _ ξ hξ G G' _ _ GΩ _ φ φ' hG hG' hφ hφ' E _ _ M M' tie p hp
+  obtain ⟨_, _⟩ := hp
+  have e : {e | ∃ v, M.Extends p e v} = {e | ∃ v, M'.Extends p e v} := Set.ext fun e =>
+    ⟨extends_move hξ hG hG' hφ hφ' M M' tie p e,
+      extends_move hξ hG' hG hφ' hφ M' M (fun e => by
+        obtain ⟨v, a, b⟩ := tie e
+        exact ⟨v, b, a⟩) p e⟩
+  simp only [LieModel.lat]
+  rw [e]
+
+end GlobalTheory.CompanionTheory.Ar.DvrExtension
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.semiabelian_lie_lattice_eq : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X), IsCptGen ξ → ∀ (G G' : Over X) [GrpObj G] [GrpObj G'] (GΩ : Over (Sp Ω)) [GrpObj GΩ] (φ : GΩ.left ⟶ G.left) (φ' : GΩ.left ⟶ G'.left), IsSemiAbelian G → IsSemiAbelian G' → IsGrpPullback GΩ G ξ φ → IsGrpPullback GΩ G' ξ φ' → ∀ (E : Type) [AddCommGroup E] [Module Ω E] (M : LieModel G ξ E) (M' : LieModel G' ξ E), (∀ e, ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ GΩ, v.left ≫ φ = (M.pt e).left ∧ v.left ≫ φ' = (M'.pt e).left) → ∀ p : Cpt ξ, (∃ _ : IsDomain (X.presheaf.stalk p.1), IsDiscreteValuationRing (X.presheaf.stalk p.1)) → M.lat p = M'.lat p := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.DvrExtension.lat_eq_of_dvr
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieStalk
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.LieStalk
+
+theorem exists_germ_frac {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Sp Ω ⟶ X)
+    (hb : Function.Bijective (Scheme.stalkClosedPointTo ξ).hom) {y : X}
+    (hs : ξ (IsLocalRing.closedPoint Ω) ⤳ y) (a : Ω) :
+    ∃ f g : X.presheaf.stalk y,
+      (X.presheaf.stalkSpecializes hs ≫ Scheme.stalkClosedPointTo ξ).hom g ≠ 0 ∧
+      a * (X.presheaf.stalkSpecializes hs ≫ Scheme.stalkClosedPointTo ξ).hom g =
+        (X.presheaf.stalkSpecializes hs ≫ Scheme.stalkClosedPointTo ξ).hom f := by
+  obtain ⟨U, hU, hyU, -⟩ := exists_isAffineOpen_mem_and_subset (X := X) (x := y) (U := ⊤) trivial
+  have hzU : ξ (IsLocalRing.closedPoint Ω) ∈ U := hs.mem_open U.isOpen hyU
+  let z : U := ⟨_, hzU⟩
+  letI := X.presheaf.algebra_section_stalk z
+  have hl := hU.isLocalization_stalk z
+  obtain ⟨s, rfl⟩ := hb.2 a
+  obtain ⟨⟨f, g⟩, e⟩ := IsLocalization.surj (S := X.presheaf.stalk z.1)
+    (hU.primeIdealOf z).asIdeal.primeCompl s
+  have hgerm : ∀ r : Γ(X, U), (X.presheaf.stalkSpecializes hs).hom (X.presheaf.germ U y hyU r) =
+      X.presheaf.germ U _ hzU r := fun r =>
+    ConcreteCategory.congr_hom (TopCat.Presheaf.germ_stalkSpecializes X.presheaf hyU hs) r
+  refine ⟨X.presheaf.germ U y hyU f, X.presheaf.germ U y hyU g.1, ?_, ?_⟩
+  · have hu : IsUnit (X.presheaf.germ U _ hzU g.1) :=
+      IsLocalization.map_units (X.presheaf.stalk z.1) g
+    have := hu.map (Scheme.stalkClosedPointTo ξ).hom
+    simpa [hgerm] using this.ne_zero
+  · have e' : s * X.presheaf.germ U _ hzU g.1 = X.presheaf.germ U _ hzU f := e
+    have := congrArg (Scheme.stalkClosedPointTo ξ).hom e'
+    simpa [hgerm] using this
+
+theorem isFractionRing_regAt : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X), IsCptGen ξ →
+    ∀ p : Cpt ξ, IsFractionRing (regAt ξ p) Ω := by
+  intro X Ω _ ξ h p
+  refine IsFractionRing.of_field (regAt ξ p) Ω fun a => ?_
+  obtain ⟨f, g, hg, e⟩ := exists_germ_frac ξ h.bij (y := p.1) p.2 a
+  refine ⟨⟨genMap ξ p f, f, rfl⟩, ⟨genMap ξ p g, g, rfl⟩, ?_⟩
+  exact eq_div_of_mul_eq hg e
+
+end GlobalTheory.CompanionTheory.Ar.LieStalk
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieStalk
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.regular_local_ring_fraction_field : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X), IsCptGen ξ → ∀ p : Cpt ξ, IsFractionRing (regAt ξ p) Ω := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.LieStalk.isFractionRing_regAt
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieStalk
+
+namespace GlobalTheory.CompanionTheory.Ar.LieStalk.HeightOne
+
+theorem isDVR_of_ringKrullDim_eq_one (B : Type*) [CommRing B] [IsDomain B] [IsLocalRing B] [IsNoetherianRing B]
+    [IsIntegrallyClosed B] (h : ringKrullDim B = 1) : IsDiscreteValuationRing B := by
+  have hf : ¬ IsField B := fun hB => by
+    rw [ringKrullDim_eq_zero_of_isField hB] at h
+    exact zero_ne_one h
+  have hle : Ring.KrullDimLE 1 B := Ring.krullDimLE_iff.2 (by rw [h]; rfl)
+  have hmax := Ring.krullDimLE_one_iff_of_noZeroDivisors.1 hle
+  have hT := (IsDiscreteValuationRing.TFAE B hf).out 0 3
+  refine hT.2 ⟨inferInstance, ExistsUnique.intro (IsLocalRing.maximalIdeal B) ⟨?_, inferInstance⟩ ?_⟩
+  · exact fun h0 => hf (IsLocalRing.isField_iff_maximalIdeal_eq.2 h0)
+  · rintro Q ⟨h0, hQ⟩
+    have := hmax Q h0 hQ
+    exact IsLocalRing.eq_maximalIdeal this
+
+theorem comap_maximalIdeal_stalkSpecializes {X : Scheme.{0}} {x y : X} (h : x ⤳ y)
+    (P : PrimeSpectrum (X.presheaf.stalk y)) (hP : X.fromSpecStalk y P = x) :
+    (IsLocalRing.maximalIdeal (X.presheaf.stalk x)).comap (X.presheaf.stalkSpecializes h).hom = P.asIdeal := by
+  have e := Scheme.SpecMap_stalkSpecializes_fromSpecStalk h
+  have e3 : (Spec.map (X.presheaf.stalkSpecializes h) ≫ X.fromSpecStalk y)
+      (IsLocalRing.closedPoint (X.presheaf.stalk x) : Spec (X.presheaf.stalk x)) = x := by
+    rw [e]
+    exact Scheme.fromSpecStalk_closedPoint
+  have e2 : X.fromSpecStalk y (Spec.map (X.presheaf.stalkSpecializes h)
+      (IsLocalRing.closedPoint (X.presheaf.stalk x) : Spec (X.presheaf.stalk x))) = X.fromSpecStalk y P :=
+    (Scheme.Hom.comp_apply _ _ _).symm.trans (e3.trans hP.symm)
+  have inj : Function.Injective (X.fromSpecStalk y) := (X.fromSpecStalk y).isEmbedding.injective
+  exact congrArg PrimeSpectrum.asIdeal (inj e2)
+
+theorem exists_mul_stalkSpecializes {X : Scheme.{0}} {x y : X} (h : x ⤳ y)
+    (P : Ideal (X.presheaf.stalk y))
+    (hP : (IsLocalRing.maximalIdeal (X.presheaf.stalk x)).comap (X.presheaf.stalkSpecializes h).hom = P)
+    (b : X.presheaf.stalk x) :
+    ∃ a, a ∉ P ∧ ∃ c, (X.presheaf.stalkSpecializes h).hom a * b = (X.presheaf.stalkSpecializes h).hom c := by
+  obtain ⟨U, hU, hyU, -⟩ := exists_isAffineOpen_mem_and_subset (x := y) (U := ⊤) trivial
+  have hxU : x ∈ U := h.mem_open U.isOpen hyU
+  letI := TopCat.Presheaf.algebra_section_stalk X.presheaf (⟨x, hxU⟩ : U)
+  have loc := hU.isLocalization_stalk ⟨x, hxU⟩
+  obtain ⟨⟨r, t⟩, ht⟩ := IsLocalization.surj (hU.primeIdealOf ⟨x, hxU⟩).asIdeal.primeCompl b
+  have hg : ∀ r : Γ(X, U), (X.presheaf.stalkSpecializes h).hom ((X.presheaf.germ U y hyU).hom r) =
+      algebraMap Γ(X, U) (X.presheaf.stalk x) r := fun r =>
+    ConcreteCategory.congr_hom (TopCat.Presheaf.germ_stalkSpecializes X.presheaf hyU h) r
+  have hu : IsUnit (algebraMap Γ(X, U) (X.presheaf.stalk x) (t : Γ(X, U))) := IsLocalization.map_units _ t
+  refine ⟨(X.presheaf.germ U y hyU).hom t, fun hm => ?_, (X.presheaf.germ U y hyU).hom r, ?_⟩
+  · rw [← hP, Ideal.mem_comap, hg] at hm
+    exact (IsLocalRing.mem_maximalIdeal _).1 hm hu
+  · rw [hg, hg, mul_comm]
+    exact ht
+
+end GlobalTheory.CompanionTheory.Ar.LieStalk.HeightOne
+
+namespace GlobalTheory.CompanionTheory.Ar.LieStalk.HeightOne
+
+theorem exists_generisation_of_height_eq_one : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X), IsCptGen ξ → IsLocallyNoetherian X → IsNormalScheme X → ∀ (p : Cpt ξ) (P : PrimeSpectrum (regAt ξ p)), P.asIdeal.height = 1 → ∃ (q : Cpt ξ) (hs : q.1 ⤳ p.1), (∃ _ : IsDomain (X.presheaf.stalk q.1), IsDiscreteValuationRing (X.presheaf.stalk q.1)) ∧ (∀ s : regAt ξ p, s ∉ P.asIdeal → (s : Ω)⁻¹ ∈ regAt ξ q) ∧ ∀ a ∈ regAt ξ q, ∃ s : regAt ξ p, s ∉ P.asIdeal ∧ (s : Ω) * a ∈ regAt ξ p := by
+  intro X Ω _ ξ hgen hN hnorm p P hP
+  let P' : PrimeSpectrum (X.presheaf.stalk p.1) := ⟨Ideal.comap (regIso hgen p) P.asIdeal, inferInstance⟩
+  have hP' : P'.asIdeal.height = 1 := ((regIso hgen p).height_comap P.asIdeal).trans hP
+  have hmem : ∀ a, a ∈ P'.asIdeal ↔ regIso hgen p a ∈ P.asIdeal := fun a => Iff.rfl
+  have hs : X.fromSpecStalk p.1 P' ⤳ p.1 := by
+    have h : X.fromSpecStalk p.1 P' ∈ Set.range (X.fromSpecStalk p.1) := ⟨P', rfl⟩
+    rwa [Scheme.range_fromSpecStalk] at h
+  have hgq : genPt ξ ⤳ X.fromSpecStalk p.1 P' := by
+    have e1 : genPt ξ = X.fromSpecStalk p.1 (spMap (genMap ξ p)
+        (IsLocalRing.closedPoint Ω : Sp Ω)) :=
+      (congrArg (fun g : Sp Ω ⟶ X => g (IsLocalRing.closedPoint Ω : Sp Ω))
+        (spMap_genMap_fromSpecStalk p)).symm.trans (Scheme.Hom.comp_apply _ _ _)
+    refine (specializes_of_eq e1).trans (Specializes.map ?_ (X.fromSpecStalk p.1).continuous)
+    refine (PrimeSpectrum.le_iff_specializes _ _).1 ?_
+    intro a ha
+    have h0 : genMap ξ p a ∈ IsLocalRing.maximalIdeal Ω := ha
+    rw [IsLocalRing.maximalIdeal_eq_bot, Ideal.mem_bot] at h0
+    have : a = 0 := hgen.inj p (h0.trans (map_zero _).symm)
+    rw [this]
+    exact Ideal.zero_mem _
+  let q : Cpt ξ := ⟨X.fromSpecStalk p.1 P', hgq⟩
+  have hs' : q.1 ⤳ p.1 := hs
+  obtain ⟨hdom, hic⟩ := hnorm q.1
+  haveI := hN
+  let f : X.presheaf.stalk p.1 →+* X.presheaf.stalk q.1 := (X.presheaf.stalkSpecializes hs').hom
+  have hcomap : (IsLocalRing.maximalIdeal (X.presheaf.stalk q.1)).comap f = P'.asIdeal :=
+    comap_maximalIdeal_stalkSpecializes hs' P' rfl
+  have hgf : ∀ a, genMap ξ q (f a) = genMap ξ p a := genMap_specializes hs'
+  have hfinj : Function.Injective f := fun a b hab =>
+    hgen.inj p (by rw [← hgf, ← hgf, hab])
+  have hunit : ∀ a, a ∉ P'.asIdeal → IsUnit (f a) := fun a ha => by
+    by_contra hu
+    exact ha (hcomap ▸ (IsLocalRing.mem_maximalIdeal _).2 hu)
+  have hfrac : ∀ b, ∃ a, a ∉ P'.asIdeal ∧ ∃ c, f a * b = f c :=
+    exists_mul_stalkSpecializes hs' P'.asIdeal hcomap
+  have hdim : ringKrullDim (X.presheaf.stalk q.1) = 1 := by
+    letI : Algebra (X.presheaf.stalk p.1) (X.presheaf.stalk q.1) := f.toAlgebra
+    haveI : IsLocalization.AtPrime (X.presheaf.stalk q.1) P'.asIdeal :=
+      { map_units := fun s => hunit s.1 s.2
+        surj := fun b => by
+          obtain ⟨a, ha, c, hc⟩ := hfrac b
+          exact ⟨⟨c, ⟨a, ha⟩⟩, by rw [mul_comm]; exact hc⟩
+        exists_of_eq := fun {a b} h => ⟨1, by rw [hfinj h]⟩ }
+    rw [IsLocalization.AtPrime.ringKrullDim_eq_height P'.asIdeal (X.presheaf.stalk q.1), hP']
+    rfl
+  refine ⟨q, hs', ⟨hdom, isDVR_of_ringKrullDim_eq_one _ hdim⟩, fun s hsP => ?_, ?_⟩
+  · have ha : (regIso hgen p).symm s ∉ P'.asIdeal := by
+      rw [hmem, RingEquiv.apply_symm_apply]
+      exact hsP
+    obtain ⟨u, hu⟩ := (hunit _ ha).exists_right_inv
+    refine ⟨u, ?_⟩
+    refine eq_inv_of_mul_eq_one_right ?_
+    have h1 := congrArg (genMap ξ q) hu
+    rw [map_mul, map_one, hgf, genMap_regIso_symm] at h1
+    exact h1
+  · rintro _ ⟨b, rfl⟩
+    obtain ⟨a, ha, c, hc⟩ := hfrac b
+    refine ⟨regIso hgen p a, fun h => ha ((hmem a).2 h), ⟨c, ?_⟩⟩
+    have h1 := congrArg (genMap ξ q) hc
+    rw [map_mul, hgf, hgf] at h1
+    exact h1.symm
+
+end GlobalTheory.CompanionTheory.Ar.LieStalk.HeightOne
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieStalk
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.height_one_prime_dvr_stalk : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X), IsCptGen ξ → IsLocallyNoetherian X → IsNormalScheme X → ∀ (p : Cpt ξ) (P : PrimeSpectrum (regAt ξ p)), P.asIdeal.height = 1 → ∃ (q : Cpt ξ) (hs : q.1 ⤳ p.1), (∃ _ : IsDomain (X.presheaf.stalk q.1), IsDiscreteValuationRing (X.presheaf.stalk q.1)) ∧ (∀ s : regAt ξ p, s ∉ P.asIdeal → (s : Ω)⁻¹ ∈ regAt ξ q) ∧ ∀ a ∈ regAt ξ q, ∃ s : regAt ξ p, s ∉ P.asIdeal ∧ (s : Ω) * a ∈ regAt ξ p := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.LieStalk.HeightOne.exists_generisation_of_height_eq_one
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.LieBaseChange
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieStalk
+
+variable {S : Scheme.{0}} {R R' : Type} [CommRing R] [CommRing R']
+
+theorem dualMap_comp_algebraMap (c : R →+* R') :
+    (dualMap c).comp (algebraMap R (DualNumber R)) = (algebraMap R' (DualNumber R')).comp c := by
+  refine RingHom.ext fun r => TrivSqZeroExt.ext ?_ ?_
+  · simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  · simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+
+theorem fst_comp_dualMap (c : R →+* R') :
+    (TrivSqZeroExt.fstHom R' R' R').toRingHom.comp (dualMap c) =
+      c.comp (TrivSqZeroExt.fstHom R R R).toRingHom := by
+  refine RingHom.ext fun a => ?_
+  simp [dualMap]
+
+theorem dualMap_comp_epsMul (c : R →+* R') (r : R) :
+    (dualMap c).comp (epsMul r) = (epsMul (c r)).comp (dualMap c) := by
+  refine RingHom.ext fun a => TrivSqZeroExt.ext ?_ ?_
+  · simp [dualMap, epsMul]
+  · simp [dualMap, epsMul, mul_comm]
+
+def epsBase (c : R →+* R') (x : Sp R ⟶ S) : epsAt (spMap c ≫ x) ⟶ epsAt x :=
+  Over.homMk (spMap (dualMap c)) (by
+    change spMap (dualMap c) ≫ Spec.map _ ≫ x = Spec.map _ ≫ spMap c ≫ x
+    simp only [spMap]
+    rw [← Category.assoc, ← Category.assoc, ← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp,
+      ← CommRingCat.ofHom_comp, dualMap_comp_algebraMap])
+
+def ptBase (c : R →+* R') (x : Sp R ⟶ S) : Over.mk (spMap c ≫ x) ⟶ Over.mk x :=
+  Over.homMk (spMap c) rfl
+
+theorem isTanAt_base (G : Over S) [GrpObj G] (c : R →+* R') (x : Sp R ⟶ S) (v : epsAt x ⟶ G)
+    (hv : IsTanAt G x v) : IsTanAt G (spMap c ≫ x) (epsBase c x ≫ v) := by
+  have h1 : (ptBase c x ≫ (1 : Over.mk x ⟶ G)) = 1 := MonObj.comp_one _
+  have h2 : spMap c ≫ (1 : Over.mk x ⟶ G).left = (1 : Over.mk (spMap c ≫ x) ⟶ G).left := by
+    rw [← h1]; rfl
+  unfold IsTanAt at hv ⊢
+  rw [← h2, ← hv]
+  change Spec.map _ ≫ spMap (dualMap c) ≫ v.left = spMap c ≫ Spec.map _ ≫ v.left
+  simp only [spMap]
+  rw [← Category.assoc, ← Category.assoc, ← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp,
+      ← CommRingCat.ofHom_comp, fst_comp_dualMap]
+
+theorem exists_isBaseChange (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] [Smooth G.hom] (R R' : Type)
+    [CommRing R] [CommRing R'] [Algebra R R'] (x : Sp R ⟶ S) (E' : Type) [AddCommGroup E'] [Module R' E']
+    [Module R E'] [IsScalarTower R R' E'] (M' : LieModel G (spMap (algebraMap R R') ≫ x) E') :
+    ∃ (E : Type) (_ : AddCommGroup E) (_ : Module R E) (M : LieModel G x E) (j : E →ₗ[R] E'),
+      IsBaseChange R' j ∧ ∀ e, (M'.pt (j e)).left = spMap (dualMap (algebraMap R R')) ≫ (M.pt e).left := by
+  obtain ⟨E, iA, iM, ⟨M⟩⟩ := lieModel_exists S G R x
+  have hex : ∀ e, ∃ e', M'.pt e' = epsBase (algebraMap R R') x ≫ M.pt e :=
+    fun e => M'.onto _ (isTanAt_base G _ x _ (M.tan e))
+  choose f hf using hex
+  have hleft : ∀ e, (M'.pt (f e)).left = spMap (dualMap (algebraMap R R')) ≫ (M.pt e).left := fun e => by
+    rw [hf e]; rfl
+  let j : E →ₗ[R] E' :=
+    { toFun := f
+      map_add' := fun a b => M'.inj (by
+        rw [M'.add, hf, hf, hf, M.add, MonObj.comp_mul])
+      map_smul' := fun r a => M'.inj (Over.OverMorphism.ext (by
+        rw [RingHom.id_apply, ← algebraMap_smul R' r (f a), M'.smul, hleft, hleft, M.smul]
+        simp only [spMap]
+        rw [← Category.assoc, ← Category.assoc, ← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp,
+          ← CommRingCat.ofHom_comp, dualMap_comp_epsMul])) }
+  refine ⟨E, iA, iM, M, j, GlobalTheory.T.lie_model_isBaseChange S G R R' x E E' M M' j fun e => ?_, hleft⟩
+  change (M'.pt (f e)).left ≫ 𝟙 G.left = _
+  rw [Category.comp_id, hleft]
+
+end GlobalTheory.CompanionTheory.Ar.LieBaseChange
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieStalk
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lie_model_descends_base_change : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] [Smooth G.hom] (R R' : Type) [CommRing R] [CommRing R'] [Algebra R R'] (x : Sp R ⟶ S) (E' : Type) [AddCommGroup E'] [Module R' E'] [Module R E'] [IsScalarTower R R' E'] (M' : LieModel G (spMap (algebraMap R R') ≫ x) E'), ∃ (E : Type) (_ : AddCommGroup E) (_ : Module R E) (M : LieModel G x E) (j : E →ₗ[R] E'), IsBaseChange R' j ∧ ∀ e, (M'.pt (j e)).left = spMap (dualMap (algebraMap R R')) ≫ (M.pt e).left := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.LieBaseChange.exists_isBaseChange
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieStalk
+
+namespace GlobalTheory.CompanionTheory.Ar.LieStalk
+
+theorem lat_eq_range : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (h : IsCptGen ξ) (G : Over X) [GrpObj G] (E : Type) [AddCommGroup E] [Module Ω E] (M : LieModel G ξ E) (p : Cpt ξ) (Ep : Type) [AddCommGroup Ep] [Module (regAt ξ p) Ep] (Mp : LieModel G (regPt h p) Ep) (j : Ep →ₗ[regAt ξ p] E), (∀ e, (M.pt (j e)).left = spMap (dualMap (algebraMap (regAt ξ p) Ω)) ≫ (Mp.pt e).left) → (M.lat p : Set E) = Set.range j :=
+  @PositivityTheory.Xgn.normal_lattice_range
+
+end GlobalTheory.CompanionTheory.Ar.LieStalk
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieStalk
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lie_lattice_range_of_stalk : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (h : IsCptGen ξ) (G : Over X) [GrpObj G] (E : Type) [AddCommGroup E] [Module Ω E] (M : LieModel G ξ E) (p : Cpt ξ) (Ep : Type) [AddCommGroup Ep] [Module (regAt ξ p) Ep] (Mp : LieModel G (regPt h p) Ep) (j : Ep →ₗ[regAt ξ p] E), (∀ e, (M.pt (j e)).left = spMap (dualMap (algebraMap (regAt ξ p) Ω)) ≫ (Mp.pt e).left) → (M.lat p : Set E) = Set.range j := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.LieStalk.lat_eq_range
+end
+
+section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieStalk
@@ -158,3 +585,5 @@ theorem lat_eq_of_normal : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp 
   rw [mem_localizedIn_iff hξ G M hs P hu hd, mem_localizedIn_iff hξ G' M' hs P hu hd, hq]
 
 end GlobalTheory.CompanionTheory.Ar.LieStalk
+end
+end

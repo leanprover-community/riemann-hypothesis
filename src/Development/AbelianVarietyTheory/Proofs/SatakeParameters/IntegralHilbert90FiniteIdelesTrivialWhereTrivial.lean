@@ -4,7 +4,36 @@ import Formalism.LocalToGlobal.Divisibility.DivisibilityProofs.TuplesP
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfCongSet
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.H90RangeEqNormOneOfIsQuad
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteAdeleFieldIdentificationEqBaseChangeRingEq
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIntegralHilbert90DetHostField
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsUnitaryOneFiniteAdelicOfDetNormOne
+
+section
+open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU
+open scoped TensorProduct
+
+noncomputable section
+namespace GlobalTheory.TwU.IntegralHilbert90
+open GlobalTheory.AdeleBaseChange
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+def evP (P : HeightOneSpectrum (𝓞 E)) : FiniteAdeleRing (𝓞 E) E →+* P.adicCompletion E where
+  toFun z := z P
+  map_one' := rfl
+  map_mul' _ _ := rfl
+  map_zero' := rfl
+  map_add' _ _ := rfl
+
+theorem localComponent_apply₂ (P : HeightOneSpectrum (𝓞 E)) (z : FiniteAdeleRing (𝓞 E) E) : evP P z = z P := rfl
+
+theorem localComponent_algebraMap (P : HeightOneSpectrum (𝓞 E)) (x : E) :
+    evP P (algebraMap E (FiniteAdeleRing (𝓞 E) E) x) = algebraMap E (P.adicCompletion E) x := rfl
+
+variable [StarRing E]
+
+end GlobalTheory.TwU.IntegralHilbert90
+end
+end
+
+section
 open NumberField IsDedekindDomain Formalism.L2.DIV Formalism.UG
 open scoped TensorProduct
 
@@ -351,3 +380,5 @@ end GlobalTheory.TwU.IntegralHilbert90Unramified
 theorem GlobalTheory.TwU.IntegralHilbert90Unramified.exists_integral_h90_preimage_trivial_where_trivial : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsConjOf σ → Algebra.Unramified (𝓞 F) (𝓞 E) → ∀ z ∈ U1 σ, z ∈ intU F E → ∃ x ∈ intU F E, h90 σ x = z ∧ ∀ P : HeightOneSpectrum (𝓞 E), (∀ P' : HeightOneSpectrum (𝓞 E), P'.under (𝓞 F) = P.under (𝓞 F) → GlobalTheory.Mem.Col2.afIso F E (z : AfE F E) P' = 1) → GlobalTheory.Mem.Col2.afIso F E (x : AfE F E) P = 1 := by
   intro F E _ _ _ _ _ σ hσ hunr z hz hzI
   exact GlobalTheory.TwU.IntegralHilbert90Unramified.exists_integral_h90_preimage_of_mem_intU_unramified σ hσ z hz hzI
+end
+end

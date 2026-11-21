@@ -1,5 +1,482 @@
-import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OrthogonalGaussModels.HermitianBlockFrames.BlockDiagMulBlockShift
+import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OrthogonalGaussModels.HermitianBlockFrames.FrobStep
+import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OrthogonalGaussModels.HermitianBlockFrames.Assembly
 
+section
+noncomputable section
+open scoped BigOperators ComplexConjugate
+
+namespace Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame
+open Formalism.L2.Th1.Top.FrP
+
+theorem im_mul_conj_lattice (L : PeriodPair) {z w : ℂ} (hz : z ∈ L.lattice) (hw : w ∈ L.lattice) :
+    ∃ k : ℤ, (z * conj w).im = k * (L.ω₁ * conj L.ω₂).im := by
+  have hz' : z ∈ Submodule.span ℤ {L.ω₁, L.ω₂} := hz
+  have hw' : w ∈ Submodule.span ℤ {L.ω₁, L.ω₂} := hw
+  obtain ⟨a, b, rfl⟩ := Submodule.mem_span_pair.mp hz'
+  obtain ⟨c, e, rfl⟩ := Submodule.mem_span_pair.mp hw'
+  refine ⟨a * e - b * c, ?_⟩
+  simp only [zsmul_eq_mul, map_add, map_mul, map_intCast, Complex.add_im, Complex.mul_im,
+    Complex.add_re, Complex.mul_re, Complex.intCast_re, Complex.intCast_im, Complex.conj_re,
+    Complex.conj_im]
+  push_cast
+  ring
+
+theorem im_div_area (L : PeriodPair) : ∃ e : ℤ, (L.ω₁ * conj L.ω₂).im / area L = e := by
+  have h : (L.ω₁ * conj L.ω₂).im = -(conj L.ω₁ * L.ω₂).im := by
+    simp only [Complex.mul_im, Complex.conj_re, Complex.conj_im]
+    ring
+  rw [h]
+  unfold area
+  rcases lt_trichotomy (conj L.ω₁ * L.ω₂).im 0 with ht | ht | ht
+  · refine ⟨1, ?_⟩
+    rw [abs_of_neg ht, div_self (neg_ne_zero.mpr ht.ne)]
+    simp
+  · exact ⟨0, by simp [ht]⟩
+  · refine ⟨-1, ?_⟩
+    rw [abs_of_pos ht, neg_div, div_self ht.ne']
+    simp
+
+theorem stdH_apply (L : PeriodPair) {N : Type*} [Fintype N] [DecidableEq N] (z w : N → ℂ) :
+    stdH L N z w = ∑ i, z i * ((area L : ℝ) : ℂ)⁻¹ * conj (w i) := by
+  simp only [stdH, matH, LinearMap.mk₂'ₛₗ_apply, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul,
+    mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+
+theorem stdLat_int (L : PeriodPair) {N : Type*} [Fintype N] [DecidableEq N] {z w : N → ℂ}
+    (hz : z ∈ stdLat L N) (hw : w ∈ stdLat L N) : ∃ k : ℤ, altE (stdH L N) z w = k := by
+  have hzi : ∀ i, z i ∈ L.lattice := fun i =>
+    (show ∀ i ∈ (Set.univ : Set N), z i ∈ L.lattice.toAddSubgroup from hz) i (Set.mem_univ i)
+  have hwi : ∀ i, w i ∈ L.lattice := fun i =>
+    (show ∀ i ∈ (Set.univ : Set N), w i ∈ L.lattice.toAddSubgroup from hw) i (Set.mem_univ i)
+  choose k hk using fun i => im_mul_conj_lattice L (hzi i) (hwi i)
+  obtain ⟨e, he⟩ := im_div_area L
+  refine ⟨(∑ i, k i) * e, ?_⟩
+  have hterm : ∀ i, (z i * ((area L : ℝ) : ℂ)⁻¹ * conj (w i)).im =
+      (k i : ℝ) * ((L.ω₁ * conj L.ω₂).im / area L) := by
+    intro i
+    rw [show z i * ((area L : ℝ) : ℂ)⁻¹ * conj (w i) = (((area L)⁻¹ : ℝ) : ℂ) * (z i * conj (w i)) by
+      push_cast; ring, Complex.im_ofReal_mul, hk i]
+    ring
+  unfold altE
+  rw [stdH_apply, Complex.im_sum, Finset.sum_congr rfl (fun i _ => hterm i), he, ← Finset.sum_mul]
+  push_cast
+  ring
+
+theorem idx_smul_mem {n : Type} [Fintype n] [DecidableEq n] (L : PeriodPair) (Λ : AddSubgroup (n → ℂ))
+    (g₁ : (Fin 4 × n → ℂ) ≃ₗ[ℂ] (Fin 4 × n → ℂ)) {y : Fin 4 × n → ℂ} (hy : y ∈ pow4 Λ) :
+    relIdx (stdLat L (Fin 4 × n)) (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ)) • g₁ y
+      ∈ stdLat L (Fin 4 × n) := by
+  have hmem : g₁ y ∈ imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ) :=
+    AddSubgroup.mem_map.mpr ⟨y, hy, rfl⟩
+  have h1 := AddSubgroup.nsmul_index_mem ((stdLat L (Fin 4 × n)).addSubgroupOf
+    (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ))) ⟨g₁ y, hmem⟩
+  rw [AddSubgroup.mem_addSubgroupOf] at h1
+  simpa [relIdx, AddSubgroup.relIndex] using h1
+
+def emb {n : Type} (a : Fin 4) (v : n → ℂ) : Fin 4 × n → ℂ := fun x => if x.1 = a then v x.2 else 0
+
+theorem emb_mem {n : Type} {Λ : AddSubgroup (n → ℂ)} (a : Fin 4) {v : n → ℂ} (hv : v ∈ Λ) :
+    emb a v ∈ pow4 Λ := by
+  intro b
+  by_cases h : b = a
+  · subst h
+    convert hv using 1
+    funext i
+    simp [slice, emb]
+  · convert Λ.zero_mem using 1
+    funext i
+    simp [slice, emb, h]
+
+theorem matrixForm_diagBlocks_blockEmbed {n : Type} [Fintype n] [DecidableEq n] (h : Matrix n n ℂ) (x : Fin 4 × n → ℂ) (a : Fin 4)
+    (v : n → ℂ) : matH (blk4 h) x (emb a v) = matH h (slice a x) v := by
+  simp only [matH, LinearMap.mk₂'ₛₗ_apply]
+  rw [Fintype.sum_prod_type, Finset.sum_eq_single a]
+  · refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Fintype.sum_prod_type, Finset.sum_eq_single a]
+    · simp [blk4, emb, slice]
+    · intro c _ hc
+      refine Finset.sum_eq_zero fun j _ => ?_
+      simp [emb, hc]
+    · simp
+  · intro b _ hb
+    refine Finset.sum_eq_zero fun i _ => ?_
+    rw [Fintype.sum_prod_type]
+    refine Finset.sum_eq_zero fun c _ => Finset.sum_eq_zero fun j _ => ?_
+    by_cases hc : c = a
+    · subst hc
+      simp [blk4, hb]
+    · simp [emb, hc]
+  · simp
+
+theorem mem_latticeFourfold_of_mem_dualLattice {n : Type} [Fintype n] [DecidableEq n] (h : Matrix n n ℂ) (Λ : AddSubgroup (n → ℂ))
+    (hΛ : IsSelfDual (matH h) Λ) {x : Fin 4 × n → ℂ} (hx : x ∈ dualLat (matH (blk4 h)) (pow4 Λ)) :
+    x ∈ pow4 Λ := by
+  have hx' : ∀ y ∈ pow4 Λ, ∃ m : ℤ, altE (matH (blk4 h)) x y = (m : ℝ) := hx
+  intro a
+  rw [← hΛ]
+  show ∀ y ∈ Λ, ∃ m : ℤ, altE (matH h) (slice a x) y = (m : ℝ)
+  intro v hv
+  obtain ⟨m, hm⟩ := hx' (emb a v) (emb_mem a hv)
+  refine ⟨m, ?_⟩
+  unfold altE at hm ⊢
+  rw [matrixForm_diagBlocks_blockEmbed] at hm
+  exact hm
+
+theorem idx_smul_symm_mem {n : Type} [Fintype n] [DecidableEq n] (L : PeriodPair) (h : Matrix n n ℂ)
+    (Λ : AddSubgroup (n → ℂ)) (hΛ : IsSelfDual (matH h) Λ) (g₁ : (Fin 4 × n → ℂ) ≃ₗ[ℂ] (Fin 4 × n → ℂ))
+    (hIso : IsIsom (matH (blk4 h)) (stdH L (Fin 4 × n)) (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)))
+    {z : Fin 4 × n → ℂ} (hz : z ∈ stdLat L (Fin 4 × n)) :
+    g₁.symm (relIdx (stdLat L (Fin 4 × n)) (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ)) • z)
+      ∈ pow4 Λ := by
+  apply mem_latticeFourfold_of_mem_dualLattice h Λ hΛ
+  show ∀ y ∈ pow4 Λ, ∃ m : ℤ, altE (matH (blk4 h)) (g₁.symm (relIdx (stdLat L (Fin 4 × n))
+    (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ)) • z)) y = (m : ℝ)
+  intro y hy
+  obtain ⟨k, hk⟩ := stdLat_int L hz (idx_smul_mem L Λ g₁ hy)
+  refine ⟨k, ?_⟩
+  unfold altE at hk ⊢
+  rw [← hIso]
+  simp only [LinearEquiv.coe_coe, LinearEquiv.apply_symm_apply, map_nsmul, LinearMap.smul_apply] at hk ⊢
+  exact hk
+
+end Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame
+end
+end
+
+section
+noncomputable section
+open scoped BigOperators ComplexConjugate
+
+namespace Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame
+open Formalism.L2.Th1.Top.FrP
+
+theorem sq_conj (d : ℕ) : conj (sq d) = -sq d := by
+  simp [sq, Complex.conj_ofReal]
+
+theorem sq_mul_sq (d : ℕ) : sq d * sq d = -(d : ℂ) := by
+  rw [← pow_two]
+  have h : ((Real.sqrt d : ℝ) : ℂ) ^ 2 = (d : ℂ) := by
+    rw [← Complex.ofReal_pow, Real.sq_sqrt (Nat.cast_nonneg _)]; simp
+  rw [sq, mul_pow, h, Complex.I_sq]; ring
+
+def Kc (d : ℕ) (hd : 0 < d) : Subfield ℂ where
+  carrier := {z | ∃ q₁ q₂ : ℚ, z = q₁ + q₂ * sq d}
+  zero_mem' := ⟨0, 0, by simp⟩
+  one_mem' := ⟨1, 0, by simp⟩
+  add_mem' := by
+    rintro _ _ ⟨a, b, rfl⟩ ⟨c, e, rfl⟩
+    exact ⟨a + c, b + e, by push_cast; ring⟩
+  mul_mem' := by
+    rintro _ _ ⟨a, b, rfl⟩ ⟨c, e, rfl⟩
+    refine ⟨a * c - d * b * e, a * e + b * c, ?_⟩
+    have := sq_mul_sq d
+    push_cast
+    linear_combination (b * e : ℂ) * this
+  neg_mem' := by
+    rintro _ ⟨a, b, rfl⟩
+    exact ⟨-a, -b, by push_cast; ring⟩
+  inv_mem' := by
+    rintro _ ⟨a, b, rfl⟩
+    by_cases h0 : (a : ℂ) + b * sq d = 0
+    · exact ⟨0, 0, by rw [h0]; simp⟩
+    have hn : (a ^ 2 + d * b ^ 2 : ℚ) ≠ 0 := by
+      intro hn
+      have hb : b = 0 := by
+        by_contra hb
+        have : (0 : ℚ) < a ^ 2 + d * b ^ 2 := by
+          have : (0 : ℚ) < d := by exact_mod_cast hd
+          positivity
+        linarith
+      have ha : a = 0 := by subst hb; simpa using hn
+      apply h0; subst ha; subst hb; simp
+    refine ⟨a / (a ^ 2 + d * b ^ 2), -b / (a ^ 2 + d * b ^ 2), ?_⟩
+    have hn' : ((a ^ 2 + d * b ^ 2 : ℚ) : ℂ) ≠ 0 := by exact_mod_cast hn
+    refine (eq_inv_of_mul_eq_one_left ?_).symm
+    have := sq_mul_sq d
+    push_cast at hn' ⊢
+    field_simp
+    linear_combination (-(b:ℂ) ^ 2) * this
+
+theorem conj_mem_Kc {d : ℕ} {hd : 0 < d} {z : ℂ} (hz : z ∈ Kc d hd) : conj z ∈ Kc d hd := by
+  obtain ⟨a, b, rfl⟩ := hz
+  exact ⟨a, -b, by simp [sq_conj]⟩
+
+end Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame
+end
+end
+
+section
+noncomputable section
+open scoped BigOperators ComplexConjugate
+
+namespace Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame
+open Formalism.L2.Th1.Top.FrP
+
+theorem conj_entry_int {a₀ : ℕ} {b₀ c₀ : ℤ} {dK : ℕ} {ha : 0 < a₀} {hdK : 0 < dK} {lam : ℂ} {hlam : lam ≠ 0}
+    (hCm : CmOK a₀ b₀ c₀ dK) (l : ℕ) [Fact l.Prime] (hl5 : 5 ≤ l)
+    (hin : ¬ ∃ a : ZMod l, a ^ 2 = -(dK : ZMod l)) {n : Type} [Fintype n] [DecidableEq n]
+    (h : Matrix n n ℂ) (Λ : AddSubgroup (n → ℂ)) (hΛ : IsSelfDual (matH h) Λ)
+    (g₁ : (Fin 4 × n → ℂ) ≃ₗ[ℂ] (Fin 4 × n → ℂ))
+    (hIso : IsIsom (matH (blk4 h)) (stdH (cmL a₀ b₀ dK ha hdK lam hlam) (Fin 4 × n))
+      (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)))
+    (hIdx : ¬ l ∣ relIdx (stdLat (cmL a₀ b₀ dK ha hdK lam hlam) (Fin 4 × n))
+      (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ)))
+    (τ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (hτ : ∀ y ∈ pow4 Λ, τ y ∈ pow4 Λ) (x w : Fin 4 × n) :
+    ∃ q₁ q₂ : ℚ, padicNorm l q₁ ≤ 1 ∧ padicNorm l q₂ ≤ 1 ∧
+      g₁ (τ (g₁.symm (Pi.single w 1))) x = q₁ + q₂ * sq dK := by
+  classical
+  have hl2 : ¬ l ∣ 2 := fun h2 => by have := Nat.le_of_dvd two_pos h2; omega
+  have hla : ¬ l ∣ a₀ := by
+    intro hla
+    apply hin
+    refine ⟨(b₀ : ZMod l), ?_⟩
+    have e := congrArg (Int.cast : ℤ → ZMod l) hCm.1
+    push_cast at e
+    have ha0 : (a₀ : ZMod l) = 0 := (CharP.cast_eq_zero_iff (ZMod l) l a₀).mpr hla
+    rw [ha0] at e
+    linear_combination -e
+  set N := relIdx (stdLat (cmL a₀ b₀ dK ha hdK lam hlam) (Fin 4 × n))
+    (imgLat (g₁ : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) (pow4 Λ)) with hN
+  have hN0 : N ≠ 0 := fun h0 => hIdx (by rw [h0]; exact dvd_zero l)
+  have hden : ¬ l ∣ 2 * N ^ 2 * a₀ := by
+    intro hd
+    have hp : l.Prime := Fact.out
+    rcases (Nat.Prime.dvd_mul hp).mp hd with h' | h'
+    · rcases (Nat.Prime.dvd_mul hp).mp h' with h'' | h''
+      · exact hl2 h''
+      · exact hIdx (hp.dvd_of_dvd_pow h'')
+    · exact hla h'
+  have he : Pi.single w (lam * (a₀ : ℂ)) ∈ stdLat (cmL a₀ b₀ dK ha hdK lam hlam) (Fin 4 × n) := by
+    intro i _
+    by_cases hi : i = w
+    · subst hi
+      rw [Pi.single_eq_same]
+      exact (cmL a₀ b₀ dK ha hdK lam hlam).ω₁_mem_lattice
+    · rw [Pi.single_eq_of_ne hi]
+      exact (cmL a₀ b₀ dK ha hdK lam hlam).lattice.toAddSubgroup.zero_mem
+  have h1 := idx_smul_symm_mem (cmL a₀ b₀ dK ha hdK lam hlam) h Λ hΛ g₁ hIso he
+  have h3 := idx_smul_mem (cmL a₀ b₀ dK ha hdK lam hlam) Λ g₁ (hτ _ h1)
+  have h4 := h3 x (Set.mem_univ x)
+  obtain ⟨m, k, hmk⟩ := PeriodPair.mem_lattice.mp h4
+  have hsingle : Pi.single w (lam * (a₀ : ℂ)) = (lam * (a₀ : ℂ)) • Pi.single w (1 : ℂ) := by
+    ext i; by_cases hi : i = w
+    · subst hi; simp
+    · simp [Pi.single_eq_of_ne hi]
+  rw [hsingle, ← Nat.cast_smul_eq_nsmul ℂ, ← Nat.cast_smul_eq_nsmul ℂ] at hmk
+  simp only [map_smul, LinearEquiv.map_smul, Pi.smul_apply, smul_eq_mul] at hmk
+  have hω1 : (cmL a₀ b₀ dK ha hdK lam hlam).ω₁ = lam * (a₀ : ℂ) := rfl
+  have hω2 : (cmL a₀ b₀ dK ha hdK lam hlam).ω₂ = lam * cmTheta b₀ dK := rfl
+  rw [hω1, hω2, cmTheta] at hmk
+  refine ⟨((2 * m * a₀ + k * b₀ : ℤ) : ℚ) / ((2 * N ^ 2 * a₀ : ℕ) : ℚ),
+    ((k : ℤ) : ℚ) / ((2 * N ^ 2 * a₀ : ℕ) : ℚ), ?_, ?_, ?_⟩
+  · rw [padicNorm.div, (padicNorm.nat_eq_one_iff _).mpr hden, div_one]; exact padicNorm.of_int _
+  · rw [padicNorm.div, (padicNorm.nat_eq_one_iff _).mpr hden, div_one]; exact padicNorm.of_int _
+  · have hNc : (N : ℂ) ≠ 0 := by exact_mod_cast hN0
+    have hac : (a₀ : ℂ) ≠ 0 := by exact_mod_cast ha.ne'
+    set E := g₁ (τ (g₁.symm (Pi.single w 1))) x with hEdef
+    have hE : ((N : ℂ) ^ 2 * (lam * (a₀ : ℂ)) * 2) * E =
+        lam * (2 * (m : ℂ) * a₀ + k * b₀ + k * (Complex.I * ((Real.sqrt dK : ℝ) : ℂ))) := by
+      linear_combination (-2 : ℂ) * hmk
+    have hc : ((N : ℂ) ^ 2 * (lam * (a₀ : ℂ)) * 2) ≠ 0 := by simp [hNc, hac, hlam]
+    have hE' : E = lam * (2 * (m : ℂ) * a₀ + k * b₀ + k * (Complex.I * ((Real.sqrt dK : ℝ) : ℂ))) /
+        ((N : ℂ) ^ 2 * (lam * (a₀ : ℂ)) * 2) := by
+      rw [eq_div_iff hc, mul_comm]; exact hE
+    rw [hE']
+    unfold sq
+    push_cast
+    field_simp
+
+theorem gmat_eq {n : Type} [Fintype n] [DecidableEq n] (g : (Fin 4 × n → ℂ) ≃ₗ[ℂ] (Fin 4 × n → ℂ)) :
+    gmat g = LinearMap.toMatrix' (g.symm : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) := by
+  ext x w
+  rw [LinearMap.toMatrix'_apply]
+  rfl
+
+theorem conj_matrix_apply {n : Type} [Fintype n] [DecidableEq n] (g : (Fin 4 × n → ℂ) ≃ₗ[ℂ] (Fin 4 × n → ℂ))
+    (T : Matrix (Fin 4 × n) (Fin 4 × n) ℂ) (x w : Fin 4 × n) :
+    (LinearMap.toMatrix' (g : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) * T * gmat g) x w
+      = g (Matrix.toLin' T (g.symm (Pi.single w 1))) x := by
+  have e : LinearMap.toMatrix' (g : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) * T * gmat g =
+      LinearMap.toMatrix' ((g : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ)) ∘ₗ Matrix.toLin' T ∘ₗ
+        (g.symm : (Fin 4 × n → ℂ) →ₗ[ℂ] (Fin 4 × n → ℂ))) := by
+    rw [LinearMap.toMatrix'_comp, LinearMap.toMatrix'_comp, LinearMap.toMatrix'_toLin', gmat_eq, mul_assoc]
+  rw [e, LinearMap.toMatrix'_apply]
+  rfl
+
+end Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame
+end
+end
+
+section
+noncomputable section
+open scoped BigOperators ComplexConjugate
+
+namespace Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame
+open Formalism.L2.Th1.Top.FrP
+
+section Blocks
+variable {n : Type} [Fintype n] [DecidableEq n]
+
+def mv {R : Type*} [Zero R] [One R] (a : Fin 4) : Matrix (Fin 4 × n) (Fin 4 × n) R :=
+  fun x y => if x.1 = a ∧ y.1 = 0 ∧ x.2 = y.2 then 1 else 0
+
+theorem mv_mul_apply {R : Type*} [CommRing R] (a : Fin 4) (G : Matrix (Fin 4 × n) (Fin 4 × n) R)
+    (z w : Fin 4 × n) : ((mv a : Matrix (Fin 4 × n) (Fin 4 × n) R) * G) z w = if z.1 = a then G (0, z.2) w else 0 := by
+  simp only [Matrix.mul_apply, mv]
+  by_cases h : z.1 = a
+  · rw [Fintype.sum_eq_single (0, z.2)]
+    · simp [h]
+    · intro y hy
+      rw [if_neg, zero_mul]
+      rintro ⟨-, h0, h2⟩
+      exact hy (Prod.ext h0 h2.symm)
+  · simp [h]
+
+theorem blockShift_mul_apply {R : Type*} [CommRing R] (k : Fin 4) (G : Matrix (Fin 4 × n) (Fin 4 × n) R)
+    (z w : Fin 4 × n) : ((bmv0 k : Matrix (Fin 4 × n) (Fin 4 × n) R) * G) z w = if z.1 = 0 then G (k, z.2) w else 0 := by
+  simp only [Matrix.mul_apply, bmv0]
+  by_cases h : z.1 = 0
+  · rw [Fintype.sum_eq_single (k, z.2)]
+    · simp [h]
+    · intro y hy
+      rw [if_neg, zero_mul]
+      rintro ⟨-, h0, h2⟩
+      exact hy (Prod.ext h0 h2.symm)
+  · simp [h]
+
+theorem mv_mulVec (a : Fin 4) (y : Fin 4 × n → ℂ) :
+    (mv a : Matrix _ _ ℂ).mulVec y = fun x => if x.1 = a then y (0, x.2) else 0 := by
+  funext x
+  simp only [Matrix.mulVec, dotProduct, mv]
+  by_cases h : x.1 = a
+  · rw [Fintype.sum_eq_single (0, x.2)]
+    · simp [h]
+    · intro z hz
+      rw [if_neg, zero_mul]
+      rintro ⟨-, h0, h2⟩
+      exact hz (Prod.ext h0 h2.symm)
+  · simp [h]
+
+theorem blockShift_mulVec (k : Fin 4) (y : Fin 4 × n → ℂ) :
+    (bmv0 k : Matrix _ _ ℂ).mulVec y = fun x => if x.1 = 0 then y (k, x.2) else 0 := by
+  funext x
+  simp only [Matrix.mulVec, dotProduct, bmv0]
+  by_cases h : x.1 = 0
+  · rw [Fintype.sum_eq_single (k, x.2)]
+    · simp [h]
+    · intro z hz
+      rw [if_neg, zero_mul]
+      rintro ⟨-, h0, h2⟩
+      exact hz (Prod.ext h0 h2.symm)
+  · simp [h]
+
+theorem mv_pres (Λ : AddSubgroup (n → ℂ)) (a : Fin 4) :
+    ∀ y ∈ pow4 Λ, Matrix.toLin' (mv a : Matrix _ _ ℂ) y ∈ pow4 Λ := by
+  intro y hy
+  have hy' : ∀ b, slice b y ∈ Λ := hy
+  show ∀ b, slice b _ ∈ Λ
+  intro b
+  rw [Matrix.toLin'_apply, mv_mulVec]
+  by_cases h : b = a
+  · subst h
+    convert hy' 0 using 1
+    funext i
+    simp [slice]
+  · convert Λ.zero_mem using 1
+    funext i
+    simp [slice, h]
+
+theorem blockShift_mapsTo (Λ : AddSubgroup (n → ℂ)) (k : Fin 4) :
+    ∀ y ∈ pow4 Λ, Matrix.toLin' (bmv0 k : Matrix _ _ ℂ) y ∈ pow4 Λ := by
+  intro y hy
+  have hy' : ∀ b, slice b y ∈ Λ := hy
+  show ∀ b, slice b _ ∈ Λ
+  intro b
+  rw [Matrix.toLin'_apply, blockShift_mulVec]
+  by_cases h : b = 0
+  · subst h
+    convert hy' k using 1
+    funext i
+    simp [slice]
+  · convert Λ.zero_mem using 1
+    funext i
+    simp [slice, h]
+
+theorem bd4_transpose {R : Type*} [Zero R] (P : Matrix n n R) : (bd4 P).transpose = bd4 P.transpose := by
+  ext x y
+  by_cases h : x.1 = y.1
+  · simp [bd4, Matrix.transpose_apply, h]
+  · simp [bd4, Matrix.transpose_apply, h, Ne.symm h]
+
+theorem bd4_smul {R : Type*} [CommRing R] (c : R) (P : Matrix n n R) : bd4 (c • P) = c • bd4 P := by
+  ext x y
+  by_cases h : x.1 = y.1 <;> simp [bd4, h]
+
+theorem bd4_one {R : Type*} [CommRing R] : bd4 (1 : Matrix n n R) = 1 := by
+  ext x y
+  by_cases h1 : x.1 = y.1 <;> by_cases h2 : x.2 = y.2 <;>
+    simp [bd4, Matrix.one_apply, Prod.ext_iff, h1, h2]
+
+theorem blockDiag_mul_blockShift {R : Type*} [CommRing R] (P : Matrix n n R) (k : Fin 4) :
+    bd4 P * bmv0 k = bmv0 k * bd4 P := by
+  ext x y
+  rw [blockShift_mul_apply]
+  simp only [Matrix.mul_apply, bd4, bmv0]
+  rw [Fintype.sum_eq_single (0, y.2)]
+  · by_cases h1 : x.1 = 0 <;> by_cases h2 : y.1 = k
+    · simp [h1, h2]
+    · have h2' : k ≠ y.1 := fun h => h2 h.symm
+      simp [h1, h2, h2']
+    · simp [h1, h2]
+    · simp [h1, h2]
+  · intro z hz
+    by_cases hc : z.1 = 0 ∧ y.1 = k ∧ z.2 = y.2
+    · exact absurd (Prod.ext hc.1 hc.2.2 : z = (0, y.2)) hz
+    · rw [if_neg hc, mul_zero]
+
+theorem exists_cols (G Gi : Matrix (Fin 4 × n) (Fin 4 × n) ℂ) (hG : G * Gi = 1) :
+    ∃ w : n → Fin 4 × n, IsUnit (Matrix.of fun i j => G (0, i) (w j)) := by
+  classical
+  set v : Fin 4 × n → (n → ℂ) := fun j i => G (0, i) j with hv
+  have hspan : Submodule.span ℂ (Set.range v) = ⊤ := by
+    rw [eq_top_iff]
+    intro x _
+    have hx : x = ∑ j, (∑ k, Gi j (0, k) * x k) • v j := by
+      funext i
+      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, hv]
+      have h : ∀ k, ∑ j, G (0, i) j * Gi j (0, k) = if i = k then 1 else 0 := fun k => by
+        have := congrFun (congrFun hG (0, i)) (0, k)
+        simpa [Matrix.mul_apply, Matrix.one_apply] using this
+      symm
+      calc ∑ j, (∑ k, Gi j (0, k) * x k) * G (0, i) j
+          = ∑ k, (∑ j, G (0, i) j * Gi j (0, k)) * x k := by
+            simp_rw [Finset.sum_mul]
+            rw [Finset.sum_comm]
+            exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => by ring
+        _ = x i := by simp [h]
+    rw [hx]
+    exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+  obtain ⟨b, hbs, hbspan, hbli⟩ := exists_linearIndependent ℂ (Set.range v)
+  rw [hspan] at hbspan
+  let B := Module.Basis.mk hbli (le_of_eq (by rw [Subtype.range_coe, hbspan]))
+  let e := B.indexEquiv (Pi.basisFun ℂ n)
+  have hmem : ∀ i : n, ∃ j, v j = ((e.symm i : b) : n → ℂ) := fun i => hbs (e.symm i).2
+  choose w hw using hmem
+  refine ⟨w, ?_⟩
+  rw [← Matrix.linearIndependent_cols_iff_isUnit]
+  have hfun : (Matrix.of fun i j => G (0, i) (w j)).col =
+      (fun x : b => (x : n → ℂ)) ∘ e.symm := by
+    funext j i
+    simp [Matrix.col, Matrix.transpose_apply, ← hw j, hv]
+  rw [hfun]
+  exact hbli.comp _ e.symm.injective
+
+end Blocks
+
+end Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame
+end
+end
+
+section
 noncomputable section
 open scoped BigOperators ComplexConjugate
 
@@ -178,3 +655,5 @@ theorem ratStep : RatStep := by
     ext x y; simp [kmat, hUe x y, mul_comm]
 
 end Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame
+end
+end

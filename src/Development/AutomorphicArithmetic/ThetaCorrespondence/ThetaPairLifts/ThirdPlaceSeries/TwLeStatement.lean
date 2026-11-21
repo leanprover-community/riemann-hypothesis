@@ -1,6 +1,158 @@
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistUpperBoundStatement
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TwLe
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistUpperBound
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RowAtOfRatStep
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.Links2OfRowsStatement
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PlacesStStatement
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.FlatStHoldsStatement
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TraceStStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmallBoundTupleStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmallBoundTuple
+import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RealTwLe
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarmonicPolynomialLatticesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarmonicPolynomialLattices
 
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+set_option autoImplicit false
+noncomputable section
+open NumberField IsDedekindDomain
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx
+open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie GlobalTheory.ExportSeries
+open Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.Mult Formalism.IndefR.Datum
+open GlobalTheory.BigOn GlobalTheory.BigOn.Exp
+open GlobalTheory.ConjTwist (BaseOf)
+open scoped TensorProduct
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1600000
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+namespace GlobalTheory.BigOn.Exp.TupLe.CoefPf
+theorem coefSt_alt : _root_.GlobalTheory.BigOn.Exp.TupLe.CoefficientCondition' := by
+  intro D L hT Gi Gl Kc Y cX ex Csz p j hr hm B hB hBo c hc hS u hu O' hO' h hh v hv
+  have hL : Links2 p := _root_.GlobalTheory.T.links2_of_single_index_twisted _ _ _ _ _ _ _ _ _ _ p hr hm.1
+  have hC : GlobalTheory.Hk3.Core (R2 p) (F2 p) := ⟨hL.1.lev, hL.1.grp, hL.1.fam, hL.1.models, hL.1.chain, hL.1.thP⟩
+  obtain ⟨gramR, c0R, c0L, hft, u', hu', hF⟩ := hS
+  have huu : u' = u := funext fun τ => Subtype.ext ((hu' τ).trans (hu τ).symm)
+  subst huu
+  obtain ⟨F, hF0, rfl⟩ := GlobalTheory.T.coefLattice_indep_coefMap_proof D _ _ _ p.P.A3.A _ (R2 p) (F2 p) hC j c0L ⟨gramR, c0R, hft⟩ h v hv
+  have hio : IoExt (R2 p) := hr.ioExt
+  have hv0 : IsChosenExtremalVector (R2 p) j (sg0 D p.P.A3.A) (p.v₀ j _) := (hL.2.2.2.2.2.2.1 j).2.lift.v0
+  have hval : ∀ w, (R2 p).ioP j (PiTensorProduct.tprod ℂ u') w ∈ harm (Wc D j).rank B.w B.F.BS := by
+    have hcV : ((R2 p).cV j).Is := hC.models.cV j
+    obtain ⟨u'', w₀, hu'', -, hw⟩ := IsChosenExtremalVector.io _ hv0 hio
+    have huu : u'' = u' := funext fun ρ => Subtype.ext ((hu'' ρ).trans (hu ρ).symm)
+    rw [huu] at hw
+    have hT := GlobalTheory.SeriesTie.Scale.io_act hC.lev hC.thP hB hBo.ψ hBo.θ hBo.sT hBo.BS hBo.BT hBo.mu0 hBo.eta
+      (PiTensorProduct.tprod ℂ u')
+    have hΔ0 := GlobalTheory.AdTh.IoExtPf.Delta_ne (D := D) j
+    rcases hcV.2.2.2.2 ((harm (Wc D j).rank B.w B.F.BS).comap ((R2 p).ioP j (PiTensorProduct.tprod ℂ u'))) (fun g => by
+        obtain ⟨a, ha, k, hk, rfl⟩ := (GlobalTheory.UnitarySplit.real_finite_split D _).1 g
+        rw [map_mul, hcV.1 k hk, mul_one]
+        rintro _ ⟨w, hw', rfl⟩
+        rw [Submodule.mem_comap, hT a ha]
+        exact fockGL_mem_harm _ _ _ hw') with h0 | h0
+    · have h1 : w₀ ∈ (harm (Wc D j).rank B.w B.F.BS).comap ((R2 p).ioP j (PiTensorProduct.tprod ℂ u')) := by
+        rw [Submodule.mem_comap, hw, ← hBo.delta]
+        exact delta_mem_harm _ _
+      rw [h0, Submodule.mem_bot] at h1
+      rw [h1, map_zero] at hw
+      exact absurd hw.symm hΔ0
+    · exact fun w => (h0 ▸ Submodule.mem_top : w ∈ (harm (Wc D j).rank B.w B.F.BS).comap
+        ((R2 p).ioP j (PiTensorProduct.tprod ℂ u')))
+  have hL0 : (B.F.ΛS : Set (Fin (Vc D j).rank → D.host.E)) = L0c D (Vc D j) := by
+    rw [hBo.ΛS]
+    exact GlobalTheory.OneMapRef.FactsLat.selfDual_frame_level_one_lattice_eq_standard (hL.1.lev.βV j)
+  refine ⟨c⁻¹ • (R2 p).ioP j (PiTensorProduct.tprod ℂ u') (c0L j F), ?_, (smul_inv_smul₀ hc _).symm⟩
+  refine (mem_harmLat _ _ _).2 ⟨Submodule.smul_mem _ _ (hval _), ?_⟩
+  have hF' : harmFn (Wc D j).rank B.w B.F.BS ((R2 p).ioP j (PiTensorProduct.tprod ℂ u') (c0L j F)) =
+      c • coefFn D.what₂.embLL (FWT.lamV D j) (F : Pol D.what₂.LL D.what₂.Tau (Vc D j).rank) := hF F
+  rw [map_smul, hF', inv_smul_smul₀ hc, hBo.lam, GlobalTheory.LatAtHLat.latAt_eq_hLat D _ _ B hL0]
+  exact Submodule.subset_span ⟨F, hF0, rfl⟩
+end GlobalTheory.BigOn.Exp.TupLe.CoefPf
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tuple_coef_le : _root_.GlobalTheory.BigOn.Exp.TupLe.CoefficientCondition' := by
+  atlas_forward_decl _root_.GlobalTheory.BigOn.Exp.TupLe.CoefPf.coefSt_alt
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+set_option autoImplicit false
+noncomputable section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain
+open NumberField Matrix GlobalTheory.ExportSeries GlobalTheory.SeriesTie
+open Formalism.IndefR.Links (PolF labLL)
+open Formalism.L2.Host (embLL0)
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+namespace GlobalTheory.SmallSpan
+variable {D : D7} {m n : ℕ}
+theorem smallSt_alt : _root_.GlobalTheory.BigOn.Exp.TupLe.SmallnessCondition := by
+  intro D _ _ _ _ _ _ _ _ _ p j _ _ B hB _ O O' _ hO' h P hP
+  exact harmLat_le_span D.LL0.val.toRingHom D.what₂.embLL (labLL0 D) O O' hO'.int B.w B.F.BS hB.wt
+    (GlobalTheory.CoefLatConj.pq_le hB) (isLattice_latAt hB.frame _) hP
+end GlobalTheory.SmallSpan
+end
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.small_tuple_statement_alt : _root_.GlobalTheory.BigOn.Exp.TupLe.SmallnessCondition := by
+  atlas_forward_decl _root_.GlobalTheory.SmallSpan.smallSt_alt
+end
+end
+
+section
+set_option synthInstance.maxHeartbeats 200000
+
+section
+set_option autoImplicit false
+noncomputable section
+open NumberField IsDedekindDomain
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx
+open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.SeriesTie GlobalTheory.ExportSeries
+open Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.Mult Formalism.IndefR.Datum
+open GlobalTheory.ConjTwist (BaseOf UnitOff ser)
+open GlobalTheory.FlatVecSum (princ)
+open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt eExt incl)
+open Formalism.L2.Host (embLL0)
+open scoped TensorProduct
+set_option synthInstance.maxHeartbeats 400000
+set_option maxHeartbeats 1600000
+open GlobalTheory.BigOn GlobalTheory.BigOn.Exp
+namespace GlobalTheory.BigOn.Exp.TupLe
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+theorem twLe_alt : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt → _root_.GlobalTheory.BigOn.Exp.TwAdmAlt → _root_.GlobalTheory.BigOn.Exp.TwistCharacter → _root_.GlobalTheory.BigOn.Exp.TwistUpperBound₂ := by
+  intro _ _ _ hA hX
+  refine _root_.GlobalTheory.BigOn.Exp.TwistConditions.imp (_root_.GlobalTheory.BigOn.Exp.TwistConditions.and hA hX) fun Fm x hx i p hr hm w hw j ⟨a, c⟩ ρ hρ ν rd hf hc => ?_
+  have hL := _root_.GlobalTheory.T.links2_of_single_index_twisted _ _ _ _ _ _ _ _ _ _ p hr hm.1
+  have h0 := baseOf_of_pin (cG := p.cG) p.charW.base.lev hρ hf.pin ((Fm.ex x hx i).nch.twI w) j ((Fm.ex x hx i).nch.sd w)
+  obtain ⟨c1, c2⟩ := c ρ hρ hf.adapted
+  obtain ⟨-, e, h1, h2⟩ := hf.adapted
+  exact _root_.GlobalTheory.BigOn.Exp.TupLe.realTw_le_alt _root_.GlobalTheory.T.seesaw_places_statement _root_.GlobalTheory.T.tuple_flat_estimate _root_.GlobalTheory.T.tupLe_traceSt _root_.GlobalTheory.T.tuple_coef_le _root_.GlobalTheory.T.small_tuple_statement_alt hr hm hL hw a.1 hρ hf.pin hf.level
+    { h0 with } e h1 h2 c1 c2 hf.norm hf.rat hc
+end GlobalTheory.BigOn.Exp.TupLe
+end
+end
+end
+
+section
 set_option synthInstance.maxHeartbeats 200000
 
 section
@@ -8,4 +160,5 @@ open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.twist_upper_bound_of_prints : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt → _root_.GlobalTheory.BigOn.Exp.TwAdmAlt → _root_.GlobalTheory.BigOn.Exp.TwistCharacter → _root_.GlobalTheory.BigOn.Exp.TwistUpperBound₂ := by
   atlas_forward_decl _root_.GlobalTheory.BigOn.Exp.TupLe.twLe_alt
+end
 end

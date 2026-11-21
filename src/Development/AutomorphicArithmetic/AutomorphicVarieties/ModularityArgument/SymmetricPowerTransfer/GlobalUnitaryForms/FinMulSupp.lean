@@ -1,5 +1,7 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.SmulMkIff
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.MemCenterSupExistsScalarMul
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.TraceFormulaEigenvalues.TraceFibreCardinality.GqMass
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.TraceFormulaEigenvalues.TraceFibreCardinality.OrbProd
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.IntegralStabilizers.FinSLoc
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.FzdLaw
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.ScalarTuples.IotaEx
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.ScalarTuples.MassFin
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.ScalarTuples.EmbAlg
@@ -8,6 +10,250 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.FinD
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.LocalHermitianForms.LocalOrbitCounts.OneD
 
+section
+open MulAction
+
+namespace UpperTheory.V.Z.Sym.Glob
+
+variable {I G : Type} [Group G] {Gv : I → Type} [∀ v, Group (Gv v)] {K : ∀ v, Subgroup (Gv v)}
+
+theorem rpg_ext (P : RPG G Gv K) {a b : G} (h : ∀ v, P.p v a = P.p v b) : a = b := by
+  have hab := P.inj (a * b⁻¹) fun v => by rw [map_mul, map_inv, h v, mul_inv_cancel]
+  exact mul_inv_eq_one.mp hab
+
+theorem mem_box (P : RPG G Gv K) (U : ∀ v, Subgroup (Gv v)) (g : G) : g ∈ P.box U ↔ ∀ v, P.p v g ∈ U v := by
+  simp [RPG.box, Subgroup.mem_iInf]
+
+theorem smul_mk_iff {A : Type} [Group A] (U : Subgroup A) (x g : A) : x • (g : A ⧸ U) = g ↔ g⁻¹ * x * g ∈ U := by
+  rw [MulAction.Quotient.smul_mk, QuotientGroup.eq, ← U.inv_mem_iff]
+  simp [mul_assoc]
+
+theorem rpg_hom {T : Type} [Group T] {Tv : I → Type} [∀ v, Group (Tv v)] {C₀ : ∀ v, Subgroup (Tv v)} (P : RPG G Gv K)
+    (Q : RPG T Tv C₀) (ιv : ∀ v, Tv v →* Gv v) (h : ∀ᶠ v in Filter.cofinite, (C₀ v).map (ιv v) ≤ K v) :
+    ∃ ι : T →* G, ∀ v t, P.p v (ι t) = ιv v (Q.p v t) := by
+  have hx : ∀ t : T, ∀ᶠ v in Filter.cofinite, ιv v (Q.p v t) ∈ K v := fun t =>
+    ((Q.ae t).and h).mono fun v hv => hv.2 ⟨_, hv.1, rfl⟩
+  choose g hg using fun t => P.surj _ (hx t)
+  refine ⟨{ toFun := g, map_one' := ?_, map_mul' := ?_ }, fun v t => hg t v⟩
+  · exact rpg_ext P fun v => by simp only [hg, map_one]
+  · intro a b
+    exact rpg_ext P fun v => by simp only [hg, map_mul]
+
+private theorem box_relIndex_ne_zero_of_local {T : Type} [Group T] {Tv : I → Type} [∀ v, Group (Tv v)]
+    {C₀ : ∀ v, Subgroup (Tv v)} (Q : RPG T Tv C₀) (A B : ∀ v, Subgroup (Tv v))
+    (hA : ∀ v, (A v).relIndex (B v) ≠ 0) (hfin : ∀ᶠ v in Filter.cofinite, B v ≤ A v) :
+    (Q.box A).relIndex (Q.box B) ≠ 0 := by
+  classical
+  have key : ∀ F : Finset I, ∃ D : Subgroup T, D.relIndex (Q.box B) ≠ 0 ∧
+      ∀ t ∈ D, ∀ v ∈ F, Q.p v t ∈ A v := by
+    intro F
+    induction F using Finset.induction_on with
+    | empty => exact ⟨⊤, by simp, fun _ _ v hv => by simp at hv⟩
+    | @insert a F _ ih =>
+      obtain ⟨D, hD, hDF⟩ := ih
+      refine ⟨D ⊓ (A a).comap (Q.p a), Subgroup.relIndex_inf_ne_zero hD ?_, ?_⟩
+      · rw [Subgroup.relIndex_comap]
+        refine mt (Subgroup.relIndex_eq_zero_of_le_right ?_) (hA a)
+        rw [Subgroup.map_le_iff_le_comap]
+        intro t ht
+        exact (mem_box Q B t).1 ht a
+      · intro t ht v hv
+        rcases Finset.mem_insert.1 hv with rfl | hv
+        · exact ht.2
+        · exact hDF t ht.1 v hv
+  obtain ⟨D, hD, hDF⟩ := key (Filter.eventually_cofinite.1 hfin).toFinset
+  refine mt (Subgroup.relIndex_eq_zero_of_le_left (K := Q.box A) ?_)
+    (Subgroup.relIndex_inf_ne_zero hD (by simp : (Q.box B).relIndex (Q.box B) ≠ 0))
+  intro t ht
+  rw [mem_box]
+  intro v
+  by_cases hv : B v ≤ A v
+  · exact hv ((mem_box Q B t).1 ht.2 v)
+  · exact hDF t ht.1 v (by simpa using hv)
+
+theorem gqAbs {T H : Type} [CommGroup T] [Group H] {Tv : I → Type} [∀ v, CommGroup (Tv v)] (U : ∀ v, Subgroup (Gv v))
+    {C₀ : ∀ v, Subgroup (Tv v)} (C : ∀ v, Subgroup (Tv v)) (P : RPG G Gv K) (Q : RPG T Tv C₀)
+    (ιv : ∀ v, Tv v →* Gv v) (θ : G →* G) (θv : ∀ v, Gv v →* Gv v) (f : G → ℂ) (fv : ∀ v, Gv v → ℂ) (δ : G)
+    (φ : H →* T) (j : H →* G) (H₀ : Subgroup H)
+    (hj : ∀ h v, P.p v (j h) = ιv v (Q.p v (φ h))) (hθ : ∀ v g, P.p v (θ g) = θv v (P.p v g))
+    (hf : ∀ g, f g = ∏ᶠ v, fv v (P.p v g)) (hinv : ∀ v, ∀ u ∈ U v, ∀ x, fv v (u⁻¹ * x * θv v u) = fv v x)
+    (hc : ∀ v t, (ιv v t)⁻¹ * P.p v δ * θv v (ιv v t) = P.p v δ) (S : Finset I)
+    (hS : ∀ v ∈ S, FinOrb (ιv v) (θv v) (U v) (fv v) (P.p v δ))
+    (hoff : ∀ v ∉ S, K v ≤ U v ∧ C₀ v ≤ C v ∧ (C v).map (ιv v) ≤ U v ∧ fv v (P.p v δ) = 1 ∧
+      ∀ y, fv v (y⁻¹ * P.p v δ * θv v y) ≠ 0 → ∃ t, ∃ u ∈ U v, y = ιv v t * u)
+    (hK : ∀ v ∉ S, (C₀ v).map (ιv v) ≤ K v)
+    (hst : ∀ v (y : Gv v ⧸ U v), (stabilizer (Gv v) y).comap (ιv v) ≤ C v ∧ ((stabilizer (Gv v) y).comap (ιv v)).relIndex (C v) ≠ 0)
+    (h0 : ∀ z ∈ H₀, ∀ v y, y⁻¹ * P.p v (j z) * y ∈ U v)
+    (m1 : (φ.range ⊔ Q.box C).index ≠ 0) (m2 : H₀.relIndex ((Q.box C).comap φ) ≠ 0) :
+    gqOn j H₀ (P.box U) (fun y => f (y.out⁻¹ * δ * θ y.out)) =
+      mass φ H₀ (Q.box C) * ∏ v ∈ S, orb (ιv v) (C v) (θv v) (U v) (fv v) (P.p v δ) := by
+  have hS' : ∀ᶠ v in Filter.cofinite, v ∉ S :=
+    Filter.eventually_cofinite.2 (S.finite_toSet.subset fun v hv => by simpa using hv)
+  obtain ⟨ι, hι⟩ := rpg_hom P Q ιv (hS'.mono hK)
+  have hjι : j = ι.comp φ :=
+    MonoidHom.ext fun z => rpg_ext P fun v => by rw [hj, MonoidHom.comp_apply, hι]
+  subst hjι
+  have hbox : ∀ (g x : G), x • (g : G ⧸ P.box U) = g ↔
+      ∀ v, (P.p v g)⁻¹ * P.p v x * P.p v g ∈ U v := by
+    intro g x
+    rw [smul_mk_iff, mem_box]
+    simp only [map_mul, map_inv]
+  have hprod := Tf.orbProd I G T Gv Tv K U C₀ C P Q ι ιv θ θv f fv δ hι hθ hf hinv hc S hS hoff
+  refine (Tf.gqMass H T G φ ι H₀ (Q.box C) θ (P.box U) f δ ?_ ?_ hprod.1 ?_ m1 m2 ?_ ?_).trans ?_
+  · intro u hu x
+    rw [hf, hf]
+    refine finprod_congr fun v => ?_
+    simp only [map_mul, map_inv, hθ]
+    exact hinv v _ ((mem_box P U u).1 hu v) _
+  · intro t
+    exact rpg_ext P fun v => by
+      simp only [map_mul, map_inv, hθ, hι]
+      exact hc v _
+  · intro z hz y
+    refine QuotientGroup.induction_on y fun g => ?_
+    exact (hbox g _).2 fun v => h0 z hz v _
+  · intro y
+    refine QuotientGroup.induction_on y fun g _ => ?_
+    have hEq : (stabilizer G (g : G ⧸ P.box U)).comap ι =
+        Q.box (fun v => (stabilizer (Gv v) ((P.p v g : Gv v ⧸ U v))).comap (ιv v)) := by
+      ext t
+      rw [Subgroup.mem_comap, mem_stabilizer_iff, hbox, mem_box]
+      simp only [Subgroup.mem_comap, mem_stabilizer_iff, smul_mk_iff, hι]
+    rw [hEq]
+    refine ⟨fun t ht => (mem_box Q C t).2 fun v => (hst v _).1 ((mem_box Q _ t).1 ht v), ?_⟩
+    refine box_relIndex_ne_zero_of_local Q _ C (fun v => (hst v _).2) ?_
+    refine ((P.ae g).and hS').mono fun v hv t ht => ?_
+    obtain ⟨hKU, -, hCU, -⟩ := hoff v hv.2
+    rw [Subgroup.mem_comap, mem_stabilizer_iff, smul_mk_iff]
+    have hg : P.p v g ∈ U v := hKU hv.1
+    exact (U v).mul_mem ((U v).mul_mem ((U v).inv_mem hg) (hCU ⟨t, ht, rfl⟩)) hg
+  · intro z hz
+    rw [Subgroup.mem_comap, mem_box]
+    intro v
+    refine (hst v ((1 : Gv v) : Gv v ⧸ U v)).1 ?_
+    rw [Subgroup.mem_comap, mem_stabilizer_iff, smul_mk_iff]
+    have h1 := h0 z hz v 1
+    rwa [MonoidHom.comp_apply, hι] at h1
+  · rw [hprod.2]
+
+end UpperTheory.V.Z.Sym.Glob
+end
+
+section
+open Matrix UpperTheory.V.Z.Sym.Loc QuadraticAlgebra
+
+namespace UpperTheory.V.Z.Sym.Glob
+
+variable {K K' : Type} [Field K] [Field K'] {Δ τ : K}
+
+theorem dx_ext {a b : DX Δ} (h : mt a = mt b) : a = b := Subtype.ext (Units.ext h)
+
+theorem zd_scal {s : DX Δ} (h : s ∈ ZD Δ) : ∃ z, IsScal z s := by
+  obtain ⟨z, hz⟩ := h
+  exact ⟨z, (congrArg Units.val hz).symm⟩
+
+theorem scal_comm {z : Kˣ} {s : DX Δ} (h : IsScal z s) (y : DX Δ) : s * y = y * s := by
+  refine dx_ext ?_
+  change mt s * mt y = mt y * mt s
+  rw [h]
+  exact (scalar_commute _ (fun _ => Commute.all _ _) _).eq
+
+theorem conj_sup {J : Subgroup (DX Δ)} {f : DX Δ → ℂ} (h : ∀ u ∈ J, ∀ x, f (u⁻¹ * x * u) = f x) :
+    ∀ u ∈ ZD Δ ⊔ J, ∀ x, f (u⁻¹ * x * u) = f x := by
+  let A : Subgroup (DX Δ) :=
+    { carrier := {u | ∀ x, f (u⁻¹ * x * u) = f x}
+      one_mem' := by simp
+      mul_mem' := fun {a b} ha hb x => by
+        have := hb (a⁻¹ * x * a)
+        rw [ha] at this
+        simpa [mul_assoc] using this
+      inv_mem' := fun {a} ha x => by
+        have := ha (a * x * a⁻¹)
+        simpa [mul_assoc] using this.symm }
+  refine fun u hu => (sup_le (fun s hs x => ?_) h : ZD Δ ⊔ J ≤ A) hu
+  obtain ⟨z, hz⟩ := zd_scal hs
+  rw [mul_assoc, ← scal_comm hz, inv_mul_cancel_left]
+
+theorem mem_center_sup_exists_scalar_mul {J : Subgroup (DX Δ)} {u : DX Δ} (hu : u ∈ ZD Δ ⊔ J) : ∃ z s, ∃ k ∈ J, IsScal z s ∧ u = s * k := by
+  haveI : (ZD Δ).Normal := ⟨fun s hs g => by
+    obtain ⟨z, hz⟩ := zd_scal hs
+    rwa [← scal_comm hz, mul_inv_cancel_right]⟩
+  obtain ⟨s, hs, k, hk, e⟩ := Subgroup.mem_sup_of_normal_left.1 hu
+  obtain ⟨z, hz⟩ := zd_scal hs
+  exact ⟨z, s, k, hk, hz, e.symm⟩
+
+theorem fZD_conj (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra O K] (h : IsLoc O Δ) (χ : Kˣ →* ℂˣ)
+    (hχ : Unr O χ) : ∀ u ∈ KD Δ O, ∀ x, fZD O χ (u⁻¹ * x * u) = fZD O χ x := by
+  intro u hu x
+  obtain ⟨h0, h1⟩ := Loc.fzdLaw O K Δ h χ hχ
+  have hu' : u ∈ ZD Δ ⊔ KD Δ O := Subgroup.mem_sup_right hu
+  by_cases hx : x ∈ ZD Δ ⊔ KD Δ O
+  · obtain ⟨z, s, k, hk, hz, rfl⟩ := mem_center_sup_exists_scalar_mul hx
+    have e : u⁻¹ * (s * k) * u = s * (u⁻¹ * k * u) := by rw [← mul_assoc, ← scal_comm hz]; simp only [mul_assoc]
+    rw [e, h1 z s k hz hk, h1 z s _ hz (mul_mem (mul_mem (inv_mem hu) hk) hu)]
+  · rw [h0 x hx, h0]
+    exact fun h => hx (by simpa [mul_assoc] using mul_mem (mul_mem hu' h) (inv_mem hu'))
+
+theorem hasTr_map (f : K →+* K') {γ : DX Δ} {γ' : DX (f Δ)} (e : mt γ' = (mt γ).map (lmap f Δ)) (h : HasTr γ τ) : HasTr γ' (f τ) := by
+  constructor
+  · rw [e, ← RingHom.mapMatrix_apply, ← RingHom.map_det, h.1, map_one]
+  · have := congrArg (lmap f Δ) h.2
+    rw [e, trace_fin_two, map_apply, map_apply, ← map_add, ← trace_fin_two, this]
+    ext <;> simp [lmap, QuadraticAlgebra.algebraMap_eq]
+
+theorem emb_map (f : K →+* K') {γ : DX Δ} {γ' : DX (f Δ)} (e : mt γ' = (mt γ).map (lmap f Δ)) {j j'} (h : IsEmb τ γ j)
+    (h' : IsEmb (f τ) γ' j') (z : (Etau K τ)ˣ) (z' : (Etau K' (f τ))ˣ) (ez : (z' : Etau K' (f τ)) = emap f τ z) :
+    mt (j' z') = (mt (j z)).map (lmap f Δ) := by
+  rw [h, h', e, ez]
+  ext a b <;> by_cases hab : a = b <;> simp [lmap, emap, hab, Matrix.one_apply, QuadraticAlgebra.re_one, QuadraticAlgebra.im_one]
+
+theorem emb_comm {γ : DX Δ} {j} (h : IsEmb τ γ j) (z) : j z * γ = γ * j z := by
+  refine dx_ext ?_
+  change mt (j z) * mt γ = mt γ * mt (j z)
+  rw [h]
+  simp [add_mul, mul_add]
+
+theorem cu_coords (O : Type) [CommRing O] [Algebra O K] (hτ : IsIntegral O τ) (hu : ∃ u : Oˣ, algebraMap O K u = τ ^ 2 - 4)
+    (h2 : IsUnit (2 : O)) {x : Etau K τ} (hx : IsIntegral O x) : IsIntegral O x.re ∧ IsIntegral O x.im := by
+  obtain ⟨u, hu⟩ := hu
+  obtain ⟨w, hw⟩ := h2.exists_right_inv
+  let st : Etau K τ →ₐ[O] Etau K τ := { starRingEnd (Etau K τ) with
+    commutes' := fun r => by ext <;> simp [QuadraticAlgebra.algebraMap_eq, IsScalarTower.algebraMap_apply O K (Etau K τ), starRingEnd_apply] }
+  have hs : IsIntegral O (star x) := hx.map st
+  have inj : Function.Injective (algebraMap K (Etau K τ)) := (algebraMap K _).injective
+  have h1 : IsIntegral O (x.im ^ 2 * (τ ^ 2 - 4)) := by
+    rw [← isIntegral_algebraMap_iff inj]
+    convert (hx.sub hs).pow 2 using 1
+    ext <;> simp [QuadraticAlgebra.algebraMap_eq, sq] <;> ring
+  have h3 : IsIntegral O x.im := by
+    refine IsIntegral.of_pow two_pos ?_
+    have := h1.mul (isIntegral_algebraMap (R := O) (A := K) (x := (u⁻¹ : Oˣ)))
+    rwa [← hu, mul_assoc, ← map_mul, Units.mul_inv, map_one, mul_one] at this
+  have h4 : IsIntegral O (2 * x.re + τ * x.im) := by
+    rw [← isIntegral_algebraMap_iff inj]
+    convert hx.add hs using 1
+    ext <;> simp [QuadraticAlgebra.algebraMap_eq] <;> ring
+  refine ⟨?_, h3⟩
+  have := (h4.sub (hτ.mul h3)).mul (isIntegral_algebraMap (R := O) (A := K) (x := w))
+  have e : (2 : K) * algebraMap O K w = 1 := by rw [← map_ofNat (algebraMap O K) 2, ← map_mul, hw, map_one]
+  rwa [show (2 * x.re + τ * x.im - τ * x.im) * algebraMap O K w = x.re by linear_combination x.re * e] at this
+
+theorem cu_map (O : Type) [CommRing O] [Algebra O K] (hτ : IsIntegral O τ) (hu : ∃ u : Oˣ, algebraMap O K u = τ ^ 2 - 4)
+    (h2 : IsUnit (2 : O)) {γ : DX Δ} {j} (h : IsEmb τ γ j) (hγ : γ ∈ KD Δ O) : (Cu O τ).map j ≤ KD Δ O := by
+  have key : ∀ z : (Etau K τ)ˣ, IsIntegral O (z : Etau K τ) → ∀ a b, IsIntegral O (mt (j z) a b) := fun z hz a b => by
+    obtain ⟨h1, h3⟩ := cu_coords O hτ hu h2 hz
+    rw [h, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Algebra.smul_def, Algebra.smul_def]
+    refine (h1.algebraMap.mul ?_).add (h3.algebraMap.mul ((mem_KD.1 hγ).1 a b))
+    by_cases hab : a = b <;> simp [Matrix.one_apply, hab, isIntegral_one, isIntegral_zero]
+  rintro _ ⟨_, ⟨w, rfl⟩, rfl⟩
+  refine mem_KD.2 ⟨key _ w.1.2, ?_⟩
+  rw [← map_inv, ← map_inv]
+  exact key _ (w⁻¹).1.2
+
+end UpperTheory.V.Z.Sym.Glob
+end
+
+section
 open NumberField UpperTheory.V.Z.Sym.Loc
 
 namespace UpperTheory.V.Z.Sym.Glob
@@ -254,3 +500,4 @@ theorem gqD (D : Dat Δ) (hD : D.Ok) (ι : DX Δ →* DA Δ) (hι : IsIotaD ι) 
     ring
 
 end UpperTheory.V.Z.Sym.Glob
+end

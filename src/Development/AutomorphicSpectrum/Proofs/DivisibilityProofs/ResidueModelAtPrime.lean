@@ -2,9 +2,62 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.LocalAtPlaces
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagIndependence
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyCN
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.DescentIntersectionNumber
-import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ConstantsMonomialApproximationStatement
+import Development.WeilBound.CoreStatements.IdealCycleValues.IntNumLComapBaseExtension
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ConstantsMonomialApproximation
 
+section
+section
+open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top GroundTheory.Heights₂.Heights.ModelLeaves
+open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar IsHorizontal mcPts mCoordIdeal IsIntersectionFamily IsIntersectionSystem IntersectionSystem ptsIntegral geoNum charOf recR arInt ChartBundle chartRing)
+
+namespace GlobalTheory.CompanionTheory.Ar.Num
+
+theorem intNumL_subfield_constants : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (F F' : Type) [Field F] [Field F'] [Algebra F F'] [FiniteDimensional F F'] (V' : Ideal (MRing ι F')), IsMultiHomogIdeal V' → (∀ (c : ∀ k, ι k) (a : F'), ∃ (n : ℕ) (G : MRing ι F), IsMultiHomog G (fun _ => n) ∧ C a * (∏ k, X ⟨k, c k⟩) ^ n - MvPolynomial.map (algebraMap F F') G ∈ V') → ∀ l : List (K → ℤ), intNumL F (V'.comap (MvPolynomial.map (algebraMap F F'))) l = (Module.finrank F F' : ℤ) * intNumL F' V' l := by
+  intro K _ _ ι _ F F' _ _ _ _ V' _ hgen l
+  have hgood : ∀ (c : ∀ k, ι k) (a : F'), ∃ n, BaseChangeColon.PlField.Good (F := F) V' n c a := by
+    intro c a
+    obtain ⟨n, G, hG, hmem⟩ := hgen c a
+    exact ⟨n, G, hG, hmem⟩
+  obtain ⟨n, hn⟩ := BaseChangeColon.PlField.exists_uniform hgood
+  have hev : ∀ᶠ m : K → ℤ in Filter.atTop,
+      hilbFn (V'.comap (MvPolynomial.map (algebraMap F F'))) m
+        = (Module.finrank F F' : ℤ) * hilbFn V' m := by
+    filter_upwards [Filter.eventually_ge_atTop
+      (fun k : K => ((n * Fintype.card (ι k) + 1 : ℕ) : ℤ))] with m hm
+    have hm' : ∀ k, ((n * Fintype.card (ι k) + 1 : ℕ) : ℤ) ≤ m k := fun k => hm k
+    have hm0 : ∀ k, 0 ≤ m k := fun k => le_trans (Int.natCast_nonneg _) (hm' k)
+    have hlt : ∀ k, n * Fintype.card (ι k) < (m k).toNat := by
+      intro k
+      have := hm' k
+      omega
+    unfold hilbFn
+    rw [if_pos hm0, if_pos hm0,
+      BaseChangeColon.PlField.finrank_piece (fun q hq => BaseChangeColon.PlField.lift_form hn hlt hq), Nat.cast_mul]
+  have hne : (Module.finrank F F' : ℤ) ≠ 0 := by
+    exact_mod_cast (Module.finrank_pos (R := F) (M := F')).ne'
+  simp only [intNumL, intNum, mixedDiff, List.ofFn_get]
+  exact BaseChangeColon.PlField.eventualValue_mul hne (BaseChangeColon.PlField.foldr_eventually _ l hev)
+
+end GlobalTheory.CompanionTheory.Ar.Num
+end
+
+open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top GroundTheory.Heights₂.Heights.ModelLeaves
+open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar IsHorizontal mcPts mCoordIdeal IsIntersectionFamily IsIntersectionSystem IntersectionSystem ptsIntegral geoNum charOf recR arInt ChartBundle chartRing)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.descent_intersection_number : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (F F' : Type) [Field F] [Field F'] [Algebra F F'] [FiniteDimensional F F'] (V' : Ideal (MRing ι F')), IsMultiHomogIdeal V' → (∀ (c : ∀ k, ι k) (a : F'), ∃ (n : ℕ) (G : MRing ι F), IsMultiHomog G (fun _ => n) ∧ C a * (∏ k, X ⟨k, c k⟩) ^ n - MvPolynomial.map (algebraMap F F') G ∈ V') → ∀ l : List (K → ℤ), intNumL F (V'.comap (MvPolynomial.map (algebraMap F F'))) l = (Module.finrank F F' : ℤ) * intNumL F' V' l := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.intNumL_subfield_constants
+end
+
+section
+open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top GroundTheory.Heights₂.Heights.ModelLeaves
+open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar IsHorizontal mcPts mCoordIdeal IsIntersectionFamily IsIntersectionSystem IntersectionSystem ptsIntegral geoNum charOf recR arInt ChartBundle chartRing)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.constants_monomial_approximation : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (A : Type) [CommRing A] [Algebra A Ω], HasConstants ℤ A y → ∀ (c : ∀ k, ι k) (a : A), ∃ (n : ℕ) (G : MRing ι ℤ), IsMultiHomog G (fun _ => n) ∧ C a * (∏ k, X ⟨k, c k⟩) ^ n - (MvPolynomial.map (Int.castRingHom A) G) ∈ pointIdeal A y := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.Num.const_mul_chartMonomial_pow_form | exact GlobalTheory.CompanionTheory.Ar.Num.const_mul_chartMonomial_pow_form | (intros; apply GlobalTheory.CompanionTheory.Ar.Num.const_mul_chartMonomial_pow_form <;> assumption)
+end
+
+section
 section
 open MvPolynomial GroundTheory.Heights₂.Heights.NumbersDVR GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top GroundTheory.Heights₂.Heights.ModelLeaves
 open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar IsHorizontal mcPts mCoordIdeal IsIntersectionFamily IsIntersectionSystem IntersectionSystem ptsIntegral geoNum charOf recR arInt ChartBundle chartRing)
@@ -141,3 +194,4 @@ open ReciprocityTheory.ChartRestriction.G.Geo (HermLine IsSmoothHerm IsArithVar 
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.residue_model_at_prime : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω) (A : Type) [CommRing A] [Algebra A Ω] [IsDedekindDomain A] [Module.Finite ℤ A], HasConstants ℤ A y → ∀ (p : ℕ) [Fact p.Prime] (m : Ideal A) [m.IsPrime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra A O] [IsLocalization.AtPrime O m] [Algebra O Ω] [IsScalarTower A O Ω], (p : A) ∈ m → ∀ fd : ℕ, Nat.card (A ⧸ m) = p ^ fd → ∀ W' : Ideal (MRing ι O), W'.IsPrime → IsMultiHomogIdeal W' → pointIdeal O y ≤ W' → (IsLocalRing.maximalIdeal O).map (C : O →+* MRing ι O) ≤ W' → ∀ l : List (K → ℤ), intNumL (ZMod p) (extTo (ZMod p) (W'.comap (MvPolynomial.map (Int.castRingHom O)))) l = (fd : ℤ) * vNumL W' l := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Num.intNumL_zmod_eq_residueDegree_mul_vNumL
+end

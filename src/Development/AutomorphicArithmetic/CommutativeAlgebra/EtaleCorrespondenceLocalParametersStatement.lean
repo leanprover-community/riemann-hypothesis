@@ -6,9 +6,236 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsFiniteQCOmega
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalMaximality.TanConjEt
 import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.ExistsUnitMulMemSpanOfReducedIsolatedZero
 import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.FiniteEtaleFunctionFieldGermCompatOfSmooth
-import Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsCotangentMapLocalizationAway
-import Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsCotangentMapDualBasisOfParameters
-import Development.AutomorphicArithmetic.CommutativeAlgebra.FiniteFiberOfFiniteTypeParameterRing
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FibFiniteAndSep
+
+section
+open KaehlerDifferential
+
+theorem UpperTheory.exists_cotangent_map_localization_away :
+    ∀ {R S : Type} [CommRing R] [CommRing S] [Algebra ℂ R] [Algebra ℂ S] [Algebra R S] [IsScalarTower ℂ R S] (f : R) [IsLocalization.Away f S] (ev : S →+* ℂ) {d : ℕ} (ψ : Ω[R⁄ℂ] →ₗ[ℂ] (Fin d → ℂ)), (∀ (b : R) (ω : Ω[R⁄ℂ]), ψ (b • ω) = ev (algebraMap R S b) • ψ ω) → (∀ ω : Ω[R⁄ℂ], ψ ω = 0 → ∃ (m : ℕ) (b : Fin m → R) (ω' : Fin m → Ω[R⁄ℂ]), (∀ i, ev (algebraMap R S (b i)) = 0) ∧ ω = ∑ i, b i • ω' i) → ∃ ψ' : Ω[S⁄ℂ] →ₗ[ℂ] (Fin d → ℂ), (∀ (b : S) (ω : Ω[S⁄ℂ]), ψ' (b • ω) = ev b • ψ' ω) ∧ (∀ ω : Ω[R⁄ℂ], ψ' (KaehlerDifferential.map ℂ ℂ R S ω) = ψ ω) ∧ (∀ ω : Ω[S⁄ℂ], ψ' ω = 0 → ∃ (m : ℕ) (b : Fin m → S) (ω' : Fin m → Ω[S⁄ℂ]), (∀ i, ev (b i) = 0) ∧ ω = ∑ i, b i • ω' i) := by
+  intro R S _ _ _ _ _ _ f _ ev d ψ h1 h2
+  letI : Module R (Fin d → ℂ) := Module.compHom (Fin d → ℂ) (ev.comp (algebraMap R S))
+  have hu : ∀ x : Submonoid.powers f, ev (algebraMap R S x) ≠ 0 := fun x =>
+    ((IsLocalization.map_units S x).map ev).ne_zero
+  have hunit : ∀ x : Submonoid.powers f,
+      IsUnit ((algebraMap R (Module.End R (Fin d → ℂ))) x) := by
+    intro x
+    rw [Module.End.isUnit_iff]
+    refine ⟨fun v w hvw => smul_right_injective (Fin d → ℂ) (hu x) hvw,
+      fun v => ⟨(ev (algebraMap R S x))⁻¹ • v, ?_⟩⟩
+    show ev (algebraMap R S x) • ((ev (algebraMap R S x))⁻¹ • v) = v
+    rw [smul_smul, mul_inv_cancel₀ (hu x), one_smul]
+  let g : Ω[R⁄ℂ] →ₗ[R] (Fin d → ℂ) :=
+    { toFun := ψ, map_add' := ψ.map_add, map_smul' := fun b ω => h1 b ω }
+  let L := IsLocalizedModule.lift (Submonoid.powers f) (KaehlerDifferential.map ℂ ℂ R S) g hunit
+  have hL : ∀ η, L (KaehlerDifferential.map ℂ ℂ R S η) = ψ η := fun η =>
+    IsLocalizedModule.lift_apply _ _ _ _ η
+  have hLs : ∀ (r : R) (ω : Ω[S⁄ℂ]), L (r • ω) = ev (algebraMap R S r) • L ω :=
+    fun r ω => L.map_smul r ω
+  have hLS : ∀ (b : S) (ω : Ω[S⁄ℂ]), L (b • ω) = ev b • L ω := by
+    intro b ω
+    obtain ⟨⟨r, t⟩, ht⟩ := IsLocalization.surj (Submonoid.powers f) b
+    have h := hLs (t : R) (b • ω)
+    rw [← algebraMap_smul S (t : R) (b • ω), smul_smul, mul_comm, ht, algebraMap_smul, hLs] at h
+    apply smul_right_injective (Fin d → ℂ) (hu t)
+    show ev (algebraMap R S t) • L (b • ω) = ev (algebraMap R S t) • ev b • L ω
+    rw [← h, ← ht, map_mul, mul_comm, mul_smul]
+  have hLC : ∀ (c : ℂ) (ω : Ω[S⁄ℂ]), L (c • ω) = c • L ω := by
+    intro c ω
+    obtain ⟨⟨η, s⟩, hs⟩ :=
+      IsLocalizedModule.surj (Submonoid.powers f) (KaehlerDifferential.map ℂ ℂ R S) ω
+    have hs' : (s : R) • ω = KaehlerDifferential.map ℂ ℂ R S η := hs
+    have e1 : ev (algebraMap R S s) • L ω = ψ η := by rw [← hLs, hs', hL]
+    have e2 : ev (algebraMap ℂ S c) • ψ η = c • ψ η := by
+      rw [show c • ψ η = ψ (c • η) from (ψ.map_smul c η).symm, ← algebraMap_smul R c η, h1,
+        ← IsScalarTower.algebraMap_apply]
+    rw [← algebraMap_smul S c ω, hLS]
+    apply smul_right_injective (Fin d → ℂ) (hu s)
+    show ev (algebraMap R S s) • ev (algebraMap ℂ S c) • L ω = ev (algebraMap R S s) • c • L ω
+    rw [smul_comm (ev (algebraMap R S s)) (ev (algebraMap ℂ S c)), e1, e2,
+      smul_comm (ev (algebraMap R S s)) c, e1]
+  refine ⟨{ toFun := L, map_add' := L.map_add, map_smul' := hLC }, hLS, hL, ?_⟩
+  intro ω hω
+  change L ω = 0 at hω
+  obtain ⟨⟨η, s⟩, hs⟩ :=
+    IsLocalizedModule.surj (Submonoid.powers f) (KaehlerDifferential.map ℂ ℂ R S) ω
+  have hs' : (s : R) • ω = KaehlerDifferential.map ℂ ℂ R S η := hs
+  have hη : ψ η = 0 := by rw [← hL, ← hs', hLs, hω, smul_zero]
+  obtain ⟨m, b, ω', hb, hηeq⟩ := h2 η hη
+  let u : S := IsLocalization.mk' S (1 : R) s
+  have hu1 : u * algebraMap R S s = 1 := by rw [IsLocalization.mk'_spec, map_one]
+  refine ⟨m, fun i => algebraMap R S (b i),
+    fun i => u • KaehlerDifferential.map ℂ ℂ R S (ω' i), hb, ?_⟩
+  calc ω = u • ((s : R) • ω) := by
+        rw [← algebraMap_smul S (s : R) ω, smul_smul, hu1, one_smul]
+    _ = u • KaehlerDifferential.map ℂ ℂ R S (∑ i, b i • ω' i) := by rw [hs', hηeq]
+    _ = ∑ i, algebraMap R S (b i) • u • KaehlerDifferential.map ℂ ℂ R S (ω' i) := by
+        rw [map_sum, Finset.smul_sum]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [map_smul, ← algebraMap_smul S (b i), smul_comm]
+end
+
+section
+open KaehlerDifferential
+
+theorem UpperTheory.exists_cotangent_map_dual_basis_of_parameters :
+    ∀ {R : Type} [CommRing R] [Algebra ℂ R] (ev : R →ₐ[ℂ] ℂ) {d : ℕ} (t : Fin d → R) (ψ : Ω[R⁄ℂ] →ₗ[ℂ] (Fin d → ℂ)), (∀ (b : R) (ω : Ω[R⁄ℂ]), ψ (b • ω) = ev b • ψ ω) → Function.Surjective ψ → (∀ l, ev (t l) = 0) → (∀ u : R, ev u = 0 → ∃ (c : R) (g : Fin d → R), ev c ≠ 0 ∧ c * u = ∑ l, g l * t l) → ∃ φ : Ω[R⁄ℂ] →ₗ[ℂ] (Fin d → ℂ), (∀ (b : R) (ω : Ω[R⁄ℂ]), φ (b • ω) = ev b • φ ω) ∧ (∀ l, φ (D ℂ R (t l)) = Pi.single l 1) ∧ (∀ ω, φ ω = 0 → ψ ω = 0) ∧ ∀ (u c : R) (g : Fin d → R), ev u = 0 → ev c ≠ 0 → c * u = ∑ l, g l * t l → ∀ l, ev (g l) = ev c * φ (D ℂ R u) l := by
+  intro R _ _ ev d t ψ hψ hsurj ht hloc
+  have key : ∀ χ : Ω[R⁄ℂ] →ₗ[ℂ] (Fin d → ℂ), (∀ (b : R) (ω : Ω[R⁄ℂ]), χ (b • ω) = ev b • χ ω) →
+      ∀ (u c : R) (g : Fin d → R), ev u = 0 → c * u = ∑ l, g l * t l →
+      ev c • χ (D ℂ R u) = ∑ l, ev (g l) • χ (D ℂ R (t l)) := by
+    intro χ hχ u c g hu hcu
+    have h := congrArg (fun x => χ (D ℂ R x)) hcu
+    simp only [Derivation.leibniz, map_sum, map_add, hχ, hu, ht, zero_smul, add_zero] at h
+    exact h
+  set v : Fin d → (Fin d → ℂ) := fun l => ψ (D ℂ R (t l)) with hvdef
+  have hspan : ⊤ ≤ Submodule.span ℂ (Set.range v) := by
+    intro y hy
+    clear hy
+    obtain ⟨ω, rfl⟩ := hsurj y
+    have hω : ω ∈ Submodule.span R (Set.range (D ℂ R)) := by
+      rw [KaehlerDifferential.span_range_derivation]
+      trivial
+    induction hω using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨u, rfl⟩ := hx
+      set u' := u - algebraMap ℂ R (ev u) with hu'
+      have hDu : D ℂ R u = D ℂ R u' := by
+        rw [hu', map_sub, Derivation.map_algebraMap, sub_zero]
+      have hev : ev u' = 0 := by
+        rw [hu', map_sub, AlgHom.commutes]
+        simp
+      obtain ⟨c, g, hc, hcu⟩ := hloc u' hev
+      have h := key ψ hψ u' c g hev hcu
+      rw [hDu]
+      have : ψ (D ℂ R u') = (ev c)⁻¹ • ∑ l, ev (g l) • v l := by
+        rw [← h, smul_smul, inv_mul_cancel₀ hc, one_smul]
+      rw [this]
+      apply Submodule.smul_mem
+      apply Submodule.sum_mem
+      intro l _
+      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩)
+    | zero => simp
+    | add x y _ _ hx hy =>
+      rw [map_add]
+      exact Submodule.add_mem _ hx hy
+    | smul a x _ hx =>
+      rw [hψ]
+      exact Submodule.smul_mem _ _ hx
+  have hli : LinearIndependent ℂ v :=
+    linearIndependent_of_top_le_span_of_card_eq_finrank hspan (by simp)
+  set bs := Module.Basis.mk hli hspan with hbs
+  have hbv : ∀ l, ψ (D ℂ R (t l)) = bs l := by
+    intro l
+    rw [hbs, Module.Basis.mk_apply]
+  have h2 : ∀ l, (bs.equivFun.toLinearMap ∘ₗ ψ) (D ℂ R (t l)) = Pi.single l 1 := by
+    intro l
+    rw [LinearMap.comp_apply, LinearEquiv.coe_coe, hbv]
+    ext j
+    rw [Module.Basis.equivFun_self]
+    by_cases hlj : l = j
+    · subst hlj
+      simp
+    · simp [hlj, Pi.single_apply, Ne.symm hlj]
+  refine ⟨bs.equivFun.toLinearMap ∘ₗ ψ, ?_, h2, ?_, ?_⟩
+  · intro b ω
+    simp [hψ]
+  · intro ω hω
+    simpa using hω
+  · intro u c g hu hc hcu l
+    have h := key (bs.equivFun.toLinearMap ∘ₗ ψ) (by intro b ω; simp [hψ]) u c g hu hcu
+    simp only [h2] at h
+    have h3 := congrFun h l
+    simp [Finset.sum_apply, Pi.single_apply] at h3
+    rw [← h3]
+    rfl
+end
+
+section
+open GlobalTheory GlobalTheory.PD
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace UpperTheory
+
+end UpperTheory
+
+theorem UpperTheory.finite_fiber_of_finiteType_parameter_ring :
+    ∀ (F K : Type) [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K]
+      (d : ℕ) (x : Fin (d + 1) → F), IsPd ℂ x → Algebra.FiniteType ℂ (rB ℂ K x {0}) →
+      Finite (fib ℂ K x) := by
+  intro F K _ _ _ _ _ _ d x hx hft
+  classical
+  have hmem : ∀ c : rA ℂ x {0}, algebraMap F K (c : F) ∈ rB ℂ K x {0} := by
+    intro c
+    show algebraMap F K (c : F) ∈ (integralClosure (rA ℂ x {0}) K).restrictScalars ℂ
+    rw [Subalgebra.mem_restrictScalars, mem_integralClosure_iff]
+    exact isIntegral_algebraMap (x := c)
+  let ι : rA ℂ x {0} →ₐ[ℂ] rB ℂ K x {0} :=
+    ((IsScalarTower.toAlgHom ℂ F K).comp (rA ℂ x {0}).val).codRestrict _ hmem
+  have key : ∀ e1 e2 : fib ℂ K x, ∀ c : rA ℂ x {0}, e1.1 (ι c) = e2.1 (ι c) := by
+    intro e1 e2 c
+    obtain ⟨c, hc⟩ := c
+    induction hc using Algebra.adjoin_induction with
+    | mem y hy =>
+      obtain ⟨i, hi, j, rfl⟩ := hy
+      rw [Finset.mem_singleton] at hi
+      subst hi
+      rcases Fin.eq_zero_or_eq_succ j with rfl | ⟨j', rfl⟩
+      · have h3 : ∀ (e : fib ℂ K x) (h : x 0 / x 0 ∈ rA ℂ x {0}), e.1 (ι ⟨x 0 / x 0, h⟩) = 1 := by
+          intro e h
+          have h1 : (⟨x 0 / x 0, h⟩ : rA ℂ x {0}) = 1 := Subtype.ext (div_self (hx.ne 0))
+          rw [h1, map_one, map_one]
+        exact (h3 e1 _).trans (h3 e2 _).symm
+      · exact (e1.2 j').trans (e2.2 j').symm
+    | algebraMap r =>
+      show e1.1 (ι (algebraMap ℂ (rA ℂ x {0}) r)) = e2.1 (ι (algebraMap ℂ (rA ℂ x {0}) r))
+      simp only [AlgHom.commutes]
+    | add y z hy hz ihy ihz =>
+      show e1.1 (ι (⟨y, hy⟩ + ⟨z, hz⟩)) = e2.1 (ι (⟨y, hy⟩ + ⟨z, hz⟩))
+      simp only [map_add, ihy, ihz]
+    | mul y z hy hz ihy ihz =>
+      show e1.1 (ι (⟨y, hy⟩ * ⟨z, hz⟩)) = e2.1 (ι (⟨y, hy⟩ * ⟨z, hz⟩))
+      simp only [map_mul, ihy, ihz]
+  rcases isEmpty_or_nonempty (fib ℂ K x) with hE | hE
+  · infer_instance
+  obtain ⟨e0⟩ := hE
+  obtain ⟨s, hs⟩ := hft.out
+  let ψ : rA ℂ x {0} →+* ℂ := (e0.1.comp ι).toRingHom
+  have hint : ∀ b : rB ℂ K x {0}, IsIntegral (rA ℂ x {0}) (b : K) := fun b => b.2
+  let R : rB ℂ K x {0} → Finset ℂ := fun b => (((hint b).choose).map ψ).roots.toFinset
+  have hR : ∀ (e : fib ℂ K x) (b : rB ℂ K x {0}), e.1 b ∈ R b := by
+    intro e b
+    obtain ⟨hm, hp⟩ := (hint b).choose_spec
+    have h0 : Polynomial.eval₂ (ι : rA ℂ x {0} →+* rB ℂ K x {0}) b (hint b).choose = 0 := by
+      apply Subtype.ext
+      have := Polynomial.hom_eval₂ (hint b).choose (ι : rA ℂ x {0} →+* rB ℂ K x {0})
+        (rB ℂ K x {0}).val.toRingHom b
+      refine this.trans ?_
+      rw [Subalgebra.coe_zero]
+      exact hp
+    have h1 := Polynomial.hom_eval₂ (hint b).choose (ι : rA ℂ x {0} →+* rB ℂ K x {0}) e.1.toRingHom b
+    rw [h0, map_zero] at h1
+    have h2 : e.1.toRingHom.comp (ι : rA ℂ x {0} →+* rB ℂ K x {0}) = ψ :=
+      RingHom.ext fun c => key e e0 c
+    rw [h2] at h1
+    have hne : ((hint b).choose.map ψ) ≠ 0 := (hm.map ψ).ne_zero
+    rw [Multiset.mem_toFinset, Polynomial.mem_roots hne, Polynomial.IsRoot, Polynomial.eval_map]
+    exact h1.symm
+  let Φ : fib ℂ K x → ((t : s) → (R t : Set ℂ)) := fun e t => ⟨e.1 t, hR e t⟩
+  apply Finite.of_injective Φ
+  intro e1 e2 h
+  apply Subtype.ext
+  apply AlgHom.ext_of_adjoin_eq_top hs
+  intro t ht
+  have := congrFun h ⟨t, ht⟩
+  exact congrArg Subtype.val this
+end
+end
+
+section
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.HodgeCoh GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 KaehlerDifferential
 open scoped TensorProduct
 set_option autoImplicit false
@@ -321,3 +548,4 @@ theorem UpperTheory.etaleCorrespondence_local_parameters_statement :
   have h := q4 (u m) (Sec.res s' hWle c) (fun l => Sec.res s' hWle (q l)) (evu m) (by rw [hy0W, ec]; exact hc) hcq l
   rw [hy0W, hy0W, ec, eq, hval l] at h
   exact (mul_left_cancel₀ hc h).trans (congrFun (hA' m) l).symm
+end

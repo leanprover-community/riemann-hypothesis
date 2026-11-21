@@ -3,11 +3,100 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarP
 import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.ConstructionA
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DEqFinrankHHX
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FEqAndRdEq
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareInHH
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.RowsBij
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.RowsProj
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.RegUnitary
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.PhSchurConv
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.PhConvProj
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.PhProdConv
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AdIndexEq
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsFdegFdegOfLowest
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegrablePhLocOfIntegrablePh
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
+import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamily
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.VolumeRatioEqSignatureIndex
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CovolFormalDegreeEq
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.DstarVolPf
 
+section
+open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting
+
+namespace GlobalTheory.RowsCount
+
+open Formalism Formalism.L2 Formalism.L2.SG in
+
+theorem projRowsR : Formalism.L2.SG.ProjRows.ProjRowsR :=
+  Formalism.L2.SG.ProjRows.projRowsR_of schur_orthogonality_idempotent convolution_projection isConvIdempotent_pi
+    Formalism.L2.SG.Pf.regular_representation_unitary
+
+open Formalism Formalism.L2 Formalism.L2.SG in
+
+theorem unimodGf : Formalism.L2.SG.Pf.UnimodGf := fun I μf _ _ =>
+  (PI.WAU.adUnimod_of PI.WAU.kg_subgroup PI.WAU.maximal_compact_isCompact PI.WAU.compact_countable
+    PI.adelic_index_eq) I μf inferInstance
+
+theorem D_eq_finrank_HHX : ∀ (D : D7) (X : HidaSetting D),
+    Integrable X.ph (Formalism.L2.SG.ProjRows.muInf X.B.I) → X.B.D = Module.finrank ℂ (HHX X) := by
+  intro D X h
+  exact (Formalism.L2.SG.RowsDef.RowsAut.D_eq_finrank_HH (Formalism.L2.SG.Pf.rows_bijective projRowsR unimodGf) X.B _
+    (fun v => (X.ds v).2.2.1) (fun v => (X.ds v).2.2.2.1)
+    (GlobalTheory.LowestVectorDegree.isFdeg_fdegOf_lowest D X) (fun v => (X.low v).1)
+    (GlobalTheory.ProdFactor.integrable_phLoc_of_integrable_ph D X h) X.Rph X.Rph_spec).1
+
+end GlobalTheory.RowsCount
+end
+
+section
+open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting
+
+namespace GlobalTheory.DegreeRankEquations
+
+theorem f_eq (D : D7) (X : HidaSetting D) : X.B.I.f = D.R.f := by
+  have e1 : Module.finrank ℚ X.B.I.E = Module.finrank ℚ D.host.E :=
+    (X.ιE.toRatAlgEquiv).toLinearEquiv.finrank_eq
+  have e2 : Module.finrank ℚ X.B.I.F * Module.finrank X.B.I.F X.B.I.E = Module.finrank ℚ X.B.I.E :=
+    Module.finrank_mul_finrank ℚ X.B.I.F X.B.I.E
+  have e3 : Module.finrank X.B.I.F X.B.I.E = 2 := X.B.I.cm.deg2
+  have e4 : Module.finrank ℚ D.host.E = 2 * D.R.f := by
+    rw [D.host.finrank_cmField]
+    unfold Ranks.f Ranks.n
+    ring_nf
+  rw [e3] at e2
+  unfold AutInst.f
+  omega
+
+theorem rd_eq (D : D7) (X : HidaSetting D) : X.B.I.rd = D.host.rdE := by
+  have hd : discr X.B.I.E = discr D.host.E := NumberField.discr_eq_discr_of_algEquiv X.B.I.E X.ιE.toRatAlgEquiv
+  have e1 : Module.finrank ℚ X.B.I.E = Module.finrank ℚ D.host.E :=
+    (X.ιE.toRatAlgEquiv).toLinearEquiv.finrank_eq
+  have e2 : Module.finrank ℚ X.B.I.F * Module.finrank X.B.I.F X.B.I.E = Module.finrank ℚ X.B.I.E :=
+    Module.finrank_mul_finrank ℚ X.B.I.F X.B.I.E
+  have e3 : Module.finrank X.B.I.F X.B.I.E = 2 := X.B.I.cm.deg2
+  have e4 : (Module.finrank ℚ D.host.E : ℝ) = 2 * (X.B.I.f : ℝ) := by
+    unfold AutInst.f
+    have : Module.finrank ℚ D.host.E = 2 * Module.finrank ℚ X.B.I.F := by rw [← e1, ← e2, e3, mul_comm]
+    rw [this]; push_cast; ring
+  unfold AutInst.rd Host.rdE
+  rw [hd, e4]
+
+end GlobalTheory.DegreeRankEquations
+end
+
+section
+open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
+
+namespace GlobalTheory
+
+theorem covol_formalDegree_eq : ∀ (D : D7) (X : HidaSetting D), X.B.I = Formalism.L2.SG.InstExistsPf.instOf D →
+    Formalism.MainNotions.StandardLattice.VolTie D → cdScaleTie D → dsigTie D →
+    (∏ v, X.dv v) * X.B.I.vol X.B.μf X.B.fund / (X.B.μf X.B.I.Kset).toReal =
+      Formalism.MainNotions.StandardLattice.volY0 D * ∏ ρ, D.dsig ρ :=
+  fun _D X h hVol hcd hT => Formalism.L2.SG.Pf.DstarVolPf.dstarVol_holds X h hVol hcd hT
+
+end GlobalTheory
+end
+
+section
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas Formalism.L2.SG.PoincareInHH.PoincareSetting
 
 namespace GlobalTheory.BundleTie
@@ -91,3 +180,4 @@ theorem autTie : ∀ (D : D7) (X : HidaSetting D), Nonempty (D.s.HH ≃ₗᵢ[�
       Dstar_eq := hD.trans (dstarD_eq X hI hV) }
 
 end GlobalTheory.BundleTie
+end

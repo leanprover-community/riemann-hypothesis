@@ -3,7 +3,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareI
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.StandardFunctorsFiniteLength
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSqIntCoeffOfIsSquareIntegrable
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SummableProdPowMultiIndex
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleIrreducibleCentralScalar
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixCoefficientHeckeDecayStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CartanDecompositionCongruence
@@ -13,6 +12,37 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixCoefficie
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupBasisNhdsStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupAntitone
 
+section
+namespace GlobalTheory.CompanionTheory.Summability
+
+theorem summable_prod_pow_multiIndex : ∀ (r : ℕ) (x : Fin r → ℝ), (∀ i, 0 ≤ x i) → (∀ i, x i < 1) →
+    Summable (fun j : Fin r → ℕ => ∏ i, x i ^ j i) := by
+  intro r
+  induction r with
+  | zero =>
+    intro x _ _
+    exact (hasSum_fintype _).summable
+  | succ r ih =>
+    intro x h0 h1
+    let e : ℕ × (Fin r → ℕ) ≃ (Fin (r + 1) → ℕ) :=
+      { toFun := fun p => Fin.cons p.1 p.2
+        invFun := fun j => (j 0, Fin.tail j)
+        left_inv := fun p => by simp
+        right_inv := fun j => by simp }
+    rw [← e.summable_iff]
+    have hA : Summable (fun n : ℕ => x 0 ^ n) := summable_geometric_of_lt_one (h0 0) (h1 0)
+    have hB : Summable (fun j : Fin r → ℕ => ∏ i, x i.succ ^ j i) :=
+      ih (fun i => x i.succ) (fun i => h0 _) (fun i => h1 _)
+    have hM := hA.mul_of_nonneg hB (fun n => pow_nonneg (h0 0) n)
+      (fun j => Finset.prod_nonneg (fun i _ => pow_nonneg (h0 _) _))
+    refine hM.congr ?_
+    rintro ⟨n, j⟩
+    simp [e, Fin.prod_univ_succ]
+
+end GlobalTheory.CompanionTheory.Summability
+end
+
+section
 open Filter Topology MeasureTheory GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult ValuativeRel
 
 namespace GlobalTheory.CompanionTheory.SqIntHecke
@@ -146,3 +176,4 @@ theorem isSqIntCoeff_of_heckeSpectral : ∀ (k : Type) [Field k] [ValuativeRel k
     exact (h.mul_left (C p ^ 2)).congr fun g => (sq_mul_pow_eq _ _ g _ _).symm
 
 end GlobalTheory.CompanionTheory.SqIntHecke
+end

@@ -5,11 +5,256 @@ import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LoglogQuotNonneg
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConvergenceStatementHoldsStatement
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalDensityInclusionExclusion
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ZeroWeightRegularFamily
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularFamilyEventuallySmoothPsh
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.PshAddPshPotentialOnOpen
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExpandMInt
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedDensityNonnegOffNullSetStatement
 
+section
+section
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.Ar.Giv
+
+theorem levi_const_zero {D : ℕ} (y w : Fin D → ℂ) : levi (fun _ : Fin D → ℂ => (0 : ℝ)) y w = 0 := by
+  simp [levi]
+
+theorem zeroMember_isRegFamily : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) (Θ L : LocPot X) (s : X → X → ℂ) (C₅ C t₁ : ℝ), IsPotential A Θ → IsPosPot A Θ → (∀ y, logNormSec L s y ≤ 0) → 0 ≤ C₅ → 0 ≤ C → 0 < t₁ → t₁ ≤ Real.exp (-Real.exp 1) → IsSingWeight A L s (LocPot.ofFun 0) 0 C₅ ∧ IsRegFamily A Θ L s (LocPot.ofFun 0) 0 (fun _ => 0) C t₁ ∧ IsRegFamilyC2 A s 0 (fun _ => 0) := by
+  intro e X _ A Θ L s C₅ C t₁ hΘ hpos hL hC₅ hC ht₁ hte
+  have hr : ∀ y, Real.exp 1 ≤ rW L s y := fun y => by
+    have := hL y; unfold rW; linarith
+  have he1 : (1 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
+  have hlogr : ∀ y, 0 ≤ Real.log (rW L s y) := fun y => Real.log_nonneg (he1.trans (hr y))
+  have hε : ∀ t, 0 < t → t ≤ t₁ → 0 ≤ epsT C t := by
+    intro t ht htt
+    rw [epsT_eq_mul]
+    exact mul_nonneg hC (loglog_quot_nonneg ht (htt.trans hte))
+  have hll : ∀ t, 0 < t → t ≤ t₁ → 1 ≤ Real.log (Real.log (1 / t)) :=
+    fun t ht htt => (log_inv_bounds ht (htt.trans hte)).2
+  have h0 : A.Smooth (0 : X → ℝ) := fun j => contDiffOn_const
+  have ht1 : t₁ < 1 := by
+    exact hte.trans_lt (Real.exp_lt_one_iff.2 (neg_lt_zero.2 (Real.exp_pos 1)))
+  refine ⟨⟨isPotential_ofFun A 0 h0, fun j => contDiffOn_const, ?_, fun y _ => ⟨?_, hC₅⟩⟩,
+    ⟨ht₁, ht1, fun t ht htt => ?_⟩, fun j K _ _ => ⟨fun u hu => Eventually.of_forall fun _ _ _ => refl_mem_uniformity hu,
+      fun u hu => Eventually.of_forall fun _ _ _ => refl_mem_uniformity hu,
+      fun u hu => Eventually.of_forall fun _ _ _ => refl_mem_uniformity hu⟩⟩
+  · intro x j y _ w
+    show 0 ≤ levi (fun z => (0 : X → ℝ) ((A.chart j).symm z) + (0 : X → ℝ) ((A.chart j).symm z)) y w
+    simp only [Pi.zero_apply, add_zero]
+    rw [levi_const_zero]
+  · have := mul_nonneg hC₅ (hlogr y)
+    show -C₅ * Real.log (rW L s y) ≤ 0
+    linarith
+  · have hεt := hε t ht htt
+    have hr3 : 0 ≤ t ^ ((1 : ℝ) / 3) := Real.rpow_nonneg ht.le _
+    refine ⟨h0, fun _ => hC, fun _ _ => le_refl _, fun _ => ?_, ?_, fun _ _ _ => ?_, fun y _ => ?_,
+      fun t' htt' ht' _ => ?_⟩
+    · have := mul_nonneg hC (le_trans zero_le_one (hll t ht htt))
+      show -C * Real.log (Real.log (1 / t)) ≤ 0
+      linarith
+    · intro x j y hy w
+      obtain ⟨hyt, hyU⟩ := hy
+      have hU : (A.chart j).symm y ∈ (Set.univ ∩ Set.univ) ∩ Θ.U x := hyU
+      have hO2 : IsOpen ((A.chart j).target ∩ (A.chart j).symm ⁻¹' Θ.U x) :=
+        (A.chart j).continuousOn_symm.isOpen_inter_preimage (A.chart j).open_target (Θ.isOpen_U x)
+      have hΘ2 : ContDiffAt ℝ 2 (Θ.φ x ∘ (A.chart j).symm) y :=
+        ((hΘ.1 x j).contDiffAt (hO2.mem_nhds ⟨hyt, hU.2⟩)).of_le (by norm_cast)
+      have hΘl : 0 ≤ levi (Θ.φ x ∘ (A.chart j).symm) y w := by
+        by_cases hw : w = 0
+        · rw [hw, levi_zero]
+        · exact (hpos x j y ⟨hyt, hU.2⟩ w hw).le
+      have hfun : (LocPot.ofFun 0 + LocPot.ofFun 0 + Θ.rsmul (epsT C t)).φ x ∘ (A.chart j).symm =
+          fun z => (fun _ : Fin e → ℂ => (0 : ℝ)) z + epsT C t * (Θ.φ x ∘ (A.chart j).symm) z := by
+        funext z
+        show (0 : X → ℝ) _ + (0 : X → ℝ) _ + epsT C t * Θ.φ x _ = 0 + epsT C t * Θ.φ x _
+        simp
+      rw [hfun, levi_add_smul (epsT C t) contDiffAt_const hΘ2 w, levi_const_zero]
+      exact add_nonneg le_rfl (mul_nonneg hεt hΘl)
+    · show (0 : ℝ) ≤ 0 + t ^ ((1 : ℝ) / 3) + epsT C t
+      linarith
+    · have := mul_nonneg hεt (le_trans (Real.exp_pos 1).le (hr y))
+      show (0 : ℝ) ≤ 0 + t ^ ((1 : ℝ) / 3) + epsT C t * rW L s y
+      linarith
+    · have := mul_nonneg hC (hε t' (ht.trans_le htt') ht')
+      show (0 : ℝ) ≤ 0 + C * epsT C t'
+      linarith
+
+end GlobalTheory.CompanionTheory.Ar.Giv
+end
+
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.zero_weight_regular_family : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) (Θ L : LocPot X) (s : X → X → ℂ) (C₅ C t₁ : ℝ), IsPotential A Θ → IsPosPot A Θ → (∀ y, logNormSec L s y ≤ 0) → 0 ≤ C₅ → 0 ≤ C → 0 < t₁ → t₁ ≤ Real.exp (-Real.exp 1) → IsSingWeight A L s (LocPot.ofFun 0) 0 C₅ ∧ IsRegFamily A Θ L s (LocPot.ofFun 0) 0 (fun _ => 0) C t₁ ∧ IsRegFamilyC2 A s 0 (fun _ => 0) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.zeroMember_isRegFamily
+end
+
+section
+section
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.Ar.Giv.EvPsh
+
+theorem tendsto_epsT_zero (C : ℝ) :
+    Tendsto (fun t => epsT C t) (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (𝓝 0) := by
+  have hℓ : Tendsto (fun t : ℝ => Real.log (1 / t)) (nhdsWithin (0 : ℝ) (Set.Ioi 0)) atTop := by
+    have h := Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero
+    refine h.congr (fun t => ?_)
+    simp [one_div]
+  have hq : Tendsto (fun x : ℝ => Real.log x / x) atTop (𝓝 0) := by
+    have := Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
+    simpa using this
+  have h2 := (hq.comp hℓ).const_mul C
+  rw [mul_zero] at h2
+  refine h2.congr (fun t => ?_)
+  simp only [Function.comp_apply, epsT]
+  ring
+
+theorem isPsh_of_isPosPot {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X)
+    (Θ : LocPot X) (h : IsPosPot A Θ) : IsPsh A Θ := by
+  intro x j y hy w
+  by_cases hw : w = 0
+  · subst hw
+    simp [levi]
+  · exact (h x j y hy w hw).le
+
+theorem eventually_isPsh_add_pot {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X)
+    (Θ L : LocPot X) (s : X → X → ℂ) (th : LocPot X) (ph : X → ℝ) (phT : ℝ → X → ℝ)
+    (C t₀ : ℝ) (hΘ : IsPotential A Θ) (hΘp : IsPosPot A Θ) (hth : IsPotential A th)
+    (hF : IsRegFamily A Θ L s th ph phT C t₀) :
+    ∀ᶠ t in nhdsWithin (0 : ℝ) (Set.Ioi 0),
+      A.Smooth (phT t) ∧ IsPsh A (th + LocPot.ofFun (phT t) + Θ) := by
+  obtain ⟨ht₀, -, hF⟩ := hF
+  have hε : ∀ᶠ t in nhdsWithin (0 : ℝ) (Set.Ioi 0), epsT C t < 1 :=
+    (tendsto_epsT_zero C).eventually (gt_mem_nhds one_pos)
+  have hsmall : ∀ᶠ t in nhdsWithin (0 : ℝ) (Set.Ioi 0), t ∈ Set.Ioo 0 t₀ :=
+    Ioo_mem_nhdsGT ht₀
+  filter_upwards [hε, hsmall] with t hεt ht
+  obtain ⟨h1, -, -, -, h5, -⟩ := hF t ht.1 ht.2.le
+  refine ⟨h1, ?_⟩
+  have h := GlobalTheory.CompanionTheory.Ar.Giv.isPsh_rsmul_mono A Θ th (phT t) hΘ (isPsh_of_isPosPot A Θ hΘp) hth h1 hεt.le h5
+  have e1 : Θ.rsmul 1 = Θ := by
+    cases Θ
+    simp [LocPot.rsmul]
+  rwa [e1] at h
+
+end GlobalTheory.CompanionTheory.Ar.Giv.EvPsh
+end
+
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.regular_family_eventually_smooth_psh : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) (Θ L : LocPot X) (s : X → X → ℂ) (th : LocPot X) (ph : X → ℝ) (phT : ℝ → X → ℝ) (C t₀ : ℝ), IsPotential A Θ → IsPosPot A Θ → IsPotential A th → IsRegFamily A Θ L s th ph phT C t₀ → ∀ᶠ t in nhdsWithin (0 : ℝ) (Set.Ioi 0), A.Smooth (phT t) ∧ IsPsh A (th + LocPot.ofFun (phT t) + Θ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Giv.EvPsh.eventually_isPsh_add_pot
+end
+
+section
+section
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.Ar.PshAdd
+
+open ReciprocityTheory.AnForm.M.LocPot
+
+theorem isPshOn_add_psh {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) (U : Set X)
+    (P : LocPot X) (f : X → ℝ) (Θ : LocPot X) (hU : IsOpen U) (hP : IsPotential A P)
+    (hΘ : IsPotential A Θ) (hf : A.SmoothOn U f) (hPf : IsPshOn A U (P + LocPot.ofFun f))
+    (hΘp : IsPsh A Θ) : IsPshOn A U (P + LocPot.ofFun f + Θ) := by
+  intro x j y hy w
+  obtain ⟨hyt, ⟨⟨hyP, -⟩, hyΘ⟩, hyU⟩ := hy
+  have hP2 : ContDiffAt ℝ 2 (P.φ x ∘ (A.chart j).symm) y := by
+    have hmem : (A.chart j).target ∩ (A.chart j).symm ⁻¹' P.U x ∈ 𝓝 y :=
+      ((A.chart j).isOpen_inter_preimage_symm (P.isOpen_U x)).mem_nhds ⟨hyt, hyP⟩
+    exact ((hP.1 x j).contDiffAt hmem).of_le (by norm_cast)
+  have hf2 : ContDiffAt ℝ 2 (f ∘ (A.chart j).symm) y := by
+    have hmem : (A.chart j).target ∩ (A.chart j).symm ⁻¹' U ∈ 𝓝 y :=
+      ((A.chart j).isOpen_inter_preimage_symm hU).mem_nhds ⟨hyt, hyU⟩
+    exact ((hf j).contDiffAt hmem).of_le (by norm_cast)
+  have hΘ2 : ContDiffAt ℝ 2 (Θ.φ x ∘ (A.chart j).symm) y := by
+    have hmem : (A.chart j).target ∩ (A.chart j).symm ⁻¹' Θ.U x ∈ 𝓝 y :=
+      ((A.chart j).isOpen_inter_preimage_symm (Θ.isOpen_U x)).mem_nhds ⟨hyt, hyΘ⟩
+    exact ((hΘ.1 x j).contDiffAt hmem).of_le (by norm_cast)
+  have hPf2 : ContDiffAt ℝ 2 (fun z => P.φ x ((A.chart j).symm z) + f ((A.chart j).symm z)) y :=
+    hP2.add hf2
+  have h1 := hPf x j y ⟨hyt, ⟨hyP, Set.mem_univ _⟩, hyU⟩ w
+  have h2 := hΘp x j y ⟨hyt, hyΘ⟩ w
+  have hsum := ReciprocityTheory.AnForm.levi_add_smul (f := fun z => P.φ x ((A.chart j).symm z) + f ((A.chart j).symm z))
+    (g := Θ.φ x ∘ (A.chart j).symm) 1 hPf2 hΘ2 w
+  have heq : ((P + LocPot.ofFun f + Θ).φ x ∘ (A.chart j).symm) =
+      fun z => (P.φ x ((A.chart j).symm z) + f ((A.chart j).symm z)) +
+        1 * (Θ.φ x ∘ (A.chart j).symm) z := by
+    funext z; simp [Function.comp, HAdd.hAdd, Add.add, LocPot.ofFun]
+  rw [heq, hsum, one_mul]
+  exact add_nonneg h1 h2
+
+end GlobalTheory.CompanionTheory.Ar.PshAdd
+end
+
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.psh_add_psh_potential_on_open : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) (U : Set X) (P : LocPot X) (f : X → ℝ) (Θ : LocPot X), IsOpen U → IsPotential A P → IsPotential A Θ → A.SmoothOn U f → IsPshOn A U (P + LocPot.ofFun f) → IsPsh A Θ → IsPshOn A U (P + LocPot.ofFun f + Θ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PshAdd.isPshOn_add_psh
+end
+
+section
+section
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+
+namespace GlobalTheory.CompanionTheory.Metric.ExpandMInt
+
+theorem expand_mInt : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X] [T2Space X] (A : FinHolAtlas e X) (U : Set X) (P : Fin e → LocPot X) (f : Fin e → X → ℝ) (Θ : LocPot X) (g : X → ℝ), IsOpen U → (∀ j, volume ((A.chart j).target ∩ (A.chart j).symm ⁻¹' Uᶜ) = 0) → (∀ i, IsPotential A (P i)) → IsPotential A Θ → (∀ i, A.SmoothOn U (f i)) → (∀ T : Finset (Fin e), MIntegrable A (fun i => (if i ∈ T then P i else LocPot.ofFun 0) + LocPot.ofFun (if i ∈ T then f i else 0) + Θ) g) → MIntegrable A (fun i => P i + LocPot.ofFun (f i)) g ∧ mInt A (fun i => P i + LocPot.ofFun (f i)) g = ∑ T : Finset (Fin e), (-1 : ℝ) ^ (e - T.card) * mInt A (fun i => (if i ∈ T then P i else LocPot.ofFun 0) + LocPot.ofFun (if i ∈ T then f i else 0) + Θ) g := by
+  intro e X _ _ _ A U P f Θ g hU hnull hP hΘ hf hT
+
+  have hae : ∀ j, ∀ᵐ y ∂(volume : Measure (Fin e → ℂ)), y ∈ (A.chart j).target →
+      locDens A (fun i => P i + LocPot.ofFun (f i)) j y =
+        ∑ T : Finset (Fin e), (-1 : ℝ) ^ (e - T.card) *
+          locDens A (fun i => (if i ∈ T then P i else LocPot.ofFun 0) +
+            LocPot.ofFun (if i ∈ T then f i else 0) + Θ) j y := by
+    intro j
+    rw [ae_iff]
+    refine measure_mono_null (fun y hy => ?_) (hnull j)
+    simp only [Set.mem_ofPred_eq, Classical.not_imp] at hy
+    refine ⟨hy.1, fun hyU => hy.2 ?_⟩
+    exact GlobalTheory.T.local_density_inclusion_exclusion A U P f Θ hU hP hΘ hf j y ⟨hy.1, hyU⟩
+  refine ⟨?_, ?_⟩
+  · intro j K hK hKc
+    have hsum : IntegrableOn (fun y => ∑ T : Finset (Fin e), (-1 : ℝ) ^ (e - T.card) *
+        (g ((A.chart j).symm y) * locDens A (fun i => (if i ∈ T then P i else LocPot.ofFun 0) +
+            LocPot.ofFun (if i ∈ T then f i else 0) + Θ) j y)) K :=
+      integrable_finsetSum _ fun T _ => (hT T j K hK hKc).const_mul _
+    refine hsum.congr_fun_ae ?_
+    filter_upwards [ae_restrict_of_ae (hae j), ae_restrict_mem hKc.measurableSet] with y hy hyK
+    rw [hy (hK hyK), Finset.mul_sum]
+    refine Finset.sum_congr rfl fun T _ => ?_
+    ring
+  · unfold mInt
+    split_ifs with h
+    · unfold integralWith
+      simp_rw [Finset.mul_sum]
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      simp_rw [← integral_const_mul]
+      rw [← integral_finsetSum _ fun T _ => (integrableOn_weight A h.some _ g (hT T) j).const_mul _]
+      refine setIntegral_congr_ae (A.chart j).open_target.measurableSet ?_
+      filter_upwards [hae j] with y hy hyt
+      rw [hy hyt, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun T _ => ?_
+      ring
+    · simp
+
+end GlobalTheory.CompanionTheory.Metric.ExpandMInt
+end
+
+open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mixed_integral_inclusion_exclusion_alt : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X] [T2Space X] (A : FinHolAtlas e X) (U : Set X) (P : Fin e → LocPot X) (f : Fin e → X → ℝ) (Θ : LocPot X) (g : X → ℝ), IsOpen U → (∀ j, volume ((A.chart j).target ∩ (A.chart j).symm ⁻¹' Uᶜ) = 0) → (∀ i, IsPotential A (P i)) → IsPotential A Θ → (∀ i, A.SmoothOn U (f i)) → (∀ T : Finset (Fin e), MIntegrable A (fun i => (if i ∈ T then P i else LocPot.ofFun 0) + LocPot.ofFun (if i ∈ T then f i else 0) + Θ) g) → MIntegrable A (fun i => P i + LocPot.ofFun (f i)) g ∧ mInt A (fun i => P i + LocPot.ofFun (f i)) g = ∑ T : Finset (Fin e), (-1 : ℝ) ^ (e - T.card) * mInt A (fun i => (if i ∈ T then P i else LocPot.ofFun 0) + LocPot.ofFun (if i ∈ T then f i else 0) + Θ) g := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Metric.ExpandMInt.expand_mInt
+end
+
+section
 open MeasureTheory Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
 open scoped ContDiff
 
@@ -168,3 +413,4 @@ theorem convergenceSigned : ConvergenceSignedStatement := by
   rw [(hmt T).2]
 
 end GlobalTheory.CompanionTheory.Ar.Giv.SignedConv
+end

@@ -2,14 +2,163 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SchurDir
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsRapidInf
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdelicUnitriangularMulMemUnipotentTimesIntegral
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LintegralThetaSeriesUnfoldMirabolicStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnfoldMirabolicStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LintegralThetaSeriesUnfoldMirabolic
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnfoldMirabolic
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspFormRapidKernelSmoothSpanSmoothCuspidalBound
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivariantProj
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsStandardAdelicAddCharGlobalAdelicChar
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IteratedColumnTransformEqGlobalWhittakerStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspidalBlockAverageLastColumnEqZero
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnipotentBlockColumnIndex
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPsiLocNeOne
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IteratedColumnTransformEqGlobalWhittaker
+import BuildAid.ForwardExisting
 
+section
+open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.MirTower
+open scoped ENNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lintegral_theta_series_unfold_mirabolic : ∀ (E : Type) [Field E] [NumberField E] (a : ℕ) (ha : 0 < a) (μ : Measure (GA E a)) [μ.IsHaarMeasure] (𝓕 𝓕P : Set (GA E a)), IsFundamentalDomain (ratGL E a).range 𝓕 μ → IsFundamentalDomain (ratMirU E a (a - 1)) 𝓕P μ → ∀ F : GA E a → (Fin a → Ad E) → ℝ≥0∞, (∀ v : Fin a → E, Measurable fun g : GA E a => F g (Matrix.vecMul (fun i => algebraMap E (Ad E) (v i)) g.val)) → (∀ (γ : GL (Fin a) E) g y, F (ratGL E a γ * g) y = F g y) → ∫⁻ g in 𝓕, ∑' ξ : {v : Fin a → E // v ≠ 0}, F g (Matrix.vecMul (fun i => algebraMap E (Ad E) (ξ.1 i)) g.val) ∂μ = ∫⁻ g in 𝓕P, F g (g.val ⟨a - 1, Nat.sub_lt ha Nat.one_pos⟩) ∂μ := by
+  first | exact @GlobalTheory.ThetaUnfold.lintegral_theta_unfold | exact GlobalTheory.ThetaUnfold.lintegral_theta_unfold | (intros; apply GlobalTheory.ThetaUnfold.lintegral_theta_unfold <;> assumption)
+end
+
+section
+open NumberField MeasureTheory Matrix GlobalTheory.CuspRep GlobalTheory.CuspGeneric GlobalTheory.MirTower
+open scoped ENNReal NNReal ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unfold_mirabolic_alt : ∀ (E : Type) [Field E] [NumberField E] (a : ℕ) [MeasurableSpace (GA E a)] [BorelSpace (GA E a)] (μ : Measure (GA E a)) [μ.IsHaarMeasure] (ψ : AddChar (Ad E) ℂ), StdPsi ψ → ∀ (𝓕 𝓕₀ : Set (GA E a)), IsFundamentalDomain (ratMirU E a (a - 1)) 𝓕 μ → IsFundamentalDomain (ratMirU E a 0) 𝓕₀ μ → ∀ (w : GA E a → ℝ≥0), Measurable w → (∀ γ ∈ mirU E a (a - 1), ∀ g, w (ratGL E a γ * g) = w g) → (∀ (k : ℕ) (y : UnipotentBlockColumnIndex a k k → Ad E) (g : GA E a), w (blkU y * g) = w g) → (∀ f, Good ψ (a - 1) f → ∫⁻ g in 𝓕, ‖f g‖ₑ ^ 2 * w g ∂μ = ∫⁻ g in 𝓕₀, ‖whit ψ (a - 1) f g‖ₑ ^ 2 * w g ∂μ) ∧ ∀ f f', Good ψ (a - 1) f → Good ψ (a - 1) f' → ∫⁻ g in 𝓕, ‖f g‖ₑ ^ 2 * w g ∂μ ≠ ⊤ → ∫⁻ g in 𝓕, ‖f' g‖ₑ ^ 2 * w g ∂μ ≠ ⊤ → IntegrableOn (fun g => f g * conj (f' g) * (w g : ℝ)) 𝓕 μ ∧ IntegrableOn (fun g => whit ψ (a - 1) f g * conj (whit ψ (a - 1) f' g) * (w g : ℝ)) 𝓕₀ μ ∧ ∫ g in 𝓕, f g * conj (f' g) * (w g : ℝ) ∂μ = ∫ g in 𝓕₀, whit ψ (a - 1) f g * conj (whit ψ (a - 1) f' g) * (w g : ℝ) ∂μ := by
+  first | exact @GlobalTheory.MirTower.unfold_mirabolic | exact GlobalTheory.MirTower.unfold_mirabolic | (intros; apply GlobalTheory.MirTower.unfold_mirabolic <;> assumption)
+end
+
+section
+section
+open NumberField Matrix GlobalTheory.CuspRep
+
+namespace GlobalTheory.StdCharStd
+
+theorem stdPsi_adelicChar : ∀ (E : Type) [Field E] [NumberField E],
+    GlobalTheory.CuspGeneric.StdPsi (Circle.coeHom.compAddChar (GroundTheory.Global.adelicChar E)) :=
+  fun E _ _ => GlobalTheory.StdCharConductor.stdPsi_psi E
+
+end GlobalTheory.StdCharStd
+end
+
+open NumberField Matrix GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isStandardAdelicAddChar_global_adelicChar : ∀ (E : Type) [Field E] [NumberField E], GlobalTheory.CuspGeneric.StdPsi (Circle.coeHom.compAddChar (GroundTheory.Global.adelicChar E)) := by
+  atlas_forward_decl GlobalTheory.StdCharStd.stdPsi_adelicChar
+end
+
+section
+open NumberField Matrix GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.iteratedColumnTransform_eq_globalWhittaker : ∀ (E : Type) [Field E] [NumberField E] (a : ℕ) (F : GA E a → ℂ), 0 < a → Continuous F → (∀ (γ : GL (Fin a) E) (g : GA E a), F (ratGL E a γ * g) = F g) → GlobalTheory.CuspGeneric.whit (Circle.coeHom.compAddChar (GroundTheory.Global.adelicChar E)) (a - 1) F = GlobalTheory.JSW.whit F := by
+  first | exact @GlobalTheory.CuspGeneric.WhitEq.whit_eq_whittaker | exact GlobalTheory.CuspGeneric.WhitEq.whit_eq_whittaker | (intros; apply GlobalTheory.CuspGeneric.WhitEq.whit_eq_whittaker <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open NumberField Matrix GlobalTheory.CuspRep MeasureTheory
+
+namespace GlobalTheory.CuspGeneric
+
+def cuspBlockIndexEquivLastColumnIndex (a r : ℕ) : BlockIx a r ≃ UnipotentBlockColumnIndex a r (a - 1) where
+  toFun p := ⟨p.1, p.2.1, p.2.2, by have := p.1.2.isLt; omega⟩
+  invFun q := ⟨q.1, q.2.1, q.2.2.1⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+theorem posM_apply_of_blkIx {R : Type} [CommRing R] {a r m : ℕ} (x : UnipotentBlockColumnIndex a r m → R) (i j : Fin a) :
+    posM Subtype.val x i j = if h : (i : ℕ) < r ∧ r ≤ (j : ℕ) ∧ (j : ℕ) ≤ m then x ⟨(i, j), h⟩ else 0 := by
+  classical
+  simp only [posM, Matrix.sum_apply]
+  split_ifs with h
+  · rw [Finset.sum_eq_single ⟨(i, j), h⟩]
+    · simp [Matrix.single_apply]
+    · intro t _ ht
+      rw [Matrix.single_apply, if_neg]
+      rintro ⟨h1, h2⟩
+      exact ht (Subtype.ext (Prod.ext h1 h2))
+    · simp
+  · refine Finset.sum_eq_zero fun t _ => ?_
+    rw [Matrix.single_apply, if_neg]
+    rintro ⟨h1, h2⟩
+    have := t.2
+    rw [h1, h2] at this
+    exact h this
+
+theorem blkU_eq_unip {R : Type} [CommRing R] {a r : ℕ} (x : UnipotentBlockColumnIndex a r (a - 1) → R) :
+    (blkU x : GL (Fin a) R) = unip (fun p => x (cuspBlockIndexEquivLastColumnIndex a r p)) := by
+  apply Units.ext
+  ext i j
+  change (1 + posM Subtype.val x : Matrix (Fin a) (Fin a) R) i j = (1 + nilM _ : Matrix (Fin a) (Fin a) R) i j
+  rw [Matrix.add_apply, Matrix.add_apply, posM_apply_of_blkIx]
+  simp only [nilM, Matrix.of_apply]
+  congr 1
+  have hj := j.2
+  by_cases h : (i : ℕ) < r ∧ r ≤ (j : ℕ)
+  · rw [dif_pos h, dif_pos ⟨h.1, h.2, by omega⟩]
+    rfl
+  · rw [dif_neg h, dif_neg (fun h' => h ⟨h'.1, h'.2.1⟩)]
+
+theorem avg_blk_last_eq_zero : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (F : GA E a → ℂ),
+    Continuous F → (∀ (γ : GL (Fin a) E) (g : GA E a), F (ratGL E a γ * g) = F g) → GlobalTheory.CuspRep.IsCuspidal F →
+    ∀ r : ℕ, 0 < r → r ≤ a - 1 → ∀ g : GA E a,
+      GlobalTheory.CuspGeneric.avg (GlobalTheory.CuspGeneric.ratV E (GlobalTheory.CuspGeneric.UnipotentBlockColumnIndex a r (a - 1)))
+        (fun x => F ((GlobalTheory.CuspGeneric.blkU x : GA E a) * g)) = 0 := by
+  intro E _ _ _ a F _ _ hF r hr0 hr g
+  have hra : r < a := by omega
+  letI : MeasurableSpace (UnipotentBlockColumnIndex a r (a - 1) → Ad E) := borel _
+  haveI : BorelSpace (UnipotentBlockColumnIndex a r (a - 1) → Ad E) := ⟨rfl⟩
+  letI : MeasurableSpace (BlockIx a r → Ad E) := borel _
+  haveI : BorelSpace (BlockIx a r → Ad E) := ⟨rfl⟩
+  simp only [avg]
+  split_ifs with h
+  swap
+  · rfl
+  obtain ⟨hμ, h𝓕, -⟩ := h.choose_spec
+  set μ := h.choose.1
+  set 𝓕 := h.choose.2
+  let e := cuspBlockIndexEquivLastColumnIndex a r
+  let β : (UnipotentBlockColumnIndex a r (a - 1) → Ad E) ≃ₜ+ (BlockIx a r → Ad E) :=
+    { toFun := fun x p => x (e p)
+      invFun := fun y q => y (e.symm q)
+      left_inv := fun x => funext fun q => congrArg x (e.apply_symm_apply q)
+      right_inv := fun y => funext fun p => congrArg y (e.symm_apply_apply p)
+      map_add' := fun _ _ => rfl
+      continuous_toFun := continuous_pi fun p => continuous_apply (e p)
+      continuous_invFun := continuous_pi fun q => continuous_apply (e.symm q) }
+  let q : ratN E a r ≃ ratV E (UnipotentBlockColumnIndex a r (a - 1)) :=
+    { toFun := fun y => ⟨β.symm y, by
+        obtain ⟨c, hc⟩ := y.2
+        exact ⟨fun t => c (e.symm t), by rw [← hc]; rfl⟩⟩
+      invFun := fun x => ⟨β x, by
+        obtain ⟨c, hc⟩ := x.2
+        exact ⟨fun p => c (e p), by rw [← hc]; rfl⟩⟩
+      left_inv := fun y => Subtype.ext (β.apply_symm_apply y)
+      right_inv := fun x => Subtype.ext (β.symm_apply_apply x) }
+  let m := β.toHomeomorph.toMeasurableEquiv
+  have h2 := hF r hr0 hra (μ.map m) (m '' 𝓕) (β.isAddHaarMeasure_map μ)
+    (h𝓕.image_of_equiv m.toEquiv (MeasurePreserving.symm m ⟨m.measurable, rfl⟩).quasiMeasurePreserving q fun y x => by
+      change β (β.symm y + x) = y + β x
+      rw [map_add, β.apply_symm_apply]) g
+  rw [m.measurableEmbedding.setIntegral_map, m.injective.preimage_image] at h2
+  rw [← h2]
+  congr 1
+  funext x
+  rw [blkU_eq_unip]
+  rfl
+
+end GlobalTheory.CuspGeneric
+end
+end
+
+open NumberField Matrix GlobalTheory.CuspRep
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cuspidal_blockAverage_lastColumn_eq_zero : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (F : GA E a → ℂ), Continuous F → (∀ (γ : GL (Fin a) E) (g : GA E a), F (ratGL E a γ * g) = F g) → GlobalTheory.CuspRep.IsCuspidal F → ∀ r : ℕ, 0 < r → r ≤ a - 1 → ∀ g : GA E a, GlobalTheory.CuspGeneric.avg (GlobalTheory.CuspGeneric.ratV E (GlobalTheory.CuspGeneric.UnipotentBlockColumnIndex a r (a - 1))) (fun x => F ((GlobalTheory.CuspGeneric.blkU x : GA E a) * g)) = 0 := by
+  atlas_forward_decl GlobalTheory.CuspGeneric.avg_blk_last_eq_zero
+end
+
+section
 open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.CuspRep GlobalTheory.JSW GroundTheory.Global.IdeleGroup Formalism.L2.Host
 open scoped ENNReal nonZeroDivisors NNReal
 
@@ -270,3 +419,5 @@ theorem GlobalTheory.RSUnfold.lintegral_theta_eq_whit : ∀ (E : Type) [Field E]
       GlobalTheory.T.iteratedColumnTransform_eq_globalWhittaker E a F ha hB.cont hB.left]
     rfl
   rw [hA]
+end
+end

@@ -1,7 +1,15 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.L2Cusps.DenseHolds
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.L2Cusps.AbsCompactAlt
+import GroundTheory.AutomorphicForms.L2LocalComponents
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.L2Cusps.CmpForm
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.IsCuspidalOfConstantTermEqZero
 
+section
+theorem UpperTheory.V.KernelIndexFullLattice.dense_holds :
+    UpperTheory.V.KernelIndexFullLattice.Dense :=
+  fun _ _ _ _ μ₁ _ => GroundTheory.Automorphic.CuspidalSpectrum.topologicalClosure_map_centralCuspForms μ₁
+end
+
+section
 open MeasureTheory GlobalTheory.AutomorphicL2Unitary GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.UnitaryBC GlobalTheory.DiscSpec
 open GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum
 
@@ -20,3 +28,4 @@ theorem UpperTheory.V.KernelIndexFullLattice.rangeLe_holds :
     UpperTheory.isCuspidal_of_constantTerm_eq_zero E a φ.1 hl hc φ.2.2⟩, UpperTheory.V.KernelIndexFullLattice.cmpForm_holds E a μ μ₁ hp φ hφ⟩
   rw [splitCentre_comm, UpperTheory.V.KernelIndexFullLattice.splitEq_holds]
   exact apply_mul_centralSection_of_mem hφ _ _
+end

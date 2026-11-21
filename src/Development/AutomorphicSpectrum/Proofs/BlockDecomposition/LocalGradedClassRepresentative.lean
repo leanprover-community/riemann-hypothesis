@@ -1,8 +1,30 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ConeSectionRestriction.LocDefs
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RepUnique
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalGradedVanishingStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PolynomialTransferStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalGradedVanishing
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PolynomialTransfer
+
+section
+set_option backward.isDefEq.respectTransparency false
+set_option autoImplicit false
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
+open GlobalTheory.CatH (face toLast)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_graded_vanishing : KH.LocGr := by
+  first | exact @GlobalTheory.CompanionTheory.LocGrStep.loc_gr | exact GlobalTheory.CompanionTheory.LocGrStep.loc_gr | (intros; apply GlobalTheory.CompanionTheory.LocGrStep.loc_gr <;> assumption)
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+set_option autoImplicit false
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
+open GlobalTheory.CatH (face toLast)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polynomial_transfer : KH.PolyTf := by
+  first | exact @GlobalTheory.CompanionTheory.PolyTfCon.polyTf | exact GlobalTheory.CompanionTheory.PolyTfCon.polyTf | (intros; apply GlobalTheory.CompanionTheory.PolyTfCon.polyTf <;> assumption)
+end
+
+section
 set_option backward.isDefEq.respectTransparency false
 set_option autoImplicit false
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
@@ -36,3 +58,4 @@ theorem loc_coef : ∀ {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X
     simpa using h2
 
 end GlobalTheory.CompanionTheory.ConeLocal
+end

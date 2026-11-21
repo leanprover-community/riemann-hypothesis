@@ -1,10 +1,554 @@
 import Mathlib
-import Formalism.SharpRestriction.LevelLetterCocycles.XDvdLevCQ
-import Formalism.SharpRestriction.LevelLetterCocycles.ConvEqSum
-import Formalism.SharpRestriction.LevelLetterCocycles.EqZeroOfMemSum
+import Formalism.SharpRestriction.LevelLetterCocycles.LatticeBoundsOfThreeParts
+import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVNonneg
 import Formalism.SharpRestriction.LevelLetterCocycles.CardBasisEq
 import Formalism.SharpRestriction.LevelLetterCocycles.UniformizerMemDeltaInvariants
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.Ring
+
+open Polynomial
+
+variable {K : Type} [Field K]
+
+theorem eq_X_mul_unit (s : PowerSeries K) (h0 : PowerSeries.constantCoeff s = 0)
+    (h1 : PowerSeries.coeff 1 s ≠ 0) : ∃ u : PowerSeries K, IsUnit u ∧ s = PowerSeries.X * u := by
+  obtain ⟨u, hu⟩ := PowerSeries.X_dvd_iff.mpr h0
+  refine ⟨u, ?_, hu⟩
+  have hc : PowerSeries.coeff 1 s = PowerSeries.constantCoeff u := by
+    rw [hu]
+    first
+    | simp [PowerSeries.coeff_succ_X_mul]
+    | exact PowerSeries.coeff_succ_X_mul 0 u
+  rw [PowerSeries.isUnit_iff_constantCoeff]
+  rw [hc] at h1
+  exact isUnit_iff_ne_zero.mpr h1
+
+private theorem algebraMap_powerSeries_self_eq_C {R : Type} [CommRing R] (a : R) :
+    algebraMap R (PowerSeries R) a = PowerSeries.C a := by
+  first
+  | rfl
+  | (rw [Algebra.algebraMap_eq_smul_one, PowerSeries.smul_eq_C_mul, mul_one])
+  | simp [PowerSeries.algebraMap_apply']
+
+private theorem constantCoeff_aeval_eq_eval_constantCoeff (y : PowerSeries K) (r : K[X]) :
+    PowerSeries.constantCoeff (Polynomial.aeval y r) = r.eval (PowerSeries.constantCoeff y) := by
+  refine Polynomial.induction_on' r (fun p q hp hq => ?_) (fun n a => ?_)
+  · rw [map_add, map_add, hp, hq, Polynomial.eval_add]
+  · rw [Polynomial.aeval_monomial, map_mul, map_pow, algebraMap_powerSeries_self_eq_C, PowerSeries.constantCoeff_C,
+      Polynomial.eval_monomial]
+
+theorem pow_dvd_of_order (r : K[X]) (c : K) (s : PowerSeries K)
+    (h0 : PowerSeries.constantCoeff s = 0) (h1 : PowerSeries.coeff 1 s ≠ 0) (b : ℕ)
+    (hb : (PowerSeries.X : PowerSeries K) ^ b ∣ Polynomial.aeval (PowerSeries.C c + s) r) :
+    (Polynomial.X - Polynomial.C c) ^ b ∣ r := by
+  obtain ⟨u, hu, hsu⟩ := eq_X_mul_unit s h0 h1
+  have hsub : Polynomial.aeval (PowerSeries.C c + s) (Polynomial.X - Polynomial.C c) = s := by
+    rw [map_sub, Polynomial.aeval_X, Polynomial.aeval_C, algebraMap_powerSeries_self_eq_C, add_sub_cancel_left]
+  induction b generalizing r with
+  | zero => simp
+  | succ b ih =>
+    have hX : (PowerSeries.X : PowerSeries K) ∣ Polynomial.aeval (PowerSeries.C c + s) r :=
+      (dvd_pow_self _ (Nat.succ_ne_zero b)).trans hb
+    have hroot : r.IsRoot c := by
+      rw [PowerSeries.X_dvd_iff, constantCoeff_aeval_eq_eval_constantCoeff, map_add, PowerSeries.constantCoeff_C, h0,
+        add_zero] at hX
+      exact hX
+    obtain ⟨q, rfl⟩ := Polynomial.dvd_iff_isRoot.mpr hroot
+    rw [map_mul, hsub] at hb
+    have hb' : (PowerSeries.X : PowerSeries K) * PowerSeries.X ^ b ∣
+        PowerSeries.X * (u * Polynomial.aeval (PowerSeries.C c + s) q) := by
+      rw [← mul_assoc, ← hsu, ← pow_succ']
+      exact hb
+    have hq : (PowerSeries.X : PowerSeries K) ^ b ∣ Polynomial.aeval (PowerSeries.C c + s) q :=
+      hu.dvd_mul_left.mp ((mul_dvd_mul_iff_left PowerSeries.X_ne_zero).mp hb')
+    rw [pow_succ']
+    exact mul_dvd_mul_left _ (ih q hq)
+
+theorem eq_zero_of_pow_dvd (r : K[X]) (cs : Finset K) (b : ℕ)
+    (h : ∀ c ∈ cs, (Polynomial.X - Polynomial.C c) ^ b ∣ r) (hdeg : r.natDegree < cs.card * b) : r = 0 := by
+  by_contra hr
+  have hprod : (∏ c ∈ cs, (Polynomial.X - Polynomial.C c) ^ b) ∣ r := by
+    refine Finset.prod_dvd_of_coprime ?_ h
+    intro x _ y _ hxy
+    exact (Polynomial.isCoprime_X_sub_C_of_isUnit_sub (sub_ne_zero.mpr hxy).isUnit).pow
+  have hdeg' : (∏ c ∈ cs, (Polynomial.X - Polynomial.C c) ^ b).natDegree = cs.card * b := by
+    rw [Polynomial.natDegree_prod _ _ (fun c _ => pow_ne_zero _ (Polynomial.X_sub_C_ne_zero c))]
+    simp [Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_comm]
+  have := Polynomial.natDegree_le_of_dvd hprod hr
+  omega
+
+theorem algHom_coe {O A : Type} [CommRing O] [CommRing A] [Algebra O A]
+    (φ : PowerSeries O →ₐ[O] A) (r : O[X]) :
+    φ (r : PowerSeries O) = Polynomial.aeval (φ PowerSeries.X) r := by
+  refine Polynomial.induction_on r (fun a => ?_) (fun p q hp hq => ?_) (fun n a _ => ?_)
+  · rw [Polynomial.coe_C, Polynomial.aeval_C, ← algebraMap_powerSeries_self_eq_C, φ.commutes]
+  · rw [Polynomial.coe_add, map_add, map_add, hp, hq]
+  · rw [Polynomial.coe_mul, Polynomial.coe_pow, Polynomial.coe_C, Polynomial.coe_X, map_mul, map_pow,
+      ← algebraMap_powerSeries_self_eq_C, φ.commutes, map_mul, map_pow, Polynomial.aeval_C, Polynomial.aeval_X]
+
+private theorem aeval_map_algebraMap_eq_aeval {O : Type} [CommRing O] [Algebra O K] (y : PowerSeries K)
+    (r : O[X]) : Polynomial.aeval y (r.map (algebraMap O K)) = Polynomial.aeval y r := by
+  first
+  | exact Polynomial.aeval_map_algebraMap K y r
+  | (refine Polynomial.induction_on r (fun a => ?_) (fun p q hp hq => ?_) (fun n a _ => ?_)
+     · simp [algebraMap_powerSeries_self_eq_C, PowerSeries.algebraMap_apply']
+     · simp only [Polynomial.map_add, map_add, hp, hq]
+     · simp [algebraMap_powerSeries_self_eq_C, PowerSeries.algebraMap_apply'])
+
+theorem dvd_of_vanish {O : Type} [CommRing O] [IsLocalRing O]
+    [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [Algebra O K]
+    (hinj : Function.Injective (algebraMap O K)) f (N : ℕ)
+    (hres : PowerSeries.map (IsLocalRing.residue O) f = PowerSeries.X ^ N)
+    (Z : Finset K) (hZ : Z.card = N) (φ : K → (PowerSeries O →ₐ[O] PowerSeries K))
+    (s : K → PowerSeries K) (hφX : ∀ c ∈ Z, φ c PowerSeries.X = PowerSeries.C c + s c)
+    (hs0 : ∀ c ∈ Z, PowerSeries.constantCoeff (s c) = 0)
+    (hs1 : ∀ c ∈ Z, PowerSeries.coeff 1 (s c) ≠ 0)
+    (hf : ∀ c ∈ Z, PowerSeries.X ∣ φ c f) (b : ℕ) (g : PowerSeries O)
+    (hg : ∀ c ∈ Z, PowerSeries.X ^ b ∣ φ c g) :
+    ∃ h : PowerSeries O, g = f ^ b * h := by
+  have hmap : PowerSeries.map (IsLocalRing.residue O) (f ^ b) = PowerSeries.X ^ (N * b) := by
+    rw [map_pow, hres, ← pow_mul]
+  have hne : PowerSeries.map (IsLocalRing.residue O) (f ^ b) ≠ 0 := by
+    rw [hmap]; exact pow_ne_zero _ PowerSeries.X_ne_zero
+  obtain ⟨q, r, hqr⟩ := PowerSeries.exists_isWeierstrassDivision g hne
+  have hord : (PowerSeries.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal O)) (f ^ b)).order.toNat
+      = N * b := by
+    have hm : PowerSeries.map (Ideal.Quotient.mk (IsLocalRing.maximalIdeal O)) (f ^ b)
+        = PowerSeries.X ^ (N * b) := hmap
+    rw [hm, PowerSeries.order_X_pow]
+    rfl
+  have hdeg : r.degree < (N * b : ℕ) := by
+    have := hqr.degree_lt
+    rwa [hord] at this
+  have hg_eq : g = f ^ b * q + (r : PowerSeries O) := hqr.eq_mul_add
+  have hr : r = 0 := by
+    by_contra hr0
+    have hnat : r.natDegree < N * b := (Polynomial.natDegree_lt_iff_degree_lt hr0).mpr hdeg
+    have hdvd : ∀ c ∈ Z, (Polynomial.X - Polynomial.C c) ^ b ∣ r.map (algebraMap O K) := by
+      intro c hc
+      apply pow_dvd_of_order _ c (s c) (hs0 c hc) (hs1 c hc) b
+      have h1 : φ c g = (φ c f) ^ b * φ c q + Polynomial.aeval (PowerSeries.C c + s c) r := by
+        rw [hg_eq, map_add, map_mul, map_pow, algHom_coe, hφX c hc]
+      have h2 : (PowerSeries.X : PowerSeries K) ^ b ∣ (φ c f) ^ b * φ c q :=
+        dvd_mul_of_dvd_left (pow_dvd_pow_of_dvd (hf c hc) b) _
+      have h4 := hg c hc
+      rw [h1] at h4
+      rw [aeval_map_algebraMap_eq_aeval]
+      exact (dvd_add_right h2).mp h4
+    have hK : r.map (algebraMap O K) = 0 := by
+      refine eq_zero_of_pow_dvd _ Z b hdvd ?_
+      rw [hZ]
+      exact lt_of_le_of_lt Polynomial.natDegree_map_le hnat
+    exact hr0 (Polynomial.map_injective _ hinj (by rw [hK, Polynomial.map_zero]))
+  exact ⟨q, by rw [hg_eq, hr, Polynomial.coe_zero, add_zero]⟩
+
+end Formalism.MainNotions.RamifiedCoefficientChains.S9.Ring
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.LevW
+
+open Module Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.RamifiedCoefficientChains Formalism.MainNotions.RamifiedCoefficientChains.S9 Formalism.MainNotions.RamifiedCoefficientChains.S9.Ring
+
+section
+
+variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
+    [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
+    (W : LocWach PD LL O v n)
+
+def levC (i : ZMod n) (ζ : LL) : PowerSeries O →ₐ[O] PowerSeries LL :=
+  (W.lev i ζ).comp (Pi.constAlgHom O (ZMod n) (PowerSeries O))
+
+theorem lev_eq_levC (i : ZMod n) (ζ : LL) (a : LetA O n) : W.lev i ζ a = levC W i ζ (a i) := by
+  have h := W.lev_letter i ζ (a - Pi.constAlgHom O (ZMod n) (PowerSeries O) (a i)) (by simp)
+  rw [map_sub, sub_eq_zero] at h
+  exact h
+
+theorem levC_X (i : ZMod n) (ζ : LL) (hζ : IsPrimitiveRoot ζ PD.p) :
+    ∃ E : PowerSeries LL, PowerSeries.constantCoeff E = 1 ∧ PowerSeries.derivative LL E = E ∧
+      levC W i ζ PowerSeries.X = PowerSeries.C ζ * E - 1 := by
+  obtain ⟨E, h0, h1, h2⟩ := W.lev_π i ζ ⟨1, by rwa [pow_one]⟩
+  refine ⟨E, h0, h1, ?_⟩
+  have h3 : levC W i ζ PowerSeries.X = W.lev i ζ letπ := by
+    first
+    | rfl
+    | exact (lev_eq_levC W i ζ letπ).symm
+  rw [h3]
+  linear_combination h2
+
+private theorem coeff_zero_derivative_eq_coeff_one {R : Type} [CommRing R] (f : PowerSeries R) :
+    PowerSeries.coeff 0 (PowerSeries.derivative R f) = PowerSeries.coeff 1 f := by
+  first
+  | (rw [show PowerSeries.derivative R f = f.derivativeFun from rfl, PowerSeries.coeff_derivativeFun]; simp)
+  | simp [PowerSeries.coeff_derivativeFun]
+  | simp [PowerSeries.derivative, PowerSeries.coeff_derivativeFun]
+
+theorem X_dvd_levC_q (i : ZMod n) (ζ : LL) (hζ : IsPrimitiveRoot ζ PD.p) (hp : 2 ≤ PD.p) :
+    PowerSeries.X ∣ levC W i ζ W.q₀ := by
+  obtain ⟨E, hE0, _, hX⟩ := levC_X W i ζ hζ
+  have h := congrArg (levC W i ζ) W.q₀_def
+  simp only [map_mul, map_sub, map_pow, map_add, map_one, hX] at h
+  have h2 := congrArg PowerSeries.constantCoeff h
+  simp only [map_mul, map_sub, map_pow, map_add, map_one, PowerSeries.constantCoeff_C, hE0] at h2
+  rw [PowerSeries.X_dvd_iff]
+  have h3 : (ζ - 1) * PowerSeries.constantCoeff (levC W i ζ W.q₀) = 0 := by
+    linear_combination h2 + hζ.pow_eq_one
+  have hne : ζ - 1 ≠ 0 := sub_ne_zero.mpr (hζ.ne_one (by omega))
+  exact (mul_eq_zero.mp h3).resolve_left hne
+
+end
+
+section Div
+
+variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
+    [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
+    (W : LocWach PD LL O v n)
+
+theorem residue_q₀ [IsLocalRing O] (hp : PD.p.Prime) (hpm : ((PD.p : ℕ) : O) ∈ IsLocalRing.maximalIdeal O) :
+    PowerSeries.map (IsLocalRing.residue O) W.q₀ = PowerSeries.X ^ (PD.p - 1) := by
+  haveI := Fact.mk hp
+  have hk : ((PD.p : ℕ) : IsLocalRing.ResidueField O) = 0 := by
+    rw [← map_natCast (IsLocalRing.residue O)]
+    exact (IsLocalRing.residue_eq_zero_iff _).mpr hpm
+  have hK : ((PD.p : ℕ) : PowerSeries (IsLocalRing.ResidueField O)) = 0 := by
+    rw [← map_natCast (PowerSeries.C (R := IsLocalRing.ResidueField O)), hk, map_zero]
+  haveI : CharP (PowerSeries (IsLocalRing.ResidueField O)) PD.p := by
+    first
+    | exact (CharP.charP_iff_prime_eq_zero hp).mpr hK
+    | exact (charP_iff_prime_eq_zero hp).mpr hK
+  have h := congrArg (PowerSeries.map (IsLocalRing.residue O)) W.q₀_def
+  simp only [map_mul, map_sub, map_pow, map_add, map_one, PowerSeries.map_X] at h
+  rw [add_pow_char, one_pow, add_sub_cancel_left] at h
+  have h2 : PowerSeries.X * PowerSeries.map (IsLocalRing.residue O) W.q₀ =
+      PowerSeries.X * PowerSeries.X ^ (PD.p - 1) := by
+    rw [h, ← pow_succ', Nat.sub_add_cancel hp.one_le]
+  exact mul_left_cancel₀ PowerSeries.X_ne_zero h2
+
+private theorem eq_of_mul_mul_eq_of_det_ne_zero (i : ZMod n) (ζ : LL) (hζ : IsPrimitiveRoot ζ PD.p) (hp : 2 ≤ PD.p)
+    (hpL : ((PD.p : ℕ) : LL) ≠ 0) (b : ℕ) (c : PowerSeries O)
+    (h : PowerSeries.X ^ (b + 1) ∣ levC W i ζ (W.q₀ * c)) : PowerSeries.X ^ b ∣ levC W i ζ c := by
+  obtain ⟨E, hE0, hE1, hX⟩ := levC_X W i ζ hζ
+  obtain ⟨w, hw⟩ := X_dvd_levC_q W i ζ hζ hp
+  have h1 := congrArg (levC W i ζ) W.q₀_def
+  simp only [map_mul, map_sub, map_pow, map_add, map_one, hX, hw] at h1
+  have e : (PowerSeries.C ζ * E) ^ PD.p = E ^ PD.p := by
+    first
+    | rw [mul_pow, ← map_pow, hζ.pow_eq_one, map_one, one_mul]
+    | simp [mul_pow, ← map_pow, hζ.pow_eq_one]
+  have h1' : (PowerSeries.C ζ * E - 1) * w * PowerSeries.X = E ^ PD.p - 1 := by
+    rw [← e]
+    linear_combination h1
+  have hc : PowerSeries.coeff 0 ((PowerSeries.C ζ * E - 1) * w) =
+      PowerSeries.coeff 1 (E ^ PD.p - 1) := by
+    rw [← h1', PowerSeries.coeff_succ_mul_X]
+  have hD : PowerSeries.coeff 1 (E ^ PD.p) = ((PD.p : ℕ) : LL) := by
+    rw [← coeff_zero_derivative_eq_coeff_one, Derivation.leibniz_pow, hE1]
+    simp [PowerSeries.coeff_zero_eq_constantCoeff_apply, hE0]
+  have hcw : PowerSeries.constantCoeff w ≠ 0 := by
+    intro h0
+    apply hpL
+    have e2 : PowerSeries.coeff 1 (E ^ PD.p - 1) = PowerSeries.coeff 1 (E ^ PD.p) := by
+      first
+      | simp
+      | simp [PowerSeries.coeff_one]
+    rw [← hD, ← e2, ← hc, PowerSeries.coeff_zero_eq_constantCoeff_apply, map_mul, h0, mul_zero]
+  have hwU : IsUnit w := by
+    rw [PowerSeries.isUnit_iff_constantCoeff]
+    exact isUnit_iff_ne_zero.mpr hcw
+  rw [map_mul, hw, pow_succ', mul_assoc] at h
+  have h2 := (mul_dvd_mul_iff_left PowerSeries.X_ne_zero).mp h
+  first
+  | exact hwU.dvd_mul_left.mp h2
+  | exact (IsUnit.dvd_mul_left hwU).mp h2
+  | exact (Units.dvd_mul_left (u := hwU.unit)).mp h2
+
+private theorem q0_dvd_of_X_dvd_levC_primitive_roots [IsLocalRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
+    (hp : PD.p.Prime) (hpm : ((PD.p : ℕ) : O) ∈ IsLocalRing.maximalIdeal O)
+    (hinj : Function.Injective (algebraMap O LL)) {ζ₀ : LL} (hζ₀ : IsPrimitiveRoot ζ₀ PD.p)
+    (i : ZMod n) (a : PowerSeries O)
+    (hv : ∀ ζ : LL, IsPrimitiveRoot ζ PD.p → PowerSeries.X ∣ levC W i ζ a) : W.q₀ ∣ a := by
+  classical
+  have hres := residue_q₀ W hp hpm
+  have hne : PowerSeries.map (IsLocalRing.residue O) W.q₀ ≠ 0 := by
+    rw [hres]
+    exact pow_ne_zero _ PowerSeries.X_ne_zero
+  obtain ⟨q, r, hdeg0, heq⟩ : ∃ (q : PowerSeries O) (r : Polynomial O),
+      r.degree < ((PowerSeries.map (IsLocalRing.residue O) W.q₀).order.toNat : WithBot ℕ) ∧
+      a = W.q₀ * q + (r : PowerSeries O) := by
+    first
+    | (obtain ⟨q, r, hr⟩ := PowerSeries.exists_isWeierstrassDivision (f := a) hne
+       exact ⟨q, r, hr.degree_lt, hr.eq_mul_add⟩)
+    | (obtain ⟨q, r, hr⟩ := PowerSeries.exists_isWeierstrassDivision a hne
+       exact ⟨q, r, hr.degree_lt, hr.eq_mul_add⟩)
+    | exact ⟨_, _, (PowerSeries.isWeierstrassDivision_weierstrassDiv_weierstrassMod a hne).degree_lt,
+        (PowerSeries.isWeierstrassDivision_weierstrassDiv_weierstrassMod a hne).eq_mul_add⟩
+  rw [hres, PowerSeries.order_X_pow] at hdeg0
+  have hdeg : r.degree < ((PD.p - 1 : ℕ) : WithBot ℕ) := by
+    first
+    | (rw [ENat.toNat_coe] at hdeg0; exact hdeg0)
+    | exact hdeg0
+    | simpa only [ENat.toNat_coe] using hdeg0
+  have hroots : ∀ ζ ∈ primitiveRoots PD.p LL, (r.map (algebraMap O LL)).eval (ζ - 1) = 0 := by
+    intro ζ hζm
+    have hζ : IsPrimitiveRoot ζ PD.p := (mem_primitiveRoots hp.pos).mp hζm
+    obtain ⟨E, hE0, _, hX⟩ := levC_X W i ζ hζ
+    have hC : ∀ c : O, levC W i ζ (PowerSeries.C c) = PowerSeries.C (algebraMap O LL c) := by
+      intro c
+      have hc := (levC W i ζ).commutes c
+      first
+      | simpa [PowerSeries.algebraMap_apply] using hc
+      | simpa [PowerSeries.algebraMap_apply'] using hc
+    have key : ∀ s : Polynomial O, PowerSeries.constantCoeff (levC W i ζ (s : PowerSeries O)) =
+        (s.map (algebraMap O LL)).eval (ζ - 1) := by
+      intro s
+      refine Polynomial.induction_on s ?_ ?_ ?_
+      · intro c
+        simp [hC]
+      · intro p1 p2 h1 h2
+        simp [h1, h2]
+      · intro k c _
+        simp [hC, hX, hE0]
+    have h1 := hv ζ hζ
+    rw [heq, map_add, map_mul] at h1
+    have h3 := dvd_mul_of_dvd_left (X_dvd_levC_q W i ζ hζ hp.two_le) (levC W i ζ q)
+    have h2 := (dvd_add_right h3).mp h1
+    rw [PowerSeries.X_dvd_iff, key] at h2
+    exact h2
+  have hR0 : r.map (algebraMap O LL) = 0 := by
+    by_contra hR
+    have hRdeg : (r.map (algebraMap O LL)).degree < ((PD.p - 1 : ℕ) : WithBot ℕ) := by
+      first
+      | exact lt_of_le_of_lt Polynomial.degree_map_le hdeg
+      | exact lt_of_le_of_lt (Polynomial.degree_map_le _ _) hdeg
+    have hnd : (r.map (algebraMap O LL)).natDegree < PD.p - 1 :=
+      (Polynomial.natDegree_lt_iff_degree_lt hR).mpr hRdeg
+    apply hR
+    apply Polynomial.eq_zero_of_natDegree_lt_card_of_eval_eq_zero' _
+      ((primitiveRoots PD.p LL).image (fun z => z - 1))
+    · intro x hx
+      obtain ⟨z, hz, rfl⟩ := Finset.mem_image.mp hx
+      exact hroots z hz
+    · rw [Finset.card_image_of_injective _ (sub_left_injective), hζ₀.card_primitiveRoots,
+        Nat.totient_prime hp]
+      exact hnd
+  have hr0 : r = 0 := by
+    apply Polynomial.map_injective (algebraMap O LL) hinj
+    rw [hR0, Polynomial.map_zero]
+  exact ⟨q, by rw [heq, hr0, Polynomial.coe_zero, add_zero]⟩
+
+theorem q_pow_dvd [IsLocalRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
+    (hp : PD.p.Prime) (hpm : ((PD.p : ℕ) : O) ∈ IsLocalRing.maximalIdeal O)
+    (hinj : Function.Injective (algebraMap O LL)) {ζ₀ : LL} (hζ₀ : IsPrimitiveRoot ζ₀ PD.p)
+    (i : ZMod n) (b : ℕ) (a : PowerSeries O)
+    (hv : ∀ ζ : LL, IsPrimitiveRoot ζ PD.p → PowerSeries.X ^ b ∣ levC W i ζ a) :
+    ∃ h : PowerSeries O, a = W.q₀ ^ b * h := by
+  have hp2 : 2 ≤ PD.p := hp.two_le
+  have hpL : ((PD.p : ℕ) : LL) ≠ 0 := by
+    intro h0
+    have h1 := W.v_l
+    rw [h0, AddValuation.map_zero] at h1
+    first
+    | exact WithTop.top_ne_one h1
+    | exact absurd h1 (by simp)
+    | simp at h1
+  induction b generalizing a with
+  | zero => exact ⟨a, by simp⟩
+  | succ b ih =>
+    obtain ⟨c, rfl⟩ := q0_dvd_of_X_dvd_levC_primitive_roots W hp hpm hinj hζ₀ i a
+      (fun ζ hζ => dvd_trans (dvd_pow_self _ (Nat.succ_ne_zero b)) (hv ζ hζ))
+    obtain ⟨h, hh⟩ := ih c (fun ζ hζ => eq_of_mul_mul_eq_of_det_ne_zero W i ζ hζ hp2 hpL b c (hv ζ hζ))
+    exact ⟨h, by rw [hh]; ring⟩
+
+end Div
+
+end Formalism.MainNotions.RamifiedCoefficientChains.S9.LevW
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.Conv
+
+variable {L M : Type} [Field L] [AddCommGroup M] [Module L M]
+
+def conv (g : PowerSeries L) (f : ℤ → M) (k : ℤ) : M := ∑ᶠ j : ℕ, PowerSeries.coeff j g • f (k - j)
+
+theorem conv_vanish (g : PowerSeries L) (f : ℤ → M) (m : ℤ) (hf : ∀ k < m, f k = 0) (e : ℕ)
+    (hg : (PowerSeries.X : PowerSeries L) ^ e ∣ g) (k : ℤ) (hk : k < m + e) : conv g f k = 0 := by
+  unfold conv
+  rw [PowerSeries.X_pow_dvd_iff] at hg
+  have hz : ∀ j : ℕ, PowerSeries.coeff j g • f (k - j) = 0 := by
+    intro j
+    by_cases hj : j < e
+    · rw [hg j hj, zero_smul]
+    · rw [hf _ (by omega), smul_zero]
+  exact (finsum_congr hz).trans finsum_zero
+
+theorem conv_lead (g : PowerSeries L) (f : ℤ → M) (m : ℤ) (hf : ∀ k < m, f k = 0) (e : ℕ)
+    (hg : ∀ j < e, PowerSeries.coeff j g = 0) :
+    conv g f (m + e) = PowerSeries.coeff e g • f m := by
+  unfold conv
+  rw [finsum_eq_single _ e]
+  · rw [add_sub_cancel_right]
+  · intro j hj
+    rcases lt_or_gt_of_ne hj with h | h
+    · rw [hg j h, zero_smul]
+    · rw [hf _ (by omega), smul_zero]
+
+theorem triangular {ι : Type} [Fintype ι] (D : ι → ℤ → M) (m : ℤ) (hD : ∀ a, ∀ k < m, D a k = 0)
+    (hind : LinearIndependent L (fun a => D a m)) (g : ι → PowerSeries L) (b : ℕ)
+    (hsum : ∀ k < m + b, ∑ a, conv (g a) (D a) k = 0) :
+    ∀ a, (PowerSeries.X : PowerSeries L) ^ b ∣ g a := by
+  have key : ∀ n : ℕ, n < b → ∀ a, PowerSeries.coeff n (g a) = 0 := by
+    intro n
+    induction n using Nat.strong_induction_on with
+    | _ n ih =>
+      intro hn
+      have h1 : ∑ a, PowerSeries.coeff n (g a) • D a m = 0 := by
+        have hs := hsum (m + n) (by omega)
+        calc ∑ a, PowerSeries.coeff n (g a) • D a m
+            = ∑ a, conv (g a) (D a) (m + n) :=
+              Finset.sum_congr rfl fun a _ =>
+                (conv_lead (g a) (D a) m (hD a) n
+                  (fun j hj => ih j hj (by omega) a)).symm
+          _ = 0 := hs
+      exact Fintype.linearIndependent_iff.mp hind (fun a => PowerSeries.coeff n (g a)) h1
+  intro a
+  rw [PowerSeries.X_pow_dvd_iff]
+  intro n hn
+  exact key n hn a
+
+end Formalism.MainNotions.RamifiedCoefficientChains.S9.Conv
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.Hodge
+
+open Module Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
+
+section Comp
+
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : PeriodData G Qp K₀ K B BdR)
+    {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+    (ρ : Representation LL G V)
+
+theorem mulVdR_of_mem {τ : K →ₐ[Qp] LL} {y : V ⊗[Qp] BdR} (hy : y ∈ DdRE PD ρ τ) (c : K) :
+    mulVdR (K := K) (BdR := BdR) (V := V) (LL := LL) c y = τ c • y := by
+  have h := (Submodule.mem_iInf _).mp (Submodule.mem_inf.mp hy).2 c
+  rw [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply, sub_eq_zero] at h
+  exact h
+
+theorem eq_zero_of_mem_sum (τ : K →ₐ[Qp] LL) :
+    ∀ (s : Finset (K →ₐ[Qp] LL)), τ ∉ s → ∀ y ∈ DdRE PD ρ τ,
+      y ∈ ⨆ τ' ∈ s, DdRE PD ρ τ' → y = 0 := by
+  classical
+  intro s
+  induction s using Finset.induction_on with
+  | empty =>
+    intro _ y _ hy
+    simpa using hy
+  | insert a s ha ih =>
+    intro hτ y hyτ hy
+    have haτ : a ≠ τ := fun h => hτ (h ▸ Finset.mem_insert_self a s)
+    have hτs : τ ∉ s := fun h => hτ (Finset.mem_insert_of_mem h)
+    obtain ⟨c, hc⟩ : ∃ c : K, τ c ≠ a c := by
+      by_contra h
+      push_neg at h
+      exact haτ (AlgHom.ext fun c => (h c).symm)
+
+    let φ : Module.End LL (V ⊗[Qp] BdR) :=
+      mulVdR (K := K) (BdR := BdR) (V := V) (LL := LL) c - a c • LinearMap.id
+    have hφ : ∀ τ', ∀ x ∈ DdRE PD ρ τ', φ x = (τ' c - a c) • x := by
+      intro τ' x hx
+      simp only [φ, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply,
+        mulVdR_of_mem PD ρ hx c, sub_smul]
+    have hW : ∀ x ∈ ⨆ τ' ∈ s, DdRE PD ρ τ', φ x ∈ ⨆ τ' ∈ s, DdRE PD ρ τ' := by
+      intro x hx
+      have hle : (⨆ τ' ∈ s, DdRE PD ρ τ') ≤ (⨆ τ' ∈ s, DdRE PD ρ τ').comap φ := by
+        refine iSup₂_le fun τ' hτ' => fun z hz => ?_
+        rw [Submodule.mem_comap, hφ τ' z hz]
+        exact Submodule.smul_mem _ _ ((le_iSup₂ (f := fun τ' _ => DdRE PD ρ τ') τ' hτ') hz)
+      exact hle hx
+    rw [Finset.iSup_insert, Submodule.mem_sup] at hy
+    obtain ⟨ya, hya, z, hz, hyz⟩ := hy
+    have h1 : φ y ∈ ⨆ τ' ∈ s, DdRE PD ρ τ' := by
+      rw [← hyz, map_add, hφ a ya hya, sub_self, zero_smul, zero_add]
+      exact hW z hz
+    rw [hφ τ y hyτ] at h1
+    have h2 := ih hτs _ (Submodule.smul_mem _ _ hyτ) h1
+    exact (smul_eq_zero.mp h2).resolve_left (sub_ne_zero.mpr hc)
+
+theorem mem_of_mem_filC (τ : K →ₐ[Qp] LL) (F : Submodule LL (V ⊗[Qp] BdR)) (hF : F ≤ DdRE PD ρ τ)
+    {x : V ⊗[Qp] BdR} (hx : x ∈ DdRE PD ρ τ)
+    (h : x ∈ F ⊔ ⨆ (τ' : K →ₐ[Qp] LL) (_ : τ' ≠ τ), DdRE PD ρ τ') : x ∈ F := by
+  classical
+  obtain ⟨f, hf, z, hz, hfz⟩ := Submodule.mem_sup.mp h
+  obtain ⟨s, hs⟩ := Submodule.mem_iSup_iff_exists_finset.mp hz
+  have hle : (⨆ τ' ∈ s, ⨆ (_ : τ' ≠ τ), DdRE PD ρ τ') ≤ ⨆ τ' ∈ s.filter (· ≠ τ), DdRE PD ρ τ' := by
+    refine iSup₂_le fun τ' hτ' => iSup_le fun hne => ?_
+    exact le_iSup₂ (f := fun τ' _ => DdRE PD ρ τ') τ' (Finset.mem_filter.mpr ⟨hτ', hne⟩)
+  have hzτ : z ∈ DdRE PD ρ τ := by
+    have e : z = x - f := by rw [← hfz]; abel
+    rw [e]
+    exact Submodule.sub_mem _ hx (hF hf)
+  have hz0 := eq_zero_of_mem_sum PD ρ τ (s.filter (· ≠ τ)) (by simp) z hzτ (hle hs)
+  rw [← hfz, hz0, add_zero]
+  exact hf
+
+theorem fildR_eq_bot (τ : K →ₐ[Qp] LL) [FiniteDimensional LL ↥(DdRE PD ρ τ)] (b : ℤ)
+    (hj : JumpsInV PD ρ τ (Set.Iic (-b))) : ∀ a : ℤ, -b < a → FildR PD ρ τ a = ⊥ := by
+  intro a ha
+  obtain ⟨hi, hhi⟩ := Formalism.MainNotions.N.Pv.LocalLengthBound.rk_fildR_hi (PD := PD) (ρ := ρ) τ
+  have hstep : ∀ c : ℤ, -b < c → FildR PD ρ τ c = FildR PD ρ τ (c + 1) := by
+    intro c hc
+    by_contra h
+    have h2 := hj c (fun h' => h h'.symm)
+    exact absurd (Set.mem_Iic.1 h2) (not_le.2 hc)
+  have hk : ∀ k : ℕ, FildR PD ρ τ a = FildR PD ρ τ (a + k) := by
+    intro k
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      rw [ih, hstep (a + k) (by omega)]
+      congr 1
+      push_cast
+      ring
+  rw [hk (hi - a).toNat]
+  exact hhi _ (by omega)
+
+end Comp
+
+end Formalism.MainNotions.RamifiedCoefficientChains.S9.Hodge
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.NinQ
@@ -681,3 +1225,5 @@ theorem lemmaDN0_of_admits [IsLocalRing O] [IsAdicComplete (IsLocalRing.maximalI
 end Final
 
 end Formalism.MainNotions.RamifiedCoefficientChains.S9.NinQ
+end
+end

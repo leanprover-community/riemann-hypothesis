@@ -1,5 +1,22 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarefreeRootsInjective.WitBase
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SquarefreeRootsInjective.ClaimOf
 
+section
+open Polynomial
+
+noncomputable section
+
+namespace PI.SqfRootsInj.W
+
+open PI.SqfLab
+
+
+
+
+end PI.SqfRootsInj.W
+end
+end
+
+section
 open Polynomial
 
 noncomputable section
@@ -50,3 +67,5 @@ end
 
 
 end PI.SqfRootsInj.W
+end
+end

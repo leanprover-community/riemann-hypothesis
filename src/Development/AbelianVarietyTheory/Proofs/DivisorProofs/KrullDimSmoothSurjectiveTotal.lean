@@ -4,7 +4,16 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsFlagBundleR
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.RegularAlteration
 import Development.AbelianVarietyTheory.Definitions.Divisors.ToKnownTheoremsOf
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KawamataViehwegVanishingNumberFieldTwist
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RingKrullDimFiberStalkEqQuotientStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RingKrullDimFiberStalkEqQuotient
+
+section
+open AlgebraicGeometry CategoryTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ringKrullDim_fiber_stalk_eq_quotient : ∀ (B Y : Scheme.{0}) (π : Y ⟶ B) (b : B) (z : π.fiber b), ringKrullDim ((π.fiber b).presheaf.stalk z) = ringKrullDim (Y.presheaf.stalk (π.fiberι b z) ⧸ (IsLocalRing.maximalIdeal (B.presheaf.stalk (π (π.fiberι b z)))).map (π.stalkMap (π.fiberι b z)).hom) := by
+  first | exact @GlobalTheory.FibreStalk.ringKrullDim_stalk_fiber | exact GlobalTheory.FibreStalk.ringKrullDim_stalk_fiber | (intros; apply GlobalTheory.FibreStalk.ringKrullDim_stalk_fiber <;> assumption)
+end
+
+section
 open NumberField MvPolynomial Filter Topology Formalism.BasicNotions Formalism.MainNotions Formalism.DegreeFormula GlobalTheory.FlagPoly GlobalTheory.Mean4 GlobalTheory.Mean4O GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.CovTest GlobalTheory.Published
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.ArInt
 open scoped Classical
@@ -125,3 +134,4 @@ theorem topologicalKrullDim_eq_of_smooth_surjective : ∀ (B Y : Scheme.{0}) [Is
     exact add_le_add le_rfl hfib
 
 end GlobalTheory.SmoothDimTotal
+end

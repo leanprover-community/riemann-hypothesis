@@ -1,11 +1,140 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.UnitarySchrodingerLemmas.UnramifiedSchwartzDensity.SchCut
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsRealCoords
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousBiadditiveBounded
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousOnRingInverseOfIsOpenEmbeddingUnits
+import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IntegrableOfRapidDecay
+import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.NDDefs
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitsOpenEmbeddingLocalTensorStatement
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
 
+section
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+
+namespace GlobalTheory.CompanionTheory.SW.SchwartzFib
+
+set_option synthInstance.maxHeartbeats 400000 in
+set_option synthInstance.maxSize 2000 in
+
+theorem exists_real_coords : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n M : ℕ),
+    ∃ (N : ℕ) (e : (Fin n → Fin M → Ainf F ⊗[F] E) ≃+ (Fin N → ℝ)), Continuous e ∧ Continuous e.symm := by
+  intro F E _ _ _ _ _ n M
+  haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
+  let t := GlobalTheory.Core.Rk.RapidInt.tupEquiv F E (Module.finBasis F E) M n
+  let L := (Module.finBasis ℝ (Fin n → Fin M → Fin (Module.finrank F E) → mixedEmbedding.mixedSpace F)).equivFun.toContinuousLinearEquiv
+  refine ⟨_, t.toAddEquiv.trans L.toLinearEquiv.toAddEquiv, ?_, ?_⟩
+  · exact L.continuous.comp t.continuous
+  · exact t.symm.continuous.comp L.symm.continuous
+
+end GlobalTheory.CompanionTheory.SW.SchwartzFib
+end
+
+section
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+
+namespace GlobalTheory.CompanionTheory.Arch
+
+theorem continuous_biadditive_bounded :
+    ∀ (N₁ N₂ N₃ : ℕ) (β : (Fin N₁ → ℝ) → (Fin N₂ → ℝ) → (Fin N₃ → ℝ)),
+      (∀ u u' v, β (u + u') v = β u v + β u' v) →
+      (∀ u v v', β u (v + v') = β u v + β u v') →
+      Continuous (fun p : (Fin N₁ → ℝ) × (Fin N₂ → ℝ) => β p.1 p.2) →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ u v, ‖β u v‖ ≤ C * ‖u‖ * ‖v‖ := by
+  intro N₁ N₂ N₃ β h₁ h₂ hβ
+  have smul₁ : ∀ (c : ℝ) u v, β (c • u) v = c • β u v := by
+    intro c u v
+    exact map_real_smul (AddMonoidHom.mk' (fun u => β u v) fun u u' => h₁ u u' v)
+      (hβ.comp (continuous_id.prodMk continuous_const)) c u
+  have smul₂ : ∀ (c : ℝ) u v, β u (c • v) = c • β u v := by
+    intro c u v
+    exact map_real_smul (AddMonoidHom.mk' (fun v => β u v) fun v v' => h₂ u v v')
+      (hβ.comp (continuous_const.prodMk continuous_id)) c v
+  have zero₁ : ∀ v, β 0 v = 0 := fun v => by simpa using smul₁ 0 0 v
+  have zero₂ : ∀ u, β u 0 = 0 := fun u => by simpa using smul₂ 0 u 0
+  obtain ⟨δ, hδ, hsmall⟩ := Metric.continuous_iff.mp hβ 0 1 one_pos
+  have key : ∀ u v, ‖u‖ < δ → ‖v‖ < δ → ‖β u v‖ < 1 := by
+    intro u v hu hv
+    have h := hsmall (u, v) (by rw [dist_zero_right, Prod.norm_def]; exact max_lt hu hv)
+    simpa [zero₁, dist_zero_right] using h
+  obtain ⟨s, rfl⟩ : ∃ s, δ = 2 * s := ⟨δ / 2, by ring⟩
+  have hs0 : 0 < s := by linarith
+  have hsδ : s < 2 * s := by linarith
+  refine ⟨4 / (2 * s) ^ 2, by positivity, fun u v => ?_⟩
+  by_cases hu : u = 0
+  · simp [hu, zero₁]
+  by_cases hv : v = 0
+  · simp [hv, zero₂]
+  have hu' : 0 < ‖u‖ := norm_pos_iff.mpr hu
+  have hv' : 0 < ‖v‖ := norm_pos_iff.mpr hv
+  have hnu : ‖(s / ‖u‖) • u‖ = s := by
+    rw [norm_smul, Real.norm_of_nonneg (div_pos hs0 hu').le]
+    field_simp
+  have hnv : ‖(s / ‖v‖) • v‖ = s := by
+    rw [norm_smul, Real.norm_of_nonneg (div_pos hs0 hv').le]
+    field_simp
+  have hb := key ((s / ‖u‖) • u) ((s / ‖v‖) • v) (by rw [hnu]; exact hsδ) (by rw [hnv]; exact hsδ)
+  rw [smul₁, smul₂, smul_smul, norm_smul,
+    Real.norm_of_nonneg (mul_pos (div_pos hs0 hu') (div_pos hs0 hv')).le] at hb
+  have e : s / ‖u‖ * (s / ‖v‖) * ‖β u v‖ = (‖β u v‖ * (s * s)) / (‖u‖ * ‖v‖) := by ring
+  rw [e, div_lt_one (mul_pos hu' hv')] at hb
+  rw [show 4 / (2 * s) ^ 2 * ‖u‖ * ‖v‖ = (‖u‖ * ‖v‖) / (s * s) by ring,
+    le_div_iff₀ (mul_pos hs0 hs0)]
+  exact hb.le
+
+end GlobalTheory.CompanionTheory.Arch
+end
+
+section
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+
+namespace GlobalTheory.CompanionTheory.SW.GLOpen
+
+theorem continuousOn_ringInverse_of_isOpenEmbedding_units
+    (A : Type) [CommRing A] [TopologicalSpace A] [IsTopologicalRing A]
+    (hA : IsOpenEmbedding (Units.val : Aˣ → A)) :
+    ContinuousOn (Ring.inverse : A → A) {x | IsUnit x} := by
+  rintro _ ⟨u, rfl⟩
+  refine ContinuousAt.continuousWithinAt ?_
+  rw [← hA.continuousAt_iff]
+  have h : (Ring.inverse ∘ Units.val : Aˣ → A) = fun v => ((v⁻¹ : Aˣ) : A) := by
+    funext v
+    exact Ring.inverse_unit v
+  rw [h]
+  exact Units.continuous_coe_inv.continuousAt
+
+theorem isOpenEmbedding_val_GL
+    (A : Type) [CommRing A] [TopologicalSpace A] [IsTopologicalRing A]
+    (hA : IsOpenEmbedding (Units.val : Aˣ → A)) (n : ℕ) :
+    IsOpenEmbedding (Units.val : GL (Fin n) A → Matrix (Fin n) (Fin n) A) := by
+  have hdet : Continuous (fun M : Matrix (Fin n) (Fin n) A => M.det) :=
+    continuous_id.matrix_det
+  have hunit : ∀ M : Matrix (Fin n) (Fin n) A, IsUnit M ↔ IsUnit M.det :=
+    fun M => Matrix.isUnit_iff_isUnit_det M
+  have hadj : Continuous (fun M : Matrix (Fin n) (Fin n) A => M.adjugate) :=
+    continuous_id.matrix_adjugate
+  have hopen : IsOpen {x : A | IsUnit x} := hA.isOpen_range
+  refine ⟨Units.isEmbedding_val_mk' (f := fun M : Matrix (Fin n) (Fin n) A => M⁻¹) ?_
+    fun u => (Matrix.coe_units_inv u).symm, ?_⟩
+  · have hinv : ContinuousOn
+        (fun M : Matrix (Fin n) (Fin n) A => Ring.inverse M.det • M.adjugate) {M | IsUnit M} := by
+      have hri : ContinuousOn (fun M : Matrix (Fin n) (Fin n) A => Ring.inverse M.det)
+          {M | IsUnit M} :=
+        (GlobalTheory.CompanionTheory.SW.GLOpen.continuousOn_ringInverse_of_isOpenEmbedding_units A hA).comp hdet.continuousOn
+          fun M hM => (hunit M).mp hM
+      exact hri.smul hadj.continuousOn
+    exact hinv.congr fun M _ => Matrix.inv_def M
+  · have h : Set.range (Units.val : GL (Fin n) A → Matrix (Fin n) (Fin n) A) =
+        (fun M : Matrix (Fin n) (Fin n) A => M.det) ⁻¹' {x | IsUnit x} := by
+      ext M
+      exact hunit M
+    rw [h]
+    exact hopen.preimage hdet
+
+end GlobalTheory.CompanionTheory.SW.GLOpen
+end
+
+section
 section
 noncomputable section
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory Topology
@@ -310,3 +439,5 @@ open scoped TensorProduct ENNReal NNReal Matrix
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.archimedean_section : PositivityTheory.PfSWUS.SchInf.SecInf := by
   atlas_forward_decl GlobalTheory.CompanionTheory.SecInf.secInf
+end
+end

@@ -4,21 +4,768 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitar
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FibOfZero
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.SelfDualUnramifiedPlaces
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.DualExponentDensity
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuadraticUnramifiedIffInertOrSplitStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFieldAdicCompletionTensorOfInertStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotIsFieldAdicCompletionTensorOfSplitStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AdditiveCharConductorExistsStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IntegralClosureCompletedCMAlgebraCompactOpenStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HermitianFormFiniteZerosOnLineCmExtStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsCompactOpenUnitsSubgroupContinuousSqrtStatement
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AddHaarMapSmulOfNormEqOne
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MeasureEqZeroOfFiniteInterLines
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AveragedFibreMeasureComplFibreEqZero
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HaarDisintegrationAveragedFibreMeasures
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IntegrableContinuousOnAveragedFibreIntegral
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFibreFamilyUnivOfNullCone
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ContDensityOnEqFibreMass
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuadraticUnramifiedIffInertOrSplit
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFieldAdicCompletionTensorOfInert
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NotIsFieldAdicCompletionTensorOfSplit
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AdditiveCharConductorExists
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IntegralClosureCompletedCMAlgebraCompactOpen
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HermitianFormFiniteZerosOnLineCmExt
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsCompactOpenUnitsSubgroupContinuousSqrt
+import BuildAid.ForwardExisting
 
+section
+open scoped TensorProduct
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quadratic_unramified_iff_isPrime_map_or_ncard_primesOver_two : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E], Module.finrank F E = 2 → ∀ v : HeightOneSpectrum (𝓞 F), ((∀ w : HeightOneSpectrum (𝓞 E), w.asIdeal.LiesOver v.asIdeal → Algebra.IsUnramifiedAt (𝓞 F) w.asIdeal) ↔ ((v.asIdeal.map (algebraMap (𝓞 F) (𝓞 E))).IsPrime ∨ (v.asIdeal.primesOver (𝓞 E)).ncard = 2)) := by
+  first | exact @GlobalTheory.quadratic_unramified_iff_inert_or_split | exact GlobalTheory.quadratic_unramified_iff_inert_or_split | (intros; apply GlobalTheory.quadratic_unramified_iff_inert_or_split <;> assumption)
+end
+
+section
+open scoped TensorProduct
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isField_adicCompletion_tensor_of_inert : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E], Module.finrank F E = 2 → ∀ v : HeightOneSpectrum (𝓞 F), (v.asIdeal.map (algebraMap (𝓞 F) (𝓞 E))).IsPrime → IsField (v.adicCompletion F ⊗[F] E) := by
+  first | exact @GlobalTheory.InertField.isField_of_inert | exact GlobalTheory.InertField.isField_of_inert | (intros; apply GlobalTheory.InertField.isField_of_inert <;> assumption)
+end
+
+section
+open scoped TensorProduct
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.not_isField_adicCompletion_tensor_of_split : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E], Module.finrank F E = 2 → ∀ v : HeightOneSpectrum (𝓞 F), (v.asIdeal.primesOver (𝓞 E)).ncard = 2 → ¬ IsField (v.adicCompletion F ⊗[F] E) := by
+  first | exact @GlobalTheory.SplitPlace.not_isField_of_split | exact GlobalTheory.SplitPlace.not_isField_of_split | (intros; apply GlobalTheory.SplitPlace.not_isField_of_split <;> assumption)
+end
+
+section
+open scoped TensorProduct
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.additive_char_conductor_exists : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (ψ : AddChar (v.adicCompletion F) ℂ), Continuous ψ → (∀ t, ‖ψ t‖ = 1) → (∃ t, ψ t ≠ 1) → ∃ n : ℤ, ∀ t : v.adicCompletion F, (∀ s ∈ v.adicCompletionIntegers F, ψ (t * s) = 1) ↔ Valued.v t ≤ WithZero.exp n := by
+  first | exact @GlobalTheory.CharConductor.exists_conductor_exponent | exact GlobalTheory.CharConductor.exists_conductor_exponent | (intros; apply GlobalTheory.CharConductor.exists_conductor_exponent <;> assumption)
+end
+
+section
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integralClosure_completedCMAlgebra_compact_open : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ v : HeightOneSpectrum (𝓞 F), IsCompact (integralClosure (v.adicCompletionIntegers F) (Fv F v ⊗[F] E) : Set (Fv F v ⊗[F] E)) ∧ IsOpen (integralClosure (v.adicCompletionIntegers F) (Fv F v ⊗[F] E) : Set (Fv F v ⊗[F] E)) := by
+  first | exact @GlobalTheory.CompletedOrder.isCompact_isOpen_integralClosure | exact GlobalTheory.CompletedOrder.isCompact_isOpen_integralClosure | (intros; apply GlobalTheory.CompletedOrder.isCompact_isOpen_integralClosure <;> assumption)
+end
+
+section
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_form_finite_zeros_on_line_cmExt : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ), 1 ≤ M → ∀ (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ (K : Type) [Field K] [Algebra F K], ∃ y : Fin M → K ⊗[F] E, ∀ x : Fin M → K ⊗[F] E, {t : K | qR K σ J (x + t • y) = 0}.Finite := by
+  first | exact @GlobalTheory.HermLineZeros.finite_zeros_on_line | exact GlobalTheory.HermLineZeros.finite_zeros_on_line | (intros; apply GlobalTheory.HermLineZeros.finite_zeros_on_line <;> assumption)
+end
+
+section
+open MeasureTheory Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_compact_open_units_subgroup_continuous_sqrt : ∀ (K : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K], (2 : K) ≠ 0 → ∃ (U : Set K) (s : K → K), GlobalTheory.QuadFibre.IsSqrtOn U s := by
+  first | exact @GlobalTheory.QuadFibre.exists_isSqrtOn | exact GlobalTheory.QuadFibre.exists_isSqrtOn | (intros; apply GlobalTheory.QuadFibre.exists_isSqrtOn <;> assumption)
+end
+
+section
+section
+open MeasureTheory Topology
+
+namespace GlobalTheory
+
+theorem addHaar_map_smul_of_norm_eq_one (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (c : K) (hc : ‖c‖ = 1) : Measure.map (fun x : V => c • x) μ = μ := by
+  have hc0 : c ≠ 0 := by
+    rintro rfl
+    simp at hc
+  let e : V ≃L[K] V := ContinuousLinearEquiv.smulLeft (Units.mk0 c hc0)
+  have he : (fun x : V => c • x) = e := by
+    ext x
+    simp [e]
+  haveI : (Measure.map (fun x : V => c • x) μ).IsAddHaarMeasure := by
+    rw [he]
+    exact e.isAddHaarMeasure_map μ
+  have hk := Measure.isAddLeftInvariant_eq_smul (Measure.map (fun x : V => c • x) μ) μ
+  set k := Measure.addHaarScalarFactor (Measure.map (fun x : V => c • x) μ) μ
+  obtain ⟨C, hC, hC0⟩ := exists_compact_mem_nhds (0 : V)
+  let S : Set V := (fun p : K × V => p.1 • p.2) '' (Metric.sphere (0 : K) 1 ×ˢ C)
+  have hS : IsCompact S :=
+    ((isCompact_sphere (0 : K) 1).prod hC).image continuous_smul
+  have hCS : C ⊆ S := fun x hx => ⟨(1, x), ⟨by simp, hx⟩, by simp⟩
+  have hpos : μ S ≠ 0 :=
+    ((Measure.measure_pos_of_mem_nhds μ hC0).trans_le (measure_mono hCS)).ne'
+  have hfin : μ S ≠ ⊤ := hS.measure_lt_top.ne
+  have hpre : (fun x : V => c • x) ⁻¹' S = S := by
+    ext x
+    constructor
+    · rintro ⟨⟨a, y⟩, ⟨ha, hy⟩, h⟩
+      refine ⟨(c⁻¹ * a, y), ⟨?_, hy⟩, ?_⟩
+      · simp at ha
+        simp [ha, hc]
+      · simp only at h ⊢
+        rw [mul_smul, h, smul_smul, inv_mul_cancel₀ hc0, one_smul]
+    · rintro ⟨⟨a, y⟩, ⟨ha, hy⟩, h⟩
+      refine ⟨(c * a, y), ⟨?_, hy⟩, ?_⟩
+      · simp at ha
+        simp [ha, hc]
+      · simp only at h ⊢
+        rw [mul_smul, h]
+  have hm : Measure.map (fun x : V => c • x) μ S = μ S := by
+    rw [Measure.map_apply (continuous_const_smul c).measurable hS.measurableSet, hpre]
+  have hk1 : k = 1 := by
+    rw [hk, Measure.smul_apply] at hm
+    have h1 : (k : ENNReal) * μ S = 1 * μ S := by
+      rw [one_mul]
+      simpa [ENNReal.smul_def] using hm
+    have := (ENNReal.mul_left_inj hpos hfin).1 h1
+    exact_mod_cast this
+  rw [hk, hk1, one_smul]
+
+end GlobalTheory
+end
+
+open MeasureTheory Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.map_smul_addHaar_of_norm_eq_one : ∀ (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (c : K), ‖c‖ = 1 → Measure.map (fun x : V => c • x) μ = μ := by
+  atlas_forward_decl GlobalTheory.addHaar_map_smul_of_norm_eq_one
+end
+
+section
+section
+open MeasureTheory Topology
+
+namespace GlobalTheory
+
+theorem measure_eq_zero_of_finite_inter_lines
+    (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K]
+    [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V]
+    [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V]
+    [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V]
+    (μ : Measure V) [μ.IsAddHaarMeasure] (Z : Set V) (hZ : MeasurableSet Z) (y : V)
+    (h : ∀ x : V, {t : K | x + t • y ∈ Z}.Finite) : μ Z = 0 := by
+  let ν : Measure K := Measure.addHaar
+  have hc : Continuous (fun p : V × K => p.1 + p.2 • y) := by fun_prop
+  have hS : MeasurableSet {p : V × K | p.1 + p.2 • y ∈ Z} := hc.measurable hZ
+  have h1 : (μ.prod ν) {p : V × K | p.1 + p.2 • y ∈ Z} = 0 := by
+    rw [Measure.measure_prod_null hS]
+    refine Filter.Eventually.of_forall fun x => ?_
+    exact (h x).measure_zero ν
+  rw [Measure.prod_apply_symm hS] at h1
+  have h2 : ∀ t : K, μ ((fun x => (x, t)) ⁻¹' {p : V × K | p.1 + p.2 • y ∈ Z}) = μ Z := by
+    intro t
+    exact measure_preimage_add_right μ (t • y) Z
+  simp only [h2, lintegral_const, mul_eq_zero] at h1
+  rcases h1 with h1 | h1
+  · exact h1
+  · exact absurd h1 (by
+      rw [Measure.measure_univ_eq_zero]
+      exact NeZero.ne ν)
+
+end GlobalTheory
+end
+
+open MeasureTheory Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measure_eq_zero_of_finite_inter_lines' : ∀ (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (Z : Set V), MeasurableSet Z → ∀ y : V, (∀ x : V, {t : K | x + t • y ∈ Z}.Finite) → μ Z = 0 := by
+  atlas_forward_decl GlobalTheory.measure_eq_zero_of_finite_inter_lines
+end
+
+section
+section
+open MeasureTheory Topology
+
+namespace GlobalTheory.QuadFibre
+
+theorem fibOf_compl_fibre : ∀ (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (ν : Measure K) [ν.IsAddHaarMeasure] (q : V → K), Continuous q → (∀ (c : K) (x : V), q (c • x) = c ^ 2 * q x) → ∀ (U : Set K) (s : K → K), GlobalTheory.QuadFibre.IsSqrtOn U s → ∀ t : K, GlobalTheory.QuadFibre.fibOf μ ν q U s t (q ⁻¹' {t})ᶜ = 0 := by
+  intro K V _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ μ _ ν _ q hq hh U s hs t
+  obtain ⟨hUo, hUc, h1, hmul, hinv, hn, hsc, hsq⟩ := hs
+  by_cases ht : t = 0
+  · subst ht; rw [fibOf_zero]; rfl
+  have hm : Measurable (fun x : V => s (t / q x) • x) := by
+    have h1 : Measurable (fun x : V => s (t / q x)) :=
+      hsc.measurable.comp (measurable_const.div hq.measurable)
+    exact h1.smul measurable_id
+  have hA : MeasurableSet (q ⁻¹' {t})ᶜ :=
+    ((isClosed_singleton.preimage hq).measurableSet).compl
+  rw [fibOf_ne _ _ _ _ _ ht, Measure.smul_apply, Measure.map_apply hm hA,
+    Measure.restrict_apply (hm hA)]
+  convert smul_zero _
+  convert measure_empty (μ := μ)
+  rw [Set.eq_empty_iff_forall_notMem]
+  rintro x ⟨hx1, u, hu, hx2⟩
+  apply hx1
+  have hu0 : u ≠ 0 := by
+    intro h
+    have := hn u hu
+    rw [h] at this
+    simp at this
+  have hx2' : q x = t * u := by simpa using hx2.symm
+  have h3 : t / q x = u⁻¹ := by rw [hx2']; field_simp
+  show q (s (t / q x) • x) = t
+  rw [hh, h3, hsq _ (hinv u hu), hx2']
+  field_simp
+
+end GlobalTheory.QuadFibre
+end
+
+open MeasureTheory Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.averagedFibreMeasure_compl_fibre_eq_zero : ∀ (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (ν : Measure K) [ν.IsAddHaarMeasure] (q : V → K), Continuous q → (∀ (c : K) (x : V), q (c • x) = c ^ 2 * q x) → ∀ (U : Set K) (s : K → K), GlobalTheory.QuadFibre.IsSqrtOn U s → ∀ t : K, GlobalTheory.QuadFibre.fibOf μ ν q U s t (q ⁻¹' {t})ᶜ = 0 := by
+  atlas_forward_decl GlobalTheory.QuadFibre.fibOf_compl_fibre
+end
+
+section
+section
+open MeasureTheory Topology
+open scoped Pointwise ENNReal NNReal
+
+namespace GlobalTheory.QuadFibre
+
+theorem exists_map_div_eq_smul {K : Type} [NontriviallyNormedField K] [ProperSpace K]
+    [MeasurableSpace K] [BorelSpace K] (ν : Measure K) [ν.IsAddHaarMeasure] {a : K} (ha : a ≠ 0) :
+    ∃ c : ℝ≥0, c ≠ 0 ∧ Measure.map (fun t : K => t / a) ν = c • ν := by
+  refine ⟨distribHaarChar K (Units.mk0 a ha), (distribHaarChar_pos).ne', ?_⟩
+  ext S hS
+  have hpre : (fun t : K => t / a) ⁻¹' S = (Units.mk0 a ha) • S := by
+    ext t
+    rw [Set.mem_preimage, Set.mem_smul_set_iff_inv_smul_mem, Units.smul_def, Units.val_inv_eq_inv_val,
+      Units.val_mk0, smul_eq_mul, div_eq_inv_mul]
+  have hf : Measurable (fun t : K => t / a) := (continuous_id.div_const a).measurable
+  rw [Measure.map_apply hf hS, hpre, ← distribHaarChar_mul ν,
+    Measure.smul_apply, ENNReal.smul_def, smul_eq_mul]
+
+theorem avg_div_eq {K : Type} [NontriviallyNormedField K] [ProperSpace K]
+    [MeasurableSpace K] [BorelSpace K] (ν : Measure K) [ν.IsAddHaarMeasure] {a : K} (ha : a ≠ 0)
+    {U : Set K} (hU : MeasurableSet U) {g : K → ℝ≥0∞} (hg : Measurable g) :
+    (ν {r | r / a ∈ U})⁻¹ * ∫⁻ t, g (t / a) ∂ν = (ν U)⁻¹ * ∫⁻ u, g u ∂ν := by
+  obtain ⟨c, hc0, hc⟩ := exists_map_div_eq_smul ν ha
+  have hf : Measurable (fun t : K => t / a) := (continuous_id.div_const a).measurable
+  have hcU : ν {r | r / a ∈ U} = c * ν U := by
+    have h : (Measure.map (fun t : K => t / a) ν) U = (c • ν) U := by rw [hc]
+    rwa [Measure.map_apply hf hU, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul] at h
+  have hcI : ∫⁻ t, g (t / a) ∂ν = c * ∫⁻ u, g u ∂ν := by
+    rw [← lintegral_map hg hf, hc, lintegral_smul_measure, ENNReal.smul_def, smul_eq_mul]
+  have hc0' : (c : ℝ≥0∞) ≠ 0 := by exact_mod_cast hc0
+  have hcc : (c : ℝ≥0∞)⁻¹ * c = 1 := ENNReal.inv_mul_cancel hc0' ENNReal.coe_ne_top
+  rw [hcU, hcI, ENNReal.mul_inv (Or.inl hc0') (Or.inl ENNReal.coe_ne_top)]
+  calc (c : ℝ≥0∞)⁻¹ * (ν U)⁻¹ * (c * ∫⁻ u, g u ∂ν)
+      = (ν U)⁻¹ * (∫⁻ u, g u ∂ν) * ((c : ℝ≥0∞)⁻¹ * c) := by ring
+    _ = (ν U)⁻¹ * ∫⁻ u, g u ∂ν := by rw [hcc, mul_one]
+
+theorem disintegration (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K]
+    [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V]
+    [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V]
+    [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V]
+    (μ : Measure V) [μ.IsAddHaarMeasure] (ν : Measure K) [ν.IsAddHaarMeasure] (q : V → K)
+    (hq : Continuous q) (hq2 : ∀ (c : K) (x : V), q (c • x) = c ^ 2 * q x)
+    (U : Set K) (s : K → K) (hU : IsSqrtOn U s)
+    (hμ : ∀ c : K, ‖c‖ = 1 → Measure.map (fun x : V => c • x) μ = μ)
+    (h0 : μ {x | q x = 0} = 0) (φ : V → ENNReal) (hφ : Measurable φ) :
+    ∫⁻ x, φ x ∂μ = ∫⁻ t, ∫⁻ x, φ x ∂(fibOf μ ν q U s t) ∂ν := by
+  obtain ⟨hUo, hUc, h1U, hmulU, hinvU, hnormU, hs, hsq⟩ := hU
+  have hUm : MeasurableSet U := hUo.measurableSet
+  have hνU0 : ν U ≠ 0 := hUo.measure_ne_zero ν ⟨1, h1U⟩
+  have hνUt : ν U ≠ ∞ := hUc.measure_lt_top.ne
+  have hqm : Measurable q := hq.measurable
+  have hsm : Measurable s := hs.measurable
+  have h0U : (0 : K) ∉ U := fun h => by simpa using hnormU 0 h
+  have hdiv : Measurable (fun p : K × K => p.1 / p.2) := by
+    simp_rw [div_eq_mul_inv]
+    exact measurable_fst.mul measurable_snd.inv
+  have hself : ∀ t : K, t ∈ t • U := fun t => by simpa using Set.smul_mem_smul_set (a := t) h1U
+
+  have hstab : ∀ u ∈ U, u • U = U := by
+    intro u hu
+    have hu0 : u ≠ 0 := fun h => h0U (h ▸ hu)
+    ext v
+    rw [Set.mem_smul_set_iff_inv_smul_mem₀ hu0, smul_eq_mul]
+    constructor
+    · intro h
+      have := hmulU _ hu _ h
+      rwa [← mul_assoc, mul_inv_cancel₀ hu0, one_mul] at this
+    · intro h
+      exact hmulU _ (hinvU _ hu) _ h
+  have hshift : ∀ t : K, ∀ t' ∈ t • U, t' • U = t • U := by
+    intro t t' ht'
+    obtain ⟨u, hu, rfl⟩ := ht'
+    change (t • u) • U = t • U
+    rw [smul_eq_mul, ← smul_smul, hstab u hu]
+  have hmem : ∀ t : K, t ≠ 0 → ∀ y : K, y ∈ t • U ↔ t / y ∈ U := by
+    intro t ht y
+    rw [Set.mem_smul_set_iff_inv_smul_mem₀ ht, smul_eq_mul]
+    constructor
+    · intro h
+      have := hinvU _ h
+      rwa [mul_inv, inv_inv, ← div_eq_mul_inv] at this
+    · intro h
+      have := hinvU _ h
+      rwa [inv_div, div_eq_inv_mul] at this
+  have hpos : ∀ t : K, t ≠ 0 → ν (t • U) ≠ 0 := fun t ht =>
+    (hUo.smul₀ ht).measure_ne_zero ν ⟨t, hself t⟩
+
+  have hmeas : Measurable (fun t : K => ν (t • U)) := by
+    refine measurable_of_continuousOn_compl_singleton 0 ?_
+    intro t ht
+    have ht0 : t ≠ 0 := ht
+    refine ContinuousAt.continuousWithinAt ?_
+    have hnb : t • U ∈ 𝓝 t := (hUo.smul₀ ht0).mem_nhds (hself t)
+    have hev : (fun _ : K => ν (t • U)) =ᶠ[𝓝 t] fun t' => ν (t' • U) := by
+      filter_upwards [hnb] with t' ht'
+      rw [hshift t t' ht']
+    exact continuousAt_const.congr hev
+
+  have hGm : Measurable (fun p : K × V => (ν (p.1 • U))⁻¹ *
+      {p : K × V | p.1 / q p.2 ∈ U}.indicator (fun p => φ (s (p.1 / q p.2) • p.2)) p) := by
+    refine (hmeas.comp measurable_fst).inv.mul (Measurable.indicator ?_ ?_)
+    · exact hφ.comp ((hsm.comp (hdiv.comp (measurable_fst.prodMk (hqm.comp measurable_snd)))).smul
+        measurable_snd)
+    · exact (hdiv.comp (measurable_fst.prodMk (hqm.comp measurable_snd))) hUm
+
+  have hA : ∀ t : K, ∫⁻ x, φ x ∂(fibOf μ ν q U s t) = ∫⁻ x, (ν (t • U))⁻¹ *
+      {p : K × V | p.1 / q p.2 ∈ U}.indicator (fun p => φ (s (p.1 / q p.2) • p.2)) (t, x) ∂μ := by
+    intro t
+    by_cases ht : t = 0
+    · subst ht
+      rw [fibOf_zero, lintegral_zero_measure]
+      simp [h0U]
+    · have hfm : Measurable (fun x : V => s (t / q x) • x) :=
+        (hsm.comp (hdiv.comp (measurable_const.prodMk hqm))).smul measurable_id
+      have hSm : MeasurableSet (q ⁻¹' (t • U)) := hqm (hUo.smul₀ ht).measurableSet
+      rw [fibOf_ne μ ν q U s ht, lintegral_smul_measure, smul_eq_mul, lintegral_map hφ hfm,
+        ← lintegral_indicator hSm, ← lintegral_const_mul' _ _ (ENNReal.inv_ne_top.mpr (hpos t ht))]
+      refine lintegral_congr fun x => ?_
+      by_cases h : t / q x ∈ U
+      · rw [Set.indicator_of_mem (show x ∈ q ⁻¹' (t • U) from (hmem t ht (q x)).mpr h),
+          Set.indicator_of_mem (show (t, x) ∈ {p : K × V | p.1 / q p.2 ∈ U} from h)]
+      · rw [Set.indicator_of_notMem (show x ∉ q ⁻¹' (t • U) from fun h' => h ((hmem t ht (q x)).mp h')),
+          Set.indicator_of_notMem (show (t, x) ∉ {p : K × V | p.1 / q p.2 ∈ U} from h)]
+
+  have hC : ∀ x : V, q x ≠ 0 → ∫⁻ t, (ν (t • U))⁻¹ *
+      {p : K × V | p.1 / q p.2 ∈ U}.indicator (fun p => φ (s (p.1 / q p.2) • p.2)) (t, x) ∂ν =
+      (ν U)⁻¹ * ∫⁻ u, U.indicator (fun u => φ (s u • x)) u ∂ν := by
+    intro x hx
+    have hset : {r : K | r / q x ∈ U} = q x • U := by
+      ext r
+      rw [Set.mem_ofPred_eq, Set.mem_smul_set_iff_inv_smul_mem₀ hx, smul_eq_mul, div_eq_inv_mul]
+    have hpt : ∀ t : K, (ν (t • U))⁻¹ *
+        {p : K × V | p.1 / q p.2 ∈ U}.indicator (fun p => φ (s (p.1 / q p.2) • p.2)) (t, x) =
+        (ν {r : K | r / q x ∈ U})⁻¹ * U.indicator (fun u => φ (s u • x)) (t / q x) := by
+      intro t
+      by_cases h : t / q x ∈ U
+      · have ht' : t ∈ q x • U := by
+          rw [Set.mem_smul_set_iff_inv_smul_mem₀ hx, smul_eq_mul, ← div_eq_inv_mul]
+          exact h
+        rw [Set.indicator_of_mem (show (t, x) ∈ {p : K × V | p.1 / q p.2 ∈ U} from h),
+          Set.indicator_of_mem h, hset, hshift (q x) t ht']
+      · rw [Set.indicator_of_notMem (show (t, x) ∉ {p : K × V | p.1 / q p.2 ∈ U} from h),
+          Set.indicator_of_notMem h, mul_zero, mul_zero]
+    have hgm : Measurable (U.indicator (fun u => φ (s u • x))) :=
+      (hφ.comp (hsm.smul measurable_const)).indicator hUm
+    have hne : ν {r : K | r / q x ∈ U} ≠ 0 := by
+      rw [hset]
+      exact hpos _ hx
+    rw [lintegral_congr hpt, lintegral_const_mul' _ _ (ENNReal.inv_ne_top.mpr hne)]
+    exact avg_div_eq ν hx hUm hgm
+
+  have hunit : ∀ u ∈ U, ∫⁻ x, φ (s u • x) ∂μ = ∫⁻ x, φ x ∂μ := by
+    intro u hu
+    have hn : ‖s u‖ = 1 := by
+      have h := congrArg norm (hsq u hu)
+      rw [norm_pow, hnormU u hu] at h
+      exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).mp h
+    calc ∫⁻ x, φ (s u • x) ∂μ = ∫⁻ x, φ x ∂(Measure.map (fun x : V => s u • x) μ) :=
+          (lintegral_map hφ (measurable_const_smul (s u))).symm
+      _ = ∫⁻ x, φ x ∂μ := by rw [hμ _ hn]
+  have hae : ∀ᵐ x ∂μ, q x ≠ 0 := by
+    rw [ae_iff]
+    simpa using h0
+  have hM2 : Measurable (Function.uncurry fun (u : K) (x : V) => U.indicator (fun u => φ (s u • x)) u) := by
+    have : (Function.uncurry fun (u : K) (x : V) => U.indicator (fun u => φ (s u • x)) u) =
+        (Prod.fst ⁻¹' U).indicator (fun p : K × V => φ (s p.1 • p.2)) := by
+      funext p
+      by_cases h : p.1 ∈ U
+      · rw [Function.uncurry_apply_pair, Set.indicator_of_mem h,
+          Set.indicator_of_mem (show p ∈ Prod.fst ⁻¹' U from h)]
+      · rw [Function.uncurry_apply_pair, Set.indicator_of_notMem h,
+          Set.indicator_of_notMem (show p ∉ Prod.fst ⁻¹' U from h)]
+    rw [this]
+    exact (hφ.comp ((hsm.comp measurable_fst).smul measurable_snd)).indicator (measurable_fst hUm)
+  calc ∫⁻ x, φ x ∂μ = (ν U)⁻¹ * (ν U * ∫⁻ x, φ x ∂μ) := by
+        rw [← mul_assoc, ENNReal.inv_mul_cancel hνU0 hνUt, one_mul]
+    _ = (ν U)⁻¹ * ∫⁻ u, U.indicator (fun _ => ∫⁻ x, φ x ∂μ) u ∂ν := by
+        rw [lintegral_indicator_const hUm, mul_comm (ν U)]
+    _ = (ν U)⁻¹ * ∫⁻ u, ∫⁻ x, U.indicator (fun u => φ (s u • x)) u ∂μ ∂ν := by
+        congr 1
+        refine lintegral_congr fun u => ?_
+        by_cases hu : u ∈ U
+        · simp [hu, hunit u hu]
+        · simp [hu]
+    _ = (ν U)⁻¹ * ∫⁻ x, ∫⁻ u, U.indicator (fun u => φ (s u • x)) u ∂ν ∂μ := by
+        rw [lintegral_lintegral_swap hM2.aemeasurable]
+    _ = ∫⁻ x, (ν U)⁻¹ * ∫⁻ u, U.indicator (fun u => φ (s u • x)) u ∂ν ∂μ := by
+        rw [lintegral_const_mul' _ _ (ENNReal.inv_ne_top.mpr hνU0)]
+    _ = ∫⁻ x, ∫⁻ t, (ν (t • U))⁻¹ *
+          {p : K × V | p.1 / q p.2 ∈ U}.indicator (fun p => φ (s (p.1 / q p.2) • p.2)) (t, x) ∂ν ∂μ := by
+        refine lintegral_congr_ae ?_
+        filter_upwards [hae] with x hx
+        exact (hC x hx).symm
+    _ = ∫⁻ t, ∫⁻ x, (ν (t • U))⁻¹ *
+          {p : K × V | p.1 / q p.2 ∈ U}.indicator (fun p => φ (s (p.1 / q p.2) • p.2)) (t, x) ∂μ ∂ν :=
+        (lintegral_lintegral_swap hGm.aemeasurable).symm
+    _ = ∫⁻ t, ∫⁻ x, φ x ∂(fibOf μ ν q U s t) ∂ν := lintegral_congr fun t => (hA t).symm
+
+end GlobalTheory.QuadFibre
+end
+
+open MeasureTheory Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.haar_disintegration_averagedFibreMeasures : ∀ (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (ν : Measure K) [ν.IsAddHaarMeasure] (q : V → K), Continuous q → (∀ (c : K) (x : V), q (c • x) = c ^ 2 * q x) → ∀ (U : Set K) (s : K → K), GlobalTheory.QuadFibre.IsSqrtOn U s → (∀ c : K, ‖c‖ = 1 → Measure.map (fun x : V => c • x) μ = μ) → μ {x | q x = 0} = 0 → ∀ φ : V → ENNReal, Measurable φ → ∫⁻ x, φ x ∂μ = ∫⁻ t, ∫⁻ x, φ x ∂(GlobalTheory.QuadFibre.fibOf μ ν q U s t) ∂ν := by
+  atlas_forward_decl GlobalTheory.QuadFibre.disintegration
+end
+
+section
+section
+open MeasureTheory Topology
+open scoped Pointwise
+
+namespace GlobalTheory.QuadFibre
+
+theorem IsSqrtOn.div_mem_of_mem_smul {K : Type} [NormedField K] {U : Set K} {s : K → K}
+    (h : IsSqrtOn U s) {t₀ t y : K} (h0 : t₀ ≠ 0) (ht : t ∈ t₀ • U) (hy : y ∈ t₀ • U) :
+    y ≠ 0 ∧ t / y ∈ U := by
+  obtain ⟨-, -, -, hmul, hinv, hnorm, -, -⟩ := h
+  rw [Set.mem_smul_set] at ht hy
+  obtain ⟨a, ha, rfl⟩ := ht
+  obtain ⟨b, hb, rfl⟩ := hy
+  have hb0 : b ≠ 0 := by
+    intro hb0
+    have := hnorm b hb
+    rw [hb0, norm_zero] at this
+    exact zero_ne_one this
+  refine ⟨smul_ne_zero h0 hb0, ?_⟩
+  simp only [smul_eq_mul]
+  rw [mul_div_mul_left a b h0, div_eq_mul_inv]
+  exact hmul a ha _ (hinv b hb)
+
+theorem IsSqrtOn.smul_eq_of_mem_smul {K : Type} [NormedField K] {U : Set K} {s : K → K}
+    (h : IsSqrtOn U s) {t₀ t : K} (ht : t ∈ t₀ • U) : t • U = t₀ • U := by
+  obtain ⟨-, -, -, hmul, hinv, hnorm, -, -⟩ := h
+  rw [Set.mem_smul_set] at ht
+  obtain ⟨a, ha, rfl⟩ := ht
+  have ha0 : a ≠ 0 := by
+    intro ha0
+    have := hnorm a ha
+    rw [ha0, norm_zero] at this
+    exact zero_ne_one this
+  have haU : a • U = U := by
+    ext x
+    rw [Set.mem_smul_set]
+    constructor
+    · rintro ⟨b, hb, rfl⟩
+      exact hmul a ha b hb
+    · intro hx
+      refine ⟨a⁻¹ * x, hmul _ (hinv a ha) x hx, ?_⟩
+      rw [smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ ha0, one_mul]
+  rw [smul_eq_mul, mul_smul, haU]
+
+theorem IsSqrtOn.norm_sqrt {K : Type} [NormedField K] {U : Set K} {s : K → K}
+    (h : IsSqrtOn U s) {a : K} (ha : a ∈ U) : ‖s a‖ = 1 := by
+  obtain ⟨-, -, -, -, -, hnorm, -, hsq⟩ := h
+  have h2 : ‖s a‖ ^ 2 = 1 := by rw [← norm_pow, hsq a ha, hnorm a ha]
+  have h0 := norm_nonneg (s a)
+  nlinarith [sq_nonneg (‖s a‖ - 1)]
+
+theorem exists_integrable_bound_unit_smul {K V : Type} [NormedField K] [ProperSpace K]
+    [AddCommGroup V] [Module K V] [TopologicalSpace V] [ContinuousSMul K V] [T2Space V]
+    [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [IsFiniteMeasureOnCompacts μ]
+    {φ : V → ℝ} (hφ : Continuous φ) (hc : HasCompactSupport φ) :
+    ∃ g : V → ℝ, Integrable g μ ∧ ∀ (a : K) (x : V), ‖a‖ = 1 → ‖φ (a • x)‖ ≤ g x := by
+  obtain ⟨C, hC⟩ := hφ.bounded_above_of_compact_support hc
+  have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
+  set T : Set V := Metric.sphere (0 : K) 1 • tsupport φ with hTdef
+  have hT : IsCompact T := by
+    have := ((isCompact_sphere (0 : K) 1).prod hc).image (f := fun p : K × V => p.1 • p.2) continuous_smul
+    rwa [Set.image_smul_prod] at this
+  refine ⟨T.indicator (fun _ => C), ?_, ?_⟩
+  · exact (integrable_indicator_iff hT.isClosed.measurableSet).mpr
+      (integrableOn_const hT.measure_lt_top.ne)
+  · intro a x ha
+    by_cases hx : φ (a • x) = 0
+    · rw [hx, norm_zero]
+      exact Set.indicator_nonneg (fun _ _ => hC0) x
+    · have ha0 : a ≠ 0 := by
+        rintro rfl
+        rw [norm_zero] at ha
+        exact zero_ne_one ha
+      have hmem : x ∈ T := by
+        refine Set.mem_smul.mpr ⟨a⁻¹, ?_, a • x, subset_tsupport _ (Function.mem_support.mpr hx),
+          inv_smul_smul₀ ha0 x⟩
+        rw [mem_sphere_zero_iff_norm, norm_inv, ha, inv_one]
+      rw [Set.indicator_of_mem hmem]
+      exact hC _
+
+theorem integrable_and_continuousOn_fibOf (K V : Type) [NontriviallyNormedField K]
+    [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V]
+    [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V]
+    [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V]
+    [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (ν : Measure K) [ν.IsAddHaarMeasure]
+    (q : V → K) (hq : Continuous q) (_hh : ∀ (c : K) (x : V), q (c • x) = c ^ 2 * q x)
+    (U : Set K) (s : K → K) (h : IsSqrtOn U s) (φ : V → ℝ) (hφ : Continuous φ)
+    (hc : HasCompactSupport φ) :
+    (∀ t : K, t ≠ 0 → Integrable φ (fibOf μ ν q U s t)) ∧
+      ContinuousOn (fun t => ∫ x, φ x ∂(fibOf μ ν q U s t)) {t : K | t ≠ 0} := by
+  have h' := h
+  obtain ⟨hUo, -, h1, -, -, -, hs, -⟩ := h'
+  have hmf : ∀ t' : K, Measurable (fun x : V => s (t' / q x) • x) := by
+    intro t'
+    have hd : Measurable (fun x : V => t' / q x) := by
+      simp_rw [div_eq_mul_inv]
+      exact (hq.measurable.inv).const_mul t'
+    exact (hs.measurable.comp hd).smul measurable_id
+  obtain ⟨g, hg, hgb⟩ := exists_integrable_bound_unit_smul (K := K) μ hφ hc
+  have hset : ∀ t : K, t ≠ 0 → MeasurableSet (q ⁻¹' (t • U)) := fun t ht =>
+    (hUo.smul₀ ht).measurableSet.preimage hq.measurable
+  have hself : ∀ t : K, t ∈ t • U := fun t => by
+    simpa using Set.smul_mem_smul_set (a := t) h1
+  have hν : ∀ t : K, t ≠ 0 → ν (t • U) ≠ 0 := fun t ht =>
+    ((hUo.smul₀ ht).measure_pos ν ⟨t, hself t⟩).ne'
+  have hbd : ∀ t t' : K, t ≠ 0 → t' ∈ t • U → ∀ x ∈ q ⁻¹' (t • U), ‖φ (s (t' / q x) • x)‖ ≤ g x :=
+    fun t t' ht ht' x hx => hgb _ x (h.norm_sqrt (h.div_mem_of_mem_smul ht ht' hx).2)
+  have hint : ∀ t : K, t ≠ 0 →
+      Integrable (fun x => φ (s (t / q x) • x)) (μ.restrict (q ⁻¹' (t • U))) := by
+    intro t ht
+    refine Integrable.mono' hg.restrict (hφ.measurable.comp (hmf t)).aestronglyMeasurable ?_
+    exact (ae_restrict_iff' (hset t ht)).mpr
+      (Filter.Eventually.of_forall (fun x hx => hbd t t ht (hself t) x hx))
+  have heq : ∀ t : K, t ≠ 0 → ∀ t' ∈ t • U, ∫ x, φ x ∂(fibOf μ ν q U s t') =
+      (ν (t • U))⁻¹.toReal • ∫ x in q ⁻¹' (t • U), φ (s (t' / q x) • x) ∂μ := by
+    intro t ht t' ht'
+    have ht'0 : t' ≠ 0 := (h.div_mem_of_mem_smul ht ht' ht').1
+    rw [fibOf_ne μ ν q U s ht'0, h.smul_eq_of_mem_smul ht', integral_smul_measure,
+      integral_map (hmf t').aemeasurable hφ.aestronglyMeasurable]
+  refine ⟨fun t ht => ?_, fun t ht => ?_⟩
+  · rw [fibOf_ne μ ν q U s ht]
+    refine Integrable.smul_measure ?_ (ENNReal.inv_ne_top.mpr (hν t ht))
+    exact (integrable_map_measure hφ.aestronglyMeasurable (hmf t).aemeasurable).mpr (hint t ht)
+  · have ht0 : t ≠ 0 := ht
+    apply ContinuousAt.continuousWithinAt
+    have hnhds : t • U ∈ 𝓝 t := (hUo.smul₀ ht0).mem_nhds (hself t)
+    have hev : (fun t' => (ν (t • U))⁻¹.toReal • ∫ x in q ⁻¹' (t • U), φ (s (t' / q x) • x) ∂μ)
+        =ᶠ[𝓝 t] (fun t' => ∫ x, φ x ∂(fibOf μ ν q U s t')) :=
+      Filter.eventually_of_mem hnhds (fun t' ht' => (heq t ht0 t' ht').symm)
+    refine ContinuousAt.congr (ContinuousAt.const_smul (continuousAt_of_dominated
+      (F := fun t' x => φ (s (t' / q x) • x)) (bound := g) ?_ ?_ hg.restrict ?_)
+      ((ν (t • U))⁻¹.toReal)) hev
+    · exact Filter.Eventually.of_forall
+        (fun t' => (hφ.measurable.comp (hmf t')).aestronglyMeasurable)
+    · exact Filter.eventually_of_mem hnhds (fun t' ht' => (ae_restrict_iff' (hset t ht0)).mpr
+        (Filter.Eventually.of_forall (fun x hx => hbd t t' ht0 ht' x hx)))
+    · exact Filter.Eventually.of_forall (fun x =>
+        (hφ.comp ((hs.comp (continuous_id.div_const _)).smul continuous_const)).continuousAt)
+
+end GlobalTheory.QuadFibre
+end
+
+open MeasureTheory Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integrable_continuousOn_averagedFibreIntegral : ∀ (K V : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [AddCommGroup V] [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (ν : Measure K) [ν.IsAddHaarMeasure] (q : V → K), Continuous q → (∀ (c : K) (x : V), q (c • x) = c ^ 2 * q x) → ∀ (U : Set K) (s : K → K), GlobalTheory.QuadFibre.IsSqrtOn U s → ∀ φ : V → ℝ, Continuous φ → HasCompactSupport φ → (∀ t : K, t ≠ 0 → Integrable φ (GlobalTheory.QuadFibre.fibOf μ ν q U s t)) ∧ ContinuousOn (fun t => ∫ x, φ x ∂(GlobalTheory.QuadFibre.fibOf μ ν q U s t)) {t : K | t ≠ 0} := by
+  atlas_forward_decl GlobalTheory.QuadFibre.integrable_and_continuousOn_fibOf
+end
+
+section
+section
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace GlobalTheory
+
+theorem isFibreFamily_univ_of_null_cone (K V : Type) [NormedField K] [IsUltrametricDist K]
+    [MeasurableSpace K] [BorelSpace K] [TopologicalSpace V] [MeasurableSpace V] [BorelSpace V]
+    (μ : Measure V) (ν : Measure K) (q : V → K) (hq : Continuous q) (h0 : μ {x | q x = 0} = 0)
+    (U : Set V) (B : Set K) (fib : K → Measure V) (hU : {x | q x ≠ 0} ⊆ U) (hB : {t | t ≠ 0} ⊆ B)
+    (h : IsFibreFamily μ q id U ν B fib) :
+    IsFibreFamily μ q id Set.univ ν {t | t ≠ 0} fib := by
+  classical
+  obtain ⟨h1, h2, h3⟩ := h
+  have hae : ∀ b, ∀ᵐ x ∂(fib b), q x = b := by
+    intro b
+    refine measure_mono_null ?_ (h1 b)
+    intro x hx hx'
+    exact hx hx'.1
+  refine ⟨fun b => ?_, fun φ hφ => ?_, fun φ hc hcs _ => ?_⟩
+  · refine measure_mono_null ?_ (h1 b)
+    intro x hx hx'
+    exact hx ⟨hx'.1, trivial⟩
+  · have hμ : μ.restrict U = μ := by
+      apply Measure.restrict_eq_self_of_ae_mem
+      refine measure_mono_null ?_ h0
+      intro x hx
+      by_contra hx'
+      exact hx (hU hx')
+    rw [← h2 φ hφ, hμ, Measure.restrict_univ]
+  · have key : ∀ b0 : K, b0 ≠ 0 → ∃ D : Set K, D ∈ nhds b0 ∧ b0 ∈ D ∧ D ⊆ B ∧
+        (∀ b ∈ D, Integrable φ (fib b)) ∧ ContinuousOn (fun b => ∫ v, φ v ∂(fib b)) D := by
+      intro b0 hb0
+      have hr : 0 < ‖b0‖ := norm_pos_iff.mpr hb0
+      have hD : IsClopen (Metric.ball b0 ‖b0‖) := IsUltrametricDist.isClopen_ball b0 _
+      set D := Metric.ball b0 ‖b0‖ with hDdef
+      have hD0 : ∀ t ∈ D, t ≠ 0 := by
+        rintro t ht rfl
+        simp [hDdef] at ht
+      have hE : IsClopen (q ⁻¹' D) := hD.preimage hq
+      let ψ : V → ℝ := (q ⁻¹' D).indicator φ
+      have hψc : Continuous ψ := hE.continuous_indicator hc
+      have hψs : HasCompactSupport ψ := by
+        refine hcs.mono ?_
+        intro x hx hx'
+        apply hx
+        simp [ψ, Set.indicator, hx']
+      have hψt : tsupport ψ ⊆ U := by
+        have : tsupport ψ ⊆ q ⁻¹' D :=
+          closure_minimal Set.support_indicator_subset hE.isClosed
+        intro x hx
+        exact hU (hD0 _ (this hx))
+      obtain ⟨hi, hco⟩ := h3 ψ hψc hψs hψt
+      have hDB : D ⊆ B := fun t ht => hB (hD0 t ht)
+      have heq : ∀ b ∈ D, ψ =ᵐ[fib b] φ := by
+        intro b hb
+        filter_upwards [hae b] with x hx
+        have : x ∈ q ⁻¹' D := by
+          show q x ∈ D
+          rw [hx]; exact hb
+        simp [ψ, Set.indicator_of_mem this]
+      refine ⟨D, Metric.ball_mem_nhds _ hr, Metric.mem_ball_self hr, hDB, fun b hb => ?_, ?_⟩
+      · exact (integrable_congr (heq b hb)).mp (hi b (hDB hb))
+      · refine (hco.mono hDB).congr fun b hb => ?_
+        exact (integral_congr_ae (heq b hb)).symm
+    refine ⟨fun b hb => ?_, fun b hb => ?_⟩
+    · obtain ⟨D, -, hbD, -, hi, -⟩ := key b hb
+      exact hi b hbD
+    · obtain ⟨D, hD, -, -, -, hco⟩ := key b hb
+      exact (hco.continuousAt hD).continuousWithinAt
+
+end GlobalTheory
+end
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isFibreFamily_univ_of_null_cone' : ∀ (K V : Type) [NormedField K] [IsUltrametricDist K] [MeasurableSpace K] [BorelSpace K] [TopologicalSpace V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) (ν : Measure K) (q : V → K), Continuous q → μ {x | q x = 0} = 0 → ∀ (U : Set V) (B : Set K) (fib : K → Measure V), {x | q x ≠ 0} ⊆ U → {t | t ≠ 0} ⊆ B → IsFibreFamily μ q id U ν B fib → IsFibreFamily μ q id Set.univ ν {t | t ≠ 0} fib := by
+  atlas_forward_decl GlobalTheory.isFibreFamily_univ_of_null_cone
+end
+
+section
+section
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace GlobalTheory
+
+theorem eq_zero_of_setIntegral_compact_eq_zero {K : Type} [MetricSpace K] [ProperSpace K]
+    [MeasurableSpace K] [BorelSpace K] (ν : Measure K) [IsFiniteMeasureOnCompacts ν]
+    [ν.IsOpenPosMeasure] {B : Set K} (hB : IsOpen B) {h : K → ℂ} (hc : ContinuousOn h B)
+    (hz : ∀ S : Set K, IsCompact S → S ⊆ B → ∫ b in S, h b ∂ν = 0) {t : K} (ht : t ∈ B) :
+    h t = 0 := by
+  by_contra hne
+  have hpos : 0 < ‖h t‖ := norm_pos_iff.2 hne
+  have hca : ContinuousAt h t := hc.continuousAt (hB.mem_nhds ht)
+  obtain ⟨ε, hε, hball⟩ := Metric.continuousAt_iff.1 hca (‖h t‖ / 2) (half_pos hpos)
+  obtain ⟨δ, hδ, hδB⟩ := Metric.isOpen_iff.1 hB t ht
+  have hρ0 : 0 < min (ε / 2) (δ / 2) := lt_min (half_pos hε) (half_pos hδ)
+  have hmemS : ∀ b ∈ Metric.closedBall t (min (ε / 2) (δ / 2)), dist b t < ε ∧ dist b t < δ := by
+    intro b hb
+    have hb' := Metric.mem_closedBall.1 hb
+    constructor
+    · linarith [min_le_left (ε / 2) (δ / 2)]
+    · linarith [min_le_right (ε / 2) (δ / 2)]
+  have hSc := isCompact_closedBall t (min (ε / 2) (δ / 2))
+  have hSB : Metric.closedBall t (min (ε / 2) (δ / 2)) ⊆ B := fun b hb =>
+    hδB (Metric.mem_ball.2 (hmemS b hb).2)
+  have hνS : 0 < ν (Metric.closedBall t (min (ε / 2) (δ / 2))) :=
+    Metric.measure_closedBall_pos ν t hρ0
+  have hνSf : ν (Metric.closedBall t (min (ε / 2) (δ / 2))) < ⊤ := hSc.measure_lt_top
+  have hIh : IntegrableOn h (Metric.closedBall t (min (ε / 2) (δ / 2))) ν :=
+    (hc.mono hSB).integrableOn_compact hSc
+  have hIc : IntegrableOn (fun _ => h t) (Metric.closedBall t (min (ε / 2) (δ / 2))) ν :=
+    integrableOn_const hνSf.ne
+  have key := integral_sub hIh hIc
+  rw [hz _ hSc hSB, setIntegral_const, zero_sub] at key
+  have hbound := norm_setIntegral_le_of_norm_le_const hνSf (f := fun b => h b - h t)
+    (C := ‖h t‖ / 2) (fun b hb => by rw [← dist_eq_norm]; exact (hball (hmemS b hb).1).le)
+  rw [key, norm_neg, norm_smul, Real.norm_of_nonneg measureReal_nonneg] at hbound
+  have hreal : 0 < ν.real (Metric.closedBall t (min (ε / 2) (δ / 2))) := by
+    rw [measureReal_def]; exact ENNReal.toReal_pos hνS.ne' hνSf.ne
+  nlinarith [mul_pos hreal hpos]
+
+theorem contDensityOn_eq_fibre_mass : ∀ (K V : Type) [NormedField K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [TopologicalSpace V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) (ν : Measure K) [ν.IsAddHaarMeasure] (q : V → K), Continuous q → ∀ (fib : K → Measure V), IsFibreFamily μ q id Set.univ ν {t | t ≠ 0} fib → ∀ (L : Set V), IsCompact L → IsOpen L → ∀ g : K → ℂ, IsContDensityOn μ q id ν {t | t ≠ 0} (L.indicator 1) g → ∀ t : K, t ≠ 0 → g t = (((fib t L).toReal : ℝ) : ℂ) := by
+  intro K V _ _ _ _ _ _ _ _ μ ν _ q hq fib hfib L hLc hLo g hg t ht
+  obtain ⟨hf1, hf2, hf3⟩ := hfib
+  obtain ⟨hgc, hgS⟩ := hg
+  have hLm : MeasurableSet L := hLo.measurableSet
+  have hBo : IsOpen {t : K | t ≠ 0} := isOpen_ne
+  have hφc : Continuous (L.indicator (1 : V → ℝ)) :=
+    IsClopen.continuous_indicator ⟨hLc.isClosed, hLo⟩ continuous_const
+  have hφs : HasCompactSupport (L.indicator (1 : V → ℝ)) :=
+    HasCompactSupport.intro hLc (fun x hx => Set.indicator_of_notMem hx _)
+  obtain ⟨hint, hcont⟩ := hf3 _ hφc hφs (Set.subset_univ _)
+  have hm_eq : (fun b => ∫ v, L.indicator (1 : V → ℝ) v ∂(fib b)) = fun b => (fib b L).toReal := by
+    funext b; rw [integral_indicator_one hLm]; rfl
+  have hmc : ContinuousOn (fun b => (fib b L).toReal) {t : K | t ≠ 0} := by
+    rw [← hm_eq]; exact hcont
+  have hfin : ∀ b ∈ {t : K | t ≠ 0}, fib b L < ⊤ := by
+    intro b hb
+    have hi := hint b hb
+    rw [integrable_indicator_iff hLm] at hi
+    exact ((integrableOn_const_iff (C := (1 : ℝ))).1 hi).resolve_left (by simp)
+  have hmcC : ContinuousOn (fun b => (((fib b L).toReal : ℝ) : ℂ)) {t : K | t ≠ 0} :=
+    Complex.continuous_ofReal.comp_continuousOn hmc
+  have key : ∀ S : Set K, IsCompact S → S ⊆ {t : K | t ≠ 0} →
+      ∫ b in S, (g b - (((fib b L).toReal : ℝ) : ℂ)) ∂ν = 0 := by
+    intro S hS hSB
+    have hSm : MeasurableSet S := hS.measurableSet
+    rw [integral_sub ((hgc.mono hSB).integrableOn_compact hS)
+      ((hmcC.mono hSB).integrableOn_compact hS), sub_eq_zero, ← hgS S hS hSB, Set.image_id]
+    have hind : L.indicator (1 : V → ℂ) = L.indicator (fun _ => (1 : ℂ)) := rfl
+    rw [hind, integral_indicator_const _ hLm, integral_complex_ofReal, Complex.real_smul, mul_one]
+    congr 1
+    have haem : AEMeasurable (fun b => fib b L) (ν.restrict S) :=
+      ((hmc.mono hSB).aemeasurable hSm).ennreal_ofReal.congr
+        ((ae_restrict_mem hSm).mono fun b hb => ENNReal.ofReal_toReal (hfin b (hSB hb)).ne)
+    rw [integral_toReal haem ((ae_restrict_mem hSm).mono fun b hb => hfin b (hSB hb)),
+      measureReal_def, Measure.restrict_apply hLm]
+    congr 1
+    have hTm : MeasurableSet (L ∩ q ⁻¹' S) := hLm.inter (hq.measurable hSm)
+    have h2 := hf2 ((L ∩ q ⁻¹' S).indicator 1) (measurable_one.indicator hTm)
+    rw [Measure.restrict_univ, lintegral_indicator_one hTm] at h2
+    rw [h2, ← lintegral_indicator hSm]
+    refine lintegral_congr fun b => ?_
+    rw [lintegral_indicator_one hTm]
+    by_cases hb : b ∈ S
+    · rw [Set.indicator_of_mem hb]
+      refine measure_inter_conull (measure_mono_null (Set.compl_subset_compl.2 ?_) (hf1 b))
+      intro v hv
+      simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_singleton_iff, id] at hv
+      simp only [Set.mem_preimage, hv.1, hb]
+    · rw [Set.indicator_of_notMem hb]
+      refine measure_mono_null (fun v hv => ?_) (hf1 b)
+      simp only [Set.mem_compl_iff, Set.mem_inter_iff, Set.mem_preimage, Set.mem_singleton_iff,
+        id, Set.mem_univ, and_true]
+      intro hqv
+      exact hb (hqv ▸ hv.2)
+  exact sub_eq_zero.1 (eq_zero_of_setIntegral_compact_eq_zero ν hBo (hgc.sub hmcC) key
+    (show t ∈ {t : K | t ≠ 0} from ht))
+
+end GlobalTheory
+end
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.contDensity_eq_fibre_measure_of_compact_open : ∀ (K V : Type) [NormedField K] [ProperSpace K] [MeasurableSpace K] [BorelSpace K] [TopologicalSpace V] [T2Space V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) (ν : Measure K) [ν.IsAddHaarMeasure] (q : V → K), Continuous q → ∀ (fib : K → Measure V), IsFibreFamily μ q id Set.univ ν {t | t ≠ 0} fib → ∀ (L : Set V), IsCompact L → IsOpen L → ∀ g : K → ℂ, IsContDensityOn μ q id ν {t | t ≠ 0} (L.indicator 1) g → ∀ t : K, t ≠ 0 → g t = (((fib t L).toReal : ℝ) : ℂ) := by
+  atlas_forward_decl GlobalTheory.contDensityOn_eq_fibre_mass
+end
+
+section
 open scoped TensorProduct
 open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
@@ -256,3 +1003,5 @@ theorem localDensity_iff :
     exact ⟨b1, b2⟩
 
 end GlobalTheory.LocalDensityCompare
+end
+end

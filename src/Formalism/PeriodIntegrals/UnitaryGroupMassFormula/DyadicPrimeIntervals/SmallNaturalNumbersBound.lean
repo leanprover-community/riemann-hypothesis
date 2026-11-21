@@ -1,10 +1,40 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicPrimeIntervals.ThetaDiff
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicPrimeIntervals.Run1
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicPrimeIntervals.Run2
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicPrimeIntervals.Run3
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicPrimeIntervals.Run4
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicPrimeIntervals.SmallLoop
 
+section
+namespace PI.PrimesDyadicRS.K
+
+theorem run1 : run 32768 1612 32766 2 1 = true := by decide +kernel
+
+end PI.PrimesDyadicRS.K
+end
+
+section
+namespace PI.PrimesDyadicRS.K
+
+theorem run2 : run 65536 3030 32768 32768 1612 = true := by decide +kernel
+
+end PI.PrimesDyadicRS.K
+end
+
+section
+namespace PI.PrimesDyadicRS.K
+
+theorem run3 : run 98304 4388 32768 65536 3030 = true := by decide +kernel
+
+end PI.PrimesDyadicRS.K
+end
+
+section
+namespace PI.PrimesDyadicRS.K
+
+theorem run4 : run 131072 5709 32768 98304 4388 = true := by decide +kernel
+
+end PI.PrimesDyadicRS.K
+end
+
+section
 namespace PI.PrimesDyadicRS.K
 
 open Real
@@ -125,3 +155,4 @@ theorem tests : ∀ m, 41 ≤ m → m < 131072 → tstR m (D m) = true := by
 
 
 end PI.PrimesDyadicRS.K
+end

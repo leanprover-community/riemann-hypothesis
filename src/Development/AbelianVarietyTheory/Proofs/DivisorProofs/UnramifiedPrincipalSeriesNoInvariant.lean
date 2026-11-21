@@ -1,7 +1,115 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalSeriesZeroOfCoordinateZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalSeriesCoordinateNearInfinity
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WEMulNUMulTD
+import BuildAid.ForwardExisting
 
+section
+section
+noncomputable section
+
+open Matrix
+
+namespace GlobalTheory.PrinTwo
+
+theorem eq_zero_of_ev_one_of_coord {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (μ₁ μ₂ : kˣ →* ℂˣ) (f : PSp μ₁ μ₂) (h1 : ev f 1 = 0)
+    (hc : ∀ x : k, coord f x = 0) : f = 0 := by
+  apply ext_ev
+  intro g
+  have hz : ev (0 : PSp μ₁ μ₂) g = 0 := by
+    have := ev_smul (0 : ℂ) (0 : PSp μ₁ μ₂) g
+    simpa using this
+  rw [hz]
+  have hdet : (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k).det ≠ 0 := (Matrix.isUnit_iff_isUnit_det _).1 g.isUnit |>.ne_zero
+  rw [Matrix.det_fin_two] at hdet
+  by_cases hr : (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 1 0 = 0
+  · rw [hr, mul_zero, sub_zero] at hdet
+    have hp : (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 0 0 ≠ 0 := left_ne_zero_of_mul hdet
+    have hs : (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 1 1 ≠ 0 := right_ne_zero_of_mul hdet
+    have hg : g = bor (Units.mk0 _ hp) (Units.mk0 _ hs) ((g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 0 1) * 1 := by
+      ext i j; fin_cases i <;> fin_cases j <;> simp [hr]
+    rw [hg, ev_bor, h1, mul_zero]
+  · set D := (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 0 0 * (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 1 1 -
+      (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 0 1 * (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 1 0 with hD
+    have hA : -D / (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 1 0 ≠ 0 := div_ne_zero (neg_ne_zero.2 hdet) hr
+    have hg : g = bor (Units.mk0 _ hA) (Units.mk0 _ hr) ((g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 0 0) *
+        (wE * nU ((g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 1 1 / (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 1 0)) := by
+      ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two, hD] <;> field_simp <;> ring
+    rw [hg, ev_bor]
+    have := hc ((g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 1 1 / (g : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) 1 0)
+    rw [coord] at this
+    rw [this, mul_zero]
+
+end GlobalTheory.PrinTwo
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.principal_series_zero_of_coordinate_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (μ₁ μ₂ : kˣ →* ℂˣ) (f : GlobalTheory.PrinTwo.PSp μ₁ μ₂), GlobalTheory.PrinTwo.ev f 1 = 0 → (∀ x : k, GlobalTheory.PrinTwo.coord f x = 0) → f = 0 := by
+  atlas_forward_decl GlobalTheory.PrinTwo.eq_zero_of_ev_one_of_coord
+end
+
+section
+section
+noncomputable section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Matrix
+open scoped Topology
+
+namespace GlobalTheory.PrinTwo
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem nL_inv (x : k) : ((nL x)⁻¹ : GL (Fin (1 + 1)) k) = nL (-x) := by
+  rw [inv_eq_iff_mul_eq_one]
+  ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
+
+theorem continuous_nL : Continuous (nL : k → GL (Fin (1 + 1)) k) := by
+  have h : Continuous fun x : k => ((nL x : GL (Fin (1 + 1)) k) : Matrix (Fin (1 + 1)) (Fin (1 + 1)) k) := by
+    refine continuous_pi fun i => continuous_pi fun j => ?_
+    fin_cases i <;> fin_cases j <;> simp <;> fun_prop
+  refine Units.continuous_iff.2 ⟨h, ?_⟩
+  simp only [nL_inv]
+  exact h.comp continuous_neg
+
+theorem nL_zero : (nL (0 : k) : GL (Fin (1 + 1)) k) = 1 := by
+  ext i j; fin_cases i <;> fin_cases j <;> simp
+
+theorem exists_ev_nL_eq {μ₁ μ₂ : kˣ →* ℂˣ} (f : PSp μ₁ μ₂) :
+    ∃ r : kˣ, ∀ z : k, valuation k z < valuation k (r : k) → ev f (nL z) = ev f 1 := by
+  have hS : IsOpen {g : GL (Fin (1 + 1)) k | psRep μ₁ μ₂ g f = f} := isSmooth_parInd _ _ f
+  have hU : nL ⁻¹' {g : GL (Fin (1 + 1)) k | psRep μ₁ μ₂ g f = f} ∈ 𝓝 (0 : k) :=
+    (hS.preimage continuous_nL).mem_nhds (by simp [nL_zero])
+  obtain ⟨γ, hγ⟩ := (IsValuativeTopology.mem_nhds_zero_iff _).mp hU
+  obtain ⟨y, hy⟩ := ValuativeRel.valuation_surjective (γ : ValueGroupWithZero k)
+  have hy0 : y ≠ 0 := by
+    rintro rfl
+    exact γ.ne_zero (by simpa using hy.symm)
+  refine ⟨Units.mk0 y hy0, fun z hz => ?_⟩
+  have hz' : psRep μ₁ μ₂ (nL z) f = f := hγ (by rw [← hy]; exact hz)
+  rw [← one_mul (nL z), ← ev_act, hz']
+
+theorem coord_eq_of_far : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    (μ₁ μ₂ : kˣ →* ℂˣ) (f : GlobalTheory.PrinTwo.PSp μ₁ μ₂), ∃ R : kˣ, ∀ x : kˣ,
+    ValuativeRel.valuation k (R : k) < ValuativeRel.valuation k (x : k) →
+      GlobalTheory.PrinTwo.coord f x = GlobalTheory.PrinTwo.bchar μ₁ μ₂ (-x⁻¹) x * GlobalTheory.PrinTwo.ev f 1 := by
+  intro k _ _ _ _ μ₁ μ₂ f
+  obtain ⟨r, hr⟩ := exists_ev_nL_eq f
+  refine ⟨r⁻¹, fun x hx => ?_⟩
+  rw [coord, wE_mul_nU_eq, ev_bor, hr]
+  have hx0 : (0 : ValueGroupWithZero k) < valuation k (x : k) := by simp [zero_lt_iff]
+  have hr0 : (0 : ValueGroupWithZero k) < valuation k (r : k) := by simp [zero_lt_iff]
+  simp only [Units.val_inv_eq_inv_val, map_inv₀] at hx ⊢
+  exact (inv_lt_comm₀ hr0 hx0).mp hx
+
+end GlobalTheory.PrinTwo
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.principal_series_coordinate_near_infinity : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (μ₁ μ₂ : kˣ →* ℂˣ) (f : GlobalTheory.PrinTwo.PSp μ₁ μ₂), ∃ R : kˣ, ∀ x : kˣ, ValuativeRel.valuation k (R : k) < ValuativeRel.valuation k (x : k) → GlobalTheory.PrinTwo.coord f x = GlobalTheory.PrinTwo.bchar μ₁ μ₂ (-x⁻¹) x * GlobalTheory.PrinTwo.ev f 1 := by
+  atlas_forward_decl GlobalTheory.PrinTwo.coord_eq_of_far
+end
+
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel GlobalTheory.PrinTwo
@@ -83,3 +191,5 @@ end GlobalTheory.PrinTwo.NoFix
 theorem GlobalTheory.PrinTwo.NoFix.eq_zero_of_nU_fixed : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (μ₁ μ₂ : kˣ →* ℂˣ), GlobalTheory.SplitWeil.IsUnram μ₁ → GlobalTheory.SplitWeil.IsUnram μ₂ → μ₂ ≠ μ₁ * GlobalTheory.SmGL.absPow k 1 → ∀ f : GlobalTheory.PrinTwo.PSp μ₁ μ₂, (∀ x : k, GlobalTheory.PrinTwo.psRep μ₁ μ₂ (GlobalTheory.PrinTwo.nU x) f = f) → f = 0 :=
   fun _ _ _ _ _ _ _ h₁ h₂ hne f hf =>
     GlobalTheory.PrinTwo.NoFix.eq_zero_of_fixed_of GlobalTheory.T.principal_series_zero_of_coordinate_zero GlobalTheory.T.principal_series_coordinate_near_infinity h₁ h₂ hne f hf
+end
+end

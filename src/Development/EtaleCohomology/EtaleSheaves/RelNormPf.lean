@@ -1,5 +1,89 @@
-import Development.EtaleCohomology.EtaleSheaves.RelNormPfAff
+import Development.EtaleCohomology.EtaleSheaves.SteinPf
 
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry
+
+namespace LateralTheory.E.RelNormPf
+
+def ClosedAt {X T : Scheme.{0}} (c : X ⟶ T) (W : T.Opens) : Prop :=
+  ∀ b : Γ(X, c ⁻¹ᵁ W), (c.app W).hom.IsIntegralElem b → ∃ a, c.app W a = b
+
+
+
+
+def NormClosed : Prop := ∀ {Z S : Scheme.{0}} (g : Z ⟶ S) [QuasiCompact g] [QuasiSeparated g], IsIntegral Z →
+  ∀ V : g.normalization.Opens, IsAffineOpen V → ∀ b : Γ(Z, g.toNormalization ⁻¹ᵁ V),
+    (g.toNormalization.app V).hom.IsIntegralElem b → ∃ a, g.toNormalization.app V a = b
+
+def NormLocal : Prop := ∀ {Z S : Scheme.{0}} (g : Z ⟶ S) [QuasiCompact g] [QuasiSeparated g], IsIntegral Z →
+  ∀ U : S.Opens, IsAffineOpen U → ∀ t : Γ(g.normalization, g.fromNormalization ⁻¹ᵁ U),
+    ClosedAt g.toNormalization (g.normalization.basicOpen t)
+
+
+theorem RelNorm_of_closed (hN : NormClosed) : LateralTheory.E.SteinPf.RelNorm := by
+  intro Z S g _ _ hZ
+  haveI : IsIntegral Z := hZ.1
+  refine ⟨g.normalization, g.toNormalization, g.fromNormalization, inferInstance, inferInstance, inferInstance,
+    g.toNormalization_fromNormalization, fun V hV hne => ⟨?_, ?_, hN g hZ.1 V hV⟩⟩
+  · obtain ⟨x, hx⟩ := hne
+    obtain ⟨z, hz⟩ := g.toNormalization.denseRange.exists_mem_open V.isOpen ⟨x, hx⟩
+    exact ⟨z, hz⟩
+  · haveI : IsSchemeTheoreticallyDominant g.toNormalization := .of_isDominant _
+    exact g.toNormalization.app_injective V
+
+end LateralTheory.E.RelNormPf
+end
+end
+
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry
+
+namespace LateralTheory.E.RelNormPf
+
+open AlgebraicGeometry.Scheme.Hom in
+theorem closedAt_preimage {Z S : Scheme.{0}} (g : Z ⟶ S) [QuasiCompact g] [QuasiSeparated g]
+    (U : S.Opens) (hU : IsAffineOpen U) : ClosedAt g.toNormalization (g.fromNormalization ⁻¹ᵁ U) := by
+  intro b hb
+  letI := (g.app U).hom.toAlgebra
+  have hle : g ⁻¹ᵁ U ≤ g.toNormalization ⁻¹ᵁ g.fromNormalization ⁻¹ᵁ U := by
+    simp [← Scheme.Hom.comp_preimage]
+  have hle' : g.toNormalization ⁻¹ᵁ g.fromNormalization ⁻¹ᵁ U ≤ g ⁻¹ᵁ U := by
+    simp [← Scheme.Hom.comp_preimage]
+  set ρ := Z.presheaf.map (homOfLE hle).op with hρ
+  have key := g.normalizationObjIso_hom_val hU
+  have hρinj : Function.Injective ρ := by
+    intro u v huv
+    have := congrArg (Z.presheaf.map (homOfLE hle').op) huv
+    have h1 : (homOfLE hle).op ≫ (homOfLE hle').op = 𝟙 (Opposite.op (g.toNormalization ⁻¹ᵁ g.fromNormalization ⁻¹ᵁ U)) :=
+      Quiver.Hom.unop_inj (Subsingleton.elim _ _)
+    simpa [hρ, ← CommRingCat.comp_apply, ← Functor.map_comp, h1] using this
+
+  have hint : IsIntegral (integralClosure Γ(S, U) Γ(Z, g ⁻¹ᵁ U)) (ρ b) := by
+    obtain ⟨p, hm, hp⟩ := hb
+    refine ⟨p.map (g.normalizationObjIso hU).hom.hom, hm.map _, ?_⟩
+    rw [Polynomial.eval₂_map]
+    have e : (algebraMap (integralClosure Γ(S, U) Γ(Z, g ⁻¹ᵁ U)) Γ(Z, g ⁻¹ᵁ U)).comp
+        (g.normalizationObjIso hU).hom.hom = ρ.hom.comp (g.toNormalization.app _).hom := by
+      have := congrArg CommRingCat.Hom.hom key
+      rw [Scheme.Hom.appLE] at this
+      exact this
+    rw [e, ← Polynomial.hom_eval₂, hp, map_zero]
+  have hmem : ρ b ∈ (⊥ : Subalgebra (integralClosure Γ(S, U) Γ(Z, g ⁻¹ᵁ U)) Γ(Z, g ⁻¹ᵁ U)) := by
+    rw [← integralClosure_idem]; exact hint
+  obtain ⟨z, hz⟩ := Algebra.mem_bot.mp hmem
+  refine ⟨(g.normalizationObjIso hU).inv z, hρinj ?_⟩
+  have := congrArg (fun φ => φ ((g.normalizationObjIso hU).inv z)) (congrArg CommRingCat.Hom.hom key)
+  simp only [Scheme.Hom.appLE, CommRingCat.hom_comp, RingHom.comp_apply] at this
+  rw [← this, ← hz]
+  simp
+
+end LateralTheory.E.RelNormPf
+end
+end
+
+section
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry
 
@@ -41,3 +125,5 @@ theorem normClosed : NormClosed := by
 theorem RelNorm_of : LateralTheory.E.SteinPf.RelNorm := RelNorm_of_closed normClosed
 
 end LateralTheory.E.RelNormPf
+end
+end

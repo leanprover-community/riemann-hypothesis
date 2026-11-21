@@ -1,8 +1,56 @@
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.ProjectionStatementOfFinal
-import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.OperatorExistsOfUnitaryContinuous
+import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.LeftTranslateSet
+import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.PjTrInnerPure
+import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.SchurRelationAddSecond
+import Mathlib
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.UnitaryRepUnimodularOfFiniteVolume
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.KernelDiagonalOfAbsoluteConvergence
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions.LeviCoordinates
+
+open MeasureTheory Filter Topology
+open scoped InnerProductSpace ENNReal
+
+
+section Dens
+
+variable {G : Type} [MeasurableSpace G] (μ : Measure G) {Hs : Type} [NormedAddCommGroup Hs]
+  [InnerProductSpace ℂ Hs] (σ : G → (Hs →L[ℂ] Hs))
+
+
+
+
+end Dens
+
+end Formalism.MainNotions.LeviCoordinates
+
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.MainNotions.LeviCoordinates
+
+open MeasureTheory NumberField Matrix Finset
+open scoped InnerProductSpace ComplexOrder ENNReal
+open Formalism.MainNotions.S Formalism.MainNotions.PlaceDegreeData Formalism.MainNotions.BridgeLemma
+
+
+
+def StepsB' (n₀ : ℕ) (A C : ℝ) : Prop :=
+  ∀ X : CData, X.HypB n₀ A → X.GapAboveThreeHalvesPower → X.GapAboveSquareRootThreshold C → RepA X ∧ UnimodF X ∧ X.CuspStep
+
+
+end Formalism.MainNotions.LeviCoordinates
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.LeviCoordinates
@@ -20,3 +68,5 @@ def cu_StepsEnd (n₀ : ℕ) (A C : ℝ) : Prop :=
 
 
 end Formalism.MainNotions.LeviCoordinates
+end
+end

@@ -6,8 +6,46 @@ import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraTail
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsLastRest
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreTer
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ObjectsAlt
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsLastTer
-import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsLastSide
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.IsGraphGenTwistBundleZero
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+
+open MvPolynomial
+open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (chartRingOver secOver mIdealOver)
+
+def StepEq.Statement : Prop :=
+  ∀ (k : Type) [Field k] (N : ℕ) (Ω : Type) [Field Ω] [Algebra k Ω] (x : Fin (N + 1) → Ω)
+    (Q : Kleiman.LineBundle k x) (n : ℤ) (m : ℕ) (s : Fin m → Ω), IsGraphGen Q n s →
+    ∀ (d : ℕ) (r : ℚ) (a : ℕ) (mm : ℤ) (c₁ : ℕ) (σ : Ω),
+      (∃ T : Kleiman.StepData k x, T.M = Q ∧ T.d + 1 = d ∧ T.t - T.s' = r ∧ T.p = a ∧ T.m = mm ∧
+          T.c₁ = c₁ ∧ T.si = σ) ↔
+        (1 ≤ d ∧ IndefiniteRowSideFullHecke.Kleiman2.IsStepData k (graphVec x s) baseBlock d (graphDeg n) r a mm c₁ σ)
+
+end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+
+open MvPolynomial
+open ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH (chartRingOver secOver mIdealOver)
+
+def ZeroIdealEq.Statement : Prop :=
+  ∀ (S : Type) [CommRing S] (N : ℕ) (Ω : Type) [Field Ω] [Algebra S Ω] (x : Fin (N + 1) → Ω)
+    (D : Kleiman.LineBundle S x) (n : ℤ) (m : ℕ) (s : Fin m → Ω), (∃ i, x i ≠ 0) → IsGraphGen D n s →
+    ∀ σ : Ω, Kleiman.zeroIdeal D.toSubSystem σ =
+      (IndefiniteRowSideFullHecke.Kleiman2.divIdeal S (graphVec x s) (graphDeg n) σ).comap
+        (rename fun a : Fin (N + 1) => (⟨baseBlock, a⟩ : Σ k, graphIdx N m k))
+
+end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
@@ -38,3 +76,4 @@ end Points
 end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
+end

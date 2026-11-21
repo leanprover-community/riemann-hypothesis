@@ -1,10 +1,234 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.LocIsotypic
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ConclusionAbsPow
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.CyclotomicCharEqLocPowOfLocalArtinUnit
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.NormLocPowSubOneLeOfValuationSubOneLe
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.FixesRootsOfUnityOfCyclotomicCharNearOne
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.InertiaFixesRootsOfUnityPrimeToResidueChar
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPadicAlgClRingEquivComplexCompEqOfCountabl
 
+section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N ValuativeRel
+open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+theorem UpperTheory.cyclotomicChar_eq_locPow_of_localArtin_unit :
+    GlobalTheory.Published.GlobalArtinReciprocity → ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (w : HeightOneSpectrum (𝓞 F)) (A : ValuationSubring Ω) (h : IsPlaceOver A w)
+    (a : Weil h →* (w.adicCompletion F)ˣ), IsLocalArtin h a → ∀ (p : ℕ) [Fact p.Prime] (ι : Qbar p ≃+* ℂ) (σ : Weil h),
+    valuation (w.adicCompletion F) (a σ : w.adicCompletion F) = 1 →
+    ((cycBar F Ω p σ : (Qbar p)ˣ) : Qbar p) = GlobalTheory.HeckeGal.locPow ι (fun _ => 1) w (a σ : w.adicCompletion F) := by
+  intro hG F Ω _ _ _ _ _ w A h a ha p _ ι σ hv
+  obtain ⟨art, hart⟩ := hG F Ω
+  obtain ⟨μ, hμ, hL⟩ := hart.exists_isLAdicOf ι (GlobalTheory.Published.CharAboveModel.absPow_isAlgPos F 1)
+  have e := GlobalTheory.Published.CharAboveModel.eq_cyc_pow hart hμ hL
+  have h1 := hL.loc (a σ) σ (ha.glob art hart σ)
+  have : (Valued.v : Valuation (w.adicCompletion F) (WithZero (Multiplicative ℤ))).Compatible :=
+    Valuation.Compatible.ofValuation _
+  have he := isEquiv (valuation (w.adicCompletion F))
+    (Valued.v : Valuation (w.adicCompletion F) (WithZero (Multiplicative ℤ)))
+  have hu : Valued.v (a σ : w.adicCompletion F) = 1 := he.eq_one_iff_eq_one.1 hv
+  have h2 : (GlobalTheory.HeckeGal.Model.absPow F ((1 : ℕ) : ℝ)).loc w (a σ) = 1 :=
+    (GlobalTheory.HeckeGal.Model.absPow_isAbsPow F ((1 : ℕ) : ℝ)).1 w _ hu
+  rw [h2, e, pow_one, cyc_eq_map_cycZ] at h1
+  simp only [Units.val_one, map_one, one_mul, Nat.cast_one] at h1
+  exact h1
+end
+
+section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N ValuativeRel
+open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+private theorem norm_lt_one_of_valuation_lt {F : Type} [Field F] [NumberField F] {w : HeightOneSpectrum (𝓞 F)} {p : ℕ} [Fact p.Prime]
+    (j : w.adicCompletion F →+* Qbar p) (hj : Continuous j) (y : w.adicCompletion F) (hy : Valued.v y < 1) :
+    ‖j y‖ < 1 := by
+  have h2 := Valued.tendsto_zero_pow_of_v_lt_one hy
+  have h3 := (hj.tendsto 0).comp h2
+  rw [map_zero] at h3
+  rw [← tendsto_pow_atTop_nhds_zero_iff_norm_lt_one]
+  refine h3.congr (fun n => ?_)
+  simp
+
+private theorem norm_le_one_of_valuation_le {F : Type} [Field F] [NumberField F] {w : HeightOneSpectrum (𝓞 F)} {p : ℕ} [Fact p.Prime]
+    (j : w.adicCompletion F →+* Qbar p) (hj : Continuous j) (y : w.adicCompletion F) (hy : Valued.v y ≤ 1) :
+    ‖j y‖ ≤ 1 := by
+  obtain ⟨a, ha, ha0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot w.ne_bot
+  set t := algebraMap F (w.adicCompletion F) (algebraMap (𝓞 F) F a) with ht
+  have h1 : Valued.v t < 1 := by
+    have : Valued.v t = w.valuation F (algebraMap (𝓞 F) F a) :=
+      HeightOneSpectrum.valuedAdicCompletion_eq_valuation' w _
+    rw [this]
+    exact (HeightOneSpectrum.valuation_lt_one_iff_mem w a).2 ha
+  have ht0 : t ≠ 0 := by
+    rw [ht, map_ne_zero]
+    exact fun h => ha0 (by simpa using h)
+  have hpos : 0 < ‖j t‖ := norm_pos_iff.mpr ((map_ne_zero j).mpr ht0)
+  by_contra hlt
+  rw [not_le] at hlt
+  obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (‖j t‖⁻¹) hlt
+  have h4 : Valued.v (t * y ^ n) < 1 := by
+    rw [map_mul, map_pow]
+    calc Valued.v t * Valued.v y ^ n ≤ Valued.v t * 1 := by
+          gcongr
+          exact pow_le_one' hy n
+      _ < 1 := by rwa [mul_one]
+  have h5 := norm_lt_one_of_valuation_lt j hj _ h4
+  rw [map_mul, map_pow, norm_mul, norm_pow] at h5
+  rw [inv_lt_iff_one_lt_mul₀' hpos] at hn
+  exact absurd (hn.trans h5) (lt_irrefl _)
+
+theorem UpperTheory.norm_locPow_sub_one_le_of_valuation_sub_one_le :
+    ∀ (F : Type) [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F)) (p : ℕ) [Fact p.Prime] (ι : Qbar p ≃+* ℂ) (M : ℕ)
+    (u : w.adicCompletion F), valuation (w.adicCompletion F) (u - 1) ≤ valuation (w.adicCompletion F) (M : w.adicCompletion F) →
+    ‖GlobalTheory.HeckeGal.locPow ι (fun _ => 1) w u - 1‖ ≤ ‖(M : Qbar p)‖ := by
+  intro F _ _ w p _ ι M u h
+  have hv : Valued.v (u - 1) ≤ Valued.v (M : w.adicCompletion F) :=
+    ((Valuation.Compatible.vle_iff_le (v := valuation (w.adicCompletion F)) _ _).mpr h :)
+  have hM1 : ‖(M : Qbar p)‖ ≤ 1 := IsUltrametricDist.norm_natCast_le_one _ M
+  have key : ∀ j : w.adicCompletion F →+* Qbar p, Continuous j → ‖j u - 1‖ ≤ ‖(M : Qbar p)‖ := by
+    intro j hj
+    by_cases hM : (M : w.adicCompletion F) = 0
+    · rw [hM, map_zero, le_zero_iff, map_eq_zero, sub_eq_zero] at hv
+      simp [hv]
+    · have hx : Valued.v ((u - 1) / (M : w.adicCompletion F)) ≤ 1 := by
+        rw [map_div₀]
+        exact div_le_one_of_le₀ hv zero_le
+      have h1 := norm_le_one_of_valuation_le j hj _ hx
+      have hM' : (M : Qbar p) ≠ 0 := by
+        rw [← map_natCast j]
+        exact (map_ne_zero j).mpr hM
+      rw [map_div₀, map_sub, map_one, map_natCast, norm_div, div_le_one (norm_pos_iff.mpr hM')] at h1
+      exact h1
+  unfold GlobalTheory.HeckeGal.locPow
+  refine finprod_induction (fun z : Qbar p => ‖z - 1‖ ≤ ‖(M : Qbar p)‖) (by simp) ?_ ?_
+  · intro x y hx hy
+    have hx1 : ‖x‖ ≤ 1 := by
+      have := IsUltrametricDist.norm_add_le_max (x - 1) 1
+      rw [sub_add_cancel, norm_one] at this
+      exact this.trans (max_le (hx.trans hM1) le_rfl)
+    have e : x * y - 1 = x * (y - 1) + (x - 1) := by ring
+    rw [e]
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ hx)
+    rw [norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _) hx1).trans hy
+  · intro j
+    rw [zpow_one]
+    exact key j.1 j.2
+end
+
+section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N ValuativeRel
+open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+theorem UpperTheory.fixes_roots_of_unity_of_cyclotomicChar_near_one :
+    ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (p : ℕ) [Fact p.Prime] (b : ℕ) (s : G F Ω),
+    ‖((cycBar F Ω p s : (Qbar p)ˣ) : Qbar p) - 1‖ ≤ ‖((p ^ b : ℕ) : Qbar p)‖ → ∀ ζ : Ω, ζ ^ p ^ b = 1 → s ζ = ζ := by
+  intro F Ω _ _ _ _ _ p _ b s h ζ hζ
+  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed F
+  haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap F Ω).injective
+  haveI : ∀ i, HasEnoughRootsOfUnity Ω (p ^ i) := fun i => inferInstance
+  rcases Nat.eq_zero_or_pos b with rfl | hb
+  · rw [pow_zero, pow_one] at hζ
+    rw [hζ, map_one]
+  set j : ℤ_[p] := ((cycZ F Ω p s : ℤ_[p]ˣ) : ℤ_[p]) with hj
+  have hn : ∀ x : ℚ_[p], ‖algebraMap ℚ_[p] (PadicAlgCl p) x‖ = ‖x‖ := fun x => PadicAlgCl.norm_extends p x
+  have e1 : ((cycBar F Ω p s : (Qbar p)ˣ) : Qbar p) - 1 = algebraMap ℚ_[p] (PadicAlgCl p) (((j - 1 : ℤ_[p])) : ℚ_[p]) := by
+    rw [show ((cycBar F Ω p s : (Qbar p)ˣ) : Qbar p) = algebraMap ℚ_[p] (PadicAlgCl p) (j : ℚ_[p]) from rfl]
+    simp
+  have e2 : ((p ^ b : ℕ) : Qbar p) = algebraMap ℚ_[p] (PadicAlgCl p) ((((p : ℤ_[p]) ^ b : ℤ_[p])) : ℚ_[p]) := by
+    simp
+  rw [e1, e2, hn, hn] at h
+  have h' : ‖j - 1‖ ≤ (p : ℝ) ^ (-(b : ℤ)) := by
+    rw [← PadicInt.norm_p_pow]
+    exact h
+  have hmem := (PadicInt.norm_le_pow_iff_mem_span_pow (j - 1) b).mp h'
+  rw [← PadicInt.ker_toZModPow, RingHom.mem_ker, map_sub, map_one, sub_eq_zero] at hmem
+  have hspec := cyclotomicCharacter.spec (L := Ω) p (MulSemiringAction.toRingAut (G F Ω) Ω s) ζ hζ
+  have hone : (p ^ b : ℕ) ≠ 1 := by
+    have := Nat.one_lt_pow hb.ne' (Fact.out : p.Prime).one_lt
+    omega
+  have hval : ((cyclotomicCharacter Ω p (MulSemiringAction.toRingAut (G F Ω) Ω s)).val.toZModPow b).val = 1 := by
+    have hj' : (cyclotomicCharacter Ω p (MulSemiringAction.toRingAut (G F Ω) Ω s)).val = j := rfl
+    rw [hj', hmem]
+    exact ZMod.val_one'' hone
+  rw [hval, pow_one] at hspec
+  exact hspec
+end
+
+section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N ValuativeRel
+open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+theorem UpperTheory.inertia_fixes_roots_of_unity_prime_to_residue_char :
+    ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (w : HeightOneSpectrum (𝓞 F)) (A : ValuationSubring Ω),
+    IsPlaceOver A w → ∀ M : ℕ, (M : 𝓞 F) ∉ w.asIdeal → ∀ s ∈ Ine (F := F) A, ∀ ζ : Ω, ζ ^ M = 1 → s ζ = ζ := by
+  intro F Ω _ _ _ _ _ w A hA M hM s hs ζ hζ
+  have hM0 : M ≠ 0 := by
+    rintro rfl
+    exact hM (by simpa using w.asIdeal.zero_mem)
+  have hvM : A.valuation (M : Ω) = 1 := by
+    have h1 := (hA (M : 𝓞 F)).not.mpr hM
+    have h2 : (algebraMap F Ω) ((M : 𝓞 F) : F) = (M : Ω) := by simp
+    rw [h2] at h1
+    refine le_antisymm ?_ (not_lt.mp h1)
+    simpa using A.valuation_le_one (M : A)
+  have hvz : A.valuation ζ = 1 := by
+    have hp : A.valuation ζ ^ M = 1 := by rw [← map_pow, hζ, map_one]
+    rcases lt_trichotomy (A.valuation ζ) 1 with h | h | h
+    · exact absurd hp (pow_lt_one₀ zero_le' h hM0).ne
+    · exact h
+    · exact absurd hp (one_lt_pow₀ h hM0).ne'
+  have hI : s ∈ Inertia A := hs
+  unfold Inertia at hI
+  obtain ⟨-, hI⟩ := hI
+  have hd : A.valuation (s ζ - ζ) < 1 := hI ζ hvz.le
+  have hζ0 : ζ ≠ 0 := by
+    rintro rfl
+    simp at hvz
+  set η := s ζ / ζ with hηdef
+  have hsz : s ζ = η * ζ := (div_mul_cancel₀ _ hζ0).symm
+  have hη : η ^ M = 1 := by
+    rw [hηdef, div_pow, ← map_pow, hζ, map_one, div_one]
+  have hη1 : A.valuation (η - 1) < 1 := by
+    have e : s ζ - ζ = (η - 1) * ζ := by rw [hsz]; ring
+    rw [e, map_mul, hvz, mul_one] at hd
+    exact hd
+  have hvη : A.valuation η = 1 := by
+    have e : η = 1 + (η - 1) := by ring
+    rw [e]
+    exact Valuation.map_one_add_of_lt _ hη1
+  by_contra hne
+  have hne' : η ≠ 1 := by
+    intro h1
+    apply hne
+    rw [hsz, h1, one_mul]
+  have hsum : ∑ i ∈ Finset.range M, η ^ i = 0 := by
+    have e := mul_geom_sum η M
+    rw [hη, sub_self] at e
+    exact (mul_eq_zero.mp e).resolve_left (sub_ne_zero.mpr hne')
+  have hMsum : (M : Ω) = ∑ i ∈ Finset.range M, (1 - η ^ i) := by
+    rw [Finset.sum_sub_distrib, hsum, sub_zero]
+    simp
+  have hlt : A.valuation (M : Ω) < 1 := by
+    rw [hMsum]
+    refine Valuation.map_sum_lt _ one_ne_zero ?_
+    intro i _
+    have e := mul_geom_sum η i
+    have hS : A.valuation (∑ j ∈ Finset.range i, η ^ j) ≤ 1 := by
+      refine Valuation.map_sum_le _ ?_
+      intro j _
+      rw [map_pow, hvη, one_pow]
+    rw [Valuation.map_sub_swap, ← e, map_mul]
+    calc A.valuation (η - 1) * A.valuation (∑ j ∈ Finset.range i, η ^ j)
+        ≤ A.valuation (η - 1) * 1 := by gcongr
+      _ = A.valuation (η - 1) := mul_one _
+      _ < 1 := hη1
+  rw [hvM] at hlt
+  exact lt_irrefl _ hlt
+end
+
+section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N ValuativeRel
 open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
 
@@ -115,3 +339,4 @@ theorem UpperTheory.inertia_fixes_roots_of_unity_of_artin_congruence :
   have h78 := UpperTheory.cyclotomicChar_eq_locPow_of_localArtin_unit hGAR F Ω w A h a ha p ι σ hv
   rw [← h78] at h82
   exact UpperTheory.fixes_roots_of_unity_of_cyclotomicChar_near_one F Ω p b (σ : G F Ω) h82 ζ hζ
+end

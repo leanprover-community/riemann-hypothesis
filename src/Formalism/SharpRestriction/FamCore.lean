@@ -1,5 +1,20 @@
-import Formalism.SharpRestriction.DFam
+import Formalism.LocalRingCardinality.DataParams₂
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions
+
+open Formalism.BasicNotions
+
+def DFam : Type 1 := ∀ ε : ℝ, 0 < ε → ε < 1 / 52 → Fam ε
+
+end Formalism.MainNotions
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions
@@ -180,4 +195,5 @@ def DFamCore : Type 1 := ∀ ε : ℝ, 0 < ε → ε < 1 / 52 → FamCore ε
 
 end Formalism.MainNotions
 
+end
 end

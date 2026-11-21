@@ -6,14 +6,688 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RWordRTrAdelic
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsCuspFunctionClosedUnderOperations
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RderMemAutFormsCuspForms
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsCompactKinfAndConj
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ModerateGrowthSobolevSizeRightTranslatePolyBoundStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GrowthSobolevCauchyTendstoSmoothLimit
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCuspFunOfTendstoModerateGrowthSizeStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryAdelicHeightRealFrameElementLeHsPow
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ComplexDerivativeRightDerivativeCommutatorStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoModerateGrowthSizeTranslateNearOne
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoModerateGrowthSizeDifferenceQuotient
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ModerateGrowthSobolevSizeRightTranslatePolyBound
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemSmoothFunctionsOfClosedRightDerivatives
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCuspFunOfTendstoModerateGrowthSize
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ComplexDerivativeRightDerivativeCommutator
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsAutFunSmStar
 
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.moderateGrowthSobolevSize_rightTranslate_polyBound : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (d N : ℕ), ∃ (C : NNReal) (m : ℕ), ∀ h ∈ GinfC V, ∀ φ ∈ GlobalTheory.Mem.AutSpace.SmFun θ V, GlobalTheory.Size.growthSob θ V d N (rTr V h φ) ≤ (C : ENNReal) * ENNReal.ofReal (GlobalTheory.Grow.height V h ^ m) * GlobalTheory.Size.growthSob θ V d N φ := by
+  first | exact @GlobalTheory.Size.Translate.growthSob_rTr_le | exact GlobalTheory.Size.Translate.growthSob_rTr_le | (intros; apply GlobalTheory.Size.Translate.growthSob_rTr_le <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+open GlobalTheory.Grow GlobalTheory.Mem.AutSpace GlobalTheory.Size Filter Topology
+open scoped ENNReal
+
+namespace GlobalTheory.GrowthComplete
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7} {θ : InfFam D} {V : HSp D} {N : ℕ} {ψ : ℕ → GA D V → ℂ} {f : GA D V → ℂ}
+
+theorem locUnif {ι : Type} {l : Filter ι} {u : ι → GA D V → ℂ}
+    (h : Tendsto (fun i => growthSize V N (u i - f)) l (𝓝 0)) : TendstoLocallyUniformly u f l := by
+  rw [Metric.tendstoLocallyUniformly_iff]
+  intro ε hε x
+  have hc : Continuous (height V) := (height_laws V).2.2.2.2
+  refine ⟨height V ⁻¹' Set.Iio (height V x + 1), (hc.isOpen_preimage _ isOpen_Iio).mem_nhds ?_, ?_⟩
+  · show height V x < height V x + 1
+    linarith
+  have h1x : 1 ≤ height V x := (height_laws V).1 x
+  have hH : 0 < (height V x + 1) ^ N := pow_pos (by linarith) N
+  have hδ : 0 < ε / (2 * (height V x + 1) ^ N) := by positivity
+  filter_upwards [(ENNReal.tendsto_nhds_zero.1 h) _ (ENNReal.ofReal_pos.2 hδ)] with i hi y hy
+  have hb := (growthSize_le_iff hδ.le).1 hi y
+  have h1 : 1 ≤ height V y := (height_laws V).1 y
+  have hy' : height V y ^ N ≤ (height V x + 1) ^ N :=
+    pow_le_pow_left₀ (by linarith) (le_of_lt (show height V y < height V x + 1 from hy)) N
+  rw [dist_comm, dist_eq_norm]
+  calc ‖u i y - f y‖ ≤ ε / (2 * (height V x + 1) ^ N) * height V y ^ N := hb
+    _ ≤ ε / (2 * (height V x + 1) ^ N) * (height V x + 1) ^ N := mul_le_mul_of_nonneg_left hy' hδ.le
+    _ = ε / 2 := by field_simp
+    _ < ε := by linarith
+
+theorem exists_lim (h : Tendsto (fun p : ℕ × ℕ => growthSize V N (ψ p.1 - ψ p.2)) atTop (𝓝 0)) :
+    ∃ f : GA D V → ℂ, ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g)) := by
+  have hb : ∀ g, ∀ p : ℕ × ℕ, growthSize V N (ψ p.1 - ψ p.2) ≠ ⊤ →
+      dist (ψ p.1 g) (ψ p.2 g) ≤ (growthSize V N (ψ p.1 - ψ p.2)).toReal * height V g ^ N := by
+    intro g p hp
+    rw [dist_eq_norm]
+    exact (growthSize_le_iff ENNReal.toReal_nonneg).1 (ENNReal.ofReal_toReal hp).ge g
+  refine ⟨fun g => limUnder atTop (fun n => ψ n g), fun g => ?_⟩
+  apply CauchySeq.tendsto_limUnder
+  rw [cauchySeq_iff_tendsto_dist_atTop_0]
+  have ht : Tendsto (fun p : ℕ × ℕ => (growthSize V N (ψ p.1 - ψ p.2)).toReal * height V g ^ N) atTop (𝓝 0) := by
+    have := ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp h).mul_const (height V g ^ N)
+    simpa using this
+  refine squeeze_zero' (Eventually.of_forall fun p => dist_nonneg) ?_ ht
+  filter_upwards [h.eventually (gt_mem_nhds ENNReal.zero_lt_top)] with p hp
+  exact hb g p hp.ne
+
+theorem tendsto_size (h : Tendsto (fun p : ℕ × ℕ => growthSize V N (ψ p.1 - ψ p.2)) atTop (𝓝 0))
+    (hf : ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g))) :
+    Tendsto (fun n => growthSize V N (ψ n - f)) atTop (𝓝 0) := by
+  rw [ENNReal.tendsto_nhds_zero]
+  intro ε hε
+  obtain ⟨δ, hδ, hδε⟩ := ENNReal.lt_iff_exists_nnreal_btwn.1 hε
+  obtain ⟨a, ha⟩ := Filter.eventually_atTop.1 ((ENNReal.tendsto_nhds_zero.1 h) δ hδ)
+  filter_upwards [Filter.eventually_ge_atTop (max a.1 a.2)] with n hn
+  refine le_trans ?_ hδε.le
+  have key : ∀ g, ‖ψ n g - f g‖ ≤ (δ : ℝ) * height V g ^ N := by
+    intro g
+    refine le_of_tendsto ((hf g).const_sub (ψ n g)).norm ?_
+    filter_upwards [Filter.eventually_ge_atTop (max a.1 a.2)] with m hm
+    have hnm : growthSize V N (ψ n - ψ m) ≤ ENNReal.ofReal (δ : ℝ) := by
+      rw [ENNReal.ofReal_coe_nnreal]
+      exact ha (n, m) ⟨le_trans (le_max_left _ _) hn, le_trans (le_max_right _ _) hm⟩
+    exact (growthSize_le_iff δ.coe_nonneg).1 hnm g
+  have hfin : growthSize V N (ψ n - f) ≤ ENNReal.ofReal (δ : ℝ) := (growthSize_le_iff δ.coe_nonneg).2 key
+  rwa [ENNReal.ofReal_coe_nnreal] at hfin
+
+variable (θ N) in
+
+def IsCauchy (ψ : ℕ → GA D V → ℂ) : Prop :=
+  (∀ n, Continuous (ψ n) ∧ ψ n ∈ SmFun θ V ∧ ∀ d, growthSob θ V d N (ψ n) ≠ ⊤) ∧
+    ∀ d, Tendsto (fun p : ℕ × ℕ => growthSob θ V d N (ψ p.1 - ψ p.2)) atTop (𝓝 0)
+
+theorem map_sub' {T : (GA D V → ℂ) → GA D V → ℂ} (hT : LinOnSm θ V T) {φ φ' : GA D V → ℂ} (h : φ ∈ SmFun θ V)
+    (h' : φ' ∈ SmFun θ V) : T (φ - φ') = T φ - T φ' := by
+  have h2 : (-1 : ℂ) • φ' ∈ SmFun θ V := (SmFun θ V).smul_mem _ h'
+  have e : φ - φ' = φ + (-1 : ℂ) • φ' := by rw [neg_one_smul, sub_eq_add_neg]
+  rw [e, hT.add _ h _ h2, hT.smul, neg_one_smul, sub_eq_add_neg]
+
+theorem IsCauchy.size (h : IsCauchy θ N ψ) :
+    Tendsto (fun p : ℕ × ℕ => growthSize V N (ψ p.1 - ψ p.2)) atTop (𝓝 0) := by
+  obtain ⟨-, hB⟩ := id h
+  have h0 := hB 0
+  simp only [growthSob, wordSum_zero] at h0
+  exact h0
+
+theorem IsCauchy.exists_lim (h : IsCauchy θ N ψ) :
+    ∃ f : GA D V → ℂ, ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g)) := GlobalTheory.GrowthComplete.exists_lim h.size
+
+theorem IsCauchy.tendsto_size (h : IsCauchy θ N ψ) (hf : ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g))) :
+    Tendsto (fun n => growthSize V N (ψ n - f)) atTop (𝓝 0) := GlobalTheory.GrowthComplete.tendsto_size h.size hf
+
+theorem IsCauchy.locUnif (h : IsCauchy θ N ψ) (hf : ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g))) :
+    TendstoLocallyUniformly ψ f atTop := GlobalTheory.GrowthComplete.locUnif (h.tendsto_size hf)
+
+theorem IsCauchy.map (h : IsCauchy θ N ψ) {T : (GA D V → ℂ) → GA D V → ℂ} (hT : LinOnSm θ V T)
+    (hc : ∀ n, Continuous (T (ψ n)))
+    (hb : ∀ d, ∃ c : ℝ≥0∞, c ≠ ⊤ ∧ ∀ φ ∈ SmFun θ V, growthSob θ V d N (T φ) ≤ c * growthSob θ V (d + 1) N φ) :
+    IsCauchy θ N fun n => T (ψ n) := by
+  obtain ⟨hA, hB⟩ := id h
+  unfold IsCauchy
+  refine ⟨fun n => ⟨hc n, hT.mem _ (hA n).2.1, fun d => ?_⟩, fun d => ?_⟩
+  · obtain ⟨c, hc', hb'⟩ := hb d
+    exact ne_top_of_le_ne_top (ENNReal.mul_ne_top hc' ((hA n).2.2 (d + 1))) (hb' _ (hA n).2.1)
+  · obtain ⟨c, hc', hb'⟩ := hb d
+    have hlim : Tendsto (fun p : ℕ × ℕ => c * growthSob θ V (d + 1) N (ψ p.1 - ψ p.2)) atTop (𝓝 0) := by
+      have := ENNReal.Tendsto.const_mul (hB (d + 1)) (Or.inr hc')
+      simpa using this
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => by simp) fun p => ?_
+    show growthSob θ V d N (T (ψ p.1) - T (ψ p.2)) ≤ c * growthSob θ V (d + 1) N (ψ p.1 - ψ p.2)
+    rw [← GlobalTheory.GrowthComplete.map_sub' hT (hA p.1).2.1 (hA p.2).2.1]
+    exact hb' _ (sub_mem (hA p.1).2.1 (hA p.2).2.1)
+
+section Der
+
+variable {τ : D.what₂.Tau} {X : Matrix (Fin V.rank) (Fin V.rank) ℂ}
+
+theorem isLieWord_single (hX : X ∈ lieAt V τ) : IsLieWord V [(τ, X)] := by
+  simp [IsLieWord, hX]
+
+private theorem exists_growthSob_rder_le_mul_growthSob_succ (hθ : IsInfFam θ) (hX : X ∈ lieAt V τ) (d : ℕ) :
+    ∃ c : ℝ≥0∞, c ≠ ⊤ ∧ ∀ φ ∈ SmFun θ V,
+      growthSob θ V d N (Rder θ V τ X φ) ≤ c * growthSob θ V (d + 1) N φ := by
+  obtain ⟨c, hc⟩ := exists_growthSize_rWord_le hθ [(τ, X)] (isLieWord_single hX)
+  refine ⟨∑ k ∈ Finset.range (d + 1), ∑ _a : Fin k → D.what₂.Tau × Fin V.rank × Fin V.rank, (c : ℝ≥0∞),
+    ?_, fun φ hφ => ?_⟩
+  · exact ENNReal.sum_ne_top.2 fun k _ => ENNReal.sum_ne_top.2 fun _ _ => ENNReal.coe_ne_top
+  calc growthSob θ V d N (Rder θ V τ X φ)
+      = ∑ k ∈ Finset.range (d + 1), ∑ a : Fin k → D.what₂.Tau × Fin V.rank × Fin V.rank,
+          growthSize V N (wordAct (glDer θ V) (List.ofFn a) (Rder θ V τ X φ)) := rfl
+    _ ≤ ∑ k ∈ Finset.range (d + 1), ∑ _a : Fin k → D.what₂.Tau × Fin V.rank × Fin V.rank,
+          (c : ℝ≥0∞) * growthSob θ V (d + 1) N φ := by
+        refine Finset.sum_le_sum fun k hk => Finset.sum_le_sum fun a _ => ?_
+        refine hc φ hφ N (d + 1) (List.ofFn a) ?_
+        simp only [List.length_ofFn, List.length_cons, List.length_nil, Finset.mem_range] at hk ⊢
+        omega
+    _ = _ := by simp_rw [Finset.sum_mul]
+
+theorem IsCauchy.rder (hθ : IsInfFam θ) (h : IsCauchy θ N ψ) (hX : X ∈ lieAt V τ) :
+    IsCauchy θ N fun n => Rder θ V τ X (ψ n) := by
+  obtain ⟨hA, -⟩ := id h
+  have hl : IsLieWord V [(τ, X), (τ, X)] := by simp [IsLieWord, hX]
+  obtain ⟨c, hc⟩ := exists_growthSize_rWord_le hθ _ hl
+  refine h.map (GlobalTheory.Mem.AutSpace.linOnSm_Rder hX) (fun n => ?_) (fun d => exists_growthSob_rder_le_mul_growthSob_succ hθ hX d)
+  refine continuous_Rder_of_growth hθ (hA n).2.1 (hA n).1 hX (A := N) (modGrowthExp_iff.2 ?_)
+  exact ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.coe_ne_top ((hA n).2.2 2))
+    (hc _ (hA n).2.1 N 2 [] (by simp))
+
+theorem IsCauchy.hasDerivAt (hθ : IsInfFam θ) (h : IsCauchy θ N ψ) (hX : X ∈ lieAt V τ)
+    (hf : ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g))) {f' : GA D V → ℂ}
+    (hf' : ∀ g, Tendsto (fun n => Rder θ V τ X (ψ n) g) atTop (𝓝 (f' g))) (g : GA D V) :
+    HasDerivAt (fun t : ℝ => f (g * oneP θ V τ X t)) (f' g) 0 := by
+  have hu : TendstoLocallyUniformly (fun n => Rder θ V τ X (ψ n)) f' atTop := (h.rder hθ hX).locUnif hf'
+  have hc : Continuous fun t : ℝ => g * oneP θ V τ X t :=
+    continuous_const.mul (GlobalTheory.Mem.Lift.continuous_oneP hθ hX)
+  have hd : ∀ n (t : ℝ), HasDerivAt (fun s : ℝ => ψ n (g * oneP θ V τ X s))
+      (Rder θ V τ X (ψ n) (g * oneP θ V τ X t)) t := by
+    obtain ⟨hA, -⟩ := id h
+    intro n t
+    exact GlobalTheory.Mem.Lift.hasDerivAt_oneP hθ hX (fun g' => GlobalTheory.Mem.Lift.hasDerivAt_Rder (hA n).2.1 hX g') g t
+  have key := hasDerivAt_of_tendstoLocallyUniformlyOn (l := atTop) (s := Set.univ) (x := (0 : ℝ))
+    (f := fun n (s : ℝ) => ψ n (g * oneP θ V τ X s)) (g := fun s : ℝ => f (g * oneP θ V τ X s))
+    (f' := fun n (t : ℝ) => Rder θ V τ X (ψ n) (g * oneP θ V τ X t)) (g' := fun t : ℝ => f' (g * oneP θ V τ X t))
+    isOpen_univ (tendstoLocallyUniformlyOn_univ.2 (hu.comp _ hc)) (Eventually.of_forall fun n t _ => hd n t)
+    (fun t _ => hf _) (Set.mem_univ _)
+  simpa [GlobalTheory.Mem.Lift.oneP_zero hθ] using key
+
+theorem IsCauchy.tendsto_rder (hθ : IsInfFam θ) (h : IsCauchy θ N ψ) (hX : X ∈ lieAt V τ)
+    (hf : ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g))) (g : GA D V) :
+    Tendsto (fun n => Rder θ V τ X (ψ n) g) atTop (𝓝 (Rder θ V τ X f g)) := by
+  obtain ⟨f', hf'⟩ := (h.rder hθ hX).exists_lim
+  have hd := h.hasDerivAt hθ hX hf hf' g
+  have e : Rder θ V τ X f g = f' g := hd.deriv
+  rw [e]
+  exact hf' g
+
+end Der
+
+theorem IsCauchy.continuous (h : IsCauchy θ N ψ) (hf : ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g))) :
+    Continuous f := by
+  obtain ⟨hA, -⟩ := id h
+  exact (h.locUnif hf).continuous (Eventually.of_forall fun n => (hA n).1).frequently
+
+theorem IsCauchy.smooth (hθ : IsInfFam θ) (h : IsCauchy θ N ψ) (hf : ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g))) :
+    f ∈ SmFun θ V := by
+  have hcont : ∀ φ ∈ {φ : GA D V → ℂ | ∃ χ : ℕ → GA D V → ℂ, IsCauchy θ N χ ∧
+      ∀ g, Tendsto (fun n => χ n g) atTop (𝓝 (φ g))}, Continuous φ := by
+    rintro φ ⟨χ, hχ, hl⟩
+    exact hχ.continuous hl
+  have hder : ∀ φ ∈ {φ : GA D V → ℂ | ∃ χ : ℕ → GA D V → ℂ, IsCauchy θ N χ ∧
+      ∀ g, Tendsto (fun n => χ n g) atTop (𝓝 (φ g))}, ∀ τ', ∀ X' ∈ lieAt V τ',
+      ∃ φ' ∈ {φ : GA D V → ℂ | ∃ χ : ℕ → GA D V → ℂ, IsCauchy θ N χ ∧
+        ∀ g, Tendsto (fun n => χ n g) atTop (𝓝 (φ g))},
+        ∀ g, HasDerivAt (fun t : ℝ => φ (g * oneP θ V τ' X' t)) (φ' g) 0 := by
+    rintro φ ⟨χ, hχ, hl⟩ τ' X' hX'
+    obtain ⟨φ', hφ'⟩ := (hχ.rder hθ hX').exists_lim
+    exact ⟨φ', ⟨_, hχ.rder hθ hX', hφ'⟩, hχ.hasDerivAt hθ hX' hl hφ'⟩
+  exact GlobalTheory.Mem.DerClosed.mem_smFun_of_closed D θ hθ V _ hcont hder f ⟨ψ, h, hf⟩
+
+theorem IsCauchy.letter (hθ : IsInfFam θ) (h : IsCauchy θ N ψ) (hf : ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g)))
+    (a : D.what₂.Tau × Fin V.rank × Fin V.rank) : (IsCauchy θ N fun n => glDer θ V a (ψ n)) ∧
+      ∀ g, Tendsto (fun n => glDer θ V a (ψ n) g) atTop (𝓝 (glDer θ V a f g)) := by
+  obtain ⟨h1, h2⟩ := GlobalTheory.SmoothAutCheck.parts_mem V a.1 (Matrix.single a.2.1 a.2.2 1)
+  have e : ∀ φ : GA D V → ℂ, glDer θ V a φ =
+      Rder θ V a.1 ((1 / 2 : ℂ) • (Matrix.single a.2.1 a.2.2 1 + conjAt V a.1 (Matrix.single a.2.1 a.2.2 1))) φ +
+        Complex.I • Rder θ V a.1 ((1 / (2 * Complex.I)) •
+          (Matrix.single a.2.1 a.2.2 1 - conjAt V a.1 (Matrix.single a.2.1 a.2.2 1))) φ := fun φ => rfl
+  obtain ⟨hA1, -⟩ := id (h.rder hθ h1)
+  obtain ⟨hA2, -⟩ := id (h.rder hθ h2)
+  have hT : LinOnSm θ V (glDer θ V a) := GlobalTheory.Mem.AutSpace.linOnSm_RderC a.1 (Matrix.single a.2.1 a.2.2 1)
+  refine ⟨h.map hT (fun n => ?_) (fun d => ⟨1, ENNReal.one_ne_top, fun φ _ => ?_⟩), fun g => ?_⟩
+  · rw [e]
+    exact (hA1 n).1.add (continuous_const.smul (hA2 n).1)
+  · rw [one_mul]
+    exact wordSum_letter_le (A := glDer θ V) (p := growthSize V N) d a φ
+  · simp only [e, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+    exact (h.tendsto_rder hθ h1 hf g).add ((h.tendsto_rder hθ h2 hf g).const_mul _)
+
+theorem IsCauchy.word (hθ : IsInfFam θ) (h : IsCauchy θ N ψ) (hf : ∀ g, Tendsto (fun n => ψ n g) atTop (𝓝 (f g)))
+    (l : List (D.what₂.Tau × Fin V.rank × Fin V.rank)) : (IsCauchy θ N fun n => wordAct (glDer θ V) l (ψ n)) ∧
+      ∀ g, Tendsto (fun n => wordAct (glDer θ V) l (ψ n) g) atTop (𝓝 (wordAct (glDer θ V) l f g)) := by
+  induction l with
+  | nil =>
+    simp only [wordAct_nil]
+    exact ⟨h, hf⟩
+  | cons a l ih =>
+    simp only [wordAct_cons]
+    exact ih.1.letter hθ ih.2 a
+
+theorem complete : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (N : ℕ) (ψ : ℕ → GA D V → ℂ), (∀ n, Continuous (ψ n) ∧ ψ n ∈ GlobalTheory.Mem.AutSpace.SmFun θ V ∧ ∀ d, GlobalTheory.Size.growthSob θ V d N (ψ n) ≠ ⊤) → (∀ d, Filter.Tendsto (fun p : ℕ × ℕ => GlobalTheory.Size.growthSob θ V d N (ψ p.1 - ψ p.2)) Filter.atTop (nhds 0)) → ∃ f : GA D V → ℂ, Continuous f ∧ f ∈ GlobalTheory.Mem.AutSpace.SmFun θ V ∧ ∀ d, Filter.Tendsto (fun n => GlobalTheory.Size.growthSob θ V d N (ψ n - f)) Filter.atTop (nhds 0) := by
+  intro D θ hθ V N ψ h1 h2
+  have h : IsCauchy θ N ψ := by
+    unfold IsCauchy
+    exact ⟨h1, h2⟩
+  obtain ⟨f, hf⟩ := h.exists_lim
+  have hs : f ∈ SmFun θ V := h.smooth hθ hf
+  refine ⟨f, h.continuous hf, hs, fun d => ?_⟩
+  have key : ∀ l : List (D.what₂.Tau × Fin V.rank × Fin V.rank),
+      Tendsto (fun n => growthSize V N (wordAct (glDer θ V) l (ψ n - f))) atTop (𝓝 0) := by
+    intro l
+    obtain ⟨hl1, hl2⟩ := h.word hθ hf l
+    refine (hl1.tendsto_size hl2).congr fun n => ?_
+    rw [GlobalTheory.GrowthComplete.map_sub' (linOnSm_glWord (θ := θ) l) (h1 n).2.1 hs]
+  have hsum := tendsto_finsetSum (Finset.range (d + 1)) fun k _ =>
+    tendsto_finsetSum (Finset.univ : Finset (Fin k → D.what₂.Tau × Fin V.rank × Fin V.rank)) fun a _ =>
+      key (List.ofFn a)
+  simp only [Finset.sum_const_zero] at hsum
+  exact hsum
+
+end GlobalTheory.GrowthComplete
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.growthSobolev_cauchy_tendsto_smooth_limit : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (N : ℕ) (ψ : ℕ → GA D V → ℂ), (∀ n, Continuous (ψ n) ∧ ψ n ∈ GlobalTheory.Mem.AutSpace.SmFun θ V ∧ ∀ d, GlobalTheory.Size.growthSob θ V d N (ψ n) ≠ ⊤) → (∀ d, Filter.Tendsto (fun p : ℕ × ℕ => GlobalTheory.Size.growthSob θ V d N (ψ p.1 - ψ p.2)) Filter.atTop (nhds 0)) → ∃ f : GA D V → ℂ, Continuous f ∧ f ∈ GlobalTheory.Mem.AutSpace.SmFun θ V ∧ ∀ d, Filter.Tendsto (fun n => GlobalTheory.Size.growthSob θ V d N (ψ n - f)) Filter.atTop (nhds 0) := by
+  atlas_forward_decl GlobalTheory.GrowthComplete.complete
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCuspFun_of_tendsto_moderateGrowthSize : ∀ (D : D7) (V : HSp D) (N : ℕ) (ψ : ℕ → GA D V → ℂ) (f : GA D V → ℂ), (∀ n, Continuous (ψ n) ∧ (∀ γ ∈ GQ V, ∀ g, ψ n (γ * g) = ψ n g) ∧ IsCuspFun V (ψ n)) → Continuous f → (∀ γ ∈ GQ V, ∀ g, f (γ * g) = f g) → Filter.Tendsto (fun n => GlobalTheory.Size.growthSize V N (ψ n - f)) Filter.atTop (nhds 0) → IsCuspFun V f := by
+  first | exact @GlobalTheory.CuspLimit.isCuspFun_of_tendsto | exact GlobalTheory.CuspLimit.isCuspFun_of_tendsto | (intros; apply GlobalTheory.CuspLimit.isCuspFun_of_tendsto <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.FrameHeight
+
+def EntryBd {n : ℕ} (f : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ) : Prop :=
+  ∃ c : ℝ, ∀ g i j, ‖f g i j‖ ≤ c * (1 + Formalism.REAL.hs g)
+
+variable {n : ℕ} {f : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ}
+
+theorem hs_nonneg (g : Matrix (Fin n) (Fin n) ℂ) : 0 ≤ Formalism.REAL.hs g := by
+  unfold Formalism.REAL.hs; positivity
+
+theorem entryBd_id : EntryBd (fun g : Matrix (Fin n) (Fin n) ℂ => g) := by
+  refine ⟨1, fun g i j => ?_⟩
+  have h1 : ‖g i j‖ ^ 2 ≤ Formalism.REAL.hs g := by
+    unfold Formalism.REAL.hs
+    refine le_trans ?_ (Finset.single_le_sum (f := fun i => ∑ j, ‖g i j‖ ^ 2)
+      (fun _ _ => by positivity) (Finset.mem_univ i))
+    exact Finset.single_le_sum (f := fun j => ‖g i j‖ ^ 2) (fun _ _ => by positivity) (Finset.mem_univ j)
+  nlinarith [sq_nonneg (‖g i j‖ - 1), hs_nonneg g]
+
+theorem EntryBd.conjTranspose (h : EntryBd f) : EntryBd fun g => (f g)ᴴ := by
+  obtain ⟨c, hc⟩ := h
+  exact ⟨c, fun g i j => by simpa [conjTranspose_apply] using hc g j i⟩
+
+theorem EntryBd.const_mul (h : EntryBd f) (P : Matrix (Fin n) (Fin n) ℂ) : EntryBd fun g => P * f g := by
+  obtain ⟨c, hc⟩ := h
+  refine ⟨(∑ i, ∑ k, ‖P i k‖) * |c|, fun g i j => ?_⟩
+  have h0 := hs_nonneg g
+  show ‖(P * f g) i j‖ ≤ _
+  rw [Matrix.mul_apply]
+  calc _ ≤ ∑ k, ‖P i k‖ * (|c| * (1 + Formalism.REAL.hs g)) := by
+        refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => ?_)
+        rw [norm_mul]
+        exact mul_le_mul_of_nonneg_left ((hc g k j).trans
+          (mul_le_mul_of_nonneg_right (le_abs_self c) (by linarith))) (norm_nonneg _)
+    _ = (∑ k, ‖P i k‖) * (|c| * (1 + Formalism.REAL.hs g)) := by rw [Finset.sum_mul]
+    _ ≤ (∑ i, ∑ k, ‖P i k‖) * (|c| * (1 + Formalism.REAL.hs g)) :=
+        mul_le_mul_of_nonneg_right (Finset.single_le_sum (f := fun i => ∑ k, ‖P i k‖)
+          (fun _ _ => by positivity) (Finset.mem_univ i)) (by positivity)
+    _ = _ := by ring
+
+theorem EntryBd.mul_const (h : EntryBd f) (P : Matrix (Fin n) (Fin n) ℂ) : EntryBd fun g => f g * P := by
+  simpa using (h.conjTranspose.const_mul Pᴴ).conjTranspose
+
+theorem frame_mem {D : D7} {V : HSp D} (A : GlobalTheory.ChainFr.Fr V) (τ : D.what₂.Tau)
+    {k : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hk : k ∈ Formalism.MainNotions.S.UJset (A.ε τ)) :
+    (A.fr τ)⁻¹ * k * A.fr τ ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ) := by
+  have h1 : A.fr τ * (A.fr τ)⁻¹ = 1 := Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 (A.fr_unit τ))
+  have hk' : kᴴ * Formalism.REAL.Jm (A.ε τ) * k = Formalism.REAL.Jm (A.ε τ) := hk
+  have h3 : ((A.fr τ)⁻¹)ᴴ * (A.fr τ)ᴴ = 1 := by rw [← conjTranspose_mul, h1, conjTranspose_one]
+  show _ᴴ * _ * _ = _
+  rw [← A.fr_gram τ]
+  calc _ = (A.fr τ)ᴴ * (kᴴ * (((A.fr τ)⁻¹)ᴴ * (A.fr τ)ᴴ) * Formalism.REAL.Jm (A.ε τ) * (A.fr τ * (A.fr τ)⁻¹) * k) *
+        A.fr τ := by simp only [conjTranspose_mul, Matrix.mul_assoc]
+    _ = _ := by rw [h1, h3, Matrix.mul_one, Matrix.mul_one, hk']
+
+theorem height_elt_le : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (A : GlobalTheory.ChainFr.Fr V) (τ : D.what₂.Tau), ∃ (C : ℝ) (m : ℕ), ∀ g ∈ Formalism.MainNotions.S.UJset (A.ε τ), GlobalTheory.Grow.height V (A.elt θ τ g) ≤ C * (1 + Formalism.REAL.hs g) ^ m := by
+  intro D θ hθ V A τ
+  obtain ⟨d, hd⟩ := GlobalTheory.Grow.height_le_normInf_pow V hθ
+  have b1 := (entryBd_id.const_mul (A.fr τ)⁻¹).mul_const (A.fr τ)
+  obtain ⟨c2, h2⟩ := (b1.conjTranspose.const_mul (gramAt D V τ)⁻¹).mul_const (gramAt D V τ)
+  obtain ⟨c1, h1⟩ := b1
+  refine ⟨(∑ _ρ : D.what₂.Tau, ∑ _i : Fin V.rank, ∑ _j : Fin V.rank, (|c1| + |c2| + 2)) ^ d, d, fun g hg => ?_⟩
+  have hu := frame_mem A τ hg
+  have s1 := GlobalTheory.PointAtPlaceHom.atTau_spec hθ V τ hu
+  have s2 := GlobalTheory.PointAtPlaceHom.isAtTau_inv V τ hu s1
+  have h0 := hs_nonneg g
+  refine (hd _ s1.1).trans ?_
+  rw [← mul_pow]
+  refine pow_le_pow_left₀ (by unfold normInf; positivity) ?_ d
+  unfold normInf
+  simp only [Finset.sum_mul]
+  refine Finset.sum_le_sum fun ρ _ => Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => ?_
+  have a1 := mul_nonneg (abs_nonneg c1) h0
+  have a2 := mul_nonneg (abs_nonneg c2) h0
+  by_cases e : ρ = τ
+  · subst e
+    rw [s1.2.1, s2.2.1]
+    have e1 := (h1 g i j).trans (mul_le_mul_of_nonneg_right (le_abs_self c1) (by linarith))
+    have e2 := (h2 g i j).trans (mul_le_mul_of_nonneg_right (le_abs_self c2) (by linarith))
+    nlinarith
+  · rw [s1.2.2 ρ e, s2.2.2 ρ e]
+    have : ‖(1 : Matrix (Fin V.rank) (Fin V.rank) ℂ) i j‖ ≤ 1 := by
+      rw [Matrix.one_apply]; split_ifs <;> simp
+    nlinarith [abs_nonneg c1, abs_nonneg c2]
+
+end GlobalTheory.FrameHeight
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryAdelicHeight_realFrameElement_le_hsPow : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (A : GlobalTheory.ChainFr.Fr V) (τ : D.what₂.Tau), ∃ (C : ℝ) (m : ℕ), ∀ g ∈ Formalism.MainNotions.S.UJset (A.ε τ), GlobalTheory.Grow.height V (A.elt θ τ g) ≤ C * (1 + Formalism.REAL.hs g) ^ m := by
+  atlas_forward_decl GlobalTheory.FrameHeight.height_elt_le
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.complexDerivative_rightDerivative_commutator : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (τ τ' : D.what₂.Tau) (Z : Matrix (Fin V.rank) (Fin V.rank) ℂ), ∀ X ∈ lieAt V τ, ∀ φ ∈ GlobalTheory.Mem.AutSpace.SmFun θ V, (RderC θ V τ Z (Rder θ V τ X φ) = Rder θ V τ X (RderC θ V τ Z φ) + RderC θ V τ (Z * X - X * Z) φ) ∧ (τ' ≠ τ → RderC θ V τ' Z (Rder θ V τ X φ) = Rder θ V τ X (RderC θ V τ' Z φ)) := by
+  first | exact @GlobalTheory.DerBracket.RderC_Rder | exact GlobalTheory.DerBracket.RderC_Rder | (intros; apply GlobalTheory.DerBracket.RderC_Rder <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.Grow GlobalTheory.Size GlobalTheory.Mem.AutSpace Filter
+open scoped ENNReal NNReal Topology
+
+namespace GlobalTheory.Size.NearOne
+
+variable {D : D7} {θ : InfFam D} {V : HSp D}
+
+theorem exists_log (V : HSp D) (τ : D.what₂.Tau) :
+    ∃ Λ : Matrix (Fin V.rank) (Fin V.rank) ℂ → Matrix (Fin V.rank) (Fin V.rank) ℂ, (∀ u, Λ u ∈ lieAt V τ) ∧
+      Tendsto Λ (𝓝 1) (𝓝 0) ∧
+      ∀ᶠ u in 𝓝[Formalism.QuantumDeterminants.UH (gramAt D V τ)] 1, NormedSpace.exp (Λ u) = u := by
+  obtain ⟨L, hL, hexp, hlog⟩ := GlobalTheory.ConjMult.hasLogAt (V := V) τ
+  have hJ := GlobalTheory.SmoothAutCheck.gramAt_unit V τ
+  have h0 : L 1 = 0 := by
+    have h := hlog.self_of_nhds
+    simpa using h
+  refine ⟨fun u => (L u).1, fun u => (L u).2, ?_, ?_⟩
+  · have hc : Filter.Tendsto L (𝓝 1) (𝓝 0) := h0 ▸ hL.continuousAt.tendsto
+    exact (continuous_subtype_val.tendsto _).comp hc
+  · filter_upwards [nhdsWithin_le_nhds hexp, self_mem_nhdsWithin] with u hu hmem
+    exact hu ((GlobalTheory.ConjMult.unit_iffM hJ u).2 hmem)
+
+private theorem continuous_matrix_exp' (n : ℕ) : Continuous (fun M : Matrix (Fin n) (Fin n) ℂ => NormedSpace.exp M) := by
+  let _ : NormedRing (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedRing
+  let _ : NormedAlgebra ℂ (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedAlgebra
+  let _ : NormedAlgebra ℚ (Matrix (Fin n) (Fin n) ℂ) := .restrictScalars ℚ ℂ _
+  have _ : CompleteSpace (Matrix (Fin n) (Fin n) ℂ) := FiniteDimensional.complete ℂ _
+  exact NormedSpace.exp_continuous
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
+
+theorem exists_height_le (hθ : IsInfFam θ) (V : HSp D) (τ : D.what₂.Tau) :
+    ∀ᶠ X in 𝓝 (0 : Matrix (Fin V.rank) (Fin V.rank) ℂ), X ∈ lieAt V τ →
+      ∀ t ∈ Set.Icc (0 : ℝ) 1, height V (oneP θ V τ X t) ≤ 2 := by
+  have hl := height_laws (V := V)
+  have hexp : Continuous (fun M : Matrix (Fin V.rank) (Fin V.rank) ℂ => NormedSpace.exp M) := continuous_matrix_exp' V.rank
+  let F : {X : Matrix (Fin V.rank) (Fin V.rank) ℂ // X ∈ lieAt V τ} × ℝ → ℝ :=
+    fun p => height V (atTau θ V τ (NormedSpace.exp (p.2 • p.1.1)))
+  have hF : Continuous F := by
+    have hin : Continuous fun p : {X : Matrix (Fin V.rank) (Fin V.rank) ℂ // X ∈ lieAt V τ} × ℝ =>
+        NormedSpace.exp (p.2 • p.1.1) :=
+      hexp.comp (continuous_snd.smul (continuous_subtype_val.comp continuous_fst))
+    exact hl.2.2.2.2.comp ((GlobalTheory.PointAtPlaceHom.continuousOn_atTau hθ V τ).comp_continuous hin
+      fun p => GlobalTheory.Mem.Lift.exp_mem p.1.2 p.2)
+  have h0mem : (0 : Matrix (Fin V.rank) (Fin V.rank) ℂ) ∈ lieAt V τ := by
+    show (0 : Matrix (Fin V.rank) (Fin V.rank) ℂ)ᴴ * gramAt D V τ + gramAt D V τ * 0 = 0
+    simp
+  have hF0 : ∀ t : ℝ, F (⟨0, h0mem⟩, t) = 1 := by
+    intro t
+    show height V (atTau θ V τ (NormedSpace.exp (t • (0 : Matrix (Fin V.rank) (Fin V.rank) ℂ)))) = 1
+    rw [smul_zero, NormedSpace.exp_zero, (GlobalTheory.PointAtPlaceHom.atTau_laws D θ hθ V τ).2.1, hl.2.1]
+  have hev : ∀ᶠ x in 𝓝 (⟨0, h0mem⟩ : {X : Matrix (Fin V.rank) (Fin V.rank) ℂ // X ∈ lieAt V τ}),
+      ∀ t ∈ Set.Icc (0 : ℝ) 1, F (x, t) ≤ 2 := by
+    refine isCompact_Icc.eventually_forall_of_forall_eventually fun t _ => ?_
+    have hlt : F (⟨0, h0mem⟩, t) < 2 := by rw [hF0]; norm_num
+    exact (hF.continuousAt.eventually (gt_mem_nhds hlt)).mono fun z hz => hz.le
+  rw [nhds_subtype, Filter.eventually_comap] at hev
+  filter_upwards [hev] with X hX hXl t ht
+  exact hX ⟨X, hXl⟩ rfl t ht
+
+theorem growthSize_sub_le (hθ : IsInfFam θ) {τ : D.what₂.Tau} {N : ℕ} {φ : GA D V → ℂ} (hs : φ ∈ SmFun θ V)
+    (hf : growthSob θ V 1 N φ ≠ ⊤) {X : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hX : X ∈ lieAt V τ)
+    (hh : ∀ t ∈ Set.Icc (0 : ℝ) 1, height V (oneP θ V τ X t) ≤ 2) :
+    growthSize V N (rTr V (oneP θ V τ X 1) φ - φ) ≤
+      ENNReal.ofReal ((∑ a : Fin V.rank × Fin V.rank, ‖X a.1 a.2‖) * (growthSob θ V 1 N φ).toReal * 2 ^ N) := by
+  set S := (growthSob θ V 1 N φ).toReal with hS
+  have hS0 : 0 ≤ S := ENNReal.toReal_nonneg
+  set s := ∑ a : Fin V.rank × Fin V.rank, ‖X a.1 a.2‖ with hs_def
+  have hs0 : 0 ≤ s := Finset.sum_nonneg fun _ _ => norm_nonneg _
+  have hglob : ∀ a : Fin V.rank × Fin V.rank, ∀ h, ‖glDer θ V (τ, a) φ h‖ ≤ S * height V h ^ N := by
+    intro a
+    have h1 : growthSize V N (glDer θ V (τ, a) φ) ≤ growthSob θ V 1 N φ := by
+      have h0 := le_wordSum (A := glDer θ V) (p := growthSize V N) (d := 1) (l := [(τ, a)]) (by simp) φ
+      simpa [wordAct, growthSob] using h0
+    have h2 : growthSize V N (glDer θ V (τ, a) φ) ≤ ENNReal.ofReal S := by
+      rw [hS, ENNReal.ofReal_toReal hf]
+      exact h1
+    exact (growthSize_le_iff hS0).1 h2
+  have hder : ∀ h, ‖Rder θ V τ X φ h‖ ≤ s * S * height V h ^ N := by
+    intro h
+    rw [Rder_eq_sum_glDer hθ hs hX, Finset.sum_apply]
+    calc ‖∑ a : Fin V.rank × Fin V.rank, (X a.1 a.2 • glDer θ V (τ, a) φ) h‖
+        ≤ ∑ a : Fin V.rank × Fin V.rank, ‖(X a.1 a.2 • glDer θ V (τ, a) φ) h‖ := norm_sum_le _ _
+      _ ≤ ∑ a : Fin V.rank × Fin V.rank, ‖X a.1 a.2‖ * (S * height V h ^ N) := by
+          refine Finset.sum_le_sum fun a _ => ?_
+          rw [Pi.smul_apply, norm_smul]
+          exact mul_le_mul_of_nonneg_left (hglob a h) (norm_nonneg _)
+      _ = s * S * height V h ^ N := by rw [← Finset.sum_mul, mul_assoc]
+  have hC : 0 ≤ s * S * 2 ^ N := by positivity
+  rw [growthSize_le_iff hC]
+  intro g
+  have hl := height_laws (V := V)
+  have hφd : ∀ t, HasDerivAt (fun r : ℝ => φ (g * oneP θ V τ X r)) (Rder θ V τ X φ (g * oneP θ V τ X t)) t :=
+    fun t => GlobalTheory.Mem.Lift.hasDerivAt_oneP hθ hX (fun g' => GlobalTheory.Mem.Lift.hasDerivAt_Rder hs hX g') g t
+  have hb : ∀ t ∈ Set.Ico (0 : ℝ) 1, ‖Rder θ V τ X φ (g * oneP θ V τ X t)‖ ≤ s * S * 2 ^ N * height V g ^ N := by
+    intro t ht
+    have hk : height V (oneP θ V τ X t) ≤ 2 := hh t (Set.Ico_subset_Icc_self ht)
+    have hgk : height V (g * oneP θ V τ X t) ≤ height V g * 2 :=
+      (hl.2.2.2.1 g _).trans (mul_le_mul_of_nonneg_left hk (zero_le_one.trans (hl.1 g)))
+    have hpow : height V (g * oneP θ V τ X t) ^ N ≤ (height V g * 2) ^ N :=
+      pow_le_pow_left₀ (zero_le_one.trans (hl.1 _)) hgk N
+    calc ‖Rder θ V τ X φ (g * oneP θ V τ X t)‖ ≤ s * S * height V (g * oneP θ V τ X t) ^ N := hder _
+      _ ≤ s * S * (height V g * 2) ^ N := mul_le_mul_of_nonneg_left hpow (mul_nonneg hs0 hS0)
+      _ = s * S * 2 ^ N * height V g ^ N := by rw [mul_pow]; ring
+  have key := norm_image_sub_le_of_norm_deriv_le_segment' (f := fun r : ℝ => φ (g * oneP θ V τ X r))
+    (a := 0) (b := 1) (fun t _ => (hφd t).hasDerivWithinAt) hb 1 (by simp)
+  simp only [sub_zero, mul_one] at key
+  rw [GlobalTheory.Mem.Lift.oneP_zero hθ, mul_one] at key
+  exact key
+
+theorem tendsto_growthSize_translate : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (τ : D.what₂.Tau) (N : ℕ), ∀ φ ∈ GlobalTheory.Mem.AutSpace.SmFun θ V, GlobalTheory.Size.growthSob θ V 1 N φ ≠ ⊤ → Filter.Tendsto (fun u : Matrix (Fin V.rank) (Fin V.rank) ℂ => GlobalTheory.Size.growthSize V N (rTr V (atTau θ V τ u) φ - φ)) (nhdsWithin 1 (Formalism.QuantumDeterminants.UH (gramAt D V τ))) (nhds 0) := by
+  intro D θ hθ V τ N φ hs hf
+  obtain ⟨Λ, hΛmem, hΛ0, hΛexp⟩ := exists_log V τ
+  have hH := exists_height_le hθ V τ
+  have h1 : Filter.Tendsto Λ (nhdsWithin 1 (Formalism.QuantumDeterminants.UH (gramAt D V τ))) (𝓝 0) := hΛ0.mono_left nhdsWithin_le_nhds
+  have h2 : Filter.Tendsto (fun u => ∑ a : Fin V.rank × Fin V.rank, ‖Λ u a.1 a.2‖)
+      (nhdsWithin 1 (Formalism.QuantumDeterminants.UH (gramAt D V τ))) (𝓝 0) := by
+    have h3 : ∀ a : Fin V.rank × Fin V.rank, Filter.Tendsto (fun u => ‖Λ u a.1 a.2‖)
+        (nhdsWithin 1 (Formalism.QuantumDeterminants.UH (gramAt D V τ))) (𝓝 0) := by
+      intro a
+      have hce : Continuous fun M : Matrix (Fin V.rank) (Fin V.rank) ℂ => M a.1 a.2 := by
+        fun_prop
+      have h5 : Filter.Tendsto (fun u => Λ u a.1 a.2) (nhdsWithin 1 (Formalism.QuantumDeterminants.UH (gramAt D V τ)))
+          (𝓝 ((0 : Matrix (Fin V.rank) (Fin V.rank) ℂ) a.1 a.2)) :=
+        (hce.tendsto _).comp h1
+      simpa using h5.norm
+    have h4 := tendsto_finsetSum (Finset.univ : Finset (Fin V.rank × Fin V.rank)) fun a _ => h3 a
+    simpa using h4
+  have hc : Filter.Tendsto (fun u => ENNReal.ofReal ((∑ a : Fin V.rank × Fin V.rank, ‖Λ u a.1 a.2‖) *
+      (growthSob θ V 1 N φ).toReal * 2 ^ N)) (nhdsWithin 1 (Formalism.QuantumDeterminants.UH (gramAt D V τ))) (𝓝 0) := by
+    have h4 := ENNReal.tendsto_ofReal ((h2.mul_const ((growthSob θ V 1 N φ).toReal)).mul_const ((2 : ℝ) ^ N))
+    simpa using h4
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hc
+    (Filter.Eventually.of_forall fun _ => zero_le) ?_
+  filter_upwards [hΛexp, h1.eventually hH] with u hu hhu
+  have hk : atTau θ V τ u = oneP θ V τ (Λ u) 1 := by
+    show atTau θ V τ u = atTau θ V τ (NormedSpace.exp ((1 : ℝ) • Λ u))
+    rw [one_smul, hu]
+  rw [hk]
+  exact growthSize_sub_le hθ hs hf (hΛmem u) (hhu (hΛmem u))
+
+end GlobalTheory.Size.NearOne
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tendsto_moderateGrowthSize_translate_near_one : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (τ : D.what₂.Tau) (N : ℕ), ∀ φ ∈ GlobalTheory.Mem.AutSpace.SmFun θ V, GlobalTheory.Size.growthSob θ V 1 N φ ≠ ⊤ → Filter.Tendsto (fun u : Matrix (Fin V.rank) (Fin V.rank) ℂ => GlobalTheory.Size.growthSize V N (rTr V (atTau θ V τ u) φ - φ)) (nhdsWithin 1 (Formalism.QuantumDeterminants.UH (gramAt D V τ))) (nhds 0) := by
+  atlas_forward_decl GlobalTheory.Size.NearOne.tendsto_growthSize_translate
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.Grow GlobalTheory.Size GlobalTheory.Mem.AutSpace Filter
+open scoped ENNReal NNReal Topology
+
+namespace GlobalTheory.Size.DiffQuot
+
+theorem norm_taylor_le {f f₁ f₂ : ℝ → ℂ} (d1 : ∀ s, HasDerivAt f (f₁ s) s) (d2 : ∀ s, HasDerivAt f₁ (f₂ s) s)
+    {B t : ℝ} (hB0 : 0 ≤ B) (hB : ∀ s ∈ Set.Icc (-|t|) |t|, ‖f₂ s‖ ≤ B) :
+    ‖f t - f 0 - (t : ℂ) * f₁ 0‖ ≤ B * |t| * |t| := by
+  have hI : Convex ℝ (Set.Icc (-|t|) |t|) := convex_Icc _ _
+  have h0 : (0 : ℝ) ∈ Set.Icc (-|t|) |t| := ⟨neg_nonpos.mpr (abs_nonneg t), abs_nonneg t⟩
+  have ht : t ∈ Set.Icc (-|t|) |t| := ⟨neg_abs_le t, le_abs_self t⟩
+
+  have h1 : ∀ s ∈ Set.Icc (-|t|) |t|, ‖f₁ s - f₁ 0‖ ≤ B * |t| := by
+    intro s hs
+    have hmv := hI.norm_image_sub_le_of_norm_hasDerivWithin_le (f := f₁) (f' := f₂)
+      (fun x _ => (d2 x).hasDerivWithinAt) hB h0 hs
+    refine hmv.trans ?_
+    rw [sub_zero, Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_left (abs_le.2 ⟨hs.1, hs.2⟩) hB0
+
+  have hg : ∀ s ∈ Set.Icc (-|t|) |t|, HasDerivWithinAt (fun u : ℝ => f u - (u : ℂ) * f₁ 0) (f₁ s - f₁ 0)
+      (Set.Icc (-|t|) |t|) s := by
+    intro s _
+    have hc : HasDerivAt (fun u : ℝ => (u : ℂ) * f₁ 0) (f₁ 0) s := by
+      simpa using ((hasDerivAt_id s).ofReal_comp).mul_const (f₁ 0)
+    exact ((d1 s).sub hc).hasDerivWithinAt
+  have hmv := hI.norm_image_sub_le_of_norm_hasDerivWithin_le hg h1 h0 ht
+  have e : f t - f 0 - (t : ℂ) * f₁ 0 = (f t - (t : ℂ) * f₁ 0) - (f 0 - ((0 : ℝ) : ℂ) * f₁ 0) := by
+    push_cast; ring
+  rw [e]
+  refine hmv.trans (le_of_eq ?_)
+  rw [sub_zero, Real.norm_eq_abs]
+
+theorem tendsto_growthSize_diffQuot : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (τ : D.what₂.Tau) (N : ℕ), ∀ X ∈ lieAt V τ, ∀ φ ∈ GlobalTheory.Mem.AutSpace.SmFun θ V, GlobalTheory.Size.growthSob θ V 2 N φ ≠ ⊤ → Filter.Tendsto (fun t : ℝ => GlobalTheory.Size.growthSize V N (((t : ℂ)⁻¹) • (rTr V (oneP θ V τ X t) φ - φ) - Rder θ V τ X φ)) (nhdsWithin 0 {0}ᶜ) (nhds 0) := by
+  intro D θ hθ V τ N X hX φ hφ hS
+  have hφ1 : Rder θ V τ X φ ∈ SmFun θ V := Rder_mem hφ hX
+
+  have hw : growthSize V N (Rder θ V τ X (Rder θ V τ X φ)) ≠ ⊤ := by
+    have hl : IsLieWord V [(τ, X), (τ, X)] := by
+      intro p hp
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+      rcases hp with rfl | rfl <;> exact hX
+    have h2 := growthSize_rWord_ne_top_of_le hθ hφ hS hl (by simp)
+    simpa only [rWord, wordAct_cons, wordAct_nil] using h2
+  obtain ⟨C, hC⟩ := modGrowthExp_iff.2 hw
+  have hC0 : 0 ≤ C := nonneg_of_growth hC
+
+  obtain ⟨K, hK⟩ := exists_height_le_of_isCompact V
+    (isCompact_Icc.image (GlobalTheory.Mem.Lift.continuous_oneP hθ hX) :
+      IsCompact (oneP θ V τ X '' Set.Icc (-1 : ℝ) 1))
+  have hK1 : 1 ≤ K := (one_le_height V _).trans (hK _ ⟨0, ⟨by norm_num, by norm_num⟩, rfl⟩)
+  have hK0 : 0 ≤ K := by linarith
+
+  have key : ∀ t : ℝ, |t| ≤ 1 → t ≠ 0 → ∀ g,
+      ‖(((t : ℂ)⁻¹) • (rTr V (oneP θ V τ X t) φ - φ) - Rder θ V τ X φ) g‖ ≤
+        C * K ^ N * |t| * height V g ^ N := by
+    intro t ht1 ht0 g
+    have d1 : ∀ s, HasDerivAt (fun s => φ (g * oneP θ V τ X s)) (Rder θ V τ X φ (g * oneP θ V τ X s)) s :=
+      fun s => GlobalTheory.Mem.Lift.hasDerivAt_oneP hθ hX (fun g' => GlobalTheory.Mem.Lift.hasDerivAt_Rder hφ hX g') g s
+    have d2 : ∀ s, HasDerivAt (fun s => Rder θ V τ X φ (g * oneP θ V τ X s))
+        (Rder θ V τ X (Rder θ V τ X φ) (g * oneP θ V τ X s)) s :=
+      fun s => GlobalTheory.Mem.Lift.hasDerivAt_oneP hθ hX (fun g' => GlobalTheory.Mem.Lift.hasDerivAt_Rder hφ1 hX g') g s
+    have hg0 : 0 ≤ height V g := (height_pos V g).le
+    have hB0 : 0 ≤ C * (height V g * K) ^ N := mul_nonneg hC0 (pow_nonneg (mul_nonneg hg0 hK0) N)
+    have hB : ∀ s ∈ Set.Icc (-|t|) |t|,
+        ‖Rder θ V τ X (Rder θ V τ X φ) (g * oneP θ V τ X s)‖ ≤ C * (height V g * K) ^ N := by
+      intro s hs
+      have hs1 : s ∈ Set.Icc (-1 : ℝ) 1 := ⟨by linarith [hs.1], by linarith [hs.2]⟩
+      refine (hC _).trans (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (height_pos V _).le ?_ N) hC0)
+      exact (height_mul_le V _ _).trans (mul_le_mul_of_nonneg_left (hK _ ⟨s, hs1, rfl⟩) hg0)
+    have hT := norm_taylor_le d1 d2 hB0 hB
+    have e0 : oneP θ V τ X 0 = 1 := GlobalTheory.Mem.Lift.oneP_zero (V := V) (τ := τ) (X := X) hθ
+    have htc : (t : ℂ) ≠ 0 := by exact_mod_cast ht0
+    have hval : (((t : ℂ)⁻¹) • (rTr V (oneP θ V τ X t) φ - φ) - Rder θ V τ X φ) g =
+        (t : ℂ)⁻¹ * (φ (g * oneP θ V τ X t) - φ (g * oneP θ V τ X 0) -
+          (t : ℂ) * Rder θ V τ X φ (g * oneP θ V τ X 0)) := by
+      simp only [e0, mul_one, rTr, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
+      field_simp
+    have hta : 0 < |t| := abs_pos.mpr ht0
+    rw [hval, norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs]
+    calc |t|⁻¹ * ‖φ (g * oneP θ V τ X t) - φ (g * oneP θ V τ X 0) -
+          (t : ℂ) * Rder θ V τ X φ (g * oneP θ V τ X 0)‖
+        ≤ |t|⁻¹ * (C * (height V g * K) ^ N * |t| * |t|) :=
+          mul_le_mul_of_nonneg_left hT (inv_nonneg.mpr hta.le)
+      _ = C * K ^ N * |t| * height V g ^ N := by
+          field_simp
+          ring
+
+  have hev : ∀ᶠ t : ℝ in nhdsWithin (0 : ℝ) {0}ᶜ, |t| ≤ 1 ∧ t ∈ ({0}ᶜ : Set ℝ) := by
+    refine (eventually_nhdsWithin_of_eventually_nhds ?_).and eventually_mem_nhdsWithin
+    filter_upwards [Metric.ball_mem_nhds (0 : ℝ) one_pos] with t ht
+    rw [Metric.mem_ball, Real.dist_eq, sub_zero] at ht
+    exact ht.le
+  have hle : ∀ᶠ t : ℝ in nhdsWithin (0 : ℝ) {0}ᶜ,
+      GlobalTheory.Size.growthSize V N (((t : ℂ)⁻¹) • (rTr V (oneP θ V τ X t) φ - φ) - Rder θ V τ X φ) ≤
+        ENNReal.ofReal (C * K ^ N * |t|) := by
+    filter_upwards [hev] with t ht
+    have ht0 : t ≠ 0 := by simpa using ht.2
+    exact (growthSize_le_iff (mul_nonneg (mul_nonneg hC0 (pow_nonneg hK0 N)) (abs_nonneg t))).2
+      (key t ht.1 ht0)
+  have hlim : Filter.Tendsto (fun t : ℝ => ENNReal.ofReal (C * K ^ N * |t|)) (nhdsWithin 0 {0}ᶜ) (nhds 0) := by
+    have h0 : Filter.Tendsto (fun t : ℝ => C * K ^ N * |t|) (nhds 0) (nhds 0) := by
+      simpa using (continuous_abs.tendsto (0 : ℝ)).const_mul (C * K ^ N)
+    simpa using (ENNReal.tendsto_ofReal h0).mono_left nhdsWithin_le_nhds
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+    (Filter.Eventually.of_forall fun _ => zero_le) hle
+
+end GlobalTheory.Size.DiffQuot
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tendsto_moderateGrowthSize_differenceQuotient : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (τ : D.what₂.Tau) (N : ℕ), ∀ X ∈ lieAt V τ, ∀ φ ∈ GlobalTheory.Mem.AutSpace.SmFun θ V, GlobalTheory.Size.growthSob θ V 2 N φ ≠ ⊤ → Filter.Tendsto (fun t : ℝ => GlobalTheory.Size.growthSize V N (((t : ℂ)⁻¹) • (rTr V (oneP θ V τ X t) φ - φ) - Rder θ V τ X φ)) (nhdsWithin 0 {0}ᶜ) (nhds 0) := by
+  atlas_forward_decl GlobalTheory.Size.DiffQuot.tendsto_growthSize_diffQuot
+end
+
+section
 section
 noncomputable section
 
@@ -472,3 +1146,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_smoothCuspForm_frechet_moderateGrowth_rep : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (A : GlobalTheory.ChainFr.Fr V) (U : Subgroup (GA D V)) (N : ℕ), IsOpen (U : Set (GA D V)) → ∃ (E : Type) (_ : AddCommGroup E) (_ : Module ℂ E) (_ : UniformSpace E) (_ : IsUniformAddGroup E) (_ : CompleteSpace E) (_ : T2Space E) (p : ℕ → Seminorm ℂ E) (ι : E →ₗ[ℂ] (GA D V → ℂ)), Function.Injective ι ∧ (∀ φ, φ ∈ Set.range ι ↔ Continuous φ ∧ (∀ γ ∈ GQ V, ∀ g, φ (γ * g) = φ g) ∧ (∀ k ∈ U, k ∈ GfC V → ∀ g, φ (g * k) = φ g) ∧ φ ∈ GlobalTheory.Mem.AutSpace.SmFun θ V ∧ IsCuspFun V φ ∧ ∀ d, GlobalTheory.Size.growthSob θ V d N φ ≠ ⊤) ∧ (∀ d x, p d x = (GlobalTheory.Size.growthSob θ V d N (ι x)).toReal) ∧ ∀ τ, ∃ π dπ : Matrix (Fin V.rank) (Fin V.rank) ℂ → (E →L[ℂ] E), GlobalTheory.SmoothGlob.IsSmoothModRep (A.ε τ) p π dπ ∧ (∀ g ∈ Formalism.MainNotions.S.UJset (A.ε τ), ∀ x, ι (π g x) = rTr V (A.elt θ τ g) (ι x)) ∧ ∀ X ∈ GlobalTheory.SmoothGlob.lieSet (A.ε τ), ∀ x, ι (dπ X x) = Rder θ V τ ((A.fr τ)⁻¹ * X * A.fr τ) (ι x) := by
   atlas_forward_decl GlobalTheory.CuspFrechet.exists_frechet
+end

@@ -5,9 +5,335 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothOfRelativeDim
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsLBOfChartPull
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagSpaceComponentSmoothProjectiveConnected
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIsoToBidualOfLocalFrames
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLieBundleFramesChartsChangeBasis
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocallyFreeSubsheafDetIso
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LbIsoDetAffDetOm
+import Development.AbelianVarietyTheory.Definitions.Divisors.ToBidualNaturalityDualSheafTranspose
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EigenDecompositionVectorBundle
 
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CechPic
+open Formalism.L2.Pj
+open GlobalTheory.LocM GlobalTheory.LieMet GlobalTheory.GrCl GlobalTheory.Reg GlobalTheory.FlagMod
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.Twist (resM resM_resM)
+
+namespace GlobalTheory.ChartLieFrame
+
+theorem eq_of_loc {Z : Scheme.{0}} {W : Z.Opens} {a b : Γ(Z, W)}
+    (h : ∀ p ∈ W, ∃ (N : Z.Opens) (e : N ≤ W), p ∈ N ∧ resG Z e a = resG Z e b) : a = b :=
+  ext_ev_loc fun p hp => by
+    obtain ⟨N, e, hpN, hab⟩ := h p hp
+    exact ⟨N, hpN, fun S _ z hz hN => by rw [← ev_res z e hN hz a, ← ev_res z e hN hz b, hab]⟩
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
+  {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
+  {Y : Model Xo c β}
+
+def Rep (M : MChart Y) (j : Fin M.n) {U : Y.X.Opens} (hU : U ≤ M.U) (s : Γ(GlobalTheory.LieVB.Lie Y.t.G, U)) : Prop :=
+  ∀ (W : Y.X.Opens) (hW : IsAffineOpen W) (h : W ≤ U) (w : Γ(GlobalTheory.LieVB.omega Y.t.G, W)),
+    VB.dualApp s h w = tanEv Y.t (isTan_tv (lieBasis M (tau hW) (tau_le hW (h.trans hU)) j)) (tau_le hW le_rfl) w
+
+theorem tanLin_res (M : MChart Y) {W W₀ V : Y.X.Opens} (hW : IsAffineOpen W) (hW₀ : IsAffineOpen W₀) (e : W ≤ W₀)
+    (hM : W₀ ≤ M.U) (hV : W₀ ≤ V) {n : ℕ} (s : Fin n → Γ(GlobalTheory.LieVB.omega Y.t.G, V)) (j : Fin M.n) :
+    tanLin Y.t (tau_le hW (e.trans hV)) s (lieBasis M (tau hW) (tau_le hW (e.trans hM)) j) =
+      fun i => resG Y.X e (tanLin Y.t (tau_le hW₀ hV) s (lieBasis M (tau hW₀) (tau_le hW₀ hM) j) i) := by
+  have φe : spMap (ev (tau hW) W₀ (tau_le hW e)) ≫ tau hW₀ = tau hW := spMap_ev (tau hW) hW₀ (tau_le hW e)
+  rw [← tanPull_lieBasis M _ φe (tau_le hW₀ hM) (tau_le hW (e.trans hM)) j,
+    tanLin_tanPull Y.t _ φe (tau_le hW₀ hV) (tau_le hW (e.trans hV))]
+  funext i
+  exact ev_tau hW e (tau_le hW e) _
+
+theorem tanEv_res (M : MChart Y) {W W₀ : Y.X.Opens} (hW : IsAffineOpen W) (hW₀ : IsAffineOpen W₀) (e : W ≤ W₀)
+    (hM : W₀ ≤ M.U) (w : Γ(GlobalTheory.LieVB.omega Y.t.G, W₀)) (j : Fin M.n) :
+    tanEv Y.t (isTan_tv (lieBasis M (tau hW) (tau_le hW (e.trans hM)) j)) (tau_le hW le_rfl) (resM _ e w) =
+      resG Y.X e (tanEv Y.t (isTan_tv (lieBasis M (tau hW₀) (tau_le hW₀ hM) j)) (tau_le hW₀ le_rfl) w) := by
+  rw [tanEv_resM]
+  exact congrFun (tanLin_res M hW hW₀ e hM le_rfl ![w] j) 0
+
+theorem Rep.res {M : MChart Y} {j : Fin M.n} {U : Y.X.Opens} {hU : U ≤ M.U} {s : Γ(GlobalTheory.LieVB.Lie Y.t.G, U)}
+    (hs : Rep M j hU s) {U' : Y.X.Opens} (e : U' ≤ U) : Rep M j (e.trans hU) (resM _ e s) := fun W hW h w => by
+  rw [VB.dualApp_res]
+  exact hs W hW (h.trans e) w
+
+theorem rep_unique (M : MChart Y) (j : Fin M.n) {U : Y.X.Opens} (hU : U ≤ M.U) {s s' : Γ(GlobalTheory.LieVB.Lie Y.t.G, U)}
+    (hs : Rep M j hU s) (hs' : Rep M j hU s') : s = s' :=
+  VB.dual_ext fun W h w => eq_of_loc fun p hp => by
+    obtain ⟨N, hN, hpN, hNW'⟩ := exists_isAffineOpen_mem_and_subset (x := p) (U := W) hp
+    have hNW : N ≤ W := hNW'
+    refine ⟨N, hNW, hpN, ?_⟩
+    rw [← VB.dualApp_resM, ← VB.dualApp_resM, hs N hN, hs' N hN]
+
+theorem rep_of_cover (M : MChart Y) (j : Fin M.n) {U : Y.X.Opens} (hU : U ≤ M.U) {ι : Type} (V : ι → Y.X.Opens)
+    (hV : ∀ k, V k ≤ U) (hc : U ≤ iSup V) (s : Γ(GlobalTheory.LieVB.Lie Y.t.G, U))
+    (H : ∀ k, Rep M j ((hV k).trans hU) (resM _ (hV k) s)) : Rep M j hU s := fun W hW h w =>
+  eq_of_loc fun p hp => by
+    obtain ⟨k, hk⟩ := TopologicalSpace.Opens.mem_iSup.1 (hc (h hp))
+    obtain ⟨N, hN, hpN, hNW⟩ := exists_isAffineOpen_mem_and_subset (x := p) (U := W ⊓ V k) ⟨hp, hk⟩
+    have eW : N ≤ W := fun q hq => (hNW hq).1
+    have eV : N ≤ V k := fun q hq => (hNW hq).2
+    refine ⟨N, eW, hpN, ?_⟩
+    rw [← VB.dualApp_resM, ← tanEv_res M hN hW eW (h.trans hU) w j]
+    have := H k N hN eV (resM _ eW w)
+    rw [VB.dualApp_res] at this
+    exact this
+
+def locSec (M : MChart Y) (j : Fin M.n) {n : ℕ} (C : VB.Chart (GlobalTheory.LieVB.omega Y.t.G) n) (hC : IsAffineOpen C.U)
+    (hM : C.U ≤ M.U) : Γ(GlobalTheory.LieVB.Lie Y.t.G, C.U) :=
+  ∑ i : Fin n, (tanLin Y.t (tau_le hC le_rfl) C.e (lieBasis M (tau hC) (tau_le hC hM) j) i : Γ(Y.X, C.U)) •
+    (C.isFrame.coord i : Γ(GlobalTheory.LieVB.Lie Y.t.G, C.U))
+
+theorem rep_locSec (M : MChart Y) (j : Fin M.n) {n : ℕ} (C : VB.Chart (GlobalTheory.LieVB.omega Y.t.G) n)
+    (hC : IsAffineOpen C.U) (hM : C.U ≤ M.U) : Rep M j hM (locSec M j C hC hM) := fun W hW h w => by
+  rw [locSec, VB.dualApp_sum]
+  simp only [VB.dualApp_smul, LinearMap.sum_apply, LinearMap.smul_apply,
+    VB.IsFrame.dualApp_coord, smul_eq_mul]
+  conv_rhs => rw [← (C.isFrame.basis h).sum_repr w]
+  rw [tanEv_sum_smul]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [VB.IsFrame.basis_apply, tanEv_resM, ev_tau_self, RingHom.id_apply, _root_.mul_comm]
+  exact congrArg (((C.isFrame.basis h).repr w i) * ·) (congrFun (tanLin_res M hW hC h hM le_rfl C.e j) i).symm
+
+theorem exists_rep (M : MChart Y) (j : Fin M.n) : ∃ s : Γ(GlobalTheory.LieVB.Lie Y.t.G, M.U), Rep M j le_rfl s := by
+  haveI := Y.t.semi
+  haveI := Y.t.semi.smooth
+  let V : (Σ n : ℕ, {C : VB.Chart (GlobalTheory.LieVB.omega Y.t.G) n // IsAffineOpen C.U ∧ C.U ≤ M.U}) → Y.X.Opens :=
+    fun k => k.2.1.U
+  have hV : ∀ k, V k ≤ M.U := fun k => k.2.2.2
+  have hc : M.U ≤ iSup V := fun p hp => by
+    obtain ⟨U₀, n, e, hp₀, he⟩ := GlobalTheory.LieVB.exists_isFrame_omega Y.t.G p
+    obtain ⟨N, hN, hpN, hNU⟩ := exists_isAffineOpen_mem_and_subset (x := p) (U := M.U ⊓ U₀) ⟨hp, hp₀⟩
+    have e₁ : N ≤ M.U := fun q hq => (hNU hq).1
+    have e₂ : N ≤ U₀ := fun q hq => (hNU hq).2
+    exact TopologicalSpace.Opens.mem_iSup.2 ⟨⟨n, ⟨⟨N, fun i => resM _ e₂ (e i), he.res e₂⟩, hN, e₁⟩⟩, hpN⟩
+  have hrep : ∀ k, Rep M j (hV k) (locSec M j k.2.1 k.2.2.1 k.2.2.2) := fun k => rep_locSec M j _ _ _
+  obtain ⟨t, ht⟩ := Twist.exists_sec_of_cover V hV hc (fun k => locSec M j k.2.1 k.2.2.1 k.2.2.2) fun k k' =>
+    rep_unique M j (inf_le_left.trans (hV k)) ((hrep k).res inf_le_left) ((hrep k').res inf_le_right)
+  exact ⟨t, rep_of_cover M j le_rfl V hV hc t fun k => by rw [ht k]; exact hrep k⟩
+
+theorem isFrame_of_rep (M : MChart Y) (f : Fin M.n → Γ(GlobalTheory.LieVB.Lie Y.t.G, M.U)) (hf : ∀ j, Rep M j le_rfl (f j)) :
+    VB.IsFrame f := by
+  haveI := Y.t.semi
+  haveI := Y.t.semi.smooth
+  refine VB.isFrame_of_forall_exists fun V h p hp => ?_
+  obtain ⟨U₀, n, e, hp₀, he⟩ := GlobalTheory.LieVB.exists_isFrame_omega Y.t.G p
+  obtain ⟨W, hW, hpW, hWU⟩ := exists_isAffineOpen_mem_and_subset (x := p) (U := V ⊓ U₀) ⟨hp, hp₀⟩
+  have e₁ : W ≤ V := fun q hq => (hWU hq).1
+  have e₂ : W ≤ U₀ := fun q hq => (hWU hq).2
+  let C : VB.Chart (GlobalTheory.LieVB.omega Y.t.G) n := ⟨W, fun i => resM _ e₂ (e i), he.res e₂⟩
+  refine ⟨W, e₁, hpW, ?_⟩
+  let R := (C.isFrame.dual.basis (le_rfl : C.U ≤ C.U)).equivFun
+  let T : (Fin M.n → Γ(Y.X, W)) → (Fin n → Γ(Y.X, W)) :=
+    (tanLin Y.t (tau_le hW (le_rfl : W ≤ C.U)) C.e) ∘ (lieBasis M (tau hW) (tau_le hW (e₁.trans h))).equivFun.symm
+  have hT : Function.Bijective T :=
+    (HodgeCech.tanLin_bijective Y.t C (tau hW) (tau_le hW le_rfl)).comp (LinearEquiv.bijective _)
+  have key : ∀ a, R (Fintype.linearCombination Γ(Y.X, W) (fun j => resM _ (e₁.trans h) (f j)) a) = T a := by
+    intro a
+    funext i
+    simp only [R, T, Function.comp_apply, Module.Basis.equivFun_apply, VB.IsFrame.dual_basis_repr,
+      Fintype.linearCombination_apply, VB.dualApp_sum, LinearMap.sum_apply, VB.dualApp_smul, LinearMap.smul_apply,
+      VB.dualApp_res, Module.Basis.equivFun_symm_apply, map_sum, map_smul, Finset.sum_apply, Pi.smul_apply,
+      smul_eq_mul, GlobalTheory.LB.resG_self]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [hf k W hW _ _, GlobalTheory.Twist.resM_self]
+    rfl
+  have hc : R ∘ (Fintype.linearCombination Γ(Y.X, W) (fun j => resM _ (e₁.trans h) (f j))) = T := funext key
+  exact (Function.Bijective.of_comp_iff' R.bijective _).1 (hc ▸ hT)
+
+theorem rep_chg (M M' : MChart Y) (f : Fin M.n → Γ(GlobalTheory.LieVB.Lie Y.t.G, M.U)) (hf : ∀ i, Rep M i le_rfl (f i))
+    (j : Fin M'.n) :
+    Rep M' j inf_le_right (∑ i, chg M M' i j • resM _ (inf_le_left : M.U ⊓ M'.U ≤ M.U) (f i)) := fun W hW h w => by
+  have ev' : ∀ v, tanEv Y.t (isTan_tv v) (tau_le hW le_rfl) w = tanLin Y.t (tau_le hW le_rfl) ![w] v 0 := fun v => rfl
+  rw [VB.dualApp_sum]
+  simp only [VB.dualApp_smul, LinearMap.sum_apply, LinearMap.smul_apply, VB.dualApp_res, smul_eq_mul]
+  rw [ev', ← (lieBasis M (tau hW) (tau_le hW (h.trans inf_le_left))).sum_toMatrix_smul_self
+    (lieBasis M' (tau hW) (tau_le hW (h.trans inf_le_right))) j, map_sum]
+  rw [Finset.sum_apply]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [map_smul, Pi.smul_apply, smul_eq_mul, hf i W hW (h.trans inf_le_left) w, ev']
+  refine congrArg₂ (· * ·) ?_ rfl
+  rw [← chg_map M M' (tau hW) (tau_le hW (h.trans inf_le_left)) (tau_le hW (h.trans inf_le_right)) (tau_le hW h),
+    Matrix.map_apply, ev_tau hW h]
+
+theorem exists_lieFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β), ∃ f : ∀ M : GlobalTheory.Reg.MChart Y, Fin M.n → Γ(GlobalTheory.LieVB.Lie Y.t.G, M.U), (∀ M, GlobalTheory.VB.IsFrame (f M)) ∧ ∀ (M M' : GlobalTheory.Reg.MChart Y) (j : Fin M'.n), GlobalTheory.Twist.resM _ (inf_le_right : M.U ⊓ M'.U ≤ M'.U) (f M' j) = ∑ i, GlobalTheory.FlagMod.chg M M' i j • GlobalTheory.Twist.resM _ (inf_le_left : M.U ⊓ M'.U ≤ M.U) (f M i) := by
+  intro E _ _ _ H Dw l Xo c O _ β Y
+  choose f hf using fun (M : MChart Y) (j : Fin M.n) => exists_rep M j
+  exact ⟨f, fun M => isFrame_of_rep M (f M) (hf M), fun M M' j =>
+    rep_unique M' j inf_le_right ((hf M' j).res inf_le_right) (rep_chg M M' (f M) (hf M) j)⟩
+
+end GlobalTheory.ChartLieFrame
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CechPic
+open Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_lieBundle_frames_charts_change_basis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β), ∃ f : ∀ M : GlobalTheory.Reg.MChart Y, Fin M.n → Γ(GlobalTheory.LieVB.Lie Y.t.G, M.U), (∀ M, GlobalTheory.VB.IsFrame (f M)) ∧ ∀ (M M' : GlobalTheory.Reg.MChart Y) (j : Fin M'.n), GlobalTheory.Twist.resM _ (inf_le_right : M.U ⊓ M'.U ≤ M'.U) (f M' j) = ∑ i, GlobalTheory.FlagMod.chg M M' i j • GlobalTheory.Twist.resM _ (inf_le_left : M.U ⊓ M'.U ≤ M.U) (f M i) := by
+  atlas_forward_decl GlobalTheory.ChartLieFrame.exists_lieFrame
+end
+
+section
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CechPic
+
+set_option autoImplicit false
+noncomputable section
+
+namespace GlobalTheory.SubGlue
+open GlobalTheory.Twist (resM resM_resM resM_self resM_smul app_resM sec_ext_of_cover)
+open GlobalTheory.LB (resG_resG resG_self exists_fun_of_cover)
+open GlobalTheory.QCoh (appLinear appLinear_apply)
+
+variable {X : Scheme.{0}} {F : X.Modules} {r : ℕ} {L : LB X}
+
+abbrev spanRes (s : ∀ k : L.ι, Fin r → Γ(F, L.U k)) (k : L.ι) {W : X.Opens} (hk : W ≤ L.U k) :
+    Submodule Γ(X, W) Γ(F, W) :=
+  Submodule.span Γ(X, W) (Set.range fun i => resM F hk (s k i))
+
+theorem resM_mem_spanRes (s : ∀ k : L.ι, Fin r → Γ(F, L.U k)) {k : L.ι} {W W' : X.Opens}
+    (hW : W' ≤ W) (hk : W ≤ L.U k) {x : Γ(F, W)} (hx : x ∈ spanRes s k hk) :
+    resM F hW x ∈ spanRes s k (hW.trans hk) := by
+  obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 hx
+  refine (Submodule.mem_span_range_iff_exists_fun _).2 ⟨fun i => resG X hW (c i), ?_⟩
+  simp only [map_sum, resM_smul, resM_resM]
+
+theorem spanRes_le (s : ∀ k : L.ι, Fin r → Γ(F, L.U k))
+    (A : ∀ k k' : L.ι, Matrix (Fin r) (Fin r) Γ(X, L.U k ⊓ L.U k'))
+    (hA : ∀ (k k' : L.ι) (i : Fin r), resM F (inf_le_right : L.U k ⊓ L.U k' ≤ L.U k') (s k' i) =
+      ∑ j, A k k' j i • resM F (inf_le_left : L.U k ⊓ L.U k' ≤ L.U k) (s k j))
+    (k k' : L.ι) {W : X.Opens} (hk : W ≤ L.U k) (hk' : W ≤ L.U k') :
+    spanRes s k' hk' ≤ spanRes s k hk := by
+  rw [spanRes, Submodule.span_le]
+  rintro _ ⟨i, rfl⟩
+  have e := congrArg (resM F (le_inf hk hk')) (hA k k' i)
+  simp only [resM_resM, map_sum, resM_smul] at e
+  change resM F hk' (s k' i) ∈ spanRes s k hk
+  rw [show resM F hk' (s k' i) = _ from e]
+  exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+
+def IsLoc (s : ∀ k : L.ι, Fin r → Γ(F, L.U k)) (V : X.Opens) (x : Γ(F, V)) : Prop :=
+  ∀ p ∈ V, ∃ (k : L.ι) (W : X.Opens) (h : W ≤ V) (hk : W ≤ L.U k), p ∈ W ∧
+    resM F h x ∈ spanRes s k hk
+
+def sub (hL : L.IsLB) (s : ∀ k : L.ι, Fin r → Γ(F, L.U k))
+    (hmono : ∀ (k k' : L.ι) (W : X.Opens) (hk : W ≤ L.U k) (hk' : W ≤ L.U k'),
+      spanRes s k' hk' ≤ spanRes s k hk) : VB.Sub F where
+  sec V :=
+    { carrier := {x | IsLoc s V x}
+      zero_mem' := fun p hp => by
+        obtain ⟨k, hk⟩ := Semi.LB.mem_of_cover hL p
+        exact ⟨k, V ⊓ L.U k, inf_le_left, inf_le_right, ⟨hp, hk⟩, by rw [map_zero]; exact zero_mem _⟩
+      add_mem' := fun {x y} hx hy p hp => by
+        obtain ⟨k, W, h, hk, hpW, hxW⟩ := hx p hp
+        obtain ⟨k', W', h', hk', hpW', hyW'⟩ := hy p hp
+        refine ⟨k, W ⊓ W', inf_le_left.trans h, inf_le_left.trans hk, ⟨hpW, hpW'⟩, ?_⟩
+        rw [map_add]
+        refine add_mem ?_ (hmono k k' _ (inf_le_left.trans hk) (inf_le_right.trans hk') ?_)
+        · have := resM_mem_spanRes s (inf_le_left : W ⊓ W' ≤ W) hk hxW
+          rw [resM_resM] at this
+          exact this
+        · have := resM_mem_spanRes s (inf_le_right : W ⊓ W' ≤ W') hk' hyW'
+          rw [resM_resM] at this
+          exact this
+      smul_mem' := fun a x hx p hp => by
+        obtain ⟨k, W, h, hk, hpW, hxW⟩ := hx p hp
+        refine ⟨k, W, h, hk, hpW, ?_⟩
+        rw [resM_smul]
+        exact Submodule.smul_mem _ _ hxW }
+  res_mem {V W} hWV x hx := fun p hp => by
+    obtain ⟨k, W', h', hk, hp', hx'⟩ := (hx : IsLoc s V x) p (hWV hp)
+    refine ⟨k, W ⊓ W', inf_le_left, inf_le_right.trans hk, ⟨hp, hp'⟩, ?_⟩
+    rw [resM_resM]
+    have := resM_mem_spanRes s (inf_le_right : W ⊓ W' ≤ W') hk hx'
+    rw [resM_resM] at this
+    exact this
+  mem_of_local {V x} H := fun p hp => by
+    obtain ⟨W, h, hpW, hW⟩ := H p hp
+    obtain ⟨k, W', h', hk, hp', hx'⟩ := (hW : IsLoc s W _) p hpW
+    refine ⟨k, W', h'.trans h, hk, hp', ?_⟩
+    rw [resM_resM] at hx'
+    exact hx'
+
+theorem mem_spanRes_of_mem (hL : L.IsLB) (s : ∀ k : L.ι, Fin r → Γ(F, L.U k))
+    (hmono : ∀ (k k' : L.ι) (W : X.Opens) (hk : W ≤ L.U k) (hk' : W ≤ L.U k'),
+      spanRes s k' hk' ≤ spanRes s k hk)
+    (hli : ∀ (k : L.ι) (V : X.Opens) (h : V ≤ L.U k),
+      LinearIndependent Γ(X, V) fun i => resM F h (s k i))
+    {k : L.ι} {V : X.Opens} (hV : V ≤ L.U k) {x : Γ(F, V)}
+    (hx : x ∈ (sub hL s hmono).sec V) : x ∈ spanRes s k hV := by
+  have hx' : IsLoc s V x := hx
+  choose k' W hW hk' hpW hxW using fun p : V => hx' p p.2
+  have hc : V ≤ iSup W := fun p hp => Opens.mem_iSup.2 ⟨⟨p, hp⟩, hpW _⟩
+  have hin (p : V) : resM F (hW p) x ∈ spanRes s k ((hW p).trans hV) :=
+    hmono k (k' p) _ _ _ (hxW p)
+  choose c hc' using fun p => (Submodule.mem_span_range_iff_exists_fun _).1 (hin p)
+  have key (p q : V) (i : Fin r) : resG X (inf_le_left : W p ⊓ W q ≤ W p) (c p i) =
+      resG X (inf_le_right : W p ⊓ W q ≤ W q) (c q i) := by
+    have hl := hli k (W p ⊓ W q) (inf_le_left.trans ((hW p).trans hV))
+    have e1 := congrArg (resM F (inf_le_left : W p ⊓ W q ≤ W p)) (hc' p)
+    have e2 := congrArg (resM F (inf_le_right : W p ⊓ W q ≤ W q)) (hc' q)
+    simp only [map_sum, resM_smul, resM_resM] at e1 e2
+    exact Fintype.linearIndependent_iffₛ.1 hl _ _ (e1.trans e2.symm) i
+  choose b hb using fun i => exists_fun_of_cover W hW hc (fun p => c p i) fun p q => key p q i
+  refine (Submodule.mem_span_range_iff_exists_fun _).2 ⟨b, ?_⟩
+  refine sec_ext_of_cover W hW hc fun p => ?_
+  simp only [map_sum, resM_smul, resM_resM, hb]
+  exact hc' p
+
+end GlobalTheory.SubGlue
+
+namespace GlobalTheory.SubGlue
+open GlobalTheory.Twist (resM resM_resM resM_self resM_smul app_resM sec_ext_of_cover)
+open GlobalTheory.QCoh (appLinear appLinear_apply)
+
+theorem exists_sub_isVB_lbIso_det : ∀ (X : Scheme.{0}) (F : X.Modules) (r : ℕ) (L : LB X), L.IsLB → ∀ (s : ∀ k : L.ι, Fin r → Γ(F, L.U k)) (A : ∀ k k' : L.ι, Matrix (Fin r) (Fin r) Γ(X, L.U k ⊓ L.U k')), (∀ (k : L.ι) (V : X.Opens) (h : V ≤ L.U k), LinearIndependent Γ(X, V) fun i => GlobalTheory.Twist.resM F h (s k i)) → (∀ (k k' : L.ι) (i : Fin r), GlobalTheory.Twist.resM F (inf_le_right : L.U k ⊓ L.U k' ≤ L.U k') (s k' i) = ∑ j, A k k' j i • GlobalTheory.Twist.resM F (inf_le_left : L.U k ⊓ L.U k' ≤ L.U k) (s k j)) → (∀ k k' : L.ι, (L.g k k').val = (A k k').det) → ∃ (W : X.Modules) (ι : W ⟶ F), Mono ι ∧ GlobalTheory.VB.IsVB W r ∧ LBIso L (GlobalTheory.VB.det W r) := by
+  intro X F r L hL s A hli hA hdet
+  have hmono := spanRes_le s A hA
+  let N := sub hL s hmono
+  have hmem (k : L.ι) (i : Fin r) : s k i ∈ N.sec (L.U k) := fun p hp =>
+    ⟨k, L.U k, le_rfl, le_rfl, hp, Submodule.subset_span ⟨i, rfl⟩⟩
+  have hfr (k : L.ι) : VB.IsFrame fun i => N.mkSec (s k i) (hmem k i) :=
+    GlobalTheory.EigenFrames.isFrame_mkSec N (s k) (hmem k) (hli k)
+      fun V h x hx => mem_spanRes_of_mem hL s hmono hli h hx
+  have hv (k k' : L.ι) (i : Fin r) :
+      resM N.toMod (inf_le_right : L.U k ⊓ L.U k' ≤ L.U k') (N.mkSec (s k' i) (hmem k' i)) =
+        ((hfr k).basis (inf_le_left : L.U k ⊓ L.U k' ≤ L.U k)).equivFun.symm
+          fun j => A k k' j i := by
+    rw [VB.IsFrame.basis_equivFun_symm]
+    apply N.incl_app_injective
+    rw [app_resM, VB.Sub.incl_app_mkSec, hA]
+    rw [← appLinear_apply, map_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [map_smul, appLinear_apply, app_resM, VB.Sub.incl_app_mkSec]
+  refine ⟨N.toMod, N.incl, inferInstance, ?_⟩
+  refine VB.lbIso_det_of_frames hL _ hfr fun k k' => Units.ext ?_
+  rw [hdet, VB.IsFrame.val_detUnit, Module.Basis.det_apply]
+  congr 1
+  ext a b
+  rw [Module.Basis.toMatrix_apply, hv, ← Module.Basis.equivFun_apply, LinearEquiv.apply_symm_apply]
+
+end GlobalTheory.SubGlue
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.CechPic
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_locallyFree_subsheaf_det_iso : ∀ (X : Scheme.{0}) (F : X.Modules) (r : ℕ) (L : LB X), L.IsLB → ∀ (s : ∀ k : L.ι, Fin r → Γ(F, L.U k)) (A : ∀ k k' : L.ι, Matrix (Fin r) (Fin r) Γ(X, L.U k ⊓ L.U k')), (∀ (k : L.ι) (V : X.Opens) (h : V ≤ L.U k), LinearIndependent Γ(X, V) fun i => GlobalTheory.Twist.resM F h (s k i)) → (∀ (k k' : L.ι) (i : Fin r), GlobalTheory.Twist.resM F (inf_le_right : L.U k ⊓ L.U k' ≤ L.U k') (s k' i) = ∑ j, A k k' j i • GlobalTheory.Twist.resM F (inf_le_left : L.U k ⊓ L.U k' ≤ L.U k) (s k j)) → (∀ k k' : L.ι, (L.g k k').val = (A k k').det) → ∃ (W : X.Modules) (ι : W ⟶ F), Mono ι ∧ GlobalTheory.VB.IsVB W r ∧ LBIso L (GlobalTheory.VB.det W r) := by
+  atlas_forward_decl GlobalTheory.SubGlue.exists_sub_isVB_lbIso_det
+end
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory Formalism.L2.Pj Formalism.BasicNotions
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.CompHS GlobalTheory.CovTop
@@ -225,3 +551,5 @@ theorem isNef_headWt : GlobalTheory.Published.SemiAbelianLieSeminegative → Glo
   exact isNef_stepEx hS hN.1 TF.X Z τ.1 (by rw [FlagMod.mult_of_mem τ]; exact hk)
 
 end GlobalTheory.NefHodge
+end
+end

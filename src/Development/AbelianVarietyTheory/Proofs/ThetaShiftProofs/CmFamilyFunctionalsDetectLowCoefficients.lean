@@ -5,11 +5,660 @@ import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.QatOf
 import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NumericalConsequencesOfPins
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.AbsNormHalfDifferentDvdDiscr
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsRankOneCuspLatticeDataOfPrincipal
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.MemFormsLowCoeffsVanishIffFourierJacobi
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsFamilyMemberFunctionalNeZero
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.ModelsAt
+import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsFramedPointChangedByLetters
+import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
+import Formalism.LocalToGlobal.ProjectiveLattices.ArcPtX
+import Development.AbelianVarietyTheory.Counterexamples.ModuliSurvey.MemOfEqMulInvPow
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.FrameChangeExistsUniqueInvertible
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsNeZeroIff
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsConstantEigenbasisTangentArc
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsIsArcFr
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.FreqRealNonnegIntegral
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.NonemptyUnifWitnessDataOfIsUnf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainOfTransference
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.CmApproximationTransference
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.HyperbolicFlagDataBasePoint
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.TransvInOfHasPrinc
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.SumReCmTypeEqHalfTrace
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CmLettersIsLieBasisAlongArc
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsCoeffNeZeroOfFourierJacobiArcDatum
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsCmArcDataAtSplitIsotropicPoint
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ModelsAtOfGoodLevel
 
+section
+open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
+open Formalism.L2.Pj Formalism.L2.Pj.QAt Formalism.MainNotions Formalism.BasicNotions Formalism.L2.LamCM GlobalTheory.ArcCM
+
+namespace GlobalTheory.ArcCM
+
+theorem absNorm_halfDifferent_dvd_discr (D : D7) :
+    Ideal.absNorm D.host.𝔟 ∣ (NumberField.discr D.host.E).natAbs := by
+  have ht : differentIdeal ℤ (𝓞 D.host.E) = differentIdeal (𝓞 D.host.K) (𝓞 D.host.E) *
+      (differentIdeal ℤ (𝓞 D.host.K)).map (algebraMap (𝓞 D.host.K) (𝓞 D.host.E)) :=
+    differentIdeal_eq_differentIdeal_mul_differentIdeal ℤ (𝓞 D.host.K) (𝓞 D.host.E)
+  have hdvd : D.host.𝔟 ∣ differentIdeal ℤ (𝓞 D.host.E) := by
+    rw [ht, D.host.𝔟_spec.1, mul_assoc]
+    exact dvd_mul_right _ _
+  have h1 := map_dvd Ideal.absNorm hdvd
+  rwa [NumberField.absNorm_differentIdeal D.host.E (𝓞 D.host.E)] at h1
+
+theorem exists_dataX_discr_absNorm : FactPrincipalDatum → ∀ (D : D7) (T : Core D) (h : LawsCore T), GlobalTheory.RunIn.GamAt T → ∀ j, InR D j → ∀ σ, GoodEmb T.Q.c σ → ∀ k : (T.U j σ).Comp, ∃ Xx : DataX D.host.E D.R.r, Xx.toData = (T.U j σ).X k ∧ Xx.g = T.Q.l.M ∧ Xx.NA = (discr D.host.E).natAbs ∧ Xx.NC = Ideal.absNorm D.host.ccK ∧ Xx.Λ = Submodule.span (𝓞 D.host.E) {v | ∃ a ∈ D.host.AA, ∃ u ∈ Xx.L', v = a • u} := by
+  intro _ D T h hG j hj σ hσ k
+  obtain ⟨Xx, h1, h2, h3, -⟩ :=
+    GlobalTheory.LatticeData.exists_dataX_of_hasPrinc D T h j hj σ hσ (hG j hj σ hσ) k
+  refine ⟨{ Xx with
+    NA := (NumberField.discr D.host.E).natAbs
+    NC := Ideal.absNorm D.host.ccK
+    NA_pos := Int.natAbs_pos.2 (NumberField.discr_ne_zero D.host.E)
+    NC_pos := Nat.pos_of_ne_zero fun e => D.host.ccK_ne_bot (Ideal.absNorm_eq_zero_iff.1 e)
+    NA_sub := fun x hx => ?_
+    NC_sub := fun x hx => ?_ }, h1, h2, rfl, rfl, h3⟩
+  · rw [h3] at hx
+    induction hx using Submodule.span_induction with
+    | mem v hv =>
+      obtain ⟨a, ha, u, hu, rfl⟩ := hv
+      obtain ⟨z, hz⟩ := GlobalTheory.LatticeData.absNorm_mul_mem_one D ha
+      obtain ⟨c, hc⟩ := absNorm_halfDifferent_dvd_discr D
+      have e : (((NumberField.discr D.host.E).natAbs : ℕ) : D.host.E) * a =
+          algebraMap (𝓞 D.host.E) D.host.E ((c : 𝓞 D.host.E) * z) := by
+        rw [hc, map_mul, map_natCast, hz, Nat.cast_mul]; ring
+      rw [smul_smul, e, algebraMap_smul]
+      exact Xx.L'.smul_mem _ hu
+    | zero => simp
+    | add v w _ _ hv hw => rw [smul_add]; exact add_mem hv hw
+    | smul c v _ hv => rw [smul_comm]; exact Xx.L'.smul_mem c hv
+  · rw [h3]
+    exact Submodule.subset_span ⟨_, GlobalTheory.LatticeData.absNorm_ccK_mem D, x, hx, rfl⟩
+
+end GlobalTheory.ArcCM
+end
+
+section
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.L2.Pj.QAt GlobalTheory.ArcQ GlobalTheory.Frames
+open MonoidalCategory CartesianMonoidalCategory
+
+namespace GlobalTheory.ArcDatumExists
+
+theorem isUnit_det_letM {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (Dw : Datum H)
+    (K : Type) [Field K] (τ : E →+* ℂ) : IsUnit (letM Dw K τ).det := by
+  have h1 : IsUnit (algebraMap (MvPolynomial (ArcLt Dw) (LaurentSeries K)) (ArcS Dw K) (arcDet Dw K)) :=
+    IsLocalization.Away.algebraMap_isUnit _
+  have h2 : Matrix.det (Matrix.of fun i k : Fin (Dw.mult τ) =>
+      (MvPolynomial.X (⟨τ, i, k⟩ : ArcLt Dw) : MvPolynomial (ArcLt Dw) (LaurentSeries K))) ∣ arcDet Dw K :=
+    Finset.dvd_prod_of_mem (fun τ : E →+* ℂ => Matrix.det (Matrix.of fun i k : Fin (Dw.mult τ) =>
+      (MvPolynomial.X (⟨τ, i, k⟩ : ArcLt Dw) : MvPolynomial (ArcLt Dw) (LaurentSeries K)))) (Finset.mem_univ τ)
+  have h3 := isUnit_of_dvd_unit
+    (map_dvd (algebraMap (MvPolynomial (ArcLt Dw) (LaurentSeries K)) (ArcS Dw K)) h2) h1
+  rw [RingHom.map_det] at h3
+  exact h3
+
+theorem flat_of_field {K S : Type} [Field K] [CommRing S] (f : K →+* S) : f.Flat := by
+  let _ := f.toAlgebra
+  exact (inferInstance : Module.Flat K S)
+
+theorem appLE_id_apply {X : Scheme.{0}} (U : X.Opens) (h : U ≤ 𝟙 X ⁻¹ᵁ U) (r : Γ(X, U)) :
+    (Scheme.Hom.appLE (𝟙 X) U U h).hom r = r := by
+  have : Scheme.Hom.appLE (𝟙 X) U U h = 𝟙 _ := by
+    unfold Scheme.Hom.appLE
+    rw [Scheme.Hom.id_app]
+    exact (Category.id_comp _).trans (X.presheaf.map_id _)
+  rw [this]; rfl
+
+theorem sec_eq_of_secBC_id_one {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
+    {l : Level H} {Xo : Moduli Dw l} {S : Type} [CommRing S] (x : Sp S ⟶ Xo.X) (s s' : LB.Sec (PPx x))
+    (h : SecBC (RingHom.id S) 1 x x s s') (i : (PPx x).ι) : s'.f i = s.f i := by
+  obtain ⟨pm, h1, h2, h3⟩ := h
+  have hid : spMap (RingHom.id S) = 𝟙 _ := by
+    unfold spMap; simp
+  have hpm : pm = 𝟙 _ := by
+    apply pullback.hom_ext
+    · rw [hid] at h2
+      simpa using h2
+    · simpa using h1
+  subst hpm
+  have h4 := h3 i le_rfl
+  have hs : scal x (1 : S) i = 1 := by
+    unfold scal Out.liftFun
+    simp
+  rw [hs, one_mul] at h4
+  rw [← h4]
+  exact appLE_id_apply _ _ _
+
+theorem isArcPt3At_of_frChg {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
+    {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F} {Y : Model Xo c β}
+    {K₁ : Type} [Field K₁] [Algebra c.F K₁] {b : O →+* K₁} {a : ArcIn Dw l β K₁ b} {χ : Sp (PowerSeries K₁) ⟶ Y.X}
+    {W : Wit Y a χ} {e : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt a.D₀ (epsR K₁)} {th : a.D₀.P.L.Sec}
+    [Algebra c.F (ArcS Dw K₁)] {y₀ yF : FrPt Xo c (ArcS Dw K₁)} (hth : ∃ j, th.f j ≠ 0)
+    (hfr : IsArcFr W e th (arcι Dw K₁) y₀) (hchg : FrChg (letM Dw K₁) 1 y₀ yF) : IsArcPt3At Y a χ W yF th := by
+  obtain ⟨x, xo, u, tan, eig, bas, s, gen⟩ := yF
+  obtain ⟨hx, hu, hs⟩ := hchg
+  dsimp only at hx hu hs
+  subst hx
+  obtain ⟨z, t', m1, m2, φ, -, -, -, h0, hm, -, θ, w1, w2, σ', s1, θ2, hθ, r1, r2, i1, i2, ps, hg⟩ := hfr
+  obtain ⟨σ, fam, θ', a1, a2, a3, a4⟩ := hθ
+  refine ⟨σ, fam, θ', θ, hth, a1, a2, a3, a4, t', m1, m2, w1, w2, σ', s1, θ2, ⟨φ, h0, hm⟩, r1, r2, i1, i2, ps, ?_⟩
+  intro g g1 g2 j h
+  rw [hg g g1 g2 j h]
+  exact congrArg _ (sec_eq_of_secBC_id_one _ _ _ hs _).symm
+
+theorem exists_arcDatum : Out.Laws → Out.Laws2 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K₁ : Type) [Field K₁] [Algebra c.F K₁] (Wp : ValuationSubring ℂ) (Y : Model Xo c (c.V Wp).subtype), Y.N4 → ∀ a : ArcIn Dw l (RingHom.id c.F) K₁ (algebraMap c.F K₁), ∃ (χ : Sp (PowerSeries K₁) ⟶ Y.X) (W : Wit Y (a.restrict (c.V Wp).subtype) χ), (∃ e, ArcLieBasis W e) ∧ ∀ e, ArcLieBasis W e → ∀ th : a.D₀.P.L.Sec, (∃ j, th.f j ≠ 0) → ∀ (μ : ArcLt Dw →₀ ℕ) (jj : ℤ), ∃ d : ArcDatum Xo c K₁, d.Wp = Wp ∧ HEq d.Y Y ∧ d.a = a ∧ HEq d.e e ∧ HEq d.th th ∧ d.μ = μ ∧ d.jj = jj ∧ d.OverBase ∧ d.Normal 1 := by
+  intro hL hL2 E _ _ _ H Dw l Xo c K₁ _ _ Wp Y hN4 a
+  have : CharZero K₁ := charZero_of_injective_algebraMap (algebraMap c.F K₁).injective
+  obtain ⟨χ, hχ, -⟩ := hN4 K₁ ((algebraMap c.F K₁).comp (c.V Wp).subtype) 1
+    (a.restrict (c.V Wp).subtype) (Or.inl ⟨Field.toIsField K₁, rfl⟩)
+  obtain ⟨hs, -, hj, hW⟩ := (hχ χ).1 rfl
+  obtain ⟨W⟩ := (Y.hasArcData_iff _ _ _ _ χ).1 hW
+  refine ⟨χ, W, ?_, fun e he th hth μ jj => ?_⟩
+  · obtain ⟨e, -, he⟩ := GlobalTheory.ConstBasis.exists_arcBasis hL hL2 E H Dw l Xo c _ _ Y K₁ _ (a.restrict (c.V Wp).subtype) χ W
+      (fun τ => (algebraMap c.F K₁).comp (embK c τ))
+      ((algebraMap K₁ (FractionRing K₁)).comp (algebraMap c.F K₁)) rfl (fun _ _ => rfl)
+      (GlobalTheory.JointModelGuards.exists_root_and_zeta l c Wp)
+    exact ⟨e, he⟩
+  · have hcomp : (algebraMap c.F (ArcS Dw K₁)).comp (c.V Wp).subtype =
+        (arcι Dw K₁).comp ((PowerSeries.C (R := K₁)).comp ((algebraMap c.F K₁).comp (c.V Wp).subtype)) := by
+      ext r
+      simp only [RingHom.comp_apply]
+      exact arcS_pin Dw K₁ ((c.V Wp).subtype r)
+    obtain ⟨z, hz1, hz2⟩ := arcPt_point (Dw := Dw) Y ((algebraMap c.F K₁).comp (c.V Wp).subtype)
+      hcomp χ hs (fun x hx => hj x (by rwa [map_one, one_mul]))
+    have hnz : ThNZ th := (GlobalTheory.ThetaOverField.nonzero_generates hL hL2 K₁ a.D₀ th).1.1 hth
+    have hflat : ((arcι Dw K₁).comp (PowerSeries.C (R := K₁))).Flat := flat_of_field _
+    have hz3 : z ≫ pullback.fst _ _ ≫ Xo.s = sOf c (ArcS Dw K₁) := by
+      rw [Y.jQ_over] at hz2
+      rw [pullback.condition, ← Category.assoc, hz2, ← spMap_comp]
+      rfl
+    obtain ⟨y₀, -, hy₀⟩ := GlobalTheory.ArcQ.exists_isArcFr hL hL2 E H Dw l Xo c _ _ Y K₁ _ (a.restrict (c.V Wp).subtype) χ W
+      (fun τ => (algebraMap c.F K₁).comp (embK c τ)) e th he hnz (Or.inl (Field.toIsField K₁))
+      (ArcS Dw K₁) (arcι Dw K₁) z hflat hz1 hz3 (fun τ x => arcS_pin Dw K₁ (embK c τ x))
+    obtain ⟨yF, hyF⟩ := (GlobalTheory.ArcQ.frChg_exists_unique_units E H Dw l Xo c (ArcS Dw K₁) (letM Dw K₁) 1 y₀).1
+      (isUnit_det_letM Dw K₁) isUnit_one
+    have h12 := hy₀.isFramedPoint_changed_by_letters hyF hs
+    have h3 := isArcPt3At_of_frChg (W := W) (e := e) hth hy₀ hyF
+    refine ⟨⟨Wp, Y, a, χ, W, e, yF, th, h12, h3, μ, jj⟩, rfl, HEq.rfl, rfl, HEq.rfl, HEq.rfl, rfl, rfl, hs,
+      y₀, hy₀, ?_⟩
+    have h1 : GlobalTheory.ArcQ.cst Dw (1 : K₁) = 1 := by simp only [GlobalTheory.ArcQ.cst, map_one]
+    rw [h1]
+    exact hyF
+
+end GlobalTheory.ArcDatumExists
+end
+
+section
+namespace GlobalTheory.FJDetect
+
+open ReciprocityTheory.ChartRestriction.G.FD NumberField Complex
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+open NumberField Complex in
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
+private lemma eq_at_imag_of_real_translation_invariant {ι : Type} [Fintype ι] (F : (ι → ℂ) → ℂ)
+    (U : Set (ι → ℂ)) (hU : IsOpen U) (hF : DifferentiableOn ℂ F U)
+    (hreal : ∀ s ∈ U, ∀ t : ι → ℝ, F (s + fun i => (t i : ℂ)) = F s)
+    (a : ι → ℝ) (hseg : ∀ u : ℝ, 0 ≤ u → u ≤ 1 → ((u : ℂ) • fun i => I * (a i : ℂ)) ∈ U) :
+    F (fun i => I * (a i : ℂ)) = F 0 := by
+  set v : ι → ℂ := fun i => I * (a i : ℂ) with hv
+  have hD : ∀ s ∈ U, ∀ t : ι → ℝ, fderiv ℂ F s (fun i => (t i : ℂ)) = 0 := by
+    intro s hs t
+    have hd : HasFDerivAt F (fderiv ℂ F s) s :=
+      (hF.differentiableAt (hU.mem_nhds hs)).hasFDerivAt
+    have hline : HasDerivAt (fun u : ℝ => s + (u : ℂ) • fun i => (t i : ℂ))
+        (fun i => (t i : ℂ)) 0 := by
+      have h0 : HasDerivAt (fun u : ℝ => (u : ℂ) • fun i => (t i : ℂ))
+          ((1 : ℂ) • fun i => (t i : ℂ)) 0 := by
+        have := (hasDerivAt_id (0 : ℝ)).ofReal_comp.smul_const (fun i => (t i : ℂ))
+        simpa using this
+      simpa using h0.const_add s
+    have hd0 : HasFDerivAt F (fderiv ℂ F s) (s + ((0 : ℝ) : ℂ) • fun i => (t i : ℂ)) := by
+      simpa using hd
+    have h1 := (hd0.restrictScalars ℝ).comp_hasDerivAt (0 : ℝ) hline
+    have h2 : (fun u : ℝ => F (s + (u : ℂ) • fun i => (t i : ℂ))) = fun _ => F s := by
+      funext u
+      have := hreal s hs (fun i => u * t i)
+      have he : (s + (u : ℂ) • fun i => (t i : ℂ)) = s + fun i => ((u * t i : ℝ) : ℂ) := by
+        funext i; simp
+      rw [he, this]
+    have h3 : HasDerivAt (fun u : ℝ => F (s + (u : ℂ) • fun i => (t i : ℂ)))
+        (fderiv ℂ F s (fun i => (t i : ℂ))) 0 := by
+      simpa [Function.comp_def] using h1
+    rw [h2] at h3
+    exact h3.unique (hasDerivAt_const _ _)
+  have hDv : ∀ s ∈ U, fderiv ℂ F s v = 0 := by
+    intro s hs
+    have : v = I • fun i => (a i : ℂ) := by funext i; simp [hv]
+    rw [this, map_smul, hD s hs a, smul_zero]
+  set g : ℝ → ℂ := fun u => F ((u : ℂ) • v) with hg
+  have hderiv : ∀ u : ℝ, 0 ≤ u → u ≤ 1 → HasDerivAt g 0 u := by
+    intro u hu0 hu1
+    have hs := hseg u hu0 hu1
+    have hd : HasFDerivAt F (fderiv ℂ F ((u : ℂ) • v)) ((u : ℂ) • v) :=
+      (hF.differentiableAt (hU.mem_nhds hs)).hasFDerivAt
+    have hl : HasDerivAt (fun w : ℝ => (w : ℂ) • v) v u := by
+      have := (hasDerivAt_id u).ofReal_comp.smul_const v
+      simpa using this
+    have h4 := (hd.restrictScalars ℝ).comp_hasDerivAt u hl
+    have h5 : ((fderiv ℂ F ((u : ℂ) • v)).restrictScalars ℝ) v = 0 := hDv _ hs
+    rw [h5] at h4
+    exact h4
+  have hconst := constant_of_has_deriv_right_zero (f := g) (a := 0) (b := 1)
+    (fun u hu => (hderiv u hu.1 hu.2).continuousAt.continuousWithinAt)
+    (fun u hu => (hderiv u hu.1 hu.2.le).hasDerivWithinAt) 1 ⟨zero_le_one, le_rfl⟩
+  simpa [hg] using hconst
+
+open NumberField Complex in
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
+private lemma exists_mem_D1set_fj_ne_zero {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r)
+    (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (P : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℂ) (hP : X.IsBddSec la P)
+    {ξ : Fin r → E} (hξ : X.IsIso ξ) (ν : X.Ψ → ℝ) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} (hx : x ∈ X.dom)
+    (hfx : X.fj la ξ ν P x ≠ 0) :
+    ∃ y ∈ X.FramesOverBasis ξ, X.fj la ξ ν P y ≠ 0 := by
+  have hV : X.IsIsoV (X.embV ξ) := _root_.PI.FdFjNearSup.W.isIsoV_embV X hξ
+  have hM := fun s => _root_.ReciprocityTheory.ChartRestriction.G.FD.flowDomainCriterion_holds r X (X.embV ξ) hV x hx s
+  set tt : X.Ψ → ℝ := fun τ => X.ttV (X.embV ξ) x τ with htt
+  have htt_pos : ∀ τ, 0 < tt τ := by
+    intro τ
+    have hc := _root_.ReciprocityTheory.ChartRestriction.G.FD.d4l4_c_pos X τ
+    have hm := X.maj_pos hx τ (hV τ).2
+    simp only [htt, _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.ttV]
+    positivity
+  set a : X.Ψ → ℝ := fun τ => 1 - tt τ with ha
+  set U : Set (X.Ψ → ℂ) := {s | X.flow ξ s x ∈ X.dom} with hUdef
+  have hUeq : U = {s | ∀ τ, 0 < 1 + (s τ).im / tt τ} := by
+    ext s; exact (hM s).1
+  have hU : IsOpen U := by
+    rw [hUeq]
+    simp only [Set.setOf_forall]
+    exact isOpen_iInter_of_finite fun τ => isOpen_lt continuous_const (by fun_prop)
+  set F : (X.Ψ → ℂ) → ℂ := fun s => X.fj la ξ ν P (X.flow ξ s x) *
+      Complex.exp (-(4 * Real.pi * I * ∑ τ, (ν τ : ℂ) * s τ)) with hFdef
+  have hFd : DifferentiableOn ℂ F U := by
+    refine DifferentiableOn.mul ?_ ?_
+    · exact (_root_.ReciprocityTheory.ChartRestriction.G.FD.CuspCoefficientFlow.fj_diffOn X la P hP hξ ν).comp (_root_.ReciprocityTheory.ChartRestriction.G.FD.FlowMeanContinuity.flow_differentiable X ξ x).differentiableOn (fun s hs => hs)
+    · exact Differentiable.differentiableOn (by fun_prop)
+  have hreal : ∀ s ∈ U, ∀ t : X.Ψ → ℝ, F (s + fun i => (t i : ℂ)) = F s := by
+    intro s hs t
+    have hfl : X.flow ξ (s + fun i => (t i : ℂ)) x
+        = X.flow ξ (fun i => (t i : ℂ)) (X.flow ξ s x) := by
+      rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.EmbeddingHermitianPairs.flow_flow X hξ.2.1, add_comm]
+    simp only [hFdef, hfl, _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.fj_flow_real X la ξ hξ ν P hP.1 hP.2 _ hs t]
+    rw [mul_comm (Complex.exp _) (X.fj la ξ ν P (X.flow ξ s x)), mul_assoc, ← Complex.exp_add]
+    congr 2
+    simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib]
+    ring
+  have hseg : ∀ u : ℝ, 0 ≤ u → u ≤ 1 → ((u : ℂ) • fun i => I * (a i : ℂ)) ∈ U := by
+    intro u hu0 hu1
+    rw [hUeq]
+    intro τ
+    have ht := htt_pos τ
+    have him : (((u : ℂ) • fun i => I * (a i : ℂ)) τ).im = u * a τ := by simp
+    rw [him]
+    have hq : 1 + u * a τ / tt τ = ((1 - u) * tt τ + u) / tt τ := by
+      simp only [ha]; field_simp; ring
+    rw [hq]
+    apply div_pos _ ht
+    rcases eq_or_lt_of_le hu0 with h | h
+    · subst h; simpa using ht
+    · nlinarith
+  have hconst := eq_at_imag_of_real_translation_invariant F U hU hFd hreal a hseg
+  set v : X.Ψ → ℂ := fun i => I * (a i : ℂ) with hvdef
+  have hvU : v ∈ U := by simpa using hseg 1 zero_le_one le_rfl
+  refine ⟨X.flow ξ v x, ⟨hvU, fun τ => ?_⟩, ?_⟩
+  · have h2 := (hM v).2 hvU τ
+    have hv : (v τ).im = a τ := by simp [hvdef]
+    rw [hv] at h2
+    have h3 : X.ttV (X.embV ξ) (X.flowV (X.embV ξ) v x) τ = 1 := by
+      rw [h2]; simp [ha, htt]
+    simp only [_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.ttV, one_div, inv_eq_one] at h3
+    exact h3
+  · intro h0
+    have hF0 : F 0 = X.fj la ξ ν P x := by
+      have := _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.fj_flow_real X la ξ hξ ν P hP.1 hP.2 x hx 0
+      simp only [hFdef]
+      have h' : X.flow ξ 0 x = X.flow ξ (fun _ => 0) x := rfl
+      rw [h']
+      simpa using this
+    have hFv : F v = 0 := by
+      simp only [hFdef]
+      rw [h0, zero_mul]
+    rw [hconst, hF0] at hFv
+    exact hfx hFv
+
+open NumberField Complex in
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
+private lemma exists_mem_D1set_sSup_hatN_lt_two_mul {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r)
+    (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (P : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℂ) (hP : X.IsBddSec la P)
+    {ξ : Fin r → E} (hξ : X.IsIso ξ) (ν : X.Ψ → ℝ) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} (hx : x ∈ X.dom)
+    (hfx : X.fj la ξ ν P x ≠ 0) :
+    ∃ z0 ∈ X.FramesOverBasis ξ, sSup {t | ∃ y ∈ X.FramesOverBasis ξ, t = X.hatN la (X.fj la ξ ν P) y}
+      < 2 * X.hatN la (X.fj la ξ ν P) z0 := by
+  obtain ⟨C, hC⟩ := hP.2
+  have hB : ∀ y ∈ X.dom, X.pnorm la (X.fj la ξ ν P) y ≤ C :=
+    fun y hy => _root_.ReciprocityTheory.ChartRestriction.G.FD.FlowCoefficientBounds.fj_bound X la P C hC hξ ν hy
+  have hC0 : 0 ≤ C := (X.pointNorm_nonneg la _ x).trans (hB x hx)
+  have hle : ∀ y, X.hatN la (X.fj la ξ ν P) y ≤ C := by
+    intro y
+    unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.hatN
+    apply Real.sSup_le _ hC0
+    rintro t ⟨x', hx', -, rfl⟩
+    exact hB x' hx'
+  have hge : ∀ y ∈ X.dom, X.pnorm la (X.fj la ξ ν P) y ≤ X.hatN la (X.fj la ξ ν P) y := by
+    intro y hy
+    unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.hatN
+    apply le_csSup
+    · refine ⟨C, ?_⟩
+      rintro t ⟨x', hx', -, rfl⟩
+      exact hB x' hx'
+    · exact ⟨y, hy, fun τ => rfl, rfl⟩
+  obtain ⟨y, hy, hfy⟩ := exists_mem_D1set_fj_ne_zero X la P ⟨hP.1, C, hC⟩ hξ ν hx hfx
+  set S := {t | ∃ y ∈ X.FramesOverBasis ξ, t = X.hatN la (X.fj la ξ ν P) y} with hS
+  have hSb : BddAbove S := ⟨C, by rintro t ⟨y, -, rfl⟩; exact hle y⟩
+  have hpos : 0 < X.hatN la (X.fj la ξ ν P) y := by
+    refine lt_of_lt_of_le ?_ (hge y hy.1)
+    rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.pnorm_eq]
+    exact mul_pos (norm_pos_iff.2 hfy) (_root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.nfac_pos X hy.1 la)
+  have hyS : X.hatN la (X.fj la ξ ν P) y ∈ S := ⟨y, hy, rfl⟩
+  have hM : 0 < sSup S := lt_of_lt_of_le hpos (le_csSup hSb hyS)
+  obtain ⟨t, ⟨z0, hz0, rfl⟩, ht⟩ := exists_lt_of_lt_csSup ⟨_, hyS⟩ (half_lt_self hM)
+  exact ⟨z0, hz0, by linarith⟩
+
+open NumberField Complex in
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
+
+theorem _root_.GlobalTheory.FJDetect.exists_fj_ne_zero_at_split_point' {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.DataX E r)
+    (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (P : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℂ) (c1 w : ℝ)
+    (hdom : X.IsDominant la) (hc1 : 0 < c1) (hw : 1 ≤ w) (hspr : (∑ τ, X.spread la τ) ≤ w)
+    (hr : (r : ℝ) ≤ w)
+    (hχ : ∀ γ ∈ X.Γ, (∀ v ∈ X.Λ, ∃ y ∈ X.Λ,
+      Matrix.mulVec (γ : Matrix (Fin r) (Fin r) E) v - v = (X.g : E) • y) → X.χ la γ = 1)
+    (hP : P ∈ X.SS la) (hP' : P ∉ X.SSgt la c1) :
+    ∃ (ξ : Fin r → E) (ν : X.Ψ → ℝ), X.IsIso ξ ∧ ∑ τ, ν τ ≤ c1 ∧ (∀ τ, 0 ≤ ν τ) ∧
+      (∃ z0, _root_.ReciprocityTheory.ChartRestriction.G.FD.ShortVectorHypotheses X la P ξ ν c1 w z0) ∧
+      let ep0 := _root_.ReciprocityTheory.ChartRestriction.G.FD.flowEpsilonBound X.g (_root_.ReciprocityTheory.ChartRestriction.G.FD.dE E) (_root_.ReciprocityTheory.ChartRestriction.G.FD.fdeg E) X.NA X.NC c1 w
+      let rh := _root_.ReciprocityTheory.ChartRestriction.G.FD.d6rh c1 w
+      let La := _root_.ReciprocityTheory.ChartRestriction.G.FD.d6La r X.p0 (_root_.ReciprocityTheory.ChartRestriction.G.FD.fdeg E) (_root_.ReciprocityTheory.ChartRestriction.G.FD.dE E) ep0 rh
+      let ms := _root_.ReciprocityTheory.ChartRestriction.G.FD.frameIndexBound r (_root_.ReciprocityTheory.ChartRestriction.G.FD.fdeg E) (_root_.ReciprocityTheory.ChartRestriction.G.FD.dE E) (_root_.ReciprocityTheory.ChartRestriction.G.FD.rdE E) X.NA X.NC ep0
+      ∀ n' : ℕ, 1000 * ms / rh ≤ n' →
+      ∃ x ∈ X.dom, ∃ lam : Fin (r - 2) → Fin r → E,
+        (∀ j, lam j ∈ X.L' ∧ _root_.ReciprocityTheory.ChartRestriction.G.FD.herm X.Gm (lam j) ξ = 0) ∧
+        LinearIndependent E (Fin.cons ξ lam : Fin (r - 2 + 1) → Fin r → E) ∧
+        (∀ j k : Fin (r - 2), (j : ℕ) < X.p0 - 1 → X.p0 - 1 ≤ (k : ℕ) →
+          _root_.ReciprocityTheory.ChartRestriction.G.FD.herm X.Gm (lam j) (lam k) = 0) ∧
+        (∀ j : Fin (r - 2), (j : ℕ) < X.p0 - 1 →
+          (∀ τ : X.Ψ, 0 < (τ.1 (_root_.ReciprocityTheory.ChartRestriction.G.FD.herm X.Gm (lam j) (lam j))).re) ∧
+          X.Jz x (X.ucomp x ξ (X.embV (lam j))) = I • X.ucomp x ξ (X.embV (lam j))) ∧
+        (∀ j : Fin (r - 2), X.p0 - 1 ≤ (j : ℕ) →
+          (∀ τ : X.Ψ, (τ.1 (_root_.ReciprocityTheory.ChartRestriction.G.FD.herm X.Gm (lam j) (lam j))).re < 0) ∧
+          X.Jz x (X.ucomp x ξ (X.embV (lam j))) = -(I • X.ucomp x ξ (X.embV (lam j)))) ∧
+        (∀ j (τ : X.Ψ), ‖τ.1 (_root_.ReciprocityTheory.ChartRestriction.G.FD.herm X.Gm (lam j) (lam j))‖ ≤ La ^ 2) ∧
+        (∀ μ ∈ X.Λp ξ, ∃ e : E, e • ξ ∈ X.Λ ∧
+          (n' : ℂ) • X.aproj x ξ (X.embV μ) = X.embV (e • ξ)) ∧
+        X.fj la ξ ν P x ≠ 0 := by
+  have hnot : ∃ ξ, X.IsIso ξ ∧ ∃ ν : X.Ψ → ℝ, ∑ τ, ν τ ≤ c1 ∧
+      ∃ x ∈ X.dom, X.fj la ξ ν P x ≠ 0 := by
+    by_contra h
+    push_neg at h
+    exact hP' ⟨hP, fun ξ hξ ν hν x hx => h ξ hξ ν hν x hx⟩
+  obtain ⟨ξ, hξ, ν, hν, x, hx, hfx⟩ := hnot
+  have hbdd := hP.1
+  have hνpos : ∀ τ, 0 ≤ ν τ := _root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.sign_of_bdd _ _root_.ReciprocityTheory.ChartRestriction.G.FD.moderateCoefficientPositivity_holds hbdd hξ ν hx hfx
+  obtain ⟨z0, hz0, hsup⟩ := exists_mem_D1set_sSup_hatN_lt_two_mul _ la P hbdd hξ ν hx hfx
+  have hD4 : _root_.ReciprocityTheory.ChartRestriction.G.FD.ShortVectorHypotheses X la P ξ ν c1 w z0 :=
+    ⟨hdom, hP, hξ, hc1, hν, ⟨x, hx, hfx⟩, hw, hspr, hχ, hz0, hsup⟩
+  refine ⟨ξ, ν, hξ, hν, hνpos, ⟨z0, hD4⟩, ?_⟩
+  exact (_root_.fd_point_assembly _root_.ReciprocityTheory.ChartRestriction.G.FD.shortVectorBound _root_.ReciprocityTheory.ChartRestriction.G.FD.orthonormalFlagTranslate_holds _root_.ReciprocityTheory.ChartRestriction.G.FD.orthonormalChartNormControl_holds (_root_.fd_fj_near_sup _root_.ReciprocityTheory.ChartRestriction.G.FD.holomorphic_periodicity_extension _root_.ReciprocityTheory.ChartRestriction.G.FD.m3bNorm_holds _root_.ReciprocityTheory.ChartRestriction.G.FD.moderateCoefficientPositivity_holds) _root_.ReciprocityTheory.ChartRestriction.G.FD.schwarzLemmaBall_holds
+    (_root_.ReciprocityTheory.ChartRestriction.G.FD.orthonormalShortVectorBound_of _root_.ReciprocityTheory.ChartRestriction.G.FD.shortVectorBound _root_.GlobalTheory.CMTransference.cmApproximation_transference) _root_.ReciprocityTheory.ChartRestriction.G.FD.isotropicCoefficientSplitting_holds _root_.ReciprocityTheory.ChartRestriction.G.FD.noShortVectorLowerBound_holds
+    (_root_.fd_unip_move _root_.ReciprocityTheory.ChartRestriction.G.FD.shortVectorBound _root_.ReciprocityTheory.ChartRestriction.G.FD.unitaryComplementMove _root_.ReciprocityTheory.ChartRestriction.G.FD.unipotent_majorant_bound _root_.ReciprocityTheory.ChartRestriction.G.FD.isotropicCoefficientSplitting_holds _root_.ReciprocityTheory.ChartRestriction.G.FD.noShortVectorLowerBound_holds)) r X la P ξ ν c1 w z0 hD4 hr
+
+end GlobalTheory.FJDetect
+end
+
+section
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
+open Formalism.L2.Pj Formalism.L2.PjFree Formalism.L2.Pj.QAt Formalism.L2.LamCM GlobalTheory GlobalTheory.ArcQ GlobalTheory.LamF GlobalTheory.ArcCM
+open scoped LaurentSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cmLetters_isLieBasis_along_arc : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K₁ : Type) [Field K₁] [NumberField K₁] [Algebra c.F K₁] (a : ArcIn Dw l (RingHom.id c.F) K₁ (algebraMap c.F K₁)) (e : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt a.D₀ (epsR K₁)) (th : a.D₀.P.L.Sec) (jj : ℤ) (n' : ℕ) (La c₁ : ℝ) (s : CMIn a e th jj n' La c₁) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (χ : Sp (PowerSeries K₁) ⟶ Y.X) (W : Wit Y (a.restrict β) χ), ArcLieBasis W e := by
+  first | exact @GlobalTheory.LetterBasis.main | exact GlobalTheory.LetterBasis.main | (intros; apply GlobalTheory.LetterBasis.main <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
+open Formalism.L2.Pj Formalism.L2.PjFree Formalism.L2.Pj.QAt Formalism.L2.LamCM GlobalTheory GlobalTheory.ArcQ GlobalTheory.LamF GlobalTheory.ArcCM
+open scoped LaurentSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_coeff_ne_zero_of_fourierJacobi_arcDatum : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K₁ : Type) [Field K₁] [NumberField K₁] [Algebra c.F K₁] (d : ArcDatum Xo c K₁) (n' : ℕ) (La c₁ : ℝ) (s : CMIn d.a d.e d.th d.jj n' La c₁) (em : K₁ →+* ℂ) [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ] (r : ℕ) (U : Unf Xo c (em.comp (algebraMap c.F K₁)) r) (Uw : UnfWit U) (k : U.Comp) (ξ' : Fin r → E) (x : Frame (U.X k).Ψ r) (a' : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), Std d → GoodEmb c (em.comp (algebraMap c.F K₁)) → IsUnf U → GlobalTheory.FrameNorm.HasPrinc U l.M → Dom a' n → (∀ k, ∀ gm ∈ (U.X k).Γ, (U.X k).χ (laU U a' n k) gm = 1) → (U.X k).IsIso ξ' → x ∈ (U.X k).dom → Comparison₂ Uw d.a em s.ξ k ξ' x → ∀ F ∈ sec Xo c a' n, (∀ k', (U.X k').IsBddSec (laU U a' n k') (rdU U F k')) → (U.X k).fj (laU U a' n k) ξ' (fun τ => (τ.1 s.ν₀).re) (rdU U F k) x ≠ 0 → ∃ mo : ArcLt Dw →₀ ℕ, cfOf d.yF mo d.jj F ≠ 0 := by
+  first | exact @GlobalTheory.DerivativeDetermination.exists_cfOf_ne_zero | exact GlobalTheory.DerivativeDetermination.exists_cfOf_ne_zero | (intros; apply GlobalTheory.DerivativeDetermination.exists_cfOf_ne_zero <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
+open Formalism.L2.Pj Formalism.L2.PjFree Formalism.L2.Pj.QAt Formalism.L2.LamCM GlobalTheory GlobalTheory.ArcQ GlobalTheory.LamF GlobalTheory.ArcCM
+open scoped LaurentSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_cmArcData_at_splitIsotropicPoint : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ] (r : ℕ) (U : Unf Xo c c.F.val.toRingHom r) (Uw : UnfWit U) (k : U.Comp) (ξ' : Fin r → E) (x : Frame (U.X k).Ψ r) (Xx : DataX E r) (hX : Xx.toData = U.X k) (𝔄 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (La₀ La c₁ : ℝ) (lam : Fin (r - 2) → Fin r → E) (n' : ℕ) (ν₀ : E), IsUnf U → l.A = 1 → 3 ≤ r → (U.X k).IsIso ξ' → x ∈ (U.X k).dom → 𝔄 ≠ 0 → Xx.Λ = Submodule.span (𝓞 E) {v | ∃ a ∈ 𝔄, ∃ u ∈ Xx.L', v = a • u} → SplitData Xx ξ' La₀ (hX ▸ x) lam → La₀ ^ 2 ≤ La ^ 2 → 0 < n' → (∀ m ∈ (U.X k).Λp ξ', ∃ e : E, e • ξ' ∈ (U.X k).Λ ∧ (n' : ℂ) • (U.X k).aproj x ξ' ((U.X k).embV m) = (U.X k).embV (e • ξ')) → cc ν₀ = ν₀ → (∀ τ : E →+* ℂ, 0 ≤ (τ ν₀).re) → (∀ s : E, cc s = s → (∀ v ∈ (U.X k).Λ, ∃ u ∈ (U.X k).Λ, (transvMat (U.X k).Gm ξ' (s * (U.X k).κ0)).mulVec v - v = (l.M' : E) • u) → ∃ m : ℤ, Algebra.trace ℚ E (ν₀ * s) = m) → ((Algebra.trace ℚ E ν₀ : ℚ) : ℝ) / 2 ≤ c₁ → ∃ (K₁ : Type) (_ : Field K₁) (_ : NumberField K₁) (_ : Algebra c.F K₁) (em : K₁ →+* ℂ) (a : ArcIn Dw l (RingHom.id c.F) K₁ (algebraMap c.F K₁)) (e : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt a.D₀ (epsR K₁)) (th : a.D₀.P.L.Sec) (jj : ℤ) (s : CMIn a e th jj n' La c₁), em.comp (algebraMap c.F K₁) = c.F.val.toRingHom ∧ s.ν₀ = ν₀ ∧ Comparison₂ Uw a em s.ξ k ξ' x := by
+  first | exact @GlobalTheory.ArcCM.Exist.exists_cmIn_tie | exact GlobalTheory.ArcCM.Exist.exists_cmIn_tie | (intros; apply GlobalTheory.ArcCM.Exist.exists_cmIn_tie <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
+open Formalism.L2.Pj Formalism.L2.PjFree Formalism.L2.Pj.QAt Formalism.L2.LamCM GlobalTheory GlobalTheory.ArcQ GlobalTheory.LamF GlobalTheory.ArcCM
+open scoped LaurentSeries
+
+namespace GlobalTheory.ArcDetect
+
+theorem exists_place (p : ℕ) (hp : p.Prime) : ∃ W : ValuationSubring ℂ, (p : ℂ) ∈ W.nonunits := by
+  have hne : (Ideal.span {(p : (⊥ : Subring ℂ))}) ≠ ⊤ := by
+    rw [Ne, Ideal.span_singleton_eq_top]
+    intro hu
+    obtain ⟨v, hv⟩ := hu.exists_right_inv
+    obtain ⟨n, hn⟩ := Subring.mem_bot.1 v.2
+    have h1 : ((p : ℤ) * n : ℤ) = 1 := by
+      have := congrArg Subtype.val hv
+      simp only [Subring.coe_mul, Subring.coe_natCast, Subring.coe_one] at this
+      rw [← hn] at this
+      exact_mod_cast this
+    have := Int.isUnit_iff_natAbs_eq.1 (IsUnit.of_mul_eq_one _ h1)
+    simp at this
+    exact hp.one_lt.ne' this
+  obtain ⟨W, -, hW⟩ := Ideal.image_subset_nonunits_valuationSubring _ hne
+  exact ⟨W, hW ⟨p, Ideal.mem_span_singleton_self _, by simp⟩⟩
+
+theorem iSup_sub_iInf_le {r : ℕ} (hr : 0 < r) (x : Fin r → ℝ) (A B : ℝ) (h1 : ∀ i, x i ≤ A) (h2 : ∀ i, -B ≤ x i) :
+    (⨆ i, x i) - ⨅ i, x i ≤ A + B := by
+  haveI : Nonempty (Fin r) := ⟨⟨0, hr⟩⟩
+  have := ciSup_le h1
+  have := le_ciInf h2
+  linarith
+
+section Weight
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+theorem sum_cm {r : ℕ} (X : Data E r) (g : (E →+* ℂ) → ℕ) :
+    ∑ τ : X.Ψ, (g τ.1 + g (conjEmb τ.1)) = ∑ τ, g τ := by
+  classical
+  rw [← Finset.sum_add_sum_compl X.Ψ g]
+  have hc : X.Ψᶜ = X.Ψ.image NumberField.ComplexEmbedding.conjugate := by
+    ext σ
+    simp only [Finset.mem_compl, Finset.mem_image]
+    constructor
+    · intro h
+      exact ⟨NumberField.ComplexEmbedding.conjugate σ, (X.cmType _).2 (by simpa using h), by simp⟩
+    · rintro ⟨τ, hτ, rfl⟩
+      exact (X.cmType τ).1 hτ
+  rw [hc, Finset.sum_image (fun a _ b _ h => by simpa using congrArg NumberField.ComplexEmbedding.conjugate h),
+    ← Finset.sum_add_distrib]
+  exact Finset.sum_coe_sort X.Ψ (fun τ => g τ + g (ComplexEmbedding.conjugate τ))
+
+theorem card_cm {r : ℕ} (X : Data E r) : Fintype.card X.Ψ = fdeg E := by
+  have h := sum_cm X (fun _ => (1 : ℕ))
+  simp only [Finset.sum_const, Finset.card_univ, smul_eq_mul, mul_one] at h
+  unfold fdeg
+  rw [← NumberField.Embeddings.card E ℂ]
+  omega
+
+variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
+
+theorem laU_dominant {σ : c.F →+* ℂ} {r : ℕ} (U : Unf Xo c σ r) {a : (E →+* ℂ) × ℕ → ℕ} {n : ℕ} (h : Dom a n)
+    (k : U.Comp) : (U.X k).IsDominant (laU U a n k) := by
+  intro τ
+  refine ⟨fun i j hij hj => ?_, fun i j hi hij => ?_, fun i j hi hj => ?_⟩
+  · have hij' : (i : ℕ) ≤ j := hij
+    have := h.1 (Function.invFun (relab c σ) (conjEmb τ.1))
+      (show (U.X k).p0 - 1 - (j : ℕ) ≤ (U.X k).p0 - 1 - (i : ℕ) by omega)
+    unfold laU
+    rw [if_neg (by omega), if_neg (by omega)]
+    dsimp only at this
+    omega
+  · have hij' : (i : ℕ) ≤ j := hij
+    have := h.1 (Function.invFun (relab c σ) τ.1)
+      (show (i : ℕ) - (U.X k).p0 ≤ (j : ℕ) - (U.X k).p0 by omega)
+    unfold laU
+    rw [if_pos (by omega), if_pos (by omega)]
+    dsimp only at this
+    omega
+  · unfold laU
+    rw [if_neg (by omega), if_pos (by omega)]
+    omega
+
+theorem invFun_relab (τ : E →+* ℂ) : Function.invFun (relab c c.F.val.toRingHom) τ = τ := by
+  have h : ∀ τ : E →+* ℂ, relab c c.F.val.toRingHom τ = τ := fun τ => RingHom.ext fun _ => rfl
+  have h2 : relab c c.F.val.toRingHom (Function.invFun (relab c c.F.val.toRingHom) τ) = τ :=
+    Function.invFun_eq ⟨τ, h τ⟩
+  rwa [h] at h2
+
+theorem sum_spread_le {r : ℕ} (hr : 0 < r) (U : Unf Xo c c.F.val.toRingHom r) (hU : IsUnf U)
+    (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (k : U.Comp) :
+    ∑ τ, (U.X k).spread (laU U a n k) τ ≤ (absA Dw a : ℝ) + (fdeg E : ℝ) * n := by
+  obtain ⟨hrk, hk, -⟩ := hU
+  obtain ⟨hp, hΨ⟩ := hk k
+  let B : (E →+* ℂ) → ℕ := fun τ => ∑ i : Fin (Dw.mult τ), a (τ, (i : ℕ))
+  have hB : ∀ τ i, i < Dw.mult τ → a (τ, i) ≤ B τ := fun τ i hi =>
+    Finset.single_le_sum (f := fun i : Fin (Dw.mult τ) => a (τ, (i : ℕ))) (fun _ _ => Nat.zero_le _)
+      (Finset.mem_univ ⟨i, hi⟩)
+  have h1 : ∀ τ : (U.X k).Ψ, (U.X k).spread (laU U a n k) τ ≤ ((B τ.1 + B (conjEmb τ.1) : ℕ) : ℝ) + n := by
+    intro τ
+    have m1 : Dw.mult τ.1 = Dw.p := if_pos ((hΨ _).1 τ.2)
+    have m2 : Dw.mult (conjEmb τ.1) = Dw.q :=
+      if_neg fun h => ((U.X k).cmType τ.1).1 τ.2 ((hΨ _).2 h)
+    have hn : ((n / 2 : ℕ) : ℝ) + ((n / 2 : ℕ) : ℝ) ≤ n := by
+      have : n / 2 + n / 2 ≤ n := by omega
+      exact_mod_cast this
+    have key : ∀ i, -((B (conjEmb τ.1) : ℤ) + ((n / 2 : ℕ) : ℤ)) ≤ laU U a n k τ i ∧
+        laU U a n k τ i ≤ (B τ.1 : ℤ) + ((n / 2 : ℕ) : ℤ) := by
+      intro i
+      have hi := i.2
+      unfold laU
+      rw [invFun_relab, invFun_relab]
+      split_ifs with h
+      · have a1 := hB τ.1 ((i : ℕ) - (U.X k).p0) (by omega)
+        constructor <;> omega
+      · have a2 := hB (conjEmb τ.1) ((U.X k).p0 - 1 - (i : ℕ)) (by omega)
+        constructor <;> omega
+    refine (iSup_sub_iInf_le hr _ ((B τ.1 : ℝ) + ((n / 2 : ℕ) : ℝ))
+      ((B (conjEmb τ.1) : ℝ) + ((n / 2 : ℕ) : ℝ)) (fun i => ?_) (fun i => ?_)).trans ?_
+    · have h1 := (Int.cast_le (R := ℝ)).2 (key i).2
+      rwa [Int.cast_add, Int.cast_natCast, Int.cast_natCast] at h1
+    · exact_mod_cast (key i).1
+    · rw [Nat.cast_add]; linarith
+  refine (Finset.sum_le_sum fun τ _ => h1 τ).trans ?_
+  rw [Finset.sum_add_distrib, ← Nat.cast_sum, sum_cm (U.X k) B, Finset.sum_const, Finset.card_univ, card_cm,
+    nsmul_eq_mul]
+  rfl
+
+theorem exists_split {r : ℕ} (X₀ : Data E r) (X : DataX E r) (hX : X.toData = X₀) (la : Wt X₀.Ψ r)
+    (P : Frame X₀.Ψ r → ℂ) (c₁ w : ℝ) (q g : ℕ) (hq : X₀.p0 = q) (hg : X.g = g)
+    (hdom : X₀.IsDominant la) (hc : 0 < c₁) (hw : 1 ≤ w) (hspr : (∑ τ, X₀.spread la τ) ≤ w) (hr : (r : ℝ) ≤ w)
+    (hχ : ∀ gm ∈ X₀.Γ, X₀.χ la gm = 1) (hP : P ∈ X₀.SS la) (hP' : P ∉ X₀.SSgt la c₁) :
+    ∃ (ξ : Fin r → E) (ν : X₀.Ψ → ℝ) (x : Frame X₀.Ψ r) (lam : Fin (r - 2) → Fin r → E),
+      X₀.IsIso ξ ∧ ∑ τ, ν τ ≤ c₁ ∧ x ∈ X₀.dom ∧ SplitData X ξ (LaQ E r q g X.NA X.NC c₁ w) (hX ▸ x) lam ∧
+      (∀ m ∈ X₀.Λp ξ, ∃ e : E, e • ξ ∈ X₀.Λ ∧
+        ((nQ E r g X.NA X.NC c₁ w : ℕ) : ℂ) • X₀.aproj x ξ (X₀.embV m) = X₀.embV (e • ξ)) ∧
+      X₀.fj la ξ ν P x ≠ 0 := by
+  subst hX hq hg
+  obtain ⟨ξ, ν, hξ, hν, -, -, h⟩ := GlobalTheory.FJDetect.exists_fj_ne_zero_at_split_point' X la P c₁ w hdom hc hw hspr hr
+    (fun gm hgm _ => hχ gm hgm) hP hP'
+  obtain ⟨x, hx, lam, h1, h2, h3, h4, h5, h6, h7, h8⟩ := h (nQ E r X.g X.NA X.NC c₁ w) (by
+    unfold nQ
+    push_cast
+    exact (Nat.le_ceil _).trans (le_add_of_nonneg_right zero_le_one))
+  refine ⟨ξ, ν, x, lam, hξ, hν, hx, ⟨h1, h2, h3, h4, h5, fun j τ => (h6 j τ).trans ?_⟩, h7, h8⟩
+  refine pow_le_pow_left₀ ?_ (le_max_right _ _) 2
+  have hw0 : 0 < w := by linarith
+  unfold d6La ReciprocityTheory.MultiplicativeHeights.approxR d5mu d6rh dE
+  positivity
+
+end Weight
+
+theorem detect_of_tie (hK : Known) {E : Type} [Field E] [NumberField E] [IsCMField E]
+    {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
+    {K₁ : Type} [Field K₁] [NumberField K₁] [Algebra c.F K₁] (d : ArcDatum Xo c K₁) {n' : ℕ} {La c₁ : ℝ}
+    (s : CMIn d.a d.e d.th d.jj n' La c₁) (em : K₁ →+* ℂ) [Algebra (FractionRing ℂ) ℂ]
+    [IsScalarTower ℂ (FractionRing ℂ) ℂ] (σ : c.F →+* ℂ) (hσ : em.comp (algebraMap c.F K₁) = σ) {r : ℕ}
+    (U : Unf Xo c σ r) (Uw : UnfWit U) (k : U.Comp) (ξ' : Fin r → E) (x : Frame (U.X k).Ψ r)
+    (a' : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) :
+    Std d → GoodEmb c σ → IsUnf U → GlobalTheory.FrameNorm.HasPrinc U l.M → Dom a' n →
+    (∀ k, ∀ gm ∈ (U.X k).Γ, (U.X k).χ (laU U a' n k) gm = 1) → (U.X k).IsIso ξ' → x ∈ (U.X k).dom →
+    Comparison₂ Uw d.a em s.ξ k ξ' x → ∀ F ∈ sec Xo c a' n, (∀ k', (U.X k').IsBddSec (laU U a' n k') (rdU U F k')) →
+    (U.X k).fj (laU U a' n k) ξ' (fun τ => (τ.1 s.ν₀).re) (rdU U F k) x ≠ 0 →
+    ∃ mo : ArcLt Dw →₀ ℕ, cfOf d.yF mo d.jj F ≠ 0 := by
+  subst hσ
+  exact GlobalTheory.T.exists_coeff_ne_zero_of_fourierJacobi_arcDatum hK E H Dw l Xo c K₁ d n' La c₁ s em r U Uw k ξ' x a' n
+
+theorem exists_fam_cfOf_ne_zero : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : Unf Xo c c.F.val.toRingHom r) (k : U.Comp) (Xx : DataX E r) (hX : Xx.toData = U.X k) (𝔄 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (a' : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (c₁ w : ℝ), ModelsAt Xo c → IsUnf U → l.A = 1 → 3 ≤ r → GlobalTheory.FrameNorm.HasPrinc U l.M → Dom a' n → (∀ k, ∀ gm ∈ (U.X k).Γ, (U.X k).χ (laU U a' n k) gm = 1) → 𝔄 ≠ 0 → Xx.Λ = Submodule.span (𝓞 E) {v | ∃ a ∈ 𝔄, ∃ u ∈ Xx.L', v = a • u} → Xx.g = l.M → 0 < c₁ → ((absA Dw a' : ℝ) + (fdeg E : ℝ) * n + r ≤ w) → ∀ F ∈ sec Xo c a' n, (∀ k', rdU U F k' ∈ (U.X k').SS (laU U a' n k')) → rdU U F k ∉ (U.X k).SSgt (laU U a' n k) c₁ → ∃ (K₁ : Type) (_ : Field K₁) (_ : NumberField K₁) (_ : Algebra c.F K₁) (d : ArcDatum Xo c K₁), Fam (nQ E r l.M Xx.NA Xx.NC c₁ w) (LaQ E r Dw.q l.M Xx.NA Xx.NC c₁ w) c₁ d ∧ cfOf d.yF d.μ d.jj F ≠ 0 := by
+  intro hK E _ _ _ H Dw l Xo c r U k Xx hX 𝔄 a' n c₁ w hM hU hA hr hP hD hχ h𝔄 hΛ hg hc hw F hF hS hS'
+  letI : Algebra (FractionRing ℂ) ℂ := FractionRing.liftAlgebra ℂ ℂ
+  haveI : IsScalarTower ℂ (FractionRing ℂ) ℂ := FractionRing.isScalarTower_liftAlgebra ℂ ℂ
+  have hr3 : (3 : ℝ) ≤ r := by exact_mod_cast hr
+  have h0 : (0 : ℝ) ≤ (absA Dw a' : ℝ) + (fdeg E : ℝ) * n := by positivity
+  obtain ⟨ξ, ν, x, lam, hξ, hν, hx, hsp, htor, hfj⟩ := exists_split (U.X k) Xx hX (laU U a' n k) (rdU U F k) c₁ w
+    Dw.q l.M (hU.2.1 k).1 hg (laU_dominant U hD k) hc (by linarith)
+    ((sum_spread_le (by omega) U hU a' n k).trans (by linarith)) (by linarith) (hχ k) (hS k) hS'
+  obtain ⟨ν₀, hν1, hν2, hν3, hν4⟩ := GlobalTheory.FjFreq.freq_real_nonneg_integral E r (U.X k) _ _ (hS k).1 ξ hξ ν x hx hfj
+  obtain rfl : ν = fun τ => (τ.1 ν₀).re := funext hν2
+  rw [GlobalTheory.sum_re_cmType_eq_half_trace] at hν
+  obtain ⟨Uw⟩ := GlobalTheory.ArcQ.nonempty_unfWit_of_isUnf E H Dw l Xo c _ r U hU
+  have htv := GlobalTheory.TransvPrinc.transvIn_of_hasPrinc E H Dw l Xo c _ r U a' n hP hχ k
+  obtain ⟨K₁, _, _, _, em, a, e, th, jj, s, hem, hs, htie⟩ := GlobalTheory.T.exists_cmArcData_at_splitIsotropicPoint hK E H Dw l Xo c r U Uw k ξ x Xx hX 𝔄
+    _ _ c₁ lam (nQ E r l.M Xx.NA Xx.NC c₁ w) ν₀ hU hA hr hξ hx h𝔄 hΛ hsp le_rfl (Nat.succ_pos _) htor hν1 hν3
+    (fun s h1 h2 => hν4 s h1 (htv ξ hξ s h1 h2)) hν
+  obtain ⟨Wp, hWp⟩ := exists_place 2 Nat.prime_two
+  obtain ⟨Y, hY, hYp⟩ := hM 2 Wp Nat.prime_two hWp
+  obtain ⟨χ, W, -, hd⟩ := GlobalTheory.ArcDatumExists.exists_arcDatum hK.laws hK.laws2 E H Dw l Xo c K₁ Wp Y hY a
+  obtain ⟨d, d1, d2, d3, d4, d5, -, d7, d8, d9⟩ := hd e
+    (GlobalTheory.T.cmLetters_isLieBasis_along_arc hK E H Dw l Xo c K₁ a e th jj _ _ c₁ s _ _ Y χ W) th s.th_nz.ne_zero 0 jj
+  obtain ⟨Wp', Y', a₁, χ', W', e', yF, th', i12, i3, mu, jj'⟩ := d
+  dsimp only at d1 d2 d3 d4 d5 d7
+  subst d1 d3 d7
+  cases d2
+  cases d4
+  cases d5
+  obtain ⟨mo, hmo⟩ := detect_of_tie hK ⟨Wp', Y', a₁, χ', W', e', yF, th', i12, i3, mu, jj'⟩ s em _ hem U Uw k ξ x a' n
+    ⟨d8, d9, hYp⟩ rfl hU hP hD hχ hξ hx htie F hF (fun k' => (hS k').1) (by rw [hs]; exact hfj)
+  exact ⟨K₁, _, _, _, ⟨Wp', Y', a₁, χ', W', e', yF, th', i12, i3, mo, jj'⟩, ⟨⟨d8, d9, hYp⟩, ⟨s⟩⟩, hmo⟩
+
+end GlobalTheory.ArcDetect
+end
+
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
+open Formalism.L2.Pj Formalism.L2.PjFree Formalism.L2.Pj.QAt Formalism.L2.LamCM GlobalTheory GlobalTheory.ArcQ GlobalTheory.LamF GlobalTheory.ArcCM
+open scoped LaurentSeries
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_familyMember_functional_ne_zero : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : Unf Xo c c.F.val.toRingHom r) (k : U.Comp) (Xx : DataX E r) (hX : Xx.toData = U.X k) (𝔄 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (a' : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (c₁ w : ℝ), ModelsAt Xo c → IsUnf U → l.A = 1 → 3 ≤ r → GlobalTheory.FrameNorm.HasPrinc U l.M → Dom a' n → (∀ k, ∀ gm ∈ (U.X k).Γ, (U.X k).χ (laU U a' n k) gm = 1) → 𝔄 ≠ 0 → Xx.Λ = Submodule.span (𝓞 E) {v | ∃ a ∈ 𝔄, ∃ u ∈ Xx.L', v = a • u} → Xx.g = l.M → 0 < c₁ → ((absA Dw a' : ℝ) + (fdeg E : ℝ) * n + r ≤ w) → ∀ F ∈ sec Xo c a' n, (∀ k', rdU U F k' ∈ (U.X k').SS (laU U a' n k')) → rdU U F k ∉ (U.X k).SSgt (laU U a' n k) c₁ → ∃ (K₁ : Type) (_ : Field K₁) (_ : NumberField K₁) (_ : Algebra c.F K₁) (d : ArcDatum Xo c K₁), Fam (nQ E r l.M Xx.NA Xx.NC c₁ w) (LaQ E r Dw.q l.M Xx.NA Xx.NC c₁ w) c₁ d ∧ cfOf d.yF d.μ d.jj F ≠ 0 := by
+  atlas_forward_decl GlobalTheory.ArcDetect.exists_fam_cfOf_ne_zero
+end
+
+section
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
 open Formalism.L2.Pj Formalism.L2.Pj.QAt Formalism.MainNotions Formalism.BasicNotions Formalism.L2.LamCM GlobalTheory.ArcCM
 
@@ -114,3 +763,4 @@ theorem detectQ_of_known : Known → ∀ (D : D7) (T : Core D) (h : LawsCore T) 
   exact hne (hF K₁ d hd)
 
 end GlobalTheory.ArcCM
+end

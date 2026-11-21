@@ -10,11 +10,56 @@ import Formalism.LocalToGlobal.CMDeterminantIdeals.LambdaLowerBound
 import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkFD
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.SupAtUnit
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.PointwiseNormSectionEqFlagDomainNorm
-import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MetricDataUniqueStatement
-import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MetricChangeOfFrameStatement
-import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.UnifMetricScalarStatement
-import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsOrthonormalFrameBorelChangeComplexFramedPoStatement
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MetricDataUnique
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MetricChangeOfFrame
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.UnifMetricScalar
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsOrthonormalFrameBorelChangeComplexFramedPo
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.LamCM Formalism.L2.Pj
+open scoped ComplexOrder
+open GlobalTheory GlobalTheory.CM GlobalTheory.Frames GlobalTheory.LamT
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.metric_data_unique : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (y : FrPt Xo c (CAt σ)) (N N' : ℝ) (Gr Gr' : (∀ b : E →+* ℂ, Matrix (Fin (Dw.mult b)) (Fin (Dw.mult b)) ℂ)), IsMetric y N Gr → IsMetric y N' Gr' → N = N' ∧ Gr = Gr' := by
+  first | exact @GlobalTheory.LamT.MetUniq.isMetric_unique | exact GlobalTheory.LamT.MetUniq.isMetric_unique | (intros; apply GlobalTheory.LamT.MetUniq.isMetric_unique <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.LamCM Formalism.L2.Pj
+open scoped ComplexOrder
+open GlobalTheory GlobalTheory.CM GlobalTheory.Frames GlobalTheory.LamT
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.metric_change_of_frame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (y y' : FrPt Xo c (CAt σ)) (N : ℝ) (Gr Y : (∀ b : E →+* ℂ, Matrix (Fin (Dw.mult b)) (Fin (Dw.mult b)) ℂ)) (a : ℂ), a ≠ 0 → FrChg (S := CAt σ) (fun b => (Y b).transpose) a y y' → IsMetric y N Gr → IsMetric y' (‖a‖ ^ 2 * N) (fun b => (Y b).conjTranspose * Gr b * Y b) := by
+  first | exact @GlobalTheory.MetricChange.isMetric_frChg | exact GlobalTheory.MetricChange.isMetric_frChg | (intros; apply GlobalTheory.MetricChange.isMetric_frChg <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.LamCM Formalism.L2.Pj
+open scoped ComplexOrder
+open GlobalTheory GlobalTheory.CM GlobalTheory.Frames GlobalTheory.LamT
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unif_metric_scalar : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Unf Xo c σ r) (ξ : ℝ), GoodEmb c σ → IsUnf U → 1 ≤ Dw.p + Dw.q → ∀ (k : U.Comp) (x : (U.X k).dom), (∀ τ : E →+* ℂ, ‖τ (U.X k).ξ0‖ = ξ) → (U.X k).IsOrtho x.1 → IsMetric (U.un k x) 1 (fun _ => ((2 * Real.pi * ξ : ℝ) : ℂ) • 1) := by
+  first | exact @GlobalTheory.OrthoMetric.isMetric_of_isOrtho | exact GlobalTheory.OrthoMetric.isMetric_of_isOrtho | (intros; apply GlobalTheory.OrthoMetric.isMetric_of_isOrtho <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.LamCM Formalism.L2.Pj
+open scoped ComplexOrder
+open GlobalTheory GlobalTheory.CM GlobalTheory.Frames GlobalTheory.LamT
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_orthonormalFrame_borelChange_complexFramedPoint : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Unf Xo c σ r), IsUnf U → ∀ y : FrPt Xo c (CAt σ), ∃ (k : U.Comp) (x : (U.X k).dom) (t : Ix Dw → (CAt σ)ˣ), (U.X k).IsOrtho x.1 ∧ FrBor t (U.un k x) y := by
+  first | exact @GlobalTheory.LamT.exists_ortho_frBor | exact GlobalTheory.LamT.exists_ortho_frBor | (intros; apply GlobalTheory.LamT.exists_ortho_frBor <;> assumption)
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.LamCM Formalism.L2.Pj
 open scoped ComplexOrder
@@ -102,3 +147,4 @@ theorem cabs_evR_le_supC : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     (pow_nonneg (Real.sqrt_nonneg _) _)
 
 end GlobalTheory.LamT.OrthoBound
+end

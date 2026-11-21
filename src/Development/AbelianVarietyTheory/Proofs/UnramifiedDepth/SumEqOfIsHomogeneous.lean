@@ -3,18 +3,522 @@ import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
 import ReciprocityTheory.DualLattices.DetPolyMulCayleyOmegaPow
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PeriodValuation
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LegendreBoundsFactorialMultiIndexCapelliStatement
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LegendreBoundsFactorialMultiIndexCapelli
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.DetFrobeniusSubPowSupport
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.WeightNonnegExpOfWeightGeInvPrimeSubOne
+import BuildAid.ForwardExisting
 import Formalism.LocalToGlobal.CharacterGerms.BiadditiveInSingleVariables
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FactorialWeightedPairingDetPowProportional
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.DeterminantPairingQuotientValuationLowerBound
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.WtAddSingle
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ProdIccMulFactorial
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LegendreAndCapelli
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.RadiiValuationDifferences
-import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.NewtonBoundPosAndNewtonStep
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.BlockValueOnRowsEq
 
+section
+open ReciprocityTheory.PGsh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.legendre_bounds_factorial_multiIndex_capelli : (∀ (l : ℕ), l.Prime → (∀ N : ℕ, 1 ≤ N → (N : ℝ) / (l - 1) - (Real.logb l N + 1) ≤ padicValNat l N.factorial ∧ (padicValNat l N.factorial : ℝ) ≤ (N - 1) / (l - 1)) ∧
+    (∀ (κ : Type) [Fintype κ] (A : κ → ℕ), 1 ≤ ∑ j, A j → ((∑ j, A j : ℕ) : ℝ) / (l - 1) - Fintype.card κ * (Real.logb l ((∑ j, A j : ℕ) : ℝ) + 1) ≤ padicValNat l (∏ j, (A j).factorial)) ∧
+    ∀ n₀ x : ℕ, (padicValNat l (∏ c ∈ Finset.range n₀, (x + c).factorial) : ℝ) - padicValNat l (∏ c ∈ Finset.range n₀, c.factorial) ≤
+      n₀ * x / (l - 1) + n₀ * (Real.logb l n₀ + 1)) := by
+  first | exact @GlobalTheory.LegendreBounds.legendre_bounds | exact GlobalTheory.LegendreBounds.legendre_bounds | (intros; apply GlobalTheory.LegendreBounds.legendre_bounds <;> assumption)
+end
+
+section
+section
+open ReciprocityTheory.PGsh
+
+namespace GlobalTheory.ExpWeight
+
+variable {C : Type} [Field C] (v : AddValuation C (WithTop ℝ))
+  {σ : Type} [DecidableEq σ] (ρ : σ → ℝ)
+
+variable {C : Type} [Field C] (v : AddValuation C (WithTop ℝ))
+  {σ : Type} [DecidableEq σ] (ρ : σ → ℝ) in
+
+theorem _root_.GlobalTheory.ExpWeight.weight_exp :
+  (∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (l : ℕ), l.Prime → v (l : C) = 1 → ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (ρ : σ → ℝ) (h : MvPowerSeries σ C), MvPowerSeries.constantCoeff h = 0 →
+    (∀ α, (((1 / (l - 1)) - α.sum (fun j e => ρ j * (e : ℝ)) : ℝ) : WithTop ℝ) ≤ v (MvPowerSeries.coeff α (h))) → (∀ α, (((0) - α.sum (fun j e => ρ j * (e : ℝ)) : ℝ) : WithTop ℝ) ≤ v (MvPowerSeries.coeff α (PowerSeries.subst (h) (PowerSeries.exp C))))) := by
+  intro C _ _ v l hl hvl σ _ _ ρ h h0 hh
+  set c : ℝ := 1 / ((l : ℝ) - 1) with hc
+  set w : (σ →₀ ℕ) → ℝ := fun α => α.sum (fun j e => ρ j * (e : ℝ)) with hw
+  have hwadd : ∀ α β : σ →₀ ℕ, w (α + β) = w α + w β := fun α β => by
+    simp only [hw]
+    exact Finsupp.sum_add_index' (fun j => by simp) (fun j a b => by push_cast; ring)
+  have hsumle : ∀ {ι : Type} (s : Finset ι) (f : ι → C) (r : ℝ),
+      (∀ i ∈ s, ((r : ℝ) : WithTop ℝ) ≤ v (f i)) → ((r : ℝ) : WithTop ℝ) ≤ v (∑ i ∈ s, f i) := by
+    intro ι s f r hf
+    refine Finset.sum_induction f (fun x => ((r : ℝ) : WithTop ℝ) ≤ v x) (fun a b ha hb => ?_) ?_ hf
+    · exact le_trans (le_min ha hb) (v.map_add a b)
+    · simp
+  have hpow : ∀ (d : ℕ) (α : σ →₀ ℕ), (((d : ℝ) * c - w α : ℝ) : WithTop ℝ) ≤ v (MvPowerSeries.coeff α (h ^ d)) := by
+    intro d
+    induction d with
+    | zero =>
+      intro α
+      rw [pow_zero, MvPowerSeries.coeff_one]
+      split_ifs with hα
+      · subst hα
+        simp [hw]
+      · simp
+    | succ d ih =>
+      intro α
+      rw [pow_succ, MvPowerSeries.coeff_mul]
+      refine hsumle _ _ _ fun p hp => ?_
+      rw [Finset.HasAntidiagonal.mem_antidiagonal] at hp
+      rw [v.map_mul]
+      have e : ((((d + 1 : ℕ) : ℝ) * c - w α : ℝ) : WithTop ℝ) =
+          (((d : ℝ) * c - w p.1 : ℝ) : WithTop ℝ) + ((1 / ((l : ℝ) - 1) - w p.2 : ℝ) : WithTop ℝ) := by
+        rw [← WithTop.coe_add, ← hp, hwadd, hc]
+        congr 1
+        push_cast
+        ring
+      rw [e]
+      exact add_le_add (ih p.1) (hh p.2)
+  intro α
+  have hsub : PowerSeries.HasSubst h := PowerSeries.HasSubst.of_constantCoeff_zero h0
+  rw [PowerSeries.coeff_subst hsub]
+  refine finsum_induction (fun x => (((0 : ℝ) - w α : ℝ) : WithTop ℝ) ≤ v x) (by simp)
+    (fun a b ha hb => le_trans (le_min ha hb) (v.map_add a b)) fun d => ?_
+  simp only [PowerSeries.coeff_exp, smul_eq_mul, v.map_mul]
+  have hf : (d.factorial : C) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero d
+  have hinv : algebraMap ℚ C (1 / (d.factorial : ℚ)) = ((d.factorial : C))⁻¹ := by simp
+  rw [hinv]
+  obtain ⟨y, hy⟩ := _root_.ReciprocityTheory.ChartRestriction.G.Sh.PowerSeriesCoeffGaps.exists_real v (inv_ne_zero hf)
+  have hfact := _root_.ReciprocityTheory.ChartRestriction.G.Sh.PowerSeriesCoeffGaps.natCast_eq_factorization v hl hvl (Nat.factorial_ne_zero d)
+  have hprod : v ((d.factorial : C))⁻¹ + v (d.factorial : C) = 0 := by
+    rw [← v.map_mul, inv_mul_cancel₀ hf, v.map_one]
+  rw [hy, hfact, ← WithTop.coe_add, WithTop.coe_eq_zero] at hprod
+  have hle := _root_.GlobalTheory.LegendreBounds.upper l hl d
+  have hyr : y = -((d.factorial.factorization l : ℕ) : ℝ) := by linarith
+  rw [Nat.factorization_def _ hl] at hyr
+  have hdc : (d : ℝ) / ((l : ℝ) - 1) = d * c := by rw [hc]; ring
+  rw [hy]
+  calc (((0 : ℝ) - w α : ℝ) : WithTop ℝ) ≤ ((y + ((d : ℝ) * c - w α) : ℝ) : WithTop ℝ) :=
+        WithTop.coe_le_coe.mpr (by linarith)
+    _ = ((y : ℝ) : WithTop ℝ) + (((d : ℝ) * c - w α : ℝ) : WithTop ℝ) := WithTop.coe_add _ _
+    _ ≤ _ := add_le_add le_rfl (hpow d α)
+
+end GlobalTheory.ExpWeight
+end
+
+open ReciprocityTheory.PGsh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weight_nonneg_exp_of_weight_ge_inv_prime_sub_one : (∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (l : ℕ), l.Prime → v (l : C) = 1 → ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (ρ : σ → ℝ) (h : MvPowerSeries σ C), MvPowerSeries.constantCoeff h = 0 →
+    (∀ α, (((1 / (l - 1)) - α.sum (fun j e => ρ j * (e : ℝ)) : ℝ) : WithTop ℝ) ≤ v (MvPowerSeries.coeff α (h))) → (∀ α, (((0) - α.sum (fun j e => ρ j * (e : ℝ)) : ℝ) : WithTop ℝ) ≤ v (MvPowerSeries.coeff α (PowerSeries.subst (h) (PowerSeries.exp C))))) := by
+  atlas_forward_decl GlobalTheory.ExpWeight.weight_exp
+end
+
+section
+section
+open ReciprocityTheory.PGsh
+
+namespace GlobalTheory.DetPairingBound
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Sh.PowerSeriesCoeffGaps
+
+theorem cayDet_isHomogeneous (n : ℕ) (C : Type) [CommRing C] :
+    (cayDet n C).IsHomogeneous n := by
+  show (Matrix.mvPolynomialX (Fin n) (Fin n) C).det.IsHomogeneous n
+  rw [Matrix.det_apply']
+  refine IsHomogeneous.sum _ _ _ fun σ _ => ?_
+  rw [← map_intCast (MvPolynomial.C : C →+* MvPolynomial (Fin n × Fin n) C)]
+  refine IsHomogeneous.C_mul ?_ _
+  have h := IsHomogeneous.prod (Finset.univ : Finset (Fin n))
+    (fun i => Matrix.mvPolynomialX (Fin n) (Fin n) C (σ i) i) (fun _ => 1)
+    (fun i _ => by simpa [Matrix.mvPolynomialX_apply] using isHomogeneous_X (R := C) ((σ i, i) : Fin n × Fin n))
+  simpa using h
+
+theorem coeff_cayDet_pow_nonneg (C : Type) [Field C] (v : AddValuation C (WithTop ℝ))
+    (n x : ℕ) (A : Fin n × Fin n →₀ ℕ) : 0 ≤ v (coeff A (cayDet n C ^ x)) := by
+  rw [← cayDet_map (R := C), ← map_pow, coeff_map, eq_intCast]
+  exact intCast_nonneg v _
+
+theorem sum_eq_of_mem_support (C : Type) [CommRing C] (n x : ℕ) (A : Fin n × Fin n →₀ ℕ)
+    (hA : A ∈ (cayDet n C ^ x).support) : ∑ j, A j = n * x := by
+  have h := (cayDet_isHomogeneous n C).pow x
+  rw [← Finsupp.degree_eq_sum]
+  by_contra hne
+  exact (mem_support_iff.mp hA) (h.coeff_eq_zero hne)
+
+theorem le_val_div {C : Type} [Field C] (v : AddValuation C (WithTop ℝ)) {N D : C} {a d r : ℝ}
+    (hN : (a : WithTop ℝ) ≤ v N) (hD : v D = d) (h : r ≤ a - d) : (r : WithTop ℝ) ≤ v (N / D) := by
+  have hD0 : D ≠ 0 := by
+    rintro rfl
+    simp at hD
+  rcases eq_or_ne N 0 with rfl | hN0
+  · simp
+  · obtain ⟨b, hb⟩ := exists_real v hN0
+    rw [div_eq_coe v hD0 hb hD]
+    rw [hb, WithTop.coe_le_coe] at hN
+    exact WithTop.coe_le_coe.mpr (by linarith)
+
+theorem main : (∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (l : ℕ), l.Prime → v (l : C) = 1 → ∀ (i n₀ s : ℕ) (Q : MvPolynomial (Fin n₀ × Fin n₀) C), 1 ≤ s → 1 ≤ n₀ →
+    (∀ A, (((s : ℝ) / 8 - (n₀ : ℝ) ^ 2 * (Real.logb l (n₀ * s) + 1) : ℝ) : WithTop ℝ) ≤ v (MvPolynomial.coeff A Q)) →
+    (((s : ℝ) / 8 - (n₀ : ℝ) ^ 2 * (3 * Real.logb l n₀ + 2 * Real.logb l s + i + 3) : ℝ) : WithTop ℝ) ≤
+      v ((∑ A ∈ (cayDet n₀ C ^ (l ^ i * s)).support, MvPolynomial.coeff A (cayDet n₀ C ^ (l ^ i * s)) * (A.prod fun _ e => (e.factorial : C)) * MvPolynomial.coeff A (Q)) / (∑ A ∈ (cayDet n₀ C ^ (l ^ i * s)).support, MvPolynomial.coeff A (cayDet n₀ C ^ (l ^ i * s)) * (A.prod fun _ e => (e.factorial : C)) * MvPolynomial.coeff A (cayDet n₀ C ^ (l ^ i * s))))) := by
+  intro C _ _ v l hl hvl i n₀ s Q hs hn₀ hQ
+  have hvnat : ∀ m : ℕ, m ≠ 0 → v (m : C) = ((padicValNat l m : ℝ) : WithTop ℝ) := by
+    intro m hm
+    rw [natCast_eq_factorization v hl hvl hm, Nat.factorization_def m hl]
+  obtain ⟨-, hL2, hL3⟩ := GlobalTheory.LegendreBounds.legendre_bounds l hl
+  have hk0 : l ^ i * s ≠ 0 := Nat.mul_ne_zero (pow_ne_zero _ hl.ne_zero) (by omega)
+
+  have hP := GlobalTheory.DetPowPairing.main C n₀ (l ^ i * s)
+  rw [← Nat.cast_prod, ← Nat.cast_prod] at hP
+  have hF0 : (∏ c ∈ Finset.range n₀, c.factorial) ≠ 0 :=
+    Finset.prod_ne_zero_iff.mpr fun c _ => Nat.factorial_ne_zero c
+  have hF1 : (∏ c ∈ Finset.range n₀, (l ^ i * s + c).factorial) ≠ 0 :=
+    Finset.prod_ne_zero_iff.mpr fun c _ => Nat.factorial_ne_zero _
+  have hF0' : ((∏ c ∈ Finset.range n₀, c.factorial : ℕ) : C) ≠ 0 := Nat.cast_ne_zero.mpr hF0
+  have hDen := (eq_div_iff hF0').mpr ((mul_comm _ _).trans hP)
+  have hvD := div_eq_coe v hF0' (hvnat _ hF1) (hvnat _ hF0)
+  rw [← hDen] at hvD
+
+  obtain ⟨wb, hwb⟩ : ∃ wb : ℝ, wb = (n₀ : ℝ) * ((l : ℝ) ^ i * s) / ((l : ℝ) - 1) -
+      (n₀ : ℝ) ^ 2 * (Real.logb l ((n₀ : ℝ) * ((l : ℝ) ^ i * s)) + 1) := ⟨_, rfl⟩
+  obtain ⟨qb, hqb⟩ : ∃ qb : ℝ, qb = (s : ℝ) / 8 - (n₀ : ℝ) ^ 2 * (Real.logb l (n₀ * s) + 1) :=
+    ⟨_, rfl⟩
+  have hnum : ∀ A ∈ (cayDet n₀ C ^ (l ^ i * s)).support, ((wb + qb : ℝ) : WithTop ℝ) ≤
+      v (MvPolynomial.coeff A (cayDet n₀ C ^ (l ^ i * s)) * (A.prod fun _ e => (e.factorial : C)) *
+        MvPolynomial.coeff A Q) := by
+    intro A hA
+    have hsum := sum_eq_of_mem_support C n₀ (l ^ i * s) A hA
+    have hW := hL2 (Fin n₀ × Fin n₀) A
+      (by rw [hsum]; exact Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega) hk0))
+    rw [hsum] at hW
+    simp only [Fintype.card_prod, Fintype.card_fin] at hW
+    push_cast at hW
+    have hwt : (A.prod fun _ e => (e.factorial : C)) = ((∏ j, (A j).factorial : ℕ) : C) := by
+      rw [Finsupp.prod_fintype _ _ (fun _ => by simp), Nat.cast_prod]
+    have hne : (∏ j, (A j).factorial) ≠ 0 :=
+      Finset.prod_ne_zero_iff.mpr fun j _ => Nat.factorial_ne_zero _
+    have h2 : (wb : WithTop ℝ) ≤ ((padicValNat l (∏ j, (A j).factorial) : ℝ) : WithTop ℝ) :=
+      WithTop.coe_le_coe.mpr (by rw [hwb, sq]; linarith)
+    have h3 : (qb : WithTop ℝ) ≤ v (MvPolynomial.coeff A Q) := by
+      rw [hqb]; exact hQ A
+    rw [AddValuation.map_mul, AddValuation.map_mul, hwt, hvnat _ hne]
+    calc ((wb + qb : ℝ) : WithTop ℝ) = 0 + (wb : WithTop ℝ) + (qb : WithTop ℝ) := by
+          rw [zero_add, WithTop.coe_add]
+      _ ≤ _ := add_le_add (add_le_add (coeff_cayDet_pow_nonneg C v n₀ _ A) h2) h3
+  refine le_val_div v (a := wb + qb) (AddValuation.map_le_sum v hnum) hvD ?_
+
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast hl.one_lt
+  have hn1 : (1 : ℝ) ≤ n₀ := by exact_mod_cast hn₀
+  have hs1 : (1 : ℝ) ≤ s := by exact_mod_cast hs
+  have hn0 : (n₀ : ℝ) ≠ 0 := (by linarith : (0 : ℝ) < n₀).ne'
+  have hs0 : (s : ℝ) ≠ 0 := (by linarith : (0 : ℝ) < s).ne'
+  have hli : (l : ℝ) ^ i ≠ 0 := pow_ne_zero _ (by linarith : (0 : ℝ) < l).ne'
+  have hLn := Real.logb_nonneg hl1 hn1
+  have hLs := Real.logb_nonneg hl1 hs1
+  have hlK : Real.logb l ((n₀ : ℝ) * ((l : ℝ) ^ i * s)) =
+      Real.logb l n₀ + i + Real.logb l s := by
+    rw [Real.logb_mul hn0 (mul_ne_zero hli hs0), Real.logb_mul hli hs0, Real.logb_pow,
+      Real.logb_self_eq_one hl1]
+    ring
+  have hlQ : Real.logb l ((n₀ : ℝ) * s) = Real.logb l n₀ + Real.logb l s :=
+    Real.logb_mul hn0 hs0
+  have h3 := hL3 n₀ (l ^ i * s)
+  push_cast at h3
+  have hsq : (n₀ : ℝ) * (Real.logb l n₀ + 1) ≤ (n₀ : ℝ) ^ 2 * (Real.logb l n₀ + 1) :=
+    mul_le_mul_of_nonneg_right (by nlinarith) (by linarith)
+  rw [hwb, hqb, hlK, hlQ]
+  linarith
+
+end GlobalTheory.DetPairingBound
+end
+
+open ReciprocityTheory.PGsh
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.determinantPairing_quotient_valuation_lower_bound : (∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (l : ℕ), l.Prime → v (l : C) = 1 → ∀ (i n₀ s : ℕ) (Q : MvPolynomial (Fin n₀ × Fin n₀) C), 1 ≤ s → 1 ≤ n₀ →
+    (∀ A, (((s : ℝ) / 8 - (n₀ : ℝ) ^ 2 * (Real.logb l (n₀ * s) + 1) : ℝ) : WithTop ℝ) ≤ v (MvPolynomial.coeff A Q)) →
+    (((s : ℝ) / 8 - (n₀ : ℝ) ^ 2 * (3 * Real.logb l n₀ + 2 * Real.logb l s + i + 3) : ℝ) : WithTop ℝ) ≤
+      v ((∑ A ∈ (cayDet n₀ C ^ (l ^ i * s)).support, MvPolynomial.coeff A (cayDet n₀ C ^ (l ^ i * s)) * (A.prod fun _ e => (e.factorial : C)) * MvPolynomial.coeff A (Q)) / (∑ A ∈ (cayDet n₀ C ^ (l ^ i * s)).support, MvPolynomial.coeff A (cayDet n₀ C ^ (l ^ i * s)) * (A.prod fun _ e => (e.factorial : C)) * MvPolynomial.coeff A (cayDet n₀ C ^ (l ^ i * s))))) := by
+  atlas_forward_decl GlobalTheory.DetPairingBound.main
+end
+
+section
+open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds
+
+namespace GlobalTheory
+
+namespace RadiiIdentities
+
+theorem sub_one_pos {l : ℕ} (hl : 2 ≤ l) : (0 : ℝ) < (l : ℝ) - 1 := by
+  have : (2 : ℝ) ≤ l := by exact_mod_cast hl
+  linarith
+
+theorem sq_sub_one_eq (l : ℕ) : (l : ℝ) ^ 2 - 1 = ((l : ℝ) - 1) * ((l : ℝ) + 1) := by
+  ring
+
+theorem exponent_integral : Formalism.L2.FormalSeriesBounds.EInt := by
+  intro l i hl hi
+  have h1 : (0 : ℝ) < (l : ℝ) - 1 := sub_one_pos hl
+  have hsq : ((l : ℝ) ^ 2 - 1) ≠ 0 := by
+    rw [sq_sub_one_eq]
+    have : (0 : ℝ) < (l : ℝ) + 1 := by linarith
+    positivity
+  constructor
+  · simp only [gam, rho]
+    field_simp
+  · obtain ⟨k, rfl⟩ := hi
+    have hk : (2 * k + 1 - 1) / 2 = k := by omega
+    have hne : ((l : ℝ) ^ 2) ≠ 1 := by
+      intro h
+      apply hsq
+      rw [h]
+      ring
+    simp only [expE, hk, Ereal, rho]
+    push_cast
+    rw [geom_sum_eq hne]
+    field_simp
+    ring
+
+theorem radii_sum : I1 := by
+  intro l i hl
+  have h1 : (0 : ℝ) < (l : ℝ) - 1 := sub_one_pos hl
+  have h2 : (0 : ℝ) < (l : ℝ) + 1 := by linarith
+  have hpow : ((l : ℝ) ^ i) ≠ 0 := by positivity
+  refine ⟨?_, ?_⟩
+  · simp only [r1, r2]
+    field_simp
+    ring
+  · simp only [Ereal, rho]
+    rw [sq_sub_one_eq]
+    field_simp
+    ring
+
+theorem slope_identity : I2 := by
+  intro l i hl hi
+  have h1 : (0 : ℝ) < (l : ℝ) - 1 := sub_one_pos hl
+  have h2 : (0 : ℝ) < (l : ℝ) + 1 := by linarith
+  have hsq : ((l : ℝ) ^ 2 - 1) = ((l : ℝ) - 1) * ((l : ℝ) + 1) := sq_sub_one_eq l
+  have hl2 : (2 : ℝ) ≤ l := by exact_mod_cast hl
+  have hli : (l : ℝ) ≤ (l : ℝ) ^ i := by
+    calc (l : ℝ) = (l : ℝ) ^ 1 := (pow_one _).symm
+      _ ≤ (l : ℝ) ^ i := pow_le_pow_right₀ (by linarith) hi
+  refine ⟨?_, ?_⟩
+  · simp only [Ereal, rho, gam]
+    rw [hsq]
+    field_simp
+    ring
+  · simp only [gam]
+    rw [hsq, sub_nonneg, mul_div_assoc', le_div_iff₀ (by positivity)]
+    nlinarith
+
+theorem val_natCast_nonneg {C : Type} [Field C] (v : AddValuation C (WithTop ℝ)) (n : ℕ) :
+    0 ≤ v (n : C) := by
+  induction n with
+  | zero => simp
+  | succ k ih =>
+    push_cast
+    calc (0 : WithTop ℝ) ≤ min (v (k : C)) (v 1) := by
+          rw [AddValuation.map_one]
+          exact le_min ih le_rfl
+      _ ≤ v ((k : C) + 1) := AddValuation.map_add v _ _
+
+theorem val_intCast_nonneg {C : Type} [Field C] (v : AddValuation C (WithTop ℝ)) (n : ℤ) :
+    0 ≤ v (n : C) := by
+  rcases Int.eq_nat_or_neg n with ⟨k, rfl | rfl⟩
+  · exact_mod_cast val_natCast_nonneg v k
+  · push_cast
+    rw [AddValuation.map_neg]
+    exact val_natCast_nonneg v k
+
+theorem val_other_prime : ValOther := by
+  intro C _ v l hl hvl p hp hpl
+  refine le_antisymm ?_ (val_natCast_nonneg v p)
+  by_contra hlt
+  rw [not_le] at hlt
+  have hcop : Nat.Coprime l p := (Nat.coprime_primes hl hp).2 (Ne.symm hpl)
+  have hbez : ((1 : ℤ) : C) = ((l : ℤ) * Nat.gcdA l p + (p : ℤ) * Nat.gcdB l p : ℤ) := by
+    rw [← Nat.gcd_eq_gcd_ab, hcop.gcd_eq_one]
+    simp
+  push_cast at hbez
+  have hA : (0 : WithTop ℝ) < v ((l : C) * (Nat.gcdA l p : C)) := by
+    rw [AddValuation.map_mul, hvl]
+    exact lt_of_lt_of_le (by exact_mod_cast (zero_lt_one : (0 : ℝ) < 1))
+      (le_add_of_nonneg_right (val_intCast_nonneg v _))
+  have hB : (0 : WithTop ℝ) < v ((p : C) * (Nat.gcdB l p : C)) := by
+    rw [AddValuation.map_mul]
+    exact lt_of_lt_of_le hlt (le_add_of_nonneg_right (val_intCast_nonneg v _))
+  have hsum := AddValuation.map_add v ((l : C) * (Nat.gcdA l p : C)) ((p : C) * (Nat.gcdB l p : C))
+  rw [← hbez, AddValuation.map_one] at hsum
+  exact absurd (lt_of_lt_of_le (lt_min hA hB) hsum) (lt_irrefl 0)
+
+theorem weight_forms_agree : WeightConditionIff := by
+  intro C _ v l i n0 h1
+  have e1 : rho l + 1 / (2 * (l : ℝ) ^ i) - 1 / (8 * (l : ℝ) ^ i) =
+      rho l + ((l : ℝ) ^ i)⁻¹ / 2 - ((l : ℝ) ^ i)⁻¹ / 8 := by ring
+  have e2 : rho l + 1 / 2 - 1 / (8 * (l : ℝ) ^ i) = rho l + 1 / 2 - ((l : ℝ) ^ i)⁻¹ / 8 := by ring
+  simp only [HM1, WeightCond, r1, r2, del, e1, e2]
+
+theorem binomial_differences : F5 := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro y s
+    have hf : (s.factorial : ℚ) ≠ 0 := by exact_mod_cast s.factorial_ne_zero
+    have key : (s.factorial : ℤ) * Ring.choose y s = ∏ j ∈ Finset.range s, (y - (j : ℤ)) := by
+      rw [← descPochhammer_eval_eq_prod_range, Polynomial.eval_eq_smeval,
+        Ring.descPochhammer_eq_factorial_smul_choose, nsmul_eq_mul]
+    rw [eq_div_iff hf, mul_comm]
+    exact_mod_cast key
+  · intro y s
+    rw [Ring.choose_succ_succ]
+    ring
+  · intro y
+    simp
+  · intro s
+    cases s with
+    | zero => simp
+    | succ k => simp [Ring.choose_zero_succ]
+
+end RadiiIdentities
+
+open RadiiIdentities in
+
+theorem radii_valuation_differences :
+    Formalism.L2.FormalSeriesBounds.EInt ∧ I1 ∧ I2 ∧ ValOther ∧ WeightConditionIff ∧ F5 :=
+  ⟨exponent_integral, radii_sum, slope_identity, val_other_prime, weight_forms_agree,
+    binomial_differences⟩
+
+end GlobalTheory
+end
+
+section
+open Formalism.L2.FormalSeriesBounds
+
+namespace GlobalTheory
+
+private lemma sum_range_succ_choose_mul_eq_add_shift {C : Type} [Field C] (f : ℕ → C) (y : ℕ) :
+    ∑ s ∈ Finset.range (y + 1 + 1), ((y + 1).choose s : C) * f s =
+      ∑ s ∈ Finset.range (y + 1), (y.choose s : C) * f s +
+        ∑ s ∈ Finset.range (y + 1), (y.choose s : C) * f (s + 1) := by
+  rw [Finset.sum_range_succ' (fun s => ((y + 1).choose s : C) * f s)]
+  simp_rw [Nat.choose_succ_succ', Nat.cast_add, add_mul, Finset.sum_add_distrib]
+  rw [Finset.sum_range_succ' (fun s => (y.choose s : C) * f s),
+    Finset.sum_range_succ (fun s => (y.choose (s + 1) : C) * f (s + 1)), Nat.choose_succ_self]
+  simp
+  ring
+
+theorem _root_.GlobalTheory.newtonBound_pos_and_newtonStep : _root_.Formalism.L2.FormalSeriesBounds.NewtonBoundPositive ∧ _root_.Formalism.L2.FormalSeriesBounds.P7 := by
+  refine ⟨?_, ?_⟩
+  · unfold _root_.Formalism.L2.FormalSeriesBounds.NewtonBoundPositive
+    intro l hl i n0 s hi hn hs
+    unfold _root_.Formalism.L2.FormalSeriesBounds.S0 at hs
+    have hl' : (5:ℝ) ≤ l := by exact_mod_cast hl
+    have hN : (1:ℝ) ≤ n0 := by exact_mod_cast hn
+    have hi' : (1:ℝ) ≤ i := by exact_mod_cast hi
+    have hlogl : 1 ≤ Real.log l := by
+      rw [Real.le_log_iff_exp_le (by linarith)]
+      have := Real.exp_one_lt_d9
+      linarith
+    have hlbN1 : 0 ≤ Real.logb l ((n0:ℝ) + 1) := Real.logb_nonneg (by linarith) (by linarith)
+    have hsK : 64 * (n0:ℝ) ^ 2 * ((i:ℝ) + 3 + 3 * Real.logb l ((n0:ℝ) + 1)) ≤ (s:ℝ) :=
+      (Nat.le_ceil _).trans (by exact_mod_cast hs)
+    have hN2 : 0 < 64 * (n0:ℝ) ^ 2 := by positivity
+    set t : ℝ := (s:ℝ) / (64 * (n0:ℝ) ^ 2) with ht
+    have hst : (s:ℝ) = t * 64 * (n0:ℝ) ^ 2 := by rw [ht]; field_simp
+    have htK : (i:ℝ) + 3 + 3 * Real.logb l ((n0:ℝ) + 1) ≤ t := by
+      rw [ht, le_div_iff₀ hN2]; linarith
+    have ht0 : 0 < t := by linarith
+    have hlogs : Real.logb l s = Real.logb l t + Real.logb l 64 + 2 * Real.logb l n0 := by
+      rw [hst, Real.logb_mul (by positivity) (by positivity), Real.logb_mul (by positivity) (by norm_num),
+        Real.logb_pow]
+      push_cast
+      ring
+    have hlbt : Real.logb l t ≤ t - 1 := by
+      have h1 := Real.log_le_sub_one_of_pos ht0
+      have h2 : 0 ≤ Real.log t := Real.log_nonneg (by linarith)
+      rw [Real.logb, div_le_iff₀ (by linarith)]
+      nlinarith
+    have hlb64 : Real.logb l 64 ≤ 3 := by
+      have h3 : Real.logb l ((l:ℝ) ^ 3) = 3 := by
+        rw [Real.logb_pow, Real.logb_self_eq_one (by linarith)]
+        norm_num
+      rw [← h3]
+      apply Real.logb_le_logb_of_le (by linarith) (by norm_num)
+      have hcube : (5:ℝ) ^ 3 ≤ (l:ℝ) ^ 3 := pow_le_pow_left₀ (by norm_num) hl' 3
+      linarith
+    have hlbN : Real.logb l n0 ≤ Real.logb l ((n0:ℝ) + 1) :=
+      Real.logb_le_logb_of_le (by linarith) (by linarith) (by linarith)
+    have key : 3 * Real.logb l n0 + 2 * Real.logb l s + i + 3 < 8 * t := by
+      rw [hlogs]
+      nlinarith
+    have hs8 : (s:ℝ) / 8 = 8 * t * (n0:ℝ) ^ 2 := by rw [hst]; ring
+    rw [hs8]
+    have hpos : 0 < (n0:ℝ) ^ 2 := by positivity
+    nlinarith [mul_lt_mul_of_pos_left key hpos]
+  · unfold _root_.Formalism.L2.FormalSeriesBounds.P7
+    intro C _ v S a hS ha0 hpos Y0
+    by_contra hcon
+    push_neg at hcon
+    have hadd : ∀ x y : C, 0 < v x → 0 < v y → 0 < v (x + y) := fun x y hx hy =>
+      lt_of_lt_of_le (lt_min hx hy) (v.map_add x y)
+    have hsub : ∀ x y : C, 0 < v x → 0 < v y → 0 < v (x - y) := fun x y hx hy => by
+      rw [sub_eq_add_neg]
+      exact hadd _ _ hx (by rwa [v.map_neg])
+    have hnat : ∀ (c : ℕ) (x : C), 0 < v x → 0 < v ((c : C) * x) := fun c x hx => by
+      rw [v.map_mul]
+      have h := _root_.ReciprocityTheory.ChartRestriction.G.Sh.PowerSeriesCoeffGaps.intCast_nonneg v (c : ℤ)
+      rw [Int.cast_natCast] at h
+      exact lt_of_lt_of_le hx (le_add_of_nonneg_left h)
+    have hsum : ∀ (s : Finset ℕ) (f : ℕ → C), (∀ j ∈ s, 0 < v (f j)) → 0 < v (∑ j ∈ s, f j) := by
+      intro s f hf
+      induction s using Finset.induction_on with
+      | empty => simp
+      | insert j s hj ih =>
+        rw [Finset.sum_insert hj]
+        exact hadd _ _ (hf j (Finset.mem_insert_self _ _))
+          (ih fun x hx => hf x (Finset.mem_insert_of_mem hx))
+    set B : ℕ → ℕ → C := fun k y => ∑ s ∈ Finset.range (y + 1), (y.choose s : C) * a (s + k) with hB
+    have hpascal : ∀ k y, B (k + 1) y = B k (y + 1) - B k y := by
+      intro k y
+      simp only [hB]
+      rw [sum_range_succ_choose_mul_eq_add_shift (fun s => a (s + k)) y]
+      have : ∀ s, a (s + 1 + k) = a (s + (k + 1)) := fun s => by rw [add_assoc, add_comm 1 k]
+      simp only [this]
+      ring
+    have hup : ∀ k, k < S → ∀ y, Y0 ≤ y → y + k < Y0 + S → 0 < v (B k y) := by
+      intro k
+      induction k with
+      | zero =>
+        intro _ y h1 h2
+        simpa [hB] using hcon y h1 (by omega)
+      | succ k ih =>
+        intro hk y h1 h2
+        rw [hpascal]
+        exact hsub _ _ (ih (by omega) (y + 1) (by omega) (by omega)) (ih (by omega) y h1 (by omega))
+    have hbig : ∀ k, S ≤ k → ∀ y, 0 < v (B k y) := fun k hk y =>
+      hsum _ _ fun s _ => hnat _ _ (hpos _ (by omega))
+    have hdown : ∀ d, d ≤ Y0 → ∀ k, 0 < v (B k (Y0 - d)) := by
+      intro d
+      induction d with
+      | zero =>
+        intro _ k
+        by_cases hk : k < S
+        · exact hup k hk Y0 le_rfl (by simpa using hk)
+        · exact hbig k (by omega) _
+      | succ d ih =>
+        intro hd
+        have hy : Y0 - d = Y0 - (d + 1) + 1 := by omega
+        have main : ∀ m k, S ≤ k + m → 0 < v (B k (Y0 - (d + 1))) := by
+          intro m
+          induction m with
+          | zero => intro k hk; exact hbig k (by omega) _
+          | succ m ihm =>
+            intro k hk
+            have e := hpascal k (Y0 - (d + 1))
+            have : B k (Y0 - (d + 1)) = B k (Y0 - (d + 1) + 1) - B (k + 1) (Y0 - (d + 1)) := by
+              rw [e]; ring
+            rw [this, ← hy]
+            exact hsub _ _ (ih (by omega) k) (ihm (k + 1) (by omega))
+        exact fun k => main S k (by omega)
+    have h0 := hdown Y0 le_rfl 0
+    simp [hB, ha0] at h0
+
+end GlobalTheory
+end
+
+section
 section
 open ReciprocityTheory.PGsh
 
@@ -1083,4 +1587,5 @@ set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.OddBlock.content_and_window : BiContent ∧ BiWindow := by
   exact @GlobalTheory.OddBlock.BlockContent.biContent_and_biWindow
 
+end
 end

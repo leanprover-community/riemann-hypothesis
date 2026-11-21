@@ -1,9 +1,334 @@
 import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.SmulSAddLeft
-import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExistsInfFilVEqBot
-import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.IndepOfSpan
+import Formalism.WeaklyAdmissibleFiltrations.Statement
 
+section
+noncomputable section
+open Classical
+
+namespace Formalism.MainNotions.N.Pv.LocalLengthBound.MC
+
+open Formalism.WeaklyAdmissibleFiltrations TensorProduct Module
+
+section Fil
+
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : PeriodData G Qp K₀ K B BdR)
+    {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+
+theorem filB_anti : Antitone PD.Fil := antitone_int_of_succ_le PD.Fil_anti
+
+private theorem range_tensor_map_subtype_mono {S T : Submodule Qp BdR} (h : S ≤ T) :
+    LinearMap.range (AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V) S.subtype) ≤
+      LinearMap.range (AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V) T.subtype) := by
+  rintro _ ⟨w, rfl⟩
+  induction w using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x y => exact LinearMap.mem_range.mpr ⟨x ⊗ₜ[Qp] ⟨(y : BdR), h y.2⟩, by simp⟩
+  | add w₁ w₂ h₁ h₂ =>
+    rw [map_add]
+    exact add_mem h₁ h₂
+
+theorem filVB_anti : Antitone (FilV PD (LL := LL) (V := V)) := by
+  intro a b hab
+  exact range_tensor_map_subtype_mono (S := (PD.Fil b).restrictScalars Qp) (T := (PD.Fil a).restrictScalars Qp)
+    fun y hy => filB_anti PD hab hy
+
+private theorem mem_FilV_iff' (a : ℤ) (z : V ⊗[Qp] BdR) :
+    z ∈ Formalism.WeaklyAdmissibleFiltrations.FilV PD (LL := LL) (V := V) a ↔
+      ∃ w, AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V)
+        ((PD.Fil a).restrictScalars Qp).subtype w = z := Iff.rfl
+
+theorem tmul_mem_filV (a : ℤ) (x : V) {y : BdR} (hy : y ∈ PD.Fil a) :
+    x ⊗ₜ[Qp] y ∈ FilV PD (LL := LL) (V := V) a :=
+  (mem_FilV_iff' PD a _).mpr
+    ⟨x ⊗ₜ[Qp] (⟨y, hy⟩ : (PD.Fil a).restrictScalars Qp), by simp⟩
+
+theorem filV_exh (z : V ⊗[Qp] BdR) : ∃ a : ℤ, z ∈ FilV PD (LL := LL) (V := V) a := by
+  induction z using TensorProduct.induction_on with
+  | zero => exact ⟨0, Submodule.zero_mem _⟩
+  | tmul x y =>
+    obtain ⟨a, ha⟩ := PD.Fil_exh y
+    exact ⟨a, tmul_mem_filV PD a x ha⟩
+  | add z₁ z₂ h₁ h₂ =>
+    obtain ⟨a₁, ha₁⟩ := h₁
+    obtain ⟨a₂, ha₂⟩ := h₂
+    exact ⟨min a₁ a₂, add_mem (filVB_anti PD (min_le_left _ _) ha₁)
+      (filVB_anti PD (min_le_right _ _) ha₂)⟩
+
+theorem coord_mem {ι : Type} (b : Basis ι Qp V) (a : ℤ) (z : V ⊗[Qp] BdR)
+    (hz : z ∈ FilV PD (LL := LL) (V := V) a) (i : ι) :
+    TensorProduct.equivFinsuppOfBasisLeft b z i ∈ PD.Fil a := by
+  obtain ⟨w, rfl⟩ := (mem_FilV_iff' PD a z).mp hz
+  clear hz
+  induction w using TensorProduct.induction_on with
+  | zero => simp
+  | tmul x y =>
+    simp only [AlgebraTensorModule.map_tmul, LinearMap.id_apply, Submodule.subtype_apply,
+      TensorProduct.equivFinsuppOfBasisLeft_apply_tmul_apply]
+    exact Submodule.smul_of_tower_mem (PD.Fil a) _ y.2
+  | add w₁ w₂ h₁ h₂ =>
+    rw [map_add, map_add, Finsupp.add_apply]
+    exact add_mem h₁ h₂
+
+theorem filV_sep (z : V ⊗[Qp] BdR) (hz : ∀ a : ℤ, z ∈ FilV PD (LL := LL) (V := V) a) : z = 0 := by
+  apply (TensorProduct.equivFinsuppOfBasisLeft (Basis.ofVectorSpace Qp V)).injective
+  rw [map_zero]
+  ext i
+  rw [Finsupp.zero_apply]
+  refine PD.Fil_sep _ fun a => ?_
+  convert coord_mem PD (Basis.ofVectorSpace Qp V) a z (hz a) i
+
+private theorem exists_int_finset_subset_FilV (s : Finset (V ⊗[Qp] BdR)) :
+    ∃ a : ℤ, ∀ z ∈ s, z ∈ Formalism.WeaklyAdmissibleFiltrations.FilV PD (LL := LL) (V := V) a := by
+  induction s using Finset.induction_on with
+  | empty => exact ⟨0, by simp⟩
+  | @insert x s hx ih =>
+    obtain ⟨a, ha⟩ := ih
+    obtain ⟨c, hc⟩ := filV_exh PD (LL := LL) x
+    refine ⟨min a c, fun z hz => ?_⟩
+    rcases Finset.mem_insert.mp hz with rfl | hz
+    · exact filVB_anti PD (min_le_right _ _) hc
+    · exact filVB_anti PD (min_le_left _ _) (ha z hz)
+
+theorem exists_le_filV (D : Submodule LL (V ⊗[Qp] BdR)) [FiniteDimensional LL D] :
+    ∃ a : ℤ, D ≤ FilV PD (LL := LL) (V := V) a := by
+  obtain ⟨s, hs⟩ := (Module.Finite.iff_fg (N := D)).mp inferInstance
+  obtain ⟨a, ha⟩ := exists_int_finset_subset_FilV PD (LL := LL) (V := V) s
+  refine ⟨a, ?_⟩
+  rw [← hs]
+  exact Submodule.span_le.mpr fun z hz => ha z (Finset.mem_coe.mp hz)
+
+theorem exists_inf_filV_eq_bot (D : Submodule LL (V ⊗[Qp] BdR)) [FiniteDimensional LL D] :
+    ∃ a : ℤ, D ⊓ FilV PD (LL := LL) (V := V) a = ⊥ := by
+  let S : ℤ → Submodule LL D := fun a => (Formalism.WeaklyAdmissibleFiltrations.FilV PD (LL := LL) (V := V) a).comap D.subtype
+  have hex : ∃ n : ℕ, ∃ a : ℤ, finrank LL (S a) = n := ⟨_, 0, rfl⟩
+  obtain ⟨a₀, ha₀⟩ := Nat.find_spec hex
+  refine ⟨a₀, eq_bot_iff.mpr ?_⟩
+  rintro x ⟨hxD, hxF⟩
+  rw [Submodule.mem_bot]
+  refine filV_sep PD (LL := LL) x fun b => ?_
+  rcases le_total b a₀ with hb | hb
+  · exact filVB_anti PD hb hxF
+  · have hle : S b ≤ S a₀ := Submodule.comap_mono (filVB_anti PD hb)
+    have heq : S b = S a₀ :=
+      Submodule.eq_of_le_of_finrank_eq hle
+        (le_antisymm (Submodule.finrank_mono hle) (ha₀ ▸ Nat.find_min' hex ⟨b, rfl⟩))
+    have hx : (⟨x, hxD⟩ : D) ∈ S a₀ := hxF
+    rw [← heq] at hx
+    exact hx
+
+end Fil
+
+end Formalism.MainNotions.N.Pv.LocalLengthBound.MC
+end
+end
+
+section
+noncomputable section
+open Classical
+
+namespace Formalism.MainNotions.N.Pv.LocalLengthBound.MC
+
+open Module Formalism.MainNotions.N.Pv.LocalLengthBound.Ser
+
+section Cnt
+
+variable {LL : Type} [Field LL] {E : Type} [AddCommGroup E] [Module LL E]
+
+def sumAt {r : ℕ} (e : Fin r → ℤ → E) (j : ℤ) : (Fin r → LL) →ₗ[LL] E :=
+  ∑ m, (LinearMap.proj m : (Fin r → LL) →ₗ[LL] LL).smulRight (e m j)
+
+theorem sumAt_apply {r : ℕ} (e : Fin r → ℤ → E) (j : ℤ) (c : Fin r → LL) :
+    sumAt e j c = ∑ m, c m • e m j := by
+  simp [sumAt, LinearMap.sum_apply]
+
+def Ub {r : ℕ} (Fil : ℤ → Submodule LL E) (e : Fin r → ℤ → E) (j : ℤ) :
+    Submodule LL (Fin r → LL) :=
+  ⨅ (i : ℤ) (_ : i < j), (Fil (-i + 1)).comap (sumAt e i)
+
+theorem mem_Ub {r : ℕ} (Fil : ℤ → Submodule LL E) (e : Fin r → ℤ → E) (j : ℤ) (c : Fin r → LL) :
+    c ∈ Ub Fil e j ↔ ∀ i < j, ∑ m, c m • e m i ∈ Fil (-i + 1) := by
+  simp only [Ub, Submodule.mem_iInf, Submodule.mem_comap, sumAt_apply]
+
+theorem Ub_anti {r : ℕ} (Fil : ℤ → Submodule LL E) (e : Fin r → ℤ → E) {j j' : ℤ} (h : j ≤ j') :
+    Ub Fil e j' ≤ Ub Fil e j := fun c hc =>
+  (mem_Ub Fil e j c).2 fun i hi => (mem_Ub Fil e j' c).1 hc i (by omega)
+
+variable {r : ℕ} {Fil : ℤ → Submodule LL E} (hFa : Antitone Fil) (D : Submodule LL E)
+  [FiniteDimensional LL D] {e : Fin r → ℤ → E}
+
+include hFa in
+
+theorem count_step (he : ∀ m k, e m k ∈ D ⊓ Fil (-k))
+    (hS : ∀ k : ℤ, ∀ w ∈ D ⊓ Fil (-k), ∃ c : Fin r → LL,
+      (∀ j < k, ∑ m, c m • e m j ∈ Fil (-j + 1)) ∧ ∑ m, c m • e m k - w ∈ Fil (-k + 1))
+    (j : ℤ) :
+    finrank LL ↥(Ub Fil e (j + 1)) + finrank LL ↥(D ⊓ Fil (-j)) =
+      finrank LL ↥(Ub Fil e j) + finrank LL ↥(D ⊓ Fil (-j + 1)) := by
+  let ψ : ↥(Ub Fil e j) →ₗ[LL] E ⧸ Fil (-j + 1) :=
+    (Fil (-j + 1)).mkQ ∘ₗ sumAt e j ∘ₗ (Ub Fil e j).subtype
+  have hle : Ub Fil e (j + 1) ≤ Ub Fil e j := Ub_anti Fil e (by omega)
+  have hker : LinearMap.ker ψ = (Ub Fil e (j + 1)).comap (Ub Fil e j).subtype := by
+    ext ⟨c, hc⟩
+    simp only [ψ, LinearMap.mem_ker, LinearMap.comp_apply, Submodule.coe_subtype,
+      Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, sumAt_apply]
+    rw [mem_Ub]
+    constructor
+    · intro h i hi
+      rcases lt_or_eq_of_le (show i ≤ j by omega) with hi' | rfl
+      · exact (mem_Ub Fil e j c).1 hc i hi'
+      · exact h
+    · intro h
+      exact h j (by omega)
+  have hrange : LinearMap.range ψ = (D ⊓ Fil (-j)).map (Fil (-j + 1)).mkQ := by
+    apply le_antisymm
+    · rintro _ ⟨⟨c, hc⟩, rfl⟩
+      refine ⟨sumAt e j c, ?_, rfl⟩
+      rw [sumAt_apply]
+      exact Submodule.sum_mem _ fun m _ => Submodule.smul_mem _ _ (he m j)
+    · rintro _ ⟨w, hw, rfl⟩
+      obtain ⟨c, hlow, hk⟩ := hS j w hw
+      refine ⟨⟨c, (mem_Ub Fil e j c).2 hlow⟩, ?_⟩
+      simp only [ψ, LinearMap.comp_apply, Submodule.coe_subtype, Submodule.mkQ_apply]
+      rw [Submodule.Quotient.eq, sumAt_apply]
+      exact hk
+  have h1 := LinearMap.finrank_range_add_finrank_ker ψ
+  rw [hker, (Submodule.comapSubtypeEquivOfLe hle).finrank_eq, hrange] at h1
+  have : FiniteDimensional LL ↥(D ⊓ Fil (-j)) := Submodule.finiteDimensional_of_le inf_le_left
+  let φ : ↥(D ⊓ Fil (-j)) →ₗ[LL] E ⧸ Fil (-j + 1) := (Fil (-j + 1)).mkQ ∘ₗ (D ⊓ Fil (-j)).subtype
+  have hle' : D ⊓ Fil (-j + 1) ≤ D ⊓ Fil (-j) := inf_le_inf_left _ (hFa (by omega))
+  have hφr : LinearMap.range φ = (D ⊓ Fil (-j)).map (Fil (-j + 1)).mkQ := by
+    simp only [φ, LinearMap.range_comp, Submodule.range_subtype]
+  have hφk : LinearMap.ker φ = (D ⊓ Fil (-j + 1)).comap (D ⊓ Fil (-j)).subtype := by
+    ext ⟨x, hx⟩
+    simp only [φ, LinearMap.mem_ker, LinearMap.comp_apply, Submodule.coe_subtype,
+      Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, Submodule.mem_inf]
+    exact ⟨fun h => ⟨(Submodule.mem_inf.1 hx).1, h⟩, fun h => h.2⟩
+  have h2 := LinearMap.finrank_range_add_finrank_ker φ
+  rw [hφr, hφk, (Submodule.comapSubtypeEquivOfLe hle').finrank_eq] at h2
+  omega
+
+include hFa in
+
+theorem indep_of_span (a₀ a₁ : ℤ) (h₀ : D ≤ Fil a₀) (h₁ : D ⊓ Fil a₁ = ⊥)
+    (he : ∀ m k, e m k ∈ D ⊓ Fil (-k))
+    (hS : ∀ k : ℤ, ∀ w ∈ D ⊓ Fil (-k), ∃ c : Fin r → LL,
+      (∀ j < k, ∑ m, c m • e m j ∈ Fil (-j + 1)) ∧ ∑ m, c m • e m k - w ∈ Fil (-k + 1))
+    (hr : r ≤ finrank LL ↥D) (c : Fin r → LL) (hc : ∀ j, ∑ m, c m • e m j ∈ Fil (-j + 1)) :
+    c = 0 := by
+  let H : ℤ → ℕ := fun j => finrank LL ↥(Ub Fil e j) + finrank LL ↥(D ⊓ Fil (-j + 1))
+  have hstep : ∀ j, H (j + 1) = H j := by
+    intro j
+    have := count_step hFa D he hS j
+    simp only [H]
+    rw [show -(j + 1) + 1 = -j by ring]
+    exact this
+  have hiter : ∀ (j : ℤ) (N : ℕ), H (j + N) = H j := by
+    intro j N
+    induction N with
+    | zero => simp
+    | succ N ih =>
+      rw [show j + ((N + 1 : ℕ) : ℤ) = (j + N) + 1 by push_cast; ring, hstep, ih]
+  have hzero : ∀ m i, i < 1 - a₁ → e m i = 0 := by
+    intro m i hi
+    have h := he m i
+    have h' : e m i ∈ D ⊓ Fil a₁ := ⟨(Submodule.mem_inf.1 h).1, hFa (by omega) (Submodule.mem_inf.1 h).2⟩
+    rw [h₁] at h'
+    exact (Submodule.mem_bot LL).1 h'
+  have htop : Ub Fil e (1 - a₁) = ⊤ := by
+    refine eq_top_iff.2 fun c _ => (mem_Ub Fil e _ c).2 fun i hi => ?_
+    rw [Finset.sum_eq_zero fun m _ => by rw [hzero m i hi, smul_zero]]
+    exact Submodule.zero_mem _
+  have hUr : finrank LL ↥(Ub Fil e (1 - a₁)) = r := by
+    rw [htop, finrank_top, Module.finrank_fin_fun]
+  have hH0 : H (1 - a₁) = r := by
+    simp only [H]
+    rw [show -(1 - a₁) + 1 = a₁ by ring, h₁, finrank_bot, hUr, add_zero]
+  let N : ℕ := (a₁ - a₀).toNat
+  have hJ : -((1 - a₁) + (N : ℤ)) + 1 ≤ a₀ := by
+    have := Int.self_le_toNat (a₁ - a₀)
+    omega
+  have hD : D ⊓ Fil (-((1 - a₁) + (N : ℤ)) + 1) = D := inf_eq_left.2 (h₀.trans (hFa hJ))
+  have hHJ := hiter (1 - a₁) N
+  rw [hH0] at hHJ
+  simp only [H] at hHJ
+  rw [hD] at hHJ
+  have hU : finrank LL ↥(Ub Fil e ((1 - a₁) + (N : ℤ))) = 0 := by omega
+  rw [Submodule.finrank_eq_zero] at hU
+  have hcU : c ∈ Ub Fil e ((1 - a₁) + (N : ℤ)) := (mem_Ub Fil e _ c).2 fun i _ => hc i
+  rw [hU] at hcU
+  exact (Submodule.mem_bot LL).1 hcU
+
+include hFa in
+
+theorem smulS_sub_cc {M : ℤ} {f : ℤ → E} (hf : LB M f) (hfF : ∀ k, f k ∈ Fil (-k))
+    (g : PowerSeries LL) (j : ℤ) :
+    smulS g f j - PowerSeries.constantCoeff g • f j ∈ Fil (-j + 1) := by
+  obtain ⟨N, hN⟩ : ∃ N : ℕ, j - M < (N + 1 : ℕ) :=
+    ⟨(j - M).toNat, by have := Int.self_le_toNat (j - M); push_cast; omega⟩
+  rw [smulS_eq_sum hf g j (N + 1) hN, Finset.sum_range_succ']
+  simp only [Nat.cast_zero, sub_zero, PowerSeries.coeff_zero_eq_constantCoeff_apply,
+    add_sub_cancel_right]
+  refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ ?_
+  exact hFa (show -j + 1 ≤ -(j - ((i + 1 : ℕ) : ℤ)) by push_cast; omega) (hfF _)
+
+include hFa in
+
+theorem dvd_of_dg (a₁ : ℤ) (h₁ : D ⊓ Fil a₁ = ⊥) (he : ∀ m k, e m k ∈ D ⊓ Fil (-k))
+    (hind : ∀ c : Fin r → LL, (∀ j, ∑ m, c m • e m j ∈ Fil (-j + 1)) → c = 0) :
+    ∀ (k : ℕ) (g : Fin r → PowerSeries LL),
+      (∀ j : ℤ, ∑ m, smulS (g m) (e m) j ∈ Fil ((k : ℤ) - j)) → ∀ m, PowerSeries.X ^ k ∣ g m := by
+  have hLB : ∀ m, LB (1 - a₁) (e m) := by
+    intro m i hi
+    have h := he m i
+    have h' : e m i ∈ D ⊓ Fil a₁ := ⟨(Submodule.mem_inf.1 h).1, hFa (by omega) (Submodule.mem_inf.1 h).2⟩
+    rw [h₁] at h'
+    exact (Submodule.mem_bot LL).1 h'
+  have hF : ∀ m k, e m k ∈ Fil (-k) := fun m k => (Submodule.mem_inf.1 (he m k)).2
+  intro k
+  induction k with
+  | zero => intro g _ m; simp
+  | succ k ih =>
+    intro g hg
+    have hcc : (fun m => PowerSeries.constantCoeff (g m)) = 0 := by
+      apply hind
+      intro j
+      have h1 : ∑ m, smulS (g m) (e m) j ∈ Fil (-j + 1) :=
+        hFa (show -j + 1 ≤ ((k + 1 : ℕ) : ℤ) - j by push_cast; omega) (hg j)
+      have h2 : ∑ m, (smulS (g m) (e m) j - PowerSeries.constantCoeff (g m) • e m j) ∈ Fil (-j + 1) :=
+        Submodule.sum_mem _ fun m _ => smulS_sub_cc hFa (hLB m) (hF m) (g m) j
+      have := Submodule.sub_mem _ h1 h2
+      rwa [← Finset.sum_sub_distrib, Finset.sum_congr rfl fun m _ => sub_sub_cancel _ _] at this
+    have hX : ∀ m, PowerSeries.X ∣ g m := fun m =>
+      (PowerSeries.X_dvd_iff).2 (congrFun hcc m)
+    choose g' hg' using hX
+    have hshift : ∀ m (j : ℤ), smulS (g m) (e m) (j + 1) = smulS (g' m) (e m) j := by
+      intro m j
+      rw [hg' m, smulS_mul (hLB m), show (PowerSeries.X : PowerSeries LL) = PowerSeries.X ^ 1 by
+        rw [pow_one], smulS_X_pow (LB_smulS (hLB m) (g' m)) 1]
+      simp
+    have hg'd := ih g' fun j => by
+      have := hg (j + 1)
+      rw [Finset.sum_congr rfl fun m _ => hshift m j] at this
+      rwa [show ((k + 1 : ℕ) : ℤ) - (j + 1) = (k : ℤ) - j by push_cast; ring] at this
+    intro m
+    rw [hg' m, pow_succ']
+    exact mul_dvd_mul_left _ (hg'd m)
+
+end Cnt
+
+end Formalism.MainNotions.N.Pv.LocalLengthBound.MC
+end
+end
+
+section
 noncomputable section
 open Classical
 
@@ -230,3 +555,5 @@ theorem rank_le (hFr : IsFractionRing O LL) (T : LocLat G Qp LL O) (c : ZMod n) 
 end Loc
 
 end Formalism.MainNotions.N.Pv.LocalLengthBound.MC
+end
+end

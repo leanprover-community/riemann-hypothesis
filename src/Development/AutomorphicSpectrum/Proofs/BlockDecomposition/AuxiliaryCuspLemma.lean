@@ -7,8 +7,16 @@ import Development.AutomorphicSpectrum.PublishedTheorems.PublishedGlobalResults.
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DiscreteSpectrumGLTwoOfCuspidalSpectrum
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LieCentralElementTraceStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceOperatorEigenvalueSumStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralEigenExponentialStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralEigenExponential
 
+section
+open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL MeasureTheory PositivityTheory.S2.Clozel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.central_eigen_exponential : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (φ : Sm E a) (c : ℂ), lie E a (oneL E a) φ = c • φ → ∀ (t : ℝ) (g : GA E a), φ.1 (GlobalTheory.UnitaryBC.splitCentre E a t * g) = Complex.exp (c * t) * φ.1 g := by
+  first | exact @GlobalTheory.CompanionTheory.Clozel.eigen_along_splitCentre | exact GlobalTheory.CompanionTheory.Clozel.eigen_along_splitCentre | (intros; apply GlobalTheory.CompanionTheory.Clozel.eigen_along_splitCentre <;> assumption)
+end
+
+section
 open NumberField GlobalTheory.CuspRep GlobalTheory.CuspRep.CuspidalL2GL MeasureTheory PositivityTheory.S2.Clozel
 
 namespace GlobalTheory.CompanionTheory.Clozel
@@ -37,3 +45,4 @@ theorem exists_twist_isNormalised : ∀ (E : Type) [Field E] [NumberField E] [Is
   simpa using GlobalTheory.T.central_eigen_exponential E a φ 0 hlie t g
 
 end GlobalTheory.CompanionTheory.Clozel
+end

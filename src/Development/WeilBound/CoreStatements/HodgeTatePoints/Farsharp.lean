@@ -1,8 +1,486 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.HodgeTateCokerSharp
-import Development.WeilBound.CoreStatements.HodgeTatePoints.FarsharpA
-import Development.WeilBound.CoreStatements.HodgeTatePoints.FarsharpB
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DerivationDivisibleOfCocomm
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvEqOneOfForallPairing
 
+section
+noncomputable section
+
+open TensorProduct Coalgebra WithConv GlobalTheory.GroupLikeDerivation
+
+namespace PositivityTheory.HtPt.Farsharp
+
+section Norm
+
+variable {C : Type} [NontriviallyNormedField C] [IsUltrametricDist C]
+  {O : Type} [CommRing O] [Algebra O C] (hO : ∀ o : O, ‖algebraMap O C o‖ ≤ 1)
+  {M : Type} [AddCommGroup M] [Module O M]
+
+include hO in
+
+theorem norm_le_of_mem_span (f : M →ₗ[O] C) {s : Set M} {r : ℝ} (hr : 0 ≤ r)
+    (h : ∀ m ∈ s, ‖f m‖ ≤ r) {m : M} (hm : m ∈ Submodule.span O s) : ‖f m‖ ≤ r := by
+  induction hm using Submodule.span_induction with
+  | mem x hx => exact h x hx
+  | zero => simpa using hr
+  | add x y _ _ hx hy =>
+    rw [map_add]; exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le hx hy)
+  | smul o x _ hx =>
+    rw [map_smul, Algebra.smul_def, norm_mul]
+    exact (mul_le_of_le_one_left (norm_nonneg _) (hO o)).trans hx
+
+include hO in
+
+theorem bddAbove_norm [Module.Finite O M] (f : M →ₗ[O] C) :
+    BddAbove (Set.range fun m => ‖f m‖) := by
+  obtain ⟨s, hs⟩ := Module.Finite.fg_top (R := O) (M := M)
+  refine ⟨∑ m ∈ s, ‖f m‖, ?_⟩
+  rintro _ ⟨m, rfl⟩
+  refine norm_le_of_mem_span hO f (s := s) (Finset.sum_nonneg fun _ _ => norm_nonneg _)
+    (fun m hm => Finset.single_le_sum (f := fun m => ‖f m‖) (fun _ _ => norm_nonneg _) hm) ?_
+  rw [hs]; trivial
+
+def supN (f : WithConv (M →ₗ[O] C)) : ℝ := ⨆ m, ‖f.ofConv m‖
+
+include hO in
+
+theorem le_supN [Module.Finite O M] (f : WithConv (M →ₗ[O] C)) (m : M) :
+    ‖f.ofConv m‖ ≤ supN f := le_ciSup (bddAbove_norm hO f.ofConv) m
+
+omit [IsUltrametricDist C] in
+
+theorem supN_le {f : WithConv (M →ₗ[O] C)} {r : ℝ} (h : ∀ m, ‖f.ofConv m‖ ≤ r) :
+    supN f ≤ r := ciSup_le h
+
+omit [IsUltrametricDist C] in
+
+theorem supN_nonneg (f : WithConv (M →ₗ[O] C)) : 0 ≤ supN f :=
+  Real.iSup_nonneg fun _ => norm_nonneg _
+
+omit [IsUltrametricDist C] in
+
+theorem supN_smul (c : C) (f : WithConv (M →ₗ[O] C)) :
+    supN (c • f) = ‖c‖ * supN f := by
+  rw [supN, supN, Real.mul_iSup_of_nonneg (norm_nonneg c)]
+  congr 1
+  ext m
+  rw [← norm_mul]
+  rfl
+
+include hO in
+
+theorem supN_add_le [Module.Finite O M] (f g : WithConv (M →ₗ[O] C)) :
+    supN (f + g) ≤ max (supN f) (supN g) :=
+  supN_le fun m => (IsUltrametricDist.norm_add_le_max (f.ofConv m) (g.ofConv m)).trans
+    (max_le_max (le_supN hO f m) (le_supN hO g m))
+
+include hO in
+
+theorem supN_mul_le [Module.Finite O M] [Coalgebra O M]
+    (f g : WithConv (M →ₗ[O] C)) : supN (f * g) ≤ supN f * supN g := by
+  refine supN_le fun m => ?_
+  have h := (Coalgebra.Repr.arbitrary O m).convMul_apply f g
+  rw [h]
+  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg
+    (mul_nonneg (supN_nonneg _) (supN_nonneg _)) fun i _ => ?_
+  rw [norm_mul]
+  exact mul_le_mul (le_supN hO f _) (le_supN hO g _) (norm_nonneg _) (supN_nonneg _)
+
+theorem supN_le_of_tmul {f : WithConv (M ⊗[O] M →ₗ[O] C)} {r : ℝ}
+    (hr : 0 ≤ r) (h : ∀ a b, ‖f.ofConv (a ⊗ₜ b)‖ ≤ r) : supN f ≤ r := by
+  refine supN_le fun t => ?_
+  induction t with
+  | zero => simpa using hr
+  | tmul a b => exact h a b
+  | add x y hx hy =>
+    rw [map_add]; exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le hx hy)
+
+include hO in
+
+theorem supN_eq_mul [Module.Finite O M] (f g : WithConv (M →ₗ[O] C))
+    (h : WithConv (M ⊗[O] M →ₗ[O] C))
+    (hh : ∀ a b, h.ofConv (a ⊗ₜ b) = f.ofConv a * g.ofConv b) :
+    supN h = supN f * supN g := by
+  apply le_antisymm
+  · refine supN_le_of_tmul (mul_nonneg (supN_nonneg _) (supN_nonneg _)) fun a b => ?_
+    rw [hh, norm_mul]
+    exact mul_le_mul (le_supN hO f _) (le_supN hO g _) (norm_nonneg _) (supN_nonneg _)
+  · rw [supN.eq_1 f, Real.iSup_mul_of_nonneg (supN_nonneg g)]
+    refine ciSup_le fun a => ?_
+    rw [supN.eq_1 g, Real.mul_iSup_of_nonneg (norm_nonneg _)]
+    refine ciSup_le fun b => ?_
+    rw [← norm_mul, ← hh]
+    exact le_supN hO h _
+
+include hO in
+
+theorem exists_supN_pow_le [Module.Finite O M] [Coalgebra O M]
+    [IsCocomm O M] {y : WithConv (M →ₗ[O] C)} (hy : IsIntegral O y) :
+    ∃ K : ℝ, ∀ k : ℕ, supN (y ^ k) ≤ K := by
+  obtain ⟨s, hs⟩ := hy.fg_adjoin_singleton
+  refine ⟨∑ f ∈ s, supN f, fun k => supN_le fun m => ?_⟩
+  have hk : y ^ k ∈ Submodule.span O (s : Set (WithConv (M →ₗ[O] C))) := by
+    rw [hs]
+    exact pow_mem (Algebra.self_mem_adjoin_singleton _ y) k
+  let ev : WithConv (M →ₗ[O] C) →ₗ[O] C :=
+    { toFun := fun f => f.ofConv m
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  exact norm_le_of_mem_span hO ev (Finset.sum_nonneg fun _ _ => supN_nonneg _)
+    (fun f hf => (le_supN hO f m).trans
+      (Finset.single_le_sum (f := fun f => supN f) (fun _ _ => supN_nonneg _) hf)) hk
+
+end Norm
+
+theorem dvd_mul_of_norm (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C]
+    [IsAlgClosed C] [CharZero C] (p : ℕ) [Fact p.Prime] (hp : ‖(p : C)‖ = (p : ℝ)⁻¹)
+    (O : Type) [CommRing O] [Algebra O C] (hinj : Function.Injective (algebraMap O C))
+    (hO : ∀ x : C, ‖x‖ ≤ 1 ↔ x ∈ (algebraMap O C).range)
+    (hcl : ∀ z : C, IsIntegral O z → z ∈ (algebraMap O C).range)
+    (A : Type) [CommRing A] [Bialgebra O A] [Coalgebra.IsCocomm O A]
+    [Module.Finite O A] [Module.Projective O A] (q : O) (hq : q ≠ 0) (D : A →ₗ[O] O)
+    (hD : ∀ a b : A, q ∣ D (a * b) - Coalgebra.counit (R := O) a * D b -
+      Coalgebra.counit (R := O) b * D a)
+    (hu : ∀ u : A, IsGroupLikeElem O u → q ∣ D u)
+    (c : O) (hc : ‖algebraMap O C c‖ ≤ (p : ℝ) ^ (-(1 / ((p : ℝ) - 1)))) (a : A) :
+    q ∣ c * D a := by
+  have hO' : ∀ o : O, ‖algebraMap O C o‖ ≤ 1 := fun o => (hO _).2 ⟨o, rfl⟩
+  have hq' : algebraMap O C q ≠ 0 := fun h => hq (hinj (by rw [h, map_zero]))
+  have hdvd : ∀ x : O, q ∣ x ↔ ‖(algebraMap O C q)⁻¹ * algebraMap O C x‖ ≤ 1 := fun x => by
+    constructor
+    · rintro ⟨z, rfl⟩
+      rw [map_mul, inv_mul_cancel_left₀ hq']
+      exact hO' z
+    · intro h
+      obtain ⟨z, hz⟩ := (hO _).1 h
+      refine ⟨z, hinj ?_⟩
+      rw [map_mul, hz, mul_inv_cancel_left₀ hq']
+  set y : WithConv (A →ₗ[O] C) := (algebraMap O C q)⁻¹ • extendHom O C A (toConv D) with hy
+  have hya : ∀ a, y.ofConv a = (algebraMap O C q)⁻¹ * algebraMap O C (D a) := fun _ => rfl
+  have : IsScalarTower O C (WithConv (A →ₗ[O] C)) := ⟨fun o x f =>
+    WithConv.ext (LinearMap.ext fun a => smul_assoc o x (f.ofConv a))⟩
+  have hint : IsIntegral O y :=
+    GlobalTheory.IntegralOfPointValues.isIntegral_inv_smul_of_closed (B₀ := GlobalTheory.CartierDual O A) hinj hcl
+      (extendHom O C A) (toConv D) q hq fun χ => by
+        obtain ⟨u, h1, h2⟩ := exists_isGroupLikeElem χ
+        rw [← h2]
+        exact hu u h1
+  have key := GlobalTheory.T.norm_smul_le_one_of_primitive_bounded_powers C p hp _ _ supN supN (mulHom O C A)
+    (inlHom O C A) (inrHom O C A) supN_smul supN_smul supN_nonneg
+    supN_nonneg (supN_add_le hO') (supN_mul_le hO')
+    (fun f => supN_le fun t => le_supN hO' f _)
+    (fun f g => supN_eq_mul hO' f g _ fun a b => by rw [inlHom_mul_inrHom, extProd_tmul])
+    y (exists_supN_pow_le hO' hint)
+    (supN_le_of_tmul zero_le_one fun a b => by
+      have h := (hdvd _).1 (hD a b)
+      convert h using 2
+      change y.ofConv (a * b) - (extProd y 1).ofConv (a ⊗ₜ b) - (extProd 1 y).ofConv (a ⊗ₜ b) = _
+      rw [extProd_tmul, extProd_tmul, hya, hya, hya, LinearMap.convOne_apply,
+        LinearMap.convOne_apply]
+      simp only [map_sub, map_mul]
+      ring)
+    (algebraMap O C c) hc
+  rw [hdvd]
+  have h : (algebraMap O C q)⁻¹ * algebraMap O C (c * D a) = (algebraMap O C c • y).ofConv a := by
+    change _ = algebraMap O C c * y.ofConv a
+    rw [hya, map_mul]
+    ring
+  rw [h]
+  exact (le_supN hO' _ a).trans key
+
+def powAbs {C : Type} [Field C] (v : Valuation C NNReal) (s : ℝ) (hs : 0 < s) : AbsoluteValue C ℝ where
+  toFun x := ((v x : NNReal) : ℝ) ^ s
+  map_mul' x y := by
+    rw [map_mul, NNReal.coe_mul, Real.mul_rpow (NNReal.coe_nonneg _) (NNReal.coe_nonneg _)]
+  nonneg' x := Real.rpow_nonneg (NNReal.coe_nonneg _) _
+  eq_zero' x := by
+    rw [Real.rpow_eq_zero (NNReal.coe_nonneg _) hs.ne']
+    simp
+  add_le' x y := by
+    rcases le_max_iff.1 (v.map_add x y) with h | h
+    · exact (Real.rpow_le_rpow (NNReal.coe_nonneg _) (NNReal.coe_le_coe.2 h) hs.le).trans
+        (le_add_of_nonneg_right (Real.rpow_nonneg (NNReal.coe_nonneg _) _))
+    · exact (Real.rpow_le_rpow (NNReal.coe_nonneg _) (NNReal.coe_le_coe.2 h) hs.le).trans
+        (le_add_of_nonneg_left (Real.rpow_nonneg (NNReal.coe_nonneg _) _))
+
+theorem dvd_mul_of_val (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
+    (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] (hv : v.Integers O)
+    (hp : v (p : C) < 1)
+    (A : Type) [CommRing A] [Bialgebra O A] [Coalgebra.IsCocomm O A]
+    [Module.Finite O A] [Module.Projective O A] (q : O) (hq : q ≠ 0) (D : A →ₗ[O] O)
+    (hD : ∀ a b : A, q ∣ D (a * b) - Coalgebra.counit (R := O) a * D b -
+      Coalgebra.counit (R := O) b * D a)
+    (hu : ∀ u : A, IsGroupLikeElem O u → q ∣ D u)
+    (c : O) (hc : v (algebraMap O C c) ^ (p - 1) ≤ v (p : C)) (a : A) :
+    q ∣ c * D a := by
+  have hpp : p.Prime := Fact.out
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hpp.one_lt
+  have hp0 : (0 : ℝ) < ((v (p : C) : NNReal) : ℝ) := by
+    have : (p : C) ≠ 0 := Nat.cast_ne_zero.2 hpp.ne_zero
+    exact NNReal.coe_pos.2 ((Valuation.pos_iff v).2 this)
+  have hlog : Real.log ((v (p : C) : NNReal) : ℝ) < 0 := Real.log_neg hp0 (by exact_mod_cast hp)
+  let s : ℝ := Real.log p / (-Real.log ((v (p : C) : NNReal) : ℝ))
+  have hs : 0 < s := div_pos (Real.log_pos hp1) (neg_pos.2 hlog)
+  letI : NormedField C := (powAbs v s hs).toNormedField
+  have hn : ∀ x : C, ‖x‖ = ((v x : NNReal) : ℝ) ^ s := fun _ => rfl
+  have hpn : ‖(p : C)‖ = (p : ℝ)⁻¹ := by
+    rw [hn, Real.rpow_def_of_pos hp0]
+    have : Real.log ((v (p : C) : NNReal) : ℝ) * s = -Real.log p := by
+      have := hlog.ne
+      simp only [s]
+      field_simp
+    rw [this, Real.exp_neg, Real.exp_log (by linarith)]
+  letI : NontriviallyNormedField C :=
+    { non_trivial := ⟨(p : C)⁻¹, by rw [norm_inv, hpn, inv_inv]; exact hp1⟩ }
+  haveI : IsUltrametricDist C := IsUltrametricDist.isUltrametricDist_of_isNonarchimedean_norm
+    fun x y => by
+      rw [hn, hn, hn]
+      rcases le_max_iff.1 (v.map_add x y) with h | h
+      · exact le_max_of_le_left
+          (Real.rpow_le_rpow (NNReal.coe_nonneg _) (NNReal.coe_le_coe.2 h) hs.le)
+      · exact le_max_of_le_right
+          (Real.rpow_le_rpow (NNReal.coe_nonneg _) (NNReal.coe_le_coe.2 h) hs.le)
+  refine dvd_mul_of_norm C p hpn O hv.hom_inj (fun x => ?_)
+    (fun z hz => hv.exists_of_le_one (hv.isIntegral_iff_v_le_one.1 hz)) A q hq D hD hu c ?_ a
+  · rw [hn]
+    constructor
+    · intro h
+      refine hv.exists_of_le_one ?_
+      by_contra h1
+      exact absurd h (not_le.2 (Real.one_lt_rpow (by exact_mod_cast not_le.1 h1) hs))
+    · rintro ⟨o, rfl⟩
+      exact Real.rpow_le_one (NNReal.coe_nonneg _) (by exact_mod_cast hv.map_le_one o) hs.le
+  · have h1 : ‖algebraMap O C c‖ ^ (p - 1) ≤ (p : ℝ)⁻¹ := by
+      rw [← hpn, ← norm_pow, hn, hn, map_pow]
+      exact Real.rpow_le_rpow (NNReal.coe_nonneg _) (NNReal.coe_le_coe.2 hc) hs.le
+    have h2 : (0 : ℝ) < (p : ℝ) - 1 := by linarith
+    have h3 : (((p - 1 : ℕ) : ℝ)) = (p : ℝ) - 1 := by rw [Nat.cast_sub hpp.one_le, Nat.cast_one]
+    have h4 := Real.rpow_le_rpow (pow_nonneg (norm_nonneg _) _) h1 (one_div_pos.2 h2).le
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (norm_nonneg _), h3, mul_one_div_cancel h2.ne',
+      Real.rpow_one, Real.inv_rpow (by linarith), ← Real.rpow_neg (by linarith)] at h4
+    exact h4
+
+end PositivityTheory.HtPt.Farsharp
+end
+end
+
+section
+noncomputable section
+
+open TensorProduct Coalgebra Bialgebra WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
+
+namespace PositivityTheory.HtPt.Farsharp
+
+theorem mem_of_forall_dvd {O A : Type} [CommRing O] [IsDomain O] [ValuationRing O] [AddCommGroup A]
+    [Module O A] [Module.IsTorsionFree O A] (N : Submodule O A) (hN : N.FG) {q : O} (hq : q ≠ 0)
+    (hqN : ∀ a, q • a ∈ N) (x : A)
+    (h : ∀ φ : A →ₗ[O] O, (∀ y ∈ N, q ∣ φ y) → q ∣ φ x) : x ∈ N := by
+  classical
+  haveI : Module.Finite O N := Module.Finite.iff_fg.mpr hN
+  haveI : Module.Flat O N := Module.Flat.flat_iff_torsion_eq_bot_of_isBezout.2
+    (Submodule.isTorsionFree_iff_torsion_eq_bot.1 inferInstance)
+  haveI : Module.Free O N := Module.free_of_flat_of_isLocalRing
+  let b := Module.Free.chooseBasis O N
+  let ψ : A →ₗ[O] N := LinearMap.codRestrict N (q • LinearMap.id) (fun a => hqN a)
+  have hψ : ∀ a, (ψ a : A) = q • a := fun a => rfl
+  have key : ∀ i, q ∣ b.coord i (ψ x) := by
+    intro i
+    apply h ((b.coord i).comp ψ)
+    intro y hy
+    have hy' : ψ y = q • (⟨y, hy⟩ : N) := Subtype.ext (hψ y)
+    rw [LinearMap.comp_apply, hy', map_smul, smul_eq_mul]
+    exact dvd_mul_right _ _
+  choose d hd using key
+  let z : N := ∑ i, d i • b i
+  have hz : ψ x = q • z := by
+    apply b.ext_elem
+    intro i
+    have := hd i
+    simp only [Module.Basis.coord_apply] at this
+    simp [z, this, Finset.smul_sum, smul_smul, Finsupp.single_apply]
+  have hxz : x = (z : A) := by
+    have h1 : q • x = q • (z : A) := by
+      rw [← hψ, hz]; rfl
+    exact Module.IsTorsionFree.isSMulRegular (isRegular_of_ne_zero hq) h1
+  rw [hxz]
+  exact z.2
+
+variable {p : ℕ} {O : Type} [CommRing O]
+
+theorem dUnit_mulBy {A : Type} [CommRing A] [Bialgebra O A] [IsCocomm O A] (k : ℕ) (a : A) :
+    dUnit O (mulBy O A k a) = (k : O) • dUnit O a := by
+  rw [← cotMap_d]
+  show cotMap ((toConv (BialgHom.id O A) ^ k).ofConv) (dUnit O a) = _
+  rw [cotMap_pow, LinearMap.smul_apply, Nat.cast_smul_eq_nsmul]
+  simp [cotMap_id]
+
+theorem dUnit_of_mem_torsionIdeal {A : Type} [CommRing A] [Bialgebra O A] [IsCocomm O A] (k : ℕ)
+    {t : A} (ht : t ∈ torsionIdeal O A k) : ∃ y, dUnit O t = (k : O) • y := by
+  suffices H : counitAlgHom O A t = 0 ∧ ∃ y, dUnit O t = (k : O) • y from H.2
+  change t ∈ Ideal.span _ at ht
+  induction ht using Submodule.span_induction with
+  | mem x hx =>
+    obtain ⟨a, ha, rfl⟩ := hx
+    refine ⟨?_, dUnit O a, dUnit_mulBy k a⟩
+    have ha' : counitAlgHom O A a = 0 := ha
+    simpa using ha'
+  | zero => exact ⟨by simp, 0, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨hx0, u, hu⟩ := hx
+    obtain ⟨hy0, v, hv⟩ := hy
+    exact ⟨by rw [map_add, hx0, hy0, add_zero], u + v, by simp [hu, hv, smul_add]⟩
+  | smul c x _ hx =>
+    obtain ⟨hx0, u, hu⟩ := hx
+    refine ⟨by rw [smul_eq_mul, map_mul, hx0, mul_zero], counitAlgHom O A c • u, ?_⟩
+    show AugCot.d _ (c * x) = _
+    rw [AugCot.d_mul, hx0, zero_smul, add_zero]
+    change _ • dUnit O x = _
+    rw [hu, smul_comm]
+
+theorem exists_of_cotMap_res_eq_zero (G : PDivGroup p O) (n : ℕ) (y : Cot O (G.A (n + 1)))
+    (hy : cotMap (G.res n) y = 0) : ∃ y', y = (p : O) ^ n • y' := by
+  unfold cotMap at hy
+  obtain ⟨x, hx⟩ := (AugCot.exact_kerMap_map _ _ (G.res_surjective n) y).1 hy
+  have hx' : dUnit O (x : G.A (n + 1)) = y := by
+    rw [← hx]
+    exact (AugCot.kerMap_apply _ _ x).symm
+  have hxmem : (x : G.A (n + 1)) ∈ torsionIdeal O (G.A (n + 1)) (p ^ n) := by
+    rw [← G.ker_res n]
+    exact x.2
+  obtain ⟨y', hy'⟩ := dUnit_of_mem_torsionIdeal (p ^ n) hxmem
+  refine ⟨y', ?_⟩
+  rw [← hx', ← Nat.cast_pow]
+  exact hy'
+
+def lev (G : PDivGroup p O) (n : ℕ) : G.omega →ₗ[O] Cot O (G.A n) :=
+  LinearMap.proj n ∘ₗ G.omegaSub.subtype
+
+theorem lev_apply (G : PDivGroup p O) (n : ℕ) (w : G.omega) : lev G n w = w.1 n := rfl
+
+private theorem prime_pow_smul_cot_eq_zero (G : PDivGroup p O) (n : ℕ) (y : Cot O (G.A n)) :
+    (p : O) ^ n • y = 0 := by
+  obtain ⟨b, rfl⟩ := AugCot.d_surjective _ y
+  obtain ⟨a, rfl⟩ := G.res_surjective n b
+  set r := counitAlgHom O (G.A (n + 1)) a
+  have hmem : mulBy O (G.A (n + 1)) (p ^ n) (a - algebraMap O _ r) ∈ RingHom.ker (G.res n) := by
+    rw [G.ker_res n]
+    apply Ideal.mem_map_of_mem
+    show a - algebraMap O _ r ∈ RingHom.ker (counitAlgHom O (G.A (n + 1)))
+    rw [RingHom.mem_ker, map_sub, AlgHom.commutes]
+    simp [r]
+  have h2 : G.res n (mulBy O _ (p ^ n) a) = algebraMap O _ r := by
+    rw [RingHom.mem_ker] at hmem
+    have := hmem
+    simp only [map_sub, AlgHomClass.commutes, sub_eq_zero] at this
+    exact this
+  rw [← Nat.cast_pow]
+  change ((p ^ n : ℕ) : O) • dUnit O (G.res n a) = 0
+  rw [← dUnit_mulBy, ← map_mulBy, h2]
+  exact AugCot.d_algebraMap _ _
+
+theorem smul_mem_of_levels [IsAdicComplete (Ideal.span {(p : O)}) O] (G : PDivGroup p O)
+    (L : Submodule O G.omega) (hL : L.FG) (κ : O)
+    (hκ : ∀ n (y : Cot O (G.A n)), κ • y ∈ L.map (lev G n))
+    (hp : ∀ n (y : Cot O (G.A n)), (p : O) • y ∈ L.map (lev G n)) (w : G.omega) : κ • w ∈ L := by
+  classical
+  obtain ⟨m, s, hs⟩ := Submodule.fg_iff_exists_fin_generating_family.1 hL
+  let g : (Fin m → O) →ₗ[O] G.omega := Fintype.linearCombination O s
+  have hg : LinearMap.range g = L := by rw [Fintype.range_linearCombination, hs]
+  let Φ : (k : ℕ) → (Fin m → O) →ₗ[O] Cot O (G.A k) := fun k => (lev G k).comp g
+  have compat : ∀ k (v : G.omega), cotMap (G.res k) (lev G (k + 1) v) = lev G k v := by
+    intro k v
+    rw [lev_apply, lev_apply]
+    exact v.2 k
+  have compatΦ : ∀ k c, cotMap (G.res k) (Φ (k + 1) c) = Φ k c := fun k c => compat k (g c)
+  have lift : ∀ k (y : Cot O (G.A k)), y ∈ L.map (lev G k) → ∃ c, Φ k c = y := by
+    intro k y hy
+    obtain ⟨v, hv, rfl⟩ := Submodule.mem_map.1 hy
+    rw [← hg] at hv
+    obtain ⟨c, rfl⟩ := hv
+    exact ⟨c, rfl⟩
+  let W : (k : ℕ) → Cot O (G.A k) := fun k => lev G k w
+  have hWc : ∀ k, cotMap (G.res k) (κ • W (k + 1)) = κ • W k := by
+    intro k
+    rw [map_smul, compat]
+  have step : ∀ n (c : {c : Fin m → O // Φ (n + 1) c = κ • W (n + 1)}),
+      ∃ c' : {c : Fin m → O // Φ (n + 2) c = κ • W (n + 2)},
+        ∃ f : Fin m → O, c'.1 = c.1 + (p : O) ^ n • f := by
+    intro n c
+    obtain ⟨d, hd⟩ := lift (n + 2) _ (hκ (n + 2) (W (n + 2)))
+    have hd1 : Φ (n + 1) d = κ • W (n + 1) := by
+      rw [← compatΦ, hd, hWc]
+    have he : cotMap (G.res (n + 1)) (Φ (n + 2) (d - c.1)) = 0 := by
+      rw [compatΦ, map_sub, hd1, c.2, sub_self]
+    obtain ⟨y', hy'⟩ := exists_of_cotMap_res_eq_zero G (n + 1) _ he
+    obtain ⟨f, hf⟩ := lift (n + 2) _ (hp (n + 2) y')
+    refine ⟨⟨c.1 + (p : O) ^ n • f, ?_⟩, f, rfl⟩
+    have key : Φ (n + 2) (d - c.1) = Φ (n + 2) ((p : O) ^ n • f) := by
+      rw [hy', map_smul, hf, smul_smul, ← pow_succ]
+    have : c.1 + (p : O) ^ n • f = d - (d - c.1) + (p : O) ^ n • f := by abel
+    rw [this, map_add, map_sub, key, hd]
+    abel
+  choose nxt hnxt using step
+  obtain ⟨c0, hc0⟩ := lift 1 _ (hκ 1 (W 1))
+  let seq : (n : ℕ) → {c : Fin m → O // Φ (n + 1) c = κ • W (n + 1)} :=
+    fun n => @Nat.rec (fun n => {c : Fin m → O // Φ (n + 1) c = κ • W (n + 1)}) ⟨c0, hc0⟩
+      (fun k ck => nxt k ck) n
+  have seq_succ : ∀ n, seq (n + 1) = nxt n (seq n) := fun n => rfl
+  have diff : ∀ a b, a ≤ b → ∃ t : Fin m → O, (seq b).1 = (seq a).1 + (p : O) ^ a • t := by
+    intro a b hab
+    induction b, hab using Nat.le_induction with
+    | base => exact ⟨0, by simp⟩
+    | succ b hab ih =>
+      obtain ⟨t, ht⟩ := ih
+      obtain ⟨f, hf⟩ := hnxt b (seq b)
+      refine ⟨t + (p : O) ^ (b - a) • f, ?_⟩
+      rw [seq_succ, hf, ht, smul_add, smul_smul, ← pow_add, Nat.add_sub_cancel' hab, add_assoc]
+  have hpre : ∀ j, ∃ l : O, ∀ n, (seq n).1 j ≡ l [SMOD ((Ideal.span {(p : O)}) ^ n • ⊤ : Submodule O O)] := by
+    intro j
+    apply IsPrecomplete.prec inferInstance
+    intro a b hab
+    obtain ⟨t, ht⟩ := diff a b hab
+    rw [SModEq.sub_mem, ht]
+    simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, sub_add_cancel_left, Ideal.mul_top]
+    exact (Ideal.neg_mem_iff _).2 (Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow (Ideal.mem_span_singleton_self _) a))
+  choose l hl using hpre
+  have close : ∀ N, ∃ t : Fin m → O, l = (seq N).1 + (p : O) ^ N • t := by
+    intro N
+    have : ∀ j, ∃ a : O, a * (p : O) ^ N = l j - (seq N).1 j := by
+      intro j
+      have h1 := (SModEq.sub_mem.1 (hl j N).symm)
+      simp only [smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow] at h1
+      exact Ideal.mem_span_singleton'.1 h1
+    choose t ht using this
+    refine ⟨t, funext fun j => ?_⟩
+    simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+    rw [mul_comm, ht]
+    ring
+  have good : ∀ n, Φ (n + 1) l = κ • W (n + 1) := by
+    intro n
+    obtain ⟨t, ht⟩ := close (n + 1)
+    have h1 : Φ (n + 1) (seq (n + 1)).1 = κ • W (n + 1) := by
+      rw [← compatΦ, (seq (n + 1)).2, hWc]
+    rw [ht, map_add, h1, map_smul, prime_pow_smul_cot_eq_zero, add_zero]
+  have good' : ∀ n, Φ n l = κ • W n := by
+    intro n
+    cases n with
+    | zero => rw [← compatΦ, good 0, hWc]
+    | succ n => exact good n
+  have hgl : g l = κ • w := by
+    apply Subtype.ext
+    funext k
+    have := good' k
+    simp only [Φ, W, LinearMap.comp_apply, lev_apply] at this
+    rw [this]
+    rfl
+  rw [← hg, ← hgl]
+  exact LinearMap.mem_range_self g l
+
+end PositivityTheory.HtPt.Farsharp
+end
+end
+
+section
 noncomputable section
 
 open TensorProduct Coalgebra Bialgebra WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
@@ -113,3 +591,5 @@ theorem hodgeTateCokerSharp : GlobalTheory.CompanionTheory.Ar.HT.HodgeTateCokerS
   | add x y hx hy => rw [map_add]; exact add_mem hx hy
 
 end PositivityTheory.HtPt.Farsharp
+end
+end

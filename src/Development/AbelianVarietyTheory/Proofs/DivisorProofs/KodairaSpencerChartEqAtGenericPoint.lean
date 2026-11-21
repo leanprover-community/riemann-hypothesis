@@ -2,13 +2,617 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsTailMore
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerUniqueAtPolarizedFieldPoint
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KodairaSpencerConditionRestrictBasicOpenOfAffine
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerCompat
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChartAppLEEq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDerivationAway
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TanBasisPull
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrpMulTransport
+import Development.AbelianVarietyTheory.Definitions.Divisors.HasDefect
+import Development.AbelianVarietyTheory.Definitions.Divisors.RigidForFan
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLogDerivationExtensionBasicOpen
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RigidChartDualNumberDeformationStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentBasisAffineOpenRestrictBasicOpen
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PairData
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsModelPresentingDivisor
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PAdicPointPairingCompatible
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConnectingStatement
+import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.PushChart
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueCmOrderActionMatrixOnAffineOpen
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentBasisMovesAlongSemiAbelianTripleMap
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CechKodairaSpencerPullbackSemiAbelianMap
 
+section
+set_option autoImplicit false
+
+open CategoryTheory AlgebraicGeometry NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+
+namespace GlobalTheory.KSAgree.TanLoc
+
+theorem exists_comb_basicOpen : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (X : Scheme.{0}) (t : SAB H X) (U W : X.affineOpens) (hW : W.1 ≤ U.1) (f : Γ(X, U.1)), W.1 = X.basicOpen f → ∀ (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left)), (∀ i, IsTanAtG t (GlobalTheory.LogKS.chart U) (v i)) → (∀ w, IsTanAtG t (GlobalTheory.LogKS.chart U) w → ∃! cf : Fin n → Γ(X, U.1), IsCombAtG t (GlobalTheory.LogKS.chart U) v cf w) → ∀ w, IsTanAtG t (GlobalTheory.LogKS.chart W) w → ∃ cf : Fin n → Γ(X, W.1), IsCombAtG t (GlobalTheory.LogKS.chart W) (fun i => spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v i) cf w :=
+  fun E _ _ _ H X t U W hW f hf n v hv hb w hw =>
+    (GlobalTheory.LogKSDiv.tanBasis_basicOpen E H X t U W hW f hf n v hv hb w hw).exists
+
+end GlobalTheory.KSAgree.TanLoc
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
+open scoped CategoryTheory.Obj Matrix TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
+open GlobalTheory.LogKS (IsField)
+open GlobalTheory.RayEv (Ray)
+open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_basis_extends_to_affine_open : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Scheme.{0}) (t : SAB H X) (U W : X.affineOpens) (hW : W.1 ≤ U.1) (f : Γ(X, U.1)), W.1 = X.basicOpen f → ∀ (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left)), (∀ i, IsTanAtG t (chart U) (v i)) → (∀ w, IsTanAtG t (chart U) w → ∃! cf : Fin n → Γ(X, U.1), IsCombAtG t (chart U) v cf w) → ∀ w, IsTanAtG t (chart W) w → ∃ cf : Fin n → Γ(X, W.1), IsCombAtG t (chart W) (fun i => spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v i) cf w := by
+  atlas_forward_decl GlobalTheory.KSAgree.TanLoc.exists_comb_basicOpen
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open Formalism.BasicNotions Formalism.L2.Pj GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.TrueGeo GlobalTheory.Mean4O GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.TrivFlag GlobalTheory.LineNorm GlobalTheory.HtGen GlobalTheory.RootFrameB
+open Formalism.MainNotions.DIV.Cons (intO)
+open scoped TensorProduct Matrix
+open MonObj
+attribute [local instance] Over.cartesianMonoidalCategory
+attribute [local instance] GlobalTheory.CompHt.algPadicInt GlobalTheory.CompHt.algPadicField GlobalTheory.CompHt.towerPadic GlobalTheory.CompHt.factPadic GlobalTheory.PadicComplexHost.isAdicComplete
+open scoped Classical
+
+namespace GlobalTheory.RootFrameB.EigTie
+
+open GlobalTheory.FlatModel GlobalTheory.FlatModel.RetractionModules GlobalTheory.HTLat GlobalTheory.HTLat.OmegaRank GlobalTheory.CompHt
+
+theorem omega_combLie {O : Type} [CommRing O] {G : Over (Sp O)} [GrpObj G] (f : omega G) :
+    ∀ (m : ℕ) (cf : Fin m → O) (xs : Fin m → LieG G), f.1 (combLie G m cf xs) = ∑ i, cf i * f.1 (xs i)
+  | 0, _, _ => by simp [combLie, omega_lieZero]
+  | m + 1, cf, xs => by
+    rw [combLie, omega_lieAdd, omega_lieScale, omega_combLie f m, Fin.sum_univ_succ]
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {X : Scheme.{0}}
+  {t : SAB H X}
+
+theorem isTanAtG_of_comb {S : Type} [CommRing S] {x : Sp S ⟶ X} {m : ℕ}
+    {v : Fin m → (Sp (DualNumber S) ⟶ t.G.left)} (hv : ∀ i, IsTanAtG t x (v i)) {cf : Fin m → S}
+    {w : Sp (DualNumber S) ⟶ t.G.left} (h : IsCombAtG t x v cf w) : IsTanAtG t x w := by
+  rw [← (GlobalTheory.FrameTangent.isCombAtG_iff t x (fun j => GlobalTheory.FrameTangent.ovT (hv j)) cf w).1 h]
+  refine GlobalTheory.FrameTangent.isTanAtG_of _ ?_
+  rw [GlobalTheory.FrameTangent.combT, GlobalTheory.TangentLinear.smT_prod]
+  refine Finset.prod_eq_one fun j _ => ?_
+  rw [GlobalTheory.FrameTangent.smT_smT, zero_mul]
+  exact GlobalTheory.FrameTangent.smT_zero_ovT (hv j)
+
+variable {p : ℕ} [Fact p.Prime] [StarRing (𝓞 E)] {Q : PtP E p} {yb : Sp 𝓞_ℂ_[p] ⟶ X} {π : Q.G.left ⟶ t.G.left}
+
+theorem eq_combLie (hπ : IsGrpPullback Q.G t.G yb π) {m : ℕ} {u : Fin m → (Sp (DualNumber 𝓞_ℂ_[p]) ⟶ t.G.left)}
+    {v : Fin m → LieG Q.Gt} (hv : ∀ i, ITie Q π (v i) (u i)) {cf : Fin m → 𝓞_ℂ_[p]}
+    {w : Sp (DualNumber 𝓞_ℂ_[p]) ⟶ t.G.left} (hw : IsCombAtG t yb u cf w) {x : LieG Q.Gt} (hx : ITie Q π x w) :
+    x = combLie Q.Gt m cf v := by
+  choose xG hxc hxG using hv
+  obtain ⟨y, hy, hwu⟩ := hw
+  obtain ⟨yG, hyc, hyG⟩ := hx
+  have h1 : ((List.ofFn y).prod).left =
+      ((List.ofFn fun i => ptMap (dualScale (cf i)) ≫ (xG i).1).prod).left ≫ π :=
+    prod_left_comp hπ (T := specO 𝓞_ℂ_[p] (DualNumber 𝓞_ℂ_[p]))
+      (fun i => ptMap (dualScale (cf i)) ≫ (xG i).1) y fun i => by
+      rw [hy i, Over.comp_left, Category.assoc, hxG i]
+      rfl
+  have h2 : yG.1 = (List.ofFn fun i => ptMap (dualScale (cf i)) ≫ (xG i).1).prod :=
+    hom_ext_pb hπ (hyG.trans (hwu.symm.trans h1))
+  have h3 : Corr Q (combLie Q.Gt m cf v).1 yG.1 := by
+    rw [combLie_val, h2]
+    exact corr_prod _ _ fun i => (hxc i).comp (dualScale (cf i))
+  exact Subtype.ext (corr_left_unique hyc h3)
+
+theorem iTie_act (hact : ∀ a, (Q.oG.act a).left ≫ π = π ≫ (t.act.act a).left) {x : LieG Q.Gt}
+    {u : Sp (DualNumber 𝓞_ℂ_[p]) ⟶ t.G.left} (h : ITie Q π x u) (a : 𝓞 E) :
+    ITie Q π (AvDefs.lieAct Q.Gt Q.oGt a x) (u ≫ (t.act.act a).left) := by
+  obtain ⟨xG, hc, hu⟩ := h
+  refine ⟨AvDefs.lieAct Q.G Q.oG a xG, corr_act hc a, ?_⟩
+  change (xG.1 ≫ Q.oG.act a).left ≫ π = _
+  rw [Over.comp_left, Category.assoc, hact, ← Category.assoc, hu]
+
+theorem sum_al₀_actT : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (X : Scheme.{0}) (t : SAB H X) (p : ℕ) [Fact p.Prime] [StarRing (𝓞 E)] (Q : GlobalTheory.FlatModel.PtP E p) (yb : Sp 𝓞_ℂ_[p] ⟶ X) (π : Q.G.left ⟶ t.G.left), IsGrpPullback Q.G t.G yb π → (∀ a, (Q.oG.act a).left ≫ π = π ≫ (t.act.act a).left) → ∀ (ε : 𝓞_ℂ_[p] ≃+* ↥(intO ℂ_[p])), (intO ℂ_[p]).subtype.comp ε.toRingHom = algebraMap 𝓞_ℂ_[p] ℂ_[p] → ∀ (x : Sp ↥(intO ℂ_[p]) ⟶ X), spMap ε.toRingHom ≫ yb = x → ∀ (g : ℕ) (e : Fin g → (Sp (DualNumber ↥(intO ℂ_[p])) ⟶ t.G.left)) (v : Fin g → LieG Q.Gt) (u : Fin g → (Sp (DualNumber 𝓞_ℂ_[p]) ⟶ t.G.left)), (∀ i, GlobalTheory.FlatModel.ITie Q π (v i) (u i)) → (∀ i, spMap (dualMap ε.toRingHom) ≫ u i = e i) → IsTanBasis t x e → ∀ (cf : Fin g → ℂ_[p]) (w : Sp (DualNumber ℂ_[p]) ⟶ t.G.left) (σ : 𝓞 E →+* ℂ_[p]), IsCombAtG t (spMap (intO ℂ_[p]).subtype ≫ x) (fun i => spMap (dualMap (intO ℂ_[p]).subtype) ≫ e i) cf w → GlobalTheory.FlatModel.IsEigG t σ w → ∀ (o : 𝓞 E) (s : Q.T), ∑ i, cf i * algebraMap 𝓞_ℂ_[p] ℂ_[p] ((Q.al₀ (Q.actT (star o) s)).1 (v i)) = σ o * ∑ i, cf i * algebraMap 𝓞_ℂ_[p] ℂ_[p] ((Q.al₀ s).1 (v i)) := by
+  intro E _ _ _ H X t p _ _ Q yb π hπ hact ε hε x hx g e v u hvu hue he cf w σ hw hσ o s
+  have e₁ : spMap (intO ℂ_[p]).subtype ≫ x = spMap (algebraMap 𝓞_ℂ_[p] ℂ_[p]) ≫ yb := by
+    rw [← hx, GlobalTheory.FlatModel.sp_sp, hε]
+  obtain rfl : bcV t ε.toRingHom u = e := funext hue
+  have e₂ : (fun i => spMap (dualMap (intO ℂ_[p]).subtype) ≫ bcV t ε.toRingHom u i) =
+      fun i => spMap (dualMap (algebraMap 𝓞_ℂ_[p] ℂ_[p])) ≫ u i := by
+    have := GlobalTheory.FlatModel.bcV_bcV (t := t) ε.toRingHom (intO ℂ_[p]).subtype u
+    rw [hε] at this
+    exact this
+  rw [e₁, e₂] at hw
+  have hid : ε.symm.toRingHom.comp ε.toRingHom = RingHom.id _ := by
+    ext1 s
+    simp
+  have h1 : spMap (RingHom.id 𝓞_ℂ_[p]) = 𝟙 _ := Spec.map_id _
+  have h2 : dualMap (RingHom.id 𝓞_ℂ_[p]) = RingHom.id _ := by
+    refine RingHom.ext fun z => ?_
+    ext <;> simp [dualMap]
+  have h3 : spMap (dualMap (RingHom.id 𝓞_ℂ_[p])) = 𝟙 _ := by rw [h2]; exact Spec.map_id _
+  have hu : IsTanBasis t yb u := by
+    have h := isTanBasis_bc he ε.symm.toRingHom
+    have h4 : bcV t (RingHom.id 𝓞_ℂ_[p]) u = u := funext fun i => by rw [bcV, h3, Category.id_comp]
+    rwa [bcV_bcV, ← hx, GlobalTheory.FlatModel.sp_sp, hid, h1, Category.id_comp, h4] at h
+  have hU : ∀ w, IsTanAtG t yb w → ∃ a, IsCombAtG t yb u a w := fun w hw => by
+    have h := hu.2 _ (RingHom.id _) w
+    simp only [h1, h3, Category.id_comp] at h
+    exact (h hw).exists
+  choose M hM using fun i => hU _ (GlobalTheory.ActMatrix.isTanAtG_act t yb o (hu.1 i))
+  have hT := (isTanBasis_bc hu (algebraMap 𝓞_ℂ_[p] ℂ_[p])).1
+  haveI := t.act.hom o
+  have c1 := GlobalTheory.TangentLinear.isCombAtG_mulVec _ hT _ (Matrix.of fun j i => algebraMap 𝓞_ℂ_[p] ℂ_[p] (M i j)) cf _
+    (fun i => GlobalTheory.LocM.Cht.FlagBase.isCombAtG_bc t (algebraMap 𝓞_ℂ_[p] ℂ_[p]) (hM i))
+    (GlobalTheory.PushChart.isCombAtG_comp (t.act.act o) _ (fun i => (Category.assoc _ _ _).symm) hw)
+  have c2 := GlobalTheory.DetHT.Bridge.isCombAtG_scale hw (σ o)
+  rw [← hσ o] at c2
+  have key := (hu.2 _ (algebraMap 𝓞_ℂ_[p] ℂ_[p]) _ (isTanAtG_of_comb hT c1)).unique c1 c2
+  have hv : ∀ i, (Q.al₀ (Q.actT (star o) s)).1 (v i) = ∑ j, M i j * (Q.al₀ s).1 (v j) := fun i => by
+    rw [Q.al₀_act, omegaAct_apply, star_star, eq_combLie hπ hvu (hM i) (iTie_act hact (hvu i) o), omega_combLie]
+  simp only [hv, map_sum, map_mul, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  have k := congrFun key j
+  simp only [Matrix.mulVec, dotProduct, Matrix.of_apply] at k
+  rw [← _root_.mul_assoc, ← k, Finset.sum_mul]
+  exact Finset.sum_congr rfl fun i _ => by ring
+
+end GlobalTheory.RootFrameB.EigTie
+
+end
+end
+
+section
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
+open scoped CategoryTheory.Obj Matrix TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
+open GlobalTheory.LogKS (IsField)
+open GlobalTheory.RayEv (Ray)
+open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.KSAgree.TanLocUnique
+
+theorem comb_unique_basicOpen : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Scheme.{0}) (t : SAB H X) (U W : X.affineOpens) (hW : W.1 ≤ U.1) (f : Γ(X, U.1)), W.1 = X.basicOpen f → ∀ (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left)), (∀ i, IsTanAtG t (chart U) (v i)) → (∀ w, IsTanAtG t (chart U) w → ∃! cf : Fin n → Γ(X, U.1), IsCombAtG t (chart U) v cf w) → ∀ (cf cf' : Fin n → Γ(X, W.1)) (w : Sp (DualNumber Γ(X, W.1)) ⟶ t.G.left), IsCombAtG t (chart W) (fun i => spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v i) cf w → IsCombAtG t (chart W) (fun i => spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v i) cf' w → cf = cf' := by
+  intro E _ _ _ H X t U W hW f hf n v hv hb cf cf' w h h'
+  have ht : ∀ i, IsTanAtG t (chart W)
+      (spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v i) := fun i => by
+    have := (GlobalTheory.LocM.FrameBase.tanBasis_baseChange t (X.presheaf.map (homOfLE hW).op).hom _ n v hv hb).1 i
+    rwa [GlobalTheory.LogKSDiv.spMap_res_chart U W hW] at this
+  have hw : IsTanAtG t (chart W) w := GlobalTheory.RootFrameB.EigTie.isTanAtG_of_comb ht h
+  exact (GlobalTheory.LogKSDiv.tanBasis_basicOpen E H X t U W hW f hf n v hv hb w hw).unique h h'
+
+end GlobalTheory.KSAgree.TanLocUnique
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
+open scoped CategoryTheory.Obj Matrix TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
+open GlobalTheory.LogKS (IsField)
+open GlobalTheory.RayEv (Ray)
+open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangent_coefficients_unique_affine_open : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Scheme.{0}) (t : SAB H X) (U W : X.affineOpens) (hW : W.1 ≤ U.1) (f : Γ(X, U.1)), W.1 = X.basicOpen f → ∀ (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left)), (∀ i, IsTanAtG t (chart U) (v i)) → (∀ w, IsTanAtG t (chart U) w → ∃! cf : Fin n → Γ(X, U.1), IsCombAtG t (chart U) v cf w) → ∀ (cf cf' : Fin n → Γ(X, W.1)) (w : Sp (DualNumber Γ(X, W.1)) ⟶ t.G.left), IsCombAtG t (chart W) (fun i => spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v i) cf w → IsCombAtG t (chart W) (fun i => spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v i) cf' w → cf = cf' := by
+  atlas_forward_decl GlobalTheory.KSAgree.TanLocUnique.comb_unique_basicOpen
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
+open scoped CategoryTheory.Obj Matrix TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
+open GlobalTheory.LogKS (IsField)
+open GlobalTheory.RayEv (Ray)
+open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+noncomputable section
+namespace GlobalTheory.KSAgree
+
+theorem res_res {X : Scheme.{0}} {U V W : X.Opens} (h₁ : V ≤ U) (h₂ : W ≤ V) (h₃ : W ≤ U) (x : Γ(X, U)) :
+    (X.presheaf.map (homOfLE h₂).op).hom ((X.presheaf.map (homOfLE h₁).op).hom x) =
+      (X.presheaf.map (homOfLE h₃).op).hom x := by
+  show (X.presheaf.map (homOfLE h₁).op ≫ X.presheaf.map (homOfLE h₂).op).hom x = _
+  rw [← Functor.map_comp]
+  rfl
+
+theorem res_comp {X : Scheme.{0}} {U V W : X.Opens} (h₁ : V ≤ U) (h₂ : W ≤ V) (h₃ : W ≤ U) :
+    (X.presheaf.map (homOfLE h₂).op).hom.comp (X.presheaf.map (homOfLE h₁).op).hom =
+      (X.presheaf.map (homOfLE h₃).op).hom :=
+  RingHom.ext (res_res h₁ h₂ h₃)
+
+theorem der_compat {X : Scheme.{0}} (U : X.affineOpens) (f : Γ(X, U.1)) (P : X.Opens)
+    (hP : P ≤ X.basicOpen f) (hPU : P ≤ U.1) (D : Derivation ℤ Γ(X, U.1) Γ(X, U.1))
+    (DW : Derivation ℤ Γ(X, X.basicOpen f) Γ(X, X.basicOpen f)) (DP : Derivation ℤ Γ(X, P) Γ(X, P))
+    (hW : ∀ r, DW ((X.presheaf.map (homOfLE (X.basicOpen_le f)).op).hom r) =
+      (X.presheaf.map (homOfLE (X.basicOpen_le f)).op).hom (D r))
+    (hD : ∀ r, DP ((X.presheaf.map (homOfLE hPU).op).hom r) = (X.presheaf.map (homOfLE hPU).op).hom (D r)) :
+    ∀ r, DP ((X.presheaf.map (homOfLE hP).op).hom r) = (X.presheaf.map (homOfLE hP).op).hom (DW r) := by
+  intro r
+  obtain ⟨u, r', hu, hb⟩ := GlobalTheory.LogKSLoc.exists_frac U (X.affineBasicOpen f) (X.basicOpen_le f) f rfl r
+  have key : ∀ x : Γ(X, U.1), DP ((X.presheaf.map (homOfLE hP).op).hom
+      ((X.presheaf.map (homOfLE (X.basicOpen_le f)).op).hom x)) =
+      (X.presheaf.map (homOfLE hP).op).hom (DW ((X.presheaf.map (homOfLE (X.basicOpen_le f)).op).hom x)) := by
+    intro x
+    rw [res_res _ _ hPU, hD, hW, res_res _ _ hPU]
+  exact GlobalTheory.LogKSLoc.leibniz_frac _ DP (fun x y => by rw [DP.leibniz, smul_eq_mul, smul_eq_mul]) DW hu hb
+    (key u) (key r')
+
+theorem dual_alg {S S' : Type} [CommRing S] [CommRing S'] (r : S →+* S') :
+    (dualMap r).comp (algebraMap S (DualNumber S)) = (algebraMap S' (DualNumber S')).comp r := by
+  ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl] <;> rfl
+
+theorem fst_dual {S S' : Type} [CommRing S] [CommRing S'] (r : S →+* S') :
+    (TrivSqZeroExt.fstHom S' S' S').toRingHom.comp (dualMap r) = r.comp (TrivSqZeroExt.fstHom S S S).toRingHom := by
+  ext a <;> (try simp [dualMap]) <;> rfl
+
+theorem dual_eps {S S' : Type} [CommRing S] [CommRing S'] (r : S →+* S') (c : S) :
+    (dualMap r).comp (epsMul c) = (epsMul (r c)).comp (dualMap r) := by
+  ext a <;> simp [dualMap, epsMul, TrivSqZeroExt.algebraMap_eq_inl] <;> rfl
+
+section Gen
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Scheme.{0}} (t : SAB H X)
+
+theorem eps_over {S S' : Type} [CommRing S] [CommRing S'] (r : S →+* S') {x : Sp S ⟶ X} {x' : Sp S' ⟶ X}
+    (hx : spMap r ≫ x = x') :
+    spMap (dualMap r) ≫ spMap (algebraMap S (DualNumber S)) ≫ x = spMap (algebraMap S' (DualNumber S')) ≫ x' := by
+  rw [← hx, ← Category.assoc, ← Category.assoc, GlobalTheory.LogKSLoc.spMap_comp', GlobalTheory.LogKSLoc.spMap_comp', dual_alg]
+
+def epsHom {S S' : Type} [CommRing S] [CommRing S'] (r : S →+* S') {x : Sp S ⟶ X} {x' : Sp S' ⟶ X}
+    (hx : spMap r ≫ x = x') : tEpsG x' ⟶ tEpsG x :=
+  Over.homMk (spMap (dualMap r)) (eps_over r hx)
+
+theorem tan_map {S S' : Type} [CommRing S] [CommRing S'] (r : S →+* S') {x : Sp S ⟶ X} {x' : Sp S' ⟶ X}
+    (hx : spMap r ≫ x = x') {v : Sp (DualNumber S) ⟶ t.G.left} (hv : IsTanAtG t x v) :
+    IsTanAtG t x' (spMap (dualMap r) ≫ v) := by
+  refine ⟨?_, ?_⟩
+  · rw [Category.assoc, hv.1, eps_over r hx]
+  · have h : spMap (TrivSqZeroExt.fstHom S' S' S').toRingHom ≫ spMap (dualMap r) =
+        spMap r ≫ spMap (TrivSqZeroExt.fstHom S S S).toRingHom := by
+      rw [GlobalTheory.LogKSLoc.spMap_comp', GlobalTheory.LogKSLoc.spMap_comp', fst_dual]
+    rw [← Category.assoc, h, Category.assoc, hv.2]
+    let k : Over.mk x' ⟶ Over.mk x := Over.homMk (spMap r) hx
+    exact congrArg CommaMorphism.left (comp_one k (M := t.G))
+
+theorem comb_map {S S' : Type} [CommRing S] [CommRing S'] (r : S →+* S') {x : Sp S ⟶ X} {x' : Sp S' ⟶ X}
+    (hx : spMap r ≫ x = x') {n : ℕ} {v : Fin n → (Sp (DualNumber S) ⟶ t.G.left)} {cf : Fin n → S}
+    {w : Sp (DualNumber S) ⟶ t.G.left} (h : IsCombAtG t x v cf w) :
+    IsCombAtG t x' (fun i => spMap (dualMap r) ≫ v i) (fun i => r (cf i)) (spMap (dualMap r) ≫ w) := by
+  obtain ⟨u, hu, hw⟩ := h
+  let φ : (tEpsG x ⟶ t.G) →* (tEpsG x' ⟶ t.G) :=
+    { toFun := fun a => epsHom r hx ≫ a
+      map_one' := comp_one _
+      map_mul' := fun a b => comp_mul _ _ _ }
+  refine ⟨fun i => φ (u i), fun i => ?_, ?_⟩
+  · show spMap (dualMap r) ≫ (u i).left = _
+    rw [hu, ← Category.assoc, GlobalTheory.LogKSLoc.spMap_comp', dual_eps, ← GlobalTheory.LogKSLoc.spMap_comp', Category.assoc]
+  · have e : (List.ofFn fun i => φ (u i)).prod = φ (List.ofFn u).prod := by
+      rw [map_list_prod, List.map_ofFn]
+      rfl
+    rw [e, ← hw]
+    rfl
+end Gen
+
+theorem tan_res : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Scheme.{0}) (t : SAB H X) (U W : X.affineOpens) (hW : W.1 ≤ U.1) (v : Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left), IsTanAtG t (chart U) v → IsTanAtG t (chart W) (spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v) :=
+  fun _ _ _ _ _ _ t U W hW _ hv => tan_map t _ (GlobalTheory.LogKSLoc.spMap_res_chart U W hW) hv
+
+theorem comb_res : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Scheme.{0}) (t : SAB H X) (U W : X.affineOpens) (hW : W.1 ≤ U.1) (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left)) (cf : Fin n → Γ(X, U.1)) (w : Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left), IsCombAtG t (chart U) v cf w → IsCombAtG t (chart W) (fun i => spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v i) (fun i => (X.presheaf.map (homOfLE hW).op).hom (cf i)) (spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ w) :=
+  fun _ _ _ _ _ _ t U W hW _ _ _ _ h => comb_map t _ (GlobalTheory.LogKSLoc.spMap_res_chart U W hW) h
+
+theorem agree : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), 1 ≤ Dw.p + Dw.q → SmoothOfRelativeDimension Dw.dim (genStr Y) → ReciprocityTheory.AnForm.R.FinalTheorems.Snc (genBdIdeal Y) → (∀ x ∈ genBd Y, IsClosed ({x} : Set (gen Y)) → HasRigidChart Y x) → ∀ (U : Y.X.affineOpens) (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(Y.X, U.1)) ⟶ Y.t.G.left)) (A : 𝓞 E → Matrix (Fin n) (Fin n) Γ(Y.X, U.1)), (∀ i, IsTanAtG Y.t (chart U) (v i)) → (∀ w, IsTanAtG Y.t (chart U) w → ∃! cf : Fin n → Γ(Y.X, U.1), IsCombAtG Y.t (chart U) v cf w) → (∀ a i, IsCombAtG Y.t (chart U) v (A a i) (v i ≫ (Y.t.act.act a).left)) → ∀ D : logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U, ∀ (f g : Γ(Y.X, U.1)) (DWf : Derivation ℤ Γ(Y.X, (Y.X.affineBasicOpen f).1) Γ(Y.X, (Y.X.affineBasicOpen f).1)) (DWg : Derivation ℤ Γ(Y.X, (Y.X.affineBasicOpen g).1) Γ(Y.X, (Y.X.affineBasicOpen g).1)), (∀ r, DWf ((Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le f)).op).hom r) = (Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le f)).op).hom (D.1 r)) → (∀ r, DWg ((Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le g)).op).hom r) = (Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le g)).op).hom (D.1 r)) → ∀ (Θf : Matrix (Fin n) (Fin n) Γ(Y.X, (Y.X.affineBasicOpen f).1)) (Θg : Matrix (Fin n) (Fin n) Γ(Y.X, (Y.X.affineBasicOpen g).1)), IsKS Y.t (interior Y) (Y.X.affineBasicOpen f) (fun i => spMap (dualMap (Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le f)).op).hom) ≫ v i) DWf Θf → IsKS Y.t (interior Y) (Y.X.affineBasicOpen g) (fun i => spMap (dualMap (Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le g)).op).hom) ≫ v i) DWg Θg → (Y.X.presheaf.map (homOfLE (inf_le_left : Y.X.basicOpen f ⊓ Y.X.basicOpen g ≤ Y.X.basicOpen f)).op).hom.mapMatrix Θf = (Y.X.presheaf.map (homOfLE (inf_le_right : Y.X.basicOpen f ⊓ Y.X.basicOpen g ≤ Y.X.basicOpen g)).op).hom.mapMatrix Θg := by
+  intro E _ _ _ H Dw l Xo c Y h1 h2 h3 h4 U n v A hv hb hA D f g DWf DWg hDf hDg Θf Θg hKf hKg
+  let P : Y.X.affineOpens := ⟨Y.X.basicOpen f ⊓ Y.X.basicOpen g, by
+    rw [← Scheme.basicOpen_mul]; exact (Y.X.affineBasicOpen (f * g)).2⟩
+  have hPU : P.1 ≤ U.1 := inf_le_left.trans (Y.X.basicOpen_le f)
+  have hPf : P.1 ≤ (Y.X.affineBasicOpen f).1 := inf_le_left
+  have hPg : P.1 ≤ (Y.X.affineBasicOpen g).1 := inf_le_right
+  have hPf' : P.1 = Y.X.basicOpen ((Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le f)).op).hom g) :=
+    (Scheme.basicOpen_res _ _ _).symm
+  have hPg' : P.1 = Y.X.basicOpen ((Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le g)).op).hom f) := by
+    rw [Scheme.basicOpen_res]; exact inf_comm _ _
+  have hPUf : P.1 = Y.X.basicOpen (f * g) := (Scheme.basicOpen_mul _ _ _).symm
+  obtain ⟨DP, hDPmem, hDP⟩ := GlobalTheory.LogDerLoc.exists_logDer_basicOpen Y.X _ Y.s _ U P hPU (f * g) hPUf D.1 D.2
+  have cf := der_compat U f P.1 hPf hPU D.1 DWf DP hDf hDP
+  have cg := der_compat U g P.1 hPg hPU D.1 DWg DP hDg hDP
+  have kf := GlobalTheory.LogKSLoc.isKS_basicOpen E H Y.X Y.t (interior Y) _ P hPf _ hPf' n _ DWf DP Θf cf hKf
+  have kg := GlobalTheory.LogKSLoc.isKS_basicOpen E H Y.X Y.t (interior Y) _ P hPg _ hPg' n _ DWg DP Θg cg hKg
+  have fr : ∀ {V : Y.X.Opens} (hV : V ≤ U.1) (hPV : P.1 ≤ V) (i : Fin n),
+      spMap (dualMap (Y.X.presheaf.map (homOfLE hPV).op).hom) ≫
+        spMap (dualMap (Y.X.presheaf.map (homOfLE hV).op).hom) ≫ v i =
+      spMap (dualMap (Y.X.presheaf.map (homOfLE hPU).op).hom) ≫ v i := by
+    intro V hV hPV i
+    rw [← Category.assoc, GlobalTheory.LogKSLoc.spMap_comp', GlobalTheory.LogKSLoc.dualMap_comp', res_comp]
+  rw [show (fun i => spMap (dualMap (Y.X.presheaf.map (homOfLE hPf).op).hom) ≫
+      spMap (dualMap (Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le f)).op).hom) ≫ v i) =
+      fun i => spMap (dualMap (Y.X.presheaf.map (homOfLE hPU).op).hom) ≫ v i from funext (fr _ hPf)] at kf
+  rw [show (fun i => spMap (dualMap (Y.X.presheaf.map (homOfLE hPg).op).hom) ≫
+      spMap (dualMap (Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le g)).op).hom) ≫ v i) =
+      fun i => spMap (dualMap (Y.X.presheaf.map (homOfLE hPU).op).hom) ≫ v i from funext (fr _ hPg)] at kg
+  exact GlobalTheory.T.rigid_chart_dual_number_deformation E H Dw l Xo c Y h1 h2 h3 h4 P n _ (fun a => (Y.X.presheaf.map (homOfLE hPU).op).hom.mapMatrix (A a))
+    (fun i => tan_res E H Y.X Y.t U P hPU _ (hv i))
+    (fun w hw => by
+      obtain ⟨cf, hcf⟩ := GlobalTheory.T.tangent_basis_extends_to_affine_open E H Y.X Y.t U P hPU (f * g) hPUf n v hv hb w hw
+      exact ⟨cf, hcf, fun cf' h => GlobalTheory.T.tangent_coefficients_unique_affine_open E H Y.X Y.t U P hPU (f * g) hPUf n v hv hb cf' cf w h hcf⟩)
+    (fun a i => by
+      have := comb_res E H Y.X Y.t U P hPU n v (A a i) _ (hA a i)
+      rw [Category.assoc]; exact this)
+    ⟨DP, hDPmem⟩ _ _ kf kg
+
+end GlobalTheory.KSAgree
+end
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
+open scoped CategoryTheory.Obj Matrix TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
+open GlobalTheory.LogKS (IsField)
+open GlobalTheory.RayEv (Ray)
+open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.LocReg
+
+theorem chart_appLE_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)) (U : Y.X.affineOpens) (k : Type) [Field k] (m d : ℕ) (ξ : Sp (ChartRing k m d) ⟶ gen Y) (hx : ξ (closedPoint _) ∈ genι Y ⁻¹ᵁ U.1), ∃ hg : ⊤ ≤ (ξ ≫ genι Y) ⁻¹ᵁ U.1, ((ξ ≫ genι Y).appLE U.1 ⊤ hg).hom = (Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv.hom.comp (GlobalTheory.LocReg.chartHom Y U ξ hx) := by
+  intro E _ _ _ H Dw l Xo c Y U k _ m d ξ hx
+  have hx' : (ξ ≫ genι Y) (closedPoint (CommRingCat.of (ChartRing k m d))) ∈ U.1 := hx
+  refine ⟨(Scheme.preimage_eq_top_of_closedPoint_mem (ξ ≫ genι Y) hx').ge, ?_⟩
+  have key : (gen Y).presheaf.germ (genι Y ⁻¹ᵁ U.1) _ hx ≫ Scheme.stalkClosedPointTo ξ =
+      ξ.appLE (genι Y ⁻¹ᵁ U.1) ⊤ (Scheme.preimage_eq_top_of_closedPoint_mem ξ hx).ge ≫
+        (Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).hom := by
+    rw [Scheme.germ_stalkClosedPointTo]
+    simp [Iso.trans_hom, Scheme.Hom.app_eq_appLE, Scheme.Hom.appLE_map_assoc]
+  have e : (ξ ≫ genι Y).appLE U.1 ⊤ (Scheme.preimage_eq_top_of_closedPoint_mem (ξ ≫ genι Y) hx').ge =
+      (genι Y).app U.1 ≫ (gen Y).presheaf.germ (genι Y ⁻¹ᵁ U.1) _ hx ≫ Scheme.stalkClosedPointTo ξ ≫
+        (Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv := by
+    rw [reassoc_of% key, Iso.hom_inv_id, Category.comp_id, Scheme.Hom.comp_appLE]
+  rw [e]
+  rfl
+
+end GlobalTheory.LocReg
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
+open scoped CategoryTheory.Obj Matrix TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
+open GlobalTheory.LogKS (IsField)
+open GlobalTheory.RayEv (Ray)
+open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.LocReg
+
+theorem exists_derivation_away {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) (f : A)
+    (hloc : letI := φ.toAlgebra; IsLocalization.Away f B) (d : A → A)
+    (hadd : ∀ x y, d (x + y) = d x + d y) (hmul : ∀ x y, d (x * y) = x * d y + y * d x) :
+    ∃ D : Derivation ℤ B B, ∀ a, D (φ a) = φ (d a) := by
+  letI := φ.toAlgebra
+  have h0 : d 0 = 0 := by
+    have e := hadd 0 0
+    rw [add_zero] at e
+    linear_combination -e
+  have h1 : d 1 = 0 := by
+    have e := hmul 1 1
+    rw [_root_.mul_one, _root_.one_mul] at e
+    linear_combination -e
+  let ψ : A →+* TrivSqZeroExt B B :=
+    { toFun := fun a => TrivSqZeroExt.inl (φ a) + TrivSqZeroExt.inr (φ (d a))
+      map_one' := by ext <;> simp [h1]
+      map_mul' := fun x y => by
+        ext
+        · simp
+        · simp [hmul]
+          ring
+      map_zero' := by ext <;> simp [h0]
+      map_add' := fun x y => by ext <;> simp [hadd] }
+  have hu : IsUnit (ψ f) := TrivSqZeroExt.isUnit_iff_isUnit_fst.2 (by
+    simpa [ψ, RingHom.algebraMap_toAlgebra] using IsLocalization.Away.algebraMap_isUnit (S := B) f)
+  let Λ : B →+* TrivSqZeroExt B B := IsLocalization.Away.lift f hu
+  have hΛ : ∀ a, Λ (φ a) = ψ a := fun a => IsLocalization.lift_eq (M := Submonoid.powers f) (S := B) _ a
+  have hfst : ∀ x, (Λ x).fst = x := by
+    have : (TrivSqZeroExt.fstHom ℤ B B).toRingHom.comp Λ = RingHom.id B := by
+      refine IsLocalization.ringHom_ext (Submonoid.powers f) (RingHom.ext fun r => ?_)
+      simp [RingHom.algebraMap_toAlgebra, hΛ, ψ]
+    intro x
+    exact congr($this x)
+  let L : B →+ B :=
+    { toFun := fun x => (Λ x).snd
+      map_zero' := by simp
+      map_add' := fun x y => by simp }
+  refine ⟨Derivation.mk' L.toIntLinearMap (fun x y => ?_), fun a => ?_⟩
+  · show (Λ (x * y)).snd = x • (Λ y).snd + y • (Λ x).snd
+    rw [map_mul, TrivSqZeroExt.snd_mul, hfst, hfst]
+    simp [mul_comm]
+  · show (Λ (φ a)).snd = φ (d a)
+    rw [hΛ]
+    simp [ψ]
+
+theorem deriv_ext_basicOpen : ∀ (X : Scheme.{0}) (U W : X.affineOpens) (hWU : W.1 ≤ U.1) (D : Derivation ℤ Γ(X, U.1) Γ(X, U.1)) (DW : Derivation ℤ Γ(X, W.1) Γ(X, W.1)), (∀ r, DW ((X.presheaf.map (homOfLE hWU).op).hom r) = (X.presheaf.map (homOfLE hWU).op).hom (D r)) → ∀ (h : Γ(X, U.1)), X.basicOpen h ≤ W.1 → ∀ (R : Type) [CommRing R] [Algebra ℤ R] (g : Sp R ⟶ X) (hg : ⊤ ≤ g ⁻¹ᵁ U.1) (D' : Derivation ℤ R R), (∀ r, D' ((Scheme.ΓSpecIso (CommRingCat.of R)).hom.hom ((g.appLE U.1 ⊤ hg).hom r)) = (Scheme.ΓSpecIso (CommRingCat.of R)).hom.hom ((g.appLE U.1 ⊤ hg).hom (D r))) → ∃ (hUW : ((Sp R).affineBasicOpen (U := ⟨⊤, isAffineOpen_top _⟩) ((g.appLE U.1 ⊤ hg).hom h)).1 ≤ g ⁻¹ᵁ W.1) (D'' : Derivation ℤ Γ(Sp R, ((Sp R).affineBasicOpen (U := ⟨⊤, isAffineOpen_top _⟩) ((g.appLE U.1 ⊤ hg).hom h)).1) Γ(Sp R, ((Sp R).affineBasicOpen (U := ⟨⊤, isAffineOpen_top _⟩) ((g.appLE U.1 ⊤ hg).hom h)).1)), (∀ r, D'' (((Sp R).presheaf.map (homOfLE (le_top : ((Sp R).affineBasicOpen (U := ⟨⊤, isAffineOpen_top _⟩) ((g.appLE U.1 ⊤ hg).hom h)).1 ≤ ⊤)).op).hom r) = ((Sp R).presheaf.map (homOfLE (le_top : ((Sp R).affineBasicOpen (U := ⟨⊤, isAffineOpen_top _⟩) ((g.appLE U.1 ⊤ hg).hom h)).1 ≤ ⊤)).op).hom ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom (D' ((Scheme.ΓSpecIso (CommRingCat.of R)).hom.hom r)))) ∧ (∀ θ, D'' ((g.appLE W.1 _ hUW).hom θ) = (g.appLE W.1 _ hUW).hom (DW θ)) := by
+
+  intro X U W hWU D DW hDW h hhW R _ _ g hg D' hD'
+  set e := Scheme.ΓSpecIso (CommRingCat.of R) with he
+  set f := (g.appLE U.1 ⊤ hg).hom h with hf
+  have hUW : ((Sp R).affineBasicOpen (U := ⟨⊤, isAffineOpen_top _⟩) f).1 ≤ g ⁻¹ᵁ W.1 := by
+    show (Sp R).basicOpen f ≤ _
+    rw [hf, Scheme.Hom.appLE, CommRingCat.comp_apply, Scheme.basicOpen_res, ← Scheme.preimage_basicOpen]
+    exact fun x hx => hhW hx.2
+  refine ⟨hUW, ?_⟩
+  set U' := ((Sp R).affineBasicOpen (U := ⟨⊤, isAffineOpen_top _⟩) f) with hU'
+  let φ := ((Sp R).presheaf.map (homOfLE (le_top : U'.1 ≤ ⊤)).op).hom
+  have hloc : letI := φ.toAlgebra; IsLocalization.Away f Γ(Sp R, U'.1) :=
+    (isAffineOpen_top (Sp R)).isLocalization_basicOpen f
+  obtain ⟨D'', hD''⟩ := exists_derivation_away φ f hloc (fun r => e.inv.hom (D' (e.hom.hom r)))
+    (fun x y => by simp only [map_add]) (fun x y => by
+      simp only [map_mul, Derivation.leibniz, smul_eq_mul, map_add]
+      simp)
+  refine ⟨D'', hD'', ?_⟩
+
+  set resUW := (X.presheaf.map (homOfLE hWU).op).hom with hresUW
+  set ψW := (g.appLE W.1 U'.1 hUW).hom with hψW
+  have hUU : U'.1 ≤ g ⁻¹ᵁ U.1 := hUW.trans (fun x hx => hWU hx)
+  set ψU := (g.appLE U.1 U'.1 hUU).hom with hψU
+  have hψ : ∀ y, ψW (resUW y) = ψU y := fun y => by
+    rw [hψW, hresUW, ← CommRingCat.comp_apply, Scheme.Hom.map_appLE]
+  have hψU' : ∀ y, ψU y = φ ((g.appLE U.1 ⊤ hg).hom y) := fun y => by
+    rw [hψU, ← CommRingCat.comp_apply, Scheme.Hom.appLE_map]
+  have hDU : ∀ y, D'' (ψU y) = ψU (D y) := fun y => by
+    rw [hψU', hD'', hψU', hD']
+    simp
+  have hres : ∀ y, D'' (ψW (resUW y)) = ψW (DW (resUW y)) := fun y => by
+    rw [hψ, hDU, hDW, hψ]
+  have hunit : IsUnit (ψU h) := by
+    rw [hψU']
+    letI := φ.toAlgebra
+    exact IsLocalization.Away.algebraMap_isUnit (S := Γ(Sp R, U'.1)) f
+  have key : ∀ θ : Γ(X, W.1), ∃ (a : Γ(X, U.1)) (M : ℕ), resUW (h ^ M) * θ = resUW a := by
+    intro θ
+    set V := X.basicOpen (resUW h) with hVdef
+    have hV : V = X.basicOpen h := by
+      rw [hVdef, hresUW, Scheme.basicOpen_res]
+      exact inf_eq_right.2 hhW
+    have hVW : V ≤ W.1 := X.basicOpen_le _
+    have hVU : V ≤ U.1 := hVW.trans hWU
+    let resUV := (X.presheaf.map (homOfLE hVU).op).hom
+    let resWV := (X.presheaf.map (homOfLE hVW).op).hom
+    have hcomp : ∀ y, resWV (resUW y) = resUV y := fun y => by
+      rw [hresUW, ← CommRingCat.comp_apply, ← Functor.map_comp]
+      rfl
+    have hlocU : letI := resUV.toAlgebra; IsLocalization.Away h Γ(X, V) :=
+      U.2.isLocalization_of_eq_basicOpen h (homOfLE hVU) hV
+    have hlocW : letI := resWV.toAlgebra; IsLocalization.Away (resUW h) Γ(X, V) :=
+      W.2.isLocalization_basicOpen (resUW h)
+    obtain ⟨⟨a, _, N, rfl⟩, hN⟩ := (letI := resUV.toAlgebra; IsLocalization.surj (Submonoid.powers h) (resWV θ))
+    simp only [RingHom.algebraMap_toAlgebra] at hN
+    rw [← hcomp, ← hcomp, ← map_mul] at hN
+    letI := resWV.toAlgebra
+    obtain ⟨⟨c, k, rfl⟩, hc⟩ := IsLocalization.exists_of_eq (M := Submonoid.powers (resUW h)) (S := Γ(X, V))
+      (x := θ * resUW (h ^ N)) (y := resUW a) (by simpa only [RingHom.algebraMap_toAlgebra] using hN)
+    refine ⟨h ^ k * a, k + N, ?_⟩
+    simp only [map_mul, map_pow] at hc ⊢
+    linear_combination hc
+  intro θ
+  obtain ⟨a, M, hM⟩ := key θ
+  have e2 := congrArg (fun x => D'' (ψW x)) hM
+  have e3 := congrArg (fun x => ψW (DW x)) hM
+  simp only [map_mul, Derivation.leibniz, smul_eq_mul, map_add] at e2 e3
+  rw [hres, hres] at e2
+  have hu : IsUnit (ψW (resUW (h ^ M))) := by rw [hψ, map_pow]; exact hunit.pow M
+  exact hu.mul_left_cancel (by linear_combination e2 - e3)
+
+end GlobalTheory.LocReg
+end
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
+open scoped CategoryTheory.Obj Matrix TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
+open GlobalTheory.LogKS (IsField)
+open GlobalTheory.RayEv (Ray)
+open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.BasisPull
+
+theorem tanBasis_pull : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X X' : Scheme.{0}) (T : SAB H X) (t : SAB H X') (g : X' ⟶ X) (φ : SABMap t T g) (U : X.affineOpens) (U' : X'.affineOpens) (hU : U'.1 ≤ g ⁻¹ᵁ U.1) (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(X, U.1)) ⟶ T.G.left)) (v' : Fin n → (Sp (DualNumber Γ(X', U'.1)) ⟶ t.G.left)), (∀ i, IsTanAtG T (chart U) (v i)) → (∀ w, IsTanAtG T (chart U) w → ∃! cf : Fin n → Γ(X, U.1), IsCombAtG T (chart U) v cf w) → (∀ i, IsTanAtG t (chart U') (v' i)) → (∀ i, v' i ≫ φ.φ = spMap (dualMap (g.appLE U.1 U'.1 hU).hom) ≫ v i) → ∀ w, IsTanAtG t (chart U') w → ∃! cf : Fin n → Γ(X', U'.1), IsCombAtG t (chart U') v' cf w := by
+  intro E _ _ _ H X X' T t g φ U U' hU n v v' hv hvb hv' hvv' w hw
+  have hx : chart U' ≫ g = spMap (g.appLE U.1 U'.1 hU).hom ≫ chart U :=
+    (IsAffineOpen.SpecMap_appLE_fromSpec g U.2 U'.2 hU).symm
+  obtain ⟨v'', hv''φ, hv''t, hv''b⟩ :=
+    GlobalTheory.SabTan.tanBasis_sabMap E H X X' T t g φ _ _ (g.appLE U.1 U'.1 hU).hom (chart U) (chart U')
+      hx n v hv hvb
+  have heq : v'' = v' := by
+    funext i
+    apply φ.cart.1.hom_ext
+    · rw [hv''φ, hvv']
+    · rw [(hv''t i).1, (hv' i).1]
+  rw [← heq]
+  exact hv''b w hw
+
+end GlobalTheory.BasisPull
+end
+
+section
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
+open scoped CategoryTheory.Obj Matrix TensorProduct
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv)
+open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
+open GlobalTheory.LogKS (IsField)
+open GlobalTheory.RayEv (Ray)
+open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.PolAVPull
+
+theorem grp_mul_transport {Y X : Scheme.{0}} (G : Over X) [GrpObj G] {a b : Y ⟶ X} (h : a = b)
+    (u v : Over.mk a ⟶ G) (u' v' : Over.mk b ⟶ G) (hu : u'.left = u.left) (hv : v'.left = v.left) :
+    (u' * v').left = (u * v).left := by
+  subst h
+  have e1 : u' = u := Over.OverMorphism.ext hu
+  have e2 : v' = v := Over.OverMorphism.ext hv
+  rw [e1, e2]
+
+theorem polAV_pull : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X X' : Scheme.{0}) (T : SAB H X) (t : SAB H X') (g : X' ⟶ X) (φ : SABMap t T g) (K : Type) [Field K] (z : Sp K ⟶ X') (P₀ : PolAV (Sp K)) (θ : P₀.A.left ⟶ T.G.left), IsGrpPullback P₀.A T.G (z ≫ g) θ → LBIso P₀.L (T.PP.L.pull θ) → ∃ m : P₀.A.left ⟶ t.G.left, IsGrpPullback P₀.A t.G z m ∧ LBIso P₀.L (t.PP.L.pull m) := by
+  intro E _ _ _ H X X' T t g φ K _ z P₀ θ hθ hL
+  have hw : θ ≫ T.G.hom = (P₀.A.hom ≫ z) ≫ g := by rw [Category.assoc]; exact hθ.1.w
+  let m : P₀.A.left ⟶ t.G.left := φ.cart.1.lift θ (P₀.A.hom ≫ z) hw
+  have hm1 : m ≫ φ.φ = θ := φ.cart.1.lift_fst _ _ _
+  have hm2 : m ≫ t.G.hom = P₀.A.hom ≫ z := φ.cart.1.lift_snd _ _ _
+  refine ⟨m, ⟨?_, ?_⟩, ?_⟩
+  · have s : IsPullback (m ≫ φ.φ) P₀.A.hom T.G.hom (z ≫ g) := by rw [hm1]; exact hθ.1
+    exact IsPullback.of_right s hm2 φ.cart.1
+  · intro T' x y x₀ y₀ hx hy
+    apply φ.cart.1.hom_ext
+    · let x₁ : Over.mk ((Over.mk (T'.hom ≫ z)).hom ≫ g) ⟶ T.G :=
+        Over.homMk (x₀.left ≫ φ.φ) (by
+          show x₀.left ≫ φ.φ ≫ T.G.hom = _; rw [φ.cart.1.w, ← Category.assoc, Over.w x₀]; rfl)
+      let y₁ : Over.mk ((Over.mk (T'.hom ≫ z)).hom ≫ g) ⟶ T.G :=
+        Over.homMk (y₀.left ≫ φ.φ) (by
+          show y₀.left ≫ φ.φ ≫ T.G.hom = _; rw [φ.cart.1.w, ← Category.assoc, Over.w y₀]; rfl)
+      have e1 := φ.cart.2 (Over.mk (T'.hom ≫ z)) x₀ y₀ x₁ y₁ rfl rfl
+      let x₂ : Over.mk (T'.hom ≫ z ≫ g) ⟶ T.G := Over.homMk (x.left ≫ θ) (by
+        show x.left ≫ θ ≫ T.G.hom = _; rw [hθ.1.w, ← Category.assoc, Over.w x]; rfl)
+      let y₂ : Over.mk (T'.hom ≫ z ≫ g) ⟶ T.G := Over.homMk (y.left ≫ θ) (by
+        show y.left ≫ θ ≫ T.G.hom = _; rw [hθ.1.w, ← Category.assoc, Over.w y]; rfl)
+      have e2 := hθ.2 T' x y x₂ y₂ rfl rfl
+      have e3 : (x₁ * y₁).left = (x₂ * y₂).left :=
+        grp_mul_transport T.G (by simp [Category.assoc]) x₂ y₂ x₁ y₁
+          (by simp [x₁, x₂, hx, Category.assoc, hm1]) (by simp [y₁, y₂, hy, Category.assoc, hm1])
+      rw [← e1, e3, e2, Category.assoc, hm1]
+    · rw [Category.assoc, hm2, Over.w]
+      simp only [Over.mk_hom, ← Category.assoc, Over.w]
+  · have h1 : LBIso (t.PP.L.pull m) (T.PP.L.pull θ) :=
+      ReciprocityTheory.ChartRestriction.G.Geo.Tor.LBIso.chartPull (ReciprocityTheory.ChartRestriction.G.Geo.Tor.chartPullPull t.PP.L m m rfl)
+        (ReciprocityTheory.ChartRestriction.G.Geo.Tor.chartPullSame T.PP.L (fun _ : PUnit => θ) (fun _ => φ.φ) (fun _ => 1) m (fun _ => hm1.symm))
+        (by obtain ⟨w, hw, -⟩ := φ.lin; exact ⟨w, hw⟩)
+    exact ReciprocityTheory.ChartRestriction.G.Geo.Tor.LBIso.trans P₀.isLB (pull_isLB T.PP.isLB θ) (pull_isLB t.PP.isLB m) hL (ReciprocityTheory.ChartRestriction.G.Geo.Tor.LBIso.symm h1)
+
+end GlobalTheory.PolAVPull
+end
+
+section
 section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing
 open scoped CategoryTheory.Obj Matrix TensorProduct
@@ -220,3 +824,4 @@ attribute [local instance] Over.cartesianMonoidalCategory
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.kodairaSpencer_chart_eq_at_generic_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), 1 ≤ Dw.p + Dw.q → SmoothOfRelativeDimension Dw.dim (genStr Y) → ∀ (U W : Y.X.affineOpens) (hW : W.1 = U.1 ⊓ interior Y) (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(Y.X, U.1)) ⟶ Y.t.G.left)), (∀ i, IsTanAtG Y.t (chart U) (v i)) → (∀ w, IsTanAtG Y.t (chart U) w → ∃! cf : Fin n → Γ(Y.X, U.1), IsCombAtG Y.t (chart U) v cf w) → ∀ (D : logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U) (DW : Derivation ℤ Γ(Y.X, W.1) Γ(Y.X, W.1)) (Θ : Matrix (Fin n) (Fin n) Γ(Y.X, W.1)), (∀ r, DW ((Y.X.presheaf.map (homOfLE (hW.le.trans inf_le_left)).op).hom r) = (Y.X.presheaf.map (homOfLE (hW.le.trans inf_le_left)).op).hom (D.1 r)) → IsKS Y.t (interior Y) W (fun i => spMap (dualMap (Y.X.presheaf.map (homOfLE (hW.le.trans inf_le_left)).op).hom) ≫ v i) DW Θ → ∀ (k : Type) [Field k] [CharZero k] (m d : ℕ) (ξ : Sp (ChartRing k m d) ⟶ gen Y) (hx : ξ (closedPoint _) ∈ genι Y ⁻¹ᵁ U.1) (t : SAB H (Sp (ChartRing k m d))) (φ : SABMap t Y.t (ξ ≫ genι Y)), IsEtaleCompletion (Scheme.stalkClosedPointTo ξ).hom → (∀ p : Sp (ChartRing k m d), ξ p ∈ genBd Y ↔ ∏ i, bdParam k m d i ∈ p.asIdeal) → ∀ vR : Fin n → (Sp (DualNumber Γ(Sp (ChartRing k m d), ⊤)) ⟶ t.G.left), (∀ i, IsTanAtG t (chart (⟨⊤, isAffineOpen_top _⟩ : (Sp (ChartRing k m d)).affineOpens)) (vR i)) → (∀ i, vR i ≫ φ.φ = spMap (dualMap ((Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv.hom.comp (GlobalTheory.LocReg.chartHom Y U ξ hx))) ≫ v i) → ∀ D' : Derivation ℤ (ChartRing k m d) (ChartRing k m d), (∀ r, D' (GlobalTheory.LocReg.chartHom Y U ξ hx r) = GlobalTheory.LocReg.chartHom Y U ξ hx (D.1 r)) → ∀ ΘR : Matrix (Fin n) (Fin n) Γ(Sp (ChartRing k m d), ⊤), IsKS t ((Sp (ChartRing k m d)).basicOpen ((Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv.hom (∏ i, bdParam k m d i))) (⟨⊤, isAffineOpen_top _⟩ : (Sp (ChartRing k m d)).affineOpens) vR (fun r => (Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv.hom (D' ((Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).hom.hom r))) ΘR → ∀ (h : Γ(Y.X, U.1)) (hh : Y.X.basicOpen h ≤ W.1), GlobalTheory.LocReg.chartHom Y U ξ hx h ≠ 0 → ∀ (a b : Fin n) (s : Γ(Y.X, U.1)) (N : ℕ), (Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le h)).op).hom s = (Y.X.presheaf.map (homOfLE (Y.X.basicOpen_le h)).op).hom (h ^ N) * (Y.X.presheaf.map (homOfLE hh).op).hom (Θ a b) → GlobalTheory.LocReg.chartHom Y U ξ hx s = GlobalTheory.LocReg.chartHom Y U ξ hx h ^ N * (Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).hom.hom (ΘR a b) := by
   atlas_forward_decl GlobalTheory.LocRegCmp.ks_chart_eq
+end

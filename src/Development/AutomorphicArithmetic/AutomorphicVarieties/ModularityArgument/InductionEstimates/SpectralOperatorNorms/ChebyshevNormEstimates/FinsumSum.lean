@@ -1,12 +1,659 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.ChebyshevNormEstimates.Exponents3
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.ChebyshevNormEstimates.FamExp
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.KillExempt
+import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEvaluation.ExpForm
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.ChebyshevNormEstimates.ActLaws
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.ChebyshevNormEstimates.ActUniq
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.ChebyshevNormEstimates.PosSymb
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.ChebyshevNormEstimates.GoodConst
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.ChebyshevNormEstimates.TruncSB
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.ChebyshevNormEstimates.Regroup
-import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.SpectralOperatorNorms.ChebyshevNormEstimates.SideEstX
+import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEvaluation.SideEst
+import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.ChebBd
 import Development.AutomorphicArithmetic.Foundations.Convolution.BlockEvaluation.TotalDegreeAevalLe
 import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.Degree
 
+section
+open MeasureTheory NumberField IsDedekindDomain MvPolynomial Filter Topology
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
+open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Ci PositivityTheory.Rg.Fx
+open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg.Tf.IntegralApplyAeEq UpperTheory.V.Z.IntegralApplyAeEq UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
+
+section SlopeTestRemainingChoices
+
+variable {H V W : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+  [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V] [CompleteSpace V]
+  [NormedAddCommGroup W] [InnerProductSpace ℂ W] [FiniteDimensional ℂ W] [CompleteSpace W]
+
+omit [FiniteDimensional ℂ V] [CompleteSpace V] [FiniteDimensional ℂ W] [CompleteSpace W] in
+private theorem lift_sh (S : V →L[ℂ] W) (S' : W →L[ℂ] V) (c : V →L[ℂ] V) (t : ℝ) (x : L W) :
+    (S ∘L c ∘L S').compLpL 2 volume (sh W t x) =
+      S.compLpL 2 volume (c.compLpL 2 volume (sh V t (S'.compLpL 2 volume x))) := by
+  refine Lp.ext ?_
+  filter_upwards [(S ∘L c ∘L S').coeFn_compLpL (sh W t x), sh_ae W t x,
+    S.coeFn_compLpL (c.compLpL 2 volume (sh V t (S'.compLpL 2 volume x))),
+    c.coeFn_compLpL (sh V t (S'.compLpL 2 volume x)), sh_ae V t (S'.compLpL 2 volume x),
+    (measurePreserving_add_right volume t).quasiMeasurePreserving.ae (S'.coeFn_compLpL x)] with y h1 h2 h3 h4 h5 h6
+  rw [h1, h2, h3, h4, h5, h6]; rfl
+
+private theorem act_transp (J : L V →ₗᵢ[ℂ] H) (J' : L W →ₗᵢ[ℂ] H) (S : V →L[ℂ] W) (S' : W →L[ℂ] V) (T T' Y : H →L[ℂ] H)
+    (hT : ∀ u, T (J u) = J' (S.compLpL 2 volume u)) (hT' : ∀ w, T' (J' w) = J (S'.compLpL 2 volume w))
+    (σ : ℂ → V →L[ℂ] V) (h : Act J Y σ) : Act J' (T ∘L Y ∘L T') fun z => S ∘L σ z ∘L S' := by
+  obtain ⟨u, κ, hk, h1, h2⟩ := h
+  have hk' : Ker fun t => S ∘L κ t ∘L S' := by
+    refine ⟨continuous_const.clm_comp (hk.1.clm_comp continuous_const), hk.2.mono fun t ht h0 => ht ?_⟩
+    simp [h0]
+  refine ⟨u.mapRange (fun c => S ∘L c ∘L S') (by simp), fun t => S ∘L κ t ∘L S', hk', fun x => ?_, fun z => ?_⟩
+  · rw [Finsupp.sum_mapRange_index fun a => Lp.ext (by
+      filter_upwards [(0 : W →L[ℂ] W).coeFn_compLpL (sh W a x), Lp.coeFn_zero W 2 (volume : Measure ℝ)] with y a b
+      rw [a, b]; rfl)]
+    simp only [ContinuousLinearMap.comp_apply]
+    rw [hT', h1, hT, map_add, Finsupp.sum, Finsupp.sum, map_sum, (convSpec _ hk' x).2.2, (convSpec _ hk _).2.2,
+      ← ContinuousLinearMap.integral_comp_comm _ (convSpec _ hk _).2.1]
+    simp only [lift_sh]
+  · beta_reduce
+    rw [Finsupp.sum_mapRange_index (by simp), h2]
+    have hi : Integrable fun t : ℝ => Complex.exp (z * t) • κ t := by
+      have c0 : Continuous fun t : ℝ => Complex.exp (z * t) := by fun_prop
+      refine Continuous.integrable_of_hasCompactSupport (c0.smul hk.1) (hk.2.mono fun t ht h0 => ht ?_)
+      show Complex.exp (z * t) • κ t = 0
+      rw [h0, smul_zero]
+    let Φ : (V →L[ℂ] V) →L[ℂ] (W →L[ℂ] W) :=
+      (ContinuousLinearMap.compL ℂ W V W S) ∘L ((ContinuousLinearMap.compL ℂ W V V).flip S')
+    have hΦ : ∀ c, Φ c = S ∘L c ∘L S' := fun c => rfl
+    simp only [← hΦ, symb, Finsupp.sum, map_add, map_sum, map_smul]
+    rw [← Φ.integral_comp_comm hi]
+    simp only [map_smul]
+
+omit [FiniteDimensional ℂ V] [CompleteSpace V] [CompleteSpace H] in
+private theorem act_congr (J : L V →ₗᵢ[ℂ] H) (Y Y' : H →L[ℂ] H) (σ : ℂ → V →L[ℂ] V) (e : ∀ u, Y' (J u) = Y (J u))
+    (h : Act J Y σ) : Act J Y' σ := by
+  obtain ⟨u, κ, hk, h1, h2⟩ := h
+  exact ⟨u, κ, hk, fun x => (e x).trans (h1 x), h2⟩
+
+private theorem act_comm (J : L V →ₗᵢ[ℂ] H) (Y Y' : H →L[ℂ] H) (σ σ' : ℂ → V →L[ℂ] V) (e : Commute Y Y')
+    (h : Act J Y σ) (h' : Act J Y' σ') : Commute (σ 0) (σ' 0) := by
+  have a := ((actLaws J).2.2.2.1 _ _ _ _ h h').2
+  have b := ((actLaws J).2.2.2.1 _ _ _ _ h' h).2
+  have e' : Y ∘L Y' = Y' ∘L Y := e
+  rw [e'] at a
+  exact congrFun (actUniq J _ _ _ a b) 0
+
+private theorem eigP_comm {d : ℕ} (a u : Eu d →L[ℂ] Eu d) (ha : IsSelfAdjoint a) (h : Commute u a) (x : ℝ) :
+    Commute (eigP a x) u := by
+  have key : ∀ w : Eu d →L[ℂ] Eu d, Commute w a → ∀ v ∈ Module.End.eigenspace (a : Eu d →ₗ[ℂ] Eu d) (x : ℂ),
+      w v ∈ Module.End.eigenspace (a : Eu d →ₗ[ℂ] Eu d) (x : ℂ) := by
+    intro w hw v hv
+    rw [Module.End.mem_eigenspace_iff] at hv ⊢
+    have h1 : w (a v) = a (w v) := DFunLike.congr_fun hw.eq v
+    have h2 : a v = (x : ℂ) • v := hv
+    show a (w v) = _
+    rw [← h1, h2, map_smul]
+  have h' : Commute (star u) a := by
+    have := h.star_star
+    rwa [ha.star_eq] at this
+  refine ContinuousLinearMap.ext fun v => ?_
+  show eigP a x (u v) = u (eigP a x v)
+  refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (key u h _ (Submodule.starProjection_apply_mem _ v)) fun w hw => ?_
+  rw [← map_sub, ← ContinuousLinearMap.adjoint_inner_right]
+  exact Submodule.starProjection_inner_eq_zero v _ (key _ h' w hw)
+
+end SlopeTestRemainingChoices
+
+theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.famExp :
+    ∀ {E : Type} [Field E] [NumberField E] [IsTotallyComplex E] {μ : Measure (normOneGL E (2 + 2))} [μ.IsHaarMeasure] {θ : Twist μ} {𝔢 : Side θ 2} (𝔵 : Fam 𝔢) (N : Eu 𝔵.d' ≃ₗᵢ[ℂ] Eu 𝔵.d) (C₀ : ℝ), Family2 μ 𝔵.A 𝔵.A' 𝔵.P N C₀ → 0 ≤ 𝔢.toAmp.A → ‖𝔢.toAmp.A‖ ≤ 1 →
+      (∃ sp : Finset ℝ, (∀ x, x ∈ sp ↔ 0 < x ∧ Module.End.eigenspace (𝔵.a₀ : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d') (x : ℂ) ≠ ⊥) ∧ (∀ x ∈ sp, x ≤ 1) ∧
+        ∀ x : ℝ, 0 < x → x ∉ sp → ∀ j, 𝔵.tr N x j = 0) ∧
+      ∀ x : ℝ, ∃ (s : Finset ℂ) (c : ℂ → ℂ), 0 ∉ s ∧ ∀ᶠ j : ℕ in atTop, 𝔵.tr N x j = ∑ ζ ∈ s, c ζ * ζ ^ j := by
+  intro E _ _ _ μ _ θ 𝔢 𝔵 N C₀ hF h0 h1
+  have ha : Conv 𝔵.A'.J 𝔵.A'.J 𝔢.toAmp.A 𝔵.βa := 𝔢.a_op ▸ 𝔵.a_acts.2.1
+  obtain ⟨p0, p1⟩ : 0 ≤ 𝔵.a₀ ∧ ‖𝔵.a₀‖ ≤ 1 := posSymb 𝔵.A'.J _ _ 𝔵.a_acts.1 ha h0 h1
+  refine ⟨?_, fun x => ?_⟩
+  · have fin : {x : ℝ | 0 < x ∧ Module.End.eigenspace (𝔵.a₀ : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d') (x : ℂ) ≠ ⊥}.Finite :=
+      ((Module.End.finite_hasEigenvalue (𝔵.a₀ : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d')).preimage
+        Complex.ofReal_injective.injOn).subset fun x hx => hx.2
+    refine ⟨fin.toFinset, fun x => fin.mem_toFinset, fun x hx => ?_, fun x hx hx' j => ?_⟩
+    · obtain ⟨hx0, hx⟩ := fin.mem_toFinset.1 hx
+      obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hx
+      have e : 𝔵.a₀ v = (x : ℂ) • v := Module.End.mem_eigenspace_iff.1 hv
+      have := (𝔵.a₀.le_opNorm v).trans (mul_le_mul_of_nonneg_right p1 (norm_nonneg v))
+      rw [e, norm_smul, Complex.norm_real, Real.norm_of_nonneg hx0.le] at this
+      exact le_of_mul_le_mul_right this (norm_pos_iff.2 hv0)
+    · have hb : Module.End.eigenspace (𝔵.a₀ : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d') (x : ℂ) = ⊥ := by
+        by_contra hb
+        exact hx' (fin.mem_toFinset.2 ⟨hx, hb⟩)
+      have : eigP 𝔵.a₀ x = 0 := by
+        refine ContinuousLinearMap.ext fun v => ?_
+        have := Submodule.starProjection_apply_mem (Module.End.eigenspace (𝔵.a₀ : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d') (x : ℂ)) v
+        exact (Submodule.eq_bot_iff _).1 hb _ this
+      simp [Fam.tr, this]
+  · have sa : IsSelfAdjoint 𝔵.a₀ := IsSelfAdjoint.of_nonneg p0
+    have aA : Act 𝔵.A'.J 𝔢.toAmp.A (symb 𝔵.βa) := (actLaws _).2.1 _ _ 𝔵.a_acts.1 ha
+    have aG : Act 𝔵.A'.J (Rop μ 𝔢.g) (symb 𝔵.βg) := (actLaws _).2.1 _ _ 𝔵.g_acts.1 𝔵.g_acts.2.1
+    have cP : ∀ i, Commute (eigP 𝔵.a₀ x) (𝔵.u i 0) := fun i =>
+      eigP_comm _ _ sa (act_comm _ _ _ _ _ (𝔢.Uq_amp i) (𝔵.u_act i) aA) x
+    let S : Eu 𝔵.d →L[ℂ] Eu 𝔵.d' := 𝔵.s.toContinuousLinearEquiv
+    let S' : Eu 𝔵.d' →L[ℂ] Eu 𝔵.d := 𝔵.s.symm.toContinuousLinearEquiv
+    let T' : L2 μ →L[ℂ] L2 μ :=
+      𝔵.A.J.toContinuousLinearMap ∘L S'.compLpL 2 volume ∘L ContinuousLinearMap.adjoint 𝔵.A'.J.toContinuousLinearMap
+    have hT : ∀ u, θ.U (𝔵.A.J u) = 𝔵.A'.J (S.compLpL 2 volume u) := fun u => 𝔵.s_op u _ (S.coeFn_compLpL u)
+    have hT' : ∀ w, T' (𝔵.A'.J w) = 𝔵.A.J (S'.compLpL 2 volume w) := fun w => by
+      have : ContinuousLinearMap.adjoint 𝔵.A'.J.toContinuousLinearMap (𝔵.A'.J w) = w := by
+        refine ext_inner_left ℂ fun y => ?_
+        rw [ContinuousLinearMap.adjoint_inner_right]
+        exact 𝔵.A'.J.inner_map_map y w
+      show 𝔵.A.J (S'.compLpL 2 volume (ContinuousLinearMap.adjoint 𝔵.A'.J.toContinuousLinearMap (𝔵.A'.J w))) = _
+      rw [this]
+    have hTT : ∀ w, θ.U (T' (𝔵.A'.J w)) = 𝔵.A'.J w := fun w => by
+      rw [hT']
+      refine 𝔵.s_op _ _ ?_
+      filter_upwards [S'.coeFn_compLpL w] with y hy
+      rw [hy]
+      exact (𝔵.s.apply_symm_apply _).symm
+    have perm : ∀ i w, symb 𝔵.βg 0 (𝔵.s (𝔵.v i 0 w)) = 𝔵.u (i + 1) 0 (symb 𝔵.βg 0 (𝔵.s w)) := fun i w => by
+      have a := ((actLaws _).2.2.2.1 _ _ _ _ aG (act_transp _ _ S S' _ _ _ hT hT' _ (𝔵.v_act i))).2
+      have b := ((actLaws _).2.2.2.1 _ _ _ _ (𝔵.u_act (i + 1)) aG).2
+      have c := actUniq _ _ _ _ a (act_congr _ _ _ _ (fun y => ?_) b)
+      · have := DFunLike.congr_fun (congrFun c 0) (𝔵.s w)
+        simpa [S, S'] using this
+      · have := DFunLike.congr_fun (𝔢.Uq_perm i) (T' (𝔵.A'.J y))
+        simp only [ContinuousLinearMap.comp_apply] at this ⊢
+        rw [this, hTT]
+    let B : Module.End ℂ (Eu 𝔵.d') := ((eigP 𝔵.a₀ x ∘L symb 𝔵.βg 0 : Eu 𝔵.d' →L[ℂ] Eu 𝔵.d') : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d') ∘ₗ
+      (𝔵.s.toLinearEquiv : Eu 𝔵.d →ₗ[ℂ] Eu 𝔵.d') ∘ₗ (N.toLinearEquiv : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d)
+    have hB : ∀ w, B w = eigP 𝔵.a₀ x (symb 𝔵.βg 0 (𝔵.s (N w))) := fun w => rfl
+    obtain ⟨s, c, hs, h⟩ := expForm (Eu 𝔵.d') 2 two_pos (fun i => (𝔵.u i 0 : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d')) B
+      (fun i k => LinearMap.ext fun w =>
+        DFunLike.congr_fun (act_comm _ _ _ _ _ (𝔢.Uq_comm i k) (𝔵.u_act i) (𝔵.u_act k)).eq w)
+      (fun i => LinearMap.ext fun w => by
+        show B (𝔵.u i 0 w) = 𝔵.u (i + 1) 0 (B w)
+        rw [hB, hB, hF.2 _ _ _ (𝔵.v_act i) (𝔵.u_act i), perm]
+        exact DFunLike.congr_fun (cP (i + 1)).eq _)
+    refine ⟨s, c, hs, (eventually_ge_atTop (Module.finrank ℂ (Eu 𝔵.d'))).mono fun j hj => ?_⟩
+    rw [← h j hj, Fam.tr, LinearMap.trace_comp_comm']
+    congr 1
+    refine LinearMap.ext fun w => ?_
+    have e : ((𝔵.u 0 0 ^ j : Eu 𝔵.d' →L[ℂ] Eu 𝔵.d') : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d') = (𝔵.u 0 0 : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d') ^ j :=
+      map_pow (ContinuousLinearMap.toLinearMapRingHom (R₁ := ℂ) (M₁ := Eu 𝔵.d')) _ j
+    rw [Module.End.mul_apply, hB, ← e]
+    exact DFunLike.congr_fun ((cP 0).pow_right j).eq _
+end
+
+section
+open MeasureTheory NumberField IsDedekindDomain MvPolynomial Filter Topology
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
+open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Ci PositivityTheory.Rg.Fx
+open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg.Tf.IntegralApplyAeEq UpperTheory.V.Z.IntegralApplyAeEq UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
+
+open Classical in
+private lemma regroup {T : Type} (s : Finset T) (a : T → ℝ) (S : T → Finset ℂ) (c : T → ℂ → ℂ) (w : T → ℂ) (P : Finset (ℝ × ℂ))
+    (hP : ∀ i ∈ s, ∀ ζ ∈ S i, (a i, ζ) ∈ P) (f : ℝ × ℂ → ℂ) :
+    ∑ q ∈ P, (∑ i ∈ s, if a i = q.1 ∧ q.2 ∈ S i then w i * c i q.2 else 0) * f q =
+      ∑ i ∈ s, w i * ∑ ζ ∈ S i, c i ζ * f (a i, ζ) := by
+  simp_rw [Finset.sum_mul]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  rw [Finset.mul_sum]
+  symm
+  have hinj : Set.InjOn (fun ζ : ℂ => (a i, ζ)) (S i) := fun z _ z' _ h => (Prod.ext_iff.1 h).2
+  calc ∑ ζ ∈ S i, w i * (c i ζ * f (a i, ζ))
+      = ∑ q ∈ (S i).image (fun ζ : ℂ => (a i, ζ)), (if a i = q.1 ∧ q.2 ∈ S i then w i * c i q.2 else 0) * f q := by
+        rw [Finset.sum_image hinj]
+        refine Finset.sum_congr rfl fun ζ hζ => ?_
+        rw [if_pos ⟨rfl, hζ⟩, mul_assoc]
+    _ = _ := by
+        refine Finset.sum_subset ?_ ?_
+        · intro q hq
+          obtain ⟨ζ, hζ, rfl⟩ := Finset.mem_image.1 hq
+          exact hP i hi ζ hζ
+        · intro q _ hq
+          rw [if_neg, zero_mul]
+          rintro ⟨h1, h2⟩
+          exact hq (Finset.mem_image.2 ⟨q.2, h2, Prod.ext h1 rfl⟩)
+
+private lemma d_top (d : ℕ → ℕ) (h : ∀ B : ℝ, ∀ᶠ j : ℕ in atTop, Real.exp (B * j) ≤ (d j).factorial) :
+    Tendsto d atTop atTop := by
+  refine tendsto_atTop.2 fun M => ?_
+  filter_upwards [h 1, eventually_ge_atTop M.factorial] with j hj hM
+  by_contra hlt
+  have h1 : (d j).factorial ≤ M.factorial := Nat.factorial_le (not_le.1 hlt).le
+  have h2 : ((d j).factorial : ℝ) ≤ j := by exact_mod_cast h1.trans hM
+  have h3 := Real.add_one_le_exp (1 * (j : ℝ))
+  linarith
+
+private lemma low_bd (Z : Finset ℂ) (hZ : ∀ ζ ∈ Z, ζ ≠ 0) : ∃ cq : ℝ, ∀ ζ ∈ Z, Real.exp (-cq) ≤ ‖ζ‖ := by
+  obtain ⟨M, hM⟩ := (Z.image fun ζ => -Real.log ‖ζ‖).bddAbove
+  refine ⟨M, fun ζ hζ => ?_⟩
+  have h1 : -Real.log ‖ζ‖ ≤ M := hM (by simpa using ⟨ζ, hζ, rfl⟩)
+  calc Real.exp (-M) ≤ Real.exp (Real.log ‖ζ‖) := Real.exp_le_exp.2 (by linarith)
+    _ = ‖ζ‖ := Real.exp_log (norm_pos_iff.2 (hZ ζ hζ))
+
+theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.absX :
+    ∀ (T : Type) (a : T → ℝ) (τ : T → ℕ → ℂ) (act good : T → Prop) (x : ℝ), 0 < x → x ≤ 1 → ∀ (p : ℕ), 0 < p → ∀ (d : ℕ → ℕ),
+      Tendsto (fun j : ℕ => (d j : ℝ) / j) atTop (𝓝 0) → (∀ B : ℝ, ∀ᶠ j : ℕ in atTop, Real.exp (B * j) ≤ (d j).factorial) →
+      (∀ i, act i → 0 < a i → ∃ (s : Finset ℂ) (c : ℂ → ℂ), 0 ∉ s ∧ ∀ᶠ j : ℕ in atTop, τ i j = ∑ ζ ∈ s, c ζ * ζ ^ j) →
+      {i | act i ∧ a i = x}.Finite →
+      (∀ N : ℝ, ∃ c₁ : ℝ, ∀ η : ℝ, 0 < η → η < x → ∃ (s : Finset T) (u : T → ℕ → ℂ) (u' : T → ℂ) (k : ℂ), k ≠ 0 ∧ (∀ i, i ∈ s ↔ η < a i ∧ act i) ∧
+        (∀ i ∈ s, Tendsto (u i) atTop (𝓝 (u' i))) ∧ (∀ i ∈ s, good i → a i = x → u' i = k) ∧ (∀ i ∈ s, ¬ good i → u' i = 0) ∧
+        ∀ s₀ : ℕ, ∃ K : ℝ, ∀ᶠ j : ℕ in atTop, ∀ m ≤ s₀, ∀ m' ≤ s₀,
+          ‖∑ i ∈ s, u i (d j) * (a i : ℂ) ^ d j * (cheb η (j / p + m) (a i) : ℂ) * τ i (j + m')‖ ≤
+            K ^ (d j + 1) * (Real.exp (c₁ * j) * (1 + (4 / η) ^ (j / p) / (d j).factorial) + (4 / η) ^ (j / p) * Real.exp (-N * j))) →
+      ∀ᶠ j : ℕ in atTop, ∑ᶠ i ∈ {i | act i ∧ good i ∧ a i = x}, τ i j = 0 := by
+  classical
+  intro T a τ act good x hx hx1 p hp d hd hfac hexp hfin H
+  choose! S c hS0 hτ using hexp
+  obtain ⟨cq, hcq⟩ := low_bd (hfin.toFinset.biUnion S) (by
+    intro ζ hζ h0
+    obtain ⟨i, hi, hζ⟩ := Finset.mem_biUnion.1 hζ
+    have hi' := hfin.mem_toFinset.1 hi
+    exact hS0 i hi'.1 (hi'.2 ▸ hx) (h0 ▸ hζ))
+  obtain ⟨N, hN⟩ := exponents3 d hd hfac p hp cq x hx hx1
+  obtain ⟨c₁, H⟩ := H N
+  obtain ⟨η, hη, hηx, hE⟩ := hN c₁
+  obtain ⟨s, u, u', k, hk, hs, hu, hgood, hbad, hest⟩ := H η hη hηx
+  have hsp : ∀ i ∈ s, act i ∧ 0 < a i := fun i hi => ⟨((hs i).1 hi).2, hη.trans ((hs i).1 hi).1⟩
+  set P : Finset (ℝ × ℂ) := s.biUnion fun i => (S i).image fun ζ => (a i, ζ) with hPdef
+  have hP : ∀ i ∈ s, ∀ ζ ∈ S i, (a i, ζ) ∈ P := fun i hi ζ hζ =>
+    Finset.mem_biUnion.2 ⟨i, hi, Finset.mem_image.2 ⟨ζ, hζ, rfl⟩⟩
+  have hP' : ∀ q ∈ P, ∃ i ∈ s, a i = q.1 ∧ q.2 ∈ S i := by
+    intro q hq
+    obtain ⟨i, hi, hq⟩ := Finset.mem_biUnion.1 hq
+    obtain ⟨ζ, hζ, rfl⟩ := Finset.mem_image.1 hq
+    exact ⟨i, hi, rfl, hζ⟩
+  have hall : ∀ᶠ j : ℕ in atTop, ∀ i ∈ s, τ i j = ∑ ζ ∈ S i, c i ζ * ζ ^ j :=
+    (Filter.eventually_all_finset s).2 fun i hi => hτ i (hsp i hi).1 (hsp i hi).2
+  obtain ⟨J, hJ⟩ := eventually_atTop.1 hall
+  let C : (T → ℂ) → ℝ × ℂ → ℂ := fun w q => ∑ i ∈ s, if a i = q.1 ∧ q.2 ∈ S i then w i * c i q.2 else 0
+  have key := hE η hη le_rfl P (fun q => q.1.1) (fun q => q.1.2)
+    (fun q => by
+      obtain ⟨i, hi, h1, -⟩ := hP' q.1 q.2
+      exact h1 ▸ ((hs i).1 hi).1)
+    (fun q h0 => by
+      obtain ⟨i, hi, -, h2⟩ := hP' q.1 q.2
+      exact hS0 i (hsp i hi).1 (hsp i hi).2 (h0 ▸ h2))
+    (fun q q' h => Subtype.ext h)
+    (fun j q => C (fun i => u i (d j)) q.1) (fun q => C u' q.1)
+    (fun q => by
+      refine tendsto_finset_sum _ fun i hi => ?_
+      split_ifs
+      · exact ((hu i hi).comp (d_top d hfac)).mul_const _
+      · exact tendsto_const_nhds)
+    (fun s₀ => by
+      obtain ⟨K, hK⟩ := hest s₀
+      refine ⟨K, ?_⟩
+      filter_upwards [hK, eventually_ge_atTop J] with j hj hjJ m hm m' hm'
+      refine le_of_eq_of_le ?_ (hj m hm m' hm')
+      congr 1
+      have h1 := regroup s a S c (fun i => u i (d j)) P hP
+        (fun q => (q.1 : ℂ) ^ d j * (cheb η (j / p + m) q.1 : ℂ) * q.2 ^ (j + m'))
+      rw [← Finset.sum_coe_sort P] at h1
+      refine Eq.trans (Finset.sum_congr rfl fun q _ => by simp only [C, mul_assoc]) (h1.trans ?_)
+      refine Finset.sum_congr rfl fun i hi => ?_
+      rw [hJ (j + m') (by omega) i hi, Finset.mul_sum, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun ζ _ => ?_
+      ring)
+  filter_upwards [hall] with j hj
+  have h1 := regroup s a S c u' P hP (fun q => if q.1 = x then q.2 ^ j else 0)
+  have h2 : ∑ q ∈ P, C u' q * (if q.1 = x then q.2 ^ j else 0) = 0 := by
+    refine Finset.sum_eq_zero fun q hq => ?_
+    split_ifs with hqx
+    · obtain ⟨i, hi, h1, h2⟩ := hP' q hq
+      have := key ⟨q, hq⟩ hqx.ge (hcq _ (Finset.mem_biUnion.2
+        ⟨i, hfin.mem_toFinset.2 ⟨(hsp i hi).1, h1.trans hqx⟩, h2⟩))
+      rw [this, zero_mul]
+    · exact mul_zero _
+  have h3 : k * ∑ i ∈ s.filter (fun i => good i ∧ a i = x), τ i j = 0 := by
+    rw [← h2]
+    refine Eq.trans ?_ h1.symm
+    rw [Finset.mul_sum, Finset.sum_filter]
+    refine Finset.sum_congr rfl fun i hi => ?_
+    by_cases hg : good i
+    · by_cases ha : a i = x
+      · simp only [hg, ha, and_self, if_true, hgood i hi hg ha, hj i hi]
+      · simp [ha]
+    · simp [hg, hbad i hi hg]
+  have h4 : {i | act i ∧ good i ∧ a i = x} = ↑(s.filter (fun i => good i ∧ a i = x)) := by
+    ext i
+    simp only [Set.mem_setOf_eq, Finset.coe_filter]
+    constructor
+    · rintro ⟨h1, h2, h3⟩
+      exact ⟨(hs i).2 ⟨h3 ▸ hηx, h1⟩, h2, h3⟩
+    · rintro ⟨h1, h2⟩
+      exact ⟨(hsp i h1).1, h2⟩
+  show ∑ᶠ i ∈ {i | act i ∧ good i ∧ a i = x}, τ i j = 0
+  rw [h4, finsum_mem_coe_finset]
+  exact (mul_eq_zero.1 h3).resolve_left hk
+end
+
+section
+open MeasureTheory NumberField IsDedekindDomain MvPolynomial Filter Topology
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
+open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Ci PositivityTheory.Rg.Fx
+open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg.Tf.IntegralApplyAeEq UpperTheory.V.Z.IntegralApplyAeEq UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
+
+private theorem pw_mul {a b M R b' : ℝ} {d : ℕ} (ha : a ≤ M ^ (d + 1)) (hb0 : 0 ≤ b) (hb : b ≤ b') (h1 : 1 ≤ b')
+    (hM : |M| ≤ R) : a * b ≤ (R * b') ^ (d + 1) := by
+  have hR : 0 ≤ R := (abs_nonneg _).trans hM
+  have h2 : a ≤ R ^ (d + 1) :=
+    ha.trans ((le_abs_self _).trans (by rw [abs_pow]; exact pow_le_pow_left₀ (abs_nonneg _) hM _))
+  rw [mul_pow]
+  exact mul_le_mul h2 (hb.trans (le_self_pow₀ h1 (Nat.succ_ne_zero d))) hb0 (by positivity)
+
+private theorem exp_grow {B c₁ : ℝ} {j m' s₀ : ℕ} (hB0 : 0 ≤ B) (hB : B ≤ Real.exp c₁) (hc : 0 ≤ c₁) (hm : m' ≤ s₀) :
+    B ^ (j + m') ≤ Real.exp (c₁ * s₀) * Real.exp (c₁ * j) := by
+  refine (pow_le_pow_left₀ hB0 hB _).trans ?_
+  rw [← Real.exp_nat_mul, ← Real.exp_add]
+  refine Real.exp_le_exp.mpr ?_
+  have : (m' : ℝ) ≤ s₀ := by exact_mod_cast hm
+  push_cast
+  nlinarith
+
+private theorem main_est {C₁ cU M₁ C₂ N c₁ η e1 e2 W D : ℝ} {N₀ j k m m' s₀ : ℕ} (hcU : 1 ≤ cU) (hM₁ : 4 ≤ M₁)
+    (hη : 0 < η) (hη1 : η ≤ 1) (hk : k ≤ j) (hm : m ≤ s₀) (hm' : m' ≤ s₀) (h10 : 0 ≤ e1) (h1 : e1 ≤ W) (h20 : 0 ≤ e2)
+    (h2 : e2 ≤ W / D) (hD : 0 < D) (hc : 0 ≤ c₁) (hA : cU * Real.exp (N₀ * C₂) ≤ Real.exp c₁)
+    (hB : cU * (M₁ / 4) * Real.exp (-2 * C₂) ≤ Real.exp (-|N|)) :
+    C₁ * cU ^ (j + m') * (Real.exp (N₀ * (C₂ * ((j + m' : ℕ) : ℝ))) * (e1 + (4 / η) ^ (k + m) * e2) +
+        (4 / η) ^ (k + m) * Real.exp (-(((2 : ℕ) : ℝ) * (C₂ * ((j + m' : ℕ) : ℝ)))) * e1 +
+        (M₁ / η) ^ (k + m) * W * Real.exp (-2 * (C₂ * ((j + m' : ℕ) : ℝ)))) ≤
+      (2 * |C₁| * Real.exp (c₁ * s₀) * (M₁ / η) ^ s₀) * W *
+        (Real.exp (c₁ * j) * (1 + (4 / η) ^ k / D) + (4 / η) ^ k * Real.exp (-N * j)) := by
+  have hW : 0 ≤ W := h10.trans h1
+  have hq : 1 ≤ 4 / η := by rw [le_div_iff₀ hη]; linarith
+  have hr : 1 ≤ M₁ / 4 := by linarith
+  have hrq : M₁ / η = M₁ / 4 * (4 / η) := by field_simp
+  rw [hrq]
+  generalize 4 / η = q at *
+  generalize M₁ / 4 = r at *
+  have hrq1 : 1 ≤ r * q := one_le_mul_of_one_le_of_one_le hr hq
+  have hR1 : (r * q) ^ m ≤ (r * q) ^ s₀ := pow_le_pow_right₀ hrq1 hm
+  have hR2 : q ^ m ≤ (r * q) ^ s₀ := (pow_le_pow_left₀ (by linarith) (by nlinarith) m).trans hR1
+  have hR3 : 1 ≤ (r * q) ^ s₀ := one_le_pow₀ hrq1
+  have a1 : cU ^ (j + m') * Real.exp (N₀ * (C₂ * ((j + m' : ℕ) : ℝ))) ≤ Real.exp (c₁ * s₀) * Real.exp (c₁ * j) := by
+    refine le_trans (le_of_eq ?_) (exp_grow (by positivity) hA hc hm')
+    rw [mul_pow, ← Real.exp_nat_mul]
+    congr 2
+    ring
+  have a2 : cU ^ (j + m') * r ^ k * Real.exp (-2 * (C₂ * ((j + m' : ℕ) : ℝ))) ≤ Real.exp (-N * j) := by
+    have b1 : r ^ k ≤ r ^ (j + m') := pow_le_pow_right₀ hr (by omega)
+    have b2 : (cU * r * Real.exp (-2 * C₂)) ^ (j + m') ≤ Real.exp (-|N|) ^ (j + m') :=
+      pow_le_pow_left₀ (by positivity) hB _
+    have b3 : Real.exp (-|N|) ^ (j + m') ≤ Real.exp (-N * j) := by
+      rw [← Real.exp_nat_mul]
+      refine Real.exp_le_exp.mpr ?_
+      have := le_abs_self N
+      have := abs_nonneg N
+      have : (0 : ℝ) ≤ j := by positivity
+      have : (0 : ℝ) ≤ m' := by positivity
+      push_cast
+      nlinarith
+    refine le_trans ?_ (b2.trans b3)
+    rw [mul_pow, mul_pow, ← Real.exp_nat_mul]
+    have : ((j + m' : ℕ) : ℝ) * (-2 * C₂) = -2 * (C₂ * ((j + m' : ℕ) : ℝ)) := by ring
+    rw [this]
+    gcongr
+  have hE : 1 ≤ Real.exp (c₁ * s₀) := Real.one_le_exp (by positivity)
+  have e : -(((2 : ℕ) : ℝ) * (C₂ * ((j + m' : ℕ) : ℝ))) = -2 * (C₂ * ((j + m' : ℕ) : ℝ)) := by push_cast; ring
+  rw [e]
+  have p1 := Real.exp_pos (N₀ * (C₂ * ((j + m' : ℕ) : ℝ)))
+  have p2 := Real.exp_pos (-2 * (C₂ * ((j + m' : ℕ) : ℝ)))
+  have p3 := Real.exp_pos (c₁ * j)
+  have p4 := Real.exp_pos (-N * j)
+  generalize Real.exp (N₀ * (C₂ * ((j + m' : ℕ) : ℝ))) = x1 at *
+  generalize Real.exp (-2 * (C₂ * ((j + m' : ℕ) : ℝ))) = x2 at *
+  generalize Real.exp (c₁ * j) = x3 at *
+  generalize Real.exp (-N * j) = x4 at *
+  generalize Real.exp (c₁ * s₀) = E at *
+  have hu : 0 ≤ cU ^ (j + m') := by positivity
+  generalize cU ^ (j + m') = u at *
+  have hrk : 1 ≤ r ^ k := one_le_pow₀ hr
+  have hrqm : 0 ≤ (r * q) ^ m := by positivity
+  rw [pow_add q, pow_add (r * q), mul_pow r q k]
+  have hqk : 0 ≤ q ^ k := by positivity
+  have hqm : 0 ≤ q ^ m := by positivity
+  generalize q ^ k = qk at *
+  generalize q ^ m = qm at *
+  generalize r ^ k = rk at *
+  generalize (r * q) ^ m = Rm at *
+  generalize (r * q) ^ s₀ = R at *
+  have a3 : u * x2 ≤ x4 := le_trans (by nlinarith [mul_nonneg hu p2.le]) a2
+  have t1 : u * x1 * (e1 + qk * qm * e2) ≤ E * x3 * (R * W + qk * R * (W / D)) := by
+    have : e1 ≤ R * W := h1.trans (le_mul_of_one_le_left hW hR3)
+    gcongr
+  have t2 : u * x2 * (qk * qm * e1) ≤ x4 * (qk * R * W) := by gcongr
+  have t3 : u * rk * x2 * (qk * Rm * W) ≤ x4 * (qk * R * W) := by gcongr
+  have t4 : x4 * (qk * R * W) ≤ E * (x4 * (qk * R * W)) := le_mul_of_one_le_left (by positivity) hE
+  have t5 : 0 ≤ E * x3 * (R * W + qk * R * (W / D)) := by positivity
+  calc _ = C₁ * (u * x1 * (e1 + qk * qm * e2) + u * x2 * (qk * qm * e1) + u * rk * x2 * (qk * Rm * W)) := by ring
+    _ ≤ |C₁| * (u * x1 * (e1 + qk * qm * e2) + u * x2 * (qk * qm * e1) + u * rk * x2 * (qk * Rm * W)) :=
+      mul_le_mul_of_nonneg_right (le_abs_self _) (by positivity)
+    _ ≤ |C₁| * (2 * (E * x3 * (R * W + qk * R * (W / D))) + 2 * (E * (x4 * (qk * R * W)))) :=
+      mul_le_mul_of_nonneg_left (by linarith) (abs_nonneg _)
+    _ = _ := by ring
+
+private theorem tr_bd {E : Type} [Field E] [NumberField E] {μ : Measure (normOneGL E (2 + 2))} [μ.IsHaarMeasure] {θ : Twist μ}
+    {𝔢 : Side θ 2} (𝔣 : Fam 𝔢) (N : Eu 𝔣.d' ≃ₗᵢ[ℂ] Eu 𝔣.d) (x : ℝ) :
+    ∃ Ct : ℝ, 0 ≤ Ct ∧ ∀ j, ‖𝔣.tr N x j‖ ≤ Ct * (‖𝔣.u 0 0‖ + 1) ^ j := by
+  let Ψ : (Eu 𝔣.d' →L[ℂ] Eu 𝔣.d') →ₗ[ℂ] ℂ :=
+    { toFun := fun a => LinearMap.trace ℂ (Eu 𝔣.d) ((N.toLinearEquiv : Eu 𝔣.d' →ₗ[ℂ] Eu 𝔣.d) ∘ₗ
+        ((eigP 𝔣.a₀ x ∘L a ∘L symb 𝔣.βg 0 : Eu 𝔣.d' →L[ℂ] Eu 𝔣.d') : Eu 𝔣.d' →ₗ[ℂ] Eu 𝔣.d') ∘ₗ
+        (𝔣.s.toLinearEquiv : Eu 𝔣.d →ₗ[ℂ] Eu 𝔣.d'))
+      map_add' := fun a b => by
+        rw [← map_add]; congr 1; ext v; simp
+      map_smul' := fun c a => by
+        rw [RingHom.id_apply, ← map_smul]; congr 1; ext v; simp }
+  refine ⟨‖LinearMap.toContinuousLinearMap Ψ‖, norm_nonneg _, fun j => ?_⟩
+  refine ((LinearMap.toContinuousLinearMap Ψ).le_opNorm (𝔣.u 0 0 ^ j)).trans
+    (mul_le_mul_of_nonneg_left ?_ (norm_nonneg _))
+  induction j with
+  | zero => rw [pow_zero, pow_zero]; exact ContinuousLinearMap.norm_id_le
+  | succ j ih =>
+    rw [pow_succ, pow_succ]
+    exact (norm_mul_le _ _).trans (mul_le_mul ih (by linarith) (norm_nonneg _) (by positivity))
+
+set_option maxHeartbeats 6000000 in
+theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.sideEstX :
+    OneSideX → EvVal → TruncSpec → ∀ (K : Type) [Field K] [NumberField K] [IsTotallyComplex K]
+      (μ : Measure (normOneGL K (2 + 2))) [μ.IsHaarMeasure] (θ : Twist μ) (𝔰 : Side θ 2) (𝔵 : Fam 𝔰)
+      (ev : PR K (2 + 2) →+* (LL μ →L[ℂ] LL μ)) (evz : ℂ → PR K (2 + 2) →+* (Eu 𝔵.d' →L[ℂ] Eu 𝔵.d'))
+      (Nn : Eu 𝔵.d' ≃ₗᵢ[ℂ] Eu 𝔵.d) (Cf : ℝ), 𝔰.toAmp.IsEv ev → (∀ P, Inner μ (ev P)) → 𝔵.IsEvz ev evz →
+      Family μ 𝔵.A 𝔵.A' 0 𝔵.P Nn Cf → ∀ sp : Finset ℝ,
+      (∀ x, x ∈ sp ↔ 0 < x ∧ Module.End.eigenspace (𝔵.a₀ : Eu 𝔵.d' →ₗ[ℂ] Eu 𝔵.d') (x : ℂ) ≠ ⊥) →
+      ∀ C₀ N : ℝ, ∃ c₁ : ℝ, ∀ η : ℝ, 0 < η → η ≤ 1 →
+      ∀ χ : ℝ → ℝ, Continuous χ → (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) → (∀ x ≥ η, χ x = 1) →
+      ∃ s : Finset (ℝ × Submodule ℂ (LL μ)),
+        (∀ y, y ∈ s ↔ η < y.1 ∧ IsSummand μ y.2 ∧ y.2.map (θ.U : LL μ →ₗ[ℂ] LL μ) = y.2 ∧ eigIn y.2 𝔰.toAmp.A y.1 ≠ ⊥) ∧
+        (∀ y ∈ s, FiniteDimensional ℂ (eigIn y.2 𝔰.toAmp.A y.1)) ∧
+        ∀ Φ G, admitted 𝔰.S Φ → IsGen Φ G →
+          (∃ C : ℝ, ∀ d : ℕ, ‖ev (trunc d G) ∘L fcalc χ 𝔰.toAmp.A ∘L (1 - Pc μ - 𝔵.P)‖ ≤ C ^ (d + 1) / d.factorial) →
+          ∀ P : PR K (2 + 2), (∀ y ∈ P.vars, y.1 ∉ 𝔰.S) → ∃ (u : ℝ × Submodule ℂ (LL μ) → ℕ → ℂ) (w : ℝ → ℕ → ℂ),
+            (∀ y ∈ s, ∀ (L : Ix K (2 + 2) → ℂ) t, At μ 𝔰.S y.2 (msOf L) t →
+              Tendsto (u y) atTop (𝓝 (y.1 * val y.1 (msOf L) t P * evK L (hval t) Φ))) ∧
+            (∀ (x : ℝ) (L : Ix K (2 + 2) → ℂ), msOf L = 𝔵.Λ → Tendsto (w x) atTop (𝓝 (x * val x 𝔵.Λ 𝔵.t P * evK L (hval 𝔵.t) Φ))) ∧
+            ∀ p : ℕ, 0 < p → ∀ s₀ : ℕ, ∃ M : ℝ, 0 ≤ M ∧ ∀ᶠ j : ℕ in atTop, ∀ d : ℕ, ∀ m ≤ s₀, ∀ m' ≤ s₀, ∀ f : TG K (2 + 2),
+              𝔰.Rep (ev (chebP η (j / p + m) * (trunc d G * P))) (j + m') (Real.exp (C₀ * ((j + m' : ℕ) : ℝ))) f →
+              ‖twInt θ f - ∑ y ∈ s, u y d * (y.1 : ℂ) ^ d * (cheb η (j / p + m) y.1 : ℂ) *
+                  trOn (eigIn y.2 𝔰.toAmp.A y.1) ((𝔰.Uq 0 ^ (j + m')) ∘L Rop μ 𝔰.g ∘L θ.U) -
+                ∑ x ∈ sp.filter (η < ·), w x d * (x : ℂ) ^ d * (cheb η (j / p + m) x : ℂ) * ((1 / 2 : ℂ) * 𝔵.tr Nn x (j + m'))‖ ≤
+                M ^ (d + 1) * (Real.exp (c₁ * j) * (1 + (4 / η) ^ (j / p) / d.factorial) + (4 / η) ^ (j / p) * Real.exp (-N * j)) := by
+  intro h1 hV hT K _ _ _ μ _ θ 𝔰 𝔵 ev evz Nn Cf hev hin hz hF sp hsp C₀ N
+  classical
+  obtain ⟨c, cU, M₁, N₀, hc, hcU, hM₁, H⟩ := h1 K μ θ 𝔰 𝔵 ev evz Nn Cf hev hin hz hF sp hsp
+  obtain ⟨C₂, hC1, hC2, hC3⟩ : ∃ C₂ : ℝ, 1 ≤ C₂ ∧ C₀ ≤ c * C₂ ∧
+      cU * (M₁ / 4) * Real.exp (-2 * C₂) ≤ Real.exp (-|N|) := by
+    have hpos : 0 < cU * (M₁ / 4) := by positivity
+    have q1 : 0 ≤ |C₀| / c := by positivity
+    have q2 := abs_nonneg N
+    refine ⟨1 + |C₀| / c + |N| + cU * (M₁ / 4), by linarith, ?_, ?_⟩
+    · have : c * (|C₀| / c) = |C₀| := by field_simp
+      have := le_abs_self C₀
+      nlinarith
+    · have q3 : cU * (M₁ / 4) ≤ Real.exp (cU * (M₁ / 4)) := by linarith [Real.add_one_le_exp (cU * (M₁ / 4))]
+      refine (mul_le_mul_of_nonneg_right q3 (Real.exp_pos _).le).trans ?_
+      rw [← Real.exp_add]
+      exact Real.exp_le_exp.mpr (by linarith)
+  obtain ⟨c₁, hc0, hcA, hcB⟩ : ∃ c₁ : ℝ, 0 ≤ c₁ ∧ cU * Real.exp (N₀ * C₂) ≤ Real.exp c₁ ∧
+      ‖𝔵.u 0 0‖ + 1 ≤ Real.exp c₁ := by
+    have q1 : 0 ≤ cU * Real.exp (N₀ * C₂) := by positivity
+    have q2 := norm_nonneg (𝔵.u 0 0)
+    have q3 := Real.add_one_le_exp (cU * Real.exp (N₀ * C₂) + ‖𝔵.u 0 0‖)
+    exact ⟨cU * Real.exp (N₀ * C₂) + ‖𝔵.u 0 0‖, by linarith, by linarith, by linarith⟩
+  refine ⟨c₁, fun η hη hη1 χ hχ hχ1 hχ2 => ?_⟩
+  obtain ⟨s, hs, hfin, H⟩ := H η hη hη1 χ hχ hχ1 hχ2
+  obtain ⟨C₁, T₁, H⟩ := H 2
+  refine ⟨s, hs, hfin, fun Φ G hΦ hG hC P hP => ?_⟩
+  obtain ⟨Ck, hC⟩ := hC
+  obtain ⟨⟨κ, D, hκ, hBd⟩, hval', hnorm⟩ := (hT K (2 + 2) 𝔰.S Φ hΦ).2 G hG
+  obtain ⟨Me, hMe⟩ := hnorm (LL μ) ev hev.const
+  have hSB : ∀ R : PR K (2 + 2), (∀ y ∈ R.vars, y.1 ∉ 𝔰.S) → ∃ M, SB (fun z => evz z R) M := fun R hR =>
+    ((actLaws 𝔵.A'.J).2.2.1 _ _ (hz.act R hR)).1
+  obtain ⟨Mt, hMt⟩ := truncSB evz hz.const 𝔰.S hSB Φ G hΦ hG
+  obtain ⟨KP, hKP⟩ := hSB P hP
+  have htv : ∀ d, ∀ y ∈ (trunc d G).vars, y.1 ∉ 𝔰.S := fun d y hy => hκ _ ((hBd d).1 y hy)
+  have hQv : ∀ d, ∀ y ∈ (trunc d G * P).vars, y.1 ∉ 𝔰.S := fun d y hy => by
+    rcases Finset.mem_union.mp (vars_mul _ _ hy) with h | h
+    · exact htv d y h
+    · exact hP y h
+  have hV' := fun y (hy : y ∈ s) =>
+    hV K (2 + 2) (by norm_num) μ 𝔰.toAmp y.2 y.1 (hη.trans ((hs y).1 hy).1) ((hs y).1 hy).2.1
+  have hex : ∀ y : ℝ × Submodule ℂ (LL μ), ∃ Λ t, y ∈ s → At μ 𝔰.S y.2 Λ t := fun y => by
+    by_cases hy : y ∈ s
+    · obtain ⟨Λ, t, h⟩ := (hV' y hy).1 ((hs y).1 hy).2.2.2
+      exact ⟨Λ, t, fun _ => h⟩
+    · exact ⟨fun _ => 0, fun _ => 0, fun h => absurd h hy⟩
+  choose Λ t hΛ using hex
+  have huniq : ∀ y ∈ s, ∀ Λ' t', At μ 𝔰.S y.2 Λ' t' → ∀ R : PR K (2 + 2), (∀ y ∈ R.vars, y.1 ∉ 𝔰.S) →
+      val y.1 (Λ y) (t y) R = val y.1 Λ' t' R := fun y hy Λ' t' h R hR => by
+    obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot ((hs y).1 hy).2.2.2
+    have e1 := (hV' y hy).2.2 ev hev _ _ (hΛ y hy) R hR v hv
+    have e2 := (hV' y hy).2.2 ev hev _ _ h R hR v hv
+    exact smul_left_injective ℂ hv0 (e1.symm.trans e2)
+  refine ⟨fun y d => y.1 * val y.1 (Λ y) (t y) P * (val y.1 (Λ y) (t y) (trunc d G) / (y.1 : ℂ) ^ d),
+    fun x d => x * val x 𝔵.Λ 𝔵.t P * (val x 𝔵.Λ 𝔵.t (trunc d G) / (x : ℂ) ^ d), ?_, ?_, ?_⟩
+  · intro y hy L t' h
+    obtain ⟨u, hu, hu'⟩ := hval' L t'
+    have hy0 : (y.1 : ℂ) ≠ 0 := by exact_mod_cast (hη.trans ((hs y).1 hy).1).ne'
+    refine (hu.const_mul _).congr fun d => ?_
+    beta_reduce
+    rw [huniq y hy _ _ h P hP, huniq y hy _ _ h _ (htv d), hu', mul_div_cancel_left₀ _ (pow_ne_zero d hy0)]
+  · intro x L hL
+    obtain ⟨u, hu, hu'⟩ := hval' L 𝔵.t
+    rw [hL] at hu'
+    refine (hu.const_mul _).congr fun d => ?_
+    beta_reduce
+    by_cases hx : (x : ℂ) = 0
+    · simp [hx]
+    · rw [hu', mul_div_cancel_left₀ _ (pow_ne_zero d hx)]
+  intro p hp s₀
+  choose Ct hCt0 hCt using fun x => tr_bd 𝔵 Nn x
+  obtain ⟨M₀, hM₀0, hM₀⟩ : ∃ M₀ : ℝ, 0 ≤ M₀ ∧ ∀ {a b M : ℝ} {d : ℕ}, a ≤ M ^ (d + 1) → 0 ≤ b → b ≤ ‖ev P‖ + |KP| + 1 →
+      |M| ≤ |Me| + |Ck| + |Mt| + 1 → a * b ≤ M₀ ^ (d + 1) :=
+    ⟨(|Me| + |Ck| + |Mt| + 1) * (‖ev P‖ + |KP| + 1), by positivity, fun ha hb hb' hM =>
+      pw_mul ha hb hb' (by linarith [norm_nonneg (ev P), abs_nonneg KP]) hM⟩
+  obtain ⟨K₁, hK₁⟩ : ∃ K₁ : ℝ, K₁ = 2 * |C₁| * Real.exp (c₁ * s₀) * (M₁ / η) ^ s₀ := ⟨_, rfl⟩
+  obtain ⟨K₂, hK₂⟩ : ∃ K₂ : ℝ, K₂ = (∑ x ∈ sp, Ct x) * Real.exp (c₁ * s₀) := ⟨_, rfl⟩
+  have hK₁0 : 0 ≤ K₁ := by
+    have : 0 ≤ M₁ := by linarith
+    rw [hK₁]; positivity
+  have hS0 : 0 ≤ ∑ x ∈ sp, Ct x := Finset.sum_nonneg fun x _ => hCt0 x
+  have hK₂0 : 0 ≤ K₂ := by rw [hK₂]; positivity
+  refine ⟨(K₁ + K₂ + 1) * M₀, by positivity, ?_⟩
+  filter_upwards [eventually_ge_atTop ⌈T₁⌉₊] with j hj d m hm m' hm' f hf
+  have n1 := abs_nonneg Me
+  have n2 := abs_nonneg Ck
+  have n3 := abs_nonneg Mt
+  have n4 := abs_nonneg KP
+  have n5 := norm_nonneg (ev P)
+  have hW0 : 0 ≤ M₀ ^ (d + 1) := by positivity
+  have hfac : (0 : ℝ) < d.factorial := by exact_mod_cast Nat.factorial_pos d
+  have b1 : ‖ev (trunc d G * P)‖ ≤ M₀ ^ (d + 1) := by
+    rw [map_mul]
+    exact (norm_mul_le _ _).trans (hM₀ (hMe d) n5 (by linarith) (by linarith))
+  have b2 : ‖ev (trunc d G * P) ∘L fcalc χ 𝔰.toAmp.A ∘L (1 - Pc μ - 𝔵.P)‖ ≤ M₀ ^ (d + 1) / d.factorial := by
+    rw [mul_comm, map_mul, ContinuousLinearMap.mul_def, ContinuousLinearMap.comp_assoc, le_div_iff₀ hfac]
+    have := (le_div_iff₀ hfac).mp (hC d)
+    refine le_trans ?_ (hM₀ this n5 (by linarith) (by linarith))
+    rw [mul_right_comm, mul_comm _ ‖ev P‖]
+    exact mul_le_mul_of_nonneg_right (ContinuousLinearMap.opNorm_comp_le _ _) hfac.le
+  have b3 : SB (fun z => evz z (trunc d G * P)) (M₀ ^ (d + 1)) := fun z hz' => by
+    simp only [map_mul]
+    exact (norm_mul_le _ _).trans (hM₀ (hMt d z hz') (norm_nonneg _)
+      ((hKP z hz').trans (by linarith [le_abs_self KP])) (by linarith))
+  have hj0 : (0 : ℝ) ≤ ((j + m' : ℕ) : ℝ) := by positivity
+  have hT₁ : T₁ ≤ C₂ * ((j + m' : ℕ) : ℝ) := by
+    have q1 : T₁ ≤ ((j + m' : ℕ) : ℝ) := (Nat.le_ceil T₁).trans (by exact_mod_cast hj.trans (Nat.le_add_right _ _))
+    nlinarith
+  have hf' : 𝔰.Rep (ev (chebP η (j / p + m) * (trunc d G * P))) (j + m') (Real.exp (c * (C₂ * ((j + m' : ℕ) : ℝ)))) f :=
+    ⟨hf.1, fun x hx => hf.2 x (lt_of_le_of_lt (Real.exp_le_exp.mpr (by nlinarith)) hx)⟩
+  have E1 := (H (trunc d G * P) (fun y => val y.1 (Λ y) (t y) (trunc d G * P)) _ (hQv d) b3
+    (fun y hy v hv => (hV' y hy).2.2 ev hev _ _ (hΛ y hy) _ (hQv d) v hv) (j / p + m) (j + m') _ f hT₁ hf').trans
+    (main_est hcU hM₁ hη hη1 (Nat.div_le_self j p) hm hm' (norm_nonneg _) b1 (norm_nonneg _) b2 hfac hc0 hcA hC3)
+  have E2 : ‖(1 / 2 : ℂ) * ∑ x ∈ sp.filter (fun x => ¬ η < x), (cheb η (j / p + m) x : ℂ) *
+      (x * val x 𝔵.Λ 𝔵.t (trunc d G * P) * 𝔵.tr Nn x (j + m'))‖ ≤ K₂ * M₀ ^ (d + 1) * Real.exp (c₁ * j) := by
+    have g1 : ∀ x ∈ sp.filter (fun x => ¬ η < x), ‖(cheb η (j / p + m) x : ℂ) *
+        (x * val x 𝔵.Λ 𝔵.t (trunc d G * P) * 𝔵.tr Nn x (j + m'))‖ ≤
+        Ct x * (M₀ ^ (d + 1) * (Real.exp (c₁ * s₀) * Real.exp (c₁ * j))) := by
+      intro x hx
+      obtain ⟨hx, hxη⟩ := Finset.mem_filter.mp hx
+      obtain ⟨hx0, hx⟩ := (hsp x).1 hx
+      have hxη : x ≤ η := not_lt.mp hxη
+      obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hx
+      have r1 : ‖(cheb η (j / p + m) x : ℂ)‖ ≤ 1 := by
+        rw [Complex.norm_real]; exact (UpperTheory.ConvolutionTheory.FX.cheb_bound η _ hη hη1).1 x ⟨hx0.le, hxη⟩
+      have r2 : ‖(x : ℂ)‖ ≤ 1 := by
+        rw [Complex.norm_real, Real.norm_of_nonneg hx0.le]; linarith
+      have r3 : ‖val x 𝔵.Λ 𝔵.t (trunc d G * P)‖ ≤ M₀ ^ (d + 1) := by
+        have q1 := (evz 0 (trunc d G * P)).le_of_opNorm_le (b3 0 (by simp)) v
+        rw [hz.zero _ (hQv d) x hx0 v hv, norm_smul] at q1
+        exact le_of_mul_le_mul_right q1 (norm_pos_iff.mpr hv0)
+      have r4 : ‖𝔵.tr Nn x (j + m')‖ ≤ Ct x * (Real.exp (c₁ * s₀) * Real.exp (c₁ * j)) :=
+        (hCt x _).trans (mul_le_mul_of_nonneg_left (exp_grow (by positivity) hcB hc0 hm') (hCt0 x))
+      have := hCt0 x
+      rw [norm_mul, norm_mul, norm_mul]
+      calc _ ≤ 1 * (1 * M₀ ^ (d + 1) * (Ct x * (Real.exp (c₁ * s₀) * Real.exp (c₁ * j)))) := by gcongr
+        _ = _ := by ring
+    have g2 := (norm_sum_le _ _).trans (Finset.sum_le_sum g1)
+    rw [← Finset.sum_mul] at g2
+    have g3 : ∑ x ∈ sp.filter (fun x => ¬ η < x), Ct x ≤ ∑ x ∈ sp, Ct x :=
+      Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) fun x _ _ => hCt0 x
+    rw [norm_mul]
+    have g4 : ‖(1 / 2 : ℂ)‖ ≤ 1 := by norm_num
+    calc _ ≤ 1 * ((∑ x ∈ sp, Ct x) * (M₀ ^ (d + 1) * (Real.exp (c₁ * s₀) * Real.exp (c₁ * j)))) :=
+          mul_le_mul g4 (g2.trans (by gcongr)) (norm_nonneg _) zero_le_one
+      _ = _ := by rw [hK₂]; ring
+  have s1 : ∑ y ∈ s, y.1 * val y.1 (Λ y) (t y) P * (val y.1 (Λ y) (t y) (trunc d G) / (y.1 : ℂ) ^ d) * (y.1 : ℂ) ^ d *
+        (cheb η (j / p + m) y.1 : ℂ) * trOn (eigIn y.2 𝔰.toAmp.A y.1) ((𝔰.Uq 0 ^ (j + m')) ∘L Rop μ 𝔰.g ∘L θ.U) =
+      ∑ y ∈ s, (cheb η (j / p + m) y.1 : ℂ) * (y.1 * val y.1 (Λ y) (t y) (trunc d G * P) *
+        trOn (eigIn y.2 𝔰.toAmp.A y.1) ((𝔰.Uq 0 ^ (j + m')) ∘L Rop μ 𝔰.g ∘L θ.U)) := by
+    refine Finset.sum_congr rfl fun y hy => ?_
+    have hy0 : (y.1 : ℂ) ≠ 0 := by exact_mod_cast (hη.trans ((hs y).1 hy).1).ne'
+    rw [map_mul]
+    field_simp
+  have s2 : ∑ x ∈ sp.filter (η < ·), x * val x 𝔵.Λ 𝔵.t P * (val x 𝔵.Λ 𝔵.t (trunc d G) / (x : ℂ) ^ d) * (x : ℂ) ^ d *
+        (cheb η (j / p + m) x : ℂ) * ((1 / 2 : ℂ) * 𝔵.tr Nn x (j + m')) =
+      (1 / 2 : ℂ) * ∑ x ∈ sp.filter (η < ·), (cheb η (j / p + m) x : ℂ) *
+        (x * val x 𝔵.Λ 𝔵.t (trunc d G * P) * 𝔵.tr Nn x (j + m')) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun x hx => ?_
+    have hx0 : (x : ℂ) ≠ 0 := by exact_mod_cast (hη.trans (Finset.mem_filter.mp hx).2).ne'
+    rw [map_mul]
+    field_simp
+  rw [← Finset.sum_filter_add_sum_filter_not sp (η < ·), mul_add, ← sub_sub, ← hK₁] at E1
+  beta_reduce
+  rw [s1, s2]
+  have hq : 0 ≤ (4 / η) ^ (j / p) := by positivity
+  have x3 := Real.exp_pos (c₁ * j)
+  have x4 := Real.exp_pos (-N * j)
+  have F0 : Real.exp (c₁ * j) ≤
+      Real.exp (c₁ * j) * (1 + (4 / η) ^ (j / p) / d.factorial) + (4 / η) ^ (j / p) * Real.exp (-N * j) := by
+    have : 0 ≤ Real.exp (c₁ * j) * ((4 / η) ^ (j / p) / d.factorial) := by positivity
+    have : 0 ≤ (4 / η) ^ (j / p) * Real.exp (-N * j) := by positivity
+    linarith
+  have F1 := x3.le.trans F0
+  refine (norm_le_norm_sub_add _ _).trans ((add_le_add E1 (E2.trans (mul_le_mul_of_nonneg_left F0 (by positivity)))).trans ?_)
+  rw [← add_mul, ← add_mul, mul_pow]
+  have F2 : K₁ + K₂ ≤ (K₁ + K₂ + 1) ^ (d + 1) := le_trans (by linarith) (le_self_pow₀ (by linarith) (Nat.succ_ne_zero d))
+  gcongr
+end
+
+section
 open MeasureTheory NumberField IsDedekindDomain MvPolynomial Filter Topology
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Ci PositivityTheory.Rg.Fx
@@ -425,3 +1072,4 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.cixOf :
   have : ∀ (u v : ℂ), u * (-c * v) = -(c * (u * v)) := fun u v => by ring
   simp only [this, Finset.sum_neg_distrib, id]
   ring
+end

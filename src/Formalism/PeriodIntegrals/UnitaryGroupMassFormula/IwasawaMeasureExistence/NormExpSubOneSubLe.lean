@@ -1,5 +1,302 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IwasawaMeasureExistence.RiemHaarOfSteps
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IwasawaMeasureExistence.ParabolicFundamentalDomain
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IwasawaMeasureExistence.EqSmulOfSub
+import Mathlib
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IwasawaMeasureExistence.AlgebraMapIntMemIntAd
 
+section
+noncomputable section
+
+namespace PI.IwaMeasEx.KV
+
+open MeasureTheory
+open scoped ENNReal
+open Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma Formalism.MainNotions.LeviCoordinates Formalism.L2.S.S7.DensDefs Formalism.L2.S.S7.WittLeviSubgroups
+  Formalism.L2.S.S7.PositiveOrthantChangeOfVariables
+open Formalism.HermitianLatticeCounting.S7 (dimN Vsph)
+open PI.IwaMeasEx.Sk
+
+structure admitted {X : CData} {J : ℕ} (c : Composition J) (D : BaseDatum X.I J) where
+  μK : Measure X.I.GA
+  μN : Measure X.I.GA
+  μM : Measure X.I.GA
+  cIw : ℝ≥0∞
+  FN : Set X.I.GA
+  FM : Set X.I.GA
+  Om : Set X.I.GA
+  VM : ℝ≥0∞
+  hK : PK D μK
+  hN : PN D c μN
+  hM : PM D c μM
+  hI : IntF μK (muP D c μN μM) cIw
+  hF : FdP D c μN μM FN FM Om
+  hL : LeviP D c μM FM VM
+
+structure Sc where
+  s : ℝ≥0∞
+  sN : ℝ≥0∞
+  sM : ℝ≥0∞
+  vU0 : ℝ
+
+abbrev GPred : Type 1 :=
+  ∀ (X : CData) (J : ℕ) (c : Composition J) (D : BaseDatum X.I J), admitted c D → Sc → Prop
+
+def n0 (X : CData) (J : ℕ) : ℕ := X.I.n - 2 * J
+
+def volU (i : ℕ) : ℝ := Vsph i * (2 : ℝ) ^ ((i : ℝ) * ((i : ℝ) - 1) / 2)
+
+def cIG (X : CData) (J : ℕ) (c : Composition J) : ℝ :=
+  ((2 : ℝ) ^ (-(dimN c.blocksFun (n0 X J) : ℝ) / 2) * (volU (X.I.n - X.qq) * volU X.qq) /
+    ((∏ i, volU (c.blocksFun i) * (2 : ℝ) ^ ((c.blocksFun i : ℝ) ^ 2 / 2)) *
+      volU (X.I.n - X.qq - J) * volU (X.qq - J))) ^ X.I.f
+
+def nBound (X : CData) (J : ℕ) (c : Composition J) : ℝ :=
+  X.I.rd ^ ((X.I.f : ℝ) * (dimN c.blocksFun (n0 X J) : ℝ) / 2)
+
+def glG (X : CData) (j : ℕ) : ℝ :=
+  X.I.rd ^ ((X.I.f : ℝ) * (j : ℝ) ^ 2) * cn_res X *
+    ∏ l ∈ Finset.Icc 2 j, ‖NumberField.dedekindZeta X.I.E (l : ℂ)‖
+
+def lProd (X : CData) (J : ℕ) : ℝ :=
+  ∏ M ∈ Finset.Ioc (n0 X J) X.I.n, Formalism.HermitianLatticesTheory.lValEta X.I.E M
+
+def gRatio (X : CData) (J : ℕ) : ℝ :=
+  X.I.rd ^ ((X.I.f : ℝ) * ((X.I.n : ℝ) ^ 2 - (n0 X J : ℝ) ^ 2) / 2) * lProd X J
+
+def StepEx (G : GPred) : Prop :=
+  ∀ (X : CData) (n₀ : ℕ) (A : ℝ) (J : ℕ), Hyp X n₀ A J → ∀ (c : Composition J) (D : BaseDatum X.I J),
+    Measurable (fun q : X.I.GA × X.I.GA => q.1 * q.2) → Measurable (PI.IwaMeasEx.tBlk D.toWittFrame c) →
+    ∀ a : admitted c D, ∃ sc : Sc, sc.s ≠ 0 ∧ sc.s ≠ ⊤ ∧ sc.sN ≠ 0 ∧ sc.sN ≠ ⊤ ∧ sc.sM ≠ 0 ∧ sc.sM ≠ ⊤ ∧
+      G X J c D a sc
+
+def StepB (G : GPred) : Prop :=
+  ∀ (X : CData) (n₀ : ℕ) (A : ℝ) (J : ℕ), Hyp X n₀ A J → ∀ (c : Composition J) (D : BaseDatum X.I J)
+    (a : admitted c D) (sc : Sc), G X J c D a sc →
+    a.cIw * sc.s = ENNReal.ofReal (cIG X J c) * (sc.sN * sc.sM)
+
+def StepC (G : GPred) : Prop :=
+  ∀ (X : CData) (n₀ : ℕ) (A : ℝ) (J : ℕ), Hyp X n₀ A J → ∀ (c : Composition J) (D : BaseDatum X.I J)
+    (a : admitted c D) (sc : Sc), G X J c D a sc →
+    sc.sN * a.μN a.FN ≤ ENNReal.ofReal (nBound X J c)
+
+def StepD (G : GPred) : Prop :=
+  ∀ (X : CData) (n₀ : ℕ) (A : ℝ) (J : ℕ), Hyp X n₀ A J → ∀ (c : Composition J) (D : BaseDatum X.I J)
+    (a : admitted c D) (sc : Sc), G X J c D a sc →
+    0 < sc.vU0 ∧ sc.sM * a.VM = ENNReal.ofReal ((∏ i, glG X (c.blocksFun i)) * sc.vU0)
+
+def StepE (G : GPred) : Prop :=
+  ∀ (X : CData) (n₀ : ℕ) (A : ℝ) (J : ℕ), Hyp X n₀ A J → ∀ (c : Composition J) (D : BaseDatum X.I J)
+    (a : admitted c D) (sc : Sc), G X J c D a sc →
+    sc.s * X.I.muA X.μf X.fund = ENNReal.ofReal (sc.vU0 * gRatio X J)
+
+def LPos : Prop :=
+  ∀ (X : CData) (n₀ : ℕ) (A : ℝ) (J : ℕ), Hyp X n₀ A J → 0 < lProd X J
+
+def StepF : Prop :=
+  ∀ (X : CData) (n₀ : ℕ) (A : ℝ) (J : ℕ), Hyp X n₀ A J → ∀ c : Composition J, 0 < lProd X J →
+    cIG X J c * nBound X J c * (∏ i, glG X (c.blocksFun i)) ≤
+      gRatio X J * Formalism.L2.S.S7.DensityConstant.densityConstant X J c
+
+
+theorem rd_nonneg (X : CData) : 0 ≤ X.I.rd := by
+  unfold AutInst.rd
+  exact Real.rpow_nonneg (abs_nonneg _) _
+
+
+end PI.IwaMeasEx.KV
+
+end
+end
+
+section
+noncomputable section
+
+namespace PI.IwaMeasEx.Gauge
+
+open MeasureTheory Topology Filter Set
+open scoped ENNReal NNReal Pointwise
+open Formalism.MainNotions.S
+
+section Riem
+
+variable {n : ℕ}
+
+abbrev MatR (n : ℕ) : Type := EuclideanSpace ℝ (Fin n × Fin n × Bool)
+
+def realifyM (X : Matrix (Fin n) (Fin n) ℂ) : MatR n :=
+  WithLp.toLp 2 (fun p => if p.2.2 then (X p.1 p.2.1).im else (X p.1 p.2.1).re)
+
+def toMat (x : MatR n) : Matrix (Fin n) (Fin n) ℂ := fun i j => ⟨x.ofLp (i, j, false), x.ofLp (i, j, true)⟩
+
+def expU (x : MatR n) : (Matrix (Fin n) (Fin n) ℂ)ˣ := (Matrix.isUnit_exp (toMat x)).unit
+
+variable {ε : Fin n → Bool}
+
+def lieOf (H : Subgroup (Formalism.REAL.UJ ε)) : Set (Matrix (Fin n) (Fin n) ℂ) :=
+  {X | ∀ t : ℝ, ∃ h ∈ H, uMat h = NormedSpace.exp ((t : ℂ) • X)}
+
+def lieSp (H : Subgroup (Formalism.REAL.UJ ε)) : Submodule ℝ (MatR n) :=
+  Submodule.span ℝ (realifyM '' lieOf H)
+
+def conjInv (H : Subgroup (Formalism.REAL.UJ ε)) (y : Formalism.REAL.UJ ε) : Subgroup (Formalism.REAL.UJ ε) :=
+  H.map (MulAut.conj y⁻¹).toMonoidHom
+
+def expSetY (H : Subgroup (Formalism.REAL.UJ ε)) (y : Formalism.REAL.UJ ε) (T : Set (lieSp (conjInv H y))) :
+    Set (Formalism.REAL.UJ ε) :=
+  {g | ∃ x ∈ T, uMat g = uMat y * NormedSpace.exp (toMat (x : MatR n)) * uMat y⁻¹}
+
+structure IsRiem (H : Subgroup (Formalism.REAL.UJ ε)) (y : Formalism.REAL.UJ ε) (R : Measure (Formalism.REAL.UJ ε)) : Prop where
+  sfin : SigmaFinite R
+  ne : R ≠ 0
+  supp : R (H : Set (Formalism.REAL.UJ ε))ᶜ = 0
+  cpt : ∀ s : Set (Formalism.REAL.UJ ε), IsCompact s → R s ≠ ⊤
+  inv : ∀ h ∈ H, R.map (fun x => h * x) = R
+  dens : ∀ S : Set (lieSp (conjInv H y)), MeasurableSet S → Bornology.IsBounded S →
+    0 < (volume : Measure (lieSp (conjInv H y))) S → (volume : Measure (lieSp (conjInv H y))) (frontier S) = 0 →
+    Tendsto (fun r : ℝ => R (expSetY H y (r • S)) / (volume : Measure (lieSp (conjInv H y))) (r • S)) (𝓝[>] 0) (𝓝 1)
+
+def RiemHaar : Prop :=
+  ∀ (n : ℕ) (ε : Fin n → Bool) (H : Subgroup (Formalism.REAL.UJ ε)) (y : Formalism.REAL.UJ ε), IsClosed (H : Set (Formalism.REAL.UJ ε)) →
+    ∃ R, IsRiem H y R
+
+end Riem
+
+end PI.IwaMeasEx.Gauge
+
+end
+end
+
+section
+noncomputable section
+
+namespace PI.IwaMeasEx.Gauge.ZetaZeros
+
+open MeasureTheory Topology Filter Set Metric
+open scoped ENNReal NNReal Pointwise
+open Formalism.MainNotions.S PI.IwaMeasEx.Gauge
+
+section Ratio
+
+variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E] [BorelSpace E]
+  [FiniteDimensional ℝ E]
+
+end Ratio
+
+variable {n : ℕ} {ε : Fin n → Bool}
+
+def haarH (H : Subgroup (Formalism.REAL.UJ ε)) (hc : IsClosed (H : Set (Formalism.REAL.UJ ε))) : Measure (Formalism.REAL.UJ ε) :=
+  haveI : LocallyCompactSpace H := hc.locallyCompactSpace
+  haveI : BorelSpace H := Subtype.borelSpace _
+  (Measure.haar : Measure H).map Subtype.val
+
+def ChartDens : Prop :=
+  ∀ (n : ℕ) (ε : Fin n → Bool) (H : Subgroup (Formalism.REAL.UJ ε)) (y : Formalism.REAL.UJ ε)
+    (hc : IsClosed (H : Set (Formalism.REAL.UJ ε))),
+    ∃ δ : ℝ, 0 < δ ∧ ∃ (j : lieSp (conjInv H y) → ℝ≥0∞) (c : ℝ≥0∞), c ≠ 0 ∧ c ≠ ⊤ ∧
+      Tendsto j (𝓝 0) (𝓝 c) ∧
+      ∀ T : Set (lieSp (conjInv H y)), MeasurableSet T → T ⊆ ball 0 δ →
+        haarH H hc (expSetY H y T) = ∫⁻ x in T, j x
+
+end PI.IwaMeasEx.Gauge.ZetaZeros
+
+end
+end
+
+section
+noncomputable section
+
+namespace PI.IwaMeasEx.Gauge.ZetaZeros
+
+open MeasureTheory Topology Filter Set Metric
+open scoped ENNReal NNReal Pointwise
+open Formalism.MainNotions.S PI.IwaMeasEx.Gauge
+
+variable {n : ℕ} {ε : Fin n → Bool}
+
+def expSet1 (K : Subgroup (Formalism.REAL.UJ ε)) (T : Set (lieSp K)) : Set (Formalism.REAL.UJ ε) :=
+  {g | ∃ x ∈ T, uMat g = NormedSpace.exp (toMat (x : MatR n))}
+
+def ChartDens1 : Prop :=
+  ∀ (n : ℕ) (ε : Fin n → Bool) (K : Subgroup (Formalism.REAL.UJ ε)) (hc : IsClosed (K : Set (Formalism.REAL.UJ ε))),
+    ∃ δ : ℝ, 0 < δ ∧ ∃ (j : lieSp K → ℝ≥0∞) (c : ℝ≥0∞), c ≠ 0 ∧ c ≠ ⊤ ∧
+      Tendsto j (𝓝 0) (𝓝 c) ∧
+      ∀ T : Set (lieSp K), MeasurableSet T → T ⊆ ball 0 δ → haarH K hc (expSet1 K T) = ∫⁻ x in T, j x
+
+theorem mem_conjInv (H : Subgroup (Formalism.REAL.UJ ε)) (y g : Formalism.REAL.UJ ε) :
+    g ∈ conjInv H y ↔ y * g * y⁻¹ ∈ H := by
+  unfold conjInv
+  rw [Subgroup.mem_map]
+  constructor
+  · rintro ⟨h, hh, rfl⟩
+    have e : y * (MulAut.conj y⁻¹).toMonoidHom h * y⁻¹ = h := by
+      simp only [MulEquiv.coe_toMonoidHom, MulAut.conj_apply]
+      group
+    rw [e]
+    exact hh
+  · intro hg
+    refine ⟨y * g * y⁻¹, hg, ?_⟩
+    simp only [MulEquiv.coe_toMonoidHom, MulAut.conj_apply]
+    group
+
+def conjE (H : Subgroup (Formalism.REAL.UJ ε)) (y : Formalism.REAL.UJ ε) : H ≃ₜ* conjInv H y where
+  toFun h := ⟨y⁻¹ * h * y, (mem_conjInv H y _).2 (by
+    rw [show y * (y⁻¹ * (h : Formalism.REAL.UJ ε) * y) * y⁻¹ = h by group]
+    exact h.2)⟩
+  invFun k := ⟨y * k * y⁻¹, (mem_conjInv H y _).1 k.2⟩
+  left_inv h := Subtype.ext (show y * (y⁻¹ * (h : Formalism.REAL.UJ ε) * y) * y⁻¹ = h by group)
+  right_inv k := Subtype.ext (show y⁻¹ * (y * (k : Formalism.REAL.UJ ε) * y⁻¹) * y = k by group)
+  map_mul' a b := Subtype.ext (show y⁻¹ * ((a : Formalism.REAL.UJ ε) * b) * y = (y⁻¹ * a * y) * (y⁻¹ * b * y) by group)
+  continuous_toFun := ((continuous_const.mul continuous_subtype_val).mul continuous_const).subtype_mk _
+  continuous_invFun := ((continuous_const.mul continuous_subtype_val).mul continuous_const).subtype_mk _
+
+end PI.IwaMeasEx.Gauge.ZetaZeros
+
+end
+end
+
+section
+noncomputable section
+
+namespace PI.IwaMeasEx.Gauge.ZetaZeros
+
+open MeasureTheory Topology Filter Set Metric
+open scoped ENNReal NNReal Pointwise
+open Formalism.MainNotions.S PI.IwaMeasEx.Gauge
+
+def LieAdd : Prop :=
+  ∀ (n : ℕ) (ε : Fin n → Bool) (K : Subgroup (Formalism.REAL.UJ ε)), IsClosed (K : Set (Formalism.REAL.UJ ε)) →
+    ∀ X ∈ lieOf K, ∀ Y ∈ lieOf K, X + Y ∈ lieOf K
+
+def ChartAt {n : ℕ} {ε : Fin n → Bool} (K : Subgroup (Formalism.REAL.UJ ε)) (δ : ℝ) (W : Set (Formalism.REAL.UJ ε)) : Prop :=
+  0 < δ ∧ IsOpen W ∧ (1 : Formalism.REAL.UJ ε) ∈ W ∧
+    (∀ x ∈ ball (0 : lieSp K) δ, ∀ x' ∈ ball (0 : lieSp K) δ,
+      NormedSpace.exp (toMat ((x : lieSp K) : MatR n)) = NormedSpace.exp (toMat ((x' : lieSp K) : MatR n)) → x = x') ∧
+    ∀ g ∈ K, g ∈ W → ∃ x ∈ ball (0 : lieSp K) δ, uMat g = NormedSpace.exp (toMat ((x : lieSp K) : MatR n))
+
+def ChartLoc : Prop :=
+  ∀ (n : ℕ) (ε : Fin n → Bool) (K : Subgroup (Formalism.REAL.UJ ε)), IsClosed (K : Set (Formalism.REAL.UJ ε)) →
+    ∀ ρ : ℝ, 0 < ρ → ∃ δ W, δ ≤ ρ ∧ ChartAt K δ W
+
+def LocUniq : Prop :=
+  ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
+    [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (μ ν : Measure G) [μ.IsHaarMeasure]
+    (W : Set G), IsOpen W → (1 : G) ∈ W → ν W ≠ ⊤ →
+    (∀ (x : G) (T : Set G), MeasurableSet T → T ⊆ W → x • T ⊆ W → ν (x • T) = ν T) →
+    ∃ V : Set G, IsOpen V ∧ (1 : G) ∈ V ∧ V ⊆ W ∧ ∃ κ : ℝ≥0∞, κ ≠ ⊤ ∧
+      ∀ S : Set G, MeasurableSet S → S ⊆ V → ν S = κ * μ S
+
+def DensChart : Prop :=
+  ∀ (n : ℕ) (ε : Fin n → Bool) (K : Subgroup (Formalism.REAL.UJ ε)) (hc : IsClosed (K : Set (Formalism.REAL.UJ ε))),
+    (∀ X ∈ lieOf K, ∀ Y ∈ lieOf K, X + Y ∈ lieOf K) → (∀ ρ : ℝ, 0 < ρ → ∃ δ W, δ ≤ ρ ∧ ChartAt K δ W) →
+    ∃ δ : ℝ, 0 < δ ∧ ∃ (j : lieSp K → ℝ≥0∞) (c : ℝ≥0∞), c ≠ 0 ∧ c ≠ ⊤ ∧
+      Tendsto j (𝓝 0) (𝓝 c) ∧
+      ∀ T : Set (lieSp K), MeasurableSet T → T ⊆ ball 0 δ → haarH K hc (expSet1 K T) = ∫⁻ x in T, j x
+
+end PI.IwaMeasEx.Gauge.ZetaZeros
+
+end
+end
+
+section
 noncomputable section
 
 namespace PI.IwaMeasEx.Gauge.ZetaZeros
@@ -194,4 +491,5 @@ end Mat
 
 end PI.IwaMeasEx.Gauge.ZetaZeros
 
+end
 end

@@ -11,24 +11,1042 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NoIntertwinerSma
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EquivariantMapCarriesGelfandInvariantToFunction
 import Development.AbelianVarietyTheory.Statements.HaarFundamentalDomain.ExistsHaarFundDom
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ScalarOfComm
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemRangeMapSubtypeOfContr
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.KerLeFinset
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InclTprodUpdate
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIsKActOfStable
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AbsIrrOfEquiv
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsUnitaryImage
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteSupportOfAdmissible
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfContr
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFiniteDimensionalKill
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CoverKerOfDown
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocKerOfCoverKer
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEmbeddingSkew
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsCuspGrowOfMemSpan
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsLocalFockIntertwinerRealPlaceOfCoverContra
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntegrationByPartsRightDerivativeAdelicQuotient
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffDerivSnoc
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableOfContinuous
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SignBlockDeterminantNeZeroOfMemMaxCompact
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.KMeanMemKFinOfCoefFam
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableOnMulRight
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ItEqSumKMean
 
+section
+noncomputable section
+
+open scoped TensorProduct Classical
+open GlobalTheory.Chain.IoLift
+
+namespace GlobalTheory.TensorContraction
+
+variable {ι : Type} [Fintype ι] {K : ι → Type} [∀ i, AddCommGroup (K i)] [∀ i, Module ℂ (K i)]
+
+theorem prod_update_self [d : DecidableEq ι] (φ : ∀ j, K j →ₗ[ℂ] ℂ) (s : Finset ι) (j : ι) (hj : j ∉ s)
+    (v : ∀ k, K k) (x : K j) :
+    ∏ k ∈ s, φ k (Function.update v j x k) = ∏ k ∈ s, φ k (v k) := by
+  refine Finset.prod_congr rfl fun k hk => ?_
+  have hk' : k ≠ j := fun e => hj (e ▸ hk)
+  rw [Function.update_of_ne hk']
+
+theorem prod_update_mem [d : DecidableEq ι] (φ : ∀ j, K j →ₗ[ℂ] ℂ) (s : Finset ι) (j : ι) (hj : j ∈ s)
+    (v : ∀ k, K k) (x : K j) :
+    ∏ k ∈ s, φ k (Function.update v j x k) = φ j x * ∏ k ∈ s.erase j, φ k (v k) := by
+  rw [← Finset.mul_prod_erase s _ hj, Function.update_self,
+    prod_update_self φ (s.erase j) j (Finset.notMem_erase j s) v x]
+
+def contrM (φ : ∀ j, K j →ₗ[ℂ] ℂ) (s : Finset ι) (i : ι) (hi : i ∉ s) (hs : ∀ j, j ≠ i → j ∈ s) :
+    MultilinearMap ℂ K (K i) where
+  toFun v := (∏ k ∈ s, φ k (v k)) • v i
+  map_update_add' v j x y := by
+    by_cases h : j = i
+    · subst h
+      simp only [prod_update_self φ s j hi, Function.update_self, smul_add]
+    · simp only [prod_update_mem φ s j (hs j h), Function.update_of_ne (Ne.symm h), map_add, add_mul, add_smul]
+  map_update_smul' v j c x := by
+    by_cases h : j = i
+    · subst h
+      simp only [prod_update_self φ s j hi, Function.update_self]
+      rw [smul_comm]
+    · simp only [prod_update_mem φ s j (hs j h), Function.update_of_ne (Ne.symm h), map_smul, smul_eq_mul,
+        mul_assoc, mul_smul]
+
+def contrL (φ : ∀ j, K j →ₗ[ℂ] ℂ) (i : ι) : (⨂[ℂ] j, K j) →ₗ[ℂ] K i :=
+  PiTensorProduct.lift (contrM φ (Finset.univ.erase i) i (Finset.notMem_erase _ _)
+    fun j h => Finset.mem_erase.2 ⟨h, Finset.mem_univ j⟩)
+
+theorem contrL_tprod (φ : ∀ j, K j →ₗ[ℂ] ℂ) (i : ι) (v : ∀ j, K j) :
+    contrL φ i (PiTensorProduct.tprod ℂ v) = (∏ k ∈ Finset.univ.erase i, φ k (v k)) • v i := by
+  rw [contrL, PiTensorProduct.lift.tprod]
+  rfl
+
+theorem contrL_comp_mapFactor (φ : ∀ j, K j →ₗ[ℂ] ℂ) (i : ι) (f : Module.End ℂ (K i)) :
+    contrL φ i ∘ₗ intersection_update_fsHerm_neg_one i f = f ∘ₗ contrL φ i := by
+  apply PiTensorProduct.ext
+  refine MultilinearMap.ext fun v => ?_
+  simp only [LinearMap.compMultilinearMap_apply, LinearMap.comp_apply, position_tprod, contrL_tprod]
+  rw [prod_update_self φ _ i (Finset.notMem_erase i _), Function.update_self, map_smul]
+
+private theorem eq_zero_of_contrL_eq_zero (i : ι) (z : ⨂[ℂ] j, K j)
+    (h : ∀ φ : ∀ j, K j →ₗ[ℂ] ℂ, contrL φ i z = 0) : z = 0 := by
+  let b : ∀ j, Module.Basis (Module.Basis.ofVectorSpaceIndex ℂ (K j)) ℂ (K j) :=
+    fun j => Module.Basis.ofVectorSpace ℂ (K j)
+  let B := Basis.piTensorProduct b
+  refine B.forall_coord_eq_zero_iff.1 fun p => ?_
+  let φ : ∀ j, K j →ₗ[ℂ] ℂ := fun j => (b j).coord (p j)
+  have key : B.coord p = (b i).coord (p i) ∘ₗ contrL φ i := by
+    apply PiTensorProduct.ext
+    refine MultilinearMap.ext fun v => ?_
+    simp only [LinearMap.compMultilinearMap_apply, LinearMap.comp_apply, contrL_tprod, map_smul, smul_eq_mul, Module.Basis.coord_apply, B,
+      Basis.piTensorProduct_repr_tprod_apply, φ]
+    rw [Finset.prod_erase_mul _ _ (Finset.mem_univ i)]
+  rw [key, LinearMap.comp_apply, h φ, map_zero]
+
+theorem eq_of_contrL (i : ι) (x y : ⨂[ℂ] j, K j) (h : ∀ φ : ∀ j, K j →ₗ[ℂ] ℂ, contrL φ i x = contrL φ i y) :
+    x = y := by
+  rw [← sub_eq_zero]
+  exact eq_zero_of_contrL_eq_zero i (x - y) fun φ => by rw [map_sub, h φ, sub_self]
+
+private theorem piTensorProduct_map_ite_eq_self_of_slot_fixed (p : ∀ j, Module.End ℂ (K j)) (x : ⨂[ℂ] j, K j)
+    (h : ∀ i, intersection_update_fsHerm_neg_one i (p i) x = x) (s : Finset ι) :
+    PiTensorProduct.map (fun j => if j ∈ s then p j else LinearMap.id) x = x := by
+  induction s using Finset.induction_on with
+  | empty => simp [PiTensorProduct.map_id]
+  | insert a s ha ih =>
+    have e : (fun j => if j ∈ insert a s then p j else (LinearMap.id : Module.End ℂ (K j))) =
+        fun j => Function.update (fun j => (LinearMap.id : K j →ₗ[ℂ] K j)) a (p a) j ∘ₗ
+          (if j ∈ s then p j else LinearMap.id) := by
+      funext j
+      by_cases hj : j = a
+      · subst hj
+        simp [ha]
+      · simp [hj]
+    rw [e, PiTensorProduct.map_comp, LinearMap.comp_apply, ih]
+    exact h a
+
+theorem map_eq_self (p : ∀ j, Module.End ℂ (K j)) (x : ⨂[ℂ] j, K j) (h : ∀ i, intersection_update_fsHerm_neg_one i (p i) x = x) :
+    PiTensorProduct.map p x = x := by
+  simpa using piTensorProduct_map_ite_eq_self_of_slot_fixed p x h Finset.univ
+
+theorem mem_range_map (ι : Type) [Fintype ι] (K : ι → Type) [∀ i, AddCommGroup (K i)] [∀ i, Module ℂ (K i)]
+    (N : ∀ i, Submodule ℂ (K i)) (x : ⨂[ℂ] i, K i)
+    (h : ∀ (i : ι) (L : (⨂[ℂ] j, K j) →ₗ[ℂ] K i), (∀ f : Module.End ℂ (K i), L ∘ₗ intersection_update_fsHerm_neg_one i f = f ∘ₗ L) → L x ∈ N i) :
+    x ∈ LinearMap.range (PiTensorProduct.map fun i => (N i).subtype) := by
+
+  have hN : ∀ i, ∀ φ : ∀ j, K j →ₗ[ℂ] ℂ, contrL φ i x ∈ N i :=
+    fun i φ => h i (contrL φ i) (contrL_comp_mapFactor φ i)
+
+  choose g hg using fun i => LinearMap.exists_leftInverse_of_injective (N i).subtype (N i).ker_subtype
+  let P : ∀ i, Module.End ℂ (K i) := fun i => (N i).subtype ∘ₗ g i
+  have hP : ∀ i, ∀ v ∈ N i, P i v = v := fun i v hv => by
+    have := congrArg (fun f => (N i).subtype (f ⟨v, hv⟩)) (hg i)
+    simpa [P] using this
+
+  have hfix : ∀ i, intersection_update_fsHerm_neg_one i (P i) x = x := fun i =>
+    eq_of_contrL i _ _ fun φ => by
+      rw [← LinearMap.comp_apply (contrL φ i), contrL_comp_mapFactor, LinearMap.comp_apply, hP i _ (hN i φ)]
+  rw [LinearMap.mem_range]
+  refine ⟨PiTensorProduct.map g x, ?_⟩
+  rw [← LinearMap.comp_apply, ← PiTensorProduct.map_comp]
+  exact map_eq_self P x hfix
+
+end GlobalTheory.TensorContraction
+
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
+open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec KMap maxCpt rep_mem_kFin)
+open scoped TensorProduct InnerProductSpace Classical
+open GlobalTheory.Chain.IoLift
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.Chain.IoLift
+
+theorem mem_range_map_subtype_of_contr (ι : Type) [Fintype ι] (K : ι → Type) [∀ i, AddCommGroup (K i)]
+    [∀ i, Module ℂ (K i)] (N : ∀ i, Submodule ℂ (K i)) (x : ⨂[ℂ] i, K i)
+    (h : ∀ i (L : (⨂[ℂ] j, K j) →ₗ[ℂ] K i), (∀ f : Module.End ℂ (K i), L ∘ₗ intersection_update_fsHerm_neg_one i f = f ∘ₗ L) → L x ∈ N i) :
+    x ∈ LinearMap.range (PiTensorProduct.map fun i => (N i).subtype) := by
+  first
+  | exact @_root_.GlobalTheory.TensorContraction.mem_range_map
+  | exact _root_.GlobalTheory.TensorContraction.mem_range_map
+  | (apply _root_.GlobalTheory.TensorContraction.mem_range_map <;> assumption)
+  | (intros; apply _root_.GlobalTheory.TensorContraction.mem_range_map <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.TensorContraction.mem_range_map <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.TensorContraction.mem_range_map ..)
+
+end GlobalTheory.Chain.IoLift
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
+open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec KMap maxCpt rep_mem_kFin)
+open scoped TensorProduct InnerProductSpace Classical
+open GlobalTheory.Chain.IoLift
+
+namespace GlobalTheory.Chain.IoLift.Factor
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+theorem kerLe_finset {A B Z₁ Z₂ σ : Type} [AddCommMonoid Z₁] [AddCommMonoid Z₂] {q₁ : A → B → Z₁} {q₂ : A → B → Z₂}
+    (h : KerLe q₁ q₂) (s : Finset σ) (a : σ → A) (b : σ → B) (h0 : ∑ r ∈ s, q₁ (a r) (b r) = 0) :
+    ∑ r ∈ s, q₂ (a r) (b r) = 0 := by
+  have e := s.equivFin.symm
+  rw [← Finset.sum_coe_sort s, ← e.sum_comp] at h0 ⊢
+  exact h _ (fun k => a (e k)) (fun k => b (e k)) h0
+
+theorem section_eq {ι : Type} [Fintype ι] {N K : ι → Type} [∀ i, AddCommGroup (K i)] [∀ i, Module ℂ (K i)]
+    [∀ i, AddCommGroup (N i)] [∀ i, Module ℂ (N i)] {Z : Type} [AddCommGroup Z] [Module ℂ Z]
+    (α : ∀ i, N i →ₗ[ℂ] K i) (s : ∀ i, K i →ₗ[ℂ] N i) (hs : ∀ i x, α i (s i x) = x)
+    (M : MultilinearMap ℂ N Z) (hM : ∀ n i z, α i z = 0 → M (Function.update n i z) = 0) (n : ∀ i, N i) :
+    M (fun i => s i (α i (n i))) = M n := by
+  have key : ∀ S : Finset ι, M (S.piecewise (fun i => s i (α i (n i))) n) = M n := by
+    intro S
+    induction S using Finset.induction_on with
+    | empty => simp
+    | insert j S hj ih =>
+      rw [Finset.piecewise_insert, ← ih]
+      have h1 := hM (S.piecewise (fun i => s i (α i (n i))) n) j (s j (α j (n j)) - n j) (by simp [hs])
+      rw [MultilinearMap.map_update_sub, sub_eq_zero] at h1
+      rw [h1]
+      congr 1
+      rw [Function.update_eq_self_iff, Finset.piecewise_eq_of_notMem _ _ _ hj]
+  simpa using key Finset.univ
+
+theorem factor :
+    ∀ (ι : Type) [Fintype ι] (K : ι → Type) [∀ i, AddCommGroup (K i)] [∀ i, Module ℂ (K i)] (P Y : ι → Type) [∀ i, AddCommGroup (P i)] [∀ i, Module ℂ (P i)] [∀ i, AddCommGroup (Y i)] [∀ i, Module ℂ (Y i)] (A : ∀ i, P i →ₗ[ℂ] Y i →ₗ[ℂ] K i), (∀ i, Submodule.span ℂ {x | ∃ p y, A i p y = x} = ⊤) → Submodule.span ℂ {x : ⨂[ℂ] i, K i | ∃ (p : ∀ i, P i) (y : ∀ i, Y i), PiTensorProduct.tprod ℂ (fun i => A i (p i) (y i)) = x} = ⊤ ∧ ∀ (Z : Type) [AddCommGroup Z] [Module ℂ Z] (B : MultilinearMap ℂ P (MultilinearMap ℂ Y Z)), (∀ i p y, KerLe (fun x z => A i x z) fun x z => B (Function.update p i x) (Function.update y i z)) → ∃ T : (⨂[ℂ] i, K i) →ₗ[ℂ] Z, ∀ p y, T (PiTensorProduct.tprod ℂ fun i => A i (p i) (y i)) = B p y := by
+  intro ι _ K _ _ P Y _ _ _ _ A hA
+  let α : ∀ i, (P i × Y i →₀ ℂ) →ₗ[ℂ] K i := fun i => Finsupp.linearCombination ℂ fun r => A i r.1 r.2
+  have hα : ∀ i, LinearMap.range (α i) = ⊤ := by
+    intro i
+    rw [Finsupp.range_linearCombination, ← hA i]
+    congr 1
+    ext x
+    simp
+  choose s hs using fun i => (α i).exists_rightInverse_of_surjective (hα i)
+  have hs' : ∀ i x, α i (s i x) = x := fun i x => LinearMap.congr_fun (hs i) x
+  let b0 : ∀ i, Module.Basis (P i × Y i) ℂ (P i × Y i →₀ ℂ) := fun i => Finsupp.basisSingleOne
+  have hb0 : ∀ i r, α i (b0 i r) = A i r.1 r.2 := by
+    intro i r
+    simp [α, b0]
+  let b := Basis.piTensorProduct b0
+  refine ⟨?_, ?_⟩
+  · have hsurj : LinearMap.range (PiTensorProduct.map α) = ⊤ := by
+      rw [LinearMap.range_eq_top]
+      intro t
+      refine ⟨PiTensorProduct.map s t, ?_⟩
+      rw [← LinearMap.comp_apply, ← PiTensorProduct.map_comp]
+      simp [hs]
+    rw [LinearMap.range_eq_map, ← b.span_eq, Submodule.map_span] at hsurj
+    rw [eq_top_iff, ← hsurj]
+    apply Submodule.span_mono
+    rintro _ ⟨_, ⟨q, rfl⟩, rfl⟩
+    refine ⟨fun i => (q i).1, fun i => (q i).2, ?_⟩
+    simp [b, hb0]
+  · intro Z _ _ B hB
+    let M : MultilinearMap ℂ (fun i => P i × Y i →₀ ℂ) Z :=
+      (b.constr ℂ fun q => B (fun i => (q i).1) (fun i => (q i).2)).compMultilinearMap (PiTensorProduct.tprod ℂ)
+    have hMb : ∀ q : ∀ i, P i × Y i, M (fun i => b0 i (q i)) = B (fun i => (q i).1) (fun i => (q i).2) := by
+      intro q
+      simp only [M, LinearMap.compMultilinearMap_apply]
+      rw [← Basis.piTensorProduct_apply b0 q]
+      exact b.constr_basis ℂ _ q
+    have hM0 : ∀ (q : ∀ i, P i × Y i) i z, α i z = 0 → M (Function.update (fun i => b0 i (q i)) i z) = 0 := by
+      intro q i z hz
+      have h1 : ∀ r, M (Function.update (fun i => b0 i (q i)) i (b0 i r)) =
+          B (Function.update (fun i => (q i).1) i r.1) (Function.update (fun i => (q i).2) i r.2) := by
+        intro r
+        have := hMb (Function.update q i r)
+        convert this using 2 <;> [skip; congr 1; skip] <;> funext j <;> by_cases h : j = i <;>
+          first | (subst h; simp) | simp [h]
+      have h2 : M (Function.update (fun i => b0 i (q i)) i z) = ∑ r ∈ z.support,
+          B (Function.update (fun i => (q i).1) i (z r • r.1)) (Function.update (fun i => (q i).2) i r.2) := by
+        have hz' : z = ∑ r ∈ z.support, z r • b0 i r := by
+          conv_lhs => rw [← Finsupp.sum_single z]
+          simp [Finsupp.sum, b0]
+        conv_lhs => rw [hz']
+        rw [MultilinearMap.map_update_sum]
+        refine Finset.sum_congr rfl fun r _ => ?_
+        rw [MultilinearMap.map_update_smul, MultilinearMap.map_update_smul, h1]
+        rfl
+      rw [h2]
+      refine kerLe_finset (hB i (fun i => (q i).1) (fun i => (q i).2)) z.support (fun r => z r • r.1)
+        (fun r => r.2) ?_
+      simpa [α, Finsupp.linearCombination_apply, Finsupp.sum] using hz
+    have hM : ∀ n i z, α i z = 0 → M (Function.update n i z) = 0 := by
+      intro n i z hz
+      let φ : (P i × Y i →₀ ℂ) →ₗ[ℂ] (P i × Y i →₀ ℂ) := Finsupp.linearCombination ℂ fun _ => z
+      have hφ : ∀ r, φ (b0 i r) = z := by
+        intro r
+        simp [φ, b0]
+      let f : ∀ j, (P j × Y j →₀ ℂ) →ₗ[ℂ] (P j × Y j →₀ ℂ) := Function.update (fun j => LinearMap.id) i φ
+      have hf : ∀ m : ∀ j, (P j × Y j →₀ ℂ), (fun j => f j (m j)) = Function.update m i (φ (m i)) := by
+        intro m
+        funext j
+        by_cases h : j = i
+        · subst h; simp [f]
+        · simp [f, h]
+      have h0 : M.compLinearMap f = 0 := by
+        refine Module.Basis.ext_multilinear b0 fun q => ?_
+        rw [MultilinearMap.compLinearMap_apply, hf, hφ]
+        exact hM0 q i z hz
+      have := congrArg (fun F => F (Function.update n i (b0 i 0))) h0
+      simpa [hf, hφ] using this
+    refine ⟨PiTensorProduct.lift (M.compLinearMap s), fun p y => ?_⟩
+    rw [PiTensorProduct.lift.tprod, MultilinearMap.compLinearMap_apply, ← hMb fun i => (p i, y i),
+      ← section_eq α s hs' M hM fun i => b0 i (p i, y i)]
+    simp only [hb0]
+
+end GlobalTheory.Chain.IoLift.Factor
+
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
+open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec KMap maxCpt rep_mem_kFin)
+open scoped TensorProduct InnerProductSpace Classical
+open GlobalTheory.Chain.IoLift
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.Chain.IoLift
+
+theorem adjZ_eq_neg_of_mem_upq {p q : ℕ} {Z : Mat p q} (h : Z ∈ upq p q) : adjZ Z = -Z := by
+  have h0 : Zᴴ * Jm p q + Jm p q * Z = 0 := h
+  have h1 : Zᴴ * Jm p q = -(Jm p q * Z) := eq_neg_of_add_eq_zero_left h0
+  rw [adjZ, Matrix.mul_assoc, h1, Matrix.mul_neg, ← Matrix.mul_assoc,
+    GlobalTheory.InvPairingTensor.Jm_mul_self, Matrix.one_mul]
+
+theorem finiteSupport_of_admissible :
+    ∀ (p q r s : ℕ) (T : GrpData r s) (R : DSRep T), Formalism.MainNotions.SchurIrreducible.AdmGK R.HK → FiniteSupport p q R := by
+  intro p q r s T R hA A _ _ B hB P
+  refine GlobalTheory.InvPairingTensor.exists_finiteDimensional_kill R hA B (fun Z hZ Q y => ?_) P
+  rw [hB Z Q y, adjZ_eq_neg_of_mem_upq hZ, map_neg, LinearMap.neg_apply, map_neg, neg_add_cancel]
+
+end GlobalTheory.Chain.IoLift
+end
+
+section
+noncomputable section
+
+open scoped TensorProduct InnerProductSpace Classical
+
+namespace GlobalTheory.Chain.IoLift.TensorFormProof
+
+open GlobalTheory.Chain.IoLift
+
+variable {A V H : Type} [AddCommGroup A] [Module ℂ A] [AddCommGroup V] [Module ℂ V] [NormedAddCommGroup H]
+    [InnerProductSpace ℂ H]
+
+theorem contr_tmul (ι : V →ₗ[ℂ] H) (y : V) (a : A) (v : V) :
+    contr ι y (a ⊗ₜ[ℂ] v) = ⟪ι y, ι v⟫_ℂ • a := by
+  unfold contr
+  rw [LinearMap.comp_apply, LinearMap.lTensor_tmul, LinearMap.comp_apply, innerₛₗ_apply_apply]
+  exact TensorProduct.rid_tmul _ _
+
+theorem dual_contr (ι : V →ₗ[ℂ] H) (y : V) (l : A →ₗ[ℂ] ℂ) (t : A ⊗[ℂ] V) :
+    l (contr ι y t) = ⟪ι y, ι (TensorProduct.lid ℂ V (LinearMap.rTensor V l t))⟫_ℂ := by
+  induction t using TensorProduct.induction_on with
+  | zero => simp
+  | tmul a v =>
+    rw [contr_tmul, map_smul, LinearMap.rTensor_tmul, TensorProduct.lid_tmul, map_smul, inner_smul_right,
+      smul_eq_mul, mul_comm]
+  | add s u hs hu => simp only [map_add, inner_add_right, hs, hu]
+
+theorem eq_zero_of_contr (ι : V →ₗ[ℂ] H) (hι : Function.Injective ι) (t : A ⊗[ℂ] V)
+    (h : ∀ y, contr ι y t = 0) : t = 0 := by
+
+  have hl : ∀ l : A →ₗ[ℂ] ℂ, LinearMap.rTensor V l t = 0 := by
+    intro l
+    set w := TensorProduct.lid ℂ V (LinearMap.rTensor V l t) with hw
+    have h0 : ⟪ι w, ι w⟫_ℂ = 0 := by
+      have := dual_contr ι w l t
+      rw [h w, map_zero] at this
+      exact this.symm
+    have hw0 : w = 0 := hι ((inner_self_eq_zero.mp h0).trans (map_zero ι).symm)
+    rw [hw] at hw0
+    exact (LinearEquiv.map_eq_zero_iff _).mp hw0
+
+  let e := (Module.Basis.ofVectorSpace ℂ A).repr
+  have hs : TensorProduct.finsuppScalarLeft ℂ V _ (LinearMap.rTensor V e.toLinearMap t) = 0 := by
+    ext i
+    rw [TensorProduct.finsuppScalarLeft_apply, ← LinearMap.rTensor_comp_apply, hl, map_zero]
+    rfl
+  have h2 : LinearMap.rTensor V e.toLinearMap t = 0 := (LinearEquiv.map_eq_zero_iff _).mp hs
+  have h3 := congrArg (LinearMap.rTensor V e.symm.toLinearMap) h2
+  rwa [← LinearMap.rTensor_comp_apply, LinearEquiv.symm_comp, LinearMap.rTensor_id_apply, map_zero] at h3
+
+theorem exists_tensor (ι : V →ₗ[ℂ] H) (β : V →ₛₗ[starRingEnd ℂ] A) (E : Submodule ℂ V) [FiniteDimensional ℂ E]
+    (h : ∀ y, (∀ e ∈ E, ⟪ι y, ι e⟫_ℂ = 0) → β y = 0) : ∃ t : A ⊗[ℂ] V, ∀ y, contr ι y t = β y := by
+
+  set F : Submodule ℂ H := E.map ι with hF
+  haveI : FiniteDimensional ℂ F := by rw [hF]; infer_instance
+  let b := stdOrthonormalBasis ℂ F
+  have hpre : ∀ k, ∃ e : V, e ∈ E ∧ ι e = (b k : H) := fun k => Submodule.mem_map.mp (b k).2
+  choose e heE he using hpre
+  refine ⟨∑ k, β (e k) ⊗ₜ[ℂ] e k, fun y => ?_⟩
+  rw [map_sum]
+  simp only [contr_tmul, he]
+
+  set z : V := ∑ k, ⟪(b k : H), ι y⟫_ℂ • e k with hz
+  have hperp : ∀ x ∈ E, ⟪ι (y - z), ι x⟫_ℂ = 0 := by
+    intro x hx
+    have hxF : ι x ∈ F := Submodule.mem_map_of_mem hx
+    have hx' : ι x = ∑ j, ⟪(b j : H), ι x⟫_ℂ • (b j : H) := by
+      have := congrArg Subtype.val (b.sum_repr' ⟨ι x, hxF⟩)
+      simpa [Submodule.coe_inner] using this.symm
+    have key : ⟪ι y, ι x⟫_ℂ = ∑ j, ⟪ι y, (b j : H)⟫_ℂ * ⟪(b j : H), ι x⟫_ℂ := by
+      conv_lhs => rw [hx']
+      rw [inner_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [inner_smul_right, mul_comm]
+    simp only [hz, map_sub, map_sum, map_smul, he, inner_sub_left, sum_inner, inner_smul_left, inner_conj_symm]
+    rw [key, sub_self]
+  have hyz := h (y - z) hperp
+  rw [map_sub, sub_eq_zero] at hyz
+  rw [hyz, hz, map_sum]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [LinearMap.map_smulₛₗ, inner_conj_symm]
+
+theorem tensorForm : TensorForm := by
+  intro U A V H _ _ _ _ _ _ _ _ ι hι
+  have sep : ∀ s u : A ⊗[ℂ] V, (∀ y, contr ι y s = contr ι y u) → s = u := fun s u hsu =>
+    sub_eq_zero.mp (eq_zero_of_contr ι hι _ fun y => by rw [map_sub, hsu, sub_self])
+  refine ⟨fun t ht => eq_zero_of_contr ι hι t ht, fun B hB => ?_⟩
+  have hex : ∀ P, ∃ t : A ⊗[ℂ] V, ∀ y, contr ι y t = B P y := by
+    intro P
+    obtain ⟨E, hE, hk⟩ := hB P
+    exact exists_tensor ι (B P) E hk
+  choose g hg using hex
+  exact ⟨{ toFun := g
+           map_add' := fun P Q => sep _ _ fun y => by simp [hg]
+           map_smul' := fun c P => sep _ _ fun y => by simp [hg] }, hg⟩
+
+end GlobalTheory.Chain.IoLift.TensorFormProof
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
+open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec KMap maxCpt rep_mem_kFin)
+open scoped TensorProduct InnerProductSpace Classical
+open GlobalTheory.Chain.IoLift GlobalTheory.IndefiniteRowSideFullHecke.BarMatrix GlobalTheory.Chain.RealIt.LocalFromCover
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.Chain.IoLift.KerTransfer
+
+theorem locKer_of_coverKer (D : D7) (V W : HSp D) (S S' : D.what₂.Tau → SPar) (M : DSModel V S) (M' : DSModel W S')
+    (τ : D.what₂.Tau) (p q r s : ℕ) (T₁ : GrpData p q) (T₂ : GrpData r s) (R₁ : DSRep T₁) (R₂ : DSRep T₂)
+    (e : Ix p q ≃ Fin V.rank) (e' : Ix r s ≃ Fin W.rank) (m m' : ℤ) (aS aT : ℚ) (U : M.H τ → R₁.U.H)
+    (U' : M'.H τ ≃ₗᵢ⋆[ℂ] R₂.U.H) (κ : LPol W.rank V.rank ≃ₗ[ℂ] Pol p q r s)
+    (a' : Matrix (Fin W.rank) (Fin W.rank) ℂ → Module.End ℂ (kFin M' τ)) (hm' : (m' : ℚ) = 2 * aS)
+    (h₁ : Matches R₁ M τ (barMat e) m U) (h₂ : Matches R₂ M' τ (plainMat e') m' U')
+    (hκ : IsPolyIso (M.ε τ) (M'.ε τ) e e' κ) (ha : IsKAct M' τ a') (hC : CoverKer p q R₂.HK) :
+    LocKer M M' τ aS aT a' := by
+  have hmC' : (m' : ℂ) = 2 * (aS : ℂ) := by exact_mod_cast hm'
+  have hmem : ∀ v, U'.symm (R₂.ι v) ∈ kFin M' τ := fun v =>
+    (h₂.kfin _).2 ⟨v, (U'.apply_symm_apply _).symm⟩
+  let j : R₂.HK.V →ₛₗ[starRingEnd ℂ] kFin M' τ :=
+    { toFun := fun v => ⟨U'.symm (R₂.ι v), hmem v⟩
+      map_add' := fun v w => Subtype.ext (by simp)
+      map_smul' := fun c v => Subtype.ext (by simp [LinearIsometryEquiv.map_smulₛₗ]) }
+  have hj : ∀ v, U' (j v : M'.H τ) = R₂.ι v := fun v => U'.apply_symm_apply _
+  have hsurj : Function.Surjective j := fun y => by
+    obtain ⟨v, hv⟩ := (h₂.kfin y).1 y.2
+    exact ⟨v, Subtype.ext (U'.injective (by rw [hj, hv]))⟩
+  have key : ∀ (Z : Type) [NormedAddCommGroup Z] [InnerProductSpace ℂ Z]
+      (B : LPol W.rank V.rank →ₗ[ℂ] kFin M' τ →ₗ[ℂ] Z), IsLocPair M M' τ aS aT a' B →
+      ∃ B' : Pol p q r s →ₗ[ℂ] R₂.HK.V →ₛₗ[starRingEnd ℂ] Z, IsCoverPair R₂.HK B' ∧
+        ∀ P v, B' (κ P) v = B P (j v) := by
+    intro Z _ _ B hB
+    let B' : Pol p q r s →ₗ[ℂ] R₂.HK.V →ₛₗ[starRingEnd ℂ] Z :=
+      { toFun := fun P => (B (κ.symm P)).comp j
+        map_add' := fun P Q => by ext v; simp
+        map_smul' := fun c P => by ext v; simp }
+    have hB' : ∀ P v, B' (κ P) v = B P (j v) := fun P v => by simp [B']
+    refine ⟨B', ⟨fun X hX P P' y y' => ?_, fun Y hY P y => ?_⟩, hB'⟩
+    · obtain ⟨P, rfl⟩ := κ.surjective P
+      obtain ⟨P', rfl⟩ := κ.surjective P'
+      have hX' : toFrame M τ (barMat e X) ∈ lieAt V τ := h₁.lie ▸ ⟨X, hX, rfl⟩
+      have h3 : (barMat e X).map (starRingEnd ℂ) = Matrix.reindex e e X := by ext a b; simp [barMat]
+      have h4 : (barMat e X).trace = -X.trace := by
+        rw [barMat, trace_reindex', ← trace_conj hX]
+        simp [Matrix.trace]
+      have h := hB.skew _ hX' P P' (j y) (j y')
+      simp only [sOp, fr_toFrame, trace_toFrame, h3, h4, LinearMap.add_apply, LinearMap.smul_apply,
+        Module.End.one_apply, map_add, map_smul, inner_add_left, inner_add_right, inner_smul_left,
+        inner_smul_right, map_neg, map_mul, map_ratCast, trace_conj hX] at h
+      rw [← hκ.1, ← hκ.1, hB', hB', hB', hB']
+      linear_combination h
+    · obtain ⟨P, rfl⟩ := κ.surjective P
+      have hY' : toFrame M' τ (plainMat e' Y) ∈ lieAt W τ := h₂.lie ▸ ⟨Y, hY, rfl⟩
+      have h4 : (plainMat e' Y).trace = Y.trace := trace_reindex' e' Y
+      have h5 : a' (toFrame M' τ (plainMat e' Y)) (j y) = j (R₂.HK.act Y y) - ((aS : ℂ) * Y.trace) • j y := by
+        have h6 : a' (toFrame M' τ (plainMat e' Y)) (j y) =
+            j (R₂.HK.act Y y + ((m' : ℂ) / 2 * Y.trace) • y) := by
+          refine Subtype.ext (U'.injective ?_)
+          rw [hj, ← h₂.der Y hY y _ (hj y), dRep, (ha.der _ hY' (j y)).deriv]
+        rw [h6, map_add, LinearMap.map_smulₛₗ, map_mul, map_div₀, map_intCast, map_ofNat, trace_conj hY, hmC',
+          sub_eq_add_neg, ← neg_smul]
+        congr 2
+        ring
+      have h := hB.inv _ hY' P (j y)
+      rw [h5, tOp, fr_toFrame, trace_toFrame, h4] at h
+      rw [← hκ.2, hB', hB', ← h]
+      simp [plainMat]
+  intro Z₁ Z₂ _ _ _ _ B₁ B₂ hB₁ hB₂ hne n a b hs
+  obtain ⟨C₁, hC₁, e₁⟩ := key Z₁ B₁ hB₁
+  obtain ⟨C₂, hC₂, e₂⟩ := key Z₂ B₂ hB₂
+  choose g hg using hsurj
+  have hne' : C₁ ≠ 0 := fun h0 => hne (LinearMap.ext fun P => LinearMap.ext fun y => by
+    rw [← hg y, ← e₁, h0]; rfl)
+  have h := hC Z₁ Z₂ C₁ C₂ hC₁ hC₂ hne' n (fun i => κ (a i)) (fun i => g (b i)) (by simpa [e₁, hg] using hs)
+  simpa [e₂, hg] using h
+
+end GlobalTheory.Chain.IoLift.KerTransfer
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
+open scoped TensorProduct InnerProductSpace Classical
+open GlobalTheory.Chain.IoLift
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.Chain.CuspL2
+
+theorem exists_toLp_ext {G : Type} [MeasurableSpace G] (ν : Measure G) :
+    ∃ E : (G → ℂ) →ₗ[ℂ] Lp ℂ 2 ν, ∀ φ, MemLp φ 2 ν → E φ =ᵐ[ν] φ := by
+  classical
+  let S : Submodule ℂ (G → ℂ) :=
+    { carrier := {φ | MemLp φ 2 ν}
+      add_mem' := fun ha hb => ha.add hb
+      zero_mem' := by
+        first
+          | exact MemLp.zero
+          | exact MemLp.zero'
+          | exact zero_memLp
+          | simp
+      smul_mem' := fun c _ h => h.const_smul c }
+  let f : S →ₗ[ℂ] Lp ℂ 2 ν :=
+    { toFun := fun φ => MemLp.toLp (φ : G → ℂ) φ.2
+      map_add' := fun φ ψ => MemLp.toLp_add φ.2 ψ.2
+      map_smul' := fun c φ => MemLp.toLp_const_smul c φ.2 }
+  obtain ⟨E, hE⟩ := LinearMap.exists_extend f
+  refine ⟨E, fun φ hφ => ?_⟩
+  have hval : E φ = f ⟨φ, hφ⟩ := LinearMap.congr_fun hE ⟨φ, hφ⟩
+  rw [hval]
+  exact MemLp.coeFn_toLp hφ
+
+theorem inner_eq {G : Type} [MeasurableSpace G] {ν : Measure G} {f f' : Lp ℂ 2 ν} {φ φ' : G → ℂ}
+    (h : f =ᵐ[ν] φ) (h' : f' =ᵐ[ν] φ') : ⟪f, f'⟫_ℂ = ∫ g, (starRingEnd ℂ) (φ g) * φ' g ∂ν := by
+  rw [MeasureTheory.L2.inner_def]
+  refine integral_congr_ae ?_
+  filter_upwards [h, h'] with g hg hg'
+  rw [hg, hg']
+  first
+    | (rw [RCLike.inner_apply]; try ring)
+    | simp [mul_comm]
+
+variable {D : D7} {θ : InfFam D} {V : HSp D}
+
+theorem bounded (hP : GlobalTheory.Published.CuspDecaySobolev) (hθ : IsInfFam θ) {φ : GA D V → ℂ} (h : IsCuspGrow θ V φ) :
+    ∃ B : ℝ, ∀ g, ‖φ g‖ ≤ B := by
+  obtain ⟨ha, hs, hc, hg⟩ := h
+  obtain ⟨-, -, hd⟩ := GlobalTheory.Size.rapidDec_of_cuspDecaySobolev hP hθ ha hs hg hc
+  obtain ⟨C, hC⟩ := hd 0
+  exact ⟨C, fun g => by simpa using hC g⟩
+
+theorem conj_mul {G : Type} [TopologicalSpace G] {φ φ' : G → ℂ} (c : Continuous φ) (c' : Continuous φ')
+    (b : ∃ B : ℝ, ∀ g, ‖φ g‖ ≤ B) (b' : ∃ B : ℝ, ∀ g, ‖φ' g‖ ≤ B) :
+    Continuous (fun g => (starRingEnd ℂ) (φ g) * φ' g) ∧ ∃ B : ℝ, ∀ g, ‖(starRingEnd ℂ) (φ g) * φ' g‖ ≤ B := by
+  obtain ⟨B, hB⟩ := b
+  obtain ⟨B', hB'⟩ := b'
+  refine ⟨(Complex.continuous_conj.comp c).mul c', max B 0 * max B' 0, fun g => ?_⟩
+  calc ‖(starRingEnd ℂ) (φ g) * φ' g‖ = ‖φ g‖ * ‖φ' g‖ := by simp [norm_mul]
+    _ ≤ max B 0 * max B' 0 :=
+      mul_le_mul ((hB g).trans (le_max_left _ _)) ((hB' g).trans (le_max_left _ _)) (norm_nonneg _)
+        (le_max_right _ _)
+
+theorem exists_embedding_skew : GlobalTheory.Published.CuspDecaySobolev → ∀ (D : D7) (θ : InfFam D) (V : HSp D) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)), IsInfFam θ → μ.IsHaarMeasure → IsFundamentalDomain (GQ V) 𝓕 μ → ∃ E : (GA D V → ℂ) →ₗ[ℂ] Lp ℂ 2 (μ.restrict 𝓕), (∀ φ, IsCuspGrow θ V φ → MemLp φ 2 (μ.restrict 𝓕) ∧ (E φ = 0 → φ = 0)) ∧ ∀ τ, ∀ X ∈ lieAt V τ, ∀ φ φ', IsCuspGrow θ V φ → IsCuspGrow θ V φ' → IsCuspGrow θ V (Rder θ V τ X φ) → IsCuspGrow θ V (Rder θ V τ X φ') → ⟪E (Rder θ V τ X φ), E φ'⟫_ℂ + ⟪E φ, E (Rder θ V τ X φ')⟫_ℂ = 0 := by
+  intro hP D θ V μ 𝓕 hθ hμ h𝓕
+  haveI := hμ
+  obtain ⟨-, -, -, iB, iT, -, iC⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D V
+  haveI := iB
+  haveI := iT
+  haveI := iC
+  haveI := (GlobalTheory.Mem.AdelicGroupFund.rightInvariant_and_exists_fundamentalDomain D V μ hμ).1
+  have hfin : μ 𝓕 ≠ ⊤ := (GlobalTheory.Mem.QuotVol.quot_volume_ne_zero_ne_top D V μ 𝓕 (And.intro hμ h𝓕)).2
+  haveI : IsFiniteMeasure (μ.restrict 𝓕) := ⟨by rw [Measure.restrict_apply_univ]; exact hfin.lt_top⟩
+  have hmem : ∀ φ, IsCuspGrow θ V φ → MemLp φ 2 (μ.restrict 𝓕) := by
+    intro φ hφ
+    obtain ⟨B, hB⟩ := bounded hP hθ hφ
+    exact MemLp.of_bound hφ.1.cont.aestronglyMeasurable B (Filter.Eventually.of_forall hB)
+  have hint : ∀ F : GA D V → ℂ, Continuous F → (∃ B : ℝ, ∀ g, ‖F g‖ ≤ B) → Integrable F (μ.restrict 𝓕) := by
+    rintro F hF ⟨B, hB⟩
+    exact memLp_one_iff_integrable.1 (MemLp.of_bound hF.aestronglyMeasurable B (Filter.Eventually.of_forall hB))
+  obtain ⟨E, hE⟩ := exists_toLp_ext (μ.restrict 𝓕)
+  refine ⟨E, fun φ hφ => ⟨hmem φ hφ, fun h0 => ?_⟩, ?_⟩
+  · have h1 := hE φ (hmem φ hφ)
+    rw [h0] at h1
+    have hz : ⇑(0 : Lp ℂ 2 (μ.restrict 𝓕)) =ᵐ[μ.restrict 𝓕] (0 : GA D V → ℂ) := Lp.coeFn_zero ..
+    have hae : ∀ᵐ g ∂(μ.restrict 𝓕), φ g = 0 := by
+      filter_upwards [h1, hz] with g a b
+      rw [← a, b]
+      rfl
+    have hopen : IsOpen {g | φ g ≠ 0} := isOpen_ne_fun hφ.1.cont continuous_const
+    haveI : SMulInvariantMeasure (GQ V) (GA D V) μ := by
+      first
+        | exact inferInstance
+        | exact ⟨fun γ s _ => measure_preimage_mul μ (γ : GA D V) s⟩
+    open Pointwise in
+    have hinv : ∀ γ : GQ V, γ • {g | φ g ≠ 0} = {g | φ g ≠ 0} := by
+      intro γ
+      ext x
+      rw [Set.mem_smul_set_iff_inv_smul_mem]
+      show φ ((γ⁻¹ : GQ V) * x) ≠ 0 ↔ φ x ≠ 0
+      rw [hφ.1.left _ (γ⁻¹).2 x]
+    have hnull : μ {g | φ g ≠ 0} = 0 := by
+      refine h𝓕.measure_zero_of_invariant _ hinv ?_
+      rw [← Measure.restrict_apply hopen.measurableSet]
+      exact ae_iff.1 hae
+    have hempty := (hopen.measure_eq_zero_iff μ).1 hnull
+    funext g
+    by_contra hne
+    have hg : g ∈ {g | φ g ≠ 0} := hne
+    rw [hempty] at hg
+    exact hg
+  · intro τ X hX φ φ' h1 h2 h3 h4
+    rw [inner_eq (hE _ (hmem _ h3)) (hE _ (hmem _ h2)), inner_eq (hE _ (hmem _ h1)) (hE _ (hmem _ h4))]
+    obtain ⟨c1, B1, b1⟩ := conj_mul h3.1.cont h2.1.cont (bounded hP hθ h3) (bounded hP hθ h2)
+    obtain ⟨c2, B2, b2⟩ := conj_mul h1.1.cont h4.1.cont (bounded hP hθ h1) (bounded hP hθ h4)
+    obtain ⟨c0, B0, b0⟩ := conj_mul h1.1.cont h2.1.cont (bounded hP hθ h1) (bounded hP hθ h2)
+    rw [← integral_add (hint _ c1 ⟨B1, b1⟩) (hint _ c2 ⟨B2, b2⟩)]
+    have key : ∀ ψ : GA D V → ℂ, ψ ∈ GlobalTheory.Mem.AutSpace.SmFun θ V → ∀ g t,
+        HasDerivAt (fun s : ℝ => ψ (g * oneP θ V τ X s)) (Rder θ V τ X ψ (g * oneP θ V τ X t)) t := by
+      intro ψ hψ g t
+      have d0 : HasDerivAt (fun u : ℝ => ψ (g * oneP θ V τ X t * oneP θ V τ X u))
+          (Rder θ V τ X ψ (g * oneP θ V τ X t)) 0 :=
+        ((GlobalTheory.Mem.AutSpace.differentiable_oneP hψ hX (g * oneP θ V τ X t)) 0).hasDerivAt
+      have d1 : HasDerivAt (fun s : ℝ => ψ (g * oneP θ V τ X t * oneP θ V τ X (s - t)))
+          (Rder θ V τ X ψ (g * oneP θ V τ X t)) t :=
+        HasDerivAt.comp_sub_const (f := fun u : ℝ => ψ (g * oneP θ V τ X t * oneP θ V τ X u)) t t
+          (by rw [sub_self]; exact d0)
+      refine d1.congr_of_eventuallyEq (Filter.Eventually.of_forall fun s => ?_)
+      show ψ (g * oneP θ V τ X s) = ψ (g * oneP θ V τ X t * oneP θ V τ X (s - t))
+      rw [mul_assoc, ← GlobalTheory.Mem.Lift.oneP_add hθ hX, show t + (s - t) = s by ring]
+    have hd : ∀ g t, HasDerivAt
+        (fun s : ℝ => (starRingEnd ℂ) (φ (g * oneP θ V τ X s)) * φ' (g * oneP θ V τ X s))
+        ((starRingEnd ℂ) (Rder θ V τ X φ (g * oneP θ V τ X t)) * φ' (g * oneP θ V τ X t) +
+          (starRingEnd ℂ) (φ (g * oneP θ V τ X t)) * Rder θ V τ X φ' (g * oneP θ V τ X t)) t := by
+      intro g t
+      exact ((key φ h1.2.1 g t).star).mul (key φ' h2.2.1 g t)
+    exact GlobalTheory.Mem.IntByParts.setIntegral_deriv_eq_zero (GQ V) μ h𝓕 hfin
+      (Φ := fun g => (starRingEnd ℂ) (φ g) * φ' g)
+      (Φ' := fun g => (starRingEnd ℂ) (Rder θ V τ X φ g) * φ' g + (starRingEnd ℂ) (φ g) * Rder θ V τ X φ' g)
+      (fun γ hγ g => by
+        show (starRingEnd ℂ) (φ (γ * g)) * φ' (γ * g) = (starRingEnd ℂ) (φ g) * φ' g
+        rw [h1.1.left γ hγ g, h2.1.left γ hγ g])
+      c0 (c1.add c2) b0
+      (fun g => (norm_add_le _ _).trans (add_le_add (b1 g) (b2 g)))
+      (GlobalTheory.Mem.Lift.oneP_zero hθ) hd
+
+end GlobalTheory.Chain.CuspL2
+
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
+open scoped TensorProduct InnerProductSpace Classical
+open GlobalTheory.Chain.IoLift
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.Chain.CuspGrowSpace
+
+variable {D : D7} {θ : InfFam D} {V : HSp D} {φ ψ : GA D V → ℂ}
+
+theorem isCuspGrow_add (h : IsCuspGrow θ V φ) (h' : IsCuspGrow θ V ψ) : IsCuspGrow θ V (φ + ψ) := by
+  obtain ⟨a, s, c, g⟩ := h
+  obtain ⟨a', s', c', g'⟩ := h'
+  refine ⟨⟨fun γ hγ g => by rw [Pi.add_apply, Pi.add_apply, a.left γ hγ, a'.left γ hγ], ?_, a.cont.add a'.cont⟩,
+    add_mem s s', GlobalTheory.MultMem.isCuspFun_add a a' c c', ?_⟩
+  · obtain ⟨U, hU, e⟩ := a.level
+    obtain ⟨U', hU', e'⟩ := a'.level
+    exact ⟨U ⊓ U', hU.inter hU', fun k hk hf g => by
+      rw [Pi.add_apply, Pi.add_apply, e k hk.1 hf, e' k hk.2 hf]⟩
+  · obtain ⟨N, hN⟩ := GlobalTheory.Size.unifModGrowth_iff.1 g
+    obtain ⟨N', hN'⟩ := GlobalTheory.Size.unifModGrowth_iff.1 g'
+    refine GlobalTheory.Size.unifModGrowth_iff.2 ⟨max N N', fun l hl => ?_⟩
+    rw [(GlobalTheory.Size.linOnSm_rWord hl).add _ s _ s']
+    exact ne_top_of_le_ne_top (ENNReal.add_ne_top.2
+      ⟨ne_top_of_le_ne_top (hN l hl) (GlobalTheory.Size.growthSize_anti (le_max_left _ _)),
+        ne_top_of_le_ne_top (hN' l hl) (GlobalTheory.Size.growthSize_anti (le_max_right _ _))⟩) GlobalTheory.Size.growthSize_add_le
+
+theorem isCuspGrow_smul (z : ℂ) (h : IsCuspGrow θ V φ) : IsCuspGrow θ V (z • φ) := by
+  obtain ⟨a, s, c, g⟩ := h
+  refine ⟨⟨fun γ hγ g => by rw [Pi.smul_apply, Pi.smul_apply, a.left γ hγ], ?_, a.cont.const_smul z⟩,
+    Submodule.smul_mem _ z s, GlobalTheory.MultMem.isCuspFun_smul z c, ?_⟩
+  · obtain ⟨U, hU, e⟩ := a.level
+    exact ⟨U, hU, fun k hk hf g => by rw [Pi.smul_apply, Pi.smul_apply, e k hk hf]⟩
+  · obtain ⟨N, hN⟩ := GlobalTheory.Size.unifModGrowth_iff.1 g
+    refine GlobalTheory.Size.unifModGrowth_iff.2 ⟨N, fun l hl => ?_⟩
+    rw [(GlobalTheory.Size.linOnSm_rWord hl).smul, GlobalTheory.Size.growthSize_smul]
+    exact ENNReal.mul_ne_top enorm_ne_top (hN l hl)
+
+theorem isCuspGrow_zero : IsCuspGrow θ V 0 := by
+  refine ⟨(isAutFunSm_const θ V 0).toIsAutFun, zero_mem _, fun _ _ _ _ _ _ _ _ => by simp,
+    GlobalTheory.Size.unifModGrowth_iff.2 ⟨0, fun l hl => ?_⟩⟩
+  have := (GlobalTheory.Size.linOnSm_rWord (θ := θ) hl).smul 0 0
+  rw [zero_smul, zero_smul] at this
+  rw [this]
+  exact (GlobalTheory.Size.growthSize_const (0 : ℂ)).trans_ne enorm_ne_top
+
+theorem isCuspGrow_of_mem_span : ∀ (D : D7) (θ : InfFam D) (V : HSp D),
+    ∀ φ ∈ Submodule.span ℂ {φ | IsCuspGrow θ V φ}, IsCuspGrow θ V φ := by
+  intro D θ V φ h
+  induction h using Submodule.span_induction with
+  | mem x hx => exact hx
+  | zero => exact isCuspGrow_zero
+  | add x y _ _ hx hy => exact isCuspGrow_add hx hy
+  | smul c x _ hx => exact isCuspGrow_smul c hx
+
+end GlobalTheory.Chain.CuspGrowSpace
+
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
+open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec KMap maxCpt rep_mem_kFin)
+open scoped TensorProduct InnerProductSpace Classical
+open GlobalTheory.Chain.IoLift
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.Chain.IoLift.FockOrbit
+
+open GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators GlobalTheory.PointAtPlaceHom
+
+section General
+
+variable {G σ : Type} [TopologicalSpace G]
+
+def CoefCont (F : G → MvPolynomial σ ℂ) : Prop := ∀ m, Continuous fun k => MvPolynomial.coeff m (F k)
+
+theorem CoefCont.const (P : MvPolynomial σ ℂ) : CoefCont fun _ : G => P := fun _ => continuous_const
+
+theorem CoefCont.add {F F' : G → MvPolynomial σ ℂ} (h : CoefCont F) (h' : CoefCont F') :
+    CoefCont fun k => F k + F' k := fun m => by
+  simp only [MvPolynomial.coeff_add]
+  exact (h m).add (h' m)
+
+theorem CoefCont.mul {F F' : G → MvPolynomial σ ℂ} (h : CoefCont F) (h' : CoefCont F') :
+    CoefCont fun k => F k * F' k := fun m => by
+  simp only [MvPolynomial.coeff_mul]
+  exact continuous_finset_sum _ fun p _ => (h _).mul (h' _)
+
+theorem CoefCont.smul {s : G → ℂ} {F : G → MvPolynomial σ ℂ} (hs : Continuous s) (h : CoefCont F) :
+    CoefCont fun k => s k • F k := fun m => by
+  simp only [MvPolynomial.coeff_smul, smul_eq_mul]
+  exact hs.mul (h m)
+
+theorem CoefCont.sum {ι : Type} [Fintype ι] {F : ι → G → MvPolynomial σ ℂ} (h : ∀ i, CoefCont (F i)) :
+    CoefCont fun k => ∑ i, F i k := fun m => by
+  simp only [MvPolynomial.coeff_sum]
+  exact continuous_finset_sum _ fun i _ => h i m
+
+theorem CoefCont.aeval {τ : Type} {g : G → τ → MvPolynomial σ ℂ} (h : ∀ v, CoefCont fun k => g k v)
+    (P : MvPolynomial τ ℂ) : CoefCont fun k => MvPolynomial.aeval (g k) P := by
+  induction P using MvPolynomial.induction_on with
+  | C a => simpa using CoefCont.const _
+  | add p q hp hq => simpa using hp.add hq
+  | mul_X p v hp => simpa using hp.mul (h v)
+
+theorem exists_monomials [Finite σ] (N : ℕ) : ∃ (n : ℕ) (e : Fin n → σ →₀ ℕ), ∀ P : MvPolynomial σ ℂ,
+    P.totalDegree ≤ N → P = ∑ i, MvPolynomial.coeff (e i) P • MvPolynomial.monomial (e i) (1 : ℂ) := by
+  let T := (Finsupp.finite_of_degree_le (σ := σ) N).toFinset
+  refine ⟨T.card, fun i => (T.equivFin.symm i : σ →₀ ℕ), fun P hP => ?_⟩
+  rw [T.equivFin.symm.sum_comp (fun d : T => MvPolynomial.coeff (d : σ →₀ ℕ) P •
+    MvPolynomial.monomial (d : σ →₀ ℕ) (1 : ℂ)),
+    Finset.sum_coe_sort T fun d => MvPolynomial.coeff d P • MvPolynomial.monomial d (1 : ℂ)]
+  simp only [MvPolynomial.smul_monomial, smul_eq_mul, mul_one]
+  conv_lhs => rw [P.as_sum]
+  refine Finset.sum_subset (fun d hd => ?_) fun d _ hd => ?_
+  · simp only [T, Set.Finite.mem_toFinset, Set.mem_setOf_eq]
+    exact (MvPolynomial.le_totalDegree hd).trans hP
+  · rw [MvPolynomial.notMem_support_iff.1 hd, map_zero]
+
+theorem exists_coefFam [Group G] [Finite σ] (ρ : G → Module.End ℂ (MvPolynomial σ ℂ))
+    (hm : ∀ a b P, ρ (a * b) P = ρ a (ρ b P)) (hd : ∀ a P, (ρ a P).totalDegree ≤ P.totalDegree)
+    (hc : ∀ P, CoefCont fun k => ρ k P) (φ : MvPolynomial σ ℂ) :
+    ∃ (n : ℕ) (φs : Fin n → MvPolynomial σ ℂ) (c : Fin n → G → ℂ), IsCoefFam c ∧ ∀ k, ρ k φ = ∑ i, c i k • φs i := by
+  obtain ⟨n, e, he⟩ := exists_monomials (σ := σ) φ.totalDegree
+  refine ⟨n, fun i => MvPolynomial.monomial (e i) 1, fun i k => MvPolynomial.coeff (e i) (ρ k φ),
+    ⟨fun i => hc φ _, fun k₀ i => ⟨fun j => MvPolynomial.coeff (e i) (ρ k₀ (MvPolynomial.monomial (e j) 1)),
+      fun k => ?_⟩⟩, fun k => he _ (hd k φ)⟩
+  beta_reduce
+  rw [hm]
+  conv_lhs => rw [he _ (hd k φ)]
+  simp only [map_sum, map_smul, MvPolynomial.coeff_sum, MvPolynomial.coeff_smul, smul_eq_mul]
+  exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+
+end General
+
+theorem signBlockDeterminant_ne_zero_of_mem_maxCompact {n : ℕ} {ε : Fin n → Bool} (e : Bool) {k : Matrix (Fin n) (Fin n) ℂ}
+    (hk : k ∈ Formalism.REAL.Kset ε) : signBlockDeterminant ε e k ≠ 0 := by
+  have hd : k.det ≠ 0 := (Matrix.isUnit_iff_isUnit_det k).1 (Unitary.isUnit_coe (U := ⟨k, hk.1⟩)) |>.ne_zero
+  rw [Matrix.twoBlockTriangular_det k (fun i => ε i = e) (fun i hi j hj => by
+    have h := congrFun (congrFun hk.2 i) j
+    simp only [Formalism.REAL.Jm, Matrix.mul_diagonal, Matrix.diagonal_mul] at h
+    cases e <;> simp only [Bool.not_eq_true, Bool.not_eq_false] at hi <;> simp [hi, hj] at h <;>
+      first | linear_combination (1 / 2 : ℂ) * h | linear_combination (-1 / 2 : ℂ) * h)] at hd
+  have := left_ne_zero_of_mul hd
+  unfold signBlockDeterminant
+  convert this
+  rfl
+
+theorem continuous_signBlockDeterminant {n : ℕ} (ε : Fin n → Bool) (e : Bool) : Continuous (signBlockDeterminant ε e) :=
+  (continuous_id.matrix_submatrix _ _).matrix_det
+
+theorem continuous_toMK {n : ℕ} (ε : Fin n → Bool) : Continuous fun k : Formalism.REAL.KG ε => Formalism.REAL.toMK k :=
+  ((Formalism.REAL.isClosedEmbeddingMatrix n ε).1.isEmbedding.comp Topology.IsEmbedding.subtypeVal).continuous
+
+variable {D : D7}
+
+theorem unframe_mem {W : HSp D} {S' : D.what₂.Tau → SPar} (M' : DSModel W S') (τ : D.what₂.Tau)
+    {k : Matrix (Fin W.rank) (Fin W.rank) ℂ} (hk : k ∈ Formalism.REAL.Kset (M'.ε τ)) :
+    (M'.fr τ)⁻¹ * k * M'.fr τ ∈ Formalism.QuantumDeterminants.UH (gramAt D W τ) := by
+  have hd := (Matrix.isUnit_iff_isUnit_det _).1 (M'.fr_unit τ)
+  have hJ : kᴴ * Formalism.REAL.Jm (M'.ε τ) * k = Formalism.REAL.Jm (M'.ε τ) := (Formalism.REAL.maximal_compact_facts _ _).1 k hk
+  have hJ' : ∀ A : Matrix (Fin W.rank) (Fin W.rank) ℂ,
+      kᴴ * (Formalism.REAL.Jm (M'.ε τ) * (k * A)) = Formalism.REAL.Jm (M'.ε τ) * A := fun A => by
+    rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, hJ]
+  have e1 : ((M'.fr τ)⁻¹)ᴴ * (M'.fr τ)ᴴ = 1 := by
+    rw [← Matrix.conjTranspose_mul, Matrix.mul_nonsing_inv _ hd]; simp
+  have e2 : ∀ A : Matrix (Fin W.rank) (Fin W.rank) ℂ, ((M'.fr τ)⁻¹)ᴴ * ((M'.fr τ)ᴴ * A) = A := fun A => by
+    rw [← Matrix.mul_assoc, e1, Matrix.one_mul]
+  change ((M'.fr τ)⁻¹ * k * M'.fr τ)ᴴ * gramAt D W τ * ((M'.fr τ)⁻¹ * k * M'.fr τ) = gramAt D W τ
+  rw [← M'.fr_gram τ]
+  simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc, e2, Matrix.mul_nonsing_inv_cancel_left _ _ hd, hJ']
+
+theorem elt_mul {θ : InfFam D} (hθ : IsInfFam θ) {W : HSp D} {S' : D.what₂.Tau → SPar} (M' : DSModel W S')
+    (τ : D.what₂.Tau) {a b : Matrix (Fin W.rank) (Fin W.rank) ℂ} (ha : a ∈ Formalism.REAL.Kset (M'.ε τ))
+    (hb : b ∈ Formalism.REAL.Kset (M'.ε τ)) : elt θ M' τ (a * b) = elt θ M' τ a * elt θ M' τ b := by
+  have hd := (Matrix.isUnit_iff_isUnit_det _).1 (M'.fr_unit τ)
+  rw [elt, elt, elt, ← atTau_mul hθ W τ (unframe_mem M' τ ha) (unframe_mem M' τ hb)]
+  simp only [Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_left _ _ hd]
+
+theorem elt_one' {θ : InfFam D} (hθ : IsInfFam θ) {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S)
+    (τ : D.what₂.Tau) : elt θ M τ 1 = 1 := by
+  rw [elt, Matrix.mul_one, Matrix.nonsing_inv_mul _ ((Matrix.isUnit_iff_isUnit_det _).1 (M.fr_unit τ)), atTau_one hθ]
+
+theorem coefCont_subst {G : Type} [TopologicalSpace G] {a b : ℕ} (τ : D.what₂.Tau) (ε : Fin a → Bool)
+    (ε' : Fin b → Bool) (g : Matrix (Fin a) (Fin a) ℂ) {k : G → Matrix (Fin b) (Fin b) ℂ} (hk : Continuous k)
+    (P : PolF D b a) : CoefCont fun x => subst τ ε ε' g (k x) P := by
+  unfold subst
+  refine CoefCont.aeval (fun v => ?_) P
+  split_ifs
+  all_goals first
+    | exact CoefCont.const _
+    | refine CoefCont.sum fun l => CoefCont.sum fun m => CoefCont.smul ?_ (CoefCont.const _)
+  · exact (hk.matrix_elem _ _).mul continuous_const
+  · exact ((hk.matrix_elem _ _).mul continuous_const).star
+
+theorem fock_orbit_coefFam : ∀ (D : D7) (V W : HSp D) (S S' : D.what₂.Tau → SPar) (M : DSModel V S) (M' : DSModel W S') (θ : InfFam D) (ψ : AddChar (AF D.host.F) ℂ) (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (f : WO V W → ℂ) (τ : D.what₂.Tau) (aS aT : ℚ), IsInfFam θ → Function.Injective (ptOf ψ θ M M' f) → GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.CompactFock ψ θ M M' ω f τ aS aT → ∀ φ : PolF D W.rank V.rank, ∃ (n : ℕ) (φs : Fin n → PolF D W.rank V.rank) (c : Fin n → Formalism.REAL.KG (M'.ε τ) → ℂ), IsCoefFam c ∧ ∀ k, ω (1, GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.elt θ M' τ (Formalism.REAL.toMK k)) (ptOf ψ θ M M' f φ) = ptOf ψ θ M M' f (∑ i, c i k • φs i) := by
+  intro D V W S S' M M' θ ψ ω f τ aS aT hθ hpt hC φ
+  obtain ⟨x, y, -, -, hc⟩ := hC
+  let pt : PolF D W.rank V.rank →ₗ[ℂ] (WO V W → ℂ) := pureTensorO ψ θ V W (cart M) (cart M') (onb M) (onb M') f
+  have hp : ptOf ψ θ M M' f = pt := rfl
+  rw [hp] at hpt hc ⊢
+  let s : Formalism.REAL.KG (M'.ε τ) → ℂ := fun k => signBlockDeterminant (M.ε τ) true 1 ^ x true * signBlockDeterminant (M.ε τ) false 1 ^ x false *
+    (signBlockDeterminant (M'.ε τ) true (Formalism.REAL.toMK k) ^ y true * signBlockDeterminant (M'.ε τ) false (Formalism.REAL.toMK k) ^ y false)
+  let ρ : Formalism.REAL.KG (M'.ε τ) → Module.End ℂ (PolF D W.rank V.rank) := fun k =>
+    s k • (subst τ (M.ε τ) (M'.ε τ) ((1 : Matrix (Fin V.rank) (Fin V.rank) ℂ).map (starRingEnd ℂ))
+      (Formalism.REAL.toMK k)).toLinearMap
+  have key : ∀ k P, ω (1, elt θ M' τ (Formalism.REAL.toMK k)) (pt P) = pt (ρ k P) := fun k P => by
+    have := hc 1 ⟨one_mem _, by rw [Matrix.one_mul, Matrix.mul_one]⟩ (Formalism.REAL.toMK k) k.2 P
+    rw [elt_one' hθ, ← map_smul] at this
+    exact this
+  have hz : ∀ e, Continuous fun k : Formalism.REAL.KG (M'.ε τ) => signBlockDeterminant (M'.ε τ) e (Formalism.REAL.toMK k) ^ y e := fun e =>
+    ((continuous_signBlockDeterminant _ e).comp (continuous_toMK _)).zpow₀ _ fun k => Or.inl (signBlockDeterminant_ne_zero_of_mem_maxCompact e k.2)
+  have hs : Continuous s := continuous_const.mul ((hz true).mul (hz false))
+  obtain ⟨n, φs, c, h1, h2⟩ := exists_coefFam ρ (fun a b P => hpt (by
+      have e : Formalism.REAL.toMK (a * b) = Formalism.REAL.toMK a * Formalism.REAL.toMK b := rfl
+      rw [← key, ← key, ← key, e, elt_mul hθ M' τ a.2 b.2, ← Module.End.mul_apply, ← map_mul, Prod.mk_mul_mk,
+        mul_one]))
+    (fun a P => (MvPolynomial.totalDegree_smul_le _ _).trans
+      (GlobalTheory.Chain.RealIt.SubstDeg.totalDegree_subst_le _ _ _ _ _ _ _ _ _))
+    (fun P => CoefCont.smul hs (coefCont_subst τ _ _ _ (continuous_toMK _) P)) φ
+  exact ⟨n, φs, c, h1, fun k => by rw [key, h2]⟩
+
+end GlobalTheory.Chain.IoLift.FockOrbit
+
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
+open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec KMap maxCpt rep_mem_kFin)
+open scoped TensorProduct InnerProductSpace Classical
+open GlobalTheory.Chain.IoLift
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.Chain.IoLift
+
+open Formalism.REAL in
+
+theorem kMean_translate {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) (τ : D.what₂.Tau) {n : ℕ}
+    (c : Fin n → KG (M.ε τ) → ℂ) (hc : IsCoefFam c) (w : M.H τ) (i : Fin n) (k₀ : KG (M.ε τ)) :
+    ∃ d : Fin n → ℂ, M.σ τ (toMK k₀) (kMean M τ (c i) w) = ∑ j, d j • kMean M τ (c j) w := by
+  have hds := M.ds τ
+  have : CompleteSpace (M.H τ) := hds.1
+  obtain ⟨⟨-, hmul⟩, -, hcont⟩ := hds.2.2.1
+  have hmem : ∀ k : KG (M.ε τ), toMK k ∈ Formalism.MainNotions.S.UJset (M.ε τ) := fun k => (k : UJ (M.ε τ)).2
+  have hcK : Continuous fun k : KG (M.ε τ) => M.σ τ (toMK k) w :=
+    (hcont w).comp_continuous (Units.continuous_val.comp (continuous_subtype_val.comp continuous_subtype_val)) hmem
+  have hint : ∀ j, Integrable (fun k => c j k • M.σ τ (toMK k) w) (muK (M.ε τ)) := fun j =>
+    ((hc.1 j).smul hcK).integrable_of_hasCompactSupport
+      (isCompact_univ.of_isClosed_subset (isClosed_tsupport _) (Set.subset_univ _))
+  have hm : ∀ k : KG (M.ε τ), M.σ τ (toMK (k₀ * k)) = (M.σ τ (toMK k₀)).comp (M.σ τ (toMK k)) :=
+    fun k => hmul _ (hmem k₀) _ (hmem k)
+  obtain ⟨d, hd⟩ := hc.2 k₀⁻¹ i
+  refine ⟨d, ?_⟩
+  unfold kMean
+  calc M.σ τ (toMK k₀) (∫ k, c i k • M.σ τ (toMK k) w ∂muK (M.ε τ))
+      = ∫ k, M.σ τ (toMK k₀) (c i k • M.σ τ (toMK k) w) ∂muK (M.ε τ) :=
+        (ContinuousLinearMap.integral_comp_comm _ (hint i)).symm
+    _ = ∫ k, (fun x => c i (k₀⁻¹ * x) • M.σ τ (toMK x) w) (k₀ * k) ∂muK (M.ε τ) := by
+        congr 1
+        funext k
+        simp only [inv_mul_cancel_left, ContinuousLinearMap.map_smul, hm k]
+        rfl
+    _ = ∫ k, c i (k₀⁻¹ * k) • M.σ τ (toMK k) w ∂muK (M.ε τ) :=
+        integral_mul_left_eq_self (μ := muK (M.ε τ)) (fun x => c i (k₀⁻¹ * x) • M.σ τ (toMK x) w) k₀
+    _ = ∑ j, d j • ∫ k, c j k • M.σ τ (toMK k) w ∂muK (M.ε τ) := by
+        simp only [hd, Finset.sum_smul, mul_smul]
+        have hs : ∀ j ∈ (Finset.univ : Finset (Fin n)),
+            Integrable (fun k => d j • c j k • M.σ τ (toMK k) w) (muK (M.ε τ)) := fun j _ => (hint j).smul (d j)
+        rw [integral_finsetSum _ hs]
+        simp only [integral_smul]
+
+theorem kMean_mem_kFin_of_coefFam : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (τ : D.what₂.Tau)
+    (n : ℕ) (c : Fin n → Formalism.REAL.KG (M.ε τ) → ℂ), IsCoefFam c → ∀ (w : M.H τ) (i : Fin n),
+    kMean M τ (c i) w ∈ kFin M τ := by
+  intro D V S M τ n c hc w i
+  unfold GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension.kFin
+  rw [GlobalTheory.KFiniteVectors.mem_kFiniteVectors]
+  refine ⟨Submodule.span ℂ (Set.range fun j => kMean M τ (c j) w),
+    FiniteDimensional.span_of_finite ℂ (Set.finite_range _), Submodule.subset_span ⟨i, rfl⟩, ?_⟩
+  intro g hg x hx
+  rw [← Formalism.REAL.range_toMK] at hg
+  obtain ⟨k₀, rfl⟩ := hg
+  have hle : Submodule.span ℂ (Set.range fun j => kMean M τ (c j) w) ≤
+      (Submodule.span ℂ (Set.range fun j => kMean M τ (c j) w)).comap
+        (M.σ τ (Formalism.REAL.toMK k₀) : M.H τ →ₗ[ℂ] M.H τ) := by
+    rw [Submodule.span_le]
+    rintro _ ⟨j, rfl⟩
+    obtain ⟨d, hd⟩ := kMean_translate M τ c hc w j k₀
+    change M.σ τ (Formalism.REAL.toMK k₀) (kMean M τ (c j) w) ∈ Submodule.span ℂ (Set.range fun j => kMean M τ (c j) w)
+    rw [hd]
+    exact Submodule.sum_mem _ fun l _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩)
+  exact hle hx
+
+end GlobalTheory.Chain.IoLift
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
+open Matrix MeasureTheory GlobalTheory.Chain GlobalTheory.Chain.RealIt
+open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec KMap maxCpt rep_mem_kFin)
+open scoped TensorProduct InnerProductSpace Classical
+open GlobalTheory.Chain.IoLift
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.Chain.IoLift
+
+theorem it_eq_sum_kMean : ∀ (D : D7) (V W : HSp D) (S S' : D.what₂.Tau → SPar) (M : DSModel V S) (M' : DSModel W S') (θ : InfFam D) (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (pt : PolF D W.rank V.rank → WO V W → ℂ) (It : PolF D W.rank V.rank →ₗ[ℂ] SmT M' →ₗ[ℂ] SmT M), IsItW θ M M' ω pt It → ∀ (τ : D.what₂.Tau) (n : ℕ) (c : Fin n → Formalism.REAL.KG (M'.ε τ) → ℂ) (φ : PolF D W.rank V.rank) (φs : Fin n → PolF D W.rank V.rank) (v : M'.Vec) (u : Fin n → M'.sm τ), (∀ i, Continuous (c i)) → (∀ k, ω (1, GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators.elt θ M' τ (Formalism.REAL.toMK k)) (pt φ) = pt (∑ i, c i k • φs i)) → (∀ i, (u i : M'.H τ) = kMean M' τ (c i) (v τ)) → It φ (PiTensorProduct.tprod ℂ v) = ∑ i, It (φs i) (PiTensorProduct.tprod ℂ (Function.update v τ (u i))) := by
+  intro D V W S S' M M' θ ω pt It hIt τ n c φ φs v u hc hω hu
+  have := (M'.ds τ).1
+  have hU := (M'.ds τ).2.2.1
+  rw [← sub_eq_zero]
+  refine inclT_injective M ?_
+  rw [map_zero]
+  refine ellT_separates M _ fun w => ?_
+  let l : Fin n → (M'.sm τ →ₗ[ℂ] ℂ) := fun i => ellT M w ∘ₗ inclT M ∘ₗ It (φs i) ∘ₗ
+    (PiTensorProduct.tprod ℂ (s := fun ρ => M'.sm ρ)).toLinearMap v τ
+  have hl : ∀ i x, l i x = ellT M w (inclT M (It (φs i) (PiTensorProduct.tprod ℂ (Function.update v τ x)))) :=
+    fun _ _ => rfl
+  have hb : ∀ i, ∃ C : ℝ, ∀ x, ‖l i x‖ ≤ C * ‖x‖ := fun i => by
+    obtain ⟨C, hC⟩ := hIt.bdd (φs i) w
+    refine ⟨C * ∏ ρ ∈ Finset.univ.erase τ, ‖(v ρ : M'.H ρ)‖, fun x => ?_⟩
+    rw [hl]
+    refine (hC _).trans (le_of_eq ?_)
+    rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ τ), mul_assoc, Function.update_self]
+    congr 2
+    refine Finset.prod_congr rfl fun ρ hρ => ?_
+    rw [Function.update_of_ne (Finset.ne_of_mem_erase hρ)]
+  choose L hL _ using fun i => exists_extension_norm_eq (M'.sm τ) ((l i).mkContinuousOfExistsBound (hb i))
+  have hL' : ∀ i (x : M'.sm τ), L i x = l i x := hL
+  have hk : ∀ k : Formalism.REAL.KG (M'.ε τ), Formalism.REAL.toMK k ∈ Formalism.MainNotions.S.UJset (M'.ε τ) :=
+    fun k => (Formalism.REAL.maximal_compact_facts _ _).1 _ k.2
+  have hcm : Continuous fun k : Formalism.REAL.KG (M'.ε τ) => Formalism.REAL.toMK k :=
+    Units.continuous_val.comp (continuous_subtype_val.comp continuous_subtype_val)
+  have hx : Continuous fun k : Formalism.REAL.KG (M'.ε τ) => M'.σ τ (Formalism.REAL.toMK k) (v τ) :=
+    (hU.2.2 _).comp_continuous hcm hk
+  have hint : ∀ i, Integrable (fun k : Formalism.REAL.KG (M'.ε τ) => c i k • M'.σ τ (Formalism.REAL.toMK k) (v τ))
+      (Formalism.REAL.muK (M'.ε τ)) := fun i =>
+    integrableOn_univ.1 (((hc i).smul hx).continuousOn.integrableOn_compact isCompact_univ)
+  have key : ∀ k : Formalism.REAL.KG (M'.ε τ), ∑ i, L i (c i k • M'.σ τ (Formalism.REAL.toMK k) (v τ)) =
+      ellT M w (inclT M (It φ (PiTensorProduct.tprod ℂ v))) := fun k => by
+    have hs : M'.σ τ (Formalism.REAL.toMK k) (v τ) ∈ M'.sm τ :=
+      (GlobalTheory.SmVec.sm_eq M' τ).ge
+        (GlobalTheory.SmVec.sigma_mem (M'.fr_unit τ) (M'.fr_gram τ) hU ((GlobalTheory.SmVec.sm_eq M' τ).le (v τ).2) (hk k))
+    have hr : M'.rep τ ((M'.fr τ)⁻¹ * Formalism.REAL.toMK k * M'.fr τ) = M'.σ τ (Formalism.REAL.toMK k) :=
+      GlobalTheory.SmVec.trRep_conj (σ := M'.σ τ) (M'.fr_unit τ) _
+    have h1 := hIt.invK τ _ (GlobalTheory.SmVec.conj_mem_UH (M'.fr_unit τ) (M'.fr_gram τ) (hk k)) φ _
+      (PiTensorProduct.tprod ℂ v) (PiTensorProduct.tprod ℂ (Function.update v τ ⟨_, hs⟩)) (hω k).symm (by
+        unfold inclT
+        rw [PiTensorProduct.map_tprod, PiTensorProduct.map_tprod, actT_pure, hr]
+        congr 1
+        funext ρ
+        by_cases h : ρ = τ
+        · subst h; simp
+        · simp [Function.update_of_ne h])
+    rw [← h1, map_sum, LinearMap.sum_apply, map_sum, map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_smul, map_smul, LinearMap.smul_apply, map_smul, map_smul, ← hl, ← hL']
+  rw [map_sub, map_sub, map_sum, map_sum, sub_eq_zero]
+  have h2 : ∀ i, ellT M w (inclT M (It (φs i) (PiTensorProduct.tprod ℂ (Function.update v τ (u i))))) =
+      ∫ k, L i (c i k • M'.σ τ (Formalism.REAL.toMK k) (v τ)) ∂(Formalism.REAL.muK (M'.ε τ)) := fun i => by
+    rw [← hl, ← hL', hu, kMean, (L i).integral_comp_comm (hint i)]
+  simp only [h2]
+  rw [← integral_finsetSum _ fun i _ => (L i).integrable_comp (hint i)]
+  simp only [key]
+  simp
+
+end GlobalTheory.Chain.IoLift
+
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
@@ -482,4 +1500,5 @@ theorem apply_kMean {θ : InfFam D} {J : Set (GA D V)} {χ : GA D V → ℂ} {T 
 
 end GlobalTheory.Chain.IoLift
 
+end
 end

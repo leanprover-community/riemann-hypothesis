@@ -2,11 +2,209 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TameFixedAway
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsPlaceOverMoveValCc
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.RootsCharpolyPowEqMapPow
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsOrderPreservingPowerHomAlgClosurePrimeFiel
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TameGeneratorImageEqCoprimePow
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InertiaCompatibleConjugationRepresentationStatement
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.InjPrimeTo
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InertiaCompatibleConjugationRepresentation
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TameAnyAtPlaceStatement
 
+section
+section
+open GlobalTheory.TypeLeaf Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
+
+namespace GlobalTheory.PowAut
+
+theorem exists_coprime_lift (N k a : ℕ) (hN : 0 < N) (hk : 0 < k) (ha : a.Coprime N) :
+    ∃ b : ℕ, b.Coprime (N * k) ∧ b ≡ a [MOD N] := by
+  haveI : NeZero (N * k) := ⟨(Nat.mul_pos hN hk).ne'⟩
+  obtain ⟨u, hu⟩ := ZMod.unitsMap_surjective (Dvd.intro k rfl : N ∣ N * k)
+    (ZMod.unitOfCoprime a ha)
+  refine ⟨(u : ZMod (N * k)).val, ZMod.val_coe_unit_coprime u, ?_⟩
+  rw [← ZMod.natCast_eq_natCast_iff]
+  have h := congrArg (fun v : (ZMod N)ˣ => (v : ZMod N)) hu
+  simp only [ZMod.unitsMap_def, Units.coe_map, MonoidHom.coe_coe, ZMod.castHom_apply,
+    ZMod.coe_unitOfCoprime] at h
+  rw [← h, ZMod.natCast_val]
+
+theorem exists_exponents (M n : ℕ) (hM : 0 < M) (hn : n.Coprime M) :
+    ∃ a : ℕ → ℕ, a 0 = n ∧ (∀ j, (a j).Coprime (M * j.factorial)) ∧
+      ∀ i j, i ≤ j → a j ≡ a i [MOD M * i.factorial] := by
+  have step : ∀ j : ℕ, ∀ a : {a : ℕ // a.Coprime (M * j.factorial)},
+      ∃ b : {b : ℕ // b.Coprime (M * (j + 1).factorial)}, b.1 ≡ a.1 [MOD M * j.factorial] := by
+    intro j a
+    obtain ⟨b, hb, hb'⟩ := exists_coprime_lift (M * j.factorial) (j + 1) a.1
+      (Nat.mul_pos hM j.factorial_pos) j.succ_pos a.2
+    refine ⟨⟨b, ?_⟩, hb'⟩
+    rw [Nat.factorial_succ, mul_comm (j + 1), ← mul_assoc]
+    exact hb
+  choose f hf using step
+  let s : ∀ j : ℕ, {a : ℕ // a.Coprime (M * j.factorial)} := fun j =>
+    Nat.rec (motive := fun j => {a : ℕ // a.Coprime (M * j.factorial)})
+      ⟨n, by simpa using hn⟩ f j
+  have hs : ∀ j, s (j + 1) = f j (s j) := fun j => rfl
+  refine ⟨fun j => (s j).1, rfl, fun j => (s j).2, ?_⟩
+  intro i j hij
+  induction j, hij using Nat.le_induction with
+  | base => exact Nat.ModEq.refl _
+  | succ j hij ih =>
+    have h1 : (s (j + 1)).1 ≡ (s j).1 [MOD M * j.factorial] := by rw [hs]; exact hf j (s j)
+    exact (h1.of_dvd (Nat.mul_dvd_mul_left M (Nat.factorial_dvd_factorial hij))).trans ih
+
+theorem orderOf_pos_of_ne_zero (g : ℕ) [Fact g.Prime] (x : AlgebraicClosure (ZMod g))
+    (hx : x ≠ 0) : 0 < orderOf x := by
+  have hint : IsIntegral (ZMod g) x := Algebra.IsIntegral.isIntegral x
+  haveI := IntermediateField.adjoin.finiteDimensional hint
+  haveI : Finite (IntermediateField.adjoin (ZMod g) {x}) := Module.finite_of_finite (ZMod g)
+  haveI := Fintype.ofFinite (IntermediateField.adjoin (ZMod g) {x})
+  let y : IntermediateField.adjoin (ZMod g) {x} :=
+    ⟨x, IntermediateField.mem_adjoin_simple_self _ x⟩
+  have hy : y ≠ 0 := fun h => hx (congrArg Subtype.val h)
+  have h1 := FiniteField.pow_card_sub_one_eq_one y hy
+  have h2 : x ^ (Fintype.card (IntermediateField.adjoin (ZMod g) {x}) - 1) = 1 :=
+    congrArg Subtype.val h1
+  exact orderOf_pos_iff.mpr (isOfFinOrder_iff_pow_eq_one.mpr
+    ⟨_, Nat.sub_pos_of_lt Fintype.one_lt_card, h2⟩)
+
+theorem exists_powHom {K : Type*} [Field K] (hK : ∀ x : K, x ≠ 0 → 0 < orderOf x)
+    (M n : ℕ) (hM : 0 < M) (hn : n.Coprime M) :
+    ∃ θ : K →* K, Function.Injective θ ∧ (∀ x, orderOf (θ x) = orderOf x) ∧
+      ∀ x, x ^ M = 1 → θ x = x ^ n := by
+  classical
+  obtain ⟨a, ha0, hac, ha⟩ := exists_exponents M n hM hn
+  let t : K → K := fun x => if x = 0 then 0 else x ^ a (orderOf x)
+  have t0 : t 0 = 0 := if_pos rfl
+  have ht : ∀ x : K, x ≠ 0 → ∀ j, orderOf x ≤ j → t x = x ^ a j := by
+    intro x hx j hj
+    have : t x = x ^ a (orderOf x) := if_neg hx
+    rw [this]
+    have h := (ha _ _ hj).of_dvd
+      (Dvd.dvd.mul_left (Nat.dvd_factorial (hK x hx) le_rfl) M)
+    rw [← pow_mod_orderOf x (a j), ← pow_mod_orderOf x (a (orderOf x)), h]
+  let θ : K →* K :=
+    { toFun := t
+      map_one' := by rw [ht 1 one_ne_zero _ le_rfl, one_pow]
+      map_mul' := by
+        intro x y
+        by_cases hx : x = 0
+        · rw [hx, zero_mul, t0, zero_mul]
+        by_cases hy : y = 0
+        · rw [hy, mul_zero, t0, mul_zero]
+        rw [ht x hx (orderOf x + orderOf y + orderOf (x * y)) (by omega),
+          ht y hy (orderOf x + orderOf y + orderOf (x * y)) (by omega),
+          ht _ (mul_ne_zero hx hy) (orderOf x + orderOf y + orderOf (x * y)) (by omega),
+          mul_pow] }
+  have hθ : ∀ x, θ x = t x := fun _ => rfl
+  have hord : ∀ x, orderOf (θ x) = orderOf x := by
+    intro x
+    by_cases hx : x = 0
+    · rw [hθ, hx, t0]
+    rw [hθ, ht x hx _ le_rfl]
+    exact Nat.Coprime.orderOf_pow ((hac (orderOf x)).coprime_dvd_right
+      (Dvd.dvd.mul_left (Nat.dvd_factorial (hK x hx) le_rfl) M)).symm
+  have hne : ∀ x : K, x ≠ 0 → θ x ≠ 0 := by
+    intro x hx
+    rw [hθ, ht x hx _ le_rfl]
+    exact pow_ne_zero _ hx
+  refine ⟨θ, ?_, hord, ?_⟩
+  · intro x y hxy
+    by_cases hy : y = 0
+    · by_contra h
+      exact hne x (hy ▸ h) (by rw [hxy, hy, hθ, t0])
+    have h1 : θ (x * y⁻¹) * θ y = 1 * θ y := by
+      rw [← map_mul, inv_mul_cancel_right₀ hy, one_mul, hxy]
+    have h2 := mul_right_cancel₀ (hne y hy) h1
+    have h3 : orderOf (x * y⁻¹) = 1 := by rw [← hord, h2, orderOf_one]
+    rw [orderOf_eq_one_iff, mul_inv_eq_one₀ hy] at h3
+    exact h3
+  · intro x hxM
+    have hx : x ≠ 0 := by
+      rintro rfl
+      rw [zero_pow hM.ne'] at hxM
+      exact zero_ne_one hxM
+    have h := (ha 0 (orderOf x) (Nat.zero_le _)).of_dvd
+      (Dvd.dvd.mul_right (orderOf_dvd_of_pow_eq_one hxM) _)
+    rw [hθ, ht x hx _ le_rfl, ← ha0, ← pow_mod_orderOf x (a 0),
+      ← pow_mod_orderOf x (a (orderOf x)), h]
+
+theorem exists_powHom_fbar : ∀ (g : ℕ) [Fact g.Prime] (M n : ℕ), 0 < M → n.Coprime M →
+    ∃ θ : Formalism.CyclotomicNorms.Fbar g →* Formalism.CyclotomicNorms.Fbar g, Function.Injective θ ∧
+      (∀ x, orderOf (θ x) = orderOf x) ∧ ∀ x, x ^ M = 1 → θ x = x ^ n :=
+  fun g _ M n hM hn => exists_powHom (orderOf_pos_of_ne_zero g) M n hM hn
+
+end GlobalTheory.PowAut
+end
+
+open GlobalTheory.TypeLeaf Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_order_preserving_power_hom_algClosure_primeField : ∀ (g : ℕ) [Fact g.Prime] (M n : ℕ), 0 < M → n.Coprime M → ∃ θ : Formalism.CyclotomicNorms.Fbar g →* Formalism.CyclotomicNorms.Fbar g, Function.Injective θ ∧ (∀ x, orderOf (θ x) = orderOf x) ∧ ∀ x, x ^ M = 1 → θ x = x ^ n := by
+  atlas_forward_decl GlobalTheory.PowAut.exists_powHom_fbar
+end
+
+section
+section
+open GlobalTheory.TypeLeaf Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
+
+namespace GlobalTheory.TypeLeaf
+
+theorem tameGen_image_mem_zpowers {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
+    (A : ValuationSubring Ω) (γ γ' : G E Ω) (h : TameGenAt A γ) (h' : TameGenAt A γ')
+    {M : Type} [Group M] (φ : G E Ω →* M) (hk : IsOpen (φ.ker : Set (G E Ω)))
+    (hw : ∀ s : G E Ω, (∀ y : Ω, y ≠ 0 → A.valuation (s y / y - 1) < 1) → φ s = 1) :
+    φ γ' ∈ Subgroup.zpowers (φ γ) := by
+  have hle : φ.ker ≤ (Subgroup.zpowers (φ γ)).comap φ := by
+    intro x hx
+    rw [Subgroup.mem_comap, MonoidHom.mem_ker.1 hx]
+    exact Subgroup.one_mem _
+  have hop : IsOpen (((Subgroup.zpowers (φ γ)).comap φ : Subgroup (G E Ω)) : Set (G E Ω)) :=
+    Subgroup.isOpen_mono hle hk
+  have hcl := Subgroup.isClosed_of_isOpen _ hop
+  have hsub : Subgroup.closure (insert γ {σ : G E Ω | ∀ y : Ω, y ≠ 0 → A.valuation (σ y / y - 1) < 1})
+      ≤ (Subgroup.zpowers (φ γ)).comap φ := by
+    rw [Subgroup.closure_le]
+    rintro x (rfl | hx)
+    · exact Subgroup.mem_zpowers _
+    · exact hle (hw x hx)
+  exact closure_minimal hsub hcl (h.2 h'.1)
+
+theorem tameGen_pow : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (γ γ' : G E Ω), TameGenAt A γ → TameGenAt A γ' → ∀ (M : Type) [Group M] (φ : G E Ω →* M), IsOpen (φ.ker : Set (G E Ω)) → (∀ s : G E Ω, (∀ y : Ω, y ≠ 0 → A.valuation (s y / y - 1) < 1) → φ s = 1) → ∃ n : ℕ, n.Coprime (orderOf (φ γ)) ∧ 0 < orderOf (φ γ) ∧ φ γ' = φ γ ^ n := by
+  intro E Ω _ _ _ _ _ A γ γ' h h' M _ φ hk hw
+  have h1 := tameGen_image_mem_zpowers A γ γ' h h' φ hk hw
+  have h2 := tameGen_image_mem_zpowers A γ' γ h' h φ hk hw
+  haveI : IsGalois E Ω := IsGalois.mk
+  haveI : Finite (G E Ω ⧸ φ.ker) := Subgroup.quotient_finite_of_isOpen _ hk
+  have hfin : IsOfFinOrder (φ γ) := by
+    have h0 : IsOfFinOrder (QuotientGroup.mk γ : G E Ω ⧸ φ.ker) := isOfFinOrder_of_finite _
+    have := (QuotientGroup.kerLift φ).isOfFinOrder h0
+    simpa using this
+  have hpos : 0 < orderOf (φ γ) := hfin.orderOf_pos
+  obtain ⟨n, hn⟩ := (hfin.mem_powers_iff_mem_zpowers).2 h1
+  have hn : φ γ ^ n = φ γ' := hn
+  have heq : orderOf (φ γ') = orderOf (φ γ) :=
+    Nat.dvd_antisymm (orderOf_dvd_of_mem_zpowers h1) (orderOf_dvd_of_mem_zpowers h2)
+  refine ⟨n, ?_, hpos, hn.symm⟩
+  rw [← hn, hfin.orderOf_pow] at heq
+  have hg : (orderOf (φ γ)).gcd n = 1 := by
+    rcases Nat.div_eq_self.1 heq with h | h
+    · omega
+    · exact h
+  exact Nat.Coprime.symm hg
+
+end GlobalTheory.TypeLeaf
+end
+
+open GlobalTheory.TypeLeaf Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tameGenerator_image_eq_coprime_pow : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (γ γ' : G E Ω), TameGenAt A γ → TameGenAt A γ' → ∀ (M : Type) [Group M] (φ : G E Ω →* M), IsOpen (φ.ker : Set (G E Ω)) → (∀ s : G E Ω, (∀ y : Ω, y ≠ 0 → A.valuation (s y / y - 1) < 1) → φ s = 1) → ∃ n : ℕ, n.Coprime (orderOf (φ γ)) ∧ 0 < orderOf (φ γ) ∧ φ γ' = φ γ ^ n := by
+  atlas_forward_decl GlobalTheory.TypeLeaf.tameGen_pow
+end
+
+section
+open GlobalTheory.TypeLeaf Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inertia_compatible_conjugation_representation : ∀ D : D7, FrobDense D → ∀ (i : D.nd.Loc) (π : D.naut.CG D.R.r) (ρ : G D.host.E D.nd.Om →* GL (Fin D.R.r) (D.nd.O i)), D.naut.csd π → IsRepOfSig D.nd D.naut i [⟨D.R.r, π, 1⟩] ρ → ∀ (w : PlE D.host) (B : ValuationSubring D.nd.Om), w ∉ placesOver D.host.E (D.nd.l i) → IsPlaceOver (F := D.host.E) B w → ∀ s ∈ Ine (F := D.host.E) B, ∀ s' : G D.host.E D.nd.Om, (∀ y, s' (D.ntw.cc y) = D.ntw.cc (s y)) → ((ρ s' : GL _ _) : Matrix (Fin D.R.r) (Fin D.R.r) (D.nd.O i)).charpoly = ((ρ s⁻¹ : GL _ _) : Matrix (Fin D.R.r) (Fin D.R.r) (D.nd.O i)).charpoly ∧ D.nd.chi i 1 s' = D.nd.chi i 1 s⁻¹ := by
+  first | exact @GlobalTheory.ConjPoly.conj_inertia | exact GlobalTheory.ConjPoly.conj_inertia | (intros; apply GlobalTheory.ConjPoly.conj_inertia <;> assumption)
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.TypeLeaf.ConjPlace
@@ -273,3 +471,5 @@ theorem tameAnyAt_of_isConjPl : ∀ D : D7, WildOne D → (∀ (i : D.nd.Loc) (k
       map_mul, map_mul, map_inv _ g, mul_inv_cancel_comm, chiBar_val, chi1, chi1, hcχ]
 
 end GlobalTheory.TypeLeaf.ConjPlace
+end
+end

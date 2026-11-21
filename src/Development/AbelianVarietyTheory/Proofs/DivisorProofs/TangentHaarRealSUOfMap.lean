@@ -2,10 +2,267 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EmbGLMemRealSU
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDensityOfImmersion
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ContinuousMatrixEntryAbsSum
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealIndependentSkewMatrices
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinearIndependentComplexMap
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryLieAlgebraSpanned
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
+import BuildAid.ForwardExisting
 
+section
+section
+open NumberField Matrix ReciprocityTheory.ChartRestriction.G.FD
+
+namespace GlobalTheory
+
+theorem linearIndependent_of_skew_of_real : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E]
+    {r n : ℕ} (G : Matrix (Fin r) (Fin r) E), G.det ≠ 0 →
+    ∀ e : Fin n → Matrix (Fin r) (Fin r) E, (∀ i, (e i)ᵀ * G + G * (e i).map cc = 0) →
+    LinearIndependent (maximalRealSubfield E) e → LinearIndependent E e := by
+  intro E _ _ _ r n G hG e he hF
+  have cc_mul' : ∀ x y : E, cc (x * y) = cc x * cc y := fun x y => map_mul (IsCMField.complexConj E) x y
+  have cc_add' : ∀ x y : E, cc (x + y) = cc x + cc y := fun x y => map_add (IsCMField.complexConj E) x y
+  have cc_cc' : ∀ x : E, cc (cc x) = x := fun x => IsCMField.complexConj_apply_apply E x
+
+  have hmap : ∀ g : Fin n → E, (∑ i, g i • e i).map cc = ∑ i, cc (g i) • (e i).map cc := by
+    intro g
+    ext a b
+    simp [Matrix.sum_apply, cc, map_sum]
+  have hinj : ∀ M : Matrix (Fin r) (Fin r) E, Mᵀ * G = 0 → M = 0 := by
+    intro M hM
+    have hu : IsUnit G.det := isUnit_iff_ne_zero.mpr hG
+    have h0 : Mᵀ = 0 := by
+      have := congrArg (· * G⁻¹) hM
+      simpa [Matrix.mul_assoc, Matrix.mul_nonsing_inv G hu] using this
+    simpa using congrArg Matrix.transpose h0
+  have key : ∀ g : Fin n → E, ∑ i, g i • e i = 0 → ∑ i, cc (g i) • e i = 0 := by
+    intro g hg
+    apply hinj
+    have h2 : G * (∑ i, g i • e i).map cc = 0 := by
+      rw [hg]
+      ext a b
+      simp [Matrix.mul_apply, cc]
+    rw [hmap, Finset.mul_sum] at h2
+    have h3 : (∑ i, cc (g i) • e i)ᵀ * G = - ∑ i, G * (cc (g i) • (e i).map cc) := by
+      rw [Matrix.transpose_sum, Finset.sum_mul, ← Finset.sum_neg_distrib]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [Matrix.transpose_smul, Matrix.smul_mul, Matrix.mul_smul, ← smul_neg]
+      congr 1
+      exact eq_neg_of_add_eq_zero_left (he i)
+    rw [h3, h2, neg_zero]
+
+  have real : ∀ g : Fin n → E, (∀ i, cc (g i) = g i) → ∑ i, g i • e i = 0 → ∀ i, g i = 0 := by
+    intro g hc hg i
+    have hm : ∀ i, g i ∈ maximalRealSubfield E := fun i =>
+      (IsCMField.complexConj_eq_self_iff E _).mp (hc i)
+    have := Fintype.linearIndependent_iff.mp hF (fun i => ⟨g i, hm i⟩) hg i
+    simpa using congrArg (Subtype.val) this
+  obtain ⟨x, hx⟩ := DFunLike.ne_iff.mp (IsCMField.complexConj_ne_one E)
+  have hx' : cc x ≠ x := hx
+
+  have sum_real : ∀ g : Fin n → E, ∑ i, g i • e i = 0 → ∀ i, g i + cc (g i) = 0 := by
+    intro g hg
+    apply real
+    · intro i
+      rw [cc_add', cc_cc', add_comm]
+    · simp only [add_smul, Finset.sum_add_distrib, hg, key g hg, add_zero]
+  rw [Fintype.linearIndependent_iff]
+  intro g hg i
+  have h1 := sum_real g hg i
+  have hxg : ∑ i, (x * g i) • e i = 0 := by
+    simp only [mul_smul, ← Finset.smul_sum, hg, smul_zero]
+  have h2 := sum_real (fun i => x * g i) hxg i
+  simp only [cc_mul'] at h2
+  have h3 : cc (g i) = - g i := eq_neg_of_add_eq_zero_right h1
+  rw [h3] at h2
+  have h4 : (x - cc x) * g i = 0 := by linear_combination h2
+  rcases mul_eq_zero.mp h4 with h | h
+  · exact absurd (sub_eq_zero.mp h).symm hx'
+  · exact h
+
+end GlobalTheory
+end
+
+open NumberField Matrix ReciprocityTheory.ChartRestriction.G.FD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.real_independent_skew_matrices : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {r n : ℕ} (G : Matrix (Fin r) (Fin r) E), G.det ≠ 0 → ∀ e : Fin n → Matrix (Fin r) (Fin r) E, (∀ i, (e i)ᵀ * G + G * (e i).map cc = 0) → LinearIndependent (maximalRealSubfield E) e → LinearIndependent E e := by
+  atlas_forward_decl GlobalTheory.linearIndependent_of_skew_of_real
+end
+
+section
+section
+open Matrix
+
+namespace GlobalTheory
+
+theorem linearIndependent_real_map_of_fieldEmb {E : Type} [Field E] {r n : ℕ} (τ : E →+* ℂ)
+    (e : Fin n → Matrix (Fin r) (Fin r) E) (he : LinearIndependent E e) :
+    LinearIndependent ℝ (fun i => (e i).map τ) := by
+  letI : Algebra E ℂ := τ.toAlgebra
+  have h1 : LinearIndependent ℂ (fun i => (1 : ℂ) ⊗ₜ[E] e i) :=
+    Module.Flat.linearIndependent_one_tmul he
+  let j := (matrixEquivTensor (Fin r) E ℂ).symm
+  have hc : ∀ (c : ℂ) (x : TensorProduct E ℂ (Matrix (Fin r) (Fin r) E)),
+      j (c • x) = c • j x := by
+    intro c x
+    induction x using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a M =>
+      rw [TensorProduct.smul_tmul', smul_eq_mul]
+      simp only [j, matrixEquivTensor_apply_symm, mul_smul]
+    | add x y hx hy => rw [smul_add, map_add, map_add, hx, hy, smul_add]
+  have h2 : LinearIndependent ℂ (j.toRingEquiv.toAddEquiv.toAddMonoidHom ∘
+      fun i => (1 : ℂ) ⊗ₜ[E] e i) :=
+    h1.map_of_injective_injective id _ (fun _ h => h)
+      (fun m hm => by simpa using hm) (fun c x => hc c x)
+  have h3 : (j.toRingEquiv.toAddEquiv.toAddMonoidHom ∘ fun i => (1 : ℂ) ⊗ₜ[E] e i) =
+      fun i => (e i).map τ := by
+    funext i
+    simp only [Function.comp_apply]
+    show j ((1 : ℂ) ⊗ₜ[E] e i) = _
+    simp only [j, matrixEquivTensor_apply_symm, one_smul]
+    rfl
+  rw [h3] at h2
+  exact h2.restrict_scalars' ℝ
+
+end GlobalTheory
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.linear_independent_complex_map : ∀ {E : Type} [Field E] {r n : ℕ} (τ : E →+* ℂ) (e : Fin n → Matrix (Fin r) (Fin r) E), LinearIndependent E e → LinearIndependent ℝ (fun i => (e i).map τ) := by
+  atlas_forward_decl GlobalTheory.linearIndependent_real_map_of_fieldEmb
+end
+
+section
+section
+open Matrix
+
+namespace GlobalTheory.TracelessSkewSpan
+
+variable {r : ℕ}
+
+noncomputable def skewSub (A : Matrix (Fin r) (Fin r) ℂ) :
+    Submodule ℝ (Matrix (Fin r) (Fin r) ℂ) where
+  carrier := {Y | Yᵀ * A + A * Y.map (starRingEnd ℂ) = 0}
+  add_mem' := by
+    intro X Y hX hY
+    simp only [Set.mem_setOf_eq] at *
+    have h : (X + Y).map (starRingEnd ℂ) = X.map (starRingEnd ℂ) + Y.map (starRingEnd ℂ) := by
+      ext i j; simp
+    rw [transpose_add, h, Matrix.add_mul, Matrix.mul_add]
+    calc _ = (Xᵀ * A + A * X.map (starRingEnd ℂ)) + (Yᵀ * A + A * Y.map (starRingEnd ℂ)) := by abel
+      _ = 0 := by rw [hX, hY, add_zero]
+  zero_mem' := by simp
+  smul_mem' := by
+    intro c Y hY
+    simp only [Set.mem_setOf_eq] at *
+    have h1 : (c • Y).map (starRingEnd ℂ) = c • Y.map (starRingEnd ℂ) := by
+      ext i j; simp [Complex.real_smul]
+    rw [transpose_smul, h1, Matrix.smul_mul, Matrix.mul_smul, ← smul_add, hY, smul_zero]
+
+lemma mem_skewSub {A Y : Matrix (Fin r) (Fin r) ℂ} :
+    Y ∈ skewSub A ↔ Yᵀ * A + A * Y.map (starRingEnd ℂ) = 0 := Iff.rfl
+
+lemma eq_zero_of_mem_of_I_smul_mem {A Y : Matrix (Fin r) (Fin r) ℂ} (hA : A.det ≠ 0)
+    (h1 : Y ∈ skewSub A) (h2 : Complex.I • Y ∈ skewSub A) : Y = 0 := by
+  rw [mem_skewSub] at h1 h2
+  have hc : (Complex.I • Y).map (starRingEnd ℂ) = (-Complex.I) • Y.map (starRingEnd ℂ) := by
+    ext i j; simp
+  rw [transpose_smul, hc, Matrix.smul_mul, Matrix.mul_smul] at h2
+  have h3 : Yᵀ * A - A * Y.map (starRingEnd ℂ) = 0 := by
+    have : Complex.I • (Yᵀ * A - A * Y.map (starRingEnd ℂ)) = 0 := by
+      rw [smul_sub, ← h2, neg_smul]; abel
+    rcases smul_eq_zero.mp this with h | h
+    · exact absurd h Complex.I_ne_zero
+    · exact h
+  have h4 : Yᵀ * A = 0 := by
+    have : (2 : ℂ) • (Yᵀ * A) = 0 := by
+      rw [two_smul]
+      calc Yᵀ * A + Yᵀ * A = (Yᵀ * A + A * Y.map (starRingEnd ℂ)) + (Yᵀ * A - A * Y.map (starRingEnd ℂ)) := by abel
+        _ = 0 := by rw [h1, h3, add_zero]
+    rcases smul_eq_zero.mp this with h | h
+    · norm_num at h
+    · exact h
+  have hu : IsUnit A.det := isUnit_iff_ne_zero.mpr hA
+  have h5 : Yᵀ = 0 := by
+    calc Yᵀ = Yᵀ * A * A⁻¹ := by rw [Matrix.mul_assoc, Matrix.mul_nonsing_inv A hu, Matrix.mul_one]
+      _ = 0 := by rw [h4, Matrix.zero_mul]
+  simpa using congrArg Matrix.transpose h5
+
+lemma finrank_skewSub_mul_two_le {A : Matrix (Fin r) (Fin r) ℂ} (hA : A.det ≠ 0) :
+    2 * Module.finrank ℝ (skewSub A) ≤ 2 * (r * r) := by
+  set u := skewSub A
+  let f : (u × u) →ₗ[ℝ] Matrix (Fin r) (Fin r) ℂ :=
+    u.subtype ∘ₗ LinearMap.fst ℝ u u + (Complex.I • LinearMap.id) ∘ₗ u.subtype ∘ₗ LinearMap.snd ℝ u u
+  have hf : Function.Injective f := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    rintro ⟨a, b⟩ hab
+    have hab' : (a : Matrix (Fin r) (Fin r) ℂ) + Complex.I • (b : Matrix (Fin r) (Fin r) ℂ) = 0 := by
+      simpa [f] using hab
+    have hIb : Complex.I • (b : Matrix (Fin r) (Fin r) ℂ) ∈ u := by
+      have : Complex.I • (b : Matrix (Fin r) (Fin r) ℂ) = -(a : Matrix (Fin r) (Fin r) ℂ) :=
+        eq_neg_of_add_eq_zero_right hab'
+      rw [this]; exact u.neg_mem a.2
+    have hb : (b : Matrix (Fin r) (Fin r) ℂ) = 0 := eq_zero_of_mem_of_I_smul_mem hA b.2 hIb
+    have ha : (a : Matrix (Fin r) (Fin r) ℂ) = 0 := by simpa [hb] using hab'
+    ext1
+    · exact Subtype.ext ha
+    · exact Subtype.ext hb
+  have := LinearMap.finrank_le_finrank_of_injective hf
+  rw [Module.finrank_prod, Module.finrank_matrix, Complex.finrank_real_complex] at this
+  simp only [Fintype.card_fin] at this
+  linarith
+
+theorem mem_span_of_linearIndependent {r : ℕ} (A : Matrix (Fin r) (Fin r) ℂ) (hA : A.det ≠ 0)
+    (v : Fin (r ^ 2 - 1) → Matrix (Fin r) (Fin r) ℂ) (hv : LinearIndependent ℝ v)
+    (hvu : ∀ i, (v i)ᵀ * A + A * (v i).map (starRingEnd ℂ) = 0 ∧ (v i).trace = 0)
+    (Y : Matrix (Fin r) (Fin r) ℂ) (hY : Yᵀ * A + A * Y.map (starRingEnd ℂ) = 0)
+    (hYt : Y.trace = 0) : Y ∈ Submodule.span ℝ (Set.range v) := by
+  rcases Nat.eq_zero_or_pos r with hr | hr
+  · subst hr
+    have : Y = 0 := Subsingleton.elim _ _
+    rw [this]; exact Submodule.zero_mem _
+  set u := skewSub A
+  set su := u ⊓ LinearMap.ker ((Matrix.traceLinearMap (Fin r) ℂ ℂ).restrictScalars ℝ)
+  have hYsu : Y ∈ su := ⟨hY, by simpa using hYt⟩
+  have hle : Submodule.span ℝ (Set.range v) ≤ su := by
+    rw [Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    exact ⟨(hvu i).1, by simpa using (hvu i).2⟩
+  have hIu : Complex.I • (1 : Matrix (Fin r) (Fin r) ℂ) ∈ u := by
+    rw [mem_skewSub]
+    have hc : (Complex.I • (1 : Matrix (Fin r) (Fin r) ℂ)).map (starRingEnd ℂ)
+        = (-Complex.I) • (1 : Matrix (Fin r) (Fin r) ℂ) := by
+      ext i j; by_cases h : i = j <;> simp [Matrix.one_apply, h]
+    rw [hc, transpose_smul, transpose_one, Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul,
+      Matrix.mul_one, neg_smul, add_neg_cancel]
+  have hIsu : Complex.I • (1 : Matrix (Fin r) (Fin r) ℂ) ∉ su := by
+    rintro ⟨-, h⟩
+    have h' : Matrix.trace (Complex.I • (1 : Matrix (Fin r) (Fin r) ℂ)) = 0 := by simpa using h
+    rw [Matrix.trace_smul, Matrix.trace_one, Fintype.card_fin, smul_eq_mul] at h'
+    rcases mul_eq_zero.mp h' with h'' | h''
+    · exact Complex.I_ne_zero h''
+    · exact absurd (by exact_mod_cast h'' : r = 0) hr.ne'
+  have hlt : su < u := lt_of_le_of_ne inf_le_left (fun h => hIsu (h ▸ hIu))
+  have h1 := Submodule.finrank_lt_finrank_of_lt hlt
+  have h2 : 2 * Module.finrank ℝ u ≤ 2 * (r * r) := finrank_skewSub_mul_two_le hA
+  have hspan := finrank_span_eq_card hv
+  rw [Fintype.card_fin] at hspan
+  have heq : Submodule.span ℝ (Set.range v) = su := by
+    apply Submodule.eq_of_le_of_finrank_le hle
+    rw [hspan, sq]
+    change Module.finrank ℝ su ≤ r * r - 1
+    generalize r * r = n at h2 ⊢
+    omega
+  rw [heq]; exact hYsu
+
+end GlobalTheory.TracelessSkewSpan
+end
+
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_lie_algebra_spanned : ∀ {r : ℕ} (A : Matrix (Fin r) (Fin r) ℂ), A.det ≠ 0 → ∀ v : Fin (r ^ 2 - 1) → Matrix (Fin r) (Fin r) ℂ, LinearIndependent ℝ v → (∀ i, (v i)ᵀ * A + A * (v i).map (starRingEnd ℂ) = 0 ∧ (v i).trace = 0) → ∀ Y : Matrix (Fin r) (Fin r) ℂ, Yᵀ * A + A * Y.map (starRingEnd ℂ) = 0 → Y.trace = 0 → Y ∈ Submodule.span ℝ (Set.range v) := by
+  atlas_forward_decl GlobalTheory.TracelessSkewSpan.mem_span_of_linearIndependent
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.SUVol.DensOne
@@ -451,3 +708,5 @@ theorem tangentHaar_formLie [NumberField E] [NumberField.IsCMField E] (hG : G.de
 end FormLie
 
 end GlobalTheory.SUVol.DensOne
+end
+end

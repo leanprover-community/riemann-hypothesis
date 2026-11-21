@@ -1,7 +1,0 @@
-import Development.AutomorphicArithmetic.Foundations.Convolution.EndomorphismSlices.CmbEllOf
-import Development.AutomorphicArithmetic.Foundations.Convolution.EndomorphismSlices.FiniteAdelicEstimates.CmbTest
-import Development.AutomorphicArithmetic.Foundations.Convolution.EndomorphismSlices.FiniteAdelicEstimates.SeenFam
-
-open UpperTheory.Zero.ConvolutionTheory.EB in
-theorem UpperTheory.Zero.ConvolutionTheory.EB.cmbEll :
-    UpperTheory.Zero.ConvolutionTheory.EB.CmbEll := cmbEll_of cmbTest seenFam positionTest lefL ffAlg

@@ -1,6 +1,357 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.OrbitPushR
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.OrbitPushE
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.OrbitPushI
 
+section
+set_option linter.unusedVariables false
+
+noncomputable section
+
+open MeasureTheory Filter Topology Matrix
+open scoped ENNReal
+
+namespace PI.RhsWLim.W
+
+open PI.RhsWLim
+
+def hq (k : ℕ) (T' : ℝ) (y : Fin k → ℂ) (θ : ℝ) : (Fin k → ℂ) × ℂ :=
+  (y, (Real.sqrt (∑ i, Complex.normSq (y i) + T') : ℂ) * Complex.exp (θ * Complex.I))
+
+def hqI (k : ℕ) (T' : ℝ) (E : Set ((Fin k → ℂ) × ℂ)) : ℝ≥0∞ :=
+  ∫⁻ θ in Set.Ioo (-Real.pi) Real.pi, ∫⁻ y, E.indicator 1 (hq k T' y θ)
+
+def HypTh : Prop :=
+  ∀ (k : ℕ) (T' : ℝ), 0 < T' → ∃ c : ℝ≥0∞, c ≠ 0 ∧ c ≠ ⊤ ∧
+    ∀ E, MeasurableSet E → hypM k T' E = c * hqI k T' E
+
+def ConeVol : Prop :=
+  ∀ (k : ℕ) (T' : ℝ), 0 < T' → ∃ c : ℝ≥0∞, c ≠ 0 ∧ c ≠ ⊤ ∧
+    ∀ E, MeasurableSet E → volume (coneSh k T' E) = c * hqI k T' E
+
+theorem coneForm_of (hH : HypTh) (hV : ConeVol) : ConeForm := by
+  intro k T' hT'
+  obtain ⟨c1, h10, h1t, h1⟩ := hH k T' hT'
+  obtain ⟨c2, h20, h2t, h2⟩ := hV k T' hT'
+  refine ⟨c1 / c2, ENNReal.div_pos h10 h2t |>.ne', ENNReal.div_ne_top h1t h20, fun E hE => ?_⟩
+  rw [h1 E hE, h2 E hE, ← mul_assoc, ENNReal.div_mul_cancel h20 h2t]
+
+end PI.RhsWLim.W
+end
+end
+
+section
+set_option linter.unusedVariables false
+
+noncomputable section
+
+open MeasureTheory Filter Topology Matrix
+open scoped ENNReal
+
+namespace PI.RhsWLim.W
+
+open PI.RhsWLim
+
+theorem continuous_hq (k : ℕ) (T' : ℝ) : Continuous (fun p : (Fin k → ℂ) × ℝ => hq k T' p.1 p.2) := by
+  unfold hq
+  refine continuous_fst.prodMk ?_
+  refine (Complex.continuous_ofReal.comp (Real.continuous_sqrt.comp
+    ((continuous_finsetSum _ fun i _ => Complex.continuous_normSq.comp
+      ((continuous_apply i).comp continuous_fst)).add continuous_const))).mul ?_
+  exact Complex.continuous_exp.comp ((Complex.continuous_ofReal.comp continuous_snd).mul continuous_const)
+
+theorem hq_periodic (k : ℕ) (T' : ℝ) (y : Fin k → ℂ) (θ : ℝ) : hq k T' y (θ + 2 * Real.pi) = hq k T' y θ := by
+  have key : Complex.exp (((θ + 2 * Real.pi : ℝ) : ℂ) * Complex.I) = Complex.exp ((θ : ℂ) * Complex.I) := by
+    have e : (((θ + 2 * Real.pi : ℝ)) : ℂ) * Complex.I = θ * Complex.I + 2 * Real.pi * Complex.I := by
+      push_cast; ring
+    rw [e, Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one]
+  unfold hq
+  rw [key]
+
+theorem lint_shift (P : ℝ → ℝ≥0∞) (hP : Measurable P) (hper : ∀ θ, P (θ + 2 * Real.pi) = P θ) :
+    ∫⁻ θ in Set.Ioc 0 (2 * Real.pi), P θ = ∫⁻ θ in Set.Ioo (-Real.pi) Real.pi, P θ := by
+  have hπ := Real.pi_pos
+  rw [setLIntegral_congr (Ioo_ae_eq_Ioc (μ := volume))]
+  have h1 : Set.Ioc 0 (2 * Real.pi) = Set.Ioc 0 Real.pi ∪ Set.Ioc Real.pi (2 * Real.pi) :=
+    (Set.Ioc_union_Ioc_eq_Ioc (by linarith) (by linarith)).symm
+  have h2 : Set.Ioc (-Real.pi) Real.pi = Set.Ioc (-Real.pi) 0 ∪ Set.Ioc 0 Real.pi :=
+    (Set.Ioc_union_Ioc_eq_Ioc (by linarith) (by linarith)).symm
+  rw [h1, h2, lintegral_union measurableSet_Ioc (Set.Ioc_disjoint_Ioc_of_le le_rfl),
+    lintegral_union measurableSet_Ioc (Set.Ioc_disjoint_Ioc_of_le le_rfl), add_comm]
+  congr 1
+  have hmp : MeasurePreserving (fun x : ℝ => x + 2 * Real.pi) volume volume := measurePreserving_add_right volume _
+  have hpre : (fun x : ℝ => x + 2 * Real.pi) ⁻¹' Set.Ioc Real.pi (2 * Real.pi) = Set.Ioc (-Real.pi) 0 := by
+    ext x
+    simp only [Set.mem_preimage, Set.mem_Ioc]
+    constructor
+    · rintro ⟨a, b⟩; constructor <;> linarith
+    · rintro ⟨a, b⟩; constructor <;> linarith
+  have := hmp.setLIntegral_comp_preimage (s := Set.Ioc Real.pi (2 * Real.pi)) measurableSet_Ioc hP
+  rw [hpre] at this
+  rw [← this]
+  exact lintegral_congr fun a => hper a
+
+theorem hypTh : HypTh := by
+  intro k T' hT'
+  let L : EuclideanSpace ℂ (Fin k) ≃L[ℝ] (Fin k → ℂ) := PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin k => ℂ)
+  set μ' : Measure (Fin k → ℂ) := (volume : Measure (EuclideanSpace ℂ (Fin k))).map L with hμ'def
+  have hH : μ'.IsAddHaarMeasure := L.isAddHaarMeasure_map _
+  have hμ' : μ' = Measure.addHaarScalarFactor μ' volume • volume := Measure.isAddLeftInvariant_eq_smul μ' volume
+  have hc0 : 0 < Measure.addHaarScalarFactor μ' volume :=
+    Measure.addHaarScalarFactor_pos_of_isAddHaarMeasure μ' volume
+  set c := Measure.addHaarScalarFactor μ' volume with hcdef
+  clear_value c
+  refine ⟨(1 / 2) * (c : ℝ≥0∞), ?_, ?_, fun E hE => ?_⟩
+  · exact mul_ne_zero (by simp) (by exact_mod_cast hc0.ne')
+  · exact ENNReal.mul_ne_top (by simp) ENNReal.coe_ne_top
+  have hf : Measurable (E.indicator (1 : (Fin k → ℂ) × ℂ → ℝ≥0∞)) := measurable_one.indicator hE
+  have hF : Measurable (fun p : (Fin k → ℂ) × ℝ => E.indicator (1 : (Fin k → ℂ) × ℂ → ℝ≥0∞) (hq k T' p.1 p.2)) :=
+    hf.comp (continuous_hq k T').measurable
+  rw [← lintegral_indicator_one hE, ← hypMeas_eq k T' hf]
+  unfold hypMeas hqI
+  rw [mul_assoc]
+  congr 1
+  have e1 : ∀ (y : EuclideanSpace ℂ (Fin k)) (θ : ℝ),
+      E.indicator (1 : (Fin k → ℂ) × ℂ → ℝ≥0∞)
+        ((fun i => y i), (Real.sqrt (‖y‖ ^ 2 + T') : ℂ) * Complex.exp (θ * Complex.I)) =
+      E.indicator (1 : (Fin k → ℂ) × ℂ → ℝ≥0∞) (hq k T' (L y) θ) := by
+    intro y θ
+    rw [← normSq_sum_eq]
+    rfl
+  simp_rw [e1]
+  have hG : Measurable (fun y : Fin k → ℂ =>
+      ∫⁻ θ in Set.Ioc 0 (2 * Real.pi), E.indicator (1 : (Fin k → ℂ) × ℂ → ℝ≥0∞) (hq k T' y θ)) :=
+    hF.lintegral_prod_right'
+  set G : (Fin k → ℂ) → ℝ≥0∞ := fun y =>
+    ∫⁻ θ in Set.Ioc 0 (2 * Real.pi), E.indicator (1 : (Fin k → ℂ) × ℂ → ℝ≥0∞) (hq k T' y θ) with hGdef
+  have eM : (∫⁻ y : EuclideanSpace ℂ (Fin k), G (L y)) = ∫⁻ y, G y ∂μ' :=
+    (lintegral_map hG L.continuous.measurable).symm
+  rw [eM, hμ', lintegral_smul_measure, ENNReal.smul_def, smul_eq_mul]
+  congr 1
+  rw [hGdef]
+  dsimp only
+  rw [lintegral_lintegral_swap hF.aemeasurable]
+  exact lint_shift _ hF.lintegral_prod_left' fun θ => by simp only [hq_periodic]
+
+end PI.RhsWLim.W
+end
+end
+
+section
+set_option linter.unusedVariables false
+
+noncomputable section
+
+open MeasureTheory Filter Topology Matrix
+open scoped ENNReal
+
+namespace PI.RhsWLim.W
+
+open PI.RhsWLim
+
+variable {k : ℕ}
+
+theorem normSq_real_smul (t : ℝ) (z : ℂ) : Complex.normSq (t • z) = t ^ 2 * Complex.normSq z := by
+  rw [Complex.real_smul, Complex.normSq_mul, Complex.normSq_ofReal]
+  ring
+
+theorem qf_smul (t : ℝ) (p : (Fin k → ℂ) × ℂ) : qf k (t • p) = t ^ 2 * qf k p := by
+  unfold qf
+  simp only [Prod.smul_fst, Prod.smul_snd, Pi.smul_apply, normSq_real_smul, ← Finset.mul_sum]
+  ring
+
+theorem continuous_qf : Continuous (qf k) := by
+  unfold qf
+  exact (continuous_finsetSum _ fun i _ => Complex.continuous_normSq.comp
+    ((continuous_apply i).comp continuous_fst)).sub (Complex.continuous_normSq.comp continuous_snd)
+
+def tau (k : ℕ) (T' : ℝ) (p : (Fin k → ℂ) × ℂ) : ℝ := Real.sqrt (-qf k p / T')
+
+theorem continuous_tau (T' : ℝ) : Continuous (tau k T') :=
+  Real.continuous_sqrt.comp (continuous_qf.neg.div_const _)
+
+theorem coneSh_eq {T' : ℝ} (hT' : 0 < T') (E : Set ((Fin k → ℂ) × ℂ)) :
+    coneSh k T' E = {p | qf k p < 0 ∧ 1 < tau k T' p ∧ tau k T' p < 2 ∧ (tau k T' p)⁻¹ • p ∈ E} := by
+  ext p
+  constructor
+  · rintro ⟨⟨v, t⟩, ⟨⟨hvE, hvS⟩, ht1, ht2⟩, rfl⟩
+    have hv : qf k v = -T' := hvS
+    have hq : qf k (t • v) = -(t ^ 2 * T') := by rw [qf_smul, hv]; ring
+    have htau : tau k T' (t • v) = t := by
+      unfold tau
+      rw [hq, neg_neg, mul_div_assoc, div_self hT'.ne', mul_one, Real.sqrt_sq (by have : 1 < t := ht1; linarith)]
+    have ht1' : 1 < t := ht1
+    have hpos : 0 < t ^ 2 * T' := mul_pos (pow_pos (by linarith) 2) hT'
+    refine ⟨by rw [hq]; linarith, by rw [htau]; exact ht1, by rw [htau]; exact ht2, ?_⟩
+    rw [htau, smul_smul, inv_mul_cancel₀ (by linarith : t ≠ 0), one_smul]
+    exact hvE
+  · rintro ⟨hneg, h1, h2, hE⟩
+    have hq0 : qf k p ≠ 0 := hneg.ne
+    have ht2 : tau k T' p ^ 2 = -qf k p / T' := by
+      unfold tau
+      rw [Real.sq_sqrt (div_nonneg (by linarith) hT'.le)]
+    refine ⟨((tau k T' p)⁻¹ • p, tau k T' p), ⟨⟨hE, ?_⟩, h1, h2⟩, ?_⟩
+    · show qf k ((tau k T' p)⁻¹ • p) = -T'
+      rw [qf_smul, inv_pow, ht2, inv_div, div_mul_eq_mul_div, div_eq_iff (neg_ne_zero.2 hq0)]
+      ring
+    · show tau k T' p • ((tau k T' p)⁻¹ • p) = p
+      rw [smul_smul, mul_inv_cancel₀ (by linarith : tau k T' p ≠ 0), one_smul]
+
+theorem measurableSet_coneSh {T' : ℝ} (hT' : 0 < T') {E : Set ((Fin k → ℂ) × ℂ)} (hE : MeasurableSet E) :
+    MeasurableSet (coneSh k T' E) := by
+  rw [coneSh_eq hT']
+  have hq := (continuous_qf (k := k)).measurable
+  have htau := (continuous_tau (k := k) T').measurable
+  simp only [Set.ofPred_and]
+  refine (measurableSet_lt hq measurable_const).inter ((measurableSet_lt measurable_const htau).inter
+    ((measurableSet_lt htau measurable_const).inter ?_))
+  exact (htau.inv.smul measurable_id) hE
+
+def phiR (a T' t : ℝ) : ℝ := Real.sqrt (a + t ^ 2 * T')
+
+theorem slice_mem {T' : ℝ} (hT' : 0 < T') (E : Set ((Fin k → ℂ) × ℂ)) (y : Fin k → ℂ) (θ t : ℝ) (ht : 0 < t) :
+    (y, ((phiR (∑ i, Complex.normSq (y i)) T' t : ℝ) : ℂ) * Complex.exp (θ * Complex.I)) ∈ coneSh k T' E ↔
+      (1 < t ∧ t < 2 ∧ hq k T' (t⁻¹ • y) θ ∈ E) := by
+  set a := ∑ i, Complex.normSq (y i) with ha_def
+  have ha : 0 ≤ a := Finset.sum_nonneg fun i _ => Complex.normSq_nonneg _
+  set φ := phiR a T' t with hφdef
+  have hφ0 : 0 ≤ φ := Real.sqrt_nonneg _
+  have hφ2 : φ ^ 2 = a + t ^ 2 * T' := Real.sq_sqrt (by positivity)
+  have hqv : qf k (y, (φ : ℂ) * Complex.exp (θ * Complex.I)) = -(t ^ 2 * T') := by
+    unfold qf
+    simp only
+    rw [Complex.normSq_mul, Complex.normSq_ofReal, Complex.normSq_eq_norm_sq (Complex.exp _),
+      Complex.norm_exp_ofReal_mul_I, ← ha_def]
+    linear_combination (-1 : ℝ) * hφ2
+  have htau : tau k T' (y, (φ : ℂ) * Complex.exp (θ * Complex.I)) = t := by
+    unfold tau
+    rw [hqv, neg_neg, mul_div_assoc, div_self hT'.ne', mul_one, Real.sqrt_sq ht.le]
+  have hsc : (t⁻¹ : ℝ) • ((y, (φ : ℂ) * Complex.exp (θ * Complex.I)) : (Fin k → ℂ) × ℂ) =
+      hq k T' (t⁻¹ • y) θ := by
+    unfold hq
+    have hs : ∑ i, Complex.normSq ((t⁻¹ • y) i) = t⁻¹ ^ 2 * a := by
+      simp only [Pi.smul_apply, normSq_real_smul, ← Finset.mul_sum, ha_def]
+    have hr : Real.sqrt (∑ i, Complex.normSq ((t⁻¹ • y) i) + T') = t⁻¹ * φ := by
+      rw [hs, show t⁻¹ ^ 2 * a + T' = (t⁻¹ * φ) ^ 2 by
+        rw [mul_pow, hφ2]; field_simp]
+      exact Real.sqrt_sq (mul_nonneg (inv_nonneg.2 ht.le) hφ0)
+    rw [hr, Prod.smul_mk, Complex.real_smul]
+    push_cast
+    ring_nf
+  rw [coneSh_eq hT']
+  simp only [Set.mem_ofPred_eq]
+  rw [htau, hsc]
+  constructor
+  · rintro ⟨-, h1, h2, h3⟩
+    exact ⟨h1, h2, h3⟩
+  · rintro ⟨h1, h2, h3⟩
+    refine ⟨?_, h1, h2, h3⟩
+    rw [hqv]
+    have : 0 < t ^ 2 * T' := by positivity
+    linarith
+
+end PI.RhsWLim.W
+end
+end
+
+section
+set_option linter.unusedVariables false
+
+noncomputable section
+
+open MeasureTheory Filter Topology Matrix
+open scoped ENNReal
+
+namespace PI.RhsWLim.W
+
+open PI.RhsWLim
+
+variable {k : ℕ}
+
+theorem radial {T' : ℝ} (hT' : 0 < T') (E : Set ((Fin k → ℂ) × ℂ)) (hE : MeasurableSet E) (y : Fin k → ℂ)
+    (θ : ℝ) :
+    ∫⁻ R in Set.Ioi (0 : ℝ), ENNReal.ofReal R *
+        (coneSh k T' E).indicator 1 (y, (R : ℂ) * Complex.exp (θ * Complex.I)) =
+      ∫⁻ t in Set.Ioo (1 : ℝ) 2, ENNReal.ofReal (T' * t) * E.indicator 1 (hq k T' (t⁻¹ • y) θ) := by
+  set a := ∑ i, Complex.normSq (y i) with ha_def
+  have ha : 0 ≤ a := Finset.sum_nonneg fun i _ => Complex.normSq_nonneg _
+  have hS := measurableSet_coneSh hT' hE
+  set g : ℝ → ℝ≥0∞ := fun R => ENNReal.ofReal R *
+    (coneSh k T' E).indicator 1 (y, (R : ℂ) * Complex.exp (θ * Complex.I)) with hgdef
+  have hsupp : ((Set.Ioi (0 : ℝ)).indicator g).support ⊆ phiR a T' '' Set.Ioo 1 2 := by
+    intro R hR
+    rw [Function.mem_support] at hR
+    have hR0 : R ∈ Set.Ioi (0 : ℝ) := by
+      by_contra h
+      exact hR (Set.indicator_of_notMem h _)
+    rw [Set.indicator_of_mem hR0] at hR
+    have hR0' : 0 < R := hR0
+    have hmem : (y, (R : ℂ) * Complex.exp (θ * Complex.I)) ∈ coneSh k T' E := by
+      by_contra h
+      apply hR
+      simp only [hgdef, Set.indicator_of_notMem h, mul_zero]
+    rw [coneSh_eq hT'] at hmem
+    obtain ⟨hneg, h1, h2, -⟩ := hmem
+    refine ⟨tau k T' (y, (R : ℂ) * Complex.exp (θ * Complex.I)), ⟨h1, h2⟩, ?_⟩
+    have hqv : qf k (y, (R : ℂ) * Complex.exp (θ * Complex.I)) = a - R ^ 2 := by
+      unfold qf
+      simp only
+      rw [Complex.normSq_mul, Complex.normSq_ofReal, Complex.normSq_eq_norm_sq (Complex.exp _),
+        Complex.norm_exp_ofReal_mul_I, ← ha_def]
+      ring
+    have htau2 : tau k T' (y, (R : ℂ) * Complex.exp (θ * Complex.I)) ^ 2 = (R ^ 2 - a) / T' := by
+      unfold tau
+      rw [Real.sq_sqrt (div_nonneg (by linarith) hT'.le), hqv]
+      ring
+    unfold phiR
+    rw [htau2, div_mul_cancel₀ _ hT'.ne', show a + (R ^ 2 - a) = R ^ 2 by ring, Real.sqrt_sq hR0'.le]
+  rw [← lintegral_indicator measurableSet_Ioi, ← setLIntegral_eq_of_support_subset hsupp]
+  have hpos : ∀ t : ℝ, 0 < t → 0 < a + t ^ 2 * T' := fun t ht =>
+    add_pos_of_nonneg_of_pos ha (mul_pos (pow_pos ht 2) hT')
+  have hderiv : ∀ t ∈ Set.Ioo (1 : ℝ) 2, HasDerivWithinAt (phiR a T')
+      (2 * t * T' / (2 * Real.sqrt (a + t ^ 2 * T'))) (Set.Ioo 1 2) t := by
+    intro t ht
+    have ht0 : 0 < t := by linarith [ht.1]
+    have h1 : HasDerivAt (fun t => a + t ^ 2 * T') (2 * t * T') t := by
+      have := ((hasDerivAt_pow 2 t).mul_const T').const_add a
+      exact this.congr_deriv (by ring)
+    exact (h1.sqrt (hpos t ht0).ne').hasDerivWithinAt
+  have hinj : Set.InjOn (phiR a T') (Set.Ioo 1 2) := by
+    intro t1 h1 t2 h2 he
+    have h10 : 0 < t1 := by linarith [h1.1]
+    have h20 : 0 < t2 := by linarith [h2.1]
+    unfold phiR at he
+    rw [Real.sqrt_inj (hpos t1 h10).le (hpos t2 h20).le] at he
+    have e2 : t1 ^ 2 = t2 ^ 2 := mul_right_cancel₀ hT'.ne' (by linarith)
+    exact (pow_left_inj₀ h10.le h20.le two_ne_zero).1 e2
+  rw [lintegral_image_eq_lintegral_abs_deriv_mul measurableSet_Ioo hderiv hinj]
+  refine setLIntegral_congr_fun measurableSet_Ioo (fun t ht => ?_)
+  have ht0 : 0 < t := by linarith [ht.1]
+  have hφpos : 0 < Real.sqrt (a + t ^ 2 * T') := Real.sqrt_pos.2 (hpos t ht0)
+  have hφ : phiR a T' t = Real.sqrt (a + t ^ 2 * T') := rfl
+  rw [Set.indicator_of_mem (show phiR a T' t ∈ Set.Ioi (0 : ℝ) from hφ ▸ hφpos)]
+  have hm := slice_mem hT' E y θ t ht0
+  have hfac : ENNReal.ofReal |2 * t * T' / (2 * Real.sqrt (a + t ^ 2 * T'))| *
+      ENNReal.ofReal (phiR a T' t) = ENNReal.ofReal (T' * t) := by
+    rw [← ENNReal.ofReal_mul (abs_nonneg _), abs_of_pos (div_pos (mul_pos (mul_pos two_pos ht0) hT')
+      (mul_pos two_pos hφpos)), hφ]
+    congr 1
+    field_simp
+  by_cases hE' : hq k T' (t⁻¹ • y) θ ∈ E
+  · rw [Set.indicator_of_mem hE']
+    simp only [hgdef]
+    rw [Set.indicator_of_mem (hm.2 ⟨ht.1, ht.2, hE'⟩)]
+    simp only [Pi.one_apply, mul_one]
+    exact hfac
+  · rw [Set.indicator_of_notMem hE']
+    simp only [hgdef]
+    rw [Set.indicator_of_notMem (fun h => hE' (hm.1 h).2.2)]
+    simp
+
+end PI.RhsWLim.W
+end
+end
+
+section
 set_option linter.unusedVariables false
 
 noncomputable section
@@ -138,3 +489,5 @@ theorem coneVol : ConeVol := by
   rw [lintegral_const_mul _ hP]
 
 end PI.RhsWLim.W
+end
+end

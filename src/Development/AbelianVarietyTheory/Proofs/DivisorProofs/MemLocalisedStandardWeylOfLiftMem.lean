@@ -1,10 +1,266 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LamGApply
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormLeOneIffIntegralAtPadicEmbeddingPlace
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralWeylBasisSpanningAllRings
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemWeylLatticeAddIffDetPowMul
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LinIndMapRangeField
 
+section
+section
+set_option autoImplicit false
+
+open Formalism.GradedWeylDivisibility MvPolynomial
+
+namespace GlobalTheory.WeylBasis
+
+theorem map_mem_span {σ ι : Type} (R : Type) [CommRing R] (g : ι → MvPolynomial σ ℤ) {f : MvPolynomial σ ℤ}
+    (hf : f ∈ Submodule.span ℤ (Set.range g)) :
+    MvPolynomial.map (Int.castRingHom R) f ∈
+      Submodule.span R (Set.range fun i => MvPolynomial.map (Int.castRingHom R) (g i)) := by
+  induction hf using Submodule.span_induction with
+  | mem y hy =>
+    obtain ⟨i, rfl⟩ := hy
+    exact Submodule.subset_span ⟨i, rfl⟩
+  | zero => rw [map_zero]; exact zero_mem _
+  | add y z _ _ hy hz => rw [map_add]; exact add_mem hy hz
+  | smul a y _ hy => rw [map_zsmul]; exact zsmul_mem hy a
+
+theorem weyl_finite (n : ℕ) (ν : Fin n → ℕ) (hν : Antitone ν) : Module.Finite ℤ (weyl ℤ n n le_rfl ν) := by
+  obtain ⟨c, hc, -⟩ := sSBasis ℤ n n ν
+  have : Finite (ssIdx n n ν) := (sSIdxFinite n n ν).to_subtype
+  have : Module.Finite ℤ (dualWeyl ℤ n n ν) := by
+    rw [← hc.2.1]
+    exact Module.Finite.span_of_finite ℤ (Set.finite_range c)
+  exact Module.Finite.of_injective (Submodule.inclusion (weylLeDual ℤ n n le_rfl ν hν))
+    (Submodule.inclusion_injective _)
+
+theorem exists_weyl_basis : ∀ (n : ℕ) (ν : Fin n → ℕ), Antitone ν → ∃ (P : Type) (_ : Fintype P) (b : P → MvPolynomial (Fin n × Fin n) ℤ), LinearIndependent ℤ b ∧ (∀ (R : Type) [CommRing R], weyl R n n le_rfl ν = Submodule.span R (Set.range fun i => MvPolynomial.map (Int.castRingHom R) (b i))) ∧ ∀ (K : Type) [Field K] [CharZero K], dualWeyl K n n ν = Submodule.span K (Set.range fun i => MvPolynomial.map (Int.castRingHom K) (b i)) := by
+  intro n ν hν
+  have := weyl_finite n ν hν
+  have : Module.Free ℤ (weyl ℤ n n le_rfl ν) := inferInstance
+  let B := Module.Free.chooseBasis ℤ (weyl ℤ n n le_rfl ν)
+  have hspan : Submodule.span ℤ (Set.range fun i => (B i : MvPolynomial (Fin n × Fin n) ℤ)) = weyl ℤ n n le_rfl ν := by
+    have h := congrArg (Submodule.map (weyl ℤ n n le_rfl ν).subtype) B.span_eq
+    rw [Submodule.map_span, ← Set.range_comp, Submodule.map_subtype_top] at h
+    exact h
+  have hR : ∀ (R : Type) [CommRing R], weyl R n n le_rfl ν =
+      Submodule.span R (Set.range fun i => MvPolynomial.map (Int.castRingHom R) (B i : MvPolynomial (Fin n × Fin n) ℤ)) := by
+    intro R _
+    apply le_antisymm
+    · unfold weyl
+      rw [Submodule.span_le]
+      rintro _ ⟨w, rfl⟩
+      have hw' : applyWord ℤ w (hw ℤ le_rfl ν) ∈ weyl ℤ n n le_rfl ν := Submodule.subset_span ⟨w, rfl⟩
+      rw [← hspan] at hw'
+      have h := map_mem_span R _ hw'
+      rw [← lclosedeq_applyWord_map, lclosedeq_hw_map] at h
+      exact h
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      have h := map_mem_span R (fun w : List (Fin n × Fin n × ℕ) => applyWord ℤ w (hw ℤ le_rfl ν)) (B i).2
+      simp only [← lclosedeq_applyWord_map, lclosedeq_hw_map] at h
+      exact h
+  refine ⟨_, inferInstance, fun i => (B i : MvPolynomial (Fin n × Fin n) ℤ), ?_, hR, ?_⟩
+  · exact B.linearIndependent.map' (weyl ℤ n n le_rfl ν).subtype (Submodule.ker_subtype _)
+  · intro K _ _
+    apply le_antisymm
+    · obtain ⟨c, hc, -⟩ := sSBasis ℤ n n ν
+      rw [← span_map_weightBasis_eq_dualWeyl (K := K) hc, Submodule.span_le]
+      rintro _ ⟨j, rfl⟩
+      have hj : c j ∈ dualWeyl ℤ n n ν := hc.2.1 ▸ Submodule.subset_span ⟨j, rfl⟩
+      obtain ⟨m, hm, hmj⟩ := weylRational n n le_rfl ν hν _ hj
+      rw [← hspan] at hmj
+      have h := map_mem_span K _ hmj
+      rw [map_zsmul, ← Int.cast_smul_eq_zsmul K] at h
+      exact (Submodule.smul_mem_iff _ (Int.cast_ne_zero.2 hm)).1 h
+    · rw [← hR K]
+      exact weylLeDual K n n le_rfl ν hν
+
+end GlobalTheory.WeylBasis
+end
+
+open NumberField IsDedekindDomain
+open scoped TensorProduct
+open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.L2.Pj GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.ExpFrame GlobalTheory.ExpTie GlobalTheory.FrameOf
+open Formalism.CohomologicalDescent.DepthNonnegative Formalism.CohomologicalDescent.LD Formalism.GradedWeylDivisibility MvPolynomial
+open GlobalTheory.FrameRead
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_weylBasis_spanning_all_rings : ∀ (n : ℕ) (ν : Fin n → ℕ), Antitone ν → ∃ (P : Type) (_ : Fintype P) (b : P → MvPolynomial (Fin n × Fin n) ℤ), LinearIndependent ℤ b ∧ (∀ (R : Type) [CommRing R], weyl R n n le_rfl ν = Submodule.span R (Set.range fun i => MvPolynomial.map (Int.castRingHom R) (b i))) ∧ ∀ (K : Type) [Field K] [CharZero K], dualWeyl K n n ν = Submodule.span K (Set.range fun i => MvPolynomial.map (Int.castRingHom K) (b i)) := by
+  atlas_forward_decl GlobalTheory.WeylBasis.exists_weyl_basis
+end
+
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open Formalism.GradedWeylDivisibility MvPolynomial
+open GlobalTheory.FrameRead
+
+namespace GlobalTheory.WeylShift
+
+variable (R : Type) [CommRing R]
+
+theorem rowGen_detPol (n : ℕ) (a b : Fin n) :
+    rowGen R a b (detPol R n) =
+      (1 + (if a = b then Polynomial.X else 0)) * Polynomial.C (detPol R n) := by
+  have hC : (Polynomial.C (detPol R n) : Polynomial (MvPolynomial (Fin n × Fin n) R)) =
+      Matrix.det (Matrix.of fun p s : Fin n =>
+        (Polynomial.C (X (p, s)) : Polynomial (MvPolynomial (Fin n × Fin n) R))) := by
+    unfold detPol
+    rw [RingHom.map_det]
+    rfl
+  rw [hC]
+  set A := (Matrix.of fun p s : Fin n =>
+        (Polynomial.C (X (p, s)) : Polynomial (MvPolynomial (Fin n × Fin n) R))) with hA
+  have h1 : rowGen R a b (detPol R n) =
+      Matrix.det (A.updateRow b (A b + (Polynomial.X : Polynomial (MvPolynomial (Fin n × Fin n) R)) • A a)) := by
+    unfold detPol
+    rw [AlgHom.map_det]
+    congr 1
+    ext1 p s
+    by_cases hp : p = b
+    · subst hp
+      simp [rowGen, hA]
+    · simp [rowGen, hA, hp, Matrix.updateRow_ne hp]
+  rw [h1]
+  by_cases hab : a = b
+  · subst hab
+    rw [Matrix.det_updateRow_add, Matrix.det_updateRow_smul, Matrix.updateRow_eq_self, if_pos rfl]
+    ring
+  · rw [Matrix.det_updateRow_add_smul_self A (Ne.symm hab), if_neg hab]
+    ring
+
+theorem rowDiv_det_mul_zero (n : ℕ) (a b : Fin n) (g : MvPolynomial (Fin n × Fin n) R) :
+    rowDiv R a b 0 (detPol R n * g) = detPol R n * rowDiv R a b 0 g := by
+  unfold rowDiv
+  rw [map_mul, rowGen_detPol]
+  split_ifs <;> simp [add_mul, mul_assoc]
+
+theorem rowDiv_det_mul_succ (n : ℕ) (a b : Fin n) (j : ℕ) (g : MvPolynomial (Fin n × Fin n) R) :
+    rowDiv R a b (j + 1) (detPol R n * g) =
+      detPol R n * rowDiv R a b (j + 1) g + (if a = b then detPol R n * rowDiv R a b j g else 0) := by
+  unfold rowDiv
+  rw [map_mul, rowGen_detPol]
+  split_ifs
+  · rw [add_mul, add_mul, one_mul, mul_assoc, Polynomial.coeff_add, Polynomial.coeff_X_mul,
+      Polynomial.coeff_C_mul, Polynomial.coeff_C_mul]
+  · simp
+
+theorem lpMinor_full (n s : ℕ) (h : s = n) (h1 h2 : s ≤ n) : lpMinor R s h1 h2 = detPol R n := by
+  subst h
+  rfl
+
+theorem hw_add_one (n : ℕ) (ν : Fin n → ℕ) :
+    hw R (le_refl n) (fun a => ν a + 1) = detPol R n * hw R (le_refl n) ν := by
+  cases n with
+  | zero => simp [hw, detPol]
+  | succ m =>
+    unfold hw
+    rw [Fin.prod_univ_castSucc, Fin.prod_univ_castSucc]
+    have h1 : ∀ s : Fin m, (ν s.castSucc + 1) - nuNext (fun a => ν a + 1) s.castSucc
+        = ν s.castSucc - nuNext ν s.castSucc := by
+      intro s
+      have hs : s.castSucc.val + 1 < m + 1 := by have := s.2; simp
+      simp only [nuNext, dif_pos hs]
+      omega
+    have h2 : ∀ μ : Fin (m + 1) → ℕ, nuNext μ (Fin.last m) = 0 := by
+      intro μ
+      simp [nuNext]
+    simp only [h1, h2, Nat.sub_zero]
+    rw [lpMinor_full R (m + 1) ((Fin.last m).val + 1) (by simp)]
+    ring
+
+theorem mem_weyl_add_one (n : ℕ) (ν : Fin n → ℕ) (f : MvPolynomial (Fin n × Fin n) R) :
+    f ∈ weyl R n n le_rfl (fun a => ν a + 1) ↔ ∃ g ∈ weyl R n n le_rfl ν, f = detPol R n * g := by
+  have key : weyl R n n le_rfl (fun a => ν a + 1) =
+      (weyl R n n le_rfl ν).map (LinearMap.mulLeft R (detPol R n)) := by
+    apply le_antisymm
+    · refine Submodule.span_le.2 ?_
+      rintro _ ⟨w, rfl⟩
+      induction w with
+      | nil =>
+        exact ⟨hw R le_rfl ν, Submodule.subset_span ⟨[], rfl⟩, (hw_add_one R n ν).symm⟩
+      | cons x w ih =>
+        obtain ⟨g, hg, hge⟩ := ih
+        obtain ⟨a, b, j⟩ := x
+        have he : applyWord R ((a, b, j) :: w) (hw R le_rfl fun a => ν a + 1) =
+            rowDiv R a b j (detPol R n * g) := by
+          have : detPol R n * g = applyWord R w (hw R le_rfl fun a => ν a + 1) := hge
+          rw [this]; rfl
+        show applyWord R ((a, b, j) :: w) (hw R le_rfl fun a => ν a + 1) ∈
+          (weyl R n n le_rfl ν).map (LinearMap.mulLeft R (detPol R n))
+        rw [he]
+        have hm : ∀ i, detPol R n * rowDiv R a b i g ∈
+            (weyl R n n le_rfl ν).map (LinearMap.mulLeft R (detPol R n)) := fun i =>
+          ⟨_, weylModuleRowDividedPowerStable R n n le_rfl ν a b i g hg, rfl⟩
+        cases j with
+        | zero => rw [rowDiv_det_mul_zero]; exact hm 0
+        | succ j =>
+          rw [rowDiv_det_mul_succ]
+          refine Submodule.add_mem _ (hm _) ?_
+          split_ifs
+          · exact hm _
+          · exact Submodule.zero_mem _
+    · rw [Submodule.map_le_iff_le_comap]
+      refine Submodule.span_le.2 ?_
+      rintro _ ⟨w, rfl⟩
+      show detPol R n * applyWord R w (hw R le_rfl ν) ∈ weyl R n n le_rfl (fun a => ν a + 1)
+      induction w with
+      | nil =>
+        exact Submodule.subset_span ⟨[], hw_add_one R n ν⟩
+      | cons x w ih =>
+        obtain ⟨a, b, j⟩ := x
+        show detPol R n * rowDiv R a b j (applyWord R w (hw R le_rfl ν)) ∈ _
+        generalize applyWord R w (hw R le_rfl ν) = g at ih ⊢
+        have hm : ∀ i, rowDiv R a b i (detPol R n * g) ∈ weyl R n n le_rfl (fun a => ν a + 1) := fun i =>
+          weylModuleRowDividedPowerStable R n n le_rfl _ a b i _ ih
+        induction j with
+        | zero => rw [← rowDiv_det_mul_zero]; exact hm 0
+        | succ j ihj =>
+          have h := hm (j + 1)
+          rw [rowDiv_det_mul_succ] at h
+          refine (Submodule.add_mem_iff_left _ ?_).1 h
+          split_ifs
+          · exact ihj
+          · exact Submodule.zero_mem _
+  rw [key, Submodule.mem_map]
+  constructor
+  · rintro ⟨g, hg, rfl⟩; exact ⟨g, hg, rfl⟩
+  · rintro ⟨g, hg, rfl⟩; exact ⟨g, hg, rfl⟩
+
+theorem mem_weyl_add (R : Type) [CommRing R] (n k : ℕ) (ν : Fin n → ℕ) (f : MvPolynomial (Fin n × Fin n) R) :
+    f ∈ weyl R n n le_rfl (fun a => ν a + k) ↔ ∃ g ∈ weyl R n n le_rfl ν, f = detPol R n ^ k * g := by
+  induction k generalizing f with
+  | zero => simp
+  | succ k ih =>
+    have h := mem_weyl_add_one R n (fun a => ν a + k) f
+    refine Iff.trans h ?_
+    constructor
+    · rintro ⟨g, hg, rfl⟩
+      obtain ⟨g', hg', rfl⟩ := (ih g).1 hg
+      exact ⟨g', hg', by ring⟩
+    · rintro ⟨g, hg, rfl⟩
+      exact ⟨_, (ih _).2 ⟨g, hg, rfl⟩, by ring⟩
+
+end GlobalTheory.WeylShift
+end
+end
+
+open NumberField IsDedekindDomain
+open scoped TensorProduct
+open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.L2.Pj GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.ExpFrame GlobalTheory.ExpTie GlobalTheory.FrameOf
+open Formalism.CohomologicalDescent.DepthNonnegative Formalism.CohomologicalDescent.LD Formalism.GradedWeylDivisibility MvPolynomial
+open GlobalTheory.FrameRead
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_weylLattice_add_iff_det_pow_mul : ∀ (R : Type) [CommRing R] (n k : ℕ) (ν : Fin n → ℕ) (f : MvPolynomial (Fin n × Fin n) R), f ∈ weyl R n n le_rfl (fun a => ν a + k) ↔ ∃ g ∈ weyl R n n le_rfl ν, f = detPol R n ^ k * g := by
+  atlas_forward_decl GlobalTheory.WeylShift.mem_weyl_add
+end
+
+section
 section
 open NumberField IsDedekindDomain
 open scoped TensorProduct
@@ -208,3 +464,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.mem_localisedStandardWeyl_of_lift_mem : ∀ (K : Type) [Field K] [NumberField K] (l : ℕ) [Fact l.Prime] (w : HeightOneSpectrum (𝓞 K)) (e0 : K →+* PadicAlgCl l) (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ) (lam : ι → DomWeight n) (lamW : ι → ℕ → ℕ) (c : ι → ℤ) (F : Frame l ι n) (Φ : VV K lam →ₛₗ[e0] NablaT (PadicAlgCl l) n lamW), AtPlace w e0 → (∀ x : F.O, ‖F.emb x‖ ≤ 1) → Shift lam lamW c → IsPhi e0 lam lamW Φ → ∀ v : VV K lam, Φ v ∈ F.latD lamW → (v : Pol K ι n) ∈ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (delStd K lam) := by
   atlas_forward_decl GlobalTheory.FrameRead.DelStd.mem_localization_standardWeylLattice
+end

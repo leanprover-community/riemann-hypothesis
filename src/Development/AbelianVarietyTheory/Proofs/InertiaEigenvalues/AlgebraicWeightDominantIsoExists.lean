@@ -6,8 +6,58 @@ import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HwFixLine
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivChar
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NoFormsOff
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SubsetTwistExceptionalPlaces
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MulVecEqProdSmul
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrameEquivApply
 
+section
+open Matrix
+
+namespace GlobalTheory.MulVecProduct
+
+theorem mulVec_eq_prod_smul {n : ℕ} {κ : Type} [Fintype κ] [DecidableEq κ] {ι : Type} [Fintype ι]
+    [DecidableEq ι] {Φ : (ι → GL (Fin n) ℂ) → Matrix κ κ ℂ}
+    (h1 : Φ (1 : ι → GL (Fin n) ℂ) = (1 : Matrix κ κ ℂ))
+    (hmul : ∀ (g h : ι → GL (Fin n) ℂ), Φ (g * h) = Φ g * Φ h)
+    {v : κ → ℂ} {lam : ι → Fin n → ℤ}
+    (hv : ∀ (τ : ι), GlobalTheory.AlgWtHW.IsBEig (fun (B : GL (Fin n) ℂ) ↦ Φ (Pi.mulSingle τ B)) v (lam τ))
+    (g : ι → GL (Fin n) ℂ)
+    (hg : ∀ (τ : ι), Matrix.BlockTriangular (↑(g τ) : Matrix (Fin n) (Fin n) ℂ) id) :
+    Matrix.mulVec (Φ g) v =
+      (∏ τ : ι, ∏ i : Fin n, (↑(g τ) : Matrix (Fin n) (Fin n) ℂ) i i ^ lam τ i) • v := by
+  classical
+  have key : ∀ S : Finset ι, Φ (fun τ => if τ ∈ S then g τ else 1) *ᵥ v =
+      (∏ τ ∈ S, ∏ i : Fin n, (↑(g τ) : Matrix (Fin n) (Fin n) ℂ) i i ^ lam τ i) • v := by
+    intro S
+    induction S using Finset.induction_on with
+    | empty =>
+      have h0 : (fun τ : ι => if τ ∈ (∅ : Finset ι) then g τ else 1) = 1 := by
+        funext τ
+        simp
+      rw [h0, h1, Finset.prod_empty, one_smul, Matrix.one_mulVec]
+    | insert a S ha ih =>
+      have hsplit : (fun τ => if τ ∈ insert a S then g τ else 1) =
+          Pi.mulSingle a (g a) * (fun τ => if τ ∈ S then g τ else 1) := by
+        funext τ
+        by_cases hτ : τ = a
+        · subst hτ
+          simp [ha]
+        · simp [hτ]
+      have ha' := (hv a).2 (g a) (hg a)
+      simp only at ha'
+      rw [hsplit, hmul, ← Matrix.mulVec_mulVec, ih, Matrix.mulVec_smul, ha', smul_smul,
+        Finset.prod_insert ha]
+      congr 1
+      ring
+  have hall : (fun τ => if τ ∈ (Finset.univ : Finset ι) then g τ else 1) = g := by
+    funext τ
+    simp
+  have := key Finset.univ
+  rw [hall] at this
+  exact this
+
+end GlobalTheory.MulVecProduct
+end
+
+section
 section
 noncomputable section
 
@@ -480,3 +530,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.algebraic_weight_dominant_iso_exists : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (ι : Type) [Fintype ι] (emb : ι → L →+* ℂ), Function.Injective (emb) → (∀ t t', (emb) t ≠ ComplexEmbedding.conjugate ((emb) t')) → (∀ σ : L →+* ℂ, ∃ t, σ = (emb) t ∨ σ = ComplexEmbedding.conjugate ((emb) t)) → ∀ a : NG.AlgWt L n, ∃ (lam : ι → DomWeight n) (T : a.W ≃ₗ[ℂ] VV ℂ lam), ∀ (γ : ReciprocityTheory.Aut.GQ L n) (γ₀ : GL (Fin n) L), (((γ : GAf L n) : GL (Fin n) (ReciprocityTheory.Aut.AL L)) : Matrix (Fin n) (Fin n) (ReciprocityTheory.Aut.AL L)) = (γ₀ : Matrix (Fin n) (Fin n) L).map Algebra.TensorProduct.includeLeftRingHom → ∀ x, T (a.ρ γ x) = rhoVr emb lam γ₀ (T x) := by
   atlas_forward_decl GlobalTheory.WtClass.exists_equiv_VV
+end

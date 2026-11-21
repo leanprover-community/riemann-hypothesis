@@ -1,10 +1,431 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHaarScalingByUnit
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InfiniteAdeleHaarScalingTotallyReal
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalHaarScalingTensorUnits
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticePreservedCofinitelyByUnit
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardLatticeMeasureEqOne
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OfE
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FactorConjugationCancel
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BinaryMassMeans.MeanVal
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicTupleProjections
 
+section
+section
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+open scoped Pointwise
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.Haar
+
+theorem nnnorm_eq_distribHaarChar (F : Type) [Field F] [NumberField F]
+    (v : HeightOneSpectrum (𝓞 F)) (n : (Fv F v)ˣ) :
+    ‖(n : Fv F v)‖₊ = distribHaarChar (Fv F v) n := by
+  have hn : (n : Fv F v) ≠ 0 := n.ne_zero
+  have hva : Valued.v (n : Fv F v) ≠ 0 := (Valuation.ne_zero_iff _).2 hn
+  have h := PI.UnitaryGroupMassFormula.LocJacTyp.BM.modF_Fv v (n : Fv F v) hn
+  rw [PI.NglqJacSplitW.modF, dif_neg hn] at h
+  have hu : Units.mk0 (n : Fv F v) hn = n := by ext; rfl
+  rw [hu] at h
+  have habs : PI.LocJacTyp.absV v (n : Fv F v) = ‖(n : Fv F v)‖ := by
+    unfold PI.LocJacTyp.absV
+    rw [dif_neg hva, NumberField.FinitePlace.norm_def, WithZeroMulInt.toNNReal_neg_apply _ hva]
+    push_cast
+    rfl
+  rw [habs, ← coe_nnnorm, ENNReal.ofReal_coe_nnreal] at h
+  exact (ENNReal.coe_injective h).symm
+
+theorem map_mul_left (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
+    (lam : Measure (Fv F v)) (hl : lam.IsAddHaarMeasure) (n : (Fv F v)ˣ) :
+    lam.map (fun t => (n : Fv F v) * t) = (‖(n : Fv F v)‖₊)⁻¹ • lam := by
+  have : SecondCountableTopology (Fv F v) := PI.UnitaryGroupMassFormula.LocJacTyp.BM.secondCountable_Fv v
+  have : lam.Regular := inferInstance
+  have hc : Continuous fun t : Fv F v => (n : Fv F v) * t := continuous_const.mul continuous_id
+  ext S hS
+  rw [Measure.map_apply hc.measurable hS, nnnorm_eq_distribHaarChar, ← map_inv]
+  have hset : (fun t : Fv F v => (n : Fv F v) * t) ⁻¹' S = n⁻¹ • S := by
+    ext y
+    rw [Set.mem_inv_smul_set_iff]
+    rfl
+  rw [hset, ← distribHaarChar_mul lam n⁻¹ S]
+  rfl
+
+end GlobalTheory.CompanionTheory.Haar
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_haar_scaling_by_unit : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (lam : Measure (Fv F v)), lam.IsAddHaarMeasure → ∀ n : (Fv F v)ˣ, lam.map (fun t => (n : Fv F v) * t) = (‖(n : Fv F v)‖₊)⁻¹ • lam := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Haar.map_mul_left
+end
+
+section
+section
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SW.HaarUnit
+
+theorem norm_inv_unit (F : Type) [Field F] [NumberField F] (hF : IsTotallyReal F)
+    (n : (InfiniteAdeleRing F)ˣ) :
+    ‖((n⁻¹ : (InfiniteAdeleRing F)ˣ) : InfiniteAdeleRing F)‖ =
+      ((∏ w : InfinitePlace F, ‖(n : InfiniteAdeleRing F) w‖₊)⁻¹ : ℝ≥0) := by
+  have hmult : ∀ w : InfinitePlace F, w.mult = 1 := fun w => by
+    rw [InfinitePlace.mult, if_pos (hF.isReal w)]
+  have hw : ∀ w : InfinitePlace F,
+      ‖((n⁻¹ : (InfiniteAdeleRing F)ˣ) : InfiniteAdeleRing F) w‖ =
+        ‖(n : InfiniteAdeleRing F) w‖⁻¹ := fun w => by
+    have h1 : ((n⁻¹ : (InfiniteAdeleRing F)ˣ) : InfiniteAdeleRing F) w *
+        (n : InfiniteAdeleRing F) w = 1 := congrFun n.inv_mul w
+    have h2 := congrArg norm h1
+    rw [norm_mul, norm_one] at h2
+    exact eq_inv_of_mul_eq_one_left h2
+  rw [InfiniteAdeleRing.norm_def]
+  simp only [hmult, pow_one, hw, NNReal.coe_inv, NNReal.coe_prod, coe_nnnorm]
+  rw [Finset.prod_inv_distrib]
+
+section Borel
+
+attribute [local instance 100000] GroundTheory.Global.measurableSpace_infiniteAdeleRing
+
+theorem infinite_adele_haar_scaling_by_unit (F : Type) [Field F] [NumberField F] (hF : IsTotallyReal F)
+    {m : MeasurableSpace (InfiniteAdeleRing F)} (hm : @BorelSpace _ _ m)
+    (li : Measure (InfiniteAdeleRing F)) (hli : li.IsAddHaarMeasure)
+    (n : (InfiniteAdeleRing F)ˣ) :
+    li.map (fun t => (n : InfiniteAdeleRing F) * t) =
+      (∏ w : InfinitePlace F, ‖(n : InfiniteAdeleRing F) w‖₊)⁻¹ • li := by
+  obtain rfl : m = GroundTheory.Global.measurableSpace_infiniteAdeleRing F :=
+    hm.measurable_eq.trans (GroundTheory.Global.borelSpace_infiniteAdeleRing (K := F)).measurable_eq.symm
+  have h := Measure.isAddLeftInvariant_eq_smul li (infiniteAdeleMeasure F)
+  rw [h, Measure.map_smul, map_mul_left_infiniteAdeleMeasure, smul_comm, norm_inv_unit F hF n,
+    ENNReal.ofReal_coe_nnreal]
+  rfl
+
+end Borel
+
+theorem map_mul_unit : ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F →
+    ∀ li : Measure (Ainf F), li.IsAddHaarMeasure → ∀ n : (Ainf F)ˣ,
+      li.map (fun t => (n : Ainf F) * t) =
+        (∏ w : InfinitePlace F, ‖(n : Ainf F) w‖₊)⁻¹ • li := by
+  intro F _ _ hF li hli n
+  exact infinite_adele_haar_scaling_by_unit F hF (m := measAinf) ⟨rfl⟩ li hli n
+
+end GlobalTheory.CompanionTheory.SW.HaarUnit
+
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.infinite_adele_haar_scaling_totally_real : ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F → ∀ li : Measure (Ainf F), li.IsAddHaarMeasure → ∀ n : (Ainf F)ˣ, li.map (fun t => (n : Ainf F) * t) = (∏ w : InfinitePlace F, ‖(n : Ainf F) w‖₊)⁻¹ • li := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.HaarUnit.map_mul_unit
+end
+
+section
+section
+noncomputable section
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+
+namespace GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.UnitScale
+
+open GlobalTheory.CompanionTheory.SW.WBox (cK eW)
+
+theorem map_eq_of_conj {G : Type} [AddCommGroup G] [TopologicalSpace G] [IsTopologicalAddGroup G]
+    [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
+    (m s : G ≃ₜ+ G) (ν : Measure G) [ν.IsAddHaarMeasure] (c : ℝ≥0) (hs : ∀ x, s (s x) = x)
+    (h : ν.map (fun x => s (m (s (m x)))) = (c * c) • ν) : ν.map m = c • ν :=
+  _root_.UpperTheory.Reformulated.B.FactorConjugationCancel.map_eq_of_conj m s ν c hs h
+
+section Coord
+
+variable {F E : Type} [Field F] [Field E] [Algebra F E] {R : Type} [CommRing R] [Algebra F R] {d : ℕ}
+  (b : Module.Basis (Fin d) F E)
+
+theorem cK_tmul_mul' (r : R) (y : R ⊗[F] E) (k : Fin d) :
+    cK R b ((r ⊗ₜ[F] (1 : E)) * y) k = r * cK R b y k := by
+  have e : (r ⊗ₜ[F] (1 : E)) * y = r • y := by
+    rw [Algebra.smul_def]
+    rfl
+  simp [cK, e]
+
+end Coord
+
+theorem pi_map_mul {R ι : Type} [Fintype ι] [CommRing R] [MeasurableSpace R] (lam : Measure R) [SigmaFinite lam]
+    (f : R → R) (hf : Measurable f) (c : ℝ≥0) (h : lam.map f = c • lam) :
+    (Measure.pi fun _ : ι => lam).map (fun t i => f (t i)) =
+      (c ^ Fintype.card ι) • Measure.pi fun _ : ι => lam := by
+  haveI : SigmaFinite (lam.map f) := by rw [h]; infer_instance
+  rw [Measure.pi_map_pi (fun _ => hf.aemeasurable)]
+  refine Measure.pi_eq fun s hs => ?_
+  simp only [h, Measure.smul_apply, Measure.pi_pi, ENNReal.smul_def, smul_eq_mul,
+    Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, ENNReal.coe_pow]
+
+theorem sigR_sigR {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
+    (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (z : R ⊗[F] E) : sigR R σ (sigR R σ z) = z := by
+  induction z with
+  | zero => simp
+  | add x y hx hy => simp [hx, hy]
+  | tmul r e => simp [sigR, hσ]
+
+theorem conj_conj {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
+    (hcm : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
+  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
+  apply τ.injective
+  rw [hcm.2.2.2, hcm.2.2.2]
+  simp
+
+def mulT {S : Type} [CommRing S] [TopologicalSpace S] [IsTopologicalRing S] (u : Sˣ) :
+    (Fin 1 → Fin 1 → S) ≃ₜ+ (Fin 1 → Fin 1 → S) where
+  toFun X a i := (u : S) * X a i
+  invFun X a i := ((u⁻¹ : Sˣ) : S) * X a i
+  left_inv X := by
+    funext a i
+    exact Units.inv_mul_cancel_left u _
+  right_inv X := by
+    funext a i
+    exact Units.mul_inv_cancel_left u _
+  map_add' X Y := by
+    funext a i
+    exact mul_add _ _ _
+  continuous_toFun := continuous_pi fun a => continuous_pi fun i =>
+    continuous_const.mul (continuous_apply_apply a i)
+  continuous_invFun := continuous_pi fun a => continuous_pi fun i =>
+    continuous_const.mul (continuous_apply_apply a i)
+
+def sigT {S : Type} [CommRing S] [TopologicalSpace S] [IsTopologicalRing S] (f : S →+* S) (hf : Continuous f)
+    (hff : ∀ x, f (f x) = x) : (Fin 1 → Fin 1 → S) ≃ₜ+ (Fin 1 → Fin 1 → S) where
+  toFun X a i := f (X a i)
+  invFun X a i := f (X a i)
+  left_inv X := by
+    funext a i
+    exact hff _
+  right_inv X := by
+    funext a i
+    exact hff _
+  map_add' X Y := by
+    funext a i
+    exact map_add f _ _
+  continuous_toFun := continuous_pi fun a => continuous_pi fun i =>
+    hf.comp (continuous_apply_apply a i)
+  continuous_invFun := continuous_pi fun a => continuous_pi fun i =>
+    hf.comp (continuous_apply_apply a i)
+
+theorem map_coordW_unit : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R] [LocallyCompactSpace R] [SecondCountableTopology R] [T2Space R] [MeasurableSpace R] [BorelSpace R], IsLocR R → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure R), lam.IsAddHaarMeasure → ∀ (y : (R ⊗[F] E)ˣ) (n : Rˣ) (c : ℝ≥0), (n : R) ⊗ₜ[F] (1 : E) = sigR R σ y * y → lam.map (fun t => (n : R) * t) = c • lam → (coordW R b lam 1 1).map (fun (X : Fin 1 → Fin 1 → R ⊗[F] E) a i => (y : R ⊗[F] E) * X a i) = c • coordW R b lam 1 1 := by
+  intro F E _ _ _ _ _ σ hcm R _ _ _ _ _ _ _ _ _ hR d b lam hlam y n c hn hc
+  have hd : d = 2 := by
+    have := Module.finrank_eq_card_basis b
+    rw [hcm.2.2.1] at this
+    simpa using this.symm
+  subst hd
+  obtain ⟨iTR, iLC, iSC, iT2, hsc, -, hK', hB, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hcm R
+  haveI := iTR
+  haveI := iLC
+  haveI := iSC
+  haveI := iT2
+  haveI := hB 1 1
+  haveI := hlam
+  have hK : IsHomeomorph (cK (F := F) (E := E) R b) := hK' 2 b
+  haveI hν : (coordW R b lam 1 1).IsAddHaarMeasure :=
+    (GlobalTheory.T.coordinate_haar_measure F E σ hcm R 2 b lam hlam).2.1 1 1
+  have hinv := sigR_sigR R σ (conj_conj σ hcm)
+  set π : Measure (Fin 1 × Fin 1 × Fin 2 → R) := Measure.pi fun _ => lam with hπ
+  have hmp := GlobalTheory.CompanionTheory.SW.WBox.map_coordW R hK lam 1 1
+  have hf : Measurable (fun t : R => (n : R) * t) := (continuous_const.mul continuous_id).measurable
+  have hTm : Measurable (fun (t : Fin 1 × Fin 1 × Fin 2 → R) i => (n : R) * t i) :=
+    measurable_pi_lambda _ fun i => hf.comp (measurable_pi_apply i)
+  have hT : π.map (fun t i => (n : R) * t i) = (c * c) • π := by
+    have h1 := pi_map_mul (ι := Fin 1 × Fin 1 × Fin 2) lam _ hf c hc
+    have e : c ^ Fintype.card (Fin 1 × Fin 1 × Fin 2) = c * c := by
+      simp [pow_two]
+    rw [e] at h1
+    exact h1
+  have hνπ : coordW R b lam 1 1 = π.map (eW R hK 1 1).symm := by
+    rw [hπ, ← hmp.map_eq, Measure.map_map (eW R hK 1 1).symm.measurable (eW R hK 1 1).measurable,
+      MeasurableEquiv.symm_comp_self, Measure.map_id]
+  have hNc : Continuous (fun (X : Fin 1 → Fin 1 → R ⊗[F] E) a i => ((n : R) ⊗ₜ[F] (1 : E)) * X a i) :=
+    continuous_pi fun a => continuous_pi fun i => continuous_const.mul (continuous_apply_apply a i)
+  have hNm := hNc.measurable
+  have hcomm : (fun (X : Fin 1 → Fin 1 → R ⊗[F] E) a i => ((n : R) ⊗ₜ[F] (1 : E)) * X a i) ∘ (eW R hK 1 1).symm =
+      (eW R hK 1 1).symm ∘ (fun t i => (n : R) * t i) := by
+    funext t
+    apply (eW R hK 1 1).injective
+    simp only [Function.comp_apply, MeasurableEquiv.apply_symm_apply]
+    funext p
+    have h1 := congrFun ((eW R hK 1 1).apply_symm_apply t) p
+    rw [GlobalTheory.CompanionTheory.SW.WBox.eW_apply] at h1
+    rw [GlobalTheory.CompanionTheory.SW.WBox.eW_apply, cK_tmul_mul', h1]
+  have hN : (coordW R b lam 1 1).map
+      (fun (X : Fin 1 → Fin 1 → R ⊗[F] E) a i => ((n : R) ⊗ₜ[F] (1 : E)) * X a i) =
+      (c * c) • coordW R b lam 1 1 := by
+    calc _ = (π.map (eW R hK 1 1).symm).map
+            (fun (X : Fin 1 → Fin 1 → R ⊗[F] E) a i => ((n : R) ⊗ₜ[F] (1 : E)) * X a i) := by rw [← hνπ]
+      _ = π.map ((eW R hK 1 1).symm ∘ (fun t i => (n : R) * t i)) := by
+          rw [Measure.map_map hNm (eW R hK 1 1).symm.measurable, hcomm]
+      _ = (π.map (fun t i => (n : R) * t i)).map (eW R hK 1 1).symm := by
+          rw [Measure.map_map (eW R hK 1 1).symm.measurable hTm]
+      _ = _ := by rw [hT, Measure.map_smul, ← hνπ]
+  refine map_eq_of_conj (mulT y) (sigT (sigR R σ) hsc hinv) _ c (fun X => ?_) ?_
+  · funext a i
+    exact hinv _
+  · have e : (fun X => sigT (sigR R σ) hsc hinv (mulT y (sigT (sigR R σ) hsc hinv (mulT y X)))) =
+        (fun (X : Fin 1 → Fin 1 → R ⊗[F] E) a i => ((n : R) ⊗ₜ[F] (1 : E)) * X a i) := by
+      funext X a i
+      change sigR R σ ((y : R ⊗[F] E) * sigR R σ ((y : R ⊗[F] E) * X a i)) = _
+      rw [map_mul, hinv, hn, mul_assoc]
+    rw [e, hN]
+
+end GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.UnitScale
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_haar_scaling_tensor_units : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R] [LocallyCompactSpace R] [SecondCountableTopology R] [T2Space R] [MeasurableSpace R] [BorelSpace R], IsLocR R → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure R), lam.IsAddHaarMeasure → ∀ (y : (R ⊗[F] E)ˣ) (n : Rˣ) (c : ℝ≥0), (n : R) ⊗ₜ[F] (1 : E) = sigR R σ y * y → lam.map (fun t => (n : R) * t) = c • lam → (coordW R b lam 1 1).map (fun (X : Fin 1 → Fin 1 → R ⊗[F] E) a i => (y : R ⊗[F] E) * X a i) = c • coordW R b lam 1 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.UnitScale.map_coordW_unit
+end
+
+section
+open PositivityTheory.Rg.Mass HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter
+open scoped TensorProduct ENNReal NNReal
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SW.LatFix
+
+section Gen
+
+variable {F E R : Type} [Field F] [Field E] [Algebra F E] [CommRing R] [Algebra F R]
+
+theorem repr_mul {d : ℕ} (b : Module.Basis (Fin d) F E) (x y : R ⊗[F] E) (k : Fin d) :
+    (Algebra.TensorProduct.basis R b).repr (x * y) k =
+      ∑ i, ∑ j, (Algebra.TensorProduct.basis R b).repr x i *
+        (Algebra.TensorProduct.basis R b).repr y j * algebraMap F R (b.repr (b i * b j) k) := by
+  classical
+  set B := Algebra.TensorProduct.basis R b with hB
+  conv_lhs => rw [← B.sum_repr x, ← B.sum_repr y]
+  simp only [Finset.sum_mul, Finset.mul_sum, smul_mul_smul_comm, map_sum, map_smul,
+    Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.smul_apply, smul_eq_mul]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  rw [hB, Algebra.TensorProduct.basis_apply, Algebra.TensorProduct.basis_apply,
+    Algebra.TensorProduct.tmul_mul_tmul, one_mul, Algebra.TensorProduct.basis_repr_tmul]
+  simp
+
+end Gen
+
+section Adelic
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
+
+theorem eventually_integral (c : F) :
+    ∀ᶠ v : HeightOneSpectrum (𝓞 F) in cofinite,
+      algebraMap F (Fv F v) c ∈ v.adicCompletionIntegers F := by
+  exact (algebraMap F (FiniteAdeleRing (𝓞 F) F) c).2
+
+theorem eventually_mul_closed {d : ℕ} (b : Module.Basis (Fin d) F E) :
+    ∀ᶠ v : HeightOneSpectrum (𝓞 F) in cofinite, ∀ x y : Fv F v ⊗[F] E,
+      (∀ k, (Algebra.TensorProduct.basis (Fv F v) b).repr x k ∈ v.adicCompletionIntegers F) →
+      (∀ k, (Algebra.TensorProduct.basis (Fv F v) b).repr y k ∈ v.adicCompletionIntegers F) →
+      ∀ k, (Algebra.TensorProduct.basis (Fv F v) b).repr (x * y) k ∈
+        v.adicCompletionIntegers F := by
+  classical
+  have h : ∀ᶠ v : HeightOneSpectrum (𝓞 F) in cofinite, ∀ i j k : Fin d,
+      algebraMap F (Fv F v) (b.repr (b i * b j) k) ∈ v.adicCompletionIntegers F := by
+    simp only [Filter.eventually_all]
+    exact fun i j k => eventually_integral _
+  filter_upwards [h] with v hv x y hx hy k
+  rw [repr_mul]
+  exact sum_mem fun i _ => sum_mem fun j _ => mul_mem (mul_mem (hx i) (hy j)) (hv i j k)
+
+end Adelic
+
+end GlobalTheory.CompanionTheory.SW.LatFix
+end
+end
+
+section
+section
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.UnitLat
+
+theorem eventually_cV_mul_mem_latV_iff : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (y : (AF F ⊗[F] E)ˣ), ∀ᶠ v in cofinite, ∀ Y : Fin 1 → Fin 1 → Fv F v ⊗[F] E, (fun a i => cV v (y : AF F ⊗[F] E) * Y a i) ∈ latV b v ↔ Y ∈ latV b v := by
+  intro F E _ _ _ _ _ σ _ d b y
+  have e1 := GlobalTheory.CompanionTheory.SW.MeasProj.eventually_mem_latV b
+    (projFin (fun _ _ : Fin 1 => (y : AF F ⊗[F] E)))
+  have e2 := GlobalTheory.CompanionTheory.SW.MeasProj.eventually_mem_latV b
+    (projFin (fun _ _ : Fin 1 => ((y⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E)))
+  filter_upwards [e1, e2, GlobalTheory.CompanionTheory.SW.LatFix.eventually_mul_closed b] with v h1 h2 h3 Y
+  have c1 : ∀ k, (Algebra.TensorProduct.basis (Fv F v) b).repr
+      (cV v (y : AF F ⊗[F] E)) k ∈ v.adicCompletionIntegers F := fun k => h1 0 0 k
+  have c2 : ∀ k, (Algebra.TensorProduct.basis (Fv F v) b).repr
+      (cV v ((y⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E)) k ∈ v.adicCompletionIntegers F :=
+    fun k => h2 0 0 k
+  have hone : cV v ((y⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) * cV v (y : AF F ⊗[F] E) = 1 := by
+    rw [← map_mul, Units.inv_mul, map_one]
+  constructor
+  · intro hY a i k
+    have h := h3 _ _ c2 (hY a i) k
+    rwa [← mul_assoc, hone, one_mul] at h
+  · intro hY a i k
+    exact h3 _ _ c1 (hY a i) k
+
+end GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.UnitLat
+
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_preserved_cofinitely_by_unit : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (y : (AF F ⊗[F] E)ˣ), ∀ᶠ v in cofinite, ∀ Y : Fin 1 → Fin 1 → Fv F v ⊗[F] E, (fun a i => cV v (y : AF F ⊗[F] E) * Y a i) ∈ latV b v ↔ Y ∈ latV b v := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.UnitLat.eventually_cV_mul_mem_latV_iff
+end
+
+section
+section
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.CoordLat
+
+theorem coordW_latV_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (lam : ∀ v : HeightOneSpectrum (𝓞 F), Measure (Fv F v)), (∀ v, IsStdV v (lam v)) → ∀ v, coordW (Fv F v) b (lam v) 1 1 (latV b v) = 1 := by
+  intro F E _ _ _ _ _ σ hσ d b lam hlam v
+  obtain ⟨t1, t2, t3, t4, -⟩ := GlobalTheory.T.completion_is_local_ring F v
+  haveI : BorelSpace (Fv F v) := ⟨rfl⟩
+  haveI := (hlam v).1
+  have hK : IsHomeomorph (GlobalTheory.CompanionTheory.SW.WBox.cK (F := F) (E := E) (Fv F v) b) :=
+    (GlobalTheory.T.tensor_locally_compact_ring F E σ hσ (Fv F v)).2.2.2.2.2.2.1 d b
+  have mv := GlobalTheory.CompanionTheory.SW.WBox.map_coordW (Fv F v) hK (lam v) 1 1
+  have hset : (latV b v : Set (Fin 1 → Fin 1 → Fv F v ⊗[F] E)) =
+      (GlobalTheory.CompanionTheory.SW.WBox.eW (Fv F v) hK 1 1) ⁻¹'
+        Set.pi Set.univ fun _ => (v.adicCompletionIntegers F : Set (Fv F v)) := by
+    ext X
+    simp only [Set.mem_preimage, Set.mem_pi, Set.mem_univ, forall_true_left]
+    exact ⟨fun h p => h p.1 p.2.1 p.2.2, fun h a i k => h (a, i, k)⟩
+  rw [hset, mv.measure_preimage_equiv, Measure.pi_pi]
+  simp [(hlam v).2]
+
+end GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.CoordLat
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
+open scoped TensorProduct ENNReal NNReal Matrix Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.standard_lattice_measure_eq_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (lam : ∀ v : HeightOneSpectrum (𝓞 F), Measure (Fv F v)), (∀ v, IsStdV v (lam v)) → ∀ v, coordW (Fv F v) b (lam v) 1 1 (latV b v) = 1 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.CoordLat.coordW_latV_one
+end
+
+section
 section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology Filter PositivityTheory.Rg.Base1 GroundTheory.Global GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil
 open scoped TensorProduct ENNReal NNReal Matrix Classical
@@ -399,3 +820,4 @@ open scoped TensorProduct ENNReal NNReal Matrix Classical
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.rank_one_theta_integral_ray_limit : PositivityTheory.Rg.Mass.Equi → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (J : Matrix (Fin 1) (Fin 1) E), IsHermND σ J → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (li : Measure (Ainf F)) (lam : ∀ v : HeightOneSpectrum (𝓞 F), Measure (Fv F v)), IsStdInf li → (∀ v, IsStdV v (lam v)) → ∀ θ : ℝ →+* Ainf F, Continuous θ → ∀ r, IsRay θ r → ∀ (S : Finset (HeightOneSpectrum (𝓞 F))) (φ : (Fin 1 → Fin 1 → Ainf F ⊗[F] E) → ℝ) (A : ∀ v : HeightOneSpectrum (𝓞 F), Set (Fin 1 → Fin 1 → Fv F v ⊗[F] E)), IsTest σ J b S φ A → ∀ (y : (AF F ⊗[F] E)ˣ) (n : (AF F)ˣ), IsNm σ y n → (∀ᶠ ε : ℝ in 𝓝[>] 0, Th φ A (y * ofF (r ε)) ≠ ⊤) → Tendsto (fun ε : ℝ => ENNReal.ofReal (ε ^ (2 * Module.finrank ℚ F)) * Th φ A (y * ofF (r ε))) (𝓝[>] 0) (𝓝 ((ENNReal.ofReal (md n))⁻¹ * vol b li lam S φ A)) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.FixedUnit.equi_unit
+end

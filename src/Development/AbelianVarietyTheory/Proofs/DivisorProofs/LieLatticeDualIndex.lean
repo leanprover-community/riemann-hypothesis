@@ -1,13 +1,658 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianAdjointProperties
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianAdjointMemEndLattice
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EndLatticeTraceIntegral
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemEndLatticeOfTraceDual
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEndLatticeTraceOne
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralOfTraceIntegralUnramified
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralTraceOneUnramified
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImaginaryLatticeScalingIndex
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmulMemOfIsIntegral
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisAutMemAdelicCompletionIntegral
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FormallyUnramifiedRingOfIntegersIffDifferentIdea
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.FinrankLeOfMapLe
 
+section
+section
+noncomputable section
+
+namespace GlobalTheory.LieDisc.HAdjAlg
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+theorem map_mul_cc (A B : Matrix (Fin r) (Fin r) E) : (A * B).map cc = A.map cc * B.map cc :=
+  Matrix.map_mul (f := (IsCMField.complexConj E : E →+* E))
+
+theorem map_map_cc (A : Matrix (Fin r) (Fin r) E) : (A.map cc).map cc = A := by
+  ext i j; simp [cc_cc]
+
+theorem herm_eq_dot (G : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) :
+    herm G x y = x ⬝ᵥ (G *ᵥ fun b => cc (y b)) := by
+  simp [herm, dotProduct, mulVec, Finset.mul_sum, mul_assoc]
+
+theorem cc_mulVec (A : Matrix (Fin r) (Fin r) E) (y : Fin r → E) :
+    (fun b => cc ((A *ᵥ y) b)) = A.map cc *ᵥ fun b => cc (y b) := by
+  ext i; simp [mulVec, dotProduct, cc, map_sum, map_mul]
+
+theorem map_one_cc : (1 : Matrix (Fin r) (Fin r) E).map cc = 1 := by
+  ext i j; by_cases h : i = j <;> simp [one_apply, h, cc]
+
+theorem map_smul_cc (c : E) (A : Matrix (Fin r) (Fin r) E) : (c • A).map cc = cc c • A.map cc := by
+  ext i j; simp [cc, map_mul]
+
+theorem trace_map_cc (A : Matrix (Fin r) (Fin r) E) : (A.map cc).trace = cc A.trace := by
+  simp [Matrix.trace, cc, map_sum]
+
+end GlobalTheory.LieDisc.HAdjAlg
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc GlobalTheory.LieDisc.HAdjAlg
+
+theorem GlobalTheory.LieDisc.hAdj_algebra : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E), (∀ a b, cc (G a b) = G b a) → G.det ≠ 0 → (∀ (Y : Matrix (Fin r) (Fin r) E) (x y : Fin r → E), herm G (Y *ᵥ x) y = herm G x (hAdj G Y *ᵥ y)) ∧ (∀ Y Z : Matrix (Fin r) (Fin r) E, hAdj G (Y * Z) = hAdj G Z * hAdj G Y) ∧ (∀ Y Z : Matrix (Fin r) (Fin r) E, hAdj G (Y + Z) = hAdj G Y + hAdj G Z) ∧ (∀ (c : E) (Y : Matrix (Fin r) (Fin r) E), hAdj G (c • Y) = cc c • hAdj G Y) ∧ hAdj G 1 = 1 ∧ (∀ Y : Matrix (Fin r) (Fin r) E, hAdj G (hAdj G Y) = Y) ∧ (∀ Y : Matrix (Fin r) (Fin r) E, (hAdj G Y).trace = cc Y.trace) ∧ (∀ Y : Matrix (Fin r) (Fin r) E, IsSkew G Y ↔ hAdj G Y = -Y) := by
+  intro E _ _ _ r G hG hdet
+  have hu : IsUnit G.det := isUnit_iff_ne_zero.mpr hdet
+  have hGi : G * G⁻¹ = 1 := mul_nonsing_inv G hu
+  have hiG : G⁻¹ * G = 1 := nonsing_inv_mul G hu
+  have hGt : G.map cc = Gᵀ := by ext a b; simp [hG]
+  have adj1 : ∀ (Y : Matrix (Fin r) (Fin r) E) (x y : Fin r → E),
+      herm G (Y *ᵥ x) y = herm G x (hAdj G Y *ᵥ y) := by
+    intro Y x y
+    rw [herm_eq_dot, herm_eq_dot, cc_mulVec, hAdj, map_map_cc, mulVec_mulVec,
+      show G * (G⁻¹ * Yᵀ * G) = Yᵀ * G by rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, hGi, Matrix.one_mul],
+      ← mulVec_mulVec, dotProduct_mulVec x Yᵀ, vecMul_transpose]
+  refine ⟨adj1, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro Y Z
+    rw [hAdj, hAdj, hAdj, ← map_mul_cc, transpose_mul]
+    congr 1
+    simp only [Matrix.mul_assoc, mul_nonsing_inv_cancel_left _ _ hu]
+  · intro Y Z
+    simp only [hAdj, transpose_add, Matrix.mul_add, Matrix.add_mul]
+    ext i j; simp [cc]
+  · intro c Y
+    rw [hAdj, hAdj, ← map_smul_cc, transpose_smul, Matrix.mul_smul, Matrix.smul_mul]
+  · rw [hAdj, transpose_one, Matrix.mul_one, hiG, map_one_cc]
+  · intro Y
+    have h1 : (G⁻¹).map cc * Gᵀ = 1 := by rw [← hGt, ← map_mul_cc, hiG, map_one_cc]
+    have h2 : (G⁻¹)ᵀ * Gᵀ = 1 := by rw [← transpose_mul, hGi, transpose_one]
+    rw [hAdj, hAdj, map_mul_cc, map_mul_cc, hGt, ← transpose_map, map_map_cc, transpose_mul, transpose_mul,
+      transpose_transpose]
+    calc _ = ((G⁻¹).map cc * Gᵀ) * Y * (G⁻¹ᵀ * Gᵀ) := by
+          simp only [Matrix.mul_assoc]
+      _ = Y := by rw [h1, h2, Matrix.one_mul, Matrix.mul_one]
+  · intro Y
+    rw [hAdj, trace_map_cc, trace_mul_comm, ← Matrix.mul_assoc, hGi, Matrix.one_mul, trace_transpose]
+  · intro Y
+    have hadd : ∀ u w, herm G (Y *ᵥ u) w + herm G u (Y *ᵥ w) = herm G u ((hAdj G Y + Y) *ᵥ w) := by
+      intro u w
+      rw [adj1, herm_eq_dot, herm_eq_dot, herm_eq_dot, ← dotProduct_add, ← mulVec_add]
+      congr 2
+      ext b; simp [add_mulVec, cc, map_add]
+    constructor
+    · intro hs
+      have hv : ∀ w, (hAdj G Y + Y) *ᵥ w = 0 := by
+        intro w
+        set v := (hAdj G Y + Y) *ᵥ w
+        have h0 : ∀ u, herm G u v = 0 := fun u => by rw [← hadd]; exact hs u w
+        have hGv : G *ᵥ (fun b => cc (v b)) = 0 := by
+          ext i
+          have := h0 (Pi.single i 1)
+          rw [herm_eq_dot, single_dotProduct, one_mul] at this
+          simpa using this
+        have hcv : (fun b => cc (v b)) = 0 := by
+          rw [← one_mulVec (fun b => cc (v b)), ← hiG, ← mulVec_mulVec, hGv, mulVec_zero]
+        ext b
+        have := congrFun hcv b
+        simp only [Pi.zero_apply] at this
+        rw [← cc_cc (v b), this]; simp [cc]
+      have hA : hAdj G Y + Y = 0 := by
+        ext i j
+        have := congrFun (hv (Pi.single j 1)) i
+        simpa [mulVec_single] using this
+      exact eq_neg_of_add_eq_zero_left hA
+    · intro h u w
+      rw [hadd, h, neg_add_cancel, zero_mulVec]
+      simp [herm, cc]
+end
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_adjoint_properties : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E), (∀ a b, cc (G a b) = G b a) → G.det ≠ 0 → (∀ (Y : Matrix (Fin r) (Fin r) E) (x y : Fin r → E), herm G (Y *ᵥ x) y = herm G x (hAdj G Y *ᵥ y)) ∧ (∀ Y Z : Matrix (Fin r) (Fin r) E, hAdj G (Y * Z) = hAdj G Z * hAdj G Y) ∧ (∀ Y Z : Matrix (Fin r) (Fin r) E, hAdj G (Y + Z) = hAdj G Y + hAdj G Z) ∧ (∀ (c : E) (Y : Matrix (Fin r) (Fin r) E), hAdj G (c • Y) = cc c • hAdj G Y) ∧ hAdj G 1 = 1 ∧ (∀ Y : Matrix (Fin r) (Fin r) E, hAdj G (hAdj G Y) = Y) ∧ (∀ Y : Matrix (Fin r) (Fin r) E, (hAdj G Y).trace = cc Y.trace) ∧ (∀ Y : Matrix (Fin r) (Fin r) E, IsSkew G Y ↔ hAdj G Y = -Y) := by
+  atlas_forward_decl GlobalTheory.LieDisc.hAdj_algebra
+end
+
+section
+section
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+
+noncomputable section
+
+namespace GlobalTheory.LieDisc
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+theorem herm_eq_dotProduct (G : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) :
+    herm G x y = x ⬝ᵥ (G *ᵥ fun b => cc (y b)) := by
+  simp only [herm, dotProduct, mulVec, Finset.mul_sum, mul_assoc]
+
+theorem cc_map_mulVec (M : Matrix (Fin r) (Fin r) E) (y : Fin r → E) :
+    (fun b => cc ((M.map cc *ᵥ y) b)) = M *ᵥ fun b => cc (y b) := by
+  funext b
+  simp only [mulVec, dotProduct, map_apply, cc, map_sum, map_mul, IsCMField.complexConj_apply_apply]
+
+theorem herm_mulVec_left_eq (G Y : Matrix (Fin r) (Fin r) E) (hG : G.det ≠ 0) (x y : Fin r → E) :
+    herm G (Y *ᵥ x) y = herm G x (hAdj G Y *ᵥ y) := by
+  rw [herm_eq_dotProduct, herm_eq_dotProduct, hAdj, cc_map_mulVec, mulVec_mulVec,
+    ← Matrix.mul_assoc, ← Matrix.mul_assoc, mul_nonsing_inv _ (isUnit_iff_ne_zero.2 hG), Matrix.one_mul,
+    ← mulVec_mulVec, dotProduct_mulVec, dotProduct_mulVec, vecMul_transpose]
+  exact (dotProduct_mulVec _ _ _).symm
+
+theorem hAdj_mem_endLat (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E))
+    (Y : Matrix (Fin r) (Fin r) E) (h : SelfDualLat G Λ) (hY : Y ∈ endLat Λ) : hAdj G Y ∈ endLat Λ := by
+  obtain ⟨hGh, hdet, -, -, hsd⟩ := h
+  intro y hy
+  refine (hsd _).1 fun x hx => ?_
+  have h1 : IsIntegral ℤ (herm G x (hAdj G Y *ᵥ y)) := by
+    rw [← herm_mulVec_left_eq G Y hdet]
+    exact (hsd (Y *ᵥ x)).2 (hY x hx) y hy
+  rw [← GlobalTheory.UCls.Det.herm_symm G hGh]
+  exact h1.map (IsCMField.complexConj E)
+
+end GlobalTheory.LieDisc
+
+theorem GlobalTheory.LieDisc.hAdj_mem_endLat_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (Y : Matrix (Fin r) (Fin r) E), SelfDualLat G Λ → Y ∈ endLat Λ → hAdj G Y ∈ endLat Λ :=
+  fun _ _ _ _ r G Λ Y h hY => GlobalTheory.LieDisc.hAdj_mem_endLat G Λ Y h hY
+end
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_adjoint_mem_end_lattice : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (Y : Matrix (Fin r) (Fin r) E), SelfDualLat G Λ → Y ∈ endLat Λ → hAdj G Y ∈ endLat Λ := by
+  atlas_forward_decl GlobalTheory.LieDisc.hAdj_mem_endLat_main
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.LieDisc
+
+open NumberField Matrix Polynomial GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD
+
+theorem isIntegral_trace_of_isIntegral_matrix {K n : Type} [Field K] [Fintype n] [DecidableEq n]
+    (M : Matrix n n K) (hM : IsIntegral ℤ M) : IsIntegral ℤ M.trace := by
+  let L := AlgebraicClosure K
+  let φ : Matrix n n K →ₐ[ℤ] Matrix n n L := ((algebraMap K L).mapMatrix).toIntAlgHom
+  have hM' : IsIntegral ℤ (φ M) := hM.map φ
+  have htr : algebraMap K L M.trace = (φ M).trace := by
+    simp only [Matrix.trace, Matrix.diag, map_sum]
+    rfl
+  rw [← isIntegral_algebraMap_iff (A := K) (B := L) (algebraMap K L).injective, htr,
+    Matrix.trace_eq_sum_roots_charpoly]
+  refine IsIntegral.multiset_sum fun μ hμ => ?_
+  have hroot : IsRoot (φ M).charpoly μ := (mem_roots'.1 hμ).2
+  have hspec : μ ∈ spectrum L (φ M) := Matrix.mem_spectrum_iff_isRoot_charpoly.2 hroot
+  obtain ⟨p, hp, hp0⟩ := hM'
+  refine ⟨p, hp, ?_⟩
+  have h1 := spectrum.subset_polynomial_aeval (φ M) (p.map (algebraMap ℤ L)) ⟨μ, hspec, rfl⟩
+  have h2 : aeval (φ M) (p.map (algebraMap ℤ L)) = 0 := by
+    rw [aeval_map_algebraMap]; simpa [aeval_def] using hp0
+  have : Nontrivial (Matrix n n L) := by
+    by_contra h
+    rw [not_nontrivial_iff_subsingleton] at h
+    rw [spectrum.of_subsingleton] at hspec
+    exact hspec
+  rw [h2, spectrum.zero_eq, Set.mem_singleton_iff] at h1
+  simpa [eval_map] using h1
+
+variable {E : Type} [Field E] [NumberField E] {r : ℕ}
+
+theorem isIntegral_of_mapsTo_lattice (Λ : Submodule (𝓞 E) (Fin r → E)) (hfg : Λ.FG)
+    (hspan : Submodule.span E (Λ : Set (Fin r → E)) = ⊤) (Y : Matrix (Fin r) (Fin r) E)
+    (hY : ∀ x ∈ Λ, Y *ᵥ x ∈ Λ) : IsIntegral (𝓞 E) Y := by
+  haveI : Module.Finite (𝓞 E) Λ := Module.Finite.iff_fg.mpr hfg
+  let f : Module.End (𝓞 E) Λ :=
+    { toFun := fun x => ⟨Y *ᵥ (x : Fin r → E), hY _ x.2⟩
+      map_add' := fun x y => by ext1; simp [mulVec_add]
+      map_smul' := fun c x => by ext1; simp [mulVec_smul] }
+  obtain ⟨p, hp, hp0⟩ := LinearMap.exists_monic_and_aeval_eq_zero (𝓞 E) f
+  have key : ∀ q : (𝓞 E)[X], ∀ x (hx : x ∈ Λ), aeval Y q *ᵥ x = ((aeval f q ⟨x, hx⟩ : Λ) : Fin r → E) := by
+    intro q
+    induction q using Polynomial.induction_on with
+    | C a =>
+      intro x hx
+      simp only [aeval_C]
+      rw [show (algebraMap (𝓞 E) (Matrix (Fin r) (Fin r) E)) a = Matrix.diagonal (fun _ => (a : E)) from rfl]
+      ext i
+      rw [mulVec_diagonal, Module.algebraMap_end_apply]
+      rfl
+    | add p q hp hq =>
+      intro x hx
+      rw [map_add, add_mulVec, hp x hx, hq x hx, map_add]
+      rfl
+    | monomial n a ih =>
+      intro x hx
+      have e1 : aeval Y (C a * X ^ (n + 1)) = aeval Y (C a * X ^ n) * Y := by
+        rw [pow_succ, ← mul_assoc, map_mul, aeval_X]
+      have e2 : aeval f (C a * X ^ (n + 1)) = aeval f (C a * X ^ n) * f := by
+        rw [pow_succ, ← mul_assoc, map_mul, aeval_X]
+      rw [e1, e2, ← mulVec_mulVec, ih _ (hY x hx)]
+      rfl
+  have hker : ∀ v, aeval Y p *ᵥ v = 0 := by
+    intro v
+    have hv : v ∈ Submodule.span E (Λ : Set (Fin r → E)) := by rw [hspan]; trivial
+    induction hv using Submodule.span_induction with
+    | mem x hx => rw [key p x hx, hp0]; rfl
+    | zero => simp
+    | add x y _ _ hx hy => rw [mulVec_add, hx, hy, add_zero]
+    | smul c x _ hx => rw [mulVec_smul, hx, smul_zero]
+  have hA : aeval Y p = 0 := by
+    apply Matrix.toLin'.injective
+    ext v i
+    simp [Matrix.toLin'_apply, hker]
+  exact ⟨p, hp, by rw [← aeval_def]; exact hA⟩
+
+theorem isIntegral_trace_of_mem_endLat [IsCMField E] (G : Matrix (Fin r) (Fin r) E)
+    (Λ : Submodule (𝓞 E) (Fin r → E)) (Y : Matrix (Fin r) (Fin r) E) (hS : SelfDualLat G Λ)
+    (hY : Y ∈ endLat Λ) : IsIntegral ℤ Y.trace :=
+  isIntegral_trace_of_isIntegral_matrix Y
+    (@isIntegral_trans ℤ (𝓞 E) _ _ _ _ _ _ _ AddCommGroup.intIsScalarTower _ Y
+      (isIntegral_of_mapsTo_lattice Λ hS.2.2.1 hS.2.2.2.1 Y (mem_endLat.mp hY)))
+
+theorem trace_integral_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
+    (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (Y : Matrix (Fin r) (Fin r) E),
+    SelfDualLat G Λ → Y ∈ endLat Λ → IsIntegral ℤ Y.trace :=
+  fun _ _ _ _ _ G Λ Y hS hY => isIntegral_trace_of_mem_endLat G Λ Y hS hY
+
+end GlobalTheory.LieDisc
+end
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.end_lattice_trace_integral : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (Y : Matrix (Fin r) (Fin r) E), SelfDualLat G Λ → Y ∈ endLat Λ → IsIntegral ℤ Y.trace := by
+  atlas_forward_decl GlobalTheory.LieDisc.trace_integral_main
+end
+
+section
+section
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+
+namespace GlobalTheory.LieDisc
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+noncomputable def rankOneHerm (G : Matrix (Fin r) (Fin r) E) (l y : Fin r → E) : Matrix (Fin r) (Fin r) E :=
+  Matrix.of fun a b => l a * ∑ k, G b k * cc (y k)
+
+theorem rankOneHerm_mulVec (G : Matrix (Fin r) (Fin r) E) (l y x : Fin r → E) :
+    rankOneHerm G l y *ᵥ x = herm G x y • l := by
+  ext a
+  simp only [rankOneHerm, mulVec, dotProduct, of_apply, Pi.smul_apply, smul_eq_mul, herm]
+  simp_rw [Finset.mul_sum, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun k _ => ?_
+  ring
+
+theorem trace_mul_rankOneHerm (G Y : Matrix (Fin r) (Fin r) E) (l y : Fin r → E) :
+    (Y * rankOneHerm G l y).trace = herm G (Y *ᵥ l) y := by
+  simp only [trace, diag, mul_apply, rankOneHerm, of_apply, herm, mulVec, dotProduct]
+  refine Finset.sum_congr rfl fun a _ => ?_
+  simp_rw [Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun b _ => ?_
+  ring
+
+theorem rankOneHerm_mem_endLat {G : Matrix (Fin r) (Fin r) E} {Λ : Submodule (𝓞 E) (Fin r → E)}
+    (hΛ : SelfDualLat G Λ) {l y : Fin r → E} (hl : l ∈ Λ) (hy : y ∈ Λ) :
+    rankOneHerm G l y ∈ endLat Λ := fun x hx => by
+  rw [rankOneHerm_mulVec]
+  exact smul_mem_of_isIntegral (((hΛ.2.2.2.2 x).mpr hx) y hy) hl
+
+theorem mem_endLat_of_trace_integral (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
+    (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (Y : Matrix (Fin r) (Fin r) E)
+    (hΛ : SelfDualLat G Λ) (hY : ∀ Z ∈ endLat Λ, IsIntegral ℤ (Y * Z).trace) : Y ∈ endLat Λ := by
+  intro l hl
+  refine (hΛ.2.2.2.2 _).mp fun y hy => ?_
+  rw [← trace_mul_rankOneHerm]
+  exact hY _ (rankOneHerm_mem_endLat hΛ hl hy)
+
+end GlobalTheory.LieDisc
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_end_lattice_of_trace_dual : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (Y : Matrix (Fin r) (Fin r) E), SelfDualLat G Λ → (∀ Z ∈ endLat Λ, IsIntegral ℤ (Y * Z).trace) → Y ∈ endLat Λ := by
+  atlas_forward_decl GlobalTheory.LieDisc.mem_endLat_of_trace_integral
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.LieDisc
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+def rankOne (G : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) : Matrix (Fin r) (Fin r) E :=
+  Matrix.of fun a b => x a * ∑ k, G b k * cc (y k)
+
+theorem rankOne_mulVec (G : Matrix (Fin r) (Fin r) E) (x y v : Fin r → E) :
+    rankOne G x y *ᵥ v = herm G v y • x := by
+  ext a
+  simp only [rankOne, mulVec, dotProduct, of_apply, herm, Pi.smul_apply, smul_eq_mul]
+  rw [Finset.sum_mul]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  simp only [Finset.mul_sum, Finset.sum_mul]
+  exact Finset.sum_congr rfl fun k _ => by ring
+
+theorem trace_rankOne (G : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) :
+    (rankOne G x y).trace = herm G x y := by
+  simp only [Matrix.trace, diag, rankOne, of_apply, herm, Finset.mul_sum, mul_assoc]
+
+def traceIdeal (Λ : Submodule (𝓞 E) (Fin r → E)) : Ideal (𝓞 E) where
+  carrier := {s | ∃ Z ∈ endLat Λ, Z.trace = (s : E)}
+  zero_mem' := ⟨0, (endLat Λ).zero_mem, by simp⟩
+  add_mem' {s t} hs ht := by
+    obtain ⟨Z, hZ, e⟩ := hs
+    obtain ⟨Z', hZ', e'⟩ := ht
+    exact ⟨Z + Z', (endLat Λ).add_mem hZ hZ', by rw [trace_add, e, e']; push_cast; rfl⟩
+  smul_mem' c {s} hs := by
+    obtain ⟨Z, hZ, e⟩ := hs
+    refine ⟨(c : E) • Z, smul_mem_endLat c.isIntegral_coe hZ, ?_⟩
+    rw [trace_smul, e, smul_eq_mul, smul_eq_mul]
+    push_cast; rfl
+
+theorem exists_endLat_trace_eq_one (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
+    (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (hr : 1 ≤ r)
+    (h : SelfDualLat G Λ) : ∃ Z ∈ endLat Λ, Z.trace = 1 := by
+  have hint : ∀ x ∈ Λ, ∀ y ∈ Λ, IsIntegral ℤ (herm G x y) := fun x hx => (h.2.2.2.2 x).2 hx
+  have htop : traceIdeal Λ = ⊤ := by
+    by_contra hT
+    refine GlobalTheory.UCls.Det.exists_herm_notMem hr h (traceIdeal Λ) hT fun x hx y hy =>
+      ⟨⟨herm G x y, hint x hx y hy⟩, ⟨rankOne G x y, fun v hv => ?_, trace_rankOne G x y⟩, rfl⟩
+    rw [rankOne_mulVec]
+    exact smul_mem_of_isIntegral (hint v hv y hy) hx
+  have h1 : (1 : 𝓞 E) ∈ traceIdeal Λ := htop ▸ Submodule.mem_top
+  obtain ⟨Z, hZ, e⟩ := h1
+  exact ⟨Z, hZ, by rw [e]; simp⟩
+
+example : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E)
+    (Λ : Submodule (𝓞 E) (Fin r → E)), 1 ≤ r → SelfDualLat G Λ → ∃ Z ∈ endLat Λ, Z.trace = 1 :=
+  exists_endLat_trace_eq_one
+
+end GlobalTheory.LieDisc
+end
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_end_lattice_trace_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)), 1 ≤ r → SelfDualLat G Λ → ∃ Z ∈ endLat Λ, Z.trace = 1 := by
+  atlas_forward_decl GlobalTheory.LieDisc.exists_endLat_trace_eq_one
+end
+
+section
+section
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+open scoped nonZeroDivisors
+
+namespace GlobalTheory.LieDisc
+
+theorem isIntegral_of_trace_integral :
+    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ w : E,
+      (∀ a : E, IsIntegral ℤ a → IsIntegral ℤ (w * a + cc (w * a))) → IsIntegral ℤ w := by
+  intro E _ _ _ hu w hw
+  set F := maximalRealSubfield E
+  have hfu : Algebra.FormallyUnramified (𝓞 F) (𝓞 E) := by
+    haveI : Algebra.Unramified (𝓞 F) (𝓞 E) := hu
+    infer_instance
+  have hd : differentIdeal (𝓞 F) (𝓞 E) = ⊤ :=
+    (GlobalTheory.formallyUnramified_ringOfIntegers_iff_differentIdeal_eq_top F E).1 hfu
+  have h10 : (1 : FractionalIdeal (𝓞 E)⁰ E) ≠ 0 := one_ne_zero
+  have hdual : FractionalIdeal.dual (𝓞 F) F (1 : FractionalIdeal (𝓞 E)⁰ E) = 1 := by
+    have h := coeIdeal_differentIdeal (𝓞 F) F (L := E) (B := 𝓞 E)
+    rw [hd, FractionalIdeal.coeIdeal_top] at h
+    exact (inv_eq_one.1 h.symm)
+  have hmem : w ∈ FractionalIdeal.dual (𝓞 F) F (1 : FractionalIdeal (𝓞 E)⁰ E) := by
+    rw [FractionalIdeal.mem_dual h10]
+    intro a ha
+    obtain ⟨b, rfl⟩ := (FractionalIdeal.mem_one_iff _).1 ha
+    rw [Algebra.traceForm_apply]
+    have ht := Formalism.FourierDecayAlt.P.S6x3.trace_eq E (w * algebraMap (𝓞 E) E b)
+    have hi : IsIntegral ℤ (Algebra.trace F E (w * algebraMap (𝓞 E) E b)) := by
+      rw [← isIntegral_algebraMap_iff (FaithfulSMul.algebraMap_injective F E), ht]
+      exact hw _ (RingOfIntegers.isIntegral_coe b)
+    exact ⟨⟨_, hi⟩, rfl⟩
+  rw [hdual] at hmem
+  obtain ⟨z, hz⟩ := (FractionalIdeal.mem_one_iff _).1 hmem
+  rw [← hz]
+  exact RingOfIntegers.isIntegral_coe z
+
+end GlobalTheory.LieDisc
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_of_trace_integral_unramified : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ w : E, (∀ a : E, IsIntegral ℤ a → IsIntegral ℤ (w * a + cc (w * a))) → IsIntegral ℤ w := by
+  atlas_forward_decl GlobalTheory.LieDisc.isIntegral_of_trace_integral
+end
+
+section
+section
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+
+noncomputable section
+
+namespace GlobalTheory.LieDisc
+
+theorem exists_integral_add_cc_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E],
+    Unr E → ∃ t : E, IsIntegral ℤ t ∧ t + cc t = 1 := by
+  intro E _ _ _ hE
+  have : Algebra.Unramified (𝓞 (maximalRealSubfield E)) (𝓞 E) := hE
+  let σ := IsCMField.ringOfIntegersComplexConj E
+  let I : Ideal (𝓞 (maximalRealSubfield E)) :=
+    { carrier := {a | ∃ t : 𝓞 E, algebraMap _ (𝓞 E) a = t + σ t}
+      add_mem' := by
+        rintro a b ⟨s, hs⟩ ⟨t, ht⟩
+        exact ⟨s + t, by rw [map_add, hs, ht, map_add]; ring⟩
+      zero_mem' := ⟨0, by simp⟩
+      smul_mem' := by
+        rintro c a ⟨t, ht⟩
+        refine ⟨algebraMap _ (𝓞 E) c * t, ?_⟩
+        rw [smul_eq_mul, map_mul, ht, map_mul, AlgEquiv.commutes]
+        ring }
+  have hI : I = ⊤ := by
+    by_contra hI
+    obtain ⟨m, hm, hIm⟩ := Ideal.exists_le_maximal _ hI
+    obtain ⟨P, hP, hPm⟩ := Ideal.exists_ideal_over_maximal_of_isIntegral (S := 𝓞 E) m
+      (by rw [(RingHom.injective_iff_ker_eq_bot _).1
+        (FaithfulSMul.algebraMap_injective (𝓞 (maximalRealSubfield E)) (𝓞 E))]; exact bot_le)
+    have htr : ∀ t : 𝓞 E, t + σ t ∈ P := by
+      intro t
+      have hco : ((t + σ t : 𝓞 E) : E) = (t : E) + IsCMField.complexConj E t := by
+        rw [← IsCMField.coe_ringOfIntegersComplexConj]
+        rfl
+      have hfix := (IsCMField.complexConj_eq_self_iff E ((t : E) + IsCMField.complexConj E t)).1 (by
+        rw [map_add, IsCMField.complexConj_apply_apply, add_comm])
+      have hi : IsIntegral ℤ (⟨_, hfix⟩ : maximalRealSubfield E) := by
+        have h0 : IsIntegral ℤ ((t + σ t : 𝓞 E) : E) := (t + σ t).isIntegral_coe
+        rw [hco] at h0
+        exact (isIntegral_algebraMap_iff (algebraMap (maximalRealSubfield E) E).injective).1 h0
+      let a : 𝓞 (maximalRealSubfield E) := ⟨_, hi⟩
+      have hA : algebraMap _ (𝓞 E) a = t + σ t := by
+        apply RingOfIntegers.ext
+        rw [hco]
+        rfl
+      have h1 : a ∈ Ideal.comap (algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E)) P := hPm ▸ hIm ⟨t, hA⟩
+      exact hA ▸ Ideal.mem_comap.1 h1
+    have hσ : ∃ s, σ.toAlgHom s ≠ s := by
+      by_contra hc
+      push Not at hc
+      apply IsCMField.complexConj_ne_one E
+      ext x
+      obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 E) x
+      have hc' : ∀ s : 𝓞 E, IsCMField.complexConj E (algebraMap (𝓞 E) E s) = algebraMap (𝓞 E) E s :=
+        fun s => congrArg (fun z : 𝓞 E => (z : E)) (hc s)
+      simp [hc']
+    obtain ⟨t, ht⟩ := GlobalTheory.UCls.Det.exists_sub_notMem σ.toAlgHom hσ P hP.ne_top
+    apply ht
+    have h2 := P.sub_mem (htr t) (P.mul_mem_right (σ t) (htr 1))
+    convert h2 using 1
+    change t - σ t = t + σ t - (1 + σ 1) * σ t
+    rw [map_one]
+    ring
+  obtain ⟨t, ht⟩ : (1 : 𝓞 (maximalRealSubfield E)) ∈ I := hI ▸ Submodule.mem_top
+  refine ⟨(t : E), t.isIntegral_coe, ?_⟩
+  have h := congrArg (fun z : 𝓞 E => (z : E)) ht
+  rw [map_one] at h
+  change (1 : E) = (t : E) + ((σ t : 𝓞 E) : E) at h
+  rw [IsCMField.coe_ringOfIntegersComplexConj] at h
+  rw [cc]
+  exact h.symm
+
+end GlobalTheory.LieDisc
+end
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_trace_one_unramified : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∃ t : E, IsIntegral ℤ t ∧ t + cc t = 1 := by
+  atlas_forward_decl GlobalTheory.LieDisc.exists_integral_add_cc_eq_one
+end
+
+section
+section
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+
+noncomputable section
+
+namespace GlobalTheory.LieDisc.ImIndex
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+def imSp (E : Type) [Field E] [NumberField E] [IsCMField E] : Submodule ℚ E where
+  carrier := {a | cc a = -a}
+  zero_mem' := by simp [cc]
+  add_mem' {a b} ha hb := by
+    simp only [Set.mem_setOf_eq, cc, map_add] at ha hb ⊢; rw [ha, hb, neg_add]
+  smul_mem' q a ha := by
+    simp only [Set.mem_setOf_eq, cc] at ha ⊢
+    rw [map_rat_smul, ha, smul_neg]
+
+theorem mem_imSp {a : E} : a ∈ imSp E ↔ cc a = -a := Iff.rfl
+
+def dm (E : Type) [Field E] [NumberField E] [IsCMField E] : E →ₗ[ℚ] E where
+  toFun x := x - cc x
+  map_add' x y := by simp only [cc, map_add]; ring
+  map_smul' q x := by simp only [cc, map_rat_smul, RingHom.id_apply, smul_sub]
+
+theorem range_dm : LinearMap.range (dm E) = imSp E := by
+  ext y
+  constructor
+  · rintro ⟨x, rfl⟩
+    change cc (x - cc x) = -(x - cc x)
+    rw [show cc (x - cc x) = cc x - cc (cc x) by simp [cc], cc_cc]; ring
+  · intro hy
+    refine ⟨(1 / 2 : ℚ) • y, ?_⟩
+    change (1 / 2 : ℚ) • y - cc ((1 / 2 : ℚ) • y) = y
+    rw [show cc ((1 / 2 : ℚ) • y) = (1 / 2 : ℚ) • cc y from map_rat_smul _ _ _, (mem_imSp).1 hy,
+      smul_neg, sub_neg_eq_add, ← add_smul]
+    norm_num
+
+theorem mem_ker_dm {x : E} : x ∈ LinearMap.ker (dm E) ↔ x ∈ maximalRealSubfield E := by
+  rw [LinearMap.mem_ker, ← IsCMField.complexConj_eq_self_iff]
+  change x - cc x = 0 ↔ _
+  rw [sub_eq_zero, eq_comm]; rfl
+
+def kerEquiv (E : Type) [Field E] [NumberField E] [IsCMField E] :
+    LinearMap.ker (dm E) ≃ₗ[ℚ] maximalRealSubfield E where
+  toFun x := ⟨x.1, mem_ker_dm.1 x.2⟩
+  invFun y := ⟨y.1, mem_ker_dm.2 y.2⟩
+  map_add' x y := rfl
+  map_smul' q x := by ext; simp [Rat.smul_def]
+  left_inv x := rfl
+  right_inv y := rfl
+
+theorem finrank_imSp : Module.finrank ℚ (imSp E) = fdeg E := by
+  have h := LinearMap.finrank_range_add_finrank_ker (dm E)
+  rw [range_dm, (kerEquiv E).finrank_eq] at h
+  have h1 := Module.finrank_mul_finrank ℚ (maximalRealSubfield E) E
+  have h2 : Module.finrank (maximalRealSubfield E) E = 2 :=
+    Algebra.IsQuadraticExtension.finrank_eq_two _ _
+  unfold fdeg
+  rw [← h1, h2] at h ⊢
+  omega
+
+instance : Module.Finite ℤ (imLat E) := by
+  let f : imLat E →+ 𝓞 E :=
+    { toFun := fun x => ⟨x.1, x.2.1⟩
+      map_zero' := rfl
+      map_add' := fun x y => rfl }
+  exact Module.Finite.of_injective f.toIntLinearMap (fun x y h => Subtype.ext (congrArg Subtype.val h :))
+
+instance : Module.Free ℤ (imLat E) := Module.free_of_finite_type_torsion_free'
+
+theorem finrank_imLat : Module.finrank ℤ (imLat E) = fdeg E := by
+  rw [← finrank_imSp]
+  let b := Module.Free.chooseBasis ℤ (imLat E)
+  let v : Module.Free.ChooseBasisIndex ℤ (imLat E) → E := fun i => (b i : E)
+  have hz : LinearIndependent ℤ v :=
+    b.linearIndependent.map' (imLat E).subtype.toIntLinearMap
+      (LinearMap.ker_eq_bot.2 Subtype.val_injective)
+  have hq : LinearIndependent ℚ v := (LinearIndependent.iff_fractionRing ℤ ℚ).1 hz
+  have hspan : Submodule.span ℚ (Set.range v) = imSp E := by
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      exact (b i).2.2
+    · intro x hx
+      have halg : IsAlgebraic ℤ x :=
+        (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic x)
+      obtain ⟨n, hn, hint⟩ := halg.exists_integral_multiple
+      have hy : n • x ∈ imLat E := by
+        refine ⟨hint, ?_⟩
+        rw [mem_imSp] at hx
+        simp only [cc, map_zsmul] at hx ⊢
+        rw [hx, smul_neg]
+      have hsum := b.sum_repr ⟨n • x, hy⟩
+      have hmem : n • x ∈ Submodule.span ℚ (Set.range v) := by
+        rw [show n • x = ((⟨n • x, hy⟩ : imLat E) : E) from rfl, ← hsum, AddSubgroup.val_finset_sum]
+        refine Submodule.sum_mem _ fun i _ => ?_
+        rw [AddSubgroup.coe_zsmul, ← Int.cast_smul_eq_zsmul ℚ]
+        exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+      have hx' : x = ((n : ℚ)⁻¹) • (n • x) := by
+        rw [← Int.cast_smul_eq_zsmul ℚ, smul_smul, inv_mul_cancel₀ (by exact_mod_cast hn), one_smul]
+      rw [hx']
+      exact Submodule.smul_mem _ _ hmem
+  rw [← hspan, finrank_span_eq_card hq, Module.finrank_eq_card_chooseBasisIndex]
+
+end GlobalTheory.LieDisc.ImIndex
+
+open GlobalTheory.LieDisc.ImIndex in
+
+theorem GlobalTheory.LieDisc.relIndex_mulLeft_imLat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ),
+    Unr E → 1 ≤ r →
+      (AddSubgroup.map (AddMonoidHom.mulLeft (r : E)) (imLat E)).relIndex (imLat E) = r ^ fdeg E := by
+  intro E _ _ _ r _ _
+  rw [AddSubgroup.relIndex, ← finrank_imLat, ← AddSubgroup.index_range_nsmul (imLat E) r]
+  congr 1
+  ext ⟨x, hx⟩
+  simp only [AddSubgroup.mem_addSubgroupOf, AddSubgroup.mem_map, AddMonoidHom.coe_mulLeft,
+    AddMonoidHom.mem_range, nsmulAddMonoidHom_apply]
+  constructor
+  · rintro ⟨y, hy, hyx⟩
+    exact ⟨⟨y, hy⟩, Subtype.ext (by simp [← hyx, nsmul_eq_mul])⟩
+  · rintro ⟨⟨y, hy⟩, hyx⟩
+    refine ⟨y, hy, ?_⟩
+    have := congrArg Subtype.val hyx
+    simpa [nsmul_eq_mul] using this
+end
+end
+
+open NumberField Matrix GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.imaginary_lattice_scaling_index : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ), Unr E → 1 ≤ r → (AddSubgroup.map (AddMonoidHom.mulLeft (r : E)) (imLat E)).relIndex (imLat E) = r ^ fdeg E := by
+  atlas_forward_decl GlobalTheory.LieDisc.relIndex_mulLeft_imLat
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.LieDisc
@@ -246,3 +891,5 @@ theorem lieLat_relIndex_dual : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   exact GlobalTheory.T.imaginary_lattice_scaling_index E r hU (by omega)
 
 end GlobalTheory
+end
+end

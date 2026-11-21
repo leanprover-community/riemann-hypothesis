@@ -1,12 +1,230 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineBundleGlobalSectionsDimCongrPicardClass
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteCohOfForallModification
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TwistedPowerHigherCohomVanishingPullbackIffPushf
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TwistedPowerVanishingInductionBySectionSqTensor
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NotMemSupportKerMulSectionOfNonvanishing
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSubsingletonCohTwistTensLbPowStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SupportPushforwardSubsetImageOfIsClosedImmersionStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TwistConeVanishing
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSubsingletonCohTwistTensLbPow
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SupportPushforwardSubsetImageOfIsClosedImmersion
 
+section
+section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Twist
+
+set_option autoImplicit false
+noncomputable section
+
+namespace GlobalTheory
+
+theorem subsingleton_coh_twist_pushforward_iff {X Y : Scheme.{0}} (g : Y ⟶ X) [IsAffineHom g]
+    {A N : LB X} (hA : A.IsLB) (hN : N.IsLB) (G : Y.Modules) [G.IsQuasicoherent] (j m p : ℕ) :
+    Subsingleton (coh (twist G (tens (lbPow (A.pull g) j) (lbPow (N.pull g) m))) p) ↔
+      Subsingleton (coh (twist ((Scheme.Modules.pushforward g).obj G)
+        (tens (lbPow A j) (lbPow N m))) p) := by
+  have hT : (tens (lbPow A j) (lbPow N m)).IsLB := isLB_tens (isLB_lbPow hA j) (isLB_lbPow hN m)
+  have hA' := LB.isLB_pull hA g
+  have hN' := LB.isLB_pull hN g
+  have hT' : (tens (lbPow (A.pull g) j) (lbPow (N.pull g) m)).IsLB :=
+    isLB_tens (isLB_lbPow hA' j) (isLB_lbPow hN' m)
+  have hTp := LB.isLB_pull hT g
+  have e : cls _ hT' = cls _ hTp := by
+    rw [cls_pull hT, cls_tens (isLB_lbPow hA j) (isLB_lbPow hN m),
+      cls_tens (isLB_lbPow hA' j) (isLB_lbPow hN' m), cls_lbPow hA, cls_lbPow hN, cls_lbPow hA',
+      cls_lbPow hN', cls_pull hA, cls_pull hN, map_add, map_nsmul, map_nsmul]
+  obtain ⟨i⟩ := nonempty_twist_iso_of_cls_eq G hT' hTp e
+  have := Twist.isQuasicoherent_twist (F := G) hTp
+  have e₁ : coh (twist ((Scheme.Modules.pushforward g).obj G) (tens (lbPow A j) (lbPow N m))) p ≃ₗ[ℤ]
+      coh (twist G (tens (lbPow (A.pull g) j) (lbPow (N.pull g) m))) p :=
+    (cohOn.mapIso ℤ ⊤ p (Twist.projIso _ g G).symm).trans
+      ((coh.pushforwardEquiv ℤ (fun r => by simp) (twist G _) p).trans (cohOn.mapIso ℤ ⊤ p i.symm))
+  exact e₁.toEquiv.subsingleton_congr.symm
+
+theorem twistConeVanishing_pull_iff_pushforward : ∀ {X Y : Scheme.{0}} (g : Y ⟶ X) [IsAffineHom g]
+    (A N : LB X), A.IsLB → N.IsLB → ∀ (G : Y.Modules) [G.IsQuasicoherent],
+    (TwistConeVanishing (A.pull g) (N.pull g) G ↔
+      TwistConeVanishing A N ((Scheme.Modules.pushforward g).obj G)) := by
+  intro X Y g _ A N hA hN G _
+  unfold TwistConeVanishing
+  simp only [subsingleton_coh_twist_pushforward_iff g hA hN G]
+
+end GlobalTheory
+end
+end
+
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Twist
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twistedPowerHigherCohomVanishing_pullback_iff_pushforward : ∀ {X Y : Scheme.{0}} (g : Y ⟶ X) [IsAffineHom g] (A N : LB X), A.IsLB → N.IsLB → ∀ (G : Y.Modules) [G.IsQuasicoherent], (TwistConeVanishing (A.pull g) (N.pull g) G ↔ TwistConeVanishing A N ((Scheme.Modules.pushforward g).obj G)) := by
+  atlas_forward_decl GlobalTheory.twistConeVanishing_pull_iff_pushforward
+end
+
+section
+section
+set_option autoImplicit false
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Twist
+
+namespace GlobalTheory
+
+theorem twistConeVanishing_of_cut : ∀ {Y : Scheme.{0}} (A N : LB Y), A.IsLB → N.IsLB → ∀ (r : ℕ), 1 ≤ r → ∀ (hM : (lbPow (tens (lbPow N 2) A) r).IsLB) (s : (lbPow (tens (lbPow N 2) A) r).Sec) (G : Y.Modules), (∃ j₁ : ℕ, ∀ j m : ℕ, j₁ ≤ j → m < 2 * r → ∀ p, 0 < p → Subsingleton (coh (twist G (tens (lbPow A j) (lbPow N m))) p)) → TwistConeVanishing A N (kernel (cutHom G hM s)) → TwistConeVanishing A N (cokernel (cutHom G hM s)) → TwistConeVanishing A N G := by
+  intro Y A N hA hN r hr hM s G ⟨j₁, h₁⟩ ⟨jK, hK⟩ ⟨jC, hC⟩
+  set φ := cutHom G hM s
+  let ψ := Abelian.factorThruImage φ
+  have hψ : ψ ≫ kernel.ι (cokernel.π φ) = φ := Abelian.image.fac φ
+  have : Epi ψ := inferInstanceAs (Epi (Abelian.factorThruImage φ))
+  have hS₂ : (ShortComplex.mk (kernel.ι (cokernel.π φ)) (cokernel.π φ)
+      (kernel.condition _)).ShortExact := { exact := ShortComplex.exact_kernel _ }
+  have hS₁ : (ShortComplex.mk (kernel.ι ψ) ψ (kernel.condition _)).ShortExact :=
+    { exact := ShortComplex.exact_kernel _ }
+  let eK : kernel ψ ≅ kernel φ := (kernelCompMono ψ _).symm ≪≫ kernelIsoOfEq hψ
+  have arith : ∀ (a n : Pic Y) (j m : ℕ), r ≤ j → 2 * r ≤ m →
+      (j - r) • a + (m - 2 * r) • n = (-1 : ℤ) • (r • (2 • n + a)) + (j • a + m • n) := by
+    intro a n j m h₁ h₂
+    obtain ⟨j', rfl⟩ := Nat.exists_eq_add_of_le h₁
+    obtain ⟨m', rfl⟩ := Nat.exists_eq_add_of_le h₂
+    simp only [Nat.add_sub_cancel_left]
+    module
+  set J := max j₁ (max jK jC) with hJ
+  have hJ₁ : j₁ ≤ J := le_max_left _ _
+  have hJK : jK ≤ J := (le_max_left _ _).trans (le_max_right _ _)
+  have hJC : jC ≤ J := (le_max_right _ _).trans (le_max_right _ _)
+  have key : ∀ m j, m ≤ j → 2 * J + m ≤ 2 * j → ∀ p, 0 < p →
+      Subsingleton (coh (twist G (tens (lbPow A j) (lbPow N m))) p) := by
+    intro m
+    induction m using Nat.strong_induction_on with
+    | _ m ih =>
+      intro j hmj hJj p hp
+      by_cases hm : m < 2 * r
+      · exact h₁ j m (by omega) hm p hp
+      · push_neg at hm
+        have hT : (tens (lbPow A j) (lbPow N m)).IsLB := isLB_tens (isLB_lbPow hA j) (isLB_lbPow hN m)
+        have e₁ := Twist.shortExact_map hT hS₁
+        have e₂ := Twist.shortExact_map hT hS₂
+        obtain ⟨iso⟩ : Nonempty (twist (twist G (lbZPow (lbPow (tens (lbPow N 2) A) r) (-1))) (tens (lbPow A j) (lbPow N m)) ≅
+            twist G (tens (lbPow A (j - r)) (lbPow N (m - 2 * r)))) := by
+          refine nonempty_twist_twist_iso_of_cls_eq G (isLB_lbZPow hM (-1)) hT
+            (isLB_tens (isLB_lbPow hA _) (isLB_lbPow hN _)) ?_
+          rw [cls_tens (isLB_lbPow hA _) (isLB_lbPow hN _), cls_tens (isLB_lbPow hA _) (isLB_lbPow hN _),
+            cls_lbZPow hM, cls_lbPow_tens_lbPow hN hA, cls_lbPow hA, cls_lbPow hN, cls_lbPow hA, cls_lbPow hN]
+          exact arith _ _ j m (by omega) hm
+        have hmid : Subsingleton (cohOn (twist (twistZ G (lbPow (tens (lbPow N 2) A) r) (-1))
+            (tens (lbPow A j) (lbPow N m))) ⊤ p) := by
+          have := ih (m - 2 * r) (by omega) (j - r) (by omega) (by omega) p hp
+          exact (cohOn.mapIso ℤ ⊤ p iso).toEquiv.subsingleton
+        have hker : Subsingleton (cohOn (twist (kernel ψ) (tens (lbPow A j) (lbPow N m))) ⊤ (p + 1)) := by
+          have := hK j m (by omega) hmj (p + 1) (by omega)
+          exact @Equiv.subsingleton _ _ (cohOn.mapIso ℤ ⊤ (p + 1) ((twistFunctor _).mapIso eK)).toEquiv this
+        have himg := cohOn.subsingleton₃ e₁ ⊤ p hmid hker
+        exact cohOn.subsingleton₂ e₂ ⊤ p himg (hC j m (by omega) hmj p hp)
+  exact ⟨2 * J, fun j m hj hmj p hp => key m j hmj (by omega) p hp⟩
+
+end GlobalTheory
+end
+end
+
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Twist
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.twistedPowerVanishing_induction_by_section_sq_tensor : ∀ {Y : Scheme.{0}} (A N : LB Y), A.IsLB → N.IsLB → ∀ (r : ℕ), 1 ≤ r → ∀ (hM : (lbPow (tens (lbPow N 2) A) r).IsLB) (s : (lbPow (tens (lbPow N 2) A) r).Sec) (G : Y.Modules), (∃ j₁ : ℕ, ∀ j m : ℕ, j₁ ≤ j → m < 2 * r → ∀ p, 0 < p → Subsingleton (coh (twist G (tens (lbPow A j) (lbPow N m))) p)) → TwistConeVanishing A N (kernel (cutHom G hM s)) → TwistConeVanishing A N (cokernel (cutHom G hM s)) → TwistConeVanishing A N G := by
+  atlas_forward_decl GlobalTheory.twistConeVanishing_of_cut
+end
+
+section
+section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Twist
+set_option autoImplicit false
+noncomputable section
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+
+namespace GlobalTheory.KernelCut
+
+private theorem subsingleton_kernel_sections_of_app_injective {Y : Scheme.{0}} {M N : Y.Modules} (φ : M ⟶ N)
+    (V : Y.Opens) (hφ : ∀ t, φ.app V t = 0 → t = 0) : Subsingleton Γ(kernel φ, V) := by
+  have hmono : Mono ((kernel.ι φ).app V) := by
+    have h1 : Mono ((Scheme.Modules.toPresheaf Y).map (kernel.ι φ)) := inferInstance
+    exact (NatTrans.mono_iff_mono_app _).1 h1 (Opposite.op V)
+  have hinj := (AddCommGrpCat.mono_iff_injective _).1 hmono
+  have key : ∀ c : Γ(kernel φ, V), c = 0 := by
+    intro c
+    apply hinj
+    rw [map_zero]
+    apply hφ
+    have h2 : (kernel.ι φ ≫ φ).app V c = 0 := by simp
+    rw [Scheme.Modules.Hom.comp_app, ConcreteCategory.comp_apply] at h2
+    exact h2
+  exact ⟨fun a b => by rw [key a, key b]⟩
+
+private theorem notMem_support_of_subsingleton_sections {Y : Scheme.{0}} (K : Y.Modules) {x : Y} (W : Y.Opens)
+    (hxW : x ∈ W) (h : ∀ V : Y.Opens, V ≤ W → Subsingleton Γ(K, V)) : x ∉ support K := by
+  unfold support
+  simp only [Set.mem_ofPred_eq, not_nontrivial_iff_subsingleton]
+  have key : ∀ c : K.presheaf.stalk x, c = 0 := by
+    intro c
+    obtain ⟨U, hxU, t, rfl⟩ := K.presheaf.exists_germ_eq c
+    rw [← K.presheaf.germ_res_apply (homOfLE (inf_le_left : U ⊓ W ≤ U)) x ⟨hxU, hxW⟩ t]
+    have := h (U ⊓ W) inf_le_right
+    rw [Subsingleton.elim (K.presheaf.map (homOfLE (inf_le_left : U ⊓ W ≤ U)).op t) 0, map_zero]
+  exact ⟨fun a b => by rw [key a, key b]⟩
+
+theorem notMem_support_kernel_cutHom : ∀ {Y : Scheme.{0}} {L : LB Y} (hL : L.IsLB) (s : L.Sec) (G : Y.Modules) [G.IsQuasicoherent], ∀ x ∈ Out.nonzeroLocus s, x ∉ support (kernel (cutHom G hL s)) := by
+  intro Y L hL s G _ x hx
+  have hx' : x ∈ ⨆ k, Y.basicOpen (s.f k) := by
+    unfold Out.nonzeroLocus at hx
+    exact hx
+  obtain ⟨k, hk⟩ := TopologicalSpace.Opens.mem_iSup.1 hx'
+  have hle : Y.basicOpen (s.f k) ≤ Out.nonzeroLocus s := by
+    unfold Out.nonzeroLocus
+    exact le_iSup (fun j => Y.basicOpen (s.f j)) k
+  refine notMem_support_of_subsingleton_sections _ (Y.basicOpen (s.f k)) hk fun V hV => ?_
+  have hVU : V ≤ L.U k := hV.trans (Y.basicOpen_le _)
+  have hmb := isMulBy_cutHom G hL s
+  obtain ⟨e, he⟩ := hmb k V hVU
+  have hunit : IsUnit (resG Y hVU (s.f k)) := by
+    have h3 := isUnit_resG_zfun (zofSec s) k hVU
+      (by rw [nonzeroLocus_zofSec hL s]; exact hV.trans hle)
+    simpa using h3
+  refine subsingleton_kernel_sections_of_app_injective _ V fun t ht => ?_
+  rw [he] at ht
+  have h4 : e t = 0 := hunit.smul_eq_zero.1 ht
+  exact e.injective (h4.trans e.map_zero.symm)
+
+end GlobalTheory.KernelCut
+end
+end
+
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Twist
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.notMem_support_ker_mulSection_of_nonvanishing : ∀ {Y : Scheme.{0}} {L : LB Y} (hL : L.IsLB) (s : L.Sec) (G : Y.Modules) [G.IsQuasicoherent], ∀ x ∈ Out.nonzeroLocus s, x ∉ support (kernel (cutHom G hL s)) := by
+  atlas_forward_decl GlobalTheory.KernelCut.notMem_support_kernel_cutHom
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Twist
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_subsingleton_coh_twist_tens_lbPow' : ∀ (k : Type) [Field k] {Y : Scheme.{0}} (f : Y ⟶ Sp k), IsProjOver f → ∀ (A N : LB Y), IsAmpleLB A → N.IsLB → ∀ (G : Y.Modules) [IsFiniteQC G] (B : ℕ), ∃ j₁ : ℕ, ∀ j m : ℕ, j₁ ≤ j → m < B → ∀ p, 0 < p → Subsingleton (coh (twist G (tens (lbPow A j) (lbPow N m))) p) := by
+  first | exact @GlobalTheory.exists_subsingleton_coh_twist_tens_lbPow | exact GlobalTheory.exists_subsingleton_coh_twist_tens_lbPow | (intros; apply GlobalTheory.exists_subsingleton_coh_twist_tens_lbPow <;> assumption)
+end
+
+section
+open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.QCoh GlobalTheory.CechPic GlobalTheory.Twist
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.support_pushforward_subset_image : ∀ {X Y : Scheme.{0}} (g : Y ⟶ X) [IsClosedImmersion g] (E : Y.Modules), support ((Scheme.Modules.pushforward g).obj E) ⊆ g '' support E := by
+  first | exact @GlobalTheory.support_pushforward_subset_image_of_isClosedImmersion | exact GlobalTheory.support_pushforward_subset_image_of_isClosedImmersion | (intros; apply GlobalTheory.support_pushforward_subset_image_of_isClosedImmersion <;> assumption)
+end
+
+section
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Filter
@@ -81,3 +299,5 @@ theorem eventually_subsingleton_coh_ample_psEff : ∀ (k : Type) [Field k] (X : 
   rwa [(redι Z).isClosedEmbedding.injective hyη] at hy
 
 end GlobalTheory
+end
+end

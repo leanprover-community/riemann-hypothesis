@@ -1,6 +1,53 @@
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.PhEvenOf
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.IdealLatticeHolds
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.EndIntWOf
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TransInvOf
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.SigmaStarUniq
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AreaLat
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TransInvLat
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SigmaStarUniq
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.DiscrNe
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SigmaStarEx
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.IdealLattice
+import Mathlib
+import Formalism.PeriodIntegrals.HeisMul
+import Formalism.PeriodIntegrals.HeisNorm
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.IdealLattice
 
+section
+namespace Formalism.MainNotions.Ext
+
+
+
+
+theorem discrNe_holds : DiscrNe := discrNe'
+
+theorem sigmaStarEx_holds : SigmaStarEx := sigma_star_exists
+
+end Formalism.MainNotions.Ext
+end
+
+section
+namespace Formalism.MainNotions.Ext
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric
+
+theorem delta_ne' (HI : IdealLattice) (D : D7) (cc : Ideal (NumberField.RingOfIntegers D.host.K)) (hc : cc ≠ ⊥) (δ : ℂ)
+    (hδ : IsDiscriminantTwelfthRootOfIdealLattice D cc δ) : δ ≠ 0 :=
+  delta_ne HI discrNe_holds D cc hc δ hδ
+
+
+
+end Formalism.MainNotions.Ext
+end
+
+section
+namespace Formalism.MainNotions.Ext
+
+theorem idealLattice_holds : IdealLattice := ideal_lattice_basis
+
+end Formalism.MainNotions.Ext
+end
+
+section
 namespace Formalism.MainNotions.Ext
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric
@@ -30,3 +77,4 @@ theorem area_lamOf (D : D7) (cc : Ideal (NumberField.RingOfIntegers D.host.K)) (
   exact h.2
 
 end Formalism.MainNotions.Ext
+end

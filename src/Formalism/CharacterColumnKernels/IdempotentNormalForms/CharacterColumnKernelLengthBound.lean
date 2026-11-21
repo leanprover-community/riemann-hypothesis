@@ -1,6 +1,20 @@
 import Formalism.CharacterColumnKernels.CharacterColumnKernelLengthBound
-import Formalism.CharacterColumnKernels.IdempotentNormalForms.ProdEraseZero
+import Formalism.CharacterColumnKernels.Statement
 
+section
+open Finset
+
+namespace Formalism.NG
+
+
+
+
+
+
+end Formalism.NG
+end
+
+section
 open Finset
 
 namespace Formalism.NG
@@ -71,3 +85,4 @@ theorem character_column_kernel_length_bound : characterColumnKernelLengthBound 
 
 
 end Formalism.NG
+end

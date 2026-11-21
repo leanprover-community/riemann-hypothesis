@@ -1,8 +1,0 @@
-import Mathlib
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RelativeIndexFlags.Development
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RelativeIndexFlags.RelIndexUnipotentConjSymm
-
-namespace Formalism.L2.SG.Pf.RelativeIndexFlags
-
-
-end Formalism.L2.SG.Pf.RelativeIndexFlags

@@ -3,9 +3,45 @@ import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefi
 import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairNormalFormGeometrySummaryStatement
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairIdealKillsDiscriminantModulesStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImportsFurther
 import BuildAid.ForwardExisting
 
+section
+namespace GlobalTheory.ExistsSmulMemLattice
+
+open NumberField
+
+theorem exists_smul_mem {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V]
+    [Module (RingOfIntegers K) V] [IsScalarTower (RingOfIntegers K) K V]
+    {M : Submodule (RingOfIntegers K) V} {v : V} (hv : v ∈ Submodule.span K (M : Set V)) :
+    ∃ d : RingOfIntegers K, d ≠ 0 ∧ d • v ∈ M := by
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨d₁, hd₁, h₁⟩ := hx
+    obtain ⟨d₂, hd₂, h₂⟩ := hy
+    refine ⟨d₁ * d₂, mul_ne_zero hd₁ hd₂, ?_⟩
+    rw [smul_add]
+    refine M.add_mem ?_ ?_
+    · rw [mul_comm, mul_smul]; exact M.smul_mem _ h₁
+    · rw [mul_smul]; exact M.smul_mem _ h₂
+  | smul a x _ hx =>
+    obtain ⟨d, hd, h⟩ := hx
+    obtain ⟨⟨n, s⟩, hs⟩ := IsLocalization.surj (nonZeroDivisors (RingOfIntegers K)) a
+    have hs0 : (s : RingOfIntegers K) ≠ 0 := nonZeroDivisors.coe_ne_zero s
+    refine ⟨(s : RingOfIntegers K) * d, mul_ne_zero hs0 hd, ?_⟩
+    have key : ((s : RingOfIntegers K) * d) • (a • x) = n • (d • x) := by
+      rw [← algebraMap_smul K ((s : RingOfIntegers K) * d), ← algebraMap_smul K n (d • x),
+        ← algebraMap_smul K d x, smul_smul, smul_smul, map_mul]
+      congr 1
+      simp only at hs
+      rw [← hs]; ring
+    rw [key]; exact M.smul_mem _ h
+
+end GlobalTheory.ExistsSmulMemLattice
+end
+
+section
 section
 open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt
 open scoped Pointwise ENNReal Classical
@@ -154,3 +190,4 @@ open scoped Pointwise ENNReal Classical
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.stabilizer_hermitianLattice_of_deep_star_congruence : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : HermSpace K V), Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ) (N : NF H r), ∀ (g : ℕ) (Λ : Submodule (𝓞 K) V), 1 ≤ g → N.IsTerm g Λ → ∀ 𝔠 : Ideal (𝓞 K), 𝔠 ≠ ⊥ → (∀ x ∈ 𝔠, ∃ y ∈ 𝔠, (y : K) = star (x : K)) → (∀ x ∈ 𝔠, (N.T : 𝓞 K) ∣ x) → (∀ (l : ℕ) (hl : l ≤ r + 1), l ≤ N.j → Dl N.F N.F' l hl ≠ 0 → ∀ x ∈ 𝔠, ∀ y ∈ ipow N.𝔡 (2 * ∑ a ∈ Finset.range l, ((r : ℤ) - a)), (x : K) * y / Dl N.F N.F' l hl ∈ (1 : Submodule (𝓞 K) K) ∧ (x : K) * y / star (Dl N.F N.F' l hl) ∈ (1 : Submodule (𝓞 K) K)) → ∀ e : ℕ, N.Split Λ → N.Near (𝔠 ^ e) Λ → ∀ s ∈ N.Rs, (∀ x ∈ N.P0, s x - x ∈ 𝔠 ^ (3 * e + 10) • N.P0) → s • Λ = Λ := by
   atlas_forward_decl GlobalTheory.DegCnt.stab_of_deep_congruence
+end

@@ -1,12 +1,41 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NefFibOfCurveDegreesNonnegStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntersectionNumberFinitePushforwardStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NefFibOfCurveDegreesNonneg
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntersectionNumberFinitePushforward
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLocalSubringGenericPoint
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidueDegreeOfIsOpenImmersion
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ResidueDegreeOfIsClosedImmersion
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPreimagePositiveResidueDegreeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KrullDimOneOfFiniteGenericStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPreimagePositiveResidueDegree
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KrullDimOneOfFiniteGeneric
 
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.CechPic
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.nefFib_of_curve_degrees_nonneg : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) (L : HermLB p), (∀ (Z : Scheme.{0}) (i : Z ⟶ X) [IsClosedImmersion i] [IsIntegral Z] (q : ℕ) [Fact q.Prime] [Algebra (ZMod q) Γ(Z, ⊤)], topologicalKrullDim Z = 1 → 0 ≤ topSelfIntersection (ZMod q) (L.B.pull i) 1) → ArInt.NefFib L := by
+  first | exact @GlobalTheory.ArInt.nefFib_of_primeField | exact GlobalTheory.ArInt.nefFib_of_primeField | (intros; apply GlobalTheory.ArInt.nefFib_of_primeField <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.CechPic
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.intersection_number_finite_pushforward : ∀ (κ : Type) [Field κ] (Z Z' : Scheme.{0}) [IsIntegral Z] [IsIntegral Z'] [Algebra κ Γ(Z, ⊤)] (f : Z' ⟶ Z) [IsFinite f], IsProjOver (strHom κ Z) → topologicalKrullDim Z = 1 → f (genericPoint Z') = genericPoint Z → ∀ N : LB Z, N.IsLB → interNumOn κ f ![N] = (f.residueDegree (genericPoint Z') : ℤ) * interNum κ (structureModule Z) ![N] := by
+  first | exact @GlobalTheory.ProjFin.interNumOn_eq_residueDegree_mul | exact GlobalTheory.ProjFin.interNumOn_eq_residueDegree_mul | (intros; apply GlobalTheory.ProjFin.interNumOn_eq_residueDegree_mul <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.CechPic
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_preimage_positive_residue_degree : ∀ (W Z : Scheme.{0}) (g : W ⟶ Z) [QuasiCompact g] [LocallyOfFiniteType g] (z : Z), z ∈ Set.range g → ∃ w, g w = z ∧ 0 < g.residueDegree w := by
+  first | exact @GlobalTheory.exists_residueDegree_pos_of_mem_range | exact GlobalTheory.exists_residueDegree_pos_of_mem_range | (intros; apply GlobalTheory.exists_residueDegree_pos_of_mem_range <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.CechPic
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.krullDim_one_of_finite_generic : ∀ (Z' Z : Scheme.{0}) [IsIntegral Z'] [IsIntegral Z] [IsNoetherian Z] (f : Z' ⟶ Z) [IsProper f], topologicalKrullDim Z = 1 → f (genericPoint Z') = genericPoint Z → 0 < f.residueDegree (genericPoint Z') → topologicalKrullDim Z' = 1 := by
+  first | exact @GlobalTheory.ProperCover.dim_eq_one | exact GlobalTheory.ProperCover.dim_eq_one | (intros; apply GlobalTheory.ProperCover.dim_eq_one <;> assumption)
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -117,3 +146,5 @@ theorem nefFib_of_pull : ∀ (k : Type) [CommRing k] [Module.Finite ℤ k] (X Y 
   exact nonneg_of_mul_nonneg_right hT (by exact_mod_cast hdeg')
 
 end GlobalTheory.NefDescent
+end
+end

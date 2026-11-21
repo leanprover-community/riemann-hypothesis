@@ -1,8 +1,18 @@
 import Mathlib
-import Development.AutomorphicSpectrum.PublishedTheorems.PublishedGlobalResults.RegularAlgebraicPurity
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.RegularAlgebraicPurity
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RegularAlgebraicPurityOfClozel
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.IsCohomologicalRankOne
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsEqMulMultOfUnits
 
+section
+namespace GlobalTheory.CompanionTheory.Published.Rd
+
+def RegularAlgebraicPurity : Prop := GlobalTheory.Published.RegularAlgebraicPurity
+
+end GlobalTheory.CompanionTheory.Published.Rd
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Topology Neutral.B1 Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.GKCoh
@@ -137,4 +147,5 @@ theorem hasInfChar_of_isRegAlg {a : ℕ} (ha : 2 ≤ a) {π : CG E a} (h : π.Is
 
 end GlobalTheory.CompanionTheory.Published.Rd.PurityModel
 
+end
 end

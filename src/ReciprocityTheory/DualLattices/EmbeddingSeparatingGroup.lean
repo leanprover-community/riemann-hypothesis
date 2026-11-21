@@ -1,6 +1,659 @@
 import ReciprocityTheory.DualLattices.EmbeddingSeparatingGroupStatement
-import ReciprocityTheory.DualLattices.SgAlgebraMap
+import Mathlib
 
+section
+noncomputable section
+
+open Finset Matrix
+
+namespace ReciprocityTheory.PGsh.Up.FrobeniusGroupField
+
+variable {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [CommRing R] [Algebra R C]
+
+def mI (hv : v.Integers R) : Ideal R where
+  carrier := {r | v (algebraMap R C r) < 1}
+  add_mem' {a b} ha hb := by
+    simp only [Set.mem_ofPred_eq, map_add] at *
+    exact v.map_add_lt ha hb
+  zero_mem' := by simp
+  smul_mem' c x hx := by
+    simp only [Set.mem_ofPred_eq, smul_eq_mul, map_mul] at *
+    calc v (algebraMap R C c) * v (algebraMap R C x) ≤ 1 * v (algebraMap R C x) :=
+          mul_le_mul_of_nonneg_right (hv.map_le_one c) zero_le
+      _ < 1 := by rwa [one_mul]
+
+theorem mem_mI (hv : v.Integers R) (r : R) : r ∈ mI hv ↔ v (algebraMap R C r) < 1 := Iff.rfl
+
+theorem v_eq_one_iff (hv : v.Integers R) (r : R) : v (algebraMap R C r) = 1 ↔ r ∉ mI hv := by
+  rw [mem_mI, not_lt]
+  exact ⟨fun h => h.ge, fun h => le_antisymm (hv.map_le_one r) h⟩
+
+theorem isUnit_of_not_mem (hv : v.Integers R) {r : R} (h : r ∉ mI hv) : IsUnit r :=
+  hv.isUnit_of_one' ((v_eq_one_iff hv r).2 h)
+
+theorem mI_isMaximal (hv : v.Integers R) : (mI hv).IsMaximal := by
+  rw [Ideal.isMaximal_iff]
+  refine ⟨by simp [mem_mI], fun J x hle hx hxJ => ?_⟩
+  obtain ⟨u, rfl⟩ := isUnit_of_not_mem hv hx
+  have : (↑u⁻¹ : R) * u ∈ J := J.mul_mem_left _ hxJ
+  simpa using this
+
+theorem isDomain (hv : v.Integers R) : IsDomain R := by
+  have : Nontrivial R := ⟨0, 1, fun h => by
+    have := congrArg (fun r => v (algebraMap R C r)) h
+    simp at this⟩
+  exact hv.hom_inj.isDomain (algebraMap R C)
+
+abbrev res (hv : v.Integers R) : R →+* R ⧸ mI hv := Ideal.Quotient.mk (mI hv)
+
+theorem res_eq_zero (hv : v.Integers R) (r : R) : res hv r = 0 ↔ v (algebraMap R C r) < 1 :=
+  Ideal.Quotient.eq_zero_iff_mem
+
+theorem res_ne_zero (hv : v.Integers R) (r : R) : res hv r ≠ 0 ↔ v (algebraMap R C r) = 1 := by
+  rw [Ne, res_eq_zero, v_eq_one_iff hv, mem_mI]
+
+instance instField (hv : v.Integers R) : Field (R ⧸ mI hv) :=
+  haveI := mI_isMaximal hv
+  Ideal.Quotient.field _
+
+theorem charP (p : ℕ) [hp : Fact p.Prime] (hv : v.Integers R)
+    (hpv : v (algebraMap R C (p : R)) < 1) : CharP (R ⧸ mI hv) p := by
+  have h0 : ((p : R ⧸ mI hv)) = 0 := by
+    rw [← map_natCast (res hv), res_eq_zero]; exact hpv
+  exact (CharP.charP_iff_prime_eq_zero hp.out).2 h0
+
+theorem idem_eq_zero (hv : v.Integers R) {n : Type} [Fintype n] [DecidableEq n]
+    (e : Matrix n n R) (he : e * e = e) (hm : ∀ a b, e a b ∈ mI hv) : e = 0 := by
+  have hmap : e.map (res hv) = 0 := by
+    ext a b; simpa [Ideal.Quotient.eq_zero_iff_mem] using hm a b
+  have hdet : IsUnit (1 - e).det := by
+    apply isUnit_of_not_mem hv
+    intro h
+    have h1 : res hv (1 - e).det = 0 := Ideal.Quotient.eq_zero_iff_mem.2 h
+    rw [RingHom.map_det, map_sub, map_one, RingHom.mapMatrix_apply, hmap, sub_zero,
+      Matrix.det_one] at h1
+    exact one_ne_zero h1
+  have hu : IsUnit (1 - e) := (Matrix.isUnit_iff_isUnit_det _).2 hdet
+  have : e * (1 - e) = 0 := by rw [mul_sub, mul_one, he, sub_self]
+  exact (hu.mul_left_eq_zero).1 this
+
+theorem root_eq (hv : v.Integers R) {n : ℕ} (hn : (n : R) ∉ mI hv) {x y : R} (hx : x ^ n = 1)
+    (hy : y ^ n = 1) (hxy : x - y ∈ mI hv) : x = y := by
+  have := isDomain hv
+  have hgeom := (Commute.all x y).geom_sum₂_mul n
+  rw [hx, hy, sub_self] at hgeom
+  rcases mul_eq_zero.1 hgeom with h | h
+  · exfalso
+    have hres : res hv (∑ i ∈ range n, x ^ i * y ^ (n - 1 - i)) = (n : R ⧸ mI hv) * res hv x ^ (n - 1) := by
+      have hxy' : res hv x = res hv y := by
+        rw [← sub_eq_zero, ← map_sub]; exact Ideal.Quotient.eq_zero_iff_mem.2 hxy
+      rw [map_sum]
+      simp only [map_mul, map_pow, ← hxy']
+      rw [Finset.sum_congr rfl (g := fun _ => res hv x ^ (n - 1)), Finset.sum_const, Finset.card_range,
+        nsmul_eq_mul]
+      intro i hi
+      rw [← pow_add]; congr 1; have := Finset.mem_range.1 hi; omega
+    have hn0 : n ≠ 0 := by rintro rfl; simp at hn
+    have hx0 : res hv x ≠ 0 := by
+      intro h0; have := congrArg (res hv) hx; rw [map_pow, h0, zero_pow hn0, map_one] at this
+      exact zero_ne_one this
+    have hnn : (n : R ⧸ mI hv) ≠ 0 := by
+      rw [← map_natCast (res hv)]; exact fun h0 => hn (Ideal.Quotient.eq_zero_iff_mem.1 h0)
+    rw [h, map_zero] at hres
+    exact mul_ne_zero hnn (pow_ne_zero _ hx0) hres.symm
+  · exact sub_eq_zero.1 h
+
+end ReciprocityTheory.PGsh.Up.FrobeniusGroupField
+end
+end
+
+section
+noncomputable section
+
+open Finset Matrix
+
+namespace ReciprocityTheory.PGsh.Up.FrobeniusGroupField
+
+variable {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [CommRing R] [Algebra R C]
+
+theorem smul_cancel (hv : v.Integers R) {n : Type} {e : Matrix n n R} (he : e ≠ 0) {x y : R}
+    (h : x • e = y • e) : x = y := by
+  obtain ⟨i, j, hij⟩ : ∃ i j, e i j ≠ 0 := by
+    by_contra hc
+    push_neg at hc
+    exact he (Matrix.ext hc)
+  have h1 := congrFun (congrFun h i) j
+  simp only [Matrix.smul_apply, smul_eq_mul] at h1
+  have h2 := congrArg (algebraMap R C) h1
+  rw [map_mul, map_mul] at h2
+  have hne : algebraMap R C (e i j) ≠ 0 := by
+    intro h0
+    rw [← map_zero (algebraMap R C)] at h0
+    exact hij (hv.hom_inj h0)
+  exact hv.hom_inj (mul_right_cancel₀ hne h2)
+
+theorem eig_pow_eq_one (hv : v.Integers R) {p : ℕ} [Fact p.Prime] {n : Type} [Fintype n] [DecidableEq n]
+    [Algebra ℤ_[p] R] (N : Matrix n n ℤ_[p]) (e : Matrix n n R) (he : e ≠ 0) (x : R)
+    (h : N.map (algebraMap ℤ_[p] R) * e = x • e) {m : ℕ} (hN : N ^ m = 1) : x ^ m = 1 := by
+  have hpow : ∀ k : ℕ, (N.map (algebraMap ℤ_[p] R)) ^ k * e = x ^ k • e := by
+    intro k
+    induction k with
+    | zero => simp
+    | succ k ih => rw [pow_succ, mul_assoc, h, Matrix.mul_smul, ih, smul_smul, ← pow_succ']
+  have hN' : (N.map (algebraMap ℤ_[p] R)) ^ m = 1 := by
+    have := congrArg (algebraMap ℤ_[p] R).mapMatrix hN
+    rwa [map_pow, map_one, RingHom.mapMatrix_apply] at this
+  have h1 := hpow m
+  rw [hN', one_mul] at h1
+  exact (smul_cancel hv he (by rw [one_smul]; exact h1)).symm
+
+theorem fermat (p : ℕ) [Fact p.Prime] (hv : v.Integers R) (hpv : v (algebraMap R C (p : R)) < 1)
+    [Algebra ℤ_[p] R] (z : ℤ_[p]) :
+    res hv (algebraMap ℤ_[p] R z) ^ p = res hv (algebraMap ℤ_[p] R z) := by
+  have hz : z ^ p - z ∈ Ideal.span {(p : ℤ_[p])} := by
+    rw [← PadicInt.maximalIdeal_eq_span_p, ← PadicInt.ker_toZMod, RingHom.mem_ker, map_sub, map_pow,
+      ZMod.pow_card, sub_self]
+  obtain ⟨w, hw⟩ := Ideal.mem_span_singleton'.mp hz
+  have hp0 : res hv (p : R) = 0 := by
+    rw [Ideal.Quotient.eq_zero_iff_mem]
+    exact hpv
+  have h0 : res hv (algebraMap ℤ_[p] R (z ^ p - z)) = 0 := by
+    rw [← hw, map_mul, map_mul, map_natCast (algebraMap ℤ_[p] R), hp0, mul_zero]
+  rw [map_sub, map_sub, map_pow, map_pow, sub_eq_zero] at h0
+  exact h0
+
+theorem proj (p : ℕ) [Fact p.Prime] (hv : v.Integers R) (hpv : v (algebraMap R C (p : R)) < 1)
+    [Algebra ℤ_[p] R] {n : Type} [Fintype n] [DecidableEq n] {ι : Type} [Fintype ι] [DecidableEq ι]
+    {G : Type} [CommGroup G] [Fintype G] (hG : IsUnit (Fintype.card G : R))
+    (A : G → Matrix n n ℤ_[p]) (hA : ∀ γ γ', A (γ * γ') = A γ * A γ') (hA1 : A 1 = 1)
+    (εT : ι → Matrix n n R) (horth : ∀ i j, εT i * εT j = if i = j then εT i else 0)
+    (hsum : ∑ i, εT i = 1) (ψ : ι → G → R)
+    (heig : ∀ j γ, (A γ).map (algebraMap ℤ_[p] R) * εT j = ψ j γ • εT j)
+    (hsep : ∀ j k, εT j ≠ 0 → εT k ≠ 0 → j ≠ k → ∃ γ, ψ j γ ≠ ψ k γ)
+    (i : ι) (hi : εT i ≠ 0) : ∃ j, εT j ≠ 0 ∧ ∀ γ, ψ j γ = ψ i γ ^ p := by
+  classical
+  have hApow : ∀ γ (k : ℕ), A (γ ^ k) = A γ ^ k := by
+    intro γ k
+    induction k with
+    | zero => simp [hA1]
+    | succ k ih => rw [pow_succ, hA, ih, pow_succ]
+  have hmul : ∀ j, εT j ≠ 0 → ∀ γ γ', ψ j (γ * γ') = ψ j γ * ψ j γ' := by
+    intro j hj γ γ'
+    apply smul_cancel hv hj
+    have e1 := heig j (γ * γ')
+    rw [hA, Matrix.map_mul, Matrix.mul_assoc, heig j γ', Matrix.mul_smul, heig j γ, smul_smul] at e1
+    rw [← e1, mul_comm (ψ j γ')]
+  have hn1 : 1 ≤ Fintype.card G := Fintype.card_pos
+  have hpowG : ∀ j, εT j ≠ 0 → ∀ γ, ψ j γ ^ Fintype.card G = 1 := fun j hj γ =>
+    eig_pow_eq_one hv (A γ) (εT j) hj (ψ j γ) (heig j γ) (by rw [← hApow, pow_card_eq_one, hA1])
+  have hiv : ∀ j, εT j ≠ 0 → ∀ γ, ψ j γ ^ (Fintype.card G - 1) * ψ j γ = 1 := by
+    intro j hj γ
+    rw [← pow_succ, Nat.sub_add_cancel hn1, hpowG j hj γ]
+  have hsum0 : ∀ χ : G → R, (∀ γ γ', χ (γ * γ') = χ γ * χ γ') → ∀ γ0, χ γ0 ≠ 1 →
+      ∑ γ, χ γ = 0 := by
+    intro χ hχ γ0 h0
+    have e : ∑ γ, χ γ = χ γ0 * ∑ γ, χ γ := by
+      rw [Finset.mul_sum]
+      exact (Fintype.sum_bijective (γ0 * ·) (Group.mulLeft_bijective γ0) (fun γ => χ γ0 * χ γ) χ
+        (fun γ => (hχ γ0 γ).symm)).symm
+    have e2 : (1 - χ γ0) * ∑ γ, χ γ = 0 := by rw [sub_mul, one_mul, ← e, sub_self]
+    have e3 := congrArg (algebraMap R C) e2
+    rw [map_mul, map_zero] at e3
+    rcases mul_eq_zero.mp e3 with h | h
+    · exact absurd (sub_eq_zero.mp (hv.hom_inj (h.trans (map_zero _).symm))).symm h0
+    · exact hv.hom_inj (h.trans (map_zero _).symm)
+  have hPe : ∀ (c : G → R) j, (∑ γ, c γ • (A γ).map (algebraMap ℤ_[p] R)) * εT j =
+      (∑ γ, c γ * ψ j γ) • εT j := by
+    intro c j
+    rw [Finset.sum_mul, Finset.sum_smul]
+    refine Finset.sum_congr rfl fun γ _ => ?_
+    rw [Matrix.smul_mul, heig, smul_smul]
+  have hdecomp : ∀ M : Matrix n n R, M = ∑ j, M * εT j := fun M => by
+    rw [← Finset.mul_sum, hsum, Matrix.mul_one]
+  by_contra hcon
+  push_neg at hcon
+  have hP'0 : (∑ γ, (ψ i γ ^ (Fintype.card G - 1)) ^ p • (A γ).map (algebraMap ℤ_[p] R)) = 0 := by
+    rw [hdecomp (∑ γ, (ψ i γ ^ (Fintype.card G - 1)) ^ p • (A γ).map (algebraMap ℤ_[p] R))]
+    refine Finset.sum_eq_zero fun j _ => ?_
+    by_cases hj : εT j = 0
+    · rw [hj, Matrix.mul_zero]
+    · rw [hPe (fun γ => (ψ i γ ^ (Fintype.card G - 1)) ^ p) j]
+      obtain ⟨γ0, hγ0⟩ := hcon j hj
+      have hz := hsum0 (fun γ => (ψ i γ ^ (Fintype.card G - 1)) ^ p * ψ j γ)
+        (fun γ γ' => by simp only [hmul i hi, hmul j hj]; ring) γ0 (by
+          intro h1
+          apply hγ0
+          try simp only at h1
+          calc ψ j γ0 = (ψ i γ0 ^ (Fintype.card G - 1) * ψ i γ0) ^ p * ψ j γ0 := by
+                rw [hiv i hi, one_pow, one_mul]
+            _ = ((ψ i γ0 ^ (Fintype.card G - 1)) ^ p * ψ j γ0) * ψ i γ0 ^ p := by ring
+            _ = ψ i γ0 ^ p := by rw [h1, one_mul])
+      try simp only at hz
+      rw [hz, zero_smul]
+  have hPi : (∑ γ, ψ i γ ^ (Fintype.card G - 1) • (A γ).map (algebraMap ℤ_[p] R)) =
+      (Fintype.card G : R) • εT i := by
+    rw [hdecomp (∑ γ, ψ i γ ^ (Fintype.card G - 1) • (A γ).map (algebraMap ℤ_[p] R)),
+      Finset.sum_eq_single i]
+    · rw [hPe (fun γ => ψ i γ ^ (Fintype.card G - 1)) i]
+      simp only [hiv i hi, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
+    · intro j _ hji
+      by_cases hj : εT j = 0
+      · rw [hj, Matrix.mul_zero]
+      · rw [hPe (fun γ => ψ i γ ^ (Fintype.card G - 1)) j]
+        obtain ⟨γ0, hγ0⟩ := hsep j i hj hi hji
+        have hz := hsum0 (fun γ => ψ i γ ^ (Fintype.card G - 1) * ψ j γ)
+          (fun γ γ' => by simp only [hmul i hi, hmul j hj]; ring) γ0 (by
+            intro h1
+            apply hγ0
+            try simp only at h1
+            calc ψ j γ0 = (ψ i γ0 ^ (Fintype.card G - 1) * ψ i γ0) * ψ j γ0 := by
+                  rw [hiv i hi, one_mul]
+              _ = (ψ i γ0 ^ (Fintype.card G - 1) * ψ j γ0) * ψ i γ0 := by ring
+              _ = ψ i γ0 := by rw [h1, one_mul])
+        try simp only at hz
+        rw [hz, zero_smul]
+    · simp
+  obtain ⟨a, b, hab⟩ : ∃ a b, εT i a b ∉ mI hv := by
+    by_contra hc
+    push_neg at hc
+    exact hi (idem_eq_zero hv (εT i) (by rw [horth, if_pos rfl]) hc)
+  haveI := charP p hv hpv
+  have hfrob : res hv ((∑ γ, (ψ i γ ^ (Fintype.card G - 1)) ^ p •
+      (A γ).map (algebraMap ℤ_[p] R)) a b) =
+      res hv ((∑ γ, ψ i γ ^ (Fintype.card G - 1) • (A γ).map (algebraMap ℤ_[p] R)) a b) ^ p := by
+    simp only [Matrix.sum_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul, map_sum, map_mul,
+      map_pow]
+    rw [sum_pow_char]
+    refine Finset.sum_congr rfl fun γ _ => ?_
+    rw [mul_pow, fermat p hv hpv]
+  have hres_n : res hv (Fintype.card G : R) ≠ 0 := by
+    intro h0
+    have h1 : IsUnit (res hv (Fintype.card G : R)) := hG.map (res hv)
+    rw [h0] at h1
+    exact not_isUnit_zero h1
+  have hres_e : res hv (εT i a b) ≠ 0 := by
+    intro h0
+    exact hab (Ideal.Quotient.eq_zero_iff_mem.mp h0)
+  rw [hP'0, hPi] at hfrob
+  simp only [Matrix.zero_apply, map_zero, Matrix.smul_apply, smul_eq_mul, map_mul] at hfrob
+  exact pow_ne_zero p (mul_ne_zero hres_n hres_e) hfrob.symm
+
+end ReciprocityTheory.PGsh.Up.FrobeniusGroupField
+end
+end
+
+section
+noncomputable section
+
+open Polynomial IsLocalRing
+
+namespace ReciprocityTheory.PGsh.Up.FrobeniusGroupField
+
+variable {p : ℕ} [hp : Fact p.Prime]
+
+theorem smul_top_self (k : ℕ) :
+    ((maximalIdeal ℤ_[p]) ^ k • ⊤ : Submodule ℤ_[p] ℤ_[p]) = (maximalIdeal ℤ_[p]) ^ k := by
+  rw [smul_eq_mul, Ideal.mul_top]
+
+theorem mem_pow_smul_top_iff {M : Type} [AddCommGroup M] [Module ℤ_[p] M] {ι : Type} [Fintype ι]
+    (b : Module.Basis ι ℤ_[p] M) (k : ℕ) (x : M) :
+    x ∈ ((maximalIdeal ℤ_[p]) ^ k • ⊤ : Submodule ℤ_[p] M) ↔
+      ∀ i, b.repr x i ∈ (maximalIdeal ℤ_[p]) ^ k := by
+  constructor
+  · intro hx i
+    have hle : ((maximalIdeal ℤ_[p]) ^ k • ⊤ : Submodule ℤ_[p] M) ≤
+        Submodule.comap (b.coord i) ((maximalIdeal ℤ_[p]) ^ k) :=
+      Submodule.smul_le.2 fun r hr m _ => by
+        rw [Submodule.mem_comap, map_smul, smul_eq_mul]
+        exact Ideal.mul_mem_right _ _ hr
+    exact hle hx
+  · intro h
+    rw [← b.sum_repr x]
+    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem_smul (h i) Submodule.mem_top
+
+theorem isPrecomplete_of_basis {M : Type} [AddCommGroup M] [Module ℤ_[p] M] {ι : Type} [Fintype ι]
+    (b : Module.Basis ι ℤ_[p] M) : IsPrecomplete (maximalIdeal ℤ_[p]) M := by
+  rw [isPrecomplete_iff]
+  intro F hF
+  have hP := (inferInstance : IsPrecomplete (maximalIdeal ℤ_[p]) ℤ_[p])
+  rw [isPrecomplete_iff] at hP
+  have hc : ∀ i, ∃ L : ℤ_[p], ∀ k, b.repr (F k) i ≡ L
+      [SMOD ((maximalIdeal ℤ_[p]) ^ k • ⊤ : Submodule ℤ_[p] ℤ_[p])] := by
+    intro i
+    refine hP (fun k => b.repr (F k) i) fun {m n} hmn => ?_
+    have := hF hmn
+    rw [SModEq.sub_mem, mem_pow_smul_top_iff b] at this
+    rw [SModEq.sub_mem, smul_top_self]
+    simpa using this i
+  choose L hL using hc
+  refine ⟨∑ i, L i • b i, fun k => ?_⟩
+  rw [SModEq.sub_mem, mem_pow_smul_top_iff b]
+  intro i
+  have := hL i k
+  rw [SModEq.sub_mem, smul_top_self] at this
+  have hr : b.repr (∑ j, L j • b j) i = L i := by
+    have h := congrFun (b.equivFun.apply_symm_apply L) i
+    rwa [Module.Basis.equivFun_symm_apply, Module.Basis.equivFun_apply] at h
+  rw [map_sub, Finsupp.sub_apply, hr]
+  exact this
+
+theorem span_p_eq (S : Type) [CommRing S] [Algebra ℤ_[p] S] :
+    (maximalIdeal ℤ_[p]).map (algebraMap ℤ_[p] S) = Ideal.span {(p : S)} := by
+  rw [PadicInt.maximalIdeal_eq_span_p, Ideal.map_span, Set.image_singleton, map_natCast]
+
+theorem isAdicComplete_of_basis (S : Type) [CommRing S] [Algebra ℤ_[p] S] {ι : Type} [Fintype ι]
+    (b : Module.Basis ι ℤ_[p] S) : IsAdicComplete (Ideal.span {(p : S)}) S := by
+  have : Module.Finite ℤ_[p] S := Module.Finite.of_basis b
+  have hH : IsHausdorff (maximalIdeal ℤ_[p]) S := inferInstance
+  have hP : IsPrecomplete (maximalIdeal ℤ_[p]) S := isPrecomplete_of_basis b
+  rw [← span_p_eq S]
+  exact { toIsHausdorff := IsHausdorff.map_algebraMap_iff.2 hH
+          toIsPrecomplete := IsPrecomplete.map_algebraMap_iff.2 hP }
+
+theorem hensel (f : ℤ_[p][X]) (hf : f.Monic) {m : ℕ} (hm0 : 0 < m) (hmp : ¬ p ∣ m) (Q0 : ℤ_[p][X])
+    (h0 : ∃ K : ℤ_[p][X], AdjoinRoot.mk f (Q0 ^ m - 1) = (p : AdjoinRoot f) * AdjoinRoot.mk f K) :
+    ∃ Q K : ℤ_[p][X], f ∣ Q ^ m - 1 ∧
+      AdjoinRoot.mk f (Q - Q0) = (p : AdjoinRoot f) * AdjoinRoot.mk f K := by
+  let S := AdjoinRoot f
+  let J : Ideal S := Ideal.span {(p : S)}
+  have : IsAdicComplete J S := isAdicComplete_of_basis S (AdjoinRoot.powerBasis' hf).basis
+  have hHen : HenselianRing S J := inferInstance
+  obtain ⟨K0, hK0⟩ := h0
+  set a0 : S := AdjoinRoot.mk f Q0
+  have ha0 : a0 ^ m - 1 ∈ J := by
+    have : a0 ^ m - 1 = AdjoinRoot.mk f (Q0 ^ m - 1) := by simp [a0]
+    rw [this, hK0]
+    exact Ideal.mul_mem_right _ _ (Ideal.subset_span rfl)
+  have hmon : (X ^ m - C (1 : S)).Monic := monic_X_pow_sub_C _ hm0.ne'
+  have hev : (X ^ m - C (1 : S)).eval a0 ∈ J := by simpa using ha0
+  have hu0 : IsUnit (Ideal.Quotient.mk J a0) := by
+    have h1 : (Ideal.Quotient.mk J a0) ^ m = 1 := by
+      rw [← map_pow, ← sub_eq_zero, ← map_one (Ideal.Quotient.mk J), ← map_sub]
+      exact Ideal.Quotient.eq_zero_iff_mem.2 ha0
+    exact IsUnit.of_pow_eq_one h1 hm0.ne'
+  have hum : IsUnit (m : S ⧸ J) := by
+    have hcop : Nat.Coprime m p :=
+      Nat.Coprime.symm ((Nat.Prime.coprime_iff_not_dvd hp.out).2 hmp)
+    have hg := Nat.gcd_eq_gcd_ab m p
+    rw [hcop, Nat.cast_one] at hg
+    have hp0 : (p : S ⧸ J) = 0 := by
+      rw [← map_natCast (Ideal.Quotient.mk J)]
+      exact Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.subset_span rfl)
+    refine IsUnit.of_mul_eq_one ((Nat.gcdA m p : ℤ) : S ⧸ J) ?_
+    have := congrArg (fun z : ℤ => (z : S ⧸ J)) hg
+    simp only [Int.cast_one, Int.cast_add, Int.cast_mul, Int.cast_natCast, hp0, zero_mul,
+      add_zero] at this
+    exact this.symm
+  have hder : IsUnit (Ideal.Quotient.mk J ((X ^ m - C (1 : S)).derivative.eval a0)) := by
+    simp only [derivative_sub, derivative_X_pow, derivative_C, sub_zero, eval_mul, eval_natCast,
+      eval_pow, eval_X, map_mul, map_pow, map_natCast]
+    exact hum.mul (hu0.pow _)
+  obtain ⟨a, ha, haJ⟩ := hHen.is_henselian _ hmon a0 hev hder
+  obtain ⟨Q, rfl⟩ := AdjoinRoot.mk_surjective a
+  refine ⟨Q, ?_⟩
+  obtain ⟨s, hs⟩ := Ideal.mem_span_singleton'.1 haJ
+  obtain ⟨K, rfl⟩ := AdjoinRoot.mk_surjective s
+  refine ⟨K, ?_, ?_⟩
+  · rw [← AdjoinRoot.mk_eq_zero, map_sub, map_pow, map_one]
+    simpa [IsRoot, sub_eq_zero] using ha
+  · rw [map_sub, ← hs, mul_comm]
+
+theorem finite_quot (f : ℤ_[p][X]) (hf : f.Monic) :
+    Finite (AdjoinRoot f ⧸ Ideal.span {(p : AdjoinRoot f)}) := by
+  have : NeZero p := ⟨hp.out.ne_zero⟩
+  let S := AdjoinRoot f
+  let J : Ideal S := Ideal.span {(p : S)}
+  let b := (AdjoinRoot.powerBasis' hf).basis
+  let Φ : (Fin (AdjoinRoot.powerBasis' hf).dim → ZMod p) → S ⧸ J := fun c =>
+    Ideal.Quotient.mk J (∑ i, (((c i).val : ℕ) : ℤ_[p]) • b i)
+  refine Finite.of_surjective Φ fun y => ?_
+  obtain ⟨s, rfl⟩ := Ideal.Quotient.mk_surjective y
+  refine ⟨fun i => PadicInt.toZMod (b.repr s i), ?_⟩
+  simp only [Φ]
+  rw [Ideal.Quotient.eq]
+  have key : (∑ i, (((PadicInt.toZMod (b.repr s i)).val : ℕ) : ℤ_[p]) • b i) - s =
+      ∑ i, ((((PadicInt.toZMod (b.repr s i)).val : ℕ) : ℤ_[p]) - b.repr s i) • b i := by
+    simp only [sub_smul, Finset.sum_sub_distrib, b.sum_repr]
+  rw [key]
+  refine Ideal.sum_mem _ fun i _ => ?_
+  have hz := PadicInt.toZMod_spec (b.repr s i)
+  rw [ZMod.cast_eq_val, PadicInt.maximalIdeal_eq_span_p, Ideal.mem_span_singleton'] at hz
+  obtain ⟨w, hw⟩ := hz
+  have : (((PadicInt.toZMod (b.repr s i)).val : ℕ) : ℤ_[p]) - b.repr s i = -(w * p) := by
+    rw [hw]; ring
+  rw [this, neg_smul, mul_comm, mul_smul, Nat.cast_smul_eq_nsmul, nsmul_eq_mul]
+  exact J.neg_mem (Ideal.mul_mem_right _ _ (Ideal.subset_span rfl))
+
+theorem exists_pow_idem {S : Type} [Monoid S] [Finite S] (x : S) :
+    ∃ M : ℕ, 0 < M ∧ x ^ (2 * M) = x ^ M := by
+  obtain ⟨a, b, hab, he⟩ := Finite.exists_ne_map_eq_of_infinite (fun n : ℕ => x ^ n)
+  wlog h : a < b generalizing a b
+  · exact this b a hab.symm he.symm (lt_of_le_of_ne (not_lt.1 h) hab.symm)
+  set d := b - a with hd
+  have hd0 : 0 < d := by omega
+  have hstep : ∀ n, a ≤ n → x ^ (n + d) = x ^ n := by
+    intro n hn
+    have : n + d = (n - a) + b := by omega
+    rw [this, pow_add, ← he, ← pow_add]; congr 1; omega
+  have hk : ∀ k n, a ≤ n → x ^ (n + k * d) = x ^ n := by
+    intro k
+    induction k with
+    | zero => intro n _; simp
+    | succ k ih =>
+      intro n hn
+      rw [show n + (k + 1) * d = (n + k * d) + d by ring, hstep _ (by omega), ih n hn]
+  refine ⟨d * (a + 1), Nat.mul_pos hd0 (Nat.succ_pos a), ?_⟩
+  rw [show 2 * (d * (a + 1)) = d * (a + 1) + (a + 1) * d by ring]
+  exact hk _ _ (by nlinarith)
+
+end ReciprocityTheory.PGsh.Up.FrobeniusGroupField
+end
+end
+
+section
+noncomputable section
+
+open Finset Matrix Polynomial
+
+namespace ReciprocityTheory.PGsh.Up.FrobeniusGroupField
+
+variable {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [CommRing R] [Algebra R C]
+
+theorem sg_algebraMap (hv : v.Integers R) {p : ℕ} [Fact p.Prime]
+    [Algebra ℤ_[p] R] {n : Type} [Fintype n] [DecidableEq n] {ι : Type}
+    {O : Type} [CommRing O] [Algebra ℤ_[p] O] (ρ : O →ₐ[ℤ_[p]] Matrix n n ℤ_[p])
+    (εT : ι → Matrix n n R) (sg : ι → O →+* R)
+    (heig : ∀ a j, (ρ a).map (algebraMap ℤ_[p] R) * εT j = sg j a • εT j) (j : ι) (hj : εT j ≠ 0)
+    (z : ℤ_[p]) : sg j (algebraMap ℤ_[p] O z) = algebraMap ℤ_[p] R z := by
+  haveI : IsDomain R := hv.hom_inj.isDomain (algebraMap R C)
+  have hm : (ρ (algebraMap ℤ_[p] O z)).map (algebraMap ℤ_[p] R) = algebraMap ℤ_[p] (Matrix n n R) z := by
+    ext i k
+    rw [AlgHom.commutes, Matrix.map_apply, Matrix.algebraMap_matrix_apply, Matrix.algebraMap_matrix_apply]
+    split_ifs <;> simp
+  have h := heig (algebraMap ℤ_[p] O z) j
+  rw [hm, Algebra.algebraMap_eq_smul_one, smul_mul_assoc, one_mul, ← algebraMap_smul R z (εT j)] at h
+  have h2 : (algebraMap ℤ_[p] R z - sg j (algebraMap ℤ_[p] O z)) • εT j = 0 := by
+    rw [sub_smul, h, sub_self]
+  rcases smul_eq_zero.mp h2 with h3 | h3
+  · exact (sub_eq_zero.mp h3).symm
+  · exact absurd h3 hj
+
+theorem sg_aeval (hv : v.Integers R) {p : ℕ} [Fact p.Prime]
+    [Algebra ℤ_[p] R] {n : Type} [Fintype n] [DecidableEq n] {ι : Type}
+    {O : Type} [CommRing O] [Algebra ℤ_[p] O] (ρ : O →ₐ[ℤ_[p]] Matrix n n ℤ_[p])
+    (εT : ι → Matrix n n R) (sg : ι → O →+* R)
+    (heig : ∀ a j, (ρ a).map (algebraMap ℤ_[p] R) * εT j = sg j a • εT j) (j : ι) (hj : εT j ≠ 0)
+    (a : O) (Q : ℤ_[p][X]) : sg j (aeval a Q) = aeval (sg j a) Q := by
+  have hc : (sg j).comp (algebraMap ℤ_[p] O) = algebraMap ℤ_[p] R :=
+    RingHom.ext fun z => sg_algebraMap hv ρ εT sg heig j hj z
+  rw [Polynomial.aeval_def, Polynomial.aeval_def, Polynomial.hom_eval₂, hc]
+
+theorem seed (p : ℕ) [Fact p.Prime] (hv : v.Integers R) (hpv : v (algebraMap R C (p : R)) < 1)
+    [Algebra ℤ_[p] R] {n : Type} [Fintype n] [DecidableEq n] {ι : Type}
+    {O : Type} [CommRing O] [Algebra ℤ_[p] O] (ρ : O →ₐ[ℤ_[p]] Matrix n n ℤ_[p])
+    (εT : ι → Matrix n n R) (sg : ι → O →+* R)
+    (heig : ∀ a j, (ρ a).map (algebraMap ℤ_[p] R) * εT j = sg j a • εT j) (a : O) (c : ℤ) :
+    ∃ (b : O) (m s : ℕ), 0 < m ∧ ¬ p ∣ m ∧ ρ b ^ m = 1 ∧
+      ∀ j, εT j ≠ 0 → res hv (sg j a + c) ≠ 0 → res hv (sg j b) = res hv (sg j a + c) ^ p ^ s := by
+  classical
+  have hpr : p.Prime := Fact.out
+  have := isDomain hv
+  let _ : Field (R ⧸ mI hv) := instField hv
+  have hch : CharP (R ⧸ mI hv) p := charP p hv hpv
+  set f : ℤ_[p][X] := (ρ a).charpoly with hfdef
+  have hf : f.Monic := Matrix.charpoly_monic _
+  have hfa : aeval (ρ a) f = 0 := Matrix.aeval_self_charpoly _
+  let S := AdjoinRoot f
+  let J : Ideal S := Ideal.span {(p : S)}
+  have : Finite (S ⧸ J) := finite_quot f hf
+  let r : S := AdjoinRoot.root f + (c : S)
+  let xq : S ⧸ J := Ideal.Quotient.mk J r
+  obtain ⟨M, hM0, hM⟩ := exists_pow_idem xq
+  obtain ⟨N, rfl⟩ : ∃ N, M = N + 1 := ⟨M - 1, by omega⟩
+  let uq : S ⧸ J := xq ^ (N + 1 + 1) + 1 - xq ^ (N + 1)
+  have huq : IsUnit uq := by
+    refine IsUnit.of_mul_eq_one (xq ^ N * xq ^ (N + 1) + 1 - xq ^ (N + 1)) ?_
+    have he : xq ^ (N + 1) * xq ^ (N + 1) = xq ^ (N + 1) := by rw [← pow_add, ← hM]; ring_nf
+    have hx : xq * xq ^ N = xq ^ (N + 1) := by ring
+    simp only [uq]
+    linear_combination (xq * xq ^ N - xq - xq ^ N + 2) * he + xq ^ (N + 1) * hx
+
+  have hU : Nat.card (S ⧸ J)ˣ ≠ 0 := Nat.card_pos.ne'
+  obtain ⟨s, m0, hm0p, hUeq⟩ := Nat.exists_eq_pow_mul_and_not_dvd hU p hpr.one_lt.ne'
+  have hm0 : 0 < m0 := Nat.pos_of_ne_zero (by rintro rfl; simp at hUeq; exact hU hUeq)
+  have hw : (uq ^ p ^ s) ^ m0 = 1 := by
+    have h1 := pow_card_eq_one' (x := huq.unit)
+    rw [hUeq, pow_mul] at h1
+    have := congrArg (fun u : (S ⧸ J)ˣ => (u : S ⧸ J)) h1
+    simpa using this
+
+  let Q0 : ℤ_[p][X] := ((X + (c : ℤ_[p][X])) ^ (N + 1 + 1) + 1 - (X + (c : ℤ_[p][X])) ^ (N + 1)) ^ p ^ s
+  have hQ0 : AdjoinRoot.mk f Q0 = (r ^ (N + 1 + 1) + 1 - r ^ (N + 1)) ^ p ^ s := by
+    simp [Q0, r]
+  have hH0 : ∃ K : ℤ_[p][X], AdjoinRoot.mk f (Q0 ^ m0 - 1) = (p : S) * AdjoinRoot.mk f K := by
+    have hmem : AdjoinRoot.mk f (Q0 ^ m0 - 1) ∈ J := by
+      have e1 : AdjoinRoot.mk f (Q0 ^ m0 - 1) = ((r ^ (N + 1 + 1) + 1 - r ^ (N + 1)) ^ p ^ s) ^ m0 - 1 := by
+        rw [map_sub, map_pow, hQ0, map_one]
+      rw [e1, ← Ideal.Quotient.eq_zero_iff_mem]
+      simp only [map_pow, map_add, map_sub, map_one]
+      rw [sub_eq_zero]
+      exact hw
+    obtain ⟨t, ht⟩ := Ideal.mem_span_singleton'.1 hmem
+    obtain ⟨K, rfl⟩ := AdjoinRoot.mk_surjective t
+    exact ⟨K, by rw [← ht, mul_comm]⟩
+  obtain ⟨Q, K, hQdvd, hQK⟩ := hensel f hf hm0 hm0p Q0 hH0
+  refine ⟨aeval a Q, m0, s, hm0, hm0p, ?_, ?_⟩
+  · obtain ⟨g, hg⟩ := hQdvd
+    have := congrArg (aeval (ρ a)) hg
+    rw [map_mul, hfa, zero_mul, map_sub, map_pow, map_one, sub_eq_zero] at this
+    rw [← aeval_algHom_apply, this]
+  · intro j hj hres
+
+    have hfj : f.eval₂ (algebraMap ℤ_[p] R) (sg j a) = 0 := by
+      have h1 := heig (aeval a f) j
+      rw [← aeval_algHom_apply, hfa, Matrix.map_zero _ (map_zero _), Matrix.zero_mul,
+        sg_aeval hv ρ εT sg heig j hj] at h1
+      have := smul_cancel hv hj (h1.symm.trans (zero_smul R (εT j)).symm)
+      rwa [aeval_def] at this
+    let ev : S →+* R := AdjoinRoot.lift (algebraMap ℤ_[p] R) (sg j a) hfj
+    have hevJ : ∀ t ∈ J, res hv (ev t) = 0 := by
+      intro t ht
+      obtain ⟨w, rfl⟩ := Ideal.mem_span_singleton'.1 ht
+      rw [map_mul, map_natCast, map_mul, map_natCast]
+      have : (p : R ⧸ mI hv) = 0 := by
+        rw [← map_natCast (res hv)]; exact (res_eq_zero hv _).2 hpv
+      rw [this, mul_zero]
+    have hevr : ev r = sg j a + c := by
+      show ev (AdjoinRoot.root f + (c : S)) = _
+      rw [map_add, map_intCast]
+      simp only [ev]
+      rw [AdjoinRoot.lift_root]
+    have hb : sg j (aeval a Q) = ev (AdjoinRoot.mk f Q) := by
+      rw [sg_aeval hv ρ εT sg heig j hj, AdjoinRoot.lift_mk, aeval_def]
+    set x := res hv (sg j a + c) with hxdef
+    have hxM : x ^ (N + 1) = 1 := by
+      have hmem : r ^ (2 * (N + 1)) - r ^ (N + 1) ∈ J := by
+        rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, map_pow, map_pow, sub_eq_zero]
+        exact hM
+      have h0 := hevJ _ hmem
+      rw [map_sub, map_pow, map_pow, hevr, map_sub, map_pow, map_pow, ← hxdef, sub_eq_zero,
+        pow_mul', sq] at h0
+      have hx0 : x ^ (N + 1) ≠ 0 := pow_ne_zero _ hres
+      exact mul_left_cancel₀ hx0 (h0.trans (mul_one _).symm)
+    have hdiff : AdjoinRoot.mk f Q - AdjoinRoot.mk f Q0 ∈ J := by
+      rw [← map_sub, hQK]
+      exact Ideal.mul_mem_right _ _ (Ideal.subset_span rfl)
+    have h2 := hevJ _ hdiff
+    rw [map_sub, map_sub, sub_eq_zero, hQ0] at h2
+    have hT : ∀ {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) (z : A),
+        φ ((z ^ (N + 1 + 1) + 1 - z ^ (N + 1)) ^ p ^ s) =
+          (φ z ^ (N + 1 + 1) + 1 - φ z ^ (N + 1)) ^ p ^ s := by
+      intros; simp
+    rw [hb, h2, hT, hT, hevr, ← hxdef, pow_succ x (N + 1), hxM, one_mul, add_sub_cancel_right]
+
+theorem pair (p : ℕ) [Fact p.Prime] (hp2 : p ≠ 2) (hv : v.Integers R)
+    (hpv : v (algebraMap R C (p : R)) < 1)
+    [Algebra ℤ_[p] R] {n : Type} [Fintype n] [DecidableEq n] {ι : Type}
+    {O : Type} [CommRing O] [Algebra ℤ_[p] O] (ρ : O →ₐ[ℤ_[p]] Matrix n n ℤ_[p])
+    (εT : ι → Matrix n n R) (sg : ι → O →+* R)
+    (heig : ∀ a j, (ρ a).map (algebraMap ℤ_[p] R) * εT j = sg j a • εT j) (a : O) (t : ℕ)
+    (i j : ι) (hi : εT i ≠ 0) (hj : εT j ≠ 0) (h : res hv (sg j a) ≠ res hv (sg i a) ^ p ^ t) :
+    ∃ (b : O) (m : ℕ), 0 < m ∧ ¬ p ∣ m ∧ ρ b ^ m = 1 ∧
+      res hv (sg j b) ≠ res hv (sg i b) ^ p ^ t := by
+  have hpr : p.Prime := Fact.out
+  let _ : Field (R ⧸ mI hv) := instField hv
+  have hch : CharP (R ⧸ mI hv) p := charP p hv hpv
+  set yi := res hv (sg i a)
+  set yj := res hv (sg j a)
+  have h10 : (1 : R ⧸ mI hv) ≠ 0 := one_ne_zero
+  have h20 : (2 : R ⧸ mI hv) ≠ 0 := by
+    intro h0
+    have := (CharP.cast_eq_zero_iff (R ⧸ mI hv) p 2).1 (by exact_mod_cast h0)
+    exact hp2 ((Nat.prime_dvd_prime_iff_eq hpr Nat.prime_two).1 this)
+  have hc : ∃ c : ℤ, yi + (c : R ⧸ mI hv) ≠ 0 ∧ yj + (c : R ⧸ mI hv) ≠ 0 := by
+    by_contra hno
+    push Not at hno
+    have h0 := hno 0
+    have h1 := hno 1
+    have h2 := hno 2
+    simp only [Int.cast_zero, Int.cast_one, Int.cast_ofNat, add_zero] at h0 h1 h2
+    by_cases a0 : yi = 0
+    · have b1 := h1 (by rw [a0, zero_add]; exact h10)
+      have b2 := h2 (by rw [a0, zero_add]; exact h20)
+      exact h10 (by linear_combination b2 - b1)
+    · have b0 := h0 a0
+      by_cases a1 : yi + 1 = 0
+      · have b2 := h2 (fun e => h10 (by linear_combination e - a1))
+        exact h20 (by linear_combination b2 - b0)
+      · have b1 := h1 a1
+        exact h10 (by linear_combination b1 - b0)
+  obtain ⟨c, hci, hcj⟩ := hc
+  obtain ⟨b, m, s, hm0, hmp, hbm, hbres⟩ := seed p hv hpv ρ εT sg heig a c
+  refine ⟨b, m, hm0, hmp, hbm, fun heq => h ?_⟩
+  have hri : res hv (sg i a + c) = yi + c := by rw [map_add, map_intCast]
+  have hrj : res hv (sg j a + c) = yj + c := by rw [map_add, map_intCast]
+  rw [hbres j hj (by rwa [hrj]), hbres i hi (by rwa [hri]), hri, hrj, ← pow_mul, mul_comm,
+    pow_mul] at heq
+  have hcfix : ∀ k : ℕ, ((c : R ⧸ mI hv)) ^ p ^ k = c := by
+    intro k
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      rw [pow_succ, pow_mul, ih]
+      have := map_intCast (frobenius (R ⧸ mI hv) p) c
+      rwa [frobenius_def] at this
+  have hrhs : (yi + c) ^ p ^ t = yi ^ p ^ t + c := by rw [add_pow_char_pow, hcfix]
+  rw [hrhs] at heq
+  have hsub : (yj + c - (yi ^ p ^ t + c)) ^ p ^ s = 0 := by
+    rw [sub_pow_char_pow, heq, sub_self]
+  have := pow_eq_zero_iff (pow_ne_zero s hpr.ne_zero) |>.1 hsub
+  linear_combination this
+
+end ReciprocityTheory.PGsh.Up.FrobeniusGroupField
+end
+end
+
+section
 noncomputable section
 
 open Finset Matrix
@@ -198,3 +851,5 @@ theorem embeddingSeparatingGroup : EmbeddingSeparatingGroupStatement := by
     exact ⟨gen none, by rw [hgen]; exact hQ none i hi⟩
 
 end ReciprocityTheory.PGsh.Up
+end
+end

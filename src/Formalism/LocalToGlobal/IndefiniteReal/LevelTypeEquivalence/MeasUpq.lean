@@ -1,9 +1,32 @@
 import Formalism.LocalRingCardinality.SpanPowerMembership.HaarDensityNeZero
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HaarScaling.MapEqSelfOfIterate
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.UnimodGA
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.MinfLev
+import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.BaseSt
+import Formalism.LocalToGlobal.IndefiniteReal.HaarTransfer.MinfUnique
 import Formalism.LocalToGlobal.IndefiniteReal.HaarTransfer.MinfUniqueP
 
+section
+noncomputable section
+
+open Formalism.BasicNotions MeasureTheory
+
+namespace Formalism.IndefR.Eqv
+
+theorem minfDensity_ne_zero (N : ℕ) : Formalism.L2.Theta.minfDensity N ≠ 0 := by
+  unfold Formalism.L2.Theta.minfDensity
+  exact ENNReal.inv_ne_zero.mpr (ENNReal.pow_ne_top ENNReal.ofNat_ne_top)
+
+theorem minfDensity_ne_top (N : ℕ) : Formalism.L2.Theta.minfDensity N ≠ ⊤ := by
+  unfold Formalism.L2.Theta.minfDensity
+  exact ENNReal.inv_ne_top.mpr (pow_ne_zero _ two_ne_zero)
+
+
+end Formalism.IndefR.Eqv
+
+end
+end
+
+section
 noncomputable section
 
 open MeasureTheory Filter Topology Formalism.BasicNotions
@@ -129,4 +152,5 @@ theorem prob_unique {p q : ℕ} {m m' : Measure (UpqT p q)} (h : m.IsHaarMeasure
 
 end Formalism.IndefR.Eqv.MU
 
+end
 end

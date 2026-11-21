@@ -1,6 +1,30 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormPowSubOneLe
+
+section
+universe u_1
+
+namespace GlobalTheory.NormPowSubOne
+
+theorem norm_pow_sub_one_le {K : Type u_1} [NormedField K] [IsUltrametricDist K] {ζ : K}
+    (hζ : ‖ζ‖ = (1 : ℝ)) (a : ℕ) : ‖ζ ^ a - (1 : K)‖ ≤ ‖ζ - (1 : K)‖ := by
+  induction a with
+  | zero => simp
+  | succ n ih =>
+    have h : ζ ^ (n + 1) - 1 = ζ * (ζ ^ n - 1) + (ζ - 1) := by ring
+    rw [h]
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ le_rfl)
+    rw [norm_mul, hζ, one_mul]
+    exact ih
+
+theorem main : ∀ {K : Type u_1} [inst : NormedField K] [IsUltrametricDist K] {ζ : K},
+    ‖ζ‖ = (1 : ℝ) → ∀ (a : ℕ), ‖ζ ^ a - (1 : K)‖ ≤ ‖ζ - (1 : K)‖ :=
+  fun hζ a => norm_pow_sub_one_le hζ a
+
+end GlobalTheory.NormPowSubOne
+end
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.MemLoc
 open scoped Formalism.Per
 
@@ -219,3 +243,4 @@ theorem GlobalTheory.CycTrace.normalised_trace_bound (l : ℕ) [hl : Fact l.Prim
   intro j _
   rw [norm_smul, norm_pow, hw1, one_pow, mul_one, ← inv_mul_le_iff₀ hl0]
   exact hb j
+end

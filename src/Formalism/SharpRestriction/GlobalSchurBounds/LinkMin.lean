@@ -1,4 +1,4 @@
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalLinkOfPartStatementsWithDelta
+import Formalism.LocalToGlobal.GlobalTheory.LossRequirementsOfSmallShares
 import Formalism.SharpRestriction.GlobalSchurBounds.FiniteModelOfAdmissibleTransports
 import Formalism.SharpRestriction.GlobalSchurBounds.TotallyPositiveTraceGeOfNormDiscr
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.IntegralityOfCommutation
@@ -7,6 +7,20 @@ import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.Fami
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.FamilyPartFiveOfExplicitConstants
 import Formalism.LocalToGlobal.GlobalTheory.PlacesMin
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions
+
+open Formalism.BasicNotions Formalism.MainNotions.Lnk Formalism.MainNotions.GlobalTheoryTheory
+
+
+end Formalism.MainNotions
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.StandardLattice
@@ -758,4 +772,5 @@ theorem family_property_mono {Fm : FamP eps} {P Q : D7 → Prop} (h : flipTwoThr
 
 end Formalism.MainNotions
 
+end
 end

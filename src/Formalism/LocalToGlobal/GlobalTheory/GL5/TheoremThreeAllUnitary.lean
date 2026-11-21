@@ -1,6 +1,22 @@
-import Formalism.LocalToGlobal.GlobalTheory.GL5.VolumeAndDsigCompatOfCompatibleData
+import Formalism.LocalToGlobal.GlobalTheory.GL5.Statement
+import Formalism.LocalToGlobal.BesselHermitianTheta.Lemmas
 import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 
+section
+noncomputable section
+
+namespace Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
+
+open Formalism.BasicNotions
+
+theorem siegel_weil_part_one_of_weil_theorem : SiegelWeilPartOneFromWeil := fun _ _ h _ _ => h
+
+end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
@@ -258,4 +274,5 @@ theorem theorem_three_all_unitary (D : D7) (C3 : ℝ) (hC3 : 1 ≤ C3) (hc : cdS
 
 end Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 
+end
 end

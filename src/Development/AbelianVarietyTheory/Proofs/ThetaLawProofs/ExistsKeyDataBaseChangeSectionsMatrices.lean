@@ -3,9 +3,43 @@ import Development.AbelianVarietyTheory.Definitions.KeyFormula.IsSquareDetermina
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyPBRing
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.BasisPowerSectionsLocalBaseChange
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.MemNonzeroLocusVia
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.FinitePreimageOfIsPullbackOfFiniteBase
 import BuildAid.ForwardExisting
 
+section
+open AlgebraicGeometry CategoryTheory Limits
+
+namespace GlobalTheory.KeyFin
+
+theorem finite_preimage_of_isPullback_of_finite_base :
+    ∀ (X X' S S' : Scheme.{0}) (h : X ⟶ S) (h' : X' ⟶ S') (φ : X' ⟶ X) (f : S' ⟶ S) (Z : Set X),
+      LocallyOfFiniteType h → QuasiCompact h → IsPullback φ h' h f → Finite S' → IsClosed Z →
+      Z.Finite → (φ ⁻¹' Z).Finite := by
+  intro X X' S S' h h' φ f Z _ _ H _ hZ hfin
+  let I := Scheme.IdealSheafData.vanishingIdeal (X := X) ⟨Z, hZ⟩
+  have hr : Set.range I.subschemeι = Z := by
+    rw [Scheme.IdealSheafData.range_subschemeι, Scheme.IdealSheafData.coe_support_vanishingIdeal]; rfl
+  have hf : Finite I.subscheme := by
+    have : Finite (Set.range I.subschemeι) := by rw [hr]; exact hfin.to_subtype
+    exact Finite.of_injective_finite_range I.subschemeι.isClosedEmbedding.injective
+  have hq : LocallyQuasiFinite (I.subschemeι ≫ h) :=
+    .of_finite_preimage_singleton _ fun _ => Set.toFinite _
+  have P := (IsPullback.of_hasPullback I.subschemeι φ).paste_vert H
+  have h1 : LocallyQuasiFinite (pullback.snd I.subschemeι φ ≫ h') :=
+    MorphismProperty.of_isPullback (P := @LocallyQuasiFinite) P hq
+  have h2 : QuasiCompact (pullback.snd I.subschemeι φ ≫ h') :=
+    MorphismProperty.of_isPullback (P := @QuasiCompact) P inferInstance
+  have h3 : (Set.univ : Set ↑(pullback I.subschemeι φ)).Finite := by
+    have := (Set.toFinite (Set.univ : Set S')).preimage'
+      (f := (pullback.snd I.subschemeι φ ≫ h')) fun _ _ =>
+        (pullback.snd I.subschemeι φ ≫ h').finite_preimage_singleton _
+    simpa using this
+  rw [← hr, ← Scheme.Pullback.range_snd, ← Set.image_univ]
+  exact h3.image _
+
+end GlobalTheory.KeyFin
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -80,3 +114,4 @@ open GlobalTheory.KeyKa
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_keyData_baseChange_sections_matrices : Out.Laws → ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] (R' : Type) [CommRing R'] (f : O →+* R') (x : KeyIn O) (n l : ℕ) (s : Fin x.P.g → RR x n) (b : ∀ j, Fin ((l - j * n) ^ x.P.g) → RR x (l - j * n)) (m), x.P.g * n < l → (∀ j ≤ x.P.g, IsBasis x (b j)) → IsMul x l s b m → ∃ (x' : KeyIn R') (φ : x'.P.A.left ⟶ x.P.A.left) (w : LB.Iso x'.P.L (x.P.L.pull φ)) (hg : x'.P.g = x.P.g) (s' : Fin x'.P.g → RR x' n) (b' : ∀ j, Fin ((l - j * n) ^ x'.P.g) → RR x' (l - j * n)) (m' : _), KeyVia x' x f φ w ∧ (∀ i, SecVia x' x φ w (s' i) (s (i.cast hg))) ∧ (∀ j k, SecVia x' x φ w (b' j k) (b j (k.cast (congrArg (fun r => (l - j * n) ^ r) hg)))) ∧ (∀ j ≤ x'.P.g, IsBasis x' (b' j)) ∧ IsMul x' l s' b' m' ∧ (∀ i j j' k k', m' i j j' k k' = f (m (i.cast hg) j j' (k.cast (congrArg (fun r => (l - j * n) ^ r) hg)) (k'.cast (congrArg (fun r => (l - j' * n) ^ r) hg)))) ∧ (Finite (Sp R') → FinZ x s → FinZ x' s') := by
   atlas_forward_decl GlobalTheory.KeyBaseChangeData.exists_baseChange_data
+end

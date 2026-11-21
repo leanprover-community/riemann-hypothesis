@@ -2,8 +2,28 @@ import Mathlib
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJmuDegG
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FdCons
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.TransportInt
-import Development.WeilBound.HeckeVectors.HeckeDoubleCosets.HeckeCoefficientDegrees.NormDeg
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSquareTransferIdentityHolds
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNormDegGBetaInfAbs
+import Formalism.LocalToGlobal.SiegelLatticeTheory.BesselDiscreteSeries.DecLowPf
+import Development.WeilBound.CoreStatements.BetaInfinityCoefficients.BetaInfinityCoefficient
+import CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonality.SchurH
+import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.UniformCoefficientBounds.FromDS
+import CompanionTheory.AutomorphicTheory.RankOneEstimates.DecSender
 
+section
+noncomputable section
+
+namespace CompanionTheory.D.Upq.Coef
+
+open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData Formalism.FourierDecayAlt.P.CutBP.Jmu Formalism.FourierDecayAlt.P.CutBP.Jmu.NDG
+
+
+end CompanionTheory.D.Upq.Coef
+
+end
+end
+
+section
 noncomputable section
 
 open MeasureTheory Matrix Topology
@@ -104,4 +124,5 @@ variable {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace â
 
 end CompanionTheory.D.Upq.Coef
 
+end
 end

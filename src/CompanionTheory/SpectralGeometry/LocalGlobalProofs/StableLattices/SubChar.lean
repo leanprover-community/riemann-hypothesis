@@ -1,17 +1,508 @@
 import Mathlib
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.FiniteTypeAlgebraCommonEigencharacter
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantCoefficientsExpansionStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CapelliPolynomialPermutationMatch
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.Bdy
+import BuildAid.ForwardExisting
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantCoefficientsExpansion
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.ExistsPermOfCapPEq
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.SumOfLevelSizesEq
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.StandardBlocksLevelSumStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CenterActionCommutesLeviDifferenceStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LeviActionPreservesSupportDegreeStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LeviActionCommutesWithTotalBoundaryStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LeviActionIsGlRepresentationStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HighestWeightClassBoundaryAndWeight
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.CenterActionCommutesLeviDifference
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LeviActionPreservesSupportDegree
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LeviActionCommutesWithTotalBoundary
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LeviActionIsGlRepresentation
+import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.EigenspaceCyclicDensity.CreationOperators.DifferentialBoundedSupport
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.FreeAlgebraActionOnSubquotient
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LevelWeightSumBound
 
+section
+section
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+
+namespace GlobalTheory.CompanionTheory.RgCOBlock
+
+theorem exists_character_of_smul_ne_zero :
+    ∀ (R : Type) [CommRing R] [Algebra ℂ R] [Algebra.FiniteType ℂ R] (W : Type) [AddCommGroup W]
+      [Module ℂ W] [Module R W] [IsScalarTower ℂ R W] (t : W), t ≠ 0 →
+      ∃ φ : R →ₐ[ℂ] ℂ, ∀ (r : R) (c : ℂ), r • t = c • t → φ r = c := by
+  intro R _ _ _ W _ _ _ _ t ht
+  let J : Ideal R := LinearMap.ker (LinearMap.toSpanSingleton R W t)
+  have hmemJ : ∀ x : R, x ∈ J ↔ x • t = 0 := fun x => by
+    simp [J, LinearMap.mem_ker, LinearMap.toSpanSingleton_apply]
+  have hJ : J ≠ ⊤ := by
+    intro h
+    have h1 : (1 : R) ∈ J := h ▸ Submodule.mem_top
+    exact ht (by simpa using (hmemJ 1).1 h1)
+  obtain ⟨m, hm, hJm⟩ := Ideal.exists_le_maximal J hJ
+  letI : Field (R ⧸ m) := Ideal.Quotient.field m
+  haveI : Algebra.FiniteType ℂ (R ⧸ m) :=
+    Algebra.FiniteType.of_surjective (Ideal.Quotient.mkₐ ℂ m) (Ideal.Quotient.mkₐ_surjective ℂ m)
+  haveI : Module.Finite ℂ (R ⧸ m) := finite_of_finite_type_of_isJacobsonRing ℂ (R ⧸ m)
+  have bij : Function.Bijective (algebraMap ℂ (R ⧸ m)) :=
+    IsAlgClosed.algebraMap_bijective_of_isIntegral
+  let e : ℂ ≃ₐ[ℂ] R ⧸ m := AlgEquiv.ofBijective (Algebra.ofId ℂ (R ⧸ m)) bij
+  refine ⟨(e.symm : (R ⧸ m) →ₐ[ℂ] ℂ).comp (Ideal.Quotient.mkₐ ℂ m), fun r c h => ?_⟩
+  have hmem : r - algebraMap ℂ R c ∈ J := by
+    rw [hmemJ, sub_smul, algebraMap_smul, h, sub_self]
+  have hq : Ideal.Quotient.mkₐ ℂ m r = algebraMap ℂ (R ⧸ m) c := by
+    have h0 : Ideal.Quotient.mk m (r - algebraMap ℂ R c) = 0 :=
+      Ideal.Quotient.eq_zero_iff_mem.2 (hJm hmem)
+    rw [map_sub, sub_eq_zero] at h0
+    exact h0
+  have he : e c = algebraMap ℂ (R ⧸ m) c := rfl
+  show e.symm (Ideal.Quotient.mkₐ ℂ m r) = c
+  rw [hq, ← he, AlgEquiv.symm_apply_apply]
+
+end GlobalTheory.CompanionTheory.RgCOBlock
+end
+
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_type_algebra_common_eigencharacter : ∀ (R : Type) [CommRing R] [Algebra ℂ R] [Algebra.FiniteType ℂ R] (W : Type) [AddCommGroup W] [Module ℂ W] [Module R W] [IsScalarTower ℂ R W] (t : W), t ≠ 0 → ∃ φ : R →ₐ[ℂ] ℂ, ∀ (r : R) (c : ℂ), r • t = c • t → φ r = c := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgCOBlock.exists_character_of_smul_ne_zero
+end
+
+section
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quantum_determinant_coefficients_expansion : ∀ (W : Type) [AddCommGroup W] [Module ℂ W] (M : ℕ) (d : Fin M → ℕ) (X : ∀ i, Fin (d i) → Fin (d i) → Module.End ℂ W), (∀ i, GlRel (X i)) → (∀ i j, i ≠ j → ∀ p q r v, Commute (X i p q) (X j r v)) → ∃ c : Fin M → ℕ → Module.End ℂ W, (∀ i, c i (d i) = 1) ∧ (∀ i (u : ℂ), qdet (X i) u = ∑ j ∈ Finset.range (d i + 1), u ^ j • c i j) ∧ (∀ i, 1 ≤ d i → c i (d i - 1) = ∑ p, X i p p - (((d i : ℂ) * ((d i : ℂ) - 1) / 2)) • (1 : Module.End ℂ W)) ∧ ∀ i j a b, Commute (c i a) (c j b) := by
+  first | exact @GlobalTheory.CompanionTheory.RgCOBlock.capelli_coef_commute | exact GlobalTheory.CompanionTheory.RgCOBlock.capelli_coef_commute | (intros; apply GlobalTheory.CompanionTheory.RgCOBlock.capelli_coef_commute <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.RgCOBlock
+
+open Finset Polynomial
+
+theorem exists_linear_factors_indexed {ι : Type} [DecidableEq ι] (F : Finset ι) :
+    ∀ P : ℂ[X], P.Monic → P.natDegree = F.card → ∃ r : ι → ℂ, P = ∏ a ∈ F, (X - C (r a)) := by
+  induction F using Finset.induction_on with
+  | empty =>
+    intro P hm hd
+    refine ⟨fun _ => 0, ?_⟩
+    simpa using eq_one_of_monic_natDegree_zero hm (by simpa using hd)
+  | insert a F ha ih =>
+    intro P hm hd
+    rw [Finset.card_insert_of_notMem ha] at hd
+    have hdeg : P.degree ≠ 0 := by
+      intro h
+      have : P.natDegree = 0 := natDegree_eq_zero_iff_degree_le_zero.mpr h.le
+      omega
+    obtain ⟨z, hz⟩ := IsAlgClosed.exists_root P hdeg
+    obtain ⟨Q, hQ⟩ := dvd_iff_isRoot.mpr hz
+    have hmQ : Q.Monic := by
+      have h := hm
+      rw [hQ] at h
+      exact (monic_X_sub_C z).of_mul_monic_left h
+    have hdQ : Q.natDegree = F.card := by
+      have h := congrArg natDegree hQ
+      rw [(monic_X_sub_C z).natDegree_mul hmQ, natDegree_X_sub_C] at h
+      omega
+    obtain ⟨r, hr⟩ := ih Q hmQ hdQ
+    refine ⟨Function.update r a z, ?_⟩
+    rw [Finset.prod_insert ha, Function.update_self, hQ, hr]
+    congr 1
+    refine Finset.prod_congr rfl fun b hb => ?_
+    rw [Function.update_of_ne (fun h : b = a => ha (h ▸ hb))]
+
+theorem exists_perm_of_monic_factors (n M : ℕ) (lev : Fin n → ℕ) (χ : Fin n → ℂ) (P : Fin M → ℂ[X]) (s : Fin M → ℂ)
+    (hlev : ∀ a, lev a < M)
+    (hP : ∀ i, (P i).Monic ∧ (P i).natDegree = (univ.filter fun a => lev a = (i : ℕ)).card)
+    (hcap : ∀ Y : ℂ, ∏ i, (P i).eval (Y + s i) = Formalism.QuantumDeterminants.capP χ Y) :
+    ∃ σ : Equiv.Perm (Fin n), ∀ i : Fin M,
+      ∑ a ∈ univ.filter (fun a => lev a = (i : ℕ)), χ (σ a) =
+        (P i).nextCoeff + ((univ.filter fun a => lev a = (i : ℕ)).card : ℂ) * s i := by
+  choose r hr using fun i => exists_linear_factors_indexed _ (P i) (hP i).1 (hP i).2
+  let lv : Fin n → Fin M := fun a => ⟨lev a, hlev a⟩
+  let g : Fin n → ℂ := fun a => s (lv a) - r (lv a) a
+  have hfil : ∀ i : Fin M, (univ.filter fun a => lev a = (i : ℕ)) = univ.filter fun a => lv a = i := by
+    intro i
+    ext a
+    simp [lv, Fin.ext_iff]
+  have hg : ∀ i : Fin M, ∀ a ∈ univ.filter (fun a => lev a = (i : ℕ)), g a = s i - r i a := by
+    intro i a ha
+    have : lv a = i := by
+      rw [hfil] at ha
+      exact (Finset.mem_filter.mp ha).2
+    simp only [g, this]
+  have hpoly : ∀ Y, Formalism.QuantumDeterminants.capP g Y = Formalism.QuantumDeterminants.capP χ Y := by
+    intro Y
+    rw [← hcap Y]
+    unfold Formalism.QuantumDeterminants.capP
+    rw [← Finset.prod_fiberwise univ lv]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    conv_rhs => rw [hr i, eval_prod]
+    rw [hfil i]
+    refine Finset.prod_congr rfl fun a ha => ?_
+    rw [← hfil i] at ha
+    rw [hg i a ha]
+    simp only [eval_sub, eval_X, eval_C]
+    ring
+  obtain ⟨σ, hσ⟩ := GlobalTheory.CompanionTheory.CharOfLowK.exists_perm_of_capelliPolynomial_eq g χ hpoly
+  refine ⟨σ, fun i => ?_⟩
+  have h1 : ∑ a ∈ univ.filter (fun a => lev a = (i : ℕ)), χ (σ a) =
+      ∑ a ∈ univ.filter (fun a => lev a = (i : ℕ)), (s i - r i a) :=
+    Finset.sum_congr rfl fun a ha => by rw [← hσ a, hg i a ha]
+  rw [h1, Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul]
+  conv_rhs => rw [hr i, prod_X_sub_C_nextCoeff]
+  ring
+
+end GlobalTheory.CompanionTheory.RgCOBlock
+end
+end
+
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.capelli_polynomial_permutation_match : ∀ (n M : ℕ) (lev : Fin n → ℕ) (χ : Fin n → ℂ) (P : Fin M → ℂ[X]) (s : Fin M → ℂ),
+    (∀ a, lev a < M) → (∀ i, (P i).Monic ∧ (P i).natDegree = (univ.filter fun a => lev a = (i : ℕ)).card) →
+    (∀ Y : ℂ, ∏ i, (P i).eval (Y + s i) = Formalism.QuantumDeterminants.capP χ Y) →
+    ∃ σ : Equiv.Perm (Fin n), ∀ i : Fin M,
+      ∑ a ∈ univ.filter (fun a => lev a = (i : ℕ)), χ (σ a) =
+        (P i).nextCoeff + ((univ.filter fun a => lev a = (i : ℕ)).card : ℂ) * s i := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgCOBlock.exists_perm_of_monic_factors
+end
+
+section
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.center_action_commutes_levi_difference : ∀ (n M : ℕ) (lev : Fin n → ℕ) (d : Fin M → ℕ) (h : ∑ i, d i = n) (Y : ℂ), Monotone lev →
+    (∀ (i : Fin M) (p : Fin (d i)), lev (stdBlocks d h ⟨i, p⟩) = (i : ℕ)) →
+    ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V), GlRel E →
+      (∀ i : Pos n, inU lev i → Commute (E i.1.1 i.1.2) (ev E (fa n Y))) ∧
+      ∀ x : V, ∃ w : Pos n → V, ev E (fa n Y) x - evL lev E (fb d h Y) x =
+        ∑ i : Pos n, if inU lev i then E i.1.1 i.1.2 (w i) else 0 := by
+  first | exact @GlobalTheory.CompanionTheory.RgCOBlock.co_hyp | exact GlobalTheory.CompanionTheory.RgCOBlock.co_hyp | (intros; apply GlobalTheory.CompanionTheory.RgCOBlock.co_hyp <;> assumption)
+end
+
+section
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_action_preserves_support_degree : ∀ (n : ℕ) (lev : Fin n → ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V), Monotone lev → ∀ (x : Cn n V), SuppIn (inU lev) x → ∀ p q, lev p = lev q → SuppIn (inU lev) (lF E p q x) ∧ ∀ j, Deg j x → Deg j (lF E p q x) := by
+  first | exact @GlobalTheory.CompanionTheory.RgCOBlock.LeviSupp.lF_suppIn_deg | exact GlobalTheory.CompanionTheory.RgCOBlock.LeviSupp.lF_suppIn_deg | (intros; apply GlobalTheory.CompanionTheory.RgCOBlock.LeviSupp.lF_suppIn_deg <;> assumption)
+end
+
+section
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_action_commutes_with_total_boundary : ∀ (n : ℕ) (lev : Fin n → ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V), Monotone lev → GlRel E → ∀ (x : Cn n V), SuppIn (inU lev) x → ∀ p q, lev p = lev q → lF E p q (bd (allT n) E x) = bd (allT n) E (lF E p q x) := by
+  first | exact @GlobalTheory.CompanionTheory.RgCOBlock.LeviBd.lF_bd | exact GlobalTheory.CompanionTheory.RgCOBlock.LeviBd.lF_bd | (intros; apply GlobalTheory.CompanionTheory.RgCOBlock.LeviBd.lF_bd <;> assumption)
+end
+
+section
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.levi_action_is_gl_representation : ∀ (n : ℕ) (lev : Fin n → ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (E : Fin n → Fin n → Module.End ℂ V), Monotone lev → GlRel E → ∀ (x : Cn n V), SuppIn (inU lev) x → ∀ p q r v, lev p = lev q → lev r = lev v → lF E p q (lF E r v x) - lF E r v (lF E p q x) = (if q = r then lF E p v x else 0) - (if v = p then lF E r q x else 0) := by
+  first | exact @GlobalTheory.CompanionTheory.RgCOBlock.lF_glRel | exact GlobalTheory.CompanionTheory.RgCOBlock.lF_glRel | (intros; apply GlobalTheory.CompanionTheory.RgCOBlock.lF_glRel <;> assumption)
+end
+
+section
+section
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.RgCOBlock.TopU
+
+variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
+
+theorem ann_app (i : Pos n) (x : Cn n V) (B : Finset (Pos n)) :
+    ann i x B = if i ∈ B then 0 else CompanionTheory.D.LK.sg i B • x (insert i B) := rfl
+
+theorem cre_app (i : Pos n) (x : Cn n V) (B : Finset (Pos n)) :
+    cre i x B = if i ∈ B then CompanionTheory.D.LK.sg i B • x (B.erase i) else 0 := rfl
+
+theorem sg_erase (i : Pos n) (B : Finset (Pos n)) : CompanionTheory.D.LK.sg i (B.erase i) = CompanionTheory.D.LK.sg i B := by
+  unfold CompanionTheory.D.LK.sg
+  congr 2
+  ext j
+  simp only [mem_filter, mem_erase]
+  constructor
+  · exact fun h => ⟨h.1.2, h.2⟩
+  · exact fun h => ⟨⟨fun e => by subst e; exact lt_irrefl _ h.2, h.1⟩, h.2⟩
+
+theorem sg_sq (i : Pos n) (B : Finset (Pos n)) : CompanionTheory.D.LK.sg i B * CompanionTheory.D.LK.sg i B = 1 := by
+  unfold CompanionTheory.D.LK.sg; rw [← pow_add, ← two_mul, pow_mul]; simp
+
+theorem cre_ann (i : Pos n) (x : Cn n V) (B : Finset (Pos n)) :
+    cre i (ann i x) B = if i ∈ B then x B else 0 := by
+  rw [cre_app]
+  split_ifs with h
+  · rw [ann_app, if_neg (notMem_erase i B), insert_erase h, sg_erase, smul_smul, sg_sq, one_smul]
+  · rfl
+
+theorem adC_self (a : Fin n) (i k : Pos n) :
+    adC a a i k = if k = i then ((if i.1.1 = a then 1 else 0) - (if i.1.2 = a then 1 else 0) : ℂ) else 0 := by
+  unfold adC
+  have e1 : (a = i.1.1 ∧ k.1 = (a, i.1.2)) ↔ (k = i ∧ i.1.1 = a) := by
+    constructor
+    · rintro ⟨h1, h2⟩; exact ⟨Subtype.ext (h2.trans (Prod.ext h1 rfl)), h1.symm⟩
+    · rintro ⟨rfl, h⟩; exact ⟨h.symm, Prod.ext h rfl⟩
+  have e2 : (i.1.2 = a ∧ k.1 = (i.1.1, a)) ↔ (k = i ∧ i.1.2 = a) := by
+    constructor
+    · rintro ⟨h1, h2⟩; exact ⟨Subtype.ext (h2.trans (Prod.ext rfl h1.symm)), h1⟩
+    · rintro ⟨rfl, h⟩; exact ⟨h, Prod.ext rfl h⟩
+  simp only [e1, e2]
+  by_cases hk : k = i <;> simp [hk]
+
+theorem adL_self_apply (a : Fin n) (x : Cn n V) (B : Finset (Pos n)) :
+    adL a a x B = ∑ i : Pos n, (((if i.1.1 = a then 1 else 0) - (if i.1.2 = a then 1 else 0) : ℂ)) •
+      cre i (ann i x) B := by
+  simp only [adL, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, Pi.smul_apply, Module.End.mul_apply,
+    adC_self]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Finset.sum_eq_single i]
+  · simp
+  · intro k _ hk; simp [hk]
+  · simp
+
+theorem top_cycle_weight : ∀ (n : ℕ) (ε : Fin n → Bool) (lev : Fin n → ℕ) (V : Type) [AddCommGroup V] [Module ℂ V]
+    (E : Fin n → Fin n → Module.End ℂ V) (γ : Fin n → ℝ) (u : V), Monotone lev → KHighest ε E γ u →
+    bd (allT n) E (Pi.single (omU ε lev) u) = 0 ∧
+    ∀ a, lF E a a (Pi.single (omU ε lev) u) = (((γ a + wt (omU ε lev) a : ℝ)) : ℂ) • (Pi.single (omU ε lev) u : Cn n V) := by
+  intro n ε lev V _ _ E γ u _ hu
+  have memA : ∀ i : Pos n, i ∈ omU ε lev ↔ ε i.1.1 = ε i.1.2 ∧ lev i.1.1 < lev i.1.2 := fun i => by simp [omU]
+  refine ⟨?_, fun a => ?_⟩
+  · funext B
+    rw [CompanionTheory.D.LK.bd_apply, Finset.sum_eq_zero, Finset.sum_eq_zero, add_zero, Pi.zero_apply]
+    · refine fun i _ => Finset.sum_eq_zero fun j _ => Finset.sum_eq_zero fun k _ => ?_
+      split_ifs with ht
+      · by_contra h
+        obtain ⟨h1, -, -, h4⟩ := CompanionTheory.D.LK.tri_ne h
+        have e : insert i (insert j (B.erase k)) = omU ε lev := by
+          by_contra h'; exact h4 (Pi.single_eq_of_ne h' _)
+        have ci := (memA i).1 (e ▸ mem_insert_self _ _)
+        have cj := (memA j).1 (e ▸ mem_insert_of_mem (mem_insert_self _ _))
+        obtain ⟨-, -, t1, t2, t3⟩ := ht
+        have ck : k ∈ omU ε lev := (memA k).2
+          ⟨by rw [t2, t3, ci.1, t1]; exact cj.1,
+           by rw [t2, t3]; exact (ci.2.trans_eq (congrArg lev t1)).trans cj.2⟩
+        rw [← e] at ck
+        have pi := i.2
+        have pj := j.2
+        rcases mem_insert.1 ck with h | h
+        · subst h; rw [← t1, t3] at pj; exact lt_irrefl _ pj
+        · rcases mem_insert.1 h with h | h
+          · subst h; rw [← t2, t1] at pi; exact lt_irrefl _ pi
+          · exact notMem_erase _ _ h
+      · rfl
+    · intro i _
+      rw [if_pos rfl, ann_app]
+      split_ifs with hi
+      · exact map_zero _
+      · by_cases e : insert i B = omU ε lev
+        · have hiA := (memA i).1 (e ▸ mem_insert_self i B)
+          rw [e, Pi.single_eq_same, map_smul, hu.2 _ _ i.2 hiA.1, smul_zero]
+        · rw [Pi.single_eq_of_ne e, smul_zero, map_zero]
+  · funext B
+    show E a a ((Pi.single (omU ε lev) u : Cn n V) B) + adL a a (Pi.single (omU ε lev) u) B = _
+    rw [adL_self_apply]
+    simp only [cre_ann]
+    by_cases e : B = omU ε lev
+    · subst e
+      rw [Pi.single_eq_same, hu.1 a, Pi.smul_apply, Pi.single_eq_same]
+      have hs : ∀ i : Pos n, ((if i.1.1 = a then 1 else 0) - (if i.1.2 = a then 1 else 0) : ℂ) •
+          (if i ∈ omU ε lev then u else 0) =
+          (if i ∈ omU ε lev then ((if i.1.1 = a then 1 else 0) - (if i.1.2 = a then 1 else 0) : ℂ) else 0) • u := by
+        intro i; split_ifs <;> simp
+      rw [Finset.sum_congr rfl fun i _ => hs i, ← Finset.sum_smul, ← add_smul]
+      congr 1
+      rw [← Finset.sum_filter, Finset.filter_mem_eq_inter, univ_inter, Finset.sum_sub_distrib, Finset.sum_boole,
+        Finset.sum_boole]
+      simp only [wt]
+      push_cast
+      ring
+    · simp [Pi.single_eq_of_ne e]
+
+end GlobalTheory.CompanionTheory.RgCOBlock.TopU
+end
+end
+
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.highest_weight_class_boundary_and_weight : ∀ (n : ℕ) (ε : Fin n → Bool) (lev : Fin n → ℕ) (V : Type) [AddCommGroup V] [Module ℂ V]
+    (E : Fin n → Fin n → Module.End ℂ V) (γ : Fin n → ℝ) (u : V), Monotone lev → KHighest ε E γ u →
+    bd (allT n) E (Pi.single (omU ε lev) u) = 0 ∧
+    ∀ a, lF E a a (Pi.single (omU ε lev) u) = (((γ a + wt (omU ε lev) a : ℝ)) : ℂ) • (Pi.single (omU ε lev) u : Cn n V) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgCOBlock.TopU.top_cycle_weight
+end
+
+section
+section
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+
+namespace GlobalTheory.CompanionTheory.RgCOBlock.ClusterBound
+
+theorem card_first_le {n : ℕ} (A : Finset (Pos n)) (c : Fin n) :
+    (A.filter fun i => i.1.1 = c).card ≤ n := by
+  have h : (A.filter fun i => i.1.1 = c).card ≤ (univ : Finset (Fin n)).card :=
+    Finset.card_le_card_of_injOn (fun i => i.1.2) (fun _ _ => mem_univ _) (by
+      intro x hx y hy hxy
+      have h1 := (mem_filter.1 (mem_coe.1 hx)).2
+      have h2 := (mem_filter.1 (mem_coe.1 hy)).2
+      exact Subtype.ext (Prod.ext (h1.trans h2.symm) hxy))
+  simpa using h
+
+theorem card_second_le {n : ℕ} (A : Finset (Pos n)) (c : Fin n) :
+    (A.filter fun i => i.1.2 = c).card ≤ n := by
+  have h : (A.filter fun i => i.1.2 = c).card ≤ (univ : Finset (Fin n)).card :=
+    Finset.card_le_card_of_injOn (fun i => i.1.1) (fun _ _ => mem_univ _) (by
+      intro x hx y hy hxy
+      have h1 := (mem_filter.1 (mem_coe.1 hx)).2
+      have h2 := (mem_filter.1 (mem_coe.1 hy)).2
+      exact Subtype.ext (Prod.ext hxy (h1.trans h2.symm)))
+  simpa using h
+
+theorem abs_wt_le {n : ℕ} (A : Finset (Pos n)) (c : Fin n) : |wt A c| ≤ n := by
+  have h1 : (((A.filter fun i => i.1.1 = c).card : ℕ) : ℝ) ≤ n := by
+    exact_mod_cast card_first_le A c
+  have h2 : (((A.filter fun i => i.1.2 = c).card : ℕ) : ℝ) ≤ n := by
+    exact_mod_cast card_second_le A c
+  have h3 : (0 : ℝ) ≤ ((A.filter fun i => i.1.1 = c).card : ℕ) := Nat.cast_nonneg _
+  have h4 : (0 : ℝ) ≤ ((A.filter fun i => i.1.2 = c).card : ℕ) := Nat.cast_nonneg _
+  unfold wt
+  rw [abs_le]
+  constructor <;> linarith
+
+theorem abs_two_rhoC_le {n : ℕ} (ε : Fin n → Bool) (a : Fin n) :
+    |(2 : ℝ) * PI.UpqRep.rhoC ε a| ≤ n := by
+  have h1 : (((univ.filter fun b => a < b ∧ ε b = ε a).card : ℕ) : ℝ) ≤ n := by
+    exact_mod_cast (card_le_univ _).trans_eq (Fintype.card_fin n)
+  have h2 : (((univ.filter fun b => b < a ∧ ε b = ε a).card : ℕ) : ℝ) ≤ n := by
+    exact_mod_cast (card_le_univ _).trans_eq (Fintype.card_fin n)
+  have h3 : (0 : ℝ) ≤ ((univ.filter fun b => a < b ∧ ε b = ε a).card : ℕ) := Nat.cast_nonneg _
+  have h4 : (0 : ℝ) ≤ ((univ.filter fun b => b < a ∧ ε b = ε a).card : ℕ) := Nat.cast_nonneg _
+  unfold PI.UpqRep.rhoC
+  rw [abs_le]
+  constructor <;> linarith
+
+theorem abs_modExp_le {M N : ℕ} (d : Fin M → ℕ) (h : ∑ j, d j = N) (i : Fin M) :
+    |modExp (fun j => Fin (d j)) i| ≤ (N : ℤ) := by
+  have hN : ∑ j, (d j : ℤ) = N := by exact_mod_cast h
+  have key : ∀ p : Fin M → Prop, ∀ [DecidablePred p],
+      (0 : ℤ) ≤ ∑ b with p b, (d b : ℤ) ∧ ∑ b with p b, (d b : ℤ) ≤ N := fun p _ =>
+    ⟨sum_nonneg fun _ _ => Int.natCast_nonneg _, hN ▸ sum_le_sum_of_subset_of_nonneg
+      (filter_subset _ _) fun _ _ _ => Int.natCast_nonneg _⟩
+  obtain ⟨a1, a2⟩ := key (fun b => i < b)
+  obtain ⟨b1, b2⟩ := key (fun b => b < i)
+  simp only [modExp, Fintype.card_fin]
+  rw [abs_le]
+  constructor <;> linarith
+
+end GlobalTheory.CompanionTheory.RgCOBlock.ClusterBound
+
+namespace GlobalTheory.CompanionTheory.RgCOBlock
+
+theorem norm_cluster_sum_le (n M : ℕ) (ε : Fin n → Bool) (lev : Fin n → ℕ) (i : Fin M) (h : ∑ j, sz lev M j = n) :
+    ‖∑ a ∈ univ.filter (fun a => lev a = (i : ℕ)), ((wt (omU ε lev) a - (2 : ℝ) * PI.UpqRep.rhoC ε a : ℝ) : ℂ) -
+      ((sz lev M i : ℂ) * ((modExp (fun j => Fin (sz lev M j)) i : ℂ) / 2))‖ ≤ 3 * (n : ℝ) ^ 2 := by
+  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hsz : ((sz lev M i : ℕ) : ℝ) ≤ n := by
+    have : sz lev M i ≤ n := (card_le_univ _).trans_eq (Fintype.card_fin n)
+    exact_mod_cast this
+  have hsz0 : (0 : ℝ) ≤ ((sz lev M i : ℕ) : ℝ) := Nat.cast_nonneg _
+  have hm : ((|modExp (fun j => Fin (sz lev M j)) i| : ℤ) : ℝ) ≤ n := by
+    exact_mod_cast ClusterBound.abs_modExp_le (sz lev M) h i
+  have hm0 : (0 : ℝ) ≤ ((|modExp (fun j => Fin (sz lev M j)) i| : ℤ) : ℝ) := by
+    exact_mod_cast abs_nonneg _
+  have hterm : ∀ a ∈ univ.filter (fun a => lev a = (i : ℕ)),
+      ‖((wt (omU ε lev) a - (2 : ℝ) * PI.UpqRep.rhoC ε a : ℝ) : ℂ)‖ ≤ 2 * (n : ℝ) := by
+    intro a _
+    rw [Complex.norm_real, Real.norm_eq_abs]
+    have h1 := ClusterBound.abs_wt_le (omU ε lev) a
+    have h2 := ClusterBound.abs_two_rhoC_le ε a
+    have h3 := abs_sub (wt (omU ε lev) a) ((2 : ℝ) * PI.UpqRep.rhoC ε a)
+    linarith
+  have hsum : ‖∑ a ∈ univ.filter (fun a => lev a = (i : ℕ)),
+      ((wt (omU ε lev) a - (2 : ℝ) * PI.UpqRep.rhoC ε a : ℝ) : ℂ)‖ ≤
+      ((sz lev M i : ℕ) : ℝ) * (2 * (n : ℝ)) := by
+    refine (norm_sum_le_of_le _ hterm).trans_eq ?_
+    rw [sum_const, nsmul_eq_mul]
+    rfl
+  have hmod : ‖(sz lev M i : ℂ) * ((modExp (fun j => Fin (sz lev M j)) i : ℂ) / 2)‖ =
+      ((sz lev M i : ℕ) : ℝ) * (((|modExp (fun j => Fin (sz lev M j)) i| : ℤ) : ℝ) / 2) := by
+    rw [norm_mul, norm_div, Complex.norm_natCast, Complex.norm_intCast]
+    simp
+  refine (norm_sub_le _ _).trans ?_
+  rw [hmod]
+  have e1 : ((sz lev M i : ℕ) : ℝ) * (2 * (n : ℝ)) ≤ (n : ℝ) * (2 * n) :=
+    mul_le_mul_of_nonneg_right hsz (by positivity)
+  have e2 : ((sz lev M i : ℕ) : ℝ) * (((|modExp (fun j => Fin (sz lev M j)) i| : ℤ) : ℝ) / 2) ≤
+      (n : ℝ) * ((n : ℝ) / 2) :=
+    mul_le_mul hsz (by linarith) (by linarith) hn
+  nlinarith [sq_nonneg (n : ℝ)]
+
+end GlobalTheory.CompanionTheory.RgCOBlock
+end
+
+open Finset Polynomial
+open Formalism.REAL (GlRel KHighest IsWeight qdet Tm qminor)
+open CompanionTheory.D.LK (Pos Cn ann cre lift bd cpt allT wt ev)
+open CompanionTheory.RgExh CompanionTheory.RgExh.U
+open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
+open GlobalTheory.CompanionTheory.RgCOBlock
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.level_weight_sum_bound : ∀ (n M : ℕ) (ε : Fin n → Bool) (lev : Fin n → ℕ) (i : Fin M) (h : ∑ j, sz lev M j = n),
+    ‖∑ a ∈ univ.filter (fun a => lev a = (i : ℕ)), ((wt (omU ε lev) a - (2 : ℝ) * PI.UpqRep.rhoC ε a : ℝ) : ℂ) -
+      ((sz lev M i : ℂ) * ((modExp (fun j => Fin (sz lev M j)) i : ℂ) / 2))‖ ≤ 3 * (n : ℝ) ^ 2 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.RgCOBlock.norm_cluster_sum_le
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.RgCOBlock
@@ -319,3 +810,5 @@ theorem coBlock : InjU → GenCOU → COBlock := by
     positivity
 
 end GlobalTheory.CompanionTheory.RgCOBlock
+end
+end

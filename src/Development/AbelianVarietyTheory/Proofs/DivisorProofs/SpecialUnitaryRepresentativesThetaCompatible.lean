@@ -3,9 +3,111 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpecialUnitaryLiftI
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteUnitaryPartIsInvertibleUnitaryAdelic
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralAtOfAdelicIntegralAt
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinCongMemLevEnv
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameStabiliserMapsToCompletedLattice
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpecialUnitaryKottwitzEquivalence
+import Formalism.LocalToGlobal.Divisibility.DefGroup
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EmbGLMemRealSU
 
+section
+section
+open NumberField
+open scoped TensorProduct Matrix
+
+namespace GlobalTheory
+
+theorem stab_hatL_mapsTo {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
+    (β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) (Λ : Submodule (𝓞 E) (Fin n → E)) :
+    Formalism.L2.DIV.IsFrame β Λ → ∀ x ∈ Formalism.L2.DIV.St β, ∀ v ∈ Formalism.L2.Herm.hatL (F := F) Λ,
+      x.1 *ᵥ v ∈ Formalism.L2.Herm.hatL (F := F) Λ := by
+  intro hF x hx v hv
+  obtain ⟨y, rfl⟩ := hx
+  have hw := (hF v).1 hv
+  refine (hF _).2 fun i => ?_
+  set Y : Matrix (Fin n) (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F) :=
+    (y : Matrix (Fin n) (Fin n) (Formalism.L2.Herm.intAf F E)).map (Formalism.L2.Herm.intAf F E).subtype with hY
+  have hval : ((Formalism.L2.DIV.frGL β y : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) : Matrix (Fin n) (Fin n) _) =
+      (β : Matrix (Fin n) (Fin n) _) * Y * ((β⁻¹ : GL (Fin n) _) : Matrix (Fin n) (Fin n) _) := by
+    simp only [Formalism.L2.DIV.frGL, Formalism.L2.DIV.intGL, MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom,
+      MulAut.conj_apply, Units.val_mul]
+    rfl
+  have hmv : ((β⁻¹ : GL (Fin n) _) : Matrix (Fin n) (Fin n) _) *ᵥ
+      (((Formalism.L2.DIV.frGL β y : GL (Fin n) _) : Matrix (Fin n) (Fin n) _) *ᵥ v) =
+      Y *ᵥ (((β⁻¹ : GL (Fin n) _) : Matrix (Fin n) (Fin n) _) *ᵥ v) := by
+    rw [hval, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, ← Matrix.mul_assoc, ← Matrix.mul_assoc,
+      Units.inv_mul, Matrix.one_mul]
+  rw [hmv]
+  simp only [Matrix.mulVec, dotProduct]
+  refine Subring.sum_mem _ fun j _ => Subring.mul_mem _ ?_ (hw j)
+  simp only [hY, Matrix.map_apply]
+  exact (y : Matrix (Fin n) (Fin n) (Formalism.L2.Herm.intAf F E)) i j |>.2
+
+end GlobalTheory
+end
+
+open NumberField
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frameStabiliser_mapsTo_completedLattice : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ} (β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) (Λ : Submodule (𝓞 E) (Fin n → E)), Formalism.L2.DIV.IsFrame β Λ → ∀ x ∈ Formalism.L2.DIV.St β, ∀ v ∈ Formalism.L2.Herm.hatL (F := F) Λ, x.1 *ᵥ v ∈ Formalism.L2.Herm.hatL (F := F) Λ := by
+  atlas_forward_decl GlobalTheory.stab_hatL_mapsTo
+end
+
+section
+section
+open NumberField
+open scoped TensorProduct Matrix
+
+namespace GlobalTheory.SEquivOfRat
+
+open Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol IsDedekindDomain
+
+theorem ratM_det {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (γ : Matrix (Fin r) (Fin r) E) :
+    (ratM (maximalRealSubfield E) γ).det = (1 : FiniteAdeleRing (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E)) ⊗ₜ γ.det := by
+  have h : ratM (maximalRealSubfield E) γ = (Algebra.TensorProduct.includeRight :
+      E →ₐ[maximalRealSubfield E] RA (maximalRealSubfield E) E).toRingHom.mapMatrix γ := rfl
+  rw [h, ← RingHom.map_det]; rfl
+
+theorem sequiv_of_rat {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (G : Matrix (Fin r) (Fin r) E)
+    (L : Set (Fin r → E)) (s s' M : Matrix (Fin r) (Fin r) (GlobalTheory.AdLat.RA (maximalRealSubfield E) E))
+    (γ : Matrix (Fin r) (Fin r) E) (hs : GlobalTheory.SUVol.IsSA G s) (hs' : GlobalTheory.SUVol.IsSA G s')
+    (hM : GlobalTheory.UCls.IsKM (IsCMField.complexConj E) G L 1 M)
+    (h : s' * M = GlobalTheory.UCls.ratM (maximalRealSubfield E) γ * s) (hγ : γ.det = 1) :
+    GlobalTheory.SUVol.SEquiv G L 1 s' s := by
+  have hγu : IsUnit γ.det := by rw [hγ]; exact isUnit_one
+  have hinv : γ * γ⁻¹ = 1 := Matrix.mul_nonsing_inv γ hγu
+  have hinv' : γ⁻¹ * γ = 1 := Matrix.nonsing_inv_mul γ hγu
+  have hdγ : (ratM (maximalRealSubfield E) γ).det = 1 := by rw [ratM_det, hγ]; rfl
+  have hdγi : (ratM (maximalRealSubfield E) γ⁻¹).det = 1 := by
+    have := congrArg Matrix.det (ratM_mul (E := E) γ γ⁻¹)
+    rw [hinv, ratM_one, det_one, det_mul, hdγ, one_mul] at this
+    exact this.symm
+  have hsu : IsUnit s.det := by rw [hs.2]; exact isUnit_one
+  have hss : s * s⁻¹ = 1 := Matrix.mul_nonsing_inv s hsu
+
+  have hpres : ∀ x y, hermA (IsCMField.complexConj E) G (ratM (maximalRealSubfield E) γ *ᵥ x) (ratM (maximalRealSubfield E) γ *ᵥ y) =
+      hermA (IsCMField.complexConj E) G x y := by
+    intro x y
+    have ex : ∀ z, ratM (maximalRealSubfield E) γ *ᵥ z = s' *ᵥ (M *ᵥ (s⁻¹ *ᵥ z)) := by
+      intro z
+      rw [mulVec_mulVec, mulVec_mulVec, h, Matrix.mul_assoc, hss, Matrix.mul_one]
+    rw [ex, ex, hs'.1.2, hM.1.2, ← hs.1.2]
+    simp only [mulVec_mulVec, hss, one_mulVec]
+  refine ⟨γ⁻¹, ⟨⟨by rw [hdγi]; exact isUnit_one, fun x y => ?_⟩, hdγi⟩, M, hM, ?_, ?_⟩
+  · rw [← hpres, mulVec_mulVec, mulVec_mulVec, ← ratM_mul, hinv, ratM_one, one_mulVec, one_mulVec]
+  · have := congrArg Matrix.det h
+    rw [det_mul, det_mul, hs'.2, hs.2, hdγ, one_mul, mul_one] at this
+    exact this
+  · rw [Matrix.mul_assoc, h, ← Matrix.mul_assoc, ← ratM_mul, hinv', ratM_one, Matrix.one_mul]
+
+end GlobalTheory.SEquivOfRat
+end
+
+open NumberField
+open scoped TensorProduct Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.special_unitary_kottwitz_equivalence : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (G : Matrix (Fin r) (Fin r) E) (L : Set (Fin r → E)) (s s' M : Matrix (Fin r) (Fin r) (GlobalTheory.AdLat.RA (maximalRealSubfield E) E)) (γ : Matrix (Fin r) (Fin r) E), GlobalTheory.SUVol.IsSA G s → GlobalTheory.SUVol.IsSA G s' → GlobalTheory.UCls.IsKM (IsCMField.complexConj E) G L 1 M → s' * M = GlobalTheory.UCls.ratM (maximalRealSubfield E) γ * s → γ.det = 1 → GlobalTheory.SUVol.SEquiv G L 1 s' s := by
+  atlas_forward_decl GlobalTheory.SEquivOfRat.sequiv_of_rat
+end
+
+section
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.FWT GlobalTheory.CovTop
 open scoped TensorProduct
 
@@ -182,3 +284,5 @@ theorem main : ∀ (D : D7) (Tu : Type) (Cl : LevCh D Tu) (t0 : Tu), Cl.Is t0 �
     exact (hS.2.1 j' j hE).symm
 
 end GlobalTheory.MassLinkConj
+end
+end

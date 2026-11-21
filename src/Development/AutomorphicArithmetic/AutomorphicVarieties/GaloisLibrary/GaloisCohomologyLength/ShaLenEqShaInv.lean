@@ -2,12 +2,92 @@ import Mathlib
 import Development.AutomorphicArithmetic.CharacterBoxes.ExistsPageN
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.NonemptyH0GlobalEquivGaloisImage
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.ShaInfl
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.VLenIndep
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.ImageConj
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.LevelInertiaLeLevelDec
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LengthCyclotomicBlockCocyclesLeSha
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.GalTransport
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.PlaceTransport
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.ShaAbsRes
 
+section
+open NumberField IsDedekindDomain ReciprocityTheory.Gal Formalism.ConjugateSelfDual Formalism.GaloisCohomology UpperTheory.V.LDataCardLeFinrank
+
+theorem UpperTheory.V.LDataCardLeFinrank.vLenIndep :
+    ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (D D' : LData F Ω l) (e : ℤ), D.S = D'.S ∧ VLen D e = VLen D' e := by
+  intro F Ω _ _ _ _ _ l _ D D' e
+  have hS : D.S = D'.S := Finset.coe_injective (D.hS.trans D'.hS.symm)
+  refine ⟨hS, ?_⟩
+  obtain ⟨S, hS₁, A, hA, chi, hchi⟩ := D
+  obtain ⟨S', hS₂, A', hA', chi', hchi'⟩ := D'
+  dsimp only at hS
+  subst hS
+  have hc : chi = chi' := by
+    refine MonoidHom.ext fun x => ?_
+    obtain ⟨g, rfl⟩ := QuotientGroup.mk_surjective x
+    exact DFunLike.congr_fun (hchi.trans hchi'.symm) g
+  subst hc
+  rfl
+end
+
+section
+open NumberField IsDedekindDomain ReciprocityTheory.Gal Formalism.ConjugateSelfDual Formalism.GaloisCohomology UpperTheory.V.LDataCardLeFinrank
+
+theorem UpperTheory.V.LDataCardLeFinrank.imageConj :
+    ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (v : HeightOneSpectrum (𝓞 F)) (A A' : ValuationSubring Ω), IsPlaceOver A v → IsPlaceOver A' v → decImage F l A = decImage F l A' ∧ ineImage F l A = ineImage F l A' := by
+  intro F Ω _ _ _ _ _ l _ v
+  have hc : ∀ g σ : G F Ω, cycZ F Ω l (g⁻¹ * σ * g) = cycZ F Ω l σ := fun g σ => by
+    rw [map_mul, map_mul, map_inv, mul_comm _ (cycZ F Ω l σ), inv_mul_cancel_right]
+  have key : ∀ A A' : ValuationSubring Ω, IsPlaceOver A v → IsPlaceOver A' v →
+      decImage F l A' ≤ decImage F l A ∧ ineImage F l A' ≤ ineImage F l A := by
+    intro A A' hA hA'
+    obtain ⟨g, rfl⟩ := exists_smul_eq_of_isPlaceOver (F := F) hA hA'
+    constructor
+    · rintro _ ⟨σ, hσ, rfl⟩
+      exact ⟨_, GlobalTheory.Cut.ShaBound.conj_mem_Dec hσ, hc g σ⟩
+    · rintro _ ⟨σ, hσ, rfl⟩
+      exact ⟨_, GlobalTheory.Cut.ShaBound.conj_mem_Ine' hσ, hc g σ⟩
+  intro A A' hA hA'
+  exact ⟨le_antisymm (key A' A hA' hA).1 (key A A' hA hA').1,
+    le_antisymm (key A' A hA' hA).2 (key A A' hA hA').2⟩
+end
+
+section
+open NumberField IsDedekindDomain ReciprocityTheory.Gal Formalism.ConjugateSelfDual Formalism.GaloisCohomology UpperTheory.V.LDataCardLeFinrank
+
+theorem UpperTheory.V.LDataCardLeFinrank.shaAbsRes :
+    ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (F' Ω' : Type) [Field F'] [NumberField F'] [Field Ω'] [Algebra F' Ω'] [IsAlgClosure F' Ω'] (S : Set (HeightOneSpectrum (𝓞 F))) (S' : Set (HeightOneSpectrum (𝓞 F'))) (φ : G F' Ω' →* G F Ω) (hφ : Continuous φ),
+      (∀ (v' : HeightOneSpectrum (𝓞 F')) (A' : ValuationSubring Ω'), IsPlaceOver A' v' → ∃ (v : HeightOneSpectrum (𝓞 F)) (A : ValuationSubring Ω), IsPlaceOver A v ∧ (v ∈ S ↔ v' ∈ S') ∧
+        (∀ g ∈ Dec (F := F') A', φ g ∈ Dec (F := F) A) ∧ ∀ g ∈ Ine (F := F') A', φ g ∈ Ine (F := F) A) →
+      ∀ (R : Type) [CommRing R] (M : Type) [AddCommGroup M] [Module R M] [TopologicalSpace M] [IsTopologicalAddGroup M] [ContinuousConstSMul R M] (ρ : Representation R (G F Ω) M), (∀ x ∈ ShaAbs ρ S, resH1 ρ φ hφ x ∈ ShaAbs (ρ.comp φ) S') ∧
+        (Function.Surjective φ → Module.length R (ShaAbs ρ S) ≤ Module.length R (ShaAbs (ρ.comp φ) S')) := by
+  intro F Ω _ _ _ _ _ F' Ω' _ _ _ _ _ S S' φ hφ h R _ M _ _ _ _ _ ρ
+  have h1 : ∀ x ∈ ShaAbs ρ S, resH1 ρ φ hφ x ∈ ShaAbs (ρ.comp φ) S' := by
+    intro x hx
+    obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+    obtain ⟨ha, hb⟩ := (mk_mem_ShaAbs ρ S z).1 hx
+    refine (mk_mem_ShaAbs (ρ.comp φ) S' (restrictCocycles1 ρ φ hφ z)).2 ⟨?_, ?_⟩
+    · intro v' hv' A' hA'
+      obtain ⟨v, A, hA, hS, hD, -⟩ := h v' A' hA'
+      obtain ⟨m, hm⟩ := ha v (hS.2 hv') A hA
+      exact ⟨m, fun g hg => hm (φ g) (hD g hg)⟩
+    · intro v' hv' A' hA'
+      obtain ⟨v, A, hA, hS, -, hI⟩ := h v' A' hA'
+      obtain ⟨m, hm⟩ := hb v (fun hv => hv' (hS.1 hv)) A hA
+      exact ⟨m, fun g hg => hm (φ g) (hI g hg)⟩
+  refine ⟨h1, fun hs => ?_⟩
+  have hinj : Function.Injective (resH1 ρ φ hφ) := by
+    rw [injective_iff_map_eq_zero]
+    intro x hx
+    obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+    have hx' : (Submodule.Quotient.mk (restrictCocycles1 ρ φ hφ z) : H1 (ρ.comp φ)) = 0 := hx
+    obtain ⟨m, hm⟩ := (mem_coboundaries1 _ _).1 ((Submodule.Quotient.mk_eq_zero _).1 hx')
+    refine (Submodule.Quotient.mk_eq_zero _).2 ((mem_coboundaries1 _ _).2 ⟨m, fun g => ?_⟩)
+    obtain ⟨g', rfl⟩ := hs g
+    exact hm g'
+  refine Module.length_le_of_injective ((resH1 ρ φ hφ).restrict h1) ?_
+  intro x y hxy
+  exact Subtype.ext (hinj (congrArg Subtype.val hxy))
+end
+
+section
 open NumberField IsDedekindDomain ReciprocityTheory.Gal Formalism.ConjugateSelfDual Formalism.GaloisCohomology
 
 noncomputable section
@@ -86,4 +166,5 @@ theorem vvle_iff_shaInv (E : Type) [Field E] [NumberField E] (t : ℕ) (B : ℝ)
 
 end UpperTheory.V.LDataCardLeFinrank
 
+end
 end

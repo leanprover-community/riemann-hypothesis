@@ -1,7 +1,33 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DivisibilityChainPowerFactorization
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
 import BuildAid.ForwardExisting
 
+section
+open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
+
+namespace GlobalTheory.CompanionTheory.NormalForm
+
+theorem normal_form_of_dichotomy :
+    ∀ {S : Type} [CommRing S] (ϖ : S), (∀ f : S, ϖ ∣ f ∨ f ∣ ϖ) →
+      ∀ (f : S) (M : ℕ), ϖ ^ M ∣ f ∨ ∃ (j : ℕ) (f' : S), f = ϖ ^ j * f' ∧ f' ∣ ϖ := by
+  intro S _ ϖ hd f M
+  induction M generalizing f with
+  | zero => exact Or.inl (by simp)
+  | succ M ih =>
+    rcases hd f with ⟨g, rfl⟩ | hf
+    · rcases ih g with hg | ⟨j, f', hg, hf'⟩
+      · left
+        rw [pow_succ']
+        exact mul_dvd_mul_left ϖ hg
+      · right
+        refine ⟨j + 1, f', ?_, hf'⟩
+        rw [hg, pow_succ', mul_assoc]
+    · exact Or.inr ⟨0, f, by simp, hf⟩
+
+end GlobalTheory.CompanionTheory.NormalForm
+end
+
+section
 section
 open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison CrystallineSemistableComparison.R
 
@@ -89,3 +115,4 @@ open CategoryTheory AlgebraicGeometry CrystallineSemistableComparison Crystallin
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.dichotomy_of_comparable_mod_square : ∀ {S : Type} [CommRing S] (ϖ : S), ϖ ∈ (⊥ : Ideal S).jacobson → (∀ f g : S, f ∈ Ideal.span {g, ϖ ^ 2} ∨ g ∈ Ideal.span {f, ϖ ^ 2}) → Dich ϖ := by
   atlas_forward_decl GlobalTheory.CompanionTheory.DichMod.dich_of_mod
+end

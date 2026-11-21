@@ -9,9 +9,210 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaSeriesInt
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVecMemHatSwap
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelPlacesNotIsConjPlaceRealDat
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TypePlacesDisjointTwistPlaces
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDetOneMulStdBlock
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSplitSupportedUnitaryLiftDetOne
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ParahoricLevelLiftsExist
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSymplecticBasisToMatrixOffDiagDvd
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOrEqOfPlaceIdem
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.RealIdemMulOfReal
 
+section
+section
+namespace GlobalTheory
+
+open Matrix
+
+theorem exists_det_one_mul_stdBlock {K : Type} [Field K] {n r : ℕ} (hrn : r < n)
+    (y : Matrix (Fin n) (Fin r) K) (hy : y.rank = r) :
+    ∃ g : GL (Fin n) K, Matrix.GeneralLinearGroup.det g = 1 ∧
+      g.val * (Matrix.of fun (a : Fin n) (b : Fin r) => if (a : ℕ) = (b : ℕ) then (1 : K) else 0) = y := by
+  classical
+  have hli : LinearIndependent K y.col := by
+    rw [linearIndependent_iff_card_eq_finrank_span, Fintype.card_fin]
+    rw [Matrix.rank_eq_finrank_span_cols] at hy
+    exact hy.symm
+  let b := Module.Basis.sumExtend hli
+  have hfin : Finite (Fin r ⊕ Module.Basis.sumExtendIndex hli) := Module.Finite.finite_basis b
+  have : Finite (Module.Basis.sumExtendIndex hli) := Finite.of_injective (Sum.inr : _ → Fin r ⊕ _) Sum.inr_injective
+  have : Fintype (Module.Basis.sumExtendIndex hli) := Fintype.ofFinite _
+  have hcard : Fintype.card (Fin r ⊕ Module.Basis.sumExtendIndex hli) = n := by
+    rw [← Module.finrank_eq_card_basis b, Module.finrank_fin_fun]
+  have hb : ∀ i, b (Sum.inl i) = y.col i := by
+    intro i
+    simp only [b, Module.Basis.sumExtend, Module.Basis.reindex_apply, Module.Basis.coe_extend,
+      Equiv.symm_symm, Equiv.trans_apply, Equiv.sumCongr_apply]
+    rfl
+  have hS : Fintype.card (Module.Basis.sumExtendIndex hli) = n - r := by
+    rw [Fintype.card_sum, Fintype.card_fin] at hcard; omega
+  let e : Fin (n - r) ≃ Module.Basis.sumExtendIndex hli := (Fintype.equivFinOfCardEq hS).symm
+  let τ : Fin n → Fin r ⊕ Module.Basis.sumExtendIndex hli := fun c =>
+    if h : (c : ℕ) < r then Sum.inl ⟨c, h⟩ else Sum.inr (e ⟨c - r, by omega⟩)
+  have hτ : Function.Injective τ := by
+    intro c c' h
+    simp only [τ] at h
+    split_ifs at h
+    all_goals first
+      | (simp only [Sum.inl.injEq, Fin.mk.injEq] at h; ext; omega)
+      | (simp only [Sum.inr.injEq, EmbeddingLike.apply_eq_iff_eq, Fin.mk.injEq] at h; ext; omega)
+      | exact absurd h Sum.inl_ne_inr
+      | exact absurd h.symm Sum.inl_ne_inr
+  let s : Fin n → Fin n → K := b ∘ τ
+  have hs : LinearIndependent K s := b.linearIndependent.comp τ hτ
+  let g₀ : Matrix (Fin n) (Fin n) K := Matrix.of fun i a => s a i
+  have hg₀col : g₀.col = s := by ext a i; rfl
+  have hu : IsUnit g₀ := Matrix.linearIndependent_cols_iff_isUnit.mp (hg₀col ▸ hs)
+  have hdet : g₀.det ≠ 0 := ((Matrix.isUnit_iff_isUnit_det _).mp hu).ne_zero
+  let last : Fin n := ⟨n - 1, by omega⟩
+  let D : Matrix (Fin n) (Fin n) K := Matrix.diagonal fun a => if a = last then g₀.det⁻¹ else 1
+  let g := g₀ * D
+  have hgdet : g.det = 1 := by
+    simp only [g, D, Matrix.det_mul, Matrix.det_diagonal, Finset.prod_ite_eq', Finset.mem_univ, if_true]
+    exact mul_inv_cancel₀ hdet
+  have hU : IsUnit g := (Matrix.isUnit_iff_isUnit_det g).mpr (by rw [hgdet]; exact isUnit_one)
+  refine ⟨hU.unit, ?_, ?_⟩
+  · ext
+    simp [Matrix.GeneralLinearGroup.val_det_apply, hgdet]
+  · have hE : ∀ (a : Fin n) (c : Fin r), ((a : ℕ) = (c : ℕ)) ↔ a = Fin.castLE hrn.le c := by
+      intro a c; rw [Fin.ext_iff, Fin.coe_castLE]
+    have hτc : ∀ c : Fin r, τ (Fin.castLE hrn.le c) = Sum.inl c := by
+      intro c
+      simp only [τ, Fin.coe_castLE, dif_pos c.isLt]
+    rw [IsUnit.unit_spec]
+    ext i c
+    simp only [g, D, Matrix.mul_assoc, Matrix.mul_apply, Matrix.diagonal_apply, Matrix.of_apply, hE]
+    simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    have hne : Fin.castLE hrn.le c ≠ last := by
+      intro h
+      have h2 := congrArg Fin.val h
+      simp only [Fin.coe_castLE, last] at h2
+      omega
+    simp only [if_neg hne, mul_one]
+    show b (τ (Fin.castLE hrn.le c)) i = y i c
+    rw [hτc, hb]
+    rfl
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_det_one_mul_stdBlock' : ∀ {K : Type} [Field K] {n r : ℕ}, r < n → ∀ y : Matrix (Fin n) (Fin r) K, y.rank = r → ∃ g : GL (Fin n) K, Matrix.GeneralLinearGroup.det g = 1 ∧ g.val * (Matrix.of fun (a : Fin n) (b : Fin r) => if (a : ℕ) = (b : ℕ) then (1 : K) else 0) = y := by
+  atlas_forward_decl GlobalTheory.exists_det_one_mul_stdBlock
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Lev Formalism.IndefR.Datum
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.ParahoricLiftDet
+
+open GlobalTheory.ParahoricLift GlobalTheory.LevSplit Formalism.L2.NTheta Formalism.MainNotions.S Formalism.IndefR.Mult MeasureTheory
+
+variable {D : D7} {n : ℕ}
+
+theorem finite_maximalSpectrum_kP (P : Pl D.host.E) : Finite (MaximalSpectrum (kP P)) := by
+  have hP : P.asIdeal.IsMaximal := P.isMaximal
+  letI := Ideal.Quotient.field P.asIdeal
+  exact Finite.of_subsingleton
+
+theorem exists_detOne_lift (P : Pl D.host.E) (k : GL (Fin n) (kP P)) (hk : Matrix.GeneralLinearGroup.det k = 1) :
+    ∃ Y : Matrix (Fin n) (Fin n) (𝓞 D.host.E), Y.map (Ideal.Quotient.mk P.asIdeal) = k.1 ∧ Y.det = 1 := by
+  haveI := finite_maximalSpectrum_kP P
+  have hk' : k.1.det = 1 := by
+    have := congrArg Units.val hk
+    rwa [Matrix.GeneralLinearGroup.val_det_apply, Units.val_one] at this
+  obtain ⟨Y, hY⟩ := GlobalTheory.specialLinearGroup_map_surjective (n := Fin n) (f := Ideal.Quotient.mk P.asIdeal)
+    Ideal.Quotient.mk_surjective ⟨k.1, hk'⟩
+  exact ⟨Y.1, congrArg Subtype.val hY, Y.2⟩
+
+theorem idem_mul_pow {A : Type} [CommRing A] {p : A} (hp : p * p = p) (m : ℕ) : p * p ^ m = p := by
+  induction m with
+  | zero => rw [pow_zero, mul_one]
+  | succ k ih => rw [pow_succ, ← mul_assoc, ih, hp]
+
+theorem idem_mul_det {A : Type} [CommRing A] {m : ℕ} {p : A} (hp : p * p = p) {a b : Matrix (Fin m) (Fin m) A}
+    (h : p • a = p • b) : p * a.det = p * b.det := by
+  have h1 := congrArg Matrix.det h
+  rw [Matrix.det_smul, Matrix.det_smul, Fintype.card_fin] at h1
+  have hpow : p * p ^ m = p := idem_mul_pow hp m
+  calc p * a.det = p * p ^ m * a.det := by rw [hpow]
+    _ = p * p ^ m * b.det := by rw [mul_assoc, h1, ← mul_assoc]
+    _ = p * b.det := by rw [hpow]
+
+set_option maxHeartbeats 1000000 in
+
+theorem exists_local_lift_det : ∀ {D : D7} {V : HSp D} {β : GL (Fin V.rank) (Lev.EAf D)}
+    {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)} {N : ℕ}, IsBaseFrame V β Λ N → ∀ {P : Pl D.host.E} {e : AE D},
+    Formalism.L2.NTheta.IsIdemAt e P → ∀ (k : GL (Fin V.rank) (kP P)), Matrix.GeneralLinearGroup.det k = 1 →
+    ∃ κ : GA D V, SuppAt e V κ ∧ κ ∈ GfC V ∧ finE V κ ∈ St β ∧ redFn β P (finE V κ) = k ∧
+      (∀ P', P' ≠ P → ¬ Lev.IsConjPl P P' → redFn β P' (finE V κ) = 1) ∧ IsDetAt e V κ 1 := by
+  intro D V β Λ N hB P e he k hk
+  have := P.isPrime
+  obtain ⟨p, hp, hpp, hres⟩ := exists_idem_int he
+  obtain ⟨Y₀, hY₀, hdet1⟩ := exists_detOne_lift P k hk
+  have hdet : Ideal.Quotient.mk P.asIdeal Y₀.det ≠ 0 := by
+    rw [hdet1, map_one]; exact one_ne_zero
+  obtain ⟨u, hu⟩ := finSw_div_int he (d := Y₀.det) fun h => hdet (Ideal.Quotient.eq_zero_iff_mem.2 h)
+  obtain ⟨Y, hY⟩ : ∃ Y, Y = Y₀.map (oToS D.host.F D.host.E) := ⟨_, rfl⟩
+  have hYdet : Y.det = 1 := by
+    rw [hY, ← RingHom.mapMatrix_apply, ← RingHom.map_det, hdet1, map_one]
+  have hu' : u * Y.det = p := by
+    rw [hY, ← RingHom.mapMatrix_apply, ← RingHom.map_det]
+    exact Subtype.ext (hu.trans hp.symm)
+  have hmm := conj_inv_part β p u Y hu' hpp
+  rw [hp] at hmm
+  obtain ⟨κ, hs, hκ⟩ := split_lift_fin V he.1 _ _ hmm
+  have hP : IsPrimeIdem P e (e + cA D e) := Or.inl ⟨he, rfl⟩
+  obtain ⟨-, -, T3, -⟩ := GlobalTheory.IdemSupport.supported_group_and_prime_idempotents V
+  have hsf := supp_fin V (f := e + cA D e) hs
+  have hκd := hκ
+  rw [← hp] at hκ
+  have hf : finSw D (e + cA D e) = p + Formalism.UG.sigR D.sp.cm.sig (Formalism.L2.Herm.Af D.host.F) p := by
+    rw [RingHom.map_add, finSw_cA, hp]
+  have hSt : finE V κ ∈ St β :=
+    mem_St_of_part D.sp.cm.sig V.gram Λ β hB.1 (hatL_selfDual hB) p u hpp (sigR_int p.2) Y hu' (finE V κ)
+      (finE_mem_UA V κ) _ hf hsf hκ
+
+  have hD : e * (mt V κ).det = e := by
+    have he2 : finSw D e * finSw D e = finSw D e := by rw [← RingHom.map_mul, he.1.1]
+    have h1 := idem_mul_det he2 hκd
+    have e1 : (finE V κ).1 = (mt V κ).map (finSw D) := rfl
+    have e2 : (β.1 * Y.map (Formalism.L2.Herm.intAf D.host.F D.host.E).subtype * (β⁻¹).1).det = 1 := by
+      rw [Matrix.det_mul, Matrix.det_mul, mul_comm, ← mul_assoc, ← Matrix.det_mul, Units.inv_mul, Matrix.det_one,
+        one_mul, ← RingHom.mapMatrix_apply, ← RingHom.map_det, hYdet, map_one]
+    rw [e1, e2, ← RingHom.mapMatrix_apply, ← RingHom.map_det, mul_one, ← RingHom.map_mul] at h1
+    have h2 : finPart D (e * (mt V κ).det) = finPart D e := (swp_bij (F := D.host.F) (E := D.host.E)).1 h1
+    refine GlobalTheory.SplitScalar.adele_ext ?_ h2
+    rw [RingHom.map_mul, GlobalTheory.PlaceModelSum.infPart_split he.1, zero_mul]
+  refine ⟨κ, hs, (T3 P e _ hP).2.2.1 κ hs, hSt, Units.ext ?_, fun P' h1 h2 => ?_, ?_⟩
+  · rw [redFn_of_smul_eq β P _ hSt p hres Y hκ, hY, ← hY₀]
+    exact Matrix.ext fun i j => resS_oToS P _
+  · obtain ⟨y, y', hy, hyy, a1, a2⟩ := exists_sep h1 fun h => h2 (isConjPl_symm h)
+    obtain ⟨w, hw⟩ := idem_div_int hP y y' hyy a1 a2
+    refine redFn_eq_one β P' _ hSt (w * oToS D.host.F D.host.E y) ?_ ?_
+    · rw [RingHom.map_mul, resS_oToS, Ideal.Quotient.eq_zero_iff_mem.2 hy, mul_zero]
+    · have e1 : ((w * oToS D.host.F D.host.E y : Formalism.L2.Herm.intAf D.host.F D.host.E) : Lev.EAf D) =
+          finSw D (e + cA D e) := hw
+      rw [e1]
+      exact hsf
+  · show ((1 : (AE D)ˣ) : AE D) = e * (mt V κ).det + (1 - e)
+    rw [hD, Units.val_one]
+    ring
+
+end GlobalTheory.ParahoricLiftDet
+
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Lev Formalism.IndefR.Datum
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_split_supported_unitary_lift_detOne : ∀ {D : D7} {V : HSp D} {β : GL (Fin V.rank) (Lev.EAf D)} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)} {N : ℕ}, IsBaseFrame V β Λ N → ∀ {P : Pl D.host.E} {e : AE D}, Formalism.L2.NTheta.IsIdemAt e P → ∀ (k : GL (Fin V.rank) (kP P)), Matrix.GeneralLinearGroup.det k = 1 → ∃ κ : GA D V, SuppAt e V κ ∧ κ ∈ GfC V ∧ finE V κ ∈ St β ∧ redFn β P (finE V κ) = k ∧ (∀ P', P' ≠ P → ¬ Lev.IsConjPl P P' → redFn β P' (finE V κ) = 1) ∧ IsDetAt e V κ 1 := by
+  atlas_forward_decl GlobalTheory.ParahoricLiftDet.exists_local_lift_det
+end
+
+section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons Formalism.L2.Pj Formalism.L2.Indef Formalism.L2.Indef.Tree
 open Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.IndefR.Datum Formalism.IndefR.Lev
 open GlobalTheory.FormTies GlobalTheory.OnTies GlobalTheory.TraceClassRank
@@ -312,4 +513,5 @@ theorem GlobalTheory.TypeMove.vecFree_typeMove : ∀ (D : D7) (G : Type) [Group 
   refine ⟨ω (m⁻¹, 1) φ₁, ⟨hvac, e, hIS, hth'⟩, m⁻¹, inv_mem hmG, 1, by rw [map_one, one_smul], isIntegral_one,
     by rw [inv_one]; exact isIntegral_one, one_ne_zero, fun h _ w hw => inCoefLat_mul R i (hC.lev.βV i) hmSt' h w hw⟩
 
+end
 end

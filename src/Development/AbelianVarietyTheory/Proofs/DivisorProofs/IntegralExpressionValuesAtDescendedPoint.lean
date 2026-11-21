@@ -2,13 +2,1137 @@ import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SepAtBIff
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsDominantToUnitLeft
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueScalar
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionPointsProjectionsDefinedOverSubfield
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodGeneratorsValLocalUnitsMulSubfield
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaGeneratorValuesScalarMulLocalUnit
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionFrameValueLocalUnitsMulSubfield
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FromBaseWith
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GsAppTopOfSection
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTorsionNe
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SecScalOneVal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CharacterValueMemLocalUnitsMulSubfield
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymmetryGeneratorValueLocalUnitsMulSubfield
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSymmetricPolarisationFiniteExtension
 
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+namespace GlobalTheory.USep.EvG
+
+theorem points_defOver : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (N : ℕ), 1 ≤ N → ∀ (b : 𝟙_ (Over (Sp V₁)) ⟶ D.P.A), b ^ N = 1 → ∀ a : D.X,
+      DefOver k₀ (spMap ev ≫ b.left ≫ β) ∧ DefOver k₀ (spMap ev ≫ (D.c a).left ≫ β) ∧
+        DefOver k₀ (spMap ev ≫ (b * D.c a).left ≫ β) ∧ DefOver k₀ (spMap ev ≫ (D.c a * b).left ≫ β) := by
+  intro V₁ _ _ _ hV hunit D τ₀ W₀ _ ib B₀ _ M₀ c₀ τ₁ β w hF K _ _ ev k₀ hk₀ hk N hN b hb a
+  classical
+  obtain ⟨-, -, hβ, -, hc, -, -⟩ := hF
+  haveI : IsNoetherianRing V₁ := hV.1
+  have hg : spMap ev ≫ spMap ib = spMap (ev.comp ib) := by
+    simp only [spMap, ← Spec.map_comp]; rfl
+  obtain ⟨Φ, hΦ⟩ :=
+    GlobalTheory.GroupBplus.Aff.exists_mulEquiv_points_of_isGrpPullback hβ (spMap ev) (spMap (ev.comp ib)) hg
+
+  have htor : ∀ x : Over.mk (spMap ev) ⟶ D.P.A, x ^ N = 1 → DefOver k₀ (x.left ≫ β) := by
+    intro x hx
+    have hNK : (N : K) ≠ 0 := by
+      have := ((hunit N (by omega)).map ev).ne_zero
+      simpa using this
+    have hcard := (GlobalTheory.abelianSchemeLaws_all.1.mulN (Sp V₁) D.P N hN).2.2.2.2 K (spMap ev) hNK
+    have hfin : Finite {y : Over.mk (spMap ev) ⟶ D.P.A // y ^ N = 1} :=
+      Nat.finite_of_card_ne_zero (by rw [hcard]; exact pow_ne_zero _ (by omega))
+    refine defOver_of_finite_orbit K k₀ hk₀ _ _ ((Set.finite_range
+      fun y : {y : Over.mk (spMap ev) ⟶ D.P.A // y ^ N = 1} => (Φ y.1).left).subset ?_)
+    rintro _ ⟨σ, hσ, rfl⟩
+    have hσf : spMap σ.toRingHom ≫ spMap (ev.comp ib) = spMap (ev.comp ib) := by
+      have e1 : (σ.toRingHom).comp (ev.comp ib) = ev.comp ib := RingHom.ext fun u => hσ _ (hk u)
+      have e0 : spMap σ.toRingHom ≫ spMap (ev.comp ib) = spMap ((σ.toRingHom).comp (ev.comp ib)) := by
+        simp only [spMap, ← Spec.map_comp]; rfl
+      rw [e0, e1]
+    let hh : Over.mk (spMap (ev.comp ib)) ⟶ Over.mk (spMap (ev.comp ib)) := Over.homMk (spMap σ.toRingHom) hσf
+    refine ⟨⟨Φ.symm (hh ≫ Φ x), ?_⟩, ?_⟩
+    · rw [← map_pow, ← MonObj.comp_pow, ← map_pow, hx, map_one, MonObj.comp_one, map_one]
+    · show (Φ (Φ.symm (hh ≫ Φ x))).left = _
+      rw [MulEquiv.apply_symm_apply, Over.comp_left, hΦ]
+      rfl
+
+  have hsub : spMap k₀.subtype ≫ spMap ((ev.comp ib).codRestrict k₀ hk) = spMap (ev.comp ib) := by
+    simp only [spMap, ← Spec.map_comp]; rfl
+  let j : Over.mk (spMap (ev.comp ib)) ⟶ Over.mk (spMap ((ev.comp ib).codRestrict k₀ hk)) :=
+    Over.homMk (spMap k₀.subtype) hsub
+  have hdesc : ∀ p : Over.mk (spMap (ev.comp ib)) ⟶ B₀, DefOver k₀ p.left →
+      ∃ p₀ : Over.mk (spMap ((ev.comp ib).codRestrict k₀ hk)) ⟶ B₀, j ≫ p₀ = p := by
+    intro p ⟨P₀, hP₀⟩
+    have e : P₀ ≫ B₀.hom = spMap ((ev.comp ib).codRestrict k₀ hk) := spMap_subtype_cancel k₀ (by
+      rw [← Category.assoc, hP₀, Over.w p, hsub]; rfl)
+    exact ⟨Over.homMk P₀ e, Over.OverMorphism.ext hP₀⟩
+  have hmul : ∀ p q : Over.mk (spMap (ev.comp ib)) ⟶ B₀, DefOver k₀ p.left → DefOver k₀ q.left →
+      DefOver k₀ (p * q).left := by
+    intro p q hp hq
+    obtain ⟨p₀, rfl⟩ := hdesc p hp
+    obtain ⟨q₀, rfl⟩ := hdesc q hq
+    rw [← MonObj.comp_mul]
+    exact ⟨(p₀ * q₀).left, rfl⟩
+  have hprod : ∀ y z : Over.mk (spMap ev) ⟶ D.P.A, DefOver k₀ (y.left ≫ β) → DefOver k₀ (z.left ≫ β) →
+      DefOver k₀ ((y * z).left ≫ β) := by
+    intro y z hy hz
+    rw [← hΦ, map_mul]
+    exact hmul _ _ (by rw [hΦ]; exact hy) (by rw [hΦ]; exact hz)
+
+  let h : Over.mk (spMap ev) ⟶ 𝟙_ (Over (Sp V₁)) := Over.homMk (spMap ev) (Category.comp_id _)
+  have hl : ∀ y : 𝟙_ (Over (Sp V₁)) ⟶ D.P.A, spMap ev ≫ y.left ≫ β = (h ≫ y).left ≫ β := by
+    intro y
+    rw [Over.comp_left, Category.assoc]
+    rfl
+  have h1 : DefOver k₀ (spMap ev ≫ b.left ≫ β) := by
+    rw [hl]
+    exact htor _ (by rw [← MonObj.comp_pow, hb, MonObj.comp_one])
+  have h2 : DefOver k₀ (spMap ev ≫ (D.c a).left ≫ β) := by
+    have e : spMap ev ≫ (D.c a).left ≫ β = spMap (ev.comp ib) ≫ c₀ a := by
+      rw [show (D.c a).left ≫ β = spMap ib ≫ c₀ a from hc a, ← Category.assoc, hg]
+    rw [e]
+    exact defOver_comp k₀ (defOver_spMap k₀ _ hk) _
+  refine ⟨h1, h2, ?_, ?_⟩
+  · rw [hl, MonObj.comp_mul]
+    exact hprod _ _ (by rw [← hl]; exact h1) (by rw [← hl]; exact h2)
+  · rw [hl, MonObj.comp_mul]
+    exact hprod _ _ (by rw [← hl]; exact h2) (by rw [← hl]; exact h1)
+
+end GlobalTheory.USep.EvG
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torsionPoints_projections_defined_over_subfield : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (N : ℕ), 1 ≤ N → ∀ (b : 𝟙_ (Over (Sp V₁)) ⟶ D.P.A), b ^ N = 1 → ∀ a : D.X,
+      DefOver k₀ (spMap ev ≫ b.left ≫ β) ∧ DefOver k₀ (spMap ev ≫ (D.c a).left ≫ β) ∧
+        DefOver k₀ (spMap ev ≫ (b * D.c a).left ≫ β) ∧ DefOver k₀ (spMap ev ≫ (D.c a * b).left ≫ β) := by
+  atlas_forward_decl GlobalTheory.USep.EvG.points_defOver
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+noncomputable section
+
+namespace GlobalTheory.USep.EvG.AtPoint
+
+theorem gm_stalkMap {X Y Z : Scheme.{0}} (r : Z ⟶ Y) (f : Y ⟶ X) (z : Z) (U : X.Opens) (a : Γ(X, U)ˣ) :
+    Units.map (r.stalkMap z).hom.toMonoidHom (gm f (r z) U a) = gm (r ≫ f) z U a := by
+  by_cases h : f (r z) ∈ U
+  · apply Units.ext
+    rw [Units.coe_map, gm_val f (r z) U h, gm_val (r ≫ f) z U h]
+    exact Scheme.Hom.germ_stalkMap_apply r (f ⁻¹ᵁ U) z h _
+  · have h' : (r ≫ f) z ∉ U := h
+    rw [gm, dif_neg h, gm, dif_neg h']
+    simp
+
+theorem val_stalkMap {X Y Y' Z : Scheme.{0}} {L : LB X} {Ix : Type} [Fintype Ix] {φ : Ix → (Y ⟶ X)} {ε : Ix → ℤ}
+    (t : LB.Gen (LB.LinComb L φ ε)) (g : Y' ⟶ Y) (r : Z ⟶ Y') (z : Z) (J : (Z ⟶ X) → L.ι) :
+    Units.map (r.stalkMap z).hom.toMonoidHom (val t g (r z) (fun ψ => J (r ≫ ψ))) = val t (r ≫ g) z J := by
+  rw [val_of t (r ≫ g) z J (fun k => J (r ≫ g ≫ φ k)) (fun k => by rw [Category.assoc])]
+  exact gm_stalkMap r g z _ _
+
+end GlobalTheory.USep.EvG.AtPoint
+
+open GlobalTheory.USep.EvG.AtPoint in
+theorem GlobalTheory.USep.EvG.fromBase_tau_val : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ D.P.A.left) → D.P.L.ι) (J₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good D.P.L z J → Good M₀ z J₀ →
+    ∀ a b : D.X, ∃ c ∈ k₀, (val (τ₀ a b) (spMap ev) z J).val =
+      (GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c (a + b)).left) * (GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c a).left))⁻¹ *
+        (GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c b).left))⁻¹ * GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c 0).left)).val * toStk z c := by
+  intro V₁ _ _ _ _ _ D τ₀ W₀ _ ib B₀ _ M₀ c₀ τ₁ β w hFB K _ _ ev k₀ _ hk z J J₀ hJ hJ₀ a b
+  obtain ⟨-, -, -, -, -, -, hlast⟩ := hFB
+  have hJ' : Good D.P.L ((spMap ev) z) (fun ψ => J (spMap ev ≫ ψ)) := fun ψ => hJ (spMap ev ≫ ψ)
+  have hJ₀' : Good M₀ ((spMap ev) z) (fun ψ => J₀ (spMap ev ≫ ψ)) := fun ψ => hJ₀ (spMap ev ≫ ψ)
+  have E := congrArg (Units.map ((spMap ev).stalkMap z).hom.toMonoidHom) (hlast a b ((spMap ev) z) _ _ hJ' hJ₀')
+  simp only [map_mul, map_inv, val_stalkMap, gm_stalkMap, Category.comp_id] at E
+  have hg : ∀ x : D.X, gm (spMap ev ≫ UChart.cpt D x) z
+      (((M₀.pull β).div D.P.L).U (fun _ => J₀ (spMap ev ≫ UChart.cpt D x ≫ β), J (spMap ev ≫ UChart.cpt D x)))
+      (w.s (fun _ => J₀ (spMap ev ≫ UChart.cpt D x ≫ β), J (spMap ev ≫ UChart.cpt D x))) =
+      GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c x).left) := by
+    intro x
+    show _ = gw w _ z _ _
+    rw [Category.assoc]
+    rfl
+  rw [hg (a + b), hg a, hg b, hg 0, ← ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp] at E
+  obtain ⟨c, hc, hv⟩ := GlobalTheory.Poinc.Sep.val_spMap_mem k₀ (τ₁ a b) (ev.comp ib) hk z hJ₀
+  refine ⟨c, hc, ?_⟩
+  rw [E, Units.val_mul, hv]
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.periodGenerators_val_localUnits_mul_subfield : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ D.P.A.left) → D.P.L.ι) (J₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good D.P.L z J → Good M₀ z J₀ →
+    ∀ a b : D.X, ∃ c ∈ k₀, (val (τ₀ a b) (spMap ev) z J).val =
+      (GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c (a + b)).left) * (GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c a).left))⁻¹ *
+        (GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c b).left))⁻¹ * GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c 0).left)).val * toStk z c := by
+  atlas_forward_decl GlobalTheory.USep.EvG.fromBase_tau_val
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+namespace GlobalTheory.USep.EvG.ThetaVal
+
+open GlobalTheory.USep.EvG
+
+theorem one_left' {S X : Scheme.{0}} (G : Over S) [GrpObj G] (t : X ⟶ S) :
+    (1 : Over.mk t ⟶ G).left = t ≫ (η[G]).left := by
+  rw [Hom.one_def]; rfl
+
+theorem toUnit_eta_left {S : Scheme.{0}} (G : Over S) [GrpObj G] :
+    (toUnit G ≫ η[G]).left = G.hom ≫ (η[G]).left := by
+  rfl
+
+@[reassoc]
+theorem spMap_two' {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
+    spMap g ≫ spMap f = spMap (g.comp f) := by
+  simp only [spMap, ← Spec.map_comp]; rfl
+
+theorem eta_push {S S' : Scheme.{0}} {G' : Over S'} [GrpObj G'] {G : Over S} [GrpObj G] {f : S' ⟶ S}
+    {F : G'.left ⟶ G.left} (hF : IsGrpPullback G' G f F) : (toUnit G' ≫ η[G']).left ≫ F = G'.hom ≫ f ≫ (η[G]).left := by
+  obtain ⟨e, he⟩ := GlobalTheory.GroupBplus.Aff.exists_mulEquiv_points_of_isGrpPullback hF G'.hom (G'.hom ≫ f) rfl
+  have h1 := he 1
+  rw [map_one, one_left', one_left'] at h1
+  rw [toUnit_eta_left, ← h1, Category.assoc]
+
+variable {V₁ : Type} [CommRing V₁] [IsDomain V₁]
+
+theorem famφB_one (D : DegPre V₁) : D.famφB 0 1 = 𝟙 _ := by
+  have h : padd D.P.A (𝟙 D.P.A) (toUnit D.P.A ≫ D.c 0) = 𝟙 D.P.A := by
+    rw [GlobalTheory.Poinc.ThetaOne.c_zero D, MonObj.comp_one]
+    exact mul_one (𝟙 D.P.A)
+  show (padd D.P.A (𝟙 D.P.A) (toUnit _ ≫ D.c 0)).left = _
+  rw [h]; rfl
+
+theorem famφB_two (D : DegPre V₁) : D.famφB 0 2 = D.famφB 0 3 := by
+  show (toUnit D.P.A ≫ D.c 0).left = (toUnit D.P.A ≫ η[D.P.A]).left
+  rw [GlobalTheory.Poinc.ThetaOne.c_zero D, MonObj.comp_one]
+  rfl
+
+def chartPullCompPull {X X' Y : Scheme.{0}} (L : LB X) (F : X' ⟶ X) {K : Type} [Fintype K] (φ : K → (Y ⟶ X'))
+    (ε : K → ℤ) : ChartPull (LB.LinComb L (fun k => φ k ≫ F) ε) (LB.LinComb (L.pull F) φ ε) (𝟙 Y) :=
+  have le : ∀ j : K → L.ι, LB.wchart L (fun k => φ k ≫ F) j ≤ (𝟙 Y) ⁻¹ᵁ LB.wchart (L.pull F) φ (fun k _ => j k) :=
+    fun j y hy => Set.mem_iInter.2 fun k => mem_pull.2 (Set.mem_iInter.1 hy k)
+  { idx := fun j k _ => j k
+    le := le
+    g := fun y j j' hj hj' => by
+      refine (gm_linComb L (fun k => φ k ≫ F) ε (𝟙 Y) y j j' hj hj').trans
+        (Eq.trans (Finset.prod_congr rfl fun k _ => congrArg (· ^ ε k) ?_)
+          (gm_linComb (L.pull F) φ ε (𝟙 Y) y _ _ (le j hj) (le j' hj')).symm)
+      refine Eq.trans ?_ (gm_pull_g L F (𝟙 Y ≫ φ k) y (fun _ => j k) (fun _ => j' k)
+        (Set.mem_iInter.1 (le j hj) k) (Set.mem_iInter.1 (le j' hj') k)).symm
+      simp only [Category.assoc] }
+
+theorem gm_linCombIso_pull' {A A₂ Y₂ : Scheme.{0}} {L : LB A} {L₂ : LB A₂} {φ : A₂ ⟶ A} (w : LB.Iso L₂ (L.pull φ))
+    {K : Type} [Fintype K] (φ' : K → (Y₂ ⟶ A₂)) (ε : K → ℤ)
+    {Z : Scheme.{0}} (r : Z ⟶ Y₂) (z : Z) (p : K → L.ι) (q : K → L₂.ι)
+    (hm : r z ∈ LB.wchart (L.pull φ) φ' (fun k _ => p k) ⊓ LB.wchart L₂ φ' q) :
+    gm r z (LB.wchart (L.pull φ) φ' (fun k _ => p k) ⊓ LB.wchart L₂ φ' q)
+      ((LB.linCombIso w φ' ε).s (fun k _ => p k, q)) = ∏ k, gw w (r ≫ φ' k) z (p k) (q k) ^ ε k := by
+  refine (map_prod _ _ _).trans (Finset.prod_congr rfl fun k _ => (map_zpow _ _ _).trans (congrArg (· ^ ε k) ?_))
+  exact (gm_res r z _ hm _).trans (gm_pull r (φ' k) z ((L.pull φ).U (fun _ => p k) ⊓ L₂.U (q k))
+    ⟨Set.mem_iInter.1 hm.1 k, Set.mem_iInter.1 hm.2 k⟩ _)
+
+theorem exists_conj_fibre_one {V₁ W₀ : Type} [CommRing V₁] [IsDomain V₁] [CommRing W₀] (D : DegPre V₁) (ib : W₀ →+* V₁)
+    (B₀ : Over (Sp W₀)) [GrpObj B₀] (β : D.P.A.left ⟶ B₀.left) (hβ : IsGrpPullback D.P.A B₀ (spMap ib) β)
+    (K : Type) [Field K] (ev : V₁ →+* K) (k₀ : Subfield K) (hk : ∀ a, ev (ib a) ∈ k₀)
+    (σ : K ≃+* K) (hσ : ∀ a ∈ k₀, σ a = a) :
+    ∃ σt : (Over.mk (spMap ev) ⊗ D.P.A).left ⟶ (Over.mk (spMap ev) ⊗ D.P.A).left,
+      σt ≫ (fst (Over.mk (spMap ev)) D.P.A).left = (fst (Over.mk (spMap ev)) D.P.A).left ≫ spMap σ.toRingHom ∧
+      σt ≫ (snd (Over.mk (spMap ev)) D.P.A).left ≫ β = (snd (Over.mk (spMap ev)) D.P.A).left ≫ β ∧
+      ∀ x : Sp K ⟶ (Over.mk (spMap ev) ⊗ D.P.A).left, x ≫ (fst (Over.mk (spMap ev)) D.P.A).left = 𝟙 _ →
+        DefOver k₀ (x ≫ (snd (Over.mk (spMap ev)) D.P.A).left ≫ β) → x ≫ σt = spMap σ.toRingHom ≫ x := by
+  set E := Over.mk (spMap ev) with hE
+  set fK := (fst E D.P.A).left with hfK
+  set q := (snd E D.P.A).left with hq
+  have hw : q ≫ D.P.A.hom = fK ≫ spMap ev := (Over.w (snd E D.P.A)).trans (Over.w (fst E D.P.A)).symm
+  have hf : ∀ a, (ev.comp ib) a ∈ k₀ := hk
+  obtain ⟨Φ₀, hΦ₀⟩ := GlobalTheory.GroupBplus.Aff.exists_mulEquiv_points_of_isGrpPullback hβ (fK ≫ spMap ev)
+    (fK ≫ spMap (ev.comp ib)) (by rw [Category.assoc, spMap_two'])
+  obtain ⟨Φ₁, hΦ₁⟩ := GlobalTheory.GroupBplus.Aff.exists_mulEquiv_points_of_isGrpPullback hβ (fK ≫ spMap σ.toRingHom ≫ spMap ev)
+    (fK ≫ spMap (ev.comp ib))
+    (by rw [Category.assoc, Category.assoc, spMap_two', spMap_conj k₀ _ hf σ hσ])
+  let qpt : Over.mk (fK ≫ spMap ev) ⟶ D.P.A := Over.homMk q hw
+  let σD := Φ₁.symm (Φ₀ qpt)
+  let a0 : Over.mk (fK ≫ spMap σ.toRingHom ≫ spMap ev) ⟶ E :=
+    Over.homMk (fK ≫ spMap σ.toRingHom) (Category.assoc _ _ _)
+  let σt : (E ⊗ D.P.A).left ⟶ (E ⊗ D.P.A).left := (lift a0 σD).left
+  have hfst : σt ≫ fK = fK ≫ spMap σ.toRingHom := congrArg (fun z => z.left) (lift_fst a0 σD)
+  have hsnd : σt ≫ q = σD.left := congrArg (fun z => z.left) (lift_snd a0 σD)
+  have hproj : σt ≫ q ≫ β = q ≫ β := by
+    rw [reassoc_of% hsnd, ← hΦ₁ σD, MulEquiv.apply_symm_apply, hΦ₀]
+    rfl
+  refine ⟨σt, hfst, hproj, fun x hx hdef => ?_⟩
+  have hEh : (E ⊗ D.P.A).hom = fK ≫ spMap ev := (Over.w (fst E D.P.A)).symm
+  let T : Over (Sp V₁) := Over.mk (spMap σ.toRingHom ≫ spMap ev)
+  let m1 : T ⟶ E ⊗ D.P.A := Over.homMk (x ≫ σt) (by
+    show (x ≫ σt) ≫ (E ⊗ D.P.A).hom = spMap σ.toRingHom ≫ spMap ev
+    rw [hEh, Category.assoc, reassoc_of% hfst, reassoc_of% hx])
+  let m2 : T ⟶ E ⊗ D.P.A := Over.homMk (spMap σ.toRingHom ≫ x) (by
+    show (spMap σ.toRingHom ≫ x) ≫ (E ⊗ D.P.A).hom = spMap σ.toRingHom ≫ spMap ev
+    rw [hEh, Category.assoc, reassoc_of% hx])
+  have hm : m1 = m2 := by
+    apply CartesianMonoidalCategory.hom_ext
+    · apply Over.OverMorphism.ext
+      show (x ≫ σt) ≫ fK = (spMap σ.toRingHom ≫ x) ≫ fK
+      rw [Category.assoc, hfst, reassoc_of% hx, Category.assoc, hx, Category.comp_id]
+    · obtain ⟨Φ₂, hΦ₂⟩ := GlobalTheory.GroupBplus.Aff.exists_mulEquiv_points_of_isGrpPullback hβ
+        (spMap σ.toRingHom ≫ spMap ev) (spMap (ev.comp ib))
+        (by rw [Category.assoc, spMap_two', spMap_conj k₀ _ hf σ hσ])
+      apply Φ₂.injective
+      apply Over.OverMorphism.ext
+      rw [hΦ₂, hΦ₂]
+      show (x ≫ σt) ≫ q ≫ β = (spMap σ.toRingHom ≫ x) ≫ q ≫ β
+      obtain ⟨P₀, hP₀⟩ := hdef
+      rw [Category.assoc, hproj, Category.assoc, ← hP₀, ← Category.assoc,
+        spMap_conj k₀ k₀.subtype (fun a => a.2) σ hσ]
+  exact congrArg (fun m => m.left) hm
+
+theorem gm_thetaIso {V₁ : Type} [CommRing V₁] [IsDomain V₁] (D : DegPre V₁) {B₀ : Scheme.{0}} {M₀ : LB B₀}
+    (β : D.P.A.left ⟶ B₀) (w : LB.Iso D.P.L (M₀.pull β)) {K : Type} [Field K] (r : Sp K ⟶ D.P.A.left) (z : Sp K)
+    (J : (Sp K ⟶ D.P.A.left) → D.P.L.ι) (J₀ : (Sp K ⟶ B₀) → M₀.ι) (hJ : Good D.P.L z J) (hJ₀ : Good M₀ z J₀) :
+    gm r z _ ((GlobalTheory.PolDeg.TautFrom.isoPull (chartPullId (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1)))
+      (chartPullCompPull M₀ β (D.famφB 0) (DegPre.famε 1)) (LB.linCombIso w (D.famφB 0) (DegPre.famε 1))).s
+        (fun k => J₀ (r ≫ (D.famφB 0 k ≫ β)), fun k => J (r ≫ D.famφB 0 k))) = gwx w z J J₀ r := by
+  have hz : r z ∈ (LB.LinComb M₀ (fun k => D.famφB 0 k ≫ β) (DegPre.famε 1)).U (fun k => J₀ (r ≫ (D.famφB 0 k ≫ β))) ⊓
+      (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1)).U (fun k => J (r ≫ D.famφB 0 k)) :=
+    ⟨hJ₀.mem (fun k => D.famφB 0 k ≫ β) r, hJ.mem (D.famφB 0) r⟩
+  refine (GlobalTheory.PolDeg.TautFrom.gm_isoPull _ _ _ r z _ hz).trans ?_
+  rw [Category.comp_id]
+  have hm : r z ∈ LB.wchart (M₀.pull β) (D.famφB 0) (fun k _ => J₀ (r ≫ (D.famφB 0 k ≫ β))) ⊓
+      LB.wchart D.P.L (D.famφB 0) (fun k => J (r ≫ D.famφB 0 k)) :=
+    ⟨Set.mem_iInter.2 fun k => mem_pull.2 (Set.mem_iInter.1 hz.1 k), hz.2⟩
+  refine (gm_linCombIso_pull' w (D.famφB 0) (DegPre.famε 1) r z (fun k => J₀ (r ≫ (D.famφB 0 k ≫ β)))
+    (fun k => J (r ≫ D.famφB 0 k)) hm).trans ?_
+  have h0 : D.famφB 0 0 = 𝟙 _ := rfl
+  rw [Fin.prod_univ_four, h0, famφB_one D, famφB_two D]
+  simp only [DegPre.famε, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three,
+    Matrix.head_cons, Matrix.tail_cons, Nat.cast_one, sub_self, zpow_zero, zpow_one, zpow_neg, one_mul,
+    Category.comp_id, Category.id_comp, mul_inv_cancel_right]
+  rw [_root_.one_mul, inv_mul_cancel_right]
+
+theorem theta_values : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ D.P.A.left) → D.P.L.ι) (J₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good D.P.L z J → Good M₀ z J₀ →
+    ∀ (θ : SecOver D.P.A.hom (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1))),
+    (∀ (R' : Type) [CommRing R'] (f : V₁ →+* R') θ',
+      IsPullSecLC D.P.L (D.famφB 0) (DegPre.famε 1) (snd (Over.mk (Spec.map (CommRingCat.ofHom f))) D.P.A).left θ θ' →
+      GlobalTheory.Poinc.ThetaOne.OneBasisAt D f θ') →
+    ∃ κ : K, ∀ p : 𝟙_ (Over (Sp V₁)) ⟶ D.P.A, DefOver k₀ (spMap ev ≫ p.left ≫ β) → ∃ c ∈ k₀,
+      sval (θ : LB.Sec (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1))) (spMap ev ≫ p.left) z J =
+        ((GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ p.left))⁻¹).val * toStk z (κ * c) := by
+  intro V₁ _ _ _ _ _ D τ₀ W₀ _ ib B₀ _ M₀ c₀ τ₁ β w hFB K _ _ ev k₀ hk₀ hk z J J₀ hJ hJ₀ θ hθ
+  obtain ⟨-, hM₀, hβ, hw, -, -, -⟩ := hFB
+  let u := GlobalTheory.PolDeg.TautFrom.isoPull (chartPullId (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1)))
+    (chartPullCompPull M₀ β (D.famφB 0) (DegPre.famε 1)) (LB.linCombIso w (D.famφB 0) (DegPre.famε 1))
+  have hu : u.IsGen := GlobalTheory.PolDeg.TautFrom.isoPull_isGen _ _ _ (DVR.linCombIso_isGen w hw _ _)
+  have hL : (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1)).IsLB := DVR.linComb_isLB _ D.P.isLB _ _
+  have hM : (LB.LinComb M₀ (fun k => D.famφB 0 k ≫ β) (DegPre.famε 1)).IsLB := DVR.linComb_isLB _ hM₀ _ _
+  obtain ⟨s, hs⟩ := ReciprocityTheory.ChartRestriction.G.DVR.FlatBC.exists_isoRel hL hM hu
+    (θ : LB.Sec (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1)))
+  let E := Over.mk (spMap ev)
+  let q := (snd E D.P.A).left
+  have hqw : q ≫ D.P.A.hom = (fst E D.P.A).left ≫ spMap ev := (Over.w (snd E D.P.A)).trans (Over.w (fst E D.P.A)).symm
+  let R : (Sp K ⟶ (E ⊗ D.P.A).left) → Prop := fun x => x ≫ (fst E D.P.A).left = 𝟙 _ ∧ DefOver k₀ (x ≫ q ≫ β)
+  have hcases : ∀ k : Fin 4, D.famφB 0 k = 𝟙 _ ∨ D.famφB 0 k ≫ β = D.P.A.hom ≫ spMap ib ≫ (η[B₀]).left := by
+    intro k
+    fin_cases k
+    · exact Or.inl rfl
+    · exact Or.inl (by show D.famφB 0 1 = _; exact famφB_one D)
+    · exact Or.inr (by show D.famφB 0 2 ≫ β = _; rw [famφB_two D]; exact eta_push hβ)
+    · exact Or.inr (by show D.famφB 0 3 ≫ β = _; exact eta_push hβ)
+  obtain ⟨κ, -, hval⟩ := galois_values k₀ hk₀ (fun k => q ≫ (D.famφB 0 k ≫ β)) (DegPre.famε 1)
+    (ReciprocityTheory.ChartRestriction.G.H1.SectionArithmetic.pullSec s q) R
+    (fun t => by
+      obtain ⟨c, hc⟩ := fibre_one_dim D ev (θ : LB.Sec (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1))) (hθ K ev)
+        (fun k => D.famφB 0 k ≫ β) (DegPre.famε 1) hM₀ u hu s hs t
+      exact ⟨c, fun x hR z J hJ => hc x hR.1 z J hJ⟩)
+    (fun σ hσ => by
+      obtain ⟨σt, hfst, hproj, hfix⟩ := exists_conj_fibre_one D ib B₀ β hβ K ev k₀ hk σ hσ
+      refine ⟨σt, fun k => ?_, fun x hR => hfix x hR.1 hR.2⟩
+      rcases hcases k with h | h
+      · show σt ≫ q ≫ D.famφB 0 k ≫ β = q ≫ D.famφB 0 k ≫ β
+        rw [h, Category.id_comp]
+        exact hproj
+      · show σt ≫ q ≫ D.famφB 0 k ≫ β = q ≫ D.famφB 0 k ≫ β
+        have hf : ∀ a, (ev.comp ib) a ∈ k₀ := hk
+        rw [h, reassoc_of% hqw, reassoc_of% hfst, spMap_two'_assoc ib ev, reassoc_of% (spMap_conj k₀ _ hf σ hσ)])
+  refine ⟨κ, fun p hdef => ?_⟩
+  have hr : (spMap ev ≫ p.left) ≫ D.P.A.hom = spMap ev := by
+    rw [Category.assoc, Over.w p]
+    exact Category.comp_id _
+  let a1 : Over.mk (spMap ev) ⟶ E := Over.homMk (𝟙 (Sp K)) (Category.id_comp _)
+  let b1 : Over.mk (spMap ev) ⟶ D.P.A := Over.homMk (spMap ev ≫ p.left) hr
+  let x : Sp K ⟶ (E ⊗ D.P.A).left := (lift a1 b1).left
+  have hxf : x ≫ (fst E D.P.A).left = 𝟙 _ :=
+    congrArg (fun m : Over.mk (spMap ev) ⟶ E => m.left) (lift_fst a1 b1)
+  have hxq : x ≫ q = spMap ev ≫ p.left := congrArg (fun m : Over.mk (spMap ev) ⟶ D.P.A => m.left) (lift_snd a1 b1)
+  have hRx : R x := ⟨hxf, by
+    show DefOver k₀ (x ≫ q ≫ β)
+    rw [reassoc_of% hxq]
+    exact hdef⟩
+  obtain ⟨c, hc, he⟩ := hval x hRx z J₀ hJ₀
+  refine ⟨c, hc, ?_⟩
+  have e1 : sval s (spMap ev ≫ p.left) z J₀ = toStk z (κ * c) := by
+    rw [← he, ReciprocityTheory.ChartRestriction.G.H1.SectionArithmetic.sval_pullSec s q x z hJ₀, hxq]
+  have e2 := gs_isoRel_at hs _ _ (spMap ev ≫ p.left) z (hJ₀.mem (fun k => D.famφB 0 k ≫ β) (spMap ev ≫ p.left))
+    (hJ.mem (D.famφB 0) (spMap ev ≫ p.left))
+  rw [gm_thetaIso D β w (spMap ev ≫ p.left) z J J₀ hJ hJ₀] at e2
+  have e4 : (gwx w z J J₀ (spMap ev ≫ p.left)).val *
+      sval (θ : LB.Sec (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1))) (spMap ev ≫ p.left) z J = toStk z (κ * c) := by
+    rw [← e1]; exact e2.symm
+  rw [← e4, Units.inv_mul_cancel_left]
+
+end GlobalTheory.USep.EvG.ThetaVal
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaGenerator_values_scalar_mul_localUnit : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ D.P.A.left) → D.P.L.ι) (J₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good D.P.L z J → Good M₀ z J₀ →
+    ∀ (θ : SecOver D.P.A.hom (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1))),
+    (∀ (R' : Type) [CommRing R'] (f : V₁ →+* R') θ',
+      IsPullSecLC D.P.L (D.famφB 0) (DegPre.famε 1) (snd (Over.mk (Spec.map (CommRingCat.ofHom f))) D.P.A).left θ θ' →
+      GlobalTheory.Poinc.ThetaOne.OneBasisAt D f θ') →
+    ∃ κ : K, ∀ p : 𝟙_ (Over (Sp V₁)) ⟶ D.P.A, DefOver k₀ (spMap ev ≫ p.left ≫ β) → ∃ c ∈ k₀,
+      sval (θ : LB.Sec (LB.LinComb D.P.L (D.famφB 0) (DegPre.famε 1))) (spMap ev ≫ p.left) z J =
+        ((GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ p.left))⁻¹).val * toStk z (κ * c) := by
+  atlas_forward_decl GlobalTheory.USep.EvG.ThetaVal.theta_values
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+open GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.PolDeg GlobalTheory.Poinc.Sep.Coef
+
+noncomputable section
+
+namespace GlobalTheory.USep.EvG
+
+section GaloisVia
+
+variable {V₁ W₀ K : Type} [CommRing V₁] [CommRing W₀] [Field K] {A : Over (Sp V₁)} [GrpObj A] {B₀ : Over (Sp W₀)}
+  [GrpObj B₀] (f : W₀ →+* V₁) (β : A.left ⟶ B₀.left)
+
+def PtsVia : Prop := ∀ (T : Over (Sp V₁)) (g : T.left ⟶ Sp W₀), T.hom ≫ spMap f = g →
+  ∃ Φ : (T ⟶ A) ≃* (Over.mk g ⟶ B₀), ∀ x, (Φ x).left = x.left ≫ β
+
+variable (ev : V₁ →+* K) (k₀ : Subfield K)
+
+def IsConjV (σ : K ≃+* K) (σt : (Over.mk (spMap ev) ⊗ A).left ⟶ (Over.mk (spMap ev) ⊗ A).left) : Prop :=
+  σt ≫ (fst (Over.mk (spMap ev)) A).left = (fst (Over.mk (spMap ev)) A).left ≫ spMap σ.toRingHom ∧
+    σt ≫ (snd (Over.mk (spMap ev)) A).left ≫ β = (snd (Over.mk (spMap ev)) A).left ≫ β
+
+def RatMV (ψ : (Over.mk (spMap ev) ⊗ A).left ⟶ A.left) : Prop :=
+  ∀ σ : K ≃+* K, (∀ a ∈ k₀, σ a = a) → ∀ σt, IsConjV β ev σ σt → σt ≫ ψ ≫ β = ψ ≫ β
+
+def RatPV (x : Sp K ⟶ A.left) : Prop := DefOver k₀ (x ≫ β)
+
+variable {f β ev k₀}
+
+theorem ptsVia_of (h : IsGrpPullback A B₀ (spMap f) β) : PtsVia f β := by
+  rintro T g rfl
+  have hw : ∀ x : T ⟶ A, (x.left ≫ β) ≫ B₀.hom = T.hom ≫ spMap f := fun x => by
+    rw [Category.assoc, h.1.w, ← Category.assoc, Over.w x]
+  let F : (T ⟶ A) → (Over.mk (T.hom ≫ spMap f) ⟶ B₀) := fun x => Over.homMk (x.left ≫ β) (hw x)
+  let G : (Over.mk (T.hom ≫ spMap f) ⟶ B₀) → (T ⟶ A) := fun y =>
+    Over.homMk (h.1.lift y.left T.hom (Over.w y)) (h.1.lift_snd _ _ _)
+  have hFG : ∀ y, F (G y) = y := fun y => Over.OverMorphism.ext (h.1.lift_fst _ _ _)
+  have hGF : ∀ x, G (F x) = x := fun x => Over.OverMorphism.ext
+    (h.1.hom_ext (h.1.lift_fst _ _ _) ((h.1.lift_snd _ _ _).trans (Over.w x).symm))
+  exact ⟨MulEquiv.mk ⟨F, G, hGF, hFG⟩ (fun x y => Over.OverMorphism.ext (h.2 T x y (F x) (F y) rfl rfl).symm),
+    fun x => rfl⟩
+
+theorem exists_conjV (hP : PtsVia f β) (hk : ∀ a, ev (f a) ∈ k₀) (σ : K ≃+* K) (hσ : ∀ a ∈ k₀, σ a = a) :
+    ∃ σt, IsConjV β ev σ σt ∧ ∀ x : Sp K ⟶ (Over.mk (spMap ev) ⊗ A).left,
+      x ≫ (fst (Over.mk (spMap ev)) A).left = 𝟙 _ → RatPV β k₀ (x ≫ (snd (Over.mk (spMap ev)) A).left) →
+        x ≫ σt = spMap σ.toRingHom ≫ x := by
+  set E := Over.mk (spMap ev) with hE
+  set fK := (fst E A).left with hfK
+  set s := (snd E A).left with hs
+  have hw : s ≫ A.hom = fK ≫ spMap ev := (Over.w (snd E A)).trans (Over.w (fst E A)).symm
+  have hf : ∀ a, (ev.comp f) a ∈ k₀ := hk
+  have h2 : spMap ev ≫ spMap f = spMap (ev.comp f) := by
+    simp only [spMap, ← Spec.map_comp]; rfl
+  obtain ⟨Φ₀, hΦ₀⟩ := hP (Over.mk (fK ≫ spMap ev)) (fK ≫ spMap (ev.comp f)) (by
+    show (fK ≫ spMap ev) ≫ spMap f = _
+    rw [Category.assoc, h2])
+  obtain ⟨Φ₁, hΦ₁⟩ := hP (Over.mk (fK ≫ spMap σ.toRingHom ≫ spMap ev)) (fK ≫ spMap (ev.comp f)) (by
+    show (fK ≫ spMap σ.toRingHom ≫ spMap ev) ≫ spMap f = _
+    rw [Category.assoc, Category.assoc, h2, spMap_conj k₀ _ hf σ hσ])
+  let qpt : Over.mk (fK ≫ spMap ev) ⟶ A := Over.homMk s hw
+  let σD := Φ₁.symm (Φ₀ qpt)
+  let a0 : Over.mk (fK ≫ spMap σ.toRingHom ≫ spMap ev) ⟶ E :=
+    Over.homMk (fK ≫ spMap σ.toRingHom) (Category.assoc _ _ _)
+  let σt : (E ⊗ A).left ⟶ (E ⊗ A).left := (lift a0 σD).left
+  have hfst : σt ≫ fK = fK ≫ spMap σ.toRingHom := congrArg (fun z => z.left) (lift_fst a0 σD)
+  have hsnd : σt ≫ s = σD.left := congrArg (fun z => z.left) (lift_snd a0 σD)
+  have hproj : σt ≫ s ≫ β = s ≫ β := by
+    rw [reassoc_of% hsnd, ← hΦ₁ σD, MulEquiv.apply_symm_apply, hΦ₀]
+    rfl
+  refine ⟨σt, ⟨hfst, hproj⟩, fun x hx hdef => ?_⟩
+  have hEh : (E ⊗ A).hom = fK ≫ spMap ev := (Over.w (fst E A)).symm
+  let T : Over (Sp V₁) := Over.mk (spMap σ.toRingHom ≫ spMap ev)
+  let m1 : T ⟶ E ⊗ A := Over.homMk (x ≫ σt) (by
+    show (x ≫ σt) ≫ (E ⊗ A).hom = spMap σ.toRingHom ≫ spMap ev
+    rw [hEh, Category.assoc, reassoc_of% hfst, reassoc_of% hx])
+  let m2 : T ⟶ E ⊗ A := Over.homMk (spMap σ.toRingHom ≫ x) (by
+    show (spMap σ.toRingHom ≫ x) ≫ (E ⊗ A).hom = spMap σ.toRingHom ≫ spMap ev
+    rw [hEh, Category.assoc, reassoc_of% hx])
+  have hm : m1 = m2 := by
+    apply CartesianMonoidalCategory.hom_ext
+    · apply Over.OverMorphism.ext
+      show (x ≫ σt) ≫ fK = (spMap σ.toRingHom ≫ x) ≫ fK
+      rw [Category.assoc, hfst, reassoc_of% hx, Category.assoc, hx, Category.comp_id]
+    · obtain ⟨Φ₂, hΦ₂⟩ := hP T (spMap (ev.comp f)) (by
+        show (spMap σ.toRingHom ≫ spMap ev) ≫ spMap f = _
+        rw [Category.assoc, h2, spMap_conj k₀ _ hf σ hσ])
+      apply Φ₂.injective
+      apply Over.OverMorphism.ext
+      rw [hΦ₂, hΦ₂]
+      show ((x ≫ σt) ≫ s) ≫ β = ((spMap σ.toRingHom ≫ x) ≫ s) ≫ β
+      obtain ⟨P₀, hP₀⟩ := hdef
+      simp only [Category.assoc] at hP₀ ⊢
+      rw [hproj, ← hP₀, ← Category.assoc, spMap_conj k₀ k₀.subtype (fun a => a.2) σ hσ]
+  exact congrArg (fun m => m.left) hm
+
+theorem ratMV_snd : RatMV β ev k₀ (snd (Over.mk (spMap ev)) A).left := fun _ _ _ h => h.2
+
+theorem ratMV_const (x : Over.mk (spMap ev) ⟶ A) (hx : RatPV β k₀ x.left) :
+    RatMV β ev k₀ (fst (Over.mk (spMap ev)) A ≫ x).left := fun σ hσ σt h => by
+  obtain ⟨P₀, hP₀⟩ := hx
+  show σt ≫ ((fst (Over.mk (spMap ev)) A).left ≫ x.left) ≫ β = ((fst (Over.mk (spMap ev)) A).left ≫ x.left) ≫ β
+  simp only [Category.assoc]
+  rw [reassoc_of% h.1]
+  erw [← hP₀]
+  congr 1
+  rw [← Category.assoc, spMap_conj k₀ k₀.subtype (fun a => a.2) σ hσ]
+
+theorem ratMV_mul (hP : PtsVia f β) (hk : ∀ a, ev (f a) ∈ k₀) {x y : Over.mk (spMap ev) ⊗ A ⟶ A}
+    (hx : RatMV β ev k₀ x.left) (hy : RatMV β ev k₀ y.left) : RatMV β ev k₀ (x * y).left := fun σ hσ σt h => by
+  have hf : ∀ a, (ev.comp f) a ∈ k₀ := hk
+  have h2 : spMap ev ≫ spMap f = spMap (ev.comp f) := by
+    simp only [spMap, ← Spec.map_comp]; rfl
+  obtain ⟨Φ, hΦ⟩ := hP (Over.mk (spMap ev) ⊗ A) ((fst (Over.mk (spMap ev)) A).left ≫ spMap (ev.comp f)) (by
+    rw [← h2, ← Category.assoc]
+    exact congrArg (· ≫ spMap f) (Over.w (fst (Over.mk (spMap ev)) A)).symm)
+  let τ : Over.mk ((fst (Over.mk (spMap ev)) A).left ≫ spMap (ev.comp f)) ⟶
+      Over.mk ((fst (Over.mk (spMap ev)) A).left ≫ spMap (ev.comp f)) := Over.homMk σt (by
+    show σt ≫ (fst (Over.mk (spMap ev)) A).left ≫ spMap (ev.comp f) = (fst (Over.mk (spMap ev)) A).left ≫ spMap (ev.comp f)
+    rw [reassoc_of% h.1]
+    erw [spMap_conj k₀ _ hf σ hσ])
+  have e : ∀ {x : Over.mk (spMap ev) ⊗ A ⟶ A}, RatMV β ev k₀ x.left → τ ≫ Φ x = Φ x := fun {x} hx =>
+    Over.OverMorphism.ext (by
+      show σt ≫ (Φ x).left = _
+      rw [hΦ]; exact hx σ hσ σt h)
+  rw [← hΦ]
+  show (τ ≫ Φ (x * y)).left = _
+  rw [map_mul, MonObj.comp_mul, e hx, e hy]
+
+theorem ratMV_one (h1 : RatPV β k₀ (1 : Over.mk (spMap ev) ⟶ A).left) :
+    RatMV β ev k₀ (1 : Over.mk (spMap ev) ⊗ A ⟶ A).left := by
+  have := ratMV_const 1 h1
+  rwa [MonObj.comp_one] at this
+
+theorem ratMV_pow (hP : PtsVia f β) (hk : ∀ a, ev (f a) ∈ k₀) (h1 : RatPV β k₀ (1 : Over.mk (spMap ev) ⟶ A).left)
+    {x : Over.mk (spMap ev) ⊗ A ⟶ A} (hx : RatMV β ev k₀ x.left) (n : ℕ) : RatMV β ev k₀ (x ^ n).left := by
+  induction n with
+  | zero => rw [pow_zero]; exact ratMV_one h1
+  | succ n ih => rw [pow_succ]; exact ratMV_mul hP hk ih hx
+
+theorem ratPV_one (hP : PtsVia f β) (hk : ∀ a, ev (f a) ∈ k₀) : RatPV β k₀ (1 : Over.mk (spMap ev) ⟶ A).left := by
+  obtain ⟨Φ, hΦ⟩ := hP (Over.mk (spMap ev)) (spMap ev ≫ spMap f) rfl
+  have e := hΦ 1
+  rw [map_one] at e
+  show DefOver k₀ (_ ≫ β)
+  rw [← e]
+  have h2 : spMap ev ≫ spMap f = spMap (ev.comp f) := by
+    simp only [spMap, ← Spec.map_comp]; rfl
+  show DefOver k₀ ((spMap ev ≫ spMap f) ≫ (η[B₀]).left)
+  rw [h2]
+  exact defOver_comp k₀ (defOver_spMap k₀ _ hk) _
+
+variable {L : LB A.left} {X₂ : Scheme.{0}} {L₂ : LB X₂} {I : Type} [Fintype I] {π : I → (A.left ⟶ X₂)} {e : I → ℤ}
+
+theorem galois_secV [IsAlgClosed K] (hk₀ : IsAlgClosed k₀) (hP : PtsVia f β) (hk : ∀ a, ev (f a) ∈ k₀) (hL : L.IsLB)
+    (hL₂ : L₂.IsLB) (u : LB.Iso L (LB.LinComb L₂ π e)) (hu : u.IsGen)
+    (hπ : ∀ (Z : Scheme.{0}) (x y : Z ⟶ A.left), x ≫ β = y ≫ β → ∀ i, x ≫ π i = y ≫ π i)
+    {Ix : Type} [Fintype Ix] (φ : Ix → ((Over.mk (spMap ev) ⊗ A).left ⟶ A.left)) (ε : Ix → ℤ)
+    (hφ : ∀ k, RatMV β ev k₀ (φ k)) (s : LB.Sec (LB.LinComb L φ ε))
+    (h1 : ∀ t : LB.Sec (LB.LinComb L φ ε), ∃ c : K, ∀ x : Sp K ⟶ (Over.mk (spMap ev) ⊗ A).left,
+      x ≫ (fst (Over.mk (spMap ev)) A).left = 𝟙 _ → ∀ z J, Good L z J → sval t x z J = toStk z c * sval s x z J) :
+    ∃ κ : K, κ ≠ 0 ∧ ∀ p : Over.mk (spMap ev) ⟶ A, RatPV β k₀ p.left → ∀ (z : Sp K) J J₂, Good L z J → Good L₂ z J₂ →
+      ∃ c ∈ k₀, (∏ k, om (Z := Sp K) u z J J₂ ((lift (𝟙 _) p).left ≫ φ k) ^ ε k).val *
+        sval (Z := Sp K) s (lift (𝟙 _) p).left z J = toStk z (κ * c) := by
+  obtain ⟨U, hU, vU⟩ := exists_transport u hu φ ε
+  have hA := DVR.linComb_isLB L hL φ ε
+  have hB := DVR.linComb_isLB L₂ hL₂ (fun p : Ix × I => φ p.1 ≫ π p.2) (fun p => ε p.1 * e p.2)
+  obtain ⟨s', hs'⟩ := DVR.FlatBC.exists_isoRel hA hB hU s
+  obtain ⟨κ, hκ, hval⟩ := galois_values k₀ hk₀ _ _ s' (fun x => x ≫ (fst (Over.mk (spMap ev)) A).left = 𝟙 _ ∧
+      RatPV β k₀ (x ≫ (snd (Over.mk (spMap ev)) A).left))
+    (fun t' => by
+      obtain ⟨t, ht⟩ := GlobalTheory.MBLow.lbIso_sec_onto _ _ _ U hA hB hU t'
+      obtain ⟨c, hc⟩ := h1 t
+      refine ⟨c, fun x hx z J₂ hJ₂ => ?_⟩
+      choose J hJ using fun χ : Sp K ⟶ A.left => exists_chart hL (χ z)
+      rw [vU t t' (fun i k => ht (i, k)) _ x z J J₂ hJ hJ₂, vU s s' hs' _ x z J J₂ hJ hJ₂, hc x hx.1 z J hJ]
+      exact mul_left_comm _ _ _)
+    (fun σ hσ => by
+      obtain ⟨σt, hc, hfix⟩ := exists_conjV hP hk σ hσ
+      refine ⟨σt, fun p => ?_, fun x hx => hfix x hx.1 hx.2⟩
+      rw [← Category.assoc]
+      exact hπ _ _ _ ((Category.assoc _ _ _).trans (hφ p.1 σ hσ σt hc)) p.2)
+  refine ⟨κ, hκ, fun p hp z J J₂ hJ hJ₂ => ?_⟩
+  obtain ⟨c, hc, he⟩ := hval (lift (𝟙 _) p).left ⟨congrArg (fun m => m.left) (lift_fst (𝟙 _) p), by
+    have e : (lift (𝟙 _) p).left ≫ (snd (Over.mk (spMap ev)) A).left = p.left :=
+      congrArg (fun m => m.left) (lift_snd (𝟙 _) p)
+    exact e ▸ hp⟩ z J₂ hJ₂
+  exact ⟨c, hc, (vU s s' hs' _ _ z J J₂ hJ hJ₂).symm.trans he⟩
+
+end GaloisVia
+
+section NormalisedVia
+
+open GlobalTheory.UT
+
+variable {V₁ W₀ K : Type} [CommRing V₁] [IsDomain V₁] [CommRing W₀] [Field K] [IsAlgClosed K] {D : DegPre V₁}
+  {B₀ : Over (Sp W₀)} [GrpObj B₀] {f : W₀ →+* V₁} {β : D.P.A.left ⟶ B₀.left} {ev : V₁ →+* K} {k₀ : Subfield K}
+  {X₂ : Scheme.{0}} {L₂ : LB X₂} {I : Type} [Fintype I] {π : I → (D.P.A.left ⟶ X₂)} {e : I → ℤ}
+
+structure DescV (f : W₀ →+* V₁) (β : D.P.A.left ⟶ B₀.left) (ev : V₁ →+* K) (k₀ : Subfield K)
+    (u : LB.Iso D.P.L (LB.LinComb L₂ π e)) : Prop where
+  hk₀ : IsAlgClosed k₀
+  hP : PtsVia f β
+  hk : ∀ a, ev (f a) ∈ k₀
+  hL₂ : L₂.IsLB
+  hu : u.IsGen
+  hπ : ∀ (Z : Scheme.{0}) (x y : Z ⟶ D.P.A.left), x ≫ β = y ≫ β → ∀ i, x ≫ π i = y ≫ π i
+
+variable {u : LB.Iso D.P.L (LB.LinComb L₂ π e)}
+
+theorem galois_genV (H : DescV f β ev k₀ u) {P v} (G : SymFrame.GRep D.P.L (Over.mk (spMap ev) ⊗ D.P.A) P v)
+    {Ix : Type} [Fintype Ix] (φ : Ix → ((Over.mk (spMap ev) ⊗ D.P.A).left ⟶ D.P.A.left)) (ε : Ix → ℤ)
+    (hφ : ∀ k, RatMV β ev k₀ (φ k))
+    (hP : ∀ (U : Type) [CommGroup U] (h : _ → U), P U h = ∏ k, h (φ k) ^ ε k)
+    (h₀ : ∀ (U : Type) [CommGroup U] (h : (Sp K ⟶ D.P.A.left) → U),
+      P U (fun ψ => h ((lift (𝟙 (Over.mk (spMap ev))) (1 : _ ⟶ D.P.A)).left ≫ ψ)) = 1)
+    (h₁ : ∀ z J, Good D.P.L z J → v (Over.mk (spMap ev)) (lift (𝟙 _) 1) z J = 1)
+    (p : Over.mk (spMap ev) ⟶ D.P.A) (hp : RatPV β k₀ p.left) (z : Sp K) (J J₂) (hJ : Good D.P.L z J)
+    (hJ₂ : Good L₂ z J₂) :
+    ∃ c ∈ k₀, (P _ (fun ψ => om (Z := Sp K) u z J J₂ ((lift (𝟙 _) p).left ≫ ψ)) *
+      @id ((Sp K).presheaf.stalk z)ˣ (v (Over.mk (spMap ev)) (lift (𝟙 _) p) z J)).val = toStk z c := by
+  obtain ⟨t, ht, vt⟩ := G.out D.P.isLB φ ε hP
+  obtain ⟨κ, hκ, hval⟩ := galois_secV H.hk₀ H.hP H.hk D.P.isLB H.hL₂ u H.hu H.hπ φ ε hφ (genSec t ht) (fun s => by
+    obtain ⟨w, hw⟩ := exists_sec D.P.isLB (K' := PEmpty) (φ' := PEmpty.elim) (ε' := PEmpty.elim)
+      (fun U _ hh => by simp [Fintype.prod_sum_type, ← Finset.prod_mul_distrib])
+      (pullMulSec s (𝟙 _) (LB.invGen D.P.L _ _ t) (DVR.invGen_isGen _ _ _ _ ht))
+    have le : (⊤ : (Over.mk (spMap ev) ⊗ D.P.A).left.Opens) ≤
+        LB.wchart D.P.L (K := PEmpty) (Y := (Over.mk (spMap ev) ⊗ D.P.A).left) PEmpty.elim PEmpty.elim :=
+      fun _ _ => Set.mem_iInter.2 fun k => k.elim
+    obtain ⟨a, ha⟩ := surj_fst GlobalTheory.abelianSchemeLaws_all.1.globalFns D.P.isAb (Over.mk (spMap ev))
+      (((Over.mk (spMap ev) ⊗ D.P.A).left.presheaf.map (homOfLE le).op).hom (w.f PEmpty.elim))
+    refine ⟨(Scheme.ΓSpecIso (CommRingCat.of K)).hom.hom a, fun x hx z J hJ => ?_⟩
+    have e₁ := hw _ x z J hJ
+    rw [sval_pullMulSec _ _ _ _ _ z hJ, Category.comp_id, val_inv, sval_of w _ z J PEmpty.elim (fun k => k.elim)] at e₁
+    rw [sval_genSec _ _ _ z hJ, ← gs_appTop_of_section x _ hx z a]
+    erw [ha]
+    refine Eq.trans ?_ (congrArg (· * _) ((gs_res x z le trivial _).trans e₁).symm)
+    rw [_root_.mul_assoc, Units.inv_mul, _root_.mul_one])
+  obtain ⟨c₀, hc₀, e₀⟩ := hval 1 (ratPV_one H.hP H.hk) z J J₂ hJ hJ₂
+  obtain ⟨c, hc, e₁⟩ := hval p hp z J J₂ hJ hJ₂
+  rw [sval_genSec _ _ _ z hJ] at e₀ e₁
+  have a₀ := (hP _ (fun ψ => om (Z := Sp K) u z J J₂ ((lift (𝟙 (Over.mk (spMap ev))) (1 : _ ⟶ D.P.A)).left ≫ ψ))).symm.trans
+    (h₀ _ (om (Z := Sp K) u z J J₂))
+  have b₀ := (vt _ (lift (𝟙 _) 1) z J hJ).trans (h₁ z J hJ)
+  erw [a₀, b₀] at e₀
+  have k1 : κ * c₀ = 1 := (toStk z).injective (by rw [← e₀, map_one]; exact _root_.mul_one _)
+  refine ⟨κ * c, k₀.mul_mem (eq_inv_of_mul_eq_one_left k1 ▸ k₀.inv_mem hc₀) hc, ?_⟩
+  rw [← e₁, hP, Units.val_mul]
+  exact congrArg₂ (· * ·) rfl (congrArg Units.val (vt _ (lift (𝟙 _) p) z J hJ).symm)
+
+theorem kap_memV (H : DescV f β ev k₀ u) {n : ℕ} (κ : LB.Gen (kapLB D (𝟙 D.P.A ^ n) (n ^ 2) 1)) (hκ : Normd κ)
+    (y : Over.mk (spMap ev) ⟶ D.P.A) (hy : RatPV β k₀ y.left) (z : Sp K) (J J₂) (hJ : Good D.P.L z J)
+    (hJ₂ : Good L₂ z J₂) :
+    ∃ c ∈ k₀, ((om (Z := Sp K) u z J J₂ y.left ^ ((n : ℤ) ^ 2) * (om (Z := Sp K) u z J J₂ (y ^ n).left)⁻¹ *
+      om (Z := Sp K) u z J J₂ (1 : Over.mk (spMap ev) ⟶ D.P.A).left ^ (1 - (n : ℤ) ^ 2)) *
+      val (Z := Sp K) κ y.left z J).val = toStk z c := by
+  have r₃ : RatMV β ev k₀ _ := ratMV_snd
+  have h1 := ratPV_one (A := D.P.A) H.hP H.hk
+  have key := galois_genV H (SymFrame.grep_kap (D := D) κ hκ.1 (snd (Over.mk (spMap ev)) D.P.A))
+    ![(snd (Over.mk (spMap ev)) D.P.A).left, (snd (Over.mk (spMap ev)) D.P.A ^ n).left,
+      (1 : Over.mk (spMap ev) ⊗ D.P.A ⟶ D.P.A).left] ![(n : ℤ) ^ 2, -1, 1 - (n : ℤ) ^ 2]
+    (fun k => by
+      fin_cases k
+      exacts [r₃, ratMV_pow H.hP H.hk h1 r₃ n, ratMV_one h1])
+    (fun U _ h => by simp [Fin.prod_univ_three])
+    (fun U _ h => by
+      simp only [← Over.comp_left, MonObj.comp_pow, MonObj.comp_one, lift_snd, one_pow]
+      group)
+    (fun z J hJ => by
+      simp only [lift_snd]
+      exact SymFrame.normd_one hκ hJ) y hy z J J₂ hJ hJ₂
+  simp only [← Over.comp_left, MonObj.comp_pow, MonObj.comp_one, lift_snd] at key
+  exact key
+
+end NormalisedVia
+
+end GlobalTheory.USep.EvG
+end
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+open GlobalTheory.Poinc.Sep.Coef
+
+noncomputable section
+
+namespace GlobalTheory.USep.EvG
+
+theorem frame_ev : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ D.P.A.left) → D.P.L.ι) (J₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good D.P.L z J → Good M₀ z J₀ →
+    ∀ (N₁ : ℕ), 2 ≤ N₁ → ∀ (b : 𝟙_ (Over (Sp V₁)) ⟶ D.P.A), b ^ N₁ = 1 → DefOver k₀ (spMap ev ≫ b.left ≫ β) →
+    ∀ t : LB.Gen (LB.LinComb D.P.L ![(η[D.P.A]).left, b.left] (DegPre.lineε 1)),
+      (t.IsGen ∧ ∀ κ : LB.Gen (kapLB D (𝟙 D.P.A ^ N₁) (N₁ ^ 2) 1), Normd κ →
+        ∀ (Z : Scheme.{0}) (r : Z ⟶ Sp V₁) (z : Z) J, Good D.P.L z J →
+          val t r z J ^ (N₁ ^ 2) * val κ (r ≫ b.left) z J = 1) →
+    ∃ c ∈ k₀, (val t (spMap ev) z J).val =
+      ((GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (η[D.P.A]).left))⁻¹ * GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ b.left)).val * toStk z c := by
+  intro V₁ _ _ _ _ _ D τ₀ W₀ _ ib B₀ _ M₀ c₀ τ₁ β w hFB K _ _ ev k₀ hk₀ hk z J J₀ hJ hJ₀ N₁ hN b hb hbdef t ht
+  obtain ⟨-, hM₀, hβ, hw, -⟩ := hFB
+  have HD : DescV ib β ev k₀ w := ⟨hk₀, ptsVia_of hβ, hk, hM₀, hw, fun _ _ _ h _ => h⟩
+  obtain ⟨κ, hκ⟩ := GlobalTheory.FamPull.exists_kap D N₁
+  let y : Over.mk (spMap ev) ⟶ D.P.A := toUnit (Over.mk (spMap ev)) ≫ b
+  have hy : y ^ N₁ = 1 := by rw [← MonObj.comp_pow, hb, MonObj.comp_one]
+  have hyd : RatPV β k₀ y.left := by
+    show DefOver k₀ ((spMap ev ≫ b.left) ≫ β)
+    rw [Category.assoc]
+    exact hbdef
+  obtain ⟨c, hc, ec⟩ := kap_memV HD κ hκ y hyd z J J₀ hJ hJ₀
+  rw [hy] at ec
+  have h1 : val t (spMap ev) z J ^ (N₁ ^ 2) * val (Z := Sp K) κ y.left z J = 1 := ht.2 κ hκ (Sp K) (spMap ev) z J hJ
+  obtain ⟨c', hc', ec'⟩ := GlobalTheory.Poinc.Sep.Coef.zpow_mem ⟨c, hc, ec⟩ (-1)
+  set a := om (Z := Sp K) w z J J₀ (1 : Over.mk (spMap ev) ⟶ D.P.A).left with ha
+  set bb := om (Z := Sp K) w z J J₀ y.left with hbb
+  set T := val t (spMap ev) z J with hT
+  set Kv := val (Z := Sp K) κ y.left z J with hKv
+  have alg : (T * a * bb⁻¹) ^ (N₁ ^ 2) = (bb ^ ((N₁ : ℤ) ^ 2) * a⁻¹ * a ^ (1 - (N₁ : ℤ) ^ 2) * Kv) ^ (-1 : ℤ) := by
+    have hK : Kv = (T ^ (N₁ ^ 2))⁻¹ := eq_inv_of_mul_eq_one_right h1
+    rw [hK]
+    apply Additive.ofMul.injective
+    simp only [ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow]
+    rw [← natCast_zsmul, ← natCast_zsmul]
+    push_cast
+    module
+  obtain ⟨c'', hc'', ec''⟩ := GlobalTheory.Poinc.Sep.Coef.root_mem hk₀ (z := z) (s := (T * a * bb⁻¹).val) (n := N₁ ^ 2) (Nat.one_le_pow _ _ (by omega))
+    ⟨c', hc', by rw [← Units.val_pow_eq_pow_val, alg]; exact ec'⟩
+  refine ⟨c'', hc'', ?_⟩
+  have e : T = (a⁻¹ * bb) * (T * a * bb⁻¹) := by
+    apply Additive.ofMul.injective
+    simp only [ofMul_mul, ofMul_inv]
+    abel
+  rw [e, Units.val_mul, ← ec'']
+  rfl
+
+end GlobalTheory.USep.EvG
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torsionFrame_value_localUnits_mul_subfield : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ D.P.A.left) → D.P.L.ι) (J₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good D.P.L z J → Good M₀ z J₀ →
+    ∀ (N₁ : ℕ), 2 ≤ N₁ → ∀ (b : 𝟙_ (Over (Sp V₁)) ⟶ D.P.A), b ^ N₁ = 1 → DefOver k₀ (spMap ev ≫ b.left ≫ β) →
+    ∀ t : LB.Gen (LB.LinComb D.P.L ![(η[D.P.A]).left, b.left] (DegPre.lineε 1)),
+      (t.IsGen ∧ ∀ κ : LB.Gen (kapLB D (𝟙 D.P.A ^ N₁) (N₁ ^ 2) 1), Normd κ →
+        ∀ (Z : Scheme.{0}) (r : Z ⟶ Sp V₁) (z : Z) J, Good D.P.L z J →
+          val t r z J ^ (N₁ ^ 2) * val κ (r ≫ b.left) z J = 1) →
+    ∃ c ∈ k₀, (val t (spMap ev) z J).val =
+      ((GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (η[D.P.A]).left))⁻¹ * GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ b.left)).val * toStk z c := by
+  atlas_forward_decl GlobalTheory.USep.EvG.frame_ev
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+namespace GlobalTheory.GenTransport
+
+theorem exists_gen_down_pmaps : ∀ {X X' Y : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' ⟶ X} {Ix : Type} [Fintype Ix]
+    (w : LB.Iso L' (L.pull F)), w.IsGen → L.IsLB → L'.IsLB → ∀ (φ' : Ix → (Y ⟶ X')) (ε : Ix → ℤ)
+    (a : LB.Gen (LB.LinComb L' φ' ε)), a.IsGen →
+    ∃ t : LB.Gen (LB.LinComb L (fun k => φ' k ≫ F) ε), t.IsGen ∧ PMaps w φ' (fun k => φ' k ≫ F) ε a t (𝟙 Y) := by
+  intro X X' Y L L' F Ix _ w hw hL hL' φ' ε a ha
+  obtain ⟨t, ht, hv⟩ := ReciprocityTheory.ChartRestriction.G.Geo.Tor.exists_up ((isGen_iff w).1 hw) hL hL' a ha
+  refine ⟨t, ht, fun Z r z p q hp hq => ?_⟩
+  rw [Category.comp_id]
+  exact hv Z r z p q (Set.mem_iInter.2 hp) (Set.mem_iInter.2 hq)
+
+end GlobalTheory.GenTransport
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_generator_transport_down_lineBundleIso : ∀ {X X' Y : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' ⟶ X} {Ix : Type} [Fintype Ix]
+    (w : LB.Iso L' (L.pull F)), w.IsGen → L.IsLB → L'.IsLB → ∀ (φ' : Ix → (Y ⟶ X')) (ε : Ix → ℤ)
+    (a : LB.Gen (LB.LinComb L' φ' ε)), a.IsGen →
+    ∃ t : LB.Gen (LB.LinComb L (fun k => φ' k ≫ F) ε), t.IsGen ∧ PMaps w φ' (fun k => φ' k ≫ F) ε a t (𝟙 Y) := by
+  atlas_forward_decl GlobalTheory.GenTransport.exists_gen_down_pmaps
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+noncomputable section
+
+namespace GlobalTheory.Poinc.Sep
+
+theorem spMap_two {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
+    spMap g ≫ spMap f = spMap (g.comp f) := by
+  simp only [spMap, ← Spec.map_comp]
+  rfl
+
+theorem gen_unique_of_eq {X Y S₀ : Scheme.{0}} {M : LB X} (hM : M.IsLB) {Ix : Type} [Fintype Ix]
+    {φ φ' : Ix → (Y ⟶ X)} {ε : Ix → ℤ} (p : Y ⟶ S₀) (e : S₀ ⟶ Y) (he : e ≫ p = 𝟙 _)
+    (hp : Function.Surjective p.appTop.hom) (hφ : φ' = φ) {u : LB.Gen (LB.LinComb M φ' ε)}
+    {u' : LB.Gen (LB.LinComb M φ ε)} (hu : u.IsGen) (hu' : u'.IsGen)
+    (h : ∀ y J, Good M y J → val u e y J = val u' e y J) (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) (J : (Z ⟶ X) → M.ι)
+    (hJ : Good M z J) : val u r z J = val u' r z J := by
+  subst hφ
+  exact gen_unique hM p e he hp hu hu' h Z r z J hJ
+
+theorem gen_values_mem : ∀ (V₁ W₀ : Type) [CommRing V₁] [CommRing W₀] (ib : W₀ →+* V₁) (A : Over (Sp V₁)) [GrpObj A],
+    IsAbelianScheme A → ∀ (B₀ : Over (Sp W₀)) (β : A.left ⟶ B₀.left), IsPullback β A.hom B₀.hom (spMap ib) →
+    ∀ (M₀ : LB B₀.left), M₀.IsLB → ∀ (Ix : Type) [Fintype Ix] (φ : Ix → (A.left ⟶ B₀.left))
+    (ψ : Ix → (B₀.left ⟶ B₀.left)), (∀ k, φ k = β ≫ ψ k) → ∀ (ε : Ix → ℤ) (t : LB.Gen (LB.LinComb M₀ φ ε)),
+    t.IsGen → ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ →
+    (∀ a, ev (ib a) ∈ k₀) → ∀ x₁ : Sp K ⟶ A.left, x₁ ≫ A.hom = spMap ev → DefOver k₀ (x₁ ≫ β) →
+    (∀ (z : Sp K) (J : (Sp K ⟶ B₀.left) → M₀.ι), Good M₀ z J → val t x₁ z J = 1) →
+    ∀ x : Sp K ⟶ A.left, x ≫ A.hom = spMap ev → DefOver k₀ (x ≫ β) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ B₀.left) → M₀.ι), Good M₀ z J → ∃ c ∈ k₀, (val t x z J).val = toStk z c := by
+  intro V₁ W₀ _ _ ib A _ hA B₀ β hβ M₀ hM₀ Ix _ φ ψ hφ ε t ht K _ _ ev k₀ hk₀ hk x₁ hx₁ hd₁ h1 x hx hd z J hJ
+  classical
+  have hf : ∀ a, (ev.comp ib) a ∈ k₀ := hk
+  let v : (Sp K ⟶ A.left) → ((Sp K ⟶ B₀.left) → M₀.ι) → K := fun x J =>
+    valF x (LB.wchart M₀ φ (fun k => J (x ≫ φ k))) ((genSec t ht).f (fun k => J (x ≫ φ k)))
+  have hv : ∀ x z J, Good M₀ z J → (val t x z J).val = toStk z (v x J) := fun x z J hJ =>
+    (sval_genSec t ht x z hJ).symm.trans (toStk_valF_gs x _ z (hJ.mem φ x) _).symm
+  have hfix : ∀ x : Sp K ⟶ A.left, DefOver k₀ (x ≫ β) → ∀ σ : K ≃+* K, (∀ a ∈ k₀, σ a = a) →
+      ∀ k, spMap σ.toRingHom ≫ x ≫ φ k = x ≫ φ k := by
+    intro x hd σ hσ k
+    obtain ⟨P₀, hP₀⟩ := hd
+    rw [hφ k, ← Category.assoc x, ← hP₀, Category.assoc, ← Category.assoc (spMap σ.toRingHom),
+      spMap_conj k₀ k₀.subtype (fun a => a.2) σ hσ]
+  have hvσ : ∀ x : Sp K ⟶ A.left, DefOver k₀ (x ≫ β) → ∀ σ : K ≃+* K, (∀ a ∈ k₀, σ a = a) → ∀ z J, Good M₀ z J →
+      (val t (spMap σ.toRingHom ≫ x) z J).val = toStk z (σ (v x J)) := fun x hd σ hσ z J hJ =>
+    (sval_genSec t ht _ z hJ).symm.trans (sval_spMap _ σ.toRingHom x z hJ (hfix x hd σ hσ))
+  have hsurj : Function.Surjective (pullback.snd A.hom (spMap ev)).appTop.hom :=
+    fun w => TLinPf.const_pullback GlobalTheory.SemiRigid.globalFns (spMap ev) A hA w
+  have key : ∀ σ : K ≃+* K, (∀ a ∈ k₀, σ a = a) → σ (v x J) = v x J := by
+    intro σ hσ
+    have hc : (pullback.fst A.hom (spMap ev) ≫ β) ≫ B₀.hom =
+        (pullback.snd A.hom (spMap ev) ≫ spMap σ.toRingHom ≫ spMap ev) ≫ spMap ib := by
+      simp only [Category.assoc]
+      rw [hβ.w, pullback.condition_assoc, spMap_two, spMap_conj k₀ _ hf σ hσ]
+    obtain ⟨l, hl1, hl2⟩ : ∃ l : pullback A.hom (spMap ev) ⟶ A.left, l ≫ β = pullback.fst A.hom (spMap ev) ≫ β ∧
+        l ≫ A.hom = pullback.snd A.hom (spMap ev) ≫ spMap σ.toRingHom ≫ spMap ev :=
+      ⟨hβ.lift _ _ hc, hβ.lift_fst _ _ hc, hβ.lift_snd _ _ hc⟩
+    obtain ⟨σt, hs1, hs2⟩ : ∃ σt : pullback A.hom (spMap ev) ⟶ pullback A.hom (spMap ev),
+        σt ≫ pullback.fst A.hom (spMap ev) = l ∧
+        σt ≫ pullback.snd A.hom (spMap ev) = pullback.snd A.hom (spMap ev) ≫ spMap σ.toRingHom :=
+      ⟨pullback.lift l _ (by rw [hl2, Category.assoc]), pullback.lift_fst _ _ _, pullback.lift_snd _ _ _⟩
+    have hσβ : σt ≫ pullback.fst A.hom (spMap ev) ≫ β = pullback.fst A.hom (spMap ev) ≫ β := by
+      rw [reassoc_of% hs1, hl1]
+    have hpt : ∀ (y : Sp K ⟶ A.left) (hy : y ≫ A.hom = spMap ev), DefOver k₀ (y ≫ β) →
+        pullback.lift y (𝟙 _) (by rw [hy, Category.id_comp]) ≫ σt =
+          spMap σ.toRingHom ≫ pullback.lift y (𝟙 _) (by rw [hy, Category.id_comp]) := by
+      intro y hy hd
+      obtain ⟨P₀, hP₀⟩ := hd
+      apply pullback.hom_ext
+      · simp only [Category.assoc, hs1, pullback.lift_fst]
+        apply hβ.hom_ext
+        · simp only [Category.assoc, hl1, pullback.lift_fst_assoc]
+          rw [← hP₀, ← Category.assoc, spMap_conj k₀ k₀.subtype (fun a => a.2) σ hσ]
+        · simp only [Category.assoc, hl2, pullback.lift_snd_assoc, Category.id_comp, hy]
+      · simp only [Category.assoc, hs2, pullback.lift_snd_assoc, Category.id_comp, pullback.lift_snd, Category.comp_id]
+    let tK := LB.pullGen M₀ φ ε t (pullback.fst A.hom (spMap ev))
+    have htK : tK.IsGen := DVR.pullGen_isGen _ _ _ _ ht _
+    have hu : (LB.pullGen M₀ _ ε tK σt).IsGen := DVR.pullGen_isGen _ _ _ _ htK _
+    have hval : ∀ (y : Sp K ⟶ A.left) (hy : y ≫ A.hom = spMap ev), DefOver k₀ (y ≫ β) → ∀ z J, Good M₀ z J →
+        val (LB.pullGen M₀ _ ε tK σt) (pullback.lift y (𝟙 _) (by rw [hy, Category.id_comp])) z J =
+          val t (spMap σ.toRingHom ≫ y) z J := by
+      intro y hy hd z J hJ
+      rw [val_pull hJ, hpt y hy hd, val_pull hJ, Category.assoc, pullback.lift_fst]
+    have hvalK : ∀ (y : Sp K ⟶ A.left) (hy : y ≫ A.hom = spMap ev) z J, Good M₀ z J →
+        val tK (pullback.lift y (𝟙 _) (by rw [hy, Category.id_comp])) z J = val t y z J := by
+      intro y hy z J hJ
+      rw [val_pull hJ, pullback.lift_fst]
+    have huniq := gen_unique_of_eq hM₀ (pullback.snd A.hom (spMap ev))
+      (pullback.lift x₁ (𝟙 _) (by rw [hx₁, Category.id_comp])) (pullback.lift_snd _ _ _) hsurj
+      (funext fun k => by rw [hφ k]; exact (reassoc_of% hσβ) (ψ k)) hu htK (fun y J hJ => by
+        rw [hval x₁ hx₁ hd₁ y J hJ, hvalK x₁ hx₁ y J hJ, h1 y J hJ]
+        apply Units.ext
+        have e1 := hv x₁ y J hJ
+        rw [h1 y J hJ, Units.val_one, ← map_one (toStk y)] at e1
+        rw [hvσ x₁ hd₁ σ hσ y J hJ, ← (toStk y).injective e1, map_one, map_one, Units.val_one])
+      (Sp K) (pullback.lift x (𝟙 _) (by rw [hx, Category.id_comp])) z J hJ
+    rw [hval x hx hd z J hJ, hvalK x hx z J hJ] at huniq
+    have e2 := congrArg Units.val huniq
+    rw [hvσ x hd σ hσ z J hJ, hv x z J hJ] at e2
+    exact (toStk z).injective e2
+  refine ⟨v x J, ?_, hv x z J hJ⟩
+  apply mem_of_finite_conj k₀ hk₀
+  apply (Set.finite_singleton (v x J)).subset
+  rintro b ⟨σ, hσ, rfl⟩
+  exact key σ hσ
+
+end GlobalTheory.Poinc.Sep
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generator_values_mem_subfield_galoisDescent : ∀ (V₁ W₀ : Type) [CommRing V₁] [CommRing W₀] (ib : W₀ →+* V₁) (A : Over (Sp V₁)) [GrpObj A],
+    IsAbelianScheme A → ∀ (B₀ : Over (Sp W₀)) (β : A.left ⟶ B₀.left), IsPullback β A.hom B₀.hom (spMap ib) →
+    ∀ (M₀ : LB B₀.left), M₀.IsLB → ∀ (Ix : Type) [Fintype Ix] (φ : Ix → (A.left ⟶ B₀.left))
+    (ψ : Ix → (B₀.left ⟶ B₀.left)), (∀ k, φ k = β ≫ ψ k) → ∀ (ε : Ix → ℤ) (t : LB.Gen (LB.LinComb M₀ φ ε)),
+    t.IsGen → ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ →
+    (∀ a, ev (ib a) ∈ k₀) → ∀ x₁ : Sp K ⟶ A.left, x₁ ≫ A.hom = spMap ev → DefOver k₀ (x₁ ≫ β) →
+    (∀ (z : Sp K) (J : (Sp K ⟶ B₀.left) → M₀.ι), Good M₀ z J → val t x₁ z J = 1) →
+    ∀ x : Sp K ⟶ A.left, x ≫ A.hom = spMap ev → DefOver k₀ (x ≫ β) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ B₀.left) → M₀.ι), Good M₀ z J → ∃ c ∈ k₀, (val t x z J).val = toStk z c := by
+  atlas_forward_decl GlobalTheory.Poinc.Sep.gen_values_mem
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+noncomputable section
+
+namespace GlobalTheory.USep.EvG.SymVal
+
+theorem sym_val : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ D.P.A.left) → D.P.L.ι) (J₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good D.P.L z J → Good M₀ z J₀ →
+    ∀ a : D.X, ∃ c ∈ k₀, (val D.sym (spMap ev ≫ (D.c a).left) z J).val =
+      ((GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c (-a)).left))⁻¹ * GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c a).left)).val * toStk z c := by
+  intro V₁ _ _ _ _ _ D τ₀ W₀ _ ib B₀ _ M₀ c₀ τ₁ β w hFB K _ _ ev k₀ hk₀ hk z J J₀ hJ hJ₀ a
+  obtain ⟨-, hM₀, hpb, hw, hc, -, -⟩ := hFB
+  set φ' : Fin 2 → (D.P.A.left ⟶ D.P.A.left) := ![(ι[D.P.A]).left, 𝟙 D.P.A.left] with hφ'
+  obtain ⟨t, ht, hmap⟩ := GlobalTheory.T.exists_generator_transport_down_lineBundleIso w hw hM₀ D.P.isLB φ' ![1, -1] D.sym D.sym_gen
+  have hφ : ∀ k, φ' k ≫ β = β ≫ (![(ι[B₀]).left, 𝟙 B₀.left] : Fin 2 → (B₀.left ⟶ B₀.left)) k := by
+    intro k
+    fin_cases k
+    · exact GlobalTheory.PolDeg.SymPol.inv_comm hpb
+    · simp [hφ']
+  have hpt : ∀ b : D.X, (spMap ev ≫ (D.c b).left) ≫ D.P.A.hom = spMap ev := fun b => by
+    rw [Category.assoc, Over.w (D.c b)]; rfl
+  have hdef : ∀ b : D.X, DefOver k₀ ((spMap ev ≫ (D.c b).left) ≫ β) := fun b => by
+    have e : (spMap ev ≫ (D.c b).left) ≫ β = spMap (ev.comp ib) ≫ c₀ b := by
+      rw [Category.assoc]
+      erw [hc b]
+      rw [← Category.assoc]
+      congr 1
+      simp only [spMap, ← Spec.map_comp]
+      rfl
+    rw [e]
+    exact GlobalTheory.Poinc.Sep.defOver_comp k₀ (GlobalTheory.Poinc.Sep.defOver_spMap k₀ _ hk) _
+
+  have read : ∀ (x : Sp K ⟶ D.P.A.left) (z' : Sp K) (I : (Sp K ⟶ D.P.A.left) → D.P.L.ι)
+      (I₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good D.P.L z' I → Good M₀ z' I₀ →
+      val t x z' I₀ = gwx w z' I I₀ (x ≫ (ι[D.P.A]).left) * (gwx w z' I I₀ x)⁻¹ * val D.sym x z' I := by
+    intro x z' I I₀ hI hI₀
+    have H := hmap (Sp K) x z' (fun k => I₀ ((x ≫ φ' k) ≫ β)) (fun k => I (x ≫ φ' k))
+      (fun k => hI₀ ((x ≫ φ' k) ≫ β)) (fun k => hI (x ≫ φ' k))
+    rw [Category.comp_id, Fin.prod_univ_two] at H
+    rw [val_of t x z' I₀ (fun k => I₀ ((x ≫ φ' k) ≫ β)) (fun k => by rw [Category.assoc]), H]
+    simp only [hφ', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, zpow_one, zpow_neg, Category.comp_id]
+    rfl
+  have hx₁ : (spMap ev ≫ (D.c 0).left) ≫ (ι[D.P.A]).left = spMap ev ≫ (D.c 0).left := by
+    rw [Category.assoc, ← Over.comp_left, ← GlobalTheory.PsiEvenPull.c_neg, neg_zero]
+  have hnorm : ∀ (z' : Sp K) (I₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good M₀ z' I₀ →
+      val t (spMap ev ≫ (D.c 0).left) z' I₀ = 1 := by
+    intro z' I₀ hI₀
+    choose I hI using fun χ : Sp K ⟶ D.P.A.left => exists_chart D.P.isLB (χ z')
+    have hIg : Good D.P.L z' I := hI
+    rw [read _ z' I I₀ hIg hI₀, hx₁, _root_.mul_inv_cancel, _root_.one_mul, GlobalTheory.Poinc.ThetaOne.c_zero]
+    have e1 : (1 : 𝟙_ (Over (Sp V₁)) ⟶ D.P.A).left = eSec D.P.A := rfl
+    rw [e1, ← val_pull hIg, val_corr hIg D.sym_rig, val_one]
+  obtain ⟨c, hc₀, hv⟩ := GlobalTheory.T.generator_values_mem_subfield_galoisDescent V₁ W₀ ib D.P.A D.P.isAb B₀ β hpb.1 M₀ hM₀ (Fin 2) (fun k => φ' k ≫ β) _ hφ
+    ![1, -1] t ht K ev k₀ hk₀ hk _ (hpt 0) (hdef 0) hnorm _ (hpt a) (hdef a) z J₀ hJ₀
+  refine ⟨c, hc₀, ?_⟩
+  have r := read (spMap ev ≫ (D.c a).left) z J J₀ hJ hJ₀
+  have hneg : (spMap ev ≫ (D.c a).left) ≫ (ι[D.P.A]).left = spMap ev ≫ (D.c (-a)).left := by
+    rw [Category.assoc, ← Over.comp_left, ← GlobalTheory.PsiEvenPull.c_neg]
+  rw [hneg] at r
+  have key : val D.sym (spMap ev ≫ (D.c a).left) z J =
+      (gwx w z J J₀ (spMap ev ≫ (D.c (-a)).left))⁻¹ * gwx w z J J₀ (spMap ev ≫ (D.c a).left) *
+        val t (spMap ev ≫ (D.c a).left) z J₀ := by
+    rw [r]
+    apply Additive.ofMul.injective
+    simp only [ofMul_mul, ofMul_inv]
+    abel
+  rw [key, Units.val_mul, hv]
+
+end GlobalTheory.USep.EvG.SymVal
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc GlobalTheory.TorRef
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory GlobalTheory.USep
+open GlobalTheory.Poinc.ThetaOne GlobalTheory.Poinc.Sep GlobalTheory.UT GlobalTheory.FieldBaseChange
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.symmetryGenerator_value_localUnits_mul_subfield : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing V₁], IsCN V₁ → (∀ m : ℕ, m ≠ 0 → IsUnit (m : V₁)) →
+    ∀ (D : DegPre V₁) (τ₀ : GlobalTheory.UChart.Gens D) (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁) (B₀ : Over (Sp W₀)) [GrpObj B₀]
+      (M₀ : LB B₀.left) (c₀ : D.X → (Sp W₀ ⟶ B₀.left))
+      (τ₁ : ∀ a b : D.X, LB.Gen (LB.LinComb M₀ (K := Fin 4) ![c₀ (a + b), c₀ a, c₀ b, c₀ 0] ![-1, 1, 1, -1]))
+      (β : D.P.A.left ⟶ B₀.left) (w : LB.Iso D.P.L (M₀.pull β)), GlobalTheory.USep.EvG.FromBaseWith D τ₀ ib B₀ M₀ c₀ τ₁ β w →
+    ∀ (K : Type) [Field K] [IsAlgClosed K] (ev : V₁ →+* K) (k₀ : Subfield K), IsAlgClosed k₀ → (∀ a, ev (ib a) ∈ k₀) →
+    ∀ (z : Sp K) (J : (Sp K ⟶ D.P.A.left) → D.P.L.ι) (J₀ : (Sp K ⟶ B₀.left) → M₀.ι), Good D.P.L z J → Good M₀ z J₀ →
+    ∀ a : D.X, ∃ c ∈ k₀, (val D.sym (spMap ev ≫ (D.c a).left) z J).val =
+      ((GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c (-a)).left))⁻¹ * GlobalTheory.USep.EvG.gwx w z J J₀ (spMap ev ≫ (D.c a).left)).val * toStk z c := by
+  atlas_forward_decl GlobalTheory.USep.EvG.SymVal.sym_val
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R
@@ -168,3 +1292,4 @@ theorem _root_.GlobalTheory.T.integral_expression_values_at_descended_point : �
     ∀ (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V₁), GlobalTheory.UChart.FromBase D τ₀ ib → (∀ a, ev (ib a) ∈ k₀) →
     ∃ Λ : K, ∀ mu c, ∃ r ∈ k₀, ev (G mu c) = Λ * r := by
   atlas_forward_decl GlobalTheory.USep.EvG.ev_values
+end

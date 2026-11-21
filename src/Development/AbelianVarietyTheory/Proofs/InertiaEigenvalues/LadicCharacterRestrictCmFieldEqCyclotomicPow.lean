@@ -4,13 +4,472 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.Ga
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsPotCrysAtOfMono0
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDimensionalAdjoinRange
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RamificationIdxEqOneOfIsSquare
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GaloisCharacterEqOneOfTrivialDegreeOneFrobenius
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AbsNormUnderEqOfInertiaDegOne
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DegreeOnePrimeCMFieldOverSplitMaxRealSubfield
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeckeCharRestrictMaxRealValEqProdAbove
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeckeCharLocalEqOneOfTrivialOnNormsSplit
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousRestrictScalarsHomMaximalRealSubfield
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ContinuousIdeleCharLocalFactorization
 
+section
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+namespace GlobalTheory.FrobTrivChar
+
+theorem eq_one_of_frob_trivial : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (l : ℕ) [Fact l.Prime]
+    (φ : G E Ω →* (Qbar l)ˣ), Continuous φ →
+    (∀ᶠ w : HeightOneSpectrum (𝓞 E) in Filter.cofinite, w.asIdeal.inertiaDeg ℤ = 1 → w.asIdeal.ramificationIdx ℤ = 1 →
+      ∀ (A : ValuationSubring Ω) (σ : G E Ω), IsPlaceOver (F := E) A w → IsFrob (F := E) A (normV w) σ → φ σ = 1) →
+    φ = 1 := by
+  classical
+  intro E Ω _ _ _ _ _ l _ φ hφ hev
+  have : IsGalois E Ω := {}
+  refine MonoidHom.ext fun g => ?_
+  rw [MonoidHom.one_apply]
+  by_contra hg
+  have hV : IsOpen {x : G E Ω | φ x ≠ 1} := isOpen_ne_fun hφ continuous_const
+  have hn : (fun u : G E Ω => u * g) ⁻¹' {x : G E Ω | φ x ≠ 1} ∈ nhds (1 : G E Ω) :=
+    (hV.preimage (continuous_mul_const g)).mem_nhds (by simpa using hg)
+  obtain ⟨L, hfd, hN, hL⟩ := (krullTopology_mem_nhds_one_iff_of_normal E Ω _).1 hn
+  have hgal : IsGalois E L := {}
+  have hS := Filter.eventually_cofinite.1 hev
+  obtain ⟨v, hv, hf, he, B, hB, -, σ, hσ, hU⟩ := GlobalTheory.Published.cheb_holds E Ω L.fixingSubgroup
+    L.fixingSubgroup_isOpen ((InfiniteGalois.normal_iff_isGalois L).2 hgal) g hS.toFinset
+  simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq, not_not] at hv
+  have h1 := hL hU
+  simp only [Set.mem_preimage, Set.mem_setOf_eq, inv_mul_cancel_right] at h1
+  exact h1 (hv hf he B σ hB hσ)
+
+end GlobalTheory.FrobTrivChar
+end
+end
+
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.galoisCharacter_eq_one_of_trivial_degreeOne_frobenius : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (l : ℕ) [Fact l.Prime]
+    (φ : G E Ω →* (Qbar l)ˣ), Continuous φ →
+    (∀ᶠ w : HeightOneSpectrum (𝓞 E) in Filter.cofinite, w.asIdeal.inertiaDeg ℤ = 1 → w.asIdeal.ramificationIdx ℤ = 1 →
+      ∀ (A : ValuationSubring Ω) (σ : G E Ω), IsPlaceOver (F := E) A w → IsFrob (F := E) A (normV w) σ → φ σ = 1) →
+    φ = 1 := by
+  atlas_forward_decl GlobalTheory.FrobTrivChar.eq_one_of_frob_trivial
+end
+end
+
+section
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+namespace GlobalTheory.NormDegOne
+
+theorem normV_under_eq : ∀ (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
+    (w : HeightOneSpectrum (𝓞 L)), w.asIdeal.inertiaDeg ℤ = 1 → normV (w.under (𝓞 K)) = normV w := by
+  intro K L _ _ _ _ _ w h
+  classical
+  set P := w.asIdeal with hP
+  set Q := (w.under (𝓞 K)).asIdeal with hQ
+  have hQP : Q = P.under (𝓞 K) := rfl
+  have : P.IsPrime := w.isPrime
+  have : Q.IsPrime := (w.under (𝓞 K)).isPrime
+  have hlo : P.LiesOver Q := ⟨hQP⟩
+  have htow := Ideal.inertiaDeg_tower (R := ℤ) Q P
+  rw [h] at htow
+  have hQ1 : Q.inertiaDeg ℤ = 1 := Nat.eq_one_of_mul_eq_one_right htow.symm
+  have hunder : Q.under ℤ = P.under ℤ := by rw [hQP, Ideal.under_under]
+  have e1 := Ideal.absNorm_pow_inertiaDeg (P.under ℤ) P
+  have : Q.LiesOver (P.under ℤ) := ⟨hunder.symm⟩
+  have e2 := Ideal.absNorm_pow_inertiaDeg (P.under ℤ) Q
+  rw [h, pow_one] at e1
+  rw [hQ1, pow_one] at e2
+  change Nat.card (𝓞 K ⧸ Q) = Nat.card (𝓞 L ⧸ P)
+  change Ideal.absNorm Q = Ideal.absNorm P
+  rw [← e1, ← e2]
+
+end GlobalTheory.NormDegOne
+end
+end
+
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.absNorm_under_eq_of_inertiaDeg_one : ∀ (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
+    (w : HeightOneSpectrum (𝓞 L)), w.asIdeal.inertiaDeg ℤ = 1 → normV (w.under (𝓞 K)) = normV w := by
+  atlas_forward_decl GlobalTheory.NormDegOne.normV_under_eq
+end
+end
+
+section
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+namespace GlobalTheory.SplitDegOne
+
+theorem exists_unique_other {ι : Type*} [Fintype ι] [DecidableEq ι] (g : ι → ℕ) (a : ι)
+    (hpos : ∀ i, 1 ≤ g i) (hsum : ∑ i, g i = 2) (ha : g a = 1) :
+    ∃ b, b ≠ a ∧ g b = 1 ∧ ∀ c, c = a ∨ c = b := by
+  have h1 : ∑ i ∈ Finset.univ.erase a, g i = 1 := by
+    have := Finset.add_sum_erase Finset.univ g (Finset.mem_univ a)
+    omega
+  have hcard : (Finset.univ.erase a).card ≤ 1 := by
+    have := Finset.card_nsmul_le_sum (Finset.univ.erase a) g 1 (fun i _ => hpos i)
+    rw [smul_eq_mul, mul_one] at this
+    exact this.trans h1.le
+  have hne : (Finset.univ.erase a).Nonempty := by
+    by_contra h
+    rw [Finset.not_nonempty_iff_eq_empty] at h
+    rw [h, Finset.sum_empty] at h1
+    omega
+  obtain ⟨b, hb⟩ := Finset.card_eq_one.1 (le_antisymm hcard hne.card_pos)
+  have hbm : b ∈ Finset.univ.erase a := hb ▸ Finset.mem_singleton_self b
+  refine ⟨b, Finset.ne_of_mem_erase hbm, by rw [hb, Finset.sum_singleton] at h1; exact h1, fun c => ?_⟩
+  by_cases hc : c = a
+  · exact Or.inl hc
+  · right
+    have : c ∈ Finset.univ.erase a := Finset.mem_erase.2 ⟨hc, Finset.mem_univ c⟩
+    rw [hb] at this
+    exact Finset.mem_singleton.1 this
+
+theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)),
+    w.asIdeal.inertiaDeg ℤ = 1 → w.asIdeal.ramificationIdx ℤ = 1 →
+    Formalism.MainNotions.SchurIrreducible.IsSplit (E := E) (w.under (𝓞 (maximalRealSubfield E))) ∧
+    (Formalism.L2.Host.aboveF (L := E) (maximalRealSubfield E) (w.under (𝓞 (maximalRealSubfield E)))).card = 2 ∧
+    ∀ w' ∈ Formalism.L2.Host.aboveF (L := E) (maximalRealSubfield E) (w.under (𝓞 (maximalRealSubfield E))),
+      Ideal.absNorm w'.asIdeal = Ideal.absNorm w.asIdeal ∧
+        w'.asIdeal.ramificationIdx (𝓞 (maximalRealSubfield E)) = 1 := by
+  intro E _ _ _ w hf he
+  classical
+  let v := w.under (𝓞 (maximalRealSubfield E))
+  have hwv : w.asIdeal.LiesOver v.asIdeal := ⟨rfl⟩
+  have hv0 : v.asIdeal ≠ ⊥ := v.ne_bot
+  have hfw : w.asIdeal.inertiaDeg (𝓞 (maximalRealSubfield E)) = 1 := by
+    have := Ideal.inertiaDeg_tower (R := ℤ) v.asIdeal w.asIdeal
+    rw [hf] at this
+    exact (mul_eq_one.1 this.symm).2
+  have hew : w.asIdeal.ramificationIdx (𝓞 (maximalRealSubfield E)) = 1 := by
+    have := Ideal.ramificationIdx_tower (R := ℤ) v.asIdeal w.asIdeal
+    rw [he] at this
+    exact (mul_eq_one.1 this.symm).2
+  have h2 : Module.finrank (𝓞 (maximalRealSubfield E)) (𝓞 E) = 2 := by
+    rw [← Algebra.IsQuadraticExtension.finrank_eq_two (maximalRealSubfield E) E]
+    exact (Algebra.IsAlgebraic.finrank_of_isFractionRing (𝓞 (maximalRealSubfield E))
+      (maximalRealSubfield E) (𝓞 E) E).symm
+  let _ : Fintype (v.asIdeal.primesOver (𝓞 E)) := Fintype.ofFinite _
+  have hsum := Ideal.sum_ramification_inertia_eq_finrank v.asIdeal (𝓞 E)
+  rw [h2] at hsum
+  let a : v.asIdeal.primesOver (𝓞 E) := ⟨w.asIdeal, w.isPrime, hwv⟩
+  obtain ⟨b, hba, hb1, hall⟩ := exists_unique_other (fun q : v.asIdeal.primesOver (𝓞 E) =>
+      q.1.ramificationIdx (𝓞 (maximalRealSubfield E)) * q.1.inertiaDeg (𝓞 (maximalRealSubfield E))) a
+    (fun q => by
+      have : q.1.IsPrime := q.2.1
+      exact Nat.one_le_iff_ne_zero.2 (Nat.mul_ne_zero (Ideal.ramificationIdx_pos q.1 _).ne'
+        (Ideal.inertiaDeg_pos q.1 _).ne'))
+    hsum (by simp only [a, hew, hfw, mul_one])
+  have hbl : b.1.LiesOver v.asIdeal := b.2.2
+  let B : HeightOneSpectrum (𝓞 E) := ⟨b.1, b.2.1, Ideal.ne_bot_of_liesOver_of_ne_bot hv0 b.1⟩
+  have hB : B.under (𝓞 (maximalRealSubfield E)) = v :=
+    HeightOneSpectrum.ext (Ideal.over_def b.1 v.asIdeal).symm
+  have hwB : w ≠ B := fun h => hba (Subtype.ext (congrArg HeightOneSpectrum.asIdeal h).symm)
+
+  have hmem : ∀ u : HeightOneSpectrum (𝓞 E), u.under (𝓞 (maximalRealSubfield E)) = v → u = w ∨ u = B := by
+    intro u hu
+    have hul : u.asIdeal.LiesOver v.asIdeal := ⟨by rw [← hu]; rfl⟩
+    rcases hall ⟨u.asIdeal, u.isPrime, hul⟩ with h | h
+    · exact Or.inl (HeightOneSpectrum.ext (congrArg Subtype.val h))
+    · exact Or.inr (HeightOneSpectrum.ext (congrArg Subtype.val h))
+  have hB1 := mul_eq_one.1 hb1
+  have hnorm : ∀ u : HeightOneSpectrum (𝓞 E), u.under (𝓞 (maximalRealSubfield E)) = v →
+      Ideal.absNorm u.asIdeal = Ideal.absNorm v.asIdeal ∧ u.asIdeal.ramificationIdx (𝓞 (maximalRealSubfield E)) = 1 := by
+    intro u hu
+    have hul : u.asIdeal.LiesOver v.asIdeal := ⟨by rw [← hu]; rfl⟩
+    have hf1 : u.asIdeal.inertiaDeg (𝓞 (maximalRealSubfield E)) = 1 ∧
+        u.asIdeal.ramificationIdx (𝓞 (maximalRealSubfield E)) = 1 := by
+      rcases hmem u hu with rfl | rfl
+      · exact ⟨hfw, hew⟩
+      · exact ⟨hB1.2, hB1.1⟩
+    refine ⟨?_, hf1.2⟩
+    rw [← Ideal.absNorm_pow_inertiaDeg v.asIdeal u.asIdeal, hf1.1, pow_one]
+  refine ⟨GlobalTheory.LFun.isSplit_iff.2 ⟨w, B, hwB, rfl, hB⟩, ?_, fun u hu => ?_⟩
+  · rw [Finset.card_eq_two]
+    refine ⟨w, B, hwB, Finset.ext fun u => ?_⟩
+    rw [GlobalTheory.LFun.mem_aboveF, Finset.mem_insert, Finset.mem_singleton]
+    exact ⟨hmem u, by rintro (rfl | rfl); exacts [rfl, hB]⟩
+  · have hu' := GlobalTheory.LFun.mem_aboveF.1 hu
+    exact ⟨(hnorm u hu').1.trans (hnorm w rfl).1.symm, (hnorm u hu').2⟩
+
+end GlobalTheory.SplitDegOne
+end
+end
+
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.degreeOne_prime_CMField_over_split_maxRealSubfield : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)),
+    w.asIdeal.inertiaDeg ℤ = 1 → w.asIdeal.ramificationIdx ℤ = 1 →
+    Formalism.MainNotions.SchurIrreducible.IsSplit (E := E) (w.under (𝓞 (maximalRealSubfield E))) ∧
+    (Formalism.L2.Host.aboveF (L := E) (maximalRealSubfield E) (w.under (𝓞 (maximalRealSubfield E)))).card = 2 ∧
+    ∀ w' ∈ Formalism.L2.Host.aboveF (L := E) (maximalRealSubfield E) (w.under (𝓞 (maximalRealSubfield E))),
+      Ideal.absNorm w'.asIdeal = Ideal.absNorm w.asIdeal ∧ w'.asIdeal.ramificationIdx (𝓞 (maximalRealSubfield E)) = 1 := by
+  atlas_forward_decl GlobalTheory.SplitDegOne.main
+end
+end
+
+section
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+namespace GlobalTheory.PolChar
+
+open Formalism.L2.Host
+
+section Comp
+
+variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+def ideleInf : (AdeleRing (𝓞 E) E)ˣ →* InfiniteAdeleRing E :=
+  (MonoidHom.fst _ _).comp (Units.coeHom (InfiniteAdeleRing E × FiniteAdeleRing (𝓞 E) E))
+
+def ideleAt (u : HeightOneSpectrum (𝓞 E)) : (AdeleRing (𝓞 E) E)ˣ →* u.adicCompletion E :=
+  (RestrictedProduct.evalMonoidHom _ u).comp
+    ((MonoidHom.snd _ _).comp (Units.coeHom (InfiniteAdeleRing E × FiniteAdeleRing (𝓞 E) E)))
+
+theorem ideleMap_localIdele_atFin (v : HeightOneSpectrum (𝓞 F)) (a : Fˣ) :
+    GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap F E (Neutral.B1.localIdele F v (atFin v a)) =
+      ∏ w ∈ aboveF (L := E) F v, Neutral.B1.localIdele E w (atFin w (upF F a)) := by
+  classical
+  refine Units.ext (Prod.ext ?_ (FiniteAdeleRing.ext _ fun u => ?_))
+  · refine Eq.trans ?_ (map_prod (ideleInf E) _ _).symm
+    refine Eq.trans ?_ (Finset.prod_eq_one fun w _ => rfl).symm
+    exact map_one (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.infiniteAdeleMap F E)
+  · refine Eq.trans ?_ (map_prod (ideleAt E u) _ _).symm
+    change GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.finiteCompletionMap F E u
+        (Neutral.B1.finiteSingle F v (algebraMap F _ (a : F)) (u.under (𝓞 F))) =
+      ∏ w ∈ aboveF (L := E) F v, Neutral.B1.finiteSingle E w (algebraMap E _ (algebraMap F E a)) u
+    by_cases h : u.under (𝓞 F) = v
+    · have hu : u ∈ aboveF (L := E) F v := by simp [aboveF, h]
+      rw [Finset.prod_eq_single_of_mem u hu fun w _ hw => GlobalTheory.LFun.finSingle_ne (Ne.symm hw) _,
+        GlobalTheory.LFun.finSingle_self]
+      subst h
+      rw [GlobalTheory.LFun.finSingle_self, GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.finiteCompletionMap_coe]
+    · rw [GlobalTheory.LFun.finSingle_ne h, map_one]
+      refine (Finset.prod_eq_one fun w hw => GlobalTheory.LFun.finSingle_ne ?_ _).symm
+      rintro rfl
+      exact h (by simpa [aboveF] using hw)
+
+end Comp
+
+end GlobalTheory.PolChar
+
+namespace GlobalTheory.PolChar
+
+open Formalism.L2.Host
+
+theorem resReal_val_eq_prod : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (ν : Formalism.L2.Host.HChar E)
+    (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))),
+    (∀ w ∈ Formalism.L2.Host.aboveF (L := E) (maximalRealSubfield E) v,
+      ν.UnrAt w ∧ w.asIdeal.ramificationIdx (𝓞 (maximalRealSubfield E)) = 1) →
+    (GlobalTheory.PolChar.resReal ν).val v = ∏ w ∈ Formalism.L2.Host.aboveF (L := E) (maximalRealSubfield E) v, ν.val w := by
+  intro E _ _ _ ν v hv
+  have key : ∀ w ∈ aboveF (L := E) (maximalRealSubfield E) v,
+      ν.loc w (atFin w (upF (maximalRealSubfield E) (unif v))) = ν.val w := by
+    intro w hw
+    obtain ⟨hunr, he⟩ := hv w hw
+    refine HChar.val_eq ν hunr _ ?_
+    have hu : w.under (𝓞 (maximalRealSubfield E)) = v := by simpa [aboveF] using hw
+    have h1 := unif_spec v
+    unfold IsUnifAt at h1 ⊢
+    change Valued.v (((algebraMap (maximalRealSubfield E) E ((unif v : (maximalRealSubfield E)ˣ) :
+      maximalRealSubfield E)) : E) : w.adicCompletion E) = _
+    rw [HeightOneSpectrum.valuedAdicCompletion_eq_valuation', GlobalTheory.LFun.valuation_up hu, he, pow_one]
+    change Valued.v (((unif v : (maximalRealSubfield E)ˣ) : maximalRealSubfield E) :
+      v.adicCompletion (maximalRealSubfield E)) = _ at h1
+    rwa [HeightOneSpectrum.valuedAdicCompletion_eq_valuation'] at h1
+  show (resReal ν).1 (Neutral.B1.localIdele _ v (atFin v (unif v))) = _
+  rw [resReal_apply, ideleMap_localIdele_atFin, map_prod]
+  exact Finset.prod_congr rfl key
+
+end GlobalTheory.PolChar
+end
+end
+
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeCharRestrictMaxReal_val_eq_prod_above : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (ν : Formalism.L2.Host.HChar E)
+    (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))),
+    (∀ w ∈ Formalism.L2.Host.aboveF (L := E) (maximalRealSubfield E) v,
+      ν.UnrAt w ∧ w.asIdeal.ramificationIdx (𝓞 (maximalRealSubfield E)) = 1) →
+    (GlobalTheory.PolChar.resReal ν).val v = ∏ w ∈ Formalism.L2.Host.aboveF (L := E) (maximalRealSubfield E) v, ν.val w := by
+  atlas_forward_decl GlobalTheory.PolChar.resReal_val_eq_prod
+end
+end
+
+section
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+namespace GlobalTheory.NormKill
+
+theorem loc_eq_one_of_compNorm_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (ε : Formalism.L2.Host.HChar (maximalRealSubfield E)),
+    compNorm E ε = 1 → ∀ v : HeightOneSpectrum (𝓞 (maximalRealSubfield E)), Formalism.MainNotions.SchurIrreducible.IsSplit (E := E) v →
+    ∀ x, ε.loc v x = 1 := by
+  intro E _ _ _ ε hε v hv x
+  have h2 : Module.finrank (maximalRealSubfield E) E = 2 :=
+    Algebra.IsQuadraticExtension.finrank_eq_two _ _
+
+  have hnorm : Neutral.B1.localIdele (maximalRealSubfield E) v x ∈
+      GlobalTheory.QuadSymbol.normGroup (maximalRealSubfield E) E
+        (AdeleRing (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E)) := by
+    rw [GlobalTheory.IdeleNormChar.mem_normGroup_iff_everywhereNorm]
+    refine ⟨fun w => ?_, fun w => ?_⟩
+    · by_cases hw : w = v
+      · subst hw
+        have hx : GlobalTheory.IdeleNormChar.finComp (Neutral.B1.localIdele (maximalRealSubfield E) w x) w = x :=
+          Units.ext (Neutral.B1.localIdele_snd_self _ w x)
+        rw [hx]
+        exact GlobalTheory.LFun.mem_normGroup_of_isSplit h2 hv x
+      · have h1 : GlobalTheory.IdeleNormChar.finComp (Neutral.B1.localIdele (maximalRealSubfield E) v x) w = 1 := by
+          apply Units.ext
+          show (Neutral.B1.finiteSingle (maximalRealSubfield E) v (x : v.adicCompletion _)) w = 1
+          exact GlobalTheory.LFun.finSingle_ne hw _
+        rw [h1]
+        exact one_mem _
+    · have h1 : GlobalTheory.IdeleNormChar.infComp (Neutral.B1.localIdele (maximalRealSubfield E) v x) w = 1 :=
+        Units.ext rfl
+      rw [h1]
+      exact one_mem _
+
+  obtain ⟨z, hz⟩ := hnorm
+  let y : (AdeleRing (𝓞 E) E)ˣ :=
+    Units.map (GlobalTheory.UnitaryHeckeBaseChange.adeleEquiv (GlobalTheory.GalOfCusp.isCMExt_real E)).toRingHom.toMonoidHom z
+  have hy : GlobalTheory.GalOfCusp.ideleNorm E y = Neutral.B1.localIdele (maximalRealSubfield E) v x := by
+    apply Units.ext
+    show Algebra.norm _ ((GlobalTheory.UnitaryHeckeBaseChange.adeleEquiv (GlobalTheory.GalOfCusp.isCMExt_real E)).symm
+      ((GlobalTheory.UnitaryHeckeBaseChange.adeleEquiv (GlobalTheory.GalOfCusp.isCMExt_real E)) (z : _))) = _
+    rw [RingEquiv.symm_apply_apply]
+    exact congrArg Units.val hz
+  have key : (GlobalTheory.GalOfCusp.compNorm E ε).1 y = (1 : Formalism.L2.Host.HChar E).1 y :=
+    congrArg (fun χ : Formalism.L2.Host.HChar E => χ.1 y) hε
+  rw [GlobalTheory.GalOfCusp.compNorm_apply, hy] at key
+  exact key
+
+end GlobalTheory.NormKill
+end
+end
+
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeChar_local_eq_one_of_trivial_on_norms_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (ε : Formalism.L2.Host.HChar (maximalRealSubfield E)),
+    compNorm E ε = 1 → ∀ v : HeightOneSpectrum (𝓞 (maximalRealSubfield E)), Formalism.MainNotions.SchurIrreducible.IsSplit (E := E) v →
+    ∀ x, ε.loc v x = 1 := by
+  atlas_forward_decl GlobalTheory.NormKill.loc_eq_one_of_compNorm_eq_one
+end
+end
+
+section
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+open scoped Topology
+namespace GlobalTheory
+
+theorem restrictScalarsHom_maximalRealSubfield_continuous :
+    ∀ (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω],
+    Continuous (AlgEquiv.restrictScalarsHom (maximalRealSubfield E) : G E Ω →* G (maximalRealSubfield E) Ω) := by
+  intro E Ω _ _ _ _ _
+  set F := maximalRealSubfield E
+  apply continuous_of_continuousAt_one
+  intro s hs
+  rw [map_one, krullTopology_mem_nhds_one_iff] at hs
+  obtain ⟨M, hM, hMs⟩ := hs
+  let b := Module.finBasis F M
+  set t : Set Ω := Set.range (fun i => ((b i : M) : Ω)) with ht_def
+  have hMt : M ≤ IntermediateField.adjoin F t := by
+    intro m hm
+    have h := congrArg (fun y : M => (y : Ω)) (b.sum_repr ⟨m, hm⟩)
+    simp only [IntermediateField.coe_sum, IntermediateField.coe_smul] at h
+    rw [← h]
+    exact sum_mem fun i _ => IntermediateField.smul_mem _
+      (IntermediateField.subset_adjoin F t (Set.mem_range_self i))
+  have hint : ∀ x ∈ t, IsIntegral E x := by
+    rintro x ⟨i, rfl⟩
+    have : IsIntegral F (b i) := IsIntegral.of_finite F _
+    exact (IsIntegral.map (IsScalarTower.toAlgHom F M Ω) this).tower_top
+  haveI : Finite t := Set.finite_range _
+  haveI : FiniteDimensional E (IntermediateField.adjoin E t) :=
+    IntermediateField.finiteDimensional_adjoin hint
+  rw [Filter.mem_map, krullTopology_mem_nhds_one_iff]
+  refine ⟨IntermediateField.adjoin E t, inferInstance, fun σ hσ => hMs ?_⟩
+  have hH : IntermediateField.adjoin F t ≤ IntermediateField.fixedField
+      (Subgroup.map (AlgEquiv.restrictScalarsHom F (A := Ω) (S := E))
+        (IntermediateField.adjoin E t).fixingSubgroup) := by
+    rw [IntermediateField.adjoin_le_iff]
+    intro x hx
+    rw [SetLike.mem_coe, IntermediateField.mem_fixedField_iff]
+    rintro f ⟨τ, hτ, rfl⟩
+    exact (IntermediateField.mem_fixingSubgroup_iff _ _).1 hτ x
+      (IntermediateField.subset_adjoin E _ hx)
+  exact IntermediateField.fixingSubgroup_antitone hMt
+    ((IntermediateField.le_iff_le _ _).1 hH ⟨σ, hσ, rfl⟩)
+
+end GlobalTheory
+end
+end
+
+noncomputable section
+open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
+  GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+open GlobalTheory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_restrictScalarsHom_maximalRealSubfield : ∀ (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω],
+    Continuous (AlgEquiv.restrictScalarsHom (maximalRealSubfield E) : G E Ω →* G (maximalRealSubfield E) Ω) := by
+  atlas_forward_decl GlobalTheory.restrictScalarsHom_maximalRealSubfield_continuous
+end
+end
+
+section
 noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting GlobalTheory.Pst
   GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
@@ -90,4 +549,5 @@ theorem restrict_eq_cycBar_pow : ∀ (E Ω : Type) [Field E] [NumberField E] [Is
 
 end GlobalTheory.PolCharRes
 
+end
 end

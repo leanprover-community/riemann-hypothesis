@@ -1,8 +1,165 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MeasurePreservingMulRight
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeadingMinorsWeightVectorEqTensorExtremalVectors
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ChiGridHighestWeightEqCompactChainParameter
 
+section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries
+
+noncomputable section
+
+namespace GlobalTheory.HwTen
+
+theorem blockEmb_lpMinor {ι : Type} [Fintype ι] [DecidableEq ι] (n : ℕ) (τ : ι) (l : Fin n) :
+    Formalism.GradedWeylDivisibility.blockEmb ℂ τ (Formalism.GradedWeylDivisibility.lpMinor ℂ (r := n) (n := n) (l.val + 1) (by omega) (by omega)) = minor n τ l := by
+  unfold Formalism.GradedWeylDivisibility.lpMinor minor
+  rw [AlgHom.map_det]
+  congr 1
+  ext p q
+  simp [Formalism.GradedWeylDivisibility.blockEmb, rename_X]
+
+theorem natW_sub_nuNext {n : ℕ} (mu : DomWeight n) (s : Fin n) :
+    mu.natW s - Formalism.GradedWeylDivisibility.nuNext mu.natW s =
+      if h : s.val + 1 < n then (mu.w s - mu.w ⟨s.val + 1, h⟩).toNat else 0 := by
+  have hn : 0 < n := Fin.pos s
+  have hd : mu.detShift = mu.w ⟨n - 1, by omega⟩ := by simp [DomWeight.detShift, hn]
+  unfold Formalism.GradedWeylDivisibility.nuNext DomWeight.natW
+  rw [hd]
+  split_ifs with h
+  · have h1 := mu.anti (show s ≤ ⟨s.val + 1, h⟩ from by rw [Fin.le_def]; simp)
+    have h2 := mu.anti (show (⟨s.val + 1, h⟩ : Fin n) ≤ ⟨n - 1, by omega⟩ from by rw [Fin.le_def]; simp; omega)
+    omega
+  · have : s = ⟨n - 1, by omega⟩ := Fin.ext (by simp; omega)
+    rw [← this]
+    simp
+
+theorem hwVec_eq_ten : ∀ {ι : Type} [Fintype ι] [DecidableEq ι] (n : ℕ) (lam : ι → ℕ → ℤ) (lam' : ι → DomWeight n), (∀ τ (i : Fin n), (lam' τ).w i = lam τ i) → hwVec n lam = Formalism.L2.DIV.ten (fun τ => Formalism.BasicNotions.extremal ℂ n (lam' τ)) := by
+  intro ι _ _ n lam lam' hl
+  unfold hwVec Formalism.L2.DIV.ten
+  refine Finset.prod_congr rfl fun τ _ => ?_
+  unfold Formalism.BasicNotions.extremal Formalism.GradedWeylDivisibility.hw
+  rw [map_prod, Finset.prod_filter]
+  refine Finset.prod_congr rfl fun s _ => ?_
+  rw [map_pow, blockEmb_lpMinor, natW_sub_nuNext]
+  split_ifs with h
+  · congr 1
+    rw [← hl τ s, ← hl τ ⟨s.val + 1, h⟩]
+  · rfl
+
+end GlobalTheory.HwTen
+end
+end
+
+section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries GlobalTheory.ChiGrid GlobalTheory.RowReal
+open Formalism.BasicNotions.TH Formalism.L2.Theta
+
+namespace GlobalTheory.RowReal.WeightsX
+
+open GlobalTheory.SignedHC
+
+theorem mem_listBlock_iff {c x : ℚ} {n : ℕ} : x ∈ GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries.block c n ↔ x ∈ TPar.block c n := by
+  rw [GlobalTheory.SignedHC.mem_block]
+  simp only [GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries.block, List.mem_map, List.mem_range]
+  exact ⟨fun ⟨a, h, e⟩ => ⟨a, h, e.symm⟩, fun ⟨a, h, e⟩ => ⟨a, h, e.symm⟩⟩
+
+theorem pairwise_listBlock (c : ℚ) (n : ℕ) : (GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries.block c n).Pairwise (· > ·) := by
+  unfold GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries.block
+  rw [List.pairwise_map]
+  refine (List.pairwise_lt_range (n := n)).imp fun {a b} h => ?_
+  have : (a : ℚ) < b := by exact_mod_cast h
+  linarith
+
+theorem psiPar_eq (D : D7) (C : ℝ) (τ : D.what₂.Tau) : (rowEntries D C τ).psiPar =
+    (num D C τ).a 0 :: ((List.finRange D.R.m).flatMap (fun i : Fin D.R.m =>
+      GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries.block (((num D C τ).cen ((i : ℕ) + 1) : ℤ) : ℚ) (sLen D - 1) ++ [(num D C τ).a ((i : ℕ) + 1)]) ++
+      (List.finRange (D.R.k - 1)).map fun i : Fin (D.R.k - 1) => (num D C τ).vHalf ((i : ℕ) + 2)) := rfl
+
+theorem psiPar_props (D : D7) (C : ℝ) (τ : D.what₂.Tau) :
+    (rowEntries D C τ).psiPar.Pairwise (· > ·) ∧ ∀ x ∈ (rowEntries D C τ).psiPar, x ∈ (num D C τ).weightX 0 := by
+  have hm : (num D C τ).NearMid := num_nearMid D C τ
+  have hs : 1 ≤ (num D C τ).s := (odd_sLen D).pos
+  have hg : (num D C τ).s < (num D C τ).ga := sLen_lt_gap D C
+  have hGm : (num D C τ).m = D.R.m := rfl
+  have hGk : (num D C τ).k = D.R.k := rfl
+  have hga : (0 : ℚ) < (num D C τ).ga := by exact_mod_cast (by omega : 0 < (num D C τ).ga)
+  have hle : ∀ {i j : ℕ}, i ≤ j → (num D C τ).a j ≤ (num D C τ).a i := fun h => by
+    rcases h.eq_or_lt with rfl | h
+    · exact le_rfl
+    · linarith [a_add_le (G := num D C τ) h]
+  have hB : ∀ (i : Fin D.R.m) x, x ∈ GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries.block (((num D C τ).cen ((i : ℕ) + 1) : ℤ) : ℚ) (sLen D - 1) →
+      (num D C τ).a ((i : ℕ) + 1) < x ∧ x < (num D C τ).a ((i : ℕ) + 1) + (num D C τ).ga := fun i x hx =>
+    blockC'_between hm hs hg (by omega) (by have := i.2; omega) (mem_listBlock_iff.1 hx)
+  have piece : ∀ (i : Fin D.R.m) y, y ∈ GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries.block (((num D C τ).cen ((i : ℕ) + 1) : ℤ) : ℚ) (sLen D - 1) ++
+      [(num D C τ).a ((i : ℕ) + 1)] → (num D C τ).a ((i : ℕ) + 1) ≤ y ∧ y < (num D C τ).a i := by
+    intro i y hy
+    rw [(num D C τ).a_eq_succ_add i]
+    rcases List.mem_append.1 hy with h | h
+    · have := hB i y h; exact ⟨this.1.le, this.2⟩
+    · rw [List.mem_singleton] at h; subst h
+      exact ⟨le_rfl, by linarith⟩
+  have hU : ∀ y ∈ (List.finRange (D.R.k - 1)).map (fun i : Fin (D.R.k - 1) => (num D C τ).vHalf ((i : ℕ) + 2)),
+      y ∈ (num D C τ).cloudHalf := by
+    intro y hy
+    obtain ⟨i, -, rfl⟩ := List.mem_map.1 hy
+    exact GridData.mem_cloudHalf.2 ⟨(i : ℕ) + 2, by omega, by have := i.2; omega, rfl⟩
+  rw [psiPar_eq]
+  refine ⟨?_, ?_⟩
+  · rw [List.pairwise_cons, List.pairwise_append, List.pairwise_flatMap, List.pairwise_map]
+    refine ⟨?_, ⟨⟨?_, ?_⟩, ?_, ?_⟩⟩
+    · intro y hy
+      rcases List.mem_append.1 hy with h | h
+      · obtain ⟨i, -, h⟩ := List.mem_flatMap.1 h
+        have := piece i y h
+        linarith [hle (Nat.zero_le (i : ℕ))]
+      · have := cloudHalf_lt (hU y h)
+        linarith [hle (Nat.zero_le (num D C τ).m)]
+    · intro i _
+      rw [List.pairwise_append]
+      refine ⟨pairwise_listBlock _ _, List.pairwise_singleton _ _, ?_⟩
+      intro x hx y hy
+      rw [List.mem_singleton] at hy; subst hy
+      exact (hB i x hx).1
+    · refine (List.pairwise_lt_finRange D.R.m).imp fun {i j} hij => ?_
+      intro x hx y hy
+      have h1 := piece i x hx
+      have h2 := piece j y hy
+      have h3 : (i : ℕ) + 1 ≤ j := hij
+      linarith [hle h3]
+    · refine (List.pairwise_lt_finRange (D.R.k - 1)).imp fun {i j} hij => ?_
+      have hij' : (i : ℕ) < j := hij
+      have := (num D C τ).v_anti ((i : ℕ) + 2) ((j : ℕ) + 2) (by omega) (by omega) (by have := j.2; omega)
+      have h' : ((num D C τ).v ((j : ℕ) + 2) : ℚ) < (num D C τ).v ((i : ℕ) + 2) := by exact_mod_cast this
+      simp only [GridData.vHalf]; linarith
+    · intro x hx y hy
+      obtain ⟨i, -, h⟩ := List.mem_flatMap.1 hx
+      have h1 := piece i x h
+      have h2 := cloudHalf_lt (hU y hy)
+      have h3 : (i : ℕ) + 1 ≤ (num D C τ).m := by have := i.2; omega
+      linarith [hle h3]
+  · intro y hy
+    rw [GridData.mem_weightX]
+    rcases List.mem_cons.1 hy with rfl | hy
+    · exact Or.inl (GridData.mem_tops.2 ⟨0, by omega, rfl⟩)
+    rcases List.mem_append.1 hy with h | h
+    · obtain ⟨i, -, h⟩ := List.mem_flatMap.1 h
+      rcases List.mem_append.1 h with h | h
+      · exact Or.inr (Or.inr (Or.inl ⟨(i : ℕ) + 1, by omega, by have := i.2; omega, mem_listBlock_iff.1 h⟩))
+      · rw [List.mem_singleton] at h; subst h
+        exact Or.inl (GridData.mem_tops.2 ⟨(i : ℕ) + 1, by have := i.2; omega, rfl⟩)
+    · exact Or.inr (Or.inl (hU y h))
+
+theorem length_psiPar (D : D7) (C : ℝ) (τ : D.what₂.Tau) : (rowEntries D C τ).psiPar.length = rankP D D.R.m := by
+  rw [length_psi, rowSizes_nR]; simp [rankX]
+
+end GlobalTheory.RowReal.WeightsX
+
+namespace GlobalTheory.RowReal
+
+open GlobalTheory.SignedHC GlobalTheory.RowReal.WeightsX
+
+end GlobalTheory.RowReal
+end
+
+section
 noncomputable section
 
 open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.IndefiniteRowSideFullHecke.MinorOrderedEntries
@@ -459,3 +616,5 @@ theorem coefPsi (W : G.Weil) (h0 : PosOnb W (.top 0)) :
 end Grid2
 
 end GlobalTheory.CoefPsi
+end
+end

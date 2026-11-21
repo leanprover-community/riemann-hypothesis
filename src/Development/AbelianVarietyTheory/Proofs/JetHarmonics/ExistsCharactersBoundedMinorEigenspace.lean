@@ -9,8 +9,238 @@ import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmTypeDirectionsEige
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IdempotentEmbeddingsCard
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ValuationIntegersPadicComplete
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NonemptyUniformisedFormalChartAlgebraicPoint
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsPlaceUOfFrobeniusOrbit
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsPrimitiveIdempotentMapEqOne
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StAvDefs
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniqueMaximalAbovePlace
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.EmbeddingsCongruentEq
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.TauBasisUnitDeterminant
 
+section
+open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
+open GlobalTheory.CharDepth TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.CharDepth
+
+theorem padicTensor_eq_mul_add (A : Type) [CommRing A] (p : ℕ) [Fact p.Prime]
+    (r : ℤ_[p] ⊗[ℤ] A) :
+    ∃ (s : ℤ_[p] ⊗[ℤ] A) (x : A), r = (p : ℤ_[p] ⊗[ℤ] A) * s + (1 : ℤ_[p]) ⊗ₜ[ℤ] x := by
+  induction r using TensorProduct.induction_on with
+  | zero => exact ⟨0, 0, by simp⟩
+  | tmul a x =>
+    have h := PadicInt.zmodRepr_spec a
+    obtain ⟨-, h⟩ := h
+    rw [PadicInt.maximalIdeal_eq_span_p, Ideal.mem_span_singleton] at h
+    obtain ⟨c, hc⟩ := h
+    refine ⟨c ⊗ₜ[ℤ] x, (a.zmodRepr : ℤ) • x, ?_⟩
+    have ha : a = (p : ℕ) • c + (a.zmodRepr : ℤ) • (1 : ℤ_[p]) := by
+      rw [nsmul_eq_mul, ← hc]; simp
+    rw [← nsmul_eq_mul, TensorProduct.tmul_smul, TensorProduct.smul_tmul', TensorProduct.smul_tmul',
+      ← TensorProduct.add_tmul, ← ha]
+  | add a b ha hb =>
+    obtain ⟨s, x, rfl⟩ := ha
+    obtain ⟨s', x', rfl⟩ := hb
+    exact ⟨s + s', x + x', by rw [TensorProduct.tmul_add]; ring⟩
+
+end GlobalTheory.CharDepth
+end
+
+section
+noncomputable section
+
+open scoped TensorProduct
+
+namespace GlobalTheory.EmbFrob
+
+open Polynomial
+
+theorem exists_pow_of_finite_field (p : ℕ) [Fact p.Prime] {F k : Type} [Field F] [Finite F]
+    [Field k] [CharP k p] (f g : F →+* k) : ∃ i : ℕ, ∀ a : F, g a = f a ^ p ^ i := by
+  haveI : CharP F p := f.charP f.injective p
+  letI : Algebra (ZMod p) F := ZMod.algebra F p
+  letI : Algebra (ZMod p) k := ZMod.algebra k p
+  letI : Algebra F k := f.toAlgebra
+  haveI : IsScalarTower (ZMod p) F k := IsScalarTower.of_algebraMap_eq' (Subsingleton.elim _ _)
+  let g' : F →ₐ[ZMod p] k :=
+    { g with commutes' := fun z =>
+        RingHom.congr_fun (Subsingleton.elim (g.comp (algebraMap (ZMod p) F)) (algebraMap _ k)) z }
+  obtain ⟨n, hn⟩ := (FiniteField.bijective_frobeniusAlgEquivOfAlgebraic_pow (ZMod p) F).2
+    (g'.restrictNormal' F)
+  refine ⟨n, fun a => ?_⟩
+  have h1 : algebraMap F k (g'.restrictNormal' F a) = g' (algebraMap F F a) :=
+    AlgHom.restrictNormal_commutes g' F a
+  have h2 : g'.restrictNormal' F a = a ^ p ^ (n : ℕ) := by
+    rw [← hn]
+    simp [AlgEquiv.coe_pow, FiniteField.coe_frobeniusAlgEquivOfAlgebraic_iterate]
+  rw [h2, map_pow] at h1
+  exact h1.symm
+
+open GlobalTheory.IndefiniteRowSideFullHecke.SplitUnramifiedPlaces
+
+theorem comap_eq {p : ℕ} [Fact p.Prime] {OE : Type} [CommRing OE] [IsDedekindDomain OE]
+    [CharZero OE] {R : Type} [CommRing R] [IsLocalRing R] [Algebra ℤ_[p] R]
+    (hp : ¬ IsUnit (p : R)) (w : Place p OE) {P : Ideal OE}
+    (hP : ∀ Q : Ideal OE, Q.IsMaximal → Q ≠ P → Q.map w.toOw = ⊤) (σ : OE →+* R)
+    (hσ : extend σ w.e = 1) : (IsLocalRing.maximalIdeal R).comap σ = P := by
+  by_contra hne
+  have hpQ : (p : OE) ∈ (IsLocalRing.maximalIdeal R).comap σ := by
+    rw [Ideal.mem_comap, map_natCast]; exact hp
+  have hQ : ((IsLocalRing.maximalIdeal R).comap σ).IsMaximal := by
+    refine Ideal.IsPrime.isMaximal inferInstance fun h => ?_
+    rw [h, Ideal.mem_bot] at hpQ
+    exact (Nat.cast_ne_zero.2 (Fact.out : p.Prime).ne_zero) hpQ
+  let φ : w.Ow →+* R := Ideal.Quotient.lift _ (extend σ).toRingHom (by
+    intro z hz
+    obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 hz
+    simp [hσ])
+  have hφ : ∀ a, φ (w.toOw a) = σ a := fun a => by
+    show extend (p := p) σ (1 ⊗ₜ a) = σ a
+    simp
+  have hle : ((IsLocalRing.maximalIdeal R).comap σ).map w.toOw ≤
+      (IsLocalRing.maximalIdeal R).comap φ := by
+    rw [Ideal.map_le_iff_le_comap]
+    intro a ha
+    rw [Ideal.mem_comap, Ideal.mem_comap, hφ]
+    exact ha
+  rw [hP _ hQ hne, top_le_iff] at hle
+  exact Ideal.comap_ne_top φ (IsLocalRing.maximalIdeal.isMaximal R).ne_top hle
+
+theorem exists_frobenius_pow : ∀ (p : ℕ) [Fact p.Prime] (OE : Type) [CommRing OE]
+    [IsDedekindDomain OE] [CharZero OE] [Module.Finite ℤ OE] (C : Type) [Field C]
+    (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C] [Algebra ℤ_[p] R],
+    v.Integers R → ¬ IsUnit (p : R) → ∀ (w : ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.PlaceU p OE)
+    (σ τ : OE →+* R), σ ∈ ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := R) w.e →
+    τ ∈ ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := R) w.e →
+    ∃ i : ℕ, ∀ a : OE, v (algebraMap R C (τ a - σ a ^ (p ^ i))) < 1 := by
+  intro p _ OE _ _ _ _ C _ v R _ _ _ hv hp w σ τ hσ hτ
+  haveI : IsDomain R := hv.hom_inj.isDomain (algebraMap R C)
+  haveI : ValuationRing R := ValuationRing.of_integers v hv
+  let w' : Place p OE := ⟨w.e, w.idem, w.ne_zero, w.prim⟩
+  obtain ⟨P, hPm, hpP, -, hP⟩ := GlobalTheory.OnePrime.exists_prime_under p OE w'
+  have h1 := comap_eq hp w' hP σ hσ
+  have h2 := comap_eq hp w' hP τ hτ
+  have hP0 : P ≠ ⊥ := fun h => by
+    rw [h, Ideal.mem_bot] at hpP
+    exact (Nat.cast_ne_zero.2 (Fact.out : p.Prime).ne_zero) hpP
+  haveI : Finite (OE ⧸ P) := Ideal.finiteQuotientOfFreeOfNeBot P hP0
+  letI : Field (OE ⧸ P) := Ideal.Quotient.field P
+  haveI : CharP (IsLocalRing.ResidueField R) p := by
+    refine (CharP.charP_iff_prime_eq_zero (Fact.out : p.Prime)).2 ?_
+    rw [← map_natCast (IsLocalRing.residue R), IsLocalRing.residue_eq_zero_iff]
+    exact hp
+  obtain ⟨i, hi⟩ := exists_pow_of_finite_field p (k := IsLocalRing.ResidueField R)
+    (Ideal.quotientMap (IsLocalRing.maximalIdeal R) σ h1.ge)
+    (Ideal.quotientMap (IsLocalRing.maximalIdeal R) τ h2.ge)
+  refine ⟨i, fun a => ?_⟩
+  have h3 : IsLocalRing.residue R (τ a) = IsLocalRing.residue R (σ a) ^ p ^ i :=
+    hi (Ideal.Quotient.mk P a)
+  have h4 : τ a - σ a ^ p ^ i ∈ IsLocalRing.maximalIdeal R := by
+    rw [← IsLocalRing.residue_eq_zero_iff, map_sub, map_pow, h3, sub_self]
+  exact lt_of_le_of_ne (hv.map_le_one _) fun h => h4 (hv.isUnit_iff_valuation_eq_one.2 h)
+
+end GlobalTheory.EmbFrob
+end
+end
+
+section
+open scoped BigOperators TensorProduct
+open Classical NumberField IsDedekindDomain Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds Formalism.L2.Pj Formalism.L2.DIV Formalism.BasicNotions GlobalTheory.RowLaw GlobalTheory.RowAt GlobalTheory.GoodDepth
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
+
+namespace GlobalTheory.OrbitPlace
+
+open ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs in
+
+theorem mem_emb_of_congr_pow (A : Type) [CommRing A] (p : ℕ) [Fact p.Prime] (O : Type)
+    [CommRing O] [IsLocalRing O] [Algebra ℤ_[p] O] (hp : ¬ IsUnit (p : O))
+    (e : ℤ_[p] ⊗[ℤ] A) (he : e * e = e) (σ σ' : A →+* O)
+    (h : ∀ x, σ' x - σ x ^ p ∈ IsLocalRing.maximalIdeal O) (hσ : σ ∈ Emb (O := O) e) :
+    σ' ∈ Emb (O := O) e := by
+  obtain ⟨s, x, hx⟩ := GlobalTheory.CharDepth.padicTensor_eq_mul_add A p e
+  have hp0 : IsLocalRing.residue O (p : O) = 0 :=
+    (IsLocalRing.residue_eq_zero_iff _).2 hp
+  have key : ∀ ρ : A →+* O,
+      IsLocalRing.residue O (tauExt ρ e) = IsLocalRing.residue O (ρ x) := by
+    intro ρ
+    have h1 : tauExt (p := p) ρ ((1 : ℤ_[p]) ⊗ₜ[ℤ] x) = ρ x := by simp [tauExt]
+    rw [hx, map_add, map_mul, map_natCast, h1, map_add, map_mul, hp0, zero_mul, zero_add]
+  have h1 : IsLocalRing.residue O (σ x) = 1 := by
+    have : tauExt σ e = 1 := hσ
+    rw [← key, this, map_one]
+  have h2 : IsLocalRing.residue O (tauExt σ' e) = 1 := by
+    have := (IsLocalRing.residue_eq_zero_iff _).2 (h x)
+    rw [map_sub, map_pow, h1, one_pow, sub_eq_zero] at this
+    rw [key, this]
+  have hu : IsUnit (tauExt σ' e) := by
+    rw [← IsLocalRing.residue_ne_zero_iff_isUnit, h2]
+    exact one_ne_zero
+  have hid : tauExt σ' e * tauExt σ' e = tauExt σ' e * 1 := by rw [← map_mul, he, mul_one]
+  exact hu.mul_left_cancel hid
+
+theorem exists_placeU_of_frobenius_orbit : ∀ (E : Type) [Field E] [NumberField E] (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C], v.Integers O → ∀ [IsLocalRing O] [Algebra ℤ_[p] O], ¬ IsUnit (p : O) → ¬ (p : ℤ) ∣ NumberField.discr E → ∀ (d : ℕ) [NeZero d] (τ : ZMod d → (𝓞 E →+* O)), Function.Injective τ → (∀ s x, τ (s + 1) x - τ s x ^ p ∈ IsLocalRing.maximalIdeal O) → ∃ (w : ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.PlaceU p (𝓞 E)) (_ : w.n = d) (t : Fin w.n ≃ ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := O) w.e), (∀ j : Fin w.n, ((t j : ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := O) w.e) : 𝓞 E →+* O) = τ ((j.val : ℕ) : ZMod d)) ∧ ∃ b : Module.Basis (Fin w.n) ℤ_[p] (LinearMap.range (LinearMap.mulLeft ℤ_[p] w.e)), IsUnit (Matrix.det (Matrix.of fun i j => ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.tauExt ((t j : ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := O) w.e) : 𝓞 E →+* O) (b i : ℤ_[p] ⊗[ℤ] 𝓞 E))) := by
+  intro E _ _ p hpp C _ _ _ v O _ _ hv _ _ hp hd d _ τ hτ hfr
+  haveI : IsDomain O := hv.hom_inj.isDomain (algebraMap O C)
+  obtain ⟨w, hw⟩ := GlobalTheory.exists_placeU_mem_emb p (𝓞 E) O (τ 0)
+  have hsep := GlobalTheory.ringOfIntegers_hom_eq_of_congr_maximalIdeal E p hpp.out hd C v O hv hp
+  have hmem : ∀ k : ℕ, τ (k : ZMod d) ∈ ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := O) w.e := by
+    intro k
+    induction k with
+    | zero => simpa using hw
+    | succ k ih =>
+      rw [Nat.cast_succ]
+      exact mem_emb_of_congr_pow _ p O hp w.e w.idem _ _ (hfr _) ih
+  have hpow : ∀ (k : ℕ) x, IsLocalRing.residue O (τ (k : ZMod d) x) =
+      IsLocalRing.residue O (τ 0 x) ^ (p ^ k) := by
+    intro k x
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      have := (IsLocalRing.residue_eq_zero_iff _).2 (hfr (k : ZMod d) x)
+      rw [map_sub, map_pow, sub_eq_zero] at this
+      rw [Nat.cast_succ, this, ih, ← pow_mul, pow_succ]
+  have hsurj : ∀ σ ∈ ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := O) w.e, ∃ s, τ s = σ := by
+    intro σ hσ
+    obtain ⟨i, hi⟩ := GlobalTheory.EmbFrob.exists_frobenius_pow p (𝓞 E) C v O hv hp w (τ 0) σ hw hσ
+    refine ⟨(i : ZMod d), hsep _ _ fun x => ?_⟩
+    have h1 : σ x - τ 0 x ^ (p ^ i) ∈ IsLocalRing.maximalIdeal O := by
+      intro hu
+      exact (hi x).ne (hv.one_of_isUnit hu)
+    have := (IsLocalRing.residue_eq_zero_iff _).2 h1
+    rw [map_sub, map_pow, sub_eq_zero] at this
+    rw [← IsLocalRing.residue_eq_zero_iff, map_sub, hpow, this, sub_self]
+  have hmem' : ∀ s : ZMod d, τ s ∈ ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := O) w.e := by
+    intro s
+    have := hmem s.val
+    rwa [ZMod.natCast_zmod_val] at this
+  have hbij : Function.Bijective
+      (fun s : ZMod d => (⟨τ s, hmem' s⟩ : ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := O) w.e)) :=
+    ⟨fun a b h => hτ (congrArg Subtype.val h), fun σ => by
+      obtain ⟨s, hs⟩ := hsurj σ.1 σ.2
+      exact ⟨s, Subtype.ext hs⟩⟩
+  obtain ⟨⟨t₀⟩, -⟩ := GlobalTheory.EmbCount.card_emb E p C v O hv w.e w.idem
+  have hn : w.n = d := by
+    have h1 := Nat.card_congr (t₀.trans (Equiv.ofBijective _ hbij).symm)
+    rw [Nat.card_zmod, Nat.card_eq_fintype_card, Fintype.card_fin] at h1
+    exact h1
+  have hcast : Function.Bijective (fun j : Fin w.n => ((j.val : ℕ) : ZMod d)) := by
+    refine ⟨fun a b h => ?_, fun s => ⟨⟨s.val, hn ▸ ZMod.val_lt s⟩, ZMod.natCast_zmod_val s⟩⟩
+    have h' := congrArg ZMod.val h
+    simp only [ZMod.val_natCast] at h'
+    rw [Nat.mod_eq_of_lt (hn ▸ a.2), Nat.mod_eq_of_lt (hn ▸ b.2)] at h'
+    exact Fin.ext h'
+  let t : Fin w.n ≃ ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs.Emb (O := O) w.e :=
+    (Equiv.ofBijective _ hcast).trans (Equiv.ofBijective _ hbij)
+  refine ⟨w, hn, t, fun j => rfl, ?_⟩
+  exact GlobalTheory.tau_basis_unit_determinant.exists_basis_isUnit_det p (𝓞 E) O w (fun j => (t j).1) (fun j => (t j).2)
+    (fun j j' h => t.injective (Subtype.ext (hsep _ _ h)))
+
+end GlobalTheory.OrbitPlace
+end
+
+section
 open scoped BigOperators TensorProduct
 open Classical NumberField IsDedekindDomain Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds Formalism.L2.Pj Formalism.L2.DIV Formalism.BasicNotions GlobalTheory.RowLaw GlobalTheory.RowAt GlobalTheory.GoodDepth
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
@@ -226,3 +456,4 @@ theorem exists_chars_minor_le : (∀ (p : ℕ) [Fact p.Prime], ReciprocityTheory
     rfl
 
 end GlobalTheory.CharMinor
+end

@@ -1,7 +1,26 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsFnFieldTrdeg
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.GenericMinors
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Assembly
+
+section
+set_option maxSynthPendingDepth 1
+
+noncomputable section
+
+namespace GroundTheory.Heights₂.Heights.LowerBoundFree
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter
+
+def FnFieldTrdeg.Statement : Prop :=
+  ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω)
+    (d : ℕ), Birational y → IsArithVar (mCoordIdeal y) (d + 1) → Algebra.trdeg ℤ Ω = d
+
+end GroundTheory.Heights₂.Heights.LowerBoundFree
+end
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 noncomputable section
@@ -32,3 +51,5 @@ theorem FnFieldTrdeg.full : FnFieldTrdeg.Statement := by
   exact Cardinal.toENat_eq_natCast.mp h2
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree
+end
+end

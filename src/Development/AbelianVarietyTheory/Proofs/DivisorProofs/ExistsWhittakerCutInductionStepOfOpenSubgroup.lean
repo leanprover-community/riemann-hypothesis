@@ -1,6 +1,246 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqvCorMulCol
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemSupportComp
+import BuildAid.ForwardExisting
 
+section
+section
+open Matrix Topology
+
+noncomputable section
+
+namespace GlobalTheory.JSW.KirFin
+
+theorem exists_charSum_eq_on_compact : ∀ {F : Type} [NormedField F] (ψ : AddChar F ℂ), IsLocallyConstant ψ → ψ ≠ 1 →
+    ∀ {ι : Type} [Fintype ι] (K : Set (ι → F)), IsCompact K → ∀ Φ : (ι → F) → ℂ, IsLocallyConstant Φ →
+    ∃ T : (ι → F) →₀ ℂ, ∀ r ∈ K, (T.sum fun v c => c * ψ (r ⬝ᵥ v)) = Φ r := by
+  intro F _ ψ hψ hψ1 ι _ K hK Φ hΦ
+  classical
+  obtain ⟨t, ht⟩ : ∃ t, ψ t ≠ 1 := by
+    by_contra h
+    push_neg at h
+    exact hψ1 (AddChar.ext _ _ h)
+  let χ : (ι → F) → (ι → F) → ℂ := fun v r => ψ (r ⬝ᵥ v)
+  let S : Set ((ι → F) → ℂ) := Set.range χ
+  have hχmul : ∀ v w, χ v * χ w = χ (v + w) := by
+    intro v w; funext r; simp [χ, dotProduct_add, AddChar.map_add_eq_mul]
+  have hχ0 : χ 0 = 1 := by funext r; simp [χ]
+  have hlc : ∀ v, IsLocallyConstant (χ v) := fun v =>
+    hψ.comp_continuous (continuous_id.dotProduct continuous_const)
+  let L : Subalgebra ℂ ((ι → F) → ℂ) :=
+    { carrier := {a | IsLocallyConstant a}
+      mul_mem' := fun ha hb => IsLocallyConstant.mul ha hb
+      add_mem' := fun ha hb => IsLocallyConstant.add ha hb
+      algebraMap_mem' := fun c => IsLocallyConstant.const _ }
+  let A := Algebra.adjoin ℂ S
+  have hAL : A ≤ L := Algebra.adjoin_le (by rintro _ ⟨v, rfl⟩; exact hlc v)
+  have hAspan : ∀ a ∈ A, a ∈ Submodule.span ℂ S := by
+    intro a ha
+    induction ha using Algebra.adjoin_induction with
+    | mem x hx => exact Submodule.subset_span hx
+    | algebraMap c =>
+      have : algebraMap ℂ ((ι → F) → ℂ) c = c • χ 0 := by
+        rw [hχ0, Algebra.algebraMap_eq_smul_one]
+      rw [this]; exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨0, rfl⟩)
+    | add x y _ _ hx hy => exact Submodule.add_mem _ hx hy
+    | mul x y _ _ hx hy =>
+      have := Submodule.mul_mem_mul hx hy
+      rw [Submodule.span_mul_span] at this
+      refine Submodule.span_mono ?_ this
+      rintro _ ⟨_, ⟨v, rfl⟩, _, ⟨w, rfl⟩, rfl⟩
+      exact ⟨v + w, (hχmul v w).symm⟩
+  let ρ : ((ι → F) → ℂ) →ₐ[ℂ] (K → ℂ) :=
+    { toFun := fun a x => a x.1
+      map_one' := rfl
+      map_mul' := fun _ _ => rfl
+      map_zero' := rfl
+      map_add' := fun _ _ => rfl
+      commutes' := fun _ => rfl }
+  haveI : CompactSpace K := isCompact_iff_compactSpace.1 hK
+  obtain ⟨a, ha, e⟩ := mem_of_separates (A.map ρ)
+    (by rintro _ ⟨a, ha, rfl⟩; exact (hAL ha).comp_continuous continuous_subtype_val)
+    (by
+      intro x y hxy
+      obtain ⟨i, hi⟩ := Function.ne_iff.1 (Subtype.coe_ne_coe.2 hxy)
+      refine ⟨ρ (χ (Pi.single i (t / (x.1 i - y.1 i)))), ⟨_, Algebra.subset_adjoin ⟨_, rfl⟩, rfl⟩,
+        fun h => ht ?_⟩
+      change ψ (x.1 ⬝ᵥ _) = ψ (y.1 ⬝ᵥ _) at h
+      rw [dotProduct_single, dotProduct_single] at h
+      have h2 : x.1 i * (t / (x.1 i - y.1 i)) = t + y.1 i * (t / (x.1 i - y.1 i)) := by
+        have := sub_ne_zero.2 hi
+        field_simp
+        ring
+      rw [h2, AddChar.map_add_eq_mul] at h
+      exact (mul_eq_right₀ (ψ.val_isUnit _).ne_zero).1 h)
+    (hΦ.comp_continuous continuous_subtype_val)
+  obtain ⟨T, hT⟩ := Finsupp.mem_span_range_iff_exists_finsupp.1 (hAspan a ha)
+  refine ⟨T, fun r hr => ?_⟩
+  have h1 := congrFun e ⟨r, hr⟩
+  change a r = Φ r at h1
+  rw [← h1, ← hT]
+  simp only [Finsupp.sum, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, χ]
+
+end GlobalTheory.JSW.KirFin
+end
+end
+
+open Matrix Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_characterSum_eq_locallyConstant_on_compact : ∀ {F : Type} [NormedField F] (ψ : AddChar F ℂ), IsLocallyConstant ψ → ψ ≠ 1 → ∀ {ι : Type} [Fintype ι] (K : Set (ι → F)), IsCompact K → ∀ Φ : (ι → F) → ℂ, IsLocallyConstant Φ → ∃ T : (ι → F) →₀ ℂ, ∀ r ∈ K, (T.sum fun v c => c * ψ (r ⬝ᵥ v)) = Φ r := by
+  atlas_forward_decl GlobalTheory.JSW.KirFin.exists_charSum_eq_on_compact
+end
+
+section
+open Matrix Topology
+
+namespace GlobalTheory.JSW
+
+theorem isCompact_charAnnihilator_of_mem_nhds_zero {F : Type} [NormedField F] [ProperSpace F] (ψ : AddChar F ℂ)
+    (hlc : IsLocallyConstant ψ) (hψ : ψ ≠ 1) {ι : Type} [Fintype ι] (L : Set (ι → F))
+    (hL : L ∈ nhds (0 : ι → F)) :
+    IsCompact {r : ι → F | ∀ y ∈ L, ψ (r ⬝ᵥ y) = 1} := by
+  classical
+  obtain ⟨t, ht⟩ := AddChar.ne_one_iff.1 hψ
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.1 hL
+  have hcont : Continuous (fun x : F => ψ x) := hlc.continuous
+  have hclosed : IsClosed {r : ι → F | ∀ y ∈ L, ψ (r ⬝ᵥ y) = 1} := by
+    have : {r : ι → F | ∀ y ∈ L, ψ (r ⬝ᵥ y) = 1} = ⋂ y ∈ L, {r : ι → F | ψ (r ⬝ᵥ y) = 1} := by
+      ext r; simp
+    rw [this]
+    refine isClosed_biInter fun y _ => isClosed_eq ?_ continuous_const
+    refine hcont.comp ?_
+    simp only [dotProduct]
+    fun_prop
+  have hR : 0 ≤ ‖t‖ / ε := div_nonneg (norm_nonneg _) hε.le
+  have hsub : {r : ι → F | ∀ y ∈ L, ψ (r ⬝ᵥ y) = 1} ⊆ Metric.closedBall 0 (‖t‖ / ε) := by
+    intro r hr
+    rw [mem_closedBall_zero_iff, pi_norm_le_iff_of_nonneg hR]
+    intro i
+    by_contra hlt
+    push_neg at hlt
+    have hri : r i ≠ 0 := by
+      intro h0; rw [h0, norm_zero] at hlt; linarith
+    have hpos : 0 < ‖r i‖ := norm_pos_iff.2 hri
+    have hy : Pi.single i (t / r i) ∈ L := by
+      apply hball
+      rw [mem_ball_zero_iff, pi_norm_lt_iff hε]
+      intro j
+      by_cases hj : j = i
+      · subst hj
+        rw [Pi.single_eq_same, norm_div, div_lt_iff₀ hpos]
+        rw [div_lt_iff₀ hε] at hlt
+        linarith
+      · rw [Pi.single_eq_of_ne hj, norm_zero]; exact hε
+    have := hr _ hy
+    rw [dotProduct_single, mul_div_cancel₀ _ hri] at this
+    exact ht this
+  exact (isCompact_closedBall 0 (‖t‖ / ε)).of_isClosed_subset hclosed hsub
+
+end GlobalTheory.JSW
+end
+
+section
+section
+noncomputable section
+
+open Matrix Topology
+
+namespace GlobalTheory.JSW.Orbit
+
+theorem isClopen_orbit : ∀ {F : Type} [NormedField F] {n : ℕ} (B : Subgroup (GL (Fin n) F)),
+    IsCompact (B : Set (GL (Fin n) F)) → IsOpen (B : Set (GL (Fin n) F)) → ∀ r₀ : Fin n → F, r₀ ≠ 0 →
+    IsClopen {r : Fin n → F | ∃ b ∈ B, r = r₀ ᵥ* (b : Matrix (Fin n) (Fin n) F)} := by
+  intro F _ n B hBc hBo r₀ hr₀
+  classical
+  have hset : {r : Fin n → F | ∃ b ∈ B, r = r₀ ᵥ* (b : Matrix (Fin n) (Fin n) F)} =
+      (fun b : GL (Fin n) F => r₀ ᵥ* (b : Matrix (Fin n) (Fin n) F)) '' (B : Set (GL (Fin n) F)) := by
+    ext r
+    constructor
+    · rintro ⟨b, hb, rfl⟩; exact ⟨b, hb, rfl⟩
+    · rintro ⟨b, hb, rfl⟩; exact ⟨b, hb, rfl⟩
+  refine ⟨?_, ?_⟩
+  · rw [hset]
+    exact (hBc.image (continuous_const.matrix_vecMul Units.continuous_val)).isClosed
+  · rw [isOpen_iff_mem_nhds]
+    rintro _ ⟨b, hb, rfl⟩
+    set r := r₀ ᵥ* (b : Matrix (Fin n) (Fin n) F) with hr
+    have hr0 : r ≠ 0 := by
+      intro h
+      apply hr₀
+      have : r ᵥ* ((b⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) = r₀ := by
+        rw [hr, vecMul_vecMul, ← Units.val_mul, mul_inv_cancel, Units.val_one, vecMul_one]
+      rw [← this, h, zero_vecMul]
+    obtain ⟨i, hi⟩ := Function.ne_iff.1 hr0
+    let c : Fin n → F := Pi.single i (r i)⁻¹
+    have hc : r ⬝ᵥ c = 1 := by
+      simp only [c, dotProduct_single]
+      exact mul_inv_cancel₀ hi
+    obtain ⟨O, hO, hOB⟩ := GlobalTheory.JSW.KirFin.isEmbedding_coe.isInducing.isOpen_iff.1 hBo
+    let s : (Fin n → F) → Matrix (Fin n) (Fin n) F := fun y => 1 + vecMulVec c (y - r)
+    have hs : Continuous s :=
+      continuous_const.add (continuous_const.matrix_vecMulVec (continuous_id.sub continuous_const))
+    have hs1 : s r = 1 := by simp [s]
+    have h1O : (1 : Matrix (Fin n) (Fin n) F) ∈ O := by
+      have : (1 : GL (Fin n) F) ∈ (B : Set (GL (Fin n) F)) := B.one_mem
+      rw [← hOB] at this
+      exact this
+    have e1 : ∀ᶠ y in 𝓝 r, s y ∈ O := hs.continuousAt.eventually_mem (hO.mem_nhds (by rw [hs1]; exact h1O))
+    have e2 : ∀ᶠ y in 𝓝 r, (s y).det ≠ 0 := hs.matrix_det.continuousAt.eventually_ne (by simp [hs1])
+    filter_upwards [e1, e2] with y hy1 hy2
+    let u : GL (Fin n) F := GeneralLinearGroup.mkOfDetNeZero _ hy2
+    have hu : u ∈ B := by
+      have : u ∈ (fun g : GL (Fin n) F => g.val) ⁻¹' O := hy1
+      rw [hOB] at this
+      exact this
+    refine ⟨b * u, B.mul_mem hb hu, ?_⟩
+    change y = r₀ ᵥ* ((b : Matrix (Fin n) (Fin n) F) * s y)
+    rw [← vecMul_vecMul, ← hr]
+    change y = r ᵥ* (1 + vecMulVec c (y - r))
+    rw [vecMul_add, vecMul_one, vecMul_vecMulVec, hc]
+    simp
+
+end GlobalTheory.JSW.Orbit
+end
+end
+
+open Matrix Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isClopen_rowVector_orbit_compactOpen_GL : ∀ {F : Type} [NormedField F] {n : ℕ} (B : Subgroup (GL (Fin n) F)), IsCompact (B : Set (GL (Fin n) F)) → IsOpen (B : Set (GL (Fin n) F)) → ∀ r₀ : Fin n → F, r₀ ≠ 0 → IsClopen {r : Fin n → F | ∃ b ∈ B, r = r₀ ᵥ* (b : Matrix (Fin n) (Fin n) F)} := by
+  atlas_forward_decl GlobalTheory.JSW.Orbit.isClopen_orbit
+end
+
+section
+open Matrix Topology GlobalTheory.SmGL GlobalTheory.Whittaker
+
+namespace GlobalTheory.JSW.Cut
+
+open GlobalTheory.JSW.KirFin
+
+theorem eqv_cor_mul_col {F : Type} [NormedField F] {ψ : AddChar F ℂ} {m : ℕ} {W : GL (Fin (m + 2)) F → ℂ}
+    (hW : Eqv ψ W) (h : GL (Fin (m + 1)) F) (x : Fin (m + 1) → F) :
+    W (cor h * mir 1 x) = ψ (lr h ⬝ᵥ x) * W (cor h) := by
+  change W (mir h 0 * mir 1 x) = _
+  rw [mir_mul, hW.apply_mir, mul_one, add_zero]
+  rfl
+
+theorem eqv_act {F : Type} [NormedField F] {ψ : AddChar F ℂ} {n : ℕ} {W : GL (Fin n) F → ℂ}
+    (hW : Eqv ψ W) (T : GL (Fin n) F →₀ ℂ) : Eqv ψ (act T W) := fun u hu g => by
+  unfold act
+  rw [Finsupp.mul_sum]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  simp only
+  rw [mul_assoc u, hW u hu]
+  ring
+
+theorem lr_ne_zero {F : Type} [NormedField F] {m : ℕ} (h : GL (Fin (m + 1)) F) : lr h ≠ 0 := fun h0 => by
+  have h1 : lr (h * h⁻¹) = 0 := by rw [lr_mul, h0, zero_vecMul]
+  rw [mul_inv_cancel] at h1
+  have := congrFun h1 (Fin.last m)
+  simp [lr] at this
+
+end GlobalTheory.JSW.Cut
+end
+
+section
 section
 open Matrix Topology GlobalTheory.SmGL GlobalTheory.Whittaker
 
@@ -167,3 +407,4 @@ open Matrix Topology
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_whittakerCut_inductionStep_of_open_subgroup : ∀ {F : Type} [NormedField F] [ProperSpace F] [IsUltrametricDist F] (ψ : AddChar F ℂ), IsLocallyConstant ψ → ψ ≠ 1 → ∀ m : ℕ, (∀ U : Subgroup (GL (Fin (m + 1)) F), IsCompact (U : Set (GL (Fin (m + 1)) F)) → IsOpen (U : Set (GL (Fin (m + 1)) F)) → ∀ z : GL (Fin (m + 1)) F, ∃ U₁ : Subgroup (GL (Fin (m + 1)) F), U₁ ≤ U ∧ IsOpen (U₁ : Set (GL (Fin (m + 1)) F)) ∧ GlobalTheory.JSW.Cut.Cuts ψ (U : Set (GL (Fin (m + 1)) F)) (GlobalTheory.JSW.Cut.cell z (U : Set (GL (Fin (m + 1)) F))) {g | ∃ p : GL (Fin (m + 1)) F, GlobalTheory.JSW.KirFin.lr p = GlobalTheory.JSW.KirFin.lr 1 ∧ ∃ u ∈ U₁, g = p * u}) → ∀ B : Subgroup (GL (Fin (m + 1)) F), IsCompact (B : Set (GL (Fin (m + 1)) F)) → IsOpen (B : Set (GL (Fin (m + 1)) F)) → ∀ L : Set (Fin (m + 1) → F), L ∈ nhds (0 : Fin (m + 1) → F) → ∀ h₀ : GL (Fin (m + 1)) F, ∃ T : GL (Fin (m + 2)) F →₀ ℂ, ∀ f : GL (Fin (m + 2)) F → ℂ, GlobalTheory.JSW.KirFin.Eqv ψ f → (∀ b ∈ B, ∀ g, f (g * GlobalTheory.JSW.KirFin.cor b) = f g) → (∀ y ∈ L, ∀ g, f (g * GlobalTheory.JSW.KirFin.mir 1 y) = f g) → ∀ h : GL (Fin (m + 1)) F, GlobalTheory.JSW.Cut.act T f (GlobalTheory.JSW.KirFin.cor h) = (GlobalTheory.JSW.Cut.cell h₀ (B : Set (GL (Fin (m + 1)) F))).indicator (fun h => f (GlobalTheory.JSW.KirFin.cor h)) h := by
   atlas_forward_decl GlobalTheory.JSW.Cut.exists_cut_cor_of_sub
+end

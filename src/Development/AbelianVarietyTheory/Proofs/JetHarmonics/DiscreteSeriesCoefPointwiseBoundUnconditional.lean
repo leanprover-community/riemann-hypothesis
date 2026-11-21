@@ -1,9 +1,20 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.DiscreteSeriesShifts.ThmBpDS
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PointwiseBoundDiscreteSeriesCoefficients
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselXiIntegrableHolds
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.XiExistsOfIn
+import Development.AbelianVarietyTheory.PublishedTheorems.BesselIntegrals.BesselXiIntegrable
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ActualClassesCompactSupport
 
+section
+namespace GlobalTheory
+
+theorem besselXiIntegrable_holds : GlobalTheory.HCXi.BesselXiIntegrable :=
+  ReciprocityTheory.ChartRestriction.DS.Xi.xiExists
+
+end GlobalTheory
+end
+
+section
 open BpJoin
 
 namespace GlobalTheory
@@ -12,3 +23,4 @@ theorem discreteSeriesCoef_pointwiseBound : ThmBpDS :=
   GlobalTheory.T.pointwiseBound_discreteSeries_coefficients GlobalTheory.besselXiIntegrable_holds GlobalTheory.actualClasses_compactSupport
 
 end GlobalTheory
+end

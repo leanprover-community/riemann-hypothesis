@@ -1,7 +1,337 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FrequencySumBounds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CuspidalExponentialDecay
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ModerateCoefficientPositivityHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IntegerApproximationCountHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicThreshold
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.M3bExpHolds
 
+section
+namespace ReciprocityTheory.ChartRestriction.G.FD
+
+open NumberField Complex Module
+open scoped ComplexConjugate
+
+variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
+
+theorem realFlowPeriods_span_eq_top {r : ℕ} (X : Data E r) (la : Wt X.Ψ r) :
+    Submodule.span ℝ {p : X.Ψ → ℝ | ∃ a : E, cc a = a ∧ IsIntegral ℤ a ∧
+      p = fun τ => ((X.m * X.chiOrd la : ℕ) : ℝ) * (τ.1 a).re} = ⊤ := by
+  classical
+  have hNpos : (0 : ℝ) < ((X.m * X.chiOrd la : ℕ) : ℝ) := by
+    have h1 : 0 < X.m := X.m_pos
+    have h2 : 0 < X.chiOrd la := (X.χ_fin la).choose_spec.1
+    exact_mod_cast Nat.mul_pos h1 h2
+  have hD := integerApproximationCount_holds (E := E)
+  unfold IntegerApproximationCount at hD
+  obtain ⟨happrox, -⟩ := hD r X
+  have hadd : ∀ x y : E, cc (x + y) = cc x + cc y := by
+    intro x y
+    unfold cc
+    exact map_add _ x y
+  rw [eq_top_iff]
+  intro v _
+  rw [← SetLike.mem_coe]
+  apply (Submodule.closed_of_finiteDimensional _).closure_subset
+  rw [Metric.mem_closure_iff]
+  intro ε hε
+  set N : ℝ := ((X.m * X.chiOrd la : ℕ) : ℝ) with hN
+  set B : ℝ := 2 * (fdeg E : ℝ) ^ 2 * rdE E with hB
+  set t : ℝ := (|B| + 1) / ε with ht
+  have htpos : 0 < t := div_pos (by positivity) hε
+  have hεt : ε * t = |B| + 1 := by
+    rw [ht]
+    field_simp
+  obtain ⟨α, hα⟩ := happrox (fun τ => ((t * v τ : ℝ) : ℂ))
+  set a : E := (α : E) + cc (α : E) with ha
+  have hcca : cc a = a := by
+    rw [ha, hadd, cc_cc, add_comm]
+  have hinta : IsIntegral ℤ a := by
+    have h0 : IsIntegral ℤ (α : E) := NumberField.RingOfIntegers.isIntegral_coe α
+    exact h0.add (isIntegral_cc h0)
+  have hre : ∀ τ : X.Ψ, (τ.1 a).re = 2 * (τ.1 (α : E)).re := by
+    intro τ
+    rw [ha, map_add, emb_cc, Complex.add_re, Complex.conj_re]
+    ring
+  refine ⟨(1 / (2 * N * t)) • (fun τ : X.Ψ => N * (τ.1 a).re), ?_, ?_⟩
+  · rw [SetLike.mem_coe]
+    apply Submodule.smul_mem
+    apply Submodule.subset_span
+    exact ⟨a, hcca, hinta, rfl⟩
+  · rw [dist_eq_norm]
+    have hlt : ∀ τ : X.Ψ,
+        ‖(v - (1 / (2 * N * t)) • (fun τ : X.Ψ => N * (τ.1 a).re)) τ‖ < ε := by
+      intro τ
+      have hval : (v - (1 / (2 * N * t)) • (fun τ : X.Ψ => N * (τ.1 a).re)) τ
+          = (t * v τ - (τ.1 (α : E)).re) / t := by
+        have hN0 : N ≠ 0 := hNpos.ne'
+        have ht0 : t ≠ 0 := htpos.ne'
+        simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, hre]
+        field_simp <;> ring
+      rw [hval, Real.norm_eq_abs, abs_div, abs_of_pos htpos, div_lt_iff₀ htpos]
+      have h1 : |t * v τ - (τ.1 (α : E)).re| ≤ ‖τ.1 (α : E) - ((t * v τ : ℝ) : ℂ)‖ := by
+        have h := Complex.abs_re_le_norm (τ.1 (α : E) - ((t * v τ : ℝ) : ℂ))
+        rw [Complex.sub_re, Complex.ofReal_re] at h
+        rw [abs_sub_comm]
+        exact h
+      have h2 : ‖τ.1 (α : E) - ((t * v τ : ℝ) : ℂ)‖ ≤ B := hα τ
+      linarith [le_abs_self B]
+    exact (pi_norm_lt_iff hε).2 hlt
+
+theorem spectralGap_holds : CuspFormGapCondition (E := E) := by
+  classical
+  unfold CuspFormGapCondition
+  intro r X la P hP
+  have hP' : X.IsBddSec la P ∧ ∀ ξ, X.IsIso ξ → ∀ x ∈ X.dom, X.fj la ξ 0 P x = 0 := hP
+  have hB : X.IsSec la P ∧ ∃ C : ℝ, ∀ x ∈ X.dom, X.pnorm la P x ≤ C := hP'.1
+  obtain ⟨C, hC⟩ := hB.2
+  have hm3 := moderateCoefficientPositivity_holds (E := E)
+  unfold ModerateCoefficientPositivity at hm3
+  have hnn := (hm3 r X la P C 0 hB.1 (fun x hx => by simpa using hC x hx)).1
+  have hspan := realFlowPeriods_span_eq_top X la
+  obtain ⟨T, hTS, hTspan, hTli⟩ := exists_linearIndependent ℝ
+    {p : X.Ψ → ℝ | ∃ a : E, cc a = a ∧ IsIntegral ℤ a ∧
+      p = fun τ => ((X.m * X.chiOrd la : ℕ) : ℝ) * (τ.1 a).re}
+  rw [hspan] at hTspan
+  have hTfin : T.Finite := hTli.setFinite
+  set M : ℝ := ∑ p ∈ hTfin.toFinset, ∑ σ, |p σ| with hM
+  have hM0 : 0 ≤ M :=
+    Finset.sum_nonneg (fun p _ => Finset.sum_nonneg (fun σ _ => abs_nonneg (p σ)))
+  have hcpos : (0 : ℝ) < 1 / (2 * M + 2) := div_pos one_pos (by linarith)
+  refine ⟨1 / (2 * M + 2), hcpos, ?_⟩
+  show P ∈ X.SS la ∧ ∀ ξ, X.IsIso ξ → ∀ ν : X.Ψ → ℝ, ∑ τ, ν τ ≤ 1 / (2 * M + 2) →
+    ∀ x ∈ X.dom, X.fj la ξ ν P x = 0
+  refine ⟨hP, ?_⟩
+  intro ξ hξ ν hν x hx
+  by_contra hne
+  have hint : ∀ p ∈ X.periods la, ∃ k : ℤ, 2 * ∑ τ, ν τ * p τ = k := by
+    by_contra hc
+    apply hne
+    rw [Data.fj, if_neg hc]
+  have hpos : ∀ τ, 0 ≤ ν τ := hnn ξ hξ ν x hx hne
+  have hsmall : ∀ τ, ν τ ≤ 1 / (2 * M + 2) := fun τ =>
+    le_trans (Finset.single_le_sum (fun σ _ => hpos σ) (Finset.mem_univ τ)) hν
+  have hzero : ∀ p ∈ T, ∑ σ, ν σ * p σ = 0 := by
+    intro p hp
+    obtain ⟨k, hk⟩ := hint p (AddSubgroup.subset_closure (hTS hp))
+    have hpM : ∑ σ, |p σ| ≤ M :=
+      Finset.single_le_sum (f := fun q : X.Ψ → ℝ => ∑ σ, |q σ|)
+        (fun q _ => Finset.sum_nonneg (fun σ _ => abs_nonneg (q σ))) (hTfin.mem_toFinset.2 hp)
+    have habs : |∑ σ, ν σ * p σ| ≤ 1 / (2 * M + 2) * M := by
+      calc |∑ σ, ν σ * p σ| ≤ ∑ σ, |ν σ * p σ| := Finset.abs_sum_le_sum_abs _ _
+        _ ≤ ∑ σ, 1 / (2 * M + 2) * |p σ| := by
+          apply Finset.sum_le_sum
+          intro σ _
+          rw [abs_mul, abs_of_nonneg (hpos σ)]
+          exact mul_le_mul_of_nonneg_right (hsmall σ) (abs_nonneg _)
+        _ = 1 / (2 * M + 2) * ∑ σ, |p σ| := by simp only [Finset.mul_sum]
+        _ ≤ 1 / (2 * M + 2) * M := mul_le_mul_of_nonneg_left hpM hcpos.le
+    have hfrac : 2 * (1 / (2 * M + 2) * M) < 1 := by
+      rw [show 2 * (1 / (2 * M + 2) * M) = (2 * M) / (2 * M + 2) by ring,
+        div_lt_one (by linarith)]
+      linarith
+    have hlt : |(k : ℝ)| < 1 := by
+      rw [← hk, abs_mul, abs_two]
+      linarith
+    have hk0 : k = 0 := by
+      have h := abs_lt.1 hlt
+      have h1 : -1 < k := by exact_mod_cast h.1
+      have h2 : k < 1 := by exact_mod_cast h.2
+      omega
+    rw [hk0, Int.cast_zero] at hk
+    linarith
+  let f : (X.Ψ → ℝ) →ₗ[ℝ] ℝ :=
+    { toFun := fun q => ∑ σ, ν σ * q σ
+      map_add' := fun q q' => by
+        simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib]
+      map_smul' := fun c q => by
+        simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
+        exact Finset.sum_congr rfl (fun σ _ => by ring) }
+  have hle : Submodule.span ℝ T ≤ LinearMap.ker f := by
+    rw [Submodule.span_le]
+    intro p hp
+    rw [SetLike.mem_coe, LinearMap.mem_ker]
+    exact hzero p hp
+  have hmem : ν ∈ Submodule.span ℝ T := by
+    rw [hTspan]
+    exact Submodule.mem_top
+  have hsq : ∑ σ, ν σ * ν σ = 0 := LinearMap.mem_ker.1 (hle hmem)
+  have hν0 : ν = 0 := by
+    funext σ
+    have h := (Finset.sum_eq_zero_iff_of_nonneg (fun i _ => mul_self_nonneg (ν i))).1 hsq σ
+      (Finset.mem_univ σ)
+    simpa using mul_self_eq_zero.1 h
+  subst hν0
+  exact hne (hP'.2 ξ hξ x hx)
+
+end ReciprocityTheory.ChartRestriction.G.FD
+end
+
+section
+namespace ReciprocityTheory.ChartRestriction.G.FD
+
+namespace FrequencySumBounds
+
+open NumberField Complex Module
+open scoped ComplexConjugate
+
+variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {r : ℕ}
+
+def IsFreq (X : Data E r) (la : Wt X.Ψ r) (ν : X.Ψ → ℝ) : Prop :=
+  (∀ τ, 0 ≤ ν τ) ∧ ∀ p ∈ X.periods la, ∃ k : ℤ, 2 * ∑ τ, ν τ * p τ = k
+
+theorem freq_sum_bound (X : Data E r) (la : Wt X.Ψ r) (a : ℝ) (ha : 0 < a) :
+    ∃ K : ℝ, ∀ F : Finset (X.Ψ → ℝ), (∀ ν ∈ F, IsFreq X la ν) →
+      ∑ ν ∈ F, Real.exp (-a * ∑ τ, ν τ) ≤ K := by
+  classical
+  have hsingle : ∀ τ : X.Ψ, ∃ T : Finset (X.Ψ → ℝ), (∀ p ∈ T, p ∈ X.periods la) ∧
+      (Pi.single τ (1 : ℝ) : X.Ψ → ℝ) ∈ Submodule.span ℝ (T : Set (X.Ψ → ℝ)) := by
+    intro τ
+    have hmem : (Pi.single τ (1 : ℝ) : X.Ψ → ℝ) ∈ (⊤ : Submodule ℝ (X.Ψ → ℝ)) := Submodule.mem_top
+    rw [← realFlowPeriods_span_eq_top X la] at hmem
+    obtain ⟨T, hT, hT'⟩ := Submodule.mem_span_finite_of_mem_span hmem
+    exact ⟨T, fun p hp => AddSubgroup.subset_closure (hT (Finset.mem_coe.mpr hp)), hT'⟩
+  choose T hTsub hTmem using hsingle
+  obtain ⟨U, hUdef⟩ : ∃ U : Finset (X.Ψ → ℝ), U = Finset.univ.biUnion T := ⟨_, rfl⟩
+  have hUsub : ∀ p ∈ U, p ∈ X.periods la := by
+    intro p hp
+    rw [hUdef, Finset.mem_biUnion] at hp
+    obtain ⟨τ, -, hp⟩ := hp
+    exact hTsub τ p hp
+
+  have hU_sep : ∀ d : X.Ψ → ℝ, (∀ p ∈ U, ∑ τ, d τ * p τ = 0) → d = 0 := by
+    intro d hd
+    funext τ
+    let φ : (X.Ψ → ℝ) →ₗ[ℝ] ℝ :=
+      { toFun := fun x => ∑ σ, d σ * x σ
+        map_add' := fun x y => by simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib]
+        map_smul' := fun c x => by
+          simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
+          exact Finset.sum_congr rfl fun σ _ => by ring }
+    have hle : Submodule.span ℝ (T τ : Set (X.Ψ → ℝ)) ≤ LinearMap.ker φ := by
+      rw [Submodule.span_le]
+      intro p hp
+      rw [SetLike.mem_coe, LinearMap.mem_ker]
+      exact hd p (by rw [hUdef]; exact Finset.mem_biUnion.mpr ⟨τ, Finset.mem_univ _, Finset.mem_coe.mp hp⟩)
+    have h1 : φ (Pi.single τ (1 : ℝ)) = 0 := LinearMap.mem_ker.mp (hle (hTmem τ))
+    have h2 : ∑ σ, d σ * (Pi.single τ (1 : ℝ) : X.Ψ → ℝ) σ = 0 := h1
+    simpa [Pi.single_apply] using h2
+
+  obtain ⟨g, hgdef⟩ : ∃ g : (X.Ψ → ℝ) → U → ℤ,
+      g = fun (ν : X.Ψ → ℝ) (p : U) => round (2 * ∑ τ, ν τ * (p : X.Ψ → ℝ) τ) := ⟨_, rfl⟩
+  have hg : ∀ ν, IsFreq X la ν → ∀ p (hp : p ∈ U),
+      ((g ν ⟨p, hp⟩ : ℤ) : ℝ) = 2 * ∑ τ, ν τ * p τ := by
+    intro ν hν p hp
+    obtain ⟨k, hk⟩ := hν.2 p (hUsub p hp)
+    rw [hgdef]
+    show ((round (2 * ∑ τ, ν τ * p τ) : ℤ) : ℝ) = _
+    rw [hk, round_intCast]
+  have hinj : ∀ ν, IsFreq X la ν → ∀ ν', IsFreq X la ν' → g ν = g ν' → ν = ν' := by
+    intro ν hν ν' hν' he
+    have hd := hU_sep (ν - ν') (fun p hp => by
+      have h1 := hg ν hν p hp
+      have h2 := hg ν' hν' p hp
+      rw [he] at h1
+      have h3 : ∑ τ, ν τ * p τ = ∑ τ, ν' τ * p τ := by linarith
+      simp only [Pi.sub_apply, sub_mul, Finset.sum_sub_distrib, h3, sub_self])
+    exact sub_eq_zero.mp hd
+
+  obtain ⟨M, hMdef⟩ : ∃ M : ℝ, M = ∑ p ∈ U, ∑ τ, |p τ| := ⟨_, rfl⟩
+  have hM0 : 0 ≤ M := by
+    rw [hMdef]
+    exact Finset.sum_nonneg fun p _ => Finset.sum_nonneg fun τ _ => abs_nonneg _
+  have hM : ∀ p ∈ U, ∀ τ, |p τ| ≤ M := by
+    intro p hp τ
+    rw [hMdef]
+    exact (Finset.single_le_sum (f := fun σ => |p σ|) (fun σ _ => abs_nonneg _)
+      (Finset.mem_univ τ)).trans (Finset.single_le_sum (f := fun q => ∑ σ, |q σ|)
+      (fun q _ => Finset.sum_nonneg fun σ _ => abs_nonneg _) hp)
+  have hbd : ∀ ν, IsFreq X la ν → ∀ p (hp : p ∈ U),
+      |((g ν ⟨p, hp⟩ : ℤ) : ℝ)| ≤ 2 * M * ∑ τ, ν τ := by
+    intro ν hν p hp
+    rw [hg ν hν p hp, abs_mul, abs_two]
+    have h1 : |∑ τ, ν τ * p τ| ≤ ∑ τ, ν τ * M := by
+      refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun τ _ => ?_)
+      rw [abs_mul, abs_of_nonneg (hν.1 τ)]
+      exact mul_le_mul_of_nonneg_left (hM p hp τ) (hν.1 τ)
+    rw [← Finset.sum_mul] at h1
+    nlinarith
+  have hsumbd : ∀ ν, IsFreq X la ν →
+      ∑ p : U, |((g ν p : ℤ) : ℝ)| ≤ (U.card : ℝ) * (2 * M * ∑ τ, ν τ) := by
+    intro ν hν
+    calc ∑ p : U, |((g ν p : ℤ) : ℝ)| ≤ ∑ _p : U, (2 * M * ∑ τ, ν τ) :=
+          Finset.sum_le_sum fun p _ => hbd ν hν p.1 p.2
+      _ = (U.card : ℝ) * (2 * M * ∑ τ, ν τ) := by simp
+  have hc : 0 ≤ (U.card : ℝ) * (2 * M) :=
+    mul_nonneg (Nat.cast_nonneg _) (by linarith)
+  have hB : 0 < (U.card : ℝ) * (2 * M) + 1 := by linarith
+  obtain ⟨b, hbdef⟩ : ∃ b : ℝ, b = a / ((U.card : ℝ) * (2 * M) + 1) := ⟨_, rfl⟩
+  have hb : 0 < b := by rw [hbdef]; exact div_pos ha hB
+
+  obtain ⟨w, hwdef⟩ : ∃ w : ℤ → ℝ, w = fun (j : ℤ) => Real.exp (-b * |(j : ℝ)|) := ⟨_, rfl⟩
+  have hw0 : ∀ j, 0 ≤ w j := fun j => by rw [hwdef]; exact (Real.exp_pos _).le
+  have hgeo : Summable (fun n : ℕ => Real.exp (-b) ^ n) :=
+    summable_geometric_of_lt_one (Real.exp_pos _).le ((Real.exp_lt_exp.mpr (by linarith : -b < 0)).trans_eq Real.exp_zero)
+  have hw : Summable w := by
+    rw [hwdef]
+    refine Summable.of_nat_of_neg ?_ ?_
+    · refine hgeo.congr fun n => ?_
+      show Real.exp (-b) ^ n = Real.exp (-b * |(((n : ℤ)) : ℝ)|)
+      rw [← Real.exp_nat_mul]
+      congr 1
+      push_cast
+      rw [abs_of_nonneg (Nat.cast_nonneg n)]
+      ring
+    · refine hgeo.congr fun n => ?_
+      show Real.exp (-b) ^ n = Real.exp (-b * |((-(n : ℤ) : ℤ) : ℝ)|)
+      rw [← Real.exp_nat_mul]
+      congr 1
+      push_cast
+      rw [abs_neg, abs_of_nonneg (Nat.cast_nonneg n)]
+      ring
+  have hexp : ∀ ν, IsFreq X la ν → Real.exp (-a * ∑ τ, ν τ) ≤ ∏ p : U, w (g ν p) := by
+    intro ν hν
+    have hs : 0 ≤ ∑ τ, ν τ := Finset.sum_nonneg fun τ _ => hν.1 τ
+    have h2 : b * ∑ p : U, |((g ν p : ℤ) : ℝ)| ≤ a * ∑ τ, ν τ := by
+      calc b * ∑ p : U, |((g ν p : ℤ) : ℝ)| ≤ b * ((U.card : ℝ) * (2 * M * ∑ τ, ν τ)) :=
+            mul_le_mul_of_nonneg_left (hsumbd ν hν) hb.le
+        _ ≤ a * ∑ τ, ν τ := by
+            rw [hbdef, div_mul_eq_mul_div, div_le_iff₀ hB]
+            nlinarith [mul_nonneg ha.le hs, mul_nonneg hc hs]
+    simp only [hwdef]
+    rw [← Real.exp_sum]
+    apply Real.exp_le_exp.mpr
+    rw [← Finset.mul_sum]
+    linarith
+  obtain ⟨Z, hZ⟩ : ∃ Z : ℝ, Z = ∑' j : ℤ, w j := ⟨_, rfl⟩
+  refine ⟨Z ^ U.card, fun F hF => ?_⟩
+  have hinjF : Set.InjOn g (F : Set (X.Ψ → ℝ)) := by
+    intro x hx y hy h
+    exact hinj x (hF x hx) y (hF y hy) h
+  obtain ⟨I, hIdef⟩ : ∃ I : Finset ℤ, I = (F.image g).biUnion (fun k => Finset.univ.image k) :=
+    ⟨_, rfl⟩
+  have hsub : F.image g ⊆ Fintype.piFinset (fun _ : U => I) := by
+    intro k hk
+    rw [Fintype.mem_piFinset]
+    intro p
+    rw [hIdef]
+    exact Finset.mem_biUnion.mpr ⟨k, hk, Finset.mem_image_of_mem k (Finset.mem_univ p)⟩
+  calc ∑ ν ∈ F, Real.exp (-a * ∑ τ, ν τ)
+      ≤ ∑ ν ∈ F, ∏ p : U, w (g ν p) := Finset.sum_le_sum fun ν hν => hexp ν (hF ν hν)
+    _ = ∑ k ∈ F.image g, ∏ p : U, w (k p) := by rw [Finset.sum_image hinjF]
+    _ ≤ ∑ k ∈ Fintype.piFinset (fun _ : U => I), ∏ p : U, w (k p) :=
+        Finset.sum_le_sum_of_subset_of_nonneg hsub
+          (fun k _ _ => Finset.prod_nonneg fun p _ => hw0 _)
+    _ = ∏ _p : U, ∑ j ∈ I, w j := (Finset.prod_univ_sum (fun _ : U => I) (fun _ j => w j)).symm
+    _ ≤ ∏ _p : U, Z := Finset.prod_le_prod (fun _ _ => Finset.sum_nonneg fun j _ => hw0 j)
+          (fun _ _ => hZ ▸ hw.sum_le_tsum I (fun j _ => hw0 j))
+    _ = Z ^ U.card := by simp
+
+end FrequencySumBounds
+
+end ReciprocityTheory.ChartRestriction.G.FD
+end
+
+section
 namespace ReciprocityTheory.ChartRestriction.G.FD
 
 open NumberField Complex
@@ -217,3 +547,4 @@ theorem cuspidalDecay_holds : CuspidalExponentialDecay (E := E) := by
           nlinarith [hK2]
 
 end ReciprocityTheory.ChartRestriction.G.FD
+end

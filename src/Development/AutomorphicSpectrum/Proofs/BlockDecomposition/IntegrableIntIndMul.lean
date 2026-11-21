@@ -1,7 +1,27 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntInd
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultHaarConstToRealNeZero
+import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.KFiniteVectors.LocalWhittakerDuality.WhittakerFunctionalEquationAdditive
 
+section
+open MeasureTheory Matrix GroundTheory.LocalField GroundTheory.Automorphic Ad3 Ad3.K.GL2LocalData
+open scoped ValuativeRel
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.GJOne
+
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
+  [MeasurableSpace F] [BorelSpace F]
+
+theorem selfDualMeasure_eq_of_isStd {ψ : AddChar F Circle} (hψ : IsStd ψ) :
+    selfDualMeasure ψ = haarIntegers F := by
+  simp [selfDualMeasure, hψ.2.2]
+
+end GlobalTheory.CompanionTheory.GJOne
+end
+end
+
+section
 open NumberField IsDedekindDomain MeasureTheory GroundTheory.Global GroundTheory.LocalField GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm Ad3 Ad3.K Ad3.K.QuadraticBaseChangeGL3 GlobalTheory.CompanionTheory.SphTheta
 open GroundTheory.Automorphic.GodementSection (localChar)
 open GroundTheory.Global.AdicLiesOver
@@ -343,3 +363,5 @@ theorem rW_phiS : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
     ring
 
 end GlobalTheory.CompanionTheory.SphTheta.SplitRW
+end
+end

@@ -1,10 +1,242 @@
-import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.InfZcCoeff
-import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LactCenGen
+import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.CapZcMemOfE
+import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.DefsObj
+import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LactSpec
 import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.ExpGen
 import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.DiracSep
 import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ClsBasic
 import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.FormsIrr
 
+section
+open MeasureTheory NumberField IsDedekindDomain
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
+open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum
+open GlobalTheory.CuspRep (CuspSub GA Af Ad finGL locGL)
+open UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Dp UpperTheory.V
+
+private theorem UpperTheory.ConvolutionTheory.Dp.infZc_prod {n : ℕ} {m : Multiset ℂ} (hm : m.card = n) (u : ℂ) :
+    (m.map fun x => u + x).prod = u ^ n + ∑ i : Fin n, u ^ (n - (i + 1)) * m.esymm (i + 1) := by
+  have h := congrArg (Polynomial.eval u) (Multiset.prod_X_add_C_eq_sum_esymm m)
+  rw [Polynomial.eval_multiset_prod, Multiset.map_map] at h
+  simp only [Function.comp_def, Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_C,
+    Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_pow, hm] at h
+  rw [h, Finset.sum_range_succ', add_comm, ← Fin.sum_univ_eq_sum_range
+    (fun i => m.esymm (i + 1) * u ^ (n - (i + 1))) n]
+  congr 1
+  · simp [Multiset.esymm]
+  · exact Finset.sum_congr rfl fun i _ => mul_comm _ _
+
+private theorem UpperTheory.ConvolutionTheory.Dp.infZc_coeff {M : Type*} [AddCommGroup M] [Module ℂ M] {n : ℕ} (v : Fin n → M)
+    (h : ∀ u : ℂ, ∑ i : Fin n, u ^ (n - (i + 1)) • v i = 0) (i : Fin n) : v i = 0 := by
+  rw [← Module.forall_dual_apply_eq_zero_iff ℂ]
+  intro f
+  have hp : (∑ j : Fin n, Polynomial.monomial (n - (j + 1)) (f (v j)) : Polynomial ℂ) = 0 := by
+    apply Polynomial.funext
+    intro u
+    have := congrArg f (h u)
+    simp only [map_sum, map_smul, map_zero, smul_eq_mul] at this
+    simp only [Polynomial.eval_finsetSum, Polynomial.eval_monomial, Polynomial.eval_zero]
+    rw [← this]
+    exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+  have := congrArg (fun p => Polynomial.coeff p (n - (i + 1))) hp
+  simp only [Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Polynomial.coeff_zero] at this
+  rw [Finset.sum_eq_single i] at this
+  · simpa using this
+  · intro j _ hj
+    rw [if_neg]
+    intro e
+    apply hj
+    have := j.2
+    have := i.2
+    exact Fin.ext (by omega)
+  · simp
+
+theorem UpperTheory.ConvolutionTheory.Dp.infZc :
+    UpperTheory.ConvolutionTheory.Dp.InfZc := by
+  intro E _ _ _ n π τ m
+  have hc := (UpperTheory.ConvolutionTheory.Dp.capZc E n τ).2
+  have key : ∀ (u : ℂ) (φ : GlobalTheory.CuspRep.Sm E n), GlobalTheory.CuspRep.cap τ u φ =
+      u ^ n • φ + ∑ i : Fin n, u ^ (n - (i + 1)) • Cm.uC E n (UpperTheory.ConvolutionTheory.zc τ i) φ := fun u φ => by
+    rw [← Cm.uC_capC, hc]
+    simp only [map_add, map_smul, map_one, map_sum, LinearMap.add_apply, LinearMap.smul_apply,
+      LinearMap.sum_apply, Module.End.one_apply]
+  change (m.card = n ∧ ∀ u : ℂ, ∀ φ ∈ π.V, GlobalTheory.CuspRep.cap τ u φ = (m.map fun x => u + x).prod • φ) ↔ _
+  refine and_congr_right fun hm => ⟨fun h i φ hφ => ?_, fun h u φ hφ => ?_⟩
+  · rw [← sub_eq_zero]
+    refine infZc_coeff (fun i : Fin n => Cm.uC E n (UpperTheory.ConvolutionTheory.zc τ i) φ - m.esymm (i + 1) • φ) (fun u => ?_) i
+    have := h u φ hφ
+    rw [key, infZc_prod hm, add_smul, add_right_inj, Finset.sum_smul] at this
+    simp only [smul_sub, Finset.sum_sub_distrib, this, smul_smul, sub_self]
+  · rw [key, infZc_prod hm, add_smul, Finset.sum_smul]
+    congr 1
+    exact Finset.sum_congr rfl fun i _ => by rw [h i φ hφ, smul_smul]
+end
+
+section
+open MeasureTheory NumberField
+open GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm
+open scoped TensorProduct
+
+namespace UpperTheory.ConvolutionTheory.Dp
+
+attribute [local instance 100] LieRing.ofAssociativeRing
+
+section General
+
+variable {𝔸 : Type*} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [CompleteSpace 𝔸] [FiniteDimensional ℝ 𝔸]
+  {G : Subgroup 𝔸ˣ} {𝔤 : Submodule ℝ 𝔸} (h : IsExpLieAlgebra G 𝔤) [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E] (π : BanachRep G E)
+
+theorem kernel_uAction (u : UniversalEnvelopingAlgebra ℝ h.lieSubalgebra) (f : h.smoothFuns (F := ℂ))
+    (hf : h.IsTestFunction fun g => f.1 g⁻¹) :
+    h.IsTestFunction (fun g => (h.rightUAction u f).1 g⁻¹) ∧ ∀ w : E,
+      (h.uAction π u ⟨π.integrated μ (fun g => f.1 g⁻¹) w, h.isSmoothVector_integrated π μ hf w⟩ : E) =
+        π.integrated μ (fun g => (h.rightUAction u f).1 g⁻¹) w := by
+  obtain ⟨t, rfl⟩ : ∃ t, UniversalEnvelopingAlgebra.mkAlgHom ℝ h.lieSubalgebra t = u :=
+    RingCon.mkₐ_surjective (α := ℝ) (UniversalEnvelopingAlgebra.ringCon ℝ h.lieSubalgebra) u
+  induction t using TensorAlgebra.induction generalizing f with
+  | algebraMap r =>
+    have e : (fun g => (h.rightUAction (UniversalEnvelopingAlgebra.mkAlgHom ℝ h.lieSubalgebra (algebraMap ℝ _ r)) f).1 g⁻¹) =
+        fun g => (r : ℂ) * f.1 g⁻¹ := by
+      rw [AlgHom.commutes, AlgHom.commutes, Module.algebraMap_end_apply]
+      rfl
+    rw [e]
+    refine ⟨hf.const_mul _, fun w => ?_⟩
+    rw [AlgHom.commutes, AlgHom.commutes, Module.algebraMap_end_apply, IsExpLieAlgebra.integrated_const_mul_kernel]
+    exact (Complex.coe_smul r _).symm
+  | ι x =>
+    have e : (fun g => (h.rightUAction (UniversalEnvelopingAlgebra.mkAlgHom ℝ h.lieSubalgebra (TensorAlgebra.ι ℝ x)) f).1 g⁻¹) =
+        h.convDeriv (h.ofLie x) fun g => f.1 g⁻¹ := by
+      show (fun g => (h.rightUAction (UniversalEnvelopingAlgebra.ι ℝ x) f).1 g⁻¹) = _
+      rw [IsExpLieAlgebra.rightUAction_ι, IsExpLieAlgebra.coe_rightDerivEnd]
+      funext g
+      simp only [IsExpLieAlgebra.convDeriv, inv_inv]
+    rw [e]
+    refine ⟨hf.convDeriv _, fun w => ?_⟩
+    show (h.uAction π (UniversalEnvelopingAlgebra.ι ℝ x) ⟨_, h.isSmoothVector_integrated π μ hf w⟩ : E) = _
+    rw [IsExpLieAlgebra.uAction_ι, IsExpLieAlgebra.coe_derivEnd, h.derivOp_integrated_convDeriv μ π hf]
+  | mul a b ha hb =>
+    obtain ⟨h1, h2⟩ := hb f hf
+    obtain ⟨h3, h4⟩ := ha _ h1
+    rw [map_mul, map_mul, map_mul, Module.End.mul_apply]
+    refine ⟨h3, fun w => ?_⟩
+    rw [Module.End.mul_apply, ← h4 w]
+    congr 2
+    exact Subtype.ext (h2 w)
+  | add a b ha hb =>
+    obtain ⟨h1, h2⟩ := hb f hf
+    obtain ⟨h3, h4⟩ := ha f hf
+    rw [map_add, map_add, map_add, LinearMap.add_apply]
+    refine ⟨h3.add h1, fun w => ?_⟩
+    rw [LinearMap.add_apply, Submodule.coe_add, h2, h4]
+    exact (h.integrated_add_kernel μ π h3 h1 w).symm
+
+theorem central_map (hπ : ∀ g, ‖π g‖ ≤ 1) {z : UniversalEnvelopingAlgebra ℝ h.lieSubalgebra} (hz : z ∈ h.centerU) {g : G}
+    (hg : g ∈ Subgroup.closure (Set.range h.expG)) : ∀ {v : E} (hv : h.IsSmoothVector π v),
+      (h.uAction π z ⟨π g v, h.isSmoothVector_map π hv _⟩ : E) = π g (h.uAction π z ⟨v, hv⟩) := by
+  induction hg using Subgroup.closure_induction'' with
+  | one => intro v hv; simp only [BanachRep.map_one_apply]
+  | mem x hx => obtain ⟨X, rfl⟩ := hx; exact fun hv => h.uAction_map_expG π hπ hz hv X
+  | inv_mem x hx => obtain ⟨X, rfl⟩ := hx; rw [← h.expG_neg]; exact fun hv => h.uAction_map_expG π hπ hz hv _
+  | mul x y _ _ hx hy =>
+    intro v hv
+    simp only [BanachRep.map_mul_apply]
+    rw [hx (h.isSmoothVector_map π hv y), hy hv]
+
+theorem central_integrated (hπ : ∀ g, ‖π g‖ ≤ 1) (hG : Subgroup.closure (Set.range h.expG) = ⊤)
+    {z : UniversalEnvelopingAlgebra ℝ h.lieSubalgebra} (hz : z ∈ h.centerU) {f : G → ℂ} (hf : h.IsTestFunction f) {w : E}
+    (hw : h.IsSmoothVector π w) :
+    (h.uAction π z ⟨π.integrated μ f w, h.isSmoothVector_integrated π μ hf w⟩ : E) = π.integrated μ f (h.uAction π z ⟨w, hw⟩) := by
+  obtain ⟨L, hL⟩ := h.exists_wordSum π z
+  refine (hL ⟨_, h.isSmoothVector_integrated π μ hf w⟩).trans ((h.wordSum_integrated π μ hπ hw hf L).trans ?_)
+  refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
+  exact congrArg (f g • ·) ((hL ⟨π g w, h.isSmoothVector_map π hw _⟩).symm.trans
+    (central_map h π hπ hz (hG ▸ Subgroup.mem_top g) hw))
+
+end General
+
+end UpperTheory.ConvolutionTheory.Dp
+end
+
+section
+open MeasureTheory NumberField IsDedekindDomain
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
+open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum
+open GlobalTheory.CuspRep (CuspSub GA Af Ad finGL locGL)
+open UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Dp UpperTheory.V
+
+theorem UpperTheory.ConvolutionTheory.Dp.lactSpec :
+    UpperTheory.ConvolutionTheory.Dp.LactSpec := by
+  intro K _ _ n u β hβ
+  obtain ⟨h, hl, -⟩ := UpperTheory.ConvolutionTheory.Tf.lactSpec K n β hβ
+  exact ⟨h, hl u⟩
+end
+
+section
+open MeasureTheory NumberField IsDedekindDomain
+open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
+open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum
+open GlobalTheory.CuspRep (CuspSub GA Af Ad finGL locGL)
+open UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Dp UpperTheory.V
+open scoped TensorProduct
+
+namespace UpperTheory.ConvolutionTheory.Dp
+
+theorem oinf_toLp {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL K n)) [μ.IsHaarMeasure]
+    (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : TI K n) (w : CuspL2 μ) :
+    Oinf μ ν β (toLp μ w) = toLp μ ((archRepT μ).integrated ν β w) := by
+  refine Eq.trans ?_ (toLp_integrated_archRepT μ ν (γ := β) β.continuous β.hasCompactSupport w).symm
+  rw [Oinf, UnitaryRep.integrated_ccToL1_apply]
+  rfl
+
+theorem rUC_tmul {K : Type} [Field K] [NumberField K] {n : ℕ} (c : ℂ) (p : UEnv K n) (f : (isExpLieAlgebra K n).smoothFuns (F := ℂ))
+    (g : archGroup K n) : (rUC (c ⊗ₜ p) f).1 g = c * ((isExpLieAlgebra K n).rightUAction p f).1 g := by
+  have h : rUC (c ⊗ₜ p) = algebraMap ℂ _ c * (isExpLieAlgebra K n).rightUAction (F := ℂ) p :=
+    Algebra.TensorProduct.lift_tmul _ _ _ c p
+  rw [h]
+  rfl
+
+set_option maxHeartbeats 800000 in
+theorem lactCen_of_gen (K : Type) [Field K] [NumberField K] (n : ℕ)
+    (hG : Subgroup.closure (Set.range (isExpLieAlgebra K n).expG) = ⊤) (μ : Measure (normOneGL K n)) [μ.IsHaarMeasure]
+    (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : TI K n) (hβ : SmoothT β) :
+    ∀ p ∈ (isExpLieAlgebra K n).centerU, ∀ q ∈ (isExpLieAlgebra K n).centerU, ∀ φ ∈ centralCuspForms K n,
+      Oinf μ ν (lact ((1 : ℂ) ⊗ₜ p + Complex.I ⊗ₜ q) β) (clsL μ φ) =
+        Oinf μ ν β (clsL μ (uActionCusp K n p φ + Complex.I • uActionCusp K n q φ)) := by
+  intro p hp q hq φ hφ
+  obtain ⟨h, hl⟩ := lactSpec K n ((1 : ℂ) ⊗ₜ p + Complex.I ⊗ₜ q) β hβ
+  have hT : (isExpLieAlgebra K n).IsTestFunction β := ⟨hβ, β.hasCompactSupport⟩
+  let f : (isExpLieAlgebra K n).smoothFuns (F := ℂ) := ⟨fun g => β g⁻¹, h⟩
+  have e : (fun g => f.1 g⁻¹) = β := funext fun g => by simp only [f, inv_inv]
+  have hf : (isExpLieAlgebra K n).IsTestFunction fun g => f.1 g⁻¹ := e ▸ hT
+  have hπ : ∀ g, ‖archRepT μ g‖ ≤ 1 := fun g => ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun v => by
+    rw [one_mul]
+    exact ((archURepT μ).norm_map g v).le
+  have key : ∀ z ∈ (isExpLieAlgebra K n).centerU,
+      (archRepT μ).integrated ν (fun g => ((isExpLieAlgebra K n).rightUAction z f).1 g⁻¹) (cuspVecL μ φ) =
+        (archRepT μ).integrated ν β (cuspVecL μ (uActionCusp K n z φ)) := fun z hz => by
+    rw [← (kernel_uAction _ ν (archRepT μ) z f hf).2, central_integrated _ ν (archRepT μ) hπ hG hz hf (isSmoothVector_cuspToL2 μ hφ),
+      uAction_cuspToL2 μ hφ, e]
+  have e2 : (lact ((1 : ℂ) ⊗ₜ p + Complex.I ⊗ₜ q) β : archGroup K n → ℂ) = fun g =>
+      ((isExpLieAlgebra K n).rightUAction p f).1 g⁻¹ + Complex.I * ((isExpLieAlgebra K n).rightUAction q f).1 g⁻¹ := by
+    funext g
+    have h3 := rUC_tmul 1 p f g⁻¹
+    rw [one_mul] at h3
+    rw [hl g, map_add, ← h3, ← rUC_tmul Complex.I q f g⁻¹]
+    rfl
+  have h1 := (kernel_uAction _ ν (archRepT μ) p f hf).1
+  have h2 := (kernel_uAction _ ν (archRepT μ) q f hf).1
+  have h4 : ∀ (γ : TI K n) ψ, Oinf μ ν γ (clsL μ ψ) = toLp μ ((archRepT μ).integrated ν γ (cuspVecL μ ψ)) :=
+    fun γ ψ => oinf_toLp μ ν γ _
+  have h5 : Oinf μ ν β (clsL μ (uActionCusp K n p φ + Complex.I • uActionCusp K n q φ)) =
+      Oinf μ ν β (clsL μ (uActionCusp K n p φ)) + Complex.I • Oinf μ ν β (clsL μ (uActionCusp K n q φ)) := by
+    rw [(clsL μ).map_add, (clsL μ).map_smul, (Oinf μ ν β).map_add, (Oinf μ ν β).map_smul]
+  rw [h5, h4, h4, h4, e2, (isExpLieAlgebra K n).integrated_add_kernel ν _ h1 (h2.const_mul _),
+    IsExpLieAlgebra.integrated_const_mul_kernel, key p hp, key q hq, (toLp μ).map_add, (toLp μ).map_smul]
+
+end UpperTheory.ConvolutionTheory.Dp
+end
+
+section
 open MeasureTheory NumberField IsDedekindDomain
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum
@@ -58,3 +290,4 @@ theorem UpperTheory.ConvolutionTheory.Dp.sInfIff :
       rw [UpperTheory.ConvolutionTheory.Dp.lactCen_of_gen E n (UpperTheory.ConvolutionTheory.Tf.expGen E n) μ ν β hβ p hp q hq ψ hψ.1, e', map_smul, map_smul]
     have hv' : v ∈ ((formsIn μ V).map (clsL μ)).topologicalClosure := by rw [hform]; exact hv
     exact closure_minimal hsub hclosed hv'
+end

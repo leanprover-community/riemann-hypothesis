@@ -9,10 +9,60 @@ import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.Ra
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConclusionOfLocalConditionsStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallinePeriodBoundAllConstantGeForty
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TheoremTbOfLocalBlochKatoDualityEuler
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalAbsorptionLengthBoundOfBlochKato
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ResidualRepSpansMatrixAlgebraOfGoodPoint
+import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoDuality
+import Formalism.GaloisCohomology.LocalTateDualityK
+import Formalism.SharpRestriction.LevelLetterCocycles.RamificationTwoAndConjugationAtQAndD
+import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.DimensionInputTwoOfBlochKato
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoLocalAllOfTateDualityEulerChar
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateDualDeRhamAndFilZeroDimAllStatement
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeCrystallineLattices
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ResidualAbsIrredGoodPointOfResidualIrred
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanRepMatrixEqTopOfAbsIrreducible
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LemmaOpenOfIntegrality
 
+section
+section
+open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
+
+namespace GlobalTheory.ClosingStatement
+
+theorem main : GlobalTheory.Published.BlochKatoLocal → Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK →
+    ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F),
+      BlochKatoDuality.Conclusion1 D ∧ BlochKatoDuality.Conclusion2 D := by
+  intro hBK hTD hEC D _ _ _
+  have h5 : Formalism.MainNotions.LocalSituation.Conclusion5 D := GlobalTheory.T.blochKatoLocal_all_of_tateDuality_eulerChar hBK hTD hEC D
+  have a1 : BlochKatoDuality.adm1 D := dimension_input_one_of_bloch_kato D h5
+  have a2 : BlochKatoDuality.adm2 D := dimension_input_two_of_bloch_kato D h5
+  have a3 : BlochKatoDuality.adm3 D := fun l _ K => GlobalTheory.T.tate_H2_period_datum hTD l (D.loc l) K
+  have a5 : BlochKatoDuality.adm5 D := fun l _ K => GlobalTheory.T.finite_H1_period_datum hTD l (D.loc l) K
+  have a6 : BlochKatoDuality.adm6 D := fun l _ K => (GlobalTheory.T.tateDual_deRham_and_filZero_dim_all D l K).1
+  exact ⟨BlochKatoDuality.ramification_two_and_conjugation_at_q_and_d D a1 a2 a6, BlochKatoDuality.second_proposition_every_localisation D a1 a2 a3 a5 a6⟩
+
+end GlobalTheory.ClosingStatement
+end
+
+open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_absorption_length_bound_of_blochKato : GlobalTheory.Published.BlochKatoLocal → Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK → ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), BlochKatoDuality.Conclusion1 D ∧ BlochKatoDuality.Conclusion2 D := by
+  atlas_forward_decl GlobalTheory.ClosingStatement.main
+end
+
+section
+open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass Formalism.MainNotions.PairedCharacterCondition Formalism.MainNotions.PairedCharacterCondition.CongruenceModules
+
+theorem GlobalTheory.Pass.residualRep_spans_matrixAlgebra_of_goodPoint : ∀ D : D7, ResidualIrreducibleRankR D → ResidualAbsIrreducible (D := D) := by
+  intro D hN9
+  have hr2 : 2 ≤ D.R.r := by
+    unfold Ranks.r; have := D.R.two_le_m; have := D.R.m_add_three_le_k; omega
+  refine ⟨hr2, ?_⟩
+  intro i hi rb hrb
+  have hirr := (hN9 i hi rb hrb).1
+  have habs := GlobalTheory.ResAbsIrrGood.absIrrSub_top_of_irred (D.naut.kFbar i) (by omega) rb
+    fun W hW => hirr W fun g _ x hx => hW g x hx
+  exact GlobalTheory.BurnsideField.span_mat_eq_top_of_absIrrSub rb habs
+end
+
+section
 open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module GlobalTheory.Pass Formalism.MainNotions.PairedCharacterCondition Formalism.MainNotions.PairedCharacterCondition.CongruenceModules
 
 namespace GlobalTheory.ClosingLocalInputs
@@ -40,3 +90,4 @@ theorem main : GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Pu
     (galoisFamilyConditions_of_sumRepresentations D h41) hG5 hG6 hSer hTB hBK hadm1 hadm2 htie0 hChi
 
 end GlobalTheory.ClosingLocalInputs
+end

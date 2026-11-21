@@ -1,8 +1,1373 @@
-import Development.WeilBound.CoreStatements.CentralCharts.IsCoeffAtOfSmul
-import Development.WeilBound.CoreStatements.CentralCharts.ChartAnalytic
-import Development.WeilBound.CoreStatements.CentralCharts.OneLeDimFl
+import Development.WeilBound.CoreStatements.CentralCharts.AnalyticAtEval
+import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlatLineGenerator
+import Development.AutomorphicSpectrum.Statements.GeometryStatements.CardComapMulFinsumEqFinsumFibres
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsPullWedge
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NonemptyCptOverOfFlatPreimmersion
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentOpenStalksDomain
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundleStatement
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptFlagDegree
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeLineLatticeVectorBundle
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameDomainInSegreChart
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentMatchesModelComponent
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmTypeLatticeComparisonStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagCmTypeLatticeComparisonStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExteriorCoeffBaseChangeCompatStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmTypeExteriorLatticeComparisonStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagWeightedDegreeSectionStatement
+import Development.WeilBound.CoreStatements.CentralCharts.PshAt0LogNorm
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagWeightedDegreeSection
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootLinesFlagDegree
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GlobalPairSumGramBoundStatement
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GramMatrixChangeFrameStatement
+import Development.WeilBound.CoreStatements.CentralCharts.PshAt0
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSncAdaptedChartAtPointStatement
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncAdaptedChartSectionForm
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFubiniStudyPositive
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelAnalyticDataExists
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothContinuous
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdaptedAtlasSncSection
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicAtlasCoordCompat
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsArithVarOfSncModel
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LowerBoundHeightOnBoundary
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BoundaryPointsClosed
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptFlagXdegStatement
 
+section
+noncomputable section
+
+namespace AnalyticReference.An
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open Filter Topology GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
+
+theorem int_frac (F : Type) [Field F] [NumberField F] : Function.Injective (algebraMap (𝓞 F) F) ∧ IsNoetherianRing (𝓞 F) ∧
+    ∀ x : F, ∃ a b : 𝓞 F, algebraMap (𝓞 F) F b ≠ 0 ∧ x * algebraMap (𝓞 F) F b = algebraMap (𝓞 F) F a := by
+  refine ⟨IsFractionRing.injective _ _, inferInstance, fun x => ?_⟩
+  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 F) x
+  have : algebraMap (𝓞 F) F b ≠ 0 := IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors hb
+  exact ⟨a, b, this, div_mul_cancel₀ _ this⟩
+
+theorem isCoeffAt_of_smul {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {V : Type}
+    [AddCommGroup V] [Module Ω V] {A B : Lat ξ V} {p q : ℕ} {a a' : ⋀[Ω]^p V} {b b' : ⋀[Ω]^q V} {x : Cpt ξ}
+    {d₁ d₂ : Ω} (h₁ : d₁ ≠ 0) (h₂ : d₂ ≠ 0) (ea : a' = d₁ • a) (eb : b' = d₂ • b)
+    (h : IsCoeffAt A B p q a' b' x 1) : IsCoeffAt A B p q a b x (d₁ / d₂)⁻¹ := by
+  obtain ⟨α, β, hα, hβ, hA, hB, e⟩ := h
+  rw [_root_.one_mul] at e
+  subst e
+  refine ⟨α * d₁, α * d₂, mul_ne_zero hα h₁, mul_ne_zero hα h₂, ?_, ?_, ?_⟩
+  · rw [hA, ea, smul_smul]
+  · rw [hB, eb, smul_smul]
+  · field_simp
+
+theorem unitAt_of_span_eq {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {p : Cpt ξ}
+    {a b : Ω} (ha : a ≠ 0) (hb : b ≠ 0)
+    (h : Submodule.span (regAt ξ p) {a} = Submodule.span (regAt ξ p) {b}) : unitAt ξ p (a / b) := by
+  obtain ⟨u, hu⟩ := Submodule.mem_span_singleton.1 (h ▸ Submodule.mem_span_singleton_self a :
+    a ∈ Submodule.span (regAt ξ p) {b})
+  obtain ⟨v, hv⟩ := Submodule.mem_span_singleton.1 (h ▸ Submodule.mem_span_singleton_self b :
+    b ∈ Submodule.span (regAt ξ p) {a})
+  refine ⟨div_ne_zero ha hb, ?_, ?_⟩
+  · have : a / b = (u : Ω) := by rw [← hu]; exact mul_div_cancel_right₀ _ hb
+    rw [this]; exact u.2
+  · have : (a / b)⁻¹ = (v : Ω) := by rw [inv_div, ← hv]; exact mul_div_cancel_right₀ _ ha
+    rw [this]; exact v.2
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Tor.Level H}
+  {Xo : Moduli D l} {c : Coeff l} [NumberField c.F] {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {S : Finset ℕ} {Ω : Type}
+  [Field Ω] {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {y : (Σ k, J k) → Ω}
+
+theorem exists_cptOver (𝔐 : HodgeCpt Y S y) :
+    ∃ (U : Set (Xo.XF c)) (Z : CptOver Y U), genPt 𝔐.ξ₀ = genPt (Z.ξ₀ ≫ Y.j) := by
+  have hβ := int_frac c.F
+  haveI : IsProper Y.s := GlobalTheory.SchemeWords.isProper_of_isProjOver Y.proj
+  haveI : IsLocallyNoetherian Y.X := LocallyOfFiniteType.isLocallyNoetherian Y.s
+  obtain ⟨W, hW, -, -⟩ := cpt_open_integral Y.X 𝔐.Ω₀ 𝔐.ξ₀ 𝔐.gen₀
+  have hsq : (𝔐.ξ ≫ 𝔐.f) ≫ Y.s = spMap 𝔐.cst ≫ spMap (algebraMap (𝓞 c.F) c.F) := by
+    rw [Category.assoc, 𝔐.cst_over]
+    unfold spMap
+    rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
+  let w := pullback.lift (𝔐.ξ ≫ 𝔐.f) (spMap 𝔐.cst) hsq
+  have hw1 : w ≫ pullback.fst _ _ = 𝔐.ξ ≫ 𝔐.f := pullback.lift_fst _ _ _
+  have hgen : genPt (𝔐.ξ ≫ 𝔐.f) = genPt 𝔐.ξ₀ := by
+    rw [show 𝔐.ξ ≫ 𝔐.f = _ from 𝔐.fn_over]
+    exact congrArg (fun x => 𝔐.ξ₀ x) (Subsingleton.elim (α := PrimeSpectrum 𝔐.Ω₀) _ _)
+  have hne : ((pullback.fst Y.s (spMap (algebraMap (𝓞 c.F) c.F)) ⁻¹ᵁ W : Scheme.Opens _) :
+      Set ↥(pullback Y.s (spMap (algebraMap (𝓞 c.F) c.F)))).Nonempty := by
+    refine ⟨genPt w, ?_⟩
+    have e : genPt (w ≫ pullback.fst _ _) ∈ W := by
+      rw [hw1, hgen]
+      exact (hW _).2 specializes_rfl
+    exact e
+  obtain ⟨_, ⟨u, rfl⟩, hu⟩ := Y.jQ_dense.exists_mem_open (TopologicalSpace.Opens.isOpen _) hne
+  have hu' : genPt 𝔐.ξ₀ ⤳ Y.j u := (hW _).1 hu
+  obtain ⟨Z⟩ := nonempty_cptOver_of_fraction hβ.1 hβ.2.2 Y (irreducibleComponent u)
+    (irreducibleComponent_mem_irreducibleComponents u)
+  have hz : genPt (Z.ξ₀ ≫ Y.j) ⤳ Y.j u := ((Z.closure u).1 mem_irreducibleComponent).map Y.j.continuous
+  exact ⟨_, Z, ((genPt_specializes_of_specializes _ 𝔐.gen₀ hu' hz).antisymm
+      (genPt_specializes_of_specializes _ Z.gen hz hu')).eq⟩
+
+theorem isGeom_of_split (hS : SplitComps Y) {U : Set (Xo.XF c)} (Z : CptOver Y U) : Z.IsGeom := by
+  rintro x ⟨f, hf, hx⟩
+  letI : Algebra c.F Z.Ω := Z.inc.toAlgebra
+  haveI : CharZero Z.Ω := charZero_of_injective_ringHom Z.inc.injective
+  haveI : Algebra.IsAlgebraic ℤ c.F := (IsFractionRing.comap_isAlgebraic_iff (A := ℤ) (K := ℚ)).2 inferInstance
+  have h0 : IsAlgebraic c.F x := ⟨f, hf, hx⟩
+  have h1 : IsAlgebraic ℤ x := h0.restrictScalars ℤ
+  refine hS Z.Ω (Z.ξ₀ ≫ Y.j) Z.inc Z.gen ?_ x h1
+  have e : spMap (Z.inc.comp (algebraMap (𝓞 c.F) c.F)) = spMap Z.inc ≫ spMap (algebraMap (𝓞 c.F) c.F) := by
+    unfold spMap
+    rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
+  rw [e, ← Z.over_inc, ← Y.jQ_over]
+  simp only [Model.j, Category.assoc, pullback.condition]
+
+theorem central (h0 : FlatLineGenerator) (h1 : FlatLineGeneratorComponent) (hS : SplitComps Y) (hpq : 1 ≤ D.p + D.q) (𝔐 : HodgeCpt Y S y)
+    (Fl : 𝔐.Flag) (xdeg : CMType H × Fin (D.p + D.q) → K → ℤ) (e : CMType H × Fin (D.p + D.q) → Ω)
+    (hx : CMType H × Fin (D.p + D.q) → HermLine J) (hroot : Fl.RootLines xdeg e)
+    (hhod : ∀ r, Fl.IsHodgeLine r (e r) (hx r)) (hdg : ∀ r, (hx r).a = xdeg r) (τ : CMType H) :
+    ∃ (c₁ : Ω) (a : K → ℤ) (tt : (c.F →+* ℂ) → ℝ), ∀ (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) w, CoordsAt 𝔐.ξ y z w →
+      ∀ cc : (k : K) → J k, (∀ k, w ⟨k, cc k⟩ ≠ 0) →
+        (∃ u : ℂ, u ≠ 0 ∧ ValAt 𝔐.ξ z (c₁ / ((∏ k, y ⟨k, cc k⟩ ^ a k) * ∏ i, e (τ, i))) u) ∧
+        (𝔐.Interior z → ∀ s : c.F →+* ℂ, (∀ x, ValAt 𝔐.ξ z (𝔐.cst x) (s x)) → ∀ u : ℂ,
+          ValAt 𝔐.ξ z (c₁ / ((∏ k, y ⟨k, cc k⟩ ^ a k) * ∏ i, e (τ, i))) u →
+          ‖u‖ * ∏ k, ‖w ⟨k, cc k⟩‖ ^ a k = Real.exp (tt s) * ∏ i, (hx (τ, i)).h w) := by
+  have hβ := int_frac c.F
+  obtain ⟨U, Z, hgp⟩ := exists_cptOver 𝔐
+  have hgeom := isGeom_of_split hS Z
+  obtain ⟨φ, hφ, hflat, -⟩ := h0 E H D l Xo c _ _ Y U Z τ.1 hβ hpq τ.2 hgeom
+  obtain ⟨hinf, -⟩ := h1 E H D l Xo c _ _ Y U Z τ.1 φ hβ hpq τ.2 hgeom hφ hflat
+  choose t hinf _ using hinf
+  obtain ⟨-, a, b, hgen, hrep⟩ := id hflat
+  obtain ⟨i, j, hT⟩ := GlobalTheory.T.hodge_component_matches_model_component E H D l Xo c Y U Z S Ω K J y 𝔐 hgp
+  obtain ⟨a', b', d₁, d₂, h₁, h₂, ha0, hb0, ha', hb', ea, eb⟩ :=
+    GlobalTheory.T.flag_cm_type_lattice_comparison E H D l Xo c Y U Z S Ω K J y 𝔐 Fl τ i j a b hT hgen
+  have hdeg := GlobalTheory.T.hodge_cpt_flag_degree E H D l Xo c _ _ Y S Ω K J y 𝔐 Fl xdeg e τ hroot
+  have he : ∏ i, e (τ, i) ≠ 0 := hdeg.1
+  have hchar : CharZero Ω := charZero_of_injective_ringHom 𝔐.cst.injective
+  have hfr : ∀ p ∈ genFibre ℤ 𝔐.ξ, IsCoeffAt (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) D.p D.q a' b' p 1 := by
+    intro p hp
+    obtain ⟨⟨x₀, hx₀, ex⟩, hs₁, hs₂⟩ := GlobalTheory.T.cm_type_lattice_comparison E H D l Xo c Y U Z S Ω K J y 𝔐 τ i j hT p hp
+    obtain ⟨hv₁, hv₂, -, -⟩ := GlobalTheory.T.eigen_lattice_vector_bundle E H D l Xo c _ _ Y U Z τ.1 hβ τ.2
+    obtain ⟨W₁, hW₁, u₁, -, hu₁⟩ := hv₁ x₀ hx₀
+    obtain ⟨W₂, hW₂, u₂, -, hu₂⟩ := hv₂ x₀ hx₀
+    exact GlobalTheory.T.exterior_coeff_base_change_compat _ _ _ _ _ _ 𝔐.f i _ _ j _ _ _ _ D.p D.q a b a' b' p x₀ u₁ u₂ Z.gen 𝔐.tie.gen hT.1 hT.2.2.1 ex
+      (hu₁ x₀ hx₀ hW₁) (hu₂ x₀ hx₀ hW₂) hs₁ hs₂ (hgen.2.2 x₀ hx₀) ha' hb'
+  have haF : exteriorPower.ιMulti Ω _ (Fl.b (.inl τ)) ≠ 0 := fun h => ha0 (by
+    have e2 : d₁ • (exteriorPower.ιMulti Ω (labelRk D (.inl τ)) (Fl.b (.inl τ))) = 0 := by rw [h, smul_zero]
+    exact ea.trans e2)
+  have hbF : exteriorPower.ιMulti Ω _ (Fl.b (.inr τ)) ≠ 0 := fun h => hb0 (by
+    have e2 : d₂ • (exteriorPower.ιMulti Ω (labelRk D (.inr τ)) (Fl.b (.inr τ))) = 0 := by rw [h, smul_zero]
+    exact eb.trans e2)
+  have hVA : (𝔐.V (.inl τ)).IsVB (labelRk D (.inl τ)) _ := 𝔐.vb (.inl τ)
+  have hVB : (𝔐.V (.inr τ)).IsVB (labelRk D (.inr τ)) _ := 𝔐.vb (.inr τ)
+  have hco : ∀ p ∈ genFibre ℤ 𝔐.ξ, IsCoeffAt (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) (labelRk D (.inl τ)) (labelRk D (.inr τ))
+      (exteriorPower.ιMulti Ω _ (Fl.b (.inl τ))) (exteriorPower.ιMulti Ω _ (Fl.b (.inr τ))) p (d₁ / d₂)⁻¹ :=
+    fun p hp => isCoeffAt_of_smul h₁ h₂ ea eb (hfr p hp)
+  have hd0 : d₁ / d₂ ≠ 0 := div_ne_zero h₁ h₂
+  let A : HermLine J := PB.combLine (fun i => hx (τ, i)) fun _ => 1
+  have hAa : A.a = ∑ i, xdeg (τ, i) := by
+    funext k
+    simp [A, PB.combLine_a, hdg, Finset.sum_apply]
+  have hAh : ∀ w, A.h w = ∏ i, (hx (τ, i)).h w := fun w => by simp [A, PB.combLine_h]
+  refine ⟨d₁ / d₂, A.a, t, fun z w hz cc hcc => ⟨?_, fun hint s hs u hu => ?_⟩⟩
+  · have hc := 𝔐.all (centre z)
+    have hp : (⟨centre z, hc⟩ : Cpt 𝔐.ξ) ∈ genFibre ℤ 𝔐.ξ := fun o ho => by
+      have v1 := valAt_int (ξ := 𝔐.ξ) hc o
+      have v2 := CxVal.inv v1 (by exact_mod_cast ho)
+      obtain ⟨_, s1, e1, -⟩ := v1
+      obtain ⟨_, s2, e2, -⟩ := v2
+      exact ⟨by simpa using ho, ⟨s1, by simpa using e1⟩, ⟨s2, by simpa using e2⟩⟩
+    obtain ⟨-, hL2, -⟩ := GlobalTheory.T.wedge_line_lattice_vector_bundle 𝔐.X Ω 𝔐.ξ 𝔐.Li (𝔐.V (.inl τ)) (𝔐.V (.inr τ)) _ _ _ _ Set.univ
+      (exteriorPower.ιMulti Ω _ (Fl.b (.inl τ))) (exteriorPower.ιMulti Ω _ (Fl.b (.inr τ))) hVA hVB haF hbF
+      ⟨_, trivial, _, hco _ hp⟩
+    have hgn := (hL2 _ trivial _).2 ⟨hd0, hco _ hp⟩
+    have hch := (GlobalTheory.T.frame_domain_in_segre_chart 𝔐.X Ω 𝔐.ξ K J y 𝔐.tie z w cc 1 hc hz
+      ⟨hcc, 1, (GlobalTheory.T.valAt_iff_value_at 𝔐.X Ω 𝔐.ξ K J y 𝔐.tie z w hc hz 1 1).1 (CxVal.one hc), one_ne_zero⟩).1
+    have h3 := hdeg.2 _ trivial cc hch
+    rw [hgn.2, smul_eq_mul, ← hAa] at h3
+    refine exists_val_ne hc (unitAt_of_span_eq hd0 (mul_ne_zero ?_ he) h3)
+    exact Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (hz.2 k (cc k) (IsUnit.mk0 _ (hcc k))).1
+  · rw [← hAh]
+    refine GlobalTheory.T.flag_weighted_degree_section E H D l Xo c Y S Ω K J y 𝔐 Fl xdeg e hx A τ (t s) (d₁ / d₂) z w hroot hhod hAa
+      (fun w'' _ => hAh w'') hz hint hd0 ?_ cc u hcc hu
+    intro hc bp bq Γ Δ α κ u' h1 h2 h3 h4 h5 h6 h7 h8 h9
+    refine GlobalTheory.T.cm_type_exterior_lattice_comparison E H D l Xo c Y U Z S Ω K J y 𝔐 τ i j a b a' b' φ s _ z hc bp bq Γ Δ (d₁ * α) (d₂ * κ) u' hT hφ
+      hgen hrep (hinf _) ha' hb' hint hs h1 h2 h3 h4 h5 h6 ?_ ?_ ?_
+    · rw [mul_smul]
+      exact ea.trans (congrArg (d₁ • ·) h7)
+    · rw [mul_smul]
+      exact eb.trans (congrArg (d₂ • ·) h8)
+    · rw [← div_mul_div_comm, ← mul_div_assoc]
+      exact h9
+
+end AnalyticReference.An
+end
+end
+
+section
+noncomputable section
+
+namespace AnalyticReference.An
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open Filter Topology
+open scoped ComplexOrder
+
+theorem frame_sup {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {V : Type}
+    [AddCommGroup V] [Module Ω V] (L : Lat ξ V) (W : Submodule Ω V) {r : ℕ} (bb : Fin r → W) (p : Cpt ξ)
+    (hb : L.IsFrameAt (fun k => (bb k : V)) p) : (Lat.comap (fun p => L p ⊔ L p) W.subtype).IsFrameAt bb p := by
+  have hspan : (Submodule.span (regAt ξ p) (Set.range bb)).map (W.subtype.restrictScalars (regAt ξ p)) =
+      Submodule.span (regAt ξ p) (Set.range fun k => (bb k : V)) := by
+    rw [Submodule.map_span, ← Set.range_comp]
+    rfl
+  refine ⟨LinearIndependent.of_comp W.subtype hb.1, ?_⟩
+  ext x
+  constructor
+  · intro hx
+    have h1 : (x : V) ∈ L p ⊔ L p := hx
+    rw [sup_idem, hb.2, ← hspan] at h1
+    obtain ⟨x', hx', e⟩ := h1
+    have e' : x' = x := Subtype.ext e
+    exact e' ▸ hx'
+  · intro hx
+    show (x : V) ∈ L p ⊔ L p
+    rw [sup_idem, hb.2, ← hspan]
+    exact ⟨x, hx, rfl⟩
+
+theorem chart_analytic {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {P : Ideal (MRing J)} {n : ℕ}
+    {Bd : Set ((Σ k, J k) → ℂ)} (χ : SncChart P n Bd) (q : Σ k, J k) : AnalyticAt ℂ (fun t => χ.γ t q) 0 :=
+  ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : (Σ k, J k) => ℂ) q).analyticAt _).comp
+    (χ.analytic 0 (Metric.mem_ball_self one_pos))
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H}
+  {Xo : ∀ l : Tor.Level H, Moduli D l} {l : Tor.Level H} {c : Coeff l} [NumberField c.F]
+  {Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)} {S : Finset ℕ} {Ω : Type} [Field Ω] [CharZero Ω]
+  {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {y : (Σ k, J k) → Ω}
+
+theorem label_data (hG : Top.Given) (hGl : Top.IsGlobal Xo l c Y) (𝔐 : HodgeCpt Y S y) (Fl : 𝔐.Flag) {n : ℕ}
+    {Bd : Set ((Σ k, J k) → ℂ)}
+    (hBd : ∀ (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) w, CoordsAt 𝔐.ξ y z w → (w ∈ Bd ↔ ¬ 𝔐.Interior z))
+    (χ : SncChart (mCoordIdeal y) n Bd) {z₀ : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X} (hz₀ : CoordsAt 𝔐.ξ y z₀ (χ.γ 0))
+    (s : CMType H ⊕ CMType H) :
+    ∃ (b : Fin (labelRk D s) → 𝔐.Li) (M : ℕ → (Fin n → ℂ) → ℝ),
+      (∀ j, flagStep Ω b j = flagStep Ω (Fl.b s) j) ∧ (𝔐.V s).IsFrameAt b ⟨centre z₀, 𝔐.all _⟩ ∧
+      (∀ t, M 0 t = 0) ∧ (∀ m ≤ labelRk D s, Tame χ.a (M m) ∧ (χ.a = 0 → PshAt0 (M m))) ∧
+      ∀ᶠ t in 𝓝 (0 : Fin n → ℂ), (∀ i : Fin n, (i : ℕ) < χ.a → t i ≠ 0) →
+        ∀ z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X, CoordsAt 𝔐.ξ y z (χ.γ t) → 𝔐.Interior z ∧
+          (𝔐.V s).IsFrameAt b ⟨centre z, 𝔐.all _⟩ ∧ ∃ Γ, 𝔐.M.GramAt 𝔐.t.PP.L z b Γ ∧ Γ.PosDef ∧
+            ∀ m ≤ labelRk D s, Real.log (leadMinor Γ m) = M m t := by
+  have hβ : Function.Injective (algebraMap (𝓞 c.F) c.F) := RingOfIntegers.coe_injective
+  have hgen : genPt 𝔐.ξ ⤳ centre z₀ := 𝔐.all _
+  obtain ⟨V, hV, b, hflag, hb⟩ := Fl.sub s ⟨centre z₀, hgen⟩ trivial
+  have hb0 := hb ⟨centre z₀, hgen⟩ trivial hV
+  obtain ⟨cc, f, hdom, -, hsub⟩ := exists_basic 𝔐.tie hz₀ hgen V hV
+  obtain ⟨hVd, -, -⟩ := GlobalTheory.T.hodge_cpt_away_from_primes E H D l (Xo l) c _ _ Y S Ω K J y 𝔐 hβ ⟨centre z₀, hgen⟩
+    fun r hr => GrNorm.not_inFibre 𝔐.tie.gen hgen hr
+  have hmem : ∀ k, b k ∈ 𝔐.Vgen s ⊔ 𝔐.Vgen s := fun k => by
+    have h1 : b k ∈ 𝔐.V s ⟨centre z₀, hgen⟩ := by
+      rw [hb0.2]
+      exact Submodule.subset_span ⟨k, rfl⟩
+    rw [hVd s] at h1
+    exact Submodule.mem_sup_left h1.2
+  let bb : Fin (labelRk D s) → ↥(𝔐.Vgen s ⊔ 𝔐.Vgen s) := fun k => ⟨b k, hmem k⟩
+  obtain ⟨a₀, g, Λ, _, L, π, ρ, U, hρ, hρ1, hU, hli, ha, hP⟩ :=
+    GlobalTheory.T.global_pair_sum_gram_bound hG E H D Xo l c Y S Ω K J y 𝔐 hGl s s _ bb n Bd χ 0 cc f hBd (Metric.mem_ball_self one_pos)
+      (fun p h1 h2 => frame_sup (𝔐.V s) _ bb p (hb p trivial (hsub p h1 h2))) hdom
+  let M : ℕ → (Fin n → ℂ) → ℝ := fun m t =>
+    Real.log (leadMinor (HodgeMetric.periodGram L U (HodgeMetric.uncentre 0 ρ π t)) m)
+  have hM : ∀ m (h : m ≤ labelRk D s), M m = fun t => Real.log
+      (HodgeMetric.periodGram L (fun j => U (Fin.castLE h j)) (HodgeMetric.uncentre 0 ρ π t)).det.re := by
+    intro m h
+    funext t
+    simp only [M, leadMinor, dif_pos h]
+    rfl
+  refine ⟨b, M, hflag, hb0, fun t => by simp [M, leadMinor_size_zero], fun m hm => ?_, ?_⟩
+  · rw [hM m hm]
+    have hli' : LinearIndependent ℂ fun j : Fin m => U (Fin.castLE hm j) 0 := hli.comp _ (Fin.castLE_injective hm)
+    refine ⟨tame_logdet L _ π ρ hρ hρ1 (fun j => hU _) hli' fun i hi => (ha i hi).1, fun h0 => ?_⟩
+    have : a₀ = 0 := by
+      by_contra hne
+      have hle := L.a_le
+      have := (ha ⟨0, by omega⟩ (Nat.pos_of_ne_zero hne)).1
+      omega
+    subst this
+    exact pshAt0_logdet L _ π ρ hρ (fun j => hU _) hli'
+  · filter_upwards [Metric.ball_mem_nhds (0 : Fin n → ℂ) hρ] with t ht hoff z hz
+    have hu := HodgeMetric.uncentre_mem_ball (t₀ := 0) (t := t) hρ π (by simpa using ht)
+    obtain ⟨h1, h2, h3, h4⟩ := hP _ hu
+    rw [HodgeMetric.recentre_uncentre 0 hρ π t] at h1 h2 h3 h4
+    have hnb : χ.γ t ∉ Bd := fun h => by
+      obtain ⟨i, hi, h0⟩ := (χ.boundary t h1).1 h
+      exact hoff i hi h0
+    have hi : 𝔐.Interior z := by_contra fun h => hnb ((hBd z _ hz).2 h)
+    have hc := GlobalTheory.T.frame_domain_in_segre_chart 𝔐.X Ω 𝔐.ξ K J y 𝔐.tie z _ cc f (𝔐.all _) hz h2
+    have hfr := hb _ trivial (hsub _ hc.1 hc.2)
+    have hΓ := h4 (h3.1 hnb) z hz
+    obtain ⟨Γ, g1, g2⟩ := RootGram.exists_gram 𝔐 hi s hfr
+    have e := GlobalTheory.T.gram_matrix_change_frame E H D l (Xo l) c Y S Ω K J y 𝔐 z _ b _ _
+      (GlobalTheory.T.interior_point_polarised E H D l (Xo l) c Y S Ω K J y 𝔐 z hi) g1 hΓ
+    refine ⟨hi, hfr, Γ, g1, g2, fun m _ => ?_⟩
+    rw [e]
+
+theorem root_data (hG : Top.Given) (hGl : Top.IsGlobal Xo l c Y) (𝔐 : HodgeCpt Y S y) (Fl : 𝔐.Flag) {n : ℕ}
+    {Bd : Set ((Σ k, J k) → ℂ)}
+    (hBd : ∀ (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X) w, CoordsAt 𝔐.ξ y z w → (w ∈ Bd ↔ ¬ 𝔐.Interior z))
+    (χ : SncChart (mCoordIdeal y) n Bd) (xdeg : CMType H × Fin (D.p + D.q) → K → ℤ)
+    (e : CMType H × Fin (D.p + D.q) → Ω) (hx : CMType H × Fin (D.p + D.q) → HermLine J) (hroot : Fl.RootLines xdeg e)
+    (hhod : ∀ r, Fl.IsHodgeLine r (e r) (hx r)) (hdg : ∀ r, (hx r).a = xdeg r) :
+    ∃ (M : CMType H ⊕ CMType H → ℕ → (Fin n → ℂ) → ℝ) (F : CMType H × Fin (D.p + D.q) → (Fin n → ℂ) → ℂ),
+      (∀ s t, M s 0 t = 0) ∧ (∀ s, ∀ m ≤ labelRk D s, Tame χ.a (M s m) ∧ (χ.a = 0 → PshAt0 (M s m))) ∧
+      (∀ r, AnalyticAt ℂ (F r) 0 ∧ F r 0 ≠ 0) ∧
+      ∀ r, ∀ᶠ t in 𝓝 (0 : Fin n → ℂ), (∀ i : Fin n, (i : ℕ) < χ.a → t i ≠ 0) →
+        Real.log ((hx r).h (χ.γ t)) = Real.log ‖F r t‖ - (HodgeCpt.rootSgn D r : ℝ) / 2 *
+          (M (HodgeCpt.rootIdx D r).1 (((HodgeCpt.rootIdx D r).2 : ℕ) + 1) t -
+            M (HodgeCpt.rootIdx D r).1 ((HodgeCpt.rootIdx D r).2 : ℕ) t) := by
+  have pts : ∀ w ∈ mcPts (mCoordIdeal y), ∃ z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X, CoordsAt 𝔐.ξ y z w := fun w hw => by
+    obtain ⟨z, -, hz⟩ := (GlobalTheory.T.complex_points_iff_centres 𝔐.X Ω 𝔐.ξ K J y 𝔐.tie w).1 hw
+    exact ⟨z, hz⟩
+  obtain ⟨z₀, hz₀⟩ := pts _ (χ.mem 0 (Metric.mem_ball_self one_pos))
+  have hgen : genPt 𝔐.ξ ⤳ centre z₀ := 𝔐.all _
+  choose b M hflag hb0 hM0 hM hev using label_data hG hGl 𝔐 Fl hBd χ hz₀
+  obtain ⟨cc, f, hdom, hch, -⟩ := exists_basic 𝔐.tie hz₀ hgen ⊤ trivial
+  have hcc : ∀ᶠ t in 𝓝 (0 : Fin n → ℂ), ∀ k, χ.γ t ⟨k, cc k⟩ ≠ 0 :=
+    eventually_all.2 fun k => (chart_analytic χ _).continuousAt.eventually_ne (hdom.1 k)
+  have key : ∀ r : CMType H × Fin (D.p + D.q), ∃ F : (Fin n → ℂ) → ℂ, (AnalyticAt ℂ F 0 ∧ F 0 ≠ 0) ∧
+      ∀ᶠ t in 𝓝 (0 : Fin n → ℂ), (∀ i : Fin n, (i : ℕ) < χ.a → t i ≠ 0) →
+        Real.log ((hx r).h (χ.γ t)) = Real.log ‖F t‖ - (HodgeCpt.rootSgn D r : ℝ) / 2 *
+          (M (HodgeCpt.rootIdx D r).1 (((HodgeCpt.rootIdx D r).2 : ℕ) + 1) t -
+            M (HodgeCpt.rootIdx D r).1 ((HodgeCpt.rootIdx D r).2 : ℕ) t) := by
+    intro r
+    obtain ⟨τ, hτ⟩ := GrNorm.exists_sub_mem_flagStep (b := Fl.b (HodgeCpt.rootIdx D r).1) (HodgeCpt.rootIdx D r).2
+      (x := b _ (HodgeCpt.rootIdx D r).2) (by
+        rw [← hflag]
+        exact Submodule.subset_span ⟨_, Nat.lt_succ_self _, rfl⟩)
+    have hu := GlobalTheory.T.root_lines_flag_degree E H D l (Xo l) c Y S Ω K J y 𝔐 Fl xdeg e r _ cc _ τ hroot hch (hflag _) (hb0 _) hτ
+    obtain ⟨v, hv0, hv⟩ := exists_val_ne hgen hu
+    have hv' := CxVal.inv hv hv0
+    rw [inv_div] at hv'
+    obtain ⟨F₁, hF₁, hF0, hF⟩ := exists_val_fam 𝔐.tie 𝔐.all (chart_analytic χ) hz₀ hv'
+    have hne : F₁ 0 * ∏ k, χ.γ 0 ⟨k, cc k⟩ ^ xdeg r k ≠ 0 :=
+      mul_ne_zero (by rw [hF0]; exact inv_ne_zero hv0)
+        (Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (hdom.1 k))
+    refine ⟨fun t => F₁ t * ∏ k, χ.γ t ⟨k, cc k⟩ ^ xdeg r k, ⟨hF₁.fun_mul
+      (Finset.analyticAt_fun_prod _ fun k _ => (chart_analytic χ _).fun_zpow (hdom.1 k)), hne⟩, ?_⟩
+    filter_upwards [hev (HodgeCpt.rootIdx D r).1, hF, hcc, Metric.ball_mem_nhds (0 : Fin n → ℂ) one_pos] with
+      t h1 h2 h3 h4 hoff
+    obtain ⟨z, hz⟩ := pts _ (χ.mem t h4)
+    obtain ⟨hi, hfr, Γ, g1, g2, g3⟩ := h1 hoff z hz
+    have hN := hhod r z _ hz hi τ _ ⟨𝔐.all _, _, Γ, hflag _, hfr, hτ, g1, g2, rfl⟩
+    obtain ⟨u, hu1, hu2⟩ := hN.2.2 cc h3
+    rw [hdg] at hu1 hu2
+    rw [CxVal.unique hu1 (h2 z hz)] at hu2
+    have p1 := leadMinor_pos_of_posDef g2 (s := ((HodgeCpt.rootIdx D r).2 : ℕ) + 1) (HodgeCpt.rootIdx D r).2.2
+    have p2 := leadMinor_pos_of_posDef g2 (s := ((HodgeCpt.rootIdx D r).2 : ℕ)) (HodgeCpt.rootIdx D r).2.2.le
+    have p3 : 0 < (hx r).h (χ.γ t) := (hx r).pos _ fun k => ⟨cc k, h3 k⟩
+    have e1 := congrArg Real.log hu2
+    rw [Real.log_mul (zpow_ne_zero _ (Real.sqrt_pos.2 (div_pos p1 p2)).ne') p3.ne', Real.log_zpow,
+      Real.log_sqrt (div_pos p1 p2).le, Real.log_div p1.ne' p2.ne', g3 _ (HodgeCpt.rootIdx D r).2.2,
+      g3 _ (HodgeCpt.rootIdx D r).2.2.le] at e1
+    simp only [norm_mul, norm_prod, norm_zpow]
+    rw [← e1]
+    ring
+  choose F hF hF' using key
+  exact ⟨M, F, hM0, hM, hF, hF'⟩
+
+end AnalyticReference.An
+end
+end
+
+section
+noncomputable section
+
+namespace AnalyticReference.An
+
+open ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo Filter Topology Metric
+open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar.PB
+
+variable {n : ℕ} {X : Type} [TopologicalSpace X]
+
+theorem holoAt_compat {A : FinHolAtlas n X} {ψ : OpenPartialHomeomorph X (Fin n → ℂ)} (hψ : IsCompatChart A ψ)
+    {U : Set X} {g : X → ℂ} (hg : A.HoloOn U g) {t : Fin n → ℂ} (ht : t ∈ ψ.target) (hU : ψ.symm t ∈ U) :
+    AnalyticAt ℂ (fun t' => g (ψ.symm t')) t := by
+  obtain ⟨j, hj⟩ := A.cover (ψ.symm t)
+  have h1 : AnalyticAt ℂ (A.chart j ∘ ψ.symm) t := (hψ j).2 t ⟨ht, hj⟩
+  have h2 : AnalyticAt ℂ (g ∘ (A.chart j).symm) ((A.chart j ∘ ψ.symm) t) := by
+    refine hg j _ ⟨(A.chart j).map_source hj, ?_⟩
+    simp only [Function.comp, Set.mem_preimage, (A.chart j).left_inv hj]
+    exact hU
+  refine (h2.comp h1).congr ?_
+  filter_upwards [(ψ.continuousAt_symm ht).preimage_mem_nhds ((A.chart j).open_source.mem_nhds hj)] with t' ht'
+  have h3 : ψ.symm t' ∈ (A.chart j).source := ht'
+  simp only [Function.comp, (A.chart j).left_inv h3]
+
+def NChart (A : FinHolAtlas n X) (U : Set X) (L : LocPot X) (s : X → X → ℂ) (x₀ : X)
+    (ψ : OpenPartialHomeomorph X (Fin n → ℂ)) (a : ℕ) (M : ℝ) : Prop :=
+  IsCompatChart A ψ ∧ x₀ ∈ ψ.source ∧ ψ x₀ = 0 ∧ a ≤ n ∧ ∀ t ∈ ball (0 : Fin n → ℂ) 1, t ∈ ψ.target ∧ ψ.symm t ∈ U ∧
+    (ψ.symm t ∈ bdry s ↔ ∃ i : Fin n, (i : ℕ) < a ∧ t i = 0) ∧
+    (ψ.symm t ∉ bdry s → logR a t ≤ rW L s (ψ.symm t) + M)
+
+theorem exists_perm_first (S : Finset (Fin n)) :
+    ∃ σ : Equiv.Perm (Fin n), ∀ i, i ∈ S ↔ ((σ i : Fin n) : ℕ) < S.card := by
+  classical
+  have hle : S.card ≤ n := by simpa using S.card_le_univ
+  have hcard : Fintype.card {i : Fin n // i ∈ S} = Fintype.card {i : Fin n // (i : ℕ) < S.card} := by
+    rw [Fintype.card_coe, ← Fintype.card_congr (Fin.castLEquiv hle), Fintype.card_fin]
+  have hcard' : Fintype.card {i : Fin n // ¬ i ∈ S} = Fintype.card {i : Fin n // ¬ (i : ℕ) < S.card} := by
+    rw [Fintype.card_subtype_compl, Fintype.card_subtype_compl, hcard]
+  let e := Fintype.equivOfCardEq hcard
+  let f := Fintype.equivOfCardEq hcard'
+  refine ⟨Equiv.subtypeCongr e f, fun i => ?_⟩
+  by_cases hi : i ∈ S
+  · have h1 : Equiv.subtypeCongr e f i = e ⟨i, hi⟩ := by
+      simp [Equiv.subtypeCongr, Equiv.sumCompl_symm_apply_of_pos hi]
+    rw [h1]
+    exact ⟨fun _ => (e ⟨i, hi⟩).2, fun _ => hi⟩
+  · have h1 : Equiv.subtypeCongr e f i = f ⟨i, hi⟩ := by
+      simp [Equiv.subtypeCongr, Equiv.sumCompl_symm_apply_of_neg hi]
+    rw [h1]
+    exact ⟨fun h => absurd h hi, fun h => absurd h (f ⟨i, hi⟩).2⟩
+
+def scalePerm (δ : ℝ) (hδ : 0 < δ) (σ : Equiv.Perm (Fin n)) : (Fin n → ℂ) ≃L[ℂ] (Fin n → ℂ) :=
+  LinearEquiv.toContinuousLinearEquiv
+    { toFun := fun t i => (δ : ℂ) * t (σ i)
+      invFun := fun y i => (δ : ℂ)⁻¹ * y (σ.symm i)
+      map_add' := fun t t' => by funext i; simp [mul_add]
+      map_smul' := fun c t => by funext i; simp; ring
+      left_inv := fun t => by
+        have h : (δ : ℂ) ≠ 0 := by exact_mod_cast hδ.ne'
+        funext i; simp [h]
+      right_inv := fun t => by
+        have h : (δ : ℂ) ≠ 0 := by exact_mod_cast hδ.ne'
+        funext i; simp [h] }
+
+theorem scalePerm_apply (δ : ℝ) (hδ : 0 < δ) (σ : Equiv.Perm (Fin n)) (t : Fin n → ℂ) (i : Fin n) :
+    scalePerm δ hδ σ t i = (δ : ℂ) * t (σ i) := rfl
+
+theorem exists_nchart (A : FinHolAtlas n X) (L : LocPot X) (s : X → X → ℂ) {nb : ℕ} {m : Fin nb → ℕ}
+    {W : Fin nb → Set X} (hL : IsPotential A L) (hs : IsSection A L s) (snc : IsSNC A L s m W) (x₀ : X) (U : Set X)
+    (hU : IsOpen U) (hx : x₀ ∈ U) : ∃ ψ a M, NChart A U L s x₀ ψ a M := by
+  classical
+  obtain ⟨φ, S, μ, v, hφ, hx0, hball2, hφ0, hsrc, hμ, hv, hv0, hsv⟩ :=
+    GlobalTheory.T.exists_snc_adapted_chart_at_point n X A L s nb m W snc x₀
+  obtain ⟨hbd, M, hM⟩ := GlobalTheory.T.snc_adapted_chart_section_form n X A L s hL hs x₀ φ S μ v hφ hball2 hsrc hμ hv hv0 hsv
+  have h0t : (0 : Fin n → ℂ) ∈ φ.target := hball2 (by simp)
+  have hs0 : φ.symm 0 = x₀ := by rw [← hφ0]; exact φ.left_inv hx0
+  have hnhds : φ.target ∩ φ.symm ⁻¹' U ∈ 𝓝 (0 : Fin n → ℂ) := by
+    refine Filter.inter_mem (φ.open_target.mem_nhds h0t) ?_
+    exact (φ.continuousAt_symm h0t).preimage_mem_nhds (by rw [hs0]; exact hU.mem_nhds hx)
+  obtain ⟨δ', hδ', hδball⟩ := Metric.mem_nhds_iff.1 hnhds
+  have hδ : 0 < min δ' 1 := lt_min hδ' one_pos
+  have hδ1 : min δ' 1 ≤ 1 := min_le_right _ _
+  have hδδ' : min δ' 1 ≤ δ' := min_le_left _ _
+  obtain ⟨σ, hσ⟩ := exists_perm_first S
+  let Lδ := scalePerm (min δ' 1) hδ σ
+  let ψ := φ.transHomeomorph Lδ.toHomeomorph.symm
+  have hψs : ∀ t, ψ.symm t = φ.symm (Lδ t) := fun t => rfl
+  have hψ : ∀ x, ψ x = Lδ.symm (φ x) := fun x => rfl
+  have hψtgt : ∀ t, t ∈ ψ.target ↔ Lδ t ∈ φ.target := fun t => Iff.rfl
+  have hnorm : ∀ t : Fin n → ℂ, ‖t‖ < 1 → ‖Lδ t‖ < min δ' 1 := by
+    intro t ht
+    refine (pi_norm_lt_iff hδ).2 fun i => ?_
+    rw [scalePerm_apply, norm_mul, Complex.norm_real, Real.norm_of_nonneg hδ.le]
+    have : ‖t (σ i)‖ < 1 := (norm_le_pi_norm t (σ i)).trans_lt ht
+    nlinarith [norm_nonneg (t (σ i))]
+  refine ⟨ψ, S.card, M, ?_, ?_, ?_, by simpa using S.card_le_univ, ?_⟩
+  · intro j
+    constructor
+    · intro y hy
+      have hy' : y ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' φ.source := hy
+      exact ((Lδ.symm : (Fin n → ℂ) →L[ℂ] (Fin n → ℂ)).analyticAt _).comp ((hφ j).1 y hy')
+    · intro y hy
+      have hy' : Lδ y ∈ φ.target ∩ φ.symm ⁻¹' (A.chart j).source := hy
+      exact ((hφ j).2 _ hy').comp ((Lδ : (Fin n → ℂ) →L[ℂ] (Fin n → ℂ)).analyticAt y)
+  · exact hx0
+  · rw [hψ, hφ0, map_zero]
+  · intro t ht
+    have ht1 : ‖t‖ < 1 := by simpa using ht
+    have hz : ‖Lδ t‖ < min δ' 1 := hnorm t ht1
+    have hzb : Lδ t ∈ ball (0 : Fin n → ℂ) δ' := by simpa using hz.trans_le hδδ'
+    have hzmem := hδball hzb
+    have hz2 : Lδ t ∈ closedBall (0 : Fin n → ℂ) 2 := by
+      rw [mem_closedBall_zero_iff]; linarith
+    have hzero : ∀ i, Lδ t i = 0 ↔ t (σ i) = 0 := by
+      intro i
+      rw [scalePerm_apply]
+      simp [hδ.ne']
+    have hbdry : ψ.symm t ∈ bdry s ↔ ∃ i : Fin n, (i : ℕ) < S.card ∧ t i = 0 := by
+      rw [hψs, hbd _ hzmem.1]
+      constructor
+      · rintro ⟨i, hi, h0⟩
+        exact ⟨σ i, (hσ i).1 hi, (hzero i).1 h0⟩
+      · rintro ⟨j, hj, h0⟩
+        exact ⟨σ.symm j, (hσ _).2 (by simpa using hj), (hzero _).2 (by simpa using h0)⟩
+    refine ⟨(hψtgt t).2 hzmem.1, by rw [hψs]; exact hzmem.2, hbdry, ?_⟩
+    intro hnb
+    have hall : ∀ i ∈ S, t (σ i) ≠ 0 := fun i hi h0 => hnb (hbdry.2 ⟨σ i, (hσ i).1 hi, h0⟩)
+    have hrw : |rW L s (ψ.symm t) - rLoc S μ (Lδ t)| ≤ M := hM _ hz2 hnb
+    have hloc : logR S.card t ≤ rLoc S μ (Lδ t) := by
+      unfold logR rLoc
+      have hsum : (∑ i : Fin n, if (i : ℕ) < S.card then Real.log (1 / ‖t i‖ ^ 2) else 0) =
+          ∑ i ∈ S, Real.log (1 / ‖t (σ i)‖ ^ 2) := by
+        calc (∑ i : Fin n, if (i : ℕ) < S.card then Real.log (1 / ‖t i‖ ^ 2) else 0)
+            = ∑ i : Fin n, (if ((σ i : Fin n) : ℕ) < S.card then Real.log (1 / ‖t (σ i)‖ ^ 2) else 0) :=
+              (Equiv.sum_comp σ (fun i : Fin n =>
+                if (i : ℕ) < S.card then Real.log (1 / ‖t i‖ ^ 2) else 0)).symm
+          _ = ∑ i : Fin n, (if i ∈ S then Real.log (1 / ‖t (σ i)‖ ^ 2) else 0) :=
+              Finset.sum_congr rfl fun i _ => by
+                by_cases hi : i ∈ S
+                · rw [if_pos ((hσ i).1 hi), if_pos hi]
+                · rw [if_neg (fun h => hi ((hσ i).2 h)), if_neg hi]
+          _ = ∑ i ∈ S, Real.log (1 / ‖t (σ i)‖ ^ 2) := by
+              rw [Finset.sum_ite_mem, Finset.univ_inter]
+      rw [hsum]
+      gcongr with i hi
+      have hx : 0 < ‖t (σ i)‖ := norm_pos_iff.2 (hall i hi)
+      have hx1 : ‖t (σ i)‖ < 1 := (norm_le_pi_norm t (σ i)).trans_lt ht1
+      have hLi : ‖Lδ t i‖ = min δ' 1 * ‖t (σ i)‖ := by
+        rw [scalePerm_apply, norm_mul, Complex.norm_real, Real.norm_of_nonneg hδ.le]
+      have hpos : 0 < min δ' 1 * ‖t (σ i)‖ := mul_pos hδ hx
+      have hA : 0 ≤ Real.log (1 / ‖t (σ i)‖ ^ 2) := by
+        apply Real.log_nonneg
+        rw [le_div_iff₀ (by positivity)]
+        nlinarith
+      have hB : Real.log (1 / ‖t (σ i)‖ ^ 2) ≤ Real.log (4 / ‖Lδ t i‖ ^ 2) := by
+        rw [hLi]
+        apply Real.log_le_log (by positivity)
+        rw [div_le_div_iff₀ (by positivity) (by positivity)]
+        have : min δ' 1 ^ 2 ≤ 1 := by nlinarith
+        nlinarith [sq_nonneg ‖t (σ i)‖]
+      have hμ1 : (1 : ℝ) ≤ μ i := by exact_mod_cast hμ i hi
+      nlinarith
+    have := (abs_le.1 hrw).1
+    linarith
+
+variable {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)]
+
+theorem not_mem_top (z : (Σ k, J k) → ℂ) : z ∉ mcPts (⊤ : Ideal (MRing J)) := by
+  intro h
+  have := h.2 1 trivial
+  simp at this
+
+theorem analyticAt_lift {P Q : Ideal (MRing J)} (R : AnLogRes P Q n) {ψ : OpenPartialHomeomorph R.X (Fin n → ℂ)}
+    (hψ : IsCompatChart R.A ψ) (x₀ : R.X) {t : Fin n → ℂ} (ht : t ∈ ψ.target) (hU : ψ.symm t ∈ R.U x₀) :
+    AnalyticAt ℂ (fun t' => R.lift x₀ (ψ.symm t')) t :=
+  analyticAt_pi_iff.2 fun q => holoAt_compat hψ (R.holo x₀ q) ht hU
+
+def NChart.snc {P : Ideal (MRing J)} (R : AnLogRes P ⊤ n) {L : LocPot R.X} {s : R.X → R.X → ℂ} {x₀ : R.X}
+    {ψ : OpenPartialHomeomorph R.X (Fin n → ℂ)} {a : ℕ} {M : ℝ} (h : NChart R.A (R.U x₀) L s x₀ ψ a M)
+    (Bd : Set ((Σ k, J k) → ℂ)) (hBd : ∀ x ∈ R.U x₀, R.lift x₀ x ∈ Bd ↔ x ∈ bdry s) : SncChart P n Bd where
+  γ t := R.lift x₀ (ψ.symm t)
+  a := a
+  a_le := h.2.2.2.1
+  analytic t ht := analyticAt_lift R h.1 x₀ (h.2.2.2.2 t ht).1 (h.2.2.2.2 t ht).2.1
+  mem t ht := R.mem _ _ (h.2.2.2.2 t ht).2.1
+  immersion t ht v := by
+    rintro ⟨c, hc⟩
+    obtain ⟨htt, hxU, -⟩ := h.2.2.2.2 t ht
+    have hγ := analyticAt_lift R h.1 x₀ htt hxU
+    obtain ⟨j, hj⟩ := R.A.cover (ψ.symm t)
+    choose p hp using (R.mem _ _ (R.mem_U (ψ.symm t))).1
+    have himm := R.immersion _ (not_mem_top _) p hp j hj
+    have hpγ : ∀ k, R.lift x₀ (ψ.symm t) ⟨k, p k⟩ ≠ 0 := by
+      intro k
+      obtain ⟨c', hc', h'⟩ := R.compat _ x₀ _ ⟨R.mem_U _, hxU⟩
+      have := hp k
+      rw [h'] at this
+      exact right_ne_zero_of_mul this
+    have hk := PosFs.fderiv_affCoord_torus p hγ.differentiableAt hpγ hc
+    have hτ : AnalyticAt ℂ (R.A.chart j ∘ ψ.symm) t := (h.1 j).2 t ⟨htt, hj⟩
+    have hF : DifferentiableAt ℂ (fun y => affCoord p (R.lift (ψ.symm t) ((R.A.chart j).symm y)))
+        ((R.A.chart j ∘ ψ.symm) t) := by
+      refine differentiableAt_pi.2 fun q => ?_
+      have hmem : (R.A.chart j) (ψ.symm t) ∈ (R.A.chart j).target ∩ (R.A.chart j).symm ⁻¹' R.U (ψ.symm t) :=
+        ⟨(R.A.chart j).map_source hj, by
+          simp only [Set.mem_preimage, (R.A.chart j).left_inv hj]; exact R.mem_U _⟩
+      have hd := (R.holo _ q j _ hmem).div (R.holo _ ⟨q.1, p q.1⟩ j _ hmem) (by
+        simp only [Function.comp, (R.A.chart j).left_inv hj]
+        exact hp q.1)
+      exact hd.differentiableAt
+    have hev : (fun t' => affCoord p (R.lift x₀ (ψ.symm t'))) =ᶠ[𝓝 t]
+        (fun y => affCoord p (R.lift (ψ.symm t) ((R.A.chart j).symm y))) ∘ (R.A.chart j ∘ ψ.symm) := by
+      filter_upwards [(ψ.continuousAt_symm htt).preimage_mem_nhds
+        ((((R.isOpen_U x₀).inter (R.isOpen_U (ψ.symm t))).inter (R.A.chart j).open_source).mem_nhds
+          ⟨⟨hxU, R.mem_U _⟩, hj⟩)] with t' ht'
+      obtain ⟨c', hc', h'⟩ := R.compat x₀ (ψ.symm t) _ ht'.1
+      have h3 : ψ.symm t' ∈ (R.A.chart j).source := ht'.2
+      funext q
+      simp only [affCoord, Function.comp, (R.A.chart j).left_inv h3]
+      rw [h']
+      exact mul_div_mul_left _ _ (hc' q.1)
+    rw [hev.fderiv_eq, fderiv_comp t hF hτ.differentiableAt] at hk
+    have hmem : fderiv ℂ (R.A.chart j ∘ ψ.symm) t v ∈
+        (fderiv ℂ (fun y => affCoord p (R.lift (ψ.symm t) ((R.A.chart j).symm y))) (R.A.chart j (ψ.symm t))).ker := hk
+    rw [himm] at hmem
+    have h0 : fderiv ℂ (R.A.chart j ∘ ψ.symm) t v = 0 := (Submodule.mem_bot _).1 hmem
+    have hσ : AnalyticAt ℂ (ψ ∘ (R.A.chart j).symm) ((R.A.chart j ∘ ψ.symm) t) :=
+      (h.1 j).1 _ ⟨(R.A.chart j).map_source hj, by
+        simp only [Set.mem_preimage, Function.comp, (R.A.chart j).left_inv hj]; exact ψ.map_target htt⟩
+    have hid : (ψ ∘ (R.A.chart j).symm) ∘ (R.A.chart j ∘ ψ.symm) =ᶠ[𝓝 t] id := by
+      filter_upwards [(ψ.continuousAt_symm htt).preimage_mem_nhds ((R.A.chart j).open_source.mem_nhds hj),
+        ψ.open_target.mem_nhds htt] with t' h1 h2
+      have h3 : ψ.symm t' ∈ (R.A.chart j).source := h1
+      simp only [Function.comp, (R.A.chart j).left_inv h3, ψ.right_inv h2, id]
+    have hcc := fderiv_comp t hσ.differentiableAt hτ.differentiableAt
+    rw [hid.fderiv_eq, fderiv_id] at hcc
+    have := congrArg (fun f : (Fin n → ℂ) →L[ℂ] (Fin n → ℂ) => f v) hcc
+    simpa [h0] using this
+  injective t ht t' ht' c hc he := by
+    obtain ⟨h1, h2, -⟩ := h.2.2.2.2 t ht
+    obtain ⟨h1', h2', -⟩ := h.2.2.2.2 t' ht'
+    have o : SameOrbit (R.lift x₀ (ψ.symm t)) (R.lift x₀ (ψ.symm t')) := ⟨c, hc, he⟩
+    have := R.inj (ψ.symm t) (ψ.symm t') (not_mem_top _)
+      (Cj.sameOrbit_trans (R.compat _ x₀ _ ⟨R.mem_U _, h2⟩) (Cj.sameOrbit_trans o (R.compat x₀ _ _ ⟨h2', R.mem_U _⟩)))
+    rw [← ψ.right_inv h1, this, ψ.right_inv h1']
+  boundary t ht := (hBd _ (h.2.2.2.2 t ht).2.1).trans (h.2.2.2.2 t ht).2.2.1
+
+end AnalyticReference.An
+end
+end
+
+section
+noncomputable section
+
+namespace AnalyticReference.An
+
+open ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo Filter Topology Metric
+
+variable {n : ℕ} {X : Type} [TopologicalSpace X]
+
+theorem exp_le_logR (a : ℕ) {t : Fin n → ℂ} (ht : ‖t‖ < 1) : Real.exp 1 ≤ logR a t := by
+  unfold logR
+  have hs : 0 ≤ ∑ i : Fin n, (if (i : ℕ) < a then Real.log (1 / ‖t i‖ ^ 2) else 0) := by
+    refine Finset.sum_nonneg fun i _ => ?_
+    split_ifs
+    · have h1 := norm_le_pi_norm t i
+      have h2 : ‖t i‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg (t i)]
+      rw [one_div, Real.log_inv, neg_nonneg]
+      exact Real.log_nonpos (by positivity) h2
+    · exact le_rfl
+  linarith
+
+theorem one_le_of_exp_le {r : ℝ} (h : Real.exp 1 ≤ r) : 1 ≤ r ∧ 1 ≤ Real.log r := by
+  have he : 1 ≤ Real.exp 1 := Real.one_le_exp zero_le_one
+  have hr : 0 < r := by linarith
+  exact ⟨le_trans he h, (Real.le_log_iff_exp_le hr).mpr h⟩
+
+theorem tame_smooth (a : ℕ) {g : (Fin n → ℂ) → ℝ}
+    (hg : ∀ t ∈ ball (0 : Fin n → ℂ) 1, ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g t) : Tame a g := by
+  have hon : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g (ball 0 1) := fun t ht => (hg t ht).contDiffWithinAt
+  have hK : IsCompact (closedBall (0 : Fin n → ℂ) (1 / 2)) := isCompact_closedBall _ _
+  have hsub : closedBall (0 : Fin n → ℂ) (1 / 2) ⊆ ball 0 1 := closedBall_subset_ball (by norm_num)
+  obtain ⟨B1, hB1⟩ := hK.exists_bound_of_continuousOn (hon.continuousOn.mono hsub)
+  obtain ⟨B2, hB2⟩ := hK.exists_bound_of_continuousOn
+    ((hon.continuousOn_fderiv_of_isOpen isOpen_ball (by exact_mod_cast le_top)).mono hsub)
+  refine ⟨1 / 2, max (max B1 B2) 0, by norm_num, by norm_num, le_max_right _ _, fun t ht _ => ?_⟩
+  have htK : t ∈ closedBall (0 : Fin n → ℂ) (1 / 2) := by
+    rw [mem_closedBall, dist_zero_right]
+    exact ht.le
+  have hR := exp_le_logR a (t := t) (by linarith)
+  obtain ⟨hR1, hL1⟩ := one_le_of_exp_le hR
+  have hC : 0 ≤ max (max B1 B2) 0 := le_max_right _ _
+  refine ⟨hg t (hsub htK), ?_, ?_⟩
+  · have h1 := hB1 t htK
+    rw [Real.norm_eq_abs] at h1
+    calc |g t| ≤ max (max B1 B2) 0 := le_trans h1 (le_trans (le_max_left _ _) (le_max_left _ _))
+      _ = max (max B1 B2) 0 * 1 := by ring
+      _ ≤ _ := mul_le_mul_of_nonneg_left hL1 hC
+  · have h1 := hB2 t htK
+    have h2 : 1 ≤ logR a t ^ max (max B1 B2) 0 := Real.one_le_rpow hR1 hC
+    have h3 : 1 ≤ Real.exp (logR a t / 2) := Real.one_le_exp (by linarith)
+    calc ‖fderiv ℝ g t‖ ≤ max (max B1 B2) 0 :=
+          le_trans h1 (le_trans (le_max_right _ _) (le_max_left _ _))
+      _ = max (max B1 B2) 0 * 1 * 1 := by ring
+      _ ≤ _ := mul_le_mul (mul_le_mul_of_nonneg_left h2 hC) h3 zero_le_one (by positivity)
+
+theorem exp_le_rW {L : LocPot X} {s : X → X → ℂ} (hn : ∀ y, logNormSec L s y ≤ 0) (y : X) :
+    Real.exp 1 ≤ rW L s y := by
+  have := hn y
+  unfold rW
+  linarith
+
+variable {A : FinHolAtlas n X} {L : LocPot X} {s : X → X → ℂ} {U : X → Set X} {ph : X → ℝ}
+
+theorem NChart.symm_zero {V : Set X} {x₀ : X} {ψ : OpenPartialHomeomorph X (Fin n → ℂ)} {a : ℕ} {M : ℝ}
+    (h : NChart A V L s x₀ ψ a M) : ψ.symm 0 = x₀ := by
+  rw [← h.2.2.1]
+  exact ψ.left_inv h.2.1
+
+theorem NChart.zero_of_not_mem {V : Set X} {x₀ : X} {ψ : OpenPartialHomeomorph X (Fin n → ℂ)} {a : ℕ} {M : ℝ}
+    (h : NChart A V L s x₀ ψ a M) (hx : x₀ ∉ bdry s) : a = 0 := by
+  by_contra ha
+  have h0 := (h.2.2.2.2 0 (mem_ball_self one_pos)).2.2.1
+  rw [NChart.symm_zero h] at h0
+  have hpos : 0 < a := Nat.pos_of_ne_zero ha
+  exact hx (h0.mpr ⟨⟨0, lt_of_lt_of_le hpos h.2.2.2.1⟩, hpos, rfl⟩)
+
+theorem smoothOn_of_tame (hT : ∀ x, ∃ ψ a M, NChart A (U x) L s x ψ a M ∧ Tame a fun t => ph (ψ.symm t)) :
+    A.SmoothOn (bdry s)ᶜ ph := by
+  intro j y hy
+  obtain ⟨hyt, hyb⟩ := hy
+  obtain ⟨ψ, a, M, hN, hTm⟩ := hT ((A.chart j).symm y)
+  have ha : a = 0 := hN.zero_of_not_mem hyb
+  subst ha
+  obtain ⟨ε, C, hε, -, -, hTt⟩ := hTm
+  have hxs : (A.chart j).symm y ∈ ψ.source := hN.2.1
+  have hs0 : ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun t => ph (ψ.symm t)) (ψ ((A.chart j).symm y)) := by
+    rw [hN.2.2.1]
+    exact (hTt 0 (by simpa using hε) (fun i hi => absurd hi (Nat.not_lt_zero _))).1
+  have hcomp : AnalyticAt ℂ (ψ ∘ (A.chart j).symm) y := (hN.1 j).1 y ⟨hyt, hxs⟩
+  have hsm : ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψ ∘ (A.chart j).symm) y :=
+    (hcomp.contDiffAt).restrict_scalars ℝ
+  have heq : (fun t => ph (ψ.symm t)) ∘ (ψ ∘ (A.chart j).symm) =ᶠ[𝓝 y] ph ∘ (A.chart j).symm := by
+    have hopen : (A.chart j).target ∩ (A.chart j).symm ⁻¹' ψ.source ∈ 𝓝 y :=
+      ((A.chart j).isOpen_inter_preimage_symm ψ.open_source).mem_nhds ⟨hyt, hxs⟩
+    filter_upwards [hopen] with w hw
+    simp [Function.comp, ψ.left_inv hw.2]
+  exact ((hs0.comp y hsm).congr_of_eventuallyEq heq.symm).contDiffWithinAt
+
+theorem local_of_tame (hn : ∀ y, logNormSec L s y ≤ 0) {V : Set X} {x : X}
+    {ψ : OpenPartialHomeomorph X (Fin n → ℂ)} {a : ℕ} {M : ℝ} (h : NChart A V L s x ψ a M)
+    (hT : Tame a fun t => ph (ψ.symm t)) :
+    ∃ (V' : Set X) (c : ℝ), IsOpen V' ∧ x ∈ V' ∧ V' ⊆ ψ.source ∧ ∀ x' ∈ V', x' ∉ bdry s →
+      |ph x'| ≤ c * Real.log (rW L s x') ∧
+      ‖fderiv ℝ (ph ∘ ψ.symm) (ψ x')‖ ≤ c * rW L s x' ^ c * Real.exp (rW L s x' / 2) := by
+  obtain ⟨ε, C, hε, hε1, hC, hTt⟩ := hT
+  set K : ℝ := 1 + max M 0 with hK
+  have hM0 : 0 ≤ max M 0 := le_max_right _ _
+  have hMM : M ≤ max M 0 := le_max_left _ _
+  have hK1 : 1 ≤ K := by rw [hK]; linarith
+  have hlogK : 0 ≤ Real.log K := Real.log_nonneg hK1
+  set c1 := C * (1 + Real.log K) with hc1d
+  set c2 := C * K ^ C * Real.exp (K / 2) with hc2d
+  have hKC : 1 ≤ K ^ C := Real.one_le_rpow hK1 hC
+  have heK : 1 ≤ Real.exp (K / 2) := Real.one_le_exp (by linarith)
+  have hCc2 : C ≤ c2 := by
+    have h1 : 1 ≤ K ^ C * Real.exp (K / 2) := by nlinarith
+    calc C = C * 1 := by ring
+      _ ≤ C * (K ^ C * Real.exp (K / 2)) := mul_le_mul_of_nonneg_left h1 hC
+      _ = c2 := by rw [hc2d]; ring
+  have hc1 : c1 ≤ max c1 c2 := le_max_left _ _
+  have hc2 : c2 ≤ max c1 c2 := le_max_right _ _
+  refine ⟨ψ.source ∩ ψ ⁻¹' ball 0 ε, max c1 c2, ψ.isOpen_inter_preimage isOpen_ball,
+    ⟨h.2.1, by simp [h.2.2.1, hε]⟩, Set.inter_subset_left, ?_⟩
+  rintro x' ⟨hxs, hxb⟩ hxbd
+  have htb : ‖ψ x'‖ < ε := by simpa using hxb
+  have ht1 : ψ x' ∈ ball (0 : Fin n → ℂ) 1 := by
+    rw [mem_ball_zero_iff]
+    linarith
+  have hsy : ψ.symm (ψ x') = x' := ψ.left_inv hxs
+  have hN := h.2.2.2.2 (ψ x') ht1
+  rw [hsy] at hN
+  have hnz : ∀ i : Fin n, (i : ℕ) < a → ψ x' i ≠ 0 := fun i hi h0 => hxbd (hN.2.2.1.mpr ⟨i, hi, h0⟩)
+  have hRb : logR a (ψ x') ≤ rW L s x' + M := hN.2.2.2 hxbd
+  obtain ⟨-, hbd1, hbd2⟩ := hTt (ψ x') htb hnz
+  have hrW := exp_le_rW hn x'
+  obtain ⟨hrW1, hlrW⟩ := one_le_of_exp_le hrW
+  obtain ⟨hR1, hlR⟩ := one_le_of_exp_le (exp_le_logR a (t := ψ x') (by linarith))
+  have hRK : logR a (ψ x') ≤ rW L s x' * K := by
+    rw [hK]
+    nlinarith
+  have hlog : Real.log (logR a (ψ x')) ≤ (1 + Real.log K) * Real.log (rW L s x') := by
+    have h1 : Real.log (logR a (ψ x')) ≤ Real.log (rW L s x' * K) := Real.log_le_log (by linarith) hRK
+    rw [Real.log_mul (by linarith) (by linarith)] at h1
+    nlinarith
+  refine ⟨?_, ?_⟩
+  · have hb1 : |ph x'| ≤ C * Real.log (logR a (ψ x')) := by simpa [hsy] using hbd1
+    calc |ph x'| ≤ C * Real.log (logR a (ψ x')) := hb1
+      _ ≤ C * ((1 + Real.log K) * Real.log (rW L s x')) := mul_le_mul_of_nonneg_left hlog hC
+      _ = c1 * Real.log (rW L s x') := by rw [hc1d]; ring
+      _ ≤ max c1 c2 * Real.log (rW L s x') := mul_le_mul_of_nonneg_right hc1 (by linarith)
+  · have hp1 : logR a (ψ x') ^ C ≤ rW L s x' ^ C * K ^ C := by
+      rw [← Real.mul_rpow (by linarith) (by linarith)]
+      exact Real.rpow_le_rpow (by linarith) hRK hC
+    have hp2 : Real.exp (logR a (ψ x') / 2) ≤ Real.exp (rW L s x' / 2) * Real.exp (K / 2) := by
+      rw [← Real.exp_add]
+      apply Real.exp_le_exp.mpr
+      rw [hK]
+      linarith
+    have hp3 : rW L s x' ^ C ≤ rW L s x' ^ max c1 c2 :=
+      Real.rpow_le_rpow_of_exponent_le hrW1 (le_trans hCc2 hc2)
+    have hfd : ‖fderiv ℝ (ph ∘ ψ.symm) (ψ x')‖ ≤ C * logR a (ψ x') ^ C * Real.exp (logR a (ψ x') / 2) :=
+      hbd2
+    have hE0 : 0 ≤ Real.exp (rW L s x' / 2) := (Real.exp_pos _).le
+    have hrC : 0 ≤ rW L s x' ^ C := by positivity
+    calc ‖fderiv ℝ (ph ∘ ψ.symm) (ψ x')‖ ≤ C * logR a (ψ x') ^ C * Real.exp (logR a (ψ x') / 2) := hfd
+      _ ≤ C * (rW L s x' ^ C * K ^ C) * (Real.exp (rW L s x' / 2) * Real.exp (K / 2)) :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hp1 hC) hp2 (Real.exp_pos _).le (by positivity)
+      _ = c2 * rW L s x' ^ C * Real.exp (rW L s x' / 2) := by rw [hc2d]; ring
+      _ ≤ max c1 c2 * rW L s x' ^ max c1 c2 * Real.exp (rW L s x' / 2) :=
+          mul_le_mul_of_nonneg_right (mul_le_mul hc2 hp3 hrC (le_trans (le_trans hC hCc2) hc2)) hE0
+
+theorem size_of_tame [CompactSpace X] (hn : ∀ y, logNormSec L s y ≤ 0)
+    (hT : ∀ x, ∃ ψ a M, NChart A (U x) L s x ψ a M ∧ Tame a fun t => ph (ψ.symm t)) :
+    ∃ C : ℝ, ∀ y ∉ bdry s, |ph y| ≤ C * Real.log (rW L s y) := by
+  have key : ∀ x, ∃ (V' : Set X) (c : ℝ), IsOpen V' ∧ x ∈ V' ∧ ∀ x' ∈ V', x' ∉ bdry s →
+      |ph x'| ≤ c * Real.log (rW L s x') := fun x => by
+    obtain ⟨ψ, a, M, h, ht⟩ := hT x
+    obtain ⟨V', c, h1, h2, -, h3⟩ := local_of_tame hn h ht
+    exact ⟨V', c, h1, h2, fun x' a b => (h3 x' a b).1⟩
+  choose V c h1 h2 h3 using key
+  obtain ⟨F, hF⟩ := isCompact_univ.elim_finite_subcover V h1 fun x _ => Set.mem_iUnion.2 ⟨x, h2 x⟩
+  refine ⟨∑ x ∈ F, |c x|, fun y hy => ?_⟩
+  obtain ⟨x, hx, hyx⟩ := Set.mem_iUnion₂.1 (hF (Set.mem_univ y))
+  have := (one_le_of_exp_le (exp_le_rW hn y)).2
+  refine (h3 x y hyx hy).trans (mul_le_mul_of_nonneg_right ((le_abs_self _).trans ?_) (by linarith))
+  exact Finset.single_le_sum (f := fun x => |c x|) (fun _ _ => abs_nonneg _) hx
+
+theorem pshOn_of_local {V : Set X} (P : LocPot X)
+    (hP : ∀ x z, z ∈ P.U x → ∃ W : Set X, IsOpen W ∧ z ∈ W ∧ ∃ G : X → ℂ, A.HoloOn W G ∧
+      ∀ w ∈ W ∩ P.U x ∩ P.U z, P.φ x w - P.φ z w = (G w).re)
+    (h : ∀ z ∈ V, ∃ ψ : OpenPartialHomeomorph X (Fin n → ℂ), IsCompatChart A ψ ∧ z ∈ ψ.source ∧ ψ z = 0 ∧
+      PshAt0 fun t => P.φ z (ψ.symm t)) : IsPshOn A V P := by
+  intro x j y hy w
+  obtain ⟨hyt, hyU, hyV⟩ := hy
+  obtain ⟨ψ, hψc, hzs, hz0, hpsh⟩ := h _ hyV
+  obtain ⟨Wd, hWo, hzW, G, hG, hdiff⟩ := hP x _ hyU
+  have hτ : AnalyticAt ℂ (ψ ∘ (A.chart j).symm) y := (hψc j).1 y ⟨hyt, hzs⟩
+  have hτy : (ψ ∘ (A.chart j).symm) y = 0 := hz0
+  have hGa : AnalyticAt ℂ (G ∘ (A.chart j).symm) y := hG j y ⟨hyt, hzW⟩
+  have hg2 : ContDiffAt ℝ 2 (fun t => P.φ ((A.chart j).symm y) (ψ.symm t)) ((ψ ∘ (A.chart j).symm) y) := by
+    rw [hτy]
+    exact hpsh.1
+  have hgc : ContDiffAt ℝ 2 ((fun t => P.φ ((A.chart j).symm y) (ψ.symm t)) ∘ (ψ ∘ (A.chart j).symm)) y :=
+    hg2.comp y ((hτ.contDiffAt).restrict_scalars ℝ)
+  have hre : ContDiffAt ℝ 2 (fun y' => ((G ∘ (A.chart j).symm) y').re) y :=
+    (Complex.reCLM.contDiff.contDiffAt).comp y ((hGa.contDiffAt).restrict_scalars ℝ)
+  have hN : (A.chart j).target ∩ (A.chart j).symm ⁻¹'
+      (Wd ∩ P.U x ∩ P.U ((A.chart j).symm y) ∩ ψ.source) ∈ 𝓝 y :=
+    ((A.chart j).isOpen_inter_preimage_symm
+      (((hWo.inter (P.isOpen_U x)).inter (P.isOpen_U _)).inter ψ.open_source)).mem_nhds
+      ⟨hyt, ⟨⟨hzW, hyU⟩, P.mem_U _⟩, hzs⟩
+  have heq : (P.φ x ∘ (A.chart j).symm) =ᶠ[𝓝 y] fun y' =>
+      ((fun t => P.φ ((A.chart j).symm y) (ψ.symm t)) ∘ (ψ ∘ (A.chart j).symm)) y' +
+        1 * ((G ∘ (A.chart j).symm) y').re := by
+    filter_upwards [hN] with y' hy'
+    obtain ⟨-, ⟨⟨hW', hx'⟩, hz'⟩, hs'⟩ := hy'
+    have := hdiff _ ⟨⟨hW', hx'⟩, hz'⟩
+    simp only [Function.comp, ψ.left_inv hs', one_mul]
+    linarith
+  rw [levi_congr heq, levi_add_smul 1 hgc hre, levi_re_analytic hGa, levi_comp w hτ hg2, hτy]
+  simpa using hpsh.2 _
+
+end AnalyticReference.An
+end
+end
+
+section
+noncomputable section
+
+namespace AnalyticReference.An
+
+open ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo Filter Topology Metric
+open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar.PB
+
+variable {n : ℕ} {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {P : Ideal (MRing J)}
+
+theorem isLiftSys (R : AnLogRes P ⊤ n) : Cj.IsLiftSys R.A P R.U R.lift :=
+  ⟨R.isOpen_U, R.mem_U, R.holo, R.mem, R.compat, fun z hz => R.surj z hz (not_mem_top _),
+    fun x x' h => R.inj x x' (not_mem_top _) h, fun x p hp j hj => R.immersion x (not_mem_top _) p hp j hj⟩
+
+def IsMember (R : AnLogRes P ⊤ n) (L : LocPot R.X) (s : R.X → R.X → ℂ) (d : K → ℤ) (u : R.X → ℝ) (cen : Prop)
+    (ph : R.X → ℝ) (phT : ℝ → R.X → ℝ) (line : ℝ → HermLine J) (C₅ C t₀ : ℝ) : Prop :=
+  IsSingWeight R.A L s (potOf R (fsHerm J d)) ph C₅ ∧
+  IsRegFamily R.A (potOf R (fsHerm J fun _ => 1)) L s (potOf R (fsHerm J d)) ph phT C t₀ ∧
+  IsRegFamilyC2 R.A s ph phT ∧ (∀ x ∉ bdry s, ph x = u x) ∧
+  (∀ t, (line t).a = d ∧ IsSmoothHerm (line t) ∧ IsConjInvariantH (line t)) ∧
+  (∀ t, 0 < t → t ≤ t₀ → ∀ x, Real.log ((line t).h (R.lift x x)) =
+    Real.log ((fsHerm J d).h (R.lift x x)) + phT t x) ∧
+  (cen → ∀ t, IsPsh R.A ((potOf R (fsHerm J d) + LocPot.ofFun (phT t)).rsmul (-1)) ∧
+    IsPsh R.A (potOf R (fsHerm J d) + LocPot.ofFun (phT t)))
+
+theorem exists_line (R : AnLogRes P ⊤ n) (c : R.X → R.X)
+    (hc : ∀ x, SameOrbit (R.lift (c x) (c x)) (Cj.cj (R.lift x x))) (d : K → ℤ) (f : R.X → ℝ) (hf : R.A.Smooth f)
+    (hfc : ∀ x, f (c x) = f x) : ∃ B : HermLine J, B.a = d ∧ IsSmoothHerm B ∧ IsConjInvariantH B ∧
+      ∀ x, Real.log (B.h (R.lift x x)) = Real.log ((fsHerm J d).h (R.lift x x)) + f x := by
+  obtain ⟨B, a0, hs, hl⟩ := exists_hermLine_log_eq_of_smooth _ _ _ n R f hf
+  have hfs : IsSmoothHerm (fsHerm J d) := StepW.fsHerm_isSmoothHerm K J d
+  have hmem : ∀ x, ∀ k, ∃ i, R.lift x x ⟨k, i⟩ ≠ 0 := fun x => (R.mem x x (R.mem_U x)).1
+  have hB : ∀ x, Real.log ((Cj.conjAvg B).h (R.lift x x)) = f x := fun x => by
+    rw [Cj.conjAvg_log _ (hmem x), ← FA.deg0_orbit B a0 (hc x), hl, hl, hfc]
+    ring
+  refine ⟨(fsHerm J d).tensor (Cj.conjAvg B), ?_, ?_, fun z => ?_, fun x => ?_⟩
+  · show d + B.a = d
+    rw [a0, add_zero]
+  · exact ContDiffOn.mul hfs (Cj.conjAvg_smooth hs)
+  · show (fsHerm J d).h _ * (Cj.conjAvg B).h _ = (fsHerm J d).h _ * (Cj.conjAvg B).h _
+    rw [Cj.fs_conj d z, Cj.conjAvg_conj B z]
+  · show Real.log ((fsHerm J d).h _ * (Cj.conjAvg B).h _) = _
+    rw [Real.log_mul ((fsHerm J d).pos _ (hmem x)).ne' ((Cj.conjAvg B).pos _ (hmem x)).ne', hB]
+
+theorem exists_member (hR : RegGlobalStatement) (R : AnLogRes P ⊤ n) (L : LocPot R.X) (s : R.X → R.X → ℂ) {nb : ℕ}
+    (m : Fin nb → ℕ) (W : Fin nb → Set R.X) (hL : IsPotential R.A L) (hs : IsSection R.A L s)
+    (snc : IsSNC R.A L s m W) (hn : ∀ y, logNormSec L s y ≤ 0)
+    (hcb : ∀ x x', SameOrbit (R.lift x' x') (Cj.cj (R.lift x x)) → (x' ∈ bdry s ↔ x ∈ bdry s) ∧ rW L s x' = rW L s x)
+    (d : K → ℤ) (u : R.X → ℝ) (cen : Prop)
+    (huc : ∀ x x', SameOrbit (R.lift x' x') (Cj.cj (R.lift x x)) → u x' = u x)
+    (hT : ∀ x, ∃ ψ a M, NChart R.A (R.U x) L s x ψ a M ∧ Tame a fun t => u (ψ.symm t))
+    (hP : ∀ x ∉ bdry s, ∃ ψ : OpenPartialHomeomorph R.X (Fin n → ℂ), IsCompatChart R.A ψ ∧ x ∈ ψ.source ∧ ψ x = 0 ∧
+      PshAt0 (fun t => Real.log ((fsHerm J d).h (R.lift x (ψ.symm t))) + u (ψ.symm t)) ∧
+      (cen → PshAt0 fun t => -1 * (Real.log ((fsHerm J d).h (R.lift x (ψ.symm t))) + u (ψ.symm t)))) :
+    ∃ ph phT line C₅ C t₀, IsMember R L s d u cen ph phT line C₅ C t₀ := by
+  obtain ⟨hA, hfs, hΘ⟩ := fs_pos_potential K J P n R
+  have hfd : IsSmoothHerm (fsHerm J d) := StepW.fsHerm_isSmoothHerm K J d
+  have hth := hA _ hfd
+  have hsys := isLiftSys R
+  obtain ⟨c, hspec, hcont, hinv⟩ := GlobalTheory.T.lift_system_complex_conjugation hsys
+  have hanal := GlobalTheory.T.conjugation_antiholomorphic_charts hsys c hspec hcont
+  have hsm := smoothOn_of_tame hT
+  obtain ⟨C₁, hC₁⟩ := size_of_tame hn hT
+  have hpsh : IsPshOn R.A (bdry s)ᶜ (potOf R (fsHerm J d) + LocPot.ofFun u) := by
+    refine pshOn_of_local _ (fun x z hz => ?_) fun z hz => ?_
+    · obtain ⟨V, h1, h2, G, h3, h4⟩ := hth.2 x z z ⟨hz.1, R.mem_U z⟩
+      refine ⟨V, h1, h2, G, h3, fun w hw => ?_⟩
+      have := h4 w ⟨⟨hw.1.1, hw.1.2.1⟩, hw.2.1⟩
+      show (potOf R (fsHerm J d)).φ x w + u w - ((potOf R (fsHerm J d)).φ z w + u w) = _
+      linarith
+    · obtain ⟨ψ, h1, h2, h3, h4, -⟩ := hP z hz
+      exact ⟨ψ, h1, h2, h3, h4⟩
+  obtain ⟨C₅, hsw⟩ := GlobalTheory.T.singular_potential_log_growth_psh n R.X R.A L s nb m W hL hs snc hn _ u C₁ hth hsm hpsh hC₁
+  have hlines : ∀ (phT : ℝ → R.X → ℝ) (t₀ : ℝ), (∀ t, 0 < t → t ≤ t₀ → R.A.Smooth (phT t)) →
+      (∀ t x, phT t (c x) = phT t x) → ∃ line : ℝ → HermLine J,
+      (∀ t, (line t).a = d ∧ IsSmoothHerm (line t) ∧ IsConjInvariantH (line t)) ∧
+      (∀ t, 0 < t → t ≤ t₀ → ∀ x, Real.log ((line t).h (R.lift x x)) =
+        Real.log ((fsHerm J d).h (R.lift x x)) + phT t x) := by
+    intro phT t₀ h1 h2
+    have : ∀ t, ∃ B : HermLine J, (B.a = d ∧ IsSmoothHerm B ∧ IsConjInvariantH B) ∧ (0 < t → t ≤ t₀ → ∀ x,
+        Real.log (B.h (R.lift x x)) = Real.log ((fsHerm J d).h (R.lift x x)) + phT t x) := fun t => by
+      by_cases ht : 0 < t ∧ t ≤ t₀
+      · obtain ⟨B, b1, b2, b3, b4⟩ := exists_line R c hspec d (phT t) (h1 t ht.1 ht.2) (h2 t)
+        exact ⟨B, ⟨b1, b2, b3⟩, fun _ _ => b4⟩
+      · exact ⟨fsHerm J d, ⟨rfl, hfd, Cj.fs_conj d⟩, fun a b => absurd ⟨a, b⟩ ht⟩
+    choose line h3 h4 using this
+    exact ⟨line, h3, h4⟩
+  by_cases hcen : cen
+  · have hneg : IsPshOn R.A (bdry s)ᶜ ((potOf R (fsHerm J d) + LocPot.ofFun u).rsmul (-1)) := by
+      refine pshOn_of_local _ (fun x z hz => ?_) fun z hz => ?_
+      · obtain ⟨V, h1, h2, G, h3, h4⟩ := hth.2 x z z ⟨hz.1, R.mem_U z⟩
+        refine ⟨V, h1, h2, fun w => -G w, fun j y hy => (h3 j y hy).neg, fun w hw => ?_⟩
+        have := h4 w ⟨⟨hw.1.1, hw.1.2.1⟩, hw.2.1⟩
+        show -1 * ((potOf R (fsHerm J d)).φ x w + u w) - -1 * ((potOf R (fsHerm J d)).φ z w + u w) = _
+        rw [Complex.neg_re]
+        linarith
+      · obtain ⟨ψ, h1, h2, h3, -, h4⟩ := hP z hz
+        exact ⟨ψ, h1, h2, h3, h4 hcen⟩
+    obtain ⟨u', C₀, hu', heq, p1, p2, s1, r1, c1⟩ := FA.central_regular R.A (potOf R (fsHerm J fun _ => 1)) L s m W
+      hL hs snc hn (hA _ hfs) hΘ _ u C₅ hsw hneg
+    have hc1 := Cj.smooth_continuous hu'
+    have hd : Dense (bdry s)ᶜ := interior_eq_empty_iff_dense_compl.1 (LeviFormBoundaryTopology.interior_bdry_eq_empty hs snc)
+    have hcp : ∀ y, u' (c y) = u' y :=
+      congrFun (Continuous.ext_on hd (hc1.comp hcont) hc1 fun y hy => by
+        have hy' : c y ∉ bdry s := fun h => hy ((hcb _ _ (hspec y)).1.1 h)
+        show u' (c y) = u' y
+        rw [heq _ hy', heq _ hy, huc _ _ (hspec y)])
+    obtain ⟨line, l1, l2⟩ := hlines (fun _ => u') (Real.exp (-Real.exp 1)) (fun _ _ _ => hu') fun _ => hcp
+    exact ⟨u', fun _ => u', line, C₀, C₀, _, s1, r1, c1, heq, l1, l2, fun _ _ => ⟨p2, p1⟩⟩
+  · obtain ⟨B, hB⟩ := GlobalTheory.T.adapted_atlas_snc_section R.A L s m W hL hs snc hn
+    obtain ⟨C₆, hg⟩ := GlobalTheory.T.adapted_atlas_smooth_potential_local n R.X R.A B L s nb m W hL hs snc hn hB u hsm fun x => by
+      obtain ⟨ψ, a, M, h, ht⟩ := hT x
+      obtain ⟨V', c, h1, h2, h3, h4⟩ := local_of_tame hn h ht
+      exact ⟨ψ, V', c, h.1, h1, h2, h3, fun x' a b => (h4 x' a b).2⟩
+    obtain ⟨m₁, -, -⟩ := enlarging_constants_smooth_members n R.X R.A (potOf R (fsHerm J fun _ => 1)) L s nb m W
+      hL hs snc hn (hA _ hfs) hΘ
+    have hsw' := m₁ _ _ _ _ (le_max_left C₅ C₆) hsw
+    obtain ⟨C, t₀, phT, r, c2⟩ := hR R.A B _ L s m W (hA _ hfs) hΘ hL hs snc hn hB _ u _ hsw' (hg _ (le_max_right _ _))
+    have hthc := GlobalTheory.T.lift_system_real_structure hsys c hspec hcont hanal (fsHerm J d) (Cj.fs_conj d) (potOf R (fsHerm J d)) fun x =>
+      ⟨Set.univ, isOpen_univ, trivial, fun _ => 0, fun _ => analyticOnNhd_const,
+        fun z _ => (sub_self _).trans Complex.zero_re.symm⟩
+    obtain ⟨C', t', r', c'⟩ := GlobalTheory.T.conjugation_invariant_singular_potential n R.X R.A _ L s nb m W hL hs snc hn (hA _ hfs) hΘ c hcont hinv hanal
+      (fun y => (hcb _ _ (hspec y)).1) (fun y => (hcb _ _ (hspec y)).2) _ u phT C t₀ hth hthc
+      (fun y _ => huc _ _ (hspec y)) r c2
+    obtain ⟨line, l1, l2⟩ := hlines (fun t y => (phT t y + phT t (c y)) / 2) t' (fun t h0 h1 => (r'.2.2 t h0 h1).1)
+      fun t x => by rw [hinv, add_comm]
+    exact ⟨u, _, line, C₅, C', t', hsw, r', c', fun _ _ => rfl, l1, l2, fun h => absurd h hcen⟩
+
+theorem IsMember.mono {R : AnLogRes P ⊤ n} {L : LocPot R.X} {s : R.X → R.X → ℂ} {nb : ℕ}
+    {m : Fin nb → ℕ} {W : Fin nb → Set R.X} (hL : IsPotential R.A L) (hs : IsSection R.A L s)
+    (snc : IsSNC R.A L s m W) (hn : ∀ y, logNormSec L s y ≤ 0) {d : K → ℤ} {u : R.X → ℝ} {cen : Prop}
+    {ph : R.X → ℝ} {phT : ℝ → R.X → ℝ} {line : ℝ → HermLine J} {C₅ C t₀ D₅ D T : ℝ}
+    (h : IsMember R L s d u cen ph phT line C₅ C t₀) (h₅ : C₅ ≤ D₅) (hD : |C| ≤ D) (hT0 : 0 < T) (hT : T ≤ t₀)
+    (hT1 : T ≤ Real.exp (-1)) : IsMember R L s d u cen ph phT line D₅ D T := by
+  obtain ⟨hA, hfs, hΘ⟩ := fs_pos_potential K J P n R
+  obtain ⟨m₁, m₂, -⟩ := enlarging_constants_smooth_members n R.X R.A (potOf R (fsHerm J fun _ => 1)) L s nb m W
+    hL hs snc hn (hA _ hfs) hΘ
+  obtain ⟨a1, a2, a3, a4, a5, a6, a7⟩ := h
+  exact ⟨m₁ _ _ _ _ h₅ a1, m₂ _ _ _ _ _ _ _ hD hT0 hT hT1 a2 a1.1, a3, a4, a5, fun t h0 h1 => a6 t h0 (h1.trans hT), a7⟩
+
+theorem member_zero (R : AnLogRes P ⊤ n) {L : LocPot R.X} {s : R.X → R.X → ℂ} {nb : ℕ}
+    {m : Fin nb → ℕ} {W : Fin nb → Set R.X} (hL : IsPotential R.A L) (hs : IsSection R.A L s)
+    (snc : IsSNC R.A L s m W) (hn : ∀ y, logNormSec L s y ≤ 0) (d : K → ℤ)
+    (hd : IsPosPot R.A (potOf R (fsHerm J d))) :
+    ∃ C₅ C t₀, IsMember R L s d 0 False 0 (fun _ => 0) (fun _ => fsHerm J d) C₅ C t₀ := by
+  obtain ⟨hA, hfs, hΘ⟩ := fs_pos_potential K J P n R
+  have hfd : IsSmoothHerm (fsHerm J d) := StepW.fsHerm_isSmoothHerm K J d
+  obtain ⟨-, -, m₃⟩ := enlarging_constants_smooth_members n R.X R.A (potOf R (fsHerm J fun _ => 1)) L s nb m W
+    hL hs snc hn (hA _ hfs) hΘ
+  have hsm0 : R.A.Smooth (0 : R.X → ℝ) := fun jj => by
+    show ContDiffOn ℝ _ (fun _ => (0 : ℝ)) _
+    exact contDiffOn_const
+  have hpsh0 : IsPsh R.A (potOf R (fsHerm J d) + LocPot.ofFun (0 : R.X → ℝ)) := by
+    intro x jj z hz w
+    have e1 : (potOf R (fsHerm J d) + LocPot.ofFun (0 : R.X → ℝ)).φ x ∘ (R.A.chart jj).symm =
+        (potOf R (fsHerm J d)).φ x ∘ (R.A.chart jj).symm := by
+      funext u
+      show (potOf R (fsHerm J d)).φ x _ + (0 : ℝ) = _
+      rw [add_zero]
+      rfl
+    rw [e1]
+    by_cases hw : w = 0
+    · rw [hw, levi_zero]
+    · exact (hd x jj z ⟨hz.1, hz.2.1⟩ w hw).le
+  obtain ⟨C₀, s0, r0, c0⟩ := m₃ _ 0 (hA _ hfd) hsm0 hpsh0
+  exact ⟨C₀, C₀, _, s0, r0, c0, fun _ _ => rfl, fun _ => ⟨rfl, hfd, Cj.fs_conj d⟩,
+    fun _ _ _ _ => (add_zero _).symm, False.elim⟩
+
+theorem common_members {σ : Type} [Finite σ] {R : AnLogRes P ⊤ n} {L : LocPot R.X} {s : R.X → R.X → ℂ} {nb : ℕ}
+    {m : Fin nb → ℕ} {W : Fin nb → Set R.X} (hL : IsPotential R.A L) (hs : IsSection R.A L s)
+    (snc : IsSNC R.A L s m W) (hn : ∀ y, logNormSec L s y ≤ 0) {d : σ → K → ℤ} {u : σ → R.X → ℝ} {cen : σ → Prop}
+    {ph : σ → R.X → ℝ} {phT : σ → ℝ → R.X → ℝ} {line : σ → ℝ → HermLine J}
+    (h : ∀ a, ∃ C₅ C t₀, IsMember R L s (d a) (u a) (cen a) (ph a) (phT a) (line a) C₅ C t₀) :
+    ∃ C₅ C t₀, ∀ a, IsMember R L s (d a) (u a) (cen a) (ph a) (phT a) (line a) C₅ C t₀ := by
+  choose C₅ C t₀ hm using h
+  obtain ⟨D₅, hD₅⟩ := FA.common_bound C₅
+  obtain ⟨D, hD⟩ := FA.common_bound fun a => |C a|
+  obtain ⟨T, hT0, hT⟩ := FA.common_scale (fun o : Option σ => o.elim (Real.exp (-1)) t₀) (by
+    rintro (_ | p)
+    · exact Real.exp_pos _
+    · exact (hm p).2.1.1)
+  exact ⟨D₅, D, T, fun a => (hm a).mono hL hs snc hn (hD₅ a) (hD a) hT0 (hT (some a)) (hT none)⟩
+
+end AnalyticReference.An
+end
+end
+
+section
+noncomputable section
+
+namespace AnalyticReference.An
+
+open ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo Filter Topology Metric
+open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar.PB
+
+variable {n : ℕ} {K : Type} [Fintype K] [DecidableEq K] {J : K → Type} [∀ k, Fintype (J k)] {P : Ideal (MRing J)}
+
+theorem fs_single_h (k₀ : K) (z : (Σ k, J k) → ℂ) :
+    (fsHerm J (Pi.single k₀ 1)).h z = Real.sqrt (∑ i, ‖z ⟨k₀, i⟩‖ ^ 2) := by
+  show refNorm (Pi.single k₀ 1) z = _
+  unfold refNorm
+  rw [Finset.prod_eq_single k₀]
+  · simp [Real.sqrt_eq_rpow]
+  · intro k _ hk
+    simp [Pi.single_apply, hk]
+  · intro h
+    exact absurd (Finset.mem_univ k₀) h
+
+private theorem fsHerm_unit_h_eq_sqrt_sum_sq {ι : Type} [Fintype ι] (u : (Σ _ : Unit, ι) → ℂ) :
+    (fsHerm (fun _ : Unit => ι) fun _ => 1).h u = Real.sqrt (∑ i, ‖u ⟨(), i⟩‖ ^ 2) := by
+  rw [fsHerm_h]
+  simp [refNorm, Real.sqrt_eq_rpow]
+
+private theorem differentiableAt_div_coord_of_ne_zero {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {Q : Type} [Fintype Q]
+    {τ : E → Q → ℂ} {y : E} (hτd : DifferentiableAt ℂ τ y) (q₀ : Q) (h0 : τ y q₀ ≠ 0) :
+    DifferentiableAt ℂ (fun v q => τ v q / τ v q₀) y := by
+  rw [differentiableAt_pi]
+  intro q
+  have hq : DifferentiableAt ℂ (fun v => τ v q) y := (differentiableAt_pi.1 hτd) q
+  have h₀ : DifferentiableAt ℂ (fun v => τ v q₀) y := (differentiableAt_pi.1 hτd) q₀
+  simp only [div_eq_mul_inv]
+  exact hq.fun_mul (h₀.fun_inv h0)
+
+theorem isPosPot_block (R : AnLogRes P ⊤ n) (k₀ : K)
+    (himm : ∀ (x : R.X) (p : J k₀), R.lift x x ⟨k₀, p⟩ ≠ 0 → ∀ j, x ∈ (R.A.chart j).source →
+      (fderiv ℂ (fun (v : Fin n → ℂ) (i : J k₀) => R.lift x ((R.A.chart j).symm v) ⟨k₀, i⟩ /
+        R.lift x ((R.A.chart j).symm v) ⟨k₀, p⟩) (R.A.chart j x)).ker = ⊥) :
+    IsPosPot R.A (potOf R (fsHerm J (Pi.single k₀ 1))) := by
+  intro x j y hy w hw
+  obtain ⟨hyt, hyU⟩ := hy
+  let τ : (Fin n → ℂ) → (Σ _ : Unit, J k₀) → ℂ :=
+    fun v q => R.lift x ((R.A.chart j).symm v) ⟨k₀, q.2⟩
+  let ψ : ((Σ _ : Unit, J k₀) → ℂ) → ℝ :=
+    fun u => Real.log ((fsHerm (fun _ : Unit => J k₀) fun _ => 1).h u)
+  have hfun : (potOf R (fsHerm J (Pi.single k₀ 1))).φ x ∘ (R.A.chart j).symm = ψ ∘ τ := by
+    funext v
+    simp only [Function.comp, potOf, ψ, τ]
+    rw [fs_single_h, fsHerm_unit_h_eq_sqrt_sum_sq]
+  rw [hfun]
+  have hmem := R.mem x _ hyU
+  obtain ⟨p, hp⟩ := hmem.1 k₀
+  have hτan : AnalyticAt ℂ τ y := by
+    rw [analyticAt_pi_iff]
+    intro q
+    exact R.holo x ⟨k₀, q.2⟩ j y ⟨hyt, hyU⟩
+  have hτne : ∀ k : Unit, ∃ i, τ y ⟨k, i⟩ ≠ 0 := fun _ => ⟨p, hp⟩
+  have hsm : ContDiffAt ℝ 2 ψ (τ y) :=
+    GlobalTheory.CompanionTheory.Ar.PB.PosFs.contDiffAt_log_h (GlobalTheory.CompanionTheory.Ar.PB.StepW.fsHerm_isSmoothHerm _ _ _) hτne
+  rw [levi_comp w hτan hsm]
+  apply GlobalTheory.CompanionTheory.Ar.PB.PosFs.levi_fs_pos hτne
+  intro c hc
+  apply hw
+  set y' := (R.A.chart j).symm y with hy'eq
+  have hy'src : y' ∈ (R.A.chart j).source := (R.A.chart j).map_target hyt
+  have hcy : (R.A.chart j) y' = y := (R.A.chart j).right_inv hyt
+  have hUy' : y' ∈ R.U y' := R.mem_U y'
+  obtain ⟨c', hc'ne, hc'eq⟩ := R.compat x y' y' ⟨hyU, hUy'⟩
+  have hp' : R.lift y' y' ⟨k₀, p⟩ ≠ 0 := by
+    intro h
+    apply hp
+    show R.lift x y' ⟨k₀, p⟩ = 0
+    rw [hc'eq]
+    simp [h]
+  have hker := himm y' p hp' j hy'src
+  rw [hcy] at hker
+  let ρ : (Fin n → ℂ) → J k₀ → ℂ := fun v i =>
+    R.lift x ((R.A.chart j).symm v) ⟨k₀, i⟩ / R.lift x ((R.A.chart j).symm v) ⟨k₀, p⟩
+  have hev : (fun (v : Fin n → ℂ) (i : J k₀) => R.lift y' ((R.A.chart j).symm v) ⟨k₀, i⟩ /
+      R.lift y' ((R.A.chart j).symm v) ⟨k₀, p⟩) =ᶠ[𝓝 y] ρ := by
+    have hcont := (R.A.chart j).continuousAt_symm hyt
+    have hnb : (R.A.chart j).symm ⁻¹' (R.U x ∩ R.U y') ∈ 𝓝 y :=
+      hcont.preimage_mem_nhds (((R.isOpen_U x).inter (R.isOpen_U y')).mem_nhds ⟨hyU, hUy'⟩)
+    filter_upwards [hnb] with v hv
+    obtain ⟨d, hdne, hdeq⟩ := R.compat x y' _ hv
+    funext i
+    simp only [ρ, hdeq]
+    rw [mul_div_mul_left _ _ (hdne k₀)]
+  have hτd : DifferentiableAt ℂ τ y := hτan.differentiableAt
+  let g : (Fin n → ℂ) → (Σ _ : Unit, J k₀) → ℂ := fun v => affCoord (fun _ : Unit => p) (τ v)
+  have hg0 : fderiv ℂ g y w = 0 :=
+    GlobalTheory.CompanionTheory.Ar.PB.PosFs.fderiv_affCoord_torus (fun _ : Unit => p) hτd (fun _ => hp) hc
+  have hgd : DifferentiableAt ℂ g y := differentiableAt_div_coord_of_ne_zero hτd ⟨(), p⟩ hp
+  let L : ((Σ _ : Unit, J k₀) → ℂ) →L[ℂ] (J k₀ → ℂ) :=
+    ContinuousLinearMap.pi fun i => ContinuousLinearMap.proj (⟨(), i⟩ : Σ _ : Unit, J k₀)
+  have hρ : ρ = L ∘ g := rfl
+  have hρ0 : fderiv ℂ ρ y w = 0 := by
+    rw [hρ, fderiv_comp y L.differentiableAt hgd, L.fderiv]
+    simp [hg0]
+  have hmk : w ∈ LinearMap.ker (fderiv ℂ (fun (v : Fin n → ℂ) (i : J k₀) =>
+      R.lift y' ((R.A.chart j).symm v) ⟨k₀, i⟩ / R.lift y' ((R.A.chart j).symm v) ⟨k₀, p⟩) y :
+        (Fin n → ℂ) →ₗ[ℂ] (J k₀ → ℂ)) := by
+    rw [LinearMap.mem_ker, ContinuousLinearMap.coe_coe, hev.fderiv_eq]
+    exact hρ0
+  rw [hker] at hmk
+  exact (Submodule.mem_bot ℂ).1 hmk
+
+end AnalyticReference.An
+end
+end
+
+section
+noncomputable section
+
+namespace AnalyticReference.An
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GroundTheory.Heights₂.Heights.LowerBoundFree
+open ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P GlobalTheory.CompanionTheory.Ar.PB Filter Topology Metric
+
+theorem weight_orbit {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {σ : Type} (S : Finset σ)
+    (A : σ → HermLine J) {z z' : (Σ k, J k) → ℂ} (hz : ∀ k, ∃ i, z' ⟨k, i⟩ ≠ 0) (h : SameOrbit z z') :
+    -∑ k ∈ S, Real.log ((A k).h z) - Real.log ((fsHerm J (-∑ k ∈ S, (A k).a)).h z) =
+      -∑ k ∈ S, Real.log ((A k).h z') - Real.log ((fsHerm J (-∑ k ∈ S, (A k).a)).h z') := by
+  obtain ⟨c, hc, rfl⟩ := h
+  have e : ∀ B : HermLine J, Real.log (B.h fun p => c p.1 * z' p) =
+      ∑ k, (B.a k : ℝ) * Real.log ‖c k‖ + Real.log (B.h z') := fun B => by
+    rw [B.smul c z' hc, Real.log_mul (Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (norm_ne_zero_iff.2 (hc k)))
+      (B.pos z' hz).ne', Real.log_prod fun k _ => zpow_ne_zero _ (norm_ne_zero_iff.2 (hc k))]
+    simp only [Real.log_zpow]
+  simp only [e, Finset.sum_add_distrib]
+  have : ∑ k, (((fsHerm J (-∑ k ∈ S, (A k).a)).a k : ℤ) : ℝ) * Real.log ‖c k‖ =
+      -∑ j ∈ S, ∑ k, ((A j).a k : ℝ) * Real.log ‖c k‖ := by
+    have e2 : ∀ k, (fsHerm J (-∑ j ∈ S, (A j).a)).a k = -∑ j ∈ S, (A j).a k := fun k => by
+      show (-∑ j ∈ S, (A j).a : K → ℤ) k = _
+      simp [Finset.sum_apply]
+    simp only [e2]
+    rw [Finset.sum_comm]
+    simp [Finset.sum_mul]
+  rw [this]
+  ring
+
+theorem one_le_dimFl {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) {N : ℕ} (hN : 2 ≤ N) :
+    1 ≤ Top.dimFl (CMType H) N := by
+  have h1 : Fintype.card (CMType H) = Module.finrank ℚ E / 2 := by
+    rw [Fintype.card_eq_nat_card]; exact GlobalTheory.PeriodCoord.card_cmType H
+  have h2 : 2 ≤ Module.finrank ℚ E := by
+    have := IsTotallyComplex.finrank E
+    have h0 : 0 < Module.finrank ℚ E := Module.finrank_pos
+    omega
+  have h3 : 2 * 1 ≤ N * (N - 1) := Nat.mul_le_mul hN (by omega)
+  unfold Top.dimFl
+  exact Nat.mul_pos (by omega) (by omega)
+
+theorem of_local (hI : PB.Inputs) {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H}
+    {l : Tor.Level H} {Xo : Moduli D l} {c : Coeff l} {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)}
+    (hp : 1 ≤ D.p) (hq : 1 ≤ D.q) (G : RefGeo Y) (sing : RootIx D → HermLine G.J)
+    (hdeg : ∀ r, (sing r).a = G.xdeg r) (hhodge : ∀ r, G.Fl.IsHodgeLine r (G.e r) (sing r))
+    (hconj : ∀ r, IsConjInvariantH (sing r))
+    (hloc : ∀ (χ : SncChart (mCoordIdeal G.y) (Top.dimFl (CMType H) (D.p + D.q)) (mcPts G.bd)) (τ : CMType H)
+      (i : Fin (D.p + D.q)),
+      Tame χ.a (fun t => -∑ k ∈ Finset.Iic i, Real.log ((sing (τ, k)).h (χ.γ t))) ∧
+      (χ.a = 0 → PshAt0 (fun t => -∑ k ∈ Finset.Iic i, Real.log ((sing (τ, k)).h (χ.γ t))) ∧
+        ((i : ℕ) + 1 = D.p + D.q → PshAt0 fun t => ∑ k ∈ Finset.Iic i, Real.log ((sing (τ, k)).h (χ.γ t))))) :
+    ∃ A : G.An, (∃ inv : A.Sys.X → A.Re.R.X, ReciprocityTheory.AnForm.M.HoloMap A.Sys.A A.Re.R.A inv ∧
+      ∀ x, inv (A.Re.π x) = x) := by
+  classical
+  have harith := GlobalTheory.T.isArithVar_of_snc_model G.𝔐.X G.Ω G.𝔐.ξ G.K G.J G.y _ G.bd (one_le_dimFl H (by omega)) G.𝔐.tie G.snc
+  obtain ⟨y1, y2, y3⟩ := GlobalTheory.T.boundary_points_closed G.𝔐.X G.Ω G.𝔐.ξ G.K G.J G.y (abLocus G.𝔐.t.G) G.bd G.𝔐.tie G.bd_iff
+  obtain ⟨R, L, s, nb, m, W, hL, hs, snc, hn, hbd, hrc⟩ := GlobalTheory.T.lowerBound_height_on_boundary G.K G.J G.Ω G.y _ G.bd G.snc harith y1 y2 y3
+  have hmem : ∀ x, R.lift x x ∈ mcPts (mCoordIdeal G.y) := fun x => R.mem x x (R.mem_U x)
+  have horb : ∀ z ∈ mcPts (mCoordIdeal G.y), ∀ z', SameOrbit z' z → z ∈ mcPts G.bd → z' ∈ mcPts G.bd := by
+    rintro z hz z' ⟨c, hc, rfl⟩ h
+    exact (y2 z ⟨hz, h⟩ c hc).2
+  have hBd : ∀ x₀, ∀ x ∈ R.U x₀, R.lift x₀ x ∈ mcPts G.bd ↔ x ∈ bdry s := fun x₀ x hx => by
+    rw [hbd]
+    exact ⟨horb _ (R.mem _ _ hx) _ (R.compat _ _ _ ⟨R.mem_U _, hx⟩),
+      horb _ (hmem x) _ (R.compat _ _ _ ⟨hx, R.mem_U _⟩)⟩
+  have hcb1 : ∀ x x', SameOrbit (R.lift x' x') (Cj.cj (R.lift x x)) → x ∈ bdry s → x' ∈ bdry s := fun x x' h hx => by
+    rw [hbd] at hx ⊢
+    have := y3 _ ⟨hmem x, hx⟩
+    exact horb _ this.1 _ h this.2
+  have hcb : ∀ x x', SameOrbit (R.lift x' x') (Cj.cj (R.lift x x)) →
+      (x' ∈ bdry s ↔ x ∈ bdry s) ∧ rW L s x' = rW L s x := fun x x' h =>
+    ⟨⟨hcb1 x' x (by
+      have := Cj.sameOrbit_symm (Cj.sameOrbit_cj h)
+      rwa [Cj.cj_cj] at this), hcb1 x x' h⟩, hrc x x' h⟩
+  have hemb : Cmp.IsEmbedded R.A (mCoordIdeal G.y) R.U R.lift :=
+    ⟨R.isOpen_U, R.mem_U, R.holo, R.mem, R.compat, fun z hz => R.surj z hz (not_mem_top _),
+      fun x x' h => R.inj x x' (not_mem_top _) h, fun x p hp j hj => R.immersion x (not_mem_top _) p hp j hj⟩
+  have hpos : IsPosPot R.A (potOf R (fsHerm G.J (Pi.single G.k₀ 1))) := isPosPot_block R G.k₀ fun x p hp j hj =>
+    (GlobalTheory.T.holomorphic_atlas_coord_compat G.𝔐.X G.Ω G.𝔐.ξ G.K G.J G.y G.k₀ G.𝔐.tie G.embeds _ R.X R.A R.U R.lift hemb (G.J G.k₀)
+      (Equiv.refl _) x p hp j hj).2
+  let d : RootIx D → G.K → ℤ := fun r => -∑ k ∈ Finset.Iic r.2, (sing (r.1, k)).a
+  let wt : RootIx D → ((Σ k, G.J k) → ℂ) → ℝ := fun r z =>
+    -∑ k ∈ Finset.Iic r.2, Real.log ((sing (r.1, k)).h z) - Real.log ((fsHerm G.J (d r)).h z)
+  have hwt : ∀ r z z', (∀ k, ∃ i, z' ⟨k, i⟩ ≠ 0) → SameOrbit z z' → wt r z = wt r z' := fun r z z' hz h =>
+    weight_orbit (Finset.Iic r.2) (fun k => sing (r.1, k)) hz h
+  let u : RootIx D → R.X → ℝ := fun r x => wt r (R.lift x x)
+  have hu : ∀ r x₀, ∀ x ∈ R.U x₀, u r x = wt r (R.lift x₀ x) := fun r x₀ x hx =>
+    hwt r _ _ (R.mem _ _ hx).1 (R.compat _ _ _ ⟨R.mem_U _, hx⟩)
+  have hball : ∀ᶠ t in 𝓝 (0 : Fin (Top.dimFl (CMType H) (D.p + D.q)) → ℂ), t ∈ ball 0 1 :=
+    isOpen_ball.mem_nhds (mem_ball_self one_pos)
+  have hsome : ∀ r : RootIx D, ∃ ph phT line C₅ C t₀,
+      IsMember R L s (d r) (u r) ((r.2 : ℕ) + 1 = D.p + D.q) ph phT line C₅ C t₀ := by
+    intro r
+    refine exists_member hI.regGlobal R L s m W hL hs snc hn hcb _ _ _ (fun x x' h => ?_) (fun x => ?_) fun x hx => ?_
+    · show wt r _ = wt r _
+      rw [hwt r _ _ (Cj.cj_nonzero (hmem x).1) h]
+      simp only [wt]
+      rw [Cj.fs_conj (d r) (R.lift x x)]
+      congr 2
+      exact Finset.sum_congr rfl fun k _ => congrArg Real.log (hconj _ _)
+    · obtain ⟨ψ, a, M, h⟩ := exists_nchart R.A L s hL hs snc x (R.U x) (R.isOpen_U x) (R.mem_U x)
+      refine ⟨ψ, a, M, h, ?_⟩
+      have t1 : Tame a _ := (hloc (h.snc R _ (hBd x)) r.1 r.2).1
+      have t2 : Tame a fun t => Real.log ((fsHerm G.J (d r)).h (R.lift x (ψ.symm t))) := tame_smooth a fun t ht => by
+        obtain ⟨h1, h2, -⟩ := h.2.2.2.2 t ht
+        have hz := (R.mem _ _ h2).1
+        have hopen : {z : (Σ k, G.J k) → ℂ | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} ∈ 𝓝 (R.lift x (ψ.symm t)) := by
+          refine Filter.eventually_all.mpr fun k => ?_
+          obtain ⟨i, hi⟩ := hz k
+          exact Filter.mem_of_superset (((continuous_apply _).isOpen_preimage _ isOpen_ne).mem_nhds hi)
+            fun y hy => ⟨i, hy⟩
+        have h3 := ((StepW.fsHerm_isSmoothHerm G.K G.J (d r)).contDiffAt hopen).log ((fsHerm G.J (d r)).pos _ hz).ne'
+        exact h3.comp t ((analyticAt_lift R h.1 x h1 h2).restrictScalars (𝕜 := ℝ)).contDiffAt
+      refine (t1.add (t2.const_mul (-1))).congr ?_
+      filter_upwards [hball] with t ht _
+      rw [hu r x _ (h.2.2.2.2 t ht).2.1]
+      show _ - _ = -∑ k ∈ Finset.Iic r.2, Real.log ((sing (r.1, k)).h (R.lift x (ψ.symm t))) + _
+      ring
+    · obtain ⟨ψ, a, M, h⟩ := exists_nchart R.A L s hL hs snc x (R.U x) (R.isOpen_U x) (R.mem_U x)
+      obtain ⟨p1, p2⟩ := (hloc (h.snc R _ (hBd x)) r.1 r.2).2 (h.zero_of_not_mem hx)
+      refine ⟨ψ, h.1, h.2.1, h.2.2.1, p1.congr ?_, fun hc => (p2 hc).congr ?_⟩
+      · filter_upwards [hball] with t ht
+        rw [hu r x _ (h.2.2.2.2 t ht).2.1]
+        show _ + (_ - _) = -∑ k ∈ Finset.Iic r.2, Real.log ((sing (r.1, k)).h (R.lift x (ψ.symm t)))
+        ring
+      · filter_upwards [hball] with t ht
+        rw [hu r x _ (h.2.2.2.2 t ht).2.1]
+        show -1 * (_ + (-∑ k ∈ Finset.Iic r.2, Real.log ((sing (r.1, k)).h (R.lift x (ψ.symm t))) - _)) =
+          ∑ k ∈ Finset.Iic r.2, Real.log ((sing (r.1, k)).h (R.lift x (ψ.symm t)))
+        ring
+  choose ph phT line hm using hsome
+  obtain ⟨C₅, C, T, hM⟩ := common_members (σ := Option (RootIx D)) (R := R) hL hs snc hn
+    (d := fun o => o.elim (Pi.single G.k₀ 1) d) (u := fun o => o.elim 0 u)
+    (cen := fun o => o.elim False fun r => (r.2 : ℕ) + 1 = D.p + D.q) (ph := fun o => o.elim 0 ph)
+    (phT := fun o => o.elim (fun _ => 0) phT)
+    (line := fun o => o.elim (fun _ => fsHerm G.J (Pi.single G.k₀ 1)) line) (by
+      rintro (_ | r)
+      · exact member_zero R hL hs snc hn _ hpos
+      · exact hm r)
+  obtain ⟨hA, hfs, hΘ⟩ := fs_pos_potential G.K G.J _ _ R
+  let S : AnSys (Top.dimFl (CMType H) (D.p + D.q)) (Option (RootIx D)) :=
+    { X := R.X
+      A := R.A
+      Θ := potOf R (fsHerm G.J fun _ => 1)
+      L := L
+      s := s
+      nb := nb
+      m := m
+      W := W
+      potΘ := hA _ hfs
+      posΘ := hΘ
+      potL := hL
+      sec := hs
+      snc := snc
+      norm_le := hn
+      th := fun o => potOf R (fsHerm G.J (o.elim (Pi.single G.k₀ 1) d))
+      ph := fun o => o.elim 0 ph
+      phT := fun o => o.elim (fun _ => 0) phT
+      C₅ := C₅
+      C := C
+      t₀ := T
+      sing := fun o => (hM o).1
+      reg := fun o => (hM o).2.1
+      c2 := fun o => (hM o).2.2.1 }
+  let Re : Realis S (mCoordIdeal G.y) :=
+    { arith := harith
+      J := ⊤
+      R := R
+      π := id
+      holo := ⟨continuous_id, fun jj k => R.A.holo jj k⟩
+      deg := 1
+      deg_pos := one_pos
+      br := ∅
+      degree := FA.degree_id_self R.A
+      ref := fun o => fsHerm G.J (o.elim (Pi.single G.k₀ 1) d)
+      ref_smooth := fun o => StepW.fsHerm_isSmoothHerm G.K G.J _
+      ref_pot := fun o x _ => ⟨Set.univ, isOpen_univ, trivial, fun _ => 0, fun _ => analyticOnNhd_const,
+          fun z _ => (sub_self _).trans Complex.zero_re.symm⟩
+      line := fun o => o.elim (fun _ => fsHerm G.J (Pi.single G.k₀ 1)) line
+      line_deg := fun o t => ((hM o).2.2.2.2.1 t).1
+      line_smooth := fun o t _ _ => ((hM o).2.2.2.2.1 t).2.1
+      line_eq := fun o t h0 h1 x => (hM o).2.2.2.2.2.1 t h0 h1 x }
+  have hnd : (Pi.single G.k₀ 1 : G.K → ℤ) G.k₀ = 1 ∧ ∀ k, k ≠ G.k₀ → (Pi.single G.k₀ 1 : G.K → ℤ) k = 0 :=
+    ⟨by simp, fun k hk => by simp [hk]⟩
+  refine ⟨{ sing := sing, sing_deg := hdeg, hodge := hhodge, Sys := S, Re := Re, J_top := rfl, deg_one := rfl
+            π_bij := Function.bijective_id, embedded := hemb, interior := fun x z hz => ?_
+            fund_deg := fun τ i => ?_, fund_sing := fun τ i x hx => ?_
+            conj := fun o t => ((hM o).2.2.2.2.1 t).2
+            none_deg := hnd
+            none_h := fun z => fs_single_h G.k₀ z, pos := hpos, ph_none := fun x => ⟨rfl, fun _ => rfl⟩
+            flat := fun τ i hi t => (hM (some (τ, i))).2.2.2.2.2.2 hi t },
+    id, ⟨continuous_id, fun jj k => R.A.holo jj k⟩, fun _ => rfl⟩
+  · have h1 := G.bd_iff z _ hz
+    show _ ↔ ¬ x ∈ bdry s
+    rw [hbd]
+    tauto
+  · show d (τ, i) = _
+    simp only [d, hdeg]
+  · have h1 : ph (τ, i) x = u (τ, i) x := (hM (some (τ, i))).2.2.2.1 x hx
+    show Real.log ((fsHerm G.J (d (τ, i))).h (R.lift x x)) + ph (τ, i) x =
+      -∑ k ∈ Finset.Iic i, Real.log ((sing (τ, k)).h (R.lift x x))
+    rw [h1]
+    simp only [u, wt]
+    ring
+
+end AnalyticReference.An
+end
+end
+
+section
 section
 noncomputable section
 
@@ -172,3 +1537,4 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_holomorphic_section_of_analytic : Top.Given → Flat.FlatLineGenerator → Flat.FlatLineGeneratorComponent → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)), Top.IsGlobal Xo l c Y → SplitComps Y → 1 ≤ D.p → 1 ≤ D.q → ∀ G : RefGeo Y, ∃ A : G.An, (∃ inv : A.Sys.X → A.Re.R.X, ReciprocityTheory.AnForm.M.HoloMap A.Sys.A A.Re.R.A inv ∧ ∀ x, inv (A.Re.π x) = x) := by
   atlas_forward_decl AnalyticReference.reference_geometry_holomorphic_inverse
+end

@@ -7,10 +7,339 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeisenbergOrient
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FiniteDimensionalThetaFunctionsLevelFockDegree
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCartanInvOneOfOnb
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FockCoefficientExtremalEqDiscreteSeries
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RieszEigenvectorSesquilinearFunctionSpaceStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaFunctionHeisenbergIrreducibleOrthogonal
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeisenbergRealPointFockVacuumPairingScalar
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RieszEigenvectorSesquilinearFunctionSpace
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeisenbergCompressionRealPlaceFockVacuaScalar
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockVacuaLocalFactorsStableHeisenbergAway
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsPureTensorBaseVectorAndLocalFactor
 
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.riesz_eigenvector_sesquilinear_function_space : ∀ (X : Type) (C : Submodule ℂ (X → ℂ)), FiniteDimensional ℂ C →
+    ∀ (ip Φ : (X → ℂ) → (X → ℂ) → ℂ),
+    (∀ (a : ℂ) (f f' g : X → ℂ), f ∈ C → f' ∈ C → g ∈ C → ip (a • f + f') g = star a * ip f g + ip f' g) →
+    (∀ (a : ℂ) (f g g' : X → ℂ), f ∈ C → g ∈ C → g' ∈ C → ip f (a • g + g') = a * ip f g + ip f g') →
+    (∀ f g : X → ℂ, f ∈ C → g ∈ C → ip g f = star (ip f g)) →
+    (∀ f : X → ℂ, f ∈ C → f ≠ 0 → 0 < (ip f f).re) →
+    (∀ (a : ℂ) (f f' g : X → ℂ), f ∈ C → f' ∈ C → g ∈ C → Φ (a • f + f') g = star a * Φ f g + Φ f' g) →
+    (∀ (a : ℂ) (f g g' : X → ℂ), f ∈ C → g ∈ C → g' ∈ C → Φ f (a • g + g') = a * Φ f g + Φ f g') →
+    (∀ f : X → ℂ, f ∈ C → ∃ h : X → ℂ, h ∈ C ∧ ∀ g : X → ℂ, g ∈ C → ip h g = Φ f g) ∧
+    (C ≠ ⊥ → ∃ c : ℂ, ∃ e : X → ℂ, e ∈ C ∧ e ≠ 0 ∧ ∀ f : X → ℂ, f ∈ C → Φ f e = c * ip f e) := by
+  first | exact @GlobalTheory.riesz_and_eigenvector_of_sesq_on_fun_space | exact GlobalTheory.riesz_and_eigenvector_of_sesq_on_fun_space | (intros; apply GlobalTheory.riesz_and_eigenvector_of_sesq_on_fun_space <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.RawLift
+
+noncomputable section
+
+namespace GlobalTheory.ThetaIrred
+
+variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
+
+theorem integrable_star_mul (hψ : IsStdChar D ψ (-1)) {μ : Measure (WO S T)} {𝓕 : Set (WO S T)} (h1 : μ 𝓕 = 1)
+    {f g q : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) (hg : IsThetaFunO ψ S T g) (hq : Continuous q)
+    {Cq : ℝ} (hCq : ∀ x, ‖q x‖ ≤ Cq) :
+    Integrable (fun x => star (f x) * (q x * g x)) (μ.restrict 𝓕) := by
+  haveI : BorelSpace (WO S T) := ⟨rfl⟩
+  haveI : IsFiniteMeasure (μ.restrict 𝓕) := ⟨by rw [Measure.restrict_apply_univ, h1]; exact ENNReal.one_lt_top⟩
+  obtain ⟨Cf, hCf⟩ := GlobalTheory.ThetaSchurBdd.exists_bound hψ hf
+  obtain ⟨Cg, hCg⟩ := GlobalTheory.ThetaSchurBdd.exists_bound hψ hg
+  refine Integrable.of_bound (hf.cont.star.mul (hq.mul hg.cont)).aestronglyMeasurable (Cf * (Cq * Cg))
+    (Filter.Eventually.of_forall fun x => ?_)
+  rw [norm_mul, norm_mul, norm_star]
+  have a0 : 0 ≤ Cq := (norm_nonneg _).trans (hCq x)
+  have b0 : 0 ≤ Cf := (norm_nonneg _).trans (hCf x)
+  exact mul_le_mul (hCf x) (mul_le_mul (hCq x) (hCg x) (norm_nonneg _) a0) (by positivity) b0
+
+theorem orth_periodic (hψ : IsStdChar D ψ (-1)) {μ : Measure (WO S T)} {𝓕 : Set (WO S T)} (h1 : μ 𝓕 = 1)
+    {h k : WO S T → ℂ} (hh : IsThetaFunO ψ S T h) (hk : IsThetaFunO ψ S T k)
+    (horth : ∀ γ ∈ ratL T S, thetaIP μ 𝓕 h (heisO ψ S T γ k) = 0)
+    {q : WO S T → ℂ} (hq : Continuous q) (hqp : ∀ γ ∈ ratL T S, ∀ x, q (γ + x) = q x)
+    {Cq : ℝ} (hCq : ∀ x, ‖q x‖ ≤ Cq) :
+    ∫ x in 𝓕, star (h x) * (q x * k x) ∂μ = 0 := by
+  haveI : BorelSpace (WO S T) := ⟨rfl⟩
+  haveI : IsFiniteMeasure (μ.restrict 𝓕) := ⟨by rw [Measure.restrict_apply_univ, h1]; exact ENNReal.one_lt_top⟩
+  have hth := (GlobalTheory.HeisThetaLaws.heis_theta_laws D ψ hψ S T).1
+  obtain ⟨Ch, hCh⟩ := GlobalTheory.ThetaSchurBdd.exists_bound hψ hh
+  obtain ⟨Ck, hCk⟩ := GlobalTheory.ThetaSchurBdd.exists_bound hψ hk
+  have ch0 : 0 ≤ Ch := (norm_nonneg _).trans (hCh 0)
+  have ck0 : 0 ≤ Ck := (norm_nonneg _).trans (hCk 0)
+  set I := ∫ x in 𝓕, star (h x) * (q x * k x) ∂μ with hIdef
+  have hint := integrable_star_mul hψ h1 hh hk hq hCq
+  have key : ∀ δ : ℝ, 0 < δ → ‖I‖ ≤ δ * (Ch * Ck) := by
+    intro δ hδ
+    obtain ⟨s, c, hsc⟩ := GlobalTheory.ThetaSchurBdd.trig_approx hψ hq hqp hδ
+    have hpk := GlobalTheory.ThetaSchurBdd.trig_mul_eq s c hk
+    have hsum : ∀ x, star (h x) * ((∑ a ∈ s, c a * ψ (symplO S T x a)) * k x) =
+        ∑ a ∈ s, c a * (star (h x) * heisO ψ S T a k x) := by
+      intro x
+      have := congrFun hpk x
+      rw [this, Finset.sum_apply, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun a _ => ?_
+      rw [Pi.smul_apply, smul_eq_mul]
+      ring
+    have hint_a : ∀ a ∈ s, Integrable (fun x => c a * (star (h x) * heisO ψ S T a k x)) (μ.restrict 𝓕) := by
+      intro a _
+      have := integrable_star_mul hψ h1 hh (hth a k hk) (q := fun _ => (1 : ℂ)) continuous_const (Cq := 1)
+        (fun _ => by simp)
+      simp only [one_mul] at this
+      exact this.const_mul (c a)
+    have hP : ∫ x in 𝓕, star (h x) * ((∑ a ∈ s, c a * ψ (symplO S T x a)) * k x) ∂μ = 0 := by
+      simp_rw [hsum]
+      rw [integral_finset_sum s hint_a]
+      refine Finset.sum_eq_zero fun a _ => ?_
+      rw [integral_const_mul]
+      have := horth a a.2
+      unfold thetaIP at this
+      rw [this, mul_zero]
+    have hPint : Integrable (fun x => star (h x) * ((∑ a ∈ s, c a * ψ (symplO S T x a)) * k x)) (μ.restrict 𝓕) := by
+      simp_rw [hsum]
+      exact integrable_finset_sum s hint_a
+    have hdiff : I = ∫ x in 𝓕, (star (h x) * (q x * k x) -
+        star (h x) * ((∑ a ∈ s, c a * ψ (symplO S T x a)) * k x)) ∂μ := by
+      rw [integral_sub hint hPint, hP, sub_zero]
+    rw [hdiff]
+    have hb : ∀ᵐ x ∂(μ.restrict 𝓕), ‖star (h x) * (q x * k x) -
+        star (h x) * ((∑ a ∈ s, c a * ψ (symplO S T x a)) * k x)‖ ≤ δ * (Ch * Ck) := by
+      refine Filter.Eventually.of_forall fun x => ?_
+      rw [show star (h x) * (q x * k x) - star (h x) * ((∑ a ∈ s, c a * ψ (symplO S T x a)) * k x) =
+        star (h x) * ((q x - ∑ a ∈ s, c a * ψ (symplO S T x a)) * k x) by ring]
+      rw [norm_mul, norm_mul, norm_star]
+      have e1 := hsc x
+      calc ‖h x‖ * (‖q x - ∑ a ∈ s, c a * ψ (symplO S T x a)‖ * ‖k x‖) ≤ Ch * (δ * Ck) :=
+            mul_le_mul (hCh x) (mul_le_mul e1 (hCk x) (norm_nonneg _) hδ.le) (by positivity) ch0
+        _ = δ * (Ch * Ck) := by ring
+    refine (norm_integral_le_of_norm_le_const hb).trans ?_
+    rw [measureReal_def, Measure.restrict_apply_univ, h1, ENNReal.toReal_one, mul_one]
+  by_contra hne
+  have hpos : 0 < ‖I‖ := norm_pos_iff.2 hne
+  have hM : 0 < Ch * Ck + 1 := by positivity
+  have := key (‖I‖ / (Ch * Ck + 1)) (div_pos hpos hM)
+  rw [div_mul_eq_mul_div, le_div_iff₀ hM] at this
+  nlinarith
+
+theorem pointwise (hψ : IsStdChar D ψ (-1)) {μ : Measure (WO S T)} {𝓕 : Set (WO S T)}
+    (hcv : IsCovolOne (ratL T S) μ 𝓕)
+    {h k : WO S T → ℂ} (hh : IsThetaFunO ψ S T h) (hk : IsThetaFunO ψ S T k)
+    (horth : ∀ γ ∈ ratL T S, thetaIP μ 𝓕 h (heisO ψ S T γ k) = 0) (x : WO S T) :
+    h x = 0 ∨ k x = 0 := by
+  have h1 : μ 𝓕 = 1 := hcv.2.2
+  haveI : BorelSpace (WO S T) := ⟨rfl⟩
+  obtain ⟨Ch, hCh⟩ := GlobalTheory.ThetaSchurBdd.exists_bound hψ hh
+  obtain ⟨Ck, hCk⟩ := GlobalTheory.ThetaSchurBdd.exists_bound hψ hk
+  have ch0 : 0 ≤ Ch := (norm_nonneg _).trans (hCh 0)
+  set q : WO S T → ℂ := fun x => h x * star (k x) with hq
+  have hqc : Continuous q := hh.cont.mul hk.cont.star
+  have hqb : ∀ x, ‖q x‖ ≤ Ch * Ck := fun x => by
+    rw [hq, norm_mul, norm_star]
+    exact mul_le_mul (hCh x) (hCk x) (norm_nonneg _) ch0
+  have hqp : ∀ γ ∈ ratL T S, ∀ x, q (γ + x) = q x := fun γ hγ x =>
+    GlobalTheory.ThetaSchur.prod_periodic hψ hh hk hγ x
+  have hz := orth_periodic hψ h1 hh hk horth hqc hqp hqb
+  set F : WO S T → ℝ := fun x => ‖h x‖ ^ 2 * ‖k x‖ ^ 2 with hF
+  have hpt : ∀ x, star (h x) * (q x * k x) = ((F x : ℝ) : ℂ) := by
+    intro x
+    rw [hq, hF, show star (h x) * (h x * star (k x) * k x) = (star (h x) * h x) * (star (k x) * k x) by ring]
+    simp only [Complex.star_def, Complex.conj_mul']
+    push_cast
+    ring
+  have hint := integrable_star_mul hψ h1 hh hk hqc hqb
+  simp_rw [hpt] at hz hint
+  rw [integral_complex_ofReal, Complex.ofReal_eq_zero] at hz
+  have hFi : Integrable F (μ.restrict 𝓕) := by
+    have := hint.re
+    simpa using this
+  have hae : ∀ᵐ x ∂(μ.restrict 𝓕), F x = 0 :=
+    (integral_eq_zero_iff_of_nonneg (fun x => by positivity) hFi).1 hz
+  have hf := GlobalTheory.ThetaSchurBdd.isTheta_star_mul_mul hψ hk hk hh
+  have h0 : nrm2 μ 𝓕 (fun x => star (k x) * k x * h x) = 0 := by
+    unfold nrm2
+    refine integral_eq_zero_of_ae ?_
+    filter_upwards [hae] with y hy
+    have e : ‖star (k y) * k y * h y‖ ^ 2 = ‖k y‖ ^ 2 * F y := by
+      rw [hF, norm_mul, norm_mul, norm_star]; ring
+    rw [Pi.zero_apply, e, hy, mul_zero]
+  have := congrFun (GlobalTheory.ThetaSchurBdd.thetaFunction_eq_zero_of_meanSquare_zero hψ hcv hf h0) x
+  simp only [Pi.zero_apply, mul_eq_zero, star_eq_zero, or_self] at this
+  exact this.symm
+
+end GlobalTheory.ThetaIrred
+
+theorem GlobalTheory.ThetaIrred.orth_heis_translates : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D), IsStdChar D ψ (-1) →
+    ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 →
+    ∀ h e : WO S T → ℂ, IsThetaFunO ψ S T h → IsThetaFunO ψ S T e →
+    (∀ w : WO S T, thetaIP μ 𝓕 h (heisO ψ S T w e) = 0) → h = 0 ∨ e = 0 := by
+  intro D ψ S T hψ μ 𝓕 hcv h e hh he horth
+  have hth := (GlobalTheory.HeisThetaLaws.heis_theta_laws D ψ hψ S T).1
+  have hhh := (GlobalTheory.HeisThetaLaws.heis_theta_laws D ψ hψ S T).2.1
+  have key : ∀ w x, h x = 0 ∨ heisO ψ S T w e x = 0 := by
+    intro w x
+    refine GlobalTheory.ThetaIrred.pointwise hψ hcv hh (hth w e he) (fun γ _ => ?_) x
+    rw [hhh γ w e]
+    unfold thetaIP
+    simp only [Pi.smul_apply, smul_eq_mul, mul_left_comm (star (h _))]
+    rw [integral_const_mul]
+    have := horth (γ + w)
+    unfold thetaIP at this
+    rw [this, mul_zero]
+  by_cases he0 : e = 0
+  · exact Or.inr he0
+  left
+  obtain ⟨y, hy⟩ : ∃ y, e y ≠ 0 := by
+    by_contra hn
+    push_neg at hn
+    exact he0 (funext hn)
+  funext x
+  rcases key (y - x) x with h0 | h0
+  · exact h0
+  · exfalso
+    simp only [heisO, add_sub_cancel] at h0
+    rcases mul_eq_zero.1 h0 with h1 | h1
+    · exact GlobalTheory.ThetaSchurBdd.psi_ne_zero hψ _ h1
+    · exact hy h1
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.RawLift
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaFunction_heisenberg_irreducible_orthogonal : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D), IsStdChar D ψ (-1) →
+    ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 →
+    ∀ h e : WO S T → ℂ, IsThetaFunO ψ S T h → IsThetaFunO ψ S T e →
+    (∀ w : WO S T, thetaIP μ 𝓕 h (heisO ψ S T w e) = 0) → h = 0 ∨ e = 0 := by
+  atlas_forward_decl GlobalTheory.ThetaIrred.orth_heis_translates
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.RawLift
+
+open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting GlobalTheory.PlaceTensor
+
+noncomputable section
+
+namespace GlobalTheory.RealVacScalar
+
+variable {D : D7}
+
+theorem sum_wAt_real {S T : HSp D} (w : WO S T) (hw : w.map (finPart D) = 0) :
+    ∑ τ : D.what₂.Tau, wAt (.inr τ) w = w := by
+  ext i j
+  rw [Matrix.sum_apply]
+  show ∑ τ : D.what₂.Tau, idem D (.inr τ) * w i j = w i j
+  rw [← Finset.sum_mul]
+  refine GlobalTheory.SplitScalar.adele_ext ?_ ?_
+  · rw [RingHom.map_mul, (GlobalTheory.T.cmAdeleIdempotentOfPlace_properties D).2.2.2.2.2.1, one_mul]
+  · have h0 : finPart D (w i j) = 0 := congrFun (congrFun hw i) j
+    rw [RingHom.map_mul, h0, mul_zero]
+
+theorem wAt_sum_real_notMem {S T : HSp D} (w : WO S T) {r : D.what₂.Tau} {P : Finset D.what₂.Tau} (hr : r ∉ P) :
+    wAt (.inr r) (∑ τ ∈ P, wAt (.inr τ) w) = 0 := by
+  rw [wAt_eq_smul, Finset.smul_sum]
+  refine Finset.sum_eq_zero fun τ hτ => ?_
+  rw [← wAt_eq_smul]
+  exact GlobalTheory.PlaceStable.wAt_wAt_ne (fun h => hr (by rw [Sum.inr_injective h]; exact hτ)) w
+
+theorem thetaIP_eq_ipO {S T : HSp D} (μ : Measure (WO S T)) (𝓕 : Set (WO S T)) (a b : WO S T → ℂ) :
+    thetaIP μ 𝓕 a b = ipO μ 𝓕 b a := by
+  unfold thetaIP ipO
+  congr 1
+  funext x
+  rw [Complex.star_def, mul_comm]
+
+theorem ipO_conj {S T : HSp D} (μ : Measure (WO S T)) (𝓕 : Set (WO S T)) (a b : WO S T → ℂ) :
+    ipO μ 𝓕 a b = starRingEnd ℂ (ipO μ 𝓕 b a) := by
+  unfold ipO
+  rw [← integral_conj]
+  congr 1
+  funext x
+  simp [mul_comm]
+
+theorem ip_sum {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D}
+    {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ} {sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ}
+    (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) (μ : Measure (WO S T)) (𝓕 : Set (WO S T)) (w : WO S T)
+    (γ : D.what₂.Tau → ℂ)
+    (hγ : ∀ τ (f g : WO S T → ℂ), IsThetaFunO ψ S T f → IsThetaFunO ψ S T g →
+      IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) f → IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) g →
+      ipO μ 𝓕 g (heisO ψ S T (wAt (.inr τ) w) f) = γ τ * ipO μ 𝓕 g f)
+    (P : Finset D.what₂.Tau) : ∀ f g : WO S T → ℂ, IsThetaFunO ψ S T f → IsThetaFunO ψ S T g →
+      (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) f) →
+      (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) g) →
+      ipO μ 𝓕 g (heisO ψ S T (∑ τ ∈ P, wAt (.inr τ) w) f) = (∏ τ ∈ P, γ τ) * ipO μ 𝓕 g f := by
+  classical
+  induction P using Finset.induction_on with
+  | empty =>
+    intro f g _ _ _ _
+    rw [Finset.sum_empty, Finset.prod_empty, GlobalTheory.SplitScalar.heisO_zero, one_mul]
+  | insert r P hr ih =>
+    intro f g hf hg vf vg
+    have h0 := wAt_sum_real_notMem w hr
+    rw [Finset.sum_insert hr, Finset.prod_insert hr,
+      GlobalTheory.SplitScalar.heisO_add_of_orth ψ S T (GlobalTheory.LocalPure.symplO_wAt S T w h0),
+      hγ r _ g ((GlobalTheory.HeisThetaLaws.heis_theta_laws D ψ hψ S T).1 _ _ hf) hg
+        (GlobalTheory.PlaceStable.isFockVacAt_heisO hθ h0 (vf r)) (vg r),
+      ih f g hf hg vf vg, mul_assoc]
+
+theorem compress_real : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D), IsStdChar D ψ (-1) →
+    IsInfFam θ → ∀ (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ)
+    (sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ),
+    (∀ τ, IsCartanInv (gramAt D S τ) (sS τ)) → (∀ τ, IsCartanInv (gramAt D T τ) (sT τ)) →
+    ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 →
+    ∀ w : WO S T, w.map (finPart D) = 0 → ∃ κ : ℂ, ∀ h e : WO S T → ℂ, IsThetaFunO ψ S T h → IsThetaFunO ψ S T e →
+    (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) h) →
+    (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) e) →
+    thetaIP μ 𝓕 h (heisO ψ S T w e) = κ * thetaIP μ 𝓕 h e := by
+  intro D ψ θ S T hψ hθ sS sT hsS hsT μ 𝓕 hμ w hw
+  choose γ hγ using fun τ =>
+    GlobalTheory.VacCompress.compress D ψ θ S T μ 𝓕 hψ hθ hμ τ (sS τ) (sT τ) (hsS τ) (hsT τ) w
+  refine ⟨starRingEnd ℂ (∏ τ, γ τ), fun h e hh he vh ve => ?_⟩
+  have key := ip_sum hψ hθ μ 𝓕 w γ hγ Finset.univ e h he hh ve vh
+  rw [sum_wAt_real w hw] at key
+  rw [thetaIP_eq_ipO, thetaIP_eq_ipO, ipO_conj, key, map_mul, ← ipO_conj]
+
+end GlobalTheory.RealVacScalar
+
+end
+end
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
+open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
+open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open GlobalTheory.RawLift
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heisenberg_realPoint_fockVacuum_pairing_scalar : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D), IsStdChar D ψ (-1) →
+    IsInfFam θ → ∀ (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ)
+    (sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ),
+    (∀ τ, IsCartanInv (gramAt D S τ) (sS τ)) → (∀ τ, IsCartanInv (gramAt D T τ) (sT τ)) →
+    ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 →
+    ∀ w : WO S T, w.map (finPart D) = 0 → ∃ κ : ℂ, ∀ h e : WO S T → ℂ, IsThetaFunO ψ S T h → IsThetaFunO ψ S T e →
+    (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) h) →
+    (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) e) →
+    thetaIP μ 𝓕 h (heisO ψ S T w e) = κ * thetaIP μ 𝓕 h e := by
+  atlas_forward_decl GlobalTheory.RealVacScalar.compress_real
+end
+
+section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
@@ -348,3 +677,5 @@ theorem GlobalTheory.VacSchurFin.vacSchur : ∀ (D : D7) (ψ : AddChar (AF D.hos
     simp only [smul_zero, add_zero, star_one, one_mul] at z
     rw [zero_mul]
     linear_combination -z
+end
+end

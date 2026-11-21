@@ -1,11 +1,328 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsOpenSameModel
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsCountableFlagSpaceAtlas
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsComponentOfModelChartsStatement
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsCountableHolomorphicFamiliesSmooth
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.PeriodCoordinatesFramesLiftTendstoStatement
+import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsComponentOfModelCharts
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsHolomorphicFamily
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.DenseMvPolynomialEvalNeZero
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsEmbeddingsOverInjective
+import BuildAid.ForwardExisting
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PairUnfoldPfA
 
+section
+section
+noncomputable section
+
+namespace GlobalTheory.Reg
+
+open AlgebraicGeometry CategoryTheory Limits NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Reg
+
+theorem exists_countable_atlas : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
+    (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l)
+    (h : GenFrEx Xo c), ∃ (ι : Type) (_ : Countable ι) (C : ι → FChart h),
+      ∀ (L : Type) [Field L] [Algebra c.F L] (y : FrPt Xo c L),
+        ∃ (i : ι) (ψ : (C i).R →ₐ[c.F] L) (z : FrPt Xo c L) (t : Ix Dw → Lˣ),
+          FrMap ψ (C i).y z ∧ FrBor t z y := by
+  intro E _ _ _ H Dw l Xo c h
+  have hS : Out.SecTwistSt := GlobalTheory.abelianSchemeLaws_all.2.secTwist
+  have hBC : FrBC Xo c := (GlobalTheory.Reg.evLaws_genFr_atlas E H Dw l Xo c).1.bc
+  choose A iA dA aA j yA hj hp hjs hsm hyA using
+    GlobalTheory.LocalFrame.exists_integral_chart_frame hS E H Dw l Xo c
+  haveI : IsNoetherian (Xo.XF c) := CompFin.isNoetherian_XF Xo c
+  obtain ⟨T, -, hT⟩ := (isCompact_univ (X := Xo.XF c)).elim_nhds_subcover (fun p => Set.range (j p))
+    (fun p _ => by
+      haveI := hj p
+      exact (IsOpenImmersion.isOpen_range (j p)).mem_nhds (hp p))
+  choose C hC using fun (p : Xo.XF c) (σ : ∀ τ : E →+* ℂ, Equiv.Perm (Fin (Dw.mult τ))) =>
+    GlobalTheory.Reg.exists_fChart_cell E H Dw l Xo c hBC h (A p) (j p) (yA p) (hj p) (hjs p) (hsm p) (hyA p) σ
+  refine ⟨T × (∀ τ : E →+* ℂ, Equiv.Perm (Fin (Dw.mult τ))), inferInstance, fun i => C i.1 i.2, ?_⟩
+  intro L _ _ y
+  have hcond : y.x ≫ Xo.s =
+      spMap (algebraMap c.F L) ≫ spMap (IntermediateField.inclusion c.le).toRingHom := by
+    rw [y.x_over, spMap_comp_ring]
+    rfl
+  let q : Sp L ⟶ Xo.XF c := pullback.lift y.x (spMap (algebraMap c.F L)) hcond
+  obtain ⟨p, hpT, hq⟩ := Set.mem_iUnion₂.mp (hT (Set.mem_univ (q (IsLocalRing.closedPoint L))))
+  haveI := hj p
+  obtain ⟨f, hf⟩ := exists_algHom_of_mem_range (pullback.snd _ _) (j p) (hjs p) q (pullback.lift_snd _ _ _) hq
+  obtain ⟨z₀, hz₀⟩ := hBC (A p) L f (yA p)
+  have hx : y.x = z₀.x := by
+    rw [hz₀.1, hyA, ← Category.assoc, hf]
+    exact (pullback.lift_fst _ _ _).symm
+  obtain ⟨g, ⟨hgu, hg⟩, -⟩ := (GlobalTheory.T.isTriangularReframe_exists_and_unique E H Dw l Xo c L z₀).2 y hx
+  choose σ u b h0 h1 hb e using fun τ => exists_perm_lower_upper (g τ) (hgu τ)
+  let x : FlagVar Dw → L := fun v => u v.1 (σ v.1 v.2.1.2) v.2.1.1
+  have hu : ∀ τ, (lowM x τ).submatrix (σ τ).symm id = u τ := by
+    intro τ
+    ext i k
+    obtain ⟨i, rfl⟩ := (σ τ).surjective i
+    simp only [Matrix.submatrix_apply, Equiv.symm_apply_apply, id, lowM]
+    split_ifs with h₁ h₂
+    · rfl
+    · rw [h₂, h1]
+    · exact (h0 τ i k (lt_of_le_of_ne (not_lt.mp h₁) (Ne.symm h₂))).symm
+  refine ⟨(⟨p, hpT⟩, σ), hC p σ L f z₀ y x b hz₀ hb ?_⟩
+  have : (fun τ => (lowM x τ).submatrix (σ τ).symm id * b τ) = g := funext fun τ => by rw [hu τ, ← e τ]
+  rw [this]
+  exact hg
+
+end GlobalTheory.Reg
+end
+end
+
+open NumberField Topology Filter ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.Reg
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_countable_flagSpace_atlas : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (h : GenFrEx Xo c), ∃ (ι : Type) (_ : Countable ι) (C : ι → FChart h), ∀ (L : Type) [Field L] [Algebra c.F L] (y : FrPt Xo c L), ∃ (i : ι) (ψ : (C i).R →ₐ[c.F] L) (z : FrPt Xo c L) (t : Ix Dw → Lˣ), FrMap ψ (C i).y z ∧ FrBor t z y := by
+  atlas_forward_decl GlobalTheory.Reg.exists_countable_atlas
+end
+
+section
+open NumberField Topology Filter ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.Reg
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_component_of_modelCharts : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Formalism.L2.PjFree.Unf Xo c σ r), Formalism.L2.PjFree.IsUnf U → ∀ (h : GenFrEx Xo c) (k : U.Comp), ∃ Z : Comp Xo c, ∀ (x : (U.X k).dom) (C : FChart h) (ψ : C.R →ₐ[c.F] CAt σ) (z : FrPt Xo c (CAt σ)) (t : Ix Dw → (CAt σ)ˣ), FrMap ψ C.y z → FrBor t z (U.un k x) → C.Z = Z := by
+  first | exact @GlobalTheory.OneComp.exists_comp_of_charts | exact GlobalTheory.OneComp.exists_comp_of_charts | (intros; apply GlobalTheory.OneComp.exists_comp_of_charts <;> assumption)
+end
+
+section
+section
+open Topology Filter
+
+namespace GlobalTheory.SmoothPointCover
+
+theorem exists_family_near (K A : Type) [Field K] [NumberField K] [CommRing A] [IsDomain A] [Algebra K A]
+    [Algebra.Smooth K A] (σ : K →+* ℂ) (φ₀ : A →+* ℂ) (h₀ : φ₀.comp (algebraMap K A) = σ) :
+    ∃ (m : ℕ) (B : Set (Fin m → ℂ)) (φ : (Fin m → ℂ) → (A →+* ℂ)) (U : Set (A → ℂ)), U ∈ 𝓝 (φ₀ : A → ℂ) ∧
+      IsOpen B ∧ (∀ b ∈ B, (φ b).comp (algebraMap K A) = σ) ∧
+      (∀ a : A, DifferentiableOn ℂ (fun b => φ b a) B) ∧
+      (∀ ψ : A →+* ℂ, ψ.comp (algebraMap K A) = σ → (ψ : A → ℂ) ∈ U → ∃ b ∈ B, φ b = ψ) ∧
+      ∀ b ∈ B, ∀ a : A, a ≠ 0 → ∃ᶠ b' in 𝓝 b, φ b' a ≠ 0 := by
+  classical
+  obtain ⟨m, s, B, φ, S, ε, hB, hε, hφ, hd, hnear⟩ :=
+    GlobalTheory.SmoothPointFamily.exists_holomorphic_family K A σ φ₀ h₀
+  let U : Set (A → ℂ) := {f | ∀ a ∈ S, ‖f a - φ₀ a‖ < ε}
+  have hU : IsOpen U := by
+    have : U = ⋂ a ∈ S, {f : A → ℂ | ‖f a - φ₀ a‖ < ε} := by
+      ext f; simp [U]
+    rw [this]
+    exact isOpen_biInter_finset fun a _ => isOpen_lt (by fun_prop) continuous_const
+  have hc : ContinuousOn (fun b => (φ b : A → ℂ)) B := continuousOn_pi.2 fun a => (hd a).continuousOn
+  refine ⟨m, B ∩ (fun b => (φ b : A → ℂ)) ⁻¹' U, φ, U, hU.mem_nhds (fun a _ => by simpa using hε),
+    hc.isOpen_inter_preimage hB hU, fun b hb => (hφ b hb.1).1, fun a => (hd a).mono Set.inter_subset_left,
+    fun ψ hψ hψU => ?_, fun b hb a ha => ?_⟩
+  · obtain ⟨h1, h2⟩ := hnear ψ hψ hψU
+    refine ⟨_, ⟨h1, ?_⟩, h2⟩
+    rw [Set.mem_preimage, h2]
+    exact hψU
+  · rw [Filter.frequently_iff]
+    intro V hV
+    have hW : U ∩ (fun f : A → ℂ => fun i => f (s i)) ⁻¹' V ∈ 𝓝 (φ b : A → ℂ) := by
+      refine Filter.inter_mem (hU.mem_nhds hb.2) ?_
+      have hcs : Continuous (fun f : A → ℂ => fun i => f (s i)) := by fun_prop
+      refine hcs.continuousAt.preimage_mem_nhds ?_
+      have : (fun i => φ b (s i)) = b := funext (hφ b hb.1).2
+      simpa only [this] using hV
+    obtain ⟨S', δ, hδ, hS'⟩ := GlobalTheory.SmoothPointFamily.exists_finset_of_mem_nhds hW
+    obtain ⟨P, hP, hPε⟩ := GlobalTheory.generic_points_dense GlobalTheory.exists_algIndep_tuple_near K A (FractionRing A) σ (φ b)
+      (hφ b hb.1).1 S' δ hδ
+    let ρ : A →+* ℂ := P.comp (algebraMap A (FractionRing A))
+    have hρ : ρ.comp (algebraMap K A) = σ := RingHom.ext fun a => RingHom.congr_fun hP a
+    obtain ⟨h3, h4⟩ := hS' ρ hPε
+    refine ⟨_, h4, ?_⟩
+    have h5 := (hnear ρ hρ h3).2
+    change φ (fun i => ρ (s i)) a ≠ 0
+    rw [h5]
+    exact (map_ne_zero_iff ρ (P.injective.comp (IsFractionRing.injective A (FractionRing A)))).2 ha
+
+theorem exists_countable_families : ∀ (K A : Type) [Field K] [NumberField K] [CommRing A] [IsDomain A] [Algebra K A] [Algebra.Smooth K A] (σ : K →+* ℂ), ∃ (ι : Type) (_ : Countable ι) (m : ι → ℕ) (B : ∀ i, Set (Fin (m i) → ℂ)) (φ : ∀ i, (Fin (m i) → ℂ) → (A →+* ℂ)), (∀ i, IsOpen (B i)) ∧ (∀ i, ∀ b ∈ B i, (φ i b).comp (algebraMap K A) = σ) ∧ (∀ i (a : A), DifferentiableOn ℂ (fun b => φ i b a) (B i)) ∧ (∀ ψ : A →+* ℂ, ψ.comp (algebraMap K A) = σ → ∃ i, ∃ b ∈ B i, φ i b = ψ) ∧ ∀ i, ∀ b ∈ B i, ∀ a : A, a ≠ 0 → ∃ᶠ b' in 𝓝 b, φ i b' a ≠ 0 := by
+  intro K A _ _ _ _ _ _ σ
+  haveI : Countable K := Countable.of_equiv _ (Module.finBasis ℚ K).equivFun.symm.toEquiv
+  haveI : Countable A := by
+    obtain ⟨n, f, hf⟩ := Algebra.FiniteType.iff_quotient_mvPolynomial''.1 (inferInstance : Algebra.FiniteType K A)
+    haveI : Countable (MvPolynomial (Fin n) K) := ReciprocityTheory.ChartRestriction.G.T0.NPB.countable_mvPoly
+    exact hf.countable
+  let X := {ψ : A →+* ℂ // ψ.comp (algebraMap K A) = σ}
+  letI : TopologicalSpace X := TopologicalSpace.induced (fun ψ => (ψ.1 : A → ℂ)) inferInstance
+  haveI : SecondCountableTopology X := TopologicalSpace.secondCountableTopology_induced X (A → ℂ) _
+  choose m B φ U hU hB hσ hd hcov hne using fun x : X => exists_family_near K A σ x.1 x.2
+  obtain ⟨t, ht, hcv⟩ := TopologicalSpace.countable_cover_nhds
+    (f := fun x : X => (fun ψ : X => (ψ.1 : A → ℂ)) ⁻¹' U x)
+    (fun x => continuous_induced_dom.continuousAt.preimage_mem_nhds (hU x))
+  refine ⟨t, ht.to_subtype, fun i => m i.1, fun i => B i.1, fun i => φ i.1, fun i => hB i.1, fun i => hσ i.1,
+    fun i => hd i.1, fun ψ hψ => ?_, fun i => hne i.1⟩
+  have : (⟨ψ, hψ⟩ : X) ∈ ⋃ x ∈ t, (fun ψ : X => (ψ.1 : A → ℂ)) ⁻¹' U x := by rw [hcv]; trivial
+  obtain ⟨x, hx, hψx⟩ := Set.mem_iUnion₂.1 this
+  exact ⟨⟨x, hx⟩, hcov x ψ hψ hψx⟩
+
+end GlobalTheory.SmoothPointCover
+end
+
+open Topology Filter
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_countable_holomorphic_families_smooth : ∀ (K A : Type) [Field K] [NumberField K] [CommRing A] [IsDomain A] [Algebra K A] [Algebra.Smooth K A] (σ : K →+* ℂ), ∃ (ι : Type) (_ : Countable ι) (m : ι → ℕ) (B : ∀ i, Set (Fin (m i) → ℂ)) (φ : ∀ i, (Fin (m i) → ℂ) → (A →+* ℂ)), (∀ i, IsOpen (B i)) ∧ (∀ i, ∀ b ∈ B i, (φ i b).comp (algebraMap K A) = σ) ∧ (∀ i (a : A), DifferentiableOn ℂ (fun b => φ i b a) (B i)) ∧ (∀ ψ : A →+* ℂ, ψ.comp (algebraMap K A) = σ → ∃ i, ∃ b ∈ B i, φ i b = ψ) ∧ ∀ i, ∀ b ∈ B i, ∀ a : A, a ≠ 0 → ∃ᶠ b' in 𝓝 b, φ i b' a ≠ 0 := by
+  atlas_forward_decl GlobalTheory.SmoothPointCover.exists_countable_families
+end
+
+section
+open NumberField Topology Filter ReciprocityTheory.ChartRestriction.G.FD
+open scoped Matrix
+
+namespace GlobalTheory.PeriodLift
+
+theorem exists_matrix_lift {r : ℕ} {ι : Type} {𝓕 : Filter ι} (p : Fin r → Prop) [DecidablePred p]
+    (A₀ : Matrix (Fin r) (Fin r) ℂ) (A : ι → Matrix (Fin r) (Fin r) ℂ)
+    (h0 : A₀.det ≠ 0) (hA : ∀ᶠ n in 𝓕, (A n).det ≠ 0)
+    (hc : ∀ a, p a → ∀ k, Tendsto (fun n => A n k a) 𝓕 (𝓝 (A₀ k a)))
+    (hr : ∀ a, ¬ p a → ∀ k, Tendsto (fun n => (A n)⁻¹ a k) 𝓕 (𝓝 (A₀⁻¹ a k))) :
+    ∃ B : ι → Matrix (Fin r) (Fin r) ℂ, Tendsto B 𝓕 (𝓝 A₀) ∧ ∀ᶠ n in 𝓕,
+      (∀ a, p a → ∀ k, B n k a = A n k a) ∧ (∀ a, ¬ p a → ∀ k, (B n)⁻¹ a k = (A n)⁻¹ a k) := by
+  set Q : ι → Matrix (Fin r) (Fin r) ℂ :=
+    fun n => Matrix.of fun k a => if p a then A n k a else A₀ k a with hQdef
+  set D : ι → Matrix (Fin r) (Fin r) ℂ :=
+    fun n => Matrix.of fun a j =>
+      if p a then (1 : Matrix (Fin r) (Fin r) ℂ) a j else ((A n)⁻¹ * Q n) a j with hDdef
+  have hQe : ∀ k a, Tendsto (fun n => Q n k a) 𝓕 (𝓝 (A₀ k a)) := by
+    intro k a
+    by_cases h : p a
+    · simpa [hQdef, h] using hc a h k
+    · simpa [hQdef, h] using tendsto_const_nhds
+  have hQ : Tendsto Q 𝓕 (𝓝 A₀) :=
+    tendsto_pi_nhds.2 fun k => tendsto_pi_nhds.2 fun a => hQe k a
+  have hD : Tendsto D 𝓕 (𝓝 1) := by
+    refine tendsto_pi_nhds.2 fun a => tendsto_pi_nhds.2 fun j => ?_
+    by_cases h : p a
+    · simpa [hDdef, h] using tendsto_const_nhds
+    · have e : (1 : Matrix (Fin r) (Fin r) ℂ) a j = ∑ k, A₀⁻¹ a k * A₀ k j := by
+        rw [← Matrix.mul_apply, Matrix.nonsing_inv_mul _ (Ne.isUnit h0)]
+      rw [e]
+      simp only [hDdef, Matrix.of_apply, h, if_false, Matrix.mul_apply]
+      exact tendsto_finset_sum _ fun k _ => (hr a h k).mul (hQe k j)
+  have hdet : Continuous fun M : Matrix (Fin r) (Fin r) ℂ => M.det := continuous_id.matrix_det
+  have hDi : Tendsto (fun n => (D n)⁻¹) 𝓕 (𝓝 1) := by
+    have hc1 : ContinuousAt Inv.inv (1 : Matrix (Fin r) (Fin r) ℂ) := by
+      apply continuousAt_matrix_inv
+      rw [Matrix.det_one, Ring.inverse_eq_inv']
+      exact continuousAt_inv₀ one_ne_zero
+    have := hc1.tendsto.comp hD
+    simpa [Function.comp_def] using this
+  have hQd : ∀ᶠ n in 𝓕, (Q n).det ≠ 0 := ((hdet.tendsto _).comp hQ).eventually_ne h0
+  have hDd : ∀ᶠ n in 𝓕, (D n).det ≠ 0 :=
+    ((hdet.tendsto _).comp hD).eventually_ne (by simp)
+  refine ⟨fun n => Q n * (D n)⁻¹, by simpa using hQ.mul hDi, ?_⟩
+  filter_upwards [hA, hQd, hDd] with n hAn hQn hDn
+  constructor
+  · intro j hj k
+    have hDj : ∀ i, D n i j = (1 : Matrix (Fin r) (Fin r) ℂ) i j := by
+      intro i
+      by_cases h : p i
+      · simp [hDdef, h]
+      · rw [← Matrix.nonsing_inv_mul _ (Ne.isUnit hAn)]
+        simp [hDdef, hQdef, h, hj, Matrix.mul_apply]
+    have e : (Q n * (D n)⁻¹ * D n) k j = (Q n * (D n)⁻¹ * (1 : Matrix (Fin r) (Fin r) ℂ)) k j := by
+      rw [Matrix.mul_apply, Matrix.mul_apply]
+      simp only [hDj]
+    rw [Matrix.mul_one, Matrix.nonsing_inv_mul_cancel_right _ _ (Ne.isUnit hDn)] at e
+    rw [← e]
+    simp [hQdef, hj]
+  · intro a ha k
+    rw [Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv _ (Ne.isUnit hDn)]
+    have e : ((A n)⁻¹ * Q n * (Q n)⁻¹) a k = (A n)⁻¹ a k := by
+      rw [Matrix.mul_nonsing_inv_cancel_right _ _ (Ne.isUnit hQn)]
+    rw [← e, Matrix.mul_apply, Matrix.mul_apply]
+    simp [hDdef, ha]
+
+theorem tendsto_of_span {E : Type} [Field E] {r : ℕ} {ι : Type} {𝓕 : Filter ι}
+    (S : Set (Fin r → E)) (hS : Submodule.span E S = ⊤) (σ : E → ℂ)
+    (Φ : ι → (Fin r → E) → ℂ) (Φ₀ : (Fin r → E) → ℂ)
+    (ha : ∀ n v w, Φ n (v + w) = Φ n v + Φ n w) (ha₀ : ∀ v w, Φ₀ (v + w) = Φ₀ v + Φ₀ w)
+    (hs : ∀ n (c : E) v, Φ n (c • v) = σ c * Φ n v) (hs₀ : ∀ (c : E) v, Φ₀ (c • v) = σ c * Φ₀ v)
+    (hσ : σ 0 = 0)
+    (h : ∀ v ∈ S, Tendsto (fun n => Φ n v) 𝓕 (𝓝 (Φ₀ v))) (v : Fin r → E) :
+    Tendsto (fun n => Φ n v) 𝓕 (𝓝 (Φ₀ v)) := by
+  have hv : v ∈ Submodule.span E S := hS ▸ Submodule.mem_top
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact h x hx
+  | zero =>
+    have e : (0 : Fin r → E) = (0 : E) • (0 : Fin r → E) := by simp
+    rw [e]
+    simp only [hs, hs₀, hσ, zero_mul]
+    exact tendsto_const_nhds
+  | add x y _ _ hx hy => simpa only [ha, ha₀] using hx.add hy
+  | smul c x _ hx => simpa only [hs, hs₀] using hx.const_mul (σ c)
+
+theorem hermC_emb_inv_col {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+    (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (hG : G.det ≠ 0) (u : Fin r → ℂ) (k : Fin r) :
+    hermC τ G u (Data.emb τ fun b => cc (G⁻¹ b k)) = u k := by
+  have e : ∀ a, ∑ b, u a * τ (G a b) * (starRingEnd ℂ) (τ (cc (G⁻¹ b k))) =
+      u a * τ ((G * G⁻¹) a k) := by
+    intro a
+    rw [Matrix.mul_apply, map_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    rw [cc, IsCMField.complexEmbedding_complexConj, Complex.conj_conj, map_mul, mul_assoc]
+  simp only [hermC, Data.emb, e]
+  rw [Matrix.mul_nonsing_inv _ (Ne.isUnit hG)]
+  simp [Matrix.one_apply, apply_ite τ]
+
+theorem period_lift : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (ι : Type) (𝓕 : Filter ι) (x₀ : Frame X.Ψ r) (x₁ : ι → Frame X.Ψ r), x₀ ∈ X.dom → (∀ᶠ n in 𝓕, x₁ n ∈ X.dom) → (∀ v ∈ X.Λ, ∀ (τ : X.Ψ) (a : Fin r), Tendsto (fun n => (if (a : ℕ) < X.p0 then hermC τ.1 X.Gm (col (mat (x₁ n) τ) a) (Data.emb τ.1 v) else ((mat (x₁ n) τ)⁻¹ *ᵥ Data.emb τ.1 v) a)) 𝓕 (𝓝 (if (a : ℕ) < X.p0 then hermC τ.1 X.Gm (col (mat x₀ τ) a) (Data.emb τ.1 v) else ((mat x₀ τ)⁻¹ *ᵥ Data.emb τ.1 v) a))) → ∀ V ∈ 𝓝 x₀, ∀ᶠ n in 𝓕, ∃ x ∈ V, ∀ (v : Fin r → E) (τ : X.Ψ) (a : Fin r), (if (a : ℕ) < X.p0 then hermC τ.1 X.Gm (col (mat x τ) a) (Data.emb τ.1 v) else ((mat x τ)⁻¹ *ᵥ Data.emb τ.1 v) a) = (if (a : ℕ) < X.p0 then hermC τ.1 X.Gm (col (mat (x₁ n) τ) a) (Data.emb τ.1 v) else ((mat (x₁ n) τ)⁻¹ *ᵥ Data.emb τ.1 v) a) := by
+  intro E _ _ _ r X ι 𝓕 x₀ x₁ h0 h1 h V hV
+  have key : ∀ τ : X.Ψ, ∃ B : ι → Matrix (Fin r) (Fin r) ℂ, Tendsto B 𝓕 (𝓝 (mat x₀ τ)) ∧
+      ∀ᶠ n in 𝓕, (∀ a : Fin r, (a : ℕ) < X.p0 → ∀ k, B n k a = mat (x₁ n) τ k a) ∧
+        (∀ a : Fin r, ¬ (a : ℕ) < X.p0 → ∀ k, (B n)⁻¹ a k = (mat (x₁ n) τ)⁻¹ a k) := by
+    intro τ
+    refine exists_matrix_lift (fun a : Fin r => (a : ℕ) < X.p0) (mat x₀ τ)
+      (fun n => mat (x₁ n) τ) (h0 τ).1 (h1.mono fun n hn => (hn τ).1) ?_ ?_
+    · intro a ha k
+      have := tendsto_of_span (𝓕 := 𝓕) (X.Λ : Set (Fin r → E)) X.Λ_span
+        (fun c => (starRingEnd ℂ) (τ.1 c))
+        (fun n v => hermC τ.1 X.Gm (col (mat (x₁ n) τ) a) (Data.emb τ.1 v))
+        (fun v => hermC τ.1 X.Gm (col (mat x₀ τ) a) (Data.emb τ.1 v))
+        (by intros; simp [hermC, Data.emb, mul_add, Finset.sum_add_distrib])
+        (by intros; simp [hermC, Data.emb, mul_add, Finset.sum_add_distrib])
+        (by intros; simp [hermC, Data.emb, Finset.mul_sum, mul_left_comm])
+        (by intros; simp [hermC, Data.emb, Finset.mul_sum, mul_left_comm])
+        (by simp)
+        (fun v hv => by simpa only [ha, if_true] using h v hv τ a)
+        (fun b => cc (X.Gm⁻¹ b k))
+      simpa only [hermC_emb_inv_col τ.1 X.Gm X.Gm_det, col] using this
+    · intro a ha k
+      have := tendsto_of_span (𝓕 := 𝓕) (X.Λ : Set (Fin r → E)) X.Λ_span
+        (fun c => τ.1 c)
+        (fun n v => ((mat (x₁ n) τ)⁻¹ *ᵥ Data.emb τ.1 v) a)
+        (fun v => ((mat x₀ τ)⁻¹ *ᵥ Data.emb τ.1 v) a)
+        (by intros; simp [Matrix.mulVec, dotProduct, Data.emb, mul_add, Finset.sum_add_distrib])
+        (by intros; simp [Matrix.mulVec, dotProduct, Data.emb, mul_add, Finset.sum_add_distrib])
+        (by intros; simp [Matrix.mulVec, dotProduct, Data.emb, Finset.mul_sum, mul_left_comm])
+        (by intros; simp [Matrix.mulVec, dotProduct, Data.emb, Finset.mul_sum, mul_left_comm])
+        (by simp)
+        (fun v hv => by simpa only [ha, if_false] using h v hv τ a)
+        (Pi.single k 1)
+      simpa [Matrix.mulVec, dotProduct, Data.emb, Pi.single_apply, apply_ite τ.1] using this
+  choose B hB hB' using key
+  have hx : Tendsto (fun n => (fun τ => B τ n : Frame X.Ψ r)) 𝓕 (𝓝 x₀) :=
+    tendsto_pi_nhds.2 fun τ => hB τ
+  filter_upwards [hx.eventually_mem hV, eventually_all.2 hB'] with n hn hn'
+  refine ⟨_, hn, fun v τ a => ?_⟩
+  have hm : mat (fun τ => B τ n : Frame X.Ψ r) τ = B τ n := rfl
+  rw [hm]
+  by_cases ha : (a : ℕ) < X.p0
+  · have : col (B τ n) a = col (mat (x₁ n) τ) a := funext fun k => (hn' τ).1 a ha k
+    simp only [ha, if_true, this]
+  · simp only [ha, if_false, Matrix.mulVec, dotProduct, (hn' τ).2 a ha]
+
+end GlobalTheory.PeriodLift
+end
+
+section
+open NumberField Topology Filter ReciprocityTheory.ChartRestriction.G.FD
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.period_coordinates_frames_lift_tendsto : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (ι : Type) (𝓕 : Filter ι) (x₀ : Frame X.Ψ r) (x₁ : ι → Frame X.Ψ r), x₀ ∈ X.dom → (∀ᶠ n in 𝓕, x₁ n ∈ X.dom) → (∀ v ∈ X.Λ, ∀ (τ : X.Ψ) (a : Fin r), Tendsto (fun n => (if (a : ℕ) < X.p0 then hermC τ.1 X.Gm (col (mat (x₁ n) τ) a) (Data.emb τ.1 v) else ((mat (x₁ n) τ)⁻¹ *ᵥ Data.emb τ.1 v) a)) 𝓕 (𝓝 (if (a : ℕ) < X.p0 then hermC τ.1 X.Gm (col (mat x₀ τ) a) (Data.emb τ.1 v) else ((mat x₀ τ)⁻¹ *ᵥ Data.emb τ.1 v) a))) → ∀ V ∈ 𝓝 x₀, ∀ᶠ n in 𝓕, ∃ x ∈ V, ∀ (v : Fin r → E) (τ : X.Ψ) (a : Fin r), (if (a : ℕ) < X.p0 then hermC τ.1 X.Gm (col (mat x τ) a) (Data.emb τ.1 v) else ((mat x τ)⁻¹ *ᵥ Data.emb τ.1 v) a) = (if (a : ℕ) < X.p0 then hermC τ.1 X.Gm (col (mat (x₁ n) τ) a) (Data.emb τ.1 v) else ((mat (x₁ n) τ)⁻¹ *ᵥ Data.emb τ.1 v) a) := by
+  first | exact @GlobalTheory.PeriodLift.period_lift | exact GlobalTheory.PeriodLift.period_lift | (intros; apply GlobalTheory.PeriodLift.period_lift <;> assumption)
+end
+
+section
 open NumberField Topology Filter ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.Reg
 open scoped Matrix
 
@@ -397,3 +714,5 @@ theorem exists_comp_generic_off_meagre : ∀ (E : Type) [Field E] [NumberField E
   exact ⟨φ, y', _, hy', hinv _ _ _ (hmul _ _ _ _ _ ht' ht)⟩
 
 end GlobalTheory.GenericFrames
+end
+end

@@ -1,12 +1,35 @@
 import Mathlib
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.Assemble
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ClosedStep
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.SubgroupLocallyCompactHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProdHaar
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.LocallyCompactAdelicUnitary
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.DiscAll
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.StabilizerFixesFrameVector
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjStep
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ConjInvOfExists
 
+section
+noncomputable section
+
+namespace PI.VolSemiDirect.W
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub NumberField IsDedekindDomain MeasureTheory
+
+
+end PI.VolSemiDirect.W
+end
+end
+
+section
 namespace PI.VolSemiDirect.W
 
 
 end PI.VolSemiDirect.W
+end
+
+section
+namespace PI.VolSemiDirect.W
+
+
+end PI.VolSemiDirect.W
+end

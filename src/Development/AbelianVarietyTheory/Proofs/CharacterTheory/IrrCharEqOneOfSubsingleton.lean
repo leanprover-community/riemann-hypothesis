@@ -3,9 +3,17 @@ import Formalism.UnipotentAdelicQuotients.CuspEllipticValues
 import Development.AbelianVarietyTheory.Definitions.CommutativeAlgebra.AbByPOfComm
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.MatrixTraceIffIsCharacterOverSubfieldComplexStatement
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IsPrimitiveExtendZeroOfSumUnipotentRadicalStatement
-import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EqOfIsPrimitiveOfEqOnEllipticFiniteGLStatement
+import Development.AbelianVarietyTheory.Proofs.CharacterTheory.EqOfIsPrimitiveOfEqOnEllipticFiniteGL
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IrreducibleOfVirtualCharacterNormOneStatement
 
+section
+open Polynomial GlobalTheory.CuspGL GlobalTheory.BI
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_of_isPrimitive_of_eq_on_elliptic_finiteGL : ∀ (F : Type) [Field F] [Finite F] (d : ℕ) (χ χ' : GL (Fin d) F → ℂ), 0 < d → IsIrrChar ℂ ℂ χ → IsIrrChar ℂ ℂ χ' → IsPrimitive (extZero χ) → IsPrimitive (extZero χ') → (∀ x : GL (Fin d) F, Irreducible (Matrix.charpoly (x : Matrix (Fin d) (Fin d) F)) → χ x = χ' x) → χ = χ' := by
+  first | exact @GlobalTheory.CuspGL.eq_of_isPrimitive_of_eq_on_elliptic | exact GlobalTheory.CuspGL.eq_of_isPrimitive_of_eq_on_elliptic | (intros; apply GlobalTheory.CuspGL.eq_of_isPrimitive_of_eq_on_elliptic <;> assumption)
+end
+
+section
 namespace GlobalTheory.CuspGL
 
 theorem irrChar_eq_one_of_subsingleton {G : Type} [Group G] [Fintype G] [Subsingleton G] (χ : G → ℂ)
@@ -51,3 +59,4 @@ theorem cuspElliptic_statement : CuspElliptic.Statement := by
       (isPrimitive_of_isCuspChar χ h) (isPrimitive_of_isCuspChar χ' h') he
 
 end GlobalTheory.CuspGL
+end

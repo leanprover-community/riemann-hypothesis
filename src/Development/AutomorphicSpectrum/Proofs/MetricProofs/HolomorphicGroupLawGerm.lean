@@ -1,7 +1,77 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsConstAddEquivOfRangeEq
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 import BuildAid.ForwardExisting
 
+section
+open Set Filter Topology
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat
+
+theorem exists_const_of_section_mem_range : ∀ (n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Countable Λ] (B : Set (Fin n → ℂ)), IsOpen B → IsPreconnected B → B.Nonempty → ∀ (P : (Fin n → ℂ) → (Λ →+ (Fin g → ℂ))) (s : (Fin n → ℂ) → (Fin g → ℂ)), (∀ x, DifferentiableOn ℂ (fun b => P b x) B) → DifferentiableOn ℂ s B → (∀ b ∈ B, s b ∈ (P b).range) → ∃ x : Λ, ∀ b ∈ B, s b = P b x := by
+  intro n g Λ _ _ B hB hpc hne P s hP hs hrange
+  haveI : Nonempty B := hne.to_subtype
+  haveI : LocallyCompactSpace B := hB.locallyCompactSpace
+  haveI : BaireSpace B := BaireSpace.of_t2Space_locallyCompactSpace
+  have hclosed : ∀ x : Λ, IsClosed {b : B | s b = P b x} := fun x =>
+    isClosed_eq hs.continuousOn.restrict (hP x).continuousOn.restrict
+  have hunion : (⋃ x : Λ, {b : B | s b = P b x}) = univ := by
+    refine eq_univ_of_forall fun b => ?_
+    obtain ⟨x, hx⟩ := AddMonoidHom.mem_range.mp (hrange b b.2)
+    exact mem_iUnion.mpr ⟨x, hx.symm⟩
+  obtain ⟨x, b₀, hb₀⟩ := nonempty_interior_of_iUnion_of_closed hclosed hunion
+  refine ⟨x, ?_⟩
+  have hopen : IsOpen ((Subtype.val : B → Fin n → ℂ) '' interior {b : B | s b = P b x}) :=
+    hB.isOpenMap_subtype_val _ isOpen_interior
+  have hev : (fun b => s b - P b x) =ᶠ[𝓝 (b₀ : Fin n → ℂ)] 0 := by
+    filter_upwards [hopen.mem_nhds ⟨b₀, hb₀, rfl⟩]
+    rintro _ ⟨c, hc, rfl⟩
+    have hmem : c ∈ {b : B | s b = P b x} := interior_subset hc
+    have hc' : s c = P c x := hmem
+    show s c - P c x = 0
+    exact sub_eq_zero.mpr hc'
+  have han : AnalyticOnNhd ℂ (fun b => s b - P b x) B :=
+    GlobalTheory.SCV.analyticOnNhd_of_differentiableOn hB (hs.sub (hP x))
+  intro b hb
+  have h0 : s b - P b x = 0 := han.eqOn_zero_of_preconnected_of_eventuallyEq_zero hpc b₀.2 hev hb
+  exact sub_eq_zero.mp h0
+
+end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+section
+open Set
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat
+
+theorem exists_const_addEquiv_of_range_eq : ∀ (n g : ℕ) (Λ Λ' : Type) [AddCommGroup Λ] [Countable Λ] [AddCommGroup Λ'] [Countable Λ'] (B : Set (Fin n → ℂ)), IsOpen B → IsPreconnected B → B.Nonempty → ∀ (P : (Fin n → ℂ) → (Λ →+ (Fin g → ℂ))) (P' : (Fin n → ℂ) → (Λ' →+ (Fin g → ℂ))), (∀ x, DifferentiableOn ℂ (fun b => P b x) B) → (∀ x, DifferentiableOn ℂ (fun b => P' b x) B) → (∀ b ∈ B, Function.Injective (P b) ∧ Function.Injective (P' b) ∧ (P b).range = (P' b).range) → ∃ T : Λ' ≃+ Λ, ∀ b ∈ B, ∀ x, P' b x = P b (T x) := by
+  intro n g Λ Λ' _ _ _ _ B hB hc hne P P' hP hP' h
+  have h1 : ∀ x : Λ', ∃ y : Λ, ∀ b ∈ B, P' b x = P b y := fun x =>
+    exists_const_of_section_mem_range n g Λ B hB hc hne P (fun b => P' b x) hP (hP' x)
+      (fun b hb => by rw [(h b hb).2.2]; exact ⟨x, rfl⟩)
+  have h2 : ∀ y : Λ, ∃ x : Λ', ∀ b ∈ B, P b y = P' b x := fun y =>
+    exists_const_of_section_mem_range n g Λ' B hB hc hne P' (fun b => P b y) hP' (hP y)
+      (fun b hb => by rw [← (h b hb).2.2]; exact ⟨y, rfl⟩)
+  choose f hf using h1
+  choose k hk using h2
+  obtain ⟨b₀, hb₀⟩ := hne
+  obtain ⟨hi, hi', -⟩ := h b₀ hb₀
+  refine ⟨{ toFun := f, invFun := k, left_inv := ?_, right_inv := ?_, map_add' := ?_ }, ?_⟩
+  · intro x
+    apply hi'
+    rw [← hk _ b₀ hb₀, ← hf _ b₀ hb₀]
+  · intro y
+    apply hi
+    rw [← hf _ b₀ hb₀, ← hk _ b₀ hb₀]
+  · intro x x'
+    apply hi
+    rw [map_add, ← hf _ b₀ hb₀, ← hf _ b₀ hb₀, ← hf _ b₀ hb₀, map_add]
+  · intro b hb x
+    exact hf x b hb
+
+end GlobalTheory.CompanionTheory.Ar.Flat
+end
+
+section
 section
 open Set
 
@@ -212,3 +282,4 @@ open Set
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.holomorphic_lattice_family_local : ∀ (n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Countable Λ] (B : Set (Fin n → ℂ)), IsOpen B → Convex ℝ B → ∀ (Γ : (Fin n → ℂ) → AddSubgroup (Fin g → ℂ)) (Q : (Fin n → ℂ) → (Fin g → ℂ) → (Fin g → ℂ) → ℝ) (e : Λ → Λ → ℝ), (∀ b₀ ∈ B, ∃ N : Set (Fin n → ℂ), IsOpen N ∧ b₀ ∈ N ∧ N ⊆ B ∧ ∃ P : (Fin n → ℂ) → (Λ →+ (Fin g → ℂ)), (∀ x, DifferentiableOn ℂ (fun b => P b x) N) ∧ ∀ b ∈ N, Function.Injective (P b) ∧ (P b).range = Γ b ∧ ∀ x y, Q b (P b x) (P b y) = e x y) → ∃ P : (Fin n → ℂ) → (Λ →+ (Fin g → ℂ)), (∀ x, DifferentiableOn ℂ (fun b => P b x) B) ∧ ∀ b ∈ B, Function.Injective (P b) ∧ (P b).range = Γ b ∧ ∀ x y, Q b (P b x) (P b y) = e x y := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.exists_global_marking_of_local
+end

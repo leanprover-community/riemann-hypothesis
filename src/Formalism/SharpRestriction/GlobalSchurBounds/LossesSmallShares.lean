@@ -1,6 +1,21 @@
-import Formalism.SharpRestriction.GlobalSchurBounds.PrvFOfFamilyTheoremTiesEventualIncidenceTransport
+import Formalism.LocalToGlobal.GlobalTheory.PlacesP
+import Formalism.LocalToGlobal.GlobalTheory.PowFourLtCeilThresholdPrime
 import Formalism.SharpRestriction.GlobalSchurBounds.WeightVectorSmallSharesSeven
 
+section
+noncomputable section
+
+namespace Formalism.MainNotions
+
+open Formalism.BasicNotions Formalism.MainNotions.Lnk Formalism.MainNotions.GlobalTheoryTheory
+
+
+end Formalism.MainNotions
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.MainNotions.Lnk
@@ -430,4 +445,5 @@ def LinkGLOBAL7 (Fm : FamP eps) (Cabs CH C0 eD eL : ℝ) : Prop :=
 
 end Formalism.MainNotions
 
+end
 end

@@ -1,12 +1,283 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannTheoremNonprincipalPolarisedTorusStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothOfRelativeDimensionOfHolUnif
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAppellHumbertFactorStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAppellHumbertFactor
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianFormsAddOfFactorProductStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AppellHumbertHomCompatibleStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelAmpleOfAppellHumbertStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LineBundleEndoFactorPullback
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AppellHumbertHomCompatible
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelAmpleOfAppellHumbert
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolarizedAbelianIsogenyExists
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsogenyTorsionGeneratorPower
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionGeneratorCharTrivial
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaMultiplierTrivialization
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaMultiplierIntegralImaginary
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_appell_humbert_factor : ∀ (g : ℕ) (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A →
+    ∀ (L₀ : LB A.left) (u₀ : HolUnif A L₀ g) (H₀ : Matrix (Fin g) (Fin g) ℂ) (χ₀ : u₀.Λ → ℂ), L₀.IsLB → u₀.IsAH H₀ χ₀ →
+    ∀ Hm : Matrix (Fin g) (Fin g) ℂ, Hm.IsHermitian →
+    (∀ l ∈ u₀.Λ, ∀ l' ∈ u₀.Λ, ∃ n : ℤ, (l ⬝ᵥ Hm.mulVec (star l')).im = n) →
+    ∃ (M : LB A.left) (u : HolUnif A M g) (χ : u.Λ → ℂ), M.IsLB ∧ u.ex = u₀.ex ∧ IsFactorAH u Hm χ := by
+  first | exact @GlobalTheory.AHBundle.exists_lb_of_hermitian_int | exact GlobalTheory.AHBundle.exists_lb_of_hermitian_int | (intros; apply GlobalTheory.AHBundle.exists_lb_of_hermitian_int <;> assumption)
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.appell_humbert_hom_compatible : ∀ (g : ℕ) (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A → IsProjOver A.hom →
+    ∀ (M₁ M₂ : LB A.left) (u₁ : HolUnif A M₁ g) (u₂ : HolUnif A M₂ g) (H₁ H₂ : Matrix (Fin g) (Fin g) ℂ)
+      (χ₁ : u₁.Λ → ℂ) (χ₂ : u₂.Λ → ℂ) (f : A ⟶ A) (Fl : (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ)),
+    M₁.IsLB → M₂.IsLB → u₂.ex = u₁.ex → IsFactorAH u₁ H₁ χ₁ → IsFactorAH u₂ H₂ χ₂ → IsMonHom f →
+    (∀ z, u₁.ex (Fl z) = u₁.ex z ≫ f) →
+    (∀ z w, z ⬝ᵥ H₂.mulVec (star w) = z ⬝ᵥ H₁.mulVec (star (Fl w))) →
+    (∀ z w, Fl z ⬝ᵥ H₁.mulVec (star w) = z ⬝ᵥ H₁.mulVec (star (Fl w))) →
+    LBIso (abelian₂ A M₂) ((abelian₂ A M₁).pull (lift (fst A A) (snd A A ≫ f)).left) := by
+  first | exact @GlobalTheory.TorusRM.lbIso_lam_pull_of_selfAdjoint | exact GlobalTheory.TorusRM.lbIso_lam_pull_of_selfAdjoint | (intros; apply GlobalTheory.TorusRM.lbIso_lam_pull_of_selfAdjoint <;> assumption)
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rel_ample_of_appell_humbert : ∀ (g : ℕ) (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A →
+    ∀ (M : LB A.left) (u : HolUnif A M g) (Hm : Matrix (Fin g) (Fin g) ℂ) (χ : u.Λ → ℂ),
+    M.IsLB → u.IsAH Hm χ → Out.RelAmple A M := by
+  first | exact @GlobalTheory.LefschetzAmple.relAmple_of_isAH | exact GlobalTheory.LefschetzAmple.relAmple_of_isAH | (intros; apply GlobalTheory.LefschetzAmple.relAmple_of_isAH <;> assumption)
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.polarized_abelian_isogeny_exists : ∀ (g : ℕ) (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A →
+    ∀ (M : LB A.left) (u : HolUnif A M g) (Hm : Matrix (Fin g) (Fin g) ℂ) (χ : u.Λ → ℂ), M.IsLB → u.IsAH Hm χ →
+    ∃ (P : Out.PolAV (Sp ℂ)) (ψ : A ⟶ P.A) (ρ : P.A ⟶ A) (N : ℕ), 1 ≤ N ∧ IsMonHom ψ ∧ IsMonHom ρ ∧
+      ψ ≫ ρ = (𝟙 A) ^ N ∧ ρ ≫ ψ = (𝟙 P.A) ^ N ∧
+      LBIso (abelian₂ A M) ((abelian₂ P.A P.L).pull (lift (fst A A ≫ ψ) (snd A A ≫ ψ)).left) := by
+  first | exact @GlobalTheory.PosAHIsog.exists_isog_principal_lam | exact GlobalTheory.PosAHIsog.exists_isog_principal_lam | (intros; apply GlobalTheory.PosAHIsog.exists_isog_principal_lam <;> assumption)
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isogeny_torsion_generator_power : ∀ (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A → ∀ (M : LB A.left), M.IsLB →
+    ∀ (P : Out.PolAV (Sp ℂ)) (ψ : A ⟶ P.A) (ρ : P.A ⟶ A) (N : ℕ), IsMonHom ψ → IsMonHom ρ →
+      ψ ≫ ρ = (𝟙 A) ^ N → ρ ≫ ψ = (𝟙 P.A) ^ N →
+      LBIso (abelian₂ A M) ((abelian₂ P.A P.L).pull (lift (fst A A ≫ ψ) (snd A A ≫ ψ)).left) →
+    ∀ (T : Over (Sp ℂ)) (x : T ⟶ A), HasGen ((abelian₂ A M).pull (lift (fst A T) (snd A T ≫ x)).left) → x ^ (N * N) = 1 := by
+  first | exact @GlobalTheory.KillSquare.pow_sq_eq_one_of_lam_trivial | exact GlobalTheory.KillSquare.pow_sq_eq_one_of_lam_trivial | (intros; apply GlobalTheory.KillSquare.pow_sq_eq_one_of_lam_trivial <;> assumption)
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.torsion_generator_char_trivial : ∀ (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A → ∀ (M : LB A.left) (f : A ⟶ A) (N : ℕ), M.IsLB → 1 ≤ N →
+    (∀ y : 𝟙_ (Over (Sp ℂ)) ⟶ A, HasGen ((abelian₂ A M).pull (lift (fst A (𝟙_ (Over (Sp ℂ)))) (snd A (𝟙_ (Over (Sp ℂ))) ≫ y)).left) → y ≫ f = 1) →
+    ∀ (T : Over (Sp ℂ)) (x : T ⟶ A), x ^ N = 1 → HasGen ((abelian₂ A M).pull (lift (fst A T) (snd A T ≫ x)).left) → x ≫ f = 1 := by
+  first | exact @GlobalTheory.torsion_point_comp_eq_one | exact GlobalTheory.torsion_point_comp_eq_one | (intros; apply GlobalTheory.torsion_point_comp_eq_one <;> assumption)
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_multiplier_trivialization : ∀ (g : ℕ) (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A →
+    ∀ (M : LB A.left) (u : HolUnif A M g) (Hm : Matrix (Fin g) (Fin g) ℂ) (χ : u.Λ → ℂ),
+    M.IsLB → IsFactorAH u Hm χ → ∀ w : Fin g → ℂ,
+    HasGen ((abelian₂ A M).pull (lift (fst A (𝟙_ (Over (Sp ℂ)))) (snd A (𝟙_ (Over (Sp ℂ))) ≫ u.ex w)).left) →
+    ∃ θ : (Fin g → ℂ) → ℂ, Differentiable ℂ θ ∧ (∀ z, θ z ≠ 0) ∧
+      ∀ l ∈ u.Λ, ∀ z, θ (z + l) = Complex.exp (Real.pi * (w ⬝ᵥ Hm.mulVec (star l))) * θ z := by
+  first | exact @GlobalTheory.TorusRM.exists_theta_of_hasGen_lam_pull | exact GlobalTheory.TorusRM.exists_theta_of_hasGen_lam_pull | (intros; apply GlobalTheory.TorusRM.exists_theta_of_hasGen_lam_pull <;> assumption)
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_multiplier_integral_imaginary : ∀ (g : ℕ) (Λ : Submodule ℤ (Fin g → ℂ)), Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤ →
+    ∀ (Hm : Matrix (Fin g) (Fin g) ℂ), Hm.IsHermitian → ∀ (w : Fin g → ℂ) (θ : (Fin g → ℂ) → ℂ),
+    Differentiable ℂ θ → (∀ z, θ z ≠ 0) →
+    (∀ l ∈ Λ, ∀ z, θ (z + l) = Complex.exp (Real.pi * (w ⬝ᵥ Hm.mulVec (star l))) * θ z) →
+    ∀ l ∈ Λ, ∃ n : ℤ, (w ⬝ᵥ Hm.mulVec (star l)).im = n := by
+  first | exact @GlobalTheory.ThetaLiouville.im_form_mem_int | exact GlobalTheory.ThetaLiouville.im_form_mem_int | (intros; apply GlobalTheory.ThetaLiouville.im_form_mem_int <;> assumption)
+end
+end
+
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.TorusRM
+
+open GlobalTheory.CechPic GlobalTheory.RealMult.Elliptic
+
+theorem hasGen_lam_pull_of_lbIso {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonObj A] {M M' : LB A.left}
+    (hM : M.IsLB) (hM' : M'.IsLB) (α : A ⟶ A)
+    (h : LBIso (abelian₂ A M') ((abelian₂ A M).pull (lift (fst A A) (snd A A ≫ α)).left)) {T : Over S} (x : T ⟶ A)
+    (hx : HasGen ((abelian₂ A M).pull (lift (fst A T) (snd A T ≫ x)).left)) :
+    HasGen ((abelian₂ A M').pull (lift (fst A T) (snd A T ≫ x)).left) := by
+  have hl : (abelian₂ A M).IsLB := LB.isLB_linComb hM _ _
+  have hl' : (abelian₂ A M').IsLB := LB.isLB_linComb hM' _ _
+  have h₁ : lam (cls M' hM') (fst A A) (snd A A) = lam (cls M hM) (fst A A) (snd A A ≫ α) :=
+    (cls_cube_two hM' _ _ hl').symm.trans
+      (((cls_eq_iff hl' (pull_isLB hl _)).2 h).trans (cls_pull_lam hM _ _ _))
+  have h₂ : lam (cls M hM) (fst A T) (snd A T ≫ x) = 0 :=
+    (cls_pull_lam hM _ _ (pull_isLB hl _)).symm.trans ((cls_eq_zero_iff (pull_isLB hl _)).2 hx)
+  have h₃ := congrArg (CechPic.pull (lift (snd A T ≫ x) (fst A T)).left) h₁
+  have h₄ := congrArg (CechPic.pull (lift (fst A T ≫ α) (snd A T)).left) h₂
+  rw [pull_lam, pull_lam, lift_fst, lift_snd, lift_snd_assoc] at h₃
+  rw [pull_lam, map_zero, lift_fst, lift_snd_assoc] at h₄
+  refine (cls_eq_zero_iff (pull_isLB hl' _)).1 ?_
+  rw [cls_pull_lam hM', lam_comm, h₃, lam_comm, h₄]
+
+theorem comp_eq_one_of_lam_triv_of_pull_pos : ∀ (g : ℕ) (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A →
+    ∀ (M : LB A.left) (u : HolUnif A M g) (Hm : Matrix (Fin g) (Fin g) ℂ) (χ : u.Λ → ℂ) (f : A ⟶ A),
+    M.IsLB → IsFactorAH u Hm χ →
+    ∀ (M' : LB A.left) (u' : HolUnif A M' g) (Hm' : Matrix (Fin g) (Fin g) ℂ) (χ' : u'.Λ → ℂ) (α : A ⟶ A),
+    M'.IsLB → u'.IsAH Hm' χ' → IsMonHom α → LBIso (abelian₂ A M') ((abelian₂ A M).pull (lift (fst A A) (snd A A ≫ α)).left) →
+    (∀ w, (∀ l ∈ u.Λ, ∃ n : ℤ, (w ⬝ᵥ Hm.mulVec (star l)).im = n) → u.ex w ≫ f = 1) →
+    ∀ (T : Over (Sp ℂ)) (x : T ⟶ A), HasGen ((abelian₂ A M).pull (lift (fst A T) (snd A T ≫ x)).left) → x ≫ f = 1 := by
+  intro g A _ hA M u Hm χ f hM hF M' u' Hm' χ' α hM' hAH _ hiso hf T x hx
+  haveI := hA.comm
+  obtain ⟨P, ψ, ρ, N, hN, hψ, hρ, h₁, h₂, h₃⟩ := GlobalTheory.T.polarized_abelian_isogeny_exists g A hA M' u' Hm' χ' hM' hAH
+  have hk : x ^ (N * N) = 1 := GlobalTheory.T.isogeny_torsion_generator_power A hA M' hM' P ψ ρ N hψ hρ h₁ h₂ h₃ T x
+    (hasGen_lam_pull_of_lbIso hM hM' α hiso x hx)
+  refine GlobalTheory.T.torsion_generator_char_trivial A hA M f (N * N) hM (Nat.mul_pos hN hN) (fun y hy => ?_) T x hk hx
+  obtain ⟨w, rfl⟩ := u.ex_onto y
+  obtain ⟨θ, hθ, h0, hp⟩ := GlobalTheory.T.theta_multiplier_trivialization g A hA M u Hm χ hM hF w hy
+  exact hf w (GlobalTheory.T.theta_multiplier_integral_imaginary g u.Λ u.full Hm hF.1 w θ hθ h0 hp)
+
+end GlobalTheory.TorusRM
+end
+end
+
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
+  CartesianMonoidalCategory MonObj TensorProduct NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.TorusRM
+
+open scoped nonZeroDivisors
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.line_bundle_endo_factor_pullback : ∀ (g : ℕ) (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A →
+    ∀ (M : LB A.left) (u : HolUnif A M g) (Hm : Matrix (Fin g) (Fin g) ℂ) (χ : u.Λ → ℂ) (f : A ⟶ A),
+    M.IsLB → IsFactorAH u Hm χ →
+    ∀ (M' : LB A.left) (u' : HolUnif A M' g) (Hm' : Matrix (Fin g) (Fin g) ℂ) (χ' : u'.Λ → ℂ) (α : A ⟶ A),
+    M'.IsLB → u'.IsAH Hm' χ' → IsMonHom α → LBIso (abelian₂ A M') ((abelian₂ A M).pull (lift (fst A A) (snd A A ≫ α)).left) →
+    (∀ w, (∀ l ∈ u.Λ, ∃ n : ℤ, (w ⬝ᵥ Hm.mulVec (star l)).im = n) → u.ex w ≫ f = 1) →
+    ∀ (T : Over (Sp ℂ)) (x : T ⟶ A), HasGen ((abelian₂ A M).pull (lift (fst A T) (snd A T ≫ x)).left) → x ≫ f = 1 := by
+  atlas_forward_decl GlobalTheory.TorusRM.comp_eq_one_of_lam_triv_of_pull_pos
+end
+end
+
+section
 section
 set_option autoImplicit false
 
@@ -239,3 +510,5 @@ theorem _root_.GlobalTheory.T.lattice_multiplication_stable : ∀ (F : Type) [Fi
       (∀ (a : 𝓞 F) w, u.ex (fun i ↦ (e i (a : F) : ℂ) * w i) = u.ex w ≫ X.rm.act a) ∧
       ∃ χ, u.IsAH (Matrix.diagonal fun i ↦ ((2 * (e i (c : F) * r i) : ℝ) : ℂ)) χ := by
   atlas_forward_decl GlobalTheory.TorusRM.exists_obj_of_polarised_torus
+end
+end

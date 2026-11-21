@@ -6,21 +6,953 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfIsSe
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyBreuilKisinDatum
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBreuilKisinFrobeniusPeriod
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PeriodRingCoreCrystallineDeRhamInvariants
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrysOfCrystallineBreuilKisinFrameStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfBreuilKisinFrameIsDeRham
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrysOfCrystallineBreuilKisinFrame
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfInvertiblePeriodMatrix
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInvariantBasisDeRhamBreuilKisin
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyLocalPeriodRingsData
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdaptedBasisThetaGaloisFixedPolesStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBreuilKisinFrameSemistableBoundedJumpsStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsHodgeBasisAtEmbeddingStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsHodgeTateIffDiagonalAdaptedBasisStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HodgeTateOperatorPowEqSumStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MultisetEqOfPowerSumsZpowEq
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaConjBoundedCompatibleBreuilKisinFramesStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRPlusIsDomainBdRIsField
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemFilPIffEvPt
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLocalPrimeAinf
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaConjBoundedCompatibleBreuilKisinFrames
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsDeRhamFrameLimitLatticeBreuilKisinTowerStatement
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LayerDdRBounds
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamCrystallineOfLatticeReadsStatement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAdaptedOfSurjective
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineAndJumps
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSemistableLatticeInMatrixAlgebraLayer
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TracePowEqAlongLatticeTowerCoverStatement
 
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCrys_of_crystallineBreuilKisinFrame : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (τ : Ainf l), bk.IsPer τ → ∀ (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (N : ℕ) (d : ℕ) (ρ : ↥(GK K) →* GL (Fin d) ℤ_[l]) (F : Frame bk N d fun g => (ρ g).val), F.IsCr → IsCrys (P.PD K) (qRep ρ) := by
+  first | (exact @GlobalTheory.CrTop.crys_of_frame) | (exact GlobalTheory.CrTop.crys_of_frame) | (intros; apply GlobalTheory.CrTop.crys_of_frame  <;> assumption)
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+
+namespace GlobalTheory.BKLim
+
+theorem isDR_of_frame_isDR : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (τ : Ainf l), bk.IsPer τ → ∀ (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (N : ℕ) (d : ℕ) (ρ : ↥(GK K) →* GL (Fin d) ℤ_[l]) (F : Frame bk N d fun g => (ρ g).val), F.IsDR → Formalism.MainNotions.N.IsDR (P.PD K) (qRep ρ) := by
+  intro l _ K bk τ hτ P AI T N d ρ F hF
+  obtain ⟨Y, Y', hY, -⟩ := GlobalTheory.T.breuilKisinPreframe_bounded_poles l K bk τ hτ N d (fun g => (ρ g).val) F.toPre
+  obtain ⟨C⟩ := GlobalTheory.MemLoc.nonempty_core l
+  obtain ⟨B, Q, -, hQ, -, -, hinv⟩ := GlobalTheory.T.exists_invariant_basis_deRham_breuilKisin l K bk τ hτ C N d (fun g => (ρ g).val) F Y hF hY
+  have hQ' : IsUnit (T.eD.symm.mapMatrix Q) := hQ.map T.eD.symm.mapMatrix
+  refine GlobalTheory.PMon.isDR_of_periodMatrix l P (Fin d) K (Fin d → ℚ_[l]) (Pi.basisFun ℚ_[l] (Fin d)) (qRep ρ) hQ'.unit ?_
+  intro g
+  have hg := hinv g
+  simp only [IsUnit.unit_spec]
+  ext i j
+  apply T.eD.injective
+  have hij := congrFun (congrFun hg i) j
+  rw [LinearMap.toMatrix_eq_toMatrix']
+  simp only [qRep, Matrix.mul_apply, Matrix.map_apply, map_sum, map_mul, RingEquiv.mapMatrix_apply] at hij ⊢
+  simp only [MonoidHom.comp_apply, MonoidHom.coe_coe, Units.coeHom_apply, RingHom.mapMatrix_apply, AlgEquiv.coe_toAlgHom, Matrix.toLinAlgEquiv'_apply, LinearMap.toMatrix'_toLin',
+    Matrix.map_apply, T.actD, RingEquiv.apply_symm_apply] at ⊢
+  rw [← hij]
+  refine Finset.sum_congr rfl fun x _ => ?_
+  congr 1
+  have e : LinearMap.toMatrix' (Matrix.toLinAlgEquiv' ((algebraMap ℤ_[l] ℚ_[l]).mapMatrix (ρ g : Matrix (Fin d) (Fin d) ℤ_[l]))) =
+      (algebraMap ℤ_[l] ℚ_[l]).mapMatrix (ρ g : Matrix (Fin d) (Fin d) ℤ_[l]) :=
+    LinearMap.toMatrix'_toLin' _
+  erw [e]
+  exact T.zD ((ρ g : Matrix (Fin d) (Fin d) ℤ_[l]) i x)
+
+end GlobalTheory.BKLim
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isDeRham_of_breuilKisinFrame_isDeRham : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (τ : Ainf l), bk.IsPer τ → ∀ (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (N : ℕ) (d : ℕ) (ρ : ↥(GK K) →* GL (Fin d) ℤ_[l]) (F : Frame bk N d fun g => (ρ g).val), F.IsDR → Formalism.MainNotions.N.IsDR (P.PD K) (qRep ρ) := by
+  atlas_forward_decl GlobalTheory.BKLim.isDR_of_frame_isDR
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+
+noncomputable section
+
+namespace GlobalTheory.BKLim.HTDiag
+
+theorem theta_zero_of_pow_eq {R S : Type*} [CommRing R] [IsDomain R] [CommRing S] (θ : R →+* S)
+    {t w v : R} {n m : ℕ} (ht : t ≠ 0) (hθt : θ t = 0) (hv : θ v = 0 → v = 0)
+    (h : t ^ n * w = t ^ m * v) (hnm : n ≠ m) : θ w = 0 := by
+  rcases Nat.lt_or_gt_of_ne hnm with hlt | hgt
+  · obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_lt hlt
+    have e : t ^ (n + k + 1) = t ^ n * t ^ (k + 1) := by ring
+    rw [e, mul_assoc] at h
+    have hw : w = t ^ (k + 1) * v := mul_left_cancel₀ (pow_ne_zero n ht) h
+    rw [hw, map_mul, map_pow, hθt, zero_pow (Nat.succ_ne_zero k), zero_mul]
+  · obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_lt hgt
+    have e : t ^ (m + k + 1) = t ^ m * t ^ (k + 1) := by ring
+    rw [e, mul_assoc] at h
+    have hv' : v = t ^ (k + 1) * w := (mul_left_cancel₀ (pow_ne_zero m ht) h).symm
+    have hv0 : v = 0 := hv (by rw [hv', map_mul, map_pow, hθt, zero_pow (Nat.succ_ne_zero k), zero_mul])
+    rw [hv0, mul_zero] at h
+    have h' : t ^ (k + 1) * w = 0 := (mul_eq_zero.1 h).resolve_left (pow_ne_zero _ ht)
+    have hw : w = 0 := (mul_eq_zero.1 h').resolve_left (pow_ne_zero _ ht)
+    rw [hw, map_zero]
+
+end GlobalTheory.BKLim.HTDiag
+
+open GlobalTheory.BKLim.HTDiag in
+
+theorem GlobalTheory.BKLim.isHT_iff_diag : ∀ (l : ℕ) [Fact l.Prime] (K K' : FinExt l) (C : Core l), C.InvdR → ∀ (ξ : Ainf l), Ideal.span {ξ} = RingHom.ker (Per.θ l) → ∀ (a : ℕ) (ρ : ↥(GK K) → Matrix (Fin a) (Fin a) (Om l)) (H : Hodge C ξ ρ K') (z : ℂ_[l]) (u : Matrix (Fin a) (Fin a) (ℂ_[l])), K.1 ≤ K'.1 → (u * H.V.map (Per.θD l) = H.V.map (Per.θD l) * Matrix.diagonal (fun i => z ^ ((H.p i : ℤ) - H.q)) ↔ IsHT C ξ ρ z u) := by
+  intro l _ K K' C hI ξ hξ a ρ H z u hKK'
+  constructor
+  · intro hm K'' p q x y hfix hxy
+    obtain ⟨hdom, hinj, hF, -⟩ := BdRField.bdR_isField l
+    haveI := hdom
+    set ι := algebraMap (Per.BdRp l) (Per.BdR l) with hι
+
+    have hxiker : xi C.ε ∈ Ideal.span {ξ} := by
+      rw [hξ, C.ker_theta]; exact Ideal.mem_span_singleton_self _
+    obtain ⟨c0, hc0⟩ := Ideal.mem_span_singleton'.1 hxiker
+    have hXu : IsUnit (ι (aDp l ξ)) := by
+      have h1 := TiedUnif.isUnit_xi (core_isEps l C)
+      rw [← hc0, map_mul, map_mul] at h1
+      exact isUnit_of_mul_isUnit_right h1
+    set e := ι (aDp l ξ) with he
+    obtain ⟨i0, hie⟩ : ∃ i0, i0 * e = 1 := ⟨_, hXu.val_inv_mul⟩
+    have ht0 : aDp l ξ ≠ 0 := by
+      intro h0
+      rw [he, h0, map_zero, mul_zero] at hie
+      exact zero_ne_one (hinj (by rw [map_zero, map_one]; exact hie))
+
+    have hVdet : IsUnit H.V.det := (Matrix.isUnit_iff_isUnit_det _).1 H.unit
+    set W := H.V⁻¹ with hW
+    have hVW : H.V * W = 1 := Matrix.mul_nonsing_inv _ hVdet
+    have hWV : W * H.V = 1 := Matrix.nonsing_inv_mul _ hVdet
+    have hWVι : W.map ι * H.V.map ι = 1 := by
+      rw [← Matrix.map_mul, hWV, Matrix.map_one _ (map_zero _) (map_one _)]
+
+    set d : Fin a → Per.BdR l := fun k => i0 ^ H.q * e ^ H.p k with hd
+    set d' : Fin a → Per.BdR l := fun k => e ^ H.q * i0 ^ H.p k with hd'
+    have hdd : ∀ k, d' k * d k = 1 := fun k => by
+      calc d' k * d k = (i0 * e) ^ H.q * (i0 * e) ^ H.p k := by simp only [hd, hd']; ring
+        _ = 1 := by rw [hie, one_pow, one_pow, one_mul]
+    have hQ : H.Q = H.V.map ι * Matrix.diagonal d := by
+      ext i k
+      rw [Matrix.mul_diagonal, Matrix.map_apply]
+      have h := H.Q_eq i k
+      simp only [map_mul, map_pow] at h
+      rw [← he] at h
+      calc H.Q i k = (i0 * e) ^ H.q * H.Q i k := by rw [hie, one_pow, one_mul]
+        _ = i0 ^ H.q * (e ^ H.q * H.Q i k) := by ring
+        _ = ι (H.V i k) * d k := by rw [h]; simp only [hd]; ring
+    set Qi := Matrix.diagonal d' * W.map ι with hQi
+    have hQiQ : Qi * H.Q = 1 := by
+      rw [hQi, hQ, Matrix.mul_assoc, ← Matrix.mul_assoc (W.map ι), hWVι, Matrix.one_mul,
+        Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+      congr 1; funext k; exact hdd k
+    have hQQi : H.Q * Qi = 1 := mul_eq_one_comm.1 hQiQ
+    set av := Qi *ᵥ x with hav
+    have hxa : x = H.Q *ᵥ av := by rw [hav, Matrix.mulVec_mulVec, hQQi, Matrix.one_mulVec]
+
+    let K3 : FinExt l := ⟨K'.1 ⊔ K''.1, by
+      haveI := K'.2; haveI := K''.2; exact IntermediateField.finiteDimensional_sup _ _⟩
+    have hmono : ∀ {A B : FinExt l}, A.1 ≤ B.1 → ∀ g, g ∈ GK B → g ∈ GK A := fun h g hg =>
+      (IntermediateField.mem_fixingSubgroup_iff _ _).2 fun x hx =>
+        (IntermediateField.mem_fixingSubgroup_iff _ _).1 hg x (h hx)
+    have h3' : K'.1 ≤ K3.1 := le_sup_left
+    have h3'' : K''.1 ≤ K3.1 := le_sup_right
+    have h3 : K.1 ≤ K3.1 := hKK'.trans h3'
+
+    have hinv : ∀ g : GQ l, g ∈ GK K3 → ∀ j, Per.σD g (av j) = av j := by
+      intro g hg
+      let g' : ↥(GK K) := ⟨g, hmono h3 g hg⟩
+      have h1 := hfix g' (hmono h3'' g hg)
+      have h2 := H.inv g' (hmono h3' g hg)
+      have hσx : (fun i => Per.σD (g' : GQ l) (x i)) =
+          H.Q.map (Per.σD (g' : GQ l)) *ᵥ (fun k => Per.σD (g' : GQ l) (av k)) := by
+        funext i
+        rw [hxa]
+        exact RingHom.map_mulVec _ _ _ i
+      rw [hσx, Matrix.mulVec_mulVec, h2] at h1
+      have h4 : av = (fun k => Per.σD (g' : GQ l) (av k)) := by
+        calc av = Qi *ᵥ x := hav
+          _ = Qi *ᵥ (H.Q *ᵥ (fun k => Per.σD (g' : GQ l) (av k))) := by rw [h1]
+          _ = _ := by rw [Matrix.mulVec_mulVec, hQiQ, Matrix.one_mulVec]
+      intro j
+      exact (congrFun h4 j).symm
+    choose c hcK hc using fun j => hI K3 (av j) (fun g hg => hinv g hg j)
+
+    have hWx : ∀ k, e ^ q * (W.map ι *ᵥ x) k = e ^ p * (W.map ι *ᵥ (fun i => ι (y i))) k := by
+      have hv : e ^ q • x = e ^ p • (fun i => ι (y i)) := by
+        funext i
+        simp only [Pi.smul_apply, smul_eq_mul]
+        rw [hxy i, map_mul, map_pow]
+      intro k
+      have := congrFun (congrArg (fun v => W.map ι *ᵥ v) hv) k
+      simpa [Matrix.mulVec_smul] using this
+    have hD : ∀ k, aDp l ξ ^ (H.q + p) * (W *ᵥ y) k = aDp l ξ ^ (q + H.p k) * C.o (c k) := by
+      intro k
+      apply hinj
+      have hck : ι (C.o (c k)) = av k := hc k
+      rw [map_mul, map_mul, map_pow, map_pow, hck, RingHom.map_mulVec]
+      have hak : av k = d' k * (W.map ι *ᵥ x) k := by
+        rw [hav, hQi, ← Matrix.mulVec_mulVec, Matrix.mulVec_diagonal]
+      rw [hak]
+      calc e ^ (H.q + p) * (W.map ι *ᵥ (fun i => ι (y i))) k = e ^ H.q * (e ^ p * (W.map ι *ᵥ (fun i => ι (y i))) k) := by ring
+        _ = e ^ H.q * (e ^ q * (W.map ι *ᵥ x) k) := by rw [hWx k]
+        _ = (i0 * e) ^ H.p k * (e ^ H.q * (e ^ q * (W.map ι *ᵥ x) k)) := by rw [hie, one_pow, one_mul]
+        _ = e ^ (q + H.p k) * (d' k * (W.map ι *ᵥ x) k) := by simp only [hd']; ring
+
+    have hθξ : Per.θD l (aDp l ξ) = 0 := by
+      rw [(thetaD_props l).2.2.2.1 ξ]
+      have : Per.θ l ξ = 0 := RingHom.mem_ker.1 (hξ ▸ Ideal.mem_span_singleton_self ξ)
+      rw [this]; rfl
+    have hkey : ∀ k, z ^ ((H.p k : ℤ) - H.q) * Per.θD l ((W *ᵥ y) k) =
+        z ^ ((p : ℤ) - q) * Per.θD l ((W *ᵥ y) k) := by
+      intro k
+      by_cases hk : (H.p k : ℤ) - H.q = (p : ℤ) - q
+      · rw [hk]
+      · have hz : Per.θD l ((W *ᵥ y) k) = 0 := by
+          refine theta_zero_of_pow_eq (Per.θD l) ht0 hθξ ?_ (hD k) ?_
+          · intro h0
+            rw [C.o_sec.th] at h0
+            have : c k = 0 := by
+              first
+                | exact (algebraMap (Om l) ℂ_[l]).injective (by simpa using h0)
+                | exact UniformSpace.Completion.coe_injective _ (by simpa using h0)
+            rw [this, map_zero]
+          · intro hn; apply hk; omega
+        rw [hz, mul_zero, mul_zero]
+
+    have hyw : y = H.V *ᵥ (W *ᵥ y) := by rw [Matrix.mulVec_mulVec, hVW, Matrix.one_mulVec]
+    have hθy : (fun i => Per.θD l (y i)) = H.V.map (Per.θD l) *ᵥ (fun k => Per.θD l ((W *ᵥ y) k)) := by
+      funext i
+      conv_lhs => rw [hyw]
+      exact RingHom.map_mulVec _ _ _ i
+    have hdiag : Matrix.diagonal (fun i => z ^ ((H.p i : ℤ) - H.q)) *ᵥ (fun k => Per.θD l ((W *ᵥ y) k)) =
+        z ^ ((p : ℤ) - q) • (fun k => Per.θD l ((W *ᵥ y) k)) := by
+      funext k
+      rw [Matrix.mulVec_diagonal, hkey k]; rfl
+    rw [hθy, Matrix.mulVec_mulVec, hm, ← Matrix.mulVec_mulVec, hdiag, Matrix.mulVec_smul]
+  · intro hHT
+    ext i j
+    have h := hHT K' (H.p j) H.q (fun i => H.Q i j) (fun i => H.V i j) ?_ ?_
+    · have := congrFun h i
+      simp only [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul] at this
+      rw [Matrix.mul_diagonal, Matrix.map_apply, Matrix.mul_apply]
+      simp only [Matrix.map_apply]
+      rw [this, mul_comm]
+    · intro g hg
+      funext i
+      have := congrFun (congrFun (H.inv g hg) i) j
+      simpa [Matrix.mul_apply, Matrix.mulVec, dotProduct] using this
+    · intro i; exact H.Q_eq i j
+end
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isHodgeTate_iff_diagonal_adapted_basis : ∀ (l : ℕ) [Fact l.Prime] (K K' : FinExt l) (C : Core l), C.InvdR → ∀ (ξ : Ainf l), Ideal.span {ξ} = RingHom.ker (Per.θ l) → ∀ (a : ℕ) (ρ : ↥(GK K) → Matrix (Fin a) (Fin a) (Om l)) (H : Hodge C ξ ρ K') (z : ℂ_[l]) (u : Matrix (Fin a) (Fin a) (ℂ_[l])), K.1 ≤ K'.1 → (u * H.V.map (Per.θD l) = H.V.map (Per.θD l) * Matrix.diagonal (fun i => z ^ ((H.p i : ℤ) - H.q)) ↔ IsHT C ξ ρ z u) := by
+  first | exact @GlobalTheory.BKLim.isHT_iff_diag | exact GlobalTheory.BKLim.isHT_iff_diag | (intros; apply GlobalTheory.BKLim.isHT_iff_diag; all_goals assumption)
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+
+noncomputable section
+
+namespace GlobalTheory.BKLim
+
+theorem htOp_pow_eq_sum : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (C : Core l) (ξ : Ainf l) (a : ℕ) (d : ℕ) (ρ : ↥(GK K) →* GL (Fin d) ℤ_[l]) (r : ↥(GK K) →* GL (Fin a) (Om l)) (b : Fin d → Matrix (Fin a) (Fin a) (Om l)) (e : Fin d → ℤ_[l]), Reads ρ r b e → ∀ (σ : GQ l) (z : ℂ_[l]) (H : Hodge C ξ (fun g => (ρ g).val.map (zOm l)) K) (U : Matrix (Fin d) (Fin d) (ℂ_[l])) (u : Matrix (Fin a) (Fin a) (ℂ_[l])), U * H.V.map (Per.θD l) = H.V.map (Per.θD l) * Matrix.diagonal (fun i => z ^ ((H.p i : ℤ) - H.q)) → IsHT C ξ (fun g => (r g).val.map σ) z u → ∀ n : ℕ, u ^ n = ∑ i, ((U ^ n) *ᵥ fun s => algebraMap (Om l) ℂ_[l] (zOm l (e s))) i • (b i).map fun x => algebraMap (Om l) ℂ_[l] (σ x) := by
+  intro l _ K C ξ a d ρ r b e hR σ z H U u hU hu
+  have hσz : ∀ c : ℤ_[l], σ (zOm l c) = zOm l c := fun c => by simp [zOm]
+  have hθo : ∀ w : Om l, Per.θD l (C.o w) = algebraMap (Om l) ℂ_[l] w := fun w => C.o_sec.th w
+
+  let S : Set (Om l) := Set.range fun t : Fin d × Fin a × Fin a => σ (b t.1 t.2.1 t.2.2)
+  haveI : Finite S := (Set.finite_range _).to_subtype
+  have hfd : FiniteDimensional ℚ_[l] (IntermediateField.adjoin ℚ_[l] S) :=
+    IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x
+  let K' : FinExt l := ⟨IntermediateField.adjoin ℚ_[l] S, hfd⟩
+  have hfix : ∀ g : GQ l, g ∈ GK K' → ∀ i m k, g (σ (b i m k)) = σ (b i m k) := by
+    intro g hg i m k
+    exact (IntermediateField.mem_fixingSubgroup_iff _ g).1 hg _
+      (IntermediateField.subset_adjoin _ _ ⟨(i, m, k), rfl⟩)
+  let B : Fin a → Matrix (Fin a) (Fin d) ℂ_[l] := fun k m i => algebraMap (Om l) ℂ_[l] (σ (b i m k))
+  have hVu : IsUnit (H.V.map (Per.θD l)) := H.unit.map (Per.θD l).mapMatrix
+  have col : ∀ k, u * B k * H.V.map (Per.θD l) = B k * U * H.V.map (Per.θD l) := by
+
+    intro k
+    ext m j
+    let y : Fin a → Per.BdRp l := fun m => ∑ i, C.o (σ (b i m k)) * H.V i j
+    let x : Fin a → Per.BdR l := fun m => ∑ i, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b i m k))) * H.Q i j
+    have hy : ∀ m, algebraMap (Per.BdRp l) (Per.BdR l) (aDp l ξ) ^ H.q * x m = algebraMap (Per.BdRp l) (Per.BdR l) (aDp l ξ ^ H.p j * y m) := by
+      intro m
+      simp only [x, y, Finset.mul_sum, map_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      have hq := H.Q_eq i j
+      calc algebraMap (Per.BdRp l) (Per.BdR l) (aDp l ξ) ^ H.q * (algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b i m k))) * H.Q i j)
+          = algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b i m k))) * (algebraMap (Per.BdRp l) (Per.BdR l) (aDp l ξ) ^ H.q * H.Q i j) := by ring
+        _ = algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b i m k))) * algebraMap (Per.BdRp l) (Per.BdR l) (aDp l ξ ^ H.p j * H.V i j) := by rw [hq]
+        _ = algebraMap (Per.BdRp l) (Per.BdR l) (aDp l ξ ^ H.p j * (C.o (σ (b i m k)) * H.V i j)) := by simp only [map_mul, map_pow]; ring
+    have hx : ∀ g : ↥(GK K), (g : GQ l) ∈ GK K' →
+        ((r g).val.map σ).map ((algebraMap (Per.BdRp l) (Per.BdR l)).comp C.o) *ᵥ (fun i => Per.σD (g : GQ l) (x i)) = x := by
+      intro g hg
+      funext m'
+      have hσD : ∀ m, Per.σD (g : GQ l) (x m) = ∑ i, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b i m k))) * Per.σD (g : GQ l) (H.Q i j) := by
+        intro m
+        simp only [x, map_sum, map_mul, PrimeEx.sigD_o, hfix _ hg]
+      have e1 : ∀ i, ∑ m, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ ((r g).val m' m))) * algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b i m k))) =
+          ∑ s, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (zOm l ((ρ g).val s i))) * algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b s m' k))) := by
+        intro i
+        have h1 := congrArg (fun M : Matrix (Fin a) (Fin a) (Om l) => algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (M m' k)))) (hR.equi g i)
+        simpa [Matrix.mul_apply, Matrix.sum_apply, map_sum, map_mul, hσz] using h1
+      have e2 : ∀ s, ∑ i, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (zOm l ((ρ g).val s i))) * Per.σD (g : GQ l) (H.Q i j) = H.Q s j := by
+        intro s
+        have h1 := congrFun (congrFun (H.inv g g.2) s) j
+        simpa [Matrix.mul_apply] using h1
+      simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, RingHom.comp_apply, hσD]
+      calc ∑ m, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ ((r g).val m' m))) * ∑ i, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b i m k))) * Per.σD (g : GQ l) (H.Q i j)
+          = ∑ i, (∑ m, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ ((r g).val m' m))) * algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b i m k)))) * Per.σD (g : GQ l) (H.Q i j) := by
+            simp only [Finset.mul_sum, Finset.sum_mul, mul_assoc]
+            exact Finset.sum_comm
+        _ = ∑ i, (∑ s, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (zOm l ((ρ g).val s i))) * algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b s m' k)))) * Per.σD (g : GQ l) (H.Q i j) := by
+            simp only [e1]
+        _ = ∑ s, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (σ (b s m' k))) * ∑ i, algebraMap (Per.BdRp l) (Per.BdR l) (C.o (zOm l ((ρ g).val s i))) * Per.σD (g : GQ l) (H.Q i j) := by
+            simp only [Finset.mul_sum, Finset.sum_mul]
+            rw [Finset.sum_comm]
+            exact Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun i _ => by ring
+        _ = x m' := by simp only [e2, x]
+    have h := hu K' (H.p j) H.q x y hx hy
+    have hθy : (fun m => Per.θD l (y m)) = fun m => (B k * H.V.map (Per.θD l)) m j := by
+      funext m'
+      simp only [y, Matrix.mul_apply, Matrix.map_apply]
+      rw [map_sum]
+      exact Finset.sum_congr rfl fun i _ => by rw [map_mul, hθo]
+    rw [hθy] at h
+    have h2 := congrFun h m
+    simp only [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul] at h2
+    rw [Matrix.mul_assoc u, Matrix.mul_assoc (B k), hU, ← Matrix.mul_assoc (B k), Matrix.mul_diagonal, Matrix.mul_apply, h2, mul_comm]
+  have comm : ∀ k, u * B k = B k * U := by
+    intro k
+    have hd : IsUnit (H.V.map (Per.θD l)).det := (Matrix.isUnit_iff_isUnit_det _).1 hVu
+    calc u * B k = u * B k * H.V.map (Per.θD l) * (H.V.map (Per.θD l))⁻¹ := by
+          rw [Matrix.mul_assoc (u * B k), Matrix.mul_nonsing_inv _ hd, Matrix.mul_one]
+      _ = B k * U * H.V.map (Per.θD l) * (H.V.map (Per.θD l))⁻¹ := by rw [col k]
+      _ = B k * U := by rw [Matrix.mul_assoc (B k * U), Matrix.mul_nonsing_inv _ hd, Matrix.mul_one]
+  have key : ∀ x : Fin d → ℂ_[l], u * (∑ i, x i • (b i).map fun w => algebraMap (Om l) ℂ_[l] (σ w)) =
+      ∑ i, (U *ᵥ x) i • (b i).map fun w => algebraMap (Om l) ℂ_[l] (σ w) := by
+    intro x
+    ext m k
+    have h := congrFun (congrArg (· *ᵥ x) (comm k)) m
+    simp only [← Matrix.mulVec_mulVec] at h
+    simp only [Matrix.mul_apply, Matrix.sum_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul]
+    simp only [Matrix.mulVec, dotProduct, B] at h
+    refine (Finset.sum_congr rfl fun x1 _ => ?_).trans (h.trans (Finset.sum_congr rfl fun c _ => ?_))
+    · congr 1
+      exact Finset.sum_congr rfl fun c _ => mul_comm _ _
+    · simp only [Matrix.mulVec, dotProduct]
+      exact mul_comm _ _
+  have one : ∑ i, (fun s => algebraMap (Om l) ℂ_[l] (zOm l (e s))) i • (b i).map (fun w => algebraMap (Om l) ℂ_[l] (σ w)) = 1 := by
+    ext m k
+    have h := congrArg (fun M : Matrix (Fin a) (Fin a) (Om l) => algebraMap (Om l) ℂ_[l] (σ (M m k))) hR.one
+    simp only [Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul, map_sum, map_mul, hσz] at h
+    simp only [Matrix.sum_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul]
+    rw [h]
+    by_cases hmk : m = k <;> simp [Matrix.one_apply, hmk]
+  intro n
+  induction n with
+  | zero => simpa using one.symm
+  | succ n ih => rw [pow_succ', ih, key, Matrix.mulVec_mulVec, ← pow_succ']
+
+end GlobalTheory.BKLim
+end
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodgeTateOperator_pow_eq_sum : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (C : Core l) (ξ : Ainf l) (a : ℕ) (d : ℕ) (ρ : ↥(GK K) →* GL (Fin d) ℤ_[l]) (r : ↥(GK K) →* GL (Fin a) (Om l)) (b : Fin d → Matrix (Fin a) (Fin a) (Om l)) (e : Fin d → ℤ_[l]), Reads ρ r b e → ∀ (σ : GQ l) (z : ℂ_[l]) (H : Hodge C ξ (fun g => (ρ g).val.map (zOm l)) K) (U : Matrix (Fin d) (Fin d) (ℂ_[l])) (u : Matrix (Fin a) (Fin a) (ℂ_[l])), U * H.V.map (Per.θD l) = H.V.map (Per.θD l) * Matrix.diagonal (fun i => z ^ ((H.p i : ℤ) - H.q)) → IsHT C ξ (fun g => (r g).val.map σ) z u → ∀ n : ℕ, u ^ n = ∑ i, ((U ^ n) *ᵥ fun s => algebraMap (Om l) ℂ_[l] (zOm l (e s))) i • (b i).map fun x => algebraMap (Om l) ℂ_[l] (σ x) := by
+  first | exact @GlobalTheory.BKLim.htOp_pow_eq_sum | exact GlobalTheory.BKLim.htOp_pow_eq_sum | (intros; apply GlobalTheory.BKLim.htOp_pow_eq_sum; all_goals assumption)
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+
+namespace GlobalTheory
+
+theorem multiset_eq_of_powerSums_zpow_eq : ∀ (k : Type) [Field k] [CharZero k] (z : k), z ≠ 0 →
+    (∀ i : ℕ, 1 ≤ i → z ^ i ≠ 1) → ∀ J J' : Multiset ℤ,
+    (∀ n : ℕ, (J.map fun h => (z ^ h) ^ n).sum = (J'.map fun h => (z ^ h) ^ n).sum) → J = J' := by
+  intro k _ _ z hz hroot J J' hsum
+
+  have hlt : ∀ a b : ℤ, a < b → z ^ a ≠ z ^ b := by
+    intro a b hab heq
+    have h1 : z ^ (b - a) = 1 := by
+      rw [zpow_sub₀ hz, heq, div_self (zpow_ne_zero _ hz)]
+    have h2 : ((b - a).toNat : ℤ) = b - a := Int.toNat_of_nonneg (by omega)
+    rw [← h2, zpow_natCast] at h1
+    exact hroot _ (by omega) h1
+  have hinj : Function.Injective (fun h : ℤ => z ^ h) := by
+    intro a b hab
+    simp only at hab
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with h | h
+    · exact hlt a b h hab
+    · exact hlt b a h hab.symm
+
+  let χ : ℤ → (Multiplicative ℕ →* k) := fun h => powersHom k (z ^ h)
+  have hχ : Function.Injective χ := (powersHom k).injective.comp hinj
+  have hli := (linearIndependent_monoidHom (Multiplicative ℕ) k).comp χ hχ
+  rw [linearIndependent_iff'] at hli
+
+  have key : ∀ (M : Multiset ℤ) (s : Finset ℤ), M.toFinset ⊆ s → ∀ f : ℤ → k,
+      (M.map f).sum = ∑ h ∈ s, (M.count h : k) * f h := by
+    intro M s hs f
+    rw [Finset.sum_multiset_map_count]
+    simp_rw [nsmul_eq_mul]
+    apply Finset.sum_subset hs
+    intro x _ hx
+    rw [Multiset.mem_toFinset] at hx
+    simp [Multiset.count_eq_zero.mpr hx]
+  set s : Finset ℤ := (J + J').toFinset with hs
+  have hJ : J.toFinset ⊆ s := by
+    intro x hx; rw [Multiset.mem_toFinset] at hx; rw [hs, Multiset.mem_toFinset]
+    exact Multiset.mem_add.mpr (Or.inl hx)
+  have hJ' : J'.toFinset ⊆ s := by
+    intro x hx; rw [Multiset.mem_toFinset] at hx; rw [hs, Multiset.mem_toFinset]
+    exact Multiset.mem_add.mpr (Or.inr hx)
+  have hzero := hli s (fun h => (J.count h : k) - (J'.count h : k)) (by
+    funext m
+    have e := hsum (Multiplicative.toAdd m)
+    rw [key J s hJ, key J' s hJ'] at e
+    simp only [Finset.sum_apply, Pi.smul_apply, Function.comp_apply, smul_eq_mul, Pi.zero_apply]
+    simp only [χ, powersHom_apply, sub_mul, Finset.sum_sub_distrib]
+    rw [sub_eq_zero]
+    exact e)
+  refine Multiset.ext.mpr (fun a => ?_)
+  by_cases ha : a ∈ s
+  · have := hzero a ha
+    rw [sub_eq_zero] at this
+    exact_mod_cast this
+  · rw [hs, Multiset.mem_toFinset, Multiset.mem_add, not_or] at ha
+    rw [Multiset.count_eq_zero.mpr ha.1, Multiset.count_eq_zero.mpr ha.2]
+
+end GlobalTheory
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.multiset_eq_of_power_sums_zpow_eq : ∀ (k : Type) [Field k] [CharZero k] (z : k), z ≠ 0 → (∀ i : ℕ, 1 ≤ i → z ^ i ≠ 1) → ∀ J J' : Multiset ℤ, (∀ n : ℕ, (J.map fun h => (z ^ h) ^ n).sum = (J'.map fun h => (z ^ h) ^ n).sum) → J = J' := by
+  atlas_forward_decl GlobalTheory.multiset_eq_of_powerSums_zpow_eq
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.theta_conj_bounded_compatible_breuilKisin_frames : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (τ : Ainf l), bk.IsPer τ → ∀ (N : ℕ), ∃ Bd : ℝ, ∀ (N' d d' n : ℕ) (ρ : ↥(GK K) → Matrix (Fin d) (Fin d) (ℤ_[l])) (ρ' : ↥(GK K) → Matrix (Fin d') (Fin d') (ℤ_[l])) (F : Frame bk N' d ρ) (F' : Frame bk N d' ρ') (Y : Matrix (Fin d) (Fin d) (Ainf l)) (Y' : Matrix (Fin d') (Fin d') (Ainf l)), N' = N → Y.map (inclW l) = inclW l τ ^ N • F.T → Y'.map (inclW l) = inclW l τ ^ N • F'.T → ∀ (g : ↥(GK K)) (U : Matrix (Fin d) (Fin d) (ℂ_[l])) (U' : Matrix (Fin d') (Fin d') (ℂ_[l])), U * Y.map ((Per.θD l).comp (aDp l)) = Y.map ((Per.θD l).comp (aDp l)) * (F.ε g).map ((Per.θD l).comp (aDp l)) → U' * Y'.map ((Per.θD l).comp (aDp l)) = Y'.map ((Per.θD l).comp (aDp l)) * (F'.ε g).map ((Per.θD l).comp (aDp l)) → (∀ i j, ‖U i j‖ ≤ Bd) ∧ (∀ i j, ‖U' i j‖ ≤ Bd) ∧ ∀ (Pi : Matrix (Fin d) (Fin d') (ℤ_[l])) (R : Matrix (Fin d) (Fin d') (bk.S)), (∀ g i j, (l : ℤ_[l]) ^ n ∣ (Pi * ρ' g - ρ g * Pi) i j) → (∀ i j, (l : WCb l) ^ n ∣ (zW Pi * F'.T - F.T * R.map bk.evW) i j) → ∀ i j, ‖(U * Pi.map (fun x => algebraMap (Om l) ℂ_[l] (zOm l x)) - Pi.map (fun x => algebraMap (Om l) ℂ_[l] (zOm l x)) * U') i j‖ ≤ Bd * ((l : ℝ) ^ n)⁻¹ := by
+  first | exact @GlobalTheory.HTBound.bounded_compat | exact GlobalTheory.HTBound.bounded_compat | (intros; apply GlobalTheory.HTBound.bounded_compat; all_goals assumption)
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+
+noncomputable section
+
+namespace GlobalTheory.ReadPass
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem exists_read_map {Γ : Type} [Group Γ] {a d : ℕ} (ρ : Γ →* GL (Fin d) ℤ_[l])
+    (r : Γ →* GL (Fin a) (Om l)) (b : Fin d → Matrix (Fin a) (Fin a) (Om l)) (e : Fin d → ℤ_[l])
+    (hR : Reads ρ r b e) (L : FinExt l) (r' : Γ →* GL (Fin a) ↥L.1)
+    (R : Representation ↥L.1 Γ (Fin a → ↥L.1)) (hRr : ∀ g v, R g v = (r' g).val *ᵥ v)
+    (hr : ∀ g i j, (((r' g).val i j : ↥L.1) : Om l) = (r g).val i j) (v : Fin a → ↥L.1) :
+    ∃ (F : (Fin d → ℚ_[l]) →ₗ[ℚ_[l]] (Fin a → ↥L.1)) (x : Fin d → ℚ_[l]),
+      (∀ g y, F (qRep ρ g y) = R g (F y)) ∧ F x = v := by
+  obtain ⟨p, hp⟩ := LinearMap.exists_leftInverse_of_injective (Algebra.linearMap ↥L.1 (Om l))
+    (LinearMap.ker_eq_bot.2 (algebraMap ↥L.1 (Om l)).injective)
+  have hp' : ∀ c : ↥L.1, p (c : Om l) = c := fun c => LinearMap.congr_fun hp c
+  let Φ : (Fin d → ℚ_[l]) → Matrix (Fin a) (Fin a) (Om l) := fun x => ∑ j, algebraMap ℚ_[l] (Om l) (x j) • b j
+  let w : Fin a → Om l := fun k => (v k : Om l)
+  have hΦs : ∀ (c : ℚ_[l]) x, Φ (c • x) = c • Φ x := by
+    intro c x
+    simp only [Φ, Finset.smul_sum, Pi.smul_apply, smul_eq_mul, map_mul, mul_smul, algebraMap_smul]
+  have hΦa : ∀ x y, Φ (x + y) = Φ x + Φ y := by
+    intro x y
+    simp only [Φ, Pi.add_apply, map_add, add_smul, Finset.sum_add_distrib]
+  let F : (Fin d → ℚ_[l]) →ₗ[ℚ_[l]] (Fin a → ↥L.1) :=
+    { toFun := fun x i => p ((Φ x *ᵥ w) i)
+      map_add' := by
+        intro x y; funext i
+        simp only [hΦa, Matrix.add_mulVec, Pi.add_apply, map_add]
+      map_smul' := by
+        intro c x; funext i
+        have h1 : ((Φ (c • x)) *ᵥ w) i = c • ((Φ x *ᵥ w) i) := by
+          rw [hΦs]
+          simp only [Matrix.mulVec, dotProduct, Finset.smul_sum, Matrix.smul_apply, smul_mul_assoc]
+        simp only [RingHom.id_apply, Pi.smul_apply]
+        rw [h1]
+        exact LinearMap.map_smul_of_tower p c _ }
+  have hq : ∀ g y, qRep ρ g y = ((ρ g).val.map (algebraMap ℤ_[l] ℚ_[l])) *ᵥ y := fun g y => rfl
+  have hΦg : ∀ g y, Φ (qRep ρ g y) = (r g).val * Φ y := by
+    intro g y
+    rw [hq]
+    simp only [Φ, Matrix.mul_sum, Matrix.mul_smul, hR.equi, Finset.smul_sum, smul_smul]
+    simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, map_sum, map_mul, Finset.sum_smul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => ?_
+    rw [mul_comm]
+    rfl
+  refine ⟨F, fun j => algebraMap ℤ_[l] ℚ_[l] (e j), fun g y => ?_, ?_⟩
+  · funext i
+    rw [hRr]
+    change p ((Φ (qRep ρ g y) *ᵥ w) i) = ∑ k, (r' g).val i k * p ((Φ y *ᵥ w) k)
+    rw [hΦg, ← Matrix.mulVec_mulVec]
+    generalize Φ y *ᵥ w = z
+    change p (∑ k, (r g).val i k * z k) = _
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [← hr]
+    exact LinearMap.map_smul p ((r' g).val i k) (z k)
+  · funext i
+    change p ((Φ _ *ᵥ w) i) = v i
+    have h1 : Φ (fun j => algebraMap ℤ_[l] ℚ_[l] (e j)) = 1 := hR.one
+    rw [h1, Matrix.one_mulVec]
+    exact hp' (v i)
+
+end GlobalTheory.ReadPass
+
+namespace GlobalTheory.ReadPass
+
+open GlobalTheory.IndefiniteRowSideFullHecke.CrystallineSubrepresentation
+
+variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P}
+
+theorem crys_pass (T : LocTied l P AI) (K L : FinExt l) {V : Type} [AddCommGroup V] [Module ℚ_[l] V]
+    [FiniteDimensional ℚ_[l] V] {a : ℕ} (ρq : Representation ℚ_[l] ↥(GK K) V)
+    (R : Representation ↥L.1 ↥(GK K) (Fin a → ↥L.1))
+    (hF : ∀ v : Fin a → ↥L.1, ∃ (F : V →ₗ[ℚ_[l]] (Fin a → ↥L.1)) (x : V),
+      (∀ g y, F (ρq g y) = R g (F y)) ∧ F x = v)
+    (h : IsCrys (P.PD K) ρq) : IsCrys (P.PD K) R := by
+  haveI := L.2
+  haveI : IsDomain P.R.B := GlobalTheory.RegularRing.isDomain_of_tied T K
+  have hf := GlobalTheory.TateDualCrys.fracInv_of_tied T K
+  have hu := GlobalTheory.TateDualCrys.lineUnit_of_tied T K
+  rw [GlobalTheory.RegularRing.isCrys_iff_span (P.PD K) hf hu] at h ⊢
+  refine GlobalTheory.RegularRing.eq_top_of_tmul _ fun c v => ?_
+  obtain ⟨F, x, hFe, rfl⟩ := hF v
+  have hm : ∀ y ∈ DcrisK₀ (P.PD K) ρq, F.baseChange P.R.B y ∈ DcrisK₀ (P.PD K) R := by
+    intro y hy
+    rw [GlobalTheory.RegularRing.mem_DcrisK₀] at hy ⊢
+    intro g
+    have hc : ∀ z, F.baseChange P.R.B (GlobalTheory.RegularRing.sig (P.PD K) ρq g z) =
+        GlobalTheory.RegularRing.sig (P.PD K) R g (F.baseChange P.R.B z) := by
+      intro z
+      induction z using TensorProduct.induction_on with
+      | zero => simp
+      | tmul b w => simp [GlobalTheory.RegularRing.sig_tmul, hFe]
+      | add z z' hz hz' => simp only [map_add, hz, hz']
+    rw [← hc, hy g]
+  have h1 : Submodule.span P.R.B (DcrisK₀ (P.PD K) ρq : Set (P.R.B ⊗[ℚ_[l]] V)) ≤
+      (Submodule.span P.R.B (DcrisK₀ (P.PD K) R : Set (P.R.B ⊗[ℚ_[l]] (Fin a → ↥L.1)))).comap
+        (F.baseChange P.R.B) :=
+    Submodule.span_le.2 fun y hy => Submodule.subset_span (hm y hy)
+  have h2 := h1 (h ▸ Submodule.mem_top : c ⊗ₜ[ℚ_[l]] x ∈ _)
+  simpa using h2
+
+theorem dr_pass (T : LocTied l P AI) (K L : FinExt l) {LL0 : Type} [Field LL0] [Algebra ℚ_[l] LL0]
+    {V : Type} [AddCommGroup V] [Module LL0 V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] LL0 V] {a : ℕ}
+    (ρ0 : Representation LL0 ↥(GK K) V) (R : Representation ↥L.1 ↥(GK K) (Fin a → ↥L.1))
+    (hF : ∀ v : Fin a → ↥L.1, ∃ (F : V →ₗ[ℚ_[l]] (Fin a → ↥L.1)) (x : V),
+      (∀ g y, F (ρ0 g y) = R g (F y)) ∧ F x = v)
+    (h : GlobalTheory.DRFil.Spans (P.PD K) ρ0) : IsDR (P.PD K) R := by
+  haveI := L.2
+  apply GlobalTheory.DRFil.isDR_of_spans T K L R
+  intro y
+  induction y using TensorProduct.induction_on with
+  | zero => exact ⟨0, Fin.elim0, Fin.elim0, fun i => i.elim0, by simp⟩
+  | add y z hy hz =>
+    obtain ⟨m, b, dd, hd, rfl⟩ := hy
+    obtain ⟨m', b', dd', hd', rfl⟩ := hz
+    refine ⟨m + m', Fin.append b b', Fin.append dd dd', fun i => ?_, ?_⟩
+    · refine Fin.addCases (fun i => ?_) (fun i => ?_) i
+      · simpa using hd i
+      · simpa using hd' i
+    · rw [Fin.sum_univ_add]
+      simp
+  | tmul v c =>
+    obtain ⟨F, x, hFe, rfl⟩ := hF v
+    obtain ⟨m, b, dd, hd, hx⟩ := h (x ⊗ₜ[ℚ_[l]] c)
+    let E : V ⊗[ℚ_[l]] P.R.BdR →ₗ[ℚ_[l]] (Fin a → ↥L.1) ⊗[ℚ_[l]] P.R.BdR :=
+      TensorProduct.map F (LinearMap.id : P.R.BdR →ₗ[ℚ_[l]] P.R.BdR)
+    have hE : ∀ (β : P.R.BdR) z, E (GlobalTheory.DRFil.mulR ℚ_[l] P.R.BdR LL0 V β z) =
+        GlobalTheory.DRFil.mulR ℚ_[l] P.R.BdR ↥L.1 (Fin a → ↥L.1) β (E z) := by
+      intro β z
+      induction z using TensorProduct.induction_on with
+      | zero => simp
+      | tmul u c' => simp [E]
+      | add z z' hz hz' => simp only [map_add, hz, hz']
+    have hg : ∀ g z, E (actVdR (P.PD K) ρ0 g z) = actVdR (P.PD K) R g (E z) := by
+      intro g z
+      induction z using TensorProduct.induction_on with
+      | zero => simp
+      | tmul u c' => simp [E, actVdR, hFe]
+      | add z z' hz hz' => simp only [map_add, hz, hz']
+    refine ⟨m, b, fun i => E (dd i), fun i => ?_, ?_⟩
+    · have h1 := hd i
+      simp only [DdR, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply,
+        sub_eq_zero] at h1 ⊢
+      intro g
+      rw [← hg, h1 g]
+    · have h2 := congrArg E hx
+      rw [map_sum] at h2
+      simp only [hE] at h2
+      simpa [E] using h2
+
+end GlobalTheory.ReadPass
+
+namespace GlobalTheory.ReadPass
+
+variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P}
+
+theorem dr_pass_rat (T : LocTied l P AI) (K L : FinExt l) {V : Type} [AddCommGroup V] [Module ℚ_[l] V]
+    [FiniteDimensional ℚ_[l] V] {a : ℕ} (ρq : Representation ℚ_[l] ↥(GK K) V)
+    (R : Representation ↥L.1 ↥(GK K) (Fin a → ↥L.1))
+    (hF : ∀ v : Fin a → ↥L.1, ∃ (F : V →ₗ[ℚ_[l]] (Fin a → ↥L.1)) (x : V),
+      (∀ g y, F (ρq g y) = R g (F y)) ∧ F x = v)
+    (h : IsDR (P.PD K) ρq) : IsDR (P.PD K) R := by
+  let LL : FinExt l := ⟨⊥, inferInstance⟩
+  let e : (↥(LL.1)) ≃ₐ[ℚ_[l]] ℚ_[l] := IntermediateField.botEquiv ℚ_[l] (Om l)
+  letI iM : Module (↥(LL.1)) V := Module.compHom V e.toRingEquiv.toRingHom
+  haveI iT : IsScalarTower ℚ_[l] (↥(LL.1)) V :=
+    ⟨fun q x v => by
+      show e (q • x) • v = q • (e x • v)
+      rw [show e (q • x) = q • e x from e.toLinearEquiv.map_smul q x, smul_eq_mul, mul_smul]⟩
+  haveI iF : FiniteDimensional (↥(LL.1)) V := Module.Finite.of_restrictScalars_finite ℚ_[l] (↥(LL.1)) V
+  let ρ' : Representation (↥(LL.1)) (↥(GK K)) V :=
+    { toFun := fun g =>
+        { toFun := ρq g, map_add' := (ρq g).map_add, map_smul' := fun x v => (ρq g).map_smul (e x) v }
+      map_one' := by ext v; simp
+      map_mul' := by intro g h; ext v; simp; rfl }
+  have hact : ∀ g (x : V ⊗[ℚ_[l]] P.R.BdR), actVdR (P.PD K) ρ' g x = actVdR (P.PD K) ρq g x := by
+    intro g x
+    induction x using TensorProduct.induction_on with
+    | zero => simp
+    | tmul v b => rfl
+    | add x z hx hz => rw [map_add, map_add, hx, hz]
+  have hmem : ∀ x : V ⊗[ℚ_[l]] P.R.BdR, x ∈ DdR (P.PD K) ρ' ↔ x ∈ DdR (P.PD K) ρq := by
+    intro x
+    simp only [DdR, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply,
+      sub_eq_zero, hact]
+  have hfr : ∀ (W : Type) [AddCommGroup W] [Module (↥(LL.1)) W] [Module ℚ_[l] W]
+      [IsScalarTower ℚ_[l] (↥(LL.1)) W], Module.finrank (↥(LL.1)) W = Module.finrank ℚ_[l] W := by
+    intro W _ _ _ _
+    rw [← Module.finrank_mul_finrank ℚ_[l] (↥(LL.1)) W]
+    have : Module.finrank ℚ_[l] (↥(LL.1)) = 1 := IntermediateField.finrank_bot
+    rw [this, one_mul]
+  let eq : ↥(DdR (P.PD K) ρ') ≃ₗ[ℚ_[l]] ↥(DdR (P.PD K) ρq) :=
+    { toFun := fun x => ⟨x.1, (hmem x.1).1 x.2⟩
+      invFun := fun x => ⟨x.1, (hmem x.1).2 x.2⟩
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl }
+  have h' : IsDR (P.PD K) ρ' := by
+    unfold IsDR at h ⊢
+    rw [hfr, hfr, eq.finrank_eq, h]
+  exact dr_pass T K L ρ' R hF ((GlobalTheory.DRFil.filSpans T K LL ρ' h').spans)
+
+theorem isDR_isCrys_of_reads : ∀ (l : ℕ) [Fact l.Prime] (K L₀ : FinExt l) (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (a : ℕ) (d : ℕ) (ρ : ↥(GK K) →* GL (Fin d) ℤ_[l]) (r : ↥(GK K) →* GL (Fin a) (Om l)) (b : Fin d → Matrix (Fin a) (Fin a) (Om l)) (e : Fin d → ℤ_[l]), Reads ρ r b e → ∀ (L : FinExt l) (r' : ↥(GK K) →* GL (Fin a) ↥L.1) (R : Representation ↥L.1 ↥(GK K) (Fin a → ↥L.1)), L₀.1 ≤ L.1 → (∀ g v, R g v = (r' g).val *ᵥ v) → (∀ g i j, (((r' g).val i j : ↥L.1) : Om l) = (r g).val i j) → (Formalism.MainNotions.N.IsDR (P.PD K) (qRep ρ) → Formalism.MainNotions.N.IsDR (P.PD K) R) ∧ (IsCrys (P.PD K) (qRep ρ) → IsCrys (P.PD K) R) := by
+  intro l _ K L₀ P AI T a d ρ r b e hR L r' R _ hRr hr
+  have hF := exists_read_map ρ r b e hR L r' R hRr hr
+  exact ⟨dr_pass_rat T K L (qRep ρ) R hF, crys_pass T K L (qRep ρ) R hF⟩
+
+end GlobalTheory.ReadPass
+
+end
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.deRham_crystalline_of_lattice_reads : ∀ (l : ℕ) [Fact l.Prime] (K L₀ : FinExt l) (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (a : ℕ) (d : ℕ) (ρ : ↥(GK K) →* GL (Fin d) ℤ_[l]) (r : ↥(GK K) →* GL (Fin a) (Om l)) (b : Fin d → Matrix (Fin a) (Fin a) (Om l)) (e : Fin d → ℤ_[l]), Reads ρ r b e → ∀ (L : FinExt l) (r' : ↥(GK K) →* GL (Fin a) ↥L.1) (R : Representation ↥L.1 ↥(GK K) (Fin a → ↥L.1)), L₀.1 ≤ L.1 → (∀ g v, R g v = (r' g).val *ᵥ v) → (∀ g i j, (((r' g).val i j : ↥L.1) : Om l) = (r g).val i j) → (Formalism.MainNotions.N.IsDR (P.PD K) (qRep ρ) → Formalism.MainNotions.N.IsDR (P.PD K) R) ∧ (IsCrys (P.PD K) (qRep ρ) → IsCrys (P.PD K) R) := by
+  first | exact @GlobalTheory.ReadPass.isDR_isCrys_of_reads | exact GlobalTheory.ReadPass.isDR_isCrys_of_reads | (intros; apply GlobalTheory.ReadPass.isDR_isCrys_of_reads; all_goals assumption)
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+noncomputable section
+
+namespace GlobalTheory.CoverTrace
+
+section Ultra
+
+variable {E : Type} [NormedField E] [IsUltrametricDist E]
+
+theorem norm_dot_le {ι : Type} [Fintype ι] {x y : ι → E} {α β : ℝ} (hα : 0 ≤ α) (hβ : 0 ≤ β)
+    (hx : ∀ i, ‖x i‖ ≤ α) (hy : ∀ i, ‖y i‖ ≤ β) : ‖x ⬝ᵥ y‖ ≤ α * β := by
+  unfold dotProduct
+  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (mul_nonneg hα hβ) fun i _ => ?_
+  rw [norm_mul]
+  exact mul_le_mul (hx i) (hy i) (norm_nonneg _) hα
+
+theorem norm_mulVec_le {ι κ : Type} [Fintype κ] {A : Matrix ι κ E} {y : κ → E} {α β : ℝ}
+    (hα : 0 ≤ α) (hβ : 0 ≤ β) (hA : ∀ i j, ‖A i j‖ ≤ α) (hy : ∀ j, ‖y j‖ ≤ β) (i : ι) :
+    ‖(A *ᵥ y) i‖ ≤ α * β :=
+  norm_dot_le hα hβ (fun j => hA i j) hy
+
+theorem norm_mul_le' {ι κ μ : Type} [Fintype κ] {A : Matrix ι κ E} {C : Matrix κ μ E} {α β : ℝ}
+    (hα : 0 ≤ α) (hβ : 0 ≤ β) (hA : ∀ i j, ‖A i j‖ ≤ α) (hC : ∀ i j, ‖C i j‖ ≤ β) (i : ι) (k : μ) :
+    ‖(A * C) i k‖ ≤ α * β := by
+  rw [Matrix.mul_apply]
+  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (mul_nonneg hα hβ) fun j _ => ?_
+  rw [norm_mul]
+  exact mul_le_mul (hA i j) (hC j k) (norm_nonneg _) hα
+
+theorem norm_pow_le {ι : Type} [Fintype ι] [DecidableEq ι] {U : Matrix ι ι E} {B : ℝ} (hB : 1 ≤ B)
+    (hU : ∀ i j, ‖U i j‖ ≤ B) (n : ℕ) (i j : ι) : ‖(U ^ n) i j‖ ≤ B ^ n := by
+  induction n generalizing i j with
+  | zero =>
+    rw [pow_zero, pow_zero, Matrix.one_apply]
+    split_ifs <;> simp
+  | succ n ih =>
+    rw [pow_succ', pow_succ']
+    exact norm_mul_le' (by linarith) (pow_nonneg (by linarith) n) hU ih i j
+
+theorem norm_comm_pow_le {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+    {U : Matrix ι ι E} {U' : Matrix κ κ E} {P : Matrix ι κ E} {B δ : ℝ} (hB : 1 ≤ B) (hδ : 0 ≤ δ)
+    (hU : ∀ i j, ‖U i j‖ ≤ B) (hU' : ∀ i j, ‖U' i j‖ ≤ B) (hc : ∀ i j, ‖(U * P - P * U') i j‖ ≤ δ)
+    (n : ℕ) (i : ι) (j : κ) : ‖(U ^ n * P - P * U' ^ n) i j‖ ≤ B ^ n * δ := by
+  induction n generalizing i j with
+  | zero => simp [hδ]
+  | succ n ih =>
+    have e : U ^ (n + 1) * P - P * U' ^ (n + 1) = U * (U ^ n * P - P * U' ^ n) + (U * P - P * U') * U' ^ n := by
+      rw [pow_succ', pow_succ', Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc, Matrix.mul_assoc, Matrix.mul_assoc]
+      abel
+    have hB0 : 0 ≤ B := by linarith
+    have hBn : 1 ≤ B ^ n := one_le_pow₀ hB
+    rw [e, Matrix.add_apply]
+    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ?_)
+    · have := norm_mul_le' hB0 (mul_nonneg (pow_nonneg hB0 n) hδ) hU ih i j
+      calc _ ≤ _ := this
+        _ = B ^ (n + 1) * δ := by ring
+    · have := norm_mul_le' hδ (pow_nonneg hB0 n) hc (norm_pow_le hB hU' n) i j
+      calc _ ≤ _ := this
+        _ ≤ B ^ (n + 1) * δ := by
+          rw [pow_succ]
+          nlinarith [mul_nonneg (mul_nonneg hδ (pow_nonneg hB0 n)) (sub_nonneg.2 hB)]
+
+theorem core {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+    (U : Matrix ι ι E) (U' : Matrix κ κ E) (P : Matrix ι κ E) (t v : ι → E) (v' T' : κ → E)
+    (B τ ε δ : ℝ) (hB : 1 ≤ B) (hτ : 0 ≤ τ) (hε : 0 ≤ ε) (hδ : 0 ≤ δ)
+    (hU : ∀ i j, ‖U i j‖ ≤ B) (hU' : ∀ i j, ‖U' i j‖ ≤ B) (ht : ∀ i, ‖t i‖ ≤ τ) (hv' : ∀ s, ‖v' s‖ ≤ 1)
+    (hv : ∀ i, ‖(v - P *ᵥ v') i‖ ≤ ε) (hc : ∀ i j, ‖(U * P - P * U') i j‖ ≤ δ)
+    (hT : ∀ s, ‖(t ᵥ* P - T') s‖ ≤ ε) (n : ℕ) :
+    ‖(U ^ n *ᵥ v) ⬝ᵥ t - (U' ^ n *ᵥ v') ⬝ᵥ T'‖ ≤ B ^ n * ε * τ + B ^ n * δ * τ + B ^ n * ε := by
+  have hB0 : 0 ≤ B := by linarith
+  have hBn : 0 ≤ B ^ n := pow_nonneg hB0 n
+  have e1 : ((P * U' ^ n) *ᵥ v') ⬝ᵥ t = (U' ^ n *ᵥ v') ⬝ᵥ (t ᵥ* P) := by
+    rw [← Matrix.mulVec_mulVec, dotProduct_comm, Matrix.dotProduct_mulVec, dotProduct_comm]
+  have e2 : U ^ n *ᵥ (P *ᵥ v') = (U ^ n * P) *ᵥ v' := Matrix.mulVec_mulVec _ _ _
+  have e : (U ^ n *ᵥ v) ⬝ᵥ t - (U' ^ n *ᵥ v') ⬝ᵥ T' =
+      (U ^ n *ᵥ (v - P *ᵥ v')) ⬝ᵥ t + ((U ^ n * P - P * U' ^ n) *ᵥ v') ⬝ᵥ t + (U' ^ n *ᵥ v') ⬝ᵥ (t ᵥ* P - T') := by
+    rw [Matrix.mulVec_sub, Matrix.sub_mulVec, sub_dotProduct, sub_dotProduct, dotProduct_sub, e1, e2]
+    ring
+  rw [e]
+  refine (norm_add_le _ _).trans (add_le_add ((norm_add_le _ _).trans (add_le_add ?_ ?_)) ?_)
+  · exact norm_dot_le (mul_nonneg hBn hε) hτ (norm_mulVec_le hBn hε (norm_pow_le hB hU n) hv) ht
+  · have := norm_dot_le (mul_nonneg (mul_nonneg hBn hδ) zero_le_one) hτ
+      (norm_mulVec_le (mul_nonneg hBn hδ) zero_le_one (norm_comm_pow_le hB hδ hU hU' hc n) hv') ht
+    simpa using this
+  · have := norm_dot_le (mul_nonneg hBn zero_le_one) hε (norm_mulVec_le hBn zero_le_one (norm_pow_le hB hU' n) hv') hT
+    simpa [mul_comm] using this
+
+theorem eq_zero_of_le_pow {x K r : ℝ} (hx : 0 ≤ x) (hK : 0 ≤ K) (hr0 : 0 ≤ r) (hr : r < 1)
+    (h : ∀ N : ℕ, x ≤ K * r ^ N) : x = 0 := by
+  by_contra hne
+  have hpos : 0 < x := lt_of_le_of_ne hx (Ne.symm hne)
+  obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one (div_pos hpos (by linarith : (0 : ℝ) < K + 1)) hr
+  have h1 : (K + 1) * r ^ N < x := by
+    rw [lt_div_iff₀ (by linarith)] at hN; linarith
+  have h2 := h N
+  nlinarith [pow_nonneg hr0 N]
+
+end Ultra
+
+section Concrete
+
+variable {l : ℕ} [Fact l.Prime]
+
+theorem norm_zC (x : ℤ_[l]) : ‖((algebraMap (Om l) ℂ_[l]).comp (zOm l)) x‖ = ‖x‖ := by
+  show ‖((zOm l x : Om l) : ℂ_[l])‖ = ‖x‖
+  rw [PadicComplex.norm_extends]
+  show ‖algebraMap ℚ_[l] (PadicAlgCl l) (algebraMap ℤ_[l] ℚ_[l] x)‖ = ‖x‖
+  rw [PadicAlgCl.norm_extends]
+  exact PadicInt.padic_norm_e_of_padicInt x
+
+theorem norm_zC_le_of_dvd {x : ℤ_[l]} {m : ℕ} (h : (l : ℤ_[l]) ^ m ∣ x) :
+    ‖((algebraMap (Om l) ℂ_[l]).comp (zOm l)) x‖ ≤ ((l : ℝ) ^ m)⁻¹ := by
+  obtain ⟨y, rfl⟩ := h
+  rw [norm_zC, norm_mul, norm_pow, PadicInt.norm_p, inv_pow]
+  exact mul_le_of_le_one_right (by positivity) (PadicInt.norm_le_one y)
+
+theorem norm_gal_C (σ : GQ l) (x : Om l) : ‖algebraMap (Om l) ℂ_[l] (σ x)‖ = ‖x‖ := by
+  show ‖((σ x : Om l) : ℂ_[l])‖ = ‖x‖
+  rw [PadicComplex.norm_extends]
+  exact (spectralNorm_eq_of_equiv σ x).symm
+
+theorem gal_zOm (σ : GQ l) (x : ℤ_[l]) : σ (zOm l x) = zOm l x := by
+  show σ (algebraMap ℚ_[l] (Om l) (algebraMap ℤ_[l] ℚ_[l] x)) = _
+  rw [AlgEquiv.commutes]
+  rfl
+
+theorem trace_sum_smul_map {a : ℕ} {ι : Type} [Fintype ι] (w : ι → ℂ_[l])
+    (M : ι → Matrix (Fin a) (Fin a) (Om l)) (f : Om l →+* ℂ_[l]) :
+    (∑ i, w i • (M i).map f).trace = w ⬝ᵥ fun i => f (M i).trace := by
+  rw [Matrix.trace_sum]
+  unfold dotProduct
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Matrix.trace_smul, smul_eq_mul]
+  congr 1
+  simp [Matrix.trace, map_sum]
+
+end Concrete
+
+theorem trace_pow_eq : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ] [TopologicalSpace Γ] (L₀ : FinExt l) (a : ℕ), 1 ≤ a → ∀ (r : Γ →* GL (Fin a) (Om l)) (Cl : Set (Γ →* GL (Fin a) (Om l))) (Cv : Cover L₀ r Cl) (σ : GQ l) (U : Matrix (Fin Cv.d) (Fin Cv.d) (ℂ_[l])) (U' : ∀ m, Matrix (Fin (Cv.tw.d' m)) (Fin (Cv.tw.d' m)) (ℂ_[l])) (Bd : ℝ) (S : ℕ → ℂ_[l]), S 0 = a → (∀ i j, ‖U i j‖ ≤ Bd) → (∀ m i j, ‖U' m i j‖ ≤ Bd) → (∀ n, ∃ m, n ≤ m ∧ ∀ i j, ‖(U * (Cv.tw.Pi m).map (fun x => algebraMap (Om l) ℂ_[l] (zOm l x)) - (Cv.tw.Pi m).map (fun x => algebraMap (Om l) ℂ_[l] (zOm l x)) * U' m) i j‖ ≤ Bd * ((l : ℝ) ^ n)⁻¹) → (∀ m k n, (∑ i, ((U' m ^ n) *ᵥ fun s => algebraMap (Om l) ℂ_[l] (zOm l ((Cv.lay m).e s))) i • ((Cv.lay m).b i k).map fun x => algebraMap (Om l) ℂ_[l] (σ x)).trace = S n) → ∀ n, (∑ i, ((U ^ n) *ᵥ fun s => algebraMap (Om l) ℂ_[l] (zOm l (Cv.e s))) i • (Cv.b i).map fun x => algebraMap (Om l) ℂ_[l] (σ x)).trace = S n := by
+  intro l _ Γ _ _ L₀ a ha r Cl Cv σ U U' Bd S hS0 hU hU' hcomm htr
+  let f : Om l →+* ℂ_[l] := (algebraMap (Om l) ℂ_[l]).comp (σ : Om l →+* Om l)
+  let Z : ℤ_[l] →+* ℂ_[l] := (algebraMap (Om l) ℂ_[l]).comp (zOm l)
+  have hfZ : ∀ x, f (zOm l x) = Z x := fun x => by
+    show algebraMap (Om l) ℂ_[l] (σ (zOm l x)) = _
+    rw [gal_zOm]; rfl
+  have hfn : ∀ x, ‖f x‖ = ‖x‖ := norm_gal_C σ
+  let t : Fin Cv.d → ℂ_[l] := fun i => f (Cv.b i).trace
+  let v : Fin Cv.d → ℂ_[l] := fun s => Z (Cv.e s)
+  have key' : ∀ m k n, (U' m ^ n *ᵥ (fun s => Z ((Cv.lay m).e s))) ⬝ᵥ (fun s => f ((Cv.lay m).b s k).trace) = S n :=
+    fun m k n => by rw [← htr m k n]; exact (trace_sum_smul_map _ _ f).symm
+  intro n
+  rw [show (∑ i, ((U ^ n) *ᵥ fun s => algebraMap (Om l) ℂ_[l] (zOm l (Cv.e s))) i •
+      (Cv.b i).map fun x => algebraMap (Om l) ℂ_[l] (σ x)).trace = (U ^ n *ᵥ v) ⬝ᵥ t from trace_sum_smul_map _ _ f]
+  have hX0 : (U ^ 0 *ᵥ v) ⬝ᵥ t = a := by
+    rw [pow_zero, Matrix.one_mulVec]
+    have h1 := congrArg (fun M => f M.trace) Cv.reads.one
+    simp only [Matrix.trace_sum, Matrix.trace_smul, map_sum, smul_eq_mul, map_mul, hfZ, Matrix.trace_one,
+      Fintype.card_fin, map_natCast] at h1
+    simpa [dotProduct, v, t] using h1
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).one_lt
+  have hl0 : (0 : ℝ) < l := by linarith
+  set B : ℝ := max Bd 1 with hBdef
+  have hB : 1 ≤ B := le_max_right _ _
+  have hB0 : 0 ≤ B := by linarith
+  set τ : ℝ := ∑ i, ‖t i‖ with hτdef
+  have hτ : 0 ≤ τ := Finset.sum_nonneg fun i _ => norm_nonneg _
+  have ht : ∀ i, ‖t i‖ ≤ τ := fun i => Finset.single_le_sum (fun j _ => norm_nonneg (t j)) (Finset.mem_univ i)
+  have est : ∀ N : ℕ, ∃ C : ℂ_[l], ∀ n, ‖(U ^ n *ᵥ v) ⬝ᵥ t - C * S n‖ ≤
+      (B ^ n * τ + B ^ n * B * τ + B ^ n) * ((l : ℝ) ^ N)⁻¹ := by
+    intro N
+    obtain ⟨m, hmN, hm⟩ := hcomm N
+    have hεN : 0 ≤ ((l : ℝ) ^ N)⁻¹ := inv_nonneg.2 (pow_nonneg hl0.le N)
+    have hε : ((l : ℝ) ^ m)⁻¹ ≤ ((l : ℝ) ^ N)⁻¹ := inv_anti₀ (pow_pos hl0 N) (pow_le_pow_right₀ hl1.le hmN)
+    let P : Matrix (Fin Cv.d) (Fin (Cv.tw.d' m)) ℂ_[l] := (Cv.tw.Pi m).map Z
+    let v' : Fin (Cv.tw.d' m) → ℂ_[l] := fun s => Z ((Cv.lay m).e s)
+    let t' : Fin (Cv.lay m).m → Fin (Cv.tw.d' m) → ℂ_[l] := fun k s => f ((Cv.lay m).b s k).trace
+    let T' : Fin (Cv.tw.d' m) → ℂ_[l] := ∑ k, f ((Cv.lay m).c k) • t' k
+    refine ⟨∑ k, f ((Cv.lay m).c k), fun n => ?_⟩
+    have hT'n : (U' m ^ n *ᵥ v') ⬝ᵥ T' = (∑ k, f ((Cv.lay m).c k)) * S n := by
+      simp only [T', dotProduct_sum, dotProduct_smul, smul_eq_mul, Finset.sum_mul]
+      exact Finset.sum_congr rfl fun k _ => by rw [key' m k n]
+    rw [← hT'n]
+    have hv' : ∀ s, ‖v' s‖ ≤ 1 := fun s => (norm_zC _).trans_le (PadicInt.norm_le_one _)
+    have hv : ∀ i, ‖(v - P *ᵥ v') i‖ ≤ ((l : ℝ) ^ N)⁻¹ := by
+      intro i
+      have e : (P *ᵥ v') i = Z ((Cv.tw.Pi m *ᵥ (Cv.lay m).e) i) := by
+        simp [P, v', Matrix.mulVec, dotProduct, map_sum, map_mul]
+      rw [Pi.sub_apply, e, norm_sub_rev, ← map_sub]
+      have hd := Cv.unit m i
+      rw [Pi.sub_apply] at hd
+      exact (norm_zC_le_of_dvd hd).trans hε
+    have hc : ∀ i j, ‖(U * P - P * U' m) i j‖ ≤ B * ((l : ℝ) ^ N)⁻¹ := fun i j =>
+      (hm i j).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) hεN)
+    have hT : ∀ s, ‖(t ᵥ* P - T') s‖ ≤ ((l : ℝ) ^ N)⁻¹ := by
+      intro s
+      have h := Cv.trace m s
+      have e : (t ᵥ* P - T') s = f ((∑ i, zOm l (Cv.tw.Pi m i s) • Cv.b i).trace -
+          ∑ k, (Cv.lay m).c k * ((Cv.lay m).b s k).trace) := by
+        rw [map_sub, Matrix.trace_sum, map_sum, map_sum]
+        simp only [Pi.sub_apply, Matrix.vecMul, dotProduct, T', t', t, P, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+          Matrix.trace_smul, map_mul, hfZ, Matrix.map_apply]
+        congr 1
+        exact Finset.sum_congr rfl fun i _ => mul_comm _ _
+      rw [e, hfn]
+      exact h.trans hε
+    have hc' := core U (U' m) P t v v' T' B τ (((l : ℝ) ^ N)⁻¹) (B * ((l : ℝ) ^ N)⁻¹) hB hτ hεN
+      (mul_nonneg hB0 hεN) (fun i j => (hU i j).trans (le_max_left _ _))
+      (fun i j => (hU' m i j).trans (le_max_left _ _)) ht hv' hv hc hT n
+    calc _ ≤ _ := hc'
+      _ = _ := by ring
+  have ha0 : (a : ℂ_[l]) ≠ 0 := Nat.cast_ne_zero.2 (by omega)
+  have hapos : 0 < ‖(a : ℂ_[l])‖ := norm_pos_iff.2 ha0
+  have hKn : 0 ≤ B ^ n * τ + B ^ n * B * τ + B ^ n := by
+    have := pow_nonneg hB0 n
+    have h2 := mul_nonneg this hτ
+    have h3 := mul_nonneg (mul_nonneg this hB0) hτ
+    linarith
+  have hK0 : 0 ≤ B ^ 0 * τ + B ^ 0 * B * τ + B ^ 0 := by
+    have h3 := mul_nonneg hB0 hτ
+    simp only [pow_zero, one_mul]
+    linarith
+  have hbound : ∀ N : ℕ, ‖(U ^ n *ᵥ v) ⬝ᵥ t - S n‖ ≤
+      ((B ^ n * τ + B ^ n * B * τ + B ^ n) + (B ^ 0 * τ + B ^ 0 * B * τ + B ^ 0) * ‖S n‖ / ‖(a : ℂ_[l])‖) *
+        ((l : ℝ)⁻¹) ^ N := by
+    intro N
+    obtain ⟨C, hC⟩ := est N
+    have h0 := hC 0
+    rw [hX0, hS0] at h0
+    have hC1 : ‖C - 1‖ * ‖(a : ℂ_[l])‖ ≤ (B ^ 0 * τ + B ^ 0 * B * τ + B ^ 0) * ((l : ℝ) ^ N)⁻¹ := by
+      rw [← norm_mul, show (C - 1) * (a : ℂ_[l]) = -((a : ℂ_[l]) - C * a) by ring, norm_neg]
+      exact h0
+    have hCb : ‖C - 1‖ ≤ (B ^ 0 * τ + B ^ 0 * B * τ + B ^ 0) * ((l : ℝ) ^ N)⁻¹ / ‖(a : ℂ_[l])‖ := by
+      rw [le_div_iff₀ hapos]; exact hC1
+    rw [show (U ^ n *ᵥ v) ⬝ᵥ t - S n = ((U ^ n *ᵥ v) ⬝ᵥ t - C * S n) + (C - 1) * S n by ring]
+    refine (norm_add_le _ _).trans ?_
+    rw [norm_mul]
+    calc _ ≤ (B ^ n * τ + B ^ n * B * τ + B ^ n) * ((l : ℝ) ^ N)⁻¹ +
+          (B ^ 0 * τ + B ^ 0 * B * τ + B ^ 0) * ((l : ℝ) ^ N)⁻¹ / ‖(a : ℂ_[l])‖ * ‖S n‖ :=
+          add_le_add (hC n) (mul_le_mul_of_nonneg_right hCb (norm_nonneg _))
+      _ = _ := by rw [inv_pow]; field_simp
+  have hz := eq_zero_of_le_pow (norm_nonneg _)
+    (add_nonneg hKn (div_nonneg (mul_nonneg hK0 (norm_nonneg _)) (norm_nonneg _)))
+    (inv_nonneg.2 hl0.le) (inv_lt_one_of_one_lt₀ hl1) hbound
+  exact sub_eq_zero.1 (norm_eq_zero.1 hz)
+
+end GlobalTheory.CoverTrace
+end
+end
+
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trace_pow_eq_along_latticeTowerCover : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ] [TopologicalSpace Γ] (L₀ : FinExt l) (a : ℕ), 1 ≤ a → ∀ (r : Γ →* GL (Fin a) (Om l)) (Cl : Set (Γ →* GL (Fin a) (Om l))) (Cv : Cover L₀ r Cl) (σ : GQ l) (U : Matrix (Fin Cv.d) (Fin Cv.d) (ℂ_[l])) (U' : ∀ m, Matrix (Fin (Cv.tw.d' m)) (Fin (Cv.tw.d' m)) (ℂ_[l])) (Bd : ℝ) (S : ℕ → ℂ_[l]), S 0 = a → (∀ i j, ‖U i j‖ ≤ Bd) → (∀ m i j, ‖U' m i j‖ ≤ Bd) → (∀ n, ∃ m, n ≤ m ∧ ∀ i j, ‖(U * (Cv.tw.Pi m).map (fun x => algebraMap (Om l) ℂ_[l] (zOm l x)) - (Cv.tw.Pi m).map (fun x => algebraMap (Om l) ℂ_[l] (zOm l x)) * U' m) i j‖ ≤ Bd * ((l : ℝ) ^ n)⁻¹) → (∀ m k n, (∑ i, ((U' m ^ n) *ᵥ fun s => algebraMap (Om l) ℂ_[l] (zOm l ((Cv.lay m).e s))) i • ((Cv.lay m).b i k).map fun x => algebraMap (Om l) ℂ_[l] (σ x)).trace = S n) → ∀ n, (∑ i, ((U ^ n) *ᵥ fun s => algebraMap (Om l) ℂ_[l] (zOm l (Cv.e s))) i • (Cv.b i).map fun x => algebraMap (Om l) ℂ_[l] (σ x)).trace = S n := by
+  first | exact @GlobalTheory.CoverTrace.trace_pow_eq | exact GlobalTheory.CoverTrace.trace_pow_eq | (intros; apply GlobalTheory.CoverTrace.trace_pow_eq; all_goals assumption)
+end
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP GlobalTheory.MemLoc GlobalTheory.Pst GlobalTheory.BKLim GlobalTheory.Cong Matrix
 open scoped Formalism.Per NNReal
 
@@ -295,3 +1227,5 @@ theorem closed_of_cover : ∀ (l : ℕ) [Fact l.Prime] (K L₀ : FinExt l) (P : 
   rw [h1]
 
 end GlobalTheory.CovClose
+end
+end

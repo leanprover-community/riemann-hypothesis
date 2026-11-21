@@ -1,10 +1,470 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardAffineHyperplane
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardTwoAffineHyperplanes
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianCountFromHyperplanes
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardFunctionalsVanishingSubspace
-import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemRiemannRochSpaceIffRegularAtEverywhere
+import BuildAid.ForwardExisting
 
+section
+section
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+
+namespace GlobalTheory.CompanionTheory.GapOpCount
+
+theorem card_dotProduct_eq_one :
+    ∀ (k : Type) [Field k] [Fintype k] (n : ℕ) (a : Fin (n + 1) → k), a ≠ 0 →
+  Fintype.card k * (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1) := by
+  intro k _ _ n a ha
+  obtain ⟨i, hi⟩ : ∃ i, a i ≠ 0 := by
+    by_contra h
+    push_neg at h
+    exact ha (funext h)
+  have hax₀ : a ⬝ᵥ Pi.single i (a i)⁻¹ = 1 := by
+    rw [dotProduct_single, mul_inv_cancel₀ hi]
+  have hfib : ∀ c : k, (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = c)).card =
+      (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1)).card := by
+    intro c
+    apply Finset.card_bij' (fun x _ => x + (1 - c) • Pi.single i (a i)⁻¹)
+      (fun x _ => x - (1 - c) • Pi.single i (a i)⁻¹)
+    case hi =>
+      intro x hx
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+      rw [dotProduct_add, dotProduct_smul, hax₀, hx, smul_eq_mul, mul_one]
+      ring
+    case hj =>
+      intro x hx
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
+      rw [dotProduct_sub, dotProduct_smul, hax₀, hx, smul_eq_mul, mul_one]
+      ring
+    case left_inv =>
+      intro x _
+      simp
+    case right_inv =>
+      intro x _
+      simp
+  have htot : (Finset.univ : Finset (Fin (n + 1) → k)).card =
+      ∑ c : k, (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = c)).card :=
+    Finset.card_eq_sum_card_fiberwise (fun x _ => Finset.mem_univ (a ⬝ᵥ x))
+  have hcard : (Finset.univ : Finset (Fin (n + 1) → k)).card = Fintype.card k ^ (n + 1) := by
+    rw [Finset.card_univ, Fintype.card_fun, Fintype.card_fin]
+  rw [← hcard, htot, Finset.sum_congr rfl (fun c _ => hfib c), Finset.sum_const,
+    Finset.card_univ, smul_eq_mul]
+
+end GlobalTheory.CompanionTheory.GapOpCount
+end
+
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_affine_hyperplane : ∀ (k : Type) [Field k] [Fintype k] (n : ℕ) (a : Fin (n + 1) → k), a ≠ 0 →
+  Fintype.card k * (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GapOpCount.card_dotProduct_eq_one
+end
+
+section
+section
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+
+namespace GlobalTheory.CompanionTheory.GapOpCount
+
+noncomputable def pairMap {k : Type} [Field k] {n : ℕ} (a b : Fin (n + 1) → k) :
+    (Fin (n + 1) → k) →ₗ[k] k × k where
+  toFun x := (a ⬝ᵥ x, b ⬝ᵥ x)
+  map_add' x y := by simp [dotProduct_add]
+  map_smul' c x := by simp [dotProduct_smul]
+
+theorem pairMap_range {k : Type} [Field k] {n : ℕ} (a b : Fin (n + 1) → k)
+    (ha : a ≠ 0) (hb : ∀ s : k, b ≠ s • a) : LinearMap.range (pairMap a b) = ⊤ := by
+  by_contra hne
+  obtain ⟨φ, hφ, hle⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.mpr hne)
+  have hform : ∀ u v : k, φ (u, v) = u * φ (1, 0) + v * φ (0, 1) := by
+    intro u v
+    have h : ((u, v) : k × k) = u • ((1, 0) : k × k) + v • ((0, 1) : k × k) := by simp
+    rw [h, map_add, map_smul, map_smul]
+    simp
+  have hzero : (φ (1, 0) • a + φ (0, 1) • b) = 0 := by
+    apply dotProduct_eq_zero
+    intro x
+    have hx : φ (pairMap a b x) = 0 := hle (LinearMap.mem_range_self _ x)
+    have hx' : φ (a ⬝ᵥ x, b ⬝ᵥ x) = 0 := hx
+    rw [hform] at hx'
+    rw [add_dotProduct, smul_dotProduct, smul_dotProduct, smul_eq_mul, smul_eq_mul]
+    linear_combination hx'
+  by_cases hμ : φ (0, 1) = 0
+  · rw [hμ, zero_smul, add_zero] at hzero
+    rcases smul_eq_zero.mp hzero with hl | h0
+    · apply hφ
+      ext p
+      · simp [hl]
+      · simp [hμ]
+    · exact ha h0
+  · apply hb (-(φ (0, 1))⁻¹ * φ (1, 0))
+    have h1 : φ (0, 1) • b = -(φ (1, 0) • a) := eq_neg_of_add_eq_zero_right hzero
+    calc b = (φ (0, 1))⁻¹ • (φ (0, 1) • b) := by rw [smul_smul, inv_mul_cancel₀ hμ, one_smul]
+      _ = (-(φ (0, 1))⁻¹ * φ (1, 0)) • a := by
+        rw [h1, smul_neg, smul_smul, neg_mul, neg_smul]
+
+theorem card_two_equations (k : Type) [Field k] [Fintype k] (n : ℕ) (a b : Fin (n + 1) → k)
+    (ha : a ≠ 0) (hb : ∀ s : k, b ≠ s • a) :
+    Fintype.card k ^ 2 * (Finset.univ.filter
+      (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1) := by
+  have hr := pairMap_range a b ha hb
+  obtain ⟨x0, hx0⟩ : ∃ x0, pairMap a b x0 = ((1, 1) : k × k) := by
+    have : ((1, 1) : k × k) ∈ LinearMap.range (pairMap a b) := by rw [hr]; trivial
+    exact this
+  have hx1 : a ⬝ᵥ x0 = 1 := congrArg Prod.fst hx0
+  have hx2 : b ⬝ᵥ x0 = 1 := congrArg Prod.snd hx0
+  have hker : ∀ y, y ∈ LinearMap.ker (pairMap a b) ↔ a ⬝ᵥ y = 0 ∧ b ⬝ᵥ y = 0 := by
+    intro y
+    rw [LinearMap.mem_ker]
+    exact Prod.ext_iff
+  let e : LinearMap.ker (pairMap a b) ≃ {x : Fin (n + 1) → k // a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1} :=
+    { toFun := fun y => ⟨y.1 + x0, by
+        have h := (hker y.1).1 y.2
+        simp [dotProduct_add, h.1, h.2, hx1, hx2]⟩
+      invFun := fun x => ⟨x.1 - x0, by
+        rw [hker]
+        simp [dotProduct_sub, x.2.1, x.2.2, hx1, hx2]⟩
+      left_inv := fun y => by simp
+      right_inv := fun x => by simp }
+  have hcard : (Finset.univ.filter
+      (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1)).card
+      = Fintype.card k ^ Module.finrank k (LinearMap.ker (pairMap a b)) := by
+    rw [← Module.card_eq_pow_finrank (K := k) (V := LinearMap.ker (pairMap a b)),
+      Fintype.card_congr e, Fintype.card_subtype]
+  have hrank := LinearMap.finrank_range_add_finrank_ker (pairMap a b)
+  rw [hr, finrank_top] at hrank
+  have h2 : Module.finrank k (k × k) = 2 := by simp
+  have hV : Module.finrank k (Fin (n + 1) → k) = n + 1 := by simp
+  rw [h2, hV] at hrank
+  rw [hcard, ← pow_add, hrank]
+
+end GlobalTheory.CompanionTheory.GapOpCount
+end
+
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_two_affine_hyperplanes : ∀ (k : Type) [Field k] [Fintype k] (n : ℕ) (a b : Fin (n + 1) → k), a ≠ 0 → (∀ s : k, b ≠ s • a) →
+  Fintype.card k ^ 2 * (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GapOpCount.card_two_equations
+end
+
+section
+section
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+
+namespace GlobalTheory.CompanionTheory.GapOpLower
+
+open Finset
+
+theorem re_sesq_sum {V ι : Type} [AddCommGroup V] [Module ℂ V] (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ)
+    (s t : Finset ι) (f : ι → V) :
+    (B (∑ a ∈ s, f a) (∑ b ∈ t, f b)).re = ∑ a ∈ s, ∑ b ∈ t, (B (f a) (f b)).re := by
+  simp only [map_sum, LinearMap.sum_apply, Complex.re_sum]
+  rw [Finset.sum_comm]
+
+theorem card_filter_ne_zero {α : Type} [Fintype α] [Zero α] :
+    (((univ : Finset α).filter (fun a => a ≠ 0)).card : ℝ) = (Fintype.card α : ℝ) - 1 := by
+  have h := Finset.card_filter_add_card_filter_not (s := (univ : Finset α)) (fun a => a ≠ 0)
+  have h0 : ((univ : Finset α).filter (fun a => ¬ a ≠ 0)).card = 1 := by
+    have : (univ : Finset α).filter (fun a => ¬ a ≠ 0) = {0} := by
+      ext a; simp
+    rw [this, card_singleton]
+  rw [h0, card_univ] at h
+  rw [← h]; push_cast; ring
+
+theorem sum_line {k : Type} [Field k] [Fintype k] {n : ℕ} (a : Fin (n + 1) → k) (ha : a ≠ 0)
+    (D : (Fin (n + 1) → k) → ℝ) (hD : ∀ b, (∀ s : k, b ≠ s • a) → D b = 0) :
+    ∑ b ∈ (univ : Finset (Fin (n + 1) → k)).filter (fun b => b ≠ 0), D b
+      = ∑ s ∈ (univ : Finset k).filter (fun s => s ≠ 0), D (s • a) := by
+  have hinj : Function.Injective (fun s : k => s • a) := smul_left_injective k ha
+  rw [← Finset.sum_image (f := D) (g := fun s : k => s • a) hinj.injOn]
+  symm
+  refine Finset.sum_subset ?_ ?_
+  · intro b hb
+    obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp hb
+    simp only [mem_filter, mem_univ, true_and] at hs ⊢
+    exact smul_ne_zero hs ha
+  · intro b hb hb'
+    refine hD b ?_
+    intro s hs
+    apply hb'
+    refine Finset.mem_image.mpr ⟨s, ?_, hs.symm⟩
+    simp only [mem_filter, mem_univ, true_and] at hb ⊢
+    rintro rfl
+    exact hb (by simpa using hs)
+
+theorem row_identity {k : Type} [Field k] [Fintype k] {n : ℕ} (a : Fin (n + 1) → k) (ha : a ≠ 0)
+    (N R : (Fin (n + 1) → k) → ℝ) (c : ℝ)
+    (hN0 : N 0 = 0)
+    (hNa : (Fintype.card k : ℝ) * N a = (Fintype.card k : ℝ) ^ (n + 1))
+    (hNs : ∀ s : k, s ≠ 1 → N (s • a) = 0)
+    (hNo : ∀ b, (∀ s : k, b ≠ s • a) → (Fintype.card k : ℝ) * N b = (Fintype.card k : ℝ) ^ n)
+    (hR : ∀ s : k, s ≠ 0 → R (s • a) = c) :
+    (Fintype.card k : ℝ) * ∑ b, N b * R b
+      = (Fintype.card k : ℝ) ^ n *
+          ∑ b ∈ (univ : Finset (Fin (n + 1) → k)).filter (fun b => b ≠ 0), R b
+        + (Fintype.card k : ℝ) ^ n * c := by
+  set q : ℝ := (Fintype.card k : ℝ) with hq
+  have hZ : ∑ b, N b * R b
+      = ∑ b ∈ (univ : Finset (Fin (n + 1) → k)).filter (fun b => b ≠ 0), N b * R b := by
+    symm
+    refine Finset.sum_subset (filter_subset _ _) ?_
+    intro b _ hb
+    have : b = 0 := by simpa using hb
+    simp [this, hN0]
+  have hD := sum_line a ha (fun b => (q * N b - q ^ n) * R b)
+    (fun b hb => by show (q * N b - q ^ n) * R b = 0; rw [hNo b hb]; ring)
+  have hterm : ∀ s ∈ (univ : Finset k).filter (fun s => s ≠ 0),
+      (q * N (s • a) - q ^ n) * R (s • a) = (if s = 1 then q ^ (n + 1) * c else 0) - q ^ n * c := by
+    intro s hs
+    have s0 : s ≠ 0 := by simpa using hs
+    rw [hR s s0]
+    by_cases h : s = 1
+    · subst h
+      rw [one_smul, hNa]; simp; ring
+    · rw [hNs s h]; simp [h]
+  have h1mem : (1 : k) ∈ (univ : Finset k).filter (fun s => s ≠ 0) := by simp
+  rw [Finset.sum_congr rfl hterm, Finset.sum_sub_distrib, Finset.sum_ite_eq', if_pos h1mem,
+    Finset.sum_const, nsmul_eq_mul, card_filter_ne_zero] at hD
+  have hsplit : q * ∑ b ∈ (univ : Finset (Fin (n + 1) → k)).filter (fun b => b ≠ 0), N b * R b
+      = q ^ n * ∑ b ∈ (univ : Finset (Fin (n + 1) → k)).filter (fun b => b ≠ 0), R b
+        + ∑ b ∈ (univ : Finset (Fin (n + 1) → k)).filter (fun b => b ≠ 0),
+            (q * N b - q ^ n) * R b := by
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    ring
+  rw [hZ, hsplit, hD]
+  ring
+
+theorem sum_expand {k : Type} [Field k] [Fintype k] {n : ℕ}
+    (R : (Fin (n + 1) → k) → (Fin (n + 1) → k) → ℝ) :
+    ∑ x : Fin (n + 1) → k,
+      ∑ a ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1),
+        ∑ b ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), R a b
+      = ∑ a, ∑ b, ((univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1)).card : ℝ)
+          * R a b := by
+  calc ∑ x : Fin (n + 1) → k,
+      ∑ a ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1),
+        ∑ b ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), R a b
+      = ∑ x : Fin (n + 1) → k, ∑ a, ∑ b, if (a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1) then R a b else 0 := by
+        refine Finset.sum_congr rfl fun x _ => ?_
+        rw [Finset.sum_filter]
+        refine Finset.sum_congr rfl fun a _ => ?_
+        by_cases ha : a ⬝ᵥ x = 1
+        · simp [ha, Finset.sum_filter]
+        · simp [ha]
+    _ = ∑ a, ∑ x : Fin (n + 1) → k, ∑ b, if (a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1) then R a b else 0 :=
+        Finset.sum_comm
+    _ = ∑ a, ∑ b, ∑ x : Fin (n + 1) → k, if (a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1) then R a b else 0 :=
+        Finset.sum_congr rfl fun a _ => Finset.sum_comm
+    _ = _ := by
+        refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+        rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
+
+theorem lower_from_counts : ∀ (k : Type) [Field k] [Fintype k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ)
+  (w : (Fin (n + 1) → k) → V) (c A : ℝ),
+  (∀ x, 0 ≤ (B x x).re) →
+  (∀ a : Fin (n + 1) → k, a ≠ 0 →
+    Fintype.card k * (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1)) →
+  (∀ a b : Fin (n + 1) → k, a ≠ 0 → (∀ s : k, b ≠ s • a) →
+    Fintype.card k ^ 2 * (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1)) →
+  (∀ a : Fin (n + 1) → k, a ≠ 0 → ∀ s : k, s ≠ 0 → w (s • a) = w a) →
+  (∀ a : Fin (n + 1) → k, a ≠ 0 → (B (w a) (w a)).re = c) →
+  (∀ x : Fin (n + 1) → k, x ≠ 0 →
+    (B (∑ a ∈ Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), w a)
+       (∑ a ∈ Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), w a)).re = A) →
+  (Fintype.card k : ℝ) ^ n * c ≤ (Fintype.card k : ℝ) * A := by
+  intro k _ _ n V _ _ B w c A hpos h1 h2 hw hc hA
+  have hq1 : (1 : ℝ) < (Fintype.card k : ℝ) := by exact_mod_cast Fintype.one_lt_card
+  set q : ℝ := (Fintype.card k : ℝ) with hq
+  have hq0 : q ≠ 0 := by linarith
+  let N : (Fin (n + 1) → k) → (Fin (n + 1) → k) → ℝ := fun a b =>
+    ((univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1)).card : ℝ)
+  let R : (Fin (n + 1) → k) → (Fin (n + 1) → k) → ℝ := fun a b => (B (w a) (w b)).re
+  let Z : Finset (Fin (n + 1) → k) := univ.filter (fun b => b ≠ 0)
+  have hZc : (Z.card : ℝ) = q ^ (n + 1) - 1 := by
+    have h := card_filter_ne_zero (α := Fin (n + 1) → k)
+    have hc' : (Fintype.card (Fin (n + 1) → k) : ℝ) = q ^ (n + 1) := by simp [hq]
+    rw [hc'] at h
+    rw [← h]
+    simp only [Z]
+    congr!
+  have hrow : ∀ a, a ≠ 0 → q * ∑ b, N a b * R a b
+      = q ^ n * ∑ b ∈ Z, R a b + q ^ n * c := by
+    intro a ha
+    refine row_identity a ha (N a) (R a) c ?_ ?_ ?_ ?_ ?_
+    · simp [N]
+    · have h := h1 a ha
+      have : N a a = ((univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1)).card : ℝ) := by
+        simp only [N, and_self]
+      rw [this]
+      exact_mod_cast h
+    · intro s hs
+      have : univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1 ∧ (s • a) ⬝ᵥ x = 1) = ∅ := by
+        refine Finset.filter_eq_empty_iff.mpr ?_
+        rintro x - ⟨hx, hx'⟩
+        rw [smul_dotProduct, hx] at hx'
+        exact hs (by simpa using hx')
+      simp only [N, this, card_empty, Nat.cast_zero]
+    · intro b hb
+      have h := h2 a b ha hb
+      have h' : q ^ 2 * N a b = q ^ (n + 1) := by
+        simp only [N]; rw [hq]; exact_mod_cast h
+      apply mul_left_cancel₀ hq0
+      rw [← mul_assoc, ← pow_two, h', pow_succ]; ring
+    · intro s hs
+      simp only [R, hw a ha s hs, hc a ha]
+
+  have hleft : ∑ x : Fin (n + 1) → k,
+      ∑ a ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1),
+        ∑ b ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), R a b
+      = (q ^ (n + 1) - 1) * A := by
+    have hZ : ∑ x ∈ Z, ∑ a ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1),
+        ∑ b ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), R a b
+        = ∑ x : Fin (n + 1) → k,
+      ∑ a ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1),
+        ∑ b ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), R a b := by
+      refine Finset.sum_subset (filter_subset _ _) ?_
+      intro x _ hx
+      have hx0 : x = 0 := by simpa [Z] using hx
+      subst hx0
+      simp
+    rw [← hZ]
+    have hconst : ∀ x ∈ Z, ∑ a ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1),
+        ∑ b ∈ univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), R a b = A := by
+      intro x hx
+      have hx0 : x ≠ 0 := by simpa [Z] using hx
+      rw [← hA x hx0, re_sesq_sum]
+    rw [Finset.sum_congr rfl hconst, Finset.sum_const, nsmul_eq_mul, hZc]
+
+  have hright : q * ∑ a, ∑ b, N a b * R a b
+      = q ^ n * ∑ a ∈ Z, ∑ b ∈ Z, R a b + (q ^ (n + 1) - 1) * (q ^ n * c) := by
+    have hZ : ∑ a ∈ Z, ∑ b, N a b * R a b = ∑ a, ∑ b, N a b * R a b := by
+      refine Finset.sum_subset (filter_subset _ _) ?_
+      intro a _ ha
+      have ha0 : a = 0 := by simpa [Z] using ha
+      subst ha0
+      simp [N]
+    rw [← hZ, Finset.mul_sum, Finset.sum_congr rfl (fun a ha => hrow a (by simpa [Z] using ha)),
+      Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const, nsmul_eq_mul, hZc]
+  have hP : 0 ≤ ∑ a ∈ Z, ∑ b ∈ Z, R a b := by
+    have := hpos (∑ a ∈ Z, w a)
+    rwa [re_sesq_sum] at this
+  have hmain : q * ((q ^ (n + 1) - 1) * A)
+      = q ^ n * ∑ a ∈ Z, ∑ b ∈ Z, R a b + (q ^ (n + 1) - 1) * (q ^ n * c) := by
+    rw [← hleft, sum_expand R]
+    exact hright
+  have hQ : 0 < q ^ (n + 1) - 1 := by
+    have : 1 < q ^ (n + 1) := one_lt_pow₀ hq1 (Nat.succ_ne_zero n)
+    linarith
+  have hqn : 0 ≤ q ^ n := by positivity
+  have hfin : 0 ≤ (q ^ (n + 1) - 1) * (q * A - q ^ n * c) := by
+    have : (q ^ (n + 1) - 1) * (q * A - q ^ n * c) = q ^ n * ∑ a ∈ Z, ∑ b ∈ Z, R a b := by
+      linear_combination hmain
+    rw [this]
+    exact mul_nonneg hqn hP
+  have := nonneg_of_mul_nonneg_right hfin hQ
+  linarith
+
+end GlobalTheory.CompanionTheory.GapOpLower
+end
+
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_count_from_hyperplanes : ∀ (k : Type) [Field k] [Fintype k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ)
+  (w : (Fin (n + 1) → k) → V) (c A : ℝ),
+  (∀ x, 0 ≤ (B x x).re) →
+  (∀ a : Fin (n + 1) → k, a ≠ 0 →
+    Fintype.card k * (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1)) →
+  (∀ a b : Fin (n + 1) → k, a ≠ 0 → (∀ s : k, b ≠ s • a) →
+    Fintype.card k ^ 2 * (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1 ∧ b ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1)) →
+  (∀ a : Fin (n + 1) → k, a ≠ 0 → ∀ s : k, s ≠ 0 → w (s • a) = w a) →
+  (∀ a : Fin (n + 1) → k, a ≠ 0 → (B (w a) (w a)).re = c) →
+  (∀ x : Fin (n + 1) → k, x ≠ 0 →
+    (B (∑ a ∈ Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), w a)
+       (∑ a ∈ Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ x = 1), w a)).re = A) →
+  (Fintype.card k : ℝ) ^ n * c ≤ (Fintype.card k : ℝ) * A := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GapOpLower.lower_from_counts
+end
+
+section
+section
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+
+namespace GlobalTheory.CompanionTheory.GapOpCount
+
+theorem card_forms_vanishing_missing_line : ∀ (k : Type) [Field k] [Fintype k] (n j : ℕ) (M : Submodule k (Fin (n + 1) → k)), e0 k n ∉ M →
+    Module.finrank k M + (j + 1) = n + 1 →
+    (Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ e0 k n = 1 ∧ ∀ x ∈ M, a ⬝ᵥ x = 0)).card = Fintype.card k ^ j := by
+  intro k _ _ n j M hM hdim
+  let E := dotProductEquiv k (Fin (n + 1))
+  have hE : ∀ a x : Fin (n + 1) → k, E a x = a ⬝ᵥ x := fun a x => by
+    simp [E, dotProductEquiv]
+  let W : Submodule k (Fin (n + 1) → k) := M ⊔ Submodule.span k {e0 k n}
+  let T : Submodule k (Fin (n + 1) → k) := W.dualAnnihilator.comap E.toLinearMap
+  have hT : ∀ a, a ∈ T ↔ a ⬝ᵥ e0 k n = 0 ∧ ∀ x ∈ M, a ⬝ᵥ x = 0 := by
+    intro a
+    simp only [T, W, Submodule.mem_comap, Submodule.mem_dualAnnihilator, LinearEquiv.coe_coe, hE]
+    constructor
+    · intro h
+      exact ⟨h _ (Submodule.mem_sup_right (Submodule.mem_span_singleton_self _)),
+        fun x hx => h x (Submodule.mem_sup_left hx)⟩
+    · rintro ⟨h0, h1⟩ w hw
+      obtain ⟨x, hx, y, hy, rfl⟩ := Submodule.mem_sup.1 hw
+      obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.1 hy
+      rw [dotProduct_add, dotProduct_smul, h0, h1 x hx, smul_zero, add_zero]
+  have hfr : Module.finrank k T = j := by
+    have hmap : T.map E.toLinearMap = W.dualAnnihilator :=
+      Submodule.map_comap_eq_of_surjective E.surjective _
+    have h1 : Module.finrank k T = Module.finrank k W.dualAnnihilator := by
+      rw [← hmap]
+      exact (LinearEquiv.finrank_map_eq E T).symm
+    have h2 := Subspace.finrank_add_finrank_dualAnnihilator_eq W
+    have h3 : Module.finrank k W = Module.finrank k M + 1 := Submodule.finrank_sup_span_singleton hM
+    have h4 : Module.finrank k (Fin (n + 1) → k) = n + 1 := by simp
+    omega
+  obtain ⟨f, hf0, hfM⟩ := Submodule.exists_le_ker_of_notMem hM
+  obtain ⟨b, rfl⟩ := E.surjective f
+  have hb0 : b ⬝ᵥ e0 k n ≠ 0 := by rwa [← hE]
+  have hbM : ∀ x ∈ M, b ⬝ᵥ x = 0 := fun x hx => by
+    rw [← hE]
+    exact hfM hx
+  let a0 : Fin (n + 1) → k := (b ⬝ᵥ e0 k n)⁻¹ • b
+  have ha0 : a0 ⬝ᵥ e0 k n = 1 := by
+    simp only [a0, smul_dotProduct, smul_eq_mul]
+    exact inv_mul_cancel₀ hb0
+  have ha0M : ∀ x ∈ M, a0 ⬝ᵥ x = 0 := fun x hx => by
+    simp only [a0, smul_dotProduct, hbM x hx, smul_zero]
+  have hcard : (Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ e0 k n = 1 ∧ ∀ x ∈ M, a ⬝ᵥ x = 0)).card
+      = (Finset.univ : Finset T).card := by
+    refine Finset.card_bij' (fun a ha => ⟨a - a0, ?_⟩) (fun t _ => t.1 + a0) ?_ ?_ ?_ ?_
+    · obtain ⟨-, h1, h2⟩ := Finset.mem_filter.1 ha
+      refine (hT _).2 ⟨?_, fun x hx => ?_⟩
+      · rw [sub_dotProduct, h1, ha0, sub_self]
+      · rw [sub_dotProduct, h2 x hx, ha0M x hx, sub_self]
+    · intro a ha
+      exact Finset.mem_univ _
+    · intro t _
+      obtain ⟨h1, h2⟩ := (hT t.1).1 t.2
+      refine Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_, fun x hx => ?_⟩
+      · rw [add_dotProduct, h1, ha0, zero_add]
+      · rw [add_dotProduct, h2 x hx, ha0M x hx, add_zero]
+    · intro a ha
+      simp
+    · intro t _
+      ext1
+      simp
+  rw [hcard, Finset.card_univ, Module.card_eq_pow_finrank (K := k) (V := T), hfr]
+
+end GlobalTheory.CompanionTheory.GapOpCount
+end
+
+open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_functionals_vanishing_subspace : ∀ (k : Type) [Field k] [Fintype k] (n j : ℕ) (M : Submodule k (Fin (n + 1) → k)), e0 k n ∉ M →
+  Module.finrank k M + (j + 1) = n + 1 →
+  (Finset.univ.filter (fun a : Fin (n + 1) → k => a ⬝ᵥ e0 k n = 1 ∧ ∀ x ∈ M, a ⬝ᵥ x = 0)).card = Fintype.card k ^ j := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GapOpCount.card_forms_vanishing_missing_line
+end
+
+section
 noncomputable section
 
 open Matrix Classical PositivityTheory.Rg.Rs GlobalTheory.CompanionTheory.GLFirstBasisOrbit
@@ -462,4 +922,5 @@ theorem gapOp : PositivityTheory.Rg.Rs.GapOp := by
     fun j hj => pairing hD lam hl hj⟩
 
 end GlobalTheory.CompanionTheory.GapOpMain
+end
 end

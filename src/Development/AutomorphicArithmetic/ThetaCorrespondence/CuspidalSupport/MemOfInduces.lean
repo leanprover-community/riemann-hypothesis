@@ -1,6 +1,10 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.LocalGlobalCompatibility.TemperedLocalGlobal.LocalGlobalCompatibilityHolds
 import Development.WeilBound.CoreStatements.AutomorphicKernels.LocalGlobalCompatibility.TemperedLocalGlobal.WeilGroupRestriction.NotRealComplex
-import Development.AutomorphicArithmetic.ThetaCorrespondence.CuspidalSupport.AboveL
+import Development.AutomorphicArithmetic.ThetaCorrespondence.CuspidalSupport.CuspOfCq
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SemisimpleLevels.CsdSsOfFull
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsSpanFormsNeBot
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CuspContragredientIsCMConjTwistOfPairedInvTranspStatement
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalGlobalOfGelfandKazhdan
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ConjOpInvolutive
 import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.PolarizedGaloisRepPublished
@@ -14,6 +18,25 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualIsConjAndLoc
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.WignerHighestWeights.Wigner
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.BernsteinZelevinskyGL.TopStd
 
+section
+open NumberField GlobalTheory.CuspRep GlobalTheory.ContraPair
+
+namespace UpperTheory.Lit.Car
+
+def DualR : Prop := LG ∧ UpperTheory.V.Lev.CsdSs
+
+theorem bridge' : GlobalTheory.Published.GelfandKazhdanDual →
+    (DualR → LG) ∧ (GlobalTheory.Published.GaloisRepOfPolarizedPair → GlobalTheory.Published.GaloisRepOfPolarizedCuspidal) := by
+  intro hGK
+  refine ⟨And.left, fun hP => ?_⟩
+  intro E Ω _ _ _ _ _ _ l _ ι a ha π χ hr hpol
+  exact hP E Ω l ι a ha π χ hr
+    ⟨hpol.sign, GlobalTheory.T.cuspContragredientIsCMConjTwist_of_paired_invTranspose E a π (GlobalTheory.GalOfCusp.compNorm E χ) (hGK E a _) hpol.dual⟩
+
+end UpperTheory.Lit.Car
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
@@ -81,4 +104,5 @@ theorem csdSs_of (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hGK : G
 
 end UpperTheory.Lit.Car
 
+end
 end

@@ -3,8 +3,25 @@ import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Statements
 import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSaturatedFirstCoordinateLine
 import GroundTheory.HeightsAndTheta.Heights.HeightComparison.Height
 import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.CurveIsOrbit
-import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.NoCommonZeroComplex
 import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights
+
+def NoCommonZeroComplex.Statement : Prop :=
+  ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (n : ι → ℕ) (P : ArithVariety n) (a : ι → ℤ)
+    (J : Type) [Fintype J] (s : J → IntegralSection P a),
+    (∀ x ∈ P.points (AlgebraicClosure ℚ), ∃ j, (s j).NonzeroAt x) →
+    ∀ z ∈ P.points ℂ, ∃ (j : J) (c : (k : ι) → Fin (n k + 1)) (d : ι → ℕ)
+      (e : MvPolynomial (Coord n) ℤ),
+      IsChartForm P a (s j).num (s j).den c d e ∧ (∀ k, z k (c k) ≠ 0) ∧ evalCone z e ≠ 0
+
+end GroundTheory.Heights₂.Heights
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
@@ -482,3 +499,4 @@ example : (IntegralSection.chartSection (ArithVariety.whole (fun _ : Unit ↦ 1)
 end
 
 end GroundTheory.Heights₂.Heights
+end

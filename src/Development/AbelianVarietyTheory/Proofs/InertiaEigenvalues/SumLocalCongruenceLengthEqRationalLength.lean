@@ -1,20 +1,1079 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RowsExhaust
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverEta
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormalizedLengthLatticeQuotientBaseChangeEq
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LatticeProjectionBaseChangeDvrComm
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LatticeInfSubspaceBaseChangeDvr
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CongruenceLengthFinsetSupEqSum
+import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
+import Formalism.SharpRestriction.LevelLetterCocycles.DataN
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverAlg
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthBaseChangeQuotientOfMapMaximalIdeal
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MapSpanBaseChangeEquivSubmoduleOf
+import BuildAid.ForwardExisting
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegralFormLatticeEqSumLocalisedLattices
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeckeEigenspaceSumDisjointCompl
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoeffEmbeddingIntegersResCharUnit
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteLengthLatticeProjectionQuotient
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodEigSumSupComplEigSumEqTop
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RationalFormEqSumLocalisationProjections
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FgInfSupOfIsCompl
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanImageSemilinearLatticeEq
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DisjointFinsetSupOfSupIndepSup
+import Formalism.SharpRestriction.LevelLetterCocycles.CongruenceSingleEndomorphism
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthLocalizedModuleEqZeroOfNotAnnihilatorLe
 
+section
+section
+open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
+
+noncomputable section
+
+namespace GlobalTheory.LatLenExt
+
+open Formalism.L2.Col TensorProduct
+
+section Int
+
+variable {K : Type} [Field K] [NumberField K] {O : Type} [CommRing O] [IsDomain O]
+  (e : K →+* FractionRing O) (he : ∀ a : 𝓞 K, e (a : K) ∈ (algebraMap O (FractionRing O)).range)
+
+def intMap : 𝓞 K →+* O :=
+  (RingEquiv.ofBijective (algebraMap O (FractionRing O)).rangeRestrict
+    ⟨fun _ _ h => IsFractionRing.injective O (FractionRing O) (congrArg Subtype.val h),
+      RingHom.rangeRestrict_surjective _⟩).symm.toRingHom.comp
+    ((e.comp (algebraMap (𝓞 K) K)).codRestrict _ he)
+
+theorem algebraMap_intMap (a : 𝓞 K) :
+    algebraMap O (FractionRing O) (intMap e he a) = e (a : K) := by
+  have h := (RingEquiv.ofBijective (algebraMap O (FractionRing O)).rangeRestrict
+    ⟨fun _ _ h => IsFractionRing.injective O (FractionRing O) (congrArg Subtype.val h),
+      RingHom.rangeRestrict_surjective _⟩).apply_symm_apply
+      ((e.comp (algebraMap (𝓞 K) K)).codRestrict _ he a)
+  exact congrArg Subtype.val h
+
+variable [IsDiscreteValuationRing O] (w : HeightOneSpectrum (𝓞 K))
+  (hw : ∀ a : 𝓞 K, ∀ z : O, algebraMap O (FractionRing O) z = e (a : K) →
+    (a ∈ w.asIdeal ↔ ¬ IsUnit z))
+
+include hw in
+theorem isUnit_intMap {a : 𝓞 K} (ha : a ∉ w.asIdeal) : IsUnit (intMap e he a) := by
+  by_contra h
+  exact ha ((hw a _ (algebraMap_intMap e he a)).2 h)
+
+def owHom : Ow w →+* O :=
+  IsLocalization.lift (M := w.asIdeal.primeCompl) (g := intMap e he)
+    (fun s => isUnit_intMap e he w hw s.2)
+
+theorem owHom_algebraMap (a : 𝓞 K) :
+    owHom e he w hw (algebraMap (𝓞 K) (Ow w) a) = intMap e he a :=
+  IsLocalization.lift_eq _ _
+
+theorem algebraMap_owHom (x : Ow w) :
+    algebraMap O (FractionRing O) (owHom e he w hw x) = e (algebraMap (Ow w) K x) := by
+  have : (algebraMap O (FractionRing O)).comp (owHom e he w hw) = e.comp (algebraMap (Ow w) K) :=
+    IsLocalization.ringHom_ext w.asIdeal.primeCompl (RingHom.ext fun a => by
+      rw [RingHom.comp_apply, RingHom.comp_apply, RingHom.comp_apply, RingHom.comp_apply,
+        owHom_algebraMap, algebraMap_intMap, ← IsScalarTower.algebraMap_apply])
+  exact RingHom.congr_fun this x
+
+theorem owHom_injective : Function.Injective (owHom e he w hw) := by
+  intro x y h
+  have := congrArg (algebraMap O (FractionRing O)) h
+  rw [algebraMap_owHom, algebraMap_owHom] at this
+  exact algebraMap_ow_injective w (e.injective this)
+
+theorem owHom_isLocalHom : IsLocalHom (owHom e he w hw) := by
+  refine ⟨fun x hx => ?_⟩
+  obtain ⟨⟨a, s⟩, rfl⟩ := IsLocalization.mk'_surjective w.asIdeal.primeCompl x
+  rw [owHom, IsLocalization.lift_mk'] at hx
+  have ha : IsUnit (intMap e he a) := (IsUnit.mul_iff.1 hx).1
+  have : a ∉ w.asIdeal := fun h => ((hw a _ (algebraMap_intMap e he a)).1 h) ha
+  exact (IsLocalization.AtPrime.isUnit_mk'_iff (Ow w) w.asIdeal a s).2 this
+
+end Int
+
+theorem nonempty_quot_map_equiv {S M N : Type*} [Ring S] [AddCommGroup M] [Module S M]
+    [AddCommGroup N] [Module S N] (f : M →ₗ[S] N) (hf : Function.Injective f)
+    (P Q : Submodule S M) (P' Q' : Submodule S N) (hP : P.map f = P') (hQ : Q.map f = Q') :
+    Nonempty ((P ⧸ Q.submoduleOf P) ≃ₗ[S] (P' ⧸ Q'.comap P'.subtype)) := by
+  subst hP hQ
+  refine ⟨Submodule.Quotient.equiv _ _ (Submodule.equivMapOfInjective f hf P) ?_⟩
+  ext ⟨y, hy⟩
+  simp only [Submodule.mem_map, Submodule.mem_comap, Submodule.submoduleOf, Submodule.subtype_apply]
+  constructor
+  · rintro ⟨x, hx, hxy⟩
+    refine ⟨x, hx, ?_⟩
+    have := congrArg Subtype.val hxy
+    simpa using this
+  · rintro ⟨q, hq, rfl⟩
+    obtain ⟨p, hp, hpq⟩ := hy
+    obtain rfl := hf hpq
+    exact ⟨⟨p, hp⟩, hq, rfl⟩
+
+end GlobalTheory.LatLenExt
+
+namespace GlobalTheory.LatLenExt
+
+open Formalism.L2.Col TensorProduct
+
+theorem lenUnit_span_eq_lenUW : ∀ (K : Type) [Field K] [NumberField K] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (e : K →+* FractionRing O) (V V' : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [FiniteDimensional K V] [AddCommGroup V'] [Module (FractionRing O) V'] [Module O V'] [IsScalarTower O (FractionRing O) V'] (iV : V →ₛₗ[e] V') (ι : Type) (b : Basis ι K V), LinearIndependent (FractionRing O) (fun a => iV (b a)) → (∀ a : 𝓞 K, e (a : K) ∈ (algebraMap O (FractionRing O)).range) → ∀ (w : HeightOneSpectrum (𝓞 K)) (l : ℕ), l.Prime → (l : 𝓞 K) ∈ w.asIdeal → (∀ a : 𝓞 K, ∀ z : O, algebraMap O (FractionRing O) z = e (a : K) → (a ∈ w.asIdeal ↔ ¬ IsUnit z)) → ∀ (A B : Submodule (𝓞 K) V), A.FG → B ≤ A → lenUnit (O := O) l (↥(Submodule.span O (iV '' (A : Set V))) ⧸ (Submodule.span O (iV '' (B : Set V))).comap (Submodule.span O (iV '' (A : Set V))).subtype) = Formalism.L2.Col.lenUW w A B := by
+  intro K _ _ O _ _ _ e V V' _ _ _ _ _ _ _ _ _ iV ι b hli he w l hl hlw hw A B _ _
+  letI : Algebra (Ow w) O := (owHom e he w hw).toAlgebra
+  letI : Algebra K (FractionRing O) := e.toAlgebra
+  haveI : IsScalarTower (Ow w) K (FractionRing O) := IsScalarTower.of_algebraMap_eq fun x => by
+    rw [IsScalarTower.algebraMap_apply (Ow w) O (FractionRing O)]
+    exact algebraMap_owHom e he w hw x
+  haveI : FaithfulSMul (Ow w) O :=
+    (faithfulSMul_iff_algebraMap_injective _ _).2 (owHom_injective e he w hw)
+  haveI : IsLocalHom (algebraMap (Ow w) O) := owHom_isLocalHom e he w hw
+  letI : Module K V' := Module.compHom V' e
+  haveI : IsScalarTower K (FractionRing O) V' := ⟨fun c x y => by
+    show (c • x) • y = e c • (x • y)
+    rw [Algebra.smul_def, mul_smul]
+    rfl⟩
+  let iVK : V →ₗ[K] V' :=
+    { toFun := iV, map_add' := iV.map_add, map_smul' := fun c x => iV.map_smulₛₗ c x }
+  let Φ : FractionRing O ⊗[K] V →ₗ[FractionRing O] V' := iVK.liftBaseChange (FractionRing O)
+  have hΦ : ∀ v, Φ ((1 : FractionRing O) ⊗ₜ[K] v) = iV v := fun v => by
+    simp [Φ, iVK]
+  have hinj : Function.Injective Φ := by
+    refine LinearMap.injective_of_linearIndependent (Algebra.TensorProduct.basis (FractionRing O) b).span_eq ?_
+    have hc : (Φ ∘ ⇑(Algebra.TensorProduct.basis (FractionRing O) b)) = fun a => iV (b a) :=
+      funext fun i => by simp [hΦ]
+    rw [hc]
+    exact hli
+  let Φs := Φ.restrictScalars O
+  have key : ∀ A' : Submodule (𝓞 K) V,
+      (GlobalTheory.spanBaseChange K O (FractionRing O) (atW w A')).map Φs =
+        Submodule.span O (iV '' (A' : Set V)) := by
+    intro A'
+    rw [GlobalTheory.spanBaseChange, Submodule.map_span, Set.image_image]
+    have h1 : (fun m => Φs ((1 : FractionRing O) ⊗ₜ[K] m)) = iV := funext fun m => hΦ m
+    rw [h1]
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      rintro _ ⟨x, hx, rfl⟩
+      obtain ⟨s, hs, hsx⟩ := mem_atW_iff.1 hx
+      obtain ⟨u, hu⟩ := isUnit_intMap e he w hw hs
+      have h2 : iV (s • x) = intMap e he s • iV x := by
+        rw [← algebraMap_smul K s x, iV.map_smulₛₗ, ← algebraMap_smul (FractionRing O) (intMap e he s),
+          algebraMap_intMap]
+      have h3 : iV x = ((u⁻¹ : Oˣ) : O) • iV (s • x) := by
+        rw [h2, ← hu, smul_smul, Units.inv_mul, one_smul]
+      rw [SetLike.mem_coe, h3]
+      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, hsx, rfl⟩)
+    · exact Submodule.span_mono (Set.image_mono fun x hx => Submodule.subset_span hx)
+  obtain ⟨E2⟩ := nonempty_quot_map_equiv Φs hinj _ _ _ _ (key A) (key B)
+  let E := GlobalTheory.spanBaseChangeSubquotEquiv K O (FractionRing O) (atW w A) (atW w B) ≪≫ₗ E2
+  have hlen : Module.length O (↥(Submodule.span O (iV '' (A : Set V))) ⧸
+      (Submodule.span O (iV '' (B : Set V))).comap (Submodule.span O (iV '' (A : Set V))).subtype) =
+      lenW w A B * ((IsLocalRing.maximalIdeal O).ramificationIdx (Ow w) : ℕ) := by
+    rw [← E.length_eq, GlobalTheory.length_baseChange_dvr]
+    rfl
+  have hden : Module.length O (O ⧸ Ideal.span {(l : O)}) =
+      (eW w : ℕ∞) * ((IsLocalRing.maximalIdeal O).ramificationIdx (Ow w) : ℕ) := by
+    obtain rfl := eq_prW_of_mem w hl hlw
+    rw [GlobalTheory.length_quotient_span_singleton_eq_addVal, ← map_natCast (algebraMap (Ow w) O),
+      GlobalTheory.addVal_algebraMap, ← GlobalTheory.length_quotient_span_singleton_eq_addVal, length_ow_quot_prW]
+  have hpos := GlobalTheory.ramificationIdx_maximalIdeal_pos (Ow w) O
+  unfold lenUnit lenUW
+  rw [hlen, hden]
+  simp only [ENat.toNat_mul, ENat.toNat_coe]
+  push_cast
+  exact mul_div_mul_right _ _ (by exact_mod_cast hpos.ne')
+
+end GlobalTheory.LatLenExt
+end
+end
+
+open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalizedLength_latticeQuotient_baseChange_eq : ∀ (K : Type) [Field K] [NumberField K] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (e : K →+* FractionRing O) (V V' : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [FiniteDimensional K V] [AddCommGroup V'] [Module (FractionRing O) V'] [Module O V'] [IsScalarTower O (FractionRing O) V'] (iV : V →ₛₗ[e] V') (ι : Type) (b : Basis ι K V), LinearIndependent (FractionRing O) (fun a => iV (b a)) → (∀ a : 𝓞 K, e (a : K) ∈ (algebraMap O (FractionRing O)).range) → ∀ (w : HeightOneSpectrum (𝓞 K)) (l : ℕ), l.Prime → (l : 𝓞 K) ∈ w.asIdeal → (∀ a : 𝓞 K, ∀ z : O, algebraMap O (FractionRing O) z = e (a : K) → (a ∈ w.asIdeal ↔ ¬ IsUnit z)) → ∀ (A B : Submodule (𝓞 K) V), A.FG → B ≤ A → lenUnit (O := O) l (↥(Submodule.span O (iV '' (A : Set V))) ⧸ (Submodule.span O (iV '' (B : Set V))).comap (Submodule.span O (iV '' (A : Set V))).subtype) = Formalism.L2.Col.lenUW w A B := by
+  atlas_forward_decl GlobalTheory.LatLenExt.lenUnit_span_eq_lenUW
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
+
+namespace GlobalTheory
+
+theorem projection_span_extend_scalars
+    (K : Type) [Field K] [NumberField K] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+    (e : K →+* FractionRing O) (V V' : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
+    [IsScalarTower (𝓞 K) K V] [FiniteDimensional K V] [AddCommGroup V'] [Module (FractionRing O) V']
+    [Module O V'] [IsScalarTower O (FractionRing O) V'] (iV : V →ₛₗ[e] V') (ι : Type) (b : Basis ι K V) :
+    LinearIndependent (FractionRing O) (fun a => iV (b a)) →
+    (∀ a : 𝓞 K, e (a : K) ∈ (algebraMap O (FractionRing O)).range) →
+    ∀ (A : Submodule (𝓞 K) V) (U U' : Submodule K V), IsCompl U U' →
+    Submodule.span O (iV '' ((U.restrictScalars (𝓞 K) ⊓ (A ⊔ U'.restrictScalars (𝓞 K)) :
+        Submodule (𝓞 K) V) : Set V)) =
+      (Submodule.span (FractionRing O) (iV '' (U : Set V))).restrictScalars O ⊓
+        (Submodule.span O (iV '' (A : Set V)) ⊔
+          (Submodule.span (FractionRing O) (iV '' (U' : Set V))).restrictScalars O) := by
+  intro hli _ A U U' hUU'
+  set F := FractionRing O
+
+  let p : V →ₗ[K] V := U.subtype ∘ₗ U.projectionOnto U' hUU'
+  have hpU : ∀ u ∈ U, p u = u := fun u hu => by
+    have h := Submodule.projectionOnto_apply_left hUU' ⟨u, hu⟩
+    show ((U.projectionOnto U' hUU') ((⟨u, hu⟩ : U) : V) : V) = u
+    rw [h]
+  have hpU' : ∀ u ∈ U', p u = 0 := fun u hu => by
+    have h := Submodule.projectionOnto_apply_right hUU' ⟨u, hu⟩
+    show ((U.projectionOnto U' hUU') ((⟨u, hu⟩ : U') : V) : V) = 0
+    rw [h]; rfl
+  have hpmem : ∀ v, p v ∈ U := fun v => by simp [p]
+  have hdec : ∀ v, ∃ u ∈ U, ∃ u' ∈ U', u + u' = v := fun v => by
+    have : v ∈ U ⊔ U' := by rw [hUU'.sup_eq_top]; trivial
+    exact Submodule.mem_sup.mp this
+  have hpdiff : ∀ v, p v - v ∈ U' := fun v => by
+    obtain ⟨u, hu, u', hu', rfl⟩ := hdec v
+    rw [map_add, hpU u hu, hpU' u' hu', add_zero]
+    simpa using U'.neg_mem hu'
+
+  let W : Submodule F V' := Submodule.span F (Set.range fun a => iV (b a))
+  let f : W →ₗ[F] V' := (Basis.span hli).constr F (fun a => iV (p (b a)))
+  obtain ⟨q, hq⟩ := LinearMap.exists_extend f
+  have hqi : ∀ v, q (iV v) = iV (p v) := by
+    have : (q.comp iV : V →ₛₗ[e] V') = iV.comp p := by
+      refine b.ext fun a => ?_
+      have hmem : iV (b a) ∈ W := Submodule.subset_span ⟨a, rfl⟩
+      have h1 : q (iV (b a)) = f ⟨iV (b a), hmem⟩ := by
+        rw [← hq]; rfl
+      have h2 : (⟨iV (b a), hmem⟩ : W) = Basis.span hli a := by
+        rw [Basis.span_apply]
+      simp only [LinearMap.comp_apply]
+      rw [h1, h2, Basis.constr_basis]
+    intro v
+    exact congrArg (fun g => g v) this
+  have hqU : ∀ x ∈ Submodule.span F (iV '' (U : Set V)), q x = x := by
+    intro x hx
+    induction hx using Submodule.span_induction with
+    | mem y hy =>
+      obtain ⟨u, hu, rfl⟩ := hy
+      rw [hqi, hpU u hu]
+    | zero => simp
+    | add x y _ _ hx hy => rw [map_add, hx, hy]
+    | smul c x _ hx => rw [map_smul, hx]
+  have hqU' : ∀ x ∈ Submodule.span F (iV '' (U' : Set V)), q x = 0 := by
+    intro x hx
+    induction hx using Submodule.span_induction with
+    | mem y hy =>
+      obtain ⟨u, hu, rfl⟩ := hy
+      rw [hqi, hpU' u hu, map_zero]
+    | zero => simp
+    | add x y _ _ hx hy => rw [map_add, hx, hy, add_zero]
+    | smul c x _ hx => rw [map_smul, hx, smul_zero]
+  apply le_antisymm
+  · rw [Submodule.span_le]
+    rintro _ ⟨w, hw, rfl⟩
+    simp only [SetLike.mem_coe, Submodule.mem_inf, Submodule.restrictScalars_mem] at hw
+    obtain ⟨hwU, hwA⟩ := hw
+    obtain ⟨a, ha, u', hu', rfl⟩ := Submodule.mem_sup.mp hwA
+    refine Submodule.mem_inf.mpr ⟨?_, ?_⟩
+    · exact Submodule.subset_span ⟨_, hwU, rfl⟩
+    · rw [map_add]
+      refine Submodule.add_mem_sup (Submodule.subset_span ⟨a, ha, rfl⟩) ?_
+      exact Submodule.subset_span ⟨u', hu', rfl⟩
+  · intro x hx
+    obtain ⟨hxU, hxs⟩ := Submodule.mem_inf.mp hx
+    obtain ⟨y, hy, z, hz, rfl⟩ := Submodule.mem_sup.mp hxs
+    have hxq : q (y + z) = y + z := hqU _ hxU
+    rw [map_add, hqU' z hz, add_zero] at hxq
+    rw [← hxq]
+    have hmap : q y ∈ Submodule.map (q.restrictScalars O) (Submodule.span O (iV '' (A : Set V))) :=
+      ⟨y, hy, rfl⟩
+    rw [Submodule.map_span] at hmap
+    refine Submodule.span_mono ?_ hmap
+    rintro _ ⟨_, ⟨a, ha, rfl⟩, rfl⟩
+    refine ⟨p a, ?_, (hqi a).symm⟩
+    simp only [SetLike.mem_coe, Submodule.mem_inf, Submodule.restrictScalars_mem]
+    refine ⟨hpmem a, ?_⟩
+    have : p a = a + (p a - a) := by abel
+    rw [this]
+    exact Submodule.add_mem_sup ha (hpdiff a)
+
+end GlobalTheory
+end
+
+open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.latticeProjection_baseChange_dvr_comm : ∀ (K : Type) [Field K] [NumberField K] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (e : K →+* FractionRing O) (V V' : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [FiniteDimensional K V] [AddCommGroup V'] [Module (FractionRing O) V'] [Module O V'] [IsScalarTower O (FractionRing O) V'] (iV : V →ₛₗ[e] V') (ι : Type) (b : Basis ι K V), LinearIndependent (FractionRing O) (fun a => iV (b a)) → (∀ a : 𝓞 K, e (a : K) ∈ (algebraMap O (FractionRing O)).range) → ∀ (A : Submodule (𝓞 K) V) (U U' : Submodule K V), IsCompl U U' → Submodule.span O (iV '' ((U.restrictScalars (𝓞 K) ⊓ (A ⊔ U'.restrictScalars (𝓞 K)) : Submodule (𝓞 K) V) : Set V)) = (Submodule.span (FractionRing O) (iV '' (U : Set V))).restrictScalars O ⊓ (Submodule.span O (iV '' (A : Set V)) ⊔ (Submodule.span (FractionRing O) (iV '' (U' : Set V))).restrictScalars O) := by
+  atlas_forward_decl GlobalTheory.projection_span_extend_scalars
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
+
+namespace GlobalTheory.LatticeInterBaseChange
+
+end GlobalTheory.LatticeInterBaseChange
+
+namespace GlobalTheory.LatticeInterBaseChange
+
+end GlobalTheory.LatticeInterBaseChange
+
+namespace GlobalTheory.LatticeInterBaseChange
+
+open NumberField IsDedekindDomain Module in
+private theorem exists_functional_comp_eq {K F : Type} [Field K] [Field F] (e : K →+* F)
+    {V V' : Type} [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module F V']
+    (iV : V →ₛₗ[e] V') {ι : Type} (b : Basis ι K V)
+    (hli : LinearIndependent F (fun a => iV (b a))) (φ : V →ₗ[K] K) :
+    ∃ ψ : V' →ₗ[F] F, ∀ v, ψ (iV v) = e (φ v) := by
+  obtain ⟨g, hg⟩ := LinearMap.exists_extend ((Basis.span hli).constr F (fun a => e (φ (b a))))
+  let f₁ : V →ₛₗ[e] F := g.comp iV
+  let f₂ : V →ₛₗ[e] F :=
+    { toFun := fun v => e (φ v)
+      map_add' := fun v w => by simp
+      map_smul' := fun t v => by simp }
+  have hf : f₁ = f₂ := by
+    refine b.ext fun a => ?_
+    have h := LinearMap.congr_fun hg (Basis.span hli a)
+    rw [Basis.constr_basis, LinearMap.comp_apply, Submodule.subtype_apply, Basis.span_apply] at h
+    exact h
+  exact ⟨g, fun v => LinearMap.congr_fun hf v⟩
+
+open NumberField IsDedekindDomain Module in
+private theorem exists_integral_inverse_coefficients {K : Type} [Field K] [NumberField K] {n : ℕ}
+    (c : Fin n → K) :
+    ∃ β : Fin n → K, (∀ j k, ∃ r : 𝓞 K, (r : K) = β j * c k) ∧
+      ∀ k, c k * ∑ j, β j * c j = c k := by
+  classical
+  by_cases hc : ∀ k, c k = 0
+  · exact ⟨0, fun j k => ⟨0, by simp⟩, fun k => by simp [hc k]⟩
+  push_neg at hc
+  obtain ⟨k₀, hk₀⟩ := hc
+  let I : FractionalIdeal (nonZeroDivisors (𝓞 K)) K :=
+    FractionalIdeal.spanFinset (𝓞 K) Finset.univ c
+  have hIc : (I : Submodule (𝓞 K) K) = Submodule.span (𝓞 K) (Set.range c) := by
+    change Submodule.span (𝓞 K) (c '' ((Finset.univ : Finset (Fin n)) : Set (Fin n))) = _
+    rw [Finset.coe_univ, Set.image_univ]
+  have hI : I ≠ 0 := by
+    intro h
+    exact hk₀ ((FractionalIdeal.spanFinset_eq_zero.1 h) k₀ (Finset.mem_univ _))
+  have h1 : (1 : K) ∈ (I : Submodule (𝓞 K) K) *
+      ((I⁻¹ : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) : Submodule (𝓞 K) K) := by
+    rw [← FractionalIdeal.coe_mul, mul_inv_cancel₀ hI]
+    exact (FractionalIdeal.mem_one_iff _).2 ⟨1, map_one _⟩
+  have key : ∃ β : Fin n → K,
+      (∀ j, β j ∈ ((I⁻¹ : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) : Submodule (𝓞 K) K)) ∧
+        (1 : K) = ∑ j, β j * c j := by
+    refine Submodule.mul_induction_on (C := fun z => ∃ β : Fin n → K,
+      (∀ j, β j ∈ ((I⁻¹ : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) : Submodule (𝓞 K) K)) ∧
+        z = ∑ j, β j * c j) h1 ?_ ?_
+    · intro m hm y hy
+      rw [hIc, Submodule.mem_span_range_iff_exists_fun] at hm
+      obtain ⟨r, rfl⟩ := hm
+      refine ⟨fun j => r j • y, fun j => Submodule.smul_mem _ (r j) hy, ?_⟩
+      rw [Finset.sum_mul]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      simp only [Algebra.smul_def]
+      ring
+    · rintro x y ⟨β, hβ, rfl⟩ ⟨β', hβ', rfl⟩
+      exact ⟨β + β', fun j => add_mem (hβ j) (hβ' j),
+        by simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]⟩
+  obtain ⟨β, hβI, hβ1⟩ := key
+  refine ⟨β, fun j k => ?_, fun k => by rw [← hβ1, mul_one]⟩
+  have hck : c k ∈ I := by
+    rw [← FractionalIdeal.mem_coe, hIc]
+    exact Submodule.subset_span ⟨k, rfl⟩
+  obtain ⟨r, hr⟩ := (FractionalIdeal.mem_one_iff _).1
+    ((FractionalIdeal.mem_inv_iff hI).1 (FractionalIdeal.mem_coe.1 (hβI j)) (c k) hck)
+  exact ⟨r, hr⟩
+
+open NumberField IsDedekindDomain Module in
+private theorem mem_span_image_inf_ker {K F R : Type} [Field K] [NumberField K] [Field F]
+    [CommRing R] [Algebra R F] (e : K →+* F) {V V' : Type} [AddCommGroup V] [Module K V]
+    [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [AddCommGroup V'] [Module F V'] [Module R V']
+    [IsScalarTower R F V'] (iV : V →ₛₗ[e] V')
+    (he : ∀ a : 𝓞 K, e (a : K) ∈ (algebraMap R F).range) (φ : V →ₗ[K] K) (ψ : V' →ₗ[F] F)
+    (hψ : ∀ v, ψ (iV v) = e (φ v)) (A : Submodule (𝓞 K) V) {x : V'}
+    (hx : x ∈ Submodule.span R (iV '' (A : Set V))) (h0 : ψ x = 0) :
+    x ∈ Submodule.span R
+      (iV '' ((A ⊓ (LinearMap.ker φ).restrictScalars (𝓞 K) : Submodule (𝓞 K) V) : Set V)) := by
+  obtain ⟨n, r, g, hxg⟩ := Submodule.mem_span_set'.1 hx
+  choose a ha hag using fun i => (g i).2
+  obtain ⟨β, hβint, hβ⟩ := exists_integral_inverse_coefficients (fun i => φ (a i))
+  choose ρ hρ using hβint
+  beta_reduce at hρ hβ
+  have hρs : ∀ j k, (ρ j k) • a j = (β j * φ (a k)) • a j := by
+    intro j k
+    rw [← hρ j k, ← algebraMap_smul K (ρ j k) (a j)]
+  let w : Fin n → V := fun k => a k - ∑ j, (ρ j k) • a j
+  have hwA : ∀ k, w k ∈ A := fun k =>
+    sub_mem (ha k) (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (ha j))
+  have hwφ : ∀ k, φ (w k) = 0 := by
+    intro k
+    have h := hβ k
+    rw [Finset.mul_sum] at h
+    simp only [w, map_sub, map_sum, hρs, map_smul, smul_eq_mul]
+    rw [sub_eq_zero]
+    conv_lhs => rw [← h]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  have key : ∑ k, algebraMap R F (r k) * e (φ (a k)) = 0 := by
+    rw [← h0, ← hxg, map_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [← hag k, ← algebraMap_smul F (r k) (iV (a k)), LinearMap.map_smul, smul_eq_mul, hψ]
+  have hiw : ∀ k, iV (w k) = iV (a k) - ∑ j, (e (β j) * e (φ (a k))) • iV (a j) := by
+    intro k
+    simp only [w, map_sub, map_sum, hρs, LinearMap.map_smulₛₗ, map_mul]
+  have hx' : x = ∑ k, r k • iV (w k) := by
+    simp only [hiw, smul_sub, Finset.sum_sub_distrib, Finset.smul_sum]
+    have h2 : ∑ k, ∑ j, r k • (e (β j) * e (φ (a k))) • iV (a j) = 0 := by
+      have h3 : ∀ k j, r k • (e (β j) * e (φ (a k))) • iV (a j) =
+          (e (β j) * (algebraMap R F (r k) * e (φ (a k)))) • iV (a j) := by
+        intro k j
+        rw [← algebraMap_smul F (r k), smul_smul]
+        congr 1
+        ring
+      simp only [h3]
+      rw [Finset.sum_comm]
+      refine Finset.sum_eq_zero fun j _ => ?_
+      rw [← Finset.sum_smul, ← Finset.mul_sum, key, mul_zero, zero_smul]
+    rw [h2, sub_zero, ← hxg]
+    exact Finset.sum_congr rfl fun k _ => by rw [hag k]
+  rw [hx']
+  exact Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _
+    (Submodule.subset_span ⟨w k, Submodule.mem_inf.2 ⟨hwA k, LinearMap.mem_ker.2 (hwφ k)⟩, rfl⟩)
+
+open NumberField IsDedekindDomain Module in
+
+theorem _root_.GlobalTheory.LatticeInterBaseChange.span_inf_baseChange : ∀ (K : Type) [Field K] [NumberField K] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (e : K →+* FractionRing O) (V V' : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [FiniteDimensional K V] [AddCommGroup V'] [Module (FractionRing O) V'] [Module O V'] [IsScalarTower O (FractionRing O) V'] (iV : V →ₛₗ[e] V') (ι : Type) (b : Basis ι K V), LinearIndependent (FractionRing O) (fun a => iV (b a)) → (∀ a : 𝓞 K, e (a : K) ∈ (algebraMap O (FractionRing O)).range) → ∀ (A : Submodule (𝓞 K) V) (U : Submodule K V), Submodule.span O (iV '' ((A ⊓ U.restrictScalars (𝓞 K) : Submodule (𝓞 K) V) : Set V)) = Submodule.span O (iV '' (A : Set V)) ⊓ (Submodule.span (FractionRing O) (iV '' (U : Set V))).restrictScalars O := by
+  intro K _ _ O _ _ _ e V V' _ _ _ _ _ _ _ _ _ iV ι b hli he A U
+  apply le_antisymm
+  · rw [Submodule.span_le]
+    rintro _ ⟨v, hv, rfl⟩
+    exact Submodule.mem_inf.2 ⟨Submodule.subset_span ⟨v, (Submodule.mem_inf.1 hv).1, rfl⟩,
+      Submodule.subset_span ⟨v, (Submodule.mem_inf.1 hv).2, rfl⟩⟩
+  · intro x hx
+    obtain ⟨hxA, hxU⟩ := Submodule.mem_inf.1 hx
+    classical
+    let bQ := Module.finBasis K (V ⧸ U)
+    let f : Fin (Module.finrank K (V ⧸ U)) → V →ₗ[K] K := fun j => (bQ.coord j).comp U.mkQ
+    have hU : ∀ v, v ∈ U ↔ ∀ j, f j v = 0 := by
+      intro v
+      simp only [f, LinearMap.comp_apply, Basis.coord_apply, Submodule.mkQ_apply]
+      constructor
+      · intro h j
+        rw [(Submodule.Quotient.mk_eq_zero U).2 h, map_zero, Finsupp.zero_apply]
+      · intro h
+        exact (Submodule.Quotient.mk_eq_zero U).1
+          ((LinearEquiv.map_eq_zero_iff bQ.repr).1 (Finsupp.ext h))
+    choose ψ hψ using fun j => exists_functional_comp_eq e iV b hli (f j)
+    have hψx : ∀ j, ψ j x = 0 := by
+      intro j
+      have hle : Submodule.span (FractionRing O) (iV '' (U : Set V)) ≤ LinearMap.ker (ψ j) := by
+        rw [Submodule.span_le]
+        rintro _ ⟨v, hv, rfl⟩
+        rw [SetLike.mem_coe, LinearMap.mem_ker, hψ, (hU v).1 hv j, map_zero]
+      exact hle hxU
+    have claim : ∀ s : Finset (Fin (Module.finrank K (V ⧸ U))), ∀ (A' : Submodule (𝓞 K) V) (y : V'),
+        y ∈ Submodule.span O (iV '' (A' : Set V)) → (∀ j ∈ s, ψ j y = 0) →
+        y ∈ Submodule.span O (iV '' ((A' ⊓ ⨅ j ∈ s, (LinearMap.ker (f j)).restrictScalars (𝓞 K) :
+          Submodule (𝓞 K) V) : Set V)) := by
+      intro s
+      induction s using Finset.induction_on with
+      | empty =>
+        intro A' y hy _
+        simpa using hy
+      | insert j s hj ih =>
+        intro A' y hy h0
+        have h1 := mem_span_image_inf_ker e iV he (f j) (ψ j) (hψ j) A' hy
+          (h0 j (Finset.mem_insert_self j s))
+        have h2 := ih _ y h1 fun i hi => h0 i (Finset.mem_insert_of_mem hi)
+        refine Submodule.span_mono (Set.image_mono ?_) h2
+        intro v hv
+        simp only [SetLike.mem_coe, Submodule.mem_inf, Submodule.mem_iInf,
+          Submodule.restrictScalars_mem, LinearMap.mem_ker, Finset.mem_insert] at hv ⊢
+        refine ⟨hv.1.1, fun i hi => ?_⟩
+        rcases hi with rfl | hi
+        · exact hv.1.2
+        · exact hv.2 i hi
+    have hfin := claim Finset.univ A x hxA fun j _ => hψx j
+    refine Submodule.span_mono (Set.image_mono ?_) hfin
+    intro v hv
+    simp only [SetLike.mem_coe, Submodule.mem_inf, Submodule.mem_iInf,
+      Submodule.restrictScalars_mem, LinearMap.mem_ker, Finset.mem_univ, forall_const] at hv ⊢
+    exact ⟨hv.1, (hU v).2 hv.2⟩
+
+end GlobalTheory.LatticeInterBaseChange
+end
+
+open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_inf_subspace_baseChange_dvr : ∀ (K : Type) [Field K] [NumberField K] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (e : K →+* FractionRing O) (V V' : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [FiniteDimensional K V] [AddCommGroup V'] [Module (FractionRing O) V'] [Module O V'] [IsScalarTower O (FractionRing O) V'] (iV : V →ₛₗ[e] V') (ι : Type) (b : Basis ι K V), LinearIndependent (FractionRing O) (fun a => iV (b a)) → (∀ a : 𝓞 K, e (a : K) ∈ (algebraMap O (FractionRing O)).range) → ∀ (A : Submodule (𝓞 K) V) (U : Submodule K V), Submodule.span O (iV '' ((A ⊓ U.restrictScalars (𝓞 K) : Submodule (𝓞 K) V) : Set V)) = Submodule.span O (iV '' (A : Set V)) ⊓ (Submodule.span (FractionRing O) (iV '' (U : Set V))).restrictScalars O := by
+  atlas_forward_decl GlobalTheory.LatticeInterBaseChange.span_inf_baseChange
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
+
+namespace GlobalTheory.CongruenceLengthSum
+
+variable {O V : Type} [CommRing O] [AddCommGroup V] [Module O V]
+
+private theorem sep_lemma' {P₁ P₂ : Submodule O V} (hd : Disjoint P₁ P₂) {x₁ y₁ x₂ y₂ : V}
+    (h₁ : x₁ ∈ P₁) (h₁' : y₁ ∈ P₁) (h₂ : x₂ ∈ P₂) (h₂' : y₂ ∈ P₂) (h : x₁ + x₂ = y₁ + y₂) :
+    x₁ = y₁ ∧ x₂ = y₂ := by
+  have e : x₁ - y₁ = y₂ - x₂ := by
+    rw [sub_eq_sub_iff_add_eq_add, h, add_comm y₁ y₂]
+  have hz : x₁ - y₁ = 0 :=
+    Submodule.disjoint_def.mp hd _ (sub_mem h₁ h₁') (e ▸ sub_mem h₂' h₂)
+  have e1 : x₁ = y₁ := sub_eq_zero.mp hz
+  refine ⟨e1, ?_⟩
+  rw [e1] at h
+  exact add_left_cancel h
+
+theorem length_quot_sup (T₁ T₂ S₁ S₂ : Submodule O V) (h₁ : S₁ ≤ T₁) (h₂ : S₂ ≤ T₂)
+    (hd : Disjoint T₁ T₂) :
+    Module.length O (↥(T₁ ⊔ T₂) ⧸ (S₁ ⊔ S₂).comap (T₁ ⊔ T₂).subtype) =
+      Module.length O (↥T₁ ⧸ S₁.comap T₁.subtype) + Module.length O (↥T₂ ⧸ S₂.comap T₂.subtype) := by
+  have key : ∀ a ∈ T₁, ∀ b ∈ T₂, a + b ∈ S₁ ⊔ S₂ ↔ a ∈ S₁ ∧ b ∈ S₂ := by
+    intro a ha b hb
+    constructor
+    · intro h
+      obtain ⟨s₁, hs₁, s₂, hs₂, hs⟩ := Submodule.mem_sup.mp h
+      obtain ⟨e1, e2⟩ := sep_lemma' hd ha (h₁ hs₁) hb (h₂ hs₂) hs.symm
+      rw [e1, e2]
+      exact ⟨hs₁, hs₂⟩
+    · rintro ⟨h1, h2⟩
+      exact add_mem (Submodule.mem_sup_left h1) (Submodule.mem_sup_right h2)
+  let f : (↥T₁ × ↥T₂) →ₗ[O] ↥(T₁ ⊔ T₂) :=
+    LinearMap.codRestrict (T₁ ⊔ T₂) (T₁.subtype.coprod T₂.subtype)
+      (fun p => add_mem (Submodule.mem_sup_left p.1.2) (Submodule.mem_sup_right p.2.2))
+  let Φ := ((S₁ ⊔ S₂).comap (T₁ ⊔ T₂).subtype).mkQ ∘ₗ f
+  let Ψ : (↥T₁ × ↥T₂) →ₗ[O] (↥T₁ ⧸ S₁.comap T₁.subtype) × (↥T₂ ⧸ S₂.comap T₂.subtype) :=
+    LinearMap.prodMap (S₁.comap T₁.subtype).mkQ (S₂.comap T₂.subtype).mkQ
+  have hΦ : Function.Surjective Φ := by
+    intro y
+    obtain ⟨⟨x, hx⟩, rfl⟩ := Submodule.mkQ_surjective _ y
+    obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.mp hx
+    exact ⟨(⟨a, ha⟩, ⟨b, hb⟩), rfl⟩
+  have hΨ : Function.Surjective Ψ := by
+    rintro ⟨y₁, y₂⟩
+    obtain ⟨a, rfl⟩ := Submodule.mkQ_surjective _ y₁
+    obtain ⟨b, rfl⟩ := Submodule.mkQ_surjective _ y₂
+    exact ⟨(a, b), rfl⟩
+  have hker : LinearMap.ker Φ = LinearMap.ker Ψ := by
+    ext ⟨a, b⟩
+    simp only [LinearMap.mem_ker, Φ, Ψ, f, LinearMap.comp_apply, Submodule.mkQ_apply,
+      Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, Submodule.subtype_apply,
+      LinearMap.prodMap_apply, Prod.mk_eq_zero]
+    exact key a a.2 b b.2
+  calc Module.length O (↥(T₁ ⊔ T₂) ⧸ (S₁ ⊔ S₂).comap (T₁ ⊔ T₂).subtype)
+      = Module.length O ((↥T₁ × ↥T₂) ⧸ LinearMap.ker Φ) :=
+        (Φ.quotKerEquivOfSurjective hΦ).length_eq.symm
+    _ = Module.length O ((↥T₁ × ↥T₂) ⧸ LinearMap.ker Ψ) := (Submodule.quotEquivOfEq _ _ hker).length_eq
+    _ = Module.length O ((↥T₁ ⧸ S₁.comap T₁.subtype) × (↥T₂ ⧸ S₂.comap T₂.subtype)) :=
+        (Ψ.quotKerEquivOfSurjective hΨ).length_eq
+    _ = _ := Module.length_prod _ _ _
+
+theorem sup_inf_split (G₁ B₁ L₁ G₂ B₂ L₂ : Submodule O V) (hd : Disjoint (G₁ ⊔ B₁) (G₂ ⊔ B₂))
+    (hL₁ : L₁ ≤ G₁ ⊔ B₁) (hL₂ : L₂ ≤ G₂ ⊔ B₂) :
+    (G₁ ⊔ G₂) ⊓ ((L₁ ⊔ L₂) ⊔ (B₁ ⊔ B₂)) = G₁ ⊓ (L₁ ⊔ B₁) ⊔ G₂ ⊓ (L₂ ⊔ B₂) := by
+  apply le_antisymm
+  · intro x hx
+    obtain ⟨hx1, hx2⟩ := Submodule.mem_inf.mp hx
+    obtain ⟨g₁, hg₁, g₂, hg₂, rfl⟩ := Submodule.mem_sup.mp hx1
+    obtain ⟨y, hy, c, hc, hyc⟩ := Submodule.mem_sup.mp hx2
+    obtain ⟨l₁, hl₁, l₂, hl₂, rfl⟩ := Submodule.mem_sup.mp hy
+    obtain ⟨b₁, hb₁, b₂, hb₂, rfl⟩ := Submodule.mem_sup.mp hc
+    have e : g₁ + g₂ = (l₁ + b₁) + (l₂ + b₂) := by rw [← hyc]; abel
+    obtain ⟨e1, e2⟩ := sep_lemma' hd (Submodule.mem_sup_left hg₁)
+      (add_mem (hL₁ hl₁) (Submodule.mem_sup_right hb₁)) (Submodule.mem_sup_left hg₂)
+      (add_mem (hL₂ hl₂) (Submodule.mem_sup_right hb₂)) e
+    refine add_mem (Submodule.mem_sup_left (Submodule.mem_inf.mpr ⟨hg₁, ?_⟩))
+      (Submodule.mem_sup_right (Submodule.mem_inf.mpr ⟨hg₂, ?_⟩))
+    · rw [e1]
+      exact add_mem (Submodule.mem_sup_left hl₁) (Submodule.mem_sup_right hb₁)
+    · rw [e2]
+      exact add_mem (Submodule.mem_sup_left hl₂) (Submodule.mem_sup_right hb₂)
+  · refine sup_le (le_inf (inf_le_left.trans le_sup_left) (inf_le_right.trans ?_))
+      (le_inf (inf_le_left.trans le_sup_right) (inf_le_right.trans ?_))
+    · exact sup_le_sup le_sup_left le_sup_left
+    · exact sup_le_sup le_sup_right le_sup_right
+
+theorem inf_split (G₁ B₁ L₁ G₂ B₂ L₂ : Submodule O V) (hd : Disjoint (G₁ ⊔ B₁) (G₂ ⊔ B₂))
+    (hL₁ : L₁ ≤ G₁ ⊔ B₁) (hL₂ : L₂ ≤ G₂ ⊔ B₂) :
+    (L₁ ⊔ L₂) ⊓ (G₁ ⊔ G₂) = L₁ ⊓ G₁ ⊔ L₂ ⊓ G₂ := by
+  apply le_antisymm
+  · intro x hx
+    obtain ⟨hx1, hx2⟩ := Submodule.mem_inf.mp hx
+    obtain ⟨l₁, hl₁, l₂, hl₂, rfl⟩ := Submodule.mem_sup.mp hx1
+    obtain ⟨g₁, hg₁, g₂, hg₂, hg⟩ := Submodule.mem_sup.mp hx2
+    obtain ⟨e1, e2⟩ := sep_lemma' hd (hL₁ hl₁) (Submodule.mem_sup_left hg₁) (hL₂ hl₂)
+      (Submodule.mem_sup_left hg₂) hg.symm
+    refine add_mem (Submodule.mem_sup_left (Submodule.mem_inf.mpr ⟨hl₁, ?_⟩))
+      (Submodule.mem_sup_right (Submodule.mem_inf.mpr ⟨hl₂, ?_⟩))
+    · rw [e1]
+      exact hg₁
+    · rw [e2]
+      exact hg₂
+  · exact sup_le (inf_le_inf le_sup_left le_sup_left) (inf_le_inf le_sup_right le_sup_right)
+
+end GlobalTheory.CongruenceLengthSum
+
+open GlobalTheory.CongruenceLengthSum in
+
+theorem GlobalTheory.congruence_length_finset_sup : ∀ (O V ι : Type) [CommRing O] [AddCommGroup V] [Module O V] (F : Finset ι) (L G B : ι → Submodule O V), F.SupIndep (fun i => G i ⊔ B i) → (∀ i ∈ F, Disjoint (G i) (B i)) → (∀ i ∈ F, L i ≤ G i ⊔ B i) → Module.length O (↥(F.sup G ⊓ (F.sup L ⊔ F.sup B)) ⧸ (F.sup L ⊓ F.sup G).comap (F.sup G ⊓ (F.sup L ⊔ F.sup B)).subtype) = ∑ i ∈ F, Module.length O (↥(G i ⊓ (L i ⊔ B i)) ⧸ (L i ⊓ G i).comap (G i ⊓ (L i ⊔ B i)).subtype) := by
+  classical
+  intro O V ι _ _ _ F L G B
+  induction F using Finset.induction_on with
+  | empty =>
+    intro _ _ _
+    rw [Finset.sum_empty, Module.length_eq_zero_iff]
+    have : Subsingleton ↥((∅ : Finset ι).sup G ⊓ ((∅ : Finset ι).sup L ⊔ (∅ : Finset ι).sup B)) :=
+      ⟨fun a b => Subtype.ext (by
+        have ha := a.2
+        have hb := b.2
+        simp only [Finset.sup_empty, bot_sup_eq, inf_bot_eq, Submodule.mem_bot] at ha hb
+        rw [ha, hb])⟩
+    exact (Submodule.mkQ_surjective _).subsingleton
+  | insert j F hj ih =>
+    intro hSI hdis hL
+    have hdj : Disjoint (G j ⊔ B j) (F.sup (fun i => G i ⊔ B i)) :=
+      hSI (Finset.subset_insert j F) (Finset.mem_insert_self j F) hj
+    replace hSI : F.SupIndep (fun i => G i ⊔ B i) := fun t ht i hi hit =>
+      hSI (ht.trans (Finset.subset_insert j F)) (Finset.mem_insert_of_mem hi) hit
+    have hGB : F.sup (fun i => G i ⊔ B i) = F.sup G ⊔ F.sup B := Finset.sup_sup (s := F) (f := G) (g := B)
+    rw [hGB] at hdj
+    have hLF : F.sup L ≤ F.sup G ⊔ F.sup B := Finset.sup_le fun i hi =>
+      (hL i (Finset.mem_insert_of_mem hi)).trans (sup_le_sup (Finset.le_sup hi) (Finset.le_sup hi))
+    have hLj : L j ≤ G j ⊔ B j := hL j (Finset.mem_insert_self j F)
+    rw [Finset.sum_insert hj, Finset.sup_insert, Finset.sup_insert, Finset.sup_insert]
+    rw [sup_inf_split _ _ _ _ _ _ hdj hLj hLF, inf_split _ _ _ _ _ _ hdj hLj hLF]
+    have hS₁ : L j ⊓ G j ≤ G j ⊓ (L j ⊔ B j) := le_inf inf_le_right (inf_le_left.trans le_sup_left)
+    have hS₂ : F.sup L ⊓ F.sup G ≤ F.sup G ⊓ (F.sup L ⊔ F.sup B) :=
+      le_inf inf_le_right (inf_le_left.trans le_sup_left)
+    have hT : Disjoint (G j ⊓ (L j ⊔ B j)) (F.sup G ⊓ (F.sup L ⊔ F.sup B)) :=
+      hdj.mono (inf_le_left.trans le_sup_left) (inf_le_left.trans le_sup_left)
+    rw [length_quot_sup _ _ _ _ hS₁ hS₂ hT, ih hSI (fun i hi => hdis i (Finset.mem_insert_of_mem hi))
+      (fun i hi => hL i (Finset.mem_insert_of_mem hi))]
+end
+
+open Formalism.BasicNotions Formalism.L2 NumberField IsDedekindDomain Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.congruenceLength_finset_sup_eq_sum : ∀ (O V ι : Type) [CommRing O] [AddCommGroup V] [Module O V] (F : Finset ι) (L G B : ι → Submodule O V), F.SupIndep (fun i => G i ⊔ B i) → (∀ i ∈ F, Disjoint (G i) (B i)) → (∀ i ∈ F, L i ≤ G i ⊔ B i) → Module.length O (↥(F.sup G ⊓ (F.sup L ⊔ F.sup B)) ⧸ (F.sup L ⊓ F.sup G).comap (F.sup G ⊓ (F.sup L ⊔ F.sup B)).subtype) = ∑ i ∈ F, Module.length O (↥(G i ⊓ (L i ⊔ B i)) ⧸ (L i ⊓ G i).comap (G i ⊓ (L i ⊔ B i)).subtype) := by
+  atlas_forward_decl GlobalTheory.congruence_length_finset_sup
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef NumberField IsDedekindDomain GlobalTheory.EtaJoin
+
+namespace GlobalTheory.EtaJoin
+
+theorem eigSum_disjoint_compl : ∀ (D : D7) (i : D.nd.Loc) (Y : Set (D.nd.X i)),
+    Disjoint (D.nd.eigSum i Y) (D.nd.eigSum i Yᶜ) := by
+  intro D i Y
+  exact (Formalism.MainNotions.PairedCharacterCondition.CongruenceModules.heckeEig_indep (D.nd.T i) (D.nd.act i) (D.nd.T_sep i)).disjoint_biSup_biSup
+    disjoint_compl_right
+
+end GlobalTheory.EtaJoin
+end
+
+open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef NumberField IsDedekindDomain GlobalTheory.EtaJoin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.heckeEigenspaceSum_disjoint_compl : ∀ (D : D7) (i : D.nd.Loc) (Y : Set (D.nd.X i)), Disjoint (D.nd.eigSum i Y) (D.nd.eigSum i Yᶜ) := by
+  atlas_forward_decl GlobalTheory.EtaJoin.eigSum_disjoint_compl
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef NumberField IsDedekindDomain GlobalTheory.EtaJoin
+
+namespace GlobalTheory.NLocPlace
+
+theorem vAdd_int (D : D7) (w : D.what₂.places.Pl) (a : 𝓞 D.what₂.LL) (ha : (a : D.what₂.LL) ≠ 0) :
+    0 ≤ vAdd (D.plEq w) (a : D.what₂.LL) ∧ (a ∈ (D.plEq w).asIdeal ↔ 0 < vAdd (D.plEq w) (a : D.what₂.LL)) := by
+  have hv0 : (D.plEq w).valuation D.what₂.LL (a : D.what₂.LL) ≠ 0 := (Valuation.ne_zero_iff _).2 ha
+  have hle : (D.plEq w).valuation D.what₂.LL (algebraMap (𝓞 D.what₂.LL) D.what₂.LL a) ≤ 1 :=
+    (D.plEq w).valuation_le_one a
+  have hmem := (D.plEq w).valuation_lt_one_iff_mem (K := D.what₂.LL) a
+  change (D.plEq w).valuation D.what₂.LL (a : D.what₂.LL) ≤ 1 at hle
+  change (D.plEq w).valuation D.what₂.LL (a : D.what₂.LL) < 1 ↔ _ at hmem
+  unfold vAdd
+  rw [← WithZero.exp_log hv0, ← WithZero.exp_zero, WithZero.exp_le_exp] at hle
+  rw [← WithZero.exp_log hv0, ← WithZero.exp_zero, WithZero.exp_lt_exp] at hmem
+  refine ⟨by omega, ?_⟩
+  rw [← hmem]
+  omega
+
+end GlobalTheory.NLocPlace
+
+namespace GlobalTheory.NLocPlace
+
+theorem ec_int_resChar_unit : ∀ (D : D7) (M : MtFam D) (B : NLocBase D M) (j : ℕ) (w : D.what₂.places.Pl),
+    (∀ a : 𝓞 D.what₂.LL, B.ec j w (a : D.what₂.LL) ∈ (algebraMap (B.Oc j w) (FractionRing (B.Oc j w))).range) ∧
+    ((D.what₂.places.resChar w : ℕ) : 𝓞 D.what₂.LL) ∈ (D.plEq w).asIdeal ∧
+    ∀ (a : 𝓞 D.what₂.LL) (z : B.Oc j w), algebraMap (B.Oc j w) (FractionRing (B.Oc j w)) z = B.ec j w (a : D.what₂.LL) →
+      (a ∈ (D.plEq w).asIdeal ↔ ¬ IsUnit z) := by
+  intro D M B j w
+  have hinj : Function.Injective (algebraMap (B.Oc j w) (FractionRing (B.Oc j w))) :=
+    IsFractionRing.injective _ _
+
+  have hval : ∀ x : D.what₂.LL, x ≠ 0 → D.what₂.places.val w x = ((vAdd (D.plEq w) x : ℤ) : WithTop ℤ) :=
+    fun x hx => D.val_eq w x hx
+
+  have hsum : ∀ x : D.what₂.LL, x ≠ 0 → vAdd (D.plEq w) x + vAdd (D.plEq w) x⁻¹ = 0 := by
+    intro x hx
+    have h1 : D.what₂.places.val w (x * x⁻¹) = 0 := by rw [mul_inv_cancel₀ hx, AddValuation.map_one]
+    rw [AddValuation.map_mul, hval x hx, hval x⁻¹ (inv_ne_zero hx), ← WithTop.coe_add] at h1
+    exact_mod_cast h1
+  refine ⟨?_, ?_, ?_⟩
+  · intro a
+    apply (B.ec_w j w _).1
+    by_cases ha : (a : D.what₂.LL) = 0
+    · rw [ha, AddValuation.map_zero]; exact le_top
+    · rw [hval _ ha]
+      exact_mod_cast (vAdd_int D w a ha).1
+  · have hp0 : (((D.what₂.places.resChar w : ℕ) : 𝓞 D.what₂.LL) : D.what₂.LL) ≠ 0 := by
+      push_cast; exact Nat.cast_ne_zero.2 (D.what₂.places.resChar_prime w).ne_zero
+    rw [(vAdd_int D w _ hp0).2]
+    have h1 := D.what₂.places.val_resChar w
+    have hc : (((D.what₂.places.resChar w : ℕ) : 𝓞 D.what₂.LL) : D.what₂.LL) = ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) := by
+      push_cast; rfl
+    rw [← hc, hval _ hp0] at h1
+    have h2 : vAdd (D.plEq w) (((D.what₂.places.resChar w : ℕ) : 𝓞 D.what₂.LL) : D.what₂.LL) = (D.what₂.places.ramIdx w : ℤ) :=
+      WithTop.coe_injective h1
+    rw [h2]
+    exact_mod_cast D.what₂.places.ramIdx_pos w
+  · intro a z hz
+    by_cases ha : (a : D.what₂.LL) = 0
+    · have ha' : a = 0 := by exact_mod_cast ha
+      have hz0 : z = 0 := hinj (by rw [hz, ha, map_zero, map_zero])
+      subst ha' hz0
+      simp
+    · have hec : B.ec j w (a : D.what₂.LL) ≠ 0 := by
+        rw [map_ne_zero]; exact ha
+      obtain ⟨hnn, hiff⟩ := vAdd_int D w a ha
+      have hs := hsum _ ha
+      rw [hiff]
+      constructor
+      · rintro hpos ⟨u, hu⟩
+        have h1 : algebraMap (B.Oc j w) (FractionRing (B.Oc j w)) (↑u⁻¹ : B.Oc j w) = B.ec j w (a : D.what₂.LL)⁻¹ := by
+          rw [map_inv₀, ← hz, ← hu]
+          apply eq_inv_of_mul_eq_one_right
+          rw [← map_mul, Units.mul_inv, map_one]
+        have h2 := (B.ec_w j w (a : D.what₂.LL)⁻¹).2 ⟨_, h1⟩
+        rw [hval _ (inv_ne_zero ha)] at h2
+        have h3 : (0 : ℤ) ≤ vAdd (D.plEq w) (a : D.what₂.LL)⁻¹ := by exact_mod_cast h2
+        omega
+      · intro hnu
+        by_contra hle
+        have h0 : vAdd (D.plEq w) (a : D.what₂.LL)⁻¹ = 0 := by omega
+        have h2 : 0 ≤ D.what₂.places.val w (a : D.what₂.LL)⁻¹ := by
+          rw [hval _ (inv_ne_zero ha), h0]; rfl
+        obtain ⟨y, hy⟩ := (B.ec_w j w _).1 h2
+        apply hnu
+        have hzy : z * y = 1 := hinj (by rw [map_mul, map_one, hz, hy, ← map_mul, mul_inv_cancel₀ ha, map_one])
+        exact ⟨⟨z, y, hzy, by rw [mul_comm]; exact hzy⟩, rfl⟩
+
+end GlobalTheory.NLocPlace
+end
+
+open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef NumberField IsDedekindDomain GlobalTheory.EtaJoin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeffEmbedding_integers_resChar_unit : ∀ (D : D7) (M : MtFam D) (B : NLocBase D M) (j : ℕ) (w : D.what₂.places.Pl), (∀ a : 𝓞 D.what₂.LL, B.ec j w (a : D.what₂.LL) ∈ (algebraMap (B.Oc j w) (FractionRing (B.Oc j w))).range) ∧ ((D.what₂.places.resChar w : ℕ) : 𝓞 D.what₂.LL) ∈ (D.plEq w).asIdeal ∧ ∀ (a : 𝓞 D.what₂.LL) (z : B.Oc j w), algebraMap (B.Oc j w) (FractionRing (B.Oc j w)) z = B.ec j w (a : D.what₂.LL) → (a ∈ (D.plEq w).asIdeal ↔ ¬ IsUnit z) := by
+  atlas_forward_decl GlobalTheory.NLocPlace.ec_int_resChar_unit
+end
+
+section
+section
+open Submodule
+
+namespace GlobalTheory
+
+theorem exists_nonZeroDivisor_smul_mem_of_span_eq_top_finlen {O K V : Type} [CommRing O] [IsDomain O]
+    [Field K] [Algebra O K] [IsFractionRing O K] [AddCommGroup V] [Module K V] [Module O V]
+    [IsScalarTower O K V] (L : Submodule O V) (hspan : Submodule.span K (L : Set V) = ⊤) (x : V) :
+    ∃ a ∈ nonZeroDivisors O, a • x ∈ L := by
+  have hx : x ∈ Submodule.span K (L : Set V) := hspan ▸ Submodule.mem_top
+  induction hx using Submodule.span_induction with
+  | mem y hy => exact ⟨1, Submonoid.one_mem _, by simpa using hy⟩
+  | zero => exact ⟨1, Submonoid.one_mem _, by simp⟩
+  | add y z _ _ hy hz =>
+    obtain ⟨a, ha, hay⟩ := hy
+    obtain ⟨b, hb, hbz⟩ := hz
+    refine ⟨a * b, Submonoid.mul_mem _ ha hb, ?_⟩
+    rw [smul_add, mul_comm a b, mul_smul, mul_comm b a, mul_smul a b z]
+    exact L.add_mem (L.smul_mem b hay) (L.smul_mem a hbz)
+  | smul c y _ hy =>
+    obtain ⟨a, ha, hay⟩ := hy
+    obtain ⟨⟨n, d⟩, hnd⟩ := IsLocalization.mk'_surjective (nonZeroDivisors O) c
+    dsimp only at hnd
+    subst hnd
+    refine ⟨a * d, Submonoid.mul_mem _ ha d.2, ?_⟩
+    have key : ((d : O) : O) • (IsLocalization.mk' K n d • y) = n • y := by
+      rw [← algebraMap_smul K (d : O), smul_smul, mul_comm, IsLocalization.mk'_spec,
+        algebraMap_smul]
+    rw [mul_smul, key, smul_comm]
+    exact L.smul_mem n hay
+
+theorem finiteLength_projection_quotient :
+    ∀ (O K V : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] [AddCommGroup V] [Module K V] [Module O V] [IsScalarTower O K V] (L : Submodule O V) (G B : Submodule K V), L.FG → Disjoint G B → Module.length O (↥(G.restrictScalars O ⊓ (L ⊔ B.restrictScalars O)) ⧸ (L ⊓ G.restrictScalars O).comap (G.restrictScalars O ⊓ (L ⊔ B.restrictScalars O)).subtype) ≠ ⊤ ∨ ¬ (Submodule.span K (L : Set V) = ⊤ ∧ G ⊔ B = ⊤) := by
+  intro O K V _ _ _ _ _ _ _ _ _ _ L G B hL hdisj
+  by_cases h : Submodule.span K (L : Set V) = ⊤ ∧ G ⊔ B = ⊤
+  swap
+  · exact Or.inr h
+  left
+  obtain ⟨hspan, hsup⟩ := h
+  have hc : IsCompl G B := ⟨hdisj, codisjoint_iff.mpr hsup⟩
+  set π : V →ₗ[O] V := (G.projection B hc).restrictScalars O
+    with hπ
+  set up := G.restrictScalars O ⊓ (L ⊔ B.restrictScalars O) with hup
+  have hπfix : ∀ v ∈ G, π v = v := fun v hv =>
+    Submodule.projection_apply_of_mem_left hc hv
+  have hπzero : ∀ v ∈ B, π v = 0 := fun v hv =>
+    Submodule.projection_apply_of_mem_right hc hv
+  have hπG' : ∀ v : V, π v ∈ G := fun v => Submodule.projection_apply_mem hc v
+  have hπB : ∀ v : V, v - π v ∈ B := by
+    intro v
+    have hv : v ∈ G ⊔ B := hsup ▸ Submodule.mem_top
+    obtain ⟨g, hg, b, hb, rfl⟩ := Submodule.mem_sup.mp hv
+    rw [map_add, hπfix g hg, hπzero b hb, add_zero, add_sub_cancel_left]
+    exact hb
+  have hmap : up = L.map π := by
+    ext x
+    constructor
+    · rintro ⟨hxG, hxLB⟩
+      obtain ⟨l, hl, b, hb, rfl⟩ := Submodule.mem_sup.mp hxLB
+      refine ⟨l, hl, ?_⟩
+      have h1 : π (l + b) = l + b := hπfix _ hxG
+      have h2 : π b = 0 := hπzero b hb
+      rw [map_add, h2, add_zero] at h1
+      exact h1
+    · rintro ⟨l, hl, rfl⟩
+      refine ⟨hπG' l, ?_⟩
+      have : π l = l - (l - π l) := by abel
+      rw [this]
+      exact Submodule.sub_mem _ (Submodule.mem_sup_left hl) (Submodule.mem_sup_right (hπB l))
+  have hfg : up.FG := hmap ▸ hL.map π
+  haveI : Module.Finite O up := Module.Finite.iff_fg.mpr hfg
+  have htors : Module.IsTorsion O (↥up ⧸ (L ⊓ G.restrictScalars O).comap up.subtype) := by
+    intro q
+    induction q using Submodule.Quotient.induction_on with
+    | H y =>
+      obtain ⟨a, ha, hay⟩ := exists_nonZeroDivisor_smul_mem_of_span_eq_top_finlen (K := K) L hspan (y : V)
+      refine ⟨⟨a, ha⟩, ?_⟩
+      rw [Submonoid.smul_def, ← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero]
+      refine ⟨hay, ?_⟩
+      exact (G.restrictScalars O).smul_mem a y.2.1
+  exact Module.length_ne_top_iff.mpr (isFiniteLength_of_isTorsion htors)
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteLength_lattice_projection_quotient : ∀ (O K V : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] [AddCommGroup V] [Module K V] [Module O V] [IsScalarTower O K V] (L : Submodule O V) (G B : Submodule K V), L.FG → Disjoint G B → Module.length O (↥(G.restrictScalars O ⊓ (L ⊔ B.restrictScalars O)) ⧸ (L ⊓ G.restrictScalars O).comap (G.restrictScalars O ⊓ (L ⊔ B.restrictScalars O)).subtype) ≠ ⊤ ∨ ¬ (Submodule.span K (L : Set V) = ⊤ ∧ G ⊔ B = ⊤) := by
+  atlas_forward_decl GlobalTheory.finiteLength_projection_quotient
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef NumberField IsDedekindDomain GlobalTheory.EtaJoin
+
+namespace GlobalTheory.EtaJoin
+
+theorem eigSum_good_sup_compl_eq_top : ∀ (D : D7) (i : D.nd.Loc), ZRat D (D.nd.mu i) (D.nd.j i) → SpecPr D i →
+    D.nd.eigSum i ↑(D.nd.Zgood i) ⊔ D.nd.eigSum i (↑(D.nd.Zgood i))ᶜ = ⊤ := by
+  intro D i hZ hS
+  rw [eq_top_iff, ← D.nd.prMt_span i, Submodule.span_le]
+  rintro _ ⟨y, rfl⟩
+  have hy : y ∈ ratSub D (D.nd.mu i) (D.nd.j i) (Idx.Z0 D (D.nd.mu i) (D.nd.j i)) ⊔
+      ratSub D (D.nd.mu i) (D.nd.j i) (Idx.Z0 D (D.nd.mu i) (D.nd.j i))ᗮ := by
+    unfold ZRat at hZ
+    rw [hZ]; exact Submodule.mem_top
+  obtain ⟨u, hu, u', hu', rfl⟩ := Submodule.mem_sup.1 hy
+  rw [map_add]
+  exact Submodule.add_mem_sup (hS.1 u hu) (hS.2 u' hu')
+
+end GlobalTheory.EtaJoin
+end
+
+open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef NumberField IsDedekindDomain GlobalTheory.EtaJoin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.goodEigSum_sup_compl_eigSum_eq_top : ∀ (D : D7) (i : D.nd.Loc), ZRat D (D.nd.mu i) (D.nd.j i) → SpecPr D i → D.nd.eigSum i ↑(D.nd.Zgood i) ⊔ D.nd.eigSum i (↑(D.nd.Zgood i))ᶜ = ⊤ := by
+  atlas_forward_decl GlobalTheory.EtaJoin.eigSum_good_sup_compl_eq_top
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef NumberField IsDedekindDomain GlobalTheory.EtaJoin
+
+noncomputable section
+
+namespace GlobalTheory.NSideDecomp
+
+theorem part_le_off' {O K V : Type} [CommRing O] [Field K] [Algebra O K] [AddCommGroup V] [Module K V]
+    [Module O V] [IsScalarTower O K V] [IsLocalRing O] (T : Subalgebra O (Module.End K V)) {I J : Ideal T}
+    (h : I ≠ J) : NCov.part T I ≤ NCov.off T J :=
+  iSup₂_le fun ψ hψ => le_iSup₂_of_le (f := fun ψ (_ : NCov.cls ψ ≠ J) => NCov.W T (NCov.pt ψ)) ψ
+    (by rw [hψ]; exact h) le_rfl
+
+theorem iV_eq_sum_Psi : ∀ (D : D7) (M : MtFam D) (T : NormalizedLocalCompatibility D M) (j : ℕ) (w : D.what₂.places.Pl), 1 ≤ j → j ≤ D.R.m → D.what₂.muAt w ≠ D.what₂.mu0 → HeckeStdTw T.B → ∀ y : D.what₂.MtL (D.what₂.muTw w) j, T.B.iV j w y = ∑ i ∈ (D.nd.locs j w).attach, T.Psi j w i.1 i.2 (D.nd.prMt i.1 (castMtInv D i.2 y)) := by
+  classical
+  intro D M T j w h1 h2 hw hstd y
+  obtain ⟨hfd, -⟩ := finrank_V T.B j w
+  haveI := hfd
+  obtain ⟨hS, hsplit, hint⟩ := gens_hypsTw T.B hstd h1 h2 (Or.inl hw)
+  have hinj := IsFractionRing.injective (T.B.Oc j w) (FractionRing (T.B.Oc j w))
+  rw [← sub_eq_zero]
+  refine NCov.eq_zero_of_forall_mem_off hinj hS hsplit hint ((D.nd.locs j w).image (T.mx j w))
+    (fun I hI => ?_) ?_
+  · obtain ⟨i, hi, rfl⟩ := T.mx_all j w h1 h2 hw I hI
+    exact Finset.mem_image_of_mem _ hi
+  · intro I hI
+    obtain ⟨i0, hi0, rfl⟩ := Finset.mem_image.1 hI
+    rw [← Finset.add_sum_erase _ _ (Finset.mem_attach _ ⟨i0, hi0⟩), sub_add_eq_sub_sub]
+    refine Submodule.sub_mem _ ?_ (Submodule.sum_mem _ fun i hi => ?_)
+    · have e := T.Psi_pr j w i0 hi0 (castMtInv D hi0 y)
+      rw [castMt_castMtInv] at e
+      rw [← neg_sub]
+      exact Submodule.neg_mem _ e
+    · have hne : T.mx j w i.1 ≠ T.mx j w i0 := by
+        intro e
+        have := T.mx_inj j w i.2 hi0 e
+        exact (Finset.mem_erase.1 hi).1 (Subtype.ext this)
+      exact part_le_off' _ hne ((T.Psi_range j w i.1 i.2 _).2 ⟨_, rfl⟩)
+
+end GlobalTheory.NSideDecomp
+end
+end
+
+open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef NumberField IsDedekindDomain GlobalTheory.EtaJoin
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rationalForm_eq_sum_localisation_projections : ∀ (D : D7) (M : MtFam D) (T : NormalizedLocalCompatibility D M) (j : ℕ) (w : D.what₂.places.Pl), 1 ≤ j → j ≤ D.R.m → D.what₂.muAt w ≠ D.what₂.mu0 → HeckeStdTw T.B → ∀ y : D.what₂.MtL (D.what₂.muTw w) j, T.B.iV j w y = ∑ i ∈ (D.nd.locs j w).attach, T.Psi j w i.1 i.2 (D.nd.prMt i.1 (castMtInv D i.2 y)) := by
+  atlas_forward_decl GlobalTheory.NSideDecomp.iV_eq_sum_Psi
+end
+
+section
+section
+open NumberField
+
+namespace GlobalTheory
+
+theorem fg_inf_sup_of_isCompl (K V : Type) [Field K] [NumberField K] [AddCommGroup V] [Module K V]
+    [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (A : Submodule (𝓞 K) V) (U U' : Submodule K V) :
+    A.FG → IsCompl U U' →
+      (U.restrictScalars (𝓞 K) ⊓ (A ⊔ U'.restrictScalars (𝓞 K))).FG := by
+  intro hA h
+  let p : V →ₗ[K] V := U.subtype ∘ₗ Submodule.linearProjOfIsCompl U U' h
+  let q : V →ₗ[𝓞 K] V := p.restrictScalars (𝓞 K)
+  have hpU : ∀ x, p x ∈ U := fun x => (Submodule.linearProjOfIsCompl U U' h x).2
+  have hpl : ∀ x ∈ U, p x = x := fun x hx =>
+    congrArg Subtype.val (Submodule.linearProjOfIsCompl_apply_left h ⟨x, hx⟩)
+  have hpr : ∀ x ∈ U', p x = 0 := fun x hx => by
+    have := (Submodule.linearProjOfIsCompl_apply_eq_zero_iff h).2 hx
+    show ((Submodule.linearProjOfIsCompl U U' h x : U) : V) = 0
+    exact congrArg Subtype.val this
+  have hsub : ∀ x, x - p x ∈ U' := fun x => by
+    rw [← Submodule.linearProjOfIsCompl_apply_eq_zero_iff h]
+    have h1 : p (x - p x) = 0 := by rw [map_sub, hpl _ (hpU x), sub_self]
+    have h2 : ((Submodule.linearProjOfIsCompl U U' h (x - p x) : U) : V) = 0 := h1
+    exact_mod_cast h2
+  have heq : U.restrictScalars (𝓞 K) ⊓ (A ⊔ U'.restrictScalars (𝓞 K)) = A.map q := by
+    ext x
+    constructor
+    · rintro ⟨hxU, hx⟩
+      obtain ⟨a, ha, u, hu, rfl⟩ := Submodule.mem_sup.1 hx
+      refine ⟨a, ha, ?_⟩
+      change p a = a + u
+      have e1 : p (a + u) = a + u := hpl _ hxU
+      rw [map_add, hpr u hu, add_zero] at e1
+      exact e1
+    · rintro ⟨a, ha, rfl⟩
+      refine ⟨hpU a, ?_⟩
+      refine Submodule.mem_sup.2 ⟨a, ha, p a - a, ?_, by abel⟩
+      have := U'.neg_mem (hsub a)
+      simpa using this
+  rw [heq]
+  exact hA.map q
+
+end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fg_inf_sup_of_isCompl' : ∀ (K V : Type) [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (A : Submodule (𝓞 K) V) (U U' : Submodule K V), A.FG → IsCompl U U' → (U.restrictScalars (𝓞 K) ⊓ (A ⊔ U'.restrictScalars (𝓞 K))).FG := by
+  atlas_forward_decl GlobalTheory.fg_inf_sup_of_isCompl
+end
+
+section
+section
+open NumberField
+
+namespace GlobalTheory
+
+theorem span_image_span_eq_of_integral (K : Type) [Field K] [NumberField K] (O : Type) [CommRing O] [IsDomain O]
+    (e : K →+* FractionRing O) (V V' : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
+    [IsScalarTower (𝓞 K) K V] [AddCommGroup V'] [Module (FractionRing O) V'] [Module O V']
+    [IsScalarTower O (FractionRing O) V'] (iV : V →ₛₗ[e] V')
+    (he : ∀ a : 𝓞 K, e (a : K) ∈ (algebraMap O (FractionRing O)).range) (S : Set V) :
+    Submodule.span O (iV '' (Submodule.span (𝓞 K) S : Set V)) = Submodule.span O (iV '' S) := by
+  apply le_antisymm
+  · rw [Submodule.span_le]
+    rintro _ ⟨v, hv, rfl⟩
+    induction hv using Submodule.span_induction with
+    | mem x hx => exact Submodule.subset_span ⟨x, hx, rfl⟩
+    | zero => simp
+    | add x y _ _ hx hy => rw [map_add]; exact Submodule.add_mem _ hx hy
+    | smul a x _ hx =>
+      obtain ⟨z, hz⟩ := he a
+      have h1 : a • x = ((a : K)) • x := (algebraMap_smul K a x).symm
+      rw [h1, LinearMap.map_smulₛₗ, ← hz, algebraMap_smul]
+      exact Submodule.smul_mem _ z hx
+  · exact Submodule.span_mono (Set.image_mono Submodule.subset_span)
+
+end GlobalTheory
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.span_image_semilinear_lattice_eq : ∀ (K : Type) [Field K] [NumberField K] (O : Type) [CommRing O] [IsDomain O] (e : K →+* FractionRing O) (V V' : Type) [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [AddCommGroup V'] [Module (FractionRing O) V'] [Module O V'] [IsScalarTower O (FractionRing O) V'] (iV : V →ₛₗ[e] V'), (∀ a : 𝓞 K, e (a : K) ∈ (algebraMap O (FractionRing O)).range) → ∀ S : Set V, Submodule.span O (iV '' (Submodule.span (𝓞 K) S : Set V)) = Submodule.span O (iV '' S) := by
+  atlas_forward_decl GlobalTheory.span_image_span_eq_of_integral
+end
+
+section
+section
+namespace GlobalTheory
+
+theorem disjoint_finset_sup_of_supIndep_sup :
+    ∀ (R V ι : Type) [Ring R] [AddCommGroup V] [Module R V] (F : Finset ι) (G B : ι → Submodule R V),
+      F.SupIndep (fun i => G i ⊔ B i) → (∀ i ∈ F, Disjoint (G i) (B i)) →
+        Disjoint (F.sup G) (F.sup B) := by
+  intro R V ι _ _ _ F G B hind hdis
+  classical
+  induction F using Finset.induction_on with
+  | empty => simp
+  | @insert a s ha ih =>
+    have hs : s.SupIndep (fun i => G i ⊔ B i) := hind.subset (Finset.subset_insert _ _)
+    have ih' := ih hs (fun i hi => hdis i (Finset.mem_insert_of_mem hi))
+    have hA : Disjoint (G a ⊔ B a) (s.sup fun i => G i ⊔ B i) :=
+      hind (Finset.subset_insert a s) (Finset.mem_insert_self a s) ha
+    have hGs : s.sup G ≤ s.sup (fun i => G i ⊔ B i) := Finset.sup_mono_fun (fun i _ => le_sup_left)
+    have hBs : s.sup B ≤ s.sup (fun i => G i ⊔ B i) := Finset.sup_mono_fun (fun i _ => le_sup_right)
+    rw [Finset.sup_insert, Finset.sup_insert, Submodule.disjoint_def]
+    intro x hxG hxB
+    obtain ⟨g, hg, g', hg', rfl⟩ := Submodule.mem_sup.mp hxG
+    obtain ⟨b, hb, b', hb', hbb⟩ := Submodule.mem_sup.mp hxB
+    have h1 : g - b ∈ G a ⊔ B a := Submodule.sub_mem _ (Submodule.mem_sup_left hg) (Submodule.mem_sup_right hb)
+    have h2 : g - b ∈ s.sup (fun i => G i ⊔ B i) := by
+      have : g - b = b' - g' := by
+        rw [sub_eq_sub_iff_add_eq_add, add_comm b' b, hbb]
+      rw [this]
+      exact Submodule.sub_mem _ (hBs hb') (hGs hg')
+    have h3 : g - b = 0 := (Submodule.disjoint_def.mp hA) _ h1 h2
+    have hgb : g = b := sub_eq_zero.mp h3
+    have hg0 : g = 0 := (Submodule.disjoint_def.mp (hdis a (Finset.mem_insert_self a s))) g hg (hgb ▸ hb)
+    have hg'b' : g' = b' := by
+      subst hgb
+      exact add_left_cancel hbb.symm
+    have hg'0 : g' = 0 := (Submodule.disjoint_def.mp ih') g' hg' (hg'b' ▸ hb')
+    rw [hg0, hg'0, add_zero]
+
+end GlobalTheory
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.disjoint_finset_sup_of_supIndep_sup' : ∀ (R V ι : Type) [Ring R] [AddCommGroup V] [Module R V] (F : Finset ι) (G B : ι → Submodule R V), F.SupIndep (fun i => G i ⊔ B i) → (∀ i ∈ F, Disjoint (G i) (B i)) → Disjoint (F.sup G) (F.sup B) := by
+  atlas_forward_decl GlobalTheory.disjoint_finset_sup_of_supIndep_sup
+end
+
+section
 section
 open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef NumberField IsDedekindDomain GlobalTheory.EtaJoin
 
@@ -322,3 +1381,4 @@ open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal Re
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.sum_localCongruenceLength_eq_rationalLength : ∀ (D : D7) (M : MtFam D) (T : NormalizedLocalCompatibility D M) (j : ℕ) (w : D.what₂.places.Pl), 1 ≤ j → j ≤ D.R.m → D.what₂.muAt w ≠ D.what₂.mu0 → HeckeStdTw T.B → LatStable T.B j w → ZRat D (D.what₂.muTw w) j → (∀ i ∈ D.nd.locs j w, SpecPr D i) → D.what₂.etaJ j w = etaRat D (D.what₂.muTw w) j w := by
   atlas_forward_decl GlobalTheory.EtaJoinSum.sum_etaLoc_eq_etaRat
+end

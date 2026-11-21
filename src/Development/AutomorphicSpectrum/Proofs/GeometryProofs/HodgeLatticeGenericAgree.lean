@@ -3,12 +3,354 @@ import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LinearIndepend
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeEqSpanOfIsFrameAt
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigenVectorBundle
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUnitWedge
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExtFrameOfQuotientKernel
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MatrixEqOfLinearIndependent
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdaptedSpan
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigProjMemOfFree
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFrameInter
 
+section
+namespace GlobalTheory.CompanionTheory.Ggeo
+
+theorem ext_frame_of_quotient_kernel (Ω M V : Type) [Field Ω] [AddCommGroup M] [Module Ω M]
+    [AddCommGroup V] [Module Ω V] (R : Subring Ω) (H : Submodule R M) (π : M →ₗ[Ω] V) (p q : ℕ)
+    (u : Fin (p + q) → M) (v : Fin p → V) (P : Matrix (Fin p) (Fin p) Ω)
+    (C : Matrix (Fin q) (Fin q) Ω)
+    (hu : LinearIndependent Ω u) (hv : LinearIndependent Ω v)
+    (hHu : ∀ y ∈ H, y ∈ Submodule.span Ω (Set.range u))
+    (hπ1 : ∀ i, π (u (Fin.castAdd q i)) = v i) (hπ2 : ∀ j, π (u (Fin.natAdd p j)) = 0)
+    (hP : P.det ≠ 0) (hC : C.det ≠ 0)
+    (hmap : H.map (π.restrictScalars R) = Submodule.span R (Set.range fun i => ∑ j, P i j • v j))
+    (hCH : ∀ j, ∑ k, C j k • u (Fin.natAdd p k) ∈ H)
+    (hker : ∀ y ∈ H, π y = 0 →
+      y ∈ Submodule.span R (Set.range fun j => ∑ k, C j k • u (Fin.natAdd p k))) :
+    ∃ A : Matrix (Fin (p + q)) (Fin (p + q)) Ω, A.det = P.det * C.det ∧
+      LinearIndependent Ω (fun i => ∑ j, A i j • u j) ∧
+      H = Submodule.span R (Set.range fun i => ∑ j, A i j • u j) := by
+  classical
+  have hlift : ∀ i, ∃ y ∈ H, π y = ∑ j, P i j • v j := by
+    intro i
+    have hmem : (∑ j, P i j • v j) ∈ H.map (π.restrictScalars R) := by
+      rw [hmap]; exact Submodule.subset_span ⟨i, rfl⟩
+    obtain ⟨y, hy, e⟩ := hmem
+    exact ⟨y, hy, e⟩
+  choose h hH hπh using hlift
+  have hT : ∀ i, ∃ t : Fin (p + q) → Ω, ∑ k, t k • u k = h i := fun i =>
+    (Submodule.mem_span_range_iff_exists_fun Ω).1 (hHu _ (hH i))
+  choose T hT using hT
+  have hTP : ∀ i j, T i (Fin.castAdd q j) = P i j := by
+    intro i
+    have e : ∑ j, T i (Fin.castAdd q j) • v j = ∑ j, P i j • v j := by
+      rw [← hπh i, ← hT i, map_sum, Fin.sum_univ_add]
+      simp [hπ1, hπ2]
+    have e2 : ∑ j, (T i (Fin.castAdd q j) - P i j) • v j = 0 := by
+      simp [sub_smul, Finset.sum_sub_distrib, e]
+    intro j
+    exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 hv _ e2 j)
+  let T2 : Matrix (Fin p) (Fin q) Ω := fun i k => T i (Fin.natAdd p k)
+  let A : Matrix (Fin (p + q)) (Fin (p + q)) Ω :=
+    Matrix.reindex finSumFinEquiv finSumFinEquiv (Matrix.fromBlocks P T2 0 C)
+  have hA11 : ∀ i j, A (Fin.castAdd q i) (Fin.castAdd q j) = P i j := by
+    intro i j; simp [A, Matrix.reindex_apply, Matrix.submatrix_apply]
+  have hA12 : ∀ i j, A (Fin.castAdd q i) (Fin.natAdd p j) = T i (Fin.natAdd p j) := by
+    intro i j
+    change A (Fin.castAdd q i) (Fin.natAdd p j) = T2 i j
+    simp [A, Matrix.reindex_apply, Matrix.submatrix_apply]
+  have hA21 : ∀ i j, A (Fin.natAdd p i) (Fin.castAdd q j) = 0 := by
+    intro i j; simp [A, Matrix.reindex_apply, Matrix.submatrix_apply]
+  have hA22 : ∀ i j, A (Fin.natAdd p i) (Fin.natAdd p j) = C i j := by
+    intro i j; simp [A, Matrix.reindex_apply, Matrix.submatrix_apply]
+  have hdet : A.det = P.det * C.det := by
+    simp only [A, Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₂₁]
+  have hw1 : ∀ i, ∑ j, A (Fin.castAdd q i) j • u j = h i := by
+    intro i
+    rw [← hT i, Fin.sum_univ_add, Fin.sum_univ_add]
+    simp only [hA11, hA12, hTP]
+  have hw2 : ∀ i, ∑ j, A (Fin.natAdd p i) j • u j = ∑ k, C i k • u (Fin.natAdd p k) := by
+    intro i
+    rw [Fin.sum_univ_add]
+    simp only [hA21, hA22, zero_smul, Finset.sum_const_zero, zero_add]
+  refine ⟨A, hdet, ?_, ?_⟩
+  · rw [Fintype.linearIndependent_iff]
+    intro c hc
+    have hc' : ∑ j, (∑ i, c i * A i j) • u j = 0 := by
+      rw [← hc]
+      simp only [Finset.smul_sum, Finset.sum_smul, mul_smul]
+      exact Finset.sum_comm
+    have hz := Fintype.linearIndependent_iff.1 hu _ hc'
+    have hvm : Matrix.vecMul c A = 0 := by
+      funext j
+      simpa [Matrix.vecMul, dotProduct] using hz j
+    have hdet0 : A.det ≠ 0 := by rw [hdet]; exact mul_ne_zero hP hC
+    have := Matrix.eq_zero_of_vecMul_eq_zero hdet0 hvm
+    intro i
+    exact congrFun this i
+  · apply le_antisymm
+    · intro y hy
+      have hmem : π y ∈ Submodule.span R (Set.range fun i => ∑ j, P i j • v j) := by
+        rw [← hmap]; exact ⟨y, hy, rfl⟩
+      obtain ⟨r, hr⟩ := (Submodule.mem_span_range_iff_exists_fun R).1 hmem
+      set S := Submodule.span R (Set.range fun i => ∑ j, A i j • u j) with hS
+      have hhS : ∀ i, h i ∈ S := fun i => by
+        rw [← hw1 i]; exact Submodule.subset_span ⟨_, rfl⟩
+      have hCS : Submodule.span R (Set.range fun j => ∑ k, C j k • u (Fin.natAdd p k)) ≤ S := by
+        rw [Submodule.span_le]
+        rintro _ ⟨j, rfl⟩
+        have := hw2 j
+        simp only at this ⊢
+        rw [← this]; exact Submodule.subset_span ⟨_, rfl⟩
+      have hsumH : ∑ i, r i • h i ∈ H := Submodule.sum_mem _ fun i _ => H.smul_mem _ (hH i)
+      have hsumS : ∑ i, r i • h i ∈ S := Submodule.sum_mem _ fun i _ => S.smul_mem _ (hhS i)
+      have hdiff : y - ∑ i, r i • h i ∈ H := H.sub_mem hy hsumH
+      have hπd : π (y - ∑ i, r i • h i) = 0 := by
+        have e : π (∑ i, r i • h i) = ∑ i, r i • ∑ j, P i j • v j := by
+          rw [map_sum]
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [← hπh i, Subring.smul_def, Subring.smul_def, map_smul]
+        rw [map_sub, e, hr, sub_self]
+      have := hCS (hker _ hdiff hπd)
+      simpa using S.add_mem this hsumS
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      refine Fin.addCases (fun i => ?_) (fun i => ?_) i
+      · simp only [SetLike.mem_coe]; rw [hw1]; exact hH i
+      · simp only [SetLike.mem_coe]; rw [hw2]; exact hCH i
+
+end GlobalTheory.CompanionTheory.Ggeo
+end
+
+section
+namespace GlobalTheory.CompanionTheory.Ggeo.FrameDet
+
+open scoped BigOperators
+
+private theorem det_mem_of_forall_mem' {Ω : Type} [CommRing Ω] (R : Subring Ω) {n : ℕ}
+    (P : Matrix (Fin n) (Fin n) Ω) (hP : ∀ i j, P i j ∈ R) : P.det ∈ R := by
+  have h : P = R.subtype.mapMatrix (Matrix.of fun i j => (⟨P i j, hP i j⟩ : R)) := by
+    ext i j
+    rfl
+  rw [h, ← RingHom.map_det]
+  exact (Matrix.det (Matrix.of fun i j => (⟨P i j, hP i j⟩ : R))).2
+
+theorem matrix_eq_of_linearIndependent {Ω M : Type} [Field Ω] [AddCommGroup M] [Module Ω M]
+    {n : ℕ} {w : Fin n → M} (hw : LinearIndependent Ω w)
+    {C D : Matrix (Fin n) (Fin n) Ω}
+    (h : ∀ i, ∑ j, C i j • w j = ∑ j, D i j • w j) : C = D := by
+  ext i j
+  have h' : ∑ k, (C i k - D i k) • w k = 0 := by
+    simp only [sub_smul, Finset.sum_sub_distrib, h i, sub_self]
+  exact sub_eq_zero.mp (Fintype.linearIndependent_iff.mp hw (fun k => C i k - D i k) h' j)
+
+theorem sum_smul_sum_smul {Ω M : Type} [Field Ω] [AddCommGroup M] [Module Ω M]
+    {n : ℕ} (w : Fin n → M) (C D : Matrix (Fin n) (Fin n) Ω) (i : Fin n) :
+    ∑ j, C i j • ∑ k, D j k • w k = ∑ k, (C * D) i k • w k := by
+  simp only [Finset.smul_sum, smul_smul, Matrix.mul_apply, Finset.sum_smul]
+  exact Finset.sum_comm
+
+theorem det_eq_unit_mul : ∀ (Ω M : Type) [Field Ω] [AddCommGroup M] [Module Ω M] (R : Subring Ω) (n : ℕ) (u : Fin n → M) (A B : Matrix (Fin n) (Fin n) Ω), LinearIndependent Ω u → LinearIndependent Ω (fun i => ∑ j, A i j • u j) → LinearIndependent Ω (fun i => ∑ j, B i j • u j) → Submodule.span R (Set.range fun i => ∑ j, A i j • u j) = Submodule.span R (Set.range fun i => ∑ j, B i j • u j) → ∃ c : Ω, c ∈ R ∧ c⁻¹ ∈ R ∧ c ≠ 0 ∧ B.det = c * A.det := by
+  intro Ω M _ _ _ R n u A B hu ha _ hspan
+  have key : ∀ a b : Fin n → M, Submodule.span R (Set.range b) ≤ Submodule.span R (Set.range a) →
+      ∃ P : Matrix (Fin n) (Fin n) Ω, (∀ i j, P i j ∈ R) ∧ ∀ i, b i = ∑ j, P i j • a j := by
+    intro a b hle
+    have hex : ∀ i, ∃ c : Fin n → R, ∑ j, c j • a j = b i := fun i =>
+      (Submodule.mem_span_range_iff_exists_fun R).mp (hle (Submodule.subset_span ⟨i, rfl⟩))
+    choose c hc using hex
+    refine ⟨Matrix.of fun i j => (c i j : Ω), fun i j => (c i j).2, fun i => ?_⟩
+    rw [← hc i]
+    exact Finset.sum_congr rfl fun j _ => Subring.smul_def _ _
+  obtain ⟨P, hPR, hP⟩ := key (fun i => ∑ j, A i j • u j) (fun i => ∑ j, B i j • u j) hspan.ge
+  obtain ⟨Q, hQR, hQ⟩ := key (fun i => ∑ j, B i j • u j) (fun i => ∑ j, A i j • u j) hspan.le
+  have hP' : ∀ i, ∑ j, B i j • u j = ∑ j, P i j • ∑ k, A j k • u k := hP
+  have hQ' : ∀ i, ∑ j, A i j • u j = ∑ j, Q i j • ∑ k, B j k • u k := hQ
+  have hBPA : B = P * A := GlobalTheory.CompanionTheory.Ggeo.FrameDet.matrix_eq_of_linearIndependent hu fun i =>
+    (hP' i).trans (GlobalTheory.CompanionTheory.Ggeo.FrameDet.sum_smul_sum_smul u P A i)
+  have hQP : Q * P = 1 := by
+    apply GlobalTheory.CompanionTheory.Ggeo.FrameDet.matrix_eq_of_linearIndependent ha
+    intro i
+    calc ∑ j, (Q * P) i j • ∑ k, A j k • u k
+        = ∑ j, Q i j • ∑ k, P j k • ∑ l, A k l • u l :=
+          (GlobalTheory.CompanionTheory.Ggeo.FrameDet.sum_smul_sum_smul (fun k => ∑ l, A k l • u l) Q P i).symm
+      _ = ∑ j, Q i j • ∑ k, B j k • u k := Finset.sum_congr rfl fun j _ => by rw [hP' j]
+      _ = ∑ k, A i k • u k := (hQ' i).symm
+      _ = ∑ j, (1 : Matrix (Fin n) (Fin n) Ω) i j • ∑ k, A j k • u k := by
+          simp [Matrix.one_apply]
+  have hdet : P.det * Q.det = 1 := by
+    rw [mul_comm, ← Matrix.det_mul, hQP, Matrix.det_one]
+  refine ⟨P.det, det_mem_of_forall_mem' R P hPR, ?_, left_ne_zero_of_mul_eq_one hdet, ?_⟩
+  · rw [inv_eq_of_mul_eq_one_right hdet]
+    exact det_mem_of_forall_mem' R Q hQR
+  · rw [hBPA, Matrix.det_mul]
+
+end GlobalTheory.CompanionTheory.Ggeo.FrameDet
+end
+
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat.AdaptedSpan
+
+open AlgebraicGeometry CategoryTheory Limits NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
+
+section
+
+variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
+  {E : Type} [Field E] [NumberField E] {V : Type} [AddCommGroup V] [Module Ω V]
+  {L : Lat ξ V} {ρ : 𝓞 E →+* Module.End Ω V} {bar : 𝓞 E ≃+* 𝓞 E} {r : ℕ}
+
+theorem comp_act (𝓗 : HodgeLat L ρ bar r) {σ : E →+* Ω} {φ : Module.Dual Ω V}
+    (h : ((0 : V), φ) ∈ HT.eigSp 𝓗.ρH σ) (a : 𝓞 E) : φ ∘ₗ ρ (bar a) = σ (a : E) • φ := by
+  have h1 := (HT.LatBasic.mem_eigSp.mp h) a
+  rw [𝓗.act_inr] at h1
+  exact congrArg Prod.snd h1
+
+theorem comp_eigProj (𝓗 : HodgeLat L ρ bar r) {σ σ' : E →+* Ω}
+    (hσ : ∀ a : 𝓞 E, σ' (a : E) = σ (bar a : 𝓞 E)) (hb : ∀ a, bar (bar a) = a) {φ : Module.Dual Ω V}
+    (h : ((0 : V), φ) ∈ HT.eigSp 𝓗.ρH σ) : φ ∘ₗ HT.eigProj ρ σ' = φ := by
+  have key : ∀ b : 𝓞 E, φ ∘ₗ ρ b = σ' (b : E) • φ := by
+    intro b
+    have h1 := comp_act 𝓗 h (bar b)
+    rw [hb b] at h1
+    rw [h1, hσ b]
+  have hsum : ∑ k, σ' (HT.dualInt E k) * σ' ((RingOfIntegers.basis E k : 𝓞 E) : E) = 1 := by
+    have h1 := congrArg σ' (HT.LatBasic.sum_dualInt_mul (E := E))
+    rw [map_sum, map_one] at h1
+    rw [← h1]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [map_mul, NumberField.integralBasis_apply]
+  unfold HT.eigProj
+  ext x
+  have hk : ∀ k, φ ((σ' (HT.dualInt E k) • ρ (RingOfIntegers.basis E k)) x) =
+      σ' (HT.dualInt E k) * σ' ((RingOfIntegers.basis E k : 𝓞 E) : E) * φ x := by
+    intro k
+    have e := LinearMap.congr_fun (key (RingOfIntegers.basis E k)) x
+    rw [LinearMap.comp_apply, LinearMap.smul_apply, smul_eq_mul] at e
+    rw [LinearMap.smul_apply, map_smul, e, smul_eq_mul, mul_assoc]
+  rw [LinearMap.comp_apply, LinearMap.sum_apply, map_sum]
+  simp_rw [hk]
+  rw [← Finset.sum_mul, hsum, one_mul]
+
+end
+
+theorem adapted_span : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) [CharZero Ω]
+    (E : Type) [Field E] [NumberField E] (V : Type) [AddCommGroup V] [Module Ω V] [FiniteDimensional Ω V]
+    (L : Lat ξ V) (ρ : 𝓞 E →+* Module.End Ω V) (bar : 𝓞 E ≃+* 𝓞 E) (p q r : ℕ) (𝓗 : HodgeLat L ρ bar r)
+    (σ σ' : E →+* Ω) (v : Fin p → V) (w : Fin q → V) (u : Fin (p + q) → V × Module.Dual Ω V),
+    (∀ a : 𝓞 E, σ' (a : E) = σ (bar a : 𝓞 E)) → (∀ a, bar (bar a) = a) → LinearIndependent Ω v →
+    Submodule.span Ω (Set.range v) = HT.eigSp ρ σ → LinearIndependent Ω w →
+    Submodule.span Ω (Set.range w) = HT.eigSp ρ σ' → IsAdapted 𝓗.ρH σ v w u →
+    LinearIndependent Ω u ∧ Submodule.span Ω (Set.range u) = HT.eigSp 𝓗.ρH σ ∧
+      ∀ φ : Module.Dual Ω V, ((0 : V), φ) ∈ HT.eigSp 𝓗.ρH σ → φ ∘ₗ HT.eigProj ρ σ' = φ := by
+  intro X Ω _ ξ _ E _ _ V _ _ _ L ρ bar p q r 𝓗 σ σ' v w u hσ hb hv hvs hw hws hu
+  obtain ⟨hu1, hu2, hu3⟩ := hu
+  have hz : ∀ j, (u (Fin.natAdd p j)).1 = 0 := fun j => (hu3 j).1
+  have hz2 : ∀ j j', (u (Fin.natAdd p j)).2 (w j') = if j = j' then 1 else 0 := fun j => (hu3 j).2
+  have hli : LinearIndependent Ω u := by
+    rw [Fintype.linearIndependent_iff]
+    intro g hg
+    rw [Fin.sum_univ_add] at hg
+    have h1 : ∀ i, g (Fin.castAdd q i) = 0 := by
+      have hf := congrArg Prod.fst hg
+      simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hu2, hz] at hf
+      exact Fintype.linearIndependent_iff.mp hv _ hf
+    have h2 : ∀ j, g (Fin.natAdd p j) = 0 := by
+      intro j'
+      have hs := congrArg (fun y : V × Module.Dual Ω V => y.2 (w j')) hg
+      simpa [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, h1, hz2] using hs
+    intro i
+    exact Fin.addCases h1 h2 i
+  have hspan : Submodule.span Ω (Set.range u) = HT.eigSp 𝓗.ρH σ := by
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      exact hu1 i
+    · intro y hy
+      have hy1 : y.1 ∈ HT.eigSp ρ σ := by
+        rw [HT.LatBasic.mem_eigSp]
+        intro a
+        have h1 := congrArg Prod.fst ((HT.LatBasic.mem_eigSp.mp hy) a)
+        rw [𝓗.act_fst] at h1
+        exact h1
+      rw [← hvs, Submodule.mem_span_range_iff_exists_fun] at hy1
+      obtain ⟨c, hc⟩ := hy1
+      set y' := y - ∑ i, c i • u (Fin.castAdd q i) with hy'
+      have hy'mem : y' ∈ HT.eigSp 𝓗.ρH σ :=
+        Submodule.sub_mem _ hy (Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hu1 _))
+      have hy'1 : y'.1 = 0 := by
+        simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hy', hu2, hc]
+      set χ := y'.2 - ∑ j, y'.2 (w j) • (u (Fin.natAdd p j)).2 with hχ
+      have hχmem : ((0 : V), χ) ∈ HT.eigSp 𝓗.ρH σ := by
+        have e : ((0 : V), χ) = y' - ∑ j, y'.2 (w j) • u (Fin.natAdd p j) := by
+          refine Prod.ext ?_ ?_
+          · simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hy'1, hz]
+          · simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hχ]
+        rw [e]
+        exact Submodule.sub_mem _ hy'mem (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (hu1 _))
+      have hχw : ∀ j', χ (w j') = 0 := by
+        intro j'
+        simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hχ, hz2]
+      have hχker : HT.eigSp ρ σ' ≤ LinearMap.ker χ := by
+        rw [← hws, Submodule.span_le]
+        rintro _ ⟨j, rfl⟩
+        exact hχw j
+      have hχ0 : χ = 0 := by
+        have h2 := comp_eigProj 𝓗 hσ hb hχmem
+        ext x
+        rw [← h2, LinearMap.comp_apply, LinearMap.zero_apply]
+        exact LinearMap.mem_ker.mp (hχker (HT.LatBasic.eigProj_mem ρ σ' x))
+      have hy2 : y'.2 = ∑ j, y'.2 (w j) • (u (Fin.natAdd p j)).2 := sub_eq_zero.mp hχ0
+      have hT : y' = ∑ j, y'.2 (w j) • u (Fin.natAdd p j) := by
+        refine Prod.ext ?_ ?_
+        · simp [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul, hy'1, hz]
+        · simpa [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, LinearMap.sum_apply, Finset.sum_apply, LinearMap.smul_apply, smul_eq_mul] using hy2
+      have hyeq : y = ∑ i, c i • u (Fin.castAdd q i) + ∑ j, y'.2 (w j) • u (Fin.natAdd p j) := by
+        rw [← hT, hy']
+        abel
+      rw [hyeq]
+      exact Submodule.add_mem _
+        (Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, rfl⟩))
+        (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, rfl⟩))
+  exact ⟨hli, hspan, fun φ hφ => comp_eigProj 𝓗 hσ hb hφ⟩
+
+end GlobalTheory.CompanionTheory.Ar.Flat.AdaptedSpan
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat.InterFrame
+
+theorem exists_frame_inter : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) [CharZero Ω] (E : Type) [Field E] [NumberField E] (V : Type) [AddCommGroup V] [Module Ω V] [FiniteDimensional Ω V] (L : Lat ξ V) (ρ : 𝓞 E →+* Module.End Ω V) (bar : 𝓞 E ≃+* 𝓞 E) (p r : ℕ) (𝓗 : HodgeLat L ρ bar r) (σ : E →+* Ω) (v : Fin p → V) (x : Cpt ξ), (∀ z ∈ L x, HT.eigProj ρ σ z ∈ L x) → LinearIndependent Ω v → Submodule.span Ω (Set.range v) = HT.eigSp ρ σ → (∃ (n : ℕ) (b : Fin n → V), L.IsFrameAt b x) → ∃ P : Matrix (Fin p) (Fin p) Ω, (L.inter (HT.eigSp ρ σ)).IsFrameAt (fun i => ∑ j, P i j • v j) x := by
+  intro X Ω _ ξ _ E _ _ V _ _ _ L ρ bar p r 𝓗 σ v x hst hv hsp _
+  have hrange : LinearMap.range (HT.eigProj ρ σ) = HT.eigSp ρ σ := by
+    apply le_antisymm
+    · rintro _ ⟨w, rfl⟩
+      exact HT.LatBasic.eigProj_mem ρ σ w
+    · intro w hw
+      exact ⟨w, HT.LatBasic.eigProj_of_mem hw⟩
+  have hidem : HT.eigProj ρ σ ∘ₗ HT.eigProj ρ σ = HT.eigProj ρ σ :=
+    LinearMap.ext fun w => HT.LatBasic.eigProj_of_mem (HT.LatBasic.eigProj_mem ρ σ w)
+  have hVB : L.IsVBOn {x} (Module.finrank Ω V) ⊤ := fun q _ => by
+    obtain ⟨U, hU, b, hb, h⟩ := 𝓗.vb q trivial
+    exact ⟨U, hU, b, hb, fun q' _ hq' => h q' trivial hq'⟩
+  have h := EigSplit.isVBOn_inter_range L {x} _ (HT.eigProj ρ σ) hidem hVB
+    (fun q hq => by rw [Set.mem_singleton_iff.1 hq]; exact hst)
+  rw [hrange] at h
+  obtain ⟨U, hU, f, hf, hfr⟩ := h x rfl
+  have hfx := hfr x rfl hU
+  have hn : Module.finrank Ω (HT.eigSp ρ σ) = p := by
+    rw [← hsp, finrank_span_eq_card hv, Fintype.card_fin]
+  subst hn
+  have hmem : ∀ i, f i ∈ Submodule.span Ω (Set.range v) := fun i => by
+    rw [hsp, ← hf]
+    exact Submodule.subset_span ⟨i, rfl⟩
+  choose P hP using fun i => (Submodule.mem_span_range_iff_exists_fun Ω).1 (hmem i)
+  refine ⟨Matrix.of P, ?_⟩
+  simpa only [Matrix.of_apply, hP] using hfx
+
+end GlobalTheory.CompanionTheory.Ar.Flat.InterFrame
+end
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
 
 noncomputable section
@@ -229,3 +571,5 @@ theorem generic_agree : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (
   exact ⟨h.2 ⟨_, b, hb x trivial hU⟩, h.1⟩
 
 end GlobalTheory.CompanionTheory.Ar.Flat.GenAgree
+end
+end

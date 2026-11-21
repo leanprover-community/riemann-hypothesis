@@ -10,8 +10,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaTransformInver
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InverseThetaTransformHasLevelCompactFiniteSuppor
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InverseAdelicThetaTransformRapidDecay
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzInverseThetaTransformOnRealTranslates
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicLinearCoordinatesContinuousFiniteRealPoint
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicLinearCoordinatesRationalSurjectiveOfCM
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicLinearCoordinatesContinuousKeepParts
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DifferentiableAtZeroHeisenbergCMRealLineThetaStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivHeisenbergCMThetaQuasiInvariantRationalStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DerivHeisenbergCMRealLineFiniteInvariantStatement
@@ -19,6 +18,191 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffDerivHeisen
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaLiftStandardCharacterIndefiniteStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergCMRealLineAddNoPhaseStatement
 
+section
+section
+open scoped TensorProduct Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open scoped ContDiff
+
+noncomputable section
+namespace GlobalTheory.AdelicCoordF
+
+open GlobalTheory.AdelicCoord (incF incI incF_sndA incI_fstA pairA_mul_eq_zero_iff_snd pairA_mul_eq_zero_iff_fst)
+
+variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+def secF : Af F ⊗[F] E →ₗ[F] AF F ⊗[F] E := TensorProduct.map (incF F) LinearMap.id
+
+def secI : Ainf F ⊗[F] E →ₗ[F] AF F ⊗[F] E := TensorProduct.map (incI F) LinearMap.id
+
+theorem secF_finPart (z : AF F ⊗[F] E) :
+    secF F E (Formalism.IndefR.DatumF.finPartF F E z) = pairA F 0 1 • z := by
+  induction z using TensorProduct.induction_on with
+  | zero => rw [map_zero, map_zero, smul_zero]
+  | tmul a b =>
+    have h1 : Formalism.IndefR.DatumF.finPartF F E (a ⊗ₜ b) = sndA F a ⊗ₜ b := rfl
+    rw [h1, secF, TensorProduct.map_tmul, LinearMap.id_apply, incF_sndA, TensorProduct.smul_tmul', smul_eq_mul]
+  | add x y hx hy => rw [map_add, map_add, hx, hy, smul_add]
+
+theorem secI_infPart (z : AF F ⊗[F] E) :
+    secI F E (Formalism.IndefR.DatumF.infPartF F E z) = pairA F 1 0 • z := by
+  induction z using TensorProduct.induction_on with
+  | zero => rw [map_zero, map_zero, smul_zero]
+  | tmul a b =>
+    have h1 : Formalism.IndefR.DatumF.infPartF F E (a ⊗ₜ b) = fstA F a ⊗ₜ b := rfl
+    rw [h1, secI, TensorProduct.map_tmul, LinearMap.id_apply, incI_fstA, TensorProduct.smul_tmul', smul_eq_mul]
+  | add x y hx hy => rw [map_add, map_add, hx, hy, smul_add]
+
+theorem finPartF_smul (z : AF F ⊗[F] E) :
+    Formalism.IndefR.DatumF.finPartF F E (pairA F 0 1 • z) = Formalism.IndefR.DatumF.finPartF F E z := by
+  rw [Algebra.smul_def, map_mul]
+  have : Formalism.IndefR.DatumF.finPartF F E (algebraMap (AF F) (AF F ⊗[F] E) (pairA F 0 1)) = 1 := by
+    rw [Algebra.TensorProduct.algebraMap_apply]
+    show sndA F (algebraMap (AF F) (AF F) (pairA F 0 1)) ⊗ₜ[F] (1 : E) = 1
+    rw [Algebra.algebraMap_self, RingHom.id_apply, GlobalTheory.AdelicCoord.sndA_pairA]
+    rfl
+  rw [this, one_mul]
+
+theorem infPartF_smul (z : AF F ⊗[F] E) :
+    Formalism.IndefR.DatumF.infPartF F E (pairA F 1 0 • z) = Formalism.IndefR.DatumF.infPartF F E z := by
+  rw [Algebra.smul_def, map_mul]
+  have : Formalism.IndefR.DatumF.infPartF F E (algebraMap (AF F) (AF F ⊗[F] E) (pairA F 1 0)) = 1 := by
+    rw [Algebra.TensorProduct.algebraMap_apply]
+    show fstA F (algebraMap (AF F) (AF F) (pairA F 1 0)) ⊗ₜ[F] (1 : E) = 1
+    rw [Algebra.algebraMap_self, RingHom.id_apply, GlobalTheory.AdelicCoord.fstA_pairA]
+    rfl
+  rw [this, one_mul]
+
+theorem finPartF_eq_zero_iff (z : AF F ⊗[F] E) :
+    Formalism.IndefR.DatumF.finPartF F E z = 0 ↔ pairA F 0 1 • z = 0 := by
+  constructor
+  · intro h; rw [← secF_finPart, h, map_zero]
+  · intro h; rw [← finPartF_smul, h, map_zero]
+
+theorem infPartF_eq_zero_iff (z : AF F ⊗[F] E) :
+    Formalism.IndefR.DatumF.infPartF F E z = 0 ↔ pairA F 1 0 • z = 0 := by
+  constructor
+  · intro h; rw [← secI_infPart, h, map_zero]
+  · intro h; rw [← infPartF_smul, h, map_zero]
+
+theorem smul_vec_fin {N : ℕ} (u : Fin N → AF F) : pairA F 0 1 • u = 0 ↔ GlobalTheory.SWQ.fin u = 0 := by
+  rw [funext_iff, funext_iff]
+  exact forall_congr' fun l => pairA_mul_eq_zero_iff_snd F (u l)
+
+theorem smul_vec_inf {N : ℕ} (u : Fin N → AF F) : pairA F 1 0 • u = 0 ↔ GlobalTheory.SWQ.inf u = 0 := by
+  rw [funext_iff, funext_iff]
+  exact forall_congr' fun l => pairA_mul_eq_zero_iff_fst F (u l)
+
+theorem smul_pair_eq_zero {N : ℕ} (c : AF F) (w : GlobalTheory.ThetaTransform.VA F N) :
+    c • w = 0 ↔ c • w.1 = 0 ∧ c • w.2 = 0 :=
+  Prod.ext_iff
+
+theorem coord : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (nS nT N : ℕ)
+    (e : Formalism.IndefR.DatumF.WOF F E nS nT ≃ₗ[AF F] GlobalTheory.ThetaTransform.VA F N),
+    Continuous e ∧ Continuous e.symm ∧
+      (∀ x : Formalism.IndefR.DatumF.WOF F E nS nT, x.map (Formalism.IndefR.DatumF.finPartF F E) = 0 ↔
+        GlobalTheory.SWQ.fin (e x).1 = 0 ∧ GlobalTheory.SWQ.fin (e x).2 = 0) ∧
+      (∀ x : Formalism.IndefR.DatumF.WOF F E nS nT, x.map (Formalism.IndefR.DatumF.infPartF F E) = 0 ↔
+        GlobalTheory.SWQ.inf (e x).1 = 0 ∧ GlobalTheory.SWQ.inf (e x).2 = 0) := by
+  intro F E _ _ _ _ _ nS nT N e
+  haveI h0 : IsModuleTopology (AF F) (AF F ⊗[F] E) := GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.modTop
+  haveI hA : ContinuousAdd (AF F ⊗[F] E) := IsModuleTopology.toContinuousAdd (AF F) (AF F ⊗[F] E)
+  haveI h1 : IsModuleTopology (AF F) (Fin nS → AF F ⊗[F] E) := IsModuleTopology.instPi
+  haveI h2 : IsModuleTopology (AF F) (Matrix (Fin nT) (Fin nS) (AF F ⊗[F] E)) := IsModuleTopology.instPi
+  refine ⟨IsModuleTopology.continuous_of_linearMap e.toLinearMap,
+    IsModuleTopology.continuous_of_linearMap e.symm.toLinearMap, fun x => ?_, fun x => ?_⟩
+  · have key : x.map (Formalism.IndefR.DatumF.finPartF F E) = 0 ↔ pairA F 0 1 • x = 0 := by
+      rw [← Matrix.ext_iff, ← Matrix.ext_iff]
+      simp only [Matrix.map_apply, Matrix.zero_apply, Matrix.smul_apply]
+      exact forall_congr' fun i => forall_congr' fun j => finPartF_eq_zero_iff F E (x i j)
+    rw [key, ← smul_vec_fin, ← smul_vec_fin, ← smul_pair_eq_zero, ← LinearEquiv.map_smul,
+      LinearEquiv.map_eq_zero_iff]
+  · have key : x.map (Formalism.IndefR.DatumF.infPartF F E) = 0 ↔ pairA F 1 0 • x = 0 := by
+      rw [← Matrix.ext_iff, ← Matrix.ext_iff]
+      simp only [Matrix.map_apply, Matrix.zero_apply, Matrix.smul_apply]
+      exact forall_congr' fun i => forall_congr' fun j => infPartF_eq_zero_iff F E (x i j)
+    rw [key, ← smul_vec_inf, ← smul_vec_inf, ← smul_pair_eq_zero, ← LinearEquiv.map_smul,
+      LinearEquiv.map_eq_zero_iff]
+
+end GlobalTheory.AdelicCoordF
+
+end
+end
+
+open scoped TensorProduct Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicLinearCoordinates_continuous_finite_real_points : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (nS nT N : ℕ)
+    (e : Formalism.IndefR.DatumF.WOF F E nS nT ≃ₗ[AF F] GlobalTheory.ThetaTransform.VA F N),
+    Continuous e ∧ Continuous e.symm ∧
+      (∀ x : Formalism.IndefR.DatumF.WOF F E nS nT, x.map (Formalism.IndefR.DatumF.finPartF F E) = 0 ↔ GlobalTheory.SWQ.fin (e x).1 = 0 ∧ GlobalTheory.SWQ.fin (e x).2 = 0) ∧
+      (∀ x : Formalism.IndefR.DatumF.WOF F E nS nT, x.map (Formalism.IndefR.DatumF.infPartF F E) = 0 ↔ GlobalTheory.SWQ.inf (e x).1 = 0 ∧ GlobalTheory.SWQ.inf (e x).2 = 0) := by
+  atlas_forward_decl GlobalTheory.AdelicCoordF.coord
+end
+
+section
+section
+open scoped TensorProduct Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open scoped ContDiff
+
+set_option synthInstance.maxHeartbeats 200000 in
+set_option maxHeartbeats 800000 in
+
+theorem GlobalTheory.WeilSchrodinger.rat_onto_of_rat_maps_F : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (nS nT N : ℕ)
+    (e : Formalism.IndefR.DatumF.WOF F E nS nT ≃ₗ[AF F] GlobalTheory.ThetaTransform.VA F N),
+    (∀ x : Matrix (Fin nT) (Fin nS) E, ∃ y z : Fin N → F, e (Formalism.IndefR.DatumF.ratWF x) = (GlobalTheory.SWQ.rat y, GlobalTheory.SWQ.rat z)) →
+    ∀ y z : Fin N → F, ∃ x : Matrix (Fin nT) (Fin nS) E, e (Formalism.IndefR.DatumF.ratWF x) = (GlobalTheory.SWQ.rat y, GlobalTheory.SWQ.rat z) := by
+  intro F E _ _ _ _ _ nS nT N e hrat y z
+  haveI : Nontrivial (AF F) := (AdeleRing.algebraMap_injective (𝓞 F) F).nontrivial
+  let I : Matrix (Fin nT) (Fin nS) E →ₗ[F] Formalism.IndefR.DatumF.WOF F E nS nT :=
+    (Algebra.TensorProduct.includeRight (R := F) (A := AF F) (B := E)).toLinearMap.mapMatrix
+  have hI : ∀ x, I x = Formalism.IndefR.DatumF.ratWF x := fun x => rfl
+  let L : Matrix (Fin nT) (Fin nS) E →ₗ[F] GlobalTheory.ThetaTransform.VA F N := (e.toLinearMap.restrictScalars F).comp I
+  have hL : ∀ x, L x = e (Formalism.IndefR.DatumF.ratWF x) := fun x => by rw [← hI]; rfl
+  let r : (Fin N → F) →ₗ[F] (Fin N → AF F) :=
+    LinearMap.pi fun i => (Algebra.linearMap F (AF F)).comp (LinearMap.proj i)
+  let R : ((Fin N → F) × (Fin N → F)) →ₗ[F] GlobalTheory.ThetaTransform.VA F N := LinearMap.prodMap r r
+  have hR : ∀ y z, R (y, z) = (GlobalTheory.SWQ.rat y, GlobalTheory.SWQ.rat z) := fun _ _ => rfl
+  have hAinj : Function.Injective (algebraMap F (AF F)) := AdeleRing.algebraMap_injective _ _
+  have hrinj : Function.Injective r := fun a b h => funext fun i => hAinj (congrFun h i)
+  have hRinj : Function.Injective R := fun a b h => Prod.ext (hrinj (congrArg Prod.fst h)) (hrinj (congrArg Prod.snd h))
+  have hIinj : Function.Injective I := fun a b h => Matrix.ext fun i j =>
+    Algebra.TensorProduct.includeRight_injective hAinj (congrFun (congrFun h i) j)
+  have hLinj : Function.Injective L := e.injective.comp hIinj
+  have hle : LinearMap.range L ≤ LinearMap.range R := by
+    rintro _ ⟨x, rfl⟩
+    obtain ⟨y', z', h⟩ := hrat x
+    exact ⟨(y', z'), by rw [hR, hL, h]⟩
+  have hdim : Fintype.card (Fin nT) * Fintype.card (Fin nS) * Module.finrank F E = N + N := by
+    have h1 := e.finrank_eq
+    rw [Module.finrank_matrix, Module.finrank_baseChange, Module.finrank_prod, Module.finrank_fin_fun] at h1
+    exact h1
+  have hfin : Module.finrank F (LinearMap.range L) = Module.finrank F (LinearMap.range R) := by
+    rw [LinearMap.finrank_range_of_inj hLinj, LinearMap.finrank_range_of_inj hRinj, Module.finrank_matrix,
+      Module.finrank_prod, Module.finrank_fin_fun, hdim]
+  have heq := Submodule.eq_of_le_of_finrank_eq hle hfin
+  obtain ⟨x, hx⟩ : (R (y, z)) ∈ LinearMap.range L := heq ▸ ⟨(y, z), rfl⟩
+  exact ⟨x, by rw [← hL, hx, hR]⟩
+end
+
+open scoped TensorProduct Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open scoped ContDiff
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicLinearCoordinates_rational_surjective_of_CM : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (nS nT N : ℕ)
+    (e : Formalism.IndefR.DatumF.WOF F E nS nT ≃ₗ[AF F] GlobalTheory.ThetaTransform.VA F N),
+    (∀ x : Matrix (Fin nT) (Fin nS) E, ∃ y z : Fin N → F, e (Formalism.IndefR.DatumF.ratWF x) = (GlobalTheory.SWQ.rat y, GlobalTheory.SWQ.rat z)) →
+    ∀ y z : Fin N → F, ∃ x : Matrix (Fin nT) (Fin nS) E, e (Formalism.IndefR.DatumF.ratWF x) = (GlobalTheory.SWQ.rat y, GlobalTheory.SWQ.rat z) := by
+  atlas_forward_decl GlobalTheory.WeilSchrodinger.rat_onto_of_rat_maps_F
+end
+
+section
 open scoped TensorProduct Matrix
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
@@ -144,4 +328,5 @@ theorem exists_thV_eqF : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
 
 end GlobalTheory.ThetaOntoF
 
+end
 end

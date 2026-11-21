@@ -1,9 +1,35 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Statements.AlgebraStatements.HodgeTateNormComparison
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPolLatticePlane
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PrimRootSubOnePowAssociated
+import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 import BuildAid.ForwardExisting
 
+section
+open Module NumberField GlobalTheory.CompanionTheory.Ar.HT
+
+namespace GlobalTheory.CompanionTheory.Ar.HT
+
+theorem primRoot_sub_one_pow_associated {O : Type*} [CommRing O] [IsDomain O] {p : ℕ}
+    (hp : p.Prime) {ζ : O} (hζ : IsPrimitiveRoot ζ p) :
+    Associated ((ζ - 1) ^ (p - 1)) (p : O) := by
+  obtain ⟨n, rfl⟩ : ∃ n, p = n + 1 := ⟨p - 1, by have := hp.pos; omega⟩
+  have h := hζ.prod_one_sub_pow_eq_order
+  have h2 : Associated (∏ _k ∈ Finset.range n, (ζ - 1)) (∏ k ∈ Finset.range n, (1 - ζ ^ (k + 1))) := by
+    refine Associated.prod _ _ _ fun k hk => ?_
+    have hk' := Finset.mem_range.1 hk
+    have hc : (k + 1).Coprime (n + 1) :=
+      (Nat.coprime_of_lt_prime (by omega) (by omega) hp).symm
+    have := hζ.associated_sub_one_pow_sub_one_of_coprime hc
+    rw [← neg_sub (ζ ^ (k + 1)) 1]
+    exact this.neg_right
+  rw [h, Finset.prod_const, Finset.card_range] at h2
+  simpa using h2
+
+
+end GlobalTheory.CompanionTheory.Ar.HT
+end
+
+section
 section
 open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
 
@@ -64,3 +90,4 @@ open Module NumberField GlobalTheory.CompanionTheory.Ar.HT TensorProduct
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.hodge_tate_constant_divides_p_sq : ∀ (C : Type) [Field C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] (hv : v.Integers O) [CharZero C] (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A] [IsDomain A] [CharZero A] (φ : A →+* O) (κ : A), v (p : C) < 1 → (if p = 2 then κ = 4 else ∃ ζ : A, IsPrimitiveRoot ζ p ∧ κ = ζ - 1) → IsHTConst v p (φ κ) ∧ κ ∣ (p : A) ^ 2 := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.HT.isHTConst_of_isCp
+end

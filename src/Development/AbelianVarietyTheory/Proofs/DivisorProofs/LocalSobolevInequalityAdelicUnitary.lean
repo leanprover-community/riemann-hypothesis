@@ -3,11 +3,152 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsArchimedeanLi
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableOneP
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocallyCompactSecondCountableT2
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SobolevIteratedOneParameterSubgroups
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SetIntegralLeOfExpanding
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeMulSetIntegralImage2OfForallLe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryGroupSecondKindCoordinatesNearOneStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SobolevIteratedOneParameterSubgroupsWordsStatement
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryGroupSecondKindCoordinatesNearOne
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SobolevIteratedOneParameterSubgroupsWords
 
+section
+section
+open MeasureTheory
+
+namespace GlobalTheory
+
+theorem volume_le_mul_volume_image_of_expanding (N : ℕ) (S : Set (Fin N → ℝ)) (K : ℝ)
+    (f : (Fin N → ℝ) → (Fin N → ℝ)) (hK : 0 ≤ K)
+    (hf : ∀ t ∈ S, ∀ t' ∈ S, ‖t - t'‖ ≤ K * ‖f t - f t'‖) :
+    volume S ≤ ENNReal.ofReal (K ^ N) * volume (f '' S) := by
+  have hinj : Set.InjOn f S := by
+    intro a ha b hb hab
+    have := hf a ha b hb
+    rw [hab, sub_self, norm_zero, mul_zero] at this
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp this)
+  have hg : ∀ a ∈ S, Function.invFunOn f S (f a) = a := fun a ha => hinj.leftInvOn_invFunOn ha
+  have hlip : LipschitzOnWith K.toNNReal (Function.invFunOn f S) (f '' S) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    rintro _ ⟨a, ha, rfl⟩ _ ⟨b, hb, rfl⟩
+    rw [hg a ha, hg b hb, dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ hK]
+    exact hf a ha b hb
+  have himg : Function.invFunOn f S '' (f '' S) = S := hinj.invFunOn_image subset_rfl
+  have h := hlip.hausdorffMeasure_image_le (d := (Fintype.card (Fin N) : ℝ)) (by positivity)
+  rw [himg, hausdorffMeasure_pi_real, Fintype.card_fin, ENNReal.rpow_natCast] at h
+  rw [ENNReal.ofReal_pow hK]
+  exact h
+
+theorem setIntegral_le_of_expanding (N : ℕ) (A Q : Set (Fin N → ℝ)) (K : ℝ)
+    (f : (Fin N → ℝ) → (Fin N → ℝ)) (h₁ h₂ : (Fin N → ℝ) → ℝ)
+    (hA : IsCompact A) (hQ : IsCompact Q) (hK : 0 ≤ K) (c₁ : Continuous h₁) (c₂ : Continuous h₂)
+    (n₁ : ∀ t, 0 ≤ h₁ t) (n₂ : ∀ t, 0 ≤ h₂ t) (hm : ∀ t ∈ A, f t ∈ Q ∧ h₁ t ≤ h₂ (f t))
+    (hf : ∀ t ∈ A, ∀ t' ∈ A, ‖t - t'‖ ≤ K * ‖f t - f t'‖) :
+    ∫ t in A, h₁ t ≤ K ^ N * ∫ t in Q, h₂ t := by
+  have i₁ : IntegrableOn h₁ A volume := c₁.continuousOn.integrableOn_compact hA
+  have i₂ : IntegrableOn h₂ Q volume := c₂.continuousOn.integrableOn_compact hQ
+  have hKN : 0 ≤ K ^ N := pow_nonneg hK N
+  have hI₂ : 0 ≤ ∫ t in Q, h₂ t := integral_nonneg n₂
+  rw [← ENNReal.ofReal_le_ofReal_iff (mul_nonneg hKN hI₂), ENNReal.ofReal_mul hKN,
+    ofReal_integral_eq_lintegral_ofReal i₁ (Filter.Eventually.of_forall n₁),
+    ofReal_integral_eq_lintegral_ofReal i₂ (Filter.Eventually.of_forall n₂),
+    lintegral_eq_lintegral_meas_lt _ (Filter.Eventually.of_forall n₁) c₁.aemeasurable,
+    lintegral_eq_lintegral_meas_lt _ (Filter.Eventually.of_forall n₂) c₂.aemeasurable,
+    ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+  refine lintegral_mono fun r => ?_
+  have m₁ : MeasurableSet {a | r < h₁ a} := measurableSet_lt measurable_const c₁.measurable
+  have m₂ : MeasurableSet {a | r < h₂ a} := measurableSet_lt measurable_const c₂.measurable
+  rw [Measure.restrict_apply m₁, Measure.restrict_apply m₂]
+  refine (volume_le_mul_volume_image_of_expanding N _ K f hK
+    (fun t ht t' ht' => hf t ht.2 t' ht'.2)).trans ?_
+  gcongr
+  rintro _ ⟨a, ⟨ha, haA⟩, rfl⟩
+  exact ⟨lt_of_lt_of_le ha (hm a haA).2, (hm a haA).1⟩
+
+end GlobalTheory
+end
+
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.setIntegral_le_pow_mul_setIntegral_of_expanding : ∀ (N : ℕ) (A Q : Set (Fin N → ℝ)) (K : ℝ) (f : (Fin N → ℝ) → (Fin N → ℝ)) (h₁ h₂ : (Fin N → ℝ) → ℝ), IsCompact A → IsCompact Q → 0 ≤ K → Continuous h₁ → Continuous h₂ → (∀ t, 0 ≤ h₁ t) → (∀ t, 0 ≤ h₂ t) → (∀ t ∈ A, f t ∈ Q ∧ h₁ t ≤ h₂ (f t)) → (∀ t ∈ A, ∀ t' ∈ A, ‖t - t'‖ ≤ K * ‖f t - f t'‖) → ∫ t in A, h₁ t ≤ K ^ N * ∫ t in Q, h₂ t := by
+  atlas_forward_decl GlobalTheory.setIntegral_le_of_expanding
+end
+
+section
+section
+open MeasureTheory
+
+namespace GlobalTheory
+
+theorem le_mul_setIntegral_image2_of_forall_le (G : Type) [Group G] [TopologicalSpace G]
+    [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
+    [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (N : ℕ)
+    (Θ : (Fin N → ℝ) → G) (Q : Set (Fin N → ℝ)) (B : Set G) (K : ℝ)
+    (hΘ : Continuous Θ) (hQ : IsCompact Q) (hB : IsCompact B) (hB1 : B ∈ nhds (1 : G))
+    (hK : 0 ≤ K) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (F : G → ℝ) (a : ℝ), Continuous F → (∀ g, 0 ≤ F g) →
+      (∀ x ∈ B, a ≤ K * ∫ t in Q, F (Θ t * x)) →
+      a ≤ C * ∫ x in Set.image2 (fun t b => Θ t * b) Q B, F x ∂μ := by
+  have hBfin : μ B ≠ ⊤ := hB.measure_lt_top.ne
+  have hQfin : (volume : Measure (Fin N → ℝ)) Q ≠ ⊤ := hQ.measure_lt_top.ne
+  have hBpos : 0 < μ.real B :=
+    ENNReal.toReal_pos (Measure.measure_pos_of_mem_nhds μ hB1).ne' hBfin
+  refine ⟨K * (volume : Measure (Fin N → ℝ)).real Q / μ.real B, by positivity, ?_⟩
+  intro F a hF hF0 ha
+  set Ω : Set G := Set.image2 (fun t b => Θ t * b) Q B with hΩdef
+  have hΩ : IsCompact Ω := by
+    rw [hΩdef, ← Set.image_prod]
+    exact (hQ.prod hB).image (by fun_prop)
+  have hFΩ : IntegrableOn F Ω μ := hF.continuousOn.integrableOn_compact hΩ
+  have hstep : ∀ t ∈ Q, ∫ x in B, F (Θ t * x) ∂μ ≤ ∫ x in Ω, F x ∂μ := by
+    intro t ht
+    rw [← (measurePreserving_mul_left μ (Θ t)).setIntegral_image_emb
+      (measurableEmbedding_mulLeft (Θ t)) F B]
+    refine setIntegral_mono_set hFΩ (Filter.Eventually.of_forall hF0) ?_
+    refine HasSubset.Subset.eventuallyLE ?_
+    rintro _ ⟨b, hb, rfl⟩
+    exact Set.mem_image2_of_mem ht hb
+  have hint : Integrable (Function.uncurry fun (x : G) (t : Fin N → ℝ) => F (Θ t * x))
+      ((μ.restrict B).prod (volume.restrict Q)) := by
+    rw [Measure.prod_restrict]
+    refine ContinuousOn.integrableOn_compact (hB.prod hQ) ?_
+    exact (by fun_prop : Continuous fun p : G × (Fin N → ℝ) => F (Θ p.2 * p.1)).continuousOn
+  have h1 : μ.real B * a ≤ ∫ x in B, K * ∫ t in Q, F (Θ t * x) ∂volume ∂μ := by
+    have hc : μ.real B * a = ∫ _x in B, a ∂μ := by simp
+    rw [hc]
+    refine setIntegral_mono_on (integrableOn_const hBfin) ?_ hB.measurableSet ha
+    exact hint.integral_prod_left.const_mul K
+  have h2 : ∫ x in B, ∫ t in Q, F (Θ t * x) ∂volume ∂μ ≤
+      (volume : Measure (Fin N → ℝ)).real Q * ∫ x in Ω, F x ∂μ := by
+    rw [integral_integral_swap hint]
+    have hc : (volume : Measure (Fin N → ℝ)).real Q * ∫ x in Ω, F x ∂μ =
+        ∫ _t in Q, (∫ x in Ω, F x ∂μ) := by simp
+    rw [hc]
+    exact setIntegral_mono_on hint.integral_prod_right (integrableOn_const hQfin)
+      hQ.measurableSet hstep
+  rw [integral_const_mul] at h1
+  rw [div_mul_eq_mul_div, le_div_iff₀ hBpos, mul_comm a, mul_assoc]
+  exact h1.trans (mul_le_mul_of_nonneg_left h2 hK)
+
+end GlobalTheory
+end
+
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.le_mul_setIntegral_image2_of_forall_le_alt : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (N : ℕ) (Θ : (Fin N → ℝ) → G) (Q : Set (Fin N → ℝ)) (B : Set G) (K : ℝ), Continuous Θ → IsCompact Q → IsCompact B → B ∈ nhds (1 : G) → 0 ≤ K → ∃ C : ℝ, 0 ≤ C ∧ ∀ (F : G → ℝ) (a : ℝ), Continuous F → (∀ g, 0 ≤ F g) → (∀ x ∈ B, a ≤ K * ∫ t in Q, F (Θ t * x)) → a ≤ C * ∫ x in Set.image2 (fun t b => Θ t * b) Q B, F x ∂μ := by
+  atlas_forward_decl GlobalTheory.le_mul_setIntegral_image2_of_forall_le
+end
+
+section
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryGroup_secondKind_coordinates_near_one : ∀ (E : Type) [NormedRing E] [NormedAlgebra ℝ E] [FiniteDimensional ℝ E] (σ : E →ₗ[ℝ] E) (N : ℕ) (e : Fin N → E) (c : Fin N → ℝ → E), (∀ a, σ (σ a) = a) → (∀ a b, σ (a * b) = σ b * σ a) → σ 1 = 1 → LinearIndependent ℝ e → (∀ i, σ (e i) = -e i) → (∀ X, σ X = -X → X ∈ Submodule.span ℝ (Set.range e)) → (∀ i, c i 0 = 1 ∧ HasStrictDerivAt (c i) (e i) 0 ∧ ∀ t, σ (c i t) * c i t = 1 ∧ c i t * σ (c i t) = 1) → ∃ (s S K : ℝ) (W : Set E), 0 < s ∧ 0 ≤ K ∧ W ∈ nhds (1 : E) ∧ ∀ x ∈ W, σ x * x = 1 → x * σ x = 1 → ∃ f : (Fin N → ℝ) → (Fin N → ℝ), (∀ t ∈ Set.pi Set.univ (fun _ : Fin N => Set.Icc (0 : ℝ) s), ‖f t‖ ≤ S ∧ (List.ofFn fun i => c i (f t i)).prod * x = (List.ofFn fun i => c i (t i)).prod) ∧ ∀ t ∈ Set.pi Set.univ (fun _ : Fin N => Set.Icc (0 : ℝ) s), ∀ t' ∈ Set.pi Set.univ (fun _ : Fin N => Set.Icc (0 : ℝ) s), ‖t - t'‖ ≤ K * ‖f t - f t'‖ := by
+  first | exact @GlobalTheory.UnitaryChart.second_kind_chart | exact GlobalTheory.UnitaryChart.second_kind_chart | (intros; apply GlobalTheory.UnitaryChart.second_kind_chart <;> assumption)
+end
+
+section
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sq_norm_le_mul_of_iterated_one_parameter_integral_le : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (N : ℕ) (c : Fin N → ℝ → G) (s : ℝ), 0 < s → (∀ i, Continuous (c i) ∧ c i 0 = 1 ∧ ∀ a b, c i (a + b) = c i a * c i b) → ∃ C : ℝ, 0 ≤ C ∧ ∀ (F : List (Fin N) → G → ℂ), (∀ l, Continuous (F l)) → (∀ l i x, HasDerivAt (fun t => F l (x * c i t)) (F (i :: l) x) 0) → ∀ (y : G) (M : ℝ), (∀ l : List (Fin N), l.length ≤ N → ∫ t in Set.pi Set.univ (fun _ : Fin N => Set.Icc (0 : ℝ) s), ‖F l (y * (List.ofFn fun i => c i (t i)).prod)‖ ^ 2 ≤ M) → ‖F [] y‖ ^ 2 ≤ C * M := by
+  first | exact @GlobalTheory.sobolev_iterated_one_parameter_subgroups_words | exact GlobalTheory.sobolev_iterated_one_parameter_subgroups_words | (intros; apply GlobalTheory.sobolev_iterated_one_parameter_subgroups_words <;> assumption)
+end
+
+section
 open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Lev Formalism.IndefR.Datum Formalism.L2.Pj Formalism.IndefR.FWT Formalism.IndefR GlobalTheory.HolDict
 open scoped TensorProduct InnerProductSpace ContDiff
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -305,3 +446,5 @@ theorem local_sobolev : ∀ (D : D7) (θ : InfFam D) (V : HSp D), IsInfFam θ �
     · simpa using hl
 
 end GlobalTheory.SobLoc
+end
+end

@@ -1,10 +1,570 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalPropertyAffineIdealCriterion
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AffineIdealLocusCriterion
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TrivialLocusLocalToGlobal
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProperIntegralPerfectFamilyExists
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GeometricallyIntegralGlobalFunctionsConstant
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsPowMulOfAway
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsIsoAppOfIsAbelianScheme
 
+section
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.TrivLoc.Rep
+
+theorem exists_basicOpen_le {Y : Scheme.{0}} {U V : Y.Opens} (hU : IsAffineOpen U) (hV : IsAffineOpen V)
+    (r : Γ(Y, V)) (y : Y) (hyU : y ∈ U) (hyr : y ∈ Y.basicOpen r) :
+    ∃ f : Γ(Y, U), y ∈ Y.basicOpen f ∧ Y.basicOpen f ≤ Y.basicOpen r := by
+  obtain ⟨f, g, e, hy⟩ := exists_basicOpen_le_affine_inter hU (hV.basicOpen r) y ⟨hyU, hyr⟩
+  exact ⟨f, hy, e ▸ Y.basicOpen_le g⟩
+
+theorem isUnit_res_of_le {Y : Scheme.{0}} {V W : Y.Opens} (r : Γ(Y, V)) (hle : W ≤ Y.basicOpen r)
+    (hWV : W ≤ V) : IsUnit ((Y.presheaf.map (homOfLE hWV).op).hom r) := by
+  have h := Y.toRingedSpace.isUnit_res_basicOpen r
+  have e : (Y.presheaf.map (homOfLE hWV).op).hom r =
+      (Y.presheaf.map (homOfLE hle).op).hom
+        ((Y.presheaf.map (homOfLE (Y.basicOpen_le r)).op).hom r) := by
+    rw [← CommRingCat.comp_apply, ← Functor.map_comp]; rfl
+  rw [e]
+  exact h.map (Y.presheaf.map (homOfLE hle).op).hom
+
+theorem exists_ideal_on_basicOpen {Y : Scheme.{0}} (P : ∀ T : Scheme.{0}, (T ⟶ Y) → Prop)
+    {U V : Y.Opens} (hU : IsAffineOpen U) (hV : IsAffineOpen V) (f : Γ(Y, U)) (r : Γ(Y, V))
+    (I : Ideal Γ(Y, V)) (hle : Y.basicOpen f ≤ Y.basicOpen r)
+    (hI : ∀ (R' : Type) [CommRing R'] (g : Γ(Y, V) →+* R'), IsUnit (g r) →
+      (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hV.fromSpec) ↔ I ≤ RingHom.ker g)) :
+    ∃ J : Ideal Γ(Y, U), ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'), IsUnit (g f) →
+      (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) ↔ J ≤ RingHom.ker g) := by
+  have hWV : Y.basicOpen f ≤ V := hle.trans (Y.basicOpen_le r)
+  let resV : Γ(Y, V) →+* Γ(Y, Y.basicOpen f) := (Y.presheaf.map (homOfLE hWV).op).hom
+  let I₂ : Ideal Γ(Y, Y.basicOpen f) := I.map resV
+  haveI := hU.isLocalization_basicOpen f
+  refine ⟨I₂.comap (algebraMap Γ(Y, U) Γ(Y, Y.basicOpen f)), fun R' _ g hu => ?_⟩
+  let h' : Γ(Y, Y.basicOpen f) →+* R' := IsLocalization.Away.lift f hu
+  have hcomp : h'.comp (algebraMap Γ(Y, U) Γ(Y, Y.basicOpen f)) = g := IsLocalization.Away.lift_comp f hu
+  have hW := hU.basicOpen f
+  have hg : CommRingCat.ofHom g =
+      Y.presheaf.map (homOfLE (Y.basicOpen_le f)).op ≫ CommRingCat.ofHom h' := by
+    rw [← hcomp]; rfl
+  have hg' : CommRingCat.ofHom (h'.comp resV) =
+      Y.presheaf.map (homOfLE hWV).op ≫ CommRingCat.ofHom h' := rfl
+  have e : Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec =
+      Spec.map (CommRingCat.ofHom (h'.comp resV)) ≫ hV.fromSpec := by
+    rw [hg, hg', Spec.map_comp, Spec.map_comp, Category.assoc, Category.assoc,
+      hU.map_fromSpec hW, hV.map_fromSpec hW]
+  have hunit : IsUnit ((h'.comp resV) r) := (isUnit_res_of_le r hle hWV).map h'
+  rw [e, hI R' _ hunit]
+  constructor
+  · intro h x hx
+    have hx' : algebraMap Γ(Y, U) Γ(Y, Y.basicOpen f) x ∈ I₂ := hx
+    have h2 : I₂ ≤ RingHom.ker h' := by
+      rw [show I₂ = I.map resV from rfl, Ideal.map_le_iff_le_comap]
+      intro z hz
+      exact h hz
+    have := h2 hx'
+    rw [RingHom.mem_ker] at this ⊢
+    rw [← hcomp]
+    exact this
+  · intro h z hz
+    have h2 : I₂ ≤ RingHom.ker h' := by
+      rw [← IsLocalization.map_comap (Submonoid.powers f) Γ(Y, Y.basicOpen f) I₂, Ideal.map_le_iff_le_comap]
+      intro x hx
+      have := h hx
+      rw [RingHom.mem_ker] at this
+      rw [Ideal.mem_comap, RingHom.mem_ker]
+      rw [← hcomp] at this
+      exact this
+    exact h2 (Ideal.mem_map_of_mem resV hz)
+
+theorem local_on_affine {Y : Scheme.{0}} (P : ∀ T : Scheme.{0}, (T ⟶ Y) → Prop)
+    (stab : ∀ (T T' : Scheme.{0}) (h : T' ⟶ T) (t : T ⟶ Y), P T t → P T' (h ≫ t))
+    (loc : ∀ (T : Scheme.{0}) (t : T ⟶ Y), (∀ x : T, ∃ W : T.Opens, x ∈ W ∧ P W.toScheme (W.ι ≫ t)) → P T t)
+    {U : Y.Opens} (hU : IsAffineOpen U) (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R') (s : Set R')
+    (hs : Ideal.span s = ⊤)
+    (hQ : ∀ a ∈ s, P (Spec (CommRingCat.of (Localization.Away a)))
+      (Spec.map (CommRingCat.ofHom ((algebraMap R' (Localization.Away a)).comp g)) ≫ hU.fromSpec)) :
+    P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) := by
+  refine loc _ _ fun x => ?_
+  let x' : PrimeSpectrum R' := x
+  have hx : ∃ a ∈ s, a ∉ x'.asIdeal := by
+    by_contra hcon
+    push Not at hcon
+    have : Ideal.span s ≤ x'.asIdeal := Ideal.span_le.2 hcon
+    rw [hs] at this
+    exact x'.2.ne_top (top_le_iff.1 this)
+  obtain ⟨a, ha, hax⟩ := hx
+  let j : Spec (CommRingCat.of (Localization.Away a)) ⟶ Spec (CommRingCat.of R') :=
+    Spec.map (CommRingCat.ofHom (algebraMap R' (Localization.Away a)))
+  haveI : IsOpenImmersion j := IsOpenImmersion.of_isLocalization a
+  refine ⟨j.opensRange, ?_, ?_⟩
+  · have h := PrimeSpectrum.localization_away_comap_range (Localization.Away a) a
+    have hx' : x' ∈ Set.range (PrimeSpectrum.comap (algebraMap R' (Localization.Away a))) := by
+      rw [h]; exact hax
+    obtain ⟨z, hz⟩ := hx'
+    exact ⟨z, hz⟩
+  · have h0 := hQ a ha
+    rw [CommRingCat.ofHom_comp, Spec.map_comp, Category.assoc] at h0
+    have h1 := stab _ _ j.isoOpensRange.inv _ h0
+    rwa [← Category.assoc, Scheme.Hom.isoOpensRange_inv_comp] at h1
+
+theorem exists_ideal_on_affine : ∀ (Y : Scheme.{0}) (P : ∀ T : Scheme.{0}, (T ⟶ Y) → Prop),
+    (∀ (T T' : Scheme.{0}) (h : T' ⟶ T) (t : T ⟶ Y), P T t → P T' (h ≫ t)) →
+    (∀ (T : Scheme.{0}) (t : T ⟶ Y), (∀ x : T, ∃ W : T.Opens, x ∈ W ∧ P W.toScheme (W.ι ≫ t)) → P T t) →
+    (∀ y : Y, ∃ (U : Y.Opens) (hU : IsAffineOpen U) (r : Γ(Y, U)) (I : Ideal Γ(Y, U)), y ∈ Y.basicOpen r ∧
+      ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'), IsUnit (g r) →
+        (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) ↔ I ≤ RingHom.ker g)) →
+    ∀ (U : Y.Opens) (hU : IsAffineOpen U), ∃ J : Ideal Γ(Y, U), ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'),
+      (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) ↔ J ≤ RingHom.ker g) := by
+  intro Y P stab loc hloc U hU
+  let Q : ∀ (R' : Type) [CommRing R'], (Γ(Y, U) →+* R') → Prop := fun R' _ g =>
+    P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec)
+  let S : Set Γ(Y, U) := {f | ∃ J : Ideal Γ(Y, U), ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'),
+    IsUnit (g f) → (Q R' g ↔ J ≤ RingHom.ker g)}
+  have hS : Ideal.span S = ⊤ := by
+    refine hU.self_le_iSup_basicOpen_iff.1 fun y hy => ?_
+    obtain ⟨V, hV, r, I, hyr, hI⟩ := hloc y
+    obtain ⟨f, hyf, hle⟩ := exists_basicOpen_le hU hV r y hy hyr
+    have hf : f ∈ S := exists_ideal_on_basicOpen P hU hV f r I hle hI
+    exact TopologicalSpace.Opens.mem_iSup.2 ⟨⟨f, hf⟩, hyf⟩
+  obtain ⟨s, hsS, hs⟩ := (Ideal.span_eq_top_iff_finite S).1 hS
+  have hS' : ∀ f, f ∈ S → ∃ J : Ideal Γ(Y, U), ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'),
+    IsUnit (g f) → (Q R' g ↔ J ≤ RingHom.ker g) := fun _ h => h
+  choose! I hI using hS'
+  refine exists_ideal_of_local Q ?_ ?_ s hs I fun f hf => hI f (hsS hf)
+  · intro R' R'' _ _ g h hq
+    have := stab _ _ (Spec.map (CommRingCat.ofHom h)) _ hq
+    change P _ _
+    rwa [← Category.assoc, ← Spec.map_comp, ← CommRingCat.ofHom_comp] at this
+  · intro R' _ g s hs hQ
+    exact local_on_affine P stab loc hU R' g s hs hQ
+
+end GlobalTheory.CompanionTheory.TrivLoc.Rep
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.local_property_affine_ideal_criterion : ∀ (Y : Scheme.{0}) (P : ∀ T : Scheme.{0}, (T ⟶ Y) → Prop),
+    (∀ (T T' : Scheme.{0}) (h : T' ⟶ T) (t : T ⟶ Y), P T t → P T' (h ≫ t)) →
+    (∀ (T : Scheme.{0}) (t : T ⟶ Y), (∀ x : T, ∃ W : T.Opens, x ∈ W ∧ P W.toScheme (W.ι ≫ t)) → P T t) →
+    (∀ y : Y, ∃ (U : Y.Opens) (hU : IsAffineOpen U) (r : Γ(Y, U)) (I : Ideal Γ(Y, U)), y ∈ Y.basicOpen r ∧
+      ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'), IsUnit (g r) →
+        (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) ↔ I ≤ RingHom.ker g)) →
+    ∀ (U : Y.Opens) (hU : IsAffineOpen U), ∃ J : Ideal Γ(Y, U), ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'),
+      (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) ↔ J ≤ RingHom.ker g) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TrivLoc.Rep.exists_ideal_on_affine
+end
+
+section
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.CompanionTheory.TrivLoc.Glue
+
+theorem ideal_eq_of_le_ker_iff {A : Type} [CommRing A] {I J : Ideal A}
+    (h : ∀ (R : Type) [CommRing R] (g : A →+* R), I ≤ RingHom.ker g ↔ J ≤ RingHom.ker g) :
+    I = J := by
+  apply le_antisymm
+  · have := (h (A ⧸ J) (Ideal.Quotient.mk J)).2 (by rw [Ideal.mk_ker])
+    rwa [Ideal.mk_ker] at this
+  · have := (h (A ⧸ I) (Ideal.Quotient.mk I)).1 (by rw [Ideal.mk_ker])
+    rwa [Ideal.mk_ker] at this
+
+theorem eq_zero_of_affine_restrict {T : Scheme.{0}} {V : T.Opens} (s : Γ(T, V))
+    (h : ∀ (W : T.Opens) (_ : IsAffineOpen W) (e : W ≤ V),
+      (T.presheaf.map (homOfLE e).op).hom s = 0) : s = 0 := by
+  refine TopCat.Presheaf.section_ext T.sheaf V s 0 fun x hx => ?_
+  obtain ⟨W, hW, hxW, hWV⟩ := exists_isAffineOpen_mem_and_subset hx
+  have hz := h W hW hWV
+  have h1 := TopCat.Presheaf.germ_res_apply T.presheaf (homOfLE hWV) x hxW s
+  refine h1.symm.trans ?_
+  erw [hz, map_zero, map_zero]
+  rfl
+
+theorem exists_closed_subscheme (Y : Scheme.{0}) (P : ∀ T : Scheme.{0}, (T ⟶ Y) → Prop)
+    (stab : ∀ (T T' : Scheme.{0}) (h : T' ⟶ T) (t : T ⟶ Y), P T t → P T' (h ≫ t))
+    (loc : ∀ (T : Scheme.{0}) (t : T ⟶ Y),
+      (∀ x : T, ∃ W : T.Opens, x ∈ W ∧ P W.toScheme (W.ι ≫ t)) → P T t)
+    (rep : ∀ (U : Y.Opens) (hU : IsAffineOpen U), ∃ J : Ideal Γ(Y, U),
+      ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'),
+      (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) ↔
+        J ≤ RingHom.ker g)) :
+    ∃ (Z : Scheme.{0}) (i : Z ⟶ Y), IsClosedImmersion i ∧
+      ∀ (T : Scheme.{0}) (t : T ⟶ Y), P T t ↔ ∃ z : T ⟶ Z, z ≫ i = t := by
+  choose J hJ using rep
+  have hJ' : ∀ (U : Y.Opens) (hU : IsAffineOpen U) (R : CommRingCat.{0}) (g : Γ(Y, U) ⟶ R),
+      P (Spec R) (Spec.map g ≫ hU.fromSpec) ↔ J U hU ≤ RingHom.ker g.hom :=
+    fun U hU R g => hJ U hU R g.hom
+  let I : Y.IdealSheafData :=
+    { ideal := fun U => J U.1 U.2
+      map_ideal_basicOpen := by
+        intro U f
+        refine ideal_eq_of_le_ker_iff fun R _ g => ?_
+        rw [Ideal.map_le_iff_le_comap, RingHom.comap_ker]
+        refine (hJ U.1 U.2 R _).symm.trans (Iff.trans ?_ (hJ _ (Y.affineBasicOpen f).2 R g))
+        have e := U.2.map_fromSpec (Y.affineBasicOpen f).2 (homOfLE (Y.basicOpen_le f)).op
+        rw [← e, ← Category.assoc, ← Spec.map_comp]
+        rfl }
+  have key : ∀ (T : Scheme.{0}) (t : T ⟶ Y), P T t ↔ I ≤ t.ker := by
+    intro T t
+    have hW : ∀ (U : Y.Opens) (hU : IsAffineOpen U) (W : T.Opens) (hW : IsAffineOpen W)
+        (e : W ≤ t ⁻¹ᵁ U), P (Spec Γ(T, W)) (hW.fromSpec ≫ t) ↔
+          J U hU ≤ RingHom.ker (t.appLE U W e).hom := by
+      intro U hU W hW e
+      rw [← hJ' U hU, IsAffineOpen.SpecMap_appLE_fromSpec t hU hW e]
+    constructor
+    · intro hP
+      refine Scheme.IdealSheafData.le_ofIdeals_iff.2 fun U a ha => ?_
+      change (t.app U.1).hom a = 0
+      refine eq_zero_of_affine_restrict _ fun W hWa e => ?_
+      exact (hW U.1 U.2 W hWa e).1 (stab _ _ _ _ hP) ha
+    · intro hI
+      refine loc T t fun x => ?_
+      obtain ⟨U, hU, hxU, -⟩ := exists_isAffineOpen_mem_and_subset
+        (U := (⊤ : Y.Opens)) (x := t x) trivial
+      obtain ⟨W, hWa, hxW, hWU⟩ := exists_isAffineOpen_mem_and_subset
+        (U := t ⁻¹ᵁ U) (x := x) hxU
+      have e : W ≤ t ⁻¹ᵁ U := hWU
+      have hk : J U hU ≤ RingHom.ker (t.appLE U W e).hom := fun a ha => by
+        have h0 : (t.app U).hom a = 0 := t.ideal_ker_le ⟨U, hU⟩ (hI ⟨U, hU⟩ ha)
+        change (T.presheaf.map (homOfLE e).op).hom ((t.app U).hom a) = 0
+        rw [h0, map_zero]
+      have hp := stab _ _ hWa.isoSpec.hom _ ((hW U hU W hWa e).2 hk)
+      have e2 : hWa.isoSpec.hom ≫ hWa.fromSpec = W.ι := by
+        rw [IsAffineOpen.fromSpec, Iso.hom_inv_id_assoc]
+      rw [← Category.assoc, e2] at hp
+      exact ⟨W, hxW, hp⟩
+  refine ⟨I.subscheme, I.subschemeι, inferInstance, fun T t => (key T t).trans ⟨fun h => ?_, ?_⟩⟩
+  · exact ⟨IsClosedImmersion.lift I.subschemeι t (by rwa [I.ker_subschemeι]),
+      IsClosedImmersion.lift_fac _ _ _⟩
+  · rintro ⟨z, rfl⟩
+    exact I.ker_subschemeι.ge.trans (Scheme.Hom.le_ker_comp _ _)
+
+end GlobalTheory.CompanionTheory.TrivLoc.Glue
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.affine_ideal_locus_criterion : ∀ (Y : Scheme.{0}) (P : ∀ T : Scheme.{0}, (T ⟶ Y) → Prop),
+    (∀ (T T' : Scheme.{0}) (h : T' ⟶ T) (t : T ⟶ Y), P T t → P T' (h ≫ t)) →
+    (∀ (T : Scheme.{0}) (t : T ⟶ Y), (∀ x : T, ∃ W : T.Opens, x ∈ W ∧ P W.toScheme (W.ι ≫ t)) → P T t) →
+    (∀ (U : Y.Opens) (hU : IsAffineOpen U), ∃ J : Ideal Γ(Y, U), ∀ (R' : Type) [CommRing R'] (g : Γ(Y, U) →+* R'),
+      (P (Spec (CommRingCat.of R')) (Spec.map (CommRingCat.ofHom g) ≫ hU.fromSpec) ↔ J ≤ RingHom.ker g)) →
+    ∃ (Z : Scheme.{0}) (i : Z ⟶ Y), IsClosedImmersion i ∧
+      ∀ (T : Scheme.{0}) (t : T ⟶ Y), P T t ↔ ∃ z : T ⟶ Z, z ≫ i = t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TrivLoc.Glue.exists_closed_subscheme
+end
+
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.CompanionTheory.TrivLoc
+
+theorem locus_of_locally : ∀ (S : Scheme.{0}) (A Y : Over S) [GrpObj A], IsAbelianScheme A → ∀ N : LB (A ⊗ Y).left, N.IsLB →
+    Triv (ev N (1 : Y ⟶ A) (𝟙 Y)) → ∀ (T : Scheme.{0}) (t : T ⟶ Y.left),
+    (∀ x : T, ∃ W : T.Opens, x ∈ W ∧ Locus N (W.ι ≫ t)) → Locus N t := by
+  intro S A Y _ hA N hN h0 T t hloc
+  let T₀ : Over S := Over.mk (t ≫ Y.hom)
+  let y : T₀ ⟶ Y := Over.homMk t rfl
+  let M : LB (A ⊗ T₀).left := ev N (fst A T₀) (snd A T₀ ≫ y)
+  have hM : M.IsLB := pull_isLB hN _
+  have key : ∀ (Z : Over S) (u : Z ⟶ A ⊗ T₀), evc hN (u ≫ fst A T₀) (u ≫ snd A T₀ ≫ y) = 0 →
+      Triv (M.pull u.left) := by
+    intro Z u h
+    refine (cls_eq_zero_iff (pull_isLB hM _)).1 ?_
+    rw [cls_pull hM]
+    have e := pull_evc hN u (fst A T₀) (snd A T₀ ≫ y)
+    rw [h] at e
+    exact e
+  show Triv M
+  refine GlobalTheory.CompanionTheory.Ar.Approx.triv_of_section_of_locally_triv (A ⊗ T₀).left T (snd A T₀).left
+    (lift (1 : T₀ ⟶ A) (𝟙 T₀)).left ?_ ?_ M hM ?_ ?_
+  · rw [← Over.comp_left, lift_snd]; rfl
+  · intro U
+    exact GlobalTheory.CompanionTheory.Ar.Approx.isIso_app_of_isAbelianScheme T ((Over.pullback T₀.hom).obj A)
+      (CubeGen.isAb_baseChange hA T₀.hom) U
+  · refine key T₀ _ ?_
+    rw [lift_fst, lift_snd_assoc, Category.id_comp]
+    have e := congrArg (CechPic.pull y.left) ((triv_ev_iff hN _ _).1 h0)
+    rwa [pull_evc, map_zero, Category.comp_id, MonObj.comp_one] at e
+  · intro x
+    obtain ⟨W, hx, hW⟩ := hloc x
+    refine ⟨W, hx, ?_⟩
+    let p := (snd A T₀).left
+    let W₀ : Over S := Over.mk ((W.ι ≫ t) ≫ Y.hom)
+    let y' : W₀ ⟶ Y := Over.homMk (W.ι ≫ t) rfl
+    let Z : Over S := Over.mk ((p ⁻¹ᵁ W).ι ≫ (A ⊗ T₀).hom)
+    let u : Z ⟶ A ⊗ T₀ := Over.homMk (p ⁻¹ᵁ W).ι rfl
+    have hr : Set.range ((p ⁻¹ᵁ W).ι ≫ p) ⊆ Set.range W.ι := by
+      rintro _ ⟨z, rfl⟩
+      rw [Scheme.Opens.range_ι]
+      exact z.2
+    let l : Z.left ⟶ W₀.left := IsOpenImmersion.lift W.ι ((p ⁻¹ᵁ W).ι ≫ p) hr
+    have hl : l ≫ W.ι = (p ⁻¹ᵁ W).ι ≫ p := IsOpenImmersion.lift_fac _ _ _
+    have wz : l ≫ W₀.hom = Z.hom := by
+      have hs : p ≫ t ≫ Y.hom = (A ⊗ T₀).hom := Over.w (snd A T₀)
+      show l ≫ (W.ι ≫ t) ≫ Y.hom = (p ⁻¹ᵁ W).ι ≫ (A ⊗ T₀).hom
+      rw [← hs, ← Category.assoc (p ⁻¹ᵁ W).ι, ← hl]
+      simp only [Category.assoc]
+    let w : Z ⟶ W₀ := Over.homMk l wz
+    have hwy : w ≫ y' = u ≫ snd A T₀ ≫ y := by
+      apply Over.OverMorphism.ext
+      show l ≫ W.ι ≫ t = (p ⁻¹ᵁ W).ι ≫ p ≫ t
+      rw [← Category.assoc, hl, Category.assoc]
+    refine key Z u ?_
+    have e := pull_evc hN (lift (u ≫ fst A T₀) w) (fst A W₀) (snd A W₀ ≫ y')
+    rw [(triv_ev_iff hN _ _).1 hW, map_zero, lift_fst, lift_snd_assoc, hwy] at e
+    exact e.symm
+
+end GlobalTheory.CompanionTheory.TrivLoc
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trivial_locus_local_to_global : ∀ (S : Scheme.{0}) (A Y : Over S) [GrpObj A], IsAbelianScheme A → ∀ N : LB (A ⊗ Y).left, N.IsLB →
+    Triv (ev N (1 : Y ⟶ A) (𝟙 Y)) → ∀ (T : Scheme.{0}) (t : T ⟶ Y.left),
+    (∀ x : T, ∃ W : T.Opens, x ∈ W ∧ Locus N (W.ι ≫ t)) → Locus N t := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TrivLoc.locus_of_locally
+end
+
+section
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.TrivLoc
+
+theorem isPullback_lift_snd {S : Scheme.{0}} (A X Y : Over S) (q : X ⟶ Y) :
+    IsPullback (lift (fst A X) (snd A X ≫ q)).left (snd A X).left (snd A Y).left q.left := by
+  have hX : IsPullback (fst A X).left (snd A X).left A.hom X.hom := by
+    simpa only [Over.fst_left, Over.snd_left] using IsPullback.of_hasPullback A.hom X.hom
+  have hY : IsPullback (fst A Y).left (snd A Y).left A.hom Y.hom := by
+    simpa only [Over.fst_left, Over.snd_left] using IsPullback.of_hasPullback A.hom Y.hom
+  have e₁ : (lift (fst A X) (snd A X ≫ q)).left ≫ (fst A Y).left = (fst A X).left := by
+    rw [← Over.comp_left, lift_fst]
+  have e₂ : (lift (fst A X) (snd A X ≫ q)).left ≫ (snd A Y).left = (snd A X).left ≫ q.left := by
+    rw [← Over.comp_left, lift_snd, Over.comp_left]
+  have hout : IsPullback ((lift (fst A X) (snd A X ≫ q)).left ≫ (fst A Y).left) (snd A X).left
+      A.hom (q.left ≫ Y.hom) := by
+    rw [e₁, Over.w q]
+    exact hX
+  exact IsPullback.of_right hout e₂ hY
+
+theorem triv_pull_iso {P Q X : Scheme.{0}} {L : LB X} (e : P ≅ Q) (a : Q ⟶ X) :
+    Triv (L.pull (e.hom ≫ a)) ↔ Triv (L.pull a) := by
+  constructor
+  · intro h
+    have := GlobalTheory.Biadditive.triv_pull_comp h e.inv
+    rwa [Iso.inv_hom_id_assoc] at this
+  · intro h
+    exact GlobalTheory.Biadditive.triv_pull_comp h e.hom
+
+theorem triv_pull_iff_locus {S : Scheme.{0}} {A Y T₀ : Over S} (N : LB (A ⊗ Y).left) (v : T₀ ⟶ Y)
+    {W X' : Scheme.{0}} (t : W ⟶ T₀.left) (π : X' ⟶ (A ⊗ T₀).left) (f' : X' ⟶ W)
+    (h : IsPullback π f' (snd A T₀).left t) :
+    Triv ((ev N (fst A T₀) (snd A T₀ ≫ v)).pull π) ↔ Locus N (t ≫ v.left) := by
+  let T' : Over S := Over.mk ((t ≫ v.left) ≫ Y.hom)
+  let u : T' ⟶ T₀ := Over.homMk t (by simp [T'])
+  let w : T' ⟶ Y := Over.homMk (t ≫ v.left) rfl
+  have huv : u ≫ v = w := by ext; simp [u, w]
+  have hp : IsPullback (lift (fst A T') (snd A T' ≫ u)).left (snd A T').left (snd A T₀).left t :=
+    isPullback_lift_snd A T' T₀ u
+  let e : X' ≅ (A ⊗ T').left := h.isoIsPullback _ _ hp
+  have he : e.hom ≫ (lift (fst A T') (snd A T' ≫ u)).left = π := h.isoIsPullback_hom_fst _ _ hp
+  have hc : (lift (fst A T') (snd A T' ≫ u)).left ≫ (lift (fst A T₀) (snd A T₀ ≫ v)).left =
+      (lift (fst A T') (snd A T' ≫ w)).left := by
+    rw [← Over.comp_left, ← huv]
+    congr 1
+    ext <;> simp
+  have h1 : Triv ((ev N (fst A T₀) (snd A T₀ ≫ v)).pull π) ↔
+      Triv (N.pull (π ≫ (lift (fst A T₀) (snd A T₀ ≫ v)).left)) :=
+    GlobalTheory.AbLaw.CubeGen.triv_pull_iff N (fun _ : PUnit => (lift (fst A T₀) (snd A T₀ ≫ v)).left) (fun _ => 1) π
+  rw [h1, ← he, Category.assoc, hc, triv_pull_iso]
+  rfl
+
+theorem family_props {R : Type} [CommRing R] [IsNoetherianRing R] {W : Scheme.{0}} (f : W ⟶ Spec (CommRingCat.of R))
+    [Smooth f] [IsProper f] [GeometricallyConnected f] (s : Spec (CommRingCat.of R) ⟶ W) (hs : s ≫ f = 𝟙 _)
+    {M : LB W} (hM : M.IsLB) :
+    Nonempty (Perf f M) ∧ Nonempty (Perf f (pw M (-1))) ∧ GeometricallyIntegral f ∧ Surjective f := by
+  refine ⟨GlobalTheory.ProperFinite.nonempty_perf_of_isProper (R := R) f hM,
+    GlobalTheory.ProperFinite.nonempty_perf_of_isProper (R := R) f (isLB_pw hM _),
+    GlobalTheory.forall_geometricallyIntegral_of_smooth_of_geometricallyConnected _ _ _ inferInstance inferInstance, ?_⟩
+  have : Surjective (s ≫ f) := by rw [hs]; infer_instance
+  exact Surjective.of_comp s f
+
+theorem exists_chart_family : ∀ (S : Scheme.{0}) (A Y : Over S) [GrpObj A], IsAbelianScheme A → ∀ N : LB (A ⊗ Y).left, N.IsLB →
+    ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (j : Spec (CommRingCat.of R) ⟶ Y.left),
+    ∃ (X : Scheme.{0}) (f : X ⟶ Spec (CommRingCat.of R)) (M : LB X), M.IsLB ∧ Nonempty (Perf f M) ∧
+      Nonempty (Perf f (pw M (-1))) ∧ IsProper f ∧ GeometricallyIntegral f ∧ Surjective f ∧
+      (∀ (K : Type) [Field K] (g₀ : R →+* K) (X₀ : Scheme.{0}) (π₀ : X₀ ⟶ X) (f₀ : X₀ ⟶ Spec (CommRingCat.of K)),
+        IsPullback π₀ f₀ f (Spec.map (CommRingCat.ofHom g₀)) → Function.Bijective f₀.appTop.hom) ∧
+      ∀ (R' : Type) [CommRing R'] (g : R →+* R') (X' : Scheme.{0}) (π : X' ⟶ X)
+        (f' : X' ⟶ Spec (CommRingCat.of R')), IsPullback π f' f (Spec.map (CommRingCat.ofHom g)) →
+        (Triv (M.pull π) ↔ Locus N (Spec.map (CommRingCat.ofHom g) ≫ j)) := by
+  intro S A Y _ hA N hN R _ _ j
+  have hB : IsAbelianScheme ((Over.pullback (j ≫ Y.hom)).obj A) := GlobalTheory.AbLaw.CubeGen.isAb_baseChange hA (j ≫ Y.hom)
+  let T₀ : Over S := Over.mk (j ≫ Y.hom)
+  let v : T₀ ⟶ Y := Over.homMk j rfl
+  let f : (A ⊗ T₀).left ⟶ Spec (CommRingCat.of R) := (snd A T₀).left
+  let M : LB (A ⊗ T₀).left := ev N (fst A T₀) (snd A T₀ ≫ v)
+  have hM : M.IsLB := pull_isLB hN _
+  have sm : Smooth f := hB.smooth
+  have pr : IsProper f := hB.proper
+  have gc : GeometricallyConnected f := hB.geomConnected
+  let s : Spec (CommRingCat.of R) ⟶ (A ⊗ T₀).left := (η[(Over.pullback (j ≫ Y.hom)).obj A]).left
+  have hs : s ≫ f = 𝟙 _ := Over.w (η[(Over.pullback (j ≫ Y.hom)).obj A])
+  obtain ⟨p₁, p₂, p₃, p₄⟩ := family_props f s hs hM
+  refine ⟨(A ⊗ T₀).left, f, M, hM, p₁, p₂, pr, p₃, p₄, ?_, ?_⟩
+  · intro K _ g₀ X₀ π₀ f₀ h
+    exact GlobalTheory.AbLaw.CubeOpen.bijective_appTop GlobalTheory.globalFns_holds _ hB h
+  · intro R' _ g X' π f' h
+    exact triv_pull_iff_locus N v _ π f' h
+
+end GlobalTheory.CompanionTheory.TrivLoc
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.proper_integral_perfect_family_exists : ∀ (S : Scheme.{0}) (A Y : Over S) [GrpObj A], IsAbelianScheme A → ∀ N : LB (A ⊗ Y).left, N.IsLB →
+    ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (j : Spec (CommRingCat.of R) ⟶ Y.left),
+    ∃ (X : Scheme.{0}) (f : X ⟶ Spec (CommRingCat.of R)) (M : LB X), M.IsLB ∧ Nonempty (Perf f M) ∧
+      Nonempty (Perf f (pw M (-1))) ∧ IsProper f ∧ GeometricallyIntegral f ∧ Surjective f ∧
+      (∀ (K : Type) [Field K] (g₀ : R →+* K) (X₀ : Scheme.{0}) (π₀ : X₀ ⟶ X) (f₀ : X₀ ⟶ Spec (CommRingCat.of K)),
+        IsPullback π₀ f₀ f (Spec.map (CommRingCat.ofHom g₀)) → Function.Bijective f₀.appTop.hom) ∧
+      ∀ (R' : Type) [CommRing R'] (g : R →+* R') (X' : Scheme.{0}) (π : X' ⟶ X)
+        (f' : X' ⟶ Spec (CommRingCat.of R')), IsPullback π f' f (Spec.map (CommRingCat.ofHom g)) →
+        (Triv (M.pull π) ↔ Locus N (Spec.map (CommRingCat.ofHom g) ≫ j)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TrivLoc.exists_chart_family
+end
+
+section
+section
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+attribute [local instance] Over.cartesianMonoidalCategory
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.TrivLoc
+
+theorem triv_of_isEmpty {Y : Scheme.{0}} [IsEmpty Y] (L : LB Y) : Triv L := by
+  have hs : ∀ U : Y.Opens, Subsingleton Γ(Y, U) := fun U => by
+    have hU : U = ⊥ := by
+      ext y
+      exact (IsEmpty.false y).elim
+    subst hU
+    infer_instance
+  refine ⟨⟨fun _ => 1⟩, fun i j => ?_⟩
+  have := hs (L.U i ⊓ L.U j)
+  exact Subsingleton.elim _ _
+
+theorem exists_ideal_near : ∀ (R : Type) [CommRing R] (X : Scheme.{0}) (f : X ⟶ Spec (CommRingCat.of R)) (M : LB X), M.IsLB →
+    Nonempty (Perf f M) → Nonempty (Perf f (pw M (-1))) → IsProper f → GeometricallyIntegral f → Surjective f →
+    (∀ (K : Type) [Field K] (g₀ : R →+* K) (X₀ : Scheme.{0}) (π₀ : X₀ ⟶ X) (f₀ : X₀ ⟶ Spec (CommRingCat.of K)),
+      IsPullback π₀ f₀ f (Spec.map (CommRingCat.ofHom g₀)) → Function.Bijective f₀.appTop.hom) →
+    ∀ p : PrimeSpectrum R, ∃ (r : R) (I : Ideal R), r ∉ p.asIdeal ∧
+      ∀ (R' : Type) [CommRing R'] (g : R →+* R') (X' : Scheme.{0}) (π : X' ⟶ X)
+        (f' : X' ⟶ Spec (CommRingCat.of R')), IsPullback π f' f (Spec.map (CommRingCat.ofHom g)) → IsUnit (g r) →
+        (Triv (M.pull π) ↔ I ≤ RingHom.ker g) := by
+  intro R _ X f M hM hP hQ hprop hgi hsurj hbij p
+  have hW := GlobalTheory.TrivLocus.isClosed_trivLocus R X f M hM hP hQ hprop hgi
+  by_cases hp : p ∈ {p : PrimeSpectrum R | ∃ (K : Type) (_ : Field K) (g : R →+* K) (X' : Scheme.{0}) (π : X' ⟶ X)
+      (f' : X' ⟶ Spec (CommRingCat.of K)), RingHom.ker g = p.asIdeal ∧
+      IsPullback π f' f (Spec.map (CommRingCat.ofHom g)) ∧ Triv (M.pull π)}
+  · obtain ⟨K, _, g₀, X₀, π₀, f₀, hk, hpb, ht⟩ := hp
+    obtain ⟨r, I, hr, -, H⟩ := GlobalTheory.AbLaw.Seesaw.seesaw R X f M hM hP inferInstance hsurj K g₀ X₀ π₀ f₀ hpb
+      (hbij K g₀ X₀ π₀ f₀ hpb) ht
+    refine ⟨r, I, fun hrp => hr ?_, H⟩
+    rw [← hk] at hrp
+    exact hrp
+  · obtain ⟨_, ⟨r, rfl⟩, hpr, hsub⟩ := PrimeSpectrum.isTopologicalBasis_basic_opens.exists_subset_of_mem_open
+      (show p ∈ _ from hp) hW.isOpen_compl
+    refine ⟨r, ⊤, hpr, fun R' _ g X' π f' h hu => ?_⟩
+    rcases subsingleton_or_nontrivial R' with hR' | hR'
+    · have hE : IsEmpty (Spec (CommRingCat.of R')) := inferInstanceAs (IsEmpty (PrimeSpectrum R'))
+      have hX' : IsEmpty X' := ⟨fun x => hE.false (f' x)⟩
+      exact ⟨fun _ x _ => Subsingleton.elim _ _, fun _ => triv_of_isEmpty _⟩
+    · refine ⟨fun ht => ?_, fun hle => ?_⟩
+      · exfalso
+        obtain ⟨m, hm⟩ := Ideal.exists_maximal R'
+        let _ : Field (R' ⧸ m) := Ideal.Quotient.field m
+        let q : R' →+* R' ⧸ m := Ideal.Quotient.mk m
+        have hpb : IsPullback (pullback.fst f' (Spec.map (CommRingCat.ofHom q)) ≫ π)
+            (pullback.snd f' (Spec.map (CommRingCat.ofHom q))) f
+            (Spec.map (CommRingCat.ofHom (q.comp g))) := by
+          have e : Spec.map (CommRingCat.ofHom (q.comp g)) =
+              Spec.map (CommRingCat.ofHom q) ≫ Spec.map (CommRingCat.ofHom g) := by
+            rw [← Spec.map_comp, CommRingCat.ofHom_comp]
+          rw [e]
+          exact (IsPullback.of_hasPullback f' (Spec.map (CommRingCat.ofHom q))).paste_horiz h
+        have hprime : (RingHom.ker (q.comp g)).IsPrime := RingHom.ker_isPrime _
+        refine hsub (show (⟨RingHom.ker (q.comp g), hprime⟩ : PrimeSpectrum R) ∈ _ from ?_)
+          ⟨R' ⧸ m, inferInstance, q.comp g, _, _, _, rfl, hpb, GlobalTheory.Biadditive.triv_pull_comp ht _⟩
+        intro hr
+        exact (hu.map q).ne_zero hr
+      · have h1 : g 1 = 0 := hle (Submodule.mem_top (x := (1 : R)))
+        rw [map_one] at h1
+        exact absurd h1 one_ne_zero
+
+end GlobalTheory.CompanionTheory.TrivLoc
+end
+end
+
+open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual PositivityTheory.ObstructionTrivialLocus GlobalTheory.CompanionTheory.TrivLoc
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.geometrically_integral_global_functions_constant : ∀ (R : Type) [CommRing R] (X : Scheme.{0}) (f : X ⟶ Spec (CommRingCat.of R)) (M : LB X), M.IsLB →
+    Nonempty (Perf f M) → Nonempty (Perf f (pw M (-1))) → IsProper f → GeometricallyIntegral f → Surjective f →
+    (∀ (K : Type) [Field K] (g₀ : R →+* K) (X₀ : Scheme.{0}) (π₀ : X₀ ⟶ X) (f₀ : X₀ ⟶ Spec (CommRingCat.of K)),
+      IsPullback π₀ f₀ f (Spec.map (CommRingCat.ofHom g₀)) → Function.Bijective f₀.appTop.hom) →
+    ∀ p : PrimeSpectrum R, ∃ (r : R) (I : Ideal R), r ∉ p.asIdeal ∧
+      ∀ (R' : Type) [CommRing R'] (g : R →+* R') (X' : Scheme.{0}) (π : X' ⟶ X)
+        (f' : X' ⟶ Spec (CommRingCat.of R')), IsPullback π f' f (Spec.map (CommRingCat.ofHom g)) → IsUnit (g r) →
+        (Triv (M.pull π) ↔ I ≤ RingHom.ker g) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.TrivLoc.exists_ideal_near
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -54,3 +614,5 @@ theorem trivLocus : TrivLocus := by
     exact ⟨z.left, by simpa using congrArg (fun q => q.left) hz⟩
 
 end GlobalTheory.CompanionTheory.TrivLoc
+end
+end

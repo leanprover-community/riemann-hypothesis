@@ -1,5 +1,331 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetDegreeBound.UnivEqBiUnion
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetDegreeBound.JetTdegEqDegree
 
+section
+noncomputable section
+
+open Classical
+
+namespace PI.OrbJet.AU
+
+open Formalism.BasicNotions Formalism.MainNotions.G MvPowerSeries Finsupp PI.OrbJet PI.OrbJet.OrbW PI.OrbShared
+
+variable (D : D7) (p : ℕ) [Fact p.Prime]
+
+theorem subst_rename {β : Type} [Finite β] (ep : ℂ_[p]) (r : Pl D) (F : MvPowerSeries (ZMod (nP D p) × β) ℂ_[p]) :
+    subst (fun v : Pl D × β => C ep * logPl D p v) (rename (pE D p r β) F) =
+      rename (pE D p r β) (subst (fun w : ZMod (nP D p) × β => C ep * jetLogG p (nP D p) w) F) := by
+  haveI : Finite (Pl D × β) := inferInstance
+  have hcc1 : ∀ v : Pl D × β, constantCoeff (C ep * logPl D p v) = 0 := by
+    intro v
+    rw [map_mul]
+    have h0 : constantCoeff (logPl D p v) = 0 := by
+      rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
+      show logPl D p v 0 = 0
+      simp [logPl, JetTdeg, eq_comm (a := (0 : Pl D × β →₀ ℕ))]
+    rw [h0, mul_zero]
+  have hb : HasSubst (fun v : Pl D × β => C ep * logPl D p v) :=
+    MvPowerSeries.hasSubst_of_constantCoeff_zero hcc1
+  have hcc2 : ∀ w : ZMod (nP D p) × β, constantCoeff (C ep * jetLogG p (nP D p) w) = 0 := by
+    intro w
+    rw [map_mul]
+    have h0 : constantCoeff (jetLogG p (nP D p) w) = 0 := by
+      rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
+      show jetLogG p (nP D p) w 0 = 0
+      simp [jetLogG, JetTdeg, eq_comm (a := (0 : ZMod (nP D p) × β →₀ ℕ))]
+    rw [h0, mul_zero]
+  have ha : HasSubst (fun w : ZMod (nP D p) × β => C ep * jetLogG p (nP D p) w) :=
+    MvPowerSeries.hasSubst_of_constantCoeff_zero hcc2
+  rw [MvPowerSeries.rename_eq_subst, MvPowerSeries.rename_eq_subst,
+    MvPowerSeries.subst_comp_subst_apply (MvPowerSeries.HasSubst.X_comp _) hb,
+    MvPowerSeries.subst_comp_subst_apply ha (MvPowerSeries.HasSubst.X_comp _)]
+  congr 1
+  funext w
+  rw [Function.comp_apply, MvPowerSeries.subst_X hb, ← MvPowerSeries.rename_eq_subst, map_mul,
+    MvPowerSeries.rename_C, rename_jet]
+
+def bsum {N0 N1 : ℕ} (be : MvPowerSeries (ZMod (nP D p)) ℂ_[p]) :
+    MvPowerSeries (ZMod (nP D p) × Fin N0 × Fin N1) ℂ_[p] :=
+  ∑ a : Fin N0, ∑ b : Fin N1,
+    subst (fun s : ZMod (nP D p) => (X (s, a, b) : MvPowerSeries (ZMod (nP D p) × Fin N0 × Fin N1) ℂ_[p])) be
+
+theorem hasSubst_Xs {N0 N1 : ℕ} (a : Fin N0) (b : Fin N1) :
+    HasSubst (fun s : ZMod (nP D p) => (X (s, a, b) : MvPowerSeries (ZMod (nP D p) × Fin N0 × Fin N1) ℂ_[p])) := by
+  first
+  | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun s => MvPowerSeries.constantCoeff_X _)
+  | exact MvPowerSeries.HasSubst.X
+  | exact MvPowerSeries.hasSubst_of_constantCoeff_nilpotent (fun s => by rw [MvPowerSeries.constantCoeff_X]; exact IsNilpotent.zero)
+
+theorem cc_bsum {N0 N1 : ℕ} (sg : ℂ_[p]) (be : MvPowerSeries (ZMod (nP D p)) ℂ_[p]) (hbe : constantCoeff be = 0) :
+    constantCoeff (sg • bsum D p (N0 := N0) (N1 := N1) be) = 0 := by
+  unfold bsum
+  rw [MvPowerSeries.smul_eq_C_mul, map_mul, map_sum]
+  rw [Finset.sum_eq_zero (fun a _ => ?_), mul_zero]
+  rw [map_sum]
+  refine Finset.sum_eq_zero fun b _ => ?_
+  exact MvPowerSeries.constantCoeff_subst_eq_zero (hasSubst_Xs D p a b)
+    (fun s => MvPowerSeries.constantCoeff_X _) hbe
+
+theorem beAll_eq {N0 N1 : ℕ} (R : Finset (Pl D)) (sg : Pl D → ℂ_[p])
+    (be : Pl D → MvPowerSeries (ZMod (nP D p)) ℂ_[p]) :
+    beAll D p (N0 := N0) (N1 := N1) R sg be =
+      ∑ r ∈ R, rename (pE D p r (Fin N0 × Fin N1)) (sg r • bsum D p (be r)) := by
+  unfold beAll bsum
+  refine Finset.sum_congr rfl fun r _ => ?_
+  rw [map_smul, map_sum]
+  congr 1
+  refine Finset.sum_congr rfl fun a _ => ?_
+  rw [map_sum]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  rw [MvPowerSeries.rename_eq_subst,
+    MvPowerSeries.subst_comp_subst_apply (hasSubst_Xs D p a b) (MvPowerSeries.HasSubst.X_comp _)]
+  congr 1
+  funext s
+  rw [MvPowerSeries.subst_X (MvPowerSeries.HasSubst.X_comp _)]
+  rfl
+
+def Eorb {N0 N1 : ℕ} (sg : ℂ_[p]) (be : MvPowerSeries (ZMod (nP D p)) ℂ_[p]) :
+    MvPowerSeries (ZMod (nP D p) × Fin N0 × Fin N1) ℂ_[p] :=
+  subst (jetLogG p (nP D p) (β := Fin N0 × Fin N1)) (OJ.expS ℂ_[p] (sg • bsum D p be))
+
+theorem E_eq {N0 N1 : ℕ} (R : Finset (Pl D)) (sg : Pl D → ℂ_[p])
+    (be : Pl D → MvPowerSeries (ZMod (nP D p)) ℂ_[p]) (hcc : ∀ r ∈ R, constantCoeff (be r) = 0) :
+    subst (logPl D p (β := Fin N0 × Fin N1)) (OJ.expS ℂ_[p] (beAll D p R sg be)) =
+      ∏ r ∈ R, rename (pE D p r (Fin N0 × Fin N1)) (Eorb D p (N0 := N0) (N1 := N1) (sg r) (be r)) := by
+  haveI : Finite (Pl D × Fin N0 × Fin N1) := inferInstance
+  have hL : HasSubst (logPl D p (β := Fin N0 × Fin N1)) := by
+    refine MvPowerSeries.hasSubst_of_constantCoeff_zero fun v => ?_
+    rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
+    show logPl D p v 0 = 0
+    simp [logPl, JetTdeg, eq_comm (a := (0 : Pl D × Fin N0 × Fin N1 →₀ ℕ))]
+  have hG : ∀ r ∈ R, constantCoeff (sg r • bsum D p (N0 := N0) (N1 := N1) (be r)) = 0 :=
+    fun r hr => cc_bsum D p (sg r) (be r) (hcc r hr)
+  have hRG : ∀ r ∈ R, constantCoeff (rename (pE D p r (Fin N0 × Fin N1)) (sg r • bsum D p (N0 := N0) (N1 := N1) (be r))) = 0 := by
+    intro r hr
+    rw [MvPowerSeries.rename_eq_subst]
+    exact MvPowerSeries.constantCoeff_subst_eq_zero (MvPowerSeries.HasSubst.X_comp _)
+      (fun i => MvPowerSeries.constantCoeff_X _) (hG r hr)
+  rw [beAll_eq]
+  change subst (logPl D p (β := Fin N0 × Fin N1)) (PI.OrbShared.ExpSum.eS _) = _
+  rw [PI.OrbShared.ExpSum.eS_sum _ _ hRG, ← MvPowerSeries.coe_substAlgHom hL, map_prod]
+  refine Finset.prod_congr rfl fun r hr => ?_
+  rw [MvPowerSeries.coe_substAlgHom]
+  have h1 : PI.OrbShared.ExpSum.eS (rename (pE D p r (Fin N0 × Fin N1)) (sg r • bsum D p (N0 := N0) (N1 := N1) (be r))) =
+      rename (pE D p r (Fin N0 × Fin N1)) (OJ.expS ℂ_[p] (sg r • bsum D p (N0 := N0) (N1 := N1) (be r))) := by
+    rw [MvPowerSeries.rename_eq_subst, MvPowerSeries.rename_eq_subst]
+    exact (PI.OrbShared.ExpSum.subst_eS (MvPowerSeries.HasSubst.X_comp _) _ (hG r hr)).symm
+  rw [h1]
+  have h2 := subst_rename D p 1 r (OJ.expS ℂ_[p] (sg r • bsum D p (N0 := N0) (N1 := N1) (be r)))
+  simp only [map_one, one_mul] at h2
+  rw [h2]
+  rfl
+
+theorem prod_monomial_one {σ ι : Type*} (s : Finset ι) (g : ι → σ →₀ ℕ) :
+    (∏ i ∈ s, (monomial (g i) (1 : ℂ_[p]) : MvPowerSeries σ ℂ_[p])) = monomial (∑ i ∈ s, g i) 1 := by
+  classical
+  refine Finset.induction_on s (by simp [MvPowerSeries.monomial_zero_one]) ?_
+  intro i s hi ih
+  rw [Finset.prod_insert hi, ih, MvPowerSeries.monomial_mul_monomial, one_mul, Finset.sum_insert hi]
+
+def resM {γ : Type} (r : Pl D) (m : Pl D × γ →₀ ℕ) : ZMod (nP D p) × γ →₀ ℕ :=
+  comapDomain (pE D p r γ) m (pE D p r γ).injective.injOn
+
+theorem mem_orbit_unique {R : Finset (Pl D)} (hR : IsReps D p R) {r r' : Pl D} (hr : r ∈ R) (hr' : r' ∈ R)
+    (s s' : ZMod (nP D p)) (h : orbMap D p r s = orbMap D p r' s') : r = r' := by
+  obtain ⟨r0, -, huniq⟩ := hR (orbMap D p r s)
+  have h1 := huniq r ⟨hr, s.val, rfl⟩
+  have h2 := huniq r' ⟨hr', s'.val, h.symm⟩
+  rw [h1, h2]
+
+theorem sum_resM {γ : Type} {R : Finset (Pl D)} (hR : IsReps D p R) (m : Pl D × γ →₀ ℕ) :
+    ∑ r ∈ R, mapDomain (pE D p r γ) (resM D p r m) = m := by
+  ext ⟨z, c⟩
+  rw [Finsupp.finset_sum_apply]
+  obtain ⟨r0, ⟨hr0, e0, he0⟩, huniq⟩ := hR z
+  have hx0 : ((z, c) : Pl D × γ) = pE D p r0 γ ((e0 : ZMod (nP D p)), c) := by
+    show (z, c) = (orbMap D p r0 (e0 : ZMod (nP D p)), c)
+    rw [← posPl_eq_orbMap, he0]
+  rw [Finset.sum_eq_single r0]
+  · rw [hx0, Finsupp.mapDomain_apply (pE D p r0 γ).injective]
+    rfl
+  · intro r hr hne
+    apply Finsupp.mapDomain_notin_range
+    rintro ⟨⟨s, c'⟩, hsc⟩
+    apply hne
+    apply huniq r
+    refine ⟨hr, s.val, ?_⟩
+    have hsc' : ((orbMap D p r s, c') : Pl D × γ) = (z, c) := hsc
+    rw [← (Prod.mk.inj hsc').1]
+    rfl
+  · intro h
+    exact absurd hr0 h
+
+theorem mono_eq {γ : Type} {R : Finset (Pl D)} (hR : IsReps D p R) (m : Pl D × γ →₀ ℕ) :
+    (monomial m (1 : ℂ_[p]) : MvPowerSeries (Pl D × γ) ℂ_[p]) =
+      ∏ r ∈ R, rename (pE D p r γ) (monomial (resM D p r m) 1) := by
+  conv_lhs => rw [← sum_resM D p hR m]
+  rw [← prod_monomial_one]
+  refine Finset.prod_congr rfl fun r _ => ?_
+  rw [MvPowerSeries.rename_monomial]
+
+end PI.OrbJet.AU
+
+end
+end
+
+section
+noncomputable section
+
+open Classical
+
+namespace PI.OrbJet.AU
+
+open Formalism.BasicNotions Formalism.MainNotions.G PI.OrbJet PI.OrbJet.OrbW PI.OrbShared PI.OrbJet.OJ
+
+variable (D : D7) (p : ℕ) [Fact p.Prime]
+
+theorem univ_eq_biUnion {R : Finset (Pl D)} (hR : IsReps D p R) :
+    (Finset.univ : Finset (Pl D)) = R.biUnion (fun r => Finset.univ.image (orbMap D p r)) := by
+  ext z
+  simp only [Finset.mem_univ, Finset.mem_biUnion, Finset.mem_image, true_iff]
+  obtain ⟨r, ⟨hr, e, he⟩, -⟩ := hR z
+  refine ⟨r, hr, ?_⟩
+  unfold orbMap
+  refine ⟨(e : ZMod (nP D p)), trivial, ?_⟩
+  rw [ZMod.val_natCast, ← he]
+  have key : ∀ (x : HH D) (n e : ℕ), n • x = 0 → (e % n) • x = e • x := by
+    intro x n e h
+    conv_rhs => rw [← Nat.mod_add_div e n]
+    rw [add_nsmul, mul_comm, ← smul_smul, h, smul_zero, add_zero]
+  have hpe : partner D p r.2 (e % nP D p) = partner D p r.2 e := by
+    unfold partner nP
+    by_cases hs : IsSg D p
+    · have h2 : (2 * addOrderOf (2 • hP D p)) • hP D p = 0 := by
+        rw [mul_comm, ← smul_smul, addOrderOf_nsmul_eq_zero]
+      simp only [if_pos hs]
+      rw [key _ _ _ h2]
+      simp only [Nat.odd_iff, Nat.mod_mod_of_dvd _ (dvd_mul_right 2 _)]
+    · simp only [if_neg hs]
+      rw [key _ _ _ (addOrderOf_nsmul_eq_zero _)]
+      simp [hs]
+  unfold posPl
+  rw [hpe]
+
+private theorem orbMap_injective (r : Pl D) : Function.Injective (orbMap D p r) := by
+  intro s t hst
+  unfold orbMap posPl partner at hst
+  simp only [Prod.mk.injEq, add_right_inj] at hst
+  obtain ⟨h1, h2⟩ := hst
+  have hn : nP D p = if IsSg D p then 2 * addOrderOf (2 • hP D p) else addOrderOf (hP D p) := by
+    unfold nP
+    rfl
+  have hs_lt := lt_of_lt_of_eq (ZMod.val_lt s) hn
+  have ht_lt := lt_of_lt_of_eq (ZMod.val_lt t) hn
+  apply ZMod.val_injective
+  by_cases hsg : IsSg D p
+  · rw [if_pos hsg] at hs_lt ht_lt
+    have hpar : s.val % 2 = t.val % 2 := by
+      have h1' : (s.val % 2 = 1 ↔ t.val % 2 = 1) := by
+        have hd : decide (IsSg D p) = true := decide_eq_true hsg
+        simpa [hd, Nat.odd_iff] using h1
+      rcases Nat.mod_two_eq_zero_or_one s.val with h | h <;>
+        rcases Nat.mod_two_eq_zero_or_one t.val with h' | h'
+      · rw [h, h']
+      · exact absurd (h1'.mpr h') (by omega)
+      · exact absurd (h1'.mp h) (by omega)
+      · rw [h, h']
+    have h3 : (s.val % 2) • hP D p + (2 * (s.val / 2)) • hP D p
+        = (t.val % 2) • hP D p + (2 * (t.val / 2)) • hP D p := by
+      rw [← add_nsmul, ← add_nsmul, Nat.mod_add_div, Nat.mod_add_div]
+      exact h2
+    rw [hpar] at h3
+    have h4 := add_left_cancel h3
+    have hk : (s.val / 2) • (2 • hP D p) = (t.val / 2) • (2 • hP D p) := by
+      rw [smul_smul, smul_smul, mul_comm (s.val / 2), mul_comm (t.val / 2)]
+      exact h4
+    have h5 := nsmul_inj_mod.mp hk
+    rw [Nat.mod_eq_of_lt (by omega), Nat.mod_eq_of_lt (by omega)] at h5
+    omega
+  · rw [if_neg hsg] at hs_lt ht_lt
+    have h5 := nsmul_inj_mod.mp h2
+    rwa [Nat.mod_eq_of_lt hs_lt, Nat.mod_eq_of_lt ht_lt] at h5
+
+theorem prod_orbits {M : Type*} [CommMonoid M] {R : Finset (Pl D)} (hR : IsReps D p R) (g : Pl D → M) :
+    ∏ z, g z = ∏ r ∈ R, ∏ s : ZMod (nP D p), g (orbMap D p r s) := by
+  rw [univ_eq_biUnion D p hR, Finset.prod_biUnion]
+  · refine Finset.prod_congr rfl (fun r _ => ?_)
+    rw [Finset.prod_image (fun s _ t _ h => orbMap_injective D p r h)]
+  · intro r hr r' hr' hne
+    rw [Function.onFun, Finset.disjoint_left]
+    intro z hz hz'
+    simp only [Finset.mem_image, Finset.mem_univ, true_and] at hz hz'
+    obtain ⟨s, rfl⟩ := hz
+    obtain ⟨s', hs'⟩ := hz'
+    apply hne
+    obtain ⟨r0, -, huniq⟩ := hR (orbMap D p r s)
+    have a := huniq r ⟨hr, s.val, rfl⟩
+    have b := huniq r' ⟨hr', s'.val, hs'⟩
+    rw [a, b]
+
+theorem Gxz_eq {R : Finset (Pl D)} (hR : IsReps D p R) {N0 N1 : ℕ} (nu : Pl D → YoungDiagram)
+    (I : ColChoice N1 nu) :
+    Gxz N0 N1 nu I = ∏ r ∈ R, MvPolynomial.rename (xzMap (N0 := N0) (N1 := N1) (orbE D p r))
+      (Gxz N0 N1 (fun s => nu (orbMap D p r s)) (fun s => I (orbMap D p r s))) := by
+  unfold Gxz
+  rw [prod_orbits D p hR]
+  refine Finset.prod_congr rfl (fun r _ => ?_)
+  rw [map_prod]
+  refine Finset.prod_congr rfl (fun s _ => ?_)
+  rw [map_prod]
+  refine Finset.prod_congr rfl (fun c _ => ?_)
+  unfold minorXZ
+  rw [AlgHom.map_det]
+  congr 1
+  refine Matrix.ext fun i k => ?_
+  simp [AlgHom.mapMatrix_apply, Matrix.map_apply, map_sum, MvPolynomial.rename_X, xzMap, orbE, pEmb,
+    Function.Embedding.coeFn_mk]
+  all_goals rfl
+
+theorem Gxz_supported {N0 N1 : ℕ} (r : Pl D) (nu : ZMod (nP D p) → YoungDiagram) (I : ColChoice N1 nu) :
+    MvPolynomial.rename (xzMap (N0 := N0) (N1 := N1) (orbE D p r)) (Gxz N0 N1 nu I) ∈
+      MvPolynomial.supported ℤ (xzLetter ⁻¹' Set.range (orbMap D p r)) := by
+  rw [MvPolynomial.mem_supported]
+  intro v hv
+  have hv' := MvPolynomial.vars_rename _ _ (Finset.mem_coe.mp hv)
+  obtain ⟨w, -, rfl⟩ := Finset.mem_image.mp hv'
+  rcases w with ⟨s, _⟩ | ⟨s, _⟩ <;>
+    exact Set.mem_preimage.mpr (Set.mem_range.mpr ⟨s, by simp [xzLetter, xzMap, orbE, pEmb, orbMap]⟩)
+
+theorem kval_prod {R : Finset (Pl D)} (hR : IsReps D p R) {N0 N1 : ℕ} (nu : Pl D → YoungDiagram)
+    (F : Pl D → MvPowerSeries (ZMod (nP D p) × Fin N0 × Fin N1) ℂ_[p]) (β : Pl D → ℝ)
+    (hF : ∀ r ∈ R, KvalGe N0 N1 p (fun s => nu (orbMap D p r s)) (F r) (β r)) :
+    KvalGe N0 N1 p nu (∏ r ∈ R, MvPowerSeries.rename (pE D p r (Fin N0 × Fin N1)) (F r)) (∑ r ∈ R, β r) := by
+  intro I m
+  have hdisj : (R : Set (Pl D)).PairwiseDisjoint (fun r => Set.range (orbMap D p r)) := by
+    intro r hr r' hr' hne
+    rw [Function.onFun, Set.disjoint_left]
+    rintro z ⟨s, rfl⟩ ⟨s', hs'⟩
+    exact hne (mem_orbit_unique D p hR hr hr' s s' hs'.symm)
+  have key := applyAt0_prod p R (fun r => Set.range (orbMap D p r)) hdisj
+    (fun r => MvPowerSeries.rename (pE D p r (Fin N0 × Fin N1)) (F r))
+    (fun r => MvPolynomial.rename (xzMap (N0 := N0) (N1 := N1) (orbE D p r))
+      (Gxz N0 N1 (fun s => nu (orbMap D p r s)) (fun s => I (orbMap D p r s))))
+    (fun r _ => serIn_rename (orbE D p r) (F r)) (fun r _ => Gxz_supported D p r _ _)
+  beta_reduce at key
+  rw [Gxz_eq D p hR, key]
+  have hpos : (0 : ℝ) < p := by exact_mod_cast (Fact.out : p.Prime).pos
+  have hsum : (p : ℝ) ^ (-∑ r ∈ R, β r) = ∏ r ∈ R, (p : ℝ) ^ (-β r) := by
+    rw [← Finset.sum_neg_distrib, Real.rpow_sum_of_pos hpos]
+  rw [hsum]
+  refine norm_coeff_prod_le R (fun r _ => Real.rpow_nonneg hpos.le _) (fun r hr m' => ?_) m
+  rw [applyAt0_rename]
+  exact norm_coeff_rename_le _ _ (Real.rpow_nonneg hpos.le _) (fun m'' => hF r hr _ m'') m'
+
+end PI.OrbJet.AU
+
+end
+end
+
+section
 noncomputable section
 
 open Classical
@@ -157,4 +483,5 @@ theorem orbAddUp_main : ∀ (D : Formalism.BasicNotions.D7) (E : PI.OrbJet.Ent D
 
 end PI.OrbJet.AU
 
+end
 end

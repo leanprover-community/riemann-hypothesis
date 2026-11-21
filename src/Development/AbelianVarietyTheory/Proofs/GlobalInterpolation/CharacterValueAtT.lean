@@ -5,16 +5,270 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NormalFormAtP
 import Development.AbelianVarietyTheory.Definitions.Foundations.AbsCharNotUnitary
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsSupportedIdele
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsPowLocKMulInf
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RingHomEqOfComapEqUnramifiedDegreeOne
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StarDetMulDetMem
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MaxVDetLat
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AbsNormSpanInvol
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsPowPrincipal
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LocCharEqZpowMul
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SpanImageLeOf
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ConjPConjP
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsComapPrime
 
+section
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory
+
+theorem ringHom_eq_of_comap_eq_unramified_degree_one
+    (E K : Type) [Field E] [NumberField E] [Field K] [NumberField K] (φ ψ : E →+* K)
+    (w : HeightOneSpectrum (𝓞 K)) (Q : HeightOneSpectrum (𝓞 E)) (p : ℕ) (hp : p.Prime)
+    (hN : Ideal.absNorm Q.asIdeal = p) (hsq : ((p : ℕ) : 𝓞 E) ∉ Q.asIdeal ^ 2)
+    (hφ : ∀ r : 𝓞 E, r ∈ Q.asIdeal ↔ RingOfIntegers.mapRingHom φ r ∈ w.asIdeal)
+    (hψ : ∀ r : 𝓞 E, r ∈ Q.asIdeal ↔ RingOfIntegers.mapRingHom ψ r ∈ w.asIdeal) :
+    φ = ψ := by
+  set f := RingOfIntegers.mapRingHom φ with hf
+  set g := RingOfIntegers.mapRingHom ψ with hg
+  have hpQ : ((p : ℕ) : 𝓞 E) ∈ Q.asIdeal := hN ▸ Ideal.absNorm_mem Q.asIdeal
+  have hQp := Q.isPrime
+
+  have h1 : ∀ x : 𝓞 E, ∃ a : ℤ, x - (a : 𝓞 E) ∈ Q.asIdeal := by
+    intro x
+    haveI : Fact p.Prime := ⟨hp⟩
+    have hc : Nat.card (𝓞 E ⧸ Q.asIdeal) = p := by
+      rw [← hN, Ideal.absNorm_apply, Submodule.cardQuot_apply]
+    have h := mem_zmultiples_of_prime_card (g := (1 : 𝓞 E ⧸ Q.asIdeal))
+      (g' := Ideal.Quotient.mk Q.asIdeal x) hc one_ne_zero
+    obtain ⟨a, ha⟩ := AddSubgroup.mem_zmultiples_iff.1 h
+    refine ⟨a, Ideal.Quotient.eq.1 ?_⟩
+    rw [← ha, map_intCast, zsmul_one]
+  have h2 : Ideal.span {((p : ℕ) : 𝓞 E)} ⊔ Q.asIdeal ^ 2 = Q.asIdeal := by
+    have h := Ideal.eq_prime_pow_of_succ_lt_of_le (P := Q.asIdeal) (i := 1)
+      (I := Ideal.span {((p : ℕ) : 𝓞 E)} ⊔ Q.asIdeal ^ 2) Q.ne_bot ?_ ?_
+    · simpa using h
+    · refine lt_of_le_of_ne le_sup_right fun h => hsq ?_
+      have h' : ((p : ℕ) : 𝓞 E) ∈ Ideal.span {((p : ℕ) : 𝓞 E)} ⊔ Q.asIdeal ^ 2 :=
+        Ideal.mem_sup_left (Ideal.mem_span_singleton_self _)
+      rw [← h] at h'
+      exact h'
+    · rw [pow_one]
+      exact sup_le ((Ideal.span_singleton_le_iff_mem _).2 hpQ) (Ideal.pow_le_self two_ne_zero)
+  have h3 : ∀ n : ℕ, Q.asIdeal ≤ Ideal.span {((p : ℕ) : 𝓞 E)} ⊔ Q.asIdeal ^ n := by
+    intro n
+    induction n with
+    | zero => simp
+    | succ n ih =>
+      rcases n with _ | n
+      · simp
+      refine h2.ge.trans (sup_le le_sup_left ?_)
+      rw [sq]
+      refine (Ideal.mul_mono_right ih).trans ?_
+      rw [Ideal.mul_sup, ← pow_succ']
+      exact sup_le_sup_right Ideal.mul_le_right _
+  have hmap : ∀ (k : 𝓞 E →+* 𝓞 K), (∀ r : 𝓞 E, r ∈ Q.asIdeal ↔ k r ∈ w.asIdeal) →
+      ∀ (n : ℕ) (z : 𝓞 E), z ∈ Q.asIdeal ^ n → k z ∈ w.asIdeal ^ n := by
+    intro k hk n z hz
+    have h := Ideal.mem_map_of_mem k hz
+    rw [Ideal.map_pow] at h
+    refine Ideal.pow_right_mono ?_ n h
+    exact Ideal.map_le_iff_le_comap.2 fun r hr => (hk r).1 hr
+  have hpw : ((p : ℕ) : 𝓞 K) ∈ w.asIdeal := by
+    simpa using (hφ _).1 hpQ
+  have h4 : ∀ (n : ℕ) (x : 𝓞 E), f x - g x ∈ w.asIdeal ^ n := by
+    intro n
+    induction n with
+    | zero => simp
+    | succ n ih =>
+      intro x
+      obtain ⟨a, ha⟩ := h1 x
+      obtain ⟨y, hy, z, hz, hyz⟩ := Submodule.mem_sup.1 (h3 (n + 1) ha)
+      obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 hy
+      have hx : x = c * p + z + a := by rw [hyz]; ring
+      have he : f x - g x = (f c - g c) * p + (f z - g z) := by
+        rw [hx]; simp only [map_add, map_mul, map_natCast, map_intCast]; ring
+      rw [he]
+      refine add_mem ?_ (sub_mem (hmap f hφ _ _ hz) (hmap g hψ _ _ hz))
+      rw [pow_succ]
+      exact Ideal.mul_mem_mul (ih c) hpw
+  have h5 : ∀ x : 𝓞 E, f x = g x := by
+    intro x
+    have hb := Ideal.iInf_pow_eq_bot_of_isDomain w.asIdeal w.isPrime.ne_top
+    have : f x - g x ∈ (⊥ : Ideal (𝓞 K)) := by
+      rw [← hb]; exact Ideal.mem_iInf.2 fun n => h4 n x
+    exact sub_eq_zero.1 (Ideal.mem_bot.1 this)
+  refine IsFractionRing.ringHom_ext (A := 𝓞 E) fun x => ?_
+  exact congrArg (algebraMap (𝓞 K) K) (h5 x)
+
+end GlobalTheory
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker Formalism.MainNotions GlobalTheory.CharVal GlobalTheory.IndefiniteRowSideFullHecke.CharacterValuation
+
+namespace GlobalTheory.LocCharVal
+
+theorem isUnit_redP {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E)) (b : E)
+    (hb : P.valuation E b = 1) : IsUnit (redP P b) := by
+  have h1 : Formalism.L2.Col.IntAt P b := (GlobalTheory.CharVal.intAt_iff _).2 hb.le
+  have h2 : Formalism.L2.Col.IntAt P b⁻¹ := (GlobalTheory.CharVal.intAt_iff _).2 (by rw [map_inv₀, hb]; simp)
+  have hb0 : b ≠ 0 := by rintro rfl; simp at hb
+  have h3 := reduction_mul h1 h2
+  rw [mul_inv_cancel₀ hb0] at h3
+  have h4 : redP P (1 : E) = 1 := by simpa using reduction_coe P 1
+  rw [h4] at h3
+  exact IsUnit.of_mul_eq_one _ h3.symm
+
+theorem locChar_eq_zpow_mul : ∀ (E K : Type) [Field E] [NumberField E] [Field K] (P : HeightOneSpectrum (𝓞 E)) (q : ℕ) (cq : K) (χ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (a : E), P.valuation E (q : E) = WithZero.exp (-1 : ℤ) → a ≠ 0 → ∃ (z : ℤ) (ζ : Kˣ), IsOfFinOrder ζ ∧ LocE.locChar q cq χ a = cq ^ z * (ζ : K) := by
+  intro E K _ _ _ P q cq χ a hq ha
+  have hv : P.valuation E a ≠ 0 := by simpa using ha
+  have hex : ∃ z : ℤ, IsUnit (redP P (a / (q : E) ^ z)) := by
+    refine ⟨-WithZero.log (P.valuation E a), isUnit_redP P _ ?_⟩
+    rw [map_div₀, map_zpow₀, hq, ← WithZero.exp_zsmul]
+    simp [WithZero.exp_log hv, hv]
+  have hu : IsUnit (redP P (a / (q : E) ^ LocE.vP P q a)) := Classical.epsilon_spec hex
+  have : Finite (𝓞 E ⧸ P.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot _ P.ne_bot
+  refine ⟨LocE.vP P q a, χ hu.unit, MonoidHom.isOfFinOrder χ (isOfFinOrder_of_finite _), ?_⟩
+  unfold LocE.locChar LocE.unitV
+  rw [dif_pos hu]
+
+end GlobalTheory.LocCharVal
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker Formalism.MainNotions GlobalTheory.CharVal GlobalTheory.IndefiniteRowSideFullHecke.CharacterValuation
+open nonZeroDivisors
+noncomputable section
+namespace GlobalTheory.CharVal.Vp
+variable {E : Type} [Field E] [NumberField E] [StarRing E]
+
+theorem conjP_conjP' (P : HeightOneSpectrum (𝓞 E)) : conjPrime₂ (conjPrime₂ P) = P := by
+  ext x
+  rw [mem_conjP, mem_conjP, cO_cO]
+
+omit [StarRing E] in
+theorem ne0 (P : HeightOneSpectrum (𝓞 E)) : (P.asIdeal : FractionalIdeal (𝓞 E)⁰ E) ≠ 0 :=
+  FractionalIdeal.coeIdeal_ne_zero.2 P.ne_bot
+
+omit [StarRing E] in
+theorem maxV_self (P : HeightOneSpectrum (𝓞 E)) :
+    MaxV P ((P.asIdeal : FractionalIdeal (𝓞 E)⁰ E) : Submodule (𝓞 E) E) (WithZero.exp (-1 : ℤ)) := by
+  constructor
+  · intro a ha
+    obtain ⟨r, hr, rfl⟩ := (FractionalIdeal.mem_coeIdeal _).1 ha
+    rw [HeightOneSpectrum.valuation_of_algebraMap]
+    have := (P.intValuation_le_pow_iff_mem r 1).2 (by simpa using hr)
+    simpa using this
+  · obtain ⟨r, hr⟩ := P.intValuation_exists_uniformizer
+    refine ⟨algebraMap _ _ r, (FractionalIdeal.mem_coeIdeal _).2 ⟨r, ?_, rfl⟩, ?_⟩
+    · have := (P.intValuation_le_pow_iff_mem r 1).1 (by simpa using hr.le)
+      simpa using this
+    · rw [HeightOneSpectrum.valuation_of_algebraMap, hr]
+
+omit [StarRing E] in
+theorem maxV_ne (Q P : HeightOneSpectrum (𝓞 E)) (h : Q ≠ P) :
+    MaxV Q ((P.asIdeal : FractionalIdeal (𝓞 E)⁰ E) : Submodule (𝓞 E) E) 1 := by
+  constructor
+  · intro a ha
+    obtain ⟨r, hr, rfl⟩ := (FractionalIdeal.mem_coeIdeal _).1 ha
+    exact Q.valuation_le_one r
+  · have : ¬ P.asIdeal ≤ Q.asIdeal := fun hle =>
+      h (HeightOneSpectrum.ext (P.isMaximal.eq_of_le Q.isPrime.ne_top hle).symm)
+    obtain ⟨r, hr, hr'⟩ := SetLike.not_le_iff_exists.1 this
+    exact ⟨algebraMap _ _ r, (FractionalIdeal.mem_coeIdeal _).2 ⟨r, hr, rfl⟩,
+      (HeightOneSpectrum.valuation_eq_one_iff_notMem Q).2 hr'⟩
+
+omit [StarRing E] in
+theorem maxV_inv {Q P : HeightOneSpectrum (𝓞 E)} {γ : WithZero (Multiplicative ℤ)} (h0 : γ ≠ 0)
+    (h : MaxV Q ((P.asIdeal : FractionalIdeal (𝓞 E)⁰ E) : Submodule (𝓞 E) E) γ) :
+    MaxV Q (((P.asIdeal : FractionalIdeal (𝓞 E)⁰ E)⁻¹ : FractionalIdeal (𝓞 E)⁰ E) : Submodule (𝓞 E) E) γ⁻¹ :=
+  h.inv h0 (by rw [← FractionalIdeal.coe_mul, mul_inv_cancel₀ (ne0 P), FractionalIdeal.coe_one])
+
+theorem mem_vp (P : HeightOneSpectrum (𝓞 E)) (x : E) :
+    x ∈ vpIdeal P ↔ ∀ r ∈ (conjPrime₂ P).asIdeal, ∃ s ∈ P.asIdeal, algebraMap _ E s = x * algebraMap _ E r := by
+  unfold vpIdeal
+  rw [← div_eq_mul_inv, FractionalIdeal.mem_coe, FractionalIdeal.mem_div_iff_of_ne_zero (ne0 _)]
+  constructor
+  · intro h r hr
+    exact (FractionalIdeal.mem_coeIdeal _).1 (h _ ((FractionalIdeal.mem_coeIdeal _).2 ⟨r, hr, rfl⟩))
+  · intro h y hy
+    obtain ⟨r, hr, rfl⟩ := (FractionalIdeal.mem_coeIdeal _).1 hy
+    exact (FractionalIdeal.mem_coeIdeal _).2 (h r hr)
+
+theorem star_mem_vp (P : HeightOneSpectrum (𝓞 E)) (x : E) (h : x ∈ vpIdeal P) : star x ∈ vpIdeal (conjPrime₂ P) := by
+  rw [mem_vp] at h ⊢
+  intro r hr
+  rw [conjP_conjP'] at hr
+  obtain ⟨s, hs, e⟩ := h (cO E r) (by rwa [mem_conjP, cO_cO])
+  refine ⟨cO E s, by rwa [mem_conjP, cO_cO], ?_⟩
+  have e1 : algebraMap _ E (cO E s) = star (algebraMap _ E s) := rfl
+  have e2 : algebraMap _ E (cO E r) = star (algebraMap _ E r) := rfl
+  rw [e1, e, e2, star_mul, star_star, mul_comm]
+
+theorem detLat_vp (P : HeightOneSpectrum (𝓞 E)) : detLat (vpLat P) = vpIdeal P := by
+  unfold detLat
+  rw [← Submodule.span_eq (vpIdeal P)]
+  congr 1
+  ext x
+  constructor
+  · rintro ⟨A, hA, rfl⟩
+    have := hA _ (single_mem_stdLat (E := E) (0 : Fin 1) 1)
+    rw [Matrix.det_fin_one]
+    simpa [vpLat, Matrix.mulVec_single] using this
+  · intro hx
+    refine ⟨Matrix.of fun _ _ => x, fun v hv => ?_, by simp⟩
+    obtain ⟨r, hr⟩ := (mem_stdLat v).1 hv 0
+    have : (Matrix.of fun _ _ => x : Matrix (Fin 1) (Fin 1) E).mulVec v 0 = r • x := by
+      simp [Matrix.mulVec, dotProduct, ← hr, Algebra.smul_def, mul_comm]
+    show (Matrix.of fun _ _ => x : Matrix (Fin 1) (Fin 1) E).mulVec v 0 ∈ vpIdeal P
+    rw [this]
+    exact (vpIdeal P).smul_mem r hx
+
+theorem vp_main : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (P : HeightOneSpectrum (𝓞 E)), P ≠ conjPrime₂ P → (∃ J : Submodule (𝓞 E) E, (∀ x, x ∈ J ↔ star x ∈ vpIdeal P) ∧ vpIdeal P * J = 1) ∧ MaxV P (vpIdeal P) (WithZero.exp (-1 : ℤ)) ∧ MaxV (conjPrime₂ P) (vpIdeal P) (WithZero.exp (1 : ℤ)) ∧ (∀ Q : HeightOneSpectrum (𝓞 E), Q ≠ P → Q ≠ conjPrime₂ P → MaxV Q (vpIdeal P) 1) ∧ detLat (vpLat P) = vpIdeal P := by
+  intro E _ _ _ P hP
+  refine ⟨⟨vpIdeal (conjPrime₂ P), fun x => ⟨fun h => ?_, fun h => ?_⟩, ?_⟩, ?_, ?_, fun Q h1 h2 => ?_, detLat_vp P⟩
+  · have := star_mem_vp _ _ h
+    rwa [conjP_conjP'] at this
+  · simpa using star_mem_vp _ _ h
+  · unfold vpIdeal
+    rw [conjP_conjP', ← FractionalIdeal.coe_mul, mul_assoc, inv_mul_cancel_left₀ (ne0 _), mul_inv_cancel₀ (ne0 _),
+      FractionalIdeal.coe_one]
+  · have := (maxV_self P).mul (maxV_inv one_ne_zero (maxV_ne P _ hP))
+    rw [inv_one, mul_one, ← FractionalIdeal.coe_mul] at this
+    exact this
+  · have := (maxV_ne _ P hP.symm).mul (maxV_inv WithZero.exp_ne_zero (maxV_self (conjPrime₂ P)))
+    rw [one_mul, ← WithZero.exp_neg, neg_neg, ← FractionalIdeal.coe_mul] at this
+    exact this
+  · have := (maxV_ne Q P h1).mul (maxV_inv one_ne_zero (maxV_ne Q _ h2))
+    rw [inv_one, mul_one, ← FractionalIdeal.coe_mul] at this
+    exact this
+
+end GlobalTheory.CharVal.Vp
+end
+end
+
+section
+namespace GlobalTheory.ComapPrimeExistence
+
+open NumberField IsDedekindDomain
+
+theorem exists_comap_prime {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K]
+    (φ : E →+* K) (w : HeightOneSpectrum (RingOfIntegers K)) :
+    ∃ Q : HeightOneSpectrum (RingOfIntegers E), ∀ r : RingOfIntegers E,
+      r ∈ Q.asIdeal ↔ (RingOfIntegers.mapRingHom φ : RingOfIntegers E → RingOfIntegers K) r ∈ w.asIdeal := by
+  have hp := w.isPrime
+  refine ⟨⟨w.asIdeal.comap (RingOfIntegers.mapRingHom φ), Ideal.comap_isPrime _ _, ?_⟩,
+    fun r => Ideal.mem_comap⟩
+  intro h
+  have hn : Ideal.absNorm w.asIdeal ≠ 0 := by
+    rw [Ne, Ideal.absNorm_eq_zero_iff]
+    exact w.ne_bot
+  have hmem : ((Ideal.absNorm w.asIdeal : ℕ) : RingOfIntegers E) ∈
+      w.asIdeal.comap (RingOfIntegers.mapRingHom φ) := by
+    rw [Ideal.mem_comap, map_natCast]
+    exact Ideal.absNorm_mem _
+  rw [h, Ideal.mem_bot] at hmem
+  exact hn (Nat.cast_eq_zero.mp hmem)
+
+end GlobalTheory.ComapPrimeExistence
+end
+
+section
 open NumberField IsDedekindDomain WithZero
 
 noncomputable section
@@ -911,3 +1165,5 @@ theorem charValAtT : CharValAtT := by
     ring
 
 end GlobalTheory.CharVal
+end
+end

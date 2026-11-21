@@ -9,11 +9,864 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCupListRe
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitLogRepresentativeCompat
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FilteredCochainExtendOfSurjective
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TopRepresentativeAdd
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUniqueTopGradedRep
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TopGradedRepRestrict
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TopGradedRepDerivationCompat
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsLocalFrameOfCoords
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalGradedClassRepresentative
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CupListRepresentativeOfForms
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TaylorOfLocalFrame
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FormSumRepresentativeLift
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFrameTaylorClassEq
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalGradedClassRepresentativeStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalFrameDerivationCompat
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TopGradedRepOpenCompat
 
+section
+set_option backward.isDefEq.respectTransparency false
+set_option autoImplicit false
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
+open GlobalTheory.CatH (face toLast)
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.ConeTopChart
+
+open GlobalTheory.CompanionTheory.CupRep GlobalTheory.CompanionTheory.CocProd
+
+section Gen
+variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {A : C ⥤ CommAlgCat.{0} R}
+
+theorem rep_shift {a b : IdF A} {j : ℕ} {z z' : ∀ s : ComposableArrows C (j + 1), A.obj (s.obj (Fin.last (j + 1)))}
+    {c : CH.H (sq a b) (j + 1)} (h : CrystallineSemistableComparison.Pb.Rep a b z c) (G : CH.Cn (CH.modF A) j)
+    (hG : ∀ s : ComposableArrows C j, (show A.obj (s.obj (Fin.last j)) from G s) ∈ a.S _)
+    (e : ∀ s : ComposableArrows C (j + 1), z' s - (z s + (show A.obj (s.obj (Fin.last (j + 1))) from CH.d _ j G s)) ∈ b.S _) :
+    CrystallineSemistableComparison.Pb.Rep a b z' c := by
+  have h1 := rep_add h (rep_d (b := b) G hG)
+  rw [add_zero] at h1
+  refine rep_congr h1 fun s => ?_
+  have h2 := (b.S _).neg_mem (e s)
+  rw [neg_sub] at h2
+  exact h2
+
+theorem term_id {k : ℕ} (u : ComposableArrows C k) (f : CH.Cn (CH.modF A) k) (g : Fin (k + 1) → Fin (k + 1))
+    (hg : Monotone g) (e : g = id) :
+    (show A.obj (u.obj (Fin.last k)) from CH.term (CH.modF A) u f g hg) = (show A.obj (u.obj (Fin.last k)) from f u) := by
+  subst e
+  change (A.map (u.map (homOfLE (Fin.le_last (Fin.last k))))).hom (f u) = _
+  rw [show (homOfLE (Fin.le_last (Fin.last k)) : Fin.last k ⟶ Fin.last k) = 𝟙 _ from Subsingleton.elim _ _,
+    u.map_id, A.map_id]
+  rfl
+
+theorem back_zero (k : ℕ) : CH.back (Nat.zero_add k) = id := by
+  funext i
+  apply Fin.ext
+  simp [CH.back]
+
+end Gen
+
+def J0 (m : ℕ) : Idx m m := ⟨id, strictMono_id⟩
+
+theorem top_index_eq {m : ℕ} (I : Idx m m) : I = J0 m := by
+  refine Subtype.ext ((StrictMono.range_inj I.2 strictMono_id).1 ?_)
+  have h : Function.Surjective I.1 := (Finite.injective_iff_surjective).1 I.2.injective
+  rw [h.range_eq, Function.surjective_id.range_eq]
+
+section Lift
+variable {K : Type} [Field K] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of K)}
+
+theorem mk_liftV {V : X.Opens} (T : Thick (smFun X q)) (h : InU V T) (g : Γ(X, V)) :
+    Ideal.Quotient.mk T.J (liftV T h g) = ev T h g :=
+  Classical.choose_spec (Ideal.Quotient.mk_surjective (ev T h g))
+
+theorem map_liftV {s : ℕ} {V : X.Opens} {T T' : (KS q s {V}).FullSubcategory} (φ : T ⟶ T') (g : Γ(X, V)) :
+    Ideal.Quotient.mk T'.obj.J (((sP (KS q s {V})).A.map φ).hom (liftV T.obj (ks_in q s V _ T.property) g)) =
+      ev T'.obj (ks_in q s V _ T'.property) g := by
+  rw [GlobalTheory.CompanionTheory.GrForm.ev_nat (q := q) φ.hom (ks_in q s V _ T.property) (ks_in q s V _ T'.property) g, ← mk_liftV]
+  rfl
+
+end Lift
+
+end GlobalTheory.CompanionTheory.ConeTopChart
+
+namespace GlobalTheory.CompanionTheory.ConeTopChart
+open GlobalTheory.CompanionTheory.CupRep GlobalTheory.CompanionTheory.CocProd
+section Key
+variable {K : Type} [Field K] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of K)}
+
+theorem lift_sub {s : ℕ} {V : X.Opens} {d : ℕ} {t : Fin d → Γ(X, V)} {E : Frame (sP (KS q s {V})) d}
+    {ε : Γ(X, V) ≃+* (sP (KS q s {V})).A.obj E.D} (hL : IsLoc q s t E ε) {T T' : (KS q s {V}).FullSubcategory}
+    (φ : T ⟶ T') (u : E.D ⟶ T') (g : Γ(X, V)) :
+    ((sP (KS q s {V})).A.map φ).hom (liftV T.obj (ks_in q s V _ T.property) g) - ((sP (KS q s {V})).A.map u).hom (ε g) ∈
+      (sFil (KS q s {V}) 1).S T' := by
+  rw [(GlobalTheory.CompanionTheory.DPFil.isFil_sFil (KS q s {V})).one T']
+  exact Ideal.Quotient.eq.1 ((map_liftV φ g).trans (hL.2.2.2.1 T' u g))
+
+theorem lift_sub_mem_ideal {s : ℕ} {V : X.Opens} {d : ℕ} {t : Fin d → Γ(X, V)} {E : Frame (sP (KS q s {V})) d}
+    {ε : Γ(X, V) ≃+* (sP (KS q s {V})).A.obj E.D} (hL : IsLoc q s t E ε) (T : (KS q s {V}).FullSubcategory)
+    (u : E.D ⟶ T) (g : Γ(X, V)) :
+    (show (sP (KS q s {V})).A.obj T from liftV T.obj (ks_in q s V _ T.property) g) - ((sP (KS q s {V})).A.map u).hom (ε g) ∈
+      (sP (KS q s {V})).J.S T :=
+  Ideal.Quotient.eq.1 ((mk_liftV _ _ g).trans (hL.2.2.2.1 T u g))
+
+theorem addC_near {s : ℕ} {V : X.Opens} {d : ℕ} {t : Fin d → Γ(X, V)} {E : Frame (sP (KS q s {V})) d}
+    {ε : Γ(X, V) ≃+* (sP (KS q s {V})).A.obj E.D} (hL : IsLoc q s t E ε) (σ : ∀ T, E.D ⟶ T) (k : Fin d)
+    (u : ComposableArrows (KS q s {V}).FullSubcategory 1) :
+    (show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from
+      addC (KS q s {V}) (fun T => liftV T.obj (ks_in q s V _ T.property) (t k)) u) -
+    (∑ i, E.form σ ![i] (if k = i then 1 else 0) u +
+      ((show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from liftV (u.obj (Fin.last 1)).obj (ks_in q s V _ (u.obj (Fin.last 1)).property) (t k)) -
+        ((sP (KS q s {V})).A.map (σ _)).hom (ε (t k)) -
+       ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom
+        ((show (sP (KS q s {V})).A.obj (u.obj 0) from liftV (u.obj 0).obj (ks_in q s V _ (u.obj 0).property) (t k)) -
+          ((sP (KS q s {V})).A.map (σ _)).hom (ε (t k))))) = 0 := by
+  rw [Finset.sum_eq_single k (fun i _ hi => by
+    rw [if_neg (Ne.symm hi)]; unfold Frame.form; rw [map_zero, mul_zero]) (by simp), if_pos rfl]
+  unfold Frame.form Frame.a
+  rw [Fin.prod_univ_one]
+  simp only [Matrix.cons_val_zero, map_one, mul_one]
+  have hφ : u.map (homOfLE (Fin.le_last (0 : Fin 1).succ)) = 𝟙 _ := by rw [← u.map_id]; rfl
+  rw [hφ, (sP (KS q s {V})).A.map_id, hL.2.2.2.2 k, Functor.map_comp, CommAlgCat.hom_comp, AlgHom.comp_apply]
+  change (show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from liftV (u.obj (Fin.last 1)).obj (ks_in q s V _ (u.obj (Fin.last 1)).property) (t k)) -
+      ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom
+        (show (sP (KS q s {V})).A.obj (u.obj 0) from liftV (u.obj 0).obj (ks_in q s V _ (u.obj 0).property) (t k)) -
+    (((sP (KS q s {V})).A.map (σ (u.obj (Fin.last 1)))).hom (ε (t k)) -
+      ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (((sP (KS q s {V})).A.map (σ (u.obj 0))).hom (ε (t k))) +
+      ((show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from liftV (u.obj (Fin.last 1)).obj (ks_in q s V _ (u.obj (Fin.last 1)).property) (t k)) -
+        ((sP (KS q s {V})).A.map (σ _)).hom (ε (t k)) -
+       ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom
+        ((show (sP (KS q s {V})).A.obj (u.obj 0) from liftV (u.obj 0).obj (ks_in q s V _ (u.obj 0).property) (t k)) -
+          ((sP (KS q s {V})).A.map (σ _)).hom (ε (t k))))) = 0
+  rw [map_sub]
+  ring
+
+end Key
+end GlobalTheory.CompanionTheory.ConeTopChart
+
+namespace GlobalTheory.CompanionTheory.ConeTopChart
+open GlobalTheory.CompanionTheory.CupRep GlobalTheory.CompanionTheory.CocProd
+section Key2
+variable {K : Type} [Field K] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of K)}
+
+theorem key {s : ℕ} {V : X.Opens} {n : ℕ} {t : Fin (n + 1) → Γ(X, V)} {E : Frame (sP (KS q s {V})) (n + 1)}
+    {ε : Γ(X, V) ≃+* (sP (KS q s {V})).A.obj E.D} (hL : IsLoc q s t E ε) (σ : ∀ T, E.D ⟶ T) (x : Γ(X, V)) :
+    ∃ G : CH.Cn (CH.modF (sP (KS q s {V})).A) n,
+      (∀ u : ComposableArrows (KS q s {V}).FullSubcategory n,
+        (show (sP (KS q s {V})).A.obj (u.obj (Fin.last n)) from G u) ∈ (sFil (KS q s {V}) ((n : ℤ) + 1)).S _) ∧
+      ∀ u : ComposableArrows (KS q s {V}).FullSubcategory (n + 1),
+        (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from xdtC (q := q) s V t x u) -
+          (E.form σ id (ε x) u + (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from CH.d _ n G u)) ∈
+          (sFil (KS q s {V}) ((n : ℤ) + 1 + 1)).S _ := by
+  have hF := GlobalTheory.CompanionTheory.DPFil.isFil_sFil (KS q s {V})
+  have hc : E.GrConst (sFil (KS q s {V})) := hL.1
+  let ℓ : Fin (n + 1) → CH.Cn (CH.modF (sP (KS q s {V})).A) 1 := fun k =>
+    addC (KS q s {V}) (fun T => liftV T.obj (ks_in q s V _ T.property) (t k))
+  let cc : Fin (n + 1) → Fin (n + 1) → (sP (KS q s {V})).A.obj E.D := fun k i => if k = i then 1 else 0
+  let hk : Fin (n + 1) → ∀ T : (KS q s {V}).FullSubcategory, (sP (KS q s {V})).A.obj T := fun k T =>
+    (show (sP (KS q s {V})).A.obj T from liftV T.obj (ks_in q s V _ T.property) (t k)) -
+      ((sP (KS q s {V})).A.map (σ T)).hom (ε (t k))
+  have hh : ∀ k, h0 (hk k) ∈ FC (sFil (KS q s {V}) ((1 : ℕ) : ℤ)) 0 := fun k => mem_FC.2 fun u => by
+    rw [Nat.cast_one, hF.one]
+    exact lift_sub_mem_ideal hL _ (σ _) (t k)
+  have he : ∀ k, ℓ k - (∑ i, fc E σ ![i] (cc k i) + CH.d (CH.modF (sP (KS q s {V})).A) 0 (h0 (hk k))) ∈
+      FC (sFil (KS q s {V}) ((1 + 1 : ℕ) : ℤ)) 1 := fun k => mem_FC.2 fun u => by
+    have e : vl (ℓ k - (∑ i, fc E σ ![i] (cc k i) + CH.d (CH.modF (sP (KS q s {V})).A) 0 (h0 (hk k)))) u = 0 := by
+      have e1 : vl (ℓ k - (∑ i, fc E σ ![i] (cc k i) + CH.d (CH.modF (sP (KS q s {V})).A) 0 (h0 (hk k)))) u =
+          vl (ℓ k) u - (∑ i, E.form σ ![i] (cc k i) u + vl (CH.d (CH.modF (sP (KS q s {V})).A) 0 (h0 (hk k))) u) := by
+        change vl (ℓ k) u - (vl (∑ i, fc E σ ![i] (cc k i)) u + _) = _
+        congr 2
+        rw [vl, Finset.sum_apply]
+        rfl
+      rw [e1, cech_d_h0_eval]
+      exact addC_near hL σ k u
+    rw [e]
+    exact zero_mem _
+  obtain ⟨g, hg, hn⟩ := near E σ hF hc (n + 1) ℓ cc (fun k => h0 (hk k)) hh he
+  obtain ⟨H, hH, rfl⟩ := hg
+  have hsum : ∑ I : Fin (n + 1) → Fin (n + 1), fc E σ I (∏ k, cc k (I k)) = fc E σ id 1 := by
+    rw [Finset.sum_eq_single id]
+    · congr 1
+      simp [cc]
+    · intro I _ hI
+      obtain ⟨k, hk'⟩ : ∃ k, I k ≠ k := by
+        by_contra h
+        push_neg at h
+        exact hI (funext h)
+      have h0' : ∏ k, cc k (I k) = 0 := Finset.prod_eq_zero (Finset.mem_univ k) (by simp [cc, Ne.symm hk'])
+      rw [h0']
+      funext u'
+      change E.form σ I 0 u' = 0
+      unfold Frame.form
+      rw [map_zero, mul_zero]
+    · simp
+  rw [hsum] at hn
+  refine ⟨fun u => (show (sP (KS q s {V})).A.obj (u.obj (Fin.last n)) from H u) * ((sP (KS q s {V})).A.map (σ _)).hom (ε x),
+    fun u => ?_, fun u => ?_⟩
+  · have h1 := mem_FC.1 hH u
+    have e : ((n + 1 : ℕ) : ℤ) = (n : ℤ) + 1 := by push_cast; ring
+    rw [e] at h1
+    exact Ideal.mul_mem_right _ _ h1
+  · set Y := ((sP (KS q s {V})).A.map (σ (u.obj (Fin.last (n + 1))))).hom (ε x) with hY
+    set P := vl (cupListC (sP (KS q s {V})).A ℓ) u with hP
+    set Fc := vl (fc E σ id 1) u with hFc
+    set D := vl (CH.d (CH.modF (sP (KS q s {V})).A) n H) u with hD
+    have hv : (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from xdtC (q := q) s V t x u) =
+        (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from CH.term (CH.modF (sP (KS q s {V})).A) u
+          (zeroC (KS q s {V}) fun T => liftV T.obj (ks_in q s V _ T.property) x) (CH.front (Nat.zero_add (n + 1))) (CH.front_mono _)) * P := by
+      change _ * (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from CH.term (CH.modF (sP (KS q s {V})).A) u
+        (cupListC (sP (KS q s {V})).A ℓ) (CH.back (Nat.zero_add (n + 1))) (CH.back_mono _)) = _
+      rw [term_id u _ _ _ (back_zero _)]
+    have hFY : (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from CH.term (CH.modF (sP (KS q s {V})).A) u
+          (zeroC (KS q s {V}) fun T => liftV T.obj (ks_in q s V _ T.property) x) (CH.front (Nat.zero_add (n + 1))) (CH.front_mono _)) - Y ∈
+        (sFil (KS q s {V}) ((1 : ℕ) : ℤ)).S _ := by
+      rw [Nat.cast_one]
+      exact lift_sub hL (u.map (homOfLE (Fin.le_last _))) (σ _) x
+    have hform : E.form σ id (ε x) u = Fc * Y := by
+      have := form_mul E σ id (ε x) 1 u
+      rwa [mul_one] at this
+    have hR : P - Fc - D ∈ (sFil (KS q s {V}) ((n + 1 + 1 : ℕ) : ℤ)).S _ := mem_FC.1 hn u
+    have hdm := d_mul E σ hF hc (ε x) hH u
+    have hFcm : Fc ∈ (sFil (KS q s {V}) ((n + 1 : ℕ) : ℤ)).S _ := mem_FC.1 (fc_mem E σ hF id 1) u
+    have hDm : D ∈ (sFil (KS q s {V}) ((n + 1 : ℕ) : ℤ)).S _ := mem_FC.1 (d_mem hH) u
+    have hPm : P ∈ (sFil (KS q s {V}) ((n + 1 : ℕ) : ℤ)).S _ := by
+      have h1 := hF.anti (r := ((n + 1 : ℕ) : ℤ)) (by push_cast; omega) _ hR
+      have h2 := add_mem (add_mem h1 hDm) hFcm
+      rwa [sub_add_cancel, sub_add_cancel] at h2
+    have hm1 := hF.mul 1 (n + 1) _ hFY hPm
+    rw [show 1 + (n + 1) = n + 1 + 1 by omega] at hm1
+    have hall := add_mem (add_mem hm1 (Ideal.mul_mem_left _ Y hR)) hdm
+    have e2 : ((n + 1 + 1 : ℕ) : ℤ) = (n : ℤ) + 1 + 1 := by push_cast; ring
+    rw [e2] at hall
+    rw [hv, hform]
+    convert hall using 1
+    ring
+
+end Key2
+end GlobalTheory.CompanionTheory.ConeTopChart
+
+namespace GlobalTheory.CompanionTheory.ConeTopChart
+
+theorem top_chart : CrystallineSemistableComparison.Pb.KH.LocGr → CrystallineSemistableComparison.Pb.KH.PolyTf → CrystallineSemistableComparison.Pb.KH.GrAff →
+    ∀ {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) (n : ℕ)
+    [SmoothOfRelativeDimension (n + 1) q] (s : ℕ), n + 1 < s → ∀ (V : X.Opens) (c : Coord q V (n + 1)) (y : HQ (KS q s {V}) ((n : ℤ) + 1) ((n : ℤ) + 1 + 1) (n + 1)),
+    ∃! x : Γ(X, V), Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1)) (xdtC s V c.t x) (y) := by
+  intro _ _ _ K _ _ X q n _ s hs V c y
+  obtain ⟨E, ε, hL⟩ := GlobalTheory.CompanionTheory.ConeLocal.exists_loc q c s (by omega)
+  let σ : ∀ T, E.D ⟶ T := fun T => (E.ne T).some
+  have hr : (n : ℤ) + 1 = ((n + 1 : ℕ) : ℤ) := by push_cast; ring
+  obtain ⟨hex, huniq⟩ := GlobalTheory.CompanionTheory.ConeLocal.loc_coef q c.t s E ε hL σ (n + 1) ((n : ℤ) + 1) hr (by omega)
+  have toForm : ∀ (x : Γ(X, V)) (z : HQ (KS q s {V}) ((n : ℤ) + 1) ((n : ℤ) + 1 + 1) (n + 1)),
+      CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1)) (E.form σ id (ε x)) z ↔
+      CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1)) (xdtC s V c.t x) z := by
+    intro x z
+    obtain ⟨G, hG, hGe⟩ := key hL σ x
+    constructor
+    · intro h
+      exact rep_shift h G hG hGe
+    · intro h
+      refine rep_shift h (-G) (fun u => (Ideal.neg_mem_iff _).2 (hG u)) (fun u => ?_)
+      have e : (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from CH.d _ n (-G) u) =
+          -(show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from CH.d _ n G u) := by
+        rw [map_neg]
+        rfl
+      rw [e]
+      convert (Ideal.neg_mem_iff _).2 (hGe u) using 1
+      ring
+  have uniqForm : ∀ (x x' : Γ(X, V)) (z : HQ (KS q s {V}) ((n : ℤ) + 1) ((n : ℤ) + 1 + 1) (n + 1)),
+      CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1)) (E.form σ id (ε x)) z →
+      CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1)) (E.form σ id (ε x')) z →
+      x = x' := by
+    intro x x' z h h'
+    have h2 := rep_add h (rep_smul (-1 : K) h')
+    have e0 : z + (-1 : K) • z = 0 := by rw [neg_one_smul, add_neg_cancel]
+    rw [e0] at h2
+    have h3 : CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1))
+        (fun u => ∑ I : Idx (n + 1) (n + 1), E.form σ I.1 (ε ((fun _ => x - x') I)) u) 0 := by
+      refine rep_congr h2 fun u => ?_
+      rw [Finset.sum_eq_single (J0 _) (fun I _ hI => absurd (top_index_eq I) hI) (by simp)]
+      have e1 : E.form σ id (ε x) u + (-1 : K) • E.form σ id (ε x') u - E.form σ (J0 (n + 1)).1 (ε (x - x')) u = 0 := by
+        change _ - E.form σ id (ε (x - x')) u = 0
+        unfold Frame.form
+        rw [map_sub, map_sub, neg_one_smul]
+        ring
+      rw [e1]
+      exact zero_mem _
+    have h4 := congrFun (huniq (fun _ => x - x') h3) (J0 _)
+    exact sub_eq_zero.1 h4
+  obtain ⟨y', hy'⟩ := hex y
+  have h1 : CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1))
+      (E.form σ id (ε (y' (J0 _)))) y := by
+    refine rep_congr hy' fun u => ?_
+    rw [Finset.sum_eq_single (J0 _) (fun I _ hI => absurd (top_index_eq I) hI) (by simp)]
+    change E.form σ id (ε (y' (J0 _))) u - E.form σ id (ε (y' (J0 _))) u ∈ _
+    rw [sub_self]
+    exact zero_mem _
+  exact ⟨y' (J0 _), (toForm _ _).1 h1, fun x' hx' => uniqForm _ _ _ ((toForm _ _).2 hx') h1⟩
+
+end GlobalTheory.CompanionTheory.ConeTopChart
+end
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+set_option autoImplicit false
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
+open GlobalTheory.CatH (face toLast)
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.ConeLdlog
+
+open GlobalTheory.CompanionTheory.CupRep GlobalTheory.CompanionTheory.ConeLocal.DlogApprox
+
+section Fr
+variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {Fil : ℤ → IdF Φ.A}
+
+def ee {d : ℕ} (E : Frame Φ d) (k i : Fin d) : Φ.A.obj E.D := if i = k then 1 else 0
+
+theorem cupList_mem (hF : IsFil Φ Fil) : ∀ (m : ℕ) (ℓ : Fin m → CH.Cn (CH.modF Φ.A) 1),
+    (∀ k, ℓ k ∈ FC (Fil ((1 : ℕ) : ℤ)) 1) → cupListC Φ.A ℓ ∈ FC (Fil (m : ℤ)) m := by
+  intro m
+  induction m with
+  | zero =>
+    intro ℓ _
+    refine mem_FC.2 fun s => ?_
+    rw [Nat.cast_zero, hF.top 0 le_rfl]
+    trivial
+  | succ m ih =>
+    intro ℓ hl
+    exact cup_mem hF rfl (ih _ fun k => hl _) (hl (Fin.last m))
+
+theorem form_id_eq {n : ℕ} (E : Frame Φ n) (σ : ∀ T : C, E.D ⟶ T) (w : Φ.A.obj E.D)
+    (u : ComposableArrows C n) :
+    E.form σ id w u = vl (∑ I : Fin n → Fin n, fc E σ I (∏ k, ee E k (I k))) u * (Φ.A.map (σ _)).hom w := by
+  rw [vl, Finset.sum_apply]
+  change _ = (∑ I : Fin n → Fin n, vl (fc E σ I (∏ k, ee E k (I k))) u) * _
+  rw [Finset.sum_mul]
+  simp only [← form_mul]
+  rw [Finset.sum_eq_single id]
+  · have e : ∏ k, ee E k (id k) = 1 := Finset.prod_eq_one fun k _ => by simp [ee]
+    rw [e, mul_one]
+  · intro I _ hI
+    obtain ⟨k, hk⟩ : ∃ k, I k ≠ k := by
+      by_contra hc
+      push_neg at hc
+      exact hI (funext hc)
+    have e : ∏ k, ee E k (I k) = 0 := Finset.prod_eq_zero (Finset.mem_univ k) (by simp [ee, hk])
+    rw [e, mul_zero]
+    simp [Frame.form]
+  · intro h
+    exact absurd (Finset.mem_univ _) h
+
+theorem rep_back (hF : IsFil Φ Fil) {n : ℕ} (E : Frame Φ (n + 1)) (σ : ∀ T : C, E.D ⟶ T) (hc : E.GrConst Fil)
+    (ℓ : Fin (n + 1) → CH.Cn (CH.modF Φ.A) 1) (h : Fin (n + 1) → ∀ T : C, Φ.A.obj T)
+    (hJ : ∀ k T, h k T ∈ Φ.J.S T)
+    (hl : ∀ (k : Fin (n + 1)) (u : ComposableArrows C 1), (show Φ.A.obj (u.obj (Fin.last 1)) from ℓ k u) -
+      (∑ i, E.form σ ![i] (ee E k i) u + (h k (u.obj (Fin.last 1)) -
+        (Φ.A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (h k (u.obj 0)))) ∈ (Fil 2).S _)
+    (w : Φ.A.obj E.D) (r : ℤ) (hr : r = ((n + 1 : ℕ) : ℤ)) (x : CH.H (gr Fil r) (n + 1))
+    (z : ∀ u : ComposableArrows C (n + 1), Φ.A.obj (u.obj (Fin.last (n + 1))))
+    (hz : ∀ u, z u - vl (cupListC Φ.A ℓ) u * (Φ.A.map (σ _)).hom w ∈ (Fil (r + 1)).S _)
+    (hx : CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (E.form σ id w) x) :
+    CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) z x := by
+  subst hr
+  have hh : ∀ k, h0 (h k) ∈ FC (Fil ((1 : ℕ) : ℤ)) 0 := fun k => mem_FC.2 fun s => by
+    have := hJ k (s.obj (Fin.last 0))
+    rw [← hF.one] at this
+    rw [Nat.cast_one]
+    exact this
+  have he : ∀ k, ℓ k - (∑ i, fc E σ ![i] (ee E k i) + CH.d (CH.modF Φ.A) 0 (h0 (h k))) ∈
+      FC (Fil ((1 + 1 : ℕ) : ℤ)) 1 := fun k => mem_FC.2 fun u => by
+    have e : vl (ℓ k - (∑ i, fc E σ ![i] (ee E k i) + CH.d (CH.modF Φ.A) 0 (h0 (h k)))) u =
+        (show Φ.A.obj (u.obj (Fin.last 1)) from ℓ k u) - (∑ i, E.form σ ![i] (ee E k i) u +
+          (h k (u.obj (Fin.last 1)) - (Φ.A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (h k (u.obj 0)))) := by
+      rw [← cech_d_h0_eval]
+      change _ - (vl (∑ i, fc E σ ![i] (ee E k i)) u + _) = _
+      congr 2
+      rw [vl, Finset.sum_apply]
+      rfl
+    rw [e]
+    exact hl k u
+  obtain ⟨g, hg, hn⟩ := near E σ hF hc (n + 1) ℓ (ee E) (fun k => h0 (h k)) hh he
+  obtain ⟨H, hH, rfl⟩ := hg
+  let H' : CH.Cn (CH.modF Φ.A) n := fun u => (show Φ.A.obj (u.obj (Fin.last n)) from H u) * (Φ.A.map (σ _)).hom w
+  have hH' : H' ∈ FC (Fil ((n + 1 : ℕ) : ℤ)) n :=
+    mem_FC.2 fun u => Ideal.mul_mem_right _ _ (mem_FC.1 hH u)
+  have h1 := rep_add hx (rep_d (b := Fil (((n + 1 : ℕ) : ℤ) + 1)) H' (mem_FC.1 hH'))
+  rw [add_zero] at h1
+  refine rep_congr h1 fun u => ?_
+  have e1 := mem_FC.1 hn u
+  have e2 := d_mul E σ hF hc w hH u
+  have e3 := hz u
+  have e4 : ((n + 1 + 1 : ℕ) : ℤ) = ((n + 1 : ℕ) : ℤ) + 1 := by push_cast; ring
+  rw [e4] at e1 e2
+  have e5 := ((Fil _).S _).neg_mem (((Fil _).S _).add_mem (((Fil _).S _).add_mem
+    (Ideal.mul_mem_right ((Φ.A.map (σ _)).hom w) _ e1) e2) e3)
+  convert e5 using 1
+  rw [form_id_eq]
+  change _ + vl (CH.d (CH.modF Φ.A) n H') u - z u = -((vl (cupListC Φ.A ℓ) u -
+    vl (∑ I : Fin (n + 1) → Fin (n + 1), fc E σ I (∏ k, ee E k (I k))) u - vl (CH.d (CH.modF Φ.A) n H) u) * _ +
+    (vl (CH.d (CH.modF Φ.A) n H) u * _ - vl (CH.d (CH.modF Φ.A) n H') u) + (z u - _))
+  ring
+
+end Fr
+
+section Term
+variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {A : C ⥤ CommAlgCat.{0} R}
+
+theorem term_id {n : ℕ} (f : CH.Cn (CH.modF A) n) (s : ComposableArrows C n) (g : Fin (n + 1) → Fin (n + 1))
+    (hg : Monotone g) (e : g = id) : CH.term (CH.modF A) s f g hg = f s := by
+  subst e
+  have e : ∀ (h : Fin.last n ⟶ Fin.last n) (z : A.obj (s.obj (Fin.last n))), (A.map (s.map h)).hom z = z := by
+    intro h z
+    have e1 : h = 𝟙 _ := Subsingleton.elim _ _
+    have e2 : s.map h = 𝟙 _ := (congrArg s.map e1).trans (s.map_id _)
+    have e3 : A.map (s.map h) = 𝟙 _ := (congrArg A.map e2).trans (A.map_id _)
+    rw [e3]
+    rfl
+  exact e _ _
+
+end Term
+
+section Loc
+variable {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K))
+
+theorem lift_sub_mem (s : ℕ) {V : X.Opens} {d : ℕ} (t : Fin d → Γ(X, V)) (E : Frame (sP (KS q s {V})) d)
+    (ε : Γ(X, V) ≃+* (sP (KS q s {V})).A.obj E.D) (hL : IsLoc q s t E ε) (σ : ∀ T, E.D ⟶ T) (y : Γ(X, V))
+    (T : (KS q s {V}).FullSubcategory) :
+    (show (sP (KS q s {V})).A.obj T from liftV T.obj (ks_in q s V T.obj T.property) y) -
+      ((sP (KS q s {V})).A.map (σ T)).hom (ε y) ∈ (sP (KS q s {V})).J.S T := by
+  obtain ⟨-, -, -, h4, -⟩ := hL
+  exact Ideal.Quotient.eq.1 ((Classical.choose_spec (Ideal.Quotient.mk_surjective
+    (ev T.obj (ks_in q s V T.obj T.property) y))).trans (h4 T (σ T) y))
+
+theorem xdt_rep (s : ℕ) {V : X.Opens} {n : ℕ} (t : Fin (n + 1) → Γ(X, V)) (E : Frame (sP (KS q s {V})) (n + 1))
+    (ε : Γ(X, V) ≃+* (sP (KS q s {V})).A.obj E.D) (hL : IsLoc q s t E ε) (σ : ∀ T, E.D ⟶ T) (y : Γ(X, V))
+    (r : ℤ) (hr : r = ((n + 1 : ℕ) : ℤ)) (x : CH.H (gr (sFil (KS q s {V})) r) (n + 1))
+    (hx : CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) r) (sFil (KS q s {V}) (r + 1)) (E.form σ id (ε y)) x) :
+    CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) r) (sFil (KS q s {V}) (r + 1)) (xdtC s V t y) x := by
+  have hF := GlobalTheory.CompanionTheory.DPFil.isFil_sFil (KS q s {V})
+  have hc : E.GrConst (sFil (KS q s {V})) := hL.1
+  have h5 := hL.2.2.2.2
+  let ℓ : Fin (n + 1) → CH.Cn (CH.modF (sP (KS q s {V})).A) 1 := fun k =>
+    addC _ fun T => liftV T.obj (ks_in q s V T.obj T.property) (t k)
+  let h : Fin (n + 1) → ∀ T : (KS q s {V}).FullSubcategory, (sP (KS q s {V})).A.obj T := fun k T =>
+    (show (sP (KS q s {V})).A.obj T from liftV T.obj (ks_in q s V T.obj T.property) (t k)) -
+      ((sP (KS q s {V})).A.map (σ T)).hom (ε (t k))
+  have hJ : ∀ k T, h k T ∈ (sP (KS q s {V})).J.S T := fun k T => lift_sub_mem q s t E ε hL σ (t k) T
+  have hl : ∀ (k : Fin (n + 1)) (u : ComposableArrows (KS q s {V}).FullSubcategory 1),
+      (show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from ℓ k u) -
+      (∑ i, E.form σ ![i] (ee E k i) u + (h k (u.obj (Fin.last 1)) -
+        ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (h k (u.obj 0)))) = 0 := by
+    intro k u
+    simp only [form_one]
+    have e1 : ∑ i, E.a σ i (u.map (homOfLE (Fin.zero_le (Fin.last 1)))) *
+        ((sP (KS q s {V})).A.map (σ _)).hom (ee E k i) = E.a σ k (u.map (homOfLE (Fin.zero_le (Fin.last 1)))) := by
+      rw [Finset.sum_eq_single k]
+      · rw [show ee E k k = 1 from if_pos rfl, map_one, mul_one]
+      · intro i _ hi
+        rw [show ee E k i = 0 from if_neg hi, map_zero, mul_zero]
+      · intro hk
+        exact absurd (Finset.mem_univ _) hk
+    rw [e1]
+    have e2 : E.a σ k (u.map (homOfLE (Fin.zero_le (Fin.last 1)))) =
+        ((sP (KS q s {V})).A.map (σ _)).hom (ε (t k)) -
+        ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom
+          (((sP (KS q s {V})).A.map (σ _)).hom (ε (t k))) := by
+      unfold Frame.a
+      rw [h5, GlobalTheory.CompanionTheory.CocProd.map_map]
+    rw [e2]
+    change ((show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from _) -
+      ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (show (sP (KS q s {V})).A.obj (u.obj 0) from _)) -
+      (_ + (((show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from _) - _) -
+      ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom ((show (sP (KS q s {V})).A.obj (u.obj 0) from _) - _))) = 0
+    rw [map_sub]
+    ring
+  have hl' := fun k u => (hl k u).symm ▸ ((sFil (KS q s {V}) 2).S _).zero_mem
+  have hlm : ∀ k, ℓ k ∈ FC (sFil (KS q s {V}) ((1 : ℕ) : ℤ)) 1 := by
+    intro k
+    refine mem_FC.2 fun u => ?_
+    have e : vl (ℓ k) u = ((∑ i, E.form σ ![i] (ee E k i) u) + (h k (u.obj (Fin.last 1)) -
+        ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (h k (u.obj 0)))) :=
+      sub_eq_zero.1 (hl k u)
+    rw [e]
+    refine ((sFil _ _).S _).add_mem (((sFil _ _).S _).sum_mem fun i _ => mem_FC.1 (fc_mem E σ hF ![i] _) u) ?_
+    rw [Nat.cast_one, hF.one]
+    exact ((sP (KS q s {V})).J.S _).sub_mem (hJ _ _) ((sP (KS q s {V})).J.map_mem _ (hJ _ _))
+  refine rep_back hF E σ hc ℓ h hJ hl' (ε y) r hr x _ (fun u => ?_) hx
+  subst hr
+  have hb := mem_FC.1 (cupList_mem hF (n + 1) ℓ hlm) u
+  have e0 : (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from xdtC s V t y u) =
+      (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from CH.term (CH.modF (sP (KS q s {V})).A) u
+        (zeroC _ fun T => liftV T.obj (ks_in q s V T.obj T.property) y) (CH.front (Nat.zero_add (n + 1))) (CH.front_mono _)) *
+      vl (cupListC (sP (KS q s {V})).A ℓ) u := by
+    have e : CH.back (Nat.zero_add (n + 1)) = id := by
+      funext i
+      apply Fin.ext
+      simp [CH.back]
+    have := term_id (cupListC (sP (KS q s {V})).A ℓ) u _ (CH.back_mono (Nat.zero_add (n + 1))) e
+    change _ * (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from CH.term (CH.modF (sP (KS q s {V})).A) u _ _ _) = _
+    rw [this]
+  have ha : ∀ p : Fin (n + 2), ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.le_last p)))).hom
+      (show (sP (KS q s {V})).A.obj (u.obj p) from liftV (u.obj p).obj (ks_in q s V (u.obj p).obj (u.obj p).property) y) -
+      ((sP (KS q s {V})).A.map (σ _)).hom (ε y) ∈ (sFil (KS q s {V}) ((1 : ℕ) : ℤ)).S _ := by
+    intro p
+    rw [Nat.cast_one, hF.one]
+    have e1 := (sP (KS q s {V})).J.map_mem (u.map (homOfLE (Fin.le_last p))) (lift_sub_mem q s t E ε hL σ y (u.obj p))
+    have e2 := const1 hF hc (σ (u.obj p) ≫ u.map (homOfLE (Fin.le_last p))) (σ _) (ε y)
+    have e3 := ((sP (KS q s {V})).J.S _).add_mem e1 e2
+    rw [map_sub, GlobalTheory.CompanionTheory.CocProd.map_map, sub_add_sub_cancel] at e3
+    exact e3
+  have e4 := hF.mul _ _ _ hb (ha (CH.front (Nat.zero_add (n + 1)) (Fin.last 0)))
+  have e5 : ((n + 1 + 1 : ℕ) : ℤ) = ((n + 1 : ℕ) : ℤ) + 1 := by push_cast; ring
+  rw [e5] at e4
+  convert e4 using 1
+  change (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from xdtC s V t y u) - _ = _
+  have ea : (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from CH.term (CH.modF (sP (KS q s {V})).A) u
+        (zeroC _ fun T => liftV T.obj (ks_in q s V T.obj T.property) y) (CH.front (Nat.zero_add (n + 1))) (CH.front_mono _)) =
+      ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.le_last (CH.front (Nat.zero_add (n + 1)) (Fin.last 0)))))).hom
+        (show (sP (KS q s {V})).A.obj (u.obj (CH.front (Nat.zero_add (n + 1)) (Fin.last 0))) from
+          liftV (u.obj (CH.front (Nat.zero_add (n + 1)) (Fin.last 0))).obj
+            (ks_in q s V _ (u.obj (CH.front (Nat.zero_add (n + 1)) (Fin.last 0))).property) y) := rfl
+  rw [e0, ea]
+  ring
+
+end Loc
+
+def i0 (m : ℕ) : Idx m m := ⟨id, strictMono_id⟩
+
+theorem idx_eq {m : ℕ} (I : Idx m m) : I = i0 m := by
+  refine Subtype.ext ((StrictMono.range_inj I.2 strictMono_id).1 ?_)
+  have h : Function.Surjective I.1 := (Finite.injective_iff_surjective).1 I.2.injective
+  rw [h.range_eq, Function.surjective_id.range_eq]
+
+instance {m : ℕ} : Unique (Idx m m) := ⟨⟨i0 m⟩, idx_eq⟩
+
+theorem sgn_det {B : Type} [CommRing B] {m : ℕ} (c : Fin m → Fin m → B) :
+    ∑ J : Fin m → Fin m, sgn (i0 m) J • ∏ k, c k (J k) = (Matrix.of fun i k => c k i).det := by
+  rw [Matrix.det_apply]
+  simp only [sgn, Finset.sum_smul]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun π _ => ?_
+  rw [Finset.sum_eq_single (⇑π)]
+  · simp only [i0, Function.id_comp, if_true]
+    rw [Units.smul_def]
+    simp
+  · intro J _ hJ
+    simp [i0, hJ]
+  · simp
+
+theorem inv_map {A B : Type*} [CommRing A] [CommRing B] (e : A ≃+* B) (a : A) : Ring.inverse (e a) = e (Ring.inverse a) := by
+  by_cases h : IsUnit a
+  · obtain ⟨v, rfl⟩ := h
+    have e1 : e (v : A) = ((Units.map e.toMonoidHom v : Bˣ) : B) := rfl
+    rw [e1, Ring.inverse_unit, Ring.inverse_unit]
+    rfl
+  · have h' : ¬ IsUnit (e a) := fun hu => h ((MulEquiv.isUnit_map e).1 hu)
+    rw [Ring.inverse_non_unit _ h, Ring.inverse_non_unit _ h', map_zero]
+
+theorem inv_prod {A : Type*} [CommRing A] {ι : Type*} [Fintype ι] (u : ι → A) (h : ∀ k, IsUnit (u k)) :
+    Ring.inverse (∏ k, u k) = ∏ k, Ring.inverse (u k) := by
+  choose v hv using h
+  simp only [← hv]
+  rw [← Units.coe_prod, Ring.inverse_unit, ← Finset.prod_inv_distrib, Units.coe_prod]
+  simp only [Ring.inverse_unit]
+
+theorem rep_one {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {Fil : ℤ → IdF Φ.A} {m : ℕ} (E : Frame Φ m)
+    (σ : ∀ T : C, E.D ⟶ T) (r : ℤ) (w : Idx m m → Φ.A.obj E.D) (cl : CH.H (gr Fil r) m)
+    (h : CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (fun u => ∑ I : Idx m m, E.form σ I.1 (w I) u) cl) :
+    CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (E.form σ id (w (i0 m))) cl := by
+  refine rep_congr h fun u => ?_
+  rw [Fintype.sum_unique]
+  change E.form σ (i0 m).1 (w (i0 m)) u - _ ∈ _
+  rw [show (i0 m).1 = id from rfl, sub_self]
+  exact Ideal.zero_mem _
+
+theorem main : CrystallineSemistableComparison.Pb.KH.LocGr → CrystallineSemistableComparison.Pb.KH.PolyTf → CrystallineSemistableComparison.Pb.KH.GrAff →
+    ∀ {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) (n : ℕ)
+    [SmoothOfRelativeDimension (n + 1) q] (s : ℕ), n + 1 < s → ∀ (V V' : X.Opens) (hVV : V ≤ V'), IsAffineOpen V' →
+    ∀ (c : Coord q V (n + 1)),
+    letI := (strV q V).toAlgebra
+    ∀ (D : Fin (n + 1) → Derivation K Γ(X, V) Γ(X, V)), (∀ k j, D k (c.t j) = if k = j then 1 else 0) →
+    ∀ (g : Fin (n + 1) → Γ(X, V')), (∀ k, IsUnit (g k)) →
+    ∀ (ĝ : Fin (n + 1) → ∀ T : (KS q s {V'}).FullSubcategory, T.obj.B),
+    (∀ k T, Ideal.Quotient.mk _ (ĝ k T) = ev T.obj (ks_in q s V' T.obj T.property) (g k)) →
+    ∀ x : HQ (KS q s {V'}) ((n : ℤ) + 1) ((n : ℤ) + 1 + 1) (n + 1), Rep (sFil (KS q s {V'}) ((n : ℤ) + 1)) (sFil (KS q s {V'}) ((n : ℤ) + 1 + 1)) (cupListC (sP (KS q s {V'})).A fun k => dlogC (KS q s {V'}) s (ĝ k)) (x) →
+    Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1)) (xdtC s V c.t (Ring.inverse (∏ k, rs hVV (g k)) * (Matrix.of fun k l => D k (rs hVV (g l))).det)) (resKS q s hVV _ _ _ x) ∨
+    Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1)) (xdtC s V c.t (-(Ring.inverse (∏ k, rs hVV (g k)) * (Matrix.of fun k l => D k (rs hVV (g l))).det))) (resKS q s hVV _ _ _ x) := by
+  intro _ _ _ K _ _ X q n _ s hs V V' hVV hV' c D hD g hg ĝ hĝ x hx
+  left
+  obtain ⟨E, ε, hL⟩ := GlobalTheory.CompanionTheory.ConeLocal.exists_loc q c s (by omega)
+  let σ : ∀ T, E.D ⟶ T := fun T => (E.ne T).some
+  have hF := GlobalTheory.CompanionTheory.DPFil.isFil_sFil (KS q s {V})
+  have hc : E.GrConst (sFil (KS q s {V})) := hL.1
+  have hT := GlobalTheory.CompanionTheory.ConeLocal.taylor_loc q c s E ε hL D hD
+  have hr : (n : ℤ) + 1 = ((n + 1 : ℕ) : ℤ) := by push_cast; ring
+  have h1 := rep_res (ks_le q s hVV) _ _ hx
+  choose h hh happ using fun k => GlobalTheory.CompanionTheory.ConeLocal.DlogApprox.main q s (by omega) hVV c.t E ε hL _ hT σ (g k) (hg k) (ĝ k) (hĝ k)
+  let ℓ : Fin (n + 1) → CH.Cn (CH.modF (sP (KS q s {V})).A) 1 := fun k => resQ (ks_le q s hVV) (dlogC (KS q s {V'}) s (ĝ k))
+  let cc : Fin (n + 1) → Fin (n + 1) → (sP (KS q s {V})).A.obj E.D := fun k i =>
+    Ring.inverse (ε (rs hVV (g k))) * ε (D i (ε.symm (ε (rs hVV (g k)))))
+  have h2 : CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1))
+      (fun u => (show (sP (KS q s {V})).A.obj (u.obj (Fin.last (n + 1))) from cupListC (sP (KS q s {V})).A ℓ u) *
+        ((sP (KS q s {V})).A.map (σ _)).hom 1) (resKS q s hVV _ _ _ x) := by
+    refine rep_congr h1 fun u => ?_
+    have e := congrFun (cup_resQ (ks_le q s hVV) (fun k => dlogC (KS q s {V'}) s (ĝ k))) u
+    rw [map_one, mul_one]
+    exact (sub_eq_zero.2 e) ▸ Ideal.zero_mem _
+  have h3 := GlobalTheory.CompanionTheory.CupRep.cup_rep hF E σ hc (n + 1) ℓ cc h hh happ 1 _ hr _ h2
+  have h4 := GlobalTheory.CompanionTheory.ConeLocal.rep_collapse hF E σ hc (n + 1) _ hr (fun I => I) (fun I => 1 * ∏ k, cc k (I k)) _ h3
+  have h5 := rep_one E σ _ (fun I => ∑ J, sgn I J • (1 * ∏ k, cc k (J k))) _ h4
+  have hu : ∀ k, IsUnit (rs hVV (g k)) := fun k => (hg k).map (rs hVV)
+  have e : ∑ J : Fin (n + 1) → Fin (n + 1), sgn (i0 (n + 1)) J • (1 * ∏ k, cc k (J k)) =
+      ε (Ring.inverse (∏ k, rs hVV (g k)) * (Matrix.of fun k l => D k (rs hVV (g l))).det) := by
+    simp only [one_mul]
+    rw [sgn_det, inv_prod _ hu, ← Matrix.det_mul_row]
+    have e1 := (ε : Γ(X, V) →+* (sP (KS q s {V})).A.obj E.D).map_det
+      (Matrix.of fun k l => Ring.inverse (rs hVV (g l)) * D k (rs hVV (g l)))
+    refine Eq.trans ?_ e1.symm
+    congr 1
+    ext i k
+    simp [cc, inv_map]
+  rw [e] at h5
+  exact xdt_rep q s c.t E ε hL σ _ _ hr _ h5
+
+end GlobalTheory.CompanionTheory.ConeLdlog
+end
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+set_option autoImplicit false
+open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Pb GlobalTheory.CompanionTheory.ConeLocal
+open GlobalTheory.CatH (face toLast)
+open GlobalTheory.CompanionTheory.CupRep GlobalTheory.CompanionTheory.CocProd
+
+noncomputable section
+namespace GlobalTheory.CompanionTheory.ConeLRestr
+
+section Gen
+variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {Fil : ℤ → IdF Φ.A} {d : ℕ}
+
+theorem cupList_mem (hF : IsFil Φ Fil) : ∀ (m : ℕ) (ℓ : Fin m → CH.Cn (CH.modF Φ.A) 1),
+    (∀ k, ℓ k ∈ FC (Fil ((1 : ℕ) : ℤ)) 1) → cupListC Φ.A ℓ ∈ FC (Fil (m : ℤ)) m := by
+  intro m
+  induction m with
+  | zero =>
+    intro ℓ _
+    refine mem_FC.2 fun s => ?_
+    rw [hF.top _ (by simp)]
+    trivial
+  | succ m ih =>
+    intro ℓ h
+    exact cup_mem hF _ (ih _ fun k => h _) (h _)
+
+theorem rep_cup (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (hc : E.GrConst Fil)
+    (n : ℕ) (ℓ : Fin (n + 1) → CH.Cn (CH.modF Φ.A) 1) (c : Fin (n + 1) → Fin d → Φ.A.obj E.D)
+    (h : Fin (n + 1) → ∀ T : C, Φ.A.obj T) (hJ : ∀ k T, h k T ∈ Φ.J.S T)
+    (hl : ∀ (k : Fin (n + 1)) (u : ComposableArrows C 1), (show Φ.A.obj (u.obj (Fin.last 1)) from ℓ k u) -
+      (∑ i, E.form σ ![i] (c k i) u + (h k (u.obj (Fin.last 1)) - (Φ.A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (h k (u.obj 0)))) ∈ (Fil 2).S _)
+    (w : Φ.A.obj E.D) (r : ℤ) (hr : r = ((n + 1 : ℕ) : ℤ)) (x : CH.H (gr Fil r) (n + 1))
+    (hx : CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (fun u => ∑ I : Fin (n + 1) → Fin d, E.form σ I (w * ∏ k, c k (I k)) u) x) :
+    CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (fun u => (show Φ.A.obj (u.obj (Fin.last (n + 1))) from cupListC Φ.A ℓ u) * (Φ.A.map (σ _)).hom w) x := by
+  subst hr
+  have hh : ∀ k, h0 (h k) ∈ FC (Fil ((1 : ℕ) : ℤ)) 0 := fun k => mem_FC.2 fun s => by
+    have := hJ k (s.obj (Fin.last 0))
+    rw [← hF.one] at this
+    rw [Nat.cast_one]
+    exact this
+  have he : ∀ k, ℓ k - (∑ i, fc E σ ![i] (c k i) + CH.d (CH.modF Φ.A) 0 (h0 (h k))) ∈
+      FC (Fil ((1 + 1 : ℕ) : ℤ)) 1 := fun k => mem_FC.2 fun u => by
+    have e : vl (ℓ k - (∑ i, fc E σ ![i] (c k i) + CH.d (CH.modF Φ.A) 0 (h0 (h k)))) u =
+        (show Φ.A.obj (u.obj (Fin.last 1)) from ℓ k u) - (∑ i, E.form σ ![i] (c k i) u +
+          (h k (u.obj (Fin.last 1)) - (Φ.A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (h k (u.obj 0)))) := by
+      rw [← cech_d_h0_eval]
+      change _ - (vl (∑ i, fc E σ ![i] (c k i)) u + _) = _
+      congr 2
+      rw [vl, Finset.sum_apply]
+      rfl
+    rw [e]
+    exact hl k u
+  obtain ⟨g, hg, hn⟩ := near E σ hF hc (n + 1) ℓ c (fun k => h0 (h k)) hh he
+  have hz : ∀ u, (∑ I : Fin (n + 1) → Fin d, E.form σ I (w * ∏ k, c k (I k)) u) =
+      vl (∑ I : Fin (n + 1) → Fin d, fc E σ I (∏ k, c k (I k))) u * (Φ.A.map (σ _)).hom w := by
+    intro u
+    rw [vl, Finset.sum_apply]
+    change _ = (∑ I : Fin (n + 1) → Fin d, vl (fc E σ I (∏ k, c k (I k))) u) * _
+    rw [Finset.sum_mul]
+    exact Finset.sum_congr rfl fun I _ => form_mul E σ I w _ u
+  obtain ⟨H, hH, rfl⟩ := hg
+  let H' : CH.Cn (CH.modF Φ.A) n := fun u => (show Φ.A.obj (u.obj (Fin.last n)) from H u) * (Φ.A.map (σ _)).hom w
+  have hH' : H' ∈ FC (Fil ((n + 1 : ℕ) : ℤ)) n :=
+    mem_FC.2 fun u => Ideal.mul_mem_right _ _ (mem_FC.1 hH u)
+  have h1 := rep_add hx (rep_d (b := Fil (((n + 1 : ℕ) : ℤ) + 1)) H' (mem_FC.1 hH'))
+  rw [add_zero] at h1
+  refine rep_congr h1 fun u => ?_
+  rw [hz]
+  have e1 := mem_FC.1 hn u
+  have e2 := d_mul E σ hF hc w hH u
+  have e3 := (Fil _).S _ |>.add_mem (Ideal.mul_mem_right ((Φ.A.map (σ _)).hom w) _ e1) e2
+  have e4 : ((n + 1 + 1 : ℕ) : ℤ) = ((n + 1 : ℕ) : ℤ) + 1 := by push_cast; ring
+  rw [e4] at e3
+  have e5 := ((Fil _).S _).neg_mem e3
+  convert e5 using 1
+  change _ + vl (CH.d (CH.modF Φ.A) n H') u - _ = -((vl (cupListC Φ.A ℓ) u - vl (∑ I : Fin (n + 1) → Fin d, fc E σ I (∏ k, c k (I k))) u -
+      vl (CH.d (CH.modF Φ.A) n H) u) * _ + (vl (CH.d (CH.modF Φ.A) n H) u * _ - vl (CH.d (CH.modF Φ.A) n H') u))
+  ring
+
+theorem rep_zero_cup (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (hc : E.GrConst Fil)
+    (m : ℕ) (L : CH.Cn (CH.modF Φ.A) m) (hL : L ∈ FC (Fil (m : ℤ)) m) (zc : CH.Cn (CH.modF Φ.A) 0)
+    (w : Φ.A.obj E.D) (hz : ∀ s : ComposableArrows C 0, vl zc s - (Φ.A.map (σ _)).hom w ∈ Φ.J.S _)
+    (r : ℤ) (hr : r = m) (x : CH.H (gr Fil r) m)
+    (hx : CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (fun u => (show Φ.A.obj (u.obj (Fin.last m)) from L u) * (Φ.A.map (σ _)).hom w) x) :
+    CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) ((CH.mulP Φ.A).cupC (Nat.zero_add m) zc L) x := by
+  subst hr
+  refine rep_congr hx fun u => ?_
+  rw [CrystallineSemistableComparison.Auxff.cupC_apply]
+  have e1 : CH.term (CH.modF Φ.A) u L (CH.back (Nat.zero_add m)) (CH.back_mono _) = L u :=
+    CrystallineSemistableComparison.Auxff.term_id _ u L _ _ (fun t => by simp [CH.back])
+  let s0 : ComposableArrows C 0 := (CH.front_mono (Nat.zero_add m)).functor ⋙ u
+  let φ : s0.obj (Fin.last 0) ⟶ u.obj (Fin.last m) :=
+    u.map (homOfLE (Fin.le_last (CH.front (Nat.zero_add m) (Fin.last 0))))
+  have e0 : (show Φ.A.obj (u.obj (Fin.last m)) from CH.term (CH.modF Φ.A) u zc (CH.front (Nat.zero_add m)) (CH.front_mono _)) =
+      (Φ.A.map φ).hom (vl zc s0) := rfl
+  have a1 : (Φ.A.map φ).hom (vl zc s0) - (Φ.A.map (σ _ ≫ φ)).hom w ∈ Φ.J.S (u.obj (Fin.last m)) := by
+    have h := Φ.J.map_mem φ (hz s0)
+    rw [map_sub, map_map] at h
+    exact h
+  have a2 : (Φ.A.map (σ _ ≫ φ)).hom w - (Φ.A.map (σ _)).hom w ∈ Φ.J.S (u.obj (Fin.last m)) :=
+    GlobalTheory.CompanionTheory.ConeLocal.DlogApprox.const1 hF hc _ _ w
+  have a3 := (Φ.J.S (u.obj (Fin.last m))).neg_mem ((Φ.J.S (u.obj (Fin.last m))).add_mem a1 a2)
+  rw [sub_add_sub_cancel, neg_sub] at a3
+  have a4 : (Φ.A.map (σ _)).hom w - (Φ.A.map φ).hom (vl zc s0) ∈ (Fil ((1 : ℕ) : ℤ)).S (u.obj (Fin.last m)) := by
+    rw [Nat.cast_one, hF.one]
+    exact a3
+  have a5 := hF.mul m 1 _ (mem_FC.1 hL u) a4
+  have e6 : ((m + 1 : ℕ) : ℤ) = (m : ℤ) + 1 := by push_cast; ring
+  rw [e6, mul_sub] at a5
+  rw [e1]
+  change vl L u * (Φ.A.map (σ _)).hom w - (Φ.A.map φ).hom (vl zc s0) * vl L u ∈ _
+  rw [mul_comm ((Φ.A.map φ).hom (vl zc s0))]
+  exact a5
+
+end Gen
+
+section Conc
+
+theorem rep_xdt {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) (s : ℕ) {V : X.Opens}
+    (n : ℕ) (t : Fin (n + 1) → Γ(X, V)) (E : Frame (sP (KS q s {V})) (n + 1))
+    (ε : Γ(X, V) ≃+* (sP (KS q s {V})).A.obj E.D) (hL : IsLoc q s t E ε) (σ : ∀ T, E.D ⟶ T) (x : Γ(X, V))
+    (r : ℤ) (hr : r = ((n + 1 : ℕ) : ℤ)) (cl : HQ (KS q s {V}) r (r + 1) (n + 1))
+    (h : CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) r) (sFil (KS q s {V}) (r + 1)) (E.form σ id (ε x)) cl) :
+    CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) r) (sFil (KS q s {V}) (r + 1)) (xdtC s V t x) cl := by
+  have hF := GlobalTheory.CompanionTheory.DPFil.isFil_sFil (KS q s {V})
+  obtain ⟨hc, -, -, h4, h5⟩ := hL
+  have hlift : ∀ (g : Γ(X, V)) (T : (KS q s {V}).FullSubcategory),
+      Ideal.Quotient.mk T.obj.J (liftV T.obj (ks_in q s V T.obj T.property) g) = ev T.obj (ks_in q s V T.obj T.property) g :=
+    fun g T => Classical.choose_spec (Ideal.Quotient.mk_surjective (ev T.obj (ks_in q s V T.obj T.property) g))
+  have hlJ : ∀ (g : Γ(X, V)) (T : (KS q s {V}).FullSubcategory),
+      (show (sP (KS q s {V})).A.obj T from liftV T.obj (ks_in q s V T.obj T.property) g) -
+        ((sP (KS q s {V})).A.map (σ T)).hom (ε g) ∈ (sP (KS q s {V})).J.S T :=
+    fun g T => Ideal.Quotient.eq.1 ((hlift g T).trans (h4 T (σ T) g))
+  let l : Fin (n + 1) → ∀ T : (KS q s {V}).FullSubcategory, T.obj.B :=
+    fun k T => liftV T.obj (ks_in q s V T.obj T.property) (t k)
+  let hh : Fin (n + 1) → ∀ T, (sP (KS q s {V})).A.obj T :=
+    fun k T => (show (sP (KS q s {V})).A.obj T from l k T) - ((sP (KS q s {V})).A.map (σ T)).hom (ε (t k))
+  let cc : Fin (n + 1) → Fin (n + 1) → (sP (KS q s {V})).A.obj E.D := fun k i => if k = i then 1 else 0
+  have cc_self : ∀ k, cc k k = 1 := fun k => if_pos rfl
+  have cc_ne : ∀ {k i : Fin (n + 1)}, k ≠ i → cc k i = 0 := fun h => if_neg h
+  let ℓ : Fin (n + 1) → CH.Cn (CH.modF (sP (KS q s {V})).A) 1 := fun k => addC (KS q s {V}) (l k)
+  have heq : ∀ (k : Fin (n + 1)) (u : ComposableArrows (KS q s {V}).FullSubcategory 1),
+      (show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from ℓ k u) =
+        E.a σ k (u.map (homOfLE (Fin.zero_le (Fin.last 1)))) + (hh k (u.obj (Fin.last 1)) -
+          ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (hh k (u.obj 0))) := by
+    intro k u
+    have e1 : E.a σ k (u.map (homOfLE (Fin.zero_le (Fin.last 1)))) = _ := h5 k (σ _ ≫ u.map (homOfLE (Fin.zero_le (Fin.last 1)))) (σ _)
+    rw [e1]
+    simp only [hh, map_sub, map_map]
+    change (show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from l k _) -
+      ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (l k _) = _
+    ring
+  have hJ : ∀ k T, hh k T ∈ (sP (KS q s {V})).J.S T := fun k T => hlJ (t k) T
+  have hl : ∀ (k : Fin (n + 1)) (u : ComposableArrows (KS q s {V}).FullSubcategory 1),
+      (show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from ℓ k u) -
+      (∑ i, E.form σ ![i] (cc k i) u + (hh k (u.obj (Fin.last 1)) -
+        ((sP (KS q s {V})).A.map (u.map (homOfLE (Fin.zero_le (Fin.last 1))))).hom (hh k (u.obj 0)))) ∈ (sFil (KS q s {V}) 2).S _ := by
+    intro k u
+    rw [heq]
+    simp only [GlobalTheory.CompanionTheory.ConeLocal.DlogApprox.form_one]
+    rw [Finset.sum_eq_single k]
+    · rw [cc_self, map_one, mul_one, sub_self]
+      exact Ideal.zero_mem _
+    · intro i _ hi
+      rw [cc_ne (Ne.symm hi), map_zero, mul_zero]
+    · intro h0
+      exact absurd (Finset.mem_univ _) h0
+  have hmem : ∀ k, ℓ k ∈ FC (sFil (KS q s {V}) ((1 : ℕ) : ℤ)) 1 := by
+    intro k
+    refine mem_FC.2 fun u => ?_
+    rw [Nat.cast_one, hF.one]
+    have e := heq k u
+    change (show (sP (KS q s {V})).A.obj (u.obj (Fin.last 1)) from ℓ k u) ∈ _
+    rw [e]
+    exact Ideal.add_mem _ (E.mem k _ _) (Ideal.sub_mem _ (hJ k _) ((sP (KS q s {V})).J.map_mem _ (hJ k _)))
+  have h1 : CrystallineSemistableComparison.Pb.Rep (sFil (KS q s {V}) r) (sFil (KS q s {V}) (r + 1))
+      (fun u => ∑ I : Fin (n + 1) → Fin (n + 1), E.form σ I (ε x * ∏ k, cc k (I k)) u) cl := by
+    refine rep_congr h fun u => ?_
+    have e : ∑ I : Fin (n + 1) → Fin (n + 1), E.form σ I (ε x * ∏ k, cc k (I k)) u = E.form σ id (ε x) u := by
+      rw [Finset.sum_eq_single id]
+      · have e0 : ∏ k, cc k (id k) = 1 := Finset.prod_eq_one fun k _ => cc_self k
+        rw [e0, mul_one]
+      · intro I _ hI
+        obtain ⟨k, hk⟩ := Function.ne_iff.1 hI
+        have e0 : ∏ k, cc k (I k) = 0 := Finset.prod_eq_zero (Finset.mem_univ k) (cc_ne (Ne.symm hk))
+        rw [e0, mul_zero]
+        unfold Frame.form
+        simp
+      · intro h0
+        exact absurd (Finset.mem_univ _) h0
+    rw [e, sub_self]
+    exact Ideal.zero_mem _
+  have h2 := rep_cup hF E σ hc n ℓ cc hh hJ hl (ε x) r hr cl h1
+  exact rep_zero_cup hF E σ hc (n + 1) _ (cupList_mem hF _ ℓ hmem) _ (ε x) (fun s0 => hlJ x _) r hr cl h2
+
+end Conc
+
+def i0 (m : ℕ) : Idx m m := ⟨id, strictMono_id⟩
+
+theorem idx_eq {m : ℕ} (I : Idx m m) : I = i0 m := by
+  refine Subtype.ext ((StrictMono.range_inj I.2 strictMono_id).1 ?_)
+  have h : Function.Surjective I.1 := (Finite.injective_iff_surjective).1 I.2.injective
+  rw [h.range_eq, Function.surjective_id.range_eq]
+
+local instance {m : ℕ} : Unique (Idx m m) := ⟨⟨i0 m⟩, idx_eq⟩
+
+theorem rep_top {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {Fil : ℤ → IdF Φ.A} {m : ℕ} (E : Frame Φ m)
+    (σ : ∀ T : C, E.D ⟶ T) (r : ℤ) (w : Idx m m → Φ.A.obj E.D) (cl : CH.H (gr Fil r) m)
+    (h : CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (fun u => ∑ I : Idx m m, E.form σ I.1 (w I) u) cl) :
+    CrystallineSemistableComparison.Pb.Rep (Fil r) (Fil (r + 1)) (E.form σ id (w (i0 m))) cl := by
+  refine rep_congr h fun u => ?_
+  rw [Fintype.sum_unique]
+  change E.form σ (i0 m).1 (w (i0 m)) u - _ ∈ _
+  rw [show (i0 m).1 = id from rfl, sub_self]
+  exact Ideal.zero_mem _
+
+theorem main : CrystallineSemistableComparison.Pb.KH.LocGr → CrystallineSemistableComparison.Pb.KH.PolyTf → CrystallineSemistableComparison.Pb.KH.GrAff →
+    ∀ {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) (n : ℕ)
+    [SmoothOfRelativeDimension (n + 1) q] (s : ℕ), n + 1 < s → ∀ (V V' : X.Opens) (hVV : V ≤ V'), IsAffineOpen V' →
+    ∀ (c : Coord q V (n + 1)),
+    letI := (strV q V).toAlgebra
+    ∀ (D : Fin (n + 1) → Derivation K Γ(X, V) Γ(X, V)), (∀ k j, D k (c.t j) = if k = j then 1 else 0) →
+    ∀ ω : HQ (KS q s {V'}) ((n : ℤ) + 1) ((n : ℤ) + 1 + 1) (n + 1), ∃ x ∈ jacSpan hVV (RingHom.id _) (fun k => D k) id, Rep (sFil (KS q s {V}) ((n : ℤ) + 1)) (sFil (KS q s {V}) ((n : ℤ) + 1 + 1)) (xdtC s V c.t x) (resKS q s hVV _ _ _ ω) := by
+  intro _ _ _ K _ _ X q n _ s hs V V' hVV hV' c D hD ω
+  have : Smooth q := SmoothOfRelativeDimension.smooth (n + 1) q
+  obtain ⟨E, ε, hL⟩ := GlobalTheory.CompanionTheory.ConeLocal.exists_loc q c s (by omega)
+  let σ : ∀ T, E.D ⟶ T := fun T => (E.ne T).some
+  have hr : (n : ℤ) + 1 = ((n + 1 : ℕ) : ℤ) := by push_cast; ring
+  obtain ⟨y, hy⟩ := (GlobalTheory.T.local_graded_class_representative q c.t s E ε hL σ (n + 1) ((n : ℤ) + 1) hr (by omega)).1 (resKS q s hVV _ _ _ ω)
+  have h1 := GlobalTheory.T.local_frame_derivation_compat q s hVV hV' c D hD E ε hL σ (n + 1) ((n : ℤ) + 1) hr (by omega) ω y hy (i0 _)
+  exact ⟨y (i0 _), h1, rep_xdt q s n c.t E ε hL σ _ _ hr _ (rep_top E σ _ (fun I => ε (y I)) _ hy)⟩
+
+end GlobalTheory.CompanionTheory.ConeLRestr
+end
+end
+
+section
 section
 set_option backward.isDefEq.respectTransparency false
 set_option autoImplicit false
@@ -286,3 +1139,4 @@ theorem _root_.GlobalTheory.T.projective_chart_affine_coords : KH.LocGr → KH.P
         -(Ring.inverse (∏ k, rs (hV Finset.univ) (g k)) * (Matrix.of fun k l => D k (rs (hV Finset.univ) (g l))).det) =
           ∑ j, x j + ∑ k : Fin (n + 1), (-1 : Γ(X, V)) ^ (k : ℕ) * D k (η k)) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.ConeTransfer.main
+end

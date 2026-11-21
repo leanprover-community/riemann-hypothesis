@@ -2,8 +2,26 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneTmulMemRangeIff
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CovOfAlgHom
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsPQ
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FrobeniusPowerSolutionLiftStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PerfectFrobeniusRootSolutionStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FrobeniusPowerSolutionLift
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PerfectFrobeniusRootSolution
+
+section
+open TensorProduct CrystallineSemistableComparison.D
+open scoped LaurentPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frobenius_power_solution_lift : ∀ (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A](S : Type) [CommRing S] [Algebra A S] (B : Type) [CommRing B] [Algebra A B] (i : S →ₐ[A] B) (I : Ideal S) (m n : ℕ) (a : Fin m → Fin n → A) (c : Fin m → A), (p : A) = 0 → PQ p (i : S →+* B) I → Solv B a c → ∃ (k : ℕ) (s : Fin n → S), ∀ t, ∑ j, a t j ^ p ^ k • s j - algebraMap A S (c t ^ p ^ k) ∈ I := by
+  first | exact @GlobalTheory.CompanionTheory.PerfectQuotient.solv_pow | exact GlobalTheory.CompanionTheory.PerfectQuotient.solv_pow | (intros; apply GlobalTheory.CompanionTheory.PerfectQuotient.solv_pow <;> assumption)
+end
+
+section
+open TensorProduct CrystallineSemistableComparison.D
+open scoped LaurentPolynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.perfect_frobenius_root_solution : ∀ (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A](B : Type) [CommRing B] [Algebra A B] (m n k : ℕ) (a : Fin m → Fin n → A) (c : Fin m → A), Pf p B → Solv B (fun t j => a t j ^ p ^ k) (fun t => c t ^ p ^ k) → Solv B a c := by
+  first | exact @GlobalTheory.CompanionTheory.PerfectRing.solv_of_solv_pow | exact GlobalTheory.CompanionTheory.PerfectRing.solv_of_solv_pow | (intros; apply GlobalTheory.CompanionTheory.PerfectRing.solv_of_solv_pow <;> assumption)
+end
+
+section
 open TensorProduct CrystallineSemistableComparison.D
 open scoped LaurentPolynomial
 
@@ -50,3 +68,4 @@ theorem cov_root : ∀ (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A] (r : ℕ
     rw [this, map_zero]
 
 end GlobalTheory.CompanionTheory.CovRoot
+end

@@ -1,7 +1,208 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.StBoundedSectionTransfer
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsArithNakaiMoishezon
+import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
 import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogXpow
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Targets
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.GeometryOfNumbersTheory
+open GroundTheory.Heights₂.Heights.HilbertSamuel
+
+noncomputable section
+
+def ArithNMSmallSection.Statement : Prop :=
+  ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω]
+    (y : (Σ k, ι k) → Ω) (D : ℕ) (L : HermLine ι) (P0 : Ideal (MRing ι)) (II : IntersectionSystem),
+    IsIntersectionSystem II → IsArithVar (mCoordIdeal y) (D + 1) →
+    P0 ≤ mCoordIdeal y → IsSemipositiveRel P0 (mCoordIdeal y) L → IsConjInvariantH L →
+    IsAmpleOnModel y L.a →
+    0 < II K ι (mCoordIdeal y) (D + 1) (fun _ => L) →
+    ∃ m : ℕ, 1 ≤ m ∧ ∃ s ∈ chartLat y (GroundTheory.Heights₂.Heights.Inter.hermZpow L m).a 1, s ≠ 0 ∧
+      ∃ c : ℝ, c < 1 ∧ IsBoundedH (mCoordIdeal y) y (GroundTheory.Heights₂.Heights.Inter.hermZpow L m) 1 c s
+
+end
+
+end GroundTheory.Heights₂.Heights.Targets
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Targets
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.GeometryOfNumbersTheory
+open GroundTheory.Heights₂.Heights.HilbertSamuel
+
+noncomputable section
+
+section Objects
+
+variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
+
+def IsGenBySmallSections (y : (Σ k, ι k) → Ω) (L : HermLine ι) : Prop :=
+  ∃ n₀ : ℕ, ∀ n : ℕ, n₀ ≤ n → ∃ (q : ℕ) (w : Fin q → Ω),
+    (∀ j, w j ∈ chartLat y (GroundTheory.Heights₂.Heights.Inter.hermZpow L n).a 1) ∧
+    KH.GeneratesOn y (GroundTheory.Heights₂.Heights.Inter.hermZpow L n).a w ∧
+    ∃ c : ℝ, c < 1 ∧
+      ∀ j, IsBoundedH (mCoordIdeal y) y (GroundTheory.Heights₂.Heights.Inter.hermZpow L n) 1 c (w j)
+
+end Objects
+
+def ArithNMLift.Statement : Prop :=
+  ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω]
+    (y : (Σ k, ι k) → Ω) (D : ℕ) (L : HermLine ι) (P0 : Ideal (MRing ι)),
+    IsArithVar (mCoordIdeal y) (D + 1) →
+    P0 ≤ mCoordIdeal y → IsSemipositiveRel P0 (mCoordIdeal y) L → IsConjInvariantH L →
+    IsAmpleOnModel y L.a →
+    (∃ m : ℕ, 1 ≤ m ∧ ∃ s ∈ chartLat y (GroundTheory.Heights₂.Heights.Inter.hermZpow L m).a 1, s ≠ 0 ∧
+      ∃ c : ℝ, c < 1 ∧ IsBoundedH (mCoordIdeal y) y (GroundTheory.Heights₂.Heights.Inter.hermZpow L m) 1 c s) →
+    (∀ (W : Ideal (MRing ι)) (e : ℕ), IsArithVar W (e + 1) → mCoordIdeal y ≤ W → e < D →
+      ∀ (Ω' : Type) [Field Ω'] (y' : (Σ k, ι k) → Ω'), mCoordIdeal y' = W → IsGenBySmallSections y' L) →
+    IsGenBySmallSections y L
+
+end
+
+end GroundTheory.Heights₂.Heights.Targets
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Targets
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry ReciprocityTheory.GeometryOfNumbersTheory
+open GroundTheory.Heights₂.Heights.HilbertSamuel
+
+noncomputable section
+
+def AmpleOnModelRestrict.Statement : Prop :=
+  ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω Ω' : Type) [Field Ω] [Field Ω']
+    (y : (Σ k, ι k) → Ω) (y' : (Σ k, ι k) → Ω') (a : K → ℤ),
+    mCoordIdeal y ≤ mCoordIdeal y' → IsAmpleOnModel y a → IsAmpleOnModel y' a
+
+end
+
+end GroundTheory.Heights₂.Heights.Targets
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Targets
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G
+open GroundTheory.Heights₂.Heights.HilbertSamuel
+
+noncomputable section
+
+namespace NMPointZero
+
+def line : Geo.HermLine (blockIdx fun _ : Unit ↦ 0) where
+  a := 0
+  h _ := 2
+  pos _ _ := two_pos
+  smul c z hc := by simp
+
+theorem isSemipositiveRel (P0 P : Ideal (Geo.MRing (blockIdx fun _ : Unit ↦ 0))) :
+    Geo.IsSemipositiveRel P0 P line := by
+  refine ⟨contDiffOn_const, fun z _ w _ => ?_⟩
+  simp [line, Geo.leviForm]
+
+theorem isAmpleOnModel : IsAmpleOnModel (ι := blockIdx fun _ : Unit ↦ 0) unitPoint line.a := by
+  intro e
+  refine ⟨0, fun n _ => ⟨1, fun _ => 1, fun _ c _ => ?_, fun c _ => ⟨fun _ => 1, fun _ => one_mem _, ?_⟩⟩⟩
+  · simp [unitPoint]
+  · simp [unitPoint]
+
+theorem isBoundedH_one :
+    IsBoundedH (Geo.mCoordIdeal (ι := blockIdx fun _ : Unit ↦ 0) unitPoint) unitPoint
+      (GroundTheory.Heights₂.Heights.Inter.hermZpow line ((1 : ℕ) : ℤ)) 1 (1 / 2) 1 := by
+  intro dg dh g h z hg hh hd he _
+  have hdd : dg = dh := by
+    funext k
+    have h1 := hd k
+    simp [GroundTheory.Heights₂.Heights.Inter.hermZpow, line] at h1
+    exact_mod_cast h1
+  subst hdd
+  have hgh : g - h = 0 := by
+    refine form_eq_zero_of_unitPoint (δ := dg) ?_ ?_
+    · exact ((geoMultiHomog_iff g dg).mp hg).sub ((geoMultiHomog_iff h dg).mp hh)
+    · rw [map_sub, he, one_mul, sub_self]
+  rw [sub_eq_zero.mp hgh]
+  simp [GroundTheory.Heights₂.Heights.Inter.hermZpow, line]
+  linarith [norm_nonneg (eval z (map (Int.castRingHom ℂ) h))]
+
+def oneSystem : Geo.IntersectionSystem := fun _ _ _ _ _ _ _ => 1
+
+end NMPointZero
+
+theorem ArithNMLift.hyps_inhabited :
+    Geo.IsArithVar (Geo.mCoordIdeal (ι := blockIdx fun _ : Unit ↦ 0) unitPoint) (0 + 1) ∧
+      (⊥ : Ideal (Geo.MRing (blockIdx fun _ : Unit ↦ 0))) ≤ Geo.mCoordIdeal unitPoint ∧
+      Geo.IsSemipositiveRel ⊥ (Geo.mCoordIdeal (ι := blockIdx fun _ : Unit ↦ 0) unitPoint) NMPointZero.line ∧
+      Geo.IsConjInvariantH NMPointZero.line ∧
+      IsAmpleOnModel (ι := blockIdx fun _ : Unit ↦ 0) unitPoint NMPointZero.line.a ∧
+      (∃ m : ℕ, 1 ≤ m ∧ ∃ s ∈ Geo.chartLat (ι := blockIdx fun _ : Unit ↦ 0) unitPoint
+          (GroundTheory.Heights₂.Heights.Inter.hermZpow NMPointZero.line m).a 1, s ≠ 0 ∧
+        ∃ c : ℝ, c < 1 ∧ IsBoundedH (Geo.mCoordIdeal (ι := blockIdx fun _ : Unit ↦ 0) unitPoint) unitPoint
+          (GroundTheory.Heights₂.Heights.Inter.hermZpow NMPointZero.line m) 1 c s) ∧
+      (∀ (W : Ideal (Geo.MRing (blockIdx fun _ : Unit ↦ 0))) (e : ℕ), Geo.IsArithVar W (e + 1) →
+        Geo.mCoordIdeal unitPoint ≤ W → e < 0 →
+        ∀ (Ω' : Type) [Field Ω'] (y' : (Σ k, (blockIdx fun _ : Unit ↦ 0) k) → Ω'),
+          Geo.mCoordIdeal y' = W → IsGenBySmallSections y' NMPointZero.line) := by
+  refine ⟨unitPoint_isArithVar, bot_le, NMPointZero.isSemipositiveRel _ _, fun _ => rfl, NMPointZero.isAmpleOnModel,
+    ⟨1, le_rfl, 1, fun c _ => ?_, one_ne_zero, 1 / 2, by norm_num, NMPointZero.isBoundedH_one⟩,
+    fun _ e _ _ he => absurd he (Nat.not_lt_zero e)⟩
+  simp [unitPoint]
+
+theorem ArithNMSmallSection.hyps_inhabited :
+    Geo.IsArithVar (Geo.mCoordIdeal (ι := blockIdx fun _ : Unit ↦ 0) unitPoint) (0 + 1) ∧
+      (⊥ : Ideal (Geo.MRing (blockIdx fun _ : Unit ↦ 0))) ≤ Geo.mCoordIdeal unitPoint ∧
+      Geo.IsSemipositiveRel ⊥ (Geo.mCoordIdeal (ι := blockIdx fun _ : Unit ↦ 0) unitPoint) NMPointZero.line ∧
+      Geo.IsConjInvariantH NMPointZero.line ∧
+      IsAmpleOnModel (ι := blockIdx fun _ : Unit ↦ 0) unitPoint NMPointZero.line.a ∧
+      0 < NMPointZero.oneSystem Unit (blockIdx fun _ : Unit ↦ 0)
+        (Geo.mCoordIdeal unitPoint) (0 + 1) (fun _ => NMPointZero.line) :=
+  ⟨unitPoint_isArithVar, bot_le, NMPointZero.isSemipositiveRel _ _, fun _ => rfl, NMPointZero.isAmpleOnModel,
+    one_pos⟩
+
+theorem AmpleOnModelRestrict.hyps_inhabited :
+    Geo.mCoordIdeal (ι := ArakelovGeometry.GlobalTheory (Fin 2)) ProjLine.y ≤ Geo.mCoordIdeal (ι := ArakelovGeometry.GlobalTheory (Fin 2)) (fun _ => (1 : ℚ)) ∧
+      IsAmpleOnModel (ι := ArakelovGeometry.GlobalTheory (Fin 2)) ProjLine.y ProjLine.fsLine1.a :=
+  ⟨by rw [ProjLine.mCoordIdeal_y]; exact bot_le, isAmpleOnModel_projLine⟩
+
+end
+
+end GroundTheory.Heights₂.Heights.Targets
+end
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.Targets
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo
+open GroundTheory.Heights₂.Heights.HilbertSamuel
+
+noncomputable section
+
+def BoundedSectionTransfer.Statement : Prop :=
+  ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω Ω' : Type) [Field Ω] [Field Ω']
+    (y : (Σ k, ι k) → Ω) (y' : (Σ k, ι k) → Ω') (d : ℕ) (A : Geo.HermLine ι) (τ : ℕ) (c : ℝ) (s' : Ω'),
+    IsArithVar (mCoordIdeal y) d → mCoordIdeal y' = mCoordIdeal y →
+    s' ∈ chartLat y' A.a τ → s' ≠ 0 → IsBoundedH (mCoordIdeal y') y' A τ c s' →
+    ∃ s ∈ chartLat y A.a τ, s ≠ 0 ∧ IsBoundedH (mCoordIdeal y) y A τ c s
+
+end
+
+end GroundTheory.Heights₂.Heights.Targets
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Targets
@@ -215,3 +416,4 @@ theorem BoundedSectionTransfer.proof : BoundedSectionTransfer.Statement := by
 end
 
 end GroundTheory.Heights₂.Heights.Targets
+end

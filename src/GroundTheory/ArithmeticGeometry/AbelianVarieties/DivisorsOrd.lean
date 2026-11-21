@@ -1,6 +1,324 @@
 import Mathlib
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsNorm
+import GroundTheory.ArithmeticGeometry.AbelianVarieties.FunctionFieldPoint
 
+section
+namespace GroundTheory.Arith.Abelian
+
+open Polynomial WeierstrassCurve WeierstrassCurve.Affine WeierstrassCurve.Affine.CoordinateRing
+  IsDedekindDomain
+
+open scoped nonZeroDivisors
+
+universe u
+
+variable {F : Type u} [Field F] (W : WeierstrassCurve F)
+
+section Field
+
+variable {W}
+
+noncomputable def evalPoint {x y : F} (h : W.toAffine.Equation x y) :
+    W.toAffine.CoordinateRing →+* F :=
+  AdjoinRoot.lift (evalRingHom x) y (by rw [eval₂_evalRingHom]; exact h)
+
+theorem evalPoint_mk {x y : F} (h : W.toAffine.Equation x y) (p : F[X][X]) :
+    evalPoint h (AdjoinRoot.mk W.toAffine.polynomial p) = p.evalEval x y := by
+  rw [evalPoint, AdjoinRoot.lift_mk, eval₂_evalRingHom]
+
+theorem evalPoint_XClass {x y : F} (h : W.toAffine.Equation x y) (x' : F) :
+    evalPoint h (XClass W.toAffine x') = x - x' := by
+  rw [XClass, evalPoint_mk]
+  simp [evalEval_C]
+
+theorem evalPoint_YClass {x y : F} (h : W.toAffine.Equation x y) (y' : F) :
+    evalPoint h (YClass W.toAffine (C y')) = y - y' := by
+  rw [YClass, evalPoint_mk]
+  simp [evalEval_sub, evalEval_X, evalEval_C]
+
+theorem XYIdeal_le_ker {x y : F} (h : W.toAffine.Equation x y) :
+    XYIdeal W.toAffine x (C y) ≤ RingHom.ker (evalPoint h) := by
+  rw [XYIdeal, Ideal.span_le]
+  rintro _ (rfl | rfl)
+  · simp [evalPoint_XClass]
+  · simp [evalPoint_YClass]
+
+theorem isMaximal_XYIdeal {x y : F} (h : W.toAffine.Equation x y) :
+    (XYIdeal W.toAffine x (C y)).IsMaximal :=
+  Ideal.Quotient.maximal_of_isField _ <|
+    MulEquiv.isField (Field.toIsField F)
+      (quotientXYIdealEquiv (W' := W.toAffine) (x := x) (y := C y) h).toRingEquiv.toMulEquiv
+
+theorem XYIdeal_ne_bot (x : F) (y : F[X]) : XYIdeal W.toAffine x y ≠ ⊥ := by
+  intro h0
+  have hx : XClass W.toAffine x ∈ XYIdeal W.toAffine x y :=
+    Ideal.subset_span (Set.mem_insert _ _)
+  rw [h0, Ideal.mem_bot] at hx
+  exact XClass_ne_zero x hx
+
+theorem XYIdeal_inj {x y x' y' : F} (h' : W.toAffine.Equation x' y')
+    (he : XYIdeal W.toAffine x (C y) = XYIdeal W.toAffine x' (C y')) : x = x' ∧ y = y' := by
+  have h1 : XClass W.toAffine x ∈ XYIdeal W.toAffine x' (C y') :=
+    he ▸ Ideal.subset_span (Set.mem_insert _ _)
+  have h2 : YClass W.toAffine (C y) ∈ XYIdeal W.toAffine x' (C y') :=
+    he ▸ Ideal.subset_span (Set.mem_insert_of_mem _ rfl)
+  have e1 := XYIdeal_le_ker h' h1
+  have e2 := XYIdeal_le_ker h' h2
+  rw [RingHom.mem_ker, evalPoint_XClass] at e1
+  rw [RingHom.mem_ker, evalPoint_YClass] at e2
+  exact ⟨(sub_eq_zero.mp e1).symm, (sub_eq_zero.mp e2).symm⟩
+
+noncomputable def heightOneOfNonsingular {x y : F} (h : W.toAffine.Nonsingular x y) :
+    HeightOneSpectrum W.toAffine.CoordinateRing where
+  asIdeal := XYIdeal W.toAffine x (C y)
+  isPrime := (isMaximal_XYIdeal h.1).isPrime
+  ne_bot := XYIdeal_ne_bot x (C y)
+
+theorem heightOneOfNonsingular_asIdeal {x y : F} (h : W.toAffine.Nonsingular x y) :
+    (heightOneOfNonsingular h).asIdeal = XYIdeal W.toAffine x (C y) := rfl
+
+theorem heightOneOfNonsingular_inj {x y x' y' : F} (h : W.toAffine.Nonsingular x y)
+    (h' : W.toAffine.Nonsingular x' y')
+    (he : heightOneOfNonsingular h = heightOneOfNonsingular h') : x = x' ∧ y = y' :=
+  XYIdeal_inj h'.1 (congrArg HeightOneSpectrum.asIdeal he)
+
+instance : IsNoetherianRing W.toAffine.CoordinateRing :=
+  inferInstanceAs (IsNoetherianRing (F[X][X] ⧸ Ideal.span {W.toAffine.polynomial}))
+
+end Field
+
+theorem isDiscreteValuationRing_of_maximalIdeal_mul_eq {R : Type*} [CommRing R] [IsDomain R]
+    [IsNoetherianRing R] [IsLocalRing R] (hnf : ¬ IsField R) (J : Ideal R) {t : R} (ht : t ≠ 0)
+    (h : IsLocalRing.maximalIdeal R * J = Ideal.span {t}) : IsDiscreteValuationRing R := by
+  have hunit : IsUnit ((IsLocalRing.maximalIdeal R : Ideal R) : FractionalIdeal R⁰ (FractionRing R)) := by
+    refine isUnit_iff_exists_inv.mpr ⟨(J : FractionalIdeal R⁰ (FractionRing R)) *
+        ((Ideal.span {t} : Ideal R) : FractionalIdeal R⁰ (FractionRing R))⁻¹, ?_⟩
+    rw [← mul_assoc, ← FractionalIdeal.coeIdeal_mul, h,
+      FractionalIdeal.coe_ideal_span_singleton_mul_inv (FractionRing R) ht]
+  have hprinc := Ideal.IsPrincipal.of_finite_maximals_of_isUnit
+    ((Set.finite_singleton (IsLocalRing.maximalIdeal R)).subset
+      fun I hI => IsLocalRing.eq_maximalIdeal hI) hunit
+  exact ((IsDiscreteValuationRing.TFAE R hnf).out 0 4).mpr hprinc
+
+section AlgClosed
+
+variable [IsAlgClosed F]
+
+theorem exists_equation (x : F) : ∃ y, W.toAffine.Equation x y := by
+  obtain ⟨y, hy⟩ := IsAlgClosed.exists_root
+    (C (1 : F) * X ^ 2 + C (W.a₁ * x + W.a₃) * X + C (-(x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆)))
+    (by rw [degree_quadratic one_ne_zero]; norm_num)
+  refine ⟨y, (W.toAffine.equation_iff x y).mpr ?_⟩
+  simp only [IsRoot, eval_add, eval_mul, eval_C, eval_pow, eval_X] at hy
+  linear_combination hy
+
+variable [W.IsElliptic]
+
+theorem exists_eq_XYIdeal {P : Ideal W.toAffine.CoordinateRing} [hP : P.IsPrime] (hP0 : P ≠ ⊥) :
+    ∃ x y, W.toAffine.Nonsingular x y ∧ P = XYIdeal W.toAffine x (C y) := by
+  obtain ⟨Q, hQdef⟩ : ∃ Q, Q = P.comap (algebraMap F[X] W.toAffine.CoordinateRing) := ⟨_, rfl⟩
+  have hQ0 : Q ≠ ⊥ := fun h => hP0 (Ideal.eq_bot_of_comap_eq_bot (hQdef ▸ h))
+  have hQ : Q.IsPrime := hQdef ▸ Ideal.IsPrime.comap _
+  have hg := Submodule.IsPrincipal.prime_generator_of_isPrime Q hQ0
+  obtain ⟨x, hx⟩ := IsAlgClosed.exists_root _ (degree_pos_of_irreducible hg.irreducible).ne'
+  have hdvd : Submodule.IsPrincipal.generator Q ∣ X - C x :=
+    (irreducible_X_sub_C x).dvd_symm hg.irreducible (dvd_iff_isRoot.mpr hx)
+  have hxQ : X - C x ∈ Q := by
+    rw [← Submodule.IsPrincipal.span_singleton_generator Q]
+    exact Ideal.mem_span_singleton.mpr hdvd
+  have hXP : XClass W.toAffine x ∈ P := by
+    have : algebraMap F[X] W.toAffine.CoordinateRing (X - C x) = XClass W.toAffine x := by
+      simp only [XClass, AdjoinRoot.mk_C, AdjoinRoot.algebraMap_eq]
+    rw [← this]
+    exact Ideal.mem_comap.mp (hQdef ▸ hxQ)
+  obtain ⟨y, hy⟩ := exists_equation W x
+  have hns : W.toAffine.Nonsingular x y := equation_iff_nonsingular.mp hy
+  have hle : XYIdeal W.toAffine x (C (W.toAffine.negY x y)) * XYIdeal W.toAffine x (C y) ≤ P := by
+    rw [XYIdeal_neg_mul hns, XIdeal, Ideal.span_le, Set.singleton_subset_iff]
+    exact hXP
+  rcases hP.mul_le.mp hle with h1 | h1
+  · exact ⟨x, _, (nonsingular_neg ..).mpr hns,
+      ((isMaximal_XYIdeal ((equation_neg ..).mpr hy)).eq_of_le hP.ne_top h1).symm⟩
+  · exact ⟨x, y, hns, ((isMaximal_XYIdeal hy).eq_of_le hP.ne_top h1).symm⟩
+
+omit [IsAlgClosed F] [W.IsElliptic] in
+
+theorem isDiscreteValuationRing_localization_XYIdeal {x y : F} (h : W.toAffine.Nonsingular x y)
+    [(XYIdeal W.toAffine x (C y)).IsPrime] :
+    IsDiscreteValuationRing (Localization.AtPrime (XYIdeal W.toAffine x (C y))) := by
+  have hnf : ¬ IsField (Localization.AtPrime (XYIdeal W.toAffine x (C y))) :=
+    IsLocalization.AtPrime.not_isField W.toAffine.CoordinateRing (P := XYIdeal W.toAffine x (C y))
+      (XYIdeal_ne_bot x (C y)) _
+  have hinj : Function.Injective (algebraMap W.toAffine.CoordinateRing
+      (Localization.AtPrime (XYIdeal W.toAffine x (C y)))) :=
+    IsLocalization.injective _ (XYIdeal W.toAffine x (C y)).primeCompl_le_nonZeroDivisors
+  have : IsNoetherianRing (Localization.AtPrime (XYIdeal W.toAffine x (C y))) :=
+    IsLocalization.isNoetherianRing (XYIdeal W.toAffine x (C y)).primeCompl _ inferInstance
+  refine isDiscreteValuationRing_of_maximalIdeal_mul_eq hnf
+    ((XYIdeal W.toAffine x (C (W.toAffine.negY x y))).map (algebraMap _ _))
+    ((map_ne_zero_iff _ hinj).mpr (XClass_ne_zero (W' := W.toAffine) x)) ?_
+  rw [← IsLocalization.AtPrime.map_eq_maximalIdeal (XYIdeal W.toAffine x (C y)), ← Ideal.map_mul, mul_comm,
+    XYIdeal_neg_mul h, XIdeal, Ideal.map_span, Set.image_singleton]
+
+instance isDedekindDomainDvr_coordinateRing : IsDedekindDomainDvr W.toAffine.CoordinateRing where
+  is_dvr_at_nonzero_prime P hP0 hP := by
+    obtain ⟨x, y, h, rfl⟩ := exists_eq_XYIdeal W hP0
+    exact isDiscreteValuationRing_localization_XYIdeal W h
+
+instance isDedekindDomain_coordinateRing : IsDedekindDomain W.toAffine.CoordinateRing :=
+  inferInstance
+
+noncomputable def affinePointEquiv :
+    {xy : F × F // W.toAffine.Nonsingular xy.1 xy.2} ≃
+      HeightOneSpectrum W.toAffine.CoordinateRing :=
+  Equiv.ofBijective (fun p => heightOneOfNonsingular p.2)
+    ⟨fun p q he => by
+      obtain ⟨h1, h2⟩ := heightOneOfNonsingular_inj p.2 q.2 he
+      exact Subtype.ext (Prod.ext h1 h2),
+    fun v => by
+      have := v.isPrime
+      obtain ⟨x, y, h, hv⟩ := exists_eq_XYIdeal W v.ne_bot
+      exact ⟨⟨(x, y), h⟩, HeightOneSpectrum.ext hv.symm⟩⟩
+
+theorem affinePointEquiv_apply_asIdeal (p : {xy : F × F // W.toAffine.Nonsingular xy.1 xy.2}) :
+    (affinePointEquiv W p).asIdeal = XYIdeal W.toAffine p.1.1 (C p.1.2) := rfl
+
+end AlgClosed
+
+end GroundTheory.Arith.Abelian
+end
+
+section
+namespace GroundTheory.Arith.Abelian
+
+open Polynomial WeierstrassCurve WeierstrassCurve.Affine WeierstrassCurve.Affine.CoordinateRing
+  IsDedekindDomain
+
+open scoped nonZeroDivisors
+
+universe u
+
+variable {F : Type u} [Field F] (W : WeierstrassCurve F)
+
+theorem finrank_coordinateRing : Module.finrank F[X] W.toAffine.CoordinateRing = 2 :=
+  (Module.finrank_eq_card_basis (CoordinateRing.basis W.toAffine)).trans (Fintype.card_fin 2)
+
+theorem algebraMap_X_sub_C (x : F) :
+    algebraMap F[X] W.toAffine.CoordinateRing (X - C x) = XClass W.toAffine x := by
+  simp only [XClass, AdjoinRoot.mk_C, AdjoinRoot.algebraMap_eq]
+
+theorem XIdeal_eq_map (x : F) : XIdeal W.toAffine x =
+    (Ideal.span {X - C x}).map (algebraMap F[X] W.toAffine.CoordinateRing) := by
+  rw [XIdeal, Ideal.map_span, Set.image_singleton, algebraMap_X_sub_C]
+
+theorem span_X_sub_C_le_comap_XYIdeal (x : F) (y : F[X]) :
+    Ideal.span {X - C x} ≤ (XYIdeal W.toAffine x y).comap (algebraMap F[X] _) := by
+  rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ideal.mem_comap,
+    algebraMap_X_sub_C]
+  exact Ideal.subset_span (Set.mem_insert _ _)
+
+variable [IsAlgClosed F] [W.IsElliptic]
+
+theorem relNorm_XYIdeal {x y : F} (h : W.toAffine.Nonsingular x y) :
+    Ideal.relNorm F[X] (XYIdeal W.toAffine x (C y)) = Ideal.span {X - C x} := by
+  have hq : (Ideal.span {X - C x} : Ideal F[X]).IsMaximal :=
+    PrincipalIdealRing.isMaximal_of_irreducible (irreducible_X_sub_C x)
+  have hle : ∀ {y' : F}, W.toAffine.Nonsingular x y' →
+      Ideal.relNorm F[X] (XYIdeal W.toAffine x (C y')) ≤ Ideal.span {X - C x} := by
+    intro y' h'
+    refine (Ideal.relNorm_le_comap F[X] _).trans ?_
+    exact (hq.eq_of_le (Ideal.comap_ne_top _ (isMaximal_XYIdeal h'.1).ne_top)
+      (span_X_sub_C_le_comap_XYIdeal W x (C y'))).ge
+  have hmul : Ideal.relNorm F[X] (XYIdeal W.toAffine x (C (W.toAffine.negY x y))) *
+      Ideal.relNorm F[X] (XYIdeal W.toAffine x (C y)) = Ideal.span {X - C x} ^ 2 := by
+    rw [← map_mul, XYIdeal_neg_mul h, XIdeal_eq_map, Ideal.relNorm_algebraMap,
+      finrank_coordinateRing]
+  obtain ⟨a, ha⟩ := Ideal.dvd_iff_le.mpr (hle h)
+  obtain ⟨b, hb⟩ := Ideal.dvd_iff_le.mpr (hle ((nonsingular_neg ..).mpr h))
+  rw [ha, hb, pow_two] at hmul
+  have hq0 : (Ideal.span {X - C x} : Ideal F[X]) ≠ 0 := by
+    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
+    exact X_sub_C_ne_zero x
+  have hba : b * a = 1 := by
+    refine mul_left_cancel₀ (mul_ne_zero hq0 hq0) ?_
+    calc Ideal.span {X - C x} * Ideal.span {X - C x} * (b * a)
+        = Ideal.span {X - C x} * b * (Ideal.span {X - C x} * a) := by ring
+      _ = _ := hmul
+      _ = _ := (mul_one _).symm
+  have ha1 : a = 1 := by
+    rw [Ideal.one_eq_top] at hba ⊢
+    exact eq_top_iff.mpr (by rw [← hba, mul_comm]; exact Ideal.mul_le_left)
+  rw [ha, ha1, mul_one]
+
+omit [IsAlgClosed F] [W.IsElliptic] in
+theorem finite_support_count [IsDedekindDomain W.toAffine.CoordinateRing]
+    (I : FractionalIdeal W.toAffine.CoordinateRing⁰ W.toAffine.FunctionField) :
+    (Function.support fun v : HeightOneSpectrum W.toAffine.CoordinateRing =>
+      FractionalIdeal.count W.toAffine.FunctionField v I).Finite :=
+  Filter.eventually_cofinite.mp (FractionalIdeal.finite_factors I)
+
+theorem finsum_count_XYIdeal {x y : F} (h : W.toAffine.Nonsingular x y) :
+    ∑ᶠ v : HeightOneSpectrum W.toAffine.CoordinateRing,
+      FractionalIdeal.count W.toAffine.FunctionField v
+        ((XYIdeal W.toAffine x (C y) : Ideal _) :
+          FractionalIdeal W.toAffine.CoordinateRing⁰ W.toAffine.FunctionField) = 1 := by
+  classical
+  have hc := fun v => FractionalIdeal.count_maximal W.toAffine.FunctionField v
+    (heightOneOfNonsingular h)
+  simp only [heightOneOfNonsingular_asIdeal] at hc
+  rw [finsum_eq_single _ (heightOneOfNonsingular h) (fun v hv => by
+    rw [hc v, if_neg (fun e => hv e.symm)]), hc, if_pos rfl]
+
+theorem natDegree_eq_finsum_count_of_relNorm_eq {I : Ideal W.toAffine.CoordinateRing} (hI : I ≠ 0)
+    {p : F[X]} (hp : Ideal.relNorm F[X] I = Ideal.span {p}) :
+    (p.natDegree : ℤ) = ∑ᶠ v : HeightOneSpectrum W.toAffine.CoordinateRing,
+      FractionalIdeal.count W.toAffine.FunctionField v
+        (I : FractionalIdeal W.toAffine.CoordinateRing⁰ W.toAffine.FunctionField) := by
+  induction I using UniqueFactorizationMonoid.induction_on_prime generalizing p with
+  | h₁ => exact absurd rfl hI
+  | h₂ I hu =>
+    rw [Ideal.isUnit_iff.mp hu, Ideal.relNorm_top, eq_comm, Ideal.span_singleton_eq_top] at hp
+    rw [Ideal.isUnit_iff.mp hu, FractionalIdeal.coeIdeal_top]
+    simp [FractionalIdeal.count_one, natDegree_eq_zero_of_isUnit hp]
+  | h₃ a P ha hP ih =>
+    have hP0 : P ≠ ⊥ := hP.ne_zero
+    have := Ideal.isPrime_of_prime hP
+    obtain ⟨x, y, h, rfl⟩ := exists_eq_XYIdeal W hP0
+    obtain ⟨g, hg⟩ : ∃ g, Ideal.relNorm F[X] a = Ideal.span {g} :=
+      ⟨_, (Submodule.IsPrincipal.span_singleton_generator _).symm⟩
+    have hg0 : g ≠ 0 := by
+      rintro rfl
+      have hb : Ideal.relNorm F[X] a = ⊥ := by rw [hg]; simp
+      exact ha (Ideal.relNorm_eq_bot_iff.mp hb)
+    rw [map_mul, relNorm_XYIdeal W h, hg, Ideal.span_singleton_mul_span_singleton,
+      Ideal.span_singleton_eq_span_singleton] at hp
+    have hdeg : p.natDegree = ((X - C x) * g).natDegree :=
+      natDegree_eq_of_degree_eq (degree_eq_degree_of_associated hp).symm
+    have hc0 : ((XYIdeal W.toAffine x (C y) : Ideal _) :
+        FractionalIdeal W.toAffine.CoordinateRing⁰ W.toAffine.FunctionField) ≠ 0 :=
+      FractionalIdeal.coeIdeal_ne_zero.mpr hP0
+    have ha0 : (a : FractionalIdeal W.toAffine.CoordinateRing⁰ W.toAffine.FunctionField) ≠ 0 :=
+      FractionalIdeal.coeIdeal_ne_zero.mpr ha
+    rw [hdeg, natDegree_mul (X_sub_C_ne_zero x) hg0, natDegree_X_sub_C,
+      FractionalIdeal.coeIdeal_mul]
+    simp_rw [FractionalIdeal.count_mul _ _ hc0 ha0]
+    rw [finsum_add_distrib (finite_support_count W _) (finite_support_count W _),
+      finsum_count_XYIdeal W h, ← ih ha hg]
+    push_cast
+    ring
+
+theorem natDegree_norm_eq_finsum_count {f : W.toAffine.CoordinateRing} (hf : f ≠ 0) :
+    ((Algebra.norm F[X] f).natDegree : ℤ) = ∑ᶠ v : HeightOneSpectrum W.toAffine.CoordinateRing,
+      FractionalIdeal.count W.toAffine.FunctionField v
+        ((Ideal.span {f} : Ideal _) :
+          FractionalIdeal W.toAffine.CoordinateRing⁰ W.toAffine.FunctionField) := by
+  refine natDegree_eq_finsum_count_of_relNorm_eq W ?_ ?_
+  · rwa [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
+  · rw [Ideal.relNorm_singleton, Algebra.intNorm_eq_norm]
+
+end GroundTheory.Arith.Abelian
+end
+
+section
 namespace GroundTheory.Arith.Abelian
 
 open Polynomial WeierstrassCurve WeierstrassCurve.Affine WeierstrassCurve.Affine.CoordinateRing
@@ -265,3 +583,4 @@ theorem exists_valuationPoint_eq_exp_neg_one (P : W.toAffine.Point) :
 end Affine
 
 end GroundTheory.Arith.Abelian
+end

@@ -1,14 +1,1387 @@
 import Mathlib
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.NGData
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowLatticeAutomorphismsEqAdaptedModUnipotent
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSubgroupUnitriangularPairsKeepingDoubleCosStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSubgroupUnitriangularPairsKeepingDoubleCos
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermsSameRationalInnerClassAreTranslates
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardStabilizerInnerDatumRowDoubleCoset
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LocClosed
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameAdaptedIsometryOfFixingBothFrames
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniqueIsometryFixingBothFramesOfFrameAdapt
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowLatticesSameInnerDifferByRationalUnipotent
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermRowDoubleCosetEqIffIsometriesStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsTermTranslateByAdaptedLatticeAutomorphisms
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BaseFrameLatticeInvariantUnderAdaptedTranslate
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MatchingTranslateSameRowDoubleCoset
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NilradicalLatticeZMemSpan
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralRowFrameMapIsometry
+import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermRowDoubleCosetEqIffIsometries
 
+section
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_subgroup_unitriangular_pairs_keeping_doubleCoset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (t : TauC Y u u'), ∃ B : Subgroup (GV D × GV D), (∀ b, b ∈ B ↔ b.1 ∈ Aut0 (lf D (X.Fu u)) t.lam ∧ b.2 ∈ Aut0 (lf D (X.Fu u')) t.lam' ∧ KeyEq (lf D (X.Fu u)) (lf D (X.Fu u')) t.lam t.lin (b.1 * t.lin * b.2⁻¹)) ∧ (∀ n ∈ NLam t.lam (lf D (X.Fu u)), ∀ n' ∈ NLam t.lam' (lf D (X.Fu u')), (n, n') ∈ B) ∧ ∀ a₁ ∈ Aut0 (lf D (X.Fu u)) t.lam, ∀ a₂ ∈ Aut0 (lf D (X.Fu u)) t.lam, ∀ a₁' ∈ Aut0 (lf D (X.Fu u')) t.lam', ∀ a₂' ∈ Aut0 (lf D (X.Fu u')) t.lam', (KeyEq (lf D (X.Fu u)) (lf D (X.Fu u')) t.lam (a₁ * t.lin * a₁'⁻¹) (a₂ * t.lin * a₂'⁻¹) ↔ (a₁⁻¹ * a₂, a₁'⁻¹ * a₂') ∈ B) := by
+  first | exact @GlobalTheory.KeyGroup.keyStab_subgroup | exact GlobalTheory.KeyGroup.keyStab_subgroup | (intros; apply GlobalTheory.KeyGroup.keyStab_subgroup <;> assumption)
+end
+
+section
+section
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+noncomputable section
+namespace GlobalTheory.GdatIota
+open Formalism.L2.SG.Pf GlobalTheory.StabCnt
+
+variable {D : D7} {T T' : D.host.E}
+
+theorem mem_gmap' (φ : GV D) (M : LV D) (x : (VS D).V) : x ∈ Formalism.HermitianLatticesTheory.gmap φ M ↔ φ.symm x ∈ M := by
+  rw [← gmap_apply_mem φ M, LinearEquiv.apply_symm_apply]
+
+theorem xlam_adapt {A B : LFlag (VS D) D.R.rS T} {φ : GV D} (h : Adapt φ A B) (M : LV D) :
+    XLam (Formalism.HermitianLatticesTheory.gmap φ M) B = Formalism.HermitianLatticesTheory.gmap φ (XLam M A) := by
+  rw [XLam, XLam, gmap_inf', gmap_toO, adapt_xsp h]
+
+theorem lrep_adapt {A B : LFlag (VS D) D.R.rS T} {φ : GV D} (h : Adapt φ A B) (M : LV D) :
+    Lrep (Formalism.HermitianLatticesTheory.gmap φ M) B = Formalism.HermitianLatticesTheory.gmap φ (Lrep M A) := by
+  rw [Lrep, Lrep, gmap_inf', gmap_toO, adapt_orth h]
+
+theorem lsub_adapt {A B : LFlag (VS D) D.R.rS T} {φ : GV D} (h : Adapt φ A B) (M : LV D) :
+    Lsub (Formalism.HermitianLatticesTheory.gmap φ M) B = Formalism.HermitianLatticesTheory.gmap φ (Lsub M A) := by
+  rw [Lsub, Lsub, lrep_adapt h, gmap_inf', gmap_sup', gmap_toO, gmap_toO, adapt_xsp h, adapt_orth h]
+
+theorem ngx_adapt {A B : LFlag (VS D) D.R.rS T} {A' B' : LFlag (VS D) D.R.rS T'} {φ : GV D} (h : Adapt φ A B)
+    (h' : Adapt φ A' B') (M : LV D) (n : ℕ) :
+    NgX (Formalism.HermitianLatticesTheory.gmap φ M) n B B' = Formalism.HermitianLatticesTheory.gmap φ (NgX M n A A') := by
+  rw [NgX, NgX, gmap_sup', gmap_sup', gmap_ideal_smul, xlam_adapt h, xlam_adapt h']
+
+theorem aut_lrep {F : LFlag (VS D) D.R.rS T} {M : LV D} {A : GV D} (hA : A ∈ Aut0 F M) (x : (VS D).V) :
+    A x ∈ Lrep M F ↔ x ∈ Lrep M F := by
+  have := lrep_adapt hA.1 M
+  rw [hA.2] at this
+  rw [← gmap_apply_mem A (Lrep M F) x, ← this]
+
+theorem aut_lrep_symm {F : LFlag (VS D) D.R.rS T} {M : LV D} {A : GV D} (hA : A ∈ Aut0 F M) (x : (VS D).V) :
+    A.symm x ∈ Lrep M F ↔ x ∈ Lrep M F := by
+  rw [← aut_lrep hA (A.symm x), LinearEquiv.apply_symm_apply]
+
+theorem lsub_eq {F : LFlag (VS D) D.R.rS T} {M : LV D} {A h : GV D} (hA : A ∈ Aut0 F M) (hh : Adapt h F F)
+    (hc : ∀ x ∈ orth (VS D) (Xsp F), h x - A x ∈ Xsp F) : Lsub (Formalism.HermitianLatticesTheory.gmap h M) F = Lsub M F := by
+  rw [lsub_adapt hh]
+  ext y
+  rw [mem_gmap']
+  constructor
+  · rintro ⟨hy, hy'⟩
+    obtain ⟨l, hl, ξ, hξ, e⟩ := Submodule.mem_sup.1 hy
+    have hy2 : y ∈ orth (VS D) (Xsp F) := by
+      have := mem_of_map_eq (adapt_orth hh) hy'
+      rwa [LinearEquiv.apply_symm_apply] at this
+    refine ⟨?_, hy2⟩
+    have e2 : y = A l + ((h l - A l) + h ξ) := by
+      have : y = h (l + ξ) := by rw [e, LinearEquiv.apply_symm_apply]
+      rw [this, map_add]; abel
+    rw [e2]
+    exact Submodule.add_mem_sup ((aut_lrep hA l).2 hl)
+      (show _ ∈ Xsp F from add_mem (hc l hl.2) (mem_of_map_eq (adapt_xsp hh) hξ))
+  · rintro ⟨hy, hy'⟩
+    obtain ⟨l, hl, ξ, hξ, e⟩ := Submodule.mem_sup.1 hy
+    refine ⟨?_, symm_mem_of_map_eq (adapt_orth hh) hy'⟩
+    have hm := (aut_lrep_symm hA l).2 hl
+    have h1 := hc _ hm.2
+    rw [LinearEquiv.apply_symm_apply] at h1
+    have e2 : h.symm y = A.symm l + h.symm (ξ - (h (A.symm l) - l)) := by
+      rw [← e]; simp only [map_add, map_sub, LinearEquiv.symm_apply_apply]; abel
+    rw [e2]
+    exact Submodule.add_mem_sup hm
+      (show _ ∈ Xsp F from symm_mem_of_map_eq (adapt_xsp hh) (sub_mem (show ξ ∈ Xsp F from hξ) h1))
+
+theorem ngx_shift {F : LFlag (VS D) D.R.rS T} {F' : LFlag (VS D) D.R.rS T'} {M : LV D} {n : ℕ}
+    {l m l' m' : (VS D).V} (hl : l ∈ Lrep M F) (hm : m ∈ Lrep M F) (hl' : l' ∈ Lrep M F') (hm' : m' ∈ Lrep M F')
+    (h1 : l - m ∈ Xsp F) (h2 : l' - m' ∈ Xsp F') (h : m - m' ∈ NgX M n F F') : l - l' ∈ NgX M n F F' := by
+  have e : l - l' = (m - m') + (l - m) - (l' - m') := by abel
+  rw [e]
+  refine sub_mem (add_mem h ?_) ?_
+  · exact Submodule.mem_sup_left (Submodule.mem_sup_right ⟨M.sub_mem hl.1 hm.1, h1⟩)
+  · exact Submodule.mem_sup_right ⟨M.sub_mem hl'.1 hm'.1, h2⟩
+
+theorem gdat_iff {F : LFlag (VS D) D.R.rS T} {F' : LFlag (VS D) D.R.rS T'} {M : LV D} {A A' h : GV D}
+    (hA : A ∈ Aut0 F M) (hA' : A' ∈ Aut0 F' M) (hh : Adapt h F F) (hh' : Adapt h F' F')
+    (hc : ∀ x ∈ orth (VS D) (Xsp F), h x - A x ∈ Xsp F)
+    (hc' : ∀ x ∈ orth (VS D) (Xsp F'), h x - A' x ∈ Xsp F') :
+    gdat F F' (Formalism.HermitianLatticesTheory.gmap h M) = gdat F F' M ↔
+      ∀ x' ∈ Lrep M F', ∀ l ∈ Lrep M F,
+        (l - x' ∈ NgX M (gS D) F F' ↔ A l - A' x' ∈ NgX M (gS D) F F') := by
+  have hG : ∀ p : (VS D).V × (VS D).V, p ∈ (gdat F F' (Formalism.HermitianLatticesTheory.gmap h M)).2.2 ↔
+      ∃ l' ∈ Lrep M F', ∃ l ∈ Lrep M F, p.1 - A' l' ∈ Xsp F' ∧ p.2 - A l ∈ Xsp F ∧
+        l - l' ∈ NgX M (gS D) F F' := by
+    intro p
+    show (∃ l' ∈ Lrep (Formalism.HermitianLatticesTheory.gmap h M) F', ∃ l ∈ Lrep (Formalism.HermitianLatticesTheory.gmap h M) F, p.1 - l' ∈ Xsp F' ∧
+      p.2 - l ∈ Xsp F ∧ l - l' ∈ NgX (Formalism.HermitianLatticesTheory.gmap h M) (gS D) F F') ↔ _
+    rw [lrep_adapt hh, lrep_adapt hh', ngx_adapt hh hh']
+    constructor
+    · rintro ⟨l', hl', l, hl, h1, h2, h3⟩
+      obtain ⟨m', rfl⟩ := h.surjective l'
+      obtain ⟨m, rfl⟩ := h.surjective l
+      rw [gmap_apply_mem] at hl hl'
+      rw [← map_sub, gmap_apply_mem] at h3
+      refine ⟨m', hl', m, hl, ?_, ?_, h3⟩
+      · simpa using add_mem h1 (hc' m' hl'.2)
+      · simpa using add_mem h2 (hc m hl.2)
+    · rintro ⟨m', hl', m, hl, h1, h2, h3⟩
+      refine ⟨h m', (gmap_apply_mem _ _ _).2 hl', h m, (gmap_apply_mem _ _ _).2 hl, ?_, ?_, ?_⟩
+      · simpa using sub_mem h1 (hc' m' hl'.2)
+      · simpa using sub_mem h2 (hc m hl.2)
+      · rw [← map_sub, gmap_apply_mem]; exact h3
+  have hG0 : ∀ p : (VS D).V × (VS D).V, p ∈ (gdat F F' M).2.2 ↔
+      ∃ l' ∈ Lrep M F', ∃ l ∈ Lrep M F, p.1 - l' ∈ Xsp F' ∧ p.2 - l ∈ Xsp F ∧
+        l - l' ∈ NgX M (gS D) F F' := fun p => Iff.rfl
+  constructor
+  · intro he x' hx' l hl
+    have hx2 := (aut_lrep hA' x').2 hx'
+    have hl2 := (aut_lrep hA l).2 hl
+    constructor
+    · intro hN
+      have : (A' x', A l) ∈ (gdat F F' M).2.2 := by
+        rw [← he, hG]
+        exact ⟨x', hx', l, hl, by simp, by simp, hN⟩
+      obtain ⟨m', hm', m, hm, h1, h2, h3⟩ := (hG0 _).1 this
+      exact ngx_shift hl2 hm hx2 hm' h2 h1 h3
+    · intro hN
+      have : (A' x', A l) ∈ (gdat F F' (Formalism.HermitianLatticesTheory.gmap h M)).2.2 := by
+        rw [he, hG0]
+        exact ⟨A' x', hx2, A l, hl2, by simp, by simp, hN⟩
+      obtain ⟨m', hm', m, hm, h1, h2, h3⟩ := (hG _).1 this
+      have h1' := symm_mem_of_map_eq (adapt_xsp hA'.1) h1
+      have h2' := symm_mem_of_map_eq (adapt_xsp hA.1) h2
+      simp only [map_sub, LinearEquiv.symm_apply_apply] at h1' h2'
+      exact ngx_shift hl hm hx' hm' h2' h1' h3
+  · intro hR
+    refine Prod.ext (lsub_eq hA hh hc) (Prod.ext (lsub_eq hA' hh' hc') ?_)
+    ext p
+    rw [hG, hG0]
+    constructor
+    · rintro ⟨l', hl', l, hl, h1, h2, h3⟩
+      exact ⟨A' l', (aut_lrep hA' l').2 hl', A l, (aut_lrep hA l).2 hl, h1, h2, (hR l' hl' l hl).1 h3⟩
+    · rintro ⟨l', hl', l, hl, h1, h2, h3⟩
+      obtain ⟨m', rfl⟩ := A'.surjective l'
+      obtain ⟨m, rfl⟩ := A.surjective l
+      rw [aut_lrep hA'] at hl'
+      rw [aut_lrep hA] at hl
+      exact ⟨m', hl', m, hl, h1, h2, (hR m' hl' m hl).2 h3⟩
+
+theorem aut_conj {A B : LFlag (VS D) D.R.rS T} {M : LV D} {g b : GV D} (hg : Adapt g A B) (hb : b ∈ Aut0 A M) :
+    g * b * g⁻¹ ∈ Aut0 B (Formalism.HermitianLatticesTheory.gmap g M) := by
+  refine ⟨?_, (conj_gmap g b M).2 hb.2⟩
+  rw [mul_assoc]
+  exact adapt_mul (adapt_mul (adapt_inv hg) hb.1) hg
+
+theorem gdat_iff_iotaCompat : ∀ (D : D7) (T T' : D.host.E) (F0 F : LFlag (VS D) D.R.rS T) (F0' F' : LFlag (VS D) D.R.rS T') (lam lam' Λ : LV D) (γ g h b₁ b₂ : GV D), γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT → Formalism.HermitianLatticesTheory.gmap γ lam' = lam → Adapt g F0 F → Adapt g (mapLF γ F0') F' → Λ = Formalism.HermitianLatticesTheory.gmap g lam → b₁ ∈ Aut0 F0 lam → b₂ ∈ Aut0 F0' lam' → h ∈ H0 F F' → (∀ x ∈ orth (VS D) (Xsp F), h x - (g * b₁ * g⁻¹) x ∈ Xsp F) → (∀ x ∈ orth (VS D) (Xsp F'), h x - (g * γ * b₂ * γ⁻¹ * g⁻¹) x ∈ Xsp F') → (gdat F F' (Formalism.HermitianLatticesTheory.gmap h Λ) = gdat F F' Λ ↔ IotaCompat lam F0 (mapLF γ F0') (mapLF (b₁ * γ * b₂⁻¹) F0') (b₁ * γ * b₂⁻¹ * γ⁻¹) (gS D)) := by
+  intro D T T' F0 F F0' F' lam lam' Λ γ g h b₁ b₂ hγ hlam hg hg' hΛ hb₁ hb₂ hh hc hc'
+  have hγa : Adapt γ F0' (mapLF γ F0') := adapt_mapLF hγ
+  have hc₂ : γ * b₂ * γ⁻¹ ∈ Aut0 (mapLF γ F0') lam := by
+    have := aut_conj hγa hb₂
+    rwa [hlam] at this
+  have hA := aut_conj hg hb₁
+  have hA' := aut_conj hg' hc₂
+  have e1 : g * γ * b₂ * γ⁻¹ * g⁻¹ = g * (γ * b₂ * γ⁻¹) * g⁻¹ := by group
+  rw [e1] at hc'
+  subst hΛ
+  rw [gdat_iff hA hA' (frameAdaptedIsometry_of_fixing_both_frames hh).1 (frameAdaptedIsometry_of_fixing_both_frames hh).2 hc hc', lrep_adapt hg, lrep_adapt hg', ngx_adapt hg hg']
+  have hi : b₁ * γ * b₂⁻¹ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT :=
+    Subgroup.mul_mem _ (Subgroup.mul_mem _ hb₁.1.1 hγ) (Subgroup.inv_mem _ hb₂.1.1)
+  have hβ : Adapt (b₁ * γ * b₂⁻¹ * (b₂ * γ⁻¹)) (mapLF γ F0') (mapLF (b₁ * γ * b₂⁻¹) F0') :=
+    adapt_mul (adapt_mul (adapt_inv hγa) hb₂.1) (adapt_mapLF hi)
+  have e2 : b₁ * γ * b₂⁻¹ * (b₂ * γ⁻¹) = b₁ := by group
+  rw [e2] at hβ
+  have hN := ngx_adapt hb₁.1 hβ lam (gS D)
+  rw [hb₁.2] at hN
+  have e3 : b₁ * γ * b₂⁻¹ * γ⁻¹ = b₁ * (γ * b₂ * γ⁻¹)⁻¹ := by group
+  unfold IotaCompat
+  rw [hN, e3]
+  generalize γ * b₂ * γ⁻¹ = c at hc₂ ⊢
+  have e4 : ∀ x, (b₁ * c⁻¹) (c x) = b₁ x := fun x => by
+    change b₁ (c.symm (c x)) = _
+    rw [LinearEquiv.symm_apply_apply]
+  constructor
+  · intro H x' hx' l hl
+    obtain ⟨y, rfl⟩ := c.surjective x'
+    obtain ⟨m, rfl⟩ := b₁.surjective l
+    rw [aut_lrep hc₂] at hx'
+    rw [aut_lrep hb₁] at hl
+    have := H (g y) ((gmap_apply_mem _ _ _).2 hx') (g m) ((gmap_apply_mem _ _ _).2 hl)
+    simp only [conj_apply, LinearEquiv.symm_apply_apply, ← map_sub, gmap_apply_mem] at this
+    rw [e4, ← map_sub, gmap_apply_mem]
+    exact this.symm
+  · intro H x' hx' l hl
+    obtain ⟨y, rfl⟩ := g.surjective x'
+    obtain ⟨m, rfl⟩ := g.surjective l
+    rw [gmap_apply_mem] at hx' hl
+    have := H (c y) ((aut_lrep hc₂ y).2 hx') (b₁ m) ((aut_lrep hb₁ m).2 hl)
+    rw [e4, ← map_sub, gmap_apply_mem] at this
+    simp only [conj_apply, LinearEquiv.symm_apply_apply, ← map_sub, gmap_apply_mem]
+    exact this.symm
+
+end GlobalTheory.GdatIota
+end
+end
+
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.innerDatum_stable_iff_identifications_compatible : ∀ (D : D7) (T T' : D.host.E) (F0 F : LFlag (VS D) D.R.rS T) (F0' F' : LFlag (VS D) D.R.rS T') (lam lam' Λ : LV D) (γ g h b₁ b₂ : GV D), γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT → Formalism.HermitianLatticesTheory.gmap γ lam' = lam → Adapt g F0 F → Adapt g (mapLF γ F0') F' → Λ = Formalism.HermitianLatticesTheory.gmap g lam → b₁ ∈ Aut0 F0 lam → b₂ ∈ Aut0 F0' lam' → h ∈ H0 F F' → (∀ x ∈ orth (VS D) (Xsp F), h x - (g * b₁ * g⁻¹) x ∈ Xsp F) → (∀ x ∈ orth (VS D) (Xsp F'), h x - (g * γ * b₂ * γ⁻¹ * g⁻¹) x ∈ Xsp F') → (gdat F F' (Formalism.HermitianLatticesTheory.gmap h Λ) = gdat F F' Λ ↔ IotaCompat lam F0 (mapLF γ F0') (mapLF (b₁ * γ * b₂⁻¹) F0') (b₁ * γ * b₂⁻¹ * γ⁻¹) (gS D)) := by
+  atlas_forward_decl GlobalTheory.GdatIota.gdat_iff_iotaCompat
+end
+
+section
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory
+
+private theorem orth_map_isom_eq_map_orth (D : D7) (φ : GV D) (hφ : φ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT)
+    (U : Submodule D.host.E (VS D).V) :
+    Formalism.MainNotions.S.Lat.orth (VS D) (U.map (φ : (VS D).V →ₗ[D.host.E] (VS D).V)) =
+      (Formalism.MainNotions.S.Lat.orth (VS D) U).map (φ : (VS D).V →ₗ[D.host.E] (VS D).V) := by
+  have hi : ∀ x y, (VS D).hT (φ x) (φ y) = (VS D).hT x y := hφ
+  ext v
+  simp only [Formalism.MainNotions.S.Lat.orth, Submodule.mem_iInf, LinearMap.mem_ker]
+  constructor
+  · intro hv
+    refine (Submodule.mem_map).2 ⟨φ.symm v, ?_, by simp⟩
+    simp only [Submodule.mem_iInf, LinearMap.mem_ker]
+    intro x hx
+    have h1 := hv (φ x) (Submodule.mem_map_of_mem hx)
+    rw [← hi x (φ.symm v)]
+    simpa using h1
+  · intro hv x hx
+    obtain ⟨w, hw, rfl⟩ := (Submodule.mem_map).1 hv
+    obtain ⟨y, hy, rfl⟩ := (Submodule.mem_map).1 hx
+    simp only [Submodule.mem_iInf, LinearMap.mem_ker] at hw
+    simp only [LinearEquiv.coe_coe]
+    rw [hi]
+    exact hw y hy
+
+private theorem toO_map_eq_toO_map (D : D7) (φ : GV D) (U : Submodule D.host.E (VS D).V) :
+    (Formalism.MainNotions.S.Lat.toO (VS D) U).map
+              ((φ : (VS D).V →ₗ[D.host.E] (VS D).V).restrictScalars (𝓞 D.host.E)) =
+      Formalism.MainNotions.S.Lat.toO (VS D) (U.map (φ : (VS D).V →ₗ[D.host.E] (VS D).V)) := by
+  ext v
+  simp only [Formalism.MainNotions.S.Lat.toO, Submodule.mem_map, Submodule.restrictScalars_mem,
+    LinearMap.coe_restrictScalars]
+
+theorem lsub_gmap_of_map_Xsp_eq :
+    ∀ (D : D7) (T : D.host.E) (F₁ F₂ : LFlag (VS D) D.R.rS T) (φ : GV D) (M : LV D),
+      φ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT →
+      (Xsp F₁).map (φ : (VS D).V →ₗ[D.host.E] (VS D).V) = Xsp F₂ →
+      Lsub (Formalism.HermitianLatticesTheory.gmap φ M) F₂ = Formalism.HermitianLatticesTheory.gmap φ (Lsub M F₁) := by
+  intro D T F₁ F₂ φ M hφ hX
+  have hinj : Function.Injective
+      ((φ : (VS D).V →ₗ[D.host.E] (VS D).V).restrictScalars (𝓞 D.host.E)) := φ.injective
+  unfold Formalism.MainNotions.S.Lat.Lsub Formalism.MainNotions.S.Lat.Lrep Formalism.HermitianLatticesTheory.gmap
+  rw [Submodule.map_inf _ hinj, Submodule.map_sup, Submodule.map_inf _ hinj,
+    toO_map_eq_toO_map, toO_map_eq_toO_map, ← orth_map_isom_eq_map_orth D φ hφ, hX]
+
+end GlobalTheory
+end
+
+section
+section
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+noncomputable section
+namespace GlobalTheory.StabCnt
+open Formalism.L2.SG.Pf
+
+variable {D : D7}
+
+theorem onto_gmap_mul (a b : GV D) (M : LV D) :
+    Formalism.HermitianLatticesTheory.gmap (a * b) M = Formalism.HermitianLatticesTheory.gmap a (Formalism.HermitianLatticesTheory.gmap b M) := by
+  ext x
+  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map]
+  constructor
+  · rintro ⟨y, hy, rfl⟩
+    exact ⟨b y, ⟨y, hy, rfl⟩, rfl⟩
+  · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
+    exact ⟨y, hy, rfl⟩
+
+theorem onto_gmap_one (M : LV D) : Formalism.HermitianLatticesTheory.gmap (1 : GV D) M = M := by
+  ext x
+  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map]
+  constructor
+  · rintro ⟨y, hy, rfl⟩
+    exact hy
+  · intro hx
+    exact ⟨x, hx, rfl⟩
+
+theorem onto_side {T : D.host.E} {A B : LFlag (VS D) D.R.rS T} {M : LV D} {G h : GV D}
+    (hG : Adapt G A B) (hh : Adapt h B B)
+    (hL : Lsub (Formalism.HermitianLatticesTheory.gmap h (Formalism.HermitianLatticesTheory.gmap G M)) B = Lsub (Formalism.HermitianLatticesTheory.gmap G M) B)
+    (hs : ∀ σ, Adapt σ A A → Lsub (Formalism.HermitianLatticesTheory.gmap σ M) A = Lsub M A →
+      ∃ n ∈ NRat A, Formalism.HermitianLatticesTheory.gmap (n * σ) M = M) :
+    ∃ n ∈ NRat A, n * (G⁻¹ * h * G) ∈ Aut0 A M ∧
+      ∀ x ∈ orth (VS D) (Xsp B), h x - (G * (n * (G⁻¹ * h * G)) * G⁻¹) x ∈ Xsp B := by
+  have hGi : Adapt G⁻¹ B A := adapt_inv hG
+  have hσ : Adapt (G⁻¹ * h * G) A A := by
+    have h2 : Adapt (G⁻¹ * (h * G)) A A := adapt_mul (adapt_mul hG hh) hGi
+    rwa [mul_assoc]
+  have hGiso : G ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := hG.1
+  have hmap : (Xsp A).map (G : (VS D).V →ₗ[D.host.E] (VS D).V) = Xsp B := adapt_xsp hG
+
+  have hinj : ∀ X Y : LV D, Formalism.HermitianLatticesTheory.gmap G X = Formalism.HermitianLatticesTheory.gmap G Y → X = Y := by
+    intro X Y hXY
+    have hXY' := congrArg (Formalism.HermitianLatticesTheory.gmap G⁻¹) hXY
+    rwa [← onto_gmap_mul, ← onto_gmap_mul, inv_mul_cancel, onto_gmap_one, onto_gmap_one] at hXY'
+  have e : G * (G⁻¹ * h * G) = h * G := by group
+  have hLσ : Lsub (Formalism.HermitianLatticesTheory.gmap (G⁻¹ * h * G) M) A = Lsub M A := by
+    apply hinj
+    rw [← lsub_gmap_of_map_Xsp_eq D T A B G _ hGiso hmap, ← lsub_gmap_of_map_Xsp_eq D T A B G M hGiso hmap,
+      ← onto_gmap_mul, e, onto_gmap_mul]
+    exact hL
+  obtain ⟨n, hn, hnM⟩ := hs _ hσ hLσ
+  refine ⟨n, hn, ?_, ?_⟩
+  · have hA : Adapt (n * (G⁻¹ * h * G)) A A := adapt_mul hσ (adapt_nrat hn)
+    show Adapt _ A A ∧ Formalism.HermitianLatticesTheory.gmap _ M = M
+    exact ⟨hA, hnM⟩
+  · intro x hx
+
+    obtain ⟨-, -, hm3⟩ := nrat_conj hG hn
+    have hhx : h x ∈ orth (VS D) (Xsp B) := mem_of_map_eq (adapt_orth hh) hx
+    have e' : G * (n * (G⁻¹ * h * G)) * G⁻¹ = G * n * G⁻¹ * h := by group
+    rw [e']
+    show h x - (G * n * G⁻¹) (h x) ∈ Xsp B
+    rw [← neg_sub]
+    exact neg_mem (hm3 (h x) hhx)
+
+theorem stab_onto : ∀ (D : D7) (T T' : D.host.E) (F0 F : LFlag (VS D) D.R.rS T) (F0' F' : LFlag (VS D) D.R.rS T') (lam lam' Λ : LV D) (γ g h : GV D), γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT → Formalism.HermitianLatticesTheory.gmap γ lam' = lam → Adapt g F0 F → Adapt g (mapLF γ F0') F' → Λ = Formalism.HermitianLatticesTheory.gmap g lam → (∀ σ, Adapt σ F0 F0 → Lsub (Formalism.HermitianLatticesTheory.gmap σ lam) F0 = Lsub lam F0 → ∃ n ∈ NRat F0, Formalism.HermitianLatticesTheory.gmap (n * σ) lam = lam) → (∀ σ, Adapt σ F0' F0' → Lsub (Formalism.HermitianLatticesTheory.gmap σ lam') F0' = Lsub lam' F0' → ∃ n ∈ NRat F0', Formalism.HermitianLatticesTheory.gmap (n * σ) lam' = lam') → h ∈ stabL F F' Λ → ∃ b, GlobalTheory.StabCnt.InB F0 F0' lam lam' γ b ∧ GlobalTheory.StabCnt.Corr F0 F F0' F' γ g b h := by
+  intro D T T' F0 F F0' F' lam lam' Λ γ g h hγ hlam hg hg' hΛ hs hs' hstab
+  obtain ⟨hH0, hdat⟩ := hstab
+  have hL1 : Lsub (Formalism.HermitianLatticesTheory.gmap h Λ) F = Lsub Λ F := congrArg Prod.fst hdat
+  have hL2 : Lsub (Formalism.HermitianLatticesTheory.gmap h Λ) F' = Lsub Λ F' := congrArg (fun p => p.2.1) hdat
+  obtain ⟨hhF, hhF'⟩ := frameAdaptedIsometry_of_fixing_both_frames hH0
+  have hgγ : Adapt (g * γ) F0' F' := adapt_mul (adapt_mapLF hγ) hg'
+  have e2 : Formalism.HermitianLatticesTheory.gmap (g * γ) lam' = Λ := by rw [onto_gmap_mul, hlam, hΛ]
+  obtain ⟨n, hn, hb1, hx1⟩ := onto_side (M := lam) hg hhF (by rw [← hΛ]; exact hL1) hs
+  obtain ⟨n', hn', hb2, hx2⟩ := onto_side (M := lam') hgγ hhF' (by rw [e2]; exact hL2) hs'
+
+  have key : n * (g⁻¹ * h * g) * γ * (n' * ((g * γ)⁻¹ * h * (g * γ)))⁻¹ = n * γ * n'⁻¹ := by group
+  have e3 : g * γ * (n' * ((g * γ)⁻¹ * h * (g * γ))) * γ⁻¹ * g⁻¹ =
+      g * γ * (n' * ((g * γ)⁻¹ * h * (g * γ))) * (g * γ)⁻¹ := by group
+  have hx2' : ∀ x ∈ orth (VS D) (Xsp F'),
+      h x - (g * γ * (n' * ((g * γ)⁻¹ * h * (g * γ))) * γ⁻¹ * g⁻¹) x ∈ Xsp F' := by
+    rw [e3]; exact hx2
+  have hI := (GlobalTheory.T.innerDatum_stable_iff_identifications_compatible D T T' F0 F F0' F' lam lam' Λ γ g h (n * (g⁻¹ * h * g))
+    (n' * ((g * γ)⁻¹ * h * (g * γ))) hγ hlam hg hg' hΛ hb1 hb2 hH0 hx1 hx2').mp hdat
+  have e4 : h⁻¹ * (g * n⁻¹ * (n * (g⁻¹ * h * g)) * g⁻¹) = 1 := by group
+  have hF : h⁻¹ * (g * n⁻¹ * (n * (g⁻¹ * h * g)) * g⁻¹) ∈ NRat F := by rw [e4]; exact nrat_one F
+  have hF' : h⁻¹ * (g * n⁻¹ * (n * (g⁻¹ * h * g)) * g⁻¹) ∈ NRat F' := by rw [e4]; exact nrat_one F'
+  have hKey : KeyEq F0 F0' lam γ (n * (g⁻¹ * h * g) * γ * (n' * ((g * γ)⁻¹ * h * (g * γ)))⁻¹) :=
+    ⟨⟨n, hn, n'⁻¹, nrat_inv hn', key⟩, hI⟩
+  refine ⟨(n * (g⁻¹ * h * g), n' * ((g * γ)⁻¹ * h * (g * γ))), ?_, ?_⟩
+  · exact ⟨hb1, hb2, hKey⟩
+  · exact ⟨hH0, n, hn, n'⁻¹, nrat_inv hn', key, hF, hF'⟩
+
+end GlobalTheory.StabCnt
+end
+end
+
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.innerDatumStabiliser_from_adapted_pair : ∀ (D : D7) (T T' : D.host.E) (F0 F : LFlag (VS D) D.R.rS T) (F0' F' : LFlag (VS D) D.R.rS T') (lam lam' Λ : LV D) (γ g h : GV D), γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT → Formalism.HermitianLatticesTheory.gmap γ lam' = lam → Adapt g F0 F → Adapt g (mapLF γ F0') F' → Λ = Formalism.HermitianLatticesTheory.gmap g lam → (∀ σ, Adapt σ F0 F0 → Lsub (Formalism.HermitianLatticesTheory.gmap σ lam) F0 = Lsub lam F0 → ∃ n ∈ NRat F0, Formalism.HermitianLatticesTheory.gmap (n * σ) lam = lam) → (∀ σ, Adapt σ F0' F0' → Lsub (Formalism.HermitianLatticesTheory.gmap σ lam') F0' = Lsub lam' F0' → ∃ n ∈ NRat F0', Formalism.HermitianLatticesTheory.gmap (n * σ) lam' = lam') → h ∈ stabL F F' Λ → ∃ b, GlobalTheory.StabCnt.InB F0 F0' lam lam' γ b ∧ GlobalTheory.StabCnt.Corr F0 F F0' F' γ g b h := by
+  atlas_forward_decl GlobalTheory.StabCnt.stab_onto
+end
+
+section
+section
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+noncomputable section
+namespace GlobalTheory.StabCnt
+open Formalism.L2.SG.Pf
+
+variable {D : D7} {T T' : D.host.E}
+
+theorem mul_mem_isometriesFixingBothFrames {F : LFlag (VS D) D.R.rS T} {F' : LFlag (VS D) D.R.rS T'} {h k : GV D} (hh : h ∈ H0 F F')
+    (hk : k ∈ H0 F F') : h * k ∈ H0 F F' :=
+  ⟨(Formalism.HermitianLatticesTheory.isom (VS D).hT).mul_mem hh.1 hk.1, fun a => by rw [le_mul_app, hk.2.1 a, hh.2.1 a],
+    fun a => by rw [le_mul_app, hk.2.2 a, hh.2.2 a]⟩
+
+theorem principalPolarisation_exists_unique_section (F : LFlag (VS D) D.R.rS T) (F' : LFlag (VS D) D.R.rS T') : (1 : GV D) ∈ H0 F F' :=
+  ⟨(Formalism.HermitianLatticesTheory.isom (VS D).hT).one_mem, fun _ => rfl, fun _ => rfl⟩
+
+theorem nlam_iff_nrat {F0 : LFlag (VS D) D.R.rS T} {lam : LV D} {b : GV D} (hb : b ∈ Aut0 F0 lam) :
+    b ∈ NLam lam F0 ↔ b ∈ NRat F0 :=
+  ⟨fun h => ⟨h.1.1, h.2.1, h.2.2⟩, fun h => ⟨⟨h.1, hb.2⟩, h.2.1, h.2.2⟩⟩
+
+section Corr
+
+variable {F0 F : LFlag (VS D) D.R.rS T} {F0' F' : LFlag (VS D) D.R.rS T'} {γ g : GV D}
+
+theorem s_adapt (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) (hg : Adapt g F0 F) (hg' : Adapt g (mapLF γ F0') F')
+    {b₁ b₂ n n' : GV D} (hb1 : Adapt b₁ F0 F0) (hb2 : Adapt b₂ F0' F0') (hn : n ∈ NRat F0) (hn' : n' ∈ NRat F0')
+    (he : b₁ * γ * b₂⁻¹ = n * γ * n') :
+    Adapt (g * n⁻¹ * b₁ * g⁻¹) F F ∧ Adapt (g * n⁻¹ * b₁ * g⁻¹) F' F' ∧
+      g * n⁻¹ * b₁ * g⁻¹ = (g * γ) * (n' * b₂) * (g * γ)⁻¹ := by
+  have e1 : n⁻¹ * b₁ = γ * n' * b₂ * γ⁻¹ := by
+    calc n⁻¹ * b₁ = n⁻¹ * (b₁ * γ * b₂⁻¹) * b₂ * γ⁻¹ := by group
+      _ = n⁻¹ * (n * γ * n') * b₂ * γ⁻¹ := by rw [he]
+      _ = γ * n' * b₂ * γ⁻¹ := by group
+  have hseq : g * n⁻¹ * b₁ * g⁻¹ = (g * γ) * (n' * b₂) * (g * γ)⁻¹ := by
+    calc g * n⁻¹ * b₁ * g⁻¹ = g * (n⁻¹ * b₁) * g⁻¹ := by group
+      _ = g * (γ * n' * b₂ * γ⁻¹) * g⁻¹ := by rw [e1]
+      _ = (g * γ) * (n' * b₂) * (g * γ)⁻¹ := by group
+  have hG : Adapt (g * γ) F0' F' := adapt_mul (adapt_mapLF hγ) hg'
+  refine ⟨adapt_mul (adapt_inv hg) (adapt_mul hb1 (adapt_mul (adapt_nrat (nrat_inv hn)) hg)), ?_, hseq⟩
+  rw [hseq]
+  exact adapt_mul (adapt_inv hG) (adapt_mul (adapt_mul hb2 (adapt_nrat hn')) hG)
+
+theorem cong_mod {A0 A : LFlag (VS D) D.R.rS T} {a s μ n b : GV D} (ha : Adapt a A0 A) (hs : Adapt s A A)
+    (hμ : μ ∈ NRat A) (hn : n ∈ NRat A0) (hb : Adapt b A0 A0) (hseq : s = a * (n * b) * a⁻¹) :
+    ∀ x ∈ orth (VS D) (Xsp A), (s * μ⁻¹) x - (a * b * a⁻¹) x ∈ Xsp A := by
+  intro x hx
+  have e : (s * μ⁻¹) x - (a * b * a⁻¹) x = s (μ⁻¹ x - x) + a (n (b (a⁻¹ x)) - b (a⁻¹ x)) := by
+    rw [hseq]
+    simp only [le_mul_app, map_sub]
+    abel
+  rw [e]
+  refine add_mem (mem_of_map_eq (adapt_xsp hs) ((nrat_inv hμ).2.2 x hx)) ?_
+  refine mem_of_map_eq (adapt_xsp ha) (hn.2.2 _ ?_)
+  exact mem_of_map_eq (adapt_orth hb) (symm_mem_of_map_eq (adapt_orth ha) hx)
+
+variable (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) (hg : Adapt g F0 F) (hg' : Adapt g (mapLF γ F0') F')
+  (hI : ∀ s, Adapt s F F → Adapt s F' F' → ∃! h, h ∈ H0 F F' ∧ h⁻¹ * s ∈ NRat F ∧ h⁻¹ * s ∈ NRat F')
+include hγ hg hg'
+
+include hI in
+theorem corr_exists {lam lam' : LV D} {b : GV D × GV D} (hb : InB F0 F0' lam lam' γ b) :
+    ∃ h, Corr F0 F F0' F' γ g b h := by
+  obtain ⟨⟨n, hn, n', hn', he⟩, -⟩ := hb.2.2
+  obtain ⟨hs1, hs2, -⟩ := s_adapt hγ hg hg' hb.1.1 hb.2.1.1 hn hn' he
+  obtain ⟨h, ⟨hh, h1, h2⟩, -⟩ := hI _ hs1 hs2
+  exact ⟨h, hh, n, hn, n', hn', he, h1, h2⟩
+
+include hI in
+theorem corr_unique {b : GV D × GV D} (hb1 : Adapt b.1 F0 F0) (hb2 : Adapt b.2 F0' F0') {h k : GV D}
+    (hh : Corr F0 F F0' F' γ g b h) (hk : Corr F0 F F0' F' γ g b k) : h = k := by
+  obtain ⟨hh0, n, hn, n', hn', he, h1, h2⟩ := hh
+  obtain ⟨hk0, m, hm, m', hm', he2, k1, k2⟩ := hk
+  obtain ⟨hs1, hs2, hseq⟩ := s_adapt hγ hg hg' hb1 hb2 hn hn' he
+  obtain ⟨-, -, hteq⟩ := s_adapt hγ hg hg' hb1 hb2 hm hm' he2
+  have hG : Adapt (g * γ) F0' F' := adapt_mul (adapt_mapLF hγ) hg'
+  have tF : (g * m⁻¹ * b.1 * g⁻¹)⁻¹ * (g * n⁻¹ * b.1 * g⁻¹) ∈ NRat F := by
+    have e : (g * m⁻¹ * b.1 * g⁻¹)⁻¹ * (g * n⁻¹ * b.1 * g⁻¹) = (g * b.1⁻¹) * (m * n⁻¹) * (g * b.1⁻¹)⁻¹ := by group
+    rw [e]; exact nrat_conj (adapt_mul (adapt_inv hb1) hg) (nrat_mul hm (nrat_inv hn))
+  have tF' : (g * m⁻¹ * b.1 * g⁻¹)⁻¹ * (g * n⁻¹ * b.1 * g⁻¹) ∈ NRat F' := by
+    have e : (g * m⁻¹ * b.1 * g⁻¹)⁻¹ * (g * n⁻¹ * b.1 * g⁻¹) =
+        ((g * γ) * b.2⁻¹) * (m'⁻¹ * n') * ((g * γ) * b.2⁻¹)⁻¹ := by rw [hseq, hteq]; group
+    rw [e]; exact nrat_conj (adapt_mul (adapt_inv hb2) hG) (nrat_mul (nrat_inv hm') hn')
+  obtain ⟨x, -, hu⟩ := hI _ hs1 hs2
+  have ek : k⁻¹ * (g * n⁻¹ * b.1 * g⁻¹) = (k⁻¹ * (g * m⁻¹ * b.1 * g⁻¹)) * ((g * m⁻¹ * b.1 * g⁻¹)⁻¹ * (g * n⁻¹ * b.1 * g⁻¹)) := by group
+  rw [hu h ⟨hh0, h1, h2⟩, hu k ⟨hk0, by rw [ek]; exact nrat_mul k1 tF, by rw [ek]; exact nrat_mul k2 tF'⟩]
+
+theorem corr_mul {lam lam' : LV D} {b c : GV D × GV D} (hb : InB F0 F0' lam lam' γ b)
+    (hc : InB F0 F0' lam lam' γ c) {h k : GV D} (hh : Corr F0 F F0' F' γ g b h)
+    (hk : Corr F0 F F0' F' γ g c k) : Corr F0 F F0' F' γ g (b * c) (h * k) := by
+  obtain ⟨hh0, n, hn, n', hn', he, h1, h2⟩ := hh
+  obtain ⟨hk0, m, hm, m', hm', hec, k1, k2⟩ := hk
+  have hk1 := (frameAdaptedIsometry_of_fixing_both_frames hk0).1
+  have hk2 := (frameAdaptedIsometry_of_fixing_both_frames hk0).2
+  refine ⟨mul_mem_isometriesFixingBothFrames hh0 hk0, b.1 * m * b.1⁻¹ * n, nrat_mul (nrat_conj hb.1.1 hm) hn,
+    n' * (b.2 * m' * b.2⁻¹), nrat_mul hn' (nrat_conj hb.2.1.1 hm'), ?_, ?_, ?_⟩
+  · show b.1 * c.1 * γ * (b.2 * c.2)⁻¹ = _
+    calc b.1 * c.1 * γ * (b.2 * c.2)⁻¹ = b.1 * (c.1 * γ * c.2⁻¹) * b.2⁻¹ := by group
+      _ = b.1 * (m * γ * m') * b.2⁻¹ := by rw [hec]
+      _ = b.1 * m * b.1⁻¹ * (b.1 * γ * b.2⁻¹) * (b.2 * m' * b.2⁻¹) := by group
+      _ = b.1 * m * b.1⁻¹ * (n * γ * n') * (b.2 * m' * b.2⁻¹) := by rw [he]
+      _ = _ := by group
+  · have e : (h * k)⁻¹ * (g * (b.1 * m * b.1⁻¹ * n)⁻¹ * (b * c).1 * g⁻¹) =
+        (k⁻¹ * (h⁻¹ * (g * n⁻¹ * b.1 * g⁻¹)) * k⁻¹⁻¹) * (k⁻¹ * (g * m⁻¹ * c.1 * g⁻¹)) := by
+      show _ = _; simp only [Prod.fst_mul]; group
+    rw [e]; exact nrat_mul (nrat_conj (adapt_inv hk1) h1) k1
+  · have e : (h * k)⁻¹ * (g * (b.1 * m * b.1⁻¹ * n)⁻¹ * (b * c).1 * g⁻¹) =
+        (k⁻¹ * (h⁻¹ * (g * n⁻¹ * b.1 * g⁻¹)) * k⁻¹⁻¹) * (k⁻¹ * (g * m⁻¹ * c.1 * g⁻¹)) := by
+      show _ = _; simp only [Prod.fst_mul]; group
+    rw [e]; exact nrat_mul (nrat_conj (adapt_inv hk2) h2) k2
+
+theorem corr_stab {lam lam' Λ : LV D} (hγl : Formalism.HermitianLatticesTheory.gmap γ lam' = lam) (hΛ : Λ = Formalism.HermitianLatticesTheory.gmap g lam)
+    {b : GV D × GV D} (hb : InB F0 F0' lam lam' γ b) {h : GV D} (hh : Corr F0 F F0' F' γ g b h) :
+    h ∈ stabL F F' Λ := by
+  obtain ⟨hh0, n, hn, n', hn', he, h1, h2⟩ := hh
+  obtain ⟨hs1, hs2, hseq⟩ := s_adapt hγ hg hg' hb.1.1 hb.2.1.1 hn hn' he
+  have hG : Adapt (g * γ) F0' F' := adapt_mul (adapt_mapLF hγ) hg'
+  have hh' : h = (g * n⁻¹ * b.1 * g⁻¹) * (h⁻¹ * (g * n⁻¹ * b.1 * g⁻¹))⁻¹ := by group
+  refine ⟨hh0, (GlobalTheory.T.innerDatum_stable_iff_identifications_compatible D T T' F0 F F0' F' lam lam' Λ γ g h b.1 b.2 hγ hγl hg hg' hΛ hb.1 hb.2.1 hh0
+    ?_ ?_).2 hb.2.2.2⟩
+  · intro x hx
+    rw [hh']
+    exact cong_mod hg hs1 h1 (nrat_inv hn) hb.1.1 (by group) x hx
+  · intro x hx
+    rw [hh', show g * γ * b.2 * γ⁻¹ * g⁻¹ = (g * γ) * b.2 * (g * γ)⁻¹ by group]
+    exact cong_mod hG hs2 h2 hn' hb.2.1.1 hseq x hx
+
+include hI in
+theorem corr_ker {lam lam' : LV D} {b : GV D × GV D} (hb : InB F0 F0' lam lam' γ b) {h : GV D}
+    (hh : Corr F0 F F0' F' γ g b h) : h = 1 ↔ b.1 ∈ NLam lam F0 ∧ b.2 ∈ NLam lam' F0' := by
+  obtain ⟨hh0, n, hn, n', hn', he, h1, h2⟩ := hh
+  obtain ⟨hs1, hs2, hseq⟩ := s_adapt hγ hg hg' hb.1.1 hb.2.1.1 hn hn' he
+  have hG : Adapt (g * γ) F0' F' := adapt_mul (adapt_mapLF hγ) hg'
+  rw [nlam_iff_nrat hb.1, nlam_iff_nrat hb.2.1]
+  constructor
+  · rintro rfl
+    rw [inv_one, one_mul] at h1 h2
+    constructor
+    · have c := nrat_conj (adapt_inv hg) h1
+      have e : g⁻¹ * (g * n⁻¹ * b.1 * g⁻¹) * g⁻¹⁻¹ = n⁻¹ * b.1 := by group
+      rw [e] at c
+      have := nrat_mul hn c
+      rwa [mul_inv_cancel_left] at this
+    · rw [hseq] at h2
+      have c := nrat_conj (adapt_inv hG) h2
+      have e : (g * γ)⁻¹ * ((g * γ) * (n' * b.2) * (g * γ)⁻¹) * (g * γ)⁻¹⁻¹ = n' * b.2 := by group
+      rw [e] at c
+      have := nrat_mul (nrat_inv hn') c
+      rwa [inv_mul_cancel_left] at this
+  · rintro ⟨c1, c2⟩
+    have sF : g * n⁻¹ * b.1 * g⁻¹ ∈ NRat F := by
+      have e : g * n⁻¹ * b.1 * g⁻¹ = g * (n⁻¹ * b.1) * g⁻¹ := by group
+      rw [e]; exact nrat_conj hg (nrat_mul (nrat_inv hn) c1)
+    have sF' : g * n⁻¹ * b.1 * g⁻¹ ∈ NRat F' := by
+      rw [hseq]; exact nrat_conj hG (nrat_mul hn' c2)
+    obtain ⟨x, -, hu⟩ := hI _ hs1 hs2
+    rw [hu h ⟨hh0, h1, h2⟩, hu 1 ⟨principalPolarisation_exists_unique_section F F', by rwa [inv_one, one_mul], by rwa [inv_one, one_mul]⟩]
+
+end Corr
+
+theorem card_of_hom {G : Type*} [Group G] {B : Subgroup (G × G)} {N N' : Subgroup G} (φ : B →* G) (S : Set G)
+    (hR : ∀ h, h ∈ φ.range ↔ h ∈ S) (hK : ∀ b : B, φ b = 1 ↔ (b : G × G).1 ∈ N ∧ (b : G × G).2 ∈ N') :
+    Nat.card S = (N.prod N').relIndex B := by
+  have hker : φ.ker = (N.prod N').subgroupOf B := by
+    ext b
+    rw [MonoidHom.mem_ker, Subgroup.mem_subgroupOf, Subgroup.mem_prod, hK]
+  have e1 : Nat.card S = Nat.card φ.range :=
+    Nat.card_congr (Equiv.subtypeEquivRight fun h => (hR h).symm)
+  rw [e1, ← Nat.card_congr (QuotientGroup.quotientKerEquivRange φ).toEquiv, Subgroup.relIndex, ← hker]
+  rfl
+
+theorem stab_card : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (w : Point D.host.E (D.R.rS + 1)), ZhatOM (ZhatL F F') = ptMat w → Gval F F' ≠ 0 → ∀ (t : TauC Y u u') (Λ : LV D), TG F F' t Λ → ∀ (B : Subgroup (GV D × GV D)) (N N' : Subgroup (GV D)), (∀ b, b ∈ B ↔ b.1 ∈ Aut0 (lf D (X.Fu u)) t.lam ∧ b.2 ∈ Aut0 (lf D (X.Fu u')) t.lam' ∧ KeyEq (lf D (X.Fu u)) (lf D (X.Fu u')) t.lam t.lin (b.1 * t.lin * b.2⁻¹)) → (N : Set (GV D)) = NLam t.lam (lf D (X.Fu u)) → (N' : Set (GV D)) = NLam t.lam' (lf D (X.Fu u')) → Nat.card (stabL F F' Λ) = (N.prod N').relIndex B := by
+  intro D X Y u u' F F' w hZ hG t Λ hTG B N N' hB hN hN'
+  obtain ⟨g, hg, hg', hΛ⟩ := hTG
+  have hγ : t.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t.rep.2.2.1
+  have hγl : Formalism.HermitianLatticesTheory.gmap t.lin t.lam' = t.lam := t.rep.2.2.2.1
+  have hg2 : Adapt g (mapLF t.lin (lf D (X.Fu u'))) F' := hg'
+  have hI := GlobalTheory.T.existsUnique_isometryFixingBothFrames_of_frameAdapted D X Y u u' F F' w hZ hG
+  have hB' : ∀ b, b ∈ B ↔ InB (lf D (X.Fu u)) (lf D (X.Fu u')) t.lam t.lam' t.lin b := hB
+  have hf : ∀ b : B, ∃ h, Corr (lf D (X.Fu u)) F (lf D (X.Fu u')) F' t.lin g (b : GV D × GV D) h :=
+    fun b => corr_exists hγ hg hg2 hI ((hB' b).1 b.2)
+  let f : B → GV D := fun b => Classical.choose (hf b)
+  have hfs : ∀ b : B, Corr (lf D (X.Fu u)) F (lf D (X.Fu u')) F' t.lin g (b : GV D × GV D) (f b) :=
+    fun b => Classical.choose_spec (hf b)
+  have hAd : ∀ b : B, Adapt (b : GV D × GV D).1 (lf D (X.Fu u)) (lf D (X.Fu u)) ∧
+      Adapt (b : GV D × GV D).2 (lf D (X.Fu u')) (lf D (X.Fu u')) :=
+    fun b => ⟨((hB' b).1 b.2).1.1, ((hB' b).1 b.2).2.1.1⟩
+  let φ : B →* GV D := MonoidHom.mk' f fun b c =>
+    corr_unique hγ hg hg2 hI (hAd (b * c)).1 (hAd (b * c)).2 (hfs (b * c))
+      (corr_mul hγ hg hg2 ((hB' b).1 b.2) ((hB' c).1 c.2) (hfs b) (hfs c))
+  refine card_of_hom φ _ (fun h => ⟨?_, fun hh => ?_⟩) (fun b => ?_)
+  · rintro ⟨b, rfl⟩
+    exact corr_stab hγ hg hg2 hγl hΛ ((hB' b).1 b.2) (hfs b)
+  · have hrow : IsRowLat D (X.Fu u) t.lam := (Y.rowsOK u).1 _ t.mem
+    have hrow' : IsRowLat D (X.Fu u') t.lam' := (Y.rowsOK u').1 _ t.mem'
+    obtain ⟨b, hbB, hbC⟩ := GlobalTheory.T.innerDatumStabiliser_from_adapted_pair D _ _ (lf D (X.Fu u)) F (lf D (X.Fu u')) F' t.lam t.lam' Λ t.lin g h
+      hγ hγl hg hg2 hΛ (fun σ hσ hL => GlobalTheory.T.row_lattices_same_inner_differ_by_rational_unipotent D _ (X.Fu u) t.lam t.lam σ hrow hrow hσ hL)
+      (fun σ hσ hL => GlobalTheory.T.row_lattices_same_inner_differ_by_rational_unipotent D _ (X.Fu u') t.lam' t.lam' σ hrow' hrow' hσ hL) hh
+    refine ⟨⟨b, (hB' b).2 hbB⟩, ?_⟩
+    exact corr_unique hγ hg hg2 hI hbB.1.1 hbB.2.1.1 (hfs _) hbC
+  · have hK := corr_ker hγ hg hg2 hI ((hB' b).1 b.2) (hfs b)
+    show f b = 1 ↔ _
+    rw [hK]
+    constructor
+    · rintro ⟨h1, h2⟩
+      refine ⟨?_, ?_⟩
+      · show _ ∈ (N : Set (GV D)); rw [hN]; exact h1
+      · show _ ∈ (N' : Set (GV D)); rw [hN']; exact h2
+    · rintro ⟨h1, h2⟩
+      refine ⟨?_, ?_⟩
+      · have : (b : GV D × GV D).1 ∈ (N : Set (GV D)) := h1
+        rwa [hN] at this
+      · have : (b : GV D × GV D).2 ∈ (N' : Set (GV D)) := h2
+        rwa [hN'] at this
+
+end GlobalTheory.StabCnt
+end
+end
+
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_stabilizer_innerDatum_rowDoubleCoset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (w : Point D.host.E (D.R.rS + 1)), ZhatOM (ZhatL F F') = ptMat w → Gval F F' ≠ 0 → ∀ (t : TauC Y u u') (Λ : LV D), TG F F' t Λ → ∀ (B : Subgroup (GV D × GV D)) (N N' : Subgroup (GV D)), (∀ b, b ∈ B ↔ b.1 ∈ Aut0 (lf D (X.Fu u)) t.lam ∧ b.2 ∈ Aut0 (lf D (X.Fu u')) t.lam' ∧ KeyEq (lf D (X.Fu u)) (lf D (X.Fu u')) t.lam t.lin (b.1 * t.lin * b.2⁻¹)) → (N : Set (GV D)) = NLam t.lam (lf D (X.Fu u)) → (N' : Set (GV D)) = NLam t.lam' (lf D (X.Fu u')) → Nat.card (stabL F F' Λ) = (N.prod N').relIndex B := by
+  atlas_forward_decl GlobalTheory.StabCnt.stab_card
+end
+
+section
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
+
+namespace GlobalTheory
+
+theorem exists_int_sub_eq_mul_of_integral_over {E : Type} [Field E] [NumberField E]
+    (g : ℕ) (hg : g ≠ 0) (m : E)
+    (hm : ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal →
+      ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ ∃ o : 𝓞 E, (s : E) * m = o) :
+    ∃ ξ c : 𝓞 E, m - (ξ : E) = (g : E) * (c : E) * m := by
+  let D : Ideal (𝓞 E) := Submodule.comap (LinearMap.toSpanSingleton (𝓞 E) E m) 1
+  have hD : ∀ s : 𝓞 E, s ∈ D ↔ ∃ o : 𝓞 E, (s : E) * m = o := by
+    intro s
+    simp only [D, Submodule.mem_comap, LinearMap.toSpanSingleton_apply, Submodule.mem_one]
+    constructor
+    · rintro ⟨y, hy⟩; exact ⟨y, by rw [Algebra.smul_def] at hy; exact hy.symm⟩
+    · rintro ⟨o, ho⟩; exact ⟨o, by rw [Algebra.smul_def]; exact ho.symm⟩
+  have htop : D ⊔ Ideal.span {(g : 𝓞 E)} = ⊤ := by
+    by_contra hne
+    obtain ⟨Q, hQmax, hQ⟩ := Ideal.exists_le_maximal _ hne
+    have hgQ : (g : 𝓞 E) ∈ Q := hQ (Ideal.mem_sup_right (Ideal.mem_span_singleton_self _))
+    have hg0 : (g : 𝓞 E) ≠ 0 := by exact_mod_cast hg
+    have hQbot : Q ≠ ⊥ := fun h => hg0 (by rw [h] at hgQ; simpa using hgQ)
+    obtain ⟨s, hs, o, ho⟩ := hm ⟨Q, hQmax.isPrime, hQbot⟩ hgQ
+    exact hs (hQ (Ideal.mem_sup_left ((hD s).2 ⟨o, ho⟩)))
+  have h1 : (1 : 𝓞 E) ∈ D ⊔ Ideal.span {(g : 𝓞 E)} := by rw [htop]; trivial
+  obtain ⟨d, hd, y, hy, hdy⟩ := Submodule.mem_sup.1 h1
+  obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 hy
+  obtain ⟨o, ho⟩ := (hD d).1 hd
+  refine ⟨o, c, ?_⟩
+  have e := congrArg (fun x : 𝓞 E => (x : E)) hdy
+  push_cast at e
+  rw [← ho]
+  linear_combination (-m) * e
+
+theorem admissible_of_congr_unitriangular {E : Type} [Field E] [NumberField E] [StarRing E]
+    {S : HSpace E} {r : ℕ} (Λ : Submodule (𝓞 E) S.V) (g : ℕ) (hg : g ≠ 0) {T T' : E}
+    (F : LFlag S r T) (F' : LFlag S r T') (M : Matrix (Fin (r + 1)) (Fin (r + 1)) E)
+    (hlow : ∀ a b, b < a → M a b = 0) (hdiag : ∀ a, M a a = 1)
+    (hint : ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ a b,
+      ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ ∃ o : 𝓞 E, (s : E) * M a b = o)
+    (hloc : ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ a,
+      frame F a ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal Λ))
+    (hmod : ∀ b, ModG S Λ g (frame F' b - ∑ a, M a b • frame F a)) :
+    IsAdmissible Λ g F F' := by
+  classical
+  have key : ∀ a b, ∃ ξ c : 𝓞 E, M a b - (ξ : E) = (g : E) * (c : E) * M a b :=
+    fun a b => exists_int_sub_eq_mul_of_integral_over g hg (M a b) (fun P hP => hint P hP a b)
+  let ξ : Matrix (Fin (r + 1)) (Fin (r + 1)) (𝓞 E) := fun a b =>
+    if b < a then 0 else if a = b then 1 else (key a b).choose
+  have hξ : ∀ a b, ∃ c : 𝓞 E, M a b - ((ξ a b : 𝓞 E) : E) = (g : E) * (c : E) * M a b := by
+    intro a b
+    by_cases h1 : b < a
+    · exact ⟨0, by simp [ξ, h1, hlow a b h1]⟩
+    · by_cases h2 : a = b
+      · subst h2; exact ⟨0, by simp [ξ, hdiag]⟩
+      · obtain ⟨c, hc⟩ := (key a b).choose_spec
+        exact ⟨c, by simpa [ξ, h1, h2] using hc⟩
+  refine ⟨ξ, fun a b hab => by simp [ξ, hab], fun a => by simp [ξ], ?_⟩
+  intro b P hP
+  haveI := P.isPrime
+  have hsplit : frame F' b - frameAct (frame F) ξ b =
+      (frame F' b - ∑ a, M a b • frame F a) + ∑ a, (M a b - (ξ a b : E)) • frame F a := by
+    simp only [frameAct, sub_smul, Finset.sum_sub_distrib]; abel
+  rw [hsplit]
+  refine Submodule.add_mem _ (hmod b P hP) (Submodule.sum_mem _ fun a _ => ?_)
+  obtain ⟨c, hc⟩ := hξ a b
+  obtain ⟨t, ht, htf⟩ := hloc P hP a
+  obtain ⟨s, hs, o, ho⟩ := hint P hP a b
+  refine ⟨s * t, P.asIdeal.primeCompl.mul_mem hs ht, ?_⟩
+  rw [hc]
+  have e : (s * t) • (((g : E) * (c : E) * M a b) • frame F a) =
+      ((g : 𝓞 E) * (c * o)) • (t • frame F a) := by
+    rw [← algebraMap_smul E (s * t), ← algebraMap_smul E ((g : 𝓞 E) * (c * o)),
+      ← algebraMap_smul E t, smul_smul, smul_smul]
+    congr 1
+    simp only [map_mul, map_natCast]
+    change (s : E) * (t : E) * ((g : E) * (c : E) * M a b) = (g : E) * ((c : E) * (o : E)) * (t : E)
+    rw [← ho]; ring
+  rw [e]
+  exact Submodule.smul_mem_smul (Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self _)) htf
+
+end GlobalTheory
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frame_admissible_of_congr_unitriangular : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : StarRing E] {S : HSpace E} {r : ℕ} (Λ : Submodule (𝓞 E) S.V) (g : ℕ), g ≠ 0 → ∀ {T T' : E} (F : LFlag S r T) (F' : LFlag S r T') (M : Matrix (Fin (r + 1)) (Fin (r + 1)) E), (∀ a b, b < a → M a b = 0) → (∀ a, M a a = 1) → (∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ a b, ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ ∃ o : 𝓞 E, (s : E) * M a b = o) → (∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ a, frame F a ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal Λ)) → (∀ b, ModG S Λ g (frame F' b - ∑ a, M a b • frame F a)) → IsAdmissible Λ g F F' := by
+  atlas_forward_decl GlobalTheory.admissible_of_congr_unitriangular
+end
+
+section
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
+
+namespace GlobalTheory.FlagCoef
+
+theorem coef_integral_of_flag {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
+    (Λ : Submodule (𝓞 E) S.V) (g : ℕ) {T : E} (F : LFlag S r T) (hc : IsFixedConv Λ g F)
+    (j : ℕ) (x : S.V) (hx : x ∈ Xflag F j)
+    (hP : ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal →
+      x ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal Λ)) :
+    ∃ w : Fin r → E, x = ∑ c, w c • F.fl.e c ∧ (∀ c : Fin r, j ≤ c.val → w c = 0) ∧
+      ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ c, ∃ s : 𝓞 E, s ∉ P.asIdeal ∧
+        ∃ o : 𝓞 E, (s : E) * w c = o := by
+  classical
+  have hxa : x ∈ Submodule.span E (F.fl.e '' {i | i.1 < j}) := hx
+  obtain ⟨l, hl, hlx⟩ := (Finsupp.mem_span_image_iff_linearCombination E).1 hxa
+
+  have hxw : x = ∑ i, l i • F.fl.e i := by
+    rw [← hlx, Finsupp.linearCombination_apply, Finsupp.sum_fintype]
+    intro i
+    simp
+  refine ⟨fun c => l c, hxw, ?_, ?_⟩
+  · intro c hc
+    by_contra h
+    have hmem : c.val < j := hl (Finsupp.mem_support_iff.2 h)
+    omega
+  · intro P hgP c
+    have := P.isPrime
+    have key : ∀ {L : Submodule (𝓞 E) S.V} {y : S.V},
+        y ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal L ↔ ∃ u ∈ P.asIdeal.primeCompl, u • y ∈ L := Iff.rfl
+
+    obtain ⟨s, hs, hsx⟩ := key.1 (hP P hgP)
+    have hxX : x ∈ Submodule.span E (Set.range F.fl.e) :=
+      Submodule.span_mono (Set.image_subset_range _ _) hxa
+    have hsX : s • x ∈ Formalism.MainNotions.S.Lat.XLam Λ F := by
+      refine Submodule.mem_inf.2 ⟨hsx, ?_⟩
+      exact Submodule.smul_of_tower_mem _ s hxX
+
+    obtain ⟨cc, -, hc1, heq⟩ := hc.1 P
+    have hloc : s • x ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal (Formalism.MainNotions.S.Lat.XLam Λ F) :=
+      key.2 ⟨1, P.asIdeal.primeCompl.one_mem, by rw [one_smul]; exact hsX⟩
+    have hfun : (fun a => cc a • F.fl.e a) = F.fl.e :=
+      funext fun a => by rw [hc1 hgP a, one_smul]
+    rw [heq, hfun] at hloc
+    obtain ⟨t, ht, htx⟩ := key.1 hloc
+    obtain ⟨o, ho⟩ := (Submodule.mem_span_range_iff_exists_fun (𝓞 E)).1 htx
+    have h1 : ∑ i, ((o i : 𝓞 E) : E) • F.fl.e i = t • s • x := by
+      rw [← ho]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      exact algebraMap_smul E (o i) (F.fl.e i)
+    have h2 : t • s • x = ∑ i, (((t * s : 𝓞 E) : E) * l i) • F.fl.e i := by
+      rw [← mul_smul, ← algebraMap_smul E (t * s) x, hxw, Finset.smul_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [mul_smul]
+    have hsum : ∑ i, (((o i : 𝓞 E) : E) - ((t * s : 𝓞 E) : E) * l i) • F.fl.e i = 0 := by
+      simp only [sub_smul, Finset.sum_sub_distrib, h1, ← h2, sub_self]
+    have hc0 := Fintype.linearIndependent_iff.1 F.fl.e_indep _ hsum c
+    exact ⟨t * s, P.asIdeal.primeCompl.mul_mem ht hs, o c, (sub_eq_zero.1 hc0).symm⟩
+
+end GlobalTheory.FlagCoef
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flag_coef_integral_of_local_integral : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : StarRing E] {S : HSpace E} {r : ℕ} (Λ : Submodule (𝓞 E) S.V) (g : ℕ) {T : E} (F : LFlag S r T), IsFixedConv Λ g F → ∀ (j : ℕ) (x : S.V), x ∈ Xflag F j → (∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → x ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal Λ)) → ∃ w : Fin r → E, x = ∑ c, w c • F.fl.e c ∧ (∀ c : Fin r, j ≤ c.val → w c = 0) ∧ ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ c, ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ ∃ o : 𝓞 E, (s : E) * w c = o := by
+  atlas_forward_decl GlobalTheory.FlagCoef.coef_integral_of_flag
+end
+
+section
+section
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
+
+namespace GlobalTheory.FlagInv
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
+
+theorem map_Xflag_le (F : LFlag S r T) (a : S.V ≃ₗ[E] S.V)
+    (h : ∀ b : Fin (r + 1), a (frame F b) - frame F b ∈ Xflag F b.val) (j : ℕ) :
+    (Xflag F j).map (a : S.V →ₗ[E] S.V) ≤ Xflag F j := by
+  show (F.fl.Xa j).map (a : S.V →ₗ[E] S.V) ≤ F.fl.Xa j
+  rw [Submodule.map_le_iff_le_comap]
+  unfold Formalism.MainNotions.S.FlagG.Xa
+  rw [Submodule.span_le]
+  rintro _ ⟨i, hi, rfl⟩
+  simp only [Set.mem_setOf_eq] at hi
+  simp only [SetLike.mem_coe, Submodule.mem_comap, LinearEquiv.coe_coe]
+  have hb := h (Fin.castSucc i)
+  have hf : frame F (Fin.castSucc i) = F.fl.e i := by
+    simp [frame, Formalism.MainNotions.S.FlagG.fvec]
+  rw [hf] at hb
+  have hmono : Xflag F (Fin.castSucc i).val ≤ F.fl.Xa j := by
+    show F.fl.Xa i.val ≤ F.fl.Xa j
+    unfold Formalism.MainNotions.S.FlagG.Xa
+    apply Submodule.span_mono
+    apply Set.image_mono
+    intro k hk
+    simp only [Set.mem_setOf_eq] at hk ⊢
+    omega
+  have he : F.fl.e i ∈ F.fl.Xa j := by
+    unfold Formalism.MainNotions.S.FlagG.Xa
+    exact Submodule.subset_span ⟨i, hi, rfl⟩
+  have := Submodule.add_mem _ (hmono hb) he
+  unfold Formalism.MainNotions.S.FlagG.Xa at this
+  simpa using this
+
+theorem map_Xflag_eq (F : LFlag S r T) (a : S.V ≃ₗ[E] S.V)
+    (h : ∀ b : Fin (r + 1), a (frame F b) - frame F b ∈ Xflag F b.val) (j : ℕ) :
+    (Xflag F j).map (a : S.V →ₗ[E] S.V) = Xflag F j := by
+  haveI : FiniteDimensional E (Xflag F j) := by
+    show FiniteDimensional E (Submodule.span E (F.fl.e '' {i | i.1 < j}))
+    exact FiniteDimensional.span_of_finite E (Set.toFinite _)
+  exact Submodule.eq_of_le_of_finrank_eq (map_Xflag_le F a h j) (LinearEquiv.finrank_map_eq a _)
+
+theorem symm_mem_Xflag (F : LFlag S r T) (a : S.V ≃ₗ[E] S.V)
+    (h : ∀ b : Fin (r + 1), a (frame F b) - frame F b ∈ Xflag F b.val) (j : ℕ) {x : S.V}
+    (hx : x ∈ Xflag F j) : a.symm x ∈ Xflag F j := by
+  rw [← map_Xflag_eq F a h j] at hx
+  obtain ⟨y, hy, rfl⟩ := hx
+  simpa using hy
+
+theorem inv_moves : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : StarRing E] {S : HSpace E} {r : ℕ} {T : E} (F : LFlag S r T) (a : S.V ≃ₗ[E] S.V), (∀ b : Fin (r + 1), a (frame F b) - frame F b ∈ Xflag F b.val) → ∀ b : Fin (r + 1), a⁻¹ (frame F b) - frame F b ∈ Xflag F b.val := by
+  intro E _ _ _ S r T F a h b
+  have hm := symm_mem_Xflag F a h b.val (h b)
+  have key : a⁻¹ (frame F b) - frame F b = -(a.symm (a (frame F b) - frame F b)) := by
+    show a.symm (frame F b) - frame F b = _
+    simp [map_sub]
+  rw [key]
+  exact Submodule.neg_mem _ hm
+
+end GlobalTheory.FlagInv
+end
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inv_unitriangular_move_frame_mem_flagSubspace : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : StarRing E] {S : HSpace E} {r : ℕ} {T : E} (F : LFlag S r T) (a : S.V ≃ₗ[E] S.V), (∀ b : Fin (r + 1), a (frame F b) - frame F b ∈ Xflag F b.val) → ∀ b : Fin (r + 1), a⁻¹ (frame F b) - frame F b ∈ Xflag F b.val := by
+  atlas_forward_decl GlobalTheory.FlagInv.inv_moves
+end
+
+section
+section
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.TransT
+
+open IsDedekindDomain
+
+section Gen
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
+
+def IA (P : HeightOneSpectrum (𝓞 E)) (x : E) : Prop :=
+  ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ ∃ o : 𝓞 E, (s : E) * x = o
+
+theorem one_nmem (P : HeightOneSpectrum (𝓞 E)) : (1 : 𝓞 E) ∉ P.asIdeal :=
+  fun h => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h)
+
+theorem mul_nmem (P : HeightOneSpectrum (𝓞 E)) {s t : 𝓞 E} (hs : s ∉ P.asIdeal) (ht : t ∉ P.asIdeal) :
+    s * t ∉ P.asIdeal := fun h => (P.isPrime.mem_or_mem h).elim hs ht
+
+theorem IA_coe (P : HeightOneSpectrum (𝓞 E)) (o : 𝓞 E) : IA P (o : E) := ⟨1, one_nmem P, o, by simp⟩
+
+theorem IA_zero (P : HeightOneSpectrum (𝓞 E)) : IA P (0 : E) := by simpa using IA_coe P 0
+
+theorem IA_one (P : HeightOneSpectrum (𝓞 E)) : IA P (1 : E) := by simpa using IA_coe P 1
+
+theorem IA_add {P : HeightOneSpectrum (𝓞 E)} {x y : E} (hx : IA P x) (hy : IA P y) : IA P (x + y) := by
+  obtain ⟨s, hs, o, e1⟩ := hx
+  obtain ⟨t, ht, p, e2⟩ := hy
+  refine ⟨s * t, mul_nmem P hs ht, t * o + s * p, ?_⟩
+  push_cast
+  linear_combination (t : E) * e1 + (s : E) * e2
+
+theorem IA_mul {P : HeightOneSpectrum (𝓞 E)} {x y : E} (hx : IA P x) (hy : IA P y) : IA P (x * y) := by
+  obtain ⟨s, hs, o, e1⟩ := hx
+  obtain ⟨t, ht, p, e2⟩ := hy
+  refine ⟨s * t, mul_nmem P hs ht, o * p, ?_⟩
+  push_cast
+  linear_combination ((t : E) * y) * e1 + (o : E) * e2
+
+theorem IA_sum {P : HeightOneSpectrum (𝓞 E)} {ι : Type*} (s : Finset ι) (f : ι → E) (h : ∀ i, IA P (f i)) :
+    IA P (∑ i ∈ s, f i) :=
+  Finset.sum_induction f (IA P) (fun _ _ => IA_add) (IA_zero P) (fun i _ => h i)
+
+theorem locP_smul (P : HeightOneSpectrum (𝓞 E)) (M : Submodule (𝓞 E) S.V) {k : E} (hk : IA P k) {x : S.V}
+    (hx : x ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal M)) :
+    k • x ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal M) := by
+  obtain ⟨s, hs, o, ho⟩ := hk
+  obtain ⟨t, ht, htx⟩ := hx
+  refine ⟨s * t, P.asIdeal.primeCompl.mul_mem hs ht, ?_⟩
+  have e : (s * t) • (k • x) = o • (t • x) := by
+    rw [Formalism.L2.SG.Pf.smul_O, Formalism.L2.SG.Pf.smul_O o, Formalism.L2.SG.Pf.smul_O t, smul_smul, smul_smul]
+    congr 1
+    push_cast
+    rw [← ho]; ring
+  rw [e]
+  exact M.smul_mem o htx
+
+theorem modG_smul {Λ : Submodule (𝓞 E) S.V} {g : ℕ} {k : E}
+    (hk : ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → IA P k) {x : S.V} (hx : ModG S Λ g x) :
+    ModG S Λ g (k • x) := fun P hP => locP_smul P _ (hk P hP) (hx P hP)
+
+theorem modG_sum {Λ : Submodule (𝓞 E) S.V} {g : ℕ} {ι : Type*} (s : Finset ι) (f : ι → S.V)
+    (h : ∀ i, ModG S Λ g (f i)) : ModG S Λ g (∑ i ∈ s, f i) := fun P hP =>
+  Submodule.sum_mem _ fun i _ => h i P hP
+
+theorem mem_localization_aut (P : HeightOneSpectrum (𝓞 E)) {Λ : Submodule (𝓞 E) S.V} {a : S.V ≃ₗ[E] S.V}
+    (ha : Formalism.HermitianLatticesTheory.gmap a Λ = Λ) {x : S.V} (hx : x ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal Λ)) :
+    a x ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal Λ) := by
+  haveI := P.isPrime
+  rw [← ha, Formalism.L2.SG.Pf.gmap_locP, Formalism.L2.SG.Pf.gmap_apply_mem]
+  exact hx
+
+theorem frame_locP (Λ : Submodule (𝓞 E) S.V) (g : ℕ) {T : E} (F : LFlag S r T) (hconv : IsFixedConv Λ g F)
+    (hl : IsLift Λ F) : ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ b,
+      frame F b ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal Λ) := by
+  intro P hP b
+  haveI := P.isPrime
+  have hsub : ∀ (M : Submodule (𝓞 E) S.V), ∀ y ∈ M, y ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal M :=
+    fun M y hy => ⟨1, P.asIdeal.primeCompl.one_mem, by simpa using hy⟩
+  refine Fin.lastCases ?_ (fun i => ?_) b
+  · have e : frame F (Fin.last r) = F.fl.z := by simp [frame, FlagG.fvec]
+    rw [e]; exact hsub _ _ hl.1
+  · have e : frame F i.castSucc = F.fl.e i := by simp [frame, FlagG.fvec]
+    rw [e]
+    obtain ⟨c, -, hc1, hloc⟩ := hconv.1 P
+    have he : F.fl.e i ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal
+        (Submodule.span (𝓞 E) (Set.range fun a => c a • F.fl.e a)) := by
+      refine hsub _ _ (Submodule.subset_span ⟨i, ?_⟩)
+      simp [hc1 hP i]
+    rw [← hloc] at he
+    obtain ⟨t, ht, hte⟩ := he
+    exact ⟨t, ht, (Submodule.mem_inf.1 hte).1⟩
+
+def triM (w : Fin (r + 1) → Fin r → E) : Matrix (Fin (r + 1)) (Fin (r + 1)) E :=
+  fun c b => (if c = b then 1 else 0) + (if h : c.val < r then w b ⟨c.val, h⟩ else 0)
+
+theorem triM_lower (w : Fin (r + 1) → Fin r → E) (hw : ∀ b (c : Fin r), b.val ≤ c.val → w b c = 0) :
+    ∀ c b, b < c → triM w c b = 0 := by
+  intro c b hbc
+  unfold triM
+  rw [if_neg hbc.ne']
+  split_ifs with h
+  · rw [hw b _ (le_of_lt (Fin.lt_def.1 hbc))]; simp
+  · simp
+
+theorem triM_diag (w : Fin (r + 1) → Fin r → E) (hw : ∀ b (c : Fin r), b.val ≤ c.val → w b c = 0) :
+    ∀ b, triM w b b = 1 := by
+  intro b
+  unfold triM
+  rw [if_pos rfl]
+  split_ifs with h
+  · rw [hw b _ le_rfl]; simp
+  · simp
+
+theorem triM_IA (P : HeightOneSpectrum (𝓞 E)) (w : Fin (r + 1) → Fin r → E) (hw : ∀ b c, IA P (w b c)) :
+    ∀ c b, IA P (triM w c b) := by
+  intro c b
+  unfold triM
+  refine IA_add ?_ ?_
+  · split_ifs
+    · exact IA_one P
+    · exact IA_zero P
+  · split_ifs
+    · exact hw _ _
+    · exact IA_zero P
+
+theorem triM_sum {T : E} (F : LFlag S r T) (w : Fin (r + 1) → Fin r → E) (b : Fin (r + 1)) :
+    ∑ c, triM w c b • frame F c = frame F b + ∑ i, w b i • F.fl.e i := by
+  simp only [triM, add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
+    Finset.mem_univ, if_true]
+  congr 1
+  rw [Fin.sum_univ_castSucc]
+  simp [frame, FlagG.fvec]
+
+theorem mul_lower {n : ℕ} (A B : Matrix (Fin n) (Fin n) E) (hA : ∀ a b, b < a → A a b = 0)
+    (hB : ∀ a b, b < a → B a b = 0) : ∀ a b, b < a → (A * B) a b = 0 := by
+  intro a b hba
+  rw [Matrix.mul_apply]
+  refine Finset.sum_eq_zero fun d _ => ?_
+  rcases lt_or_ge d a with h | h
+  · rw [hA a d h, zero_mul]
+  · rw [hB d b (lt_of_lt_of_le hba h), mul_zero]
+
+theorem mul_diag {n : ℕ} (A B : Matrix (Fin n) (Fin n) E) (hA : ∀ a b, b < a → A a b = 0)
+    (hB : ∀ a b, b < a → B a b = 0) (hA1 : ∀ a, A a a = 1) (hB1 : ∀ a, B a a = 1) : ∀ a, (A * B) a a = 1 := by
+  intro a
+  rw [Matrix.mul_apply, Finset.sum_eq_single a]
+  · rw [hA1, hB1, one_mul]
+  · intro d _ hd
+    rcases lt_or_gt_of_ne hd with h | h
+    · rw [hA a d h, zero_mul]
+    · rw [hB d a h, mul_zero]
+  · intro h; exact absurd (Finset.mem_univ a) h
+
+theorem mul_IA {n : ℕ} (P : HeightOneSpectrum (𝓞 E)) (A B : Matrix (Fin n) (Fin n) E) (hA : ∀ a b, IA P (A a b))
+    (hB : ∀ a b, IA P (B a b)) : ∀ a b, IA P ((A * B) a b) := by
+  intro a b
+  rw [Matrix.mul_apply]
+  exact IA_sum _ _ fun d => IA_mul (hA a d) (hB d b)
+
+theorem adapt_mat (Λ : Submodule (𝓞 E) S.V) (g : ℕ) {T : E} (F : LFlag S r T) (hconv : IsFixedConv Λ g F)
+    (hl : IsLift Λ F) (a : S.V ≃ₗ[E] S.V) (haΛ : Formalism.HermitianLatticesTheory.gmap a Λ = Λ)
+    (haf : ∀ b : Fin (r + 1), a (frame F b) - frame F b ∈ Xflag F b.val) :
+    ∃ W : Matrix (Fin (r + 1)) (Fin (r + 1)) E, (∀ c b, b < c → W c b = 0) ∧ (∀ b, W b b = 1) ∧
+      (∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ c b, IA P (W c b)) ∧
+      ∀ b, a (frame F b) = ∑ c, W c b • frame F c := by
+  have hloc := frame_locP Λ g F hconv hl
+  have h := fun b : Fin (r + 1) => GlobalTheory.T.flag_coef_integral_of_local_integral Λ g F hconv b.val (a (frame F b) - frame F b) (haf b)
+    (fun P hP => sub_mem (mem_localization_aut P haΛ (hloc P hP b)) (hloc P hP b))
+  choose w hw0 hw1 hw2 using h
+  refine ⟨triM w, triM_lower w hw1, triM_diag w hw1, fun P hP => triM_IA P w (fun b c => hw2 b P hP c), fun b => ?_⟩
+  rw [triM_sum, ← hw0 b]
+  abel
+
+theorem map_lower {n : ℕ} (ξ : Matrix (Fin n) (Fin n) (𝓞 E)) (h : ∀ a b, b < a → ξ a b = 0) :
+    ∀ a b, b < a → (ξ.map (fun x : 𝓞 E => (x : E))) a b = 0 := by
+  intro a b hba; simp [h a b hba]
+
+theorem map_diag {n : ℕ} (ξ : Matrix (Fin n) (Fin n) (𝓞 E)) (h : ∀ a, ξ a a = 1) :
+    ∀ a, (ξ.map (fun x : 𝓞 E => (x : E))) a a = 1 := by
+  intro a; simp [h a]
+
+theorem isAdmissible_flagPair_of_unitriangular_left_automorphism (Λ : Submodule (𝓞 E) S.V) (g : ℕ) (hg : g ≠ 0) {T T' : E} (F : LFlag S r T) (G : LFlag S r T')
+    (a : S.V ≃ₗ[E] S.V) (haI : a ∈ Formalism.HermitianLatticesTheory.isom S.hT) (haΛ : Formalism.HermitianLatticesTheory.gmap a Λ = Λ)
+    (haf : ∀ b : Fin (r + 1), a (frame F b) - frame F b ∈ Xflag F b.val) (hconv : IsFixedConv Λ g F)
+    (hl : IsLift Λ F) (hA : IsAdmissible Λ g F G) :
+    IsAdmissible Λ g F (Formalism.L2.SG.Saturated.mapL a haI G) := by
+  have hA2 := (Formalism.L2.SG.Pf.IsAdmissible_mapL a haI g Λ F G).2 hA
+  rw [haΛ] at hA2
+  obtain ⟨ξ, hξ0, hξ1, hξc⟩ := hA2
+  obtain ⟨W, hW0, hW1, hWi, hWe⟩ := adapt_mat Λ g F hconv hl a haΛ haf
+  refine GlobalTheory.T.frame_admissible_of_congr_unitriangular Λ g hg F _ (W * ξ.map (fun x : 𝓞 E => (x : E)))
+    (mul_lower _ _ hW0 (map_lower ξ hξ0)) (mul_diag _ _ hW0 (map_lower ξ hξ0) hW1 (map_diag ξ hξ1))
+    (fun P hP => mul_IA P _ _ (hWi P hP) (fun a b => by simpa using IA_coe P (ξ a b)))
+    (frame_locP Λ g F hconv hl) (fun b => ?_)
+  have key : ∑ c, (W * ξ.map (fun x : 𝓞 E => (x : E))) c b • frame F c =
+      frameAct (frame (Formalism.L2.SG.Saturated.mapL a haI F)) ξ b := by
+    simp only [frameAct, Formalism.L2.SG.Saturated.frame_mapL, hWe, Matrix.mul_apply, Matrix.map_apply,
+      Finset.sum_smul, Finset.smul_sum, smul_smul]
+    rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by rw [mul_comm]
+  rw [key]
+  exact hξc b
+
+theorem isAdmissible_flagPair_of_unitriangular_right_automorphism (Λ Λ' : Submodule (𝓞 E) S.V) (g : ℕ) (hg : g ≠ 0) {T T' : E} (F : LFlag S r T)
+    (F' : LFlag S r T') (γ a' : S.V ≃ₗ[E] S.V) (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom S.hT) (ha'I : a' ∈ Formalism.HermitianLatticesTheory.isom S.hT)
+    (ha'Λ : Formalism.HermitianLatticesTheory.gmap a' Λ' = Λ') (ha'f : ∀ b : Fin (r + 1), a' (frame F' b) - frame F' b ∈ Xflag F' b.val)
+    (hconv' : IsFixedConv Λ' g F') (hl' : IsLift Λ' F')
+    (hFf : ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ a,
+      frame F a ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal Λ))
+    (hA : IsAdmissible Λ g F (Formalism.L2.SG.Saturated.mapL γ hγ F')) :
+    IsAdmissible Λ g F (Formalism.L2.SG.Saturated.mapL (γ * a'⁻¹) (Subgroup.mul_mem _ hγ (Subgroup.inv_mem _ ha'I)) F') := by
+  obtain ⟨ξ, hξ0, hξ1, hξc⟩ := hA
+  obtain ⟨K, hK0, hK1, hKi, hKe⟩ := adapt_mat Λ' g F' hconv' hl' a'⁻¹ (Formalism.L2.SG.Pf.gmap_inv ha'Λ)
+    (GlobalTheory.T.inv_unitriangular_move_frame_mem_flagSubspace F' a' ha'f)
+  refine GlobalTheory.T.frame_admissible_of_congr_unitriangular Λ g hg F _ (ξ.map (fun x : 𝓞 E => (x : E)) * K)
+    (mul_lower _ _ (map_lower ξ hξ0) hK0) (mul_diag _ _ (map_lower ξ hξ0) hK0 (map_diag ξ hξ1) hK1)
+    (fun P hP => mul_IA P _ _ (fun a b => by simpa using IA_coe P (ξ a b)) (hKi P hP))
+    hFf (fun b => ?_)
+  have key : frame (Formalism.L2.SG.Saturated.mapL (γ * a'⁻¹) (Subgroup.mul_mem _ hγ (Subgroup.inv_mem _ ha'I)) F') b -
+      ∑ c, (ξ.map (fun x : 𝓞 E => (x : E)) * K) c b • frame F c =
+      ∑ d, K d b • (frame (Formalism.L2.SG.Saturated.mapL γ hγ F') d - frameAct (frame F) ξ d) := by
+    rw [Formalism.L2.SG.Saturated.frame_mapL, LinearEquiv.mul_apply, hKe b]
+    simp only [Formalism.L2.SG.Saturated.frame_mapL, map_sum, map_smul, frameAct, smul_sub, Finset.sum_sub_distrib,
+      Matrix.mul_apply, Matrix.map_apply, Finset.sum_smul, Finset.smul_sum, smul_smul]
+    congr 1
+    rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by rw [mul_comm]
+  rw [key]
+  exact modG_sum _ _ fun d => modG_smul (fun P hP => hKi P hP d b) (hξc d)
+
+end Gen
+
+theorem trans_main : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (t : TauC Y u u'), ∀ a ∈ Aut0 (lf D (X.Fu u)) t.lam, ∀ a' ∈ Aut0 (lf D (X.Fu u')) t.lam', ∃ s : TauC Y u u', s.lam = t.lam ∧ s.lam' = t.lam' ∧ ∃ n ∈ NLam t.lam (lf D (X.Fu u)), ∃ n' ∈ NLam t.lam' (lf D (X.Fu u')), s.lin = n * (a * t.lin * a'⁻¹) * n' := by
+  intro D X Y u u' t a ha a' ha'
+  have hγ : t.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t.rep.2.2.1
+  have hγΛ : Formalism.HermitianLatticesTheory.gmap t.lin t.lam' = t.lam := t.rep.2.2.2.1
+  have hPD := t.rep.2.2.2.2
+  have haI : a ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := ha.1.1
+  have ha'I : a' ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := ha'.1.1
+  have hβ : a * t.lin * a'⁻¹ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT :=
+    Subgroup.mul_mem _ (Subgroup.mul_mem _ haI hγ) (Subgroup.inv_mem _ ha'I)
+  have hβΛ : Formalism.HermitianLatticesTheory.gmap (a * t.lin * a'⁻¹) t.lam' = t.lam := by
+    rw [Formalism.L2.SG.Pf.gmap_mul, Formalism.L2.SG.Pf.gmap_inv ha'.2, Formalism.L2.SG.Pf.gmap_mul, hγΛ, ha.2]
+  obtain ⟨x, hx⟩ := Formalism.L2.SG.Pf.ratPt_holds D X _ hβ
+  have hPDβ : Formalism.L2.SG.TermDef.PD D t.lam (lf D (X.Fu u)) u' (mapLF (a * t.lin * a'⁻¹) (lf D (X.Fu u'))) := by
+    have hRow := (Y.rowsOK u).1 _ t.mem
+    have hRow' := (Y.rowsOK u').1 _ t.mem'
+    have hFO' : FrameOK D t.lam' (lf D (X.Fu u')) := ⟨hRow'.2.1.2.2.2, hRow'.2.2⟩
+    have hg : Formalism.MainNotions.S.Lat.gS D ≠ 0 := by
+      unfold Formalism.MainNotions.S.Lat.gS; exact Nat.mul_ne_zero (D.host.g_prime 0).ne_zero (D.host.g_prime 1).ne_zero
+    have emap : ∀ (β : (VS D).V ≃ₗ[D.host.E] (VS D).V) (hβ : β ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) {T : D.host.E}
+        (F : LFlag (VS D) D.R.rS T), mapLF β F = Formalism.L2.SG.Saturated.mapL β hβ F := by
+      intro β hβ T F; unfold mapLF; rw [dif_pos hβ]; rfl
+    refine ⟨?_, ?_, GlobalTheory.FrameIsom.frameOK_mapLF D _ hβ t.lam' t.lam hβΛ _ _ hFO'⟩
+    · rw [emap _ hβ, ← hβΛ]; exact (Formalism.L2.SG.Pf.IsLift_mapL _ hβ _ _).2 hRow'.2.1.2.2.1
+    · have hA : IsAdmissible t.lam (Formalism.MainNotions.S.Lat.gS D) (lf D (X.Fu u)) (Formalism.L2.SG.Saturated.mapL t.lin hγ (lf D (X.Fu u'))) := by
+        rw [← emap]; exact hPD.2.1
+      have hβ2 : t.lin * a'⁻¹ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := Subgroup.mul_mem _ hγ (Subgroup.inv_mem _ ha'I)
+      have e : Formalism.L2.SG.Saturated.mapL (a * t.lin * a'⁻¹) hβ (lf D (X.Fu u')) =
+          Formalism.L2.SG.Saturated.mapL a haI (Formalism.L2.SG.Saturated.mapL (t.lin * a'⁻¹) hβ2 (lf D (X.Fu u'))) := by
+        rw [← Formalism.L2.SG.Saturated.mapL_mul]
+        congr 1
+      rw [emap _ hβ]
+      refine (congrArg (fun G => IsAdmissible t.lam (Formalism.MainNotions.S.Lat.gS D) (lf D (X.Fu u)) G) e).mpr ?_
+      exact isAdmissible_flagPair_of_unitriangular_left_automorphism t.lam (Formalism.MainNotions.S.Lat.gS D) hg (lf D (X.Fu u))
+        (Formalism.L2.SG.Saturated.mapL (t.lin * a'⁻¹) hβ2 (lf D (X.Fu u'))) a haI ha.2 ha.1.2 hRow.2.1.2.2.2 hRow.2.1.2.2.1
+        (isAdmissible_flagPair_of_unitriangular_right_automorphism t.lam t.lam' (Formalism.MainNotions.S.Lat.gS D) hg (lf D (X.Fu u)) (lf D (X.Fu u')) t.lin a' hγ ha'I ha'.2 ha'.1.2
+          hRow'.2.1.2.2.2 hRow'.2.1.2.2.1 (frame_locP t.lam (Formalism.MainNotions.S.Lat.gS D) _ hRow.2.1.2.2.2 hRow.2.1.2.2.1) hA)
+  let p : GCar X u u' (X.Fu u) (X.Fu u') t.lam t.lam' := ⟨(x, a * t.lin * a'⁻¹), hx, hβ, hβΛ, hPDβ⟩
+  let s : TauC Y u u' := ⟨t.lam, t.mem, t.lam', t.mem', Quot.mk _ p⟩
+  refine ⟨s, rfl, rfl, ?_⟩
+  have heq : Equivalence (GRel X u u' (X.Fu u) (X.Fu u') t.lam t.lam') := by
+    refine ⟨fun p => ⟨1, (Formalism.L2.SG.Pf.NLamSub _ _).one_mem, 1, (Formalism.L2.SG.Pf.NLamSub _ _).one_mem, by simp⟩, ?_, ?_⟩
+    · rintro p q ⟨n, hn, n', hn', e⟩
+      refine ⟨n⁻¹, (Formalism.L2.SG.Pf.NLamSub t.lam _).inv_mem hn, n'⁻¹, (Formalism.L2.SG.Pf.NLamSub t.lam' _).inv_mem hn', ?_⟩
+      rw [e]; group
+    · rintro p q w ⟨n, hn, n', hn', e⟩ ⟨m, hm, m', hm', e'⟩
+      refine ⟨m * n, (Formalism.L2.SG.Pf.NLamSub t.lam _).mul_mem hm hn, n' * m', (Formalism.L2.SG.Pf.NLamSub t.lam' _).mul_mem hn' hm', ?_⟩
+      rw [e', e]; group
+  have hq : GRel X u u' (X.Fu u) (X.Fu u') t.lam t.lam' p s.rep := by
+    have h1 : Quot.mk (GRel X u u' (X.Fu u) (X.Fu u') t.lam t.lam') s.rep = Quot.mk _ p := Quot.out_eq _
+    exact heq.symm ((heq.eqvGen_iff).1 (Quot.eqvGen_exact h1))
+  obtain ⟨n, hn, n', hn', e⟩ := hq
+  exact ⟨n, hn, n', hn', e⟩
+
+end GlobalTheory.TransT
+end
+
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_term_translate_by_adapted_lattice_automorphisms : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (t : TauC Y u u'), ∀ a ∈ Aut0 (lf D (X.Fu u)) t.lam, ∀ a' ∈ Aut0 (lf D (X.Fu u')) t.lam', ∃ s : TauC Y u u', s.lam = t.lam ∧ s.lam' = t.lam' ∧ ∃ n ∈ NLam t.lam (lf D (X.Fu u)), ∃ n' ∈ NLam t.lam' (lf D (X.Fu u')), s.lin = n * (a * t.lin * a'⁻¹) * n' := by
+  atlas_forward_decl GlobalTheory.TransT.trans_main
+end
+
+section
+section
+noncomputable section
+
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.Unfold.TgTr
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
+
+def Hom {T T' : E} (φ : S.V ≃ₗ[E] S.V) (A : LFlag S r T) (B : LFlag S r T') : Prop :=
+  ∀ a : Fin (r + 1), φ (frame A a) - frame B a ∈ Xflag B a.val
+
+theorem frame_castSucc {T : E} (A : LFlag S r T) (i : Fin r) : frame A i.castSucc = A.fl.e i := by
+  simp [frame, FlagG.fvec, Fin.snoc_castSucc]
+
+theorem frame_last {T : E} (A : LFlag S r T) : frame A (Fin.last r) = A.fl.z := by
+  simp [frame, FlagG.fvec, Fin.snoc_last]
+
+theorem xflag_mono {T : E} (A : LFlag S r T) {i j : ℕ} (h : i ≤ j) : Xflag A i ≤ Xflag A j := by
+  exact Submodule.span_mono (Set.image_mono (fun k hk => lt_of_lt_of_le hk h))
+
+theorem e_mem_xflag {T : E} (A : LFlag S r T) (i : Fin r) {j : ℕ} (h : i.1 < j) : A.fl.e i ∈ Xflag A j :=
+  Submodule.subset_span ⟨i, h, rfl⟩
+
+theorem Hom.map_mem {T T' : E} {φ : S.V ≃ₗ[E] S.V} {A : LFlag S r T} {B : LFlag S r T'} (h : Hom φ A B)
+    (j : ℕ) {x : S.V} (hx : x ∈ Xflag A j) : φ x ∈ Xflag B j := by
+  have hle : Xflag A j ≤ (Xflag B j).comap (φ : S.V →ₗ[E] S.V) := by
+    apply Submodule.span_le.mpr
+    rintro y ⟨i, hi, rfl⟩
+    have h1 := h i.castSucc
+    rw [frame_castSucc, frame_castSucc] at h1
+    have h2 : φ (A.fl.e i) = (φ (A.fl.e i) - B.fl.e i) + B.fl.e i := by abel
+    show φ (A.fl.e i) ∈ Xflag B j
+    rw [h2]
+    refine Submodule.add_mem _ ?_ (e_mem_xflag B i hi)
+    exact xflag_mono B (le_of_lt hi) h1
+  exact hle hx
+
+theorem Hom.comp {T T' T'' : E} {φ ψ : S.V ≃ₗ[E] S.V} {A : LFlag S r T} {B : LFlag S r T'} {C : LFlag S r T''}
+    (hφ : Hom φ B C) (hψ : Hom ψ A B) : Hom (φ * ψ) A C := by
+  intro a
+  have e1 : (φ * ψ) (frame A a) - frame C a = φ (ψ (frame A a) - frame B a) + (φ (frame B a) - frame C a) := by
+    rw [LinearEquiv.mul_apply, map_sub]; abel
+  rw [e1]
+  exact Submodule.add_mem _ (hφ.map_mem _ (hψ a)) (hφ a)
+
+theorem Hom.inv {T : E} {φ : S.V ≃ₗ[E] S.V} {A : LFlag S r T} (h : Hom φ A A) : Hom φ⁻¹ A A := by
+  have hW : ∀ j : ℕ, ∀ x ∈ Xflag A j, φ⁻¹ x ∈ Xflag A j := by
+    intro j x hx
+    set W := Xflag A j
+    have : FiniteDimensional E W := FiniteDimensional.span_of_finite E ((Set.toFinite _).image _)
+    have hle : W.map (φ : S.V →ₗ[E] S.V) ≤ W := by
+      rintro y ⟨w, hw, rfl⟩
+      exact h.map_mem j hw
+    have heq : W.map (φ : S.V →ₗ[E] S.V) = W :=
+      Submodule.eq_of_le_of_finrank_eq hle (LinearEquiv.finrank_map_eq φ W)
+    rw [← heq] at hx
+    obtain ⟨w, hw, rfl⟩ := hx
+    have : φ⁻¹ (φ w) = w := by
+      rw [← LinearEquiv.mul_apply, inv_mul_cancel]; rfl
+    simpa [this] using hw
+  intro a
+  have e1 : φ⁻¹ (frame A a) - frame A a = -(φ⁻¹ (φ (frame A a) - frame A a)) := by
+    have : φ⁻¹ (φ (frame A a)) = frame A a := by
+      rw [← LinearEquiv.mul_apply, inv_mul_cancel]; rfl
+    rw [map_sub, this]; abel
+  rw [e1]
+  exact Submodule.neg_mem _ (hW _ _ (h a))
+
+theorem xflag_r {T : E} (A : LFlag S r T) : Xflag A r = Xsp A := by
+  show Submodule.span E (A.fl.e '' {i | i.1 < r}) = Submodule.span E (Set.range A.fl.e)
+  congr 1
+  rw [← Set.image_univ]
+  congr 1
+  ext i; simp
+
+theorem z_mem_orth {T : E} (A : LFlag S r T) : A.fl.z ∈ orth S (Xsp A) := by
+  have hle : Xsp A ≤ LinearMap.ker (S.hT.flip A.fl.z) := by
+    apply Submodule.span_le.mpr
+    rintro y ⟨i, rfl⟩
+    show S.hT.flip A.fl.z (A.fl.e i) = 0
+    rw [LinearMap.flip_apply]; exact A.fl.z_orth i
+  simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]
+  intro x hx
+  have := hle hx
+  rw [LinearMap.mem_ker, LinearMap.flip_apply] at this
+  exact this
+
+theorem Hom.of_nlam {T : E} {Λ : Submodule (𝓞 E) S.V} {n : S.V ≃ₗ[E] S.V} {A : LFlag S r T}
+    (h : n ∈ NLam Λ A) : Hom n A A := by
+  obtain ⟨-, h2, h3⟩ := h
+  intro a
+  induction a using Fin.lastCases with
+  | last =>
+    rw [frame_last, Fin.val_last, xflag_r]
+    exact h3 _ (z_mem_orth A)
+  | cast i =>
+    rw [frame_castSucc, Fin.val_castSucc]
+    exact h2 i.1 _ (e_mem_xflag A i (Nat.lt_succ_self _))
+
+theorem frame_mapLF {T : E} {γ : S.V ≃ₗ[E] S.V} (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom S.hT) (A : LFlag S r T) (a : Fin (r + 1)) :
+    frame (mapLF γ A) a = γ (frame A a) := by
+  induction a using Fin.lastCases with
+  | last => simp [mapLF, hγ, frame_last, mapFlag]
+  | cast i => simp [mapLF, hγ, frame_castSucc, mapFlag]
+
+theorem Hom.of_mapLF {T : E} {γ : S.V ≃ₗ[E] S.V} (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom S.hT) (A : LFlag S r T) :
+    Hom γ A (mapLF γ A) := by
+  intro a
+  rw [frame_mapLF hγ, sub_self]
+  exact Submodule.zero_mem _
+
+theorem gmap_mul (φ ψ : S.V ≃ₗ[E] S.V) (Λ : Submodule (𝓞 E) S.V) :
+    Formalism.HermitianLatticesTheory.gmap (φ * ψ) Λ = Formalism.HermitianLatticesTheory.gmap φ (Formalism.HermitianLatticesTheory.gmap ψ Λ) := by
+  ext x
+  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map]
+  constructor
+  · rintro ⟨y, hy, rfl⟩
+    exact ⟨ψ y, ⟨y, hy, rfl⟩, rfl⟩
+  · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
+    exact ⟨y, hy, rfl⟩
+
+theorem gmap_inv {φ : S.V ≃ₗ[E] S.V} {Λ : Submodule (𝓞 E) S.V} (h : Formalism.HermitianLatticesTheory.gmap φ Λ = Λ) :
+    Formalism.HermitianLatticesTheory.gmap φ⁻¹ Λ = Λ := by
+  conv_lhs => rw [← h]
+  rw [← gmap_mul, inv_mul_cancel]
+  ext x
+  simp [Formalism.HermitianLatticesTheory.gmap]
+
+end GlobalTheory.Unfold.TgTr
+
+namespace GlobalTheory.Unfold
+
+open GlobalTheory.Unfold.TgTr in
+
+theorem tg_translate : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word) (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (t₀ s : TauC Y u u') (Λ₀ : LV D) (a a' n n' : GV D), TG F F' t₀ Λ₀ → a ∈ Aut0 (lf D (X.Fu u)) t₀.lam → a' ∈ Aut0 (lf D (X.Fu u')) t₀.lam' → n ∈ NLam t₀.lam (lf D (X.Fu u)) → n' ∈ NLam t₀.lam' (lf D (X.Fu u')) → s.lam = t₀.lam → s.lin = n * (a * t₀.lin * a'⁻¹) * n' → TG F F' s Λ₀ := by
+  intro D X Y u u' F F' t₀ s Λ₀ a a' n n' hTG ha ha' hn hn' hsl hsg
+  obtain ⟨g, hgL, hgt, hΛ⟩ := hTG
+  obtain ⟨⟨haI, haH⟩, haΛ⟩ := ha
+  obtain ⟨⟨ha'I, ha'H⟩, -⟩ := ha'
+  have hnH : Hom n _ _ := Hom.of_nlam hn
+  have hn'H : Hom n' _ _ := Hom.of_nlam hn'
+  have hnI : n ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := hn.1.1
+  have hnΛ : Formalism.HermitianLatticesTheory.gmap n t₀.lam = t₀.lam := hn.1.2
+  have ht₀I : t₀.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t₀.rep.2.2.1
+  have hsI : s.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := s.rep.2.2.1
+  refine ⟨g * a⁻¹ * n⁻¹, ⟨?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
+  · exact Subgroup.mul_mem _ (Subgroup.mul_mem _ hgL.1 (Subgroup.inv_mem _ haI)) (Subgroup.inv_mem _ hnI)
+  · exact Hom.comp (Hom.comp (φ := g) hgL.2 (Hom.inv haH)) (Hom.inv hnH)
+  · exact Subgroup.mul_mem _ (Subgroup.mul_mem _ hgL.1 (Subgroup.inv_mem _ haI)) (Subgroup.inv_mem _ hnI)
+  · have hK : Hom (g * t₀.lin * a'⁻¹ * n') (lf D (X.Fu u')) F' :=
+      Hom.comp (Hom.comp (Hom.comp (φ := g) hgt.2 (Hom.of_mapLF ht₀I _)) (Hom.inv ha'H)) hn'H
+    have heq : g * a⁻¹ * n⁻¹ * s.lin = g * t₀.lin * a'⁻¹ * n' := by
+      rw [hsg]; group
+    intro c
+    have hf : frame s.frame c = s.lin (frame (lf D (X.Fu u')) c) := frame_mapLF hsI _ c
+    rw [hf, ← LinearEquiv.mul_apply, heq]
+    exact hK c
+  · rw [hsl, gmap_mul, gmap_mul, gmap_inv hnΛ, gmap_inv haΛ, hΛ]
+
+end GlobalTheory.Unfold
+end
+end
+
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.baseFrameLattice_invariant_under_adapted_translate : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word) (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (t₀ s : TauC Y u u') (Λ₀ : LV D) (a a' n n' : GV D), TG F F' t₀ Λ₀ → a ∈ Aut0 (lf D (X.Fu u)) t₀.lam → a' ∈ Aut0 (lf D (X.Fu u')) t₀.lam' → n ∈ NLam t₀.lam (lf D (X.Fu u)) → n' ∈ NLam t₀.lam' (lf D (X.Fu u')) → s.lam = t₀.lam → s.lin = n * (a * t₀.lin * a'⁻¹) * n' → TG F F' s Λ₀ := by
+  atlas_forward_decl GlobalTheory.Unfold.tg_translate
+end
+
+section
+section
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.Unfold.TgKey
+
+theorem translate_key : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (w : Point D.host.E (D.R.rS + 1)), ZhatOM (ZhatL F F') = ptMat w → Gval F F' ≠ 0 → ∀ (t₀ t : TauC Y u u') (Λ₀ Λ₁ : LV D), TG F F' t₀ Λ₀ → TG F F' t Λ₁ → LRel F F' Λ₀ Λ₁ → ∃ a ∈ Aut0 (lf D (X.Fu u)) t₀.lam, ∃ a' ∈ Aut0 (lf D (X.Fu u')) t₀.lam', ∀ s : TauC Y u u', s.lam = t₀.lam → s.lam' = t₀.lam' → (∃ n ∈ NLam t₀.lam (lf D (X.Fu u)), ∃ n' ∈ NLam t₀.lam' (lf D (X.Fu u')), s.lin = n * (a * t₀.lin * a'⁻¹) * n') → key s = key t := by
+  intro D X Y u u' F F' w hw hG t₀ t Λ₀ Λ₁ h₀ h₁ hR
+  obtain ⟨hl, hl', a, ha, a', ha', K1⟩ := GlobalTheory.T.terms_same_rational_inner_class_are_translates D X Y u u' F F' w hw hG t₀ t Λ₀ Λ₁ h₀ h₁ hR
+  refine ⟨a, ha, a', ha', ?_⟩
+  rintro s hs hs' ⟨n, hn, n', hn', hsl⟩
+  rw [GlobalTheory.Unfold.KeyIff.key_eq_iff]
+  refine ⟨hs.trans hl.symm, hs'.trans hl'.symm, ?_⟩
+  rw [hs, hsl]
+  have hI : ∀ {x y : GV D}, x ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT → y ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT →
+      x * y ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := fun hx hy => (Formalism.HermitianLatticesTheory.isom _).mul_mem hx hy
+  have ht : t₀.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t₀.rep.2.2.1
+  have htΛ : Formalism.HermitianLatticesTheory.gmap t₀.lin t₀.lam' = t₀.lam := t₀.rep.2.2.2.1
+  have ha'i : a'⁻¹ ∈ Aut0 (lf D (X.Fu u')) t₀.lam' := (GlobalTheory.KeyGroup.flagLatticeAutomorphismGroup _ _).inv_mem ha'
+  have hγ : a * t₀.lin * a'⁻¹ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := hI (hI ha.1.1 ht) ha'i.1.1
+  have hγΛ : Formalism.HermitianLatticesTheory.gmap (a * t₀.lin * a'⁻¹) t₀.lam' = t₀.lam := by
+    rw [GlobalTheory.Unfold.Model.gmap_mul, GlobalTheory.Unfold.Model.gmap_mul, ha'i.2, htΛ, ha.2]
+  have hγn : a * t₀.lin * a'⁻¹ * n' ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := hI hγ hn'.1.1
+  have hγnΛ : Formalism.HermitianLatticesTheory.gmap (a * t₀.lin * a'⁻¹ * n') t₀.lam' = t₀.lam := by
+    rw [GlobalTheory.Unfold.Model.gmap_mul, hn'.1.2, hγΛ]
+  have hs3 : n * (a * t₀.lin * a'⁻¹) * n' ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := by
+    rw [mul_assoc]; exact hI hn.1.1 hγn
+  have hs3Λ : Formalism.HermitianLatticesTheory.gmap (n * (a * t₀.lin * a'⁻¹) * n') t₀.lam' = t₀.lam := by
+    rw [mul_assoc, GlobalTheory.Unfold.Model.gmap_mul, hγnΛ, hn.1.2]
+  have K2 := GlobalTheory.KeyGroup.keyEq_right (F := lf D (X.Fu u)) (F0' := X.Fu u') hγ hγΛ hn'
+  have K3 := GlobalTheory.KeyGroup.keyEq_left (F0' := X.Fu u') hγn hn
+  rw [← mul_assoc] at K3
+  have K4 := GlobalTheory.KeyGroup.keyEq_trans hγ hγn hγΛ hγnΛ K2 K3
+  have K5 := GlobalTheory.KeyGroup.keyEq_symm hγ hs3 hγΛ hs3Λ K4
+  exact GlobalTheory.KeyGroup.keyEq_trans hs3 hγ hs3Λ hγΛ K5 K1
+
+end GlobalTheory.Unfold.TgKey
+end
+
+open scoped Classical ENNReal
+open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matching_translate_same_row_double_coset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (w : Point D.host.E (D.R.rS + 1)), ZhatOM (ZhatL F F') = ptMat w → Gval F F' ≠ 0 → ∀ (t₀ t : TauC Y u u') (Λ₀ Λ₁ : LV D), TG F F' t₀ Λ₀ → TG F F' t Λ₁ → LRel F F' Λ₀ Λ₁ → ∃ a ∈ Aut0 (lf D (X.Fu u)) t₀.lam, ∃ a' ∈ Aut0 (lf D (X.Fu u')) t₀.lam', ∀ s : TauC Y u u', s.lam = t₀.lam → s.lam' = t₀.lam' → (∃ n ∈ NLam t₀.lam (lf D (X.Fu u)), ∃ n' ∈ NLam t₀.lam' (lf D (X.Fu u')), s.lin = n * (a * t₀.lin * a'⁻¹) * n') → key s = key t := by
+  atlas_forward_decl GlobalTheory.Unfold.TgKey.translate_key
+end
+
+section
 section
 noncomputable section
 open scoped Classical ENNReal
@@ -179,3 +1552,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.orbitCount_rows_doubleCosets_innerDatum_class : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (F : LFlag (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)) (F' : LFlag (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)) (w : Point D.host.E (D.R.rS + 1)), ZhatOM (ZhatL F F') = ptMat w → Gval F F' ≠ 0 → ∀ (t₀ : TauC Y u u') (Λ₀ : LV D), TG F F' t₀ Λ₀ → ∀ K, K = {κ | ∃ (t : TauC Y u u') (Λ₁ : LV D), TG F F' t Λ₁ ∧ LRel F F' Λ₀ Λ₁ ∧ key t = κ} → K.Finite ∧ (∀ κ ∈ K, ∃ t : TauC Y u u', TG F F' t Λ₀ ∧ key t = κ) ∧ (∀ (t : TauC Y u u') (Λ₁ : LV D), TG F F' t Λ₁ → LRel F F' Λ₀ Λ₁ → wt t = wt t₀) ∧ (K.encard : ℝ≥0∞) * ENNReal.ofReal (wt t₀ ^ 2) = (((stabL F F' Λ₀).encard : ℝ≥0∞))⁻¹ := by
   atlas_forward_decl GlobalTheory.OrbitCount.orbit_count
+end

@@ -1,9 +1,289 @@
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.PCandSa
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.SphMono
-import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.ParabolicFunctionLeftInvariant
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.CandOut
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.FactorActionAlgebra
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.AdelicHeckeBlocks.Imports
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.Target
+import Development.WeilBound.CoreStatements.AutomorphicKernels.IsobaricBaseChange.IntegralCoefficientBaseChange.ResidualRigidity.SphLocProd
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviOf
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockUpperTimesUnipotentMulBlockDiagonal
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HaarIntegralNormalizedIntegralMatricesTwoSidedMu
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsHalfBlockDetIntegralGLInvariant
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermLocallyConstant
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SatakeParameterSphericalProductSpehQuotients
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.FrobeniusWeights.PConjFix
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LocalSeparation.ReadingModuleHolds
 
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Matrix MeasureTheory Filter
+open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.G8
+open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf)
+open PositivityTheory.Rg.BcB.SpectralAccumulation (Tr pairSpace)
+open PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.RS
+open scoped Classical
+
+set_option synthInstance.maxHeartbeats 200000
+
+namespace PositivityTheory.Rg.BcB.F
+
+attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace PCandSa
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+theorem locM_comp {a b : ℕ} {k k' : Type} [Fintype k] [Fintype k'] (w : Pl E) (φ : k ≃ k')
+    (N : k' → k' → LF a b w) (Y : k' → H E a b → ℂ) (m : ℕ) :
+    (locM w (fun x y => N (φ x) (φ y)))^[m] (Y ∘ φ) = ((locM w N)^[m] Y) ∘ φ := by
+  induction m with
+  | zero => rfl
+  | succ m ih =>
+    rw [Function.iterate_succ_apply', Function.iterate_succ_apply', ih]
+    funext x
+    simp only [locM, Function.comp]
+    exact Equiv.sum_comp φ (fun y' => actP w (N (φ x) y') (((locM w N)^[m] Y) y'))
+
+theorem isLev_lev {n a : ℕ} (d : LocData E n) (hd : d.Ok) (ha : a ≤ n) : Tail.IsLev (d.lev a) := by
+  refine ⟨fun w => ?_, ?_⟩
+  · obtain ⟨K₁, K₂, h₁, h₂, e⟩ := LocOk.lev_lv d hd ha w
+    rw [e]
+    exact LocOk.prod_open_le h₁ h₂
+  · refine Filter.eventually_cofinite.2 ((d.T ∪ d.S₀ ∪ d.Bad).finite_toSet.subset fun w hw => ?_)
+    by_contra h
+    exact hw (LocOk.lev_out d (LocOk.out3 d h).1 (LocOk.out3 d h).2)
+
+theorem isLev_lev₂ {n a : ℕ} (d : LocData E n) (hd : d.Ok) (ha : a ≤ n) : Tail.IsLev (d.lev₂ a) := by
+  refine ⟨fun w => ?_, ?_⟩
+  · obtain ⟨K₁, K₂, h₁, h₂, e⟩ := LocOk.lev₂_lv d hd ha w
+    rw [e]
+    exact LocOk.prod_open_le h₁ h₂
+  · refine Filter.eventually_cofinite.2 ((d.T ∪ d.S₀ ∪ d.Bad).finite_toSet.subset fun w hw => ?_)
+    by_contra h
+    exact hw (LocOk.lev₂_out d (LocOk.out3 d h).2)
+
+theorem betaL_hecke {n a : ℕ} (d : LocData E n) (hd : d.Ok) (ha : a ≤ n) :
+    ∀ w ∈ d.P, ∀ x y, IsHecke (d.lev a w) ((d.betaL a ha).m w x y) := by
+  intro w hw x y
+  show IsHecke _ (if w ∈ d.T then d.diag (fun x => d.qT a w x.1.1) x y else d.mac a ha w (d.e w) x.1.2 y.1.2)
+  split_ifs with hT
+  · rw [LocOk.level_eq_iwahori_pair_at_bad_places d hT]
+    exact LocOk.diagH d _ (fun z => LocOk.qT_H d w z.1.1) x y
+  · have hS : w ∈ d.S₀ := by
+      simp only [LocData.P, Finset.mem_union] at hw
+      tauto
+    rw [LocOk.lev_S d hT (Finset.mem_union_left _ hS)]
+    exact LocOk.mac_H d PositivityTheory.Rg.BcN.F2.LocOpPf.locOp3 hd ha hS (LocOk.kap_X d hT hS x) (LocOk.kap_X d hT hS y)
+
+def kapX {n : ℕ} (d : LocData E n) {w : Pl E} (hT : w ∉ d.T) (hS : w ∈ d.S₀) : d.kap w ≃ (d.X w) :=
+  Equiv.ofBijective (fun x => ⟨x.1.2, LocOk.kap_X d hT hS x⟩) (by
+    have e : d.idx w = {∅} ×ˢ d.X w := by unfold LocData.idx; rw [if_neg hT, if_pos hS]
+    constructor
+    · rintro ⟨⟨s, x⟩, hx⟩ ⟨⟨s', x'⟩, hx'⟩ h
+      have h1 := (Finset.mem_product.1 (e ▸ hx)).1
+      have h2 := (Finset.mem_product.1 (e ▸ hx')).1
+      simp only [Finset.mem_singleton] at h1 h2
+      simp only [Subtype.mk.injEq] at h
+      subst h1 h2 h
+      rfl
+    · rintro ⟨x, hx⟩
+      exact ⟨⟨(∅, x), by rw [e]; simp [hx]⟩, rfl⟩)
+
+end PCandSa
+
+open PCandSa in
+theorem candS_of (h : Tail.ReadS) : CandS := by
+  intro hR E _ _ _ hE n hn π hπ S T F₀ F hF i s₁ s₂ Pa Pb D A G hc hG hl hne w hwS hsplit
+  have ha : F₀.C.a i ≤ n := F₀.C.le i
+  obtain ⟨hS0, hBad, hμ, hϖ, hK', hX, hL, hfix, hKB⟩ := F.same
+  have hw0 : w ∈ F₀.d₀.S₀ := F₀.S_le w hwS hsplit
+  have hwd : w ∈ F.d.S₀ := hS0 ▸ hw0
+  have hwT : w ∉ F.d.T := fun h => Finset.disjoint_left.1 F.ok.disj.1 h hwd
+  have hwP : w ∈ F.d.P := Finset.mem_union_right _ hwd
+  have hwSec : w ∈ F₀.Sec := (F₀.S₀ w hw0).1
+  have hPS : (↑F.d.P : Set (Pl E)) ⊆ F₀.Sec := by
+    intro u hu
+    rcases Finset.mem_union.1 hu with h1 | h1
+    · exact (F.T_in u h1).1
+    · exact (F₀.S₀ u (hS0 ▸ h1)).1
+  have hpow := FA.fmPow_of intHint slots BlockFiniteConvolution.finConv' BlockFiniteConvolution.fmAlg' E F.d.kap F₀.Sec F.d.P (F.B i) (Equiv.refl _)
+    F₀.hSec hPS (F.d.lev _) (F.d.lev₂ _) (F.d.betaL _ ha) A G F.m (isLev_lev F.d F.ok ha) (isLev_lev₂ F.d F.ok ha)
+    ((BlockFiniteConvolution.locOk₀ E n F.d F.ok _ ha).2.1) (fun _ => rfl) (fun _ => rfl)
+    (fun u hu x y k hk g => ((betaL_hecke F.d F.ok ha u hu x y).2 k hk g)) hl hne ⟨w, hwP⟩
+  obtain ⟨α, x₀, hx₀⟩ := hpow
+  have hGy : ∀ j, G j ∈ pairSpace s₁.space s₂.space ∧ G j ∈ fixed (pairRt _ _ w) (F.d.lev (F₀.C.a i) w) :=
+    fun j => ⟨hG j, ((hl j).2 w hwSec).1⟩
+  set G' : F.d.kap w → H E (F₀.C.a i) (n - F₀.C.a i) → ℂ :=
+    fun y => G (α, (Equiv.refl _).symm (Function.update x₀ ⟨w, hwP⟩ y)) with hG'def
+  have hG'p : ∀ y, G' y ∈ pairSpace s₁.space s₂.space ∧ G' y ∈ fixed (pairRt _ _ w) (F.d.lev (F₀.C.a i) w) :=
+    fun y => hGy _
+  change (locM w ((F.d.betaL _ ha).m w))^[F.m] G' ≠ 0 at hx₀
+  clear_value G'
+  set φ := kapX F.d hwT hwd with hφ
+  let N : (F.d.X w) → (F.d.X w) → LF (F₀.C.a i) (n - F₀.C.a i) w :=
+    fun x y => phiMu (Nat.add_sub_of_le ha) w (F₀.μ.loc w) (F.d.e w) x y
+  have hm : (F.d.betaL _ ha).m w = fun x y => (F.d.sgn (F₀.C.a i) w * ((F.d.X w).card : ℂ))⁻¹ • N (φ x) (φ y) := by
+    funext x y g
+    simp only [LocData.betaL, if_neg hwT, LocData.mac, Pi.smul_apply, smul_eq_mul, N, hμ, F₀.μloc]
+    rfl
+  rw [hm] at hx₀
+  have hopen : IsOpen (F.d.lev (F₀.C.a i) w : Set (GLw (F₀.C.a i) w × GLw (n - F₀.C.a i) w)) :=
+    ((isLev_lev F.d F.ok ha).1 w).1
+  have h1 := (Tail.locPow_holds E _ _ w (F.d.kap w) (F.d.lev _ w) G' F.m hopen (fun y => (hG'p y).2)).1 _
+    (fun x y => N (φ x) (φ y)) hx₀
+  have h2 : (matS (Nat.add_sub_of_le ha) w (F₀.μ.loc w) (F.d.e w) (F.d.X w))^[F.m] (G' ∘ φ.symm) ≠ 0 := by
+    intro h0
+    apply h1
+    have e1 := locM_comp w φ N (G' ∘ φ.symm) F.m
+    rw [show (G' ∘ φ.symm) ∘ φ = G' from by funext y; simp] at e1
+    rw [e1]
+    change ((matS (Nat.add_sub_of_le ha) w (F₀.μ.loc w) (F.d.e w) (F.d.X w))^[F.m] (G' ∘ φ.symm)) ∘ φ = 0
+    rw [h0]
+    rfl
+  obtain ⟨P, hPc, hkill⟩ := F.choiceS w hw0
+  have hOk := F.ok.K' w hwd
+  rw [hK'] at hOk
+  obtain ⟨hO, hle, hN, hXK, hU, hHk⟩ := hOk
+  exact ⟨P, h E n (F₀.C.a i) (n - F₀.C.a i) (Nat.add_sub_of_le ha) F₀.μ s₁ s₂ Pa Pb D hc.ctx w (F₀.d₀.K' w) (F.d.X w)
+    (F.d.lev _ w) (F.d.e w) P F.m (G' ∘ φ.symm) hO hle hN hXK hU hopen hHk (hkill i s₁ s₂ Pa Pb D hc)
+    ((F.choiceM i s₁ s₂ Pa Pb D hc).1 w hw0) (fun x => hG'p _) h2, hPc⟩
+
+end PositivityTheory.Rg.BcB.F
+
+end
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain
+open GlobalTheory.PRep
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace PositivityTheory.Rg.BcB.F.Tail
+
+
+theorem satSph : SatSph := by
+  intro E _ _ _ n D w B hB
+  obtain ⟨b, hb, -⟩ := hB
+  exact GlobalTheory.Rigid.isSpherical_locProd D.h w (D.σ · w) fun i => (hb i).1
+
+end PositivityTheory.Rg.BcB.F.Tail
+
+end
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Matrix Filter
+open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcN.F2
+open scoped Classical TensorProduct
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option synthInstance.maxHeartbeats 200000
+
+namespace PositivityTheory.Rg.BcB.F.Tail.B
+
+theorem hint_mul_right_comm {H : Type} [CommGroup H] (K : Subgroup H) (u : H → ℂ) (t : H) :
+    hint K (fun X => u (X * t)) = hint K u := by
+  have hr : rStab (fun X => u (X * t)) = rStab u := by
+    ext k
+    show (∀ x, u (x * k * t) = u (x * t)) ↔ ∀ x, u (x * k) = u x
+    constructor
+    · intro hk x
+      have := hk (x * t⁻¹)
+      rwa [mul_right_comm (x * t⁻¹) k t, inv_mul_cancel_right] at this
+    · intro hk x
+      rw [mul_right_comm x k t, hk]
+  unfold hint
+  rw [hr]
+  congr 1
+  set S := rStab u ⊓ K with hS
+  have key : ∀ q : H ⧸ S, u ((MulAction.toPerm t q : H ⧸ S).out) = u (q.out * t) := by
+    intro q
+    have h1 : (MulAction.toPerm t q : H ⧸ S) = ((t * q.out : H) : H ⧸ S) := by
+      rw [MulAction.toPerm_apply]
+      conv_lhs => rw [← QuotientGroup.out_eq' q]
+      rfl
+    obtain ⟨s, hs⟩ := QuotientGroup.mk_out_eq_mul S (t * q.out)
+    rw [h1, hs, (Subgroup.mem_inf.1 s.2).1, mul_comm]
+  calc ∑ᶠ q : H ⧸ S, u (q.out * t) = ∑ᶠ q : H ⧸ S, u ((MulAction.toPerm t q : H ⧸ S).out) :=
+        finsum_congr fun q => (key q).symm
+    _ = ∑ᶠ q : H ⧸ S, u q.out := finsum_comp_equiv (MulAction.toPerm t) (f := fun q : H ⧸ S => u q.out)
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+theorem blk_mul {n a b : ℕ} (h : a + b = n) (w : Pl E) (m m' : GLw a w × GLw b w)
+    (X X' : Matrix (Fin a) (Fin b) (w.adicCompletion E)) :
+    blk h w m X * blk h w m' X' = blk h w (m * m') (X' + (m'.1⁻¹).val * X * m'.2.val) := by
+  apply Units.ext
+  rw [Units.val_mul, CtLevel.blk_val, CtLevel.blk_val, CtLevel.blk_val, reindex_apply, reindex_apply,
+    reindex_apply, submatrix_mul_equiv, fromBlocks_multiply]
+  have e : (m'.1.val) * (m'.1⁻¹).val = 1 := Units.mul_inv _
+  have key : m.1.val * (m'.1.val * X') + m.1.val * X * m'.2.val =
+      (m * m').1.val * (X' + (m'.1⁻¹).val * X * m'.2.val) := by
+    rw [Prod.fst_mul, Units.val_mul]
+    simp only [Matrix.mul_add, Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc m'.1.val (m'.1⁻¹).val, e, Matrix.one_mul]
+  rw [key]
+  simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Prod.fst_mul, Prod.snd_mul, Units.val_mul]
+
+theorem blk_entries {n a b : ℕ} (h : a + b = n) (w : Pl E) (m : GLw a w × GLw b w)
+    (X : Matrix (Fin a) (Fin b) (w.adicCompletion E)) :
+    (∀ i j, (blk h w m X).val (CtLevel.blkEq h (Sum.inl i)) (CtLevel.blkEq h (Sum.inl j)) = m.1.val i j) ∧
+      ∀ i j, (blk h w m X).val (CtLevel.blkEq h (Sum.inr i)) (CtLevel.blkEq h (Sum.inr j)) = m.2.val i j := by
+  constructor <;> intro i j <;>
+    rw [CtLevel.blk_val, reindex_apply, submatrix_apply, Equiv.symm_apply_apply, Equiv.symm_apply_apply] <;> rfl
+
+theorem blocks_of_blk_mem {n a b : ℕ} (h : a + b = n) (w : Pl E) (m : GLw a w × GLw b w)
+    (X : Matrix (Fin a) (Fin b) (w.adicCompletion E)) (hk : blk h w m X ∈ GlobalTheory.LFun.KGL w n) :
+    m.1 ∈ GlobalTheory.LFun.KGL w a ∧ m.2 ∈ GlobalTheory.LFun.KGL w b := by
+  obtain ⟨h1, h2⟩ := GlobalTheory.AdelicU.mem_GLint_iff.1 hk
+  rw [CtLevel.blk_inv] at h2
+  refine ⟨GlobalTheory.AdelicU.mem_GLint_iff.2 ⟨fun i j => ?_, fun i j => ?_⟩,
+    GlobalTheory.AdelicU.mem_GLint_iff.2 ⟨fun i j => ?_, fun i j => ?_⟩⟩
+  · have := h1 (CtLevel.blkEq h (Sum.inl i)) (CtLevel.blkEq h (Sum.inl j))
+    rwa [(blk_entries h w m X).1] at this
+  · have := h2 (CtLevel.blkEq h (Sum.inl i)) (CtLevel.blkEq h (Sum.inl j))
+    rwa [(blk_entries h w _ _).1] at this
+  · have := h1 (CtLevel.blkEq h (Sum.inr i)) (CtLevel.blkEq h (Sum.inr j))
+    rwa [(blk_entries h w m X).2] at this
+  · have := h2 (CtLevel.blkEq h (Sum.inr i)) (CtLevel.blkEq h (Sum.inr j))
+    rwa [(blk_entries h w _ _).2] at this
+
+theorem parabolic_function_left_invariant {n a b : ℕ} (h : a + b = n) (w : Pl E) (K' : Subgroup (GLw n w)) (f : GLw n w → ℂ)
+    (hf : ∀ k ∈ K', ∀ g, f (k * g) = f g) (x y : GLw n w) (mq : GLw a w × GLw b w) (hmq1 : mq.1 ∈ GlobalTheory.LFun.KGL w a)
+    (hmq2 : mq.2 ∈ GlobalTheory.LFun.KGL w b) (Z : Matrix (Fin a) (Fin b) (w.adicCompletion E)) (k' : GLw n w) (hk' : k' ∈ K')
+    (m : GLw a w × GLw b w) : phi3 h w f (blk h w mq Z * x * k') y m = phi3 h w f x y (mq⁻¹ * m) := by
+  have hab : absHalf w ((mq⁻¹ * m).1.val.det ^ b / (mq⁻¹ * m).2.val.det ^ a) =
+      absHalf w (m.1.val.det ^ b / m.2.val.det ^ a) :=
+    (absHalf_blockDet_KGL_invariant E a b w m mq⁻¹ (inv_mem hmq1) (inv_mem hmq2)).1
+  set T : Matrix (Fin a) (Fin b) (w.adicCompletion E) :=
+    (m.1⁻¹).val * (-(mq.1.val * Z * (mq.2⁻¹).val)) * m.2.val with hT
+  have hstep : ∀ X : Matrix (Fin a) (Fin b) (w.adicCompletion E),
+      f ((blk h w mq Z * x * k')⁻¹ * blk h w m X * y) = f (x⁻¹ * blk h w (mq⁻¹ * m) (X + T) * y) := by
+    intro X
+    have e1 : (blk h w mq Z * x * k')⁻¹ * blk h w m X * y =
+        k'⁻¹ * (x⁻¹ * ((blk h w mq Z)⁻¹ * blk h w m X) * y) := by group
+    rw [e1, hf _ (inv_mem hk'), CtLevel.blk_inv, blk_mul]
+  unfold phi3
+  rw [hab]
+  congr 1
+  simp_rw [hstep]
+  exact hint_mul_right_comm (intMat a b w)
+    (fun Y => f (x⁻¹ * blk h w (mq⁻¹ * m) (Multiplicative.toAdd Y) * y)) (Multiplicative.ofAdd T)
+
+
+
+end PositivityTheory.Rg.BcB.F.Tail.B
+
+end
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter
@@ -209,4 +489,5 @@ theorem candLev_of (h0 : Tail.ReadLev) (h1 : Tail.ReadT) (h2 : Tail.ExpRead) (h3
 
 end PositivityTheory.Rg.BcB.F.PCandLh
 
+end
 end

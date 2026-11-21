@@ -7,21 +7,869 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilFormulaRootE
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegrableOfMemSB
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExDownExUpAndExUpExDown
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OrbitLocallyConstant
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierJacobiUnipotentEqProdRootExchangeStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHeisenbergSubgroupFourierJacobiCommutator
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSchwartzBruhatConvolutionLocalFieldPowerStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSchwartzBruhatSupportedNhdsIntegralOne
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemFourierJacobiSubgroupIffParabolicMulColumnStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemRootExchangeParabolicAndFourierJacobiIffEntriStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsUnimodularBlockUpperTriangularSymmetricLevelsStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeHeisenbergVariableSign
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeOperatorWeilRowUnipotent
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilFormulaRootExchangeParabolicQuotient
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QuotIntFJUnique
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSumSmulOfLocallyConstantCompactSupport
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchwartzFourierTransformPiSurjectiveSchwartzBruhStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousCharactersLocallyConstantNonarchLocalFStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierJacobiUnipotentEqProdRootExchange
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RootExchangeSupportAndFourierRelation
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSchwartzBruhatConvolutionLocalFieldPower
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierTransformInversionLocalFieldPi
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemFourierJacobiSubgroupIffParabolicMulColumn
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemRootExchangeParabolicAndFourierJacobiIffEntri
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsUnimodularBlockUpperTriangularSymmetricLevels
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousWittExtendByZero
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ProperTriple
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemNormalizerOfTri
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchwartzFourierTransformPiSurjectiveSchwartzBruh
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousCharactersLocallyConstantNonarchLocalF
 
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.fourierJacobiUnipotent_eq_prod_rootExchange : ∀ (k : Type) [Field k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c), (∀ g, g ∈ NFJ k n c ρ ↔ ∃ x ∈ N k n c ρ, ∃ y ∈ N k n c (ρ + 1), g = x * y) ∧ (∀ g : GL (n ⊕ Fin c) k, g ∈ NFJ k n c ρ ↔ ∀ r s : n ⊕ Fin c, Sum.elim (fun _ => 2 * ρ + 1) (fun i : Fin c => 2 * (i.val + 1)) s ≤ Sum.elim (fun _ => 2 * ρ + 1) (fun i : Fin c => 2 * (i.val + 1)) r → g.val r s = (1 : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) r s) ∧ ∀ g ∈ NFJ k n c ρ, ∃ u ∈ N k n c (ρ + 1), ∃ β : n → k, g = u * colE c (ρ + 1) β := by
+  first | exact @GlobalTheory.RootEx.FJUnipotent.fj_unipotent | exact GlobalTheory.RootEx.FJUnipotent.fj_unipotent | (intros; apply GlobalTheory.RootEx.FJUnipotent.fj_unipotent <;> assumption)
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+
+noncomputable section
+namespace GlobalTheory.RootEx.HeisenbergSubgroup
+
+section
+variable {k : Type} [Field k] {n : Type} [Fintype n] [DecidableEq n] {c p : ℕ}
+
+def zM (c p : ℕ) (t : k) : Matrix (Fin c) (Fin c) k :=
+  Matrix.of fun l i => if l.val + 1 = p ∧ i.val + 1 = p + 1 then t else 0
+
+def hM (c p : ℕ) (u β : n → k) (t : k) : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k :=
+  fromBlocks 1 (ExchangeSupport.colM c (p + 1) β) (ExchangeSupport.rowM c p u) (1 + zM c p t)
+
+theorem zM_add (s t : k) : zM c p (s + t) = zM c p s + zM c p t := by
+  ext l i
+  simp only [zM, Matrix.of_apply, Matrix.add_apply]
+  split_ifs <;> simp
+
+theorem zM_zero : zM c p (0 : k) = 0 := by
+  ext l i
+  simp [zM]
+
+theorem zM_mul (s t : k) : zM c p s * zM c p t = 0 := by
+  ext l i
+  simp only [Matrix.mul_apply, zM, Matrix.of_apply, Matrix.zero_apply]
+  refine Finset.sum_eq_zero fun j _ => ?_
+  split_ifs with h₁ h₂ <;> first | (exfalso; omega) | simp
+
+omit [Fintype n] [DecidableEq n] in
+theorem col_mul_zM (β : n → k) (t : k) : ExchangeSupport.colM c (p + 1) β * zM c p t = 0 := by
+  ext r i
+  simp only [Matrix.mul_apply, ExchangeSupport.colM, zM, Matrix.of_apply, Matrix.zero_apply]
+  refine Finset.sum_eq_zero fun j _ => ?_
+  split_ifs with h₁ h₂ <;> first | (exfalso; omega) | simp
+
+omit [Fintype n] [DecidableEq n] in
+theorem zM_mul_row (u : n → k) (t : k) : zM c p t * ExchangeSupport.rowM c p u = 0 := by
+  ext l s
+  simp only [Matrix.mul_apply, ExchangeSupport.rowM, zM, Matrix.of_apply, Matrix.zero_apply]
+  refine Finset.sum_eq_zero fun j _ => ?_
+  split_ifs with h₁ h₂ <;> first | (exfalso; omega) | simp
+
+omit [DecidableEq n] in
+theorem row_mul_col (u β : n → k) :
+    ExchangeSupport.rowM c p u * ExchangeSupport.colM c (p + 1) β = zM c p (u ⬝ᵥ β) := by
+  ext l i
+  simp only [Matrix.mul_apply, ExchangeSupport.rowM, ExchangeSupport.colM, zM, Matrix.of_apply]
+  by_cases hl : l.val + 1 = p <;> by_cases hi : i.val + 1 = p + 1 <;> simp [hl, hi, dotProduct]
+
+omit [Fintype n] [DecidableEq n] in
+theorem row_add (u w : n → k) : ExchangeSupport.rowM c p (u + w) =
+    ExchangeSupport.rowM c p u + ExchangeSupport.rowM c p w := by
+  ext l s
+  simp only [ExchangeSupport.rowM, Matrix.of_apply, Matrix.add_apply, Pi.add_apply]
+  split_ifs <;> simp
+
+omit [Fintype n] [DecidableEq n] in
+theorem col_add (u w : n → k) : ExchangeSupport.colM c p (u + w) =
+    ExchangeSupport.colM c p u + ExchangeSupport.colM c p w := by
+  ext r i
+  simp only [ExchangeSupport.colM, Matrix.of_apply, Matrix.add_apply, Pi.add_apply]
+  split_ifs <;> simp
+
+omit [Fintype n] [DecidableEq n] in
+theorem row_zero : ExchangeSupport.rowM c p (0 : n → k) = 0 := by
+  ext l s
+  simp [ExchangeSupport.rowM]
+
+omit [Fintype n] [DecidableEq n] in
+theorem col_zero : ExchangeSupport.colM c p (0 : n → k) = 0 := by
+  ext r i
+  simp [ExchangeSupport.colM]
+
+theorem hM_mul (u β u' β' : n → k) (t t' : k) :
+    hM c p u β t * hM c p u' β' t' = hM c p (u + u') (β + β') (t + t' + u ⬝ᵥ β') := by
+  simp only [hM, Matrix.fromBlocks_multiply]
+  congr 1
+  · rw [ExchangeSupport.colM_mul_rowM, Matrix.one_mul, add_zero]
+  · rw [Matrix.one_mul, Matrix.mul_add, Matrix.mul_one, col_mul_zM, add_zero, col_add]
+    abel
+  · rw [Matrix.mul_one, Matrix.add_mul, Matrix.one_mul, zM_mul_row, add_zero, row_add]
+  · rw [row_mul_col]
+    simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, zM_mul, zM_add]
+    abel
+
+omit [Fintype n] in
+theorem hM_zero : hM c p (0 : n → k) 0 0 = 1 := by
+  rw [hM, row_zero, col_zero, zM_zero, add_zero, Matrix.fromBlocks_one]
+
+theorem rowE_eq (u : n → k) : (rowE c p u).val = hM c p u 0 0 := by
+  rw [ExchangeSupport.rowE_val, hM, col_zero, zM_zero, add_zero]
+
+theorem colE_eq (β : n → k) : (colE c (p + 1) β).val = hM c p 0 β 0 := by
+  rw [ExchangeSupport.colE_val, hM, row_zero, zM_zero, add_zero]
+
+theorem cenM_eq (t : k) : cenM n c p t = hM c p 0 0 t := by
+  rw [hM, row_zero, col_zero]
+  rfl
+
+theorem prod_eq (u β : n → k) (t : k) :
+    (rowE c p u).val * (colE c (p + 1) β).val * cenM n c p t = hM c p u β (u ⬝ᵥ β + t) := by
+  rw [rowE_eq, colE_eq, cenM_eq, hM_mul, hM_mul]
+  simp only [add_zero, zero_add, dotProduct_zero]
+
+def Heisenberg₂ (k : Type) [Field k] (n : Type) [Fintype n] [DecidableEq n] (c p : ℕ) :
+    Subgroup (GL (n ⊕ Fin c) k) where
+  carrier := {g | ∃ (u β : n → k) (t : k), g.val = hM c p u β t}
+  one_mem' := ⟨0, 0, 0, hM_zero.symm⟩
+  mul_mem' := by
+    rintro g h ⟨u, β, t, hg⟩ ⟨u', β', t', hh⟩
+    exact ⟨_, _, _, by rw [Units.val_mul, hg, hh, hM_mul]⟩
+  inv_mem' := by
+    rintro g ⟨u, β, t, hg⟩
+    refine ⟨-u, -β, u ⬝ᵥ β - t, Units.inv_eq_of_mul_eq_one_right ?_⟩
+    rw [hg, hM_mul, ← hM_zero (p := p)]
+    simp
+
+theorem mem_N_of_val {g : GL (n ⊕ Fin c) k} {β : n → k} {t : k} (hg : g.val = hM c p 0 β t) :
+    g ∈ N k n c p := by
+  show g ∈ Subgroup.closure {g | InN p g}
+  refine Subgroup.subset_closure ?_
+  intro r s hrs
+  rw [hg, hM, row_zero]
+  rcases r with a | l <;> rcases s with b | i
+  · simp [Matrix.one_apply]
+  · simp only [lev, Sum.elim_inl, Sum.elim_inr] at hrs
+    simp only [Matrix.fromBlocks_apply₁₂, ExchangeSupport.colM, Matrix.of_apply]
+    rw [if_neg (by omega)]
+    simp
+  · simp
+  · simp only [lev, Sum.elim_inr] at hrs
+    simp only [Matrix.fromBlocks_apply₂₂, Matrix.add_apply, zM, Matrix.of_apply]
+    rw [if_neg (by omega)]
+    simp [Matrix.one_apply]
+
+private theorem eMat_mem_N_succ (u : n → k) : rowE c p u ∈ N k n c (p + 1) := by
+  show rowE c p u ∈ Subgroup.closure {g | InN (p + 1) g}
+  refine Subgroup.subset_closure ?_
+  intro r s hrs
+  rw [ExchangeSupport.rowE_val]
+  rcases r with a | l <;> rcases s with b | i
+  · simp [Matrix.one_apply]
+  · simp
+  · simp only [lev, Sum.elim_inl, Sum.elim_inr] at hrs
+    simp only [Matrix.fromBlocks_apply₂₁, ExchangeSupport.rowM, Matrix.of_apply]
+    rw [if_neg (by omega)]
+    simp
+  · simp [Matrix.one_apply]
+
+theorem heis_le : Heisenberg₂ k n c p ≤ NFJ k n c p := by
+  rintro g ⟨u, β, t, hg⟩
+  have hinv : rowE c p u * rowE c p (-u) = 1 := by
+    rw [← ExchangeSupport.rowE_add, add_neg_cancel, ExchangeSupport.rowE_zero]
+  have hsplit : g = rowE c p u * (rowE c p (-u) * g) := by
+    rw [← mul_assoc, hinv, one_mul]
+  have hrest : rowE c p (-u) * g ∈ N k n c p := by
+    refine mem_N_of_val (β := β) (t := t - u ⬝ᵥ β) ?_
+    rw [Units.val_mul, hg, rowE_eq, hM_mul]
+    simp only [neg_add_cancel, zero_add, neg_dotProduct]
+    ring_nf
+  rw [hsplit]
+  exact Subgroup.mul_mem _ (le_sup_right (a := N k n c p) (eMat_mem_N_succ u))
+    (le_sup_left (b := N k n c (p + 1)) hrest)
+
+end
+
+theorem heisenberg_subgroup : ∀ (k : Type) [Field k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c), (∃ H : Subgroup (GL (n ⊕ Fin c) k), H ≤ NFJ k n c ρ ∧ ∀ g, g ∈ H ↔ ∃ (u β : n → k) (t : k), g.val = (rowE c ρ u).val * (colE c (ρ + 1) β).val * cenM n c ρ t) ∧ ∀ u β₀ : n → k, (rowE c ρ u * colE c (ρ + 1) β₀).val = cenM n c ρ (u ⬝ᵥ β₀) * (colE c (ρ + 1) β₀ * rowE c ρ u).val := by
+  intro k _ n _ _ c ρ _ _
+  refine ⟨⟨Heisenberg₂ k n c ρ, heis_le, fun g => ?_⟩, fun u β₀ => ?_⟩
+  · constructor
+    · rintro ⟨u, β, t, hg⟩
+      refine ⟨u, β, t - u ⬝ᵥ β, ?_⟩
+      rw [prod_eq, hg]
+      congr 1
+      ring
+    · rintro ⟨u, β, t, hg⟩
+      exact ⟨u, β, u ⬝ᵥ β + t, by rw [hg, prod_eq]⟩
+  · rw [Units.val_mul, Units.val_mul, rowE_eq, colE_eq, cenM_eq, hM_mul, hM_mul, hM_mul]
+    simp only [add_zero, zero_add, dotProduct_zero, zero_dotProduct]
+
+end GlobalTheory.RootEx.HeisenbergSubgroup
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_heisenbergSubgroup_fourierJacobi_commutator : ∀ (k : Type) [Field k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c), (∃ H : Subgroup (GL (n ⊕ Fin c) k), H ≤ NFJ k n c ρ ∧ ∀ g, g ∈ H ↔ ∃ (u β : n → k) (t : k), g.val = (rowE c ρ u).val * (colE c (ρ + 1) β).val * cenM n c ρ t) ∧ ∀ u β₀ : n → k, (rowE c ρ u * colE c (ρ + 1) β₀).val = cenM n c ρ (u ⬝ᵥ β₀) * (colE c (ρ + 1) β₀ * rowE c ρ u).val := by
+  atlas_forward_decl GlobalTheory.RootEx.HeisenbergSubgroup.heisenberg_subgroup
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_schwartzBruhat_convolution_localFieldPower : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (ν : Measure k) [ν.IsAddHaarMeasure] (Φ Ψ : SB (n → k)), ∃ (T : (n → k) → SB (n → k)) (w : SB (n → k)), (∀ y x, (T y).1 x = Ψ.1 (x - y)) ∧ (∀ x, w.1 x = ∫ y, Φ.1 y * Ψ.1 (x - y) ∂(Measure.pi fun _ => ν)) ∧ (∀ x, w.1 x = ∫ y, Ψ.1 y * Φ.1 (x - y) ∂(Measure.pi fun _ => ν)) ∧ ∀ l : SB (n → k) →ₗ[ℂ] ℂ, l w = ∫ y, Φ.1 y * l (T y) ∂(Measure.pi fun _ => ν) := by
+  first | exact @GlobalTheory.SBConv.exists_convolution | exact GlobalTheory.SBConv.exists_convolution | (intros; apply GlobalTheory.SBConv.exists_convolution <;> assumption)
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+
+namespace GlobalTheory.RootEx
+
+private theorem isLocallyConstant_indicator_const_of_isClopen {X : Type} [TopologicalSpace X] {B : Set X}
+    (hB : IsClopen B) (c : ℂ) : IsLocallyConstant (B.indicator fun _ => c) := by
+  rw [IsLocallyConstant.iff_exists_open]
+  intro x
+  by_cases hx : x ∈ B
+  · refine ⟨B, hB.isOpen, hx, fun y hy => ?_⟩
+    rw [Set.indicator_of_mem hy, Set.indicator_of_mem hx]
+  · refine ⟨Bᶜ, hB.isClosed.isOpen_compl, hx, fun y hy => ?_⟩
+    rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]
+
+private theorem sigmaCompactSpace_of_isNonarchimedeanLocalField (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] : SigmaCompactSpace k := by
+  obtain ⟨g, hg⟩ := IsCyclic.exists_generator (α := (ValueGroupWithZero k)ˣ)
+  refine SigmaCompactSpace.of_countable
+    (Set.range fun m : ℤ => {x : k | valuation k x ≤ ((g ^ m : (ValueGroupWithZero k)ˣ) : ValueGroupWithZero k)})
+    (Set.countable_range _) ?_ ?_
+  · rintro _ ⟨m, rfl⟩
+    exact IsNonarchimedeanLocalField.isCompact_closedBall k _
+  · refine Set.eq_univ_of_forall fun x => ?_
+    by_cases hx : x = 0
+    · subst hx
+      refine Set.mem_sUnion.mpr ⟨_, ⟨0, rfl⟩, ?_⟩
+      rw [Set.mem_ofPred_eq, map_zero]
+      exact zero_le
+    · obtain ⟨m, hm⟩ := Subgroup.mem_zpowers_iff.mp
+        (hg (Units.mk0 (valuation k x) ((map_ne_zero (valuation k)).mpr hx)))
+      refine Set.mem_sUnion.mpr ⟨_, ⟨m, rfl⟩, ?_⟩
+      rw [Set.mem_ofPred_eq, hm, Units.val_mk0]
+
+open GlobalTheory.SplitWeil.FourierPi in
+
+theorem exists_SB_supported_integral_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (ν : Measure k) [ν.IsAddHaarMeasure] (U : Set (n → k)) (_ : U ∈ nhds (0 : n → k)), ∃ Ψ : SB (n → k), (∀ y, y ∉ U → Ψ.1 y = 0) ∧ ∫ y, Ψ.1 y ∂(Measure.pi fun _ => ν) = 1 := by
+  intro k _ _ _ _ _ _ n _ _ ν _ U hU
+  have := sigmaCompactSpace_of_isNonarchimedeanLocalField k
+  obtain ⟨s, hsU⟩ := exists_box_subset (k := k) (n := n) hU
+  have hBo : IsOpen (box (k := k) n s) := isOpen_box s
+  have hBc : IsCompact (box (k := k) n s) := isCompact_box s
+  have hBcl : IsClosed (box (k := k) n s) := isClosed_set_pi fun _ _ =>
+    AddSubgroup.isClosed_of_isOpen
+      { carrier := cball s
+        zero_mem' := by
+          show valuation k (0 : k) ≤ valuation k (s : k)
+          rw [map_zero]
+          exact zero_le
+        add_mem' := add_mem_cball
+        neg_mem' := neg_mem_cball } (isOpen_cball s)
+  have hBm : MeasurableSet (box (k := k) n s) :=
+    MeasurableSet.univ_pi fun _ => (isOpen_cball s).measurableSet
+  have h0 : (0 : n → k) ∈ box (k := k) n s := by
+    intro i _
+    show valuation k (0 : k) ≤ valuation k (s : k)
+    rw [map_zero]
+    exact zero_le
+  have hpos : 0 < (Measure.pi fun _ : n => ν) (box n s) := hBo.measure_pos _ ⟨0, h0⟩
+  have hfin : (Measure.pi fun _ : n => ν) (box n s) < ⊤ := hBc.measure_lt_top
+  have hreal : (Measure.pi fun _ : n => ν).real (box n s) ≠ 0 :=
+    (ENNReal.toReal_pos hpos.ne' hfin.ne).ne'
+  set c : ℂ := (((Measure.pi fun _ : n => ν).real (box n s) : ℝ) : ℂ)⁻¹ with hc
+  refine ⟨⟨(box (k := k) n s).indicator fun _ => c,
+    isLocallyConstant_indicator_const_of_isClopen ⟨hBcl, hBo⟩ c,
+    HasCompactSupport.intro' hBc hBcl fun y hy => Set.indicator_of_notMem hy _⟩, ?_, ?_⟩
+  · intro y hy
+    show (box (k := k) n s).indicator (fun _ => c) y = 0
+    exact Set.indicator_of_notMem (fun hb => hy (hsU hb)) _
+  · show ∫ y, (box (k := k) n s).indicator (fun _ => c) y ∂(Measure.pi fun _ => ν) = 1
+    rw [integral_indicator_const c hBm, Complex.real_smul, hc,
+      mul_inv_cancel₀ (Complex.ofReal_ne_zero.mpr hreal)]
+
+end GlobalTheory.RootEx
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_schwartzBruhat_supported_nhds_integral_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (ν : Measure k) [ν.IsAddHaarMeasure] (U : Set (n → k)) (_ : U ∈ nhds (0 : n → k)), ∃ Ψ : SB (n → k), (∀ y, y ∉ U → Ψ.1 y = 0) ∧ ∫ y, Ψ.1 y ∂(Measure.pi fun _ => ν) = 1 := by
+  atlas_forward_decl GlobalTheory.RootEx.exists_SB_supported_integral_one
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_fourierJacobiSubgroup_iff_parabolic_mul_column : ∀ (k : Type) [Field k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c), (∀ g, g ∈ RFJ k n c ρ ↔ ∃ r ∈ R k n c (ρ + 1), ∃ β : n → k, g = r * colE c (ρ + 1) β) ∧ ∀ β : n → k, ∀ u ∈ N k n c (ρ + 1), colE c (ρ + 1) β * u * (colE c (ρ + 1) β)⁻¹ ∈ N k n c (ρ + 1) := by
+  first | exact @GlobalTheory.RootEx.FourierJacobiGroup.mem_RFJ_iff | exact GlobalTheory.RootEx.FourierJacobiGroup.mem_RFJ_iff | (intros; apply GlobalTheory.RootEx.FourierJacobiGroup.mem_RFJ_iff <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_rootExchangeParabolic_and_fourierJacobi_iff_entries : ∀ (k : Type) [Field k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ), (∀ g : GL (n ⊕ Fin c) k, g ∈ R k n c ρ ↔ ∀ r s : n ⊕ Fin c, (r.isRight ∨ s.isRight) → Sum.elim (fun _ => ρ) (fun i : Fin c => i.val + 1) s ≤ Sum.elim (fun _ => ρ) (fun i : Fin c => i.val + 1) r → g.val r s = (1 : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) r s) ∧ (1 ≤ ρ → ρ < c → ∀ g : GL (n ⊕ Fin c) k, g ∈ RFJ k n c ρ ↔ ∀ r s : n ⊕ Fin c, (r.isRight ∨ s.isRight) → Sum.elim (fun _ => 2 * ρ + 1) (fun i : Fin c => 2 * (i.val + 1)) s ≤ Sum.elim (fun _ => 2 * ρ + 1) (fun i : Fin c => 2 * (i.val + 1)) r → g.val r s = (1 : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) r s) := by
+  first | exact @GlobalTheory.RootEx.ParabolicEntries.mem_R_iff_and_mem_RFJ_iff | exact GlobalTheory.RootEx.ParabolicEntries.mem_R_iff_and_mem_RFJ_iff | (intros; apply GlobalTheory.RootEx.ParabolicEntries.mem_R_iff_and_mem_RFJ_iff <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isUnimodular_blockUpperTriangular_symmetricLevels : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (c l : ℕ) (L : Fin c → ℕ) (_ : ∀ i, L (Fin.rev i) + L i = 2 * l) (S : Subgroup (GL (n ⊕ Fin c) k)) (_ : ∀ g : GL (n ⊕ Fin c) k, g ∈ S ↔ ∀ r s : n ⊕ Fin c, (r.isRight ∨ s.isRight) → Sum.elim (fun _ => l) L s ≤ Sum.elim (fun _ => l) L r → g.val r s = (1 : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) r s) (m : Measure S), m.IsHaarMeasure → m.IsMulRightInvariant := by
+  first | exact @GlobalTheory.LevelUnimod.unimodular | exact GlobalTheory.LevelUnimod.unimodular | (intros; apply GlobalTheory.LevelUnimod.unimodular <;> assumption)
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+
+noncomputable section
+namespace GlobalTheory.RootEx.HeisenbergSign
+
+theorem colE_inv_eq {k : Type} [Field k] {n : Type} [Fintype n] [DecidableEq n] (c p : ℕ) (β : n → k) :
+    ((colE c p β)⁻¹ : GL (n ⊕ Fin c) k).val = 1 - ((colE c p β).val - 1) := by
+  rw [ExchangeSupport.colE_inv_val, ExchangeSupport.colE_val]
+  ext (i | i) (j | j) <;> simp [Matrix.one_apply]
+
+theorem mat_add_gCol {k : Type} [Field k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
+    {c : ℕ} (q : Fin c) (ξ : n → k) (x₀ : Matrix n n' k) (y : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) → k) :
+    Exchange.mat x₀ (y + Exchange.gCol q ξ) = Exchange.mat x₀ y + colM c (q.val + 1) ξ := by
+  ext r s
+  rcases r with r | l <;> rcases s with s | i <;>
+    simp [Exchange.mat, Exchange.gCol, colM, add_assoc, Fin.ext_iff]
+
+theorem sign : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c), (∀ (x₀ : Matrix n n' k) (e : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free (ρ + 1) rs} → k) (β : n → k) (r : n) (i : Fin (c + 1)), i.val + 1 = ρ + 1 → ((1 - ((colE c (ρ + 1) β).val - 1)) * affPt (ρ + 1) x₀ e : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k) (Sum.inl r) (Sum.inr i) = -β r) ∧ ∀ (ψ : AddChar k Circle) (ν : Measure k) [ν.IsAddHaarMeasure], Continuous ψ → ∀ (μ : kˣ →* ℂˣ) (Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)) (β : n → k), (∀ x, om μ 1 (colE c (ρ + 1) β) Φ.1 x = Φ.1 ((1 - ((colE c (ρ + 1) β).val - 1)) * x)) ∧ ∀ x₀, fl ψ ν μ ρ Φ.1 x₀ β = opE ψ ν (ρ + 1) (fun x => Φ.1 (x + colM c (ρ + 1) (-β))) x₀ := by
+  intro k _ _ _ _ _ _ n n' _ _ _ _ c ρ _ hρc
+  refine ⟨fun x₀ e β r i hi => ?_, fun ψ ν _ hψ μ Φ β => ⟨fun x => ?_, fun x₀ => ?_⟩⟩
+  ·
+    have hi' : i = Fin.castSucc (⟨ρ, hρc⟩ : Fin c) := Fin.ext (by simp; omega)
+    subst hi'
+    have h := congrFun (Exchange.col_colE_inv_mul (n' := n') (⟨ρ, hρc⟩ : Fin c) β x₀ e) r
+    simp only at h
+    rw [← colE_inv_eq]
+    exact neg_eq_iff_eq_neg.mp h
+  · rw [Exchange.om_colE, colE_inv_eq]
+  ·
+    have hch : ∀ (y : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k) (p : ℕ) (ξ : n → k),
+        ch (y + colM c p ξ) = ch y := by
+      intro y p ξ
+      simp [ch, colM]
+    have hmem : IsLocallyConstant Φ.1 ∧ HasCompactSupport Φ.1 := Φ.2
+    have key := Exchange.opE_colE hψ ν μ (⟨ρ, hρc⟩ : Fin c) (⟨ρ, hρc⟩ : Fin c)
+      (χ := fun _ => (1 : ℂ)) continuous_const hmem.1.continuous x₀ β
+    dsimp only at key
+    refine Eq.trans ?_ (key.trans ?_)
+    · simp [fl]
+    · rw [opE]
+      congr 1
+      funext e
+      rw [mat_add_gCol, ← Exchange.affPt_eq]
+      simp only [Exchange.big, one_mul, hch]
+
+end GlobalTheory.RootEx.HeisenbergSign
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rootExchange_heisenbergVariable_sign : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c), (∀ (x₀ : Matrix n n' k) (e : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free (ρ + 1) rs} → k) (β : n → k) (r : n) (i : Fin (c + 1)), i.val + 1 = ρ + 1 → ((1 - ((colE c (ρ + 1) β).val - 1)) * affPt (ρ + 1) x₀ e : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k) (Sum.inl r) (Sum.inr i) = -β r) ∧ ∀ (ψ : AddChar k Circle) (ν : Measure k) [ν.IsAddHaarMeasure], Continuous ψ → ∀ (μ : kˣ →* ℂˣ) (Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)) (β : n → k), (∀ x, om μ 1 (colE c (ρ + 1) β) Φ.1 x = Φ.1 ((1 - ((colE c (ρ + 1) β).val - 1)) * x)) ∧ ∀ x₀, fl ψ ν μ ρ Φ.1 x₀ β = opE ψ ν (ρ + 1) (fun x => Φ.1 (x + colM c (ρ + 1) (-β))) x₀ := by
+  atlas_forward_decl GlobalTheory.RootEx.HeisenbergSign.sign
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+
+noncomputable section
+namespace GlobalTheory.RootEx.RowSign
+open GlobalTheory.RootEx.Exchange
+
+theorem mat_add_gRow {k : Type} [Field k] {n n' : Type} [DecidableEq n] {c : ℕ} (q : Fin c) (u : n' → k) (x₀ : Matrix n n' k)
+    (y : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) → k) :
+    mat x₀ (y + gRow q u) = mat x₀ y + rowM n c (q.val + 1) u := by
+  ext r s
+  rcases r with r | l <;> rcases s with s | i <;>
+    simp [mat, gRow, rowM, Fin.ext_iff, add_assoc]
+
+private theorem ch_affPt_add_sRow {k : Type} [Field k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
+    [DecidableEq n'] {c : ℕ} (q : Fin c) (u : n' → k) (x₀ : Matrix n n' k)
+    (e : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free (q.val + 1) rs} → k) :
+    ch (affPt (q.val + 1) x₀ (e + sRow q u e)) = ch (affPt (q.val + 1) x₀ e) := by
+  unfold ch
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp [affPt, sRow]
+
+theorem opE_om_rowE : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c p : ℕ) (_ : 1 ≤ p) (_ : p ≤ c) (ψ : AddChar k Circle) (_ : Continuous ψ) (ν : Measure k) [ν.IsAddHaarMeasure] (μ : kˣ →* ℂˣ) (Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)) (u : n' → k) (x₀ : Matrix n n' k), opE ψ ν p (om μ (rowE (c + 1) p u) 1 Φ.1) x₀ = opE ψ ν p (fun x => Φ.1 (x + rowM n c p u)) x₀ := by
+  intro k _ _ _ _ _ _ n n' _ _ _ _ c p hp1 hpc ψ hψ ν _ μ Φ u x₀
+  classical
+  have := secondCountable k
+  have := t2Space k
+  obtain ⟨q, rfl⟩ : ∃ q : Fin c, q.val + 1 = p := ⟨⟨p - 1, by omega⟩, by show p - 1 + 1 = p; omega⟩
+  have hΦ : IsLocallyConstant Φ.1 ∧ HasCompactSupport Φ.1 := Φ.2
+  have hA : Continuous fun e : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free (q.val + 1) rs} → k =>
+      affPt (q.val + 1) x₀ e :=
+    ((continuous_mat x₀).comp (continuous_wittExtendByZero _)).congr fun e => (affPt_eq _ x₀ e).symm
+  have hch : Continuous fun x : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k => ch x :=
+    continuous_finsetSum _ fun i _ => continuous_id.matrix_elem _ _
+  set f : ({rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free (q.val + 1) rs} → k) → ℂ := fun e =>
+    Φ.1 (affPt (q.val + 1) x₀ e + rowM n c (q.val + 1) u) * (ψ (-ch (affPt (q.val + 1) x₀ e)) : ℂ) with hf_def
+  have hf : Continuous f := by
+    refine (hΦ.1.continuous.comp (hA.add continuous_const)).mul ?_
+    exact continuous_subtype_val.comp (hψ.comp (hch.comp hA).neg)
+  have hS : Continuous (sRow (n := n) (n' := n') q u) := by
+    refine continuous_pi fun i => ?_
+    rcases i with ⟨⟨r, s | s⟩, hi⟩
+    · exact ((continuous_apply _).comp (continuous_wittExtendByZero _)).mul continuous_const
+    · exact continuous_const
+  have h0 : ∀ e (i : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free (q.val + 1) rs}),
+      ¬ (∃ s, i.1.2 = Sum.inl s) → sRow q u e i = 0 := by
+    rintro e ⟨⟨r, s | s⟩, hi⟩ h
+    · exact absurd ⟨s, rfl⟩ h
+    · rfl
+  have h1 : ∀ e e' : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free (q.val + 1) rs} → k,
+      (∀ i, ¬ (∃ s, i.1.2 = Sum.inl s) → e i = e' i) → sRow q u e = sRow q u e' := by
+    intro e e' he
+    funext i
+    rcases i with ⟨⟨r, s | s⟩, hi⟩
+    · simp only [sRow, Sum.elim_inl]
+      congr 1
+      simp only [ext0]
+      split_ifs with h
+      · exact he _ (by simp)
+      · rfl
+    · rfl
+  have hL : ∀ e, om μ (rowE (c + 1) (q.val + 1) u) 1 Φ.1 (affPt (q.val + 1) x₀ e) *
+      (ψ (-ch (affPt (q.val + 1) x₀ e)) : ℂ) = f (e + sRow q u e) := by
+    intro e
+    rw [om_rowE, affPt_mul_rowE, mat_add_gRow, ← affPt_eq]
+    simp only [hf_def, ch_affPt_add_sRow]
+  unfold opE
+  simp_rw [hL]
+  exact integral_shear ν (fun i => ∃ s, i.1.2 = Sum.inl s) (sRow q u) hS h0 h1 f hf
+
+end GlobalTheory.RootEx.RowSign
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rootExchangeOperator_weil_rowUnipotent : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c p : ℕ) (_ : 1 ≤ p) (_ : p ≤ c) (ψ : AddChar k Circle) (_ : Continuous ψ) (ν : Measure k) [ν.IsAddHaarMeasure] (μ : kˣ →* ℂˣ) (Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)) (u : n' → k) (x₀ : Matrix n n' k), opE ψ ν p (om μ (rowE (c + 1) p u) 1 Φ.1) x₀ = opE ψ ν p (fun x => Φ.1 (x + rowM n c p u)) x₀ := by
+  atlas_forward_decl GlobalTheory.RootEx.RowSign.opE_om_rowE
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_compact_preimage_embX_mul_colE : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c) (C : Set (GL (n ⊕ Fin c) k)) (_ : IsCompact C), ∃ D : Set (GL n k × N k n c (ρ + 1) × (n → k)), IsCompact D ∧ ∀ z : GL n k × N k n c (ρ + 1) × (n → k), embX c z.1 * (z.2.1 : GL (n ⊕ Fin c) k) * colE c (ρ + 1) z.2.2 ∈ C → z ∈ D := by
+  first | exact @GlobalTheory.RootEx.ProperTriple.proper_triple | exact GlobalTheory.RootEx.ProperTriple.proper_triple | (intros; apply GlobalTheory.RootEx.ProperTriple.proper_triple <;> assumption)
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+
+namespace GlobalTheory.QuotIntFJ
+
+theorem integral_rotate_three {B X U : Type} [MeasurableSpace X] [MeasurableSpace B] [MeasurableSpace U]
+    (β : Measure B) (μ : Measure X) (ρ : Measure U) [SFinite μ] [SFinite β] [SFinite ρ]
+    (Φ : B → X → U → ℂ) (hΦ : Integrable (fun z : B × (X × U) => Φ z.1 z.2.1 z.2.2) (β.prod (μ.prod ρ))) :
+    Integrable (fun b => ∫ x, ∫ u, Φ b x u ∂ρ ∂μ) β ∧
+      ∫ b, ∫ x, ∫ u, Φ b x u ∂ρ ∂μ ∂β = ∫ x, ∫ u, ∫ b, Φ b x u ∂β ∂ρ ∂μ := by
+  have hsec : ∀ᵐ b ∂β, Integrable (fun y : X × U => Φ b y.1 y.2) (μ.prod ρ) := hΦ.prod_right_ae
+  have hin : ∀ᵐ b ∂β, ∫ x, ∫ u, Φ b x u ∂ρ ∂μ = ∫ y : X × U, Φ b y.1 y.2 ∂(μ.prod ρ) := by
+    filter_upwards [hsec] with b hb
+    exact (integral_prod (fun y : X × U => Φ b y.1 y.2) hb).symm
+  have hsw : Integrable (fun w : (X × U) × B => Φ w.2 w.1.1 w.1.2) ((μ.prod ρ).prod β) := hΦ.swap
+  refine ⟨hΦ.integral_prod_left.congr (hin.mono fun b hb => hb.symm), ?_⟩
+  calc ∫ b, ∫ x, ∫ u, Φ b x u ∂ρ ∂μ ∂β
+      = ∫ b, ∫ y : X × U, Φ b y.1 y.2 ∂(μ.prod ρ) ∂β := integral_congr_ae hin
+    _ = ∫ w : B × (X × U), Φ w.1 w.2.1 w.2.2 ∂(β.prod (μ.prod ρ)) := (integral_prod _ hΦ).symm
+    _ = ∫ w : (X × U) × B, Φ w.2 w.1.1 w.1.2 ∂((μ.prod ρ).prod β) :=
+        (integral_prod_swap (fun w : B × (X × U) => Φ w.1 w.2.1 w.2.2)).symm
+    _ = ∫ y : X × U, ∫ b, Φ b y.1 y.2 ∂β ∂(μ.prod ρ) := integral_prod _ hsw
+    _ = ∫ x, ∫ u, ∫ b, Φ b x u ∂β ∂ρ ∂μ :=
+        integral_prod (fun y : X × U => ∫ b, Φ b y.1 y.2 ∂β) hsw.integral_prod_left
+
+theorem weil_formula_FJ : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c) (ν : Measure k) [ν.IsAddHaarMeasure] (μX : Measure (GL n k)) [μX.IsHaarMeasure] (μG : Measure (GL (n ⊕ Fin c) k)) (f : GL (n ⊕ Fin c) k → ℂ) (z : ℂ), IsQuotInt ν μX μG (ρ + 1) f z → (∀ h, Integrable (fun β : n → k => f (colE c (ρ + 1) β * h)) (Measure.pi fun _ => ν)) ∧ IsQuotIntFJ ν μX μG ρ (fun h => ∫ β : n → k, f (colE c (ρ + 1) β * h) ∂(Measure.pi fun _ => ν)) z := by
+  intro k _ _ _ _ _ _ n _ _ c ρ hρ hρc ν _ μX _ μG f z hq
+  obtain ⟨F, hF, hfF, hz⟩ := hq
+  have hF' : IsLocallyConstant F ∧ HasCompactSupport F := hF
+  obtain ⟨hsck, ht2k⟩ := GlobalTheory.SplitWeil.Model.secondCountable_and_t2_local_field (k := k)
+  have := hsck
+  have := ht2k
+  obtain ⟨hB1, hL1, hS1, -⟩ := volGL_haar k n ν
+  obtain ⟨hB2, hL2, hS2, -⟩ := volGL_haar k (n ⊕ Fin c) ν
+  have := hB1
+  have := hL1
+  have := hS1
+  have := hB2
+  have := hL2
+  have := hS2
+
+  have hV : volN ν n c (ρ + 1) =
+      (Measure.pi fun _ => ν).map (GlobalTheory.RootEx.VolN.coEquiv (k := k) (n := n) (c := c) (ρ + 1)) :=
+    GlobalTheory.RootEx.VolN.volN_eq (n := n) (c := c) ν (ρ + 1)
+  have : SigmaFinite (volN ν n c (ρ + 1)) := by
+    rw [hV]
+    exact (GlobalTheory.RootEx.VolN.coEquiv (k := k) (n := n) (c := c) (ρ + 1)).sigmaFinite_map
+  have : IsFiniteMeasureOnCompacts (volN ν n c (ρ + 1)) := by
+    rw [hV]
+    refine ⟨fun K hK => ?_⟩
+    rw [MeasurableEquiv.map_apply]
+    have hpre : (GlobalTheory.RootEx.VolN.coEquiv (k := k) (n := n) (c := c) (ρ + 1)) ⁻¹' K =
+        GlobalTheory.RootEx.VolN.co (ρ + 1) '' K := by
+      ext e
+      constructor
+      · intro he
+        exact ⟨_, he, GlobalTheory.RootEx.VolN.co_mkNel _ e⟩
+      · rintro ⟨g, hg, rfl⟩
+        show GlobalTheory.RootEx.Model.mkNel _ (GlobalTheory.RootEx.VolN.co _ g) ∈ K
+        rw [GlobalTheory.RootEx.VolN.mkNel_co]
+        exact hg
+    rw [hpre]
+    exact (hK.image (GlobalTheory.RootEx.VolN.continuous_co _)).measure_lt_top
+
+  have hint : ∀ h : GL (n ⊕ Fin c) k, Integrable
+      (fun w : (n → k) × (GL n k × N k n c (ρ + 1)) =>
+        F (embX c w.2.1 * (w.2.2 : GL (n ⊕ Fin c) k) * colE c (ρ + 1) w.1 * h))
+      ((Measure.pi fun _ => ν).prod (μX.prod (volN ν n c (ρ + 1)))) := by
+    intro h
+    have hcont : Continuous (fun w : (n → k) × (GL n k × N k n c (ρ + 1)) =>
+        F (embX c w.2.1 * (w.2.2 : GL (n ⊕ Fin c) k) * colE c (ρ + 1) w.1 * h)) := by
+      refine hF'.1.continuous.comp (Continuous.mul (Continuous.mul (Continuous.mul ?_ ?_) ?_) continuous_const)
+      · exact GlobalTheory.RootEx.QuotStep.continuous_embX.comp (continuous_fst.comp continuous_snd)
+      · exact continuous_subtype_val.comp (continuous_snd.comp continuous_snd)
+      · exact (GlobalTheory.RootEx.QuotStep.continuous_colE (ρ + 1)).comp continuous_fst
+    obtain ⟨D, hD, hDC⟩ := GlobalTheory.T.exists_compact_preimage_embX_mul_colE k n c ρ hρ hρc ((fun g => g * h⁻¹) '' tsupport F)
+      (hF'.2.image (continuous_mul_const h⁻¹))
+    have hsupp : HasCompactSupport (fun w : (n → k) × (GL n k × N k n c (ρ + 1)) =>
+        F (embX c w.2.1 * (w.2.2 : GL (n ⊕ Fin c) k) * colE c (ρ + 1) w.1 * h)) := by
+      refine HasCompactSupport.intro
+        (hD.image (f := fun t : GL n k × N k n c (ρ + 1) × (n → k) => (t.2.2, (t.1, t.2.1)))
+          (by fun_prop)) ?_
+      intro w hw
+      by_contra hne
+      apply hw
+      refine ⟨(w.2.1, w.2.2, w.1), hDC _ ⟨_, subset_tsupport _ hne, ?_⟩, rfl⟩
+      simp [mul_assoc]
+    exact hcont.integrable_of_hasCompactSupport hsupp
+  have hfeq : ∀ (h : GL (n ⊕ Fin c) k) (b : n → k), f (colE c (ρ + 1) b * h) =
+      ∫ x, ∫ u : N k n c (ρ + 1), F (embX c x * (u : GL (n ⊕ Fin c) k) * colE c (ρ + 1) b * h)
+        ∂(volN ν n c (ρ + 1)) ∂μX := by
+    intro h b
+    rw [hfF]
+    simp only [mul_assoc]
+  have key := fun h : GL (n ⊕ Fin c) k => integral_rotate_three (Measure.pi fun _ : n => ν) μX
+    (volN ν n c (ρ + 1))
+    (fun b x (u : N k n c (ρ + 1)) => F (embX c x * (u : GL (n ⊕ Fin c) k) * colE c (ρ + 1) b * h))
+    (hint h)
+  refine ⟨fun h => (key h).1.congr (Filter.Eventually.of_forall fun b => (hfeq h b).symm), ?_⟩
+  unfold IsQuotIntFJ
+  refine ⟨F, hF, fun h => ?_, hz⟩
+  calc ∫ b : n → k, f (colE c (ρ + 1) b * h) ∂(Measure.pi fun _ => ν)
+      = ∫ b : n → k, ∫ x, ∫ u : N k n c (ρ + 1),
+          F (embX c x * (u : GL (n ⊕ Fin c) k) * colE c (ρ + 1) b * h)
+            ∂(volN ν n c (ρ + 1)) ∂μX ∂(Measure.pi fun _ => ν) :=
+        integral_congr_ae (Filter.Eventually.of_forall (hfeq h))
+    _ = _ := (key h).2
+
+end GlobalTheory.QuotIntFJ
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_formula_rootExchange_parabolic_quotient : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c) (ν : Measure k) [ν.IsAddHaarMeasure] (μX : Measure (GL n k)) [μX.IsHaarMeasure] (μG : Measure (GL (n ⊕ Fin c) k)) (f : GL (n ⊕ Fin c) k → ℂ) (z : ℂ), IsQuotInt ν μX μG (ρ + 1) f z → (∀ h, Integrable (fun β : n → k => f (colE c (ρ + 1) β * h)) (Measure.pi fun _ => ν)) ∧ IsQuotIntFJ ν μX μG ρ (fun h => ∫ β : n → k, f (colE c (ρ + 1) β * h) ∂(Measure.pi fun _ => ν)) z := by
+  atlas_forward_decl GlobalTheory.QuotIntFJ.weil_formula_FJ
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+
+noncomputable section
+namespace GlobalTheory.QuotIntFJ
+open GlobalTheory.QuotInt
+
+open MeasureTheory ValuativeRel Matrix in
+set_option maxHeartbeats 1000000 in
+
+theorem _root_.GlobalTheory.QuotIntFJ.quotIntFJ_unique : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n]
+    [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c) (ν : Measure k) [ν.IsAddHaarMeasure]
+    (μX : Measure (GL n k)) [μX.IsHaarMeasure] (μG : Measure (GL (n ⊕ Fin c) k)) [μG.IsHaarMeasure]
+    (f : GL (n ⊕ Fin c) k → ℂ) (z z' : ℂ), _root_.GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage.IsQuotIntFJ ν μX μG ρ f z →
+    _root_.GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage.IsQuotIntFJ ν μX μG ρ f z' → z = z' := by
+  intro k _ _ _ _ _ _ n _ _ c ρ hρ hρc ν _ μX _ μG _ f z z' hz hz'
+  obtain ⟨F₁, hF₁, hf₁, rfl⟩ := hz
+  obtain ⟨F₂, hF₂, hf₂, rfl⟩ := hz'
+  haveI := _root_.GlobalTheory.SplitWeil.secondCountable k
+  have hA := _root_.GlobalTheory.SplitWeil.volGL_haar k n ν
+  have hB := _root_.GlobalTheory.SplitWeil.volGL_haar k (n ⊕ Fin c) ν
+  haveI := hA.1; haveI := hA.2.1; haveI := hB.1; haveI := hB.2.1
+  set U := _root_.GlobalTheory.RootEx.N k n c (ρ + 1)
+  set μU := _root_.GlobalTheory.RootEx.volN ν n c (ρ + 1)
+  haveI : μU.IsHaarMeasure := _root_.GlobalTheory.RootEx.VolN.isHaarMeasure_volN ν (ρ + 1)
+  haveI : SFinite μU := by
+    show SFinite (_root_.GlobalTheory.RootEx.volN ν n c (ρ + 1))
+    rw [_root_.GlobalTheory.RootEx.VolN.volN_eq]; infer_instance
+  set emb := _root_.GlobalTheory.RootEx.embX (k := k) (n := n) c
+  set col := _root_.GlobalTheory.RootEx.colE (k := k) (n := n) c (ρ + 1)
+  let m : GL n k × (U × (n → k)) → GL (n ⊕ Fin c) k := fun p => emb p.1 * ↑p.2.1 * col p.2.2
+  have hm : Continuous m := by
+    refine (_root_.GlobalTheory.RootEx.QuotStep.continuous_embX.comp continuous_fst).mul
+      (continuous_subtype_val.comp (continuous_fst.comp continuous_snd)) |>.mul
+      ((_root_.GlobalTheory.RootEx.QuotStep.continuous_colE (ρ + 1)).comp
+        (continuous_snd.comp continuous_snd))
+  have hSB : ∀ φ ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k), Continuous φ ∧ HasCompactSupport φ :=
+    fun φ hφ => ⟨hφ.1.continuous, hφ.2⟩
+  have hcs : ∀ φ ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k), ∃ D : Set (GL n k × (U × (n → k))),
+      IsCompact D ∧ ∀ p, φ (m p) ≠ 0 → p ∈ D := by
+    intro φ hφ
+    obtain ⟨D, hD, hDm⟩ := _root_.GlobalTheory.RootEx.ProperTriple.proper_triple k n c ρ hρ hρc (tsupport φ) (hSB φ hφ).2
+    exact ⟨D, hD, fun p hp => hDm p (subset_tsupport _ hp)⟩
+  set μP := μX.prod (μU.prod (Measure.pi fun _ : n => ν))
+  have hint : ∀ φ ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k),
+      Integrable (fun p => φ (m p)) μP := by
+    intro φ hφ
+    obtain ⟨D, hD, hDm⟩ := hcs φ hφ
+    refine ((hSB φ hφ).1.comp hm).integrable_of_hasCompactSupport ?_
+    exact HasCompactSupport.intro hD (fun p hp => by by_contra h; exact hp (hDm p h))
+  have hint2 : ∀ φ ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k), ∀ g : GL n k,
+      Integrable (fun y : U × (n → k) => φ (m (g, y))) (μU.prod (Measure.pi fun _ : n => ν)) := by
+    intro φ hφ g
+    obtain ⟨D, hD, hDm⟩ := hcs φ hφ
+    refine ((hSB φ hφ).1.comp (hm.comp (Continuous.prodMk_right g))).integrable_of_hasCompactSupport ?_
+    exact HasCompactSupport.intro (hD.image continuous_snd)
+      (fun y hy => by by_contra h; exact hy ⟨(g, y), hDm _ h, rfl⟩)
+  set Λ : (GL (n ⊕ Fin c) k → ℂ) → ℂ := fun φ => ∫ (g : GL n k), ∫ (u : U),
+      ∫ (β : n → k), φ (emb g * ↑u * col β) ∂Measure.pi fun _ ↦ ν ∂μU ∂μX with hΛ
+  have hΛP : ∀ φ ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k), Λ φ = ∫ p, φ (m p) ∂μP := by
+    intro φ hφ
+    rw [integral_prod _ (hint φ hφ)]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
+    exact (integral_prod _ (hint2 φ hφ g)).symm
+  set R := _root_.GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage.RFJ k n c ρ
+  have hmR : ∀ p, m p ∈ R := by
+    intro p
+    have h1 : emb p.1 ∈ R :=
+      (le_sup_right : _root_.GlobalTheory.RootEx.R k n c (ρ + 1) ≤ R)
+        ((le_sup_left : emb.range ≤ _) ⟨p.1, rfl⟩)
+    have h2 : (p.2.1 : GL (n ⊕ Fin c) k) ∈ R :=
+      (le_sup_right : _root_.GlobalTheory.RootEx.R k n c (ρ + 1) ≤ R)
+        ((le_sup_right : U ≤ _) p.2.1.2)
+    have h3 : col p.2.2 ∈ R := (le_sup_left : _root_.GlobalTheory.RootEx.R k n c ρ ≤ R)
+      ((le_sup_right : _root_.GlobalTheory.RootEx.N k n c ρ ≤ _)
+        (_root_.GlobalTheory.RootEx.Radical.colE_mem _ (Nat.lt_succ_self ρ)))
+    exact R.mul_mem (R.mul_mem h1 h2) h3
+  have hadd : ∀ φ ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k),
+      ∀ ψ ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k), Λ (φ + ψ) = Λ φ + Λ ψ := by
+    intro φ hφ ψ hψ
+    rw [hΛP _ (add_mem hφ hψ), hΛP _ hφ, hΛP _ hψ, ← integral_add (hint φ hφ) (hint ψ hψ)]
+    rfl
+  have hsmul : ∀ (a : ℂ) (φ : GL (n ⊕ Fin c) k → ℂ), (Λ fun g ↦ a * φ g) = a * Λ φ := by
+    intro a φ
+    simp only [hΛ]
+    rw [← integral_const_mul]; congr 1; funext g
+    rw [← integral_const_mul]; congr 1; funext u
+    rw [← integral_const_mul]
+  have hloc : ∀ (φ ψ : GL (n ⊕ Fin c) k → ℂ), (∀ r ∈ R, φ r = ψ r) → Λ φ = Λ ψ := by
+    intro φ ψ h
+    simp only [hΛ]
+    congr 1; funext g; congr 1; funext u; congr 1; funext β
+    exact h _ (hmR (g, u, β))
+  have hpos : ∀ φ ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k), (∀ g, φ g = 0 ∨ φ g = 1) →
+      (∃ r ∈ R, φ r = 1) → Λ φ ≠ 0 := by
+    intro φ hφ h01 ⟨r, hr, hr1⟩
+    obtain ⟨r', hr', β, rfl⟩ :=
+      ((_root_.GlobalTheory.RootEx.FourierJacobiGroup.mem_RFJ_iff k n c ρ hρ hρc).1 r).1 hr
+    obtain ⟨x, u, hu, rfl⟩ := _root_.GlobalTheory.RootEx.Radical.exists_of_mem_R hr'
+    have hre : ∀ p, φ (m p) = ((φ (m p)).re : ℂ) := by
+      intro p
+      rcases h01 (m p) with h | h <;> simp [h]
+    rw [hΛP φ hφ, integral_congr_ae (Filter.Eventually.of_forall hre), integral_complex_ofReal]
+    obtain ⟨D, hD, hDm⟩ := hcs φ hφ
+    have hpos := Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (μ := μP)
+      (x := (x, ⟨u, hu⟩, β)) (Complex.continuous_re.comp ((hSB φ hφ).1.comp hm))
+      (HasCompactSupport.intro hD (fun p hp => by
+        by_contra h
+        exact hp (hDm p (fun h' => h (by simp [h'])))))
+      (fun p => by rcases h01 (m p) with h | h <;> simp [h])
+      (by show (φ (emb x * u * col β)).re ≠ 0; rw [hr1]; simp)
+    exact_mod_cast hpos.ne'
+  let H : Subgroup (GL (n ⊕ Fin c) k) :=
+    { carrier := {r | ∀ φ : GL (n ⊕ Fin c) k → ℂ, (Λ fun g ↦ φ (r * g)) = Λ φ}
+      mul_mem' := fun {a b} ha hb φ => by
+        have e : (fun g ↦ φ (a * b * g)) = fun g ↦ (fun y ↦ φ (a * y)) (b * g) := by
+          funext g; simp only [mul_assoc]
+        simp only [Set.mem_setOf_eq] at ha hb ⊢
+        rw [e, hb (fun y ↦ φ (a * y)), ha φ]
+      one_mem' := fun φ => by simp only [one_mul]
+      inv_mem' := fun {a} ha φ => by
+        simp only [Set.mem_setOf_eq] at ha ⊢
+        have := ha (fun y ↦ φ (a⁻¹ * y))
+        simp only [inv_mul_cancel_left] at this
+        exact this.symm }
+  have hembH : ∀ x : GL n k, emb x ∈ H := by
+    intro x φ
+    simp only [hΛ]
+    have e : ∀ (g : GL n k) (u : U) (β : n → k),
+        emb x * (emb g * ↑u * col β) = emb (x * g) * ↑u * col β := by
+      intro g u β; simp only [map_mul, mul_assoc]
+    simp only [e]
+    exact integral_mul_left_eq_self (μ := μX)
+      (fun g ↦ ∫ (u : U), ∫ (β : n → k), φ (emb g * ↑u * col β) ∂Measure.pi fun _ ↦ ν ∂μU) x
+  have hUH : ∀ v ∈ U, v ∈ H := by
+    intro v hv φ
+    simp only [hΛ]
+    congr 1; funext g
+    have hw : (emb g)⁻¹ * v * emb g ∈ U :=
+      _root_.GlobalTheory.RootEx.Model.conj_mem hv g
+    have e : ∀ (u : U) (β : n → k), v * (emb g * ↑u * col β) =
+        emb g * ↑((⟨_, hw⟩ : U) * u) * col β := by
+      intro u β; simp only [Subgroup.coe_mul]; group
+    simp only [e]
+    exact integral_mul_left_eq_self (μ := μU)
+      (fun u : U ↦ ∫ (β : n → k), φ (emb g * ↑u * col β) ∂Measure.pi fun _ ↦ ν) (⟨_, hw⟩ : U)
+  have hcolH : ∀ γ : n → k, col γ ∈ H := by
+    intro γ φ
+    simp only [hΛ]
+    congr 1; funext g
+    set δ : n → k := (↑g⁻¹ : Matrix n n k) *ᵥ γ
+    have hconj : emb g⁻¹ * col γ * (emb g⁻¹)⁻¹ = col δ :=
+      _root_.GlobalTheory.RootEx.QuotStep.conj_colE (ρ + 1) g⁻¹ γ
+    have e : ∀ (u : U) (β : n → k), col γ * (emb g * ↑u * col β) =
+        emb g * (col δ * ↑u * (col δ)⁻¹) * col (δ + β) := by
+      intro u β
+      have hc : col (δ + β) = col δ * col β := (_root_.GlobalTheory.RootEx.FourierJacobiGroup.colE_add (ρ + 1) δ β).symm
+      rw [hc, ← hconj]
+      simp only [map_inv, inv_inv]
+      group
+    simp only [e]
+    have hβ : ∀ y : GL (n ⊕ Fin c) k,
+        ∫ (β : n → k), φ (emb g * y * col (δ + β)) ∂(Measure.pi fun _ ↦ ν) =
+        ∫ (β : n → k), φ (emb g * y * col β) ∂(Measure.pi fun _ ↦ ν) := fun y =>
+      integral_add_left_eq_self (fun β ↦ φ (emb g * y * col β)) δ
+    simp only [hβ]
+    exact _root_.GlobalTheory.RootEx.ConjVol.integral_conj_colE k n c ρ hρ hρc ν δ
+      (fun y ↦ ∫ (β : n → k), φ (emb g * y * col β) ∂Measure.pi fun _ ↦ ν)
+  have hinv : ∀ r ∈ R, ∀ (φ : GL (n ⊕ Fin c) k → ℂ), (Λ fun g ↦ φ (r * g)) = Λ φ := by
+    intro r hr
+    obtain ⟨r', hr', β, rfl⟩ :=
+      ((_root_.GlobalTheory.RootEx.FourierJacobiGroup.mem_RFJ_iff k n c ρ hρ hρc).1 r).1 hr
+    obtain ⟨x, u, hu, rfl⟩ := _root_.GlobalTheory.RootEx.Radical.exists_of_mem_R hr'
+    exact H.mul_mem (H.mul_mem (hembH x) (hUH u hu)) (hcolH β)
+  have hF : (F₁ - F₂) ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k) := sub_mem hF₁ hF₂
+  have hG : ∀ φ ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k), Integrable φ μG :=
+    fun φ hφ => (hSB φ hφ).1.integrable_of_hasCompactSupport (hSB φ hφ).2
+  have hΛf : ∀ F ∈ _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k),
+      (∀ h, f h = ∫ (g : GL n k), ∫ (u : U), ∫ (β : n → k), F (emb g * ↑u * col β * h)
+        ∂(Measure.pi fun _ ↦ ν) ∂μU ∂μX) → ∀ h, (Λ fun g ↦ F (g * h)) = f h := by
+    intro F _ hf h
+    rw [hf h]
+  have key := _root_.GlobalTheory.QuotInt.integral_eq_zero_of_avg μG _ hB.2.2.2.2.1 hB.2.2.2.1
+    R Λ hadd hsmul hloc hinv hpos hF (fun h => by
+      have e : (fun g => (F₁ - F₂) (g * h)) =
+          (fun g => F₁ (g * h)) + (fun g => (-1 : ℂ) * F₂ (g * h)) := by
+        funext g; simp [sub_eq_add_neg]
+      have hneg : (fun g => (-1 : ℂ) * F₂ (g * h)) ∈
+          _root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k) :=
+        (_root_.GlobalTheory.SplitWeil.SB (GL (n ⊕ Fin c) k)).smul_mem (-1 : ℂ)
+          (_root_.GlobalTheory.QuotInt.sb_right hF₂ h)
+      rw [e, hadd _ (_root_.GlobalTheory.QuotInt.sb_right hF₁ h) _ hneg,
+        hsmul (-1) (fun g => F₂ (g * h)), hΛf F₁ hF₁ hf₁ h, hΛf F₂ hF₂ hf₂ h]
+      ring)
+  have hsub : ∫ g, (F₁ - F₂) g ∂μG = ∫ g, F₁ g ∂μG - ∫ g, F₂ g ∂μG :=
+    integral_sub (hG _ hF₁) (hG _ hF₂)
+  rw [hsub] at key
+  exact sub_eq_zero.1 key
+
+end GlobalTheory.QuotIntFJ
+end
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_of_isQuotIntFJ_of_isQuotIntFJ : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ) (_ : ρ < c) (ν : Measure k) [ν.IsAddHaarMeasure] (μX : Measure (GL n k)) [μX.IsHaarMeasure] (μG : Measure (GL (n ⊕ Fin c) k)) [μG.IsHaarMeasure] (f : GL (n ⊕ Fin c) k → ℂ) (z z' : ℂ), IsQuotIntFJ ν μX μG ρ f z → IsQuotIntFJ ν μX μG ρ f z' → z = z' := by
+  atlas_forward_decl GlobalTheory.QuotIntFJ.quotIntFJ_unique
+end
+
+section
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+
+namespace GlobalTheory.LocConstTensor
+
+theorem exists_sum (Z : Type) [TopologicalSpace Z] [T2Space Z] (V : Type) [AddCommGroup V]
+    [Module ℂ V] (T : Z → V) (hT : IsLocallyConstant T) (K : Set Z) (hK : IsCompact K)
+    (h0 : ∀ y, y ∉ K → T y = 0) :
+    ∃ (m : ℕ) (v : Fin m → V) (Φ : Fin m → SB Z), ∀ y, T y = ∑ i, (Φ i).1 y • v i := by
+  classical
+  have hfin : (T '' K).Finite := by
+    letI : TopologicalSpace V := ⊥
+    haveI : DiscreteTopology V := ⟨rfl⟩
+    exact (hK.image hT.continuous).finite_of_discrete
+  let S : Finset V := hfin.toFinset.erase 0
+  let e : Fin S.card ≃ S := S.equivFin.symm
+  have hmem : ∀ w : V, w ≠ 0 → (fun y => if T y = w then (1 : ℂ) else 0) ∈ SB Z := by
+    intro w hw
+    refine ⟨hT.comp (fun u => if u = w then (1 : ℂ) else 0), ?_⟩
+    refine HasCompactSupport.intro hK ?_
+    intro y hy
+    rw [h0 y hy, if_neg (Ne.symm hw)]
+  refine ⟨S.card, fun i => (e i : V),
+    fun i => ⟨_, hmem (e i) (Finset.ne_of_mem_erase (e i).2)⟩, fun y => ?_⟩
+  have h1 : ∑ i, (if T y = (e i : V) then (1 : ℂ) else 0) • (e i : V)
+      = ∑ w ∈ S, (if T y = w then (1 : ℂ) else 0) • w := by
+    rw [← Finset.sum_coe_sort S]
+    exact Equiv.sum_comp e (fun w : S => (if T y = (w : V) then (1 : ℂ) else 0) • (w : V))
+  change T y = ∑ i, (if T y = (e i : V) then (1 : ℂ) else 0) • (e i : V)
+  rw [h1]
+  simp only [ite_smul, one_smul, zero_smul, Finset.sum_ite_eq]
+  split_ifs with h
+  · rfl
+  · by_contra hne
+    apply h
+    refine Finset.mem_erase.2 ⟨hne, hfin.mem_toFinset.2 ⟨y, ?_, rfl⟩⟩
+    by_contra hy
+    exact hne (h0 y hy)
+
+end GlobalTheory.LocConstTensor
+end
+
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_sum_smul_of_locallyConstant_compactSupport : ∀ (Z : Type) [TopologicalSpace Z] [T2Space Z] (V : Type) [AddCommGroup V] [Module ℂ V] (T : Z → V) (_ : IsLocallyConstant T) (K : Set Z) (_ : IsCompact K) (_ : ∀ y, y ∉ K → T y = 0), ∃ (m : ℕ) (v : Fin m → V) (Φ : Fin m → SB Z), ∀ y, T y = ∑ i, (Φ i).1 y • v i := by
+  atlas_forward_decl GlobalTheory.LocConstTensor.exists_sum
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartzFourierTransformPi_surjective_schwartzBruhat : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : Type) [Fintype n] [DecidableEq n] (ψ : AddChar k Circle) (_ : Continuous ψ) (_ : ψ ≠ 1) (ν : Measure k) (_ : IsSelfDual ψ ν), (∀ Φ₀ : SB (n → k), hat ψ ν Φ₀.1 ∈ SB (n → k)) ∧ ∀ g : SB (n → k), ∃ Φ₀ : SB (n → k), hat ψ ν Φ₀.1 = g.1 := by
+  first | exact @GlobalTheory.SplitWeil.FourierSurj.hat_surjective | exact GlobalTheory.SplitWeil.FourierSurj.hat_surjective | (intros; apply GlobalTheory.SplitWeil.FourierSurj.hat_surjective <;> assumption)
+end
+
+section
+open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.continuous_characters_locallyConstant_nonarchLocalField : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], (∀ μ : kˣ →* ℂˣ, Continuous μ → IsOpen (μ.ker : Set kˣ)) ∧ ∀ ψ : AddChar k Circle, Continuous ψ → IsLocallyConstant (fun x : k => (ψ x : ℂ)) := by
+  first | exact @GlobalTheory.RootEx.OpenKernel.characters_locallyConstant | exact GlobalTheory.RootEx.OpenKernel.characters_locallyConstant | (intros; apply GlobalTheory.RootEx.OpenKernel.characters_locallyConstant <;> assumption)
+end
+
+section
 open MeasureTheory ValuativeRel Matrix GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage
 open Filter Topology
 
@@ -435,3 +1283,5 @@ theorem fourierJacobiBessel : FourierJacobiBessel :=
   fun _ _ _ _ _ _ _ => ⟨heisenberg, uniqueBessel, exponents, localSign, target, source⟩
 
 end GlobalTheory.RootEx.FourierJacobi
+end
+end

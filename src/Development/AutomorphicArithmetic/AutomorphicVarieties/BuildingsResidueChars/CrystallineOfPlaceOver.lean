@@ -1,7 +1,126 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.ExistsEigenvectorOfRoot
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.WeilDeligneSpanCrystalline
-import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.LocalCrystallineOfInduced
+import Mathlib
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.WdParameterMonodromyZeroIffPotentiallyCrystallin
+import Formalism.SharpRestriction.LevelLetterCocycles.JsetEmb
+import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfJumpsBdd
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CommuteIsNilpotentOfUnipotent
+
+section
+open Polynomial
+
+theorem UpperTheory.exists_eigenvector_of_root :
+    ∀ {L C D W : Type} [Field L] [Field C] [AddCommGroup D] [Module L D] [FiniteDimensional L D] [AddCommGroup W] [Module C W] [FiniteDimensional C W] (s : L →+* C) (j : D →+ W) (S : Module.End L D) (T : Module.End C W), (∀ (a : L) (x : D), j (a • x) = s a • j x) → Submodule.span C (Set.range j) = ⊤ → (∀ x, T (j x) = j (S x)) → ∀ (q : L[X]) (b : C), b ∈ T.charpoly.roots → q.eval₂ s b = 0 → ∃ x : D, x ≠ 0 ∧ aeval S q x = 0 := by
+  intro L C D W _ _ _ _ _ _ _ _ s j S T hj hspan hT q b hb hq
+  by_contra hcon
+  have hinj : Function.Injective (aeval S q) := by
+    rw [injective_iff_map_eq_zero]
+    intro x hx
+    by_contra h0
+    exact hcon ⟨x, h0, hx⟩
+  have hsurj : Function.Surjective (aeval S q) := LinearMap.injective_iff_surjective.mp hinj
+  have hpow : ∀ (n : ℕ) (x : D), (T ^ n) (j x) = j ((S ^ n) x) := by
+    intro n
+    induction n with
+    | zero => intro x; simp
+    | succ n ih =>
+      intro x
+      rw [pow_succ, pow_succ, Module.End.mul_apply, Module.End.mul_apply, hT, ih]
+  have hcomm : ∀ (p : L[X]) (x : D), aeval T (p.map s) (j x) = j (aeval S p x) := by
+    intro p
+    induction p using Polynomial.induction_on' with
+    | add p r hp hr =>
+      intro x
+      simp only [Polynomial.map_add, map_add, LinearMap.add_apply, hp, hr]
+    | monomial n a =>
+      intro x
+      rw [Polynomial.map_monomial, aeval_monomial, aeval_monomial, Module.End.mul_apply,
+        Module.End.mul_apply, Module.algebraMap_end_apply, Module.algebraMap_end_apply, hj, hpow]
+  have hsurj' : Function.Surjective (aeval T (q.map s)) := by
+    rw [← LinearMap.range_eq_top, eq_top_iff, ← hspan, Submodule.span_le]
+    rintro _ ⟨y, rfl⟩
+    obtain ⟨x, rfl⟩ := hsurj y
+    exact ⟨j x, hcomm q x⟩
+  have hinj' : Function.Injective (aeval T (q.map s)) :=
+    LinearMap.injective_iff_surjective.mpr hsurj'
+  have hroot : T.charpoly.IsRoot b := (mem_roots'.mp hb).2
+  have hev : T.HasEigenvalue b := (Module.End.hasEigenvalue_iff_isRoot_charpoly T b).mpr hroot
+  obtain ⟨v, hv⟩ := hev.exists_hasEigenvector
+  have h1 := Module.End.aeval_apply_of_hasEigenvector (p := q.map s) hv
+  rw [eval_map, hq, zero_smul] at h1
+  exact hv.2 (hinj' (by rw [h1, map_zero]))
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain TensorProduct Module GlobalTheory.WeilDeligne GlobalTheory.Pst Polynomial
+
+theorem UpperTheory.weil_deligne_span_crystalline :
+    ∀ {l : ℕ} [Fact l.Prime] (P : LocPrime l) (ι : Om l ≃+* ℂ) {K LL : FinExt l} {V : Type} [AddCommGroup V] [Module ↥LL.1 V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] ↥LL.1 V] [FiniteDimensional ↥LL.1 V] (ρ : Representation ↥LL.1 ↥(GK K) V), IsPst P ρ → IsCrys (P.PD K) ρ → Submodule.span ℂ {z : WDSpace P ι ρ | ∃ (x : V ⊗[ℚ_[l]] P.R.B) (y : ↥(Dpst P ρ)), x ∈ Dcris (P.PD K) ρ ∧ (y : V ⊗[ℚ_[l]] Bst P) = crisIncl P ↥LL.1 V x ∧ z = wdMk P ι ρ y} = ⊤ := by
+  intro l _ P ι K LL V _ _ _ _ _ ρ hV hc
+  have hk := mem_Dst_and_monV_eq_zero_iff l P K LL V ρ
+  set S := Submodule.span ℂ {z : WDSpace P ι ρ | ∃ (x : V ⊗[ℚ_[l]] P.R.B) (y : ↥(Dpst P ρ)), x ∈ Dcris (P.PD K) ρ ∧ (y : V ⊗[ℚ_[l]] Bst P) = crisIncl P ↥LL.1 V x ∧ z = wdMk P ι ρ y} with hS
+  have key : ∀ (x : V ⊗[ℚ_[l]] Bst P), x ∈ Dpst P ρ → ∃ h : x ∈ Dpst P ρ, wdMk P ι ρ ⟨x, h⟩ ∈ S := by
+    intro x hx
+    refine AddSubgroup.closure_induction
+      (p := fun y _ => ∃ h : y ∈ Dpst P ρ, wdMk P ι ρ ⟨y, h⟩ ∈ S) ?_ ?_ ?_ ?_
+      (GlobalTheory.PstLaws.mem_closure_of_isCrys P ρ hV hc x hx)
+    · rintro _ ⟨c, s, hs, rfl⟩
+      have hsD : s ∈ Dpst P ρ := Dst_resTo_le P ρ le_rfl ((hk s).mpr hs).1
+      obtain ⟨x₀, hx₀, e⟩ := hs
+      refine ⟨mulV_mem_Dpst P ρ c s hsD, ?_⟩
+      have h1 : wdMk P ι ρ ⟨s, hsD⟩ ∈ S := Submodule.subset_span ⟨x₀, ⟨s, hsD⟩, hx₀, e.symm, rfl⟩
+      have h2 := S.smul_mem (ι (c : Om l)) h1
+      rw [← wdMk_mul] at h2
+      exact h2
+    · refine ⟨zero_mem _, ?_⟩
+      have h1 : wdMk P ι ρ 0 ∈ S := by rw [wdMk_zero]; exact zero_mem _
+      exact h1
+    · rintro y z _ _ ⟨hy, h1⟩ ⟨hz, h2⟩
+      refine ⟨add_mem hy hz, ?_⟩
+      have h3 := S.add_mem h1 h2
+      rw [← wdMk_add] at h3
+      exact h3
+    · rintro y _ ⟨hy, h1⟩
+      refine ⟨neg_mem hy, ?_⟩
+      have h2 := S.smul_mem (ι (((-1 : ↥LL.1) : ↥LL.1) : Om l)) h1
+      rw [← wdMk_smul, neg_one_smul] at h2
+      exact h2
+  rw [eq_top_iff, ← span_wdMk P ι ρ, Submodule.span_le]
+  rintro _ ⟨x, rfl⟩
+  exact (key x.1 x.2).2
+end
+
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain TensorProduct Module GlobalTheory.WeilDeligne GlobalTheory.Pst Polynomial
+
+theorem UpperTheory.local_crystalline_of_induced :
+    ∀ {l : ℕ} [Fact l.Prime] (P : LocPrime l) {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (Bw : LocBridge l E Ω (Dec (F := E) A) O) (h : IsPlaceOver A w) (hj : Induces Bw) {LL : FinExt l} {V : Type} [AddCommGroup V] [Module ↥LL.1 V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] ↥LL.1 V] [FiniteDimensional ↥LL.1 V] (ρ : Representation ↥LL.1 ↥(GK Bw.Kw) V) [FiniteDimensional ↥(MaximalUnramifiedExtension l) (DpstUr P ρ)] (σ : ↥(Weil h)), deg σ = -1 → ∀ (x : V ⊗[ℚ_[l]] P.R.B) (y : ↥(Dpst P ρ)), x ∈ Dcris (P.PD Bw.Kw) ρ → (y : V ⊗[ℚ_[l]] Bst P) = crisIncl P ↥LL.1 V x → ((weilD Bw h P ρ σ y : ↥(Dpst P ρ)) : V ⊗[ℚ_[l]] Bst P) = crisIncl P ↥LL.1 V (((φVB (P.PD Bw.Kw) (LL := ↥LL.1) (V := V) : Module.End ↥LL.1 (V ⊗[ℚ_[l]] P.R.B)) ^ resDeg l w) x) := by
+  intro l _ P E Ω _ _ _ _ _ A w O _ _ _ Bw h hj LL V _ _ _ _ _ ρ _ σ hσ x y hx hy
+  have hφ : ∀ z : V ⊗[ℚ_[l]] P.R.B, phiV P ↥LL.1 V (crisIncl P ↥LL.1 V z) =
+      crisIncl P ↥LL.1 V (φVB (P.PD Bw.Kw) (LL := ↥LL.1) (V := V) z) := by
+    intro z
+    induction z using TensorProduct.induction_on with
+    | zero => simp
+    | tmul v b => simp [φVB, P.PD_φ]
+    | add a b ha hb => simp only [map_add, ha, hb]
+  have hpow : ∀ n : ℕ, (((phiD P ρ ^ n) y : ↥(Dpst P ρ)) : V ⊗[ℚ_[l]] Bst P) =
+      crisIncl P ↥LL.1 V (((φVB (P.PD Bw.Kw) (LL := ↥LL.1) (V := V) :
+        Module.End ↥LL.1 (V ⊗[ℚ_[l]] P.R.B)) ^ n) x) := by
+    intro n
+    induction n with
+    | zero => simpa using hy
+    | succ n ih => rw [pow_succ', pow_succ', End.mul_apply, End.mul_apply, coe_phiD, ih, hφ]
+  have hfix : actD P ρ (weilToGK Bw h σ) y = y := by
+    refine Subtype.ext ?_
+    rw [coe_actD, hy, stRep_crisIncl]
+    congr 1
+    have h1 := (Submodule.mem_iInf _).mp hx (weilToGK Bw h σ)
+    simpa [sub_eq_zero] using h1
+  have ha : -alpha l σ = ((resDeg l w : ℕ) : ℤ) := by simp [alpha, hσ]
+  rw [weilD_apply, (commute_actD_phiU P ρ _ _).eq, End.mul_apply, hfix, ha, zpow_natCast,
+    Units.val_pow_eq_pow_val, coe_phiU, hpow]
+end
+
+section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain TensorProduct Module GlobalTheory.WeilDeligne GlobalTheory.Pst Polynomial
 
 private theorem map_pow_of_commuting {R S M N : Type} [Semiring R] [Semiring S] [AddCommMonoid M] [AddCommMonoid N]
@@ -132,3 +251,4 @@ theorem UpperTheory.crystalline_of_place_over :
   exact fin_step P ρ _ q (UpperTheory.exists_eigenvector_of_root (ι.toRingHom.comp (algebraMap ↥LL.1 (Om l))) (crystallineToWeilDeligne P ρ ι)
     (frobeniusRestriction P ρ ^ resDeg l w) (wdRho P ι Bw h hj ρ σ) (crystalline_to_weil_deligne_smul P ρ ι)
     (span_crystalline_weil_deligne_top P ρ ι hV hC) hT (q.map (algebraMap ℚ_[l] ↥LL.1)) b hb' (eval_root_transport ι b q hq))
+end

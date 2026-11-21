@@ -1,11 +1,85 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RbUVal
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.TowerPl
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.CardLocalCocyclesLeOfPlaceAbovePrime
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.FerreroWashington
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.PlaceDict
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.ExistsZmodPrimeRepresentationOfTorsion
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.LocalH1FiniteModL
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.CocycleCardEulerFormula
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.SumDeg
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.RankCard
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RealPlaceConjugation.KrFacts
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LocallyConstantOpenPreimage
 
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws UpperTheory.V.Two
+open scoped Classical Pointwise
+
+theorem UpperTheory.V.Ws.exists_injective_places_above_l_of_tower :
+    ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (T : Tower D), ∃ pl : T.ι → HeightOneSpectrum (𝓞 T.F), Function.Injective pl ∧ ∀ v, IsPlaceOver (T.pl v) (pl v) ∧ ((l : ℕ) : 𝓞 T.F) ∈ (pl v).asIdeal := by
+  intro Ω _ _ _ l _ c D T
+  haveI := T.nF
+  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  haveI : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
+  haveI : Algebra.IsAlgebraic T.F Ω := Algebra.IsAlgebraic.tower_top (K := ℚ) T.F
+  haveI : IsAlgClosure T.F Ω := ⟨inferInstance, inferInstance⟩
+  obtain ⟨_, hex, hne, _⟩ := UpperTheory.V.Kum.placeDict T.F Ω
+  have hpl : ∀ v, ∃ w : HeightOneSpectrum (𝓞 T.F), IsPlaceOver (T.pl v) w :=
+    fun v => hex _ (hne _ l (Fact.out : l.Prime).ne_zero (T.ovl v))
+  choose pl hpl using hpl
+  refine ⟨pl, ?_, fun v => ⟨hpl v, ?_⟩⟩
+  · intro v w hvw
+    have h1 := hpl v
+    have h2 := hpl w
+    rw [hvw] at h1
+    obtain ⟨σ, hσ⟩ := exists_smul_eq_of_isPlaceOver h1 h2
+    obtain ⟨u, _, huniq⟩ := T.cover (T.pl w) (T.ovl w)
+    have hv : v = u := by
+      apply huniq v
+      refine ⟨σ, fun x => ?_⟩
+      rw [← hσ]
+      exact ValuationSubring.smul_mem_pointwise_smul_iff
+    have hw : w = u := by
+      apply huniq w
+      exact ⟨1, fun x => Iff.rfl⟩
+    rw [hv, hw]
+  · apply (hpl v (l : 𝓞 T.F)).1
+    simpa using T.ovl v
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws UpperTheory.V.Two
+open scoped Classical
+
+theorem UpperTheory.V.Ws.card_localCocycles_le_of_place_above_prime :
+    LocalFiniteness → LocalTateDuality → LocalEulerChar → ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (R M : Type) [CommRing R] [AddCommGroup M] [Module R M] [Finite M], (∀ m : M, l • m = 0) → ∀ (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 F)) (ρ : Representation R (Dec (F := F) A) M), IsPlaceOver A v → ((l : ℕ) : 𝓞 F) ∈ v.asIdeal → (∀ m, IsLocallyConstant fun g => ρ g m) → CardLe (cocOff ρ ∅) (Nat.card M ^ (2 + locDeg v)) := by
+  intro hF hT hE F Ω _ _ _ _ _ l _ R M _ _ _ _ hl A v ρ hA hv hρ
+  obtain ⟨inst, ρ', hρ'⟩ := exists_zmod_prime_representation_of_torsion l (Dec (F := F) A) R M hl ρ
+  letI : TopologicalSpace M := ⊥
+  haveI : DiscreteTopology M := ⟨rfl⟩
+  have hc : ReciprocityTheory.Gal.ContAction ρ' := by
+    unfold ReciprocityTheory.Gal.ContAction
+    rw [continuous_prod_of_discrete_right]
+    intro m
+    simp only [hρ']
+    exact (hρ m).continuous
+  obtain ⟨f1, h1⟩ := local_h1_finite_mod_l hF hT hE F Ω l M A v ρ' hA hc
+  obtain ⟨fz, hz⟩ := cocycle_card_euler_formula _ _ M ρ' hc f1
+  rw [if_pos hv] at h1
+  have h0 : 0 < Nat.card (H0 ρ') := by
+    haveI : Finite (H0 ρ') := Subtype.finite
+    haveI : Nonempty (H0 ρ') := ⟨0⟩
+    exact Nat.card_pos
+  have hZ : CardLe (Z1 ρ') (Nat.card M ^ (2 + locDeg v)) := by
+    refine ⟨fz, Nat.le_of_mul_le_mul_right ?_ h0⟩
+    rw [hz]
+    calc Nat.card (H1 ρ') * Nat.card M
+        ≤ Nat.card (H0 ρ') * Nat.card M ^ (1 + locDeg v) * Nat.card M := Nat.mul_le_mul_right _ h1
+      _ = Nat.card M ^ (2 + locDeg v) * Nat.card (H0 ρ') := by ring
+  have hmem : ∀ z : cocOff ρ ∅, z.1 ∈ Z1 ρ' := fun z =>
+    (mem_Z1_iff_cocycle ρ' _).2 ⟨z.2.1.continuous, fun g h => by rw [hρ']; exact z.2.2.1 g h⟩
+  exact hZ.of_injective (fun z => ⟨z.1, hmem z⟩) fun a b h => Subtype.ext (congrArg (fun z : Z1 ρ' => z.1) h)
+end
+
+section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws UpperTheory.V.Two
 open scoped Classical
 
@@ -79,3 +153,4 @@ theorem UpperTheory.V.Ws.rank_localCocycleSpaces_le :
   have := rank_le_of_card_le_pow_card_field (ResidueField c.O) _ _ hC
   rw [Nat.cast_add] at this
   exact this
+end

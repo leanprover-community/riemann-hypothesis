@@ -1,7 +1,21 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.ExistsRationalMatrixUnipotent
-import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.SdEx
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.RelAlg
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSelfdualMeasureHermitianAdeles
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSelfdualMeasureHermitianTuples
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaPlaces.Assemble
 
+section
+namespace PositivityTheory.SiegelWeilFormula.KWhit
+
+theorem sdEx : SdEx := by
+  intro F E _ _ _ _ _ σ hcm M J hJ ψ hψ n
+  exact ⟨GlobalTheory.T.exists_selfdual_measure_hermitian_tuples F E σ hcm M J hJ ψ hψ n, GlobalTheory.T.exists_selfdual_measure_hermitian_adeles F E σ hcm ψ hψ n⟩
+
+end PositivityTheory.SiegelWeilFormula.KWhit
+end
+
+section
 noncomputable section
 
 namespace PositivityTheory.SiegelWeilFormula.KWhit
@@ -22,4 +36,5 @@ theorem relEx : RelEx := relEx_of relAlg_pf sdEx ThetaDictR.relReal
 
 end PositivityTheory.SiegelWeilFormula.KWhit
 
+end
 end

@@ -1,8 +1,30 @@
 import Mathlib
 import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MapLeftMulVolumeEq
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MapMulVolumeOfSubgroup
 
+section
+private def UpperTheory.matrixSpaceLinearEquiv (n : ℕ) : (Fin n → Fin n → ℂ) ≃ₗ[ℂ] (Fin n → Fin n → ℂ) where
+  toFun x := fun i j => x j i
+  invFun x := fun i j => x j i
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+private noncomputable def UpperTheory.matrixLeftMulLinearMap (n : ℕ) (a : Fin n → Fin n → ℂ) :
+    (Fin n → Fin n → ℂ) →ₗ[ℂ] (Fin n → Fin n → ℂ) :=
+  (UpperTheory.matrixSpaceLinearEquiv n).toLinearMap ∘ₗ
+    (LinearMap.pi fun j : Fin n => (Matrix.toLin' (Matrix.of a)).comp (LinearMap.proj j)) ∘ₗ
+    (UpperTheory.matrixSpaceLinearEquiv n).symm.toLinearMap
+end
+
+section
+open MeasureTheory Set
+
+private noncomputable def mulE {n : ℕ} (a x : Fin n → Fin n → ℂ) : Fin n → Fin n → ℂ :=
+  Matrix.of.symm (Matrix.of a * Matrix.of x)
+end
+
+section
 open Matrix in
 private theorem hpk_sq (k r : ℕ) : Formalism.QuantumDeterminants.Hpk k r * Formalism.QuantumDeterminants.Hpk k r = 1 := by
   have key : ∀ i : Fin (2 * r + k + 1), ∃ s : Fin (2 * r + k + 1),
@@ -43,4 +65,4 @@ private theorem norm_det_one (k r : ℕ) (g : Formalism.FourierDecayAlt.B.Mat k 
     linarith
   have h6 := norm_nonneg g.det
   nlinarith
-
+end

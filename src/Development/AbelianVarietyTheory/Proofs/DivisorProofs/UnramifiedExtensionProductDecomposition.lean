@@ -1,10 +1,390 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrobeniusPowRootOfUnity
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnramifiedExtensionBasis
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormSumFrobeniusGcd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoefficientsBoundedRootsUnity
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFrobeniusAutomorphismGcd
+import BuildAid.ForwardExisting
 
+section
+section
+open ReciprocityTheory.DiscreteGroups.LocalClassField GlobalTheory.LKRes GlobalTheory.LKRes.ResSplit
+
+noncomputable section
+open scoped TensorProduct
+
+namespace GlobalTheory.LKRes.ResSplit
+
+theorem pow_sub_one_ne_zero (p : ℕ) [Fact p.Prime] {r : ℕ} (hr : 0 < r) : p ^ r - 1 ≠ 0 := by
+  have h := Nat.one_lt_pow hr.ne' (Fact.out : p.Prime).one_lt
+  omega
+
+theorem Qr_eq_adjoin (p : ℕ) [Fact p.Prime] {r : ℕ} (hr : 0 < r) {ζ : PadicAlgCl p}
+    (hζ : IsPrimitiveRoot ζ (p ^ r - 1)) (hζr : ζ ∈ Qr p r) :
+    Qr p r = IntermediateField.adjoin ℚ_[p] {ζ} := by
+  apply le_antisymm
+  · apply UnramifiedExtensions.Kn_le (Q0 p) bot_le
+    intro ξ hξ
+    rw [residue_cardinality_base_field] at hξ
+    have : NeZero (p ^ r - 1) := ⟨pow_sub_one_ne_zero p hr⟩
+    obtain ⟨i, -, rfl⟩ := hζ.eq_pow_of_pow_eq_one hξ
+    exact pow_mem (IntermediateField.mem_adjoin_simple_self ℚ_[p] ζ) i
+  · rw [IntermediateField.adjoin_le_iff]
+    rintro _ rfl
+    exact hζr
+
+theorem Qr_span_pow (p : ℕ) [Fact p.Prime] {r : ℕ} (hr : 0 < r) (ζ : Qr p r)
+    (hζ : IsPrimitiveRoot (ζ : PadicAlgCl p) (p ^ r - 1)) (b : Qr p r) :
+    ∃ d : Fin r → ℚ_[p], b = ∑ j : Fin r, d j • ζ ^ (j : ℕ) := by
+  have hQ := Qr_eq_adjoin p hr hζ ζ.2
+  have hrank : Module.finrank ℚ_[p] (Qr p r) = r := by
+    rw [finrank_Kn p (Q0 p) inferInstance hr, IntermediateField.finrank_bot, mul_one]
+  have hint : IsIntegral ℚ_[p] (ζ : PadicAlgCl p) := Algebra.IsIntegral.isIntegral _
+  set pb := IntermediateField.adjoin.powerBasis hint
+  have hdim : pb.dim = r := by
+    rw [← PowerBasis.finrank pb]
+    exact (congrArg (fun L : IntermediateField ℚ_[p] (PadicAlgCl p) => Module.finrank ℚ_[p] L) hQ).symm.trans hrank
+  have hb : (b : PadicAlgCl p) ∈ IntermediateField.adjoin ℚ_[p] {(ζ : PadicAlgCl p)} := by
+    rw [← hQ]; exact b.2
+  obtain ⟨f, hf, hy⟩ := pb.exists_eq_aeval ⟨b, hb⟩
+  rw [hdim] at hf
+  have h1 : (b : PadicAlgCl p) = Polynomial.aeval (ζ : PadicAlgCl p) f := by
+    have := congrArg Subtype.val hy
+    rw [this]
+    show IntermediateField.val _ (Polynomial.aeval pb.gen f) = _
+    rw [← Polynomial.aeval_algHom_apply]
+    rfl
+  refine ⟨fun j => f.coeff j, ?_⟩
+  apply Subtype.ext
+  rw [h1, Polynomial.aeval_eq_sum_range' hf, Finset.sum_range]
+  simp [IntermediateField.coe_sum]
+
+theorem KQ_eq_sum_pow : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (r : ℕ), 0 < r →
+    ∀ (ζ : Qr p r), IsPrimitiveRoot (ζ : PadicAlgCl p) (p ^ r - 1) →
+    ∀ x : KQ p K r, ∃ c : Fin r → K, x = ∑ j : Fin r, inclK p K r (c j) * inclQ p K r ζ ^ (j : ℕ) := by
+  intro p _ K r hr ζ hζ x
+  have key : ∀ (c : K) (z : Qr p r), inclK p K r c * inclQ p K r z = (c ⊗ₜ[ℚ_[p]] z : K ⊗[ℚ_[p]] Qr p r) := by
+    intro c z
+    show (c ⊗ₜ[ℚ_[p]] (1 : Qr p r) : K ⊗[ℚ_[p]] Qr p r) * ((1 : K) ⊗ₜ[ℚ_[p]] z) = _
+    rw [Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
+  have h : ∀ y : K ⊗[ℚ_[p]] Qr p r, ∃ c : Fin r → K,
+      y = ∑ j : Fin r, (c j ⊗ₜ[ℚ_[p]] (ζ ^ (j : ℕ)) : K ⊗[ℚ_[p]] Qr p r) := by
+    intro y
+    induction y using TensorProduct.induction_on with
+    | zero => exact ⟨0, by simp⟩
+    | tmul a b =>
+      obtain ⟨d, hd⟩ := Qr_span_pow p hr ζ hζ b
+      refine ⟨fun j => d j • a, ?_⟩
+      rw [hd, TensorProduct.tmul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [TensorProduct.tmul_smul, TensorProduct.smul_tmul']
+    | add y z hy hz =>
+      obtain ⟨c, hc⟩ := hy
+      obtain ⟨c', hc'⟩ := hz
+      refine ⟨c + c', ?_⟩
+      rw [hc, hc', ← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [Pi.add_apply, TensorProduct.add_tmul]
+  obtain ⟨c, hc⟩ := h x
+  refine ⟨c, ?_⟩
+  have e : ∀ j : Fin r, inclK p K r (c j) * inclQ p K r ζ ^ (j : ℕ) =
+      (c j ⊗ₜ[ℚ_[p]] (ζ ^ (j : ℕ)) : K ⊗[ℚ_[p]] Qr p r) := by
+    intro j
+    rw [← map_pow, key]
+  rw [Finset.sum_congr rfl fun j _ => e j]
+  exact hc
+
+end GlobalTheory.LKRes.ResSplit
+end
+end
+
+open ReciprocityTheory.DiscreteGroups.LocalClassField GlobalTheory.LKRes GlobalTheory.LKRes.ResSplit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unramified_extension_basis : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (r : ℕ), 0 < r → ∀ (ζ : Qr p r), IsPrimitiveRoot (ζ : PadicAlgCl p) (p ^ r - 1) → ∀ x : KQ p K r, ∃ c : Fin r → K, x = ∑ j : Fin r, inclK p K r (c j) * inclQ p K r ζ ^ (j : ℕ) := by
+  atlas_forward_decl GlobalTheory.LKRes.ResSplit.KQ_eq_sum_pow
+end
+
+section
+section
+open ReciprocityTheory.DiscreteGroups.LocalClassField GlobalTheory.LKRes GlobalTheory.LKRes.ResSplit
+
+namespace GlobalTheory.LKRes.ResSplit
+
+theorem pow_pow_eq_of_zmod {p : ℕ} {F : Type} [CommMonoid F] {r : ℕ} {ζ : F} (hζ : ζ ^ (p ^ r - 1) = 1)
+    (hp : 0 < p) {m₁ m₂ : ℕ} (h : (m₁ : ZMod r) = m₂) : ζ ^ p ^ m₁ = ζ ^ p ^ m₂ := by
+  have hper : ζ ^ p ^ r = ζ := by
+    have h1 : 1 ≤ p ^ r := Nat.one_le_pow _ _ hp
+    rw [show p ^ r = (p ^ r - 1) + 1 by omega, pow_succ, hζ, one_mul]
+  have hmod : ∀ m, ζ ^ p ^ m = ζ ^ p ^ (m % r) := by
+    intro m
+    conv_lhs => rw [← Nat.mod_add_div m r]
+    generalize m / r = n
+    induction n with
+    | zero => simp
+    | succ n ih =>
+      rw [Nat.mul_succ, ← add_assoc, pow_add, mul_comm, pow_mul, hper, ih]
+  rw [hmod m₁, hmod m₂, (ZMod.natCast_eq_natCast_iff' m₁ m₂ r).1 h]
+
+theorem spread_main (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p))
+    (hK : FiniteDimensional ℚ_[p] K) (f r : ℕ) (hq : qK p K = p ^ f) (hr : 0 < r)
+    (ζ : PadicAlgCl p) (hζ : ζ ^ (p ^ r - 1) = 1) (c : Fin r → K) (s : ℕ) :
+    ∃ i < Nat.gcd f r, ‖∑ j : Fin r, (c j : PadicAlgCl p) * (ζ ^ p ^ s) ^ (j : ℕ)‖ =
+      ‖∑ j : Fin r, (c j : PadicAlgCl p) * (ζ ^ p ^ i) ^ (j : ℕ)‖ := by
+  have hp : 1 < p := (Fact.out : p.Prime).one_lt
+  set d := Nat.gcd f r with hd
+  have hd0 : 0 < d := Nat.gcd_pos_of_pos_right f hr
+  refine ⟨s % d, Nat.mod_lt _ hd0, ?_⟩
+  haveI : NeZero r := ⟨hr.ne'⟩
+
+  set a : ℕ := ((f.gcdA r : ℤ) : ZMod r).val with ha
+  have hfa : ((f : ZMod r) * (a : ZMod r)) = (d : ZMod r) := by
+    rw [ha, ZMod.natCast_zmod_val]
+    have h := Nat.gcd_eq_gcd_ab f r
+    have h2 : ((d : ℤ) : ZMod r) = (((f : ℤ) * f.gcdA r + (r : ℤ) * f.gcdB r : ℤ) : ZMod r) := by
+      rw [hd, h]
+    push_cast at h2
+    rw [ZMod.natCast_self, zero_mul, add_zero] at h2
+    exact h2.symm
+  set k := a * (s / d) with hk
+  have hcong : ((s % d + f * k : ℕ) : ZMod r) = (s : ZMod r) := by
+    rw [hk]
+    push_cast
+    rw [← mul_assoc, hfa]
+    conv_rhs => rw [← Nat.mod_add_div s d]
+    push_cast
+    ring
+
+  have hpN : ¬ p ∣ p ^ r - 1 := by
+    intro hdvd
+    have h1 : p ∣ p ^ r := dvd_pow_self p hr.ne'
+    have h2 : 1 ≤ p ^ r := Nat.one_le_pow _ _ (by omega)
+    have h3 : p ∣ p ^ r - (p ^ r - 1) := Nat.dvd_sub h1 hdvd
+    rw [show p ^ r - (p ^ r - 1) = 1 by omega] at h3
+    exact (Fact.out : p.Prime).one_lt.ne' (Nat.dvd_one.1 h3)
+  set i := s % d
+  have hζi : (ζ ^ p ^ i) ^ (p ^ r - 1) = 1 := by
+    rw [← pow_mul, mul_comm, pow_mul, hζ, one_pow]
+  have hφ : (frobK p K ^ k) (ζ ^ p ^ i) = ζ ^ p ^ s := by
+    rw [IsFrob.pow_apply hK (isFrob_frobK hK) hpN k hζi, hq, ← pow_mul, ← pow_mul, ← pow_add]
+    exact pow_pow_eq_of_zmod hζ (by omega) hcong
+  set φ := frobK p K ^ k
+  have hsum : φ (∑ j : Fin r, (c j : PadicAlgCl p) * (ζ ^ p ^ i) ^ (j : ℕ)) =
+      ∑ j : Fin r, (c j : PadicAlgCl p) * (ζ ^ p ^ s) ^ (j : ℕ) := by
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [map_mul, map_pow, hφ]
+    congr 1
+    exact φ.commutes (c j)
+  rw [← hsum, norm_GK]
+
+end GlobalTheory.LKRes.ResSplit
+
+theorem GlobalTheory.LKRes.ResSplit.spread : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)), FiniteDimensional ℚ_[p] K → ∀ (f r : ℕ), qK p K = p ^ f → 0 < r → ∀ (ζ : PadicAlgCl p), ζ ^ (p ^ r - 1) = 1 → ∀ (c : Fin r → K) (s : ℕ), ∃ i < Nat.gcd f r, ‖∑ j : Fin r, (c j : PadicAlgCl p) * (ζ ^ p ^ s) ^ (j : ℕ)‖ = ‖∑ j : Fin r, (c j : PadicAlgCl p) * (ζ ^ p ^ i) ^ (j : ℕ)‖ :=
+  fun p _ K hK f r hq hr ζ hζ c s => GlobalTheory.LKRes.ResSplit.spread_main p K hK f r hq hr ζ hζ c s
+end
+
+open ReciprocityTheory.DiscreteGroups.LocalClassField GlobalTheory.LKRes GlobalTheory.LKRes.ResSplit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_sum_frobenius_gcd : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)), FiniteDimensional ℚ_[p] K → ∀ (f r : ℕ), qK p K = p ^ f → 0 < r → ∀ (ζ : PadicAlgCl p), ζ ^ (p ^ r - 1) = 1 → ∀ (c : Fin r → K) (s : ℕ), ∃ i < Nat.gcd f r, ‖∑ j : Fin r, (c j : PadicAlgCl p) * (ζ ^ p ^ s) ^ (j : ℕ)‖ = ‖∑ j : Fin r, (c j : PadicAlgCl p) * (ζ ^ p ^ i) ^ (j : ℕ)‖ := by
+  atlas_forward_decl GlobalTheory.LKRes.ResSplit.spread
+end
+
+section
+section
+open ReciprocityTheory.DiscreteGroups.LocalClassField GlobalTheory.LKRes GlobalTheory.LKRes.ResSplit
+
+namespace GlobalTheory.LKRes.ResSplit
+
+open Matrix
+
+theorem vandermonde_integral_of_roots_of_unity : ∀ (p : ℕ) [Fact p.Prime] (N r : ℕ), ¬ p ∣ N → ∀ (w : Fin r → PadicAlgCl p), (∀ s, w s ^ N = 1) → Function.Injective w → ∀ (c : Fin r → PadicAlgCl p), (∀ s, ‖∑ j : Fin r, c j * w s ^ (j : ℕ)‖ ≤ 1) → ∀ j, ‖c j‖ ≤ 1 := by
+  intro p _ N r hN w hw hinj c hc j
+  have hN0 : N ≠ 0 := by rintro rfl; exact hN (dvd_zero p)
+  have hw1 : ∀ s, ‖w s‖ = 1 := fun s => by
+    have h := congrArg norm (hw s)
+    rw [norm_pow, norm_one] at h
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hN0).1 h
+  set S := Obar p
+  let ws : Fin r → S := fun s => ⟨w s, mem_Obar_iff.2 (hw1 s).le⟩
+  let ys : Fin r → S := fun s => ⟨∑ j : Fin r, c j * w s ^ (j : ℕ), mem_Obar_iff.2 (hc s)⟩
+  let V' : Matrix (Fin r) (Fin r) S := Matrix.vandermonde ws
+  have hmap : V'.map S.subtype = Matrix.vandermonde w := by
+    ext s t; simp [V', ws, Matrix.vandermonde_apply]
+  have hdet : ‖(Matrix.vandermonde w).det‖ = 1 := by
+    rw [Matrix.det_vandermonde, norm_prod]
+    refine Finset.prod_eq_one fun i _ => ?_
+    rw [norm_prod]
+    refine Finset.prod_eq_one fun k hk => ?_
+    have hik : i < k := Finset.mem_Ioi.1 hk
+    exact norm_sub_eq_one_of_pow_eq_one p hN (hw k) (hw i) (fun h => (ne_of_lt hik) (hinj h).symm)
+  have hdetS : (S.subtype V'.det) = (Matrix.vandermonde w).det := by
+    rw [RingHom.map_det, ← hmap]; rfl
+  have hne : (Matrix.vandermonde w).det ≠ 0 := by
+    intro h; rw [h, norm_zero] at hdet; exact zero_ne_one hdet
+  have hunit : IsUnit V'.det := by
+    have hmem : ((Matrix.vandermonde w).det)⁻¹ ∈ S := by
+      rw [mem_Obar_iff, norm_inv, hdet, inv_one]
+    refine IsUnit.of_mul_eq_one ⟨_, hmem⟩ ?_
+    apply Subtype.ext
+    change S.subtype V'.det * _ = 1
+    rw [hdetS, mul_inv_cancel₀ hne]
+  let c' : Fin r → S := V'⁻¹ *ᵥ ys
+  have hc' : V' *ᵥ c' = ys := by
+    simp only [c', Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hunit, Matrix.one_mulVec]
+  have hV : Matrix.vandermonde w *ᵥ (fun k => (c' k : PadicAlgCl p)) = Matrix.vandermonde w *ᵥ c := by
+    funext s
+    have h1 := RingHom.map_mulVec S.subtype V' c' s
+    rw [hc', hmap] at h1
+    change _ = (vandermonde w *ᵥ ⇑S.subtype ∘ c') s at h1
+    rw [show (fun k => (c' k : PadicAlgCl p)) = ⇑S.subtype ∘ c' from rfl, ← h1]
+    simp only [ys, Matrix.mulVec, dotProduct, Matrix.vandermonde_apply]
+    simp [mul_comm]
+  have hVu : IsUnit (Matrix.vandermonde w) := (Matrix.isUnit_iff_isUnit_det _).2 (isUnit_iff_ne_zero.2 hne)
+  have hcc : (fun k => (c' k : PadicAlgCl p)) = c := by
+    have := congrArg (fun v => (Matrix.vandermonde w)⁻¹ *ᵥ v) hV
+    simpa only [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ ((Matrix.isUnit_iff_isUnit_det _).1 hVu), Matrix.one_mulVec] using this
+  rw [← congrFun hcc j]
+  exact mem_Obar_iff.1 (c' j).2
+
+end GlobalTheory.LKRes.ResSplit
+end
+
+open ReciprocityTheory.DiscreteGroups.LocalClassField GlobalTheory.LKRes GlobalTheory.LKRes.ResSplit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coefficients_bounded_roots_unity : ∀ (p : ℕ) [Fact p.Prime] (N r : ℕ), ¬ p ∣ N → ∀ (w : Fin r → PadicAlgCl p), (∀ s, w s ^ N = 1) → Function.Injective w → ∀ (c : Fin r → PadicAlgCl p), (∀ s, ‖∑ j : Fin r, c j * w s ^ (j : ℕ)‖ ≤ 1) → ∀ j, ‖c j‖ ≤ 1 := by
+  atlas_forward_decl GlobalTheory.LKRes.ResSplit.vandermonde_integral_of_roots_of_unity
+end
+
+section
+section
+noncomputable section
+
+open ReciprocityTheory.DiscreteGroups.LocalClassField GlobalTheory.LKRes GlobalTheory.LKRes.ResSplit
+
+namespace GlobalTheory.LKRes.ResSplit.Tau
+
+theorem pow_eq_pow_of_modEq' {M : Type*} [Monoid M] {ζ : M} {N a b : ℕ} (hζ : ζ ^ N = 1)
+    (h : a ≡ b [MOD N]) : ζ ^ a = ζ ^ b := by
+  have h' : a % N = b % N := h
+  rw [← Nat.mod_add_div a N, ← Nat.mod_add_div b N, pow_add, pow_add, pow_mul, pow_mul, hζ, one_pow,
+    one_pow, h']
+
+theorem pow_modEq_pow_mod (p r a : ℕ) (hp : 1 ≤ p) : p ^ a ≡ p ^ (a % r) [MOD p ^ r - 1] := by
+  have h1 : p ^ r ≡ 1 [MOD p ^ r - 1] := ((Nat.modEq_iff_dvd' (Nat.one_le_pow _ _ hp)).2 dvd_rfl).symm
+  have h2 := (Nat.ModEq.pow (a / r) h1).mul_left (p ^ (a % r))
+  rw [one_pow, mul_one, ← pow_mul, ← pow_add, Nat.mod_add_div] at h2
+  exact h2
+
+variable {p : ℕ} [Fact p.Prime] {K : IntermediateField ℚ_[p] (PadicAlgCl p)}
+
+theorem pow_fix {σ : PadicAlgCl p ≃ₐ[K] PadicAlgCl p} {x : PadicAlgCl p} (h : σ x = x) (n : ℕ) :
+    (σ ^ n) x = x := by
+  induction n with
+  | zero => rfl
+  | succ n ih => rw [pow_succ', AlgEquiv.mul_apply, ih, h]
+
+theorem pow_apply_root' {σ : PadicAlgCl p ≃ₐ[K] PadicAlgCl p} {q N : ℕ}
+    (h : ∀ ζ : PadicAlgCl p, ζ ^ N = 1 → σ ζ = ζ ^ q) {ζ : PadicAlgCl p} (hζ : ζ ^ N = 1) (k : ℕ) :
+    (σ ^ k) ζ = ζ ^ q ^ k := by
+  induction k with
+  | zero => simp
+  | succ n ih =>
+    have h1 : (ζ ^ q ^ n) ^ N = 1 := by rw [← pow_mul, mul_comm, pow_mul, hζ, one_pow]
+    rw [pow_succ', AlgEquiv.mul_apply, ih, h _ h1, ← pow_mul, pow_succ]
+
+theorem frob_pow_mod (hK : FiniteDimensional ℚ_[p] K) {m : ℕ} (hm : 0 < m) {x : PadicAlgCl p}
+    (hx : x ∈ Kn p K m) (a : ℕ) : (frobK p K ^ a) x = (frobK p K ^ (a % m)) x := by
+  have h := (IsFrobOn.pow_fixes_iff p K hK hm ((isFrob_frobK hK).isFrobOn m) (m * (a / m))).2
+    (dvd_mul_right _ _)
+  conv_lhs => rw [← Nat.mod_add_div a m, pow_add, AlgEquiv.mul_apply, h x hx]
+
+theorem exists_tau : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)),
+    FiniteDimensional ℚ_[p] K → ∀ (f r : ℕ) (hq : qK p K = p ^ f), 0 < r →
+    ∃ τ : Kn p K (r / Nat.gcd f r) ≃+* Kn p K (r / Nat.gcd f r),
+      (∀ x, τ x = x ↔ (x : PadicAlgCl p) ∈ K) ∧ (∀ x, (⇑τ)^[r / Nat.gcd f r] x = x) ∧
+      ∀ b : Qr p r, τ (incQ p K hq r b) = incQ p K hq r ((frobQ p r ^ Nat.gcd f r) b) := by
+  intro p _ K hK f r hq hr
+  have hp0 : 0 < p := (Nat.Prime.one_lt Fact.out).le
+  have hd0 : 0 < Nat.gcd f r := Nat.gcd_pos_of_pos_right f hr
+  have hm0 : 0 < r / Nat.gcd f r := Nat.div_pos (Nat.gcd_le_right (m := f) (n := r) hr) hd0
+  have hrdm : r = Nat.gcd f r * (r / Nat.gcd f r) := (Nat.mul_div_cancel' (Nat.gcd_dvd_right f r)).symm
+  have hfdf : f = Nat.gcd f r * (f / Nat.gcd f r) := (Nat.mul_div_cancel' (Nat.gcd_dvd_left f r)).symm
+  have hcop : Nat.Coprime (f / Nat.gcd f r) (r / Nat.gcd f r) := Nat.coprime_div_gcd_div_gcd hd0
+  set d := Nat.gcd f r with hd
+  set m := r / d with hm
+  set f' := f / d with hf'
+  set k := f' ^ (Nat.totient m - 1) with hk
+  have hk1 : f' * k ≡ 1 [MOD m] := by
+    have ht : 0 < Nat.totient m := Nat.totient_pos.2 hm0
+    have := Nat.ModEq.pow_totient hcop
+    rwa [← Nat.sub_add_cancel ht, pow_succ'] at this
+  have hk2 : f * k ≡ d [MOD r] := by
+    have := Nat.ModEq.mul_left' d hk1
+    rw [mul_one, ← mul_assoc, ← hfdf, ← hrdm] at this
+    exact this
+  let σ : PadicAlgCl p ≃ₐ[K] PadicAlgCl p := frobK p K ^ k
+  have hσ : ∀ x ∈ Kn p K m, σ x ∈ Kn p K m := fun x hx => UnramifiedExtensions.map_mem_Kn K m σ hx
+  have hσ' : ∀ x ∈ Kn p K m, σ⁻¹ x ∈ Kn p K m := fun x hx => UnramifiedExtensions.map_mem_Kn K m σ⁻¹ hx
+  let τ : Kn p K m ≃+* Kn p K m :=
+    { toFun := fun x => ⟨σ x, hσ x x.2⟩
+      invFun := fun x => ⟨σ⁻¹ x, hσ' x x.2⟩
+      left_inv := fun x => Subtype.ext (by
+        show σ⁻¹ (σ (x : PadicAlgCl p)) = x
+        rw [AlgEquiv.aut_inv, AlgEquiv.symm_apply_apply])
+      right_inv := fun x => Subtype.ext (by
+        show σ (σ⁻¹ (x : PadicAlgCl p)) = x
+        rw [AlgEquiv.aut_inv, AlgEquiv.apply_symm_apply])
+      map_mul' := fun x y => Subtype.ext (map_mul σ (x : PadicAlgCl p) y)
+      map_add' := fun x y => Subtype.ext (map_add σ (x : PadicAlgCl p) y) }
+  have hτ : ∀ x, ((τ x : Kn p K m) : PadicAlgCl p) = σ x := fun _ => rfl
+  refine ⟨τ, fun x => ⟨fun h => ?_, fun h => ?_⟩, fun x => ?_, fun b => ?_⟩
+  · have h1 : σ x = x := by rw [← hτ, h]
+    have h2 : (frobK p K ^ (k * f')) x = x := by rw [pow_mul]; exact pow_fix h1 f'
+    have h3 : frobK p K (x : PadicAlgCl p) = x := by
+      have e := frob_pow_mod hK hm0 x.2 (k * f')
+      have e1 := frob_pow_mod hK hm0 x.2 1
+      rw [pow_one] at e1
+      have e2 : (k * f') % m = 1 % m := by rw [mul_comm]; exact hk1
+      rw [e1, ← e2, ← e, h2]
+    exact mem_of_frobK_fixed hK (Kn_le_Kur hm0 x.2) h3
+  · exact Subtype.ext (show σ (x : PadicAlgCl p) = x from σ.commutes ⟨x, h⟩)
+  · have hit : ∀ n (y : Kn p K m), (((⇑τ)^[n] y : Kn p K m) : PadicAlgCl p) = (σ ^ n) y := by
+      intro n
+      induction n with
+      | zero => intro y; rfl
+      | succ n ih =>
+        intro y
+        rw [Function.iterate_succ_apply', pow_succ', AlgEquiv.mul_apply, ← ih]
+        rfl
+    apply Subtype.ext
+    rw [hit, ← pow_mul, frob_pow_mod hK hm0 x.2, show k * m % m = 0 by simp, pow_zero]
+    rfl
+  · have hN : ¬ p ∣ p ^ r - 1 := by
+      intro h
+      have h2 := Nat.dvd_sub (dvd_pow_self p hr.ne') h
+      rw [Nat.sub_sub_self (Nat.one_le_pow _ _ hp0)] at h2
+      exact (Nat.Prime.one_lt Fact.out).ne' (Nat.dvd_one.1 h2)
+    have hpow : p ^ (f * k) ≡ p ^ d [MOD p ^ r - 1] := by
+      have e := pow_modEq_pow_mod p r (f * k) hp0
+      rw [show f * k % r = d % r from hk2] at e
+      exact e.trans (pow_modEq_pow_mod p r d hp0).symm
+    apply Subtype.ext
+    rw [hτ, coe_incQ, coe_incQ, coe_frobQ_pow]
+    refine UnramifiedExtensions.eqOn_Kn (Q0 p) (σ := resGK bot_le σ) (τ := frobK p (Q0 p) ^ d) (fun ζ hζ => ?_) b.2
+    rw [residue_cardinality_base_field] at hζ
+    rw [resGK_apply, frobenius_pow_root_of_unity p hN hζ d]
+    have hfr := fun ζ' hζ' => (isFrob_iff hK (frobK p K)).1 (isFrob_frobK hK) ζ' (p ^ r - 1) hN hζ'
+    show (frobK p K ^ k) ζ = _
+    rw [pow_apply_root' hfr hζ k, hq, ← pow_mul]
+    exact pow_eq_pow_of_modEq' hζ hpow
+
+end GlobalTheory.LKRes.ResSplit.Tau
+end
+end
+
+open ReciprocityTheory.DiscreteGroups.LocalClassField GlobalTheory.LKRes GlobalTheory.LKRes.ResSplit
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_frobenius_automorphism_gcd : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)), FiniteDimensional ℚ_[p] K → ∀ (f r : ℕ) (hq : qK p K = p ^ f), 0 < r → ∃ τ : Kn p K (r / Nat.gcd f r) ≃+* Kn p K (r / Nat.gcd f r), (∀ x, τ x = x ↔ (x : PadicAlgCl p) ∈ K) ∧ (∀ x, (⇑τ)^[r / Nat.gcd f r] x = x) ∧ ∀ b : Qr p r, τ (incQ p K hq r b) = incQ p K hq r ((frobQ p r ^ Nat.gcd f r) b) := by
+  atlas_forward_decl GlobalTheory.LKRes.ResSplit.Tau.exists_tau
+end
+
+section
 section
 noncomputable section
 
@@ -212,3 +592,4 @@ open ReciprocityTheory.DiscreteGroups.LocalClassField Matrix GlobalTheory.LKRes
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.unramified_extension_product_decomposition : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p)), FiniteDimensional ℚ_[p] K → ∀ (f r : ℕ), qK p K = p ^ f → 0 < r → ∃ (e : KQ p K r ≃+* (Fin (Nat.gcd f r) → Kn p K (r / Nat.gcd f r))) (τ : Kn p K (r / Nat.gcd f r) ≃+* Kn p K (r / Nat.gcd f r)), (∀ x, (τ x = x ↔ (x : PadicAlgCl p) ∈ K)) ∧ (∀ x, (⇑τ)^[r / Nat.gcd f r] x = x) ∧ (∀ (a : K) (i : Fin (Nat.gcd f r)), ((e (inclK p K r a) i : Kn p K (r / Nat.gcd f r)) : PadicAlgCl p) = a) ∧ (∀ (x : KQ p K r) (i : Fin (Nat.gcd f r)) (h : i.val + 1 < Nat.gcd f r), e (sigKQ p K r x) i = e x ⟨i.val + 1, h⟩) ∧ (∀ (x : KQ p K r) (i : Fin (Nat.gcd f r)), i.val + 1 = Nat.gcd f r → ∀ (i0 : Fin (Nat.gcd f r)), i0.val = 0 → e (sigKQ p K r x) i = τ (e x i0)) ∧ (∀ x : KQ p K r, x ∈ intKQ p K r ↔ ∀ i, e x i ∈ GlobalTheory.LKLoc.intR p K (r / Nat.gcd f r)) := by
   atlas_forward_decl GlobalTheory.LKRes.ResSplit.kq_split
+end

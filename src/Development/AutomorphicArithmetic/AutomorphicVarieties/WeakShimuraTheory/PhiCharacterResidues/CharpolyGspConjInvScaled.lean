@@ -1,6 +1,71 @@
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.PhiCharacterResidues.PhiConj
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.PhiCharacterResidues.AdjEqConj
+import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.PhiCharacterResidues.ContinuousResLe
 
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws GlobalTheory.GalOfCusp
+
+theorem UpperTheory.V.Ws.phiConj :
+    ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} {D : Raw Ω c} (T : Tower D) (s : W.HidaSetting l T.L Ω), ∃ cF : G T.F Ω, ∀ g : G T.L Ω, ∃ g' : G T.L Ω, W.resP T.L Ω g' = s.c * W.resP T.L Ω g * s.c⁻¹ ∧ resLe T.F_le g' = cF * resLe T.F_le g * cF⁻¹ := by
+  intro Ω _ _ _ l _ c D T s
+  obtain ⟨j, hj⟩ := s.hc
+  have hfixF : ∀ x : T.F, s.c (x : Ω) = x := by
+    intro x
+    have hr := IsTotallyReal.complexEmbedding_isReal (j.comp (algebraMap T.F Ω))
+    have := RingHom.congr_fun (NumberField.ComplexEmbedding.isReal_iff.1 hr) x
+    simp only [NumberField.ComplexEmbedding.conjugate_coe_eq, RingHom.comp_apply] at this
+    apply j.injective
+    rw [hj]
+    exact this
+  have hstab : ∀ (τ : G (W.Lp T.L) Ω) (x : T.L), ∃ y : T.L, τ (x : Ω) = y := by
+    intro τ x
+    exact ⟨τ.restrictNormal T.L x, (AlgEquiv.restrictNormal_commutes τ T.L x).symm⟩
+  let cF : G T.F Ω := AlgEquiv.ofRingEquiv (f := s.c.toRingEquiv) (fun x => hfixF x)
+  refine ⟨cF, fun g => ?_⟩
+  let σ : G (W.Lp T.L) Ω := s.c * W.resP T.L Ω g * s.c⁻¹
+  have hσ : ∀ x : T.L, σ (x : Ω) = x := by
+    intro x
+    obtain ⟨y, hy⟩ := hstab s.c⁻¹ x
+    have h1 : g (y : Ω) = y := g.commutes y
+    have h2 : s.c (y : Ω) = x := by
+      rw [← hy]
+      exact mul_inv_apply (σ := s.c) (x : Ω)
+    show s.c (g (s.c⁻¹ (x : Ω))) = x
+    rw [hy, h1, h2]
+  let g' : G T.L Ω := AlgEquiv.ofRingEquiv (f := σ.toRingEquiv) (fun x => hσ x)
+  refine ⟨g', ?_, ?_⟩
+  · ext x
+    rfl
+  · ext x
+    rfl
+end
+
+section
+open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws GlobalTheory.GalOfCusp
+
+private def formJ (R : Type) [CommRing R] : M4 R := !![0, 0, 0, 1; 0, 0, 1, 0; 0, -1, 0, 0; -1, 0, 0, 0]
+
+private theorem formJ_mul (R : Type) [CommRing R] : (formJ R).transpose * formJ R = 1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [formJ, Matrix.mul_apply, Fin.sum_univ_four]
+
+private theorem adj_eq_conj {R : Type} [CommRing R] (M : M4 R) :
+    adj M = formJ R * (M.transpose * (formJ R).transpose) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [formJ, adj_apply, sgn, Fin.rev, Matrix.mul_apply, Fin.sum_univ_four]
+
+theorem UpperTheory.V.Ws.phiAdj :
+    ∀ {R : Type} [CommRing R] (ν : R) (M N : M4 R), IsGSp ν M → M * N = 1 → (ν • N).charpoly = M.charpoly := by
+  intro R _ ν M N hM hMN
+  have h1 : adj M = ν • N := by
+    have h2 : adj M * M * N = ν • N := by
+      unfold IsGSp at hM
+      rw [hM, smul_mul_assoc, one_mul]
+    rw [mul_assoc, hMN, mul_one] at h2
+    exact h2
+  rw [← h1, adj_eq_conj, Matrix.charpoly_mul_comm, mul_assoc, formJ_mul, mul_one, Matrix.charpoly_transpose]
+end
+
+section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws GlobalTheory.GalOfCusp
 
 private theorem charpoly_gsp_conj_inv_scaled {R Γ : Type} [CommRing R] [Group Γ] (r : Γ →* M4 R) (x y : Γ) (ν s s' t : R)
@@ -64,3 +129,4 @@ theorem UpperTheory.V.Ws.phiPol :
       generalize (inc h (D.th (resQ T.L g)) : c'.O) = θ at k1 ⊢
       generalize ((K.β g : c'.Oˣ) : c'.O) ^ n = b
       linear_combination (-u * v * b) * k1 + (b * (K.κ g : c'.O) * θ * u * (e : c'.O) ^ 3) * e2 + (b * (K.κ g : c'.O) * θ) * e1
+end

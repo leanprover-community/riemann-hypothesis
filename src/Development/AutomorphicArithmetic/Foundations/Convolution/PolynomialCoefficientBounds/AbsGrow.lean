@@ -1,8 +1,15 @@
 import Mathlib
 import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.SliceShift
 import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.Reduce
-import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.Taylor
+import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.AffineCharacterGenerators.Generators
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasSumTaylorOfExpBounds
 
+section
+open MvPolynomial Filter Topology PositivityTheory.Rg.Fx
+open scoped ContDiff
+end
+
+section
 open PositivityTheory.Rg.Fx UpperTheory.ConvolutionTheory.BW
 
 theorem UpperTheory.ConvolutionTheory.FX.abs_growth :
@@ -63,3 +70,4 @@ theorem UpperTheory.ConvolutionTheory.FX.abs_growth :
     _ = l1 (G β) * (B β * max |C| 1 ^ α.degree) := by rw [← Finset.sum_mul]; rfl
     _ ≤ K ^ α.degree * (B β * max |C| 1 ^ α.degree) := mul_le_mul_of_nonneg_right hG (mul_nonneg (hB0 β) (by positivity))
     _ = _ := by rw [mul_pow]; ring
+end

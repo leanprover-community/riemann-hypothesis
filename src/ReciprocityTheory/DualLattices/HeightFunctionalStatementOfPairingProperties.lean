@@ -1,6 +1,33 @@
 import ReciprocityTheory.DualLattices.IsFibreSq
-import ReciprocityTheory.DualLattices.ToSigmaAddFstZeroFst
+import ReciprocityTheory.DualLattices.ModuliPointsState
 
+section
+noncomputable section
+
+namespace ReciprocityTheory.PGsh
+
+universe u
+
+variable {R₀ : Type u} [CommRing R₀]
+
+namespace BX
+
+def tot (B : BX R₀) {R : LAlg R₀} {x y : B.G R} (u : B.P R x y) : Σ x y : B.G R, B.P R x y :=
+  ⟨x, y, u⟩
+
+def tmap (B : BX R₀) {R S : LAlg R₀} (f : LHom R S) (t : Σ x y : B.G R, B.P R x y) :
+    Σ x y : B.G S, B.P S x y :=
+  ⟨B.map f t.1, B.map f t.2.1, B.pmap f t.2.2⟩
+
+variable {B : BX R₀} {R S T : LAlg R₀}
+
+end BX
+
+end ReciprocityTheory.PGsh
+end
+end
+
+section
 noncomputable section
 
 open TensorProduct
@@ -369,3 +396,5 @@ theorem heightFunctionalStatement_of_pairingProperties (B : BX R₀) (h1 : Pairi
     fun y y' h h' hh hh' => BX.part_c h1 Dp N y y' h h' hh hh'⟩
 
 end ReciprocityTheory.PGsh
+end
+end

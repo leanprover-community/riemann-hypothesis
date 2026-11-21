@@ -1,8 +1,429 @@
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.OkpUnitsDense
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.AdditionIdentityOfSigmaFormula
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.PhNormOfUnits
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.BeConjOfNorm
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.CubeOfTwoIdentities
+import Formalism.SharpRestriction.GlobalSchurBounds.StatementTranslationInvariantSeventh
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TestVectorMemSchwartzBruhat
+import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.StmtEndIntWHolds
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.StmtTransInvHolds
 
+section
+namespace Formalism.MainNotions.Ext.CutA
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Formalism.MainNotions.Ext
+
+def OkpSwap (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), ∀ α ∈ OKp D lam, α.swap ∈ OKp D lam
+
+def OkpTrace (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), ∀ α ∈ OKp D lam, ∃ n : ℤ_[p], α.1 + α.2 = zc n
+
+def OkpNeg (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), ((-1 : ℂ_[p]), (-1 : ℂ_[p])) ∈ OKp D lam
+
+def OkpTwo (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), ((2 : ℂ_[p]), (2 : ℂ_[p])) ∈ OKp D lam
+
+def OkpDiff (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), p ≠ 2 →
+    ∃ α ∈ OKp D lam, ‖α.1 - α.2‖ = if p = D.host.d then ((p : ℝ) ^ ((1 : ℝ) / 2))⁻¹ else 1
+
+theorem okpSwap_holds (D : D7) : OkpSwap D := by
+  intro p _ lam α hα
+  have hsq : D.host.conj D.host.sqd ∈ D.host.K := by
+    rw [Formalism.HC.HostRaw.conj_sqd]
+    exact neg_mem (IntermediateField.mem_adjoin_simple_self ℚ _)
+  have hK : ∀ x ∈ D.host.K, D.host.conj x ∈ D.host.K := by
+    intro x hx
+    have hle : (D.host.K).map (D.host.conj : D.host.E →ₐ[ℚ] D.host.E) ≤ D.host.K := by
+      show (IntermediateField.adjoin ℚ {D.host.sqd}).map
+        (D.host.conj : D.host.E →ₐ[ℚ] D.host.E) ≤ D.host.K
+      rw [IntermediateField.adjoin_map, Set.image_singleton,
+        IntermediateField.adjoin_simple_le_iff]
+      exact hsq
+    exact hle ((IntermediateField.mem_map _).2 ⟨x, hx, rfl⟩)
+  have hint : ∀ a : NumberField.RingOfIntegers D.host.K, IsIntegral ℤ (D.host.conj ((a : D.host.K) : D.host.E)) := by
+    intro a
+    have h0 : IsIntegral ℤ ((a : D.host.K) : D.host.E) :=
+      (NumberField.RingOfIntegers.isIntegral_coe a).map ((D.host.K).val.restrictScalars ℤ)
+    exact h0.map ((D.host.conj : D.host.E →ₐ[ℚ] D.host.E).restrictScalars ℤ)
+  have key : ∀ a : NumberField.RingOfIntegers D.host.K, ∃ b : NumberField.RingOfIntegers D.host.K,
+      ((b : D.host.K) : D.host.E) = D.host.conj ((a : D.host.K) : D.host.E) := by
+    intro a
+    have hy : IsIntegral ℤ
+        (⟨D.host.conj ((a : D.host.K) : D.host.E), hK _ (a : D.host.K).2⟩ : D.host.K) :=
+      (isIntegral_algHom_iff ((D.host.K).val.restrictScalars ℤ)
+        (fun x y h => Subtype.ext h)).1 (hint a)
+    exact ⟨⟨⟨D.host.conj ((a : D.host.K) : D.host.E), hK _ (a : D.host.K).2⟩, hy⟩, rfl⟩
+  have hmaps : Set.MapsTo Prod.swap
+      (Set.range fun a : NumberField.RingOfIntegers D.host.K => (tauK D lam (a : D.host.K), tauKc D lam (a : D.host.K)))
+      (Set.range fun a : NumberField.RingOfIntegers D.host.K => (tauK D lam (a : D.host.K), tauKc D lam (a : D.host.K))) := by
+    rintro _ ⟨a, rfl⟩
+    obtain ⟨b, hb⟩ := key a
+    refine ⟨b, ?_⟩
+    simp only [Prod.swap_prod_mk, tauK, tauKc, hb, Formalism.HC.HostRaw.conj_conj]
+  unfold OKp at hα ⊢
+  exact map_mem_closure continuous_swap hα hmaps
+
+theorem okpNeg_holds (D : D7) : OkpNeg D := by
+  intro p _ lam
+  have hQ : (-1 : ℂ) ∈ Qbar := neg_mem (one_mem _)
+  have hl : lamC lam (-1 : ℂ) = -1 := by
+    unfold lamC
+    rw [dif_pos hQ]
+    have e : (⟨-1, hQ⟩ : Qbar) = -1 := Subtype.ext (by first | rfl | simp | norm_num)
+    rw [e, map_neg, map_one]
+  have hc : D.host.conj (-1 : D.host.E) = -1 := by simp
+  unfold OKp
+  refine subset_closure ⟨-1, ?_⟩
+  simp [tauK, tauKc, hc, hl]
+
+theorem okpTwo_holds (D : D7) : OkpTwo D := by
+  intro p _ lam
+  have hQ : (2 : ℂ) ∈ Qbar := by
+    first
+      | norm_num
+      | simp
+      | (have h := add_mem (one_mem Qbar) (one_mem Qbar); rwa [one_add_one_eq_two] at h)
+  have hl : lamC lam (2 : ℂ) = 2 := by
+    unfold lamC
+    rw [dif_pos hQ]
+    have e : (⟨2, hQ⟩ : Qbar) = 1 + 1 := Subtype.ext (by
+      first
+        | (show (2 : ℂ) = ((1 : Qbar) : ℂ) + ((1 : Qbar) : ℂ); norm_num)
+        | (push_cast; norm_num)
+        | rfl)
+    rw [e, map_add, map_one] <;> norm_num
+  have hc : D.host.conj (2 : D.host.E) = 2 := by
+    first
+      | (rw [show (2 : D.host.E) = 1 + 1 by norm_num, map_add, map_one])
+      | exact map_ofNat _ 2
+  have hz : (((2 : NumberField.RingOfIntegers D.host.K) : D.host.K) : D.host.E) = 2 := by
+    rw [show (2 : NumberField.RingOfIntegers D.host.K) = 1 + 1 by norm_num]
+    first
+      | (push_cast; norm_num)
+      | simp
+      | norm_num
+  have hφ : D.host.φ₀ (2 : D.host.E) = 2 := by
+    first
+      | (rw [show (2 : D.host.E) = 1 + 1 by norm_num, map_add, map_one]; norm_num)
+      | simp
+  unfold OKp
+  refine subset_closure ⟨2, ?_⟩
+  simp only [tauK, tauKc, hz, hc, hφ, hl, Prod.mk.injEq, and_self]
+
+theorem cube_of (H : CubeOfTwoIdentities) (D : D7) (h2 : cube2 D) (h3 : cube3 D) : cube D := by
+  intro p _ cc δ g hA
+  exact H p g hA.2.2.2.2 (h2 p cc δ g hA) (h3 p cc δ g hA)
+
+theorem phGram_of (H : PhGramG) (D : D7) (he : endInt D) (ha : addInt D) (hn : phNorm D)
+    (hb : beConj D) (hB : beBiadd D) : GL3r7.PhGram D := by
+  intro p _ cc δ g hA hp
+  have key := H p g (OKp D g.lam) hA.2.2.2.2 (fun α hα => okpSwap_holds D p g.lam α hα)
+    (he p cc δ g hA) (ha p cc δ g hA).1 (hn p cc δ g hA hp) (hb p cc δ g hA hp)
+    (hB p cc δ g hA).1
+  intro κ _ k A hA'
+  exact key κ k A hA'
+
+theorem phUnitary_of (HU : GramUnitEq) (D : D7) (hG : GL3r7.PhGram D) : PhUnitary D := by
+  intro p _ cc δ g hA hp n de hde horth
+  have h1 := hG p cc δ g hA hp (Fin n) n de hde
+  rwa [HU p g hA.2.2.2.2 n de horth] at h1
+
+theorem phIsotropic_of (HI : GramIsoEq) (D : D7) (hG : GL3r7.PhGram D) : PhIsotropic D := by
+  intro p _ cc δ g hA hp n r b hb _ hiso
+  have h1 := hG p cc δ g hA hp (Fin n) r b hb
+  rwa [HI p g hA.2.2.2.2 (Fin n) r b hiso] at h1
+
+theorem phDual_of (HD : PhDualOfGram) (D : D7) (hG : GL3r7.PhGram D) : PhDual D := by
+  intro p _ cc δ g hA hp κ ι _ _ b b' hb hb' hd
+  exact HD p g (OKp D g.lam) hA.2.2.2.2
+    (by
+      intro κ' _ k A hA'
+      exact hG p cc δ g hA hp κ' k A hA') κ ι b b' hb hb' hd
+
+theorem jetsPh_of (HH : JetsHigh) (H1 : JetsOne) (H2 : JetsTwo) (D : D7) (hc : cube D) (hn : phNorm D)
+    (hb : beConj D) (hdf : OkpDiff D) : jetsPh D := by
+  intro p _ cc δ g hA hp
+  have hok := hA.2.2.2.2
+  obtain ⟨α₀, hα₀, hnorm⟩ := hdf p g.lam hp
+  have hprod : ‖(α₀.1 - α₀.2) * g.jetPh 2‖ ≤ 1 :=
+    H2 p g α₀.1 α₀.2 hok (hb p cc δ g hA hp α₀ hα₀)
+  rw [norm_mul] at hprod
+  refine ⟨fun i hi2 => ?_, fun α hα => H2 p g α.1 α.2 hok (hb p cc δ g hA hp α hα),
+    fun hpd => ?_, fun hpd => ?_⟩
+  · by_cases hi1 : i = 1
+    · subst hi1
+      have hn1 := hn p cc δ g hA hp ((-1 : ℂ_[p]), (-1 : ℂ_[p])) (okpNeg_holds D p g.lam)
+      have hm : ((-1 : ℂ_[p]), (-1 : ℂ_[p])).1 * ((-1 : ℂ_[p]), (-1 : ℂ_[p])).2 = 1 := by
+        norm_num
+      rw [hm, map_one, one_mul] at hn1
+      exact H1 p g hok hp hn1
+    · exact HH p g hok (hc p cc δ g hA) i hi1 hi2
+  · rw [if_neg hpd] at hnorm
+    rw [hnorm, one_mul] at hprod
+    exact hprod
+  · rw [if_pos hpd] at hnorm
+    rw [hnorm] at hprod
+    have hpos : (0 : ℝ) < (p : ℝ) ^ ((1 : ℝ) / 2) :=
+      Real.rpow_pos_of_pos (by exact_mod_cast (Fact.out : p.Prime).pos) _
+    have h3 := mul_le_mul_of_nonneg_left hprod hpos.le
+    rw [← mul_assoc, mul_inv_cancel₀ hpos.ne', one_mul, mul_one] at h3
+    exact h3
+
+set_option maxHeartbeats 400000 in
+theorem beDiag_of (H : BeDiagG) (D : D7) (ht : OkpTrace D) (he : endInt D)
+    (ha : addInt D) (hn : phNorm D) (hb : beConj D) (hB : beBiadd D) : beDiag D := by
+  intro p _ cc δ g hA hp
+  have h2 := hn p cc δ g hA hp ((2 : ℂ_[p]), (2 : ℂ_[p])) (okpTwo_holds D p g.lam)
+  exact H p g (OKp D g.lam) hA.2.2.2.2 (fun α hα => okpSwap_holds D p g.lam α hα)
+    (he p cc δ g hA) (ha p cc δ g hA).1 (fun α hα => ht p g.lam α hα) h2
+    (hb p cc δ g hA hp) (hB p cc δ g hA).1
+
+end Formalism.MainNotions.Ext.CutA
+end
+
+section
+namespace Formalism.MainNotions.Ext.CutA
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Formalism.MainNotions.Ext
+
+def OkpSplit (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), p ≠ 2 → SplitK D p →
+    ∃ α ∈ OKp D lam, ∃ a b : ℤ_[p], α = (zc a, zc b) ∧ IsUnit (a - b)
+
+def OkpNorm (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), ∀ α ∈ OKp D lam, ∃ n : ℤ_[p], α.1 * α.2 = zc n
+
+def OkpTwoUnits (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), p ≠ 2 →
+    ∀ α ∈ OKp D lam, ∃ β ∈ OKp D lam, ∃ γ ∈ OKp D lam, ‖β.1‖ = 1 ∧ ‖γ.1‖ = 1 ∧ α = β + γ
+
+theorem sDiff_of (H : SDiffOfGram) (D : D7) : GL3r7.StatementSymmetricDifference D := by
+  intro hPG hbc p _ cc δ g hAt hp
+  exact H p g (OKp D g.lam) hAt.2.2.2.2 (okp_zero D g.lam) (fun β hβ => okp_swap D g.lam β hβ)
+    (fun β hβ γ hγ => okp_add D g.lam β γ hβ hγ) (fun β hβ γ hγ => okp_mul D g.lam β γ hβ hγ)
+    (hPG p cc δ g hAt hp) (hbc p cc δ g hAt hp)
+
+theorem splitZero_of (H : SplitZeroG) (D : D7) (hsp : OkpSplit D) (he : endInt D) (ha : addInt D) (hn : phNorm D)
+    (hb : beConj D) (hB : beBiadd D) : splitZero D := by
+  intro p _ cc δ g hAt hp hspl
+  refine H p g (OKp D g.lam) hAt.2.2.2.2 hp (fun α hα => okpSwap_holds D p g.lam α hα)
+    (fun α hα => he p cc δ g hAt α hα) (ha p cc δ g hAt).1 (fun α hα => hb p cc δ g hAt hp α hα)
+    (hB p cc δ g hAt).1 ?_ (hsp p g.lam hp hspl)
+  have h := hn p cc δ g hAt hp _ (okpNeg_holds D p g.lam)
+  simpa using h
+
+theorem beConj_of (H : BeConjOfNorm) (D : D7) (hN : OkpNorm D) (hU : OkpTwoUnits D) (he : endInt D) (ha : addInt D)
+    (hn : phNorm D) (hB : beBiadd D) : beConj D := by
+  intro p _ cc δ g hAt hp α hα
+  have hadd : ∀ β ∈ OKp D g.lam, ∀ γ ∈ OKp D g.lam, β + γ ∈ OKp D g.lam :=
+    fun β hβ γ hγ => okp_add D g.lam β γ hβ hγ
+  exact H p g (OKp D g.lam) hAt.2.2.2.2 (fun β hβ => okpSwap_holds D p g.lam β hβ) hadd
+    (fun β hβ => he p cc δ g hAt β hβ) (ha p cc δ g hAt).1 (fun β hβ => hN p g.lam β hβ)
+    (fun β hβ => hU p g.lam hp β hβ) (fun β hβ => hn p cc δ g hAt hp β hβ) (hB p cc δ g hAt).1 α hα
+
+end Formalism.MainNotions.Ext.CutA
+end
+
+section
+namespace Formalism.MainNotions.Ext.CutA
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Formalism.MainNotions.Ext NumberField
+
+def PhNormOK (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : G1 p), At D cc δ g → p ≠ 2 →
+    ∀ a : 𝓞 D.host.K, Nat.Coprime (Algebra.norm ℤ a).natAbs p →
+      Simeq (g.phAt (g.mulBy (tauK D g.lam (a : D.host.K)) (Xv ())) : MvPowerSeries Unit ℂ_[p])
+        (MvPowerSeries.C (tauK D g.lam (a : D.host.K) * tauKc D g.lam (a : D.host.K)) * g.phAt (Xv ()))
+
+def OkpUnitsDense (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), p ≠ 2 → ∀ α ∈ OKp D lam, ‖α.1‖ = 1 → ‖α.2‖ = 1 →
+    α ∈ closure {x | ∃ a : 𝓞 D.host.K, Nat.Coprime (Algebra.norm ℤ a).natAbs p ∧
+      x = (tauK D lam (a : D.host.K), tauKc D lam (a : D.host.K))}
+
+def OkpTwoUnits2 (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), p ≠ 2 →
+    ∀ α ∈ OKp D lam, ∃ β ∈ OKp D lam, ∃ γ ∈ OKp D lam,
+      ‖β.1‖ = 1 ∧ ‖β.2‖ = 1 ∧ ‖γ.1‖ = 1 ∧ ‖γ.2‖ = 1 ∧ α = β + γ
+
+theorem phNorm_of (H1 : PhNormOfUnits) (H2 : PhNormClosed) (D : D7) (hOK : PhNormOK D) (hd : OkpUnitsDense D)
+    (hU : OkpTwoUnits2 D) (ht : OkpTrace D) (hN : OkpNorm D) (he : endInt D) (ha : addInt D) (hB : beBiadd D) :
+    phNorm D := by
+  have hsqK : D.host.conj D.host.sqd ∈ D.host.K := by
+    unfold Formalism.HC.HostRaw.K
+    rw [D.host.gal_sqd]
+    exact mul_mem (intCast_mem _ _) (IntermediateField.mem_adjoin_simple_self ℚ _)
+  have hsq : D.host.conj (D.host.conj D.host.sqd) = D.host.sqd := by
+    have hu : ∀ u : ℤˣ, (u : ℤ) * u = 1 := fun u => by
+      first
+      | exact Int.units_coe_mul_self u
+      | (rw [← Units.val_mul, Int.units_mul_self, Units.val_one])
+      | (rcases Int.units_eq_one_or u with h | h <;> simp [h])
+    rw [D.host.gal_sqd, map_mul, map_intCast, D.host.gal_sqd, ← mul_assoc, ← Int.cast_mul, hu,
+      Int.cast_one, one_mul]
+  have hmemK : ∀ y : D.host.E, y ∈ D.host.K →
+      D.host.conj y ∈ D.host.K ∧ D.host.conj (D.host.conj y) = y := by
+    clear H1 H2 hOK hd hU ht hN he ha hB
+    unfold Formalism.HC.HostRaw.K at hsqK ⊢
+    intro y hy
+    induction hy using IntermediateField.adjoin_induction
+    all_goals simp_all [Set.mem_singleton_iff, map_add, map_mul, map_inv₀, map_neg, AlgEquiv.commutes,
+      add_mem, mul_mem, inv_mem, neg_mem, IntermediateField.algebraMap_mem]
+  have hQ : ∀ x : D.host.E, D.host.φ₀ x ∈ Qbar := by
+    intro x
+    have hx : IsIntegral ℚ (D.host.φ₀ x) :=
+      (Algebra.IsIntegral.isIntegral (R := ℚ) x).map D.host.φ₀.toRatAlgHom
+    first
+    | exact hx
+    | exact (mem_algebraicClosure_iff' (F := ℚ)).2 hx
+    | exact mem_algebraicClosure_iff.2 hx.isAlgebraic
+  have hL : ∀ {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (x : D.host.E),
+      lamC lam (D.host.φ₀ x) = lam ⟨D.host.φ₀ x, hQ x⟩ := by
+    intro p _ lam x
+    unfold lamC
+    rw [dif_pos (hQ x)]
+  have key : ∀ {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]),
+      (∀ α ∈ OKp D lam, ∀ β ∈ OKp D lam, α + β ∈ OKp D lam) ∧
+      (∀ α ∈ OKp D lam, ∀ β ∈ OKp D lam, α * β ∈ OKp D lam) ∧
+      ((2 : ℂ_[p]), (2 : ℂ_[p])) ∈ OKp D lam ∧
+      (∀ α ∈ OKp D lam, α.swap ∈ OKp D lam) := by
+    intro p _ lam
+    let ψ : D.host.E →+* Qbar := D.host.φ₀.codRestrict Qbar hQ
+    let ι : 𝓞 D.host.K →+* D.host.E :=
+      (algebraMap D.host.K D.host.E).comp (algebraMap (𝓞 D.host.K) D.host.K)
+    let F : 𝓞 D.host.K →+* ℂ_[p] × ℂ_[p] :=
+      RingHom.prod ((lam.comp ψ).comp ι)
+        ((lam.comp ψ).comp ((D.host.conj : D.host.E →+* D.host.E).comp ι))
+    have hF : ∀ a : 𝓞 D.host.K, F a = (tauK D lam (a : D.host.K), tauKc D lam (a : D.host.K)) := by
+      intro a
+      unfold tauK tauKc
+      rw [hL, hL]
+      rfl
+    have hR : OKp D lam = closure ((F.range : Subring (ℂ_[p] × ℂ_[p])) : Set (ℂ_[p] × ℂ_[p])) := by
+      unfold OKp
+      congr 1
+      ext x
+      simp only [Set.mem_range, SetLike.mem_coe, RingHom.mem_range, hF]
+    have hcl : OKp D lam = ((F.range.topologicalClosure : Subring _) : Set (ℂ_[p] × ℂ_[p])) := by
+      rw [hR]
+      first
+      | rfl
+      | exact (Subring.coe_topologicalClosure _).symm
+      | exact (Subring.topologicalClosure_coe _).symm
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · intro α hα β hβ
+      rw [hcl] at hα hβ ⊢
+      exact add_mem hα hβ
+    · intro α hα β hβ
+      rw [hcl] at hα hβ ⊢
+      exact mul_mem hα hβ
+    · have e : ((2 : ℂ_[p]), (2 : ℂ_[p])) = 1 + 1 := by
+        ext <;> norm_num
+      rw [hcl, e]
+      exact add_mem (one_mem _) (one_mem _)
+    · intro α hα
+      rw [hR] at hα ⊢
+      refine map_mem_closure continuous_swap hα ?_
+      intro x hx
+      rw [SetLike.mem_coe, RingHom.mem_range] at hx ⊢
+      obtain ⟨a, rfl⟩ := hx
+      obtain ⟨hc, hcc⟩ := hmemK ((a : D.host.K) : D.host.E) (a : D.host.K).2
+      let z : D.host.K := ⟨D.host.conj ((a : D.host.K) : D.host.E), hc⟩
+      have h1 : IsIntegral ℤ (a : D.host.K) := by
+        first
+        | exact a.2
+        | exact NumberField.RingOfIntegers.isIntegral_coe a
+      have h2 := h1.map (((D.host.conj : D.host.E →+* D.host.E).comp
+        (algebraMap D.host.K D.host.E)).toIntAlgHom)
+      have hz : IsIntegral ℤ z :=
+        (isIntegral_algHom_iff (x := z) ((algebraMap D.host.K D.host.E).toIntAlgHom)
+          (algebraMap D.host.K D.host.E).injective).1 h2
+      refine ⟨⟨z, hz⟩, ?_⟩
+      rw [hF a]
+      refine (hF _).trans (Prod.ext rfl ?_)
+      show lamC lam (D.host.φ₀ (D.host.conj (D.host.conj ((a : D.host.K) : D.host.E)))) =
+        lamC lam (D.host.φ₀ ((a : D.host.K) : D.host.E))
+      rw [hcc]
+  intro p _ cc δ g hAt hp
+  obtain ⟨hadd, hmul, htwo, hswap⟩ := key g.lam
+  have hOk : g.Ok := hAt.2.2.2.2
+  apply H1 p g (OKp D g.lam) hOk hp htwo hswap hadd hmul (he p cc δ g hAt) (ha p cc δ g hAt).1
+    (ht p g.lam) (hN p g.lam) (hU p g.lam hp) (hB p cc δ g hAt).1
+  intro α hα h1 h2
+  have hcl := hd p g.lam hp α hα h1 h2
+  refine H2 p g _ hOk ?_ ?_ α hcl
+  · rintro _ ⟨a, _, rfl⟩
+    apply he p cc δ g hAt
+    unfold OKp
+    exact subset_closure ⟨a, rfl⟩
+  · rintro _ ⟨a, hcop, rfl⟩
+    exact hOK p cc δ g hAt hp a hcop
+
+end Formalism.MainNotions.Ext.CutA
+end
+
+section
+open Formalism.MainNotions.GL3Theta Formalism.MainNotions.TaylorLogMetric
+
+namespace Formalism.MainNotions.Ext.CutA
+
+def UnitTraceSumSecondBound : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (g : G1 p), g.Ok → IntegralMv (g.add (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]) →
+    ∃ n : MvPowerSeries (Fin 2) ℂ_[p], IntegralMv n ∧ MvPowerSeries.constantCoeff n = 1 ∧
+      (Xv 0) ^ 2 * (PowerSeries.subst (Xv 1 : MvPowerSeries (Fin 2) ℂ_[p]) g.wq)⁻¹ -
+          (Xv 1) ^ 2 * (PowerSeries.subst (Xv 0 : MvPowerSeries (Fin 2) ℂ_[p]) g.wq)⁻¹ =
+        g.add (Xv 0) (Xv 1) * g.sub (Xv 0) (Xv 1) * n
+
+def CubeIdentityFromAdditionFormula : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (g : G1 p), g.Ok →
+    PowerSeries.constantCoeff (ePhi1 g.lam g.abelian₂ g.C g.wq) = 1 →
+    g.add (Xv 0) (Xv 1) * g.sub (Xv 0) (Xv 1) *
+        PowerSeries.subst (g.add (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]) (ePhi1 g.lam g.abelian₂ g.C g.wq) *
+        PowerSeries.subst (g.sub (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]) (ePhi1 g.lam g.abelian₂ g.C g.wq) =
+      ((Xv 0) ^ 2 * (PowerSeries.subst (Xv 1 : MvPowerSeries (Fin 2) ℂ_[p]) g.wq)⁻¹ -
+          (Xv 1) ^ 2 * (PowerSeries.subst (Xv 0 : MvPowerSeries (Fin 2) ℂ_[p]) g.wq)⁻¹) *
+        PowerSeries.subst (Xv 0 : MvPowerSeries (Fin 2) ℂ_[p]) (ePhi1 g.lam g.abelian₂ g.C g.wq) ^ 2 *
+        PowerSeries.subst (Xv 1 : MvPowerSeries (Fin 2) ℂ_[p]) (ePhi1 g.lam g.abelian₂ g.C g.wq) ^ 2 →
+    (∃ n : MvPowerSeries (Fin 2) ℂ_[p], IntegralMv n ∧ MvPowerSeries.constantCoeff n = 1 ∧
+      (Xv 0) ^ 2 * (PowerSeries.subst (Xv 1 : MvPowerSeries (Fin 2) ℂ_[p]) g.wq)⁻¹ -
+          (Xv 1) ^ 2 * (PowerSeries.subst (Xv 0 : MvPowerSeries (Fin 2) ℂ_[p]) g.wq)⁻¹ =
+        g.add (Xv 0) (Xv 1) * g.sub (Xv 0) (Xv 1) * n) →
+    Simeq (g.phAt (g.add (Xv 0) (Xv 1)) + g.phAt (g.sub (Xv 0) (Xv 1)) : MvPowerSeries (Fin 2) ℂ_[p])
+      (2 * g.phAt (Xv 0) + 2 * g.phAt (Xv 1))
+
+end Formalism.MainNotions.Ext.CutA
+end
+
+section
+namespace Formalism.MainNotions.Ext.CutA
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta NumberField
+
+def EPhiOne (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : G1 p), At D cc δ g →
+    PowerSeries.constantCoeff (ePhi1 g.lam g.abelian₂ g.C g.wq) = 1
+
+def PAdicSigmaAdditionFormula (D : D7) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime] (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : G1 p), At D cc δ g →
+    g.add (Xv 0) (Xv 1) * g.sub (Xv 0) (Xv 1) *
+        PowerSeries.subst (g.add (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]) (ePhi1 g.lam g.abelian₂ g.C g.wq) *
+        PowerSeries.subst (g.sub (Xv 0) (Xv 1) : MvPowerSeries (Fin 2) ℂ_[p]) (ePhi1 g.lam g.abelian₂ g.C g.wq) =
+      ((Xv 0) ^ 2 * (PowerSeries.subst (Xv 1 : MvPowerSeries (Fin 2) ℂ_[p]) g.wq)⁻¹ -
+          (Xv 1) ^ 2 * (PowerSeries.subst (Xv 0 : MvPowerSeries (Fin 2) ℂ_[p]) g.wq)⁻¹) *
+        PowerSeries.subst (Xv 0 : MvPowerSeries (Fin 2) ℂ_[p]) (ePhi1 g.lam g.abelian₂ g.C g.wq) ^ 2 *
+        PowerSeries.subst (Xv 1 : MvPowerSeries (Fin 2) ℂ_[p]) (ePhi1 g.lam g.abelian₂ g.C g.wq) ^ 2
+
+theorem addition_identity_of_sigma_formula (H31 : UnitTraceSumSecondBound) (HC : CubeIdentityFromAdditionFormula) (D : D7) (hQ : PAdicSigmaAdditionFormula D) (hE : EPhiOne D) (ha : addInt D) :
+    cube2 D := by
+  intro p _ cc δ g hA
+  have ok : g.Ok := hA.2.2.2.2
+  exact HC p g ok (hE p cc δ g hA) (hQ p cc δ g hA) (H31 p g ok (ha p cc δ g hA).1)
+
+end Formalism.MainNotions.Ext.CutA
+end
+
+section
 namespace Formalism.MainNotions.Ext.CutA
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Formalism.MainNotions.Ext NumberField
@@ -597,3 +1018,4 @@ theorem cube_second_identity_of_determinant (H31 : LemmaThreeOneThird) (HC : Cub
 
 
 end Formalism.MainNotions.Ext.CutA
+end

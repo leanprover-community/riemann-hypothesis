@@ -6,18 +6,323 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDimens
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCmConjugationOmega
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteResidueField
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCyclotomicUnramifiedCompletedIntegersStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CardPadicAlgClPadicComplexEqComplexStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRingEquivAlgClosedOverNumberFieldCompEq
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemFiniteExtPadicRingOfIntegersIffNormLeOneStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemMaximalIdealIffNormLtOneStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRingEquivFinExtIntegersPadicIntOfStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIntegersToCompletedUnramifiedCompositum
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinitePrimitiveRoot
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CardPadicAlgClPadicComplexEqComplex
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemFiniteExtPadicRingOfIntegersIffNormLeOne
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemMaximalIdealIffNormLtOne
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsRingEquivFinExtIntegersPadicIntOf
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnramifiedHeckeCharIdeleValueUniformiserStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EtaTildeIsUnitArgAtCmTypePlacesStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockValAeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCoefficientFieldLowerBounds
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EtaTildeIsUnitArgAtCmTypePlaces
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BlockValAe
 
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_padicAlgCl_padicComplex_eq_complex : ∀ (l : ℕ) [Fact l.Prime], Cardinal.mk (PadicAlgCl l) = Cardinal.mk ℂ ∧ Cardinal.mk ℂ_[l] = Cardinal.mk ℂ := by
+  first | exact @GlobalTheory.PadicCard.card_padicAlgCl_padicComplex | exact GlobalTheory.PadicCard.card_padicAlgCl_padicComplex | (intros; apply GlobalTheory.PadicCard.card_padicAlgCl_padicComplex <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+
+set_option autoImplicit false
+
+namespace GlobalTheory.AlgClosedIsoOverNumberField
+
+open Cardinal
+
+theorem exists_ringEquiv_commutes (R K L : Type) [Field R] [Field K] [Field L] [IsAlgClosed K]
+    [IsAlgClosed L] [Algebra R K] [Algebra R L] (hR : #R ≤ ℵ₀) (hK : ℵ₀ < #K) (hKL : #K = #L) :
+    ∃ e : K ≃+* L, ∀ x : R, e (algebraMap R K x) = algebraMap R L x := by
+  classical
+
+  obtain ⟨s, hs⟩ := exists_isTranscendenceBasis R K
+  obtain ⟨t, ht⟩ := exists_isTranscendenceBasis R L
+  have hL : ℵ₀ < #L := hKL ▸ hK
+  have hs' : #K = #s :=
+    IsAlgClosed.cardinal_eq_cardinal_transcendence_basis_of_aleph0_lt' _ hs hR hK
+  have ht' : #L = #t :=
+    IsAlgClosed.cardinal_eq_cardinal_transcendence_basis_of_aleph0_lt' _ ht hR hL
+  obtain ⟨f⟩ : Nonempty (s ≃ t) := Cardinal.eq.1 (hs'.symm.trans (hKL.trans ht'))
+
+  let := IsAlgClosed.isAlgClosure_of_transcendence_basis _ hs
+  let := IsAlgClosed.isAlgClosure_of_transcendence_basis _ ht
+
+  let e₀ : Algebra.adjoin R (Set.range ((↑) : s → K)) ≃ₐ[R]
+      Algebra.adjoin R (Set.range ((↑) : t → L)) :=
+    hs.1.aevalEquiv.symm.trans ((MvPolynomial.renameEquiv R f).trans ht.1.aevalEquiv)
+  refine ⟨IsAlgClosure.equivOfEquiv K L e₀.toRingEquiv, fun x => ?_⟩
+  rw [IsScalarTower.algebraMap_apply R (Algebra.adjoin R (Set.range ((↑) : s → K))) K,
+    IsAlgClosure.equivOfEquiv_algebraMap, AlgEquiv.coe_ringEquiv,
+    AlgEquiv.commutes, ← IsScalarTower.algebraMap_apply]
+
+theorem exists_ringEquiv_comp_eq :
+    ∀ (K Ω₁ Ω₂ : Type) [Field K] [NumberField K] [Field Ω₁] [Field Ω₂] [IsAlgClosed Ω₁]
+      [IsAlgClosed Ω₂] [CharZero Ω₁] [CharZero Ω₂] (a : K →+* Ω₁) (b : K →+* Ω₂),
+      Cardinal.mk Ω₁ = Cardinal.mk Ω₂ → Cardinal.aleph0 < Cardinal.mk Ω₁ →
+        ∃ ι : Ω₁ ≃+* Ω₂, ∀ x, ι (a x) = b x := by
+  intro K Ω₁ Ω₂ _ _ _ _ _ _ _ _ a b hcard hbig
+  let : Algebra K Ω₁ := a.toAlgebra
+  let : Algebra K Ω₂ := b.toAlgebra
+
+  have hK : #K ≤ ℵ₀ := by
+    have := Algebra.IsAlgebraic.cardinalMk_le_max ℚ K
+    rwa [Cardinal.mkRat, max_self] at this
+  obtain ⟨e, he⟩ := exists_ringEquiv_commutes K Ω₁ Ω₂ hK hbig hcard
+  exact ⟨e, he⟩
+
+end GlobalTheory.AlgClosedIsoOverNumberField
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ringEquiv_algClosed_over_numberField_comp_eq : ∀ (K Ω₁ Ω₂ : Type) [Field K] [NumberField K] [Field Ω₁] [Field Ω₂] [IsAlgClosed Ω₁] [IsAlgClosed Ω₂] [CharZero Ω₁] [CharZero Ω₂] (a : K →+* Ω₁) (b : K →+* Ω₂), Cardinal.mk Ω₁ = Cardinal.mk Ω₂ → Cardinal.aleph0 < Cardinal.mk Ω₁ → ∃ ι : Ω₁ ≃+* Ω₂, ∀ x, ι (a x) = b x := by
+  atlas_forward_decl GlobalTheory.AlgClosedIsoOverNumberField.exists_ringEquiv_comp_eq
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_finiteExtPadic_ringOfIntegers_iff_norm_le_one : ∀ (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l) (x : ↥K.1), x ∈ Loc.OL K ↔ ‖(x : PadicAlgCl l)‖ ≤ 1 := by
+  first | exact @GlobalTheory.IntNormFinExt.mem_OL_iff_norm_le_one | exact GlobalTheory.IntNormFinExt.mem_OL_iff_norm_le_one | (intros; apply GlobalTheory.IntNormFinExt.mem_OL_iff_norm_le_one <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_maximalIdeal_OL_iff_norm_lt_one : ∀ (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l) [IsLocalRing ↥(Loc.OL K)] (y : ↥(Loc.OL K)), y ∈ IsLocalRing.maximalIdeal ↥(Loc.OL K) ↔ ‖((y : ↥K.1) : PadicAlgCl l)‖ < 1 := by
+  first | exact @GlobalTheory.IntMaxFinExt.mem_maximalIdeal_iff_norm_lt_one | exact GlobalTheory.IntMaxFinExt.mem_maximalIdeal_iff_norm_lt_one | (intros; apply GlobalTheory.IntMaxFinExt.mem_maximalIdeal_iff_norm_lt_one <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_ringEquiv_finExtIntegers_padicIntOf : ∀ (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l), ∃ e : ↥(Loc.OL K) ≃+* ↥(intOf l K.1), ∀ y, (e y : PadicAlgCl l) = ((y : ↥K.1) : PadicAlgCl l) := by
+  first | exact @GlobalTheory.IntOfFinExt.exists_ringEquiv_intOf | exact GlobalTheory.IntOfFinExt.exists_ringEquiv_intOf | (intros; apply GlobalTheory.IntOfFinExt.exists_ringEquiv_intOf <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+
+namespace GlobalTheory.HeightCounting.ToClC
+
+theorem norm_le_one_of_mem_OL (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l) (x : ↥(Loc.OL K)) :
+    ‖((x : ↥K.1) : PadicAlgCl l)‖ ≤ 1 := by
+  have h : IsIntegral ℤ_[l] ((x : ↥K.1) : PadicAlgCl l) :=
+    (isIntegral_algHom_iff (K.1.val.restrictScalars ℤ_[l]) K.1.val.toRingHom.injective).2 x.2
+  rw [← PadicAlgCl.spectralNorm_eq, spectralNorm,
+    spectralValue_le_one_iff (minpoly.monic (Algebra.IsIntegral.isIntegral _))]
+  intro n
+  rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] h, Polynomial.coeff_map]
+  exact ((minpoly ℤ_[l] _).coeff n).2
+
+theorem mem_clC_of_OL (l : ℕ) [Fact l.Prime] (K₀ L : Loc.FinExt l) (y : ↥(Loc.OL K₀)) :
+    algebraMap (PadicAlgCl l) ℂ_[l] ((y : ↥K₀.1) : PadicAlgCl l) ∈ clC l (Kt l K₀ L) := by
+  refine ⟨Subring.le_topologicalClosure _ ⟨((y : ↥K₀.1) : PadicAlgCl l), ?_, rfl⟩, ?_⟩
+  · show ((y : ↥K₀.1) : PadicAlgCl l) ∈ Kt l K₀ L
+    exact (le_sup_left.trans (le_sup_left : K₀.1 ⊔ L.1 ≤ _)) (y : ↥K₀.1).2
+  · change algebraMap (PadicAlgCl l) ℂ_[l] ((y : ↥K₀.1) : PadicAlgCl l) ∈ PadicComplexInt l
+    rw [PadicComplexInt, Valuation.mem_valuationSubring_iff, ← PadicComplex.coe_eq, PadicComplex.valuation_extends, ← NNReal.coe_le_one, PadicAlgCl.valuation_coe]
+    exact norm_le_one_of_mem_OL l K₀ y
+
+def toClC (l : ℕ) [Fact l.Prime] (K₀ L : Loc.FinExt l) : ↥(Loc.OL K₀) →+* ↥(clC l (Kt l K₀ L)) :=
+  ((algebraMap (PadicAlgCl l) ℂ_[l]).comp (K₀.1.val.toRingHom.comp (Loc.OL K₀).val.toRingHom)).codRestrict _
+    fun y => mem_clC_of_OL l K₀ L y
+
+theorem exists_toClC : ∀ (l : ℕ) [Fact l.Prime] (K₀ L : Loc.FinExt l), ∃ f : ↥(Loc.OL K₀) →+* ↥(clC l (Kt l K₀ L)),
+    ∀ y, (f y : ℂ_[l]) = algebraMap (PadicAlgCl l) ℂ_[l] ((y : ↥K₀.1) : PadicAlgCl l) :=
+  fun l _ K₀ L => ⟨toClC l K₀ L, fun _ => rfl⟩
+
+end GlobalTheory.HeightCounting.ToClC
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integers_to_completedUnramifiedCompositum : ∀ (l : ℕ) [Fact l.Prime] (K₀ L : Loc.FinExt l), ∃ f : ↥(Loc.OL K₀) →+* ↥(clC l (Kt l K₀ L)), ∀ y, (f y : ℂ_[l]) = algebraMap (PadicAlgCl l) ℂ_[l] ((y : ↥K₀.1) : PadicAlgCl l) := by
+  atlas_forward_decl GlobalTheory.HeightCounting.ToClC.exists_toClC
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+namespace GlobalTheory.CycLayers
+
+theorem layer_of_clauses {F : Type*} [NormedField F] (A R : Subring F) (h : A ≤ R) (l m : ℕ)
+    (hlnorm : ‖(l : F)‖ < 1) (hl0 : (l : F) ≠ 0) (hm : 0 < m)
+    (hdiv : ∀ x ∈ R, ∀ y ∈ R, ‖x‖ ≤ ‖y‖ → x / y ∈ R)
+    (T : Finset F) (hT : ∀ x, x ∈ R ↔ x ∈ Submodule.span A (T : Set F))
+    (ζ : F) (hzmem : ζ ∈ R) (hζ : IsPrimitiveRoot ζ m)
+    (hlast : ∀ x ∈ R, ∃ (p : Polynomial A) (d : A), d ≠ 0 ∧ x * (d : F) = Polynomial.aeval ζ p) :
+    letI := (Subring.inclusion h).toAlgebra;
+    Module.Finite A R ∧ ∃ z : Rˣ, IsPrimitiveRoot (z : R) m ∧ ∀ x : FractionRing R, ∃ p : Polynomial A, ∃ d : A, d ≠ 0 ∧
+      x * algebraMap _ (FractionRing R) (algebraMap _ R d) = algebraMap _ (FractionRing R) (Polynomial.aeval (z : R) p) := by
+  let _ := (Subring.inclusion h).toAlgebra
+  refine ⟨?_, ?_⟩
+  · let f : R →ₗ[A] F :=
+      { toFun := Subtype.val, map_add' := fun _ _ => rfl,
+        map_smul' := fun a y => by rw [RingHom.id_apply, Algebra.smul_def, Subring.smul_def]; rfl }
+    let S : Set R := Subtype.val ⁻¹' (T : Set F)
+    have hS : S.Finite := T.finite_toSet.preimage Subtype.val_injective.injOn
+    have himg : f '' S = (T : Set F) := by
+      ext c
+      constructor
+      · rintro ⟨y, hy, rfl⟩; exact hy
+      · intro hc
+        have hcR : c ∈ R := (hT c).2 (Submodule.subset_span hc)
+        exact ⟨⟨c, hcR⟩, hc, rfl⟩
+    have key : ∀ y : R, y ∈ Submodule.span A S := by
+      intro y
+      have h1 : (y : F) ∈ Submodule.span A (T : Set F) := (hT y).1 y.2
+      rw [← himg, ← Submodule.map_span] at h1
+      obtain ⟨y', hy', hyy⟩ := h1
+      have : y' = y := Subtype.ext hyy
+      rw [← this]; exact hy'
+    exact ⟨⟨hS.toFinset, by rw [Set.Finite.coe_toFinset]; exact eq_top_iff.2 fun y _ => key y⟩⟩
+  · have hprim : IsPrimitiveRoot (⟨ζ, hzmem⟩ : R) m :=
+      IsPrimitiveRoot.coe_submonoidClass_iff.1 hζ
+    refine ⟨(hprim.isUnit hm.ne').unit, by simpa using hprim, ?_⟩
+    intro x
+    obtain ⟨⟨a, s⟩, rfl⟩ := IsLocalization.mk'_surjective (nonZeroDivisors R) x
+    set b : R := (s : R) with hbdef
+    have hb : b ∈ nonZeroDivisors R := s.2
+    have hb0 : (b : F) ≠ 0 := by
+      intro h0
+      have : b = 0 := Subtype.ext h0
+      exact nonZeroDivisors.ne_zero hb this
+    obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one (norm_pos_iff.2 hb0) hlnorm
+    have hlR : (l : F) ^ N ∈ R := pow_mem (natCast_mem R l) N
+    have hlNA : (l : F) ^ N ∈ A := pow_mem (natCast_mem A l) N
+    have hq : (l : F) ^ N / b ∈ R := by
+      refine hdiv _ hlR _ b.2 ?_
+      rw [norm_pow]; exact hN.le
+    obtain ⟨p, d', hd', hpd⟩ := hlast _ (mul_mem a.2 hq)
+    refine ⟨p, ⟨(l : F) ^ N, hlNA⟩ * d', ?_, ?_⟩
+    · refine mul_ne_zero ?_ hd'
+      intro h0
+      have h1 : (l : F) ^ N = 0 := congrArg Subtype.val h0
+      exact pow_ne_zero N hl0 h1
+    · have hev : ((Polynomial.aeval ((hprim.isUnit hm.ne').unit : R) p : R) : F) = Polynomial.aeval ζ p := by
+        rw [Polynomial.aeval_def, Polynomial.aeval_def, IsUnit.unit_spec]
+        rw [show ((Polynomial.eval₂ (algebraMap A R) (⟨ζ, hzmem⟩ : R) p : R) : F) =
+          R.subtype (Polynomial.eval₂ (algebraMap A R) (⟨ζ, hzmem⟩ : R) p) from rfl, Polynomial.hom_eval₂]
+        rfl
+      have hRd : algebraMap A R (⟨(l : F) ^ N, hlNA⟩ * d') =
+          b * ⟨(l : F) ^ N / b, hq⟩ * algebraMap A R d' := by
+        rw [map_mul]; congr 1
+        apply Subtype.ext
+        show (l : F) ^ N = (b : F) * ((l : F) ^ N / b)
+        field_simp
+      have hfin : a * ⟨(l : F) ^ N / b, hq⟩ * algebraMap A R d' =
+          Polynomial.aeval ((hprim.isUnit hm.ne').unit : R) p := by
+        apply Subtype.ext
+        rw [hev, ← hpd]
+        rfl
+      rw [hRd, ← hfin, map_mul, map_mul, map_mul, map_mul, ← mul_assoc, ← mul_assoc, IsLocalization.mk'_spec]
+
+theorem finite_primitive_root :
+    ∀ (l : ℕ) [Fact l.Prime] (K₀ L : Loc.FinExt l) (k : ℕ) (h : clC l (Kt l K₀ L) ≤ clC l (Kt l K₀ L ⊔ muK l k)), letI := (Subring.inclusion h).toAlgebra; Module.Finite ↥(clC l (Kt l K₀ L)) ↥(clC l (Kt l K₀ L ⊔ muK l k)) ∧ ∃ z : (↥(clC l (Kt l K₀ L ⊔ muK l k)))ˣ, IsPrimitiveRoot (z : ↥(clC l (Kt l K₀ L ⊔ muK l k))) (l ^ k) ∧ ∀ x : FractionRing ↥(clC l (Kt l K₀ L ⊔ muK l k)), ∃ p : Polynomial ↥(clC l (Kt l K₀ L)), ∃ d : ↥(clC l (Kt l K₀ L)), d ≠ 0 ∧ x * algebraMap _ (FractionRing ↥(clC l (Kt l K₀ L ⊔ muK l k))) (algebraMap _ ↥(clC l (Kt l K₀ L ⊔ muK l k)) d) = algebraMap _ (FractionRing ↥(clC l (Kt l K₀ L ⊔ muK l k))) (Polynomial.aeval (z : ↥(clC l (Kt l K₀ L ⊔ muK l k))) p) := by
+  intro l _ K₀ L k h
+  obtain ⟨-, -, -, -, hdiv, -, ⟨T, hT⟩, ζ, hzmem, hζ, hlast⟩ := GlobalTheory.T.exists_cyclotomic_unramified_completed_integers l K₀ L k
+  have hlnorm : ‖(l : ℂ_[l])‖ < 1 := by
+    have e : ((l : ℚ_[l]) : ℂ_[l]) = (l : ℂ_[l]) := by simp
+    rw [← e, PadicComplex.norm_extends' l (l : ℚ_[l]), Padic.norm_p]
+    exact inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : l.Prime).one_lt)
+  have hl0 : (l : ℂ_[l]) ≠ 0 := by exact_mod_cast (Fact.out : l.Prime).ne_zero
+  exact layer_of_clauses _ _ h l (l ^ k) hlnorm hl0 (pow_pos (Fact.out : l.Prime).pos k) hdiv T hT ζ hzmem hζ hlast
+
+end GlobalTheory.CycLayers
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_primitive_root_of_clC_le : ∀ (l : ℕ) [Fact l.Prime] (K₀ L : Loc.FinExt l) (k : ℕ) (h : clC l (Kt l K₀ L) ≤ clC l (Kt l K₀ L ⊔ muK l k)), letI := (Subring.inclusion h).toAlgebra; Module.Finite ↥(clC l (Kt l K₀ L)) ↥(clC l (Kt l K₀ L ⊔ muK l k)) ∧ ∃ z : (↥(clC l (Kt l K₀ L ⊔ muK l k)))ˣ, IsPrimitiveRoot (z : ↥(clC l (Kt l K₀ L ⊔ muK l k))) (l ^ k) ∧ ∀ x : FractionRing ↥(clC l (Kt l K₀ L ⊔ muK l k)), ∃ p : Polynomial ↥(clC l (Kt l K₀ L)), ∃ d : ↥(clC l (Kt l K₀ L)), d ≠ 0 ∧ x * algebraMap _ (FractionRing ↥(clC l (Kt l K₀ L ⊔ muK l k))) (algebraMap _ ↥(clC l (Kt l K₀ L ⊔ muK l k)) d) = algebraMap _ (FractionRing ↥(clC l (Kt l K₀ L ⊔ muK l k))) (Polynomial.aeval (z : ↥(clC l (Kt l K₀ L ⊔ muK l k))) p) := by
+  atlas_forward_decl GlobalTheory.CycLayers.finite_primitive_root
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.etaTilde_isUnitArg_at_cmType_places : ∀ {R : Ranks} (H : Host R) (χ : HChar H.E), IsEtaT H χ → ∀ (h : Formalism.L2.NC.HC H.E), h.χ = (χ : Ideles H.E →* ℂˣ) → ∀ (g : R.Psi), h.IsUnitArg (H.emb (g : R.GG)) := by
+  first | exact @GlobalTheory.EtaUnitArg.etaT_isUnitArg | exact GlobalTheory.EtaUnitArg.etaT_isUnitArg | (intros; apply GlobalTheory.EtaUnitArg.etaT_isUnitArg <;> assumption)
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eventually_block_val_at_and_exists_inv_eq : ∀ {E : Type} [Field E] [NumberField E] {K : Type} [Field K] (ε : K →+* ℂ) (μ η : HChar E), AlmostIn ε μ → η.ValuesIn (1 / 2) ε → ∀ {r : ℕ}, Odd r → ∀ (μH ηH : Formalism.L2.NC.HC E), μH.χ = (μ : Ideles E →* ℂˣ) → ηH.χ = (η : Ideles E →* ℂˣ) → ∀ᶠ v in Filter.cofinite, (μH * ηH⁻¹).At v ((((block μ η r).val v : ℂˣ) : ℂ) * (Real.sqrt (normV v) : ℂ) ^ (-(r : ℤ))) ∧ ∃ y : K, ε y = (((block μ η r).val v : ℂˣ) : ℂ)⁻¹ := by
+  first | exact @GlobalTheory.BlockVal.block_val_ae | exact GlobalTheory.BlockVal.block_val_ae | (intros; apply GlobalTheory.BlockVal.block_val_ae <;> assumption)
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+
+noncomputable section
+
+namespace GlobalTheory.CoeffFieldLower
+
+theorem finiteDimensional_muK_one (l : ℕ) [Fact l.Prime] : FiniteDimensional ℚ_[l] (muK l 1) := by
+  classical
+  have hl : 0 < l ^ 1 := pow_pos (Fact.out : l.Prime).pos 1
+  have hfin : ({x : PadicAlgCl l | x ^ (l ^ 1) = 1}).Finite :=
+    (nthRoots (l ^ 1) (1 : PadicAlgCl l)).toFinset.finite_toSet.subset fun x hx => by
+      rw [Finset.mem_coe, Multiset.mem_toFinset, Polynomial.mem_nthRoots hl]; exact hx
+  have := hfin.to_subtype
+  show FiniteDimensional ℚ_[l] (IntermediateField.adjoin ℚ_[l] {x : PadicAlgCl l | x ^ (l ^ 1) = 1})
+  exact IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x
+
+open Classical in
+
+def bridgeLow (D : D7) (l : ℕ) [Fact l.Prime] (w : HeightOneSpectrum (𝓞 D.host.E)) : Loc.FinExt l :=
+  if hw : w ∈ placesOver D.host.E l then
+    (Classical.choose_spec (GlobalTheory.PlaceBridge.exists_locBridge l D.host.E D.nd.Om w (D.nd.plOm.1 w) hw
+      (D.nd.plOm.2 w))).choose
+  else ⟨⊥, inferInstance⟩
+
+def low (D : D7) : Big D := fun l hl j =>
+  haveI := hl
+  ⟨IntermediateField.adjoin ℚ_[l] (Set.range j) ⊔ muK l 1 ⊔
+      ⨆ w ∈ (placesOver_finite' D.host.E l (Fact.out : l.Prime).ne_zero).toFinset, (bridgeLow D l w).1, by
+    have := GlobalTheory.PlaceBridge.finiteDimensional_adjoin_range j
+    have := finiteDimensional_muK_one l
+    have : ∀ w, FiniteDimensional ℚ_[l] (bridgeLow D l w).1 := fun w => (bridgeLow D l w).2
+    infer_instance⟩
+
+theorem exists_low : ∀ (D : D7), ∃ c0 : Big D, ∀ (l : ℕ) [Fact l.Prime] (j : ↥D.LL0 →+* PadicAlgCl l), (∀ x, j x ∈ (c0 l j).1) ∧ muK l 1 ≤ (c0 l j).1 ∧ ∀ K0 : Loc.FinExt l, (c0 l j).1 ≤ K0.1 → ∀ w ∈ placesOver D.host.E l, ∃ Bw : LocBridge l D.host.E D.nd.Om (Dec (F := D.host.E) (D.nd.plOm.1 w)) ↥(Loc.OL K0), ∀ x, x ∈ D.nd.plOm.1 w ↔ ‖Bw.j x‖ ≤ 1 := by
+  intro D
+  refine ⟨low D, fun l _ j => ⟨fun x => ?_, ?_, fun K0 hK0 w hw => ?_⟩⟩
+  · have h1 : IntermediateField.adjoin ℚ_[l] (Set.range j) ≤ (low D l j).1 := le_sup_left.trans le_sup_left
+    exact h1 (IntermediateField.subset_adjoin _ _ ⟨x, rfl⟩)
+  · exact le_sup_right.trans le_sup_left
+  · have hex := GlobalTheory.PlaceBridge.exists_locBridge l D.host.E D.nd.Om w (D.nd.plOm.1 w) hw (D.nd.plOm.2 w)
+    have hspec := (Classical.choose_spec hex).choose_spec
+    have hL : (bridgeLow D l w).1 ≤ K0.1 := by
+      refine le_trans ?_ hK0
+      refine le_trans ?_ le_sup_right
+      have hmem : w ∈ (placesOver_finite' D.host.E l (Fact.out : l.Prime).ne_zero).toFinset := by simpa using hw
+      exact le_iSup₂ (f := fun w (_ : w ∈ (placesOver_finite' D.host.E l (Fact.out : l.Prime).ne_zero).toFinset) =>
+        (bridgeLow D l w).1) w hmem
+    have e : bridgeLow D l w = (Classical.choose_spec hex).choose := dif_pos hw
+    have hL' : (Classical.choose_spec hex).choose.1 ≤ K0.1 := e ▸ hL
+    obtain ⟨Bw, hBj, -⟩ := hspec.2 K0 hL'
+    exact ⟨Bw, fun x => by rw [hBj]; exact hspec.1 x⟩
+
+end GlobalTheory.CoeffFieldLower
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.L2.NT Formalism.L2.TwC GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_coefficientField_lower_bounds : ∀ (D : D7), ∃ c0 : Big D, ∀ (l : ℕ) [Fact l.Prime] (j : ↥D.LL0 →+* PadicAlgCl l), (∀ x, j x ∈ (c0 l j).1) ∧ muK l 1 ≤ (c0 l j).1 ∧ ∀ K0 : Loc.FinExt l, (c0 l j).1 ≤ K0.1 → ∀ w ∈ placesOver D.host.E l, ∃ Bw : LocBridge l D.host.E D.nd.Om (Dec (F := D.host.E) (D.nd.plOm.1 w)) ↥(Loc.OL K0), ∀ x, x ∈ D.nd.plOm.1 w ↔ ‖Bw.j x‖ ≤ 1 := by
+  atlas_forward_decl GlobalTheory.CoeffFieldLower.exists_low
+end
+
+section
 section
 noncomputable section
 
@@ -522,3 +827,4 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_twistRings_characters_classGroups : GlobalTheory.Published.GlobalArtinReciprocity → ∀ (D : D7) (cf : CharFrame D) (J : ∀ (l : ℕ) [Fact l.Prime] (w : HeightOneSpectrum (𝓞 ↥D.LL0)), ((l : ℕ) : 𝓞 ↥D.LL0) ∈ w.asIdeal → (↥D.LL0 →+* PadicAlgCl l)), (∀ (l : ℕ) [Fact l.Prime] w h (x : 𝓞 ↥D.LL0), x ∈ w.asIdeal ↔ ‖J l w h x‖ < 1) → ValLL0 D cf → (∀ x : D.LL0, star (x : D.what₂.LL) ∈ D.LL0) → (∀ j g, ∃ z : ℤ, eExp D j g = z) → ∃ c0 : Big D, ∀ (b0 b1 : Big D) (Sx : Finset (PlE D.host)), (∀ (l : ℕ) [Fact l.Prime] j, (c0 l j).1 ≤ (b0 l j).1) → ∃ (T : TwR D.LL0 D.nd) (Sp : RingSpec D cf b0 b1 Sx T), ∀ i, Sp.j0 i = J (T.l i) (Sp.eTw i) (Sp.pl_emb i).1 ∧ Sp.K0 i = b0 (T.l i) (Sp.j0 i) ∧ Sp.Lw i = b1 (T.l i) (Sp.j0 i) := by
   atlas_forward_decl GlobalTheory.TwRing.exists_ringSpec
+end

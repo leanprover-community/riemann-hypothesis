@@ -6,12 +6,473 @@ import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsValueAtOfTorus
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.FiniteEtaleSurjectiveOfPullback
 import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartNormPtsA
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorSumIdentityBaseChange
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagValuationNormalization
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.ValuationRingExtensionSpecialization
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.StepRowsInverseNonzeroEntry
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.GenericFlagAlgebraicallyIndependentStatement
+import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOfValILeOne
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.GenericFlagAlgebraicallyIndependent
 
+section
+section
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.PB.MinorAny
+
+theorem minorIJ_map {R S : Type} [CommRing R] [CommRing S] {N : ℕ} (f : R →+* S)
+    (A : Matrix (Fin N) (Fin N) R) (I J : Finset (Fin N)) :
+    minorIJ (A.map f) I J = f (minorIJ A I J) := by
+  unfold minorIJ
+  split_ifs with e
+  · rw [RingHom.map_det]
+    rfl
+  · exact (map_zero f).symm
+
+def gap {N : ℕ} {Ω : Type} [Field Ω] (T : Matrix (Fin N) (Fin N) Ω) (c₀ c₁ : Ω)
+    (coef u : Finset (Fin N) → Ω) (J : Finset (Fin N)) (S : Type) [CommRing S] [Algebra Ω S]
+    (h : Matrix (Fin N) (Fin N) S) : S :=
+  algebraMap Ω S c₀ * ∑ I, algebraMap Ω S (coef I) * minorIJ (T.map (algebraMap Ω S) * h) I J -
+    algebraMap Ω S c₁ * ∑ I, algebraMap Ω S (u I) * minorIJ h I J
+
+theorem gap_map {N : ℕ} {Ω : Type} [Field Ω] (T : Matrix (Fin N) (Fin N) Ω) (c₀ c₁ : Ω)
+    (coef u : Finset (Fin N) → Ω) (J : Finset (Fin N)) {S S' : Type} [CommRing S] [Algebra Ω S]
+    [CommRing S'] [Algebra Ω S'] (f : S →ₐ[Ω] S') (h : Matrix (Fin N) (Fin N) S) :
+    f (gap T c₀ c₁ coef u J S h) = gap T c₀ c₁ coef u J S' (h.map f.toRingHom) := by
+  have hm : ∀ (M : Matrix (Fin N) (Fin N) S) (I J : Finset (Fin N)),
+      f (minorIJ M I J) = minorIJ (M.map f.toRingHom) I J :=
+    fun M I J => (minorIJ_map f.toRingHom M I J).symm
+  have hT : (T.map (algebraMap Ω S) * h).map f.toRingHom = T.map (algebraMap Ω S') * h.map f.toRingHom := by
+    rw [Matrix.map_mul, Matrix.map_map]
+    congr 1
+    congr 1
+    funext x
+    exact f.commutes x
+  simp only [gap, map_sub, map_mul, map_sum, AlgHom.commutes, hm, hT]
+
+theorem minor_any : ∀ (Ω : Type) [Field Ω] [Infinite Ω] (N j : ℕ) (T : Matrix (Fin N) (Fin N) Ω) (c₀ c₁ : Ω) (coef u : Finset (Fin N) → Ω) (J : Finset (Fin N)), (∀ h : Matrix (Fin N) (Fin N) Ω, IsBlockDiag j h → c₀ * ∑ I, coef I * minorIJ (T * h) I J = c₁ * ∑ I, u I * minorIJ h I J) → ∀ (S : Type) [CommRing S] [Algebra Ω S] (h : Matrix (Fin N) (Fin N) S), IsBlockDiag j h → algebraMap Ω S c₀ * ∑ I, algebraMap Ω S (coef I) * minorIJ (T.map (algebraMap Ω S) * h) I J = algebraMap Ω S c₁ * ∑ I, algebraMap Ω S (u I) * minorIJ h I J := by
+  intro Ω _ _ N j T c₀ c₁ coef u J hyp S _ _ h hh
+  have hT : T.map (algebraMap Ω Ω) = T := Matrix.ext fun _ _ => rfl
+  have key : ∀ M : Matrix (Fin N) (Fin N) Ω, IsBlockDiag j M → gap T c₀ c₁ coef u J Ω M = 0 := by
+    intro M hM
+    simp only [gap, hT]
+    exact sub_eq_zero.mpr (hyp M hM)
+  let G : Matrix (Fin N) (Fin N) (MvPolynomial (Fin N × Fin N) Ω) :=
+    Matrix.of fun a b => if ((a : ℕ) < N - j ↔ (b : ℕ) < N - j) then X (a, b) else 0
+  have hP : gap T c₀ c₁ coef u J (MvPolynomial (Fin N × Fin N) Ω) G = 0 := by
+    apply MvPolynomial.funext
+    intro x
+    show aeval x (gap T c₀ c₁ coef u J (MvPolynomial (Fin N × Fin N) Ω) G) = aeval x 0
+    rw [map_zero, gap_map]
+    apply key
+    intro a b hab
+    simp only [G, Matrix.map_apply, Matrix.of_apply, if_neg hab, map_zero]
+  have hG : G.map (aeval (fun p : Fin N × Fin N => h p.1 p.2)).toRingHom = h := by
+    ext a b
+    simp only [G, Matrix.map_apply, Matrix.of_apply]
+    split_ifs with hab
+    · simp [aeval_X]
+    · rw [map_zero]
+      exact (hh a b hab).symm
+  have hz := congrArg (aeval (fun p : Fin N × Fin N => h p.1 p.2)) hP
+  rw [gap_map, hG, map_zero] at hz
+  simp only [gap] at hz
+  exact sub_eq_zero.mp hz
+
+end GlobalTheory.CompanionTheory.Ar.PB.MinorAny
+end
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.minor_sum_identity_base_change : ∀ (Ω : Type) [Field Ω] [Infinite Ω] (N j : ℕ) (T : Matrix (Fin N) (Fin N) Ω) (c₀ c₁ : Ω) (coef u : Finset (Fin N) → Ω) (J : Finset (Fin N)), (∀ h : Matrix (Fin N) (Fin N) Ω, IsBlockDiag j h → c₀ * ∑ I, coef I * minorIJ (T * h) I J = c₁ * ∑ I, u I * minorIJ h I J) → ∀ (S : Type) [CommRing S] [Algebra Ω S] (h : Matrix (Fin N) (Fin N) S), IsBlockDiag j h → algebraMap Ω S c₀ * ∑ I, algebraMap Ω S (coef I) * minorIJ (T.map (algebraMap Ω S) * h) I J = algebraMap Ω S c₁ * ∑ I, algebraMap Ω S (u I) * minorIJ h I J := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.MinorAny.minor_any
+end
+
+section
+section
+noncomputable section
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+
+namespace GlobalTheory.CompanionTheory.Ar.PB.IwBlock
+
+theorem exists_blocks_add {L : Type} [Field L] (V : ValuationSubring L) (n m : ℕ)
+    (A : Matrix (Fin (n + m)) (Fin (n + m)) L)
+    (hA : ∀ a b : Fin (n + m), ¬ ((a : ℕ) < n ↔ (b : ℕ) < n) → A a b = 0) (hd : A.det ≠ 0) :
+    ∃ (K : Matrix (Fin (n + m)) (Fin (n + m)) V) (U : Matrix (Fin (n + m)) (Fin (n + m)) L),
+      IsUnit K.det ∧ (∀ a b : Fin (n + m), ¬ ((a : ℕ) < n ↔ (b : ℕ) < n) → U a b = 0) ∧
+      U.BlockTriangular id ∧ (∀ a, U a a ≠ 0) ∧ A = K.map (algebraMap V L) * U := by
+  let e : Fin n ⊕ Fin m ≃ Fin (n + m) := finSumFinEquiv
+  let A₁ : Matrix (Fin n) (Fin n) L := fun i k => A (e (Sum.inl i)) (e (Sum.inl k))
+  let A₂ : Matrix (Fin m) (Fin m) L := fun i k => A (e (Sum.inr i)) (e (Sum.inr k))
+  have lt_l : ∀ i : Fin n, ((e (Sum.inl i) : Fin (n + m)) : ℕ) < n := fun i => by simp [e]
+  have ge_r : ∀ i : Fin m, ¬ ((e (Sum.inr i) : Fin (n + m)) : ℕ) < n := fun i => by simp [e]
+  have val_l : ∀ i : Fin n, ((e (Sum.inl i) : Fin (n + m)) : ℕ) = i := fun i => by simp [e]
+  have val_r : ∀ i : Fin m, ((e (Sum.inr i) : Fin (n + m)) : ℕ) = n + i := fun i => by simp [e]
+  have hB : A.submatrix e e = fromBlocks A₁ 0 0 A₂ := by
+    ext (i | i) (k | k)
+    · rfl
+    · exact hA _ _ fun h => ge_r k (h.1 (lt_l i))
+    · exact hA _ _ fun h => ge_r i (h.2 (lt_l k))
+    · rfl
+  have hdet : A₁.det * A₂.det ≠ 0 := by
+    rw [← det_fromBlocks_zero₂₁ A₁ 0 A₂, ← hB, det_submatrix_equiv_self]
+    exact hd
+  obtain ⟨k₁, U₁, hk₁, hU₁, hd₁, e₁⟩ := GlobalTheory.ValIwasawa.iwasawa_matrix (V := V) A₁ (left_ne_zero_of_mul hdet)
+  obtain ⟨k₂, U₂, hk₂, hU₂, hd₂, e₂⟩ := GlobalTheory.ValIwasawa.iwasawa_matrix (V := V) A₂ (right_ne_zero_of_mul hdet)
+  refine ⟨(fromBlocks k₁ 0 0 k₂).submatrix e.symm e.symm, (fromBlocks U₁ 0 0 U₂).submatrix e.symm e.symm,
+    ?_, ?_, ?_, ?_, ?_⟩
+  · rw [det_submatrix_equiv_self, det_fromBlocks_zero₂₁]
+    exact hk₁.mul hk₂
+  · intro a b h
+    obtain ⟨x, rfl⟩ := e.surjective a
+    obtain ⟨y, rfl⟩ := e.surjective b
+    rcases x with i | i <;> rcases y with k | k
+    · exact absurd (iff_of_true (lt_l i) (lt_l k)) h
+    · simp
+    · simp
+    · exact absurd (iff_of_false (ge_r i) (ge_r k)) h
+  · intro a b h
+    obtain ⟨x, rfl⟩ := e.surjective a
+    obtain ⟨y, rfl⟩ := e.surjective b
+    have h' : ((e y : Fin (n + m)) : ℕ) < (e x : Fin (n + m)) := h
+    rcases x with i | i <;> rcases y with k | k
+    · rw [val_l, val_l] at h'
+      simpa using hU₁ (show k < i from h')
+    · simp
+    · simp
+    · rw [val_r, val_r] at h'
+      simpa using hU₂ (show k < i from Nat.lt_of_add_lt_add_left h')
+  · intro a
+    obtain ⟨x, rfl⟩ := e.surjective a
+    rcases x with i | i
+    · simpa using hd₁ i
+    · simpa using hd₂ i
+  · have h1 : A = (fromBlocks A₁ 0 0 A₂).submatrix e.symm e.symm := by
+      rw [← hB]; ext a b; simp
+    have h3 : fromBlocks A₁ 0 0 A₂ =
+        (fromBlocks k₁ 0 0 k₂).map (algebraMap V L) * fromBlocks U₁ 0 0 U₂ := by
+      rw [fromBlocks_map, fromBlocks_multiply, ← e₁, ← e₂,
+        Matrix.map_zero _ (map_zero (algebraMap V L)), Matrix.map_zero _ (map_zero (algebraMap V L))]
+      simp
+    rw [h1, h3, ← submatrix_mul_equiv _ _ _ e.symm _]
+    rfl
+
+theorem exists_blocks {L : Type} [Field L] (V : ValuationSubring L) (N n : ℕ) (hn : n ≤ N)
+    (A : Matrix (Fin N) (Fin N) L)
+    (hA : ∀ a b : Fin N, ¬ ((a : ℕ) < n ↔ (b : ℕ) < n) → A a b = 0) (hd : A.det ≠ 0) :
+    ∃ (K : Matrix (Fin N) (Fin N) V) (U : Matrix (Fin N) (Fin N) L),
+      IsUnit K.det ∧ (∀ a b : Fin N, ¬ ((a : ℕ) < n ↔ (b : ℕ) < n) → U a b = 0) ∧
+      U.BlockTriangular id ∧ (∀ a, U a a ≠ 0) ∧ A = K.map (algebraMap V L) * U := by
+  obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
+  exact exists_blocks_add V n m A hA hd
+
+theorem inv_diag_ne_zero {L : Type} [Field L] {N : ℕ} {U : Matrix (Fin N) (Fin N) L}
+    (hU : U.BlockTriangular id) (hd : IsUnit U.det) (a : Fin N) : U⁻¹ a a ≠ 0 := by
+  have hI : U⁻¹.BlockTriangular id := by
+    letI := Matrix.invertibleOfIsUnitDet U hd
+    exact blockTriangular_inv_of_blockTriangular hU
+  intro e
+  have h := congrFun (congrFun (nonsing_inv_mul U hd) a) a
+  rw [Matrix.mul_apply, Matrix.one_apply_eq, Finset.sum_eq_single a (fun c _ hc => ?_) (by simp), e,
+    zero_mul] at h
+  · exact zero_ne_one h
+  · rcases lt_or_gt_of_ne hc with l | l
+    · rw [hI l, zero_mul]
+    · rw [hU l, mul_zero]
+
+theorem main : ∀ (L : Type) [Field L] (V : ValuationSubring L) (N j : ℕ) (A : Matrix (Fin N) (Fin N) L), IsBlockDiag j A → A.det ≠ 0 → ∃ b : Matrix (Fin N) (Fin N) L, IsBlockDiag j b ∧ b.BlockTriangular id ∧ (∀ a, b a a ≠ 0) ∧ (∀ a c, (A * b) a c ∈ V) ∧ (A * b).det ≠ 0 ∧ ((A * b).det)⁻¹ ∈ V := by
+  intro L _ V N j A hA hd
+  obtain ⟨K, U, hK, hUb, hUt, hUd, hAe⟩ := exists_blocks V N (N - j) (Nat.sub_le N j) A hA hd
+  have hUdet : IsUnit U.det := by
+    rw [det_of_upperTriangular hUt]
+    exact (Finset.prod_ne_zero_iff.2 fun a _ => hUd a).isUnit
+  have hAU : A * U⁻¹ = K.map (algebraMap V L) := by
+    rw [hAe, Matrix.mul_nonsing_inv_cancel_right _ _ hUdet]
+  have hKdet : (K.map (algebraMap V L)).det = algebraMap V L K.det := (RingHom.map_det _ K).symm
+  have hUb' : IsBlockDiag j U := hUb
+  refine ⟨U⁻¹, hUb'.inv hUdet, ?_, inv_diag_ne_zero hUt hUdet, fun a c => ?_, ?_, ?_⟩
+  · letI := Matrix.invertibleOfIsUnitDet U hUdet
+    exact blockTriangular_inv_of_blockTriangular hUt
+  · rw [hAU]
+    exact (K a c).2
+  · rw [hAU, hKdet]
+    exact (hK.map (algebraMap V L)).ne_zero
+  · rw [hAU, hKdet]
+    obtain ⟨u, hu⟩ := hK
+    rw [← hu]
+    have e : (algebraMap V L (u : V))⁻¹ = algebraMap V L ((u⁻¹ : Vˣ) : V) := by
+      refine inv_eq_of_mul_eq_one_right ?_
+      rw [← map_mul, Units.mul_inv, map_one]
+    rw [e]
+    exact ((u⁻¹ : Vˣ) : V).2
+
+end GlobalTheory.CompanionTheory.Ar.PB.IwBlock
+end
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.block_diag_valuation_normalization : ∀ (L : Type) [Field L] (V : ValuationSubring L) (N j : ℕ) (A : Matrix (Fin N) (Fin N) L), IsBlockDiag j A → A.det ≠ 0 → ∃ b : Matrix (Fin N) (Fin N) L, IsBlockDiag j b ∧ b.BlockTriangular id ∧ (∀ a, b a a ≠ 0) ∧ (∀ a c, (A * b) a c ∈ V) ∧ (A * b).det ≠ 0 ∧ ((A * b).det)⁻¹ ∈ V := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.IwBlock.main
+end
+
+section
+section
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+
+namespace GlobalTheory.CompanionTheory.Ar.ComplexPlace
+
+theorem exists_ringHom_of_finiteType {A B : Type} [CommRing A] [CommRing B] [Algebra A B]
+    [Algebra.FiniteType A B] (v : A →+* ℂ) (hv : (RingHom.ker v).IsMaximal) (M : Ideal B)
+    (hMm : M.IsMaximal) (hM : ∀ a, v a = 0 → algebraMap A B a ∈ M) :
+    ∃ ψ : B →+* ℂ, ∀ a, ψ (algebraMap A B a) = v a := by
+  letI κF : Field (A ⧸ RingHom.ker v) := Ideal.Quotient.field _
+  letI KF : Field (B ⧸ M) := Ideal.Quotient.field _
+  let φ : A ⧸ RingHom.ker v →+* B ⧸ M :=
+    Ideal.quotientMap M (algebraMap A B) (fun a ha => hM a (RingHom.mem_ker.mp ha))
+  letI : Algebra (A ⧸ RingHom.ker v) (B ⧸ M) := φ.toAlgebra
+  haveI : IsScalarTower A (A ⧸ RingHom.ker v) (B ⧸ M) :=
+    IsScalarTower.of_algebraMap_eq (fun a => rfl)
+  haveI : Algebra.FiniteType A (B ⧸ M) :=
+    Algebra.FiniteType.of_surjective (Ideal.Quotient.mkₐ A M) (Ideal.Quotient.mkₐ_surjective A M)
+  haveI : Algebra.FiniteType (A ⧸ RingHom.ker v) (B ⧸ M) :=
+    Algebra.FiniteType.of_restrictScalars_finiteType A (A ⧸ RingHom.ker v) (B ⧸ M)
+  haveI : Module.Finite (A ⧸ RingHom.ker v) (B ⧸ M) :=
+    finite_of_finite_type_of_isJacobsonRing _ _
+  letI : Algebra (A ⧸ RingHom.ker v) ℂ := (RingHom.kerLift v).toAlgebra
+  let g : (B ⧸ M) →ₐ[A ⧸ RingHom.ker v] ℂ := IsAlgClosed.lift
+  refine ⟨g.toRingHom.comp (Ideal.Quotient.mk M), fun a => ?_⟩
+  exact g.commutes (Ideal.Quotient.mk (RingHom.ker v) a)
+
+theorem isLocalRing_and_ker {L : Type} [Field L] (O : Subring L) (v : O →+* ℂ)
+    (hv : ∀ s : O, v s ≠ 0 → (s : L)⁻¹ ∈ O) :
+    ∃ _ : IsLocalRing O, RingHom.ker v = IsLocalRing.maximalIdeal O := by
+  have hunit : ∀ s : O, IsUnit s ↔ v s ≠ 0 := by
+    intro s
+    constructor
+    · intro h
+      exact (h.map v).ne_zero
+    · intro h
+      have hs : (s : L) ≠ 0 := by
+        intro h0
+        apply h
+        have : s = 0 := Subtype.ext h0
+        simp [this]
+      refine IsUnit.of_mul_eq_one (⟨(s : L)⁻¹, hv s h⟩ : O) ?_
+      exact Subtype.ext (mul_inv_cancel₀ hs)
+  have hloc : IsLocalRing O := by
+    refine IsLocalRing.of_nonunits_add ?_
+    intro a b ha hb
+    have ha' : v a = 0 := by
+      by_contra h
+      exact ha ((hunit a).2 h)
+    have hb' : v b = 0 := by
+      by_contra h
+      exact hb ((hunit b).2 h)
+    intro hab
+    exact (hunit _).1 hab (by simp [ha', hb'])
+  refine ⟨hloc, ?_⟩
+  ext s
+  rw [RingHom.mem_ker, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, hunit]
+  simp
+
+theorem exists_valuationSubring_place (L : Type) [Field L] (O : Subring L) (v : O →+* ℂ)
+    (hv : ∀ s : O, v s ≠ 0 → (s : L)⁻¹ ∈ O) :
+    ∃ V : ValuationSubring L, (∀ s ∈ O, s ∈ V) ∧ ∀ T : Finset L, (∀ t ∈ T, t ∈ V) →
+      ∃ (R : Subring L) (hO : O ≤ R) (ψ : R →+* ℂ), (∀ t ∈ T, t ∈ R) ∧
+        (∀ s : O, ψ (Subring.inclusion hO s) = v s) ∧ ∀ t ∈ T, t ≠ 0 → t⁻¹ ∈ V → t⁻¹ ∈ R := by
+  obtain ⟨hloc, hker⟩ := isLocalRing_and_ker O v hv
+  obtain ⟨V, hV, hlocal⟩ := IsLocalRing.exists_factor_valuationRing O.subtype
+  refine ⟨V, fun s hs => hV ⟨s, hs⟩, fun T hT => ?_⟩
+  let S : Finset L := T ∪ (T.filter (fun t => t⁻¹ ∈ V)).image (fun t => t⁻¹)
+  have hSV : ∀ x ∈ S, x ∈ V := by
+    intro x hx
+    rcases Finset.mem_union.mp hx with h | h
+    · exact hT x h
+    · obtain ⟨t, ht, rfl⟩ := Finset.mem_image.mp h
+      exact (Finset.mem_filter.mp ht).2
+  let B : Subalgebra O L := Algebra.adjoin O (S : Set L)
+  let VA : Subalgebra O L :=
+    { V.toSubring with algebraMap_mem' := fun s => hV s }
+  have hBV : B ≤ VA := Algebra.adjoin_le (fun x hx => hSV x hx)
+  haveI : Algebra.FiniteType O B :=
+    (Subalgebra.fg_iff_finiteType B).1 (Subalgebra.fg_adjoin_finset S)
+  let f : B →+* V :=
+    { toFun := fun x => ⟨x.1, hBV x.2⟩
+      map_one' := rfl
+      map_mul' := fun _ _ => rfl
+      map_zero' := rfl
+      map_add' := fun _ _ => rfl }
+  let n : Ideal B := (IsLocalRing.maximalIdeal V).comap f
+  have hn : n ≠ ⊤ := by
+    intro h
+    have h1 : (1 : B) ∈ n := h ▸ Submodule.mem_top
+    have h2 : f 1 ∈ IsLocalRing.maximalIdeal V := h1
+    rw [map_one] at h2
+    exact (Ideal.ne_top_iff_one _).1 (IsLocalRing.maximalIdeal.isMaximal V).ne_top h2
+  obtain ⟨M, hMm, hnM⟩ := Ideal.exists_le_maximal n hn
+  have hM : ∀ a : O, v a = 0 → algebraMap O B a ∈ M := by
+    intro a ha
+    apply hnM
+    have ha' : a ∈ IsLocalRing.maximalIdeal O := hker ▸ RingHom.mem_ker.mpr ha
+    show f (algebraMap O B a) ∈ IsLocalRing.maximalIdeal V
+    rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff] at ha' ⊢
+    intro hu
+    apply ha'
+    exact hlocal.map_nonunit a hu
+  have hvm : (RingHom.ker v).IsMaximal := by
+    rw [hker]
+    exact IsLocalRing.maximalIdeal.isMaximal O
+  obtain ⟨ψ, hψ⟩ := exists_ringHom_of_finiteType v hvm M hMm hM
+  have hO : O ≤ B.toSubring := fun s hs => B.algebraMap_mem (⟨s, hs⟩ : O)
+  refine ⟨B.toSubring, hO, ψ, ?_, ?_, ?_⟩
+  · intro t ht
+    exact Algebra.subset_adjoin (Finset.mem_coe.2 (Finset.mem_union_left _ ht))
+  · intro s
+    exact hψ s
+  · intro t ht _ hi
+    exact Algebra.subset_adjoin (Finset.mem_coe.2 (Finset.mem_union_right _
+      (Finset.mem_image.2 ⟨t, Finset.mem_filter.2 ⟨ht, hi⟩, rfl⟩)))
+
+end GlobalTheory.CompanionTheory.Ar.ComplexPlace
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.valuation_ring_extension_specialization : ∀ (L : Type) [Field L] (O : Subring L) (v : O →+* ℂ), (∀ s : O, v s ≠ 0 → (s : L)⁻¹ ∈ O) → ∃ V : ValuationSubring L, (∀ s ∈ O, s ∈ V) ∧ ∀ T : Finset L, (∀ t ∈ T, t ∈ V) → ∃ (R : Subring L) (hO : O ≤ R) (ψ : R →+* ℂ), (∀ t ∈ T, t ∈ R) ∧ (∀ s : O, ψ (Subring.inclusion hO s) = v s) ∧ ∀ t ∈ T, t ≠ 0 → t⁻¹ ∈ V → t⁻¹ ∈ R := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.ComplexPlace.exists_valuationSubring_place
+end
+
+section
+section
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+
+namespace GlobalTheory.CompanionTheory.Ar.PB.UnitComb
+
+theorem coe_minorIJ {L : Type} [Field L] (V : ValuationSubring L) {N : ℕ}
+    (h : Matrix (Fin N) (Fin N) V) (I J : Finset (Fin N)) :
+    ((minorIJ h I J : V) : L) = minorIJ (h.map V.subtype) I J := by
+  unfold minorIJ
+  split_ifs with e
+  · exact RingHom.map_det V.subtype _
+  · rfl
+
+theorem minorIJ_one_diag {R : Type} [CommRing R] {N : ℕ} (J : Finset (Fin N)) :
+    minorIJ (1 : Matrix (Fin N) (Fin N) R) J J = 1 := by
+  unfold minorIJ
+  rw [dif_pos rfl, Matrix.submatrix_one _ (J.orderEmbOfFin rfl).injective, Matrix.det_one]
+
+theorem exists_isUnit_of_sum {R : Type} [CommRing R] [IsLocalRing R] {ι : Type} (s : Finset ι)
+    (f : ι → R) (h : IsUnit (∑ a ∈ s, f a)) : ∃ a ∈ s, IsUnit (f a) := by
+  by_contra hc
+  push_neg at hc
+  have : ∑ a ∈ s, f a ∈ IsLocalRing.maximalIdeal R :=
+    Ideal.sum_mem _ fun a ha => (IsLocalRing.mem_maximalIdeal _).2 (hc a ha)
+  exact (IsLocalRing.mem_maximalIdeal _).1 this h
+
+theorem stepCols_ne_empty {N j : ℕ} (i : Fin N) (hj : j ≤ N) : stepCols N j i ≠ ∅ := by
+  have hi := i.2
+  by_cases c : (i : ℕ) + 1 ≤ j
+  · refine Finset.Nonempty.ne_empty ⟨⟨N - j, by omega⟩, ?_⟩
+    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos c]
+    omega
+  · refine Finset.Nonempty.ne_empty ⟨⟨0, by omega⟩, ?_⟩
+    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg c]
+    omega
+
+theorem unit_comb : ∀ (L : Type) [Field L] (V : ValuationSubring L) (N j : ℕ) (i : Fin N) (H : Matrix (Fin N) (Fin N) L) (κ : Type) [Fintype κ] (u : κ → Finset (Fin N) → L) (u' : Finset (Fin N) → κ → L), j ≤ N → IsBlockDiag j H → (∀ a b, H a b ∈ V) → H.det ≠ 0 → (H.det)⁻¹ ∈ V → (∀ I m, u' I m ∈ V) → (∀ m I, u m I ∈ V) → (∀ I I', IsStepRows N j i I → IsStepRows N j i I' → ∑ m, u' I m * u m I' = if I = I' then 1 else 0) → ∃ m, (∑ I, u m I * minorIJ H I (stepCols N j i)) ≠ 0 ∧ (∑ I, u m I * minorIJ H I (stepCols N j i))⁻¹ ∈ V := by
+  intro L _ V N j i H κ _ u u' hj hB hH hdet hinv hu' hu horth
+  let Hv : Matrix (Fin N) (Fin N) V := Matrix.of fun a b => ⟨H a b, hH a b⟩
+  have hHv : Hv.map V.subtype = H := by ext a b; rfl
+  let uv : κ → Finset (Fin N) → V := fun m I => ⟨u m I, hu m I⟩
+  let uv' : Finset (Fin N) → κ → V := fun I m => ⟨u' I m, hu' I m⟩
+  have hdetc : ((Hv.det : V) : L) = H.det := by
+    have := RingHom.map_det V.subtype Hv
+    rw [RingHom.mapMatrix_apply, hHv] at this
+    exact this
+  have hunit : IsUnit Hv.det := by
+    refine IsUnit.of_mul_eq_one (⟨(H.det)⁻¹, hinv⟩ : V) ?_
+    apply Subtype.ext
+    change ((Hv.det : V) : L) * (H.det)⁻¹ = 1
+    rw [hdetc, mul_inv_cancel₀ hdet]
+  have main := GlobalTheory.T.block_diagonal_minor_vanishing V N j i hj
+  have hJ := stepCols_ne_empty (j := j) i hj
+  have hBv : IsBlockDiag j Hv := fun a b hab => Subtype.ext (hB a b hab)
+  have hstep : ∀ I, ¬ IsStepRows N j i I → minorIJ Hv I (stepCols N j i) = 0 := fun I hI =>
+    (main.2.1 Hv I hBv hI).resolve_right hJ
+  have hsum1 : IsUnit (∑ I', minorIJ Hv⁻¹ (stepCols N j i) I' * minorIJ Hv I' (stepCols N j i)) := by
+    rw [← main.1, Matrix.nonsing_inv_mul _ hunit, minorIJ_one_diag]
+    exact isUnit_one
+  obtain ⟨I₀, -, hI₀⟩ := exists_isUnit_of_sum _ _ hsum1
+  have hI₀' : IsUnit (minorIJ Hv I₀ (stepCols N j i)) := isUnit_of_mul_isUnit_right hI₀
+  have hI₀s : IsStepRows N j i I₀ := by
+    by_contra hc
+    rw [hstep I₀ hc] at hI₀'
+    exact not_isUnit_zero hI₀'
+  have horthV : ∀ I', IsStepRows N j i I' → ∑ m, uv' I₀ m * uv m I' = if I₀ = I' then 1 else 0 := by
+    intro I' hI'
+    apply Subtype.ext
+    have := horth I₀ I' hI₀s hI'
+    split_ifs at this ⊢ with e
+    · simpa [uv, uv'] using this
+    · simpa [uv, uv'] using this
+  let w : κ → V := fun m => ∑ I, uv m I * minorIJ Hv I (stepCols N j i)
+  have hw : ∑ m, uv' I₀ m * w m = minorIJ Hv I₀ (stepCols N j i) := by
+    have e1 : ∑ m, uv' I₀ m * w m =
+        ∑ I, (∑ m, uv' I₀ m * uv m I) * minorIJ Hv I (stepCols N j i) := by
+      simp only [w, Finset.mul_sum, Finset.sum_mul]
+      rw [Finset.sum_comm]
+      simp only [mul_assoc]
+    rw [e1, Finset.sum_eq_single I₀]
+    · rw [horthV I₀ hI₀s, if_pos rfl, one_mul]
+    · intro b _ hb
+      by_cases hs : IsStepRows N j i b
+      · rw [horthV b hs, if_neg (Ne.symm hb), zero_mul]
+      · rw [hstep b hs, mul_zero]
+    · intro h
+      exact absurd (Finset.mem_univ _) h
+  rw [← hw] at hI₀'
+  obtain ⟨m, -, hm⟩ := exists_isUnit_of_sum _ _ hI₀'
+  have hwm : IsUnit (w m) := isUnit_of_mul_isUnit_right hm
+  have hcoe : ((w m : V) : L) = ∑ I, u m I * minorIJ H I (stepCols N j i) := by
+    simp only [w, AddSubmonoidClass.coe_finset_sum, MulMemClass.coe_mul, coe_minorIJ, hHv]
+    rfl
+  refine ⟨m, ?_, ?_⟩
+  · rw [← hcoe]
+    intro h0
+    exact hwm.ne_zero (Subtype.ext h0)
+  · obtain ⟨c, hc⟩ := hwm.exists_right_inv
+    have hc' : ((w m : V) : L) * (c : L) = 1 := congrArg Subtype.val hc
+    rw [← hcoe, inv_eq_of_mul_eq_one_right hc']
+    exact c.2
+
+end GlobalTheory.CompanionTheory.Ar.PB.UnitComb
+end
+
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.step_rows_inverse_nonzero_entry : ∀ (L : Type) [Field L] (V : ValuationSubring L) (N j : ℕ) (i : Fin N) (H : Matrix (Fin N) (Fin N) L) (κ : Type) [Fintype κ] (u : κ → Finset (Fin N) → L) (u' : Finset (Fin N) → κ → L), j ≤ N → IsBlockDiag j H → (∀ a b, H a b ∈ V) → H.det ≠ 0 → (H.det)⁻¹ ∈ V → (∀ I m, u' I m ∈ V) → (∀ m I, u m I ∈ V) → (∀ I I', IsStepRows N j i I → IsStepRows N j i I' → ∑ m, u' I m * u m I' = if I = I' then 1 else 0) → ∃ m, (∑ I, u m I * minorIJ H I (stepCols N j i)) ≠ 0 ∧ (∑ I, u m I * minorIJ H I (stepCols N j i))⁻¹ ∈ V := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.PB.UnitComb.unit_comb
+end
+
+section
+open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
+open scoped ComplexOrder Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generic_flag_algebraically_independent : ∀ (Ω Φ : Type) [Field Ω] [Field Φ] [Algebra Ω Φ] (Ψ : Type) (N j : ℕ) (g : Ψ → Matrix (Fin N) (Fin N) Φ) (T : Ψ → Matrix (Fin N) (Fin N) Ω), (∀ τ, IsBlockDiag j (g τ)) → IsGenericFlag Ω j g → (∀ τ, IsBlockDiag j (T τ) ∧ (T τ).det ≠ 0) → AlgebraicIndependent Ω (fun q : inertBlockIndex Ψ N j => (((T q.1.1)⁻¹.map (algebraMap Ω (MvPolynomial (UpIdx Ψ N j) Φ))) * ((g q.1.1).map (C : Φ →+* MvPolynomial (UpIdx Ψ N j) Φ) * genUp Φ N j q.1.1)) q.1.2.1 q.1.2.2) := by
+  first | exact @GlobalTheory.CompanionTheory.Ar.PB.IsGenericFlag.indep_twist_mul_genUp | exact GlobalTheory.CompanionTheory.Ar.PB.IsGenericFlag.indep_twist_mul_genUp | (intros; apply GlobalTheory.CompanionTheory.Ar.PB.IsGenericFlag.indep_twist_mul_genUp <;> assumption)
+end
+
+section
 open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 open scoped ComplexOrder Classical
 
@@ -646,3 +1107,5 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     (mCoordIdeal_le hzb)
 
 end GlobalTheory.CompanionTheory.Ar.PB.CPts
+end
+end

@@ -1,10 +1,317 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExponentialPolynomialSolutionSpaceFiniteDimensio
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExponentialPolynomialEqZeroOfEqOnIoo
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimContinuousNormLeOnIccOfDetermined
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicAbsDetMulArchimedeanExpScalarCurve
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarishChandraFiniteFormsGLSpanKilledScalarDeriva
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemExpSolCons
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdeleModuleDetDiagUnitsPosIdele
 
+section
+section
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+
+namespace GlobalTheory.HCF
+
+theorem eq_smul_exp_of_deriv_eq {c : ℂ} {f : ℝ → ℂ} (hf : Differentiable ℝ f)
+    (h : deriv f = c • f) : f = f 0 • (fun t : ℝ => Complex.exp (c * t)) := by
+  have hd : ∀ t : ℝ, HasDerivAt (fun s : ℝ => Complex.exp (-c * s)) (-c * Complex.exp (-c * t)) t := by
+    intro t
+    have h1 : HasDerivAt (fun s : ℝ => -c * (s : ℂ)) (-c * 1) t :=
+      (hasDerivAt_id t).ofReal_comp.const_mul (-c)
+    have := h1.cexp
+    simpa [mul_comm] using this
+  set g : ℝ → ℂ := fun t => Complex.exp (-c * t) * f t with hg
+  have hgd : ∀ t, HasDerivAt g 0 t := by
+    intro t
+    have h2 := (hd t).mul (hf t).hasDerivAt
+    have e : deriv f t = c * f t := by
+      have := congrFun h t; simpa using this
+    rw [e] at h2
+    have h3 := h2.congr_deriv (show _ = (0:ℂ) by ring)
+    exact h3
+  have hgdiff : Differentiable ℝ g := fun t => (hgd t).differentiableAt
+  have hc := is_const_of_deriv_eq_zero hgdiff (fun t => (hgd t).deriv)
+  funext t
+  have h0 := hc t 0
+  simp only [hg, Complex.ofReal_zero, mul_zero, Complex.exp_zero, one_mul] at h0
+  simp only [Pi.smul_apply, smul_eq_mul]
+  rw [← h0, mul_comm (Complex.exp _) (f t), mul_assoc, ← Complex.exp_add]
+  have e2 : -c * (t : ℂ) + c * t = 0 := by ring
+  rw [e2, Complex.exp_zero, mul_one]
+
+theorem expSol_finiteDimensional : ∀ l : List ℂ, FiniteDimensional ℂ (expSol l)
+  | [] => by
+      have : expSol [] = ⊥ := rfl
+      rw [this]; infer_instance
+  | c :: l => by
+      haveI := expSol_finiteDimensional l
+      let φ : expSol (c :: l) →ₗ[ℂ] expSol l :=
+        { toFun := fun f => ⟨deriv (f : ℝ → ℂ) - c • (f : ℝ → ℂ), (mem_expSol_cons.1 f.2).2⟩
+          map_add' := fun f g => by
+            apply Subtype.ext
+            have hf := (mem_expSol_cons.1 f.2).1
+            have hg := (mem_expSol_cons.1 g.2).1
+            funext x
+            simp only [Submodule.coe_add, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
+            rw [deriv_add (hf x) (hg x)]; ring
+          map_smul' := fun k f => by
+            apply Subtype.ext
+            have hf := (mem_expSol_cons.1 f.2).1
+            funext x
+            simp only [Submodule.coe_smul, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, RingHom.id_apply,
+              Submodule.coe_smul_of_tower]
+            rw [deriv_const_smul k (hf x)]; simp only [smul_eq_mul]; ring }
+      have hker : ((LinearMap.ker φ).map (expSol (c :: l)).subtype) ≤
+          Submodule.span ℂ {fun t : ℝ => Complex.exp (c * t)} := by
+        rintro _ ⟨f, hf, rfl⟩
+        have hd := (mem_expSol_cons.1 f.2).1
+        have h0 : deriv (f : ℝ → ℂ) - c • (f : ℝ → ℂ) = 0 := by
+          have := congrArg Subtype.val (LinearMap.mem_ker.1 hf)
+          simpa [φ] using this
+        have h1 : deriv (f : ℝ → ℂ) = c • (f : ℝ → ℂ) := sub_eq_zero.1 h0
+        rw [Submodule.mem_span_singleton]
+        exact ⟨(f : ℝ → ℂ) 0, (eq_smul_exp_of_deriv_eq hd h1).symm⟩
+      haveI : FiniteDimensional ℂ ((LinearMap.ker φ).map (expSol (c :: l)).subtype) :=
+        Submodule.finiteDimensional_of_le hker
+      have hkerFG : (LinearMap.ker φ).FG :=
+        Submodule.fg_of_fg_map_injective _ (Submodule.injective_subtype _)
+          (Submodule.fg_iff_finiteDimensional _ |>.2 inferInstance)
+      have hmapFG : ((⊤ : Submodule ℂ (expSol (c :: l))).map φ).FG :=
+        IsNoetherian.noetherian _
+      have htop : (⊤ : Submodule ℂ (expSol (c :: l))).FG :=
+        Submodule.fg_of_fg_map_of_fg_inf_ker φ hmapFG (by rw [top_inf_eq]; exact hkerFG)
+      exact Module.finite_def.2 htop
+
+end GlobalTheory.HCF
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exponentialPolynomialSolutionSpace_finiteDimensional : ∀ l : List ℂ, FiniteDimensional ℂ (expSol l) := by
+  atlas_forward_decl GlobalTheory.HCF.expSol_finiteDimensional
+end
+
+section
+section
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+
+namespace GlobalTheory.HCF
+
+theorem expSol_eq_zero_of_eqOn_Ioo :
+    ∀ (l : List ℂ) (f : ℝ → ℂ), f ∈ expSol l → ∀ s t : ℝ, s < t → (∀ x ∈ Set.Ioo s t, f x = 0) → f = 0 := by
+  intro l
+  induction l with
+  | nil => intro f hf _ _ _ _; exact mem_expSol_nil.1 hf
+  | cons c l ih =>
+    intro f hf s t hst h0
+    rw [mem_expSol_cons] at hf
+    obtain ⟨hd, hg⟩ := hf
+    have hg0 : deriv f - c • f = 0 := by
+      refine ih _ hg s t hst (fun x hx => ?_)
+      have hev : f =ᶠ[𝓝 x] (fun _ => (0 : ℂ)) :=
+        Filter.eventually_of_mem (isOpen_Ioo.mem_nhds hx) (fun y hy => h0 y hy)
+      simp [Pi.sub_apply, hev.deriv_eq, h0 x hx]
+    have hder : ∀ x, HasDerivAt f (c * f x) x := by
+      intro x
+      have h1 := congrFun hg0 x
+      simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] at h1
+      have e : deriv f x = c * f x := sub_eq_zero.1 h1
+      rw [← e]; exact (hd x).hasDerivAt
+    set k : ℝ → ℂ := fun x => Complex.exp (-c * x) * f x with hk
+    have hkd : ∀ x, HasDerivAt k 0 x := by
+      intro x
+      have h1 : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 x := (hasDerivAt_id x).ofReal_comp
+      have h2 := ((h1.const_mul (-c)).cexp).mul (hder x)
+      have h3 := h2.congr_deriv (show _ = (0 : ℂ) by ring)
+      exact h3
+    have hkc : ∀ x y, k x = k y := fun x y =>
+      is_const_of_deriv_eq_zero (fun z => (hkd z).differentiableAt) (fun z => (hkd z).deriv) x y
+    have hm : (s + t) / 2 ∈ Set.Ioo s t := ⟨by linarith, by linarith⟩
+    funext x
+    have := hkc x ((s + t) / 2)
+    simp only [hk, h0 _ hm, mul_zero] at this
+    simpa [Complex.exp_ne_zero] using this
+
+end GlobalTheory.HCF
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exponentialPolynomial_eq_zero_of_eqOn_Ioo : ∀ (l : List ℂ) (f : ℝ → ℂ), f ∈ expSol l → ∀ s t : ℝ, s < t → (∀ x ∈ Set.Ioo s t, f x = 0) → f = 0 := by
+  atlas_forward_decl GlobalTheory.HCF.expSol_eq_zero_of_eqOn_Ioo
+end
+
+section
+section
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+
+namespace GlobalTheory
+
+theorem finiteDim_norm_le_on_Icc_of_determined :
+    ∀ (V : Submodule ℂ (ℝ → ℂ)), FiniteDimensional ℂ V → (∀ f ∈ V, Continuous f) → ∀ ℓ : ℝ, 0 < ℓ →
+    (∀ f ∈ V, (∀ x ∈ Set.Icc 0 ℓ, f x = 0) → f = 0) → ∀ R : ℝ, ∃ C : ℝ, ∀ f ∈ V, ∀ M : ℝ,
+      (∀ x ∈ Set.Icc 0 ℓ, ‖f x‖ ≤ M) → ∀ t ∈ Set.Icc (-R) R, ‖f t‖ ≤ C * M := by
+  intro V hV hcont ℓ hℓ hdet R
+  let ev : Set.Icc (0:ℝ) ℓ → Module.Dual ℂ V := fun x =>
+    (LinearMap.proj (R := ℂ) (φ := fun _ : ℝ => ℂ) (x:ℝ)).comp V.subtype
+  obtain ⟨κ, a, -, hspan, hli⟩ := exists_linearIndependent' ℂ ev
+  haveI : Finite κ := hli.finite
+  letI : Fintype κ := Fintype.ofFinite κ
+  classical
+  let T : V →ₗ[ℂ] (κ → ℂ) := LinearMap.pi (fun k => ev (a k))
+  have hT : LinearMap.ker T = ⊥ := by
+    rw [LinearMap.ker_eq_bot']
+    intro g hg
+    have h1 : Submodule.span ℂ (Set.range (ev ∘ a)) ≤ LinearMap.ker (Module.Dual.eval ℂ V g) := by
+      rw [Submodule.span_le]
+      rintro _ ⟨k, rfl⟩
+      have := congrFun hg k
+      simpa [T] using this
+    rw [hspan] at h1
+    have h2 : ∀ x ∈ Set.Icc (0:ℝ) ℓ, (g : ℝ → ℂ) x = 0 := by
+      intro x hx
+      have := h1 (Submodule.subset_span ⟨⟨x, hx⟩, rfl⟩)
+      simpa [ev] using this
+    exact Subtype.ext (hdet g g.2 h2)
+  obtain ⟨S, hS⟩ := LinearMap.exists_leftInverse_of_injective T hT
+  let g : κ → ℝ → ℂ := fun k => (S (Pi.single k 1) : ℝ → ℂ)
+  have hB : ∀ k, ∃ B, ∀ t ∈ Set.Icc (-R) R, ‖g k t‖ ≤ B := fun k =>
+    (isCompact_Icc).exists_bound_of_continuousOn (hcont _ (S (Pi.single k 1)).2).continuousOn
+  choose B hB using hB
+  refine ⟨∑ k, max (B k) 0, ?_⟩
+  intro f hf M hM t ht
+  have hM0 : 0 ≤ M := le_trans (norm_nonneg _) (hM 0 ⟨le_rfl, hℓ.le⟩)
+  have e : (⟨f, hf⟩ : V) = S (T ⟨f, hf⟩) := (LinearMap.congr_fun hS _).symm
+  have e2 : T ⟨f, hf⟩ = ∑ k, (f (a k)) • (Pi.single k 1 : κ → ℂ) := by
+    ext j; simp [T, ev, Finset.sum_apply, Pi.single_apply]
+  rw [e2, map_sum] at e
+  have e3 := congrFun (congrArg Subtype.val e) t
+  have hft : f t = ∑ k, f (a k) * g k t := by
+    simpa [g, Finset.sum_apply] using e3
+  rw [hft, Finset.sum_mul]
+  refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => ?_)
+  rw [norm_mul, mul_comm]
+  exact mul_le_mul ((hB k t ht).trans (le_max_left _ _)) (hM _ (a k).2) (norm_nonneg _)
+    (le_max_right _ _)
+
+end GlobalTheory
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finiteDim_continuous_norm_le_on_Icc_of_determined : ∀ (V : Submodule ℂ (ℝ → ℂ)), FiniteDimensional ℂ V → (∀ f ∈ V, Continuous f) → ∀ ℓ : ℝ, 0 < ℓ →
+    (∀ f ∈ V, (∀ x ∈ Set.Icc 0 ℓ, f x = 0) → f = 0) → ∀ R : ℝ, ∃ C : ℝ, ∀ f ∈ V, ∀ M : ℝ,
+      (∀ x ∈ Set.Icc 0 ℓ, ‖f x‖ ≤ M) → ∀ t ∈ Set.Icc (-R) R, ‖f t‖ ≤ C * M := by
+  atlas_forward_decl GlobalTheory.finiteDim_norm_le_on_Icc_of_determined
+end
+
+section
+section
+noncomputable section
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+
+namespace GlobalTheory.HCF
+
+theorem expCurve_eq_diagUnits (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (t : ℝ) :
+    expCurve E a t = GroundTheory.Automorphic.Reduction.diagUnits a
+      (fun _ : Fin a => GroundTheory.Automorphic.Reduction.posIdele (K := E) (Real.exp t) (Real.exp_pos t)) := by
+  rw [GlobalTheory.CuspBoundSiegel.posIdele_exp]
+  have e : t • (1 : Cinf E) = fun _ => (t : ℂ) := by
+    funext w; simp
+  unfold expCurve
+  rw [e]
+  refine Units.ext ?_
+  rw [GroundTheory.Automorphic.Reduction.coe_diagUnits]
+  rfl
+
+theorem absDetA_mul_expCurve (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (g : GA E a) (t : ℝ) :
+    absDetA (g * expCurve E a t) = absDetA g * Real.exp (t * (a * Module.finrank ℚ E)) := by
+  unfold absDetA
+  rw [GroundTheory.Automorphic.Reduction.adeleAbs_units (K := E), GroundTheory.Automorphic.Reduction.adeleAbs_units (K := E),
+    map_mul, map_mul, Positive.val_mul, expCurve_eq_diagUnits, GlobalTheory.CuspBoundSiegel.ideleModule_det_diagUnits_posIdele,
+    ← Real.exp_nat_mul]
+  congr 2
+  push_cast; ring
+
+end GlobalTheory.HCF
+
+end
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.adelicAbsDet_mul_archimedeanExpScalarCurve : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (g : GA E a) (t : ℝ),
+    absDetA (g * expCurve E a t) = absDetA g * Real.exp (t * (a * Module.finrank ℚ E)) := by
+  atlas_forward_decl GlobalTheory.HCF.absDetA_mul_expCurve
+end
+
+section
+section
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+
+namespace GlobalTheory.HCF
+
+theorem span_formsGL_killed_scalD : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (L : Subgroup (GL (Fin a) (Af E)))
+    (W : Submodule ℂ (Kinf E a → ℂ)) (X : Set (Module.End ℂ (Sm E a) → ℂ)), X.Finite → ∀ N : ℕ,
+    ∃ Λ : List ℂ, ∀ φ ∈ Submodule.span ℂ (formsGL E a L W X N),
+      (Λ.map fun c => scalD E a - algebraMap ℂ (Module.End ℂ (Sm E a)) c).prod φ = 0 := by
+  intro E _ _ _ a L W X hX N
+  set S : Module.End ℂ (Sm E a) := scalD E a with hS
+  set f : ℂ → Module.End ℂ (Sm E a) := fun c => S - algebraMap ℂ (Module.End ℂ (Sm E a)) c with hf
+  have hSZ : S ∈ Zalg E a := Central.lie_mem_Zalg 1
+
+  have hpow : ∀ (χ : Module.End ℂ (Sm E a) → ℂ) (φ : Sm E a), CentralNilGL χ N φ → (f (χ S) ^ N) φ = 0 := by
+    intro χ φ h
+    have key : ∀ n : ℕ, (List.replicate n S).foldr (fun z g => z g - χ z • g) φ = (f (χ S) ^ n) φ := by
+      intro n
+      induction n with
+      | zero => simp
+      | succ n ih =>
+        rw [List.replicate_succ, List.foldr_cons, ih, pow_succ', Module.End.mul_apply]
+        simp [hf, Algebra.algebraMap_eq_smul_one]
+    rw [← key]
+    exact h _ (List.length_replicate) (fun z hz => by rw [List.eq_of_mem_replicate hz]; exact hSZ)
+  have hc : ∀ c d, Commute (f c) (f d) := fun c d =>
+    Commute.sub_left (Commute.sub_right (Commute.refl S) (Algebra.commute_algebraMap_right _ _))
+      (Commute.sub_right (Algebra.commute_algebraMap_left _ _) (Algebra.commute_algebraMap_left _ _))
+  have hcl : ∀ (l : List ℂ) c, Commute (f c) (l.map f).prod := fun l c =>
+    Commute.list_prod_right _ _ fun y hy => by
+      obtain ⟨d, -, rfl⟩ := List.mem_map.1 hy
+      exact hc c d
+  let G : (Module.End ℂ (Sm E a) → ℂ) → List ℂ := fun χ => List.replicate N (χ S)
+  have main : ∀ (Ls : List (Module.End ℂ (Sm E a) → ℂ)) (φ : Sm E a),
+      (∃ χ ∈ Ls, (f (χ S) ^ N) φ = 0) → ((Ls.flatMap G).map f).prod φ = 0 := by
+    intro Ls
+    induction Ls with
+    | nil => intro φ h; simp at h
+    | cons χ0 rest ih =>
+      intro φ ⟨χ, hχ, h0⟩
+      rw [List.flatMap_cons, List.map_append, List.prod_append]
+      have hA : ((G χ0).map f).prod = f (χ0 S) ^ N := by
+        simp [G, List.map_replicate, List.prod_replicate]
+      rcases List.mem_cons.1 hχ with rfl | hr
+      · have hcomm : Commute ((G χ).map f).prod ((rest.flatMap G).map f).prod := by
+          rw [hA]; exact (hcl _ _).pow_left N
+        rw [hcomm.eq, Module.End.mul_apply, hA, h0, map_zero]
+      · rw [Module.End.mul_apply, ih φ ⟨χ, hr, h0⟩, map_zero]
+  refine ⟨hX.toFinset.toList.flatMap G, fun φ hφ => ?_⟩
+  have hsub : formsGL E a L W X N ⊆ (LinearMap.ker ((hX.toFinset.toList.flatMap G).map f).prod : Set (Sm E a)) := by
+    intro ψ hψ
+    obtain ⟨χ, hχX, hχ⟩ := hψ.2.2.2
+    exact LinearMap.mem_ker.2 (main _ ψ ⟨χ, by simpa using hχX, hpow χ ψ hχ⟩)
+  exact LinearMap.mem_ker.1 ((Submodule.span_le.2 hsub) hφ)
+
+end GlobalTheory.HCF
+end
+
+open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.harishChandraFiniteFormsGL_span_killed_scalarDerivative : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (L : Subgroup (GL (Fin a) (Af E)))
+    (W : Submodule ℂ (Kinf E a → ℂ)) (X : Set (Module.End ℂ (Sm E a) → ℂ)), X.Finite → ∀ N : ℕ,
+    ∃ Λ : List ℂ, ∀ φ ∈ Submodule.span ℂ (formsGL E a L W X N),
+      (Λ.map fun c => scalD E a - algebraMap ℂ (Module.End ℂ (Sm E a)) c).prod φ = 0 := by
+  atlas_forward_decl GlobalTheory.HCF.span_formsGL_killed_scalD
+end
+
+section
 section
 noncomputable section
 
@@ -120,3 +427,4 @@ open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.HCF Topology
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.norm_le_sup_wider_band_genCentralEigenforms : ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E] (a : ℕ) (L : Subgroup (GL (Fin a) (Af E))), IsOpen (L : Set (GL (Fin a) (Af E))) → ∀ W : Submodule ℂ (Kinf E a → ℂ), FiniteDimensional ℂ W → ∀ X : Set (Module.End ℂ (Sm E a) → ℂ), X.Finite → ∀ (N : ℕ) (c : ℝ), 1 ≤ c → ∃ C : ℝ, ∀ φ ∈ Submodule.span ℂ (formsGL E a L W X N), ∀ M : ℝ, (∀ h ∈ band E a, ‖φ.1 h‖ ≤ M) → ∀ g : GA E a, c⁻¹ ≤ absDetA g → absDetA g ≤ 2 * c → ‖φ.1 g‖ ≤ C * M := by
   atlas_forward_decl GlobalTheory.HCF.norm_le_of_band_wide
+end

@@ -1,7 +1,26 @@
 import Mathlib
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.SplittingFieldLattices.Kh3
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.GlobalSerreRelations.GlobSerreSt
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.GrCechFin
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.SplittingFieldLattices.SplitField
 
+section
+set_option autoImplicit false
+set_option backward.isDefEq.respectTransparency false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers
+
+namespace CrystallineSemistableComparison.Pb
+
+set_option maxHeartbeats 4000000 in
+theorem kh3 : True ∧ KH.GrCechFin := ⟨trivial, @gr_cech_fin⟩
+
+end CrystallineSemistableComparison.Pb
+end
+end
+
+section
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
@@ -29,3 +48,5 @@ theorem liftA : LiftA := lift_a afgA
 theorem basisB : BasisB := basis_b bcOn_false @k_iso
 
 end CrystallineSemistableComparison.Pb
+end
+end

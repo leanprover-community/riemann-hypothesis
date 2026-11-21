@@ -1,8 +1,0 @@
-import Mathlib
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsIrreducibleConstituentsCharpolyProduct
-import BuildAid.ForwardExisting
-
-open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
-set_option maxHeartbeats 1000000 in
-theorem _root_.GlobalTheory.T.exists_irreducible_constituents_charpoly_product : SSList := by
-  atlas_forward_decl GlobalTheory.ssList_holds

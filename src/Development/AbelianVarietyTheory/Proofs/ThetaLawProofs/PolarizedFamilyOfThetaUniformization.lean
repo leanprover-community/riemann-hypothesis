@@ -8,14 +8,543 @@ import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SqOfCalculus
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsPointOfPerLev
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsPerLev
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsTwoTorsionTranslateSameLambdaBundleStatement
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.PotentiallyKnownOfSameLambdaBundleStatement
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.LiftIdempotentEqOfSameComplexComponentStatement
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.GeomIntegralOfEtaleFaithfullyFlatCover
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SiegelFamilyStandardLevelPointsSameComponentStatement
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsSiegelFamilyOverNumberFieldStatement
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsNumberFieldPointSiegelFamilyKnownValueStatement
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsRigidTranslatePrincipalPolarisationOrderTwStatement
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.PotentiallyKnownOfSameLambdaBundle
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.LiftIdempotentEqOfSameComplexComponent
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsFiniteExtGeomIntegralLocalization
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.GeomIntegralBaseChangeAndLocalization
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SiegelFamilyStandardLevelPointsSameComponent
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsSiegelFamilyOverNumberField
+import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.IsAmpleLBOfRelAmpleOfIsAffine
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsEllipticKeyDataValueEqDiscriminant
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsIsKeyPow
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.LatticeBlocks
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsIsGrpPullbackPow
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.NormalFormsEqOfKeyDataIsoComplex
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsTorsionGeneratorsRational
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsNumberFieldTorsionPoints
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.TheoremOfCubePolAbelianScheme
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSiegPreOfPolAV
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsRigidTranslatePrincipalPolarisationOrderTw
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.potentiallyKnown_of_same_lambdaBundle : Out.Laws → ThetaUnifAV → ∀ (K : Type) [Field K] [NumberField K] (y : KeyIn K) (P : Out.PolAV (Sp K)) (e : P.A ≅ y.P.A), IsMonHom e.hom → LamIs P.A P.L y.P.A (abelian₂ y.P.A y.P.L) e.hom.left → Known K y → PotKnown K P := by
+  first | exact @GlobalTheory.KeyFam.SameLam.potKnown_of_lamIs | exact GlobalTheory.KeyFam.SameLam.potKnown_of_lamIs | (intros; apply GlobalTheory.KeyFam.SameLam.potKnown_of_lamIs <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lift_idempotent_eq_of_sameComplexComponent : ∀ (K : Type) [Field K] [Algebra K ℂ] (X : Scheme.{0}) (s : X ⟶ Sp K) (R : Type) [CommRing R] [Algebra K R] (i : Sp R ⟶ X) (p q : R →ₐ[K] ℂ), Smooth s → IsOpenImmersion i → i ≫ s = spMap (algebraMap K R) → SameComp s (algebraMap K ℂ) (spMap p.toRingHom ≫ i) (spMap q.toRingHom ≫ i) → ∀ e : ℂ ⊗[K] R, IsIdempotentElem e → Algebra.TensorProduct.lift (AlgHom.id ℂ ℂ) p (fun _ _ => Commute.all _ _) e = Algebra.TensorProduct.lift (AlgHom.id ℂ ℂ) q (fun _ _ => Commute.all _ _) e := by
+  first | exact @GlobalTheory.KeyFam.lift_eq_of_sameComp_of_isIdempotentElem | exact GlobalTheory.KeyFam.lift_eq_of_sameComp_of_isIdempotentElem | (intros; apply GlobalTheory.KeyFam.lift_eq_of_sameComp_of_isIdempotentElem <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_ext_geom_integral_localization : ∀ (K : Type) [Field K] [NumberField K] [Algebra K ℂ] (R : Type) [CommRing R] [Algebra K R] [Algebra.Smooth K R] (p : R →ₐ[K] ℂ), ∃ (k : IntermediateField K ℂ) (e : k ⊗[K] R), FiniteDimensional K k ∧ IsIdempotentElem e ∧ Algebra.TensorProduct.lift k.val p (fun _ _ => Commute.all _ _) e = 1 ∧ GeomInt k (Localization.Away e) := by
+  first | exact @GlobalTheory.GeomComp.exists_geomInt_component | exact GlobalTheory.GeomComp.exists_geomInt_component | (intros; apply GlobalTheory.GeomComp.exists_geomInt_component <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+
+namespace GlobalTheory.KeyFam
+
+theorem exists_point_over_of_idempotent {F A B : Type} [Field F] [IsAlgClosed F] [CommRing A]
+    [CommRing B] [Algebra F A] [Algebra F B] [IsNoetherianRing A] (f : A →ₐ[F] B)
+    (hfin : f.toRingHom.Finite) (hflat : f.toRingHom.Flat) (P : B →ₐ[F] F) (Q : A →ₐ[F] F)
+    (h : ∀ e : A, IsIdempotentElem e → P (f e) = Q e) (E : B) (hE : IsIdempotentElem E)
+    (hP : P E = 1) : ∃ Q' : B →ₐ[F] F, Q' E = 1 ∧ ∀ a, Q' (f a) = Q a := by
+  algebraize [f.toRingHom]
+  haveI : Algebra.FinitePresentation A B :=
+    Algebra.FinitePresentation.of_finiteType.1 inferInstance
+  have hcl : IsClopen (PrimeSpectrum.basicOpen E : Set (PrimeSpectrum B)) :=
+    PrimeSpectrum.isClopen_iff.2 ⟨E, hE, rfl⟩
+  have him : IsClopen (PrimeSpectrum.comap (algebraMap A B) ''
+      (PrimeSpectrum.basicOpen E : Set (PrimeSpectrum B))) :=
+    ⟨PrimeSpectrum.isClosedMap_comap_of_isIntegral _ (Algebra.IsIntegral.isIntegral) _ hcl.1,
+      PrimeSpectrum.isOpenMap_comap_of_hasGoingDown_of_finitePresentation _ hcl.2⟩
+  obtain ⟨ε, hε, hεe⟩ := PrimeSpectrum.isClopen_iff.1 him
+  have h1 : PrimeSpectrum.comap (algebraMap A B) ⟨RingHom.ker P, RingHom.ker_isPrime P⟩ ∈
+      (PrimeSpectrum.basicOpen ε : Set (PrimeSpectrum A)) := by
+    rw [← hεe]
+    refine ⟨_, ?_, rfl⟩
+    change ¬ (P E = 0)
+    rw [hP]; exact one_ne_zero
+  have h2 : (⟨RingHom.ker Q, RingHom.ker_isPrime Q⟩ : PrimeSpectrum A) ∈
+      (PrimeSpectrum.basicOpen ε : Set (PrimeSpectrum A)) := by
+    change ¬ (Q ε = 0)
+    rw [← h ε hε]
+    exact h1
+  rw [← hεe] at h2
+  obtain ⟨𝔮, h𝔮E, h𝔮⟩ := h2
+  have hker : ∀ a : A, Q a = 0 → f a ∈ 𝔮.asIdeal := by
+    intro a ha
+    have : a ∈ (PrimeSpectrum.comap (algebraMap A B) 𝔮).asIdeal := by
+      rw [h𝔮]; exact ha
+    exact this
+  have hcomp : ∀ a : A, Ideal.Quotient.mk 𝔮.asIdeal (f a) =
+      algebraMap F (B ⧸ 𝔮.asIdeal) (Q a) := by
+    intro a
+    have := hker (a - algebraMap F A (Q a)) (by simp)
+    rw [map_sub, AlgHom.commutes] at this
+    exact Ideal.Quotient.eq.2 this
+  have hint : (algebraMap F (B ⧸ 𝔮.asIdeal)).IsIntegral := by
+    apply RingHom.IsIntegral.tower_top Q.toRingHom
+    have : (algebraMap F (B ⧸ 𝔮.asIdeal)).comp Q.toRingHom =
+        (Ideal.Quotient.mk 𝔮.asIdeal).comp f.toRingHom := by
+      ext a; exact (hcomp a).symm
+    rw [this]
+    exact RingHom.IsIntegral.trans _ _ hfin.to_isIntegral
+      (RingHom.isIntegral_of_surjective _ Ideal.Quotient.mk_surjective)
+  haveI : Algebra.IsIntegral F (B ⧸ 𝔮.asIdeal) := ⟨hint⟩
+  have hbij : Function.Bijective (Algebra.ofId F (B ⧸ 𝔮.asIdeal)) :=
+    IsAlgClosed.algebraMap_bijective_of_isIntegral
+  let φ := (AlgEquiv.ofBijective _ hbij).symm
+  refine ⟨φ.toAlgHom.comp (Ideal.Quotient.mkₐ F 𝔮.asIdeal), ?_, fun a => ?_⟩
+  · rcases IsIdempotentElem.iff_eq_zero_or_one.1
+      (hE.map (φ.toAlgHom.comp (Ideal.Quotient.mkₐ F 𝔮.asIdeal))) with h0 | h0
+    · exfalso
+      apply h𝔮E
+      have : Ideal.Quotient.mk 𝔮.asIdeal E = 0 := φ.injective (by rw [map_zero]; exact h0)
+      exact Ideal.Quotient.eq_zero_iff_mem.1 this
+    · exact h0
+  · change φ (Ideal.Quotient.mk 𝔮.asIdeal (f a)) = _
+    rw [hcomp, AlgEquiv.commutes]; rfl
+
+theorem exists_algHom_baseChange_away {k₀ k B L : Type} [Field k₀] [Field k] [Algebra k₀ k]
+    [CommRing B] [Algebra k₀ B] [CommRing L] [Algebra k₀ L] [Algebra k L] [IsScalarTower k₀ k L]
+    (e : B) (G : B →ₐ[k₀] L) (hG : G e = 1) :
+    ∃ s : k ⊗[k₀] Localization.Away e →ₐ[k] L,
+      ∀ b, s (1 ⊗ₜ algebraMap B (Localization.Away e) b) = G b := by
+  have hu : ∀ y : Submonoid.powers e, IsUnit (G y) := by
+    rintro ⟨_, n, rfl⟩
+    simp [hG]
+  refine ⟨Algebra.TensorProduct.lift (Algebra.ofId k L)
+    (IsLocalization.liftAlgHom (S := Localization.Away e) hu) (fun _ _ => Commute.all _ _),
+    fun b => ?_⟩
+  simp
+
+theorem exists_finset_integral_of_finiteType {K T L : Type} [Field K] [CommRing T] [Algebra K T]
+    [Algebra.FiniteType K T] [CommRing L] [Algebra K L] (g : T →ₐ[K] L)
+    (hg : ∀ x, IsIntegral K (g x)) :
+    ∃ s : Set L, s.Finite ∧ (∀ y ∈ s, IsIntegral K y) ∧
+      ∀ U : Subalgebra K L, s ⊆ U → ∀ x, g x ∈ U := by
+  obtain ⟨t, ht⟩ := Algebra.FiniteType.out (R := K) (A := T)
+  refine ⟨g '' t, t.finite_toSet.image _, ?_, fun U hU x => ?_⟩
+  · rintro _ ⟨x, -, rfl⟩; exact hg x
+  · have : Algebra.adjoin K (t : Set T) ≤ U.comap g :=
+      Algebra.adjoin_le fun y hy => hU ⟨y, hy, rfl⟩
+    rw [ht] at this
+    exact this Algebra.mem_top
+
+theorem finite_flat_tensor_map (K F R R₁ : Type) [CommRing K] [CommRing F] [Algebra K F]
+    [CommRing R] [Algebra K R] [CommRing R₁] [Algebra R R₁] [Algebra K R₁] [IsScalarTower K R R₁]
+    [Module.Finite R R₁] [Module.Flat R R₁] :
+    (Algebra.TensorProduct.map (AlgHom.id F F) (IsScalarTower.toAlgHom K R R₁)).toRingHom.Finite ∧
+    (Algebra.TensorProduct.map (AlgHom.id F F) (IsScalarTower.toAlgHom K R R₁)).toRingHom.Flat := by
+  constructor
+  · exact RingHom.Finite.tensorProductMap (f := AlgHom.id K F) (RingHom.Finite.id F)
+      (g := IsScalarTower.toAlgHom K R R₁) (RingHom.finite_algebraMap.2 inferInstance)
+  · exact RingHom.Flat.tensorProductMap (f := AlgHom.id F F)
+      (g := IsScalarTower.toAlgHom K R R₁) (RingHom.Flat.id F)
+      (RingHom.flat_algebraMap_iff.2 inferInstance)
+
+theorem exists_geomInt_piece_of_finite_etale : ∀ (K : Type) [Field K] [NumberField K] [Algebra K ℂ] (R R₁ : Type) [CommRing R] [Algebra K R] [Algebra.Smooth K R] [CommRing R₁] [Algebra R R₁] [Algebra K R₁] [IsScalarTower K R R₁] (K₁ : Type) [Field K₁] [NumberField K₁] [Algebra K K₁] (σ₁ : K₁ →ₐ[K] ℂ) (p : R₁ →ₐ[K] ℂ) (q : R →ₐ[K] K₁), (Module.Finite R R₁ ∧ Algebra.Etale R R₁ ∧ Module.FaithfullyFlat R R₁) → (∀ e : ℂ ⊗[K] R, IsIdempotentElem e → Algebra.TensorProduct.lift (AlgHom.id ℂ ℂ) (p.comp (IsScalarTower.toAlgHom K R R₁)) (fun _ _ => Commute.all _ _) e = Algebra.TensorProduct.lift (AlgHom.id ℂ ℂ) (σ₁.comp q) (fun _ _ => Commute.all _ _) e) → ∃ (k : Type) (_ : Field k) (_ : NumberField k) (S : Type) (_ : CommRing S) (_ : Algebra k S) (j : R₁ →+* S) (s : S →+* ℂ) (s₀ : S →ₐ[k] k) (ii : K₁ →+* k), GeomInt k S ∧ s.comp j = p.toRingHom ∧ (s₀.toRingHom.comp j).comp (algebraMap R R₁) = ii.comp q.toRingHom := by
+  intro K _ _ _ R R₁ _ _ _ _ _ _ _ K₁ _ _ _ σ₁ p q ⟨hfin, het, hff⟩ hidem
+  haveI : Algebra.Smooth K R₁ := Algebra.Smooth.comp K R R₁
+  obtain ⟨k₀, e, hk₀, he, hpe, hgi⟩ := GlobalTheory.T.exists_finite_ext_geom_integral_localization K R₁ p
+  haveI : IsNoetherianRing (ℂ ⊗[K] R) := Algebra.FiniteType.isNoetherianRing ℂ _
+  let f : ℂ ⊗[K] R →ₐ[ℂ] ℂ ⊗[K] R₁ :=
+    Algebra.TensorProduct.map (AlgHom.id ℂ ℂ) (IsScalarTower.toAlgHom K R R₁)
+  obtain ⟨hf1, hf2⟩ : f.toRingHom.Finite ∧ f.toRingHom.Flat := finite_flat_tensor_map K ℂ R R₁
+  let emb : k₀ ⊗[K] R₁ →ₐ[K] ℂ ⊗[K] R₁ := Algebra.TensorProduct.map k₀.val (AlgHom.id K R₁)
+  let P : ℂ ⊗[K] R₁ →ₐ[ℂ] ℂ :=
+    Algebra.TensorProduct.lift (AlgHom.id ℂ ℂ) p (fun _ _ => Commute.all _ _)
+  have hPemb : ∀ x, P (emb x) = Algebra.TensorProduct.lift k₀.val p (fun _ _ => Commute.all _ _) x := by
+    intro x
+    induction x using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a b => simp [P, emb]
+    | add a b ha hb => simp only [map_add, ha, hb]
+  have hPf : ∀ x, P (f x) = Algebra.TensorProduct.lift (AlgHom.id ℂ ℂ)
+      (p.comp (IsScalarTower.toAlgHom K R R₁)) (fun _ _ => Commute.all _ _) x := by
+    intro x
+    induction x using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a b => simp [P, f]
+    | add a b ha hb => simp only [map_add, ha, hb]
+  obtain ⟨Q', hQE, hQ⟩ := exists_point_over_of_idempotent f hf1 hf2 P
+    (Algebra.TensorProduct.lift (AlgHom.id ℂ ℂ) (σ₁.comp q) (fun _ _ => Commute.all _ _))
+    (fun x hx => (hPf x).trans (hidem x hx)) (emb e) (he.map emb) ((hPemb e).trans hpe)
+  let q' : R₁ →ₐ[K] ℂ := (Q'.restrictScalars K).comp Algebra.TensorProduct.includeRight
+  have hq' : ∀ r, q' (algebraMap R R₁ r) = σ₁ (q r) := by
+    intro r
+    have := hQ (1 ⊗ₜ r)
+    simpa [f, q'] using this
+  have hq'int : ∀ x, IsIntegral K (q' x) := by
+    intro x
+    letI : Algebra K₁ ℂ := σ₁.toRingHom.toAlgebra
+    haveI : IsScalarTower K K₁ ℂ := IsScalarTower.of_algebraMap_eq fun a => (σ₁.commutes a).symm
+    have h1 : IsIntegral K₁ (q' x) :=
+      (Algebra.IsIntegral.isIntegral (R := R) x).map_of_comp_eq q.toRingHom q'.toRingHom
+        (RingHom.ext fun r => (hq' r).symm)
+    exact isIntegral_trans _ h1
+  obtain ⟨s₁, hs₁, hs₁i, hs₁U⟩ := exists_finset_integral_of_finiteType q' hq'int
+  obtain ⟨s₂, hs₂, hs₂i, hs₂U⟩ := exists_finset_integral_of_finiteType σ₁
+    (fun x => (Algebra.IsIntegral.isIntegral (R := K) x).map σ₁)
+  let k : IntermediateField k₀ ℂ := IntermediateField.adjoin k₀ (s₁ ∪ s₂)
+  haveI : Finite ↥(s₁ ∪ s₂) := (hs₁.union hs₂).to_subtype
+  haveI : FiniteDimensional k₀ k := IntermediateField.finiteDimensional_adjoin (by
+    rintro x (hx | hx)
+    · exact (hs₁i x hx).tower_top
+    · exact (hs₂i x hx).tower_top)
+  haveI : NumberField k₀ := NumberField.of_module_finite K k₀
+  haveI : NumberField k := NumberField.of_module_finite k₀ k
+  have hm₁ : ∀ x, q' x ∈ k := hs₁U (k.toSubalgebra.restrictScalars K)
+    (fun y hy => IntermediateField.subset_adjoin k₀ (s₁ ∪ s₂) (Or.inl hy))
+  have hm₂ : ∀ x, σ₁ x ∈ k := hs₂U (k.toSubalgebra.restrictScalars K)
+    (fun y hy => IntermediateField.subset_adjoin k₀ (s₁ ∪ s₂) (Or.inr hy))
+  let qk : R₁ →ₐ[K] k :=
+    { toRingHom := q'.toRingHom.codRestrict k hm₁
+      commutes' := fun a => Subtype.ext (q'.commutes a) }
+  let G : k₀ ⊗[K] R₁ →ₐ[k₀] ℂ :=
+    Algebra.TensorProduct.lift (Algebra.ofId k₀ ℂ) p (fun _ _ => Commute.all _ _)
+  let G₀ : k₀ ⊗[K] R₁ →ₐ[k₀] k :=
+    Algebra.TensorProduct.lift (Algebra.ofId k₀ k) qk (fun _ _ => Commute.all _ _)
+  have hG : ∀ x, G x = Algebra.TensorProduct.lift k₀.val p (fun _ _ => Commute.all _ _) x := by
+    intro x
+    induction x using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a b => rfl
+    | add a b ha hb => simp only [map_add, ha, hb]
+  have hG₀ : ∀ x, (G₀ x : ℂ) = Q' (emb x) := by
+    intro x
+    induction x using TensorProduct.induction_on with
+    | zero => simp
+    | tmul a b =>
+      have : emb (a ⊗ₜ b) = (a : ℂ) • ((1 : ℂ) ⊗ₜ[K] b) := by
+        simp [emb, TensorProduct.smul_tmul']
+      rw [this, map_smul, smul_eq_mul]
+      rfl
+    | add a b ha hb => simp only [map_add, ← ha, ← hb]; rfl
+  obtain ⟨s, hs⟩ := exists_algHom_baseChange_away (k := k) e G ((hG e).trans hpe)
+  obtain ⟨s₀, hs₀⟩ := exists_algHom_baseChange_away (k := k) e G₀
+    (Subtype.ext ((hG₀ e).trans hQE))
+  refine ⟨k, inferInstance, inferInstance, k ⊗[k₀] Localization.Away e, inferInstance,
+    inferInstance,
+    (Algebra.TensorProduct.includeRight (R := k₀) (A := k)).toRingHom.comp
+      ((algebraMap (k₀ ⊗[K] R₁) (Localization.Away e)).comp
+        (Algebra.TensorProduct.includeRight (R := K) (A := k₀)).toRingHom),
+    s.toRingHom, s₀, σ₁.toRingHom.codRestrict k hm₂, (geomInt_baseChange_and_away k₀ k _ hgi).1, ?_, ?_⟩
+  · ext x
+    refine (hs (1 ⊗ₜ x)).trans ?_
+    simp [G]
+  · refine RingHom.ext fun x => ?_
+    refine (hs₀ (1 ⊗ₜ algebraMap R R₁ x)).trans (Subtype.ext ?_)
+    rw [hG₀]
+    exact Eq.trans (by simp [emb, q']) (hq' x)
+
+end GlobalTheory.KeyFam
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.geom_integral_of_etale_faithfully_flat_cover : ∀ (K : Type) [Field K] [NumberField K] [Algebra K ℂ] (R R₁ : Type) [CommRing R] [Algebra K R] [Algebra.Smooth K R] [CommRing R₁] [Algebra R R₁] [Algebra K R₁] [IsScalarTower K R R₁] (K₁ : Type) [Field K₁] [NumberField K₁] [Algebra K K₁] (σ₁ : K₁ →ₐ[K] ℂ) (p : R₁ →ₐ[K] ℂ) (q : R →ₐ[K] K₁), (Module.Finite R R₁ ∧ Algebra.Etale R R₁ ∧ Module.FaithfullyFlat R R₁) → (∀ e : ℂ ⊗[K] R, IsIdempotentElem e → Algebra.TensorProduct.lift (AlgHom.id ℂ ℂ) (p.comp (IsScalarTower.toAlgHom K R R₁)) (fun _ _ => Commute.all _ _) e = Algebra.TensorProduct.lift (AlgHom.id ℂ ℂ) (σ₁.comp q) (fun _ _ => Commute.all _ _) e) → ∃ (k : Type) (_ : Field k) (_ : NumberField k) (S : Type) (_ : CommRing S) (_ : Algebra k S) (j : R₁ →+* S) (s : S →+* ℂ) (s₀ : S →ₐ[k] k) (ii : K₁ →+* k), GeomInt k S ∧ s.comp j = p.toRingHom ∧ (s₀.toRingHom.comp j).comp (algebraMap R R₁) = ii.comp q.toRingHom := by
+  atlas_forward_decl GlobalTheory.KeyFam.exists_geomInt_piece_of_finite_etale
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.siegelFamily_standard_level_points_same_component : Out.Laws → Out.Laws2 → ThetaUnifAV → GlobalTheory.TorusAlgebraic → ∀ (h k : ℕ) (K : Type) [Field K] (ζ : K) (σ : K →+* ℂ) (F : SFam h k ζ), 1 ≤ h → 3 ≤ k → Odd k → σ ζ = Complex.exp (-(2 * Real.pi * Complex.I) / k) → ∀ (τ τ' : Matrix (Fin h) (Fin h) ℂ) (p q : Sp ℂ ⟶ F.X), p ≫ F.s = spMap σ → q ≫ F.s = spMap σ → PtAt F.univ p τ → PtAt F.univ q τ' → SameComp F.s σ p q := by
+  first | exact @GlobalTheory.SiegelConnected.sameComp_of_ptAt | exact GlobalTheory.SiegelConnected.sameComp_of_ptAt | (intros; apply GlobalTheory.SiegelConnected.sameComp_of_ptAt <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_siegelFamily_over_numberField : Out.Laws → Out.Laws2 → ThetaUnifAV → ∀ h : ℕ, 1 ≤ h → ∃ (k : ℕ) (K : Type) (_ : Field K) (_ : NumberField K) (ζ : K) (σ : K →+* ℂ), 3 ≤ k ∧ Odd k ∧ σ ζ = Complex.exp (-(2 * Real.pi * Complex.I) / k) ∧ Nonempty (SFam h k ζ) := by
+  first | exact @GlobalTheory.SiegelFamilyNumberField.exists_sFam_numberField | exact GlobalTheory.SiegelFamilyNumberField.exists_sFam_numberField | (intros; apply GlobalTheory.SiegelFamilyNumberField.exists_sFam_numberField <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyKa
+open GlobalTheory.KeyEq
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.normalForms_eq_of_keyDataIso_complex : ∀ x x' : KeyIn ℂ, KeyPB x' x (RingHom.id ℂ) → (∀ t, Val x t ↔ Val x' t) ∧ ∀ (g : ℕ) (τ : Matrix (Fin g) (Fin g) ℂ) (a b : Fin g → ℂ), Nrm x τ a b ↔ Nrm x' τ a b := by
+  first | exact @GlobalTheory.KeyIsoNormal.val_iff_and_nrm_iff | exact GlobalTheory.KeyIsoNormal.val_iff_and_nrm_iff | (intros; apply GlobalTheory.KeyIsoNormal.val_iff_and_nrm_iff <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+
+namespace GlobalTheory.KeyFam
+
+theorem Val.pow {x y : KeyIn ℂ} {j : ℕ} {t : ℂ} (hp : IsKeyPow y x j) (h : Val x t) : Val y (t ^ j) := by
+  obtain ⟨τ, M, a, b, c, ⟨ha, hb⟩, hc, hN, rfl⟩ := h
+  have ea : a = fun k => (((a k).re : ℝ) : ℂ) := by
+    funext k
+    rcases ha k with h | h <;> rw [h] <;> norm_num
+  have eb : b = fun k => (((b k).re : ℝ) : ℂ) := by
+    funext k
+    rcases hb k with h | h <;> rw [h] <;> norm_num
+  rw [ea, eb] at hN
+  obtain ⟨e, τ', M', hdet, hN'⟩ := normalAt_pow x y j τ M _ _ c hp hN
+  refine ⟨τ', M', _, _, c ^ j, ⟨fun p => ?_, fun p => ?_⟩, pow_ne_zero _ hc, hN', ?_⟩
+  · rw [← congrFun ea]; exact ha _
+  · rw [← congrFun eb]; exact hb _
+  · rw [hdet, div_pow, ← pow_mul, ← pow_mul, ← pow_mul, ← pow_mul, Nat.mul_comm 4, Nat.mul_comm 8]
+
+theorem isElliptic_cube_sub : (⟨0, 0, 0, -1, 0⟩ : WeierstrassCurve ℚ).IsElliptic := by
+  refine ⟨Ne.isUnit ?_⟩
+  norm_num [WeierstrassCurve.Δ, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆, WeierstrassCurve.b₈]
+
+theorem exists_known_rat : Out.Laws → ThetaUnifAV → ∀ g : ℕ, 1 ≤ g → ∃ y : KeyIn ℚ, y.P.g = g ∧ Known ℚ y := by
+  intro _ hU g hg
+  have := isElliptic_cube_sub
+  obtain ⟨y₁, h₁, hval⟩ := EllipticKey.exists_keyIn_value_eq_discriminant hU ℚ ⟨0, 0, 0, -1, 0⟩
+  obtain ⟨y, hy⟩ := exists_isKeyPow ℚ y₁ g hg
+  refine ⟨y, ?_, (⟨0, 0, 0, -1, 0⟩ : WeierstrassCurve ℚ).Δ ^ g, fun e x hx => ?_⟩
+  · obtain ⟨-, h, -⟩ := hy
+    rw [← h, h₁, Nat.mul_one]
+  · obtain ⟨x₁, hx₁⟩ := exists_keyPB_ring y₁ e
+    obtain ⟨⟨τ, M, a, b, c, hab, hc, -, hN⟩, -⟩ := KeyNormalExists.exists_normalAt hU x₁
+    have hv₁ : Val x₁ (e (⟨0, 0, 0, -1, 0⟩ : WeierstrassCurve ℚ).Δ) :=
+      ⟨τ, M, a, b, c, hab, hc, hN, (hval e x₁ τ M a b c hx₁ hab hc hN).symm⟩
+    obtain ⟨x', hx'⟩ := exists_isKeyPow ℂ x₁ g hg
+    have hpb := keyPB_of_isKeyPow ℚ ℂ e y₁ y x₁ x' g hx₁ hy hx'
+    have hid : KeyPB x x' (RingHom.id ℂ) := KeyCancel.keyPB_cancel ℚ ℂ ℂ y x' x e (RingHom.id ℂ) hpb hx
+    rw [map_pow]
+    exact ((GlobalTheory.T.normalForms_eq_of_keyDataIso_complex x' x hid).1 _).1 (hv₁.pow hx')
+
+end GlobalTheory.KeyFam
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_thetaKeyDatum_known_value_rat : Out.Laws → ThetaUnifAV → ∀ g : ℕ, 1 ≤ g → ∃ y : KeyIn ℚ, y.P.g = g ∧ Known ℚ y := by
+  atlas_forward_decl GlobalTheory.KeyFam.exists_known_rat
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+
+namespace GlobalTheory.KeyFam
+open GlobalTheory.ZM.SiegPull
+
+theorem polPB_of_keyPB_alg {R R' : Type} [CommRing R] [CommRing R'] {x' : KeyIn R'} {x : KeyIn R} {f : R →+* R'}
+    (H : KeyPB x' x f) : ∃ φ, PolPB x'.P x.P (spMap f) φ := by
+  obtain ⟨φ, -, w, hg, -, hp, hw, -⟩ := H
+  exact ⟨φ, hp, hg, w, hw⟩
+
+theorem Known.of_keyPB {K K' : Type} [Field K] [Field K'] {y' : KeyIn K'} {y : KeyIn K} {f : K →+* K'}
+    (H : KeyPB y' y f) (h : Known K y) : Known K' y' := by
+  obtain ⟨t, ht⟩ := h
+  exact ⟨f t, fun e x hx => ht (e.comp f) x (keyPB_trans _ _ _ _ _ _ _ _ H hx)⟩
+
+theorem exists_secHom_field (hL : Out.Laws) {K k : Type} [Field K] [Field k] {β : K →+* k} {Q : Out.PolAV (Sp K)}
+    {Q' : Out.PolAV (Sp k)} {ψ : Q'.A.left ⟶ Q.A.left} (H : PolPB Q' Q (spMap β) ψ) :
+    ∃ ρ : (𝟙_ (Over (Sp K)) ⟶ Q.A) →* (𝟙_ (Over (Sp k)) ⟶ Q'.A), Function.Injective ρ ∧
+      (∀ x, (ρ x).left ≫ ψ = spMap β ≫ x.left) ∧
+      ∀ (n : ℕ) x y (u : Kˣ), x ^ n = 1 → y ^ n = 1 →
+        Out.WeilIs Q'.A Q'.L n (ρ x) (ρ y) (unitOn (Units.map β.toMonoidHom u)) →
+        Out.WeilIs Q.A Q.L n x y (unitOn u) := by
+  have := Q.isAb.comm
+  obtain ⟨b, hb⟩ := UnifPoint.exists_pointEquiv H.1
+  let e : Over.mk (spMap β) ⟶ 𝟙_ (Over (Sp K)) := Over.homMk (spMap β) (Category.comp_id _)
+  let r : (𝟙_ (Over (Sp K)) ⟶ Q.A) →* (Over.mk (spMap β) ⟶ Q.A) :=
+    MonoidHom.mk' (fun x => e ≫ x) fun x y => MonObj.comp_mul _ _ _
+  have hρ : ∀ x, (b.symm (r x)).left ≫ ψ = spMap β ≫ x.left := fun x => by
+    rw [← hb, b.apply_symm_apply]; rfl
+  refine ⟨b.symm.toMonoidHom.comp r, b.symm.injective.comp fun x y hxy => ?_, hρ, fun n x y u hx hy hw => ?_⟩
+  · have : Epi e.left := TorsionSeparable.epi_specMap β
+    have : Epi e := Over.epi_of_epi_left _
+    exact (cancel_epi e).1 hxy
+  · obtain ⟨c, hc, -⟩ := (hL.weil _ Q n _).1 x y hx hy
+    have h₁ := CommPairing.weilIs_pull hL.globalFns Q.isAb Q.isLB e hc
+    have h₂ := (weilIs_grpPullback_of_comm _ _ Q.A Q'.A _ ψ Q.L Q'.L Q.isLB Q'.isLB H.1 H.2.2 _ n _ _
+      (pushPt H.1.1.w _) (pushPt H.1.1.w _) _ rfl rfl).1 hw
+    have h₃ : Out.WeilIs Q.A Q.L n (e ≫ x) (e ≫ y) (unitOn (Units.map β.toMonoidHom u)) :=
+      UnifPoint.weilIs_congr (Category.id_comp _) (hρ x) (hρ y) h₂
+    have h₄ := CommutatorPairing.weilIs_unique hL.globalFns Q.isAb Q.isLB h₁ h₃
+    obtain ⟨v, rfl⟩ : ∃ v : Kˣ, unitOn v = c :=
+      ⟨Units.map (Scheme.ΓSpecIso (CommRingCat.of K)).hom.hom.toMonoidHom c,
+        Units.ext (CommRingCat.inv_hom_apply (Scheme.ΓSpecIso (CommRingCat.of K)) c.val)⟩
+    have e' : Units.map e.left.appTop.hom.toMonoidHom (unitOn v) = unitOn (Units.map β.toMonoidHom v) :=
+      Units.ext (congrArg (fun q => q.hom v.val) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom β))).symm
+    have h₅ := congrArg Units.val (TorsionGenerators.unitOn_injective (e'.symm.trans h₄))
+    obtain rfl : v = u := Units.ext (β.injective h₅)
+    exact hc
+
+theorem sqOf_of_iso_of_siegPB {h k : ℕ} {o o' : Type} [CommRing o] [CommRing o'] {ζ : o} {ζ' : o'} {S S' : Scheme.{0}}
+    {s : S ⟶ Sp o} {s' : S' ⟶ Sp o'} {c : SiegPre h k ζ s} {c' : SiegPre h k ζ' s'} {f : S' ⟶ S}
+    (H : SiegPB c' c f) {P : Out.PolAV S'} (hg : P.g = h) (e : c'.A ≅ P.A) [IsMonHom e.hom]
+    (hP : LBIso c'.P ((abelian₂ P.A P.L).pull (lift (fst c'.A c'.A ≫ e.hom) (snd c'.A c'.A ≫ e.hom)).left)) :
+    ∃ φ, SqOf P c f φ ∧ ∀ a, (c'.lev a ≫ e.hom).left ≫ φ = f ≫ (c.lev a).left := by
+  obtain ⟨φ, φ₂, gp, sq, iP, hlev⟩ := H
+  have hinv : IsMonHom e.symm.hom := inferInstanceAs (IsMonHom e.inv)
+  have hΛ : (abelian₂ P.A P.L).IsLB := DVR.linComb_isLB _ P.isLB _ _
+  refine ⟨e.inv.left ≫ φ, ⟨((isGrpPullback_of_iso e.symm).comp gp).congr (Category.id_comp _) rfl, hg,
+    (e.inv ⊗ₘ e.inv).left ≫ φ₂, isSquare_comp (isSquare_tensor e.inv) sq, ?_⟩, fun a => ?_⟩
+  · have k₁ := lbIso_pull_comp hP (e.inv ⊗ₘ e.inv).left
+    have k₂ := lbIso_pull_comp iP (e.inv ⊗ₘ e.inv).left
+    have k₃ : (e.inv ⊗ₘ e.inv).left ≫ (lift (fst c'.A c'.A ≫ e.hom) (snd c'.A c'.A ≫ e.hom)).left = 𝟙 _ := by
+      rw [← Over.comp_left, ← Over.id_left]
+      congr 1
+      ext1 <;> simp
+    rw [k₃] at k₁
+    exact LBIso.trans hΛ (pull_isLB c'.isLB _) (pull_isLB c.isLB _)
+      (LBIso.trans (pull_isLB c'.isLB _) (pull_isLB hΛ _) hΛ k₁ (GlobalTheory.lbIso_pull_id hΛ)).symm k₂
+  · rw [← hlev, ← Category.assoc, ← Over.comp_left, Category.assoc, e.hom_inv_id, Category.comp_id]
+
+theorem PerLev.level {P : Out.PolAV (Sp ℂ)} {g k : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ}
+    {lev : (Fin g ⊕ Fin g → ℤ) → (𝟙_ (Over (Sp ℂ)) ⟶ P.A)} (H : PerLev P τ k lev) (hk : 0 < k) :
+    (∀ a b, lev (a + b) = lev a * lev b) ∧ (∀ a, lev a ^ k = 1) ∧
+      ∀ z : ℂˣ, (z : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) / k) → ∀ a b,
+        Out.WeilIs P.A P.L k (lev a) (lev b) (unitOn (z ^ omegaStd a b)) := by
+  obtain ⟨-, -, -, u, hΛ, hw, hl⟩ := H
+  have h0 : (k : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hk.ne'
+  refine ⟨fun a b => by rw [hl, hl, hl, per_add, smul_add, u.ex_add], fun a => ?_, fun z hz a b => ?_⟩
+  · have hp : ∀ (z) (m : ℕ), u.ex (m • z) = u.ex z ^ m := fun z m => by
+      induction m with
+      | zero => rw [zero_smul, pow_zero]; exact (u.ker 0).2 (zero_mem _)
+      | succ m ih => rw [succ_nsmul, u.ex_add, ih, pow_succ]
+    rw [hl, ← hp, ← Nat.cast_smul_eq_nsmul ℂ, smul_inv_smul₀ h0]
+    exact (u.ker _).2 ((hΛ _).2 ⟨a, rfl⟩)
+  · rw [hl, hl]
+    refine hw k a b _ hk ?_
+    rw [Units.val_zpow_eq_zpow_val, hz, ← Complex.exp_int_mul]
+    congr 1
+    ring
+
+theorem exists_known_point : Out.Laws → ThetaUnifAV → ∀ (h k : ℕ) (K : Type) [Field K] (ζ : K) (σ : K →+* ℂ) (F : SFam h k ζ), 1 ≤ h → 3 ≤ k → Odd k → σ ζ = Complex.exp (-(2 * Real.pi * Complex.I) / k) → NumberField K → ∃ (K₁ : Type) (_ : Field K₁) (_ : NumberField K₁) (j : K →+* K₁) (σ₁ : K₁ →+* ℂ) (y : KeyIn K₁) (q : Sp K₁ ⟶ F.X) (φ : y.P.A.left ⟶ F.univ.A.left) (τ : Matrix (Fin h) (Fin h) ℂ), σ₁.comp j = σ ∧ q ≫ F.s = spMap j ∧ Known K₁ y ∧ SqOf y.P F.univ q φ ∧ PtAt F.univ (spMap σ₁ ≫ q) τ := by
+  intro hL hT h k K _ ζ σ F hh hk _ hζ hK
+  have hk0 : 0 < k := by omega
+  obtain ⟨y₀, hg₀, hy₀⟩ := GlobalTheory.T.exists_thetaKeyDatum_known_value_rat hL hT h hh
+  let k₀ : IntermediateField ℚ ℂ := σ.toRatAlgHom.fieldRange
+  have : FiniteDimensional ℚ k₀ :=
+    Module.Finite.of_surjective σ.toRatAlgHom.rangeRestrict.toLinearMap σ.toRatAlgHom.rangeRestrict_surjective
+  obtain ⟨y₁, H₁⟩ := exists_keyPB_ring y₀ (algebraMap ℚ k₀)
+  obtain ⟨k₁, fin₁, le₁, tors⟩ := exists_numberField_torsion_points hL k₀ y₁.P k hk0
+  have : NumberField k₁ := ⟨⟩
+  obtain ⟨y, H⟩ := exists_keyPB_ring y₁ (IntermediateField.inclusion le₁).toRingHom
+  obtain ⟨x, Hx⟩ := exists_keyPB_ring y (algebraMap k₁ ℂ)
+  obtain ⟨φ₀, p₀⟩ := polPB_of_keyPB_alg H₁
+  obtain ⟨φ₁, p₁⟩ := polPB_of_keyPB_alg H
+  obtain ⟨ψ, pψ⟩ := polPB_of_keyPB_alg Hx
+  have hg : y.P.g = h := p₁.2.1.trans (p₀.2.1.trans hg₀)
+  obtain ⟨τ, lev, hlev⟩ := exists_perLev hT x.P h k (pψ.2.1.trans hg)
+  obtain ⟨ladd, ltors, lweil⟩ := hlev.level hk0
+  obtain ⟨ρ, ρinj, hρ, ρw⟩ := exists_secHom_field hL pψ
+  have es : spMap (algebraMap k₁ ℂ) ≫ spMap (IntermediateField.inclusion le₁).toRingHom = spMap (algebraMap k₀ ℂ) :=
+    (spMap_comp _ _).symm
+  obtain ⟨b, hb⟩ := UnifPoint.exists_pointEquiv ((pψ.1.comp p₁.1).congr es rfl)
+  obtain ⟨b₁, hb₁⟩ := UnifPoint.exists_pointEquiv p₁.1
+  have desc : ∀ a, ∃ t, ρ t = lev a := fun a => by
+    obtain ⟨x₂, hx₂, -⟩ := tors k₁ le₁ le_rfl (b (lev a)) (by rw [← map_pow, ltors, map_one])
+    refine ⟨b₁.symm x₂, b.injective (Over.OverMorphism.ext ?_)⟩
+    rw [← hx₂, hb, ← Category.assoc, hρ, Category.assoc, ← hb₁, b₁.apply_symm_apply]
+  choose t ht using desc
+  let j : K →+* k₁ := σ.codRestrict k₁.toSubfield fun a => le₁ ⟨a, rfl⟩
+  have hj : (algebraMap k₁ ℂ).comp j = σ := rfl
+  have hprim : IsPrimitiveRoot (σ ζ) k := by
+    rw [hζ, neg_div, Complex.exp_neg]
+    exact (Complex.isPrimitiveRoot_exp k hk0.ne').inv
+  have hprim₁ : IsPrimitiveRoot (j ζ) k :=
+    IsPrimitiveRoot.of_map_of_injective (f := algebraMap k₁ ℂ) hprim (algebraMap k₁ ℂ).injective
+  let ze : k₁ˣ := Units.mk0 (j ζ) (hprim₁.ne_zero hk0.ne')
+  have ttors : ∀ a, t a ^ k = 1 := fun a => ρinj (by rw [map_pow, ht, ltors, map_one])
+  obtain ⟨c, e, he, pr, iP, hc⟩ := exists_siegPre_of_polAV hL Moduli.cube_of_isLB K k₁ j h k ζ ze y.P t hg
+    (Nat.cast_ne_zero.2 hk0.ne') rfl (IsPrimitiveRoot.coe_units_iff.1 hprim₁)
+    (fun a a' => ρinj (by rw [map_mul, ht, ht, ht, ladd])) ttors fun a a' =>
+      ρw k _ _ _ (ttors a) (ttors a') (by
+        rw [ht, ht, map_zpow]
+        exact lweil _ hζ a a')
+  obtain ⟨q, hq, pb⟩ := F.rep _ _ c inferInstance (fun z => subset_closure (by
+    show ((spMap j) z).asIdeal = ⊥
+    exact congrArg PrimeSpectrum.asIdeal (Subsingleton.elim (α := PrimeSpectrum K) _ ⊥))) pr
+  obtain ⟨φ, sq, hφ⟩ := sqOf_of_iso_of_siegPB pb hg e iP
+  refine ⟨k₁, inferInstance, inferInstance, j, algebraMap k₁ ℂ, y, q, φ, τ, hj, hq,
+    (hy₀.of_keyPB H₁).of_keyPB H, sq, x.P, lev, ψ ≫ φ, hlev,
+    (sqOf_calculus h k K ζ _ _ _ _ F.univ q).1 _ _ _ _ _ sq pψ, fun a => ?_⟩
+  rw [← ht, ← Category.assoc, hρ, Category.assoc, Category.assoc, ← hφ, hc]
+
+end GlobalTheory.KeyFam
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_numberField_point_siegelFamily_knownValue : Out.Laws → ThetaUnifAV → ∀ (h k : ℕ) (K : Type) [Field K] (ζ : K) (σ : K →+* ℂ) (F : SFam h k ζ), 1 ≤ h → 3 ≤ k → Odd k → σ ζ = Complex.exp (-(2 * Real.pi * Complex.I) / k) → NumberField K → ∃ (K₁ : Type) (_ : Field K₁) (_ : NumberField K₁) (j : K →+* K₁) (σ₁ : K₁ →+* ℂ) (y : KeyIn K₁) (q : Sp K₁ ⟶ F.X) (φ : y.P.A.left ⟶ F.univ.A.left) (τ : Matrix (Fin h) (Fin h) ℂ), σ₁.comp j = σ ∧ q ≫ F.s = spMap j ∧ Known K₁ y ∧ SqOf y.P F.univ q φ ∧ PtAt F.univ (spMap σ₁ ≫ q) τ := by
+  first | exact @GlobalTheory.KeyFam.exists_known_point | exact GlobalTheory.KeyFam.exists_known_point | (intros; apply GlobalTheory.KeyFam.exists_known_point <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_rigidTranslate_principalPolarisation_order_two : Out.Laws → ∀ (R : Type) [CommRing R] (P : Out.PolAV (Sp R)) (t : 𝟙_ (Over (Sp R)) ⟶ P.A), t ^ 2 = 1 → ∃ (P' : Out.PolAV (Sp R)) (e : P'.A ≅ P.A), IsMonHom e.hom ∧ P'.g = P.g ∧ LamIs P'.A P'.L P.A (abelian₂ P.A P.L) e.hom.left ∧ LBIso P'.L (LB.LinComb P.L (K := Fin 2) ![(e.hom ≫ ((toUnit P.A ≫ t) * 𝟙 P.A)).left, (toUnit P'.A ≫ t).left] ![1, -1]) := by
+  first | exact @GlobalTheory.RigidTranslate.exists_rigid_translate | exact GlobalTheory.RigidTranslate.exists_rigid_translate | (intros; apply GlobalTheory.RigidTranslate.exists_rigid_translate <;> assumption)
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -206,3 +735,4 @@ open GlobalTheory.KeyPow GlobalTheory.KeyFam GlobalTheory.ZM GlobalTheory.AbLaw
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.polarized_family_of_theta_uniformization : Out.Laws → Out.Laws2 → ThetaUnifAV → GlobalTheory.TorusAlgebraic → PolFam := by
   atlas_forward_decl GlobalTheory.KeyFam.polFam
+end

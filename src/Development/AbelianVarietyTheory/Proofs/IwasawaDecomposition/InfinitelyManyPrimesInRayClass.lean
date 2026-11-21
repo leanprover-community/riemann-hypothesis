@@ -1,7 +1,323 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RayClassPartialZetaContinuationStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RayLNonvanishingAtOne
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RayLSeriesEulerProduct
+import BuildAid.ForwardExisting
 
+section
+open NumberField IsDedekindDomain GlobalTheory.Mem Complex
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ray_L_series_euler_product : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 ≤ M → ∀ (D : RayData K M) (χ : D.G →* ℂˣ) (s : ℂ), 1 < s.re → LSeriesSummable (D.coef χ) s ∧ Summable (fun v : D.Pr => ‖((Ideal.absNorm v.1.asIdeal : ℕ) : ℂ) ^ (-s)‖) ∧ LSeries (D.coef χ) s = Complex.exp (∑' v : D.Pr, -Complex.log (1 - (χ (D.cls v.1.asIdeal) : ℂ) * ((Ideal.absNorm v.1.asIdeal : ℕ) : ℂ) ^ (-s))) := by
+  first | exact @GlobalTheory.Mem.RayData.lseries_eq_exp_tsum | exact GlobalTheory.Mem.RayData.lseries_eq_exp_tsum | (intros; apply GlobalTheory.Mem.RayData.lseries_eq_exp_tsum <;> assumption)
+end
+
+section
+section
+open NumberField IsDedekindDomain GlobalTheory.Mem Complex
+open scoped ComplexOrder
+
+namespace GlobalTheory.Mem
+
+def PosDirichlet (F : ℂ → ℂ) : Prop :=
+  ∃ (ι : Type) (w : ι → ℝ) (N : ι → ℕ), (∀ i, 0 ≤ w i) ∧ (∀ i, N i ≠ 0) ∧
+    ∀ s : ℂ, 1 < s.re → HasSum (fun i => (w i : ℂ) * (N i : ℂ) ^ (-s)) (F s)
+
+namespace PosDirichlet
+
+lemma congr {F G : ℂ → ℂ} (h : PosDirichlet F) (e : ∀ s : ℂ, 1 < s.re → F s = G s) :
+    PosDirichlet G := by
+  obtain ⟨ι, w, N, hw, hN, h⟩ := h
+  exact ⟨ι, w, N, hw, hN, fun s hs => e s hs ▸ h s hs⟩
+
+lemma const {c : ℝ} (hc : 0 ≤ c) : PosDirichlet (fun _ => (c : ℂ)) :=
+  ⟨Unit, fun _ => c, fun _ => 1, fun _ => hc, fun _ => one_ne_zero, fun s _ => by
+    simpa using hasSum_unique (fun _ : Unit => (c : ℂ))⟩
+
+lemma hasSum_mul_of_norm_summable {ι κ : Type} {f : ι → ℂ} {g : κ → ℂ} {a b : ℂ} (hf : HasSum f a)
+    (hg : HasSum g b) : HasSum (fun p : ι × κ => f p.1 * g p.2) (a * b) :=
+  hf.mul hg (summable_mul_of_summable_norm hf.summable.norm hg.summable.norm)
+
+lemma mul {F G : ℂ → ℂ} (hF : PosDirichlet F) (hG : PosDirichlet G) :
+    PosDirichlet (fun s => F s * G s) := by
+  obtain ⟨ι, w, N, hw, hN, h⟩ := hF
+  obtain ⟨κ, w', N', hw', hN', h'⟩ := hG
+  refine ⟨ι × κ, fun p => w p.1 * w' p.2, fun p => N p.1 * N' p.2,
+    fun p => mul_nonneg (hw _) (hw' _), fun p => mul_ne_zero (hN _) (hN' _), fun s hs => ?_⟩
+  have e : ∀ p : ι × κ, ((w p.1 * w' p.2 : ℝ) : ℂ) * ((N p.1 * N' p.2 : ℕ) : ℂ) ^ (-s) =
+      ((w p.1 : ℂ) * (N p.1 : ℂ) ^ (-s)) * ((w' p.2 : ℂ) * (N' p.2 : ℂ) ^ (-s)) := by
+    intro p
+    push_cast
+    rw [Complex.natCast_mul_natCast_cpow]
+    ring
+  have h1 := hasSum_mul_of_norm_summable (h s hs) (h' s hs)
+  beta_reduce at h1 ⊢
+  rw [funext e]
+  exact h1
+
+lemma pow {F : ℂ → ℂ} (hF : PosDirichlet F) (j : ℕ) : PosDirichlet (fun s => F s ^ j) := by
+  induction j with
+  | zero => simpa using const zero_le_one
+  | succ j ih => simpa only [pow_succ] using ih.mul hF
+
+lemma norm_term {w : ℝ} (hw : 0 ≤ w) {N : ℕ} (hN : N ≠ 0) (s : ℂ) :
+    ‖(w : ℂ) * (N : ℂ) ^ (-s)‖ = ((w : ℂ) * (N : ℂ) ^ (-(s.re : ℂ))).re := by
+  rw [norm_mul, Complex.norm_natCast_cpow_of_pos (Nat.pos_of_ne_zero hN), Complex.norm_real,
+    Real.norm_of_nonneg hw, ← Complex.ofReal_neg, ← Complex.ofReal_natCast,
+    ← Complex.ofReal_cpow (Nat.cast_nonneg N), ← Complex.ofReal_mul, Complex.ofReal_re, neg_re]
+
+lemma tsum {J : Type} {F : J → ℂ → ℂ} (hF : ∀ j, PosDirichlet (F j))
+    (hs : ∀ s : ℂ, 1 < s.re → Summable (fun j => F j s)) :
+    PosDirichlet (fun s => ∑' j, F j s) := by
+  choose ι w N hw hN h using hF
+  refine ⟨Σ j, ι j, fun p => w p.1 p.2, fun p => N p.1 p.2, fun p => hw _ _, fun p => hN _ _,
+    fun s hs' => ?_⟩
+  have hσ : 1 < ((s.re : ℝ) : ℂ).re := by simpa using hs'
+  have key : ∀ j, HasSum (fun i => ‖(w j i : ℂ) * (N j i : ℂ) ^ (-s)‖) (F j s.re).re := by
+    intro j
+    simp only [norm_term (hw _ _) (hN _ _)]
+    exact Complex.hasSum_re (h j _ hσ)
+  have hsum : Summable (fun p : Σ j, ι j => (w p.1 p.2 : ℂ) * (N p.1 p.2 : ℂ) ^ (-s)) := by
+    apply Summable.of_norm
+    rw [summable_sigma_of_nonneg (fun _ => norm_nonneg _)]
+    refine ⟨fun j => (key j).summable, ?_⟩
+    simp only [fun j => (key j).tsum_eq]
+    exact (Complex.hasSum_re (hs _ hσ).hasSum).summable
+  have h2 := hsum.hasSum.sigma (fun j => h j s hs')
+  show HasSum _ (∑' j, F j s)
+  rw [h2.tsum_eq]
+  exact hsum.hasSum
+
+lemma exists_LSeries {F : ℂ → ℂ} (hF : PosDirichlet F) :
+    ∃ b : ℕ → ℂ, 0 ≤ b ∧ ∀ s : ℂ, 1 < s.re → LSeriesHasSum b s (F s) := by
+  obtain ⟨ι, w, N, hw, hN, h⟩ := hF
+  refine ⟨fun n => ∑' i : N ⁻¹' {n}, (w i : ℂ), fun n => tsum_nonneg fun i =>
+    Complex.zero_le_real.2 (hw i.1), fun s hs => ?_⟩
+  have h1 := (h s hs).tsum_fiberwise N
+  unfold LSeriesHasSum
+  suffices e : ∀ n, LSeries.term (fun n => ∑' i : N ⁻¹' {n}, (w i : ℂ)) s n =
+      ∑' i : N ⁻¹' {n}, (w i : ℂ) * (N i : ℂ) ^ (-s) by
+    rw [funext e]; exact h1
+  intro n
+  rcases eq_or_ne n 0 with rfl | hn
+  · haveI : IsEmpty (N ⁻¹' {0}) := ⟨fun i => hN i i.2⟩
+    simp
+  · rw [LSeries.term_of_ne_zero hn, div_eq_mul_inv, ← Complex.cpow_neg, ← tsum_mul_right]
+    refine tsum_congr fun i => ?_
+    have : N i = n := i.2
+    rw [this]
+
+lemma exp_sub_one {F : ℂ → ℂ} (hF : PosDirichlet F) :
+    PosDirichlet (fun s => Complex.exp (F s) - 1) := by
+  have h1 : ∀ z : ℂ, HasSum (fun j : ℕ => z ^ (j + 1) / ((j + 1).factorial : ℂ))
+      (Complex.exp z - 1) := by
+    intro z
+    have := NormedSpace.expSeries_div_hasSum_exp z
+    rw [← Complex.exp_eq_exp_ℂ, ← hasSum_nat_add_iff' 1] at this
+    simpa using this
+  refine (tsum (F := fun (j : ℕ) s => F s ^ (j + 1) / ((j + 1).factorial : ℂ)) (fun j => ?_)
+    (fun s _ => (h1 _).summable)).congr fun s _ => (h1 _).tsum_eq
+  refine ((hF.pow (j + 1)).mul (const (c := ((j + 1).factorial : ℝ)⁻¹) (by positivity))).congr
+    fun s _ => ?_
+  push_cast
+  rw [div_eq_mul_inv]
+
+lemma exists_LSeries_exp {F : ℂ → ℂ} (hF : PosDirichlet F) :
+    ∃ b : ℕ → ℂ, 0 ≤ b ∧ 0 < b 1 ∧ LSeries.abscissaOfAbsConv b ≤ 1 ∧
+      ∀ s : ℂ, 1 < s.re → LSeries b s = Complex.exp (F s) := by
+  obtain ⟨b, hb, h⟩ := hF.exp_sub_one.exists_LSeries
+  have hδ : (0 : ℕ → ℂ) ≤ LSeries.delta := fun n => by
+    by_cases hn : n = 1 <;> simp [LSeries.delta, hn]
+  have h2 : ∀ s : ℂ, 1 < s.re → LSeriesHasSum (LSeries.delta + b) s (Complex.exp (F s)) := by
+    intro s hs
+    have h0 : LSeriesHasSum LSeries.delta s 1 := by
+      unfold LSeriesHasSum
+      have := hasSum_ite_eq (1 : ℕ) (1 : ℂ)
+      convert this using 2 with n
+      rw [LSeries.term_delta]
+    simpa using h0.add (h s hs)
+  refine ⟨LSeries.delta + b, add_nonneg hδ hb, ?_, ?_, fun s hs => (h2 s hs).LSeries_eq⟩
+  · have : LSeries.delta 1 = 1 := by simp [LSeries.delta]
+    rw [Pi.add_apply, this]
+    exact add_pos_of_pos_of_nonneg one_pos (hb 1)
+  · refine LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable (x := 1) fun y hy => ?_
+    exact (h2 y (by simpa using hy)).LSeriesSummable
+
+end PosDirichlet
+
+lemma sum_characters_nonneg {G : Type} [CommGroup G] [Fintype (G →* ℂˣ)] (g : G) :
+    0 ≤ ∑ χ : G →* ℂˣ, (χ g : ℂ) := by
+  by_cases h : ∀ χ : G →* ℂˣ, χ g = 1
+  · exact Finset.sum_nonneg fun χ _ => by simp [h χ]
+  · push_neg at h
+    obtain ⟨ψ, hψ⟩ := h
+    have h1 : ∑ χ : G →* ℂˣ, (χ g : ℂ) = (ψ g : ℂ) * ∑ χ : G →* ℂˣ, (χ g : ℂ) := by
+      rw [Finset.mul_sum, ← Equiv.sum_comp (Equiv.mulLeft ψ)]
+      simp
+    have h2 : (1 - (ψ g : ℂ)) * ∑ χ : G →* ℂˣ, (χ g : ℂ) = 0 := by linear_combination h1
+    rcases mul_eq_zero.1 h2 with h3 | h3
+    · exact absurd (Units.ext (sub_eq_zero.1 h3).symm) hψ
+    · exact h3.ge
+
+lemma norm_character {G : Type} [CommGroup G] [Fintype G] (χ : G →* ℂˣ) (g : G) :
+    ‖(χ g : ℂ)‖ = 1 := by
+  apply Complex.norm_eq_one_of_pow_eq_one (n := Fintype.card G) _ Fintype.card_ne_zero
+  rw [← Units.val_pow_eq_pow_val, ← map_pow, pow_card_eq_one, map_one, Units.val_one]
+
+lemma natCast_pow_cpow_comm (q k : ℕ) (z : ℂ) : ((q : ℂ) ^ k) ^ z = ((q : ℂ) ^ z) ^ k := by
+  rw [← Complex.natCast_cpow_natCast_mul, Complex.cpow_nat_mul]
+
+lemma posDirichlet_local {G : Type} [CommGroup G] [Fintype G] [Fintype (G →* ℂˣ)] (g : G)
+    {q : ℕ} (hq : 2 ≤ q) :
+    PosDirichlet (fun s => ∑ χ : G →* ℂˣ, -Complex.log (1 - (χ g : ℂ) * (q : ℂ) ^ (-s))) := by
+  refine ⟨ℕ, fun k => (∑ χ : G →* ℂˣ, (χ (g ^ k) : ℂ)).re / k, fun k => q ^ k,
+    fun k => div_nonneg (Complex.nonneg_iff.1 (sum_characters_nonneg _)).1 (Nat.cast_nonneg _),
+    fun k => pow_ne_zero _ (by omega), fun s hs => ?_⟩
+  have h1 : ∀ χ : G →* ℂˣ, ‖(χ g : ℂ) * (q : ℂ) ^ (-s)‖ < 1 := by
+    intro χ
+    rw [norm_mul, norm_character, one_mul, Complex.norm_natCast_cpow_of_pos (by omega)]
+    apply Real.rpow_lt_one_of_one_lt_of_neg
+    · exact_mod_cast hq
+    · simp only [neg_re]; linarith
+  have h2 := hasSum_sum (s := Finset.univ)
+    (fun χ _ => Complex.hasSum_taylorSeries_neg_log (h1 χ))
+  convert h2 using 2 with k
+  have h3 : (((∑ χ : G →* ℂˣ, (χ (g ^ k) : ℂ)).re : ℝ) : ℂ) = ∑ χ : G →* ℂˣ, (χ (g ^ k) : ℂ) :=
+    (Complex.eq_re_of_ofReal_le (r := 0) (by simpa using sum_characters_nonneg (g ^ k))).symm
+  rw [Complex.ofReal_div, h3, Finset.sum_div, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun χ _ => ?_
+  rw [Nat.cast_pow, natCast_pow_cpow_comm, mul_pow, map_pow, Units.val_pow_eq_pow_val]
+  push_cast
+  ring
+
+theorem ray_prod_LSeries_nonneg : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 ≤ M → ∀ (D : RayData K M) [Fintype (D.G →* ℂˣ)], ∃ b : ℕ → ℂ, 0 ≤ b ∧ 0 < b 1 ∧ LSeries.abscissaOfAbsConv b ≤ 1 ∧ ∀ s : ℂ, 1 < s.re → LSeries b s = ∏ χ : D.G →* ℂˣ, LSeries (D.coef χ) s := by
+  intro K _ _ M hM D _
+  have hsum : ∀ (χ : D.G →* ℂˣ) (s : ℂ), 1 < s.re → Summable (fun v : D.Pr =>
+      -Complex.log (1 - (χ (D.cls v.1.asIdeal) : ℂ) *
+        ((Ideal.absNorm v.1.asIdeal : ℕ) : ℂ) ^ (-s))) := by
+    intro χ s hs
+    refine (Summable.clog_one_sub (Summable.of_norm ?_)).neg
+    simpa only [norm_mul, norm_character, one_mul] using (GlobalTheory.T.ray_L_series_euler_product K M hM D χ s hs).2.1
+  have hq : ∀ v : D.Pr, 2 ≤ Ideal.absNorm v.1.asIdeal := fun v =>
+    NumberField.HeightOneSpectrum.one_lt_absNorm v.1
+  obtain ⟨b, h0, h1, h2, h3⟩ := (PosDirichlet.tsum
+    (fun v : D.Pr => posDirichlet_local (D.cls v.1.asIdeal) (hq v))
+    (fun s hs => summable_sum fun χ _ => hsum χ s hs)).exists_LSeries_exp
+  refine ⟨b, h0, h1, h2, fun s hs => ?_⟩
+  rw [h3 s hs, Summable.tsum_finsetSum (fun χ _ => hsum χ s hs), Complex.exp_sum]
+  exact Finset.prod_congr rfl fun χ _ => (GlobalTheory.T.ray_L_series_euler_product K M hM D χ s hs).2.2.symm
+
+end GlobalTheory.Mem
+end
+
+open NumberField IsDedekindDomain GlobalTheory.Mem Complex
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dedekind_zeta_factorization_ray : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 ≤ M → ∀ (D : RayData K M) [Fintype (D.G →* ℂˣ)], ∃ b : ℕ → ℂ, 0 ≤ b ∧ 0 < b 1 ∧ LSeries.abscissaOfAbsConv b ≤ 1 ∧ ∀ s : ℂ, 1 < s.re → LSeries b s = ∏ χ : D.G →* ℂˣ, LSeries (D.coef χ) s := by
+  atlas_forward_decl GlobalTheory.Mem.ray_prod_LSeries_nonneg
+end
+
+section
+section
+open NumberField IsDedekindDomain GlobalTheory.Mem Complex
+open scoped ComplexOrder
+
+namespace GlobalTheory.Mem
+
+lemma exists_entire_div_sub_one {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h1 : f 1 = 0) :
+    ∃ g : ℂ → ℂ, Differentiable ℂ g ∧ ∀ s, f s = (s - 1) * g s := by
+  refine ⟨dslope f 1, ?_, fun s => ?_⟩
+  · rw [← differentiableOn_univ] at hf ⊢
+    exact (Complex.differentiableOn_dslope Filter.univ_mem).2 hf
+  · have := sub_smul_dslope f 1 s
+    rw [h1, sub_zero, smul_eq_mul] at this
+    exact this.symm
+
+lemma RayData.LSeries_coef_eq_sum {K : Type} [Field K] [NumberField K] {M : ℕ} (D : RayData K M)
+    (χ : D.G →* ℂˣ) (s : ℂ) (h : ∀ c, LSeriesSummable (D.cnt c) s) :
+    LSeries (D.coef χ) s = ∑ c, (χ c : ℂ) * LSeries (D.cnt c) s := by
+  have e : D.coef χ = ∑ c, (χ c : ℂ) • D.cnt c := by
+    funext n
+    simp [RayData.coef, Finset.sum_apply]
+  rw [e, LSeries_sum (fun c _ => (h c).smul _)]
+  simp [LSeries_smul]
+
+theorem rayLSeries_entire_ne_zero_one : ∀ (K : Type) [Field K] [NumberField K] [IsTotallyComplex K], Module.finrank ℚ K = 2 → ∀ (M : ℕ), 2 ≤ M → ∀ (D : RayData K M) (χ : D.G →* ℂˣ), χ ≠ 1 → ∃ L : ℂ → ℂ, Differentiable ℂ L ∧ L 1 ≠ 0 ∧ ∀ s : ℂ, 1 < s.re → L s = LSeries (D.coef χ) s := by
+  intro K _ _ _ hK M hM D χ₀ hχ₀
+  classical
+  obtain ⟨ρ, -, hZ⟩ := GlobalTheory.T.ray_class_partial_zeta_continuation K hK M hM D
+  choose Z hZd hZ1 hZm hZs using hZ
+  let Y : (D.G →* ℂˣ) → ℂ → ℂ := fun χ s => ∑ c, (χ c : ℂ) * Z c s
+  have hYd : ∀ χ, Differentiable ℂ (Y χ) := fun χ =>
+    Differentiable.fun_sum fun c _ => (hZd c).const_mul _
+  have hYm : ∀ χ, Y χ (-1) = 0 := fun χ => by simp [Y, hZm]
+  have hYs : ∀ χ s, 1 < s.re → Y χ s = (s - 1) * LSeries (D.coef χ) s := by
+    intro χ s hs
+    rw [D.LSeries_coef_eq_sum χ s fun c => (hZs c s hs).1, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun c _ => ?_
+    rw [(hZs c s hs).2]; ring
+  have hY1 : ∀ χ, χ ≠ 1 → Y χ 1 = 0 := by
+    intro χ hχ
+    have h0 : ∑ c, (χ c : ℂ) = 0 := by
+      have := sum_hom_units_eq_zero ((Units.coeHom ℂ).comp χ) (by
+        intro h
+        apply hχ
+        ext c
+        simpa using DFunLike.congr_fun h c)
+      simpa using this
+    simp only [Y, hZ1]
+    rw [← Finset.sum_mul, h0, zero_mul]
+  have hL : ∀ χ : D.G →* ℂˣ, ∃ L : ℂ → ℂ, χ ≠ 1 →
+      Differentiable ℂ L ∧ ∀ s : ℂ, 1 < s.re → L s = LSeries (D.coef χ) s := by
+    intro χ
+    by_cases hχ : χ = 1
+    · exact ⟨0, fun h => absurd hχ h⟩
+    obtain ⟨g, hg, hg'⟩ := exists_entire_div_sub_one (hYd χ) (hY1 χ hχ)
+    refine ⟨g, fun _ => ⟨hg, fun s hs => ?_⟩⟩
+    have hs1 : s - 1 ≠ 0 := by
+      rw [sub_ne_zero]; rintro rfl; simp at hs
+    exact mul_left_cancel₀ hs1 ((hg' s).symm.trans (hYs χ s hs))
+  choose L hL using hL
+  refine ⟨L χ₀, (hL χ₀ hχ₀).1, fun h0 => ?_, (hL χ₀ hχ₀).2⟩
+  obtain ⟨g, hg, hg'⟩ := exists_entire_div_sub_one (hL χ₀ hχ₀).1 h0
+  haveI : NeZero ((Monoid.exponent D.G : ℕ) : ℂ) := ⟨by exact_mod_cast Monoid.exponent_ne_zero_of_finite⟩
+  haveI : Finite (D.G →* ℂˣ) := by
+    obtain ⟨e⟩ := CommGroup.monoidHom_mulEquiv_of_hasEnoughRootsOfUnity D.G ℂ
+    exact Finite.of_equiv _ e.toEquiv.symm
+  haveI : Fintype (D.G →* ℂˣ) := Fintype.ofFinite _
+  obtain ⟨b, hb0, hb1, hba, hbs⟩ := GlobalTheory.T.dedekind_zeta_factorization_ray K M hM D
+  let F : ℂ → ℂ := fun s => Y 1 s * (g s * ∏ χ ∈ (Finset.univ.erase 1).erase χ₀, L χ s)
+  have hFd : Differentiable ℂ F := by
+    refine (hYd 1).mul (hg.mul ?_)
+    refine Differentiable.fun_finset_prod fun χ hχ => (hL χ ?_).1
+    exact Finset.ne_of_mem_erase (Finset.mem_of_mem_erase hχ)
+  have hFs : {s : ℂ | (1 : ℝ) < s.re}.EqOn F (LSeries b) := by
+    intro s hs
+    have hs' : 1 < s.re := hs
+    rw [hbs s hs', ← Finset.mul_prod_erase _ _ (Finset.mem_univ (1 : D.G →* ℂˣ)),
+      ← Finset.mul_prod_erase _ _ (Finset.mem_erase.2 ⟨hχ₀, Finset.mem_univ χ₀⟩),
+      ← (hL χ₀ hχ₀).2 s hs', hg' s]
+    simp only [F]
+    rw [hYs 1 s hs', Finset.prod_congr rfl fun χ hχ =>
+      (hL χ (Finset.ne_of_mem_erase (Finset.mem_of_mem_erase hχ))).2 s hs']
+    ring
+  have hpos := LSeries.positive_of_differentiable_of_eqOn hb0 hb1 hFd (x := 1)
+    (by exact_mod_cast hba) hFs (-1)
+  have : F ((-1 : ℝ) : ℂ) = 0 := by
+    simp [F, hYm]
+  rw [this] at hpos
+  exact lt_irrefl _ hpos
+
+end GlobalTheory.Mem
+end
+
+open NumberField IsDedekindDomain GlobalTheory.Mem Complex
+open scoped ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.ray_L_nonvanishing_at_one : ∀ (K : Type) [Field K] [NumberField K] [IsTotallyComplex K], Module.finrank ℚ K = 2 → ∀ (M : ℕ), 2 ≤ M → ∀ (D : RayData K M) (χ : D.G →* ℂˣ), χ ≠ 1 → ∃ L : ℂ → ℂ, Differentiable ℂ L ∧ L 1 ≠ 0 ∧ ∀ s : ℂ, 1 < s.re → L s = LSeries (D.coef χ) s := by
+  atlas_forward_decl GlobalTheory.Mem.rayLSeries_entire_ne_zero_one
+end
+
+section
 open NumberField IsDedekindDomain GlobalTheory.Mem Complex
 open scoped ComplexOrder
 open Filter Topology Asymptotics Set
@@ -322,3 +638,4 @@ theorem exists_prime_in_class : ∀ (K : Type) [Field K] [NumberField K] [IsTota
       (fun i j hij => Subtype.ext (Subtype.ext hij)) fun i hi => hcon i.1 i.2 hi
 
 end GlobalTheory.Mem.RayPrimes
+end

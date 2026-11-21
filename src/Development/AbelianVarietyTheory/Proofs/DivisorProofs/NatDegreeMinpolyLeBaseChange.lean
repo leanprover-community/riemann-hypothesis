@@ -1,8 +1,15 @@
 import Mathlib
 import GroundTheory.Brauer.Degree
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankIInfKerEqOfIsBaseChangeFamily
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixEqAevalOfCommuteStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixEqAevalOfCommute
 
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_eq_aeval_of_commute_of_charpoly_separable : ∀ {k : Type} [Field k] (n : ℕ) (N X : Matrix (Fin n) (Fin n) k), N.charpoly.Separable → Commute X N → ∃ q : Polynomial k, X = Polynomial.aeval N q := by
+  first | exact @GlobalTheory.CentralizerSeparable.matrix_eq_aeval_of_commute | exact GlobalTheory.CentralizerSeparable.matrix_eq_aeval_of_commute | (intros; apply GlobalTheory.CentralizerSeparable.matrix_eq_aeval_of_commute <;> assumption)
+end
+
+section
 open Module Polynomial TensorProduct
 
 namespace GlobalTheory.CentSep
@@ -138,3 +145,4 @@ theorem centralizer_eq_adjoin : ∀ (F B : Type) [Field F] [Ring B] [Algebra F B
   exact (Subalgebra.toSubmodule_injective heq).symm
 
 end GlobalTheory.CentSep
+end

@@ -1,16 +1,673 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.NonemptyCuspFrame
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FramesExist
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHomOfFieldPointRelationProper
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagChartFramesEigenFramesLocalRingStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundlePointFramesTriangularComponentStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SncToroidalGenericBoundaryOfSncBoundaryStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagModelPointCarriesUniqueFlagBundlePointStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagModelCarriesSameFlagsFieldExtension
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagModelCarriesSameFlagsSpecialiseValuationRingStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagModelToFlagBundleLocallyQuasiFiniteStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIsoFlagModelFlagBundleOverModuli
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsIsoOfIsProperOfExistsUniqueFieldPointOfIsInteg
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.GeometricallyReducedOfPerfectField
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagChartFramesEigenFramesLocalRing
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagBundlePointFramesTriangularComponent
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SncToroidalGenericBoundaryOfSncBoundary
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagModelPointCarriesUniqueFlagBundlePoint
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IntOIsLocalRing
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagModelCarriesSameFlagsSpecialiseValuationRing
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagModelToFlagBundleLocallyQuasiFinite
+import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
+import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsUniqueLiesUnder
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBaseChange
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.JGenSpecializes
 
+section
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor
+
+namespace GlobalTheory.FieldPointGraph
+
+theorem epi_spMap {K K' : Type} [Field K] [Field K'] (ι : K →+* K') : Epi (spMap ι) := by
+  have : Flat (spMap ι) := by
+    rw [HasRingHomProperty.Spec_iff (P := @Flat)]
+    letI := ι.toAlgebra
+    exact (inferInstance : Module.Flat K K')
+  have : Surjective (spMap ι) := ⟨fun y => ⟨IsLocalRing.closedPoint K', Subsingleton.elim _ _⟩⟩
+  exact Flat.epi_of_flat_of_surjective _
+
+noncomputable def pt (K : Type) [Field K] : Sp K := IsLocalRing.closedPoint K
+
+theorem eq_pt {K : Type} [Field K] (t : Sp K) : t = pt K := Subsingleton.elim _ _
+
+theorem exists_eq_spMap_comp {X : Scheme.{0}} {K : Type} [Field K] (c : Sp K ⟶ X) {x : X}
+    (hx : c (pt K) = x) :
+    ∃ ι : X.residueField x →+* K, c = spMap ι ≫ X.fromSpecResidueField x := by
+  subst hx
+  exact ⟨_, (Scheme.descResidueField_stalkClosedPointTo_fromSpecResidueField K X c).symm⟩
+
+theorem exists_valuationRing_factor {R K : Type} [CommRing R] [IsLocalRing R] [Field K]
+    (f : R →+* K) :
+    ∃ (A : Type) (_ : CommRing A) (_ : IsDomain A) (_ : ValuationRing A) (φ : R →+* A)
+      (ι : FractionRing A →+* K), IsLocalHom φ ∧
+        ι.comp ((algebraMap A (FractionRing A)).comp φ) = f := by
+  obtain ⟨A, hA, hl⟩ := IsLocalRing.exists_factor_valuationRing f
+  refine ⟨A, inferInstance, inferInstance, inferInstance, f.codRestrict A.toSubring hA,
+    IsFractionRing.lift (A := A) (g := A.subtype) Subtype.val_injective, hl, ?_⟩
+  ext a
+  exact IsFractionRing.lift_algebraMap (A := A) (g := A.subtype) Subtype.val_injective _
+
+theorem exists_valuationRing_of_specializes {X : Scheme.{0}} {x y : X} (h : x ⤳ y) :
+    ∃ (A : Type) (_ : CommRing A) (_ : IsDomain A) (_ : ValuationRing A) (u : Sp A ⟶ X)
+      (ι : FractionRing A →+* X.residueField x),
+      spMap ι ≫ spMap (algebraMap A (FractionRing A)) ≫ u = X.fromSpecResidueField x ∧
+        (spMap (IsLocalRing.residue A) ≫ u) (pt _) = y := by
+  obtain ⟨A, _, _, _, φ, ι, hl, hf⟩ := exists_valuationRing_factor
+    (X.presheaf.stalkSpecializes h ≫ X.residue x).hom
+  refine ⟨A, inferInstance, inferInstance, inferInstance, spMap φ ≫ X.fromSpecStalk y, ι, ?_, ?_⟩
+  · have e : spMap ι ≫ spMap (algebraMap A (FractionRing A)) ≫ spMap φ =
+        Spec.map (X.presheaf.stalkSpecializes h ≫ X.residue x) := by
+      rw [← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp, ← CommRingCat.ofHom_comp, hf]
+      rfl
+    refine Eq.trans ?_ ((congrArg (· ≫ X.fromSpecStalk y) e).trans ?_)
+    · simp only [Category.assoc]
+    · rw [Spec.map_comp, Category.assoc, Scheme.SpecMap_stalkSpecializes_fromSpecStalk]
+      rfl
+  · have e1 : (spMap (IsLocalRing.residue A)) (pt _) = IsLocalRing.closedPoint A :=
+      IsLocalRing.comap_closedPoint (IsLocalRing.residue A)
+    have e2 : (spMap φ) (IsLocalRing.closedPoint A) = IsLocalRing.closedPoint _ :=
+      IsLocalRing.comap_closedPoint φ
+    rw [Scheme.Hom.comp_apply, Scheme.Hom.comp_apply, e1]
+    exact (congrArg (X.fromSpecStalk y) e2).trans Scheme.fromSpecStalk_closedPoint
+
+theorem exists_section {W Q : Scheme.{0}} (r : W ⟶ Q) [IsProper r] [IsNoetherian Q]
+    [GlobalTheory.IsNormalScheme Q] (G : ∀ (K : Type) [Field K], (Sp K ⟶ W) → Prop)
+    (hU : ∀ (K : Type) [Field K] (z : Sp K ⟶ Q), ∃! c, G K c ∧ c ≫ r = z)
+    (hB : ∀ (K K' : Type) [Field K] [Field K'] (ι : K →+* K') (c : Sp K ⟶ W),
+      G K c → G K' (spMap ι ≫ c))
+    (hV : ∀ (A : Type) [CommRing A] [IsDomain A] [ValuationRing A] (u : Sp A ⟶ W),
+      G (FractionRing A) (spMap (algebraMap A (FractionRing A)) ≫ u) →
+      G (IsLocalRing.ResidueField A) (spMap (IsLocalRing.residue A) ≫ u)) :
+    ∃ s : Q ⟶ W, s ≫ r = 𝟙 Q ∧ ∀ (K : Type) [Field K] (z : Sp K ⟶ Q), G K (z ≫ s) := by
+
+  have hD : ∀ (K K' : Type) [Field K] [Field K'] (ι : K →+* K') (c : Sp K ⟶ W),
+      G K' (spMap ι ≫ c) → G K c := by
+    intro K K' _ _ ι c hc
+    obtain ⟨d, ⟨hd, hdr⟩, -⟩ := hU K (c ≫ r)
+    have e : spMap ι ≫ c = spMap ι ≫ d :=
+      (hU K' (spMap ι ≫ c ≫ r)).unique ⟨hc, Category.assoc _ _ _⟩
+        ⟨hB _ _ ι d hd, by rw [Category.assoc, hdr]⟩
+    have := epi_spMap ι
+    rwa [(cancel_epi _).mp e]
+  let T : Set W := {x | G (W.residueField x) (W.fromSpecResidueField x)}
+  have hT : ∀ (K : Type) [Field K] (c : Sp K ⟶ W),
+      G K c ↔ c (pt K) ∈ T := by
+    intro K _ c
+    obtain ⟨ι, hι⟩ := exists_eq_spMap_comp c rfl
+    exact ⟨fun h => hD _ _ ι _ (hι ▸ h), fun h => by rw [hι]; exact hB _ _ ι _ h⟩
+  have hspec : ∀ x y : W, x ⤳ y → x ∈ T → y ∈ T := by
+    intro x y h hx
+    obtain ⟨A, _, _, _, u, ι, hu, hy⟩ := exists_valuationRing_of_specializes h
+    have h1 := hV A u (hD _ _ ι _ (hu ▸ hx))
+    rwa [hT, hy] at h1
+  choose g hg hg' using fun y : Q => hU (Q.residueField y) (Q.fromSpecResidueField y)
+  let γ : Q → W := fun y => g y (pt _)
+  have hγT : ∀ y, γ y ∈ T := fun y => (hT _ _).mp (hg y).1
+  have hγr : ∀ y, r (γ y) = y := fun y => by
+    refine (Scheme.Hom.comp_apply (g y) r _).symm.trans ?_
+    rw [(hg y).2]
+    exact Scheme.fromSpecResidueField_apply _ _
+  have hTγ : ∀ x ∈ T, x = γ (r x) := by
+    intro x hx
+    have hpt : (W.fromSpecResidueField x ≫ r) (pt (W.residueField x)) =
+        r x := by
+      rw [Scheme.Hom.comp_apply, Scheme.fromSpecResidueField_apply]
+    obtain ⟨ι, hι⟩ := exists_eq_spMap_comp (K := W.residueField x) _ hpt
+    have e : W.fromSpecResidueField x = spMap ι ≫ g (r x) :=
+      (hU (W.residueField x) (W.fromSpecResidueField x ≫ r)).unique ⟨hx, rfl⟩
+        ⟨hB _ _ ι _ (hg _).1, by rw [Category.assoc, (hg _).2, hι]⟩
+    have e1 := Scheme.fromSpecResidueField_apply x (pt (W.residueField x))
+    refine e1.symm.trans ?_
+    rw [e, Scheme.Hom.comp_apply]
+    exact congrArg (g (r x)) (eq_pt _)
+  have hfin : (γ '' genericPoints Q).Finite :=
+    (genericPoints.finite NoetherianSpace.finite_irreducibleComponents).image γ
+  have hsub : closure (γ '' genericPoints Q) ⊆ T := by
+    intro x hx
+    rw [← Set.biUnion_of_singleton (γ '' genericPoints Q), hfin.closure_biUnion] at hx
+    simp only [Set.mem_iUnion] at hx
+    obtain ⟨_, ⟨y, -, rfl⟩, hx⟩ := hx
+    exact hspec _ _ (specializes_iff_mem_closure.mpr hx) (hγT y)
+  have hcl : IsClosed T := by
+    have hsurj : r '' closure (γ '' genericPoints Q) = Set.univ := by
+      refine Set.eq_univ_of_univ_subset ?_
+      rw [← genericPoints.closure (α := Q)]
+      refine closure_minimal (fun y hy => ⟨γ y, subset_closure ⟨y, hy, rfl⟩, hγr y⟩)
+        (r.isClosedMap _ isClosed_closure)
+    have : T = closure (γ '' genericPoints Q) := by
+      refine Set.Subset.antisymm (fun x hx => ?_) hsub
+      obtain ⟨x', hx', e⟩ : r x ∈ r '' closure (γ '' genericPoints Q) := hsurj ▸ Set.mem_univ _
+      rwa [hTγ x hx, ← e, ← hTγ x' (hsub hx')]
+    rw [this]
+    exact isClosed_closure
+  let I := Scheme.IdealSheafData.vanishingIdeal (⟨T, hcl⟩ : Closeds W)
+  have hI : Set.range I.subschemeι = T := by
+    rw [Scheme.IdealSheafData.range_subschemeι]
+    rfl
+  have hGI : ∀ (K : Type) [Field K] (c : Sp K ⟶ I.subscheme), G K (c ≫ I.subschemeι) := by
+    intro K _ c
+    rw [hT, ← hI, Scheme.Hom.comp_apply]
+    exact ⟨_, rfl⟩
+  have : IsIso (I.subschemeι ≫ r) := by
+    refine GlobalTheory.isIso_of_isProper_of_existsUnique_field_point _ _ _ inferInstance
+      (ReducedSubgroup.isReduced_subscheme_vanishingIdeal _) (GlobalTheory.IsNormalScheme.pred _)
+      inferInstance fun K _ z => ?_
+    obtain ⟨c, ⟨hc, hcr⟩, hu⟩ := hU K z
+    have hker : I.subschemeι.ker ≤ c.ker := by
+      rw [Scheme.IdealSheafData.ker_subschemeι]
+      refine ReducedSubgroup.vanishingIdeal_le_ker c _ ?_
+      rintro _ ⟨t, rfl⟩
+      rw [eq_pt t]
+      exact (hT K c).mp hc
+    have hl := IsClosedImmersion.lift_fac I.subschemeι c hker
+    refine ⟨IsClosedImmersion.lift I.subschemeι c hker, ?_, fun d hd => ?_⟩
+    · show _ ≫ _ ≫ _ = _
+      rw [← Category.assoc, hl, hcr]
+    · rw [← cancel_mono I.subschemeι, hl]
+      exact hu _ ⟨hGI K d, (Category.assoc _ _ _).trans hd⟩
+  refine ⟨inv (I.subschemeι ≫ r) ≫ I.subschemeι, ?_, fun K _ z => ?_⟩
+  · rw [Category.assoc, IsIso.inv_hom_id]
+  · rw [← Category.assoc]
+    exact hGI K _
+
+theorem exists_hom_of_rel : ∀ (Q P S : Scheme.{0}) (q : Q ⟶ S) (p : P ⟶ S) [IsProper p] [IsNoetherian Q] [GlobalTheory.IsNormalScheme Q] (R : ∀ (K : Type) [Field K], (Sp K ⟶ Q) → (Sp K ⟶ P) → Prop), (∀ (K : Type) [Field K] (z : Sp K ⟶ Q) (w : Sp K ⟶ P), R K z w → z ≫ q = w ≫ p) → (∀ (K : Type) [Field K] (z : Sp K ⟶ Q), ∃! w, R K z w) → (∀ (K K' : Type) [Field K] [Field K'] (ι : K →+* K') (z : Sp K ⟶ Q) (w : Sp K ⟶ P), R K z w → R K' (spMap ι ≫ z) (spMap ι ≫ w)) → (∀ (A : Type) [CommRing A] [IsDomain A] [ValuationRing A] (u : Sp A ⟶ Q) (v : Sp A ⟶ P), u ≫ q = v ≫ p → R (FractionRing A) (spMap (algebraMap A (FractionRing A)) ≫ u) (spMap (algebraMap A (FractionRing A)) ≫ v) → R (IsLocalRing.ResidueField A) (spMap (IsLocalRing.residue A) ≫ u) (spMap (IsLocalRing.residue A) ≫ v)) → ∃ h : Q ⟶ P, h ≫ p = q ∧ ∀ (K : Type) [Field K] (z : Sp K ⟶ Q), R K z (z ≫ h) := by
+  intro Q P S q p _ _ _ R hC hU hB hV
+  obtain ⟨s, hs, hG⟩ := exists_section (pullback.fst q p)
+    (fun K _ c => R K (c ≫ pullback.fst q p) (c ≫ pullback.snd q p))
+    (fun K _ z => by
+      obtain ⟨w, hw, hu⟩ := hU K z
+      refine ⟨pullback.lift z w (hC K z w hw), ⟨?_, pullback.lift_fst _ _ _⟩, fun c hc => ?_⟩
+      · rwa [pullback.lift_fst, pullback.lift_snd]
+      · refine pullback.hom_ext (by rw [pullback.lift_fst, hc.2]) ?_
+        rw [pullback.lift_snd]
+        exact hu _ (hc.2 ▸ hc.1))
+    (fun K K' _ _ ι c hc => by
+      rw [Category.assoc, Category.assoc]
+      exact hB K K' ι _ _ hc)
+    (fun A _ _ _ u hu => by
+      rw [Category.assoc, Category.assoc] at hu ⊢
+      exact hV A _ _ (by simp [pullback.condition]) hu)
+  refine ⟨s ≫ pullback.snd q p, ?_, fun K _ z => ?_⟩
+  · rw [Category.assoc, ← pullback.condition, ← Category.assoc, hs, Category.id_comp]
+  · have := hG K z
+    rwa [Category.assoc, Category.assoc, hs, Category.comp_id] at this
+
+end GlobalTheory.FieldPointGraph
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_hom_of_fieldPoint_relation_proper : ∀ (Q P S : Scheme.{0}) (q : Q ⟶ S) (p : P ⟶ S) [IsProper p] [IsNoetherian Q] [GlobalTheory.IsNormalScheme Q] (R : ∀ (K : Type) [Field K], (Sp K ⟶ Q) → (Sp K ⟶ P) → Prop), (∀ (K : Type) [Field K] (z : Sp K ⟶ Q) (w : Sp K ⟶ P), R K z w → z ≫ q = w ≫ p) → (∀ (K : Type) [Field K] (z : Sp K ⟶ Q), ∃! w, R K z w) → (∀ (K K' : Type) [Field K] [Field K'] (ι : K →+* K') (z : Sp K ⟶ Q) (w : Sp K ⟶ P), R K z w → R K' (spMap ι ≫ z) (spMap ι ≫ w)) → (∀ (A : Type) [CommRing A] [IsDomain A] [ValuationRing A] (u : Sp A ⟶ Q) (v : Sp A ⟶ P), u ≫ q = v ≫ p → R (FractionRing A) (spMap (algebraMap A (FractionRing A)) ≫ u) (spMap (algebraMap A (FractionRing A)) ≫ v) → R (IsLocalRing.ResidueField A) (spMap (IsLocalRing.residue A) ≫ u) (spMap (IsLocalRing.residue A) ≫ v)) → ∃ h : Q ⟶ P, h ≫ p = q ∧ ∀ (K : Type) [Field K] (z : Sp K ⟶ Q), R K z (z ≫ h) := by
+  atlas_forward_decl GlobalTheory.FieldPointGraph.exists_hom_of_rel
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flagChartFrames_eigenFrames_localRing : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ∀ (X : GlobalTheory.FlagMod.FlagCover Y), GlobalTheory.VarFlag.FramesExist X := by
+  first | exact @GlobalTheory.VarFlag.framesExist_flagCover | exact GlobalTheory.VarFlag.framesExist_flagCover | (intros; apply GlobalTheory.VarFlag.framesExist_flagCover <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flagBundlePointFramesTriangular_component : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ∀ (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.CarriesTri C := by
+  first | exact @GlobalTheory.VarFlag.carriesTri | exact GlobalTheory.VarFlag.carriesTri | (intros; apply GlobalTheory.VarFlag.carriesTri <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.snc_toroidalGenericBoundary_of_snc_boundary : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ReciprocityTheory.AnForm.R.FinalTheorems.Snc (GlobalTheory.LogKS.boundary Y) → ReciprocityTheory.AnForm.R.FinalTheorems.Snc (GlobalTheory.Toroidal.genBdIdeal Y) := by
+  first | exact @GlobalTheory.VarFlag.snc_genBdIdeal_of_snc_boundary | exact GlobalTheory.VarFlag.snc_genBdIdeal_of_snc_boundary | (intros; apply GlobalTheory.VarFlag.snc_genBdIdeal_of_snc_boundary <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flagModel_point_carries_unique_flagBundle_point : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ∀ (X : GlobalTheory.FlagMod.FlagCover Y) (Z : Formalism.L2.Pj.Comp Xo c), GlobalTheory.VarFlag.FramesExist X → ∀ (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.CarriesTri C → ∀ (B : GlobalTheory.ProjVar.Var c.F) (j : B.X ⟶ GlobalTheory.Toroidal.gen Y) [IsOpenImmersion j] (f : C.Y.X ⟶ B.X), C.π = f ≫ j → (∀ (K : Type) [Field K] (χ : c.F →+* K) (x : Sp K ⟶ GlobalTheory.Toroidal.gen Y) (x' : Sp K ⟶ B.X), x' ≫ j = x → x ≫ GlobalTheory.Toroidal.genStr Y = spMap χ → ∀ g : GlobalTheory.ShFam.EigFrame Y χ (x ≫ GlobalTheory.Toroidal.genι Y), ∃! p : Sp K ⟶ C.Y.X, p ≫ f = x' ∧ C.Carries p g) → (∀ w : GlobalTheory.Toroidal.gen Y, GlobalTheory.Toroidal.genι Y w ∈ GlobalTheory.CompHS.barComp Y Z ↔ w ∈ Set.range j) → ∀ (K : Type) [Field K] (z : Sp K ⟶ GlobalTheory.CompHS.Y₀ X Z), ∃! p : Sp K ⟶ C.Y.X, GlobalTheory.VarFlag.Rel X.F C (z ≫ GlobalTheory.CompHS.inc₀ X Z) p := by
+  first | exact @GlobalTheory.VarFlag.uniq_rel | exact GlobalTheory.VarFlag.uniq_rel | (intros; apply GlobalTheory.VarFlag.uniq_rel <;> assumption)
+end
+
+section
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.VarFlag
+
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (tv)
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+theorem rel_baseChange : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ∀ (X : GlobalTheory.FlagMod.FlagCover Y), GlobalTheory.VarFlag.FramesExist X → ∀ (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)) (K K' : Type) [Field K] [Field K'] (ι : K →+* K') (z : Sp K ⟶ X.YY) (p : Sp K ⟶ C.Y.X), GlobalTheory.VarFlag.Rel X.F C z p → GlobalTheory.VarFlag.Rel X.F C (spMap ι ≫ z) (spMap ι ≫ p) := by
+  intro E _ _ _ H Dw l Xo c Y X hFE C K K' _ _ ι z p hR
+  obtain ⟨φ, k, hz, g, hs, hg, y, ψ, φ₁, f, t, t', hp, hf0, hx, hφ, hcomb⟩ := hR
+  have hz' : ⊤ ≤ (spMap ι ≫ z) ⁻¹ᵁ X.F.U k := fun w _ => by
+    exact hz (show spMap ι w ∈ (⊤ : (Sp K).Opens) from trivial)
+  have hs' : (spMap ι ≫ z) ≫ X.π ≫ Y.s = spMap (ι.comp φ) := by
+    rw [Category.assoc, hs, ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap]
+  obtain ⟨g', hg'⟩ := hFE K' (ι.comp φ) (spMap ι ≫ z) k hz' hs'
+  have e : spMap ι ≫ (z ≫ X.π) = (spMap ι ≫ z) ≫ X.π := (Category.assoc _ _ _).symm
+  have hv : ∀ τ i, g'.v τ i = spMap (dualMap ι) ≫ g.v τ i := fun τ i => by
+    have h1 : g'.v τ i = (tv (GlobalTheory.FlagMod.tanPull ι e (X.F.vecAt k z hz rfl τ i))).left := by
+      rw [hg' τ i, X.F.tanPull_vecAt k ι z hz hz' rfl rfl e]
+    rw [h1, hg τ i]
+    rfl
+  refine ⟨ι.comp φ, k, hz', g', hs', hg', y, ι.comp ψ, φ₁, f, t, fun τ i => Units.map ι.toMonoidHom (t' τ i), ?_, hf0,
+    ?_, ?_, fun τ i => ?_⟩
+  · rw [hp, ← Category.assoc, ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap]
+  · rw [Category.assoc, hx, ← Category.assoc, ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap]
+  · rw [hφ]; rfl
+  · obtain ⟨cf, h1, h2, h3⟩ := hcomb τ i
+    refine ⟨fun j => ι (cf j), by simp [h1], fun j hj => by simp [h2 j hj], ?_⟩
+    have h4 := GlobalTheory.LatDRFree.comb_map Y.t ι h3
+    have hd : ∀ j, spMap (dualMap ι) ≫ spMap (dualMap ψ) ≫ f.v τ j = spMap (dualMap (ι.comp ψ)) ≫ f.v τ j := fun j => by
+      rw [← Category.assoc, ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap]
+      congr 2
+      exact RingHom.ext fun a => by ext <;> simp [dualMap]
+    simp only [hd] at h4
+    rw [hv, ← e]
+    exact h4
+
+end GlobalTheory.VarFlag
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flagModel_carriesSameFlags_fieldExtension : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ∀ (X : GlobalTheory.FlagMod.FlagCover Y), GlobalTheory.VarFlag.FramesExist X → ∀ (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)) (K K' : Type) [Field K] [Field K'] (ι : K →+* K') (z : Sp K ⟶ X.YY) (p : Sp K ⟶ C.Y.X), GlobalTheory.VarFlag.Rel X.F C z p → GlobalTheory.VarFlag.Rel X.F C (spMap ι ≫ z) (spMap ι ≫ p) := by
+  atlas_forward_decl GlobalTheory.VarFlag.rel_baseChange
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flagModel_carriesSameFlags_specialise_valuationRing : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ∀ (X : GlobalTheory.FlagMod.FlagCover Y), GlobalTheory.VarFlag.FramesExist X → ∀ (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.CarriesTri C → ∀ (A : Type) [CommRing A] [IsDomain A] [ValuationRing A] (u : Sp A ⟶ X.YY) (v : Sp A ⟶ C.Y.X), u ≫ X.π = v ≫ C.π ≫ GlobalTheory.Toroidal.genι Y → GlobalTheory.VarFlag.Rel X.F C (spMap (algebraMap A (FractionRing A)) ≫ u) (spMap (algebraMap A (FractionRing A)) ≫ v) → GlobalTheory.VarFlag.Rel X.F C (spMap (IsLocalRing.residue A) ≫ u) (spMap (IsLocalRing.residue A) ≫ v) := by
+  first | exact @GlobalTheory.VarFlag.rel_specialise | exact GlobalTheory.VarFlag.rel_specialise | (intros; apply GlobalTheory.VarFlag.rel_specialise <;> assumption)
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flagModel_to_flagBundle_locallyQuasiFinite : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ∀ (X : GlobalTheory.FlagMod.FlagModel Y) (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.CarriesTri C → ∀ (Z : Formalism.L2.Pj.Comp Xo c) (h : GlobalTheory.CompHS.Y₀ X.toFlagCover Z ⟶ C.Y.X) [IsProper h], (∀ (K : Type) [Field K] (z : Sp K ⟶ GlobalTheory.CompHS.Y₀ X.toFlagCover Z), GlobalTheory.VarFlag.Rel X.F C (z ≫ GlobalTheory.CompHS.inc₀ X.toFlagCover Z) (z ≫ h)) → LocallyQuasiFinite h := by
+  first | exact @GlobalTheory.VarFlag.locallyQuasiFinite_flag | exact GlobalTheory.VarFlag.locallyQuasiFinite_flag | (intros; apply GlobalTheory.VarFlag.locallyQuasiFinite_flag <;> assumption)
+end
+
+section
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.VarFlag
+
+open GlobalTheory.FlagMod (FlagCover Frames frX frVec)
+open GlobalTheory.ShFam (EigFrame FlagCpt)
+open GlobalTheory.Toroidal (gen genι genStr)
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (tv)
+
+theorem tv_vecAt_congr {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
+    {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} {Z : Scheme.{0}} {π : Z ⟶ Y.X}
+    (F : Frames Y π) {S : Type} [CommRing S] (k : F.J) (z : Sp S ⟶ Z) (hz : ⊤ ≤ z ⁻¹ᵁ F.U k) {x : Sp S ⟶ Y.X}
+    (hx : z ≫ π = x) (σ : E →+* ℂ) (i : Fin (Dw.mult σ)) :
+    (tv (F.vecAt k z hz hx σ i)).left = (tv (F.vecAt k z hz rfl σ i)).left := by
+  subst hx
+  rfl
+
+theorem exists_gen_unit {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
+    {Xo : Moduli Dw l} {c : Coeff l} {S : Type} [CommRing S] [Algebra c.F S] (Q Q' : FrPt Xo c S)
+    (e : Q'.x = Q.x) : ∃ u : Sˣ, ∀ e : Q'.x = Q.x, ∀ i, (e ▸ Q'.s).f i = scal Q.x (u : S) i * Q.s.f i := by
+  obtain ⟨x', xo', v', t1', t2', t3', s', t4'⟩ := Q'
+  dsimp only at e
+  subst e
+  obtain ⟨u0, hu0⟩ := gen_unit Q.s s' Q.gen t4'
+  exact ⟨u0, fun _ => hu0⟩
+
+theorem rel_unique : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} (X : GlobalTheory.FlagMod.FlagCover Y) (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.FramesExist X → GlobalTheory.VarFlag.CarriesTri C → ∀ (K : Type) [Field K] (z z' : Sp K ⟶ X.YY) (p : Sp K ⟶ C.Y.X), (∀ s, p s ∈ GlobalTheory.VarFlag.Vo C) → GlobalTheory.VarFlag.Rel X.F C z p → GlobalTheory.VarFlag.Rel X.F C z' p → z = z' := by
+  intro E _ _ _ H Dw l Xo c Y X C _ hC K _ z z' p hp hr hr'
+  obtain ⟨φ, k, hk, g, hφ, hg, hc⟩ := hr
+  obtain ⟨φ', k', hk', g', hφ', hg', hc'⟩ := hr'
+  have e1 : p ≫ C.π ≫ genι Y = z ≫ X.π := carries_over C hc
+  have e2 : p ≫ C.π ≫ genι Y = z' ≫ X.π := carries_over C hc'
+  have hπ : z' ≫ X.π = z ≫ X.π := e2.symm.trans e1
+  have ephi : φ' = φ := by
+    have h0 : spMap φ' = spMap φ := by rw [← hφ', ← hφ, ← Category.assoc, hπ, Category.assoc]
+    exact congrArg CommRingCat.Hom.hom (Spec.map_injective h0)
+  subst ephi
+  obtain ⟨g0, hg0⟩ : ∃ g0 : EigFrame Y φ' (z ≫ X.π), ∀ τ i, g0.v τ i = g'.v τ i := by
+    rw [← hπ]; exact ⟨g', fun _ _ => rfl⟩
+  have hc0 : C.Carries p g0 := (carries_congr C hπ.symm g0 g' hg0 p).2 hc'
+  obtain ⟨t, ht⟩ := hC K _ _ (z ≫ X.π) p g g0 hc hc0
+  letI : Algebra c.F K := φ'.toAlgebra
+  have hid : spMap (RingHom.id c.F) = 𝟙 _ := Spec.map_id _
+  have hxg : (p ≫ C.π) ≫ genι Y = z ≫ X.π := by rw [Category.assoc]; exact e1
+  have hr : Set.range (p ≫ C.π) ⊆ Set.range Y.jQ := by
+    rintro _ ⟨a, rfl⟩
+    have := hp a
+    rw [Scheme.Hom.comp_apply]
+    exact this
+  have := Y.jQ_open
+  let y := IsOpenImmersion.lift Y.jQ (p ≫ C.π) hr
+  have hy0 : y ≫ Y.jQ = p ≫ C.π := IsOpenImmersion.lift_fac _ _ _
+  have hyj : z ≫ X.π = y ≫ Y.j := by
+    rw [Model.j, ← Category.assoc, hy0, ← hxg]
+  have hstr : genStr Y = genι Y ≫ Y.s := by
+    calc genStr Y = genStr Y ≫ spMap (RingHom.id c.F) := by rw [hid, Category.comp_id]
+      _ = genι Y ≫ Y.s := (pullback.condition (f := Y.s) (g := spMap (RingHom.id c.F))).symm
+  have hy : y ≫ pullback.snd _ _ = spMap (algebraMap c.F K) := by
+    rw [← Y.jQ_over, ← Category.assoc, hy0]
+    show (p ≫ C.π) ≫ genStr Y = _
+    rw [hstr, ← Category.assoc, hxg, Category.assoc]
+    exact hφ
+  obtain ⟨Q, hQ⟩ := X.top.exists_chartFr hy hyj k hk
+  obtain ⟨Q', hQ'⟩ := X.top.exists_chartFr hy (hπ.trans hyj) k' hk'
+  have hx : frX Q ≫ Y.j = z ≫ X.π := hQ.over
+  have hx' : frX Q' ≫ Y.j = z ≫ X.π := hQ'.over.trans hπ
+  have eQ : Q'.x = Q.x := by
+    rw [← GlobalTheory.FlagMod.frX_fst, ← GlobalTheory.FlagMod.frX_fst,
+      GlobalTheory.FlagMod.xF_ext (Y := Y) (GlobalTheory.FlagMod.frX_snd Q') (GlobalTheory.FlagMod.frX_snd Q) (hx'.trans hx.symm)]
+  obtain ⟨u0, hu0⟩ := exists_gen_unit Q Q' eQ
+  choose cf hcf1 hcf2 hcf3 using ht.2.2
+  have h1 : spMap (dualMap (RingHom.id K)) = 𝟙 _ := by
+    rw [← Spec.map_id]
+    congr 1
+    ext r <;> simp [dualMap]
+  let T : Ix Dw → Kˣ := fun ix => match ix with | none => u0 | some q => t q.1 q.2
+  have hB : FrBor T Q Q' := by
+    refine GlobalTheory.FlagMod.frBor_of_frVec (X.F.inM hk rfl) hx hx' T (fun σ j i => cf σ i j)
+      (fun σ r s hrs => hcf2 σ s r hrs) (fun σ i => hcf1 σ i) (fun σ i => ?_) hu0
+    rw [hQ'.frVec_eq hπ hx', hQ.frVec_eq rfl hx]
+    refine (GlobalTheory.LieMet.isComb_iff _ _ _).1 ?_
+    have h3 := hcf3 σ i
+    simp only [h1, Category.id_comp] at h3
+    rw [hg0 σ i, hg' σ i, ← tv_vecAt_congr X.F k' z' hk' hπ σ i] at h3
+    have e : (fun j => g.v σ j) = fun j => (tv (X.F.vecAt k z hk rfl σ j)).left := funext (hg σ)
+    rw [e] at h3
+    exact h3
+  exact (X.rep K Q').unique (hQ.lies.frBor hB) hQ'.lies
+
+end GlobalTheory.VarFlag
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.flagBundle_point_flags_unique_flagCover_point : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} (X : GlobalTheory.FlagMod.FlagCover Y) (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.FramesExist X → GlobalTheory.VarFlag.CarriesTri C → ∀ (K : Type) [Field K] (z z' : Sp K ⟶ X.YY) (p : Sp K ⟶ C.Y.X), (∀ s, p s ∈ GlobalTheory.VarFlag.Vo C) → GlobalTheory.VarFlag.Rel X.F C z p → GlobalTheory.VarFlag.Rel X.F C z' p → z = z' := by
+  atlas_forward_decl GlobalTheory.VarFlag.rel_unique
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry Limits NumberField ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open Formalism.BasicNotions Formalism.L2.Pj GlobalTheory GlobalTheory.ProjVar GlobalTheory.TrueGeo GlobalTheory.ArInt GlobalTheory.Mean4 GlobalTheory.Mean4O GlobalTheory.Toroidal GlobalTheory.Cartier GlobalTheory.ShFam GlobalTheory.ShFam.Pad
+
+namespace GlobalTheory.Mean4O.CompModel
+
+theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
+    spMap g ≫ spMap f = spMap (g.comp f) :=
+  (Spec.map_comp (CommRingCat.ofHom f) (CommRingCat.ofHom g)).symm
+
+section Free
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
+  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
+  {Z : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Model Xo c β} {F : Type} [Field F] {e : F ≃+* c.F}
+
+theorem stalkPt_genStr (C : FlagCpt Z e) (z : C.Y.X) (φ : c.F →+* C.Y.X.presheaf.stalk z)
+    (hφ : constF e C.Y = (algebraMap (C.Y.X.presheaf.stalk z) C.Y.X.functionField).comp φ) :
+    stalkPt C.Y z ≫ C.π ≫ genStr Z = spMap φ := by
+  let ρ : c.F →+* C.Y.X.presheaf.stalk z := (Spec.preimage (stalkPt C.Y z ≫ C.π ≫ genStr Z)).hom
+  have h0 : spMap ρ = stalkPt C.Y z ≫ C.π ≫ genStr Z := Spec.map_preimage _
+  let j := algebraMap (C.Y.X.presheaf.stalk z) C.Y.X.functionField
+  letI := (constF e C.Y).toAlgebra
+  have hgen : spMap j ≫ stalkPt C.Y z = genericPt C.Y :=
+    Scheme.SpecMap_stalkSpecializes_fromSpecStalk ((genericPoint_spec C.Y.X).specializes trivial)
+  have h1 : spMap (j.comp ρ) = spMap (constF e C.Y) := by
+    rw [← sp_comp, h0, ← Category.assoc, ← Category.assoc, hgen]
+    exact (congrArg (· ≫ genStr Z) C.y0_x.symm).trans ((Category.assoc _ _ _).trans
+      ((congrArg (_ ≫ ·) Z.jQ_over).trans (pullback.lift_snd _ _ _)))
+  have h2 : j.comp ρ = constF e C.Y := congrArg CommRingCat.Hom.hom (Spec.map_injective h1)
+  have h3 : ρ = φ := RingHom.ext fun r => IsFractionRing.injective (C.Y.X.presheaf.stalk z) C.Y.X.functionField
+      ((RingHom.congr_fun h2 r).trans (RingHom.congr_fun hφ r))
+  rw [← h0, h3]
+
+theorem exists_flagPt (C : FlagCpt Z e) {K : Type} [Field K] (p : Sp K ⟶ C.Y.X) :
+    ∃ y : FlagPt Z K, p ≫ C.π = y.y ∧ C.Carries p y.frame := by
+  obtain ⟨φ, f, t, hT, -⟩ := C.gr_spec (below p)
+  let ψ : C.Y.X.presheaf.stalk (below p) →+* K := (Scheme.stalkClosedPointTo p).hom
+  have hp : p = spMap ψ ≫ stalkPt C.Y (below p) := (Scheme.Spec_stalkClosedPointTo_fromSpecStalk p).symm
+  have hx : spMap ψ ≫ stalkPt C.Y (below p) ≫ C.π ≫ genι Z = (p ≫ C.π) ≫ genι Z := by
+    rw [← Category.assoc, ← hp, Category.assoc]
+  obtain ⟨g, hg⟩ : ∃ g : EigFrame Z (ψ.comp φ) ((p ≫ C.π) ≫ genι Z), ∀ τ i, g.v τ i = spMap (dualMap ψ) ≫ f.v τ i := by
+    rw [← hx]
+    exact EigFrame.exists_baseChange E H Dw l Xo c O β Z _ _ φ _ f ψ
+  have ho : (p ≫ C.π) ≫ genStr Z = spMap (ψ.comp φ) := by
+    rw [← sp_comp, ← stalkPt_genStr C _ φ hT.2.1, ← Category.assoc (spMap ψ), ← hp, Category.assoc]
+  refine ⟨⟨ψ.comp φ, p ≫ C.π, ho, g.v, g.tan, g.eig, g.basis⟩, rfl, below p, ψ, φ, f, t, 1, hp, hT, hx.symm, rfl,
+    fun τ i => ⟨Pi.single i 1, by simp, fun k hk => Pi.single_eq_of_ne hk.ne' _, ?_⟩⟩
+  have := isCombAtG_single Z.t _ (g.tan τ) i
+  rw [show (fun k => spMap (dualMap ψ) ≫ f.v τ k) = g.v τ from funext fun k => (hg τ k).symm]
+  exact this
+
+end Free
+
+section Model
+
+variable {F : Type} [Field F] [NumberField F] {Y : Var F} (M : TrueGeo.Model Y)
+
+theorem dense_image_j (S : Set Y.X) : Dense (M.j '' S) ↔ Dense S := by
+  have := M.ar.isIntegral
+  have := SmallSec.isPreimmersion_j M
+  have hd : DenseRange M.j := fun x =>
+    (genericPoint_specializes x).mem_closed isClosed_closure
+      (subset_closure (SmallSec.mem_range_j M (SmallSec.asIdeal_p_gen M)))
+  exact (IsDenseInducing.mk M.j.isEmbedding.isInducing hd).dense_image
+
+theorem irreducible_fibre {K : Type} [Field K] (σ : F →+* K) :
+    IrreducibleSpace ↥(pullback M.p (spMap (σ.comp (algebraMap (𝓞 F) F)))) := by
+  have h := ((IsPullback.of_hasPullback Y.str (spMap σ)).paste_horiz M.pb)
+  rw [sp_comp] at h
+  have : IsIntegral (pullback Y.str (spMap σ)) :=
+    GeometricallyIntegral.geometrically_isIntegral (f := Y.str) _ _ _ (IsPullback.of_hasPullback Y.str (spMap σ))
+  exact h.isoPullback.hom.homeomorph.irreducibleSpace_iff.1 inferInstance
+
+theorem isAlgPt_iff {K : Type} [Field K] (ε : K ≃+* AlgebraicClosure ℚ) (x : M.X) :
+    IsAlgPt x ↔ ∃ p : Sp K ⟶ Y.X, M.j (below p) = x := by
+  have hb {K K' : Type} [Field K] [Field K'] (a : K →+* K') (p : Sp K ⟶ Y.X) : below (spMap a ≫ p) = below p :=
+    congrArg p (Subsingleton.elim (α := PrimeSpectrum K) _ _)
+  constructor
+  · intro hx
+    let σ : F →+* AlgebraicClosure ℚ := (IsAlgClosed.lift (R := ℚ) (S := F) (M := AlgebraicClosure ℚ)).toRingHom
+    obtain ⟨z, rfl⟩ := exists_geomPt M.ar (σ.comp (algebraMap (𝓞 F) F)) hx
+    have hz : z.1 ≫ M.p = spMap σ ≫ spMap (algebraMap (𝓞 F) F) := by rw [sp_comp]; exact z.2
+    refine ⟨spMap ε.symm.toRingHom ≫ M.pb.lift z.1 (spMap σ) hz, ?_⟩
+    rw [hb]
+    exact congrArg (fun q : Sp (AlgebraicClosure ℚ) ⟶ M.X => q (IsLocalRing.closedPoint _)) (M.pb.lift_fst z.1 (spMap σ) hz)
+  · rintro ⟨p, rfl⟩
+    rw [← hb ε.toRingHom p]
+    let q := spMap ε.toRingHom ≫ p
+    exact GeomPt.isAlgPt (ι := (Spec.preimage ((q ≫ M.j) ≫ M.p)).hom) M.ar ⟨q ≫ M.j, (Spec.map_preimage _).symm⟩
+
+end Model
+
+theorem exists_isCompModel : ∀ (D : D7) (O : Setup D) (A : SlopeTestRemainingChoices O.Y), O.IsFlagHeightData A → ∀ (c : O.s.Comp) (M : TrueGeo.Model (O.var c)) (hM : IsArithVar M.p (Formalism.MainNotions.WeightThresholdDefs.dimY O.Y)), ∃ b : O.Y.Pt → M.X, (∀ y : ShFam.Pad.Pt O.s, ShFam.Pad.compPt O.s y = c → b y = M.j (baseOn O.Φ c y)) ∧ IsCompModel A c (@ArMod.mk _ (𝓞 D.what₂.LL) _ M.X hM.isIntegral M.p hM) b := by
+  intro D O A hA c M hM
+  have : IsAlgClosure ℚ Qb := algebraicClosure.isAlgClosure ℚ ℂ
+  have : IsAlgClosure ℚ (AlgebraicClosure ℚ) := ⟨inferInstance, AlgebraicClosure.isAlgebraic ℚ⟩
+  let ε : Qb ≃+* AlgebraicClosure ℚ := (IsAlgClosure.equiv ℚ Qb (AlgebraicClosure ℚ)).toRingEquiv
+  refine ⟨fun y : ShFam.Pad.Pt O.s => M.j (baseOn O.Φ c y), fun _ _ => rfl, ⟨_, irreducible_fibre M
+    (IsAlgClosed.lift (R := ℚ) (S := D.what₂.LL) (M := AlgebraicClosure ℚ)).toRingHom⟩, ?_, fun Z => ?_⟩
+  · refine Set.ext fun x : M.X => Iff.trans ?_ (isAlgPt_iff M ε x).symm
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      obtain rfl : compPt O.s y = c := hy
+      obtain ⟨p, -, -, hp⟩ := liesUnder_basePt O.Φ y
+      exact ⟨p, congrArg M.j hp⟩
+    · rintro ⟨p, rfl⟩
+      obtain ⟨y, h₁, h₂⟩ := exists_flagPt (O.Φ.C c) p
+      have h : LiesUnder O.Φ c y (below p) := ⟨p, h₁, h₂, rfl⟩
+      obtain rfl : compPt O.s y = c := h.compPt_eq
+      exact ⟨y, rfl, congrArg M.j ((existsUnique_liesUnder O.Φ y).unique (liesUnder_basePt O.Φ y) h)⟩
+  · refine (hA.dense c Z).trans (and_congr Iff.rfl ?_)
+    exact (dense_image_j M _).symm.trans (iff_of_eq (congrArg Dense (Set.image_image _ _ (Z : Set (ShFam.Pad.Pt O.s)))))
+
+end GlobalTheory.Mean4O.CompModel
+end
+end
+
+section
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.VarFlag
+
+open GlobalTheory.ShFam (EigFrame FlagCpt)
+open ReciprocityTheory.ChartRestriction.G.PullbackSections (tv)
+open GlobalTheory.Toroidal (gen genι genStr)
+
+theorem exists_rel_of_mem_Vo : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} (X : GlobalTheory.FlagMod.FlagCover Y) (Z : Formalism.L2.Pj.Comp Xo c), GlobalTheory.VarFlag.FramesExist X → ∀ (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.CarriesTri C → ∀ (B : GlobalTheory.ProjVar.Var c.F) (j : B.X ⟶ GlobalTheory.Toroidal.gen Y) [IsOpenImmersion j] (f : C.Y.X ⟶ B.X), C.π = f ≫ j → (∀ w : GlobalTheory.Toroidal.gen Y, GlobalTheory.Toroidal.genι Y w ∈ GlobalTheory.CompHS.barComp Y Z ↔ w ∈ Set.range j) → ∀ (K : Type) [Field K] (p : Sp K ⟶ C.Y.X), (∀ s, p s ∈ GlobalTheory.VarFlag.Vo C) → ∃ z : Sp K ⟶ GlobalTheory.CompHS.Y₀ X Z, GlobalTheory.VarFlag.Rel X.F C (z ≫ GlobalTheory.CompHS.inc₀ X Z) p := by
+  intro E _ _ _ H Dw l Xo c Y X Z hFE C _ B j _ f hπ hbar K _ p hp
+
+  obtain ⟨yF, hyF, hcar⟩ := GlobalTheory.Mean4O.CompModel.exists_flagPt C p
+
+  haveI := Y.jQ_open
+  have hr : Set.range (p ≫ C.π) ⊆ Set.range Y.jQ := by
+    rintro _ ⟨s, rfl⟩
+    exact hp s
+  let y := IsOpenImmersion.lift Y.jQ (p ≫ C.π) hr
+  have hy : y ≫ Y.jQ = p ≫ C.π := IsOpenImmersion.lift_fac _ _ _
+  have hys : y ≫ pullback.snd _ _ = spMap yF.fK := by
+    rw [← Y.jQ_over, ← Category.assoc, hy, hyF]
+    exact yF.y_over
+
+  obtain ⟨P, hPy, hPw⟩ := GlobalTheory.ShFam.exists_frPt_ptF_over_of_eigFrame E H Dw l Xo c c.F (RingHom.id c.F) Y K yF.fK y
+    (yF.y ≫ genι Y) yF.frame hys (by rw [← Category.assoc, hy, hyF])
+  letI : Algebra c.F K := yF.fK.toAlgebra
+  have hPX : GlobalTheory.FlagMod.frX P = y := hPy
+  have hl := X.lies_ptY P
+  have hxg : X.ptY P ≫ X.π = yF.y ≫ genι Y := by
+    rw [hl.1, hPX, Model.j, ← Category.assoc, hy, hyF]
+
+  have hr₀ : Set.range (X.ptY P) ⊆ Set.range (GlobalTheory.CompHS.inc₀ X Z) := by
+    rintro _ ⟨s, rfl⟩
+    rw [Scheme.Opens.range_ι]
+    show X.π (X.ptY P s) ∈ GlobalTheory.CompHS.barComp Y Z
+    have e : X.π (X.ptY P s) = genι Y (j (f (p s))) := by
+      rw [← Scheme.Hom.comp_apply, hxg, ← hyF, hπ]
+      rfl
+    rw [e]
+    exact (hbar _).2 ⟨f (p s), rfl⟩
+  let z := IsOpenImmersion.lift (GlobalTheory.CompHS.inc₀ X Z) (X.ptY P) hr₀
+  have hz : z ≫ GlobalTheory.CompHS.inc₀ X Z = X.ptY P := IsOpenImmersion.lift_fac _ _ _
+  refine ⟨z, ?_⟩
+  rw [hz]
+
+  obtain ⟨k, hk⟩ := GlobalTheory.FlagMod.exists_chart_of_isLocalRing X.F.cover (X.ptY P)
+  have hφ : X.ptY P ≫ X.π ≫ Y.s = spMap yF.fK := GlobalTheory.CompHS.ptY_str X P
+  obtain ⟨g₂, hg₂⟩ := hFE K yF.fK (X.ptY P) k hk hφ
+  refine ⟨yF.fK, k, hk, g₂, hφ, hg₂, ?_⟩
+
+  obtain ⟨Q, hQ⟩ := X.top.exists_chartFr (GlobalTheory.FlagMod.frX_snd P) hl.1 k hk
+  obtain ⟨t, ht⟩ := hQ.exists_frBor hl
+  have ht' := (GlobalTheory.Reg.BorelGroupoid.frBor_groupoid E H Dw l Xo c K).2.2.1 _ _ _ ht
+  have hPx : GlobalTheory.FlagMod.frX P ≫ Y.j = X.ptY P ≫ X.π := hl.1.symm
+  choose b hb hdiag hsum using fun τ =>
+    GlobalTheory.FlagMod.frVec_of_frBor (M := (X.F.M k).toMChart) (X.F.inM hk rfl) hPx hQ.over ht' τ
+
+  have hgv : ∀ τ i, yF.frame.v τ i = (tv (GlobalTheory.FlagMod.frVec Y P hPx τ i)).left := by
+    intro τ i
+    obtain ⟨w, hw1, hw2, hw3⟩ := hPw τ i
+    rw [← hPX] at hw1
+    have hL : w = GlobalTheory.FlagMod.liftTan Y (GlobalTheory.FlagMod.frX P) ((GlobalTheory.FlagMod.frX_fst P).symm ▸ P.tan τ i) :=
+      Y.m0.cart.1.hom_ext (hw2.trans (GlobalTheory.FlagMod.liftTan_univ _ _).symm)
+        (hw1.trans (GlobalTheory.FlagMod.liftTan_over _ _).symm)
+    show yF.frame.v τ i = _
+    rw [← hw3, hL]
+    rfl
+  have h1 : spMap (dualMap (RingHom.id K)) = 𝟙 _ := by
+    rw [← Spec.map_id]
+    congr 1
+    ext r <;> simp [dualMap]
+  have h2 : spMap (RingHom.id K) = 𝟙 _ := Spec.map_id _
+  have hd : yF.frame.Tri (RingHom.id K) g₂ (fun τ i => (t⁻¹) (some ⟨τ, i⟩)) := by
+    refine ⟨by rw [h2, Category.id_comp, hxg], rfl, fun τ i => ⟨fun m => b τ m i, hdiag τ i,
+      fun m hm => hb τ hm, ?_⟩⟩
+    simp only [h1, Category.id_comp]
+    have e : (fun m => yF.frame.v τ m) = fun m => (tv (GlobalTheory.FlagMod.frVec Y P hPx τ m)).left := funext (hgv τ)
+    rw [e, hg₂ τ i, GlobalTheory.LieMet.isComb_iff, ← hQ.frVec_eq rfl hQ.over τ]
+    exact hsum τ i
+  exact carries_of_tri C hd hcar
+
+end GlobalTheory.VarFlag
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_flagModel_point_of_flagBundle_fieldPoint : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} (X : GlobalTheory.FlagMod.FlagCover Y) (Z : Formalism.L2.Pj.Comp Xo c), GlobalTheory.VarFlag.FramesExist X → ∀ (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.CarriesTri C → ∀ (B : GlobalTheory.ProjVar.Var c.F) (j : B.X ⟶ GlobalTheory.Toroidal.gen Y) [IsOpenImmersion j] (f : C.Y.X ⟶ B.X), C.π = f ≫ j → (∀ w : GlobalTheory.Toroidal.gen Y, GlobalTheory.Toroidal.genι Y w ∈ GlobalTheory.CompHS.barComp Y Z ↔ w ∈ Set.range j) → ∀ (K : Type) [Field K] (p : Sp K ⟶ C.Y.X), (∀ s, p s ∈ GlobalTheory.VarFlag.Vo C) → ∃ z : Sp K ⟶ GlobalTheory.CompHS.Y₀ X Z, GlobalTheory.VarFlag.Rel X.F C (z ≫ GlobalTheory.CompHS.inc₀ X Z) p := by
+  atlas_forward_decl GlobalTheory.VarFlag.exists_rel_of_mem_Vo
+end
+
+section
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+
+set_option autoImplicit false
+noncomputable section
+
+namespace GlobalTheory.VarFlag
+
+theorem isIso_restrict_Vo : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ∀ (X : GlobalTheory.FlagMod.FlagCover Y) (Z : Formalism.L2.Pj.Comp Xo c), GlobalTheory.VarFlag.FramesExist X → ∀ (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.CarriesTri C → ∀ (B : GlobalTheory.ProjVar.Var c.F) (j : B.X ⟶ GlobalTheory.Toroidal.gen Y) [IsOpenImmersion j] (f : C.Y.X ⟶ B.X), C.π = f ≫ j → (∀ w : GlobalTheory.Toroidal.gen Y, GlobalTheory.Toroidal.genι Y w ∈ GlobalTheory.CompHS.barComp Y Z ↔ w ∈ Set.range j) → ∀ (h : GlobalTheory.CompHS.Y₀ X Z ⟶ C.Y.X) [IsProper h], (∀ (K : Type) [Field K] (z : Sp K ⟶ GlobalTheory.CompHS.Y₀ X Z), ∃! p : Sp K ⟶ C.Y.X, GlobalTheory.VarFlag.Rel X.F C (z ≫ GlobalTheory.CompHS.inc₀ X Z) p) → (∀ (K : Type) [Field K] (z : Sp K ⟶ GlobalTheory.CompHS.Y₀ X Z), GlobalTheory.VarFlag.Rel X.F C (z ≫ GlobalTheory.CompHS.inc₀ X Z) (z ≫ h)) → IsIso (h ∣_ GlobalTheory.VarFlag.Vo C) := by
+  intro E _ _ _ H Dw l Xo c Y X Z hF C hT B j _ f hπ hB h _ hU hH
+  have := C.Y.isNormalScheme
+  have hN := GlobalTheory.IsNormalScheme.pred (GlobalTheory.VarFlag.Vo C).toScheme
+  have : IsLocallyNoetherian C.Y.X := LocallyOfFiniteType.isLocallyNoetherian C.Y.str
+  refine GlobalTheory.isIso_of_isProper_of_existsUnique_field_point _ _ _ inferInstance inferInstance hN inferInstance
+    fun K _ w => ?_
+  have hp : ∀ s, (w ≫ (GlobalTheory.VarFlag.Vo C).ι) s ∈ GlobalTheory.VarFlag.Vo C := fun s => by
+    rw [Scheme.Hom.comp_apply]; exact (w s).2
+  obtain ⟨z₀, hz₀⟩ := GlobalTheory.T.exists_flagModel_point_of_flagBundle_fieldPoint X Z hF C hT B j f hπ hB K _ hp
+  have e₀ : z₀ ≫ h = w ≫ (GlobalTheory.VarFlag.Vo C).ι := (hU K z₀).unique (hH K z₀) hz₀
+  have P := (isPullback_morphismRestrict h (GlobalTheory.VarFlag.Vo C)).flip
+  refine ⟨P.lift z₀ w e₀, P.lift_snd _ _ _, fun y hy => ?_⟩
+  apply P.hom_ext
+  · rw [P.lift_fst]
+    have ey : (y ≫ (h ⁻¹ᵁ GlobalTheory.VarFlag.Vo C).ι) ≫ h = w ≫ (GlobalTheory.VarFlag.Vo C).ι := by
+      rw [Category.assoc, ← morphismRestrict_ι, ← Category.assoc, hy]
+    have hr := hH K (y ≫ (h ⁻¹ᵁ GlobalTheory.VarFlag.Vo C).ι)
+    rw [ey] at hr
+    have := GlobalTheory.T.flagBundle_point_flags_unique_flagCover_point X C hF hT K _ _ _ hp hr hz₀
+    exact (cancel_mono (GlobalTheory.CompHS.inc₀ X Z)).1 this
+  · rw [P.lift_snd]; exact hy
+
+end GlobalTheory.VarFlag
+end
+end
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isIso_flagModel_flagBundle_over_moduli : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}, ∀ (X : GlobalTheory.FlagMod.FlagCover Y) (Z : Formalism.L2.Pj.Comp Xo c), GlobalTheory.VarFlag.FramesExist X → ∀ (C : GlobalTheory.ShFam.FlagCpt Y (RingEquiv.refl c.F)), GlobalTheory.VarFlag.CarriesTri C → ∀ (B : GlobalTheory.ProjVar.Var c.F) (j : B.X ⟶ GlobalTheory.Toroidal.gen Y) [IsOpenImmersion j] (f : C.Y.X ⟶ B.X), C.π = f ≫ j → (∀ w : GlobalTheory.Toroidal.gen Y, GlobalTheory.Toroidal.genι Y w ∈ GlobalTheory.CompHS.barComp Y Z ↔ w ∈ Set.range j) → ∀ (h : GlobalTheory.CompHS.Y₀ X Z ⟶ C.Y.X) [IsProper h], (∀ (K : Type) [Field K] (z : Sp K ⟶ GlobalTheory.CompHS.Y₀ X Z), ∃! p : Sp K ⟶ C.Y.X, GlobalTheory.VarFlag.Rel X.F C (z ≫ GlobalTheory.CompHS.inc₀ X Z) p) → (∀ (K : Type) [Field K] (z : Sp K ⟶ GlobalTheory.CompHS.Y₀ X Z), GlobalTheory.VarFlag.Rel X.F C (z ≫ GlobalTheory.CompHS.inc₀ X Z) (z ≫ h)) → IsIso (h ∣_ GlobalTheory.VarFlag.Vo C) := by
+  atlas_forward_decl GlobalTheory.VarFlag.isIso_restrict_Vo
+end
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS
 
 set_option autoImplicit false
@@ -198,3 +855,5 @@ theorem isVariety₀_flag : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   rw [← hps, ← Category.assoc, hh, Category.assoc]
 
 end GlobalTheory.VarFlag
+end
+end

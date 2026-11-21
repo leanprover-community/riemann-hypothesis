@@ -1,7 +1,310 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TailSubstPAdicallySmallOfIntegralDifferential
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasValSubstPoly
+import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasPAdicPowerSeriesValueMapOfContinuousEvaluatioStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasPAdicPowerSeriesValueAddSmulMapStatement
 
+section
+section
+namespace GlobalTheory.VSubArith
+
+theorem sq_le_two_pow_add_one (v : ℕ) : v * v ≤ 2 ^ v + 1 := by
+  have key : ∀ k : ℕ, (k + 4) * (k + 4) ≤ 2 ^ (k + 4) ∧ 2 * (k + 4) + 1 ≤ 2 ^ (k + 4) := by
+    intro k
+    induction k with
+    | zero => norm_num
+    | succ k ih =>
+      obtain ⟨h1, h2⟩ := ih
+      rw [show k + 1 + 4 = (k + 4) + 1 by ring, pow_succ]
+      constructor <;> nlinarith
+  rcases Nat.lt_or_ge v 4 with h | h
+  · interval_cases v <;> norm_num
+  · obtain ⟨k, rfl⟩ : ∃ k, v = k + 4 := ⟨v - 4, by omega⟩
+    exact le_trans (key k).1 (Nat.le_succ _)
+
+theorem two_mul_le_sq_add_sq (v L : ℕ) : 2 * (v * L) ≤ v * v + L * L := by
+  have h : (2 * (v * L) : ℤ) ≤ v * v + L * L := by nlinarith [sq_nonneg ((v : ℤ) - L)]
+  exact_mod_cast h
+
+theorem add_mul_le_of_pow_le : ∀ (p L m : ℕ), 2 ≤ p → ∃ M0 : ℕ, ∀ n v : ℕ, M0 ≤ n → p ^ v ≤ n → (v + m) * L ≤ n := by
+  intro p L m hp
+  refine ⟨L * L + 2 * m * L + 1, ?_⟩
+  intro n v hn hpv
+  have h2 : 2 ^ v ≤ p ^ v := Nat.pow_le_pow_left hp v
+  have hsq := sq_le_two_pow_add_one v
+  have hag := two_mul_le_sq_add_sq v L
+  have hx : 2 * ((v + m) * L) ≤ n + n := by nlinarith
+  linarith
+
+end GlobalTheory.VSubArith
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.add_mul_le_of_pow_le_of_large : ∀ (p L m : ℕ), 2 ≤ p → ∃ M0 : ℕ, ∀ n v : ℕ, M0 ≤ n → p ^ v ≤ n → (v + m) * L ≤ n := by
+  atlas_forward_decl GlobalTheory.VSubArith.add_mul_le_of_pow_le
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+namespace GlobalTheory.DivMono
+
+theorem coeff_finsuppProd_eq_zero_of_degree_lt :
+    ∀ (R : Type) [CommRing R] (σ τ : Type) (u : τ → MvPowerSeries σ R), (∀ j, constantCoeff (u j) = 0) →
+      ∀ (α : τ →₀ ℕ) (β : σ →₀ ℕ), β.degree < α.degree → coeff β (α.prod fun j e => u j ^ e) = 0 := by
+  intro R _ σ τ u hu α β hβ
+  apply coeff_of_lt_order
+  have hle : ((α.degree : ℕ) : ℕ∞) ≤ (α.prod fun j e => u j ^ e).order := by
+    unfold Finsupp.prod
+    refine le_trans ?_ (le_order_prod (fun j => u j ^ α j) α.support)
+    rw [Finsupp.degree_apply, Nat.cast_sum]
+    exact Finset.sum_le_sum fun j _ => le_order_pow_of_constantCoeff_eq_zero (α j) (hu j)
+  exact lt_of_lt_of_le (by exact_mod_cast hβ) hle
+
+end GlobalTheory.DivMono
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coeff_finsuppProd_constFree_eq_zero_of_degree_lt : ∀ (R : Type) [CommRing R] (σ τ : Type) (u : τ → MvPowerSeries σ R), (∀ j, constantCoeff (u j) = 0) → ∀ (α : τ →₀ ℕ) (β : σ →₀ ℕ), β.degree < α.degree → coeff β (α.prod fun j e => u j ^ e) = 0 := by
+  atlas_forward_decl GlobalTheory.DivMono.coeff_finsuppProd_eq_zero_of_degree_lt
+end
+
+section
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+namespace GlobalTheory.DivSub
+
+theorem eval_trunc'_eq_sum {R σ : Type} [CommRing R] [Fintype σ] [DecidableEq σ] (w : σ → R)
+    (n : σ →₀ ℕ) (f : MvPowerSeries σ R) :
+    MvPolynomial.eval w (trunc' R n f) = ∑ β ∈ Finset.Iic n, coeff β f * ∏ i ∈ β.support, w i ^ β i := by
+  have hsub : (trunc' R n f).support ⊆ Finset.Iic n := by
+    intro m hm
+    rw [MvPolynomial.mem_support_iff, coeff_trunc'] at hm
+    split_ifs at hm with h
+    · exact Finset.mem_Iic.mpr h
+    · exact absurd rfl hm
+  rw [MvPolynomial.eval_eq, Finset.sum_subset hsub]
+  · refine Finset.sum_congr rfl fun m hm => ?_
+    rw [coeff_trunc', if_pos (Finset.mem_Iic.mp hm)]
+  · intro m _ hm
+    rw [MvPolynomial.notMem_support_iff.mp hm, zero_mul]
+
+theorem eval_trunc'_subst_eq_sum :
+    ∀ (B Q : Type) [CommRing B] [CommRing Q] [Algebra B Q] (σ τ : Type) [Fintype σ] [DecidableEq σ]
+      [Fintype τ] [DecidableEq τ] (z : σ → B) (u : τ → MvPowerSeries σ B),
+      (∀ j, constantCoeff (u j) = 0) → ∀ (g : MvPowerSeries τ Q) (n : σ →₀ ℕ)
+      (S : Finset (τ →₀ ℕ)), (∀ α : τ →₀ ℕ, α.degree ≤ n.degree → α ∈ S) →
+      MvPolynomial.eval (fun i => algebraMap B Q (z i)) (trunc' Q n (subst (up Q u) g)) =
+        ∑ α ∈ S, coeff α g *
+          algebraMap B Q (MvPolynomial.eval z (trunc' B n (α.prod fun j e => u j ^ e))) := by
+  intro B Q _ _ _ σ τ _ _ _ _ z u hu g n S hS
+  have ha : HasSubst (up Q u) :=
+    hasSubst_of_constantCoeff_zero fun j => by simp [up, constantCoeff_map, hu j]
+  have hP : ∀ α : τ →₀ ℕ, (α.prod fun j e => (up Q u j) ^ e) =
+      map (algebraMap B Q) (α.prod fun j e => u j ^ e) := by
+    intro α
+    rw [map_finsuppProd]
+    simp [up, map_pow]
+  have hcoeff : ∀ β ≤ n, coeff β (subst (up Q u) g) =
+      ∑ α ∈ S, coeff α g * algebraMap B Q (coeff β (α.prod fun j e => u j ^ e)) := by
+    intro β hβ
+    rw [coeff_subst ha]
+    simp_rw [hP, coeff_map, smul_eq_mul]
+    apply finsum_eq_sum_of_support_subset
+    intro α hα
+    by_contra hαS
+    apply hα
+    dsimp only
+    have hlt : n.degree < α.degree := lt_of_not_ge fun h => hαS (hS α h)
+    rw [GlobalTheory.T.coeff_finsuppProd_constFree_eq_zero_of_degree_lt B σ τ u hu α β (lt_of_le_of_lt (Finsupp.degree_mono hβ) hlt), map_zero,
+      mul_zero]
+  rw [eval_trunc'_eq_sum, Finset.sum_congr rfl fun β hβ => by
+    rw [hcoeff β (Finset.mem_Iic.mp hβ)]]
+  simp_rw [Finset.sum_mul]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun α _ => ?_
+  rw [eval_trunc'_eq_sum, map_sum, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun β _ => ?_
+  rw [map_mul, map_prod]
+  simp_rw [map_pow]
+  ring
+
+end GlobalTheory.DivSub
+end
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mvPowerSeries_eval_trunc_subst_eq_sum : ∀ (B Q : Type) [CommRing B] [CommRing Q] [Algebra B Q] (σ τ : Type) [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ] (z : σ → B) (u : τ → MvPowerSeries σ B), (∀ j, constantCoeff (u j) = 0) → ∀ (g : MvPowerSeries τ Q) (n : σ →₀ ℕ) (S : Finset (τ →₀ ℕ)), (∀ α : τ →₀ ℕ, α.degree ≤ n.degree → α ∈ S) → MvPolynomial.eval (fun i => algebraMap B Q (z i)) (trunc' Q n (subst (up Q u) g)) = ∑ α ∈ S, coeff α g * algebraMap B Q (MvPolynomial.eval z (trunc' B n (α.prod fun j e => u j ^ e))) := by
+  atlas_forward_decl GlobalTheory.DivSub.eval_trunc'_subst_eq_sum
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+namespace GlobalTheory
+
+theorem trunc'_eval_dvd_of_order :
+    ∀ (p : ℕ) (B : Type) [CommRing B] (σ : Type) [Fintype σ] [DecidableEq σ] (z : σ → B),
+      (∀ i, ∃ N : ℕ, (p : B) ∣ z i ^ N) → ∃ L : ℕ, ∀ (k : ℕ) (h : MvPowerSeries σ B),
+        (∀ α : σ →₀ ℕ, α.degree < L * k → coeff α h = 0) →
+          ∀ n : σ →₀ ℕ, (p : B) ^ k ∣ MvPolynomial.eval z (trunc' B n h) := by
+  intro p B _ σ _ _ z hz
+  choose N hN using hz
+  set N₀ : ℕ := ∑ i, N i + 1 with hN₀
+  have hdiv : ∀ i, (p : B) ∣ z i ^ N₀ := by
+    intro i
+    have hle : N i ≤ N₀ := by
+      have := Finset.single_le_sum (f := N) (fun _ _ => Nat.zero_le _) (Finset.mem_univ i)
+      omega
+    exact (hN i).trans (pow_dvd_pow _ hle)
+  refine ⟨Fintype.card σ * N₀ + 1, ?_⟩
+  intro k h hh n
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · simp
+  rw [MvPolynomial.eval_eq]
+  apply Finset.dvd_sum
+  intro β _
+  rw [coeff_trunc']
+  split_ifs with hβ
+  · by_cases hc : coeff β h = 0
+    · simp [hc]
+    · have hdeg : ¬ β.degree < (Fintype.card σ * N₀ + 1) * k := fun hlt => hc (hh β hlt)
+      have : ∃ i, N₀ * k ≤ β i := by
+        by_contra hne
+        push_neg at hne
+        apply hdeg
+        rw [Finsupp.degree_eq_sum]
+        calc ∑ i, β i ≤ ∑ _i : σ, N₀ * k := Finset.sum_le_sum (fun i _ => (hne i).le)
+          _ = Fintype.card σ * N₀ * k := by simp [Finset.sum_const, mul_assoc]
+          _ < (Fintype.card σ * N₀ + 1) * k := by nlinarith
+      obtain ⟨i, hi⟩ := this
+      apply Dvd.dvd.mul_left
+      have h1 : (p : B) ^ k ∣ z i ^ β i := by
+        calc (p : B) ^ k ∣ (z i ^ N₀) ^ k := pow_dvd_pow_of_dvd (hdiv i) k
+          _ = z i ^ (N₀ * k) := (pow_mul _ _ _).symm
+          _ ∣ z i ^ β i := pow_dvd_pow _ hi
+      have hmem : i ∈ β.support := by
+        rw [Finsupp.mem_support_iff]
+        have : 1 ≤ N₀ * k := Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega) (by omega))
+        omega
+      exact h1.trans (Finset.dvd_prod_of_mem _ hmem)
+  · simp
+
+end GlobalTheory
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pow_dvd_eval_trunc_of_high_order : ∀ (p : ℕ) (B : Type) [CommRing B] (σ : Type) [Fintype σ] [DecidableEq σ] (z : σ → B), (∀ i, ∃ N : ℕ, (p : B) ∣ z i ^ N) → ∃ L : ℕ, ∀ (k : ℕ) (h : MvPowerSeries σ B), (∀ α : σ →₀ ℕ, α.degree < L * k → coeff α h = 0) → ∀ n : σ →₀ ℕ, (p : B) ^ k ∣ MvPolynomial.eval z (trunc' B n h) := by
+  atlas_forward_decl GlobalTheory.trunc'_eval_dvd_of_order
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+theorem GlobalTheory.tail_subst_small : ∀ (p : ℕ) [Fact p.Prime] (B O Q : Type) [CommRing B] [CommRing Q] [CommRing O] [Algebra B Q] (θ : B →+* O), IsFrame p Q θ → ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (z : σ → B), (∀ i, ∃ N : ℕ, (p : B) ∣ z i ^ N) → ∀ (τ : Type) [Fintype τ] [DecidableEq τ] (u : τ → MvPowerSeries σ B) (f : MvPowerSeries τ Q), (∀ j, constantCoeff (u j) = 0) → DIn (⊤ : Ideal B) f → ∀ m : ℕ, ∃ M0 : ℕ, ∀ M ≥ M0, ∀ n : σ →₀ ℕ, ∃ b : B, MvPolynomial.eval (fun i => algebraMap B Q (z i)) (trunc' Q n (subst (up Q u) (f - (trunc' Q (Finsupp.equivFunOnFinite.symm fun _ => M) f : MvPowerSeries τ Q)))) = algebraMap B Q (p ^ m * b) := by
+  intro p hp B O Q _ _ _ _ θ hF σ _ _ z hz τ _ _ u f hu hD m
+  have hpr : p.Prime := hp.out
+  obtain ⟨L, hL⟩ := GlobalTheory.T.pow_dvd_eval_trunc_of_high_order p B σ z hz
+  obtain ⟨M0, hM0⟩ := GlobalTheory.T.add_mul_le_of_pow_le_of_large p L m hpr.two_le
+  refine ⟨M0, fun M hM n => ?_⟩
+  set g : MvPowerSeries τ Q := f - (trunc' Q (Finsupp.equivFunOnFinite.symm fun _ => M) f : MvPowerSeries τ Q) with hg
+  have hfin := Finsupp.finite_of_degree_le (σ := τ) n.degree
+  rw [GlobalTheory.T.mvPowerSeries_eval_trunc_subst_eq_sum B Q σ τ z u hu g n hfin.toFinset (fun α hα => by simpa using hα)]
+
+  have key : ∀ α : τ →₀ ℕ, ∃ b : B, coeff α g * algebraMap B Q (MvPolynomial.eval z
+      (trunc' B n (α.prod fun j e => u j ^ e))) = algebraMap B Q (p ^ m * b) := by
+    intro α
+    by_cases hα : α ≤ Finsupp.equivFunOnFinite.symm fun _ => M
+    · refine ⟨0, ?_⟩
+      have : coeff α g = 0 := by
+        simp [hg, coeff_trunc', hα]
+      simp [this]
+    · have hcg : coeff α g = coeff α f := by
+        simp [hg, coeff_trunc', hα]
+      rw [hcg]
+      obtain ⟨i, hi⟩ : ∃ i, M < α i := by
+        by_contra h
+        push_neg at h
+        exact hα (fun i => by simpa using h i)
+      obtain ⟨b, -, hb⟩ := hD α i
+      obtain ⟨v, n', hn', hdec⟩ := Nat.exists_eq_pow_mul_and_not_dvd (n := α i) (by omega) p hpr.one_lt.ne'
+      have hcop : Nat.Coprime n' p := ((Nat.Prime.coprime_iff_not_dvd hpr).2 hn').symm
+      obtain ⟨w, hw⟩ := (hF.unit_coprime n' hcop).exists_right_inv
+      have hn'pos : 0 < n' := Nat.pos_of_ne_zero (by rintro rfl; simp at hdec; omega)
+      have hpv : p ^ v ≤ α.degree := by
+        have : p ^ v ≤ α i := by rw [hdec]; exact Nat.le_mul_of_pos_right _ hn'pos
+        exact this.trans (Finsupp.le_degree i α)
+      have hdeg : (v + m) * L ≤ α.degree :=
+        hM0 α.degree v (by have := Finsupp.le_degree i α; omega) hpv
+      obtain ⟨c, hc⟩ := hL (v + m) (α.prod fun j e => u j ^ e) (fun β hβ =>
+        GlobalTheory.T.coeff_finsuppProd_constFree_eq_zero_of_degree_lt B σ τ u hu α β (by rw [mul_comm] at hβ; omega)) n
+      refine ⟨b * w * c, ?_⟩
+      rw [hc]
+      rw [hdec] at hb
+      have hw' := congrArg (algebraMap B Q) hw
+      simp only [map_mul, map_pow, map_natCast, map_one, Nat.cast_mul, Nat.cast_pow] at hb hw' ⊢
+      linear_combination ((p : Q) ^ m * algebraMap B Q w * algebraMap B Q c) * hb
+        - (coeff α f * (p : Q) ^ (v + m) * algebraMap B Q c) * hw'
+  choose bb hbb using key
+  refine ⟨∑ α ∈ hfin.toFinset, bb α, ?_⟩
+  rw [Finset.mul_sum, map_sum]
+  exact Finset.sum_congr rfl fun α _ => hbb α
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tail_subst_pAdically_small_of_integral_differential : ∀ (p : ℕ) [Fact p.Prime] (B O Q : Type) [CommRing B] [CommRing Q] [CommRing O] [Algebra B Q] (θ : B →+* O), IsFrame p Q θ → ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (z : σ → B), (∀ i, ∃ N : ℕ, (p : B) ∣ z i ^ N) → ∀ (τ : Type) [Fintype τ] [DecidableEq τ] (u : τ → MvPowerSeries σ B) (f : MvPowerSeries τ Q), (∀ j, constantCoeff (u j) = 0) → DIn (⊤ : Ideal B) f → ∀ m : ℕ, ∃ M0 : ℕ, ∀ M ≥ M0, ∀ n : σ →₀ ℕ, ∃ b : B, MvPolynomial.eval (fun i => algebraMap B Q (z i)) (trunc' Q n (subst (up Q u) (f - (trunc' Q (Finsupp.equivFunOnFinite.symm fun _ => M) f : MvPowerSeries τ Q)))) = algebraMap B Q (p ^ m * b) := by
+  atlas_forward_decl GlobalTheory.tail_subst_small
+end
+
+section
+section
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+
+namespace GlobalTheory.QLog
+
+theorem hasVal_subst_poly : ∀ (p : ℕ) [Fact p.Prime] (B O Q : Type) [CommRing B] [CommRing Q] [CommRing O] [Algebra B Q] (θ : B →+* O), IsFrame p Q θ → ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (z : σ → B), (∀ i, ∃ N : ℕ, (p : B) ∣ z i ^ N) → ∀ E : MvPowerSeries σ B →ₐ[B] B, IsEval p z E → ∀ (τ : Type) [Fintype τ] [DecidableEq τ] (u : τ → MvPowerSeries σ B), (∀ j, constantCoeff (u j) = 0) → ∀ g : MvPolynomial τ Q, HasVal p z (subst (up Q u) (g : MvPowerSeries τ Q)) (MvPolynomial.eval (fun j => algebraMap B Q (E (u j))) g) := by
+  intro p _ B O Q _ _ _ _ θ hF σ _ _ z hz E hE τ _ _ u hu g
+  have ha : HasSubst (up Q u) := hasSubst_of_constantCoeff_zero fun j => by
+    simp [up, hu j]
+  induction g using MvPolynomial.induction_on' with
+  | monomial α c =>
+    rw [MvPolynomial.coe_monomial, subst_monomial ha, MvPolynomial.eval_monomial]
+    have hprod : α.prod (fun s n => (up Q u s) ^ n) = map (algebraMap B Q) (α.prod fun s n => (u s) ^ n) := by
+      simp [up, Finsupp.prod, map_prod, map_pow]
+    have hEp : E (α.prod fun s n => (u s) ^ n) = α.prod fun s n => (E (u s)) ^ n := by
+      simp [Finsupp.prod, map_prod, map_pow]
+    have hv := GlobalTheory.T.hasPAdicPowerSeriesValue_map_of_continuousEvaluation p B O Q θ hF σ z hz E hE (α.prod fun s n => (u s) ^ n)
+    have hs := (GlobalTheory.T.hasPAdicPowerSeriesValue_add_smul_map p B O Q θ hF σ z _ 0 _ 0 hv).2.1 c
+    rw [hprod]
+    convert hs using 1
+    · rw [MvPowerSeries.smul_eq_C_mul]; rfl
+    · rw [hEp]; simp [Finsupp.prod, map_prod, map_pow]
+  | add f g hf hg =>
+    rw [MvPolynomial.coe_add, subst_add ha, map_add]
+    exact (GlobalTheory.T.hasPAdicPowerSeriesValue_add_smul_map p B O Q θ hF σ z _ _ _ _ hf).1 hg
+
+end GlobalTheory.QLog
+end
+
+open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hasVal_subst_polynomial_eval : ∀ (p : ℕ) [Fact p.Prime] (B O Q : Type) [CommRing B] [CommRing Q] [CommRing O] [Algebra B Q] (θ : B →+* O), IsFrame p Q θ → ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (z : σ → B), (∀ i, ∃ N : ℕ, (p : B) ∣ z i ^ N) → ∀ E : MvPowerSeries σ B →ₐ[B] B, IsEval p z E → ∀ (τ : Type) [Fintype τ] [DecidableEq τ] (u : τ → MvPowerSeries σ B), (∀ j, constantCoeff (u j) = 0) → ∀ g : MvPolynomial τ Q, HasVal p z (subst (up Q u) (g : MvPowerSeries τ Q)) (MvPolynomial.eval (fun j => algebraMap B Q (E (u j))) g) := by
+  atlas_forward_decl GlobalTheory.QLog.hasVal_subst_poly
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -32,3 +335,5 @@ theorem hasVal_subst : ∀ (p : ℕ) [Fact p.Prime] (B O Q : Type) [CommRing B] 
   linear_combination hb1 + hb2 - hb3
 
 end GlobalTheory.QLog
+end
+end

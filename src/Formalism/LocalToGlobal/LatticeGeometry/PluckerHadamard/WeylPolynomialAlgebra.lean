@@ -1,6 +1,639 @@
-import Formalism.LocalToGlobal.LatticeGeometry.PluckerHadamard.BlockVandermondeForms
+import Formalism.WeightedDeltaMeans.LogBaseHeightBound
+import Formalism.LocalToGlobal.LatticeGeometry.ShimuraSheafOfIndefiniteSubspace
+import Formalism.LocalToGlobal.LatticeGeometry.ExtPtHt
+import Formalism.LocalToGlobal.LatticeGeometry.ViewsC
+import Formalism.SharpRestriction.Divisibility.HeightShare
+import Formalism.SharpRestriction.Divisibility.ProductFirstParts
+import Formalism.LocalRingCardinality.HeightBoundGeFourthPowerRank
 import Formalism.DegreeFormula.PointDegree.FlagDeg
 
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.MainNotions MvPolynomial Filter Topology
+
+namespace Formalism.L2.Geo
+
+variable {D : D7} {G : DV.Geo D.what₂.LL} {Lev : Type}
+  {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} {w : Dat D Lev}
+
+structure ExtThmB (U : ShimU D G jC ng w) where
+
+  hFl : MvPolynomial (DV.Rt D.what₂.Tau w.N) ℝ →ₗ[ℝ] ℝ
+  hFl_homog : ∀ (P : MvPolynomial (DV.Rt D.what₂.Tau w.N) ℝ) (d : ℕ),
+    d ≠ Formalism.DegreeFormula.dimFl D.what₂.Tau w.N + 1 → P.IsHomogeneous d → hFl P = 0
+
+  PBs : ℝ → MvPolynomial (DV.Rt D.what₂.Tau w.N ⊕ Unit) ℝ
+
+  PBsC : ℝ → U.Comp → MvPolynomial (DV.Rt D.what₂.Tau w.N ⊕ Unit) ℝ
+
+  v0 : D.what₂.Tau → Fin w.N → ℝ
+
+def extThmBJunk (U : ShimU D G jC ng w) : ExtThmB U where
+  hFl := 0
+  hFl_homog := fun _ _ _ _ => rfl
+  PBs := fun _ => 0
+  PBsC := fun _ _ => 0
+  v0 := fun _ _ => 0
+
+section Defs
+
+variable (U : ShimU D G jC ng w) (h : w.Indef) (lev : Finset ℕ) (hlev : ∀ p ∈ lev, p.Prime)
+
+abbrev YU : DV.ShimX D.what₂.Tau := toShimX U h lev hlev
+
+abbrev Wts (w : Dat D Lev) : Type := D.what₂.Tau → Fin w.N → ℝ
+
+def CompGapsGe (lam : Wts w) (c0 : ℝ) : Prop :=
+  ∀ τ (a : ℕ) (ha : a + 1 < w.N), a + 1 ≠ w.j →
+    c0 ≤ lam τ ⟨a, by omega⟩ - lam τ ⟨a + 1, ha⟩
+
+def RatW (lam : Wts w) : Prop := ∀ τ i, ∃ q : ℚ, lam τ i = q
+
+variable {U}
+
+def lamPP (E : ExtThmB U) (lam : Wts w) (s : ℚ) : Wts w := fun τ i => lam τ i - (s : ℝ) * E.v0 τ i
+
+def pbs (E : ExtThmB U) (B : ℝ) (lam : Wts w) (s : ℝ) : ℝ :=
+  eval (Sum.elim (fun x : DV.Rt D.what₂.Tau w.N => lam x.1 x.2) (fun _ => s)) (E.PBs B)
+
+def pbsC (E : ExtThmB U) (B : ℝ) (c : U.Comp) (lam : Wts w) (s : ℝ) : ℝ :=
+  eval (Sum.elim (fun x : DV.Rt D.what₂.Tau w.N => lam x.1 x.2) (fun _ => s)) (E.PBsC B c)
+
+def flagDegW (lam : Wts w) : ℝ := by
+  classical
+  exact Formalism.DegreeFormula.flagDeg D.what₂.Tau w.N lam
+
+def hFlPoly (E : ExtThmB U) (lam : Wts w) : ℝ :=
+  E.hFl (Formalism.DegreeFormula.linRoot lam ^ (Formalism.DegreeFormula.dimFl D.what₂.Tau w.N + 1))
+
+def swapW (lam : Wts w) (τ : D.what₂.Tau) (a : ℕ) (ha : a + 1 < w.N) : Wts w := by
+  classical
+  exact fun τ' i => if τ' = τ then lam τ (Equiv.swap (⟨a, by omega⟩ : Fin w.N) ⟨a + 1, ha⟩ i) else lam τ' i
+
+end Defs
+
+section Reformulated
+
+variable (U : ShimU D G jC ng w) (h : w.Indef) (lev : Finset ℕ) (hlev : ∀ p ∈ lev, p.Prime)
+
+def ThmBI1 (E : ExtThmB U) : Prop :=
+  ∃ C2 : ℝ, ∀ B : ℝ, 2 ≤ B →
+    (∃ Q : MvPolynomial (DV.Rt D.what₂.Tau w.N) ℝ, Q.IsHomogeneous (Formalism.DegreeFormula.dimFl D.what₂.Tau w.N + 1) ∧
+      (∀ lam : Wts w, Tendsto (fun R => product_first_partition.PBR (YU U h lev hlev) B R lam) atTop
+        (𝓝 (eval (fun x => lam x.1 x.2) Q))) ∧
+      ∀ m, |Q.coeff m| ≤ C2 * Real.log B) ∧
+    (∀ lam : Wts w, pbs E B lam 0 = product_first_partition.PB (YU U h lev hlev) B lam) ∧
+    (∀ m, |(E.PBs B).coeff m| ≤ C2 * Real.log B) ∧
+    (∑ c, E.PBsC B c) = E.PBs B ∧ ∀ c m, |(E.PBsC B c).coeff m| ≤ C2 * Real.log B
+
+def ThmBI2 (E : ExtThmB U) : Prop :=
+  ∀ c0 Λ : ℝ, 0 < c0 → ∃ s0 : ℝ, 0 < s0 ∧ ∃ C3 : ℝ, ∀ B : ℝ, 2 ≤ B → ∀ (lam : Wts w) (s : ℚ), RatW lam →
+    WeightThresholdDefs.supAbs (YU U h lev hlev) lam ≤ Λ → 0 < s → (s : ℝ) ≤ s0 →
+    WeightThresholdDefs.Dominant (YU U h lev hlev) (lamPP E lam s) → CompGapsGe (lamPP E lam s) c0 →
+    ∀ c, |U.alg.arSelfC (U.alg.Mbar B lam s) c - pbsC E B c (lamPP E lam s) s| ≤ C3 * s
+
+def ThmBI3 (E : ExtThmB U) : Prop :=
+  ∀ (B : ℝ) (lam : Wts w) (s : ℚ), 2 ≤ B → RatW lam → 0 < s → WeightThresholdDefs.Dominant (YU U h lev hlev) (lamPP E lam s) →
+    (∀ τ, 4 * (D.R.f : ℝ) * WeightThresholdDefs.supAbs (YU U h lev hlev) (lamPP E lam s) ≤
+      (B - 2) * WeightThresholdDefs.gap (YU U h lev hlev) (lamPP E lam s) τ) →
+    (YU U h lev hlev).semipos ((YU U h lev hlev).Mbar B lam s) ∧
+      (YU U h lev hlev).nefFib ((YU U h lev hlev).Mbar B lam s)
+
+def ThmBI3R (E : ExtThmB U) : Prop :=
+  ∀ Λ : ℝ, ∃ s0 : ℝ, 0 < s0 ∧ ∀ (B : ℝ) (lam : Wts w) (s : ℚ), 2 ≤ B → RatW lam →
+    WeightThresholdDefs.supAbs (YU U h lev hlev) lam ≤ Λ → 0 < s → (s : ℝ) ≤ s0 →
+    WeightThresholdDefs.Dominant (YU U h lev hlev) (lamPP E lam s) →
+    (∀ τ, 4 * (D.R.f : ℝ) * WeightThresholdDefs.supAbs (YU U h lev hlev) (lamPP E lam s) ≤
+      (B - 2) * WeightThresholdDefs.gap (YU U h lev hlev) (lamPP E lam s) τ) →
+    (YU U h lev hlev).semipos ((YU U h lev hlev).Mbar B lam s) ∧
+      (YU U h lev hlev).nefFib ((YU U h lev hlev).Mbar B lam s)
+
+
+def ThmBI5 (P : ExtPtHt U) : Prop :=
+  ∀ c0 : ℝ, 0 < c0 → ∃ t0 : ℝ, 0 < t0 ∧ ∃ C4 : ℝ, ∀ B : ℝ, 2 ≤ B → ∀ lam : Wts w, RatW lam →
+    WeightThresholdDefs.supAbs (YU U h lev hlev) lam ≤ 1 → ∀ t : ℚ, 0 < t → (t : ℝ) ≤ t0 →
+    (∀ τ, (t : ℝ) ≤ WeightThresholdDefs.gap (YU U h lev hlev) lam τ) → CompGapsGe lam c0 →
+    ∀ c y, -C4 * Real.log (B / ((t : ℝ) ^ 2)) ≤ P.ht c (U.alg.Mbar B lam (t ^ 2) c) y
+
+def ThmBI6 (P : ExtPtHt U) : Prop :=
+  ∀ c0 : ℝ, 0 < c0 → ∃ t0 : ℝ, 0 < t0 ∧ ∃ C5 : ℝ, ∀ B : ℝ, 2 ≤ B → ∀ lam : Wts w, RatW lam →
+    WeightThresholdDefs.supAbs (YU U h lev hlev) lam ≤ 1 → ∀ t : ℚ, 0 < t → (t : ℝ) ≤ t0 →
+    (∀ τ, (t : ℝ) ≤ WeightThresholdDefs.gap (YU U h lev hlev) lam τ) → CompGapsGe lam c0 →
+    ∀ c, ∃ S : Set (P.Pt c), P.dense c S ∧ ∀ y ∈ S, P.ht c (U.alg.Mbar B lam (t ^ 2) c) y ≤ C5 * Real.log B
+
+def ThmBI7 : Prop :=
+  ∀ (c : U.Comp) (lam : D.what₂.Tau → Fin w.N → ℤ), (∀ τ (a b : Fin w.N), a ≤ b → lam τ b ≤ lam τ a) →
+    G.nef (U.alg.Yv c) (U.alg.Lw c lam)
+
+def ThmBStep2 (E : ExtThmB U) : Prop :=
+  (∀ c (γ : U.cx.Γ c), IsOfFinOrder γ → γ = 1) →
+  ∀ (B : ℝ) (lam : Wts w) (s : ℚ), 0 < s → WeightThresholdDefs.Dominant (YU U h lev hlev) lam →
+    WeightThresholdDefs.Dominant (YU U h lev hlev) (lamPP E lam s) →
+    (∀ c, 0 ≤ U.alg.degA c (U.alg.Mbar B lam s c)) ∧
+      ∑ c, U.alg.degA c (U.alg.Mbar B lam s c) ≤ WeightThresholdDefs.geoDeg (YU U h lev hlev) lam
+
+def ThmBAmple (E : ExtThmB U) (P : ExtPtHt U) : Prop :=
+  ∀ (B : ℝ) (lam : Wts w) (s : ℚ), 0 < s → WeightThresholdDefs.Dominant (YU U h lev hlev) (lamPP E lam s) →
+    (∀ τ, 4 * (D.R.f : ℝ) * WeightThresholdDefs.supAbs (YU U h lev hlev) (lamPP E lam s) ≤
+      (B - 2) * WeightThresholdDefs.gap (YU U h lev hlev) (lamPP E lam s) τ) →
+    ∀ c, P.ampleG c (U.alg.Mbar B lam s c)
+
+def ThmBI8 (E : ExtThmB U) : Prop :=
+  ∀ B : ℝ, 2 ≤ B → ∀ (τ : D.what₂.Tau) (a : ℕ) (ha : a + 1 < w.N), a + 1 ≠ w.j → ∀ lam : Wts w,
+    product_first_partition.PB (YU U h lev hlev) B (swapW lam τ a ha) - U.cx.vol * hFlPoly E (swapW lam τ a ha) =
+      -(product_first_partition.PB (YU U h lev hlev) B lam - U.cx.vol * hFlPoly E lam)
+
+def ThmBI9 (E : ExtThmB U) : Prop :=
+  (∀ lam : Wts w, WeightThresholdDefs.Dominant (YU U h lev hlev) lam → (∃ τ, WeightThresholdDefs.gap (YU U h lev hlev) lam τ = 0) →
+    hFlPoly E lam = 0) ∧
+  ∀ lam : Wts w, WeightThresholdDefs.Dominant (YU U h lev hlev) lam → 0 ≤ hFlPoly E lam
+
+def ThmBGeoLim : Prop :=
+  (∀ c (γ : U.cx.Γ c), IsOfFinOrder γ → γ = 1) → ∀ (B : ℝ) (uq : D.what₂.Tau → Fin w.N → ℚ), ∀ c : U.Comp,
+    Tendsto (fun s : ℚ => U.alg.degA c (U.alg.Mbar B (product_first_partition.castW (YU U h lev hlev) uq) s c)) (𝓝[>] 0)
+      (𝓝 (U.cx.volC c * flagDegW (product_first_partition.castW (YU U h lev hlev) uq)))
+
+end Reformulated
+
+section Targets
+
+variable (U : ShimU D G jC ng w) (h : w.Indef) (lev : Finset ℕ) (hlev : ∀ p ∈ lev, p.Prime)
+
+def ThmBDecomp (E : ExtThmB U) : Prop :=
+  ∃ CB : ℝ, ∃ B1 : ℕ, ∀ B : ℕ, B1 ≤ B → ∃ al be : D.what₂.Tau → ℝ,
+    ∃ EB : MvPolynomial (DV.Rt D.what₂.Tau w.N) ℝ, (∀ m, |EB.coeff m| ≤ CB * Real.log B / B) ∧
+      ∀ lam : Wts w, product_first_partition.PB (YU U h lev hlev) B lam =
+        U.cx.vol * (hFlPoly E lam + ((Formalism.DegreeFormula.dimFl D.what₂.Tau w.N : ℝ) + 1) *
+          flagDegW lam *
+          ∑ τ, (al τ * ∑ i : Fin w.N, (if (i : ℕ) < w.j then lam τ i else 0) +
+            be τ * ∑ i : Fin w.N, (if (i : ℕ) < w.j then 0 else lam τ i))) +
+        eval (fun x => lam x.1 x.2) EB
+
+def ThmBTarget0 : Prop :=
+  ∀ B : ℝ, ∃ Q : MvPolynomial (DV.Rt D.what₂.Tau w.N) ℝ, ∀ lam : Wts w,
+    Tendsto (fun R => product_first_partition.PBR (YU U h lev hlev) B R lam) atTop (𝓝 (eval (fun x => lam x.1 x.2) Q))
+
+def ThmBTarget1m : Prop :=
+  ∀ (uq : D.what₂.Tau → Fin w.N → ℚ) (g : ℝ),
+    WeightThresholdDefs.WeightHyp (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g →
+    ((product_first_partition.badPr (YU U h lev hlev)).card : ℝ) ≤
+      WeightThresholdDefs.bigB0 (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g →
+    Tendsto (fun s : ℚ => (YU U h lev hlev).arSelf ((YU U h lev hlev).Mbar
+        (WeightThresholdDefs.bigB0 (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g) (product_first_partition.castW (YU U h lev hlev) uq) s))
+      (𝓝[>] 0) (𝓝 (product_first_partition.PB (YU U h lev hlev)
+        (WeightThresholdDefs.bigB0 (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g) (product_first_partition.castW (YU U h lev hlev) uq))) ∧
+    ∀ᶠ s : ℚ in 𝓝[>] 0,
+      (YU U h lev hlev).semipos ((YU U h lev hlev).Mbar
+        (WeightThresholdDefs.bigB0 (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g) (product_first_partition.castW (YU U h lev hlev) uq) s) ∧
+      (YU U h lev hlev).nefFib ((YU U h lev hlev).Mbar
+        (WeightThresholdDefs.bigB0 (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g) (product_first_partition.castW (YU U h lev hlev) uq) s)
+
+def ThmBTarget2 : Prop :=
+  ∀ (uq : D.what₂.Tau → Fin w.N → ℚ) (g : ℝ),
+    WeightThresholdDefs.WeightHyp (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g →
+    ((product_first_partition.badPr (YU U h lev hlev)).card : ℝ) ≤
+      WeightThresholdDefs.bigB0 (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g →
+    (∀ c, ∃ l : ℝ, Tendsto (product_first_partition.slFun (YU U h lev hlev)
+        (WeightThresholdDefs.bigB0 (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g) (product_first_partition.castW (YU U h lev hlev) uq) c)
+        (𝓝[>] 0) (𝓝 l)) ∧
+    product_first_partition.PB (YU U h lev hlev) (WeightThresholdDefs.bigB0 (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g)
+                        (product_first_partition.castW (YU U h lev hlev) uq) /
+      (((WeightThresholdDefs.dimY (YU U h lev hlev) : ℝ) + 1) *
+        WeightThresholdDefs.geoDeg (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq)) =
+    (∑ c, limUnder (𝓝[>] (0 : ℚ)) (product_first_partition.slFun (YU U h lev hlev)
+        (WeightThresholdDefs.bigB0 (YU U h lev hlev) (product_first_partition.castW (YU U h lev hlev) uq) g) (product_first_partition.castW (YU U h lev hlev) uq) c)) /
+      (Fintype.card U.Comp : ℝ)
+
+end Targets
+
+end Formalism.L2.Geo
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.MainNotions MvPolynomial Filter Topology Finset
+
+namespace Formalism.L2.Geo
+
+section Alg
+
+open Formalism.ShimuraLimitIdentity (Pol Sh Tot psumAt Kills)
+
+def smallBlock (N j : ℕ) : Finset (Fin N) := univ.filter (fun i : Fin N => j ≤ i.val)
+
+variable {Ψ : Type} [Fintype Ψ] {N : ℕ}
+
+def a0Mu (j : ℕ) : Pol Ψ N := ∑ τ : Ψ, ∑ i ∈ smallBlock N j, X (τ, i)
+
+def smallBlockPowerSum (j : ℕ) (τ : Ψ) (k : ℕ) : Pol Ψ N := ∑ i ∈ smallBlock N j, X (τ, i) ^ k
+
+def blockVandermondePolynomial (τ : Ψ) (S : Finset (Fin N)) : Pol Ψ N :=
+  ∏ a ∈ S, ∏ b ∈ S.filter (fun b => a < b), (X (τ, a) - X (τ, b))
+
+def fibreVandermondeProduct (j : ℕ) (cf : ℝ) : Pol Ψ N :=
+  C cf * ∏ τ : Ψ, (blockVandermondePolynomial τ (Formalism.ShimuraLimitIdentity.top N j) * blockVandermondePolynomial τ (smallBlock N j))
+
+def a0F (j n : ℕ) (cf : ℝ) : Pol Ψ N := a0Mu j ^ (n + 1) * fibreVandermondeProduct j cf
+
+def a0JP (j n : ℕ) (cf : ℝ) : Pol Ψ N := a0Mu j ^ n * fibreVandermondeProduct j cf
+
+def a0n (Ψ : Type) [Fintype Ψ] (N j : ℕ) : ℕ := Fintype.card Ψ * (j * (N - j))
+
+end Alg
+
+section AlgStmt
+
+open Formalism.ShimuraLimitIdentity (Pol Sh Tot psumAt Kills)
+
+def LargestBlockVandermondeVanishes : Prop :=
+  ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j n : ℕ) (cf : ℝ) (τ : Ψ),
+    ∑ i ∈ Formalism.ShimuraLimitIdentity.top N j, pderiv (τ, i) (a0F (Ψ := Ψ) (N := N) j n cf) = 0
+
+def TotalDerivativeValue : Prop :=
+  ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j n : ℕ) (cf : ℝ) (τ : Ψ),
+    ∑ i : Fin N, pderiv (τ, i) (a0F (Ψ := Ψ) (N := N) j n cf) =
+      C (((n : ℝ) + 1) * ((N - j : ℕ) : ℝ)) * a0JP j n cf
+
+def TestPolynomialHomogeneous : Prop :=
+  ∀ (Ψ : Type) [Fintype Ψ] (N j : ℕ) (cf : ℝ), j ≤ N →
+    (a0F (Ψ := Ψ) (N := N) j (a0n Ψ N j) cf).IsHomogeneous (Formalism.DegreeFormula.dimFl Ψ N + 1)
+
+def FlagIntegralNonzero : Prop :=
+  ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ), j ≤ N →
+    degFlL Ψ N (a0JP (Ψ := Ψ) (N := N) j (a0n Ψ N j) 1) ≠ 0
+
+def FlagIntegralAnnihilatesPowerSums : Prop :=
+  ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ), Kills (degFlL Ψ N)
+
+def RestTermBound : Prop :=
+  ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (cf : ℝ) (Q : Ψ → ℕ → Pol Ψ N), j < N →
+    a0F j (a0n Ψ N j) cf = ∑ σ : Ψ, ∑ k ∈ Icc 1 N, psumAt σ k * Q σ k →
+    ∀ (τ τ' : Ψ) (k : ℕ), k ∈ Icc 2 N →
+      |(k : ℝ) * degFlL Ψ N (smallBlockPowerSum j τ' (k - 1) * Q τ k)| ≤
+        ((a0n Ψ N j : ℝ) + 1) * |degFlL Ψ N (a0JP j (a0n Ψ N j) cf)| *
+          (2 * (((j * (N - j) : ℕ) : ℝ) + N)) ^ (k - 1) / (Nat.factorial k : ℝ)
+
+def PrimeSumBound : Prop :=
+  ∀ (Pr : Finset ℕ) (f N B0 X : ℝ) (K : ℕ), (∀ p ∈ Pr, p.Prime ∧ B0 < p) → 1 ≤ f → 2 ≤ N →
+    4 * f * N ^ 2 ≤ B0 → 0 ≤ X → X ≤ 3 / 2 * N ^ 2 →
+    ∑ p ∈ Pr, Real.log p *
+      (f * ∑ k ∈ Icc 2 K, 2 * ((p : ℝ) ^ k)⁻¹ * X ^ (k - 1) / (Nat.factorial k : ℝ)) ≤ 8 / 5
+
+def TwistShapeProp {Ψ : Type} [Fintype Ψ] {N : ℕ} (j : ℕ) (I : Pol Ψ N →ₗ[ℝ] ℝ) (vol : ℝ) (p : ℕ)
+    (Q : Ψ → ℕ → Pol Ψ N) (rp : ℝ) : Prop :=
+  ∃ (geo : Ψ → ℕ → ℝ) (Gt : ℕ → Ψ → ℕ → Pol Ψ N),
+    rp = Real.log p * vol * ∑ τ : Ψ, ∑ k ∈ Icc 2 N, (k : ℝ) * geo τ k ∧
+    (∀ τ k, HasSum (fun m : ℕ => (((p : ℝ) ^ k)⁻¹) ^ (m + 1) * I (Gt m τ k * Q τ k)) (geo τ k)) ∧
+    ∀ m τ k, ∃ (τ' : Ψ) (s : ℝ) (H : Pol Ψ N), (s = 1 ∨ s = -1) ∧
+      Gt m τ k = C s * smallBlockPowerSum j τ' (k - 1) + psumAt τ' (k - 1) * H
+
+def RestBoundFromPrimeSum : Prop :=
+  ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] [Nonempty Ψ] (N j : ℕ) (cf vol B0 restF : ℝ)
+    (Q : Ψ → ℕ → Pol Ψ N) (Pr : ℕ → Finset ℕ) (rp : ℕ → ℝ),
+    RestTermBound → PrimeSumBound → Kills (degFlL Ψ N) →
+    j < N → 2 ≤ N → 0 < vol → 4 * (Fintype.card Ψ : ℝ) * (N : ℝ) ^ 2 ≤ B0 →
+    a0F j (a0n Ψ N j) cf = ∑ σ : Ψ, ∑ k ∈ Icc 1 N, psumAt σ k * Q σ k →
+    (∀ B, ∀ p ∈ Pr B, p.Prime ∧ B0 < p) →
+    (∀ B, ∀ p ∈ Pr B, TwistShapeProp j (degFlL Ψ N) vol p Q (rp p)) →
+    Tendsto (fun B => ∑ p ∈ Pr B, rp p) atTop (𝓝 restF) →
+    |restF| ≤ 8 / 5 * (((a0n Ψ N j : ℝ) + 1) * vol * |degFlL Ψ N (a0JP j (a0n Ψ N j) cf)|)
+
+def CauchyBinetHadamard : Prop :=
+  ∀ (a b : ℕ) (Z : Matrix (Fin a) (Fin b) ℂ), (∀ i k, ‖Z i k‖ = 1) →
+    1 / 2 * Real.log (Matrix.det (1 + Z * Z.conjTranspose)).re ≤ (a : ℝ) / 2 * Real.log (1 + b)
+
+def LowerBoundFromTermBounds : Prop :=
+  ∀ (Ψ : Type) [Fintype Ψ] [Nonempty Ψ] (N j jp n : ℕ) (PPF hhF restF vol J K1 Ca Λ : ℝ)
+    (A0 b0 ShF TotF : Ψ → ℝ),
+    N = j + jp → 1 ≤ jp → 2 * jp ≤ N → 0 < vol → 0 < J → 0 ≤ K1 → 0 ≤ Ca → 1 ≤ Λ →
+    Real.log ((N : ℝ) + 1) ≤ Λ →
+    PPF = vol * (hhF - (∑ τ, A0 τ * ShF τ) - (∑ τ, b0 τ * TotF τ)) + restF →
+    (∀ τ, ShF τ = 0) → (∀ τ, TotF τ = ((n : ℝ) + 1) * jp * J) →
+    -(((n : ℝ) + 1) * vol * J * (Ca * (Fintype.card Ψ : ℝ) * jp * Λ)) ≤ PPF →
+    hhF ≤ ((n : ℝ) + 1) * J * ((Fintype.card Ψ : ℝ) * (jp / 2 * Real.log ((N : ℝ) + 1))) →
+    |restF| ≤ 8 / 5 * (((n : ℝ) + 1) * vol * J) →
+    (∀ τ, |(j : ℝ) * A0 τ + (N : ℝ) * b0 τ| ≤ K1 * N * Λ) →
+    (∀ τ σ, A0 τ = A0 σ) →
+    ∀ τ, -((2 * K1 + 2 * Ca + 21 / 5) * Λ) ≤ A0 τ
+
+def LowerBoundHypothesis {Ψ : Type} (A0 : Ψ → ℝ) (K2 Λ : ℝ) : Prop := ∀ τ, -(K2 * Λ) ≤ A0 τ
+
+end AlgStmt
+
+section Geo
+
+open Formalism.ShimuraLimitIdentity (Pol Sh Tot psumAt Kills)
+
+variable {D : D7} {G : DV.Geo D.what₂.LL} {Lev : Type}
+  {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} {w : Dat D Lev}
+
+structure ExtensionData (U : ShimU D G jC ng w) where
+
+  Xb : U.Comp → G.Var
+
+  PtX : U.Comp → Type
+
+  bdX : ∀ c, PtX c → Prop
+
+  htX : ∀ c, G.Adl (Xb c) → PtX c → ℝ
+
+  degX : ∀ c, G.Adl (Xb c) → ℝ
+
+  semiposX : ∀ c, G.Adl (Xb c) → Prop
+  nefFibX : ∀ c, G.Adl (Xb c) → Prop
+  ampleX : ∀ c, G.Adl (Xb c) → Prop
+
+  muC : ℝ → ℝ → ℝ → ∀ c, G.Adl (Xb c)
+
+  arLim : ℝ → U.Comp → ℝ
+
+  degMu : U.Comp → ℝ
+
+  meanU : U.Comp → ℝ
+
+  fdeg : ℝ
+
+def trivialExtensionData (U : ShimU D G jC ng w) : ExtensionData U where
+  Xb := U.alg.Yv
+  PtX := fun _ => Empty
+  bdX := fun _ _ => False
+  htX := fun _ _ _ => 0
+  degX := fun _ _ => 0
+  semiposX := fun _ _ => True
+  nefFibX := fun _ _ => True
+  ampleX := fun _ _ => False
+  muC := fun B _ _ c => U.alg.Mbar B 0 0 c
+  arLim := fun _ _ => 0
+  degMu := fun _ => 1
+  meanU := fun _ => 0
+  fdeg := 1
+
+section Props
+
+variable (U : ShimU D G jC ng w) (X : ExtensionData U)
+
+abbrev fA (D : D7) : ℝ := (Fintype.card D.what₂.Tau : ℝ)
+
+abbrev jpA (w : Dat D Lev) : ℝ := ((w.N - w.j : ℕ) : ℝ)
+
+abbrev nA (w : Dat D Lev) : ℕ := a0n D.what₂.Tau w.N w.j
+
+def JA (w : Dat D Lev) (cf : ℝ) : ℝ := by
+  classical
+  exact degFlL D.what₂.Tau w.N (a0JP w.j (nA w) cf)
+
+abbrev FA (w : Dat D Lev) (cf : ℝ) : Pol D.what₂.Tau w.N := a0F w.j (nA w) cf
+
+def ZhangLowerXProp : Prop :=
+  ∀ (c : U.Comp) (Lb : G.Adl (X.Xb c)), X.semiposX c Lb → X.nefFibX c Lb → X.ampleX c Lb →
+    ∀ e : ℝ, (∀ y, e ≤ X.htX c Lb y) → ((G.dim (X.Xb c) : ℝ) + 1) * e * X.degX c Lb ≤ G.arTop (X.Xb c) Lb
+
+def DimXProp : Prop := ∀ c, G.dim (X.Xb c) = nA w
+
+def CuspBundlePosProp : Prop :=
+  ∀ B : ℝ, 4 * fA D ≤ B - 2 → ∀ ep t' : ℝ, 0 < ep → ep ≤ 1 → 0 < t' → t' ≤ 1 → ∀ c,
+    X.semiposX c (X.muC B ep t' c) ∧ X.nefFibX c (X.muC B ep t' c) ∧ X.ampleX c (X.muC B ep t' c)
+
+def HtInteriorProp (Ch K rd Lchi : ℝ) : Prop :=
+  ∀ B : ℝ, 4 * fA D * (w.N : ℝ) ^ 2 ≤ B → ∀ ep t' : ℝ, 0 < ep → ep ≤ 1 → 0 < t' → t' ≤ 1 → ∀ c y, ¬ X.bdX c y →
+    -(Ch * fA D * jpA w * (Real.log (B * rd) + Lchi)) - ep * K ≤ X.htX c (X.muC B ep t' c) y
+
+def HtBoundaryProp (Ch K rd Lchi : ℝ) : Prop :=
+  ∀ B : ℝ, 4 * fA D * (w.N : ℝ) ^ 2 ≤ B → ∀ ep t' : ℝ, 0 < ep → ep ≤ 1 → 0 < t' → t' ≤ 1 → ∀ c y, X.bdX c y →
+    -(Ch * fA D * jpA w * (Real.log (B * rd) + Lchi)) - ep * K ≤ X.htX c (X.muC B ep t' c) y
+
+def StokesLimitProp (K : ℝ) : Prop :=
+  ∀ B : ℝ, 4 * fA D ≤ B - 2 → ∀ (c : U.Comp) (a : ℝ),
+    (∀ ep t' : ℝ, 0 < ep → ep ≤ 1 → 0 < t' → t' ≤ 1 →
+      ((nA w : ℝ) + 1) * (a - ep * K) * X.degX c (X.muC B ep t' c) ≤ G.arTop (X.Xb c) (X.muC B ep t' c)) →
+    ((nA w : ℝ) + 1) * (a - X.meanU c / 2) * X.degMu c ≤ X.arLim B c
+
+def CuspMeanProp (Cu rd Lchi : ℝ) : Prop :=
+  1 ≤ w.N - w.j → 3 * (w.N - w.j) + 1 ≤ w.N → ∀ B : ℝ, 4 * fA D * (w.N : ℝ) ^ 2 ≤ B → ∀ c,
+    X.meanU c ≤ Cu * fA D * jpA w * (Real.log (B * rd) + Lchi)
+
+def PushDownProp (PPf : Pol D.what₂.Tau w.N →ₗ[ℝ] ℝ) (cf B : ℝ) : Prop :=
+  PPf (FA w cf) = cf * X.fdeg * ∑ c, X.arLim B c ∧
+    (∀ c, cf * X.fdeg * X.degMu c = U.cx.volC c * JA w cf) ∧ ∀ c, 0 < X.degMu c
+
+def PolarTie (h : w.Indef) (lev : Finset ℕ) (hlev : ∀ p ∈ lev, p.Prime) (B : ℝ)
+    (PPf : Pol D.what₂.Tau w.N →ₗ[ℝ] ℝ) : Prop :=
+  (∀ (P : Pol D.what₂.Tau w.N) (d : ℕ), d ≠ WeightThresholdDefs.dimY (YU U h lev hlev) + 1 → P.IsHomogeneous d → PPf P = 0) ∧
+    ∀ lam : Wts w, PPf (Formalism.DegreeFormula.linRoot lam ^ (WeightThresholdDefs.dimY (YU U h lev hlev) + 1)) = product_first_partition.PB (YU U h lev hlev) B lam
+
+def GrassmannianHeightBound (E : ExtThmB U) (cf : ℝ) : Prop :=
+  0 < JA w cf → ∀ e : ℝ, (∀ Z : Matrix (Fin (w.N - w.j)) (Fin w.j) ℂ, (∀ a b, ‖Z a b‖ = 1) →
+      1 / 2 * Real.log (Matrix.det (1 + Z * Z.conjTranspose)).re ≤ e) →
+    E.hFl (FA w cf) ≤ ((nA w : ℝ) + 1) * JA w cf * (fA D * e)
+
+end Props
+
+section Assembly
+
+variable (U : ShimU D G jC ng w)
+
+def SlopeLowerBoundFromPluckerHeights : Prop :=
+  ∀ (X : ExtensionData U) (PPf : Pol D.what₂.Tau w.N →ₗ[ℝ] ℝ) (cf B rd Lchi Ch Cu K : ℝ),
+    0 < Fintype.card D.what₂.Tau → 1 ≤ w.N - w.j → 3 * (w.N - w.j) + 1 ≤ w.N →
+    4 * fA D * (w.N : ℝ) ^ 2 ≤ B → 1 ≤ rd → 0 ≤ Lchi → 0 ≤ Ch → 0 ≤ Cu → 0 < JA w cf →
+    ZhangLowerXProp U X → DimXProp U X → CuspBundlePosProp U X → HtInteriorProp U X Ch K rd Lchi →
+    HtBoundaryProp U X Ch K rd Lchi → StokesLimitProp U X K → CuspMeanProp U X Cu rd Lchi →
+    PushDownProp U X PPf cf B →
+    -(((nA w : ℝ) + 1) * U.cx.vol * JA w cf *
+        ((Ch + Cu / 2) * fA D * jpA w * (Real.log (B * rd) + Lchi))) ≤ PPf (FA w cf)
+
+open Classical in
+
+def LowerBoundOnShimura : Prop :=
+  ∀ (h : w.Indef) (lev : Finset ℕ) (hlev : ∀ p ∈ lev, p.Prime) (E : ExtThmB U) (X : ExtensionData U)
+    (PPf : Pol D.what₂.Tau w.N →ₗ[ℝ] ℝ) (rest : Pol D.what₂.Tau w.N → ℝ) (A0 b0 : D.what₂.Tau → ℝ)
+    (cf B0 rd Lchi Ch Cu K K1 : ℝ) (Q : Pol D.what₂.Tau w.N) (Qd : D.what₂.Tau → ℕ → Pol D.what₂.Tau w.N)
+    (Pr : ℕ → Finset ℕ) (rp : ℕ → ℝ),
+
+    LargestBlockVandermondeVanishes → TotalDerivativeValue → TestPolynomialHomogeneous → FlagIntegralAnnihilatesPowerSums → RestTermBound → PrimeSumBound → RestBoundFromPrimeSum →
+    CauchyBinetHadamard → LowerBoundFromTermBounds → SlopeLowerBoundFromPluckerHeights U →
+
+    0 < Fintype.card D.what₂.Tau → 1 ≤ w.N - w.j → 3 * (w.N - w.j) + 1 ≤ w.N →
+    4 * fA D * (w.N : ℝ) ^ 2 ≤ B0 → 1 ≤ rd → 0 ≤ Lchi → 0 ≤ K1 → 0 ≤ Ch → 0 ≤ Cu → 0 < JA w cf →
+
+    PolarTie U h lev hlev B0 PPf →
+    (∀ F : Pol D.what₂.Tau w.N, F.IsHomogeneous (Formalism.DegreeFormula.dimFl D.what₂.Tau w.N + 1) →
+      PPf F = U.cx.vol * (E.hFl F - (∑ τ, A0 τ * Sh (degFlL D.what₂.Tau w.N) w.j τ F)
+        - (∑ τ, b0 τ * Tot (degFlL D.what₂.Tau w.N) τ F)) + rest F) →
+
+    Q.IsHomogeneous (Formalism.DegreeFormula.dimFl D.what₂.Tau w.N) → degFlL D.what₂.Tau w.N Q = 1 →
+    (∀ τ, E.hFl (psumAt τ 1 * Q) = 0) → (∀ τ, rest (psumAt τ 1 * Q) = 0) →
+    (∀ τ, |PPf (psumAt τ 1 * Q)| ≤ U.cx.vol * (K1 * (w.N : ℝ) * (Real.log (B0 * rd) + Lchi))) →
+
+    (∀ τ σ, A0 τ = A0 σ) →
+
+    FA w cf = ∑ σ, ∑ k ∈ Icc 1 w.N, psumAt σ k * Qd σ k →
+    (∀ B, ∀ p ∈ Pr B, p.Prime ∧ B0 < p) →
+    (∀ B, ∀ p ∈ Pr B, TwistShapeProp w.j (degFlL D.what₂.Tau w.N) U.cx.vol p Qd (rp p)) →
+    Tendsto (fun B => ∑ p ∈ Pr B, rp p) atTop (𝓝 (rest (FA w cf))) →
+
+    ZhangLowerXProp U X → DimXProp U X → CuspBundlePosProp U X → HtInteriorProp U X Ch K rd Lchi →
+    HtBoundaryProp U X Ch K rd Lchi → StokesLimitProp U X K → CuspMeanProp U X Cu rd Lchi →
+    PushDownProp U X PPf cf B0 → GrassmannianHeightBound U E cf →
+    LowerBoundHypothesis A0 (2 * K1 + 2 * Ch + Cu + 21 / 5) (Real.log (B0 * rd) + Lchi)
+
+end Assembly
+
+
+end Geo
+
+end Formalism.L2.Geo
+end
+end
+
+section
+noncomputable section
+
+open Finset MvPolynomial
+
+namespace Formalism.L2.Geo
+
+namespace BlockVandermondeForms
+
+open Formalism.ShimuraLimitIdentity (Pol psumAt)
+
+variable {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ}
+
+def dS (τ : Ψ) (S : Finset (Fin N)) : Derivation ℝ (Pol Ψ N) (Pol Ψ N) := ∑ i ∈ S, pderiv (τ, i)
+
+theorem dS_apply (τ : Ψ) (S : Finset (Fin N)) (P : Pol Ψ N) : dS τ S P = ∑ i ∈ S, pderiv (τ, i) P := by
+  classical
+  unfold dS
+  refine Finset.induction_on S (by simp) ?_
+  intro a t ha ih
+  rw [Finset.sum_insert ha, Finset.sum_insert ha, Derivation.add_apply, ih]
+
+theorem dS_X (τ : Ψ) (S : Finset (Fin N)) (σ : Ψ) (a : Fin N) :
+    dS τ S (X (σ, a)) = if σ = τ ∧ a ∈ S then 1 else 0 := by
+  rw [dS_apply]
+  simp only [pderiv_X]
+  by_cases h : σ = τ ∧ a ∈ S
+  · obtain ⟨rfl, ha⟩ := h
+    rw [if_pos ⟨rfl, ha⟩, Finset.sum_eq_single a]
+    · simp
+    · intro b _ hb
+      simp [Pi.single_apply, Ne.symm hb]
+    · intro h'
+      exact absurd ha h'
+  · rw [if_neg h]
+    refine Finset.sum_eq_zero fun i hi => ?_
+    rw [Pi.single_apply, if_neg]
+    intro he
+    simp only [Prod.mk.injEq] at he
+    exact h ⟨he.1, by rw [he.2]; exact hi⟩
+
+theorem d_prod_zero (D : Derivation ℝ (Pol Ψ N) (Pol Ψ N)) {ι : Type*} (s : Finset ι) (f : ι → Pol Ψ N)
+    (h : ∀ i ∈ s, D (f i) = 0) : D (∏ i ∈ s, f i) = 0 := by
+  classical
+  revert h
+  refine Finset.induction_on s (fun _ => by rw [Finset.prod_empty, Derivation.map_one_eq_zero]) ?_
+  intro a t ha ih h
+  rw [Finset.prod_insert ha, Derivation.leibniz, h a (Finset.mem_insert_self a t),
+    ih (fun i hi => h i (Finset.mem_insert_of_mem hi)), smul_zero, smul_zero, add_zero]
+
+private theorem card_filter_fin_val_eq_card_filter_range (N : ℕ) (p : ℕ → Prop) [DecidablePred p] :
+    (Finset.univ.filter (fun i : Fin N => p i.val)).card = ((Finset.range N).filter p).card := by
+  rw [Finset.card_filter, Finset.card_filter]
+  exact Fin.sum_univ_eq_sum_range (fun x => if p x then 1 else 0) N
+
+theorem card_smallBlock (N j : ℕ) : (smallBlock N j).card = N - j := by
+  unfold smallBlock
+  rw [card_filter_fin_val_eq_card_filter_range N (fun x => j ≤ x)]
+  have e : (Finset.range N).filter (fun x => j ≤ x) = Finset.Ico j N := by
+    ext x
+    simp only [Finset.mem_filter, Finset.mem_range, Finset.mem_Ico]
+    exact ⟨fun h => ⟨h.2, h.1⟩, fun h => ⟨h.2, h.1⟩⟩
+  rw [e, Nat.card_Ico]
+
+theorem card_top (N j : ℕ) (hj : j ≤ N) : (Formalism.ShimuraLimitIdentity.top N j).card = j := by
+  unfold Formalism.ShimuraLimitIdentity.top
+  rw [card_filter_fin_val_eq_card_filter_range N (fun x => x < j)]
+  have e : (Finset.range N).filter (fun x => x < j) = Finset.range j := by
+    ext x
+    simp only [Finset.mem_filter, Finset.mem_range]
+    constructor
+    · exact fun h => h.2
+    · exact fun h => ⟨by omega, h⟩
+  rw [e, Finset.card_range]
+
+end BlockVandermondeForms
+
+open BlockVandermondeForms
+
+theorem flag_integral_kills_power_sums : FlagIntegralAnnihilatesPowerSums := by
+  intro Ψ _ _ N τ k hk G
+  simp only [degFlL, LinearMap.smul_apply, LinearMap.sum_apply, MvPolynomial.lcoeff_apply,
+    smul_eq_mul]
+  rw [mul_eq_zero]
+  right
+  have h : ∀ σ : Ψ → Equiv.Perm (Fin N),
+      (∏ t, ((Equiv.Perm.sign (σ t) : ℤ) : ℝ)) * (Formalism.ShimuraLimitIdentity.psumAt τ k * G).coeff (Formalism.DegreeFormula.permExp σ) =
+        ∑ j : Fin N, Formalism.DegreeFormula.PPowSum.sgnP σ *
+          (X (τ, (σ τ).symm j) ^ k * G).coeff (Formalism.DegreeFormula.permExp σ) := by
+    intro σ
+    rw [Formalism.ShimuraLimitIdentity.psumAt, Finset.sum_mul, coeff_sum, Finset.mul_sum]
+    exact (Equiv.sum_comp (σ τ).symm
+      (fun i => Formalism.DegreeFormula.PPowSum.sgnP σ * (X (τ, i) ^ k * G).coeff (Formalism.DegreeFormula.permExp σ))).symm
+  rw [Finset.sum_congr rfl fun σ _ => h σ, Finset.sum_comm]
+  exact Finset.sum_eq_zero fun j _ => Formalism.DegreeFormula.PPowSum.slice τ k hk G j
+
+namespace BlockVandermondeForms
+
+theorem pairs_eq {N : ℕ} (S : Finset (Fin N)) :
+    ∑ a ∈ S, (S.filter (fun b => a < b)).card = S.card.choose 2 := by
+  refine Finset.induction_on_max S (by simp) fun m S hm ih => ?_
+  have hmS : m ∉ S := fun h => lt_irrefl m (hm m h)
+  rw [Finset.sum_insert hmS, Finset.card_insert_of_notMem hmS]
+  have h1 : ((insert m S).filter (fun b => m < b)).card = 0 := by
+    rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
+    intro x hx
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · exact lt_irrefl _
+    · exact fun h => lt_asymm h (hm x hx)
+  have h2 : ∀ a ∈ S, ((insert m S).filter (fun b => a < b)).card = (S.filter (fun b => a < b)).card + 1 := by
+    intro a ha
+    rw [Finset.filter_insert, if_pos (hm a ha),
+      Finset.card_insert_of_notMem (fun h => hmS (Finset.mem_filter.mp h).1)]
+  rw [h1, zero_add, Finset.sum_congr rfl h2, Finset.sum_add_distrib, ih, Finset.sum_const, smul_eq_mul, mul_one,
+    Nat.choose_succ_succ', Nat.choose_one_right]
+  simp only [Nat.reduceAdd]
+  omega
+
+theorem add_choose_two (a b : ℕ) : (a + b).choose 2 = a.choose 2 + a * b + b.choose 2 := by
+  have hs : ∀ k : ℕ, (k + 1).choose 2 = k.choose 2 + k := fun k => by
+    rw [Nat.choose_succ_succ', Nat.choose_one_right]
+    simp only [Nat.reduceAdd]
+    omega
+  induction b with
+  | zero => simp
+  | succ b ih =>
+    rw [← Nat.add_assoc, hs, hs, ih]
+    ring
+
+variable {Ψ : Type} [Fintype Ψ] {N : ℕ}
+
+theorem vdm_homog (τ : Ψ) (S : Finset (Fin N)) : (blockVandermondePolynomial τ S).IsHomogeneous (S.card.choose 2) := by
+  unfold blockVandermondePolynomial
+  rw [← pairs_eq S]
+  refine MvPolynomial.IsHomogeneous.prod _ _ _ fun a _ => ?_
+  rw [Finset.card_eq_sum_ones]
+  exact MvPolynomial.IsHomogeneous.prod _ _ _ fun b _ => (isHomogeneous_X ℝ _).sub (isHomogeneous_X ℝ _)
+
+end BlockVandermondeForms
+
+end Formalism.L2.Geo
+end
+end
+
+section
 noncomputable section
 
 open Finset MvPolynomial
@@ -418,3 +1051,5 @@ theorem mul_eq_sign_rearrange (K e s f : ℝ) (hf : f ≠ 0) (hs : s * s = 1) : 
 
 
 end Formalism.L2.Geo
+end
+end

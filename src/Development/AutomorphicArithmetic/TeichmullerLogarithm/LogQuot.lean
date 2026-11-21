@@ -1,6 +1,25 @@
 import Mathlib
-import Development.AutomorphicArithmetic.TeichmullerLogarithm.CyclotomicPowSubOneNilpotent
+import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.CrisTheta
 
+section
+open Ideal Reformulated.AutPerF
+
+universe u
+
+namespace UpperTheory.RingBr
+
+
+
+
+variable {p : ℕ} [Fact p.Prime]
+variable {R : Type u} [CommRing R] [Fact ¬IsUnit (p : R)] [IsAdicComplete (span {(p : R)}) R]
+
+
+
+end UpperTheory.RingBr
+end
+
+section
 open Ideal Reformulated.AutPerF
 
 universe u
@@ -16,3 +35,4 @@ variable [IsDomain R] [ValuationRing R] [CharZero R] [IsAlgClosed (FractionRing 
 
 
 end UpperTheory.RingBr
+end

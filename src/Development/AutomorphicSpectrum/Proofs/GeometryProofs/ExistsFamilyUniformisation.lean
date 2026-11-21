@@ -1,9 +1,50 @@
 import Mathlib
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsDetRule
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
+import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedUniformisationComponentsPeriodSpacesBiject
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsEquivComp
 
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Rec.FlatTie
+
+open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl Formalism.L2.Pj
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
+  {Xo : Moduli D l} {c : Coeff l}
+
+def RuleTie (U : Set (Xo.XF c)) (τ : E →+* ℂ) (φ : FrameFn Xo c) (t : Rul Xo c) : Prop :=
+  ∀ (p : TRing c.F) (z : FrPt Xo c p.R) (F : Type) [Field F] (ψ : p.R →+* F) (y : Sp F ⟶ Xo.XF c),
+    under y = spMap ψ ≫ z.x → y ≫ pullback.snd _ _ = spMap (ψ.comp (algebraMap c.F p.R)) → Set.range y ⊆ U →
+    ∀ (v : Vecs y D.p) (w : Vecs y D.q) (hp : D.mult τ = D.p) (hq : D.mult (ComplexEmbedding.conjugate τ) = D.q),
+      (∀ i, (v i).left = spMap (Formalism.L2.Pj.dualMap ψ) ≫ z.u τ (i.cast hp.symm)) →
+      (∀ j, (w j).left = spMap (Formalism.L2.Pj.dualMap ψ) ≫ z.u (ComplexEmbedding.conjugate τ) (j.cast hq.symm)) →
+      ψ (t p z) = φ F y v w
+
+open Classical in
+
+def detExp (τ : E →+* ℂ) : (E →+* ℂ) × ℕ → ℕ := fun x => if x.1 = τ then 1 else 0
+
+variable (Xo c) in
+
+def IsDetRule (τ τ' : E →+* ℂ) (s : Rul Xo c) : Prop :=
+  IsNatural (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) s ∧
+    ∀ (p : TRing c.F) (t : Ix D → (p.R)ˣ) (y y' : FrPt Xo c p.R), FrBor t y y' →
+      wchar (ex D (detExp τ') 0) t * s p y' = wchar (ex D (detExp τ) 0) t * s p y
+
+open Classical in
+
+def oneAt {Ψ : Finset (E →+* ℂ)} (r : ℕ) (ρ : E →+* ℂ) : ReciprocityTheory.ChartRestriction.G.FD.Wt Ψ r :=
+  fun ρ' _ => if ρ'.1 = ρ then 1 else 0
+
+end GlobalTheory.CompanionTheory.Ar.Rec.FlatTie
+end
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl GlobalTheory.CompanionTheory.Ar.Rec.FlatTie
 
@@ -113,3 +154,4 @@ open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain Recipr
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_family_uniformisation : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Z : Comp Xo c) (r : ℕ) (U : Unf Xo c c.F.val.toRingHom r), 1 ≤ r → IsUnf U → (∀ b : Om Z, IsAlgebraic c.F b → b ∈ (algebraMap c.F (Om Z)).range) → ∃ (g : ℕ) (ty : Fin g → (E →+* ℂ)) (FU : FamilyUnif Xo (algebraMap (KA l) ℂ) ty) (i : Fin FU.n), IsTypeFn H D.p D.q ty ∧ ∀ y : Sp ℂ ⟶ Xo.XF c, y ≫ pullback.snd _ _ = spMap (algebraMap c.F ℂ) → (Set.range y ⊆ (Z : Set (Xo.XF c)) ↔ ∃ P, IsPeriod (FU.Di i) ty P ∧ under y = FU.u i P) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Rec.PeriodComp.comp_iff_period
+end

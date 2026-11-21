@@ -1,6 +1,26 @@
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDrowLemmas
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.RowActMul
+import Formalism.GradedWeylDivisibility.StatementD
 
+section
+open MvPolynomial
+
+noncomputable section
+
+namespace Formalism.GradedWeylDivisibility
+
+theorem row_action_mul : RowActMul := by
+  intro R _ k n g h
+  apply MvPolynomial.algHom_ext
+  intro v
+  simp only [AlgHom.comp_apply, rowAct, aeval_X, map_sum, map_mul, aeval_C, Matrix.mul_apply,
+    MvPolynomial.algebraMap_eq, Finset.mul_sum, Finset.sum_mul, mul_assoc]
+  exact Finset.sum_comm
+
+end Formalism.GradedWeylDivisibility
+end
+end
+
+section
 open MvPolynomial
 
 noncomputable section
@@ -113,3 +133,5 @@ theorem nabla_weight_le : NablaLLe := by
   exact hinv _ _ hGK
 
 end Formalism.GradedWeylDivisibility
+end
+end

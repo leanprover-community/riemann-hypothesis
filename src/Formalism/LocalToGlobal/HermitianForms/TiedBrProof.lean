@@ -1,6 +1,193 @@
-import Formalism.LocalToGlobal.HermitianForms.TiedBrCl
+import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
+import Formalism.LocalToGlobal.HermitianForms.TiedBrRep
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.LowerTieChain
 
+section
+noncomputable section
+
+namespace Formalism.L2.Forms
+
+open Formalism.BasicNotions Formalism.MainNotions.product_first_zeroth_parts
+
+section Inv
+
+variable {ι : Type} [Fintype ι] {n : ℕ}
+
+open Classical in
+
+def fnInv (G : ι → Matrix (Fin n) (Fin n) ℂ) (s : ι → ℤ) (M : ι → Matrix (Fin n) (Fin n) ℂ) :
+    (Frames G → ℂ) →ₗ[ℂ] MvPolynomial (ι × Fin n × Fin n) ℂ :=
+  if h : ∀ τ, IsUnit (M τ).det then
+    Classical.choose (LinearMap.exists_leftInverse_of_injective (fnOf G s M)
+      (LinearMap.ker_eq_bot.mpr (fnOf_injective G s M h)))
+  else 0
+
+theorem fnInv_fnOf (G : ι → Matrix (Fin n) (Fin n) ℂ) (s : ι → ℤ) (M : ι → Matrix (Fin n) (Fin n) ℂ)
+    (h : ∀ τ, IsUnit (M τ).det) (P : MvPolynomial (ι × Fin n × Fin n) ℂ) : fnInv G s M (fnOf G s M P) = P := by
+  classical
+  unfold fnInv
+  rw [dif_pos h]
+  exact LinearMap.congr_fun (Classical.choose_spec (LinearMap.exists_leftInverse_of_injective (fnOf G s M)
+      (LinearMap.ker_eq_bot.mpr (fnOf_injective G s M h)))) P
+
+end Inv
+
+variable {D : D7} {u : D.what₂.Word}
+
+def bZg (u : D.what₂.Word) (z0 : Fin (D.R.N D.R.m) → D.host.E) (B' : Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) D.host.E) :
+    Matrix (Fin (D.R.N D.R.m)) (Fin (D.R.N D.R.m)) D.host.E :=
+  fun a b => if hb : (b : ℕ) < D.R.N D.R.m - 1 then (iXm D * B') a ⟨b, hb⟩ else z0 a / ((D.mem u).A.T : D.host.E)
+
+
+def trEv (Tf : FormsTied D u) (c : (D.fm u).clsP) :
+    ((D.mem u).C.Y D.R.m → ℂ) →ₗ[ℂ] (Fr D D.R.m le_rfl → ℂ) :=
+  ((((Tf.cls D.R.m le_rfl).lev.chi (Tf.tilAd.ka c))⁻¹ : ℂˣ) : ℂ) •
+    LinearMap.funLeft ℂ ℂ (fun y : Fr D D.R.m le_rfl => (Tf.val D.R.m le_rfl).eY.symm
+      (y.tr (atInf (embT D) ((((Tf.til.ga c).1)⁻¹ : GL (Fin (D.R.N D.R.m)) D.host.E) : Matrix _ _ D.host.E))
+        (isUnit_det_atInf (embT D) ((Tf.til.ga c).1)⁻¹)))
+
+def coMT (Tf : FormsTied D u) (B : D.what₂.places.Pl → (D.fm u).clsP → Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) D.host.E)
+    (w : D.what₂.places.Pl) (c : (D.fm u).clsP) :
+    ((D.mem u).C.Y D.R.m → ℂ) →ₗ[ℂ] MvPolynomial (D.what₂.Tau × Fin (D.R.N D.R.m) × Fin (D.R.N D.R.m)) ℂ :=
+  fnInv (gramC (gramN D D.R.m le_rfl) (embT D)) (shiftOf (lamT u D.R.m))
+    (atInf (embT D) (bZg u Tf.til.z0 (B w c))⁻¹) ∘ₗ trEv Tf c
+
+def coPT (Tf : FormsTied D u) (B : D.what₂.places.Pl → (D.fm u).clsP → Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) D.host.E)
+    (w : D.what₂.places.Pl) :
+    (D.mem u).P.Wrow →ₗ[ℂ] ((D.fm u).clsP → MvPolynomial (D.what₂.Tau × Fin (D.R.N D.R.m - 1) × Fin (D.R.N D.R.m - 1)) ℂ) :=
+  LinearMap.pi fun c => fnInv (gramC (gramP D) (embT D)) (shiftOf (sgT u)) (atInf (embT D) (B w c)⁻¹) ∘ₗ
+    (LinearMap.proj c ∘ₗ Tf.valP.eW.toLinearMap)
+
+
+end Formalism.L2.Forms
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.Forms
+
+open Formalism.BasicNotions Formalism.MainNotions.product_first_zeroth_parts
+
+variable {D : D7} {u : D.what₂.Word}
+
+structure PendClauses (Tf : FormsTied D u)
+    (B : D.what₂.places.Pl → (D.fm u).clsP → Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) D.host.E)
+    (gP : D.what₂.places.Pl → (D.fm u).clsP → D.what₂.Tau → GL (Fin (D.R.N D.R.m - 1)) ℂ) : Prop where
+  coM_mem : ∀ w c, ∀ φ ∈ (D.fm u).Fi D.R.m, coMT Tf B w c (φ ((D.fm u).til c)) ∈ Formalism.MainNotions.product_first_zeroth_parts.CSpan ((D.fm u).lam D.R.m)
+  coM_inj : ∀ w c, ∀ φ ∈ (D.fm u).Fi D.R.m, coMT Tf B w c (φ ((D.fm u).til c)) = 0 → φ ((D.fm u).til c) = 0
+  coP_mem : ∀ w, ∀ z ∈ (D.fm u).ptC, ∀ c, coPT Tf B w z c ∈ Formalism.MainNotions.product_first_zeroth_parts.CSpan (D.fm u).sg
+  coP_inj : ∀ w, ∀ z ∈ (D.fm u).ptC, coPT Tf B w z = 0 → z = 0
+  exP : ∀ w, ∀ φ ∈ (D.fm u).Fi D.R.m, ∀ c, ∃ P ∈ CSpan ((D.fm u).lam D.R.m),
+    (∀ s, Tf.eWz ((D.mem u).P.evz φ) c s =
+      fnOf _ (shiftOf (lamT u D.R.m)) (mZ u Tf.til.z0) P ((Tf.val D.R.m le_rfl).eY s)) ∧
+    ∀ z : (D.mem u).P.Wrow, Tf.valP.eW z c = fnOf _ (shiftOf (sgT u)) 1 (Formalism.L2.Ker.brTen D u P) →
+      coPT Tf B w z c = Formalism.L2.Ker.brTen D u (coMT Tf B w c (φ ((D.fm u).til c)))
+  lat_co : ∀ w, ∀ x ∈ (D.fm u).S D.R.m w, ∀ c,
+    coMT Tf B w c ((D.fm u).emb D.R.m x ((D.fm u).til c)) ∈ Formalism.MainNotions.product_first_zeroth_parts.IntSpan D w ((D.fm u).lam D.R.m)
+  pt_co : ∀ w, ∀ z ∈ (D.fm u).ptC, (∃ y ∈ (D.fm u).SP w, (D.fm u).ptEmb y = z) ↔
+    ∀ c, coPT Tf B w z c ∈ Formalism.MainNotions.product_first_zeroth_parts.IntSpan D w (D.fm u).sg
+  ipV_co : ∀ w c, ∀ φ ∈ (D.fm u).Fi D.R.m,
+    ((D.fm u).ipV D.R.m ((D.fm u).til c) (φ ((D.fm u).til c)) (φ ((D.fm u).til c))).re =
+    (Formalism.MainNotions.product_first_zeroth_parts.nfAll ((D.fm u).lam D.R.m)
+      (blk (fun τ => sqAct ℂ _ (lamTr D u τ) (gFull D u (gP w c τ))) (coMT Tf B w c (φ ((D.fm u).til c))))
+      (blk (fun τ => sqAct ℂ _ (lamTr D u τ) (gFull D u (gP w c τ))) (coMT Tf B w c (φ ((D.fm u).til c))))).re
+  re_petersson_self_eq_sum_coord : ∀ w, ∀ z ∈ (D.fm u).ptC, ((D.fm u).ipP z z).re = ∑ c, ((Nat.card ((D.fm u).stabilizer₂ c) : ℝ))⁻¹ *
+    (Formalism.MainNotions.product_first_zeroth_parts.nfAll (D.fm u).sg (blk (fun τ => sqAct ℂ _ (sgTr D u τ) (gP w c τ)) (coPT Tf B w z c))
+      (blk (fun τ => sqAct ℂ _ (sgTr D u τ) (gP w c τ)) (coPT Tf B w z c))).re
+
+def pendOf (Tf : FormsTied D u) (hL : LowerLevelCompatible Tf)
+    (B : D.what₂.places.Pl → (D.fm u).clsP → Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) D.host.E)
+    (gP : D.what₂.places.Pl → (D.fm u).clsP → D.what₂.Tau → GL (Fin (D.R.N D.R.m - 1)) ℂ) (h : PendClauses Tf B gP) : Pend D u where
+  br τ := Formalism.L2.Ker.brOne ℂ (Nm_succ D.R).symm (lamTr D u τ) (sgTr D u τ)
+  coM := coMT Tf B
+  coP := coPT Tf B
+  coM_mem := h.coM_mem
+  coM_inj := h.coM_inj
+  coP_mem := h.coP_mem
+  coP_inj := h.coP_inj
+  Pt_eq := by
+    intro w φ hφ c
+    obtain ⟨P, hP, hv, hz⟩ := h.exP w φ hφ c
+    exact hz _ (hL.map.pt_eq (bZ_isUnit Tf) φ c P hP hv)
+  lat_co := h.lat_co
+  pt_co := h.pt_co
+  gP := gP
+  ipV_co := h.ipV_co
+  re_petersson_self_eq_sum_coord := h.re_petersson_self_eq_sum_coord
+  beOn_eq := hL.beOn
+  interlace := sg_interlace Tf.valP
+
+
+end Formalism.L2.Forms
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.Forms
+
+open Formalism.BasicNotions Formalism.MainNotions.product_first_zeroth_parts Matrix
+
+theorem exists_change {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n) (G : ι → Matrix (Fin n) (Fin n) ℂ) (s : ι → ℤ)
+    (M M' : ι → Matrix (Fin n) (Fin n) ℂ) (hM : ∀ τ, IsUnit (M τ).det) (P : MvPolynomial (ι × Fin n × Fin n) ℂ)
+    (hP : P ∈ CSpan lam) : ∃ Q ∈ CSpan lam, fnOf G s M' P = fnOf G s M Q := by
+  refine ⟨_, ?_, fnOf_change G s M M' hM P⟩
+  exact Submodule.smul_mem _ _ (blkRow_mem _ _ hP)
+
+variable {D : D7} {u : D.what₂.Word}
+
+
+theorem atInf_inv_isUnit {n : ℕ} (A : Matrix (Fin n) (Fin n) D.host.E) (hA : IsUnit A.det) (τ : D.what₂.Tau) :
+    IsUnit (atInf (embT D) A⁻¹ τ).det := by
+  unfold atInf
+  have h := (Matrix.isUnit_nonsing_inv_det A hA).map (embT D τ)
+  first
+  | (rw [RingHom.map_det, RingHom.mapMatrix_apply] at h; exact h)
+  | simpa [RingHom.map_det] using h
+  | simpa [AlgHom.map_det] using h
+
+
+
+variable (Tf : FormsTied D u)
+  (B : D.what₂.places.Pl → (D.fm u).clsP → Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) D.host.E)
+  (hB : ∀ w c, IsUnit (B w c).det)
+
+include hB
+
+
+
+
+
+omit hB in
+
+structure PendRest (gP : D.what₂.places.Pl → (D.fm u).clsP → D.what₂.Tau → GL (Fin (D.R.N D.R.m - 1)) ℂ) : Prop where
+  exP : ∀ w, ∀ φ ∈ (D.fm u).Fi D.R.m, ∀ c, ∃ P ∈ CSpan ((D.fm u).lam D.R.m),
+    (∀ s, Tf.eWz ((D.mem u).P.evz φ) c s =
+      fnOf _ (shiftOf (lamT u D.R.m)) (mZ u Tf.til.z0) P ((Tf.val D.R.m le_rfl).eY s)) ∧
+    ∀ z : (D.mem u).P.Wrow, Tf.valP.eW z c = fnOf _ (shiftOf (sgT u)) 1 (Formalism.L2.Ker.brTen D u P) →
+      coPT Tf B w z c = Formalism.L2.Ker.brTen D u (coMT Tf B w c (φ ((D.fm u).til c)))
+  lat_co : ∀ w, ∀ x ∈ (D.fm u).S D.R.m w, ∀ c,
+    coMT Tf B w c ((D.fm u).emb D.R.m x ((D.fm u).til c)) ∈ Formalism.MainNotions.product_first_zeroth_parts.IntSpan D w ((D.fm u).lam D.R.m)
+  pt_co : ∀ w, ∀ z ∈ (D.fm u).ptC, (∃ y ∈ (D.fm u).SP w, (D.fm u).ptEmb y = z) ↔
+    ∀ c, coPT Tf B w z c ∈ Formalism.MainNotions.product_first_zeroth_parts.IntSpan D w (D.fm u).sg
+  ipV_co : ∀ w c, ∀ φ ∈ (D.fm u).Fi D.R.m,
+    ((D.fm u).ipV D.R.m ((D.fm u).til c) (φ ((D.fm u).til c)) (φ ((D.fm u).til c))).re =
+    (Formalism.MainNotions.product_first_zeroth_parts.nfAll ((D.fm u).lam D.R.m)
+      (blk (fun τ => sqAct ℂ _ (lamTr D u τ) (gFull D u (gP w c τ))) (coMT Tf B w c (φ ((D.fm u).til c))))
+      (blk (fun τ => sqAct ℂ _ (lamTr D u τ) (gFull D u (gP w c τ))) (coMT Tf B w c (φ ((D.fm u).til c))))).re
+  re_petersson_self_eq_sum_coord : ∀ w, ∀ z ∈ (D.fm u).ptC, ((D.fm u).ipP z z).re = ∑ c, ((Nat.card ((D.fm u).stabilizer₂ c) : ℝ))⁻¹ *
+    (Formalism.MainNotions.product_first_zeroth_parts.nfAll (D.fm u).sg (blk (fun τ => sqAct ℂ _ (sgTr D u τ) (gP w c τ)) (coPT Tf B w z c))
+      (blk (fun τ => sqAct ℂ _ (sgTr D u τ) (gP w c τ)) (coPT Tf B w z c))).re
+
+
+end Formalism.L2.Forms
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.Forms
@@ -174,3 +361,5 @@ theorem cspan_sgTr : Formalism.MainNotions.product_first_zeroth_parts.CSpan (sgT
 
 
 end Formalism.L2.Forms
+end
+end

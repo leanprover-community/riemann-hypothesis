@@ -1,7 +1,47 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ScalesBy
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoLeAndExistsRatPtsSwap
+import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactSpaceAxis
 
+section
+open scoped TensorProduct NNReal ENNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.StdPar GlobalTheory.ResLine
+open GlobalTheory.Doubling (absE)
+
+noncomputable section
+
+namespace GlobalTheory.ResLine.Swap
+
+section Swap
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+omit [NumberField F] [NumberField E] in
+theorem cT_add' (σ : E →ₐ[F] E) {a b : Type} (M N : Matrix a b E) :
+    Formalism.UG.cT (σ : E →+* E) (M + N) = Formalism.UG.cT (σ : E →+* E) M + Formalism.UG.cT (σ : E →+* E) N := by
+  ext i j; simp [Formalism.UG.cT]
+
+omit [NumberField F] [NumberField E] in
+theorem cT_sub' (σ : E →ₐ[F] E) {a b : Type} (M N : Matrix a b E) :
+    Formalism.UG.cT (σ : E →+* E) (M - N) = Formalism.UG.cT (σ : E →+* E) M - Formalism.UG.cT (σ : E →+* E) N := by
+  ext i j; simp [Formalism.UG.cT]
+
+theorem cT_cT_of_isCMExt {σ : E →ₐ[F] E} (hσ : IsCMExt F E σ) {a b : Type} (M : Matrix a b E) :
+    Formalism.UG.cT (σ : E →+* E) (Formalism.UG.cT (σ : E →+* E) M) = M := by
+  ext i j; simp [Formalism.UG.cT, GlobalTheory.SiegelSet.sigma_sigma hσ]
+
+omit [NumberField F] [NumberField E] in
+theorem cT_eq_of_isHermND {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} (hJ : IsHermND σ J) :
+    Formalism.UG.cT (σ : E →+* E) J = J := by
+  ext i j; simpa [Formalism.UG.cT] using hJ.1 i j
+
+end Swap
+
+end GlobalTheory.ResLine.Swap
+
+end
+end
+
+section
 section
 open scoped TensorProduct NNReal ENNReal Matrix
 open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.ResLine GlobalTheory.ResidueEisenstein
@@ -91,3 +131,4 @@ open GlobalTheory.Doubling (absE)
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.wittFrame_rank_le_and_exists_rational_swap : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (r : ℕ) (X Y : Matrix (Fin n) (Fin (r + 1)) E), IsCMExt F E σ → IsHermND σ J → IsWittFrame σ J X Y → 2 * (r + 1) ≤ n ∧ ∃ w ∈ ratPts σ J, (matHom _ σ J w).1 * adMat F Y = adMat F X ∧ (matHom _ σ J w).1 * adMat F X = adMat F Y := by
   atlas_forward_decl GlobalTheory.ResidueEisenstein.Swap.two_mul_le_and_exists_ratPts_swap
+end

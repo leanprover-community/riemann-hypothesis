@@ -1,8 +1,43 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharacterDecompositionAndClassFunctionExpansionStatement
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsCharacterOfFDRepCompHomAndMulStatement
 
+section
+open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.GLm
+open scoped Classical
+
+namespace GlobalTheory.GLm
+
+theorem isChar_comp_hom {G M : Type} [Group G] [Group M] (π : G →* M) (χ : M → ℂ)
+    (h : IsChar χ) : IsChar (fun x => χ (π x)) := by
+  obtain ⟨V, hV⟩ := h
+  exact ⟨FDRep.of (V.ρ.comp π), fun x => hV (π x)⟩
+
+theorem isChar_mul_fun {G : Type} [Group G] (α β : G → ℂ) (hα : IsChar α) (hβ : IsChar β) :
+    IsChar (fun x => α x * β x) := by
+  obtain ⟨V, hV⟩ := hα
+  obtain ⟨W, hW⟩ := hβ
+  refine ⟨CategoryTheory.MonoidalCategoryStruct.tensorObj V W, fun x => ?_⟩
+  rw [FDRep.char_tensor, Pi.mul_apply, hV, hW]
+
+theorem isChar_comp_hom_and_mul :
+    (∀ (G M : Type) [Group G] [Group M] (π : G →* M) (χ : M → ℂ),
+      IsChar χ → IsChar (fun x => χ (π x))) ∧
+    ∀ (G : Type) [Group G] (α β : G → ℂ), IsChar α → IsChar β → IsChar (fun x => α x * β x) :=
+  ⟨fun _ _ _ _ π χ h => isChar_comp_hom π χ h, fun _ _ α β hα hβ => isChar_mul_fun α β hα hβ⟩
+
+end GlobalTheory.GLm
+end
+
+section
+open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.GLm
+open scoped Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCharacterOfFDRep_comp_hom_and_mul : (∀ (G M : Type) [Group G] [Group M] (π : G →* M) (χ : M → ℂ), IsChar χ → IsChar (fun x => χ (π x))) ∧ ∀ (G : Type) [Group G] (α β : G → ℂ), IsChar α → IsChar β → IsChar (fun x => α x * β x) := by
+  first | exact @GlobalTheory.GLm.isChar_comp_hom_and_mul | exact GlobalTheory.GLm.isChar_comp_hom_and_mul | (intros; apply GlobalTheory.GLm.isChar_comp_hom_and_mul <;> assumption)
+end
+
+section
 section
 open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.GLm
 open scoped Classical
@@ -115,3 +150,4 @@ open scoped Classical
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_irr_pairs_char_prod_eq_sum : ∀ (G₁ G₂ : Type) [Group G₁] [Fintype G₁] [Group G₂] [Fintype G₂] (Φ : G₁ × G₂ → ℂ), IsChar Φ → ∃ L : List ((G₁ → ℂ) × (G₂ → ℂ)), (∀ p ∈ L, IsIrr p.1 ∧ IsIrr p.2) ∧ ∀ x y, Φ (x, y) = (L.map fun p => p.1 x * p.2 y).sum := by
   atlas_forward_decl GlobalTheory.GLm.ProdChar.exists_list_prod
+end

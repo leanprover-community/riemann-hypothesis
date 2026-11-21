@@ -1,6 +1,14 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
-import Development.EtaleCohomology.TateTwists.EtaleTensorComplexDescendsNaturalFamily
+import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 
+section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
+
+def LateralTheory.EtaleFoundations.EtaleTensorComplexDescendsNaturalFamily : Prop :=
+  ∀ (R S : Type) [CommRing R] [CommRing S] {I J K : Cx R} (τ : Pair I J K), τ.IsTensor → ∀ (w : ℤ) (M : Shv S) (b : ∀ U : Scheme.{0}, Tens I J U w →+ Sec M U), (∀ (V U : Scheme.{0}) (g : V ⟶ U) x, Sec.res g (b U x) = b V (Tens.res g w x)) → ∃ φ : ∀ U : Scheme.{0}, Sec (K.X w) U →+ Sec M U, (∀ (V U : Scheme.{0}) (g : V ⟶ U) y, Sec.res g (φ U y) = φ V (Sec.res g y)) ∧ ∀ U x, φ U (τ.lift U w x) = b U x
+end
+
+section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
 namespace LateralTheory.EtaleFoundations.TensFam
@@ -136,3 +144,4 @@ theorem LateralTheory.EtaleFoundations.etale_tensor_hom_descends_along_tensor_pa
   refine ⟨φ, fun V U g y => ?_, fun U x => ?_⟩
   · exact uniq τ hτ w M b hb (good_nat τ w M b hb g (ex U y).choose_spec) (ex V _).choose_spec
   · exact uniq τ hτ w M b hb (ex U _).choose_spec (good_lift τ w M b hb U x)
+end

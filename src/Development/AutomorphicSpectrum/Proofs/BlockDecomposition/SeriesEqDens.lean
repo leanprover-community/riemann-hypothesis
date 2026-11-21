@@ -1,15 +1,956 @@
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedNondeg
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianMatrixDiagonalizable
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussSumHermitianNormLevelShift
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaussSumHermitianNormLevelOne
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardRangeMulQuotientBoundedLevelStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixGaussSumDiagonalFactor
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatrixGaussSumCongrInvariance
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedQuotientCardStatement
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResidueAlgebraUnramified
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormFibreCardNonzero
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormFibreCardZero
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardRangeMulQuotientBoundedLevel
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultiplicityReductionDiagonalProd
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianCharacterOrthogonalityStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianRepCountFourierExpansionStatement
 
+section
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.GaussRec
+
+variable {R : Type} [CommRing R]
+
+theorem sum_comp_surj {A B : Type} [AddCommGroup A] [AddCommGroup B] [Fintype A] [Fintype B]
+    (π : A →+ B) (hπ : Function.Surjective π) (c : ℕ)
+    (hc : Fintype.card A = c * Fintype.card B) (G : B → ℂ) :
+    ∑ x, G (π x) = (c : ℂ) * ∑ y, G y := by
+  classical
+  have hn : ∀ b, (Finset.univ.filter fun x => π x = b).card
+      = (Finset.univ.filter fun x => π x = 0).card := by
+    intro b
+    obtain ⟨x0, rfl⟩ := hπ b
+    refine Finset.card_equiv (Equiv.subRight x0) ?_
+    intro i
+    simp [map_sub, sub_eq_zero]
+  have hcard : Fintype.card A
+      = (Finset.univ.filter fun x => π x = 0).card * Fintype.card B := by
+    have h1 := Finset.card_eq_sum_card_fiberwise (s := (Finset.univ : Finset A))
+      (t := (Finset.univ : Finset B)) (f := π) (fun _ _ => Finset.mem_coe.2 (Finset.mem_univ _))
+    rw [Finset.card_univ] at h1
+    rw [h1, Finset.sum_congr rfl (fun b _ => hn b)]
+    simp [mul_comm]
+  have hpos : 0 < Fintype.card B := Fintype.card_pos
+  have hc' : (Finset.univ.filter fun x => π x = 0).card = c := by
+    have : (Finset.univ.filter fun x => π x = 0).card * Fintype.card B = c * Fintype.card B := by
+      rw [← hcard, hc]
+    exact Nat.eq_of_mul_eq_mul_right hpos this
+  rw [← Finset.sum_fiberwise (s := Finset.univ) (g := π) (f := fun x => G (π x)), Finset.mul_sum]
+  refine Finset.sum_congr rfl fun b _ => ?_
+  have : ∀ x ∈ Finset.univ.filter (fun x => π x = b), G (π x) = G b := by
+    intro x hx
+    rw [(Finset.mem_filter.1 hx).2]
+  rw [Finset.sum_congr rfl this, Finset.sum_const, hn b, hc', nsmul_eq_mul]
+
+def gaussTerm (σ : R →+* R) (ϖ : R) (hfix : σ ϖ = ϖ) (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ) (a : R)
+    (k : ℕ) (w : R ⧸ lev ϖ k) : ℂ :=
+  ψ k (Ideal.Quotient.mk (lev ϖ k) a * (barσ σ ϖ hfix k w * w))
+
+theorem gaussTerm_mk (σ : R →+* R) (ϖ : R) (hfix : σ ϖ = ϖ) (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ)
+    (a : R) (k : ℕ) (x : R) :
+    gaussTerm σ ϖ hfix ψ a k (Ideal.Quotient.mk _ x)
+      = ψ k (Ideal.Quotient.mk _ (a * (σ x * x))) := by
+  simp only [gaussTerm, barσ_mk, map_mul]
+
+def traceChar (σ : R →+* R) (ϖ : R) (hfix : σ ϖ = ϖ) (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ) (c : R) :
+    AddChar (R ⧸ lev ϖ 1) ℂ :=
+  (ψ 1).compAddMonoidHom (AddMonoidHom.mk'
+    (fun t => Ideal.Quotient.mk (lev ϖ 1) c * t + barσ σ ϖ hfix 1 (Ideal.Quotient.mk (lev ϖ 1) c * t))
+    (by intro x y; simp only [mul_add, map_add]; abel))
+
+theorem traceChar_mk (σ : R →+* R) (ϖ : R) (hfix : σ ϖ = ϖ) (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ)
+    (c y : R) :
+    traceChar σ ϖ hfix ψ c (Ideal.Quotient.mk _ y)
+      = ψ 1 (Ideal.Quotient.mk _ (c * y + σ (c * y))) := by
+  show ψ 1 (Ideal.Quotient.mk (lev ϖ 1) c * Ideal.Quotient.mk _ y
+    + barσ σ ϖ hfix 1 (Ideal.Quotient.mk (lev ϖ 1) c * Ideal.Quotient.mk _ y)) = _
+  rw [← map_mul, barσ_mk, ← map_add]
+
+theorem sum_traceChar {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (hR : IsUnrQuad R σ ϖ q ε)
+    [Fintype (R ⧸ lev ϖ 1)] {ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ} (hψ : IsLevelChars σ ϖ ψ) (c : R)
+    [Decidable (c ∈ lev ϖ 1)] :
+    ∑ t, traceChar σ ϖ hR.fix_ϖ ψ c t
+      = if c ∈ lev ϖ 1 then (Fintype.card (R ⧸ lev ϖ 1) : ℂ) else 0 := by
+  split_ifs with hc
+  · have h1 : ∀ t, traceChar σ ϖ hR.fix_ϖ ψ c t = 1 := by
+      intro t
+      obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective t
+      rw [traceChar_mk]
+      have : Ideal.Quotient.mk (lev ϖ 1) (c * y + σ (c * y)) = 0 := by
+        have h0 : Ideal.Quotient.mk (lev ϖ 1) c = 0 := Ideal.Quotient.eq_zero_iff_mem.2 hc
+        rw [map_add, ← barσ_mk σ ϖ hR.fix_ϖ, map_mul, h0]
+        simp
+      rw [this, AddChar.map_zero_eq_one]
+    simp [h1]
+  · have hne : traceChar σ ϖ hR.fix_ϖ ψ c ≠ 1 := by
+      intro h0
+      apply hc
+      refine trace_nondeg hR hψ 1 c (fun t => ?_)
+      have h1 := traceChar_mk σ ϖ hR.fix_ϖ ψ c t
+      rw [h0, AddChar.one_apply] at h1
+      rw [mul_comm t c]
+      exact h1.symm
+    exact AddChar.sum_eq_zero_of_ne_one hne
+
+theorem gaussTerm_shift {σ : R →+* R} {ϖ : R} (hinv : ∀ a, σ (σ a) = a) (hfix : σ ϖ = ϖ)
+    {ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ} (hψ : IsLevelChars σ ϖ ψ) (j : ℕ) {a : R} (ha : σ a = a)
+    (x y : R) :
+    gaussTerm σ ϖ hfix ψ a (j + 2) (Ideal.Quotient.mk _ x + Ideal.Quotient.mk _ (ϖ ^ (j + 1) * y))
+      = gaussTerm σ ϖ hfix ψ a (j + 2) (Ideal.Quotient.mk _ x)
+        * traceChar σ ϖ hfix ψ (a * σ x) (Ideal.Quotient.mk _ y) := by
+  have hp := psi_pow hψ 1 (j + 1) (a * σ x * y + σ (a * σ x * y))
+  rw [show 1 + (j + 1) = j + 2 by omega] at hp
+  rw [← map_add, gaussTerm_mk, gaussTerm_mk, traceChar_mk, ← hp, ← AddChar.map_add_eq_mul,
+    ← map_add]
+  congr 1
+  rw [Ideal.Quotient.eq]
+  refine mem_lev_iff.2 ⟨ϖ ^ j * (a * σ y * y), ?_⟩
+  simp only [map_mul, map_add, map_pow, hfix, ha, hinv]
+  ring
+
+theorem mem_lev_one_iff {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (hR : IsUnrQuad R σ ϖ q ε) {a : R}
+    (ha : σ a = a) (ha1 : a ∉ lev ϖ 1) (x : R) : a * σ x ∈ lev ϖ 1 ↔ x ∈ lev ϖ 1 := by
+  constructor
+  · intro h
+    obtain ⟨v, hv⟩ := (hR.fixLocal a ha ha1).exists_left_inv
+    have h1 : σ x ∈ lev ϖ 1 := by
+      have : σ x = v * (a * σ x) := by rw [← mul_assoc, hv, one_mul]
+      rw [this]
+      exact Ideal.mul_mem_left _ _ h
+    obtain ⟨c, hc⟩ := mem_lev_iff.1 h1
+    refine mem_lev_iff.2 ⟨σ c, ?_⟩
+    have := congrArg σ hc
+    simpa [hR.inv, hR.fix_ϖ] using this
+  · intro h
+    obtain ⟨c, rfl⟩ := mem_lev_iff.1 h
+    refine mem_lev_iff.2 ⟨a * σ c, ?_⟩
+    simp only [map_mul, map_pow, hR.fix_ϖ]
+    ring
+
+def lft (ϖ : R) (k : ℕ) (w : R ⧸ lev ϖ k) : R :=
+  Function.surjInv (Ideal.Quotient.mk_surjective (I := lev ϖ k)) w
+
+@[simp] theorem mk_lft (ϖ : R) (k : ℕ) (w : R ⧸ lev ϖ k) :
+    Ideal.Quotient.mk (lev ϖ k) (lft ϖ k w) = w :=
+  Function.surjInv_eq _ w
+
+theorem sum_stationary {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (hR : IsUnrQuad R σ ϖ q ε)
+    [∀ k, Fintype (R ⧸ lev ϖ k)] {ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ} (hψ : IsLevelChars σ ϖ ψ)
+    (j : ℕ) {a : R} (ha : σ a = a) [DecidablePred fun c => c ∈ lev ϖ 1] :
+    ∑ w, gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w
+      = ∑ w, if a * σ (lft ϖ (j + 2) w) ∈ lev ϖ 1 then gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w else 0 := by
+  have shift : ∀ t : R ⧸ lev ϖ 1, ∑ w, gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w
+      = ∑ w, gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w
+          * traceChar σ ϖ hR.fix_ϖ ψ (a * σ (lft ϖ (j + 2) w)) t := by
+    intro t
+    rw [← Equiv.sum_comp (Equiv.addRight (Ideal.Quotient.mk (lev ϖ (j + 2)) (ϖ ^ (j + 1) * lft ϖ 1 t)))]
+    refine Finset.sum_congr rfl fun w _ => ?_
+    have h := gaussTerm_shift hR.inv hR.fix_ϖ hψ j ha (lft ϖ (j + 2) w) (lft ϖ 1 t)
+    rw [mk_lft, mk_lft] at h
+    exact h
+  have hcard : (Fintype.card (R ⧸ lev ϖ 1) : ℂ) ≠ 0 := by
+    exact_mod_cast Fintype.card_ne_zero
+  apply mul_left_cancel₀ hcard
+  calc (Fintype.card (R ⧸ lev ϖ 1) : ℂ) * ∑ w, gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w
+      = ∑ t : R ⧸ lev ϖ 1, ∑ w, gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w := by
+        rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    _ = ∑ t : R ⧸ lev ϖ 1, ∑ w, gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w
+          * traceChar σ ϖ hR.fix_ϖ ψ (a * σ (lft ϖ (j + 2) w)) t :=
+        Finset.sum_congr rfl fun t _ => shift t
+    _ = ∑ w, gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w
+          * ∑ t, traceChar σ ϖ hR.fix_ϖ ψ (a * σ (lft ϖ (j + 2) w)) t := by
+        rw [Finset.sum_comm]
+        exact Finset.sum_congr rfl fun w _ => (Finset.mul_sum _ _ _).symm
+    _ = _ := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun w _ => ?_
+        rw [sum_traceChar hR hψ]
+        split_ifs <;> ring
+
+theorem mk_mul_eq (ϖ : R) (j : ℕ) {x y : R}
+    (h : Ideal.Quotient.mk (lev ϖ (j + 1)) x = Ideal.Quotient.mk (lev ϖ (j + 1)) y) :
+    Ideal.Quotient.mk (lev ϖ (j + 2)) (ϖ * x) = Ideal.Quotient.mk (lev ϖ (j + 2)) (ϖ * y) := by
+  rw [Ideal.Quotient.eq] at h ⊢
+  obtain ⟨c, hc⟩ := mem_lev_iff.1 h
+  refine mem_lev_iff.2 ⟨c, ?_⟩
+  rw [← mul_sub, hc]
+  ring
+
+theorem mk_of_mul_eq {ϖ : R} (hreg : IsSMulRegular R ϖ) (j : ℕ) {x y : R}
+    (h : Ideal.Quotient.mk (lev ϖ (j + 2)) (ϖ * x) = Ideal.Quotient.mk (lev ϖ (j + 2)) (ϖ * y)) :
+    Ideal.Quotient.mk (lev ϖ (j + 1)) x = Ideal.Quotient.mk (lev ϖ (j + 1)) y := by
+  rw [Ideal.Quotient.eq] at h ⊢
+  obtain ⟨c, hc⟩ := mem_lev_iff.1 h
+  refine mem_lev_iff.2 ⟨c, hreg ?_⟩
+  simp only [smul_eq_mul]
+  rw [mul_sub, hc]
+  ring
+
+theorem gaussTerm_mul {σ : R →+* R} {ϖ : R} (hfix : σ ϖ = ϖ)
+    {ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ} (hψ : IsLevelChars σ ϖ ψ) (j : ℕ) (a x : R) :
+    gaussTerm σ ϖ hfix ψ a (j + 2) (Ideal.Quotient.mk _ (ϖ * x))
+      = gaussTerm σ ϖ hfix ψ a j (Ideal.Quotient.mk _ x) := by
+  rw [gaussTerm_mk, gaussTerm_mk, ← psi_pow hψ j 2 (a * (σ x * x))]
+  congr 2
+  simp only [map_mul, hfix]
+  ring
+
+theorem sum_filter_eq {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (hR : IsUnrQuad R σ ϖ q ε)
+    [∀ k, Fintype (R ⧸ lev ϖ k)] {ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ} (hψ : IsLevelChars σ ϖ ψ)
+    (j : ℕ) {a : R} (ha : σ a = a) (ha1 : a ∉ lev ϖ 1) [DecidablePred fun c => c ∈ lev ϖ 1] :
+    (∑ w, if a * σ (lft ϖ (j + 2) w) ∈ lev ϖ 1 then gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w else 0)
+      = ∑ w' : R ⧸ lev ϖ (j + 1), gaussTerm σ ϖ hR.fix_ϖ ψ a j
+          (Ideal.Quotient.factor (Ideal.span_singleton_le_span_singleton.2 (pow_dvd_pow ϖ (Nat.le_succ j))) w') := by
+  rw [← Finset.sum_filter]
+  symm
+  refine Finset.sum_nbij (fun w' => Ideal.Quotient.mk (lev ϖ (j + 2)) (ϖ * lft ϖ (j + 1) w'))
+    ?_ ?_ ?_ ?_
+  · intro w' _
+    refine Finset.mem_filter.2 ⟨Finset.mem_univ _, (mem_lev_one_iff hR ha ha1 _).2 ?_⟩
+    have h := mk_lft ϖ (j + 2) (Ideal.Quotient.mk (lev ϖ (j + 2)) (ϖ * lft ϖ (j + 1) w'))
+    rw [Ideal.Quotient.eq] at h
+    obtain ⟨c, hc⟩ := mem_lev_iff.1 h
+    rw [sub_eq_iff_eq_add] at hc
+    rw [hc]
+    refine mem_lev_iff.2 ⟨ϖ ^ (j + 1) * c + lft ϖ (j + 1) w', ?_⟩
+    ring
+  · intro x _ y _ h
+    have := mk_of_mul_eq hR.reg j h
+    simpa using this
+  · intro w hw
+    have hw' := (mem_lev_one_iff hR ha ha1 _).1 (Finset.mem_filter.1 hw).2
+    obtain ⟨c, hc⟩ := mem_lev_iff.1 hw'
+    refine ⟨Ideal.Quotient.mk _ c, by simp, ?_⟩
+    have h1 := mk_mul_eq ϖ j (mk_lft ϖ (j + 1) (Ideal.Quotient.mk _ c))
+    simp only
+    rw [h1, ← mk_lft ϖ (j + 2) w, hc, pow_one]
+  · intro w' _
+    conv_lhs => rw [← mk_lft ϖ (j + 1) w']
+    rw [Ideal.Quotient.factor_mk, gaussTerm_mul hR.fix_ϖ hψ]
+
+end GlobalTheory.CompanionTheory.GaussRec
+
+open GlobalTheory.CompanionTheory.GaussRec in
+theorem GlobalTheory.CompanionTheory.GaussRec.gauss_recursion : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ) (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)] (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ), IsLevelChars σ ϖ ψ → ∀ (j : ℕ) (a : R), σ a = a → a ∉ lev ϖ 1 → (∑ w : R ⧸ lev ϖ (j + 2), ψ (j + 2) (Ideal.Quotient.mk (lev ϖ (j + 2)) a * (barσ σ ϖ hR.fix_ϖ (j + 2) w * w))) = (q : ℂ) ^ 2 * ∑ w : R ⧸ lev ϖ j, ψ j (Ideal.Quotient.mk (lev ϖ j) a * (barσ σ ϖ hR.fix_ϖ j w * w)) := by
+  intro R _ σ ϖ q ε hR _ ψ hψ j a ha ha1
+  classical
+  have hle : lev ϖ (j + 1) ≤ lev ϖ j :=
+    Ideal.span_singleton_le_span_singleton.2 (pow_dvd_pow ϖ (Nat.le_succ j))
+  have h1 := sum_stationary hR hψ j ha
+  rw [sum_filter_eq hR hψ j ha ha1] at h1
+  have hc : Fintype.card (R ⧸ lev ϖ (j + 1)) = q ^ 2 * Fintype.card (R ⧸ lev ϖ j) := by
+    have e1 := GlobalTheory.T.unramified_quotient_card R σ ϖ q ε hR (j + 1)
+    have e2 := GlobalTheory.T.unramified_quotient_card R σ ϖ q ε hR j
+    rw [Nat.card_eq_fintype_card] at e1 e2
+    rw [e1, e2, ← pow_add]
+    congr 1
+    ring
+  have h2 := sum_comp_surj (Ideal.Quotient.factor hle).toAddMonoidHom
+    (Ideal.Quotient.factor_surjective hle) (q ^ 2) hc (gaussTerm σ ϖ hR.fix_ϖ ψ a j)
+  have h3 : (∑ w, gaussTerm σ ϖ hR.fix_ϖ ψ a (j + 2) w) = ((q ^ 2 : ℕ) : ℂ) * ∑ w, gaussTerm σ ϖ hR.fix_ϖ ψ a j w :=
+    h1.trans h2
+  simpa [gaussTerm] using h3
+
+end
+end
+
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gauss_sum_hermitian_norm_level_shift : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ) (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)] (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ), IsLevelChars σ ϖ ψ → ∀ (j : ℕ) (a : R), σ a = a → a ∉ lev ϖ 1 → (∑ w : R ⧸ lev ϖ (j + 2), ψ (j + 2) (Ideal.Quotient.mk (lev ϖ (j + 2)) a * (barσ σ ϖ hR.fix_ϖ (j + 2) w * w))) = (q : ℂ) ^ 2 * ∑ w : R ⧸ lev ϖ j, ψ j (Ideal.Quotient.mk (lev ϖ j) a * (barσ σ ϖ hR.fix_ϖ j w * w)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GaussRec.gauss_recursion
+end
+
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.residue_algebra_unramified : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ), ∀ h : IsUnrQuad R σ ϖ q ε, ResAlg (R ⧸ lev ϖ 1) (barσ σ ϖ h.fix_ϖ 1) q ε := by
+  first | exact @GlobalTheory.CompanionTheory.UnrDens.resAlg_of_isUnrQuad | exact GlobalTheory.CompanionTheory.UnrDens.resAlg_of_isUnrQuad | (intros; apply GlobalTheory.CompanionTheory.UnrDens.resAlg_of_isUnrQuad <;> assumption)
+end
+
+section
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+
+namespace GlobalTheory.CompanionTheory.SiegLoc.GaussOne
+
+variable {E : Type} [CommRing E] [Fintype E] {τ : E →+* E} {q : ℕ} {ε : ℤ}
+
+open Classical in
+
+theorem sum_fixed_eq_zero (χ : AddChar E ℂ) (A b : E) (hb : τ b = b) (hχ : χ (A * b) ≠ 1) :
+    ∑ t ∈ Finset.univ.filter (fun t : E => τ t = t), χ (A * t) = 0 := by
+  set S := ∑ t ∈ Finset.univ.filter (fun t : E => τ t = t), χ (A * t) with hS
+  have key : χ (A * b) * S = S := by
+    rw [hS, Finset.mul_sum]
+    refine Finset.sum_nbij' (fun t => t + b) (fun t => t - b) ?_ ?_ ?_ ?_ ?_
+    · intro t ht
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ht ⊢
+      rw [map_add, ht, hb]
+    · intro t ht
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ht ⊢
+      rw [map_sub, ht, hb]
+    · intro t _
+      simp
+    · intro t _
+      simp
+    · intro t _
+      rw [← AddChar.map_add_eq_mul, mul_add, add_comm]
+  have h1 : (1 - χ (A * b)) * S = 0 := by rw [sub_mul, one_mul, key, sub_self]
+  rcases mul_eq_zero.mp h1 with h | h
+  · exact absurd (sub_eq_zero.mp h).symm hχ
+  · exact h
+
+open Classical in
+
+theorem card_filter_norm (t : E) :
+    (((Finset.univ.filter (fun w : E => τ w * w = t)).card : ℕ) : ℤ) =
+      (Nat.card {a : E // a * τ a = t} : ℤ) := by
+  have hf : Finset.univ.filter (fun w : E => τ w * w = t) =
+      Finset.univ.filter (fun a : E => a * τ a = t) := by
+    ext w
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    rw [mul_comm]
+  rw [hf, Nat.card_eq_fintype_card, Fintype.card_subtype]
+
+open Classical in
+
+theorem gauss_core (h : ResAlg E τ q ε) (χ : AddChar E ℂ) (A b : E) (hb : τ b = b)
+    (hχ : χ (A * b) ≠ 1) :
+    ∑ w : E, χ (A * (τ w * w)) = (ε : ℂ) * q := by
+  have hmap : ∀ w ∈ (Finset.univ : Finset E),
+      τ w * w ∈ Finset.univ.filter (fun t : E => τ t = t) := by
+    intro w _
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, map_mul, h.inv]
+    exact mul_comm _ _
+  rw [← Finset.sum_fiberwise_of_maps_to hmap]
+  have hfib : ∀ t ∈ Finset.univ.filter (fun t : E => τ t = t),
+      (∑ w ∈ Finset.univ.filter (fun w : E => τ w * w = t), χ (A * (τ w * w))) =
+        (((q : ℂ) - ε) + if t = 0 then (q : ℂ) * ε else 0) * χ (A * t) := by
+    intro t ht
+    have ht' : τ t = t := (Finset.mem_filter.mp ht).2
+    rw [Finset.sum_congr rfl (fun w hw => by rw [(Finset.mem_filter.mp hw).2]), Finset.sum_const,
+      nsmul_eq_mul]
+    congr 1
+    have hc := card_filter_norm (τ := τ) t
+    have hc' : (((Finset.univ.filter (fun w : E => τ w * w = t)).card : ℕ) : ℂ) =
+        ((Nat.card {a : E // a * τ a = t} : ℤ) : ℂ) := by
+      rw [← hc]
+      push_cast
+      rfl
+    rw [hc']
+    by_cases h0 : t = 0
+    · subst h0
+      rw [GlobalTheory.T.norm_fibre_card_zero E τ q ε h, if_pos rfl]
+      push_cast
+      ring
+    · rw [GlobalTheory.T.norm_fibre_card_nonzero E τ q ε h t ht' h0, if_neg h0]
+      push_cast
+      ring
+  rw [Finset.sum_congr rfl hfib]
+  simp only [add_mul, Finset.sum_add_distrib, ← Finset.mul_sum]
+  rw [sum_fixed_eq_zero χ A b hb hχ, mul_zero, zero_add]
+  simp only [ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_filter, Finset.mem_univ, true_and,
+    map_zero, if_true, mul_zero, AddChar.map_zero_eq_one, mul_one]
+  ring
+
+end GlobalTheory.CompanionTheory.SiegLoc.GaussOne
+
+namespace GlobalTheory.CompanionTheory.SiegLoc
+
+theorem gauss_level_one : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ)
+    (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)] (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ),
+    IsLevelChars σ ϖ ψ → ∀ (a : R), σ a = a → a ∉ lev ϖ 1 →
+    (∑ w : R ⧸ lev ϖ 1, ψ 1 (Ideal.Quotient.mk (lev ϖ 1) a * (barσ σ ϖ hR.fix_ϖ 1 w * w))) =
+      (ε : ℂ) * q := by
+  intro R _ σ ϖ q ε hR _ ψ hψ a ha hna
+  have hex : ∃ b, σ b = b ∧ ψ 1 (Ideal.Quotient.mk _ (a * b)) ≠ 1 := by
+    by_contra hcon
+    push_neg at hcon
+    exact hna (hψ.prim a ha hcon)
+  obtain ⟨b, hb, hχ⟩ := hex
+  refine GaussOne.gauss_core (GlobalTheory.T.residue_algebra_unramified R σ ϖ q ε hR) (ψ 1) _ (Ideal.Quotient.mk _ b) ?_ ?_
+  · rw [barσ_mk, hb]
+  · rwa [← map_mul]
+
+end GlobalTheory.CompanionTheory.SiegLoc
+end
+
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gauss_sum_hermitian_norm_level_one : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ) (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)] (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ), IsLevelChars σ ϖ ψ → ∀ (a : R), σ a = a → a ∉ lev ϖ 1 → (∑ w : R ⧸ lev ϖ 1, ψ 1 (Ideal.Quotient.mk (lev ϖ 1) a * (barσ σ ϖ hR.fix_ϖ 1 w * w))) = (ε : ℂ) * q := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegLoc.gauss_level_one
+end
+
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_range_mul_quotient_bounded_level : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ) (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)] (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ), IsLevelChars σ ϖ ψ → (∀ (j : ℕ) (a : R), σ a = a → a ∉ lev ϖ 1 → (∑ w : R ⧸ lev ϖ j, ψ j (Ideal.Quotient.mk (lev ϖ j) a * (barσ σ ϖ hR.fix_ϖ j w * w))) = ((ε : ℂ) * q) ^ j) → ∀ (k : ℕ) (d : R), σ d = d → ∃ e : ℕ, e ≤ k ∧ Nat.card (Set.range fun w : R ⧸ lev ϖ k => w * Ideal.Quotient.mk (lev ϖ k) d) = (q ^ 2) ^ e ∧ ∀ a : R, σ a = a → a ∉ lev ϖ 1 → (∑ w : R ⧸ lev ϖ k, ψ k (Ideal.Quotient.mk (lev ϖ k) (a * d) * (barσ σ ϖ hR.fix_ϖ k w * w))) = (q : ℂ) ^ (2 * k) * ((ε : ℂ) / q) ^ e := by
+  first | exact @GlobalTheory.CompanionTheory.SiegLoc.Scaled.gauss_image_level | exact GlobalTheory.CompanionTheory.SiegLoc.Scaled.gauss_image_level | (intros; apply GlobalTheory.CompanionTheory.SiegLoc.Scaled.gauss_image_level <;> assumption)
+end
+
+section
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+
+namespace GlobalTheory.CompanionTheory.GaussProd
+
+theorem sum_pi_prod {ι Q : Type} [Fintype ι] [DecidableEq ι] [Fintype Q] (g : ι → Q → ℂ) :
+    (∑ y : ι → Q, ∏ i, g i (y i)) = ∏ i, ∑ w, g i w := by
+  rw [Finset.prod_univ_sum, Fintype.piFinset_univ]
+
+theorem chi_sum {ι Q : Type} [AddCommMonoid Q] (χ : AddChar Q ℂ) (s : Finset ι) (g : ι → Q) :
+    χ (∑ i ∈ s, g i) = ∏ i ∈ s, χ (g i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [Finset.sum_insert ha, Finset.prod_insert ha, AddChar.map_add_eq_mul, ih]
+
+theorem trace_diag {Q : Type} [CommRing Q] (τ : Q →+* Q) (m n : ℕ) (d : Fin n → Q) (e : Fin m → Q)
+    (y : Matrix (Fin m) (Fin n) Q) :
+    Matrix.trace (Matrix.diagonal d * (cT τ y * Matrix.diagonal e * y)) =
+      ∑ i, ∑ l, e l * d i * (τ (y l i) * y l i) := by
+  simp only [Matrix.trace, Matrix.diag_apply]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Matrix.diagonal_mul, Matrix.mul_apply, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun l _ => ?_
+  rw [Matrix.mul_diagonal]
+  simp only [cT, Matrix.transpose_apply, Matrix.map_apply]
+  ring
+
+theorem red_diagonal {R : Type} [CommRing R] (ϖ : R) (k n : ℕ) (D : Fin n → R) :
+    red ϖ k (Matrix.diagonal D) =
+      Matrix.diagonal fun i => Ideal.Quotient.mk (lev ϖ k) (D i) := by
+  ext i j
+  by_cases h : i = j
+  · subst h; simp [red]
+  · simp [red, Matrix.diagonal_apply_ne _ h]
+
+theorem sum_fun_prod {Q : Type} [Fintype Q] (m n : ℕ) (f : Fin n → Fin m → Q → ℂ) :
+    (∑ y : Fin m → Fin n → Q, ∏ l, ∏ i, f i l (y l i)) = ∏ i, ∏ l, ∑ w, f i l w := by
+  have h1 : ∀ l, ∑ v : Fin n → Q, ∏ i, f i l (v i) = ∏ i, ∑ w, f i l w := fun l =>
+    sum_pi_prod (fun i => f i l)
+  have h2 := sum_pi_prod (ι := Fin m) (Q := Fin n → Q) (fun l v => ∏ i, f i l (v i))
+  simp only [h1] at h2
+  rw [Finset.prod_comm]
+  exact h2
+
+theorem gauss_gen {Q : Type} [CommRing Q] [Fintype Q] (τ : Q →+* Q) (χ : AddChar Q ℂ) (m n : ℕ)
+    (d : Fin n → Q) (e : Fin m → Q) :
+    (∑ y : Matrix (Fin m) (Fin n) Q,
+      χ (Matrix.trace (Matrix.diagonal d * (cT τ y * Matrix.diagonal e * y)))) =
+      ∏ i : Fin n, ∏ l : Fin m, ∑ w : Q, χ (e l * d i * (τ w * w)) := by
+  let f : Fin n → Fin m → Q → ℂ := fun i l w => χ (e l * d i * (τ w * w))
+  have hterm : ∀ y : Matrix (Fin m) (Fin n) Q,
+      χ (Matrix.trace (Matrix.diagonal d * (cT τ y * Matrix.diagonal e * y))) =
+        ∏ l, ∏ i, f i l (y l i) := by
+    intro y
+    rw [trace_diag, chi_sum, Finset.prod_comm (s := Finset.univ) (t := Finset.univ)]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    rw [chi_sum]
+  exact (Fintype.sum_equiv Matrix.of.symm _ _ fun y => hterm y).trans (sum_fun_prod m n f)
+
+theorem gauss_prod : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (hf : σ ϖ = ϖ) (k : ℕ) [Fintype (R ⧸ lev ϖ k)] (χ : AddChar (R ⧸ lev ϖ k) ℂ) (m n : ℕ) (D : Fin n → R) (E : Fin m → R), (∑ y : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), χ (Matrix.trace (red ϖ k (Matrix.diagonal D) * (cT (barσ σ ϖ hf k) y * red ϖ k (Matrix.diagonal E) * y)))) = ∏ i : Fin n, ∏ l : Fin m, ∑ w : R ⧸ lev ϖ k, χ (Ideal.Quotient.mk (lev ϖ k) (E l * D i) * (barσ σ ϖ hf k w * w)) := by
+  intro R _ σ ϖ hf k _ χ m n D E
+  have h := gauss_gen (barσ σ ϖ hf k) χ m n (fun i => Ideal.Quotient.mk (lev ϖ k) (D i))
+    (fun l => Ideal.Quotient.mk (lev ϖ k) (E l))
+  simp only [red_diagonal, map_mul]
+  exact h
+
+end GlobalTheory.CompanionTheory.GaussProd
+end
+
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_gauss_sum_diagonal_factor : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (hf : σ ϖ = ϖ) (k : ℕ) [Fintype (R ⧸ lev ϖ k)] (χ : AddChar (R ⧸ lev ϖ k) ℂ) (m n : ℕ) (D : Fin n → R) (E : Fin m → R), (∑ y : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), χ (Matrix.trace (red ϖ k (Matrix.diagonal D) * (cT (barσ σ ϖ hf k) y * red ϖ k (Matrix.diagonal E) * y)))) = ∏ i : Fin n, ∏ l : Fin m, ∑ w : R ⧸ lev ϖ k, χ (Ideal.Quotient.mk (lev ϖ k) (E l * D i) * (barσ σ ϖ hf k w * w)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GaussProd.gauss_prod
+end
+
+section
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+
+namespace GlobalTheory.CompanionTheory.SiegCov
+
+section Ring
+
+variable {A : Type} [CommRing A]
+
+theorem cT_mul (τ : A →+* A) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) A)
+    (y : Matrix (Fin b) (Fin c) A) : cT τ (x * y) = cT τ y * cT τ x := by
+  unfold cT
+  rw [Matrix.map_mul, Matrix.transpose_mul]
+
+theorem cT_one (τ : A →+* A) {a : ℕ} : cT τ (1 : Matrix (Fin a) (Fin a) A) = 1 := by
+  unfold cT
+  rw [Matrix.map_one _ (map_zero τ) (map_one τ), Matrix.transpose_one]
+
+theorem cT_cT (τ : A →+* A) (hτ : ∀ a, τ (τ a) = a) {a b : ℕ} (x : Matrix (Fin a) (Fin b) A) :
+    cT τ (cT τ x) = x := by
+  unfold cT
+  ext i j
+  exact hτ (x i j)
+
+def covEquiv (τ : A →+* A) {m n : ℕ} (G G' : Matrix (Fin n) (Fin n) A)
+    (P P' : Matrix (Fin m) (Fin m) A) (hG : G * G' = 1) (hG' : G' * G = 1)
+    (hP : P * P' = 1) (hP' : P' * P = 1) :
+    Matrix (Fin m) (Fin n) A ≃ Matrix (Fin m) (Fin n) A where
+  toFun x := P' * x * cT τ G'
+  invFun y := P * y * cT τ G
+  left_inv x := by
+    have h : cT τ G' * cT τ G = 1 := by rw [← cT_mul, hG, cT_one]
+    calc P * (P' * x * cT τ G') * cT τ G = (P * P') * x * (cT τ G' * cT τ G) := by
+          simp only [Matrix.mul_assoc]
+      _ = x := by rw [hP, h, Matrix.one_mul, Matrix.mul_one]
+  right_inv y := by
+    have h : cT τ G * cT τ G' = 1 := by rw [← cT_mul, hG', cT_one]
+    calc P' * (P * y * cT τ G) * cT τ G' = (P' * P) * y * (cT τ G * cT τ G') := by
+          simp only [Matrix.mul_assoc]
+      _ = y := by rw [hP', h, Matrix.one_mul, Matrix.mul_one]
+
+theorem eq_of_conj (τ : A →+* A) {n : ℕ} {h D g g' : Matrix (Fin n) (Fin n) A}
+    (hg : g * g' = 1) (hD : cT τ g * h * g = D) : h = cT τ g' * D * g' := by
+  have hg2 : cT τ g' * cT τ g = 1 := by rw [← cT_mul, hg, cT_one]
+  rw [← hD]
+  calc h = (cT τ g' * cT τ g) * h * (g * g') := by
+        rw [hg2, hg, Matrix.one_mul, Matrix.mul_one]
+    _ = cT τ g' * (cT τ g * h * g) * g' := by simp only [Matrix.mul_assoc]
+
+theorem trace_cov (τ : A →+* A) (hτ : ∀ a, τ (τ a) = a) {m n : ℕ}
+    (D g' : Matrix (Fin n) (Fin n) A) (E p' : Matrix (Fin m) (Fin m) A)
+    (x : Matrix (Fin m) (Fin n) A) :
+    Matrix.trace ((cT τ g' * D * g') * (cT τ x * (cT τ p' * E * p') * x)) =
+      Matrix.trace (D * (cT τ (p' * x * cT τ g') * E * (p' * x * cT τ g'))) := by
+  rw [cT_mul, cT_mul, cT_cT τ hτ]
+  simp only [Matrix.mul_assoc]
+  rw [Matrix.trace_mul_comm (cT τ g')]
+  simp only [Matrix.mul_assoc]
+
+end Ring
+
+section Red
+
+variable {R : Type} [CommRing R]
+
+theorem red_mul (ϖ : R) (k : ℕ) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R)
+    (y : Matrix (Fin b) (Fin c) R) : red ϖ k (x * y) = red ϖ k x * red ϖ k y := by
+  unfold red
+  exact Matrix.map_mul
+
+theorem red_cT (σ : R →+* R) (ϖ : R) (hf : σ ϖ = ϖ) (k : ℕ) {a b : ℕ}
+    (x : Matrix (Fin a) (Fin b) R) : red ϖ k (cT σ x) = cT (barσ σ ϖ hf k) (red ϖ k x) := by
+  ext i j
+  exact (barσ_mk σ ϖ hf k (x j i)).symm
+
+theorem red_one (ϖ : R) (k : ℕ) {a : ℕ} : red ϖ k (1 : Matrix (Fin a) (Fin a) R) = 1 := by
+  unfold red
+  exact Matrix.map_one _ (map_zero _) (map_one _)
+
+theorem barσ_inv (σ : R →+* R) (ϖ : R) (hf : σ ϖ = ϖ) (hσ : ∀ a, σ (σ a) = a) (k : ℕ)
+    (a : R ⧸ lev ϖ k) : barσ σ ϖ hf k (barσ σ ϖ hf k a) = a := by
+  obtain ⟨b, rfl⟩ := Ideal.Quotient.mk_surjective a
+  rw [barσ_mk, barσ_mk, hσ]
+
+end Red
+
+theorem gauss_cov (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (hf : σ ϖ = ϖ)
+    (hσ : ∀ a, σ (σ a) = a) (k : ℕ) [Fintype (R ⧸ lev ϖ k)] (χ : AddChar (R ⧸ lev ϖ k) ℂ)
+    (m n : ℕ) (h D g g' : Matrix (Fin n) (Fin n) R) (S E p p' : Matrix (Fin m) (Fin m) R)
+    (hg : g * g' = 1) (hg' : g' * g = 1) (hp : p * p' = 1) (hp' : p' * p = 1)
+    (hD : cT σ g * h * g = D) (hE : cT σ p * S * p = E) :
+    (∑ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k),
+        χ (Matrix.trace (red ϖ k h * (cT (barσ σ ϖ hf k) x * red ϖ k S * x)))) =
+      ∑ y : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k),
+        χ (Matrix.trace (red ϖ k D * (cT (barσ σ ϖ hf k) y * red ϖ k E * y))) := by
+  have hh : h = cT σ g' * D * g' := eq_of_conj σ hg hD
+  have hS : S = cT σ p' * E * p' := eq_of_conj σ hp hE
+  have rg : red ϖ k g * red ϖ k g' = 1 := by rw [← red_mul, hg, red_one]
+  have rg' : red ϖ k g' * red ϖ k g = 1 := by rw [← red_mul, hg', red_one]
+  have rp : red ϖ k p * red ϖ k p' = 1 := by rw [← red_mul, hp, red_one]
+  have rp' : red ϖ k p' * red ϖ k p = 1 := by rw [← red_mul, hp', red_one]
+  refine Fintype.sum_equiv
+    (covEquiv (barσ σ ϖ hf k) (red ϖ k g) (red ϖ k g') (red ϖ k p) (red ϖ k p') rg rg' rp rp')
+    _ _ ?_
+  intro x
+  have key : Matrix.trace (red ϖ k h * (cT (barσ σ ϖ hf k) x * red ϖ k S * x)) =
+      Matrix.trace (red ϖ k D * (cT (barσ σ ϖ hf k) (red ϖ k p' * x * cT (barσ σ ϖ hf k) (red ϖ k g')) *
+        red ϖ k E * (red ϖ k p' * x * cT (barσ σ ϖ hf k) (red ϖ k g')))) := by
+    rw [hh, hS, red_mul, red_mul, red_mul, red_mul, red_cT σ ϖ hf, red_cT σ ϖ hf]
+    exact trace_cov (barσ σ ϖ hf k) (barσ_inv σ ϖ hf hσ k) (red ϖ k D) (red ϖ k g') (red ϖ k E)
+      (red ϖ k p') x
+  exact congrArg (⇑χ) key
+
+end GlobalTheory.CompanionTheory.SiegCov
+end
+
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_gauss_sum_congr_invariance : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (hf : σ ϖ = ϖ), (∀ a, σ (σ a) = a) → ∀ (k : ℕ) [Fintype (R ⧸ lev ϖ k)] (χ : AddChar (R ⧸ lev ϖ k) ℂ) (m n : ℕ) (h D g g' : Matrix (Fin n) (Fin n) R) (S E p p' : Matrix (Fin m) (Fin m) R), g * g' = 1 → g' * g = 1 → p * p' = 1 → p' * p = 1 → cT σ g * h * g = D → cT σ p * S * p = E → (∑ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), χ (Matrix.trace (red ϖ k h * (cT (barσ σ ϖ hf k) x * red ϖ k S * x)))) = ∑ y : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), χ (Matrix.trace (red ϖ k D * (cT (barσ σ ϖ hf k) y * red ϖ k E * y))) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SiegCov.gauss_cov
+end
+
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+
+namespace GlobalTheory.CompanionTheory.SiegLoc.HermOrth
+
+variable {R : Type} [CommRing R]
+
+theorem red_add' (ϖ : R) (k : ℕ) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
+    red ϖ k (x + y) = red ϖ k x + red ϖ k y := by
+  ext i j
+  simp [red]
+
+theorem red_neg' (ϖ : R) (k : ℕ) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
+    red ϖ k (-x) = -red ϖ k x := by
+  ext i j
+  simp [red]
+
+theorem cT_add' (σ : R →+* R) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
+    cT σ (x + y) = cT σ x + cT σ y := by
+  ext i j
+  simp [cT]
+
+theorem cT_neg' (σ : R →+* R) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
+    cT σ (-x) = -cT σ x := by
+  ext i j
+  simp [cT]
+
+theorem cT_single' (σ : R →+* R) {n : ℕ} (i j : Fin n) (c : R) :
+    cT σ (Matrix.single i j c) = Matrix.single j i (σ c) := by
+  simp only [PositivityTheory.PfSWUS.Loc.cT, Matrix.map_single, Matrix.transpose_single]
+
+theorem trace_single_mul' {n : ℕ} (i j : Fin n) (c : R) (y : Matrix (Fin n) (Fin n) R) :
+    Matrix.trace (Matrix.single i j c * y) = c * y j i := by
+  rw [Matrix.trace_single_mul, smul_eq_mul]
+
+theorem trace_red_mul (ϖ : R) (k n : ℕ) (b y : Matrix (Fin n) (Fin n) R) :
+    Matrix.trace (red ϖ k b * red ϖ k y) = Ideal.Quotient.mk (lev ϖ k) (Matrix.trace (b * y)) := by
+  unfold PositivityTheory.PfSWUS.Loc.red
+  rw [← Matrix.map_mul]
+  simp only [Matrix.trace, Matrix.diag_apply, Matrix.map_apply, map_sum]
+
+theorem tsum_eq_zero_of_shift {G : Type} [AddCommGroup G] (H : Set G)
+    (hadd : ∀ a b, a ∈ H → b ∈ H → a + b ∈ H) (hneg : ∀ a, a ∈ H → -a ∈ H)
+    (f : G → ℂ) (hf : ∀ a b, f (a + b) = f a * f b) (B₀ : G) (hB₀ : B₀ ∈ H) (h : f B₀ ≠ 1) :
+    ∑' B : H, f B.1 = 0 := by
+  let e : H ≃ H :=
+    { toFun := fun B => ⟨B₀ + B.1, hadd _ _ hB₀ B.2⟩
+      invFun := fun B => ⟨-B₀ + B.1, hadd _ _ (hneg _ hB₀) B.2⟩
+      left_inv := fun B => Subtype.ext (by simp)
+      right_inv := fun B => Subtype.ext (by simp) }
+  have key : ∑' B : H, f B.1 = f B₀ * ∑' B : H, f B.1 := by
+    calc ∑' B : H, f B.1 = ∑' B : H, f (e B).1 := (e.tsum_eq (fun B : H => f B.1)).symm
+      _ = ∑' B : H, f B₀ * f B.1 := tsum_congr fun B => by
+          show f (B₀ + B.1) = _
+          exact hf _ _
+      _ = f B₀ * ∑' B : H, f B.1 := tsum_mul_left
+  have hzero : (f B₀ - 1) * ∑' B : H, f B.1 = 0 := by
+    rw [sub_mul, one_mul, ← key, sub_self]
+  rcases mul_eq_zero.mp hzero with h' | h'
+  · exact absurd (sub_eq_zero.mp h') h
+  · exact h'
+
+theorem hermMod_add {σ : R →+* R} {ϖ : R} {n k : ℕ}
+    (a b : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k)) (ha : a ∈ hermMod σ ϖ n k)
+    (hb : b ∈ hermMod σ ϖ n k) : a + b ∈ hermMod σ ϖ n k := by
+  unfold PositivityTheory.PfSWUS.Loc.hermMod at ha hb ⊢
+  obtain ⟨a', ha', rfl⟩ := ha
+  obtain ⟨b', hb', rfl⟩ := hb
+  have ha'' : PositivityTheory.PfSWUS.Loc.cT σ a' = a' := ha'
+  have hb'' : PositivityTheory.PfSWUS.Loc.cT σ b' = b' := hb'
+  refine ⟨a' + b', ?_, GlobalTheory.CompanionTheory.SiegLoc.HermOrth.red_add' _ _ _ _⟩
+  show PositivityTheory.PfSWUS.Loc.cT σ (a' + b') = a' + b'
+  rw [GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_add', ha'', hb'']
+
+theorem hermMod_neg {σ : R →+* R} {ϖ : R} {n k : ℕ}
+    (a : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k)) (ha : a ∈ hermMod σ ϖ n k) :
+    -a ∈ hermMod σ ϖ n k := by
+  unfold PositivityTheory.PfSWUS.Loc.hermMod at ha ⊢
+  obtain ⟨a', ha', rfl⟩ := ha
+  have ha'' : PositivityTheory.PfSWUS.Loc.cT σ a' = a' := ha'
+  refine ⟨-a', ?_, GlobalTheory.CompanionTheory.SiegLoc.HermOrth.red_neg' _ _ _⟩
+  show PositivityTheory.PfSWUS.Loc.cT σ (-a') = -a'
+  rw [GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_neg', ha'']
+
+theorem red_eq_zero_of_trivial {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ}
+    {ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ} (hR : IsUnrQuad R σ ϖ q ε) (hψ : IsLevelChars σ ϖ ψ)
+    (n k : ℕ) (y : Matrix (Fin n) (Fin n) R) (hy : cT σ y = y)
+    (h : ∀ b : Matrix (Fin n) (Fin n) R, cT σ b = b →
+      ψ k (Ideal.Quotient.mk _ (Matrix.trace (b * y))) = 1) :
+    red ϖ k y = 0 := by
+  have hσσ : ∀ a, σ (σ a) = a := hR.1
+  ext i j
+  simp only [PositivityTheory.PfSWUS.Loc.red, Matrix.map_apply, Matrix.zero_apply]
+  rw [Ideal.Quotient.eq_zero_iff_mem]
+  apply GlobalTheory.CompanionTheory.SiegLoc.trace_nondeg hR hψ k (y i j)
+  intro t
+  have hyji : σ (y i j) = y j i := by
+    have hentry := congrFun (congrFun hy j) i
+    simpa [PositivityTheory.PfSWUS.Loc.cT] using hentry
+  have hb : PositivityTheory.PfSWUS.Loc.cT σ (Matrix.single j i t + Matrix.single i j (σ t)) =
+      Matrix.single j i t + Matrix.single i j (σ t) := by
+    rw [GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_add', GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_single', GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_single',
+      hσσ, add_comm]
+  have htr := h _ hb
+  rw [Matrix.add_mul, Matrix.trace_add, GlobalTheory.CompanionTheory.SiegLoc.HermOrth.trace_single_mul',
+    GlobalTheory.CompanionTheory.SiegLoc.HermOrth.trace_single_mul'] at htr
+  rw [map_mul σ, hyji]
+  exact htr
+
+theorem orth_hermMod (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ)
+    (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)]
+    (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ) (hψ : IsLevelChars σ ϖ ψ) (n k : ℕ)
+    (Y : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k)) (hY : Y ∈ hermMod σ ϖ n k) :
+    (Y = 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) =
+        (Nat.card (hermMod σ ϖ n k) : ℂ)) ∧
+      (Y ≠ 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) = 0) := by
+  refine ⟨fun h0 => ?_, fun hne => ?_⟩
+  · subst h0
+    simp only [Matrix.mul_zero, Matrix.trace_zero, AddChar.map_zero_eq_one]
+    rw [tsum_const, nsmul_eq_mul, mul_one]
+  · have hY' := hY
+    unfold PositivityTheory.PfSWUS.Loc.hermMod at hY'
+    obtain ⟨y, hy, rfl⟩ := hY'
+    by_contra hsum
+    apply hne
+    apply GlobalTheory.CompanionTheory.SiegLoc.HermOrth.red_eq_zero_of_trivial hR hψ n k y hy
+    intro b hb
+    rw [← GlobalTheory.CompanionTheory.SiegLoc.HermOrth.trace_red_mul]
+    by_contra hb1
+    exact hsum (GlobalTheory.CompanionTheory.SiegLoc.HermOrth.tsum_eq_zero_of_shift _
+      (fun a₁ a₂ h₁ h₂ => GlobalTheory.CompanionTheory.SiegLoc.HermOrth.hermMod_add a₁ a₂ h₁ h₂)
+      (fun a₁ h₁ => GlobalTheory.CompanionTheory.SiegLoc.HermOrth.hermMod_neg a₁ h₁)
+      (fun B => ψ k (Matrix.trace (B * PositivityTheory.PfSWUS.Loc.red ϖ k y)))
+      (fun a₁ a₂ => by simp only [Matrix.add_mul, Matrix.trace_add, AddChar.map_add_eq_mul])
+      (PositivityTheory.PfSWUS.Loc.red ϖ k b) ⟨b, hb, rfl⟩ hb1)
+
+end GlobalTheory.CompanionTheory.SiegLoc.HermOrth
+end
+
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_character_orthogonality : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ) (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)] (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ), IsLevelChars σ ϖ ψ → ∀ (n k : ℕ) (Y : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k)), Y ∈ hermMod σ ϖ n k → (Y = 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) = (Nat.card (hermMod σ ϖ n k) : ℂ)) ∧ (Y ≠ 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) = 0) := by
+  first | exact @GlobalTheory.CompanionTheory.SiegLoc.HermOrth.orth_hermMod | exact GlobalTheory.CompanionTheory.SiegLoc.HermOrth.orth_hermMod | (intros; apply GlobalTheory.CompanionTheory.SiegLoc.HermOrth.orth_hermMod <;> assumption)
+end
+
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+
+namespace GlobalTheory.CompanionTheory.SiegLoc.LevelId
+
+variable {R : Type} [CommRing R]
+
+theorem cT_mul (σ : R →+* R) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) (y : Matrix (Fin b) (Fin c) R) :
+    cT σ (x * y) = cT σ y * cT σ x := by
+  unfold cT
+  rw [Matrix.map_mul, Matrix.transpose_mul]
+
+theorem cT_cT (σ : R →+* R) (h : ∀ a, σ (σ a) = a) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
+    cT σ (cT σ x) = x := by
+  ext i j
+  exact h (x i j)
+
+theorem cT_sub (σ : R →+* R) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
+    cT σ (x - y) = cT σ x - cT σ y := by
+  ext i j
+  exact map_sub σ (x j i) (y j i)
+
+theorem red_mul (ϖ : R) (k : ℕ) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) (y : Matrix (Fin b) (Fin c) R) :
+    red ϖ k (x * y) = red ϖ k x * red ϖ k y := by
+  unfold red
+  exact Matrix.map_mul
+
+theorem red_sub (ϖ : R) (k : ℕ) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
+    red ϖ k (x - y) = red ϖ k x - red ϖ k y := by
+  ext i j
+  exact map_sub (Ideal.Quotient.mk (lev ϖ k)) (x i j) (y i j)
+
+theorem red_neg (ϖ : R) (k : ℕ) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
+    red ϖ k (-x) = - red ϖ k x := by
+  ext i j
+  exact map_neg (Ideal.Quotient.mk (lev ϖ k)) (x i j)
+
+theorem red_cT (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
+    red ϖ k (cT σ x) = cT (barσ σ ϖ h k) (red ϖ k x) := by
+  ext i j
+  exact (barσ_mk σ ϖ h k (x j i)).symm
+
+theorem red_surj (ϖ : R) (k : ℕ) {a b : ℕ} :
+    Function.Surjective (red ϖ k : Matrix (Fin a) (Fin b) R → _) := by
+  intro y
+  refine ⟨Matrix.of fun i j => (Ideal.Quotient.mk_surjective (y i j)).choose, ?_⟩
+  ext i j
+  exact (Ideal.Quotient.mk_surjective (y i j)).choose_spec
+
+theorem red_gram (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {m n : ℕ}
+    (S : Matrix (Fin m) (Fin m) R) (x : Matrix (Fin m) (Fin n) R) :
+    red ϖ k (cT σ x * S * x) = cT (barσ σ ϖ h k) (red ϖ k x) * red ϖ k S * red ϖ k x := by
+  rw [red_mul, red_mul, red_cT σ ϖ h]
+
+theorem image_sol (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {m n : ℕ}
+    (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R) :
+    red ϖ k '' {x : Matrix (Fin m) (Fin n) R | red ϖ k (cT σ x * S * x) = red ϖ k T} =
+      {y | cT (barσ σ ϖ h k) y * red ϖ k S * y = red ϖ k T} := by
+  ext y
+  constructor
+  · rintro ⟨x, hx, rfl⟩
+    show cT (barσ σ ϖ h k) (red ϖ k x) * red ϖ k S * red ϖ k x = red ϖ k T
+    rw [← red_gram σ ϖ h]
+    exact hx
+  · intro hy
+    obtain ⟨x, rfl⟩ := red_surj ϖ k y
+    refine ⟨x, ?_, rfl⟩
+    show red ϖ k (cT σ x * S * x) = red ϖ k T
+    rw [red_gram σ ϖ h]
+    exact hy
+
+theorem gram_sub_mem (σ : R →+* R) (ϖ : R) (hinv : ∀ a, σ (σ a) = a) (h : σ ϖ = ϖ) (k : ℕ) {m n : ℕ}
+    (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R) (hS : cT σ S = S) (hT : cT σ T = T)
+    (y : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) :
+    cT (barσ σ ϖ h k) y * red ϖ k S * y - red ϖ k T ∈ hermMod σ ϖ n k := by
+  obtain ⟨x, rfl⟩ := red_surj ϖ k y
+  unfold hermMod
+  refine ⟨cT σ x * S * x - T, ?_, ?_⟩
+  · show cT σ (cT σ x * S * x - T) = cT σ x * S * x - T
+    rw [cT_sub, cT_mul, cT_mul, cT_cT σ hinv, hS, hT, Matrix.mul_assoc]
+  · show red ϖ k (cT σ x * S * x - T) = _
+    rw [red_sub, red_gram σ ϖ h]
+
+theorem neg_mem_herm (σ : R →+* R) (ϖ : R) (n k : ℕ) {B : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k)}
+    (hB : B ∈ hermMod σ ϖ n k) : -B ∈ hermMod σ ϖ n k := by
+  unfold hermMod at hB ⊢
+  obtain ⟨h0, hh, rfl⟩ := hB
+  refine ⟨-h0, ?_, red_neg ϖ k h0⟩
+  show cT σ (-h0) = -h0
+  have hh' : cT σ h0 = h0 := hh
+  ext i j
+  have e : σ (h0 j i) = h0 i j := congrFun (congrFun hh' i) j
+  show σ (-(h0 j i)) = -(h0 i j)
+  rw [map_neg, e]
+
+theorem nuAt_neg (ϖ : R) {n k : ℕ} (B : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k)) :
+    nuAt ϖ (-B) = nuAt ϖ B := by
+  unfold nuAt
+  have hset : (Set.range fun x : Fin n → R ⧸ lev ϖ k => Matrix.vecMul x (-B)) =
+      Set.range fun x : Fin n → R ⧸ lev ϖ k => Matrix.vecMul x B := by
+    ext v
+    constructor
+    · rintro ⟨x, rfl⟩
+      refine ⟨-x, ?_⟩
+      show Matrix.vecMul (-x) B = Matrix.vecMul x (-B)
+      rw [Matrix.neg_vecMul, Matrix.vecMul_neg]
+    · rintro ⟨x, rfl⟩
+      refine ⟨-x, ?_⟩
+      show Matrix.vecMul (-x) (-B) = Matrix.vecMul x B
+      rw [Matrix.neg_vecMul, Matrix.vecMul_neg, neg_neg]
+  rw [hset]
+
+end GlobalTheory.CompanionTheory.SiegLoc.LevelId
+
+open GlobalTheory.CompanionTheory.SiegLoc.LevelId in
+
+theorem GlobalTheory.CompanionTheory.SiegLoc.level_identity : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ) (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)] (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ), IsLevelChars σ ϖ ψ → ∀ (m n k : ℕ) (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R), cT σ S = S → cT σ T = T → (∀ Y : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k), Y ∈ hermMod σ ϖ n k → (Y = 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) = (Nat.card (hermMod σ ϖ n k) : ℂ)) ∧ (Y ≠ 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) = 0)) → (∀ B ∈ hermMod σ ϖ n k, (∑ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), ψ k (Matrix.trace (B * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x)))) = (Nat.card (Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) : ℂ) * (((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ B))) → siegAt ϖ σ ψ q ε m T k = ((densAt σ ϖ S T k : ℝ) : ℂ) := by
+  intro R _ σ ϖ q ε hR _ ψ hψ m n k S T hS hT horth hgauss
+  classical
+  have : Fintype ↥(hermMod σ ϖ n k) := Fintype.ofFinite _
+  have hx : ∀ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k),
+      (∑' B : hermMod σ ϖ n k,
+        ψ k (Matrix.trace (B.1 * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x - red ϖ k T)))) =
+        if cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x = red ϖ k T then
+          (Nat.card (hermMod σ ϖ n k) : ℂ) else 0 := by
+    intro x
+    have hmem := gram_sub_mem σ ϖ hR.inv hR.fix_ϖ k S T hS hT x
+    by_cases hxe : cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x = red ϖ k T
+    · rw [if_pos hxe]
+      exact (horth _ hmem).1 (sub_eq_zero.mpr hxe)
+    · rw [if_neg hxe]
+      exact (horth _ hmem).2 (sub_ne_zero.mpr hxe)
+  have hsplit : ∀ (B : hermMod σ ϖ n k) (x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)),
+      ψ k (Matrix.trace (B.1 * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x - red ϖ k T))) =
+        ψ k (Matrix.trace (B.1 * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x))) *
+          ψ k (-Matrix.trace (B.1 * red ϖ k T)) := by
+    intro B x
+    rw [Matrix.mul_sub, Matrix.trace_sub, sub_eq_add_neg, AddChar.map_add_eq_mul]
+  have hsol : (solCount σ ϖ S T k : ℂ) = ∑ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k),
+      if cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x = red ϖ k T then (1 : ℂ) else 0 := by
+    unfold solCount
+    rw [image_sol σ ϖ hR.fix_ϖ k S T, Nat.card_eq_fintype_card, Fintype.card_subtype,
+      Finset.natCast_card_filter]
+    exact Finset.sum_congr rfl fun x _ => if_congr Iff.rfl rfl rfl
+  have h1 : ∀ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), (Nat.card (hermMod σ ϖ n k) : ℂ) *
+      (if cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x = red ϖ k T then (1 : ℂ) else 0) =
+      ∑ B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x))) *
+        ψ k (-Matrix.trace (B.1 * red ϖ k T)) := by
+    intro x
+    rw [mul_ite, mul_one, mul_zero, ← hx x, tsum_fintype]
+    exact Finset.sum_congr rfl fun B _ => hsplit B x
+  have hcount : (Nat.card (hermMod σ ϖ n k) : ℂ) * (solCount σ ϖ S T k : ℂ) =
+      (Nat.card (Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) : ℂ) *
+        ∑ B : hermMod σ ϖ n k, ψ k (-Matrix.trace (B.1 * red ϖ k T)) *
+          ((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ B.1) := by
+    calc (Nat.card (hermMod σ ϖ n k) : ℂ) * (solCount σ ϖ S T k : ℂ)
+        = ∑ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), (Nat.card (hermMod σ ϖ n k) : ℂ) *
+            (if cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x = red ϖ k T then (1 : ℂ) else 0) := by
+          rw [hsol, Finset.mul_sum]
+      _ = ∑ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), ∑ B : hermMod σ ϖ n k,
+            ψ k (Matrix.trace (B.1 * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x))) *
+              ψ k (-Matrix.trace (B.1 * red ϖ k T)) := Finset.sum_congr rfl fun x _ => h1 x
+      _ = ∑ B : hermMod σ ϖ n k, ∑ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k),
+            ψ k (Matrix.trace (B.1 * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x))) *
+              ψ k (-Matrix.trace (B.1 * red ϖ k T)) := Finset.sum_comm
+      _ = ∑ B : hermMod σ ϖ n k, (Nat.card (Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) : ℂ) *
+            (ψ k (-Matrix.trace (B.1 * red ϖ k T)) *
+              ((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ B.1)) := by
+          refine Finset.sum_congr rfl fun B _ => ?_
+          rw [← Finset.sum_mul, hgauss B.1 B.2]
+          ring
+      _ = _ := by rw [Finset.mul_sum]
+  have hneg : ∑ B : hermMod σ ϖ n k, ψ k (-Matrix.trace (B.1 * red ϖ k T)) *
+        ((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ B.1) =
+      ∑ B : hermMod σ ϖ n k, ψ k (Matrix.trace (red ϖ k T * B.1)) *
+        ((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ B.1) := by
+    let e : hermMod σ ϖ n k ≃ hermMod σ ϖ n k :=
+      { toFun := fun B => ⟨-B.1, neg_mem_herm σ ϖ n k B.2⟩
+        invFun := fun B => ⟨-B.1, neg_mem_herm σ ϖ n k B.2⟩
+        left_inv := fun B => Subtype.ext (neg_neg _)
+        right_inv := fun B => Subtype.ext (neg_neg _) }
+    refine Fintype.sum_equiv e _ _ fun B => ?_
+    show _ = ψ k (Matrix.trace (red ϖ k T * -B.1)) *
+      ((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ (-B.1))
+    rw [nuAt_neg, Matrix.mul_neg, Matrix.trace_neg, Matrix.trace_mul_comm]
+  have hfin : siegAt ϖ σ ψ q ε m T k = ∑ B : hermMod σ ϖ n k, ψ k (-Matrix.trace (B.1 * red ϖ k T)) *
+        ((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ B.1) := by
+    unfold siegAt
+    rw [tsum_fintype, hneg]
+  have hM : (Nat.card (Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) : ℂ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr Nat.card_pos.ne'
+  have hcast : ((densAt σ ϖ S T k : ℝ) : ℂ) = (solCount σ ϖ S T k : ℂ) * (Nat.card (hermMod σ ϖ n k) : ℂ) /
+      (Nat.card (Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) : ℂ) := by
+    unfold densAt
+    rw [Complex.ofReal_div, Complex.ofReal_mul, Complex.ofReal_natCast, Complex.ofReal_natCast,
+      Complex.ofReal_natCast]
+  rw [hfin, hcast, eq_div_iff hM]
+  linear_combination (-1 : ℂ) * hcount
+end
+
+section
+open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermitian_rep_count_fourier_expansion : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) (q : ℕ) (ε : ℤ) (hR : IsUnrQuad R σ ϖ q ε) [∀ k, Fintype (R ⧸ lev ϖ k)] (ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ), IsLevelChars σ ϖ ψ → ∀ (m n k : ℕ) (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R), cT σ S = S → cT σ T = T → (∀ Y : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k), Y ∈ hermMod σ ϖ n k → (Y = 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) = (Nat.card (hermMod σ ϖ n k) : ℂ)) ∧ (Y ≠ 0 → (∑' B : hermMod σ ϖ n k, ψ k (Matrix.trace (B.1 * Y))) = 0)) → (∀ B ∈ hermMod σ ϖ n k, (∑ x : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k), ψ k (Matrix.trace (B * (cT (barσ σ ϖ hR.fix_ϖ k) x * red ϖ k S * x)))) = (Nat.card (Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) : ℂ) * (((ε : ℂ) ^ m * (q : ℂ) ^ (-(m : ℤ))) ^ Nat.log (q ^ 2) (nuAt ϖ B))) → siegAt ϖ σ ψ q ε m T k = ((densAt σ ϖ S T k : ℝ) : ℂ) := by
+  first | exact @GlobalTheory.CompanionTheory.SiegLoc.level_identity | exact GlobalTheory.CompanionTheory.SiegLoc.level_identity | (intros; apply GlobalTheory.CompanionTheory.SiegLoc.level_identity <;> assumption)
+end
+
+section
 noncomputable section
 open PositivityTheory.PfSWUS.Loc GlobalTheory.CompanionTheory.UnrDens GlobalTheory.CompanionTheory.SiegLoc Filter Topology
 namespace GlobalTheory.CompanionTheory.SiegLoc
@@ -89,4 +1030,5 @@ theorem gauss_full {R : Type} [CommRing R] {σ : R →+* R} {ϖ : R} {q : ℕ} {
 
 
 end GlobalTheory.CompanionTheory.SiegLoc
+end
 end

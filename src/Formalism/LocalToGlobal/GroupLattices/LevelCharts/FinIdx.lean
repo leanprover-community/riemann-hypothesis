@@ -1,5 +1,14 @@
-import Formalism.LocalToGlobal.GroupLattices.LevelCharts.LevFinIdxPI
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.LevelProdIdx
+import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteClassSetOfFiniteIndex
 
+section
+open NumberField IsDedekindDomain Matrix Formalism.UG
+open scoped TensorProduct
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions NumberField IsDedekindDomain Matrix Formalism.UG
@@ -25,3 +34,5 @@ theorem finite_setOf_mem_asIdeal {x : 𝓞 F} (hx : x ≠ 0) : {v : HeightOneSpe
 
 
 end Formalism.L2.G
+end
+end

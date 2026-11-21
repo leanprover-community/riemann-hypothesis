@@ -2,11 +2,521 @@ import Mathlib
 import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RationalDualityOfAllCoefficients
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIntegralDualFunctional
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoboundaryModIffForallTraceFormCoboundary
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZlLatticeOfCoefficientLattice
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DualLatticeRestrictScalarsTraceForm
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoefficientRingIntegersCompactAdicPropertiesStatement
+import BuildAid.ForwardExisting
 
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
+
+noncomputable section
+namespace GlobalTheory.IntDual
+
+theorem lattice_basis (l : ℕ) [Fact l.Prime] (LL : Type) [Field LL] [Algebra ℚ_[l] LL]
+    [FiniteDimensional ℚ_[l] LL] :
+    ∃ (n : ℕ) (b : Basis (Fin n) ℚ_[l] LL),
+      (∀ i, ((algebraMap ℚ_[l] LL).comp (algebraMap ℤ_[l] ℚ_[l])).IsIntegralElem (b i)) ∧
+      ∀ x : LL, ((algebraMap ℚ_[l] LL).comp (algebraMap ℤ_[l] ℚ_[l])).IsIntegralElem x →
+        ∀ i, ∃ z : ℤ_[l], b.repr x i = (z : ℚ_[l]) := by
+  letI : Algebra ℤ_[l] LL := ((algebraMap ℚ_[l] LL).comp (algebraMap ℤ_[l] ℚ_[l])).toAlgebra
+  haveI : IsScalarTower ℤ_[l] ℚ_[l] LL := IsScalarTower.of_algebraMap_eq (fun _ => rfl)
+  let S := integralClosure ℤ_[l] LL
+  haveI : IsIntegralClosure S ℤ_[l] LL := integralClosure.isIntegralClosure _ _
+  haveI : Module.Finite ℤ_[l] S := IsIntegralClosure.finite ℤ_[l] ℚ_[l] LL S
+  have hinj : Function.Injective (algebraMap ℤ_[l] LL) := by
+    intro a c h
+    exact IsFractionRing.injective ℤ_[l] ℚ_[l] ((algebraMap ℚ_[l] LL).injective h)
+  haveI : Module.IsTorsionFree ℤ_[l] S := ⟨fun r hr a c hac => by
+    have hr0 : algebraMap ℤ_[l] LL r ≠ 0 := by
+      intro h0; exact hr.ne_zero (hinj (h0.trans (map_zero _).symm))
+    apply Subtype.ext
+    have h1 := congrArg (fun s : S => (s : LL)) hac
+    simp only [Subalgebra.coe_smul, Algebra.smul_def] at h1
+    exact mul_left_cancel₀ hr0 h1⟩
+  haveI : Module.Free ℤ_[l] S := Module.free_of_finite_type_torsion_free'
+  haveI : IsLocalization (Algebra.algebraMapSubmonoid S (nonZeroDivisors ℤ_[l])) LL :=
+    IsIntegralClosure.isLocalization ℤ_[l] ℚ_[l] LL S
+  let bO := (Module.Free.chooseBasis ℤ_[l] S).reindex (Fintype.equivFin _)
+  let b := bO.localizationLocalization ℚ_[l] (nonZeroDivisors ℤ_[l]) LL
+  have hb : ∀ i, b i = (bO i : LL) := fun i => Module.Basis.localizationLocalization_apply _ _ _ _ i
+  refine ⟨_, b, fun i => ?_, fun x hx i => ?_⟩
+  · rw [hb]; exact (bO i).2
+  · have := bO.localizationLocalization_repr_algebraMap ℚ_[l] (nonZeroDivisors ℤ_[l]) LL ⟨x, hx⟩ i
+    exact ⟨bO.repr ⟨x, hx⟩ i, this⟩
+
+theorem intDual_coef : ∀ (l : ℕ) [Fact l.Prime] (LL : Type) [Field LL] [Algebra ℚ_[l] LL] [TopologicalSpace LL]
+    (O : Type) [CommRing O] [Algebra O LL], GoodO (Qp := ℚ_[l]) LL O →
+    ∃ (lam : LL →ₗ[ℚ_[l]] ℚ_[l]) (n : ℕ) (e f : Fin n → O),
+      (∀ z : ℤ_[l], ∃ o : O, algebraMap O LL o = algebraMap ℚ_[l] LL (z : ℚ_[l])) ∧
+      (∀ o : O, ∃ z : ℤ_[l], lam (algebraMap O LL o) = (z : ℚ_[l])) ∧
+      (∀ x : LL, x = ∑ i, lam (algebraMap O LL (f i) * x) • algebraMap O LL (e i)) := by
+  intro l _ LL _ _ _ O _ _ hO
+  have H := GlobalTheory.T.coefficient_ring_integers_compact_adic_properties l LL O hO
+  obtain ⟨⟨hdom, hdvr, hfrac⟩, hfd, -, -, -⟩ := hO
+  haveI := hdom
+  haveI := hdvr
+  haveI := hfrac
+  haveI := hfd
+  have hmem := H.1
+  obtain ⟨n, b, hbint, hcoord⟩ := lattice_basis l LL
+  let ι := algebraMap O LL
+  have hιinj : Function.Injective ι := IsFractionRing.injective O LL
+  let Tr := Algebra.trace ℚ_[l] LL
+  let B := Algebra.traceForm ℚ_[l] LL
+  have hB : B.Nondegenerate := traceForm_nondegenerate ℚ_[l] LL
+  let f' := B.dualBasis hB b
+  have hcoef : ∀ x i, Tr (f' i * x) = b.repr x i := by
+    intro x i
+    conv_lhs => rw [← b.sum_repr x]
+    rw [Finset.mul_sum, map_sum]
+    have : ∀ j, Tr (f' i * (b.repr x j • b j)) = b.repr x j * (if j = i then 1 else 0) := by
+      intro j
+      rw [mul_smul_comm, map_smul, smul_eq_mul, ← LinearMap.BilinForm.apply_dualBasis_left hB b i j]
+      rfl
+    simp_rw [this, mul_ite, mul_one, mul_zero]
+    simp
+
+  let Zs : Subring ℚ_[l] := (algebraMap ℤ_[l] ℚ_[l]).range
+  have hZ : ∀ q : ℚ_[l], q ∈ Zs ↔ ∃ z : ℤ_[l], q = (z : ℚ_[l]) := by
+    intro q; constructor
+    · rintro ⟨z, hz⟩; exact ⟨z, hz.symm⟩
+    · rintro ⟨z, hz⟩; exact ⟨z, hz.symm⟩
+  have hintO : ∀ o : O, ((algebraMap ℚ_[l] LL).comp (algebraMap ℤ_[l] ℚ_[l])).IsIntegralElem (ι o) :=
+    fun o => (hmem (ι o)).1 ⟨o, rfl⟩
+  have hf'M : ∀ i (s : O), Tr (f' i * ι s) ∈ Zs := by
+    intro i s
+    obtain ⟨z, hz⟩ := hcoord (ι s) (hintO s) i
+    rw [hcoef, hZ]; exact ⟨z, hz⟩
+  obtain ⟨⟨c, hc⟩, hcint⟩ := IsLocalization.exist_integer_multiples (nonZeroDivisors O)
+    (Finset.univ : Finset (Fin n)) f'
+  let D := ι c
+  have hD : D ≠ 0 := by
+    intro h0
+    exact nonZeroDivisors.coe_ne_zero ⟨c, hc⟩ (hιinj (h0.trans (map_zero ι).symm))
+  have ho : ∀ i, ∃ o : O, ι o = D * f' i := by
+    intro i
+    obtain ⟨o, ho⟩ := hcint i (Finset.mem_univ i)
+    exact ⟨o, by rw [ho, Algebra.smul_def]⟩
+  choose o hoD using ho
+  let I : Ideal O :=
+    { carrier := {a | ∀ s : O, Tr (D⁻¹ * ι a * ι s) ∈ Zs}
+      add_mem' := by
+        intro a a' ha ha' s
+        have e : D⁻¹ * ι (a + a') * ι s = D⁻¹ * ι a * ι s + D⁻¹ * ι a' * ι s := by
+          rw [map_add]; ring
+        rw [e, map_add]; exact Zs.add_mem (ha s) (ha' s)
+      zero_mem' := by
+        intro s; simp only [map_zero, mul_zero, zero_mul]; exact Zs.zero_mem
+      smul_mem' := by
+        intro r a ha s
+        have e : D⁻¹ * ι (r • a) * ι s = D⁻¹ * ι a * ι (r * s) := by
+          rw [smul_eq_mul, map_mul, map_mul]; ring
+        rw [e]; exact ha (r * s) }
+  have hoI : ∀ i, o i ∈ I := by
+    intro i s
+    show Tr (D⁻¹ * ι (o i) * ι s) ∈ Zs
+    rw [hoD i, ← mul_assoc, inv_mul_cancel₀ hD, one_mul]
+    exact hf'M i s
+  let g := Submodule.IsPrincipal.generator I
+  have hgI : g ∈ I := Submodule.IsPrincipal.generator_mem I
+  have ha : ∀ i, ∃ a : O, a * g = o i := by
+    intro i
+    have h := hoI i
+    rw [← Submodule.IsPrincipal.span_singleton_generator I] at h
+    exact Ideal.mem_span_singleton'.1 h
+  choose a hag using ha
+  let δ := D⁻¹ * ι g
+  let lam : LL →ₗ[ℚ_[l]] ℚ_[l] := Tr.comp (LinearMap.mulLeft ℚ_[l] δ)
+  have hlam : ∀ y, lam y = Tr (δ * y) := fun y => rfl
+  have hδa : ∀ i, δ * ι (a i) = f' i := by
+    intro i
+    show D⁻¹ * ι g * ι (a i) = f' i
+    rw [mul_assoc, ← map_mul, mul_comm g, hag, hoD, ← mul_assoc, inv_mul_cancel₀ hD, one_mul]
+  have he : ∀ i, ∃ e : O, ι e = b i := fun i => (hmem (b i)).2 (hbint i)
+  choose e he using he
+  refine ⟨lam, n, e, a, fun z => ?_, fun y => ?_, fun x => ?_⟩
+  · have hz : ((algebraMap ℚ_[l] LL).comp (algebraMap ℤ_[l] ℚ_[l])).IsIntegralElem
+        (algebraMap ℚ_[l] LL (z : ℚ_[l])) := RingHom.isIntegralElem_map _
+    exact (hmem _).2 hz
+  · have h := hgI y
+    rw [hZ] at h
+    obtain ⟨z, hz⟩ := h
+    exact ⟨z, by rw [hlam]; exact hz⟩
+  · conv_lhs => rw [← b.sum_repr x]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hlam, ← mul_assoc, hδa, hcoef, he]
+end GlobalTheory.IntDual
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_integral_dual_functional : ∀ (l : ℕ) [Fact l.Prime] (LL : Type) [Field LL] [Algebra ℚ_[l] LL] [TopologicalSpace LL]
+    (O : Type) [CommRing O] [Algebra O LL], GoodO (Qp := ℚ_[l]) LL O →
+    ∃ (lam : LL →ₗ[ℚ_[l]] ℚ_[l]) (n : ℕ) (e f : Fin n → O),
+      (∀ z : ℤ_[l], ∃ o : O, algebraMap O LL o = algebraMap ℚ_[l] LL (z : ℚ_[l])) ∧
+      (∀ o : O, ∃ z : ℤ_[l], lam (algebraMap O LL o) = (z : ℚ_[l])) ∧
+      (∀ x : LL, x = ∑ i, lam (algebraMap O LL (f i) * x) • algebraMap O LL (e i)) := by
+  atlas_forward_decl GlobalTheory.IntDual.intDual_coef
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
+
+namespace GlobalTheory
+
+open Submodule in
+
+theorem cobO_iff_forall_lam : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (K : FinExt l) (LL : Type) [Field LL] [Algebra ℚ_[l] LL]
+    (O : Type) [CommRing O] [Algebra O LL] (lam : LL →ₗ[ℚ_[l]] ℚ_[l]) (n : ℕ) (e f : Fin n → O),
+    (∀ z : ℤ_[l], ∃ o : O, algebraMap O LL o = algebraMap ℚ_[l] LL (z : ℚ_[l])) →
+    (∀ o : O, ∃ z : ℤ_[l], lam (algebraMap O LL o) = (z : ℚ_[l])) →
+    (∀ x : LL, x = ∑ i, lam (algebraMap O LL (f i) * x) • algebraMap O LL (e i)) →
+    ∀ (L1 : Lattice (O := O) (charRep (cycLL (P.PD K) LL))),
+    L1.T = LinearMap.range (Algebra.linearMap O LL) →
+    ∀ (L1Z : Lattice (O := ℤ_[l]) (charRep (cycLL (P.PD K) ℚ_[l]))),
+    L1Z.T = LinearMap.range (Algebra.linearMap ℤ_[l] ℚ_[l]) →
+    ∀ (z : ↥(GK K) × ↥(GK K) → LL),
+    (CobO (P.PD K) L1 z ↔ ∀ o : O, CobO (P.PD K) L1Z (fun x => lam (algebraMap O LL o * z x))) := by
+  intro l _ P K LL _ _ O _ _ lam n e f h1 h2 h3 L1 hL1 L1Z hL1Z z
+  classical
+  have memT : ∀ x : LL, x ∈ L1.T ↔ ∃ o : O, algebraMap O LL o = x := by
+    intro x; rw [hL1]; simp [LinearMap.mem_range]
+  have memZ : ∀ q : ℚ_[l], q ∈ L1Z.T ↔ ∃ w : ℤ_[l], (w : ℚ_[l]) = q := by
+    intro q; rw [hL1Z]; simp [LinearMap.mem_range]
+  have actT : ∀ g (a : LL), (repD L1 g) (Submodule.Quotient.mk a) =
+      Submodule.Quotient.mk (algebraMap ℚ_[l] LL ((P.PD K).χ g : ℚ_[l]) * a) := by
+    intro g a
+    simp [repD, Submodule.mapQ_apply, charRep, cycLL, Algebra.smul_def]
+  have actZ : ∀ g (q : ℚ_[l]), (repD L1Z g) (Submodule.Quotient.mk q) =
+      Submodule.Quotient.mk (((P.PD K).χ g : ℚ_[l]) * q) := by
+    intro g q
+    simp [repD, Submodule.mapQ_apply, charRep, cycLL]
+  have lamc : ∀ (o : O) (c : ℚ_[l]) (y : LL),
+      lam (algebraMap O LL o * (algebraMap ℚ_[l] LL c * y)) = c * lam (algebraMap O LL o * y) := by
+    intro o c y
+    have : algebraMap O LL o * (algebraMap ℚ_[l] LL c * y) = c • (algebraMap O LL o * y) := by
+      rw [Algebra.smul_def]; ring
+    rw [this, map_smul, smul_eq_mul]
+  unfold CobO ReciprocityTheory.Def.B2
+  constructor
+  · intro H o
+    obtain ⟨F, ⟨hFc, -⟩, hF⟩ := Submodule.mem_map.1 H
+    choose Ft hFt using fun g => Submodule.Quotient.mk_surjective L1.T (F g)
+    have hFeq : F = fun g => Submodule.Quotient.mk (Ft g) := funext fun g => (hFt g).symm
+    subst hFeq
+    let φ : LL ⧸ L1.T → ℚ_[l] ⧸ L1Z.T := fun q =>
+      Submodule.Quotient.mk (lam (algebraMap O LL o * (Submodule.Quotient.mk_surjective L1.T q).choose))
+    have hφ : ∀ a, φ (Submodule.Quotient.mk a) = Submodule.Quotient.mk (lam (algebraMap O LL o * a)) := by
+      intro a
+      have hc := (Submodule.Quotient.mk_surjective L1.T (Submodule.Quotient.mk a)).choose_spec
+      rw [Submodule.Quotient.eq] at hc
+      obtain ⟨o', ho'⟩ := (memT _).1 hc
+      obtain ⟨w, hw⟩ := h2 (o * o')
+      show Submodule.Quotient.mk _ = _
+      rw [Submodule.Quotient.eq, memZ]
+      exact ⟨w, by rw [← hw, map_mul, ho', mul_sub, map_sub]⟩
+    refine Submodule.mem_map.2 ⟨φ ∘ (fun g => Submodule.Quotient.mk (Ft g)), ⟨hFc.comp φ, fun _ => trivial⟩, ?_⟩
+    funext x
+    have hx := congrFun hF x
+    simp only [ReciprocityTheory.Def.d1, LinearMap.coe_mk, AddHom.coe_mk, Function.comp_apply] at hx ⊢
+    rw [actT, ← Submodule.Quotient.mk_sub, ← Submodule.Quotient.mk_add, Submodule.Quotient.eq] at hx
+    obtain ⟨o', ho'⟩ := (memT _).1 hx
+    obtain ⟨w, hw⟩ := h2 (o * o')
+    rw [hφ, hφ, hφ, actZ, ← Submodule.Quotient.mk_sub, ← Submodule.Quotient.mk_add, Submodule.Quotient.eq, memZ]
+    refine ⟨w, ?_⟩
+    rw [← hw, map_mul, ho', mul_sub, mul_add, mul_sub, map_sub, map_add, map_sub, lamc]
+  · intro H
+    choose Fz hFzc hFz using fun i => Submodule.mem_map.1 (H (f i))
+    choose Ft hFt using fun i g => Submodule.Quotient.mk_surjective L1Z.T (Fz i g)
+    refine Submodule.mem_map.2 ⟨fun g => Submodule.Quotient.mk
+      (∑ i, algebraMap ℚ_[l] LL (Ft i g) * algebraMap O LL (e i)), ⟨?_, fun _ => trivial⟩, ?_⟩
+    · rw [IsLocallyConstant.iff_eventually_eq]
+      intro x
+      have hev : ∀ᶠ y in nhds x, ∀ i, Fz i y = Fz i x :=
+        Filter.eventually_all.2 fun i => (IsLocallyConstant.iff_eventually_eq _).1 (hFzc i).1 x
+      filter_upwards [hev] with y hy
+      rw [Submodule.Quotient.eq, ← Finset.sum_sub_distrib]
+      refine Submodule.sum_mem _ fun i _ => ?_
+      have hyi := hy i
+      rw [← hFt i y, ← hFt i x, Submodule.Quotient.eq, memZ] at hyi
+      obtain ⟨w, hw⟩ := hyi
+      obtain ⟨o, ho⟩ := h1 w
+      rw [memT]
+      exact ⟨o * e i, by rw [map_mul, ho, hw, ← sub_mul, map_sub]⟩
+    · funext x
+      have key : ∀ i, ∃ w : ℤ_[l], (w : ℚ_[l]) = ((P.PD K).χ x.1 : ℚ_[l]) * Ft i x.2 - Ft i (x.1 * x.2)
+          + Ft i x.1 - lam (algebraMap O LL (f i) * z x) := by
+        intro i
+        have hx := congrFun (hFz i) x
+        simp only [ReciprocityTheory.Def.d1, LinearMap.coe_mk, AddHom.coe_mk] at hx
+        rw [← hFt i x.2, ← hFt i (x.1 * x.2), ← hFt i x.1, actZ, ← Submodule.Quotient.mk_sub,
+          ← Submodule.Quotient.mk_add, Submodule.Quotient.eq, memZ] at hx
+        exact hx
+      choose w hw using key
+      choose o ho using fun i => h1 (w i)
+      simp only [ReciprocityTheory.Def.d1, LinearMap.coe_mk, AddHom.coe_mk]
+      rw [actT, ← Submodule.Quotient.mk_sub, ← Submodule.Quotient.mk_add, Submodule.Quotient.eq, memT]
+      refine ⟨∑ i, o i * e i, ?_⟩
+      have hl : ∀ i, lam (algebraMap O LL (f i) * z x) = ((P.PD K).χ x.1 : ℚ_[l]) * Ft i x.2
+          - Ft i (x.1 * x.2) + Ft i x.1 - (w i : ℚ_[l]) := fun i => by rw [hw i]; ring
+      conv_rhs => rw [h3 (z x)]
+      simp_rw [hl]
+      rw [map_sum, Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib,
+        ← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [map_mul, ho, Algebra.smul_def]
+      simp only [map_sub, map_add, map_mul]
+      ring
+
+end GlobalTheory
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.coboundaryMod_iff_forall_traceForm_coboundary : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (K : FinExt l) (LL : Type) [Field LL] [Algebra ℚ_[l] LL]
+    (O : Type) [CommRing O] [Algebra O LL] (lam : LL →ₗ[ℚ_[l]] ℚ_[l]) (n : ℕ) (e f : Fin n → O),
+    (∀ z : ℤ_[l], ∃ o : O, algebraMap O LL o = algebraMap ℚ_[l] LL (z : ℚ_[l])) →
+    (∀ o : O, ∃ z : ℤ_[l], lam (algebraMap O LL o) = (z : ℚ_[l])) →
+    (∀ x : LL, x = ∑ i, lam (algebraMap O LL (f i) * x) • algebraMap O LL (e i)) →
+    ∀ (L1 : Lattice (O := O) (charRep (cycLL (P.PD K) LL))),
+    L1.T = LinearMap.range (Algebra.linearMap O LL) →
+    ∀ (L1Z : Lattice (O := ℤ_[l]) (charRep (cycLL (P.PD K) ℚ_[l]))),
+    L1Z.T = LinearMap.range (Algebra.linearMap ℤ_[l] ℚ_[l]) →
+    ∀ (z : ↥(GK K) × ↥(GK K) → LL),
+    (CobO (P.PD K) L1 z ↔ ∀ o : O, CobO (P.PD K) L1Z (fun x => lam (algebraMap O LL o * z x))) := by
+  atlas_forward_decl GlobalTheory.cobO_iff_forall_lam
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
+
+noncomputable section
+namespace GlobalTheory
+
+theorem latticeZl_of_latticeO : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (LL : Type) [Field LL] [Algebra ℚ_[l] LL]
+    (O : Type) [CommRing O] [Algebra O LL]
+    (V : Type) [AddCommGroup V] [Module LL V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] LL V]
+    [Module O V] [IsScalarTower O LL V] [Module ℤ_[l] V] [IsScalarTower ℤ_[l] ℚ_[l] V]
+    (lam : LL →ₗ[ℚ_[l]] ℚ_[l]) (n : ℕ) (e f : Fin n → O),
+    (∀ z : ℤ_[l], ∃ o : O, algebraMap O LL o = algebraMap ℚ_[l] LL (z : ℚ_[l])) →
+    (∀ o : O, ∃ z : ℤ_[l], lam (algebraMap O LL o) = (z : ℚ_[l])) →
+    (∀ x : LL, x = ∑ i, lam (algebraMap O LL (f i) * x) • algebraMap O LL (e i)) →
+    ∀ (ρ : Representation LL ↥(GK K) V) (L : Lattice (O := O) ρ),
+    ∃ LZ : Lattice (O := ℤ_[l]) (GlobalTheory.PstCoeff.resQ ρ), ∀ v, v ∈ LZ.T ↔ v ∈ L.T := by
+  intro l _ K LL _ _ O _ _ V _ _ _ _ _ _ _ _ lam n e f h1 h2 h3 ρ L
+
+  have hz : ∀ (z : ℤ_[l]) (v : V), z • v = ((z : ℚ_[l]) : ℚ_[l]) • v := fun z v => by
+    rw [← algebraMap_smul ℚ_[l] z v]; rfl
+
+  have hdec : ∀ (a : LL) (t : V), a • t = ∑ i, lam (algebraMap O LL (f i) * a) • (e i • t) := by
+    intro a t
+    conv_lhs => rw [h3 a]
+    rw [Finset.sum_smul]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [smul_assoc, algebraMap_smul]
+  let TZ : Submodule ℤ_[l] V :=
+    { carrier := (L.T : Set V)
+      add_mem' := fun ha hb => L.T.add_mem ha hb
+      zero_mem' := L.T.zero_mem
+      smul_mem' := by
+        intro z v hv
+        obtain ⟨o, ho⟩ := h1 z
+        show z • v ∈ L.T
+        rw [hz, ← algebraMap_smul LL (z : ℚ_[l]) v, ← ho, algebraMap_smul]
+        exact L.T.smul_mem o hv }
+  have hmem : ∀ v, v ∈ TZ ↔ v ∈ L.T := fun v => Iff.rfl
+
+  have hfg : TZ.FG := by
+    obtain ⟨S, hS⟩ := L.fg
+    classical
+    refine ⟨Finset.image (fun p : Fin n × V => e p.1 • p.2) (Finset.univ ×ˢ S), ?_⟩
+    apply le_antisymm
+    · rw [Submodule.span_le]
+      intro x hx
+      simp only [Finset.coe_image, Set.mem_image, Finset.coe_product, Set.mem_prod, Finset.coe_univ,
+        Set.mem_univ, true_and, Finset.mem_coe] at hx
+      obtain ⟨⟨i, t⟩, ht, rfl⟩ := hx
+      have : t ∈ L.T := hS ▸ Submodule.subset_span ht
+      exact L.T.smul_mem (e i) this
+    · intro x hx
+      have hx' : x ∈ Submodule.span O (S : Set V) := by rw [hS]; exact hx
+      obtain ⟨c, -, rfl⟩ := (Submodule.mem_span_finset).1 hx'
+      refine Submodule.sum_mem _ fun t ht => ?_
+      rw [← algebraMap_smul LL (c t) t, hdec]
+      refine Submodule.sum_mem _ fun i _ => ?_
+      obtain ⟨z, hz'⟩ := h2 (f i * c t)
+      rw [← map_mul, hz', ← hz]
+      refine Submodule.smul_mem _ z (Submodule.subset_span ?_)
+      simp only [Finset.coe_image, Set.mem_image, Finset.coe_product, Set.mem_prod, Finset.coe_univ,
+        Set.mem_univ, true_and, Finset.mem_coe]
+      exact ⟨(i, t), ht, rfl⟩
+  have hfin : Module.Finite ℤ_[l] TZ := Module.Finite.iff_fg.mpr hfg
+  have htf : Module.IsTorsionFree ℤ_[l] TZ := by
+    rw [Module.isTorsionFree_iff_smul_eq_zero]
+    intro z x h
+    by_cases hz0 : z = 0
+    · exact Or.inl hz0
+    right
+    have h' : ((z : ℚ_[l]) : ℚ_[l]) • (x : V) = 0 := by
+      rw [← hz]; exact congrArg Subtype.val h
+    have hq : (z : ℚ_[l]) ≠ 0 := fun h0 => hz0 (PadicInt.coe_eq_zero.1 h0)
+    exact Subtype.ext ((smul_eq_zero.1 h').resolve_left hq)
+  refine ⟨{ T := TZ, stable := ?_, fg := hfg, free := ?_, span := ?_ }, hmem⟩
+  · intro g x hx
+    exact L.stable g x hx
+  · exact Module.free_of_finite_type_torsion_free'
+  · let W : Submodule LL V :=
+      { carrier := (Submodule.span ℚ_[l] (TZ : Set V) : Set V)
+        add_mem' := fun ha hb => Submodule.add_mem _ ha hb
+        zero_mem' := Submodule.zero_mem _
+        smul_mem' := by
+          intro a x hx
+          induction hx using Submodule.span_induction with
+          | mem t ht =>
+            show a • t ∈ Submodule.span ℚ_[l] (TZ : Set V)
+            rw [hdec]
+            refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ?_)
+            exact L.T.smul_mem (e i) ht
+          | zero => simp
+          | add x y _ _ hx hy =>
+            show a • (x + y) ∈ Submodule.span ℚ_[l] (TZ : Set V)
+            rw [smul_add]; exact Submodule.add_mem _ hx hy
+          | smul q x _ hx =>
+            show a • (q • x) ∈ Submodule.span ℚ_[l] (TZ : Set V)
+            rw [← algebraMap_smul LL q x, smul_smul, mul_comm, ← smul_smul, algebraMap_smul]
+            exact Submodule.smul_mem _ q hx }
+    have hW : W = ⊤ := by
+      rw [eq_top_iff, ← L.span, Submodule.span_le]
+      intro t ht
+      exact Submodule.subset_span ht
+    rw [eq_top_iff]
+    intro v _
+    have : v ∈ W := hW ▸ Submodule.mem_top
+    exact this
+end GlobalTheory
+end
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.zlLattice_of_coefficientLattice : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (LL : Type) [Field LL] [Algebra ℚ_[l] LL]
+    (O : Type) [CommRing O] [Algebra O LL]
+    (V : Type) [AddCommGroup V] [Module LL V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] LL V]
+    [Module O V] [IsScalarTower O LL V] [Module ℤ_[l] V] [IsScalarTower ℤ_[l] ℚ_[l] V]
+    (lam : LL →ₗ[ℚ_[l]] ℚ_[l]) (n : ℕ) (e f : Fin n → O),
+    (∀ z : ℤ_[l], ∃ o : O, algebraMap O LL o = algebraMap ℚ_[l] LL (z : ℚ_[l])) →
+    (∀ o : O, ∃ z : ℤ_[l], lam (algebraMap O LL o) = (z : ℚ_[l])) →
+    (∀ x : LL, x = ∑ i, lam (algebraMap O LL (f i) * x) • algebraMap O LL (e i)) →
+    ∀ (ρ : Representation LL ↥(GK K) V) (L : Lattice (O := O) ρ),
+    ∃ LZ : Lattice (O := ℤ_[l]) (GlobalTheory.PstCoeff.resQ ρ), ∀ v, v ∈ LZ.T ↔ v ∈ L.T := by
+  atlas_forward_decl GlobalTheory.latticeZl_of_latticeO
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
+
+namespace GlobalTheory.DualLatDescent
+
+theorem dualLat_resQ : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (K : FinExt l) (LL : Type) [Field LL] [Algebra ℚ_[l] LL]
+    (O : Type) [CommRing O] [Algebra O LL]
+    (V : Type) [AddCommGroup V] [Module LL V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] LL V]
+    [Module O V] [IsScalarTower O LL V] [Module ℤ_[l] V] [IsScalarTower ℤ_[l] ℚ_[l] V]
+    (V' : Type) [AddCommGroup V'] [Module LL V'] [Module ℚ_[l] V'] [IsScalarTower ℚ_[l] LL V']
+    [Module O V'] [IsScalarTower O LL V'] [Module ℤ_[l] V'] [IsScalarTower ℤ_[l] ℚ_[l] V']
+    [FiniteDimensional ℚ_[l] LL] [FiniteDimensional LL V] [FiniteDimensional LL V']
+    (lam : LL →ₗ[ℚ_[l]] ℚ_[l]) (n : ℕ) (e f : Fin n → O),
+    (∀ z : ℤ_[l], ∃ o : O, algebraMap O LL o = algebraMap ℚ_[l] LL (z : ℚ_[l])) →
+    (∀ o : O, ∃ z : ℤ_[l], lam (algebraMap O LL o) = (z : ℚ_[l])) →
+    (∀ x : LL, x = ∑ i, lam (algebraMap O LL (f i) * x) • algebraMap O LL (e i)) →
+    ∀ (ρ : Representation LL ↥(GK K) V) (ρ' : Representation LL ↥(GK K) V')
+    (L : Lattice (O := O) ρ) (L' : Lattice (O := O) ρ')
+    (LZ : Lattice (O := ℤ_[l]) (GlobalTheory.PstCoeff.resQ ρ)) (LZ' : Lattice (O := ℤ_[l]) (GlobalTheory.PstCoeff.resQ ρ')),
+    (∀ v, v ∈ LZ.T ↔ v ∈ L.T) → (∀ v, v ∈ LZ'.T ↔ v ∈ L'.T) →
+    ∀ (Pr : V →ₗ[LL] V' →ₗ[LL] LL) (PQ : V →ₗ[ℚ_[l]] V' →ₗ[ℚ_[l]] ℚ_[l]),
+    (∀ x y, PQ x y = lam (Pr x y)) → IsDualLat1 (P.PD K) L L' Pr →
+    IsDualLat1 (P.PD K) LZ LZ' PQ := by
+  intro l _ P K LL _ _ O _ _ V _ _ _ _ _ _ _ _ V' _ _ _ _ _ _ _ _ _ _ _ lam n e f h1 h2 h3 ρ ρ' L L' LZ LZ' hT hT' Pr PQ hPQ hP
+  obtain ⟨⟨hg, hl, hr, hrk⟩, hlat⟩ := hP
+
+  have key : ∀ z : LL, (∀ a : LL, lam (a * z) = 0) → z = 0 := by
+    intro z hz
+    rw [h3 z]
+    simp [hz]
+  refine ⟨⟨?_, ?_, ?_, ?_⟩, ?_⟩
+  · intro g x y
+    rw [hPQ, GlobalTheory.PstCoeff.resQ_apply, GlobalTheory.PstCoeff.resQ_apply, hg, hPQ]
+    have : ((cycLL (P.PD K) LL g : LLˣ) : LL) = algebraMap ℚ_[l] LL ((cycLL (P.PD K) ℚ_[l] g : ℚ_[l]ˣ) : ℚ_[l]) := by
+      simp [cycLL]
+    rw [this, ← Algebra.smul_def, map_smul, smul_eq_mul]
+  · intro x hx
+    apply hl
+    intro y
+    apply key
+    intro a
+    rw [← smul_eq_mul, ← map_smul, ← hPQ]
+    exact hx _
+  · intro y hy
+    apply hr
+    intro x
+    apply key
+    intro a
+    rw [← smul_eq_mul, ← LinearMap.smul_apply, ← map_smul, ← hPQ]
+    exact hy _
+  · rw [← Module.finrank_mul_finrank ℚ_[l] LL V, ← Module.finrank_mul_finrank ℚ_[l] LL V', hrk]
+  · intro y
+    rw [hT', hlat]
+    constructor
+    · intro H x hx
+      obtain ⟨a, ha⟩ := H x ((hT x).1 hx)
+      obtain ⟨z, hz⟩ := h2 a
+      exact ⟨z, by rw [hPQ, ha, hz]; rfl⟩
+    · intro H x hx
+      have hi : ∀ i, ∃ z : ℤ_[l], lam (algebraMap O LL (f i) * Pr x y) = (z : ℚ_[l]) := by
+        intro i
+        have hm : f i • x ∈ L.T := L.T.smul_mem _ hx
+        obtain ⟨z, hz⟩ := H _ ((hT _).2 hm)
+        refine ⟨z, ?_⟩
+        rw [hPQ, ← algebraMap_smul LL (f i) x, map_smul, LinearMap.smul_apply, smul_eq_mul] at hz
+        rw [hz]; rfl
+      choose z hz using hi
+      have ho : ∀ i, ∃ o : O, algebraMap O LL o = algebraMap ℚ_[l] LL (z i : ℚ_[l]) := fun i => h1 (z i)
+      choose o ho using ho
+      refine ⟨∑ i, o i * e i, ?_⟩
+      rw [h3 (Pr x y), map_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [hz i, map_mul, ho i, Algebra.smul_def]
+
+end GlobalTheory.DualLatDescent
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualLattice_restrictScalars_traceForm : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (K : FinExt l) (LL : Type) [Field LL] [Algebra ℚ_[l] LL]
+    (O : Type) [CommRing O] [Algebra O LL]
+    (V : Type) [AddCommGroup V] [Module LL V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] LL V]
+    [Module O V] [IsScalarTower O LL V] [Module ℤ_[l] V] [IsScalarTower ℤ_[l] ℚ_[l] V]
+    (V' : Type) [AddCommGroup V'] [Module LL V'] [Module ℚ_[l] V'] [IsScalarTower ℚ_[l] LL V']
+    [Module O V'] [IsScalarTower O LL V'] [Module ℤ_[l] V'] [IsScalarTower ℤ_[l] ℚ_[l] V']
+    [FiniteDimensional ℚ_[l] LL] [FiniteDimensional LL V] [FiniteDimensional LL V']
+    (lam : LL →ₗ[ℚ_[l]] ℚ_[l]) (n : ℕ) (e f : Fin n → O),
+    (∀ z : ℤ_[l], ∃ o : O, algebraMap O LL o = algebraMap ℚ_[l] LL (z : ℚ_[l])) →
+    (∀ o : O, ∃ z : ℤ_[l], lam (algebraMap O LL o) = (z : ℚ_[l])) →
+    (∀ x : LL, x = ∑ i, lam (algebraMap O LL (f i) * x) • algebraMap O LL (e i)) →
+    ∀ (ρ : Representation LL ↥(GK K) V) (ρ' : Representation LL ↥(GK K) V')
+    (L : Lattice (O := O) ρ) (L' : Lattice (O := O) ρ')
+    (LZ : Lattice (O := ℤ_[l]) (GlobalTheory.PstCoeff.resQ ρ)) (LZ' : Lattice (O := ℤ_[l]) (GlobalTheory.PstCoeff.resQ ρ')),
+    (∀ v, v ∈ LZ.T ↔ v ∈ L.T) → (∀ v, v ∈ LZ'.T ↔ v ∈ L'.T) →
+    ∀ (Pr : V →ₗ[LL] V' →ₗ[LL] LL) (PQ : V →ₗ[ℚ_[l]] V' →ₗ[ℚ_[l]] ℚ_[l]),
+    (∀ x y, PQ x y = lam (Pr x y)) → IsDualLat1 (P.PD K) L L' Pr →
+    IsDualLat1 (P.PD K) LZ LZ' PQ := by
+  atlas_forward_decl GlobalTheory.DualLatDescent.dualLat_resQ
+end
+
+section
 section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
 
@@ -348,3 +858,4 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.Weakl
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.blochKato_annihilator_of_integralLocalDuality : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (K : FinExt l), GlobalTheory.Published.BlochKato.IntegralDuality (P.PD K) → bkBCore (P.PD K) := by
   atlas_forward_decl GlobalTheory.BKIntDescent.bkBCore_of_integralDuality
+end

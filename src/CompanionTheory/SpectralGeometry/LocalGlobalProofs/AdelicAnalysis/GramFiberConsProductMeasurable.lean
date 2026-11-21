@@ -1,9 +1,84 @@
 import Mathlib
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StageData
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorInvolutionAlgebraProperties
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramBlockOneFirstVectorFormula
+import BuildAid.ForwardExisting
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.BlockOneScalarPreservesNondegenerateStatement
 
+section
+section
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SW.PiLocalization₂
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW GlobalTheory.CompanionTheory.SW.PiLocalization₂ NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+
+section GramVec
+
+variable {F E : Type} [Field F] [Field E] [Algebra F E]
+
+theorem hR_blockOne_cons (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
+    (J : Matrix (Fin M) (Fin M) E) (t : E) (x₀ y₀ : R ⊗[F] E) (x y : Fin M → R ⊗[F] E) :
+    hR R σ (blockOne t J) (Fin.cons x₀ x : Fin (M + 1) → R ⊗[F] E) (Fin.cons y₀ y) =
+      sigR R σ x₀ * inclR R t * y₀ + hR R σ J x y := by
+  simp only [hR, hform, JR, Fin.sum_univ_succ, blockOne, Matrix.map_apply, Matrix.of_apply,
+    Fin.cons_zero, Fin.cons_succ, map_zero, mul_zero, zero_mul, Finset.sum_const_zero, add_zero,
+    zero_add]
+
+theorem hR_zero_left (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
+    (J : Matrix (Fin M) (Fin M) E) (y : Fin M → R ⊗[F] E) :
+    hR R σ J (fun _ => 0) y = 0 := by
+  simp [hR, hform]
+
+theorem sigR_tmul_one (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) (u : R) :
+    sigR R σ (u ⊗ₜ[F] (1 : E)) = u ⊗ₜ[F] (1 : E) := by
+  simp [sigR]
+
+theorem tmul_one_mul_inclR (R : Type) [CommRing R] [Algebra F R] (u : R) (e : E) :
+    (u ⊗ₜ[F] (1 : E)) * inclR R e = u ⊗ₜ[F] e := by
+  simp [inclR, Algebra.TensorProduct.tmul_mul_tmul]
+
+theorem tmul_algebraMap (R : Type) [CommRing R] [Algebra F R] (u : R) (t : F) :
+    u ⊗ₜ[F] (algebraMap F E t) = (u * algebraMap F R t) ⊗ₜ[F] (1 : E) := by
+  rw [Algebra.algebraMap_eq_smul_one, TensorProduct.tmul_smul, TensorProduct.smul_tmul',
+    Algebra.smul_def, mul_comm]
+
+theorem gramR_vec (F E : Type) [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) (M : ℕ)
+    (J : Matrix (Fin M) (Fin M) E) (t : F) (n : ℕ) (R : Type) [CommRing R] [Algebra F R] (u : R)
+    (c : Fin n → R ⊗[F] E) (X : Fin n → Fin M → R ⊗[F] E) :
+    gramR R σ (blockOne (algebraMap F E t) J) (vec (u ⊗ₜ[F] (1 : E)) c X) 0 0 =
+        (u ^ 2 * algebraMap F R t) ⊗ₜ[F] (1 : E) ∧
+      (∀ j : Fin n, gramR R σ (blockOne (algebraMap F E t) J) (vec (u ⊗ₜ[F] (1 : E)) c X) 0 j.succ =
+        (u ⊗ₜ[F] (algebraMap F E t)) * c j) ∧
+      ∀ i j : Fin n, gramR R σ (blockOne (algebraMap F E t) J) (vec (u ⊗ₜ[F] (1 : E)) c X) i.succ j.succ =
+        sigR R σ (c i) * inclR R (algebraMap F E t) * c j + gramR R σ J X i j := by
+  refine ⟨?_, ?_, ?_⟩
+  · simp only [gramR, vec, Fin.cons_zero]
+    rw [hR_blockOne_cons, hR_zero_left, add_zero, sigR_tmul_one, tmul_one_mul_inclR,
+      tmul_algebraMap, Algebra.TensorProduct.tmul_mul_tmul, mul_one]
+    congr 1
+    ring
+  · intro j
+    simp only [gramR, vec, Fin.cons_zero, Fin.cons_succ]
+    rw [hR_blockOne_cons, hR_zero_left, add_zero, sigR_tmul_one, tmul_one_mul_inclR]
+  · intro i j
+    simp only [gramR, vec, Fin.cons_succ]
+    rw [hR_blockOne_cons]
+
+end GramVec
+
+end GlobalTheory.CompanionTheory.SW.PiLocalization₂
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW GlobalTheory.CompanionTheory.SW.PiLocalization₂ NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gram_block_one_first_vector_formula : ∀ (F E : Type) [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) (t : F) (n : ℕ) (R : Type) [CommRing R] [Algebra F R] (u : R) (c : Fin n → R ⊗[F] E) (X : Fin n → Fin M → R ⊗[F] E), gramR R σ (blockOne (algebraMap F E t) J) (vec (u ⊗ₜ[F] (1 : E)) c X) 0 0 = (u ^ 2 * algebraMap F R t) ⊗ₜ[F] (1 : E) ∧ (∀ j : Fin n, gramR R σ (blockOne (algebraMap F E t) J) (vec (u ⊗ₜ[F] (1 : E)) c X) 0 j.succ = (u ⊗ₜ[F] (algebraMap F E t)) * c j) ∧ ∀ i j : Fin n, gramR R σ (blockOne (algebraMap F E t) J) (vec (u ⊗ₜ[F] (1 : E)) c X) i.succ j.succ = sigR R σ (c i) * inclR R (algebraMap F E t) * c j + gramR R σ J X i j := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.PiLocalization₂.gramR_vec
+end
+
+section
 section
 noncomputable section
 
@@ -125,3 +200,4 @@ open scoped TensorProduct ENNReal NNReal Matrix
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.gram_block_one_schur_coordinates : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) (t : F) (n : ℕ) (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [MeasurableSpace R] [BorelSpace R] (d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure R) (m₁ : HermR R σ 1 → Measure (Fin 1 → Fin (M + 1) → R ⊗[F] E)) (m' : HermR R σ n → Measure (Fin n → Fin M → R ⊗[F] E)) (s : (Fin 1 → Fin (M + 1) → R ⊗[F] E) → HA R σ (blockOne (algebraMap F E t) J)) (B₀ : Set R) (a : R → Rˣ) (κ₁ cm : Rˣ → ℝ≥0), StageData σ J t n b lam m₁ m' s B₀ a κ₁ cm → (∀ x ∈ B₀, ∀ (c : Fin n → R ⊗[F] E) (X : Fin n → Fin M → R ⊗[F] E) (S : HermR R σ (n + 1)), (S : Matrix (Fin (n + 1)) (Fin (n + 1)) (R ⊗[F] E)) = gramR R σ (blockOne (algebraMap F E t) J) (vec (((a x : Rˣ) : R) ⊗ₜ[F] (1 : E)) c X) → s0 R (S : Matrix (Fin (n + 1)) (Fin (n + 1)) (R ⊗[F] E)) = x ∧ cvec R t a (S : Matrix (Fin (n + 1)) (Fin (n + 1)) (R ⊗[F] E)) = c ∧ (schur R σ t a S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) = gramR R σ J X) ∧ (∀ (S : HermR R σ (n + 1)) (X : Fin n → Fin M → R ⊗[F] E), s0 R (S : Matrix (Fin (n + 1)) (Fin (n + 1)) (R ⊗[F] E)) ∈ B₀ → gramR R σ J X = (schur R σ t a S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) → gramR R σ (blockOne (algebraMap F E t) J) (vec (((a (s0 R (S : Matrix (Fin (n + 1)) (Fin (n + 1)) (R ⊗[F] E)))) : R) ⊗ₜ[F] (1 : E)) (cvec R t a (S : Matrix (Fin (n + 1)) (Fin (n + 1)) (R ⊗[F] E))) X) = (S : Matrix (Fin (n + 1)) (Fin (n + 1)) (R ⊗[F] E))) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.SW.PiLocalization₂.GramCoord.coords
+end

@@ -1,7 +1,266 @@
 import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.DictKAOfParts
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FockKStable
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompactIsOpenCosVN
+import Mathlib
+import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.WhitNDgOfLocalOfSteps
+import Development.WeilBound.CoreStatements.PublishedTheorems.SiegelWeilSchrodinger.SiegelWeilUnitarySchrodingerLit
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IwasawaDecompositionUnitary
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SiegelParabolicUnnMatrixBlockUpperTriangular
+import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.EisensteinMaximalParabolic
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsWeilDatumDoubledOfSchrodingerFormulasStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsFockVectorOfSchrodingerMemFockSpace
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsStandardCartanInvolutionCommuteCompactStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ArchimedeanParametersAddCharUniqueStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SchroedingerFunctionFockVectorPolynomialGaussianStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilRepPreservesFockDegreeOfCommuteCartanStatement
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ShiftedAdditiveCharacterArchimedeanParameters
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuousStandardUnitaryChartAndSymm
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FockVectorFiniteUnderCompactCommutingCartan
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GramNear
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.SchwartzBruhatEqSumPure
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicTupleProjections
 
+section
+noncomputable section
+
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.Core.Rk.SWLaw GlobalTheory.Core.Rk.SW GlobalTheory.StdUnn
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.CompanionTheory.PfSWUS
+
+theorem fockKStable : PositivityTheory.PfSWUS.FockKStable := by
+  intro D n V ψ χ θ μ ω H l s ν Φ hStd k hk
+  obtain ⟨𝓕, hμ⟩ := hStd.hμ
+  have hψ := hStd.hψ
+  have hχ := hStd.hχ
+  have hr := hStd.hη
+  have hθ := hStd.hθ
+  have hω := hStd.hω
+  have hl := hStd.hl
+  have hs := hStd.hs
+  have hΦ := hStd.hΦ
+  let A : HSp D := Formalism.BasicNotions.Examples₂.posSpace (E := D.host.E) Formalism.BasicNotions.Examples₂.star_isIntegral n
+  obtain ⟨ψ₀, μ', lam, κ, omh, hstd, hsk, hlam, hψeq, hchart, hdat, htr⟩ :=
+    GlobalTheory.T.exists_weilDatum_doubled_of_schrodingerFormulas D A V ψ hψ χ hχ hr θ hθ μ 𝓕 hμ ω hω
+  obtain ⟨lam', hlam', -, l', hl', habs⟩ := GlobalTheory.StdUnn.shift_char_realPar D ψ₀ hstd θ hθ μ' hsk
+  have hll : lam' = lam := (algebraMap D.host.F D.host.E).injective (hlam'.trans hlam.symm)
+  subst hll
+  have hl'' : HasRealPar ψ θ l' := hψeq ▸ hl'
+  have hleq : l = l' := GlobalTheory.T.archimedean_parameters_addChar_unique D ψ θ hθ l l' hl hl''
+  subst hleq
+  obtain ⟨-, hsurj, -⟩ := GlobalTheory.T.schrodingerTheta_eq_schwartzBruhat D ψ₀ hstd θ hθ A V μ 𝓕 hμ
+  obtain ⟨f, hf, hfΦ⟩ := hsurj Φ.1 Φ.2
+  obtain ⟨s', hstd', hcomm⟩ := GlobalTheory.T.exists_standardCartanInvolution_commute_compact D A μ' hsk κ hchart θ hθ
+  have hfock : IsFockVec ψ₀ θ (dblSp A) V s' s f :=
+    GlobalTheory.T.isFockVector_of_schrodinger_mem_fockSpace D ψ₀ hstd θ hθ A V μ 𝓕 hμ μ' hsk s' s hstd' hs l habs f hf (hfΦ ▸ hΦ)
+  obtain ⟨hth, N, hN⟩ := hfock
+  have hk' : κ (κ.symm k) ∈ K D A.rank := by
+    rw [show κ (κ.symm k) = k from κ.apply_symm_apply k]
+    exact hk
+  have hfock' : IsFockVec ψ₀ θ (dblSp A) V s' s (omh (κ.symm k, 1) f) :=
+    ⟨hdat.om_pres _ f hth, N,
+      GlobalTheory.T.weilRep_preserves_fockDegree_of_commute_cartan D ψ₀ θ (dblSp A) V 1 χ⁻¹ omh s' s hdat hθ (κ.symm k) (hcomm _ hk') N f hth hN⟩
+  have hmem := GlobalTheory.T.schroedingerFunction_fockVector_polynomial_gaussian D ψ₀ hstd θ hθ A V μ 𝓕 hμ μ' hsk s' s hstd' hs l habs _ hfock'
+  have htrk := htr (κ.symm k) f hf Φ hfΦ.symm
+  rw [show κ (κ.symm k) = k from κ.apply_symm_apply k] at htrk
+  exact Eq.mpr (congrArg (fun φ : Mx D V.rank n → ℂ => φ ∈ fockA θ V n l s) htrk) hmem
+
+end GlobalTheory.CompanionTheory.PfSWUS
+
+end
+end
+
+section
+open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
+open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
+open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
+open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WhitFree
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.PfSWUS.FockSplit.Box
+
+open NumberField IsDedekindDomain GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.Dec
+open PI.VolStabS.PositiveNearLattice PI.VolStabS.AdmissibleCompactSupport
+open scoped Topology
+
+variable {F : Type} [Field F] [NumberField F]
+variable {E : Type} [Field E] [Algebra F E] [FiniteDimensional F E] {d : ℕ} (b : Module.Basis (Fin d) F E)
+
+def lvN (v : HeightOneSpectrum (𝓞 F)) (P : AddSubgroup (Fv F v)) (n M : ℕ) :
+    AddSubgroup (Fin n → Fin M → Fv F v ⊗[F] E) where
+  carrier := {Z | ∀ a i k, crd b (Fv F v) (Z a i) k ∈ P}
+  add_mem' hx hy a i k := by
+    rw [Pi.add_apply, Pi.add_apply, crd_add]
+    exact add_mem (hx a i k) (hy a i k)
+  zero_mem' a i k := by
+    rw [Pi.zero_apply, Pi.zero_apply, crd_zero]
+    exact zero_mem P
+  neg_mem' hx a i k := by
+    rw [Pi.neg_apply, Pi.neg_apply, crd_neg]
+    exact neg_mem (hx a i k)
+
+theorem isClopen_lvN (v : HeightOneSpectrum (𝓞 F)) (P : OpenAddSubgroup (Fv F v)) (n M : ℕ) :
+    IsClopen (lvN b v (P : AddSubgroup (Fv F v)) n M : Set (Fin n → Fin M → Fv F v ⊗[F] E)) := by
+  have hc : ∀ (x : Fin n) (i : Fin M) (k : Fin d),
+      Continuous (fun Y : Fin n → Fin M → Fv F v ⊗[F] E => crd b (Fv F v) (Y x i) k) :=
+    fun x i k => (continuous_crd b (Fv F v) k).comp ((continuous_apply i).comp (continuous_apply x))
+  have e : (lvN b v (P : AddSubgroup (Fv F v)) n M : Set (Fin n → Fin M → Fv F v ⊗[F] E)) = ⋂ x, ⋂ i, ⋂ k,
+      (fun Y : Fin n → Fin M → Fv F v ⊗[F] E => crd b (Fv F v) (Y x i) k) ⁻¹' (P : Set (Fv F v)) := by
+    ext Y
+    simp [lvN]
+  rw [e]
+  exact ⟨isClosed_iInter fun x => isClosed_iInter fun i => isClosed_iInter fun k =>
+    P.isClosed.preimage (hc x i k), isOpen_iInter_of_finite fun x =>
+    isOpen_iInter_of_finite fun i => isOpen_iInter_of_finite fun k => P.isOpen.preimage (hc x i k)⟩
+
+theorem isCompact_lvN (v : HeightOneSpectrum (𝓞 F)) (P : OpenAddSubgroup (Fv F v)) (hP : P ≤ intSub v) (n M : ℕ) :
+    IsCompact (lvN b v (P : AddSubgroup (Fv F v)) n M : Set (Fin n → Fin M → Fv F v ⊗[F] E)) :=
+  (isCompact_latV b v n M).of_isClosed_subset (isClopen_lvN b v P n M).isClosed
+    fun _ hZ a i k => hP (hZ a i k)
+
+theorem projV_subN (v : HeightOneSpectrum (𝓞 F)) {n M : ℕ} (X Y : Fin n → Fin M → Af F ⊗[F] E) :
+    projV v (X - Y) = projV v X - projV v Y := by
+  funext a i
+  simp [projV, map_sub]
+
+def cosVN (v : HeightOneSpectrum (𝓞 F)) (P : OpenAddSubgroup (Fv F v)) {n M : ℕ}
+    (a : Fin n → Fin M → Fv F v ⊗[F] E) : Set (Fin n → Fin M → Fv F v ⊗[F] E) :=
+  {Z | Z - a ∈ lvN b v (P : AddSubgroup (Fv F v)) n M}
+
+theorem isCompact_isOpen_cosVN (v : HeightOneSpectrum (𝓞 F)) (P : OpenAddSubgroup (Fv F v)) (hP : P ≤ intSub v)
+    {n M : ℕ} (a : Fin n → Fin M → Fv F v ⊗[F] E) : IsCompact (cosVN b v P a) ∧ IsOpen (cosVN b v P a) := by
+  haveI : IsModuleTopology (Fv F v) (Fv F v ⊗[F] E) := ⟨rfl⟩
+  haveI : IsTopologicalRing (Fv F v ⊗[F] E) := IsModuleTopology.isTopologicalRing (Fv F v) _
+  have e : cosVN b v P a = (Homeomorph.subRight a) ⁻¹' (lvN b v (P : AddSubgroup (Fv F v)) n M : Set _) := rfl
+  rw [e]
+  exact ⟨(Homeomorph.subRight a).isCompact_preimage.2 (isCompact_lvN b v P hP n M),
+    (isClopen_lvN b v P n M).isOpen.preimage (Homeomorph.subRight a).continuous⟩
+
+theorem cosVN_intSub (v : HeightOneSpectrum (𝓞 F)) {n M : ℕ} {a : Fin n → Fin M → Fv F v ⊗[F] E}
+    (ha : a ∈ latV b v) : cosVN b v (intSub v) a = latV b v := by
+  have ha' : a ∈ lvN b v ((intSub v : OpenAddSubgroup (Fv F v)) : AddSubgroup (Fv F v)) n M := ha
+  ext Z
+  have e1 : Z ∈ cosVN b v (intSub v) a ↔ Z - a ∈ lvN b v ((intSub v : OpenAddSubgroup (Fv F v)) : AddSubgroup (Fv F v)) n M :=
+    Iff.rfl
+  have e2 : Z ∈ latV b v ↔ Z ∈ lvN b v ((intSub v : OpenAddSubgroup (Fv F v)) : AddSubgroup (Fv F v)) n M := Iff.rfl
+  rw [e1, e2, sub_eq_add_neg]
+  exact add_mem_cancel_right (neg_mem ha')
+
+theorem exists_box_combN {n M : ℕ} (g : (Fin n → Fin M → Af F ⊗[F] E) → ℂ) (hg : IsSB g) :
+    ∃ (s : Finset (Fin n → Fin M → Af F ⊗[F] E))
+      (A : (Fin n → Fin M → Af F ⊗[F] E) → ∀ v : HeightOneSpectrum (𝓞 F), Set (Fin n → Fin M → Fv F v ⊗[F] E))
+      (S : Finset (HeightOneSpectrum (𝓞 F))),
+      (∀ a v, IsCompact (A a v) ∧ IsOpen (A a v)) ∧ (∀ a ∈ s, ∀ v, v ∉ S → A a v = latV b v) ∧
+        ∀ Y, g Y = ∑ a ∈ s, g a * (boxF (A a)).indicator (fun _ => (1 : ℂ)) Y := by
+  classical
+  haveI : IsModuleTopology (Af F) (Af F ⊗[F] E) := ⟨rfl⟩
+  haveI : IsTopologicalRing (Af F ⊗[F] E) := IsModuleTopology.isTopologicalRing (Af F) _
+  have hU := invariant_mem_nhds hg.1 hg.2
+  let Lc : (Fin n → Fin M → Fin d → Af F) → (Fin n → Fin M → Af F ⊗[F] E) :=
+    fun c x i => ∑ k, c x i k • ((1 : Af F) ⊗ₜ[F] b k)
+  have hL : Continuous Lc := by
+    refine continuous_pi fun x => continuous_pi fun i => continuous_finsetSum _ fun k _ => ?_
+    exact continuous_smul.comp
+      (((continuous_apply k).comp ((continuous_apply i).comp (continuous_apply x))).prodMk
+        continuous_const)
+  have hL0 : Lc (fun _ _ _ => 0) = 0 := by
+    funext x i
+    simp [Lc]
+  have hp : Lc ⁻¹' {u | ∀ x, g (x + u) = g x} ∈ 𝓝 (fun _ => fun _ => fun _ => (0 : Af F)) :=
+    hL.continuousAt.preimage_mem_nhds (by rw [hL0]; exact hU)
+  obtain ⟨W1, hW1, h1⟩ := exists_nhds_of_pi hp
+  obtain ⟨W2, hW2, h2⟩ := exists_nhds_of_pi hW1
+  obtain ⟨W, hW, h3⟩ := exists_nhds_of_pi hW2
+  obtain ⟨T, P, hPO, hPT, hsub⟩ := exists_box_subset hW
+  let B : AddSubgroup (Af F) :=
+    { carrier := {y | ∀ v, y v ∈ P v}
+      add_mem' := fun hx hy v => add_mem (hx v) (hy v)
+      zero_mem' := fun v => zero_mem (P v)
+      neg_mem' := fun hx v => neg_mem (hx v) }
+  have hBo : IsOpen (B : Set (Af F)) := by
+    have e : (B : Set (Af F)) = {y : Af F | ∀ v, y v ∈ v.adicCompletionIntegers F} ∩
+        ⋂ v ∈ T, (fun y : Af F => y v) ⁻¹' (P v : Set (Fv F v)) := by
+      ext y
+      constructor
+      · intro hy
+        exact ⟨fun v => hPO v (hy v), Set.mem_iInter₂.2 fun v _ => hy v⟩
+      · rintro ⟨hy1, hy2⟩ v
+        by_cases hv : v ∈ T
+        · exact Set.mem_iInter₂.1 hy2 v hv
+        · rw [hPT v hv]
+          exact hy1 v
+    rw [e]
+    refine IsOpen.inter ?_ (T.finite_toSet.isOpen_biInter fun v _ => (P v).isOpen.preimage
+      (RestrictedProduct.continuous_eval (R := fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletion F) v))
+    exact RestrictedProduct.isOpen_forall_mem (R := fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
+      (A := fun v => (v.adicCompletionIntegers F : Set (v.adicCompletion F)))
+      (fun v => Valued.isOpen_valuationSubring _)
+  let L : AddSubgroup (Fin n → Fin M → Af F ⊗[F] E) :=
+    { carrier := {X | ∀ a i k, crd b (Af F) (X a i) k ∈ B}
+      add_mem' := fun {x y} hx hy a i k => by
+        rw [Pi.add_apply, Pi.add_apply, crd_add]
+        exact add_mem (hx a i k) (hy a i k)
+      zero_mem' := fun a i k => by
+        rw [Pi.zero_apply, Pi.zero_apply, crd_zero]
+        exact zero_mem B
+      neg_mem' := fun {x} hx a i k => by
+        rw [Pi.neg_apply, Pi.neg_apply, crd_neg]
+        exact neg_mem (hx a i k) }
+  have hLo : IsOpen (L : Set (Fin n → Fin M → Af F ⊗[F] E)) := by
+    have e : (L : Set (Fin n → Fin M → Af F ⊗[F] E)) = ⋂ a, ⋂ i, ⋂ k,
+        (fun X : Fin n → Fin M → Af F ⊗[F] E => crd b (Af F) (X a i) k) ⁻¹' (B : Set (Af F)) := by
+      ext X
+      simp [L]
+    rw [e]
+    exact isOpen_iInter_of_finite fun a => isOpen_iInter_of_finite fun i => isOpen_iInter_of_finite fun k =>
+      hBo.preimage ((continuous_crd b (Af F) k).comp ((continuous_apply i).comp (continuous_apply a)))
+  have hinv : ∀ x, ∀ l ∈ L, g (x + l) = g x := by
+    intro x l hl
+    have hl' : l = Lc fun a i k => crd b (Af F) (l a i) k := by
+      funext a i
+      exact eq_sum_crd b (Af F) (l a i)
+    rw [hl']
+    refine h1 _ (fun a => h2 _ fun i => h3 _ fun k => hsub (hl a i k)) x
+  obtain ⟨s, hs⟩ := eq_sum_cosets hg.2 L hLo hinv
+  have hbad : ∀ a : Fin n → Fin M → Af F ⊗[F] E, {v | ¬ projV v a ∈ latV b v}.Finite := fun a =>
+    Filter.eventually_cofinite.1 (eventually_mem_latV b a)
+  refine ⟨s, fun a v => cosVN b v (P v) (projV v a), T ∪ s.biUnion fun a => (hbad a).toFinset,
+    fun a v => isCompact_isOpen_cosVN b v (P v) (hPO v) _, fun a ha v hv => ?_, fun Y => ?_⟩
+  · have hvT : v ∉ T := fun h => hv (Finset.mem_union_left _ h)
+    have hva : projV v a ∈ latV b v := by
+      by_contra h
+      exact hv (Finset.mem_union_right _ (Finset.mem_biUnion.2 ⟨a, ha, (hbad a).mem_toFinset.2 h⟩))
+    show cosVN b v (P v) (projV v a) = latV b v
+    rw [hPT v hvT]
+    exact cosVN_intSub b v hva
+  · rw [hs Y]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    congr 2
+    ext X
+    show X - a ∈ L ↔ ∀ v, projV v X - projV v a ∈ lvN b v ((P v : OpenAddSubgroup (Fv F v)) : AddSubgroup (Fv F v)) n M
+    constructor
+    · intro h v i j k
+      rw [← projV_subN]
+      have := crd_projV b (X - a) v i j k
+      rw [this]
+      exact h i j k v
+    · intro h i j k v
+      have := crd_projV b (X - a) v i j k
+      rw [← this, projV_subN]
+      exact h v i j k
+
+end GlobalTheory.CompanionTheory.PfSWUS.FockSplit.Box
+
+end
+end
+
+section
 section
 noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
@@ -178,3 +437,5 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.fock_splitting_maximal_compact : PositivityTheory.PfSWUS.FockSplitK := by
   atlas_forward_decl GlobalTheory.CompanionTheory.PfSWUS.fockSplitK
+end
+end

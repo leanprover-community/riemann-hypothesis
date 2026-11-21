@@ -2,15 +2,159 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviOf
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumOutOfLe
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousBlkOneVal
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ComapUNAndMapSM
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UNInjective
+import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrincEqKOne
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HintEqOfLe
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsBlocksOfUpper
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOfValILeOne
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinsumParabolicQuotientFubini
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviProjectionMaximalCompact
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HaarIntegralNormalizedIntegralMatricesTwoSidedMu
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasCompactSupportTwistedConstantTermSplitPlace
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockUpperTimesUnipotentMulBlockDiagonal
 
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.CompanionTheory.LeviInt
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+theorem blk_entries_int {a b n : ℕ} (h : a + b = n) (w : Pl E) (m : GLw a w × GLw b w)
+    (X : Matrix (Fin a) (Fin b) (w.adicCompletion E))
+    (h1 : ∀ i j, (m.1.val i j) ∈ Ov E w) (h2 : ∀ i j, (m.2.val i j) ∈ Ov E w)
+    (hX : ∀ i j, X i j ∈ Ov E w) (i j : Fin n) :
+    ((blk h w m X : GLw n w) : Matrix (Fin n) (Fin n) (w.adicCompletion E)) i j ∈ Ov E w := by
+  rw [CtLevel.blk_val]
+  obtain ⟨i', rfl⟩ := (CtLevel.blkEq h).surjective i
+  obtain ⟨j', rfl⟩ := (CtLevel.blkEq h).surjective j
+  rw [reindex_apply, submatrix_apply, Equiv.symm_apply_apply, Equiv.symm_apply_apply]
+  rcases i' with i' | i' <;> rcases j' with j' | j'
+  · simpa using h1 i' j'
+  · simp only [fromBlocks_apply₁₂, Matrix.mul_apply]
+    exact Subring.sum_mem _ fun k _ => Subring.mul_mem _ (h1 _ _) (hX _ _)
+  · simp
+  · simpa using h2 i' j'
+
+theorem blk_corner {a b n : ℕ} (h : a + b = n) (w : Pl E)
+    (X : Matrix (Fin a) (Fin b) (w.adicCompletion E)) (i : Fin a) (j : Fin b) :
+    ((blk h w 1 X : GLw n w) : Matrix (Fin n) (Fin n) (w.adicCompletion E))
+      (CtLevel.blkEq h (Sum.inl i)) (CtLevel.blkEq h (Sum.inr j)) = X i j := by
+  rw [CtLevel.blk_val, reindex_apply, submatrix_apply, Equiv.symm_apply_apply, Equiv.symm_apply_apply]
+  simp
+
+theorem comap_uN_and_map_sM : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b n : ℕ) (h : a + b = n) (w : Pl E), ((GlobalTheory.LFun.KGL w n).subgroupOf (GlobalTheory.LeviFubini.parB h w)).comap (GlobalTheory.LeviFubini.uN h w) = intMat a b w ∧ ((GlobalTheory.LFun.KGL w a).prod (GlobalTheory.LFun.KGL w b)).map (GlobalTheory.LeviFubini.sM h w) ≤ (GlobalTheory.LFun.KGL w n).subgroupOf (GlobalTheory.LeviFubini.parB h w) := by
+  intro E _ _ _ a b n h w
+  have hinv : ∀ X : Multiplicative (Matrix (Fin a) (Fin b) (w.adicCompletion E)),
+      ((GlobalTheory.LeviFubini.uN h w X : GlobalTheory.LeviFubini.parB h w) : GLw n w)⁻¹ =
+        blk h w 1 (Multiplicative.toAdd X⁻¹) := fun X => by
+    rw [← GlobalTheory.LeviFubini.uN_val, map_inv, Subgroup.coe_inv]
+  have hint : ∀ k : ℕ, ∀ i j : Fin k, ((1 : GLw k w).val i j) ∈ Ov E w := fun k i j => by
+    rw [Units.val_one, Matrix.one_apply]
+    split_ifs
+    · exact Subring.one_mem _
+    · exact Subring.zero_mem _
+  refine ⟨le_antisymm (fun X hX => ?_) ?_, ?_⟩
+  · rw [Subgroup.mem_comap, Subgroup.mem_subgroupOf, GlobalTheory.LeviFubini.uN_val] at hX
+    refine Subgroup.subset_closure fun i j => ?_
+    have h1 := (GlobalTheory.AdelicU.mem_GLint_iff.1 hX).1 (CtLevel.blkEq h (Sum.inl i)) (CtLevel.blkEq h (Sum.inr j))
+    rw [blk_corner] at h1
+    exact h1
+  · refine (Subgroup.closure_le _).2 fun X hX => ?_
+    have hX' : ∀ i j, Multiplicative.toAdd X i j ∈ Ov E w := hX
+    rw [SetLike.mem_coe, Subgroup.mem_comap, Subgroup.mem_subgroupOf]
+    refine GlobalTheory.AdelicU.mem_GLint_iff.2 ⟨fun i j => ?_, fun i j => ?_⟩
+    · rw [GlobalTheory.LeviFubini.uN_val]
+      exact blk_entries_int h w 1 _ (hint a) (hint b) hX' i j
+    · rw [hinv]
+      refine blk_entries_int h w 1 _ (hint a) (hint b) (fun i j => ?_) i j
+      simpa using Subring.neg_mem _ (hX' i j)
+  · rintro _ ⟨m, ⟨h1, h2⟩, rfl⟩
+    obtain ⟨h11, h12⟩ := GlobalTheory.AdelicU.mem_GLint_iff.1 h1
+    obtain ⟨h21, h22⟩ := GlobalTheory.AdelicU.mem_GLint_iff.1 h2
+    rw [Subgroup.mem_subgroupOf]
+    refine GlobalTheory.AdelicU.mem_GLint_iff.2 ⟨fun i j => ?_, fun i j => ?_⟩
+    · rw [GlobalTheory.LeviFubini.sM_val]
+      exact blk_entries_int h w m 0 h11 h21 (fun _ _ => Subring.zero_mem _) i j
+    · rw [← Subgroup.coe_inv, ← map_inv, GlobalTheory.LeviFubini.sM_val]
+      exact blk_entries_int h w m⁻¹ 0 h12 h22 (fun _ _ => Subring.zero_mem _) i j
+
+end GlobalTheory.CompanionTheory.LeviInt
+end
+
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter
+open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcN.F2
+open scoped Classical TensorProduct
+
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.IwaBlock
+
+theorem exists_blocks_of_upper {K : Type} [Field K] {n a b : ℕ} (h : a + b = n) (p : GL (Fin n) K)
+    (hp : p.1.BlockTriangular id) :
+    ∃ (m₁ : GL (Fin a) K) (m₂ : GL (Fin b) K) (Y : Matrix (Fin a) (Fin b) K),
+      Matrix.reindex (finSumFinEquiv.trans (finCongr h)) (finSumFinEquiv.trans (finCongr h))
+        (Matrix.fromBlocks m₁.val (m₁.val * Y) 0 m₂.val) = p.val := by
+  set e : Fin a ⊕ Fin b ≃ Fin n := finSumFinEquiv.trans (finCongr h) with he
+  set M : Matrix (Fin a ⊕ Fin b) (Fin a ⊕ Fin b) K := p.val.submatrix e e with hM
+  have h21 : M.toBlocks₂₁ = 0 := by
+    refine Matrix.ext fun i j => hp ?_
+    change (e (Sum.inl j) : ℕ) < e (Sum.inr i)
+    simp [he]
+    omega
+  have hMb : M = Matrix.fromBlocks M.toBlocks₁₁ M.toBlocks₁₂ 0 M.toBlocks₂₂ := by
+    rw [← h21]; exact (Matrix.fromBlocks_toBlocks M).symm
+  have hdet : M.det ≠ 0 := by
+    rw [hM, Matrix.det_submatrix_equiv_self]
+    exact Matrix.GeneralLinearGroup.det_ne_zero p
+  have hprod : M.toBlocks₁₁.det * M.toBlocks₂₂.det ≠ 0 := by
+    rw [hMb, Matrix.det_fromBlocks_zero₂₁] at hdet
+    simpa using hdet
+  have hA : IsUnit M.toBlocks₁₁ :=
+    (Matrix.isUnit_iff_isUnit_det _).2 (isUnit_iff_ne_zero.2 (left_ne_zero_of_mul hprod))
+  have hD : IsUnit M.toBlocks₂₂ :=
+    (Matrix.isUnit_iff_isUnit_det _).2 (isUnit_iff_ne_zero.2 (right_ne_zero_of_mul hprod))
+  refine ⟨hA.unit, hD.unit, (hA.unit⁻¹ : GL (Fin a) K).val * M.toBlocks₁₂, ?_⟩
+  have hAB : hA.unit.val * ((hA.unit⁻¹ : GL (Fin a) K).val * M.toBlocks₁₂) = M.toBlocks₁₂ := by
+    rw [← Matrix.mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mul]
+  rw [hAB]
+  change Matrix.reindex e e (Matrix.fromBlocks M.toBlocks₁₁ M.toBlocks₁₂ 0 M.toBlocks₂₂) = p.val
+  rw [← hMb, hM]
+  ext i j
+  simp
+
+theorem iwasawa_parabolic : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n a b : ℕ) (h : a + b = n) (w : Pl E)
+    (g : GLw n w), ∃ (m : GLw a w × GLw b w) (Y : Matrix (Fin a) (Fin b) (w.adicCompletion E)),
+      ∃ k ∈ GlobalTheory.LFun.KGL w n, g = blk h w m Y * k := by
+  intro E _ _ _ n a b h w g
+  obtain ⟨k, c, hc, hg⟩ := GlobalTheory.ValIwasawa.iwasawa (w.adicCompletionIntegers E) (w.adicCompletion E) n g⁻¹
+  have hk : Matrix.GeneralLinearGroup.map (algebraMap (w.adicCompletionIntegers E) (w.adicCompletion E)) k ∈
+      GlobalTheory.LFun.KGL w n := ⟨k, rfl⟩
+  have hc' : (c⁻¹).1.BlockTriangular id := by
+    haveI : Invertible c.1 := Units.invertible c
+    rw [Matrix.coe_units_inv]
+    exact Matrix.blockTriangular_inv_of_blockTriangular hc
+  obtain ⟨m₁, m₂, Y, hY⟩ := exists_blocks_of_upper h c⁻¹ hc'
+  have hblk : blk h w (m₁, m₂) Y = c⁻¹ := by
+    have hU : IsUnit (Matrix.reindex (finSumFinEquiv.trans (finCongr h)) (finSumFinEquiv.trans (finCongr h))
+        (Matrix.fromBlocks m₁.val (m₁.val * Y) 0 m₂.val)) := by
+      rw [hY]; exact (c⁻¹).isUnit
+    apply Units.ext
+    simp only [blk]
+    rw [dif_pos hU, IsUnit.unit_spec]
+    exact hY
+  refine ⟨(m₁, m₂), Y, _, inv_mem hk, ?_⟩
+  rw [hblk, ← inv_inv g, hg, _root_.mul_inv_rev]
+
+end GlobalTheory.CompanionTheory.IwaBlock
+end
+end
+
+section
 open NumberField IsDedekindDomain Matrix Polynomial Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcN.F2
 open scoped Classical TensorProduct
@@ -424,3 +568,5 @@ theorem integral_decomposition : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   rw [hLHS, hR]
 
 end GlobalTheory.CompanionTheory.IntDec
+end
+end

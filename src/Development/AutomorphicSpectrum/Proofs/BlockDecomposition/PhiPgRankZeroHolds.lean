@@ -2,11 +2,455 @@ import Mathlib
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MvecLeviMulUv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicFourierExpansion
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GpProjContinuous
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsInducedBallIndicator
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocallyConstantFiniteBallSum
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RestrictionBallIndicatorSpan
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMemTwKerPolyBall
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenFixedOfSubgroup
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothPsiMinus
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCIndValue
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothIntegralLinear
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.PhiPG0
 
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.SplitWeil GlobalTheory.CompanionTheory.MirFourier GlobalTheory.CompanionTheory.MirLevi ValuativeRel
+open scoped Topology
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.MirLevi.Bump
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+variable {n : ℕ} {E : Type} [AddCommGroup E] [Module ℂ E]
+
+def IntM (m : GL (Fin n) k) : Prop :=
+  ∀ i, Multiplicative.ofAdd ((m : Matrix (Fin n) (Fin n) k) i) ∈ polyBall (k := k) n 1
+
+theorem intM_one : IntM (1 : GL (Fin n) k) := by
+  intro i j
+  show valuation k (((1 : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) i j) ≤ valuation k ((1 : kˣ) : k)
+  by_cases h : i = j
+  · simp [h]
+  · simp [one_apply, h]
+
+theorem IntM.mulVec_mem {m : GL (Fin n) k} (hm : IntM m) {s : kˣ} {v : Fin n → k}
+    (hv : Multiplicative.ofAdd v ∈ polyBall (k := k) n s) :
+    Multiplicative.ofAdd ((m : Matrix (Fin n) (Fin n) k).mulVec v) ∈ polyBall (k := k) n s :=
+  fun i => dotProduct_mem_cball (a := 1) (b := s) (c := s) (by simp) (hm i) hv
+
+theorem isOpen_intM : IsOpen {m : GL (Fin n) k | IntM m} := by
+  have h : {m : GL (Fin n) k | IntM m} = ⋂ i, (fun m : GL (Fin n) k =>
+      Multiplicative.ofAdd ((m : Matrix (Fin n) (Fin n) k) i)) ⁻¹'
+        (polyBall (k := k) n 1 : Set (Multiplicative (Fin n → k))) := by
+    ext m
+    simp [IntM]
+  rw [h]
+  refine isOpen_iInter_of_finite fun i => (isOpen_polyBall n 1).preimage ?_
+  exact continuous_ofAdd.comp (continuous_pi fun j => Units.continuous_val.matrix_elem i j)
+
+theorem continuous_colv : Continuous (colv : Mir k n → Fin n → k) :=
+  continuous_pi fun i => (Units.continuous_val.comp continuous_subtype_val).matrix_elem (Fin.castSucc i) (Fin.last n)
+
+theorem continuous_mvec : Continuous (mvec : Mir k n → Fin n → k) := by
+  have h1 : Continuous fun x : Mir k n =>
+      (((mirabolicProjection k n x)⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) :=
+    Units.continuous_val.comp (continuous_inv.comp (GlobalTheory.CompanionTheory.BZMirFun.continuous_mirProj k n))
+  exact h1.matrix_mulVec continuous_colv
+
+theorem continuous_lv : Continuous (lv k n) :=
+  continuous_induced_rng.2 (GlobalTheory.CompanionTheory.BZMirFun.continuous_levi k n)
+
+def bumpF (ρ : Representation ℂ (LH k n) E) (s : kˣ) (e : E) (g : Mir k n) : E :=
+  @ite _ (Multiplicative.ofAdd (mvec g) ∈ polyBall (k := k) n s) (Classical.propDecidable _)
+    (ρ (lv k n (mirabolicProjection k n g)) e) 0
+
+variable (ρ : Representation ℂ (LH k n) E) (s : kˣ) (e : E)
+
+theorem bumpF_levi_mul (m : GL (Fin n) k) (g : Mir k n) :
+    bumpF ρ s e (levi k n m * g) = ρ (lv k n m) (bumpF ρ s e g) := by
+  unfold bumpF
+  rw [mvec_levi_mul, map_mul, mirProj_levi, map_mul, map_mul, Module.End.mul_apply]
+  split_ifs <;> simp
+
+theorem bumpF_equi (h : LH k n) (g : Mir k n) :
+    bumpF ρ s e ((h : Mir k n) * g) = ρ h (bumpF ρ s e g) := by
+  obtain ⟨m, hm⟩ := h.2
+  have e1 : h = lv k n m := Subtype.ext hm.symm
+  rw [e1]
+  exact bumpF_levi_mul ρ s e m g
+
+theorem bumpF_levi_uv (q : GL (Fin n) k) (w : Fin n → k) :
+    bumpF ρ s e (levi k n q * uv n w) =
+      @ite _ (Multiplicative.ofAdd w ∈ polyBall (k := k) n s) (Classical.propDecidable _)
+        (ρ (lv k n q) e) 0 := by
+  unfold bumpF
+  rw [mvec_levi_mul_uv, map_mul, mirProj_levi, mirProj_uv, mul_one]
+
+theorem bumpF_uv (w : Fin n → k) :
+    bumpF ρ s e (uv n w) =
+      @ite _ (Multiplicative.ofAdd w ∈ polyBall (k := k) n s) (Classical.propDecidable _) e 0 := by
+  have h := bumpF_levi_uv ρ s e 1 w
+  rw [map_one (levi k n), one_mul, map_one (lv k n), map_one ρ] at h
+  simpa using h
+
+theorem mul_formula (p m : GL (Fin n) k) (v a : Fin n → k) :
+    (levi k n p * uv n v) * (levi k n m * uv n a) = levi k n (p * m) *
+      uv n (((m⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).mulVec v + a) := by
+  rw [uv_add, map_mul, mul_assoc (levi k n p), ← mul_assoc (uv n v), uv_mul_levi]
+  simp only [mul_assoc]
+
+theorem bumpF_fix (p m : GL (Fin n) k) (v a : Fin n → k) (h1 : IntM m) (h2 : IntM m⁻¹)
+    (hm : ρ (lv k n m) e = e) (ha : Multiplicative.ofAdd a ∈ polyBall (k := k) n s) :
+    bumpF ρ s e ((levi k n p * uv n v) * (levi k n m * uv n a)) = bumpF ρ s e (levi k n p * uv n v) := by
+  rw [mul_formula, bumpF_levi_uv, bumpF_levi_uv, map_mul, map_mul, Module.End.mul_apply, hm]
+  have hiff : Multiplicative.ofAdd (((m⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).mulVec v + a) ∈
+      polyBall (k := k) n s ↔ Multiplicative.ofAdd v ∈ polyBall (k := k) n s := by
+    constructor
+    · intro h
+      have h3 : Multiplicative.ofAdd (((m⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k).mulVec v) ∈
+          polyBall (k := k) n s := by
+        have h4 := mul_mem h (inv_mem ha)
+        rwa [ofAdd_add, mul_inv_cancel_right] at h4
+      have h5 := h1.mulVec_mem h3
+      rwa [mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, one_mulVec] at h5
+    · intro h
+      rw [ofAdd_add]
+      exact mul_mem (h2.mulVec_mem h) ha
+  by_cases hv : Multiplicative.ofAdd v ∈ polyBall (k := k) n s
+  · rw [if_pos hv, if_pos (hiff.2 hv)]
+  · rw [if_neg hv, if_neg (fun c => hv (hiff.1 c))]
+
+def nbhd : Set (Mir k n) :=
+  {x | IntM (mirabolicProjection k n x) ∧ IntM (mirabolicProjection k n x)⁻¹ ∧ ρ (lv k n (mirabolicProjection k n x)) e = e ∧
+    Multiplicative.ofAdd (mvec x) ∈ polyBall (k := k) n s}
+
+theorem isOpen_nbhd (hρ : IsSmooth ρ) : IsOpen (nbhd ρ s e) := by
+  have hp := GlobalTheory.CompanionTheory.BZMirFun.continuous_mirProj k n
+  refine (isOpen_intM.preimage hp).inter ((isOpen_intM.preimage (continuous_inv.comp hp)).inter
+    (((hρ e).preimage (continuous_lv.comp hp)).inter ?_))
+  exact (isOpen_polyBall n s).preimage (continuous_ofAdd.comp continuous_mvec)
+
+theorem one_mem_nbhd : (1 : Mir k n) ∈ nbhd ρ s e := by
+  have hm : mvec (1 : Mir k n) = 0 := by
+    have h := mvec_uv (k := k) n 0
+    rwa [uv_zero] at h
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rw [map_one]; exact intM_one
+  · rw [map_one, inv_one]; exact intM_one
+  · simp
+  · rw [hm]; exact one_mem _
+
+theorem bumpF_mul_nbhd (g x : Mir k n) (hx : x ∈ nbhd ρ s e) :
+    bumpF ρ s e (g * x) = bumpF ρ s e g := by
+  obtain ⟨h1, h2, h3, h4⟩ := hx
+  have h := bumpF_fix ρ s e (mirabolicProjection k n g) (mirabolicProjection k n x) (mvec g) (mvec x) h1 h2 h3 h4
+  rwa [← decomp g, ← decomp x] at h
+
+theorem bumpF_mem : bumpF ρ s e ∈ indSpace (LH k n) ρ := fun h g => bumpF_equi ρ s e h g
+
+theorem bumpF_smooth (hρ : IsSmooth ρ) :
+    (⟨bumpF ρ s e, bumpF_mem ρ s e⟩ : indSpace (LH k n) ρ) ∈ smoothPart (ind (LH k n) ρ) := by
+  have hfix : nbhd ρ s e ⊆ (GlobalTheory.CompanionTheory.LeibPhi.stabSub (ind (LH k n) ρ)
+      (⟨bumpF ρ s e, bumpF_mem ρ s e⟩ : indSpace (LH k n) ρ) : Set (Mir k n)) := by
+    intro x hx
+    apply Subtype.ext
+    funext g
+    exact bumpF_mul_nbhd ρ s e g x hx
+  exact (GlobalTheory.CompanionTheory.LeibPhi.stabSub (ind (LH k n) ρ)
+    (⟨bumpF ρ s e, bumpF_mem ρ s e⟩ : indSpace (LH k n) ρ)).isOpen_of_mem_nhds (g := 1)
+    (Filter.mem_of_superset ((isOpen_nbhd ρ s e hρ).mem_nhds (one_mem_nbhd ρ s e)) hfix)
+
+theorem bumpF_support : ∃ C : Set (Mir k n), IsCompact C ∧ ∀ g, bumpF ρ s e g ≠ 0 →
+    ∃ h ∈ LH k n, ∃ c ∈ C, g = h * c := by
+  refine ⟨unipIn k n '' (polyBall (k := k) n s : Set (Multiplicative (Fin n → k))),
+    (isCompact_polyBall n s).image (continuous_unipIn n), fun g hg => ?_⟩
+  have hL : Multiplicative.ofAdd (mvec g) ∈ polyBall (k := k) n s := by
+    by_contra hc
+    exact hg (if_neg hc)
+  exact ⟨levi k n (mirabolicProjection k n g), ⟨_, rfl⟩, uv n (mvec g), ⟨_, hL, rfl⟩, decomp g⟩
+
+theorem exists_bump_restr : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (n : ℕ) (E : Type) [AddCommGroup E] [Module ℂ E]
+    (ρ : Representation ℂ (LH k n) E), IsSmooth ρ → ∀ (s : kˣ) (e : E),
+    ∃ b : cIndSpace (LH k n) ρ, ∀ v : Fin n → k, restr ρ b v =
+      @ite _ (Multiplicative.ofAdd v ∈ polyBall (k := k) n s) (Classical.propDecidable _) e 0 := by
+  intro k _ _ _ _ n E _ _ ρ hρ s e
+  exact ⟨⟨⟨⟨bumpF ρ s e, bumpF_mem ρ s e⟩, bumpF_smooth ρ s e hρ⟩, bumpF_support ρ s e⟩,
+    fun v => bumpF_uv ρ s e v⟩
+
+end GlobalTheory.CompanionTheory.MirLevi.Bump
+
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.SplitWeil GlobalTheory.CompanionTheory.MirFourier GlobalTheory.CompanionTheory.MirLevi
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_induced_ball_indicator : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (E : Type) [AddCommGroup E] [Module ℂ E] (ρ : Representation ℂ (LH k n) E), IsSmooth ρ → ∀ (s : kˣ) (e : E), ∃ b : cIndSpace (LH k n) ρ, ∀ v : Fin n → k, restr ρ b v = @ite _ (Multiplicative.ofAdd v ∈ polyBall (k := k) n s) (Classical.propDecidable _) e 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MirLevi.Bump.exists_bump_restr
+end
+
+section
+section
+open Matrix GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.SplitWeil GlobalTheory.CompanionTheory.MirFourier GlobalTheory.CompanionTheory.MirLevi
+
+namespace GlobalTheory.CompanionTheory.MirFourier
+
+theorem exists_finset_eq_sum_polyBall_translates :
+    ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (E : Type) [AddCommGroup E] [Module ℂ E] (φ : (Fin n → k) → E) (s S : kˣ), (∀ v a : Fin n → k, Multiplicative.ofAdd a ∈ polyBall (k := k) n s → φ (v + a) = φ v) → (∀ v : Fin n → k, φ v ≠ 0 → Multiplicative.ofAdd v ∈ polyBall (k := k) n S) → ∃ R : Finset (Fin n → k), ∀ v : Fin n → k, φ v = ∑ x ∈ R, @ite _ (Multiplicative.ofAdd (v - x) ∈ polyBall (k := k) n s) (Classical.propDecidable _) (φ x) 0 := by
+  intro k _ _ _ _ n E _ _ φ s S hinv hsupp
+  classical
+  set L := polyBall (k := k) n s with hL
+  let q : Multiplicative (Fin n → k) → Multiplicative (Fin n → k) ⧸ L := QuotientGroup.mk
+  have hopen : IsOpen (L : Set (Multiplicative (Fin n → k))) := isOpen_polyBall n s
+  have hcov : ∃ T : Finset (Multiplicative (Fin n → k)),
+      ((polyBall (k := k) n S : Subgroup _) : Set (Multiplicative (Fin n → k))) ⊆
+        ⋃ x ∈ T, (fun y => x * y) '' (L : Set (Multiplicative (Fin n → k))) := by
+    refine (isCompact_polyBall n S).elim_finite_subcover
+      (fun x : Multiplicative (Fin n → k) => (fun y => x * y) '' (L : Set (Multiplicative (Fin n → k))))
+      (fun x => (Homeomorph.mulLeft x).isOpenMap _ hopen) ?_ |>.imp fun T hT => ?_
+    · intro x _
+      exact Set.mem_iUnion.2 ⟨x, 1, L.one_mem, by simp⟩
+    · simpa using hT
+  obtain ⟨T, hT⟩ := hcov
+  let f : Multiplicative (Fin n → k) ⧸ L → (Fin n → k) := fun c => (Quotient.out c).toAdd
+  have hf : Function.Injective f := fun a b hab =>
+    Quotient.out_injective (Multiplicative.toAdd.injective hab)
+  have hmem : ∀ (v : Fin n → k) (c : Multiplicative (Fin n → k) ⧸ L),
+      Multiplicative.ofAdd (v - f c) ∈ L ↔ q (Multiplicative.ofAdd v) = c := by
+    intro v c
+    have hc : q (Quotient.out c) = c := QuotientGroup.out_eq' c
+    have hinvEq : Multiplicative.ofAdd (v - f c) =
+        ((Multiplicative.ofAdd v)⁻¹ * Quotient.out c)⁻¹ := by
+      apply Multiplicative.toAdd.injective
+      simp [f, sub_eq_add_neg, add_comm]
+    rw [hinvEq, L.inv_mem_iff, ← QuotientGroup.eq]
+    exact (by rw [hc] : q (Multiplicative.ofAdd v) = q (Quotient.out c) ↔ _)
+  have hval : ∀ v : Fin n → k, φ (f (q (Multiplicative.ofAdd v))) = φ v := by
+    intro v
+    have h := hinv (f (q (Multiplicative.ofAdd v))) (v - f (q (Multiplicative.ofAdd v)))
+      ((hmem v _).2 rfl)
+    rw [add_sub_cancel] at h
+    exact h.symm
+  refine ⟨(T.image q).image f, fun v => ?_⟩
+  rw [Finset.sum_image (fun a _ b _ h => hf h)]
+  by_cases hv : q (Multiplicative.ofAdd v) ∈ T.image q
+  · rw [Finset.sum_eq_single_of_mem _ hv
+      (fun b _ hb => if_neg (fun h => hb ((hmem v b).1 h).symm)),
+      if_pos ((hmem v _).2 rfl), hval]
+  · have h0 : φ v = 0 := by
+      by_contra hne
+      obtain ⟨x, hx, y, hy, hxy⟩ := Set.mem_iUnion₂.1 (hT (hsupp v hne))
+      refine hv (Finset.mem_image.2 ⟨x, hx, ?_⟩)
+      have hxv : x⁻¹ * Multiplicative.ofAdd v ∈ L := by
+        rw [← hxy]
+        simpa using hy
+      exact QuotientGroup.eq.2 hxv
+    rw [h0]
+    refine (Finset.sum_eq_zero fun b hb => if_neg fun h => hv ?_).symm
+    rw [(hmem v b).1 h]
+    exact hb
+
+end GlobalTheory.CompanionTheory.MirFourier
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.SplitWeil GlobalTheory.CompanionTheory.MirFourier GlobalTheory.CompanionTheory.MirLevi
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.locally_constant_finite_ball_sum : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (E : Type) [AddCommGroup E] [Module ℂ E] (φ : (Fin n → k) → E) (s S : kˣ), (∀ v a : Fin n → k, Multiplicative.ofAdd a ∈ polyBall (k := k) n s → φ (v + a) = φ v) → (∀ v : Fin n → k, φ v ≠ 0 → Multiplicative.ofAdd v ∈ polyBall (k := k) n S) → ∃ R : Finset (Fin n → k), ∀ v : Fin n → k, φ v = ∑ x ∈ R, @ite _ (Multiplicative.ofAdd (v - x) ∈ polyBall (k := k) n s) (Classical.propDecidable _) (φ x) 0 := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.MirFourier.exists_finset_eq_sum_polyBall_translates
+end
+
+section
+section
+noncomputable section
+
+open Matrix GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.SplitWeil GlobalTheory.CompanionTheory.MirFourier GlobalTheory.CompanionTheory.MirLevi
+open MeasureTheory GlobalTheory.CompanionTheory.Rodier GlobalTheory.CompanionTheory.Rodier.SmIntEl
+open scoped Topology
+
+namespace GlobalTheory.CompanionTheory.ThetaInt
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+theorem isOpen_ball (n : ℕ) (s : kˣ) :
+    IsOpen {a : Fin n → k | Multiplicative.ofAdd a ∈ polyBall (k := k) n s} :=
+  (isOpen_polyBall n s).preimage continuous_ofAdd
+
+theorem isCompact_ball (n : ℕ) (s : kˣ) :
+    IsCompact {a : Fin n → k | Multiplicative.ofAdd a ∈ polyBall (k := k) n s} := by
+  have e : {a : Fin n → k | Multiplicative.ofAdd a ∈ polyBall (k := k) n s} =
+      Multiplicative.toAdd '' (polyBall (k := k) n s : Set (Multiplicative (Fin n → k))) := by
+    ext a
+    constructor
+    · intro h
+      exact ⟨Multiplicative.ofAdd a, h, rfl⟩
+    · rintro ⟨x, hx, rfl⟩
+      exact hx
+  rw [e]
+  exact (isCompact_polyBall n s).image continuous_toAdd
+
+theorem isLocallyConstant_of_periodic {n : ℕ} {Y : Type} (g : (Fin n → k) → Y) (s : kˣ)
+    (h : ∀ v a : Fin n → k, Multiplicative.ofAdd a ∈ polyBall (k := k) n s → g (v + a) = g v) :
+    IsLocallyConstant g := by
+  refine (IsLocallyConstant.iff_eventually_eq _).mpr fun x => ?_
+  have h0 : (fun z : Fin n → k => -x + z) ⁻¹'
+      {a : Fin n → k | Multiplicative.ofAdd a ∈ polyBall (k := k) n s} ∈ 𝓝 x :=
+    ((isOpen_ball n s).preimage (by fun_prop)).mem_nhds (by
+      show Multiplicative.ofAdd (-x + x) ∈ polyBall (k := k) n s
+      rw [neg_add_cancel]
+      exact one_mem _)
+  filter_upwards [h0] with z hz
+  have e : z = x + (-x + z) := by abel
+  rw [e]
+  exact h x _ hz
+
+theorem hasCompactSupport_of_ball {n : ℕ} {E : Type} [AddCommGroup E] (g : (Fin n → k) → E) (S : kˣ)
+    (h : ∀ v, g v ≠ 0 → Multiplicative.ofAdd v ∈ polyBall (k := k) n S) : HasCompactSupport g := by
+  haveI := GlobalTheory.SplitWeil.t2Space k
+  refine HasCompactSupport.intro (isCompact_ball n S) fun x hx => ?_
+  by_contra h1
+  exact hx (h x h1)
+
+def tw (ψ : AddChar k Circle) {N : ℕ} {E : Type} [AddCommGroup E] [Module ℂ E]
+    (g : (Fin (N + 1) → k) → E) : (Fin (N + 1) → k) → E :=
+  fun v => ((ψ (-(v (Fin.last N))) : Circle) : ℂ) • g v
+
+variable {N : ℕ} {E : Type} [AddCommGroup E] [Module ℂ E]
+
+theorem isLocallyConstant_tw (ψ : AddChar k Circle) (hψ : Continuous ψ)
+    {g : (Fin (N + 1) → k) → E} (hg : IsLocallyConstant g) : IsLocallyConstant (tw ψ g) := by
+  obtain ⟨s, hs⟩ := exists_cball_addChar_eq_one ψ hψ
+  have h1 : IsLocallyConstant fun v : Fin (N + 1) → k => ((ψ (-(v (Fin.last N))) : Circle) : ℂ) := by
+    refine isLocallyConstant_of_periodic _ s fun v a ha => ?_
+    have h2 : ψ (a (Fin.last N)) = 1 := hs _ (ha (Fin.last N))
+    rw [Pi.add_apply, neg_add, AddChar.map_add_eq_mul, AddChar.map_neg_eq_inv (a := a (Fin.last N)), h2,
+      inv_one, mul_one]
+  exact h1.comp₂ hg fun c x => c • x
+
+theorem hasCompactSupport_tw (ψ : AddChar k Circle) {g : (Fin (N + 1) → k) → E} (S : kˣ)
+    (h : ∀ v, g v ≠ 0 → Multiplicative.ofAdd v ∈ polyBall (k := k) (N + 1) S) :
+    HasCompactSupport (tw ψ g) := by
+  refine hasCompactSupport_of_ball _ S fun v hv => h v fun h0 => hv ?_
+  simp [tw, h0]
+
+section Int
+
+variable [MeasurableSpace k] [BorelSpace k] [SecondCountableTopology k] (ν : Measure k)
+  [ν.IsAddHaarMeasure]
+
+theorem smInt_comp_inv_mulVec (g : GL (Fin (N + 1)) k) {φ : (Fin (N + 1) → k) → E}
+    (l : IsLocallyConstant φ) :
+    smInt (Measure.pi fun _ : Fin (N + 1) => ν) (φ ∘ ((g⁻¹ : GL (Fin (N + 1)) k) :
+        Matrix (Fin (N + 1)) (Fin (N + 1)) k).mulVec) =
+      ((nabs k (Matrix.GeneralLinearGroup.det g) : ℝ) : ℂ) •
+        smInt (Measure.pi fun _ : Fin (N + 1) => ν) φ := by
+  have hm : ∀ B : Matrix (Fin (N + 1)) (Fin (N + 1)) k, Measurable B.mulVec := fun B =>
+    (continuous_const.matrix_mulVec continuous_id).measurable
+  have key : ∀ B : Set (Fin (N + 1) → k), MeasurableSet B →
+      (Measure.pi fun _ : Fin (N + 1) => ν)
+          (((g⁻¹ : GL (Fin (N + 1)) k) : Matrix (Fin (N + 1)) (Fin (N + 1)) k).mulVec ⁻¹' B) =
+        (distribHaarChar k (Matrix.GeneralLinearGroup.det g) : ENNReal) *
+          (Measure.pi fun _ : Fin (N + 1) => ν) B := by
+    intro B hB
+    have h1 := GlobalTheory.WeilM.smul_map_mulVec_pi ν g.val (Matrix.GeneralLinearGroup.det g) rfl
+    conv_lhs => rw [← h1]
+    rw [Measure.smul_apply, Measure.map_apply (hm _) ((hm _) hB), smul_eq_mul]
+    congr 2
+    ext x
+    simp only [Set.mem_preimage, mulVec_mulVec]
+    rw [← Units.val_mul, inv_mul_cancel, Units.val_one, one_mulVec]
+  unfold smInt
+  rw [smul_finsum]
+  refine finsum_congr fun v => ?_
+  rw [Set.preimage_comp, key (φ ⁻¹' {v}) (l.isOpen_fiber v).measurableSet, ENNReal.toReal_mul, smul_smul]
+  congr 1
+  simp [nabs]
+
+end Int
+
+theorem exists_twisted_integral : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), Continuous ψ → ∀ (N : ℕ) (X E : Type) [AddCommGroup X] [Module ℂ X] [AddCommGroup E] [Module ℂ E] (r : X →ₗ[ℂ] (Fin (N + 1) → k) → E), (∀ f, ∃ s : kˣ, ∀ (v a : Fin (N + 1) → k), Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s → r f (v + a) = r f v) → (∀ f, ∃ S : kˣ, ∀ v : Fin (N + 1) → k, r f v ≠ 0 → Multiplicative.ofAdd v ∈ polyBall (k := k) (N + 1) S) → ∀ (tr : (Fin (N + 1) → k) → X → X), (∀ a f v, r (tr a f) v = r f (v + a)) → ∀ (lev : GL (Fin (N + 1)) k → X → X) (A : GL (Fin (N + 1)) k → E →ₗ[ℂ] E), (∀ m f v, r (lev m f) v = A m (r f (((m⁻¹ : GL (Fin (N + 1)) k) : Matrix (Fin (N + 1)) (Fin (N + 1)) k).mulVec v))) → ∃ T : X →ₗ[ℂ] E, (∀ a f, T (tr a f) = ((ψ (a (Fin.last N)) : Circle) : ℂ) • T f) ∧ (∀ m : GL (Fin (N + 1)) k, m ∈ Mir k N → ∀ f, T (lev m f) = ((nabs k (Matrix.GeneralLinearGroup.det m) : ℝ) : ℂ) • A m (T f)) ∧ (∀ s : kˣ, (∀ a : Fin (N + 1) → k, Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s → ψ (a (Fin.last N)) = 1) → ∃ c : ℂ, c ≠ 0 ∧ ∀ (b : X) (e : E), (∀ v, r b v = @ite _ (Multiplicative.ofAdd v ∈ polyBall (k := k) (N + 1) s) (Classical.propDecidable _) e 0) → T b = c • e) := by
+  intro k _ _ _ _ ψ hψ N X E _ _ _ _ r hper hsup tr htr lev A hlev
+  borelize k
+  haveI := GlobalTheory.SplitWeil.secondCountable k
+  haveI := GlobalTheory.SplitWeil.t2Space k
+  obtain ⟨ν, hν⟩ : ∃ ν : Measure k, ν.IsAddHaarMeasure := ⟨Measure.addHaar, inferInstance⟩
+  let μ : Measure (Fin (N + 1) → k) := Measure.pi fun _ => ν
+  haveI hμ : μ.IsAddHaarMeasure := Measure.pi.isAddHaarMeasure _
+  have hl : ∀ f, IsLocallyConstant (tw ψ (r f)) := fun f => by
+    obtain ⟨s, hs⟩ := hper f
+    exact isLocallyConstant_tw ψ hψ (isLocallyConstant_of_periodic _ s fun v a ha => hs v a ha)
+  have hc : ∀ f, HasCompactSupport (tw ψ (r f)) := fun f => by
+    obtain ⟨S, hS⟩ := hsup f
+    exact hasCompactSupport_tw ψ S hS
+  let T : X →ₗ[ℂ] E :=
+    { toFun := fun f => smInt μ (tw ψ (r f))
+      map_add' := fun f g => by
+        have e : tw ψ (r (f + g)) = tw ψ (r f) + tw ψ (r g) := by
+          funext v
+          simp [tw, map_add, smul_add]
+        show smInt μ (tw ψ (r (f + g))) = smInt μ (tw ψ (r f)) + smInt μ (tw ψ (r g))
+        rw [e, smInt_add μ (hl f) (hc f) (hl g) (hc g)]
+      map_smul' := fun c f => by
+        have e : tw ψ (r (c • f)) = (c • LinearMap.id : E →ₗ[ℂ] E) ∘ tw ψ (r f) := by
+          funext v
+          simp only [tw, Function.comp, map_smul, Pi.smul_apply, LinearMap.smul_apply, LinearMap.id_apply]
+        show smInt μ (tw ψ (r (c • f))) = c • smInt μ (tw ψ (r f))
+        rw [e, smInt_linear μ _ (hl f) (hc f)]
+        rfl }
+  have hT : ∀ f, T f = smInt μ (tw ψ (r f)) := fun _ => rfl
+  refine ⟨T, ?_, ?_, ?_⟩
+  · intro a f
+    let L : E →ₗ[ℂ] E := ((ψ (a (Fin.last N)) : Circle) : ℂ) • LinearMap.id
+    have e : tw ψ (r (tr a f)) = (L ∘ tw ψ (r f)) ∘ fun v => v + a := by
+      funext v
+      simp only [tw, Function.comp, htr, L, LinearMap.smul_apply, LinearMap.id_apply, smul_smul]
+      congr 1
+      rw [← Circle.coe_mul, ← AddChar.map_add_eq_mul]
+      congr 2
+      simp only [Pi.add_apply]
+      abel
+    rw [hT, hT, e, smInt_comp_measurePreserving μ (measurePreserving_add_right μ a) ((hl f).comp _),
+      smInt_linear μ L (hl f) (hc f)]
+    rfl
+  · intro m hm f
+    have e : tw ψ (r (lev m f)) = (A m ∘ tw ψ (r f)) ∘
+        ((m⁻¹ : GL (Fin (N + 1)) k) : Matrix (Fin (N + 1)) (Fin (N + 1)) k).mulVec := by
+      funext v
+      simp only [tw, Function.comp, hlev, map_smul]
+      rw [mulVec_last_of_mem k _ (inv_mem hm) v]
+    rw [hT, hT, e]
+    refine (smInt_comp_inv_mulVec ν m ((hl f).comp _)).trans ?_
+    congr 1
+    exact smInt_linear μ (A m) (hl f) (hc f)
+  · intro s hs
+    have hLo := isOpen_ball (k := k) (N + 1) s
+    have hLc := isCompact_ball (k := k) (N + 1) s
+    refine ⟨(((μ {a | Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s}).toReal : ℝ) : ℂ), ?_, fun b e hb => ?_⟩
+    · have h0 := (hLo.measure_pos μ ⟨0, one_mem (polyBall (k := k) (N + 1) s)⟩).ne'
+      exact Complex.ofReal_ne_zero.2 (ENNReal.toReal_ne_zero.2 ⟨h0, hLc.measure_lt_top.ne⟩)
+    · have e' : tw ψ (r b) = Set.indicator {a | Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s} fun _ => e := by
+        funext v
+        by_cases hv : Multiplicative.ofAdd v ∈ polyBall (k := k) (N + 1) s
+        · have h1 : ψ (v (Fin.last N)) = 1 := hs v hv
+          simp only [tw]
+          rw [hb v, if_pos hv, Set.indicator_of_mem (show v ∈ {a | Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s} from hv),
+            AddChar.map_neg_eq_inv, h1]
+          simp
+        · simp only [tw]
+          rw [hb v, if_neg hv, Set.indicator_of_notMem (show v ∉ {a | Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s} from hv),
+            smul_zero]
+      rw [hT, e', smInt_indicator]
+
+end GlobalTheory.CompanionTheory.ThetaInt
+end
+end
+
+open Matrix GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.SplitWeil GlobalTheory.CompanionTheory.MirFourier GlobalTheory.CompanionTheory.MirLevi
+open MeasureTheory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.restriction_ball_indicator_span : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), Continuous ψ → ∀ (N : ℕ) (X E : Type) [AddCommGroup X] [Module ℂ X] [AddCommGroup E] [Module ℂ E] (r : X →ₗ[ℂ] (Fin (N + 1) → k) → E), (∀ f, ∃ s : kˣ, ∀ (v a : Fin (N + 1) → k), Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s → r f (v + a) = r f v) → (∀ f, ∃ S : kˣ, ∀ v : Fin (N + 1) → k, r f v ≠ 0 → Multiplicative.ofAdd v ∈ polyBall (k := k) (N + 1) S) → ∀ (tr : (Fin (N + 1) → k) → X → X), (∀ a f v, r (tr a f) v = r f (v + a)) → ∀ (lev : GL (Fin (N + 1)) k → X → X) (A : GL (Fin (N + 1)) k → E →ₗ[ℂ] E), (∀ m f v, r (lev m f) v = A m (r f (((m⁻¹ : GL (Fin (N + 1)) k) : Matrix (Fin (N + 1)) (Fin (N + 1)) k).mulVec v))) → ∃ T : X →ₗ[ℂ] E, (∀ a f, T (tr a f) = ((ψ (a (Fin.last N)) : Circle) : ℂ) • T f) ∧ (∀ m : GL (Fin (N + 1)) k, m ∈ Mir k N → ∀ f, T (lev m f) = ((nabs k (Matrix.GeneralLinearGroup.det m) : ℝ) : ℂ) • A m (T f)) ∧ (∀ s : kˣ, (∀ a : Fin (N + 1) → k, Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s → ψ (a (Fin.last N)) = 1) → ∃ c : ℂ, c ≠ 0 ∧ ∀ (b : X) (e : E), (∀ v, r b v = @ite _ (Multiplicative.ofAdd v ∈ polyBall (k := k) (N + 1) s) (Classical.propDecidable _) e 0) → T b = c • e) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ThetaInt.exists_twisted_integral
+end
+
+section
 noncomputable section
 open Matrix GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.SplitWeil GlobalTheory.CompanionTheory.MirFourier
 open scoped Topology
@@ -644,3 +1088,5 @@ theorem phiPG0_holds : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
   exact phiPG_zero τ σ ψ hψ hσ _ rfl
 
 end GlobalTheory.CompanionTheory.MirLevi
+end
+end

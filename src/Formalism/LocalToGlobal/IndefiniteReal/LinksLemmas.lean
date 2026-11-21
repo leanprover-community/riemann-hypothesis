@@ -1,9 +1,486 @@
 import Formalism.LocalToGlobal.IndefiniteReal.ConcretePkgSpec
-import Formalism.LocalToGlobal.IndefiniteReal.CxCore
+import Mathlib
+import Formalism.LocalToGlobal.IndefiniteReal.CxToPkgFamIn
+import Formalism.LocalToGlobal.IndefiniteReal.MemRangeAdjointOfKerStable
+import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfMemRangeAdjoint
+import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfRangeAdjoint
+import Formalism.LocalToGlobal.IndefiniteReal.FinrankISupLeSum
+import Formalism.LocalToGlobal.IndefiniteReal.CutPassage
+import Formalism.LocalToGlobal.IndefiniteReal.CxCutPO
+import Formalism.LocalToGlobal.IndefiniteReal.LiftCoordinatesInGoodPartOfDefinite
+import Formalism.LocalToGlobal.IndefiniteReal.EigSumLeComapSemi
+import Formalism.LocalToGlobal.IndefiniteReal.LiftGoodPartComplexEqRange
 import Formalism.LocalToGlobal.IndefiniteReal.BridgeLemmas
-import Formalism.LocalToGlobal.IndefiniteReal.ArithLemmas
+import Formalism.LocalToGlobal.IndefiniteReal.GramCEqTranspose
+import Formalism.LocalToGlobal.LatticeGeometry.FormsK
 import Formalism.LocalRingCardinality.HeightBoundGeFourthPowerRank
 
+section
+open Module NumberField IsDedekindDomain
+open scoped Matrix ComplexOrder InnerProductSpace
+
+noncomputable section
+
+namespace Formalism.IndefR.Cx
+
+open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.DIV
+
+variable {K : Type} [Field K] [NumberField K] [StarRing K]
+variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
+
+structure CxPrims (A : FamIn K G Pl0 T m) (P0 : Subgroup G) (ψ0 : P0 →* Kˣ) (P1 : Subgroup G) (ψ1 : P1 →* Kˣ)
+    (Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)) (Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs))
+    (Zsc : DefSub A.fam.amb → IndefScale A.fam.base) (X : CxData A.fam.amb) (cv : CrdV A.fam.amb) (s : ℕ)
+    (C0 C1 : ∀ j : Fin m, ((A.fam.L j A.fam.μ0).Pl × ℕ → K) → Prop)
+    (ζ : (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Dc.Mem → A.fam.base.Tup → K)
+    (sEE : X.EE →ₗ⋆[ℂ] (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Sp.HH)
+    (C CH : ℝ) : Prop where
+
+  kFormR : X.KFormR
+
+  kFormL : X.KFormL
+
+  kerStabR : X.KerStabR
+
+  kerStabL : X.KerStabL
+
+  adjClosedR : X.AdjClosedR
+
+  adjClosedL : X.AdjClosedL
+
+  inBlock : X.zs.InBlock
+
+  ratZ : X.RatZ
+
+  jIsoR : X.JIsoR cv
+
+  jIsoL : X.JIsoL cv
+
+  ok : A.fam.Ok s
+
+  sep : A.fam.TypesSep
+
+  heckeR : HeckeRatR A
+
+  heckeL : HeckeRatL A
+
+  eig0 : LiftsEig A X P0 ψ0 C0
+
+  eig1 : LiftsEig A X P1 ψ1 C1
+
+  typ0 : LiftsTyp A C0
+
+  typ1 : LiftsTyp A C1
+
+  pos : ∀ b, (lv (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs) b).Pos
+
+  h0 : X.H0
+
+  w1 : ∀ w, X.W1 (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH) w → w ∈ X.Tw
+
+  h4pos : X.H4pos
+
+  isoR : ∀ b, X.IsoR (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  crdZ : ∀ b, X.CrdZ (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  coordinates_in_good_part : ∀ b, X.CoordinatesInGoodPart (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) cv b
+
+  ratLev : ∀ b, X.RatLev (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) cv b
+
+  dnLev : ∀ b, X.DnLev cv b
+
+  upLev : ∀ b, X.UpLev cv b
+
+  thmBop : ∀ b, X.ThmBop b
+
+  partsE : ∀ b, X.PartsE b
+
+  ratMu : ∀ b, X.RATmu (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  h3 : ∀ b, X.H3 (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  kForm : ∀ b, X.KForm b
+
+  mLat : ∀ b, X.MLat b
+
+  ewNorm : ∀ b, X.EWnorm b
+
+  isoL : ∀ b, X.IsoL (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  crdZL : ∀ b, X.CrdZL (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  lift_coordinates_in_good_part : ∀ b, X.LiftCoordinatesInGoodPart (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) cv b
+
+  ratLevL : ∀ b, X.RatLevL (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) cv b
+
+  dnLevL : ∀ b, X.DnLevL cv b
+
+  upLevL : ∀ b, X.UpLevL cv b
+
+  thmAop : ∀ b, X.ThmAop b
+
+  partsW : ∀ b, X.PartsW b
+
+  ratTh : ∀ b, X.RATth (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  h3W : ∀ b, X.H3W (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  galD : ∀ b, X.GalD (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  dimParts : ∀ b, X.DimParts b
+
+  l3 : (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false).L3 ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+
+  on : (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false).ON ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+
+  l6 : (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) true).L6 ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+
+  btVanish : X.BtVanish (fc := faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc)
+
+  mi0 : X.MatrixIdentityOffBase (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) ζ
+
+  zetaOK : X.ZetaOK ζ
+
+  l1e : (X.colOf (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) (X.colDef (fun u t => (ζ u t)⁻¹) sEE)).L1e
+
+  passage : Passage ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+    (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false) (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) true)
+
+  fun0 : (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false).FUN ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+
+section All
+
+variable {A : FamIn K G Pl0 T m} {P0 : Subgroup G} {ψ0 : P0 →* Kˣ} {P1 : Subgroup G} {ψ1 : P1 →* Kˣ}
+  {Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)} {Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs)}
+  {Zsc : DefSub A.fam.amb → IndefScale A.fam.base} {X : CxData A.fam.amb} {cv : CrdV A.fam.amb} {s : ℕ}
+  {C0 C1 : ∀ j : Fin m, ((A.fam.L j A.fam.μ0).Pl × ℕ → K) → Prop}
+  {ζ : (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Dc.Mem → A.fam.base.Tup → K}
+  {sEE : X.EE →ₗ⋆[ℂ] (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Sp.HH}
+  {C CH : ℝ}
+
+theorem CxPrims.stable (hP : CxPrims A P0 ψ0 P1 ψ1 Dc Sp Zsc X cv s C0 C1 ζ sEE C CH) : X.zs.Stable :=
+  CxData.cutStable X hP.kFormR hP.kFormL hP.kerStabR hP.kerStabL hP.adjClosedR hP.adjClosedL
+
+theorem CxPrims.wf (hP : CxPrims A P0 ψ0 P1 ψ1 Dc Sp Zsc X cv s C0 C1 ζ sEE C CH) :
+    ∀ b, (lv (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs) b).WF := fun b => match b with
+  | false => A.side_WF hP.ok P0 ψ0 X.zs hP.stable hP.inBlock hP.sep
+  | true => A.side_WF hP.ok P1 ψ1 X.zs hP.stable hP.inBlock hP.sep
+
+theorem links_of_prims (hP : CxPrims A P0 ψ0 P1 ψ1 Dc Sp Zsc X cv s C0 C1 ζ sEE C CH) :
+    X.CxLinks (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) (X.colDef (fun u t => (ζ u t)⁻¹) sEE) C CH := by
+  have hW := hP.wf
+  have hst := hP.stable
+  have what₂ := fun b => cutRows (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) cv b (hW b) hP.h4pos (hP.isoR b) (hP.crdZ b)
+    (hP.coordinates_in_good_part b) (hP.ratLev b) (hP.dnLev b) (hP.upLev b) (hP.thmBop b) (hP.partsE b)
+  have lifts := fun b => CxData.cutLifts X (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) cv b (hW b) hP.h4pos (hP.kForm b)
+    (hP.isoL b) (hP.crdZL b) (hP.lift_coordinates_in_good_part b) (hP.ratLevL b) (hP.dnLevL b) (hP.upLevL b) (hP.thmAop b) (hP.partsW b)
+  have types := cutTypes A X P0 ψ0 P1 ψ1 Dc Sp Zsc s C0 C1 hP.ok hP.sep hst hP.eig0 hP.eig1 hP.typ0 hP.typ1
+  exact
+    { stable := hst
+      inBlock := hP.inBlock
+      ratZ := hP.ratZ
+      pos := hP.pos
+      proviso := cutProviso A X P0 ψ0 P1 ψ1 Dc Sp Zsc s C0 C1 hP.ok hP.heckeL hP.eig0 hP.eig1
+      types := types
+      partsOrth := cutPartsOrth A X P0 ψ0 P1 ψ1 Dc Sp Zsc s hP.ok hP.heckeR hst
+      h0 := hP.h0
+      h2 := fun b => (what₂ b).1
+      ratMu := hP.ratMu
+      h3 := hP.h3
+      h4pos := hP.h4pos
+      h4 := fun b => (what₂ b).2
+      kForm := hP.kForm
+      mLat := hP.mLat
+      ewNorm := hP.ewNorm
+      h5 := fun b => (lifts b).1
+      ratTh := hP.ratTh
+      h3W := hP.h3W
+      thmA := fun b => (lifts b).2
+      galD := hP.galD
+      l1d := fun b => CxData.cutDims X (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b (hW b) hP.h4pos (hP.kForm b) (hP.ewNorm b)
+        (types b) (what₂ b).1 (hP.ratMu b) (hP.h3 b) (lifts b).1 (hP.ratTh b) (hP.h3W b) (hP.partsE b) (hP.partsW b)
+        (hP.dimParts b)
+      l3 := hP.l3
+      on := hP.on
+      l6 := hP.l6
+      l1b := CxData.cutPairing X (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) ζ sEE (hW true) (what₂ true).1 hP.btVanish hP.mi0 hP.zetaOK
+      l1e := hP.l1e
+      untw := CxData.cutTuples2 X (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) C CH hP.h0 hP.w1
+      passage := hP.passage
+      fun0 := hP.fun0 }
+
+def cxPkgPrims (hP : CxPrims A P0 ψ0 P1 ψ1 Dc Sp Zsc X cv s C0 C1 ζ sEE C CH) :
+    IndefPkg A.fam.amb (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) C CH :=
+  cxPkgF A hP.ok hP.sep P0 ψ0 P1 ψ1 Dc Sp Zsc X _ C CH (links_of_prims hP)
+
+end All
+
+end Formalism.IndefR.Cx
+end
+end
+
+section
+open Module NumberField IsDedekindDomain
+open scoped Matrix ComplexOrder InnerProductSpace
+
+noncomputable section
+
+namespace Formalism.IndefR.Cx
+
+open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.DIV
+
+variable {K : Type} [Field K] [NumberField K] [StarRing K]
+variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
+
+structure CxCore (A : FamIn K G Pl0 T m) (P0 : Subgroup G) (ψ0 : P0 →* Kˣ) (P1 : Subgroup G) (ψ1 : P1 →* Kˣ)
+    (Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)) (Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs))
+    (Zsc : DefSub A.fam.amb → IndefScale A.fam.base) (X : CxData A.fam.amb) (s : ℕ)
+    (C0 C1 : ∀ j : Fin m, ((A.fam.L j A.fam.μ0).Pl × ℕ → K) → Prop)
+    (ζ : (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Dc.Mem → A.fam.base.Tup → K)
+    (sEE : X.EE →ₗ⋆[ℂ] (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Sp.HH)
+    (C CH : ℝ)
+    (hE : ∀ t, (A.fam.R t).Pl × ℕ → Module.End ℂ X.EE)
+    (hW : ∀ j t, (A.fam.L j t).Pl × ℕ → Module.End ℂ (X.W j)) (gE : Representation ℂ G X.EE)
+    (gW : ∀ j, Representation ℂ G (X.W j)) : Prop where
+
+  kFormR : X.KFormR
+
+  kFormL : X.KFormL
+
+  jIsoR : X.JIsoR (cvOf A P0 ψ0 P1 ψ1)
+
+  jIsoL : X.JIsoL (cvOf A P0 ψ0 P1 ψ1)
+
+  npTie : NPTie X P0 P1
+
+  ok : A.fam.Ok s
+
+  sep : A.fam.TypesSep
+
+  heckeR : HeckeRatAllR A
+
+  heckeL : HeckeRatAllL A
+
+  thetaR : HeckeThetaR A X hE
+
+  thetaL : HeckeThetaL A X hW
+
+  gUnit : Formalism.IndefR.CxPass.GUnit A X gE
+
+  gEquiv : Formalism.IndefR.CxPass.GEquiv A X gE
+
+  lev0 : Formalism.IndefR.CxPass.LevType A X (P1 := P1) (ψ1 := ψ1) (Dc := Dc) (Sp := Sp) (Zsc := Zsc) gE false P0 ψ0
+
+  lev1 : Formalism.IndefR.CxPass.LevType A X (P1 := P1) (ψ1 := ψ1) (Dc := Dc) (Sp := Sp) (Zsc := Zsc) gE true P1 ψ1
+
+  h2P : Formalism.IndefR.CxPass.PrincipalInjectiveCommonRange A X (P1 := P1) (ψ1 := ψ1) (Dc := Dc) (Sp := Sp) (Zsc := Zsc)
+
+  gUnitL : Formalism.IndefR.CxPass.GUnitL A X gW
+
+  gEquivL : Formalism.IndefR.CxPass.GEquivL A X gW
+
+  lower_level_lift_type : Formalism.IndefR.CxPass.LevTypeL A X (P1 := P1) (ψ1 := ψ1) (Dc := Dc) (Sp := Sp) (Zsc := Zsc) gW false P0 ψ0
+
+  upper_level_lift_type : Formalism.IndefR.CxPass.LevTypeL A X (P1 := P1) (ψ1 := ψ1) (Dc := Dc) (Sp := Sp) (Zsc := Zsc) gW true P1 ψ1
+
+  inBlock : X.zs.InBlock
+
+  ratZ : X.RatZ
+
+  eig0 : LiftsEig A X P0 ψ0 C0
+
+  eig1 : LiftsEig A X P1 ψ1 C1
+
+  typ0 : LiftsTyp A C0
+
+  typ1 : LiftsTyp A C1
+
+  pos : ∀ b, (lv (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs) b).Pos
+
+  h0 : X.H0
+
+  w1 : ∀ w, X.W1 (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH) w → w ∈ X.Tw
+
+  h4pos : X.H4pos
+
+  thmBop : ∀ b, X.ThmBop b
+
+  partsE : ∀ b, X.PartsE b
+
+  ratMu : ∀ b, X.RATmu (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  kForm : ∀ b, X.KForm b
+
+  mLat : ∀ b, X.MLat b
+
+  ewNorm : ∀ b, X.EWnorm b
+
+  thmAop : ∀ b, X.ThmAop b
+
+  partsW : ∀ b, X.PartsW b
+
+  ratTh : ∀ b, X.RATth (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  galD : ∀ b, X.GalD (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b
+
+  dimParts : ∀ b, X.DimParts b
+
+  l3 : (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false).L3 ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+
+  on : (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false).ON ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+
+  l6 : (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) true).L6 ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+
+  btVanish : X.BtVanish (fc := faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc)
+
+  mi0 : X.MatrixIdentityOffBase (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) ζ
+
+  zetaOK : X.ZetaOK ζ
+
+  l1e : (X.colOf (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) (X.colDef (fun u t => (ζ u t)⁻¹) sEE)).L1e
+
+  fun0 : (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false).FUN ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+
+section Core
+
+variable {A : FamIn K G Pl0 T m} {P0 : Subgroup G} {ψ0 : P0 →* Kˣ} {P1 : Subgroup G} {ψ1 : P1 →* Kˣ}
+  {Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)} {Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs)}
+  {Zsc : DefSub A.fam.amb → IndefScale A.fam.base} {X : CxData A.fam.amb} {s : ℕ}
+  {C0 C1 : ∀ j : Fin m, ((A.fam.L j A.fam.μ0).Pl × ℕ → K) → Prop}
+  {ζ : (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Dc.Mem → A.fam.base.Tup → K}
+  {sEE : X.EE →ₗ⋆[ℂ] (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Sp.HH}
+  {C CH : ℝ}
+  {hE : ∀ t, (A.fam.R t).Pl × ℕ → Module.End ℂ X.EE} {hW : ∀ j t, (A.fam.L j t).Pl × ℕ → Module.End ℂ (X.W j)}
+  {gE : Representation ℂ G X.EE} {gW : ∀ j, Representation ℂ G (X.W j)}
+
+theorem CxCore.stable (hC : CxCore A P0 ψ0 P1 ψ1 Dc Sp Zsc X s C0 C1 ζ sEE C CH hE hW gE gW) : X.zs.Stable :=
+  CxData.cutStable X hC.kFormR hC.kFormL
+    (Formalism.IndefR.CxPass.kerStabR_of hC.kFormR hC.gEquiv (kerStabR_hecke hC.thetaR))
+    (Formalism.IndefR.CxPass.kerStabL_of hC.kFormL hC.gEquivL (kerStabL_hecke hC.thetaL))
+    (adjClosedR_of hC.ok hC.heckeR hC.kFormR hC.jIsoR) (adjClosedL_of hC.ok hC.heckeL hC.kFormL hC.jIsoL)
+
+theorem CxCore.wf (hC : CxCore A P0 ψ0 P1 ψ1 Dc Sp Zsc X s C0 C1 ζ sEE C CH hE hW gE gW) :
+    ∀ b, (lv (faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs) b).WF := fun b => match b with
+  | false => A.side_WF hC.ok P0 ψ0 X.zs hC.stable hC.inBlock hC.sep
+  | true => A.side_WF hC.ok P1 ψ1 X.zs hC.stable hC.inBlock hC.sep
+
+theorem CxCore.h2 (hC : CxCore A P0 ψ0 P1 ψ1 Dc Sp Zsc X s C0 C1 ζ sEE C CH hE hW gE gW) (b : Bool) :
+    X.H2 (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) b :=
+  (cutRows (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) (cvOf A P0 ψ0 P1 ψ1) b (hC.wf b) hC.h4pos
+    (isoR_of hC.ok hC.jIsoR hC.npTie b) (crdZ_of X b) (coordinates_in_good_part_of_definite X b)
+    (Formalism.IndefR.CxPass.ratLev_of hC.ok hC.kFormR hC.jIsoR hC.ratZ hC.gUnit hC.gEquiv b)
+    (Formalism.IndefR.CxPass.dnLev_of hC.ok hC.kFormR hC.jIsoR hC.ratZ hC.gUnit hC.gEquiv hC.h2P hC.lev0 hC.lev1 b)
+    (Formalism.IndefR.CxPass.upLev_of hC.ok hC.kFormR hC.jIsoR hC.gUnit hC.gEquiv hC.lev0 hC.lev1 b)
+    (hC.thmBop b) (hC.partsE b)).1
+
+theorem prims_of_core (hC : CxCore A P0 ψ0 P1 ψ1 Dc Sp Zsc X s C0 C1 ζ sEE C CH hE hW gE gW)
+    (hPass : Passage ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+      (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false) (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) true)) :
+    CxPrims A P0 ψ0 P1 ψ1 Dc Sp Zsc X (cvOf A P0 ψ0 P1 ψ1) s C0 C1 ζ sEE C CH := by
+  have kR : X.KerStabR := Formalism.IndefR.CxPass.kerStabR_of hC.kFormR hC.gEquiv (kerStabR_hecke hC.thetaR)
+  have kL : X.KerStabL := Formalism.IndefR.CxPass.kerStabL_of hC.kFormL hC.gEquivL (kerStabL_hecke hC.thetaL)
+  have aR : X.AdjClosedR := adjClosedR_of hC.ok hC.heckeR hC.kFormR hC.jIsoR
+  have aL : X.AdjClosedL := adjClosedL_of hC.ok hC.heckeL hC.kFormL hC.jIsoL
+  have hst : X.zs.Stable := CxData.cutStable X hC.kFormR hC.kFormL kR kL aR aL
+  exact
+    { kFormR := hC.kFormR, kFormL := hC.kFormL, kerStabR := kR, kerStabL := kL, adjClosedR := aR, adjClosedL := aL
+      inBlock := hC.inBlock, ratZ := hC.ratZ, jIsoR := hC.jIsoR, jIsoL := hC.jIsoL, ok := hC.ok, sep := hC.sep
+      heckeR := hC.heckeR A.fam.μ0, heckeL := fun j => hC.heckeL j A.fam.μ0
+      eig0 := hC.eig0, eig1 := hC.eig1, typ0 := hC.typ0, typ1 := hC.typ1, pos := hC.pos, h0 := hC.h0, w1 := hC.w1
+      h4pos := hC.h4pos, isoR := isoR_of hC.ok hC.jIsoR hC.npTie, crdZ := crdZ_of X, coordinates_in_good_part := coordinates_in_good_part_of_definite X
+      ratLev := Formalism.IndefR.CxPass.ratLev_of hC.ok hC.kFormR hC.jIsoR hC.ratZ hC.gUnit hC.gEquiv
+      dnLev := Formalism.IndefR.CxPass.dnLev_of hC.ok hC.kFormR hC.jIsoR hC.ratZ hC.gUnit hC.gEquiv hC.h2P hC.lev0 hC.lev1
+      upLev := Formalism.IndefR.CxPass.upLev_of hC.ok hC.kFormR hC.jIsoR hC.gUnit hC.gEquiv hC.lev0 hC.lev1
+      thmBop := hC.thmBop, partsE := hC.partsE
+      ratMu := hC.ratMu, h3 := equivRows_of P0 ψ0 P1 ψ1 Dc Sp Zsc hC.kFormR hst hC.ok hC.thetaR
+      kForm := hC.kForm, mLat := hC.mLat, ewNorm := hC.ewNorm, isoL := isoL_of hC.ok hC.jIsoL hC.npTie
+      crdZL := crdZL_of X, lift_coordinates_in_good_part := lift_coordinates_in_good_part_of_definite X
+      ratLevL := Formalism.IndefR.CxPass.ratLevL_of hC.ok hC.kFormL hC.jIsoL hC.ratZ hC.gUnitL hC.gEquivL
+      dnLevL := Formalism.IndefR.CxPass.dnLevL_of hC.ok hC.kFormL hC.jIsoL hC.ratZ hC.gUnitL hC.gEquivL hC.lower_level_lift_type hC.upper_level_lift_type
+      upLevL := Formalism.IndefR.CxPass.upLevL_of hC.ok hC.kFormL hC.jIsoL hC.gUnitL hC.gEquivL hC.lower_level_lift_type hC.upper_level_lift_type
+      thmAop := hC.thmAop, partsW := hC.partsW, ratTh := hC.ratTh
+      h3W := equivLifts_of P0 ψ0 P1 ψ1 Dc Sp Zsc hC.kFormL hst hC.ok hC.thetaL
+      galD := hC.galD, dimParts := hC.dimParts, l3 := hC.l3, on := hC.on, l6 := hC.l6, btVanish := hC.btVanish
+      mi0 := hC.mi0, zetaOK := hC.zetaOK, l1e := hC.l1e, passage := hPass, fun0 := hC.fun0 }
+
+theorem links_of_core (hC : CxCore A P0 ψ0 P1 ψ1 Dc Sp Zsc X s C0 C1 ζ sEE C CH hE hW gE gW)
+    (hPass : Passage ((faceOf A P0 ψ0 P1 ψ1 Dc Sp Zsc X.zs).Z.num C CH)
+      (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) false) (X.data (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) true)) :
+    X.CxLinks (crdOf A P0 ψ0 P1 ψ1 Dc Sp Zsc) (X.colDef (fun u t => (ζ u t)⁻¹) sEE) C CH :=
+  links_of_prims (prims_of_core hC hPass)
+
+end Core
+
+end Formalism.IndefR.Cx
+end
+end
+
+section
+noncomputable section
+
+open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Geo
+
+namespace Formalism.IndefR.Arith
+
+section Comparison₂
+
+variable {D : D7} {G : DV.Geo D.what₂.LL} {NW : ℕ → ℕ} {CompW : ℕ → Type} [∀ j, Fintype (CompW j)]
+  {algW : ∀ j, AlgPkg G D.what₂.Tau (NW j) (CompW j)} {PtY : ℕ → ℕ → Type}
+variable (P : FormsPkg D G NW CompW algW PtY) [Algebra P.KO D.what₂.LL]
+variable {WL : Type} [AddCommGroup WL] [Module D.what₂.LL WL] [Module P.KO WL] [IsScalarTower P.KO D.what₂.LL WL]
+  [Module (𝓞 P.KO) WL] [IsScalarTower (𝓞 P.KO) P.KO WL]
+variable {W : (D.what₂.LL →+* ℂ) → Type} [∀ σ, NormedAddCommGroup (W σ)] [∀ σ, InnerProductSpace ℂ (W σ)]
+variable {G0 : Type} [Group G0]
+
+def TiedTo (j : ℕ) (w : WeightFamilies.Wt D j) (A : FormsL D.what₂.LL P.KO WL W G0) (ι : P.Cusp j w →ₗ[P.KO] WL) : Prop :=
+  w.n = D.R.nV ∧ wtOf w = DV.kapW D j ∧ (∀ a : P.KO, algebraMap P.KO D.what₂.LL a = P.kL a) ∧
+    Function.Injective ι ∧ (∀ x, x ∈ A.WK ↔ x ∈ LinearMap.range ι) ∧ ∀ F, ι F ∈ A.MK ↔ F ∈ P.Mlat j w
+
+def NormTie (pos : (D.what₂.LL →+* ℂ) → Prop) (c : ℝ) {j : ℕ} {w : WeightFamilies.Wt D j} (A : FormsL D.what₂.LL P.KO WL W G0)
+    (ι : P.Cusp j w →ₗ[P.KO] WL) : Prop :=
+  ∀ σ, pos σ → ∀ F, A.nrmAt σ (ι F) = c * P.l2NormAlt j w (σ.comp P.kL) F
+
+theorem NormTie.rigid {pos : (D.what₂.LL →+* ℂ) → Prop} {c : ℝ} (hc : 0 < c) {j : ℕ} {w : WeightFamilies.Wt D j}
+    {A : FormsL D.what₂.LL P.KO WL W G0} {ι : P.Cusp j w →ₗ[P.KO] WL} (h : NormTie P pos c A ι) {a : D.what₂.LL}
+    (h' : ∀ σ, pos σ → ∀ F, ‖A.j σ (a • ι F)‖ = c * P.l2NormAlt j w (σ.comp P.kL) F)
+    {F : P.Cusp j w} (hF : F ≠ 0) {σ : D.what₂.LL →+* ℂ} (hσ : pos σ) : ‖σ a‖ = 1 := by
+  have h1 := h σ hσ F
+  have h2 := h' σ hσ F
+  rw [map_smulₛₗ, norm_smul] at h2
+  unfold FormsL.nrmAt at h1
+  have h3 : c * P.l2NormAlt j w (σ.comp P.kL) F ≠ 0 :=
+    mul_ne_zero hc.ne' fun e => hF ((P.l2Norm_eq_zero_iff _ _ _ _).1 e)
+  rw [h1] at h2
+  exact mul_right_cancel₀ h3 (h2.trans (one_mul _).symm)
+
+end Comparison₂
+
+section Fam
+
+variable {D : D7} {G : DV.Geo D.what₂.LL} {Lev : Type} {Fam : ShimFam D G Lev} (K : FormsKPkg Fam)
+variable [Algebra K.fs.KO D.what₂.LL]
+variable {WL : Type} [AddCommGroup WL] [Module D.what₂.LL WL] [Module K.fs.KO WL]
+  [IsScalarTower K.fs.KO D.what₂.LL WL] [Module (𝓞 K.fs.KO) WL] [IsScalarTower (𝓞 K.fs.KO) K.fs.KO WL]
+variable {W : (D.what₂.LL →+* ℂ) → Type} [∀ σ, NormedAddCommGroup (W σ)] [∀ σ, InnerProductSpace ℂ (W σ)]
+variable {G0 : Type} [Group G0]
+
+def ActTie (e : G0 ≃* K.Hb) (j : ℕ) (w : WeightFamilies.Wt D j) (A : FormsL D.what₂.LL K.fs.KO WL W G0)
+    (ι : K.fs.Cusp j w →ₗ[K.fs.KO] WL) : Prop :=
+  ∀ g (F F' : K.fs.Cusp j w), e g • K.fs.inc j w F = K.fs.inc j w F' → A.ρ g (ι F) = ι F'
+
+def CompatibleAtCompactLevel (e : G0 ≃* K.Hb) (pos : (D.what₂.LL →+* ℂ) → Prop) (volRec : ℝ) (j : ℕ) (w : WeightFamilies.Wt D j)
+    (A : FormsL D.what₂.LL K.fs.KO WL W G0) (ι : K.fs.Cusp j w →ₗ[K.fs.KO] WL) : Prop :=
+  K.κs = Fam.κg ∧ 1 ≤ j ∧ j ≤ D.R.m ∧ TiedTo K.fs j w A ι ∧ ActTie K e j w A ι ∧
+    NormTie K.fs pos (Real.sqrt (volRec * dimKap D j)) A ι
+
+end Fam
+
+end Formalism.IndefR.Arith
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix
@@ -493,4 +970,5 @@ end Host
 
 end Formalism.IndefR.Links
 
+end
 end

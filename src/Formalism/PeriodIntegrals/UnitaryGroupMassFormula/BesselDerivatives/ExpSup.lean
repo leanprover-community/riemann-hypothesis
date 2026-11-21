@@ -1,6 +1,55 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BesselDerivatives.ContDiffOnDirectionalDerivative
+import Mathlib
 import Formalism.PeriodIntegrals.BesselDeriv
 
+section
+open scoped ContDiff Topology
+
+noncomputable section
+
+namespace PI.BesselDerivW
+
+variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup V] [NormedSpace ℝ V]
+
+def liftA (a : E →L[ℝ] E) : ℝ × E →L[ℝ] ℝ × E :=
+  (ContinuousLinearMap.inr ℝ ℝ E).comp (a.comp (ContinuousLinearMap.snd ℝ ℝ E))
+
+theorem liftA_apply (a : E →L[ℝ] E) (p : ℝ × E) : liftA a p = (0, a p.2) := rfl
+
+def rX (a : E →L[ℝ] E) (Φ : ℝ × E → V) (p : ℝ × E) : V := fderiv ℝ Φ p (liftA a p)
+
+def dT (Φ : ℝ × E → V) (p : ℝ × E) : V := fderiv ℝ Φ p ((1 : ℝ), (0 : E))
+
+variable {W : Set (ℝ × E)} {Φ : ℝ × E → V}
+
+end PI.BesselDerivW
+end
+end
+
+section
+open scoped ContDiff Topology
+open Filter
+
+noncomputable section
+
+namespace PI.BesselDerivW
+
+variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup V] [NormedSpace ℝ V]
+
+def r1 (a : E →L[ℝ] E) (G : E → V) (g : E) : V := fderiv ℝ G g (a g)
+
+def r1W : List (E →L[ℝ] E) → (E → V) → E → V
+  | [], G => G
+  | a :: w, G => r1 a (r1W w G)
+
+def r2W : List (E →L[ℝ] E) → (ℝ × E → V) → ℝ × E → V
+  | [], Φ => Φ
+  | a :: w, Φ => rX a (r2W w Φ)
+
+end PI.BesselDerivW
+end
+end
+
+section
 open scoped ContDiff Topology
 open Matrix
 
@@ -53,3 +102,5 @@ def mulLc (X : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ →L[ℝ
   LinearMap.toContinuousLinearMap (LinearMap.mulLeft ℝ X)
 
 end PI.BesselDerivW
+end
+end

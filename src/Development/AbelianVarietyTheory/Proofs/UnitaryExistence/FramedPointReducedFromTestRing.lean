@@ -5,8 +5,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.Sec
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.FramedPointBaseChangeLaws
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ReducedFiniteTypeIffTestRing
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFactorOpenImmersion
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ModuliPointFromFgSubalgebra
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFgSubalgebraDescAway
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFramedPointBaseChangeAlgebraMapStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniqueFrameChangeByMatricesStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameChangeExistsUniqueOfSamePointStatement
@@ -15,9 +13,536 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameChangeCommB
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsOpenChartFramedPointTestRingStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniversalFrameTestRing
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UniversalFrameClassifiesFramedPointsStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameEqOfBaseChangeInjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointsGluePrincipalCover
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameEqOfBaseChangeInjective
+import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniqueGlueDual
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsTangentVectorBasisAtPointBaseChange
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointBaseChangeUniqueReflIffStatement
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
+
+namespace GlobalTheory
+
+theorem point_from_fg_subalgebra {K F : Type} [CommRing K] [CommRing F] (φ : K →+* F) {X : Scheme.{0}}
+    (s : X ⟶ Sp K) [LocallyOfFinitePresentation s] (S : Type) [CommRing S] [Algebra F S] (x : Sp S ⟶ X)
+    (hx : x ≫ s = spMap ((algebraMap F S).comp φ)) :
+    ∃ S₀ : Subalgebra F S, S₀.FG ∧ ∃ x₀ : Sp S₀ ⟶ X, x₀ ≫ s = spMap ((algebraMap F S₀).comp φ) ∧
+      spMap S₀.val.toRingHom ≫ x₀ = x := by
+  classical
+  let P : Finset S ⥤ CommRingCat.{0} :=
+    { obj t := .of (Algebra.adjoin F (t : Set S))
+      map {t t'} h := CommRingCat.ofHom
+        (Subalgebra.inclusion (Algebra.adjoin_mono (Finset.coe_subset.mpr h.le))).toRingHom }
+  let cP : Cocone P :=
+    { pt := .of S
+      «ι» := { app t := CommRingCat.ofHom (Algebra.adjoin F (t : Set S)).val.toRingHom } }
+  have : ReflectsFilteredColimits (forget CommRingCat.{0}) :=
+    ⟨fun _ ↦ reflectsColimitsOfShape_of_reflectsIsomorphisms⟩
+  have hcP : IsColimit cP := isColimitOfReflects (forget _)
+    (Types.FilteredColimit.isColimitOf' _ _
+      (fun x ↦ by
+        let x' : S := x
+        exact ⟨({x'} : Finset S), (⟨x', Algebra.subset_adjoin (by simp)⟩ :
+          Algebra.adjoin F (({x'} : Finset S) : Set S)), rfl⟩)
+      (fun i x y hxy ↦ ⟨i, 𝟙 i, congrArg _ (Subtype.ext hxy)⟩))
+  let G : (Finset S)ᵒᵖ ⥤ Scheme.{0} := P.op ⋙ Scheme.Spec
+  let cG : Cone G := Scheme.Spec.mapCone cP.op
+  have hcG : IsLimit cG := isLimitOfPreserves Scheme.Spec hcP.op
+  let κ (t : (Finset S)ᵒᵖ) : G.obj t ⟶ Sp K :=
+    spMap ((algebraMap F (Algebra.adjoin F (t.unop : Set S))).comp φ)
+  have hι {t t' : (Finset S)ᵒᵖ} (f : t ⟶ t') : G.map f ≫ κ t' = κ t := by
+    change Spec.map _ ≫ Spec.map _ = Spec.map _
+    rw [← Spec.map_comp]
+    rfl
+  have hι' (t : (Finset S)ᵒᵖ) : cG.π.app t ≫ κ t = spMap ((algebraMap F S).comp φ) := by
+    change Spec.map _ ≫ Spec.map _ = Spec.map _
+    rw [← Spec.map_comp]
+    rfl
+  have hG (t : (Finset S)ᵒᵖ) : IsAffine (G.obj t) := inferInstanceAs (IsAffine (Spec _))
+  have hGa {t t' : (Finset S)ᵒᵖ} (f : t ⟶ t') : IsAffineHom (G.map f) := inferInstance
+  obtain ⟨i, y₀, hy₀, hy₁⟩ := Scheme.exists_π_app_comp_eq_of_locallyOfFinitePresentation G
+    ({ app := κ, naturality := fun t t' f => (hι f).trans (Category.comp_id _).symm } :
+      G ⟶ (Functor.const _).obj (Sp K)) s cG hcG x
+    (NatTrans.ext (funext fun t => (hι' t).trans hx.symm))
+  exact ⟨Algebra.adjoin F (i.unop : Set S), ⟨i.unop, rfl⟩, y₀, hy₁, hy₀⟩
+
+theorem moduli_point_from_fg_subalgebra : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (S : Type) [CommRing S] [Algebra c.F S] (x : Sp S ⟶ Xo.X), x ≫ Xo.s = sOf c S → ∃ S₀ : Subalgebra c.F S, S₀.FG ∧ ∃ x₀ : Sp S₀ ⟶ Xo.X, x₀ ≫ Xo.s = sOf c S₀ ∧ spMap S₀.val.toRingHom ≫ x₀ = x := by
+  intro E _ _ _ H Dw l Xo c S _ _ x hx
+  have := Xo.smooth
+  have : Smooth Xo.s := SmoothOfRelativeDimension.smooth Dw.dim Xo.s
+  exact point_from_fg_subalgebra (IntermediateField.inclusion c.le).toRingHom Xo.s S x hx
+
+end GlobalTheory
+end
+
+section
+namespace GlobalTheory.AwaySubalgebraEmbedding
+
+theorem exists_away_subalgebra_embedding (K : Type) [Field K] (S : Type) [CommRing S]
+    [Algebra K S] (S₁ : Subalgebra K S) (x : S) (hx : x ∈ S₁) :
+    ∃ (κ : Localization.Away (⟨x, hx⟩ : S₁) →ₐ[K] Localization.Away x),
+      (∀ s : S₁, κ (algebraMap S₁ (Localization.Away (⟨x, hx⟩ : S₁)) s)
+        = algebraMap S (Localization.Away x) (s : S)) ∧
+      Function.Injective κ ∧
+      ∀ (z : Localization.Away x) (m : ℕ), ∀ s ∈ S₁,
+        z * algebraMap S (Localization.Away x) x ^ m = algebraMap S (Localization.Away x) s →
+          z ∈ AlgHom.range κ := by
+  let f : S₁ →ₐ[K] Localization.Away x :=
+    (IsScalarTower.toAlgHom K S (Localization.Away x)).comp S₁.val
+  have hxu : IsUnit (algebraMap S (Localization.Away x) x) :=
+    IsLocalization.Away.algebraMap_isUnit x
+  have hf : ∀ y : Submonoid.powers (⟨x, hx⟩ : S₁), IsUnit (f y) := by
+    rintro ⟨y, n, rfl⟩
+    simp only [map_pow]
+    exact hxu.pow n
+  let κ : Localization.Away (⟨x, hx⟩ : S₁) →ₐ[K] Localization.Away x :=
+    IsLocalization.liftAlgHom (M := Submonoid.powers (⟨x, hx⟩ : S₁)) hf
+  have hκ : ∀ s : S₁, κ (algebraMap S₁ (Localization.Away (⟨x, hx⟩ : S₁)) s)
+      = algebraMap S (Localization.Away x) (s : S) := by
+    intro s
+    exact IsLocalization.lift_eq (M := Submonoid.powers (⟨x, hx⟩ : S₁))
+      (g := (f : S₁ →+* Localization.Away x)) hf s
+  have hxu₁ : IsUnit (algebraMap S₁ (Localization.Away (⟨x, hx⟩ : S₁)) ⟨x, hx⟩) :=
+    IsLocalization.Away.algebraMap_isUnit _
+  refine ⟨κ, hκ, ?_, ?_⟩
+  · rw [injective_iff_map_eq_zero]
+    intro a ha
+    obtain ⟨n, s, hs⟩ := IsLocalization.Away.surj (⟨x, hx⟩ : S₁) a
+    have h0 : algebraMap S (Localization.Away x) (s : S) = 0 := by
+      rw [← hκ, ← hs, map_mul, ha, zero_mul]
+    obtain ⟨⟨_, k, rfl⟩, hk⟩ :=
+      (IsLocalization.map_eq_zero_iff (Submonoid.powers x) (Localization.Away x) _).1 h0
+    have h1 : (⟨x, hx⟩ : S₁) ^ k * s = 0 := by
+      apply Subtype.ext
+      simpa using hk
+    have h2 : a * algebraMap S₁ (Localization.Away (⟨x, hx⟩ : S₁)) ⟨x, hx⟩ ^ (n + k) = 0 := by
+      rw [pow_add, ← mul_assoc, hs, ← map_pow, ← map_mul, mul_comm, h1, map_zero]
+    exact (hxu₁.pow (n + k)).mul_left_eq_zero.1 h2
+  · intro z m s hs hz
+    obtain ⟨u, hu⟩ := hxu₁.pow m
+    refine ⟨algebraMap S₁ (Localization.Away (⟨x, hx⟩ : S₁)) ⟨s, hs⟩ * ↑u⁻¹, ?_⟩
+    apply (hxu.pow m).mul_right_cancel
+    have h3 : κ ↑u = algebraMap S (Localization.Away x) x ^ m := by
+      rw [hu, map_pow, hκ]
+    show κ _ * _ = _
+    rw [hz, ← h3, ← map_mul, mul_assoc, Units.inv_mul, mul_one, hκ]
+
+end GlobalTheory.AwaySubalgebraEmbedding
+end
+
+section
+namespace GlobalTheory
+
+theorem exists_awayMap_subalgebra (K : Type) [Field K] (S : Type) [CommRing S] [Algebra K S]
+    (S₁ : Subalgebra K S) (x : S) (hx : x ∈ S₁) :
+    ∃ κ : Localization.Away (⟨x, hx⟩ : S₁) →ₐ[K] Localization.Away x,
+      (∀ s : S₁, κ (algebraMap S₁ _ s) = algebraMap S _ (s : S)) ∧ Function.Injective κ ∧
+      ∀ (z : Localization.Away x) (m : ℕ) (s : S), s ∈ S₁ →
+        z * algebraMap S _ x ^ m = algebraMap S _ s → z ∈ κ.range := by
+  first
+  | exact @_root_.GlobalTheory.AwaySubalgebraEmbedding.exists_away_subalgebra_embedding
+  | exact _root_.GlobalTheory.AwaySubalgebraEmbedding.exists_away_subalgebra_embedding
+  | (apply _root_.GlobalTheory.AwaySubalgebraEmbedding.exists_away_subalgebra_embedding <;> assumption)
+  | (intros; apply _root_.GlobalTheory.AwaySubalgebraEmbedding.exists_away_subalgebra_embedding <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.AwaySubalgebraEmbedding.exists_away_subalgebra_embedding <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.AwaySubalgebraEmbedding.exists_away_subalgebra_embedding ..)
+
+theorem exists_fg_subalgebra_desc_away : ∀ (K : Type) [Field K] (S : Type) [CommRing S] [Algebra K S] (S₀ : Subalgebra K S), S₀.FG → ∀ (n : ℕ) (h : Fin n → S) (A : Fin n → Type) [∀ i, CommRing (A i)] [∀ i, Algebra K (A i)], (∀ i, Algebra.FiniteType K (A i)) → ∀ a : ∀ i, A i →ₐ[K] Localization.Away (h i), Ideal.span (Set.range h) = ⊤ → ∃ (S₁ : Subalgebra K S) (h₁ : Fin n → S₁), S₁.FG ∧ S₀ ≤ S₁ ∧ (∀ i, (h₁ i : S) = h i) ∧ Ideal.span (Set.range h₁) = ⊤ ∧ ∀ i, ∃ (κ : Localization.Away (h₁ i) →ₐ[K] Localization.Away (h i)) (a' : A i →ₐ[K] Localization.Away (h₁ i)), (∀ s : S₁, κ (algebraMap S₁ _ s) = algebraMap S _ (s : S)) ∧ Function.Injective κ ∧ κ.comp a' = a i := by
+  classical
+  intro K _ S _ _ S₀ hS₀ n h A _ _ hA a hspan
+  obtain ⟨c, hc⟩ : ∃ c : Fin n → S, ∑ i, c i * h i = 1 :=
+    Ideal.mem_span_range_iff_exists_fun.1 (hspan ▸ Submodule.mem_top)
+  choose G hG using fun i => (hA i).out
+  choose m s hs using fun i (g : A i) => IsLocalization.Away.surj (h i) (a i g)
+  let T : Finset S := Finset.univ.image h ∪ Finset.univ.image c ∪
+    Finset.univ.biUnion fun i => (G i).image (s i)
+  let S₁ : Subalgebra K S := S₀ ⊔ Algebra.adjoin K (T : Set S)
+  have hT : ∀ t ∈ T, t ∈ S₁ := fun t ht =>
+    (le_sup_right : Algebra.adjoin K (T : Set S) ≤ S₁) (Algebra.subset_adjoin ht)
+  have hh : ∀ i, h i ∈ S₁ := fun i => hT _ (by simp [T])
+  have hcm : ∀ i, c i ∈ S₁ := fun i => hT _ (by simp [T])
+  have hsm : ∀ i, ∀ g ∈ G i, s i g ∈ S₁ := fun i g hg => hT _ (by
+    simp only [T, Finset.mem_union, Finset.mem_biUnion, Finset.mem_image]
+    exact Or.inr ⟨i, Finset.mem_univ _, g, hg, rfl⟩)
+  refine ⟨S₁, fun i => ⟨h i, hh i⟩, hS₀.sup ⟨T, rfl⟩, le_sup_left, fun _ => rfl, ?_, ?_⟩
+  · rw [Ideal.eq_top_iff_one]
+    refine Ideal.mem_span_range_iff_exists_fun.2 ⟨fun i => ⟨c i, hcm i⟩, Subtype.ext ?_⟩
+    simpa using hc
+  · intro i
+    obtain ⟨κ, hκ, hinj, hr⟩ := exists_awayMap_subalgebra K S S₁ (h i) (hh i)
+    have hmem : ∀ y : A i, a i y ∈ κ.range := by
+      intro y
+      have : (⊤ : Subalgebra K (A i)) ≤ κ.range.comap (a i) := by
+        rw [← hG i, Algebra.adjoin_le_iff]
+        intro g hg
+        exact hr _ (m i g) _ (hsm i g hg) (hs i g)
+      exact this Algebra.mem_top
+    refine ⟨κ, (AlgEquiv.ofInjective κ hinj).symm.toAlgHom.comp ((a i).codRestrict _ hmem),
+      hκ, hinj, ?_⟩
+    ext y
+    have := AlgEquiv.ofInjective_apply κ hinj
+      ((AlgEquiv.ofInjective κ hinj).symm ⟨a i y, hmem y⟩)
+    rw [AlgEquiv.apply_symm_apply] at this
+    exact this.symm
+
+end GlobalTheory
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frame_eq_of_baseChange_injective : Out.SecBaseChangeSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (S : Type) [CommRing S] [Algebra c.F S] (T : Type) [CommRing T] [Algebra c.F T] (φ : S →ₐ[c.F] T) (z z' : FrPt Xo c S) (w : FrPt Xo c T), Function.Injective φ → z'.x = z.x → FrMap φ z w → FrMap φ z' w → z = z' := by
+  first | exact @GlobalTheory.Frames.frPt_eq_of_frMap_injective | exact GlobalTheory.Frames.frPt_eq_of_frMap_injective | (intros; apply GlobalTheory.Frames.frPt_eq_of_frMap_injective <;> assumption)
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
+
+namespace GlobalTheory.TanBasisLocal
+
+theorem dual_ext {S : Type} [CommRing S] {Y : Scheme.{0}} {n : ℕ} {h : Fin n → S}
+    (hs : Ideal.span (Set.range h) = ⊤) {w w' : Sp (DualNumber S) ⟶ Y}
+    (e : ∀ i, spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ w =
+      spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ w') : w = w' := by
+  have key := GlobalTheory.Frames.existsUnique_glue_dual S Y n h hs
+    (fun i => spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ w') (by
+      intro i j α β hα hβ
+      rw [← Category.assoc, ← Category.assoc, spMap_comp_ring, spMap_comp_ring, ← dualMap_comp, ← dualMap_comp,
+        hα, hβ])
+  exact key.unique e (fun _ => rfl)
+
+theorem base_ext {S : Type} [CommRing S] {Y : Scheme.{0}} {n : ℕ} {h : Fin n → S}
+    (hs : Ideal.span (Set.range h) = ⊤) {w w' : Sp S ⟶ Y}
+    (e : ∀ i, spMap (algebraMap S (Localization.Away (h i))) ≫ w =
+      spMap (algebraMap S (Localization.Away (h i))) ≫ w') : w = w' :=
+  (Scheme.affineOpenCoverOfSpanRangeEqTop (R := CommRingCat.of S) h hs).openCover.hom_ext _ _ e
+
+theorem fst_dual {S T : Type} [CommRing S] [CommRing T] (ψ : S →+* T) :
+    (TrivSqZeroExt.fstHom T T T).toRingHom.comp (dualMap ψ) =
+      ψ.comp (TrivSqZeroExt.fstHom S S S).toRingHom :=
+  RingHom.ext fun x => by simp [dualMap]
+
+theorem eps_alg {S : Type} [CommRing S] (a : S) :
+    (epsMul a).comp (algebraMap S (DualNumber S)) = algebraMap S (DualNumber S) :=
+  RingHom.ext fun x => by
+    ext <;> simp [epsMul, TrivSqZeroExt.algebraMap_eq_inl]
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
+variable {Xo : Moduli Dw l}
+
+theorem one_pull {S T : Type} [CommRing S] [CommRing T] (ψ : S →+* T) (x : Sp S ⟶ Xo.X) :
+    spMap ψ ≫ (1 : Over.mk x ⟶ Xo.univ.t.G).left = (1 : Over.mk (spMap ψ ≫ x) ⟶ Xo.univ.t.G).left := by
+  have e : (Over.homMk (spMap ψ) rfl : Over.mk (spMap ψ ≫ x) ⟶ Over.mk x) ≫
+      (1 : Over.mk x ⟶ Xo.univ.t.G) = 1 := by
+    simp [Hom.one_def]
+  rw [← e, Over.comp_left]
+  rfl
+
+theorem tan_pull {S T : Type} [CommRing S] [CommRing T] (ψ : S →+* T) {x : Sp S ⟶ Xo.X}
+    {v : Sp (DualNumber S) ⟶ Xo.univ.t.G.left} (hv : IsTanAt x v) :
+    IsTanAt (spMap ψ ≫ x) (spMap (dualMap ψ) ≫ v) := by
+  obtain ⟨h1, h2⟩ := hv
+  refine ⟨?_, ?_⟩
+  · rw [Category.assoc, h1, ← Category.assoc, spMap_comp_ring, dualMap_alg, ← spMap_comp_ring,
+      Category.assoc]
+  · rw [← Category.assoc, spMap_comp_ring, fst_dual, ← spMap_comp_ring, Category.assoc, h2, one_pull]
+
+theorem tan_local {S : Type} [CommRing S] {x : Sp S ⟶ Xo.X} {n : ℕ} {h : Fin n → S}
+    (hs : Ideal.span (Set.range h) = ⊤) {v : Sp (DualNumber S) ⟶ Xo.univ.t.G.left}
+    (hv : ∀ i, IsTanAt (spMap (algebraMap S (Localization.Away (h i))) ≫ x)
+      (spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ v)) : IsTanAt x v := by
+  refine ⟨dual_ext hs fun i => ?_, base_ext hs fun i => ?_⟩
+  · rw [← Category.assoc, (hv i).1, ← Category.assoc, ← Category.assoc, spMap_comp_ring, spMap_comp_ring,
+      dualMap_alg]
+  · rw [one_pull, ← (hv i).2, ← Category.assoc, ← Category.assoc, spMap_comp_ring, spMap_comp_ring, fst_dual]
+
+theorem comb_unique {S : Type} [CommRing S] {x : Sp S ⟶ Xo.X} {m : ℕ}
+    {v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)} {a : Fin m → S}
+    {w w' : Sp (DualNumber S) ⟶ Xo.univ.t.G.left} (h : IsCombAt x v a w) (h' : IsCombAt x v a w') : w = w' := by
+  obtain ⟨u, hu, rfl⟩ := h
+  obtain ⟨u', hu', rfl⟩ := h'
+  have : u = u' := funext fun i => Over.OverMorphism.ext ((hu i).trans (hu' i).symm)
+  rw [this]
+
+theorem comb_exists {S : Type} [CommRing S] {x : Sp S ⟶ Xo.X} {m : ℕ}
+    {v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)} (hv : ∀ i, IsTanAt x (v i)) (a : Fin m → S) :
+    ∃ w, IsCombAt x v a w := by
+  refine ⟨_, fun i => Over.homMk (spMap (epsMul (a i)) ≫ v i) ?_, fun i => rfl, rfl⟩
+  show (spMap (epsMul (a i)) ≫ v i) ≫ Xo.univ.t.G.hom = spMap (algebraMap S (DualNumber S)) ≫ x
+  rw [Category.assoc, (hv i).1, ← Category.assoc, spMap_comp_ring, eps_alg]
+
+theorem comb_pull_comp {S A C : Type} [CommRing S] [CommRing A] [CommRing C] {φ : S →+* A} {χ : S →+* C}
+    (α : A →+* C) (hα : α.comp φ = χ) {x : Sp S ⟶ Xo.X} {m : ℕ}
+    {v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)} {w : Sp (DualNumber S) ⟶ Xo.univ.t.G.left}
+    {a : Fin m → A}
+    (ha : IsCombAt (spMap φ ≫ x) (fun k => spMap (dualMap φ) ≫ v k) a (spMap (dualMap φ) ≫ w)) :
+    IsCombAt (spMap χ ≫ x) (fun k => spMap (dualMap χ) ≫ v k) (fun j => α (a j)) (spMap (dualMap χ) ≫ w) :=
+  isCombAt_pull α (by rw [← Category.assoc, spMap_comp_ring, hα])
+    (fun j => by rw [← Category.assoc, spMap_comp_ring, ← dualMap_comp, hα])
+    (by rw [← Category.assoc, spMap_comp_ring, ← dualMap_comp, hα]) ha
+
+theorem coeff_compat {S A B C : Type} [CommRing S] [CommRing A] [CommRing B] [CommRing C] {φ : S →+* A}
+    {ψ : S →+* B} {χ : S →+* C} (α : A →+* C) (β : B →+* C) (hα : α.comp φ = χ) (hβ : β.comp ψ = χ)
+    {x : Sp S ⟶ Xo.X} {m : ℕ}
+    {v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)} {w : Sp (DualNumber S) ⟶ Xo.univ.t.G.left}
+    (hw : IsTanAt x w) (hb : TanBasis (spMap φ ≫ x) (fun k => spMap (dualMap φ) ≫ v k))
+    {a : Fin m → A} {b : Fin m → B}
+    (ha : IsCombAt (spMap φ ≫ x) (fun k => spMap (dualMap φ) ≫ v k) a (spMap (dualMap φ) ≫ w))
+    (hb' : IsCombAt (spMap ψ ≫ x) (fun k => spMap (dualMap ψ) ≫ v k) b (spMap (dualMap ψ) ≫ w)) :
+    (fun j => α (a j)) = fun j => β (b j) := by
+  have hB : TanBasis (spMap χ ≫ x) (fun k => spMap (dualMap χ) ≫ v k) := by
+    have := GlobalTheory.Frames.tanBasis_baseChange E H Dw l Xo _ _ α _ m _ hb
+    have e1 : spMap α ≫ spMap φ ≫ x = spMap χ ≫ x := by rw [← Category.assoc, spMap_comp_ring, hα]
+    have e2 : (fun k => spMap (dualMap α) ≫ spMap (dualMap φ) ≫ v k) = fun k => spMap (dualMap χ) ≫ v k :=
+      funext fun k => by rw [← Category.assoc, spMap_comp_ring, ← dualMap_comp, hα]
+    rw [e1, e2] at this
+    exact this
+  exact (hB.2 _ (tan_pull χ hw)).unique (comb_pull_comp α hα ha) (comb_pull_comp β hβ hb')
+
+theorem tanBasis_local : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (S : Type) [CommRing S] (x : Sp S ⟶ Xo.X) (n : ℕ) (h : Fin n → S), Ideal.span (Set.range h) = ⊤ → ∀ (m : ℕ) (v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)), (∀ i, TanBasis (spMap (algebraMap S (Localization.Away (h i))) ≫ x) (fun k => spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ v k)) → TanBasis x v := by
+  intro E _ _ _ H Dw l Xo S _ x n h hs m v hb
+  have hv : ∀ k, IsTanAt x (v k) := fun k => tan_local hs fun i => (hb i).1 k
+  have hb' : ∀ f : Set.range h, TanBasis (spMap (algebraMap S (Localization.Away f.1)) ≫ x)
+      (fun k => spMap (dualMap (algebraMap S (Localization.Away f.1))) ≫ v k) := by
+    rintro ⟨_, i, rfl⟩
+    exact hb i
+  refine ⟨hv, fun w hw => ?_⟩
+  choose d hd hdu using fun f : Set.range h =>
+    (hb' f).2 _ (tan_pull (algebraMap S (Localization.Away f.1)) hw)
+  have compat : ∀ (k : Fin m) (f g : Set.range h),
+      IsLocalization.Away.awayToAwayRight (P := Localization.Away (f * g : S)) f.1 g (d f k) =
+        IsLocalization.Away.awayToAwayLeft g.1 f (d g k) := by
+    intro k f g
+    let α : Localization.Away f.1 →+* Localization.Away (f * g : S) :=
+      IsLocalization.Away.awayToAwayRight f.1 g
+    let β : Localization.Away g.1 →+* Localization.Away (f * g : S) :=
+      IsLocalization.Away.awayToAwayLeft g.1 f
+    have hα : α.comp (algebraMap S _) = algebraMap S _ :=
+      RingHom.ext fun s => IsLocalization.Away.awayToAwayRight_eq f.1 g.1 s
+    have hβ : β.comp (algebraMap S _) = algebraMap S _ :=
+      RingHom.ext fun s => IsLocalization.Away.awayToAwayLeft_eq g.1 f.1 s
+    exact congrFun (coeff_compat α β hα hβ hw (hb' f) (hd f) (hd g)) k
+  choose c hc hcu using fun k => Localization.existsUnique_algebraMap_eq_of_span_eq_top (Set.range h) hs
+    (fun f => d f k) (compat k)
+  refine ⟨c, ?_, fun a ha => funext fun k => hcu k _ fun f => ?_⟩
+  · obtain ⟨w', hw'⟩ := comb_exists hv c
+    have : w' = w := dual_ext hs fun i => by
+      let f : Set.range h := ⟨h i, i, rfl⟩
+      have h1 := isCombAt_pull (algebraMap S (Localization.Away f.1)) rfl (fun _ => rfl) rfl hw'
+      have e : (fun j => algebraMap S (Localization.Away f.1) (c j)) = d f := funext fun j => hc j f
+      rw [e] at h1
+      exact comb_unique h1 (hd f)
+    exact this ▸ hw'
+  · exact congrFun (hdu f _ (isCombAt_pull (algebraMap S (Localization.Away f.1)) rfl (fun _ => rfl) rfl ha)) k
+
+end GlobalTheory.TanBasisLocal
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tanBasis_of_local_tanBasis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (S : Type) [CommRing S] (x : Sp S ⟶ Xo.X) (n : ℕ) (h : Fin n → S), Ideal.span (Set.range h) = ⊤ → ∀ (m : ℕ) (v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)), (∀ i, TanBasis (spMap (algebraMap S (Localization.Away (h i))) ≫ x) (fun k => spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ v k)) → TanBasis x v := by
+  atlas_forward_decl GlobalTheory.TanBasisLocal.tanBasis_local
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.existsUnique_glue_dualNumber : ∀ (S : Type) [CommRing S] (Y : Scheme.{0}) (n : ℕ) (h : Fin n → S), Ideal.span (Set.range h) = ⊤ → ∀ w : ∀ i, Sp (DualNumber (Localization.Away (h i))) ⟶ Y, (∀ i j (α : Localization.Away (h i) →+* Localization.Away (h i * h j)) (β : Localization.Away (h j) →+* Localization.Away (h i * h j)), α.comp (algebraMap S (Localization.Away (h i))) = (algebraMap S (Localization.Away (h i * h j))) → β.comp (algebraMap S (Localization.Away (h j))) = (algebraMap S (Localization.Away (h i * h j))) → spMap (dualMap α) ≫ w i = spMap (dualMap β) ≫ w j) → ∃! w₀ : Sp (DualNumber S) ⟶ Y, ∀ i, spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ w₀ = w i := by
+  first | exact @GlobalTheory.Frames.existsUnique_glue_dual | exact GlobalTheory.Frames.existsUnique_glue_dual | (intros; apply GlobalTheory.Frames.existsUnique_glue_dual <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
+
+namespace GlobalTheory.Frames.Glue
+
+theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : B →+* C) (g : A →+* B) :
+    spMap f ≫ spMap g = spMap (f.comp g) := by
+  simp only [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
+
+theorem dual_comp {S T U : Type} [CommRing S] [CommRing T] [CommRing U] (φ : S →+* T) (ψ : T →+* U) :
+    (dualMap ψ).comp (dualMap φ) = dualMap (ψ.comp φ) :=
+  RingHom.ext fun x => by ext <;> simp [dualMap]
+
+theorem dual_eps {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) (a : S) :
+    (dualMap φ).comp (epsMul a) = (epsMul (φ a)).comp (dualMap φ) :=
+  RingHom.ext fun x => by
+    ext <;> simp [dualMap, epsMul, mul_comm]
+
+theorem dual_ext {S : Type} [CommRing S] {Y : Scheme.{0}} {n : ℕ} {h : Fin n → S}
+    (hh : Ideal.span (Set.range h) = ⊤) (f g : Sp (DualNumber S) ⟶ Y)
+    (e : ∀ i, spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ f =
+      spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ g) : f = g := by
+  have := GlobalTheory.T.existsUnique_glue_dualNumber S Y n h hh (fun i => spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ g) (by
+    intro i j α β hα hβ
+    rw [← Category.assoc, ← Category.assoc, sp_comp, sp_comp, dual_comp, dual_comp, hα, hβ])
+  exact this.unique e fun _ => rfl
+
+theorem exists_lift {S : Type} [CommRing S] {n : ℕ} {h : Fin n → S}
+    (hh : Ideal.span (Set.range h) = ⊤) (p : Sp S) :
+    ∃ (i : Fin n) (p' : Sp (Localization.Away (h i))), spMap (algebraMap S (Localization.Away (h i))) p' = p := by
+  have hp : ∃ i, h i ∉ (show PrimeSpectrum S from p).asIdeal := by
+    by_contra hc
+    push Not at hc
+    apply (show PrimeSpectrum S from p).isPrime.ne_top
+    rw [eq_top_iff, ← hh, Ideal.span_le]
+    rintro _ ⟨i, rfl⟩
+    exact hc i
+  obtain ⟨i, hi⟩ := hp
+  have hr := PrimeSpectrum.localization_away_comap_range (Localization.Away (h i)) (h i)
+  have : (show PrimeSpectrum S from p) ∈ Set.range (PrimeSpectrum.comap (algebraMap S (Localization.Away (h i)))) := by
+    rw [hr]; exact hi
+  obtain ⟨p', hp'⟩ := this
+  exact ⟨i, p', hp'⟩
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
+  {Xo : Moduli Dw l}
+
+theorem chart_le {S T : Type} [CommRing S] [CommRing T] {x : Sp S ⟶ Xo.X} {x' : Sp T ⟶ Xo.X}
+    (pm : Gx x' ⟶ Gx x)
+    (hs : pm ≫ (snd (Over.mk x) Xo.univ.t.G).left = (snd (Over.mk x') Xo.univ.t.G).left)
+    (i : Fin 1 → Xo.univ.t.PP.L.ι) : (PPx x').U i ≤ pm ⁻¹ᵁ (PPx x).U i := by
+  intro p hp
+  have hp' : ∀ k, p ∈ (snd (Over.mk x') Xo.univ.t.G).left.base ⁻¹' (Xo.univ.t.PP.L.U (i k) : Set _) :=
+    Set.mem_iInter.1 hp
+  have e := congrArg (fun f : Gx x' ⟶ Xo.univ.t.G.left => f.base p) hs
+  show pm.base p ∈ ⋂ k, (snd (Over.mk x) Xo.univ.t.G).left.base ⁻¹' (Xo.univ.t.PP.L.U (i k) : Set _)
+  refine Set.mem_iInter.2 fun k => ?_
+  show (pm ≫ (snd (Over.mk x) Xo.univ.t.G).left).base p ∈ (Xo.univ.t.PP.L.U (i k) : Set _)
+  rw [e]
+  exact hp' k
+
+theorem secBC_unique {S T : Type} [CommRing S] [CommRing T] {φ : S →+* T} {a : S} {x : Sp S ⟶ Xo.X}
+    {x' : Sp T ⟶ Xo.X} {s : LB.Sec (PPx x)} {t t' : LB.Sec (PPx x')} (h₁ : SecBC φ a x x' s t)
+    (h₂ : SecBC φ a x x' s t') : t = t' := by
+  obtain ⟨p₁, s₁, f₁, a₁⟩ := h₁
+  obtain ⟨p₂, s₂, f₂, a₂⟩ := h₂
+  have e : p₁ = p₂ := by
+    apply pullback.hom_ext
+    · exact f₁.trans f₂.symm
+    · exact s₁.trans s₂.symm
+  subst e
+  obtain ⟨t, ht⟩ := t
+  obtain ⟨t', ht'⟩ := t'
+  congr 1
+  funext i
+  exact (a₁ i (chart_le p₁ s₁ i)).symm.trans (a₂ i (chart_le p₁ s₁ i))
+
+theorem secBC_transport {S S' T : Type} [CommRing S] [CommRing S'] [CommRing T] {φ : S →+* T} {ψ : S' →+* T}
+    {x : Sp S ⟶ Xo.X} {x' : Sp S' ⟶ Xo.X} {s : LB.Sec (PPx x)} {s' : LB.Sec (PPx x')} {w w' : Sp T ⟶ Xo.X}
+    (hw : w = w') {r : LB.Sec (PPx w)} (h₁ : SecBC φ 1 x w s r) (h₂ : SecBC ψ 1 x' w s' r)
+    (t : LB.Sec (PPx w')) (ht : SecBC φ 1 x w' s t) : SecBC ψ 1 x' w' s' t := by
+  subst hw
+  rw [secBC_unique ht h₁]
+  exact h₂
+
+def algOf {K S A B : Type} [CommRing K] [CommRing S] [CommRing A] [CommRing B] [Algebra K S] [Algebra S A]
+    [Algebra S B] [Algebra K A] [Algebra K B] [IsScalarTower K S A] [IsScalarTower K S B] (α : A →+* B)
+    (hα : α.comp (algebraMap S A) = algebraMap S B) : A →ₐ[K] B :=
+  { α with
+    commutes' := fun r => by
+      rw [IsScalarTower.algebraMap_apply K S A, IsScalarTower.algebraMap_apply K S B, ← hα]
+      rfl }
+
+end GlobalTheory.Frames.Glue
+
+open GlobalTheory.Frames.Glue in
+
+theorem GlobalTheory.Frames.frPt_glue : Out.SecBaseChangeSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (S : Type) [CommRing S] [Algebra c.F S] (x : Sp S ⟶ Xo.X), x ≫ Xo.s = sOf c S → ∀ (n : ℕ) (h : Fin n → S), Ideal.span (Set.range h) = ⊤ → ∀ y : ∀ i, FrPt Xo c (Localization.Away (h i)), (∀ i, (y i).x = spMap (algebraMap S (Localization.Away (h i))) ≫ x) → (∀ i j (α : Localization.Away (h i) →ₐ[c.F] Localization.Away (h i * h j)) (β : Localization.Away (h j) →ₐ[c.F] Localization.Away (h i * h j)), α.toRingHom.comp (algebraMap S (Localization.Away (h i))) = (algebraMap S (Localization.Away (h i * h j))) → β.toRingHom.comp (algebraMap S (Localization.Away (h j))) = (algebraMap S (Localization.Away (h i * h j))) → ∀ z, FrMap α (y i) z → FrMap β (y j) z) → ∃ y₀ : FrPt Xo c S, y₀.x = x ∧ ∀ i, FrMap (IsScalarTower.toAlgHom c.F S (Localization.Away (h i))) y₀ (y i) := by
+  intro hB E _ _ _ H Dw l Xo c S _ _ x hx n h hh y hy hov
+  classical
+
+  have ovl : ∀ i j (α : Localization.Away (h i) →+* Localization.Away (h i * h j))
+      (β : Localization.Away (h j) →+* Localization.Away (h i * h j)),
+      α.comp (algebraMap S (Localization.Away (h i))) = (algebraMap S (Localization.Away (h i * h j))) →
+      β.comp (algebraMap S (Localization.Away (h j))) = (algebraMap S (Localization.Away (h i * h j))) →
+      ∃ z : FrPt Xo c (Localization.Away (h i * h j)),
+        z.x = spMap (algebraMap S (Localization.Away (h i * h j))) ≫ x ∧
+        (∀ τ k, z.u τ k = spMap (dualMap α) ≫ (y i).u τ k) ∧ (∀ τ k, z.u τ k = spMap (dualMap β) ≫ (y j).u τ k) ∧
+        SecBC α 1 _ _ (y i).s z.s ∧ SecBC β 1 _ _ (y j).s z.s := by
+    intro i j α β hα hβ
+    obtain ⟨z, hz⟩ := GlobalTheory.T.exists_framedPoint_baseChange_algebraMap hB E H Dw l Xo c _ _ (algOf (K := c.F) α hα) (y i)
+    have hz' := hov i j (algOf α hα) (algOf β hβ) hα hβ z hz
+    have e₁ := ((GlobalTheory.T.framedPoint_baseChange_unique_refl_iff E H Dw l Xo c _ _ _ (y i)).2.2 z).1 hz
+    have e₂ := ((GlobalTheory.T.framedPoint_baseChange_unique_refl_iff E H Dw l Xo c _ _ _ (y j)).2.2 z).1 hz'
+    refine ⟨z, ?_, e₁.2.1, e₂.2.1, e₁.2.2, e₂.2.2⟩
+    rw [e₁.1, hy i, ← Category.assoc, sp_comp, ← hα]
+    rfl
+
+  have nf : ∀ i, ∃ ov u tan eig basis s gen,
+      y i = ⟨spMap (algebraMap S (Localization.Away (h i))) ≫ x, ov, u, tan, eig, basis, s, gen⟩ := by
+    intro i
+    have hi := hy i
+    generalize y i = w at hi
+    obtain ⟨wx, ov, u, tan, eig, basis, s, gen⟩ := w
+    dsimp only at hi
+    subst hi
+    exact ⟨ov, u, tan, eig, basis, s, gen, rfl⟩
+  choose ov u tan eig basis s gen hyy using nf
+  obtain rfl : y = fun i => ⟨_, ov i, u i, tan i, eig i, basis i, s i, gen i⟩ := funext hyy
+  dsimp only at ovl
+
+  have hu : ∀ τ k, ∃ w₀ : Sp (DualNumber S) ⟶ Xo.univ.t.G.left,
+      ∀ i, spMap (dualMap (algebraMap S (Localization.Away (h i)))) ≫ w₀ = u i τ k := by
+    intro τ k
+    refine (GlobalTheory.T.existsUnique_glue_dualNumber S _ n h hh (fun i => u i τ k) ?_).exists
+    intro i j α β hα hβ
+    obtain ⟨z, -, h₁, h₂, -⟩ := ovl i j α β hα hβ
+    exact (h₁ τ k).symm.trans (h₂ τ k)
+  choose u₀ hu₀ using hu
+  have eig₀ : ∀ τ k, IsEigAt c τ (u₀ τ k) := by
+    intro τ k a
+    refine dual_ext hh _ _ fun i => ?_
+    rw [← Category.assoc, hu₀, eig i τ k a, ← hu₀ τ k i, ← Category.assoc, ← Category.assoc, sp_comp, sp_comp,
+      dual_eps, ← IsScalarTower.algebraMap_apply]
+  let e : Fin (Fintype.card (Σ τ : E →+* ℂ, Fin (Dw.mult τ))) ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ) :=
+    (Fintype.equivFin _).symm
+  have tb : TanBasis x (fun j => u₀ (e j).1 (e j).2) := by
+    refine GlobalTheory.T.tanBasis_of_local_tanBasis E H Dw l Xo S x n h hh _ _ fun i => ?_
+    have := (GlobalTheory.T.eigenBasis_iff_tangentBasis E H Dw l Xo c _ _ (u i) _ e (tan i) (eig i)).1 (basis i)
+    simpa only [hu₀] using this
+  have tan₀ : ∀ τ k, IsTanAt x (u₀ τ k) := by
+    intro τ k
+    have := tb.1 (e.symm ⟨τ, k⟩)
+    dsimp only at this
+    rw [e.apply_symm_apply] at this
+    exact this
+  have basis₀ := (GlobalTheory.T.eigenBasis_iff_tangentBasis E H Dw l Xo c S x u₀ _ e tan₀ eig₀).2 tb
+
+  obtain ⟨s₀, hs₀⟩ := (GlobalTheory.T.existsUnique_glue_sections_principal_cover E H Dw l Xo S x n h hh s (by
+    intro i j α β hα hβ t ht
+    obtain ⟨z, hz, -, -, h₁, h₂⟩ := ovl i j α β hα hβ
+    exact secBC_transport hz h₁ h₂ t ht)).exists
+  have nz : SecNZ x s₀ := by
+    intro p
+    obtain ⟨i, p', rfl⟩ := exists_lift hh p
+    exact (GlobalTheory.Frames.secBC_nonvanishing_iff E H Dw l Xo S _ _ x _ rfl s₀ (s i) (hs₀ i) p').1
+      (GlobalTheory.T.fibreSectionNowhereZero_of_generates hB E H Dw l Xo _ _ (s i) (gen i) p')
+  refine ⟨⟨x, hx, u₀, tan₀, eig₀, basis₀, s₀, GlobalTheory.T.fibreSectionGenerates_of_nowhereZero hB E H Dw l Xo S x s₀ nz⟩, rfl, fun i => ?_⟩
+  refine ((GlobalTheory.T.framedPoint_baseChange_unique_refl_iff E H Dw l Xo c _ _ _ _).2.2 _).2 ⟨rfl, fun τ k => (hu₀ τ k i).symm, hs₀ i⟩
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.framedPoints_glue_principal_cover : Out.SecBaseChangeSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (S : Type) [CommRing S] [Algebra c.F S] (x : Sp S ⟶ Xo.X), x ≫ Xo.s = sOf c S → ∀ (n : ℕ) (h : Fin n → S), Ideal.span (Set.range h) = ⊤ → ∀ y : ∀ i, FrPt Xo c (Localization.Away (h i)), (∀ i, (y i).x = spMap (algebraMap S (Localization.Away (h i))) ≫ x) → (∀ i j (α : Localization.Away (h i) →ₐ[c.F] Localization.Away (h i * h j)) (β : Localization.Away (h j) →ₐ[c.F] Localization.Away (h i * h j)), α.toRingHom.comp (algebraMap S (Localization.Away (h i))) = (algebraMap S (Localization.Away (h i * h j))) → β.toRingHom.comp (algebraMap S (Localization.Away (h j))) = (algebraMap S (Localization.Away (h i * h j))) → ∀ z, FrMap α (y i) z → FrMap β (y j) z) → ∃ y₀ : FrPt Xo c S, y₀.x = x ∧ ∀ i, FrMap (IsScalarTower.toAlgHom c.F S (Localization.Away (h i))) y₀ (y i) := by
+  atlas_forward_decl GlobalTheory.Frames.frPt_glue
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
 
@@ -288,3 +813,5 @@ theorem allTest_of_secBaseChange : Out.SecBaseChangeSt → ∀ (E : Type) [Field
   exact hy₁
 
 end GlobalTheory.Frames
+end
+end

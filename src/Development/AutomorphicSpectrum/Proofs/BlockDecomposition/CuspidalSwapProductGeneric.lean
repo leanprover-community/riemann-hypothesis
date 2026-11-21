@@ -2,15 +2,494 @@ import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.GenericUnlinkedGL.UnlinkedRealize
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductIrreducibleFiniteLengthStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerRankProductLeOne
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReversedProductSameSubquotients
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GenericHasGenericIrreducibleSubquotient
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductOfProductsAssociative
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductPreservesSubquotient
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SmoothContragredientIrreducibleAndReflexive
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContragredientProductIrreducible
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualClassInvolutive
+import BuildAid.D3
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductTransposeInverseDualReverseStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContragredientProductIrreducibleStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualClassInvolutiveStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LanglandsSocleOfOrderFree
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsCosocleComp
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetMultiplicityOrderEmbedding
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductIrreducibleAppendEquiv
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PiExteriorTensorIsSubquotientOfForall
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ParabolicInductionPreservesSubquotient
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerRankExtensionBound
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SwapProductSegments
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerHeredityGenericProduct
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsIrrRepInjective
 
+section
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.ContraSq
+
+variable {G V W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+  [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
+
+theorem isSmooth_sub {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (S : Subrepresentation ρ) :
+    IsSmooth S.toRepresentation := fun s => by
+  have e : {g : G | S.toRepresentation g s = s} = {g : G | ρ g (s : V) = s} := by
+    ext g
+    exact Subtype.ext_iff
+  rw [e]
+  exact hρ s
+
+theorem exists_smooth_extension {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (S : Subrepresentation ρ)
+    {K : Subgroup G} (ho : IsOpen (K : Set G)) (hc : IsCompact (K : Set G))
+    (l₀ : Module.Dual ℂ S.toSubmodule) (hl₀ : ∀ h ∈ K, ∀ s, l₀ (S.toRepresentation h s) = l₀ s) :
+    ∃ l : smoothPart ρ.dual, (∀ h ∈ K, contra ρ h l = l) ∧
+      ∀ s : S.toSubmodule, (l : Module.Dual ℂ V) s = l₀ s := by
+  have hmem : ∀ x : fixed S.toRepresentation K,
+      (S.toSubmodule.subtype ∘ₗ (fixed S.toRepresentation K).subtype) x ∈ fixed ρ K := by
+    intro x
+    refine GlobalTheory.ContraRefl.mem_fix.2 fun h hh => ?_
+    exact congrArg Subtype.val (GlobalTheory.ContraRefl.mem_fix.1 x.2 h hh)
+  let ι : fixed S.toRepresentation K →ₗ[ℂ] fixed ρ K := LinearMap.codRestrict _ _ hmem
+  have hι : LinearMap.ker ι = ⊥ := by
+    rw [LinearMap.ker_eq_bot']
+    intro x hx
+    have h1 : ((x : S.toSubmodule) : V) = 0 := congrArg Subtype.val hx
+    exact Subtype.ext (Subtype.ext h1)
+  obtain ⟨r, hr⟩ := LinearMap.exists_leftInverse_of_injective ι hι
+  obtain ⟨l, hl1, hl2⟩ := GlobalTheory.ContraRefl.exists_fixed_contra hρ ho hc
+    ((l₀ ∘ₗ (fixed S.toRepresentation K).subtype) ∘ₗ r)
+  refine ⟨l, hl1, fun s => ?_⟩
+  have key : (l : Module.Dual ℂ V) ∘ₗ S.toSubmodule.subtype = l₀ := by
+    refine GlobalTheory.ContraRefl.form_ext (isSmooth_sub hρ S) hc (fun h hh w => ?_) hl₀ fun w hw => ?_
+    · have h1 := congrArg (fun x : smoothPart ρ.dual => (x : Module.Dual ℂ V) (w : V))
+        (hl1 h⁻¹ (inv_mem hh))
+      simp only [contra_apply, inv_inv] at h1
+      exact h1
+    · have h2 := hl2 (ι ⟨w, hw⟩)
+      have h3 : r (ι ⟨w, hw⟩) = ⟨w, hw⟩ := LinearMap.congr_fun hr ⟨w, hw⟩
+      simp only [LinearMap.comp_apply, h3] at h2
+      exact h2
+  exact LinearMap.congr_fun key s
+
+def annih {ρ : Representation ℂ G V} {τ : Representation ℂ G W} (S : Subrepresentation ρ)
+    (f : S.toRepresentation.IntertwiningMap τ) : Subrepresentation (contra ρ) :=
+  ⟨{ carrier := {l | ∀ s : S.toSubmodule, f s = 0 → (l : Module.Dual ℂ V) s = 0}
+     add_mem' := fun {a b} ha hb s hs => by simp [ha s hs, hb s hs]
+     zero_mem' := fun s _ => by simp
+     smul_mem' := fun c a ha s hs => by simp [ha s hs] }, by
+    intro h l hl s hs
+    have h0 : f (S.toRepresentation h⁻¹ s) = 0 := by
+      rw [f.isIntertwining, hs, map_zero]
+    exact hl _ h0⟩
+
+theorem mem_annih {ρ : Representation ℂ G V} {τ : Representation ℂ G W} {S : Subrepresentation ρ}
+    {f : S.toRepresentation.IntertwiningMap τ} {l : smoothPart ρ.dual} :
+    l ∈ (annih S f).toSubmodule ↔ ∀ s : S.toSubmodule, f s = 0 → (l : Module.Dual ℂ V) s = 0 :=
+  Iff.rfl
+
+def pull {ρ : Representation ℂ G V} (S : Subrepresentation ρ) (g : W →ₗ[ℂ] S.toSubmodule) :
+    Module.Dual ℂ V →ₗ[ℂ] Module.Dual ℂ W :=
+  (S.toSubmodule.subtype ∘ₗ g).dualMap
+
+theorem pull_apply_map {ρ : Representation ℂ G V} {τ : Representation ℂ G W} {S : Subrepresentation ρ}
+    {f : S.toRepresentation.IntertwiningMap τ} {g : W →ₗ[ℂ] S.toSubmodule}
+    (hg : ∀ w, f (g w) = w) {l : smoothPart ρ.dual} (hl : l ∈ (annih S f).toSubmodule)
+    (s : S.toSubmodule) : pull S g (l : Module.Dual ℂ V) (f s) = (l : Module.Dual ℂ V) s := by
+  have h0 : f (g (f s) - s) = 0 := by
+    have : f (g (f s) - s) = f (g (f s)) - f s := map_sub f.toLinearMap _ _
+    rw [this, hg, sub_self]
+  have h1 := mem_annih.1 hl _ h0
+  have h2 : (l : Module.Dual ℂ V) ((g (f s) : V) - s) = 0 := h1
+  rw [map_sub, sub_eq_zero] at h2
+  exact h2
+
+def restrLin {ρ : Representation ℂ G V} {τ : Representation ℂ G W} {S : Subrepresentation ρ}
+    {f : S.toRepresentation.IntertwiningMap τ} (hf : Function.Surjective f)
+    {g : W →ₗ[ℂ] S.toSubmodule} (hg : ∀ w, f (g w) = w) :
+    (annih S f).toSubmodule →ₗ[ℂ] smoothPart τ.dual where
+  toFun l := ⟨pull S g ((l : smoothPart ρ.dual) : Module.Dual ℂ V),
+    mem_smoothPart_of_nhds (Filter.mem_of_superset
+      ((isSmooth_contra ρ (l : smoothPart ρ.dual)).mem_nhds (by simp)) fun h hh => by
+        have hh' : contra ρ h (l : smoothPart ρ.dual) = l := hh
+        refine LinearMap.ext fun w => ?_
+        obtain ⟨s, rfl⟩ := hf w
+        show pull S g _ (τ h⁻¹ (f s)) = pull S g _ (f s)
+        rw [← f.isIntertwining, pull_apply_map hg l.2, pull_apply_map hg l.2]
+        have h1 := congrArg (fun x : smoothPart ρ.dual => (x : Module.Dual ℂ V) (s : V)) hh'
+        simp only [contra_apply] at h1
+        exact h1)⟩
+  map_add' a b := Subtype.ext (by simp)
+  map_smul' c a := Subtype.ext (by simp)
+
+theorem restrLin_apply_map {ρ : Representation ℂ G V} {τ : Representation ℂ G W}
+    {S : Subrepresentation ρ} {f : S.toRepresentation.IntertwiningMap τ}
+    (hf : Function.Surjective f) {g : W →ₗ[ℂ] S.toSubmodule} (hg : ∀ w, f (g w) = w)
+    (l : (annih S f).toSubmodule) (s : S.toSubmodule) :
+    (restrLin hf hg l : Module.Dual ℂ W) (f s) = ((l : smoothPart ρ.dual) : Module.Dual ℂ V) s :=
+  pull_apply_map hg l.2 s
+
+theorem restrLin_comm {ρ : Representation ℂ G V} {τ : Representation ℂ G W}
+    {S : Subrepresentation ρ} {f : S.toRepresentation.IntertwiningMap τ}
+    (hf : Function.Surjective f) {g : W →ₗ[ℂ] S.toSubmodule} (hg : ∀ w, f (g w) = w)
+    (h : G) (l : (annih S f).toSubmodule) (w : W) :
+    (restrLin hf hg ((annih S f).toRepresentation h l) : Module.Dual ℂ W) w =
+      (restrLin hf hg l : Module.Dual ℂ W) (τ h⁻¹ w) := by
+  have e : ∀ s : S.toSubmodule,
+      (restrLin hf hg ((annih S f).toRepresentation h l) : Module.Dual ℂ W) (f s) =
+        (restrLin hf hg l : Module.Dual ℂ W) (τ h⁻¹ (f s)) := fun s => by
+    rw [← f.isIntertwining, restrLin_apply_map, restrLin_apply_map]
+    rfl
+  have := e (g w)
+  rwa [hg w] at this
+
+def restr {ρ : Representation ℂ G V} {τ : Representation ℂ G W} {S : Subrepresentation ρ}
+    {f : S.toRepresentation.IntertwiningMap τ} (hf : Function.Surjective f)
+    {g : W →ₗ[ℂ] S.toSubmodule} (hg : ∀ w, f (g w) = w) :
+    (annih S f).toRepresentation.IntertwiningMap (contra τ) where
+  toLinearMap := restrLin hf hg
+  isIntertwining' h :=
+    LinearMap.ext fun l => Subtype.ext (LinearMap.ext fun w => restrLin_comm hf hg h l w)
+
+theorem contra_isSubquotient : ∀ {G V W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W],
+    (∀ U ∈ nhds (1 : G), ∃ K : Subgroup G, IsOpen (K : Set G) ∧ IsCompact (K : Set G) ∧ (K : Set G) ⊆ U) →
+    ∀ (ρ : Representation ℂ G V) (τ : Representation ℂ G W),
+      IsSmooth ρ → IsSubquotient τ ρ → IsSubquotient (contra τ) (contra ρ) := by
+  intro G V W _ _ _ _ _ _ _ hG ρ τ hρ ⟨S, f, hf⟩
+  obtain ⟨g, hg⟩ := LinearMap.exists_rightInverse_of_surjective f.toLinearMap
+    (LinearMap.range_eq_top.2 hf)
+  have hg' : ∀ w, f (g w) = w := fun w => LinearMap.congr_fun hg w
+  refine ⟨annih S f, restr hf hg', fun m => ?_⟩
+  obtain ⟨K, ho, hc, hKs⟩ := hG _ ((isSmooth_contra τ m).mem_nhds (by simp))
+  have hfix : ∀ h ∈ K, ∀ s, (m : Module.Dual ℂ W) (f (S.toRepresentation h s)) =
+      (m : Module.Dual ℂ W) (f s) := by
+    intro h hh s
+    have h1 : contra τ h⁻¹ m = m := hKs (inv_mem hh)
+    have h2 := congrArg (fun x : smoothPart τ.dual => (x : Module.Dual ℂ W) (f s)) h1
+    simp only [contra_apply, inv_inv] at h2
+    rw [f.isIntertwining]
+    exact h2
+  obtain ⟨l, -, hl⟩ := exists_smooth_extension hρ S ho hc
+    ((m : Module.Dual ℂ W) ∘ₗ f.toLinearMap) hfix
+  have hmem : l ∈ (annih S f).toSubmodule := fun s hs => by
+    have h1 := hl s
+    have h2 : ((m : Module.Dual ℂ W) ∘ₗ f.toLinearMap) s = (m : Module.Dual ℂ W) (f s) := rfl
+    rw [h1, h2, hs, map_zero]
+  refine ⟨⟨l, hmem⟩, Subtype.ext (LinearMap.ext fun w => ?_)⟩
+  obtain ⟨s, rfl⟩ := hf w
+  show pull S g (l : Module.Dual ℂ V) (f s) = _
+  rw [pull_apply_map hg' hmem]
+  exact hl s
+
+end GlobalTheory.CompanionTheory.ContraSq
+
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isSubquotient_contra_of_isSubquotient : ∀ {G V W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W], (∀ U ∈ nhds (1 : G), ∃ K : Subgroup G, IsOpen (K : Set G) ∧ IsCompact (K : Set G) ∧ (K : Set G) ⊆ U) → ∀ (ρ : Representation ℂ G V) (τ : Representation ℂ G W), IsSmooth ρ → IsSubquotient τ ρ → IsSubquotient (contra τ) (contra ρ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ContraSq.contra_isSubquotient
+end
+
+section
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.ContraProd
+
+theorem contra_contra_of_equiv {G V W U : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] [AddCommGroup U] [Module ℂ U]
+    {σ : Representation ℂ G V} {τ : Representation ℂ G W} {υ : Representation ℂ G U}
+    (E₁ : (contra σ).Equiv τ) (E₂ : (contra τ).Equiv υ) (E₃ : υ.Equiv σ) :
+    Nonempty ((contra (contra σ)).Equiv σ) :=
+  ⟨((GlobalTheory.ContraRefl.contraEquiv E₁).symm.trans E₂).trans E₃⟩
+
+theorem prodIrr_equiv_of_eq {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] {h N : ℕ} {x y : Fin h → IrrGL k} (e : y = x)
+    (hy : ∑ a, (y a).1 = N) (hx : ∑ a, (x a).1 = N) :
+    Nonempty ((prodIrr y hy).Equiv (prodIrr x hx)) := by
+  subst e
+  exact ⟨Representation.Equiv.refl _⟩
+
+theorem contra_contra_prodIrr : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.Published.IrreducibleAdmissibleGL → ∀ {h N : ℕ} (x : Fin h → IrrGL k) (hd : ∑ a, (x a).1 = N), Nonempty ((contra (contra (prodIrr x hd))).Equiv (prodIrr x hd)) := by
+  intro k _ _ _ _ hA h N x hd
+  refine Exists.elim (contra_prodIrr hA x hd) fun hd₁ H₁ => H₁.elim fun E₁ => ?_
+  refine Exists.elim (contra_prodIrr hA (fun a => Zc.dualCl (x a)) hd₁) fun hd₂ H₂ => H₂.elim fun E₂ => ?_
+  refine (prodIrr_equiv_of_eq (funext fun a => GlobalTheory.CompanionTheory.Zcore.dualCl_dualCl hA (x a)) hd₂ hd).elim fun E₃ => ?_
+  exact contra_contra_of_equiv E₁ E₂ E₃
+
+end GlobalTheory.CompanionTheory.ContraProd
+
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.double_contragredient_of_induced_product : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.Published.IrreducibleAdmissibleGL → ∀ {h N : ℕ} (x : Fin h → IrrGL k) (hd : ∑ a, (x a).1 = N), Nonempty ((contra (contra (prodIrr x hd))).Equiv (prodIrr x hd)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.ContraProd.contra_contra_prodIrr
+end
+
+section
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.GenRev
+
+theorem isSubquotient_of_equiv {G V W U : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
+    [AddCommGroup U] [Module ℂ U] {σ : Representation ℂ G W} {ρ : Representation ℂ G V} {ρ' : Representation ℂ G U}
+    (h : IsSubquotient σ ρ) (E : ρ.Equiv ρ') : IsSubquotient σ ρ' :=
+  h.trans (IsSubquotient.of_surjective E.symm.toIntertwiningMap E.symm.surjective)
+
+theorem isSubquotient_of_equiv_left {G V W U : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
+    [Module ℂ W] [AddCommGroup U] [Module ℂ U] {σ : Representation ℂ G W} {τ : Representation ℂ G U}
+    {ρ : Representation ℂ G V} (E : σ.Equiv τ) (h : IsSubquotient σ ρ) : IsSubquotient τ ρ :=
+  (IsSubquotient.of_surjective E.toIntertwiningMap E.surjective).trans h
+
+set_option maxHeartbeats 2000000 in
+
+theorem isSubquotient_prodIrr_rev : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k], GlobalTheory.Published.IrreducibleAdmissibleGL → Zc.Cos.GKLocal k →
+    ∀ {h N : ℕ} (x : Fin h → IrrGL k) (hd : ∑ a, (x a).1 = N) (hd' : ∑ a, (x (Fin.rev a)).1 = N) {W : Type}
+      [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GL (Fin N) k) W), IsSmooth σ → σ.IsIrreducible →
+      IsSubquotient σ (prodIrr x hd) → IsSubquotient σ (prodIrr (fun a => x (Fin.rev a)) hd') := by
+  intro k _ _ _ _ hA hGK h N x hd hd' W _ _ σ _ hi hsq
+
+  obtain ⟨hdy, ⟨E1⟩⟩ := GlobalTheory.T.contragredient_product_irreducible hA (fun a => x (Fin.rev a)) hd'
+
+  obtain ⟨hd2, ⟨E2⟩⟩ := GlobalTheory.T.product_transpose_inverse_dual_reverse hA hGK (fun a => Zc.dualCl (x (Fin.rev a))) hdy
+  have ex : (fun a => Zc.dualCl ((fun a => Zc.dualCl (x (Fin.rev a))) (Fin.rev a))) = x := funext fun a => by
+    simp only [Fin.rev_rev]
+    exact GlobalTheory.T.dual_class_involutive hA (x a)
+  obtain ⟨E3⟩ := GlobalTheory.CompanionTheory.LSocle.prodIrr_congr ex hd2 hd
+  have h1 : IsSubquotient σ ((prodIrr (fun a => Zc.dualCl (x (Fin.rev a))) hdy).comp (Zc.Cos.thetaW k N)) :=
+    isSubquotient_of_equiv hsq (E2.trans E3).symm
+  have h2 : IsSubquotient (σ.comp (Zc.Cos.thetaW k N)) (prodIrr (fun a => Zc.dualCl (x (Fin.rev a))) hdy) := by
+    have := GlobalTheory.CompanionTheory.WordProd.RowCell.isSubquotient_pullback (Zc.Cos.thetaW k N) h1
+    rwa [GlobalTheory.CompanionTheory.LSocle.comp_thetaW_thetaW] at this
+  have hs : IsSmooth (σ.comp (Zc.Cos.thetaW k N)) := h2.isSmooth (isSmooth_prodIrr _ _)
+  have hi' : Representation.IsIrreducible (σ.comp (Zc.Cos.thetaW k N)) :=
+    GlobalTheory.CosocleComp.isIrreducible_comp (GlobalTheory.CompanionTheory.LSocle.thetaW_surjective N) hi
+  have h3 : IsSubquotient (σ.comp (Zc.Cos.thetaW k N)) (contra (prodIrr (fun a => x (Fin.rev a)) hd')) :=
+    isSubquotient_of_equiv h2 E1.symm
+  have h4 := GlobalTheory.T.isSubquotient_contra_of_isSubquotient (GlobalTheory.SqIntUnit.compactOpen_basis k N) _ _ (isSmooth_contra _) h3
+  obtain ⟨E4⟩ := GlobalTheory.T.double_contragredient_of_induced_product hA (fun a => x (Fin.rev a)) hd'
+  obtain ⟨E5⟩ := GlobalTheory.CompanionTheory.LSocle.equiv_contra_comp_thetaW hGK σ hs hi'
+  exact isSubquotient_of_equiv_left E5.symm (isSubquotient_of_equiv h4 E4)
+
+end GlobalTheory.CompanionTheory.GenRev
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.reversed_product_same_subquotients : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.Published.IrreducibleAdmissibleGL → Zc.Cos.GKLocal k → ∀ {h N : ℕ} (x : Fin h → IrrGL k) (hd : ∑ a, (x a).1 = N) (hd' : ∑ a, (x (Fin.rev a)).1 = N) {W : Type} [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GL (Fin N) k) W), IsSmooth σ → σ.IsIrreducible → IsSubquotient σ (prodIrr x hd) → IsSubquotient σ (prodIrr (fun a => x (Fin.rev a)) hd') := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GenRev.isSubquotient_prodIrr_rev
+end
+
+section
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.GenExists
+
+section General
+
+variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
+
+theorem isSmooth_subQuot [TopologicalSpace G] [IsTopologicalGroup G] {ρ : Representation ℂ G V} (hρ : IsSmooth ρ)
+    (A B : Subrepresentation ρ) : IsSmooth (subQuot A B) := by
+  have stab : ∀ {W : Type} [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ G W) (w : W),
+      ∃ H : Subgroup G, ∀ g, g ∈ H ↔ σ g w = w := by
+    intro W _ _ σ w
+    refine ⟨{ carrier := {g | σ g w = w}, mul_mem' := ?_, one_mem' := ?_, inv_mem' := ?_ }, fun g => Iff.rfl⟩
+    · intro a b ha hb
+      replace ha : σ a w = w := ha
+      replace hb : σ b w = w := hb
+      show σ (a * b) w = w
+      rw [map_mul, Module.End.mul_apply, hb, ha]
+    · show σ 1 w = w
+      rw [map_one, Module.End.one_apply]
+    · intro a ha
+      replace ha : σ a w = w := ha
+      show σ a⁻¹ w = w
+      conv_lhs => rw [← ha]
+      rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
+  intro v
+  obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ v
+  obtain ⟨H₁, hH₁⟩ := stab ρ (x : V)
+  obtain ⟨H₂, hH₂⟩ := stab (subQuot A B) (Submodule.Quotient.mk x)
+  have hle : H₁ ≤ H₂ := by
+    intro g hg
+    rw [hH₁] at hg
+    rw [hH₂]
+    show Submodule.Quotient.mk (A.toRepresentation g x) = Submodule.Quotient.mk x
+    congr 1
+    exact Subtype.ext hg
+  have e₁ : (H₁ : Set G) = {g | ρ g x = x} := Set.ext hH₁
+  have e₂ : (H₂ : Set G) = {g | (subQuot A B) g (Submodule.Quotient.mk x) = Submodule.Quotient.mk x} :=
+    Set.ext hH₂
+  rw [← e₂]
+  exact Subgroup.isOpen_mono hle (e₁ ▸ hρ x)
+
+theorem nontrivial_twJacquet_subQuot {ρ : Representation ℂ G V} (N : Subgroup G) (χ : N →* ℂˣ)
+    (A B : Subrepresentation ρ) (hB : B.toSubmodule ≤ twKer ρ N χ) (hA : ¬ A.toSubmodule ≤ twKer ρ N χ) :
+    Nontrivial (TwJacquet (subQuot A B) N χ) := by
+  obtain ⟨a, haA, hak⟩ := SetLike.not_le_iff_exists.mp hA
+  let φ : A.toSubmodule →ₗ[ℂ] V ⧸ twKer ρ N χ := (twKer ρ N χ).mkQ ∘ₗ A.toSubmodule.subtype
+  have hφ : Submodule.comap A.toSubmodule.subtype B.toSubmodule ≤ LinearMap.ker φ := by
+    intro x hx
+    rw [LinearMap.mem_ker]
+    show Submodule.Quotient.mk (x : V) = (0 : V ⧸ twKer ρ N χ)
+    rw [Submodule.Quotient.mk_eq_zero]
+    exact hB (Submodule.mem_comap.mp hx)
+  let Ψ := (Submodule.comap A.toSubmodule.subtype B.toSubmodule).liftQ φ hφ
+  have hker : twKer (subQuot A B) N χ ≤ LinearMap.ker Ψ := by
+    apply Submodule.span_le.mpr
+    rintro w ⟨n, v, rfl⟩
+    obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ v
+    rw [SetLike.mem_coe, LinearMap.mem_ker, map_sub, map_smul]
+    show Submodule.Quotient.mk (ρ n (x : V)) - (χ n : ℂ) • Submodule.Quotient.mk (x : V) =
+      (0 : V ⧸ twKer ρ N χ)
+    rw [← Submodule.Quotient.mk_smul, ← Submodule.Quotient.mk_sub, Submodule.Quotient.mk_eq_zero]
+    exact Submodule.subset_span ⟨n, (x : V), rfl⟩
+  refine ⟨⟨(Submodule.Quotient.mk (Submodule.Quotient.mk ⟨a, haA⟩ :
+      A.toSubmodule ⧸ Submodule.comap A.toSubmodule.subtype B.toSubmodule) :
+      _ ⧸ twKer (subQuot A B) N χ), 0, ?_⟩⟩
+  intro h
+  rw [Submodule.Quotient.mk_eq_zero] at h
+  have h' := hker h
+  rw [LinearMap.mem_ker] at h'
+  have h'' : Submodule.Quotient.mk a = (0 : V ⧸ twKer ρ N χ) := h'
+  exact hak ((Submodule.Quotient.mk_eq_zero _).mp h'')
+
+end General
+
+theorem exists_generic_subQuot : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), Continuous ψ → ∀ (N : ℕ) {V : Type} [AddCommGroup V]
+    [Module ℂ V] (ρ : Representation ℂ (GL (Fin N) k) V), IsSmooth ρ → GlobalTheory.SmGL.HasFiniteLength ρ →
+    IsGenericFor ψ ρ → ∃ A B : Subrepresentation ρ, B ≤ A ∧ (subQuot A B).IsIrreducible ∧
+      IsSmooth (subQuot A B) ∧ IsGenericFor ψ (subQuot A B) := by
+  intro k _ _ _ _ ψ hψ N V _ _ ρ hρ hfl hgen
+  have hNA := isFiniteLength_iff_isNoetherian_isArtinian.mp hfl
+  haveI := hNA.1
+  haveI := hNA.2
+  have hle : ∀ S T : Subrepresentation ρ, S.asSubmodule ≤ T.asSubmodule ↔ S ≤ T := fun S T => Iff.rfl
+  have hsm : StrictMono (fun S : Subrepresentation ρ => S.asSubmodule) := fun S T h =>
+    lt_of_le_of_ne ((hle S T).mpr h.le)
+      (fun he => h.ne (le_antisymm ((hle S T).mp he.le) ((hle T S).mp he.ge)))
+  have wfl : WellFounded (fun S T : Subrepresentation ρ => S < T) :=
+    Subrelation.wf (fun {S T} h => hsm h) (InvImage.wf (fun S : Subrepresentation ρ => S.asSubmodule) wellFounded_lt)
+  have wfg : WellFounded (fun S T : Subrepresentation ρ => T < S) :=
+    Subrelation.wf (fun {S T} h => hsm h) (InvImage.wf (fun S : Subrepresentation ρ => S.asSubmodule) wellFounded_gt)
+  have hgen' : Nontrivial (V ⧸ twKer ρ (unipB k (Fin N)) (whitChar ψ N)) := hgen
+  let T0 : Subrepresentation ρ := ⟨⊤, fun _ _ _ => Submodule.mem_top⟩
+  have htop : ¬ T0.toSubmodule ≤ twKer ρ (unipB k (Fin N)) (whitChar ψ N) := by
+    intro h
+    obtain ⟨x, y, hxy⟩ := hgen'.exists_pair_ne
+    obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective _ x
+    obtain ⟨b, rfl⟩ := Submodule.Quotient.mk_surjective _ y
+    apply hxy
+    rw [Submodule.Quotient.eq]
+    exact h Submodule.mem_top
+  obtain ⟨A, hAP, hAmin⟩ := wfl.has_min {A | ¬ A.toSubmodule ≤ twKer ρ (unipB k (Fin N)) (whitChar ψ N)} ⟨T0, htop⟩
+  let Z : Subrepresentation ρ := ⟨⊥, fun g v hv => by
+    rw [Submodule.mem_bot] at hv ⊢
+    rw [hv, map_zero]⟩
+  have hZk : Z.toSubmodule ≤ twKer ρ (unipB k (Fin N)) (whitChar ψ N) := bot_le
+  have hZA : Z < A := by
+    refine lt_of_le_of_ne ?_ ?_
+    · intro x hx
+      have hx0 : x = 0 := (Submodule.mem_bot ℂ).mp hx
+      rw [hx0]
+      exact A.toSubmodule.zero_mem
+    · intro h
+      rw [← h] at hAP
+      exact hAP hZk
+  obtain ⟨B, hBA, hBmax⟩ := wfg.has_min {B | B < A} ⟨Z, hZA⟩
+  have hcov : B ⋖ A := ⟨hBA, fun C hBC hCA => hBmax C hCA hBC⟩
+  have hBk : B.toSubmodule ≤ twKer ρ (unipB k (Fin N)) (whitChar ψ N) := by
+    by_contra h
+    exact hAmin B h hBA
+  exact ⟨A, B, hBA.le, GlobalTheory.SmGL.isIrreducible_subQuot hcov, GlobalTheory.CompanionTheory.GenExists.isSmooth_subQuot hρ A B,
+    GlobalTheory.CompanionTheory.GenExists.nontrivial_twJacquet_subQuot _ _ A B hBk hAP⟩
+
+end GlobalTheory.CompanionTheory.GenExists
+
+end
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.generic_has_generic_irreducible_subquotient : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), Continuous ψ → ∀ (N : ℕ) {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin N) k) V), IsSmooth ρ → GlobalTheory.SmGL.HasFiniteLength ρ → IsGenericFor ψ ρ → ∃ A B : Subrepresentation ρ, B ≤ A ∧ (subQuot A B).IsIrreducible ∧ IsSmooth (subQuot A B) ∧ IsGenericFor ψ (subQuot A B) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GenExists.exists_generic_subQuot
+end
+
+section
+noncomputable section
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.ProdFlattenDep
+
+open GlobalTheory.ProdFlatten
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
+
+unseal GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.one in
+
+theorem of_iso {d c M : ℕ} (len : Fin d → ℕ) (y : ∀ i, Fin (len i) → IrrGL k) (N : Fin d → ℕ)
+    (hN : ∀ i, ∑ j, (y i j).1 = N i) (hM : ∑ i, N i = M) (z : Fin c → IrrGL k) (hz : ∑ p, (z p).1 = M)
+    (H : Iso (mp N hM fun i => pr (y i) (hN i)) (pr z hz)) :
+    Nonempty ((multiProd (stdBlocks N hM) fun i => prodIrr (y i) (hN i)).Equiv (prodIrr z hz)) := H
+
+end GlobalTheory.CompanionTheory.ProdFlattenDep
+end
+end
+
+section
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.GenMulti
+
+theorem multiProd_isSubquotient_of_forall (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] {d : ℕ} (N : Fin d → ℕ) (M : ℕ) (hM : ∑ i, N i = M)
+    (X Y : Fin d → Type) [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)]
+    [∀ i, AddCommGroup (Y i)] [∀ i, Module ℂ (Y i)]
+    (ρ : ∀ i, Representation ℂ (GL (Fin (N i)) k) (X i))
+    (ρ' : ∀ i, Representation ℂ (GL (Fin (N i)) k) (Y i))
+    (hs : ∀ i, IsSmooth (ρ' i)) (hq : ∀ i, IsSubquotient (ρ i) (ρ' i)) :
+    IsSubquotient (multiProd (stdBlocks N hM) ρ) (multiProd (stdBlocks N hM) ρ') :=
+  GlobalTheory.ParIndSubquot.parInd_isSubquotient k _ _ _ (GlobalTheory.SmGL.stdBlocks N hM) _ _ _ _
+    (GlobalTheory.SmGL.isSmooth_piTensor hs)
+    (GlobalTheory.piTensor_isSubquotient_of_forall _ _ X Y ρ ρ' hq)
+
+end GlobalTheory.CompanionTheory.GenMulti
+end
+
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.product_preserves_subquotient : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {d : ℕ} (N : Fin d → ℕ) (M : ℕ) (hM : ∑ i, N i = M) (X Y : Fin d → Type) [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)] [∀ i, AddCommGroup (Y i)] [∀ i, Module ℂ (Y i)] (ρ : ∀ i, Representation ℂ (GL (Fin (N i)) k) (X i)) (ρ' : ∀ i, Representation ℂ (GL (Fin (N i)) k) (Y i)), (∀ i, IsSmooth (ρ' i)) → (∀ i, IsSubquotient (ρ i) (ρ' i)) → IsSubquotient (multiProd (stdBlocks N hM) ρ) (multiProd (stdBlocks N hM) ρ') := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.GenMulti.multiProd_isSubquotient_of_forall
+end
+
+section
 section
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.RgGu
 open scoped TensorProduct
@@ -174,3 +653,4 @@ open scoped TensorProduct
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.cuspidal_swap_product_generic : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.Published.IrreducibleAdmissibleGL → Zc.Cos.GKLocal k → GlobalTheory.BZMir.Leib.WhitHeredity k → GlobalTheory.BZSeg.WhitRankIrr k → GlobalTheory.BZSeg.CuspGeneric k → ∀ (ψ : AddChar k Circle), Continuous ψ → ψ ≠ 1 → ∀ {h N : ℕ} (x : Fin h → IrrGL k), (∀ a, (x a).IsCusp) → ∀ (hd : ∑ a, (x a).1 = N) (j : ℕ) (hj : j + 1 < h) (hd' : ∑ a, (x (Equiv.swap ⟨j, by omega⟩ ⟨j + 1, hj⟩ a)).1 = N) {W : Type} [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GL (Fin N) k) W), IsSmooth σ → σ.IsIrreducible → IsGenericFor ψ σ → IsSubquotient σ (prodIrr x hd) → IsSubquotient σ (prodIrr (fun a => x (Equiv.swap ⟨j, by omega⟩ ⟨j + 1, hj⟩ a)) hd') := by
   atlas_forward_decl GlobalTheory.CompanionTheory.GenSwap.isSubquotient_prodIrr_swap
+end

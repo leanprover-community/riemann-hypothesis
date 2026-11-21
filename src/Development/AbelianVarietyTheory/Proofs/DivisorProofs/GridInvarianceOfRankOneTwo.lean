@@ -1,8 +1,29 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NablaSchur
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommutatorPowOfCommutatorEqSmul
 import BuildAid.ForwardExisting
 
+section
+namespace GlobalTheory.CommutatorPowerFormula
+
+theorem commutator_pow_of_commutator_eq_smul {A : Type} [Ring A] [Algebra ℚ A] {H X : A} {s : ℚ}
+    (h : H * X - X * H = s • X) (k : ℕ) :
+    H * X ^ k - X ^ k * H = ((k : ℚ) * s) • X ^ k := by
+  induction k with
+  | zero => simp
+  | succ n ih =>
+    have e : H * X ^ (n + 1) - X ^ (n + 1) * H
+        = (H * X ^ n - X ^ n * H) * X + X ^ n * (H * X - X * H) := by
+      rw [pow_succ]
+      noncomm_ring
+    rw [e, ih, h, smul_mul_assoc, mul_smul_comm, ← pow_succ, ← add_smul]
+    congr 1
+    push_cast
+    ring
+
+end GlobalTheory.CommutatorPowerFormula
+end
+
+section
 section
 open GlobalTheory.LeviCut
 
@@ -338,3 +359,4 @@ open GlobalTheory.LeviCut
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.grid_invariance_of_rank_one_two : GlobalTheory.LeviCut.RankOne → GlobalTheory.LeviCut.RankTwo → GlobalTheory.LeviCut.GridInv := by
   atlas_forward_decl GlobalTheory.LeviCut.gridInv_of_rankOne_rankTwo
+end

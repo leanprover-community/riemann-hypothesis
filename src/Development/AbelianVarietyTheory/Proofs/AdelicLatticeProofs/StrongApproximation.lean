@@ -4,9 +4,26 @@ import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.IsHermF
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLatticeRationalVectorsInAdelicTranslate
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsAnisotropicOrthogonalBasisHermitian
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitaryGroupWeakApproximationAtPrimesStatement
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitaryTransvectionSubmonoidAdjustIntegralAwayStatement
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitaryEqQuasiReflectionMulTransvectionsStatement
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitaryTransvectionSubmonoidAdjustIntegralAway
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.UnitaryEqQuasiReflectionMulTransvections
 
+section
+open NumberField IsDedekindDomain Matrix GlobalTheory.UTrans GlobalTheory.AdLat
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitaryTransvectionSubmonoid_adjust_integral_away : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E) (n : ℕ) (G : Matrix (Fin n) (Fin n) E), Module.finrank F E = 2 → IsHerm (c : E →+* E) G → ∀ L : Submodule (𝓞 E) (Fin n → E), L.FG → Submodule.span E (L : Set (Fin n → E)) = ⊤ → ∀ m ∈ TvGen (c : E →+* E) G, ∀ b : ℕ, 0 < b → ∀ N : ℕ, ∃ m' ∈ TvGen (c : E →+* E) G, ∃ k e : ℕ, k.Coprime b ∧ ∀ v ∈ L, (∃ w ∈ L, k • (m' *ᵥ v - m *ᵥ v) = b ^ N • w) ∧ b ^ e • (m' *ᵥ v) ∈ L ∧ b ^ e • (m'⁻¹ *ᵥ v) ∈ L := by
+  first | exact @GlobalTheory.UTrans.tvGen_adjust | exact GlobalTheory.UTrans.tvGen_adjust | (intros; apply GlobalTheory.UTrans.tvGen_adjust <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Matrix GlobalTheory.UTrans GlobalTheory.AdLat
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_eq_quasiReflection_mul_transvections : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E) (n : ℕ) (G : Matrix (Fin n) (Fin n) E), IsHerm (c : E →+* E) G → (∃ z : Fin n → E, z ≠ 0 ∧ hf (c : E →+* E) G z z = 0) → ∀ γ, IsU (c : E →+* E) G γ → (∀ x, hf (c : E →+* E) G x x ≠ 0 → ∃ m ∈ TvGen (c : E →+* E) G, γ = tv (c : E →+* E) G x ((γ.det - 1) / hf (c : E →+* E) G x x) * m) ∧ (γ.det = 1 → γ ∈ TvGen (c : E →+* E) G) := by
+  first | exact @GlobalTheory.UTrans.isU_eq_tv_mul_tvGen | exact GlobalTheory.UTrans.isU_eq_tv_mul_tvGen | (intros; apply GlobalTheory.UTrans.isU_eq_tv_mul_tvGen <;> assumption)
+end
+
+section
 open NumberField IsDedekindDomain Matrix GlobalTheory.UTrans GlobalTheory.AdLat
 open scoped TensorProduct
 
@@ -331,3 +348,4 @@ theorem strong_approximation : ∀ (F E : Type) [Field F] [NumberField F] [Field
   rw [hYe, Matrix.add_mulVec, Matrix.one_mulVec, Nat.cast_smul_eq_nsmul, Matrix.smul_mulVec]
 
 end GlobalTheory.UTrans.StrongApprox
+end

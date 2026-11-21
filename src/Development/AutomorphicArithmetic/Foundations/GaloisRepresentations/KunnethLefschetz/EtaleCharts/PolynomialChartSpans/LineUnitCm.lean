@@ -1,8 +1,94 @@
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.PolynomialChartSpans.PBEx
-import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.PolynomialChartSpans.PBOf
+import Mathlib
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.ExistsG
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.ExistsV
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.WCover
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.TCover
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.CoverComm
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.GvField
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.InjField
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.KunnethLefschetz.EtaleCharts.FlatSectionExtension.OntoField
+import Development.AutomorphicArithmetic.WhittakerHecke.QuasiIsoChainsOfCechConditionOfLocallySurjective
+import Development.AutomorphicArithmetic.WhittakerHecke.ProjBundleDataExistsUniqueSimplexOfVertices
+import Development.AutomorphicArithmetic.WhittakerHecke.ProjBundleDataCechExistsUniqueSimplexOfVertices
+import Development.AutomorphicArithmetic.WhittakerHecke.ProjBundleDataIsLocallySurjectiveEtale
+import Development.AutomorphicArithmetic.WhittakerHecke.ProjBundleDataBundleIsLocallySurjectiveEtale
+import Development.AutomorphicArithmetic.WhittakerHecke.FirstChernClassProjBundleLineOfTwistEquiv
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FirstChernClassEqZeroOfUnitTrivialization
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlternatingSumThreeTerms
 
+section
+open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC CrystallineSemistableComparison CrystallineSemistableComparison.Onto UpperTheory.Gal.KunnethLefschetz.G.PX
+
+theorem UpperTheory.Gal.KunnethLefschetz.G.pBEx : UpperTheory.Gal.KunnethLefschetz.G.PBEx := by
+  intro K _ W Z Y T q i π D d hB j r hsq
+  obtain ⟨B⟩ := hB
+  obtain ⟨g, gn, gc, gs⟩ := existsG B
+  obtain ⟨v, hv, hu⟩ := existsV B j
+  obtain ⟨sc, uc⟩ := wCover B
+  obtain ⟨se, ue⟩ := tCover B j r hsq
+  obtain ⟨cm, ct⟩ := coverComm B j r hsq.w
+  have hτ : ∀ {V : Scheme.{0}} (a b : V ⟶ TP B j), a ≫ eP B j = b ≫ eP B j →
+      (a ≫ tauP B j) ≫ D.f = (b ≫ tauP B j) ≫ D.f := fun a b h => by
+    rw [Category.assoc, Category.assoc, ct, reassoc_of% h]
+  have hone : ∀ {V : Scheme.{0}} (a b : V ⟶ WP B) (e : a = b) (h : a ≫ cP B = b ≫ cP B), g a b h = 1 := by
+    intro V a b e h
+    subst e
+    have := gc a a a h h
+    exact mul_eq_left.1 this
+  let P : PBData r d :=
+    { W' := WP B
+      c := cP B
+      g := g
+      g_nat := gn
+      g_coc := gc
+      T' := TP B j
+      e := eP B j
+      ρ := rhoP B j r hsq.w
+      comm := cm
+      v := fun a => ⟨a.appTop.hom ∘ v, by
+        rw [Set.range_comp, ← Ideal.map_span, hu, Ideal.map_top]⟩
+      v_nat := fun s a => by
+        funext m
+        simp only [Function.comp_apply, Scheme.Hom.comp_appTop]
+        rfl
+      w := fun a b h => (D.u _ _ (hτ a b h))⁻¹
+      gv := fun a b h h' => gvField B j r hsq v hv a b h (hτ a b h) _ (gs _ _ h')
+      inj := fun a b h' u hh => injField B j r hsq v hv a b _ h' (gs _ _ h') u hh
+      onto := fun a₀ v₀ x => by
+        obtain ⟨U, a, u, hx, ha, hv'⟩ := ontoField B j r hsq v hv a₀ v₀ x
+        have h : (a ≫ rhoP B j r hsq.w) ≫ cP B = (U.ι ≫ a₀) ≫ cP B := by rw [ha]
+        refine ⟨U, a, h, u, hx, ?_⟩
+        rw [hone _ _ ha h]
+        simpa using hv' }
+  exact ⟨P, tauP B j, ct, fun a b h h' => rfl⟩
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC CrystallineSemistableComparison CrystallineSemistableComparison.Onto Simplicial UpperTheory.Gal.KunnethLefschetz UpperTheory.Gal.KunnethLefschetz.G
+
+theorem UpperTheory.Gal.KunnethLefschetz.G.pBOf : UpperTheory.Gal.KunnethLefschetz.G.PBOf := by
+  intro hIn q _ T W r d P hq L ε hL x hx
+  haveI := P.smc
+  haveI := P.suc
+  haveI := P.sme
+  haveI := P.sue
+  have hS := UpperTheory.quasiIso_chains_of_cech_condition_of_locallySurjective (ZMod q) P.S P.Q P.pS (UpperTheory.projBundleData_existsUnique_simplex_of_vertices P) (UpperTheory.projBundleData_isLocallySurjective_etale P)
+  have hE := UpperTheory.quasiIso_chains_of_cech_condition_of_locallySurjective (ZMod q) (cech P.e) P.Q (P.bunF ≫ P.pS) (UpperTheory.projBundleData_cech_existsUnique_simplex_of_vertices P) (UpperTheory.projBundleData_bundle_isLocallySurjective_etale P)
+  rw [Functor.map_comp] at hE
+  have hF : QuasiIso ((chains (ZMod q)).map P.bunF) := (quasiIso_iff_comp_right _ ((chains (ZMod q)).map P.pS)).1 hE
+  refine UpperTheory.firstChernClass_projBundle_line_of_twist_equiv hIn q r d (cechAug P.c) (cechAug P.e) P.bunV P.bunF (fun i => hIn.a2 _ P.c _) (fun i => hIn.a2 _ P.e _)
+    (fun i n => hIn.a1 _ ((chains (ZMod q)).map P.bunF) _ n) ?_ hq L ε ?_ x hx
+  · rw [← Category.assoc, P.bunF_fst, P.ρmap_aug]
+  · intro U y
+    obtain ⟨s, h, e⟩ := pts_spec P.e y
+    have h2 : ∀ t : Fin 2, pts P.e y t ≫ P.e = s := h
+    rw [e, P.lineUnit_bunF s _ h2]
+    exact hL U s _ h2
+end
+
+section
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC CrystallineSemistableComparison CrystallineSemistableComparison.Onto
@@ -185,4 +271,5 @@ theorem UpperTheory.Gal.KunnethLefschetz.G.pBE :
       exact ((hI.a6nat q).2.2.1 _ L hinvD).trans hz
     exact (hI.a2 (ZMod q) f' (tw q 1) 2).1 (hz2.trans (map_zero _).symm)
 
+end
 end

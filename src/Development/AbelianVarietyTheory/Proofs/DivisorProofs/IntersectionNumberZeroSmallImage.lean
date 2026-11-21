@@ -2,8 +2,51 @@ import Mathlib
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsTorsionFreeOfForallExists
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalSectionCycleFormulaProjectiveStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeNatCastOfAddOneLe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LtNatCastOfAddOneLtSucc
+
+section
+namespace GlobalTheory.NatCastUpperBound
+
+theorem le_natCast_of_add_one_le {a : WithBot ℕ∞} {n : ℕ}
+    (h : a + (1 : WithBot ℕ∞) ≤ (↑(n + (1 : ℕ)) : WithBot ℕ∞)) :
+    a ≤ (↑n : WithBot ℕ∞) := by
+  induction a using WithBot.recBotCoe with
+  | bot => exact bot_le
+  | coe b =>
+    induction b using ENat.recTopCoe with
+    | top =>
+      exfalso
+      have h1 : ((⊤ : ℕ∞) : WithBot ℕ∞) + 1 = ((⊤ : ℕ∞) : WithBot ℕ∞) := rfl
+      have h2 : ((n + 1 : ℕ) : WithBot ℕ∞) = (((n + 1 : ℕ) : ℕ∞) : WithBot ℕ∞) := rfl
+      rw [h1, h2, WithBot.coe_le_coe, top_le_iff] at h
+      exact ENat.coe_ne_top _ h
+    | coe m =>
+      have h1 : ((m : ℕ∞) : WithBot ℕ∞) + 1 = (((m + 1 : ℕ) : ℕ∞) : WithBot ℕ∞) := rfl
+      have h2 : ((n + 1 : ℕ) : WithBot ℕ∞) = (((n + 1 : ℕ) : ℕ∞) : WithBot ℕ∞) := rfl
+      have h3 : ((n : ℕ) : WithBot ℕ∞) = (((n : ℕ) : ℕ∞) : WithBot ℕ∞) := rfl
+      rw [h1, h2, WithBot.coe_le_coe, ENat.coe_le_coe] at h
+      rw [h3, WithBot.coe_le_coe, ENat.coe_le_coe]
+      omega
+
+end GlobalTheory.NatCastUpperBound
+end
+
+section
+namespace GlobalTheory.NatCastStrictBound
+
+theorem lt_natCast_of_add_one_lt_succ :
+    ∀ {a : WithBot ℕ∞} {n : ℕ}, a + (1 : WithBot ℕ∞) < (↑(n + (1 : ℕ)) : WithBot ℕ∞) →
+      a < (↑n : WithBot ℕ∞) := by
+  intro a n h
+  by_contra hc
+  have hle : (↑n : WithBot ℕ∞) ≤ a := not_lt.mp hc
+  have h2 : (↑n : WithBot ℕ∞) + 1 ≤ a + 1 := by gcongr
+  rw [Nat.cast_add, Nat.cast_one] at h
+  exact absurd h (not_lt.mpr h2)
+
+end GlobalTheory.NatCastStrictBound
+end
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.ArInt GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.FibreProj
 
 set_option autoImplicit false
@@ -181,3 +224,5 @@ theorem interNum_pull_eq_zero : ∀ (κ : Type) [Field κ] (e r : ℕ) (Z W : Sc
       exact withBot_lt_of_add_one_lt (lt_of_le_of_lt h1 hg)
 
 end GlobalTheory.PullVanish
+end
+end

@@ -5,11 +5,160 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.Ex
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.AlgebraicCharacterWD
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.EqOneOfMemLev
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.EqOneOfNormOneValuationSubOneSmall
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsOtherSplitPlaceWithDistinctRealPlaceStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CmIdeleConjMemCongruenceUnitIdelesConjPlaces
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RealSubfieldHeckeCharFinitePartEqOneStatement
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsOtherSplitPlaceWithDistinctRealPlace
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RealSubfieldHeckeCharFinitePartEqOne
 
+section
+section
+open NumberField IsDedekindDomain
+
+namespace GlobalTheory
+
+theorem abs_norm_eq_prod_embeddings_closeOne {E : Type} [Field E] [NumberField E] (x : E) :
+    |((Algebra.norm ℚ x : ℚ) : ℝ)| = ∏ σ : E →+* ℂ, ‖σ x‖ := by
+  have h : ((Algebra.norm ℚ x : ℚ) : ℂ) = ∏ σ : E →+* ℂ, σ x := by
+    rw [Fintype.prod_equiv (RingHom.equivRatAlgHom E ℂ) (fun f => f x) (fun φ => φ x)
+      (fun _ => rfl), ← Algebra.norm_eq_prod_embeddings ℚ ℂ x]
+    simp
+  rw [← norm_prod, ← h, Complex.norm_ratCast]
+
+theorem eq_one_of_norm_one_of_valuation_sub_one_le (E : Type) [Field E] [NumberField E] (ε : E)
+    (w : HeightOneSpectrum (𝓞 E)) (K : ℕ) (hK : Module.finrank ℚ E < K)
+    (hint : ∀ v : HeightOneSpectrum (𝓞 E), v.valuation E ε ≤ 1)
+    (habs : ∀ φ : E →+* ℂ, ‖φ ε‖ = 1)
+    (hw : w.valuation E (ε - 1) ≤ WithZero.exp (-(K : ℤ))) : ε = 1 := by
+  obtain ⟨r, hr⟩ := HeightOneSpectrum.mem_integers_of_valuation_le_one E ε hint
+  by_contra hne
+  have hxE : algebraMap (𝓞 E) E (r - 1) = ε - 1 := by simp [hr]
+  have hx0 : r - 1 ≠ 0 := by
+    intro h
+    rw [h, map_zero] at hxE
+    exact hne (sub_eq_zero.mp hxE.symm)
+  have hmem : r - 1 ∈ w.asIdeal ^ K := by
+    rw [← HeightOneSpectrum.intValuation_le_pow_iff_mem, ← HeightOneSpectrum.valuation_of_algebraMap (K := E)]
+    convert hw using 2
+  have hdvd : w.asIdeal ^ K ∣ Ideal.span {r - 1} := by
+    rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
+    exact hmem
+  have hN := map_dvd Ideal.absNorm hdvd
+  rw [map_pow, Ideal.absNorm_span_singleton] at hN
+  have hnz : (Algebra.norm ℤ (r - 1)).natAbs ≠ 0 := by
+    rw [← Ideal.absNorm_span_singleton, Ne, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
+    exact hx0
+  have hle := Nat.le_of_dvd (Nat.pos_of_ne_zero hnz) hN
+  have h2 : 2 ≤ Ideal.absNorm w.asIdeal := by
+    have h0 : Ideal.absNorm w.asIdeal ≠ 0 := by
+      rw [Ne, Ideal.absNorm_eq_zero_iff]; exact w.ne_bot
+    have h1 : Ideal.absNorm w.asIdeal ≠ 1 := by
+      rw [Ne, Ideal.absNorm_eq_one_iff]; exact w.isPrime.ne_top
+    omega
+  have hlow : 2 ^ K ≤ (Algebra.norm ℤ (r - 1)).natAbs :=
+    le_trans (Nat.pow_le_pow_left h2 K) hle
+  have hup : ((Algebra.norm ℤ (r - 1)).natAbs : ℝ) ≤ 2 ^ Module.finrank ℚ E := by
+    have h1 : ((Algebra.norm ℤ (r - 1)).natAbs : ℝ) = |((Algebra.norm ℚ (ε - 1) : ℚ) : ℝ)| := by
+      rw [← hxE, ← Algebra.coe_norm_int (r - 1), Nat.cast_natAbs]
+      push_cast
+      rfl
+    rw [h1, abs_norm_eq_prod_embeddings_closeOne]
+    calc ∏ φ : E →+* ℂ, ‖φ (ε - 1)‖ ≤ ∏ _φ : E →+* ℂ, (2 : ℝ) := by
+          refine Finset.prod_le_prod (fun _ _ => norm_nonneg _) (fun φ _ => ?_)
+          rw [map_sub, map_one]
+          calc ‖φ ε - 1‖ ≤ ‖φ ε‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
+            _ = 2 := by rw [habs φ, norm_one]; norm_num
+      _ = 2 ^ Module.finrank ℚ E := by
+          rw [Finset.prod_const, Finset.card_univ, NumberField.Embeddings.card]
+  have hlowR : (2 : ℝ) ^ K ≤ 2 ^ Module.finrank ℚ E := by
+    have : ((2 ^ K : ℕ) : ℝ) ≤ ((Algebra.norm ℤ (r - 1)).natAbs : ℝ) := by exact_mod_cast hlow
+    push_cast at this
+    linarith
+  have := (pow_le_pow_iff_right₀ (by norm_num : (1 : ℝ) < 2)).mp hlowR
+  omega
+
+end GlobalTheory
+end
+
+open NumberField IsDedekindDomain
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_one_of_norm_one_valuation_sub_one_small : ∀ (E : Type) [Field E] [NumberField E] (ε : E) (w : HeightOneSpectrum (𝓞 E)) (K : ℕ), Module.finrank ℚ E < K → (∀ v : HeightOneSpectrum (𝓞 E), v.valuation E ε ≤ 1) → (∀ φ : E →+* ℂ, ‖φ ε‖ = 1) → w.valuation E (ε - 1) ≤ WithZero.exp (-(K : ℤ)) → ε = 1 := by
+  atlas_forward_decl GlobalTheory.eq_one_of_norm_one_of_valuation_sub_one_le
+end
+
+section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host
+open GlobalTheory.HeckeUnrExt
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele (ideleMap ideleConj)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_other_split_place_with_distinct_real_place : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w₀ : HeightOneSpectrum (𝓞 E)), ∃ w₁ : HeightOneSpectrum (𝓞 E), GlobalTheory.UnitaryBC.IsSplitAt w₁ ∧ w₁.under (𝓞 (maximalRealSubfield E)) ≠ w₀.under (𝓞 (maximalRealSubfield E)) := by
+  first | exact @GlobalTheory.OtherSplitPlace.exists_isSplitAt_under_ne | exact GlobalTheory.OtherSplitPlace.exists_isSplitAt_under_ne | (intros; apply GlobalTheory.OtherSplitPlace.exists_isSplitAt_under_ne <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host
+open GlobalTheory.HeckeUnrExt
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele (ideleMap ideleConj finiteCompletionMap)
+
+namespace GlobalTheory.HeckeConjLev
+
+theorem ideleMap_mem_levT (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
+    (T : Set (HeightOneSpectrum (𝓞 K))) (T' : Set (HeightOneSpectrum (𝓞 L)))
+    (hT : ∀ w ∈ T', w.under (𝓞 K) ∈ T) (N : ℕ) (y : Ideles K) (hy : y ∈ levT K T N) :
+    ideleMap K L y ∈ levT L T' N := by
+  have hc : ∀ w : HeightOneSpectrum (𝓞 L), (ideleMap K L y).val.2 w =
+      finiteCompletionMap K L w (y.val.2 (w.under (𝓞 K))) := fun w => rfl
+  refine ⟨fun w => ?_, fun w hw => ?_⟩
+  · show Valued.v ((ideleMap K L y).val.2 w) = 1
+    have h : Valued.v (y.val.2 (w.under (𝓞 K))) = 1 := hy.1 _
+    rw [hc, GlobalTheory.UpIdeleMod.valued_finiteCompletionMap, h, one_pow]
+  · show Valued.v ((ideleMap K L y).val.2 w - 1) ≤ Valued.v (N : w.adicCompletion L)
+    rw [hc, ← map_one (finiteCompletionMap K L w), ← map_sub, ← map_natCast (finiteCompletionMap K L w),
+      GlobalTheory.UpIdeleMod.valued_finiteCompletionMap, GlobalTheory.UpIdeleMod.valued_finiteCompletionMap]
+    exact pow_le_pow_left₀ zero_le (hy.2 _ (hT w hw)) _
+
+theorem under_under (F K L : Type) [Field F] [NumberField F] [Field K] [NumberField K] [Field L] [NumberField L]
+    [Algebra F K] [Algebra K L] [Algebra F L]
+    (h : ∀ x : F, algebraMap K L (algebraMap F K x) = algebraMap F L x) (w : HeightOneSpectrum (𝓞 L)) :
+    (w.under (𝓞 K)).under (𝓞 F) = w.under (𝓞 F) := by
+  haveI : IsScalarTower F K L := IsScalarTower.of_algebraMap_eq fun x => (h x).symm
+  exact HeightOneSpectrum.ext (Ideal.under_under w.asIdeal)
+
+theorem ideleConj_mem_levT (E : Type) [Field E] [NumberField E] [IsCMField E]
+    (T : Set (HeightOneSpectrum (𝓞 E))) (N : ℕ) (u : Ideles E) (hu : u ∈ levT E T N) :
+    ideleConj (maximalRealSubfield E) E u ∈ levT E {w | ∀ w' : HeightOneSpectrum (𝓞 E),
+      w'.under (𝓞 (maximalRealSubfield E)) = w.under (𝓞 (maximalRealSubfield E)) → w' ∈ T} N :=
+  @ideleMap_mem_levT E E _ _ _ _
+    (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.conj (maximalRealSubfield E) E).toRingEquiv.toRingHom.toAlgebra T
+    {w | ∀ w' : HeightOneSpectrum (𝓞 E),
+      w'.under (𝓞 (maximalRealSubfield E)) = w.under (𝓞 (maximalRealSubfield E)) → w' ∈ T}
+    (fun w hw => hw _ (@under_under (maximalRealSubfield E) E E _ _ _ _ _ _ _
+      (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.conj (maximalRealSubfield E) E).toRingEquiv.toRingHom.toAlgebra _
+      (fun x => (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.conj (maximalRealSubfield E) E).commutes x) w)) N u hu
+
+end GlobalTheory.HeckeConjLev
+end
+end
+
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host
+open GlobalTheory.HeckeUnrExt
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele (ideleMap ideleConj)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cmIdeleConj_mem_congruenceUnitIdeles_conj_places : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (T : Set (HeightOneSpectrum (𝓞 E))) (N : ℕ) (u : Ideles E), u ∈ levT E T N → ideleConj (maximalRealSubfield E) E u ∈ levT E {w | ∀ w' : HeightOneSpectrum (𝓞 E), w'.under (𝓞 (maximalRealSubfield E)) = w.under (𝓞 (maximalRealSubfield E)) → w' ∈ T} N := by
+  atlas_forward_decl GlobalTheory.HeckeConjLev.ideleConj_mem_levT
+end
+
+section
+open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host
+open GlobalTheory.HeckeUnrExt
+open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele (ideleMap ideleConj)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realSubfield_heckeChar_finitePart_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (ψ : HChar (maximalRealSubfield E)) (M : ℕ), (∀ a : Ideles (maximalRealSubfield E), a ∈ GlobalTheory.Mem.Chr.unitIdl (maximalRealSubfield E) → (∀ w, (a : AdeleRing (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E)).1 w = 1) → (∀ P : HeightOneSpectrum (𝓞 (maximalRealSubfield E)), Valued.v ((a : AdeleRing (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E)).2 P - 1) ≤ Valued.v ((M : maximalRealSubfield E) : P.adicCompletion (maximalRealSubfield E))) → ψ.1 a = 1) → (∀ w : HeightOneSpectrum (𝓞 E), ¬ GlobalTheory.UnitaryBC.IsSplitAt w → ψ.UnrAt (w.under (𝓞 (maximalRealSubfield E)))) → ∀ (w₀ : HeightOneSpectrum (𝓞 E)) (N : ℕ), M ∣ N → ∀ b : Ideles (maximalRealSubfield E), ideleMap (maximalRealSubfield E) E b ∈ levT E {w | GlobalTheory.UnitaryBC.IsSplitAt w ∧ w ≠ w₀} N → ψ.1 (GlobalTheory.Mem.Chr.finPartI (maximalRealSubfield E) b) = 1 := by
+  first | exact @GlobalTheory.HeckeFinTriv.finPart_eq_one | exact GlobalTheory.HeckeFinTriv.finPart_eq_one | (intros; apply GlobalTheory.HeckeFinTriv.finPart_eq_one <;> assumption)
+end
+
+section
 section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
@@ -155,3 +304,4 @@ open GlobalTheory.GalCut GlobalTheory.Published
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_algebraic_hecke_char_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (χ : HChar (maximalRealSubfield E)) (b : ℤ), χ.IsAlg (fun _ => b) → (∀ w : HeightOneSpectrum (𝓞 E), ¬ GlobalTheory.UnitaryBC.IsSplitAt w → Algebra.IsUnramifiedAt (𝓞 (maximalRealSubfield E)) w.asIdeal ∧ χ.UnrAt (w.under (𝓞 (maximalRealSubfield E)))) → ∀ w₀ : HeightOneSpectrum (𝓞 E), GlobalTheory.UnitaryBC.IsSplitAt w₀ → ∃ (κ : HChar E) (m : (E →+* ℂ) → ℤ), κ.IsAlg m ∧ GlobalTheory.HeightCounting.Blocks.resReal κ = χ ∧ κ.UnrAt w₀ ∧ ∀ w : HeightOneSpectrum (𝓞 E), ¬ GlobalTheory.UnitaryBC.IsSplitAt w → κ.UnrAt w := by
   atlas_forward_decl GlobalTheory.HeckeUnrExt.exists_ext_unr
+end

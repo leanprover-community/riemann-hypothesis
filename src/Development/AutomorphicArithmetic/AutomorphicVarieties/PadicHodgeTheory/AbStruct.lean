@@ -1,9 +1,614 @@
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
 import GroundTheory.LocalFields.PrincipalUnitsRank
 import GroundTheory.LocalFields.MainTheorem
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalClassFieldTheoryOfOpenEmbedding
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalFieldUnitsStructureTheorem
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.OpenField
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixingSubgroupEquivBicontinuous
+import Mathlib
 
+section
+open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc Topology
+
+private theorem ag_lift {G C : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CommGroup C]
+    [TopologicalSpace C] [T2Space C] (q : G →* C) (hq : Continuous q) :
+    ∃ F : TopologicalAbelianization G →* C, Continuous F ∧ ∀ g : G, F g = q g := by
+  have hle : (commutator G).topologicalClosure ≤ q.ker :=
+    Subgroup.topologicalClosure_minimal _ (Abelianization.commutator_subset_ker q)
+      (isClosed_singleton.preimage hq)
+  refine ⟨QuotientGroup.lift _ q hle, ?_, fun g => rfl⟩
+  exact continuous_coinduced_dom.2 hq
+
+private theorem ag_map {G G' : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group G']
+    [TopologicalSpace G'] [IsTopologicalGroup G'] (f : G →* G') (hf : Continuous f) :
+    ∃ F : TopologicalAbelianization G →* TopologicalAbelianization G', Continuous F ∧ ∀ g : G, F g = (f g : G') := by
+  set M := (commutator G').topologicalClosure
+  have hker : ((QuotientGroup.mk' M).comp f).ker = M.comap f := by
+    ext x
+    simp
+  have hle : (commutator G).topologicalClosure ≤ M.comap f := by
+    apply Subgroup.topologicalClosure_minimal
+    · rw [← hker]
+      exact Abelianization.commutator_subset_ker _
+    · exact (Subgroup.isClosed_topologicalClosure _).preimage hf
+  refine ⟨QuotientGroup.map _ M f hle, ?_, fun g => rfl⟩
+  exact continuous_coinduced_dom.2 (continuous_quotient_mk'.comp hf)
+
+open GroundTheory.LocalField ValuativeRel GroundTheory.LocalField.Abstract in
+private theorem ag_field (K Ω : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
+    [IsNonarchimedeanLocalField K] [Field Ω] [Algebra K Ω] [IsSepClosure K Ω]
+    {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (ε : G ≃* (Ω ≃ₐ[K] Ω))
+    (hε : Continuous ε) (hε' : Continuous ε.symm) :
+    ∃ (θ : Kˣ →* TopologicalAbelianization G) (D : TopologicalAbelianization G →* Multiplicative ProfiniteInteger),
+      Continuous θ ∧ Function.Injective θ ∧ DenseRange θ ∧
+      (∀ H : Subgroup Kˣ, IsOpen (H : Set Kˣ) → H.FiniteIndex →
+        ∃ V : Subgroup (TopologicalAbelianization G), IsOpen (V : Set (TopologicalAbelianization G)) ∧ V.comap θ = H) ∧
+      Continuous D ∧ (∀ y : Kˣ, D (θ y) = Multiplicative.ofAdd ((ord (y : K) : ℤ) : ProfiniteInteger)) ∧
+      ∀ g : G, D (QuotientGroup.mk' _ g) = unramifiedDegree K Ω (ε g) := by
+  obtain ⟨F, hF, hFe⟩ := ag_map (ε : G →* (Ω ≃ₐ[K] Ω)) hε
+  obtain ⟨F', hF', hF'e⟩ := ag_map (ε.symm : (Ω ≃ₐ[K] Ω) →* G) hε'
+  have hFF' : ∀ b, F (F' b) = b := by
+    intro b
+    obtain ⟨g, rfl⟩ := QuotientGroup.mk_surjective b
+    rw [hF'e, hFe]
+    simp
+  have hF'F : ∀ a, F' (F a) = a := by
+    intro a
+    obtain ⟨g, rfl⟩ := QuotientGroup.mk_surjective a
+    rw [hFe, hF'e]
+    simp
+  obtain ⟨U, hU, hUe⟩ := ag_lift (unramifiedDegree K Ω) continuous_unramifiedDegree
+  set L := localReciprocityLimit K Ω
+  have hLart : ∀ x, localArtinMap K Ω x = topologicalAbelianizationEquiv K Ω (L x) :=
+    fun x => localArtinMap_apply x
+  have hLc : Continuous L := by
+    have h : (L : Kˣ → _) = (topologicalAbelianizationEquiv K Ω).symm ∘ localArtinMap K Ω := by
+      funext x
+      simp [hLart]
+    rw [h]
+    exact (topologicalAbelianizationEquiv K Ω).symm.continuous.comp continuous_localArtinMap
+  have hLi : Function.Injective L := by
+    intro x y hxy
+    apply injective_localArtinMap (K := K) (Ω := Ω)
+    rw [hLart, hLart, hxy]
+  have hU' : ∀ x : Kˣ, U (L x) = Multiplicative.ofAdd ((ord (x : K) : ℤ) : ProfiniteInteger) := by
+    intro x
+    obtain ⟨g, hg⟩ := QuotientGroup.mk_surjective (L x)
+    rw [← hg, hUe]
+    exact unramifiedDegree_of_mk_eq_localReciprocityLimit hg
+  refine ⟨F'.comp L, U.comp F, hF'.comp hLc, ?_, ?_, ?_, hU.comp hF, ?_, ?_⟩
+  · intro x y hxy
+    apply hLi
+    have := congrArg F hxy
+    simpa [hFF'] using this
+  · exact (Function.Surjective.denseRange (fun a => ⟨F a, hF'F a⟩)).comp
+      (denseRange_localReciprocityLimit (K := K) (Ω := Ω)) hF'
+  · intro H hHo hHf
+    let H' : openFiniteIndex Kˣ := ⟨H, hHo, hHf⟩
+    let ψ := ((artinCoord K Ω H').comp
+      (topologicalAbelianizationEquiv K Ω).toMulEquiv.toMonoidHom).comp F
+    have hψ : Continuous ψ :=
+      (continuous_artinCoord H').comp ((topologicalAbelianizationEquiv K Ω).continuous.comp hF)
+    haveI := openCompletion.discreteTopology_quotient H'
+    refine ⟨ψ.ker, ?_, ?_⟩
+    · exact (isOpen_discrete ({1} : Set (Kˣ ⧸ (H : Subgroup Kˣ)))).preimage hψ
+    · ext y
+      simp only [Subgroup.mem_comap, MonoidHom.mem_ker, ψ, MonoidHom.comp_apply, hFF']
+      change artinCoord K Ω H' (topologicalAbelianizationEquiv K Ω (L y)) = 1 ↔ y ∈ H
+      rw [← hLart, artinCoord_localArtinMap]
+      exact QuotientGroup.eq_one_iff y
+  · intro y
+    simp [hFF', hU']
+  · intro g
+    simp [hFe, hUe]
+
+open GroundTheory.LocalField ValuativeRel IsLocalRing in
+private theorem ag_char (l : ℕ) [Fact l.Prime] (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+    [IsNonarchimedeanLocalField k] [Algebra ℚ_[l] k] [ValuativeExtension ℚ_[l] k] : CharP 𝓀[k] l := by
+  rw [CharP.charP_iff_prime_eq_zero (Fact.out : l.Prime)]
+  have hnu : ¬ IsUnit ((l : 𝒪[k])) := by
+    rintro ⟨u, hu⟩
+    have h1 : ((u⁻¹ : 𝒪[k]ˣ) : 𝒪[k]) * (l : 𝒪[k]) = 1 := by
+      rw [← hu]
+      simp
+    have h2 : ((((u⁻¹ : 𝒪[k]ˣ) : 𝒪[k]) : k)) = algebraMap ℚ_[l] k ((l : ℚ_[l])⁻¹) := by
+      have := congrArg (fun x : 𝒪[k] => (x : k)) h1
+      simp only [Subring.coe_mul, Subring.coe_natCast, Subring.coe_one] at this
+      rw [map_inv₀, map_natCast]
+      exact eq_inv_of_mul_eq_one_left this
+    have h3 : algebraMap ℚ_[l] k ((l : ℚ_[l])⁻¹) ∈ (ValuativeRel.valuation k).integer := by
+      rw [← h2]
+      exact (((u⁻¹ : 𝒪[k]ˣ) : 𝒪[k])).2
+    rw [algebraMap_mem_integer_iff, PadicRank.mem_integer_padic_iff] at h3
+    rw [norm_inv, Padic.norm_p, inv_inv] at h3
+    have : (1 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).one_lt
+    linarith
+  have hmem : (l : 𝒪[k]) ∈ maximalIdeal 𝒪[k] := (mem_maximalIdeal _).2 hnu
+  rw [← map_natCast (residue 𝒪[k]) l]
+  exact (residue_eq_zero_iff _).2 hmem
+
+theorem UpperTheory.local_class_field_theory_of_open_embedding :
+    ∀ {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ l) (hφ : IsOpenEmbedding φ), ∃ (K : Type) (_ : Field K) (_ : ValuativeRel K) (_ : TopologicalSpace K) (_ : IsNonarchimedeanLocalField K) (_ : Algebra ℚ_[l] K) (_ : ValuativeExtension ℚ_[l] K) (_ : FiniteDimensional ℚ_[l] K), φ.range.index = Module.finrank ℚ_[l] K ∧ ∃ (θ : Kˣ →* TopologicalAbelianization G) (D : TopologicalAbelianization G →* Multiplicative GroundTheory.LocalField.Abstract.ProfiniteInteger), Continuous θ ∧ Function.Injective θ ∧ DenseRange θ ∧ (∀ H : Subgroup Kˣ, IsOpen (H : Set Kˣ) → H.FiniteIndex → ∃ V : Subgroup (TopologicalAbelianization G), IsOpen (V : Set (TopologicalAbelianization G)) ∧ V.comap θ = H) ∧ Continuous D ∧ (∀ y : Kˣ, D (θ y) = Multiplicative.ofAdd ((GroundTheory.LocalField.ord (y : K) : ℤ) : GroundTheory.LocalField.Abstract.ProfiniteInteger)) ∧ ∀ g : G, φ g ∈ Iq l ↔ D (QuotientGroup.mk' _ g) = 1 := by
+  intro l _ G _ _ _ φ hφ
+  obtain ⟨K, e, he, he', hcomp, -, hidx, -⟩ := openField φ hφ
+  haveI hfin : FiniteDimensional ℚ_[l] K.1 := K.2
+  obtain ⟨vr, tp, hloc, hext⟩ :=
+    GroundTheory.LocalField.exists_isNonarchimedeanLocalField_valuativeExtension ℚ_[l] K.1
+  letI := vr
+  letI := tp
+  haveI := hloc
+  haveI := hext
+  haveI : Algebra.IsAlgebraic K.1 (Om l) := Algebra.IsAlgebraic.tower_top (K := ℚ_[l]) K.1
+  haveI : IsAlgClosure K.1 (Om l) := ⟨inferInstance, inferInstance⟩
+  haveI : IsSepClosure K.1 (Om l) := inferInstance
+  obtain ⟨hc1, hc2⟩ := GlobalTheory.fixingSubgroupEquiv_bicontinuous ℚ_[l] (Om l) K.1
+  let ε : G ≃* Gal(Om l/K.1) := e.trans K.1.fixingSubgroupEquiv
+  have hε : Continuous ε := hc1.comp he
+  have hε' : Continuous ε.symm := he'.comp hc2
+  obtain ⟨θ, D, h1, h2, h3, h4, h5, h6, hD⟩ := ag_field K.1 (Om l) ε hε hε'
+  refine ⟨K.1, inferInstance, vr, tp, hloc, inferInstance, hext, hfin, hidx, θ, D,
+    h1, h2, h3, h4, h5, h6, ?_⟩
+  intro g
+  have hεg : ∀ x, (ε g) x = φ g x := by
+    intro x
+    rw [← hcomp]
+    rfl
+  haveI := ag_char l K.1
+  rw [hD g, GroundTheory.LocalField.unramifiedDegree_eq_one_iff]
+  simp only [Iq, MaximalUnramifiedExtension, GroundTheory.LocalField.mem_fixingSubgroup_adjoin_iff,
+    GroundTheory.LocalField.mem_unramifiedRoots_iff, hεg]
+  constructor
+  · rintro h ξ ⟨m, hm, hξ⟩
+    apply h
+    refine ⟨m, ?_, ?_, hξ⟩
+    · rcases Nat.eq_zero_or_pos m with rfl | hpos
+      · simp at hm
+      · exact hpos
+    · intro hdvd
+      exact hm ((CharP.cast_eq_zero_iff _ l m).2 hdvd)
+  · rintro h ξ ⟨m, -, hml, hξ⟩
+    apply h
+    exact ⟨m, fun h0 => hml ((CharP.cast_eq_zero_iff _ l m).1 h0), hξ⟩
+end
+
+section
+open Module Topology
+
+theorem UpperTheory.finite_zp_module_torsion_free_splitting :
+    ∀ (l : ℕ) [Fact l.Prime] (N : Type) [AddCommGroup N] [Module ℤ_[l] N] [TopologicalSpace N] [IsTopologicalAddGroup N] [ContinuousSMul ℤ_[l] N] [T2Space N] [Module.Finite ℤ_[l] N], Finite ↥(Submodule.torsion ℤ_[l] N) ∧ ∃ (p : N →ₗ[ℤ_[l]] (Fin (Module.finrank ℤ_[l] N) → ℤ_[l])) (t : N →ₗ[ℤ_[l]] ↥(Submodule.torsion ℤ_[l] N)), Continuous p ∧ IsOpen (LinearMap.ker t : Set N) ∧ (∀ y : ↥(Submodule.torsion ℤ_[l] N), p y = 0 ∧ t y = y) ∧ Function.Bijective (fun y => (p y, t y)) := by
+  intro l _ N _ _ _ _ _ _ _
+  obtain ⟨m, g, hg⟩ := Module.Finite.exists_fin' ℤ_[l] N
+  have hgc : Continuous g := LinearMap.continuous_on_pi g
+  have hq : Topology.IsQuotientMap g := hgc.isClosedMap.isQuotientMap hgc hg
+  have hlin : ∀ f : N →ₗ[ℤ_[l]] (Fin (Module.finrank ℤ_[l] N) → ℤ_[l]), Continuous f := by
+    intro f
+    rw [hq.continuous_iff]
+    exact LinearMap.continuous_on_pi (f ∘ₗ g)
+  obtain ⟨a, ha, ha0⟩ := Submodule.annihilator_top_inter_nonZeroDivisors
+    (R := ℤ_[l]) (M := Submodule.torsion ℤ_[l] N) Submodule.torsion_isTorsion
+  have ha0' : a ≠ 0 := nonZeroDivisors.ne_zero ha0
+  have hkill : ∀ y : Submodule.torsion ℤ_[l] N, ((l : ℤ_[l]) ^ a.valuation) • y = 0 := by
+    intro y
+    have h1 : a • y = 0 := (Submodule.mem_annihilator.mp ha) y trivial
+    rw [PadicInt.unitCoeff_spec ha0', mul_smul] at h1
+    exact (smul_eq_zero_iff_eq (PadicInt.unitCoeff ha0')).mp (by rwa [Units.smul_def])
+  set K := a.valuation
+  have hl0 : (l : ℝ) ≠ 0 := by exact_mod_cast (Fact.out : l.Prime).ne_zero
+  have hopenI : IsOpen ((Ideal.span {(l : ℤ_[l]) ^ K} : Ideal ℤ_[l]) : Set ℤ_[l]) := by
+    have : ((Ideal.span {(l : ℤ_[l]) ^ K} : Ideal ℤ_[l]) : Set ℤ_[l])
+        = Metric.closedBall 0 ((l : ℝ) ^ (-(K : ℤ))) := by
+      ext x
+      simp [← PadicInt.norm_le_pow_iff_mem_span_pow]
+    rw [this]
+    exact IsUltrametricDist.isOpen_closedBall 0 (zpow_ne_zero _ hl0)
+  set T := Submodule.torsion ℤ_[l] N with hT
+  haveI : Module.IsTorsionFree ℤ_[l] (N ⧸ T) :=
+    Submodule.isTorsionFree_iff_torsion_eq_bot.mpr Submodule.QuotientTorsion.torsion_eq_bot
+  haveI : Module.Free ℤ_[l] (N ⧸ T) := Module.free_of_finite_type_torsion_free'
+  have hrank : Module.finrank ℤ_[l] (N ⧸ T) = Module.finrank ℤ_[l] N := by
+    have h := rank_quotient_add_rank_of_isDomain T
+    rw [Module.IsTorsion.rank_eq_zero Submodule.torsion_isTorsion, add_zero] at h
+    unfold Module.finrank
+    rw [h]
+  let b := Module.finBasisOfFinrankEq ℤ_[l] (N ⧸ T) hrank
+  obtain ⟨s, hs⟩ := Module.projective_lifting_property T.mkQ LinearMap.id T.mkQ_surjective
+  have hs' : ∀ q, T.mkQ (s q) = q := fun q => LinearMap.congr_fun hs q
+  let f : N →ₗ[ℤ_[l]] N := LinearMap.id - s ∘ₗ T.mkQ
+  have hsx : ∀ x, f x ∈ T := by
+    intro x
+    rw [← Submodule.Quotient.mk_eq_zero]
+    have := hs' (T.mkQ x)
+    simp only [Submodule.mkQ_apply] at this
+    simp [f, this]
+  let t : N →ₗ[ℤ_[l]] T := LinearMap.codRestrict T f hsx
+  let p : N →ₗ[ℤ_[l]] (Fin (Module.finrank ℤ_[l] N) → ℤ_[l]) := b.equivFun.toLinearMap ∘ₗ T.mkQ
+  have htv : ∀ x, (t x : N) = x - s (T.mkQ x) := fun x => rfl
+  have hmk0 : ∀ y : T, T.mkQ (y : N) = 0 := fun y => (Submodule.Quotient.mk_eq_zero T).mpr y.2
+  have hker : ∀ c : Fin m → ℤ_[l], (∀ i, c i ∈ Ideal.span {(l : ℤ_[l]) ^ K}) → t (g c) = 0 := by
+    intro c hc
+    choose c' hc' using fun i => Ideal.mem_span_singleton'.mp (hc i)
+    have : c = ((l : ℤ_[l]) ^ K) • c' := funext fun i => by simp [← hc' i, mul_comm]
+    rw [this, map_smul, map_smul, hkill]
+  refine ⟨?_, p, t, hlin p, ?_, fun y => ⟨?_, ?_⟩, ?_, ?_⟩
+  · haveI : NeZero (l ^ K) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
+    refine Finite.of_surjective (fun d : Fin m → ZMod (l ^ K) => t (g (fun i => ((d i).val : ℤ_[l])))) ?_
+    intro y
+    obtain ⟨c, hc⟩ := hg (y : N)
+    refine ⟨fun i => PadicInt.toZModPow K (c i), ?_⟩
+    have h1 : t (g c) = y := by
+      apply Subtype.ext
+      rw [htv, hc, hmk0, map_zero, sub_zero]
+    rw [← h1, ← sub_eq_zero, ← map_sub, ← map_sub]
+    apply hker
+    intro i
+    rw [← PadicInt.ker_toZModPow, RingHom.mem_ker]
+    simp [map_sub, ZMod.natCast_zmod_val]
+  · refine hq.isCoinducing.isOpen_preimage.mp ?_
+    show IsOpen ((LinearMap.ker (t ∘ₗ g) : Submodule ℤ_[l] (Fin m → ℤ_[l])) : Set (Fin m → ℤ_[l]))
+    refine Submodule.isOpen_mono (U := Submodule.pi Set.univ (fun _ => Ideal.span {(l : ℤ_[l]) ^ K})) ?_ ?_
+    · intro c hc
+      exact LinearMap.mem_ker.mpr (hker c (fun i => hc i (Set.mem_univ i)))
+    · rw [Submodule.coe_pi]
+      exact isOpen_set_pi Set.finite_univ (fun i _ => hopenI)
+  · show b.equivFun (T.mkQ y) = 0
+    rw [hmk0, map_zero]
+  · exact Subtype.ext (by rw [htv, hmk0, map_zero, sub_zero])
+  · intro x x' hxx
+    simp only [Prod.mk.injEq] at hxx
+    obtain ⟨h1, h2⟩ := hxx
+    have hq' : T.mkQ x = T.mkQ x' := b.equivFun.injective h1
+    have h3 := congrArg Subtype.val h2
+    rw [htv, htv, hq'] at h3
+    exact sub_left_injective h3
+  · rintro ⟨v, y⟩
+    refine ⟨s (b.equivFun.symm v) + y, ?_⟩
+    have hm : T.mkQ (s (b.equivFun.symm v) + y) = b.equivFun.symm v := by
+      rw [map_add, hs', hmk0, add_zero]
+    refine Prod.ext ?_ ?_
+    · show b.equivFun (T.mkQ _) = v
+      rw [hm, LinearEquiv.apply_symm_apply]
+    · apply Subtype.ext
+      show (t _ : N) = y
+      rw [htv, hm]
+      abel
+end
+
+section
+open GroundTheory.LocalField ValuativeRel Module Topology
+
+private theorem UpperTheory.exists_continuous_retraction_power {G : Type*} [CommGroup G] [TopologicalSpace G]
+    [IsTopologicalGroup G] (U : Subgroup G) (hU : IsOpen (U : Set G)) (u : G →* G) (m : ℕ)
+    (hfix : ∀ x ∈ U, u x = x) (hm : ∀ y, u y ^ m ∈ U) (s : U →* U) (hs : ∀ x, s x ^ m = x) :
+    ∃ r : G →* U, Continuous r ∧ (∀ x : U, r x = x) ∧ ∀ y, (r y : G) ^ m = u y ^ m := by
+  let r : G →* U :=
+    { toFun := fun y => s ⟨u y ^ m, hm y⟩
+      map_one' := by
+        have h : (⟨u 1 ^ m, hm 1⟩ : U) = 1 := by ext; simp
+        rw [h, map_one]
+      map_mul' := by
+        intro x y
+        have h : (⟨u (x * y) ^ m, hm (x * y)⟩ : U) = ⟨u x ^ m, hm x⟩ * ⟨u y ^ m, hm y⟩ := by
+          ext; simp [mul_pow]
+        rw [h, map_mul] }
+  have hr : ∀ y, r y = s ⟨u y ^ m, hm y⟩ := fun y => rfl
+  have hfixr : ∀ x : U, r x = x := by
+    intro x
+    have h : (⟨u x ^ m, hm x⟩ : U) = x ^ m := by ext; simp [hfix x x.2]
+    rw [hr, h, map_pow, hs]
+  refine ⟨r, ?_, hfixr, ?_⟩
+  · rw [continuous_induced_rng]
+    let f : G →* G := U.subtype.comp r
+    have hf : ∀ y, f y = (r y : G) := fun y => rfl
+    have hc : Continuous f := by
+      apply continuous_of_continuousAt_one f
+      apply continuousAt_id.congr
+      filter_upwards [hU.mem_nhds U.one_mem] with x hx
+      rw [hf, show x = ((⟨x, hx⟩ : U) : G) from rfl, hfixr]
+      rfl
+    exact hc
+  · intro y
+    rw [hr, ← Subgroup.coe_pow, hs]
+
+theorem UpperTheory.exists_principal_units_retraction_localField :
+    ∀ (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] (l : ℕ) [Fact l.Prime] [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l], (∀ y ∈ CommGroup.primaryComponent Kˣ l, y ∈ GroundTheory.LocalField.unitFiltrationUnits K 1) ∧ ∃ r : Kˣ →* ↥(GroundTheory.LocalField.unitFiltrationUnits K 1), Continuous r ∧ (∀ u : ↥(GroundTheory.LocalField.unitFiltrationUnits K 1), r u = u) ∧ ∀ (n : ℕ) (y : Kˣ), (l : ℤ) ^ n ∣ GroundTheory.LocalField.ord (y : K) → (∃ w, r y = w ^ l ^ n) → ∃ z : Kˣ, y = z ^ l ^ n := by
+  intro K _ _ _ _ l _ _
+  have hl : l.Prime := Fact.out
+  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible ↥𝒪[K]
+  haveI : Fintype 𝓀[K] := Fintype.ofFinite _
+  have hq : l ∣ Nat.card 𝓀[K] := by
+    rw [← CharP.cast_eq_zero_iff 𝓀[K] l, Nat.card_eq_fintype_card]
+    exact FiniteField.cast_card_eq_zero 𝓀[K]
+  have hq1 : 1 ≤ Nat.card 𝓀[K] := Nat.card_pos
+  have hcop : Nat.Coprime (Nat.card 𝓀[K] - 1) l := by
+    rw [Nat.coprime_comm, hl.coprime_iff_not_dvd]
+    intro h
+    have h2 := Nat.dvd_sub hq h
+    rw [show Nat.card 𝓀[K] - (Nat.card 𝓀[K] - 1) = 1 by omega] at h2
+    exact hl.one_lt.ne' (Nat.dvd_one.mp h2)
+  have bez : ∀ {M : Type} [CommGroup M] (t : M) (a b : ℕ), Nat.Coprime a b →
+      ∃ A B : ℤ, t = (t ^ a) ^ A * (t ^ b) ^ B := by
+    intro M _ t a b h
+    refine ⟨Nat.gcdA a b, Nat.gcdB a b, ?_⟩
+    have h' : (a : ℤ) * Nat.gcdA a b + b * Nat.gcdB a b = 1 := by
+      rw [← Nat.gcd_eq_gcd_ab, h, Nat.cast_one]
+    rw [← zpow_natCast, ← zpow_natCast, ← zpow_mul, ← zpow_mul, ← zpow_add, h', zpow_one]
+  have hidx : ∀ v : (𝒪[K])ˣ, v ^ (Nat.card 𝓀[K] - 1) ∈ unitFiltration K 1 := by
+    intro v
+    rw [← index_unitFiltration_one]
+    exact Subgroup.pow_index_mem _ v
+  have hdecomp : ∀ y : Kˣ,
+      y = uniformizerUnit hϖ ^ ord (y : K) * unitsIncl K ((unitsEquivIntProd hϖ) y).2 := by
+    intro y
+    apply (unitsEquivIntProd hϖ).injective
+    rw [map_mul, map_zpow, unitsEquivIntProd_uniformizer, unitsEquivIntProd_unitsIncl]
+    ext
+    · simp [unitsEquivIntProd_fst, ← ofAdd_zsmul]
+    · simp
+  have hinj : ∀ w : (𝒪[K])ˣ, unitsIncl K w = 1 → w = 1 := by
+    intro w hw
+    have h := congrArg (fun z => ((unitsEquivIntProd hϖ) z).2) hw
+    simpa [unitsEquivIntProd_unitsIncl] using h
+  refine ⟨?_, ?_⟩
+  · intro y hy
+    obtain ⟨k, hk⟩ := CommGroup.mem_primaryComponent.mp hy
+    have hord : ord (y : K) = 0 := by
+      have h := congrArg (fun z => ((unitsEquivIntProd hϖ) z).1) hk
+      simp only [map_pow, Prod.pow_fst, map_one, Prod.fst_one, unitsEquivIntProd_fst] at h
+      rw [← ofAdd_nsmul, ofAdd_eq_one, nsmul_eq_mul] at h
+      rcases mul_eq_zero.mp h with h | h
+      · exact absurd h (by exact_mod_cast pow_ne_zero k hl.ne_zero)
+      · exact h
+    set v := ((unitsEquivIntProd hϖ) y).2 with hvdef
+    have hyv : y = unitsIncl K v := by
+      conv_lhs => rw [hdecomp y]
+      rw [hord, zpow_zero, one_mul]
+    have hvk : v ^ l ^ k = 1 := by
+      apply hinj
+      rw [map_pow, ← hyv, hk]
+    obtain ⟨A, B, hAB⟩ := bez v (Nat.card 𝓀[K] - 1) (l ^ k) (Nat.Coprime.pow_right k hcop)
+    have hv : v ∈ unitFiltration K 1 := by
+      rw [hAB, hvk, one_zpow, mul_one]
+      exact zpow_mem (hidx v) A
+    rw [hyv]
+    exact Subgroup.mem_map_of_mem _ hv
+  · let u : Kˣ →* Kˣ :=
+      (unitsIncl K).comp ((MonoidHom.snd _ _).comp (unitsEquivIntProd hϖ).toMonoidHom)
+    have hu : ∀ y, u y = unitsIncl K ((unitsEquivIntProd hϖ) y).2 := fun y => rfl
+    have hunit : IsUnit ((Nat.card 𝓀[K] - 1 : ℕ) : ℤ_[l]) := by
+      rw [PadicInt.isUnit_iff]
+      apply le_antisymm (PadicInt.norm_le_one _)
+      by_contra hlt
+      push_neg at hlt
+      have h : l ∣ Fintype.card 𝓀[K] - 1 := by simpa using hlt
+      rw [← Nat.card_eq_fintype_card] at h
+      exact (hl.coprime_iff_not_dvd.mp hcop.symm) h
+    obtain ⟨c, hc⟩ : ∃ c : ℤ_[l], ((Nat.card 𝓀[K] - 1 : ℕ) : ℤ_[l]) * c = 1 :=
+      ⟨_, hunit.mul_val_inv⟩
+    let s : unitFiltrationUnits K 1 →* unitFiltrationUnits K 1 :=
+      { toFun := fun x => Additive.toMul (c • Additive.ofMul x)
+        map_one' := by simp
+        map_mul' := by intro x y; simp [smul_add] }
+    have hs : ∀ x, s x ^ (Nat.card 𝓀[K] - 1) = x := by
+      intro x
+      show (Additive.toMul (c • Additive.ofMul x)) ^ (Nat.card 𝓀[K] - 1) = x
+      rw [← toMul_nsmul, ← natCast_smul l, smul_smul, hc, one_smul]
+      rfl
+    have hm : ∀ y, u y ^ (Nat.card 𝓀[K] - 1) ∈ unitFiltrationUnits K 1 := by
+      intro y
+      rw [hu, ← map_pow]
+      exact Subgroup.mem_map_of_mem _ (hidx _)
+    have hfix : ∀ x ∈ unitFiltrationUnits K 1, u x = x := by
+      intro x hx
+      obtain ⟨v, _, rfl⟩ := Subgroup.mem_map.mp hx
+      rw [hu, unitsEquivIntProd_unitsIncl]
+    obtain ⟨r, hrc, hrfix, hrpow⟩ := UpperTheory.exists_continuous_retraction_power _ (isOpen_unitFiltrationUnits 1) u
+      (Nat.card 𝓀[K] - 1) hfix hm s hs
+    refine ⟨r, hrc, hrfix, ?_⟩
+    rintro n y ⟨a, ha⟩ ⟨w, hw⟩
+    set t := u y * (r y : Kˣ)⁻¹ with htdef
+    have ht : t ^ (Nat.card 𝓀[K] - 1) = 1 := by
+      rw [htdef, mul_pow, inv_pow, hrpow, mul_inv_cancel]
+    obtain ⟨A, B, hAB⟩ := bez t (Nat.card 𝓀[K] - 1) (l ^ n) (Nat.Coprime.pow_right n hcop)
+    rw [ht, one_zpow, one_mul] at hAB
+    have hry : (r y : Kˣ) = (w : Kˣ) ^ (l ^ n) := by rw [hw]; rfl
+    have e1 : (uniformizerUnit hϖ ^ a) ^ (l ^ n) = uniformizerUnit hϖ ^ ord (y : K) := by
+      rw [ha, ← zpow_natCast, ← zpow_mul, mul_comm]
+      push_cast
+      rfl
+    have e2 : (t ^ B) ^ (l ^ n) = t := by
+      conv_rhs => rw [hAB]
+      rw [← zpow_natCast, ← zpow_natCast, ← zpow_mul, ← zpow_mul, mul_comm]
+    refine ⟨uniformizerUnit hϖ ^ a * t ^ B * (w : Kˣ), ?_⟩
+    rw [mul_pow, mul_pow, e1, e2, ← hry, htdef, mul_assoc, mul_assoc, inv_mul_cancel, mul_one, hu]
+    exact hdecomp y
+end
+
+section
+open GroundTheory.LocalField ValuativeRel Module Topology
+
+private theorem UpperTheory.mem_torsion_iff_primary_component (l : ℕ) [hl : Fact l.Prime] {G : Type} [CommGroup G]
+    (U : Subgroup G) [Module ℤ_[l] (Additive U)] (x : Additive U) :
+    x ∈ Submodule.torsion ℤ_[l] (Additive U) ↔
+      ((Additive.toMul x : U) : G) ∈ CommGroup.primaryComponent G l := by
+  have key : ∀ m : ℕ, ((Additive.toMul x : U) : G) ^ m = 1 ↔ m • x = 0 := by
+    intro m
+    rw [← Subgroup.coe_pow, ← toMul_nsmul, OneMemClass.coe_eq_one, toMul_eq_one]
+  rw [Submodule.mem_torsion_iff, CommGroup.mem_primaryComponent]
+  constructor
+  · rintro ⟨a, ha⟩
+    have ha0 : (a : ℤ_[l]) ≠ 0 := nonZeroDivisors.coe_ne_zero a
+    have hspec := PadicInt.unitCoeff_spec ha0
+    set c := PadicInt.unitCoeff ha0
+    set v := (a : ℤ_[l]).valuation
+    have hax : (a : ℤ_[l]) • x = 0 := ha
+    rw [hspec, mul_smul] at hax
+    have hlv : ((l : ℤ_[l]) ^ v) • x = 0 := by
+      have := congrArg (fun y => ((c⁻¹ : ℤ_[l]ˣ) : ℤ_[l]) • y) hax
+      simpa [smul_smul] using this
+    refine ⟨v, (key _).2 ?_⟩
+    rw [← Nat.cast_smul_eq_nsmul ℤ_[l]]
+    push_cast
+    exact hlv
+  · rintro ⟨k, hk⟩
+    refine ⟨⟨((l ^ k : ℕ) : ℤ_[l]), mem_nonZeroDivisors_of_ne_zero ?_⟩, ?_⟩
+    · exact_mod_cast pow_ne_zero k hl.out.ne_zero
+    · show ((l ^ k : ℕ) : ℤ_[l]) • x = 0
+      rw [Nat.cast_smul_eq_nsmul]
+      exact (key _).1 hk
+
+private theorem UpperTheory.finite_quotient_of_retraction_rank (l : ℕ) [hl : Fact l.Prime] {G : Type} [CommGroup G]
+    [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G]
+    (U : Subgroup G) [Module ℤ_[l] (Additive U)] [ContinuousSMul ℤ_[l] (Additive U)]
+    [Module.Finite ℤ_[l] (Additive U)] (hP : ∀ y ∈ CommGroup.primaryComponent G l, y ∈ U)
+    (r : G →* U) (hr : Continuous r) (hid : ∀ u : U, r u = u) (d : ℕ)
+    (hd : Module.finrank ℤ_[l] (Additive U) = d) :
+    Finite ↥(CommGroup.primaryComponent G l) ∧
+    ∃ (p : G →* Multiplicative (Fin d → ℤ_[l])) (t : G →* ↥(CommGroup.primaryComponent G l)),
+      Continuous p ∧ IsOpen (t.ker : Set G) ∧
+      (∀ y : ↥(CommGroup.primaryComponent G l), p y = 1 ∧ t y = y) ∧
+      (∀ x τ, ∃ y ∈ U, p y = x ∧ t y = τ) ∧
+      ∀ (n : ℕ) (y : G), (∀ i, (l : ℤ_[l]) ^ n ∣ Multiplicative.toAdd (p y) i) → t y = 1 →
+        ∃ w, r y = w ^ l ^ n := by
+  subst hd
+  haveI : T2Space (Additive U) := inferInstanceAs (T2Space U)
+  obtain ⟨hfin, p0, t0, hp0c, ht0o, hpt, hbij⟩ := UpperTheory.finite_zp_module_torsion_free_splitting l (Additive U)
+  have memT : ∀ u : U, (u : G) ∈ CommGroup.primaryComponent G l →
+      Additive.ofMul u ∈ Submodule.torsion ℤ_[l] (Additive U) := fun u hu =>
+    (UpperTheory.mem_torsion_iff_primary_component l U (Additive.ofMul u)).2 hu
+  have memP : ∀ z : Submodule.torsion ℤ_[l] (Additive U),
+      ((Additive.toMul (z : Additive U) : U) : G) ∈ CommGroup.primaryComponent G l := fun z =>
+    (UpperTheory.mem_torsion_iff_primary_component l U z).1 z.2
+  let p : G →* Multiplicative (Fin (Module.finrank ℤ_[l] (Additive U)) → ℤ_[l]) :=
+    MonoidHom.mk' (fun g => Multiplicative.ofAdd (p0 (Additive.ofMul (r g)))) (by
+      intro a b
+      simp [ofAdd_add])
+  let t : G →* CommGroup.primaryComponent G l :=
+    MonoidHom.mk' (fun g => ⟨((Additive.toMul (t0 (Additive.ofMul (r g)) : Additive U) : U) : G),
+      memP _⟩) (by
+      intro a b
+      apply Subtype.ext
+      simp)
+  have hrU : ∀ y : CommGroup.primaryComponent G l, r (y : G) = ⟨y, hP y y.2⟩ :=
+    fun y => hid ⟨y, hP y y.2⟩
+  have htker : ∀ g, t g = 1 ↔ t0 (Additive.ofMul (r g)) = 0 := by
+    intro g
+    rw [← OneMemClass.coe_eq_one]
+    show ((Additive.toMul (t0 (Additive.ofMul (r g)) : Additive U) : U) : G) = 1 ↔ _
+    rw [OneMemClass.coe_eq_one, toMul_eq_one, ZeroMemClass.coe_eq_zero]
+  refine ⟨?_, p, t, ?_, ?_, ?_, ?_, ?_⟩
+  · haveI := hfin
+    refine Finite.of_injective (β := Submodule.torsion ℤ_[l] (Additive U))
+      (fun y => ⟨Additive.ofMul ⟨(y : G), hP y y.2⟩, memT _ y.2⟩) ?_
+    intro a b hab
+    apply Subtype.ext
+    have := congrArg (fun z : Submodule.torsion ℤ_[l] (Additive U) =>
+      ((Additive.toMul (z : Additive U) : U) : G)) hab
+    simpa using this
+  · exact continuous_ofAdd.comp (hp0c.comp (continuous_ofMul.comp hr))
+  · have hset : (t.ker : Set G) = (fun g => Additive.ofMul (r g)) ⁻¹' (t0.ker : Set (Additive U)) := by
+      ext g
+      simp only [SetLike.mem_coe, MonoidHom.mem_ker, LinearMap.mem_ker, Set.mem_preimage]
+      exact htker g
+    rw [hset]
+    exact ht0o.preimage (continuous_ofMul.comp hr)
+  · intro y
+    have hz := hpt ⟨Additive.ofMul ⟨(y : G), hP y y.2⟩, memT _ y.2⟩
+    have hry := hrU y
+    constructor
+    · show Multiplicative.ofAdd (p0 (Additive.ofMul (r y))) = 1
+      rw [hry, hz.1]
+      rfl
+    · apply Subtype.ext
+      show ((Additive.toMul (t0 (Additive.ofMul (r y)) : Additive U) : U) : G) = y
+      rw [hry, hz.2]
+      rfl
+  · intro x τ
+    obtain ⟨m, hm⟩ := hbij.2 (Multiplicative.toAdd x, ⟨Additive.ofMul ⟨(τ : G), hP τ τ.2⟩, memT _ τ.2⟩)
+    simp only [Prod.mk.injEq] at hm
+    refine ⟨((Additive.toMul m : U) : G), (Additive.toMul m).2, ?_, ?_⟩
+    · show Multiplicative.ofAdd (p0 (Additive.ofMul (r _))) = x
+      rw [hid, ofMul_toMul, hm.1, ofAdd_toAdd]
+    · apply Subtype.ext
+      show ((Additive.toMul (t0 (Additive.ofMul (r _)) : Additive U) : U) : G) = τ
+      rw [hid, ofMul_toMul, hm.2]
+      rfl
+  · intro n y hdiv hty
+    have ht0 : t0 (Additive.ofMul (r y)) = 0 := (htker y).1 hty
+    choose c hc using hdiv
+    obtain ⟨m', hm'⟩ := hbij.2 (c, 0)
+    simp only [Prod.mk.injEq] at hm'
+    have heq : Additive.ofMul (r y) = ((l : ℤ_[l]) ^ n) • m' := by
+      apply hbij.1
+      simp only [Prod.mk.injEq, map_smul, hm'.1, hm'.2, smul_zero, ht0, and_true]
+      funext i
+      rw [Pi.smul_apply, smul_eq_mul, ← hc i]
+      rfl
+    refine ⟨Additive.toMul m', ?_⟩
+    have hsm : ((l : ℤ_[l]) ^ n) • m' = (l ^ n) • m' := by
+      rw [← Nat.cast_smul_eq_nsmul ℤ_[l]]
+      push_cast
+      rfl
+    rw [← toMul_ofMul (r y), heq, hsm, toMul_nsmul]
+
+theorem UpperTheory.localField_units_structure_theorem :
+    ∀ (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] (l : ℕ) [Fact l.Prime] [Algebra ℚ_[l] K] [ValuativeExtension ℚ_[l] K] [FiniteDimensional ℚ_[l] K], Finite ↥(CommGroup.primaryComponent Kˣ l) ∧ ∃ (p : Kˣ →* Multiplicative (Fin (Module.finrank ℚ_[l] K) → ℤ_[l])) (t : Kˣ →* ↥(CommGroup.primaryComponent Kˣ l)), Continuous p ∧ IsOpen (t.ker : Set Kˣ) ∧ (∀ y : ↥(CommGroup.primaryComponent Kˣ l), p y = 1 ∧ t y = y) ∧ (∀ x τ, ∃ y : Kˣ, GroundTheory.LocalField.ord (y : K) = 0 ∧ p y = x ∧ t y = τ) ∧ ∀ (n : ℕ) (y : Kˣ), (∀ i, (l : ℤ_[l]) ^ n ∣ Multiplicative.toAdd (p y) i) → (l : ℤ) ^ n ∣ GroundTheory.LocalField.ord (y : K) → t y = 1 → ∃ z : Kˣ, y = z ^ l ^ n := by
+  intro K _ _ _ _ l _ _ _ _
+  haveI : CharZero K := charZero_of_injective_algebraMap (algebraMap ℚ_[l] K).injective
+  have hlmax : (l : 𝒪[K]) ∈ IsLocalRing.maximalIdeal 𝒪[K] := by
+    rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
+    intro hu
+    obtain ⟨v, hv⟩ := hu.exists_right_inv
+    have hinv : (algebraMap ℚ_[l] K) ((l : ℚ_[l])⁻¹) ∈ 𝒪[K] := by
+      have heq : (algebraMap ℚ_[l] K) ((l : ℚ_[l])⁻¹) = (v : K) := by
+        have h1 : ((l : 𝒪[K]) : K) * (v : K) = 1 := by
+          have := congrArg (fun z : 𝒪[K] => (z : K)) hv
+          simpa using this
+        rw [map_inv₀, map_natCast]
+        push_cast at h1
+        exact inv_eq_of_mul_eq_one_right h1
+      rw [heq]
+      exact v.2
+    rw [algebraMap_mem_integer_iff, PadicRank.mem_integer_padic_iff, norm_inv, Padic.norm_p,
+      inv_inv] at hinv
+    have h2 : (2 : ℝ) ≤ l := by exact_mod_cast (Fact.out : l.Prime).two_le
+    linarith
+  haveI : CharP 𝓀[K] l := by
+    rw [CharP.charP_iff_prime_eq_zero (Fact.out : l.Prime)]
+    have := (IsLocalRing.residue_eq_zero_iff _).2 hlmax
+    simpa using this
+  have hhom : CharZero.padicHom K l = algebraMap ℚ_[l] K := by
+    have := (Padic.denseRange_ratCast (p := l)).equalizer (CharZero.continuous_padicHom K l)
+      (GroundTheory.LocalField.continuous_algebraMap ℚ_[l] K) (by funext q; simp)
+    exact RingHom.ext (congrFun this)
+  have halg : (CharZero.padicHom K l).toAlgebra = ‹Algebra ℚ_[l] K› :=
+    Algebra.algebra_ext _ _ fun q => by
+      show CharZero.padicHom K l q = algebraMap ℚ_[l] K q
+      rw [hhom]
+  have hfr : Module.finrank ℤ_[l] (Additive (unitFiltrationUnits K 1)) = Module.finrank ℚ_[l] K := by
+    have := finrank_principalUnits (K := K) l
+    rw [halg] at this
+    exact this
+  haveI := finite_principalUnits (K := K) l
+  obtain ⟨hPU, r, hr, hid, hdiv⟩ := UpperTheory.exists_principal_units_retraction_localField K l
+  obtain ⟨hfin, p, t, hp, ht, hpt, hsurj, hpow⟩ := UpperTheory.finite_quotient_of_retraction_rank l (unitFiltrationUnits K 1) hPU r hr
+    hid (Module.finrank ℚ_[l] K) hfr
+  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪[K]
+  have hord : ∀ y ∈ unitFiltrationUnits K 1, ord (y : K) = 0 := by
+    intro y hy
+    obtain ⟨u, -, rfl⟩ := Subgroup.mem_map.1 hy
+    have h1 := unitsEquivIntProd_fst hϖ (unitsIncl K u)
+    rw [unitsEquivIntProd_unitsIncl] at h1
+    have h2 : Multiplicative.ofAdd (ord ((unitsIncl K u : Kˣ) : K)) = Multiplicative.ofAdd 0 := by
+      rw [← h1]
+      rfl
+    exact Multiplicative.ofAdd.injective h2
+  refine ⟨hfin, p, t, hp, ht, hpt, ?_, ?_⟩
+  · intro x τ
+    obtain ⟨y, hy, hpx, hty⟩ := hsurj x τ
+    exact ⟨y, hord y hy, hpx, hty⟩
+  · intro n y hpd hod hty
+    exact hdiv n y hod (hpow n y hpd hty)
+end
+
+section
 open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal TensorProduct Module UpperTheory.V.Loc Topology
 
 private theorem as_ext {M A B : Type} [CommGroup M] [TopologicalSpace M] [CommGroup A] [TopologicalSpace A]
@@ -457,3 +1062,4 @@ theorem UpperTheory.V.Loc.abStruct :
       rw [e0]
       exact hqo _ hf
     exact hA5 Y hY f' hf' (q g) e1 e2 e3
+end

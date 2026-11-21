@@ -4,13 +4,359 @@ import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.Continu
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.DisintegrationDensityUnique
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramRightActionIdentities
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HermitianMatricesLocallyCompactBorel
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsSizeMulLe
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyRealStatement
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitsOpenEmbeddingLocalTensorStatement
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GramFiberMeasuresIntegralFormula
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HermitianLocalContinuousCongruenceSection
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SizeFunctionRapidDecayIntegrable
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement
+import BuildAid.ForwardExisting
 
+section
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+
+namespace GlobalTheory.CompanionTheory.SW.SizeScale
+
+section
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {d : ℕ}
+
+theorem continuous_size (b : Module.Basis (Fin d) F E) :
+    Continuous (sizeInf b : Ainf F ⊗[F] E → ℝ) := by
+  have : IsModuleTopology (Ainf F) (Ainf F ⊗[F] E) := ⟨rfl⟩
+  unfold sizeInf
+  refine continuous_finsetSum _ fun k _ => continuous_finsetSum _ fun v _ => ?_
+  have hk : Continuous fun y : Ainf F ⊗[F] E =>
+      (Algebra.TensorProduct.basis (Ainf F) b).coord k y :=
+    IsModuleTopology.continuous_of_linearMap _
+  simp only [← Module.Basis.coord_apply]
+  exact continuous_norm.comp ((continuous_apply v).comp hk)
+
+theorem size_nonneg (b : Module.Basis (Fin d) F E) (y : Ainf F ⊗[F] E) : 0 ≤ sizeInf b y :=
+  Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _
+
+theorem tup_nonneg {M n : ℕ} (b : Module.Basis (Fin d) F E) (X : Fin n → Fin M → Ainf F ⊗[F] E) :
+    0 ≤ sizeTup b X :=
+  Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => size_nonneg b _
+
+theorem size_add_le (b : Module.Basis (Fin d) F E) (x y : Ainf F ⊗[F] E) :
+    sizeInf b (x + y) ≤ sizeInf b x + sizeInf b y := by
+  unfold sizeInf
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_le_sum fun k _ => ?_
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_le_sum fun v _ => ?_
+  rw [map_add]
+  exact norm_add_le _ _
+
+theorem size_zero (b : Module.Basis (Fin d) F E) : sizeInf b (0 : Ainf F ⊗[F] E) = 0 := by
+  unfold sizeInf
+  refine Finset.sum_eq_zero fun k _ => Finset.sum_eq_zero fun v _ => ?_
+  have h0 : ((0 : Fin d →₀ Ainf F) k) v = 0 := rfl
+  rw [map_zero, h0, norm_zero]
+
+theorem size_sum_le {ι : Type} (b : Module.Basis (Fin d) F E) (s : Finset ι)
+    (f : ι → Ainf F ⊗[F] E) : sizeInf b (∑ c ∈ s, f c) ≤ ∑ c ∈ s, sizeInf b (f c) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp [size_zero]
+  | insert a s ha ih =>
+    rw [Finset.sum_insert ha, Finset.sum_insert ha]
+    exact (size_add_le b _ _).trans (by gcongr)
+
+theorem coord_le_size (b : Module.Basis (Fin d) F E) (y : Ainf F ⊗[F] E) (j : Fin d)
+    (v : InfinitePlace F) :
+    ‖(Algebra.TensorProduct.basis (Ainf F) b).repr y j v‖ ≤ sizeInf b y := by
+  unfold sizeInf
+  calc ‖(Algebra.TensorProduct.basis (Ainf F) b).repr y j v‖
+      ≤ ∑ w, ‖(Algebra.TensorProduct.basis (Ainf F) b).repr y j w‖ :=
+        Finset.single_le_sum
+          (f := fun w => ‖(Algebra.TensorProduct.basis (Ainf F) b).repr y j w‖)
+          (fun _ _ => norm_nonneg _) (Finset.mem_univ v)
+    _ ≤ _ := Finset.single_le_sum
+        (f := fun k => ∑ w, ‖(Algebra.TensorProduct.basis (Ainf F) b).repr y k w‖)
+        (fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _) (Finset.mem_univ j)
+
+theorem repr_mul (b : Module.Basis (Fin d) F E) (x y : Ainf F ⊗[F] E) (k : Fin d) :
+    (Algebra.TensorProduct.basis (Ainf F) b).repr (x * y) k =
+      ∑ i, ∑ j, (Algebra.TensorProduct.basis (Ainf F) b).repr x i *
+        (Algebra.TensorProduct.basis (Ainf F) b).repr y j *
+          algebraMap F (Ainf F) (b.repr (b i * b j) k) := by
+  set B := Algebra.TensorProduct.basis (Ainf F) b with hB
+  have hBB : ∀ i j, B.repr (B i * B j) k = algebraMap F (Ainf F) (b.repr (b i * b j) k) := by
+    intro i j
+    simp [hB, Algebra.TensorProduct.basis_apply, Algebra.TensorProduct.tmul_mul_tmul,
+      Algebra.TensorProduct.basis_repr_tmul]
+  conv_lhs => rw [← B.sum_repr x, ← B.sum_repr y, Finset.sum_mul_sum]
+  simp only [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply, smul_mul_smul_comm, map_smul,
+    Finsupp.smul_apply, hBB, smul_eq_mul]
+
+theorem exists_size_mul_le (b : Module.Basis (Fin d) F E) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ x y : Ainf F ⊗[F] E, sizeInf b (x * y) ≤ K * sizeInf b x * sizeInf b y := by
+  obtain ⟨S₀, hS₀⟩ := (Set.finite_range (fun p : Fin d × Fin d × Fin d × InfinitePlace F =>
+    ‖(algebraMap F (Ainf F) (b.repr (b p.1 * b p.2.1) p.2.2.1)) p.2.2.2‖)).bddAbove
+  set S := |S₀| with hS
+  have hS0 : 0 ≤ S := abs_nonneg _
+  have hs : ∀ i j k v, ‖(algebraMap F (Ainf F) (b.repr (b i * b j) k)) v‖ ≤ S := fun i j k v =>
+    (hS₀ ⟨(i, j, k, v), rfl⟩).trans (le_abs_self _)
+  refine ⟨(d : ℝ) * d * S, by positivity, fun x y => ?_⟩
+  set B := Algebra.TensorProduct.basis (Ainf F) b with hB
+  have hpt : ∀ k (v : InfinitePlace F), ‖B.repr (x * y) k v‖ ≤
+      (d : ℝ) * S * sizeInf b y * ∑ i, ‖B.repr x i v‖ := by
+    intro k v
+    have hev : B.repr (x * y) k v =
+        ∑ i, ∑ j, B.repr x i v * B.repr y j v * (algebraMap F (Ainf F) (b.repr (b i * b j) k)) v := by
+      rw [repr_mul b x y k]
+      have := map_sum (Pi.evalRingHom (fun w : InfinitePlace F => w.Completion) v)
+        (fun i => ∑ j, B.repr x i * B.repr y j * algebraMap F (Ainf F) (b.repr (b i * b j) k))
+        Finset.univ
+      refine this.trans (Finset.sum_congr rfl fun i _ => ?_)
+      exact map_sum (Pi.evalRingHom (fun w : InfinitePlace F => w.Completion) v) _ _
+    rw [hev]
+    calc ‖∑ i, ∑ j, B.repr x i v * B.repr y j v * (algebraMap F (Ainf F) (b.repr (b i * b j) k)) v‖
+        ≤ ∑ i, ∑ j : Fin d, ‖B.repr x i v‖ * sizeInf b y * S := by
+          refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun i _ => ?_)
+          refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
+          rw [norm_mul, norm_mul]
+          exact mul_le_mul (mul_le_mul_of_nonneg_left (coord_le_size b y j v) (norm_nonneg _))
+            (hs i j k v) (norm_nonneg _) (mul_nonneg (norm_nonneg _) (size_nonneg b y))
+      _ = (d : ℝ) * S * sizeInf b y * ∑ i, ‖B.repr x i v‖ := by
+          simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            Finset.mul_sum]
+          exact Finset.sum_congr rfl fun i _ => by ring
+  calc sizeInf b (x * y) = ∑ k, ∑ v : InfinitePlace F, ‖B.repr (x * y) k v‖ := rfl
+    _ ≤ ∑ k : Fin d, ∑ v : InfinitePlace F, (d : ℝ) * S * sizeInf b y * ∑ i, ‖B.repr x i v‖ :=
+        Finset.sum_le_sum fun k _ => Finset.sum_le_sum fun v _ => hpt k v
+    _ = (d : ℝ) * ((d : ℝ) * S * sizeInf b y * ∑ v : InfinitePlace F, ∑ i, ‖B.repr x i v‖) := by
+        simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+          Finset.mul_sum]
+    _ = (d : ℝ) * d * S * sizeInf b x * sizeInf b y := by
+        have : sizeInf b x = ∑ v : InfinitePlace F, ∑ i, ‖B.repr x i v‖ := Finset.sum_comm
+        rw [this]; ring
+
+end
+
+theorem size_rmul_le : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E), ∀ (n M : ℕ) (C : Set (Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E))), IsCompact C → ∃ c : ℝ, 0 < c ∧ ∀ g ∈ C, ∀ X : Fin n → Fin M → Ainf F ⊗[F] E, sizeTup b (rmul (Ainf F) X g) ≤ c * sizeTup b X := by
+  intro F E _ _ _ _ _ σ _ d b n M C hC
+  obtain ⟨K, hK0, hK⟩ := exists_size_mul_le b
+  have hcont : Continuous fun g : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E) =>
+      ∑ c, ∑ a, sizeInf b (g c a) :=
+    continuous_finsetSum _ fun c _ => continuous_finsetSum _ fun a _ =>
+      (continuous_size b).comp (continuous_id.matrix_elem c a)
+  obtain ⟨D, hD⟩ := (hC.image hcont).bddAbove
+  refine ⟨K * |D| + 1, by positivity, fun g hg X => ?_⟩
+  have hg' : ∀ c, ∑ a, sizeInf b (g c a) ≤ |D| := fun c =>
+    (Finset.single_le_sum (f := fun c => ∑ a, sizeInf b (g c a))
+      (fun _ _ => Finset.sum_nonneg fun _ _ => size_nonneg b _) (Finset.mem_univ c)).trans
+      ((hD ⟨g, hg, rfl⟩).trans (le_abs_self _))
+  calc sizeTup b (rmul (Ainf F) X g)
+      = ∑ a, ∑ i, sizeInf b (∑ c, X c i * g c a) := rfl
+    _ ≤ ∑ a, ∑ i, ∑ c, K * sizeInf b (X c i) * sizeInf b (g c a) :=
+        Finset.sum_le_sum fun a _ => Finset.sum_le_sum fun i _ =>
+          (size_sum_le b _ _).trans (Finset.sum_le_sum fun c _ => hK _ _)
+    _ = ∑ i, ∑ c, K * sizeInf b (X c i) * ∑ a, sizeInf b (g c a) := by
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [Finset.sum_comm]
+        exact Finset.sum_congr rfl fun c _ => (Finset.mul_sum _ _ _).symm
+    _ ≤ ∑ i, ∑ c, K * sizeInf b (X c i) * |D| :=
+        Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun c _ =>
+          mul_le_mul_of_nonneg_left (hg' c) (mul_nonneg hK0 (size_nonneg b _))
+    _ = K * |D| * sizeTup b X := by
+        unfold sizeTup
+        rw [Finset.sum_comm, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun c _ => ?_
+        rw [Finset.mul_sum]
+        exact Finset.sum_congr rfl fun i _ => by ring
+    _ ≤ (K * |D| + 1) * sizeTup b X := by
+        nlinarith [tup_nonneg b X]
+
+end GlobalTheory.CompanionTheory.SW.SizeScale
+end
+
+section
+section
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.SW.SizeInt
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
+
+def compReal (hF : IsTotallyReal F) (v : InfinitePlace F) : v.Completion ≃+* ℝ :=
+  InfinitePlace.Completion.ringEquivRealOfIsReal (hF.isReal v)
+
+theorem continuous_compReal (hF : IsTotallyReal F) (v : InfinitePlace F) :
+    Continuous (compReal hF v) :=
+  (InfinitePlace.Completion.isometryEquivRealOfIsReal (hF.isReal v)).continuous
+
+theorem continuous_compReal_symm (hF : IsTotallyReal F) (v : InfinitePlace F) :
+    Continuous (compReal hF v).symm :=
+  (InfinitePlace.Completion.isometryEquivRealOfIsReal (hF.isReal v)).symm.continuous
+
+theorem norm_compReal (hF : IsTotallyReal F) (v : InfinitePlace F) (x : v.Completion) :
+    ‖compReal hF v x‖ = ‖x‖ :=
+  (InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal (hF.isReal v)).norm_map_of_map_zero
+    (map_zero _) x
+
+theorem secondCountable_Ainf (hF : IsTotallyReal F) : SecondCountableTopology (Ainf F) := by
+  haveI : ∀ v : InfinitePlace F, SecondCountableTopology v.Completion := fun v =>
+    (InfinitePlace.Completion.isometryEquivRealOfIsReal (hF.isReal v)).toHomeomorph.secondCountableTopology
+  exact inferInstanceAs (SecondCountableTopology (∀ v : InfinitePlace F, v.Completion))
+
+section Coord
+
+variable {d : ℕ} (hF : IsTotallyReal F) (b : Module.Basis (Fin d) F E)
+
+def ainfEquiv : Ainf F ≃+ (InfinitePlace F → ℝ) where
+  toFun x v := compReal hF v (x v)
+  invFun w := (fun v => (compReal hF v).symm (w v) : ∀ v : InfinitePlace F, v.Completion)
+  left_inv x := by funext v; exact (compReal hF v).symm_apply_apply _
+  right_inv w := by funext v; exact (compReal hF v).apply_symm_apply _
+  map_add' x y := by funext v; exact map_add (compReal hF v) (x v) (y v)
+
+theorem continuous_ainfEquiv : Continuous (ainfEquiv hF) :=
+  continuous_pi fun v => (continuous_compReal hF v).comp (continuous_apply (A := fun v : InfinitePlace F => v.Completion) v)
+
+theorem continuous_ainfEquiv_symm : Continuous (ainfEquiv hF).symm := by
+  have h : Continuous fun (w : InfinitePlace F → ℝ) (v : InfinitePlace F) =>
+      ((compReal hF v).symm (w v) : v.Completion) :=
+    continuous_pi fun v => (continuous_compReal_symm hF v).comp (continuous_apply v)
+  exact h
+
+def coordEquiv : Ainf F ⊗[F] E ≃+ (Fin d → InfinitePlace F → ℝ) :=
+  (Algebra.TensorProduct.basis (Ainf F) b).equivFun.toAddEquiv.trans
+    (AddEquiv.piCongrRight fun _ => ainfEquiv hF)
+
+theorem abs_coordEquiv (y : Ainf F ⊗[F] E) (k : Fin d) (v : InfinitePlace F) :
+    ‖coordEquiv hF b y k v‖ = ‖(Algebra.TensorProduct.basis (Ainf F) b).repr y k v‖ :=
+  norm_compReal hF v _
+
+def tupEquiv (n M : ℕ) :
+    (Fin n → Fin M → Ainf F ⊗[F] E) ≃+ (Fin n → Fin M → Fin d → InfinitePlace F → ℝ) :=
+  AddEquiv.piCongrRight fun _ => AddEquiv.piCongrRight fun _ => coordEquiv hF b
+
+theorem tupEquiv_apply (n M : ℕ) (X : Fin n → Fin M → Ainf F ⊗[F] E) (a : Fin n) (i : Fin M) :
+    tupEquiv hF b n M X a i = coordEquiv hF b (X a i) := rfl
+
+theorem norm_tupEquiv_le (n M : ℕ) (X : Fin n → Fin M → Ainf F ⊗[F] E) :
+    ‖tupEquiv hF b n M X‖ ≤ sizeTup b X := by
+  have h0 : ∀ (y : Ainf F ⊗[F] E) (k : Fin d) (v : InfinitePlace F),
+      0 ≤ ‖(Algebra.TensorProduct.basis (Ainf F) b).repr y k v‖ := fun _ _ _ => norm_nonneg _
+  have hI : ∀ y : Ainf F ⊗[F] E, 0 ≤ sizeInf b y := fun y =>
+    Finset.sum_nonneg fun k _ => Finset.sum_nonneg fun v _ => h0 y k v
+  have hT : 0 ≤ sizeTup b X := Finset.sum_nonneg fun a _ => Finset.sum_nonneg fun i _ => hI _
+  refine (pi_norm_le_iff_of_nonneg hT).2 fun a => (pi_norm_le_iff_of_nonneg hT).2 fun i =>
+    (pi_norm_le_iff_of_nonneg hT).2 fun k => (pi_norm_le_iff_of_nonneg hT).2 fun v => ?_
+  rw [tupEquiv_apply, abs_coordEquiv]
+  calc ‖(Algebra.TensorProduct.basis (Ainf F) b).repr (X a i) k v‖
+      ≤ ∑ v', ‖(Algebra.TensorProduct.basis (Ainf F) b).repr (X a i) k v'‖ :=
+        Finset.single_le_sum (f := fun v' => ‖(Algebra.TensorProduct.basis (Ainf F) b).repr (X a i) k v'‖)
+          (fun v' _ => norm_nonneg _) (Finset.mem_univ v)
+    _ ≤ sizeInf b (X a i) :=
+        Finset.single_le_sum (f := fun k' => ∑ v', ‖(Algebra.TensorProduct.basis (Ainf F) b).repr (X a i) k' v'‖)
+          (fun k' _ => Finset.sum_nonneg fun v' _ => norm_nonneg _) (Finset.mem_univ k)
+    _ ≤ ∑ i', sizeInf b (X a i') :=
+        Finset.single_le_sum (f := fun i' => sizeInf b (X a i')) (fun i' _ => hI _) (Finset.mem_univ i)
+    _ ≤ sizeTup b X :=
+        Finset.single_le_sum (f := fun a' => ∑ i', sizeInf b (X a' i'))
+          (fun a' _ => Finset.sum_nonneg fun i' _ => hI _) (Finset.mem_univ a)
+
+theorem continuous_coordEquiv
+    (hc : IsHomeomorph fun (y : Ainf F ⊗[F] E) (k : Fin d) =>
+      (Algebra.TensorProduct.basis (Ainf F) b).repr y k) :
+    Continuous (coordEquiv hF b) :=
+  continuous_pi fun k => (continuous_ainfEquiv hF).comp ((continuous_apply k).comp hc.continuous)
+
+theorem continuous_coordEquiv_symm
+    (hc : IsHomeomorph fun (y : Ainf F ⊗[F] E) (k : Fin d) =>
+      (Algebra.TensorProduct.basis (Ainf F) b).repr y k) :
+    Continuous (coordEquiv hF b).symm := by
+  have h1 : Continuous fun w : Fin d → InfinitePlace F → ℝ => fun k => (ainfEquiv hF).symm (w k) :=
+    continuous_pi fun k => (continuous_ainfEquiv_symm hF).comp (continuous_apply k)
+  have h2 := (hc.homeomorph _).symm.continuous.comp h1
+  convert h2 using 1
+  funext w
+  apply (hc.homeomorph _).injective
+  rw [Function.comp_apply, Homeomorph.apply_symm_apply]
+  funext k
+  show (Algebra.TensorProduct.basis (Ainf F) b).repr ((coordEquiv hF b).symm w) k = _
+  apply (ainfEquiv hF).injective
+  rw [AddEquiv.apply_symm_apply]
+  have := congrFun ((coordEquiv hF b).apply_symm_apply w) k
+  exact this
+
+end Coord
+
+theorem size_neg_pow_integrable : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E), ∀ (n M : ℕ) (μ : Measure (Fin n → Fin M → Ainf F ⊗[F] E)), μ.IsAddHaarMeasure → Continuous (sizeTup b : (Fin n → Fin M → Ainf F ⊗[F] E) → ℝ) ∧ (∀ X : Fin n → Fin M → Ainf F ⊗[F] E, 0 ≤ sizeTup b X) ∧ ∃ N : ℕ, ∫⁻ X, ENNReal.ofReal (((1 + sizeTup b X) ^ N)⁻¹) ∂μ < ⊤ := by
+  intro F E _ _ _ _ _ σ hCM d b n M μ hμ
+  have hF : IsTotallyReal F := hCM.1
+  haveI : SecondCountableTopology (Ainf F) := secondCountable_Ainf hF
+  haveI : T2Space (Ainf F) := inferInstanceAs (T2Space (∀ v : InfinitePlace F, v.Completion))
+  obtain ⟨hring, -, -, -, -, -, hhom, hborel, -, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hCM (Ainf F)
+  haveI := hring
+  haveI := hborel n M
+  have hc := hhom d b
+  have hce := continuous_coordEquiv hF b hc
+  have hcs := continuous_coordEquiv_symm hF b hc
+  have hnorm : ∀ y : Ainf F ⊗[F] E, sizeInf b y = ∑ k, ∑ v, ‖coordEquiv hF b y k v‖ := fun y => by
+    simp only [abs_coordEquiv, sizeInf]
+  have hcontI : Continuous (sizeInf b : Ainf F ⊗[F] E → ℝ) := by
+    have : (sizeInf b : Ainf F ⊗[F] E → ℝ) = fun y => ∑ k, ∑ v, ‖coordEquiv hF b y k v‖ := funext hnorm
+    rw [this]
+    refine continuous_finset_sum _ fun k _ => continuous_finset_sum _ fun v _ => ?_
+    exact ((continuous_apply v).comp ((continuous_apply k).comp hce)).norm
+  have hcontT : Continuous (sizeTup b : (Fin n → Fin M → Ainf F ⊗[F] E) → ℝ) := by
+    unfold sizeTup
+    refine continuous_finset_sum _ fun a _ => continuous_finset_sum _ fun i _ => ?_
+    exact hcontI.comp ((continuous_apply i).comp (continuous_apply a))
+  have hI0 : ∀ y : Ainf F ⊗[F] E, 0 ≤ sizeInf b y := fun y =>
+    Finset.sum_nonneg fun k _ => Finset.sum_nonneg fun v _ => norm_nonneg _
+  have hT0 : ∀ X : Fin n → Fin M → Ainf F ⊗[F] E, 0 ≤ sizeTup b X := fun X =>
+    Finset.sum_nonneg fun a _ => Finset.sum_nonneg fun i _ => hI0 _
+  refine ⟨hcontT, hT0, ?_⟩
+  let e := tupEquiv hF b n M
+  have he : Continuous e :=
+    continuous_pi fun a => continuous_pi fun i => hce.comp ((continuous_apply i).comp (continuous_apply a))
+  have hes : Continuous e.symm :=
+    continuous_pi fun a => continuous_pi fun i => hcs.comp ((continuous_apply i).comp (continuous_apply a))
+  let W := Fin n → Fin M → Fin d → InfinitePlace F → ℝ
+  haveI b1 : BorelSpace (Fin d → InfinitePlace F → ℝ) := inferInstance
+  haveI s1 : SecondCountableTopology (Fin d → InfinitePlace F → ℝ) := inferInstance
+  haveI b2 : BorelSpace (Fin M → Fin d → InfinitePlace F → ℝ) := Pi.borelSpace
+  haveI s2 : SecondCountableTopology (Fin M → Fin d → InfinitePlace F → ℝ) := inferInstance
+  haveI b3 : BorelSpace W := Pi.borelSpace
+  haveI : (Measure.map e μ).IsAddHaarMeasure := e.isAddHaarMeasure_map μ he hes
+  obtain ⟨N, hN⟩ := exists_nat_gt (Module.finrank ℝ W : ℝ)
+  refine ⟨N, ?_⟩
+  have hfin := finite_integral_one_add_norm (μ := Measure.map e μ) (E := W) (r := (N : ℝ)) hN
+  have hmeas : Measurable fun y : W => ENNReal.ofReal ((1 + ‖y‖) ^ (-(N : ℝ))) := by
+    refine ENNReal.measurable_ofReal.comp ?_
+    exact (Continuous.rpow_const (by fun_prop) fun y => Or.inl (by positivity)).measurable
+  rw [lintegral_map hmeas he.measurable] at hfin
+  refine lt_of_le_of_lt (lintegral_mono fun X => ?_) hfin
+  refine ENNReal.ofReal_le_ofReal ?_
+  have h1 : (0 : ℝ) < 1 + ‖e X‖ := by positivity
+  rw [Real.rpow_neg h1.le, Real.rpow_natCast]
+  have h2 : 1 + ‖e X‖ ≤ 1 + sizeTup b X := by
+    have := norm_tupEquiv_le hF b n M X
+    linarith
+  exact inv_anti₀ (pow_pos h1 N) (pow_le_pow_left₀ h1.le h2 N)
+
+end GlobalTheory.CompanionTheory.SW.SizeInt
+end
+end
+
+open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
+open scoped TensorProduct ENNReal NNReal Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.size_function_rapid_decay_integrable : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E), ∀ (n M : ℕ) (μ : Measure (Fin n → Fin M → Ainf F ⊗[F] E)), μ.IsAddHaarMeasure → Continuous (sizeTup b : (Fin n → Fin M → Ainf F ⊗[F] E) → ℝ) ∧ (∀ X : Fin n → Fin M → Ainf F ⊗[F] E, 0 ≤ sizeTup b X) ∧ ∃ N : ℕ, ∫⁻ X, ENNReal.ofReal (((1 + sizeTup b X) ^ N)⁻¹) ∂μ < ⊤ := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.SW.SizeInt.size_neg_pow_integrable
+end
+
+section
 section
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
@@ -288,3 +634,4 @@ open scoped TensorProduct ENNReal NNReal Matrix
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.archimedean_gram_fiber_continuous_density : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (μ : Measure (Fin 1 → Fin M → Ainf F ⊗[F] E)) (ν : Measure (HermR (Ainf F) σ 1)) m, μ.IsAddHaarMeasure → ν.IsAddHaarMeasure → IsGramFib (Ainf F) σ J 1 μ ν m → ∀ φ : (Fin 1 → Fin M → Ainf F ⊗[F] E) → ℝ, Continuous φ → (∀ X, 0 ≤ φ X) → RapidDecay b (fun X => (φ X : ℂ)) → ∀ D : HermR (Ainf F) σ 1 → ℝ, Continuous D → (∀ U : Set (HermR (Ainf F) σ 1), MeasurableSet U → ∫⁻ X in gramR (Ainf F) σ J ⁻¹' (Subtype.val '' U), ENNReal.ofReal (φ X) ∂μ = ∫⁻ S in U, ENNReal.ofReal (D S) ∂ν) → ∀ S : HermR (Ainf F) σ 1, IsUnit (S : Matrix (Fin 1) (Fin 1) (Ainf F ⊗[F] E)).det → ∫⁻ X, ENNReal.ofReal (φ X) ∂(m S) = ENNReal.ofReal (D S) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.SW.LocGauss.fibre_rapid_eq_density
+end

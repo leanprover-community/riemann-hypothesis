@@ -1,10 +1,578 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletedLatticeStabilizerCompactOpenStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteClassSetHermitianUnitaryOpenLevelStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteCovolumeLatticeStabiliserUnitaryRealPoints
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteClassSetHermitianUnitaryOpenLevel
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBoundOrthonormalFrame
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CuspidalExponentialDecay
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
+import Development.AbelianVarietyTheory.Definitions.UpperBounds.SingleMemIntVec
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ExistsIntMulIntegral
+import Development.AbelianVarietyTheory.PublishedTheorems.Landherr₂.LandherrStIffLandherr
+import Development.AbelianVarietyTheory.Definitions.Foundations.CdScaleTieIff
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsArchAdeleTensorEquivComplexCmType
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicSplit
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EncardSmulMemLeEncardSmulInterNonempty
 
+section
+open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.Mem.Vol
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_classSet_hermitianUnitary_openLevel : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ K : Subgroup (HA (Af F) σ J), IsOpen (K : Set (HA (Af F) σ J)) → ∃ S : Finset (HA (Af F) σ J), ∀ g : HA (Af F) σ J, ∃ γ : HFinIn (Af F) σ J, ∃ s ∈ S, ∃ k ∈ K, g = γ • (s * k) := by
+  first | exact @GlobalTheory.Mem.ClassFinite.exists_finset_classes | exact GlobalTheory.Mem.ClassFinite.exists_finset_classes | (intros; apply GlobalTheory.Mem.ClassFinite.exists_finset_classes <;> assumption)
+end
+
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst
+open scoped ComplexConjugate ComplexOrder Matrix
+
+namespace GlobalTheory.Member.LatData
+
+open GlobalTheory.Up.Definite GlobalTheory.LatFin
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+theorem norm_entry_le_one {Λ : Submodule (𝓞 E) (Fin r → E)} {γ : GL (Fin r) E}
+    (hγ : IsUStab (1 : Matrix (Fin r) (Fin r) E) Λ γ) (φ : E →+* ℂ) (a b : Fin r) :
+    ‖φ ((γ : Matrix (Fin r) (Fin r) E) a b)‖ ≤ 1 := by
+  have hcol : (γ : Matrix (Fin r) (Fin r) E) *ᵥ (Pi.single b 1) =
+      fun a => (γ : Matrix (Fin r) (Fin r) E) a b := by
+    ext a; simp
+  have h1 := congrArg φ (hγ.1 (Pi.single b 1) (Pi.single b 1))
+  rw [map_herm_one_self, map_herm_one_self, hcol] at h1
+  have h2 : ∑ a, ‖φ ((Pi.single b 1 : Fin r → E) a)‖ ^ 2 = 1 := by
+    rw [Finset.sum_eq_single b] <;> simp +contextual
+  have h3 := Complex.ofReal_injective h1
+  rw [h2] at h3
+  have h4 := Finset.single_le_sum (f := fun a => ‖φ ((γ : Matrix (Fin r) (Fin r) E) a b)‖ ^ 2)
+    (fun _ _ => sq_nonneg _) (Finset.mem_univ a)
+  rw [h3] at h4
+  nlinarith [norm_nonneg (φ ((γ : Matrix (Fin r) (Fin r) E) a b))]
+
+theorem finite_stab (Λ : Submodule (𝓞 E) (Fin r → E)) (hfg : Λ.FG)
+    (hsp : Submodule.span E (Λ : Set (Fin r → E)) = ⊤) :
+    {γ : GL (Fin r) E | IsUStab (1 : Matrix (Fin r) (Fin r) E) Λ γ}.Finite := by
+  obtain ⟨k, hk, hi⟩ := exists_common_den Λ hfg
+  choose l hl hm using fun b : Fin r => exists_int_smul_mem Λ hsp (Pi.single b 1)
+  have hfin := Set.Finite.pi' fun _ : Fin r => Set.Finite.pi' fun b : Fin r =>
+    finite_bounded (data E r).Ψ (data E r).cmType (k * l b) (mul_ne_zero hk (hl b)) 1
+  refine Set.Finite.of_finite_image
+    (f := fun γ : GL (Fin r) E => fun a b => (γ : Matrix (Fin r) (Fin r) E) a b)
+    (hfin.subset ?_) (fun x _ y _ h => Units.ext h)
+  rintro _ ⟨γ, hγ, rfl⟩ a b
+  refine ⟨?_, fun τ => norm_entry_le_one hγ τ.1 a b⟩
+  have := hi _ ((hγ.2 _).1 (hm b)) a
+  rw [Matrix.mulVec_smul, Matrix.mulVec_single_one] at this
+  simpa [mul_assoc, Matrix.col] using this
+
+open NumberField in
+open scoped ComplexConjugate ComplexOrder Matrix in
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
+omit [IsCMField E] in
+private theorem exists_int_mul_isIntegral_of_fg (Λ : Submodule (𝓞 E) (Fin r → E)) (hΛ : Λ.FG) :
+    ∃ d : ℤ, d ≠ 0 ∧ ∀ x ∈ Λ, ∀ a, IsIntegral ℤ ((d : E) * x a) := by
+  classical
+  obtain ⟨s, rfl⟩ := hΛ
+  obtain ⟨d, hd, hint⟩ := exists_integral_multiples ℤ ℚ (s.biUnion fun x => Finset.univ.image x)
+  refine ⟨d, hd, fun x hx => ?_⟩
+  induction hx using Submodule.span_induction with
+  | mem x hx =>
+    intro a
+    have h := hint (x a) (Finset.mem_biUnion.2 ⟨x, hx, Finset.mem_image_of_mem _ (Finset.mem_univ a)⟩)
+    rwa [zsmul_eq_mul] at h
+  | zero => intro a; simpa using isIntegral_zero
+  | add x y _ _ hx hy => intro a; simpa [mul_add] using (hx a).add (hy a)
+  | smul k x _ hx =>
+    intro a
+    have h : (d : E) * (k • x) a = algebraMap (𝓞 E) E k * ((d : E) * x a) := by
+      rw [Pi.smul_apply, Algebra.smul_def]
+      ring
+    rw [h]
+    exact (RingOfIntegers.isIntegral_coe k).mul (hx a)
+
+open NumberField in
+open scoped ComplexConjugate ComplexOrder Matrix in
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
+omit [IsCMField E] in
+private theorem exists_int_smul_single_mem_of_span_eq_univ (Λ : Submodule (𝓞 E) (Fin r → E))
+    (hspan : Submodule.span E (Λ : Set (Fin r → E)) = ⊤) :
+    ∃ c : ℤ, c ≠ 0 ∧ ∀ b : Fin r, (c : E) • (Pi.single b 1 : Fin r → E) ∈ Λ := by
+  classical
+  have hmem : ∀ b : Fin r, (Pi.single b 1 : Fin r → E) ∈ Submodule.span E (Λ : Set (Fin r → E)) :=
+    fun b => hspan ▸ Submodule.mem_top
+  choose f t ht _ hsum using fun b => Submodule.mem_span_iff_exists_finset_subset.1 (hmem b)
+  obtain ⟨c, hc, hcint⟩ := exists_integral_multiples ℤ ℚ (Finset.univ.biUnion fun b => (t b).image (f b))
+  refine ⟨c, hc, fun b => ?_⟩
+  have key : ∀ v ∈ t b, (c : E) • (f b v • v) ∈ Λ := by
+    intro v hv
+    have hI : IsIntegral ℤ ((c : E) * f b v) := by
+      have h := hcint (f b v) (Finset.mem_biUnion.2 ⟨b, Finset.mem_univ _, Finset.mem_image_of_mem _ hv⟩)
+      rwa [zsmul_eq_mul] at h
+    have h : (c : E) • (f b v • v) = (⟨_, hI⟩ : 𝓞 E) • v := by
+      rw [smul_smul]
+      rfl
+    rw [h]
+    exact Λ.smul_mem _ (ht b hv)
+  rw [← hsum b, Finset.smul_sum]
+  exact Λ.sum_mem key
+
+open NumberField in
+open scoped ComplexConjugate ComplexOrder Matrix in
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
+private theorem cc_intCast' (n : ℤ) : _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (n : E) = n := by
+  obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
+  apply φ.injective
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.emb_cc, map_intCast, map_intCast]
+
+open NumberField in
+open scoped ComplexConjugate ComplexOrder Matrix in
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
+omit [IsCMField E] in
+private theorem finite_GL_of_integral_bounded_scaled_entries (c : E) (hc : c ≠ 0) (B : ℝ) :
+    {γ : GL (Fin r) E | ∀ a b, IsIntegral ℤ (c * (γ : Matrix (Fin r) (Fin r) E) a b) ∧
+      ∀ φ : E →+* ℂ, ‖φ (c * (γ : Matrix (Fin r) (Fin r) E) a b)‖ ≤ B}.Finite := by
+  have hT := Embeddings.finite_of_norm_le E ℂ B
+  have hpi : (Set.univ.pi fun _ : Fin r => Set.univ.pi fun _ : Fin r =>
+      {x : E | IsIntegral ℤ x ∧ ∀ φ : E →+* ℂ, ‖φ x‖ ≤ B}).Finite :=
+    Set.Finite.pi fun _ => Set.Finite.pi fun _ => hT
+  have hinj : Function.Injective fun γ : GL (Fin r) E => fun a b => c * (γ : Matrix (Fin r) (Fin r) E) a b := by
+    intro γ δ h
+    ext a b
+    exact mul_left_cancel₀ hc (congrFun (congrFun h a) b)
+  refine (hpi.preimage hinj.injOn).subset fun γ hγ => ?_
+  simp only [Set.mem_preimage, Set.mem_pi, Set.mem_univ, true_implies, Set.mem_setOf_eq]
+  exact fun a b => hγ a b
+
+open NumberField in
+open scoped ComplexConjugate ComplexOrder Matrix in
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
+
+theorem _root_.GlobalTheory.Member.LatData.exists_data_lattice : ∀ (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E] (r : ℕ)
+    (Λ : Submodule (𝓞 E) (Fin r → E)), Λ.FG → Submodule.span E (Λ : Set (Fin r → E)) = ⊤ →
+    ∃ X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r, X.Λ = Λ := by
+  intro E _ _ _ r Λ hfg hspan
+  obtain ⟨d, hd, hdint⟩ := exists_int_mul_isIntegral_of_fg Λ hfg
+  obtain ⟨c, hc, hcmem⟩ := exists_int_smul_single_mem_of_span_eq_univ Λ hspan
+  have hdc : ((d * c : ℤ) : E) ≠ 0 := by exact_mod_cast mul_ne_zero hd hc
+  refine ⟨{ _root_.GlobalTheory.Up.Definite.data E r with
+    Λ := Λ
+    Λ_fg := hfg
+    Λ_span := hspan
+    den := (d : 𝓞 E) * (d : 𝓞 E)
+    den_ne := by exact_mod_cast mul_ne_zero hd hd
+    Λ_int := ?_
+    Γ_stab := ?_
+    Γ_index := ?_
+    transv := by
+      intro ξ _ hiso s _ _
+      change _root_.ReciprocityTheory.ChartRestriction.G.FD.herm (1 : Matrix (Fin r) (Fin r) E) ξ ξ = 0 at hiso
+      obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
+      have h1 := congrArg φ hiso
+      rw [_root_.GlobalTheory.Up.Definite.map_herm_one_self, map_zero, Complex.ofReal_eq_zero,
+        Finset.sum_eq_zero_iff_of_nonneg fun _ _ => sq_nonneg _] at h1
+      have hξ : ∀ a, ξ a = 0 := fun a => by simpa using h1 a (Finset.mem_univ a)
+      refine ⟨1, Subgroup.one_mem _, ?_⟩
+      ext a b
+      simp [_root_.GlobalTheory.Up.Definite.data, _root_.ReciprocityTheory.ChartRestriction.G.FD.transvMat, hξ, Matrix.one_apply] }, rfl⟩
+  · intro x hx y hy
+    show IsIntegral ℤ ((((d : 𝓞 E) * (d : 𝓞 E) : 𝓞 E) : E) * _root_.ReciprocityTheory.ChartRestriction.G.FD.herm (1 : Matrix (Fin r) (Fin r) E) x y)
+    rw [_root_.GlobalTheory.Up.Definite.herm_one, Finset.mul_sum]
+    refine IsIntegral.sum _ fun a _ => ?_
+    have h : (((d : 𝓞 E) * (d : 𝓞 E) : 𝓞 E) : E) * (x a * _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (y a)) =
+        ((d : E) * x a) * _root_.ReciprocityTheory.ChartRestriction.G.FD.cc ((d : E) * y a) := by
+      rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.cc_mul, cc_intCast',
+        show (((d : 𝓞 E) * (d : 𝓞 E) : 𝓞 E) : E) = (d : E) * (d : E) by simp]
+      ring
+    rw [h]
+    exact (hdint x hx a).mul (_root_.ReciprocityTheory.ChartRestriction.G.FD.isIntegral_cc (hdint y hy a))
+  · intro γ hγ
+    change γ ∈ (⊥ : Subgroup (GL (Fin r) E)) at hγ
+    rw [Subgroup.mem_bot] at hγ
+    subst hγ
+    simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab]
+  · refine ⟨(finite_GL_of_integral_bounded_scaled_entries ((d * c : ℤ) : E) hdc ‖((d * c : ℤ) : ℂ)‖).toFinset,
+      fun γ hγ => ⟨γ, ?_, by simp⟩⟩
+    rw [Set.Finite.mem_toFinset]
+    intro a b
+    have hcol : (γ : Matrix (Fin r) (Fin r) E) *ᵥ (Pi.single b 1) =
+        fun a => (γ : Matrix (Fin r) (Fin r) E) a b := by
+      ext a; simp
+    have hnorm : ∀ φ : E →+* ℂ, ‖φ ((γ : Matrix (Fin r) (Fin r) E) a b)‖ ≤ 1 := by
+      intro φ
+      have h0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.herm (1 : Matrix (Fin r) (Fin r) E) ((γ : Matrix (Fin r) (Fin r) E) *ᵥ Pi.single b 1)
+          ((γ : Matrix (Fin r) (Fin r) E) *ᵥ Pi.single b 1) =
+          _root_.ReciprocityTheory.ChartRestriction.G.FD.herm (1 : Matrix (Fin r) (Fin r) E) (Pi.single b 1) (Pi.single b 1) := hγ.1 _ _
+      have h1 := congrArg φ h0
+      rw [_root_.GlobalTheory.Up.Definite.map_herm_one_self, _root_.GlobalTheory.Up.Definite.map_herm_one_self, hcol] at h1
+      have h2 : ∑ a, ‖φ ((Pi.single b 1 : Fin r → E) a)‖ ^ 2 = 1 := by
+        rw [Finset.sum_eq_single b] <;> simp +contextual
+      have h3 := Complex.ofReal_injective h1
+      rw [h2] at h3
+      have h4 := Finset.single_le_sum (f := fun a => ‖φ ((γ : Matrix (Fin r) (Fin r) E) a b)‖ ^ 2)
+        (fun _ _ => sq_nonneg _) (Finset.mem_univ a)
+      rw [h3] at h4
+      nlinarith [norm_nonneg (φ ((γ : Matrix (Fin r) (Fin r) E) a b))]
+    refine ⟨?_, fun φ => ?_⟩
+    · have hmemγ := (hγ.2 _).mp (hcmem b)
+      have hi := hdint _ hmemγ a
+      rw [Matrix.mulVec_smul, hcol] at hi
+      simp only [Pi.smul_apply, smul_eq_mul] at hi
+      have h : ((d * c : ℤ) : E) * (γ : Matrix (Fin r) (Fin r) E) a b =
+          (d : E) * ((c : E) * (γ : Matrix (Fin r) (Fin r) E) a b) := by
+        push_cast
+        ring
+      rw [h]
+      exact hi
+    · rw [map_mul, norm_mul, map_intCast]
+      exact mul_le_of_le_one_right (norm_nonneg _) (hnorm φ)
+
+end GlobalTheory.Member.LatData
+end
+
+section
+open NumberField
+
+namespace GlobalTheory.HermSignature
+
+theorem exists_le_gram_eq_sgn : ∀ (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E), (∀ a b, ReciprocityTheory.ChartRestriction.G.FD.cc (G a b) = G b a) → G.det ≠ 0 → ∀ τ : E →+* ℂ, ∃ p : ℕ, p ≤ r ∧ ∃ P : Matrix (Fin r) (Fin r) ℂ, P.det ≠ 0 ∧ ReciprocityTheory.ChartRestriction.G.FD.gram τ G P = Matrix.diagonal fun a : Fin r => ((ReciprocityTheory.ChartRestriction.G.FD.sgn p (a : ℕ) : ℝ) : ℂ) := by
+  intro E _ _ _ r G hG hd τ
+  obtain ⟨p, Q, hQ, h⟩ := GlobalTheory.Published.LandherrSt.exists_gram_eq_sgn hG hd τ
+  refine ⟨min p r, min_le_right _ _, Q, hQ, ?_⟩
+  rw [h]
+  congr 1
+  funext a
+  have ha := a.2
+  simp only [ReciprocityTheory.ChartRestriction.G.FD.sgn, lt_min_iff, ha, and_true]
+
+end GlobalTheory.HermSignature
+end
+
+section
+open NumberField
+
+namespace GlobalTheory.HermDen
+
+open ReciprocityTheory.ChartRestriction.G.FD
+
+theorem isIntegral_conj {E : Type} [Field E] [NumberField E] [IsCMField E] {x : E}
+    (hx : IsIntegral ℤ x) : IsIntegral ℤ (cc x) :=
+  hx.map (IsCMField.complexConj E).toRingEquiv.toRingHom.toIntAlgHom
+
+theorem exists_den (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E] (r : ℕ)
+    (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (hΛ : Λ.FG) :
+    ∃ den : 𝓞 E, den ≠ 0 ∧ ∀ x ∈ Λ, ∀ y ∈ Λ,
+      IsIntegral ℤ ((den : E) * ReciprocityTheory.ChartRestriction.G.FD.herm G x y) := by
+  classical
+  obtain ⟨k, hk, hi⟩ := GlobalTheory.LatFin.exists_common_den Λ hΛ
+  obtain ⟨l, hl, hG⟩ := GlobalTheory.LatFin.exists_common_den
+    (Submodule.span (𝓞 E) (Set.range fun a : Fin r => (G a : Fin r → E)))
+    (Submodule.fg_span (Set.finite_range _))
+  have hG' : ∀ a b, IsIntegral ℤ ((l : E) * G a b) := fun a b =>
+    hG _ (Submodule.subset_span ⟨a, rfl⟩) b
+  refine ⟨((k * k * l : ℤ) : 𝓞 E), Int.cast_ne_zero.2 (mul_ne_zero (mul_ne_zero hk hk) hl),
+    fun x hx y hy => ?_⟩
+  have e : ((((k * k * l : ℤ) : 𝓞 E)) : E) * herm G x y
+      = ∑ a, ∑ b, ((k : E) * x a) * ((l : E) * G a b) * cc ((k : E) * y b) := by
+    have h1 : ((((k * k * l : ℤ) : 𝓞 E)) : E) = (k : E) * k * l := by
+      rw [RingOfIntegers.coe_eq_algebraMap, map_intCast]
+      push_cast
+      ring
+    rw [h1, herm, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    have h2 : cc ((k : E) * y b) = k * cc (y b) := by simp [cc]
+    rw [h2]
+    ring
+  rw [e]
+  exact IsIntegral.sum _ fun a _ => IsIntegral.sum _ fun b _ =>
+    ((hi x hx a).mul (hG' a b)).mul (isIntegral_conj (hi y hy b))
+
+end GlobalTheory.HermDen
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.Mem.Vol
+open scoped TensorProduct
+
+noncomputable section
+
+namespace GlobalTheory.Mem.CovolTransport
+
+section General
+
+theorem isometry_iff {A : Type} [CommRing A] {M : ℕ} (s : A →+* A) (J g : Matrix (Fin M) (Fin M) A) :
+    (∀ u w : Fin M → A, ∑ a, ∑ b, (g *ᵥ u) a * J b a * s ((g *ᵥ w) b) = ∑ a, ∑ b, u a * J b a * s (w b)) ↔
+      Formalism.UG.cT s g * J * g = J := by
+  have h1 : ∀ (K : Matrix (Fin M) (Fin M) A) (u w : Fin M → A),
+      ∑ a, ∑ b, u a * K b a * s (w b) = (s ∘ w) ⬝ᵥ (K *ᵥ u) := by
+    intro K u w
+    rw [Finset.sum_comm]
+    simp only [dotProduct, Matrix.mulVec, Finset.mul_sum, Function.comp_apply]
+    exact Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun a _ => by ring
+  have h2 : ∀ u w : Fin M → A, (s ∘ (g *ᵥ w)) ⬝ᵥ (J *ᵥ (g *ᵥ u)) =
+      (s ∘ w) ⬝ᵥ ((Formalism.UG.cT s g * J * g) *ᵥ u) := by
+    intro u w
+    have e : s ∘ (g *ᵥ w) = g.map s *ᵥ (s ∘ w) := by
+      funext a; exact RingHom.map_mulVec s g w a
+    rw [e, ← Matrix.vecMul_transpose, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec,
+      Matrix.mulVec_mulVec]
+    rfl
+  simp only [h1, h2]
+  constructor
+  · intro h
+    ext a b
+    have := h (Pi.single b 1) (Pi.single a 1)
+    have e : s ∘ (Pi.single a 1 : Fin M → A) = Pi.single a 1 := by
+      funext k
+      by_cases hk : k = a <;> simp [Pi.single_apply, hk]
+    rw [e] at this
+    simpa using this
+  · intro h u w
+    rw [h]
+
+variable {S : Type} [CommRing S] {I : Type} {M : ℕ} {e : S ≃+* (I → ℂ)} {θ : I → (S →+* ℂ)}
+
+theorem ext_map (he : ∀ x i, e x i = θ i x) {X Y : Matrix (Fin M) (Fin M) S}
+    (h : ∀ i, X.map (θ i) = Y.map (θ i)) : X = Y := by
+  ext a b
+  apply e.injective
+  funext i
+  rw [he, he]
+  exact congrFun (congrFun (h i) a) b
+
+theorem cT_map {s : S →+* S} {t : S →+* ℂ} (hs : ∀ x, t (s x) = star (t x))
+    (X : Matrix (Fin M) (Fin M) S) :
+    (Formalism.UG.cT s X).map t = Formalism.UG.cT (starRingEnd ℂ) (X.map t) := by
+  ext a b
+  simp [Formalism.UG.cT, hs]
+
+theorem exists_equiv [TopologicalSpace S] (he : ∀ x i, e x i = θ i x) (hc : Continuous e)
+    (hc' : Continuous e.symm) (s : S →+* S) (hs : ∀ x i, θ i (s x) = star (θ i x))
+    (J : Matrix (Fin M) (Fin M) S) (H : Subgroup (I → GL (Fin M) ℂ))
+    (hH : ∀ g, g ∈ H ↔ ∀ i, g i ∈ Formalism.UG.UJ (starRingEnd ℂ) (J.map (θ i))) :
+    ∃ f : Formalism.UG.UJ s J ≃ₜ* H, ∀ h i, (((f h : I → GL (Fin M) ℂ) i : GL (Fin M) ℂ) : Matrix (Fin M) (Fin M) ℂ) =
+      ((h.1 : GL (Fin M) S) : Matrix (Fin M) (Fin M) S).map (θ i) := by
+  have hone : ∀ i, (1 : Matrix (Fin M) (Fin M) S).map (θ i) = 1 := fun i =>
+    Matrix.map_one _ (map_zero _) (map_one _)
+  have hθ : ∀ i, Continuous (θ i) := fun i => by
+    have : (θ i : S → ℂ) = fun x => e x i := funext fun x => (he x i).symm
+    rw [this]
+    exact (continuous_apply i).comp hc
+  let fw : Formalism.UG.UJ s J → H := fun h => ⟨fun i => Formalism.UG.bc (θ i) h.1, (hH _).2 fun i => by
+    have hh : Formalism.UG.cT s h.1.1 * J * h.1.1 = J := h.2
+    have h2 := congrArg (fun X => Matrix.map X (θ i)) hh
+    simp only [Matrix.map_mul, cT_map (fun x => hs x i)] at h2
+    exact h2⟩
+  have hfw : ∀ h i, ((fw h).1 i).1 = h.1.1.map (θ i) := fun _ _ => rfl
+  let L : H → Matrix (Fin M) (Fin M) S :=
+    fun g => Matrix.of fun a b => e.symm fun i => (g.1 i).1 a b
+  have hL : ∀ g i, (L g).map (θ i) = (g.1 i).1 := fun g i => by
+    ext a b
+    simp [L, ← he]
+  have hLmul : ∀ g g', L g * L g' = L (g * g') := by
+    intro g g'
+    refine ext_map he fun i => ?_
+    rw [Matrix.map_mul, hL, hL, hL]
+    rfl
+  have hL1 : L 1 = 1 := by
+    refine ext_map he fun i => ?_
+    rw [hL, hone]
+    rfl
+  have hLu : ∀ g, Formalism.UG.cT s (L g) * J * L g = J := by
+    intro g
+    refine ext_map he fun i => ?_
+    rw [Matrix.map_mul, Matrix.map_mul, cT_map (fun x => hs x i), hL]
+    exact (hH _).1 g.2 i
+  have hLc : Continuous L := by
+    refine continuous_pi fun a => continuous_pi fun b => ?_
+    refine hc'.comp (continuous_pi fun i => ?_)
+    have : Continuous fun g : H => (g.1 i).1 :=
+      Units.continuous_val.comp ((continuous_apply i).comp continuous_subtype_val)
+    exact this.matrix_elem a b
+  let bw : H → Formalism.UG.UJ s J := fun g =>
+    ⟨⟨L g, L g⁻¹, by rw [hLmul, mul_inv_cancel, hL1], by rw [hLmul, inv_mul_cancel, hL1]⟩, hLu g⟩
+  refine ⟨
+    { toFun := fw
+      invFun := bw
+      left_inv := fun h => ?_
+      right_inv := fun g => ?_
+      map_mul' := fun h h' => ?_
+      continuous_toFun := ?_
+      continuous_invFun := ?_ }, fun h i => rfl⟩
+  · exact Subtype.ext (Units.ext (ext_map he fun i => hL (fw h) i))
+  · exact Subtype.ext (funext fun i => Units.ext (hL g i))
+  · exact Subtype.ext (funext fun i => map_mul (Formalism.UG.bc (θ i)) h.1 h'.1)
+  · refine Continuous.subtype_mk (continuous_pi fun i => Units.continuous_iff.2 ⟨?_, ?_⟩) _
+    · exact (Units.continuous_val.comp continuous_subtype_val).matrix_map (hθ i)
+    · exact (Units.continuous_coe_inv.comp continuous_subtype_val).matrix_map (hθ i)
+  · exact Continuous.subtype_mk (Units.continuous_iff.2 ⟨hLc, hLc.comp continuous_inv⟩) _
+
+end General
+
+theorem isCMFam_val {E : Type} [Field E] (Ψ : Finset (E →+* ℂ))
+    (hΨ : ∀ τ : E →+* ℂ, τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ) :
+    IsCMFam (fun τ : Ψ => τ.1) := by
+  constructor
+  · intro i j hij
+    rcases InfinitePlace.mk_eq_iff.1 hij with h | h
+    · exact Subtype.ext h
+    · exact absurd (h ▸ j.2) ((hΨ _).1 i.2)
+  · intro w
+    by_cases h : w.embedding ∈ Ψ
+    · exact ⟨⟨_, h⟩, w.mk_embedding⟩
+    · have h' : ComplexEmbedding.conjugate w.embedding ∈ Ψ := by
+        by_contra hn
+        exact h ((hΨ _).2 hn)
+      exact ⟨⟨_, h'⟩, (InfinitePlace.mk_conjugate_eq _).trans w.mk_embedding⟩
+
+theorem finite_covolume_real_points : (∀ (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)), (∀ a b, ReciprocityTheory.ChartRestriction.G.FD.cc (G a b) = G b a) → G.det ≠ 0 → Λ.FG → Submodule.span E (Λ : Set (Fin r → E)) = ⊤ → ∃ Ψ : Finset (E →+* ℂ), (∀ τ : E →+* ℂ, τ ∈ Ψ ↔ NumberField.ComplexEmbedding.conjugate τ ∉ Ψ) ∧ ∀ (H : Subgroup (Ψ → GL (Fin r) ℂ)), (∀ g, g ∈ H ↔ ∀ τ : Ψ, ∀ u w : Fin r → ℂ, ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 G (Matrix.mulVec (g τ : Matrix (Fin r) (Fin r) ℂ) u) (Matrix.mulVec (g τ : Matrix (Fin r) (Fin r) ℂ) w) = ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 G u w) → ∀ [MeasurableSpace H] [BorelSpace H] (ν : MeasureTheory.Measure H) [ν.IsHaarMeasure], ∃ Ω : Set H, MeasurableSet Ω ∧ ν Ω < ⊤ ∧ ∀ g : H, ∃ γ : GL (Fin r) E, ReciprocityTheory.ChartRestriction.G.FD.IsUStab G Λ γ ∧ ∃ w ∈ Ω, ∀ τ : Ψ, (((g : Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ) = (γ : Matrix (Fin r) (Fin r) E).map τ.1 * (((w : Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ)) → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ (L : Submodule (𝓞 E) (Fin M → E)), L.FG → Submodule.span E (L : Set (Fin M → E)) = ⊤ → ∀ ν : Measure (HA (Ainf F) σ J), ν.IsHaarMeasure → ∃ Ω : Set (HA (Ainf F) σ J), MeasurableSet Ω ∧ ν Ω < ⊤ ∧ ∀ g : HA (Ainf F) σ J, ∃ γ ∈ Formalism.UG.UJ (σ : E →+* E) J, (∀ x, x ∈ L ↔ (γ : Matrix (Fin M) (Fin M) E).mulVec x ∈ L) ∧ ∃ w ∈ Ω, HA.mat (Ainf F) σ J g = Formalism.UG.bc (inclR (F := F) (Ainf F)) γ * HA.mat (Ainf F) σ J w := by
+  intro hyp F E _ _ _ _ _ σ hcm M J hJ L hL hsp ν hν
+  haveI := hcm.1
+  haveI := hcm.2.1
+  haveI : Algebra.IsQuadraticExtension F E := ⟨hcm.2.2.1⟩
+  haveI : IsCMField E := IsCMField.ofCMExtension F E
+  have hcc : ∀ x : E, ReciprocityTheory.ChartRestriction.G.FD.cc x = σ x := fun x => by
+    obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
+    apply φ.injective
+    rw [ReciprocityTheory.ChartRestriction.G.FD.emb_cc, hcm.2.2.2]
+    rfl
+  obtain ⟨Ψ, hΨ, hcov⟩ := hyp E M Jᵀ L (fun a b => by rw [hcc]; exact hJ.1 a b)
+    (by rw [Matrix.det_transpose]; exact hJ.2) hL hsp
+  choose θ hθ using fun τ : Ψ => (GlobalTheory.Mem.VolEmb.existsUnique_infEmb F E σ hcm τ.1).exists
+  obtain ⟨e, he, hc, hc', hs⟩ :=
+    GlobalTheory.Mem.VolInfIso.exists_infAdele_equiv F E σ Ψ _ θ hcm (isCMFam_val Ψ hΨ) hθ
+  have hincl : ∀ (X : Matrix (Fin M) (Fin M) E) (τ : Ψ),
+      (X.map (inclR (F := F) (Ainf F))).map (θ τ) = X.map τ.1 := fun X τ => by
+    ext a b
+    exact (hθ τ).1 (X a b)
+  let H : Subgroup (Ψ → GL (Fin M) ℂ) :=
+    Subgroup.pi Set.univ fun τ => Formalism.UG.UJ (starRingEnd ℂ) (J.map τ.1)
+  obtain ⟨f, hf⟩ : ∃ f : HA (Ainf F) σ J ≃ₜ* H, ∀ h i,
+      (((f h : Ψ → GL (Fin M) ℂ) i : GL (Fin M) ℂ) : Matrix (Fin M) (Fin M) ℂ) =
+        (HA.mat (Ainf F) σ J h : Matrix (Fin M) (Fin M) (Ainf F ⊗[F] E)).map (θ i) :=
+    exists_equiv he hc hc' (sigR (Ainf F) σ) (fun x i => by rw [← he, ← he, hs]) (JR (Ainf F) J) H
+      fun g => by
+        simp only [H, Subgroup.mem_pi, Set.mem_univ, forall_const, JR, hincl]
+  borelize ↥H
+  haveI : BorelSpace (HA (Ainf F) σ J) := ⟨rfl⟩
+  haveI : IsTopologicalGroup (HA (Ainf F) σ J) :=
+    f.toHomeomorph.isInducing.topologicalGroup f
+  haveI : (ν.map f).IsHaarMeasure := f.isHaarMeasure_map ν
+  obtain ⟨Ω, hΩm, hΩf, hΩ⟩ := hcov H (fun g => by
+    simp only [H, Subgroup.mem_pi, Set.mem_univ, forall_const]
+    exact forall_congr' fun τ => (isometry_iff (starRingEnd ℂ) (J.map τ.1) (g τ).1).symm) (ν.map f)
+  have hfm : Measurable f := f.continuous.measurable
+  refine ⟨f ⁻¹' Ω, hfm hΩm, by rwa [Measure.map_apply hfm hΩm] at hΩf, fun g => ?_⟩
+  obtain ⟨γ, hγ, w, hw, hgw⟩ := hΩ (f g)
+  refine ⟨γ, (isometry_iff (σ : E →+* E) J γ.1).1 fun u v => ?_, hγ.2, f.symm w, by simpa using hw, ?_⟩
+  · have := hγ.1 u v
+    simp only [ReciprocityTheory.ChartRestriction.G.FD.herm, hcc, Matrix.transpose_apply] at this
+    exact this
+  · refine Units.ext (ext_map he fun τ => ?_)
+    rw [Units.val_mul, Matrix.map_mul, ← hf, ← hf, f.apply_symm_apply, hgw, ← hincl]
+    rfl
+
+end GlobalTheory.Mem.CovolTransport
+end
+end
+
+section
+section
+namespace GlobalTheory.MixedSignature
+
+section
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up MeasureTheory Topology
+open scoped ComplexOrder ENNReal Matrix ComplexConjugate
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+theorem compact_mod_stabiliser_of_minGe :
+    (∀ (r : ℕ) (X : Data E r) (G : Matrix (Fin r) (Fin r) E) (p : X.Ψ → ℕ) (_ : G.det ≠ 0) {den : 𝓞 E} (_ : den ≠ 0) (_ : ∀ x ∈ X.Λ, ∀ y ∈ X.Λ, IsIntegral ℤ ((den : E) * herm G x y)) (H : Subgroup (X.Ψ → GL (Fin r) ℂ)), (∀ g, g ∈ H ↔ Uni X G fun τ => (g τ : Matrix (Fin r) (Fin r) ℂ)) → ∀ x0, Orth X G p x0 → ∀ ε : ℝ, 0 < ε → ∃ K : Set H, IsCompact K ∧ ∀ g : H, MinGe X ε (X.lmulC (fun τ => (((g : H) : X.Ψ → GL (Fin r) ℂ) τ : Matrix (Fin r) (Fin r) ℂ)) x0) → ∃ u : H, (∃ γ : GL (Fin r) E, IsUStab G X.Λ γ ∧ ∀ τ : X.Ψ, ((((u : H) : X.Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ) = (γ : Matrix (Fin r) (Fin r) E).map τ.1) ∧ ∃ k ∈ K, g = u * k) := by
+  intro r X G p hG den hden hint H hH x0 hx0 ε hε
+  obtain ⟨-, -, hfr⟩ := unitary_group_frames r X p H hH
+  obtain ⟨horth, ι, hιc, -, hιg⟩ := hfr x0 hx0
+  obtain ⟨R, hR⟩ := exists_bound_orthonormal_frame X G p hG hden hint ε hε
+  obtain ⟨Γ, hΓ⟩ := exists_stabiliser_image_subgroup r X H hH
+  refine ⟨ι '' {x : Frame X.Ψ r | Orth X G p x ∧ ∀ τ a b, ‖x τ a b‖ ≤ R},
+    (isCompact_orth_bounded r X G p R).image_of_continuousOn
+      (hιc.mono fun x hx => hx.1), fun g hg => ?_⟩
+  obtain ⟨γ, hγ, hb⟩ := hR _ (horth g) hg
+  obtain ⟨u, hu⟩ := exists_unitary_elem_of_isUStab r X H hH γ hγ
+  have huΓ : u ∈ Γ := (hΓ u).2 ⟨γ, hγ, hu⟩
+  refine ⟨u⁻¹, (hΓ _).1 (Γ.inv_mem huΓ), u * g, ⟨_, ⟨horth (u * g), ?_⟩, hιg (u * g)⟩,
+    (inv_mul_cancel_left u g).symm⟩
+  have key : X.lmulC (fun τ => (((u * g : H) : X.Ψ → GL (Fin r) ℂ) τ :
+      Matrix (Fin r) (Fin r) ℂ)) x0 = lact γ (X.lmulC (fun τ =>
+        (((g : H) : X.Ψ → GL (Fin r) ℂ) τ : Matrix (Fin r) (Fin r) ℂ)) x0) := by
+    funext τ
+    change (((u : X.Ψ → GL (Fin r) ℂ) τ : Matrix (Fin r) (Fin r) ℂ) *
+        ((g : X.Ψ → GL (Fin r) ℂ) τ : Matrix (Fin r) (Fin r) ℂ)) * mat x0 τ =
+      (γ : Matrix (Fin r) (Fin r) E).map τ.1 *
+        (((g : X.Ψ → GL (Fin r) ℂ) τ : Matrix (Fin r) (Fin r) ℂ) * mat x0 τ)
+    rw [hu, Matrix.mul_assoc]
+  rw [key]
+  exact hb
+
+theorem exists_finite_measure_cover : (∀ (r : ℕ) (X : Data E r) (G : Matrix (Fin r) (Fin r) E) (p : X.Ψ → ℕ) (_ : G.det ≠ 0) {den : 𝓞 E} (_ : den ≠ 0) (_ : ∀ x ∈ X.Λ, ∀ y ∈ X.Λ, IsIntegral ℤ ((den : E) * herm G x y)) (x0 : Frame X.Ψ r) (_ : Orth X G p x0) (_ : ∀ τ, p τ ≤ r) (H : Subgroup (X.Ψ → GL (Fin r) ℂ)), (∀ g, g ∈ H ↔ Uni X G fun τ => (g τ : Matrix (Fin r) (Fin r) ℂ)) → ∀ [MeasurableSpace H] [BorelSpace H] (ν : Measure H) [ν.IsHaarMeasure], ∃ Ω : Set H, MeasurableSet Ω ∧ ν Ω < ⊤ ∧ ∀ g : H, ∃ γ : GL (Fin r) E, IsUStab G X.Λ γ ∧ ∃ w ∈ Ω, ∀ τ : X.Ψ, (((g : X.Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ) = (γ : Matrix (Fin r) (Fin r) E).map τ.1 * (((w : X.Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ)) := by
+  intro r X G p hG den hden hint x0 hx0 hple H hH _ _ ν _
+  obtain ⟨Γ, hΓ⟩ := exists_stabiliser_image_subgroup r X H hH
+  suffices hS : ∃ Ω : Set H, MeasurableSet Ω ∧ ν Ω < ⊤ ∧ ∀ g : H, ∃ γ ∈ Γ, ∃ w ∈ Ω, g = γ * w by
+    obtain ⟨Ω, h1, h2, h3⟩ := hS
+    refine ⟨Ω, h1, h2, fun g => ?_⟩
+    obtain ⟨u, hu, w, hw, rfl⟩ := h3 g
+    obtain ⟨γ, hγ, hγu⟩ := (hΓ u).1 hu
+    refine ⟨γ, hγ, w, hw, fun τ => ?_⟩
+    rw [← hγu τ]
+    simp
+  by_cases hp : ∀ τ, p τ = 0 ∨ p τ = r
+  · have : CompactSpace H := compactSpace_unitary_of_definite r X H hH hp x0 hx0
+    exact ⟨Set.univ, MeasurableSet.univ, isCompact_univ.measure_lt_top,
+      fun g => ⟨1, Γ.one_mem, g, Set.mem_univ _, (one_mul g).symm⟩⟩
+  · obtain ⟨τ0, hp⟩ := not_forall.1 hp
+    have hp0 : 0 < p τ0 := Nat.pos_of_ne_zero fun h => hp (Or.inl h)
+    have hpr : p τ0 < r := lt_of_le_of_ne (hple τ0) fun h => hp (Or.inr h)
+    obtain ⟨hlc, hsc, -⟩ := unitary_group_frames r X p H hH
+    obtain ⟨σ, _, _, h, f, c, b, hk, hf, hf0, hinv, hc0, hc1, hb, hdrift, hsub⟩ :=
+      exists_drift_function r X G p hG τ0 H hH hp0 hpr x0 hx0
+    obtain ⟨U, hU, hU1⟩ := gamDisc r X H hH
+    refine GlobalTheory.exists_finite_measure_cover_of_drift_function H ν Γ σ h f c b
+      ⟨U, hU, fun γ hγ => hU1 γ ((hΓ γ).1 hγ)⟩ hk hf hf0
+      (fun γ hγ => hinv γ ((hΓ γ).1 hγ)) hc0 hc1 hb hdrift fun M => ?_
+    obtain ⟨ε, hε, hM⟩ := hsub M
+    obtain ⟨K, hK, hKc⟩ := compact_mod_stabiliser_of_minGe r X G p hG hden hint H hH x0 hx0 ε hε
+    refine ⟨K, hK, fun g hg => ?_⟩
+    obtain ⟨u, hu, k, hk, e⟩ := hKc g (hM g hg)
+    exact ⟨u, (hΓ u).2 hu, k, hk, e⟩
+
+end
+
+open NumberField in
+
+theorem exists_cmType_finite_measure_cover : (∀ (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)), (∀ a b, ReciprocityTheory.ChartRestriction.G.FD.cc (G a b) = G b a) → G.det ≠ 0 → Λ.FG → Submodule.span E (Λ : Set (Fin r → E)) = ⊤ → ∃ Ψ : Finset (E →+* ℂ), (∀ τ : E →+* ℂ, τ ∈ Ψ ↔ NumberField.ComplexEmbedding.conjugate τ ∉ Ψ) ∧ ∀ (H : Subgroup (Ψ → GL (Fin r) ℂ)), (∀ g, g ∈ H ↔ ∀ τ : Ψ, ∀ u w : Fin r → ℂ, ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 G (Matrix.mulVec (g τ : Matrix (Fin r) (Fin r) ℂ) u) (Matrix.mulVec (g τ : Matrix (Fin r) (Fin r) ℂ) w) = ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 G u w) → ∀ [MeasurableSpace H] [BorelSpace H] (ν : MeasureTheory.Measure H) [ν.IsHaarMeasure], ∃ Ω : Set H, MeasurableSet Ω ∧ ν Ω < ⊤ ∧ ∀ g : H, ∃ γ : GL (Fin r) E, ReciprocityTheory.ChartRestriction.G.FD.IsUStab G Λ γ ∧ ∃ w ∈ Ω, ∀ τ : Ψ, (((g : Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ) = (γ : Matrix (Fin r) (Fin r) E).map τ.1 * (((w : Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ)) := by
+  intro E _ _ _ r G Λ hh hG hfg hsp
+  obtain ⟨X, rfl⟩ := GlobalTheory.Member.LatData.exists_data_lattice E r Λ hfg hsp
+  obtain ⟨den, hden, hint⟩ := GlobalTheory.HermDen.exists_den E r G X.Λ hfg
+  choose p hp P _ hP using fun τ : X.Ψ => GlobalTheory.HermSignature.exists_le_gram_eq_sgn E r G hh hG τ.1
+  exact ⟨X.Ψ, X.cmType, exists_finite_measure_cover r X G p hG hden hint P hP hp⟩
+
+open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.Mem.Vol
+open scoped TensorProduct
+
+theorem finite_covolume_real_points : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ (L : Submodule (𝓞 E) (Fin M → E)), L.FG → Submodule.span E (L : Set (Fin M → E)) = ⊤ → ∀ ν : Measure (HA (Ainf F) σ J), ν.IsHaarMeasure → ∃ Ω : Set (HA (Ainf F) σ J), MeasurableSet Ω ∧ ν Ω < ⊤ ∧ ∀ g : HA (Ainf F) σ J, ∃ γ ∈ Formalism.UG.UJ (σ : E →+* E) J, (∀ x, x ∈ L ↔ (γ : Matrix (Fin M) (Fin M) E).mulVec x ∈ L) ∧ ∃ w ∈ Ω, HA.mat (Ainf F) σ J g = Formalism.UG.bc (inclR (F := F) (Ainf F)) γ * HA.mat (Ainf F) σ J w :=
+  GlobalTheory.Mem.CovolTransport.finite_covolume_real_points exists_cmType_finite_measure_cover
+
+end GlobalTheory.MixedSignature
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.Mem.Vol
+open scoped TensorProduct
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_covolume_latticeStabiliser_unitaryRealPoints : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ (L : Submodule (𝓞 E) (Fin M → E)), L.FG → Submodule.span E (L : Set (Fin M → E)) = ⊤ → ∀ ν : Measure (HA (Ainf F) σ J), ν.IsHaarMeasure → ∃ Ω : Set (HA (Ainf F) σ J), MeasurableSet Ω ∧ ν Ω < ⊤ ∧ ∀ g : HA (Ainf F) σ J, ∃ γ ∈ Formalism.UG.UJ (σ : E →+* E) J, (∀ x, x ∈ L ↔ (γ : Matrix (Fin M) (Fin M) E).mulVec x ∈ L) ∧ ∃ w ∈ Ω, HA.mat (Ainf F) σ J g = Formalism.UG.bc (inclR (F := F) (Ainf F)) γ * HA.mat (Ainf F) σ J w := by
+  atlas_forward_decl GlobalTheory.MixedSignature.finite_covolume_real_points
+end
+
+section
 open Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.Mem.Vol
 open scoped TensorProduct Pointwise
 
@@ -181,3 +749,4 @@ theorem finVol : FiniteVolume₂ := by
     group
 
 end GlobalTheory.Mem.VolFin
+end

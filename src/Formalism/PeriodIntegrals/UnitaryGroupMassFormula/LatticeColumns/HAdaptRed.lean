@@ -1,7 +1,73 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.OneSubMulOneAdd
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.HAdapt
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.LevelClauseAdaptedBasis
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.SecondCoordsMulGL
 
+section
+noncomputable section
+
+namespace PIW.MassDataColumns
+
+open Matrix Formalism.FourierDecayAlt.S3
+open scoped Matrix
+
+variable {K : Type} [Field K] (O : Subring K) {r k : ℕ}
+
+def colv (c : Idx r k → Idx r k → K) (y : Fin k → Idx r k → K) : Idx r k → Idx r k → K
+  | Sum.inr (Sum.inl (Sum.inl i)) => y i
+  | Sum.inl a => c (Sum.inl a)
+  | Sum.inr (Sum.inl (Sum.inr u)) => c (Sum.inr (Sum.inl (Sum.inr u)))
+  | Sum.inr (Sum.inr b) => c (Sum.inr (Sum.inr b))
+
+def ofCols (v : Idx r k → Idx r k → K) : Matrix (Idx r k) (Idx r k) K := fun i j => v j i
+
+section Gen
+
+open Classical in
+
+def coefv (o : Idx r k → Fin k → K) (l : Idx r k → K) (g : K) (i : Fin k) : Idx r k → K :=
+  fun t => if IsW t then 0 else g * o (dlH t) i * (l (dlH t))⁻¹
+
+def nMat (o : Idx r k → Fin k → K) (l : Idx r k → K) (g : K) : Matrix (Idx r k) (Idx r k) K :=
+  ofCols (colv (fun _ => 0) (fun i => coefv o l g i))
+
+def IntO (M : Matrix (Idx r k) (Idx r k) K) : Prop := ∀ i j, M i j ∈ O
+
+end Gen
+
+end PIW.MassDataColumns
+end
+end
+
+section
+noncomputable section
+
+namespace PIW.MassDataColumns
+
+open Matrix Formalism.FourierDecayAlt.S3
+open scoped Matrix
+
+variable {K : Type} [Field K] (O : Subring K) {r k : ℕ}
+
+
+
+
+theorem one_sub_mul_one_add (N : Matrix (Idx r k) (Idx r k) K) (hN : N * N = 0) : (1 - N) * (1 + N) = 1 := by
+  rw [sub_mul, one_mul, mul_add, mul_one, hN, add_zero, add_sub_cancel_right]
+
+theorem one_add_mul_one_sub (N : Matrix (Idx r k) (Idx r k) K) (hN : N * N = 0) : (1 + N) * (1 - N) = 1 := by
+  rw [add_mul, one_mul, mul_sub, mul_one, hN, sub_zero, sub_add_cancel]
+
+
+
+
+
+
+
+end PIW.MassDataColumns
+end
+end
+
+section
 noncomputable section
 
 namespace PIW.MassDataColumns
@@ -364,3 +430,5 @@ theorem hAdaptAll_of (h : AdaptInAll) : HAdaptAll := by
   exact hAdaptQ_of_in X hb u p (h X hb hK u hM hL p)
 
 end PIW.MassDataColumns
+end
+end

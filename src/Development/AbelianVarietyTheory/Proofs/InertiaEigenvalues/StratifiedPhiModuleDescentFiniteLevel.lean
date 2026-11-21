@@ -1,8 +1,249 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AdIPowLe
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DescentFreeModuleCocycle
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BhattScholzeIntegral
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.SpanSingletonEqTopIffIsUnitOfIsBaseChange
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PrismPushoutModAdicPowUniversal
 
+section
+section
+open TensorProduct
+
+namespace GlobalTheory.CocycleDescent
+
+variable {A B : Type} [CommRing A] [CommRing B] [Algebra A B] {d : ℕ}
+
+noncomputable def defect (ε : Matrix (Fin d) (Fin d) (B ⊗[A] B)) :
+    (Fin d → B) →ₗ[A] (Fin d → B ⊗[A] B) :=
+  (Algebra.TensorProduct.includeLeft : B →ₐ[A] B ⊗[A] B).toLinearMap.compLeft (Fin d) -
+    (ε.mulVecLin.restrictScalars A) ∘ₗ
+      (Algebra.TensorProduct.includeRight : B →ₐ[A] B ⊗[A] B).toLinearMap.compLeft (Fin d)
+
+theorem defect_apply (ε : Matrix (Fin d) (Fin d) (B ⊗[A] B)) (z : Fin d → B) :
+    defect ε z = (fun i => z i ⊗ₜ[A] (1 : B)) - ε.mulVec fun i => (1 : B) ⊗ₜ[A] z i := rfl
+
+theorem lTensor_defect (ε : Matrix (Fin d) (Fin d) (B ⊗[A] B)) (x : B ⊗[A] (Fin d → B)) :
+    piRight A A B (fun _ : Fin d => B ⊗[A] B) ((defect ε).lTensor B x) =
+      (fun i => Algebra.TensorProduct.map (AlgHom.id A B)
+        (Algebra.TensorProduct.includeLeft : B →ₐ[A] B ⊗[A] B)
+          (piRight A A B (fun _ : Fin d => B) x i)) -
+      (ε.map (Algebra.TensorProduct.includeRight : B ⊗[A] B →ₐ[A] B ⊗[A] (B ⊗[A] B))).mulVec
+        (fun i => Algebra.TensorProduct.map (AlgHom.id A B)
+          (Algebra.TensorProduct.includeRight : B →ₐ[A] B ⊗[A] B)
+            (piRight A A B (fun _ : Fin d => B) x i)) := by
+  induction x with
+  | zero =>
+    ext i
+    simp [Matrix.mulVec, dotProduct]
+  | add x y hx hy =>
+    rw [map_add, map_add, hx, hy, map_add]
+    ext i
+    simp only [Matrix.mulVec, dotProduct, Pi.add_apply, Pi.sub_apply, map_add, mul_add,
+      Finset.sum_add_distrib]
+    abel
+  | tmul b z =>
+    ext i
+    simp [defect_apply, Matrix.mulVec, dotProduct, tmul_sub, tmul_sum]
+
+theorem isBaseChange [Module.Flat A B] (ε : Matrix (Fin d) (Fin d) (B ⊗[A] B)) (hε : IsUnit ε)
+    (hc : ε.map (Algebra.TensorProduct.map (AlgHom.id A B)
+        (Algebra.TensorProduct.includeLeft : B →ₐ[A] B ⊗[A] B)) *
+      ε.map (Algebra.TensorProduct.includeRight : B ⊗[A] B →ₐ[A] B ⊗[A] (B ⊗[A] B)) =
+      ε.map (Algebra.TensorProduct.map (AlgHom.id A B)
+        (Algebra.TensorProduct.includeRight : B →ₐ[A] B ⊗[A] B))) :
+    IsBaseChange B (LinearMap.ker (defect ε)).subtype := by
+  set N := LinearMap.ker (defect ε) with hN
+  set e := piRight A A B (fun _ : Fin d => B) with he
+  have hεinj : Function.Injective ε.mulVec := Matrix.mulVec_injective_of_isUnit hε
+  have key : ∀ x : B ⊗[A] N, (fun i => (N.subtype.liftBaseChange B x) i ⊗ₜ[A] (1 : B)) =
+      ε.mulVec (e (N.subtype.lTensor B x)) := by
+    intro x
+    induction x with
+    | zero => ext i; simp
+    | add x y hx hy =>
+      rw [map_add, map_add, map_add, Matrix.mulVec_add, ← hx, ← hy]
+      ext i
+      simp [add_tmul]
+    | tmul b n =>
+      have hn : defect ε n.1 = 0 := n.2
+      rw [defect_apply, sub_eq_zero] at hn
+      have h1 : e (N.subtype.lTensor B (b ⊗ₜ n)) =
+          (b ⊗ₜ[A] (1 : B)) • fun i => (1 : B) ⊗ₜ[A] n.1 i := by
+        ext i
+        simp [he]
+      rw [h1, Matrix.mulVec_smul, ← hn]
+      ext i
+      simp
+  have hleft : ∀ z w : Fin d → B,
+      (fun i => z i ⊗ₜ[A] (1 : B)) = (fun i => w i ⊗ₜ[A] (1 : B)) → z = w := by
+    intro z w h
+    ext i
+    simpa using congrArg (Algebra.TensorProduct.lmul' A (S := B)) (congrFun h i)
+  change Function.Bijective (N.subtype.liftBaseChange B)
+  constructor
+  · intro x y hxy
+    have h := key x
+    rw [hxy, key y] at h
+    exact (Module.Flat.lTensor_preserves_injective_linearMap N.subtype N.injective_subtype
+      (e.injective (hεinj h))).symm
+  · intro z
+    obtain ⟨y, hy⟩ := Matrix.mulVec_surjective_iff_isUnit.mpr hε (fun i => z i ⊗ₜ[A] (1 : B))
+    have hex := Module.Flat.lTensor_exact B (LinearMap.exact_subtype_ker_map (defect ε))
+    have h0 : (defect ε).lTensor B (e.symm y) = 0 := by
+      apply (piRight A A B (fun _ : Fin d => B ⊗[A] B)).injective
+      rw [lTensor_defect, map_zero, sub_eq_zero, ← he, e.apply_symm_apply]
+      set i₁₂ := Algebra.TensorProduct.map (AlgHom.id A B)
+        (Algebra.TensorProduct.includeLeft : B →ₐ[A] B ⊗[A] B) with h12
+      set i₁₃ := Algebra.TensorProduct.map (AlgHom.id A B)
+        (Algebra.TensorProduct.includeRight : B →ₐ[A] B ⊗[A] B) with h13
+      have hu : IsUnit (ε.map i₁₂) := hε.map (i₁₂.toRingHom.mapMatrix)
+      apply Matrix.mulVec_injective_of_isUnit hu
+      rw [Matrix.mulVec_mulVec, hc]
+      ext i
+      have a := RingHom.map_mulVec i₁₂.toRingHom ε y i
+      have b := RingHom.map_mulVec i₁₃.toRingHom ε y i
+      refine a.symm.trans (Eq.trans ?_ b)
+      rw [hy]
+      simp [h12, h13, ← Algebra.TensorProduct.one_def]
+    obtain ⟨x, hx⟩ := (hex _).mp h0
+    refine ⟨x, hleft _ _ ?_⟩
+    rw [key, ← hy]
+    congr 1
+    rw [← e.apply_symm_apply y, ← hx]
+
+theorem descent (A B : Type) [CommRing A] [CommRing B] [Algebra A B] [Module.FaithfullyFlat A B]
+    (d : ℕ) (ε : Matrix (Fin d) (Fin d) (B ⊗[A] B)) (hε : IsUnit ε)
+    (hc : ε.map (Algebra.TensorProduct.map (AlgHom.id A B)
+        (Algebra.TensorProduct.includeLeft : B →ₐ[A] B ⊗[A] B)) *
+      ε.map (Algebra.TensorProduct.includeRight : B ⊗[A] B →ₐ[A] B ⊗[A] (B ⊗[A] B)) =
+      ε.map (Algebra.TensorProduct.map (AlgHom.id A B)
+        (Algebra.TensorProduct.includeRight : B →ₐ[A] B ⊗[A] B)))
+    (N : Submodule A (Fin d → B))
+    (hN : ∀ z, z ∈ N ↔ (fun i => z i ⊗ₜ[A] (1 : B)) = ε.mulVec fun i => (1 : B) ⊗ₜ[A] z i) :
+    Module.Finite A ↥N ∧ Module.Projective A ↥N ∧ IsBaseChange B N.subtype := by
+  have hk : N = LinearMap.ker (defect ε) := by
+    ext z
+    rw [hN, LinearMap.mem_ker, defect_apply, sub_eq_zero]
+  have hb : IsBaseChange B N.subtype := hk ▸ isBaseChange ε hε hc
+  have : Module.Finite B (B ⊗[A] N) := Module.Finite.equiv hb.equiv.symm
+  have : Module.Projective B (B ⊗[A] N) := Module.Projective.of_equiv hb.equiv.symm
+  exact ⟨GlobalTheory.Descent.finite B, GlobalTheory.Descent.projective B, hb⟩
+
+end GlobalTheory.CocycleDescent
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.faithfullyFlat_descent_free_module_cocycle : ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B] [Module.FaithfullyFlat A B] (d : ℕ) (ε : Matrix (Fin d) (Fin d) (B ⊗[A] B)), IsUnit ε → ε.map (Algebra.TensorProduct.map (AlgHom.id A B) (Algebra.TensorProduct.includeLeft : B →ₐ[A] B ⊗[A] B)) * ε.map (Algebra.TensorProduct.includeRight : B ⊗[A] B →ₐ[A] B ⊗[A] (B ⊗[A] B)) = ε.map (Algebra.TensorProduct.map (AlgHom.id A B) (Algebra.TensorProduct.includeRight : B →ₐ[A] B ⊗[A] B)) → ∀ N : Submodule A (Fin d → B), (∀ z, z ∈ N ↔ (fun i => z i ⊗ₜ[A] (1 : B)) = ε.mulVec fun i => (1 : B) ⊗ₜ[A] z i) → Module.Finite A ↥N ∧ Module.Projective A ↥N ∧ IsBaseChange B N.subtype := by
+  atlas_forward_decl GlobalTheory.CocycleDescent.descent
+end
+
+section
+section
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP
+open scoped Formalism.Per NNReal
+open CategoryTheory
+
+namespace GlobalTheory
+
+theorem descent_free_cocycle : ∀ (A B D T : Type) [CommRing A] [CommRing B] [CommRing D] [CommRing T] [Algebra A B] (p q : B →+* D) (q₁₂ q₂₃ q₁₃ : D →+* T) (q₃ : B →+* T), (algebraMap A B).FaithfullyFlat → CategoryTheory.IsPushout (CommRingCat.ofHom (algebraMap A B)) (CommRingCat.ofHom (algebraMap A B)) (CommRingCat.ofHom p) (CommRingCat.ofHom q) → CategoryTheory.IsPushout (CommRingCat.ofHom (algebraMap A B)) (CommRingCat.ofHom (p.comp (algebraMap A B))) (CommRingCat.ofHom q₃) (CommRingCat.ofHom q₁₂) → q₂₃.comp p = q₁₂.comp q → q₂₃.comp q = q₃ → q₁₃.comp p = q₁₂.comp p → q₁₃.comp q = q₃ → ∀ (d : ℕ) (ε : Matrix (Fin d) (Fin d) D), IsUnit ε → ε.map q₁₂ * ε.map q₂₃ = ε.map q₁₃ → ∀ N : Submodule A (Fin d → B), (∀ z, z ∈ N ↔ (fun i => p (z i)) = ε.mulVec fun i => q (z i)) → Module.Finite A ↥N ∧ Module.Projective A ↥N ∧ IsBaseChange B N.subtype := by
+  intro A B D T _ _ _ _ _ p q q₁₂ q₂₃ q₁₃ q₃ hff hD hT h1 h2 h3 h4 d ε hε hcoc N hN
+  haveI : Module.FaithfullyFlat A B := RingHom.faithfullyFlat_algebraMap_iff.1 hff
+  have hTP := CommRingCat.isPushout_tensorProduct A B B
+  let iso := hD.isoIsPushout _ _ hTP
+  let e : D ≃+* B ⊗[A] B := iso.commRingCatIsoToRingEquiv
+  let ψ : D →+* B ⊗[A] B := e.toRingHom
+  have hψp : ∀ b, ψ (p b) = b ⊗ₜ[A] (1 : B) := fun b =>
+    congr($(hD.inl_isoIsPushout_hom _ _ hTP).hom b)
+  have hψq : ∀ b, ψ (q b) = (1 : B) ⊗ₜ[A] b := fun b =>
+    congr($(hD.inr_isoIsPushout_hom _ _ hTP).hom b)
+  let L : B ⊗[A] B →ₐ[A] B ⊗[A] (B ⊗[A] B) :=
+    Algebra.TensorProduct.map (AlgHom.id A B) (Algebra.TensorProduct.includeLeft : B →ₐ[A] B ⊗[A] B)
+  let R : B ⊗[A] B →ₐ[A] B ⊗[A] (B ⊗[A] B) :=
+    (Algebra.TensorProduct.includeRight : B ⊗[A] B →ₐ[A] B ⊗[A] (B ⊗[A] B))
+  let M : B ⊗[A] B →ₐ[A] B ⊗[A] (B ⊗[A] B) :=
+    Algebra.TensorProduct.map (AlgHom.id A B) (Algebra.TensorProduct.includeRight : B →ₐ[A] B ⊗[A] B)
+  let c3 : B →+* B ⊗[A] (B ⊗[A] B) :=
+    (R.comp (Algebra.TensorProduct.includeRight : B →ₐ[A] B ⊗[A] B)).toRingHom
+  have w : CommRingCat.ofHom (algebraMap A B) ≫ CommRingCat.ofHom c3 =
+      CommRingCat.ofHom (p.comp (algebraMap A B)) ≫
+        CommRingCat.ofHom (S := B ⊗[A] (B ⊗[A] B)) (L.toRingHom.comp ψ) := by
+    ext a
+    change c3 (algebraMap A B a) = L (ψ (p (algebraMap A B a)))
+    rw [hψp]
+    exact ((R.comp Algebra.TensorProduct.includeRight).commutes a).trans
+      ((L.comp (Algebra.TensorProduct.includeLeft : B →ₐ[A] B ⊗[A] B)).commutes a).symm
+  let Φ := hT.desc _ _ w
+  let φ : T →+* B ⊗[A] (B ⊗[A] B) := Φ.hom
+  have hφ3 : ∀ b, φ (q₃ b) = c3 b := fun b => congr($(hT.inl_desc _ _ w).hom b)
+  have hφ12 : ∀ x, φ (q₁₂ x) = L (ψ x) := fun x => congr($(hT.inr_desc _ _ w).hom x)
+  have hext : ∀ {W : CommRingCat} (f g : CommRingCat.of D ⟶ W), (∀ b, f (p b) = g (p b)) →
+      (∀ b, f (q b) = g (q b)) → f = g := fun f g hp hq =>
+    hD.hom_ext (by ext b; exact hp b) (by ext b; exact hq b)
+  have hφ23 : ∀ x, φ (q₂₃ x) = R (ψ x) := by
+    have key := hext (CommRingCat.ofHom q₂₃ ≫ Φ)
+      (CommRingCat.ofHom (S := B ⊗[A] (B ⊗[A] B)) (R.toRingHom.comp ψ)) ?_ ?_
+    · intro x; exact congr($(key).hom x)
+    · intro b
+      change φ (q₂₃ (p b)) = R (ψ (p b))
+      rw [show q₂₃ (p b) = q₁₂ (q b) from congr($h1 b), hφ12, hψq, hψp]
+      simp [L, R]
+    · intro b
+      change φ (q₂₃ (q b)) = R (ψ (q b))
+      rw [show q₂₃ (q b) = q₃ b from congr($h2 b), hφ3, hψq]
+      simp [c3, R]
+  have hφ13 : ∀ x, φ (q₁₃ x) = M (ψ x) := by
+    have key := hext (CommRingCat.ofHom q₁₃ ≫ Φ)
+      (CommRingCat.ofHom (S := B ⊗[A] (B ⊗[A] B)) (M.toRingHom.comp ψ)) ?_ ?_
+    · intro x; exact congr($(key).hom x)
+    · intro b
+      change φ (q₁₃ (p b)) = M (ψ (p b))
+      rw [show q₁₃ (p b) = q₁₂ (p b) from congr($h3 b), hφ12, hψp]
+      simp [L, M]
+    · intro b
+      change φ (q₁₃ (q b)) = M (ψ (q b))
+      rw [show q₁₃ (q b) = q₃ b from congr($h4 b), hφ3, hψq]
+      simp [c3, R, M]
+  let ε' : Matrix (Fin d) (Fin d) (B ⊗[A] B) := ε.map ψ
+  have hε' : IsUnit ε' := hε.map ψ.mapMatrix
+  have hcoc' : ε'.map L * ε'.map R = ε'.map M := by
+    have key := congrArg φ.mapMatrix hcoc
+    rw [map_mul] at key
+    have e12 : φ.mapMatrix (ε.map q₁₂) = ε'.map L := by
+      ext i j; simp [ε', hφ12]
+    have e23 : φ.mapMatrix (ε.map q₂₃) = ε'.map R := by
+      ext i j; simp [ε', hφ23]
+    have e13 : φ.mapMatrix (ε.map q₁₃) = ε'.map M := by
+      ext i j; simp [ε', hφ13]
+    rw [e12, e23, e13] at key
+    exact key
+  have hN' : ∀ z, z ∈ N ↔ (fun i => z i ⊗ₜ[A] (1 : B)) = ε'.mulVec fun i => (1 : B) ⊗ₜ[A] z i := by
+    intro z
+    rw [hN z]
+    have hv : (ψ ∘ fun i => q (z i)) = fun i => (1 : B) ⊗ₜ[A] z i := funext fun k => hψq _
+    have hmv : ∀ i, ψ ((ε.mulVec fun i => q (z i)) i) = (ε'.mulVec fun i => (1 : B) ⊗ₜ[A] z i) i := by
+      intro i; rw [RingHom.map_mulVec, hv]
+    constructor
+    · intro h; funext i
+      rw [← hmv i, ← h, hψp]
+    · intro h; funext i
+      apply e.injective
+      change ψ (p (z i)) = ψ _
+      rw [hmv i, hψp]
+      exact congrFun h i
+  exact GlobalTheory.T.faithfullyFlat_descent_free_module_cocycle A B d ε' hε' hcoc' N hN'
+
+end GlobalTheory
+end
+
+open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP
+open scoped Formalism.Per NNReal
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.descent_free_module_cocycle : ∀ (A B D T : Type) [CommRing A] [CommRing B] [CommRing D] [CommRing T] [Algebra A B] (p q : B →+* D) (q₁₂ q₂₃ q₁₃ : D →+* T) (q₃ : B →+* T), (algebraMap A B).FaithfullyFlat → CategoryTheory.IsPushout (CommRingCat.ofHom (algebraMap A B)) (CommRingCat.ofHom (algebraMap A B)) (CommRingCat.ofHom p) (CommRingCat.ofHom q) → CategoryTheory.IsPushout (CommRingCat.ofHom (algebraMap A B)) (CommRingCat.ofHom (p.comp (algebraMap A B))) (CommRingCat.ofHom q₃) (CommRingCat.ofHom q₁₂) → q₂₃.comp p = q₁₂.comp q → q₂₃.comp q = q₃ → q₁₃.comp p = q₁₂.comp p → q₁₃.comp q = q₃ → ∀ (d : ℕ) (ε : Matrix (Fin d) (Fin d) D), IsUnit ε → ε.map q₁₂ * ε.map q₂₃ = ε.map q₁₃ → ∀ N : Submodule A (Fin d → B), (∀ z, z ∈ N ↔ (fun i => p (z i)) = ε.mulVec fun i => q (z i)) → Module.Finite A ↥N ∧ Module.Projective A ↥N ∧ IsBaseChange B N.subtype := by
+  atlas_forward_decl GlobalTheory.descent_free_cocycle
+end
+
+section
 section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BKReal GlobalTheory.Per GlobalTheory.BSP
 open scoped Formalism.Per NNReal
@@ -118,3 +359,4 @@ open scoped Formalism.Per NNReal
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.stratifiedPhiModule_descent_finite_level : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (d : ℕ) (S : Strat bk d) (B C D : Obj l ↥(OL K)) (h : Hom B C) (f : Hom bk.prism C) (p q : Hom C D), Cover h → IsPO h h p q → ∀ m : ℕ, letI := (qmap h m).toAlgebra; ∃ N : Submodule (B.A ⧸ adI B ^ m) (Fin d → C.A ⧸ adI C ^ m), (∀ z, z ∈ N ↔ (fun i => qmap p m (z i)) = ((S.ε (p.comp f) (q.comp f)).map (Ideal.Quotient.mk (adI D ^ m))).mulVec fun i => qmap q m (z i)) ∧ Module.Finite (B.A ⧸ adI B ^ m) ↥N ∧ Module.Projective (B.A ⧸ adI B ^ m) ↥N ∧ IsBaseChange (C.A ⧸ adI C ^ m) N.subtype := by
   atlas_forward_decl GlobalTheory.BSP.LevH.descent_at_level
+end

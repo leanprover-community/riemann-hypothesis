@@ -10,17 +10,238 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamily
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCompactAdele
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnramifiedConjugatePlaceUniformiser
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.QuadraticUnramifiedIffInertOrSplit
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdmissibleUnitaryConjugateDual
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SemilinearEquivPreservesProperties
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeActsByScalarCommutativeStatement
+import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSplitOfIsInertAt
+import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeActsByScalarCommutative
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeParameterOfSphericalStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSatakeParameterSphericalUnramifiedUnitaryStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitarySatakeTransformStarParameterEqOfUnitarisaStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormSatakeLeOfUnitarySphericalGLStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SatakeParameterGLStarEqInvOfUnitarisableStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QuadraticPowerCharacterSplitPlacesValuesInverseStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SqValueEqOneAtInertPlaceOfRestrictsToQuadraticStatement
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.QuadraticPowerCharacterSplitPlacesValuesInverse
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SqValueEqOneAtInertPlaceOfRestrictsToQuadratic
 
+section
+section
+open GlobalTheory.PRep
+
+namespace GlobalTheory.SmoothRiesz
+
+theorem surjective_of_injective {F : Type} [AddCommGroup F] [Module ℂ F] [FiniteDimensional ℂ F]
+    (T : F →ₛₗ[starRingEnd ℂ] Module.Dual ℂ F) (hT : ∀ x, T x = 0 → x = 0) : Function.Surjective T := by
+  let b := Module.finBasis ℂ F
+  have key : ∀ c : Fin (Module.finrank ℂ F) → ℂ,
+      T (∑ i, starRingEnd ℂ (c i) • b i) = ∑ i, c i • T (b i) := by
+    intro c
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [LinearMap.map_smulₛₗ, Complex.conj_conj]
+  have hli : LinearIndependent ℂ fun i => T (b i) := by
+    refine Fintype.linearIndependent_iff.2 fun c hc i => ?_
+    have h := Fintype.linearIndependent_iff.1 b.linearIndependent _ (hT _ ((key c).trans hc)) i
+    simpa using h
+  have hsp := hli.span_eq_top_of_card_eq_finrank' (by simp)
+  intro l
+  have hl : l ∈ Submodule.span ℂ (Set.range fun i => T (b i)) := hsp ▸ Submodule.mem_top
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).1 hl
+  exact ⟨_, (key c).trans hc⟩
+
+def stabiliser {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) (v : V) :
+    Subgroup G where
+  carrier := {g | ρ g v = v}
+  mul_mem' := fun {a b} ha hb => by
+    show ρ (a * b) v = v
+    rw [map_mul, Module.End.mul_apply, hb, ha]
+  one_mem' := by simp
+  inv_mem' := fun {a} ha => by
+    show ρ a⁻¹ v = v
+    conv_lhs => rw [← ha]
+    rw [← Module.End.mul_apply, ← map_mul]; simp
+
+theorem exists_conj_smoothDual : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (K : Subgroup G), IsOpen (K : Set G) → IsCompact (K : Set G) → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V), IsAdmissible ρ → GlobalTheory.LGrp.IsUnitarisable ρ → ∃ φ : V →ₛₗ[starRingEnd ℂ] smoothPart ρ.dual, Function.Bijective φ ∧ ∀ g x, φ (ρ g x) = GlobalTheory.LGrp.smoothDual ρ g (φ x) := by
+  intro G _ _ _ K hKo hKc V _ _ ρ hρ hU
+  obtain ⟨B, -, hpos, hinv⟩ := hU
+  have hadj : ∀ g v x, B (ρ g⁻¹ v) x = B v (ρ g x) := by
+    intro g v x
+    rw [← hinv g, ← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one, Module.End.one_apply]
+  have hnd : ∀ x, B x x = 0 → x = 0 := fun x hx => by
+    by_contra h
+    have := hpos x h
+    rw [hx] at this
+    simp at this
+  have hsm : ∀ x, B.flip x ∈ smoothPart ρ.dual := by
+    intro x
+    refine (stabiliser ρ.dual (B.flip x)).isOpen_of_mem_nhds (g := 1)
+      (Filter.mem_of_superset ((hρ.1 x).mem_nhds (by simp)) fun g hg => ?_)
+    have hg' : ρ g x = x := hg
+    refine LinearMap.ext fun v => ?_
+    show B (ρ g⁻¹ v) x = B v x
+    rw [hadj, hg']
+  refine ⟨B.flip.codRestrict _ hsm, ⟨?_, ?_⟩, fun g x => Subtype.ext (LinearMap.ext fun v => (hadj g v x).symm)⟩
+  · refine (injective_iff_map_eq_zero _).2 fun x hx => hnd x ?_
+    exact LinearMap.congr_fun (congrArg Subtype.val hx) x
+  · intro l
+    let U : Subgroup G := stabiliser ρ.dual l.1 ⊓ K
+    have hUo : IsOpen (U : Set G) := IsOpen.inter l.2 hKo
+    have hUc : IsCompact (U : Set G) :=
+      hKc.of_isClosed_subset (U.isClosed_of_isOpen hUo) fun _ h => h.2
+    haveI := hρ.2 U hUo hUc
+    let T : fixed ρ U →ₛₗ[starRingEnd ℂ] Module.Dual ℂ (fixed ρ U) :=
+      (B.domRestrict₁₂ (fixed ρ U) (fixed ρ U)).flip
+    obtain ⟨x, hx⟩ := surjective_of_injective T
+      (fun x hx => Subtype.ext (hnd x (LinearMap.congr_fun hx x))) (l.1 ∘ₗ (fixed ρ U).subtype)
+    refine ⟨x, Subtype.ext ?_⟩
+    show B.flip x = l.1
+    rw [← sub_eq_zero, ← LinearMap.ker_eq_top, eq_top_iff,
+      ← (GlobalTheory.LocGL.isCompl_fixed_twKer hρ.1 hUc).sup_eq_top]
+    refine sup_le (fun v hv => ?_) (Submodule.span_le.2 ?_)
+    · exact sub_eq_zero.2 (LinearMap.congr_fun hx ⟨v, hv⟩)
+    · rintro _ ⟨u, v, rfl⟩
+      have h1 : l.1 (ρ u v) = l.1 v := by
+        have := LinearMap.congr_fun (show ρ.dual (u : G)⁻¹ l.1 = l.1 from (U.inv_mem u.2).1) v
+        rw [← this]
+        show _ = l.1 (ρ (u : G)⁻¹⁻¹ v)
+        rw [inv_inv]
+      have h2 : B (ρ u v) x = B v x := by
+        rw [← inv_inv (u : G), hadj, GlobalTheory.LGrp.mem_fixed.1 x.2 _ (U.inv_mem u.2)]
+      simp [h1, h2]
+
+end GlobalTheory.SmoothRiesz
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.PRep GlobalTheory.AdelicU GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.admissible_unitary_conjugate_dual : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (K : Subgroup G), IsOpen (K : Set G) → IsCompact (K : Set G) → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V), IsAdmissible ρ → GlobalTheory.LGrp.IsUnitarisable ρ → ∃ φ : V →ₛₗ[starRingEnd ℂ] smoothPart ρ.dual, Function.Bijective φ ∧ ∀ g x, φ (ρ g x) = GlobalTheory.LGrp.smoothDual ρ g (φ x) := by
+  atlas_forward_decl GlobalTheory.SmoothRiesz.exists_conj_smoothDual
+end
+
+section
+section
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.PRep GlobalTheory.AdelicU GlobalTheory.LFun
+
+namespace GlobalTheory.ConjRep
+
+variable {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
+  {ρ : Representation ℂ G V} {ρ' : Representation ℂ G W}
+
+theorem map_fixed (e : V ≃ₛₗ[starRingEnd ℂ] W) (he : ∀ g x, e (ρ g x) = ρ' g (e x)) (U : Subgroup G) :
+    (fixed ρ U).map (e : V →ₛₗ[starRingEnd ℂ] W) = fixed ρ' U := by
+  ext w
+  obtain ⟨v, rfl⟩ := e.surjective w
+  constructor
+  · rintro ⟨x, hx, hxe⟩
+    have hxe' : e x = e v := hxe
+    rw [← hxe', GlobalTheory.LGrp.mem_fixed]
+    intro k hk
+    rw [← he, GlobalTheory.LGrp.mem_fixed.1 hx k hk]
+  · intro h
+    refine ⟨v, GlobalTheory.LGrp.mem_fixed.2 fun k hk => e.injective ?_, rfl⟩
+    rw [he, GlobalTheory.LGrp.mem_fixed.1 h k hk]
+
+def comapSub (φ : V →ₛₗ[starRingEnd ℂ] W) (he : ∀ g x, φ (ρ g x) = ρ' g (φ x)) (S : Subrepresentation ρ') :
+    Subrepresentation ρ where
+  toSubmodule := S.toSubmodule.comap φ
+  apply_mem_toSubmodule g v hv := by
+    rw [Submodule.mem_comap] at hv ⊢
+    rw [he]
+    exact S.apply_mem_toSubmodule g hv
+
+theorem symm_equivariant (e : V ≃ₛₗ[starRingEnd ℂ] W) (he : ∀ g x, e (ρ g x) = ρ' g (e x)) (g : G) (y : W) :
+    e.symm (ρ' g y) = ρ g (e.symm y) := by
+  apply e.injective
+  rw [he]
+  simp
+
+def subOrderIso (e : V ≃ₛₗ[starRingEnd ℂ] W) (he : ∀ g x, e (ρ g x) = ρ' g (e x)) :
+    Subrepresentation ρ' ≃o Subrepresentation ρ where
+  toFun := comapSub (e : V →ₛₗ[starRingEnd ℂ] W) he
+  invFun := comapSub (e.symm : W →ₛₗ[starRingEnd ℂ] V) (symm_equivariant e he)
+  left_inv S := by
+    apply Subrepresentation.toSubmodule_injective
+    ext x
+    simp [comapSub]
+  right_inv S := by
+    apply Subrepresentation.toSubmodule_injective
+    ext x
+    simp [comapSub]
+  map_rel_iff' := by
+    intro S T
+    constructor
+    · intro h w hw
+      obtain ⟨v, rfl⟩ := e.surjective w
+      exact @h v hw
+    · intro h v hv
+      exact @h (e v) hv
+
+theorem isUnitarisable (e : V ≃ₛₗ[starRingEnd ℂ] W) (he : ∀ g x, e (ρ g x) = ρ' g (e x))
+    (h : GlobalTheory.LGrp.IsUnitarisable ρ) : GlobalTheory.LGrp.IsUnitarisable ρ' := by
+  obtain ⟨B, h1, h2, h3⟩ := h
+  refine ⟨LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ) (fun x y => B (e.symm y) (e.symm x)) ?_ ?_ ?_ ?_, ?_, ?_, ?_⟩
+  · intro a b c; simp
+  · intro a b c; simp [LinearEquiv.map_smulₛₗ]
+  · intro a b c; simp
+  · intro a b c; simp [LinearEquiv.map_smulₛₗ]
+  · intro v w
+    exact h1 _ _
+  · intro v hv
+    exact h2 _ (by simpa using hv)
+  · intro g v w
+    simp only [LinearMap.mk₂'ₛₗ_apply, symm_equivariant e he, h3]
+
+theorem conj_transfer : ∀ (G : Type) [Group G] [TopologicalSpace G] (K : Subgroup G) (V : Type) [AddCommGroup V] [Module ℂ V] (W : Type) [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ G V) (ρ' : Representation ℂ G W) (φ : V →ₛₗ[starRingEnd ℂ] W), Function.Bijective φ → (∀ g x, φ (ρ g x) = ρ' g (φ x)) → (ρ.IsIrreducible → ρ'.IsIrreducible) ∧ (IsAdmissible ρ → IsAdmissible ρ') ∧ (GlobalTheory.LGrp.IsUnitarisable ρ → GlobalTheory.LGrp.IsUnitarisable ρ') ∧ (GlobalTheory.LGrp.IsSpherical ρ K → GlobalTheory.LGrp.IsSpherical ρ' K) := by
+  intro G _ _ K V _ _ W _ _ ρ ρ' φ hφ hρ
+  let e : V ≃ₛₗ[starRingEnd ℂ] W := LinearEquiv.ofBijective φ hφ
+  have he : ∀ g x, e (ρ g x) = ρ' g (e x) := hρ
+  refine ⟨fun h => ?_, fun h => ⟨fun w => ?_, fun U hU hc => ?_⟩, isUnitarisable e he, fun h h0 => h ?_⟩
+  · haveI : IsSimpleOrder (Subrepresentation ρ) := h
+    exact (subOrderIso e he).isSimpleOrder
+  · obtain ⟨v, rfl⟩ := e.surjective w
+    have := h.1 v
+    convert this using 3 with g
+    rw [← he]
+    exact e.injective.eq_iff
+  · haveI := h.2 U hU hc
+    rw [← map_fixed e he U]
+    have hfg : (fixed ρ U).FG := Module.Finite.iff_fg.1 inferInstance
+    exact Module.Finite.iff_fg.2 (hfg.map _)
+  · rw [← map_fixed e he K] at h0
+    rw [eq_bot_iff]
+    intro v hv
+    have : e v ∈ (⊥ : Submodule ℂ W) := h0 ▸ Submodule.mem_map_of_mem hv
+    simpa using this
+
+end GlobalTheory.ConjRep
+end
+
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.PRep GlobalTheory.AdelicU GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.semilinear_equiv_preserves_properties : ∀ (G : Type) [Group G] [TopologicalSpace G] (K : Subgroup G) (V : Type) [AddCommGroup V] [Module ℂ V] (W : Type) [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ G V) (ρ' : Representation ℂ G W) (φ : V →ₛₗ[starRingEnd ℂ] W), Function.Bijective φ → (∀ g x, φ (ρ g x) = ρ' g (φ x)) → (ρ.IsIrreducible → ρ'.IsIrreducible) ∧ (IsAdmissible ρ → IsAdmissible ρ') ∧ (GlobalTheory.LGrp.IsUnitarisable ρ → GlobalTheory.LGrp.IsUnitarisable ρ') ∧ (GlobalTheory.LGrp.IsSpherical ρ K → GlobalTheory.LGrp.IsSpherical ρ' K) := by
+  atlas_forward_decl GlobalTheory.ConjRep.conj_transfer
+end
+
+section
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.PRep GlobalTheory.AdelicU GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hecke_acts_by_scalar_commutative : ∀ (G : Type) [Group G] (K : Subgroup G), IsCommensurated K → (∀ f₁ ∈ Hecke ℂ K, ∀ f₂ ∈ Hecke ℂ K, conv K f₁ f₂ = conv K f₂ f₁) → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V), ρ.IsIrreducible → FiniteDimensional ℂ (fixed ρ K) → ∀ h ∈ Hecke ℂ K, ∃ c : ℂ, ∀ x ∈ fixed ρ K, heckeVec ρ K h x = c • x := by
+  first | exact @GlobalTheory.LFun.HeckeScalar.heckeVec_scalar | exact GlobalTheory.LFun.HeckeScalar.heckeVec_scalar | (intros; apply GlobalTheory.LFun.HeckeScalar.heckeVec_scalar <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.PRep GlobalTheory.AdelicU GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.quadraticPowerCharacter_splitPlaces_values_inverse : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (μ : (TensorProduct F (AF F) E)ˣ →* Circle) (b : ℕ), ResEta F E μ b → ∀ (w w' : HeightOneSpectrum (𝓞 E)), w.under (𝓞 F) = w'.under (𝓞 F) → w ≠ w' → UnrAt μ w → UnrAt μ w' → val μ w * val μ w' = 1 := by
+  first | exact @GlobalTheory.LFun.SplitVal.val_mul_val_eq_one | exact GlobalTheory.LFun.SplitVal.val_mul_val_eq_one | (intros; apply GlobalTheory.LFun.SplitVal.val_mul_val_eq_one <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.PRep GlobalTheory.AdelicU GlobalTheory.LFun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.sq_value_eq_one_at_inert_place_of_restrictsToQuadratic : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (μ : (TensorProduct F (AF F) E)ˣ →* Circle) (b : ℕ), ResEta F E μ b → ∀ (v : HeightOneSpectrum (𝓞 F)) (w : HeightOneSpectrum (𝓞 E)), IsInertAt F E v w → UnrAt μ w → val μ w ^ 2 = 1 := by
+  first | exact @GlobalTheory.LFun.val_sq_eq_one_of_isInertAt | exact GlobalTheory.LFun.val_sq_eq_one_of_isInertAt | (intros; apply GlobalTheory.LFun.val_sq_eq_one_of_isInertAt <;> assumption)
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.LPositivity
@@ -235,4 +456,5 @@ end Global
 
 end GlobalTheory.LPositivity
 
+end
 end

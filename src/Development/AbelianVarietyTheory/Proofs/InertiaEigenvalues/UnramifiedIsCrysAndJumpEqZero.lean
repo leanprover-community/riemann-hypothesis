@@ -3,12 +3,817 @@ import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormSubLtOneOfFix
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBasisOfSubmodule
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Hilbert90MatrixCoboundaryCharPFiniteLevel
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsWittVectorTraceOneFiniteLevel
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInvariantMatrixLiftOfAdicComplete
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrysOfSplit
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PeriodDataComparisonStatement
+import BuildAid.ForwardExisting
+import Formalism.WeaklyAdmissibleFiltrations.Statement
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlockCharactersCrystallineOfRules
 
+section
+section
+namespace GlobalTheory.UnramifiedHilbertNinety
+
+open GlobalTheory.UnramifiedCrys
+
+theorem exists_mem_multilinear_ne_zero {R V ι : Type} [CommRing R] [AddCommGroup V] [Module R V]
+    [Fintype ι] [DecidableEq ι] (f : MultilinearMap R (fun _ : ι => V) R) (S : Set V)
+    (hS : ∀ l : V →ₗ[R] R, (∀ s ∈ S, l s = 0) → l = 0) (v₀ : ι → V) (h₀ : f v₀ ≠ 0) :
+    ∃ v : ι → V, (∀ i, v i ∈ S) ∧ f v ≠ 0 := by
+  have key : ∀ T : Finset ι, ∃ v : ι → V, (∀ i ∈ T, v i ∈ S) ∧ f v ≠ 0 := by
+    intro T
+    induction T using Finset.induction_on with
+    | empty => exact ⟨v₀, by simp, h₀⟩
+    | insert a T ha ih =>
+      obtain ⟨v, hv, hf⟩ := ih
+      obtain ⟨s, hs, hne⟩ : ∃ s ∈ S, f (Function.update v a s) ≠ 0 := by
+        by_contra hc
+        push Not at hc
+        have h1 := hS (f.toLinearMap v a) hc
+        have h2 := LinearMap.congr_fun h1 (v a)
+        rw [MultilinearMap.toLinearMap_apply, Function.update_eq_self] at h2
+        exact hf h2
+      refine ⟨Function.update v a s, fun i hi => ?_, hne⟩
+      by_cases hia : i = a
+      · subst hia
+        rwa [Function.update_self]
+      · rw [Function.update_of_ne hia]
+        exact hv i ((Finset.mem_insert.1 hi).resolve_left hia)
+  obtain ⟨v, hv, hf⟩ := key Finset.univ
+  exact ⟨v, fun i => hv i (Finset.mem_univ i), hf⟩
+
+theorem exists_matrix_coboundary (p : ℕ) [hp : Fact p.Prime] (G : Type) [Group G] (R : Type)
+    [CommRing R] [IsDomain R] [CharP R p] (ρ : G →* (R ≃+* R)) (m : ℕ) (hm : 0 < m)
+    (hfin : Finite (G ⧸ fixer ρ p m)) (r : ℕ) (M : G →* Matrix (Fin r) (Fin r) R)
+    (hρ : ∀ g h i j, ρ g (M h i j) = M h i j) (hM : ∀ h i j, M h i j ^ p ^ m = M h i j)
+    (hMN : ∀ g ∈ fixer ρ p m, M g = 1) :
+    ∃ W : Matrix (Fin r) (Fin r) R, IsUnit W.det ∧ (∀ i j, W i j ^ p ^ m = W i j) ∧
+      ∀ g, M g * W.map (ρ g) = W := by
+  classical
+  set N := fixer ρ p m with hN
+  letI : Fintype (G ⧸ N) := Fintype.ofFinite _
+  let χ : G ⧸ N → (fixedPow p R m →* R) := fun x =>
+    (ρ x.out).toMonoidHom.comp (fixedPow p R m).subtype
+  have hχ : Function.Injective χ := by
+    intro x x' h
+    rw [← x.out_eq, ← x'.out_eq]
+    apply Quotient.sound
+    apply QuotientGroup.leftRel_apply.2
+    intro y hy
+    have h1 : ρ x.out y = ρ x'.out y := DFunLike.congr_fun h ⟨y, hy⟩
+    rw [map_mul, RingAut.mul_apply, ← h1, ← RingAut.mul_apply, ← map_mul, inv_mul_cancel, map_one,
+      RingAut.one_apply]
+  have hli := (linearIndependent_monoidHom (fixedPow p R m) R).comp χ hχ
+  have hsum : ∀ (f : G → R), (∀ g, ∀ n ∈ N, f (g * n) = f g) → ∀ g,
+      ∑ x : G ⧸ N, f (g * x.out) = ∑ x : G ⧸ N, f x.out := by
+    intro f hf g
+    refine Fintype.sum_equiv (MulAction.toPerm g) _ _ fun x => ?_
+    obtain ⟨n, hn⟩ := QuotientGroup.mk_out_eq_mul N (g * x.out)
+    have : MulAction.toPerm g x = QuotientGroup.mk (g * x.out) := by
+      rw [MulAction.toPerm_apply]
+      conv_lhs => rw [← x.out_eq]
+      rfl
+    rw [this, hn, hf _ _ n.2]
+  let S : Set (Fin r → R) := {v | (∀ i, v i ^ p ^ m = v i) ∧
+    ∀ g i, ∑ k, M g i k * ρ g (v k) = v i}
+  have hb : ∀ (θ : fixedPow p R m) (j : Fin r),
+      (fun i => ∑ x : G ⧸ N, ρ x.out θ * M x.out i j) ∈ S := by
+    intro θ j
+    have hθm : (θ : R) ^ p ^ m = θ := θ.2
+    refine ⟨fun i => ?_, fun g i => ?_⟩
+    · rw [sum_pow_char_pow]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      rw [mul_pow, ← map_pow, hθm, hM]
+    · have h2 := hsum (fun g => ρ g θ * M g i j) (fun g n hn => by
+        simp only [map_mul, RingAut.mul_apply, hn θ hθm, hMN n hn, mul_one]) g
+      simp only [map_sum, Finset.mul_sum]
+      rw [← h2, Finset.sum_comm]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      simp only [map_mul, RingAut.mul_apply, Matrix.mul_apply, hρ, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      ring
+  have hS : ∀ l : (Fin r → R) →ₗ[R] R, (∀ s ∈ S, l s = 0) → l = 0 := by
+    intro l hl
+    refine LinearMap.pi_ext' fun j => LinearMap.ext_ring ?_
+    have h1 := Fintype.linearIndependent_iff.1 hli (fun x => l (fun i => M x.out i j)) (by
+      funext θ
+      simp only [Finset.sum_apply, Function.comp, Pi.zero_apply, Pi.smul_apply, smul_eq_mul]
+      have h3 : (fun i => ∑ x : G ⧸ N, ρ x.out θ * M x.out i j) =
+          ∑ x : G ⧸ N, ρ x.out θ • (fun i => M x.out i j) := by
+        funext i
+        simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+      have h4 := hl _ (hb θ j)
+      rw [h3, map_sum] at h4
+      rw [← h4]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      rw [map_smul, smul_eq_mul, mul_comm]
+      rfl) (QuotientGroup.mk 1)
+    obtain ⟨n, hn⟩ := QuotientGroup.mk_out_eq_mul N (1 : G)
+    simp only [hn, one_mul, hMN n n.2] at h1
+    have h5 : (fun i => (1 : Matrix (Fin r) (Fin r) R) i j) = Pi.single j 1 := by
+      funext i
+      rw [Matrix.one_apply, Pi.single_apply]
+    rw [h5] at h1
+    simpa using h1
+  obtain ⟨v, hv, hf⟩ := exists_mem_multilinear_ne_zero
+    (Matrix.detRowAlternating (n := Fin r) (R := R)).toMultilinearMap S hS
+    (1 : Matrix (Fin r) (Fin r) R) (by
+      change (1 : Matrix (Fin r) (Fin r) R).det ≠ 0
+      rw [Matrix.det_one]
+      exact one_ne_zero)
+  have hf' : ((Matrix.of v).transpose).det ≠ 0 := by
+    rw [Matrix.det_transpose]
+    exact hf
+  have hW : ∀ i j, (Matrix.of v).transpose i j ^ p ^ m = (Matrix.of v).transpose i j :=
+    fun i j => (hv j).1 i
+  refine ⟨(Matrix.of v).transpose, ?_, hW, fun g => ?_⟩
+  · set t := ((Matrix.of v).transpose).det with ht
+    have htq : t ^ p ^ m = t := by
+      rw [← iterateFrobenius_def, ht, RingHom.map_det]
+      congr 1
+      ext i j
+      exact hW i j
+    have h1 : 1 < p ^ m := Nat.one_lt_pow hm.ne' hp.out.one_lt
+    have hu : t ^ (p ^ m - 2) * t = 1 := by
+      apply mul_right_cancel₀ hf'
+      rw [← pow_succ, ← pow_succ, one_mul, show p ^ m - 2 + 1 + 1 = p ^ m by omega, htq]
+    exact IsUnit.of_mul_eq_one_right _ hu
+  · ext i j
+    exact (hv j).2 g i
+
+end GlobalTheory.UnramifiedHilbertNinety
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unit_matrix_coboundary_of_fixed_frobenius_pow : ∀ (p : ℕ) [Fact p.Prime] (G : Type) [Group G] (R : Type) [CommRing R] [IsDomain R] [CharP R p] (ρ : G →* (R ≃+* R)) (m : ℕ), 0 < m → Finite (G ⧸ GlobalTheory.UnramifiedCrys.fixer ρ p m) → ∀ (r : ℕ) (M : G →* Matrix (Fin r) (Fin r) R), (∀ g h i j, ρ g (M h i j) = M h i j) → (∀ h i j, M h i j ^ p ^ m = M h i j) → (∀ g ∈ GlobalTheory.UnramifiedCrys.fixer ρ p m, M g = 1) → ∃ W : Matrix (Fin r) (Fin r) R, IsUnit W.det ∧ (∀ i j, W i j ^ p ^ m = W i j) ∧ ∀ g, M g * W.map (ρ g) = W := by
+  atlas_forward_decl GlobalTheory.UnramifiedHilbertNinety.exists_matrix_coboundary
+end
+
+section
+section
+namespace GlobalTheory.UnramifiedCrys
+
+theorem exists_witt_trace_one : ∀ (p : ℕ) [Fact p.Prime] (G : Type) [Group G] (R : Type) [CommRing R] [IsDomain R] [CharP R p] [PerfectRing R p] (ρ : G →* (R ≃+* R)) (m : ℕ), 0 < m → Finite (G ⧸ GlobalTheory.UnramifiedCrys.fixer ρ p m) → ∃ τ : WittVector p R, (∀ g ∈ GlobalTheory.UnramifiedCrys.fixer ρ p m, WittVector.map (ρ g).toRingHom τ = τ) ∧ ∑ᶠ x : G ⧸ GlobalTheory.UnramifiedCrys.fixer ρ p m, WittVector.map (ρ x.out).toRingHom τ = 1 := by
+  intro p hp G _ R _ _ _ _ ρ m hm hfin
+  classical
+  set N := fixer ρ p m with hN
+  letI : Fintype (G ⧸ N) := Fintype.ofFinite _
+  let χ : G ⧸ N → (fixedPow p R m →* R) := fun x =>
+    (ρ x.out).toMonoidHom.comp (fixedPow p R m).subtype
+  have hχ : Function.Injective χ := by
+    intro x x' h
+    rw [← x.out_eq, ← x'.out_eq]
+    apply Quotient.sound
+    apply QuotientGroup.leftRel_apply.2
+    intro y hy
+    have h1 : ρ x.out y = ρ x'.out y := DFunLike.congr_fun h ⟨y, hy⟩
+    rw [map_mul, RingAut.mul_apply, ← h1, ← RingAut.mul_apply, ← map_mul, inv_mul_cancel, map_one,
+      RingAut.one_apply]
+  have hli := (linearIndependent_monoidHom (fixedPow p R m) R).comp χ hχ
+  obtain ⟨θ, hθ⟩ : ∃ θ : fixedPow p R m, ∑ x : G ⧸ N, ρ x.out θ ≠ 0 := by
+    by_contra hc
+    push Not at hc
+    have := Fintype.linearIndependent_iff.1 hli (fun _ => 1) (by
+      funext θ
+      simp only [one_smul, Finset.sum_apply, Function.comp, Pi.zero_apply]
+      exact hc θ) (QuotientGroup.mk 1)
+    exact one_ne_zero this
+  have hθm : (θ : R) ^ p ^ m = θ := θ.2
+  have hsum : ∀ (f : G → WittVector p R), (∀ g, ∀ n ∈ N, f (g * n) = f g) → ∀ g,
+      ∑ x : G ⧸ N, f (g * x.out) = ∑ x : G ⧸ N, f x.out := by
+    intro f hf g
+    refine Fintype.sum_equiv (MulAction.toPerm g) _ _ fun x => ?_
+    obtain ⟨n, hn⟩ := QuotientGroup.mk_out_eq_mul N (g * x.out)
+    have : MulAction.toPerm g x = QuotientGroup.mk (g * x.out) := by
+      rw [MulAction.toPerm_apply]
+      conv_lhs => rw [← x.out_eq]
+      rfl
+    rw [this, hn, hf _ _ n.2]
+  set t := ∑ x : G ⧸ N, ρ x.out θ with ht
+  have htq : t ^ p ^ m = t := by
+    rw [ht, sum_pow_char_pow]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [← map_pow, hθm]
+  have h1 : 1 < p ^ m := Nat.one_lt_pow hm.ne' hp.out.one_lt
+  have hu : t ^ (p ^ m - 2) * t = 1 := by
+    apply mul_right_cancel₀ hθ
+    rw [← pow_succ, ← pow_succ, one_mul, show p ^ m - 2 + 1 + 1 = p ^ m by omega, htq]
+  have hθN : ∀ n ∈ N, WittVector.map (ρ n).toRingHom (WittVector.teichmuller p (θ : R)) =
+      WittVector.teichmuller p (θ : R) := fun n hn => by
+    rw [WittVector.map_teichmuller]
+    congr 1
+    exact hn θ hθm
+  set T := ∑ x : G ⧸ N, WittVector.map (ρ x.out).toRingHom (WittVector.teichmuller p (θ : R))
+    with hT
+  have hTg : ∀ g, WittVector.map (ρ g).toRingHom T = T := fun g => by
+    rw [hT, map_sum, ← hsum (fun g => WittVector.map (ρ g).toRingHom
+      (WittVector.teichmuller p (θ : R))) (fun g n hn => by
+        simp only [wittMap_mul, hθN n hn]) g]
+    simp only [wittMap_mul]
+  have hT0 : WittVector.constantCoeff T = t := by
+    rw [hT, map_sum, ht]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [WittVector.map_teichmuller, WittVector.constantCoeff_apply,
+      WittVector.teichmuller_coeff_zero]
+    rfl
+  have hcomp := WittVector.isAdicCompleteIdealSpanP (p := p) (k := R)
+  have hmem : T * WittVector.teichmuller p (t ^ (p ^ m - 2)) - 1 ∈
+      Ideal.span {(p : WittVector p R)} := by
+    rw [WittVector.mem_span_p_iff_coeff_zero_eq_zero, ← WittVector.constantCoeff_apply, map_sub,
+      map_mul, map_one, hT0, WittVector.constantCoeff_apply, WittVector.teichmuller_coeff_zero,
+      mul_comm, hu, sub_self]
+  have hunit : IsUnit T := by
+    have := Ideal.mem_jacobson_bot.1 (IsAdicComplete.le_jacobson_bot _ hmem) 1
+    rw [mul_one, sub_add_cancel] at this
+    exact isUnit_of_mul_isUnit_left this
+  obtain ⟨S, hS⟩ := hunit.exists_left_inv
+  have hSg : ∀ g, WittVector.map (ρ g).toRingHom S = S := fun g => by
+    have h2 := congrArg (WittVector.map (ρ g).toRingHom) hS
+    rw [map_mul, hTg, map_one] at h2
+    exact hunit.mul_right_cancel (h2.trans hS.symm)
+  refine ⟨S * WittVector.teichmuller p (θ : R), fun g hg => ?_, ?_⟩
+  · rw [map_mul, hSg, hθN g hg]
+  · rw [finsum_eq_sum_of_fintype]
+    simp only [map_mul, hSg]
+    rw [← Finset.mul_sum, ← hT, hS]
+
+end GlobalTheory.UnramifiedCrys
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_wittVector_trace_one_finiteLevel : ∀ (p : ℕ) [Fact p.Prime] (G : Type) [Group G] (R : Type) [CommRing R] [IsDomain R] [CharP R p] [PerfectRing R p] (ρ : G →* (R ≃+* R)) (m : ℕ), 0 < m → Finite (G ⧸ GlobalTheory.UnramifiedCrys.fixer ρ p m) → ∃ τ : WittVector p R, (∀ g ∈ GlobalTheory.UnramifiedCrys.fixer ρ p m, WittVector.map (ρ g).toRingHom τ = τ) ∧ ∑ᶠ x : G ⧸ GlobalTheory.UnramifiedCrys.fixer ρ p m, WittVector.map (ρ x.out).toRingHom τ = 1 := by
+  atlas_forward_decl GlobalTheory.UnramifiedCrys.exists_witt_trace_one
+end
+
+section
+section
+namespace GlobalTheory.InvariantLift
+
+variable {G : Type} [Group G] {A : Type} [CommRing A] {r : ℕ}
+
+theorem average_step (σ : G → A →+* A) (hσ : ∀ g h a, σ (g * h) a = σ g (σ h a))
+    (M : G →* Matrix (Fin r) (Fin r) A) (hM : ∀ g h i j, σ g (M h i j) = M h i j)
+    (N : Subgroup G) [hN : N.Normal] [Finite (G ⧸ N)] (τ : A) (hτ : ∀ g ∈ N, σ g τ = τ)
+    (hτ1 : ∑ᶠ x : G ⧸ N, σ x.out τ = 1) (c d : A) (hd : ∀ g ∈ N, ∀ i j, d ∣ (M g - 1) i j)
+    (W : Matrix (Fin r) (Fin r) A) (hW : ∀ g ∈ N, W.map (σ g) = W)
+    (hc : ∀ g i j, c ∣ (M g * W.map (σ g) - W) i j) :
+    ∃ W' : Matrix (Fin r) (Fin r) A, (∀ i j, c ∣ (W - W') i j) ∧ (∀ g ∈ N, W'.map (σ g) = W') ∧
+      ∀ g i j, d ∣ (M g * W'.map (σ g) - W') i j := by
+  classical
+  haveI : Fintype (G ⧸ N) := Fintype.ofFinite _
+
+  have dl : ∀ (e : A) (X : Matrix (Fin r) (Fin r) A), (∀ i j, e ∣ X i j) →
+      ∀ (Y : Matrix (Fin r) (Fin r) A) i j, e ∣ (X * Y) i j := by
+    intro e X hX Y i j
+    rw [Matrix.mul_apply]
+    exact Finset.dvd_sum fun k _ => (hX i k).mul_right _
+  have dr : ∀ (e : A) (Y : Matrix (Fin r) (Fin r) A), (∀ i j, e ∣ Y i j) →
+      ∀ (X : Matrix (Fin r) (Fin r) A) i j, e ∣ (X * Y) i j := by
+    intro e Y hY X i j
+    rw [Matrix.mul_apply]
+    exact Finset.dvd_sum fun k _ => (hY k j).mul_left _
+
+  have hfix : ∀ a : A, (∀ m ∈ N, σ m a = a) → ∀ g, ∀ n ∈ N, σ n (σ g a) = σ g a := by
+    intro a ha g n hn
+    have hm : g⁻¹ * n * g ∈ N := by simpa using hN.conj_mem n hn g⁻¹
+    rw [← hσ, show n * g = g * (g⁻¹ * n * g) by group, hσ, ha _ hm]
+  obtain ⟨U, hU⟩ : ∃ U : Matrix (Fin r) (Fin r) A, U = τ • W := ⟨_, rfl⟩
+  have hUfix : ∀ m ∈ N, ∀ k l, σ m (U k l) = U k l := by
+    intro m hm k l
+    have hWe : σ m (W k l) = W k l := congrFun (congrFun (hW m hm) k) l
+    rw [hU, Matrix.smul_apply, smul_eq_mul, map_mul, hτ m hm, hWe]
+  have hUl : ∀ g, ∀ n ∈ N, U.map (σ (n * g)) = U.map (σ g) := by
+    intro g n hn
+    ext k l
+    simp only [Matrix.map_apply, hσ]
+    exact hfix _ (fun m hm => hUfix m hm k l) g n hn
+  have hUr : ∀ g, ∀ n ∈ N, U.map (σ (g * n)) = U.map (σ g) := by
+    intro g n hn
+    ext k l
+    simp only [Matrix.map_apply, hσ, hUfix n hn]
+  have hMfix : ∀ g h, (M h).map (σ g) = M h := by
+    intro g h
+    ext i j
+    exact hM g h i j
+  have hUmap : ∀ g h, (U.map (σ h)).map (σ g) = U.map (σ (g * h)) := by
+    intro g h
+    ext i j
+    simp [hσ]
+  have hsum : ∀ (f : A →+* A) (X : G ⧸ N → Matrix (Fin r) (Fin r) A),
+      (∑ x, X x).map f = ∑ x, (X x).map f := by
+    intro f X
+    ext i j
+    simp [Matrix.sum_apply, map_sum]
+
+  refine ⟨∑ x : G ⧸ N, M x.out * U.map (σ x.out), ?_, ?_, ?_⟩
+  · intro i j
+    have h1 : ∑ x : G ⧸ N, σ x.out τ = 1 := by
+      rw [← finsum_eq_sum_of_fintype]
+      exact hτ1
+    have hent : ∀ x : G ⧸ N, (M x.out * U.map (σ x.out)) i j =
+        σ x.out τ * (M x.out * W.map (σ x.out)) i j := by
+      intro x
+      simp only [hU, Matrix.mul_apply, Matrix.map_apply, Matrix.smul_apply, smul_eq_mul, map_mul,
+        Finset.mul_sum]
+      exact Finset.sum_congr rfl fun k _ => by ring
+    have hsplit : (W - ∑ x : G ⧸ N, M x.out * U.map (σ x.out)) i j =
+        ∑ x : G ⧸ N, σ x.out τ * (W i j - (M x.out * W.map (σ x.out)) i j) := by
+      rw [Matrix.sub_apply, Matrix.sum_apply, Finset.sum_congr rfl (fun x _ => hent x)]
+      simp only [mul_sub]
+      rw [Finset.sum_sub_distrib, ← Finset.sum_mul, h1, one_mul]
+    rw [hsplit]
+    refine Finset.dvd_sum fun x _ => dvd_mul_of_dvd_right ?_ _
+    exact dvd_sub_comm.mp (by simpa only [Matrix.sub_apply] using hc x.out i j)
+  · intro n hn
+    rw [hsum]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [Matrix.map_mul, hMfix, hUmap, hUl _ n hn]
+  · intro g i j
+    have hmul : M g * (∑ x : G ⧸ N, M x.out * U.map (σ x.out)).map (σ g) =
+        ∑ x : G ⧸ N, M (g * x.out) * U.map (σ (g * x.out)) := by
+      rw [hsum, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      rw [Matrix.map_mul, hMfix, hUmap, map_mul, mul_assoc]
+    have hre : ∑ x : G ⧸ N, M x.out * U.map (σ x.out) =
+        ∑ x : G ⧸ N, M (g • x).out * U.map (σ (g • x).out) :=
+      (Equiv.sum_comp (MulAction.toPerm g) (fun y : G ⧸ N => M y.out * U.map (σ y.out))).symm
+    rw [hmul, hre, ← Finset.sum_sub_distrib, Matrix.sum_apply]
+    refine Finset.dvd_sum fun x _ => ?_
+    obtain ⟨n, hn, hgx⟩ : ∃ n ∈ N, g * x.out = (g • x).out * n := by
+      refine ⟨((g • x).out)⁻¹ * (g * x.out), ?_, (mul_inv_cancel_left _ _).symm⟩
+      rw [← QuotientGroup.eq]
+      simp only [QuotientGroup.out_eq']
+      obtain ⟨y, rfl⟩ := QuotientGroup.mk_surjective x
+      simp only [MulAction.Quotient.smul_mk, smul_eq_mul, QuotientGroup.mk_mul, QuotientGroup.out_eq',
+        Quotient.out_eq]
+    rw [hgx, map_mul, hUr _ n hn]
+    have hfac : M (g • x).out * M n * U.map (σ (g • x).out) - M (g • x).out * U.map (σ (g • x).out)
+        = M (g • x).out * ((M n - 1) * U.map (σ (g • x).out)) := by
+      noncomm_ring
+    rw [hfac]
+    exact dr d _ (dl d _ (fun i' j' => by simpa [Matrix.sub_apply] using hd n hn i' j') _) _ i j
+
+theorem exists_invariant_lift : ∀ (G : Type) [Group G] (A : Type) [CommRing A] (π : A), IsAdicComplete (Ideal.span {π}) A → ∀ (σ : G → A →+* A), (∀ g h a, σ (g * h) a = σ g (σ h a)) → (∀ g, σ g π = π) → ∀ (r : ℕ) (M : G →* Matrix (Fin r) (Fin r) A), (∀ g h i j, σ g (M h i j) = M h i j) → ∀ (S : Set (Subgroup G)), (∀ N ∈ S, N.Normal ∧ Finite (G ⧸ N) ∧ ∃ τ : A, (∀ g ∈ N, σ g τ = τ) ∧ ∑ᶠ x : G ⧸ N, σ x.out τ = 1) → (∀ N ∈ S, ∀ k : ℕ, ∃ N' ∈ S, N' ≤ N ∧ ∀ g ∈ N', ∀ i j, π ^ k ∣ (M g - 1) i j) → ∀ (W₀ : Matrix (Fin r) (Fin r) A), (∃ N ∈ S, ∀ g ∈ N, W₀.map (σ g) = W₀) → (∀ g i j, π ∣ (M g * W₀.map (σ g) - W₀) i j) → ∃ W : Matrix (Fin r) (Fin r) A, (∀ i j, π ∣ (W - W₀) i j) ∧ ∀ g, M g * W.map (σ g) = W := by
+  intro G _ A _ π hA σ hσ hσπ r M hM S hS hSk W₀ hW₀ hW₀c
+  classical
+
+  have hstep : ∀ (k : ℕ) (N : Subgroup G) (W : Matrix (Fin r) (Fin r) A), N ∈ S →
+      (∀ g ∈ N, W.map (σ g) = W) → (∀ g i j, π ^ (k + 1) ∣ (M g * W.map (σ g) - W) i j) →
+      ∃ (N' : Subgroup G) (W' : Matrix (Fin r) (Fin r) A), N' ∈ S ∧ (∀ g ∈ N', W'.map (σ g) = W') ∧
+        (∀ g i j, π ^ (k + 1 + 1) ∣ (M g * W'.map (σ g) - W') i j) ∧
+        ∀ i j, π ^ (k + 1) ∣ (W - W') i j := by
+    intro k N W hNS hWN hWc
+    obtain ⟨N', hN'S, hN'N, hN'd⟩ := hSk N hNS (k + 1 + 1)
+    obtain ⟨hN'n, hN'f, τ, hτ, hτ1⟩ := hS N' hN'S
+    haveI := hN'n
+    haveI := hN'f
+    obtain ⟨W', h1, h2, h3⟩ := GlobalTheory.InvariantLift.average_step σ hσ M hM N' τ hτ hτ1
+      (π ^ (k + 1)) (π ^ (k + 1 + 1)) hN'd W (fun g hg => hWN g (hN'N hg)) hWc
+    exact ⟨N', W', hN'S, h2, h3, h1⟩
+  choose! Nf Wf hNf hWf hcf hdf using hstep
+  obtain ⟨N₀, hN₀S, hN₀W⟩ := hW₀
+  obtain ⟨seq, hseq0, hseqs⟩ : ∃ seq : ℕ → Subgroup G × Matrix (Fin r) (Fin r) A,
+      seq 0 = (N₀, W₀) ∧ ∀ k, seq (k + 1) = (Nf k (seq k).1 (seq k).2, Wf k (seq k).1 (seq k).2) :=
+    ⟨fun k => Nat.rec (N₀, W₀) (fun k q => (Nf k q.1 q.2, Wf k q.1 q.2)) k, rfl, fun _ => rfl⟩
+  have hP : ∀ k, (seq k).1 ∈ S ∧ (∀ g ∈ (seq k).1, (seq k).2.map (σ g) = (seq k).2) ∧
+      ∀ g i j, π ^ (k + 1) ∣ (M g * (seq k).2.map (σ g) - (seq k).2) i j := by
+    intro k
+    induction k with
+    | zero => exact ⟨by simp [hseq0, hN₀S], by simpa [hseq0] using hN₀W,
+        by simpa [hseq0] using hW₀c⟩
+    | succ k ih =>
+      rw [hseqs]
+      exact ⟨hNf k _ _ ih.1 ih.2.1 ih.2.2, hWf k _ _ ih.1 ih.2.1 ih.2.2, hcf k _ _ ih.1 ih.2.1 ih.2.2⟩
+  have hd : ∀ k i j, π ^ (k + 1) ∣ (seq k).2 i j - (seq (k + 1)).2 i j := by
+    intro k i j
+    have := hdf k _ _ (hP k).1 (hP k).2.1 (hP k).2.2 i j
+    rw [hseqs]
+    simpa [Matrix.sub_apply] using this
+  have hcauchy : ∀ m n, m ≤ n → ∀ i j, π ^ m ∣ (seq m).2 i j - (seq n).2 i j := by
+    intro m n hmn i j
+    induction n, hmn using Nat.le_induction with
+    | base => simp
+    | succ n hmn ih =>
+      have e : (seq m).2 i j - (seq (n + 1)).2 i j =
+          ((seq m).2 i j - (seq n).2 i j) + ((seq n).2 i j - (seq (n + 1)).2 i j) := by ring
+      rw [e]
+      exact dvd_add ih ((pow_dvd_pow π (by omega)).trans (hd n i j))
+
+  have hmod : ∀ (n : ℕ) (x y : A),
+      x ≡ y [SMOD ((Ideal.span {π}) ^ n • (⊤ : Submodule A A))] ↔ π ^ n ∣ x - y := by
+    intro n x y
+    rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow,
+      Ideal.mem_span_singleton]
+  have hlim : ∀ i j, ∃ L : A, ∀ n, π ^ n ∣ (seq n).2 i j - L := by
+    intro i j
+    obtain ⟨L, hL⟩ := hA.toIsPrecomplete.prec (f := fun n => (seq n).2 i j)
+      (fun {m n} hmn => (hmod m _ _).mpr (hcauchy m n hmn i j))
+    exact ⟨L, fun n => (hmod n _ _).mp (hL n)⟩
+  choose L hL using hlim
+  refine ⟨Matrix.of L, ?_, ?_⟩
+  · intro i j
+    have a := hd 0 i j
+    have b := hL i j 1
+    rw [hseq0] at a
+    simp only [zero_add, pow_one] at a b
+    have c : π ∣ W₀ i j - L i j := by
+      have e : W₀ i j - L i j = (W₀ i j - (seq 1).2 i j) + ((seq 1).2 i j - L i j) := by ring
+      rw [e]
+      exact dvd_add a b
+    simpa [Matrix.sub_apply] using dvd_sub_comm.mp c
+  · intro g
+    ext i j
+    apply sub_eq_zero.mp
+    rw [← Matrix.sub_apply]
+    apply hA.toIsHausdorff.haus
+    intro n
+    rw [hmod, sub_zero]
+    have key : (M g * (Matrix.of L).map (σ g) - Matrix.of L) i j =
+        (∑ k, M g i k * σ g (L k j - (seq n).2 k j)) +
+          (M g * (seq n).2.map (σ g) - (seq n).2) i j + ((seq n).2 i j - L i j) := by
+      simp only [Matrix.sub_apply, Matrix.mul_apply, Matrix.map_apply, Matrix.of_apply, map_sub,
+        mul_sub, Finset.sum_sub_distrib]
+      ring
+    rw [key]
+    refine dvd_add (dvd_add (Finset.dvd_sum fun k _ => ?_) ?_) (hL i j n)
+    · obtain ⟨e, he⟩ := dvd_sub_comm.mp (hL k j n)
+      refine dvd_mul_of_dvd_right ⟨σ g e, ?_⟩ _
+      rw [he, map_mul, map_pow, hσπ]
+    · exact (pow_dvd_pow π (Nat.le_succ n)).trans ((hP n).2.2 g i j)
+
+end GlobalTheory.InvariantLift
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_invariant_matrix_lift_of_adic_complete : ∀ (G : Type) [Group G] (A : Type) [CommRing A] (π : A), IsAdicComplete (Ideal.span {π}) A → ∀ (σ : G → A →+* A), (∀ g h a, σ (g * h) a = σ g (σ h a)) → (∀ g, σ g π = π) → ∀ (r : ℕ) (M : G →* Matrix (Fin r) (Fin r) A), (∀ g h i j, σ g (M h i j) = M h i j) → ∀ (S : Set (Subgroup G)), (∀ N ∈ S, N.Normal ∧ Finite (G ⧸ N) ∧ ∃ τ : A, (∀ g ∈ N, σ g τ = τ) ∧ ∑ᶠ x : G ⧸ N, σ x.out τ = 1) → (∀ N ∈ S, ∀ k : ℕ, ∃ N' ∈ S, N' ≤ N ∧ ∀ g ∈ N', ∀ i j, π ^ k ∣ (M g - 1) i j) → ∀ (W₀ : Matrix (Fin r) (Fin r) A), (∃ N ∈ S, ∀ g ∈ N, W₀.map (σ g) = W₀) → (∀ g i j, π ∣ (M g * W₀.map (σ g) - W₀) i j) → ∃ W : Matrix (Fin r) (Fin r) A, (∀ i j, π ∣ (W - W₀) i j) ∧ ∀ g, M g * W.map (σ g) = W := by
+  atlas_forward_decl GlobalTheory.InvariantLift.exists_invariant_lift
+end
+
+section
+section
+noncomputable section
+
+namespace GlobalTheory.SplitCrys
+
+open Formalism.WeaklyAdmissibleFiltrations Module GlobalTheory.BlockCrys
+
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : PeriodData G Qp K₀ K B BdR) {n : ℕ}
+
+theorem finrank_coordInv_of_split (A : G → Matrix (Fin n) (Fin n) Qp) (W : Matrix (Fin n) (Fin n) B)
+    (hu : IsUnit W.det) (hW : ∀ g, (A g).map (algebraMap Qp B) * W.map (PD.actB g) = W) :
+    finrank K₀ (coordInv PD A) = n := by
+  have := GlobalTheory.Survey.CrystallineCyclotomic.nontrivial_B PD
+  have hact : ∀ g (y : Fin n → B),
+      coordAct PD A g (W.mulVec y) = W.mulVec fun i => PD.actB g (y i) := by
+    intro g y
+    have h1 : (fun i => PD.actB g (W.mulVec y i)) =
+        (W.map (PD.actB g)).mulVec fun i => PD.actB g (y i) := by
+      funext i
+      simp [Matrix.mulVec, dotProduct, map_sum]
+    change ((A g).map (algebraMap Qp B)).mulVec _ = _
+    rw [h1, Matrix.mulVec_mulVec, hW]
+  have hinj : Function.Injective W.mulVec :=
+    Matrix.mulVec_injective_of_isUnit ((Matrix.isUnit_iff_isUnit_det W).2 hu)
+  let f : (Fin n → K₀) →ₗ[K₀] (Fin n → B) :=
+    (W.mulVecLin.restrictScalars K₀).comp ((Algebra.linearMap K₀ B).compLeft (Fin n))
+  have hf : ∀ c, f c = W.mulVec fun i => algebraMap K₀ B (c i) := fun c => rfl
+  have hfi : Function.Injective f := by
+    intro c d h
+    rw [hf, hf] at h
+    funext i
+    exact (algebraMap K₀ B).injective (congrFun (hinj h) i)
+  have hr : LinearMap.range f = coordInv PD A := by
+    ext x
+    constructor
+    · rintro ⟨c, rfl⟩ g
+      rw [hf, hact]
+      simp only [AlgEquiv.commutes]
+    · intro hx
+      have hxy : W.mulVec (W⁻¹.mulVec x) = x := by
+        rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hu, Matrix.one_mulVec]
+      have hc : ∀ i, ∃ c : K₀, algebraMap K₀ B c = W⁻¹.mulVec x i := fun i =>
+        PD.invB _ fun g => by
+          have h2 := hact g (W⁻¹.mulVec x)
+          rw [hxy, hx g] at h2
+          exact congrFun (hinj (h2.symm.trans hxy.symm)) i
+      choose c hc using hc
+      refine ⟨c, ?_⟩
+      rw [hf, funext hc, hxy]
+  rw [← hr, LinearMap.finrank_range_of_inj hfi, Module.finrank_fin_fun]
+
+theorem isCrys_of_split {LL : Type} [Field LL] [Algebra Qp LL] {V : Type} [AddCommGroup V] [Module LL V]
+    [Module Qp V] [IsScalarTower Qp LL V] (ρ : Representation LL G V) {n : ℕ} (e : Basis (Fin n) Qp V)
+    [FiniteDimensional Qp LL] (W : Matrix (Fin n) (Fin n) B) (hu : IsUnit W.det)
+    (hW : ∀ g, (Matrix.of fun i j => algebraMap Qp B (e.repr (ρ g (e j)) i)) * W.map (PD.actB g) = W) :
+    IsCrys PD ρ := by
+  let A : G → Matrix (Fin n) (Fin n) Qp := fun g => Matrix.of fun i j => e.repr (ρ g (e j)) i
+  have h1 := finrank_coordInv PD ρ e A fun g i j => rfl
+  have h2 := finrank_coordInv_of_split PD A W hu hW
+  have hL : 0 < finrank Qp LL := Module.finrank_pos
+  have hV : finrank Qp LL * finrank LL V = n := by
+    rw [Module.finrank_mul_finrank Qp LL V, finrank_eq_card_basis e, Fintype.card_fin]
+  rw [h2, ← hV, mul_left_comm] at h1
+  exact Nat.eq_of_mul_eq_mul_left hL h1
+
+end GlobalTheory.SplitCrys
+end
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isCrys_of_split_alt : ∀ {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K] [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K] {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B] [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR] [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR] (PD : Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) {LL : Type} [Field LL] [Algebra Qp LL] {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V] (ρ : Representation LL G V) {n : ℕ} (e : Module.Basis (Fin n) Qp V) [FiniteDimensional Qp LL] (W : Matrix (Fin n) (Fin n) B), IsUnit W.det → (∀ g, (Matrix.of fun i j => algebraMap Qp B (e.repr (ρ g (e j)) i)) * W.map (PD.actB g) = W) → Formalism.WeaklyAdmissibleFiltrations.IsCrys PD ρ := by
+  atlas_forward_decl GlobalTheory.SplitCrys.isCrys_of_split
+end
+
+section
+noncomputable section
+
+open Formalism.WeaklyAdmissibleFiltrations
+
+namespace GlobalTheory.SplitJump
+
+open Module TensorProduct
+
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : PeriodData G Qp K₀ K B BdR)
+
+open Module TensorProduct in
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : _root_.Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) in
+theorem _root_.GlobalTheory.SplitJump.fil_mono {a b : ℤ} (h : a ≤ b) : PD.Fil b ≤ PD.Fil a := by
+  induction b, h using Int.le_induction with
+  | base => exact le_rfl
+  | succ b _ ih => exact (PD.Fil_anti b).trans ih
+
+open Module TensorProduct in
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : _root_.Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) in
+
+theorem _root_.GlobalTheory.SplitJump.eq_zero_of_mem_fil_one (k : K) (hk : algebraMap K BdR k ∈ PD.Fil 1) :
+    k = 0 := by
+  by_contra hne
+  have h1 : (1 : BdR) ∈ PD.Fil 1 := by
+    have := (PD.Fil 1).smul_mem k⁻¹ hk
+    rwa [Algebra.smul_def, ← map_mul, inv_mul_cancel₀ hne, map_one] at this
+  have := PD.Fil_mul 1 1 _ _ PD.mem_filtration_one h1
+  rw [mul_one] at this
+  exact PD.not_mem_filtration_two (by simpa using this)
+
+variable {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+    (ρ : Representation LL G V) {n : ℕ} (e : Basis (Fin n) Qp V)
+
+def coord (BdR : Type) [CommRing BdR] [Algebra Qp BdR] : V ⊗[Qp] BdR ≃ₗ[Qp] (Fin n → BdR) :=
+  (TensorProduct.comm Qp V BdR).trans ((Algebra.TensorProduct.basis BdR e).equivFun.restrictScalars Qp)
+
+open Module TensorProduct in
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : _root_.Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) in
+variable {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+    (ρ : Representation LL G V) {n : ℕ} (e : Basis (Fin n) Qp V) in
+omit [Field LL] [Algebra Qp LL] [Module LL V] [IsScalarTower Qp LL V] in
+private lemma coord_tmul_eq_repr_mul (v : V) (b : BdR) (i : Fin n) :
+    _root_.GlobalTheory.SplitJump.coord e BdR (v ⊗ₜ b) i = algebraMap Qp BdR (e.repr v i) * b := by
+  simp [_root_.GlobalTheory.SplitJump.coord, Algebra.TensorProduct.basis_repr_tmul, mul_comm]
+
+open Module TensorProduct in
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : _root_.Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) in
+variable {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+    (ρ : Representation LL G V) {n : ℕ} (e : Basis (Fin n) Qp V) in
+omit [Field LL] [Algebra Qp LL] [Module LL V] [IsScalarTower Qp LL V] in
+private lemma sum_basis_tmul_coord_eq (y : V ⊗[Qp] BdR) :
+    ∑ i, e i ⊗ₜ[Qp] _root_.GlobalTheory.SplitJump.coord e BdR y i = y := by
+  apply (_root_.GlobalTheory.SplitJump.coord e BdR).injective
+  ext j
+  simp [map_sum, coord_tmul_eq_repr_mul, Finsupp.single_apply, Pi.single_apply]
+
+open Module TensorProduct in
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : _root_.Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) in
+variable {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+    (ρ : Representation LL G V) {n : ℕ} (e : Basis (Fin n) Qp V) in
+theorem _root_.GlobalTheory.SplitJump.mem_filV (a : ℤ) (y : V ⊗[Qp] BdR) :
+    y ∈ _root_.Formalism.WeaklyAdmissibleFiltrations.FilV PD (LL := LL) (V := V) a ↔ ∀ i, _root_.GlobalTheory.SplitJump.coord e BdR y i ∈ PD.Fil a := by
+  unfold _root_.Formalism.WeaklyAdmissibleFiltrations.FilV
+  rw [LinearMap.mem_range]
+  constructor
+  · rintro ⟨z, rfl⟩ i
+    induction z using TensorProduct.induction_on with
+    | zero => simp
+    | tmul v f =>
+      rw [AlgebraTensorModule.map_tmul, LinearMap.id_apply, coord_tmul_eq_repr_mul]
+      rw [IsScalarTower.algebraMap_apply Qp K BdR, ← Algebra.smul_def]
+      exact (PD.Fil a).smul_mem _ f.2
+    | add z₁ z₂ h₁ h₂ =>
+      rw [map_add, map_add]
+      exact (PD.Fil a).add_mem h₁ h₂
+  · intro h
+    refine ⟨∑ i, e i ⊗ₜ[Qp]
+      (⟨_root_.GlobalTheory.SplitJump.coord e BdR y i, h i⟩ : (PD.Fil a).restrictScalars Qp), ?_⟩
+    rw [map_sum]
+    conv_rhs => rw [← sum_basis_tmul_coord_eq e y]
+    rfl
+
+open Module TensorProduct in
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : _root_.Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) in
+variable {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+    (ρ : Representation LL G V) {n : ℕ} (e : Basis (Fin n) Qp V) in
+theorem _root_.GlobalTheory.SplitJump.coord_act (g : G) (x : V ⊗[Qp] BdR) :
+    _root_.GlobalTheory.SplitJump.coord e BdR (_root_.Formalism.WeaklyAdmissibleFiltrations.actVdR PD ρ g x) =
+      (Matrix.of fun i j => algebraMap Qp BdR (e.repr (ρ g (e j)) i)).mulVec
+        fun i => PD.actdR g (_root_.GlobalTheory.SplitJump.coord e BdR x i) := by
+  unfold _root_.Formalism.WeaklyAdmissibleFiltrations.actVdR
+  induction x using TensorProduct.induction_on with
+  | zero => ext i; simp [Matrix.mulVec, dotProduct]
+  | tmul v b =>
+    ext i
+    have hv : ρ g v = ∑ j, e.repr v j • ρ g (e j) := by
+      conv_lhs => rw [← e.sum_repr v]
+      rw [map_sum]
+      simp [LinearMap.map_smul_of_tower]
+    have hσ : ∀ r : Qp, PD.actdR g (algebraMap Qp BdR r) = algebraMap Qp BdR r := by
+      intro r
+      rw [IsScalarTower.algebraMap_apply Qp K BdR, AlgEquiv.commutes]
+    simp only [AlgebraTensorModule.map_tmul, coord_tmul_eq_repr_mul, Matrix.mulVec, dotProduct,
+      Matrix.of_apply]
+    rw [hv, map_sum, Finset.sum_apply', map_sum, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [map_mul, hσ, map_smul, Finsupp.smul_apply, smul_eq_mul, map_mul]
+    change _ * PD.actdR g b = _
+    ring
+  | add x₁ x₂ h₁ h₂ =>
+    rw [map_add, map_add, h₁, h₂, ← Matrix.mulVec_add]
+    congr 1
+    ext i
+    simp
+
+open Module TensorProduct in
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : _root_.Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) in
+variable {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+    (ρ : Representation LL G V) {n : ℕ} (e : Basis (Fin n) Qp V) in
+
+theorem _root_.GlobalTheory.SplitJump.exists_coord (W W' : Matrix (Fin n) (Fin n) BdR) (hWW : W * W' = 1)
+    (hg : ∀ g, (Matrix.of fun i j => algebraMap Qp BdR (e.repr (ρ g (e j)) i)) *
+      W.map (PD.actdR g) = W)
+    (y : V ⊗[Qp] BdR) (hy : y ∈ _root_.Formalism.WeaklyAdmissibleFiltrations.DdR PD ρ) :
+    ∃ k : Fin n → K, (fun i => algebraMap K BdR (k i)) =
+      W'.mulVec (_root_.GlobalTheory.SplitJump.coord e BdR y) := by
+  unfold _root_.Formalism.WeaklyAdmissibleFiltrations.DdR at hy
+  have hfix : ∀ g, _root_.Formalism.WeaklyAdmissibleFiltrations.actVdR PD ρ g y = y := by
+    intro g
+    have := (Submodule.mem_iInf _).1 hy g
+    rw [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply, sub_eq_zero] at this
+    exact this
+  have hinv : ∀ i g, PD.actdR g ((W'.mulVec (_root_.GlobalTheory.SplitJump.coord e BdR y)) i) =
+      (W'.mulVec (_root_.GlobalTheory.SplitJump.coord e BdR y)) i := by
+    intro i g
+    set M : Matrix (Fin n) (Fin n) BdR :=
+      Matrix.of fun i j => algebraMap Qp BdR (e.repr (ρ g (e j)) i)
+    set σ : BdR →+* BdR := (PD.actdR g : BdR ≃ₐ[K] BdR).toRingEquiv.toRingHom
+    have hW'W : W' * W = 1 := mul_eq_one_comm.1 hWW
+    have hmap : W'.map σ = W' * M := by
+      have h1 : W.map σ * W'.map σ = 1 := by
+        rw [← Matrix.map_mul, hWW, Matrix.map_one _ (map_zero σ) (map_one σ)]
+      calc W'.map σ = (W' * W) * W'.map σ := by rw [hW'W, Matrix.one_mul]
+        _ = W' * (M * W.map σ) * W'.map σ := by rw [show M * W.map σ = W from hg g]
+        _ = W' * M * (W.map σ * W'.map σ) := by simp only [Matrix.mul_assoc]
+        _ = W' * M := by rw [h1, Matrix.mul_one]
+    have hc : M.mulVec (fun j => σ (_root_.GlobalTheory.SplitJump.coord e BdR y j)) =
+        _root_.GlobalTheory.SplitJump.coord e BdR y := by
+      have := _root_.GlobalTheory.SplitJump.coord_act PD ρ e g y
+      rw [hfix g] at this
+      exact this.symm
+    change σ _ = _
+    rw [RingHom.map_mulVec, hmap]
+    change (W' * M).mulVec (σ ∘ _root_.GlobalTheory.SplitJump.coord e BdR y) i = _
+    rw [← Matrix.mulVec_mulVec]
+    congr 2
+  choose k hk using fun i => PD.invdR _ fun g => hinv i g
+  exact ⟨k, funext hk⟩
+
+open Module TensorProduct in
+variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    (PD : _root_.Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) in
+variable {LL : Type} [Field LL] [Algebra Qp LL]
+    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
+    (ρ : Representation LL G V) {n : ℕ} (e : Basis (Fin n) Qp V) in
+
+theorem _root_.GlobalTheory.SplitJump.jump_eq_zero (W W' : Matrix (Fin n) (Fin n) BdR)
+    (hWW : W * W' = 1)
+    (hW : ∀ i j, W i j ∈ PD.Fil 0) (hW' : ∀ i j, W' i j ∈ PD.Fil 0)
+    (hg : ∀ g, (Matrix.of fun i j => algebraMap Qp BdR (e.repr (ρ g (e j)) i)) *
+      W.map (PD.actdR g) = W)
+    (τ : K →ₐ[Qp] LL) (a : ℤ) (h : _root_.Formalism.WeaklyAdmissibleFiltrations.IsJumpV PD ρ τ a) : a = 0 := by
+  have hK0 : ∀ c : K, algebraMap K BdR c ∈ PD.Fil 0 := fun c => by
+    rw [Algebra.algebraMap_eq_smul_one]
+    exact (PD.Fil 0).smul_mem c PD.one_mem
+  have hrec : ∀ y ∈ _root_.Formalism.WeaklyAdmissibleFiltrations.DdR PD ρ, ∃ k : Fin n → K,
+      _root_.GlobalTheory.SplitJump.coord e BdR y = W.mulVec (fun i => algebraMap K BdR (k i)) ∧
+      (fun i => algebraMap K BdR (k i)) = W'.mulVec (_root_.GlobalTheory.SplitJump.coord e BdR y) := by
+    intro y hy
+    obtain ⟨k, hk⟩ := _root_.GlobalTheory.SplitJump.exists_coord PD ρ e W W' hWW hg y hy
+    refine ⟨k, ?_, hk⟩
+    rw [hk, Matrix.mulVec_mulVec, hWW, Matrix.one_mulVec]
+  have hlow : ∀ y ∈ _root_.Formalism.WeaklyAdmissibleFiltrations.DdR PD ρ, ∀ b : ℤ, b ≤ 0 → y ∈ _root_.Formalism.WeaklyAdmissibleFiltrations.FilV PD (LL := LL) (V := V) b := by
+    intro y hy b hb
+    obtain ⟨k, hc, -⟩ := hrec y hy
+    rw [_root_.GlobalTheory.SplitJump.mem_filV PD e]
+    intro i
+    apply _root_.GlobalTheory.SplitJump.fil_mono PD hb
+    rw [hc]
+    simp only [Matrix.mulVec, dotProduct]
+    refine Submodule.sum_mem _ fun j _ => ?_
+    simpa using PD.Fil_mul 0 0 _ _ (hW i j) (hK0 (k j))
+  have hhigh : ∀ y ∈ _root_.Formalism.WeaklyAdmissibleFiltrations.DdR PD ρ, ∀ b : ℤ, 1 ≤ b →
+      y ∈ _root_.Formalism.WeaklyAdmissibleFiltrations.FilV PD (LL := LL) (V := V) b → y = 0 := by
+    intro y hy b hb hyb
+    obtain ⟨k, hc, hk⟩ := hrec y hy
+    rw [_root_.GlobalTheory.SplitJump.mem_filV PD e] at hyb
+    have hk0 : k = 0 := by
+      funext i
+      apply _root_.GlobalTheory.SplitJump.eq_zero_of_mem_fil_one PD
+      have := congrFun hk i
+      rw [this]
+      simp only [Matrix.mulVec, dotProduct]
+      refine Submodule.sum_mem _ fun j _ => ?_
+      simpa using PD.Fil_mul 0 1 _ _ (hW' i j) (_root_.GlobalTheory.SplitJump.fil_mono PD hb (hyb j))
+    apply (_root_.GlobalTheory.SplitJump.coord e BdR).injective
+    rw [hc, hk0, map_zero]
+    funext i
+    simp [Matrix.mulVec, dotProduct]
+  unfold _root_.Formalism.WeaklyAdmissibleFiltrations.IsJumpV _root_.Formalism.WeaklyAdmissibleFiltrations.FildR at h
+  have hL : _root_.Formalism.WeaklyAdmissibleFiltrations.DdRE PD ρ τ ≤ _root_.Formalism.WeaklyAdmissibleFiltrations.DdR PD ρ := by
+    unfold _root_.Formalism.WeaklyAdmissibleFiltrations.DdRE
+    exact inf_le_left
+  by_contra ha
+  apply h
+  rcases lt_or_gt_of_ne ha with ha | ha
+  · rw [inf_eq_left.2 fun y hy => hlow y (hL hy) _ (by omega),
+      inf_eq_left.2 fun y hy => hlow y (hL hy) _ (by omega)]
+  · have hbot : ∀ b : ℤ, 1 ≤ b →
+        _root_.Formalism.WeaklyAdmissibleFiltrations.DdRE PD ρ τ ⊓ _root_.Formalism.WeaklyAdmissibleFiltrations.FilV PD (LL := LL) (V := V) b = ⊥ := by
+      intro b hb
+      rw [eq_bot_iff]
+      intro y hy
+      exact (Submodule.mem_bot _).2 (hhigh y (hL hy.1) b hb hy.2)
+    rw [hbot _ (by omega), hbot _ (by omega)]
+
+end GlobalTheory.SplitJump
+end
+end
+
+section
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.period_data_comparison : ∀ {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K] [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K] {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B] [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR] [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR] (PD : Formalism.WeaklyAdmissibleFiltrations.PeriodData G Qp K₀ K B BdR) {LL : Type} [Field LL] [Algebra Qp LL] {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V] (ρ : Representation LL G V) {n : ℕ} (e : Module.Basis (Fin n) Qp V) (W W' : Matrix (Fin n) (Fin n) BdR), W * W' = 1 → (∀ i j, W i j ∈ PD.Fil 0) → (∀ i j, W' i j ∈ PD.Fil 0) → (∀ g, (Matrix.of fun i j => algebraMap Qp BdR (e.repr (ρ g (e j)) i)) * W.map (PD.actdR g) = W) → ∀ (τ : K →ₐ[Qp] LL) (a : ℤ), Formalism.WeaklyAdmissibleFiltrations.IsJumpV PD ρ τ a → a = 0 := by
+  first | exact @GlobalTheory.SplitJump.jump_eq_zero | exact GlobalTheory.SplitJump.jump_eq_zero | (intros; apply GlobalTheory.SplitJump.jump_eq_zero <;> assumption)
+end
+
+section
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct GlobalTheory.UnramifiedCrys GlobalTheory.Cyc
 open scoped Topology
 
@@ -248,3 +1053,4 @@ theorem isCrys_and_jump_eq_zero : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) 
         ((P.PD K).ι_comm g)
 
 end GlobalTheory.UnramifiedRep
+end

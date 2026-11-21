@@ -1,7 +1,0 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellVanishingDifferential
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BudgetClassEstimate
-
-namespace Formalism.FourierDecayAlt.P
-
-
-end Formalism.FourierDecayAlt.P

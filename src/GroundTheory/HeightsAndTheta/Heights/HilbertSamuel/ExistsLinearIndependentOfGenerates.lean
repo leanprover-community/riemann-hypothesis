@@ -1,8 +1,26 @@
 import Mathlib
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNefFibresAmple
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNefAmpleFibre
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftModel
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothMetricOfIsSmoothHerm
+
+section
+set_option maxSynthPendingDepth 1
+
+namespace GroundTheory.Heights₂.Heights.HilbertSamuel
+
+open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
+
+def NefFibresAmple.Statement : Prop :=
+  ∀ (K : Type) [Fintype K] [LinearOrder K] (ι : K → Type) [∀ k, Fintype (ι k)] [∀ k, LinearOrder (ι k)]
+    (Ω : Type) [Field Ω] [CharZero Ω] (y : (Σ k, ι k) → Ω) (D : ℕ) (α : K → ℤ) (b a : ℕ),
+    IsArithVar (mCoordIdeal y) (D + 1) → NefOnFibres (mCoordIdeal y) α → 1 ≤ b → 1 ≤ a →
+    ∀ ℓ : ℕ, ℓ.Prime → KH.AmpleV (ZMod ℓ) (fibreIdeal ℓ y) (b • α + fun _ => (a : ℤ))
+
+end GroundTheory.Heights₂.Heights.HilbertSamuel
+end
+
+section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.HilbertSamuel
@@ -151,3 +169,4 @@ theorem Lift.proof (hKA : KH.KAmpStatement) (hNF : NefAmpleFibre.Statement) (hLM
 end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel
+end

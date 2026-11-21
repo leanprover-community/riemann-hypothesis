@@ -3,9 +3,1370 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LoopTer
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingAffine
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LoopBPin
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniquePlace
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StabiliserHaarRootCoordinatesLeLebesgue
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegerPointsCoverRealPointsRootCoordinates
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RatCoordCont
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GramUnipotentStabilizerBruhatCellConjRoot
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StabUMapEqOfRoots
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHDef
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.InfCut
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.WeightConstA
 
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.LoopVol
+
+private theorem hJ_smul_right_flag_measures {n : ℕ} (ε : Fin n → Bool) (c : ℂ) (x y : Fin n → ℂ) :
+    Formalism.L2.SG.HidaSetting.hJ ε x (c • y) = c * Formalism.L2.SG.HidaSetting.hJ ε x y := by
+  unfold Formalism.L2.SG.HidaSetting.hJ
+  rw [Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
+
+theorem ratCoord_conj_eq_stCoord : ∀ (D : D7) (X : HidaSetting D) (u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (γ s y : X.B.I.Ginf) (τ : D.what₂.Tau) (q : GlobalTheory.LoopV.roots (ptMat w)) (p : Formalism.L2.SG.RealObj.FreeE w), p.1 = q.1 → GlobalTheory.LoopVol.ratCoord X u' w γ s (s * y * s⁻¹) τ q = ((D.host.rdE : ℂ) ^ (q.1.2.1 - q.1.1.1))⁻¹ * Formalism.L2.SG.RealObj.stCoord X u' w γ y (X.pl.symm τ) p := by
+  intro D X u' w γ s y τ q p hpq
+  obtain ⟨pq, hp⟩ := p
+  obtain ⟨qq, hq⟩ := q
+  simp only at hpq
+  subst hpq
+
+  have hconj : s⁻¹ * (s * y * s⁻¹) * s = y := by group
+  have hab : pq.1.val < pq.2.val := hp.1
+  have hbr : pq.2.val ≤ D.R.rS := Nat.lt_succ_iff.mp pq.2.isLt
+  have hrd : (D.host.rdE : ℂ) ≠ 0 := by
+    have h1 := GlobalTheory.RealPlaces.one_le_rdE D
+    exact Complex.ofReal_ne_zero.mpr (by linarith)
+  unfold GlobalTheory.LoopVol.ratCoord Formalism.L2.SG.RealObj.stCoord
+  rw [hconj]
+  unfold Formalism.L2.SG.RealObj.frm Formalism.L2.SG.RealObj.famSc
+  simp only [Complex.ofReal_one, one_pow, inv_one, one_smul, Matrix.mulVec_smul, hJ_smul_right_flag_measures]
+
+  have hsplit : D.R.rS - pq.1.val = (pq.2.val - pq.1.val) + (D.R.rS - pq.2.val) := by omega
+  rw [hsplit, pow_add]
+  field_simp
+
+end GlobalTheory.LoopVol
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.RootsBijection
+
+open Formalism.L2.SG.RealObj in
+theorem fwd {K : Type*} [Zero K] : ∀ (bs : List (K × ℕ)) (i j a b : ℕ), Formalism.MainNotions.S.ptEntry bs i a ≠ 0 →
+    Formalism.MainNotions.S.ptEntry bs j b ≠ 0 → a < b → j < i → blkOf bs a = blkOf bs b
+  | [], _, _, _, _, h, _, _, _ => by simp [Formalism.MainNotions.S.ptEntry] at h
+  | (t, s) :: bs, i, j, a, b, h1, h2, hab, hji => by
+    rw [Formalism.MainNotions.S.ptEntry] at h1 h2
+    by_cases ha : a < s
+    · by_cases hb : b < s
+      · simp [blkOf, ha, hb]
+      · exfalso
+        rw [if_neg (show ¬ (j < s ∧ b < s) by omega)] at h2
+        by_cases hj : s ≤ j
+        · rw [if_neg (show ¬ (s ≤ i ∧ s ≤ a) by omega)] at h1
+          by_cases hi : i < s
+          · omega
+          · rw [if_neg (show ¬ (i < s ∧ a < s) by omega)] at h1; exact h1 rfl
+        · rw [if_neg (show ¬ (s ≤ j ∧ s ≤ b) by omega)] at h2; exact h2 rfl
+    · have hb : ¬ b < s := by omega
+      rw [if_neg (show ¬ (i < s ∧ a < s) by omega)] at h1
+      rw [if_neg (show ¬ (j < s ∧ b < s) by omega)] at h2
+      by_cases hi : s ≤ i
+      · by_cases hj : s ≤ j
+        · rw [if_pos ⟨hi, by omega⟩] at h1
+          rw [if_pos ⟨hj, by omega⟩] at h2
+          have := fwd bs (i - s) (j - s) (a - s) (b - s) h1 h2 (by omega) (by omega)
+          simp [blkOf, ha, hb, this]
+        · rw [if_neg (show ¬ (s ≤ j ∧ s ≤ b) by omega)] at h2; exact absurd rfl h2
+      · rw [if_neg (show ¬ (s ≤ i ∧ s ≤ a) by omega)] at h1; exact absurd rfl h1
+
+open Formalism.L2.SG.RealObj in
+theorem bwd {K : Type*} [Zero K] : ∀ (bs : List (K × ℕ)), (∀ p ∈ bs, p.1 ≠ 0) → ∀ (a b : ℕ), a < b →
+    b < (bs.map Prod.snd).sum → blkOf bs a = blkOf bs b →
+    ∃ i j, j < i ∧ i < (bs.map Prod.snd).sum ∧ Formalism.MainNotions.S.ptEntry bs i a ≠ 0 ∧ Formalism.MainNotions.S.ptEntry bs j b ≠ 0
+  | [], _, _, _, _, hb, _ => by simp at hb
+  | (t, s) :: bs, hnz, a, b, hab, hbs, hbl => by
+    have ht : t ≠ 0 := hnz (t, s) (by simp)
+    simp only [List.map_cons, List.sum_cons] at hbs ⊢
+    by_cases ha : a < s
+    · have hb : b < s := by
+        by_contra hb
+        simp [blkOf, ha, hb] at hbl
+      refine ⟨s - 1 - a, s - 1 - b, by omega, by omega, ?_, ?_⟩
+      · rw [Formalism.MainNotions.S.ptEntry, if_pos ⟨by omega, ha⟩, if_pos (by omega)]; exact ht
+      · rw [Formalism.MainNotions.S.ptEntry, if_pos ⟨by omega, hb⟩, if_pos (by omega)]; exact ht
+    · have hb : ¬ b < s := by omega
+      have hbl' : blkOf bs (a - s) = blkOf bs (b - s) := by
+        simpa [blkOf, ha, hb] using hbl
+      obtain ⟨i, j, hji, his, hi, hj⟩ := bwd bs (fun p hp => hnz p (by simp [hp])) (a - s) (b - s) (by omega)
+        (by omega) hbl'
+      refine ⟨i + s, j + s, by omega, by omega, ?_, ?_⟩
+      · rw [Formalism.MainNotions.S.ptEntry, if_neg (by omega), if_pos ⟨by omega, by omega⟩]; simpa using hi
+      · rw [Formalism.MainNotions.S.ptEntry, if_neg (by omega), if_pos ⟨by omega, by omega⟩]; simpa using hj
+
+end GlobalTheory.RootsBijection
+
+theorem GlobalTheory.roots_ptMat_iff : ∀ (K : Type) [Field K] (n : ℕ) (w : Point K n) (a b : Fin n),
+    (a, b) ∈ GlobalTheory.LoopV.roots (ptMat w) ↔ a < b ∧ Formalism.L2.SG.RealObj.blkOf w.1 a.1 = Formalism.L2.SG.RealObj.blkOf w.1 b.1 := by
+  intro K _ n w a b
+  unfold GlobalTheory.LoopV.roots
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+  simp only [ptMat]
+  constructor
+  · rintro ⟨hab, i, j, hji, hi, hj⟩
+    exact ⟨hab, GlobalTheory.RootsBijection.fwd w.1 i.1 j.1 a.1 b.1 hi hj hab hji⟩
+  · rintro ⟨hab, hbl⟩
+    obtain ⟨i, j, hji, hin, hi, hj⟩ := GlobalTheory.RootsBijection.bwd w.1 (fun p hp => (w.2.1 p hp).1) a.1 b.1 hab
+      (by rw [w.2.2]; exact b.2) hbl
+    rw [w.2.2] at hin
+    exact ⟨hab, ⟨i, hin⟩, ⟨j, by omega⟩, hji, hi, hj⟩
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_roots_point_matrix_iff_same_block : ∀ (K : Type) [Field K] (n : ℕ) (w : Point K n) (a b : Fin n), (a, b) ∈ GlobalTheory.LoopV.roots (ptMat w) ↔ a < b ∧ Formalism.L2.SG.RealObj.blkOf w.1 a.1 = Formalism.L2.SG.RealObj.blkOf w.1 b.1 := by
+  atlas_forward_decl GlobalTheory.roots_ptMat_iff
+end
+
+section
+namespace GlobalTheory.CoordScale
+open MeasureTheory
+
+theorem sigmaFinite_smul {α : Type} [MeasurableSpace α] (μ : Measure α) [SigmaFinite μ] {c : ENNReal}
+    (hc : c ≠ ⊤) : SigmaFinite (c • μ) := by
+  have h : c • μ = c.toNNReal • μ := by
+    rw [ENNReal.smul_def, ENNReal.coe_toNNReal hc]
+  rw [h]
+  infer_instance
+
+theorem pi_smul_ne_top {ι : Type} [Fintype ι] {α : ι → Type} [∀ i, MeasurableSpace (α i)]
+    (μ : ∀ i, Measure (α i)) [∀ i, SigmaFinite (μ i)] (c : ι → ENNReal) (hc : ∀ i, c i ≠ ⊤) :
+    Measure.pi (fun i => c i • μ i) = (∏ i, c i) • Measure.pi μ := by
+  have : ∀ i, SigmaFinite (c i • μ i) := fun i => sigmaFinite_smul (μ i) (hc i)
+  refine Measure.pi_eq (fun s hs => ?_)
+  simp only [Measure.smul_apply, Measure.pi_pi, smul_eq_mul, Finset.prod_mul_distrib]
+
+theorem measurePreserving_inv_mul (r : ℝ) (hr : 0 < r) :
+    MeasurePreserving (fun z : ℂ => ((r : ℂ))⁻¹ * z) volume
+      (ENNReal.ofReal (r ^ 2) • (volume : Measure ℂ)) := by
+  refine ⟨measurable_id.const_mul _, ?_⟩
+  have hfun : (fun z : ℂ => ((r : ℂ))⁻¹ * z) = fun z => (r⁻¹ : ℝ) • z := by
+    funext z
+    rw [Complex.real_smul, Complex.ofReal_inv]
+  rw [hfun, Measure.map_addHaar_smul volume (inv_ne_zero hr.ne'), Complex.finrank_real_complex,
+    inv_pow, inv_inv, abs_of_pos (by positivity)]
+
+private theorem map_pi_reindex_eq_pi_of_map_eq {ι ι' β γ : Type} [Fintype ι] [Fintype ι'] [MeasurableSpace β]
+    [MeasurableSpace γ] (e : ι ≃ ι') (μ : Measure β) [SigmaFinite μ] (ν : ι → Measure γ)
+    [∀ i, SigmaFinite (ν i)] (h : ι → β → γ) (hh : ∀ i, Measurable (h i))
+    (hmap : ∀ i, Measure.map (h i) μ = ν i) :
+    Measure.map (fun (x : ι' → β) (i : ι) => h i (x (e i))) (Measure.pi fun _ => μ) =
+      Measure.pi ν := by
+  have hm : Measurable (fun (x : ι' → β) (i : ι) => h i (x (e i))) :=
+    measurable_pi_lambda _ (fun i => (hh i).comp (measurable_pi_apply (e i)))
+  symm
+  refine Measure.pi_eq (fun s hs => ?_)
+  rw [Measure.map_apply hm (MeasurableSet.univ_pi hs)]
+  have hpre : (fun (x : ι' → β) (i : ι) => h i (x (e i))) ⁻¹' Set.univ.pi s =
+      Set.univ.pi (fun i' => h (e.symm i') ⁻¹' s (e.symm i')) := by
+    ext x
+    simp only [Set.mem_preimage, Set.mem_univ_pi]
+    constructor
+    · intro hx i'
+      have := hx (e.symm i')
+      rwa [Equiv.apply_symm_apply] at this
+    · intro hx i
+      have := hx (e i)
+      rwa [Equiv.symm_apply_apply] at this
+  rw [hpre, Measure.pi_pi]
+  refine (Finset.prod_congr rfl (fun i' _ => ?_)).trans (Equiv.prod_comp e.symm (fun i => ν i (s i)))
+  rw [← hmap (e.symm i'), Measure.map_apply (hh _) (hs _)]
+
+theorem measure_preimage_reindex_scale_le : ∀ (ι ι' κ κ' : Type) [Fintype ι] [Fintype ι'] [Fintype κ] [Fintype κ'] (e : ι ≃ ι') (f : κ ≃ κ') (ρ c : ℝ) (d : κ → ℕ), 1 ≤ ρ → c ≤ 1 → ∀ A : Set (ι → κ → ℂ), MeasurableSet A → (MeasureTheory.Measure.pi fun _ : ι' => MeasureTheory.Measure.pi fun _ : κ' => ENNReal.ofReal c • (MeasureTheory.volume : MeasureTheory.Measure ℂ)) ((fun (x : ι' → κ' → ℂ) (i : ι) (q : κ) => ((ρ : ℂ) ^ d q)⁻¹ * x (e i) (f q)) ⁻¹' A) ≤ MeasureTheory.volume A * ENNReal.ofReal (ρ ^ (2 * Fintype.card ι * ∑ q, d q)) := by
+  intro ι ι' κ κ' _ _ _ _ e f ρ c d hρ hc A hA
+  have hρ0 : 0 < ρ := lt_of_lt_of_le one_pos hρ
+  set C : ENNReal := ENNReal.ofReal c with hCdef
+  have hCt : C ≠ ⊤ := ENNReal.ofReal_ne_top
+  have : SigmaFinite (C • (volume : Measure ℂ)) := sigmaFinite_smul _ hCt
+  set w : κ → ENNReal := fun q => C * ENNReal.ofReal ((ρ ^ d q) ^ 2) with hwdef
+  have hwt : ∀ q, w q ≠ ⊤ := fun q => ENNReal.mul_ne_top hCt ENNReal.ofReal_ne_top
+  have : ∀ q, SigmaFinite (w q • (volume : Measure ℂ)) := fun q => sigmaFinite_smul _ (hwt q)
+  have hin : Measure.map (fun (y : κ' → ℂ) (q : κ) => ((ρ : ℂ) ^ d q)⁻¹ * y (f q))
+      (Measure.pi fun _ : κ' => C • (volume : Measure ℂ)) =
+      Measure.pi fun q : κ => w q • (volume : Measure ℂ) := by
+    refine map_pi_reindex_eq_pi_of_map_eq f (C • (volume : Measure ℂ)) (fun q => w q • (volume : Measure ℂ))
+      (fun q z => ((ρ : ℂ) ^ d q)⁻¹ * z) (fun q => measurable_id.const_mul _) (fun q => ?_)
+    show Measure.map (fun z : ℂ => ((ρ : ℂ) ^ d q)⁻¹ * z) (C • volume) = w q • volume
+    have hfun : (fun z : ℂ => ((ρ : ℂ) ^ d q)⁻¹ * z) = fun z => (((ρ ^ d q : ℝ) : ℂ))⁻¹ * z := by
+      funext z
+      rw [Complex.ofReal_pow]
+    rw [Measure.map_smul, hfun, (measurePreserving_inv_mul (ρ ^ d q) (pow_pos hρ0 _)).map_eq,
+      smul_smul]
+  set K : ENNReal := ∏ q, w q with hKdef
+  have hKt : K ≠ ⊤ := ENNReal.prod_ne_top (fun q _ => hwt q)
+  have hin' : Measure.map (fun (y : κ' → ℂ) (q : κ) => ((ρ : ℂ) ^ d q)⁻¹ * y (f q))
+      (Measure.pi fun _ : κ' => C • (volume : Measure ℂ)) = K • (volume : Measure (κ → ℂ)) := by
+    rw [hin, pi_smul_ne_top (fun _ => (volume : Measure ℂ)) w hwt]
+    rfl
+  have : SigmaFinite (K • (volume : Measure (κ → ℂ))) := sigmaFinite_smul _ hKt
+  have hinm : Measurable (fun (y : κ' → ℂ) (q : κ) => ((ρ : ℂ) ^ d q)⁻¹ * y (f q)) :=
+    measurable_pi_lambda _ (fun q => (measurable_pi_apply (f q)).const_mul _)
+  have hout : Measure.map (fun (x : ι' → κ' → ℂ) (i : ι) (q : κ) => ((ρ : ℂ) ^ d q)⁻¹ * x (e i) (f q))
+      (MeasureTheory.Measure.pi fun _ : ι' =>
+        MeasureTheory.Measure.pi fun _ : κ' => ENNReal.ofReal c • (MeasureTheory.volume : MeasureTheory.Measure ℂ)) =
+      (K ^ Fintype.card ι) • (volume : Measure (ι → κ → ℂ)) := by
+    have h1 := map_pi_reindex_eq_pi_of_map_eq e (Measure.pi fun _ : κ' => C • (volume : Measure ℂ))
+      (fun _ : ι => K • (volume : Measure (κ → ℂ)))
+      (fun _ (y : κ' → ℂ) (q : κ) => ((ρ : ℂ) ^ d q)⁻¹ * y (f q)) (fun _ => hinm) (fun _ => hin')
+    refine h1.trans ?_
+    rw [pi_smul_ne_top (fun _ : ι => (volume : Measure (κ → ℂ))) (fun _ => K) (fun _ => hKt),
+      Finset.prod_const, Finset.card_univ]
+    rfl
+  have hgm : Measurable (fun (x : ι' → κ' → ℂ) (i : ι) (q : κ) => ((ρ : ℂ) ^ d q)⁻¹ * x (e i) (f q)) :=
+    measurable_pi_lambda _ (fun i => hinm.comp (measurable_pi_apply (e i)))
+  rw [← Measure.map_apply hgm hA, hout, Measure.smul_apply, smul_eq_mul, mul_comm]
+  have hC1 : C ≤ 1 := ENNReal.ofReal_le_one.mpr hc
+  have hK1 : K ≤ ∏ q, ENNReal.ofReal ((ρ ^ d q) ^ 2) := by
+    refine Finset.prod_le_prod' (fun q _ => ?_)
+    calc w q = C * ENNReal.ofReal ((ρ ^ d q) ^ 2) := rfl
+      _ ≤ 1 * ENNReal.ofReal ((ρ ^ d q) ^ 2) := by gcongr
+      _ = ENNReal.ofReal ((ρ ^ d q) ^ 2) := one_mul _
+  have hprod : ∏ q, ENNReal.ofReal ((ρ ^ d q) ^ 2) = ENNReal.ofReal (∏ q, (ρ ^ d q) ^ 2) :=
+    (ENNReal.ofReal_prod_of_nonneg (fun q _ => by positivity)).symm
+  have hreal : (∏ q, (ρ ^ d q) ^ 2) ^ Fintype.card ι = ρ ^ (2 * Fintype.card ι * ∑ q, d q) := by
+    rw [Finset.prod_pow, Finset.prod_pow_eq_pow_sum, ← pow_mul, ← pow_mul]
+    congr 1
+    ring
+  have hK2 : K ^ Fintype.card ι ≤ ENNReal.ofReal (ρ ^ (2 * Fintype.card ι * ∑ q, d q)) := by
+    rw [← hreal, ENNReal.ofReal_pow (by positivity), ← hprod]
+    exact pow_le_pow_left' hK1 _
+  gcongr
+
+end GlobalTheory.CoordScale
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.measure_preimage_reindex_scale_complex_le : ∀ (ι ι' κ κ' : Type) [Fintype ι] [Fintype ι'] [Fintype κ] [Fintype κ'] (e : ι ≃ ι') (f : κ ≃ κ') (ρ c : ℝ) (d : κ → ℕ), 1 ≤ ρ → c ≤ 1 → ∀ A : Set (ι → κ → ℂ), MeasurableSet A → (MeasureTheory.Measure.pi fun _ : ι' => MeasureTheory.Measure.pi fun _ : κ' => ENNReal.ofReal c • (MeasureTheory.volume : MeasureTheory.Measure ℂ)) ((fun (x : ι' → κ' → ℂ) (i : ι) (q : κ) => ((ρ : ℂ) ^ d q)⁻¹ * x (e i) (f q)) ⁻¹' A) ≤ MeasureTheory.volume A * ENNReal.ofReal (ρ ^ (2 * Fintype.card ι * ∑ q, d q)) := by
+  atlas_forward_decl GlobalTheory.CoordScale.measure_preimage_reindex_scale_le
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+open MeasureTheory
+
+namespace GlobalTheory.LoopVol
+
+theorem pinned_ratCoord_le : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (γw sf : X.B.I.Ginf) (μw : MeasureTheory.Measure X.B.I.Ginf), IsHaarOnSet X.B.I (Formalism.L2.SG.RealObj.StInf X u u' γw) μw → μw.map (Formalism.L2.SG.RealObj.stCoord X u' w γw) = Formalism.L2.SG.RealObj.muStab X w → D.host.ka / (X.B.g : ℝ) / Real.pi ≤ 1 → ∀ A : Set (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ), MeasurableSet A → (μw.map (fun y => sf * y * sf⁻¹)) (GlobalTheory.LoopVol.ratCoord X u' w γw sf ⁻¹' A) ≤ MeasureTheory.volume A * ENNReal.ofReal (D.host.rdE ^ (2 * D.R.f * (D.R.rS + 1) ^ 3)) := by
+  intro D X u u' w γw sf μw _hH hmap hc A hA
+  classical
+
+  let ι : GlobalTheory.LoopV.roots (ptMat w) ≃ Formalism.L2.SG.RealObj.FreeE w :=
+    Equiv.subtypeEquivRight (fun p => GlobalTheory.T.mem_roots_point_matrix_iff_same_block D.host.E (D.R.rS + 1) w p.1 p.2)
+  let d : GlobalTheory.LoopV.roots (ptMat w) → ℕ := fun q => q.1.2.1 - q.1.1.1
+  let S : (NumberField.InfinitePlace X.B.I.F → Formalism.L2.SG.RealObj.FreeE w → ℂ) → (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ) :=
+    fun x τ q => (((D.host.rdE : ℝ) : ℂ) ^ d q)⁻¹ * x (X.pl.symm τ) (ι q)
+  have hS : Continuous S := by
+    refine continuous_pi fun τ => continuous_pi fun q => continuous_const.mul ?_
+    exact (continuous_apply _).comp (continuous_apply _)
+  have hΦ : Continuous (fun y : X.B.I.Ginf => sf * y * sf⁻¹) :=
+    (continuous_const.mul continuous_id).mul continuous_const
+  have hst := Formalism.L2.SG.Pf.LoopBPin.stCoord_cont (X := X) u' w γw
+  have hrat := ratCoord_cont X u' w γw sf
+  have hpre : (fun y : X.B.I.Ginf => sf * y * sf⁻¹) ⁻¹' (ratCoord X u' w γw sf ⁻¹' A) =
+      Formalism.L2.SG.RealObj.stCoord X u' w γw ⁻¹' (S ⁻¹' A) := by
+    ext y
+    simp only [Set.mem_preimage]
+    have : ratCoord X u' w γw sf (sf * y * sf⁻¹) = S (Formalism.L2.SG.RealObj.stCoord X u' w γw y) := by
+      funext τ q
+      exact ratCoord_conj_eq_stCoord D X u' w γw sf y τ q (ι q) rfl
+    rw [this]
+  have hB : MeasurableSet (S ⁻¹' A) := hS.measurable hA
+  rw [Measure.map_apply hΦ.measurable (hrat.measurable hA), hpre,
+    ← Measure.map_apply hst.measurable hB, hmap]
+  have hrd : 1 ≤ D.host.rdE := GlobalTheory.RealPlaces.one_le_rdE (D := D)
+  have key := GlobalTheory.T.measure_preimage_reindex_scale_complex_le D.what₂.Tau (NumberField.InfinitePlace X.B.I.F) (GlobalTheory.LoopV.roots (ptMat w)) (Formalism.L2.SG.RealObj.FreeE w)
+    X.pl.symm ι D.host.rdE (D.host.ka / (X.B.g : ℝ) / Real.pi) d hrd hc A hA
+  refine le_trans key ?_
+  gcongr
+  · rw [D.what₂.card_Tau]
+  · have hsum : ∑ q : GlobalTheory.LoopV.roots (ptMat w), d q ≤ (D.R.rS + 1) ^ 3 := by
+      calc ∑ q : GlobalTheory.LoopV.roots (ptMat w), d q ≤ ∑ _q : GlobalTheory.LoopV.roots (ptMat w), (D.R.rS + 1) :=
+            Finset.sum_le_sum fun q _ => by
+              have := q.1.2.2; simp only [d]; omega
+        _ = Fintype.card (GlobalTheory.LoopV.roots (ptMat w)) * (D.R.rS + 1) := by simp
+        _ ≤ (D.R.rS + 1) ^ 2 * (D.R.rS + 1) := by
+            gcongr
+            calc Fintype.card (GlobalTheory.LoopV.roots (ptMat w)) ≤ Fintype.card (Fin (D.R.rS + 1) × Fin (D.R.rS + 1)) :=
+                  Fintype.card_subtype_le _
+              _ = (D.R.rS + 1) ^ 2 := by simp [sq]
+        _ = (D.R.rS + 1) ^ 3 := by ring
+    exact hsum
+
+end GlobalTheory.LoopVol
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stabiliserHaar_rootCoordinates_le_lebesgue : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (γw sf : X.B.I.Ginf) (μw : MeasureTheory.Measure X.B.I.Ginf), IsHaarOnSet X.B.I (Formalism.L2.SG.RealObj.StInf X u u' γw) μw → μw.map (Formalism.L2.SG.RealObj.stCoord X u' w γw) = Formalism.L2.SG.RealObj.muStab X w → D.host.ka / (X.B.g : ℝ) / Real.pi ≤ 1 → ∀ A : Set (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ), MeasurableSet A → (μw.map (fun y => sf * y * sf⁻¹)) (GlobalTheory.LoopVol.ratCoord X u' w γw sf ⁻¹' A) ≤ MeasureTheory.volume A * ENNReal.ofReal (D.host.rdE ^ (2 * D.R.f * (D.R.rS + 1) ^ 3)) := by
+  atlas_forward_decl GlobalTheory.LoopVol.pinned_ratCoord_le
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+
+noncomputable section
+
+namespace GlobalTheory.LoopAct
+
+open scoped Classical
+
+theorem exists_coeff_of_mem_span_image {r n : ℕ} (e : Fin r → Fin n → ℂ) (s : Set (Fin r)) (x : Fin n → ℂ)
+    (hx : x ∈ Submodule.span ℂ (e '' s)) : ∃ c : Fin r → ℂ, (∀ b, b ∉ s → c b = 0) ∧ x = ∑ b, c b • e b := by
+  rw [Finsupp.mem_span_image_iff_linearCombination] at hx
+  obtain ⟨l, hl, rfl⟩ := hx
+  refine ⟨l, fun b hb => ?_, ?_⟩
+  · by_contra h
+    exact hb (hl (Finsupp.mem_support_iff.mpr h))
+  · rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype]
+    intro b
+    exact zero_smul ℂ (e b)
+
+theorem exists_upUni_of_inS {r n : ℕ} (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) (g : Matrix (Fin n) (Fin n) ℂ)
+    (hg : Formalism.L2.SG.HidaSetting.InS e z g) :
+    ∃ M : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ, IsUpUni M ∧
+      IsMatOn g (Fin.snoc (α := fun _ => Fin n → ℂ) e z) M := by
+  set f : Fin (r + 1) → Fin n → ℂ := Fin.snoc (α := fun _ => Fin n → ℂ) e z with hf
+
+  have hcol : ∀ b : Fin (r + 1), (g - 1) *ᵥ f b ∈ Submodule.span ℂ (e '' {c : Fin r | c.1 < b.1}) := by
+    intro b
+    refine Fin.lastCases ?_ (fun a => ?_) b
+    · simpa [hf, Formalism.L2.SG.HidaSetting.spanLt] using hg.2
+    · simpa [hf, Formalism.L2.SG.HidaSetting.spanLt] using hg.1 a
+  choose D hD0 hDs using fun b => exists_coeff_of_mem_span_image e _ _ (hcol b)
+  refine ⟨fun c b => (if c = b then 1 else 0) + (if h : c.1 < r then D b ⟨c.1, h⟩ else 0), ?_, ?_⟩
+  · intro i j
+    constructor
+    · intro hji
+      have hne : i ≠ j := fun h => (lt_irrefl j) (h ▸ hji)
+      simp only [hne, if_false, zero_add]
+      split_ifs with h
+      · apply hD0
+        simp only [Set.mem_setOf_eq, not_lt]
+        exact le_of_lt hji
+      · rfl
+    · rintro rfl
+      simp only [if_true]
+      split_ifs with h
+      · rw [hD0 i ⟨i.1, h⟩ (by simp)]
+        ring
+      · ring
+  · intro b
+    have hg1 : g *ᵥ f b = (g - 1) *ᵥ f b + f b := by
+      rw [Matrix.sub_mulVec, Matrix.one_mulVec, sub_add_cancel]
+    rw [hg1, hDs b]
+    simp only [add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
+      Finset.mem_univ, if_true]
+    rw [add_comm, Fin.sum_univ_castSucc]
+    simp [hf]
+
+theorem sinfU_frame_upUni : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (y : X.B.I.Ginf), y ∈ X.SinfU u → ∀ v : NumberField.InfinitePlace X.B.I.F, ∃ M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ, IsUpUni M ∧ GlobalTheory.LoopAct.IsMatOn (uMat (y v)) (Formalism.L2.SG.RealObj.frm X u 1 v) M := by
+  intro D X u y hy v
+  obtain ⟨M, hM, hMat⟩ := exists_upUni_of_inS _ _ _ (hy v)
+  refine ⟨M, hM, ?_⟩
+  have hfr : Formalism.L2.SG.RealObj.frm X u 1 v = Fin.snoc (α := fun _ => Fin X.B.I.n → ℂ)
+      (fun a => Formalism.L2.SG.HidaSetting.rv X.B.I v (X.eR a)) (Formalism.L2.SG.HidaSetting.rv X.B.I v (X.zR u)) := by
+    funext a
+    simp [Formalism.L2.SG.RealObj.frm, Formalism.L2.SG.RealObj.famSc, Formalism.L2.SG.RealObj.fam]
+  rw [hfr]
+  exact hMat
+
+end GlobalTheory.LoopAct
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realBesselSubgroup_acts_frame_upperUnitriangular : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (y : X.B.I.Ginf), y ∈ X.SinfU u → ∀ v : NumberField.InfinitePlace X.B.I.F, ∃ M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ, IsUpUni M ∧ GlobalTheory.LoopAct.IsMatOn (uMat (y v)) (Formalism.L2.SG.RealObj.frm X u 1 v) M := by
+  atlas_forward_decl GlobalTheory.LoopAct.sinfU_frame_upUni
+end
+
+section
+section
+noncomputable section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+
+namespace GlobalTheory.RationalFrame
+
+open NumberField Formalism.L2.SG.PoincareInHH
+
+theorem hJ_lin {n : ℕ} (ε : Fin n → Bool) {ι : Type*} [Fintype ι] (x : Fin n → ℂ) (g : ι → ℂ)
+    (y : ι → Fin n → ℂ) (c : ℂ) (w : Fin n → ℂ) :
+    hJ ε x (∑ i, g i • y i + c • w) = ∑ i, g i * hJ ε x (y i) + c * hJ ε x w := by
+  unfold hJ
+  simp only [mulVec_add, mulVec_sum, mulVec_smul, dotProduct_add, dotProduct_sum, dotProduct_smul, smul_eq_mul]
+
+theorem frame_linearIndependent (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (v : InfinitePlace X.B.I.F) :
+    LinearIndependent ℂ (Formalism.L2.SG.RealObj.frm X u 1 v) := by
+  have hfr : Formalism.L2.SG.RealObj.frm X u 1 v = Formalism.L2.SG.RealObj.fam (fun a => rv X.B.I v (X.eR a))
+      (rv X.B.I v (X.zR u)) := by
+    funext a
+    simp [Formalism.L2.SG.RealObj.frm, Formalism.L2.SG.RealObj.famSc]
+  have hze : ∀ a, hJ (X.B.I.ε v) (rv X.B.I v (X.zR u)) (rv X.B.I v (X.eR a)) = 0 := by
+    intro a
+    refine (Cut.hJ_crd X v _ _).trans ?_
+    have h := (VS D).herm.eq (X.eX a) (X.zu u)
+    rw [(X.zu_orth u a).1] at h
+    rw [← h]
+    simp
+  have hzz : hJ (X.B.I.ε v) (rv X.B.I v (X.zR u)) (rv X.B.I v (X.zR u)) ≠ 0 := by
+    rw [HidaSetting.zR, Cut.hJ_crd X v, X.zu_norm]
+    simp only [map_neg, map_natCast, neg_ne_zero, Nat.cast_ne_zero]
+    exact ((D.mem u).A.T_prime).ne_zero
+  have hfe : ∀ j a, hJ (X.B.I.ε v) (rv X.B.I v (X.fR j)) (rv X.B.I v (X.eR a)) = if a = j then 1 else 0 := by
+    intro j a
+    refine (Cut.hJ_crd X v _ _).trans ?_
+    rw [Cut.hT_f_e X]
+    split_ifs <;> simp
+  have hfz : ∀ j, hJ (X.B.I.ε v) (rv X.B.I v (X.fR j)) (rv X.B.I v (X.zR u)) = 0 := by
+    intro j
+    refine (Cut.hJ_crd X v _ _).trans ?_
+    rw [(X.zu_orth u j).2]
+    simp
+  rw [hfr, Fintype.linearIndependent_iff]
+  intro g hg
+  rw [Fin.sum_univ_castSucc] at hg
+  simp only [Formalism.L2.SG.RealObj.fam, Fin.snoc_castSucc, Fin.snoc_last] at hg
+  have hlast : g (Fin.last _) = 0 := by
+    have h := congrArg (hJ (X.B.I.ε v) (rv X.B.I v (X.zR u))) hg
+    rw [hJ_lin] at h
+    simp only [hze, mul_zero, Finset.sum_const_zero, zero_add] at h
+    unfold hJ at h
+    simp only [mulVec_zero, dotProduct_zero] at h
+    exact (mul_eq_zero.1 h).resolve_right hzz
+  intro i
+  refine Fin.lastCases hlast (fun j => ?_) i
+  have h := congrArg (hJ (X.B.I.ε v) (rv X.B.I v (X.fR j))) hg
+  rw [hJ_lin, hfz] at h
+  simp only [hfe, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, add_zero] at h
+  unfold hJ at h
+  simp only [mulVec_zero, dotProduct_zero] at h
+  exact h
+
+end GlobalTheory.RationalFrame
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rationalBesselFrame_realPlace_linearIndependent : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (v : NumberField.InfinitePlace X.B.I.F), LinearIndependent ℂ (Formalism.L2.SG.RealObj.frm X u 1 v) := by
+  atlas_forward_decl GlobalTheory.RationalFrame.frame_linearIndependent
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+
+namespace GlobalTheory.LoopVol
+
+open Formalism.L2.SG.HidaSetting
+
+theorem hJ_sum_right' {n m : ℕ} (ε : Fin n → Bool) (x : Fin n → ℂ) (g : Fin m → ℂ)
+    (y : Fin m → Fin n → ℂ) : hJ ε x (∑ i, g i • y i) = ∑ i, g i * hJ ε x (y i) := by
+  unfold hJ
+  simp only [mulVec_sum, mulVec_smul, dotProduct_sum, dotProduct_smul, smul_eq_mul]
+
+theorem ratCoord_eq_matOn : ∀ (D : D7) (X : HidaSetting D) (u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (γ s y : X.B.I.Ginf) (τ : D.what₂.Tau) (M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ), GlobalTheory.LoopAct.IsMatOn (uMat ((γ⁻¹ * (s⁻¹ * y * s) * γ) (X.pl.symm τ))) (Formalism.L2.SG.RealObj.frm X u' 1 (X.pl.symm τ)) M → ∀ q : GlobalTheory.LoopV.roots (ptMat w), GlobalTheory.LoopVol.ratCoord X u' w γ s y τ q = M q.1.1 q.1.2 := by
+  intro D X u' w γ s y τ M hM q
+  unfold GlobalTheory.LoopVol.ratCoord
+  rw [hM q.1.2, hJ_sum_right', Fin.sum_univ_castSucc]
+  have hfe : ∀ i : Fin D.R.rS, hJ (X.B.I.ε (X.pl.symm τ)) (rv X.B.I (X.pl.symm τ) (X.fR ⟨q.1.1.1, root_fst_lt w q⟩))
+      (Formalism.L2.SG.RealObj.frm X u' 1 (X.pl.symm τ) (Fin.castSucc i)) = if i = ⟨q.1.1.1, root_fst_lt w q⟩ then 1 else 0 := by
+    intro i
+    unfold Formalism.L2.SG.RealObj.frm Formalism.L2.SG.RealObj.famSc Formalism.L2.SG.RealObj.fam
+    simp only [Fin.snoc_castSucc, Complex.ofReal_one, one_pow, inv_one, one_smul]
+    exact (Formalism.L2.SG.PoincareInHH.Cut.hJ_crd X _ _ _).trans
+      (by rw [Formalism.L2.SG.PoincareInHH.Cut.hT_f_e X]; split_ifs <;> simp)
+  have hfz : hJ (X.B.I.ε (X.pl.symm τ)) (rv X.B.I (X.pl.symm τ) (X.fR ⟨q.1.1.1, root_fst_lt w q⟩))
+      (Formalism.L2.SG.RealObj.frm X u' 1 (X.pl.symm τ) (Fin.last _)) = 0 := by
+    unfold Formalism.L2.SG.RealObj.frm Formalism.L2.SG.RealObj.famSc Formalism.L2.SG.RealObj.fam
+    simp only [Fin.snoc_last, Complex.ofReal_one, one_pow, inv_one, one_smul]
+    exact (Formalism.L2.SG.PoincareInHH.Cut.hJ_crd X _ _ _).trans (by rw [(X.zu_orth u' _).2]; simp)
+  simp only [hfe, hfz, mul_ite, mul_one, mul_zero, add_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  congr 1
+
+end GlobalTheory.LoopVol
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rationalRootCoordinates_eq_frameMatrix : ∀ (D : D7) (X : HidaSetting D) (u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1)) (γ s y : X.B.I.Ginf) (τ : D.what₂.Tau) (M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ), GlobalTheory.LoopAct.IsMatOn (uMat ((γ⁻¹ * (s⁻¹ * y * s) * γ) (X.pl.symm τ))) (Formalism.L2.SG.RealObj.frm X u' 1 (X.pl.symm τ)) M → ∀ q : GlobalTheory.LoopV.roots (ptMat w), GlobalTheory.LoopVol.ratCoord X u' w γ s y τ q = M q.1.1 q.1.2 := by
+  atlas_forward_decl GlobalTheory.LoopVol.ratCoord_eq_matOn
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+
+noncomputable section
+
+open scoped Classical
+
+namespace GlobalTheory.FrameStab
+
+open Formalism.L2.SG.RealObj
+
+variable {n m r : ℕ}
+
+def colMat (f : Fin m → Fin n → ℂ) : Matrix (Fin n) (Fin m) ℂ := Matrix.of fun i a => f a i
+
+theorem isMatOn_iff (g : Matrix (Fin n) (Fin n) ℂ) (f : Fin m → Fin n → ℂ) (M : Matrix (Fin m) (Fin m) ℂ) :
+    GlobalTheory.LoopAct.IsMatOn g f M ↔ g * colMat f = colMat f * M := by
+  constructor
+  · intro h
+    ext i b
+    have := congrFun (h b) i
+    simp only [Matrix.mulVec, dotProduct, Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at this
+    simp only [Matrix.mul_apply, colMat, Matrix.of_apply, this, mul_comm]
+  · intro h b
+    ext i
+    have := congrFun (congrFun h i) b
+    simp only [Matrix.mul_apply, colMat, Matrix.of_apply] at this
+    simp only [Matrix.mulVec, dotProduct, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, this, mul_comm]
+
+theorem zhat_eq (ε : Fin n → Bool) (f f' : Fin (r + 1) → Fin n → ℂ) (G : Matrix (Fin n) (Fin n) ℂ) :
+    Formalism.L2.SG.RealObj.Zhat ε f f' G = (colMat f)ᴴ * Formalism.REAL.Jm ε * G * colMat f' := by
+  rw [Matrix.mul_assoc, Matrix.mul_assoc]
+  ext a b
+  simp only [Formalism.L2.SG.RealObj.Zhat, Formalism.L2.SG.HidaSetting.hJ, Matrix.mul_apply, Matrix.mulVec, dotProduct, colMat,
+    Matrix.of_apply, Matrix.conjTranspose_apply, Pi.star_apply]
+
+theorem conjTranspose_mul_zhat_mul {ε : Fin n → Bool} {f f' : Fin (r + 1) → Fin n → ℂ}
+    {Y G Gi : Matrix (Fin n) (Fin n) ℂ} {P M : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ}
+    (hY : Yᴴ * Formalism.REAL.Jm ε * Y = Formalism.REAL.Jm ε) (hG : G * Gi = 1)
+    (hP : GlobalTheory.LoopAct.IsMatOn Y f P) (hM : GlobalTheory.LoopAct.IsMatOn (Gi * Y * G) f' M) :
+    Pᴴ * (Formalism.L2.SG.RealObj.Zhat ε f f' G * M) = Formalism.L2.SG.RealObj.Zhat ε f f' G := by
+  rw [isMatOn_iff] at hP hM
+  rw [zhat_eq]
+  calc Pᴴ * ((colMat f)ᴴ * Formalism.REAL.Jm ε * G * colMat f' * M)
+      = (colMat f * P)ᴴ * Formalism.REAL.Jm ε * G * (colMat f' * M) := by
+        rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
+    _ = (Y * colMat f)ᴴ * Formalism.REAL.Jm ε * G * (Gi * Y * G * colMat f') := by rw [hP, hM]
+    _ = (colMat f)ᴴ * (Yᴴ * Formalism.REAL.Jm ε * ((G * Gi) * Y)) * G * colMat f' := by
+        rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
+    _ = (colMat f)ᴴ * Formalism.REAL.Jm ε * G * colMat f' := by
+        rw [hG, Matrix.one_mul, hY]
+
+theorem isLoUni_conjTranspose {N : ℕ} {P : Matrix (Fin N) (Fin N) ℂ} (h : Formalism.MainNotions.S.IsUpUni P) :
+    Formalism.MainNotions.S.IsLoUni Pᴴ := by
+  intro i j
+  refine ⟨fun hij => ?_, fun hij => ?_⟩
+  · rw [Matrix.conjTranspose_apply, (h j i).1 hij, star_zero]
+  · rw [Matrix.conjTranspose_apply, (h j i).2 hij.symm, star_one]
+
+theorem mem_stabU_of_conjTranspose_mul {N : ℕ} {Z P M : Matrix (Fin N) (Fin N) ℂ} (hZ : IsUnit Z.det)
+    (hP : Formalism.MainNotions.S.IsUpUni P) (hM : Formalism.MainNotions.S.IsUpUni M) (h : Pᴴ * (Z * M) = Z) :
+    M ∈ GlobalTheory.LoopV.stabU Z := by
+  refine ⟨hM, ?_⟩
+  have e : Pᴴ * (Z * M * Z⁻¹) = 1 := by
+    rw [← Matrix.mul_assoc, h, Matrix.mul_nonsing_inv _ hZ]
+  rw [← Matrix.inv_eq_right_inv e]
+  exact (Formalism.L2.SG.Pf.ZsVolGrp.isLoUni_inv (isLoUni_conjTranspose hP)).1
+
+end GlobalTheory.FrameStab
+
+namespace GlobalTheory.FrameStab
+
+variable {n r : ℕ}
+
+theorem exists_coeff_of_mem_spanLt {e : Fin r → Fin n → ℂ} {k : ℕ} {x : Fin n → ℂ}
+    (hx : x ∈ Formalism.L2.SG.HidaSetting.spanLt e k) :
+    ∃ c : Fin r → ℂ, (∀ b : Fin r, ¬ b.1 < k → c b = 0) ∧ x = ∑ b, c b • e b := by
+  obtain ⟨l, hl, rfl⟩ := (Finsupp.mem_span_image_iff_linearCombination ℂ).1 hx
+  refine ⟨l, fun b hb => ?_, ?_⟩
+  · exact (Finsupp.mem_supported' ℂ l).1 hl b hb
+  · rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype]
+    intro i; exact zero_smul _ _
+
+theorem exists_isUpUni_isMatOn {e : Fin r → Fin n → ℂ} {z : Fin n → ℂ} {Y : Matrix (Fin n) (Fin n) ℂ}
+    (h : Formalism.L2.SG.HidaSetting.InS e z Y) :
+    ∃ P : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ, Formalism.MainNotions.S.IsUpUni P ∧
+      GlobalTheory.LoopAct.IsMatOn Y (Formalism.L2.SG.RealObj.fam e z) P := by
+  choose ca hca0 hcae using fun a : Fin r => exists_coeff_of_mem_spanLt (h.1 a)
+  obtain ⟨cz, -, hcz⟩ := exists_coeff_of_mem_spanLt h.2
+  let Q : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ := fun i j =>
+    Fin.lastCases (motive := fun _ => ℂ) 0
+      (fun c : Fin r => Fin.lastCases (motive := fun _ => ℂ) (cz c) (fun a : Fin r => ca a c) j) i
+  have hQl : ∀ j, Q (Fin.last r) j = 0 := fun j => by simp [Q]
+  have hQcl : ∀ c, Q (Fin.castSucc c) (Fin.last r) = cz c := fun c => by simp [Q]
+  have hQcc : ∀ c a, Q (Fin.castSucc c) (Fin.castSucc a) = ca a c := fun c a => by simp [Q]
+  refine ⟨1 + Q, fun i j => ?_, fun b => ?_⟩
+  · refine Fin.lastCases ?_ (fun c => ?_) i
+    · refine ⟨fun hj => ?_, fun hj => ?_⟩
+      · rw [Matrix.add_apply, hQl, Matrix.one_apply_ne (ne_of_lt hj).symm, add_zero]
+      · rw [Matrix.add_apply, hQl, hj, Matrix.one_apply_eq, add_zero]
+    · refine Fin.lastCases ?_ (fun a => ?_) j
+      · exact ⟨fun hj => absurd hj (not_lt.2 (Fin.castSucc_lt_last c).le),
+          fun hj => absurd hj (Fin.castSucc_lt_last c).ne⟩
+      · refine ⟨fun hj => ?_, fun hj => ?_⟩
+        · rw [Matrix.add_apply, hQcc, Matrix.one_apply_ne (ne_of_lt hj).symm, zero_add]
+          exact hca0 a c (not_lt.2 (Fin.castSucc_lt_castSucc_iff.1 hj).le)
+        · rw [Matrix.add_apply, hQcc, hj, Matrix.one_apply_eq, Fin.castSucc_inj.1 hj]
+          rw [hca0 a a (lt_irrefl _), add_zero]
+  · rw [Fin.sum_univ_castSucc]
+    simp only [Formalism.L2.SG.RealObj.fam, Fin.snoc_castSucc, Fin.snoc_last, Matrix.add_apply, add_smul,
+      Finset.sum_add_distrib, hQl, zero_smul, add_zero]
+    refine Fin.lastCases ?_ (fun a => ?_) b
+    · simp only [Fin.snoc_last, hQcl, Matrix.one_apply_eq, one_smul,
+        Matrix.one_apply_ne (Fin.castSucc_lt_last _).ne, zero_smul, Finset.sum_const_zero, zero_add]
+      rw [← hcz, Matrix.sub_mulVec, Matrix.one_mulVec, sub_add_cancel]
+    · simp only [Fin.snoc_castSucc, hQcc, Matrix.one_apply_ne (Fin.castSucc_lt_last _).ne', zero_smul,
+        add_zero]
+      have e1 : ∑ x : Fin r, (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (Fin.castSucc x) (Fin.castSucc a) • e x
+          = e a := by
+        simp only [Matrix.one_apply, Fin.castSucc_inj, ite_smul, one_smul, zero_smul,
+          Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      rw [e1, ← hcae a, Matrix.sub_mulVec, Matrix.one_mulVec, add_sub_cancel]
+
+end GlobalTheory.FrameStab
+
+namespace GlobalTheory.FrameStab
+
+theorem frameMat_mem_stabU : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (γ y : X.B.I.Ginf) (v : NumberField.InfinitePlace X.B.I.F) (M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ), y ∈ Formalism.L2.SG.RealObj.StInf X u u' γ → IsUpUni M → GlobalTheory.LoopAct.IsMatOn (uMat ((γ⁻¹ * y * γ) v)) (Formalism.L2.SG.RealObj.frm X u' 1 v) M → IsUnit (Formalism.L2.SG.RealObj.ZX X u u' 1 γ v).det → M ∈ GlobalTheory.LoopV.stabU (Formalism.L2.SG.RealObj.ZX X u u' 1 γ v) := by
+  intro D X u u' γ y v M hy hMu hM hZ
+  obtain ⟨P, hPu, hP⟩ := exists_isUpUni_isMatOn ((hy.1 v).1)
+  have hf : Formalism.L2.SG.RealObj.frm X u 1 v = Formalism.L2.SG.RealObj.fam
+      (fun a => Formalism.L2.SG.HidaSetting.rv X.B.I v (X.eR a)) (Formalism.L2.SG.HidaSetting.rv X.B.I v (X.zR u)) := by
+    funext a
+    simp [Formalism.L2.SG.RealObj.frm, Formalism.L2.SG.RealObj.famSc]
+  rw [← hf] at hP
+  have hY : (uMat (y v))ᴴ * Formalism.REAL.Jm (X.B.I.ε v) * uMat (y v) = Formalism.REAL.Jm (X.B.I.ε v) := (y v).2
+  have hG : uMat (γ v) * uMat (γ⁻¹ v) = 1 := by
+    show uMat ((γ * γ⁻¹) v) = 1
+    rw [mul_inv_cancel]
+    rfl
+  exact mem_stabU_of_conjTranspose_mul hZ hPu hMu (conjTranspose_mul_zhat_mul hY hG hP hM)
+
+end GlobalTheory.FrameStab
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frameMatrix_mem_unipotentStabilizer_frameGram : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (γ y : X.B.I.Ginf) (v : NumberField.InfinitePlace X.B.I.F) (M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ), y ∈ Formalism.L2.SG.RealObj.StInf X u u' γ → IsUpUni M → GlobalTheory.LoopAct.IsMatOn (uMat ((γ⁻¹ * y * γ) v)) (Formalism.L2.SG.RealObj.frm X u' 1 v) M → IsUnit (Formalism.L2.SG.RealObj.ZX X u u' 1 γ v).det → M ∈ GlobalTheory.LoopV.stabU (Formalism.L2.SG.RealObj.ZX X u u' 1 γ v) := by
+  atlas_forward_decl GlobalTheory.FrameStab.frameMat_mem_stabU
+end
+
+section
+open scoped Classical ComplexConjugate ENNReal
+open MeasureTheory NumberField Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj
+
+noncomputable section
+
+namespace GlobalTheory.GxConj
+
+variable {r n : ℕ}
+
+def LoUni (L : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) : Prop :=
+  (∀ a b, a < b → L a b = 0) ∧ ∀ a, L a a = 1
+
+theorem LoUni.conj {L : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (h : LoUni L) :
+    LoUni (L.map (starRingEnd ℂ)) :=
+  ⟨fun a b hab => by simp [h.1 a b hab], fun a => by simp [h.2 a]⟩
+
+theorem sub_mul_left {l : ℕ} {ι : Type*} (hl : l ≤ r + 1) (A : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ)
+    (B : Matrix (Fin (r + 1)) ι ℂ) (c : Fin l → ι) (hA : ∀ a b, a < b → A a b = 0) :
+    (A * B).submatrix (Fin.castLE hl) c =
+      A.submatrix (Fin.castLE hl) (Fin.castLE hl) * B.submatrix (Fin.castLE hl) c := by
+  ext a b
+  simp only [Matrix.submatrix_apply, Matrix.mul_apply]
+  symm
+  refine Fintype.sum_of_injective (Fin.castLE hl) (Fin.castLE_injective hl) _ _ ?_ (fun _ => rfl)
+  intro i hi
+  have hli : l ≤ i.1 := by
+    by_contra hc
+    exact hi ⟨⟨i.1, by omega⟩, rfl⟩
+  rw [hA _ _ (by
+    show a.1 < i.1
+    have := a.2
+    omega), zero_mul]
+
+theorem sub_mul_right {l : ℕ} {ι : Type*} (hl : l ≤ r + 1) (A : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ)
+    (B : Matrix ι (Fin (r + 1)) ℂ) (c : Fin l → ι) (hA : ∀ a b, a < b → A a b = 0) :
+    (B * Aᵀ).submatrix c (Fin.castLE hl) =
+      B.submatrix c (Fin.castLE hl) * (A.submatrix (Fin.castLE hl) (Fin.castLE hl))ᵀ := by
+  ext a b
+  simp only [Matrix.submatrix_apply, Matrix.mul_apply, Matrix.transpose_apply]
+  symm
+  refine Fintype.sum_of_injective (Fin.castLE hl) (Fin.castLE_injective hl) _ _ ?_ (fun _ => rfl)
+  intro i hi
+  have hli : l ≤ i.1 := by
+    by_contra hc
+    exact hi ⟨⟨i.1, by omega⟩, rfl⟩
+  rw [hA _ _ (by
+    show b.1 < i.1
+    have := b.2
+    omega), mul_zero]
+
+theorem det_sub {l : ℕ} (hl : l ≤ r + 1) {L : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (h : LoUni L) :
+    (L.submatrix (Fin.castLE hl) (Fin.castLE hl)).det = 1 := by
+  rw [Matrix.det_of_lowerTriangular]
+  · exact Finset.prod_eq_one fun a _ => h.2 _
+  · intro i j hij
+    exact h.1 _ _ hij
+
+
+
+
+theorem fam_last (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) : fam e z (Fin.last r) = z :=
+  Fin.snoc_last (α := fun _ => Fin n → ℂ) z e
+
+theorem fam_castSucc (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) (a : Fin r) : fam e z a.castSucc = e a :=
+  Fin.snoc_castSucc (α := fun _ => Fin n → ℂ) z e a
+
+theorem fam_span (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) (A : Matrix (Fin n) (Fin n) ℂ) (h : InS e z A)
+    (a : Fin (r + 1)) : (A - 1) *ᵥ fam e z a ∈ Submodule.span ℂ (fam e z '' {b | b < a}) := by
+  refine Fin.lastCases ?_ (fun a => ?_) a
+  · rw [fam_last]
+    refine Submodule.span_mono ?_ h.2
+    rintro _ ⟨b, hb, rfl⟩
+    exact ⟨b.castSucc, Fin.castSucc_lt_last b, fam_castSucc e z b⟩
+  · rw [fam_castSucc]
+    refine Submodule.span_mono ?_ (h.1 a)
+    rintro _ ⟨b, hb, rfl⟩
+    exact ⟨b.castSucc, hb, fam_castSucc e z b⟩
+
+theorem hJ_adj (ε : Fin n → Bool) (A Ai : Matrix (Fin n) (Fin n) ℂ)
+    (hU : Aiᴴ * Formalism.REAL.Jm ε * Ai = Formalism.REAL.Jm ε) (h1 : Ai * A = 1) (x y : Fin n → ℂ) :
+    hJ ε x (A *ᵥ y) = hJ ε (Ai *ᵥ x) y := by
+  have e : Aiᴴ * Formalism.REAL.Jm ε = Formalism.REAL.Jm ε * A := by
+    calc Aiᴴ * Formalism.REAL.Jm ε = Aiᴴ * Formalism.REAL.Jm ε * (Ai * A) := by rw [h1, Matrix.mul_one]
+      _ = (Aiᴴ * Formalism.REAL.Jm ε * Ai) * A := by simp only [Matrix.mul_assoc]
+      _ = Formalism.REAL.Jm ε * A := by rw [hU]
+  have e2 : Aiᴴ *ᵥ (Formalism.REAL.Jm ε *ᵥ y) = Formalism.REAL.Jm ε *ᵥ (A *ᵥ y) := by
+    rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, e]
+  unfold hJ
+  rw [Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, e2]
+
+theorem hJ_sum_left {ι : Type*} [Fintype ι] (ε : Fin n → Bool) (s : ι → ℂ) (x : ι → Fin n → ℂ) (y : Fin n → ℂ) :
+    hJ ε (∑ c, s c • x c) y = ∑ c, conj (s c) * hJ ε (x c) y := by
+  unfold hJ
+  simp only [star_sum, star_smul, sum_dotProduct, smul_dotProduct, smul_eq_mul, Complex.star_def]
+
+theorem hJ_sum_right {ι : Type*} [Fintype ι] (ε : Fin n → Bool) (s : ι → ℂ) (x : Fin n → ℂ) (y : ι → Fin n → ℂ) :
+    hJ ε x (∑ c, s c • y c) = ∑ c, s c * hJ ε x (y c) := by
+  unfold hJ
+  simp only [Matrix.mulVec_sum, Matrix.mulVec_smul, dotProduct_sum, dotProduct_smul, smul_eq_mul]
+
+theorem mulVec_lin {ι : Type*} [Fintype ι] (B : Matrix (Fin n) (Fin n) ℂ) (s : ι → ℂ) (y : ι → Fin n → ℂ) :
+    B *ᵥ ∑ c, s c • y c = ∑ c, s c • (B *ᵥ y c) := by
+  simp only [Matrix.mulVec_sum, Matrix.mulVec_smul]
+
+theorem zhat_conj (ε : Fin n → Bool) (f f' : Fin (r + 1) → Fin n → ℂ) (A Ai B C : Matrix (Fin n) (Fin n) ℂ)
+    (hadj : ∀ x y, hJ ε x (A *ᵥ y) = hJ ε (Ai *ᵥ x) y) (L M : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ)
+    (hL : ∀ a, Ai *ᵥ f a = ∑ c, L a c • f c) (hM : ∀ b, C *ᵥ f' b = ∑ d, M b d • f' d) :
+    Zhat ε f f' (A * B * C) = L.map (starRingEnd ℂ) * Zhat ε f f' B * Mᵀ := by
+  ext a b
+  have e1 : (A * B * C) *ᵥ f' b = A *ᵥ (B *ᵥ (C *ᵥ f' b)) := by
+    simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc]
+  simp only [Formalism.L2.SG.RealObj.Zhat, Matrix.mul_apply, Matrix.map_apply, Matrix.transpose_apply]
+  rw [e1, hadj, hL, hM, mulVec_lin, hJ_sum_left]
+  simp only [hJ_sum_right, Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun d _ => Finset.sum_congr rfl fun c _ => ?_
+  ring
+
+end GlobalTheory.GxConj
+
+namespace GlobalTheory
+
+open GlobalTheory.GxConj
+
+
+end GlobalTheory
+end
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+
+noncomputable section
+
+namespace GlobalTheory.ZxMul
+
+theorem zx_mul : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (g γ h : X.B.I.Ginf) (v : NumberField.InfinitePlace X.B.I.F) (C B : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ), GlobalTheory.LoopAct.IsMatOn (uMat (g⁻¹ v)) (Formalism.L2.SG.RealObj.frm X u 1 v) C → GlobalTheory.LoopAct.IsMatOn (uMat (h v)) (Formalism.L2.SG.RealObj.frm X u' 1 v) B → Formalism.L2.SG.RealObj.ZX X u u' 1 (g * γ * h) v = Cᴴ * Formalism.L2.SG.RealObj.ZX X u u' 1 γ v * B := by
+  intro D X u u' g γ h v C B hC hB
+  have hU : (uMat (g⁻¹ v))ᴴ * Formalism.REAL.Jm (X.B.I.ε v) * uMat (g⁻¹ v) = Formalism.REAL.Jm (X.B.I.ε v) := (g⁻¹ v).2
+  have e : uMat ((g * γ * h) v) = uMat (g v) * uMat (γ v) * uMat (h v) := rfl
+  have hL : ∀ a, uMat (g⁻¹ v) *ᵥ Formalism.L2.SG.RealObj.frm X u 1 v a =
+      ∑ c, Cᵀ a c • Formalism.L2.SG.RealObj.frm X u 1 v c := fun a => by
+    rw [hC a]; rfl
+  have hM : ∀ b, uMat (h v) *ᵥ Formalism.L2.SG.RealObj.frm X u' 1 v b =
+      ∑ d, Bᵀ b d • Formalism.L2.SG.RealObj.frm X u' 1 v d := fun b => by
+    rw [hB b]; rfl
+  unfold Formalism.L2.SG.RealObj.ZX
+  rw [e, GlobalTheory.GxConj.zhat_conj _ _ _ _ _ _ _
+    (GlobalTheory.GxConj.hJ_adj _ _ _ hU (Formalism.L2.SG.RealObj.InfCut.uMat_inv_mul' (g v))) _ _ hL hM,
+    Matrix.transpose_transpose]
+  rfl
+
+end GlobalTheory.ZxMul
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frameGram_mul_eq_conjTranspose_mul_frameMatrices : ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (g γ h : X.B.I.Ginf) (v : NumberField.InfinitePlace X.B.I.F) (C B : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ), GlobalTheory.LoopAct.IsMatOn (uMat (g⁻¹ v)) (Formalism.L2.SG.RealObj.frm X u 1 v) C → GlobalTheory.LoopAct.IsMatOn (uMat (h v)) (Formalism.L2.SG.RealObj.frm X u' 1 v) B → Formalism.L2.SG.RealObj.ZX X u u' 1 (g * γ * h) v = Cᴴ * Formalism.L2.SG.RealObj.ZX X u u' 1 γ v * B := by
+  atlas_forward_decl GlobalTheory.ZxMul.zx_mul
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+
+namespace GlobalTheory.ZhatRat
+
+theorem mapFlag_fvec {D : D7} {r : ℕ} {T : D.host.E} (γ : (VS D).V ≃ₗ[D.host.E] (VS D).V)
+    (h : γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) (F : FlagG (VS D) r T) (b : Fin (r + 1)) :
+    (Formalism.L2.SG.TermOp.mapFlag γ h F).fvec b = γ (F.fvec b) := by
+  refine Fin.lastCases ?_ (fun b' => ?_) b
+  · simp only [FlagG.fvec, Fin.snoc_last, Formalism.L2.SG.TermOp.mapFlag]
+  · simp only [FlagG.fvec, Fin.snoc_castSucc, Formalism.L2.SG.TermOp.mapFlag]
+
+theorem frm_one {D : D7} (X : HidaSetting D) (u : D.what₂.Word) (v : NumberField.InfinitePlace X.B.I.F)
+    (a : Fin (D.R.rS + 1)) :
+    Formalism.L2.SG.RealObj.frm X u 1 v a = rv X.B.I v (X.crd ((X.Fu u).fvec a)) := by
+  unfold Formalism.L2.SG.RealObj.frm Formalism.L2.SG.RealObj.famSc Formalism.L2.SG.RealObj.fam
+  rw [Complex.ofReal_one, one_pow, inv_one, one_smul]
+  refine Fin.lastCases ?_ (fun a' => ?_) a
+  · rw [Fin.snoc_last, FlagG.fvec, Fin.snoc_last, X.flagZVector u]
+    rfl
+  · rw [Fin.snoc_castSucc, FlagG.fvec, Fin.snoc_castSucc, X.Fu_e u]
+    rfl
+
+end GlobalTheory.ZhatRat
+
+open GlobalTheory.ZhatRat in
+
+theorem GlobalTheory.zhatRat_embed : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (W : WittDat X) (u u' : D.what₂.Word) (s : TT Y u u') (τ : D.what₂.Tau), (ZhatL (lf D (FlagOfWord W u)) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame)).map (embS D τ) = Formalism.L2.SG.RealObj.ZX X u u' 1 s.pt.1 (X.pl.symm τ) := by
+  intro D X Y W u u' s τ
+  obtain ⟨M, _, hM1, _, hM3⟩ := s.rep.2.1
+  have hiso : s.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := s.rep.2.2.1
+  rw [← mapL_lf W u]
+  refine (congrArg (fun Z => Matrix.map Z (embS D τ)) (zhatL_mapL (W.δ u) (W.isom u) (lf D (X.Fu u)) s.frame)).trans ?_
+  ext a b
+  simp only [Matrix.map_apply]
+  have hM1' : ∀ v, uMat (s.pt.1 v) = (X.B.I.P v)⁻¹ * (M : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E).map ⇑(X.B.I.φ v) * X.B.I.P v := hM1
+  have hM3' : ∀ y, X.crd (s.lin y) = (M : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) *ᵥ X.crd y := hM3
+  have hL : (s.frame).fl.fvec b = s.lin ((X.Fu u').fvec b) := by
+    unfold Formalism.L2.SG.TermOp.GTerm.frame Formalism.L2.SG.TermOp.mapLF
+    rw [dif_pos hiso]
+    exact mapFlag_fvec _ hiso _ _
+  change embS D τ (brS (VS D) (s.frame.fl.fvec b) ((X.Fu u).fvec a)) = _
+  rw [hL]
+  unfold brS Formalism.L2.SG.RealObj.ZX Formalism.L2.SG.RealObj.Zhat
+  rw [frm_one, frm_one, hM1', Formalism.L2.SG.Pf.Level.rv_mulVec, ← hM3', Formalism.L2.SG.Pf.Level.hJ_rv, X.φ_eq,
+    X.pl.apply_symm_apply, Formalism.L2.SG.PoincareInHH.Cut.hform_crd]
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rationalFrameGram_embed_eq_realFrameGram : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (W : WittDat X) (u u' : D.what₂.Word) (s : TT Y u u') (τ : D.what₂.Tau), (ZhatL (lf D (FlagOfWord W u)) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame)).map (embS D τ) = Formalism.L2.SG.RealObj.ZX X u u' 1 s.pt.1 (X.pl.symm τ) := by
+  atlas_forward_decl GlobalTheory.zhatRat_embed
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+
+noncomputable section
+
+namespace GlobalTheory.ActQ
+
+theorem snoc_map {α β : Type*} {r : ℕ} (f : α → β) (e : Fin r → α) (z : α) (j : Fin (r + 1)) :
+    f (Fin.snoc (α := fun _ => α) e z j) = Fin.snoc (α := fun _ => β) (fun a => f (e a)) (f z) j := by
+  refine Fin.lastCases ?_ (fun i => ?_) j
+  · simp only [Fin.snoc_last]
+  · simp only [Fin.snoc_castSucc]
+
+end GlobalTheory.ActQ
+
+theorem GlobalTheory.realPoint_ratIsom_isMatOn : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word) (s : TT Y u u') (n : (VS D).V ≃ₗ[D.host.E] (VS D).V) (x : X.B.I.GA) (A : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E), Formalism.L2.SG.TermOp.RatLink X x n → (∀ j, n (frame s.frame j) = ∑ i, A i j • frame s.frame i) → ∀ v : NumberField.InfinitePlace X.B.I.F, GlobalTheory.LoopAct.IsMatOn (uMat (x.1 v)) (fun j => uMat (s.pt.1 v) *ᵥ Formalism.L2.SG.RealObj.frm X u' 1 v j) (A.map (embS D (X.pl v))) := by
+  intro D X Y u u' s n x A hR hA v
+  obtain ⟨M, -, hM1, -, hM3⟩ := hR
+  obtain ⟨M', -, hM1', -, hM3'⟩ := s.rep.2.1
+  have hP' : ∀ v, uMat (s.pt.1 v) = (X.B.I.P v)⁻¹ * (↑M' : Matrix _ _ _).map ⇑(X.B.I.φ v) * X.B.I.P v := hM1'
+  have hL' : ∀ y, X.crd (s.lin y) = (↑M' : Matrix _ _ _) *ᵥ X.crd y := hM3'
+  have hiso : s.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := s.rep.2.2.1
+  have hfr : ∀ j, frame s.frame j = s.lin (Fin.snoc (α := fun _ => (VS D).V) X.eX (X.zu u') j) := by
+    intro j
+    have e1 : s.frame = Formalism.L2.SG.TermOp.mapLF s.lin (lf D (X.Fu u')) := rfl
+    rw [e1]
+    unfold Formalism.L2.SG.TermOp.mapLF
+    rw [dif_pos hiso]
+    rw [GlobalTheory.ActQ.snoc_map (f := (s.lin : (VS D).V → (VS D).V)), ← X.Fu_e u', ← X.flagZVector u']
+    rfl
+  have hfrm : ∀ j, Formalism.L2.SG.RealObj.frm X u' 1 v j =
+      rv X.B.I v (X.crd (Fin.snoc (α := fun _ => (VS D).V) X.eX (X.zu u') j)) := by
+    intro j
+    unfold Formalism.L2.SG.RealObj.frm Formalism.L2.SG.RealObj.famSc Formalism.L2.SG.RealObj.fam
+    simp only [Complex.ofReal_one, one_pow, inv_one, one_smul]
+    rw [GlobalTheory.ActQ.snoc_map (f := fun y => rv X.B.I v (X.crd y))]
+    rfl
+  have hf : ∀ j, uMat (s.pt.1 v) *ᵥ Formalism.L2.SG.RealObj.frm X u' 1 v j = rv X.B.I v (X.crd (frame s.frame j)) := by
+    intro j
+    rw [hfrm, hfr, hL', ← Formalism.L2.SG.Pf.Level.rv_mulVec X v, ← hP' v]
+  have hsum : ∀ (c : Fin (D.R.rS + 1) → D.host.E) (w : Fin (D.R.rS + 1) → (VS D).V),
+      rv X.B.I v (X.crd (∑ i, c i • w i)) = ∑ i, embS D (X.pl v) (c i) • rv X.B.I v (X.crd (w i)) := by
+    intro c w
+    have hc : X.crd (∑ i, c i • w i) = ∑ i, X.ιE.symm (c i) • X.crd (w i) := by
+      funext l
+      simp [HidaSetting.crd, Formalism.L2.SG.HidaSetting.crdOf, map_sum, Finset.sum_apply, smul_eq_mul]
+    rw [hc]
+    unfold rv
+    have hv : (fun l => X.B.I.φ v ((∑ i, X.ιE.symm (c i) • X.crd (w i)) l)) =
+        ∑ i, embS D (X.pl v) (c i) • fun l => X.B.I.φ v (X.crd (w i) l) := by
+      funext l
+      simp [Finset.sum_apply, map_sum, X.φ_eq]
+    rw [hv, Matrix.mulVec_sum]
+    simp_rw [Matrix.mulVec_smul]
+  intro b
+  dsimp only
+  rw [hf b, hM1 v, Formalism.L2.SG.Pf.Level.rv_mulVec, ← hM3, hA b, hsum]
+  simp_rw [hf, Matrix.map_apply]
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.realPoint_rationalIsometry_acts_frame_matrix : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word) (s : TT Y u u') (n : (VS D).V ≃ₗ[D.host.E] (VS D).V) (x : X.B.I.GA) (A : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E), Formalism.L2.SG.TermOp.RatLink X x n → (∀ j, n (frame s.frame j) = ∑ i, A i j • frame s.frame i) → ∀ v : NumberField.InfinitePlace X.B.I.F, GlobalTheory.LoopAct.IsMatOn (uMat (x.1 v)) (fun j => uMat (s.pt.1 v) *ᵥ Formalism.L2.SG.RealObj.frm X u' 1 v j) (A.map (embS D (X.pl v))) := by
+  atlas_forward_decl GlobalTheory.realPoint_ratIsom_isMatOn
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+
+namespace GlobalTheory.CoverAct
+
+theorem ratLink_mem_ROinf : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (W : WittDat X) (u u' : D.what₂.Word) (s : TT Y u u') (n : (VS D).V ≃ₗ[D.host.E] (VS D).V), n ∈ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (lf D (FlagOfWord W u)) ∩ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame) → ∃ x : X.B.I.GA, Formalism.L2.SG.TermOp.RatLink X x ((W.δ u)⁻¹ * n * W.δ u) ∧ x.1 ∈ Formalism.L2.SG.TermOp.ROinf s := by
+  intro D X Y W u u' s n hn
+  obtain ⟨h1, h2⟩ := hn
+  have hδ := W.isom u
+  have hm1 : (W.δ u)⁻¹ * n * W.δ u ∈ NLam s.lam (lf D (X.Fu u)) := by
+    rw [← Formalism.L2.SG.TermTieOf.mapL_lf W u] at h1
+    exact (Formalism.L2.SG.Pf.mem_NLam_map (W.δ u) hδ _ _ _).1 h1
+  have hm2 : (W.δ u)⁻¹ * n * W.δ u ∈ NLam s.lam s.frame :=
+    (Formalism.L2.SG.Pf.mem_NLam_map (W.δ u) hδ _ _ _).1 h2
+  have hiso : (W.δ u)⁻¹ * n * W.δ u ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT :=
+    mul_mem (mul_mem (inv_mem hδ) h1.1.1) hδ
+  have hlin : s.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := s.rep.2.2.1
+  have hlam : Formalism.HermitianLatticesTheory.gmap s.lin s.lam' = s.lam := s.rep.2.2.2.1
+  have hfr : s.frame = Formalism.L2.SG.Saturated.mapL s.lin hlin (lf D (X.Fu u')) := by
+    unfold Formalism.L2.SG.TermOp.GTerm.frame Formalism.L2.SG.TermOp.mapLF
+    rw [dif_pos hlin]
+    rfl
+  rw [hfr, ← hlam] at hm2
+  have hm3 := (Formalism.L2.SG.Pf.mem_NLam_map s.lin hlin _ _ _).1 hm2
+  obtain ⟨x, hx⟩ := Formalism.L2.SG.Pf.ratPt_holds D X _ hiso
+  exact ⟨x, hx, x, _, hx, rfl, hm1, hm3⟩
+
+end GlobalTheory.CoverAct
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.rationalLink_conjugate_mem_integralRealPoints : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (W : WittDat X) (u u' : D.what₂.Word) (s : TT Y u u') (n : (VS D).V ≃ₗ[D.host.E] (VS D).V), n ∈ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (lf D (FlagOfWord W u)) ∩ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame) → ∃ x : X.B.I.GA, Formalism.L2.SG.TermOp.RatLink X x ((W.δ u)⁻¹ * n * W.δ u) ∧ x.1 ∈ Formalism.L2.SG.TermOp.ROinf s := by
+  atlas_forward_decl GlobalTheory.CoverAct.ratLink_mem_ROinf
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+open Matrix
+
+noncomputable section
+
+open scoped Classical
+open MeasureTheory
+
+namespace GlobalTheory.LoopVol
+
+def actSgn (r : ℕ) : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ := Matrix.diagonal fun b => (-1 : ℂ) ^ (r - b.val)
+
+theorem actSgn_mul_self (r : ℕ) : actSgn r * actSgn r = 1 := by
+  rw [actSgn, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
+  congr 1
+  funext b
+  rw [← mul_pow]
+  norm_num
+
+theorem actSgn_conj_apply {r : ℕ} (M : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (i j : Fin (r + 1)) :
+    (actSgn r * M * actSgn r) i j = (-1 : ℂ) ^ (r - i.val) * M i j * (-1) ^ (r - j.val) := by
+  simp [actSgn, Matrix.diagonal_mul, Matrix.mul_diagonal]
+
+theorem act_zhatO_eq {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) :
+    Formalism.L2.SG.RealObj.ZhatO Z = Z * actSgn r := by
+  ext a b
+  simp [Formalism.L2.SG.RealObj.ZhatO, actSgn, Matrix.mul_diagonal, mul_comm]
+
+theorem act_zhatOM_map {K : Type} [Field K] {r : ℕ} (ψ : K →+* ℂ) (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) K) :
+    (ZhatOM Z).map ψ = Z.map ψ * actSgn r := by
+  ext a b
+  simp [ZhatOM, actSgn, Matrix.mul_diagonal, mul_comm]
+
+theorem actSgn_conj_ofRoots {r : ℕ} (R : Finset (Fin (r + 1) × Fin (r + 1))) (c : R → ℂ) :
+    actSgn r * GlobalTheory.LoopV.ofRoots R c * actSgn r =
+      GlobalTheory.LoopV.ofRoots R (fun q => (-1 : ℂ) ^ (r - q.1.1.val) * c q * (-1) ^ (r - q.1.2.val)) := by
+  ext i j
+  rw [actSgn_conj_apply]
+  unfold GlobalTheory.LoopV.ofRoots
+  split_ifs with h1 h2
+  · rfl
+  · subst h2
+    rw [mul_one, ← mul_pow]
+    norm_num
+  · simp
+
+theorem act_isUpUni_sgn {r : ℕ} {M : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (h : IsUpUni M) :
+    IsUpUni (actSgn r * M * actSgn r) := fun i j =>
+  ⟨fun hij => by rw [actSgn_conj_apply, (h i j).1 hij]; simp,
+   fun hij => by subst hij; rw [actSgn_conj_apply, (h i i).2 rfl, mul_one, ← mul_pow]; norm_num⟩
+
+theorem act_isUpUni_map {K : Type} [Field K] {N : ℕ} (ψ : K →+* ℂ) {M : Matrix (Fin N) (Fin N) K}
+    (h : IsUpUni M) : IsUpUni (M.map ψ) := fun i j =>
+  ⟨fun hij => by simp [(h i j).1 hij], fun hij => by subst hij; simp [(h i i).2 rfl]⟩
+
+theorem act_isLoUni_map {K : Type} [Field K] {N : ℕ} (ψ : K →+* ℂ) {M : Matrix (Fin N) (Fin N) K}
+    (h : IsLoUni M) : IsLoUni (M.map ψ) := fun i j =>
+  ⟨fun hij => by simp [(h i j).1 hij], fun hij => by subst hij; simp [(h i i).2 rfl]⟩
+
+theorem act_isLoUni_conjTranspose {N : ℕ} {C : Matrix (Fin N) (Fin N) ℂ} (h : IsUpUni C) : IsLoUni Cᴴ :=
+  fun i j => ⟨fun hij => by simp [Matrix.conjTranspose_apply, (h j i).1 hij],
+    fun hij => by subst hij; simp [Matrix.conjTranspose_apply, (h i i).2 rfl]⟩
+
+theorem act_sgn_mem {r : ℕ} {Z P m : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hZ : IsUnit Z.det)
+    (hP : Z * actSgn r = P) (hm : m ∈ GlobalTheory.LoopV.stabU Z) : actSgn r * m * actSgn r ∈ GlobalTheory.LoopV.stabU P := by
+  refine ⟨act_isUpUni_sgn hm.1, ?_⟩
+  have hss := actSgn_mul_self r
+  have hsi : (actSgn r)⁻¹ = actSgn r := Matrix.inv_eq_left_inv hss
+  have e : P * (actSgn r * m * actSgn r) * P⁻¹ = Z * m * Z⁻¹ := by
+    rw [← hP, Matrix.mul_inv_rev, hsi]
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc (actSgn r) (actSgn r), hss, Matrix.one_mul, ← Matrix.mul_assoc (actSgn r) (actSgn r), hss,
+      Matrix.one_mul]
+  rw [e]
+  exact hm.2
+
+theorem act_eq_ofRoots {K : Type} [Field K] {r : ℕ} (ψ : K →+* ℂ) (p : Point K (r + 1))
+    {Z m : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hZ : IsUnit Z.det) (hP : Z * actSgn r = (ptMat p).map ψ)
+    (hm : m ∈ GlobalTheory.LoopV.stabU Z) : m = GlobalTheory.LoopV.ofRoots (GlobalTheory.LoopV.roots (ptMat p)) (fun q => m q.1.1 q.1.2) := by
+  have h1 := GlobalTheory.LoopAct.stabU_map_eq_ofRoots ψ p _ (act_sgn_mem hZ hP hm)
+  have hss := actSgn_mul_self r
+  have h2 : actSgn r * (actSgn r * m * actSgn r) * actSgn r = actSgn r * GlobalTheory.LoopV.ofRoots (GlobalTheory.LoopV.roots (ptMat p))
+      (fun q => (actSgn r * m * actSgn r) q.1.1 q.1.2) * actSgn r := congrArg (fun M => actSgn r * M * actSgn r) h1
+  rw [actSgn_conj_ofRoots] at h2
+  have e : actSgn r * (actSgn r * m * actSgn r) * actSgn r = m := by
+    simp only [← Matrix.mul_assoc, hss, Matrix.one_mul]
+    rw [Matrix.mul_assoc, hss, Matrix.mul_one]
+  rw [e] at h2
+  refine h2.trans (congrArg (GlobalTheory.LoopV.ofRoots (GlobalTheory.LoopV.roots (ptMat p))) ?_)
+  funext q
+  rw [actSgn_conj_apply]
+  have ha : ((-1 : ℂ) ^ (r - q.1.1.val)) * (-1) ^ (r - q.1.1.val) = 1 := by rw [← mul_pow]; norm_num
+  have hb : ((-1 : ℂ) ^ (r - q.1.2.val)) * (-1) ^ (r - q.1.2.val) = 1 := by rw [← mul_pow]; norm_num
+  linear_combination (m q.1.1 q.1.2 * (-1 : ℂ) ^ (r - q.1.2.val) * (-1) ^ (r - q.1.2.val)) * ha + m q.1.1 q.1.2 * hb
+
+theorem act_sign_pow (r : ℕ) (i j : Fin (r + 1)) :
+    (-1 : ℂ) ^ (i.val + j.val) = (-1 : ℂ) ^ (r - i.val) * (-1) ^ (r - j.val) := by
+  rw [← pow_add, neg_one_pow_eq_pow_mod_two, neg_one_pow_eq_pow_mod_two (n := r - i.val + (r - j.val))]
+  have hi := i.isLt
+  have hj := j.isLt
+  congr 1
+  omega
+
+theorem act_neg_one_mp (k : ℕ) : MeasurePreserving (fun x : ℂ => (-1 : ℂ) ^ k * x) volume volume := by
+  rcases neg_one_pow_eq_or ℂ k with h | h
+  · simp only [h, one_mul]
+    exact MeasurePreserving.id volume
+  · simp only [h, neg_one_mul]
+    exact Measure.measurePreserving_neg volume
+
+open GlobalTheory.LoopAct in
+theorem cover_action : ∀ Cg cb Cu cT CT C0 A : ℝ, ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (W : WittDat X) (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl : ℝ), Formalism.MainNotions.S.Cnt.Hyp D large₂ u u' C' Cl Cg cb Cu cT CT C0 A → ∀ s : TT Y u u', s.relevant → s.G ≠ 0 → ∀ (w : Point D.host.E (D.R.rS + 1)) (γw sf s' : X.B.I.Ginf), s.toTerm.atPt w → Formalism.L2.SG.RealObj.IsPtRep X u u' w γw → sf ∈ X.SinfU u → s' ∈ X.SinfU u' → s.pt.1 = sf * γw * s'⁻¹ → ∀ (L U : Formalism.MainNotions.S.Cnt.GramM D), IsLoUni L → IsUpUni U → ZhatOM (ZhatL (lf D (FlagOfWord W u)) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame)) = L * ptMat w * U → ∀ Ω : Set (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ), (∀ c : D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ, ∃ n ∈ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (lf D (FlagOfWord W u)) ∩ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame), ∃ a : Formalism.MainNotions.S.Cnt.GramM D, (∀ j : Fin (D.R.rS + 1), n (frame (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame) j) = ∑ i : Fin (D.R.rS + 1), ((-1) ^ (i.val + j.val) * a i j) • frame (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame) i) ∧ (fun τ (q : GlobalTheory.LoopV.roots (ptMat w)) => ((U * a * U⁻¹).map (embS D τ) * GlobalTheory.LoopV.ofRoots (GlobalTheory.LoopV.roots (ptMat w)) (c τ) : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ) q.1.1 q.1.2) ∈ Ω) → ∃ T : (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ) → (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ), MeasureTheory.MeasurePreserving T MeasureTheory.volume MeasureTheory.volume ∧ ∀ r ∈ Formalism.L2.SG.TermOp.Vanish.Rset s, ∃ q ∈ Formalism.L2.SG.TermOp.ROinf s, T (GlobalTheory.LoopVol.ratCoord X u' w γw sf (q * r)) ∈ Ω := by
+  intro Cg cb Cu cT CT C0 A D X Y W large₂ u u' C' Cl hH s hrel hG w γw sf s' hat hrep hsf hs' hdec L U hL hU hZ Ω hcov
+  set R := GlobalTheory.LoopV.roots (ptMat w) with hR
+  have hRlt : ∀ q ∈ R, q.1 < q.2 := by
+    intro q hq
+    simp only [hR, GlobalTheory.LoopV.roots, Finset.mem_filter] at hq
+    exact hq.2.1
+  have hs'i : s'⁻¹ ∈ X.SinfU u' := Formalism.L2.SG.Pf.Sinf.sinf_inv' X u' hs'
+  have hsfi : sf⁻¹ ∈ X.SinfU u := Formalism.L2.SG.Pf.Sinf.sinf_inv' X u hsf
+  choose B hBu hBm using fun τ : D.what₂.Tau => GlobalTheory.T.realBesselSubgroup_acts_frame_upperUnitriangular D X u' s'⁻¹ hs'i (X.pl.symm τ)
+  choose Cm hCu hCm using fun τ : D.what₂.Tau => GlobalTheory.T.realBesselSubgroup_acts_frame_upperUnitriangular D X u sf⁻¹ hsfi (X.pl.symm τ)
+  have hUi := Formalism.L2.SG.Pf.ZsVolGrp.isUpUni_inv hU
+  set sg := actSgn D.R.rS with hsg
+  have hss : sg * sg = 1 := actSgn_mul_self _
+  have hss' : ∀ M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ, sg * (sg * M) = M := fun M => by
+    rw [← Matrix.mul_assoc, hss, Matrix.one_mul]
+  set Uc : D.what₂.Tau → Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ := fun τ => U.map (embS D τ) with hUc
+  have hUcu : ∀ τ, IsUpUni (Uc τ) := fun τ => act_isUpUni_map _ hU
+  have hBi : ∀ τ, (B τ)⁻¹ * B τ = 1 ∧ B τ * (B τ)⁻¹ = 1 := fun τ => (Formalism.L2.SG.Pf.ZsVolGrp.isUpUni_inv (hBu τ)).2
+  have hUci : ∀ τ, (Uc τ)⁻¹ * Uc τ = 1 ∧ Uc τ * (Uc τ)⁻¹ = 1 := fun τ =>
+    (Formalism.L2.SG.Pf.ZsVolGrp.isUpUni_inv (hUcu τ)).2
+  have hUcinv : ∀ τ, (U⁻¹).map (embS D τ) = (Uc τ)⁻¹ := fun τ => by
+    refine (Matrix.inv_eq_left_inv ?_).symm
+    simp only [hUc]
+    rw [← Matrix.map_mul, hUi.2.1, Matrix.map_one _ (map_zero _) (map_one _)]
+  set Xm : D.what₂.Tau → Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ := fun τ => Uc τ * sg * (B τ)⁻¹ with hXm
+  have hXinv : ∀ τ, (Xm τ)⁻¹ = B τ * sg * (Uc τ)⁻¹ := fun τ => by
+    refine Matrix.inv_eq_right_inv ?_
+    calc Xm τ * (B τ * sg * (Uc τ)⁻¹) = Uc τ * (sg * (((B τ)⁻¹ * B τ) * (sg * (Uc τ)⁻¹))) := by
+          simp only [hXm, Matrix.mul_assoc]
+      _ = 1 := by rw [(hBi τ).1, Matrix.one_mul, hss', (hUci τ).2]
+
+  set T : (D.what₂.Tau → R → ℂ) → (D.what₂.Tau → R → ℂ) :=
+    fun c τ q => (Xm τ * GlobalTheory.LoopV.ofRoots R (c τ) * (Xm τ)⁻¹) q.1.1 q.1.2 with hTdef
+  refine ⟨T, ?_, ?_⟩
+  · set a : D.what₂.Tau → Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ := fun τ => Uc τ * (sg * (B τ)⁻¹ * sg) with ha
+    set b : D.what₂.Tau → Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ := fun τ => sg * B τ * sg * (Uc τ)⁻¹ with hb
+    have hau : ∀ τ, IsUpUni (a τ) := fun τ => Formalism.L2.SG.Pf.ZsVolGrp.isUpUni_mul (hUcu τ)
+      (act_isUpUni_sgn (Formalism.L2.SG.Pf.ZsVolGrp.isUpUni_inv (hBu τ)).1)
+    have hbu : ∀ τ, IsUpUni (b τ) := fun τ => Formalism.L2.SG.Pf.ZsVolGrp.isUpUni_mul (act_isUpUni_sgn (hBu τ))
+      (Formalism.L2.SG.Pf.ZsVolGrp.isUpUni_inv (hUcu τ)).1
+    have hconj : ∀ τ (M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ),
+        Xm τ * M * (Xm τ)⁻¹ = a τ * (sg * M * sg) * b τ := fun τ M => by
+      rw [hXinv]
+      simp only [hXm, ha, hb, Matrix.mul_assoc, hss']
+    have hTc : T = (fun (c : D.what₂.Tau → R → ℂ) τ (q : R) => (a τ * GlobalTheory.LoopV.ofRoots R (c τ) * b τ) q.1.1 q.1.2) ∘
+        (fun (c : D.what₂.Tau → R → ℂ) τ => (fun (c' : R → ℂ) (q : R) =>
+          (-1 : ℂ) ^ (D.R.rS - q.1.1.val + (D.R.rS - q.1.2.val)) * c' q) (c τ)) := by
+      funext c τ q
+      simp only [hTdef, Function.comp, hconj, hsg, actSgn_conj_ofRoots]
+      have hfun : (fun q' : R => (-1 : ℂ) ^ (D.R.rS - q'.1.1.val) * c τ q' * (-1) ^ (D.R.rS - q'.1.2.val)) =
+          fun q' : R => (-1 : ℂ) ^ (D.R.rS - q'.1.1.val + (D.R.rS - q'.1.2.val)) * c τ q' := by
+        funext q'
+        rw [pow_add]
+        ring
+      rw [hfun]
+    rw [hTc]
+    refine (GlobalTheory.LoopVol.measurePreserving_mul_pi R hRlt a b hau hbu).comp ?_
+    exact volume_preserving_pi fun _ => volume_preserving_pi fun q => act_neg_one_mp _
+  · intro r hr
+    have hstr := Formalism.L2.SG.LoopTerm.stInf_conj_inv hsf hs' hdec hr
+    have hyr : γw⁻¹ * (sf⁻¹ * r * sf) * γw ∈ X.SinfU u' := fun v => (hstr.2 v).1
+    choose Mr hMru hMrm using fun τ : D.what₂.Tau => GlobalTheory.T.realBesselSubgroup_acts_frame_upperUnitriangular D X u' _ hyr (X.pl.symm τ)
+    obtain ⟨n, hn, a, ha, hΩ⟩ := hcov (T (GlobalTheory.LoopVol.ratCoord X u' w γw sf r))
+    obtain ⟨x, hx, hq⟩ := GlobalTheory.T.rationalLink_conjugate_mem_integralRealPoints D X Y W u u' s n hn
+    refine ⟨x.1, hq, ?_⟩
+    have hqR := Formalism.L2.SG.Pf.LoopBPin.roinf_sub_rset s hq
+    have hstq := Formalism.L2.SG.LoopTerm.stInf_conj_inv hsf hs' hdec hqR
+    have hyq : γw⁻¹ * (sf⁻¹ * x.1 * sf) * γw ∈ X.SinfU u' := fun v => (hstq.2 v).1
+    set Ar : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E :=
+      Matrix.of fun i j => (-1) ^ (i.val + j.val) * a i j with hAr
+    have hnA : ∀ j, ((W.δ u)⁻¹ * n * W.δ u) (frame s.frame j) = ∑ i, Ar i j • frame s.frame i := by
+      intro j
+      have e1 : ∀ i, frame (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame) i = W.δ u (frame s.frame i) :=
+        fun i => by
+          show (Formalism.L2.SG.Saturated.mapFlag (W.δ u) (W.isom u) s.frame.fl).fvec i = _
+          rw [Formalism.L2.SG.Saturated.fvec_mapFlag]
+      have h := ha j
+      simp only [e1] at h
+      show (W.δ u).symm (n (W.δ u (frame s.frame j))) = _
+      rw [h, map_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [map_smul, LinearEquiv.symm_apply_apply]
+      rfl
+    have hum : ∀ (g h : X.B.I.Ginf) v, uMat ((g * h) v) = uMat (g v) * uMat (h v) := by
+      intro g h v
+      simp [uMat]
+    have huinv : ∀ (g : X.B.I.Ginf) v, uMat (g⁻¹ v) * uMat (g v) = 1 := by
+      intro g v
+      rw [← hum, inv_mul_cancel]
+      simp [uMat]
+    convert hΩ using 1
+    funext τ q
+    set v := X.pl.symm τ with hv
+    have hplv : X.pl v = τ := X.pl.apply_symm_apply τ
+    set Zv := Formalism.L2.SG.RealObj.ZX X u u' 1 γw v with hZv
+    have hptC : Formalism.L2.SG.RealObj.ptC X v w = (ptMat w).map (embS D τ) := by
+      ext i j
+      simp only [Formalism.L2.SG.RealObj.ptC, Matrix.map_apply, X.φ_eq, RingEquiv.apply_symm_apply, hplv]
+    have hZs : Zv * sg = (ptMat w).map (embS D τ) := by
+      rw [hZv, hsg, ← act_zhatO_eq, hrep v, hptC]
+    have hZu : IsUnit Zv.det := by
+      have h1 : IsUnit (Zv * sg).det := by
+        rw [hZs]
+        have h2 := (GlobalTheory.LoopV.Cell.ptMat_det w).map (embS D τ)
+        rw [RingHom.map_det] at h2
+        exact h2
+      rw [Matrix.det_mul] at h1
+      exact isUnit_of_mul_isUnit_left h1
+    have hMrs : Mr τ ∈ GlobalTheory.LoopV.stabU Zv := GlobalTheory.T.frameMatrix_mem_unipotentStabilizer_frameGram D X u u' γw _ v (Mr τ) hstr (hMru τ) (hMrm τ) hZu
+    obtain ⟨Mq, hMqu, hMqm⟩ := GlobalTheory.T.realBesselSubgroup_acts_frame_upperUnitriangular D X u' _ hyq v
+    have hMqs : Mq ∈ GlobalTheory.LoopV.stabU Zv := GlobalTheory.T.frameMatrix_mem_unipotentStabilizer_frameGram D X u u' γw _ v Mq hstq hMqu hMqm hZu
+
+    have hrc : GlobalTheory.LoopV.ofRoots R (GlobalTheory.LoopVol.ratCoord X u' w γw sf r τ) = Mr τ := by
+      have e : GlobalTheory.LoopVol.ratCoord X u' w γw sf r τ = fun q' : R => Mr τ q'.1.1 q'.1.2 :=
+        funext (GlobalTheory.T.rationalRootCoordinates_eq_frameMatrix D X u' w γw sf r τ (Mr τ) (hMrm τ))
+      rw [e]
+      exact (act_eq_ofRoots (embS D τ) w hZu hZs hMrs).symm
+    have hyqr : γw⁻¹ * (sf⁻¹ * (x.1 * r) * sf) * γw =
+        (γw⁻¹ * (sf⁻¹ * x.1 * sf) * γw) * (γw⁻¹ * (sf⁻¹ * r * sf) * γw) := by group
+    have hMqrm : IsMatOn (uMat ((γw⁻¹ * (sf⁻¹ * (x.1 * r) * sf) * γw) v)) (Formalism.L2.SG.RealObj.frm X u' 1 v)
+        (Mq * Mr τ) := by
+      rw [hyqr, hum]
+      exact isMatOn_mul hMqm (hMrm τ)
+    have hqrc : GlobalTheory.LoopV.ofRoots R (GlobalTheory.LoopVol.ratCoord X u' w γw sf (x.1 * r) τ) = Mq * Mr τ := by
+      have e : GlobalTheory.LoopVol.ratCoord X u' w γw sf (x.1 * r) τ = fun q' : R => (Mq * Mr τ) q'.1.1 q'.1.2 :=
+        funext (GlobalTheory.T.rationalRootCoordinates_eq_frameMatrix D X u' w γw sf (x.1 * r) τ (Mq * Mr τ) hMqrm)
+      rw [e]
+      exact (act_eq_ofRoots (embS D τ) w hZu hZs (stabU_mul hZu hMqs hMrs)).symm
+
+    have hAq := GlobalTheory.T.realPoint_rationalIsometry_acts_frame_matrix D X Y u u' s _ x Ar hx hnA v
+    rw [hplv] at hAq
+    have hc1 := isMatOn_conj hAq (huinv s.pt.1 v)
+    have e1 : uMat (s.pt.1⁻¹ v) * uMat (x.1 v) * uMat (s.pt.1 v) =
+        uMat ((s' * (γw⁻¹ * (sf⁻¹ * x.1 * sf) * γw) * s'⁻¹) v) := by
+      rw [← hum, ← hum]
+      congr 2
+      rw [hdec]
+      group
+    rw [e1] at hc1
+    have hc2 := isMatOn_mul (hBm τ) hc1
+    have hc3 := isMatOn_mul hMqm (hBm τ)
+    rw [← hum] at hc2 hc3
+    have e2 : s'⁻¹ * (s' * (γw⁻¹ * (sf⁻¹ * x.1 * sf) * γw) * s'⁻¹) = (γw⁻¹ * (sf⁻¹ * x.1 * sf) * γw) * s'⁻¹ := by
+      group
+    rw [e2] at hc2
+    have heq := isMatOn_unique (GlobalTheory.T.rationalBesselFrame_realPlace_linearIndependent D X u' v) hc3 hc2
+    have hA' : Ar.map (embS D τ) = sg * a.map (embS D τ) * sg := by
+      ext i j
+      rw [hsg, actSgn_conj_apply]
+      simp only [hAr, Matrix.map_apply, Matrix.of_apply, map_mul, map_pow, map_neg, map_one]
+      rw [act_sign_pow D.R.rS i j]
+      ring
+    have hMq : Mq = B τ * (sg * a.map (embS D τ) * sg) * (B τ)⁻¹ := by
+      rw [← hA', ← heq, Matrix.mul_assoc, (hBi τ).2, Matrix.mul_one]
+
+    have hzr := GlobalTheory.T.rationalFrameGram_embed_eq_realFrameGram D X Y W u u' s τ
+    have hzm := GlobalTheory.T.frameGram_mul_eq_conjTranspose_mul_frameMatrices D X u u' sf γw s'⁻¹ v (Cm τ) (B τ) (hCm τ) (hBm τ)
+    have hkey : (Cm τ)ᴴ * Zv * B τ * sg = L.map (embS D τ) * (Zv * sg) * Uc τ := by
+      have h : Matrix.map (ZhatOM (ZhatL (lf D (FlagOfWord W u)) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame)))
+          (embS D τ) = Matrix.map (L * ptMat w * U) (embS D τ) := congrArg (fun M => Matrix.map M (embS D τ)) hZ
+      rw [act_zhatOM_map, hzr, hdec, hzm, Matrix.map_mul, Matrix.map_mul, ← hZs] at h
+      exact h
+    set g0 := B τ * (sg * (Uc τ)⁻¹ * sg) with hg0
+    have hCl := act_isLoUni_conjTranspose (hCu τ)
+    have hCli := Formalism.L2.SG.Pf.ZsVolGrp.isLoUni_inv hCl
+    have hZg : Zv * g0 * Zv⁻¹ = ((Cm τ)ᴴ)⁻¹ * L.map (embS D τ) := by
+      have h1 : (Cm τ)ᴴ * (Zv * g0) = L.map (embS D τ) * Zv := by
+        calc (Cm τ)ᴴ * (Zv * g0) = ((Cm τ)ᴴ * Zv * B τ * sg) * ((Uc τ)⁻¹ * sg) := by
+              simp only [hg0, Matrix.mul_assoc]
+          _ = L.map (embS D τ) * Zv := by
+              rw [hkey]
+              simp only [Matrix.mul_assoc]
+              rw [← Matrix.mul_assoc (Uc τ) (Uc τ)⁻¹, (hUci τ).2, Matrix.one_mul, hss, Matrix.mul_one]
+      have h2 : Zv * g0 = ((Cm τ)ᴴ)⁻¹ * (L.map (embS D τ) * Zv) := by
+        rw [← h1, ← Matrix.mul_assoc ((Cm τ)ᴴ)⁻¹, hCli.2.1, Matrix.one_mul]
+      rw [h2, Matrix.mul_assoc, Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hZu, Matrix.mul_one]
+    have hg0s : g0 ∈ GlobalTheory.LoopV.stabU Zv := by
+      refine ⟨Formalism.L2.SG.Pf.ZsVolGrp.isUpUni_mul (hBu τ)
+        (act_isUpUni_sgn (Formalism.L2.SG.Pf.ZsVolGrp.isUpUni_inv (hUcu τ)).1), ?_⟩
+      rw [hZg]
+      exact Formalism.L2.SG.Pf.ZsVolGrp.isLoUni_mul hCli.1 (act_isLoUni_map _ hL)
+    have hg0i : g0⁻¹ = sg * Uc τ * sg * (B τ)⁻¹ := by
+      refine Matrix.inv_eq_right_inv ?_
+      calc g0 * (sg * Uc τ * sg * (B τ)⁻¹) = B τ * (sg * ((Uc τ)⁻¹ * (sg * (sg * (Uc τ * (sg * (B τ)⁻¹)))))) := by
+            simp only [hg0, Matrix.mul_assoc]
+        _ = 1 := by rw [hss', ← Matrix.mul_assoc (Uc τ)⁻¹, (hUci τ).1, Matrix.one_mul, hss', (hBi τ).2]
+    have hXr : Xm τ * Mr τ * (Xm τ)⁻¹ = sg * (g0⁻¹ * Mr τ * g0) * sg := by
+      rw [hg0i, hXinv]
+      simp only [hXm, hg0, Matrix.mul_assoc, hss', hss, Matrix.mul_one]
+    have hXrs : GlobalTheory.LoopV.ofRoots R (T (GlobalTheory.LoopVol.ratCoord X u' w γw sf r) τ) = Xm τ * Mr τ * (Xm τ)⁻¹ := by
+      have hm := act_sgn_mem hZu hZs (stabU_mul hZu (stabU_mul hZu (stabU_inv hZu hg0s) hMrs) hg0s)
+      have h1 := GlobalTheory.LoopAct.stabU_map_eq_ofRoots (embS D τ) w _ hm
+      rw [← hXr] at h1
+      rw [h1]
+      refine congrArg (GlobalTheory.LoopV.ofRoots R) ?_
+      funext q'
+      simp only [hTdef]
+      rw [hrc]
+
+    rw [hXrs]
+    simp only [hTdef]
+    have hB1 : ∀ M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ, (B τ)⁻¹ * (B τ * M) = M := fun M => by
+      rw [← Matrix.mul_assoc, (hBi τ).1, Matrix.one_mul]
+    have hU1 : ∀ M : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ, (Uc τ)⁻¹ * (Uc τ * M) = M := fun M => by
+      rw [← Matrix.mul_assoc, (hUci τ).1, Matrix.one_mul]
+    have hfin : ∀ P : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ,
+        Xm τ * (B τ * (sg * P * sg) * (B τ)⁻¹ * Mr τ) * (B τ * sg * (Uc τ)⁻¹) =
+          Uc τ * P * (Uc τ)⁻¹ * (Xm τ * Mr τ * (B τ * sg * (Uc τ)⁻¹)) := fun P => by
+      simp only [hXm, Matrix.mul_assoc, hB1, hU1, hss']
+    rw [hqrc, Matrix.map_mul, Matrix.map_mul, hUcinv, hMq, hXinv, hfin]
+
+end GlobalTheory.LoopVol
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LoopTieOf
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integerPoints_cover_realPoints_rootCoordinates : ∀ Cg cb Cu cT CT C0 A : ℝ, ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (W : WittDat X) (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl : ℝ), Formalism.MainNotions.S.Cnt.Hyp D large₂ u u' C' Cl Cg cb Cu cT CT C0 A → ∀ s : TT Y u u', s.relevant → s.G ≠ 0 → ∀ (w : Point D.host.E (D.R.rS + 1)) (γw sf s' : X.B.I.Ginf), s.toTerm.atPt w → Formalism.L2.SG.RealObj.IsPtRep X u u' w γw → sf ∈ X.SinfU u → s' ∈ X.SinfU u' → s.pt.1 = sf * γw * s'⁻¹ → ∀ (L U : Formalism.MainNotions.S.Cnt.GramM D), IsLoUni L → IsUpUni U → ZhatOM (ZhatL (lf D (FlagOfWord W u)) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame)) = L * ptMat w * U → ∀ Ω : Set (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ), (∀ c : D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ, ∃ n ∈ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (lf D (FlagOfWord W u)) ∩ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame), ∃ a : Formalism.MainNotions.S.Cnt.GramM D, (∀ j : Fin (D.R.rS + 1), n (frame (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame) j) = ∑ i : Fin (D.R.rS + 1), ((-1) ^ (i.val + j.val) * a i j) • frame (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame) i) ∧ (fun τ (q : GlobalTheory.LoopV.roots (ptMat w)) => ((U * a * U⁻¹).map (embS D τ) * GlobalTheory.LoopV.ofRoots (GlobalTheory.LoopV.roots (ptMat w)) (c τ) : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ) q.1.1 q.1.2) ∈ Ω) → ∃ T : (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ) → (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ), MeasureTheory.MeasurePreserving T MeasureTheory.volume MeasureTheory.volume ∧ ∀ r ∈ Formalism.L2.SG.TermOp.Vanish.Rset s, ∃ q ∈ Formalism.L2.SG.TermOp.ROinf s, T (GlobalTheory.LoopVol.ratCoord X u' w γw sf (q * r)) ∈ Ω := by
+  atlas_forward_decl GlobalTheory.LoopVol.cover_action
+end
+
+section
 section
 noncomputable section
 
@@ -108,3 +1469,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.stabiliserCovolume_le_rootCoordinateCover : ∀ Cg cb Cu cT CT C0 A : ℝ, ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (W : WittDat X) (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl : ℝ), Formalism.MainNotions.S.Cnt.Hyp D large₂ u u' C' Cl Cg cb Cu cT CT C0 A → ∀ s : TT Y u u', s.relevant → s.G ≠ 0 → ∀ (w : Point D.host.E (D.R.rS + 1)) (μR : MeasureTheory.Measure X.B.I.Ginf) (K : Set X.B.I.Ginf), s.toTerm.atPt w → Formalism.L2.SG.VolPin.IsPinnedR s w μR → Formalism.L2.SG.LoopTerm.IsFundR s K → ∀ (L U : Formalism.MainNotions.S.Cnt.GramM D), IsLoUni L → IsUpUni U → ZhatOM (ZhatL (lf D (FlagOfWord W u)) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame)) = L * ptMat w * U → ∀ Ω : Set (D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ), MeasurableSet Ω → (∀ c : D.what₂.Tau → GlobalTheory.LoopV.roots (ptMat w) → ℂ, ∃ n ∈ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (lf D (FlagOfWord W u)) ∩ NLam (Formalism.HermitianLatticesTheory.gmap (W.δ u) s.lam) (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame), ∃ a : Formalism.MainNotions.S.Cnt.GramM D, (∀ j : Fin (D.R.rS + 1), n (frame (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame) j) = ∑ i : Fin (D.R.rS + 1), ((-1) ^ (i.val + j.val) * a i j) • frame (Formalism.L2.SG.Saturated.mapL (W.δ u) (W.isom u) s.frame) i) ∧ (fun τ (q : GlobalTheory.LoopV.roots (ptMat w)) => ((U * a * U⁻¹).map (embS D τ) * GlobalTheory.LoopV.ofRoots (GlobalTheory.LoopV.roots (ptMat w)) (c τ) : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) ℂ) q.1.1 q.1.2) ∈ Ω) → μR K ≤ MeasureTheory.volume Ω * ENNReal.ofReal (D.host.rdE ^ (2 * D.R.f * (D.R.rS + 1) ^ 3)) := by
   atlas_forward_decl GlobalTheory.LoopVol.covolume_le_cover
+end

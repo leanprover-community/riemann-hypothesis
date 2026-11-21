@@ -1,11 +1,589 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TranslationInvariantSchwartzUnique
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TranslationInvariantFunctionalRestrict
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzMapBarrelledSpace
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzCompactSupportDense
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzPairingContinuousFunctional
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RealCompactPartitionUnity
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TranslationIsometrySchwartzOperator
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzContinuousAtOfPointwiseOfBounded
+import BuildAid.ForwardExisting
 
+section
+section
+namespace GlobalTheory.CharInvAtZero
+
+theorem eq_of_eq_zero : ∀ {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y]
+    (ℓ : SchwartzMap Y ℂ →L[ℂ] ℂ),
+    (∀ L : Y →ₗ[ℝ] ℝ, ∀ f g : SchwartzMap Y ℂ, ⇑g = (fun x => GlobalTheory.ArchSch.ech (L x) * f x) → ℓ g = ℓ f) →
+    ∀ f g : SchwartzMap Y ℂ, f 0 = g 0 → ℓ f = ℓ g := by
+  intro Y _ _ _ ℓ hinv f g h0
+  refine GlobalTheory.SchwartzHadamard.eq_of_eqOn (⊥ : Submodule ℝ Y) ℓ (fun L _ => hinv L) f g ?_
+  intro p hp
+  rw [Submodule.mem_bot] at hp
+  subst hp
+  exact h0
+
+end GlobalTheory.CharInvAtZero
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_functional_depends_on_value_at_zero : ∀ {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y]
+    (ℓ : SchwartzMap Y ℂ →L[ℂ] ℂ),
+    (∀ L : Y →ₗ[ℝ] ℝ, ∀ f g : SchwartzMap Y ℂ, ⇑g = (fun x => GlobalTheory.ArchSch.ech (L x) * f x) → ℓ g = ℓ f) →
+    ∀ f g : SchwartzMap Y ℂ, f 0 = g 0 → ℓ f = ℓ g := by
+  atlas_forward_decl GlobalTheory.CharInvAtZero.eq_of_eq_zero
+end
+
+section
+open scoped FourierTransform SchwartzMap InnerProductSpace
+open MeasureTheory
+
+namespace GlobalTheory.TransInvSchwartz
+
+theorem fourier_compSubConst {n : ℕ} (h : 𝓢(EuclideanSpace ℝ (Fin n), ℂ)) (w ξ : EuclideanSpace ℝ (Fin n)) :
+    𝓕 (SchwartzMap.compSubConstCLM ℂ w h) ξ = GlobalTheory.ArchSch.ech ⟪w, ξ⟫_ℝ * 𝓕 h ξ := by
+  rw [SchwartzMap.fourier_coe, SchwartzMap.fourier_coe, Real.fourier_eq', Real.fourier_eq', ← integral_const_mul]
+  simp only [SchwartzMap.compSubConstCLM_apply, smul_eq_mul]
+  rw [← integral_add_right_eq_self (fun v => Complex.exp (↑(-2 * Real.pi * ⟪v, ξ⟫_ℝ) * Complex.I) * h (v - w)) w]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
+  simp only [add_sub_cancel_right, GlobalTheory.ArchSch.ech, inner_add_left]
+  rw [← mul_assoc, ← Complex.exp_add]
+  congr 2
+  push_cast
+  ring
+
+theorem eq_of_fourier_zero {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (μ : SchwartzMap V ℂ →L[ℂ] ℂ)
+    (hμ : ∀ (a : V) (f g : SchwartzMap V ℂ), ⇑g = (fun x => f (x + a)) → μ g = μ f)
+    (f g : SchwartzMap V ℂ)
+    (hfg : 𝓕 (SchwartzMap.compCLMOfContinuousLinearEquiv ℂ (F := ℂ) (toEuclidean (E := V)).symm f) 0 =
+      𝓕 (SchwartzMap.compCLMOfContinuousLinearEquiv ℂ (F := ℂ) (toEuclidean (E := V)).symm g) 0) :
+    μ f = μ g := by
+  set T := toEuclidean (E := V)
+  set C := SchwartzMap.compCLMOfContinuousLinearEquiv ℂ (F := ℂ) T.symm with hC
+  let Ci := SchwartzMap.compCLMOfContinuousLinearEquiv ℂ (F := ℂ) T
+  have hCi : ∀ h, Ci (C h) = h := fun h => by ext x; simp [Ci, C]
+  let Fe := SchwartzMap.fourierTransformCLE ℂ (E := 𝓢(EuclideanSpace ℝ (Fin (Module.finrank ℝ V)), ℂ))
+  have hFe : ∀ h, Fe h = 𝓕 h := fun h => rfl
+  let ℓ : 𝓢(EuclideanSpace ℝ (Fin (Module.finrank ℝ V)), ℂ) →L[ℂ] ℂ :=
+    μ.comp (Ci.comp (Fe.symm : _ →L[ℂ] _))
+  have hℓ : ∀ h, ℓ (𝓕 (C h)) = μ h := fun h => by
+    show μ (Ci (Fe.symm (Fe (C h)))) = μ h
+    rw [ContinuousLinearEquiv.symm_apply_apply, hCi]
+  have hinv : ∀ L : EuclideanSpace ℝ (Fin (Module.finrank ℝ V)) →ₗ[ℝ] ℝ, ∀ F G : 𝓢(EuclideanSpace ℝ (Fin (Module.finrank ℝ V)), ℂ),
+      ⇑G = (fun x => GlobalTheory.ArchSch.ech (L x) * F x) → ℓ G = ℓ F := by
+    intro L F G hG
+    set w := (InnerProductSpace.toDual ℝ _).symm (LinearMap.toContinuousLinearMap L)
+    have hw : ∀ x, L x = ⟪w, x⟫_ℝ := fun x => by
+      rw [InnerProductSpace.toDual_symm_apply]; rfl
+    set h := Fe.symm F
+    have hF : 𝓕 h = F := Fe.apply_symm_apply F
+    have hG' : Fe (SchwartzMap.compSubConstCLM ℂ w h) = G := by
+      ext ξ
+      rw [hFe, fourier_compSubConst, hG, ← hF]
+      simp only [hw]
+    show μ (Ci (Fe.symm G)) = μ (Ci (Fe.symm F))
+    rw [← hG', ContinuousLinearEquiv.symm_apply_apply]
+    apply hμ (-T.symm w)
+    ext x
+    simp only [Ci, SchwartzMap.compCLMOfContinuousLinearEquiv_apply, Function.comp_apply]
+    rw [SchwartzMap.compSubConstCLM_apply, map_add, map_neg, ContinuousLinearEquiv.apply_symm_apply, sub_eq_add_neg]
+  have := GlobalTheory.T.schwartz_functional_depends_on_value_at_zero ℓ hinv (𝓕 (C f)) (𝓕 (C g)) hfg
+  rwa [hℓ, hℓ] at this
+
+theorem dim_le_one : ∀ {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (μ μ' : SchwartzMap V ℂ →L[ℂ] ℂ),
+    (∀ (a : V) (f g : SchwartzMap V ℂ), ⇑g = (fun x => f (x + a)) → μ g = μ f) →
+    (∀ (a : V) (f g : SchwartzMap V ℂ), ⇑g = (fun x => f (x + a)) → μ' g = μ' f) →
+    μ ≠ 0 → ∃ c : ℂ, μ' = c • μ := by
+  intro V _ _ _ μ μ' hμ hμ' h0
+  set C := SchwartzMap.compCLMOfContinuousLinearEquiv ℂ (F := ℂ) (toEuclidean (E := V)).symm with hC
+  let Fe := SchwartzMap.fourierTransformCLE ℂ (E := 𝓢(EuclideanSpace ℝ (Fin (Module.finrank ℝ V)), ℂ))
+  let Φ : SchwartzMap V ℂ → ℂ := fun f => Fe (C f) 0
+  have hΦs : ∀ (c : ℂ) f, Φ (c • f) = c * Φ f := fun c f => by
+    show Fe (C (c • f)) 0 = c * Fe (C f) 0
+    rw [map_smul, map_smul]; rfl
+  obtain ⟨f₀, hf₀⟩ : ∃ f₀, μ f₀ ≠ 0 := by
+    by_contra hc; push_neg at hc; exact h0 (ContinuousLinearMap.ext hc)
+  have hΦ0 : Φ f₀ ≠ 0 := by
+    intro hz
+    apply hf₀
+    rw [eq_of_fourier_zero μ hμ f₀ 0 (by
+      show Φ f₀ = Fe (C 0) 0
+      rw [hz]; simp), map_zero]
+  have hrep : ∀ ν : SchwartzMap V ℂ →L[ℂ] ℂ,
+      (∀ (a : V) (f g : SchwartzMap V ℂ), ⇑g = (fun x => f (x + a)) → ν g = ν f) →
+      ∀ f, ν f = (Φ f / Φ f₀) * ν f₀ := fun ν hν f => by
+    rw [eq_of_fourier_zero ν hν f ((Φ f / Φ f₀) • f₀) (by
+      show Φ f = Φ ((Φ f / Φ f₀) • f₀)
+      rw [hΦs, div_mul_cancel₀ _ hΦ0]), map_smul, smul_eq_mul]
+  refine ⟨μ' f₀ / μ f₀, ContinuousLinearMap.ext fun f => ?_⟩
+  rw [ContinuousLinearMap.smul_apply, hrep μ' hμ' f, hrep μ hμ f, smul_eq_mul]
+  field_simp
+
+end GlobalTheory.TransInvSchwartz
+end
+
+section
+open Filter Topology
+open scoped ContDiff
+
+namespace GlobalTheory
+
+theorem schwartz_dense_hasCompactSupport :
+    ∀ {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V],
+    Dense {f : SchwartzMap V ℂ | HasCompactSupport (f : V → ℂ)} := by
+  intro V _ _ _
+  obtain ⟨χ, -, hχc, hχs, -, hχ0⟩ := exists_contDiff_tsupport_subset (n := ⊤) (Filter.univ_mem (f := 𝓝 (0 : V)))
+  set L : ℝ → V →L[ℝ] V := fun r => r • ContinuousLinearMap.id ℝ V with hL
+  have hLx : ∀ r x, L r x = r • x := fun r x => by simp [hL]
+  have hLn : ∀ r, ‖L r‖ ≤ |r| := fun r => by
+    refine (norm_smul_le _ _).trans ?_
+    rw [Real.norm_eq_abs]
+    exact mul_le_of_le_one_right (abs_nonneg r) ContinuousLinearMap.norm_id_le
+  set g : ℝ → V → ℂ := fun r => Complex.ofRealLI ∘ (χ ∘ L r) with hg
+  have hgx : ∀ r x, g r x = ((χ (r • x) : ℝ) : ℂ) := fun r x => by simp [hg, hLx]
+  have hχL : ∀ r, ContDiff ℝ ∞ (χ ∘ L r) := fun r => hχs.comp (L r).contDiff
+  have hgs : ∀ r, ContDiff ℝ ∞ (g r) := fun r => Complex.ofRealLI.contDiff.comp (hχL r)
+  have hM : ∀ i : ℕ, ∃ M, ∀ y, ‖iteratedFDeriv ℝ i χ y‖ ≤ M := fun i =>
+    (hχs.continuous_iteratedFDeriv (mod_cast le_top)).bounded_above_of_compact_support
+      (hχc.iteratedFDeriv i)
+  choose M hM using hM
+  have hgb : ∀ i : ℕ, ∀ r x, ‖iteratedFDeriv ℝ i (g r) x‖ ≤ M i * ‖L r‖ ^ i := by
+    intro i r x
+    rw [hg, Complex.ofRealLI.norm_iteratedFDeriv_comp_left (hχL r).contDiffAt (mod_cast le_top),
+      ContinuousLinearMap.iteratedFDeriv_comp_right (L r) hχs x (mod_cast le_top)]
+    refine (ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _).trans ?_
+    rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+    exact mul_le_mul_of_nonneg_right (hM i _) (by positivity)
+  have htg : ∀ r, (g r).HasTemperateGrowth := fun r =>
+    ⟨hgs r, fun n => ⟨0, M n * ‖L r‖ ^ n, fun x => by simpa using hgb n r x⟩⟩
+  intro f
+  set F : ℝ → SchwartzMap V ℂ := fun r => SchwartzMap.smulLeftCLM ℂ (g r) f with hF
+  have hFx : ∀ r, (F r : V → ℂ) = fun y => g r y * f y := fun r => by
+    ext y; simp [hF, SchwartzMap.smulLeftCLM_apply_apply (htg r)]
+  have hF0 : F 0 = f := by
+    ext y; rw [hFx]; simp [hgx, hχ0]
+  have hcont : ContinuousAt F 0 := by
+    refine schwartz_continuousAt_of_pointwise_of_bounded F 0 (fun v => ?_) (fun k n => ?_)
+    · simp only [hFx, hgx]
+      exact ((Complex.continuous_ofReal.comp (hχs.continuous.comp
+        (continuous_id.smul continuous_const))).mul continuous_const).continuousAt
+    · refine ⟨∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * |M i| * SchwartzMap.seminorm ℂ k (n - i) f, ?_⟩
+      filter_upwards [Metric.closedBall_mem_nhds (0 : ℝ) one_pos] with r hr v
+      have hr1 : |r| ≤ 1 := by simpa [Real.dist_0_eq_abs] using hr
+      rw [hFx]
+      refine (mul_le_mul_of_nonneg_left (norm_iteratedFDeriv_mul_le (N := ∞) (hgs r) (f.smooth ⊤) v
+        (mod_cast le_top)) (by positivity)).trans ?_
+      rw [Finset.mul_sum]
+      refine Finset.sum_le_sum fun i _ => ?_
+      have h1 : ‖iteratedFDeriv ℝ i (g r) v‖ ≤ |M i| := by
+        refine (hgb i r v).trans ?_
+        refine (mul_le_mul_of_nonneg_right (le_abs_self _) (by positivity)).trans ?_
+        exact mul_le_of_le_one_right (abs_nonneg _)
+          (pow_le_one₀ (norm_nonneg _) ((hLn r).trans hr1))
+      have h2 := SchwartzMap.le_seminorm ℂ k (n - i) f v
+      calc ‖v‖ ^ k * ((n.choose i : ℝ) * ‖iteratedFDeriv ℝ i (g r) v‖ * ‖iteratedFDeriv ℝ (n - i) (⇑f) v‖)
+          = (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i (g r) v‖ * (‖v‖ ^ k * ‖iteratedFDeriv ℝ (n - i) (⇑f) v‖) := by ring
+        _ ≤ (n.choose i : ℝ) * |M i| * SchwartzMap.seminorm ℂ k (n - i) f :=
+          mul_le_mul (mul_le_mul_of_nonneg_left h1 (by positivity)) h2 (by positivity) (by positivity)
+  have ht : Tendsto F (𝓝[≠] 0) (𝓝 f) := by
+    rw [← hF0]; exact hcont.tendsto.mono_left nhdsWithin_le_nhds
+  refine mem_closure_of_tendsto ht (eventually_nhdsWithin_of_forall fun r hr => ?_)
+  have hr0 : r ≠ 0 := hr
+  show HasCompactSupport (F r : V → ℂ)
+  rw [hFx]
+  have hgc : HasCompactSupport (g r) := by
+    have : g r = fun x => ((χ (r • x) : ℝ) : ℂ) := funext (hgx r)
+    rw [this]
+    exact (hχc.comp_smul hr0).comp_left Complex.ofReal_zero
+  exact hgc.mul_right
+
+end GlobalTheory
+end
+
+section
+section
+open MeasureTheory Filter Topology
+open scoped SchwartzMap
+
+namespace GlobalTheory
+
+theorem schwartz_mem_closure_hasCompactSupport :
+    ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] (f : SchwartzMap V ℂ),
+    f ∈ closure {g : SchwartzMap V ℂ | HasCompactSupport (g : V → ℂ)} := by
+  intro V _ _ _ f
+  exact schwartz_dense_hasCompactSupport f
+
+end GlobalTheory
+end
+
+open MeasureTheory Filter Topology
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_compact_support_dense : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] (f : SchwartzMap V ℂ),
+    f ∈ closure {g : SchwartzMap V ℂ | HasCompactSupport (g : V → ℂ)} := by
+  atlas_forward_decl GlobalTheory.schwartz_mem_closure_hasCompactSupport
+end
+
+section
+section
+open MeasureTheory Filter Topology
+open scoped SchwartzMap
+
+namespace GlobalTheory
+
+theorem schwartz_pairing_conj_clm_of_borelSpace (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V]
+    [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
+    (μ : MeasureTheory.Measure V) [μ.IsAddHaarMeasure] (k : SchwartzMap V ℂ) :
+    ∃ L : SchwartzMap V ℂ →L[ℂ] ℂ, ∀ u : SchwartzMap V ℂ,
+      L u = ∫ x, u x * starRingEnd ℂ (k x) ∂μ := by
+  let kc : 𝓢(V, ℂ) := SchwartzMap.postcompCLM (𝕜 := ℝ) (Complex.conjCLE : ℂ →L[ℝ] ℂ) k
+  have hkc : ∀ x, kc x = starRingEnd ℂ (k x) := fun x => rfl
+  have hg : Function.HasTemperateGrowth (fun x => starRingEnd ℂ (k x)) := by
+    have := kc.hasTemperateGrowth
+    simpa [funext hkc] using this
+  refine ⟨(SchwartzMap.integralCLM ℂ μ).comp
+    (SchwartzMap.smulLeftCLM ℂ (fun x => starRingEnd ℂ (k x))), fun u => ?_⟩
+  rw [ContinuousLinearMap.comp_apply, SchwartzMap.integralCLM_apply,
+    SchwartzMap.smulLeftCLM_apply hg]
+  congr 1
+  funext x
+  simp only [smul_eq_mul, mul_comm]
+
+end GlobalTheory
+end
+
+open MeasureTheory Filter Topology
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.schwartz_pairing_continuous_functional : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
+    (μ : MeasureTheory.Measure V) [μ.IsAddHaarMeasure] (k : SchwartzMap V ℂ),
+    ∃ L : SchwartzMap V ℂ →L[ℂ] ℂ, ∀ u : SchwartzMap V ℂ, L u = ∫ x, u x * starRingEnd ℂ (k x) ∂μ := by
+  atlas_forward_decl GlobalTheory.schwartz_pairing_conj_clm_of_borelSpace
+end
+
+section
+section
+open MeasureTheory Filter Topology
+open scoped SchwartzMap ContDiff
+
+noncomputable section
+
+namespace GlobalTheory.LatticePartition
+
+def bump (t : ℝ) : ℝ := Real.smoothTransition (t + 1) - Real.smoothTransition t
+
+theorem bump_contDiff : ContDiff ℝ ∞ bump :=
+  (Real.smoothTransition.contDiff.comp (contDiff_id.add contDiff_const)).sub
+    Real.smoothTransition.contDiff
+
+theorem bump_eq_zero {t : ℝ} (h : 1 ≤ |t|) : bump t = 0 := by
+  unfold bump
+  rcases le_abs'.1 h with h | h
+  · rw [Real.smoothTransition.zero_of_nonpos (by linarith),
+      Real.smoothTransition.zero_of_nonpos (by linarith)]
+    simp
+  · rw [Real.smoothTransition.one_of_one_le (by linarith),
+      Real.smoothTransition.one_of_one_le h]
+    simp
+
+theorem bump_local (y : ℝ) (k : ℤ) (hk : k ∉ ({⌊y⌋ - 1, ⌊y⌋, ⌊y⌋ + 1} : Finset ℤ)) :
+    bump (y - k) = 0 := by
+  apply bump_eq_zero
+  simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hk
+  have h1 := Int.floor_le y
+  have h2 := Int.lt_floor_add_one y
+  have : k ≤ ⌊y⌋ - 2 ∨ ⌊y⌋ + 2 ≤ k := by omega
+  rcases this with h | h
+  · have h' : (k : ℝ) ≤ (⌊y⌋ : ℝ) - 2 := by exact_mod_cast h
+    rw [le_abs']; right; linarith
+  · have h' : (⌊y⌋ : ℝ) + 2 ≤ (k : ℝ) := by exact_mod_cast h
+    rw [le_abs']; left; linarith
+
+theorem bump_sum (y : ℝ) : ∑ k ∈ ({⌊y⌋ - 1, ⌊y⌋, ⌊y⌋ + 1} : Finset ℤ), bump (y - k) = 1 := by
+  rw [Finset.sum_insert (by simp; omega), Finset.sum_insert (by simp), Finset.sum_singleton]
+  have h1 := Int.floor_le y
+  have h2 := Int.lt_floor_add_one y
+  have e1 : y - ((⌊y⌋ - 1 : ℤ) : ℝ) = y - (⌊y⌋ : ℝ) + 1 := by push_cast; ring
+  have e2 : y - ((⌊y⌋ + 1 : ℤ) : ℝ) + 1 = y - (⌊y⌋ : ℝ) := by push_cast; ring
+  have ha : Real.smoothTransition (y - (⌊y⌋ : ℝ) + 1 + 1) = 1 :=
+    Real.smoothTransition.one_of_one_le (by linarith)
+  have hb : Real.smoothTransition (y - ((⌊y⌋ + 1 : ℤ) : ℝ)) = 0 :=
+    Real.smoothTransition.zero_of_nonpos (by push_cast; linarith)
+  unfold bump
+  rw [e1, e2, ha, hb]
+  ring
+
+theorem summable_lattice {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (L : Submodule ℤ E) [DiscreteTopology L] :
+    Summable fun z : L => ((1 + ‖z‖) ^ (Module.finrank ℤ L + 1))⁻¹ := by
+  refine Summable.of_norm_bounded_eventually (ZLattice.summable_norm_pow_inv L _ (Nat.lt_succ_self _)) ?_
+  refine (Set.finite_singleton (0 : L)).subset fun z hz => ?_
+  by_contra h0
+  apply hz
+  have hz0 : 0 < ‖z‖ := norm_pos_iff.2 h0
+  show ‖((1 + ‖z‖) ^ (Module.finrank ℤ L + 1))⁻¹‖ ≤ ‖z‖⁻¹ ^ (Module.finrank ℤ L + 1)
+  rw [norm_inv, norm_pow, Real.norm_of_nonneg (by positivity), inv_pow]
+  exact inv_anti₀ (pow_pos hz0 _) (pow_le_pow_left₀ hz0.le (by linarith) _)
+
+section
+variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] {n : ℕ}
+
+def bumpProd (e : V ≃L[ℝ] (Fin n → ℝ)) (x : V) : ℝ := ∏ i, bump (e x i)
+
+def latPt (e : V ≃L[ℝ] (Fin n → ℝ)) (j : Fin n → ℤ) : V := e.symm (fun i => (j i : ℝ))
+
+theorem bumpProd_contDiff (e : V ≃L[ℝ] (Fin n → ℝ)) : ContDiff ℝ ∞ (bumpProd e) := by
+  unfold bumpProd
+  refine contDiff_prod fun i _ => bump_contDiff.comp ?_
+  exact (contDiff_apply ℝ ℝ i).comp e.contDiff
+
+theorem bumpProd_compact (e : V ≃L[ℝ] (Fin n → ℝ)) : HasCompactSupport (bumpProd e) := by
+  have hK : IsCompact (Set.univ.pi fun _ : Fin n => Set.Icc (-1 : ℝ) 1) :=
+    isCompact_univ_pi fun _ => isCompact_Icc
+  refine HasCompactSupport.intro (hK.image e.symm.continuous) ?_
+  intro x hx
+  have : ∃ i, 1 ≤ |e x i| := by
+    by_contra h
+    simp only [not_exists, not_le] at h
+    exact hx ⟨e x, Set.mem_univ_pi.2 fun i => ⟨(abs_lt.1 (h i)).1.le, (abs_lt.1 (h i)).2.le⟩,
+      e.symm_apply_apply x⟩
+  obtain ⟨i, hi⟩ := this
+  exact Finset.prod_eq_zero (Finset.mem_univ i) (bump_eq_zero hi)
+
+theorem bumpProd_sub (e : V ≃L[ℝ] (Fin n → ℝ)) (x : V) (j : Fin n → ℤ) :
+    bumpProd e (x - latPt e j) = ∏ i, bump (e x i - j i) := by
+  simp [bumpProd, latPt, map_sub]
+
+theorem hasSum_bumpProd (e : V ≃L[ℝ] (Fin n → ℝ)) (x : V) :
+    HasSum (fun j : Fin n → ℤ => bumpProd e (x - latPt e j)) 1 := by
+  simp only [bumpProd_sub]
+  generalize e x = y
+  have hsum : ∑ j ∈ Fintype.piFinset (fun i => ({⌊y i⌋ - 1, ⌊y i⌋, ⌊y i⌋ + 1} : Finset ℤ)),
+      ∏ i, bump (y i - j i) = 1 := by
+    rw [← Finset.prod_univ_sum (t := fun i => ({⌊y i⌋ - 1, ⌊y i⌋, ⌊y i⌋ + 1} : Finset ℤ))
+      (f := fun i k => bump (y i - k))]
+    exact Finset.prod_eq_one fun i _ => bump_sum (y i)
+  have h := hasSum_sum_of_ne_finset_zero (L := SummationFilter.unconditional _)
+    (f := fun j : Fin n → ℤ => ∏ i, bump (y i - j i))
+    (s := Fintype.piFinset (fun i => ({⌊y i⌋ - 1, ⌊y i⌋, ⌊y i⌋ + 1} : Finset ℤ))) (by
+      intro j hj
+      rw [Fintype.mem_piFinset, not_forall] at hj
+      obtain ⟨i, hi⟩ := hj
+      exact Finset.prod_eq_zero (Finset.mem_univ i) (bump_local _ _ hi))
+  rwa [hsum] at h
+
+theorem summable_latPt [FiniteDimensional ℝ V] (b : Module.Basis (Fin n) ℝ V) :
+    ∃ M : ℕ, Summable (fun j : Fin n → ℤ => ((1 + ‖latPt b.equivFunL j‖) ^ M)⁻¹) := by
+  have hmem : ∀ j, latPt b.equivFunL j ∈ Submodule.span ℤ (Set.range b) := fun j => by
+    have : latPt b.equivFunL j = ∑ i, (j i : ℝ) • b i := b.equivFun_symm_apply _
+    rw [this]
+    refine Submodule.sum_mem _ fun i _ => ?_
+    rw [Int.cast_smul_eq_zsmul]
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  have hinj : Function.Injective fun j : Fin n → ℤ =>
+      (⟨latPt b.equivFunL j, hmem j⟩ : Submodule.span ℤ (Set.range b)) := by
+    intro j k hjk
+    have h1 : latPt b.equivFunL j = latPt b.equivFunL k := congrArg Subtype.val hjk
+    have h2 : (fun i => (j i : ℝ)) = fun i => (k i : ℝ) := b.equivFunL.symm.injective h1
+    funext i
+    exact_mod_cast congrFun h2 i
+  have h := (summable_lattice (Submodule.span ℤ (Set.range b))).comp_injective hinj
+  refine ⟨Module.finrank ℤ (Submodule.span ℤ (Set.range b)) + 1, h.congr fun j => ?_⟩
+  simp only [Function.comp_apply, Submodule.coe_norm]
+
+theorem finite_of_summable {ι : Type} (a : ι → ℝ) (ha : ∀ j, 0 ≤ a j) (M : ℕ)
+    (hS : Summable (fun j => ((1 + a j) ^ M)⁻¹)) (R : ℝ) : {j | a j ≤ R}.Finite := by
+  have ht := hS.tendsto_cofinite_zero
+  have hR : (0 : ℝ) ≤ max R 0 := le_max_right _ _
+  have hε : (0 : ℝ) < ((1 + max R 0) ^ M)⁻¹ := by positivity
+  have h3 := ht (Iio_mem_nhds hε)
+  rw [Filter.mem_map, Filter.mem_cofinite] at h3
+  refine h3.subset fun j hj => ?_
+  simp only [Set.mem_setOf_eq] at hj
+  simp only [Set.mem_compl_iff, Set.mem_preimage, Set.mem_Iio, not_lt]
+  have hj' : a j ≤ max R 0 := le_trans hj (le_max_left _ _)
+  have h0 := ha j
+  exact inv_anti₀ (by positivity) (pow_le_pow_left₀ (by linarith) (by linarith) _)
+
+end
+
+theorem exists_lattice_partition :
+    ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V],
+    ∃ ψ : SchwartzMap V ℂ, HasCompactSupport (ψ : V → ℂ) ∧ (∀ x, starRingEnd ℂ (ψ x) = ψ x) ∧
+      ∃ v : (Fin (Module.finrank ℝ V) → ℤ) → V, (∀ x, HasSum (fun j => ψ (x - v j)) 1) ∧
+        (∀ R : ℝ, {j | ‖v j‖ ≤ R}.Finite) ∧ ∃ M : ℕ, Summable (fun j => ((1 + ‖v j‖) ^ M)⁻¹) := by
+  intro V _ _ _
+  obtain ⟨M, hS⟩ := summable_latPt (Module.finBasis ℝ V)
+  generalize (Module.finBasis ℝ V).equivFunL = e at hS
+  have hc : HasCompactSupport (fun x => ((bumpProd e x : ℝ) : ℂ)) :=
+    (bumpProd_compact e).comp_left (g := Complex.ofReal) Complex.ofReal_zero
+  have hd : ContDiff ℝ ∞ (fun x => ((bumpProd e x : ℝ) : ℂ)) :=
+    Complex.ofRealCLM.contDiff.comp (bumpProd_contDiff e)
+  obtain ⟨ψ, hψ⟩ : ∃ ψ : SchwartzMap V ℂ, (ψ : V → ℂ) = fun x => ((bumpProd e x : ℝ) : ℂ) :=
+    ⟨hc.toSchwartzMap hd, rfl⟩
+  refine ⟨ψ, hψ ▸ hc, ?_, latPt e, ?_, ?_, M, hS⟩
+  · intro x
+    rw [hψ]
+    exact Complex.conj_ofReal _
+  · intro x
+    rw [hψ]
+    have h := Complex.hasSum_ofReal.2 (hasSum_bumpProd e x)
+    rwa [Complex.ofReal_one] at h
+  · exact finite_of_summable (fun j => ‖latPt e j‖) (fun _ => norm_nonneg _) M hS
+
+end GlobalTheory.LatticePartition
+end
+end
+
+open MeasureTheory Filter Topology
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.real_compact_partition_unity : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V],
+    ∃ ψ : SchwartzMap V ℂ, HasCompactSupport (ψ : V → ℂ) ∧ (∀ x, starRingEnd ℂ (ψ x) = ψ x) ∧
+      ∃ v : (Fin (Module.finrank ℝ V) → ℤ) → V, (∀ x, HasSum (fun j => ψ (x - v j)) 1) ∧
+        (∀ R : ℝ, {j | ‖v j‖ ≤ R}.Finite) ∧ ∃ M : ℕ, Summable (fun j => ((1 + ‖v j‖) ^ M)⁻¹) := by
+  atlas_forward_decl GlobalTheory.LatticePartition.exists_lattice_partition
+end
+
+section
+section
+open MeasureTheory Filter Topology
+open scoped SchwartzMap
+
+namespace GlobalTheory.TransDecay
+
+theorem seminorm_mul_shift_le {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
+    (χ h : 𝓢(V, ℂ)) (hχ : HasCompactSupport (χ : V → ℂ)) (l m M : ℕ) :
+    ∃ C : ℝ, ∀ (v : V) (k' : 𝓢(V, ℂ)), (∀ x, k' x = χ x * h (x + v)) →
+      SchwartzMap.seminorm ℂ l m k' ≤ C * ((1 + ‖v‖) ^ M)⁻¹ := by
+  obtain ⟨r, hr⟩ := hχ.isCompact.isBounded.subset_closedBall (0 : V)
+  set R := max r 0
+  have hR0 : 0 ≤ R := le_max_right _ _
+  have hxR : ∀ x ∈ tsupport (χ : V → ℂ), ‖x‖ ≤ R := fun x hx => by
+    have := hr hx
+    rw [Metric.mem_closedBall, dist_zero_right] at this
+    exact this.trans (le_max_left _ _)
+  set S := ((Finset.Iic (M, m)).sup fun p : ℕ × ℕ => SchwartzMap.seminorm ℂ p.1 p.2) h
+  have hS0 : 0 ≤ S := apply_nonneg _ _
+  set A := ∑ i ∈ Finset.range (m + 1), (m.choose i : ℝ) * SchwartzMap.seminorm ℂ 0 i χ
+  have hA0 : 0 ≤ A := Finset.sum_nonneg fun i _ => by positivity
+  refine ⟨R ^ l * A * ((1 + R) ^ M * (2 ^ M * S)), fun v k' hk' => ?_⟩
+  have hvpos : 0 < (1 + ‖v‖) ^ M := by positivity
+  refine SchwartzMap.seminorm_le_bound ℂ l m k' (by positivity) fun x => ?_
+  have hfun : (k' : V → ℂ) = fun y => χ y * h (y + v) := funext hk'
+  rw [hfun]
+  have hsh : ContDiff ℝ (⊤ : ℕ∞) (fun y => h (y + v)) :=
+    (h.smooth ⊤).comp (contDiff_id.add contDiff_const)
+  have hL := norm_iteratedFDeriv_mul_le (χ.smooth ⊤) hsh x (n := m) (by exact_mod_cast le_top)
+  have hterm : ∀ i ∈ Finset.range (m + 1), ‖x‖ ^ l * ((m.choose i : ℝ) * ‖iteratedFDeriv ℝ i χ x‖ *
+      ‖iteratedFDeriv ℝ (m - i) (fun y => h (y + v)) x‖) ≤
+      R ^ l * ((m.choose i : ℝ) * SchwartzMap.seminorm ℂ 0 i χ) * ((1 + R) ^ M * (2 ^ M * S)) *
+        ((1 + ‖v‖) ^ M)⁻¹ := by
+    intro i _
+    by_cases hx : x ∈ tsupport (χ : V → ℂ)
+    · have hx1 := hxR x hx
+      rw [iteratedFDeriv_comp_add_right]
+      have hj : (1 + ‖x + v‖) ^ M * ‖iteratedFDeriv ℝ (m - i) h (x + v)‖ ≤ 2 ^ M * S :=
+        SchwartzMap.one_add_le_sup_seminorm_apply (𝕜 := ℂ) (m := (M, m)) le_rfl (Nat.sub_le _ _) h (x + v)
+      have hv : 1 + ‖v‖ ≤ (1 + R) * (1 + ‖x + v‖) := by
+        have : ‖v‖ ≤ ‖x + v‖ + ‖x‖ := by
+          calc ‖v‖ = ‖(x + v) - x‖ := by simp
+            _ ≤ _ := norm_sub_le _ _
+        nlinarith [norm_nonneg (x + v)]
+      have hD : ‖iteratedFDeriv ℝ (m - i) h (x + v)‖ ≤
+          (1 + R) ^ M * (2 ^ M * S) * ((1 + ‖v‖) ^ M)⁻¹ := by
+        rw [← div_eq_mul_inv, le_div_iff₀ hvpos]
+        calc ‖iteratedFDeriv ℝ (m - i) h (x + v)‖ * (1 + ‖v‖) ^ M
+            ≤ ‖iteratedFDeriv ℝ (m - i) h (x + v)‖ * ((1 + R) * (1 + ‖x + v‖)) ^ M := by gcongr
+          _ = (1 + R) ^ M * ((1 + ‖x + v‖) ^ M * ‖iteratedFDeriv ℝ (m - i) h (x + v)‖) := by
+            rw [mul_pow]; ring
+          _ ≤ (1 + R) ^ M * (2 ^ M * S) := by gcongr
+      have hχi : ‖iteratedFDeriv ℝ i χ x‖ ≤ SchwartzMap.seminorm ℂ 0 i χ :=
+        SchwartzMap.norm_iteratedFDeriv_le_seminorm ℂ χ i x
+      calc ‖x‖ ^ l * ((m.choose i : ℝ) * ‖iteratedFDeriv ℝ i χ x‖ *
+            ‖iteratedFDeriv ℝ (m - i) h (x + v)‖)
+          ≤ R ^ l * ((m.choose i : ℝ) * SchwartzMap.seminorm ℂ 0 i χ *
+            ((1 + R) ^ M * (2 ^ M * S) * ((1 + ‖v‖) ^ M)⁻¹)) := by gcongr
+        _ = _ := by ring
+    · have h0 : iteratedFDeriv ℝ i χ x = 0 := by
+        by_contra hne
+        exact hx (support_iteratedFDeriv_subset i (Function.mem_support.2 hne))
+      rw [h0, norm_zero, mul_zero, zero_mul, mul_zero]
+      positivity
+  calc ‖x‖ ^ l * ‖iteratedFDeriv ℝ m (fun y => χ y * h (y + v)) x‖
+      ≤ ‖x‖ ^ l * ∑ i ∈ Finset.range (m + 1), (m.choose i : ℝ) * ‖iteratedFDeriv ℝ i χ x‖ *
+          ‖iteratedFDeriv ℝ (m - i) (fun y => h (y + v)) x‖ := by gcongr
+    _ = ∑ i ∈ Finset.range (m + 1), ‖x‖ ^ l * ((m.choose i : ℝ) * ‖iteratedFDeriv ℝ i χ x‖ *
+          ‖iteratedFDeriv ℝ (m - i) (fun y => h (y + v)) x‖) := Finset.mul_sum _ _ _
+    _ ≤ ∑ i ∈ Finset.range (m + 1), R ^ l * ((m.choose i : ℝ) * SchwartzMap.seminorm ℂ 0 i χ) *
+          ((1 + R) ^ M * (2 ^ M * S)) * ((1 + ‖v‖) ^ M)⁻¹ := Finset.sum_le_sum hterm
+    _ = R ^ l * A * ((1 + R) ^ M * (2 ^ M * S)) * ((1 + ‖v‖) ^ M)⁻¹ := by
+        rw [← Finset.sum_mul, ← Finset.sum_mul, ← Finset.mul_sum]
+
+theorem decay : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
+    (μ : MeasureTheory.Measure V) [μ.IsAddHaarMeasure] (T : SchwartzMap V ℂ →L[ℂ] SchwartzMap V ℂ),
+    (∀ (a : V) (f f' g g' : SchwartzMap V ℂ), (∀ x, f' x = f (x + a)) → (∀ x, g' x = g (x + a)) →
+      ∫ x, T f' x * starRingEnd ℂ (T g' x) ∂μ = ∫ x, T f x * starRingEnd ℂ (T g x) ∂μ) →
+    ∀ (χ ψ h : SchwartzMap V ℂ), HasCompactSupport (χ : V → ℂ) → ∀ M : ℕ, ∃ C : ℝ,
+      ∀ (v : V) (k ψv : SchwartzMap V ℂ), (∀ x, k x = χ (x - v) * h x) → (∀ x, ψv x = ψ (x - v)) →
+        ‖∫ x, T k x * starRingEnd ℂ (T ψv x) ∂μ‖ ≤ C * ((1 + ‖v‖) ^ M)⁻¹ := by
+  intro V _ _ _ _ _ μ _ T hinv χ ψ h hχ M
+  have hp : Continuous ((SchwartzMap.seminorm ℂ 0 0 : Seminorm ℂ 𝓢(V, ℂ)).comp
+      (T : 𝓢(V, ℂ) →ₗ[ℂ] 𝓢(V, ℂ))) :=
+    ((schwartz_withSeminorms ℂ V ℂ).continuous_seminorm (0, 0)).comp T.continuous
+  obtain ⟨s, C0, -, hC0⟩ := Seminorm.bound_of_continuous (schwartz_withSeminorms ℂ V ℂ) _ hp
+  have hA : ∀ i : ℕ × ℕ, ∃ C : ℝ, ∀ (v : V) (k' : 𝓢(V, ℂ)), (∀ x, k' x = χ x * h (x + v)) →
+      SchwartzMap.seminorm ℂ i.1 i.2 k' ≤ C * ((1 + ‖v‖) ^ M)⁻¹ :=
+    fun i => seminorm_mul_shift_le χ h hχ i.1 i.2 M
+  choose Cf hCf using hA
+  set Cs := ∑ i ∈ s, |Cf i|
+  have hCs : 0 ≤ Cs := Finset.sum_nonneg fun i _ => abs_nonneg _
+  set I := ∫ x, ‖T ψ x‖ ∂μ
+  have hint : Integrable (fun x => ‖T ψ x‖) μ := (SchwartzMap.integrable (T ψ)).norm
+  refine ⟨(C0 : ℝ) * Cs * I, fun v k ψv hk hψv => ?_⟩
+  set k' := SchwartzMap.compSubConstCLM ℂ (-v) k
+  have hk' : ∀ x, k' x = k (x + v) := by
+    intro x; simp [k', SchwartzMap.compSubConstCLM_apply, sub_neg_eq_add]
+  have hk'' : ∀ x, k' x = χ x * h (x + v) := by intro x; rw [hk', hk]; simp
+  have hψ : ∀ x, ψ x = ψv (x + v) := by intro x; rw [hψv]; simp
+  rw [← hinv v k k' ψv ψ hk' hψ]
+  have hsup : (s.sup (schwartzSeminormFamily ℂ V ℂ)) k' ≤ Cs * ((1 + ‖v‖) ^ M)⁻¹ := by
+    refine Seminorm.finset_sup_apply_le (by positivity) fun i hi => ?_
+    calc schwartzSeminormFamily ℂ V ℂ i k' ≤ Cf i * ((1 + ‖v‖) ^ M)⁻¹ := hCf i v k' hk''
+      _ ≤ |Cf i| * ((1 + ‖v‖) ^ M)⁻¹ := by gcongr; exact le_abs_self _
+      _ ≤ Cs * ((1 + ‖v‖) ^ M)⁻¹ := by
+        gcongr
+        exact Finset.single_le_sum (f := fun i => |Cf i|) (fun i _ => abs_nonneg _) hi
+  have hTk : ∀ x, ‖T k' x‖ ≤ (C0 : ℝ) * (Cs * ((1 + ‖v‖) ^ M)⁻¹) := by
+    intro x
+    have h2 := hC0 k'
+    rw [Seminorm.smul_apply, NNReal.smul_def, smul_eq_mul] at h2
+    calc ‖T k' x‖ ≤ SchwartzMap.seminorm ℂ 0 0 (T k') := SchwartzMap.norm_le_seminorm ℂ _ x
+      _ ≤ (C0 : ℝ) * (s.sup (schwartzSeminormFamily ℂ V ℂ)) k' := h2
+      _ ≤ _ := by gcongr
+  calc ‖∫ x, T k' x * starRingEnd ℂ (T ψ x) ∂μ‖
+      ≤ ∫ x, ((C0 : ℝ) * (Cs * ((1 + ‖v‖) ^ M)⁻¹)) * ‖T ψ x‖ ∂μ := by
+        refine norm_integral_le_of_norm_le (hint.const_mul _) (Eventually.of_forall fun x => ?_)
+        rw [norm_mul, RCLike.norm_conj]
+        gcongr
+        exact hTk x
+    _ = (C0 : ℝ) * Cs * I * ((1 + ‖v‖) ^ M)⁻¹ := by rw [integral_const_mul]; ring
+
+end GlobalTheory.TransDecay
+end
+
+open MeasureTheory Filter Topology
+open scoped SchwartzMap
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.translation_isometry_schwartz_operator : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
+    (μ : MeasureTheory.Measure V) [μ.IsAddHaarMeasure] (T : SchwartzMap V ℂ →L[ℂ] SchwartzMap V ℂ),
+    (∀ (a : V) (f f' g g' : SchwartzMap V ℂ), (∀ x, f' x = f (x + a)) → (∀ x, g' x = g (x + a)) →
+      ∫ x, T f' x * starRingEnd ℂ (T g' x) ∂μ = ∫ x, T f x * starRingEnd ℂ (T g x) ∂μ) →
+    ∀ (χ ψ h : SchwartzMap V ℂ), HasCompactSupport (χ : V → ℂ) → ∀ M : ℕ, ∃ C : ℝ,
+      ∀ (v : V) (k ψv : SchwartzMap V ℂ), (∀ x, k x = χ (x - v) * h x) → (∀ x, ψv x = ψ (x - v)) →
+        ‖∫ x, T k x * starRingEnd ℂ (T ψv x) ∂μ‖ ≤ C * ((1 + ‖v‖) ^ M)⁻¹ := by
+  atlas_forward_decl GlobalTheory.TransDecay.decay
+end
+
+section
 section
 open MeasureTheory Filter Topology
 open scoped SchwartzMap
@@ -291,3 +869,4 @@ theorem _root_.GlobalTheory.T.translation_invariant_form_const_l2 : ∀ (V : Typ
       @MeasureTheory.integral V ℂ _ _ (borel V) μ (fun x => T f x * starRingEnd ℂ (T g x)) =
         c * @MeasureTheory.integral V ℂ _ _ (borel V) μ (fun x => f x * starRingEnd ℂ (g x)) := by
   atlas_forward_decl GlobalTheory.TransConstForm.eq_const_mul_l2_of_translation_invariant
+end

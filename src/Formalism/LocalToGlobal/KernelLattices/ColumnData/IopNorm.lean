@@ -1,7 +1,865 @@
 import Mathlib
-import Formalism.LocalToGlobal.KernelLattices.ColumnData.IopIso
-import Formalism.LocalToGlobal.KernelLattices.ColumnData.DetIdealsKernelNormOne
+import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThIndep
+import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThU
+import Formalism.GL3MeanSquares.HookFormulaTorsion.SquareEqDiagOfQuadraticEven
 
+section
+noncomputable section
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Classical
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+variable {D : Car} {N N' : ℕ}
+
+theorem Hf_add_left (T : Tor D) (x x' y : VC D N N') :
+    Hf D T (x + x') y = Hf D T x y + Hf D T x' y := by
+  unfold Hf
+  rw [← add_div]
+  congr 1
+  simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
+
+theorem Hf_herm (T : Tor D) (x y : VC D N N') :
+    Hf D T y x = starRingEnd ℂ (Hf D T x y) := by
+  unfold Hf
+  rw [map_div₀]
+  congr 1
+  · simp only [map_sum, map_mul, Complex.conj_conj]
+    refine Finset.sum_congr rfl fun τ _ => Finset.sum_congr rfl fun i _ =>
+      Finset.sum_congr rfl fun j _ => ?_
+    ring
+  · simp
+
+
+def cf (T : Tor D) (x y : VC D N N') : ℂ :=
+  Complex.exp (-((Real.pi : ℂ) * Complex.I * ((Hf D T x y).im : ℂ)))
+
+private theorem Hf_add_right_lemma (T : Tor D) (x y y' : VC D N N') :
+    Hf D T x (y + y') = Hf D T x y + Hf D T x y' := by
+  rw [Hf_herm T (y + y') x, Hf_add_left T y y' x, map_add, ← Hf_herm T y x, ← Hf_herm T y' x]
+
+theorem U_U (T : Tor D) (x y : VC D N N') (G : VC D N N' → ℂ) (z : VC D N N') :
+    U D T x (U D T y G) z = cf T x y * U D T (x + y) G z := by
+  have hc : starRingEnd ℂ (Hf D T x y) = Hf D T x y - 2 * ((Hf D T x y).im : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp <;> ring
+  simp only [U, cf]
+  rw [add_assoc z x y, Hf_add_left T z x y, Hf_add_right_lemma T z x y, Hf_add_left T x y (x + y),
+    Hf_add_right_lemma T x x y, Hf_add_right_lemma T y x y, Hf_herm T x y, hc]
+  rw [mul_assoc, ← Complex.exp_add, mul_left_comm, ← Complex.exp_add]
+  congr 2
+  ring
+
+theorem U_smul (T : Tor D) (x : VC D N N') (c : ℂ) (G : VC D N N' → ℂ) (z : VC D N N') :
+    U D T x (fun w => c * G w) z = c * U D T x G z := by
+  simp only [U]
+  ring
+
+theorem U_zero_fn (T : Tor D) (x : VC D N N') (z : VC D N N') :
+    U D T x (fun _ => (0 : ℂ)) z = 0 := by
+  simp [U]
+
+def SemiChar (T : Tor D) (La' : AddSubgroup (VC D N N')) : Prop :=
+  ∀ x ∈ La', ∀ y ∈ La', al D T (x + y) = al D T x * al D T y * cf T x y
+
+theorem fix_eq (T : Tor D) {La' : AddSubgroup (VC D N N')} {G : VC D N N' → ℂ}
+    (hG : G ∈ ThSp D T La') {y : VC D N N'} (hy : y ∈ La') :
+    (fun w => al D T y * U D T y G w) = G := by
+  have hG' : Differentiable ℂ G ∧ ∀ x ∈ La', ∀ z, al D T x * U D T x G z = G z := hG
+  funext w
+  exact hG'.2 y hy w
+
+theorem two_step (T : Tor D) {La' : AddSubgroup (VC D N N')} {G : VC D N N' → ℂ}
+    (hG : G ∈ ThSp D T La') {y : VC D N N'} (hy : y ∈ La') (x z : VC D N N') :
+    al D T x * U D T x G z = al D T x * al D T y * cf T x y * U D T (x + y) G z := by
+  conv_lhs => rw [← fix_eq T hG hy]
+  rw [U_smul T x (al D T y) (U D T y G) z, U_U T x y G z]
+  ring
+
+theorem semiChar_of_ne_zero (T : Tor D) {La' : AddSubgroup (VC D N N')} {G : VC D N N' → ℂ}
+    (hG : G ∈ ThSp D T La') (hne : ∃ z, G z ≠ 0) : SemiChar T La' := by
+  obtain ⟨z₀, hz₀⟩ := hne
+  unfold SemiChar
+  intro x hx y hy
+  have h1 := congrFun (fix_eq T hG (La'.add_mem hx hy)) z₀
+  have h2 := congrFun (fix_eq T hG hx) z₀
+  have h3 := two_step T hG hy x z₀
+  try dsimp only at h1
+  try dsimp only at h2
+  have hu : U D T (x + y) G z₀ ≠ 0 := by
+    intro h0
+    apply hz₀
+    rw [← h1, h0, mul_zero]
+  apply mul_right_cancel₀ hu
+  rw [h1, ← h3, h2]
+
+theorem rep_shift (T : Tor D) {La₁ La₂ : AddSubgroup (VC D N N')} (hS : SemiChar T La₂)
+    {G : VC D N N' → ℂ} (hG : G ∈ ThSp D T La₁) {x y : VC D N N'} (hx : x ∈ La₂)
+    (hy₁ : y ∈ La₁) (hy₂ : y ∈ La₂) (z : VC D N N') :
+    al D T (x + y) * U D T (x + y) G z = al D T x * U D T x G z := by
+  rw [hS x hx y hy₂]
+  exact (two_step T hG hy₁ x z).symm
+
+theorem term_indep (T : Tor D) {La₁ La₂ : AddSubgroup (VC D N N')} (hS : SemiChar T La₂)
+    {G : VC D N N' → ℂ} (hG : G ∈ ThSp D T La₁) (a b : La₂)
+    (hab : (a : La₂ ⧸ La₁.addSubgroupOf La₂) = (b : La₂ ⧸ La₁.addSubgroupOf La₂))
+    (z : VC D N N') :
+    al D T (b : VC D N N') * U D T (b : VC D N N') G z =
+      al D T (a : VC D N N') * U D T (a : VC D N N') G z := by
+  have h := (QuotientAddGroup.eq).mp hab
+  rw [AddSubgroup.mem_addSubgroupOf] at h
+  have hb : (b : VC D N N') = (a : VC D N N') + ((-a + b : La₂) : VC D N N') := by
+    push_cast
+    abel
+  rw [hb]
+  exact rep_shift T hS hG a.2 h (-a + b).2 z
+
+theorem term_out (T : Tor D) {La₁ La₂ : AddSubgroup (VC D N N')} (hS : SemiChar T La₂)
+    {G : VC D N N' → ℂ} (hG : G ∈ ThSp D T La₁) (a : La₂) (z : VC D N N') :
+    al D T ((Quotient.out (a : La₂ ⧸ La₁.addSubgroupOf La₂) : La₂) : VC D N N') *
+        U D T ((Quotient.out (a : La₂ ⧸ La₁.addSubgroupOf La₂) : La₂) : VC D N N') G z =
+      al D T (a : VC D N N') * U D T (a : VC D N N') G z := term_indep T hS hG a (Quotient.out (a : La₂ ⧸ La₁.addSubgroupOf La₂))
+    (Quotient.out_eq _).symm z
+
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Classical
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+variable {D : Car} {N N' : ℕ}
+
+theorem Hf_diff (T : Tor D) (x : VC D N N') :
+    Differentiable ℂ (fun z : VC D N N' => Hf D T z x) := by
+  unfold Hf
+  first
+  | fun_prop
+  | exact (Differentiable.sum fun τ _ => Differentiable.sum fun i _ => Differentiable.sum fun j _ =>
+      ((differentiable_apply j).comp ((differentiable_apply i).comp
+        (differentiable_apply τ))).mul_const _).div_const _
+
+theorem U_diff (T : Tor D) (x : VC D N N') {G : VC D N N' → ℂ} (hG : Differentiable ℂ G) :
+    Differentiable ℂ (U D T x G) := by
+  have hU : U D T x G = fun z => G (z + x) *
+      Complex.exp (-(Real.pi : ℂ) * Hf D T z x - (Real.pi : ℂ) * Hf D T x x / 2) := by
+    funext z
+    rfl
+  rw [hU]
+  have hH := Hf_diff T x
+  first
+  | exact (hG.comp (differentiable_id.add_const x)).mul
+      ((((differentiable_const _).mul hH).sub (differentiable_const _)).cexp)
+  | fun_prop
+
+theorem U_sum (T : Tor D) {Q : Type*} [Fintype Q] (x : VC D N N') (F : Q → VC D N N' → ℂ)
+    (z : VC D N N') : U D T x (fun w => ∑ q, F q w) z = ∑ q, U D T x (F q) z := by
+  simp only [U, Finset.sum_mul]
+
+theorem Iop_mem_ThSp (T : Tor D) {La₁ La₂ : AddSubgroup (VC D N N')} (hS : SemiChar T La₂)
+    {G : VC D N N' → ℂ} (hG : G ∈ ThSp D T La₁) : Iop D T La₁ La₂ G ∈ ThSp D T La₂ := by
+  classical
+  have hG' : Differentiable ℂ G ∧ ∀ x ∈ La₁, ∀ z, al D T x * U D T x G z = G z := hG
+  show Differentiable ℂ (Iop D T La₁ La₂ G) ∧
+    ∀ x ∈ La₂, ∀ z, al D T x * U D T x (Iop D T La₁ La₂ G) z = Iop D T La₁ La₂ G z
+  by_cases hfin : Finite (La₂ ⧸ La₁.addSubgroupOf La₂)
+  · haveI := Fintype.ofFinite (La₂ ⧸ La₁.addSubgroupOf La₂)
+    have hfun : Iop D T La₁ La₂ G = fun w =>
+        ((Real.sqrt ((La₁.addSubgroupOf La₂).index : ℝ))⁻¹ : ℂ) *
+          ∑ q : La₂ ⧸ La₁.addSubgroupOf La₂,
+            al D T ((Quotient.out q : La₂) : VC D N N') *
+              U D T ((Quotient.out q : La₂) : VC D N N') G w := by
+      funext w
+      simp only [Iop, finsum_eq_sum_of_fintype]
+    refine ⟨?_, ?_⟩
+    · rw [hfun]
+      have hd : ∀ q : La₂ ⧸ La₁.addSubgroupOf La₂, Differentiable ℂ (fun w =>
+          al D T ((Quotient.out q : La₂) : VC D N N') *
+            U D T ((Quotient.out q : La₂) : VC D N N') G w) :=
+        fun q => (U_diff T _ hG'.1).const_mul _
+      first
+      | exact (Differentiable.fun_sum fun q _ => hd q).const_mul _
+      | fun_prop
+      | exact (by simpa using (Differentiable.sum (u := Finset.univ) fun q _ => hd q)).const_mul _
+    · intro x hx z
+      have key : ∀ q : La₂ ⧸ La₁.addSubgroupOf La₂,
+          al D T x * U D T x (fun w => al D T ((Quotient.out q : La₂) : VC D N N') *
+            U D T ((Quotient.out q : La₂) : VC D N N') G w) z =
+          al D T ((Quotient.out (((⟨x, hx⟩ : La₂) : La₂ ⧸ La₁.addSubgroupOf La₂) + q) : La₂) :
+              VC D N N') *
+            U D T ((Quotient.out (((⟨x, hx⟩ : La₂) : La₂ ⧸ La₁.addSubgroupOf La₂) + q) : La₂) :
+              VC D N N') G z := by
+        intro q
+        rw [U_smul T x _ (U D T ((Quotient.out q : La₂) : VC D N N') G) z, U_U T x _ G z,
+          ← mul_assoc, ← mul_assoc, ← hS x hx _ (Quotient.out q).2]
+        have h1 : ((Quotient.out q : La₂) : La₂ ⧸ La₁.addSubgroupOf La₂) = q := Quotient.out_eq q
+        have h2 : ((Quotient.out (((⟨x, hx⟩ : La₂) : La₂ ⧸ La₁.addSubgroupOf La₂) + q) : La₂) :
+            La₂ ⧸ La₁.addSubgroupOf La₂) = ((⟨x, hx⟩ : La₂) : La₂ ⧸ La₁.addSubgroupOf La₂) + q :=
+          Quotient.out_eq _
+        have hab : (((⟨x, hx⟩ : La₂) + Quotient.out q : La₂) : La₂ ⧸ La₁.addSubgroupOf La₂) =
+            ((Quotient.out (((⟨x, hx⟩ : La₂) : La₂ ⧸ La₁.addSubgroupOf La₂) + q) : La₂) :
+              La₂ ⧸ La₁.addSubgroupOf La₂) := by
+          rw [h2, QuotientAddGroup.mk_add, h1]
+        exact (term_indep T hS hG _ _ hab z).symm
+      simp only [hfun]
+      rw [U_smul T x _ _ z, U_sum T x _ z, mul_left_comm (al D T x)]
+      congr 1
+      rw [Finset.mul_sum, Finset.sum_congr rfl fun q _ => key q]
+      exact Fintype.sum_equiv
+        (Equiv.addLeft (((⟨x, hx⟩ : La₂) : La₂ ⧸ La₁.addSubgroupOf La₂))) _ _
+        (fun q => by first | rfl | simp only [Equiv.coe_addLeft])
+  · haveI : Infinite (La₂ ⧸ La₁.addSubgroupOf La₂) := not_finite_iff_infinite.mp hfin
+    have hidx : (La₁.addSubgroupOf La₂).index = 0 := by
+      first
+      | exact AddSubgroup.index_eq_zero_of_infinite
+      | exact AddSubgroup.index_eq_zero_iff_infinite.mpr inferInstance
+    have h0 : Iop D T La₁ La₂ G = fun _ => 0 := by
+      funext z
+      simp [Iop, hidx]
+    rw [h0]
+    refine ⟨differentiable_const _, fun x _ z => ?_⟩
+    simp [U]
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Classical
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+variable {D : Car} {N N' : ℕ}
+
+theorem Iop_of_le (T : Tor D) {La₁ La₂ : AddSubgroup (VC D N N')} (hle : La₂ ≤ La₁)
+    {G : VC D N N' → ℂ} (hG : G ∈ ThSp D T La₁) : Iop D T La₁ La₂ G = G := by
+  classical
+  have hG' : Differentiable ℂ G ∧ ∀ x ∈ La₁, ∀ z, al D T x * U D T x G z = G z := hG
+  funext z
+  have htop : La₁.addSubgroupOf La₂ = ⊤ := AddSubgroup.addSubgroupOf_eq_top.mpr hle
+  have hidx : (La₁.addSubgroupOf La₂).index = 1 := by
+    rw [htop, AddSubgroup.index_top]
+  haveI hsub : Subsingleton (La₂ ⧸ La₁.addSubgroupOf La₂) := by
+    constructor
+    intro a b
+    obtain ⟨a, rfl⟩ := QuotientAddGroup.mk_surjective a
+    obtain ⟨b, rfl⟩ := QuotientAddGroup.mk_surjective b
+    rw [QuotientAddGroup.eq, htop]
+    exact AddSubgroup.mem_top _
+  haveI : Unique (La₂ ⧸ La₁.addSubgroupOf La₂) := uniqueOfSubsingleton 0
+  have hterm : ∀ q : La₂ ⧸ La₁.addSubgroupOf La₂,
+      al D T ((Quotient.out q : La₂) : VC D N N') * U D T ((Quotient.out q : La₂) : VC D N N') G z =
+        G z :=
+    fun q => hG'.2 _ (hle (Quotient.out q).2) z
+  simp only [Iop, hterm, finsum_unique]
+  simp [hidx]
+
+theorem IopIso_diag (D : Car) (T : Tor D) {N N' : ℕ} (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
+    (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) (G : VC D N N' → ℂ)
+    (hG : G ∈ Th D T L L') :
+    normSq D T (La D T L L') (Iop D T (La D T L L') (La D T L L') G) =
+      normSq D T (La D T L L') G := by
+  rw [Iop_of_le T le_rfl hG]
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Classical
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+variable {D : Car} {N N' : ℕ}
+
+def HfInt (T : Tor D) (La' : AddSubgroup (VC D N N')) : Prop :=
+  ∀ x ∈ La', ∀ y ∈ La', ∃ a b : ℤ, Even (a - b) ∧
+    Hf D T x y = (((a : ℝ) / Real.sqrt D.host.d : ℝ) : ℂ) + (b : ℂ) * Complex.I
+
+theorem sqrt_d_pos (D : Car) : 0 < Real.sqrt D.host.d := by
+  first
+  | exact Real.sqrt_pos.mpr (Nat.cast_pos.mpr (Nat.zero_lt_of_lt D.host.qd_big.2))
+  | (apply Real.sqrt_pos.mpr; have h := D.host.qd_big.2; exact_mod_cast (by omega : 0 < D.host.d))
+
+theorem Hf_add_right (T : Tor D) (x y y' : VC D N N') :
+    Hf D T x (y + y') = Hf D T x y + Hf D T x y' := by
+  rw [Hf_herm T (y + y') x, Hf_add_left T y y' x, map_add, ← Hf_herm T y x, ← Hf_herm T y' x]
+
+theorem Hf_self_im (T : Tor D) (x : VC D N N') : (Hf D T x x).im = 0 := by
+  have h := congrArg Complex.im (Hf_herm T x x)
+  simp only [Complex.conj_im] at h
+  linarith
+
+theorem Hf_re_swap (T : Tor D) (x y : VC D N N') : (Hf D T y x).re = (Hf D T x y).re := by
+  simpa using congrArg Complex.re (Hf_herm T x y)
+
+theorem self_int (T : Tor D) {La' : AddSubgroup (VC D N N')} (hI : HfInt T La')
+    {x : VC D N N'} (hx : x ∈ La') :
+    ∃ m : ℤ, (Hf D T x x).re = 2 * m / Real.sqrt D.host.d ∧
+      round (Real.sqrt D.host.d / 2 * (Hf D T x x).re) = m := by
+  obtain ⟨a, b, hab, hH⟩ := hI x hx x hx
+  have hb0 : b = 0 := by
+    have h := congrArg Complex.im hH
+    rw [Hf_self_im] at h
+    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im,
+      Complex.intCast_re, Complex.intCast_im] at h
+    have h' : (b : ℝ) = 0 := by linarith
+    exact_mod_cast h'
+  obtain ⟨m, hm⟩ := hab
+  have ha : a = 2 * m := by omega
+  have haR : (a : ℝ) = 2 * (m : ℝ) := by exact_mod_cast ha
+  have hre : (Hf D T x x).re = (a : ℝ) / Real.sqrt D.host.d := by
+    rw [hH]
+    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.I_im,
+      Complex.intCast_re, Complex.intCast_im]
+    ring
+  have hs : Real.sqrt D.host.d ≠ 0 := (sqrt_d_pos D).ne'
+  refine ⟨m, ?_, ?_⟩
+  · rw [hre, haR]
+  · rw [hre, haR]
+    have hm' : Real.sqrt D.host.d / 2 * (2 * (m : ℝ) / Real.sqrt D.host.d) =
+        (m : ℝ) * (Real.sqrt D.host.d / Real.sqrt D.host.d) * (2 / 2) := by
+      ring
+    rw [hm', div_self hs, div_self (two_ne_zero : (2 : ℝ) ≠ 0), mul_one, mul_one, round_intCast]
+
+theorem neg_one_zpow_congr {n m : ℤ} (h : Even (n - m)) : (-1 : ℂ) ^ n = (-1 : ℂ) ^ m := by
+  have h0 : (-1 : ℂ) ≠ 0 := by norm_num
+  calc (-1 : ℂ) ^ n = (-1 : ℂ) ^ ((n - m) + m) := by rw [sub_add_cancel]
+    _ = (-1 : ℂ) ^ (n - m) * (-1 : ℂ) ^ m := zpow_add₀ h0 _ _
+    _ = (-1 : ℂ) ^ m := by rw [Even.neg_one_zpow h, one_mul]
+
+theorem cf_int (T : Tor D) (x y : VC D N N') (b : ℤ) (hb : (Hf D T x y).im = b) :
+    cf T x y = (-1 : ℂ) ^ (-b) := by
+  unfold cf
+  rw [hb, ← Complex.exp_pi_mul_I, ← Complex.exp_int_mul]
+  congr 1
+  push_cast
+  ring
+
+theorem semiChar_of_HfInt (T : Tor D) {La' : AddSubgroup (VC D N N')} (hI : HfInt T La') :
+    SemiChar T La' := by
+  unfold SemiChar
+  intro x hx y hy
+  obtain ⟨mx, hmx, hrx⟩ := self_int T hI hx
+  obtain ⟨my, hmy, hry⟩ := self_int T hI hy
+  obtain ⟨a, b, hab, hxy⟩ := hI x hx y hy
+  have hs : Real.sqrt D.host.d ≠ 0 := (sqrt_d_pos D).ne'
+  have hre : (Hf D T x y).re = (a : ℝ) / Real.sqrt D.host.d := by
+    rw [hxy]
+    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.I_im,
+      Complex.intCast_re, Complex.intCast_im]
+    ring
+  have him : (Hf D T x y).im = b := by
+    rw [hxy]
+    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im,
+      Complex.intCast_re, Complex.intCast_im]
+    ring
+  have hsum : (Hf D T (x + y) (x + y)).re =
+      (Hf D T x x).re + (Hf D T y y).re + 2 * (Hf D T x y).re := by
+    rw [Hf_add_left T x y (x + y), Hf_add_right T x x y, Hf_add_right T y x y, Complex.add_re,
+      Complex.add_re, Complex.add_re, Hf_re_swap T x y]
+    ring
+  have hr : round (Real.sqrt D.host.d / 2 * (Hf D T (x + y) (x + y)).re) = mx + my + a := by
+    rw [hsum, hmx, hmy, hre]
+    have h4 : Real.sqrt D.host.d / 2 * (2 * (mx : ℝ) / Real.sqrt D.host.d +
+        2 * (my : ℝ) / Real.sqrt D.host.d + 2 * ((a : ℝ) / Real.sqrt D.host.d)) =
+        ((mx : ℝ) + my + a) * (Real.sqrt D.host.d / Real.sqrt D.host.d) * (2 / 2) := by
+      ring
+    rw [h4, div_self hs, div_self (two_ne_zero : (2 : ℝ) ≠ 0), mul_one, mul_one]
+    exact_mod_cast round_intCast (mx + my + a)
+  unfold al
+  rw [hr, hrx, hry, cf_int T x y b him,
+    ← zpow_add₀ (by norm_num : (-1 : ℂ) ≠ 0), ← zpow_add₀ (by norm_num : (-1 : ℂ) ≠ 0)]
+  apply neg_one_zpow_congr
+  obtain ⟨k, hk⟩ := hab
+  exact ⟨k + b, by omega⟩
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Classical
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+theorem finite_quot_of_smul {V : Type*} [AddCommGroup V] (La₁ La₂ R : AddSubgroup V)
+    [Module.Finite ℤ R] (hle : La₂ ≤ R) (k : ℤ) (hk : k ≠ 0) (hkR : ∀ z ∈ R, k • z ∈ La₁) :
+    Finite (La₂ ⧸ La₁.addSubgroupOf La₂) := by
+  classical
+  haveI : IsNoetherian ℤ R := by
+    first
+    | exact isNoetherian_of_isNoetherianRing_of_finite ℤ R
+    | infer_instance
+  have hinj : Function.Injective (AddSubgroup.inclusion hle).toIntLinearMap := by
+    intro a b h
+    exact AddSubgroup.inclusion_injective hle h
+  haveI : Module.Finite ℤ La₂ := Module.Finite.of_injective _ hinj
+  haveI : Module.Finite ℤ (La₂ ⧸ La₁.addSubgroupOf La₂) :=
+    Module.Finite.of_surjective (QuotientAddGroup.mk' (La₁.addSubgroupOf La₂)).toIntLinearMap
+      (QuotientAddGroup.mk'_surjective _)
+  apply Module.finite_of_fg_torsion
+  intro q
+  refine ⟨⟨k, mem_nonZeroDivisors_of_ne_zero hk⟩, ?_⟩
+  obtain ⟨z, rfl⟩ := QuotientAddGroup.mk_surjective q
+  show k • (QuotientAddGroup.mk z : La₂ ⧸ La₁.addSubgroupOf La₂) = 0
+  rw [show k • (QuotientAddGroup.mk z : La₂ ⧸ La₁.addSubgroupOf La₂) =
+      QuotientAddGroup.mk (k • z) from
+      (map_zsmul (QuotientAddGroup.mk' (La₁.addSubgroupOf La₂)) k z).symm]
+  rw [QuotientAddGroup.eq_zero_iff, AddSubgroup.mem_addSubgroupOf]
+  simpa using hkR z (hle z.2)
+
+variable {D : Car}
+
+theorem Phi_smul_eq {N N' : ℕ} (δ : ℂ) (M : ℤ) (hM : M ≠ 0) (n : ℕ)
+    (A : Fin N' → Fin N → 𝓞 D.host.E) :
+    ((n : ℤ) * M) • FL.Phi D (N := N) (N' := N') (δ / M) A =
+      ∑ i0 : Fin N', ∑ j0 : Fin N,
+        FL.ins D i0 j0 (fun τ => δ * n * embT D τ ((A i0 j0 : 𝓞 D.host.E) : D.host.E)) := by
+  funext τ i j
+  have hM' : (M : ℂ) ≠ 0 := by exact_mod_cast hM
+  simp only [Finset.sum_apply]
+  have h1 : ∀ i0 : Fin N', i0 ≠ i → (∑ j0 : Fin N, FL.ins D i0 j0
+      (fun τ => δ * n * embT D τ ((A i0 j0 : 𝓞 D.host.E) : D.host.E)) τ i j) = 0 := by
+    intro i0 hi0
+    apply Finset.sum_eq_zero
+    intro j0 _
+    simp [FL.ins, Ne.symm hi0]
+  have h2 : ∀ j0 : Fin N, j0 ≠ j → FL.ins D i j0
+      (fun τ => δ * n * embT D τ ((A i j0 : 𝓞 D.host.E) : D.host.E)) τ i j = 0 := by
+    intro j0 hj0
+    simp [FL.ins, Ne.symm hj0]
+  have h3 : FL.ins D i j (fun τ => δ * n * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E)) τ i j =
+      δ * n * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E) := if_pos ⟨rfl, rfl⟩
+  rw [Fintype.sum_eq_single i h1, Fintype.sum_eq_single j h2, h3]
+  show ((n : ℤ) * M) • (δ / M * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E)) = _
+  rw [zsmul_eq_mul]
+  push_cast
+  first
+  | (rw [show ((n : ℂ) * (M : ℂ)) * (δ / (M : ℂ) * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E)) =
+        δ * n * embT D τ ((A i j : 𝓞 D.host.E) : D.host.E) * ((M : ℂ) / (M : ℂ)) by ring,
+      div_self hM', mul_one])
+  | (field_simp; ring)
+  | field_simp
+
+theorem La_index_finite (cc : Ideal (𝓞 D.host.K)) (hcc : IsCurveIdeal D cc) (δ : ℂ) {N N' : ℕ}
+    (L₁ L₂ : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
+    (L₁' L₂' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E))
+    (h₁ : admitted D N N' L₁ L₁') (h₂ : admitted D N N' L₂ L₂') :
+    Finite (La D (tor0 D cc δ) L₂ L₂' ⧸
+      (La D (tor0 D cc δ) L₁ L₁').addSubgroupOf (La D (tor0 D cc δ) L₂ L₂')) := by
+  obtain ⟨M, hM, hup⟩ := FL.La_upper D L₂ L₂' h₂ cc δ
+  obtain ⟨n, hn, hlow⟩ := FL.La_lower D L₁ L₁' h₁ cc hcc δ
+  haveI : Module.Finite ℤ (FL.Phi D (N := N) (N' := N') (δ / M)).range :=
+    Module.Finite.of_surjective (FL.Phi D (N := N) (N' := N') (δ / M)).rangeRestrict.toIntLinearMap
+      (AddMonoidHom.rangeRestrict_surjective _)
+  refine finite_quot_of_smul _ _ _ hup ((n : ℤ) * M)
+    (mul_ne_zero (by exact_mod_cast hn) hM) ?_
+  rintro z ⟨A, rfl⟩
+  rw [Phi_smul_eq δ M hM n A]
+  exact AddSubgroup.sum_mem _ fun i0 _ => AddSubgroup.sum_mem _ fun j0 _ => hlow i0 j0 (A i0 j0)
+
+theorem La_index_ne_zero (cc : Ideal (𝓞 D.host.K)) (hcc : IsCurveIdeal D cc) (δ : ℂ) {N N' : ℕ}
+    (L₁ L₂ : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
+    (L₁' L₂' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E))
+    (h₁ : admitted D N N' L₁ L₁') (h₂ : admitted D N N' L₂ L₂') :
+    ((La D (tor0 D cc δ) L₁ L₁').addSubgroupOf (La D (tor0 D cc δ) L₂ L₂')).index ≠ 0 := by
+  haveI := La_index_finite cc hcc δ L₁ L₂ L₁' L₂' h₁ h₂
+  exact AddSubgroup.index_ne_zero_of_finite
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity.IO
+
+end
+end
+
+section
+noncomputable section
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.DN
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Matrix
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+variable (D : Car)
+
+def vol {N : ℕ} (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) : IdE D :=
+  Submodule.span (𝓞 D.host.E)
+    {x | ∃ U : Matrix (Fin N) (Fin N) D.host.E, (∀ j, (fun i => U i j) ∈ L) ∧ x = U.det}
+
+theorem mulVec_col {N : ℕ} (A U : Matrix (Fin N) (Fin N) D.host.E) (j : Fin N) :
+    A *ᵥ (fun i => U i j) = fun i => (A * U) i j := by
+  funext i; simp [Matrix.mulVec, dotProduct, Matrix.mul_apply]
+
+theorem detId_mul_vol_le {N : ℕ} (L L' : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) :
+    detId D L L' * vol D L ≤ vol D L' := by
+  unfold detId vol
+  rw [Submodule.span_mul_span, Submodule.span_le]
+  rintro _ ⟨_, ⟨A, hA, rfl⟩, _, ⟨U, hU, rfl⟩, rfl⟩
+  refine Submodule.subset_span ⟨A * U, fun j => ?_, (det_mul A U).symm⟩
+  rw [← mulVec_col]; exact hA _ (hU j)
+
+theorem cS_span_le (S : Set D.host.E) :
+    CU.cS D (Submodule.span (𝓞 D.host.E) S) ≤ Submodule.span (𝓞 D.host.E) (D.host.conj '' S) := by
+  intro x hx
+  rw [CU.mem_cS] at hx
+  have key : ∀ y ∈ Submodule.span (𝓞 D.host.E) S,
+      D.host.conj y ∈ Submodule.span (𝓞 D.host.E) (D.host.conj '' S) := by
+    intro y hy
+    induction hy using Submodule.span_induction with
+    | mem z hz => exact Submodule.subset_span ⟨z, hz, rfl⟩
+    | zero => simp
+    | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
+    | smul r a _ ha => rw [CU.conj_smul]; exact Submodule.smul_mem _ _ ha
+  have := key _ hx
+  rwa [CU.conj_conj] at this
+
+theorem cS_cS (𝔞 : IdE D) : CU.cS D (CU.cS D 𝔞) = 𝔞 := by
+  ext x; rw [CU.mem_cS, CU.mem_cS, CU.conj_conj]
+
+theorem vol_mul_cS_le {N : ℕ} (L L' : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
+    (hL : letI := D.host.cmStar; ∀ x ∈ L, ∀ w ∈ L,
+      stdH D.host.E N w x ∈ (algebraMap (𝓞 D.host.E) D.host.E).range) :
+    vol D L' * CU.cS D (vol D L) ≤ detId D L L' := by
+  let _ := D.host.cmStar
+  refine (mul_le_mul' (le_refl _) (cS_span_le D _)).trans ?_
+  unfold vol detId
+  rw [Submodule.span_mul_span, Submodule.span_le]
+  rintro _ ⟨_, ⟨V, hV, rfl⟩, _, ⟨_, ⟨W, hW, rfl⟩, rfl⟩, rfl⟩
+  refine Submodule.subset_span ⟨V * Wᴴ, fun x hx => ?_, ?_⟩
+  · have hc : ∀ i, ∃ r : 𝓞 D.host.E, algebraMap _ _ r = (Wᴴ *ᵥ x) i := by
+      intro i
+      obtain ⟨r, hr⟩ := hL x hx _ (hW i)
+      refine ⟨r, hr.trans ?_⟩
+      simp [stdH, Matrix.mulVec, dotProduct, conjTranspose_apply]
+    choose r hr using hc
+    have e : (V * Wᴴ) *ᵥ x = ∑ i, r i • (fun k => V k i) := by
+      rw [← mulVec_mulVec]
+      funext k
+      simp only [Matrix.mulVec, dotProduct, Finset.sum_apply, Pi.smul_apply, Algebra.smul_def]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [hr i, mul_comm]
+      rfl
+    rw [e]
+    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hV i)
+  · rw [det_mul, det_conjTranspose, CU.star_conj]
+
+theorem vol_mul_cS_le_one {N : ℕ} (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
+    (hL : letI := D.host.cmStar; ∀ x ∈ L, ∀ w ∈ L,
+      stdH D.host.E N w x ∈ (algebraMap (𝓞 D.host.E) D.host.E).range) :
+    vol D L * CU.cS D (vol D L) ≤ 1 := by
+  let _ := D.host.cmStar
+  refine (mul_le_mul' (le_refl _) (cS_span_le D _)).trans ?_
+  unfold vol
+  rw [Submodule.span_mul_span, Submodule.span_le]
+  rintro _ ⟨_, ⟨V, hV, rfl⟩, _, ⟨_, ⟨W, hW, rfl⟩, rfl⟩, rfl⟩
+  have hc : ∀ i j, ∃ r : 𝓞 D.host.E, algebraMap _ _ r = (Wᴴ * V) i j := by
+    intro i j
+    obtain ⟨r, hr⟩ := hL _ (hV j) _ (hW i)
+    refine ⟨r, hr.trans ?_⟩
+    simp [stdH, Matrix.mul_apply, conjTranspose_apply]
+  choose r hr using hc
+  have e : Wᴴ * V = (Matrix.of r).map (algebraMap (𝓞 D.host.E) D.host.E) := by
+    ext i j; simp [hr]
+  show _ ∈ (1 : IdE D)
+  rw [Submodule.mem_one, ← CU.star_conj, ← det_conjTranspose]
+  refine ⟨(Matrix.of r).det, ?_⟩
+  have h2 : algebraMap (𝓞 D.host.E) D.host.E (Matrix.of r).det = (Wᴴ * V).det := by
+    rw [e, RingHom.map_det]; rfl
+  rw [h2, det_mul]
+  exact mul_comm _ _
+
+theorem sd_int {N : ℕ} {L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
+    (hL : letI := D.host.cmStar; IsSDLat D.host.E N L) :
+    letI := D.host.cmStar; ∀ x ∈ L, ∀ w ∈ L,
+      stdH D.host.E N w x ∈ (algebraMap (𝓞 D.host.E) D.host.E).range :=
+  fun x hx w hw => (hL.2.2 x).1 hx w hw
+
+def UnitDisc (D : Car) : Prop :=
+  let _ := D.host.cmStar
+  ∀ N (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)), IsSDLat D.host.E N L →
+    1 ≤ vol D L * CU.cS D (vol D L)
+
+theorem determinant_norm_one_of_unit_disc (hU : UnitDisc D) : DetIdealsKernelNormOne D := by
+  let _ := D.host.cmStar
+  intro N L L' _ hL hL'
+  have e1 : vol D L * CU.cS D (vol D L) = 1 :=
+    le_antisymm (vol_mul_cS_le_one D L (sd_int D hL)) (hU N L hL)
+  have e2 : vol D L' * CU.cS D (vol D L') = 1 :=
+    le_antisymm (vol_mul_cS_le_one D L' (sd_int D hL')) (hU N L' hL')
+  have hA : detId D L L' = vol D L' * CU.cS D (vol D L) := by
+    refine le_antisymm ?_ (vol_mul_cS_le D L L' (sd_int D hL))
+    calc detId D L L' = detId D L L' * (vol D L * CU.cS D (vol D L)) := by rw [e1, mul_one]
+      _ = detId D L L' * vol D L * CU.cS D (vol D L) := by rw [mul_assoc]
+      _ ≤ vol D L' * CU.cS D (vol D L) :=
+          mul_le_mul' (detId_mul_vol_le D L L') (le_refl _)
+  rw [CU.normOne_ideal_iff_mul_conj, hA, CU.cS_mul, cS_cS]
+  calc vol D L' * CU.cS D (vol D L) * (CU.cS D (vol D L') * vol D L)
+      = (vol D L' * CU.cS D (vol D L')) * (vol D L * CU.cS D (vol D L)) := by ring
+    _ = 1 := by rw [e1, e2, mul_one]
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity.DN
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.DN
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Matrix
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+variable (D : Car)
+
+theorem adj_step {N : ℕ} (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
+    (hL : letI := D.host.cmStar; IsSDLat D.host.E N L)
+    (U : Matrix (Fin N) (Fin N) D.host.E) (hU : ∀ j, (fun i => U i j) ∈ L) (t : Fin N → D.host.E)
+    (ht : ∀ i, ∀ b ∈ CU.cS D (vol D L), t i * b ∈ (1 : IdE D)) :
+    D.host.conj U.det ^ (N - 1) * ∏ i, t i ∈ vol D L := by
+  let _ := D.host.cmStar
+  refine Submodule.subset_span ⟨(adjugate U)ᴴ * diagonal t, fun i => ?_, ?_⟩
+  · refine (hL.2.2 _).2 fun x hx => ?_
+    have hdet : (U.updateCol i x).det ∈ vol D L := by
+      refine Submodule.subset_span ⟨U.updateCol i x, fun j => ?_, rfl⟩
+      by_cases hj : j = i
+      · subst hj; convert hx using 1; funext k; simp
+      · convert hU j using 1; funext k; simp [hj]
+    have hb : star (U.updateCol i x).det ∈ CU.cS D (vol D L) := by
+      rw [CU.mem_cS, ← CU.star_conj, star_star]; exact hdet
+    obtain ⟨r, hr⟩ := Submodule.mem_one.mp (ht i _ hb)
+    refine ⟨r, hr.trans ?_⟩
+    rw [← cramer_apply, cramer_eq_adjugate_mulVec]
+    simp only [stdH, Matrix.mulVec, dotProduct, star_sum, star_mul, mul_diagonal,
+      conjTranspose_apply, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    ring
+  · rw [det_mul, det_diagonal, det_conjTranspose, det_adjugate, Fintype.card_fin, star_pow,
+      CU.star_conj]
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity.DN
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.DN
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Matrix nonZeroDivisors
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+open FractionalIdeal in
+
+theorem spanPow {R K : Type*} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K]
+    [IsFractionRing R K] (I : FractionalIdeal R⁰ K) (hI : I ≠ 0) (S : Set K)
+    (hIS : (I : Submodule R K) = Submodule.span R S) (k : ℕ) :
+    (I : Submodule R K) ^ k ≤ Submodule.span R ((fun s => s ^ k) '' S) := by
+  classical
+  set Q := Submodule.span R ((fun s => s ^ k) '' S)
+  have hQle : Q ≤ ((I ^ k : FractionalIdeal R⁰ K) : Submodule R K) := by
+    rw [coe_pow, Submodule.span_le]
+    rintro _ ⟨s, hs, rfl⟩
+    exact Submodule.pow_mem_pow _ (hIS ▸ Submodule.subset_span hs) k
+  let Qf : FractionalIdeal R⁰ K := ⟨Q, isFractional_of_le hQle⟩
+  have hQf : Qf ≤ I ^ k := hQle
+  have hIk : I ^ k ≠ 0 := pow_ne_zero _ hI
+  suffices h : I ^ k ≤ Qf by
+    rw [← coe_pow]; exact h
+  by_contra hne
+  have hb : Qf * (I ^ k)⁻¹ ≤ 1 := by
+    calc Qf * (I ^ k)⁻¹ ≤ I ^ k * (I ^ k)⁻¹ := mul_le_mul' hQf le_rfl
+      _ = 1 := mul_inv_cancel₀ hIk
+  obtain ⟨B, hB⟩ := le_one_iff_exists_coeIdeal.mp hb
+  have hBtop : B ≠ ⊤ := by
+    rintro rfl
+    apply hne
+    have h1 : Qf * (I ^ k)⁻¹ = 1 := by rw [← hB, coeIdeal_top]
+    calc I ^ k = Qf * (I ^ k)⁻¹ * I ^ k := by rw [h1, one_mul]
+      _ = Qf := by rw [mul_assoc, inv_mul_cancel₀ hIk, mul_one]
+      _ ≤ Qf := le_rfl
+  obtain ⟨P, hPmax, hBP⟩ := Ideal.exists_le_maximal B hBtop
+  have := hPmax.isPrime
+  have hstep : ∀ s ∈ S, s ∈ ((P : FractionalIdeal R⁰ K) * I) := by
+    intro s hs
+    have hsI : spanSingleton R⁰ s ≤ I := by
+      rw [spanSingleton_le_iff_mem, ← mem_coe, hIS]; exact Submodule.subset_span hs
+    have hc : spanSingleton R⁰ s * I⁻¹ ≤ 1 := by
+      calc spanSingleton R⁰ s * I⁻¹ ≤ I * I⁻¹ := mul_le_mul' hsI le_rfl
+        _ = 1 := mul_inv_cancel₀ hI
+    obtain ⟨C, hC⟩ := le_one_iff_exists_coeIdeal.mp hc
+    have hCk : C ^ k ≤ P := by
+      rw [← coeIdeal_le_coeIdeal K, coeIdeal_pow, hC, mul_pow, spanSingleton_pow, inv_pow]
+      calc spanSingleton R⁰ (s ^ k) * (I ^ k)⁻¹ ≤ Qf * (I ^ k)⁻¹ := by
+            refine mul_le_mul' ?_ le_rfl
+            rw [spanSingleton_le_iff_mem]
+            exact Submodule.subset_span ⟨s, hs, rfl⟩
+        _ = B := hB.symm
+        _ ≤ P := (coeIdeal_le_coeIdeal K).mpr hBP
+    have hCP : C ≤ P := Ideal.IsPrime.le_of_pow_le hCk
+    have h2 : spanSingleton R⁰ s * I⁻¹ ≤ P := hC ▸ (coeIdeal_le_coeIdeal K).mpr hCP
+    have h3 : spanSingleton R⁰ s ≤ (P : FractionalIdeal R⁰ K) * I := by
+      calc spanSingleton R⁰ s = spanSingleton R⁰ s * I⁻¹ * I := by
+            rw [mul_assoc, inv_mul_cancel₀ hI, mul_one]
+        _ ≤ P * I := mul_le_mul' h2 le_rfl
+    exact spanSingleton_le_iff_mem.mp h3
+  have hIP : I ≤ (P : FractionalIdeal R⁰ K) * I := by
+    rw [← coe_le_coe, hIS, Submodule.span_le]
+    intro s hs
+    exact mem_coe.mpr (hstep s hs)
+  have h1P : (1 : FractionalIdeal R⁰ K) ≤ P := by
+    calc (1 : FractionalIdeal R⁰ K) = I * I⁻¹ := (mul_inv_cancel₀ hI).symm
+      _ ≤ P * I * I⁻¹ := mul_le_mul' hIP le_rfl
+      _ = P := by rw [mul_assoc, mul_inv_cancel₀ hI, mul_one]
+  rw [← coeIdeal_top, coeIdeal_le_coeIdeal] at h1P
+  exact hPmax.ne_top (top_le_iff.mp h1P)
+
+variable (D : Car)
+
+theorem cS_span (S : Set D.host.E) :
+    CU.cS D (Submodule.span (𝓞 D.host.E) S) = Submodule.span (𝓞 D.host.E) (D.host.conj '' S) := by
+  refine le_antisymm (cS_span_le D S) ?_
+  rw [Submodule.span_le]
+  rintro _ ⟨s, hs, rfl⟩
+  rw [SetLike.mem_coe, CU.mem_cS, CU.conj_conj]
+  exact Submodule.subset_span hs
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity.DN
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.DN
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions Matrix nonZeroDivisors FractionalIdeal
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+variable (D : Car)
+
+theorem unitDisc : UnitDisc D := by
+  let _ := D.host.cmStar
+  intro N L hL
+  obtain ⟨m, hm0, hup, hlow⟩ := FL.sd_bounds D L hL
+  set G : Set D.host.E := {x | ∃ U : Matrix (Fin N) (Fin N) D.host.E,
+    (∀ j, (fun i => U i j) ∈ L) ∧ x = U.det} with hG
+  have hvol : vol D L = Submodule.span (𝓞 D.host.E) G := rfl
+  have hmE : (m : D.host.E) ≠ 0 := Int.cast_ne_zero.mpr hm0
+  set c : D.host.E := ((m : D.host.E) ^ N)⁻¹ with hc
+  have hcc : D.host.conj c = c := by simp [hc, map_inv₀, map_pow, map_intCast]
+  have hmN : (m : D.host.E) ^ N ∈ G := by
+    refine ⟨Matrix.diagonal (fun _ => (m : D.host.E)), fun j => ?_, by simp [det_diagonal]⟩
+    have h1 := hlow (Pi.single j 1) (fun i => by
+      by_cases h : i = j
+      · subst h; simpa using isIntegral_one
+      · simpa [Pi.single_apply, h] using isIntegral_zero)
+    convert h1 using 1
+    funext i
+    by_cases h : i = j
+    · subst h; simp
+    · simp [h]
+  have hGle : vol D L ≤ Submodule.span (𝓞 D.host.E) {c} := by
+    rw [hvol, Submodule.span_le]
+    rintro _ ⟨U, hU, rfl⟩
+    have hint : ∀ i j, IsIntegral ℤ ((m : D.host.E) * U i j) := fun i j => hup _ (hU j) i
+    let M' : Matrix (Fin N) (Fin N) (𝓞 D.host.E) := Matrix.of fun i j => ⟨_, hint i j⟩
+    have e : M'.map (algebraMap (𝓞 D.host.E) D.host.E) = (m : D.host.E) • U := by
+      ext i j; rfl
+    rw [SetLike.mem_coe, Submodule.mem_span_singleton]
+    refine ⟨M'.det, ?_⟩
+    rw [Algebra.smul_def, RingHom.map_det]
+    change (M'.map (algebraMap _ _)).det * c = U.det
+    rw [e, det_smul, Fintype.card_fin, hc, mul_comm, ← mul_assoc,
+      inv_mul_cancel₀ (pow_ne_zero _ hmE), one_mul]
+  have hMle : CU.cS D (vol D L) ≤ Submodule.span (𝓞 D.host.E) {c} := by
+    intro x hx
+    rw [CU.mem_cS] at hx
+    obtain ⟨a, ha⟩ := Submodule.mem_span_singleton.mp (hGle hx)
+    refine Submodule.mem_span_singleton.mpr ⟨CU.conjO D a, ?_⟩
+    have h2 := congrArg D.host.conj ha
+    rwa [CU.conj_smul, hcc, CU.conj_conj] at h2
+  let Lf : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=
+    ⟨vol D L, isFractional_of_le (J := spanSingleton _ c) (by rw [coe_spanSingleton]; exact hGle)⟩
+  let Mf : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=
+    ⟨CU.cS D (vol D L), isFractional_of_le (J := spanSingleton _ c)
+      (by rw [coe_spanSingleton]; exact hMle)⟩
+  have hmL : (m : D.host.E) ^ N ∈ vol D L := Submodule.subset_span hmN
+  have hmM : (m : D.host.E) ^ N ∈ CU.cS D (vol D L) := by
+    rw [CU.mem_cS, map_pow, map_intCast]; exact hmL
+  have hMf0 : Mf ≠ 0 := by
+    intro h
+    have h1 : (m : D.host.E) ^ N ∈ (Mf : Submodule (𝓞 D.host.E) D.host.E) := hmM
+    rw [h, coe_zero, Submodule.mem_bot] at h1
+    exact pow_ne_zero _ hmE h1
+  have hMS : (Mf : Submodule (𝓞 D.host.E) D.host.E) = Submodule.span _ (D.host.conj '' G) :=
+    cS_span D G
+  have key : (Mf : Submodule (𝓞 D.host.E) D.host.E) ^ (N - 1) *
+      ((Mf⁻¹ : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) : Submodule (𝓞 D.host.E) D.host.E) ^ N ≤
+        vol D L := by
+    refine (mul_le_mul' (spanPow Mf hMf0 _ hMS (N - 1)) le_rfl).trans ?_
+    have hp : ((Mf⁻¹ : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) : Submodule (𝓞 D.host.E) D.host.E) ^ N =
+        ∏ _i : Fin N, Submodule.span (𝓞 D.host.E)
+          (((Mf⁻¹ : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) : Submodule (𝓞 D.host.E) D.host.E) :
+            Set D.host.E) := by
+      rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin, Submodule.span_eq]
+    rw [hp, Submodule.prod_span, Submodule.span_mul_span, Submodule.span_le]
+    rintro _ ⟨_, ⟨_, ⟨_, ⟨U, hU, rfl⟩, rfl⟩, rfl⟩, b, hb, rfl⟩
+    obtain ⟨g, hg, rfl⟩ := (Set.mem_fintype_prod _ _).mp hb
+    refine adj_step D L hL U hU g fun i y hy => ?_
+    have h1 := (mem_inv_iff hMf0).mp (hg i) y hy
+    rwa [← mem_coe, coe_one] at h1
+  have key' : Mf ^ (N - 1) * Mf⁻¹ ^ N ≤ Lf := by
+    rw [← coe_le_coe, coe_mul, coe_pow, coe_pow]; exact key
+  have hfin : (1 : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) ≤ Lf * Mf := by
+    rcases N with _ | n
+    · have h1 : (1 : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) ≤ Lf := by
+        simpa using key'
+      have h2 : (1 : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) ≤ Mf := by
+        rw [FractionalIdeal.one_le, ← mem_coe]
+        have h5 : (1 : D.host.E) ∈ CU.cS D (vol D L) := by simpa using hmM
+        exact h5
+      calc (1 : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) = 1 * 1 := (one_mul 1).symm
+        _ ≤ Lf * Mf := mul_le_mul' h1 h2
+    · have h3 : Mf ^ (n + 1 - 1) * Mf⁻¹ ^ (n + 1) = Mf⁻¹ := by
+        rw [Nat.add_sub_cancel, inv_pow, pow_succ, mul_inv, ← mul_assoc,
+          mul_inv_cancel₀ (pow_ne_zero _ hMf0), one_mul]
+      rw [h3] at key'
+      calc (1 : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) = Mf⁻¹ * Mf := (inv_mul_cancel₀ hMf0).symm
+        _ ≤ Lf * Mf := mul_le_mul' key' le_rfl
+  have h4 := coe_le_coe.mpr hfin
+  rw [coe_one, coe_mul] at h4
+  exact h4
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity.DN
+
+namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity
+
+open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity hiding CMConjEmb CMTransitive DedekindFactor LinkChi LinkPer LinkThIndep LinkThU LinkThUFam ThetaNormIndependent theta_norm_independent_of_bounds th22U theta_norm_unitary_invariant_of_bounds
+
+open NumberField Formalism.BasicNotions
+open Formalism.L2.Ker.Cd.TaylorLogMetric
+open Formalism.MainNotions.TaylorLogMetric hiding admitted AdmittedStatements AllSplit CoefIn DataIn DualB EqAt EqAway FamE Hf IdE InProd Iop IsChi IsComb IsCurveIdeal IsDiscriminantTwelfthRootOfIdealLattice IsFrobC IsIdem JetsInt La LocBasis LocBasisW Mono N1 NNBasis OrthoBasisW Orthonormal Pos Qd QdB Stmt TVar TVarB Th ThSp Tor TorsPrime U VC Wop XiF YYl adm1 al atLog chK chg chgB coordV der detId logDerivativeAtOne ellT embT embV eq22 fF fnConj hYY hh homL int22 jet kap lamOf letterOf liftY logOmVal meanLogNormSq meanLogOm mmM mom22 LargerSupportMomentCondition mono normSq pSer pairN per22 posEmb posG aux₃ pull qH sE sgm str22 tauEmb tauSg taylor th22 tor0 torConj vec22 vecN wPh zB
+
+theorem relative_determinant_norm_one (D : Car) : DetIdealsKernelNormOne D :=
+  DN.determinant_norm_one_of_unit_disc D (DN.unitDisc D)
+
+theorem character_unit_on_determinant (D : Car) (χ : IdE D → ℂ) (hχ : IsChi D χ) : ChiUnitDet D χ :=
+  chi_unit_of_det_norm_one D (relative_determinant_norm_one D) χ hχ
+
+
+end Formalism.L2.Ker.Cd.IntegralLatticeDensity
+
+end
+end
+
+section
 noncomputable section
 
 namespace Formalism.L2.Ker.Cd.IntegralLatticeDensity.IL
@@ -679,4 +1537,5 @@ theorem IopIso_of_parts (hA : HfIntRec) (hB : SelfDualRec) :
 
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity
 
+end
 end

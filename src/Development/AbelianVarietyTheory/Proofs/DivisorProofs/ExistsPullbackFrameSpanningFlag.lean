@@ -1,5 +1,153 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PullbackUnipotentFrameUniqueStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TotalEqCurve
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdjacentPullPull
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniREqUni
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFlagBundleIff
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagFramesTriangularChangeStatement
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
+open GlobalTheory.FlagFibre (Low uni dens)
+open ReciprocityTheory.L2DbarEstimates (V cHess)
+open scoped ContDiff ComplexOrder Classical
+open GlobalTheory.FlagCell GlobalTheory.FlagConnect
+
+set_option autoImplicit false
+
+namespace GlobalTheory.FlagCell
+
+theorem uniR_lowerTri {R : Type} [CommRing R] {m : ℕ} (n : Low m → R) :
+    (uniR n).BlockTriangular OrderDual.toDual := by
+  intro i j hij
+  have hij' : i < j := hij
+  simp only [uniR_apply]
+  rw [dif_neg (not_lt.mpr hij'.le), if_neg (ne_of_lt hij')]
+
+theorem uniR_diag {R : Type} [CommRing R] {m : ℕ} (n : Low m → R) (i : Fin m) :
+    uniR n i i = 1 := by
+  simp [uniR_apply]
+
+theorem uniR_det {R : Type} [CommRing R] {m : ℕ} (n : Low m → R) : (uniR n).det = 1 := by
+  rw [Matrix.det_of_isLowerTriangular _ (uniR_lowerTri n)]
+  simp [uniR_diag]
+
+theorem uniR_unique_of_mul_eq (R : Type) [CommRing R] (m : ℕ) (n n' : Low m → R)
+    (M M' : Matrix (Fin m) (Fin m) R) (hM : M.BlockTriangular id) (hM' : M'.BlockTriangular id)
+    (hdet : IsUnit M.det) (h : uniR n * M = uniR n' * M') : n = n' := by
+  set L := uniR n
+  set L' := uniR n'
+  have hL' : IsUnit L'.det := by rw [uniR_det]; exact isUnit_one
+  letI : Invertible M := Matrix.invertibleOfIsUnitDet M hdet
+  letI : Invertible L' := Matrix.invertibleOfIsUnitDet L' hL'
+  have hP : L'⁻¹ * L = M' * M⁻¹ := by
+    calc L'⁻¹ * L = L'⁻¹ * (L * M) * M⁻¹ := by
+          rw [Matrix.mul_assoc, Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hdet, Matrix.mul_one]
+      _ = L'⁻¹ * (L' * M') * M⁻¹ := by rw [h]
+      _ = M' * M⁻¹ := by
+          rw [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hL', Matrix.one_mul]
+  have hlow : (L'⁻¹ * L).BlockTriangular OrderDual.toDual :=
+    (Matrix.blockTriangular_inv_of_blockTriangular (uniR_lowerTri n')).mul (uniR_lowerTri n)
+  have hup : (M' * M⁻¹).BlockTriangular id :=
+    hM'.mul (Matrix.blockTriangular_inv_of_blockTriangular hM)
+  set P := L'⁻¹ * L with hPdef
+  have hdiag : P = Matrix.diagonal (fun j => P j j) := by
+    ext i j
+    rcases lt_trichotomy i j with hij | hij | hij
+    · rw [Matrix.diagonal_apply_ne _ (ne_of_lt hij)]
+      exact hlow hij
+    · subst hij; simp
+    · rw [Matrix.diagonal_apply_ne _ (ne_of_gt hij), hP]
+      exact hup hij
+  have hLP : L = L' * P := by
+    rw [hPdef, ← Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hL', Matrix.one_mul]
+  have hP1 : ∀ j, P j j = 1 := by
+    intro j
+    have := congrFun (congrFun hLP j) j
+    rw [hdiag, Matrix.mul_diagonal] at this
+    simpa [L, L', uniR_diag] using this.symm
+  have hLL : L = L' := by
+    rw [hLP, hdiag]
+    simp [hP1]
+  funext s
+  have := congrFun (congrFun hLL s.1.1) s.1.2
+  simpa [L, L', uniR_apply, s.2] using this
+
+end GlobalTheory.FlagCell
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
+open GlobalTheory.FlagFibre (Low uni dens)
+open ReciprocityTheory.L2DbarEstimates (V cHess)
+open scoped ContDiff ComplexOrder Classical
+open GlobalTheory.FlagCell GlobalTheory.FlagConnect
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unipotent_triangular_factor_unique : ∀ (R : Type) [CommRing R] (m : ℕ) (n n' : Low m → R) (M M' : Matrix (Fin m) (Fin m) R), M.BlockTriangular id → M'.BlockTriangular id → IsUnit M.det → uniR n * M = uniR n' * M' → n = n' := by
+  first | exact @GlobalTheory.FlagCell.uniR_unique_of_mul_eq | exact GlobalTheory.FlagCell.uniR_unique_of_mul_eq | (intros; apply GlobalTheory.FlagCell.uniR_unique_of_mul_eq <;> assumption)
+end
+
+section
+set_option autoImplicit false
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.VB
+open GlobalTheory.FlagFibre (Low)
+
+namespace GlobalTheory.FlagCell
+
+theorem low_eq_of_spans_pullCol (X B : Scheme.{0}) (g : X ⟶ B) (E : B.Modules) (m : ℕ) (hE : IsVB E m)
+    (U : B.Opens) (e : Fin m → Γ(E, U)) (he : IsFrame e)
+    (fl : Vert.Flag ((Scheme.Modules.pullback g).obj E) m) (V : X.Opens) (hV : V ≤ g ⁻¹ᵁ U)
+    (n n' : Low m → Γ(X, V)) (h : Spans fl V (pullCol g e hV (uniR n)))
+    (h' : Spans fl V (pullCol g e hV (uniR n'))) : n = n' := by
+  classical
+  haveI := hE.isQuasicoherent
+  obtain ⟨M, hM, hdet, hMv⟩ := GlobalTheory.T.flag_frames_triangular_change X _ m fl V _ _ h h'
+  have hinj := ((he.pullback g) V hV).1
+  have e1 : (fun i => GlobalTheory.Twist.resM ((Scheme.Modules.pullback g).obj E) hV
+      (QCoh.pullbackSections g E (le_refl (g ⁻¹ᵁ U)) (e i))) =
+      fun i => QCoh.pullbackSections g E hV (e i) :=
+    funext fun i => QCoh.res_pullbackSections _ _ _ _ _
+  rw [e1] at hinj
+  have key : uniR n * M = uniR n' * 1 := by
+    rw [Matrix.mul_one]
+    refine Matrix.ext fun l j => ?_
+    have := hinj (a₁ := fun l => (uniR n * M) l j) (a₂ := fun l => uniR n' l j) (by
+      simp only [Fintype.linearCombination_apply]
+      have h1 := hMv j
+      simp only [pullCol] at h1
+      rw [h1]
+      simp only [Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, smul_smul]
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
+      rw [mul_comm])
+    exact congrFun this l
+  exact GlobalTheory.T.unipotent_triangular_factor_unique _ m n n' M 1 hM Matrix.blockTriangular_one hdet key
+
+end GlobalTheory.FlagCell
+end
+
+section
+open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
+open GlobalTheory.FlagFibre (Low uni dens)
+open ReciprocityTheory.L2DbarEstimates (V cHess)
+open scoped ContDiff ComplexOrder Classical
+open GlobalTheory.FlagCell GlobalTheory.FlagConnect
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.pullback_unipotent_frame_unique : ∀ (X B : Scheme.{0}) (g : X ⟶ B) (E : B.Modules) (m : ℕ), IsVB E m → ∀ (U : B.Opens) (e : Fin m → Γ(E, U)), IsFrame e → ∀ (fl : Vert.Flag ((Scheme.Modules.pullback g).obj E) m) (V : X.Opens) (hV : V ≤ g ⁻¹ᵁ U) (n n' : Low m → Γ(X, V)), Spans fl V (pullCol g e hV (uniR n)) → Spans fl V (pullCol g e hV (uniR n')) → n = n' := by
+  first | exact @GlobalTheory.FlagCell.low_eq_of_spans_pullCol | exact GlobalTheory.FlagCell.low_eq_of_spans_pullCol | (intros; apply GlobalTheory.FlagCell.low_eq_of_spans_pullCol <;> assumption)
+end
+
+section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MeasureTheory Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.Points GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.HermFrame GlobalTheory.ArInt GlobalTheory.MixDens GlobalTheory.CovTest
@@ -93,3 +241,4 @@ theorem exists_cellLocus : ∀ (B Y : Scheme.{0}) (π : Y ⟶ B) (ι : Type) (r 
   exact (hN s _).trans (congrFun (uniq V hV _ _ (gK ⟨V, hV, n', hn'⟩) hn') s)
 
 end GlobalTheory.FlagCell
+end

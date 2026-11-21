@@ -5,11 +5,523 @@ import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlatDegree
 import Development.AutomorphicSpectrum.Statements.GeometryStatements.NineGeoU
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DifferentiableOnStarStar
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLogPeriodFamily
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeGramComplexConjugate
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FamilyExponentialConjugate
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogPeriodsConjugateExists
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsValLineLogNormAtIffEmbedding
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsRigTransport
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FibreLatticeBaseChangeConj
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsConjugateLogPeriods
 import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ConjugateRootZeroThird
 
+section
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+
+open scoped CategoryTheory.Obj
+
+namespace GlobalTheory.CompanionTheory.Ar.GramConj
+
+open GlobalTheory.ArchMetricCompare (cj cjPt cjUnif cj_isAH cj_val isIso_of_cj carry carry_isAH)
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+theorem dualConj_dualConj :
+    spMap (dualMap (starRingEnd ℂ)) ≫ spMap (dualMap (starRingEnd ℂ)) = 𝟙 (Sp (DualNumber ℂ)) := by
+  have h : (dualMap (starRingEnd ℂ)).comp (dualMap (starRingEnd ℂ)) = RingHom.id (DualNumber ℂ) := by
+    ext c <;> simp [dualMap]
+  rw [← Spec.map_comp, ← CommRingCat.ofHom_comp, h]
+  exact Spec.map_id _
+
+theorem fderiv_conj {g : ℕ} (F : (Fin g → ℂ) → ℂ) (w : Fin g → ℂ) :
+    fderiv ℂ (star ∘ F ∘ star) 0 (star w) = star (fderiv ℂ F 0 w) := by
+  by_cases h : DifferentiableAt ℂ F 0
+  · have d := h.hasFDerivAt.star_star
+    rw [star_zero] at d
+    rw [d.fderiv]
+    simp
+  · have h' : ¬ DifferentiableAt ℂ (star ∘ F ∘ star) 0 := fun h' => h (by
+      have := h'.star_star
+      have e : star ∘ (star ∘ F ∘ star) ∘ star = F := by
+        ext z
+        simp
+      rw [star_zero, e] at this
+      exact this)
+    rw [fderiv_zero_of_not_differentiableAt h, fderiv_zero_of_not_differentiableAt h']
+    simp
+
+variable {A A' : Over (Sp ℂ)} [GrpObj A] [GrpObj A'] {ψ : A'.left ⟶ A.left} {M : LB A.left} {M' : LB A'.left} {g : ℕ}
+
+theorem isDiff_conj (h : IsGrpPullback A' A cj ψ) (u : HolUnif A M g) (u' : HolUnif A' M' g)
+    (hex : ∀ z, u'.ex z = cjPt h (u.ex (star z))) {t : epsR ℂ ⟶ A} {t' : epsR ℂ ⟶ A'}
+    (e : t'.left ≫ ψ = spMap (dualMap (starRingEnd ℂ)) ≫ t.left) {w : Fin g → ℂ} (hd : u.IsDiff w t) :
+    u'.IsDiff (star w) t' := by
+  haveI := isIso_of_cj h
+  intro U hU f
+  have e2 : t'.left = spMap (dualMap (starRingEnd ℂ)) ≫ (show Sp (DualNumber ℂ) ⟶ _ from t.left) ≫ inv ψ := by
+    rw [← Category.assoc]
+    exact (IsIso.eq_comp_inv ψ).2 e
+  have e4 : (show Sp (DualNumber ℂ) ⟶ _ from t.left) ≫ inv ψ = spMap (dualMap (starRingEnd ℂ)) ≫ t'.left := by
+    rw [e2, ← Category.assoc, dualConj_dualConj, Category.id_comp]
+  have h2 : ⊤ ≤ t.left ⁻¹ᵁ (inv ψ ⁻¹ᵁ U) := fun p _ => by
+    have q : ((show Sp (DualNumber ℂ) ⟶ _ from t.left) ≫ inv ψ) p ∈ U := by
+      rw [e4]
+      exact hU (show spMap (dualMap (starRingEnd ℂ)) p ∈ (⊤ : (Sp (DualNumber ℂ)).Opens) from trivial)
+    exact q
+  have e1 : (fun z => valAt' (u'.ex z).left U f) =
+      star ∘ (fun z => valAt' (u.ex z).left (inv ψ ⁻¹ᵁ U) (((inv ψ).app U).hom f)) ∘ star :=
+    funext fun z => by
+      simp only [hex]
+      exact cj_val h _ U f
+  rw [e1, fderiv_conj]
+  have k : ∀ (y : Sp (DualNumber ℂ) ⟶ A'.left) (hy : ⊤ ≤ y ⁻¹ᵁ U),
+      y = spMap (dualMap (starRingEnd ℂ)) ≫ (show Sp (DualNumber ℂ) ⟶ _ from t.left) ≫ inv ψ →
+      TangentOrigin.evalPt y U hy f = dualMap (starRingEnd ℂ)
+        (TangentOrigin.evalPt (R := DualNumber ℂ) t.left _ h2 (((inv ψ).app U).hom f)) := by
+    rintro _ hy rfl
+    rw [TangentOrigin.evalPt_spMap_comp _ _ U h2]
+    congr 1
+  refine (congrArg TrivSqZeroExt.snd (k _ hU e2)).trans ?_
+  have e3 := hd _ h2 (((inv ψ).app U).hom f)
+  simp only [dualMap, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk, TrivSqZeroExt.snd_add, TrivSqZeroExt.snd_inl,
+    TrivSqZeroExt.snd_inr, zero_add]
+  exact congrArg (starRingEnd ℂ) e3
+
+theorem exists_conjUnif (h : IsGrpPullback A' A cj ψ) (hM : M.IsLB) (u : HolUnif A M g)
+    {Hm : Matrix (Fin g) (Fin g) ℂ} {χ : u.Λ → ℂ} (hA : u.IsAH Hm χ) :
+    ∃ (u' : HolUnif A' (M.pull ψ) g) (χ' : u'.Λ → ℂ), u'.IsAH (Hm.map star) χ' ∧
+      ∀ z, u'.ex z = cjPt h (u.ex (star z)) := by
+  have hM1 : (M.pull (𝟙 A.left)).IsLB := pull_isLB hM _
+  obtain ⟨w, hw⟩ : LBIso M (M.pull (𝟙 A.left)) :=
+    LBIso.chartPull (chartPullId M) (chartPullPull M (𝟙 _) (𝟙 _) rfl) (PolBaseChange.lbIso_refl hM)
+  have key : ∀ f, f = ψ ≫ 𝟙 A.left → ∃ (u' : HolUnif A' (M.pull f) g) (χ' : u'.Λ → ℂ),
+      u'.IsAH (Hm.map star) χ' ∧ ∀ z, u'.ex z = cjPt h (u.ex (star z)) := by
+    rintro _ rfl
+    exact ⟨cjUnif h (carry u hM hM1 hw), _, cj_isAH h _ (carry_isAH hM hM1 hw hA), fun _ => rfl⟩
+  exact key _ (Category.comp_id _).symm
+
+theorem isHodgeGram_conj : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] (L : LB G.left) (x x' : Spec (CommRingCat.of ℂ) ⟶ S) (n : ℕ) (v : Fin n → (epsAt x ⟶ G)) (v' : Fin n → (epsAt x' ⟶ G)) (Γ : Matrix (Fin n) (Fin n) ℂ), x' = spMap (starRingEnd ℂ) ≫ x → (∀ i, (v' i).left = spMap (dualMap (starRingEnd ℂ)) ≫ (v i).left) → Fl.IsHodgeGram G L x v Γ → Fl.IsHodgeGram G L x' v' (Γ.map (starRingEnd ℂ)) := by
+  rintro S G _ L x x' n v v' Γ rfl hv' ⟨Q, ψ, vo, u, Hm, χ, W, hP, hLB, hAH, hvo, hΓ⟩
+  have hc := isGrpPullback_pullback Q.A cj
+  haveI := (Out.TLinPf.isAb_pullback cj Q.A Q.isAb).comm
+  obtain ⟨u', χ', hAH', hex⟩ := exists_conjUnif hc Q.isLB u hAH
+  have sq : ∀ i, (spMap (dualMap (starRingEnd ℂ)) ≫ (vo i).left) ≫ Q.A.hom = (epsR ℂ).hom ≫ cj := fun i => by
+    rw [Category.assoc, Over.w]
+    change Spec.map _ ≫ Spec.map _ = Spec.map _ ≫ Spec.map _
+    rw [← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp, ← CommRingCat.ofHom_comp]
+    congr 2
+    ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  let t : ∀ i, epsR ℂ ⟶ (Over.pullback cj).obj Q.A := fun i => Over.homMk (hc.1.lift _ _ (sq i)) (hc.1.lift_snd _ _ _)
+  have et : ∀ i, (t i).left ≫ pullback.fst Q.A.hom cj = spMap (dualMap (starRingEnd ℂ)) ≫ (vo i).left :=
+    fun i => hc.1.lift_fst _ _ _
+  refine ⟨GlobalTheory.TorsionTauCompare.polOfPullback Q _ hc, pullback.fst Q.A.hom cj ≫ ψ, t, u', Hm.map star, χ',
+    fun i => star (W i), hc.comp hP, ?_, hAH', fun i => ⟨?_, isDiff_conj hc u u' hex (et i) (hvo i).2⟩, fun i j => ?_⟩
+  · exact LBIso.symm (Cusp.FibreMove.lbIso_pull (LBIso.symm hLB) _)
+  · exact ((Category.assoc _ _ _).symm.trans (congrArg (· ≫ ψ) (et i))).trans
+      (((Category.assoc _ _ _).trans (congrArg _ (hvo i).1)).trans (hv' i).symm)
+  · rw [Matrix.map_apply, hΓ, map_mul, Complex.conj_ofReal]
+    congr 1
+    refine Eq.trans ?_ (GlobalTheory.ArchMetricCompare.star_form Hm (star (W i)) (star (W j)))
+    rw [star_star (W i), star_star (W j)]
+    rfl
+
+end GlobalTheory.CompanionTheory.Ar.GramConj
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hodge_gram_complex_conjugate : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] (L : LB G.left) (x x' : Spec (CommRingCat.of ℂ) ⟶ S) (n : ℕ) (v : Fin n → (epsAt x ⟶ G)) (v' : Fin n → (epsAt x' ⟶ G)) (Γ : Matrix (Fin n) (Fin n) ℂ), x' = spMap (starRingEnd ℂ) ≫ x → (∀ i, (v' i).left = spMap (dualMap (starRingEnd ℂ)) ≫ (v i).left) → Fl.IsHodgeGram G L x v Γ → Fl.IsHodgeGram G L x' v' (Γ.map (starRingEnd ℂ)) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.GramConj.isHodgeGram_conj
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat.ConjExp
+
+open Filter Topology GlobalTheory.CompanionTheory.Ar.Flat.Conj
+
+local notation "κ" => spMap (starRingEnd ℂ)
+local notation "δ" => spMap (dualMap (starRingEnd ℂ))
+
+section Points
+
+variable {A B C : Type} [CommRing A] [CommRing B] [CommRing C]
+
+theorem spMap_comp_ring (f : A →+* B) (g : B →+* C) : spMap (g.comp f) = spMap g ≫ spMap f := by
+  show Spec.map (CommRingCat.ofHom (g.comp f)) = Spec.map (CommRingCat.ofHom g) ≫ Spec.map (CommRingCat.ofHom f)
+  rw [CommRingCat.ofHom_comp, Spec.map_comp]
+
+theorem conj_conj_point : κ ≫ κ = 𝟙 (Sp ℂ) := by
+  have h : (starRingEnd ℂ).comp (starRingEnd ℂ) = RingHom.id ℂ := by
+    ext c
+    simp
+  rw [← spMap_comp_ring, h]
+  exact Spec.map_id _
+
+theorem conj_conj_dual : δ ≫ δ = 𝟙 (Sp (DualNumber ℂ)) := by
+  have h : (dualMap (starRingEnd ℂ)).comp (dualMap (starRingEnd ℂ)) = RingHom.id (DualNumber ℂ) := by
+    ext c <;> simp [dualMap]
+  rw [← spMap_comp_ring, h]
+  exact Spec.map_id _
+
+theorem conj_conj_apply {X : Scheme.{0}} (y : Sp ℂ ⟶ X) : κ ≫ κ ≫ y = y := by
+  rw [← Category.assoc, conj_conj_point, Category.id_comp]
+
+theorem spMap_dualMap_comp (f : A →+* ℂ) :
+    spMap (dualMap ((starRingEnd ℂ).comp f)) = δ ≫ spMap (dualMap f) := by
+  have h : dualMap ((starRingEnd ℂ).comp f) = (dualMap (starRingEnd ℂ)).comp (dualMap f) := by
+    ext c <;> simp [dualMap]
+  rw [h, spMap_comp_ring]
+
+theorem fst_conj :
+    spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ δ = κ ≫ spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom := by
+  have h : (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom.comp (dualMap (starRingEnd ℂ)) =
+      (starRingEnd ℂ).comp (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom := by
+    ext c <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
+  rw [← spMap_comp_ring, ← spMap_comp_ring, h]
+
+theorem top_le_comp {T T' X : Scheme.{0}} (a : T' ⟶ T) (x : T ⟶ X) {U : X.Opens} (h : ⊤ ≤ x ⁻¹ᵁ U) :
+    ⊤ ≤ (a ≫ x) ⁻¹ᵁ U := by
+  rw [Scheme.Hom.comp_preimage]
+  intro p _
+  exact h (show a p ∈ (⊤ : T.Opens) from trivial)
+
+theorem top_le_conj_iff {X : Scheme.{0}} (y : Sp ℂ ⟶ X) (U : X.Opens) :
+    ⊤ ≤ (κ ≫ y) ⁻¹ᵁ U ↔ ⊤ ≤ y ⁻¹ᵁ U :=
+  ⟨fun h => by
+    have h' := top_le_comp κ _ h
+    rwa [conj_conj_apply] at h', top_le_comp _ _⟩
+
+theorem eval_spMap {X : Scheme.{0}} (φ : A →+* B) (x : Sp A ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U)
+    (h' : ⊤ ≤ (spMap φ ≫ x) ⁻¹ᵁ U) (f : Γ(X, U)) :
+    (Scheme.ΓSpecIso (CommRingCat.of B)).hom.hom (((spMap φ ≫ x).appLE U ⊤ h').hom f) =
+      φ ((Scheme.ΓSpecIso (CommRingCat.of A)).hom.hom ((x.appLE U ⊤ h).hom f)) := by
+  have e1 : (spMap φ ≫ x).appLE U ⊤ h' = x.appLE U ⊤ h ≫ (spMap φ).appTop := by
+    rw [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE]
+    exact (Scheme.Hom.appLE_comp_appLE _ _ _ _ _ _ _).symm
+  have e2 := Scheme.ΓSpecIso_naturality (CommRingCat.ofHom φ)
+  have e3 : x.appLE U ⊤ h ≫ (spMap φ).appTop ≫ (Scheme.ΓSpecIso (CommRingCat.of B)).hom =
+      x.appLE U ⊤ h ≫ (Scheme.ΓSpecIso (CommRingCat.of A)).hom ≫ CommRingCat.ofHom φ := by
+    rw [e2]
+  rw [e1]
+  exact congrArg (fun q => CommRingCat.Hom.hom q f) e3
+
+theorem valAt'_conj {X : Scheme.{0}} (y : Sp ℂ ⟶ X) (U : X.Opens) (f : Γ(X, U)) :
+    valAt' (κ ≫ y) U f = starRingEnd ℂ (valAt' y U f) := by
+  by_cases h : ⊤ ≤ y ⁻¹ᵁ U
+  · have h' := top_le_comp κ y h
+    rw [valAt', dif_pos h', valAt', dif_pos h]
+    exact eval_spMap _ y U h h' f
+  · have h' := mt (top_le_conj_iff y U).1 h
+    rw [valAt', dif_neg h', valAt', dif_neg h, map_zero]
+
+theorem fderiv_conj_zero {g : ℕ} (F : (Fin g → ℂ) → ℂ) (w : Fin g → ℂ) :
+    fderiv ℂ (star ∘ F ∘ star) 0 (star w) = star (fderiv ℂ F 0 w) := by
+  by_cases hF : DifferentiableAt ℂ F 0
+  · have d := hF.hasFDerivAt.star_star
+    rw [star_zero] at d
+    rw [d.fderiv]
+    simp
+  · have hG : ¬ DifferentiableAt ℂ (star ∘ F ∘ star) 0 := fun hG => hF (by
+      have := hG.star_star
+      have e : star ∘ (star ∘ F ∘ star) ∘ star = F := funext fun z => by simp
+      rwa [star_zero, e] at this)
+    rw [fderiv_zero_of_not_differentiableAt hF, fderiv_zero_of_not_differentiableAt hG]
+    simp
+
+theorem isDerivAt0_conj {g : ℕ} {X : Scheme.{0}} (e : (Fin g → ℂ) → (Sp ℂ ⟶ X)) (w : Fin g → ℂ) (hw : star w = w)
+    (v v' : Sp (DualNumber ℂ) ⟶ X) (hv : v = δ ≫ v') (h : IsDerivAt0 e w v') :
+    IsDerivAt0 (fun z => κ ≫ e (star z)) w v := by
+  obtain ⟨h0, hd⟩ := h
+  have hv' : v' = δ ≫ v := by rw [hv, ← Category.assoc, conj_conj_dual, Category.id_comp]
+  refine ⟨?_, fun U h f => ?_⟩
+  · show _ ≫ v = κ ≫ e (star 0)
+    rw [star_zero, ← h0, hv, ← Category.assoc, fst_conj, Category.assoc]
+  · have h' : ⊤ ≤ v' ⁻¹ᵁ U := by
+      rw [hv']
+      exact top_le_comp _ _ h
+    have e1 : (Scheme.ΓSpecIso (CommRingCat.of (DualNumber ℂ))).hom.hom ((v.appLE U ⊤ h).hom f) =
+        dualMap (starRingEnd ℂ) ((Scheme.ΓSpecIso (CommRingCat.of (DualNumber ℂ))).hom.hom ((v'.appLE U ⊤ h').hom f)) := by
+      subst hv
+      exact eval_spMap _ v' U h' h f
+    have e2 : (fun z => valAt' (κ ≫ e (star z)) U f) = star ∘ (fun z => valAt' (e z) U f) ∘ star :=
+      funext fun z => valAt'_conj _ U f
+    have e3 := fderiv_conj_zero (fun z => valAt' (e z) U f) w
+    rw [hw] at e3
+    show TrivSqZeroExt.snd ((Scheme.ΓSpecIso (CommRingCat.of (DualNumber ℂ))).hom.hom ((v.appLE U ⊤ h).hom f)) = _
+    rw [e1, e2, e3, ← hd U h' f]
+    simp [dualMap]
+
+theorem differentiableOn_conj_preimage {F : Type} [NormedAddCommGroup F] [NormedSpace ℂ F] [StarAddMonoid F]
+    [StarModule ℂ F] [ContinuousStar F] {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [StarAddMonoid V]
+    [StarModule ℂ V] [ContinuousStar V] {f : V → F} {S : Set V} (hS : IsOpen S) (hf : DifferentiableOn ℂ f S) :
+    DifferentiableOn ℂ (fun z => star (f (star z))) (star ⁻¹' S) := by
+  intro z hz
+  have h1 : DifferentiableAt ℂ f (star z) := hf.differentiableAt (hS.mem_nhds hz)
+  have h2 := h1.star_star
+  rw [star_star] at h2
+  exact h2.differentiableWithinAt
+
+end Points
+
+variable {R : Type} [CommRing R] {n : ℕ}
+
+theorem spMap_conjPts (ψ : (Fin n → ℂ) → (R →+* ℂ)) (b : Fin n → ℂ) :
+    spMap (conjPts ψ (star b)) = κ ≫ spMap (ψ b) := by
+  rw [conjPts, star_star, spMap_comp_ring]
+
+def conjBack (ψ : (Fin n → ℂ) → (R →+* ℂ)) (b : Fin n → ℂ) :
+    Over.mk (spMap (ψ b)) ⟶ Over.mk (spMap (conjPts ψ (star b))) :=
+  Over.homMk κ (by
+    show κ ≫ spMap (conjPts ψ (star b)) = spMap (ψ b)
+    rw [spMap_conjPts, conj_conj_apply])
+
+def conjFwd (ψ : (Fin n → ℂ) → (R →+* ℂ)) (b : Fin n → ℂ) :
+    Over.mk (spMap (conjPts ψ (star b))) ⟶ Over.mk (spMap (ψ b)) :=
+  Over.homMk κ (by
+    show κ ≫ spMap (ψ b) = spMap (conjPts ψ (star b))
+    rw [spMap_conjPts])
+
+theorem conjBack_conjFwd (ψ : (Fin n → ℂ) → (R →+* ℂ)) (b : Fin n → ℂ) :
+    conjBack ψ b ≫ conjFwd ψ b = 𝟙 _ :=
+  Over.OverMorphism.ext conj_conj_point
+
+theorem conjFwd_conjBack (ψ : (Fin n → ℂ) → (R →+* ℂ)) (b : Fin n → ℂ) :
+    conjFwd ψ b ≫ conjBack ψ b = 𝟙 _ :=
+  Over.OverMorphism.ext conj_conj_point
+
+variable {G : Over (Sp R)} [GrpObj G] {g : ℕ} {M : LieModel G (𝟙 (Sp R)) (Fin g → R)} {ρ : ℝ}
+  {ψ : (Fin n → ℂ) → (R →+* ℂ)}
+
+def exOf (e' : Flat.FamExp G M (Metric.ball 0 ρ) (conjPts ψ)) (b : Fin n → ℂ) (x : Fin g → ℂ) :
+    Over.mk (spMap (ψ b)) ⟶ G :=
+  conjBack ψ b ≫ e'.ex (star b) (star x)
+
+variable (e' : Flat.FamExp G M (Metric.ball 0 ρ) (conjPts ψ))
+
+theorem exOf_left (b : Fin n → ℂ) (x : Fin g → ℂ) :
+    (exOf e' b x).left = κ ≫ (e'.ex (star b) (star x)).left := rfl
+
+theorem exOf_add {b : Fin n → ℂ} (hb : b ∈ Metric.ball (0 : Fin n → ℂ) ρ) (z w : Fin g → ℂ) :
+    exOf e' b (z + w) = exOf e' b z * exOf e' b w := by
+  rw [exOf, star_add, e'.add _ (star_mem_ball.2 hb), MonObj.comp_mul]
+  rfl
+
+theorem exOf_hol : IsHolTo (Metric.ball (0 : Fin n → ℂ) ρ ×ˢ (Set.univ : Set (Fin g → ℂ)))
+    (fun bz : (Fin n → ℂ) × (Fin g → ℂ) => (exOf e' bz.1 bz.2).left) := by
+  intro U f
+  obtain ⟨ho, hd⟩ := e'.hol U f
+  have hS : {bz ∈ Metric.ball (0 : Fin n → ℂ) ρ ×ˢ (Set.univ : Set (Fin g → ℂ)) | ⊤ ≤ (exOf e' bz.1 bz.2).left ⁻¹ᵁ U} =
+      star ⁻¹' {bz ∈ Metric.ball (0 : Fin n → ℂ) ρ ×ˢ (Set.univ : Set (Fin g → ℂ)) |
+        ⊤ ≤ (e'.ex bz.1 bz.2).left ⁻¹ᵁ U} := by
+    ext bz
+    simp only [Set.mem_setOf_eq, Set.mem_preimage, Set.mem_prod, Set.mem_univ, and_true, exOf_left,
+      Prod.fst_star, Prod.snd_star, star_mem_ball]
+    exact and_congr_right fun _ => top_le_conj_iff _ _
+  rw [hS]
+  refine ⟨ho.preimage continuous_star, ?_⟩
+  refine (differentiableOn_conj_preimage ho hd).congr fun bz _ => ?_
+  exact valAt'_conj (e'.ex (star bz.1) (star bz.2)).left U f
+
+theorem exOf_diff {b : Fin n → ℂ} (hb : b ∈ Metric.ball (0 : Fin n → ℂ) ρ) (a : Fin g) :
+    IsDerivAt0 (fun z => (exOf e' b z).left) (Pi.single a 1)
+      (spMap (dualMap (ψ b)) ≫ (M.pt (Pi.single a 1)).left) := by
+  have h := e'.diff (star b) (star_mem_ball.2 hb) a
+  have hw : star (Pi.single a 1 : Fin g → ℂ) = Pi.single a 1 := by
+    ext k
+    by_cases hk : k = a
+    · subst hk
+      simp
+    · simp [Pi.single_eq_of_ne hk]
+  refine isDerivAt0_conj (fun z => (e'.ex (star b) z).left) _ hw _ _ ?_ h
+  have h1 : conjPts ψ (star b) = (starRingEnd ℂ).comp (ψ b) := by
+    rw [conjPts, star_star]
+  rw [h1, spMap_dualMap_comp, ← Category.assoc, ← Category.assoc, conj_conj_dual, Category.id_comp]
+
+theorem exOf_log {b₀ : Fin n → ℂ} (hb : b₀ ∈ Metric.ball (0 : Fin n → ℂ) ρ) :
+    ∃ (V : G.left.Opens) (N : ℕ) (f : Fin N → Γ(G.left, V))
+    (L : (Fin n → ℂ) × (Fin N → ℂ) → (Fin g → ℂ)), ⊤ ≤ (exOf e' b₀ 0).left ⁻¹ᵁ V ∧
+    AnalyticAt ℂ L (b₀, fun j => valAt' (exOf e' b₀ 0).left V (f j)) ∧
+    (∀ᶠ bz : (Fin n → ℂ) × (Fin g → ℂ) in 𝓝 (b₀, 0),
+      L (bz.1, fun j => valAt' (exOf e' bz.1 bz.2).left V (f j)) = bz.2) ∧
+    ∀ᶠ p : (Fin n → ℂ) × (Fin N → ℂ) in 𝓝 (b₀, fun j => valAt' (exOf e' b₀ 0).left V (f j)),
+      ∀ x : Over.mk (spMap (ψ p.1)) ⟶ G, ⊤ ≤ x.left ⁻¹ᵁ V → (∀ j, valAt' x.left V (f j) = p.2 j) →
+        x = exOf e' p.1 (L p) := by
+  obtain ⟨V, N, f, L', h1, h2, h3, h4⟩ := e'.log (star b₀) (star_mem_ball.2 hb)
+  have hval : (fun j => valAt' (exOf e' b₀ 0).left V (f j)) =
+      star (fun j => valAt' (e'.ex (star b₀) 0).left V (f j)) := by
+    funext j
+    rw [exOf_left, star_zero, valAt'_conj]
+    rfl
+  have hcp : Tendsto (star : (Fin n → ℂ) × (Fin N → ℂ) → _)
+      (𝓝 (b₀, star (fun j => valAt' (e'.ex (star b₀) 0).left V (f j))))
+      (𝓝 (star b₀, fun j => valAt' (e'.ex (star b₀) 0).left V (f j))) := by
+    have h := (continuous_star (R := (Fin n → ℂ) × (Fin N → ℂ))).tendsto
+      (b₀, star (fun j => valAt' (e'.ex (star b₀) 0).left V (f j)))
+    rwa [show star ((b₀, star (fun j => valAt' (e'.ex (star b₀) 0).left V (f j))) : (Fin n → ℂ) × (Fin N → ℂ)) =
+      (star b₀, fun j => valAt' (e'.ex (star b₀) 0).left V (f j)) from Prod.ext rfl (star_star _)] at h
+  have hcz : Tendsto (star : (Fin n → ℂ) × (Fin g → ℂ) → _) (𝓝 (b₀, 0)) (𝓝 (star b₀, 0)) := by
+    have h := (continuous_star (R := (Fin n → ℂ) × (Fin g → ℂ))).tendsto (b₀, 0)
+    rwa [show star ((b₀, 0) : (Fin n → ℂ) × (Fin g → ℂ)) = (star b₀, 0) from Prod.ext rfl (star_zero _)] at h
+  refine ⟨V, N, f, fun p => star (L' (star p)), ?_, ?_, ?_, ?_⟩
+  · rw [exOf_left, star_zero]
+    exact top_le_comp _ _ h1
+  · rw [hval]
+    refine GlobalTheory.SCV.analyticAt_iff_eventually_differentiableAt.2 ?_
+    filter_upwards [hcp.eventually h2.eventually_analyticAt] with q hq
+    simpa [Function.comp_def] using hq.differentiableAt.star_star
+  · filter_upwards [hcz.eventually h3] with bz hbz
+    have e1 : star ((bz.1, fun j => valAt' (exOf e' bz.1 bz.2).left V (f j)) : (Fin n → ℂ) × (Fin N → ℂ)) =
+        ((star bz).1, fun j => valAt' (e'.ex (star bz).1 (star bz).2).left V (f j)) := by
+      refine Prod.ext rfl (funext fun j => ?_)
+      show star (valAt' (exOf e' bz.1 bz.2).left V (f j)) = _
+      rw [exOf_left, valAt'_conj]
+      simp
+    show star (L' (star ((bz.1, fun j => valAt' (exOf e' bz.1 bz.2).left V (f j)) : (Fin n → ℂ) × (Fin N → ℂ)))) = bz.2
+    rw [e1, hbz]
+    exact star_star _
+  · rw [hval]
+    filter_upwards [hcp.eventually h4] with p hp x hx hxv
+    have h5 := hp (conjFwd ψ p.1 ≫ x) (top_le_comp _ _ hx) (fun j => by
+      show valAt' (κ ≫ x.left) V (f j) = star p.2 j
+      rw [valAt'_conj, hxv]
+      rfl)
+    show x = conjBack ψ p.1 ≫ e'.ex (star p.1) (star (star (L' (star p))))
+    rw [star_star]
+    refine Eq.trans ?_ (congrArg (fun y => conjBack ψ p.1 ≫ y) h5)
+    show x = conjBack ψ p.1 ≫ conjFwd ψ p.1 ≫ x
+    rw [← Category.assoc, conjBack_conjFwd, Category.id_comp]
+
+def famExpOfConj : Flat.FamExp G M (Metric.ball 0 ρ) ψ where
+  ex := exOf e'
+  add _ hb z w := exOf_add e' hb z w
+  hol := exOf_hol e'
+  diff _ hb a := exOf_diff e' hb a
+  log _ hb := exOf_log e' hb
+
+theorem mem_per_famExpOfConj (b : Fin n → ℂ) (p : Fin g → ℂ) :
+    p ∈ (famExpOfConj e').per b ↔ star p ∈ e'.per (star b) := by
+  have hone : ∀ {A A' : Over (Sp R)} (c : A ⟶ A'), c ≫ (1 : A' ⟶ G) = 1 := fun c => by
+    rw [Hom.one_def, Hom.one_def, ← Category.assoc, toUnit_unique (c ≫ toUnit _) (toUnit _)]
+  constructor
+  · intro h
+    have h1 : conjBack ψ b ≫ e'.ex (star b) (star p) = 1 := h
+    show e'.ex (star b) (star p) = 1
+    have h2 := congrArg (fun y => conjFwd ψ b ≫ y) h1
+    simp only [hone, ← Category.assoc, conjFwd_conjBack, Category.id_comp] at h2
+    exact h2
+  · intro h
+    have h1 : e'.ex (star b) (star p) = 1 := h
+    show conjBack ψ b ≫ e'.ex (star b) (star p) = 1
+    rw [h1, hone]
+
+theorem exists_famExp_of_conj : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] (g n : ℕ) (M : LieModel G (𝟙 (Sp R)) (Fin g → R)) (ρ : ℝ) (ψ : (Fin n → ℂ) → (R →+* ℂ)) (e' : Flat.FamExp G M (Metric.ball 0 ρ) (Flat.Conj.conjPts ψ)), ∃ e : Flat.FamExp G M (Metric.ball 0 ρ) ψ, ∀ b p, p ∈ e.per b ↔ star p ∈ e'.per (star b) :=
+  fun _ _ _ _ _ _ _ _ _ e' => ⟨famExpOfConj e', mem_per_famExpOfConj e'⟩
+
+end GlobalTheory.CompanionTheory.Ar.Flat.ConjExp
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.family_exponential_conjugate : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] (g n : ℕ) (M : LieModel G (𝟙 (Sp R)) (Fin g → R)) (ρ : ℝ) (ψ : (Fin n → ℂ) → (R →+* ℂ)) (e' : Flat.FamExp G M (Metric.ball 0 ρ) (Flat.Conj.conjPts ψ)), ∃ e : Flat.FamExp G M (Metric.ball 0 ρ) ψ, ∀ b p, p ∈ e.per b ↔ star p ∈ e'.per (star b) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.ConjExp.exists_famExp_of_conj
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.Ar.Flat.LogPer
+
+open GroundTheory.Heights₂.Heights.Regular
+
+variable {n a g : ℕ} {Λ : Type} [AddCommGroup Λ]
+
+theorem add_single_mem_logCover (h : a ≤ n) {w : Fin n → ℂ} (hw : w ∈ logCover h) (i : Fin a) :
+    w + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I) ∈ logCover h := by
+  refine ⟨fun j => ?_, fun k hk => ?_⟩
+  · by_cases hj : Fin.castLE h j = Fin.castLE h i
+    · simpa [hj, Pi.single_apply] using (by simpa [hj] using hw.1 j)
+    · simpa [Pi.single_apply, hj] using hw.1 j
+  · have hki : k ≠ Fin.castLE h i := by
+      rintro rfl
+      simp at hk
+      omega
+    simpa [Pi.single_apply, hki] using hw.2 k hk
+
+theorem expCover_add_single (h : a ≤ n) (w : Fin n → ℂ) (i : Fin a) :
+    expCover a (w + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I)) = expCover a w := by
+  funext k
+  by_cases hk : k = Fin.castLE h i
+  · subst hk
+    have hi : (Fin.castLE h i).val < a := i.2
+    simp only [expCover, Pi.add_apply, Pi.single_eq_same, if_pos hi, Complex.exp_add,
+      Complex.exp_two_pi_mul_I]
+    exact mul_one _
+  · simp [expCover, Pi.single_apply, hk]
+
+theorem exists_mem_logCover (h : a ≤ n) : ∃ w : Fin n → ℂ, w ∈ logCover h := by
+  refine ⟨fun k => if k.val < a then -1 else 0, fun i => ?_, fun k hk => ?_⟩
+  · have hi : (Fin.castLE h i).val < a := i.2
+    simp only [if_pos hi]
+    simp
+  · simp [not_lt.2 hk]
+
+theorem monodromy_preserves_form (L : Flat.LogPeriods n a g Λ) (i : Fin a) (x y : Λ) :
+    L.E (L.T i x) (L.T i y) = L.E x y := by
+  obtain ⟨w, hw⟩ := exists_mem_logCover L.a_le
+  have h1 := L.im _ (add_single_mem_logCover L.a_le hw i) x y
+  rw [L.mono i w hw, L.mono i w hw, expCover_add_single, L.im w hw] at h1
+  exact_mod_cast h1
+
+theorem T_bijective (L : Flat.LogPeriods n a g Λ) (i : Fin a) : Function.Bijective (L.T i) := by
+  haveI := L.fin
+  let e : Λ ≃ₗ[ℤ] Module.Dual ℤ Λ := LinearEquiv.ofBijective L.E L.unimod
+  let S : Λ →ₗ[ℤ] Λ := e.symm.toLinearMap ∘ₗ (L.T i).dualMap ∘ₗ e.toLinearMap
+  have hE : ∀ x y, L.E (S x) y = L.E x (L.T i y) := by
+    intro x y
+    have h1 : e (S x) = (L.T i).dualMap (e x) := by simp [S]
+    exact congrArg (fun f : Module.Dual ℤ Λ => f y) h1
+  have hST : ∀ x, S (L.T i x) = x := fun x =>
+    L.unimod.1 (LinearMap.ext fun y => by rw [hE, monodromy_preserves_form])
+  have hSs : Function.Surjective S := fun x => ⟨_, hST x⟩
+  have hSi : Function.Injective S := OrzechProperty.injective_of_surjective_endomorphism S hSs
+  exact ⟨fun x y h => by rw [← hST x, ← hST y, h], fun y => ⟨S y, hSi (hST (S y))⟩⟩
+
+theorem exists_conj_logPeriods : ∀ (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] (L' : Flat.LogPeriods n a g Λ),
+    ∃ L : Flat.LogPeriods n a g Λ, (∀ w x, L.P w x = star (L'.P (star w) x)) ∧
+      ∀ z, L.H z = (L'.H (star z)).map (starRingEnd ℂ) := by
+  intro n a g Λ _ L'
+  exact ⟨ConjPeriods.conj L' (T_bijective L'), fun _ _ => rfl, fun _ => rfl⟩
+
+end GlobalTheory.CompanionTheory.Ar.Flat.LogPer
+end
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.log_periods_conjugate_exists : ∀ (n a g : ℕ) (Λ : Type) [AddCommGroup Λ] (L' : Flat.LogPeriods n a g Λ), ∃ L : Flat.LogPeriods n a g Λ, (∀ w x, L.P w x = star (L'.P (star w) x)) ∧ ∀ z, L.H z = (L'.H (star z)).map (starRingEnd ℂ) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.LogPer.exists_conj_logPeriods
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField Matrix Filter Topology
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
@@ -270,3 +782,4 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.boundary_chart_log_period_family : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Tor.Level H) (Xo : Moduli D l) (σ : KA l →+* ℂ) (n a : ℕ) (C : Flat.BdryChart Xo σ n a), 1 ≤ D.p + D.q → ∃ (ρ : ℝ) (Λ : Type) (_ : AddCommGroup Λ) (L : Flat.LogPeriods n a C.g Λ) (e : Flat.FamExp C.t.G C.M (Metric.ball 0 ρ) C.ψ), 0 < ρ ∧ ρ ≤ 1 ∧ (∀ w ∈ GroundTheory.Heights₂.Heights.Regular.logCover L.a_le, ∀ p, p ∈ e.per ((ρ : ℂ) • GroundTheory.Heights₂.Heights.Regular.expCover a w) ↔ ∃ x, L.P w x = p) ∧ ∀ z ∈ Flat.punct n a 1, C.IsRiem ((ρ : ℂ) • z) (L.H z) := by
   atlas_forward_decl GlobalTheory.CompanionTheory.Ar.Flat.Conj.exists_logPeriods_famExp_isRiem
+end

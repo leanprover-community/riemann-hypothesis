@@ -3,11 +3,257 @@ import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleF
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifUniqSt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.TwistBCPf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SaturationChartsHolds
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirectionsAreEigenvectorsStatement
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.PowSubSelfMemSpanOfSplitsCompletely
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirectionsAreEigenvectors
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HomValueCongruentIntModPrime
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsSeparatingModPrimePow
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsDualFormsOfSeparatedTypes
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.ExpBijectiveUniformisation Formalism.MainNotions.ModuliIntegralCharts.H1.GSt
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
+attribute [local instance] Over.cartesianMonoidalCategory
+open Formalism.MainNotions.ModuliIntegralCharts.H1.BoxTuple Formalism.MainNotions.ModuliIntegralCharts.H1.BidegreeTwoJet GlobalTheory GlobalTheory.PowGerm
+open ReciprocityTheory.ChartRestriction.G.TB (colM dAct)
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.integral_chart_directions_are_eigenvectors : EigDirSt := by
+  first | exact @GlobalTheory.PowGerm.eigDirSt | exact GlobalTheory.PowGerm.eigDirSt | (intros; apply GlobalTheory.PowGerm.eigDirSt <;> assumption)
+end
+
+section
+open NumberField
+
+namespace GlobalTheory
+
+theorem eq_of_le_of_multiset_prod_eq_pow_card {g : ℕ} (hg : 0 < g) (s : Multiset ℕ)
+    (hle : ∀ a ∈ s, g ≤ a) (hprod : s.prod = g ^ s.card) : ∀ a ∈ s, a = g := by
+  intro a ha
+  obtain ⟨t, rfl⟩ := Multiset.exists_cons_of_mem ha
+  have ht : g ^ t.card ≤ t.prod :=
+    Multiset.pow_card_le_prod (fun b hb => hle b (Multiset.mem_cons_of_mem hb))
+  rw [Multiset.prod_cons, Multiset.card_cons, pow_succ'] at hprod
+  have hpos : 0 < g ^ t.card := pow_pos hg _
+  have h1 : a * g ^ t.card ≤ g * g ^ t.card := hprod ▸ Nat.mul_le_mul_left a ht
+  exact le_antisymm (Nat.le_of_mul_le_mul_right h1 hpos) (hle a (Multiset.mem_cons_self _ _))
+
+theorem pow_sub_self_mem_span_of_splits_completely (E : Type) [Field E] [NumberField E] (g : ℕ)
+    (hg : g.Prime)
+    (hcard : (UniqueFactorizationMonoid.normalizedFactors (Ideal.span {(g : 𝓞 E)})).card =
+      Module.finrank ℚ E)
+    (hnd : (UniqueFactorizationMonoid.normalizedFactors (Ideal.span {(g : 𝓞 E)})).Nodup)
+    (x : 𝓞 E) : x ^ g - x ∈ Ideal.span {(g : 𝓞 E)} := by
+  classical
+  set I : Ideal (𝓞 E) := Ideal.span {(g : 𝓞 E)} with hI
+  set s := UniqueFactorizationMonoid.normalizedFactors I with hs
+  have hI0 : I ≠ ⊥ := by
+    rw [hI, Ne, Ideal.span_singleton_eq_bot]
+    exact_mod_cast hg.ne_zero
+  have hprod : s.prod = I := Ideal.prod_normalizedFactors_eq_self hI0
+  have hprime : ∀ P ∈ s, Prime P := fun P hP =>
+    UniqueFactorizationMonoid.prime_of_normalized_factor P hP
+  have hN : Ideal.absNorm I = g ^ Module.finrank ℚ E := by
+    rw [hI, Ideal.absNorm_span_natCast, RingOfIntegers.rank]
+  have hle : ∀ a ∈ s.map Ideal.absNorm, g ≤ a := by
+    intro a ha
+    obtain ⟨P, hP, rfl⟩ := Multiset.mem_map.mp ha
+    have hdvd : Ideal.absNorm P ∣ g ^ Module.finrank ℚ E := by
+      rw [← hN, ← hprod]
+      exact map_dvd _ (Multiset.dvd_prod hP)
+    obtain ⟨k, -, hk⟩ := (Nat.dvd_prime_pow hg).mp hdvd
+    have hk0 : k ≠ 0 := by
+      rintro rfl
+      rw [pow_zero, Ideal.absNorm_eq_one_iff] at hk
+      exact (hprime P hP).ne_one (by rw [hk, Ideal.one_eq_top])
+    rw [hk]
+    exact Nat.le_self_pow hk0 g
+  have hall : ∀ a ∈ s.map Ideal.absNorm, a = g := by
+    refine eq_of_le_of_multiset_prod_eq_pow_card hg.pos _ hle ?_
+    rw [← map_multiset_prod, hprod, hN, Multiset.card_map, hcard]
+  have hmem : ∀ P ∈ s, x ^ g - x ∈ P := by
+    intro P hP
+    have hNP : Ideal.absNorm P = g := hall _ (Multiset.mem_map_of_mem _ hP)
+    have hPp : P.IsPrime := Ideal.isPrime_of_prime (hprime P hP)
+    have hPm : P.IsMaximal := hPp.isMaximal (hprime P hP).ne_zero
+    have hc : Nat.card (𝓞 E ⧸ P) = g := by
+      rw [← hNP, Ideal.absNorm_apply, Submodule.cardQuot_apply]
+    have hfin : Finite (𝓞 E ⧸ P) := Nat.finite_of_card_ne_zero (hc ▸ hg.ne_zero)
+    let := Fintype.ofFinite (𝓞 E ⧸ P)
+    let := Ideal.Quotient.field P
+    rw [← Ideal.Quotient.eq, map_pow, ← hc, Nat.card_eq_fintype_card]
+    exact FiniteField.pow_card _
+  have hdvd : (∏ P ∈ (⟨s, hnd⟩ : Finset (Ideal (𝓞 E))), P) ∣ Ideal.span {x ^ g - x} :=
+    Finset.prod_primes_dvd _ hprime fun P hP =>
+      Ideal.dvd_span_singleton.mpr (hmem P hP)
+  have he : (∏ P ∈ (⟨s, hnd⟩ : Finset (Ideal (𝓞 E))), P) = I := by
+    rw [← hprod, Finset.prod_mk, Multiset.map_id']
+  rw [he] at hdvd
+  exact Ideal.dvd_span_singleton.mp hdvd
+
+end GlobalTheory
+end
+
+section
+namespace GlobalTheory
+
+theorem _root_.GlobalTheory.exists_isUnit_sub_of_ringHom_ne : ∀ (A O : Type) [CommRing A] [Module.Finite ℤ A] [CommRing O] [IsLocalRing O] (g : ℕ), g.Prime → ¬ IsUnit (g : O) → (∀ x : A, x ^ g - x ∈ Ideal.span {(g : A)}) → ∀ σ σ' : A →+* O, σ ≠ σ' → ∃ a : A, IsUnit (σ a - σ' a) := by
+  intro A O _ _ _ _ g hg hgO hA σ σ' hne
+  by_contra hcon
+  push_neg at hcon
+  apply hne
+  have hgm : (g : O) ∈ IsLocalRing.maximalIdeal O :=
+    (IsLocalRing.mem_maximalIdeal _).mpr (mem_nonunits_iff.mpr hgO)
+  have hspan : Ideal.span {(g : O)} ≤ IsLocalRing.maximalIdeal O :=
+    (Ideal.span_singleton_le_iff_mem _).mpr hgm
+  obtain ⟨s, hs⟩ := Module.Finite.fg_top (R := ℤ) (M := A)
+  set J : Ideal O := Ideal.span ((fun a => σ a - σ' a) '' (s : Set A)) with hJ
+  have hmem : ∀ a : A, σ a - σ' a ∈ J := by
+    intro a
+    have ha : a ∈ Submodule.span ℤ (s : Set A) := hs ▸ Submodule.mem_top
+    induction ha using Submodule.span_induction with
+    | mem y hy => exact Ideal.subset_span ⟨y, hy, rfl⟩
+    | zero => simp
+    | add y z _ _ hy hz =>
+        have : σ (y + z) - σ' (y + z) = (σ y - σ' y) + (σ z - σ' z) := by
+          rw [map_add, map_add]; ring
+        rw [this]
+        exact J.add_mem hy hz
+    | smul n y _ hy =>
+        have : σ (n • y) - σ' (n • y) = (n : O) * (σ y - σ' y) := by
+          simp [zsmul_eq_mul, mul_sub]
+        rw [this]
+        exact J.mul_mem_left _ hy
+  have hgk : (g : IsLocalRing.ResidueField O) = 0 := by
+    rw [← map_natCast (IsLocalRing.residue O), IsLocalRing.residue_eq_zero_iff]
+    exact hgm
+  have hle : J ≤ Ideal.span {(g : O)} • J := by
+    rw [hJ, Ideal.span_le]
+    rintro _ ⟨a, -, rfl⟩
+    obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.mp (hA a)
+    have hc1 : σ c * g = σ a ^ g - σ a := by
+      rw [← map_natCast σ g, ← map_mul, hc, map_sub, map_pow]
+    have hc2 : σ' c * g = σ' a ^ g - σ' a := by
+      rw [← map_natCast σ' g, ← map_mul, hc, map_sub, map_pow]
+    have hgeom := geom_sum₂_mul (σ a) (σ' a) g
+    have key : (σ a - σ' a) * ((∑ i ∈ Finset.range g, σ a ^ i * σ' a ^ (g - 1 - i)) - 1) =
+        (g : O) * (σ c - σ' c) := by
+      linear_combination hgeom - hc1 + hc2
+    have hr : IsLocalRing.residue O (σ' a) = IsLocalRing.residue O (σ a) := by
+      rw [eq_comm, ← sub_eq_zero, ← map_sub, IsLocalRing.residue_eq_zero_iff]
+      exact (IsLocalRing.mem_maximalIdeal _).mpr (mem_nonunits_iff.mpr (hcon a))
+    have hS : (∑ i ∈ Finset.range g, σ a ^ i * σ' a ^ (g - 1 - i)) ∈
+        IsLocalRing.maximalIdeal O := by
+      rw [← IsLocalRing.residue_eq_zero_iff, map_sum]
+      simp_rw [map_mul, map_pow, hr, ← pow_add]
+      rw [Finset.sum_congr rfl (g := fun _ => IsLocalRing.residue O (σ a) ^ (g - 1))
+        (fun i hi => by have := Finset.mem_range.mp hi; congr 1; omega)]
+      rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, hgk, zero_mul]
+    have hu : IsUnit ((∑ i ∈ Finset.range g, σ a ^ i * σ' a ^ (g - 1 - i)) - 1) := by
+      by_contra hu
+      have h1 : (1 : O) ∈ IsLocalRing.maximalIdeal O := by
+        have := Ideal.sub_mem _ hS
+          ((IsLocalRing.mem_maximalIdeal _).mpr (mem_nonunits_iff.mpr hu))
+        simpa using this
+      exact (IsLocalRing.maximalIdeal.isMaximal O).ne_top ((Ideal.eq_top_iff_one _).mpr h1)
+    have : σ a - σ' a = ((g : O) * (σ c - σ' c)) * ↑hu.unit⁻¹ := by
+      rw [← key, mul_assoc, IsUnit.mul_val_inv, mul_one]
+    show σ a - σ' a ∈ (Ideal.span {(g : O)} • J : Ideal O)
+    rw [this, Ideal.smul_eq_mul]
+    exact Ideal.mul_mem_right _ _
+      (Ideal.mul_mem_mul (Ideal.mem_span_singleton_self _) (hmem c))
+  have hfg : J.FG := by
+    classical
+    exact ⟨s.image (fun a => σ a - σ' a), by rw [Finset.coe_image]⟩
+  have hjac : Ideal.span {(g : O)} ≤ (⊥ : Ideal O).jacobson := by
+    rw [IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top]
+    exact hspan
+  have hbot := Submodule.eq_bot_of_le_smul_of_le_jacobson_bot _ J hfg hle hjac
+  ext a
+  have := hmem a
+  rw [hbot] at this
+  exact sub_eq_zero.mp ((Submodule.mem_bot _).mp this)
+
+end GlobalTheory
+end
+
+section
+namespace GlobalTheory
+
+private lemma ringHom_pow_sub_mem_span {A O : Type} [CommRing A] [CommRing O] (g : ℕ)
+    (hA : ∀ x : A, x ^ g - x ∈ Ideal.span {(g : A)}) (σ : A →+* O) (x : A) :
+    σ x ^ g - σ x ∈ Ideal.span {(g : O)} := by
+  obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.mp (hA x)
+  exact Ideal.mem_span_singleton'.mpr
+    ⟨σ c, by rw [← map_natCast σ g, ← map_mul, hc, map_sub, map_pow]⟩
+
+theorem _root_.GlobalTheory.exists_separating_mod_prime_pow : ∀ (A O : Type) [CommRing A] [Module.Finite ℤ A] [CommRing O] [IsLocalRing O] (g : ℕ), g.Prime → ¬ IsUnit (g : O) → (∀ x : A, x ^ g - x ∈ Ideal.span {(g : A)}) → ∀ (T : Type) [Fintype T] [DecidableEq T] (σ : T → A →+* O), Function.Injective σ → ∀ (K : ℕ) (t₀ : T), ∃ e : A, ∀ t, σ t e - (if t = t₀ then 1 else 0) ∈ Ideal.span {(g : O) ^ K} := by
+  intro A O _ _ _ _ g hg hgO hA T _ _ σ hσ K t₀
+  have h2 : 2 ≤ g := hg.two_le
+  have hgm : (g : O) ∈ IsLocalRing.maximalIdeal O :=
+    (IsLocalRing.mem_maximalIdeal _).mpr (mem_nonunits_iff.mpr hgO)
+  have hspan : Ideal.span {(g : O)} ≤ IsLocalRing.maximalIdeal O :=
+    (Ideal.span_singleton_le_iff_mem _).mpr hgm
+  have hb : ∀ t, t ≠ t₀ → ∃ b : A, σ t b ∈ Ideal.span {(g : O)} ∧ IsUnit (σ t₀ b) := by
+    intro t ht
+    obtain ⟨a, ha⟩ := _root_.GlobalTheory.exists_isUnit_sub_of_ringHom_ne A O g hg hgO hA (σ t₀) (σ t)
+      (fun h => ht (hσ h).symm)
+    obtain ⟨⟨i, hi⟩, -⟩ := _root_.GlobalTheory.hom_value_congruent_int_mod_prime A O g hg hgO hA (σ t) a
+    refine ⟨a - (i : A), by rwa [map_sub, map_intCast], ?_⟩
+    rw [map_sub, map_intCast]
+    by_contra hn
+    have h1 : σ t₀ a - (i : O) ∈ IsLocalRing.maximalIdeal O :=
+      (IsLocalRing.mem_maximalIdeal _).mpr (mem_nonunits_iff.mpr hn)
+    have h3 : σ t₀ a - σ t a ∈ IsLocalRing.maximalIdeal O := by
+      have := Ideal.sub_mem _ h1 (hspan hi)
+      rwa [sub_sub_sub_cancel_right] at this
+    exact (mem_nonunits_iff.mp ((IsLocalRing.mem_maximalIdeal _).mp h3)) ha
+  choose! b hb1 hb2 using hb
+  obtain ⟨c, hc0, hct⟩ : ∃ c : A, IsUnit (σ t₀ c) ∧ ∀ t, t ≠ t₀ → σ t c ∈ Ideal.span {(g : O)} := by
+    refine ⟨∏ t ∈ Finset.univ.erase t₀, b t, ?_, fun t ht => ?_⟩
+    · rw [map_prod]
+      exact Finset.prod_induction _ IsUnit (fun _ _ => IsUnit.mul) isUnit_one
+        (fun t ht => hb2 t (Finset.ne_of_mem_erase ht))
+    · rw [map_prod, ← Finset.mul_prod_erase _ _ (Finset.mem_erase.mpr ⟨ht, Finset.mem_univ t⟩)]
+      exact Ideal.mul_mem_right _ _ (hb1 t ht)
+  obtain ⟨f, hf0, hft⟩ : ∃ f : A, σ t₀ f - 1 ∈ Ideal.span {(g : O)} ∧
+      ∀ t, t ≠ t₀ → σ t f ∈ Ideal.span {(g : O)} := by
+    refine ⟨c ^ (g - 1), ?_, fun t ht => ?_⟩
+    · rw [map_pow]
+      have hz : σ t₀ c * (σ t₀ c ^ (g - 1) - 1) = σ t₀ c ^ g - σ t₀ c := by
+        rw [mul_sub, mul_one, ← pow_succ']
+        congr 2
+        omega
+      have : σ t₀ c ^ (g - 1) - 1 = (σ t₀ c ^ g - σ t₀ c) * ↑hc0.unit⁻¹ := by
+        rw [← hz, mul_comm (σ t₀ c), mul_assoc, IsUnit.mul_val_inv, mul_one]
+      rw [this]
+      exact Ideal.mul_mem_right _ _ (ringHom_pow_sub_mem_span g hA (σ t₀) c)
+    · rw [map_pow]
+      exact Ideal.pow_mem_of_mem _ (hct t ht) _ (by omega)
+  refine ⟨1 - (1 - f ^ K) ^ K, fun t => ?_⟩
+  rw [← Ideal.span_singleton_pow]
+  split_ifs with ht
+  · subst ht
+    simp only [map_sub, map_one, map_pow]
+    have h1 : 1 - σ t f ^ K ∈ Ideal.span {(g : O)} := by
+      rw [← Ideal.Quotient.eq_zero_iff_mem] at hf0 ⊢
+      rw [map_sub, map_one, map_pow]
+      rw [map_sub, map_one, sub_eq_zero] at hf0
+      rw [hf0, one_pow, sub_self]
+    have : 1 - (1 - σ t f ^ K) ^ K - 1 = -((1 - σ t f ^ K) ^ K) := by ring
+    rw [this]
+    exact neg_mem (Ideal.pow_mem_pow h1 K)
+  · simp only [map_sub, map_one, map_pow]
+    have hw : σ t f ^ K ∈ Ideal.span {(g : O)} ^ K := Ideal.pow_mem_pow (hft t ht) K
+    have hgs := geom_sum_mul (1 - σ t f ^ K) K
+    have : 1 - (1 - σ t f ^ K) ^ K - 0 =
+        (∑ i ∈ Finset.range K, (1 - σ t f ^ K) ^ i) * σ t f ^ K := by
+      linear_combination hgs
+    rw [this]
+    exact Ideal.mul_mem_left _ _ hw
+
+end GlobalTheory
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.ExpBijectiveUniformisation Formalism.MainNotions.ModuliIntegralCharts.H1.GSt
@@ -150,3 +396,4 @@ theorem exists_integral_types_and_directions : ∀ (E : Type) [Field E] [NumberF
     · rw [if_neg ht, if_neg (Ne.symm ht), map_zero]
 
 end GlobalTheory.PowGerm
+end

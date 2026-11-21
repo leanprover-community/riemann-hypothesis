@@ -1,9 +1,184 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.DefiniteBound
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsGensModNsmulOfFgNumberField
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatticeModRepsCardLe
+import BuildAid.ForwardExisting
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
 
+section
+section
+open NumberField
+
+namespace GlobalTheory.GensModNsmul
+
+theorem exists_gen_mod_nsmul_of_linearMap (E : Type) [Field E] [NumberField E] (M : ℕ) (hM : 1 ≤ M)
+    (N : Type) [AddCommGroup N] [Module (𝓞 E) N] [Module.Finite (𝓞 E) N] (π : N →ₗ[𝓞 E] E) :
+    ∃ l : N, ∀ x : N, ∃ o : 𝓞 E, ∃ y : N, π x = o • π l + M • π y := by
+  have hfg : (LinearMap.range π).FG := by
+    rw [LinearMap.range_eq_map]; exact Module.Finite.fg_top.map _
+  obtain ⟨d, hd, hint⟩ := FractionalIdeal.isFractional_of_fg (S := nonZeroDivisors (𝓞 E)) hfg
+  have hd0 : d ≠ 0 := nonZeroDivisors.ne_zero hd
+  have hd0' : (algebraMap (𝓞 E) E d) ≠ 0 := by simpa using hd0
+  set I : Ideal (𝓞 E) := Submodule.comap (Algebra.linearMap (𝓞 E) E) (LinearMap.range (d • π)) with hI
+  have hmem : ∀ a : 𝓞 E, a ∈ I ↔ ∃ x : N, d • π x = algebraMap (𝓞 E) E a := by
+    intro a; simp [hI]
+  have hM0 : (M : 𝓞 E) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+  have key : ∃ a ∈ I, Ideal.span {(M : 𝓞 E)} * I ⊔ Ideal.span {a} = I := by
+    by_cases h : I = ⊥
+    · exact ⟨0, I.zero_mem, by simp [h]⟩
+    · obtain ⟨a, ha⟩ := IsDedekindDomain.exists_sup_span_eq
+        (I := Ideal.span {(M : 𝓞 E)} * I) (J := I) Ideal.mul_le_right
+        (mul_ne_zero (by simpa using hM0) h)
+      refine ⟨a, ?_, ha⟩
+      rw [← ha]
+      exact Ideal.mem_sup_right (Ideal.mem_span_singleton_self a)
+  obtain ⟨a, haI, ha⟩ := key
+  obtain ⟨l, hl⟩ := (hmem a).1 haI
+  refine ⟨l, fun x => ?_⟩
+  obtain ⟨b, hb⟩ := hint (π x) ⟨x, rfl⟩
+  have hbI : b ∈ I := (hmem b).2 ⟨x, hb.symm⟩
+  rw [← ha, Submodule.mem_sup] at hbI
+  obtain ⟨u, hu, v, hv, huv⟩ := hbI
+  obtain ⟨c, hc, rfl⟩ := Ideal.mem_span_singleton_mul.1 hu
+  obtain ⟨o, rfl⟩ := Ideal.mem_span_singleton'.1 hv
+  obtain ⟨y, hy⟩ := (hmem c).1 hc
+  refine ⟨o, y, ?_⟩
+  apply mul_left_cancel₀ hd0'
+  rw [Algebra.smul_def] at hb hl hy
+  rw [← hb, ← huv, Algebra.smul_def, nsmul_eq_mul, map_add, map_mul, map_mul, map_natCast, ← hl, ← hy]
+  ring
+
+theorem exists_gens_mod_nsmul_of_injective (E : Type) [Field E] [NumberField E] (M : ℕ) (hM : 1 ≤ M)
+    (r : ℕ) : ∀ (N : Type) [AddCommGroup N] [Module (𝓞 E) N] [Module.Finite (𝓞 E) N]
+    (f : N →ₗ[𝓞 E] (Fin r → E)), Function.Injective f →
+    ∃ e : Fin r → N, ∀ x : N, ∃ o : Fin r → 𝓞 E, ∃ y : N, x = ∑ i, o i • e i + M • y := by
+  induction r with
+  | zero =>
+    intro N _ _ _ f hf
+    refine ⟨Fin.elim0, fun x => ⟨Fin.elim0, 0, ?_⟩⟩
+    simpa using hf (Subsingleton.elim (f x) (f 0))
+  | succ r ih =>
+    intro N _ _ _ f hf
+    let π : N →ₗ[𝓞 E] E := (LinearMap.proj 0) ∘ₗ f
+    obtain ⟨l, hl⟩ := exists_gen_mod_nsmul_of_linearMap E M hM N π
+    let f' : LinearMap.ker π →ₗ[𝓞 E] (Fin r → E) :=
+      LinearMap.pi fun i => (LinearMap.proj i.succ) ∘ₗ f ∘ₗ (LinearMap.ker π).subtype
+    have hf' : Function.Injective f' := by
+      rw [injective_iff_map_eq_zero]
+      intro x hx
+      apply Subtype.ext
+      apply hf
+      funext i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · rw [Submodule.coe_zero, map_zero]; exact x.2
+      · simpa [f'] using congrFun hx j
+    obtain ⟨e, he⟩ := ih (LinearMap.ker π) f' hf'
+    refine ⟨Fin.cons l (fun i => (e i : N)), fun x => ?_⟩
+    obtain ⟨o, y, hoy⟩ := hl x
+    have hk : x - o • l - M • y ∈ LinearMap.ker π := by
+      rw [LinearMap.mem_ker, map_sub, map_sub, map_smul, map_nsmul, hoy]; abel
+    obtain ⟨o', y', h'⟩ := he ⟨_, hk⟩
+    refine ⟨Fin.cons o o', y + y', ?_⟩
+    have h2 := congrArg Subtype.val h'
+    simp only [Submodule.coe_add, Submodule.coe_sum, Submodule.coe_smul,
+      Submodule.coe_smul_of_tower] at h2
+    simp only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ, smul_add]
+    have : x = o • l + M • y + (x - o • l - M • y) := by abel
+    rw [this, h2]; abel
+
+theorem exists_gens_mod_nsmul (E : Type) [Field E] [NumberField E] (r M : ℕ)
+    (Λ : Submodule (𝓞 E) (Fin r → E)) (hM : 1 ≤ M) (hΛ : Λ.FG) :
+    ∃ e : Fin r → Fin r → E, (∀ i, e i ∈ Λ) ∧
+      ∀ x ∈ Λ, ∃ o : Fin r → 𝓞 E, ∃ y ∈ Λ, x = ∑ i, o i • e i + M • y := by
+  haveI : Module.Finite (𝓞 E) Λ := Module.Finite.iff_fg.2 hΛ
+  obtain ⟨e, he⟩ := exists_gens_mod_nsmul_of_injective E M hM r Λ Λ.subtype Subtype.val_injective
+  refine ⟨fun i => e i, fun i => (e i).2, fun x hx => ?_⟩
+  obtain ⟨o, y, h⟩ := he ⟨x, hx⟩
+  refine ⟨o, y, y.2, ?_⟩
+  have h2 := congrArg Subtype.val h
+  simpa only [Submodule.coe_add, Submodule.coe_sum, Submodule.coe_smul,
+      Submodule.coe_smul_of_tower] using h2
+
+end GlobalTheory.GensModNsmul
+end
+
+open NumberField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_gens_mod_nsmul_of_fg_numberField : ∀ (E : Type) [Field E] [NumberField E] (r M : ℕ) (Λ : Submodule (𝓞 E) (Fin r → E)), 1 ≤ M → Λ.FG → ∃ e : Fin r → Fin r → E, (∀ i, e i ∈ Λ) ∧ ∀ x ∈ Λ, ∃ o : Fin r → 𝓞 E, ∃ y ∈ Λ, x = ∑ i, o i • e i + M • y := by
+  atlas_forward_decl GlobalTheory.GensModNsmul.exists_gens_mod_nsmul
+end
+
+section
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.FD
+
+namespace GlobalTheory
+
+theorem lattice_mod_reps_card_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r M : ℕ)
+    (Λ : Submodule (𝓞 E) (Fin r → E)), 1 ≤ M → Λ.FG → ∃ T : Finset (Fin r → E),
+    T.card ≤ M ^ (2 * fdeg E * r) ∧ (∀ t ∈ T, t ∈ Λ) ∧ ∀ x ∈ Λ, ∃ t ∈ T, ∃ y ∈ Λ, x = t + M • y := by
+  intro E _ _ _ r M Λ hM hfg
+  classical
+  let L : Submodule ℤ (Fin r → E) := Λ.restrictScalars ℤ
+  have hLfg : L.FG := hfg.restrictScalars
+  haveI : Module.Finite ℤ L := Module.Finite.iff_fg.mpr hLfg
+  haveI : Module.Free ℤ L := Module.free_of_finite_type_torsion_free'
+  let ι := Module.Free.ChooseBasisIndex ℤ L
+  let b := Module.Free.chooseBasis ℤ L
+  have hli : LinearIndependent ℤ (fun i => (b i : Fin r → E)) :=
+    b.linearIndependent.map' L.subtype (Submodule.ker_subtype L)
+  have hliQ : LinearIndependent ℚ (fun i => (b i : Fin r → E)) :=
+    (LinearIndependent.iff_fractionRing ℤ ℚ).mp hli
+  have hcard : Fintype.card ι ≤ Module.finrank ℚ (Fin r → E) := hliQ.fintype_card_le_finrank
+  have hfr : Module.finrank ℚ (Fin r → E) = r * Module.finrank ℚ E := by
+    simp [Module.finrank_pi_fintype]
+  have heven : Module.finrank ℚ E = 2 * fdeg E := by
+    rw [fdeg, IsTotallyComplex.finrank E]; omega
+  have hn : Fintype.card ι ≤ 2 * fdeg E * r := by
+    rw [hfr, heven] at hcard; linarith [Nat.mul_comm r (2 * fdeg E)]
+  have hMpos : (0 : ℤ) < M := by exact_mod_cast hM
+  let f : (ι → Fin M) → (Fin r → E) := fun c => ((∑ i, ((c i : ℕ) : ℤ) • b i : L) : Fin r → E)
+  refine ⟨Finset.univ.image f, ?_, ?_, ?_⟩
+  · calc (Finset.univ.image f).card ≤ (Finset.univ : Finset (ι → Fin M)).card :=
+          Finset.card_image_le
+      _ = M ^ Fintype.card ι := by simp
+      _ ≤ M ^ (2 * fdeg E * r) := Nat.pow_le_pow_right hM hn
+  · intro t ht
+    obtain ⟨c, -, rfl⟩ := Finset.mem_image.mp ht
+    exact (∑ i, ((c i : ℕ) : ℤ) • b i : L).2
+  · intro x hx
+    let xl : L := ⟨x, hx⟩
+    let k := b.repr xl
+    let c : ι → Fin M := fun i => ⟨(k i % M).toNat, by
+      have := Int.emod_nonneg (k i) hMpos.ne'
+      have := Int.emod_lt_of_pos (k i) hMpos
+      omega⟩
+    refine ⟨f c, Finset.mem_image_of_mem _ (Finset.mem_univ _),
+      ((∑ i, (k i / M) • b i : L) : Fin r → E), (∑ i, (k i / M) • b i : L).2, ?_⟩
+    have hsum : xl = ∑ i, ((c i : ℕ) : ℤ) • b i + (M : ℤ) • ∑ i, (k i / M) • b i := by
+      conv_lhs => rw [← b.sum_repr xl]
+      rw [Finset.smul_sum, ← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [smul_smul, ← add_smul]
+      congr 1
+      show k i = ((k i % M).toNat : ℤ) + M * (k i / M)
+      rw [Int.toNat_of_nonneg (Int.emod_nonneg _ hMpos.ne')]
+      linarith [Int.mul_ediv_add_emod (k i) (M : ℤ)]
+    have h2 := congrArg Subtype.val hsum
+    calc x = (xl : Fin r → E) := rfl
+      _ = _ := h2
+      _ = f c + M • ((∑ i, (k i / M) • b i : L) : Fin r → E) := by
+        rw [Submodule.coe_add, Submodule.coe_smul, natCast_zsmul]
+
+end GlobalTheory
+end
+
+open NumberField ReciprocityTheory.ChartRestriction.G.FD
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_reps_mod_lattice_card_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r M : ℕ) (Λ : Submodule (𝓞 E) (Fin r → E)), 1 ≤ M → Λ.FG → ∃ T : Finset (Fin r → E), T.card ≤ M ^ (2 * fdeg E * r) ∧ (∀ t ∈ T, t ∈ Λ) ∧ ∀ x ∈ Λ, ∃ t ∈ T, ∃ y ∈ Λ, x = t + M • y := by
+  atlas_forward_decl GlobalTheory.lattice_mod_reps_card_le
+end
+
+section
 open NumberField Matrix GlobalTheory.AdLat GlobalTheory.UCls ReciprocityTheory.ChartRestriction.G.FD
 open scoped TensorProduct
 
@@ -227,3 +402,5 @@ theorem exists_reps_mod_KM : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
     · rw [← mul_assoc, Matrix.mul_nonsing_inv _ (by rw [s'.2.2]; exact isUnit_one), one_mul]
 
 end GlobalTheory.UCls.IdxK
+end
+end

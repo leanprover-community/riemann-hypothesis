@@ -1,10 +1,319 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEqSumPowOfCommute
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EntryMemSubringOfTraceGramUnitStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetTracePowGramNeZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceMemOfPowBdd
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BoundedEntriesOfIsCompactClosureZpowersUnitary
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalPointsIntegralAlmostAll
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistedCentralizerIsNormOneTorus
 
+section
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.SepCommutant
+
+theorem exists_eq_sum_pow_of_commute :
+    ∀ {K : Type} [Field K] {n : ℕ} (g t : Matrix (Fin n) (Fin n) K), g.charpoly.Separable →
+    t * g = g * t → ∃ c : Fin n → K, t = ∑ i, c i • g ^ (i : ℕ) := by
+  intro K _ n g t hs hc
+  have hm := GlobalTheory.Tw.CentralizerAdjoin.mem_adjoin_of_commute g t hs hc
+  rw [Algebra.adjoin_singleton_eq_range_aeval] at hm
+  obtain ⟨p, rfl⟩ := hm
+  set r := p %ₘ g.charpoly with hr
+  have hmon : g.charpoly.Monic := Matrix.charpoly_monic g
+  have hae : aeval g p = aeval g r := by
+    exact (Polynomial.aeval_modByMonic_eq_self_of_root (Matrix.aeval_self_charpoly g)).symm
+  have hdeg : r.degree < n := by
+    have := Polynomial.degree_modByMonic_lt p hmon
+    rwa [Matrix.charpoly_degree_eq_dim, Fintype.card_fin] at this
+  refine ⟨fun i => r.coeff i, ?_⟩
+  change aeval g p = _
+  rw [hae, aeval_def, eval₂_eq_sum, ← Polynomial.sum_fin (fun e a => algebraMap K (Matrix (Fin n) (Fin n) K) a * g ^ e) (by simp) hdeg]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Algebra.smul_def]
+
+end GlobalTheory.SepCommutant
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_eq_sum_smul_pow_of_commute_of_separable : ∀ {K : Type} [Field K] {n : ℕ} (g t : Matrix (Fin n) (Fin n) K), g.charpoly.Separable →
+    t * g = g * t → ∃ c : Fin n → K, t = ∑ i, c i • g ^ (i : ℕ) := by
+  atlas_forward_decl GlobalTheory.SepCommutant.exists_eq_sum_pow_of_commute
+end
+
+section
+open Matrix
+
+namespace GlobalTheory.TraceGram
+
+theorem pow_entry_mem {K : Type} [Field K] (O : Subring K) {n : ℕ}
+    (g : Matrix (Fin n) (Fin n) K) (hg : ∀ i j, g i j ∈ O) (k : ℕ) : ∀ i j, (g ^ k) i j ∈ O := by
+  induction k with
+  | zero =>
+    intro i j
+    rw [pow_zero, Matrix.one_apply]
+    split_ifs
+    · exact O.one_mem
+    · exact O.zero_mem
+  | succ k ih =>
+    intro i j
+    rw [pow_succ, Matrix.mul_apply]
+    exact O.sum_mem fun l _ => O.mul_mem (ih i l) (hg l j)
+
+theorem adjugate_entry_mem {K : Type} [Field K] (O : Subring K) {n : ℕ}
+    (G : Matrix (Fin n) (Fin n) K) (hG : ∀ i j, G i j ∈ O) : ∀ i j, G.adjugate i j ∈ O := by
+  intro i j
+  let G' : Matrix (Fin n) (Fin n) O := Matrix.of fun i j => ⟨G i j, hG i j⟩
+  have h : O.subtype.mapMatrix G' = G := by
+    ext i j; rfl
+  rw [← h, ← RingHom.map_adjugate]
+  exact (G'.adjugate i j).2
+
+theorem entry_mem_of_trace_gram : ∀ {K : Type} [Field K] (O : Subring K) {n : ℕ} (g x : Matrix (Fin n) (Fin n) K) (c : Fin n → K),
+    x = ∑ i, c i • g ^ (i : ℕ) → (∀ i j, g i j ∈ O) → (∀ j : Fin n, (x * g ^ (j : ℕ)).trace ∈ O) →
+    (Matrix.of fun i j : Fin n => (g ^ ((i : ℕ) + j)).trace).det ≠ 0 →
+    ((Matrix.of fun i j : Fin n => (g ^ ((i : ℕ) + j)).trace).det)⁻¹ ∈ O → ∀ i j, x i j ∈ O := by
+  intro K _ O n g x c hx hg htr hdet hinv
+  set G : Matrix (Fin n) (Fin n) K := Matrix.of fun i j : Fin n => (g ^ ((i : ℕ) + j)).trace with hGdef
+  have hG : ∀ i j, G i j ∈ O := by
+    intro i j
+    simp only [hGdef, Matrix.of_apply, Matrix.trace, Matrix.diag_apply]
+    exact O.sum_mem fun l _ => pow_entry_mem O g hg _ l l
+  have hb : ∀ j, (c ᵥ* G) j ∈ O := by
+    intro j
+    have : (c ᵥ* G) j = (x * g ^ (j : ℕ)).trace := by
+      rw [hx, Finset.sum_mul, Matrix.trace_sum]
+      simp only [Matrix.vecMul, dotProduct, hGdef, Matrix.of_apply, smul_mul_assoc,
+        Matrix.trace_smul, smul_eq_mul, pow_add]
+    rw [this]; exact htr j
+  have hc : ∀ i, c i ∈ O := by
+    intro i
+    have h1 : (c ᵥ* G) ᵥ* G.adjugate = G.det • c := by
+      rw [Matrix.vecMul_vecMul, Matrix.mul_adjugate, Matrix.vecMul_smul, Matrix.vecMul_one]
+    have h2 : c i = (G.det)⁻¹ * ((c ᵥ* G) ᵥ* G.adjugate) i := by
+      rw [h1, Pi.smul_apply, smul_eq_mul, ← mul_assoc, inv_mul_cancel₀ hdet, one_mul]
+    rw [h2]
+    refine O.mul_mem hinv ?_
+    change ∑ l, (c ᵥ* G) l * G.adjugate l i ∈ O
+    exact O.sum_mem fun l _ => O.mul_mem (hb l) (adjugate_entry_mem O G hG l i)
+  intro i j
+  rw [hx, Matrix.sum_apply]
+  refine O.sum_mem fun l _ => ?_
+  rw [Matrix.smul_apply, smul_eq_mul]
+  exact O.mul_mem (hc l) (pow_entry_mem O g hg _ i j)
+
+end GlobalTheory.TraceGram
+end
+
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.entry_mem_subring_of_trace_gram_unit : ∀ {K : Type} [Field K] (O : Subring K) {n : ℕ} (g x : Matrix (Fin n) (Fin n) K) (c : Fin n → K),
+    x = ∑ i, c i • g ^ (i : ℕ) → (∀ i j, g i j ∈ O) → (∀ j : Fin n, (x * g ^ (j : ℕ)).trace ∈ O) →
+    (Matrix.of fun i j : Fin n => (g ^ ((i : ℕ) + j)).trace).det ≠ 0 →
+    ((Matrix.of fun i j : Fin n => (g ^ ((i : ℕ) + j)).trace).det)⁻¹ ∈ O → ∀ i j, x i j ∈ O := by
+  atlas_forward_decl GlobalTheory.TraceGram.entry_mem_of_trace_gram
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.TraceGram
+
+theorem det_trace_pow_gram_ne_zero {K : Type} [Field K] {n : ℕ} (g : Matrix (Fin n) (Fin n) K)
+    (hg : g.charpoly.Separable) :
+    (Matrix.of fun i j : Fin n => (g ^ ((i : ℕ) + j)).trace).det ≠ 0 := by
+  set L := AlgebraicClosure K
+  set f : K →+* L := algebraMap K L
+  set M : Matrix (Fin n) (Fin n) L := g.map f
+  have hMc : M.charpoly = g.charpoly.map f := Matrix.charpoly_map g f
+  have hnd : M.charpoly.roots.Nodup := by
+    rw [hMc]; exact nodup_roots (hg.map)
+  have hcard : M.charpoly.roots.toFinset.card = n := by
+    rw [Multiset.toFinset_card_of_nodup hnd, GlobalTheory.CharpolyPow.card_roots_charpoly]
+  set s := M.charpoly.roots.toFinset
+  let e : Fin n ≃ s := (Fin.castOrderIso hcard.symm).toEquiv.trans s.equivFin.symm
+  let v : Fin n → L := fun i => (e i : L)
+  have hv : Function.Injective v := fun a b h => e.injective (Subtype.ext h)
+  have hsum : ∀ φ : L → L, (M.charpoly.roots.map φ).sum = ∑ i, φ (v i) := by
+    intro φ
+    have : M.charpoly.roots = s.val := by
+      simp [s, Multiset.toFinset_val, Multiset.dedup_eq_self.mpr hnd]
+    rw [this, ← Finset.sum_eq_multiset_sum, ← Finset.sum_coe_sort s]
+    exact (Fintype.sum_equiv e _ _ (fun _ => rfl)).symm
+  have htr : ∀ m : ℕ, f (g ^ m).trace = ∑ i, v i ^ m := by
+    intro m
+    have h1 : f (g ^ m).trace = (M ^ m).trace := by
+      have hp : M ^ m = (g ^ m).map f := by simp [M, Matrix.map_pow]
+      rw [hp]; simp [Matrix.trace, Matrix.map_apply, map_sum]
+    rw [h1, Matrix.trace_eq_sum_roots_charpoly, GlobalTheory.CharpolyPow.roots_charpoly_pow, hsum]
+  have hG : (Matrix.of fun i j : Fin n => (g ^ ((i : ℕ) + j)).trace).map f
+      = (vandermonde v)ᵀ * vandermonde v := by
+    ext i j
+    rw [vandermonde_transpose_mul_vandermonde, Matrix.map_apply, Matrix.of_apply, htr]
+  intro h0
+  have hd := RingHom.map_det f (Matrix.of fun i j : Fin n => (g ^ ((i : ℕ) + j)).trace)
+  rw [h0, map_zero] at hd
+  have h2 : ((vandermonde v)ᵀ * vandermonde v).det = 0 := by
+    rw [← hG]; exact hd.symm
+  rw [det_mul, det_transpose, mul_self_eq_zero] at h2
+  exact det_vandermonde_ne_zero_iff.mpr hv h2
+
+end GlobalTheory.TraceGram
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.det_trace_pow_matrix_ne_zero_of_separable : ∀ {K : Type} [Field K] {n : ℕ} (g : Matrix (Fin n) (Fin n) K), g.charpoly.Separable →
+    (Matrix.of fun i j : Fin n => (g ^ ((i : ℕ) + j)).trace).det ≠ 0 := by
+  atlas_forward_decl GlobalTheory.TraceGram.det_trace_pow_gram_ne_zero
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.TraceBdd
+
+theorem trace_mem_valuationSubring_of_pow_bounded {K : Type} [Field K] (O : ValuationSubring K) [IsNoetherianRing O]
+    (n : ℕ) (y : Matrix (Fin n) (Fin n) K) (a : K) (ha : a ≠ 0)
+    (h : ∀ k : ℕ, ∀ i j, a * (y ^ k) i j ∈ O) : y.trace ∈ O := by
+  classical
+
+  let N : Submodule O (Matrix (Fin n) (Fin n) K) :=
+    Submodule.span O (Set.range fun p : Fin n × Fin n => a⁻¹ • Matrix.single p.1 p.2 (1 : K))
+  have hNfg : N.FG := Submodule.fg_span (Set.finite_range _)
+  haveI : IsNoetherian O N := isNoetherian_of_fg_of_noetherian N hNfg
+  have hpow : ∀ k : ℕ, y ^ k ∈ N := by
+    intro k
+    rw [Matrix.matrix_eq_sum_single (y ^ k)]
+    refine Submodule.sum_mem _ fun i _ => Submodule.sum_mem _ fun j _ => ?_
+    have hc : a * (y ^ k) i j ∈ O := h k i j
+    have : Matrix.single i j ((y ^ k) i j) =
+        (⟨a * (y ^ k) i j, hc⟩ : O) • (a⁻¹ • Matrix.single i j (1 : K)) := by
+      rw [← algebraMap_smul K (⟨a * (y ^ k) i j, hc⟩ : O), smul_smul, Matrix.smul_single, smul_eq_mul]
+      congr 1
+      change (y ^ k) i j = a * (y ^ k) i j * a⁻¹ * 1
+      field_simp
+    rw [this]
+    exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨(i, j), rfl⟩)
+  have hle : Subalgebra.toSubmodule (Algebra.adjoin O {y}) ≤ N := by
+    rw [Algebra.adjoin_eq_span, Submodule.span_le]
+    rintro x hx
+    obtain ⟨k, rfl⟩ := Submonoid.mem_closure_singleton.mp hx
+    exact hpow k
+  have hint : IsIntegral O y :=
+    isIntegral_of_submodule_noetherian _ (isNoetherian_of_le hle) y (Algebra.self_mem_adjoin_singleton O y)
+  obtain ⟨p, hpm, hp⟩ := hint
+
+  have hpL : aeval (y.map (algebraMap K (AlgebraicClosure K))) (p.map (algebraMap O (AlgebraicClosure K))) = 0 := by
+    have h1 : aeval y (p.map (algebraMap O K)) = 0 := by
+      rw [aeval_map_algebraMap]; exact hp
+    have h2 : aeval (y.map (algebraMap K (AlgebraicClosure K)))
+          ((p.map (algebraMap O K)).map (algebraMap K (AlgebraicClosure K))) =
+        (Algebra.ofId K (AlgebraicClosure K)).mapMatrix (aeval y (p.map (algebraMap O K))) := by
+      rw [aeval_map_algebraMap]
+      rw [← aeval_algHom_apply]
+      rfl
+    rw [IsScalarTower.algebraMap_eq O K (AlgebraicClosure K), ← Polynomial.map_map, h2, h1, map_zero]
+  have hroot : ∀ μ ∈ (y.map (algebraMap K (AlgebraicClosure K))).charpoly.roots, IsIntegral O μ := by
+    intro μ hμ
+    have hs : μ ∈ spectrum (AlgebraicClosure K) (y.map (algebraMap K (AlgebraicClosure K))) :=
+      Matrix.mem_spectrum_iff_isRoot_charpoly.2 (isRoot_of_mem_roots hμ)
+    have hs2 := spectrum.subset_polynomial_aeval (y.map (algebraMap K (AlgebraicClosure K)))
+      (p.map (algebraMap O (AlgebraicClosure K))) ⟨μ, hs, rfl⟩
+    rw [hpL] at hs2
+    have h0 : eval μ (p.map (algebraMap O (AlgebraicClosure K))) = 0 := by
+      by_contra hc
+      rw [spectrum.mem_iff, sub_zero] at hs2
+      exact hs2 ((Ne.isUnit hc).map _)
+    exact ⟨p, hpm, by rwa [eval_map] at h0⟩
+  have htr : algebraMap K (AlgebraicClosure K) y.trace = (y.map (algebraMap K (AlgebraicClosure K))).trace := by
+    simp [Matrix.trace, map_sum]
+  have hL : IsIntegral O (algebraMap K (AlgebraicClosure K) y.trace) := by
+    rw [htr, Matrix.trace_eq_sum_roots_charpoly]
+    exact multiset_sum_mem _ (fun μ hμ => (mem_integralClosure_iff _ _).2 (hroot μ hμ))
+  have hK : IsIntegral O y.trace :=
+    (isIntegral_algHom_iff (IsScalarTower.toAlgHom O K (AlgebraicClosure K))
+      (algebraMap K (AlgebraicClosure K)).injective).1 hL
+  obtain ⟨z, hz⟩ := IsIntegrallyClosed.isIntegral_iff.1 hK
+  rw [← hz]
+  exact z.2
+
+end GlobalTheory.TraceBdd
+
+theorem GlobalTheory.trace_mem_of_pow_bdd : ∀ (E : Type) [Field E] [NumberField E] (w : Pl E) (n : ℕ)
+    (y : Matrix (Fin n) (Fin n) (w.adicCompletion E)) (a : w.adicCompletion E), a ≠ 0 →
+    (∀ k : ℕ, ∀ i j, a * (y ^ k) i j ∈ Ov E w) → y.trace ∈ Ov E w := by
+  intro E _ _ w n y a ha h
+  exact GlobalTheory.TraceBdd.trace_mem_valuationSubring_of_pow_bounded (w.adicCompletionIntegers E) n y a ha h
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.trace_mem_of_mul_pow_entries_mem : ∀ (E : Type) [Field E] [NumberField E] (w : Pl E) (n : ℕ)
+    (y : Matrix (Fin n) (Fin n) (w.adicCompletion E)) (a : w.adicCompletion E), a ≠ 0 →
+    (∀ k : ℕ, ∀ i j, a * (y ^ k) i j ∈ Ov E w) → y.trace ∈ Ov E w := by
+  atlas_forward_decl GlobalTheory.trace_mem_of_pow_bdd
+end
+
+section
+section
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+
+namespace GlobalTheory.BddCpt
+
+theorem bdd_entries_of_isCompact_closure_zpowers : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (w : Pl E) (t : UL n w),
+    IsCompact (closure (Subgroup.zpowers t : Set (UL n w))) →
+    ∃ a : w.adicCompletion E, a ≠ 0 ∧ ∀ k : ℤ, ∀ i j, a * (t ^ k).1.1 i j ∈ Ov E w := by
+  intro E _ _ _ n w t hK
+  have hO : IsOpen ((Ov E w : Set (w.adicCompletion E))) := Valued.isOpen_valuationSubring _
+  have hNe : (nhdsWithin (0 : w.adicCompletion E) {0}ᶜ).NeBot := by
+    letI : NontriviallyNormedField (w.adicCompletion E) := Valued.toNontriviallyNormedField _ _
+    exact NormedField.nhdsNE_neBot 0
+  have hev : ∀ᶠ a in nhds (0 : w.adicCompletion E),
+      ∀ s ∈ closure (Subgroup.zpowers t : Set (UL n w)), ∀ i j, a * s.1.1 i j ∈ Ov E w := by
+    refine hK.eventually_forall_of_forall_eventually fun s _ => ?_
+    rw [Filter.eventually_all]
+    intro i
+    rw [Filter.eventually_all]
+    intro j
+    have hc : Continuous (fun z : w.adicCompletion E × UL n w => z.1 * z.2.1.1 i j) := by fun_prop
+    have h0 : (fun z : w.adicCompletion E × UL n w => z.1 * z.2.1.1 i j) (0, s) ∈ (Ov E w : Set _) := by
+      simp only [zero_mul]; exact (Ov E w).zero_mem
+    exact hc.continuousAt.preimage_mem_nhds (hO.mem_nhds h0)
+  obtain ⟨a, ha, ha0⟩ := ((hev.filter_mono (nhdsWithin_le_nhds (s := ({0}ᶜ : Set (w.adicCompletion E))))).and
+    (self_mem_nhdsWithin (s := ({0}ᶜ : Set (w.adicCompletion E))))).exists
+  exact ⟨a, ha0, fun k i j => ha _ (subset_closure ⟨k, rfl⟩) i j⟩
+
+end GlobalTheory.BddCpt
+end
+
+open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
+open scoped Classical TensorProduct
+attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.bounded_entries_of_isCompact_closure_zpowers_unitary : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (w : Pl E) (t : UL n w),
+    IsCompact (closure (Subgroup.zpowers t : Set (UL n w))) →
+    ∃ a : w.adicCompletion E, a ≠ 0 ∧ ∀ k : ℤ, ∀ i j, a * (t ^ k).1.1 i j ∈ Ov E w := by
+  atlas_forward_decl GlobalTheory.BddCpt.bdd_entries_of_isCompact_closure_zpowers
+end
+
+section
 section
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
@@ -87,3 +396,4 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.centraliser_compactPart_le_integral_almostAll : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ, ∀ γ : UE E n, γ.1.val.charpoly.Separable → ∀ᶠ w in cofinite, cptPart (twCent (MonoidHom.id (UL n w)) (locPt w γ)) ≤ KL n w := by
   atlas_forward_decl GlobalTheory.BCT.GoodCpt.main
+end

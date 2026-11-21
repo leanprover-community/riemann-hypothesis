@@ -1,4 +1,290 @@
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VecLineOneLeVecLine
+import Mathlib
+import Development.AbelianVarietyTheory.Definitions.Divisors.SiegelWeilAnisotropicHermitian
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EisAtMinusRho
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EisensteinResidueHolomorphicRegion
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsTransv
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EisensteinSettingHeightContinuous
+
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.EisRes
+open GlobalTheory.Doubling (absE)
+
+namespace GlobalTheory.EisCT
+
+theorem exists_col0_ne_zero_of_witt {F E : Type} [Field F] [Field E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
+    {J : Matrix (Fin n) (Fin n) E} {r : ℕ} {X Y : Matrix (Fin n) (Fin (r + 1)) E} (hW : IsWittFrame σ J X Y) :
+    ∃ i, X i 0 ≠ 0 := by
+  by_contra hc
+  push_neg at hc
+  have h1 := congrArg (fun M => M 0 0) hW.xy
+  simp only [Matrix.one_apply_eq] at h1
+  rw [Matrix.mul_apply] at h1
+  simp [Matrix.mul_apply, Formalism.UG.cT, hc] at h1
+
+theorem iwaHt_mul_rat_stabL : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ)
+    (J : Matrix (Fin n) (Fin n) E) (r : ℕ) (X Y : Matrix (Fin n) (Fin (r + 1)) E) (L : Submodule (𝓞 E) (Fin n → E))
+    (a : GL (Fin n) (AF F ⊗[F] E)) (h : GAd σ J → ℝ), HidaSetting σ J X Y L a h →
+    ∀ p ∈ ratPts σ J, GlobalTheory.EisCT.StabL σ J (col0 X) p → ∀ v, h (p * v) = h v := by
+  intro F E _ _ _ _ _ σ n J r X Y L a h hS p hp hst v
+  obtain ⟨-, -, -, -, hW, -, hI1, hI2⟩ := hS
+  obtain ⟨lp, hlp⟩ := hst
+  have key : absE F E lp = 1 := by
+    rw [← range_ratEmb] at hp
+    obtain ⟨γ, rfl⟩ := hp
+    obtain ⟨i, hi⟩ := exists_col0_ne_zero_of_witt hW
+    have hmat : (matHom _ σ J (ratEmb σ J γ)).1 = (γ.1.1 : Matrix (Fin n) (Fin n) E).map (inclR (F := F) (AF F)) := by
+      ext s t; rfl
+    rw [hmat] at hlp
+    have hent := congrArg (fun M => M i 0) hlp
+    simp only [adMat] at hent
+    rw [← RingHom.map_matrix_mul] at hent
+    simp only [Matrix.map_apply, Matrix.smul_apply, smul_eq_mul] at hent
+    have hx : col0 X i 0 = X i 0 := rfl
+    rw [hx] at hent
+    set e : E := ((γ.1.1 : Matrix (Fin n) (Fin n) E) * col0 X) i 0 / X i 0 with he_def
+    have he : inclR (F := F) (AF F) e * inclR (F := F) (AF F) (X i 0) =
+        inclR (F := F) (AF F) (((γ.1.1 : Matrix (Fin n) (Fin n) E) * col0 X) i 0) := by
+      rw [← map_mul, he_def, div_mul_cancel₀ _ hi]
+    have hu : IsUnit (inclR (F := F) (AF F) (X i 0)) := (isUnit_iff_ne_zero.2 hi).map _
+    have hl : lp.1 = inclR (F := F) (AF F) e := by
+      rw [← he] at hent
+      exact (hu.mul_left_inj.1 hent).symm
+    by_cases he0 : e = 0
+    · rw [he0, map_zero] at hl
+      have : Subsingleton (AF F ⊗[F] E) := by
+        have h01 := lp.mul_inv
+        rw [hl, zero_mul] at h01
+        exact subsingleton_of_zero_eq_one h01
+      rw [Subsingleton.elim lp 1, map_one]
+    · have := GlobalTheory.Doubling.absE_inclR (F := F) (E := E) (Units.mk0 e he0)
+      rwa [show (Units.map (inclR (F := F) (AF F)).toMonoidHom (Units.mk0 e he0)) = lp from
+        Units.ext (by simp [hl])] at this
+  obtain ⟨q, lq, hq, k, hk, rfl⟩ := hI1 v
+  have e1 : h (q * k) = absE F E lq := hI2 q lq hq k hk
+  have hpq : (matHom _ σ J (p * q)).1 * adMat F (col0 X) = (lp * lq).1 • adMat F (col0 X) := by
+    rw [map_mul, Units.val_mul, Matrix.mul_assoc, hq, Matrix.mul_smul, hlp, smul_smul, Units.val_mul, mul_comm]
+  have e2 : h (p * q * k) = absE F E (lp * lq) := hI2 (p * q) (lp * lq) hpq k hk
+  rw [← mul_assoc, e2, e1, map_mul, key, one_mul]
+
+end GlobalTheory.EisCT
+end
+
+section
+noncomputable section
+
+open scoped TensorProduct NNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.EisRes
+open IsDedekindDomain
+open GlobalTheory.Doubling (absE absEv absEw)
+
+namespace GlobalTheory.EisMidHt
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
+
+variable (F) in
+
+def adVec (z : Fin n → E) : Fin n → AF F ⊗[F] E := fun i => inclR (F := F) (AF F) (z i)
+
+def firstColumn {r : ℕ} (X : Matrix (Fin n) (Fin (r + 1)) E) : Fin n → E := fun i => X i 0
+
+variable (F) in
+
+def normFin (L : Submodule (𝓞 E) (Fin n → E)) (v : HeightOneSpectrum (𝓞 F)) (u : Fin n → Fv F v ⊗[F] E) : ℝ≥0 :=
+  sInf {c | ∃ l : (Fv F v ⊗[F] E)ˣ, ((l⁻¹ : (Fv F v ⊗[F] E)ˣ) : Fv F v ⊗[F] E) • u ∈ latLoc F L v ∧ c = absEv F E v l}
+
+def normInf (a : GL (Fin n) (AF F ⊗[F] E)) (w : InfinitePlace F) (u : Fin n → w.Completion ⊗[F] E) : ℝ :=
+  let b : GL (Fin n) (w.Completion ⊗[F] E) := (Formalism.UG.bc (compInf F E w) a)⁻¹
+  Norm.norm (Finset.univ.sum fun i => Algebra.norm w.Completion ((b.1 *ᵥ u) i)) ^ w.mult
+
+def ht (L : Submodule (𝓞 E) (Fin n → E)) (a : GL (Fin n) (AF F ⊗[F] E)) (u : Fin n → AF F ⊗[F] E) : ℝ :=
+  (∏ᶠ v, (normFin F L v (fun i => compFin F E v (u i)) : ℝ)) * ∏ w, normInf a w (fun i => compInf F E w (u i))
+
+variable (σ : E →ₐ[F] E) (J : Matrix (Fin n) (Fin n) E)
+
+def IsLineReps (x y : Fin n → E) (Y : Set (Fin n → E)) : Prop :=
+  (∀ z ∈ Y, z ≠ 0 ∧ hE σ J z z = 0 ∧ hE σ J x z = 0 ∧ hE σ J y z = 0) ∧
+  (∀ z ∈ Y, ∀ z' ∈ Y, ∀ c : E, z = c • z' → z = z') ∧
+  ∀ z : Fin n → E, z ≠ 0 → hE σ J z z = 0 → hE σ J x z = 0 → hE σ J y z = 0 → ∃ z' ∈ Y, ∃ c : E, z = c • z'
+
+end GlobalTheory.EisMidHt
+
+end
+end
+
+section
+open scoped TensorProduct NNReal Matrix
+open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.EisRes
+open GlobalTheory.Doubling (absE)
+
+noncomputable section
+
+namespace GlobalTheory.EisUnfold
+
+open GlobalTheory.EisMidHt (adVec)
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+  (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E)
+
+omit [NumberField E] in
+theorem inv_mulVec_cancel (p : GAd σ J) (y : Fin n → AF F ⊗[F] E) :
+    (matHom _ σ J p⁻¹).1 *ᵥ (matHom _ σ J p).1 *ᵥ y = y := by
+  rw [Matrix.mulVec_mulVec, ← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one, Matrix.one_mulVec]
+
+def vecStab (z : Fin n → AF F ⊗[F] E) (H : Subgroup (AF F ⊗[F] E)ˣ) : Subgroup (GAd σ J) where
+  carrier := {p | ∃ l ∈ H, (matHom _ σ J p).1 *ᵥ z = l.1 • z}
+  one_mem' := ⟨1, one_mem _, by simp⟩
+  mul_mem' := by
+    rintro p q ⟨l, hl, e⟩ ⟨l', hl', e'⟩
+    refine ⟨l * l', mul_mem hl hl', ?_⟩
+    rw [map_mul, Units.val_mul, ← Matrix.mulVec_mulVec, e', Matrix.mulVec_smul, e, smul_smul, Units.val_mul, mul_comm]
+  inv_mem' := by
+    rintro p ⟨l, hl, e⟩
+    refine ⟨l⁻¹, inv_mem hl, ?_⟩
+    have h := inv_mulVec_cancel σ J p z
+    rw [e, Matrix.mulVec_smul] at h
+    conv_rhs => rw [← h, smul_smul, Units.inv_mul, one_smul]
+
+def vecFix (z : Fin n → AF F ⊗[F] E) : Subgroup (GAd σ J) := vecStab σ J z ⊥
+
+def vecLine (z : Fin n → AF F ⊗[F] E) : Subgroup (GAd σ J) := vecStab σ J z ⊤
+
+def vecLineOne (z : Fin n → AF F ⊗[F] E) : Subgroup (GAd σ J) := vecStab σ J z (absE F E).ker
+
+variable {σ J}
+
+omit [NumberField E] in
+theorem mem_vecFix {z : Fin n → AF F ⊗[F] E} {p : GAd σ J} : p ∈ vecFix σ J z ↔ (matHom _ σ J p).1 *ᵥ z = z :=
+  ⟨fun ⟨l, hl, e⟩ => by rw [e, Subgroup.mem_bot.1 hl, Units.val_one, one_smul], fun e => ⟨1, one_mem _, by simpa using e⟩⟩
+
+omit [NumberField E] in
+theorem mem_vecLine {z : Fin n → AF F ⊗[F] E} {p : GAd σ J} :
+    p ∈ vecLine σ J z ↔ ∃ l : (AF F ⊗[F] E)ˣ, (matHom _ σ J p).1 *ᵥ z = l.1 • z :=
+  ⟨fun ⟨l, _, e⟩ => ⟨l, e⟩, fun ⟨l, e⟩ => ⟨l, trivial, e⟩⟩
+
+theorem mem_vecLineOne {z : Fin n → AF F ⊗[F] E} {p : GAd σ J} :
+    p ∈ vecLineOne σ J z ↔ ∃ l : (AF F ⊗[F] E)ˣ, absE F E l = 1 ∧ (matHom _ σ J p).1 *ᵥ z = l.1 • z := Iff.rfl
+
+
+
+omit [NumberField E] in
+
+theorem conj_mem_vecStab {z : Fin n → AF F ⊗[F] E} {H : Subgroup (AF F ⊗[F] E)ˣ} {p q : GAd σ J} (hp : p ∈ vecLine σ J z)
+    (hq : q ∈ vecStab σ J z H) : p * q * p⁻¹ ∈ vecStab σ J z H := by
+  obtain ⟨l, -, e⟩ := hp
+  obtain ⟨l', -, e'⟩ := inv_mem (show p ∈ vecLine σ J z from ⟨l, trivial, e⟩)
+  obtain ⟨k, hk, ek⟩ := hq
+  refine ⟨k, hk, ?_⟩
+  have h := inv_mulVec_cancel σ J p⁻¹ z
+  rw [inv_inv] at h
+  rw [map_mul, map_mul, Units.val_mul, Units.val_mul, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, e', Matrix.mulVec_smul, ek,
+    smul_comm, ← e', Matrix.mulVec_smul, h]
+
+omit [NumberField E] in
+
+theorem conj_mem_vecStab_iff {z w : Fin n → AF F ⊗[F] E} {H : Subgroup (AF F ⊗[F] E)ˣ} {γ p : GAd σ J} {c : (AF F ⊗[F] E)ˣ}
+    (e : (matHom _ σ J γ).1 *ᵥ z = c.1 • w) : γ⁻¹ * p * γ ∈ vecStab σ J z H ↔ p ∈ vecStab σ J w H := by
+  refine exists_congr fun l => and_congr_right fun _ => ?_
+  have h := inv_mulVec_cancel σ J γ⁻¹
+  rw [inv_inv] at h
+  rw [map_mul, map_mul, Units.val_mul, Units.val_mul, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, e]
+  constructor
+  · intro h1
+    have h2 := congrArg ((matHom _ σ J γ).1 *ᵥ ·) h1
+    simp only [h, Matrix.mulVec_smul, e] at h2
+    rw [smul_comm] at h2
+    exact (c.isUnit.smul_left_cancel).1 h2
+  · intro h1
+    rw [Matrix.mulVec_smul, h1, smul_comm, ← e, Matrix.mulVec_smul, inv_mulVec_cancel]
+
+
+def IsStart {r : ℕ} (S : Finset (Fin r)) (j : Fin r) : Prop := j.val = 0 ∨ ∃ k ∈ S, k.val + 1 = j.val
+
+def IsStdVec {r : ℕ} (X Y : Matrix (Fin n) (Fin r) E) (S : Finset (Fin r)) (z : Fin n → E) : Prop :=
+  (∃ j, IsStart S j ∧ z = Xᵀ j) ∨ ∃ j ∈ S, z = Yᵀ j
+
+example {r : ℕ} (X Y : Matrix (Fin n) (Fin (r + 1)) E) (S : Finset (Fin (r + 1))) : IsStdVec X Y S (Xᵀ 0) :=
+  Or.inl ⟨0, Or.inl rfl, rfl⟩
+
+omit [NumberField E] in
+theorem col0_eq_iff {r : ℕ} {X : Matrix (Fin n) (Fin (r + 1)) E} {m : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)} {l : AF F ⊗[F] E} :
+    m * adMat F (col0 X) = l • adMat F (col0 X) ↔ m *ᵥ adVec F (Xᵀ 0) = l • adVec F (Xᵀ 0) :=
+  ⟨fun h => funext fun i => congrFun (congrFun h i) 0, fun h => Matrix.ext fun i _ => congrFun h i⟩
+
+variable (σ J) in
+
+abbrev Lines {r : ℕ} (X : Matrix (Fin n) (Fin (r + 1)) E) : Type := ratPts σ J ⧸ lineStab σ J (col0 X)
+
+def term {r : ℕ} (X : Matrix (Fin n) (Fin (r + 1)) E) (h : GAd σ J → ℝ) (e : ℂ) (q : Lines σ J X) (g : GAd σ J) : ℂ :=
+  (h ((q.out : ratPts σ J).1⁻¹ * g) : ℂ) ^ e
+
+
+
+section HidaSetting
+
+variable {r : ℕ} {X Y : Matrix (Fin n) (Fin (r + 1)) E} {L : Submodule (𝓞 E) (Fin n → E)} {a : GL (Fin n) (AF F ⊗[F] E)}
+  {h : GAd σ J → ℝ} (hS : HidaSetting σ J X Y L a h)
+include hS
+
+theorem ht_mul_left {p : GAd σ J} (hp : p ∈ vecLineOne σ J (adVec F (Xᵀ 0))) (g : GAd σ J) : h (p * g) = h g := by
+  obtain ⟨l, hl, e⟩ := mem_vecLineOne.1 hp
+  obtain ⟨p', l', e', k, hk, rfl⟩ := hS.2.2.2.2.2.2.1 g
+  rw [← mul_assoc, hS.2.2.2.2.2.2.2 p' l' e' k hk, hS.2.2.2.2.2.2.2 (p * p') (l * l') ?_ k hk, map_mul, hl, one_mul]
+  rw [map_mul, Units.val_mul, Matrix.mul_assoc, e', Matrix.mul_smul, col0_eq_iff.2 e, smul_smul, Units.val_mul, mul_comm]
+
+theorem ht_pos (g : GAd σ J) : 0 < h g := by
+  obtain ⟨p, l, e, k, hk, rfl⟩ := hS.2.2.2.2.2.2.1 g
+  rw [hS.2.2.2.2.2.2.2 p l e k hk]
+  exact_mod_cast GlobalTheory.Doubling.hom_pos _ l
+
+theorem term_mk (e : ℂ) (γ : ratPts σ J) (g : GAd σ J) : term X h e (γ : Lines σ J X) g = (h (γ.1⁻¹ * g) : ℂ) ^ e := by
+  obtain ⟨p, hp⟩ := QuotientGroup.mk_out_eq_mul (lineStab σ J (col0 X)) γ
+  rw [term, hp, Subgroup.coe_mul, mul_inv_rev, mul_assoc]
+  exact congrArg (fun x : ℝ => (x : ℂ) ^ e) (GlobalTheory.EisCT.iwaHt_mul_rat_stabL F E σ n J r X Y L a h hS _ (p⁻¹).1.2 (p⁻¹).2 _)
+
+theorem term_smul (e : ℂ) (γ : ratPts σ J) (q : Lines σ J X) (g : GAd σ J) : term X h e (γ • q) (γ.1 * g) = term X h e q g := by
+  induction q using QuotientGroup.induction_on with
+  | H δ => rw [MulAction.Quotient.smul_coe, term_mk hS, term_mk hS, smul_eq_mul, Subgroup.coe_mul, mul_inv_rev, mul_assoc,
+      inv_mul_cancel_left]
+
+theorem continuous_term (e : ℂ) (q : Lines σ J X) : Continuous (term X h e q) :=
+  (Complex.continuous_ofReal.comp ((HtCont.continuous_iwaHt F E σ n J r X Y L a h hS).comp (continuous_mul_left _))).cpow
+    continuous_const fun _ => Complex.ofReal_mem_slitPlane.2 (ht_pos hS _)
+
+theorem term_mul_left (e : ℂ) {γ : ratPts σ J} {w : Fin n → AF F ⊗[F] E} {c : (AF F ⊗[F] E)ˣ}
+    (hγ : (matHom _ σ J γ.1).1 *ᵥ adVec F (Xᵀ 0) = c.1 • w) {p : GAd σ J} (hp : p ∈ vecLineOne σ J w) (g : GAd σ J) :
+    term X h e (γ : Lines σ J X) (p * g) = term X h e (γ : Lines σ J X) g := by
+  rw [term_mk hS, term_mk hS, ← ht_mul_left hS ((conj_mem_vecStab_iff hγ).2 hp) (γ.1⁻¹ * g)]
+  simp only [mul_assoc, mul_inv_cancel_left]
+
+theorem norm_term (e : ℂ) (q : Lines σ J X) (g : GAd σ J) : ‖term X h e q g‖ = h ((q.out : ratPts σ J).1⁻¹ * g) ^ e.re :=
+  Complex.norm_cpow_eq_rpow_re_of_pos (ht_pos hS _) e
+
+end HidaSetting
+
+theorem hasSum_term {r : ℕ} {X : Matrix (Fin n) (Fin (r + 1)) E} {h : GAd σ J → ℝ} {Eis : ℂ → GAd σ J → ℂ}
+    (hE : IsSerG σ J (col0 X) h Eis) {s : ℂ} (hs : ((n : ℝ) - 1) / 2 < s.re) (g : GAd σ J) :
+    HasSum (fun q : Lines σ J X => term X h (s + ((n : ℂ) - 1) / 2) q g) (Eis s g) := by
+  let f : Lines σ J X → ratPts σ J := fun q => (q.out)⁻¹
+  have hf : Function.Injective f := fun q q' e => Quotient.out_injective (inv_injective e)
+  have := hE (Set.range f) (fun γ => ⟨f (γ⁻¹ : ratPts σ J), ⟨⟨_, rfl⟩, ?_⟩, ?_⟩) s hs g
+  · exact (Equiv.ofInjective f hf).hasSum_iff.2 this
+  · obtain ⟨p, hp⟩ := QuotientGroup.mk_out_eq_mul (lineStab σ J (col0 X)) γ⁻¹
+    have : γ * (f (γ⁻¹ : ratPts σ J))⁻¹ = p := by simp only [f, inv_inv, hp, mul_inv_cancel_left]
+    rw [this]
+    exact p.2
+  · rintro _ ⟨⟨q, rfl⟩, ht⟩
+    refine congrArg f ?_
+    rw [← QuotientGroup.out_eq' q, eq_comm, QuotientGroup.eq, inv_inv]
+    simp only [f, inv_inv] at ht
+    exact ht
+
+end GlobalTheory.EisUnfold
+
+end
+end
+
+section
 open scoped TensorProduct NNReal ENNReal Matrix ComplexConjugate
 open NumberField MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU GlobalTheory.SiegelSet GlobalTheory.EisRes GlobalTheory.StdPar GlobalTheory.EisUnfold
 open GlobalTheory.Doubling (absE)
@@ -152,3 +438,5 @@ theorem GlobalTheory.FlagNorm.conj_mem_unip : ∀ (F E : Type) [Field F] [Number
     refine ⟨keep_conj keepB hu2.1, fun y hy => ?_⟩
     rw [conj_sub]
     exact (keepB _).1 (hu2.2 _ (perp_inv (hm _ hkMT) hy))
+end
+end

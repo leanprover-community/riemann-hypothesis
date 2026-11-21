@@ -1,10 +1,426 @@
 import Mathlib
 import Formalism.LocalToGlobal.IndefiniteReal.BridgeTie
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualWeylModuleLeSpanExtremalTranslates
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylTensorCoefSpaceLeSpanPureTensors
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylTensorCoefSpaceEndomorphismPreservesTorusWei
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightSpaceCoefficientSpaceEqExtremalTensorLine
+import Formalism.LocalToGlobal.Divisibility.CoefMod
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DualWeylModuleSimpleCharZero
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DualWeylHighestWeightSpaceLineField
 
+section
+section
+set_option autoImplicit false
+noncomputable section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
+open scoped Matrix
+
+namespace GlobalTheory
+
+theorem sqAct_sqAct_nabla (K : Type) [Field K] (n : ℕ) (lam : DomWeight n) (g h : GL (Fin n) K)
+    (f : MvPolynomial (Fin n × Fin n) K) :
+    sqAct K n lam g (sqAct K n lam h f) = sqAct K n lam (g * h) f := by
+  unfold sqAct
+  have hm := congrArg (fun φ => φ f) (Formalism.GradedWeylDivisibility.rowActMul K n n
+    ((g : Matrix (Fin n) (Fin n) K)ᵀ) ((h : Matrix (Fin n) (Fin n) K)ᵀ))
+  simp only [AlgHom.comp_apply] at hm
+  rw [map_smul, hm, smul_smul, ← Matrix.transpose_mul]
+  congr 1
+  unfold detPow
+  rw [map_mul, mul_zpow, Units.val_mul]
+
+theorem sqAct_one_nabla (K : Type) [Field K] (n : ℕ) (lam : DomWeight n)
+    (f : MvPolynomial (Fin n × Fin n) K) : sqAct K n lam 1 f = f := by
+  unfold sqAct detPow
+  simp only [Matrix.GeneralLinearGroup.coe_one, Matrix.transpose_one, map_one, one_zpow, Units.val_one, one_smul]
+  have h1 : Formalism.GradedWeylDivisibility.rowAct K (n := n) (1 : Matrix (Fin n) (Fin n) K) = AlgHom.id K _ := by
+    apply MvPolynomial.algHom_ext
+    intro v
+    unfold Formalism.GradedWeylDivisibility.rowAct
+    rw [aeval_X]
+    simp [Matrix.one_apply, ite_mul]
+  rw [h1]; rfl
+
+theorem nablaSq_le_span_extremal : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (lam : DomWeight n),
+    nablaSq K n lam ≤ Submodule.span K (Set.range fun g : GL (Fin n) K => sqAct K n lam g (extremal K n lam)) := by
+  intro K _ _ n lam
+  set M := Submodule.span K (Set.range fun g : GL (Fin n) K => sqAct K n lam g (extremal K n lam)) with hM
+  have hanti : Antitone lam.natW := by
+    intro i j hij
+    have := lam.anti hij
+    unfold DomWeight.natW
+    omega
+  have hext : extremal K n lam ∈ nablaSq K n lam :=
+    Formalism.GradedWeylDivisibility.hwMem K n n le_rfl lam.natW hanti
+  have hstab : ∀ g : GL (Fin n) K, ∀ f ∈ nablaSq K n lam, sqAct K n lam g f ∈ nablaSq K n lam := by
+    intro g f hf
+    unfold sqAct
+    exact Submodule.smul_mem _ _ (Formalism.GradedWeylDivisibility.dualWeylRowStable K n n lam.natW _ f hf)
+  have hle : M ≤ nablaSq K n lam := by
+    rw [hM, Submodule.span_le]
+    rintro _ ⟨g, rfl⟩
+    exact hstab g _ hext
+  have hlin : ∀ g : GL (Fin n) K, ∀ (c : K) (f₁ f₂ : MvPolynomial (Fin n × Fin n) K),
+      sqAct K n lam g (c • f₁ + f₂) = c • sqAct K n lam g f₁ + sqAct K n lam g f₂ := by
+    intro g c f₁ f₂
+    unfold sqAct
+    rw [map_add, map_smul, smul_add, smul_comm]
+  have hMstab : ∀ g : GL (Fin n) K, ∀ f ∈ M, sqAct K n lam g f ∈ M := by
+    intro g f hf
+    induction hf using Submodule.span_induction with
+    | mem x hx =>
+      obtain ⟨h, rfl⟩ := hx
+      rw [sqAct_sqAct_nabla]
+      exact Submodule.subset_span ⟨g * h, rfl⟩
+    | zero =>
+      have h0 : sqAct K n lam g 0 = 0 := by unfold sqAct; simp
+      rw [h0]; exact M.zero_mem
+    | add x y _ _ hx hy =>
+      have := hlin g 1 x y
+      rw [one_smul, one_smul] at this
+      rw [this]; exact M.add_mem hx hy
+    | smul c x _ hx =>
+      have hs : sqAct K n lam g (c • x) = c • sqAct K n lam g x := by
+        unfold sqAct; rw [map_smul, smul_comm]
+      rw [hs]; exact M.smul_mem c hx
+  rcases GlobalTheory.T.dualWeylModule_simple_charZero K n lam M hle hMstab with h0 | h1
+  · exfalso
+    have hmem : extremal K n lam ∈ M := by
+      have : sqAct K n lam 1 (extremal K n lam) ∈ M := Submodule.subset_span ⟨1, rfl⟩
+      rwa [sqAct_one_nabla] at this
+    rw [h0, Submodule.mem_bot] at hmem
+    exact Formalism.GradedWeylDivisibility.hwNe K n n le_rfl lam.natW hmem
+  · rw [h1]
+
+end GlobalTheory
+end
+end
+
+set_option autoImplicit false
+noncomputable section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dualWeylModule_le_span_extremalTranslates : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (lam : DomWeight n), nablaSq K n lam ≤ Submodule.span K (Set.range fun g : GL (Fin n) K => sqAct K n lam g (extremal K n lam)) := by
+  atlas_forward_decl GlobalTheory.nablaSq_le_span_extremal
+end
+end
+
+section
+section
+set_option autoImplicit false
+noncomputable section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
+open scoped Matrix
+
+namespace GlobalTheory
+
+theorem multilinear_mem_span_of_mem_span {K ι M N : Type} [Field K] [Fintype ι]
+    [AddCommGroup M] [Module K M] [AddCommGroup N] [Module K N]
+    (m : MultilinearMap K (fun _ : ι => M) N) (S : ι → Set M) (f : ι → M)
+    (hf : ∀ τ, f τ ∈ Submodule.span K (S τ)) :
+    m f ∈ Submodule.span K {P | ∃ g : ι → M, (∀ τ, g τ ∈ S τ) ∧ P = m g} := by
+  classical
+  have key : ∀ (s : Finset ι) (f : ι → M), (∀ τ, f τ ∈ Submodule.span K (S τ)) →
+      (∀ τ, τ ∉ s → f τ ∈ S τ) →
+      m f ∈ Submodule.span K {P | ∃ g : ι → M, (∀ τ, g τ ∈ S τ) ∧ P = m g} := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty =>
+      intro f _ h
+      exact Submodule.subset_span ⟨f, fun τ => h τ (Finset.notMem_empty τ), rfl⟩
+    | insert a s ha ih =>
+      intro f h1 h2
+      have hle : Submodule.span K (S a) ≤
+          (Submodule.span K {P | ∃ g : ι → M, (∀ τ, g τ ∈ S τ) ∧ P = m g}).comap
+            (m.toLinearMap f a) := by
+        rw [Submodule.span_le]
+        intro x hx
+        rw [SetLike.mem_coe, Submodule.mem_comap, MultilinearMap.toLinearMap_apply]
+        apply ih
+        · intro τ
+          by_cases hτ : τ = a
+          · subst hτ
+            rw [Function.update_self]
+            exact Submodule.subset_span hx
+          · rw [Function.update_of_ne hτ]
+            exact h1 τ
+        · intro τ hτs
+          by_cases hτ : τ = a
+          · subst hτ
+            rw [Function.update_self]
+            exact hx
+          · rw [Function.update_of_ne hτ]
+            exact h2 τ (by simp [hτ, hτs])
+      have h := hle (h1 a)
+      rw [Submodule.mem_comap, MultilinearMap.toLinearMap_apply, Function.update_eq_self] at h
+      exact h
+  exact key Finset.univ f hf (fun τ h => absurd (Finset.mem_univ τ) h)
+
+theorem coefSpace_le_span_pure_tensors (K : Type) [Field K] {ι : Type} [Fintype ι] {n : ℕ}
+    (lam : ι → DomWeight n) (S : ι → Set (MvPolynomial (Fin n × Fin n) K))
+    (hS : ∀ τ, nablaSq K n (lam τ) ≤ Submodule.span K (S τ)) :
+    VV K lam ≤ Submodule.span K
+      {P | ∃ f : ι → MvPolynomial (Fin n × Fin n) K, (∀ τ, f τ ∈ S τ) ∧ P = ten f} := by
+  classical
+  let m : MultilinearMap K (fun _ : ι => MvPolynomial (Fin n × Fin n) K)
+      (MvPolynomial (ι × Fin n × Fin n) K) :=
+    (MultilinearMap.mkPiAlgebra K ι (MvPolynomial (ι × Fin n × Fin n) K)).compLinearMap
+      (fun τ => (Formalism.GradedWeylDivisibility.blockEmb K τ).toLinearMap)
+  have hm : ∀ f, m f = ten f := fun f => rfl
+  unfold VV Formalism.GradedWeylDivisibility.tensorLat
+  rw [Submodule.span_le]
+  rintro P ⟨F, hF, rfl⟩
+  exact multilinear_mem_span_of_mem_span m S F (fun τ => hS τ (hF τ))
+
+end GlobalTheory
+end
+end
+
+set_option autoImplicit false
+noncomputable section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weylTensorCoefSpace_le_span_pure_tensors : ∀ (K : Type) [Field K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n) (S : ι → Set (MvPolynomial (Fin n × Fin n) K)), (∀ τ, nablaSq K n (lam τ) ≤ Submodule.span K (S τ)) → VV K lam ≤ Submodule.span K {P | ∃ f : ι → MvPolynomial (Fin n × Fin n) K, (∀ τ, f τ ∈ S τ) ∧ P = ten f} := by
+  atlas_forward_decl GlobalTheory.coefSpace_le_span_pure_tensors
+end
+end
+
+section
+section
+set_option autoImplicit false
+noncomputable section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
+open scoped Matrix
+
+namespace GlobalTheory.CoefTorusWeight
+
+theorem coeff_aeval_scale {K σ : Type} [Field K] [Fintype σ] (c : σ → K) (F : MvPolynomial σ K)
+    (m : σ →₀ ℕ) :
+    coeff m (aeval (fun v => (C (c v) * X v : MvPolynomial σ K)) F) = (∏ v, c v ^ m v) * coeff m F := by
+  classical
+  induction F using MvPolynomial.induction_on' with
+  | monomial u a =>
+    have h : aeval (fun v => (C (c v) * X v : MvPolynomial σ K)) (monomial u a)
+        = monomial u ((∏ v, c v ^ u v) * a) := by
+      rw [aeval_monomial, Finsupp.prod_fintype _ _ (by simp), monomial_eq,
+        Finsupp.prod_fintype _ _ (by simp)]
+      simp only [mul_pow, Finset.prod_mul_distrib, ← C_pow, ← map_prod, algebraMap_eq, C_mul]
+      ring
+    rw [h, coeff_monomial, coeff_monomial]
+    split_ifs with hu
+    · rw [hu]
+    · simp
+  | add p q hp hq => rw [map_add, coeff_add, coeff_add, hp, hq, mul_add]
+
+theorem coeff_actP_diag {K ι : Type} [Field K] [Fintype ι] {n : ℕ} (lam : ι → DomWeight n)
+    (t : ι → Fin n → Kˣ) (F : Pol K ι n) (m : (ι × Fin n × Fin n) →₀ ℕ) :
+    coeff m (actP lam (fun τ => diagGL K n (t τ)) F)
+      = detTwK lam (fun τ => diagGL K n (t τ)) *
+        ((∏ v : ι × Fin n × Fin n, (t v.1 v.2.1 : K) ^ m v) * coeff m F) := by
+  classical
+  have h : trAct (fun τ => diagGL K n (t τ))
+      = aeval (fun v : ι × Fin n × Fin n => (C (t v.1 v.2.1 : K) * X v : Pol K ι n)) := by
+    apply MvPolynomial.algHom_ext
+    intro v
+    simp only [trAct, Formalism.GradedWeylDivisibility.blockAct, aeval_X, diagGL, Matrix.diagonal_transpose]
+    rw [Finset.sum_eq_single v.2.1]
+    · simp
+    · intro b _ hb
+      simp [Matrix.diagonal_apply_ne _ (Ne.symm hb)]
+    · simp
+  rw [actP, LinearMap.smul_apply, AlgHom.toLinearMap_apply, coeff_smul, smul_eq_mul, h,
+    coeff_aeval_scale]
+
+theorem detTwK_ne_zero {K ι : Type} [Field K] [Fintype ι] {n : ℕ} (lam : ι → DomWeight n)
+    (h : ι → GL (Fin n) K) : detTwK lam h ≠ 0 :=
+  Finset.prod_ne_zero_iff.mpr fun _ _ => Units.ne_zero _
+
+theorem weight_preserved (K : Type) [Field K] [CharZero K] {ι : Type} [Fintype ι] {n : ℕ}
+    (lam : ι → DomWeight n) (g : Module.End K (VV K lam))
+    (hg : ∀ (h : ι → GL (Fin n) K) v, g (rhoK lam h v) = rhoK lam h (g v)) (v : VV K lam)
+    (hv : ∀ m ∈ (v : Pol K ι n).support, ∀ τ a, ∑ s : Fin n, m (τ, a, s) = (lam τ).natW a) :
+    ∀ m ∈ ((g v : VV K lam) : Pol K ι n).support, ∀ τ a,
+      ∑ s : Fin n, m (τ, a, s) = (lam τ).natW a := by
+  classical
+  intro m hm τ0 a0
+  let u : Kˣ := Units.mk0 (2 : K) two_ne_zero
+  let t : ι → Fin n → Kˣ := fun τ a => if τ = τ0 ∧ a = a0 then u else 1
+  have hprod : ∀ m : (ι × Fin n × Fin n) →₀ ℕ,
+      (∏ v : ι × Fin n × Fin n, (t v.1 v.2.1 : K) ^ m v) = 2 ^ (∑ s : Fin n, m (τ0, a0, s)) := by
+    intro m
+    rw [Fintype.prod_prod_type, Finset.prod_eq_single τ0, Fintype.prod_prod_type,
+      Finset.prod_eq_single a0, ← Finset.prod_pow_eq_pow_sum]
+    · simp [t, u]
+    · intro b _ hb
+      simp [t, hb]
+    · simp
+    · intro b _ hb
+      simp [t, hb]
+    · simp
+  set h : ι → GL (Fin n) K := fun τ => diagGL K n (t τ) with hh
+  have hco : ∀ (w : VV K lam) (m : (ι × Fin n × Fin n) →₀ ℕ),
+      coeff m ((rhoK lam h w : VV K lam) : Pol K ι n)
+        = detTwK lam h * (2 ^ (∑ s : Fin n, m (τ0, a0, s)) * coeff m (w : Pol K ι n)) := by
+    intro w m
+    rw [← hprod]
+    exact coeff_actP_diag lam t w m
+  have h1 : rhoK lam h v = (detTwK lam h * 2 ^ (lam τ0).natW a0) • v := by
+    apply Subtype.ext
+    ext m'
+    rw [hco, Submodule.coe_smul, coeff_smul, smul_eq_mul, mul_assoc]
+    by_cases hm' : m' ∈ (v : Pol K ι n).support
+    · rw [hv m' hm']
+    · rw [notMem_support_iff.mp hm']
+      simp
+  have h2 := hg h v
+  rw [h1, map_smul] at h2
+  have h3 := congrArg (fun w : VV K lam => coeff m (w : Pol K ι n)) h2
+  simp only [hco, Submodule.coe_smul, coeff_smul, smul_eq_mul, mul_assoc] at h3
+  have h4 := mul_right_cancel₀ (mem_support_iff.mp hm) (mul_left_cancel₀ (detTwK_ne_zero lam h) h3)
+  have h5 : (2 : ℕ) ^ (lam τ0).natW a0 = 2 ^ (∑ s : Fin n, m (τ0, a0, s)) := by
+    exact_mod_cast h4
+  exact (Nat.pow_right_injective le_rfl h5).symm
+
+end GlobalTheory.CoefTorusWeight
+end
+end
+
+set_option autoImplicit false
+noncomputable section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weylTensorCoefSpace_endomorphism_preserves_torus_weight : ∀ (K : Type) [Field K] [CharZero K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n) (g : Module.End K (VV K lam)), (∀ (h : ι → GL (Fin n) K) v, g (rhoK lam h v) = rhoK lam h (g v)) → ∀ v : VV K lam, (∀ m ∈ (v : Pol K ι n).support, ∀ τ a, ∑ s : Fin n, m (τ, a, s) = (lam τ).natW a) → ∀ m ∈ ((g v : VV K lam) : Pol K ι n).support, ∀ τ a, ∑ s : Fin n, m (τ, a, s) = (lam τ).natW a := by
+  atlas_forward_decl GlobalTheory.CoefTorusWeight.weight_preserved
+end
+end
+
+section
+section
+set_option autoImplicit false
+noncomputable section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
+open scoped Matrix
+
+namespace GlobalTheory.CoefWtLine
+
+open Formalism.GradedWeylDivisibility
+
+open Classical in
+
+def blkW (ι : Type) (n : ℕ) : ι × Fin n × Fin n → ι → Fin n → ℕ :=
+  fun v => Pi.single v.1 (Pi.single v.2.1 1)
+
+theorem weight_blkW {ι : Type} [Fintype ι] {n : ℕ} (m : ι × Fin n × Fin n →₀ ℕ) (τ : ι) (a : Fin n) :
+    Finsupp.weight (blkW ι n) m τ a = ∑ s : Fin n, m (τ, a, s) := by
+  classical
+  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp), Finset.sum_apply, Finset.sum_apply,
+    Fintype.sum_prod_type, Finset.sum_eq_single τ, Fintype.sum_prod_type, Finset.sum_eq_single a]
+  · simp [blkW]
+  · intro b _ hb
+    simp [blkW, hb]
+  · simp
+  · intro b _ hb
+    refine Finset.sum_eq_zero fun x _ => ?_
+    simp [blkW, hb]
+  · simp
+
+open Classical in
+theorem blockEmb_hom {K : Type} [Field K] {ι : Type} [Fintype ι] {n : ℕ} (τ : ι)
+    (f : MvPolynomial (Fin n × Fin n) K) (μ : Fin n → ℕ) (hf : IsWeightedHomogeneous (rowW n n) f μ) :
+    IsWeightedHomogeneous (blkW ι n) (blockEmb K τ f) (Pi.single τ μ) := by
+  intro d hd
+  obtain ⟨u, rfl, hu⟩ := coeff_rename_ne_zero _ _ _ hd
+  have e := hf hu
+  funext τ' a
+  rw [weight_blkW]
+  by_cases h : τ' = τ
+  · subst h
+    rw [Pi.single_eq_same, ← e, GlobalTheory.LvT.KerLat.weight_rowW, rowDeg]
+    refine Finset.sum_congr rfl fun s _ => ?_
+    exact Finsupp.mapDomain_apply (fun x y hxy => (Prod.mk.inj hxy).2) u (a, s)
+  · rw [Pi.single_eq_of_ne h]
+    refine Finset.sum_eq_zero fun s _ => ?_
+    apply Finsupp.mapDomain_notin_range
+    rintro ⟨x, hx⟩
+    exact h (Prod.mk.inj hx).1.symm
+
+theorem ten_hom {K : Type} [Field K] {ι : Type} [Fintype ι] {n : ℕ}
+    (f : ι → MvPolynomial (Fin n × Fin n) K) (μ : ι → Fin n → ℕ)
+    (hf : ∀ τ, IsWeightedHomogeneous (rowW n n) (f τ) (μ τ)) :
+    IsWeightedHomogeneous (blkW ι n) (ten f) μ := by
+  classical
+  have h := IsWeightedHomogeneous.prod Finset.univ (fun τ => blockEmb K τ (f τ)) _
+    (fun τ _ => blockEmb_hom τ (f τ) (μ τ) (hf τ))
+  have e : μ = ∑ τ, Pi.single τ (μ τ) := (Finset.univ_sum_single μ).symm
+  rw [e]
+  exact h
+
+theorem natW_antitone' {n : ℕ} (l : DomWeight n) : Antitone l.natW := fun _ _ h =>
+  Int.toNat_le_toNat (sub_le_sub_right (l.anti h) _)
+
+theorem extremal_hom (K : Type) [Field K] {n : ℕ} (l : DomWeight n) :
+    IsWeightedHomogeneous (rowW n n) (extremal K n l) l.natW := by
+  have h := hwRowWeight K n n le_rfl l.natW (natW_antitone' l)
+  have e : (rowNu l.natW : Fin n → ℕ) = l.natW := by
+    funext a
+    simp [rowNu]
+  rwa [e] at h
+
+theorem weight_line : ∀ (K : Type) [Field K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n), (∀ m ∈ (ten fun τ => extremal K n (lam τ) : Pol K ι n).support, ∀ τ a, ∑ s : Fin n, m (τ, a, s) = (lam τ).natW a) ∧ ∀ G ∈ VV K lam, (∀ m ∈ G.support, ∀ τ a, ∑ s : Fin n, m (τ, a, s) = (lam τ).natW a) → ∃ c : K, G = c • ten fun τ => extremal K n (lam τ) := by
+  intro K _ ι _ n lam
+  classical
+  refine ⟨fun m hm τ a => ?_, fun G hG hw => ?_⟩
+  · have h := ten_hom _ (fun τ => (lam τ).natW) (fun τ => extremal_hom K (lam τ)) (mem_support_iff.1 hm)
+    rw [← weight_blkW, h]
+  · have hGh : IsWeightedHomogeneous (blkW ι n) G (fun τ => (lam τ).natW) := by
+      intro d hd
+      funext τ a
+      rw [weight_blkW]
+      exact hw d (mem_support_iff.2 hd) τ a
+    have key : VV K lam ≤ (Submodule.span K {(ten fun τ => extremal K n (lam τ) : Pol K ι n)}).comap
+        (weightedHomogeneousComponent (blkW ι n) (fun τ => (lam τ).natW)) := by
+      rw [← (bVVfun_spec K lam).2, Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      have sp := fun τ => (sSBasis K n n (lam τ).natW).choose_spec.1
+      have hb : ∀ τ, IsWeightedHomogeneous (rowW n n) (ssB K (lam τ).natW (i τ)) (rowWt (i τ).1) :=
+        fun τ => (sp τ).2.2 (i τ)
+      have hi : IsWeightedHomogeneous (blkW ι n) (bVVfun K lam i) (fun τ => rowWt (i τ).1) := ten_hom _ _ hb
+      simp only [SetLike.mem_coe, Submodule.mem_comap]
+      by_cases he : (fun τ => (lam τ).natW) = fun τ => rowWt (i τ).1
+      · rw [← he] at hi
+        rw [hi.weightedHomogeneousComponent_same]
+        have hc : ∀ τ, ∃ c : K, ssB K (lam τ).natW (i τ) = c • extremal K n (lam τ) := fun τ => by
+          refine GlobalTheory.Alc.hw_line_field K n _ (natW_antitone' _) _ ?_ ?_
+          · rw [← (sp τ).2.1]
+            exact Submodule.subset_span ⟨i τ, rfl⟩
+          · have := hb τ
+            rwa [← congrFun he τ] at this
+        choose c hc using hc
+        refine Submodule.mem_span_singleton.2 ⟨∏ τ, c τ, ?_⟩
+        simp only [bVVfun, ten, hc, map_smul]
+        exact (Finset.prod_smul _ _ _).symm
+      · rw [hi.weightedHomogeneousComponent_ne _ he]
+        exact zero_mem _
+    have h := key hG
+    rw [Submodule.mem_comap, hGh.weightedHomogeneousComponent_same] at h
+    obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.1 h
+    exact ⟨c, hc.symm⟩
+
+end GlobalTheory.CoefWtLine
+end
+end
+
+set_option autoImplicit false
+noncomputable section
+open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
+open scoped Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weightSpace_coefficientSpace_eq_extremalTensorLine : ∀ (K : Type) [Field K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n), (∀ m ∈ (ten fun τ => extremal K n (lam τ) : Pol K ι n).support, ∀ τ a, ∑ s : Fin n, m (τ, a, s) = (lam τ).natW a) ∧ ∀ G ∈ VV K lam, (∀ m ∈ G.support, ∀ τ a, ∑ s : Fin n, m (τ, a, s) = (lam τ).natW a) → ∃ c : K, G = c • ten fun τ => extremal K n (lam τ) := by
+  atlas_forward_decl GlobalTheory.CoefWtLine.weight_line
+end
+end
+
+section
 set_option autoImplicit false
 noncomputable section
 open NumberField Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Theta Formalism.IndefR
@@ -63,3 +479,5 @@ theorem endo_scalar : ∀ (K : Type) [Field K] [CharZero K] {ι : Type} [Fintype
   simpa [sub_eq_zero] using hw
 
 end GlobalTheory.CoefSchur
+end
+end

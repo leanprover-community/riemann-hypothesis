@@ -4,10 +4,202 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.BasisPowerSectionsLocalBaseChange
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.MemNonzeroLocusVia
 import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.SectionsSeparatePointsAndTangents
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.DetNeZeroOfGenericLinearFormsVanish
-import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.FiniteOfIsClosedSingleton
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.InjectiveOfInjectiveCompAevalOfTrdegLe
+import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.JacNeZeroIffSpanEqMaximalIdeal
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.TrdegEqOfLocallyIsStandardSmoothOfRelativeDimens
 import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.UnifPreGenericFibreSurjectiveAppTopAndIsIntegral
+
+section
+namespace GlobalTheory
+
+open MvPolynomial
+
+theorem det_ne_zero_of_generic_linear_forms_vanish :
+    ∀ (k K : Type) [Field k] [Field K] [Algebra k K] (F : IntermediateField k K) (g N : ℕ)
+    (T : Fin g × Fin N → K) (e : Fin N → K) (D : Fin g → Fin N → K),
+    AlgebraicIndependent k T → Algebra.trdeg k F ≤ g → (∀ j, e j ∈ F) → (∀ a j, D a j ∈ F) →
+    (∃ j, e j ≠ 0) →
+    (∃ c : Fin g → Fin N → K, (∀ i, ∑ j, c i j * e j = 0) ∧
+      (Matrix.of fun i a => ∑ j, c i j * D a j).det ≠ 0) →
+    (∀ i, ∑ j, T (i, j) * e j = 0) → (Matrix.of fun i a => ∑ j, T (i, j) * D a j).det ≠ 0 := by
+  intro k K _ _ _ F g N T e D hT hF he hD ⟨j0, hj0⟩ ⟨c, hc, hcd⟩ hTe
+  obtain ⟨M, rfl⟩ : ∃ M, N = M + 1 := ⟨N - 1, by have := j0.pos; omega⟩
+  let η : Fin (M + 1) → F := fun j => ⟨e j / e j0, F.div_mem (he j) (he j0)⟩
+  let D' : Fin g → Fin (M + 1) → F := fun a j => ⟨D a j, hD a j⟩
+  let b : Fin g × Fin (M + 1) → MvPolynomial (Fin g × Fin M) F := fun p =>
+    Fin.insertNth (α := fun _ => MvPolynomial (Fin g × Fin M) F) j0
+      (-∑ l : Fin M, X (p.1, l) * C (η (j0.succAbove l))) (fun l => X (p.1, l)) p.2
+  let χ : (Fin g × Fin (M + 1) → K) → (MvPolynomial (Fin g × Fin M) F →ₐ[F] K) := fun v =>
+    aeval fun q => v (q.1, j0.succAbove q.2)
+  have hb : ∀ v : Fin g × Fin (M + 1) → K, (∀ i, ∑ j, v (i, j) * e j = 0) →
+      ∀ p, χ v (b p) = v p := by
+    rintro v hv ⟨i, j⟩
+    refine Fin.succAboveCases j0 ?_ (fun l => ?_) j
+    · have h1 := hv i
+      rw [Fin.sum_univ_succAbove _ j0] at h1
+      have h2 : v (i, j0) =
+          -∑ l : Fin M, v (i, j0.succAbove l) * (e (j0.succAbove l) / e j0) := by
+        simp only [← mul_div_assoc, ← Finset.sum_div]
+        field_simp
+        linear_combination h1
+      rw [h2]
+      simp [b, χ, η]
+    · simp [b, χ]
+  let Δ : MvPolynomial (Fin g × Fin M) F :=
+    (Matrix.of fun i a => ∑ j, b (i, j) * C (D' a j)).det
+  have hΔ : ∀ v : Fin g × Fin (M + 1) → K, (∀ i, ∑ j, v (i, j) * e j = 0) →
+      χ v Δ = (Matrix.of fun i a => ∑ j, v (i, j) * D a j).det := by
+    intro v hv
+    rw [AlgHom.map_det]
+    congr 1
+    ext i a
+    simp only [AlgHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, map_sum, map_mul,
+      hb v hv]
+    simp [χ, D']
+  have hΔ0 : Δ ≠ 0 := by
+    intro h
+    apply hcd
+    rw [← hΔ (fun p => c p.1 p.2) hc, h, map_zero]
+  have htr : Algebra.trdeg k (MvPolynomial (Fin g × Fin M) F) ≤
+      Cardinal.mk (Fin g × Fin (M + 1)) := by
+    have : FaithfulSMul F (MvPolynomial (Fin g × Fin M) F) :=
+      (faithfulSMul_iff_algebraMap_injective _ _).2 (MvPolynomial.C_injective _ _)
+    rw [← trdeg_add_eq k F, MvPolynomial.trdeg_of_isDomain, Cardinal.lift_id,
+      Cardinal.mk_fintype, Cardinal.mk_fintype]
+    refine (add_le_add_left hF _).trans ?_
+    norm_cast
+    simp only [Fintype.card_prod, Fintype.card_fin]
+    apply le_of_eq
+    ring
+  have hχ : Function.Injective (χ T).toRingHom := by
+    refine injective_of_injective_comp_aeval_of_trdeg_le (k := k) b htr _ ?_
+    have : (fun q : MvPolynomial (Fin g × Fin (M + 1)) k => (χ T).toRingHom (aeval b q)) =
+        aeval T := by
+      have h3 : ((χ T).restrictScalars k).comp (aeval b) = aeval T := by
+        apply MvPolynomial.algHom_ext
+        intro p
+        simp [hb T hTe]
+      funext q
+      exact DFunLike.congr_fun h3 q
+    rw [this]
+    exact hT
+  rw [← hΔ T hTe]
+  intro h
+  exact hΔ0 (hχ (by simpa using h))
+
+end GlobalTheory
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.AbLaw
+open GlobalTheory.KeyKa
+
+namespace GlobalTheory.TransvFin
+
+theorem valT_eq_zero_of_notMem {K : Type} [Field K] {X : Scheme.{0}} (w : Sp K ⟶ X) {U : X.Opens}
+    (h : ⊤ ≤ w ⁻¹ᵁ U) (f : Γ(X, U)) (p : Sp K) (hp : w p ∉ X.basicOpen f) : valT (T := K) w U f = 0 := by
+  by_contra hne
+  have h1 : IsUnit ((Scheme.ΓSpecIso (CommRingCat.of K)).hom.hom ((w.appLE U ⊤ h).hom f)) := by
+    have e : valT (T := K) w U f = _ := dif_pos h
+    exact e ▸ Ne.isUnit hne
+  have h2 : IsUnit ((w.appLE U ⊤ h).hom f) := by
+    have := h1.map (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom
+    rwa [Iso.hom_inv_id_apply] at this
+  have h3 := (Sp K).basicOpen_of_isUnit h2
+  rw [Scheme.basicOpen_appLE] at h3
+  exact hp ((h3.ge (x := p) trivial).2)
+
+theorem eq_of_specializes {X : Scheme.{0}} {J : Type} {U : X.Opens} (f : J → Γ(X, U)) {y y' : X} (h : y' ⤳ y)
+    (hy : y ∈ U)
+    (hf : Ideal.span (Set.range fun i => gs (𝟙 X) y U (f i)) = IsLocalRing.maximalIdeal (X.presheaf.stalk y))
+    (h0 : ∀ i, y' ∉ X.basicOpen (f i)) : y' = y := by
+  by_contra hne
+  have hn : ¬ y ⤳ y' := fun h' => hne (h.antisymm h').eq
+  rw [specializes_iff_forall_open] at hn
+  push_neg at hn
+  obtain ⟨V, hV, hV1, hV2⟩ := hn
+  obtain ⟨W, hW, hyW, -⟩ := exists_isAffineOpen_mem_and_subset (X := X) (x := y) (U := ⊤) trivial
+  have hyW' : y' ∈ W := h.mem_open W.isOpen hyW
+  obtain ⟨g, hg, hg'⟩ := hW.exists_basicOpen_le (V := ⟨V, hV⟩) ⟨y', hV1⟩ hyW'
+  have hle : IsLocalRing.maximalIdeal (X.presheaf.stalk y) ≤
+      (IsLocalRing.maximalIdeal (X.presheaf.stalk y')).comap (X.presheaf.stalkSpecializes h).hom := by
+    rw [← hf, Ideal.span_le]
+    rintro _ ⟨i, rfl⟩ hu
+    refine h0 i ((X.mem_basicOpen (f i) y' (h.mem_open U.isOpen hy)).2 ?_)
+    have e : gs (𝟙 X) y U (f i) = (X.presheaf.germ U y hy).hom (f i) := gs_eq (𝟙 X) y U hy (f i)
+    beta_reduce at hu
+    rwa [e, TopCat.Presheaf.germ_stalkSpecializes_apply] at hu
+  have hm : (X.presheaf.germ W y hyW).hom g ∈ IsLocalRing.maximalIdeal (X.presheaf.stalk y) :=
+    fun hu => hV2 (hg ((X.mem_basicOpen g y hyW).2 hu))
+  refine hle hm ?_
+  rw [TopCat.Presheaf.germ_stalkSpecializes_apply]
+  exact (X.mem_basicOpen g y' hyW').1 hg'
+
+theorem finite_of_isClosed_singleton {T : Type} [TopologicalSpace T] [TopologicalSpace.NoetherianSpace T]
+    [QuasiSober T] {Z : Set T} (hZ : IsClosed Z) (h : ∀ y ∈ Z, IsClosed ({y} : Set T)) : Z.Finite := by
+  obtain ⟨S, hS, hc, hi, rfl⟩ := TopologicalSpace.NoetherianSpace.exists_finite_set_isClosed_irreducible hZ
+  refine hS.sUnion fun t ht => ?_
+  obtain ⟨y, hy⟩ := QuasiSober.sober (hi t ht) (hc t ht)
+  rw [← hy.def, (h y ⟨t, ht, hy.mem⟩).closure_eq]
+  exact Set.finite_singleton y
+
+end GlobalTheory.TransvFin
+
+open GlobalTheory.TransvFin in
+
+theorem GlobalTheory.KeyKa.exists_etZ_of_jac_ne_zero : ∀ (K : Type) [Field K] [IsAlgClosed K] (x : KeyIn K) (n : ℕ) (s : Fin x.P.g → RR x n), (∀ (z : Pt x) (c : x.P.L.ι), ⊤ ≤ z.left ⁻¹ᵁ x.P.L.U c → (∀ i, valT (T := K) z.left (x.P.L.U c) ((s i).f c) = 0) → jac x s z c ≠ 0) → ∃ (d : ℕ) (z : Fin d → Pt x) (ch : Fin d → x.P.L.ι), EtZ x s z ch := by
+  intro K _ _ x n s hs
+  have := x.P.smoothDim
+  have : Smooth x.P.A.hom := SmoothOfRelativeDimension.smooth x.P.g _
+  have : IsProper x.P.A.hom := x.P.isAb.proper
+  have : JacobsonSpace x.P.A.left := LocallyOfFiniteType.jacobsonSpace x.P.A.hom
+  have : IsLocallyNoetherian x.P.A.left := LocallyOfFiniteType.isLocallyNoetherian x.P.A.hom
+  have : CompactSpace x.P.A.left := QuasiCompact.compactSpace_of_compactSpace x.P.A.hom
+  have : IsNoetherian x.P.A.left := {}
+  let Z : Set x.P.A.left := {y | ∀ i, y ∉ Out.nonzeroLocus (s i)}
+  have hZ : IsClosed Z := by
+    have e : Z = ⋂ i, (Out.nonzeroLocus (s i) : Set x.P.A.left)ᶜ := by
+      ext y
+      simp [Z]
+    rw [e]
+    exact isClosed_iInter fun i => (Out.nonzeroLocus (s i)).isOpen.isClosed_compl
+  have hb : ∀ y ∈ Z, ∀ c i, y ∉ x.P.A.left.basicOpen ((s i).f c) := fun y hy c i h =>
+    hy i (TopologicalSpace.Opens.mem_iSup.2 ⟨c, h⟩)
+  have key : ∀ y ∈ Z, IsClosed ({y} : Set x.P.A.left) → ∃ (z : Pt x) (c : x.P.L.ι), (∀ p, z.left p = y) ∧
+      ⊤ ≤ z.left ⁻¹ᵁ x.P.L.U c ∧ ∀ i, valT (T := K) z.left (x.P.L.U c) ((s i).f c) = 0 := by
+    intro y hy hc
+    let z : Pt x := Over.homMk (pointOfClosedPoint (K := K) x.P.A.hom y hc)
+      (pointOfClosedPoint_comp (K := K) x.P.A.hom y hc)
+    have hz (p) : z.left p = y := pointOfClosedPoint_apply (K := K) x.P.A.hom y hc p
+    obtain ⟨c, hyc⟩ := TopologicalSpace.Opens.mem_iSup.1 (x.P.isLB.cover.ge (x := y) trivial)
+    have ht : ⊤ ≤ z.left ⁻¹ᵁ x.P.L.U c := fun p _ => (congrArg (· ∈ x.P.L.U c) (hz p)).mpr hyc
+    exact ⟨z, c, hz, ht, fun i => valT_eq_zero_of_notMem z.left ht _ (IsLocalRing.closedPoint K)
+      fun h => hb y hy c i ((congrArg (· ∈ x.P.A.left.basicOpen ((s i).f c)) (hz _)).mp h)⟩
+  have hcl : ∀ y ∈ Z, IsClosed ({y} : Set x.P.A.left) := by
+    intro y' hy'
+    obtain ⟨y, hy, hc⟩ := nonempty_inter_closedPoints (Z := closure ({y'} : Set x.P.A.left))
+      ⟨y', subset_closure rfl⟩ isClosed_closure.isLocallyClosed
+    have hsp : y' ⤳ y := specializes_iff_mem_closure.2 hy
+    obtain ⟨z, c, hz, ht, h0⟩ := key y (hsp.mem_closed hZ hy') hc
+    have h1 := (jac_ne_zero_iff_span_eq_maximalIdeal K x n s z c (IsLocalRing.closedPoint K) ht h0).1 (hs z c ht h0)
+    have hU : z.left (IsLocalRing.closedPoint K) ∈ x.P.L.U c := ht (x := IsLocalRing.closedPoint K) trivial
+    have e := eq_of_specializes (fun i => (s i).f c) ((hz _).symm ▸ hsp) hU h1 (hb y' hy' c)
+    rw [e.trans (hz _)]
+    exact hc
+  have hfin := finite_of_isClosed_singleton hZ hcl
+  obtain ⟨d, ⟨e⟩⟩ := Finite.exists_equiv_fin Z (h := hfin)
+  choose z c hz ht h0 using fun y : Z => key y y.2 (hcl y y.2)
+  refine ⟨d, fun a => z (e.symm a), fun a => c (e.symm a), fun a => ht _, fun a => h0 _,
+    fun a => (hs _ _ (ht _) (h0 _)).isUnit, fun a a' hne p h => hne ?_,
+    fun y hy => ⟨e ⟨y, hy⟩, IsLocalRing.closedPoint K, ?_⟩⟩
+  · exact e.symm.injective (Subtype.ext ((hz _ p).symm.trans (h.trans (hz _ p))))
+  · exact (hz _ _).trans (congrArg Subtype.val (e.symm_apply_apply ⟨y, hy⟩))
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 attribute [local instance] Over.cartesianMonoidalCategory
@@ -232,4 +424,5 @@ theorem exists_etZ_of_algebraicIndependent : Out.Laws → ∀ (k K : Type) [Fiel
     exact mul_ne_zero hu hs₀ this.symm
 
 end GlobalTheory.KeyKa.GenericZeros
+end
 end

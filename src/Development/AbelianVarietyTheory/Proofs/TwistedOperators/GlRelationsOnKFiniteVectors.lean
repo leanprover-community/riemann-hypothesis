@@ -2,12 +2,229 @@ import Mathlib
 import Formalism.PeriodIntegrals.DSInfCharCap
 import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.PseudoCoefficientSeparation
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DifferentiableAtOrbit
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GelfandTraceConjInvertibleScalarMatrix
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ElementaryTracePowerCyclicWordsStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FreeAlgebraLiftMonoidSum
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MatrixCoefficientDerivativeFormula
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ElementaryTracePowerCyclicWords
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DerivedRepConjMaxCompactIntertwines
 
+section
+section
+open scoped InnerProductSpace
+
+namespace GlobalTheory
+
+theorem recursive_matrixPower_eq_matrix_pow {A : Type} [Ring A] {n : ℕ} (E : Fin n → Fin n → A) (k : ℕ) :
+    Matrix.of (Formalism.REAL.epow E k) = (Matrix.of E) ^ k := by
+  induction k with
+  | zero =>
+    ext a b
+    simp [Formalism.REAL.epow, Matrix.one_apply]
+  | succ k ih =>
+    ext a b
+    rw [pow_succ, ← ih]
+    simp [Formalism.REAL.epow, Matrix.mul_apply]
+
+theorem scalarMatrix_mul_algebraMatrix_mul_apply {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ}
+    (M : Matrix (Fin n) (Fin n) A) (P Q : Matrix (Fin n) (Fin n) ℂ) (a b : Fin n) :
+    ((algebraMap ℂ A).mapMatrix P.transpose * M * (algebraMap ℂ A).mapMatrix Q.transpose) a b
+      = ∑ c, ∑ d, (P c a * Q b d) • M c d := by
+  rw [Finset.sum_comm]
+  simp only [Matrix.mul_apply, RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.transpose_apply,
+    Finset.sum_mul]
+  refine Finset.sum_congr rfl fun d _ => Finset.sum_congr rfl fun c _ => ?_
+  rw [← Algebra.commutes, ← Algebra.smul_def, ← Algebra.smul_def, smul_smul, mul_comm]
+
+theorem etr_conj_scalar_matrix {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A)
+    (P : Matrix (Fin n) (Fin n) ℂ) (hP : IsUnit P) (k : ℕ) :
+    Formalism.REAL.etr (fun a b => ∑ c, ∑ d, (P c a * P⁻¹ b d) • E c d) k = Formalism.REAL.etr E k := by
+  have hd : IsUnit P.det := (Matrix.isUnit_iff_isUnit_det P).1 hP
+  have h1 : P * P⁻¹ = 1 := Matrix.mul_nonsing_inv P hd
+  have h2 : P⁻¹ * P = 1 := Matrix.nonsing_inv_mul P hd
+  set L : Matrix (Fin n) (Fin n) A := (algebraMap ℂ A).mapMatrix P.transpose with hL
+  set R : Matrix (Fin n) (Fin n) A := (algebraMap ℂ A).mapMatrix (P⁻¹).transpose with hR
+  have hLR : L * R = 1 := by
+    rw [hL, hR, ← map_mul, ← Matrix.transpose_mul, h2, Matrix.transpose_one, map_one]
+  have hRL : R * L = 1 := by
+    rw [hL, hR, ← map_mul, ← Matrix.transpose_mul, h1, Matrix.transpose_one, map_one]
+  have hE : Matrix.of (fun a b => ∑ c, ∑ d, (P c a * P⁻¹ b d) • E c d) = L * Matrix.of E * R := by
+    ext a b
+    rw [hL, hR, scalarMatrix_mul_algebraMatrix_mul_apply]
+    rfl
+  have hpow : ∀ m : ℕ, (L * Matrix.of E * R) ^ m = L * (Matrix.of E) ^ m * R := by
+    intro m
+    induction m with
+    | zero => simp [hLR]
+    | succ m ih =>
+      rw [pow_succ, ih, pow_succ]
+      calc L * Matrix.of E ^ m * R * (L * Matrix.of E * R)
+          = L * Matrix.of E ^ m * (R * L) * Matrix.of E * R := by simp only [mul_assoc]
+        _ = L * (Matrix.of E ^ m * Matrix.of E) * R := by rw [hRL]; simp only [mul_assoc, one_mul]
+  have hk := recursive_matrixPower_eq_matrix_pow (fun a b => ∑ c, ∑ d, (P c a * P⁻¹ b d) • E c d) k
+  rw [hE, hpow, ← recursive_matrixPower_eq_matrix_pow] at hk
+  have hent : ∀ a, Formalism.REAL.epow (fun a b => ∑ c, ∑ d, (P c a * P⁻¹ b d) • E c d) k a a
+      = ∑ c, ∑ d, (P c a * P⁻¹ a d) • Formalism.REAL.epow E k c d := by
+    intro a
+    have := congrFun (congrFun hk a) a
+    rw [hL, hR, scalarMatrix_mul_algebraMatrix_mul_apply] at this
+    exact this
+  unfold Formalism.REAL.etr
+  simp only [hent]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  rw [Finset.sum_comm]
+  simp only [← Finset.sum_smul, ← Matrix.mul_apply, h1, Matrix.one_apply, ite_smul, one_smul,
+    zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+
+end GlobalTheory
+end
+
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.gelfandTrace_conj_invertible_scalarMatrix : ∀ {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A) (P : Matrix (Fin n) (Fin n) ℂ), IsUnit P → ∀ k : ℕ, Formalism.REAL.etr (fun a b => ∑ c, ∑ d, (P c a * P⁻¹ b d) • E c d) k = Formalism.REAL.etr E k := by
+  atlas_forward_decl GlobalTheory.etr_conj_scalar_matrix
+end
+
+section
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.elementary_trace_power_cyclic_words : ∀ {A : Type} [Ring A] {n : ℕ} (E : Fin n → Fin n → A) (m : ℕ), Formalism.REAL.etr E (m + 1) = ∑ a : Fin (m + 1) → Fin n, ((GlobalTheory.Dec.cycWord a).map fun p => E p.1 p.2).prod := by
+  first | exact @GlobalTheory.TraceCycWord.etr_succ_eq_sum_cycWord | exact GlobalTheory.TraceCycWord.etr_succ_eq_sum_cycWord | (intros; apply GlobalTheory.TraceCycWord.etr_succ_eq_sum_cycWord <;> assumption)
+end
+
+section
+section
+open scoped InnerProductSpace
+
+namespace GlobalTheory
+
+theorem freeAlgebra_lift_eq_sum_monomials {B : Type} [Ring B] [Algebra ℂ B] {X : Type} (f : X → B) (p : FreeAlgebra ℂ X) : FreeAlgebra.lift ℂ f p = Finsupp.sum (FreeAlgebra.equivMonoidAlgebraFreeMonoid p).coeff fun (w : FreeMonoid X) (c : ℂ) => c • (w.toList.map f).prod := by
+  set e := (FreeAlgebra.equivMonoidAlgebraFreeMonoid : FreeAlgebra ℂ X ≃ₐ[ℂ] MonoidAlgebra ℂ (FreeMonoid X))
+  have he : ∀ x : X, e (FreeAlgebra.ι ℂ x) = MonoidAlgebra.of ℂ (FreeMonoid X) (FreeMonoid.of x) := by
+    intro x
+    simp [e, FreeAlgebra.equivMonoidAlgebraFreeMonoid]
+  have hF : ((FreeAlgebra.lift ℂ f).comp e.symm.toAlgHom) = MonoidAlgebra.lift ℂ B (FreeMonoid X) (FreeMonoid.lift f) := by
+    rw [← (MonoidAlgebra.lift ℂ B (FreeMonoid X)).apply_symm_apply ((FreeAlgebra.lift ℂ f).comp e.symm.toAlgHom)]
+    congr 1
+    apply FreeMonoid.hom_eq
+    intro x
+    have hx : e.symm (MonoidAlgebra.of ℂ (FreeMonoid X) (FreeMonoid.of x)) = FreeAlgebra.ι ℂ x := by
+      rw [← he x, e.symm_apply_apply]
+    rw [MonoidAlgebra.of_apply] at hx
+    rw [MonoidAlgebra.lift_symm_apply]
+    simp only [AlgHom.comp_apply, AlgEquiv.toAlgHom_eq_coe, AlgHom.coe_coe, AlgEquiv.coe_algHom, hx, FreeAlgebra.lift_ι_apply, FreeMonoid.lift_eval_of]
+  have := AlgHom.congr_fun hF (e p)
+  simp only [AlgHom.comp_apply, AlgEquiv.toAlgHom_eq_coe, AlgHom.coe_coe, AlgEquiv.coe_algHom, AlgEquiv.symm_apply_apply, MonoidAlgebra.lift_apply, FreeMonoid.lift_apply] at this
+  exact this
+end GlobalTheory
+end
+
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.freeAlgebra_lift_monoid_sum : ∀ {B : Type} [Ring B] [Algebra ℂ B] {X : Type} (f : X → B) (p : FreeAlgebra ℂ X), FreeAlgebra.lift ℂ f p = Finsupp.sum (FreeAlgebra.equivMonoidAlgebraFreeMonoid p).coeff fun (w : FreeMonoid X) (c : ℂ) => c • (w.toList.map f).prod := by
+  atlas_forward_decl GlobalTheory.freeAlgebra_lift_eq_sum_monomials
+end
+
+section
+section
+open scoped InnerProductSpace
+
+noncomputable section
+
+open Matrix
+
+namespace GlobalTheory.MatCoefDeriv
+
+variable {n : ℕ} {ε : Fin n → Bool}
+
+theorem exp_inUJ {X : Matrix (Fin n) (Fin n) ℂ} (hX : X ∈ GlobalTheory.SmoothGlob.lieSet ε) (t : ℝ) :
+    Formalism.REAL.inUJ ε (NormedSpace.exp ((t : ℂ) • X)) := by
+  have hX' : Xᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * X = 0 := hX
+  have hJJ := GlobalTheory.GKLie.Jm_mul_self ε
+  have hJinv : (Formalism.REAL.Jm ε)⁻¹ = Formalism.REAL.Jm ε := Matrix.inv_eq_right_inv hJJ
+  have hu : IsUnit (Formalism.REAL.Jm ε) := ⟨⟨_, _, hJJ, hJJ⟩, rfl⟩
+  have h1 : Xᴴ * Formalism.REAL.Jm ε = -(Formalism.REAL.Jm ε * X) := eq_neg_of_add_eq_zero_left hX'
+  have hXh : Xᴴ = Formalism.REAL.Jm ε * (-X) * (Formalism.REAL.Jm ε)⁻¹ := by
+    rw [hJinv]
+    calc Xᴴ = Xᴴ * Formalism.REAL.Jm ε * Formalism.REAL.Jm ε := by rw [mul_assoc, hJJ, mul_one]
+      _ = _ := by rw [h1, mul_neg, neg_mul]
+  have hc : ((t : ℂ) • X)ᴴ = Formalism.REAL.Jm ε * (-((t : ℂ) • X)) * (Formalism.REAL.Jm ε)⁻¹ := by
+    rw [conjTranspose_smul, hXh, Complex.star_def, Complex.conj_ofReal]
+    simp [smul_neg, mul_smul_comm, smul_mul_assoc]
+  unfold Formalism.REAL.inUJ
+  rw [← Matrix.exp_conjTranspose, hc, Matrix.exp_conj _ _ hu, hJinv]
+  have hcomm : Commute (-((t : ℂ) • X)) ((t : ℂ) • X) := (Commute.refl _).neg_left
+  calc Formalism.REAL.Jm ε * NormedSpace.exp (-((t : ℂ) • X)) * Formalism.REAL.Jm ε * Formalism.REAL.Jm ε *
+        NormedSpace.exp ((t : ℂ) • X)
+      = Formalism.REAL.Jm ε * (NormedSpace.exp (-((t : ℂ) • X)) * NormedSpace.exp ((t : ℂ) • X)) := by
+        rw [mul_assoc (Formalism.REAL.Jm ε * _) (Formalism.REAL.Jm ε) (Formalism.REAL.Jm ε), hJJ, mul_one, mul_assoc]
+    _ = Formalism.REAL.Jm ε := by
+        rw [← Matrix.exp_add_of_commute _ _ hcomm, neg_add_cancel, NormedSpace.exp_zero, mul_one]
+
+variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+
+theorem Rd_coef {ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hρ : Formalism.QuantumDeterminants.IsCRepOn (Formalism.MainNotions.S.UJset ε) ρ)
+    {u : H} (hu : Formalism.L2.Theta.SmoothVec (GlobalTheory.SmoothGlob.lieSet ε) ρ u) (w : H)
+    {f : Matrix (Fin n) (Fin n) ℂ → ℂ} (hf : ∀ g, Formalism.REAL.inUJ ε g → f g = ⟪w, ρ g u⟫_ℂ)
+    {X : Matrix (Fin n) (Fin n) ℂ} (hX : X ∈ GlobalTheory.SmoothGlob.lieSet ε)
+    {g : Matrix (Fin n) (Fin n) ℂ} (hg : Formalism.REAL.inUJ ε g) :
+    Formalism.REAL.Rd X f g = ⟪w, ρ g (PI.PhMeasCore.dsig ρ X u)⟫_ℂ := by
+  set γ : ℝ → H := fun t => ρ (NormedSpace.exp ((t : ℂ) • X)) u with hγ
+  let L : H →L[ℝ] ℂ := ((innerSL ℂ w).comp (ρ g)).restrictScalars ℝ
+  have hfun : (fun t : ℝ => f (g * NormedSpace.exp ((t : ℂ) • X))) = fun t => L (γ t) := by
+    funext t
+    have he := exp_inUJ hX t
+    rw [hf _ (by
+      unfold Formalism.REAL.inUJ at hg he ⊢
+      rw [conjTranspose_mul]
+      calc _ = (NormedSpace.exp ((t : ℂ) • X))ᴴ * (gᴴ * Formalism.REAL.Jm ε * g) *
+            NormedSpace.exp ((t : ℂ) • X) := by simp only [Matrix.mul_assoc]
+        _ = _ := by rw [hg, he])]
+    rw [hρ.2 g hg _ he]
+    rfl
+  have hdiff : DifferentiableAt ℝ γ 0 := by
+    have h := GlobalTheory.GKLie.differentiableAt_orbit hu hX
+    have e : γ = fun t : ℝ => ρ (NormedSpace.exp (t • X)) u := by
+      funext t; simp only [hγ, Complex.coe_smul]
+    rw [e]; exact h
+  unfold Formalism.REAL.Rd
+  rw [hfun]
+  show deriv (⇑L ∘ γ) 0 = _
+  rw [(L.hasFDerivAt.comp_hasDerivAt (0 : ℝ) hdiff.hasDerivAt).deriv]
+  rfl
+
+theorem cpart1_eq (Z : Matrix (Fin n) (Fin n) ℂ) :
+    Formalism.REAL.cpart1 ε Z = (1 / 2 : ℂ) • (Z + PI.DSInfCharCap.thetaJ ε Z) := by
+  simp [Formalism.REAL.cpart1, PI.DSInfCharCap.thetaJ, sub_eq_add_neg]
+
+theorem cpart2_eq (Z : Matrix (Fin n) (Fin n) ℂ) :
+    Formalism.REAL.cpart2 ε Z = (1 / (2 * Complex.I)) • (Z - PI.DSInfCharCap.thetaJ ε Z) := by
+  simp [Formalism.REAL.cpart2, PI.DSInfCharCap.thetaJ, sub_eq_add_neg]
+
+theorem Eab_coef : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), Formalism.QuantumDeterminants.IsCRepOn (Formalism.MainNotions.S.UJset ε) ρ →
+    ∀ u : H, Formalism.L2.Theta.SmoothVec (GlobalTheory.SmoothGlob.lieSet ε) ρ u → ∀ (w : H) (f : Matrix (Fin n) (Fin n) ℂ → ℂ),
+    (∀ g, Formalism.REAL.inUJ ε g → f g = ⟪w, ρ g u⟫_ℂ) → ∀ (a b : Fin n) (g : Matrix (Fin n) (Fin n) ℂ),
+    Formalism.REAL.inUJ ε g → Formalism.REAL.Eab ε a b f g =
+      ⟪w, ρ g (PI.DSInfCharCap.dsigC ε ρ (Matrix.single a b 1) u)⟫_ℂ := by
+  intro n ε H _ _ ρ hρ u hu w f hf a b g hg
+  have h1 := Rd_coef hρ hu w hf (GlobalTheory.GKLie.cre_mem (ε := ε) (Matrix.single a b 1)) hg
+  have h2 := Rd_coef hρ hu w hf (GlobalTheory.GKLie.cim_mem (ε := ε) (Matrix.single a b 1)) hg
+  unfold Formalism.REAL.Eab Formalism.REAL.Ec PI.DSInfCharCap.dsigC
+  rw [cpart1_eq, cpart2_eq]
+  unfold GlobalTheory.GKLie.cre at h1
+  unfold GlobalTheory.GKLie.cim at h2
+  rw [h1, h2, map_add, map_smul, inner_add_right, inner_smul_right]
+
+end GlobalTheory.MatCoefDeriv
+end
+end
+
+open scoped InnerProductSpace
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.matrix_coefficient_derivative_formula : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), Formalism.QuantumDeterminants.IsCRepOn (Formalism.MainNotions.S.UJset ε) ρ → ∀ u : H, Formalism.L2.Theta.SmoothVec (GlobalTheory.SmoothGlob.lieSet ε) ρ u → ∀ (w : H) (f : Matrix (Fin n) (Fin n) ℂ → ℂ), (∀ g, Formalism.REAL.inUJ ε g → f g = ⟪w, ρ g u⟫_ℂ) → ∀ (a b : Fin n) (g : Matrix (Fin n) (Fin n) ℂ), Formalism.REAL.inUJ ε g → Formalism.REAL.Eab ε a b f g = ⟪w, ρ g (PI.DSInfCharCap.dsigC ε ρ (Matrix.single a b 1) u)⟫_ℂ := by
+  atlas_forward_decl GlobalTheory.MatCoefDeriv.Eab_coef
+end
+
+section
 noncomputable section
 
 open MeasureTheory Matrix Formalism.REAL Formalism.MainNotions.S Formalism.L2.Theta GlobalTheory.FlagMeas GlobalTheory.GKModule GlobalTheory.RealInd GlobalTheory.OpTrace
@@ -228,3 +445,5 @@ theorem kFin_glModule : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAd
     fun κ hκ k v w hw => etr_kequiv hρ hV hκ k v w hw, fun χ hχ k v => etr_infChar hρ hV χ hχ k v⟩
 
 end GlobalTheory.GKLie
+end
+end

@@ -1,5 +1,18 @@
-import Development.EtaleCohomology.EtaleSheaves.LeafSpreadLQFMapVtuPfG
+import Development.EtaleCohomology.EtaleSheaves.SpreadingOutLocallyQuasiFinite
 
+section
+namespace LateralTheory.E.LeafSpreadLQFMap_vtuPfG
+
+open LateralTheory.E.SpreadingOutLocallyQuasiFinite in
+
+theorem LeafSpreadLQFMap_of (hD : LeafQFAtDescend) (hO : LeafOpenSpread) :
+    LateralTheory.E.SpreadingOutQuasiFiniteness.LeafSpreadLQFMap :=
+  LateralTheory.E.SpreadingOutLocallyQuasiFinite.LeafSpreadLQFMap_of quasi_finite_at_base_change_of_finite_type hD hO
+
+end LateralTheory.E.LeafSpreadLQFMap_vtuPfG
+end
+
+section
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry
 
@@ -42,3 +55,5 @@ theorem LeafQFAtDescend_of : LateralTheory.E.SpreadingOutLocallyQuasiFinite.Leaf
   exact pullback.lift_fst _ _ _
 
 end LateralTheory.E.QuasiFiniteAtDescent
+end
+end

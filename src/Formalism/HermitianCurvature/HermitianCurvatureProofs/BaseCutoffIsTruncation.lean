@@ -1,10 +1,28 @@
 import Formalism.HermitianCurvature.StatementTop
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.VanishingAtRelevantPoints
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.FibreExpansionZeroFails
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellVanishingOfCommute
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BudgetClassEstimate
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralIdentities
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableUnipotentNormRpowNeg
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 
+section
+namespace Formalism.FourierDecayAlt.P
+
+
+
+end Formalism.FourierDecayAlt.P
+end
+
+section
+namespace Formalism.FourierDecayAlt.P
+
+
+end Formalism.FourierDecayAlt.P
+end
+
+section
 noncomputable section
 
 open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.FourierDecayAlt
@@ -257,3 +275,5 @@ theorem thr_arith {c₃ CV R Nn : ℝ} (hc₃ : 0 ≤ c₃) (hCV : 8 * c₃ ≤ 
 
 
 end Formalism.FourierDecayAlt.P.Topx2
+end
+end

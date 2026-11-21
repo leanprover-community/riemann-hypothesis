@@ -2,12 +2,547 @@ import Mathlib
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieChart
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueSemilinearStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalizationSheafGlueModules
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveModulesGlueCover
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalizedModuleBaseChange
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualModuleFiniteProjectiveStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualNumberPointsGlue
+import BuildAid.ForwardExisting
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocharLie
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DualMapSOfIdToRingHom
 
+section
+section
+namespace GlobalTheory.CompanionTheory.BasicCover
+
+theorem exists_uniform_bound {J : Type} [Finite J] (P : J → ℕ → Prop)
+    (mono : ∀ j n m, n ≤ m → P j n → P j m) (h : ∀ j, ∃ n, P j n) : ∃ N, ∀ j, P j N := by
+  classical
+  cases nonempty_fintype J
+  choose n hn using h
+  exact ⟨∑ j, n j, fun j => mono j _ _ (Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ j)) (hn j)⟩
+
+theorem pow_smul_eq_zero_mono {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
+    (t : R) (y : M) {n m : ℕ} (hnm : n ≤ m) (h : t ^ n • y = 0) : t ^ m • y = 0 := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hnm
+  rw [pow_add, mul_comm, mul_smul, h, smul_zero]
+
+theorem exists_pow_smul_eq_zero {R M M' : Type} [CommRing R] [AddCommGroup M] [Module R M]
+    [AddCommGroup M'] [Module R M'] (t : R) (φ : M →ₗ[R] M')
+    [IsLocalizedModule (Submonoid.powers t) φ] (y : M) (h : φ y = 0) :
+    ∃ n : ℕ, t ^ n • y = 0 := by
+  obtain ⟨⟨c, hc⟩, hc'⟩ := IsLocalizedModule.exists_of_eq (S := Submonoid.powers t) (f := φ)
+    (x₁ := y) (x₂ := 0) (by rw [h, map_zero])
+  obtain ⟨n, rfl⟩ := (Submonoid.mem_powers_iff _ _).1 hc
+  exact ⟨n, by simpa [Submonoid.smul_def] using hc'⟩
+
+theorem exists_pow_smul_eq_map {R M M' : Type} [CommRing R] [AddCommGroup M] [Module R M]
+    [AddCommGroup M'] [Module R M'] (t : R) (φ : M →ₗ[R] M')
+    [IsLocalizedModule (Submonoid.powers t) φ] (z : M') :
+    ∃ (n : ℕ) (y : M), t ^ n • z = φ y := by
+  obtain ⟨⟨y, ⟨c, hc⟩⟩, hy⟩ := IsLocalizedModule.surj (Submonoid.powers t) φ z
+  obtain ⟨n, rfl⟩ := (Submonoid.mem_powers_iff _ _).1 hc
+  exact ⟨n, y, by simpa [Submonoid.smul_def] using hy⟩
+
+theorem isLocalizedModule_of_basic_cover : ∀ (R E : Type) [CommRing R] [AddCommGroup E] [Module R E] (J : Type) [Finite J] (f : J → R), Ideal.span (Set.range f) = ⊤ →
+  ∀ (F : {g : R // ∃ i, f i ∣ g} → Type) [∀ g, AddCommGroup (F g)] [∀ g, Module R (F g)]
+    (res : ∀ g g' : {g : R // ∃ i, f i ∣ g}, g.1 ∣ g'.1 → (F g →ₗ[R] F g'))
+    (ρ : ∀ g, E →ₗ[R] F g),
+    (∀ g (h : g.1 ∣ g.1) y, res g g h y = y) →
+    (∀ g g' g'' (h : g.1 ∣ g'.1) (h' : g'.1 ∣ g''.1) (h'' : g.1 ∣ g''.1) y, res g' g'' h' (res g g' h y) = res g g'' h'' y) →
+    (∀ g g' (h : g.1 ∣ g'.1) e, res g g' h (ρ g e) = ρ g' e) →
+    (∀ g (a : R), a ∣ g.1 → IsUnit (algebraMap R (Module.End R (F g)) a)) →
+    (∀ g g' (h : g.1 ∣ g'.1) (t : R), g'.1 = g.1 * t → IsLocalizedModule (Submonoid.powers t) (res g g' h)) →
+    (∀ e, (∀ i, ρ ⟨f i, i, dvd_rfl⟩ e = 0) → e = 0) →
+    (∀ w : ∀ i, F ⟨f i, i, dvd_rfl⟩,
+      (∀ i j, res ⟨f i, i, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_right _ _) (w i) =
+        res ⟨f j, j, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_left _ _) (w j)) →
+      ∃ e, ∀ i, ρ ⟨f i, i, dvd_rfl⟩ e = w i) →
+    ∀ i, IsLocalizedModule (Submonoid.powers (f i)) (ρ ⟨f i, i, dvd_rfl⟩) := by
+  intro R E _ _ _ J _ f _ F _ _ res ρ _ hcomp hrρ hunit hloc hsep hglue i
+  have inj : ∀ (g g' : {g : R // ∃ i, f i ∣ g}) (h : g.1 ∣ g'.1) (t : R), g'.1 = g.1 * t → t ∣ g.1 →
+      ∀ x, res g g' h x = 0 → x = 0 := by
+    intro g g' h t ht htd x hx
+    have := hloc g g' h t ht
+    obtain ⟨n, hn⟩ := GlobalTheory.CompanionTheory.BasicCover.exists_pow_smul_eq_zero t (res g g' h) x hx
+    have hu : IsUnit (algebraMap R (Module.End R (F g)) (t ^ n)) := by
+      rw [map_pow]
+      exact (hunit g t htd).pow n
+    apply ((Module.End.isUnit_iff _).1 hu).1
+    rw [Module.algebraMap_end_apply, hn, map_zero]
+  refine ⟨fun x => ?_, fun z => ?_, fun {x₁ x₂} hx => ?_⟩
+  · obtain ⟨c, hc⟩ := x
+    obtain ⟨n, rfl⟩ := (Submonoid.mem_powers_iff _ _).1 hc
+    show IsUnit (algebraMap R (Module.End R (F ⟨f i, i, dvd_rfl⟩)) (f i ^ n))
+    rw [map_pow]
+    exact (hunit _ (f i) dvd_rfl).pow n
+  · have Pex : ∀ j, ∃ n, (fun j n => ∃ y : F ⟨f j, j, dvd_rfl⟩, f i ^ n • res ⟨f i, i, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_right _ _) z = res ⟨f j, j, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_left _ _) y) j n := by
+      intro j
+      have := hloc ⟨f j, j, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_left _ _) (f i) (mul_comm _ _)
+      exact GlobalTheory.CompanionTheory.BasicCover.exists_pow_smul_eq_map (f i) _ _
+    obtain ⟨N, hN⟩ := GlobalTheory.CompanionTheory.BasicCover.exists_uniform_bound (fun j n => ∃ y : F ⟨f j, j, dvd_rfl⟩, f i ^ n • res ⟨f i, i, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_right _ _) z = res ⟨f j, j, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_left _ _) y)
+      (fun j n m hnm hex => by
+        obtain ⟨y, hy⟩ := hex
+        exact ⟨f i ^ (m - n) • y, by
+          rw [map_smul, ← hy, smul_smul, ← pow_add, Nat.sub_add_cancel hnm]⟩) Pex
+    choose y hy using hN
+    have lift : ∀ j (g'' : {g : R // ∃ i, f i ∣ g}) (h1 : f j ∣ g''.1) (h2 : f i * f j ∣ g''.1)
+        (h3 : f i ∣ g''.1), res ⟨f j, j, dvd_rfl⟩ g'' h1 (y j) = f i ^ N • res ⟨f i, i, dvd_rfl⟩ g'' h3 z := by
+      intro j g'' h1 h2 h3
+      rw [← hcomp ⟨f j, j, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ g'' (dvd_mul_left _ _) h2 h1 (y j), ← hy j, map_smul,
+        hcomp ⟨f i, i, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ g'' (dvd_mul_right _ _) h2 h3 z]
+    have Qex : ∀ p : J × J, ∃ m, f i ^ m • (res ⟨f p.1, p.1, dvd_rfl⟩ ⟨f p.1 * f p.2, p.1, dvd_mul_right _ _⟩ (dvd_mul_right _ _) (y p.1) - res ⟨f p.2, p.2, dvd_rfl⟩ ⟨f p.1 * f p.2, p.1, dvd_mul_right _ _⟩ (dvd_mul_left _ _) (y p.2)) = 0 := by
+      rintro ⟨j, k⟩
+      dsimp only
+      have := hloc ⟨f j * f k, j, dvd_mul_right _ _⟩ ⟨f j * f k * f i, j, dvd_mul_of_dvd_left (dvd_mul_right _ _) _⟩ (dvd_mul_right _ _) (f i) rfl
+      apply GlobalTheory.CompanionTheory.BasicCover.exists_pow_smul_eq_zero (f i) (res ⟨f j * f k, j, dvd_mul_right _ _⟩ ⟨f j * f k * f i, j, dvd_mul_of_dvd_left (dvd_mul_right _ _) _⟩ (dvd_mul_right _ _))
+      rw [map_sub, hcomp ⟨f j, j, dvd_rfl⟩ ⟨f j * f k, j, dvd_mul_right _ _⟩ ⟨f j * f k * f i, j, dvd_mul_of_dvd_left (dvd_mul_right _ _) _⟩ (dvd_mul_right _ _) (dvd_mul_right _ _)
+          (dvd_mul_of_dvd_left (dvd_mul_right _ _) _) (y j),
+        hcomp ⟨f k, k, dvd_rfl⟩ ⟨f j * f k, j, dvd_mul_right _ _⟩ ⟨f j * f k * f i, j, dvd_mul_of_dvd_left (dvd_mul_right _ _) _⟩ (dvd_mul_left _ _) (dvd_mul_right _ _)
+          (dvd_mul_of_dvd_left (dvd_mul_left _ _) _) (y k),
+        lift j ⟨f j * f k * f i, j, dvd_mul_of_dvd_left (dvd_mul_right _ _) _⟩ (dvd_mul_of_dvd_left (dvd_mul_right _ _) _)
+          (Dvd.intro (f k) (show f i * f j * f k = f j * f k * f i by ring))
+          (Dvd.intro (f j * f k) (show f i * (f j * f k) = f j * f k * f i by ring)),
+        lift k ⟨f j * f k * f i, j, dvd_mul_of_dvd_left (dvd_mul_right _ _) _⟩ (dvd_mul_of_dvd_left (dvd_mul_left _ _) _)
+          (Dvd.intro (f j) (show f i * f k * f j = f j * f k * f i by ring))
+          (Dvd.intro (f j * f k) (show f i * (f j * f k) = f j * f k * f i by ring)), sub_self]
+    obtain ⟨M, hM⟩ := GlobalTheory.CompanionTheory.BasicCover.exists_uniform_bound
+      (fun (p : J × J) m => f i ^ m • (res ⟨f p.1, p.1, dvd_rfl⟩ ⟨f p.1 * f p.2, p.1, dvd_mul_right _ _⟩ (dvd_mul_right _ _) (y p.1) - res ⟨f p.2, p.2, dvd_rfl⟩ ⟨f p.1 * f p.2, p.1, dvd_mul_right _ _⟩ (dvd_mul_left _ _) (y p.2)) = 0)
+      (fun p n m hnm hn => GlobalTheory.CompanionTheory.BasicCover.pow_smul_eq_zero_mono _ _ hnm hn) Qex
+    have hii : f i ^ N • z = y i := by
+      apply sub_eq_zero.1
+      apply inj ⟨f i, i, dvd_rfl⟩ ⟨f i * f i, i, dvd_mul_right _ _⟩ (dvd_mul_right _ _) (f i) rfl dvd_rfl
+      rw [map_sub, map_smul, hy i, sub_self]
+    obtain ⟨e, he⟩ := hglue (fun j => f i ^ M • y j) fun j k => by
+      have h4 := hM (j, k)
+      dsimp only at h4 ⊢
+      rw [smul_sub, sub_eq_zero] at h4
+      rw [map_smul, map_smul]
+      exact h4
+    refine ⟨(e, ⟨f i ^ (M + N), pow_mem (Submonoid.mem_powers _) _⟩), ?_⟩
+    show f i ^ (M + N) • z = ρ ⟨f i, i, dvd_rfl⟩ e
+    rw [he i]
+    rw [← hii, smul_smul, ← pow_add]
+  · have hd : ρ ⟨f i, i, dvd_rfl⟩ (x₁ - x₂) = 0 := by rw [map_sub, hx, sub_self]
+    have Rj : ∀ j, ∃ n, f i ^ n • ρ ⟨f j, j, dvd_rfl⟩ (x₁ - x₂) = 0 := by
+      intro j
+      have := hloc ⟨f j, j, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_left _ _) (f i) (mul_comm _ _)
+      apply GlobalTheory.CompanionTheory.BasicCover.exists_pow_smul_eq_zero (f i)
+        (res ⟨f j, j, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_left _ _))
+      rw [hrρ, ← hrρ ⟨f i, i, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_right _ _), hd, map_zero]
+    obtain ⟨N, hN⟩ := GlobalTheory.CompanionTheory.BasicCover.exists_uniform_bound
+      (fun j n => f i ^ n • ρ ⟨f j, j, dvd_rfl⟩ (x₁ - x₂) = 0)
+      (fun j n m hnm hn => GlobalTheory.CompanionTheory.BasicCover.pow_smul_eq_zero_mono _ _ hnm hn) Rj
+    have h0 : f i ^ N • (x₁ - x₂) = 0 := hsep _ fun j => by rw [map_smul]; exact hN j
+    refine ⟨⟨f i ^ N, pow_mem (Submonoid.mem_powers _) N⟩, ?_⟩
+    show f i ^ N • x₁ = f i ^ N • x₂
+    rw [← sub_eq_zero, ← smul_sub]
+    exact h0
+
+end GlobalTheory.CompanionTheory.BasicCover
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localization_sheaf_glue_modules : ∀ (R E : Type) [CommRing R] [AddCommGroup E] [Module R E] (J : Type) [Finite J] (f : J → R), Ideal.span (Set.range f) = ⊤ →
+  ∀ (F : {g : R // ∃ i, f i ∣ g} → Type) [∀ g, AddCommGroup (F g)] [∀ g, Module R (F g)]
+    (res : ∀ g g' : {g : R // ∃ i, f i ∣ g}, g.1 ∣ g'.1 → (F g →ₗ[R] F g'))
+    (ρ : ∀ g, E →ₗ[R] F g),
+    (∀ g (h : g.1 ∣ g.1) y, res g g h y = y) →
+    (∀ g g' g'' (h : g.1 ∣ g'.1) (h' : g'.1 ∣ g''.1) (h'' : g.1 ∣ g''.1) y, res g' g'' h' (res g g' h y) = res g g'' h'' y) →
+    (∀ g g' (h : g.1 ∣ g'.1) e, res g g' h (ρ g e) = ρ g' e) →
+    (∀ g (a : R), a ∣ g.1 → IsUnit (algebraMap R (Module.End R (F g)) a)) →
+    (∀ g g' (h : g.1 ∣ g'.1) (t : R), g'.1 = g.1 * t → IsLocalizedModule (Submonoid.powers t) (res g g' h)) →
+    (∀ e, (∀ i, ρ ⟨f i, i, dvd_rfl⟩ e = 0) → e = 0) →
+    (∀ w : ∀ i, F ⟨f i, i, dvd_rfl⟩,
+      (∀ i j, res ⟨f i, i, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_right _ _) (w i) =
+        res ⟨f j, j, dvd_rfl⟩ ⟨f i * f j, i, dvd_mul_right _ _⟩ (dvd_mul_left _ _) (w j)) →
+      ∃ e, ∀ i, ρ ⟨f i, i, dvd_rfl⟩ e = w i) →
+    ∀ i, IsLocalizedModule (Submonoid.powers (f i)) (ρ ⟨f i, i, dvd_rfl⟩) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.BasicCover.isLocalizedModule_of_basic_cover
+end
+
+section
+section
+namespace GlobalTheory.CompanionTheory.Ggeo
+
+theorem finite_projective_of_isLocalizedModule_cover :
+    ∀ (R E : Type) [CommRing R] [AddCommGroup E] [Module R E] (J : Type) [Finite J] (f : J → R), Ideal.span (Set.range f) = ⊤ →
+  ∀ (F : J → Type) [∀ i, AddCommGroup (F i)] [∀ i, Module R (F i)] [∀ i, Module (Localization.Away (f i)) (F i)]
+    [∀ i, IsScalarTower R (Localization.Away (f i)) (F i)] [∀ i, Module.Finite (Localization.Away (f i)) (F i)]
+    [∀ i, Module.Projective (Localization.Away (f i)) (F i)] (φ : ∀ i, E →ₗ[R] F i),
+    (∀ i, IsLocalizedModule (Submonoid.powers (f i)) (φ i)) → Module.Finite R E ∧ Module.Projective R E := by
+  intro R E _ _ _ J _ f hf F _ _ _ _ _ _ φ hφ
+  have hex : ∀ g : Set.range f, ∃ i, f i = g.1 := fun g => g.2
+  choose idx hidx using hex
+  have hA : ∀ g : Set.range f, IsLocalization.Away g.1 (Localization.Away (f (idx g))) := by
+    intro g
+    rw [← hidx g]
+    infer_instance
+  have hL : ∀ g : Set.range f, IsLocalizedModule (Submonoid.powers g.1) (φ (idx g)) := by
+    intro g
+    rw [← hidx g]
+    exact hφ _
+  have hfp : Module.FinitePresentation R E :=
+    Module.FinitePresentation.of_localizationSpan' (Set.range f) hf
+      (Mₚ := fun g => F (idx g)) (Rₚ := fun g => Localization.Away (f (idx g)))
+      (fun g => φ (idx g)) (fun g => Module.finitePresentation_of_projective _ _)
+  have hflat : Module.Flat R E := by
+    refine Module.flat_of_isLocalized_span (R := R) R E (Set.range f) hf (fun g => F (idx g))
+      (fun g => φ (idx g)) (fun g => ?_)
+    have : Module.Flat R (Localization.Away (f (idx g))) :=
+      IsLocalization.flat _ (Submonoid.powers (f (idx g)))
+    exact Module.Flat.trans R (Localization.Away (f (idx g))) (F (idx g))
+  exact ⟨inferInstance, Module.Flat.projective_of_finitePresentation⟩
+
+end GlobalTheory.CompanionTheory.Ggeo
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.projective_modules_glue_cover : ∀ (R E : Type) [CommRing R] [AddCommGroup E] [Module R E] (J : Type) [Finite J] (f : J → R), Ideal.span (Set.range f) = ⊤ →
+  ∀ (F : J → Type) [∀ i, AddCommGroup (F i)] [∀ i, Module R (F i)] [∀ i, Module (Localization.Away (f i)) (F i)]
+    [∀ i, IsScalarTower R (Localization.Away (f i)) (F i)] [∀ i, Module.Finite (Localization.Away (f i)) (F i)]
+    [∀ i, Module.Projective (Localization.Away (f i)) (F i)] (φ : ∀ i, E →ₗ[R] F i),
+    (∀ i, IsLocalizedModule (Submonoid.powers (f i)) (φ i)) → Module.Finite R E ∧ Module.Projective R E := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ggeo.finite_projective_of_isLocalizedModule_cover
+end
+
+section
+section
+namespace GlobalTheory.CompanionTheory.LocHom
+
+variable {R : Type*} [CommRing R]
+
+theorem isLocalizedModule_of_retract {M M' N N' : Type*} [AddCommGroup M] [AddCommGroup M']
+    [AddCommGroup N] [AddCommGroup N'] [Module R M] [Module R M'] [Module R N] [Module R N']
+    (S : Submonoid R) (g : M →ₗ[R] M') (h : N →ₗ[R] N') [IsLocalizedModule S h]
+    (i : M →ₗ[R] N) (j : N →ₗ[R] M) (i' : M' →ₗ[R] N') (j' : N' →ₗ[R] M')
+    (hji : ∀ x, j (i x) = x) (hji' : ∀ x, j' (i' x) = x)
+    (hi : ∀ x, h (i x) = i' (g x)) (hj : ∀ y, g (j y) = j' (h y)) :
+    IsLocalizedModule S g := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro s
+    rw [Module.End.isUnit_iff]
+    have hu := IsLocalizedModule.map_units h s
+    rw [Module.End.isUnit_iff] at hu
+    constructor
+    · intro x y hxy
+      apply (show Function.Injective i' from fun a b e => by rw [← hji' a, ← hji' b, e])
+      apply hu.1
+      simp only [Module.algebraMap_end_apply] at hxy ⊢
+      rw [← map_smul, ← map_smul, hxy]
+    · intro y
+      obtain ⟨z, hz⟩ := hu.2 (i' y)
+      refine ⟨j' z, ?_⟩
+      simp only [Module.algebraMap_end_apply] at hz ⊢
+      rw [← map_smul, hz, hji']
+  · intro y
+    obtain ⟨⟨x, s⟩, hx⟩ := IsLocalizedModule.surj S h (i' y)
+    refine ⟨⟨j x, s⟩, ?_⟩
+    simp only at hx ⊢
+    rw [hj, ← hx, Submonoid.smul_def, Submonoid.smul_def, map_smul, hji']
+  · intro x₁ x₂ e
+    have h0 : h (i x₁) = h (i x₂) := by rw [hi, hi, e]
+    obtain ⟨c, hc⟩ := IsLocalizedModule.exists_of_eq (S := S) h0
+    refine ⟨c, ?_⟩
+    have h1 := congrArg j hc
+    simpa only [Submonoid.smul_def, map_smul, hji] using h1
+
+theorem map_away_smul {f : R} {P D : Type*} [AddCommGroup P] [Module R P]
+    [Module (Localization.Away f) P] [IsScalarTower R (Localization.Away f) P]
+    [CommRing D] [Algebra R D] (ρ : Localization.Away f →ₐ[R] D) (φ : P →ₗ[R] D)
+    (a : Localization.Away f) (p : P) : φ (a • p) = ρ a * φ p := by
+  obtain ⟨⟨r, s⟩, hrs⟩ := IsLocalization.surj (Submonoid.powers f) a
+  simp only at hrs
+  have hs : IsUnit (algebraMap R D s) := by
+    have := (IsLocalization.map_units (Localization.Away f) s).map ρ
+    rwa [AlgHom.commutes] at this
+  have h1 : (s : R) • (a • p) = r • p := by
+    rw [← algebraMap_smul (Localization.Away f) (s : R), ← algebraMap_smul (Localization.Away f) r,
+      ← hrs, smul_smul, mul_comm]
+  have h2 : (s : R) • φ (a • p) = r • φ p := by rw [← map_smul, h1, map_smul]
+  rw [Algebra.smul_def, Algebra.smul_def] at h2
+  have h3 := congrArg ρ hrs
+  rw [map_mul, AlgHom.commutes, AlgHom.commutes] at h3
+  apply hs.mul_right_injective
+  show algebraMap R D s * _ = algebraMap R D s * _
+  linear_combination h2 - φ p * h3
+
+section retraction
+
+variable {A P D : Type*} [CommRing A] [Algebra R A] [AddCommGroup P] [Module R P]
+  [CommRing D] [Algebra R D] {n : ℕ}
+
+noncomputable def coord (s : P →ₗ[R] (Fin n → A)) (ρ : A →ₐ[R] D) (k : Fin n) : P →ₗ[R] D :=
+  ρ.toLinearMap ∘ₗ LinearMap.proj k ∘ₗ s
+
+noncomputable def assemble (s : P →ₗ[R] (Fin n → A)) (ρ : A →ₐ[R] D) :
+    (Fin n → D) →ₗ[R] (P →ₗ[R] D) where
+  toFun v := ∑ k, v k • coord s ρ k
+  map_add' v w := by simp [add_smul, Finset.sum_add_distrib]
+  map_smul' r v := by simp [Finset.smul_sum, smul_assoc]
+
+def evalAt (D : Type*) [CommRing D] [Algebra R D] (b : Fin n → P) :
+    (P →ₗ[R] D) →ₗ[R] (Fin n → D) where
+  toFun φ k := φ (b k)
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+end retraction
+
+theorem isLocalizedModule_compRight_away :
+    ∀ (R P C C' : Type) [CommRing R] [CommRing C] [CommRing C'] [Algebra R C] [Algebra R C']
+      (f t : R) [AddCommGroup P] [Module R P]
+      [Module (Localization.Away f) P] [IsScalarTower R (Localization.Away f) P]
+      [Module.Finite (Localization.Away f) P]
+      [Module.Projective (Localization.Away f) P], IsUnit (algebraMap R C f) →
+      ∀ c : C →ₐ[R] C',
+      IsLocalizedModule (Submonoid.powers t) c.toLinearMap →
+      IsLocalizedModule (Submonoid.powers t)
+        (LinearMap.compRight R c.toLinearMap : (P →ₗ[R] C) →ₗ[R] (P →ₗ[R] C')) := by
+  intro R P C C' _ _ _ _ _ f t _ _ _ _ _ _ hf c hc
+  have hunit : ∀ y : Submonoid.powers f, IsUnit ((Algebra.ofId R C) (y : R)) := by
+    rintro ⟨_, k, rfl⟩
+    simpa [Algebra.ofId_apply] using hf.pow k
+  let ρ : Localization.Away f →ₐ[R] C := IsLocalization.liftAlgHom (M := Submonoid.powers f) hunit
+  let ρ' : Localization.Away f →ₐ[R] C' := c.comp ρ
+  obtain ⟨n, π, hπ⟩ := Module.Finite.exists_fin' (Localization.Away f) P
+  obtain ⟨s, hs⟩ := Module.projective_lifting_property π LinearMap.id hπ
+  let s₀ : P →ₗ[R] (Fin n → Localization.Away f) := s.restrictScalars R
+  let b : Fin n → P := fun k => π (fun j => if k = j then 1 else 0)
+  have hexp : ∀ p : P, ∑ k, s p k • b k = p := by
+    intro p
+    have h1 := LinearMap.congr_fun hs p
+    have h2 := LinearMap.pi_apply_eq_sum_univ π (s p)
+    simp only [LinearMap.comp_apply, LinearMap.id_apply] at h1
+    rw [h1] at h2
+    exact h2.symm
+  have hret : ∀ {D : Type} [CommRing D] [Algebra R D] (σ : Localization.Away f →ₐ[R] D)
+      (φ : P →ₗ[R] D), assemble s₀ σ (evalAt D b φ) = φ := by
+    intro D _ _ σ φ
+    ext p
+    conv_rhs => rw [← hexp p]
+    simp [assemble, evalAt, coord, s₀, map_sum, map_away_smul σ, mul_comm]
+  haveI : IsLocalizedModule (Submonoid.powers t)
+      (LinearMap.pi fun k : Fin n => c.toLinearMap ∘ₗ LinearMap.proj k) :=
+    IsLocalizedModule.pi (Submonoid.powers t) (fun _ : Fin n => c.toLinearMap)
+  refine isLocalizedModule_of_retract (Submonoid.powers t) _
+    (LinearMap.pi fun k : Fin n => c.toLinearMap ∘ₗ LinearMap.proj k)
+    (evalAt C b) (assemble s₀ ρ) (evalAt C' b) (assemble s₀ ρ')
+    (hret ρ) (hret ρ') ?_ ?_
+  · intro φ
+    rfl
+  · intro v
+    ext p
+    simp [assemble, coord, ρ', map_sum]
+
+end GlobalTheory.CompanionTheory.LocHom
+end
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.localized_module_base_change : ∀ (R P C C' : Type) [CommRing R] [CommRing C] [CommRing C'] [Algebra R C] [Algebra R C'] (f t : R) [AddCommGroup P] [Module R P]
+  [Module (Localization.Away f) P] [IsScalarTower R (Localization.Away f) P] [Module.Finite (Localization.Away f) P]
+  [Module.Projective (Localization.Away f) P], IsUnit (algebraMap R C f) → ∀ c : C →ₐ[R] C',
+  IsLocalizedModule (Submonoid.powers t) c.toLinearMap →
+  IsLocalizedModule (Submonoid.powers t) (LinearMap.compRight R c.toLinearMap : (P →ₗ[R] C) →ₗ[R] (P →ₗ[R] C')) := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.LocHom.isLocalizedModule_compRight_away
+end
+
+section
+namespace GlobalTheory.CompanionTheory.Ggeo.HomDual
+
+noncomputable def homEquivDual (R P : Type) [CommRing R] (f : R) [AddCommGroup P] [Module R P]
+    [Module (Localization.Away f) P] [IsScalarTower R (Localization.Away f) P] :
+    (P →ₗ[R] Localization.Away f) ≃ₗ[Localization.Away f] Module.Dual (Localization.Away f) P :=
+  { toFun := fun g =>
+      LinearMap.extendScalarsOfIsLocalization (Submonoid.powers f) (Localization.Away f) g
+    invFun := fun g => g.restrictScalars R
+    map_add' := fun _ _ => rfl
+    map_smul' := fun _ _ => rfl
+    left_inv := fun _ => rfl
+    right_inv := fun _ => rfl }
+
+theorem finite_projective_hom : ∀ (R P : Type) [CommRing R] (f : R) [AddCommGroup P] [Module R P]
+    [Module (Localization.Away f) P] [IsScalarTower R (Localization.Away f) P]
+    [Module.Finite (Localization.Away f) P] [Module.Projective (Localization.Away f) P],
+    Module.Finite (Localization.Away f) (P →ₗ[R] Localization.Away f) ∧
+      Module.Projective (Localization.Away f) (P →ₗ[R] Localization.Away f) := by
+  intro R P _ f _ _ _ _ _ _
+  let e := homEquivDual R P f
+  exact ⟨Module.Finite.equiv e.symm, Module.Projective.of_equiv e.symm⟩
+
+end GlobalTheory.CompanionTheory.Ggeo.HomDual
+
+alias _root_.GlobalTheory.T.dual_module_finite_projective := _root_.GlobalTheory.CompanionTheory.Ggeo.HomDual.finite_projective_hom
+end
+
+section
+section
+noncomputable section
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
+open ReciprocityTheory.ChartRestriction.G.Chart (dAway dAway_ext dAway_lift isUnit_dAway Ld toL fromL toL_comp fromL_comp fromL_toL)
+
+namespace GlobalTheory.CompanionTheory.Ar.LieFinGlue
+
+variable {R : Type} [CommRing R]
+
+theorem dualMap_algebraMap_eq_dAway (s : R) : dualMap (algebraMap R (Localization.Away s)) = dAway s := by
+  refine RingHom.ext fun x => ?_
+  ext <;> simp [dualMap, ReciprocityTheory.ChartRestriction.G.Chart.dualMapR]
+
+theorem dualMap_comp_dualMap {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (p : B →+* C) (q : A →+* B) :
+    (dualMap p).comp (dualMap q) = dualMap (p.comp q) := by
+  refine RingHom.ext fun x => ?_
+  ext <;> simp [dualMap]
+
+theorem span_range_inl {J : Type} (f : J → R) (hf : Ideal.span (Set.range f) = ⊤) :
+    Ideal.span (Set.range fun k => (TrivSqZeroExt.inl (f k) : DualNumber R)) = ⊤ := by
+  have := congrArg (Ideal.map (TrivSqZeroExt.inlHom R R)) hf
+  rw [Ideal.map_span, Ideal.map_top, ← Set.range_comp] at this
+  exact this
+
+theorem spMap_algebraMap_eq (s : R) :
+    spMap (algebraMap (DualNumber R) (Ld s)) = spMap (toL s) ≫ spMap (dAway s) := by
+  rw [← Spec.map_comp, ← CommRingCat.ofHom_comp, toL_comp]
+
+theorem sep_base {X : Scheme.{0}} {J : Type} (f : J → R) (hf : Ideal.span (Set.range f) = ⊤)
+    (a b : Sp R ⟶ X)
+    (h : ∀ i, spMap (algebraMap R (Localization.Away (f i))) ≫ a =
+      spMap (algebraMap R (Localization.Away (f i))) ≫ b) : a = b :=
+  Scheme.Cover.hom_ext (Scheme.affineOpenCoverOfSpanRangeEqTop (R := CommRingCat.of R) _ hf).openCover _ _
+    fun (k : J) => h k
+
+theorem sep_dual {X : Scheme.{0}} {J : Type} (f : J → R) (hf : Ideal.span (Set.range f) = ⊤)
+    (a b : Sp (DualNumber R) ⟶ X)
+    (h : ∀ i, spMap (dualMap (algebraMap R (Localization.Away (f i)))) ≫ a =
+      spMap (dualMap (algebraMap R (Localization.Away (f i)))) ≫ b) : a = b := by
+  refine Scheme.Cover.hom_ext
+    (Scheme.affineOpenCoverOfSpanRangeEqTop (R := CommRingCat.of (DualNumber R)) _ (span_range_inl f hf)).openCover
+    _ _ fun (k : J) => ?_
+  have hk := h k
+  rw [dualMap_algebraMap_eq_dAway] at hk
+  show spMap (algebraMap (DualNumber R) (Ld (f k))) ≫ a = spMap (algebraMap (DualNumber R) (Ld (f k))) ≫ b
+  rw [spMap_algebraMap_eq, Category.assoc, Category.assoc, hk]
+
+theorem compat_of_pair {X : Scheme.{0}} {J : Type} (f : J → R)
+    (w : ∀ i, Sp (DualNumber (Localization.Away (f i))) ⟶ X)
+    (hw : ∀ i j (a : Localization.Away (f i) →+* Localization.Away (f i * f j))
+      (b : Localization.Away (f j) →+* Localization.Away (f i * f j)),
+      a.comp (algebraMap R _) = algebraMap R _ → b.comp (algebraMap R _) = algebraMap R _ →
+      spMap (dualMap a) ≫ w i = spMap (dualMap b) ≫ w j)
+    (i j : J) (T : CommRingCat.{0}) (α : DualNumber (Localization.Away (f i)) →+* T)
+    (β : DualNumber (Localization.Away (f j)) →+* T) (h : α.comp (dAway (f i)) = β.comp (dAway (f j))) :
+    Spec.map (CommRingCat.ofHom α) ≫ w i = Spec.map (CommRingCat.ofHom β) ≫ w j := by
+  have hi : IsUnit ((α.comp (dAway (f i))) (TrivSqZeroExt.inl (f i))) := (isUnit_dAway (f i)).map α
+  have hj : IsUnit ((α.comp (dAway (f i))) (TrivSqZeroExt.inl (f j))) := by
+    rw [h]
+    exact (isUnit_dAway (f j)).map β
+  have hij : IsUnit ((α.comp (dAway (f i))) (TrivSqZeroExt.inl (f i * f j))) := by
+    rw [TrivSqZeroExt.inl_mul, map_mul]
+    exact hi.mul hj
+  obtain ⟨χ, hχ⟩ := dAway_lift (f i * f j) (α.comp (dAway (f i))) hij
+  have hu : IsUnit (algebraMap R (Localization.Away (f i * f j)) (f i * f j)) :=
+    IsLocalization.Away.algebraMap_isUnit (f i * f j)
+  rw [map_mul] at hu
+  have ui : IsUnit (algebraMap R (Localization.Away (f i * f j)) (f i)) := isUnit_of_mul_isUnit_left hu
+  have uj : IsUnit (algebraMap R (Localization.Away (f i * f j)) (f j)) := isUnit_of_mul_isUnit_right hu
+  let a : Localization.Away (f i) →+* Localization.Away (f i * f j) := IsLocalization.Away.lift (f i) ui
+  let b : Localization.Away (f j) →+* Localization.Away (f i * f j) := IsLocalization.Away.lift (f j) uj
+  have ha : a.comp (algebraMap R _) = algebraMap R _ := IsLocalization.Away.lift_comp _ ui
+  have hb : b.comp (algebraMap R _) = algebraMap R _ := IsLocalization.Away.lift_comp _ uj
+  have hα : χ.comp (dualMap a) = α := dAway_ext (f i) (by
+    rw [RingHom.comp_assoc, ← dualMap_algebraMap_eq_dAway (f i), dualMap_comp_dualMap, ha,
+      dualMap_algebraMap_eq_dAway, hχ, dualMap_algebraMap_eq_dAway])
+  have hβ : χ.comp (dualMap b) = β := dAway_ext (f j) (by
+    rw [RingHom.comp_assoc, ← dualMap_algebraMap_eq_dAway (f j), dualMap_comp_dualMap, hb,
+      dualMap_algebraMap_eq_dAway, hχ, dualMap_algebraMap_eq_dAway, h])
+  have e := hw i j a b ha hb
+  rw [← hα, ← hβ, CommRingCat.ofHom_comp, CommRingCat.ofHom_comp, Spec.map_comp, Spec.map_comp, Category.assoc,
+    Category.assoc]
+  exact congrArg (Spec.map (CommRingCat.ofHom χ) ≫ ·) e
+
+set_option backward.isDefEq.respectTransparency false in
+
+theorem glue_of_compat {X : Scheme.{0}} {J : Type} (f : J → R) (hf : Ideal.span (Set.range f) = ⊤)
+    (w : ∀ i, Sp (DualNumber (Localization.Away (f i))) ⟶ X)
+    (hc : ∀ k l (T : CommRingCat.{0}) (α : DualNumber (Localization.Away (f k)) →+* T)
+      (β : DualNumber (Localization.Away (f l)) →+* T), α.comp (dAway (f k)) = β.comp (dAway (f l)) →
+      Spec.map (CommRingCat.ofHom α) ≫ w k = Spec.map (CommRingCat.ofHom β) ≫ w l) :
+    ∃ v : Sp (DualNumber R) ⟶ X, ∀ i, spMap (dAway (f i)) ≫ v = w i := by
+  let 𝒰 := (Scheme.affineOpenCoverOfSpanRangeEqTop (R := CommRingCat.of (DualNumber R)) _
+    (span_range_inl f hf)).openCover
+  let g : ∀ k, 𝒰.X k ⟶ X := fun k => Spec.map (CommRingCat.ofHom (toL (f k))) ≫ w k
+  have hg : ∀ k l, pullback.fst (𝒰.f k) (𝒰.f l) ≫ g k = pullback.snd (𝒰.f k) (𝒰.f l) ≫ g l := by
+    refine fun (k : J) (l : J) => Scheme.Cover.hom_ext (pullback (𝒰.f k) (𝒰.f l)).affineOpenCover.openCover _ _
+      fun (i : (pullback (𝒰.f k) (𝒰.f l)).affineOpenCover.I₀) => ?_
+    let a : Spec ((pullback (𝒰.f k) (𝒰.f l)).affineOpenCover.X i) ⟶ pullback (𝒰.f k) (𝒰.f l) :=
+      (pullback (𝒰.f k) (𝒰.f l)).affineOpenCover.f i
+    let A : CommRingCat.of (Ld (f k)) ⟶ (pullback (𝒰.f k) (𝒰.f l)).affineOpenCover.X i :=
+      Spec.preimage (a ≫ pullback.fst (𝒰.f k) (𝒰.f l))
+    let B : CommRingCat.of (Ld (f l)) ⟶ (pullback (𝒰.f k) (𝒰.f l)).affineOpenCover.X i :=
+      Spec.preimage (a ≫ pullback.snd (𝒰.f k) (𝒰.f l))
+    have ea : Spec.map A = a ≫ pullback.fst (𝒰.f k) (𝒰.f l) := Spec.map_preimage _
+    have eb : Spec.map B = a ≫ pullback.snd (𝒰.f k) (𝒰.f l) := Spec.map_preimage _
+    have e1 : Spec.map (CommRingCat.ofHom (algebraMap (DualNumber R) (Ld (f k))) ≫ A) =
+        Spec.map (CommRingCat.ofHom (algebraMap (DualNumber R) (Ld (f l))) ≫ B) := by
+      rw [Spec.map_comp, Spec.map_comp, ea, eb, Category.assoc, Category.assoc]
+      exact congrArg (a ≫ ·) pullback.condition
+    have key : A.hom.comp (algebraMap (DualNumber R) (Ld (f k))) =
+        B.hom.comp (algebraMap (DualNumber R) (Ld (f l))) :=
+      congrArg CommRingCat.Hom.hom (Spec.map_injective e1)
+    have hkey : (A.hom.comp (toL (f k))).comp (dAway (f k)) = (B.hom.comp (toL (f l))).comp (dAway (f l)) := by
+      rw [RingHom.comp_assoc, RingHom.comp_assoc, toL_comp, toL_comp]
+      exact key
+    have h := hc k l _ (A.hom.comp (toL (f k))) (B.hom.comp (toL (f l))) hkey
+    show a ≫ pullback.fst (𝒰.f k) (𝒰.f l) ≫ Spec.map (CommRingCat.ofHom (toL (f k))) ≫ w k =
+      a ≫ pullback.snd (𝒰.f k) (𝒰.f l) ≫ Spec.map (CommRingCat.ofHom (toL (f l))) ≫ w l
+    rw [← Category.assoc a, ← Category.assoc a, ← ea, ← eb, ← Category.assoc, ← Category.assoc, ← Spec.map_comp,
+      ← Spec.map_comp]
+    exact h
+  refine ⟨𝒰.glueMorphisms g hg, fun k => ?_⟩
+  have hι : 𝒰.f k ≫ 𝒰.glueMorphisms g hg = g k := Scheme.Cover.ι_glueMorphisms 𝒰 g hg k
+  have e : spMap (dAway (f k)) = Spec.map (CommRingCat.ofHom (fromL (f k))) ≫ 𝒰.f k := by
+    show _ = _ ≫ Spec.map (CommRingCat.ofHom (algebraMap (DualNumber R) (Ld (f k))))
+    rw [← Spec.map_comp, ← CommRingCat.ofHom_comp, fromL_comp]
+  rw [e, Category.assoc, hι]
+  show Spec.map (CommRingCat.ofHom (fromL (f k))) ≫ Spec.map (CommRingCat.ofHom (toL (f k))) ≫ w k = _
+  rw [← Category.assoc, ← Spec.map_comp, ← CommRingCat.ofHom_comp, fromL_toL, CommRingCat.ofHom_id, Spec.map_id,
+    Category.id_comp]
+
+theorem dual_glue : ∀ (X : Scheme.{0}) (R : Type) [CommRing R] (J : Type) [Finite J] (f : J → R),
+    Ideal.span (Set.range f) = ⊤ →
+  (∀ a b : Sp R ⟶ X, (∀ i, spMap (algebraMap R (Localization.Away (f i))) ≫ a = spMap (algebraMap R (Localization.Away (f i))) ≫ b) → a = b) ∧
+  (∀ a b : Sp (DualNumber R) ⟶ X,
+    (∀ i, spMap (dualMap (algebraMap R (Localization.Away (f i)))) ≫ a = spMap (dualMap (algebraMap R (Localization.Away (f i)))) ≫ b) → a = b) ∧
+  ∀ w : ∀ i, Sp (DualNumber (Localization.Away (f i))) ⟶ X,
+    (∀ i j (a : Localization.Away (f i) →+* Localization.Away (f i * f j)) (b : Localization.Away (f j) →+* Localization.Away (f i * f j)),
+      a.comp (algebraMap R _) = algebraMap R _ → b.comp (algebraMap R _) = algebraMap R _ →
+      spMap (dualMap a) ≫ w i = spMap (dualMap b) ≫ w j) →
+    ∃ v : Sp (DualNumber R) ⟶ X, ∀ i, spMap (dualMap (algebraMap R (Localization.Away (f i)))) ≫ v = w i := by
+  intro X R _ J _ f hf
+  refine ⟨sep_base f hf, sep_dual f hf, fun w hw => ?_⟩
+  obtain ⟨v, hv⟩ := glue_of_compat f hf w (compat_of_pair f w hw)
+  exact ⟨v, fun i => by rw [dualMap_algebraMap_eq_dAway]; exact hv i⟩
+
+end GlobalTheory.CompanionTheory.Ar.LieFinGlue
+end
+end
+
+open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
+open scoped CategoryTheory.Obj
+open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_number_points_glue : ∀ (X : Scheme.{0}) (R : Type) [CommRing R] (J : Type) [Finite J] (f : J → R), Ideal.span (Set.range f) = ⊤ →
+  (∀ a b : Sp R ⟶ X, (∀ i, spMap (algebraMap R (Localization.Away (f i))) ≫ a = spMap (algebraMap R (Localization.Away (f i))) ≫ b) → a = b) ∧
+  (∀ a b : Sp (DualNumber R) ⟶ X,
+    (∀ i, spMap (dualMap (algebraMap R (Localization.Away (f i)))) ≫ a = spMap (dualMap (algebraMap R (Localization.Away (f i)))) ≫ b) → a = b) ∧
+  ∀ w : ∀ i, Sp (DualNumber (Localization.Away (f i))) ⟶ X,
+    (∀ i j (a : Localization.Away (f i) →+* Localization.Away (f i * f j)) (b : Localization.Away (f j) →+* Localization.Away (f i * f j)),
+      a.comp (algebraMap R _) = algebraMap R _ → b.comp (algebraMap R _) = algebraMap R _ →
+      spMap (dualMap a) ≫ w i = spMap (dualMap b) ≫ w j) →
+    ∃ v : Sp (DualNumber R) ⟶ X, ∀ i, spMap (dualMap (algebraMap R (Localization.Away (f i)))) ≫ v = w i := by
+  atlas_forward_decl GlobalTheory.CompanionTheory.Ar.LieFinGlue.dual_glue
+end
+
+section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar
@@ -336,3 +871,5 @@ theorem GlobalTheory.CompanionTheory.Ar.LieFin.lieModel_finite_projective :
   intro S G _ R _ x J _ f hf hch E _ _ M
   choose P iA iM iL ist ifin iproj m nat using hch
   exact @GlobalTheory.CompanionTheory.Ar.LieFin.fin_of_charts S G _ R _ x J _ f hf E _ _ P iA iM iL ist ifin iproj m nat M
+end
+end

@@ -1,10 +1,88 @@
 import Mathlib
 import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.HeckeOperatorsCommuteOnAutomorphicForms
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsOpenStabilizerAddSmul
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FiniteSpanAddSmul
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ModerateGrowthAddSmul
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MirabolicRowCongruence
 
+section
+theorem UpperTheory.isOpen_stabilizer_add_smul :
+    ∀ {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V] [Module ℂ V]
+        (ρ : Representation ℂ G V) (a b : V) (z : ℂ),
+        IsOpen {g : G | ρ g a = a} → IsOpen {g : G | ρ g b = b} → IsOpen {g : G | ρ g (a + z • b) = a + z • b} := by
+  intro G V _ _ _ _ _ ρ a b z ha hb
+  rw [isOpen_iff_mem_nhds]
+  intro g hg
+  have hg' : ρ g (a + z • b) = a + z • b := hg
+  have hc : Continuous fun x : G => g⁻¹ * x := continuous_const.mul continuous_id
+  have hU : IsOpen ((fun x : G => g⁻¹ * x) ⁻¹' ({g : G | ρ g a = a} ∩ {g : G | ρ g b = b})) :=
+    (ha.inter hb).preimage hc
+  refine Filter.mem_of_superset (hU.mem_nhds ?_) ?_
+  · simp
+  · intro x hx
+    have h1 : ρ (g⁻¹ * x) a = a := hx.1
+    have h2 : ρ (g⁻¹ * x) b = b := hx.2
+    have h3 : ρ (g⁻¹ * x) (a + z • b) = a + z • b := by
+      rw [map_add, map_smul, h1, h2]
+    have h4 : x = g * (g⁻¹ * x) := by group
+    show ρ x (a + z • b) = a + z • b
+    rw [h4, map_mul, Module.End.mul_apply, h3, hg']
+end
+
+section
+theorem UpperTheory.finite_span_add_smul :
+    ∀ {ι V : Type} [AddCommGroup V] [Module ℂ V] (T : ι → V →ₗ[ℂ] V) (S : Set ι) (a b : V) (z : ℂ),
+        FiniteDimensional ℂ (Submodule.span ℂ ((fun i => T i a) '' S)) →
+        FiniteDimensional ℂ (Submodule.span ℂ ((fun i => T i b) '' S)) →
+        FiniteDimensional ℂ (Submodule.span ℂ ((fun i => T i (a + z • b)) '' S)) := by
+  intro ι V _ _ T S a b z ha hb
+  have hle : Submodule.span ℂ ((fun i => T i (a + z • b)) '' S) ≤
+      Submodule.span ℂ ((fun i => T i a) '' S) ⊔ Submodule.span ℂ ((fun i => T i b) '' S) := by
+    rw [Submodule.span_le]
+    rintro _ ⟨i, hi, rfl⟩
+    simp only [map_add, map_smul, SetLike.mem_coe]
+    exact Submodule.add_mem_sup (Submodule.subset_span ⟨i, hi, rfl⟩)
+      (Submodule.smul_mem _ z (Submodule.subset_span ⟨i, hi, rfl⟩))
+  exact Submodule.finiteDimensional_of_le hle
+end
+
+section
+theorem UpperTheory.moderate_growth_add_smul :
+    ∀ {Y : Type} (h : Y → ℝ) (f g : Y → ℂ) (z : ℂ), (∀ y, 1 ≤ h y) →
+        (∃ (C : ℝ) (N : ℕ), ∀ y, ‖f y‖ ≤ C * h y ^ N) → (∃ (C : ℝ) (N : ℕ), ∀ y, ‖g y‖ ≤ C * h y ^ N) →
+        ∃ (C : ℝ) (N : ℕ), ∀ y, ‖f y + z * g y‖ ≤ C * h y ^ N := by
+  intro Y h f g z hh ⟨C, N, hf⟩ ⟨D, M, hg⟩
+  refine ⟨|C| + ‖z‖ * |D|, N + M, fun y => ?_⟩
+  have h0 : 0 ≤ h y := zero_le_one.trans (hh y)
+  have h1 : ‖f y‖ ≤ |C| * h y ^ (N + M) :=
+    (hf y).trans (mul_le_mul (le_abs_self C)
+      (pow_le_pow_right₀ (hh y) (Nat.le_add_right N M)) (pow_nonneg h0 _) (abs_nonneg C))
+  have h2 : ‖g y‖ ≤ |D| * h y ^ (N + M) :=
+    (hg y).trans (mul_le_mul (le_abs_self D)
+      (pow_le_pow_right₀ (hh y) (Nat.le_add_left M N)) (pow_nonneg h0 _) (abs_nonneg D))
+  calc ‖f y + z * g y‖ ≤ ‖f y‖ + ‖z * g y‖ := norm_add_le _ _
+    _ = ‖f y‖ + ‖z‖ * ‖g y‖ := by rw [norm_mul]
+    _ ≤ |C| * h y ^ (N + M) + ‖z‖ * (|D| * h y ^ (N + M)) :=
+        add_le_add h1 (mul_le_mul_of_nonneg_left h2 (norm_nonneg z))
+    _ = (|C| + ‖z‖ * |D|) * h y ^ (N + M) := by ring
+end
+
+section
+theorem UpperTheory.mirabolic_row_congruence :
+    ∀ {R : Type} [CommRing R] (I J : Ideal R) (g : GL (Fin 2) R), I ≤ J →
+        Matrix.vecMul ![0, 1] ((Matrix.GeneralLinearGroup.map (Ideal.Quotient.mk I) g : GL (Fin 2) (R ⧸ I)) : Matrix (Fin 2) (Fin 2) (R ⧸ I)) = ![0, 1] →
+        Matrix.vecMul ![0, 1] ((Matrix.GeneralLinearGroup.map (Ideal.Quotient.mk J) g : GL (Fin 2) (R ⧸ J)) : Matrix (Fin 2) (Fin 2) (R ⧸ J)) = ![0, 1] := by
+  intro R _ I J g hIJ h
+  have key : ∀ (K : Ideal R) (j : Fin 2),
+      Matrix.vecMul ![0, 1] ((Matrix.GeneralLinearGroup.map (Ideal.Quotient.mk K) g :
+        GL (Fin 2) (R ⧸ K)) : Matrix (Fin 2) (Fin 2) (R ⧸ K)) j
+        = Ideal.Quotient.mk K ((g : Matrix (Fin 2) (Fin 2) R) 1 j) := by
+    intro K j
+    simp [Matrix.vecMul, dotProduct, Fin.sum_univ_two, Matrix.GeneralLinearGroup.map]
+  funext j
+  have hj := congrArg (Ideal.Quotient.factor hIJ) ((key I j).symm.trans (congrFun h j))
+  rw [Ideal.Quotient.factor_mk] at hj
+  rw [key J j, hj]
+  fin_cases j <;> simp
+end
+
+section
 open UpperTheory.V.Sd UpperTheory.V.TR in
 private theorem UpperTheory.Reformulated.B.Gr32.aut_zero {F : Type} [Field F] [NumberField F] [NumberField.IsTotallyReal F] :
     IsAutForm (0 : Sm F 2) := by
@@ -93,3 +171,4 @@ theorem UpperTheory.Reformulated.B.Gr32.holLin :
     have h : φ ∈ UpperTheory.Reformulated.B.SubgroupFixedSubmodule.fixd (UpperTheory.V.Sd.locSm F w) (UpperTheory.V.Sd.K1 w (c w)) := a2 w
     show φ ∈ UpperTheory.Reformulated.B.SubgroupFixedSubmodule.fixd (UpperTheory.V.Sd.locSm F w) (UpperTheory.V.Sd.K1 w (c' w))
     exact fun g hg => h g (UpperTheory.Reformulated.B.Gr32.principal_congruence_antitone w (hc w) hg)
+end

@@ -1,13 +1,422 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SetStab
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoordsStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DecoratedLatticeDiagonalBasePointMul
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitaryDiagonalBasePointLevelPrimeStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CouplingCosetInFramesEqIffReductionEqStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnPointEqOfDecoAndCosetReductionStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCouplingCosetWithGivenReductionStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPointOfLastCoordinateDilationOnePrime
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PlaceProjectionZeroIntegralIffComponentsAbove
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitaryDiagonalBasePointLevelPrime
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CouplingCosetInFramesEqIffReductionEq
+import Formalism.LocalToGlobal.Columns.TargetChF
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicPointDecoratedLatticeAllTwistsStatement
 
+section
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
+
+noncomputable section
+
+namespace GlobalTheory.Mem.Col2.DiaPt
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+
+theorem hasRes_row {P : HeightOneSpectrum (𝓞 E)} {n : ℕ} (r : Fin n) (K U : Fin n → P.adicCompletion E)
+    {c s : 𝓞 E ⧸ P.asIdeal} (hK : ∀ j, HasRes P (K j) (if j = r then c else 0)) (hU : ∀ j, Valued.v (U j) ≤ 1)
+    (hs : HasRes P (U r) s) : HasRes P (∑ j, K j * U j) (c * s) := by
+  obtain ⟨s, rfl, hs⟩ := hs
+  obtain ⟨c, rfl⟩ := Ideal.Quotient.mk_surjective c
+  rw [← map_mul, DilPt.hasRes_mk_iff]
+  have hC : Valued.v (algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E c)) ≤ 1 := by
+    rw [valued_algebraMap]
+    exact HeightOneSpectrum.valuation_le_one _ _
+  have e : (∑ j, K j * U j) - algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E (c * s)) =
+      ∑ j, (K j - if j = r then algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E c) else 0) * U j +
+        algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E c) *
+          (U r - algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E s)) := by
+    simp only [_root_.sub_mul, Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+      map_mul]
+    ring
+  rw [e]
+  refine Valuation.map_add_lt _ (Valuation.map_sum_lt _ one_ne_zero fun j _ => ?_) ?_
+  · rw [map_mul]
+    refine lt_of_le_of_lt (mul_le_of_le_one_right' (hU j)) ?_
+    have := hK j
+    by_cases hj : j = r
+    · rw [if_pos hj, DilPt.hasRes_mk_iff] at this
+      rwa [if_pos hj]
+    · rw [if_neg hj] at this
+      rw [if_neg hj, sub_zero]
+      exact DilPt.hasRes_lt_one this
+  · rw [map_mul]
+    exact lt_of_le_of_lt (mul_le_of_le_one_left' hC) hs
+
+variable [StarRing E] {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
+
+theorem decoSet_ext {d d' : DecoSet E n ST SG} (hN : d.1.N = d'.1.N) (hf : ∀ P, ∀ x ∈ d'.1.N, d.1.f P x = d'.1.f P x)
+    (hbe : ∀ w, ∀ x ∈ d'.1.N, d.1.be w x = d'.1.be w x) : d = d' := by
+  have hat : ∀ P, d.1.at P = d'.1.at P := fun P => by unfold Deco.at; rw [hN]
+  have h0 : ∀ (P : HeightOneSpectrum (𝓞 E)) (s : 𝓞 E), s ∉ P.asIdeal → Ideal.Quotient.mk P.asIdeal s ≠ 0 :=
+    fun P s hs h => hs (Ideal.Quotient.eq_zero_iff_mem.1 h)
+  refine Subtype.ext (Deco.ext hN (funext fun P => funext fun x => ?_) (funext fun P => funext fun x => ?_))
+  · by_cases hx : x ∈ d'.1.at P.1
+    · obtain ⟨s, hs, h⟩ := (mem_locP _ _ _).1 hx
+      have := hf P _ h
+      rw [d.2.f_smul P s x (hat _ ▸ hx), d'.2.f_smul P s x hx] at this
+      have hp := P.1.isPrime
+      exact mul_left_cancel₀ (h0 _ s hs) this
+    · rw [d.2.f_off P x (hat _ ▸ hx), d'.2.f_off P x hx]
+  · by_cases hx : x ∈ d'.1.at P.1
+    · obtain ⟨s, hs, h⟩ := (mem_locP _ _ _).1 hx
+      have := hbe P _ h
+      rw [d.2.be_smul P s x (hat _ ▸ hx), d'.2.be_smul P s x hx] at this
+      have hp := P.1.isPrime
+      funext i
+      exact mul_left_cancel₀ (h0 _ s hs) (congrFun this i)
+    · rw [d.2.be_off P x (hat _ ▸ hx), d'.2.be_off P x hx]
+
+theorem decoOf_dia_eq : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E] (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] (ST SG Q : Finset (HeightOneSpectrum (𝓞 E))) (g k : GL (Fin n) (AfE F E)) (p : DecoF E n ST SG Q) (c : DiaG E ST), IsPtOf hc (g * k) p → (∃ p₀ : DecoF E n ∅ ∅ ∅, IsPtOf hc k p₀ ∧ p₀.deco.1.N = Formalism.L2.Col.stdLat E n) → (∀ w ∈ SG, bc (prV (E := E) (w.under (𝓞 F))) k = 1) → (∀ (P : ST) (r j : Fin n), r.1 + 1 = n → HasRes P.1 (adAt F P.1 ((k⁻¹ : GL (Fin n) (AfE F E)).1 r j)) (if j = r then (c P : 𝓞 E ⧸ P.1.asIdeal) else 0)) → g ∈ UAd hc n ∧ (decoOf ST SG g).dia c = p.deco := by
+  intro F E _ _ _ _ _ _ hc n _ ST SG Q g k p c h ⟨p₀, hk, hk0⟩ htriv hrow
+  classical
+  have hg : g ∈ UAd hc n := by
+    have := mul_mem h.uni (inv_mem hk.uni)
+    rw [mul_inv_cancel_right] at this
+    exact this
+  have hkc := hk.lat
+  rw [hk0] at hkc
+  have hkI : ∀ z : Fin n → AfE F E, (∀ i, z i ∈ RInt F E) ↔
+      ∀ i, (((k⁻¹ : GL (Fin n) (AfE F E)) : Matrix (Fin n) (Fin n) (AfE F E)) *ᵥ z) i ∈ RInt F E :=
+    fun z => (mem_latS_std z).symm.trans ((hkc z).trans (mem_latS_std _))
+  have hN : Formalism.UG.CS.globLat g (Formalism.L2.Col.stdLat E n) = p.deco.1.N := by
+    rw [← Formalism.UG.P.global_lattice_one_holds F E (Fin n) p.deco.1.N (Module.Finite.iff_fg.2 p.deco.2.lat.fg) p.deco.2.lat.span_eq_top]
+    ext w
+    refine (mem_globLat g w).trans ((hkI _).trans ?_)
+    have e : ((k⁻¹ : GL (Fin n) (AfE F E)) : Matrix (Fin n) (Fin n) (AfE F E)) *ᵥ Formalism.L2.Col.pullV g w =
+        GlobalTheory.Mem.Col2.pullV (g * k) w := (DilPt.pullbackVector_mul_right g k w).symm
+    rw [e]
+    refine (mem_latS_std _).symm.trans ((h.lat _).symm.trans ?_)
+    show _ ↔ ((1⁻¹ : GL (Fin n) (AfE F E)) : Matrix (Fin n) (Fin n) (AfE F E)) *ᵥ _ ∈ Formalism.L2.Herm.hatL (F := F) p.deco.1.N
+    rw [inv_one, Units.val_one, Matrix.one_mulVec]
+  have hone : ∀ w ∈ SG, ∀ i j, adAt F w ((k⁻¹ : GL (Fin n) (AfE F E)).1 i j) = if j = i then 1 else 0 := by
+    intro w hw i j
+    have h1 : bc (prV (E := E) (w.under (𝓞 F))) k⁻¹ = 1 := by rw [map_inv, htriv w hw, inv_one]
+    have h2 : prV (E := E) (w.under (𝓞 F)) ((k⁻¹ : GL (Fin n) (AfE F E)).1 i j) = if i = j then 1 else 0 := by
+      have := congrArg (fun x : GL (Fin n) _ => x.1 i j) h1
+      simp only [Units.val_one, Matrix.one_apply] at this
+      exact this
+    have h3 : prV (E := E) (w.under (𝓞 F)) ((k⁻¹ : GL (Fin n) (AfE F E)).1 i j - if j = i then 1 else 0) = 0 := by
+      rw [map_sub, h2]
+      by_cases hij : i = j
+      · simp [hij]
+      · simp [hij, Ne.symm hij]
+    have h4 := (GlobalTheory.Mem.Col2.AdComp.prV_zero_int_iff F E _ _).1.1 h3 w rfl
+    rw [map_sub, sub_eq_zero] at h4
+    rw [h4]
+    split_ifs <;> simp
+  have hraw := rlc_decoOf_val hc n ST SG hg
+  have hint : ∀ x ∈ p.deco.1.N, ∀ i, GlobalTheory.Mem.Col2.pullV g x i ∈ RInt F E := fun x hx =>
+    (mem_globLat g x).1 (hN ▸ hx)
+  refine ⟨hg, decoSet_ext ?_ (fun P x hx => ?_) fun w x hx => ?_⟩
+  · show (decoOf ST SG g).1.N = _
+    rw [hraw]
+    exact hN
+  · show (c P).1 * (decoOf ST SG g).1.f P x = _
+    have hl : (lastIdx n).1 + 1 = n := Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))
+    have h1 := h.f P x hx _ hl
+    rw [DilPt.pullbackVector_mul_right] at h1
+    simp only [Matrix.mulVec, dotProduct, map_sum, map_mul] at h1
+    have h2 := hasRes_row (lastIdx n) _ (fun j => adAt F P.1 (GlobalTheory.Mem.Col2.pullV g x j)) (fun j => hrow P _ j hl)
+      (fun j => (mem_rInt_iff F E _).1 (hint x hx j) P.1) (PtExist.hasRes_redA P.1 (hint x hx _))
+    rw [hraw]
+    simp only [decoRaw]
+    rw [if_pos (le_locP _ _ (hN ▸ hx))]
+    exact h2.unique h1
+  · show (decoOf ST SG g).1.be w x = _
+    rw [hraw]
+    simp only [decoRaw]
+    rw [if_pos (le_locP _ _ (hN ▸ hx))]
+    funext i
+    have h1 := h.be w x hx i
+    rw [DilPt.pullbackVector_mul_right] at h1
+    simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, hone w.1 w.2, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
+      Finset.mem_univ, if_true] at h1
+    exact (PtExist.hasRes_redA w.1 (hint x hx i)).unique h1
+
+end GlobalTheory.Mem.Col2.DiaPt
+end
+end
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.decoratedLattice_diagonalBasePoint_mul : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E] (hc : Formalism.BasicNotions.CMData F E) (n : ℕ) [NeZero n] (ST SG Q : Finset (HeightOneSpectrum (𝓞 E))) (g k : GL (Fin n) (AfE F E)) (p : DecoF E n ST SG Q) (c : DiaG E ST), IsPtOf hc (g * k) p → (∃ p₀ : DecoF E n ∅ ∅ ∅, IsPtOf hc k p₀ ∧ p₀.deco.1.N = stdLat E n) → (∀ w ∈ SG, bc (prV (E := E) (w.under (𝓞 F))) k = 1) → (∀ (P : ST) (r j : Fin n), r.1 + 1 = n → HasRes P.1 (adAt F P.1 ((k⁻¹ : GL (Fin n) (AfE F E)).1 r j)) (if j = r then (c P : 𝓞 E ⧸ P.1.asIdeal) else 0)) → g ∈ UAd hc n ∧ (decoOf ST SG g).dia c = p.deco := by
+  atlas_forward_decl GlobalTheory.Mem.Col2.DiaPt.decoOf_dia_eq
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
+attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_unitary_diagonal_basePoint_levelPrime : ∀ {B : Base} (X : PreX B.toPre), (B.primes X).Ok → ∀ (u : B.Word) (n : ℕ), ∃ k : GA B n, (∃ p : DecoF B.fields.E n ∅ ∅ ∅, PtOf k p ∧ p.deco.1.N = stdLat B.fields.E n) ∧ (∀ v : HeightOneSpectrum (𝓞 B.host.F), (B.T u : 𝓞 B.host.F) ∉ v.asIdeal → bc (prV (E := B.host.E) v) k = 1) ∧ ∀ (P : (B.primes X).vT u) (r j : Fin n), r.1 + 1 = n → HasRes P.1 (adAt B.host.F P.1 ((k⁻¹ : GA B n).1 r j)) (if j = r then Ideal.Quotient.mk P.1.asIdeal (B.fields.conjO (X.piT u)) else 0) := by
+  first | exact @GlobalTheory.Mem.Col2.BasePoint.exists_kStd | exact GlobalTheory.Mem.Col2.BasePoint.exists_kStd | (intros; apply GlobalTheory.Mem.Col2.BasePoint.exists_kStd <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.couplingCosetInFrames_eq_iff_reduction_eq : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ} {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {u : Pr.Word} {j : ℕ}, QE sel (mu : Chr X.F X.E X.K) = ∅ → (∀ w ∈ Pr.vGs, ((Formalism.L2.Col.qOf w : ℕ) : 𝓞 X.E) ∉ w.asIdeal ^ 2) → ∀ q q' : PtAt R sel mu cst u j, cosetIn q = cosetIn q' ↔ MemChart.bar q = MemChart.bar q' := by
+  first | exact @GlobalTheory.Mem.Col2.MemChart.cosetIn_eq_iff_bar_eq | exact GlobalTheory.Mem.Col2.MemChart.cosetIn_eq_iff_bar_eq | (intros; apply GlobalTheory.Mem.Col2.MemChart.cosetIn_eq_iff_bar_eq <;> assumption)
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
+
+namespace GlobalTheory.Mem.Col2.MemChart
+
+theorem inv_smul_mem_of_be_eq_zero {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
+    {ST SG : Finset (HeightOneSpectrum (𝓞 E))} {d : Deco E n ST SG} (hd : d.Ok) (w : SG)
+    (hq : ((Formalism.L2.Col.qOf w.1 : ℕ) : 𝓞 E) ∉ w.1.asIdeal ^ 2) {x : Sp E n} (hx : x ∈ d.at w.1) (h0 : d.be w x = 0) :
+    ((Formalism.L2.Col.qOf w.1 : ℕ) : E)⁻¹ • x ∈ d.at w.1 := by
+  obtain ⟨h1, h2⟩ := GlobalTheory.TopStep.liftFr_spec hd w
+  set fr := d.liftFr w with hfr
+  have e : fr (fr.symm x) = x := fr.apply_symm_apply x
+  have hs : fr.symm x ∈ stdAt E n w.1 := (h1 _).1 (by rwa [e])
+  have hr := h2 _ hs
+  rw [e, h0] at hr
+  have hi := GlobalTheory.TopStep.mem_stdAt.1 hs
+  have hs' : ((Formalism.L2.Col.qOf w.1 : ℕ) : E)⁻¹ • fr.symm x ∈ stdAt E n w.1 := GlobalTheory.TopStep.mem_stdAt.2 fun i => by
+    have := GlobalTheory.TopStep.intAt_div_of_redP hq (hi i) (congrFun hr i).symm
+    rwa [div_eq_inv_mul] at this
+  have := (h1 _).2 hs'
+  rwa [map_smul, e] at this
+
+theorem sub_mem_of_be_eq {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
+    {ST SG : Finset (HeightOneSpectrum (𝓞 E))} {d : Deco E n ST SG} (hd : d.Ok) (w : SG)
+    (hq : ((Formalism.L2.Col.qOf w.1 : ℕ) : 𝓞 E) ∉ w.1.asIdeal ^ 2) {y y' z : Sp E n}
+    (hy : ((Formalism.L2.Col.qOf w.1 : ℕ) : E) • y ∈ d.at w.1) (hy' : ((Formalism.L2.Col.qOf w.1 : ℕ) : E) • y' ∈ d.at w.1)
+    (hz : z - y' ∈ d.at w.1)
+    (e : d.be w (((Formalism.L2.Col.qOf w.1 : ℕ) : E) • y) = d.be w (((Formalism.L2.Col.qOf w.1 : ℕ) : E) • z)) :
+    y - y' ∈ d.at w.1 := by
+  have hq0 : ((Formalism.L2.Col.qOf w.1 : ℕ) : E) ≠ 0 := GlobalTheory.TopStep.qOf_ne_zero
+  have hqz : ((Formalism.L2.Col.qOf w.1 : ℕ) : E) • (z - y') ∈ d.at w.1 :=
+    GlobalTheory.TopStep.smul_mem_locP (GlobalTheory.TopStep.intAt_nat _) hz
+  have e1 : d.be w (((Formalism.L2.Col.qOf w.1 : ℕ) : E) • (z - y')) = 0 := by
+    rw [GlobalTheory.TopStep.be_smul_int hd w (GlobalTheory.TopStep.intAt_nat _) hz, GlobalTheory.TopStep.reduction_absNorm_eq_zero, zero_smul]
+  have e2 := hd.be_add w _ hqz _ hy'
+  rw [← smul_add, sub_add_cancel, e1, zero_add, ← e] at e2
+  have hx : ((Formalism.L2.Col.qOf w.1 : ℕ) : E) • (y - y') ∈ d.at w.1 := by
+    rw [smul_sub]
+    exact sub_mem hy hy'
+  have e3 := hd.be_add w _ hx _ hy'
+  rw [← smul_add, sub_add_cancel, e2, right_eq_add] at e3
+  have := inv_smul_mem_of_be_eq_zero hd w hq hx e3
+  rwa [smul_smul, inv_mul_cancel₀ hq0, one_smul] at this
+
+theorem mem_coset {M : Type} [AddCommGroup M] {A : Type} [Ring A] [Module A M] {L : Submodule A M} {y z : M} :
+    z ∈ {z | z - y ∈ L} ↔ z - y ∈ L := Iff.rfl
+
+theorem coset_eq {M : Type} [AddCommGroup M] {A : Type} [Ring A] [Module A M] (L : Submodule A M) {y y' : M} (h : y - y' ∈ L) :
+    {z | z - y ∈ L} = {z | z - y' ∈ L} := by
+  refine Set.ext fun z => ?_
+  rw [mem_coset, mem_coset]
+  refine ⟨fun h' => ?_, fun h' => ?_⟩
+  · have := add_mem h' h
+    rwa [sub_add_sub_cancel] at this
+  · have := sub_mem h' h
+    rwa [sub_sub_sub_cancel_right] at this
+
+theorem eq_of_deco_bar : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ} {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {u : Pr.Word} {j : ℕ}, QE sel (mu : Chr X.F X.E X.K) = ∅ → (∀ w ∈ Pr.vGs, ((Formalism.L2.Col.qOf w : ℕ) : 𝓞 X.E) ∉ w.asIdeal ^ 2) → ∀ q q' : PtAt R sel mu cst u j, q.1.1.deco = q'.1.1.deco → MemChart.bar q = MemChart.bar q' → q = q' := by
+  intro X Pr R sel S mu cst u j hQ hq q q' hd hb
+  have hP : ∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs := fun P => by
+    have := P.2
+    simpa [rowSG, uSG, hQ] using this
+  have hfr : q.1.1 = q'.1.1 := by
+    apply Subtype.ext
+    have hE : ∀ a, a ∈ QE sel (mu : Chr X.F X.E X.K) → False := fun a ha => by
+      rw [hQ] at ha
+      simp at ha
+    exact Prod.ext hd (funext fun P => (hE _ P.2).elim)
+  suffices h2 : q.1.2 = q'.1.2 from Subtype.ext (Prod.ext hfr h2)
+  by_cases hj : j + 1 = R.m
+  · obtain ⟨y, hy, eY⟩ := q.mem_ybSet hj
+    obtain ⟨y', hy', eY'⟩ := q'.mem_ybSet hj
+    have eN : q'.1.1.deco.1.N = q.1.1.deco.1.N := by rw [hd]
+    rw [eN] at hy' eY'
+    have key : ∀ e : rowSG Pr sel mu → ℤ, (∀ P, e P = 0) → y - y' ∈ locLat (rowSG Pr sel mu) q.1.1.deco.1.N e := by
+      intro e he
+      refine (mem_locLat _ _ _ _).2 fun P => ?_
+      rw [he P, zpow_zero, inv_one, one_smul]
+      have hm : q.1.1.deco.1.be ⟨P.1, hP P⟩ (((Formalism.L2.Col.qOf P.1 : ℕ) : X.E) • y) ∈ bar q ⟨P.1, hP P⟩ :=
+        ⟨y, by rw [eY, mem_coset, sub_self]; exact zero_mem _, rfl⟩
+      rw [congrFun hb ⟨P.1, hP P⟩] at hm
+      obtain ⟨z, hz, ez⟩ := hm
+      rw [← hd] at ez
+      rw [eY'] at hz
+      have hz' := (mem_locLat _ _ _ _).1 (mem_coset.1 hz) P
+      rw [if_pos (hP P), zpow_zero, inv_one, one_smul] at hz'
+      have h1 := (mem_locLat _ _ _ _).1 hy P
+      have h2 := (mem_locLat _ _ _ _).1 hy' P
+      rw [if_pos (hP P), _root_.zpow_neg_one, inv_inv] at h1 h2
+      exact sub_mem_of_be_eq q.1.1.deco.2 ⟨P.1, hP P⟩ (hq _ (hP P)) h1 h2 hz' ez
+    rw [eY, eY']
+    exact coset_eq _ (key _ fun P => if_pos (hP P))
+  · have h1 := q.2
+    have h1' := q'.2
+    rw [ysAt_ys_of_ne sel mu cst hj] at h1 h1'
+    exact h1.trans h1'.symm
+
+end GlobalTheory.Mem.Col2.MemChart
+end
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.columnPoint_eq_of_deco_and_cosetReduction : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ} {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {u : Pr.Word} {j : ℕ}, QE sel (mu : Chr X.F X.E X.K) = ∅ → (∀ w ∈ Pr.vGs, ((Formalism.L2.Col.qOf w : ℕ) : 𝓞 X.E) ∉ w.asIdeal ^ 2) → ∀ q q' : PtAt R sel mu cst u j, q.1.1.deco = q'.1.1.deco → MemChart.bar q = MemChart.bar q' → q = q' := by
+  first | exact @GlobalTheory.Mem.Col2.MemChart.eq_of_deco_bar | exact GlobalTheory.Mem.Col2.MemChart.eq_of_deco_bar | (intros; apply GlobalTheory.Mem.Col2.MemChart.eq_of_deco_bar <;> assumption)
+end
+
+section
+noncomputable section
+
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
+
+namespace GlobalTheory.Mem.Col2.MemChart.CosetLift
+
+section Local
+
+variable {E : Type} [Field E] [NumberField E]
+
+theorem exists_pow_intAt_div (P : HeightOneSpectrum (𝓞 E)) {m : ℕ} (hm : m ≠ 0) :
+    ∃ K : ℕ, ∀ e ∈ P.asIdeal ^ K, Formalism.L2.Col.IntAt P (algebraMap (𝓞 E) E e / (m : E)) := by
+  have h0 : P.intValuation (m : 𝓞 E) ≠ 0 := P.intValuation_ne_zero _ (Nat.cast_ne_zero.2 hm)
+  refine ⟨(-WithZero.log (P.intValuation (m : 𝓞 E))).toNat, fun e he => ?_⟩
+  have hv : P.valuation E (algebraMap (𝓞 E) E e / (m : E)) ≤ 1 := by
+    rw [← map_natCast (algebraMap (𝓞 E) E) m, map_div₀, HeightOneSpectrum.valuation_of_algebraMap,
+      HeightOneSpectrum.valuation_of_algebraMap]
+    have h1 := (P.intValuation_le_pow_iff_mem e _).2 he
+    have h2 : WithZero.exp (-((-WithZero.log (P.intValuation (m : 𝓞 E))).toNat : ℤ)) ≤ P.intValuation (m : 𝓞 E) := by
+      conv_rhs => rw [← WithZero.exp_log h0]
+      rw [WithZero.exp_le_exp]
+      omega
+    exact (div_le_one₀ (zero_lt_iff.2 h0)).2 (h1.trans h2)
+  obtain ⟨r, s, hrs⟩ := P.exists_primeCompl_mul_eq_of_integer _ hv
+  exact ⟨r, s, s.2, by rw [mul_comm]; exact hrs⟩
+
+theorem exists_one_intAt_div (T : Finset (HeightOneSpectrum (𝓞 E))) (w : HeightOneSpectrum (𝓞 E)) {m : ℕ} (hm : m ≠ 0) :
+    ∃ e : 𝓞 E, Ideal.Quotient.mk w.asIdeal e = 1 ∧
+      ∀ w' ∈ T, w' ≠ w → Formalism.L2.Col.IntAt w' (algebraMap (𝓞 E) E e / (m : E)) := by
+  classical
+  choose K hK using fun w' : HeightOneSpectrum (𝓞 E) => exists_pow_intAt_div w' hm
+  have ht : ∀ w' : HeightOneSpectrum (𝓞 E), ∃ t : 𝓞 E, t ∉ w.asIdeal ∧ (w' ≠ w → t ∈ w'.asIdeal) := by
+    intro w'
+    by_cases hne : w' = w
+    · exact ⟨1, Formalism.L2.Col.one_notMem w, fun h => absurd hne h⟩
+    · by_contra hc
+      refine hne (HeightOneSpectrum.ext (w'.isMaximal.eq_of_le w.isPrime.ne_top fun t h => ?_))
+      by_contra h'
+      exact hc ⟨t, h', fun _ => h⟩
+  choose t ht1 ht2 using ht
+  have := w.isMaximal
+  have := w.isPrime
+  have he0 : (∏ w' ∈ T, t w' ^ K w') ∉ w.asIdeal :=
+    w.asIdeal.primeCompl.prod_mem fun w' _ => w.asIdeal.primeCompl.pow_mem (ht1 w') _
+  obtain ⟨b, hb⟩ := Ideal.Quotient.exists_inv (Formalism.L2.Col.mk_ne_zero he0)
+  obtain ⟨b, rfl⟩ := Ideal.Quotient.mk_surjective b
+  refine ⟨(∏ w' ∈ T, t w' ^ K w') * b, by rw [map_mul, hb], fun w' hw' hne => hK w' _ (Ideal.mul_mem_right _ _ ?_)⟩
+  obtain ⟨c, hc⟩ := Finset.dvd_prod_of_mem (fun w' => t w' ^ K w') hw'
+  rw [hc]
+  exact Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow (ht2 w' hne) _)
+
+variable [StarRing E] {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
+
+theorem exists_vec (d : DecoSet E n ST SG) (v : ∀ w : SG, Fin n → 𝓞 E ⧸ w.1.asIdeal) :
+    ∃ y : Sp E n, ∀ w : SG, ((Formalism.L2.Col.qOf w.1 : ℕ) : E) • y ∈ d.1.at w.1 ∧
+      d.1.be w (((Formalism.L2.Col.qOf w.1 : ℕ) : E) • y) = v w := by
+  classical
+  choose x hxN hxv using fun w : SG => d.2.be_surj w (v w)
+  choose e he1 he2 using fun w : SG => exists_one_intAt_div SG w.1 (m := Formalism.L2.Col.qOf w.1)
+    (Nat.cast_ne_zero.1 (TopStep.qOf_ne_zero (P := w.1)))
+  refine ⟨∑ w : SG, (algebraMap (𝓞 E) E (e w) / ((Formalism.L2.Col.qOf w.1 : ℕ) : E)) • x w, fun w0 => ?_⟩
+  have hc : ((Formalism.L2.Col.qOf w0.1 : ℕ) : E) * (algebraMap (𝓞 E) E (e w0) / ((Formalism.L2.Col.qOf w0.1 : ℕ) : E)) =
+      algebraMap (𝓞 E) E (e w0) := mul_div_cancel₀ _ TopStep.qOf_ne_zero
+  have hi : ∀ w : SG, Formalism.L2.Col.IntAt w0.1
+      (((Formalism.L2.Col.qOf w0.1 : ℕ) : E) * (algebraMap (𝓞 E) E (e w) / ((Formalism.L2.Col.qOf w.1 : ℕ) : E))) := fun w => by
+    by_cases h : w = w0
+    · rw [h, hc]
+      exact Formalism.L2.Col.IntAt.coe _ _
+    · exact (TopStep.intAt_nat _).mul (he2 w w0.1 w0.2 fun h' => h (Subtype.ext h'.symm))
+  have hx : ∀ w : SG, x w ∈ d.1.at w0.1 := fun w => Formalism.L2.Col.le_locP _ _ (hxN w)
+  simp only [Finset.smul_sum, smul_smul]
+  refine ⟨Submodule.sum_mem _ fun w _ => TopStep.smul_mem_locP (hi w) (hx w), ?_⟩
+  rw [TopStep.be_sum d.2 w0 _ fun w _ => TopStep.smul_mem_locP (hi w) (hx w), Finset.sum_eq_single w0]
+  · rw [TopStep.be_smul_int d.2 w0 (hi w0) (hx w0), hc, Formalism.L2.Col.reduction_coe, he1, one_smul, hxv]
+  · intro w _ h
+    rw [TopStep.be_smul_int d.2 w0 (hi w) (hx w), Formalism.L2.Col.reduction_mul (TopStep.intAt_nat _)
+      (he2 w w0.1 w0.2 fun h' => h (Subtype.ext h'.symm)), TopStep.reduction_absNorm_eq_zero, zero_mul, zero_smul]
+  · exact fun h => absurd (Finset.mem_univ _) h
+
+theorem coset_be (d : DecoSet E n ST SG) (SB : Finset (HeightOneSpectrum (𝓞 E))) (w : SG) (hw : w.1 ∈ SB) (e0 : SB → ℤ)
+    (h0 : e0 ⟨w.1, hw⟩ = 0) {y : Sp E n} (hy : ((Formalism.L2.Col.qOf w.1 : ℕ) : E) • y ∈ d.1.at w.1) :
+    {v | ∃ z ∈ {z | z - y ∈ Formalism.L2.Col.locLat SB d.1.N e0}, v = d.1.be w (((Formalism.L2.Col.qOf w.1 : ℕ) : E) • z)} =
+      {d.1.be w (((Formalism.L2.Col.qOf w.1 : ℕ) : E) • y)} := by
+  ext v
+  constructor
+  · rintro ⟨z, hz, rfl⟩
+    have hz' : z - y ∈ d.1.at w.1 := by
+      have := (Formalism.L2.Col.mem_locLat _ _ _ _).1 hz ⟨w.1, hw⟩
+      rwa [h0, zpow_zero, inv_one, one_smul] at this
+    have e : ((Formalism.L2.Col.qOf w.1 : ℕ) : E) • z =
+        ((Formalism.L2.Col.qOf w.1 : ℕ) : E) • y + ((Formalism.L2.Col.qOf w.1 : ℕ) : E) • (z - y) := by
+      rw [← smul_add, add_sub_cancel]
+    rw [Set.mem_singleton_iff, e, d.2.be_add w _ hy _ (TopStep.smul_mem_locP (TopStep.intAt_nat _) hz'),
+      TopStep.be_smul_int d.2 w (TopStep.intAt_nat _) hz', TopStep.reduction_absNorm_eq_zero, zero_smul, add_zero]
+  · intro hv
+    exact ⟨y, by rw [Set.mem_setOf_eq, sub_self]; exact zero_mem _, hv⟩
+
+end Local
+
+theorem exists_ptAt_bar_eq {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)}
+    {S : Set ℕ} {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {u : Pr.Word} {j : ℕ}
+    (hQ : QE sel (mu : Chr X.F X.E X.K) = ∅) (_hq : ∀ w ∈ Pr.vGs, ((Formalism.L2.Col.qOf w : ℕ) : 𝓞 X.E) ∉ w.asIdeal ^ 2)
+    (q : PtAt R sel mu cst u j) (d : DecoSet X.E (R.N j) (Pr.vT u) Pr.vGs) :
+    ∃ q' : PtAt R sel mu cst u j, q'.1.1.deco = d ∧ MemChart.bar q' = MemChart.bar q := by
+  classical
+  by_cases h : j + 1 = R.m
+  · obtain ⟨y, hy, hY⟩ := q.mem_ybSet h
+    have hG : ∀ w : Pr.vGs, w.1 ∈ rowSG Pr sel mu := fun w => Finset.mem_union_left _ w.2
+    have hG' : ∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs := fun P =>
+      (Finset.mem_union.mp P.2).resolve_right fun h' => chfok_false hQ ⟨P.1, h'⟩
+    obtain ⟨y', hy'⟩ := exists_vec d fun w => q.1.1.deco.1.be w (((Formalism.L2.Col.qOf w.1 : ℕ) : X.E) • y)
+    refine ⟨⟨(chfokLift hQ d, {z | z - y' ∈ Formalism.L2.Col.locLat (rowSG Pr sel mu) d.1.N
+      (fun P => if P.1 ∈ Pr.vGs then 0 else (cst.M : ℤ))}), ?_⟩, rfl, ?_⟩
+    · rw [ysAt_ys_of_eq sel mu cst h]
+      refine ⟨y', (Formalism.L2.Col.mem_locLat _ _ _ _).2 fun P => ?_, by congr!⟩
+      rw [if_pos (hG' P), _root_.zpow_neg_one, inv_inv]
+      exact (hy' ⟨P.1, hG' P⟩).1
+    · funext w
+      have h1 := (Formalism.L2.Col.mem_locLat _ _ _ _).1 hy ⟨w.1, hG w⟩
+      rw [if_pos w.2, _root_.zpow_neg_one, inv_inv] at h1
+      refine (coset_be d _ w (hG w) _ (if_pos w.2) (hy' w).1).trans ?_
+      rw [(hy' w).2, MemChart.bar, hY]
+      exact (coset_be q.1.1.deco _ w (hG w) _ (if_pos w.2) h1).symm
+  · have hY : q.1.2 = ∅ := by
+      have := q.2
+      rwa [ysAt_ys_of_ne sel mu cst h] at this
+    refine ⟨⟨(chfokLift hQ d, ∅), by rw [ysAt_ys_of_ne sel mu cst h]; rfl⟩, rfl, ?_⟩
+    funext w
+    simp [MemChart.bar, hY]
+
+end GlobalTheory.Mem.Col2.MemChart.CosetLift
+end
+end
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_couplingCoset_with_given_reduction : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ} {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {u : Pr.Word} {j : ℕ}, QE sel (mu : Chr X.F X.E X.K) = ∅ → (∀ w ∈ Pr.vGs, ((Formalism.L2.Col.qOf w : ℕ) : 𝓞 X.E) ∉ w.asIdeal ^ 2) → ∀ (q : PtAt R sel mu cst u j) (d : DecoSet X.E (R.N j) (Pr.vT u) Pr.vGs), ∃ q' : PtAt R sel mu cst u j, q'.1.1.deco = d ∧ MemChart.bar q' = MemChart.bar q := by
+  first | exact @GlobalTheory.Mem.Col2.MemChart.CosetLift.exists_ptAt_bar_eq | exact GlobalTheory.Mem.Col2.MemChart.CosetLift.exists_ptAt_bar_eq | (intros; apply GlobalTheory.Mem.Col2.MemChart.CosetLift.exists_ptAt_bar_eq <;> assumption)
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
@@ -564,3 +973,5 @@ theorem exists_charts : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok →
 end Main
 
 end GlobalTheory.Mem.Col2.MemChart
+end
+end

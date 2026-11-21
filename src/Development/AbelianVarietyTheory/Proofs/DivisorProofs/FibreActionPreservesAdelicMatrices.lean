@@ -1,6 +1,27 @@
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsAdelicOne
 import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementG
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KronIdentity
+import Formalism.PolynomialDimension.WeylDim
+
+section
+namespace GlobalTheory.KroneckerIdentity
+
+theorem kron_identity {T : Type} [Fintype T] [DecidableEq T] {J : T → Type}
+    [∀ t, Fintype (J t)] [∀ t, DecidableEq (J t)] {R : Type} [CommRing R] :
+    (GlobalTheory.DefPt.kron fun (t : T) ↦ (1 : Matrix (J t) (J t) R))
+      = (1 : Matrix ((t : T) → J t) ((t : T) → J t) R) := by
+  ext I I'
+  simp only [GlobalTheory.DefPt.kron, Matrix.of_apply, Matrix.one_apply]
+  by_cases h : I = I'
+  · subst h
+    simp
+  · rw [if_neg h]
+    obtain ⟨t, ht⟩ : ∃ t, I t ≠ I' t := not_forall.mp fun hc => h (funext hc)
+    exact Finset.prod_eq_zero (Finset.mem_univ t) (if_neg ht)
+
+end GlobalTheory.KroneckerIdentity
+end
+
+section
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj GlobalTheory.DualWeyl GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.DefPt MvPolynomial
 open scoped Matrix
 
@@ -128,4 +149,5 @@ theorem fibA_isAdelic : ∀ (K : Type) [Field K] [NumberField K] (T : Type) [Fin
 
 end GlobalTheory.FibAdel
 
+end
 end

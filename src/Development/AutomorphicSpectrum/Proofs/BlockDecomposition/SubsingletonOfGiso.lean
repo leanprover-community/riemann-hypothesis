@@ -1,11 +1,26 @@
 import Mathlib
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.PhiPG0
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicPsiMinusExactStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicPhiMinusExactStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicPsiMinusExact
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicPhiMinusExact
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothPhiMinusStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothPsiMinusStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothSmInd
 
+section
+open GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mirabolic_psi_minus_exact : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.BZMir.Fun.ExPsiMinus k := by
+  first | exact @GlobalTheory.CompanionTheory.BZMir.exPsiMinus | exact GlobalTheory.CompanionTheory.BZMir.exPsiMinus | (intros; apply GlobalTheory.CompanionTheory.BZMir.exPsiMinus <;> assumption)
+end
+
+section
+open GlobalTheory.PRep GlobalTheory.BZMir GlobalTheory.BZMir.Fun
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mirabolic_phi_minus_exact : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.BZMir.Fun.ExPhiMinus k := by
+  first | exact @GlobalTheory.CompanionTheory.BZMir.exPhiMinus | exact GlobalTheory.CompanionTheory.BZMir.exPhiMinus | (intros; apply GlobalTheory.CompanionTheory.BZMir.exPhiMinus <;> assumption)
+end
+
+section
 noncomputable section
 
 open Matrix GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.BZMir GlobalTheory.BZMir.Leib GlobalTheory.RgGu.Leib
@@ -285,4 +300,5 @@ end chain
 
 end GlobalTheory.CompanionTheory.LeibOrd
 
+end
 end

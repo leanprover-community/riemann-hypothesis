@@ -1,7 +1,0 @@
-import Mathlib
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.AffineCharacterGenerators.Generators
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HasSumTaylorOfExpBounds
-
-open MvPolynomial Filter Topology PositivityTheory.Rg.Fx
-open scoped ContDiff
-

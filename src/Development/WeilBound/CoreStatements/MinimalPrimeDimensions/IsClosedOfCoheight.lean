@@ -1,9 +1,887 @@
-import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.SpecializesIff
-import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.IsProjPrimeOfRelComps
-import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.ResGAppLE
-import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.LeDimQuotientHorizontal
+import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.GenIdeal
+import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.MemMinimalPrimesIff
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LowerBoundConditional
+import Mathlib
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemConeOfMem
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormsOfInduces
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TopologicalKrullDimEqSucc
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KrullDimQuotientMinimalPrimeOverL
+import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PCharacterised
 
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry NumberField MvPolynomial IsDedekindDomain TopologicalSpace
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
+open GlobalTheory GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.Cartier
+open GroundTheory.Heights₂.Heights (IsProjPrime IsHomogIdeal relComps localMult)
+
+namespace ChowFormHeightComparison₂.CF.P
+
+open ChowFormHeightComparison₂.CF.A
+
+variable {R : Type} [CommRing R] {Z : Scheme.{0}} {B : LB Z} {m : ℕ} {p : Z ⟶ Sp R} {s : Fin m → B.Sec}
+
+theorem len_equiv {A B : Type} [CommRing A] [CommRing B] (e : A ≃+* B) (a : A) :
+    Module.length B (B ⧸ Ideal.span {e a}) = Module.length A (A ⧸ Ideal.span {a}) := by
+  rw [Module.length_quotient, Module.length_quotient]
+  have hmap : (Ideal.span {e a} : Ideal B) =
+      (Ideal.relIsoOfBijective (e : A →+* B) e.bijective).symm (Ideal.span {a}) := by
+    show _ = Ideal.map (e : A →+* B) _
+    rw [Ideal.map_span, Set.image_singleton]
+    rfl
+  rw [hmap]
+  exact Order.coheight_orderIso _ _
+
+abbrev qOf {U : Z.Opens} (hU : IsAffineOpen U) {z : Z} (hz : z ∈ U) : Ideal Γ(Z, U) :=
+  (hU.primeIdealOf ⟨z, hz⟩).asIdeal
+
+theorem mem_qOf {U : Z.Opens} (hU : IsAffineOpen U) {z : Z} (hz : z ∈ U) (a : Γ(Z, U)) :
+    a ∈ qOf hU hz ↔ ¬ IsUnit ((Z.presheaf.germ U z hz).hom a) := by
+  letI : Algebra Γ(Z, U) (Z.presheaf.stalk z) := (Z.presheaf.germ U z hz).hom.toAlgebra
+  haveI := hU.isLocalization_stalk ⟨z, hz⟩
+  have h := IsLocalization.AtPrime.isUnit_to_map_iff (Z.presheaf.stalk z) (qOf hU hz) a
+  rw [← not_iff_not, not_not]
+  exact h.symm
+
+structure Ch (p : Z ⟶ Sp R) (s : Fin m → B.Sec) (k : Fin m) (t : Fin m → Γ(Z, nonzeroLocus (s k))) : Prop where
+  aff : IsAffineOpen (nonzeroLocus (s k))
+  surj : Function.Surjective (eval₂Hom (algX p (nonzeroLocus (s k))) t)
+  rel : ∀ j i, resG Z (inf_le_right : nonzeroLocus (s k) ⊓ B.U i ≤ B.U i) ((s j).f i) =
+      resG Z (inf_le_left : nonzeroLocus (s k) ⊓ B.U i ≤ nonzeroLocus (s k)) (t j) *
+        resG Z (inf_le_right : nonzeroLocus (s k) ⊓ B.U i ≤ B.U i) ((s k).f i)
+
+theorem exists_ch (hE : Emb p s) (k : Fin m) : ∃ t, Ch p s k t :=
+  have ⟨h1, t, h2, h3⟩ := hE.chart k
+  ⟨t, h1, h2, h3⟩
+
+theorem exists_mem (hE : Emb p s) (z : Z) : ∃ k, z ∈ nonzeroLocus (s k) := by
+  have hz : z ∈ (⨆ k, nonzeroLocus (s k)) := by
+    rw [hE.cover]
+    trivial
+  exact Opens.mem_iSup.mp hz
+
+variable {k : Fin m} {t : Fin m → Γ(Z, nonzeroLocus (s k))}
+
+theorem Ch.germ (h : Ch p s k t) {z : Z} (hz : z ∈ nonzeroLocus (s k)) {i : B.ι} (hi : z ∈ B.U i) (j : Fin m) :
+    (Z.presheaf.germ _ z hi).hom ((s j).f i) =
+      (Z.presheaf.germ _ z hz).hom (t j) * (Z.presheaf.germ _ z hi).hom ((s k).f i) := by
+  have hzi : z ∈ nonzeroLocus (s k) ⊓ B.U i := ⟨hz, hi⟩
+  have hc := congrArg (Z.presheaf.germ _ z hzi).hom (h.rel j i)
+  rw [map_mul] at hc
+  erw [TopCat.Presheaf.germ_res_apply, TopCat.Presheaf.germ_res_apply,
+    TopCat.Presheaf.germ_res_apply] at hc
+  exact hc
+
+theorem isUnit_germ {u : B.Sec} {z : Z} {i : B.ι} (hi : z ∈ B.U i) :
+    z ∈ nonzeroLocus u ↔ IsUnit ((Z.presheaf.germ _ z hi).hom (u.f i)) := by
+  constructor
+  · intro hz
+    unfold nonzeroLocus at hz
+    obtain ⟨k, hk⟩ := Opens.mem_iSup.mp hz
+    have hzk : z ∈ B.U k := Z.basicOpen_le _ hk
+    have hu := (Z.mem_basicOpen _ _ hzk).mp hk
+    have hzik : z ∈ B.U i ⊓ B.U k := ⟨hi, hzk⟩
+    have hc := congrArg (Z.presheaf.germ (B.U i ⊓ B.U k) z hzik).hom (u.compat i k)
+    rw [map_mul] at hc
+    erw [TopCat.Presheaf.germ_res_apply, TopCat.Presheaf.germ_res_apply] at hc
+    erw [hc]
+    exact ((Units.isUnit _).map _).mul hu
+  · intro hu
+    unfold nonzeroLocus
+    exact Opens.mem_iSup.mpr ⟨i, (Z.mem_basicOpen _ _ hi).mpr hu⟩
+
+theorem Ch.one (h : Ch p s k t) (hB : B.IsLB) : t k = 1 := by
+  apply TopCat.Presheaf.section_ext Z.sheaf
+  intro z hz
+  have hzc : z ∈ (⨆ i, B.U i) := by
+    rw [hB.cover]
+    trivial
+  obtain ⟨i, hi⟩ := Opens.mem_iSup.mp hzc
+  have hg := h.germ hz hi k
+  have hu := (isUnit_germ (u := s k) hi).mp hz
+  change (Z.presheaf.germ _ z hz).hom (t k) = (Z.presheaf.germ _ z hz).hom 1
+  rw [map_one]
+  exact (hu.mul_right_cancel (by rw [one_mul]; exact hg)).symm
+
+theorem germ_algX {U W : Z.Opens} {z : Z} (hU : z ∈ U) (hW : z ∈ W) (r : R) :
+    (Z.presheaf.germ _ z hU).hom (algX p U r) = (Z.presheaf.germ _ z hW).hom (algX p W r) := by
+  have hUW : z ∈ U ⊓ W := ⟨hU, hW⟩
+  have e1 : algX p (U ⊓ W) r = resG Z (inf_le_left : U ⊓ W ≤ U) (algX p U r) := by
+    rw [← GlobalTheory.TopForm.resG_comp_algX p (inf_le_left : U ⊓ W ≤ U)]
+    rfl
+  have e2 : algX p (U ⊓ W) r = resG Z (inf_le_right : U ⊓ W ≤ W) (algX p W r) := by
+    rw [← GlobalTheory.TopForm.resG_comp_algX p (inf_le_right : U ⊓ W ≤ W)]
+    rfl
+  have g1 := congrArg (Z.presheaf.germ _ z hUW).hom e1
+  have g2 := congrArg (Z.presheaf.germ _ z hUW).hom e2
+  have r1 := Z.presheaf.germ_res_apply (homOfLE (inf_le_left : U ⊓ W ≤ U)) z hUW (algX p U r)
+  have r2 := Z.presheaf.germ_res_apply (homOfLE (inf_le_right : U ⊓ W ≤ W)) z hUW (algX p W r)
+  exact r1.symm.trans ((g1.symm.trans g2).trans r2)
+
+theorem Ch.germ_eval (h : Ch p s k t) {z : Z} (hz : z ∈ nonzeroLocus (s k)) {i : B.ι} (hi : z ∈ B.U i) {d : ℕ}
+    {g : MvPolynomial (Fin m) R} (hg : g.IsHomogeneous d) :
+    (Z.presheaf.germ _ z hi).hom (eval₂Hom (algX p (B.U i)) (fun j => (s j).f i) g) =
+      (Z.presheaf.germ _ z hz).hom (eval₂Hom (algX p _) t g) * (Z.presheaf.germ _ z hi).hom ((s k).f i) ^ d := by
+  rw [coe_eval₂Hom, coe_eval₂Hom, hom_eval₂, hom_eval₂]
+  have hc : (Z.presheaf.germ _ z hi).hom.comp (algX p (B.U i)) =
+      (Z.presheaf.germ _ z hz).hom.comp (algX p (nonzeroLocus (s k))) := by
+    ext r
+    exact germ_algX hi hz r
+  have hfun : (fun j => (Z.presheaf.germ _ z hi).hom ((s j).f i)) =
+      fun j => (Z.presheaf.germ _ z hz).hom (t j) * (Z.presheaf.germ _ z hi).hom ((s k).f i) :=
+    funext fun j => h.germ hz hi j
+  rw [hfun, hc]
+  have := eval₂Hom_mul ((Z.presheaf.germ _ z hz).hom.comp (algX p (nonzeroLocus (s k))))
+    (fun j => (Z.presheaf.germ _ z hz).hom (t j)) hg ((Z.presheaf.germ _ z hi).hom ((s k).f i))
+  rw [coe_eval₂Hom, coe_eval₂Hom] at this
+  exact this
+
+theorem mem_ker_coneHom {z : Z} {i : B.ι} (hi : z ∈ B.U i) (g : MvPolynomial (Fin m) R) :
+    g ∈ RingHom.ker (coneHom p s z i hi) ↔ ∀ d, ¬ IsUnit ((Z.presheaf.germ _ z hi).hom
+      (eval₂Hom (algX p (B.U i)) (fun j => (s j).f i) (homogeneousComponent d g))) := by
+  rw [RingHom.mem_ker]
+  change ChowFormHeightComparison₂.CF.A.cone ((Z.evaluation (B.U i) z hi).hom.comp (algX p (B.U i)))
+    (fun k => (Z.evaluation (B.U i) z hi).hom ((s k).f i)) g = 0 ↔ _
+  rw [Polynomial.ext_iff]
+  simp only [coeff_cone, Polynomial.coeff_zero]
+  apply forall_congr'
+  intro d
+  have e := Scheme.evaluation_eq_zero_iff_notMem_basicOpen Z z hi
+    (eval₂Hom (algX p (B.U i)) (fun j => (s j).f i) (homogeneousComponent d g))
+  rw [Scheme.mem_basicOpen Z _ z hi] at e
+  rw [coe_eval₂Hom, ← hom_eval₂]
+  exact e
+
+theorem Ch.ptIdeal_eq (h : Ch p s k t) (hB : B.IsLB) {z : Z} (hz : z ∈ nonzeroLocus (s k)) :
+    ptIdeal p s z = pr (algX p _) t (qOf h.aff hz) := by
+  ext g
+  have hzc : z ∈ (⨆ i, B.U i) := by
+    rw [hB.cover]
+    trivial
+  obtain ⟨i0, hi0⟩ := Opens.mem_iSup.mp hzc
+  have key : ∀ i (hi : z ∈ B.U i) (d : ℕ),
+      IsUnit ((Z.presheaf.germ _ z hi).hom
+        (eval₂Hom (algX p (B.U i)) (fun j => (s j).f i) (homogeneousComponent d g))) ↔
+      IsUnit ((Z.presheaf.germ _ z hz).hom (eval₂Hom (algX p _) t (homogeneousComponent d g))) := by
+    intro i hi d
+    rw [h.germ_eval hz hi (homogeneousComponent_isHomogeneous d g)]
+    exact IsUnit.mul_iff.trans (and_iff_left (((isUnit_germ hi).mp hz).pow d))
+  rw [ChowFormHeightComparison₂.CF.A.mem_pr]
+  simp only [ptIdeal, Submodule.mem_iInf, mem_ker_coneHom]
+  constructor
+  · intro H d
+    rw [mem_qOf]
+    exact (key i0 hi0 d).not.mp (H i0 hi0 d)
+  · intro H i hi d
+    exact (key i hi d).not.mpr ((mem_qOf _ _ _).mp (H d))
+
+theorem isProjPrime (hE : Emb p s) (z : Z) : IsProjPrime (ptIdeal p s z) := by
+  obtain ⟨k, hk⟩ := exists_mem hE z
+  obtain ⟨t, h⟩ := exists_ch hE k
+  rw [h.ptIdeal_eq hE.isLB hk]
+  exact isProjPrime_pr (h.one hE.isLB) _
+
+private theorem linForm_isHomogeneous_one_minimal_prime_dimensions (u : Fin m → R) :
+    (GroundTheory.Heights₂.Heights.linForm u).IsHomogeneous 1 := by
+  unfold GroundTheory.Heights₂.Heights.linForm
+  exact MvPolynomial.IsHomogeneous.sum _ _ _ fun j _ => isHomogeneous_C_mul_X (u j) j
+
+theorem Ch.germ_comb (h : Ch p s k t) {u : Fin m → R} {su : B.Sec} (hu : IsComb p s u su) {z : Z}
+    (hz : z ∈ nonzeroLocus (s k)) {i : B.ι} (hi : z ∈ B.U i) :
+    (Z.presheaf.germ _ z hi).hom (su.f i) =
+      (Z.presheaf.germ _ z hz).hom (eval₂Hom (algX p _) t (GroundTheory.Heights₂.Heights.linForm u)) *
+        (Z.presheaf.germ _ z hi).hom ((s k).f i) := by
+  have heq : su.f i = eval₂Hom (algX p (B.U i)) (fun j => (s j).f i)
+      (GroundTheory.Heights₂.Heights.linForm u) := by
+    rw [hu i]
+    simp [GroundTheory.Heights₂.Heights.linForm, map_sum]
+  rw [heq, h.germ_eval hz hi (linForm_isHomogeneous_one_minimal_prime_dimensions u), pow_one]
+
+theorem mem_iff (hE : Emb p s) {u : Fin m → R} {su : B.Sec} (hu : IsComb p s u su) (z : Z) :
+    z ∈ nonzeroLocus su ↔ GroundTheory.Heights₂.Heights.linForm u ∉ ptIdeal p s z := by
+  obtain ⟨k, hk⟩ := exists_mem hE z
+  obtain ⟨t, h⟩ := exists_ch hE k
+  obtain ⟨i, hi⟩ := LB.mem_of_cover hE.isLB z
+  rw [h.ptIdeal_eq hE.isLB hk, mem_pr_homog (isHomog_linForm u), mem_qOf, not_not, isUnit_germ hi,
+    h.germ_comb hu hk hi, IsUnit.mul_iff, and_iff_left ((isUnit_germ hi).1 hk)]
+
+theorem mem_iff_X (hE : Emb p s) (j : Fin m) (z : Z) : z ∈ nonzeroLocus (s j) ↔ X j ∉ ptIdeal p s z := by
+  obtain ⟨k, hz⟩ := exists_mem hE z
+  obtain ⟨t, h⟩ := exists_ch hE k
+  have hzc : z ∈ (⨆ i, B.U i) := by
+    rw [hE.isLB.cover]
+    trivial
+  obtain ⟨i, hi⟩ := Opens.mem_iSup.mp hzc
+  rw [h.ptIdeal_eq hE.isLB hz, ChowFormHeightComparison₂.CF.A.mem_pr_homog (isHomogeneous_X R j), mem_qOf, not_not,
+    eval₂Hom_X', isUnit_germ hi, h.germ hz hi j]
+  exact IsUnit.mul_iff.trans (and_iff_left ((isUnit_germ hi).mp hz))
+
+theorem qOf_le_iff {U : Z.Opens} (hU : IsAffineOpen U) {z z' : Z} (hz : z ∈ U) (hz' : z' ∈ U) :
+    qOf hU hz ≤ qOf hU hz' ↔ z ⤳ z' := by
+  have e := (hU.fromSpec.isOpenEmbedding.isInducing.specializes_iff
+    (x := hU.primeIdealOf ⟨z, hz⟩) (y := hU.primeIdealOf ⟨z', hz'⟩))
+  rw [hU.fromSpec_primeIdealOf, hU.fromSpec_primeIdealOf] at e
+  rw [e]
+  exact PrimeSpectrum.le_iff_specializes _ _
+
+theorem specializes_iff (hE : Emb p s) (z z' : Z) : z ⤳ z' ↔ ptIdeal p s z ≤ ptIdeal p s z' := by
+  obtain ⟨k, hz'⟩ := exists_mem hE z'
+  obtain ⟨t, h⟩ := exists_ch hE k
+  have h1 := h.one hE.isLB
+  constructor
+  · intro hsp
+    have hz : z ∈ nonzeroLocus (s k) := hsp.mem_open (nonzeroLocus (s k)).isOpen hz'
+    rw [h.ptIdeal_eq hE.isLB hz, h.ptIdeal_eq hE.isLB hz', ChowFormHeightComparison₂.CF.A.pr_le_iff h.surj h1,
+      qOf_le_iff]
+    exact hsp
+  · intro hle
+    have hz : z ∈ nonzeroLocus (s k) :=
+      (mem_iff_X hE k z).mpr fun hx => (mem_iff_X hE k z').mp hz' (hle hx)
+    rw [h.ptIdeal_eq hE.isLB hz, h.ptIdeal_eq hE.isLB hz', ChowFormHeightComparison₂.CF.A.pr_le_iff h.surj h1,
+      qOf_le_iff] at hle
+    exact hle
+
+theorem injective (hE : Emb p s) : Function.Injective (ptIdeal p s) := fun z z' h =>
+  (((specializes_iff hE z z').2 h.le).antisymm ((specializes_iff hE z' z).2 h.ge)).eq
+
+variable [IsIntegral Z]
+
+theorem qOf_generic {U : Z.Opens} (hU : IsAffineOpen U) (hz : genericPoint Z ∈ U) : qOf hU hz = ⊥ := by
+  haveI : Nonempty U := ⟨⟨_, hz⟩⟩
+  show (hU.primeIdealOf ⟨genericPoint Z, hz⟩).asIdeal = ⊥
+  rw [hU.primeIdealOf_genericPoint, genericPoint_eq_bot_of_affine]
+  rfl
+
+theorem exists_pt (hE : Emb p s) (W : Ideal (MvPolynomial (Fin m) R)) (hW : IsProjPrime W)
+    (hle : ptIdeal p s (genericPoint Z) ≤ W) : ∃ z, ptIdeal p s z = W := by
+  obtain ⟨k, hk⟩ := hW.isRelevant
+  obtain ⟨t, h⟩ := exists_ch hE k
+  have h1 := h.one hE.isLB
+  have hη : genericPoint Z ∈ nonzeroLocus (s k) := (mem_iff_X hE k _).mpr fun hx => hk (hle hx)
+  rw [h.ptIdeal_eq hE.isLB hη, qOf_generic] at hle
+  obtain ⟨q, hq, hqW⟩ := ChowFormHeightComparison₂.CF.A.exists_eq_pr h.surj h1 hW.isPrime hW.isHomog hk hle
+  let P : PrimeSpectrum Γ(Z, nonzeroLocus (s k)) := ⟨q, hq⟩
+  have hmem : h.aff.fromSpec P ∈ nonzeroLocus (s k) := by
+    rw [← SetLike.mem_coe, ← h.aff.range_fromSpec]
+    exact ⟨P, rfl⟩
+  refine ⟨h.aff.fromSpec P, ?_⟩
+  rw [h.ptIdeal_eq hE.isLB hmem, ← hqW]
+  congr 1
+  have hinj : h.aff.primeIdealOf ⟨_, hmem⟩ = P :=
+    h.aff.fromSpec.isOpenEmbedding.injective (h.aff.fromSpec_primeIdealOf ⟨_, hmem⟩)
+  show (h.aff.primeIdealOf ⟨_, hmem⟩).asIdeal = q
+  rw [hinj]
+
+end ChowFormHeightComparison₂.CF.P
+
+namespace ChowFormHeightComparison₂.CF
+
+theorem stPts : StPts := fun _ _ _ _ _ _ _ _ hE =>
+  ⟨P.isProjPrime hE, P.specializes_iff hE, P.exists_pt hE, fun _ _ hu => P.mem_iff hE hu⟩
+
+private theorem mem_minimalPrimes_span_iff_mem_height_eq_one {A : Type} [CommRing A] [IsDomain A] [IsNoetherianRing A]
+    (q : Ideal A) [q.IsPrime] {f : A} (hf : f ≠ 0) :
+    q ∈ (Ideal.span {f}).minimalPrimes ↔ f ∈ q ∧ q.height = 1 := by
+  have hpos : ∀ (p : Ideal A) [p.IsPrime], f ∈ p → 1 ≤ p.height := by
+    intro p _ hfp
+    have hlt : (⊥ : Ideal A) < p := by
+      refine bot_lt_iff_ne_bot.mpr fun hp => hf ?_
+      rw [hp, Ideal.mem_bot] at hfp
+      exact hfp
+    exact le_trans le_add_self (Ideal.height_add_one_le_of_lt_of_isPrime hlt)
+  constructor
+  · intro hq
+    have hfq : f ∈ q := hq.1.2 (Ideal.mem_span_singleton_self f)
+    exact ⟨hfq, le_antisymm (Ideal.height_le_one_of_isPrincipal_of_mem_minimalPrimes _ q hq)
+      (hpos q hfq)⟩
+  · rintro ⟨hfq, hq1⟩
+    refine ⟨⟨inferInstance, (Ideal.span_singleton_le_iff_mem _).mpr hfq⟩, ?_⟩
+    rintro p ⟨hp, hfp⟩ hpq
+    haveI := hp
+    by_contra hne
+    have hlt : p < q := lt_of_le_not_ge hpq hne
+    have h1 := hpos p ((Ideal.span_singleton_le_iff_mem _).mp hfp)
+    have h2 := Ideal.height_strict_mono_of_isPrime_of_isPrime hlt
+    rw [hq1] at h2
+    exact absurd (lt_of_le_of_lt h1 h2) (lt_irrefl _)
+
+open ChowFormHeightComparison₂.CF.A ChowFormHeightComparison₂.CF.P in
+theorem stDiv : StDiv := by
+  intro R _ _ Z _ _ p B m s hE u su hsu hu
+  have hB := hE.isLB
+  have core : ∀ z : Z,
+      ((divOfSec hB su hu).mult z ≠ 0 ↔ ptIdeal p s z ∈
+        relComps (ptIdeal p s (genericPoint Z) ⊔ Ideal.span {GroundTheory.Heights₂.Heights.linForm u})) ∧
+      ((divOfSec hB su hu).mult z ≠ 0 → (divOfSec hB su hu).mult z =
+        ↑(localMult (ptIdeal p s (genericPoint Z) ⊔ Ideal.span {GroundTheory.Heights₂.Heights.linForm u})
+          (ptIdeal p s z))) := by
+    intro z
+    obtain ⟨k, hz⟩ := P.exists_mem hE z
+    obtain ⟨t, h⟩ := P.exists_ch hE k
+    have h1 := h.one hB
+    have hη : genericPoint Z ∈ nonzeroLocus (s k) :=
+      ((genericPoint_spec Z).mem_open_set_iff (nonzeroLocus (s k)).isOpen).mpr
+        ⟨z, Set.mem_univ _, hz⟩
+    haveI : Nonempty (nonzeroLocus (s k)) := ⟨⟨z, hz⟩⟩
+    haveI : IsNoetherianRing Γ(Z, nonzeroLocus (s k)) :=
+      IsLocallyNoetherian.component_noetherian ⟨_, h.aff⟩
+    have hf0 : eval₂Hom (algX p (nonzeroLocus (s k))) t (GroundTheory.Heights₂.Heights.linForm u) ≠ 0 := by
+      have hnm := (P.mem_iff hE hsu (genericPoint Z)).mp hu
+      rw [h.ptIdeal_eq hB hη, qOf_generic, ChowFormHeightComparison₂.CF.A.mem_pr_homog (linForm_isHomogeneous_one_minimal_prime_dimensions u)] at hnm
+      intro h0
+      exact hnm (by rw [Ideal.mem_bot]; exact h0)
+    rw [h.ptIdeal_eq hB hz, h.ptIdeal_eq hB hη, qOf_generic]
+    have hrel : pr (algX p (nonzeroLocus (s k))) t (qOf h.aff hz) ∈
+        relComps (pr (algX p (nonzeroLocus (s k))) t ⊥ ⊔ Ideal.span {GroundTheory.Heights₂.Heights.linForm u}) ↔
+        qOf h.aff hz ∈ (Ideal.span {eval₂Hom (algX p (nonzeroLocus (s k))) t
+          (GroundTheory.Heights₂.Heights.linForm u)}).minimalPrimes := by
+      rw [← ChowFormHeightComparison₂.CF.A.mem_minimalPrimes_iff h.surj h1 u (qOf h.aff hz)]
+      exact ⟨fun H => H.1, fun H => ⟨H, k, ChowFormHeightComparison₂.CF.A.X_notMem_pr h1 _⟩⟩
+    rw [hrel, ChowFormHeightComparison₂.CF.A.localMult_pr h.surj h1 u (qOf h.aff hz)]
+    have hzc : z ∈ (⨆ i, B.U i) := by
+      rw [hB.cover]
+      trivial
+    obtain ⟨i, hi⟩ := Opens.mem_iSup.mp hzc
+    letI : Algebra Γ(Z, nonzeroLocus (s k)) (Z.presheaf.stalk z) :=
+      (Z.presheaf.germ _ z hz).hom.toAlgebra
+    haveI : IsLocalization.AtPrime (Z.presheaf.stalk z) (qOf h.aff hz) :=
+      h.aff.isLocalization_stalk ⟨z, hz⟩
+    have hht : Order.coheight z = (qOf h.aff hz).height := by
+      have e1 := ringKrullDim_stalk_eq_coheight z
+      rw [IsLocalization.AtPrime.ringKrullDim_eq_height (qOf h.aff hz) (Z.presheaf.stalk z)] at e1
+      exact (WithBot.coe_inj.mp e1).symm
+    have hg := h.germ_comb hsu hz hi
+    have hunit := (isUnit_germ hi).mp hz
+    have hspan : Ideal.span {(Z.presheaf.germ _ z hi).hom (su.f i)} =
+        Ideal.span {algebraMap _ (Z.presheaf.stalk z)
+          (eval₂Hom (algX p (nonzeroLocus (s k))) t (GroundTheory.Heights₂.Heights.linForm u))} := by
+      rw [hg]
+      exact Ideal.span_singleton_mul_right_unit hunit _
+    have hlen : Module.length (Z.presheaf.stalk z) (Z.presheaf.stalk z ⧸ Ideal.span {algebraMap _
+          (Z.presheaf.stalk z) (eval₂Hom (algX p (nonzeroLocus (s k))) t
+            (GroundTheory.Heights₂.Heights.linForm u))}) =
+        Module.length (Localization.AtPrime (qOf h.aff hz))
+          (Localization.AtPrime (qOf h.aff hz) ⧸ Ideal.map (algebraMap _ (Localization.AtPrime
+            (qOf h.aff hz))) (Ideal.span {eval₂Hom (algX p (nonzeroLocus (s k))) t
+              (GroundTheory.Heights₂.Heights.linForm u)})) := by
+      have he := (IsLocalization.algEquiv (qOf h.aff hz).primeCompl
+        (Localization.AtPrime (qOf h.aff hz)) (Z.presheaf.stalk z)).commutes
+          (eval₂Hom (algX p (nonzeroLocus (s k))) t (GroundTheory.Heights₂.Heights.linForm u))
+      rw [Ideal.map_span, Set.image_singleton, ← he]
+      exact len_equiv (IsLocalization.algEquiv (qOf h.aff hz).primeCompl
+        (Localization.AtPrime (qOf h.aff hz)) (Z.presheaf.stalk z)).toRingEquiv _
+    have hLM : localMult (Ideal.span {eval₂Hom (algX p (nonzeroLocus (s k))) t
+          (GroundTheory.Heights₂.Heights.linForm u)}) (qOf h.aff hz) =
+        (Module.length (Z.presheaf.stalk z) (Z.presheaf.stalk z ⧸ Ideal.span {algebraMap _
+          (Z.presheaf.stalk z) (eval₂Hom (algX p (nonzeroLocus (s k))) t
+            (GroundTheory.Heights₂.Heights.linForm u))})).toNat := by
+      rw [hlen]
+      unfold localMult
+      rw [dif_pos (show (qOf h.aff hz).IsPrime from inferInstance)]
+    by_cases hc : Order.coheight z = 1
+    · have hmult := GlobalTheory.Cartier.mult_divOfSec (hL := hB) (s := su) (hs := hu) hc hi
+      rw [hmult, hspan, ← hLM]
+      refine ⟨?_, fun _ => rfl⟩
+      rw [mem_minimalPrimes_span_iff_mem_height_eq_one _ hf0, ← hht, hc, and_iff_left rfl, hLM]
+      haveI : Ring.KrullDimLE 1 (Z.presheaf.stalk z) := krullDimLE_of_coheight_le hc.le
+      have hne0 : algebraMap _ (Z.presheaf.stalk z)
+          (eval₂Hom (algX p (nonzeroLocus (s k))) t (GroundTheory.Heights₂.Heights.linForm u)) ≠ 0 := by
+        intro h0
+        apply hf0
+        exact germ_injective_of_isIntegral Z z hz (h0.trans (map_zero _).symm)
+      have hfin := isFiniteLength_quotient_span_singleton (Z.presheaf.stalk z)
+        (mem_nonZeroDivisors_of_ne_zero hne0)
+      have hntop := Module.length_ne_top_iff.mpr hfin
+      rw [Nat.cast_ne_zero, Ne, ENat.toNat_eq_zero, or_iff_left hntop, Module.length_eq_zero_iff,
+        Ideal.Quotient.subsingleton_iff, Ideal.span_singleton_eq_top,
+        IsLocalization.AtPrime.isUnit_to_map_iff (Z.presheaf.stalk z) (qOf h.aff hz)]
+      exact not_not
+    · have h0 : (divOfSec hB su hu).mult z = 0 := by
+        by_contra hne
+        exact hc (GlobalTheory.Cartier.CartierDiv.coheight_eq_one_of_mult_ne_zero hne)
+      rw [h0]
+      refine ⟨⟨fun H => absurd rfl H, fun H => absurd ?_ hc⟩, fun H => absurd rfl H⟩
+      rw [hht]
+      exact ((mem_minimalPrimes_span_iff_mem_height_eq_one _ hf0).mp H).2
+  exact ⟨fun z => (core z).1, fun z => (core z).2⟩
+
+end ChowFormHeightComparison₂.CF
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open MvPolynomial NumberField IsDedekindDomain
+open GroundTheory.Heights₂.Heights
+
+namespace ChowFormHeightComparison₂.CF.M
+
+attribute [local instance] MvPolynomial.algebraMvPolynomial
+
+variable {K : Type} [Field K] [NumberField K] {m : ℕ}
+
+local notation "φ" => (MvPolynomial.map (algebraMap (𝓞 K) K) : MvPolynomial (Fin m) (𝓞 K) →+* MvPolynomial (Fin m) K)
+local notation "CC" => (C : 𝓞 K →+* MvPolynomial (Fin m) (𝓞 K))
+
+theorem disjoint_of_bot {W : Ideal (MvPolynomial (Fin m) (𝓞 K))} (h : W.comap CC = ⊥) :
+    Disjoint (((nonZeroDivisors (𝓞 K)).map CC : Submonoid _) : Set (MvPolynomial (Fin m) (𝓞 K))) W := by
+  rw [Set.disjoint_left]
+  rintro _ ⟨a, ha, rfl⟩ hW
+  exact nonZeroDivisors.ne_zero ha (Ideal.mem_bot.1 (h ▸ (show a ∈ W.comap CC from hW)))
+
+theorem comap_map {W : Ideal (MvPolynomial (Fin m) (𝓞 K))} (hW : W.IsPrime) (h : W.comap CC = ⊥) :
+    (W.map φ).comap φ = W :=
+  IsLocalization.under_map_of_isPrime_disjoint ((nonZeroDivisors (𝓞 K)).map CC) (MvPolynomial (Fin m) K) hW
+    (disjoint_of_bot h)
+
+theorem isPrime_map {W : Ideal (MvPolynomial (Fin m) (𝓞 K))} (hW : W.IsPrime) (h : W.comap CC = ⊥) :
+    (W.map φ).IsPrime :=
+  IsLocalization.isPrime_of_isPrime_disjoint ((nonZeroDivisors (𝓞 K)).map CC) (MvPolynomial (Fin m) K) W hW
+    (disjoint_of_bot h)
+
+theorem map_comap (W : Ideal (MvPolynomial (Fin m) K)) : (W.comap φ).map φ = W :=
+  IsLocalization.map_under ((nonZeroDivisors (𝓞 K)).map CC) (MvPolynomial (Fin m) K) W
+
+theorem comap_bot {W : Ideal (MvPolynomial (Fin m) K)} (hW : W ≠ ⊤) : (W.comap φ).comap CC = ⊥ := by
+  refine le_bot_iff.1 fun a ha => ?_
+  by_contra h0
+  rw [Ideal.mem_comap, Ideal.mem_comap, map_C] at ha
+  exact hW (W.eq_top_of_isUnit_mem ha ((IsUnit.mk0 _ (by simpa using h0)).map C))
+
+theorem map_linForm (u : Fin m → 𝓞 K) : φ (linForm u) = linForm fun j => (u j : K) := by
+  simp [linForm]
+
+theorem isProjPrime_map {W : Ideal (MvPolynomial (Fin m) (𝓞 K))} (hW : IsProjPrime W) (h : W.comap CC = ⊥) :
+    IsProjPrime (W.map φ) := by
+  refine ⟨isPrime_map hW.isPrime h, ?_, (isRelevant_comap_map_iff _ _).1 ((comap_map hW.isPrime h).symm ▸ hW.isRelevant)⟩
+  intro f hf d
+  refine Submodule.span_induction (p := fun f _ => ∀ d, homogeneousComponent d f ∈ W.map φ) ?_ (by simp)
+    (fun a b _ _ ha hb d => by rw [map_add]; exact Ideal.add_mem _ (ha d) (hb d)) ?_ hf d
+  · rintro _ ⟨g, hg, rfl⟩ d
+    have e : homogeneousComponent d (φ g) = φ (homogeneousComponent d g) := by
+      ext n
+      rw [coeff_homogeneousComponent, coeff_map, coeff_map, coeff_homogeneousComponent]
+      split_ifs <;> simp
+    rw [e]
+    exact Ideal.mem_map_of_mem _ (hW.isHomog g hg d)
+  · intro a b _ hb d
+    rw [smul_eq_mul, ← b.sum_homogeneousComponent, ← a.sum_homogeneousComponent, Finset.sum_mul_sum, map_sum]
+    refine Ideal.sum_mem _ fun i _ => ?_
+    rw [map_sum]
+    refine Ideal.sum_mem _ fun j _ => ?_
+    rw [homogeneousComponent_of_mem ((homogeneousComponent_isHomogeneous i a).mul
+      (homogeneousComponent_isHomogeneous j b))]
+    split_ifs
+    · exact Ideal.mul_mem_left _ _ (hb j)
+    · exact Ideal.zero_mem _
+
+theorem isProjPrime_of_relComps {R : Type} [CommRing R] {J W : Ideal (MvPolynomial (Fin m) R)} (hJ : IsHomogIdeal J)
+    (hW : W ∈ relComps J) : IsProjPrime W := by
+  have := hW.1.1.1
+  obtain ⟨W', h1, h2, h3, h4⟩ := A.exists_core W
+  have e : W' = W := le_antisymm h3 (hW.1.2 ⟨h1, fun g hg => h4 g fun d => hW.1.1.2 (hJ g hg d)⟩ h3)
+  exact ⟨this, e ▸ h2, hW.2⟩
+
+theorem mem_relComps_map {J : Ideal (MvPolynomial (Fin m) (𝓞 K))} {W : Ideal (MvPolynomial (Fin m) K)} :
+    W ∈ relComps (J.map φ) ↔ W.comap φ ∈ relComps J := by
+  have h := IsLocalization.minimalPrimes_map ((nonZeroDivisors (𝓞 K)).map CC) (MvPolynomial (Fin m) K) J
+  exact and_congr (Set.ext_iff.1 h W) (isRelevant_comap_map_iff _ _).symm
+
+theorem localMult_map' (J : Ideal (MvPolynomial (Fin m) (𝓞 K))) (W : Ideal (MvPolynomial (Fin m) K)) [hW : W.IsPrime] :
+    localMult (J.map φ) W = localMult J (W.comap φ) := by
+  refine A.localMult_map φ W J (fun b => ?_) ?_
+  · obtain ⟨⟨a, s⟩, e⟩ := IsLocalization.surj ((nonZeroDivisors (𝓞 K)).map CC) b
+    exact ⟨a, s, fun h => hW.ne_top (W.eq_top_of_isUnit_mem h
+      (IsLocalization.map_units (MvPolynomial (Fin m) K) s)), e⟩
+  · rw [(RingHom.injective_iff_ker_eq_bot _).1 (map_injective _ (FaithfulSMul.algebraMap_injective (𝓞 K) K))]
+    exact bot_le
+
+variable {P : Ideal (MvPolynomial (Fin m) (𝓞 K))} {u : Fin m → 𝓞 K} {ι : Type} {S : Finset ι}
+  {Pt : ι → Ideal (MvPolynomial (Fin m) (𝓞 K))} {μ : ι → ℤ}
+
+open Classical in
+theorem vertTerm_eq (hP : P.IsPrime) (h0 : P.comap CC = ⊥) (hi : Function.Injective Pt)
+    (hS : ∀ W, W ∈ relComps (P ⊔ Ideal.span {linForm u}) ↔ ∃ z ∈ S, Pt z = W)
+    (hμ : ∀ z ∈ S, μ z = localMult (P ⊔ Ideal.span {linForm u}) (Pt z)) (k : ℕ) (g : ι → ℝ)
+    (hg : ∀ z ∈ S, ∀ v : HeightOneSpectrum (𝓞 K), (Pt z).comap CC = v.asIdeal →
+      g z = chowDegree (reduceMod v (Pt z)) k * Real.log (Ideal.absNorm v.asIdeal)) :
+    vertTerm (P.map φ) k u = ∑ z ∈ S with (Pt z).comap CC ≠ ⊥, (μ z : ℝ) * g z := by
+  have hI : integralModel (P.map φ) = P := comap_map hP h0
+  have h1 (v : HeightOneSpectrum (𝓞 K)) : vertTermAt (P.map φ) k u v =
+      ∑ z ∈ S, if (Pt z).comap CC = v.asIdeal then (μ z : ℝ) * g z else 0 := by
+    have e : vertComps (P.map φ) u v = Pt '' (S.filter fun z => (Pt z).comap CC = v.asIdeal : Finset ι) := by
+      ext W
+      simp only [vertComps, hI, hS, Set.mem_ofPred_eq, Set.mem_image, Finset.coe_filter]
+      exact ⟨fun ⟨⟨z, hz, e⟩, h⟩ => ⟨z, ⟨hz, e ▸ h⟩, e⟩, fun ⟨z, ⟨hz, h⟩, e⟩ => ⟨⟨z, hz, e⟩, e ▸ h⟩⟩
+    rw [vertTermAt, e, finsum_mem_image hi.injOn, finsum_mem_coe_finset, ← Finset.sum_filter, hI]
+    refine Finset.sum_congr rfl fun z hz => ?_
+    rw [Finset.mem_filter] at hz
+    rw [hμ z hz.1, hg z hz.1 v hz.2, Int.cast_natCast, mul_assoc]
+  rw [vertTerm, finsum_congr h1, finsum_sum_comm, Finset.sum_filter]
+  · refine Finset.sum_congr rfl fun z hz => ?_
+    have hp : (Pt z).IsPrime := ((hS _).2 ⟨z, hz, rfl⟩).1.1.1
+    split_ifs with h
+    · refine (finsum_eq_single _ ⟨(Pt z).comap CC, Ideal.comap_isPrime _ _, h⟩ fun v hv => if_neg fun e => hv ?_).trans
+        (if_pos rfl)
+      exact HeightOneSpectrum.ext e.symm
+    · exact finsum_eq_zero_of_forall_eq_zero fun v => if_neg fun (e : (Pt z).comap CC = v.asIdeal) =>
+        h fun e' => v.ne_bot (e.symm.trans e')
+  · intro z _
+    refine Set.Subsingleton.finite fun v hv w hw => HeightOneSpectrum.ext ?_
+    have h1 : (Pt z).comap CC = v.asIdeal := by by_contra h; exact hv (if_neg h)
+    have h2 : (Pt z).comap CC = w.asIdeal := by by_contra h; exact hw (if_neg h)
+    exact h1.symm.trans h2
+
+open Classical in
+theorem divCycle_eq (hi : Function.Injective Pt)
+    (hS : ∀ W, W ∈ relComps (P ⊔ Ideal.span {linForm u}) ↔ ∃ z ∈ S, Pt z = W)
+    (hμ : ∀ z ∈ S, μ z = localMult (P ⊔ Ideal.span {linForm u}) (Pt z)) (hμ0 : ∀ z ∈ S, μ z ≠ 0) :
+    (∀ z ∈ S, (Pt z).comap CC = ⊥ → (Pt z).map φ ∈ (divCycle (P.map φ) fun j => (u j : K)).support) ∧
+    ∀ F : Ideal (MvPolynomial (Fin m) K) → ℝ,
+      ∑ W ∈ (divCycle (P.map φ) fun j => (u j : K)).support, ((divCycle (P.map φ) fun j => (u j : K)) W : ℝ) * F W =
+        ∑ z ∈ S with (Pt z).comap CC = ⊥, (μ z : ℝ) * F ((Pt z).map φ) := by
+  have hJ : P.map φ ⊔ Ideal.span {linForm fun j => (u j : K)} = (P ⊔ Ideal.span {linForm u}).map φ := by
+    rw [Ideal.map_sup, Ideal.map_span, Set.image_singleton, map_linForm]
+  have hp (z) (hz : z ∈ S) : (Pt z).IsPrime := ((hS _).2 ⟨z, hz, rfl⟩).1.1.1
+  have hval (z) (hz : z ∈ S) (h : (Pt z).comap CC = ⊥) :
+      ((divCycle (P.map φ) fun j => (u j : K)) ((Pt z).map φ) : ℤ) = μ z := by
+    have := isPrime_map (hp z hz) h
+    rw [divCycle, hJ, fundCycle_apply, if_pos (mem_relComps_map.2 (by
+      rw [comap_map (hp z hz) h]; exact (hS _).2 ⟨z, hz, rfl⟩)), localMult_map', comap_map (hp z hz) h, hμ z hz]
+  have hmem (z) (hz : z ∈ S) (h : (Pt z).comap CC = ⊥) :
+      (Pt z).map φ ∈ (divCycle (P.map φ) fun j => (u j : K)).support :=
+    Finsupp.mem_support_iff.2 fun e => hμ0 z hz ((hval z hz h).symm.trans (by rw [e]; rfl))
+  refine ⟨hmem, fun F => (Finset.sum_bij (fun z _ => (Pt z).map φ) (fun z hz => ?_) (fun z hz z' hz' e => ?_)
+    (fun W hW => ?_) fun z hz => ?_).symm⟩
+  · rw [Finset.mem_filter] at hz
+    exact hmem z hz.1 hz.2
+  · rw [Finset.mem_filter] at hz hz'
+    exact hi ((comap_map (hp z hz.1) hz.2).symm.trans ((congrArg _ e).trans (comap_map (hp z' hz'.1) hz'.2)))
+  · have h1 : W ∈ relComps ((P ⊔ Ideal.span {linForm u}).map φ) := by
+      by_contra hn
+      refine Finsupp.mem_support_iff.1 hW ?_
+      rw [divCycle, hJ, fundCycle_apply, if_neg hn]
+    obtain ⟨z, hz, e⟩ := (hS _).1 (mem_relComps_map.1 h1)
+    exact ⟨z, Finset.mem_filter.2 ⟨hz, e ▸ comap_bot h1.1.1.1.ne_top⟩, by rw [e, map_comap]⟩
+  · rw [Finset.mem_filter] at hz
+    rw [← hval z hz.1 hz.2, Int.cast_natCast]
+
+end ChowFormHeightComparison₂.CF.M
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry TopologicalSpace NumberField MvPolynomial
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
+open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
+
+namespace ChowFormHeightComparison₂.CF
+
+namespace PullbackComparison
+
+variable {Y Z : Scheme.{0}} (i : Y ⟶ Z)
+
+theorem resG_appLE {U : Z.Opens} {V V' : Y.Opens} (e : V ≤ i ⁻¹ᵁ U) (h : V' ≤ V) (a : Γ(Z, U)) :
+    resG Y h ((i.appLE U V e).hom a) = (i.appLE U V' (h.trans e)).hom a := by
+  rw [← Scheme.Hom.appLE_map i e (homOfLE h).op]
+  rfl
+
+theorem appLE_resG {U U' : Z.Opens} {V : Y.Opens} (e : V ≤ i ⁻¹ᵁ U') (h : U' ≤ U) (e' : V ≤ i ⁻¹ᵁ U) (a : Γ(Z, U)) :
+    (i.appLE U' V e).hom (resG Z h a) = (i.appLE U V e').hom a := by
+  rw [← Scheme.Hom.map_appLE i e (homOfLE h).op]
+  rfl
+
+theorem algX_comp {R : Type} [CommRing R] (p : Z ⟶ Sp R) {U : Z.Opens} {V : Y.Opens} (e : V ≤ i ⁻¹ᵁ U) (a : R) :
+    algX (i ≫ p) V a = (i.appLE U V e).hom (algX p U a) := by
+  simp only [algX, RingHom.comp_apply]
+  rw [← Scheme.Hom.appLE_comp_appLE i p ⊤ U V (by simp) e]
+  rfl
+
+theorem surj_appLE [IsClosedImmersion i] {U : Z.Opens} (hU : IsAffineOpen U) {V : Y.Opens} (e : V = i ⁻¹ᵁ U) :
+    Function.Surjective (i.appLE U V e.le).hom := by
+  subst e
+  rw [Scheme.Hom.appLE_eq_app]
+  exact i.app_surjective U hU
+
+theorem eval_appLE {U : Z.Opens} {V : Y.Opens} (e : V ≤ i ⁻¹ᵁ U) (y : Y) (hy : y ∈ V) (a : Γ(Z, U)) :
+    (Y.evaluation V y hy).hom ((i.appLE U V e).hom a) =
+      (i.residueFieldMap y).hom ((Z.evaluation U (i y) (e hy)).hom a) := by
+  refine Eq.trans ?_ (Scheme.evaluation_naturality_apply i y (e hy) a).symm
+  simp only [Scheme.Hom.appLE, Scheme.evaluation, LocallyRingedSpace.evaluation, CommRingCat.comp_apply]
+  rw [TopCat.Presheaf.germ_res_apply]
+
+end PullbackComparison
+
+open PullbackComparison
+
+theorem stPull : StPull := by
+  intro R _ Z Y p B m s i _ hE
+  have hAR : ∀ {U U' : Z.Opens} {W : Y.Opens} (e : W ≤ i ⁻¹ᵁ U') (h : U' ≤ U) (a : Γ(Z, U)),
+      (i.appLE U' W e).hom (resG Z h a) = (i.appLE U W (fun y hy => h (e hy))).hom a :=
+    fun e h a => appLE_resG i e h _ a
+  have hf : ∀ (t : B.Sec) (J : (B.pull i).ι), (GlobalTheory.secPull t i).f J =
+      (i.appLE (B.U (J PUnit.unit)) ((B.pull i).U J) (GlobalTheory.LB.pull_U i J).le).hom (t.f (J PUnit.unit)) := by
+    intro t J
+    simp only [GlobalTheory.secPull, GlobalTheory.chartSec_f]
+    rfl
+  refine ⟨⟨LB.isLB_pull hE.isLB i, ?_, ?_⟩, ?_, ?_⟩
+  · rw [eq_top_iff]
+    intro y _
+    have h : i y ∈ ⨆ k, nonzeroLocus (s k) := by rw [hE.cover]; trivial
+    rw [TopologicalSpace.Opens.mem_iSup] at h ⊢
+    obtain ⟨k, hk⟩ := h
+    exact ⟨k, by rw [GlobalTheory.nonzeroLocus_secPull]; exact hk⟩
+  · intro k
+    obtain ⟨hAff, t, hsurj, hrel⟩ := hE.chart k
+    have hV : nonzeroLocus (GlobalTheory.secPull (s k) i) = i ⁻¹ᵁ nonzeroLocus (s k) := GlobalTheory.nonzeroLocus_secPull _ _
+    refine ⟨by rw [hV]; exact hAff.preimage i, fun j => (i.appLE _ _ hV.le).hom (t j), ?_, ?_⟩
+    · have hcomp : eval₂Hom (algX (i ≫ p) (nonzeroLocus (GlobalTheory.secPull (s k) i)))
+          (fun j => (i.appLE _ _ hV.le).hom (t j)) =
+          (i.appLE _ _ hV.le).hom.comp (eval₂Hom (algX p (nonzeroLocus (s k))) t) := by
+        apply MvPolynomial.ringHom_ext
+        · intro a
+          simp only [RingHom.comp_apply, MvPolynomial.eval₂Hom_C]
+          exact algX_comp i p hV.le a
+        · intro j
+          simp only [RingHom.comp_apply, MvPolynomial.eval₂Hom_X']
+      rw [hcomp]
+      exact (surj_appLE i hAff hV).comp hsurj
+    · intro j J
+      have hle : nonzeroLocus (GlobalTheory.secPull (s k) i) ⊓ (B.pull i).U J ≤
+          i ⁻¹ᵁ (nonzeroLocus (s k) ⊓ B.U (J PUnit.unit)) := by
+        intro y hy
+        exact ⟨hV.le hy.1, (GlobalTheory.LB.pull_U i J).le hy.2⟩
+      have key := congrArg (i.appLE _ _ hle).hom (hrel j (J PUnit.unit))
+      simp only [map_mul, hAR] at key
+      simp only [hf, resG_appLE]
+      exact key
+  · intro y
+    have hker : ∀ (J : (B.pull i).ι) (h : y ∈ (B.pull i).U J),
+        RingHom.ker (coneHom (i ≫ p) (fun k => GlobalTheory.secPull (s k) i) y J h) =
+          RingHom.ker (coneHom p s (i y) (J PUnit.unit) ((GlobalTheory.LB.pull_U i J).le h)) := by
+      intro J h
+      have heq : coneHom (i ≫ p) (fun k => GlobalTheory.secPull (s k) i) y J h =
+          (Polynomial.mapRingHom (i.residueFieldMap y).hom).comp
+            (coneHom p s (i y) (J PUnit.unit) ((GlobalTheory.LB.pull_U i J).le h)) := by
+        apply MvPolynomial.ringHom_ext
+        · intro a
+          simp only [coneHom, RingHom.comp_apply, MvPolynomial.eval₂Hom_C, Polynomial.coe_mapRingHom,
+            Polynomial.map_C]
+          rw [algX_comp i p (GlobalTheory.LB.pull_U i J).le a]
+          congr 1
+          exact eval_appLE i (GlobalTheory.LB.pull_U i J).le y h _
+        · intro k
+          simp only [coneHom, RingHom.comp_apply, MvPolynomial.eval₂Hom_X', Polynomial.coe_mapRingHom,
+            Polynomial.map_mul, Polynomial.map_X, Polynomial.map_C]
+          rw [hf]
+          congr 2
+          exact eval_appLE i (GlobalTheory.LB.pull_U i J).le y h _
+      rw [heq]
+      exact RingHom.ker_comp_of_injective _ (Polynomial.map_injective _ (i.residueFieldMap y).hom.injective)
+    apply le_antisymm
+    · refine le_iInf₂ fun j hj => ?_
+      let J : (B.pull i).ι := fun _ => j
+      have hJ : y ∈ (B.pull i).U J := (GlobalTheory.LB.pull_U i J).ge hj
+      exact (iInf₂_le J hJ).trans_eq (hker J hJ)
+    · refine le_iInf₂ fun J hJ => ?_
+      rw [hker J hJ]
+      exact iInf₂_le (J PUnit.unit) ((GlobalTheory.LB.pull_U i J).le hJ)
+  · intro u su hc J
+    rw [hf, hc (J PUnit.unit), map_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [map_mul, ← algX_comp, hf]
+
+end ChowFormHeightComparison₂.CF
+end
+end
+
+section
+set_option autoImplicit false
+
+noncomputable section
+
+open CategoryTheory AlgebraicGeometry TensorProduct ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.ProjVar GlobalTheory.TrueGeo GlobalTheory.ShFam.Pad
+
+namespace ChowFormHeightComparison₂.CF
+
+attribute [local instance] Algebra.TensorProduct.rightAlgebra in
+theorem le_dim_quotient_horizontal (A : Type) [CommRing A] [IsDomain A] [CharZero A] [Algebra.FiniteType ℤ A]
+    (q : Ideal A) [q.IsPrime] (hq : q.height ≤ 1) (hinj : Function.Injective (algebraMap ℤ (A ⧸ q))) {d : ℕ}
+    (hd : Algebra.trdeg ℤ A = d) : (d : WithBot ℕ∞) ≤ ringKrullDim (A ⧸ q) := by
+  have : FaithfulSMul ℤ (A ⧸ q) := (faithfulSMul_iff_algebraMap_injective _ _).2 hinj
+  have : Algebra.FiniteType ℤ (A ⧸ q) :=
+    Algebra.FiniteType.of_surjective (Ideal.Quotient.mkₐ ℤ q) (Ideal.Quotient.mkₐ_surjective ℤ q)
+  obtain ⟨e, he⟩ := exists_trdeg_eq_natCast ℤ (A := A ⧸ q)
+  have h1 := GroundTheory.Heights₂.Heights.IntDomainDim.proof (A ⧸ q) hinj
+  rw [he, Cardinal.toENat_nat] at h1
+  have hB := ringKrullDim_genericFibre_eq ℤ ℚ hd
+  have hB' := ringKrullDim_genericFibre_eq ℤ ℚ he
+  have := IsLocalization.tensorRight (S := A) ℚ (nonZeroDivisors ℤ)
+  have := IsLocalization.tensorRight (S := A ⧸ q) ℚ (nonZeroDivisors ℤ)
+  have hle : Algebra.algebraMapSubmonoid A (nonZeroDivisors ℤ) ≤ nonZeroDivisors A :=
+    Submonoid.map_le_iff_le_comap.mpr fun x hx ↦ mem_nonZeroDivisors_of_ne_zero
+      (by simpa using nonZeroDivisors.ne_zero hx)
+  have hle' : Algebra.algebraMapSubmonoid (A ⧸ q) (nonZeroDivisors ℤ) ≤ nonZeroDivisors (A ⧸ q) :=
+    Submonoid.map_le_iff_le_comap.mpr fun x hx ↦ mem_nonZeroDivisors_of_ne_zero
+      ((map_ne_zero_iff _ hinj).2 (nonZeroDivisors.ne_zero hx))
+  have : IsDomain (ℚ ⊗[ℤ] A) := IsLocalization.isDomain_of_le_nonZeroDivisors _ hle
+  have : IsDomain (ℚ ⊗[ℤ] (A ⧸ q)) := IsLocalization.isDomain_of_le_nonZeroDivisors _ hle'
+  let φ : ℚ ⊗[ℤ] A →ₐ[ℚ] ℚ ⊗[ℤ] (A ⧸ q) := Algebra.TensorProduct.map (AlgHom.id ℚ ℚ) (Ideal.Quotient.mkₐ ℤ q)
+  have hφ : Function.Surjective φ := fun x => by
+    induction x using TensorProduct.induction_on with
+    | zero => exact ⟨0, map_zero _⟩
+    | tmul a b =>
+      obtain ⟨b, rfl⟩ := Ideal.Quotient.mk_surjective b
+      exact ⟨a ⊗ₜ b, rfl⟩
+    | add x y hx hy =>
+      obtain ⟨x, rfl⟩ := hx
+      obtain ⟨y, rfl⟩ := hy
+      exact ⟨x + y, map_add _ _ _⟩
+  have : (RingHom.ker φ).IsPrime := RingHom.ker_isPrime _
+  have hc : (RingHom.ker φ).comap (algebraMap A (ℚ ⊗[ℤ] A)) = q := by
+    ext a
+    rw [Ideal.mem_comap, RingHom.mem_ker, ← Ideal.Quotient.eq_zero_iff_mem,
+      ← map_eq_zero_iff _ (IsLocalization.injective (ℚ ⊗[ℤ] (A ⧸ q)) hle')]
+    exact Iff.rfl
+  have h2 := IsLocalization.height_comap (Algebra.algebraMapSubmonoid A (nonZeroDivisors ℤ)) (RingHom.ker φ)
+  replace h2 : q.height = (RingHom.ker φ).height := (congrArg Ideal.height hc).symm.trans h2
+  have h3 := height_add_ringKrullDim_quotient_of_finiteType ℚ (RingHom.ker φ)
+  have h4 : ringKrullDim ((ℚ ⊗[ℤ] A) ⧸ RingHom.ker φ) = ringKrullDim (ℚ ⊗[ℤ] (A ⧸ q)) :=
+    ringKrullDim_eq_of_ringEquiv (RingHom.quotientKerEquivOfSurjective (f := φ.toRingHom) hφ)
+  rw [h4, hB, hB', ← h2] at h3
+  rw [h1, ← h3, add_comm, WithBot.coe_add]
+  refine add_le_add (le_of_eq (by norm_cast)) ?_
+  exact_mod_cast hq
+
+theorem le_dim_quotient (A : Type) [CommRing A] [IsDomain A] [CharZero A] [Algebra.FiniteType ℤ A]
+    (q : Ideal A) [q.IsPrime] (hmin : ∀ f ∈ q, f ≠ 0 → q ∈ (Ideal.span {f}).minimalPrimes) {d : ℕ}
+    (hd : Algebra.trdeg ℤ A = d) : (d : WithBot ℕ∞) ≤ ringKrullDim (A ⧸ q) := by
+  have : IsNoetherianRing A := Algebra.FiniteType.isNoetherianRing ℤ A
+  obtain ⟨l, hl⟩ := CharP.exists (A ⧸ q)
+  rcases CharP.char_is_prime_or_zero (A ⧸ q) l with h | rfl
+  · have : Fact l.Prime := ⟨h⟩
+    have hlq : (l : A) ∈ q := by
+      rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
+      exact CharP.cast_eq_zero _ l
+    exact (GlobalTheory.ringKrullDim_quotient_eq_trdeg_of_mem_minimalPrimes_natPrime A l q
+      (hmin _ hlq (Nat.cast_ne_zero.2 h.ne_zero)) d hd).ge
+  · have : CharZero (A ⧸ q) := CharP.charP_to_charZero _
+    refine le_dim_quotient_horizontal A q ?_ (algebraMap ℤ (A ⧸ q)).injective_int hd
+    by_cases h0 : q = ⊥
+    · subst h0
+      rw [Ideal.height_bot]
+      exact zero_le_one
+    · obtain ⟨f, hf, hf0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot h0
+      exact Ideal.height_le_one_of_isPrincipal_of_mem_minimalPrimes _ _ (hmin f hf hf0)
+
+theorem stDim : StDim := by
+  intro k _ X p D hX Z i _ _ hcoh
+  have := hX.isIntegral
+  generalize hiz : i (genericPoint Z) = z at hcoh
+  let t : X ⟶ Sp ℤ := p ≫ spMap (Int.castRingHom k)
+  have hrange : Set.range i = closure {z} := by
+    have h₁ := (genericPoint_spec Z).image i.continuous
+    rw [Set.image_univ, i.isClosedEmbedding.isClosed_range.closure_eq, hiz] at h₁
+    exact h₁.def.symm
+  rw [← topologicalKrullDim_eq_of_isEmbedding i.isClosedEmbedding.isEmbedding hrange]
+  have hgen : genericPoint X ∉ closure ({z} : Set X) := by
+    intro h
+    have e : z = genericPoint X :=
+      ((genericPoint_specializes z).antisymm (specializes_iff_mem_closure.2 h)).eq.symm
+    rw [e, Order.coheight_eq_zero.2 (fun y _ => genericPoint_specializes y)] at hcoh
+    exact zero_ne_one hcoh
+  have hX1 : topologicalKrullDim (Set.univ : Set X) = (D + 1 : ℕ) :=
+    (topologicalKrullDim_eq_of_isEmbedding Topology.IsEmbedding.id Set.range_id).trans hX.dim_eq
+  have hup : topologicalKrullDim (closure ({z} : Set X)) + 1 ≤ (D + 1 : ℕ) :=
+    hX1 ▸ topologicalKrullDim_add_one_le isClosed_closure isClosed_univ
+      fun x hx => ⟨genericPoint X, trivial, hgen, genericPoint_specializes x⟩
+  obtain ⟨N, jN, _, hjN⟩ := hX.isProjOver
+  have := isProper_str k N
+  have : IsProper p := hjN ▸ inferInstance
+  have : IsFinite (spMap (Int.castRingHom k)) :=
+    (IsFinite.SpecMap_iff _).2 (RingHom.finite_algebraMap.2 hX.finite)
+  have : LocallyOfFiniteType t := inferInstance
+  have : Flat t := hX.flat
+  obtain ⟨A, _, _, instA, _, _, j, _, ⟨a, ha⟩, hjt, hA⟩ := exists_affine_chart_trdeg_eq t z
+  obtain rfl : instA = Ring.toIntAlgebra A := Subsingleton.elim _ _
+  have : CharZero A := ⟨fun m n h => Nat.cast_injective (R := ℤ) (FaithfulSMul.algebraMap_injective ℤ A (by simpa using h))⟩
+  obtain ⟨d, hd⟩ := exists_trdeg_eq_natCast ℤ (A := A)
+  have hdimX : topologicalKrullDim X ≤ (d + 1 : ℕ) := by
+    refine topologicalKrullDim_le_of_forall_exists_isOpen fun x => ?_
+    obtain ⟨B, _, _, _, _, _, j', _, ⟨b, rfl⟩, -, hB⟩ := exists_affine_chart_trdeg_eq t x
+    refine ⟨Set.range j', j'.isOpenEmbedding.isOpen_range, ⟨b, rfl⟩, ?_⟩
+    rw [topologicalKrullDim_eq_of_isEmbedding j'.isOpenEmbedding.isEmbedding rfl]
+    refine (PrimeSpectrum.topologicalKrullDim_eq_ringKrullDim B).le.trans ?_
+    have hdB : Algebra.trdeg ℤ B = d := hB.trans (hA.symm.trans hd)
+    have hZ1 : ringKrullDim ℤ ≤ 1 := by
+      exact_mod_cast Ring.krullDimLE_iff.mp (inferInstance : Ring.KrullDimLE 1 ℤ)
+    refine (IntModel.ringKrullDim_le_add (O := ℤ) ℚ).trans ?_
+    rw [ringKrullDim_genericFibre_eq ℤ ℚ hdB]
+    refine (add_le_add hZ1 (le_refl ((d : ℕ) : WithBot ℕ∞))).trans_eq ?_
+    push_cast
+    exact add_comm _ _
+  have hDd : D ≤ d := by
+    have := hX.dim_eq.symm.trans_le hdimX
+    have : ((D + 1 : ℕ) : WithBot ℕ∞) ≤ ((d + 1 : ℕ) : WithBot ℕ∞) := this
+    exact Nat.le_of_succ_le_succ (by exact_mod_cast this)
+  have : a.asIdeal.IsPrime := a.isPrime
+  have hmin : ∀ f ∈ a.asIdeal, f ≠ 0 → a.asIdeal ∈ (Ideal.span {f}).minimalPrimes := fun f hf hf0 => by
+    refine ⟨⟨a.isPrime, (Ideal.span_singleton_le_iff_mem _).2 hf⟩, fun q' hq' hle => ?_⟩
+    obtain ⟨hq'p, hlq'⟩ := hq'
+    by_contra hne
+    have hbot : (⊥ : Ideal A) ≠ q' := by
+      intro h0
+      have h1 : f ∈ q' := (Ideal.span_singleton_le_iff_mem _).1 hlq'
+      rw [← h0, Ideal.mem_bot] at h1
+      exact hf0 h1
+    let b' : PrimeSpectrum A := ⟨q', hq'p⟩
+    let g : PrimeSpectrum A := ⟨⊥, Ideal.isPrime_bot⟩
+    have hsp (u v : PrimeSpectrum A) : j u ⤳ j v ↔ u.asIdeal ≤ v.asIdeal :=
+      j.isOpenEmbedding.isInducing.specializes_iff.trans (PrimeSpectrum.le_iff_specializes u v).symm
+    have h₁ : z < j b' := by
+      rw [← ha]
+      exact ⟨(hsp b' a).2 hle, fun h => hne ((hsp a b').1 h)⟩
+    have h₂ : j b' < j g := ⟨(hsp g b').2 bot_le, fun h => hbot (le_bot_iff.1 ((hsp b' g).1 h)).symm⟩
+    have h₃ := Order.coheight_add_one_le h₁
+    have h₄ := Order.coheight_add_one_le h₂
+    rw [hcoh] at h₃
+    have h₅ : (1 : ℕ∞) + 1 ≤ 1 := (add_le_add_left (le_add_self.trans h₄) 1).trans h₃
+    exact absurd h₅ (by decide)
+  have hq := le_dim_quotient A a.asIdeal hmin hd
+  have hlow : topologicalKrullDim (Set.range j ∩ closure {j a} : Set X) ≤
+      topologicalKrullDim (closure ({z} : Set X)) := by
+    rw [ha]
+    exact (Topology.IsEmbedding.inclusion Set.inter_subset_right).isInducing.topologicalKrullDim_le
+  rw [topologicalKrullDim_range_inter_closure_eq j a] at hlow
+  replace hlow := hq.trans hlow
+  obtain ⟨e, he⟩ : ∃ e : ℕ, topologicalKrullDim (closure ({z} : Set X)) = e :=
+    have ⟨e, he⟩ := hX.exists_dim_eq i
+    ⟨e, (topologicalKrullDim_eq_of_isEmbedding i.isClosedEmbedding.isEmbedding hrange).trans he⟩
+  rw [he] at hlow hup ⊢
+  have h1 : d ≤ e := by exact_mod_cast hlow
+  have h2 : e + 1 ≤ D + 1 := by exact_mod_cast hup
+  have : e = D := by omega
+  rw [this]
+
+end ChowFormHeightComparison₂.CF
+end
+end
+
+section
 set_option autoImplicit false
 
 noncomputable section
@@ -676,3 +1554,5 @@ theorem stMain_of (hV : StVert) (hA : StArch) (hR : GroundTheory.Heights₂.Heig
   exact M.core hV hA hR hS hMul hPt hX hE hF hh e Z (𝟙 Z) ((M.charZero_iff hE).1 hX.charZero) hX.dim_eq δ f hf hδ
 
 end ChowFormHeightComparison₂.CF
+end
+end

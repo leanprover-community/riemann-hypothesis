@@ -2,10 +2,294 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.HermSysHypOneLeLambdaZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankDeepestFiltrationStepEqRational
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianMultiplicationFlatColumnsEval
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AlternatingMapDetFiltrationWithSymbols
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MonomialCountsDegreeAndWeightedSumStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SymbolsOfEvaluatedColumnsHermitianMultSystem
 
+section
+section
+open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights ReciprocityTheory.GeometryOfNumbersTheory
+open GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HermTools GlobalTheory.HilbertSamuel GlobalTheory.HSChoice GlobalTheory.HSShort
+
+namespace GlobalTheory.FiltDet
+
+theorem alt_linComb {E A' : Type} [Field E] [AddCommGroup A'] [Module E A'] {d : ℕ}
+    (ω : A' [⋀^Fin d]→ₗ[E] E) (z : Fin d → A') (N : Fin d → Fin d → E) :
+    ω (fun j => Fintype.linearCombination E z (N j)) = (Matrix.of N).det * ω z := by
+  classical
+  have h := AlternatingMap.eq_smul_basis_det (Pi.basisFun E (Fin d))
+    (ω.compLinearMap (Fintype.linearCombination E z))
+  have e1 : (fun i => Fintype.linearCombination E z (Pi.basisFun E (Fin d) i)) = z := by
+    funext i; simp [Fintype.linearCombination_apply_single]
+  have h2 : ω (fun j => Fintype.linearCombination E z (N j)) =
+      (ω.compLinearMap (Fintype.linearCombination E z)) N := rfl
+  rw [h2, h, AlternatingMap.smul_apply, Pi.basisFun_det,
+    AlternatingMap.compLinearMap_apply, e1, smul_eq_mul, mul_comm]
+  rfl
+
+theorem det_filtration_symbols : ∀ (E A' : Type) [Field E] [AddCommGroup A'] [Module E A'] (r d : ℕ) (I : Fin r → Type) [∀ a, Fintype (I a)] [∀ a, DecidableEq (I a)] (U : ℕ → Submodule E A') (sym : ∀ a : Fin r, U a →ₗ[E] (I a → E)), (∀ a < r, U (a + 1) ≤ U a) → (∀ (a : Fin r) (x : U a), sym a x = 0 ↔ x.1 ∈ U (a + 1)) → ∀ (ix : (Σ a, I a) ↪ Fin d) (J : Finset (Fin d)) (v : Fin d → A') (hv : ∀ q, v (ix q) ∈ U q.1), (∀ k ∈ J, k ∉ Set.range ix ∧ v k ∈ U r) → ∀ [FiniteDimensional E (U r)], Module.finrank E (U r) ≤ J.card → ∀ (z : Fin d → A') (hz : ∀ q, z (ix q) ∈ U q.1), (∀ q, sym q.1 ⟨z (ix q), hz q⟩ = Pi.single q.2 1) → (∀ k, k ∉ Set.range ix → z k = v k) → ∀ ω : A' [⋀^Fin d]→ₗ[E] E, ω v = (∏ a, (Matrix.of fun i i' : I a => sym a ⟨v (ix ⟨a, i'⟩), hv ⟨a, i'⟩⟩ i).det) * ω z := by
+  intro E A' _ _ _ r d I _ _ U sym hdec hsym ix J v hv hJ _ hcard z hz hzs hzv ω
+  classical
+
+  have step : ∀ (a : Fin r) (x : A') (hx : x ∈ U a),
+      x - ∑ i, sym a ⟨x, hx⟩ i • z (ix ⟨a, i⟩) ∈ U (a + 1) := by
+    intro a x hx
+    have hzs' : ∀ i, sym a ⟨z (ix ⟨a, i⟩), hz ⟨a, i⟩⟩ = Pi.single i 1 := fun i => hzs ⟨a, i⟩
+    have hmem : ∑ i, sym a ⟨x, hx⟩ i • z (ix ⟨a, i⟩) ∈ U a :=
+      Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hz ⟨a, i⟩)
+    have hy : x - ∑ i, sym a ⟨x, hx⟩ i • z (ix ⟨a, i⟩) ∈ U a := Submodule.sub_mem _ hx hmem
+    refine (hsym a ⟨_, hy⟩).1 ?_
+    have : (⟨_, hy⟩ : U a) = ⟨x, hx⟩ - ∑ i, sym a ⟨x, hx⟩ i • ⟨z (ix ⟨a, i⟩), hz ⟨a, i⟩⟩ := by
+      ext; simp
+    rw [this, map_sub, map_sum]
+    simp only [map_smul, hzs']
+    funext j
+    simp [Finset.sum_apply, Pi.single_apply]
+  obtain ⟨β, hβix, hβout⟩ : ∃ β : Fin d → ℕ, (∀ q, β (ix q) = q.1) ∧
+      (∀ k, k ∉ Set.range ix → β k = r) := by
+    refine ⟨fun k => if h : k ∈ Set.range ix then ((Classical.choose h).1 : ℕ) else r, ?_, ?_⟩
+    · intro q
+      have h : ix q ∈ Set.range ix := ⟨q, rfl⟩
+      simp only [dif_pos h]
+      rw [ix.injective (Classical.choose_spec h)]
+    · intro k hk; simp only [dif_neg hk]
+  have hβle : ∀ k, β k ≤ r := by
+    intro k
+    by_cases hk : k ∈ Set.range ix
+    · obtain ⟨q, rfl⟩ := hk; rw [hβix]; exact q.1.isLt.le
+    · rw [hβout k hk]
+  have conv : ∀ (S : Set (Fin d)) (x : A'), x ∈ Submodule.span E (z '' S) →
+      ∃ c : Fin d → E, (∀ k ∉ S, c k = 0) ∧ Fintype.linearCombination E z c = x := by
+    intro S x hx
+    obtain ⟨l, hl, rfl⟩ := (Finsupp.mem_span_image_iff_linearCombination E).1 hx
+    refine ⟨l, fun k hk => (Finsupp.mem_supported' E l).1 hl k hk, ?_⟩
+    rw [Fintype.linearCombination_apply, Finsupp.linearCombination_apply, Finsupp.sum_fintype]
+    intro i; simp
+  by_cases hli : LinearIndependent E (fun k : J => v k)
+  swap
+  · have h1 : ¬ LinearIndependent E v := fun h => hli (h.comp _ Subtype.val_injective)
+    have h2 : ¬ LinearIndependent E z := by
+      intro h; apply hli
+      have : (fun k : J => v k) = z ∘ Subtype.val := by
+        funext k; exact (hzv k.1 (hJ k.1 k.2).1).symm
+      rw [this]; exact h.comp _ Subtype.val_injective
+    rw [ω.map_linearDependent v h1, ω.map_linearDependent z h2, mul_zero]
+  have hspan : U r ≤ Submodule.span E (Set.range fun k : J => v k) := by
+    have hle : Submodule.span E (Set.range fun k : J => v k) ≤ U r := by
+      rw [Submodule.span_le]; rintro _ ⟨k, rfl⟩; exact (hJ k.1 k.2).2
+    refine (Submodule.eq_of_le_of_finrank_le hle ?_).ge
+    rw [finrank_span_eq_card hli, Fintype.card_coe]; exact hcard
+  have hdown : ∀ n a, a + n = r → U a ≤ Submodule.span E (z '' {k | a ≤ β k}) := by
+    intro n
+    induction n with
+    | zero =>
+      intro a ha
+      obtain rfl : a = r := by omega
+      refine hspan.trans (Submodule.span_mono ?_)
+      rintro _ ⟨k, rfl⟩
+      refine ⟨k.1, ?_, hzv k.1 (hJ k.1 k.2).1⟩
+      simp [hβout k.1 (hJ k.1 k.2).1]
+    | succ n ih =>
+      intro a ha x hx
+      have har : a < r := by omega
+      have key := step ⟨a, har⟩ x hx
+      have hy := ih (a + 1) (by omega) key
+      have hmono : Submodule.span E (z '' {k | a + 1 ≤ β k}) ≤
+          Submodule.span E (z '' {k | a ≤ β k}) :=
+        Submodule.span_mono (Set.image_mono fun k hk => by
+          simp only [Set.mem_setOf_eq] at hk ⊢; omega)
+      have hsum : ∑ i, sym ⟨a, har⟩ ⟨x, hx⟩ i • z (ix ⟨⟨a, har⟩, i⟩) ∈
+          Submodule.span E (z '' {k | a ≤ β k}) := by
+        refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _
+          (Submodule.subset_span ⟨ix ⟨⟨a, har⟩, i⟩, ?_, rfl⟩)
+        simp [hβix]
+      have := Submodule.add_mem _ (hmono hy) hsum
+      simpa using this
+  have hcol : ∀ q : (Σ a, I a), ∃ col : Fin d → E, Fintype.linearCombination E z col = v (ix q) ∧
+      (∀ k, β k < q.1 → col k = 0) ∧
+      ∀ i, col (ix ⟨q.1, i⟩) = sym q.1 ⟨v (ix q), hv q⟩ i := by
+    rintro ⟨a, i'⟩
+    have key := step a (v (ix ⟨a, i'⟩)) (hv ⟨a, i'⟩)
+    have hy := hdown (r - (a + 1)) (a + 1) (by omega) key
+    obtain ⟨c, hc0, hcL⟩ := conv _ _ hy
+    refine ⟨c + ∑ i, sym a ⟨v (ix ⟨a, i'⟩), hv ⟨a, i'⟩⟩ i • Pi.single (ix ⟨a, i⟩) 1, ?_, ?_, ?_⟩
+    · rw [map_add, map_sum, hcL]
+      simp only [map_smul, Fintype.linearCombination_apply_single, one_smul]
+      abel
+    · intro k hk
+      have hk' : β k < a := hk
+      have h1 : c k = 0 := hc0 k (by simp only [Set.mem_setOf_eq, not_le]; omega)
+      simp only [Pi.add_apply, Finset.sum_apply, Pi.smul_apply, h1, zero_add]
+      refine Finset.sum_eq_zero fun i _ => ?_
+      have hne : k ≠ ix ⟨a, i⟩ := by
+        rintro rfl; rw [hβix] at hk'; exact lt_irrefl _ hk'
+      simp [Pi.single_apply, hne]
+    · intro i
+      have h1 : c (ix ⟨a, i⟩) = 0 := hc0 _ (by simp [hβix])
+      simp [h1, Finset.sum_apply, Pi.single_apply, Sigma.mk.inj_iff]
+  choose col hcolL hcol0 hcoldiag using hcol
+  obtain ⟨N, hNix, hNout⟩ : ∃ N : Matrix (Fin d) (Fin d) E, (∀ q, N (ix q) = col q) ∧
+      (∀ k, k ∉ Set.range ix → N k = Pi.single k 1) := by
+    refine ⟨Matrix.of fun k => if h : k ∈ Set.range ix then col (Classical.choose (Set.mem_range.1 h))
+      else Pi.single k 1, ?_, ?_⟩
+    · intro q
+      have h : ix q ∈ Set.range ix := ⟨q, rfl⟩
+      funext j
+      simp only [Matrix.of_apply, dif_pos h]
+      rw [ix.injective (Classical.choose_spec (Set.mem_range.1 h))]
+    · intro k hk; funext j; simp only [Matrix.of_apply, dif_neg hk]
+  have hNL : ∀ j, Fintype.linearCombination E z (N j) = v j := by
+    intro j
+    by_cases hj : j ∈ Set.range ix
+    · obtain ⟨q, rfl⟩ := hj; rw [hNix]; exact hcolL q
+    · rw [hNout j hj, Fintype.linearCombination_apply_single, one_smul]; exact hzv j hj
+  have hBT : N.BlockTriangular β := by
+    intro i j hij
+    by_cases hi : i ∈ Set.range ix
+    · obtain ⟨q, rfl⟩ := hi; rw [hNix]; exact hcol0 q j (by rw [hβix] at hij; exact hij)
+    · rw [hNout i hi, Pi.single_apply, if_neg]; rintro rfl; exact lt_irrefl _ hij
+  have hdet : N.det = ∏ a : Fin r,
+      (Matrix.of fun i i' : I a => sym a ⟨v (ix ⟨a, i'⟩), hv ⟨a, i'⟩⟩ i).det := by
+    rw [hBT.det]
+    have himg : Finset.image β Finset.univ ⊆ Finset.range (r + 1) := by
+      intro b hb
+      obtain ⟨k, _, rfl⟩ := Finset.mem_image.1 hb
+      simp only [Finset.mem_range]; have := hβle k; omega
+    rw [Finset.prod_subset himg ?_]
+    · rw [Finset.prod_range_succ]
+      have hlast : (N.toSquareBlock β r).det = 1 := by
+        have : N.toSquareBlock β r = 1 := by
+          ext ⟨i, hi⟩ ⟨j, hj⟩
+          have hi' : i ∉ Set.range ix := by
+            rintro ⟨q, rfl⟩; rw [hβix] at hi; have := q.1.isLt; omega
+          rw [Matrix.toSquareBlock_def, Matrix.of_apply, hNout i hi', Pi.single_apply,
+            Matrix.one_apply]
+          simp only [Subtype.mk.injEq, eq_comm]
+        rw [this, Matrix.det_one]
+      rw [hlast, mul_one, ← Fin.prod_univ_eq_prod_range (fun x => (N.toSquareBlock β x).det) r]
+      refine Finset.prod_congr rfl fun a _ => ?_
+      have hinj : Function.Injective
+          (fun i : I a => (⟨ix ⟨a, i⟩, hβix _⟩ : {k // β k = (a : ℕ)})) := by
+        intro i i' h
+        simp only [Subtype.mk.injEq, ix.apply_eq_iff_eq, Sigma.mk.inj_iff, heq_eq_eq,
+          true_and] at h
+        exact h
+      have hsurj : Function.Surjective
+          (fun i : I a => (⟨ix ⟨a, i⟩, hβix _⟩ : {k // β k = (a : ℕ)})) := by
+        rintro ⟨k, hk⟩
+        by_cases hkr : k ∈ Set.range ix
+        · obtain ⟨⟨b, i⟩, rfl⟩ := hkr
+          rw [hβix] at hk
+          have hab : b = a := Fin.ext hk
+          subst hab
+          exact ⟨i, rfl⟩
+        · rw [hβout k hkr] at hk; have := a.isLt; omega
+      let e := Equiv.ofBijective _ ⟨hinj, hsurj⟩
+      show (N.toSquareBlock β a).det = _
+      rw [← Matrix.det_submatrix_equiv_self e, ← Matrix.det_transpose]
+      congr 1
+      ext i i'
+      show N (ix ⟨a, i'⟩) (ix ⟨a, i⟩) = _
+      rw [hNix]
+      exact hcoldiag ⟨a, i'⟩ i
+    · intro b _ hb
+      haveI : IsEmpty {i // β i = b} :=
+        ⟨fun ⟨i, hi⟩ => hb (Finset.mem_image.2 ⟨i, Finset.mem_univ _, hi⟩)⟩
+      exact Matrix.det_isEmpty
+  have hv' : v = fun j => Fintype.linearCombination E z (N j) := funext fun j => (hNL j).symm
+  rw [show ω v = ω (fun j => Fintype.linearCombination E z (N j)) from congrArg _ hv',
+]
+  refine (alt_linComb ω z N).trans ?_
+  rw [← hdet]
+  rfl
+
+end GlobalTheory.FiltDet
+end
+
+open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights ReciprocityTheory.GeometryOfNumbersTheory
+open GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HermTools GlobalTheory.HilbertSamuel GlobalTheory.HSChoice GlobalTheory.HSShort
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.alternatingMap_det_filtration_with_symbols : ∀ (E A' : Type) [Field E] [AddCommGroup A'] [Module E A'] (r d : ℕ) (I : Fin r → Type) [∀ a, Fintype (I a)] [∀ a, DecidableEq (I a)] (U : ℕ → Submodule E A') (sym : ∀ a : Fin r, U a →ₗ[E] (I a → E)), (∀ a < r, U (a + 1) ≤ U a) → (∀ (a : Fin r) (x : U a), sym a x = 0 ↔ x.1 ∈ U (a + 1)) → ∀ (ix : (Σ a, I a) ↪ Fin d) (J : Finset (Fin d)) (v : Fin d → A') (hv : ∀ q, v (ix q) ∈ U q.1), (∀ k ∈ J, k ∉ Set.range ix ∧ v k ∈ U r) → ∀ [FiniteDimensional E (U r)], Module.finrank E (U r) ≤ J.card → ∀ (z : Fin d → A') (hz : ∀ q, z (ix q) ∈ U q.1), (∀ q, sym q.1 ⟨z (ix q), hz q⟩ = Pi.single q.2 1) → (∀ k, k ∉ Set.range ix → z k = v k) → ∀ ω : A' [⋀^Fin d]→ₗ[E] E, ω v = (∏ a, (Matrix.of fun i i' : I a => sym a ⟨v (ix ⟨a, i'⟩), hv ⟨a, i'⟩⟩ i).det) * ω z := by
+  atlas_forward_decl GlobalTheory.FiltDet.det_filtration_symbols
+end
+
+section
+open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights ReciprocityTheory.GeometryOfNumbersTheory
+open GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HermTools GlobalTheory.HilbertSamuel GlobalTheory.HSChoice GlobalTheory.HSShort
+
+namespace GlobalTheory.HSShort
+
+theorem nat_card_monoDeg_fin (D a : ℕ) (hD : 1 ≤ D) :
+    Nat.card (MonoDeg (Fin D) a) = (a + D - 1).choose (D - 1) := by
+  obtain ⟨d, rfl⟩ : ∃ d, D = d + 1 := ⟨D - 1, by omega⟩
+  classical
+  rw [Nat.card_eq_fintype_card, MonoDeg.card_eq_card_finsuppAntidiag,
+    Finset.card_finsuppAntidiag_nat_eq_choose]
+  simp only [Finset.card_univ, Fintype.card_fin]
+  rw [show a + (d + 1) - 1 = a + d by omega, show d + 1 + a - 1 = a + d by omega,
+    show d + 1 - 1 = d by omega]
+  exact Nat.choose_symm_add
+
+theorem sum_range_choose_mul_sub (d n : ℕ) :
+    ∑ a ∈ Finset.range n, (a + d).choose d * (n - a) = (n + d + 1).choose (d + 2) := by
+  induction n with
+  | zero => simp [Nat.choose_eq_zero_of_lt]
+  | succ n ih =>
+    have h1 : ∑ a ∈ Finset.range n, (a + d).choose d * (n + 1 - a) =
+        ∑ a ∈ Finset.range n, (a + d).choose d * (n - a) +
+          ∑ a ∈ Finset.range n, (a + d).choose d := by
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun a ha => ?_
+      have : a < n := Finset.mem_range.mp ha
+      rw [show n + 1 - a = (n - a) + 1 by omega, Nat.mul_succ]
+    rw [Finset.sum_range_succ, h1, ih, show n + 1 - n = 1 by omega, mul_one, add_assoc,
+      ← Finset.sum_range_succ, Nat.sum_range_add_choose,
+      show n + 1 + d + 1 = (n + d + 1) + 1 by omega, Nat.choose_succ_succ' (n + d + 1) (d + 1)]
+    ring_nf
+
+theorem monomial_counts : ∀ D T : ℕ, 1 ≤ D → D + 1 ≤ T →
+    (∀ a : ℕ, Nat.card (MonoDeg (Fin D) a) = (a + D - 1).choose (D - 1)) ∧
+    Nat.card (Σ a : Fin (T - D), MonoDeg (Fin D) a) = (T - 1).choose D ∧
+    (D + 1) * ∑ a ∈ Finset.range (T - D), (a + D - 1).choose (D - 1) * (T - a) =
+      (T - 1).choose D * (T + D * (D + 1)) := by
+  intro D T hD hT
+  have h1 := fun a => nat_card_monoDeg_fin D a hD
+  obtain ⟨d, rfl⟩ : ∃ d, D = d + 1 := ⟨D - 1, by omega⟩
+  obtain ⟨m, rfl⟩ : ∃ m, T = d + 2 + m := ⟨T - (d + 2), by omega⟩
+  have hTD : d + 2 + m - (d + 1) = m + 1 := by omega
+  have hT1 : d + 2 + m - 1 = m + d + 1 := by omega
+  have hsub : ∀ a, a + (d + 1) - 1 = a + d := fun a => by omega
+  simp only [hsub, show d + 1 - 1 = d by omega] at h1 ⊢
+  have hsum : ∑ a ∈ Finset.range (m + 1), (a + d).choose d = (m + d + 1).choose (d + 1) :=
+    Nat.sum_range_add_choose m d
+  refine ⟨h1, ?_, ?_⟩
+  · rw [Nat.card_sigma, hT1]
+    simp only [h1]
+    rw [← hsum, hTD, Finset.sum_range (fun a => (a + d).choose d)]
+  · rw [hTD, hT1]
+    have hw : ∑ a ∈ Finset.range (m + 1), (a + d).choose d * (d + 2 + m - a) =
+        ∑ a ∈ Finset.range (m + 1), (a + d).choose d * (m + 1 - a) +
+          (d + 1) * ∑ a ∈ Finset.range (m + 1), (a + d).choose d := by
+      rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun a ha => ?_
+      have : a < m + 1 := Finset.mem_range.mp ha
+      rw [show d + 2 + m - a = (m + 1 - a) + (d + 1) by omega]
+      ring
+    rw [hw, sum_range_choose_mul_sub, hsum]
+    have key := Nat.add_one_mul_choose_eq (m + d + 1) (d + 1)
+    rw [show m + 1 + d + 1 = m + d + 1 + 1 by omega]
+    nlinarith [key]
+
+end GlobalTheory.HSShort
+end
+
+section
+open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights ReciprocityTheory.GeometryOfNumbersTheory
+open GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HermTools GlobalTheory.HilbertSamuel GlobalTheory.HSChoice GlobalTheory.HSShort
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.monomial_counts_degree_and_weighted_sum : ∀ D T : ℕ, 1 ≤ D → D + 1 ≤ T → (∀ a : ℕ, Nat.card (MonoDeg (Fin D) a) = (a + D - 1).choose (D - 1)) ∧ Nat.card (Σ a : Fin (T - D), MonoDeg (Fin D) a) = (T - 1).choose D ∧ (D + 1) * ∑ a ∈ Finset.range (T - D), (a + D - 1).choose (D - 1) * (T - a) = (T - 1).choose D * (T + D * (D + 1)) := by
+  first | exact @GlobalTheory.HSShort.monomial_counts | exact GlobalTheory.HSShort.monomial_counts | (intros; apply GlobalTheory.HSShort.monomial_counts <;> assumption)
+end
+
+section
 section
 open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights ReciprocityTheory.GeometryOfNumbersTheory
 open GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HermTools GlobalTheory.HilbertSamuel GlobalTheory.HSChoice GlobalTheory.HSShort
@@ -159,3 +443,4 @@ open GlobalTheory GlobalTheory.ChowHt GlobalTheory.Adelic GlobalTheory.HermTools
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.det_rational_sections_eq_pow_product_linearForms : ∀ (F A : Type) [Field F] [NumberField F] [AddCommGroup A] [Module F A] [Module (𝓞 F) A] [IsScalarTower (𝓞 F) F A] (S : Sys F A), S.Hyp → ∀ (E A' : Type) [Field E] [Algebra F E] [AddCommGroup A'] [Module E A'] (s : Fin S.D → Fin S.N → F) (δ : ℕ) (Φ : S.Flat E A' (fun i k => algebraMap F E (s i k)) δ) (d : ℕ) (b : Module.Basis (Fin d) F (S.V S.T)) (c : Fin d → A →ₗ[F] F), S.IsCo b c → ∀ (col : Fin d → S.Col) (m : Fin δ → S.V 0) (ix : (Σ a : Fin (S.T - S.D), MonoDeg (Fin S.D) a) × Fin δ ↪ Fin d), S.Shape δ col m ix → S.deepRank s ≤ (Finset.univ.filter fun k => (col k).j = S.D).card → ∃ γ : E, ∀ l : Fin S.N → E, aeval (join (fun i k => algebraMap F E (s i k)) l) (S.det c col) = γ * (∏ p, ∑ k, l k * Φ.y p k) ^ S.expo := by
   atlas_forward_decl GlobalTheory.HSShort.det_rational_eq_pow
+end

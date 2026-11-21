@@ -3,10 +3,32 @@ import Development.WeilBound.CoreStatements.EulerCharacteristicCounts.GcohCmp
 import Mathlib
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.NormalSubgroupLeUnramifiedFixing
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GaloisUnramifiedOutsideCohomology
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.FiniteH1UnramifiedOutsideStatement
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.FiniteH2UnramifiedOutside
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CohomologicalDimensionTwoUnramified
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.FiniteH1UnramifiedOutside
+import ReciprocityTheory.Hypotheses.GalCoh
+import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
+import GroundTheory.ProfiniteCohomology.ContinuousCochains
+import Development.WeilBound.CoreStatements.PublishedTheorems.GlobalFiniteness.FiniteH2TorsionModule
 
+section
+open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.finite_H1_unramified_outside : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (r : ℕ) (S : Finset (HeightOneSpectrum (𝓞 F))), ContainsAbove S l → ∀ (A : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside F Ω (S : Set (HeightOneSpectrum (𝓞 F))))) [IsDiscreteRep A], Finite A.V → (∀ a : A.V, (l ^ r) • a = 0) → Finite (cohomology A 1) := by
+  first | exact @GlobalTheory.CompanionTheory.GSFin.finite_cohomology_one | exact GlobalTheory.CompanionTheory.GSFin.finite_cohomology_one | (intros; apply GlobalTheory.CompanionTheory.GSFin.finite_cohomology_one <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
+theorem _root_.GlobalTheory.T.finite_H2_unramified_outside : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (r : ℕ) (S : Finset (HeightOneSpectrum (𝓞 F))), ContainsAbove S l → ∀ (A : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside F Ω (S : Set (HeightOneSpectrum (𝓞 F))))) [IsDiscreteRep A], Finite A.V → (∀ a : A.V, (l ^ r) • a = 0) → Finite (cohomology A 2) :=
+  @PositivityTheory.Lit1.GFParts.finite_H2_torsion_module
+end
+
+section
+open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
+theorem _root_.GlobalTheory.T.cohomological_dimension_two_unramified : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (r : ℕ) (S : Finset (HeightOneSpectrum (𝓞 F))), ContainsAbove S l → l ≠ 2 → ∀ (A : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside F Ω (S : Set (HeightOneSpectrum (𝓞 F))))) [IsDiscreteRep A], Finite A.V → (∀ a : A.V, (l ^ r) • a = 0) → ∀ n : ℕ, 3 ≤ n → Subsingleton (cohomology A n) :=
+  @PositivityTheory.Lit1.GFParts.subsingleton_hn
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal Formalism.ConjugateSelfDual
@@ -81,3 +103,5 @@ theorem globalFiniteness : ReciprocityTheory.Gal.GlobalFiniteness := by
     exact (ReciprocityTheory.Neutral.Bridge.isoHn e rhoS rho' (fun _ _ => rfl) n).toEquiv.subsingleton
 
 end GlobalTheory.CompanionTheory.Hypotheses₂
+end
+end

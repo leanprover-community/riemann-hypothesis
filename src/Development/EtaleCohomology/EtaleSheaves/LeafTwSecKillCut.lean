@@ -1,5 +1,20 @@
-import Development.EtaleCohomology.EtaleSheaves.LeafSuppKillPfSec
+import Development.EtaleCohomology.EtaleSheaves.CupUnitChernKummerLaws
 
+section
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
+
+namespace LateralTheory.E.E8
+
+def LeafTwSecKill : Prop := ∀ (q : ℕ) [NeZero q] {X Z : Scheme.{0}} [IsNoetherian X] (ι : Z ⟶ X) [IsClosedImmersion ι],
+  IsUnit (q : Γ(X, ⊤)) → ∀ (j : ℤ) (s : Sec (tw q j) X), Sec.res ι s = 0 →
+  ∀ x ∈ Set.range ι, ∃ (W : Scheme.{0}) (w : W ⟶ X), Etale w ∧ x ∈ Set.range w ∧ Sec.res w s = 0
+
+end LateralTheory.E.E8
+end
+end
+
+section
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
@@ -70,3 +85,5 @@ theorem goal_of (h1 : LeafOfRingsLocSurj) (h2 : LeafOfRingsLocInj) (h3 : LeafTwP
     exact (congrArg (Sec.res w') ht).trans (e.trans (sec_zero _ _))
 
 end LateralTheory.E.E8.TwSec
+end
+end

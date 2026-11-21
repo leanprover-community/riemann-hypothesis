@@ -3,8 +3,86 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.LocPoly
 import GroundTheory.AutomorphicForms.MacdonaldWhittakerHecke
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.SphDict
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.MemIffLocal
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralCosetsDetFiniteSum
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IwasawaExponentHnfGL
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HermiteReductionUnipotent
+import BuildAid.ForwardExisting
+import Formalism.ArtinHasse.ArtinHasseProofs.SymmSeries
 
+section
+section
+open GroundTheory.Automorphic GLnLocal Iwasawa
+open scoped ValuativeRel
+
+namespace GlobalTheory.HermCount
+
+theorem card_res (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] (t : ℕ) :
+    Nat.card (Res F t) = Spherical.qF F ^ t := by
+  have hq := cardQuot_pow_of_prime (P := IsLocalRing.maximalIdeal 𝒪[F])
+    (IsDiscreteValuationRing.not_a_field _) (i := t)
+  rw [Submodule.cardQuot_apply, Submodule.cardQuot_apply, maximalIdeal_pow_eq] at hq
+  rw [Res, hq]
+  rfl
+
+theorem sum_pos (n : ℕ) (l : Fin n → ℕ) :
+    ∑ p : Pos n, l p.1.1 = ∑ i : Fin n, (n - 1 - i.val) * l i := by
+  classical
+  rw [← Finset.sum_subtype (Finset.univ.filter fun p : Fin n × Fin n => p.1 < p.2)
+    (p := fun p : Fin n × Fin n => p.1 < p.2) (by simp) (fun p => l p.1)]
+  rw [Finset.sum_filter, Fintype.sum_prod_type]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← Finset.sum_filter]
+  simp only
+  rw [Finset.sum_const, smul_eq_mul]
+  congr 1
+  have : (Finset.univ.filter fun j : Fin n => i < j) = Finset.Ioi i := by
+    ext j; simp
+  rw [this, Fin.card_Ioi]
+
+theorem card_hData : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
+    [IsNonarchimedeanLocalField F] (n : ℕ) (l : Fin n → ℕ),
+    Nat.card (GlobalTheory.HermCount.HData F n l) = Spherical.qF F ^ (∑ i : Fin n, (n - 1 - i.val) * l i) := by
+  intro F _ _ _ _ n l
+  rw [HData, Nat.card_pi]
+  simp only [card_res]
+  rw [Finset.prod_pow_eq_pow_sum, sum_pos]
+
+end GlobalTheory.HermCount
+end
+
+open GroundTheory.Automorphic GLnLocal Iwasawa
+open scoped ValuativeRel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_hermite_data_power_q : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (n : ℕ) (l : Fin n → ℕ), Nat.card (GlobalTheory.HermCount.HData F n l) = Spherical.qF F ^ (∑ i : Fin n, (n - 1 - i.val) * l i) := by
+  atlas_forward_decl GlobalTheory.HermCount.card_hData
+end
+
+section
+open GroundTheory.Automorphic GLnLocal Iwasawa
+open scoped ValuativeRel
+
+namespace GlobalTheory.HermCount
+variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
+  {n : ℕ}
+
+instance finite_deg (k : ℕ) : Finite {l : Fin n → ℕ // ∑ i, l i = k} := by
+  refine Finite.of_injective (fun l => (⟨l.1, Finset.Nat.mem_antidiagonalTuple.2 l.2⟩ :
+    (Finset.Nat.antidiagonalTuple n k : Set (Fin n → ℕ)))) ?_
+  intro x y h
+  have h' := congrArg Subtype.val h
+  exact Subtype.ext h'
+
+instance finite_hdata (l : Fin n → ℕ) : Finite (HData F n l) := by
+  refine Nat.finite_of_card_ne_zero ?_
+  rw [GlobalTheory.T.card_hermite_data_power_q F n l]
+  exact pow_ne_zero _ (Spherical.qF_pos (F := F)).ne'
+
+instance finite_hdataDeg (k : ℕ) : Finite (HDataDeg F n k) := inferInstance
+
+end GlobalTheory.HermCount
+end
+
+section
 noncomputable section
 
 open NumberField IsDedekindDomain Polynomial MeasureTheory GroundTheory.Automorphic UpperTheory.V.Af GlobalTheory.HenQ
@@ -156,3 +234,5 @@ namespace GlobalTheory.HenQ
 open GroundTheory.Automorphic.Spherical GLnLocal Iwasawa HeckeAlgebra
 
 end GlobalTheory.HenQ
+end
+end

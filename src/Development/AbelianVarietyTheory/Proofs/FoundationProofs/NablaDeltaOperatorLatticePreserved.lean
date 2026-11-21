@@ -6,10 +6,67 @@ import Formalism.GradedWeylDivisibility.StatementE
 import Formalism.HarderNarasimhan.ShiftInvariance
 import Formalism.QuotientMetricDivisors.ReductionLemmaZero
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.RealCubicMeans.LeafBounds.MeanMaxLeaf.LeafMMFree
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeHasBasisAtEveryFinitePlaceStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StdWeylLatticesFgAndSpanCoeffSpaceStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeHasBasisAtEveryFinitePlace
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StdWeylLatticesFgAndSpanCoeffSpace
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TransportedLatticeLocalizationFreeLeCoefficientSStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ImportsTer
+
+section
+open NumberField IsDedekindDomain MvPolynomial Formalism.BasicNotions Formalism.L2.DIV Formalism.DivisionValues GlobalTheory.TestLat Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open scoped Matrix ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.lattice_has_basis_at_every_finite_place : BasisAtEx := by
+  first | exact @GlobalTheory.LatBasisAt.basisAtEx | exact GlobalTheory.LatBasisAt.basisAtEx | (intros; apply GlobalTheory.LatBasisAt.basisAtEx <;> assumption)
+end
+
+section
+open NumberField IsDedekindDomain MvPolynomial Formalism.BasicNotions Formalism.L2.DIV Formalism.DivisionValues GlobalTheory.TestLat Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
+open scoped Matrix ComplexOrder
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.stdWeylLattices_fg_and_span_coeffSpace : ∀ (K : Type) [Field K] [NumberField K] (ι : Type) [Fintype ι] (n : ℕ) (lam : ι → DomWeight n), (nabStd K lam).FG ∧ (delStd K lam).FG ∧ Submodule.span K (nabStd K lam : Set (Pol K ι n)) = VV K lam ∧ Submodule.span K (delStd K lam : Set (Pol K ι n)) = VV K lam := by
+  first | exact @GlobalTheory.StdLatSpan.std_fg_span | exact GlobalTheory.StdLatSpan.std_fg_span | (intros; apply GlobalTheory.StdLatSpan.std_fg_span <;> assumption)
+end
+
+section
+namespace GlobalTheory.SpanScalarMembership
+
+open NumberField
+
+theorem exists_smul_mem_of_mem_span {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V]
+    [Module K V] [Module (RingOfIntegers K) V] [IsScalarTower (RingOfIntegers K) K V]
+    (T : Submodule (RingOfIntegers K) V) {x : V} (hx : x ∈ Submodule.span K (T : Set V)) :
+    ∃ s : RingOfIntegers K, s ≠ 0 ∧ s • x ∈ T := by
+  induction hx using Submodule.span_induction with
+  | mem y hy => exact ⟨1, one_ne_zero, by simpa using hy⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add y z _ _ hy hz =>
+    obtain ⟨s, hs, hsy⟩ := hy
+    obtain ⟨t, ht, htz⟩ := hz
+    refine ⟨s * t, mul_ne_zero hs ht, ?_⟩
+    rw [smul_add]
+    refine T.add_mem ?_ ?_
+    · rw [mul_comm, mul_smul]; exact T.smul_mem t hsy
+    · rw [mul_smul]; exact T.smul_mem s htz
+  | smul a y _ hy =>
+    obtain ⟨s, hs, hsy⟩ := hy
+    obtain ⟨p, q, hq, rfl⟩ := IsFractionRing.div_surjective (A := RingOfIntegers K) a
+    have hq0 : q ≠ 0 := nonZeroDivisors.ne_zero hq
+    have hqK : algebraMap (RingOfIntegers K) K q ≠ 0 := by
+      intro h
+      exact hq0 ((IsFractionRing.injective (RingOfIntegers K) K) (by rw [h, map_zero]))
+    refine ⟨s * q, mul_ne_zero hs hq0, ?_⟩
+    have key : (s * q) • ((algebraMap (RingOfIntegers K) K p / algebraMap (RingOfIntegers K) K q) • y)
+        = p • (s • y) := by
+      rw [← algebraMap_smul K (s * q), ← algebraMap_smul K p, ← algebraMap_smul K s,
+        smul_smul, smul_smul, map_mul]
+      congr 1
+      field_simp
+    rw [key]
+    exact T.smul_mem p hsy
+
+end GlobalTheory.SpanScalarMembership
+end
+
+section
 open NumberField IsDedekindDomain MvPolynomial Formalism.BasicNotions Formalism.L2.DIV Formalism.DivisionValues GlobalTheory.TestLat Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
 open scoped Matrix ComplexOrder
 
@@ -209,3 +266,4 @@ theorem nabDelLattice : NabDelLattice := by
       fun w B hB => (GlobalTheory.T.transportedLattice_localization_free_le_coefficientSpace.1 K ι n lam M hM w B hB).2⟩
 
 end GlobalTheory.TransLattice
+end

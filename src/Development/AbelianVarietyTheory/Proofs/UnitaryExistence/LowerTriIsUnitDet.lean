@@ -4,8 +4,28 @@ import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniqueFrameChangeByMatricesStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameChangeExistsUniqueOfSamePointStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameChangeByMatricesReflAndCompStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LowerTriangularMul
 
+section
+namespace GlobalTheory.LowerTriangularMul
+
+theorem lowerTriangular_mul {S : Type} [CommRing S] {n : ℕ} (A B : Matrix (Fin n) (Fin n) S)
+    (hA : ∀ (i j : Fin n), i < j → A i j = (0 : S))
+    (hB : ∀ (i j : Fin n), i < j → B i j = (0 : S)) :
+    ∀ (i j : Fin n), i < j → (A * B) i j = (0 : S) := by
+  intro i j hij
+  rw [Matrix.mul_apply]
+  refine Finset.sum_eq_zero fun k _ => ?_
+  rcases lt_or_ge i k with hik | hki
+  · rw [hA i k hik, zero_mul]
+  · rw [hB k j (lt_of_le_of_lt hki hij), mul_zero]
+
+theorem main : ∀ {S : Type} [inst : CommRing S] {n : ℕ} (A B : Matrix (Fin n) (Fin n) S), (∀ (i j : Fin n), i < j → A i j = (0 : S)) → (∀ (i j : Fin n), i < j → B i j = (0 : S)) → ∀ (i j : Fin n), i < j → (A * B) i j = (0 : S) :=
+  fun A B hA hB => lowerTriangular_mul A B hA hB
+
+end GlobalTheory.LowerTriangularMul
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
 
@@ -105,3 +125,4 @@ theorem frBor_calculus : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     exact Units.eq_inv_of_mul_eq_one_right h2.symm
 
 end GlobalTheory.Frames
+end

@@ -1,11 +1,936 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFinsetGeneratingOperatorStableBounded
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqTopOfPureTensorsOfFactorGeneratorsStatement
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsMaximalOperatorStableOfFinsetGenerating
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TensorMaximalStableContainsLeftKernel
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PiTensorMaximalStableContainsFactorKernel
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SimpleOverStableSubmodulePiTensor
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SimpleOver
+import BuildAid.ForwardExisting
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqTopOfPureTensorsOfFactorGenerators
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeKerOfLocalFiniteLengthToSimple
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DixmierSchurOfRankLeAleph0
 
+section
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.StabGen
+
+open GlobalTheory.TensHead
+
+variable {M : Type} [AddCommGroup M] [Module ℂ M]
+
+def stabClosure (Op : Set (Module.End ℂ M)) (Rel : Submodule ℂ M) (S : Set M) : Submodule ℂ M :=
+  sInf {N | Rel ≤ N ∧ Stab Op N ∧ S ⊆ N}
+
+theorem rel_le_closure (Op : Set (Module.End ℂ M)) (Rel : Submodule ℂ M) (S : Set M) :
+    Rel ≤ stabClosure Op Rel S :=
+  le_sInf fun _ hN => hN.1
+
+theorem subset_closure (Op : Set (Module.End ℂ M)) (Rel : Submodule ℂ M) (S : Set M) :
+    S ⊆ stabClosure Op Rel S := fun _ hx =>
+  Submodule.mem_sInf.2 fun _ hN => hN.2.2 hx
+
+theorem stab_closure (Op : Set (Module.End ℂ M)) (Rel : Submodule ℂ M) (S : Set M) :
+    Stab Op (stabClosure Op Rel S) := by
+  intro g hg x hx
+  rw [stabClosure, Submodule.mem_sInf] at hx ⊢
+  intro N hN
+  exact hN.2.1 g hg x (hx N hN)
+
+theorem closure_le {Op : Set (Module.End ℂ M)} {Rel N : Submodule ℂ M} {S : Set M}
+    (h1 : Rel ≤ N) (h2 : Stab Op N) (h3 : S ⊆ N) : stabClosure Op Rel S ≤ N :=
+  sInf_le ⟨h1, h2, h3⟩
+
+theorem closure_mono {Op : Set (Module.End ℂ M)} {Rel : Submodule ℂ M} {S T : Set M}
+    (h : S ⊆ T) : stabClosure Op Rel S ≤ stabClosure Op Rel T :=
+  closure_le (rel_le_closure Op Rel T) (stab_closure Op Rel T)
+    (h.trans (subset_closure Op Rel T))
+
+noncomputable def chainSet [DecidableEq M] (pick : Finset M → M) : ℕ → Finset M
+  | 0 => ∅
+  | n + 1 => insert (pick (chainSet pick n)) (chainSet pick n)
+
+theorem exists_finset_generating (Op : Set (Module.End ℂ M)) (Rel : Submodule ℂ M)
+    (hL : ∃ L : ℕ, ∀ (m : ℕ) (N : Fin m → Submodule ℂ M), StrictMono N →
+        (∀ j, Rel ≤ N j ∧ ∀ g ∈ Op, ∀ x ∈ N j, g x ∈ N j) → m ≤ L) :
+    ∃ F : Finset M, ∀ N : Submodule ℂ M, Rel ≤ N → GlobalTheory.TensHead.Stab Op N →
+      (↑F : Set M) ⊆ ↑N → N = ⊤ := by
+  classical
+  obtain ⟨L, hL⟩ := hL
+  by_contra hne
+  push_neg at hne
+  have hx : ∀ F : Finset M, ∃ x, x ∉ stabClosure Op Rel (F : Set M) := by
+    intro F
+    obtain ⟨N, h1, h2, h3, h4⟩ := hne F
+    by_contra h
+    push_neg at h
+    exact h4 (eq_top_iff.2 fun x _ => closure_le h1 h2 h3 (h x))
+  choose pick hpick using hx
+  have hD : StrictMono fun n => stabClosure Op Rel (↑(chainSet pick n) : Set M) := by
+    refine strictMono_nat_of_lt_succ fun n => lt_of_le_of_ne ?_ ?_
+    · exact closure_mono (Finset.coe_subset.2 (Finset.subset_insert _ _))
+    · intro h
+      apply hpick (chainSet pick n)
+      have hmem : pick (chainSet pick n) ∈ stabClosure Op Rel (↑(chainSet pick (n + 1)) : Set M) :=
+        subset_closure Op Rel _ (by simp [chainSet])
+      rw [← h] at hmem
+      exact hmem
+  have := hL (L + 1) (fun j => stabClosure Op Rel (↑(chainSet pick j) : Set M))
+    (fun a b hab => hD hab) (fun j => ⟨rel_le_closure _ _ _, stab_closure _ _ _⟩)
+  omega
+
+end GlobalTheory.StabGen
+end
+
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finset_generating_operator_stable_bounded : ∀ {M : Type} [AddCommGroup M] [Module ℂ M] (Op : Set (Module.End ℂ M)) (Rel : Submodule ℂ M),
+    (∃ L : ℕ, ∀ (m : ℕ) (N : Fin m → Submodule ℂ M), StrictMono N →
+        (∀ j, Rel ≤ N j ∧ ∀ g ∈ Op, ∀ x ∈ N j, g x ∈ N j) → m ≤ L) →
+    ∃ F : Finset M, ∀ N : Submodule ℂ M, Rel ≤ N → GlobalTheory.TensHead.Stab Op N → (↑F : Set M) ⊆ ↑N → N = ⊤ := by
+  atlas_forward_decl GlobalTheory.StabGen.exists_finset_generating
+end
+
+section
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.eq_top_of_pure_tensors_of_factor_generators : ∀ {ι : Type} [Fintype ι] [DecidableEq ι] {M₀ : Type} [AddCommGroup M₀] [Module ℂ M₀]
+    {M : ι → Type} [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)]
+    (Op₀ : Set (Module.End ℂ M₀)) (Op : ∀ i, Set (Module.End ℂ (M i)))
+    (Rel₀ : Submodule ℂ M₀) (Rel : ∀ i, Submodule ℂ (M i)) (F₀ : Finset M₀) (F : ∀ i, Finset (M i)),
+    (∀ N : Submodule ℂ M₀, Rel₀ ≤ N → GlobalTheory.TensHead.Stab Op₀ N → (↑F₀ : Set M₀) ⊆ ↑N → N = ⊤) →
+    (∀ i, ∀ N : Submodule ℂ (M i), Rel i ≤ N → GlobalTheory.TensHead.Stab (Op i) N →
+      (↑(F i) : Set (M i)) ⊆ ↑N → N = ⊤) →
+    ∀ N : Submodule ℂ (M₀ ⊗[ℂ] (⨂[ℂ] i, M i)),
+      (∀ x ∈ Rel₀, ∀ y, x ⊗ₜ[ℂ] y ∈ N) →
+      (∀ i, ∀ x ∈ Rel i, ∀ (x₀ : M₀) (y : ∀ j, M j),
+        x₀ ⊗ₜ[ℂ] PiTensorProduct.tprod ℂ (Function.update y i x) ∈ N) →
+      GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps Op₀ (GlobalTheory.TensHead.piOps Op)) N →
+      (∀ x₀ ∈ F₀, ∀ y : ∀ i, M i, (∀ i, y i ∈ F i) → x₀ ⊗ₜ[ℂ] PiTensorProduct.tprod ℂ y ∈ N) →
+      N = ⊤ := by
+  first | exact @GlobalTheory.TensHead.eq_top_of_pure_generators | exact GlobalTheory.TensHead.eq_top_of_pure_generators | (intros; apply GlobalTheory.TensHead.eq_top_of_pure_generators <;> assumption)
+end
+
+section
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.TensHead
+
+theorem exists_maximal_stab_of_finset {V : Type} [AddCommGroup V] [Module ℂ V]
+    (G : Set (Module.End ℂ V)) (R : Submodule ℂ V) (F : Finset V)
+    (hF : ∀ N : Submodule ℂ V, R ≤ N → Stab G N → (↑F : Set V) ⊆ ↑N → N = ⊤) :
+    ∀ N : Submodule ℂ V, R ≤ N → Stab G N → N ≠ ⊤ →
+      ∃ N' : Submodule ℂ V, N ≤ N' ∧ Stab G N' ∧ N' ≠ ⊤ ∧
+        ∀ U : Submodule ℂ V, Stab G U → N' ≤ U → U = N' ∨ U = ⊤ := by
+  intro N hRN hN hNtop
+  let s : Set (Submodule ℂ V) := {U | R ≤ U ∧ Stab G U ∧ ¬ (↑F : Set V) ⊆ ↑U}
+  have hcomp := (CompleteLattice.isCompactElement_iff_le_of_directed_sSup_le _ _).1
+    (Submodule.finset_span_isCompactElement (R := ℂ) F)
+  have hNs : N ∈ s := ⟨hRN, hN, fun h => hNtop (hF N hRN hN h)⟩
+  obtain ⟨M, hNM, hM⟩ := zorn_le_nonempty₀ s (by
+    intro c hcs hc y hy
+    have hne : c.Nonempty := ⟨y, hy⟩
+    have hdir : DirectedOn (· ≤ ·) c := hc.directedOn
+    refine ⟨sSup c, ⟨le_trans (hcs hy).1 (le_sSup hy), ?_, ?_⟩, fun z hz => le_sSup hz⟩
+    · intro g hg x hx
+      obtain ⟨U, hU, hxU⟩ := (Submodule.mem_sSup_of_directed hne hdir).1 hx
+      exact (Submodule.mem_sSup_of_directed hne hdir).2 ⟨U, hU, (hcs hU).2.1 g hg x hxU⟩
+    · intro hFc
+      have hspan : Submodule.span ℂ (↑F : Set V) ≤ sSup c := Submodule.span_le.2 hFc
+      obtain ⟨U, hU, hle⟩ := hcomp c hne hdir hspan
+      exact (hcs hU).2.2 (Submodule.span_le.1 hle)) N hNs
+  refine ⟨M, hNM, hM.prop.2.1, fun h => hM.prop.2.2 (by rw [h]; exact fun _ _ => trivial), ?_⟩
+  intro U hU hMU
+  by_cases hFU : (↑F : Set V) ⊆ ↑U
+  · exact Or.inr (hF U (le_trans hM.prop.1 hMU) hU hFU)
+  · exact Or.inl (le_antisymm (hM.2 ⟨le_trans hM.prop.1 hMU, hU, hFU⟩ hMU) hMU)
+
+end GlobalTheory.TensHead
+end
+
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_maximal_operatorStable_of_finset_generating : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] (G : Set (Module.End ℂ V)) (R : Submodule ℂ V)
+    (F : Finset V),
+    (∀ N : Submodule ℂ V, R ≤ N → GlobalTheory.TensHead.Stab G N → (↑F : Set V) ⊆ ↑N → N = ⊤) →
+    ∀ N : Submodule ℂ V, R ≤ N → GlobalTheory.TensHead.Stab G N → N ≠ ⊤ →
+      ∃ N' : Submodule ℂ V, N ≤ N' ∧ GlobalTheory.TensHead.Stab G N' ∧ N' ≠ ⊤ ∧
+        ∀ U : Submodule ℂ V, GlobalTheory.TensHead.Stab G U → N' ≤ U → U = N' ∨ U = ⊤ := by
+  atlas_forward_decl GlobalTheory.TensHead.exists_maximal_stab_of_finset
+end
+
+section
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.TensHead
+
+theorem tens_maxStab_contains_left_ker : ∀ {M₀ V : Type} [AddCommGroup M₀] [Module ℂ M₀] [AddCommGroup V] [Module ℂ V]
+    (Op₀ : Set (Module.End ℂ M₀)) (B : Set (Module.End ℂ V)) (Rel₀ K₀ : Submodule ℂ M₀),
+    (∃ L : ℕ, ∀ (m : ℕ) (N : Fin m → Submodule ℂ M₀), StrictMono N →
+        (∀ j, Rel₀ ≤ N j ∧ ∀ g ∈ Op₀, ∀ x ∈ N j, g x ∈ N j) → m ≤ L) →
+    (∀ N : Submodule ℂ M₀, Rel₀ ≤ N → GlobalTheory.TensHead.Stab Op₀ N → N ≠ ⊤ → N ≤ K₀) →
+    K₀ ≠ ⊤ → GlobalTheory.TensHead.Stab Op₀ K₀ →
+    ∀ N' : Submodule ℂ (M₀ ⊗[ℂ] V),
+      (∀ x ∈ Rel₀, ∀ y, x ⊗ₜ[ℂ] y ∈ N') → GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps Op₀ B) N' →
+      (∀ U, GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps Op₀ B) U → N' ≤ U → U = N' ∨ U = ⊤) →
+      ∀ x ∈ K₀, ∀ y, x ⊗ₜ[ℂ] y ∈ N' := by
+  classical
+  intro M₀ V _ _ _ _ Op₀ B Rel₀ K₀ hlen hmax hK hKs N' hrel hN'st hN'max x hx y
+
+  let act : Module.End ℂ M₀ → Module.End ℂ ((M₀ ⊗[ℂ] V) ⧸ N') := fun g =>
+    if hs : N' ≤ N'.comap (TensorProduct.map g LinearMap.id) then
+      N'.mapQ N' (TensorProduct.map g LinearMap.id) hs else 0
+  let bAct : Module.End ℂ V → Module.End ℂ ((M₀ ⊗[ℂ] V) ⧸ N') := fun h =>
+    if hs : N' ≤ N'.comap (TensorProduct.map LinearMap.id h) then
+      N'.mapQ N' (TensorProduct.map LinearMap.id h) hs else 0
+  have hsg : ∀ g ∈ Op₀, N' ≤ N'.comap (TensorProduct.map g LinearMap.id) := by
+    intro g hg z hz
+    exact hN'st _ (Or.inl ⟨g, hg, rfl⟩) z hz
+  have hsh : ∀ h ∈ B, N' ≤ N'.comap (TensorProduct.map LinearMap.id h) := by
+    intro h hh z hz
+    exact hN'st _ (Or.inr ⟨h, hh, rfl⟩) z hz
+  have hactg : ∀ g ∈ Op₀, ∀ z, act g (N'.mkQ z) = N'.mkQ (TensorProduct.map g LinearMap.id z) := by
+    intro g hg z
+    simp only [act, dif_pos (hsg g hg), Submodule.mapQ_apply, Submodule.mkQ_apply]
+  have hbacth : ∀ h ∈ B, ∀ z, bAct h (N'.mkQ z) = N'.mkQ (TensorProduct.map LinearMap.id h z) := by
+    intro h hh z
+    simp only [bAct, dif_pos (hsh h hh), Submodule.mapQ_apply, Submodule.mkQ_apply]
+  let φ : M₀ →ₗ[ℂ] (M₀ ⊗[ℂ] V) ⧸ N' := N'.mkQ ∘ₗ (TensorProduct.mk ℂ M₀ V).flip y
+  have hφ : ∀ x, φ x = N'.mkQ (x ⊗ₜ[ℂ] y) := fun x => rfl
+  have key := GlobalTheory.T.le_ker_of_local_finite_length_to_simple Op₀ Rel₀ K₀ φ act (bAct '' B) hlen hmax hK hKs
+    (by
+      intro z hz
+      rw [LinearMap.mem_ker, hφ, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
+      exact hrel z hz y)
+    (by
+      intro g hg
+      ext z
+      simp only [LinearMap.comp_apply, hφ, hactg g hg, TensorProduct.map_tmul, LinearMap.id_apply])
+    (by
+      rintro g hg b ⟨h, hh, rfl⟩
+      apply Submodule.linearMap_qext
+      apply TensorProduct.ext'
+      intro u v
+      simp only [LinearMap.comp_apply, Module.End.mul_apply, hactg g hg, hbacth h hh,
+        TensorProduct.map_tmul, LinearMap.id_apply])
+    (by
+      intro U hU
+      have hP : Stab (tensOps Op₀ B) (U.comap N'.mkQ) := by
+        rintro f (⟨g, hg, rfl⟩ | ⟨h, hh, rfl⟩) z hz
+        · rw [Submodule.mem_comap] at hz ⊢
+          rw [← hactg g hg]
+          exact hU _ (Or.inl ⟨g, hg, rfl⟩) _ hz
+        · rw [Submodule.mem_comap] at hz ⊢
+          rw [← hbacth h hh]
+          exact hU _ (Or.inr ⟨h, hh, rfl⟩) _ hz
+      have hle : N' ≤ U.comap N'.mkQ := by
+        intro z hz
+        rw [Submodule.mem_comap, Submodule.mkQ_apply, (Submodule.Quotient.mk_eq_zero N').2 hz]
+        exact U.zero_mem
+      have hsurj : Function.Surjective N'.mkQ := Submodule.mkQ_surjective N'
+      rcases hN'max _ hP hle with h1 | h1
+      · left
+        rw [← Submodule.map_comap_eq_of_surjective hsurj U, h1, Submodule.mkQ_map_self]
+      · right
+        rw [← Submodule.map_comap_eq_of_surjective hsurj U, h1, Submodule.map_top,
+          LinearMap.range_eq_top.2 hsurj])
+  have := key hx
+  rw [LinearMap.mem_ker, hφ, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at this
+  exact this
+
+end GlobalTheory.TensHead
+end
+
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tensor_maximalStable_contains_leftKernel : ∀ {M₀ V : Type} [AddCommGroup M₀] [Module ℂ M₀] [AddCommGroup V] [Module ℂ V]
+    (Op₀ : Set (Module.End ℂ M₀)) (B : Set (Module.End ℂ V)) (Rel₀ K₀ : Submodule ℂ M₀),
+    (∃ L : ℕ, ∀ (m : ℕ) (N : Fin m → Submodule ℂ M₀), StrictMono N →
+        (∀ j, Rel₀ ≤ N j ∧ ∀ g ∈ Op₀, ∀ x ∈ N j, g x ∈ N j) → m ≤ L) →
+    (∀ N : Submodule ℂ M₀, Rel₀ ≤ N → GlobalTheory.TensHead.Stab Op₀ N → N ≠ ⊤ → N ≤ K₀) →
+    K₀ ≠ ⊤ → GlobalTheory.TensHead.Stab Op₀ K₀ →
+    ∀ N' : Submodule ℂ (M₀ ⊗[ℂ] V),
+      (∀ x ∈ Rel₀, ∀ y, x ⊗ₜ[ℂ] y ∈ N') → GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps Op₀ B) N' →
+      (∀ U, GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps Op₀ B) U → N' ≤ U → U = N' ∨ U = ⊤) →
+      ∀ x ∈ K₀, ∀ y, x ⊗ₜ[ℂ] y ∈ N' := by
+  atlas_forward_decl GlobalTheory.TensHead.tens_maxStab_contains_left_ker
+end
+
+section
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.TensHead
+
+section Quot
+variable {V : Type} [AddCommGroup V] [Module ℂ V]
+
+noncomputable def quotOp (N : Submodule ℂ V) (f : Module.End ℂ V) : Module.End ℂ (V ⧸ N) := by
+  classical
+  exact if h : N ≤ N.comap f then N.mapQ N f h else 0
+
+theorem quotOp_mk (N : Submodule ℂ V) (f : Module.End ℂ V) (h : ∀ x ∈ N, f x ∈ N) (x : V) :
+    quotOp N f (N.mkQ x) = N.mkQ (f x) := by
+  have h' : N ≤ N.comap f := fun x hx => h x hx
+  unfold quotOp
+  rw [dif_pos h']
+  simp
+
+theorem quotOp_mul (N : Submodule ℂ V) (f₁ f₂ : Module.End ℂ V) (h₁ : ∀ x ∈ N, f₁ x ∈ N)
+    (h₂ : ∀ x ∈ N, f₂ x ∈ N) : quotOp N f₁ * quotOp N f₂ = quotOp N (f₁ * f₂) := by
+  have h₁₂ : ∀ x ∈ N, (f₁ * f₂) x ∈ N := fun x hx => h₁ _ (h₂ x hx)
+  apply Submodule.linearMap_qext
+  ext x
+  simp only [LinearMap.comp_apply, Module.End.mul_apply]
+  rw [quotOp_mk N f₂ h₂, quotOp_mk N f₁ h₁, quotOp_mk N _ h₁₂, Module.End.mul_apply]
+
+end Quot
+
+section Slot
+variable {ι : Type} [DecidableEq ι] {M : ι → Type} [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)]
+
+theorem piOp_comm (i j : ι) (hij : j ≠ i) (g : Module.End ℂ (M i)) (h : Module.End ℂ (M j)) :
+    piOp i g * piOp j h = piOp j h * piOp i g := by
+  unfold piOp
+  rw [Module.End.mul_eq_comp, Module.End.mul_eq_comp, ← PiTensorProduct.map_comp,
+    ← PiTensorProduct.map_comp]
+  congr 1
+  funext k
+  by_cases hki : k = i
+  · subst hki
+    simp [Function.update_of_ne hij.symm]
+  · by_cases hkj : k = j
+    · subst hkj
+      simp [Function.update_of_ne hij]
+    · simp [Function.update_of_ne hki, Function.update_of_ne hkj]
+
+end Slot
+
+end GlobalTheory.TensHead
+
+namespace GlobalTheory.TensHead
+
+theorem position_mem_of_maximal_stable : ∀ {ι : Type} [DecidableEq ι] {M₀ : Type} [AddCommGroup M₀] [Module ℂ M₀]
+    {M : ι → Type} [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)]
+    (Op₀ : Set (Module.End ℂ M₀)) (Op : ∀ i, Set (Module.End ℂ (M i))) (i : ι)
+    (Rel K : Submodule ℂ (M i)),
+    (∃ L : ℕ, ∀ (m : ℕ) (N : Fin m → Submodule ℂ (M i)), StrictMono N →
+        (∀ j, Rel ≤ N j ∧ ∀ g ∈ Op i, ∀ x ∈ N j, g x ∈ N j) → m ≤ L) →
+    (∀ N : Submodule ℂ (M i), Rel ≤ N → GlobalTheory.TensHead.Stab (Op i) N → N ≠ ⊤ → N ≤ K) →
+    K ≠ ⊤ → GlobalTheory.TensHead.Stab (Op i) K →
+    ∀ N' : Submodule ℂ (M₀ ⊗[ℂ] (⨂[ℂ] j, M j)),
+      (∀ x ∈ Rel, ∀ (x₀ : M₀) (y : ∀ j, M j),
+        x₀ ⊗ₜ[ℂ] PiTensorProduct.tprod ℂ (Function.update y i x) ∈ N') →
+      GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps Op₀ (GlobalTheory.TensHead.piOps Op)) N' →
+      (∀ U, GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps Op₀ (GlobalTheory.TensHead.piOps Op)) U → N' ≤ U →
+        U = N' ∨ U = ⊤) →
+      ∀ x ∈ K, ∀ (x₀ : M₀) (y : ∀ j, M j),
+        x₀ ⊗ₜ[ℂ] PiTensorProduct.tprod ℂ (Function.update y i x) ∈ N' := by
+  intro ι _ M₀ _ _ M _ _ Op₀ Op i Rel K hlen hmax hK hKst N' hRel hN'st hN'max x hx x₀ y
+  let φ : M i →ₗ[ℂ] (M₀ ⊗[ℂ] (⨂[ℂ] j, M j)) ⧸ N' :=
+    N'.mkQ ∘ₗ (TensorProduct.mk ℂ M₀ (⨂[ℂ] j, M j) x₀) ∘ₗ
+      ((PiTensorProduct.tprod ℂ : MultilinearMap ℂ M (⨂[ℂ] j, M j)).toLinearMap y i)
+  have hφ : ∀ z, φ z = N'.mkQ (x₀ ⊗ₜ[ℂ] PiTensorProduct.tprod ℂ (Function.update y i z)) := by
+    intro z
+    simp [φ, MultilinearMap.toLinearMap_apply]
+  let act : Module.End ℂ (M i) → Module.End ℂ ((M₀ ⊗[ℂ] (⨂[ℂ] j, M j)) ⧸ N') :=
+    fun g => quotOp N' (TensorProduct.map LinearMap.id (piOp i g))
+  let B : Set (Module.End ℂ ((M₀ ⊗[ℂ] (⨂[ℂ] j, M j)) ⧸ N')) :=
+    quotOp N' '' ({f | ∃ g ∈ Op₀, f = TensorProduct.map g LinearMap.id} ∪
+      {f | ∃ j, j ≠ i ∧ ∃ h ∈ Op j, f = TensorProduct.map LinearMap.id (piOp j h)})
+  have hst0 : ∀ g ∈ Op₀, ∀ z ∈ N', TensorProduct.map g LinearMap.id z ∈ N' :=
+    fun g hg => hN'st _ (Or.inl ⟨g, hg, rfl⟩)
+  have hst1 : ∀ j, ∀ h ∈ Op j, ∀ z ∈ N', TensorProduct.map LinearMap.id (piOp j h) z ∈ N' :=
+    fun j h hh => hN'st _ (Or.inr ⟨piOp j h, ⟨j, h, hh, rfl⟩, rfl⟩)
+  have key := GlobalTheory.T.le_ker_of_local_finite_length_to_simple (Op i) Rel K φ act B hlen hmax hK hKst ?_ ?_ ?_ ?_
+  · have h0 := key hx
+    rw [LinearMap.mem_ker, hφ, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at h0
+    exact h0
+  · intro z hz
+    rw [LinearMap.mem_ker, hφ, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
+    exact hRel z hz x₀ y
+  · intro g hg
+    ext z
+    simp only [LinearMap.comp_apply]
+    rw [hφ, hφ, quotOp_mk N' _ (hst1 i g hg), TensorProduct.map_tmul, LinearMap.id_apply,
+      piOp_tprod_update]
+  · intro g hg b hb
+    obtain ⟨f, hf, rfl⟩ := hb
+    rcases hf with ⟨g₀, hg₀, rfl⟩ | ⟨j, hji, h, hh, rfl⟩
+    · rw [quotOp_mul N' _ _ (hst1 i g hg) (hst0 g₀ hg₀), quotOp_mul N' _ _ (hst0 g₀ hg₀) (hst1 i g hg)]
+      congr 1
+      simp only [Module.End.mul_eq_comp, ← TensorProduct.map_comp, LinearMap.id_comp,
+        LinearMap.comp_id]
+    · rw [quotOp_mul N' _ _ (hst1 i g hg) (hst1 j h hh), quotOp_mul N' _ _ (hst1 j h hh) (hst1 i g hg)]
+      congr 1
+      simp only [Module.End.mul_eq_comp, ← TensorProduct.map_comp, LinearMap.id_comp]
+      rw [← Module.End.mul_eq_comp, ← Module.End.mul_eq_comp, piOp_comm i j hji g h]
+  · intro U hU
+    have hs : U = (U.comap N'.mkQ).map N'.mkQ :=
+      (Submodule.map_comap_eq_of_surjective N'.mkQ_surjective U).symm
+    have hle : N' ≤ U.comap N'.mkQ := by
+      intro z hz
+      rw [Submodule.mem_comap, Submodule.mkQ_apply, (Submodule.Quotient.mk_eq_zero N').mpr hz]
+      exact U.zero_mem
+    have hstab : Stab (tensOps Op₀ (piOps Op)) (U.comap N'.mkQ) := by
+      intro f hf z hz
+      rw [Submodule.mem_comap] at hz ⊢
+      rw [← quotOp_mk N' f (hN'st f hf)]
+      apply hU _ _ _ hz
+      rcases hf with ⟨g₀, hg₀, rfl⟩ | ⟨p, ⟨j, h, hh, rfl⟩, rfl⟩
+      · exact Or.inr ⟨_, Or.inl ⟨g₀, hg₀, rfl⟩, rfl⟩
+      · by_cases hji : j = i
+        · subst hji
+          exact Or.inl ⟨h, hh, rfl⟩
+        · exact Or.inr ⟨_, Or.inr ⟨j, hji, h, hh, rfl⟩, rfl⟩
+    rcases hN'max _ hstab hle with h | h
+    · left
+      rw [hs, h, Submodule.mkQ_map_self]
+    · right
+      rw [hs, h, Submodule.map_top, Submodule.range_mkQ]
+
+end GlobalTheory.TensHead
+end
+
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.piTensor_maximalStable_contains_positionKernel : ∀ {ι : Type} [DecidableEq ι] {M₀ : Type} [AddCommGroup M₀] [Module ℂ M₀]
+    {M : ι → Type} [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)]
+    (Op₀ : Set (Module.End ℂ M₀)) (Op : ∀ i, Set (Module.End ℂ (M i))) (i : ι)
+    (Rel K : Submodule ℂ (M i)),
+    (∃ L : ℕ, ∀ (m : ℕ) (N : Fin m → Submodule ℂ (M i)), StrictMono N →
+        (∀ j, Rel ≤ N j ∧ ∀ g ∈ Op i, ∀ x ∈ N j, g x ∈ N j) → m ≤ L) →
+    (∀ N : Submodule ℂ (M i), Rel ≤ N → GlobalTheory.TensHead.Stab (Op i) N → N ≠ ⊤ → N ≤ K) →
+    K ≠ ⊤ → GlobalTheory.TensHead.Stab (Op i) K →
+    ∀ N' : Submodule ℂ (M₀ ⊗[ℂ] (⨂[ℂ] j, M j)),
+      (∀ x ∈ Rel, ∀ (x₀ : M₀) (y : ∀ j, M j),
+        x₀ ⊗ₜ[ℂ] PiTensorProduct.tprod ℂ (Function.update y i x) ∈ N') →
+      GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps Op₀ (GlobalTheory.TensHead.piOps Op)) N' →
+      (∀ U, GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps Op₀ (GlobalTheory.TensHead.piOps Op)) U → N' ≤ U →
+        U = N' ∨ U = ⊤) →
+      ∀ x ∈ K, ∀ (x₀ : M₀) (y : ∀ j, M j),
+        x₀ ⊗ₜ[ℂ] PiTensorProduct.tprod ℂ (Function.update y i x) ∈ N' := by
+  atlas_forward_decl GlobalTheory.TensHead.position_mem_of_maximal_stable
+end
+
+section
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.TensHead
+
+theorem exists_adjoin_agree {V : Type} [AddCommGroup V] [Module ℂ V] [Nontrivial V]
+    (A : Set (Module.End ℂ V)) (hrank : Module.rank ℂ V ≤ Cardinal.aleph0)
+    (hA : ∀ U : Submodule ℂ V, Stab A U → U = ⊥ ∨ U = ⊤) (p : Module.End ℂ V) (s : Finset V) :
+    ∃ r ∈ Algebra.adjoin ℂ A, ∀ m ∈ s, p m = r m := by
+  set R := Algebra.adjoin ℂ A with hR
+  haveI : IsSimpleModule R V := by
+    rw [isSimpleModule_iff]
+    refine { eq_bot_or_eq_top := fun N => ?_ }
+    have h := hA (N.restrictScalars ℂ) (fun g hg x hx =>
+      N.smul_mem (⟨g, Algebra.subset_adjoin hg⟩ : R) hx)
+    rcases h with h | h
+    · left; exact (Submodule.restrictScalars_eq_bot_iff ℂ R V).1 h
+    · right; exact (Submodule.restrictScalars_eq_top_iff ℂ R V).1 h
+  have hsc : ∀ φ : Module.End R V, ∃ c : ℂ, ∀ x, φ x = c • x := by
+    intro φ
+    obtain ⟨c, hc⟩ := GlobalTheory.dixmier_schur_of_rank_le_aleph0 V A (fun g => g.1)
+      (LinearMap.restrictScalars ℂ φ) inferInstance hrank
+      (fun N hN => hA N (fun g hg x hx => hN ⟨g, hg⟩ x hx))
+      (fun g => LinearMap.ext fun x =>
+        φ.map_smul (⟨g.1, Algebra.subset_adjoin g.2⟩ : R) x)
+    exact ⟨c, fun x => LinearMap.congr_fun hc x⟩
+  let f : Module.End (Module.End R V) V :=
+    { toFun := p
+      map_add' := p.map_add
+      map_smul' := fun φ x => by
+        obtain ⟨c, hc⟩ := hsc φ
+        change p (φ x) = φ (p x)
+        rw [hc, hc, map_smul] }
+  obtain ⟨r, hr⟩ := jacobson_density f s
+  exact ⟨r.1, r.2, hr⟩
+
+theorem simple_tensor :
+    ∀ {S₀ S₁ : Type} [AddCommGroup S₀] [Module ℂ S₀] [AddCommGroup S₁] [Module ℂ S₁]
+    (A : Set (Module.End ℂ S₀)) (B : Set (Module.End ℂ S₁)),
+    Module.rank ℂ S₀ ≤ Cardinal.aleph0 →
+    (∀ U : Submodule ℂ S₀, GlobalTheory.TensHead.Stab A U → U = ⊥ ∨ U = ⊤) →
+    (∀ U : Submodule ℂ S₁, GlobalTheory.TensHead.Stab B U → U = ⊥ ∨ U = ⊤) →
+    ∀ U : Submodule ℂ (S₀ ⊗[ℂ] S₁), GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps A B) U →
+      U = ⊥ ∨ U = ⊤ := by
+  classical
+  intro S₀ S₁ _ _ _ _ A B hrank hA hB U hU
+  rcases eq_or_ne U ⊥ with h0 | h0
+  · exact Or.inl h0
+  right
+  obtain ⟨t, htU, ht0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot h0
+  have hadj : ∀ r ∈ Algebra.adjoin ℂ A, ∀ z ∈ U, TensorProduct.map r LinearMap.id z ∈ U := by
+    intro r hr
+    induction hr using Algebra.adjoin_induction with
+    | mem g hg => exact hU _ (Or.inl ⟨g, hg, rfl⟩)
+    | algebraMap c =>
+      intro z hz
+      rw [Algebra.algebraMap_eq_smul_one, TensorProduct.map_smul_left, LinearMap.smul_apply,
+        Module.End.one_eq_id, TensorProduct.map_id]
+      exact U.smul_mem c hz
+    | add f g _ _ hf hg =>
+      intro z hz
+      rw [TensorProduct.map_add_left]
+      exact U.add_mem (hf z hz) (hg z hz)
+    | mul f g _ _ hf hg =>
+      intro z hz
+      have : TensorProduct.map (f * g) (LinearMap.id : S₁ →ₗ[ℂ] S₁) =
+          (TensorProduct.map f LinearMap.id) ∘ₗ (TensorProduct.map g LinearMap.id) := by
+        rw [← TensorProduct.map_comp]; rfl
+      rw [this]
+      exact hf _ (hg z hz)
+  let b := Module.Basis.ofVectorSpace ℂ S₀
+  set c := TensorProduct.equivFinsuppOfBasisLeft b t with hc
+  have ht : t = c.sum fun i n => b i ⊗ₜ[ℂ] n := by
+    rw [hc, ← TensorProduct.equivFinsuppOfBasisLeft_symm_apply, LinearEquiv.symm_apply_apply]
+  have hc0 : c ≠ 0 := by
+    intro h
+    apply ht0
+    rw [ht, h, Finsupp.sum_zero_index]
+  obtain ⟨i, hi⟩ := Finsupp.support_nonempty_iff.2 hc0
+  have hbi : b i ≠ 0 := b.ne_zero i
+  haveI : Nontrivial S₀ := ⟨⟨b i, 0, hbi⟩⟩
+  obtain ⟨r, hr, hrp⟩ := exists_adjoin_agree A hrank hA ((b.coord i).smulRight (b i))
+    (c.support.image b)
+  have h1 : b i ⊗ₜ[ℂ] c i ∈ U := by
+    have h2 := hadj r hr t htU
+    have h3 : TensorProduct.map r LinearMap.id t = b i ⊗ₜ[ℂ] c i := by
+      conv_lhs => rw [ht]
+      rw [Finsupp.sum, map_sum, Finset.sum_eq_single i]
+      · rw [TensorProduct.map_tmul, ← hrp _ (Finset.mem_image_of_mem b hi)]
+        simp
+      · intro j hj hji
+        rw [TensorProduct.map_tmul, ← hrp _ (Finset.mem_image_of_mem b hj)]
+        simp [Finsupp.single_apply, hji]
+      · intro h; exact absurd hi h
+    rwa [h3] at h2
+  have h4 : U.comap (TensorProduct.mk ℂ S₀ S₁ (b i)) = ⊤ := by
+    refine (hB _ ?_).resolve_left ?_
+    · intro g hg y hy
+      exact hU _ (Or.inr ⟨g, hg, rfl⟩) _ hy
+    · intro h
+      have : c i ∈ U.comap (TensorProduct.mk ℂ S₀ S₁ (b i)) := h1
+      rw [h, Submodule.mem_bot] at this
+      exact Finsupp.mem_support_iff.1 hi this
+  have h5 : ∀ y, U.comap ((TensorProduct.mk ℂ S₀ S₁).flip y) = ⊤ := by
+    intro y
+    refine (hA _ ?_).resolve_left ?_
+    · intro g hg x hx
+      exact hU _ (Or.inl ⟨g, hg, rfl⟩) _ hx
+    · intro h
+      have h6 : y ∈ U.comap (TensorProduct.mk ℂ S₀ S₁ (b i)) := by rw [h4]; trivial
+      have : b i ∈ U.comap ((TensorProduct.mk ℂ S₀ S₁).flip y) := h6
+      rw [h, Submodule.mem_bot] at this
+      exact hbi this
+  rw [eq_top_iff]
+  rintro z -
+  induction z using TensorProduct.induction_on with
+  | zero => exact U.zero_mem
+  | tmul x y =>
+    have : x ∈ U.comap ((TensorProduct.mk ℂ S₀ S₁).flip y) := by rw [h5]; trivial
+    exact this
+  | add x y hx hy => exact U.add_mem hx hy
+
+end GlobalTheory.TensHead
+end
+
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.simple_tensor_product_operatorStable_countable : ∀ {S₀ S₁ : Type} [AddCommGroup S₀] [Module ℂ S₀] [AddCommGroup S₁] [Module ℂ S₁]
+    (A : Set (Module.End ℂ S₀)) (B : Set (Module.End ℂ S₁)),
+    Module.rank ℂ S₀ ≤ Cardinal.aleph0 →
+    (∀ U : Submodule ℂ S₀, GlobalTheory.TensHead.Stab A U → U = ⊥ ∨ U = ⊤) →
+    (∀ U : Submodule ℂ S₁, GlobalTheory.TensHead.Stab B U → U = ⊥ ∨ U = ⊤) →
+    ∀ U : Submodule ℂ (S₀ ⊗[ℂ] S₁), GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.tensOps A B) U → U = ⊥ ∨ U = ⊤ := by
+  atlas_forward_decl GlobalTheory.TensHead.simple_tensor
+end
+
+section
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.TensHead
+
+def quotOps {V : Type} [AddCommGroup V] [Module ℂ V] (G : Set (Module.End ℂ V))
+    (K : Submodule ℂ V) : Set (Module.End ℂ (V ⧸ K)) :=
+  {f | ∃ g ∈ G, f ∘ₗ K.mkQ = K.mkQ ∘ₗ g}
+
+theorem quot_simple {V : Type} [AddCommGroup V] [Module ℂ V] (G : Set (Module.End ℂ V))
+    (K : Submodule ℂ V) (hs : Stab G K) (hK : SimpleOver G K) :
+    ∀ U : Submodule ℂ (V ⧸ K), Stab (quotOps G K) U → U = ⊥ ∨ U = ⊤ := by
+  intro U hU
+  have hst : Stab G (U.comap K.mkQ) := by
+    intro g hg x hx
+    have hf : (K.mapQ K g (fun y hy => hs g hg y hy)) ∘ₗ K.mkQ = K.mkQ ∘ₗ g := by
+      ext y; simp
+    have := hU _ ⟨g, hg, hf⟩ _ hx
+    simpa using this
+  have hle : K ≤ U.comap K.mkQ := by
+    intro x hx; simp [(Submodule.Quotient.mk_eq_zero K).2 hx]
+  rcases hK _ hst hle with h | h
+  · left
+    rw [← Submodule.map_comap_eq_of_surjective K.mkQ_surjective U, h, Submodule.mkQ_map_self]
+  · right
+    rw [← Submodule.map_comap_eq_of_surjective K.mkQ_surjective U, h, Submodule.map_top,
+      LinearMap.range_eq_top.2 K.mkQ_surjective]
+
+theorem ker_map_mkQ_le {V₀ V₁ : Type} [AddCommGroup V₀] [Module ℂ V₀] [AddCommGroup V₁]
+    [Module ℂ V₁] (K₀ : Submodule ℂ V₀) (K₁ : Submodule ℂ V₁) :
+    LinearMap.ker (TensorProduct.map K₀.mkQ K₁.mkQ) ≤ tensKer K₀ K₁ := by
+  rw [TensorProduct.map_ker (LinearMap.exact_subtype_mkQ K₀) K₀.mkQ_surjective
+    (LinearMap.exact_subtype_mkQ K₁) K₁.mkQ_surjective]
+  refine sup_le ?_ ?_
+  · rintro _ ⟨z, rfl⟩
+    induction z using TensorProduct.induction_on with
+    | zero => simp
+    | tmul x k => exact Submodule.subset_span ⟨x, k, Or.inr k.2, by simp⟩
+    | add a b ha hb => rw [map_add]; exact add_mem ha hb
+  · rintro _ ⟨z, rfl⟩
+    induction z using TensorProduct.induction_on with
+    | zero => simp
+    | tmul k y => exact Submodule.subset_span ⟨k, y, Or.inl k.2, by simp⟩
+    | add a b ha hb => rw [map_add]; exact add_mem ha hb
+
+theorem simpleOver_tensKer : ∀ {V₀ V₁ : Type} [AddCommGroup V₀] [Module ℂ V₀] [AddCommGroup V₁] [Module ℂ V₁]
+    (A : Set (Module.End ℂ V₀)) (B : Set (Module.End ℂ V₁)) (K₀ : Submodule ℂ V₀) (K₁ : Submodule ℂ V₁),
+    Module.rank ℂ V₀ ≤ Cardinal.aleph0 → GlobalTheory.TensHead.Stab A K₀ → GlobalTheory.TensHead.Stab B K₁ →
+    GlobalTheory.TensHead.SimpleOver A K₀ → GlobalTheory.TensHead.SimpleOver B K₁ →
+    GlobalTheory.TensHead.SimpleOver (GlobalTheory.TensHead.tensOps A B) (GlobalTheory.TensHead.tensKer K₀ K₁) := by
+  intro V₀ V₁ _ _ _ _ A B K₀ K₁ hr hA hB hsA hsB N hN hKN
+  set φ := TensorProduct.map K₀.mkQ K₁.mkQ with hφ
+  have hker : LinearMap.ker φ ≤ N := (ker_map_mkQ_le K₀ K₁).trans hKN
+  have hstU : Stab (tensOps (quotOps A K₀) (quotOps B K₁)) (N.map φ) := by
+    rintro f hf _ ⟨x, hx, rfl⟩
+    rcases hf with ⟨f', ⟨g, hg, hfg⟩, rfl⟩ | ⟨f', ⟨g, hg, hfg⟩, rfl⟩
+    · have hc : TensorProduct.map f' LinearMap.id ∘ₗ φ = φ ∘ₗ TensorProduct.map g LinearMap.id := by
+        rw [hφ, ← TensorProduct.map_comp, ← TensorProduct.map_comp, hfg]; rfl
+      refine ⟨TensorProduct.map g LinearMap.id x, hN _ (Or.inl ⟨g, hg, rfl⟩) x hx, ?_⟩
+      exact (LinearMap.congr_fun hc x).symm
+    · have hc : TensorProduct.map LinearMap.id f' ∘ₗ φ = φ ∘ₗ TensorProduct.map LinearMap.id g := by
+        rw [hφ, ← TensorProduct.map_comp, ← TensorProduct.map_comp, hfg]; rfl
+      refine ⟨TensorProduct.map LinearMap.id g x, hN _ (Or.inr ⟨g, hg, rfl⟩) x hx, ?_⟩
+      exact (LinearMap.congr_fun hc x).symm
+  rcases GlobalTheory.T.simple_tensor_product_operatorStable_countable (quotOps A K₀) (quotOps B K₁) ((rank_quotient_le K₀).trans hr)
+    (quot_simple A K₀ hA hsA) (quot_simple B K₁ hB hsB) _ hstU with h | h
+  · left
+    refine le_antisymm ?_ hKN
+    intro x hx
+    apply ker_map_mkQ_le K₀ K₁
+    rw [LinearMap.mem_ker, ← Submodule.mem_bot ℂ, ← h]
+    exact Submodule.mem_map_of_mem hx
+  · right
+    rw [eq_top_iff]
+    intro x _
+    have : φ x ∈ N.map φ := h ▸ Submodule.mem_top
+    obtain ⟨y, hy, hxy⟩ := this
+    have : x - y ∈ LinearMap.ker φ := by simp [hxy]
+    simpa using add_mem (hker this) hy
+
+end GlobalTheory.TensHead
+end
+
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.simpleOverStableSubmodule_tensorPureKernelSpan : ∀ {V₀ V₁ : Type} [AddCommGroup V₀] [Module ℂ V₀] [AddCommGroup V₁] [Module ℂ V₁]
+    (A : Set (Module.End ℂ V₀)) (B : Set (Module.End ℂ V₁)) (K₀ : Submodule ℂ V₀) (K₁ : Submodule ℂ V₁),
+    Module.rank ℂ V₀ ≤ Cardinal.aleph0 → GlobalTheory.TensHead.Stab A K₀ → GlobalTheory.TensHead.Stab B K₁ →
+    GlobalTheory.TensHead.SimpleOver A K₀ → GlobalTheory.TensHead.SimpleOver B K₁ →
+    GlobalTheory.TensHead.SimpleOver (GlobalTheory.TensHead.tensOps A B) (GlobalTheory.TensHead.tensKer K₀ K₁) := by
+  atlas_forward_decl GlobalTheory.TensHead.simpleOver_tensKer
+end
+
+section
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.TensHead
+
+open scoped TensorProduct in
+
+theorem _root_.GlobalTheory.TensHead.stab_piOps_piKer {ι : Type} [DecidableEq ι] {M : ι → Type} [∀ i, AddCommGroup (M i)]
+    [∀ i, Module ℂ (M i)]
+    (Op : ∀ i, Set (Module.End ℂ (M i))) (K : ∀ i, Submodule ℂ (M i))
+    (h : ∀ i, _root_.GlobalTheory.TensHead.Stab (Op i) (K i)) :
+    _root_.GlobalTheory.TensHead.Stab (_root_.GlobalTheory.TensHead.piOps Op) (_root_.GlobalTheory.TensHead.piKer K) := by
+  unfold _root_.GlobalTheory.TensHead.Stab at h ⊢
+  rintro _ ⟨i, g, hg, rfl⟩ x hx
+  unfold _root_.GlobalTheory.TensHead.piKer at hx ⊢
+  have hle : Submodule.span ℂ {t | ∃ y : ∀ j, M j, (∃ j, y j ∈ K j) ∧ t = PiTensorProduct.tprod ℂ y}
+      ≤ (Submodule.span ℂ {t | ∃ y : ∀ j, M j, (∃ j, y j ∈ K j) ∧ t = PiTensorProduct.tprod ℂ y}).comap
+        (_root_.GlobalTheory.TensHead.piOp i g) := by
+    rw [Submodule.span_le]
+    rintro _ ⟨y, ⟨j, hj⟩, rfl⟩
+    refine Submodule.subset_span ⟨fun k => Function.update (fun _ => LinearMap.id) i g k (y k), ⟨j, ?_⟩, ?_⟩
+    · by_cases hji : j = i
+      · subst hji
+        simpa using h j g hg _ hj
+      · simpa [Function.update_of_ne hji] using hj
+    · simp [_root_.GlobalTheory.TensHead.piOp]
+  exact hle hx
+
+end GlobalTheory.TensHead
+end
+
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.operatorStable_piTensorPureKernelSpan : ∀ {ι : Type} [DecidableEq ι] {M : ι → Type} [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)]
+    (Op : ∀ i, Set (Module.End ℂ (M i))) (K : ∀ i, Submodule ℂ (M i)),
+    (∀ i, GlobalTheory.TensHead.Stab (Op i) (K i)) →
+    GlobalTheory.TensHead.Stab (GlobalTheory.TensHead.piOps Op) (GlobalTheory.TensHead.piKer K) := by
+  atlas_forward_decl GlobalTheory.TensHead.stab_piOps_piKer
+end
+
+section
+section
+open scoped TensorProduct
+
+namespace GlobalTheory.PiSimple
+
+open GlobalTheory.TensHead
+
+theorem simpleOver_of_equiv {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
+    [Module ℂ W] (e : V ≃ₗ[ℂ] W) (G : Set (Module.End ℂ V)) (G' : Set (Module.End ℂ W))
+    (K : Submodule ℂ V) (K' : Submodule ℂ W) (hK : K.map (e : V →ₗ[ℂ] W) = K')
+    (hG : ∀ g' ∈ G', ∃ g ∈ G, ∀ x, g' (e x) = e (g x)) (h : SimpleOver G' K') :
+    SimpleOver G K := by
+  intro N hN hKN
+  have hs : Stab G' (N.map (e : V →ₗ[ℂ] W)) := by
+    rintro g' hg' _ ⟨x, hx, rfl⟩
+    obtain ⟨g, hg, hc⟩ := hG g' hg'
+    exact ⟨g x, hN g hg x hx, by simpa using (hc x).symm⟩
+  have hle : K' ≤ N.map (e : V →ₗ[ℂ] W) := hK ▸ Submodule.map_mono hKN
+  have key : ∀ P : Submodule ℂ V, (P.map (e : V →ₗ[ℂ] W)).comap (e : V →ₗ[ℂ] W) = P := by
+    intro P; ext x; simp
+  rcases h _ hs hle with h1 | h1
+  · left
+    have := congrArg (Submodule.comap (e : V →ₗ[ℂ] W)) h1
+    rwa [← hK, key, key] at this
+  · right
+    have := congrArg (Submodule.comap (e : V →ₗ[ℂ] W)) h1
+    rwa [key, Submodule.comap_top] at this
+
+def PP (σ : Type) : Prop :=
+  ∀ [DecidableEq σ] (M : σ → Type) [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)]
+    (Op : ∀ i, Set (Module.End ℂ (M i))) (K : ∀ i, Submodule ℂ (M i)),
+    (∀ i, Module.rank ℂ (M i) ≤ Cardinal.aleph0) → (∀ i, Stab (Op i) (K i)) →
+    (∀ i, SimpleOver (Op i) (K i)) → SimpleOver (piOps Op) (piKer K)
+
+theorem pp_empty : PP PEmpty := by
+  intro _ M _ _ Op K _ _ _
+  refine simpleOver_of_equiv (PiTensorProduct.isEmptyEquiv PEmpty) _ (∅ : Set (Module.End ℂ ℂ))
+    _ ⊥ ?_ (by simp) ?_
+  · have : piKer K = ⊥ := by
+      rw [piKer, Submodule.span_eq_bot]
+      rintro _ ⟨y, ⟨i, _⟩, _⟩
+      exact i.elim
+    rw [this, Submodule.map_bot]
+  · intro N _ _
+    rcases Ideal.eq_bot_or_top (N : Ideal ℂ) with h | h
+    · exact Or.inl h
+    · exact Or.inr h
+
+theorem pp_unit : PP PUnit := by
+  intro _ M _ _ Op K _ _ hso
+  let e := PiTensorProduct.subsingletonEquiv (R := ℂ) (s := M) PUnit.unit
+  refine simpleOver_of_equiv e _ (Op PUnit.unit) _ (K PUnit.unit) ?_ ?_ (hso _)
+  · apply le_antisymm
+    · rw [piKer, Submodule.map_span, Submodule.span_le]
+      rintro _ ⟨_, ⟨y, ⟨i, hi⟩, rfl⟩, rfl⟩
+      cases i
+      simpa [e] using hi
+    · intro x hx
+      refine ⟨e.symm x, Submodule.subset_span ⟨_, ⟨PUnit.unit, by simpa using hx⟩, rfl⟩, by simp⟩
+  · intro g hg
+    refine ⟨piOp PUnit.unit g, ⟨PUnit.unit, g, hg, rfl⟩, fun x => ?_⟩
+    have H : g ∘ₗ (e : _ →ₗ[ℂ] M PUnit.unit) = (e : _ →ₗ[ℂ] M PUnit.unit) ∘ₗ piOp PUnit.unit g := by
+      apply PiTensorProduct.ext
+      apply MultilinearMap.ext
+      intro y
+      simp [e, piOp, PiTensorProduct.map_tprod]
+    exact LinearMap.congr_fun H x
+
+theorem pp_of_equiv {σ ι : Type} (f : σ ≃ ι) (hσ : PP σ) : PP ι := by
+  intro _ M _ _ Op K hr hs hso
+  classical
+  have H := hσ (fun s => M (f s)) (fun s => Op (f s)) (fun s => K (f s)) (fun s => hr _)
+    (fun s => hs _) (fun s => hso _)
+  refine simpleOver_of_equiv (PiTensorProduct.reindex ℂ M f.symm) _ _ _ _ ?_ ?_ H
+  · apply le_antisymm
+    · rw [piKer, Submodule.map_span, Submodule.span_le]
+      rintro _ ⟨_, ⟨y, ⟨i, hi⟩, rfl⟩, rfl⟩
+      obtain ⟨s, rfl⟩ := f.surjective i
+      exact Submodule.subset_span ⟨fun s => y (f s), ⟨s, hi⟩, by simp⟩
+    · rw [piKer, Submodule.span_le]
+      rintro _ ⟨z, ⟨s, hz⟩, rfl⟩
+      refine ⟨PiTensorProduct.tprod ℂ (Equiv.piCongrLeft M f z),
+        Submodule.subset_span ⟨_, ⟨f s, by simpa using hz⟩, rfl⟩, ?_⟩
+      simp
+  · rintro _ ⟨s, g, hg, rfl⟩
+    refine ⟨piOp (f s) g, ⟨f s, g, hg, rfl⟩, fun x => ?_⟩
+    have hu : (Function.update (fun j => (LinearMap.id : M (f j) →ₗ[ℂ] M (f j))) s g) =
+        fun j => Function.update (fun i => (LinearMap.id : M i →ₗ[ℂ] M i)) (f s) g (f.symm.symm j) := by
+      funext j
+      by_cases h : j = s
+      · subst h; simp
+      · rw [Function.update_of_ne h]
+        exact (Function.update_of_ne (β := fun i => M i →ₗ[ℂ] M i) (a := f j) (a' := f s)
+          (fun h' => h (f.injective h')) g (fun i => LinearMap.id)).symm
+    simp only [piOp, LinearEquiv.coe_coe]
+    rw [hu, PiTensorProduct.map_reindex]
+
+theorem simpleOver_sum {α β : Type} (hα : PP α) (hβ : PP β) [DecidableEq (α ⊕ β)]
+    (N : α ⊕ β → Type) [∀ i, AddCommGroup (N i)] [∀ i, Module ℂ (N i)]
+    (Op : ∀ i, Set (Module.End ℂ (N i))) (K : ∀ i, Submodule ℂ (N i))
+    (hr : ∀ i, Module.rank ℂ (N i) ≤ Cardinal.aleph0)
+    (hrl : Module.rank ℂ (⨂[ℂ] a, N (.inl a)) ≤ Cardinal.aleph0)
+    (hs : ∀ i, Stab (Op i) (K i)) (hso : ∀ i, SimpleOver (Op i) (K i)) :
+    SimpleOver (piOps Op) (piKer K) := by
+  classical
+  have hA := hα (fun a => N (.inl a)) (fun a => Op (.inl a)) (fun a => K (.inl a))
+    (fun a => hr _) (fun a => hs _) (fun a => hso _)
+  have hB := hβ (fun b => N (.inr b)) (fun b => Op (.inr b)) (fun b => K (.inr b))
+    (fun b => hr _) (fun b => hs _) (fun b => hso _)
+  have hT := GlobalTheory.T.simpleOverStableSubmodule_tensorPureKernelSpan (piOps (fun a => Op (.inl a))) (piOps (fun b => Op (.inr b)))
+    (piKer (fun a => K (.inl a))) (piKer (fun b => K (.inr b))) hrl
+    (GlobalTheory.T.operatorStable_piTensorPureKernelSpan _ _ (fun a => hs _)) (GlobalTheory.T.operatorStable_piTensorPureKernelSpan _ _ (fun b => hs _)) hA hB
+  let e := (PiTensorProduct.tmulEquivDep ℂ N).symm
+  refine simpleOver_of_equiv e _ _ _ _ ?_ ?_ hT
+  · apply le_antisymm
+    · rw [piKer, Submodule.map_span, Submodule.span_le]
+      rintro _ ⟨_, ⟨y, ⟨i, hi⟩, rfl⟩, rfl⟩
+      refine Submodule.subset_span ⟨PiTensorProduct.tprod ℂ (fun a => y (.inl a)),
+        PiTensorProduct.tprod ℂ (fun b => y (.inr b)), ?_, by simp [e]⟩
+      cases i with
+      | inl a => exact Or.inl (Submodule.subset_span ⟨_, ⟨a, hi⟩, rfl⟩)
+      | inr b => exact Or.inr (Submodule.subset_span ⟨_, ⟨b, hi⟩, rfl⟩)
+    · set Q := (piKer K).map e.toLinearMap with hQ
+      have pure : ∀ (y₁ : ∀ a, N (.inl a)) (y₂ : ∀ b, N (.inr b)),
+          ((∃ a, y₁ a ∈ K (.inl a)) ∨ (∃ b, y₂ b ∈ K (.inr b))) →
+          PiTensorProduct.tprod ℂ y₁ ⊗ₜ[ℂ] PiTensorProduct.tprod ℂ y₂ ∈ Q := by
+        intro y₁ y₂ h
+        refine ⟨PiTensorProduct.tprod ℂ (fun i => Sum.rec y₁ y₂ i),
+          Submodule.subset_span ⟨_, ?_, rfl⟩, by simp [e]⟩
+        rcases h with ⟨a, ha⟩ | ⟨b, hb⟩
+        · exact ⟨.inl a, ha⟩
+        · exact ⟨.inr b, hb⟩
+      have left : ∀ (y₁ : ∀ a, N (.inl a)), (∃ a, y₁ a ∈ K (.inl a)) →
+          ∀ z, PiTensorProduct.tprod ℂ y₁ ⊗ₜ[ℂ] z ∈ Q := by
+        intro y₁ h z
+        have : (⊤ : Submodule ℂ (⨂[ℂ] b, N (.inr b))) ≤
+            Q.comap (TensorProduct.mk ℂ _ _ (PiTensorProduct.tprod ℂ y₁)) := by
+          rw [← PiTensorProduct.span_tprod_eq_top, Submodule.span_le]
+          rintro _ ⟨y₂, rfl⟩
+          exact pure y₁ y₂ (Or.inl h)
+        exact this Submodule.mem_top
+      have right : ∀ (y₂ : ∀ b, N (.inr b)), (∃ b, y₂ b ∈ K (.inr b)) →
+          ∀ x, x ⊗ₜ[ℂ] PiTensorProduct.tprod ℂ y₂ ∈ Q := by
+        intro y₂ h x
+        have : (⊤ : Submodule ℂ (⨂[ℂ] a, N (.inl a))) ≤
+            Q.comap ((TensorProduct.mk ℂ _ _).flip (PiTensorProduct.tprod ℂ y₂)) := by
+          rw [← PiTensorProduct.span_tprod_eq_top, Submodule.span_le]
+          rintro _ ⟨y₁, rfl⟩
+          exact pure y₁ y₂ (Or.inr h)
+        exact this Submodule.mem_top
+      rw [tensKer, Submodule.span_le]
+      rintro _ ⟨x, z, hxz, rfl⟩
+      rcases hxz with hx | hz
+      · have : piKer (fun a => K (.inl a)) ≤ Q.comap ((TensorProduct.mk ℂ _ _).flip z) := by
+          rw [piKer, Submodule.span_le]
+          rintro _ ⟨y₁, h, rfl⟩
+          exact left y₁ h z
+        exact this hx
+      · have : piKer (fun b => K (.inr b)) ≤ Q.comap (TensorProduct.mk ℂ _ _ x) := by
+          rw [piKer, Submodule.span_le]
+          rintro _ ⟨y₂, h, rfl⟩
+          exact right y₂ h x
+        exact this hz
+  · rintro _ (⟨_, ⟨a, g, hg, rfl⟩, rfl⟩ | ⟨_, ⟨b, g, hg, rfl⟩, rfl⟩)
+    · refine ⟨piOp (Sum.inl a) g, ⟨_, g, hg, rfl⟩, fun x => ?_⟩
+      have H : (TensorProduct.map (piOp a g) LinearMap.id) ∘ₗ e.toLinearMap =
+          e.toLinearMap ∘ₗ piOp (Sum.inl a) g := by
+        apply PiTensorProduct.ext
+        apply MultilinearMap.ext
+        intro y
+        simp only [e, piOp, LinearMap.compMultilinearMap_apply, LinearMap.comp_apply,
+          LinearEquiv.coe_coe, PiTensorProduct.map_tprod, PiTensorProduct.tmulEquivDep_symm_apply,
+          TensorProduct.map_tmul, LinearMap.id_apply]
+        congr 2
+        · funext a'
+          by_cases h : a' = a
+          · subst h; simp
+          · rw [Function.update_of_ne h, Function.update_of_ne (fun h' => h (Sum.inl_injective h'))]
+        · funext b'
+          rw [Function.update_of_ne (Sum.inr_ne_inl)]
+          rfl
+      exact LinearMap.congr_fun H x
+    · refine ⟨piOp (Sum.inr b) g, ⟨_, g, hg, rfl⟩, fun x => ?_⟩
+      have H : (TensorProduct.map LinearMap.id (piOp b g)) ∘ₗ e.toLinearMap =
+          e.toLinearMap ∘ₗ piOp (Sum.inr b) g := by
+        apply PiTensorProduct.ext
+        apply MultilinearMap.ext
+        intro y
+        simp only [e, piOp, LinearMap.compMultilinearMap_apply, LinearMap.comp_apply,
+          LinearEquiv.coe_coe, PiTensorProduct.map_tprod, PiTensorProduct.tmulEquivDep_symm_apply,
+          TensorProduct.map_tmul, LinearMap.id_apply]
+        congr 2
+        · funext a'
+          rw [Function.update_of_ne (Sum.inl_ne_inr)]
+          rfl
+        · funext b'
+          by_cases h : b' = b
+          · subst h; simp
+          · rw [Function.update_of_ne h, Function.update_of_ne (fun h' => h (Sum.inr_injective h'))]
+      exact LinearMap.congr_fun H x
+
+theorem pp_unit_sum {α : Type} (hα : PP α) : PP (PUnit ⊕ α) := by
+  intro _ N _ _ Op K hr hs hso
+  refine simpleOver_sum pp_unit hα N Op K hr ?_ hs hso
+  rw [(PiTensorProduct.subsingletonEquiv (R := ℂ) (s := fun u : PUnit => N (Sum.inl u))
+    PUnit.unit).rank_eq]
+  exact hr _
+
+theorem pp_option {α : Type} (hα : PP α) : PP (Option α) :=
+  pp_of_equiv ((Equiv.optionEquivSumPUnit α).trans (Equiv.sumComm _ _)).symm (pp_unit_sum hα)
+
+theorem pp_finite (σ : Type) [Finite σ] : PP σ :=
+  Finite.induction_empty_option (P := PP) (fun f h => pp_of_equiv f h) pp_empty
+    (fun h => pp_option h) σ
+
+theorem simpleOver_piKer : ∀ {ι : Type} [Fintype ι] [DecidableEq ι] {M : ι → Type}
+    [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)] (Op : ∀ i, Set (Module.End ℂ (M i)))
+    (K : ∀ i, Submodule ℂ (M i)),
+    (∀ i, Module.rank ℂ (M i) ≤ Cardinal.aleph0) → (∀ i, GlobalTheory.TensHead.Stab (Op i) (K i)) →
+    (∀ i, GlobalTheory.TensHead.SimpleOver (Op i) (K i)) →
+    GlobalTheory.TensHead.SimpleOver (GlobalTheory.TensHead.piOps Op) (GlobalTheory.TensHead.piKer K) := by
+  intro ι _ _ M _ _ Op K hr hs hso
+  exact pp_finite ι M Op K hr hs hso
+
+end GlobalTheory.PiSimple
+end
+
+open scoped TensorProduct
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.simpleOverStableSubmodule_piTensor : ∀ {ι : Type} [Fintype ι] [DecidableEq ι] {M : ι → Type} [∀ i, AddCommGroup (M i)]
+    [∀ i, Module ℂ (M i)] (Op : ∀ i, Set (Module.End ℂ (M i))) (K : ∀ i, Submodule ℂ (M i)),
+    (∀ i, Module.rank ℂ (M i) ≤ Cardinal.aleph0) → (∀ i, GlobalTheory.TensHead.Stab (Op i) (K i)) →
+    (∀ i, GlobalTheory.TensHead.SimpleOver (Op i) (K i)) →
+    GlobalTheory.TensHead.SimpleOver (GlobalTheory.TensHead.piOps Op) (GlobalTheory.TensHead.piKer K) := by
+  atlas_forward_decl GlobalTheory.PiSimple.simpleOver_piKer
+end
+
+section
 section
 open scoped TensorProduct
 
@@ -144,3 +1069,4 @@ theorem _root_.GlobalTheory.T.tensor_eq_top_or_le_ker_finiteLength_modules : ∀
         (PiTensorProduct.map (Function.update (fun j => (LinearMap.id : M j →ₗ[ℂ] M j)) i g)) t ∈ N) →
       N = ⊤ ∨ N ≤ LinearMap.ker (TensorProduct.map p₀ (PiTensorProduct.map p)) := by
   atlas_forward_decl GlobalTheory.TensHead.tensor_eq_top_or_le_ker_map
+end

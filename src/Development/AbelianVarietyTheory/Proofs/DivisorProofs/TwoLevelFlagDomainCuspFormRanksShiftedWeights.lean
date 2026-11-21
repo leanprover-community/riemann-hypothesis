@@ -4,10 +4,836 @@ import Development.AbelianVarietyTheory.BlockTheory.PoincareCuspForms.SmallUnipo
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TotallyRealDegreeAndChartDimensionEq
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCuspFormIndependentTranslates
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowerRankCuspFormsDetWeightOneComponent
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNonzeroBoundedSectionShiftedWeight
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CardIndependentBoundedSectionsShiftedWeightLe
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoBinomialRatioBounds
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.InterpWeight
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.CurvAndMarginClosed
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FrameThetaConstPos
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.KappaStatementHolds
 
+section
+section
+open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
+
+namespace GlobalTheory.ShareSection
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+theorem drop_of_gaps {Ψ : Finset (E →+* ℂ)} {p0 : ℕ} {L : Wt Ψ r} (h : GapsGe p0 L 1) (τ : Ψ) :
+    ∀ d : ℕ, ∀ i j : Fin r, (j : ℕ) = i + d → (p0 ≤ (i : ℕ) ∨ (j : ℕ) < p0) → L τ j + d ≤ L τ i := by
+  intro d
+  induction d with
+  | zero =>
+    intro i j hij _
+    have : i = j := Fin.ext (by omega)
+    subst this
+    simp
+  | succ d ih =>
+    intro i j hij hb
+    have hk : (i : ℕ) + d < r := by omega
+    have h1 := ih i ⟨i + d, hk⟩ rfl (by
+      rcases hb with hb | hb
+      · exact Or.inl hb
+      · right; simp only; omega)
+    have h2 := h τ ⟨i + d, hk⟩ j (by simp only; omega) (by omega)
+    push_cast
+    linarith
+
+theorem spread_of_gaps {Ψ : Finset (E →+* ℂ)} {p0 : ℕ} {L : Wt Ψ r} (h : GapsGe p0 L 1) (τ : Ψ)
+    (i j i0 i1 : Fin r) (hi : (i : ℕ) < p0) (hj : p0 ≤ (j : ℕ)) (h0 : (i0 : ℕ) = 0) (h1 : (i1 : ℕ) = r - 1) :
+    L τ i1 - L τ i0 ≤ L τ j - L τ i := by
+  have a := drop_of_gaps h τ (r - 1 - j) j i1 (by omega) (Or.inl hj)
+  have b := drop_of_gaps h τ i i0 i (by omega) (Or.inr hi)
+  have c : (0 : ℤ) ≤ ((r - 1 - j : ℕ) : ℤ) := Nat.cast_nonneg _
+  have d : (0 : ℤ) ≤ ((i : ℕ) : ℤ) := Nat.cast_nonneg _
+  linarith
+
+theorem wt_apply (X : Data E r) (L : Wt X.Ψ r) (a s : ℕ) (τ : X.Ψ) (i : Fin r) :
+    (a • L - 2 • deMul X.Ψ r X.p0 s - kapW X) τ i =
+      (a : ℤ) * L τ i - 2 * (if (i : ℕ) < X.p0 then -((s / 2 : ℕ) : ℤ) else ((s / 2 : ℕ) : ℤ)) -
+        (2 * ((i : ℕ) : ℤ) - ((r : ℤ) - 1)) := by
+  simp only [Pi.sub_apply, Pi.smul_apply]
+  simp only [nsmul_eq_mul, deMul, kapW]
+  push_cast
+  ring
+
+end GlobalTheory.ShareSection
+
+namespace GlobalTheory.ShareSection
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+theorem block_fst (X : Data E r) {L : Wt X.Ψ r} (hg : GapsGe X.p0 L 1) (a s : ℕ) :
+    ∀ (τ : X.Ψ) (i j : Fin r), i ≤ j → (j : ℕ) < X.p0 →
+      (a • L - 2 • deMul X.Ψ r X.p0 s - kapW X) τ j ≤ (a • L - 2 • deMul X.Ψ r X.p0 s - kapW X) τ i := by
+  intro τ i j hij hj
+  have hij' : (i : ℕ) ≤ j := hij
+  have hd := drop_of_gaps hg τ (j - i) i j (by omega) (Or.inr hj)
+  rw [wt_apply, wt_apply, if_pos hj, if_pos (by omega)]
+  have e : (((j - i : ℕ) : ℤ)) = (j : ℤ) - (i : ℤ) := by push_cast [Nat.cast_sub hij']; ring
+  rw [e] at hd
+  have ha : (0 : ℤ) ≤ a := Nat.cast_nonneg _
+  have hm : (a : ℤ) * L τ j ≤ (a : ℤ) * L τ i := mul_le_mul_of_nonneg_left (by linarith) ha
+  linarith
+
+theorem block_snd (X : Data E r) {L : Wt X.Ψ r} (hg : GapsGe X.p0 L 1) (a s : ℕ) :
+    ∀ (τ : X.Ψ) (i j : Fin r), X.p0 ≤ (i : ℕ) → i ≤ j →
+      (a • L - 2 • deMul X.Ψ r X.p0 s - kapW X) τ j ≤ (a • L - 2 • deMul X.Ψ r X.p0 s - kapW X) τ i := by
+  intro τ i j hi hij
+  have hij' : (i : ℕ) ≤ j := hij
+  have hd := drop_of_gaps hg τ (j - i) i j (by omega) (Or.inl hi)
+  rw [wt_apply, wt_apply, if_neg (by omega), if_neg (by omega)]
+  have e : (((j - i : ℕ) : ℤ)) = (j : ℤ) - (i : ℤ) := by push_cast [Nat.cast_sub hij']; ring
+  rw [e] at hd
+  have ha : (0 : ℤ) ≤ a := Nat.cast_nonneg _
+  have hm : (a : ℤ) * L τ j ≤ (a : ℤ) * L τ i := mul_le_mul_of_nonneg_left (by linarith) ha
+  linarith
+
+theorem cross (X : Data E r) {L : Wt X.Ψ r} (hg : GapsGe X.p0 L 1) {T : ℕ} (hp : PairGe L (1.9 * T))
+    (a s : ℕ) (hs : s ≤ T) (hr : X.p0 < r) :
+    ∀ (τ : X.Ψ) (i j : Fin r), (i : ℕ) < X.p0 → X.p0 ≤ (j : ℕ) →
+      (a : ℝ) * (1.9 * T) - 2 * T - 2 * ((r : ℝ) - 1) ≤
+        (((a • L - 2 • deMul X.Ψ r X.p0 s - kapW X) τ j : ℤ) : ℝ) -
+          (((a • L - 2 • deMul X.Ψ r X.p0 s - kapW X) τ i : ℤ) : ℝ) := by
+  intro τ i j hi hj
+  have hsp := spread_of_gaps hg τ i j ⟨0, by omega⟩ ⟨r - 1, by omega⟩ hi hj rfl rfl
+  have hpp := hp τ ⟨0, by omega⟩ ⟨r - 1, by omega⟩ rfl rfl
+  have hD : (1.9 * T : ℝ) ≤ ((L τ j - L τ i : ℤ) : ℝ) := hpp.trans (by exact_mod_cast hsp)
+  have ha : (0 : ℝ) ≤ a := Nat.cast_nonneg _
+  have hm := mul_le_mul_of_nonneg_left hD ha
+  rw [wt_apply, wt_apply, if_pos hi, if_neg (by omega)]
+  have hq0 : s / 2 * 2 ≤ T := (Nat.div_mul_le_self s 2).trans hs
+  generalize s / 2 = q at hq0 ⊢
+  have hq : (q : ℝ) * 2 ≤ T := by exact_mod_cast hq0
+  have hij : ((j : ℕ) : ℝ) - (i : ℕ) ≤ (r : ℝ) - 1 := by
+    have : (j : ℕ) + 1 ≤ r := j.isLt
+    have : (j : ℝ) + 1 ≤ r := by exact_mod_cast this
+    have : (0 : ℝ) ≤ (i : ℕ) := Nat.cast_nonneg _
+    linarith
+  push_cast at hm ⊢
+  nlinarith
+
+theorem gaps_G (X : Data E r) {L : Wt X.Ψ r} (hg : GapsGe X.p0 L 1) (n s : ℕ) :
+    GlobalTheory.IndefiniteRowSideFullHecke.ThetaWeightedNorm.GapsGe X (n • L - 2 • deMul X.Ψ r X.p0 s) 0 := by
+  intro τ i j hij hj
+  have h1 := hg τ i j hij hj
+  have e : ∀ k : Fin r, (n • L - 2 • deMul X.Ψ r X.p0 s) τ k =
+      (n : ℤ) * L τ k - 2 * (if (k : ℕ) < X.p0 then -((s / 2 : ℕ) : ℤ) else ((s / 2 : ℕ) : ℤ)) := by
+    intro k
+    simp only [Pi.sub_apply, Pi.smul_apply]
+    simp only [nsmul_eq_mul, deMul]
+    push_cast
+    ring
+  have hn : (0 : ℤ) ≤ n := Nat.cast_nonneg _
+  have hm : (0 : ℤ) ≤ (n : ℤ) * (L τ i - L τ j) := mul_nonneg hn (by linarith)
+  rw [e, e]
+  by_cases hi : (i : ℕ) < X.p0
+  · rw [if_pos hi, if_pos (by omega)]
+    have : (0 : ℤ) ≤ (n : ℤ) * L τ i - 2 * -((s / 2 : ℕ) : ℤ) - ((n : ℤ) * L τ j - 2 * -((s / 2 : ℕ) : ℤ)) := by
+      linarith
+    exact_mod_cast this
+  · rw [if_neg hi, if_neg (by omega)]
+    have : (0 : ℤ) ≤ (n : ℤ) * L τ i - 2 * ((s / 2 : ℕ) : ℤ) - ((n : ℤ) * L τ j - 2 * ((s / 2 : ℕ) : ℤ)) := by
+      linarith
+    exact_mod_cast this
+
+theorem pair_G (X : Data E r) {L : Wt X.Ψ r} {T : ℕ} (hp : PairGe L (1.9 * T)) (n s : ℕ) (hn : 6 ≤ n)
+    (hs : s ≤ T) (hT : 1 ≤ T) (h0 : 0 < X.p0) (hr : X.p0 < r) :
+    GlobalTheory.IndefiniteRowSideFullHecke.ThetaWeightedNorm.PairingGe X (n • L - 2 • deMul X.Ψ r X.p0 s) 1 := by
+  intro τ i0 i1 h0' h1'
+  have hpp := hp τ i0 i1 h0' h1'
+  have e : ∀ k : Fin r, (n • L - 2 • deMul X.Ψ r X.p0 s) τ k =
+      (n : ℤ) * L τ k - 2 * (if (k : ℕ) < X.p0 then -((s / 2 : ℕ) : ℤ) else ((s / 2 : ℕ) : ℤ)) := by
+    intro k
+    simp only [Pi.sub_apply, Pi.smul_apply]
+    simp only [nsmul_eq_mul, deMul]
+    push_cast
+    ring
+  rw [e, e, if_pos (show (i0 : ℕ) < X.p0 by omega), if_neg (show ¬ (i1 : ℕ) < X.p0 by omega)]
+  have hq0 : s / 2 * 2 ≤ T := (Nat.div_mul_le_self s 2).trans hs
+  generalize s / 2 = q at hq0 ⊢
+  have hq : (q : ℝ) * 2 ≤ T := by exact_mod_cast hq0
+  have hn' : (6 : ℝ) ≤ n := by exact_mod_cast hn
+  have hT' : (1 : ℝ) ≤ T := by exact_mod_cast hT
+  push_cast at hpp ⊢
+  nlinarith
+
+theorem card_mul_le_nd (X : Data E r) : X.Ψ.card * (r - 1) ≤ nd X := by
+  let f : X.Ψ × Fin (r - 1) → Ent X := fun p =>
+    (p.1, ⟨(⟨p.2.1 + 1, by have := p.2.isLt; omega⟩, ⟨0, by have := p.2.isLt; omega⟩), by simp [Fin.lt_def]⟩)
+  have hf : Function.Injective f := by
+    rintro ⟨τ, i⟩ ⟨τ', i'⟩ h
+    simp only [f, Prod.mk.injEq, Subtype.mk.injEq, Fin.mk.injEq] at h
+    obtain ⟨h1, h2, -⟩ := h
+    subst h1
+    rw [Prod.mk.injEq]
+    exact ⟨rfl, Fin.ext (by omega)⟩
+  have := Fintype.card_le_of_injective f hf
+  simpa [Fintype.card_prod, Fintype.card_coe, Fintype.card_fin, nd] using this
+
+theorem size_le (c n R T : ℕ) (hc : 1 ≤ c) (hR : 2 ≤ R) (hn : 2 ≤ n) (hcn : c * (R - 1) ≤ n)
+    (hT : 11 * n ^ 2 ≤ T) : 4 * c * R ^ 2 + 2 * R ≤ 2 * T := by
+  obtain ⟨e, rfl⟩ : ∃ e, R = e + 1 := ⟨R - 1, by omega⟩
+  simp only [Nat.add_sub_cancel] at hcn
+  have he : 1 ≤ e := by omega
+  have h1 : c * e * (c * e) ≤ n * n := Nat.mul_le_mul hcn hcn
+  have h2a : (e + 1) ^ 2 ≤ 4 * (e * e) := by nlinarith
+  have h2 : c * (e + 1) ^ 2 ≤ 4 * (c * e * (c * e)) :=
+    calc c * (e + 1) ^ 2 ≤ c * (4 * (e * e)) := Nat.mul_le_mul_left _ h2a
+      _ ≤ (c * c) * (4 * (e * e)) := Nat.mul_le_mul_right _ (Nat.le_mul_self c)
+      _ = 4 * (c * e * (c * e)) := by ring
+  have h3 : 2 * (e + 1) ≤ 4 * n := by nlinarith
+  have h4 : 4 * n ≤ 2 * (n * n) := by nlinarith
+  nlinarith
+
+end GlobalTheory.ShareSection
+
+namespace GlobalTheory.ShareSection
+
+theorem exists_bddSec_shift : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : DataX E r)
+    (Xa : ArchInM X.toData) (Fl : FlatM X.toData Xa), GlobalTheory.Shares.Margins X.toData Xa → 0 < X.p0 → X.p0 < r →
+    GapsGe X.p0 Xa.L 1 → PairGe Xa.L (1.9 * Xa.T) →
+    GapsGe X.p0 (Xa.Fp - kLog X.Ψ r - (nd X.toData + 2) • Xa.L) 0 →
+    PairGe (Xa.Fp - kLog X.Ψ r - (nd X.toData + 2) • Xa.L) 1 → ∀ s : ℕ, Even s → s ≤ Xa.T →
+    ∀ u : Frame X.Ψ r → ℂ, u ∈ X.SS (deMul X.Ψ r X.p0 s) → (∃ x ∈ X.dom, u x ≠ 0) →
+    ∃ w : Frame X.Ψ r → ℂ, X.IsBddSec ((nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s) w ∧
+      ∃ x ∈ X.dom, w x ≠ 0 := by
+  intro E _ _ _ r X Xa Fl _ h0 hr hg hp _ _ s _ hsT _ _ _
+  have hn := Xa.n_ge
+  have hT := Xa.T_ge
+  have hT1 : 1 ≤ Xa.T := le_trans (by nlinarith) hT
+
+  have hδ : 0 < Fl.δ := by
+    rcases Nat.eq_zero_or_pos Fl.δ with h | h
+    · exfalso
+      obtain ⟨x1, hx1, h1⟩ := Xa.thp_ne
+      obtain ⟨k, hk⟩ := Xa.w_nz x1 hx1
+      have hb : ∀ n : ℕ, X.toData.IsBddSec (Xa.Fp + n • Xa.L) (Xa.thp * Xa.w k ^ n) := by
+        intro n
+        induction n with
+        | zero => simpa using Xa.thp_van.1.1
+        | succ n ih =>
+          have := BoundedSectionAlgebra.bdd_mul X.toData ih (Xa.w_van k).1.1
+          rw [succ_nsmul, ← add_assoc, pow_succ, ← mul_assoc]
+          exact this
+      have hup := GlobalTheory.UpperModel.upper E r X.toData Xa Fl 1 (fun _ => Xa.thp * Xa.w k ^ Xa.T)
+        (fun _ => hb Xa.T) (by
+          intro c hc
+          funext q
+          have hq : q = 0 := Subsingleton.elim _ _
+          subst hq
+          have := hc x1 hx1
+          simp only [Fin.sum_univ_one, Pi.mul_apply, Pi.pow_apply] at this
+          rcases mul_eq_zero.1 this with h' | h'
+          · exact h'
+          · exfalso
+            exact mul_ne_zero h1 (pow_ne_zero _ hk) h')
+      rw [h, zero_mul] at hup
+      omega
+    · exact h
+  have hR : 2 ≤ r := by omega
+  have hc1 : 1 ≤ X.Ψ.card := by
+    have := GlobalTheory.ThetaRecordCompare.two_le_r hn
+    by_contra hc
+    have h0c : X.Ψ.card = 0 := by omega
+    have := card_mul_le_nd X.toData
+    have hnd : nd X.toData = X.Ψ.card * (Fintype.card {p : Fin r × Fin r // p.2 < p.1}) := by
+      simp [nd, Fintype.card_prod, Fintype.card_coe]
+    rw [h0c, zero_mul] at hnd
+    omega
+  have hsize := size_le X.Ψ.card (nd X.toData) r Xa.T hc1 hR hn (card_mul_le_nd X.toData) hT
+  have hsize' : (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 2 * r) ≤ 2 * Xa.T := by exact_mod_cast hsize
+  have hTr : (0 : ℝ) ≤ Xa.T := Nat.cast_nonneg _
+
+  have e4 : (nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData - nd X.toData • Xa.L =
+      4 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData := by
+    funext τ i
+    simp only [Pi.sub_apply, Pi.smul_apply]
+    simp only [nsmul_eq_mul]
+    push_cast
+    ring
+  have e3 : (nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData - (nd X.toData + 1) • Xa.L =
+      3 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData := by
+    funext τ i
+    simp only [Pi.sub_apply, Pi.smul_apply]
+    simp only [nsmul_eq_mul]
+    push_cast
+    ring
+  have hmar : ∃ bb m : ℝ, 4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 < bb ∧ bb < m ∧
+      ∀ x0, IsOrth X.toData x0 → ∀ z ∈ OmF X.toData x0, ∀ ξ : Fin (nd X.toData) → ℂ,
+        m * leviRh X.toData x0 z ξ ≤
+          leviO X.toData x0 (phla X.toData ((nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s)) z ξ -
+            leviDens X.toData x0 z ξ - (nd X.toData : ℝ) * leviO X.toData x0 (phla X.toData Xa.L) z ξ := by
+    refine ⟨4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1, (4 : ℕ) * (1.9 * Xa.T) - 2 * Xa.T - 2 * ((r : ℝ) - 1),
+      by linarith, by push_cast; nlinarith, fun x0 ho z hz ξ => ?_⟩
+    have h := (GlobalTheory.CurvMarginClosed.curv_and_margin_closed (E := E)).2 r X.toData
+      (4 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData) _ (block_fst X.toData hg 4 s)
+      (block_snd X.toData hg 4 s) (cross X.toData hg hp 4 s hsT hr) x0 ho z hz ξ
+    have e := IW.leviM_comb X.toData x0 ho hz ((nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s) Xa.L
+      (nd X.toData) ξ
+    rw [e4] at e
+    have e' : leviO X.toData x0 (phla X.toData (4 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData)) z ξ =
+        leviM X.toData (phla X.toData (4 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData)) x0 z ξ := rfl
+    linarith
+  have hstr : ∃ η : ℝ, 0 < η ∧ ∀ x0, IsOrth X.toData x0 → ∀ z ∈ OmF X.toData x0, ∀ ξ : Fin (nd X.toData) → ℂ,
+      2 * η * leviO X.toData x0 (phla X.toData Xa.L) z ξ ≤
+        leviO X.toData x0 (phla X.toData ((nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s)) z ξ -
+          leviDens X.toData x0 z ξ - (nd X.toData : ℝ) * leviO X.toData x0 (phla X.toData Xa.L) z ξ := by
+    refine ⟨1 / 2, by norm_num, fun x0 ho z hz ξ => ?_⟩
+    have hc3 : ∀ (τ : X.Ψ) (i j : Fin r), (i : ℕ) < X.p0 → X.p0 ≤ (j : ℕ) →
+        (0 : ℝ) ≤ (((3 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData) τ j : ℤ) : ℝ) -
+          (((3 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData) τ i : ℤ) : ℝ) := by
+      intro τ i j hi hj
+      have := cross X.toData hg hp 3 s hsT hr τ i j hi hj
+      push_cast at this
+      nlinarith
+    have h := (GlobalTheory.CurvMarginClosed.curv_and_margin_closed (E := E)).2 r X.toData
+      (3 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData) 0 (block_fst X.toData hg 3 s)
+      (block_snd X.toData hg 3 s) hc3 x0 ho z hz ξ
+    have e := IW.leviM_comb X.toData x0 ho hz ((nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s) Xa.L
+      (nd X.toData + 1) ξ
+    rw [e3] at e
+    have e' : leviO X.toData x0 (phla X.toData (3 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData)) z ξ =
+        leviM X.toData (phla X.toData (3 • Xa.L - 2 • deMul X.Ψ r X.p0 s - kapW X.toData)) x0 z ξ := rfl
+    push_cast at e
+    linarith
+  have hcusp : ∀ P, X.toData.IsBddSec ((nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s) P →
+      P ∈ X.toData.SS ((nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s) := fun P hP =>
+    GlobalTheory.ThetaRecordCompare.cusp_of_gaps hn h0 hr (gaps_G X.toData hg _ s)
+      (pair_G X.toData hp _ s (by omega) hsT hT1 h0 hr) hP
+  obtain ⟨F, hF, hv⟩ := GlobalTheory.InterpWeight.interp_weight (E := E)
+    ⟨normFactor_rightBorel_holds, normFactor_leftAction_holds, pointwiseNorm_invariance_holds⟩ poin_holds extFStatement_holds measInv_holds
+    vanishAtS_holds KapPf.kappa_statement_holds r X.toData Xa Fl _ (GlobalTheory.ClosedDiscontinuity.propDisc_closed _ _)
+    hmar hstr hcusp (fun _ => 1)
+  exact ⟨F, hF.1.1, Fl.xs ⟨0, hδ⟩, Fl.xs_mem _, by rw [hv]; exact one_ne_zero⟩
+
+end GlobalTheory.ShareSection
+end
+
+open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_nonzero_boundedSection_shiftedWeight : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : DataX E r) (Xa : ArchInM X.toData) (Fl : FlatM X.toData Xa), GlobalTheory.Shares.Margins X.toData Xa → 0 < X.p0 → X.p0 < r → GapsGe X.p0 Xa.L 1 → PairGe Xa.L (1.9 * Xa.T) → GapsGe X.p0 (Xa.Fp - kLog X.Ψ r - (nd X.toData + 2) • Xa.L) 0 → PairGe (Xa.Fp - kLog X.Ψ r - (nd X.toData + 2) • Xa.L) 1 → ∀ s : ℕ, Even s → s ≤ Xa.T → ∀ u : Frame X.Ψ r → ℂ, u ∈ X.SS (deMul X.Ψ r X.p0 s) → (∃ x ∈ X.dom, u x ≠ 0) → ∃ w : Frame X.Ψ r → ℂ, X.IsBddSec ((nd X.toData + 4) • Xa.L - 2 • deMul X.Ψ r X.p0 s) w ∧ ∃ x ∈ X.dom, w x ≠ 0 := by
+  atlas_forward_decl GlobalTheory.ShareSection.exists_bddSec_shift
+end
+
+section
+section
+open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates MeasureTheory Topology GlobalTheory.Shares GlobalTheory.QuotientMax GlobalTheory.QuotNoMax
+open scoped ContDiff ENNReal Matrix
+open Filter Asymptotics
+
+noncomputable section
+
+namespace GlobalTheory.UpperShift
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+section
+variable (X : Data E r) (Xa : ArchInM X) (Fl : FlatM X Xa) (T : ℕ) (f : Frame X.Ψ r → ℂ)
+
+def quotT (x : Frame X.Ψ r) : ℝ :=
+  X.pnorm (Xa.Fp + T • Xa.L) f x ^ 2 * thetaFac X Xa x /
+    sumSq X Xa Fl x ^ ((T : ℝ) + nd X + 6 + 1 / 2)
+
+theorem quotT_inv (hf : X.IsSec (Xa.Fp + T • Xa.L) f) {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ)
+    {x : Frame X.Ψ r} (hx : x ∈ X.dom) {b : Frame X.Ψ r} (hb : b ∈ Bor X.Ψ r) :
+    quotT X Xa Fl T f (lact γ (rmul x b)) = quotT X Xa Fl T f x := by
+  unfold quotT thetaFac sumSq
+  rw [pointwiseNorm_invariance_holds r X _ _ Xa.et_sec γ hγ x hx b hb, pointwiseNorm_invariance_holds r X _ _ hf γ hγ x hx b hb,
+    pointwiseNorm_invariance_holds r X _ _ Xa.firstTheta_vanishes.1.1.1 γ hγ x hx b hb,
+    pointwiseNorm_invariance_holds r X _ _ Xa.secondTheta_vanishes.1.1.1 γ hγ x hx b hb]
+  congr 2
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [pointwiseNorm_invariance_holds r X _ _ (Fl.s_van k).1.1.1 γ hγ x hx b hb]
+
+theorem quotT_contOn (hf : X.IsSec (Xa.Fp + T • Xa.L) f) {A : Set (Frame X.Ψ r)} (hA : A ⊆ X.dom)
+    (hS : ∀ x ∈ A, 0 < sumSq X Xa Fl x) : ContinuousOn (quotT X Xa Fl T f) A := by
+  have h1 : ContinuousOn (thetaFac X Xa) X.dom :=
+    (((BigB.pnorm_contOn X _ Xa.secondTheta_vanishes.1.1.1).pow 2).mul
+      ((BigB.pnorm_contOn X _ Xa.firstTheta_vanishes.1.1.1).pow 2)).mul
+      (((BigB.pnorm_contOn X _ Xa.et_sec).pow 2).rpow_const fun _ _ => Or.inr (by positivity))
+  have h2 : ContinuousOn (sumSq X Xa Fl) X.dom :=
+    continuousOn_finsetSum _ fun k _ => (BigB.pnorm_contOn X _ (Fl.s_van k).1.1.1).pow 2
+  refine ContinuousOn.div ((((BigB.pnorm_contOn X _ hf).pow 2).mul h1).mono hA)
+    ((h2.mono hA).rpow_const fun _ _ => Or.inr (by positivity)) fun x hx => ?_
+  exact (Real.rpow_pos_of_pos (hS x hx) _).ne'
+
+theorem quotT_near (j : Fin Fl.δ)
+    (hO : (fun z : V (nd X) => f (cpt X (Fl.xs j) z)) =O[𝓝 0] fun z => ‖z‖ ^ (T + nd X + 7))
+    {ε : ℝ} (hε : 0 < ε) : ∀ᶠ z in 𝓝 (0 : V (nd X)),
+      cpt X (Fl.xs j) z ∈ X.dom ∧ quotT X Xa Fl T f (cpt X (Fl.xs j) z) < ε := by
+  have hx := Fl.xs_mem j
+  obtain ⟨d, hd, ev1⟩ := sumSq_lower X Xa Fl j
+  obtain ⟨C, hC, ev2⟩ := hO.exists_pos
+  obtain ⟨B, hB, hBle⟩ := thetaFac_bdd X Xa
+  have hc0 : Filter.Tendsto (cpt X (Fl.xs j)) (𝓝 0) (𝓝 (Fl.xs j)) := by
+    have := (KU.cont_cpt X (Fl.xs j)).tendsto 0
+    rwa [VanishPf.cpt_zero] at this
+  have hnb := (PoinPf.isOpenDom X).mem_nhds hx
+  set N := X.nfac (Xa.Fp + T • Xa.L) (Fl.xs j) + 1 with hN
+  have hN0 : 0 < N := by have := BoundedSectionAlgebra.nfac_pos X hx (Xa.Fp + T • Xa.L); linarith
+  have ev3 : ∀ᶠ z in 𝓝 (0 : V (nd X)), X.nfac (Xa.Fp + T • Xa.L) (cpt X (Fl.xs j) z) < N :=
+    (((ExtFPf.nfac_contOn X _).continuousAt hnb).tendsto.comp hc0).eventually
+      (Iio_mem_nhds (by linarith))
+  set p : ℝ := (T : ℝ) + nd X + 6 + 1 / 2 with hp
+  have hp0 : 0 < p := by positivity
+  set K : ℝ := (C * N) ^ 2 * B / d ^ p with hK
+  have hK0 : 0 < K := by positivity
+  have ev4 : ∀ᶠ z in 𝓝 (0 : V (nd X)), ‖z‖ < ε / K := by
+    filter_upwards [Metric.ball_mem_nhds (0 : V (nd X)) (div_pos hε hK0)] with z hz
+    simpa using hz
+  filter_upwards [ev1, ev2.bound, ev3, ev4, hc0.eventually hnb] with z h1 h2 h3 h4 hy
+  refine ⟨hy, ?_⟩
+  set y := cpt X (Fl.xs j) z with hydef
+  rw [Real.norm_of_nonneg (by positivity)] at h2
+  have hf : X.pnorm (Xa.Fp + T • Xa.L) f y ≤ C * ‖z‖ ^ (T + nd X + 7) * N :=
+    mul_le_mul h2 h3.le (BoundedSectionAlgebra.nfac_pos X hy _).le (by positivity)
+  have hnum : X.pnorm (Xa.Fp + T • Xa.L) f y ^ 2 * thetaFac X Xa y ≤
+      (C * ‖z‖ ^ (T + nd X + 7) * N) ^ 2 * B :=
+    mul_le_mul (pow_le_pow_left₀ (pnorm_nonneg X _ _ hy) hf 2) (hBle y hy) (thetaFac_nonneg X Xa y)
+      (by positivity)
+  rcases (norm_nonneg z).eq_or_lt with h0 | h0
+  · have h5 : X.pnorm (Xa.Fp + T • Xa.L) f y ^ 2 * thetaFac X Xa y ≤ 0 := by
+      rw [← h0] at hnum
+      simpa using hnum
+    exact lt_of_le_of_lt (div_nonpos_of_nonpos_of_nonneg h5
+      (Real.rpow_nonneg (sumSq_nonneg X Xa Fl y) _)) hε
+  · have hden : d ^ p * ‖z‖ ^ (2 * (T + nd X) + 13) ≤ sumSq X Xa Fl y ^ p := by
+      refine le_trans (le_of_eq ?_) (Real.rpow_le_rpow (by positivity) h1 hp0.le)
+      rw [Real.mul_rpow hd.le (by positivity), ← Real.rpow_natCast ‖z‖ 2, ← Real.rpow_mul h0.le,
+        ← Real.rpow_natCast]
+      congr 2
+      rw [hp]; push_cast; ring
+    have h6 : quotT X Xa Fl T f y ≤ (C * ‖z‖ ^ (T + nd X + 7) * N) ^ 2 * B /
+        (d ^ p * ‖z‖ ^ (2 * (T + nd X) + 13)) :=
+      div_le_div₀ (by positivity) hnum (by positivity) hden
+    have h7 : (C * ‖z‖ ^ (T + nd X + 7) * N) ^ 2 * B /
+        (d ^ p * ‖z‖ ^ (2 * (T + nd X) + 13)) = ‖z‖ * K := by
+      rw [hK]
+      have : 0 < d ^ p := by positivity
+      field_simp
+      ring
+    rw [h7] at h6
+    exact h6.trans_lt ((lt_div_iff₀ hK0).mp h4)
+
+theorem quotT_far (hf : X.IsBddSec (Xa.Fp + T • Xa.L) f)
+    (hrate : 0 < 4 / (Xa.g0 : ℝ) - 2 * Xa.c * ((T : ℝ) + nd X + 6 + 1 / 2)) {A : Set (Frame X.Ψ r)} {d : ℝ}
+    (hd : 0 < d) (hA : ∀ x ∈ X.dom, x ∈ A → d * Real.exp (-(2 * Xa.c * Xa.ph x)) ≤ sumSq X Xa Fl x)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ X.dom, x ∈ A → X.la1 x < δ → quotT X Xa Fl T f x < ε := by
+  obtain ⟨Cf, hCf⟩ := hf.2
+  obtain ⟨B, hB, hBle⟩ := thetaFac_le X Xa
+  obtain ⟨ca, ε0, hca, hε0, hp1⟩ := Xa.p1
+  have hβ := hrate
+  set p : ℝ := (T : ℝ) + nd X + 6 + 1 / 2 with hp
+  have hp0 : 0 < p := by positivity
+  set β : ℝ := 4 / (Xa.g0 : ℝ) - 2 * Xa.c * p with hβdef
+  set K : ℝ := (max Cf 1) ^ 2 * B / d ^ p with hK
+  have hK0 : 0 < K := by positivity
+  set M : ℝ := K / (ε * β) with hM
+  have hM0 : 0 < M := by positivity
+  refine ⟨min ε0 (Real.sqrt (ca / M)), lt_min hε0 (Real.sqrt_pos.mpr (by positivity)),
+    fun x hx hxA hl => ?_⟩
+  have hlpos : 0 < X.la1 x := ModeHalfC.first_minimum_pos X hx (BigB.lam_ne X Xa)
+  have hph : ca / X.la1 x ^ 2 ≤ Xa.ph x := hp1 x hx (lt_of_lt_of_le hl (min_le_left _ _))
+  have hl2 : X.la1 x ^ 2 < ca / M :=
+    (Real.lt_sqrt hlpos.le).mp (lt_of_lt_of_le hl (min_le_right _ _))
+  have hbig : M < Xa.ph x := by
+    refine lt_of_lt_of_le ?_ hph
+    rw [lt_div_iff₀ (by positivity)]
+    rw [lt_div_iff₀ hM0] at hl2
+    linarith
+  have hnum : X.pnorm (Xa.Fp + T • Xa.L) f x ^ 2 * thetaFac X Xa x ≤
+      (max Cf 1) ^ 2 * (B * Real.exp (-(4 / (Xa.g0 : ℝ)) * Xa.ph x)) :=
+    mul_le_mul (pow_le_pow_left₀ (pnorm_nonneg X _ _ hx) ((hCf x hx).trans (le_max_left _ _)) 2)
+      (hBle x hx) (thetaFac_nonneg X Xa x) (by positivity)
+  have hden : d ^ p * Real.exp (-(2 * Xa.c * Xa.ph x) * p) ≤ sumSq X Xa Fl x ^ p := by
+    refine le_trans (le_of_eq ?_) (Real.rpow_le_rpow (by positivity) (hA x hx hxA) hp0.le)
+    rw [Real.mul_rpow hd.le (Real.exp_pos _).le, ← Real.exp_mul]
+  have h6 : quotT X Xa Fl T f x ≤ (max Cf 1) ^ 2 * (B * Real.exp (-(4 / (Xa.g0 : ℝ)) * Xa.ph x)) /
+      (d ^ p * Real.exp (-(2 * Xa.c * Xa.ph x) * p)) :=
+    div_le_div₀ (by positivity) hnum (by positivity) hden
+  have h7 : (max Cf 1) ^ 2 * (B * Real.exp (-(4 / (Xa.g0 : ℝ)) * Xa.ph x)) /
+      (d ^ p * Real.exp (-(2 * Xa.c * Xa.ph x) * p)) = K / Real.exp (β * Xa.ph x) := by
+    have e : Real.exp (-(2 * Xa.c * Xa.ph x) * p) =
+        Real.exp (-(4 / (Xa.g0 : ℝ)) * Xa.ph x) * Real.exp (β * Xa.ph x) := by
+      rw [← Real.exp_add]; congr 1; rw [hβdef]; ring
+    have : 0 < d ^ p := by positivity
+    rw [e, hK]
+    field_simp
+  rw [h7] at h6
+  refine h6.trans_lt ?_
+  rw [div_lt_iff₀ (Real.exp_pos _)]
+  have h8 := Real.add_one_le_exp (β * Xa.ph x)
+  rw [hM, div_lt_iff₀ (by positivity)] at hbig
+  nlinarith
+
+theorem exists_maxT (hf : X.IsBddSec (Xa.Fp + T • Xa.L) f)
+    (hrate : 0 < 4 / (Xa.g0 : ℝ) - 2 * Xa.c * ((T : ℝ) + nd X + 6 + 1 / 2))
+    (hO : ∀ j, (fun z : V (nd X) => f (cpt X (Fl.xs j) z)) =O[𝓝 0] fun z => ‖z‖ ^ (T + nd X + 7))
+    (hpos : ∃ x ∈ X.dom, 0 < quotT X Xa Fl T f x) :
+    ∃ x0 ∈ X.dom, (∃ k, Fl.s k x0 ≠ 0) ∧ 0 < quotT X Xa Fl T f x0 ∧
+      ∀ x ∈ X.dom, quotT X Xa Fl T f x ≤ quotT X Xa Fl T f x0 := by
+  obtain ⟨x1, hx1, hε⟩ := hpos
+  have hρ : ∀ j, ∃ ρ : ℝ, 0 < ρ ∧
+      IsOpen {x | ∃ γ ∈ X.Γ, ∃ b ∈ Bor X.Ψ r, ∃ z' ∈ Metric.ball (0 : V (nd X)) ρ,
+        x = lact γ (rmul (cpt X (Fl.xs j) z') b)} ∧
+      ∀ z ∈ Metric.ball (0 : V (nd X)) ρ, cpt X (Fl.xs j) z ∈ X.dom ∧
+        quotT X Xa Fl T f (cpt X (Fl.xs j) z) < quotT X Xa Fl T f x1 := by
+    intro j
+    obtain ⟨ρ0, hρ0, hop⟩ := sat_open X (Fl.xs_mem j)
+    obtain ⟨ρ1, hρ1, h1⟩ := Metric.eventually_nhds_iff_ball.mp (quotT_near X Xa Fl T f j (hO j) hε)
+    exact ⟨min ρ0 ρ1, lt_min hρ0 hρ1, hop _ (min_le_left _ _),
+      fun z hz => h1 z (Metric.ball_subset_ball (min_le_right _ _) hz)⟩
+  choose ρ hρ0 hop hsm using hρ
+  set U : Set (Frame X.Ψ r) := ⋃ j, {x | ∃ γ ∈ X.Γ, ∃ b ∈ Bor X.Ψ r,
+    ∃ z' ∈ Metric.ball (0 : V (nd X)) (ρ j), x = lact γ (rmul (cpt X (Fl.xs j) z') b)} with hUdef
+  have hU : IsOpen U := isOpen_iUnion hop
+  have hxs : ∀ j, Fl.xs j ∈ U := fun j => Set.mem_iUnion.mpr
+    ⟨j, 1, X.Γ.one_mem, ExtFPf.oneF X, ExtFPf.oneF_mem X, 0, Metric.mem_ball_self (hρ0 j), by
+      rw [ExtFPf.rmul_oneF, KU.lact_one, VanishPf.cpt_zero]⟩
+  have hsat : ∀ x ∈ U, ∀ γ ∈ X.Γ, ∀ b ∈ Bor X.Ψ r, lact γ (rmul x b) ∈ U := by
+    intro x hx γ hγ b hb
+    obtain ⟨j, γ', hγ', b', hb', z, hz, rfl⟩ := Set.mem_iUnion.mp hx
+    refine Set.mem_iUnion.mpr ⟨j, γ * γ', X.Γ.mul_mem hγ hγ', rmul b' b, ExtFPf.mul_mem X hb' hb,
+      z, hz, ?_⟩
+    rw [← PoinPf.lact_rmul', KU.lact_lact, ExtFPf.rmul_assoc]
+  have hUsm : ∀ x ∈ U, quotT X Xa Fl T f x < quotT X Xa Fl T f x1 := by
+    intro x hx
+    obtain ⟨j, γ', hγ', b', hb', z, hz, rfl⟩ := Set.mem_iUnion.mp hx
+    rw [quotT_inv X Xa Fl T f hf.1 hγ' (hsm j z hz).1 hb']
+    exact (hsm j z hz).2
+  obtain ⟨d, hd, hfar⟩ := sumSq_far X Xa Fl hU hxs hsat
+  obtain ⟨δ, hδ, hsmall⟩ := quotT_far X Xa Fl T f hf hrate (A := Uᶜ) hd hfar hε
+  obtain ⟨Kc, hKc, hKsub, hrep⟩ := reductionTheory_holds r X δ hδ
+  have hSpos : ∀ x ∈ Kc \ U, 0 < sumSq X Xa Fl x := fun x hx =>
+    lt_of_lt_of_le (by positivity) (hfar x (hKsub hx.1) hx.2)
+  have hmove : ∀ x ∈ X.dom, quotT X Xa Fl T f x1 ≤ quotT X Xa Fl T f x →
+      ∃ y ∈ Kc \ U, quotT X Xa Fl T f y = quotT X Xa Fl T f x := by
+    intro x hx hle
+    have hxU : x ∉ U := fun h => absurd (hUsm x h) (not_lt.mpr hle)
+    have hl : δ ≤ X.la1 x := by
+      by_contra h
+      exact absurd (hsmall x hx hxU (not_le.mp h)) (not_lt.mpr hle)
+    obtain ⟨γ, hγ, b, hb, hy⟩ := hrep x hx hl
+    have he := quotT_inv X Xa Fl T f hf.1 hγ hx hb
+    exact ⟨_, ⟨hy, fun h => absurd (he ▸ hUsm _ h) (not_lt.mpr hle)⟩, he⟩
+  obtain ⟨y1, hy1, he1⟩ := hmove x1 hx1 le_rfl
+  obtain ⟨x0, hx0, hmax⟩ := (hKc.diff hU).exists_isMaxOn ⟨y1, hy1⟩
+    (quotT_contOn X Xa Fl T f hf.1 (fun x hx => hKsub hx.1) hSpos)
+  have hge : quotT X Xa Fl T f x1 ≤ quotT X Xa Fl T f x0 := he1 ▸ hmax hy1
+  refine ⟨x0, hKsub hx0.1, ?_, hε.trans_le hge, fun x hx => ?_⟩
+  · by_contra h
+    push Not at h
+    have h0 := hSpos x0 hx0
+    simp [sumSq, Data.pnorm, h] at h0
+  · rcases le_or_gt (quotT X Xa Fl T f x1) (quotT X Xa Fl T f x) with hle | hlt
+    · obtain ⟨y, hy, he⟩ := hmove x hx hle
+      exact he ▸ hmax hy
+    · exact hlt.le.trans hge
+
+end
+
+theorem mainT : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (Xa : ArchInM X) (Fl : FlatM X Xa) (T : ℕ) (f : Frame X.Ψ r → ℂ), 0 < 4 / (Xa.g0 : ℝ) - 2 * Xa.c * ((T : ℝ) + nd X + 6 + 1 / 2) → X.IsBddSec (Xa.Fp + T • Xa.L) f → (∀ j, (fun z : V (nd X) => f (cpt X (Fl.xs j) z)) =O[𝓝 0] fun z => ‖z‖ ^ (T + nd X + 7)) → let Φ : Frame X.Ψ r → ℝ := fun x => X.pnorm (Xa.Fp + T • Xa.L) f x ^ 2 * X.pnorm ((nd X + 4) • Xa.L - Xa.Fp) Xa.th2 x ^ 2 * X.pnorm (2 • Xa.L - Xa.de) Xa.th1 x ^ 2 * (X.pnorm ((Xa.i * (Xa.g0 / 2)) • Xa.de) Xa.et x ^ 2) ^ ((1 : ℝ) / (Xa.i * (Xa.g0 / 2) : ℕ)) / (∑ k, X.pnorm Xa.L (Fl.s k) x ^ 2) ^ ((T : ℝ) + nd X + 6 + 1 / 2); (∃ x ∈ X.dom, 0 < Φ x) → ∃ x0 ∈ X.dom, (∃ k, Fl.s k x0 ≠ 0) ∧ 0 < Φ x0 ∧ ∀ x ∈ X.dom, Φ x ≤ Φ x0 := by
+  intro E _ _ _ r X Xa Fl T f hrate hf hO Φ hpos
+  have he : Φ = quotT X Xa Fl T f := by
+    funext x
+    simp only [Φ, quotT, thetaFac, sumSq, mul_assoc]
+  rw [he] at hpos ⊢
+  exact exists_maxT X Xa Fl T f hf hrate hO hpos
+
+theorem no_pos_maxT : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (Xa : ArchInM X) (Fl : FlatM X Xa) (T : ℕ) (f : Frame X.Ψ r → ℂ), X.IsSec (Xa.Fp + T • Xa.L) f → let Φ : Frame X.Ψ r → ℝ := fun x => X.pnorm (Xa.Fp + T • Xa.L) f x ^ 2 * X.pnorm ((nd X + 4) • Xa.L - Xa.Fp) Xa.th2 x ^ 2 * X.pnorm (2 • Xa.L - Xa.de) Xa.th1 x ^ 2 * (X.pnorm ((Xa.i * (Xa.g0 / 2)) • Xa.de) Xa.et x ^ 2) ^ ((1 : ℝ) / (Xa.i * (Xa.g0 / 2) : ℕ)) / (∑ k, X.pnorm Xa.L (Fl.s k) x ^ 2) ^ ((T : ℝ) + nd X + 6 + 1 / 2); ∀ x0 ∈ X.dom, (∃ k, Fl.s k x0 ≠ 0) → 0 < Φ x0 → ¬ ∀ x ∈ X.dom, Φ x ≤ Φ x0 := by
+  intro E _ _ _ r X Xa Fl T f hf Φ x0 hx0 ⟨k0, hk0⟩ hpos hmax
+  have hU : IsOpen (OmF X x0) := OntoB.isOpen_OmF X x0
+  have h0U : (0 : V (nd X)) ∈ OmF X x0 := by show cpt X x0 0 ∈ X.dom; rw [IW.cpt_zero]; exact hx0
+  set n1 : ℝ := ((Xa.i * (Xa.g0 / 2) : ℕ) : ℝ) with hn1
+  have hn1p : 0 < n1 := by
+    obtain ⟨g2, hg2⟩ := Xa.genus_even
+    have h1 := Xa.i_pos
+    have h2 := Xa.genus_pos
+    have h3 : 1 ≤ Xa.g0 / 2 := by omega
+    rw [hn1]
+    have : 1 ≤ Xa.i * (Xa.g0 / 2) := Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero (by omega) (by omega))
+    exact_mod_cast this
+  have hz : ∀ (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ), P x0 = 0 → X.pnorm la P x0 ^ 2 = 0 := by
+    intro la P h
+    rw [OW.pnorm_eq, h]; simp
+  have hf0 : f x0 ≠ 0 := fun h => by
+    simp only [Φ, hz _ _ h, zero_mul, zero_div, lt_irrefl] at hpos
+  have h20 : Xa.th2 x0 ≠ 0 := fun h => by
+    simp only [Φ, hz _ _ h, zero_mul, mul_zero, zero_div, lt_irrefl] at hpos
+  have h10 : Xa.th1 x0 ≠ 0 := fun h => by
+    simp only [Φ, hz _ _ h, zero_mul, mul_zero, zero_div, lt_irrefl] at hpos
+  have he0 : Xa.et x0 ≠ 0 := fun h => by
+    have : (0 : ℝ) ^ ((1 : ℝ) / n1) = 0 := Real.zero_rpow (by positivity)
+    simp only [Φ, hz _ _ h, ← hn1, this, mul_zero, zero_div, lt_irrefl] at hpos
+  have hlog : ∀ x ∈ X.dom, f x ≠ 0 → Xa.th2 x ≠ 0 → Xa.th1 x ≠ 0 → Xa.et x ≠ 0 → Fl.s k0 x ≠ 0 →
+      0 < Φ x ∧ Real.log (Φ x) = Real.log (Complex.normSq (f x)) + Real.log (Complex.normSq (Xa.th2 x)) +
+      Real.log (Complex.normSq (Xa.th1 x)) + (1 / n1) * Real.log (Complex.normSq (Xa.et x)) +
+      (-((T : ℝ) + nd X + 6 + 1 / 2)) * Real.log (∑ k, Complex.normSq (Fl.s k x)) +
+      (1 / 2) * phla X Xa.L x := by
+    intro x hx a1 a2 a3 a4 a5
+    have hp : ∀ (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ), P x ≠ 0 → 0 < X.pnorm la P x ^ 2 := by
+      intro la P h
+      rw [OW.pnorm_sq X la P hx]
+      exact mul_pos (Complex.normSq_pos.2 h) (Real.exp_pos _)
+    have hsp := OW.sums_pos Fl a5
+    have hS : 0 < ∑ k, X.pnorm Xa.L (Fl.s k) x ^ 2 := by
+      rw [OW.sum_pnorm_sq X _ _ hx]; exact mul_pos hsp (Real.exp_pos _)
+    have p1 := hp (Xa.Fp + T • Xa.L) f a1
+    have p2 := hp ((nd X + 4) • Xa.L - Xa.Fp) Xa.th2 a2
+    have p3 := hp (2 • Xa.L - Xa.de) Xa.th1 a3
+    have p4 := hp ((Xa.i * (Xa.g0 / 2)) • Xa.de) Xa.et a4
+    have p5 := Real.rpow_pos_of_pos p4 (1 / n1)
+    have p6 := Real.rpow_pos_of_pos hS ((T : ℝ) + nd X + 6 + 1 / 2)
+    refine ⟨div_pos (mul_pos (mul_pos (mul_pos p1 p2) p3) p5) p6, ?_⟩
+    simp only [Φ]
+    rw [Real.log_div (mul_pos (mul_pos (mul_pos p1 p2) p3) p5).ne' p6.ne',
+      Real.log_mul (mul_pos (mul_pos p1 p2) p3).ne' p5.ne', Real.log_mul (mul_pos p1 p2).ne' p3.ne',
+      Real.log_mul p1.ne' p2.ne', Real.log_rpow p4, Real.log_rpow hS,
+      BigC.log_pnorm_sq X hx a1, BigC.log_pnorm_sq X hx a2, BigC.log_pnorm_sq X hx a3,
+      BigC.log_pnorm_sq X hx a4, OW.sum_pnorm_sq X _ _ hx, Real.log_mul hsp.ne' (Real.exp_pos _).ne',
+      Real.log_exp, OW.phla_add_nsmul X hx, BigC.phla_sub X hx, BigC.phla_sub X hx,
+      BigC.phla_nsmul X hx, BigC.phla_nsmul X hx, BigC.phla_nsmul X hx, ← hn1]
+    push_cast
+    field_simp
+    ring
+  have d1 := OntoB.hol_comp X x0 hf.1
+  have d2 := OntoB.hol_comp X x0 Xa.secondTheta_vanishes.1.1.1.1
+  have d3 := OntoB.hol_comp X x0 Xa.firstTheta_vanishes.1.1.1.1
+  have d4 := OntoB.hol_comp X x0 Xa.et_sec.1
+  have d5 := fun k => OntoB.hol_comp X x0 (OW.s_diffOn Fl k)
+  have hc0 : cpt X x0 0 = x0 := IW.cpt_zero X x0
+  have ev : ∀ {P : Frame X.Ψ r → ℂ}, DifferentiableOn ℂ (fun z => P (cpt X x0 z)) (OmF X x0) → P x0 ≠ 0 →
+      ∀ᶠ z in 𝓝 (0 : V (nd X)), P (cpt X x0 z) ≠ 0 := fun hP h =>
+    (hP.continuousOn.continuousAt (hU.mem_nhds h0U)).eventually_ne (by rw [hc0]; exact h)
+  refine no_localMax hU h0U (a := fun z => f (cpt X x0 z)) (b := fun z => Xa.th2 (cpt X x0 z))
+    (c := fun z => Xa.th1 (cpt X x0 z)) (d := fun z => Xa.et (cpt X x0 z)) d1 d2 d3 d4
+    (by simpa only [hc0] using hf0) (by simpa only [hc0] using h20) (by simpa only [hc0] using h10)
+    (by simpa only [hc0] using he0) (s := fun k z => Fl.s k (cpt X x0 z)) d5 (k0 := k0)
+    (by simpa only [hc0] using hk0) (φ := fun z => phla X Xa.L (cpt X x0 z))
+    ((IW.phla_cpt_cdAt X x0 h0U Xa.L).of_le HE.two_le_inf)
+    (fun ξ hξ => Xa.posL x0 hx0 0 h0U ξ hξ) (1 / n1) (-((T : ℝ) + nd X + 6 + 1 / 2)) ?_
+  filter_upwards [hU.mem_nhds h0U, ev d1 hf0, ev d2 h20, ev d3 h10, ev d4 he0, ev (d5 k0) hk0]
+    with z hz a1 a2 a3 a4 a5
+  obtain ⟨q1, q2⟩ := hlog _ hz a1 a2 a3 a4 a5
+  obtain ⟨-, q3⟩ := hlog _ hx0 hf0 h20 h10 he0 hk0
+  rw [hc0, ← q2, ← q3]
+  exact Real.log_le_log q1 (hmax _ hz)
+
+theorem rate_shift {X : Data E r} (Xa : ArchInM X) :
+    0 < 4 / (Xa.g0 : ℝ) - 2 * Xa.c * (((Xa.T + (nd X + 4) : ℕ) : ℝ) + nd X + 6 + 1 / 2) := by
+  have hg : (1 : ℝ) ≤ Xa.g0 := by exact_mod_cast Xa.genus_pos
+  have hc := Xa.c_pos
+  have hT : (2 * nd X : ℝ) + 11 ≤ Xa.T := by
+    have h1 := Xa.T_ge
+    have h2 := Xa.n_ge
+    have : 2 * nd X + 11 ≤ Xa.T := by nlinarith
+    exact_mod_cast this
+  have hn : (0 : ℝ) ≤ nd X := Nat.cast_nonneg _
+  have h1 : (Xa.T : ℝ) * Xa.c * Xa.g0 ≤ 1 := Xa.Tcg0
+  set y : ℝ := Xa.c * Xa.g0 with hy
+  have hy0 : 0 < y := by positivity
+  have h2 : y * (2 * nd X + 21 / 2) < y * Xa.T := mul_lt_mul_of_pos_left (by linarith) hy0
+  have h3 : 2 * y * ((Xa.T : ℝ) + 2 * nd X + 21 / 2) < 4 := by nlinarith
+  have h4 : 4 / (Xa.g0 : ℝ) - 2 * Xa.c * (((Xa.T + (nd X + 4) : ℕ) : ℝ) + nd X + 6 + 1 / 2) =
+      (4 - 2 * y * ((Xa.T : ℝ) + 2 * nd X + 21 / 2)) / Xa.g0 := by
+    rw [hy]; push_cast; field_simp; ring
+  rw [h4]
+  exact div_pos (by linarith) (by linarith)
+
+end GlobalTheory.UpperShift
+
+namespace GlobalTheory.UpperShift
+
+open GlobalTheory.UpperModel GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
+
+theorem upper_shift : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (Xa : ArchInM X) (Fl : FlatM X Xa) (m : ℕ) (f : Fin m → Frame X.Ψ r → ℂ), (∀ q, X.IsBddSec (Xa.Fp + (Xa.T + (nd X + 4)) • Xa.L) (f q)) → (∀ u : Fin m → ℂ, (∀ x ∈ X.dom, ∑ q, u q * f q x = 0) → u = 0) → m ≤ Fl.δ * (Xa.T + 3 * nd X + 10).choose (nd X) := by
+  intro E _ _ _ r X Xa Fl m f hf hind
+  by_contra hm
+  obtain ⟨u, hu, hO⟩ := exists_comb Fl (Xa.T + (nd X + 4) + nd X + 6) m f (fun q => (hf q).1.1) (by
+    rw [show Xa.T + (nd X + 4) + nd X + 6 + nd X = Xa.T + 3 * nd X + 10 by ring]; omega)
+  have hg := isBddSec_sum X hf u
+  have hg0 : ∃ x ∈ X.dom, ∑ q, u q * f q x ≠ 0 := by
+    by_contra h
+    push_neg at h
+    exact hu (hind u h)
+  obtain ⟨k, hk⟩ := exists_s_ne Fl
+  have d1 := hg.1.1
+  have d2 := Xa.secondTheta_vanishes.1.1.1.1
+  have d3 := Xa.firstTheta_vanishes.1.1.1.1
+  have d4 := Xa.et_sec.1
+  have d5 := (Fl.s_van k).1.1.1.1
+  obtain ⟨x, hx, hne⟩ := exists_mul_ne (((d1.mul d2).mul d3).mul d4) d5
+    (exists_mul_ne ((d1.mul d2).mul d3) d4 (exists_mul_ne (d1.mul d2) d3
+      (exists_mul_ne d1 d2 hg0 Xa.secondTheta_ne_zero) Xa.firstTheta_ne_zero) Xa.et_ne) hk
+  simp only [Pi.mul_apply, ne_eq, mul_eq_zero, not_or] at hne
+  obtain ⟨⟨⟨⟨h1, h2⟩, h3⟩, h4⟩, h5⟩ := hne
+  obtain ⟨x0, hx0, hs0, hpos, hmax⟩ := mainT E r X Xa Fl (Xa.T + (nd X + 4)) _ (rate_shift Xa) hg hO ⟨x, hx, by
+    have p1 := pnorm_pos X (Xa.Fp + (Xa.T + (nd X + 4)) • Xa.L) (P := fun x => ∑ q, u q * f q x) hx h1
+    have p2 := pnorm_pos X ((nd X + 4) • Xa.L - Xa.Fp) hx h2
+    have p3 := pnorm_pos X (2 • Xa.L - Xa.de) hx h3
+    have p4 := pnorm_pos X ((Xa.i * (Xa.g0 / 2)) • Xa.de) hx h4
+    have p5 : 0 < ∑ k, X.pnorm Xa.L (Fl.s k) x ^ 2 :=
+      Finset.sum_pos' (fun _ _ => sq_nonneg _) ⟨k, Finset.mem_univ _, pow_pos (pnorm_pos X _ hx h5) 2⟩
+    positivity⟩
+  exact no_pos_maxT E r X Xa Fl _ _ hg.1 x0 hx0 hs0 hpos hmax
+
+end GlobalTheory.UpperShift
+end
+end
+
+open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.card_independent_boundedSections_shiftedWeight_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (Xa : ArchInM X) (Fl : FlatM X Xa) (m : ℕ) (f : Fin m → Frame X.Ψ r → ℂ), (∀ q, X.IsBddSec (Xa.Fp + (Xa.T + (nd X + 4)) • Xa.L) (f q)) → (∀ u : Fin m → ℂ, (∀ x ∈ X.dom, ∑ q, u q * f q x = 0) → u = 0) → m ≤ Fl.δ * (Xa.T + 3 * nd X + 10).choose (nd X) := by
+  atlas_forward_decl GlobalTheory.UpperShift.upper_shift
+end
+
+section
+section
+open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
+
+namespace GlobalTheory.BinomRatio
+open Finset
+
+theorem fact_mul_choose_eq_prod (T a n : ℕ) :
+    ((n.factorial : ℕ) : ℝ) * (((T + a + n).choose n : ℕ) : ℝ)
+      = ∏ i ∈ range n, ((T : ℝ) + a + 1 + i) := by
+  have h := Nat.ascFactorial_eq_factorial_mul_choose (T + a) n
+  rw [Nat.ascFactorial_eq_prod_range] at h
+  have h2 : ((∏ i ∈ range n, (T + a + 1 + i) : ℕ) : ℝ) = ((n.factorial * (T + a + n).choose n : ℕ) : ℝ) := by
+    rw [h]
+  push_cast at h2
+  rw [← h2]
+
+theorem prod_upper (T a n : ℕ) :
+    ∏ i ∈ range n, ((T : ℝ) + a + 1 + i)
+      ≤ (1 + (a : ℝ) / (T + 1)) ^ n * ∏ i ∈ range n, ((T : ℝ) + 0 + 1 + i) := by
+  have hc : (1 + (a : ℝ) / (T + 1)) ^ n = ∏ _i ∈ range n, (1 + (a : ℝ) / (T + 1)) := by simp
+  rw [hc, ← prod_mul_distrib]
+  apply prod_le_prod
+  · intro i _; positivity
+  · intro i _
+    have hT : (0 : ℝ) < T + 1 := by positivity
+    have hi : (0 : ℝ) ≤ i := by positivity
+    have ha : (0 : ℝ) ≤ a := by positivity
+    have e : (1 + (a : ℝ) / (T + 1)) * ((T : ℝ) + 0 + 1 + i) = (T + 1 + i) + a + a * i / (T + 1) := by
+      field_simp; ring
+    rw [e]
+    have : 0 ≤ (a : ℝ) * i / (T + 1) := by positivity
+    linarith
+
+theorem prod_lower (T c n : ℕ) (hc : (c : ℝ) ≤ T) (hT : 0 < T) :
+    (1 - (c : ℝ) / T) ^ n * ∏ i ∈ range n, ((T : ℝ) + c + 1 + i)
+      ≤ ∏ i ∈ range n, ((T : ℝ) + 0 + 1 + i) := by
+  have hT' : (0 : ℝ) < T := by exact_mod_cast hT
+  have hcp : (1 - (c : ℝ) / T) ^ n = ∏ _i ∈ range n, (1 - (c : ℝ) / T) := by simp
+  rw [hcp, ← prod_mul_distrib]
+  apply prod_le_prod
+  · intro i _
+    have : (0 : ℝ) ≤ 1 - c / T := by rw [sub_nonneg, div_le_one hT']; exact hc
+    positivity
+  · intro i _
+    have hi : (0 : ℝ) ≤ i := by positivity
+    have hc0 : (0 : ℝ) ≤ c := by positivity
+    have e : (1 - (c : ℝ) / T) * ((T : ℝ) + c + 1 + i) = (T + 1 + i) - (c * c + c * (1 + i)) / T := by
+      field_simp; ring
+    rw [e]
+    have : 0 ≤ ((c : ℝ) * c + c * (1 + i)) / T := by positivity
+    linarith
+
+end GlobalTheory.BinomRatio
+
+namespace GlobalTheory.BinomRatio
+open Finset
+
+theorem first_ratio (T n : ℕ) (hn : 2 ≤ n) (hT : 11 * n ^ 2 ≤ T) :
+    (T + 3 * n + 10).choose n ≤ 2 * (T + n).choose n := by
+  have e1 : T + 3 * n + 10 = T + (2 * n + 10) + n := by ring
+  have e2 : T + n = T + 0 + n := by ring
+  rw [e1, e2]
+  have hf : (0 : ℝ) < ((n.factorial : ℕ) : ℝ) := by exact_mod_cast Nat.factorial_pos n
+  have hA := fact_mul_choose_eq_prod T (2 * n + 10) n
+  have hB := fact_mul_choose_eq_prod T 0 n
+  have hU := prod_upper T (2 * n + 10) n
+  set x : ℝ := ((2 * n + 10 : ℕ) : ℝ) / (T + 1) with hx
+  have hT1 : (0 : ℝ) < T + 1 := by positivity
+  have hx0 : 0 ≤ x := by positivity
+  have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hTR : (11 : ℝ) * n ^ 2 ≤ T := by exact_mod_cast hT
+  have hnx : (n : ℝ) * x ≤ 0.65 := by
+    rw [hx, mul_div_assoc', div_le_iff₀ hT1]
+    push_cast
+    nlinarith
+  have hpow : (1 + x) ^ n ≤ 2 := by
+    calc (1 + x) ^ n ≤ (Real.exp x) ^ n := by
+          apply pow_le_pow_left₀ (by positivity)
+          have := Real.add_one_le_exp x; linarith
+      _ = Real.exp (n * x) := by rw [← Real.exp_nat_mul]
+      _ ≤ Real.exp (Real.log 2) := by
+          apply Real.exp_le_exp.mpr
+          have := Real.log_two_gt_d9; linarith
+      _ = 2 := Real.exp_log (by norm_num)
+  have hP : 0 ≤ ∏ i ∈ range n, ((T : ℝ) + 0 + 1 + i) := by
+    apply prod_nonneg; intro i _; positivity
+  have key : ((n.factorial : ℕ) : ℝ) * (((T + (2 * n + 10) + n).choose n : ℕ) : ℝ)
+      ≤ ((n.factorial : ℕ) : ℝ) * ((2 * (T + 0 + n).choose n : ℕ) : ℝ) := by
+    rw [hA]
+    calc ∏ i ∈ range n, ((T : ℝ) + ((2 * n + 10 : ℕ) : ℝ) + 1 + i)
+        ≤ (1 + x) ^ n * ∏ i ∈ range n, ((T : ℝ) + 0 + 1 + i) := hU
+      _ ≤ 2 * ∏ i ∈ range n, ((T : ℝ) + 0 + 1 + i) := mul_le_mul_of_nonneg_right hpow hP
+      _ = ((n.factorial : ℕ) : ℝ) * ((2 * (T + 0 + n).choose n : ℕ) : ℝ) := by
+          push_cast at hB ⊢
+          rw [← hB]; ring
+  have := le_of_mul_le_mul_left key hf
+  exact_mod_cast this
+
+theorem second_ratio (T n : ℕ) (hn : 2 ≤ n) (hT : 11 * n ^ 2 ≤ T) :
+    (1 - (n : ℝ) * (n + 6) / T) * ((T + 2 * n + 6).choose n : ℕ) ≤ ((T + n).choose n : ℕ) := by
+  have e1 : T + 2 * n + 6 = T + (n + 6) + n := by ring
+  have e2 : T + n = T + 0 + n := by ring
+  rw [e1, e2]
+  have hf : (0 : ℝ) < ((n.factorial : ℕ) : ℝ) := by exact_mod_cast Nat.factorial_pos n
+  have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hTR : (11 : ℝ) * n ^ 2 ≤ T := by exact_mod_cast hT
+  have hT0 : 0 < T := by nlinarith
+  have hTR0 : (0 : ℝ) < T := by exact_mod_cast hT0
+  have hc : (((n + 6 : ℕ)) : ℝ) ≤ T := by push_cast; nlinarith
+  have hA := fact_mul_choose_eq_prod T (n + 6) n
+  have hB := fact_mul_choose_eq_prod T 0 n
+  have hL := prod_lower T (n + 6) n hc hT0
+  have hbern : 1 + (n : ℝ) * (-((((n + 6 : ℕ)) : ℝ)) / T) ≤ (1 + -((((n + 6 : ℕ)) : ℝ)) / T) ^ n := by
+    apply one_add_mul_le_pow
+    rw [neg_div, neg_le_neg_iff, div_le_iff₀ hTR0]
+    linarith
+  have hC : (0 : ℝ) ≤ (((T + (n + 6) + n).choose n : ℕ) : ℝ) := by positivity
+  have step : (1 - (n : ℝ) * (n + 6) / T) * (((T + (n + 6) + n).choose n : ℕ) : ℝ)
+      ≤ (1 - (((n + 6 : ℕ)) : ℝ) / T) ^ n * (((T + (n + 6) + n).choose n : ℕ) : ℝ) := by
+    apply mul_le_mul_of_nonneg_right _ hC
+    have h1 : (1 : ℝ) - (n : ℝ) * (n + 6) / T = 1 + (n : ℝ) * (-((((n + 6 : ℕ)) : ℝ)) / T) := by
+      push_cast; ring
+    have h2 : (1 : ℝ) - (((n + 6 : ℕ)) : ℝ) / T = 1 + -((((n + 6 : ℕ)) : ℝ)) / T := by ring
+    rw [h1, h2]; exact hbern
+  have key : ((n.factorial : ℕ) : ℝ) * ((1 - (((n + 6 : ℕ)) : ℝ) / T) ^ n * (((T + (n + 6) + n).choose n : ℕ) : ℝ))
+      ≤ ((n.factorial : ℕ) : ℝ) * (((T + 0 + n).choose n : ℕ) : ℝ) := by
+    rw [hB, mul_left_comm, hA]
+    simpa only [Nat.cast_zero] using hL
+  have := le_of_mul_le_mul_left key hf
+  linarith
+
+theorem two_binom_ratios : ∀ T n : ℕ, 2 ≤ n → 11 * n ^ 2 ≤ T →
+    (T + 3 * n + 10).choose n ≤ 2 * (T + n).choose n ∧
+    (1 - (n : ℝ) * (n + 6) / T) * ((T + 2 * n + 6).choose n : ℕ) ≤ ((T + n).choose n : ℕ) :=
+  fun T n hn hT => ⟨first_ratio T n hn hT, second_ratio T n hn hT⟩
+
+end GlobalTheory.BinomRatio
+end
+
+open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.two_binomial_ratio_bounds : ∀ T n : ℕ, 2 ≤ n → 11 * n ^ 2 ≤ T → (T + 3 * n + 10).choose n ≤ 2 * (T + n).choose n ∧ (1 - (n : ℝ) * (n + 6) / T) * ((T + 2 * n + 6).choose n : ℕ) ≤ ((T + n).choose n : ℕ) := by
+  atlas_forward_decl GlobalTheory.BinomRatio.two_binom_ratios
+end
+
+section
 section
 open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn
 
@@ -374,3 +1200,4 @@ open NumberField Module ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheor
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.twoLevelFlagDomain_cuspForm_ranks_shifted_weights : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (U C : Type) [Group U] [Finite U] [Finite C] [MulAction U C] (M : TwoLevels E r U C), LevelHyp (sub M ⊥) → 0 < M.p0 → M.p0 < r → ∀ (ka : Wt M.Ψ r) (T : ℕ), ArchOn M ka T → sOf M ≤ T → Ranks M ka (sOf M) ((M.dimY : ℝ) * (M.dimY + 6) / T) 2 := by
   atlas_forward_decl GlobalTheory.ShareRanks.ranks
+end

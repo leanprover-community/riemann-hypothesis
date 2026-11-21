@@ -3,8 +3,26 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.ValuationOfValuationModSquare
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CrystallineSiteZariskiCoveredByAtlas
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PeriodRingBaseChangeFromUniversalStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentLocalizationUniversalStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentRefinementOfUnimodularStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentLocalizationUniversal
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentRefinementOfUnimodular
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.idempotent_localization_universal : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l) (e : A.A), IsIdempotentElem e → ∃ (A' : PAlg l) (lam : A ⟶ A'), (A.IsTest → A'.IsTest) ∧ PAlg.Hom.f lam e = 1 ∧ (∀ (B : PAlg l) (ψ : A ⟶ B), PAlg.Hom.f ψ e = 1 → ∃! χ : A' ⟶ B, lam ≫ χ = ψ) ∧ ∀ n, Function.Surjective (mapAcr lam n) ∧ ∀ x, mapAcr lam n x = 0 → A.toAcr n (WittVector.teichmuller l e) * x = 0 := by
+  first | exact @GlobalTheory.CompanionTheory.IdemObj.directFactor | exact GlobalTheory.CompanionTheory.IdemObj.directFactor | (intros; apply GlobalTheory.CompanionTheory.IdemObj.directFactor <;> assumption)
+end
+
+section
+set_option backward.isDefEq.respectTransparency false
+open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris GlobalTheory.PDA CrystallineSemistableComparison CrystallineSemistableComparison.CH CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.idempotent_refinement_of_unimodular : ∀ {l : ℕ} [Fact l.Prime] (A : PAlg l), A.IsTest → ∀ {m : ℕ} (s : Fin m → A.U), Ideal.span (Set.range s) = ⊤ → ∃ e : Fin m → A.A, (∀ k, IsIdempotentElem (e k)) ∧ Ideal.span (Set.range e) = ⊤ ∧ ∀ k, A.sharp (e k) ∈ Ideal.span {s k} := by
+  first | exact @GlobalTheory.CompanionTheory.TestCover.test_cover | exact GlobalTheory.CompanionTheory.TestCover.test_cover | (intros; apply GlobalTheory.CompanionTheory.TestCover.test_cover <;> assumption)
+end
+
+section
 set_option backward.isDefEq.respectTransparency false
 set_option autoImplicit false
 noncomputable section
@@ -200,3 +218,5 @@ theorem zarCov_test : ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] (F : 
   exact ⟨Lc', lamE, fun S i hi => h1 S i hi, fun S T'' ψ h => h2 S T'' ψ fun i hi => h i hi, h3⟩
 
 end GlobalTheory.CompanionTheory.TestZar
+end
+end

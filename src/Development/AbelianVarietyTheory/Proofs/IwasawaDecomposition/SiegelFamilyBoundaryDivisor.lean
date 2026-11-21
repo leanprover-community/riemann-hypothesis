@@ -3,14 +3,48 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsSiegPull
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdmissibleBaseOfCompleteNormalLocalCharZero
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsOpenAbelianLocus
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SiegelFamilyProperExtension
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompleteUnramifiedResidueLiftStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteLocalDomainCoverStatement
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SemiabelianTorusAfterSeparableStatement
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompleteUnramifiedResidueLift
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteLocalDomainCover
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SemiabelianTorusAfterSeparable
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConeConditionsCoverModels
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaNZOfPolAt
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationLinearAndTorsion
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationTotalClosed
 
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.ShFam GlobalTheory.Models GlobalTheory.SiegLoc GlobalTheory
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.complete_unramified_residue_lift : ∀ (S₀ B R₀ k' : Type) [CommRing S₀] [IsLocalRing S₀] [CommRing B] [IsDomain B] [IsLocalRing B] [IsIntegrallyClosed B] [CharZero B] [Algebra.EssFiniteType ℤ B] [CommRing R₀] [IsLocalRing R₀] [Field k'] (f : S₀ →+* B) (g : S₀ →+* R₀) (v : ResidueField B →+* k'), IsAdicComplete (maximalIdeal R₀) R₀ → IsLocalHom f → IsLocalHom g → IsEtaleCompletion g → ((residue R₀).comp g).FormallyUnramified → v.Finite → v.FormallyUnramified → ∃ (A : Type) (_ : CommRing A) (_ : IsDomain A) (_ : IsLocalRing A) (ψ : B →+* A) (φ : R₀ →+* A) (τ : k' →+* ResidueField A), IsCN A ∧ IsLocalHom ψ ∧ IsEtaleCompletion ψ ∧ ((residue A).comp ψ).FormallyUnramified ∧ IsLocalHom φ ∧ ψ.comp f = φ.comp g ∧ τ.comp (v.comp (residue B)) = (residue A).comp ψ := by
+  first | exact @GlobalTheory.EtaleCompletionLift.exists_etaleCompletion_over | exact GlobalTheory.EtaleCompletionLift.exists_etaleCompletion_over | (intros; apply GlobalTheory.EtaleCompletionLift.exists_etaleCompletion_over <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.ShFam GlobalTheory.Models GlobalTheory.SiegLoc GlobalTheory
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_finite_local_domain_cover : ∀ (R₀ A R' : Type) [CommRing R₀] [IsLocalRing R₀] [CommRing A] [IsDomain A] [IsLocalRing A] [CommRing R'] [IsLocalRing R'] (φ : R₀ →+* A) (ρ : R₀ →+* R'), IsCN A → IsLocalHom φ → Function.Injective ρ → ρ.Finite → ∃ (A₁ : Type) (_ : CommRing A₁) (_ : IsDomain A₁) (_ : IsLocalRing A₁) (ι : A →+* A₁) (σ : R' →+* A₁), IsCN A₁ ∧ Function.Injective ι ∧ ι.Finite ∧ IsLocalHom ι ∧ IsLocalHom σ ∧ σ.comp ρ = ι.comp φ := by
+  first | exact @GlobalTheory.LocExt.exists_isCN_common_of_finite | exact GlobalTheory.LocExt.exists_isCN_common_of_finite | (intros; apply GlobalTheory.LocExt.exists_isCN_common_of_finite <;> assumption)
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.ShFam GlobalTheory.Models GlobalTheory.SiegLoc GlobalTheory
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.semiabelian_torus_after_separable : ∀ (k : Type) [Field k] (G : Over (Sp k)) [GrpObj G], IsSemiAbelian G → ∃ (k' : Type) (_ : Field k') (_ : Algebra k k'), FiniteDimensional k k' ∧ Algebra.IsSeparable k k' ∧ Nonempty (TorusExtension ((Over.pullback (spMap (algebraMap k k'))).obj G)) := by
+  first | exact @GlobalTheory.exists_finite_separable_torusExtension | exact GlobalTheory.exists_finite_separable_torusExtension | (intros; apply GlobalTheory.exists_finite_separable_torusExtension <;> assumption)
+end
+
+section
 open AlgebraicGeometry CategoryTheory Limits NumberField IsLocalRing Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.ShFam GlobalTheory.Models GlobalTheory.SiegLoc GlobalTheory
@@ -248,3 +282,5 @@ theorem exists_local_cone : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   exact ⟨q, u, hq, by rw [mul_comm]; exact hu.symm⟩
 
 end GlobalTheory.SiegChart
+end
+end

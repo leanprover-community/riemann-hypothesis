@@ -4,8 +4,17 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RationalPointsIn
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeOfAdelicPoint
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmFiniteAdeleIntegralSeparatedCompleteStatement
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCmIdempotentsSelectConjugatePrimesStatement
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmFiniteAdeleStrongApproxModAdelicIdealStatement
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmFiniteAdeleStrongApproxModAdelicIdeal
 
+section
+open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum
+open scoped BigOperators Pointwise
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.cmFiniteAdele_strong_approx_mod_adelicIdeal : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)), cc ≠ ⊥ → (∀ (y : AE D) (m : ℕ), 0 < m → ∃ e : D.host.E, ∃ t ∈ IhE D cc, inc D e - y = (m : AE D) * t) ∧ (∀ y : AE D, ∃ n : ℕ, 0 < n ∧ (n : AE D) * y ∈ OhE D) ∧ (∀ s ∈ OhE D, ∀ t ∈ IhE D cc, s * t ∈ IhE D cc) := by
+  first | exact @GlobalTheory.AdelicApprox.approx_mod_ideal | exact GlobalTheory.AdelicApprox.approx_mod_ideal | (intros; apply GlobalTheory.AdelicApprox.approx_mod_ideal <;> assumption)
+end
+
+section
 open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum
 open scoped BigOperators Pointwise
 
@@ -135,3 +144,4 @@ theorem det_int (D : D7) {N : ℕ} (g : GL (Fin N) (AE D)) (hg : IntG D g) :
   exact sum_mem fun σ _ => mul_mem (intCast_mem _ _) (prod_mem fun i _ => (hg _ _).1)
 
 end GlobalTheory.NormSum.VacMove
+end

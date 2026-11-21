@@ -3,10 +3,225 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.TamagawaSp
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PhaseFrame
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentHaarRealSUOfMap
 import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.NormDetStrongContragredientDomRestrictAnnihilato
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpecialUnitaryLieAlgebraEntriesOrthonormalFrame
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SkewFamilyInnerReEqStrictLowerAddDiagIm
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SkewFamilyEqOfStrictLowerOfDiagIm
+import BuildAid.ForwardExisting
 
+section
+section
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up
+open scoped ComplexConjugate
+
+namespace GlobalTheory.SUVol.FrameSkew
+
+theorem gram_eq_mul {E : Type} [Field E] {r : ℕ} (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E)
+    (P : Matrix (Fin r) (Fin r) ℂ) :
+    gram τ G P = Pᵀ * G.map τ * P.map (starRingEnd ℂ) := by
+  ext a b
+  simp only [ReciprocityTheory.ChartRestriction.G.FD.gram, hermC, ReciprocityTheory.ChartRestriction.G.FD.col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
+    Finset.sum_mul]
+  rw [Finset.sum_comm]
+
+theorem sgn_mul_self (p0 a : ℕ) : sgn p0 a * sgn p0 a = 1 := by
+  unfold sgn; split_ifs <;> norm_num
+
+theorem sgn_ne_zero (p0 a : ℕ) : sgn p0 a ≠ 0 := by
+  unfold sgn; split_ifs <;> norm_num
+
+theorem det_ne_of_orth {E : Type} [Field E] {r : ℕ} (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E)
+    (P : Matrix (Fin r) (Fin r) ℂ) (p0 : ℕ)
+    (h : gram τ G P = Matrix.diagonal fun a : Fin r => ((sgn p0 (a : ℕ) : ℝ) : ℂ)) : P.det ≠ 0 := by
+  rw [gram_eq_mul] at h
+  have hd := congrArg Matrix.det h
+  rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, Matrix.det_diagonal] at hd
+  intro h0
+  rw [h0, zero_mul, zero_mul] at hd
+  exact (Finset.prod_ne_zero_iff.2 fun a _ => by exact_mod_cast sgn_ne_zero p0 a) hd.symm
+
+theorem entries_of_mem {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r)
+    (x : Frame X.Ψ r) (hx : IsOrth X x) (Y : EuclideanSpace ℂ (X.Ψ × Fin r × Fin r))
+    (hY : fromFrame x Y ∈ realLie X.Ψ X.Gm) :
+    (∀ τ a b, Y (τ, b, a) = -((sgn X.p0 a * sgn X.p0 b : ℝ) : ℂ) * conj (Y (τ, a, b))) ∧
+      ∀ τ, ∑ a, Y (τ, a, a) = 0 := by
+  have hL := (GlobalTheory.SUVol.DensOne.mem_realLie_iff X.Ψ X.Gm (fromFrame x Y)).1 hY
+  have hP : ∀ τ, (mat x τ).det ≠ 0 := fun τ => det_ne_of_orth τ.1 X.Gm (mat x τ) X.p0 (hx τ)
+  constructor
+  · intro τ a b
+    set P := mat x τ with hPdef
+    set Ym : Matrix (Fin r) (Fin r) ℂ := Matrix.of fun a b => Y (τ, a, b) with hYm
+    set Gt := X.Gm.map τ.1
+    set D : Matrix (Fin r) (Fin r) ℂ := Matrix.diagonal fun a : Fin r => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ) with hD
+    have hO : Pᵀ * Gt * P.map (starRingEnd ℂ) = D := by rw [← gram_eq_mul]; exact hx τ
+    have hu : IsUnit P.det := isUnit_iff_ne_zero.2 (hP τ)
+    have hinv : P⁻¹ * P = 1 := Matrix.nonsing_inv_mul P hu
+    have hinvT : Pᵀ * (P⁻¹)ᵀ = 1 := by rw [← Matrix.transpose_mul, hinv, Matrix.transpose_one]
+    have hinvC : (P⁻¹).map (starRingEnd ℂ) * P.map (starRingEnd ℂ) = 1 := by
+      rw [← Matrix.map_mul, hinv, Matrix.map_one _ (map_zero _) (map_one _)]
+    have hM : Matrix.of (fromFrame x Y τ) = P * Ym * P⁻¹ := rfl
+    have h1 := (hL τ).1
+    rw [hM] at h1
+    have h2 : Pᵀ * ((P * Ym * P⁻¹)ᵀ * Gt + Gt * (P * Ym * P⁻¹).map (starRingEnd ℂ)) * P.map (starRingEnd ℂ) = 0 := by
+      rw [h1, Matrix.mul_zero, Matrix.zero_mul]
+    have h3 : Ymᵀ * D + D * Ym.map (starRingEnd ℂ) = 0 := by
+      rw [← h2, ← hO]
+      simp only [Matrix.transpose_mul, Matrix.map_mul, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
+      congr 1
+      · rw [← Matrix.mul_assoc Pᵀ P⁻¹ᵀ, hinvT, Matrix.one_mul]
+      · rw [hinvC, Matrix.mul_one]
+    have h4 := congrFun (congrFun h3 a) b
+    simp only [hD, Matrix.add_apply, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.transpose_apply,
+      Matrix.map_apply, hYm, Matrix.of_apply, Matrix.zero_apply] at h4
+    have hs : ((sgn X.p0 (b : ℕ) : ℝ) : ℂ) * ((sgn X.p0 (b : ℕ) : ℝ) : ℂ) = 1 := by
+      exact_mod_cast sgn_mul_self X.p0 b
+    push_cast
+    linear_combination (((sgn X.p0 (b : ℕ) : ℝ) : ℂ)) * h4 - Y (τ, b, a) * hs
+  · intro τ
+    have h1 := (hL τ).2
+    have hM : Matrix.of (fromFrame x Y τ) = mat x τ * Matrix.of (fun a b => Y (τ, a, b)) * (mat x τ)⁻¹ := rfl
+    rw [hM, Matrix.trace_mul_comm, ← Matrix.mul_assoc,
+      Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.2 (hP τ)), Matrix.one_mul] at h1
+    simpa [Matrix.trace] using h1
+
+end GlobalTheory.SUVol.FrameSkew
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up
+open scoped ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.specialUnitaryLieAlgebra_entries_orthonormal_frame : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r) (x : Frame X.Ψ r), IsOrth X x → ∀ (Y : EuclideanSpace ℂ (X.Ψ × Fin r × Fin r)), fromFrame x Y ∈ realLie X.Ψ X.Gm → (∀ τ a b, Y (τ, b, a) = -((sgn X.p0 a * sgn X.p0 b : ℝ) : ℂ) * conj (Y (τ, a, b))) ∧ ∀ τ, ∑ a, Y (τ, a, a) = 0 := by
+  atlas_forward_decl GlobalTheory.SUVol.FrameSkew.entries_of_mem
+end
+
+section
+section
+open scoped ComplexConjugate
+
+namespace GlobalTheory
+
+theorem skew_family_inner_re_split : ∀ {ι : Type} [Fintype ι] {r : ℕ} (s : Fin r → ℝ), (∀ a, s a * s a = 1) → ∀ (Y Y' : ι × Fin r × Fin r → ℂ), (∀ τ a b, Y (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y (τ, a, b))) → (∀ τ a b, Y' (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y' (τ, a, b))) → ∑ p, (conj (Y p) * Y' p).re = 2 * ∑ q : ι × {p : Fin r × Fin r // p.2 < p.1}, (conj (Y (q.1, q.2.1.1, q.2.1.2)) * Y' (q.1, q.2.1.1, q.2.1.2)).re + ∑ τ, ∑ a, (Y (τ, a, a)).im * (Y' (τ, a, a)).im := by
+  intro ι _ r s hs Y Y' hY hY'
+  set F : ι → Fin r → Fin r → ℝ := fun τ a b => (conj (Y (τ, a, b)) * Y' (τ, a, b)).re with hF
+  have key : ∀ τ a b, F τ b a = F τ a b := by
+    intro τ a b
+    have h2 : (s a * s b) * (s a * s b) = 1 := by rw [mul_mul_mul_comm, hs, hs, one_mul]
+    simp only [hF, hY τ a b, hY' τ a b, map_mul, map_neg, Complex.conj_conj, Complex.conj_ofReal,
+      Complex.mul_re, Complex.neg_re, Complex.ofReal_re, Complex.ofReal_im, Complex.conj_re,
+      Complex.conj_im, Complex.mul_im, Complex.neg_im]
+    linear_combination ((Y (τ, a, b)).re * (Y' (τ, a, b)).re + (Y (τ, a, b)).im * (Y' (τ, a, b)).im) * h2
+  have diag : ∀ τ a, F τ a a = (Y (τ, a, a)).im * (Y' (τ, a, a)).im := by
+    intro τ a
+    have h1 := congrArg Complex.re (hY τ a a)
+    have h2 := congrArg Complex.re (hY' τ a a)
+    simp only [hs, Complex.ofReal_one, Complex.neg_re, Complex.mul_re, Complex.one_re, Complex.one_im,
+      Complex.conj_re, Complex.conj_im, Complex.neg_im] at h1 h2
+    simp only [hF, Complex.mul_re, Complex.conj_re, Complex.conj_im]
+    have e1 : (Y (τ, a, a)).re = 0 := by linarith
+    rw [e1]; ring
+  have per : ∀ τ, ∑ a, ∑ b, F τ a b
+      = 2 * ∑ p : {p : Fin r × Fin r // p.2 < p.1}, F τ p.1.1 p.1.2 + ∑ a, F τ a a := by
+    intro τ
+    have hsplit : ∀ a b, F τ a b = ((if b < a then F τ a b else 0) + (if a < b then F τ a b else 0))
+        + (if a = b then F τ a b else 0) := by
+      intro a b
+      rcases lt_trichotomy a b with h | rfl | h
+      · simp [h, not_lt_of_gt h, h.ne]
+      · simp
+      · simp [h, not_lt_of_gt h, h.ne']
+    have hsub : ∑ p : {p : Fin r × Fin r // p.2 < p.1}, F τ p.1.1 p.1.2
+        = ∑ a, ∑ b, if b < a then F τ a b else 0 := by
+      rw [← Finset.sum_subtype (Finset.univ.filter (fun p : Fin r × Fin r => p.2 < p.1)) (by simp)
+        (fun p : Fin r × Fin r => F τ p.1 p.2), Finset.sum_filter, Fintype.sum_prod_type]
+    have hsym : (∑ a, ∑ b, if a < b then F τ a b else 0) = ∑ a, ∑ b, if b < a then F τ a b else 0 := by
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
+      rw [key]
+    have hdiag : (∑ a, ∑ b, if a = b then F τ a b else 0) = ∑ a, F τ a a := by
+      simp
+    calc ∑ a, ∑ b, F τ a b
+        = ∑ a, ∑ b, (((if b < a then F τ a b else 0) + (if a < b then F τ a b else 0))
+            + (if a = b then F τ a b else 0)) :=
+          Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hsplit a b))
+      _ = ((∑ a, ∑ b, if b < a then F τ a b else 0) + (∑ a, ∑ b, if a < b then F τ a b else 0))
+            + ∑ a, ∑ b, if a = b then F τ a b else 0 := by
+          simp only [Finset.sum_add_distrib]
+      _ = _ := by rw [hsym, hdiag, hsub]; ring
+  have lhs : ∑ p, (conj (Y p) * Y' p).re = ∑ τ, ∑ a, ∑ b, F τ a b := by
+    simp only [hF, Fintype.sum_prod_type]
+  rw [lhs, Fintype.sum_prod_type, Finset.mul_sum, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl (fun τ _ => ?_)
+  rw [per τ]
+  simp only [diag]
+  rfl
+
+end GlobalTheory
+end
+
+open scoped ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.skew_family_inner_re_eq_strictLower_add_diagIm : ∀ {ι : Type} [Fintype ι] {r : ℕ} (s : Fin r → ℝ), (∀ a, s a * s a = 1) → ∀ (Y Y' : ι × Fin r × Fin r → ℂ), (∀ τ a b, Y (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y (τ, a, b))) → (∀ τ a b, Y' (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y' (τ, a, b))) → ∑ p, (conj (Y p) * Y' p).re = 2 * ∑ q : ι × {p : Fin r × Fin r // p.2 < p.1}, (conj (Y (q.1, q.2.1.1, q.2.1.2)) * Y' (q.1, q.2.1.1, q.2.1.2)).re + ∑ τ, ∑ a, (Y (τ, a, a)).im * (Y' (τ, a, a)).im := by
+  atlas_forward_decl GlobalTheory.skew_family_inner_re_split
+end
+
+section
+section
+open scoped ComplexConjugate
+
+namespace GlobalTheory
+
+theorem skewFamily_eq_of_strictLower_of_diagIm
+    {ι : Type} [Fintype ι] {r : ℕ} (s : Fin r → ℝ) (hs : ∀ a, s a * s a = 1)
+    (Y Y' : ι × Fin r × Fin r → ℂ)
+    (hY : ∀ τ a b, Y (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y (τ, a, b)))
+    (hYt : ∀ τ, ∑ a, Y (τ, a, a) = 0)
+    (hY' : ∀ τ a b, Y' (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y' (τ, a, b)))
+    (hY't : ∀ τ, ∑ a, Y' (τ, a, a) = 0)
+    (hlt : ∀ τ a b, b < a → Y (τ, a, b) = Y' (τ, a, b))
+    (him : ∀ τ (a : Fin r), (a : ℕ) + 1 < r → (Y (τ, a, a)).im = (Y' (τ, a, a)).im) :
+    Y = Y' := by
+  have hre : ∀ (Z : ι × Fin r × Fin r → ℂ),
+      (∀ τ a b, Z (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Z (τ, a, b))) →
+      ∀ τ a, (Z (τ, a, a)).re = 0 := by
+    intro Z hZ τ a
+    have h := hZ τ a a
+    rw [hs a] at h
+    have h2 := congrArg Complex.re h
+    simp only [Complex.ofReal_one, neg_mul, one_mul, Complex.neg_re, Complex.conj_re] at h2
+    linarith
+  have hoff : ∀ τ (c : Fin r), (c : ℕ) + 1 < r → Y (τ, c, c) = Y' (τ, c, c) :=
+    fun τ c hc => Complex.ext (by rw [hre Y hY τ c, hre Y' hY' τ c]) (him τ c hc)
+  have hdiag : ∀ τ (a : Fin r), Y (τ, a, a) = Y' (τ, a, a) := by
+    intro τ a
+    by_cases ha : (a : ℕ) + 1 < r
+    · exact hoff τ a ha
+    · have hsum : ∀ c ∈ Finset.univ.erase a, Y (τ, c, c) = Y' (τ, c, c) := by
+        intro c hc
+        apply hoff
+        have hca : c ≠ a := Finset.ne_of_mem_erase hc
+        have hcv : (c : ℕ) ≠ a := fun h => hca (Fin.ext h)
+        have := c.isLt
+        have := a.isLt
+        omega
+      have e1 : Y (τ, a, a) + ∑ c ∈ Finset.univ.erase a, Y (τ, c, c) = 0 := by
+        exact (Finset.add_sum_erase Finset.univ (fun c => Y (τ, c, c)) (Finset.mem_univ a)).trans (hYt τ)
+      have e2 : Y' (τ, a, a) + ∑ c ∈ Finset.univ.erase a, Y' (τ, c, c) = 0 := by
+        exact (Finset.add_sum_erase Finset.univ (fun c => Y' (τ, c, c)) (Finset.mem_univ a)).trans (hY't τ)
+      rw [Finset.sum_congr rfl hsum] at e1
+      linear_combination e1 - e2
+  funext p
+  obtain ⟨τ, a, b⟩ := p
+  rcases lt_trichotomy a b with h | rfl | h
+  · rw [hY τ b a, hY' τ b a, hlt τ b a h]
+  · exact hdiag τ a
+  · exact hlt τ a b h
+
+end GlobalTheory
+end
+
+open scoped ComplexConjugate
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.skew_family_eq_of_strictLower_of_diagIm : ∀ {ι : Type} [Fintype ι] {r : ℕ} (s : Fin r → ℝ), (∀ a, s a * s a = 1) → ∀ (Y Y' : ι × Fin r × Fin r → ℂ), (∀ τ a b, Y (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y (τ, a, b))) → (∀ τ, ∑ a, Y (τ, a, a) = 0) → (∀ τ a b, Y' (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y' (τ, a, b))) → (∀ τ, ∑ a, Y' (τ, a, a) = 0) → (∀ τ a b, b < a → Y (τ, a, b) = Y' (τ, a, b)) → (∀ τ (a : Fin r), (a : ℕ) + 1 < r → (Y (τ, a, a)).im = (Y' (τ, a, a)).im) → Y = Y' := by
+  atlas_forward_decl GlobalTheory.skewFamily_eq_of_strictLower_of_diagIm
+end
+
+section
 section
 open NumberField MeasureTheory Matrix Filter Topology GlobalTheory.SUVol GlobalTheory.RiemConst ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.L2DbarEstimates
 open scoped ENNReal
@@ -297,3 +512,4 @@ open scoped ENNReal
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.riemannianMeasure_lieAlgebra_eq_smul_map_chartLebesgue : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (x : Frame X.Ψ r), 1 ≤ r → IsOrth X x → ∀ D : ChartSp X →L[ℝ] (X.Ψ → Fin r → Fin r → ℂ), (∀ w : ChartSp X, D w ∈ realLie X.Ψ X.Gm ∧ (∀ τ a b, b < a → inFrame x (D w) τ a b = nmat X w.1 τ a b) ∧ ∀ τ a, inFrame x (D w) τ a a = Complex.I * (angles (w.2 τ) a : ℂ)) → Function.Injective D ∧ riemLie X.Ψ X.Gm x = ENNReal.ofReal (2 ^ nd X * Real.sqrt r ^ X.Ψ.card) • (volume : Measure (ChartSp X)).map D := by
   atlas_forward_decl GlobalTheory.RiemConst.Jac.riemLie_eq_smul_map
+end

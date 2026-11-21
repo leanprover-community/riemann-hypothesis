@@ -1,9 +1,0 @@
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.LieExponentialMajorantHolds
-
-noncomputable section
-
-namespace ReciprocityTheory.ChartRestriction.DS.Lap.Base
-
-theorem b5 : CayleyMajorantBound := LieExponentialMajorant.lieExponentialMajorant_holds
-
-end ReciprocityTheory.ChartRestriction.DS.Lap.Base

@@ -16,12 +16,22 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalMultipl
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwoSegmentNongenericQuotient
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GenericCommutationOfReorder
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerHeredityGenericProduct
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GenericProdIrrOfGenericProdIff
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhittakerHeredity
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsIrrRepInjective
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductSingleNonzeroFactorEquiv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReducibleCuspidalPairNongenericSubquotient
 
+section
+open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.BZMir.Leib
+open scoped TensorProduct
+
+namespace GlobalTheory.CompanionTheory.BZMir
+
+
+end GlobalTheory.CompanionTheory.BZMir
+end
+
+section
 noncomputable section
 
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc GlobalTheory.Published GlobalTheory.LocGL.SupportUnique GlobalTheory.SplitRead GlobalTheory.DiagCell
@@ -243,4 +253,5 @@ theorem nu_one_ne {x : IrrGL k} (hx : 0 < x.1) : x.nu 1 ≠ x := fun h => by
 
 
 end GlobalTheory.CompanionTheory.CuspPairSub
+end
 end

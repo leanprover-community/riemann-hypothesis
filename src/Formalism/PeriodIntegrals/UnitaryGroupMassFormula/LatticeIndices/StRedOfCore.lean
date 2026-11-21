@@ -1,8 +1,39 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.StRedOfParts
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.SecondSplitSmul
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.ReindexGl
 
+section
+noncomputable section
+
+namespace MassDataIdxCore
+
+open Matrix
+
+theorem reindex_gl {H R : Type} [Group H] [CommRing R] {n ι : Type} [Fintype n] [DecidableEq n] [Fintype ι]
+    [DecidableEq ι] (e : n ≃ ι) (I : Ideal R) (Q : H → Prop) (ψ : H →* GL n R) (hψ : Function.Surjective ψ)
+    (hQ : ∀ h, (∀ i j, (((ψ h : GL n R) : Matrix n n R) - 1) i j ∈ I) ↔ Q h) :
+    ∃ ψ' : H →* GL ι R, Function.Surjective ψ' ∧
+      ∀ h, (∀ i j, (((ψ' h : GL ι R) : Matrix ι ι R) - 1) i j ∈ I) ↔ Q h := by
+  classical
+  let φ : GL n R ≃* GL ι R := Units.mapEquiv (Matrix.reindexAlgEquiv R R e).toMulEquiv
+  refine ⟨φ.toMonoidHom.comp ψ, φ.surjective.comp hψ, fun h => ?_⟩
+  rw [← hQ h]
+  have key : ∀ i j, (((φ.toMonoidHom.comp ψ h : GL ι R) : Matrix ι ι R) - 1) i j =
+      (((ψ h : GL n R) : Matrix n n R) - 1) (e.symm i) (e.symm j) := by
+    intro i j
+    simp [φ, Matrix.sub_apply, Matrix.one_apply, Matrix.reindexAlgEquiv_apply, Matrix.reindex_apply]
+  simp only [key]
+  constructor
+  · intro H i j
+    simpa using H (e i) (e j)
+  · intro H i j
+    exact H _ _
+
+end MassDataIdxCore
+end
+end
+
+section
 noncomputable section
 
 namespace MassDataIdxSteps
@@ -95,3 +126,5 @@ theorem stRed_of_core {D : D7} (X : HidaSetting D) (p : TypX X) (hR : StResZ X p
     (hC : CoreAll) : StRed X p := stRed_of_parts X p hR hS (latCore_of hC)
 
 end MassDataIdxSteps
+end
+end

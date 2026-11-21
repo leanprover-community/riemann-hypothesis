@@ -6,10 +6,85 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchwartzSeminormL2B
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilTransportArchimedeanSliceSobolevBounds
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLocalFiniteDimensionalFinitePartsWeilTransStatement
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitaryOnWeilDatumTransportAdelicSchwartzStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStandardArchimedeanAddCharOfIsStandardTraceAde
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationL2IsometryStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationDarbouxCoordinatesStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdeleJoinZero
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MulRealAdEqZero
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationL2Isometry
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationDarbouxCoordinates
 
+section
+section
+noncomputable section
+
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+
+namespace GlobalTheory.WeilL2Words.StdArch
+
+theorem supportedAtArchimedean_adeleOfMixedSpaceComponent (F : Type) [Field F] [NumberField F] (z : mixedEmbedding.mixedSpace F) :
+    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F) (GlobalTheory.WeilL2Words.arch1 F z) := by
+  intro u hu
+  have h : u.1 = 0 := (InfiniteAdeleRing.ringEquiv_mixedSpace F).map_eq_zero_iff.1 hu
+  refine Prod.ext ?_ ?_
+  · change u.1 * _ = 0
+    rw [h, zero_mul]
+  · exact mul_zero u.2
+
+theorem evI_arch1 (F : Type) [Field F] [NumberField F] (z : mixedEmbedding.mixedSpace F) :
+    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F (GlobalTheory.WeilL2Words.arch1 F z) = z :=
+  (InfiniteAdeleRing.ringEquiv_mixedSpace F).apply_symm_apply z
+
+theorem isStdInf_of_isStd : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ),
+    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsStd ψ → GlobalTheory.WeilL2Words.IsStdInf F ψ := by
+  intro F _ _ ψ hψ
+  refine ⟨-(Algebra.trace ℝ (mixedEmbedding.mixedSpace F)), fun z hz => ?_, fun z => ?_⟩
+  · by_contra h
+    push_neg at h
+    exact hz (GlobalTheory.ArchUniq.Coord.eq_zero_of_trace z fun b => by
+      have := h b
+      rw [LinearMap.neg_apply, neg_eq_zero] at this
+      exact this)
+  · rw [hψ.2.2 _ (supportedAtArchimedean_adeleOfMixedSpaceComponent F z), evI_arch1]
+    simp only [LinearMap.neg_apply, Complex.ofReal_neg]
+    ring_nf
+
+end GlobalTheory.WeilL2Words.StdArch
+
+end
+end
+
+open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.isStandardArchimedeanAddChar_of_isStandardTraceAdelic : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ), GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsStd ψ → GlobalTheory.WeilL2Words.IsStdInf F ψ := by
+  atlas_forward_decl GlobalTheory.WeilL2Words.StdArch.isStdInf_of_isStd
+end
+
+section
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_representation_l2_isometry : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] {G : Type} [Group G]
+    (om : G →* Module.End ℂ ((κ → AF F) → ℂ)), (∀ p, ∀ φ ∈ schA F κ, om p φ ∈ schA F κ) → IsUnitaryOn (adeleClass F) om →
+    ∃ μ : @MeasureTheory.Measure (κ → FiniteAdeleRing (𝓞 F) F) (borel _), @MeasureTheory.Measure.IsAddHaarMeasure _ _ _ (borel _) μ ∧
+      ∀ p, ∀ Φ ∈ schA F κ, GlobalTheory.WeilL2Words.l2A F μ (om p Φ) = GlobalTheory.WeilL2Words.l2A F μ Φ := by
+  first | exact @GlobalTheory.WeilL2Isometry.l2A_eq_of_isUnitaryOn | exact GlobalTheory.WeilL2Isometry.l2A_eq_of_isUnitaryOn | (intros; apply GlobalTheory.WeilL2Isometry.l2A_eq_of_isUnitaryOn <;> assumption)
+end
+
+section
+open scoped TensorProduct Matrix
+open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.weil_representation_darboux_coordinates : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (ψ : AddChar (AF F) ℂ) (m n : ℕ) (JA : Matrix (Fin m) (Fin m) E) (JB : Matrix (Fin n) (Fin n) E) (ξ : AF F ⊗[F] E) (κ : Type) [Fintype κ]
+    (co : Darboux (symp (cA σ) ξ (incM F JA) (incM F JB)) κ)
+    (om : UG (cA σ) (incM F JA) × UG (cA σ) (incM F JB) →* Module.End ℂ ((κ → AF F) → ℂ)),
+    (∀ p w, ∀ φ ∈ schA F κ, om p (co.rho ψ w φ) = co.rho ψ (actAB (cA σ) p w) (om p φ)) →
+    ∃ M : UG (cA σ) (incM F JA) × UG (cA σ) (incM F JB) → ((κ → mixedEmbedding.mixedSpace F) × (κ → mixedEmbedding.mixedSpace F)) →ₗ[ℝ] ((κ → mixedEmbedding.mixedSpace F) × (κ → mixedEmbedding.mixedSpace F)),
+      (∀ p h, ∀ φ ∈ schA F κ,
+        om p (schr ψ (GlobalTheory.WeilL2Words.archPair F (M p h)) φ) = schr ψ (GlobalTheory.WeilL2Words.archPair F h) (om p φ)) ∧
+      ∀ h, Continuous fun p => M p h := by
+  first | exact @GlobalTheory.ArchTransportDir.archDir_transport | exact GlobalTheory.ArchTransportDir.archDir_transport | (intros; apply GlobalTheory.ArchTransportDir.archDir_transport <;> assumption)
+end
+
+section
 open scoped TensorProduct Matrix
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
@@ -53,3 +128,4 @@ theorem GlobalTheory.WeilContF.slice_bounds : ∀ (F E : Type) [Field F] [Number
   rw [hfs] at hp ⊢
   refine (hsob s x).trans (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt ?_) hC)
   exact Finset.sum_le_sum fun i hi => Finset.sum_le_sum fun j hj => hp i hi j hj
+end

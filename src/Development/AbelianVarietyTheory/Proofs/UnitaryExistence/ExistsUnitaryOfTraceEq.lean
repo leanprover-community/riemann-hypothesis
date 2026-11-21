@@ -9,9 +9,53 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicElementLat
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryLatticeRationalTranslateInvarianceStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PrincipalLevelEqHalfMarkingStabilizerStatement
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RelabelEmbeddingsGoodBijectiveConjCompatStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsWeightZeroSectionOfPeriodSpaceFunctionStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsSmulMemOfSpanEqTop
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsWeightZeroSectionOfPeriodSpaceFunction
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.PureType GlobalTheory.CompRat
+open scoped CategoryTheory.Obj
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_weightZero_section_of_periodSpace_function : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (σ : c.F →+* ℂ) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) ty), 1 ≤ D.p + D.q → (σ.comp (IntermediateField.inclusion c.le).toRingHom) (baseKA l).ρ = H.rt0 → IsTypeFn H D.p D.q ty → l.A = 1 → FnAlgClosed Xo c → ∀ v : Fin F.n → c.F, ∃ f ∈ sec Xo c 0 0, (∀ m : ℕ, (∀ i, v i ^ m = 1) → f ^ m = 1) ∧ ∀ (y : FrPt Xo c (CAt σ)) (i : Fin F.n) P, IsPeriod (F.Di i) ty P → y.x = F.u i P → Formalism.L2.PjFree.toC (evR Xo c f y) = σ (v i) := by
+  first | exact @GlobalTheory.CompFun.exists_section_of_function | exact GlobalTheory.CompFun.exists_section_of_function | (intros; apply GlobalTheory.CompFun.exists_section_of_function <;> assumption)
+end
+
+section
+namespace GlobalTheory.SmulMemSpanTop
+
+open NumberField
+
+theorem exists_smul_mem_of_span_eq_top {E : Type} [Field E] [NumberField E] {n : ℕ}
+    (Λ : Submodule (𝓞 E) (Fin n → E))
+    (h : Submodule.span E (↑Λ : Set (Fin n → E)) = ⊤) (v : Fin n → E) :
+    ∃ d : 𝓞 E, d ≠ 0 ∧ d • v ∈ Λ := by
+  have hv : v ∈ Submodule.span E (↑Λ : Set (Fin n → E)) := h ▸ Submodule.mem_top
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
+  | zero => exact ⟨1, one_ne_zero, by simp⟩
+  | add x y _ _ hx hy =>
+    obtain ⟨a, ha, hax⟩ := hx
+    obtain ⟨b, hb, hby⟩ := hy
+    refine ⟨a * b, mul_ne_zero ha hb, ?_⟩
+    rw [smul_add]
+    refine Λ.add_mem ?_ ?_
+    · rw [mul_comm, mul_smul]; exact Λ.smul_mem _ hax
+    · rw [mul_smul, smul_comm]
+      rw [smul_comm]; exact Λ.smul_mem _ hby
+  | smul c x _ hx =>
+    obtain ⟨a, ha, hax⟩ := hx
+    obtain ⟨⟨r, s⟩, hrs⟩ := IsLocalization.surj (nonZeroDivisors (𝓞 E)) c
+    refine ⟨a * s, mul_ne_zero ha (nonZeroDivisors.coe_ne_zero s), ?_⟩
+    have h1 : (s : 𝓞 E) • c • x = r • x := by
+      rw [← algebraMap_smul E (s : 𝓞 E), ← algebraMap_smul E r, smul_smul, mul_comm]
+      exact congrArg (· • x) hrs
+    rw [mul_smul, h1, smul_comm]
+    exact Λ.smul_mem _ hax
+
+end GlobalTheory.SmulMemSpanTop
+end
+
+section
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Pj GlobalTheory.Member
 open scoped TensorProduct Matrix
 open GlobalTheory.CompRat
@@ -416,3 +460,4 @@ theorem exists_sec_rdU_eq_char : ∀ (D : D7) (H : ReciprocityTheory.ChartRestri
     exact dif_pos (hdom h)
 
 end GlobalTheory.CharRead
+end

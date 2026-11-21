@@ -1,5 +1,470 @@
-import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OrthogonalGaussModels.HermitianBlockFrames.HfSelfProj
+import Mathlib
 
+section
+noncomputable section
+open scoped BigOperators
+open Matrix
+
+namespace Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame.Jac
+
+structure JSetup (K : Type*) [Field K] where
+  σ : K →+* K
+  O : Subring K
+  p : K
+  hp0 : p ≠ 0
+  hpO : p ∈ O
+  hσp : σ p = p
+  hσO : ∀ x ∈ O, σ x ∈ O
+  hσσ : ∀ x ∈ O, σ (σ x) = x
+  hinv : ∀ x ∈ O, (¬ ∃ y ∈ O, x = p * y) → x⁻¹ ∈ O
+  hone : ¬ ∃ y ∈ O, (1 : K) = p * y
+  htwo : (2 : K)⁻¹ ∈ O
+  h2 : (2 : K) ≠ 0
+  hnorm : ∀ u ∈ O, σ u = u → (¬ ∃ y ∈ O, u = p * y) → ∃ w ∈ O, σ w * w = u
+  hsep : ∀ x ∈ O, x ≠ 0 → ∃ N : ℕ, ¬ ∃ y ∈ O, x = p ^ N * y
+
+variable {K : Type*} [Field K] (S : JSetup K)
+
+namespace JSetup
+
+def NU (x : K) : Prop := ∃ y ∈ S.O, x = S.p * y
+
+theorem NU_zero : S.NU 0 := ⟨0, S.O.zero_mem, by rw [mul_zero]⟩
+
+theorem NU_add {x y : K} (hx : S.NU x) (hy : S.NU y) : S.NU (x + y) := by
+  obtain ⟨a, ha, rfl⟩ := hx
+  obtain ⟨b, hb, rfl⟩ := hy
+  exact ⟨a + b, S.O.add_mem ha hb, by rw [mul_add]⟩
+
+theorem NU_neg {x : K} (hx : S.NU x) : S.NU (-x) := by
+  obtain ⟨a, ha, rfl⟩ := hx
+  exact ⟨-a, S.O.neg_mem ha, by rw [mul_neg]⟩
+
+theorem NU_mul {x z : K} (hz : z ∈ S.O) (hx : S.NU x) : S.NU (z * x) := by
+  obtain ⟨a, ha, rfl⟩ := hx
+  exact ⟨z * a, S.O.mul_mem hz ha, by ring⟩
+
+theorem NU_sum {ι : Type*} (s : Finset ι) (f : ι → K) (h : ∀ i ∈ s, S.NU (f i)) : S.NU (∑ i ∈ s, f i) := by
+  exact Finset.sum_induction _ S.NU (fun _ _ => S.NU_add) S.NU_zero h
+
+theorem ne_zero_of_not_NU {x : K} (hx : ¬ S.NU x) : x ≠ 0 := by
+  rintro rfl
+  exact hx S.NU_zero
+
+theorem NU_σ {x : K} (hx : S.NU x) : S.NU (S.σ x) := by
+  obtain ⟨a, ha, rfl⟩ := hx
+  exact ⟨S.σ a, S.hσO a ha, by rw [map_mul, S.hσp]⟩
+
+theorem not_NU_σ {x : K} (hxO : x ∈ S.O) (hx : ¬ S.NU x) : ¬ S.NU (S.σ x) := by
+  intro h
+  apply hx
+  have h2 := S.NU_σ h
+  rwa [S.hσσ x hxO] at h2
+
+
+
+
+theorem two_mem : (2 : K) ∈ S.O := by
+  have h := S.O.add_mem S.O.one_mem S.O.one_mem
+  rwa [one_add_one_eq_two] at h
+
+
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def IntV (x : ι → K) : Prop := ∀ i, x i ∈ S.O
+
+def IntM (Γ : Matrix ι ι K) : Prop := ∀ i j, Γ i j ∈ S.O
+
+def cv (x : ι → K) : ι → K := fun i => S.σ (x i)
+
+def Herm (Γ : Matrix ι ι K) : Prop := ∀ i j, S.σ (Γ i j) = Γ j i
+
+def hf (Γ : Matrix ι ι K) (x y : ι → K) : K := S.cv x ⬝ᵥ (Γ *ᵥ y)
+
+def UM (Γ : Matrix ι ι K) : Prop :=
+  ∀ x : ι → K, S.IntV x → (∀ i, S.NU ((Γ *ᵥ x) i)) → ∃ x', S.IntV x' ∧ Γ *ᵥ x = S.p • (Γ *ᵥ x')
+
+theorem IntV_mulVec {Γ : Matrix ι ι K} (hΓ : S.IntM Γ) {x : ι → K} (hx : S.IntV x) : S.IntV (Γ *ᵥ x) := by
+  intro i
+  simp only [Matrix.mulVec, dotProduct]
+  exact S.O.sum_mem fun j _ => S.O.mul_mem (hΓ i j) (hx j)
+
+theorem IntV_cv {x : ι → K} (hx : S.IntV x) : S.IntV (S.cv x) := fun i => S.hσO (x i) (hx i)
+
+theorem hf_mem {Γ : Matrix ι ι K} (hΓ : S.IntM Γ) {x y : ι → K} (hx : S.IntV x) (hy : S.IntV y) :
+    S.hf Γ x y ∈ S.O := by
+  unfold hf
+  simp only [dotProduct]
+  exact S.O.sum_mem fun i _ => S.O.mul_mem (S.IntV_cv hx i) (S.IntV_mulVec hΓ hy i)
+
+theorem hf_swap {Γ : Matrix ι ι K} (hΓ : S.IntM Γ) (hH : S.Herm Γ) {x y : ι → K} (hx : S.IntV x)
+    (hy : S.IntV y) : S.hf Γ y x = S.σ (S.hf Γ x y) := by
+  unfold hf cv
+  simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  rw [S.hσσ _ (hx _), hH]
+  ring
+
+theorem σ_mulVec {Γ : Matrix ι ι K} (hH : S.Herm Γ) (a : ι → K) (i : ι) :
+    S.σ ((Γ *ᵥ a) i) = (S.cv a ᵥ* Γ) i := by
+  simp only [Matrix.mulVec, Matrix.vecMul, dotProduct, map_sum, map_mul, cv, hH i]
+  exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+
+theorem σ_vecMul {Γ : Matrix ι ι K} (hH : S.Herm Γ) {a : ι → K} (ha : S.IntV a) (j : ι) :
+    S.σ ((S.cv a ᵥ* Γ) j) = (Γ *ᵥ a) j := by
+  simp only [Matrix.mulVec, Matrix.vecMul, dotProduct, map_sum, map_mul, cv]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [S.hσσ _ (ha i), hH i j, mul_comm]
+
+end JSetup
+
+end Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame.Jac
+end
+end
+
+section
+noncomputable section
+open scoped BigOperators
+open Matrix
+
+namespace Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame.Jac
+namespace JSetup
+
+variable {K : Type*} [Field K] (S : JSetup K)
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+theorem IntV_single (j : ι) {t : K} (ht : t ∈ S.O) : S.IntV (Pi.single j t) := by
+  intro i
+  rw [Pi.single_apply]
+  split_ifs
+  · exact ht
+  · exact S.O.zero_mem
+
+theorem IntV_add {x y : ι → K} (hx : S.IntV x) (hy : S.IntV y) : S.IntV (x + y) := fun i => S.O.add_mem (hx i) (hy i)
+
+theorem IntV_sub {x y : ι → K} (hx : S.IntV x) (hy : S.IntV y) : S.IntV (x - y) := fun i => S.O.sub_mem (hx i) (hy i)
+
+theorem IntV_smul {x : ι → K} {c : K} (hc : c ∈ S.O) (hx : S.IntV x) : S.IntV (c • x) := fun i => S.O.mul_mem hc (hx i)
+
+theorem cv_add (x y : ι → K) : S.cv (x + y) = S.cv x + S.cv y := by
+  funext k
+  show S.σ (x k + y k) = S.σ (x k) + S.σ (y k)
+  exact map_add _ _ _
+
+theorem cv_sub (x y : ι → K) : S.cv (x - y) = S.cv x - S.cv y := by
+  funext k
+  show S.σ (x k - y k) = S.σ (x k) - S.σ (y k)
+  exact map_sub _ _ _
+
+theorem cv_smul (c : K) (x : ι → K) : S.cv (c • x) = S.σ c • S.cv x := by
+  funext k
+  show S.σ (c * x k) = S.σ c * S.σ (x k)
+  exact map_mul _ _ _
+
+theorem cv_single (j : ι) (t : K) : S.cv (Pi.single j t) = Pi.single j (S.σ t) := by
+  funext k
+  show S.σ ((Pi.single j t : ι → K) k) = (Pi.single j (S.σ t) : ι → K) k
+  rw [Pi.single_apply, Pi.single_apply]
+  split_ifs
+  · rfl
+  · exact map_zero _
+
+theorem hf_add_left (Γ : Matrix ι ι K) (x x' y : ι → K) : S.hf Γ (x + x') y = S.hf Γ x y + S.hf Γ x' y := by
+  unfold hf
+  rw [cv_add, add_dotProduct]
+
+theorem hf_add_right (Γ : Matrix ι ι K) (x y y' : ι → K) : S.hf Γ x (y + y') = S.hf Γ x y + S.hf Γ x y' := by
+  unfold hf
+  rw [mulVec_add, dotProduct_add]
+
+theorem hf_smul_left (Γ : Matrix ι ι K) (c : K) (x y : ι → K) : S.hf Γ (c • x) y = S.σ c * S.hf Γ x y := by
+  unfold hf
+  rw [cv_smul, smul_dotProduct, smul_eq_mul]
+
+theorem hf_smul_right (Γ : Matrix ι ι K) (c : K) (x y : ι → K) : S.hf Γ x (c • y) = c * S.hf Γ x y := by
+  unfold hf
+  rw [mulVec_smul, dotProduct_smul, smul_eq_mul]
+
+private theorem mulVec_single_apply_hermitian_block_frames (Γ : Matrix ι ι K) (i j : ι) (t : K) :
+    (Γ *ᵥ Pi.single j t) i = Γ i j * t := by
+  show ∑ k, Γ i k * (Pi.single j t : ι → K) k = Γ i j * t
+  rw [Finset.sum_eq_single j]
+  · rw [Pi.single_eq_same]
+  · intro k _ hk
+    rw [Pi.single_eq_of_ne hk, mul_zero]
+  · intro h
+    exact absurd (Finset.mem_univ j) h
+
+theorem hf_single (Γ : Matrix ι ι K) (i j : ι) (s t : K) :
+    S.hf Γ (Pi.single i s) (Pi.single j t) = S.σ s * (Γ i j * t) := by
+  unfold hf
+  rw [cv_single, ← mulVec_single_apply_hermitian_block_frames Γ i j t]
+  show ∑ k, (Pi.single i (S.σ s) : ι → K) k * (Γ *ᵥ Pi.single j t) k = _
+  rw [Finset.sum_eq_single i]
+  · rw [Pi.single_eq_same]
+  · intro k _ hk
+    rw [Pi.single_eq_of_ne hk, zero_mul]
+  · intro h
+    exact absurd (Finset.mem_univ i) h
+
+theorem exists_not_NU {Γ : Matrix ι ι K} (hΓ : S.IntM Γ) (hU : S.UM Γ) (h0 : Γ ≠ 0) :
+    ∃ i j, ¬ S.NU (Γ i j) := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨i, j, hij⟩ : ∃ i j, Γ i j ≠ 0 := by
+    by_contra h
+    push Not at h
+    apply h0
+    ext a b
+    simp [h a b]
+  have hdiv : ∀ x : ι → K, S.IntV x → ∀ k, S.NU ((Γ *ᵥ x) k) := by
+    intro x hx k
+    show S.NU (∑ l, Γ k l * x l)
+    apply S.NU_sum
+    intro l _
+    rw [mul_comm]
+    exact S.NU_mul (hx l) (hcon k l)
+  have key : ∀ N : ℕ, ∃ x', S.IntV x' ∧
+      Γ *ᵥ Pi.single j (1 : K) = S.p ^ N • (Γ *ᵥ x') := by
+    intro N
+    induction N with
+    | zero => exact ⟨Pi.single j 1, S.IntV_single j S.O.one_mem, by rw [pow_zero, one_smul]⟩
+    | succ n ih =>
+      obtain ⟨x', hx', hx'eq⟩ := ih
+      obtain ⟨x'', hx'', he⟩ := hU x' hx' (hdiv x' hx')
+      refine ⟨x'', hx'', ?_⟩
+      rw [hx'eq, he, smul_smul, pow_succ]
+  obtain ⟨N, hN⟩ := S.hsep _ (hΓ i j) hij
+  obtain ⟨x', hx', heq⟩ := key N
+  apply hN
+  refine ⟨(Γ *ᵥ x') i, S.IntV_mulVec hΓ hx' i, ?_⟩
+  have h1 := congrFun heq i
+  rw [Pi.smul_apply, smul_eq_mul, mulVec_single_apply_hermitian_block_frames, mul_one] at h1
+  exact h1
+
+theorem exists_unit_vec {Γ : Matrix ι ι K} (hΓ : S.IntM Γ) (hH : S.Herm Γ) (hU : S.UM Γ) (h0 : Γ ≠ 0) :
+    ∃ (a : ι → K) (i : ι), S.IntV a ∧ ¬ S.NU (a i) ∧ S.hf Γ a a = 1 := by
+
+  have key : ∀ (v : ι → K) (k : ι), S.IntV v → v k = 1 → S.hf Γ v v ∈ S.O →
+      S.σ (S.hf Γ v v) = S.hf Γ v v → ¬ S.NU (S.hf Γ v v) →
+      ∃ (a : ι → K) (i : ι), S.IntV a ∧ ¬ S.NU (a i) ∧ S.hf Γ a a = 1 := by
+    intro v k hv hk hO hσ hn
+    have hu0 : S.hf Γ v v ≠ 0 := by
+      intro hz
+      apply hn
+      unfold NU
+      exact ⟨0, S.O.zero_mem, by rw [hz, mul_zero]⟩
+    have hinvO : (S.hf Γ v v)⁻¹ ∈ S.O := S.hinv _ hO hn
+    have hinvσ : S.σ (S.hf Γ v v)⁻¹ = (S.hf Γ v v)⁻¹ := by
+      rw [map_inv₀, hσ]
+    have hinvn : ¬ ∃ y ∈ S.O, (S.hf Γ v v)⁻¹ = S.p * y := by
+      rintro ⟨y, hy, hyeq⟩
+      apply S.hone
+      refine ⟨y * S.hf Γ v v, S.O.mul_mem hy hO, ?_⟩
+      rw [← mul_assoc, ← hyeq, inv_mul_cancel₀ hu0]
+    obtain ⟨w, hwO, hw⟩ := S.hnorm _ hinvO hinvσ hinvn
+    refine ⟨w • v, k, S.IntV_smul hwO hv, ?_, ?_⟩
+    · rw [Pi.smul_apply, hk, smul_eq_mul, mul_one]
+      intro hwn
+      unfold NU at hwn
+      obtain ⟨y, hy, hyeq⟩ := hwn
+      apply hinvn
+      refine ⟨S.σ w * y, S.O.mul_mem (S.hσO w hwO) hy, ?_⟩
+      rw [← hw, hyeq]
+      ring
+    · rw [S.hf_smul_left, S.hf_smul_right, ← mul_assoc, hw, inv_mul_cancel₀ hu0]
+  have hσ2 : S.σ 2 = 2 := by
+    rw [← one_add_one_eq_two, map_add, map_one]
+  have h2O : (2 : K) ∈ S.O := by
+    have h11 := S.O.add_mem S.O.one_mem S.O.one_mem
+    rwa [one_add_one_eq_two] at h11
+
+  have diag : ∀ m : ι, ¬ S.NU (Γ m m) →
+      ∃ (a : ι → K) (i : ι), S.IntV a ∧ ¬ S.NU (a i) ∧ S.hf Γ a a = 1 := by
+    intro m hm
+    have e : S.hf Γ (Pi.single m 1) (Pi.single m 1) = Γ m m := by
+      rw [S.hf_single, map_one, one_mul, mul_one]
+    refine key (Pi.single m 1) m (S.IntV_single m S.O.one_mem) (Pi.single_eq_same m 1) ?_ ?_ ?_
+    · rw [e]; exact hΓ m m
+    · rw [e]; exact hH m m
+    · rw [e]; exact hm
+  obtain ⟨i, j, hij⟩ := S.exists_not_NU hΓ hU h0
+  by_cases hi : S.NU (Γ i i)
+  swap
+  · exact diag i hi
+  by_cases hj : S.NU (Γ j j)
+  swap
+  · exact diag j hj
+
+  have hne : i ≠ j := by
+    rintro rfl
+    exact hij hi
+  have ht0 : Γ i j ≠ 0 := by
+    intro hz
+    apply hij
+    unfold NU
+    exact ⟨0, S.O.zero_mem, by rw [hz, mul_zero]⟩
+  have hcO : (Γ i j)⁻¹ ∈ S.O := S.hinv _ (hΓ i j) hij
+  have h1 : Γ i j * (Γ i j)⁻¹ = 1 := mul_inv_cancel₀ ht0
+  have h2 : S.σ (Γ i j)⁻¹ * S.σ (Γ i j) = 1 := by
+    rw [← map_mul, inv_mul_cancel₀ ht0, map_one]
+  have hval : S.hf Γ (Pi.single i 1 + Pi.single j (Γ i j)⁻¹) (Pi.single i 1 + Pi.single j (Γ i j)⁻¹) =
+      Γ i i + 2 + S.σ (Γ i j)⁻¹ * Γ j j * (Γ i j)⁻¹ := by
+    rw [S.hf_add_left, S.hf_add_right, S.hf_add_right, S.hf_single, S.hf_single, S.hf_single,
+      S.hf_single, map_one, ← hH i j]
+    linear_combination h1 + h2
+  refine key (Pi.single i 1 + Pi.single j (Γ i j)⁻¹) i
+    (S.IntV_add (S.IntV_single i S.O.one_mem) (S.IntV_single j hcO)) ?_ ?_ ?_ ?_
+  · rw [Pi.add_apply, Pi.single_eq_same, Pi.single_eq_of_ne hne, add_zero]
+  · rw [hval]
+    exact S.O.add_mem (S.O.add_mem (hΓ i i) h2O) (S.O.mul_mem (S.O.mul_mem (S.hσO _ hcO) (hΓ j j)) hcO)
+  · rw [hval]
+    simp only [map_add, map_mul, hH i i, hH j j, S.hσσ (Γ i j)⁻¹ hcO, hσ2]
+    ring
+  · rw [hval]
+    intro hn
+    unfold NU at hn hi hj
+    obtain ⟨y, hy, hyeq⟩ := hn
+    obtain ⟨a, ha, hae⟩ := hi
+    obtain ⟨b, hb, hbe⟩ := hj
+    rw [hae, hbe] at hyeq
+    have h2inv : (2 : K)⁻¹ * 2 = 1 := inv_mul_cancel₀ S.h2
+    apply S.hone
+    refine ⟨(y - a - S.σ (Γ i j)⁻¹ * b * (Γ i j)⁻¹) * 2⁻¹,
+      S.O.mul_mem (S.O.sub_mem (S.O.sub_mem hy ha)
+        (S.O.mul_mem (S.O.mul_mem (S.hσO _ hcO) hb) hcO)) S.htwo, ?_⟩
+    linear_combination (2 : K)⁻¹ * hyeq - h2inv
+
+end JSetup
+end Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame.Jac
+end
+end
+
+section
+noncomputable section
+open scoped BigOperators
+open Matrix
+
+namespace Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame.Jac
+namespace JSetup
+
+variable {K : Type*} [Field K] (S : JSetup K)
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+def Γp (Γ : Matrix ι ι K) (a : ι → K) : Matrix ι ι K := Γ - vecMulVec (Γ *ᵥ a) (S.cv a ᵥ* Γ)
+
+def proj (Γ : Matrix ι ι K) (a y : ι → K) : ι → K := y - S.hf Γ a y • a
+
+theorem hf_eq_vecMul (Γ : Matrix ι ι K) (x y : ι → K) : S.hf Γ x y = (S.cv x ᵥ* Γ) ⬝ᵥ y :=
+  dotProduct_mulVec _ _ _
+
+private theorem vecMulVec_mulVec_hermitian_block_frames (u v y : ι → K) : vecMulVec u v *ᵥ y = (v ⬝ᵥ y) • u := by
+  ext i
+  simp only [mulVec, dotProduct, vecMulVec_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul]
+  exact Finset.sum_congr rfl fun j _ => by ring
+
+theorem Γp_mulVec (Γ : Matrix ι ι K) (a y : ι → K) :
+    S.Γp Γ a *ᵥ y = Γ *ᵥ y - S.hf Γ a y • (Γ *ᵥ a) := by
+  rw [Γp, sub_mulVec, vecMulVec_mulVec_hermitian_block_frames, hf_eq_vecMul]
+
+private theorem vecMul_vecMulVec' (u v x : ι → K) : x ᵥ* vecMulVec u v = (x ⬝ᵥ u) • v := by
+  ext j
+  simp only [vecMul, dotProduct, vecMulVec_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul]
+  exact Finset.sum_congr rfl fun i _ => by ring
+
+theorem vecMul_Γp (Γ : Matrix ι ι K) (a x : ι → K) :
+    S.cv x ᵥ* S.Γp Γ a = S.cv x ᵥ* Γ - S.hf Γ x a • (S.cv a ᵥ* Γ) := by
+  rw [Γp, vecMul_sub, vecMul_vecMulVec']
+  rfl
+
+theorem hf_Γp (Γ : Matrix ι ι K) (a x y : ι → K) :
+    S.hf (S.Γp Γ a) x y = S.hf Γ x y - S.hf Γ a y * S.hf Γ x a := by
+  show S.cv x ⬝ᵥ (S.Γp Γ a *ᵥ y) = _
+  rw [Γp_mulVec, dotProduct_sub, dotProduct_smul, smul_eq_mul]
+  rfl
+
+variable {Γ : Matrix ι ι K} {a : ι → K}
+
+theorem Γp_mulVec_self (haa : S.hf Γ a a = 1) : S.Γp Γ a *ᵥ a = 0 := by
+  rw [Γp_mulVec, haa, one_smul, sub_self]
+
+theorem vecMul_Γp_self (haa : S.hf Γ a a = 1) : S.cv a ᵥ* S.Γp Γ a = 0 := by
+  rw [vecMul_Γp, haa, one_smul, sub_self]
+
+theorem IntM_Γp (hΓ : S.IntM Γ) (ha : S.IntV a) : S.IntM (S.Γp Γ a) := by
+  intro i j
+  have h1 : (Γ *ᵥ a) i ∈ S.O := S.IntV_mulVec hΓ ha i
+  have h2 : (S.cv a ᵥ* Γ) j ∈ S.O := by
+    simp only [vecMul, dotProduct]
+    exact S.O.sum_mem fun k _ => S.O.mul_mem (S.IntV_cv ha k) (hΓ k j)
+  simp only [Γp, Matrix.sub_apply, vecMulVec_apply]
+  exact S.O.sub_mem (hΓ i j) (S.O.mul_mem h1 h2)
+
+theorem Herm_Γp (hΓ : S.IntM Γ) (hH : S.Herm Γ) (ha : S.IntV a) : S.Herm (S.Γp Γ a) := by
+  intro i j
+  simp only [Γp, Matrix.sub_apply, vecMulVec_apply, map_sub, map_mul, hH i j, S.σ_mulVec hH,
+    S.σ_vecMul hH ha]
+  ring
+
+theorem mulVec_proj (Γ : Matrix ι ι K) (a y : ι → K) : Γ *ᵥ S.proj Γ a y = S.Γp Γ a *ᵥ y := by
+  rw [proj, mulVec_sub, mulVec_smul, Γp_mulVec]
+
+theorem IntV_proj (hΓ : S.IntM Γ) (ha : S.IntV a) {y : ι → K} (hy : S.IntV y) : S.IntV (S.proj Γ a y) :=
+  S.IntV_sub hy (S.IntV_smul (S.hf_mem hΓ ha hy) ha)
+
+private theorem sub_smul_vecMul (x b : ι → K) (c : K) (M : Matrix ι ι K) :
+    (x - c • b) ᵥ* M = x ᵥ* M - c • (b ᵥ* M) := by
+  ext j
+  simp only [vecMul, dotProduct, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, sub_mul,
+    Finset.sum_sub_distrib, Finset.mul_sum, mul_assoc]
+
+private theorem hf_proj_right_eq_hf_Γp (Γ : Matrix ι ι K) (a x y : ι → K) :
+    S.hf Γ x (S.proj Γ a y) = S.hf (S.Γp Γ a) x y := by
+  show S.cv x ⬝ᵥ (Γ *ᵥ S.proj Γ a y) = S.cv x ⬝ᵥ (S.Γp Γ a *ᵥ y)
+  rw [mulVec_proj]
+
+theorem hf_proj_proj (haa : S.hf Γ a a = 1) (x y : ι → K) :
+    S.hf Γ (S.proj Γ a x) (S.proj Γ a y) = S.hf (S.Γp Γ a) x y := by
+  rw [hf_proj_right_eq_hf_Γp, hf_eq_vecMul, hf_eq_vecMul, proj, cv_sub, cv_smul,
+    sub_smul_vecMul, S.vecMul_Γp_self haa, smul_zero, sub_zero]
+
+theorem hf_self_proj (haa : S.hf Γ a a = 1) (y : ι → K) : S.hf Γ a (S.proj Γ a y) = 0 := by
+  rw [hf_proj_right_eq_hf_Γp, hf_Γp, haa, mul_one, sub_self]
+
+theorem hf_proj_self (hΓ : S.IntM Γ) (hH : S.Herm Γ) (ha : S.IntV a) (haa : S.hf Γ a a = 1) {y : ι → K}
+    (hy : S.IntV y) : S.hf Γ (S.proj Γ a y) a = 0 := by
+  rw [S.hf_swap hΓ hH ha (S.IntV_proj hΓ ha hy), S.hf_self_proj haa, map_zero]
+
+theorem vecMul_proj (hΓ : S.IntM Γ) (hH : S.Herm Γ) (ha : S.IntV a) {y : ι → K} (hy : S.IntV y) :
+    S.cv (S.proj Γ a y) ᵥ* Γ = S.cv y ᵥ* S.Γp Γ a := by
+  rw [proj, cv_sub, cv_smul, sub_smul_vecMul, vecMul_Γp, S.hf_swap hΓ hH ha hy]
+
+theorem UM_Γp (hΓ : S.IntM Γ) (hH : S.Herm Γ) (hU : S.UM Γ) (ha : S.IntV a) (haa : S.hf Γ a a = 1) :
+    S.UM (S.Γp Γ a) := by
+  intro x hx hPx
+  have hz := S.IntV_proj hΓ ha hx
+  have hΓz : ∀ i, S.NU ((Γ *ᵥ S.proj Γ a x) i) := by
+    intro i
+    rw [mulVec_proj]
+    exact hPx i
+  obtain ⟨z, hz', hzz⟩ := hU _ hz hΓz
+  refine ⟨z, hz', ?_⟩
+  have h0 : S.hf Γ a z = 0 := by
+    have h1 : S.hf Γ a (S.proj Γ a x) = S.p * S.hf Γ a z := by
+      show S.cv a ⬝ᵥ (Γ *ᵥ S.proj Γ a x) = S.p * (S.cv a ⬝ᵥ (Γ *ᵥ z))
+      rw [hzz, dotProduct_smul, smul_eq_mul]
+    rw [S.hf_self_proj haa] at h1
+    exact (mul_eq_zero.mp h1.symm).resolve_left S.hp0
+  rw [← S.mulVec_proj Γ a x, hzz, Γp_mulVec, h0, zero_smul, sub_zero]
+
+end JSetup
+end Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame.Jac
+end
+end
+
+section
 noncomputable section
 open scoped BigOperators
 open Matrix
@@ -202,3 +667,5 @@ theorem jac_fin : ∀ (m : ℕ) (Γ : Matrix (Fin m) (Fin m) K), S.IntM Γ → S
 
 end JSetup
 end Formalism.L2.Th1.Top.FrP.UnitaryGroupMassFormula.HermFrame.Jac
+end
+end

@@ -1,5 +1,260 @@
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SliceBounds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MinimumGrowthBounds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMeanContinuity
+import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.FourSignHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.M3bNormHolds
 
+section
+namespace ReciprocityTheory.ChartRestriction.G.FD
+
+open NumberField Complex MajorantConjugateTransfer TwoSidedBoostBounds
+open scoped ComplexConjugate
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+namespace FractionalSliceDomains
+
+variable {r : ℕ} (X : Data E r)
+
+noncomputable def hfun (P : Frame X.Ψ r → ℂ) (ξ : Fin r → E) (x : Frame X.Ψ r) {n : ℕ}
+    (ω : Module.Basis (Fin n) ℝ (X.Ψ → ℝ)) (t : Fin n → ℂ) : ℂ :=
+  P (X.flow ξ (fun τ => ∑ j, t j * (ω j τ : ℂ)) x)
+
+def Om (ξ : Fin r → E) (x : Frame X.Ψ r) {n : ℕ} (ω : Module.Basis (Fin n) ℝ (X.Ψ → ℝ)) :
+    Set (Fin n → ℝ) :=
+  {b | (fun τ => ∑ j, b j * ω j τ) ∈ AdmissibleHermitianColumns.admissibleImaginary X ξ x}
+
+variable {ξ : Fin r → E} {x : Frame X.Ψ r} {n : ℕ} (ω : Module.Basis (Fin n) ℝ (X.Ψ → ℝ))
+
+theorem Om_open_conn (hx : x ∈ X.dom) : IsOpen (Om X ξ x ω) ∧ IsPreconnected (Om X ξ x ω) := by
+  obtain ⟨ho, hc⟩ := AdmissibleHermitianColumns.admissibleImaginary_open_convex (X := X) (ξ := ξ) x hx
+  have hcont : Continuous (fun b : Fin n → ℝ => fun τ : X.Ψ => ∑ j, b j * ω j τ) := by
+    refine continuous_pi fun τ => ?_
+    exact continuous_finset_sum _ fun j _ => (continuous_apply j).mul continuous_const
+  refine ⟨ho.preimage hcont, ?_⟩
+  have hconv : Convex ℝ (Om X ξ x ω) := by
+    intro a ha b hb s t hs ht hst
+    show (fun τ => ∑ j, (s • a + t • b) j * ω j τ) ∈ AdmissibleHermitianColumns.admissibleImaginary X ξ x
+    have e : (fun τ => ∑ j, (s • a + t • b) j * ω j τ) =
+        s • (fun τ => ∑ j, a j * ω j τ) + t • (fun τ => ∑ j, b j * ω j τ) := by
+      funext τ
+      simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun j _ => by ring
+    rw [e]
+    exact hc ha hb hs ht hst
+  exact hconv.isPreconnected
+
+theorem mem_admissibleImaginary_iff (hx : x ∈ X.dom) (hξ : X.IsIso ξ) (y : X.Ψ → ℝ) :
+    y ∈ AdmissibleHermitianColumns.admissibleImaginary X ξ x ↔ ∀ τ, 0 < 1 + X.c τ * y τ * X.maj x τ (Data.emb τ.1 ξ) := by
+  have he : X.IsIsoV (fun τ => Data.emb τ.1 ξ) := fun τ =>
+    ⟨by rw [ReciprocityTheory.ChartRestriction.G.FD.hermC_emb, hξ.2.1, map_zero], ReciprocityTheory.ChartRestriction.G.FD.emb_ne_zero τ.1 hξ.2.2⟩
+  have h1 := AdmissibleHermitianColumns.flow_mem_dom_iff (X := X) hξ.2.1 x hx (fun τ => (y τ : ℂ) * I)
+  have h1' : X.flow ξ (fun τ => (y τ : ℂ) * I) x ∈ X.dom ↔ y ∈ AdmissibleHermitianColumns.admissibleImaginary X ξ x := by
+    rw [h1]
+    apply iff_of_eq
+    congr 1
+    funext τ
+    simp
+  have h2 := ((flowDomainCriterion_holds (E := E)) r X (fun τ => Data.emb τ.1 ξ) he x hx
+    (fun τ => (y τ : ℂ) * I)).1
+  have hfl : X.flow ξ (fun τ => (y τ : ℂ) * I) x =
+      X.flowV (fun τ => Data.emb τ.1 ξ) (fun τ => (y τ : ℂ) * I) x := rfl
+  rw [← h1', hfl, h2]
+  refine forall_congr' fun τ => ?_
+  simp only [Data.ttV, Complex.mul_I_im, Complex.ofReal_re]
+  rw [div_div_eq_mul_div, div_one]
+  have e : y τ * (X.c τ * X.maj x τ (Data.emb τ.1 ξ)) = X.c τ * y τ * X.maj x τ (Data.emb τ.1 ξ) := by
+    ring
+  rw [e]
+
+theorem zero_mem_Om (hx : x ∈ X.dom) (hξ : X.IsIso ξ) : (0 : Fin n → ℝ) ∈ Om X ξ x ω := by
+  show (fun τ => ∑ j, (0 : Fin n → ℝ) j * ω j τ) ∈ AdmissibleHermitianColumns.admissibleImaginary X ξ x
+  simp only [AdmissibleHermitianColumns.admissibleImaginary, Set.mem_setOf_eq]
+  intro τ i
+  have h := (hx τ).2 i
+  simpa [dmin] using h
+
+theorem tube_dom (hx : x ∈ X.dom) (hξ : X.IsIso ξ) {u : Fin n → ℂ}
+    (hu : u ∈ ReciprocityTheory.L2DbarEstimates.Y.tube n (Om X ξ x ω)) :
+    X.flow ξ (fun τ => ∑ j, u j * (ω j τ : ℂ)) x ∈ X.dom := by
+  refine (AdmissibleHermitianColumns.flow_mem_dom_iff (X := X) hξ.2.1 x hx (fun τ => ∑ j, u j * (ω j τ : ℂ))).2 ?_
+  have e : (fun τ => (∑ j, u j * (ω j τ : ℂ)).im) = fun τ => ∑ j, (u j).im * ω j τ := by
+    funext τ
+    simp [Complex.im_sum, Complex.mul_im]
+  rw [e]
+  exact hu
+
+theorem hfun_diff (P : Frame X.Ψ r → ℂ) (la : Wt X.Ψ r) (hP : X.IsSec la P) (hx : x ∈ X.dom)
+    (hξ : X.IsIso ξ) :
+    DifferentiableOn ℂ (hfun X P ξ x ω) (ReciprocityTheory.L2DbarEstimates.Y.tube n (Om X ξ x ω)) := by
+  have hL : Differentiable ℂ (fun t : Fin n → ℂ => fun τ : X.Ψ => ∑ j, t j * (ω j τ : ℂ)) := by
+    refine differentiable_pi.2 fun τ => ?_
+    exact Differentiable.fun_sum fun j _ => (differentiable_apply j).mul (differentiable_const _)
+  have hF : Differentiable ℂ (fun t : Fin n → ℂ => X.flow ξ (fun τ => ∑ j, t j * (ω j τ : ℂ)) x) :=
+    (FlowMeanContinuity.flow_differentiable X ξ x).comp hL
+  exact hP.1.comp hF.differentiableOn (fun t ht => tube_dom X ω hx hξ ht)
+
+theorem hfun_periodic (P : Frame X.Ψ r → ℂ) (la : Wt X.Ψ r) (hP : X.IsSec la P) (hx : x ∈ X.dom)
+    (hξ : X.IsIso ξ) (hω : Submodule.span ℤ (Set.range ω) = RealEmbeddingCharacters.perL X la) :
+    ∀ s ∈ ReciprocityTheory.L2DbarEstimates.Y.tube n (Om X ξ x ω), ∀ m : Fin n → ℤ,
+      hfun X P ξ x ω (s + fun k => (m k : ℂ)) = hfun X P ξ x ω s := by
+  intro s hs m
+  have hS := tube_dom X ω hx hξ hs
+  have hp : (fun τ => ∑ j, (m j : ℝ) * ω j τ) ∈ X.periods la := by
+    have h1 : (fun τ => ∑ j, (m j : ℝ) * ω j τ) ∈ RealEmbeddingCharacters.perL X la := by
+      rw [← hω]
+      have e : (fun τ => ∑ j, (m j : ℝ) * ω j τ) = ∑ j, (m j) • ω j := by
+        funext τ
+        simp [Finset.sum_apply, zsmul_eq_mul]
+      rw [e]
+      exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+    first
+      | exact h1
+      | exact (AddSubgroup.mem_toIntSubmodule _).mp h1
+  have hsum : (fun τ => ∑ j, (s + fun k => (m k : ℂ)) j * (ω j τ : ℂ)) =
+      TransvectionPeriodicity.cR X (fun τ => ∑ j, (m j : ℝ) * ω j τ) + fun τ => ∑ j, s j * (ω j τ : ℂ) := by
+    funext τ
+    simp only [Pi.add_apply, TransvectionPeriodicity.cR]
+    push_cast
+    rw [← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  show P (X.flow ξ (fun τ => ∑ j, (s + fun k => (m k : ℂ)) j * (ω j τ : ℂ)) x) =
+    P (X.flow ξ (fun τ => ∑ j, s j * (ω j τ : ℂ)) x)
+  first
+    | rw [hsum, ← EmbeddingHermitianPairs.flow_flow (X := X) hξ.2.1]
+    | rw [hsum, ← AdmissibleHermitianColumns.flow_flow (X := X) hξ.2.1]
+  exact TransvectionPeriodicity.sec_periodic X la P hP hξ.1 hξ.2.1 hp _ hS
+
+theorem slice_fract (P : Frame X.Ψ r → ℂ) (la : Wt X.Ψ r) (hP : X.IsSec la P) (hx : x ∈ X.dom)
+    (hξ : X.IsIso ξ) (hω : Submodule.span ℤ (Set.range ω) = RealEmbeddingCharacters.perL X la)
+    {b : Fin n → ℝ} (hb : b ∈ Om X ξ x ω) (y : Fin n → ℝ) :
+    hfun X P ξ x ω (fun k => (y k : ℂ) + (b k : ℂ) * I) =
+      hfun X P ξ x ω (fun k => ((Int.fract (y k) : ℝ) : ℂ) + (b k : ℂ) * I) := by
+  have hmem : (fun k => (y k : ℂ) + (b k : ℂ) * I) ∈ ReciprocityTheory.L2DbarEstimates.Y.tube n (Om X ξ x ω) := by
+    show (fun k => ((y k : ℂ) + (b k : ℂ) * I).im) ∈ Om X ξ x ω
+    simpa using hb
+  have h := hfun_periodic X ω P la hP hx hξ hω _ hmem (fun k => -⌊y k⌋)
+  rw [← h]
+  congr 1
+  funext k
+  simp only [Pi.add_apply, Int.fract, Complex.ofReal_sub, Complex.ofReal_intCast, Int.cast_neg]
+  ring
+
+noncomputable def Bω : ℝ := ∑ τ : X.Ψ, ∑ j, |ω j τ|
+
+theorem re_bound (u : Fin n → ℝ) (hu : ∀ j, 0 ≤ u j ∧ u j ≤ 1) (τ : X.Ψ) :
+    |∑ j, u j * ω j τ| ≤ Bω X ω := by
+  unfold Bω
+  calc |∑ j, u j * ω j τ| ≤ ∑ j, |u j * ω j τ| := Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ j, |ω j τ| := by
+        refine Finset.sum_le_sum fun j _ => ?_
+        rw [abs_mul, abs_of_nonneg (hu j).1]
+        exact mul_le_of_le_one_left (abs_nonneg _) (hu j).2
+    _ ≤ ∑ τ' : X.Ψ, ∑ j, |ω j τ'| :=
+        Finset.single_le_sum (f := fun τ' => ∑ j, |ω j τ'|)
+          (fun τ' _ => Finset.sum_nonneg fun j _ => abs_nonneg _) (Finset.mem_univ τ)
+
+theorem Bω_nonneg : 0 ≤ Bω X ω := by
+  unfold Bω
+  exact Finset.sum_nonneg fun τ _ => Finset.sum_nonneg fun j _ => abs_nonneg _
+
+end FractionalSliceDomains
+
+end ReciprocityTheory.ChartRestriction.G.FD
+end
+
+section
+namespace ReciprocityTheory.ChartRestriction.G.FD
+
+open NumberField Complex MajorantConjugateTransfer TwoSidedBoostBounds MinimumGrowthBounds FractionalSliceDomains
+open scoped ComplexConjugate
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+
+namespace SliceBounds
+
+variable {r : ℕ} (X : Data E r)
+
+theorem slice_bound {x : Frame X.Ψ r} (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ)
+    (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (hP : X.IsSec la P) (C A : ℝ)
+    (hmod : ∀ z ∈ X.dom, X.pnorm la P z ≤ C * X.la1 z ^ (-A)) {n : ℕ}
+    (ω : Module.Basis (Fin n) ℝ (X.Ψ → ℝ)) (hω : Submodule.span ℤ (Set.range ω) = RealEmbeddingCharacters.perL X la)
+    {b : Fin n → ℝ} (hb : b ∈ Om X ξ x ω) {k1 k2 R : ℝ} (hk1 : 0 < k1) (hk12 : k1 ≤ k2)
+    (hq1 : ∀ τ (ρ : ℝ), |ρ| ≤ Bω X ω →
+      k1 ≤ min (1 + X.c τ * (∑ j, b j * ω j τ) * X.maj x τ (Data.emb τ.1 ξ))
+        (1 + X.c τ * (∑ j, b j * ω j τ) * X.maj x τ (Data.emb τ.1 ξ))⁻¹ /
+        (1 + X.c τ * |ρ| * X.maj x τ (Data.emb τ.1 ξ)) ^ 2)
+    (hq2 : ∀ τ (ρ : ℝ), |ρ| ≤ Bω X ω →
+      max (1 + X.c τ * (∑ j, b j * ω j τ) * X.maj x τ (Data.emb τ.1 ξ))
+        (1 + X.c τ * (∑ j, b j * ω j τ) * X.maj x τ (Data.emb τ.1 ξ))⁻¹ *
+        (1 + X.c τ * |ρ| * X.maj x τ (Data.emb τ.1 ξ)) ^ 2 ≤ k2)
+    (hR : ∏ τ, max (1 + X.c τ * (∑ j, b j * ω j τ) * X.maj x τ (Data.emb τ.1 ξ))
+        (1 + X.c τ * (∑ j, b j * ω j τ) * X.maj x τ (Data.emb τ.1 ξ))⁻¹ ^ (X.spread la τ / 2) ≤ R)
+    (y : Fin n → ℝ) :
+    ‖hfun X P ξ x ω (fun k => (y k : ℂ) + (b k : ℂ) * I)‖ * X.nfac la x ≤
+      max C 0 * max (k1 ^ (-A / 2)) (k2 ^ (-A / 2)) * R * X.la1 x ^ (-A) := by
+  classical
+  rw [slice_fract (X := X) (ω := ω) P la hP hx hξ hω hb y]
+  set u : Fin n → ℝ := fun k => Int.fract (y k) with hu
+  set s : X.Ψ → ℂ := fun τ => ∑ j, (((u j : ℝ) : ℂ) + (b j : ℂ) * I) * (ω j τ : ℂ) with hs
+  have hre : ∀ τ, (s τ).re = ∑ j, u j * ω j τ := by
+    intro τ
+    simp [hs, Complex.re_sum]
+  have him : ∀ τ, (s τ).im = ∑ j, b j * ω j τ := by
+    intro τ
+    simp [hs, Complex.im_sum]
+  have hhf : hfun X P ξ x ω (fun k => ((u k : ℝ) : ℂ) + (b k : ℂ) * I) = P (X.flow ξ s x) := by
+    simp only [hfun, hs]
+  have hsim : (fun τ => (s τ).im) = fun τ => ∑ j, b j * ω j τ := funext him
+  have hdom : X.flow ξ s x ∈ X.dom := by
+    rw [AdmissibleHermitianColumns.flow_mem_dom_iff (X := X) hξ.2.1 x hx, hsim]
+    exact hb
+  have hbd : ∀ τ, |(s τ).re| ≤ Bω X ω := by
+    intro τ
+    rw [hre]
+    exact re_bound (X := X) (ω := ω) u (fun j => ⟨Int.fract_nonneg _, (Int.fract_lt_one _).le⟩) τ
+  rw [hhf]
+  have hisoV : X.IsIsoV (fun τ => Data.emb τ.1 ξ) := by
+    intro τ
+    constructor
+    · have hh : hermC τ.1 X.Gm (Data.emb τ.1 ξ) (Data.emb τ.1 ξ) = τ.1 (herm X.Gm ξ ξ) := by
+        simp only [hermC, herm, Data.emb, map_sum, map_mul]
+        refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
+        congr 1
+        exact (IsCMField.complexEmbedding_complexConj E τ.1 (ξ b)).symm
+      rw [hh, hξ.2.1, map_zero]
+    · intro h
+      apply hξ.2.2
+      funext a
+      have ha := congrFun h a
+      simpa [Data.emb] using ha
+  have hflowV : X.flowV (fun τ => Data.emb τ.1 ξ) s x = X.flow ξ s x := rfl
+  have hN := (m3bNorm_holds (E := E) r X (fun τ => Data.emb τ.1 ξ) hisoV la x hx s
+    (by rw [hflowV]; exact hdom)).2
+  rw [hflowV] at hN
+  refine MinimumGrowthBounds.growth (X := X) la P C A hmod hx hdom hk1 hk12 ?_ ?_ ?_
+  · intro τ w
+    have h := (TwoSidedBoostBounds.maj_two_sided (X := X) hx hξ s hdom τ w).2.1
+    rw [him τ] at h
+    exact le_trans (mul_le_mul_of_nonneg_right (hq1 τ _ (hbd τ)) (MajorantConjugateTransfer.maj_nonneg (X := X) hx τ w)) h
+  · intro τ w
+    have h := (TwoSidedBoostBounds.maj_two_sided (X := X) hx hξ s hdom τ w).2.2
+    rw [him τ] at h
+    exact le_trans h (mul_le_mul_of_nonneg_right (hq2 τ _ (hbd τ)) (MajorantConjugateTransfer.maj_nonneg (X := X) hx τ w))
+  · refine le_trans hN (le_of_eq_of_le ?_ hR)
+    refine Finset.prod_congr rfl (fun τ _ => ?_)
+    have hA : 1 + (s τ).im / X.ttV (fun τ => Data.emb τ.1 ξ) x τ =
+        1 + X.c τ * (∑ j, b j * ω j τ) * X.maj x τ (Data.emb τ.1 ξ) := by
+      rw [him τ, Data.ttV, one_div, div_inv_eq_mul]
+      ring
+    beta_reduce
+    rw [hA]
+
+end SliceBounds
+
+end ReciprocityTheory.ChartRestriction.G.FD
+end
+
+section
 namespace ReciprocityTheory.ChartRestriction.G.FD
 
 open NumberField Complex MajorantConjugateTransfer TwoSidedBoostBounds MinimumGrowthBounds FractionalSliceDomains SliceBounds
@@ -309,3 +564,4 @@ theorem moderateCoefficientPositivity_holds : ModerateCoefficientPositivity (E :
       _ = Cη * X.la1 x ^ (-A) * T := by field_simp
 
 end ReciprocityTheory.ChartRestriction.G.FD
+end

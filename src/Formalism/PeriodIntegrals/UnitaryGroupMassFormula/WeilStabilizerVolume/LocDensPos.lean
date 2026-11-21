@@ -1,7 +1,41 @@
 import Mathlib
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.LocDensSt
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.FreeOpen
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.FibDis
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.ExOmTOfSteps
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.TensAll
 
+section
+noncomputable section
+
+namespace PI.VolStabW
+
+open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes NumberField IsDedekindDomain MeasureTheory PI.VolFromSW Topology
+open scoped TensorProduct
+
+def FreeOpen : Prop := InCtx fun F E _ _ _ _ _ _σ M _J a _X0 _hT =>
+  IsOpen {X : Fin a → Fin M → Ainf F ⊗[F] E | LinearIndependent (Ainf F ⊗[F] E) X} ∧
+  ∀ v : HeightOneSpectrum (𝓞 F),
+    IsOpen {X : Fin a → Fin M → Fv F v ⊗[F] E | LinearIndependent (Fv F v ⊗[F] E) X}
+
+end PI.VolStabW
+end
+end
+
+section
+noncomputable section
+
+namespace PI.VolStabW
+
+open scoped TensorProduct
+open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.AdicCompletionValuation
+  PI.VolFromSW TensAllW
+
+
+end PI.VolStabW
+end
+end
+
+section
 noncomputable section
 
 namespace PI.VolStabW
@@ -192,3 +226,5 @@ theorem archPos_of_lb (hL : LBInf) : ArchPos := by
   exact_mod_cast hpos.ne'
 
 end PI.VolStabW
+end
+end

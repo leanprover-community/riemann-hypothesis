@@ -1,9 +1,38 @@
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.AdditionIdentityOfSigmaFormulaUnit
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FirstKernelRemainderOfLevelRestrictionOfLinPtW
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.LevelRestrictionOfGroupLawAlt
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.CoefWfZero
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.RetcutA
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TheoremOfCubeOfAdditionFormulas
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.StmtPhDualWHolds
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FglPtW
 
+section
+namespace Formalism.MainNotions.Ext.CutA
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Formalism.MainNotions.GL3r7 Formalism.MainNotions.Ext
+
+
+end Formalism.MainNotions.Ext.CutA
+end
+
+section
+namespace Formalism.MainNotions.Ext
+
+theorem addPtW_holds : AddPtW :=
+  fun p _ g hOk hF σ a b ha hb =>
+    formal_group_add_generation ℂ_[p] (Formalism.MainNotions.GL3Theta.Wp p) g.l g.ex hOk.2.2.1 hOk.2.2.2 hF σ a b ha hb
+
+theorem mulPtW_holds : MulPtW :=
+  fun p _ g hOk c hc σ a ha =>
+    formal_group_mul_generation ℂ_[p] (Formalism.MainNotions.GL3Theta.Wp p) g.l g.ex hOk.2.2.1 hOk.2.2.2 c hc σ a ha
+
+
+
+
+
+end Formalism.MainNotions.Ext
+end
+
+section
 namespace Formalism.MainNotions.Ext
 
 open Formalism.BasicNotions Formalism.MainNotions.GL3Theta Formalism.MainNotions.GL3r7 Formalism.MainNotions.Ext.CutA
@@ -22,3 +51,4 @@ theorem firstGeometricCondition_of_properties (D : D7) (hc : cube D) (he : endIn
 
 
 end Formalism.MainNotions.Ext
+end

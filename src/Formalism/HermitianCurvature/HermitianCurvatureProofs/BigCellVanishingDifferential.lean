@@ -1,8 +1,0 @@
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FibreExpansionZeroFails
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellVanishingOfCommute
-
-namespace Formalism.FourierDecayAlt.P
-
-
-
-end Formalism.FourierDecayAlt.P

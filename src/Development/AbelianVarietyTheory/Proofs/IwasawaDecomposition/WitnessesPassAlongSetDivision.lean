@@ -4,12 +4,475 @@ import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.Ex
 import Development.AbelianVarietyTheory.PublishedTheorems.WeberRayClassFields.WeberRayFieldSt
 import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PositionMv
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConcreteSplitPrimeAutomorphicDataDivisionLattice
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KernelTaylorSeriesPreservedDivisionLatticeChange
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaAutomorphicWeilDataPreservedDivisionLattice
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DivisionLocalDataPreservedDivisionLatticeChange
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GoodTwistsThetaLatticesPreservedDivisionChange
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnLocalDataTransportDivision
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColsReTo0S
 
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+namespace GlobalTheory.Mem.Top.Bl.WitTr
+open Formalism.MainNotions.G Formalism.UG Formalism.L2.Forms Formalism.L2.G
+attribute [local instance] Formalism.BasicNotions.factResChar
+
+section Gen
+
+variable {D : D7} (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ) {X : Formalism.L2.Herm.Herm0 D}
+
+set_option maxHeartbeats 2000000 in
+
+def cmpInS (I : Cmp.CmpIn D X) : Cmp.CmpIn (setDiv D N h) (DivTr.herm0S N h X) := { I with }
+
+set_option maxHeartbeats 2000000 in
+
+theorem cmpHyp0P_setDiv {T : ∀ u : D.what₂.Word, Forms0 D u} {Gt : GatTies D} {I : Cmp.CmpIn D X} (H : CmpHyp0P T Gt I) :
+    CmpHyp0P (D := setDiv D N h) (fun u => DivTr.forms0S N h (T u)) (gatTr N h Gt) (cmpInS N h I) :=
+  ⟨H.ex, H.evInj, H.ptEx, H.ptAll, H.chi, H.latM⟩
+
+theorem stdB_setDiv {B : GL (Fin D.R.k) D.host.E} (hB : Cmp.StdB D B) : Cmp.StdB (setDiv D N h) B := hB
+
+set_option maxHeartbeats 2000000 in
+
+theorem cmpHyp_setDiv {T : ∀ u : D.what₂.Word, Forms0 D u} {Gt : GatTies D} {I : Cmp.CmpIn D X} (H : Cmp.CmpHyp T Gt I) :
+    Cmp.CmpHyp (D := setDiv D N h) (fun u => DivTr.forms0S N h (T u)) (gatTr N h Gt) (cmpInS N h I) :=
+  ⟨H.ex, H.uniq, H.pos, H.chi, H.li, H.latM⟩
+
+set_option maxHeartbeats 2000000 in
+
+theorem latCmpC_setDiv {T : ∀ u : D.what₂.Word, Forms0 D u} {Gt : GatTies D} {I : Cmp.CmpIn D X} (H : Cmp.CmpHyp T Gt I) :
+    cmpTr N h (Cmp.latCmpC T Gt I H) =
+      Cmp.latCmpC (D := setDiv D N h) (fun u => DivTr.forms0S N h (T u)) (gatTr N h Gt) (cmpInS N h I) (cmpHyp_setDiv N h H) := rfl
+
+set_option maxHeartbeats 2000000 in
+
+theorem sigma_setDiv {T : ∀ u : D.what₂.Word, Forms0 D u} {Gt : GatTies D} {I : Cmp.CmpIn D X} (H : Cmp.CmpHyp T Gt I)
+    (H0 : Formalism.L2.Herm.Herm0 D) :
+    (⟨setDiv D N h, gatTr N h Gt, cmpTr N h (Cmp.latCmpC T Gt I H), DivTr.herm0S N h H0, fun u => DivTr.forms0S N h (T u)⟩ :
+      Σ D : D7, GatTies D × LatCmp D × Formalism.L2.Herm.Herm0 D × ∀ u, Forms0 D u) =
+    ⟨setDiv D N h, gatTr N h Gt,
+      Cmp.latCmpC (D := setDiv D N h) (fun u => DivTr.forms0S N h (T u)) (gatTr N h Gt) (cmpInS N h I) (cmpHyp_setDiv N h H),
+      DivTr.herm0S N h H0, fun u => DivTr.forms0S N h (T u)⟩ := by
+  rw [latCmpC_setDiv]
+
+end Gen
+
+attribute [local instance_reducible] tauRec hP frobSet lamRec packC locPackC recG gatTiesG extRec embRec cmpInC hermitianLevelZeroOfRecursion levTieG gatRecP_lev gatRec_lev gatRec_pos
+  DivTr.herm0S DivTr.forms0S DivTr.atTTS cmpInS LocPack.posOK
+
+set_option maxHeartbeats 1600000 in
+
+theorem isRecG_setDiv : ∀ (sc : Scale) (D : D7) (Gt : GatTies D) (c : LatCmp D) (H : Formalism.L2.Herm.Herm0 D)
+    (F : ∀ u, Formalism.L2.Forms.Forms0 D u) (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ),
+    IsRecG sc D Gt c H F → IsRecG sc (setDiv D N h) (gatTr N h Gt) (cmpTr N h c) (DivTr.herm0S N h H)
+      (fun u => DivTr.forms0S N h (F u)) := by
+  intro sc D Gt c H F N h hR
+  obtain ⟨D0, Lc, I, ψ, hd, H0, hL, T, B, hBs, hB, iK, lam, hK, hPos, CH, eq⟩ := hR
+  cases eq
+  refine IsRecG.intro (setDiv D0 N h) Lc I ?a1 ?a2 ?a3 ?a4 ?a5 B ?a6 ?a7 ?a8 ?a9 ?a10 ?a11 ?a12 ?a13
+  case a1 => with_reducible_and_instances exact ψ
+  case a2 => with_reducible_and_instances exact hd
+  case a3 => with_reducible_and_instances exact DivTr.herm0S N h H0
+  case a4 => with_reducible_and_instances exact hL
+  case a5 => with_reducible_and_instances exact fun u => DivTr.forms0S N h (T u)
+  case a6 => with_reducible_and_instances exact stdB_setDiv N h hBs
+  case a7 => with_reducible_and_instances exact hB
+  case a8 => with_reducible_and_instances exact iK
+  case a9 => with_reducible_and_instances exact lam
+  case a10 => with_reducible_and_instances exact hK
+  case a11 => with_reducible_and_instances exact hPos
+  case a12 => with_reducible_and_instances exact cmpHyp0P_setDiv N h CH
+  case a13 =>
+    with_reducible_and_instances refine Eq.trans (sigma_setDiv N h _ H0) ?_
+    with_reducible_and_instances exact Eq.refl _
+
+end GlobalTheory.Mem.Top.Bl.WitTr
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.concreteSplitPrimeAutomorphicData_divisionLatticeChange : ∀ (sc : Scale) (D : D7) (Gt : GatTies D) (c : LatCmp D) (H : Formalism.L2.Herm.Herm0 D) (F : ∀ u, Formalism.L2.Forms.Forms0 D u) (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ), IsRecG sc D Gt c H F → IsRecG sc (setDiv D N h) (gatTr N h Gt) (cmpTr N h c) (DivTr.herm0S N h H) (fun u => DivTr.forms0S N h (F u)) := by
+  atlas_forward_decl GlobalTheory.Mem.Top.Bl.WitTr.isRecG_setDiv
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Df GlobalTheory.Mem.Db NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.Mem.Db.DivTr
+
+section GyGen
+
+variable {D : D7} (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ)
+
+@[reducible] def ledBack (L : SizeData₂ (setDiv D N h)) : SizeData₂ D := { L with }
+
+@[reducible] def instBack {L : SizeData₂ (setDiv D N h)} (X : G.Inst (setDiv D N h) L) : G.Inst D (ledBack N h L) := { X with }
+
+end GyGen
+
+variable {B : Base} {f : Fr B.toPre} {T : TwDat B}
+variable (w : ColW B f T) (Z : w.Lt) (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ)
+
+def kerTr {t : ColT w Z} {Gy : G.LatInst (w.D Z)} (ker : KerFam (w.D Z) t.Gt t.cmp (w.tw Z) Gy) :
+    KerFam (w.D (setDivZ Z N h)) (colTTr w Z N h t).Gt (colTTr w Z N h t).cmp (w.tw (setDivZ Z N h)) (latTr (D := w.D Z) N h Gy) :=
+  fun u v g => { ker u v g with }
+
+set_option maxHeartbeats 4000000 in
+
+def ktTr {t : ColT w Z} {X : DivX (w.D Z)} {Gy : G.LatInst (w.D Z)} {ker : KerFam (w.D Z) t.Gt t.cmp (w.tw Z) Gy}
+    (kt : KerT t X Gy ker) :
+    KerT (colTTr w Z N h t) (divTr (D := w.D Z) N h X) (latTr (D := w.D Z) N h Gy) (kerTr w Z N h ker) :=
+  { kt with
+    O := fun u a => { kt.O u a with }
+    E := { kt.E with }
+    std := { kt.std with }
+    ok := ⟨⟨fun u μ v hv => { (kt.ok.1.choose u μ v hv) with }, fun u μ v hv => kt.ok.1.choose_spec u μ v hv⟩, kt.ok.2⟩ }
+
+set_option maxHeartbeats 8000000 in
+
+theorem entC_tr {t : ColT w Z} {X : DivX (w.D Z)} {Gy : G.LatInst (w.D Z)} {ker : KerFam (w.D Z) t.Gt t.cmp (w.tw Z) Gy}
+    (kt : KerT t X Gy ker)
+    (H : ∃ (Pl : Examples₂.EntPl (w.D Z)) (Bs : Formalism.L2.Ker.PlaceMatrixFamily (w.D Z)) (hh : Formalism.L2.Ker.KerEntHyp Pl kt.O Bs X (w.tw Z)),
+      kt.E = Formalism.L2.Ker.kerEntC Pl kt.O Bs hh) :
+    ∃ (Pl : Examples₂.EntPl (w.D (setDivZ Z N h))) (Bs : Formalism.L2.Ker.PlaceMatrixFamily (w.D (setDivZ Z N h)))
+      (hh : Formalism.L2.Ker.KerEntHyp Pl (ktTr w Z N h kt).O Bs (divTr (D := w.D Z) N h X) (w.tw (setDivZ Z N h))),
+      (ktTr w Z N h kt).E = Formalism.L2.Ker.kerEntC Pl (ktTr w Z N h kt).O Bs hh := by
+  obtain ⟨Pl, Bs, hh, e⟩ := H
+  exact ⟨{ Pl with }, Bs, { hh with },
+    congrArg (fun E => ({ E with } : Formalism.BasicNotions.KerEnt (w.D (setDivZ Z N h)) (divTr (D := w.D Z) N h X) (w.tw (setDivZ Z N h)))) e⟩
+
+end GlobalTheory.Mem.Db.DivTr
+
+end
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.Mem.Top.Bl.WitTr
+
+set_option maxHeartbeats 8000000 in
+
+theorem kerT_entC_setDiv : ∀ {B : Base} {f : Fr B.toPre} {T : TwDat B} (w : ColW B f T) (Z : w.Lt) (t : ColT w Z) (Y : DivX (w.D Z)) (Gy : G.LatInst (w.D Z)) (ker : KerFam (w.D Z) t.Gt t.cmp (w.tw Z) Gy) (k : KerT t Y Gy ker) (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ), EntC k → ∃ k' : KerT (DivTr.colTTr w Z N h t) (divTr (D := w.D Z) N h Y) (latTr (D := w.D Z) N h Gy) (kerTr w Z N h ker), EntC k' := by
+  intro B f T w Z t Y Gy ker k N h hE
+  exact ⟨DivTr.ktTr w Z N h k, DivTr.entC_tr w Z N h k hE⟩
+
+end GlobalTheory.Mem.Top.Bl.WitTr
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.kernelTaylorSeries_preserved_divisionLatticeChange : ∀ {B : Base} {f : Fr B.toPre} {T : TwDat B} (w : ColW B f T) (Z : w.Lt) (t : ColT w Z) (Y : DivX (w.D Z)) (Gy : G.LatInst (w.D Z)) (ker : KerFam (w.D Z) t.Gt t.cmp (w.tw Z) Gy) (k : KerT t Y Gy ker) (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ), EntC k → ∃ k' : KerT (DivTr.colTTr w Z N h t) (divTr (D := w.D Z) N h Y) (latTr (D := w.D Z) N h Gy) (kerTr w Z N h ker), EntC k' := by
+  atlas_forward_decl GlobalTheory.Mem.Top.Bl.WitTr.kerT_entC_setDiv
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 4000000
+
+namespace GlobalTheory.Mem.Top.Bl.ThTTr
+
+open Formalism.L2.Theta Formalism.L2.JoinChr
+open scoped TensorProduct
+open Formalism.BasicNotions.TH (tauE)
+
+section Gen
+
+variable {D : D7} (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ)
+
+theorem isAutFun_tr {V : TH.HSp D} {φ : GA D V → ℂ} :
+    IsAutFun (D := D) V φ ↔ IsAutFun (D := setDiv D N h) V φ :=
+  ⟨fun x => ⟨x.left, x.level, x.cont⟩, fun x => ⟨x.left, x.level, x.cont⟩⟩
+
+theorem isAutFunSm_tr {θ : D.what₂.Tau → (GlobalTheoryTheory.GenusMassVolumes.Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {V : TH.HSp D}
+    {φ : GA D V → ℂ} : IsAutFunSm (D := D) θ V φ ↔ IsAutFunSm (D := setDiv D N h) θ V φ :=
+  ⟨fun x => ⟨(isAutFun_tr N h).1 x.toIsAutFun, x.smooth, x.zfin, x.growth⟩,
+   fun x => ⟨(isAutFun_tr N h).2 x.toIsAutFun, x.smooth, x.zfin, x.growth⟩⟩
+
+theorem isThetaFun_tr {ψ : AddChar (GlobalTheoryTheory.GenusMassVolumes.AF D.host.F) ℂ} {V W : TH.HSp D} {f : WA V W → ℂ} :
+    IsThetaFun (D := D) ψ V W f ↔ IsThetaFun (D := setDiv D N h) ψ V W f :=
+  ⟨fun x => ⟨x.quasi, x.level, x.cont, x.smooth⟩, fun x => ⟨x.quasi, x.level, x.cont, x.smooth⟩⟩
+
+theorem isPolFock_tr {ψ : AddChar (GlobalTheoryTheory.GenusMassVolumes.AF D.host.F) ℂ}
+    {θ : D.what₂.Tau → (GlobalTheoryTheory.GenusMassVolumes.Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {V W : TH.HSp D}
+    {A : ∀ τ : D.what₂.Tau, Matrix (Fin (V.sig (tauE D τ)).1 ⊕ Fin (V.sig (tauE D τ)).2) (Fin V.rank) ℂ}
+    {B : ∀ τ : D.what₂.Tau, Matrix (Fin (W.sig (tauE D τ)).1 ⊕ Fin (W.sig (tauE D τ)).2) (Fin W.rank) ℂ}
+    {f : WA V W → ℂ} :
+    IsPolFock (D := D) ψ θ V W A B f ↔ IsPolFock (D := setDiv D N h) ψ θ V W A B f :=
+  ⟨fun ⟨J, x, rest⟩ => ⟨J, ⟨x.cont, x.real, x.sq, x.symp, x.kcomm, x.defin⟩, rest⟩,
+   fun ⟨J, x, rest⟩ => ⟨J, ⟨x.cont, x.real, x.sq, x.symp, x.kcomm, x.defin⟩, rest⟩⟩
+
+@[reducible] def besDatTr {A B : TH.HSp D} {ι : A.V →ₗ[D.host.E] B.V} (d : BesDat (D := D) A B ι) :
+    BesDat (D := setDiv D N h) A B ι := { d with }
+
+set_option maxHeartbeats 4000000 in
+
+def thetaTiedTr {X : ThetaX D} (T : ThetaTied D X) : ThetaTied (setDiv D N h) (thTr N h X) :=
+  { T with ev_aut := fun V F => (isAutFun_tr N h).1 (T.ev_aut V F) }
+
+set_option maxHeartbeats 4000000 in
+
+def weilTiedTr {X : ThetaX D} {T : ThetaTied D X} (Wl : WeilTied D X T) :
+    WeilTied (setDiv D N h) (thTr N h X) (thetaTiedTr N h T) :=
+  { Wl with
+    evS_range := fun V W hne => (Wl.evS_range V W hne).trans (Set.ext fun _ => isThetaFun_tr N h)
+    om_tw := { Wl.om_tw with } }
+
+set_option maxHeartbeats 4000000 in
+
+theorem weilTiedEq_tr {X : ThetaX D} {T : ThetaTied D X} {Wl : WeilTied D X T} (e : WeilCompatibleEquivariance Wl) :
+    WeilCompatibleEquivariance (weilTiedTr N h Wl) :=
+  { e with
+    evS_range := fun V W hr => (e.evS_range V W hr).trans (Set.ext fun _ => isThetaFun_tr N h)
+    om_tw := { e.om_tw with } }
+
+set_option maxHeartbeats 4000000 in
+
+def allTiedTr {X : ThetaX D} {A : TH.ProvA} (a : AllTied D X A) : AllTied (setDiv D N h) (thTr N h X) A where
+  T := thetaTiedTr N h a.T
+  sm := ⟨a.sm.1, fun θ hθ V hV => (a.sm.2 θ hθ V hV).trans (Set.ext fun _ => isAutFunSm_tr N h)⟩
+  ty := { a.ty with }
+  W := weilTiedTr N h a.W
+  unr := a.unr
+  kf := { a.kf with
+    kfin := ⟨a.kf.kfin.1, fun θ hθ V W h1 h2 h3 Φ => (a.kf.kfin.2 θ hθ V W h1 h2 h3 Φ).trans (isPolFock_tr N h)⟩ }
+  phiUp := a.phiUp
+  B := { a.B with dat := fun A B ι ho p => besDatTr N h (a.B.dat A B ι ho p) }
+  real := { a.real with }
+  prov := { a.prov with }
+
+end Gen
+
+end GlobalTheory.Mem.Top.Bl.ThTTr
+
+open GlobalTheory.Mem.Top.Bl.ThTTr in
+set_option maxHeartbeats 16000000 in
+
+theorem GlobalTheory.Mem.Top.Bl.ThTTr.thT_setDiv : ∀ {B : Base} {f : Fr B.toPre} {T : TwDat B} (w : ColW B f T) (Z : w.Lt) {Wt : Set B.places.Pl} {nch : NChoice (w.D Z)} (n : NchT w Z Wt nch) (th : ThetaX (w.D Z)) (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ), ThT n th → Nonempty (ThT (nchTTr w Z N h n) (thTr (D := w.D Z) N h th)) := by
+  intro B f T w Z Wt nch n th N h t
+  exact ⟨{ provA := t.provA
+           all := allTiedTr (D := w.D Z) N h t.all
+           weq := weilTiedEq_tr (D := w.D Z) N h t.weq
+           chr := { t.chr with }
+           same := { t.same with }
+           std := t.std
+           io := t.io }⟩
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaAutomorphicWeilData_preserved_divisionLatticeChange : ∀ {B : Base} {f : Fr B.toPre} {T : TwDat B} (w : ColW B f T) (Z : w.Lt) {Wt : Set B.places.Pl} {nch : NChoice (w.D Z)} (n : NchT w Z Wt nch) (th : ThetaX (w.D Z)) (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ), ThT n th → Nonempty (ThT (nchTTr w Z N h n) (thTr (D := w.D Z) N h th)) := by
+  atlas_forward_decl GlobalTheory.Mem.Top.Bl.ThTTr.thT_setDiv
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.Mem.Top.Bl.WitTr
+
+open Formalism.L2.Geo
+open Formalism.L2.Geo.PadPkg renaming md → padMd
+open Formalism.L2.Geo.CompatiblePlaces' renaming md → tiedMd
+
+namespace GeoDivTr
+
+section Gen
+variable {D : D7} (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ)
+
+set_option maxHeartbeats 4000000 in
+
+@[reducible] def datBk {Lev : Type} (w : Dat (setDiv D N h) Lev) : Dat D Lev := { w with }
+
+set_option maxHeartbeats 4000000 in
+
+@[reducible] def mdlT {p : ℕ} [Fact p.Prime] {M : ℕ} {rk : DV.Emb D p → ℕ} (m : DV.Mdl D p M rk) : DV.Mdl (setDiv D N h) p M rk := { m with }
+
+set_option maxHeartbeats 4000000 in
+
+@[reducible] def locT {M j p : ℕ} (l : ModuliIntegralCharts.Loc D M j p) : ModuliIntegralCharts.Loc (setDiv D N h) M j p := { l with }
+
+set_option maxHeartbeats 4000000 in
+
+@[reducible] def padT {M j : ℕ} {Comp : Type} {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg}
+    (P : PadPkg D M j Comp jC ng) : PadPkg (setDiv D N h) M j Comp jC ng :=
+  { P with
+    loc := fun p => locT N h (P.loc p)
+    ex := fun p => { P.ex p with }
+    locB := fun p hp => { P.locB p hp with }
+    pbKF := fun p _ k => P.pbKF p k
+    bc := fun p z => P.bc p z
+    md := fun p _ la z => mdlT N h (padMd P p la z) }
+
+set_option maxHeartbeats 4000000 in
+
+@[reducible] def shimUT {G : DV.Geo D.what₂.LL} {Lev : Type} {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg}
+    {w : Dat (setDiv D N h) Lev} (U : ShimU D G jC ng (datBk N h w)) : ShimU (setDiv D N h) G jC ng w :=
+  { U with alg := { U.alg with }, pad := padT N h U.pad }
+
+@[reducible] def wtB {j : ℕ} (w : WeightFamilies.Wt (setDiv D N h) j) : WeightFamilies.Wt D j := { w with }
+
+set_option maxHeartbeats 8000000 in
+
+@[reducible] def formsT {G : DV.Geo D.what₂.LL} {NW : ℕ → ℕ} {CompW : ℕ → Type} [∀ j, Fintype (CompW j)]
+    {algW : ∀ j, AlgPkg G D.what₂.Tau (NW j) (CompW j)} {PtY : ℕ → ℕ → Type}
+    (P : FormsPkg D G NW CompW algW PtY) :
+    FormsPkg (setDiv D N h) G NW CompW (fun j => { algW j with }) PtY where
+  KO := P.KO
+  fKO := P.fKO
+  nfKO := P.nfKO
+  eO := P.eO
+  kL := P.kL
+  kL_eO := P.kL_eO
+  Cusp := fun j w => P.Cusp j (wtB N h w)
+  acgC := fun j w => P.acgC j (wtB N h w)
+  modC := fun j w => P.modC j (wtB N h w)
+  fdC := fun j w => P.fdC j (wtB N h w)
+  modOC := fun j w => P.modOC j (wtB N h w)
+  towC := fun j w => P.towC j (wtB N h w)
+  cmp := fun j w c => P.cmp j (wtB N h w) c
+  cmp_mem := fun j w c F => P.cmp_mem j (wtB N h w) c F
+  cmp_cusp := fun j w c F => P.cmp_cusp j (wtB N h w) c F
+  cmp_span := fun j h1 h2 w s hs => P.cmp_span j h1 h2 (wtB N h w) s hs
+  cmp_indep := fun j w _ v hv => P.cmp_indep j (wtB N h w) v hv
+  mulC := fun j w w' F F' => P.mulC j (wtB N h w) (wtB N h w') F F'
+  cmp_mul := fun j w w' c F F' => P.cmp_mul j (wtB N h w) (wtB N h w') c F F'
+  supN := fun j w => P.supN j (wtB N h w)
+  supN_nonneg := fun j w => P.supN_nonneg j (wtB N h w)
+  supN_eq_zero := fun j w => P.supN_eq_zero j (wtB N h w)
+  supN_smul := fun j w => P.supN_smul j (wtB N h w)
+  supN_add := fun j w => P.supN_add j (wtB N h w)
+  l2NormAlt := fun j w => P.l2NormAlt j (wtB N h w)
+  l2Norm_nonneg_bis := fun j w => P.l2Norm_nonneg_bis j (wtB N h w)
+  l2Norm_eq_zero_iff := fun j w => P.l2Norm_eq_zero_iff j (wtB N h w)
+  l2Norm_smul_alt := fun j w => P.l2Norm_smul_alt j (wtB N h w)
+  l2Norm_add_le' := fun j w => P.l2Norm_add_le' j (wtB N h w)
+  l2Norm_le_supNorm_alt := fun j w => P.l2Norm_le_supNorm_alt j (wtB N h w)
+  Cu := P.Cu
+  Xc := P.Xc
+  Xc_lat := P.Xc_lat
+  FJt := fun j c χ w => P.FJt j c χ (wtB N h w)
+  acgF := fun j c χ w => P.acgF j c χ (wtB N h w)
+  modF := fun j c χ w => P.modF j c χ (wtB N h w)
+  sg := fun j c χ w => P.sg j c χ (wtB N h w)
+  Pt := P.Pt
+  pt66 := P.pt66
+  vAtC := fun j la y w => P.vAtC j la y (wtB N h w)
+  vAtC_zero := fun j la y w => P.vAtC_zero j la y (wtB N h w)
+  vAtC_ne_bot := fun j la y w => P.vAtC_ne_bot j la y (wtB N h w)
+  vAtC_add := fun j la y w => P.vAtC_add j la y (wtB N h w)
+  vAtC_smul := fun j la y w => P.vAtC_smul j la y (wtB N h w)
+  vAtC_mul := fun j la y w w' => P.vAtC_mul j la y (wtB N h w) (wtB N h w')
+  thAll := fun j w => P.thAll j (wtB N h w)
+  shortTh := fun j w => P.shortTh j (wtB N h w)
+
+set_option maxHeartbeats 8000000 in
+
+def famT {G : DV.Geo D.what₂.LL} {Lev : Type} (F : ShimFam D G Lev) : ShimFam (setDiv D N h) G Lev :=
+  { F with
+    U := fun w => shimUT N h (F.U (datBk N h w))
+    forms := formsT N h F.forms }
+
+set_option maxHeartbeats 4000000 in
+
+theorem heq_mdlT {p : ℕ} [Fact p.Prime] {A A' : Type} {M M' : ℕ} {rk rk' : DV.Emb D p → ℕ}
+    (f : A → DV.Mdl D p M rk) (g : A' → DV.Mdl D p M' rk') (hA : A = A') (hM : M = M') (hrk : rk = rk')
+    (hfg : HEq f g) : HEq (fun z => mdlT N h (f z)) (fun z => mdlT N h (g z)) := by
+  subst hA hM hrk
+  obtain rfl := eq_of_heq hfg
+  rfl
+
+set_option maxHeartbeats 8000000 in
+
+theorem geoTiedP_divTr {X : DivX D} {inK : X.Lev → ℕ → Prop} (hg : GeoTiedP X inK) :
+    GeoTiedP (divTr N h X) inK := by
+  obtain ⟨F, ePl, eC, hT, hJ, hC, hI, hL⟩ := hg
+  refine ⟨famT N h F, ePl, eC, ⟨⟨hT.shv.lev, fun w hw => hT.shv.shv (datBk N h w) hw⟩,
+    ⟨hT.pl.wt, hT.pl.jc, fun w hw => hT.pl.mp (datBk N h w) hw, ?_, fun w hw => hT.pl.curveM (datBk N h w) hw,
+      fun w hw => hT.pl.degM (datBk N h w) hw, fun w hw => hT.pl.htMdl (datBk N h w) hw,
+      fun w hw => hT.pl.htCurve (datBk N h w) hw⟩, ⟨fun j h1 h2 c => hT.geo.yv j h1 h2 c, fun j h1 h2 c => hT.geo.ybd j h1 h2 c,
+      fun j h1 h2 c la => hT.geo.lw j h1 h2 c la⟩, hT.lev_κg⟩, hJ, hC,
+    fun w w' hs hk hj hw hw' => hI (datBk N h w) (datBk N h w') hs hk hj hw hw', fun w M => hL (datBk N h w) M⟩
+  intro w hw p _ la
+  have hS := hT.shv.shv (datBk N h w) hw
+  have hM : (X.shv w.S w.κ).N = (datBk N h w).N := by rw [show w.S = (datBk N h w).S from rfl, show w.κ = (datBk N h w).κ from rfl, hS]; rfl
+  have hj : (X.shv w.S w.κ).j = (datBk N h w).j := by rw [show w.S = (datBk N h w).S from rfl, show w.κ = (datBk N h w).κ from rfl, hS]; rfl
+  have hrk : DV.rkOf (DV.PsiOf D (X.jC p la)) (X.shv w.S w.κ).N (X.shv w.S w.κ).j =
+      DV.rkOf (DV.PsiOf D (F.jC p (ePl p la))) (datBk N h w).N (datBk N h w).j := by
+    rw [hT.pl.jc p la, hM, hj]
+  exact heq_mdlT N h _ _ (hT.pl.mp (datBk N h w) hw p la) hM hrk (tiedMd hT.pl (datBk N h w) hw p la)
+
+end Gen
+
+end GeoDivTr
+
+open GeoDivTr
+
+set_option maxHeartbeats 8000000 in
+
+theorem divT_setDiv : ∀ {B : Base} {f : Fr B.toPre} {T : TwDat B} (w : ColW B f T) (Z : w.Lt) {Wt : Set B.places.Pl} {nch : NChoice (w.D Z)} (n : NchT w Z Wt nch) (Y : DivX (w.D Z)) (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ), DivT n Y → Nonempty (DivT (nchTTr w Z N h n) (divTr (D := w.D Z) N h Y)) := by
+  intro B f T w Z Wt nch n Y N h d
+  refine ⟨{ Qp := d.Qp, chr := { d.chr with }, loc := ?_, inK := d.inK, geo := geoTiedP_divTr (D := w.D Z) N h d.geo }⟩
+  obtain ⟨h1, h2⟩ := d.loc
+  exact ⟨h1, { h2 with }⟩
+
+end GlobalTheory.Mem.Top.Bl.WitTr
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.divisionLocalData_preserved_divisionLatticeChange : ∀ {B : Base} {f : Fr B.toPre} {T : TwDat B} (w : ColW B f T) (Z : w.Lt) {Wt : Set B.places.Pl} {nch : NChoice (w.D Z)} (n : NchT w Z Wt nch) (Y : DivX (w.D Z)) (N : ∀ u, Submodule (𝓞 B.LL) (Z.V.div.Nu u).V) (h : B.Word → ℝ), DivT n Y → Nonempty (DivT (nchTTr w Z N h n) (divTr (D := w.D Z) N h Y)) := by
+  atlas_forward_decl GlobalTheory.Mem.Top.Bl.WitTr.divT_setDiv
+end
+
+section
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.Mem.Top.Bl.WitTr
+
+set_option maxHeartbeats 4000000 in
+
+theorem goodO_setDiv : ∀ (D : D7) (nch : NChoice D) (xd : ThData D) (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ), GoodO D nch xd → GoodO (setDiv D N h) (nchTr N h nch) (xdTr N h xd) := by
+  intro D nch xd N h hg
+  obtain ⟨⟨⟨E, N0, S⟩, hE, hA, hC⟩, hsep⟩ := hg
+  subst hE
+  exact ⟨⟨⟨{ (twEOf xd) with }, N0, S⟩, rfl, hA, hC⟩, hsep⟩
+
+end GlobalTheory.Mem.Top.Bl.WitTr
+
+end
+end
+
+open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.Db GlobalTheory.Mem.Top.Bl.WitTr NumberField IsDedekindDomain
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.goodTwistsThetaLattices_preserved_divisionChange : ∀ (D : D7) (nch : NChoice D) (xd : ThData D) (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h : D.what₂.Word → ℝ), GoodO D nch xd → GoodO (setDiv D N h) (nchTr N h nch) (xdTr N h xd) := by
+  atlas_forward_decl GlobalTheory.Mem.Top.Bl.WitTr.goodO_setDiv
+end
+
+section
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -79,3 +542,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.witnesses_pass_along_set_division : ∀ 𝒮 : Slots, PositionMv 𝒮 → WitMv 𝒮 := by
   atlas_forward_decl GlobalTheory.Mem.Top.Bl.witMv_of_positionMv
+end

@@ -1,8 +1,56 @@
-import Formalism.GaussJetBounds.OneLetterGaussJets.TheoremATwoFormsOfEntry
+import Formalism.GaussJetBounds.OneLetterGaussJets.OneLetterGaussProofs.CapLeOddShiftBound
+import Formalism.GaussJetBounds.GaussJetProofs.WeightsAddOverOrbitsLogLoss
+import Formalism.GaussJetBounds.OneLetterGaussJets.OneLetterGaussProofs.TheoremAMonomialOfLemmas
+import Formalism.GaussJetBounds.OneLetterGaussJets.OneLetterGaussProofs.ThmAGen7Of
+import Formalism.GaussJetBounds.OneLetterGaussJets.OneLetterGaussProofs.ThmAGeneric7Of
+import Formalism.GaussJetBounds.OneLetterGaussJets.OneLetterGaussProofs.TwoFormsOfTheoremA
+import Formalism.GaussJetBounds.OneLetterGaussJets.MinWeightSumAddCostAbsBound
+import Formalism.GaussJetBounds.GaussJetProofs.IntegralOperatorsOnJets
 import Formalism.GaussJetBounds.OneLetterGaussJets.OneLetterGaussProofs.CompanionTheory
 import Formalism.GaussJetBounds.OneLetterGaussJets.OneLetterGaussProofs.OneLetterUnramifiedBound
-import Formalism.GaussJetBounds.OneLetterGaussJets.SizesRows7
 
+section
+universe u v w
+
+namespace Formalism.DworkPowerSeriesWeights.OddLevelGainBounds
+
+theorem thmAAssembly7 : ThmAAssembly7 := gauss_jet_bound_of_parts
+theorem thmAJet7 : ThmAJet7.{u} := thmAJet7_of thmAAssembly7
+theorem thmAOp7 : ThmAOp7.{u} := thmAOp7_of thmAJet7
+theorem thmAGen7 : ThmAGen7.{u} := thmAGen7_of thmAOp7
+theorem thmAFrame7 : ThmAFrame7.{u} := thmAFrame7_of thmAGen7
+theorem thmAGeneric7 : ThmAGeneric7.{u} := thmAGeneric7_of thmAFrame7
+theorem thmAGauss7 : ThmAGauss7 := thmAGauss7_of thmAGeneric7
+theorem thmAWeyl7 : ThmAWeyl7 := thmAWeyl7_of thmAGauss7
+theorem thmAEntry7 : ThmAEntry7 := thmAEntry7_of thmAWeyl7
+
+end Formalism.DworkPowerSeriesWeights.OddLevelGainBounds
+end
+
+section
+noncomputable section
+open scoped BigOperators
+
+namespace Formalism.DworkPowerSeriesWeights.OddLevelGainBounds
+
+def SizesSign7 : Prop :=
+  ∀ (H : Type) [Fintype H] (c wt wt' : H → ℝ) (k : ℝ), 1 ≤ k → (∀ t, (k - 1) * wt t ≤ c t) →
+    (-((k - 1) / 2) * ∑ t, min (wt t) (wt' t)) + (1 / 2) * ∑ t, c t =
+        (1 / 2) * ∑ t, (c t - (k - 1) * min (wt t) (wt' t)) ∧
+      0 ≤ (-((k - 1) / 2) * ∑ t, min (wt t) (wt' t)) + (1 / 2) * ∑ t, c t
+
+def SizesRows7 : Prop :=
+  ∀ (k : ℕ) (N w w' : ℝ), 1 ≤ k → 1 ≤ N →
+    (∀ (row : Fin k → ℝ) (rest : ℝ), 4 * k * N ≤ w → (∀ i, w - N - 1 / 2 < row i) → 0 ≤ rest →
+      ((k : ℝ) - 1) * w < (∑ i, row i) + rest) ∧
+    (∀ (row : Fin (k - 1) → ℝ) (rest first : ℝ), 4 * k * N ≤ w' → (∀ i, w - N < row i) → 0 ≤ rest →
+      w' - N - 1 / 2 < first → ((k : ℝ) - 1) * w < (∑ i, row i) + rest + first)
+
+end Formalism.DworkPowerSeriesWeights.OddLevelGainBounds
+end
+end
+
+section
 universe u v w
 
 namespace Formalism.DworkPowerSeriesWeights.OddLevelGainBounds
@@ -22,3 +70,4 @@ theorem normCor7 : NormCor7 := by
 theorem oneLetterGauss7 : OneLetterGauss7 := one_letter_gauss_bound
 
 end Formalism.DworkPowerSeriesWeights.OddLevelGainBounds
+end

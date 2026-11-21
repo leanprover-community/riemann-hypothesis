@@ -2,9 +2,41 @@ import Mathlib
 import Formalism.LocalRingCardinality.DataCD
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousMatExp
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsDensityOriginOfAlmostHomogeneous
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsOmegaLebesgueMeasure
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqExpLocalChart
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
+
+section
+open Formalism.BasicNotions MeasureTheory Filter Topology Matrix
+open scoped ENNReal NNReal
+
+noncomputable section
+
+namespace GlobalTheory.OmegaLebExists
+
+theorem J_conjTranspose (P Q : ℕ) : (Formalism.UG.Jpq P Q)ᴴ = Formalism.UG.Jpq P Q := by
+  unfold Formalism.UG.Jpq
+  rw [fromBlocks_conjTranspose]
+  simp
+
+def cplxMap (P Q : ℕ) :
+    (lieU P Q × lieU P Q) →ₗ[ℝ] ((Fin P ⊕ Fin Q) × (Fin P ⊕ Fin Q) → ℂ) where
+  toFun ab := entries ((ab.1 : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) +
+        Complex.I • (ab.2 : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ))
+  map_add' x y := by
+    funext ij
+    simp [entries]
+    ring
+  map_smul' c x := by
+    funext ij
+    simp [entries]
+    ring
+
+end GlobalTheory.OmegaLebExists
+end
+end
+
+section
 open Formalism.BasicNotions MeasureTheory Filter Topology Matrix
 
 noncomputable section
@@ -37,3 +69,5 @@ theorem isInducing_toL1 (P Q : ℕ) : IsInducing (toL1 P Q) := by
 theorem mat_mul {P Q : ℕ} (g h : UpqT P Q) : (g * h).mat = g.mat * h.mat := rfl
 
 end GlobalTheory.HaarDensityUpq
+end
+end

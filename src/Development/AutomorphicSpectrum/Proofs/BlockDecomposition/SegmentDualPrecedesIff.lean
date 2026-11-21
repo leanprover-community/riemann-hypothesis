@@ -1,9 +1,17 @@
 import Mathlib
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.LSegJacquet
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualClassCuspidalStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualClassCuspidal
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualClassInvolutiveStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualClassTwistNegStatement
 
+section
+open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.dual_class_cuspidal : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (x : IrrGL k), x.IsCusp → (dualCl x).IsCusp ∧ (dualCl x).1 = x.1 := by
+  first | exact @GlobalTheory.CompanionTheory.DualCusp.dualCl_isCusp | exact GlobalTheory.CompanionTheory.DualCusp.dualCl_isCusp | (intros; apply GlobalTheory.CompanionTheory.DualCusp.dualCl_isCusp <;> assumption)
+end
+
+section
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc
 
 namespace GlobalTheory.CompanionTheory.SegDualPrec
@@ -110,3 +118,4 @@ theorem segDual_precedes : ∀ {k : Type} [Field k] [ValuativeRel k] [Topologica
   segDual_precedes_iff (fun x hx => (GlobalTheory.T.dual_class_cuspidal hA x hx).1) (GlobalTheory.T.dual_class_twist_neg hA) (GlobalTheory.T.dual_class_involutive hA) Δ Δ'
 
 end GlobalTheory.CompanionTheory.SegDualPrec
+end

@@ -8,10 +8,300 @@ import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IrreducibleCharac
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.VirtualCharactersMulComapConjIndLinear
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.IndMulClassFunEqIndMulRestrict
 import Development.AbelianVarietyTheory.Proofs.CharacterTheory.OneMemClosureInducedCentralByPrimePower
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InducedClassFunctionMemInducedDegreeOneCharDiff
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InducedOneSubIndexMemDegreeOneCharacterDiff
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLtCommutatorMemOfNeTop
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IndApplyOne
 
+section
+section
+open GlobalTheory.BI GlobalTheory.BrauerZero
+
+namespace GlobalTheory.BrauerZero
+
+theorem ind_ind_of_le {G : Type} [Group G] [Finite G] (K A : Subgroup G) (hKA : K ≤ A)
+    (ψ : K → ℂ) :
+    ind A (ind (K.subgroupOf A) (fun k => ψ ⟨((k : A) : G), k.2⟩)) = ind K ψ := by
+  classical
+  haveI := Fintype.ofFinite G
+  funext g
+  have hcard : Nat.card (K.subgroupOf A) = Nat.card K :=
+    Nat.card_congr (Subgroup.subgroupOfEquivOfLe hKA).toEquiv
+  have key : ∀ a y : A, ext0 (K.subgroupOf A) (fun k => ψ ⟨((k : A) : G), k.2⟩) (y⁻¹ * a * y)
+      = ext0 K ψ ((y : G)⁻¹ * (a : G) * y) := by
+    intro a y
+    have hc : ((y⁻¹ * a * y : A) : G) = (y : G)⁻¹ * (a : G) * y := by simp
+    by_cases h : (y : G)⁻¹ * (a : G) * y ∈ K
+    · have h' : y⁻¹ * a * y ∈ K.subgroupOf A := by rw [Subgroup.mem_subgroupOf, hc]; exact h
+      rw [ext0, ext0, dif_pos h', dif_pos h]
+      congr 1
+    · have h' : y⁻¹ * a * y ∉ K.subgroupOf A := by rw [Subgroup.mem_subgroupOf, hc]; exact h
+      rw [ext0, ext0, dif_neg h', dif_neg h]
+  have step : ∀ x : G, ext0 A (ind (K.subgroupOf A) (fun k => ψ ⟨((k : A) : G), k.2⟩)) (x⁻¹ * g * x)
+      = (Nat.card K : ℂ)⁻¹ * ∑ y : A, ext0 K ψ ((x * y)⁻¹ * g * (x * y)) := by
+    intro x
+    by_cases hx : x⁻¹ * g * x ∈ A
+    · rw [ext0, dif_pos hx, ind, hcard, finsum_eq_sum_of_fintype]
+      congr 1
+      refine Finset.sum_congr rfl fun y _ => ?_
+      rw [key ⟨_, hx⟩ y]
+      congr 1
+      simp only [mul_inv_rev]
+      group
+    · rw [ext0, dif_neg hx]
+      symm
+      refine mul_eq_zero_of_right _ (Finset.sum_eq_zero fun y _ => ?_)
+      have hn : (x * y)⁻¹ * g * (x * y) ∉ K := by
+        intro hk
+        apply hx
+        have hA : (x * y)⁻¹ * g * (x * y) ∈ A := hKA hk
+        have e : x⁻¹ * g * x = (y : G) * ((x * y)⁻¹ * g * (x * y)) * (y : G)⁻¹ := by group
+        rw [e]
+        exact A.mul_mem (A.mul_mem y.2 hA) (A.inv_mem y.2)
+      rw [ext0, dif_neg hn]
+  rw [ind, ind, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype,
+    Finset.sum_congr rfl (fun x _ => step x), ← Finset.mul_sum, Finset.sum_comm]
+  have shift : ∀ y : A, ∑ x : G, ext0 K ψ ((x * y)⁻¹ * g * (x * y)) = ∑ z : G, ext0 K ψ (z⁻¹ * g * z) :=
+    fun y => Fintype.sum_equiv (Equiv.mulRight (y : G)) _ _ (fun x => rfl)
+  rw [Finset.sum_congr rfl (fun y _ => shift y), Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
+    ← Nat.card_eq_fintype_card]
+  have hA0 : (Nat.card A : ℂ) ≠ 0 := by exact_mod_cast (Nat.card_pos (α := A)).ne'
+  field_simp
+
+end GlobalTheory.BrauerZero
+end
+
+open GlobalTheory.BI GlobalTheory.BrauerZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inducedClassFunctionFromSubgroup_trans : ∀ {G : Type} [Group G] [Finite G] (K A : Subgroup G), K ≤ A → ∀ (ψ : K → ℂ), ind A (ind (K.subgroupOf A) (fun k => ψ ⟨((k : A) : G), k.2⟩)) = ind K ψ := by
+  atlas_forward_decl GlobalTheory.BrauerZero.ind_ind_of_le
+end
+
+section
+section
+open GlobalTheory.BI GlobalTheory.BrauerZero
+
+noncomputable section
+namespace GlobalTheory.BrauerZero
+
+theorem ind_eq_ind_map_subgroupOf {G : Type} [Group G] [Finite G] (E : Subgroup G) (H : Subgroup E)
+    (φ : H → ℂ) :
+    ind H φ = ind ((H.map E.subtype).subgroupOf E)
+      (fun k => φ ((Subgroup.equivMapOfInjective H E.subtype Subtype.val_injective).symm
+        ⟨((k : E) : G), k.2⟩)) := by
+  classical
+  have hS : (H.map E.subtype).subgroupOf E = H := by
+    ext y
+    simp [Subgroup.mem_subgroupOf]
+  have hc : Nat.card ((H.map E.subtype).subgroupOf E) = Nat.card H :=
+    Nat.card_congr (MulEquiv.subgroupCongr hS).toEquiv
+  funext g
+  simp only [ind, hc]
+  congr 1
+  refine finsum_congr fun x => ?_
+  simp only [ext0]
+  by_cases hy : x⁻¹ * g * x ∈ H
+  · have hy' : x⁻¹ * g * x ∈ (H.map E.subtype).subgroupOf E := by rw [hS]; exact hy
+    rw [dif_pos hy, dif_pos hy']
+    congr 1
+    apply (Subgroup.equivMapOfInjective H E.subtype Subtype.val_injective).injective
+    rw [MulEquiv.apply_symm_apply]
+    rfl
+  · have hy' : x⁻¹ * g * x ∉ (H.map E.subtype).subgroupOf E := by rw [hS]; exact hy
+    rw [dif_neg hy, dif_neg hy']
+
+theorem ind_mem_D0_of_mem_D0 : ∀ {G : Type} [Group G] [Finite G] (E : Subgroup G) (f : E → ℂ),
+    f ∈ D0 E → ind E f ∈ D0 G := by
+  intro G _ _ E f hf
+  induction hf using AddSubgroup.closure_induction with
+  | mem x hx =>
+    obtain ⟨H, χ, rfl⟩ := hx
+    have hK : H.map E.subtype ≤ E := by
+      rintro _ ⟨y, _, rfl⟩
+      exact y.2
+    let χ' : H.map E.subtype →* ℂˣ :=
+      χ.comp (Subgroup.equivMapOfInjective H E.subtype Subtype.val_injective).symm.toMonoidHom
+    rw [ind_sub, ind_eq_ind_map_subgroupOf E H (fun h => (χ h : ℂ)),
+      ind_eq_ind_map_subgroupOf E H (fun _ => (1 : ℂ))]
+    have h1 : ind E (ind ((H.map E.subtype).subgroupOf E) (fun k =>
+        ((χ ((Subgroup.equivMapOfInjective H E.subtype Subtype.val_injective).symm
+          ⟨((k : E) : G), k.2⟩) : ℂˣ) : ℂ))) = ind (H.map E.subtype) (fun k => (χ' k : ℂ)) :=
+      GlobalTheory.T.inducedClassFunctionFromSubgroup_trans (H.map E.subtype) E hK (fun k => (χ' k : ℂ))
+    have h2 := GlobalTheory.T.inducedClassFunctionFromSubgroup_trans (H.map E.subtype) E hK (fun _ => (1 : ℂ))
+    rw [h1, h2]
+    exact AddSubgroup.subset_closure ⟨H.map E.subtype, χ', rfl⟩
+  | zero =>
+    have : ind E (0 : E → ℂ) = 0 := (indAddHomComplex E).map_zero
+    rw [this]; exact zero_mem _
+  | add a b _ _ ha hb =>
+    have : ind E (a + b) = ind E a + ind E b := (indAddHomComplex E).map_add a b
+    rw [this]; exact add_mem ha hb
+  | neg a _ ha =>
+    have : ind E (-a) = -ind E a := (indAddHomComplex E).map_neg a
+    rw [this]; exact neg_mem ha
+
+end GlobalTheory.BrauerZero
+end
+end
+
+open GlobalTheory.BI GlobalTheory.BrauerZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.inducedClassFunction_mem_inducedDegreeOneCharDiff : ∀ {G : Type} [Group G] [Finite G] (E : Subgroup G) (f : E → ℂ), f ∈ D0 E → ind E f ∈ D0 G := by
+  atlas_forward_decl GlobalTheory.BrauerZero.ind_mem_D0_of_mem_D0
+end
+
+section
+section
+open GlobalTheory.BI GlobalTheory.BrauerZero
+
+namespace GlobalTheory.BrauerZero
+
+theorem ind_one_sub_index_mem_D0 {G : Type} [Group G] [Finite G] (K : Subgroup G)
+    (hK : ∀ a b : G, a * b * a⁻¹ * b⁻¹ ∈ K) :
+    ind K (fun _ => (1 : ℂ)) - (fun _ => (K.index : ℂ)) ∈ D0 G := by
+  classical
+  haveI := Fintype.ofFinite G
+  haveI hN : K.Normal := ⟨fun n hn g => by
+    have h1 := hK g n
+    have : g * n * g⁻¹ = (g * n * g⁻¹ * n⁻¹) * n := by group
+    rw [this]; exact K.mul_mem h1 hn⟩
+  letI : CommGroup (G ⧸ K) :=
+    { (inferInstance : Group (G ⧸ K)) with
+      mul_comm := by
+        intro x y
+        induction x using QuotientGroup.induction_on with
+        | H a =>
+        induction y using QuotientGroup.induction_on with
+        | H b =>
+          rw [← QuotientGroup.mk_mul, ← QuotientGroup.mk_mul, QuotientGroup.eq]
+          have := hK b⁻¹ a⁻¹
+          have e : (a * b)⁻¹ * (b * a) = b⁻¹ * a⁻¹ * b⁻¹⁻¹ * a⁻¹⁻¹ := by group
+          rw [e]; exact this }
+  haveI : Fintype (G ⧸ K) := Fintype.ofFinite _
+  let Q := Additive (G ⧸ K)
+
+  let F : AddChar Q ℂ → G → ℂ := fun ψ g => ψ (Additive.ofMul (QuotientGroup.mk g : G ⧸ K))
+  have hFmul : ∀ ψ : AddChar Q ℂ, ∀ a b : G, F ψ (a * b) = F ψ a * F ψ b := by
+    intro ψ a b
+    simp only [F, QuotientGroup.mk_mul, ofMul_mul, AddChar.map_add_eq_mul]
+  have hFone : ∀ ψ : AddChar Q ℂ, F ψ 1 = 1 := by
+    intro ψ
+    simp only [F, QuotientGroup.mk_one, ofMul_one, AddChar.map_zero_eq_one]
+
+  have hgen : ∀ ψ : AddChar Q ℂ, (F ψ - fun _ => (1 : ℂ)) ∈ D0 G := by
+    intro ψ
+    let f : G →* ℂ := { toFun := F ψ, map_one' := hFone ψ, map_mul' := hFmul ψ }
+    let χ : (⊤ : Subgroup G) →* ℂˣ := (MonoidHom.toHomUnits f).comp (⊤ : Subgroup G).subtype
+    have hcl : ∀ g x : G, F ψ (x⁻¹ * g * x) = F ψ g := by
+      intro g x
+      rw [hFmul, hFmul, mul_comm (F ψ x⁻¹), mul_assoc, ← hFmul, inv_mul_cancel, hFone, mul_one]
+    have h1 : ind (⊤ : Subgroup G) (fun h => (χ h : ℂ)) = F ψ := by
+      exact (ind_top (F ψ) hcl : _)
+    have h2 : ind (⊤ : Subgroup G) (fun _ => (1 : ℂ)) = fun _ => (1 : ℂ) :=
+      ind_top (fun _ => (1 : ℂ)) (fun _ _ => rfl)
+    apply AddSubgroup.subset_closure
+    exact ⟨⊤, χ, by rw [h1, h2]⟩
+
+  have hind : ∀ g : G, ind K (fun _ => (1 : ℂ)) g = if g ∈ K then (K.index : ℂ) else 0 := by
+    intro g
+    have hconj : ∀ x : G, (x⁻¹ * g * x ∈ K ↔ g ∈ K) := by
+      intro x
+      constructor
+      · intro h
+        have := hN.conj_mem _ h x
+        have e : x * (x⁻¹ * g * x) * x⁻¹ = g := by group
+        rwa [e] at this
+      · intro h
+        have := hN.conj_mem _ h x⁻¹
+        have e : x⁻¹ * g * x⁻¹⁻¹ = x⁻¹ * g * x := by group
+        rwa [e] at this
+    simp only [ind, finsum_eq_sum_of_fintype, ext0]
+    have hs : ∀ x : G, (if h : x⁻¹ * g * x ∈ K then (1 : ℂ) else 0) = if g ∈ K then 1 else 0 := by
+      intro x
+      by_cases hg : g ∈ K
+      · rw [dif_pos ((hconj x).2 hg), if_pos hg]
+      · rw [dif_neg (fun h => hg ((hconj x).1 h)), if_neg hg]
+    rw [Finset.sum_congr rfl (fun x _ => hs x), Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
+      ← Nat.card_eq_fintype_card, ← K.card_mul_index]
+    have : (Nat.card K : ℂ) ≠ 0 := by exact_mod_cast (Nat.card_pos (α := K)).ne'
+    split_ifs
+    · push_cast; field_simp
+    · simp
+
+  have hsum : ∀ g : G, (∑ ψ : AddChar Q ℂ, F ψ g) = if g ∈ K then (K.index : ℂ) else 0 := by
+    intro g
+    have := AddChar.sum_apply_eq_ite (α := Q) (Additive.ofMul (QuotientGroup.mk g : G ⧸ K))
+    simp only [F]
+    rw [this]
+    have hc : (Fintype.card Q : ℂ) = (K.index : ℂ) := by
+      rw [Subgroup.index, ← Nat.card_eq_fintype_card]; rfl
+    have he : (Additive.ofMul (QuotientGroup.mk g : G ⧸ K) = 0) ↔ g ∈ K := by
+      rw [ofMul_eq_zero, QuotientGroup.eq_one_iff]
+    by_cases hg : g ∈ K
+    · rw [if_pos (he.2 hg), if_pos hg, hc]
+    · rw [if_neg (fun h => hg (he.1 h)), if_neg hg]
+  have hcard : (Fintype.card (AddChar Q ℂ) : ℂ) = (K.index : ℂ) := by
+    rw [AddChar.card_eq, Subgroup.index, ← Nat.card_eq_fintype_card]; rfl
+  have heq : ind K (fun _ => (1 : ℂ)) - (fun _ => (K.index : ℂ))
+      = ∑ ψ : AddChar Q ℂ, (F ψ - fun _ => (1 : ℂ)) := by
+    funext g
+    rw [Finset.sum_apply]
+    simp only [Pi.sub_apply, Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
+      nsmul_eq_mul, mul_one]
+    rw [hind g, hsum g, hcard]
+  rw [heq]
+  exact AddSubgroup.sum_mem _ (fun ψ _ => hgen ψ)
+
+end GlobalTheory.BrauerZero
+end
+
+open GlobalTheory.BI GlobalTheory.BrauerZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.induced_one_sub_index_mem_degreeOneCharacterDiff : ∀ {G : Type} [Group G] [Finite G] (K : Subgroup G), (∀ a b : G, a * b * a⁻¹ * b⁻¹ ∈ K) → ind K (fun _ => (1 : ℂ)) - (fun _ => (K.index : ℂ)) ∈ D0 G := by
+  atlas_forward_decl GlobalTheory.BrauerZero.ind_one_sub_index_mem_D0
+end
+
+section
+section
+open GlobalTheory.BI GlobalTheory.BrauerZero
+
+namespace GlobalTheory
+
+theorem exists_lt_commutator_mem_of_ne_top {G : Type} [Group G] [Finite G] [Group.IsNilpotent G]
+    (K : Subgroup G) (hK : K ≠ ⊤) :
+    ∃ A : Subgroup G, K < A ∧ ∀ a ∈ A, ∀ b ∈ A, a * b * a⁻¹ * b⁻¹ ∈ K := by
+  have hlt : K < Subgroup.normalizer (K : Set G) :=
+    Group.normalizerCondition_of_isNilpotent K (lt_top_iff_ne_top.mpr hK)
+  obtain ⟨x, hxN, hxK⟩ := SetLike.exists_of_lt hlt
+  have hconj : ∀ i : ℤ, ∀ k ∈ K, x ^ i * k * (x ^ i)⁻¹ ∈ K := fun i k hk =>
+    (Subgroup.mem_normalizer_iff.mp (Subgroup.zpow_mem _ hxN i) k).mp hk
+  let A : Subgroup G :=
+    { carrier := {g | ∃ k ∈ K, ∃ i : ℤ, g = k * x ^ i}
+      one_mem' := ⟨1, K.one_mem, 0, by simp⟩
+      mul_mem' := by
+        rintro _ _ ⟨k, hk, i, rfl⟩ ⟨k', hk', j, rfl⟩
+        exact ⟨k * (x ^ i * k' * (x ^ i)⁻¹), K.mul_mem hk (hconj i k' hk'), i + j, by
+          rw [zpow_add]; group⟩
+      inv_mem' := by
+        rintro _ ⟨k, hk, i, rfl⟩
+        exact ⟨x ^ (-i) * k⁻¹ * (x ^ (-i))⁻¹, hconj (-i) _ (K.inv_mem hk), -i, by group⟩ }
+  have hKA : K ≤ A := fun k hk => (⟨k, hk, 0, by simp⟩ : ∃ k' ∈ K, ∃ i : ℤ, k = k' * x ^ i)
+  have hxA : x ∈ A := (⟨1, K.one_mem, 1, by simp⟩ : ∃ k ∈ K, ∃ i : ℤ, x = k * x ^ i)
+  refine ⟨A, SetLike.lt_iff_le_and_exists.mpr ⟨hKA, x, hxA, hxK⟩, ?_⟩
+  rintro _ ⟨k, hk, i, rfl⟩ _ ⟨k', hk', j, rfl⟩
+  have h : k * x ^ i * (k' * x ^ j) * (k * x ^ i)⁻¹ * (k' * x ^ j)⁻¹ =
+      k * (x ^ i * k' * (x ^ i)⁻¹) * (x ^ j * k⁻¹ * (x ^ j)⁻¹) * k'⁻¹ := by group
+  rw [h]
+  exact K.mul_mem (K.mul_mem (K.mul_mem hk (hconj i k' hk')) (hconj j _ (K.inv_mem hk)))
+    (K.inv_mem hk')
+
+end GlobalTheory
+end
+
+open GlobalTheory.BI GlobalTheory.BrauerZero
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_gt_commutator_mem_of_ne_whole : ∀ {G : Type} [Group G] [Finite G] [Group.IsNilpotent G] (K : Subgroup G), K ≠ ⊤ → ∃ A : Subgroup G, K < A ∧ ∀ a ∈ A, ∀ b ∈ A, a * b * a⁻¹ * b⁻¹ ∈ K := by
+  atlas_forward_decl GlobalTheory.exists_lt_commutator_mem_of_ne_top
+end
+
+section
 noncomputable section
 open GlobalTheory.BI
 
@@ -213,4 +503,5 @@ theorem brauerDegreeZero : GlobalTheory.Published.BrauerDegreeZero := by
 
 end GlobalTheory.BrauerZero
 
+end
 end

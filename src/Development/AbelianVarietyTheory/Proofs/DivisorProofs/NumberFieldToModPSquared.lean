@@ -1,6 +1,176 @@
 import Mathlib
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SepIntPolyRootModPrimeSq
+import BuildAid.ForwardExisting
 
+section
+namespace GlobalTheory.PrimeDivisorOfPolynomialValue
+
+open Polynomial
+
+theorem exists_eval_mul_ne (f : ℤ[X]) (hf : 0 < f.natDegree) (c a : ℤ) (ha : a ≠ 0) :
+    ∃ k : ℤ, f.eval (a * k) ≠ c ∧ f.eval (a * k) ≠ -c := by
+
+  have hdeg : 0 < (f.comp (C a * X)).natDegree := by
+    rw [natDegree_comp, natDegree_C_mul_X a ha, mul_one]
+    exact hf
+  have hne : ∀ b : ℤ, f.comp (C a * X) - C b ≠ 0 := fun b h => by
+    rw [sub_eq_zero] at h
+    rw [h, natDegree_C] at hdeg
+    exact lt_irrefl 0 hdeg
+  obtain ⟨k, hk⟩ := Infinite.exists_notMem_finset
+    ((f.comp (C a * X) - C c).roots.toFinset ∪ (f.comp (C a * X) - C (-c)).roots.toFinset)
+  refine ⟨k, fun e => hk (Finset.mem_union_left _ ?_), fun e => hk (Finset.mem_union_right _ ?_)⟩
+  · rw [Multiset.mem_toFinset, mem_roots (hne c)]
+    simp [e]
+  · rw [Multiset.mem_toFinset, mem_roots (hne (-c))]
+    simp [e]
+
+theorem exists_prime_gt_dvd_eval :
+    ∀ (f : Polynomial ℤ), (0 : ℕ) < Polynomial.natDegree f → ∀ (n : ℕ),
+      ∃ (p : ℕ), Nat.Prime p ∧ n < p ∧ ∃ (x : ℤ), (↑p : ℤ) ∣ Polynomial.eval x f := by
+  intro f hf n
+
+  have of_root : ∀ x, f.eval x = 0 → ∃ p, Nat.Prime p ∧ n < p ∧ ∃ x : ℤ, (p : ℤ) ∣ f.eval x := by
+    intro x hx
+    obtain ⟨p, hnp, hp⟩ := Nat.exists_infinite_primes (n + 1)
+    exact ⟨p, hp, hnp, x, by rw [hx]; exact dvd_zero _⟩
+  by_cases h0 : f.eval 0 = 0
+  · exact of_root 0 h0
+  have hfac : ((n.factorial : ℕ) : ℤ) ≠ 0 := by exact_mod_cast (Nat.factorial_pos n).ne'
+  obtain ⟨k, hk1, hk2⟩ := exists_eval_mul_ne f hf (f.eval 0) _ (mul_ne_zero h0 hfac)
+  by_cases hx : f.eval (f.eval 0 * n.factorial * k) = 0
+  · exact of_root _ hx
+
+  obtain ⟨q, hq⟩ := Polynomial.sub_dvd_eval_sub (f.eval 0 * n.factorial * k) 0 f
+  have hft : f.eval (f.eval 0 * n.factorial * k) = f.eval 0 * (1 + n.factorial * k * q) := by
+    linear_combination hq
+  have ht1 : (1 + (n.factorial : ℤ) * k * q) ≠ 1 := fun h => hk1 (by rw [hft, h, mul_one])
+  have ht2 : (1 + (n.factorial : ℤ) * k * q) ≠ -1 := fun h => hk2 (by rw [hft, h, mul_neg_one])
+  have hnat : (1 + (n.factorial : ℤ) * k * q).natAbs ≠ 1 := by
+    intro h
+    rcases Int.natAbs_eq_iff.1 h with h | h
+    · exact ht1 (by simpa using h)
+    · exact ht2 (by simpa using h)
+  have hp := Nat.minFac_prime hnat
+  have hpt : ((1 + (n.factorial : ℤ) * k * q).natAbs.minFac : ℤ) ∣ (1 + (n.factorial : ℤ) * k * q) :=
+    Int.ofNat_dvd_left.2 (Nat.minFac_dvd _)
+  refine ⟨_, hp, ?_, _, by rw [hft]; exact dvd_mul_of_dvd_right hpt _⟩
+
+  by_contra hle
+  rw [not_lt] at hle
+  have h3 : ((1 + (n.factorial : ℤ) * k * q).natAbs.minFac : ℤ) ∣ (n.factorial : ℤ) * k * q :=
+    dvd_mul_of_dvd_left (dvd_mul_of_dvd_left (Int.natCast_dvd_natCast.2 (Nat.dvd_factorial hp.pos hle)) _) _
+  have h4 := dvd_sub hpt h3
+  rw [add_sub_cancel_right] at h4
+  exact hp.not_dvd_one (Int.natCast_dvd_natCast.1 (by simpa using h4))
+
+end GlobalTheory.PrimeDivisorOfPolynomialValue
+end
+
+section
+section
+open scoped TensorProduct Polynomial
+
+namespace GlobalTheory
+
+open Polynomial in
+
+theorem exists_prime_gt_dvd_eval :
+    ∀ f : ℤ[X], 0 < f.natDegree → ∀ n : ℕ, ∃ p : ℕ, p.Prime ∧ n < p ∧ ∃ x : ℤ, (p : ℤ) ∣ f.eval x := by
+  first
+  | exact @_root_.GlobalTheory.PrimeDivisorOfPolynomialValue.exists_prime_gt_dvd_eval
+  | exact _root_.GlobalTheory.PrimeDivisorOfPolynomialValue.exists_prime_gt_dvd_eval
+  | (apply _root_.GlobalTheory.PrimeDivisorOfPolynomialValue.exists_prime_gt_dvd_eval <;> assumption)
+  | (intros; apply _root_.GlobalTheory.PrimeDivisorOfPolynomialValue.exists_prime_gt_dvd_eval <;> assumption)
+  | (intros; apply @_root_.GlobalTheory.PrimeDivisorOfPolynomialValue.exists_prime_gt_dvd_eval <;> first | assumption | infer_instance)
+  | (intros; exact _root_.GlobalTheory.PrimeDivisorOfPolynomialValue.exists_prime_gt_dvd_eval ..)
+
+end GlobalTheory
+end
+
+open scoped TensorProduct Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_large_prime_dvd_int_polynomial_eval : ∀ f : ℤ[X], 0 < f.natDegree → ∀ n : ℕ, ∃ p : ℕ, p.Prime ∧ n < p ∧ ∃ x : ℤ, (p : ℤ) ∣ f.eval x := by
+  atlas_forward_decl GlobalTheory.exists_prime_gt_dvd_eval
+end
+
+section
+section
+open scoped TensorProduct Polynomial
+
+namespace GlobalTheory
+
+open Polynomial
+
+theorem int_bezout_derivative_of_separable (f : ℤ[X])
+    (hf : (f.map (Int.castRingHom ℚ)).Separable) :
+    ∃ A B : ℤ[X], ∃ N : ℤ, N ≠ 0 ∧ A * f + B * derivative f = C N := by
+  obtain ⟨a, b, hab⟩ := hf
+  obtain ⟨c1, hc1⟩ := IsLocalization.integerNormalization_map_to_map (nonZeroDivisors ℤ) a
+  obtain ⟨c2, hc2⟩ := IsLocalization.integerNormalization_map_to_map (nonZeroDivisors ℤ) b
+  set A := IsLocalization.integerNormalization (nonZeroDivisors ℤ) a
+  set B := IsLocalization.integerNormalization (nonZeroDivisors ℤ) b
+  refine ⟨(c2 : ℤ) • A, (c1 : ℤ) • B, (c1 : ℤ) * c2, ?_, ?_⟩
+  · exact mul_ne_zero (nonZeroDivisors.coe_ne_zero c1) (nonZeroDivisors.coe_ne_zero c2)
+  · apply Polynomial.map_injective (Int.castRingHom ℚ) (RingHom.injective_int _)
+    have e1 : A.map (Int.castRingHom ℚ) = ((c1 : ℤ) : ℚ) • a := by
+      rw [show Int.castRingHom ℚ = algebraMap ℤ ℚ from rfl, hc1]
+      exact (Int.cast_smul_eq_zsmul ℚ _ _).symm
+    have e2 : B.map (Int.castRingHom ℚ) = ((c2 : ℤ) : ℚ) • b := by
+      rw [show Int.castRingHom ℚ = algebraMap ℤ ℚ from rfl, hc2]
+      exact (Int.cast_smul_eq_zsmul ℚ _ _).symm
+    simp only [Polynomial.map_add, Polynomial.map_mul, Polynomial.map_smul, Polynomial.map_C,
+      ← Polynomial.derivative_map, e1, e2]
+    rw [smul_eq_C_mul, smul_eq_C_mul, smul_eq_C_mul, smul_eq_C_mul]
+    calc _ = C (((c1 : ℤ) : ℚ) * ((c2 : ℤ) : ℚ)) *
+            (a * map (Int.castRingHom ℚ) f + b * derivative (map (Int.castRingHom ℚ) f)) := by
+          rw [C_mul]; simp only [eq_intCast]; ring
+      _ = _ := by rw [hab, mul_one]; simp
+
+theorem sep_int_poly_root_mod_prime_sq :
+    ∀ f : ℤ[X], 0 < f.natDegree → (f.map (Int.castRingHom ℚ)).Separable →
+      ∀ n : ℕ, ∃ p : ℕ, p.Prime ∧ n < p ∧ ∃ x : ℤ, ((p : ℤ) ^ 2) ∣ f.eval x := by
+  intro f hdeg hsep n
+  obtain ⟨A, B, N, hN, hAB⟩ := int_bezout_derivative_of_separable f hsep
+  obtain ⟨p, hp, hnp, x, hx⟩ := GlobalTheory.T.exists_large_prime_dvd_int_polynomial_eval f hdeg (max n N.natAbs)
+  refine ⟨p, hp, lt_of_le_of_lt (le_max_left _ _) hnp, ?_⟩
+  have hpZ : Prime (p : ℤ) := Nat.prime_iff_prime_int.mp hp
+  have hev : A.eval x * f.eval x + B.eval x * (derivative f).eval x = N := by
+    have := congrArg (Polynomial.eval x) hAB
+    simpa using this
+  have hpN : ¬ (p : ℤ) ∣ N := by
+    intro h
+    have h1 := Int.natAbs_dvd_natAbs.mpr h
+    simp only [Int.natAbs_natCast] at h1
+    have h2 := Nat.le_of_dvd (Int.natAbs_pos.mpr hN) h1
+    have h3 := lt_of_le_of_lt (le_max_right n N.natAbs) hnp
+    omega
+  have hpd : ¬ (p : ℤ) ∣ (derivative f).eval x := by
+    intro h
+    apply hpN
+    rw [← hev]
+    exact dvd_add (dvd_mul_of_dvd_right hx _) (dvd_mul_of_dvd_right h _)
+  have hcop : IsCoprime ((derivative f).eval x) (p : ℤ) := by
+    rw [isCoprime_comm]
+    exact (Prime.coprime_iff_not_dvd hpZ).mpr hpd
+  obtain ⟨u, v, huv⟩ := hcop
+  obtain ⟨k, hk⟩ := hx
+  obtain ⟨K, hK⟩ := Polynomial.binomExpansion f x ((p : ℤ) * (-(k * u)))
+  refine ⟨x + (p : ℤ) * (-(k * u)), ?_⟩
+  rw [hK, hk]
+  refine ⟨k * v + K * (k * u) ^ 2, ?_⟩
+  have : k = k * (u * (derivative f).eval x + v * p) := by rw [huv, mul_one]
+  linear_combination (p : ℤ) * this
+
+end GlobalTheory
+end
+
+open scoped TensorProduct Polynomial
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_large_prime_sq_dvd_eval_of_separable : ∀ f : ℤ[X], 0 < f.natDegree → (f.map (Int.castRingHom ℚ)).Separable → ∀ n : ℕ, ∃ p : ℕ, p.Prime ∧ n < p ∧ ∃ x : ℤ, ((p : ℤ) ^ 2) ∣ f.eval x := by
+  atlas_forward_decl GlobalTheory.sep_int_poly_root_mod_prime_sq
+end
+
+section
 section
 open scoped TensorProduct Polynomial
 
@@ -126,3 +296,4 @@ end
 open scoped TensorProduct Polynomial
 theorem _root_.GlobalTheory.T.number_field_to_mod_p_squared : ∀ (K : Type) [Field K] [NumberField K] (S : Finset K) (n : ℕ), ∃ p : ℕ, p.Prime ∧ n < p ∧ Nonempty (Subring.closure (S : Set K) →+* ZMod (p ^ 2)) := by
   atlas_forward_decl _root_.GlobalTheory.exists_prime_sq_ringHom_of_closure
+end

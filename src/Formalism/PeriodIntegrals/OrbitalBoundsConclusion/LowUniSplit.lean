@@ -1,2 +1,0 @@
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LowerUnipotentSplit.SecondFactorMemLowerTriangular
-

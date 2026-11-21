@@ -4,16 +4,878 @@ import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ChartGen
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AdaptSelf
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairNormalFormGeometrySummary
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairCommonUnipotentStabiliserSummary
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsIntegralOfMulMem
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairScalarEqQuotIdealsNormLe
+import Development.AbelianVarietyTheory.PublishedTheorems.DiscreteSeriesUnitary₂.MaxMass
+import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
+import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.IdealsOfNormEqIndexSet
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairInnerLatticesUnimodularPrimitiveStatement
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormalFormTerminalDeterminant
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagPairInnerLatticeIndicesAndGenerators
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagFramesSameGradedDefinitePartLatticeEq
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsHermFramePairNormalFormMovedByIsometry
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairNormalFormUniqueUpToUnipotent
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SignedBlockAntidiagWithLeadingMinorsEncardLe
+import BuildAid.ForwardExisting
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.InvVolPos
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumWeightsInequivalentHermFrameTermsLe
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EmbeddedDatumInvariantUnderUnipotent
 
+section
+open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt
+open scoped Pointwise ENNReal Classical nonZeroDivisors
+
+noncomputable section
+
+namespace GlobalTheory.DegCnt.NormOneCount
+
+theorem le_totient_sq (n : ℕ) : n ≤ 2 * n.totient ^ 2 ∧ (Odd n → n ≤ n.totient ^ 2) := by
+  induction n using Nat.recOnPosPrimePosCoprime with
+  | prime_pow p k hp hk =>
+    obtain ⟨k, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by omega⟩
+    rw [Nat.totient_prime_pow_succ hp]
+    have h2 := hp.two_le
+    obtain ⟨q, rfl⟩ : ∃ q, p = q + 1 := ⟨p - 1, by omega⟩
+    have hq : 1 ≤ q := by omega
+    have hP : 1 ≤ (q + 1) ^ k := Nat.one_le_pow _ _ (by omega)
+    rw [pow_succ, Nat.add_sub_cancel]
+    generalize (q + 1) ^ k = P at hP ⊢
+    have hPP : P ≤ P ^ 2 := by nlinarith
+    refine ⟨?_, fun ho => ?_⟩
+    · have h1 : q + 1 ≤ 2 * q ^ 2 := by nlinarith
+      calc P * (q + 1) ≤ P ^ 2 * (2 * q ^ 2) := Nat.mul_le_mul hPP h1
+        _ = _ := by ring
+    · have ho' : Odd (q + 1) := (Nat.odd_mul.1 ho).2
+      have hq2 : 2 ≤ q := by
+        obtain ⟨m, hm⟩ := ho'
+        omega
+      have h1 : q + 1 ≤ q ^ 2 := by nlinarith
+      calc P * (q + 1) ≤ P ^ 2 * q ^ 2 := Nat.mul_le_mul hPP h1
+        _ = _ := by ring
+  | zero => simp
+  | one => simp
+  | coprime a b ha hb hab iha ihb =>
+    rw [Nat.totient_mul hab]
+    refine ⟨?_, fun ho => ?_⟩
+    · rcases Nat.even_or_odd a with hea | hoa
+      · have hob : Odd b := by
+          rcases Nat.even_or_odd b with heb | hob
+          · have := Nat.dvd_gcd hea.two_dvd heb.two_dvd
+            rw [hab.gcd_eq_one] at this
+            omega
+          · exact hob
+        calc a * b ≤ (2 * a.totient ^ 2) * b.totient ^ 2 := Nat.mul_le_mul iha.1 (ihb.2 hob)
+          _ = _ := by ring
+      · calc a * b ≤ a.totient ^ 2 * (2 * b.totient ^ 2) := Nat.mul_le_mul (iha.2 hoa) ihb.1
+          _ = _ := by ring
+    · obtain ⟨h1, h2⟩ := Nat.odd_mul.1 ho
+      calc a * b ≤ a.totient ^ 2 * b.totient ^ 2 := Nat.mul_le_mul (iha.2 h1) (ihb.2 h2)
+        _ = _ := by ring
+
+theorem card_torsion_le (K : Type) [Field K] [NumberField K] :
+    Nat.card (Units.torsion K) ≤ 2 * Module.finrank ℚ K ^ 2 := by
+  obtain ⟨g, hg⟩ := IsCyclic.exists_ofOrder_eq_natCard (α := Units.torsion K)
+  have h1 : IsPrimitiveRoot g (Nat.card (Units.torsion K)) := hg ▸ IsPrimitiveRoot.orderOf g
+  have h2 : IsPrimitiveRoot (g : (𝓞 K)ˣ) (Nat.card (Units.torsion K)) :=
+    h1.map_of_injective (f := (Units.torsion K).subtype) Subtype.val_injective
+  have h3 : IsPrimitiveRoot ((g : (𝓞 K)ˣ) : 𝓞 K) (Nat.card (Units.torsion K)) :=
+    IsPrimitiveRoot.coe_units_iff.2 h2
+  have h4 : IsPrimitiveRoot (algebraMap (𝓞 K) K ((g : (𝓞 K)ˣ) : 𝓞 K)) (Nat.card (Units.torsion K)) :=
+    h3.map_of_injective (RingOfIntegers.coe_injective)
+  have hpos : 0 < Nat.card (Units.torsion K) := Nat.card_pos
+  have h5 := IsPrimitiveRoot.lcm_totient_le_finrank (K := ℚ) h4 h4
+    (by rw [Nat.lcm_self]; exact Polynomial.cyclotomic.irreducible_rat hpos)
+  rw [Nat.lcm_self] at h5
+  exact (le_totient_sq _).1.trans (by gcongr)
+
+variable {K : Type} [Field K] [NumberField K]
+
+theorem isIntegral_of_mul_mem {𝔞 : Ideal (𝓞 K)} (h : 𝔞 ≠ ⊥) {u : K}
+    (hu : ∀ t ∈ ipow 𝔞 1, u * t ∈ ipow 𝔞 1) : IsIntegral ℤ u := by
+  have hne : ipow 𝔞 1 ≠ ⊥ := by
+    unfold ipow
+    rw [zpow_one]
+    intro h0
+    exact (FractionalIdeal.coeIdeal_ne_zero.2 h) (FractionalIdeal.coeToSubmodule_eq_bot.1 h0)
+  have hfg : (ipow 𝔞 1).FG := by
+    unfold ipow
+    exact FractionalIdeal.fg_of_isNoetherianRing le_rfl _
+  have h1 : IsIntegral (𝓞 K) u :=
+    isIntegral_of_smul_mem_submodule (ipow 𝔞 1) hne hfg u (fun t ht => by simpa using hu t ht)
+  exact isIntegral_trans u h1
+
+theorem exists_torsion [StarRing K] (hK : ∀ (φ : K →+* ℂ) (a : K), φ (star a) = starRingEnd ℂ (φ a))
+    {𝔞 𝔞' : Ideal (𝓞 K)} (h : 𝔞' ≠ ⊥) {c d : K} (hc : c * star c = 1) (hd : d * star d = 1)
+    (h1 : ∀ t : K, t * c ∈ ipow 𝔞 1 ↔ t ∈ ipow 𝔞' 1) (h2 : ∀ t : K, t * d ∈ ipow 𝔞 1 ↔ t ∈ ipow 𝔞' 1) :
+    ∃ ζ : Units.torsion K, c = algebraMap (𝓞 K) K ((ζ : (𝓞 K)ˣ) : 𝓞 K) * d := by
+  have hc0 : c ≠ 0 := left_ne_zero_of_mul_eq_one hc
+  have hd0 : d ≠ 0 := left_ne_zero_of_mul_eq_one hd
+  have i1 : IsIntegral ℤ (c / d) := isIntegral_of_mul_mem h fun t ht => by
+    rw [← h2, show c / d * t * d = t * c by field_simp, h1]; exact ht
+  have i2 : IsIntegral ℤ (d / c) := isIntegral_of_mul_mem h fun t ht => by
+    rw [← h1, show d / c * t * c = t * d by field_simp, h2]; exact ht
+  obtain ⟨a, ha⟩ : ∃ a : 𝓞 K, algebraMap (𝓞 K) K a = c / d := ⟨⟨c / d, i1⟩, rfl⟩
+  obtain ⟨b, hb⟩ : ∃ b : 𝓞 K, algebraMap (𝓞 K) K b = d / c := ⟨⟨d / c, i2⟩, rfl⟩
+  have hm : a * b = 1 := by
+    apply RingOfIntegers.coe_injective
+    rw [map_mul, map_one, ha, hb]
+    field_simp
+  have hn : ∀ (φ : K →+* ℂ) (e : K), e * star e = 1 → ‖φ e‖ = 1 := fun φ e he => by
+    have h3 := congrArg (fun z => ‖φ z‖) he
+    simp only [map_mul, hK, map_one, norm_mul, norm_one, RCLike.norm_conj] at h3
+    nlinarith [norm_nonneg (φ e)]
+  refine ⟨⟨Units.mkOfMulEqOne _ _ hm, (Units.mem_torsion K).2 fun w => ?_⟩, ?_⟩
+  · show w (algebraMap (𝓞 K) K a) = 1
+    rw [ha, ← InfinitePlace.norm_embedding_eq, map_div₀, norm_div, hn _ c hc, hn _ d hd, div_one]
+  · show c = algebraMap (𝓞 K) K a * d
+    rw [ha]
+    field_simp
+
+theorem main : ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ x : ℝ, 1 ≤ x → ((({c : K | c * star c = 1 ∧ ∃ 𝔞 𝔞' : Ideal (𝓞 K), 𝔞 ≠ ⊥ ∧ 𝔞' ≠ ⊥ ∧ (Ideal.absNorm 𝔞 : ℝ) ≤ x ∧ (Ideal.absNorm 𝔞' : ℝ) ≤ x ∧ ∀ t : K, t * c ∈ ipow 𝔞 1 ↔ t ∈ ipow 𝔞' 1}).encard : ℕ∞) : ℝ≥0∞) ≤ ENNReal.ofReal (8 * ((Formalism.HermitianLatticesTheory.fDeg K) : ℝ) ^ 2 * x ^ (2 * (2 + cf K))) := by
+  intro K _ _ _ hK x hx
+  obtain ⟨hfin, hle⟩ := Formalism.HermitianLatticeCounting.P.ideal_norm_le_count K x hx
+  set A := {I : Ideal (𝓞 K) | I ≠ ⊥ ∧ (Ideal.absNorm I : ℝ) ≤ x} with hA
+  let c0 : Ideal (𝓞 K) × Ideal (𝓞 K) → K := fun p =>
+    if h : ∃ d : K, d * star d = 1 ∧ ∀ t : K, t * d ∈ ipow p.1 1 ↔ t ∈ ipow p.2 1 then h.choose else 0
+  let g : (Ideal (𝓞 K) × Ideal (𝓞 K)) × Units.torsion K → K := fun q =>
+    algebraMap (𝓞 K) K ((q.2 : (𝓞 K)ˣ) : 𝓞 K) * c0 q.1
+  have hB : ((A ×ˢ A) ×ˢ (Set.univ : Set (Units.torsion K))).Finite :=
+    (hfin.prod hfin).prod Set.finite_univ
+  have hsub : {c : K | c * star c = 1 ∧ ∃ 𝔞 𝔞' : Ideal (𝓞 K), 𝔞 ≠ ⊥ ∧ 𝔞' ≠ ⊥ ∧ (Ideal.absNorm 𝔞 : ℝ) ≤ x ∧
+      (Ideal.absNorm 𝔞' : ℝ) ≤ x ∧ ∀ t : K, t * c ∈ ipow 𝔞 1 ↔ t ∈ ipow 𝔞' 1} ⊆
+      g '' ((A ×ˢ A) ×ˢ (Set.univ : Set (Units.torsion K))) := by
+    rintro c ⟨hc, 𝔞, 𝔞', h1, h2, h3, h4, h5⟩
+    have hex : ∃ d : K, d * star d = 1 ∧ ∀ t : K, t * d ∈ ipow 𝔞 1 ↔ t ∈ ipow 𝔞' 1 := ⟨c, hc, h5⟩
+    obtain ⟨ζ, hζ⟩ := exists_torsion hK.2.1 h2 hc hex.choose_spec.1 h5 hex.choose_spec.2
+    refine ⟨((𝔞, 𝔞'), ζ), ⟨⟨⟨h1, h3⟩, ⟨h2, h4⟩⟩, trivial⟩, ?_⟩
+    simp only [g, c0, dif_pos hex]
+    exact hζ.symm
+  have henc := (Set.encard_le_encard hsub).trans (Set.encard_image_le _ _)
+  rw [← hB.cast_ncard_eq, Set.ncard_prod, Set.ncard_prod, Set.ncard_univ] at henc
+  refine (ENat.toENNReal_le.2 henc).trans ?_
+  rw [ENat.toENNReal_coe, ← ENNReal.ofReal_natCast]
+  apply ENNReal.ofReal_le_ofReal
+  have hd : Module.finrank ℚ K = 2 * Formalism.HermitianLatticesTheory.fDeg K := by
+    have := hK.1
+    rw [IsTotallyComplex.finrank, Formalism.HermitianLatticesTheory.fDeg, InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces,
+      IsTotallyComplex.nrRealPlaces_eq_zero, zero_add]
+  have hw : (Nat.card (Units.torsion K) : ℝ) ≤ 8 * ((Formalism.HermitianLatticesTheory.fDeg K) : ℝ) ^ 2 := by
+    have h1 := card_torsion_le K
+    rw [hd] at h1
+    have h2 : (Nat.card (Units.torsion K) : ℝ) ≤ 2 * (2 * (Formalism.HermitianLatticesTheory.fDeg K : ℝ)) ^ 2 := by
+      exact_mod_cast h1
+    linarith
+  have hA' : (A.ncard : ℝ) ≤ x ^ (2 + cf K) :=
+    hle.trans (Real.rpow_le_rpow_of_exponent_le hx (by unfold cf; linarith))
+  have hx0 : 0 < x := by linarith
+  push_cast
+  calc (A.ncard : ℝ) * A.ncard * Nat.card (Units.torsion K)
+      ≤ x ^ (2 + cf K) * x ^ (2 + cf K) * (8 * ((Formalism.HermitianLatticesTheory.fDeg K) : ℝ) ^ 2) := by gcongr
+    _ = _ := by rw [← Real.rpow_add hx0, two_mul (2 + cf K)]; ring
+
+end GlobalTheory.DegCnt.NormOneCount
+end
+end
+
+section
+section
+open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt
+open scoped Pointwise ENNReal Classical nonZeroDivisors
+
+namespace GlobalTheory.DegCnt
+
+theorem mem_ipow_one_iff_exists {K : Type} [Field K] [NumberField K] (𝔞 : Ideal (𝓞 K)) (t : K) :
+    t ∈ ipow 𝔞 1 ↔ ∃ a ∈ 𝔞, algebraMap (𝓞 K) K a = t := by
+  unfold ipow
+  rw [zpow_one]
+  exact FractionalIdeal.mem_coeIdeal _
+
+theorem exists_ideal_coeff {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V]
+    [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (L M : Submodule (𝓞 K) V) (z : V) (hML : M ≤ L)
+    (hidx : idx L M ≠ 0) (hz : ∀ t : K, t • z ∈ L ↔ t ∈ (1 : Submodule (𝓞 K) K)) :
+    ∃ 𝔞 : Ideal (𝓞 K), 𝔞 ≠ ⊥ ∧ Ideal.absNorm 𝔞 ≤ idx L M ∧ ∀ t : K, t ∈ ipow 𝔞 1 ↔ t • z ∈ M := by
+  let f : 𝓞 K →ₗ[𝓞 K] V := LinearMap.toSpanSingleton (𝓞 K) V z
+  have hf : ∀ a : 𝓞 K, f a = (algebraMap (𝓞 K) K a) • z := fun a => by
+    simp only [f, LinearMap.toSpanSingleton_apply, algebraMap_smul]
+  let 𝔞 : Ideal (𝓞 K) := M.comap f
+  have hr : f.toAddMonoidHom.range ≤ L.toAddSubgroup := by
+    rintro _ ⟨a, rfl⟩
+    show f a ∈ L
+    rw [hf, hz]
+    exact Submodule.mem_one.2 ⟨a, rfl⟩
+  have hN : Ideal.absNorm 𝔞 = M.toAddSubgroup.relIndex f.toAddMonoidHom.range := by
+    rw [← AddSubgroup.index_comap, Ideal.absNorm_apply, Submodule.cardQuot_apply]
+    rfl
+  have hle : Ideal.absNorm 𝔞 ≤ idx L M := by
+    rw [hN]; exact AddSubgroup.relIndex_le_of_le_right hr hidx
+  have hne : Ideal.absNorm 𝔞 ≠ 0 := by
+    rw [hN]
+    exact fun h => hidx (AddSubgroup.relIndex_eq_zero_of_le_right hr h)
+  refine ⟨𝔞, fun h => hne (by rw [h, Ideal.absNorm_bot]), hle, fun t => ?_⟩
+  rw [mem_ipow_one_iff_exists]
+  constructor
+  · rintro ⟨a, ha, rfl⟩
+    rw [← hf]; exact ha
+  · intro ht
+    obtain ⟨a, rfl⟩ := Submodule.mem_one.1 ((hz t).1 (hML ht))
+    refine ⟨a, ?_, rfl⟩
+    show f a ∈ M
+    rw [hf]; exact ht
+
+theorem c_eq_quot_ideals : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : HermSpace K V), Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ) (N : NF H r), ∀ (g : ℕ) (Λ : Submodule (𝓞 K) V), 1 ≤ g → N.IsTerm g Λ → ∃ 𝔞 𝔞' : Ideal (𝓞 K), 𝔞 ≠ ⊥ ∧ 𝔞' ≠ ⊥ ∧ (Ideal.absNorm 𝔞 : ℝ) ≤ N.Del ∧ (Ideal.absNorm 𝔞' : ℝ) ≤ N.Del ∧ ∀ t : K, t * N.c ∈ ipow 𝔞 1 ↔ t ∈ ipow 𝔞' 1 := by
+  intro K V _ _ _ _ _ _ _ _ H hK r N g Λ hg hΛ
+  obtain ⟨-, -, hz, hz', -⟩ := GlobalTheory.T.hermFramePair_innerLattices_unimodular_primitive K V H hK r N g Λ hg hΛ
+  obtain ⟨hb, -, hD, h1⟩ := GlobalTheory.T.normal_form_terminal_determinant K V H hK r N g Λ hg hΛ
+  obtain ⟨hi, hi', hle, -⟩ := GlobalTheory.T.flagPairInnerLattice_indices_and_generators K V H hK r N g Λ hg hΛ
+  set i := idx (latL N.F N.F' Λ) (lamOne N.F N.F' Λ) with hidef
+  have hi0 : i ≠ 0 := by
+    intro h; rw [h] at hi; simp at hi; linarith
+  have hB : cardB N.F N.F' Λ ≠ 0 := by
+    intro h; rw [h] at hi; simp at hi; linarith
+  have hiD : (i : ℝ) ≤ N.Del := by
+    have hB1 : (1 : ℝ) ≤ cardB N.F N.F' Λ := by exact_mod_cast Nat.one_le_iff_ne_zero.2 hB
+    have hb1 : (1 : ℝ) ≤ N.bI Λ := by exact_mod_cast Nat.one_le_iff_ne_zero.2 hb
+    have hb2 : (1 : ℝ) ≤ (N.bI Λ : ℝ) ^ 2 := one_le_pow₀ hb1
+    have hi1 : (0 : ℝ) ≤ i := Nat.cast_nonneg _
+    calc (i : ℝ) ≤ i * cardB N.F N.F' Λ := le_mul_of_one_le_right hi1 hB1
+      _ = delBar N.F N.F' Λ := hi
+      _ ≤ delBar N.F N.F' Λ * (N.bI Λ : ℝ) ^ 2 := le_mul_of_one_le_right (by linarith) hb2
+      _ = N.Del := hD
+  obtain ⟨𝔞, h0, hn, hm⟩ := exists_ideal_coeff _ _ N.F.z (hle.trans inf_le_left) hi0 hz
+  obtain ⟨𝔞', h0', hn', hm'⟩ := exists_ideal_coeff _ _ N.F'.z (hle.trans inf_le_right) (hi' ▸ hi0) hz'
+  refine ⟨𝔞, 𝔞', h0, h0', le_trans (by exact_mod_cast hn) hiD,
+    le_trans (by exact_mod_cast hi' ▸ hn') hiD, fun t => ?_⟩
+  have hzz : N.F'.z = N.c • N.F.z := N.same (Fin.last r) (by simpa using N.j_le)
+  rw [hm, hm', hzz, mul_smul]
+
+end GlobalTheory.DegCnt
+end
+
+open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermFramePair_scalar_eq_quot_ideals_norm_le : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : HermSpace K V), Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ) (N : NF H r), ∀ (g : ℕ) (Λ : Submodule (𝓞 K) V), 1 ≤ g → N.IsTerm g Λ → ∃ 𝔞 𝔞' : Ideal (𝓞 K), 𝔞 ≠ ⊥ ∧ 𝔞' ≠ ⊥ ∧ (Ideal.absNorm 𝔞 : ℝ) ≤ N.Del ∧ (Ideal.absNorm 𝔞' : ℝ) ≤ N.Del ∧ ∀ t : K, t * N.c ∈ ipow 𝔞 1 ↔ t ∈ ipow 𝔞' 1 := by
+  atlas_forward_decl GlobalTheory.DegCnt.c_eq_quot_ideals
+end
+
+section
+section
+open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt GlobalTheory.DegAsm
+open scoped Pointwise ENNReal Classical
+open Formalism.HermitianLatticeCounting.P
+namespace GlobalTheory.DegAsm.NFUnique
+variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : HermSpace K V} {r : ℕ}
+
+def Cmp (H : HermSpace K V) (p q : V × V) : Prop := H.B p.1 q.1 = H.B p.2 q.2
+
+theorem Cmp.symm {p q : V × V} (h : Cmp H p q) : Cmp H q p := by
+  unfold Cmp at *
+  rw [← H.herm, h, H.herm]
+
+theorem cmp_span_left {S : Set (V × V)} {q : V × V} (h : ∀ p ∈ S, Cmp H p q) :
+    ∀ p ∈ Submodule.span K S, Cmp H p q := by
+  intro p hp
+  induction hp using Submodule.span_induction with
+  | mem x hx => exact h x hx
+  | zero => simp [Cmp]
+  | add x y _ _ h1 h2 => simp only [Cmp] at *; simp [h1, h2]
+  | smul a x _ h1 => simp only [Cmp] at *; simp [h1]
+
+theorem exists_isometry (S : Set (V × V)) (h : ∀ p ∈ S, ∀ q ∈ S, Cmp H p q)
+    (h1 : (Submodule.span K S).map (LinearMap.fst K V V) = ⊤)
+    (h2 : (Submodule.span K S).map (LinearMap.snd K V V) = ⊤) :
+    ∃ s : V ≃ₗ[K] V, (∀ x y, H.B (s x) (s y) = H.B x y) ∧ ∀ p ∈ S, s p.1 = p.2 := by
+  have hG : ∀ p ∈ Submodule.span K S, ∀ q ∈ Submodule.span K S, Cmp H p q := fun p hp q hq =>
+    cmp_span_left (fun p hp => (cmp_span_left (fun q hq => h q hq p hp) q hq).symm) p hp
+  set G := Submodule.span K S with hGdef
+  have s1 : ∀ v : V, ∃ p : G, p.1.1 = v := fun v => by
+    obtain ⟨p, hp, e⟩ := Submodule.mem_map.1 (h1.symm ▸ Submodule.mem_top (x := v))
+    exact ⟨⟨p, hp⟩, e⟩
+  have s2 : ∀ v : V, ∃ p : G, p.1.2 = v := fun v => by
+    obtain ⟨p, hp, e⟩ := Submodule.mem_map.1 (h2.symm ▸ Submodule.mem_top (x := v))
+    exact ⟨⟨p, hp⟩, e⟩
+  have b1 : Function.Bijective ((LinearMap.fst K V V).comp G.subtype) := by
+    refine ⟨(injective_iff_map_eq_zero _).2 fun p hp => ?_, s1⟩
+    have e1 : p.1.1 = 0 := hp
+    refine Subtype.ext (Prod.ext e1 (H.nondeg _ fun y => ?_))
+    obtain ⟨q, rfl⟩ := s2 y
+    have := hG _ p.2 _ q.2
+    rw [Cmp, e1] at this
+    simpa using this.symm
+  have b2 : Function.Bijective ((LinearMap.snd K V V).comp G.subtype) := by
+    refine ⟨(injective_iff_map_eq_zero _).2 fun p hp => ?_, s2⟩
+    have e1 : p.1.2 = 0 := hp
+    refine Subtype.ext (Prod.ext (H.nondeg _ fun y => ?_) e1)
+    obtain ⟨q, rfl⟩ := s1 y
+    have := hG _ p.2 _ q.2
+    rw [Cmp, e1] at this
+    simpa using this
+  have key : ∀ p : G, ((LinearEquiv.ofBijective _ b1).symm.trans (LinearEquiv.ofBijective _ b2)) p.1.1 = p.1.2 := by
+    intro p
+    have : (LinearEquiv.ofBijective _ b1).symm p.1.1 = p := (LinearEquiv.symm_apply_eq _).2 rfl
+    rw [LinearEquiv.trans_apply, this]
+    rfl
+  refine ⟨_, fun x y => ?_, fun p hp => key ⟨p, Submodule.subset_span hp⟩⟩
+  obtain ⟨p, rfl⟩ := s1 x
+  obtain ⟨q, rfl⟩ := s1 y
+  rw [key, key]
+  exact Eq.symm (hG _ p.2 _ q.2)
+
+theorem gram_eq {F G : FlagD H r} (hT : F.T = G.T) (a b : Fin (r + 1)) :
+    H.B (F.e a) (F.e b) = H.B (G.e a) (G.e b) := by
+  refine Fin.lastCases ?_ (fun a => ?_) a <;> refine Fin.lastCases ?_ (fun b => ?_) b
+  · rw [F.zz, G.zz, hT]
+  · rw [B_swap0 H (F.zperp b), B_swap0 H (G.zperp b)]
+  · rw [F.zperp, G.zperp]
+  · rw [F.iso, G.iso]
+
+theorem flag_vector_mem_base_lattice (F F' : FlagD H r) (a : Fin (r + 1)) : F.e a ∈ V0 F F' :=
+  Fin.lastCases (lastVector_mem_jointSpan_left F F') (fun a => isotropicSpan_le_jointSpan_left _ _ (e_mem_X _ a)) a
+
+theorem hermFlag_secondFrame_mem_frameSpan (F F' : FlagD H r) (a : Fin (r + 1)) : F'.e a ∈ V0 F F' :=
+  Fin.lastCases (lastVector_mem_jointSpan_right F F') (fun a => isotropicSpan_le_jointSpan_right _ _ (e_mem_X _ a)) a
+
+theorem perp_transfer {F G : FlagD H r} (h : SameGr F G) {w : V} (hw : ∀ a, H.B (F.e a) w = 0) (a : Fin (r + 1)) :
+    H.B (G.e a) w = 0 := by
+  have h1 := perp_X F (fun b => hw b.castSucc) _ (Xa_le_X F _ (h a))
+  simpa [hw a] using h1
+
+variable [NumberField K]
+
+theorem wt_e (N : NF H r) {w : V} (hw : w ∈ N.Wt) (a : Fin (r + 1)) : H.B (N.F.e a) w = 0 :=
+  (NFGeom.mem_perp' _ _).1 hw _ (Submodule.mem_sup_left (flag_vector_mem_base_lattice _ _ a))
+
+theorem wt_e' (N : NF H r) {w : V} (hw : w ∈ N.Wt) (a : Fin (r + 1)) : H.B (N.F'.e a) w = 0 :=
+  (NFGeom.mem_perp' _ _).1 hw _ (Submodule.mem_sup_left (hermFlag_secondFrame_mem_frameSpan _ _ a))
+
+theorem wt_ist (N : NF H r) {w : V} (hw : w ∈ N.Wt) (b : Fin r) (hb : N.j ≤ b.val) : H.B (N.ist b) w = 0 :=
+  (NFGeom.mem_perp' _ _).1 hw _ (Submodule.mem_sup_right (Submodule.subset_span ⟨b, hb, rfl⟩))
+
+variable [FiniteDimensional K V]
+
+theorem decomp (N : NF H r) {w : V} (hw : ∀ a, H.B (N.F.e a) w = 0) : ∃ w' ∈ N.Wt, w' - w ∈ N.F.X := by
+  obtain ⟨x, hx, hp⟩ := (NFGeom.full N).2.2.2.2.2.2.2.1 w hw
+  obtain ⟨u, hu, i, hi, e⟩ := Submodule.mem_sup.1 ((NFGeom.isLift N).2.2 _ hp)
+  refine ⟨u, hu, ?_⟩
+  have : u - w = -(x + i) := by rw [← sub_eq_zero, ← sub_eq_zero.2 e]; abel
+  rw [this]
+  exact Submodule.neg_mem _ (Submodule.add_mem _ hx hi.1)
+
+theorem eq_top (N : NF H r) (M : Submodule K V) (h1 : ∀ a, N.F.e a ∈ M) (h2 : ∀ a, N.F'.e a ∈ M)
+    (h3 : ∀ b : Fin r, N.j ≤ b.val → N.ist b ∈ M) (h4 : N.Wt ≤ M) : M = ⊤ := by
+  rw [eq_top_iff, ← (NFGeom.isCompl N).sup_eq_top, NFGeom.Pi_eq]
+  refine sup_le h4 (sup_le (sup_le (sup_le ?_ ?_) ?_) ?_) <;> refine Submodule.span_le.2 ?_
+  · rintro _ ⟨b, -, rfl⟩; exact h1 _
+  · rintro _ ⟨b, -, rfl⟩; exact h2 _
+  · rintro _ (rfl | rfl)
+    · exact h1 _
+    · exact h2 _
+  · rintro _ ⟨b, hb, rfl⟩; exact h3 b hb
+
+theorem main (N₀ N₁ : NF H r) (h : SameGr N₀.F N₁.F) (hj : N₀.j = N₁.j) (hc : N₀.c = N₁.c) (hT : N₀.T = N₁.T)
+    (hM : pairM N₀.F N₀.F' N₀.j = pairM N₁.F N₁.F' N₁.j) :
+    ∃ s : V ≃ₗ[K] V, N₀.F.InN (s : V →ₗ[K] V) ∧ ∀ a, s (N₀.F.e a) = N₁.F.e a ∧ s (N₀.F'.e a) = N₁.F'.e a := by
+  have hX : N₁.F.X = N₀.F.X := AdaptInv.x_eq h
+  have ee := gram_eq (F := N₀.F) (G := N₁.F) (by rw [N₀.hT, N₁.hT, hT])
+  have e'e' := gram_eq (F := N₀.F') (G := N₁.F') (by rw [N₀.hT', N₁.hT', hT])
+  have ee' : ∀ a b, H.B (N₀.F.e a) (N₀.F'.e b) = H.B (N₁.F.e a) (N₁.F'.e b) := by
+    intro a b
+    by_cases hb : N₀.j ≤ b.val
+    · rw [N₀.same b hb, N₁.same b (hj ▸ hb)]
+      simp [ee, hc]
+    by_cases ha : N₀.j ≤ a.val
+    · rw [NFGeom.e_eq N₀ a ha, NFGeom.e_eq N₁ a (hj ▸ ha)]
+      simp [e'e', hc]
+    have := congrFun (congrFun hM a) b
+    simpa [pairM, ← hj, not_le.1 ha, not_le.1 hb] using this
+  have ei : ∀ a (b : Fin r), N₀.j ≤ b.val → H.B (N₀.F.e a) (N₀.ist b) = H.B (N₁.F.e a) (N₁.ist b) := by
+    intro a b hb
+    refine Fin.lastCases ?_ (fun a => ?_) a
+    · exact (N₀.normalForm_dual_orthogonal_last b hb).trans (N₁.normalForm_dual_orthogonal_last b (hj ▸ hb)).symm
+    · rw [N₀.ist_e a b hb, N₁.ist_e a b (hj ▸ hb)]
+  have e'i : ∀ a (b : Fin r), N₀.j ≤ b.val → H.B (N₀.F'.e a) (N₀.ist b) = H.B (N₁.F'.e a) (N₁.ist b) := by
+    intro a b hb
+    by_cases ha : N₀.j ≤ a.val
+    · rw [N₀.same a ha, N₁.same a (hj ▸ ha)]
+      simp [ei a b hb, hc]
+    have hl : a.val < r := lt_of_lt_of_le (not_le.1 ha) N₀.j_le
+    exact (N₀.ist_e' ⟨a.val, hl⟩ b (not_le.1 ha) hb).trans
+      (N₁.ist_e' ⟨a.val, hl⟩ b (hj ▸ not_le.1 ha) (hj ▸ hb)).symm
+  have ww : ∀ p q : V × V, p.1 ∈ N₀.Wt → q.1 ∈ N₀.Wt → p.2 - p.1 ∈ N₀.F.X → q.2 - q.1 ∈ N₀.F.X → Cmp H p q := by
+    intro p q hp hq hp' hq'
+    have a1 := perp_X N₀.F (fun b => wt_e N₀ hq b.castSucc) _ hp'
+    have a2 := B_swap0 H (perp_X N₀.F (fun b => wt_e N₀ hp b.castSucc) _ hq')
+    have a3 := X_iso N₀.F hp' hq'
+    simp only [map_sub, LinearMap.sub_apply] at a1 a2 a3
+    unfold Cmp
+    linear_combination -a1 - a2 - a3
+  obtain ⟨s, hs, hS⟩ := exists_isometry (H := H)
+    {p | (∃ a, p = (N₀.F.e a, N₁.F.e a)) ∨ (∃ a, p = (N₀.F'.e a, N₁.F'.e a)) ∨
+      (∃ b : Fin r, N₀.j ≤ b.val ∧ p = (N₀.ist b, N₁.ist b)) ∨ (p.1 ∈ N₀.Wt ∧ p.2 ∈ N₁.Wt ∧ p.2 - p.1 ∈ N₀.F.X)}
+    (by
+      rintro p (⟨a, rfl⟩ | ⟨a, rfl⟩ | ⟨a, ha, rfl⟩ | ⟨p0, p1, p2⟩) q (⟨b, rfl⟩ | ⟨b, rfl⟩ | ⟨b, hb, rfl⟩ | ⟨q0, q1, q2⟩)
+      · exact ee a b
+      · exact ee' a b
+      · exact ei a b hb
+      · exact (wt_e N₀ q0 a).trans (wt_e N₁ q1 a).symm
+      · exact Cmp.symm (ee' b a)
+      · exact e'e' a b
+      · exact e'i a b hb
+      · exact (wt_e' N₀ q0 a).trans (wt_e' N₁ q1 a).symm
+      · exact Cmp.symm (ei b a ha)
+      · exact Cmp.symm (e'i b a ha)
+      · exact (N₀.ist_iso a b ha hb).trans (N₁.ist_iso a b (hj ▸ ha) (hj ▸ hb)).symm
+      · exact (wt_ist N₀ q0 a ha).trans (wt_ist N₁ q1 a (hj ▸ ha)).symm
+      · exact Cmp.symm ((wt_e N₀ p0 b).trans (wt_e N₁ p1 b).symm)
+      · exact Cmp.symm ((wt_e' N₀ p0 b).trans (wt_e' N₁ p1 b).symm)
+      · exact Cmp.symm ((wt_ist N₀ p0 b hb).trans (wt_ist N₁ p1 b (hj ▸ hb)).symm)
+      · exact ww p q p0 q0 p2 q2)
+    (by
+      refine eq_top N₀ _ (fun a => ⟨_, Submodule.subset_span (Or.inl ⟨a, rfl⟩), rfl⟩)
+        (fun a => ⟨_, Submodule.subset_span (Or.inr (Or.inl ⟨a, rfl⟩)), rfl⟩)
+        (fun b hb => ⟨_, Submodule.subset_span (Or.inr (Or.inr (Or.inl ⟨b, hb, rfl⟩))), rfl⟩) fun w hw => ?_
+      obtain ⟨u, hu, hx⟩ := decomp N₁ (perp_transfer h (wt_e N₀ hw))
+      exact ⟨(w, u), Submodule.subset_span (Or.inr (Or.inr (Or.inr ⟨hw, hu, hX ▸ hx⟩))), rfl⟩)
+    (by
+      refine eq_top N₁ _ (fun a => ⟨_, Submodule.subset_span (Or.inl ⟨a, rfl⟩), rfl⟩)
+        (fun a => ⟨_, Submodule.subset_span (Or.inr (Or.inl ⟨a, rfl⟩)), rfl⟩)
+        (fun b hb => ⟨_, Submodule.subset_span (Or.inr (Or.inr (Or.inl ⟨b, hj ▸ hb, rfl⟩))), rfl⟩) fun w hw => ?_
+      obtain ⟨u, hu, hx⟩ := decomp N₀ (perp_transfer (AdaptInv.sameGr_symm h) (wt_e N₁ hw))
+      exact ⟨(u, w), Submodule.subset_span (Or.inr (Or.inr (Or.inr ⟨hu, hw, by
+        simpa using Submodule.neg_mem _ hx⟩))), rfl⟩)
+  have se : ∀ a, s (N₀.F.e a) = N₁.F.e a := fun a => hS (_, _) (Or.inl ⟨a, rfl⟩)
+  refine ⟨s, ⟨hs, s.bijective, fun a => ?_, fun y hy => ?_⟩,
+    fun a => ⟨se a, hS (_, _) (Or.inr (Or.inl ⟨a, rfl⟩))⟩⟩
+  · rw [LinearEquiv.coe_coe, se]
+    exact h a.castSucc
+  · let M : Submodule K V := N₀.F.X.comap ((s : V →ₗ[K] V) - LinearMap.id)
+    have m1 : ∀ a, N₀.F.e a ∈ M := fun a => by
+      change s (N₀.F.e a) - N₀.F.e a ∈ N₀.F.X
+      rw [se]
+      exact Xa_le_X _ _ (h a)
+    have m2 : N₀.F.X ≤ M := Submodule.span_le.2 (by rintro _ ⟨b, -, rfl⟩; exact m1 _)
+    have m3 : N₀.Wt ≤ M := fun w hw => by
+      obtain ⟨u, hu, hx⟩ := decomp N₁ (perp_transfer h (wt_e N₀ hw))
+      change s w - w ∈ N₀.F.X
+      rw [show s w = u from hS (w, u) (Or.inr (Or.inr (Or.inr ⟨hw, hu, hX ▸ hx⟩))), ← hX]
+      exact hx
+    obtain ⟨u, hu, hx⟩ := decomp N₀ (w := y + star (H.B N₀.F.z y / N₀.F.T) • N₀.F.z) (fun a => by
+      refine Fin.lastCases ?_ (fun a => ?_) a
+      · have := N₀.F.hT
+        change H.B N₀.F.z _ = 0
+        simp only [map_add, LinearMap.map_smulₛₗ, starRingEnd_apply, star_star, smul_eq_mul, pairing_lastVector_lastVector]
+        field_simp
+        ring
+      · simp [hy a, pairing_isotropicSpan_lastVector N₀.F (e_mem_X _ a)])
+    have m4 : y ∈ M := by
+      have := M.sub_mem (M.sub_mem (m3 hu) (m2 hx))
+        (M.smul_mem (star (H.B N₀.F.z y / N₀.F.T)) (m1 (Fin.last r)))
+      simpa [FlagD.z] using this
+    exact m4
+
+end GlobalTheory.DegAsm.NFUnique
+
+namespace GlobalTheory.DegAsm
+
+theorem nf_unique : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : HermSpace K V), Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ), ∀ (F : FlagD H r) (N₀ N₁ : NF H r), SameGr F N₀.F → SameGr F N₁.F → N₀.j = N₁.j → N₀.c = N₁.c → N₀.T = N₁.T → pairM N₀.F N₀.F' N₀.j = pairM N₁.F N₁.F' N₁.j → ∃ s : V ≃ₗ[K] V, F.InN (s : V →ₗ[K] V) ∧ ∀ a, s (N₀.F.e a) = N₁.F.e a ∧ s (N₀.F'.e a) = N₁.F'.e a := by
+  intro K V _ _ _ _ _ _ _ _ H _ r F N₀ N₁ h₀ h₁ hj hc hT hM
+  have h : SameGr N₀.F N₁.F := fun a => by
+    rw [AdaptInv.xa_eq h₀]
+    simpa using Submodule.sub_mem _ (h₁ a) (h₀ a)
+  obtain ⟨s, hs, he⟩ := NFUnique.main N₀ N₁ h hj hc hT hM
+  exact ⟨s, AdaptInv.inN_of (AdaptInv.sameGr_symm h₀) _ hs, he⟩
+
+end GlobalTheory.DegAsm
+end
+
+open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt GlobalTheory.DegAsm
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.hermFramePairNormalForm_unique_up_to_unipotent : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : HermSpace K V), Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ), ∀ (F : FlagD H r) (N₀ N₁ : NF H r), SameGr F N₀.F → SameGr F N₁.F → N₀.j = N₁.j → N₀.c = N₁.c → N₀.T = N₁.T → pairM N₀.F N₀.F' N₀.j = pairM N₁.F N₁.F' N₁.j → ∃ s : V ≃ₗ[K] V, F.InN (s : V →ₗ[K] V) ∧ ∀ a, s (N₀.F.e a) = N₁.F.e a ∧ s (N₀.F'.e a) = N₁.F'.e a := by
+  atlas_forward_decl GlobalTheory.DegAsm.nf_unique
+end
+
+section
+section
+open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt GlobalTheory.DegAsm
+open scoped Pointwise ENNReal Classical
+
+namespace GlobalTheory.SignedBlockCount
+open Formalism.MainNotions.S.Loc
+
+variable {K : Type} [Field K]
+
+noncomputable def minor (bs : List (Kˣ × ℕ+)) (l : ℕ) : K :=
+  (Matrix.of fun a b : Fin l => ptEntryL bs a b).det
+
+theorem minor_zero (bs : List (Kˣ × ℕ+)) : minor bs 0 = 1 := by simp [minor]
+
+theorem minor_lt (t : Kˣ) (s : ℕ+) (bs : List (Kˣ × ℕ+)) (l : ℕ) (h0 : 0 < l) (hl : l < s) :
+    minor ((t, s) :: bs) l = 0 := by
+  refine Matrix.det_eq_zero_of_row_eq_zero ⟨0, h0⟩ fun b => ?_
+  have hb := b.2
+  simp only [Matrix.of_apply, ptEntryL]
+  split_ifs <;> first | rfl | omega
+
+theorem minor_add (t : Kˣ) (s : ℕ+) (bs : List (Kˣ × ℕ+)) (l : ℕ) :
+    minor ((t, s) :: bs) (s + l) =
+      (((Equiv.Perm.sign (Fin.revPerm : Equiv.Perm (Fin s)) : ℤˣ) : ℤ) *
+        (t : K) ^ (s : ℕ)) * minor bs l := by
+  have key : (Matrix.of fun a b : Fin (s + l) => ptEntryL ((t, s) :: bs) a b).submatrix
+      finSumFinEquiv finSumFinEquiv =
+      Matrix.fromBlocks ((Matrix.diagonal (fun _ : Fin s => (t : K))).submatrix id
+          (Fin.revPerm : Equiv.Perm (Fin s))) 0 0
+        (Matrix.of fun a b : Fin l => ptEntryL bs a b) := by
+    ext (a | a) (b | b)
+    · have ha := a.2
+      have hb := b.2
+      simp only [Matrix.submatrix_apply, Matrix.of_apply, ptEntryL, finSumFinEquiv_apply_left,
+        Fin.val_castAdd, Matrix.fromBlocks_apply₁₁, id, Matrix.diagonal_apply, Fin.revPerm_apply,
+        Fin.ext_iff, Fin.val_rev]
+      split_ifs <;> first | rfl | omega
+    · simp [ptEntryL]
+    · simp [ptEntryL]
+    · simp [ptEntryL]
+  rw [minor, ← Matrix.det_submatrix_equiv_self finSumFinEquiv, key, Matrix.det_fromBlocks_zero₂₁,
+    Matrix.det_permute', Matrix.det_diagonal]
+  simp [minor]
+
+theorem sign_ne (u : ℤˣ) : ((u : ℤ) : K) ≠ 0 := by
+  rcases Int.units_eq_one_or u with e | e <;> simp [e]
+
+theorem minor_self (t : Kˣ) (s : ℕ+) (bs : List (Kˣ × ℕ+)) :
+    minor ((t, s) :: bs) s =
+      ((Equiv.Perm.sign (Fin.revPerm : Equiv.Perm (Fin s)) : ℤˣ) : ℤ) * (t : K) ^ (s : ℕ) := by
+  have := minor_add t s bs 0
+  rwa [minor_zero, mul_one, Nat.add_zero] at this
+
+theorem minor_self_ne (t : Kˣ) (s : ℕ+) (bs : List (Kˣ × ℕ+)) : minor ((t, s) :: bs) s ≠ 0 := by
+  rw [minor_self]
+  exact mul_ne_zero (sign_ne _) (pow_ne_zero _ t.ne_zero)
+
+theorem count_lists (n : ℕ) : ∀ η : ℕ → K, ∃ T : Finset (List (Kˣ × ℕ+)), T.card ≤ 2 ^ n ∧
+    ∀ bs : List (Kˣ × ℕ+), (bs.map (fun b => (b.2 : ℕ))).sum = n →
+      (∀ l ≤ n, minor bs l = η l) → bs ∈ T := by
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+  intro η
+  by_cases hex : ∃ (t : Kˣ) (s : ℕ+) (bs : List (Kˣ × ℕ+)),
+      (s : ℕ) + (bs.map (fun b => (b.2 : ℕ))).sum = n ∧ ∀ l ≤ n, minor ((t, s) :: bs) l = η l
+  · obtain ⟨t₀, s, bs₀, hs, h₀⟩ := hex
+    have hsp := s.pos
+    obtain ⟨T, hT, hT'⟩ := ih (n - s) (by omega) (fun l => η (s + l) / η s)
+    let c : K := ((Equiv.Perm.sign (Fin.revPerm : Equiv.Perm (Fin s)) : ℤˣ) : ℤ)
+    have hc : c ≠ 0 := sign_ne _
+    let R := (Polynomial.nthRoots s (η s / c)).toFinset
+    have hR : R.card ≤ s := (Multiset.toFinset_card_le _).trans (Polynomial.card_nthRoots _ _)
+    refine ⟨Finset.image₂ (fun x bs => ((if h : x = 0 then 1 else Units.mk0 x h), s) :: bs) R T,
+      ?_, ?_⟩
+    · refine (Finset.card_image₂_le _ _ _).trans ?_
+      calc R.card * T.card ≤ 2 ^ (s : ℕ) * 2 ^ (n - s) :=
+            Nat.mul_le_mul (hR.trans (Nat.lt_two_pow_self).le) hT
+        _ = 2 ^ n := by rw [← pow_add]; congr 1; omega
+    · rintro (_ | ⟨⟨t, s'⟩, bs⟩) hsum h
+      · simp only [List.map_nil, List.sum_nil] at hsum
+        omega
+      simp only [List.map_cons, List.sum_cons] at hsum
+      have hsp' := s'.pos
+      have e : s' = s := by
+        apply PNat.eq
+        rcases lt_trichotomy (s' : ℕ) s with h1 | h1 | h1
+        · exact absurd ((h s' (by omega)).trans ((h₀ s' (by omega)).symm.trans
+            (minor_lt _ _ _ _ hsp' h1))) (minor_self_ne _ _ _)
+        · exact h1
+        · exact absurd ((h₀ s (by omega)).trans ((h s (by omega)).symm.trans
+            (minor_lt _ _ _ _ hsp h1))) (minor_self_ne _ _ _)
+      subst e
+      have h1 := h s' (by omega)
+      refine Finset.mem_image₂.2 ⟨t, ?_, bs, hT' bs (by omega) fun l hl => ?_, ?_⟩
+      · simp only [R, Multiset.mem_toFinset, Polynomial.mem_nthRoots hsp]
+        rw [← h1, minor_self, eq_div_iff hc, mul_comm]
+      · rw [← h _ (by omega), ← h1, minor_add, ← minor_self t s' bs,
+          mul_div_cancel_left₀ _ (minor_self_ne _ _ _)]
+      · simp [t.ne_zero]
+  · refine ⟨{[]}, by simpa using Nat.one_le_two_pow, ?_⟩
+    rintro (_ | ⟨⟨t, s⟩, bs⟩) hsum h
+    · simp
+    · exact absurd ⟨t, s, bs, by simpa using hsum, h⟩ hex
+
+end GlobalTheory.SignedBlockCount
+
+namespace GlobalTheory
+
+open Formalism.MainNotions.S.Loc SignedBlockCount in
+
+theorem signed_block_count : ∀ (K : Type) [Field K] (j : ℕ) (δ : ℕ → K), (({P : Matrix (Fin j) (Fin j) K | (∃ (w : Formalism.MainNotions.S.Loc.Pt K j) (sgn : Fin j → ℤˣ), ∀ a b, P a b = w.mat a b * ((sgn b : ℤ) : K)) ∧ ∀ (l : ℕ) (hl : l ≤ j), (P.submatrix (Fin.castLE hl) (Fin.castLE hl)).det = δ l}).encard : ℕ∞) ≤ 8 ^ j := by
+  intro K _ j δ
+  choose T hT hT' using count_lists (K := K) j
+  let η : (Fin j → ℤˣ) → ℕ → K := fun sgn l =>
+    if hl : l ≤ j then δ l / ∏ b : Fin l, ((sgn (Fin.castLE hl b) : ℤ) : K) else 0
+  let U : Finset (Matrix (Fin j) (Fin j) K) := Finset.univ.biUnion fun sgn : Fin j → ℤˣ =>
+    (T (η sgn)).image fun bs => Matrix.of fun a b => ptEntryL bs a b * ((sgn b : ℤ) : K)
+  have hU : U.card ≤ 8 ^ j := by
+    refine (Finset.card_biUnion_le_card_mul _ _ (2 ^ j)
+      fun sgn _ => Finset.card_image_le.trans (hT _)).trans ?_
+    simp only [Finset.card_univ, Fintype.card_pi, Fintype.card_units_int, Finset.prod_const,
+      Fintype.card_fin]
+    rw [← mul_pow]
+    exact Nat.pow_le_pow_left (by norm_num) _
+  refine (Set.encard_le_encard (t := (U : Set _)) ?_).trans ?_
+  · rintro P ⟨⟨w, sgn, hP⟩, hδ⟩
+    refine Finset.mem_coe.2 (Finset.mem_biUnion.2 ⟨sgn, Finset.mem_univ _,
+      Finset.mem_image.2 ⟨w.blocks, hT' _ _ w.size fun l hl => ?_, ?_⟩⟩)
+    · simp only [η, dif_pos hl]
+      rw [eq_div_iff (Finset.prod_ne_zero_iff.2 fun b _ => sign_ne _), ← hδ l hl, mul_comm, minor,
+        ← Matrix.det_mul_row]
+      congr 1
+      ext a b
+      simp [hP, Pt.mat, mul_comm]
+    · ext a b
+      simp [hP, Pt.mat]
+  · rw [Set.encard_coe_eq_coe_finsetCard]
+    exact_mod_cast hU
+
+end GlobalTheory
+end
+
+open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt GlobalTheory.DegAsm
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.signedBlockAntidiag_with_leadingMinors_encard_le : ∀ (K : Type) [Field K] (j : ℕ) (δ : ℕ → K), (({P : Matrix (Fin j) (Fin j) K | (∃ (w : Formalism.MainNotions.S.Loc.Pt K j) (sgn : Fin j → ℤˣ), ∀ a b, P a b = w.mat a b * ((sgn b : ℤ) : K)) ∧ ∀ (l : ℕ) (hl : l ≤ j), (P.submatrix (Fin.castLE hl) (Fin.castLE hl)).det = δ l}).encard : ℕ∞) ≤ 8 ^ j := by
+  atlas_forward_decl GlobalTheory.signed_block_count
+end
+
+section
+section
+open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt GlobalTheory.DegAsm
+open scoped Pointwise ENNReal Classical
+namespace GlobalTheory.DegAsm.DatMove
+open AdaptInv
+
+theorem sup_iff {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] (t : M ≃+ M)
+    {A B A' B' : Submodule R M} (h : ∀ y, t y ∈ A ↔ y ∈ B) (h' : ∀ y, t y ∈ A' ↔ y ∈ B') (y : M) :
+    t y ∈ A ⊔ A' ↔ y ∈ B ⊔ B' := by
+  simp only [Submodule.mem_sup]
+  constructor
+  · rintro ⟨a, ha, b, hb, hab⟩
+    refine ⟨t.symm a, (h _).1 (by simpa using ha), t.symm b, (h' _).1 (by simpa using hb), ?_⟩
+    apply t.injective
+    simp [hab]
+  · rintro ⟨a, ha, b, hb, rfl⟩
+    exact ⟨t a, (h _).2 ha, t b, (h' _).2 hb, by simp⟩
+
+theorem sup_iff_of_sub {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] (t : M ≃+ M)
+    {A B C : Submodule R M} (h : ∀ y, t y ∈ A ↔ y ∈ B) (h' : ∀ y, t y ∈ C ↔ y ∈ C) {y : M}
+    (hy : t y - y ∈ C) : y ∈ A ⊔ C ↔ y ∈ B ⊔ C := by
+  rw [← sup_iff t h h' y]
+  have h1 : t y - y ∈ A ⊔ C := Submodule.mem_sup_right hy
+  rw [← Submodule.add_mem_iff_right _ h1]
+  simp
+
+variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : HermSpace K V} {r : ℕ}
+
+def push (s : V ≃ₗ[K] V) (hs : ∀ x y, H.B (s x) (s y) = H.B x y) (F : FlagD H r) : FlagD H r where
+  e a := s (F.e a)
+  T := F.T
+  indep := F.indep.map' (s : V →ₗ[K] V) s.ker
+  iso a b := by rw [hs]; exact F.iso a b
+  zperp a := by rw [hs]; exact F.zperp a
+  zz := by rw [hs]; exact F.zz
+  hT := F.hT
+
+variable (s : V ≃ₗ[K] V) (hs : ∀ x y, H.B (s x) (s y) = H.B x y)
+
+theorem push_X (F : FlagD H r) : (push s hs F).X = F.X.map (s : V →ₗ[K] V) := by
+  unfold FlagD.X FlagD.Xa
+  rw [Submodule.map_span, Set.image_image]
+  rfl
+
+theorem hermFrameMapIsometry_frameSpan (F G : FlagD H r) : V0 (push s hs F) (push s hs G) = (V0 F G).map (s : V →ₗ[K] V) := by
+  unfold V0
+  rw [push_X, push_X, Submodule.map_sup, Submodule.map_sup, Submodule.map_span, Set.image_pair]
+  rfl
+
+theorem mem_map_iff (S : Submodule K V) (y : V) : s y ∈ S.map (s : V →ₗ[K] V) ↔ y ∈ S := by
+  constructor
+  · rintro ⟨x, hx, h⟩
+    exact s.injective h ▸ hx
+  · exact fun h => ⟨y, h, rfl⟩
+
+include hs in
+theorem perp_map_iff (S : Submodule K V) (y : V) : s y ∈ perp H (S.map (s : V →ₗ[K] V)) ↔ y ∈ perp H S := by
+  simp only [mem_perp_iff]
+  constructor
+  · intro h x hx
+    rw [← hs]; exact h _ ⟨x, hx, rfl⟩
+  · rintro h _ ⟨x, hx, rfl⟩
+    exact (hs _ _).trans (h x hx)
+
+theorem push_X_iff (F : FlagD H r) (y : V) : s y ∈ (push s hs F).X ↔ y ∈ F.X := by
+  rw [push_X, mem_map_iff]
+
+variable {R : Type} [CommRing R] [Algebra R K] [Module R V] [IsScalarTower R K V]
+
+theorem hermIsometry_mem_flagPairDefinitePartLattice_iff (F G : FlagD H r) {Λ Λ' : Submodule R V} (h : ∀ y, s y ∈ Λ' ↔ y ∈ Λ) (y : V) :
+    s y ∈ flagPairDefinitePartLattice (push s hs F) (push s hs G) Λ' ↔ y ∈ flagPairDefinitePartLattice F G Λ := by
+  have h1 := sup_iff s.toAddEquiv (A' := rs R (push s hs F).X) (B' := rs R F.X) h (push_X_iff s hs F) y
+  simp only [flagPairDefinitePartLattice, latL, uPerp, wSp, Submodule.mem_inf, Submodule.restrictScalars_mem]
+  rw [hermFrameMapIsometry_frameSpan, perp_map_iff s hs]
+  refine and_congr (and_congr ?_ h1) Iff.rfl
+  rw [push_X, push_X, ← Submodule.map_sup, perp_map_iff s hs]
+
+theorem smulLat_iff {Λ Λ' : Submodule R V} (h : ∀ y, s y ∈ Λ' ↔ y ∈ Λ) (g : R) (y : V) :
+    s y ∈ smulLat g Λ' ↔ y ∈ smulLat g Λ := by
+  have hg : ∀ x, s (g • x) = g • s x := fun x => (s : V →ₗ[K] V).map_smul_of_tower g x
+  constructor
+  · rintro ⟨x, hx, h1⟩
+    refine ⟨s.symm x, (h _).1 (by simpa using hx), s.injective ?_⟩
+    rw [← h1]
+    simpa using hg (s.symm x)
+  · rintro ⟨x, hx, rfl⟩
+    exact ⟨s x, (h _).2 hx, (hg x).symm⟩
+
+theorem push_graph (F G : FlagD H r) {Λ Λ' : Submodule R V} (h : ∀ y, s y ∈ Λ' ↔ y ∈ Λ) (g : R) (y : V × V) :
+    (s.toAddEquiv.prodCongr s.toAddEquiv) y ∈ iotaGraph (push s hs F) (push s hs G) Λ' g ↔
+      y ∈ iotaGraph F G Λ g := by
+  simp only [iotaGraph, Submodule.mem_inf]
+  refine and_congr (and_congr (hermIsometry_mem_flagPairDefinitePartLattice_iff s hs G F h y.1) (hermIsometry_mem_flagPairDefinitePartLattice_iff s hs F G h y.2)) ?_
+  refine sup_iff _ (fun p => ?_) (fun p => and_congr (push_X_iff s hs G p.1) (push_X_iff s hs F p.2)) y
+  refine and_congr (and_congr (h p.1) (h p.2)) ?_
+  have := sup_iff s.toAddEquiv (A' := Λ' ⊓ rs R (push s hs F).X) (B' := Λ ⊓ rs R F.X) (smulLat_iff s h g)
+    (fun y => and_congr (h y) (push_X_iff s hs F y)) (p.2 - p.1)
+  rw [map_sub] at this
+  exact this
+
+theorem sameGr_push (F : FlagD H r) (hN : F.InN (s : V →ₗ[K] V)) : SameGr F (push s hN.1 F) := by
+  intro a
+  induction a using Fin.lastCases with
+  | last => exact hN.2.2.2 _ F.zperp
+  | cast a => exact hN.2.2.1 a
+
+theorem flag_vector_mem_base_lattice (F G : FlagD H r) (a : Fin (r + 1)) : F.e a ∈ V0 F G := by
+  induction a using Fin.lastCases with
+  | last => exact Submodule.mem_sup_right (Submodule.subset_span (Or.inl rfl))
+  | cast a => exact Submodule.mem_sup_left (Submodule.mem_sup_left (e_mem_xa F a a.2))
+
+theorem jointSpan_comm (F G : FlagD H r) : V0 F G = V0 G F := by
+  unfold V0
+  rw [sup_comm F.X, Set.pair_comm]
+
+theorem herm_zero {x y : V} (h : H.B x y = 0) : H.B y x = 0 := by
+  rw [← H.herm, h, star_zero]
+
+theorem commonIsotropic_le_flagPairDefinitePartLattice {F G : FlagD H r} (hI : ∀ x ∈ II F G, ∀ w ∈ V0 F G, H.B w x = 0) (Λ : Submodule R V)
+    {x : V} (hx : x ∈ II F G) : x ∈ flagPairDefinitePartLattice F G Λ := by
+  refine ⟨⟨?_, Submodule.mem_sup_right hx.1⟩, ?_⟩
+  · exact (mem_perp_iff _ _ _).2 fun w hw => herm_zero (hI x hx w (Submodule.mem_sup_left hw))
+  · exact (mem_perp_iff _ _ _).2 fun w hw => herm_zero (hI x hx w hw)
+
+end GlobalTheory.DegAsm.DatMove
+
+namespace GlobalTheory.DegAsm
+open AdaptInv DatMove
+
+theorem datOf_move : ∀ (K V W : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [AddCommGroup W] [Module K W] [FiniteDimensional K W] [Module (𝓞 K) W] [IsScalarTower (𝓞 K) K W] (H : HermSpace K V) (HW : HermSpace K W) (e : W →ₗ[K] V), Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ), ∀ (F G G' : FlagD H r) (𝔡 : Ideal (𝓞 K)) (N : NF H r) (g : ℕ), IsEmb F HW e → Adapt F G 𝔡 N → (∀ (s : V ≃ₗ[K] V) (Λ : Submodule (𝓞 K) V), F.InN (s : V →ₗ[K] V) → (∀ a, s (G.e a) - G'.e a ∈ G'.Xa a.val) → datOf F G' e g (s • Λ) = datOf F G e g Λ ∧ lat0 F e (s • Λ) = lat0 F e Λ ∧ latL F G (s • Λ) = latL F G Λ) ∧ ∀ Λ Λ' : Submodule (𝓞 K) V, datOf F G e g Λ = datOf F G e g Λ' → flagPairDefinitePartLattice G F Λ = flagPairDefinitePartLattice G F Λ' ∧ iotaGraph F G Λ (g : 𝓞 K) = iotaGraph F G Λ' (g : 𝓞 K) := by
+  intro K V W _ _ _ _ _ _ _ _ _ _ _ _ _ H HW e hK r F G G' 𝔡 N g hE hA
+  refine ⟨fun s Λ hN hG => ?_, ?_⟩
+  · have hs : ∀ x y, H.B (s x) (s y) = H.B x y := hN.1
+    have hF : SameGr F (push s hs F) := sameGr_push s F hN
+    have hG' : SameGr G' (push s hs G) := hG
+    have hΛ : ∀ y, s y ∈ s • Λ ↔ y ∈ Λ := fun y => by
+      constructor
+      · rintro ⟨x, hx, h⟩
+        exact s.injective h ▸ hx
+      · exact fun h => ⟨y, h, rfl⟩
+    have hX : ∀ y, s y ∈ F.X ↔ y ∈ F.X := fun y => by
+      have := push_X_iff s hs F y
+      rwa [x_eq hF] at this
+    have he : ∀ w, s (e w) - e w ∈ F.X := fun w =>
+      hN.2.2.2 _ fun a => (hE.2 (e w)).2 (Submodule.mem_sup_left ⟨w, rfl⟩) _
+    refine ⟨Prod.ext ?_ ?_, ?_, ?_⟩
+    · ext w
+      refine sup_iff_of_sub s.toAddEquiv (C := rs (𝓞 K) F.X) (fun y => ?_) hX (he w)
+      rw [← flagFramesSameGraded_definitePartLattice_eq hG' hF]
+      exact hermIsometry_mem_flagPairDefinitePartLattice_iff s hs G F hΛ y
+    · ext w
+      refine sup_iff_of_sub (s.toAddEquiv.prodCongr s.toAddEquiv)
+        (C := (rs (𝓞 K) F.X).prod (rs (𝓞 K) F.X)) (fun y => ?_)
+        (fun p => and_congr (hX p.1) (hX p.2)) ⟨he w.1, he w.2⟩
+      rw [← iotaGraph_eq hF hG']
+      exact push_graph s hs F G hΛ _ y
+    · ext w
+      exact sup_iff_of_sub s.toAddEquiv (C := rs (𝓞 K) F.X) hΛ hX (he w)
+    · ext y
+      refine and_congr_right fun hy => sup_iff_of_sub s.toAddEquiv (C := rs (𝓞 K) F.X) hΛ hX ?_
+      exact hN.2.2.2 y fun a => herm_zero
+        ((mem_perp_iff _ _ _).1 hy _ (Submodule.mem_sup_left (e_mem_xa F a a.2)))
+  · obtain ⟨-, h, h'⟩ := hA
+    have h0 := (GlobalTheory.DegCnt.NF.geometry K V H hK r N).1.2.2.2.2.2.1
+    have h1 : II N.F N.F' = II F G := by simp only [II, x_eq h, x_eq h']
+    rw [h1, x_eq h, sitesCommonSpace_v0_eq_Vp h h'] at h0
+    have hI : ∀ x ∈ II F G, ∀ w ∈ V0 F G, H.B w x = 0 := fun x hx => (h0 x hx.1).2 hx
+    have hI' : ∀ x ∈ II G F, ∀ w ∈ V0 G F, H.B w x = 0 := fun x hx w hw =>
+      hI x ⟨hx.2, hx.1⟩ w (jointSpan_comm G F ▸ hw)
+    have hdec : ∀ y ∈ wSp F G, ∃ w, y - e w ∈ F.X := fun y hy => by
+      have := (hE.2 y).1 fun a => herm_zero ((mem_perp_iff _ _ _).1 hy _ (flag_vector_mem_base_lattice F G a))
+      obtain ⟨_, ⟨w, rfl⟩, x, hx, rfl⟩ := Submodule.mem_sup.1 this
+      exact ⟨w, by simpa using hx⟩
+    have hker : ∀ y ∈ wSp F G, ∀ y' ∈ wSp F G, y - y' ∈ F.X → y - y' ∈ II F G := fun y hy y' hy' hx =>
+      (h0 _ hx).1 fun w hw => herm_zero ((mem_perp_iff _ _ _).1 (Submodule.sub_mem _ hy hy') w hw)
+    have hw : wSp G F = wSp F G := by rw [wSp, jointSpan_comm]; rfl
+    have hL : ∀ Λ : Submodule (𝓞 K) V, ∀ y ∈ flagPairDefinitePartLattice G F Λ, y ∈ wSp F G := fun Λ y hy => hw ▸ hy.2
+    have key : ∀ Λ Λ' : Submodule (𝓞 K) V, datOf F G e g Λ = datOf F G e g Λ' →
+        flagPairDefinitePartLattice G F Λ ≤ flagPairDefinitePartLattice G F Λ' ∧ iotaGraph F G Λ (g : 𝓞 K) ≤ iotaGraph F G Λ' (g : 𝓞 K) := by
+      intro Λ Λ' hd
+      refine ⟨fun y hy => ?_, fun y hy => ?_⟩
+      · obtain ⟨w, hx⟩ := hdec y (hL _ y hy)
+        have a1 : w ∈ (datOf F G e g Λ).1 := by
+          have := Submodule.sub_mem (flagPairDefinitePartLattice G F Λ ⊔ rs (𝓞 K) F.X) (Submodule.mem_sup_left hy)
+            (Submodule.mem_sup_right hx)
+          rw [sub_sub_cancel] at this
+          exact this
+        rw [hd] at a1
+        obtain ⟨m, hm, x, hx', hmx⟩ := Submodule.mem_sup.1 a1
+        have hmx : m + x = e w := hmx
+        have a2 : y - m ∈ F.X := by
+          have := F.X.add_mem hx hx'
+          convert this using 1
+          rw [← hmx]; abel
+        have a3 := hker y (hL _ y hy) m (hL _ m hm) a2
+        have := Submodule.add_mem _ (commonIsotropic_le_flagPairDefinitePartLattice hI' Λ' ⟨a3.2, a3.1⟩) hm
+        simpa using this
+      · obtain ⟨w, hx⟩ := hdec y.1 (hL _ _ hy.1.1)
+        obtain ⟨w', hx'⟩ := hdec y.2 hy.1.2.2
+        have a1 : (w, w') ∈ (datOf F G e g Λ).2 := by
+          have := Submodule.sub_mem (iotaGraph F G Λ (g : 𝓞 K) ⊔ (rs (𝓞 K) F.X).prod (rs (𝓞 K) F.X))
+            (Submodule.mem_sup_left hy) (Submodule.mem_sup_right (x := y - (e w, e w')) ⟨hx, hx'⟩)
+          rw [sub_sub_cancel] at this
+          exact this
+        rw [hd] at a1
+        obtain ⟨m, hm, x, hx2, hmx⟩ := Submodule.mem_sup.1 a1
+        have hmx1 : m.1 + x.1 = e w := congrArg Prod.fst hmx
+        have hmx2 : m.2 + x.2 = e w' := congrArg Prod.snd hmx
+        have a2 : y.1 - m.1 ∈ F.X := by
+          have := F.X.add_mem hx hx2.1
+          convert this using 1
+          rw [← hmx1]; abel
+        have a2' : y.2 - m.2 ∈ F.X := by
+          have := F.X.add_mem hx' hx2.2
+          convert this using 1
+          rw [← hmx2]; abel
+        have a3 := hker _ (hL _ _ hy.1.1) _ (hL _ _ hm.1.1) a2
+        have a3' := hker _ hy.1.2.2 _ hm.1.2.2 a2'
+        have a4 : y - m ∈ iotaGraph F G Λ' (g : 𝓞 K) :=
+          ⟨⟨commonIsotropic_le_flagPairDefinitePartLattice hI' Λ' ⟨a3.2, a3.1⟩, commonIsotropic_le_flagPairDefinitePartLattice hI Λ' a3'⟩, Submodule.mem_sup_right ⟨a3.2, a3'.1⟩⟩
+        have := Submodule.add_mem _ a4 hm
+        simpa using this
+    exact fun Λ Λ' hd => ⟨le_antisymm (key _ _ hd).1 (key _ _ hd.symm).1, le_antisymm (key _ _ hd).2 (key _ _ hd.symm).2⟩
+
+end GlobalTheory.DegAsm
+end
+
+open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt GlobalTheory.DegAsm
+open scoped Pointwise ENNReal Classical
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.embeddedDatum_invariant_under_unipotent : ∀ (K V W : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [AddCommGroup W] [Module K W] [FiniteDimensional K W] [Module (𝓞 K) W] [IsScalarTower (𝓞 K) K W] (H : HermSpace K V) (HW : HermSpace K W) (e : W →ₗ[K] V), Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ), ∀ (F G G' : FlagD H r) (𝔡 : Ideal (𝓞 K)) (N : NF H r) (g : ℕ), IsEmb F HW e → Adapt F G 𝔡 N → (∀ (s : V ≃ₗ[K] V) (Λ : Submodule (𝓞 K) V), F.InN (s : V →ₗ[K] V) → (∀ a, s (G.e a) - G'.e a ∈ G'.Xa a.val) → datOf F G' e g (s • Λ) = datOf F G e g Λ ∧ lat0 F e (s • Λ) = lat0 F e Λ ∧ latL F G (s • Λ) = latL F G Λ) ∧ ∀ Λ Λ' : Submodule (𝓞 K) V, datOf F G e g Λ = datOf F G e g Λ' → flagPairDefinitePartLattice G F Λ = flagPairDefinitePartLattice G F Λ' ∧ iotaGraph F G Λ (g : 𝓞 K) = iotaGraph F G Λ' (g : 𝓞 K) := by
+  atlas_forward_decl GlobalTheory.DegAsm.datOf_move
+end
+
+section
 open NumberField Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat GlobalTheory.DegCnt GlobalTheory.DegAsm
 open scoped Pointwise ENNReal Classical
 namespace GlobalTheory.DegAsm.PerDat
@@ -269,3 +1131,4 @@ theorem sum_weights_per_datum : ∀ (K V W : Type) [Field K] [NumberField K] [St
     ring
 
 end GlobalTheory.DegAsm
+end

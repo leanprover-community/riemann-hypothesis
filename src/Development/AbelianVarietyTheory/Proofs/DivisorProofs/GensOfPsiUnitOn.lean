@@ -3,8 +3,31 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsMonoFamNontri
 import Development.AbelianVarietyTheory.Definitions.Divisors.EvenDefect
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodsInCoordinatesFromBasePullDeg
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToUnitTKLeft
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsLastFurther
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitPsiCoord
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.PsiCoordRescaleLocal
+
+theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (D : DegPre R) (q : D.X → (FractionRing R)ˣ) (y : D.X),
+    PsiUnitOn D y Set.univ → ∀ s : R, (q y : FractionRing R) = algebraMap R (FractionRing R) s →
+      ∃ u : Rˣ, Formalism.L2.Pj.PsiCoord (GlobalTheory.PolDeg.rescale D q) y (u * s) := by
+  intro R _ _ _ D q y h s hs
+  obtain ⟨v, hv⟩ := GlobalTheory.LocM.FJ.MultiData.exists_unit_psiCoord D y h
+  have h2 := GlobalTheory.LocM.FJ.MultiData.psiCoord_rescale D q hv hs
+  refine ⟨v, ?_⟩
+  rw [mul_comm]
+  exact h2
+
+end GlobalTheory.PsiCoordRescaleLocal
+end
+
+section
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
@@ -370,3 +393,5 @@ theorem main (W R : Type) [CommRing W] [IsDomain W] [CommRing R] [IsDomain R] [I
   exact ho a
 
 end GlobalTheory.UTautData
+end
+end

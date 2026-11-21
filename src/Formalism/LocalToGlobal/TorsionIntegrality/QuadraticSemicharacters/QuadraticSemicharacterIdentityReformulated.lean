@@ -1,6 +1,17 @@
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.FinalKappa
+import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharactersFactTer
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UnitDetRoot
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UnimodLocStd
 
+section
+namespace Formalism.L2.Th1.H
+
+theorem kappaExists : KappaExists := unit_det_root_of_unity
+
+
+end Formalism.L2.Th1.H
+end
+
+section
 namespace Formalism.L2.Th1.H
 
 theorem localStandard : LocalStandard := unimodular_local_standard
@@ -8,3 +19,4 @@ theorem localStandard : LocalStandard := unimodular_local_standard
 theorem quadraticSemicharacter_identity_reformulated : quadraticSemicharacterIdentityReformulated := quadraticSemicharacters_of_fact localStandard kappaExists
 
 end Formalism.L2.Th1.H
+end

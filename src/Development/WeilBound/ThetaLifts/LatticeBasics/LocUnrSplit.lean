@@ -1,9 +1,469 @@
 import Development.WeilBound.ThetaLifts.LatticeBasics.LocUnr
-import Development.WeilBound.ThetaLifts.LatticeBasics.LocUnrSplitA
-import Development.WeilBound.ThetaLifts.LatticeBasics.LocUnrSplitL
+import Development.WeilBound.ThetaLifts.LatticeBasics.LocUnrInertA
+import Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedCohomology.ExistsSelfDual
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IdeleCharacterEqOneIntegralUnitsUnramifiedAdelic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnramifiedCharacterAtUniformizer
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOfBasis
+import Mathlib
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IntegrandEqOnPiece
+import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GeneralLinearUnimodularHaar
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormSatakeLeOfUnitarySphericalGL
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormUniformiserEqInvAbsNorm
 
+section
+noncomputable section
+
+namespace GlobalTheory.ThK.Dbl.Split
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
+open PositivityTheory.ThK PositivityTheory.ThKH.Iwas PositivityTheory.ThKH.Locpair PositivityTheory.ThKH.Locrep
+open GlobalTheory.EmbChart (atPlace evFin_atPlace atPlace_mul_right tensAt)
+open GlobalTheory.Doubling (absE)
+open GlobalTheory.SplitFlip (invT)
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
+  {v : Pl F} {Y : Spc F E n} (hσ : IsCMExt F E σ) (τ : E →ₐ[F] Fv F v)
+
+omit [NumberField E] in
+theorem mem_latW (y : Fin n → AE F E) : y ∈ latW Y v ↔ At (evFin F v) y ∧ compFin F E v ∘ y ∈ latLoc F Y.L v := by
+  have e0 : ∀ (a : AF F) (x : E), a • inclR (F := F) (AF F) x = a ⊗ₜ[F] x := fun a x => by
+    change (a * 1) ⊗ₜ[F] x = _
+    rw [mul_one]
+  have key : ∀ y ∈ latW Y v, At (evFin F v) y ∧ compFin F E v ∘ y ∈ latLoc F Y.L v := fun y hy => by
+    induction hy using AddSubgroup.closure_induction with
+    | mem y hy =>
+      obtain ⟨a, ha, ha', x, hx, rfl⟩ := hy
+      refine ⟨fun u hu => funext fun i => ?_, ?_⟩
+      · change u • a • inclR (F := F) (AF F) (x i) = 0
+        rw [smul_smul, show u * a = 0 from ha u hu, zero_smul]
+      · convert tmul_mem_latLoc ha' hx using 1
+        exact funext fun i => congrArg (compFin F E v) (e0 a (x i))
+    | zero => exact ⟨at_zero, by convert zero_mem (latLoc F Y.L v) using 1; exact funext fun i => map_zero _⟩
+    | add y z _ _ hy hz => exact ⟨at_add hy.1 hz.1, by convert add_mem hy.2 hz.2 using 1; exact funext fun i => map_add _ _ _⟩
+    | neg y _ hy =>
+      exact ⟨by simpa using at_sub at_zero hy.1, by convert neg_mem hy.2 using 1; exact funext fun i => map_neg _ _⟩
+  refine ⟨key y, fun hy => ?_⟩
+  have : ∀ z ∈ latLoc F Y.L v, (fun i => sgE E v (z i)) ∈ latW Y v := fun z hz => by
+    refine latLoc_induction (p := fun z => (fun i => sgE E v (z i)) ∈ latW Y v) (fun a ha x hx => ?_) ?_
+      (fun y z hy hz => ?_) (fun y hy => ?_) hz
+    · exact AddSubgroup.subset_closure ⟨sg v a, at_sg a, by rwa [ev_sg], x, hx, funext fun i => (e0 _ _).symm⟩
+    · convert zero_mem (latW Y v) using 1; exact funext fun i => map_zero _
+    · convert add_mem hy hz using 1; exact funext fun i => map_add _ _ _
+    · convert neg_mem hy using 1; exact funext fun i => map_neg _ _
+  convert this _ hy.2 using 1
+  exact (idem_smul hy.1).symm.trans (funext fun i => (sgE_comp (y i)).symm)
+
+theorem int_iff {m : Matrix (Fin n) (Fin n) (Fv F v)} {L : Submodule (𝓞 E) (Fin n → E)} {b : GL (Fin n) (Fv F v)}
+    (hb : IsSplitBasis τ L b) : (∀ u ∈ splitLat τ L, m *ᵥ u ∈ splitLat τ L) ↔
+      ∀ i j, ((b⁻¹).1 * m * b.1) i j ∈ v.adicCompletionIntegers F := by
+  simp only [hb.mem_iff]
+  refine ⟨fun H i j => ?_, fun H u hu i => ?_⟩
+  · have := H (b.1 *ᵥ Pi.single j 1) (fun l => by
+      rw [Matrix.mulVec_mulVec, Units.inv_mul, Matrix.one_mulVec, Pi.single_apply]; split_ifs; exacts [one_mem _, zero_mem _]) i
+    rwa [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_single_one] at this
+  · have : (b⁻¹).1 *ᵥ m *ᵥ u = ((b⁻¹).1 * m * b.1) *ᵥ (b⁻¹).1 *ᵥ u := by
+      simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one]
+    rw [this]
+    exact sum_mem fun j _ => mul_mem (H i j) (hu j)
+
+include hσ in
+theorem stab_iff {b b' : GL (Fin n) (Fv F v)} (hb : IsSplitBasis τ Y.L b) (hb' : IsSplitBasis (τ.comp σ) Y.L b')
+    (g : Matrix (Fin n) (Fin n) (AE F E)) : (∀ y ∈ latW Y v, g *ᵥ y ∈ latW Y v) ↔
+      (∀ i j, ((b⁻¹).1 * g.map (piW τ) * b.1) i j ∈ v.adicCompletionIntegers F) ∧
+        ∀ i j, ((b'⁻¹).1 * g.map (piW (τ.comp σ)) * b'.1) i j ∈ v.adicCompletionIntegers F := by
+  have e : ∀ (t : E →ₐ[F] Fv F v) y, splitVec t (compFin F E v ∘ (g *ᵥ y)) = g.map (piW t) *ᵥ splitVec t (compFin F E v ∘ y) :=
+    fun t y => funext fun i => RingHom.map_mulVec (piW t) g y i
+  rw [← int_iff τ hb, ← int_iff _ hb']
+  refine ⟨fun H => ?_, fun H y hy => ?_⟩
+  · have k : ∀ t : E →ₐ[F] Fv F v, ∀ u ∈ splitLat t Y.L, g.map (piW t) *ᵥ u ∈ splitLat t Y.L := by
+      rintro t _ ⟨z, hz, rfl⟩
+      have c : compFin F E v ∘ (fun i => sgE E v (z i)) = z := funext fun i => comp_sgE _
+      have := ((mem_latW _).1 (H _ ((mem_latW _).2 ⟨fun a ha => funext fun i => at_sgE (z i) a ha, c.symm ▸ hz⟩))).2
+      exact ⟨_, this, by rw [e, c]⟩
+    exact ⟨k _, k _⟩
+  · obtain ⟨h1, h2⟩ := (mem_latW _).1 hy
+    refine (mem_latW _).2 ⟨at_mulVec_right _ h1, (mem_latLoc_iff_split τ hσ).2 ?_⟩
+    rw [e, e]
+    exact ⟨H.1 _ ⟨_, h2, rfl⟩, H.2 _ ⟨_, h2, rfl⟩⟩
+
+omit [NumberField E] in
+theorem piW_cA (z : AE F E) : piW τ (cA σ z) = piW (τ.comp σ) z :=
+  (congrArg (splitProj τ) (comp_cA v z)).trans (splitProj_comp τ σ _).symm
+
+include hσ in
+theorem extS {ι κ : Type} {a b : Matrix ι κ (AE F E)} (h1 : a.map (piW τ) = b.map (piW τ))
+    (h2 : a.map (piW (τ.comp σ)) = b.map (piW (τ.comp σ))) (h3 : a.map (aw E v) = b.map (aw E v)) : a = b :=
+  extM v (Matrix.ext fun i j => split_ext hσ τ (congrFun (congrFun h1 i) j) (congrFun (congrFun h2 i) j)) h3
+
+variable {β : Type} [Fintype β] [DecidableEq β]
+
+def up (m m' : Matrix β β (Fv F v)) : Matrix β β (AE F E) :=
+  liftM E v β (Matrix.of fun i j => (splitAlgEquiv hσ τ).symm (m i j, m' i j))
+
+theorem up_fst (m m' : Matrix β β (Fv F v)) : (up hσ τ m m').map (piW τ) = m := Matrix.ext fun i j =>
+  (congrArg (splitProj τ) (congrFun (congrFun (comp_liftM v _) i) j)).trans (splitProj_symm hσ τ _)
+
+theorem up_snd (m m' : Matrix β β (Fv F v)) : (up hσ τ m m').map (piW (τ.comp σ)) = m' := Matrix.ext fun i j =>
+  (congrArg (splitProj (τ.comp σ)) (congrFun (congrFun (comp_liftM v _) i) j)).trans (splitProj_comp_symm hσ τ _)
+
+theorem up_aw (m m' : Matrix β β (Fv F v)) : (up hσ τ m m').map (aw E v) = 1 := aw_liftM v _
+
+theorem up_at (m m' : Matrix β β (Fv F v)) : At (evFin F v) (up hσ τ m m' - 1) := at_liftM v _
+
+def upH : Matrix β β (Fv F v) × Matrix β β (Fv F v) →* Matrix β β (AE F E) where
+  toFun m := up hσ τ m.1 m.2
+  map_one' := extS hσ τ (by rw [up_fst, Matrix.map_one _ (map_zero _) (map_one _)]; rfl)
+    (by rw [up_snd, Matrix.map_one _ (map_zero _) (map_one _)]; rfl) (by rw [up_aw, Matrix.map_one _ (map_zero _) (map_one _)])
+  map_mul' a b := extS hσ τ (by simp only [Matrix.map_mul, up_fst]; rfl) (by simp only [Matrix.map_mul, up_snd]; rfl)
+    (by simp only [Matrix.map_mul, up_aw, mul_one])
+
+theorem continuous_upH : Continuous (upH (β := β) hσ τ) := by
+  haveI : IsModuleTopology (Fv F v) (Ev E v) := ⟨rfl⟩
+  haveI : ContinuousAdd (AE F E) := IsModuleTopology.toContinuousAdd (AF F) _
+  haveI : IsTopologicalAddGroup (Ev E v) := IsModuleTopology.topologicalAddGroup (Fv F v) _
+  have c1 : Continuous (liftM E v β) :=
+    continuous_const.add ((continuous_id.sub continuous_const).matrix_map Inert.continuous_tensAt)
+  exact c1.comp (continuous_matrix fun i j => (continuous_splitAlgEquiv_symm hσ τ).comp (by fun_prop))
+
+theorem continuous_piW : Continuous (piW τ) := (continuous_splitProj τ).comp
+  (GlobalTheory.AutFunCompare.continuous_tensNU (E := E) (evFin F v).toLinearMap (map_mul (evFin F v))
+    ((RestrictedProduct.continuous_eval v).comp continuous_snd))
+
+def upG : GL β (Fv F v) × GL β (Fv F v) →* GL β (AE F E) :=
+  (Units.map (upH hσ τ)).comp (MulEquiv.prodUnits (M := Matrix β β (Fv F v)) (N := Matrix β β (Fv F v))).symm.toMonoidHom
+
+theorem upG_val (x y : GL β (Fv F v)) : (upG hσ τ (x, y)).1 = up hσ τ x.1 y.1 := rfl
+
+def dual (J : GL β (Fv F v)) : GL β (Fv F v) →* GL β (Fv F v) := (MulAut.conj J⁻¹).toMonoidHom.comp invT
+
+theorem dual_val (J x : GL β (Fv F v)) : (dual J x).1 = (J⁻¹).1 * (x⁻¹).1ᵀ * J.1 := rfl
+
+variable {J : Matrix β β (AE F E)} {Jp : GL β (Fv F v)} (h1 : J.map (piW τ) = Jp.1) (h2 : J.map (piW (τ.comp σ)) = Jp.1ᵀ)
+
+omit [NumberField E] [DecidableEq β] in
+theorem pi_gram (M : Matrix β β (AE F E)) :
+    (Mᵀ * J * M.map (cA σ)).map (piW τ) = (M.map (piW τ))ᵀ * J.map (piW τ) * M.map (piW (τ.comp σ)) := by
+  rw [Matrix.map_mul, Matrix.map_mul]
+  exact congrArg _ (Matrix.ext fun i j => piW_cA τ _)
+
+def liftS : GL β (Fv F v) →* UG (cA σ) J :=
+  ((upG hσ τ).comp ((MonoidHom.id _).prod (dual Jp))).codRestrict _ fun g => by
+    change (up hσ τ g.1 (dual Jp g).1)ᵀ * J * (up hσ τ g.1 (dual Jp g).1).map (cA σ) = J
+    have k : g.1ᵀ * Jp.1 * (dual Jp g).1 = Jp.1 := by
+      rw [dual_val, ← Matrix.mul_assoc, ← Matrix.mul_assoc, Units.mul_inv_cancel_right, ← Matrix.transpose_mul, Units.inv_mul,
+        Matrix.transpose_one, Matrix.one_mul]
+    refine extS hσ τ ?_ ?_ ?_
+    · rw [pi_gram, up_fst, up_snd, h1, k]
+    · rw [pi_gram, comp_conj_conj hσ, up_fst, up_snd, h2]
+      simpa only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc] using congrArg Matrix.transpose k
+    · rw [Matrix.map_mul, Matrix.map_mul, Matrix.transpose_map, awM_cA, up_aw, Matrix.transpose_one,
+        Matrix.map_one _ (map_zero _) (map_one _), one_mul, mul_one]
+
+
+include h1 in
+theorem snd_eq (g : UG (cA σ) J) : g.1.1.map (piW (τ.comp σ)) = (dual Jp (Matrix.GeneralLinearGroup.map (piW τ) g.1)).1 := by
+  have := (pi_gram τ g.1.1).symm.trans (congrArg (·.map (piW τ)) g.2)
+  rw [h1] at this
+  set x := Matrix.GeneralLinearGroup.map (piW τ) g.1
+  rw [dual_val, ← this, show g.1.1.map (piW τ) = x.1 from rfl, ← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.mul_assoc (Jp⁻¹).1,
+    ← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one, Matrix.mul_one, Units.inv_mul, Matrix.one_mul]
+
+theorem lift_down {g : UG (cA σ) J} (hg : At (evFin F v) (g.1.1 - 1)) :
+    liftS hσ τ h1 h2 (Matrix.GeneralLinearGroup.map (piW τ) g.1) = g := by
+  refine Subtype.ext (Units.ext (extS hσ τ (up_fst _ _ _ _) ((up_snd _ _ _ _).trans (snd_eq τ h1 g).symm) ?_))
+  have := awM_of_at v hg
+  rw [Matrix.map_sub _ (map_sub _), Matrix.map_one _ (map_zero _) (map_one _), sub_eq_zero] at this
+  exact (up_aw _ _ _ _).trans this.symm
+
+theorem continuous_liftS : Continuous (liftS hσ τ h1 h2) := by
+  have c0 : Continuous fun g : GL β (Fv F v) => (g.1, (dual Jp g).1) := by
+    simp only [dual_val]
+    exact Units.continuous_val.prodMk
+      ((continuous_const.matrix_mul Units.continuous_coe_inv.matrix_transpose).matrix_mul continuous_const)
+  have c : Continuous fun g : GL β (Fv F v) => (liftS hσ τ h1 h2 g).1.1 := by
+    have := (continuous_upH hσ τ).comp c0
+    exact this
+  have c' : Continuous fun g : GL β (Fv F v) => ((liftS hσ τ h1 h2 g).1⁻¹).1 :=
+    (c.comp continuous_inv).congr fun g => congrArg (·.1.1) (map_inv (liftS hσ τ h1 h2) g)
+  exact continuous_induced_rng.2 (Units.continuous_iff.2 ⟨c, c'⟩)
+
+include hσ in
+theorem above_iff (u : HeightOneSpectrum (𝓞 E)) : u.under (𝓞 F) = v ↔ u = splitPrime τ ∨ u = splitPrime (τ.comp σ) := by
+  refine ⟨fun h => ?_, by rintro (rfl | rfl) <;> exact splitPrime_under _⟩
+  obtain ⟨t, rfl⟩ := SplitChart.exists_splitPrime_eq hσ (SplitChart.isSplit_of_algHom hσ τ) h
+  exact (eq_or_eq_comp_conj hσ τ t).imp (congrArg _) (congrArg _)
+
+include hσ in
+theorem chi_at (χ : Chr F E) {x : (AE F E)ˣ} (hx : At (evFin F v) (x.1 - 1)) {a b : (Fv F v)ˣ} (ha : piW τ x.1 = a)
+    (hb : piW (τ.comp σ) x.1 = b) : (χ x : ℂ) = chrW χ τ a * chrW χ (τ.comp σ) b := by
+  have m : ∀ t : E →ₐ[F] Fv F v, splitPrime t ∈ (Formalism.L2.Host.finite_aboveF (L := E) F v).toFinset := fun t =>
+    (Set.Finite.mem_toFinset _).2 (splitPrime_under t)
+  rw [GlobalTheory.InertChars.eq_ideleAt_of_at x hx, ideleAt_eq_prod_locIdele, Finset.prod_eq_mul_of_mem ⟨_, m τ⟩ ⟨_, m (τ.comp σ)⟩
+    (Finset.mem_attach _ _) (Finset.mem_attach _ _) (fun h => splitPrime_comp_ne hσ τ (congrArg Subtype.val h).symm)
+    fun c _ hc => absurd ((above_iff hσ τ c.1).1 ((Formalism.L2.Host.finite_aboveF (L := E) F v).mem_toFinset.1 c.2))
+      (not_or.2 ⟨fun h => hc.1 (Subtype.ext h), fun h => hc.2 (Subtype.ext h)⟩), map_mul, Circle.coe_mul]
+  congr 1
+  · exact congrArg (fun y => (χ (locIdele F _ y) : ℂ)) (Units.ext ((ConjPlace.toCompl_eq hσ _ rfl _).trans (congrArg _ ha)))
+  · exact congrArg (fun y => (χ (locIdele F _ y) : ℂ)) (Units.ext ((ConjPlace.toCompl_eq hσ _ rfl _).trans (congrArg _ hb)))
+
+include hσ in
+theorem abs_at {x : (AE F E)ˣ} (hx : At (evFin F v) (x.1 - 1)) : (absE F E x : ℝ) = ‖piW τ x.1‖ * ‖piW (τ.comp σ) x.1‖ := by
+  have := congrArg (splitProj τ) (GlobalTheory.Doubling.algebraMap_norm_eq hσ (compFin F E v x.1))
+  rw [AlgHom.commutes, map_mul, ← splitProj_comp] at this
+  conv_lhs => rw [GlobalTheory.InertChars.eq_ideleAt_of_at x hx, GlobalTheory.Doubling.absE_ideleAt, GlobalTheory.Doubling.absEv_apply, coe_nnnorm]
+  exact (congrArg norm this).trans (norm_mul _ _)
+
+include hσ in
+theorem chrW_mul {χ : Chr F E} (hr : ResEtaPow (Units.map (algebraMap F (AF F)).toMonoidHom).range χ 0) (a : (Fv F v)ˣ) :
+    (chrW χ τ a : ℂ) * chrW χ (τ.comp σ) a = 1 := by
+  let j : Fv F v →* AF F :=
+    { toFun := fun t => 1 + atPlace v (t - 1)
+      map_one' := by simp
+      map_mul' := fun s t => extF v (by simp [evFin_atPlace, -map_sub]) (by simp [awF_at, -map_sub]) }
+  have e : ∀ t : E →ₐ[F] Fv F v, piW t (algebraMap (AF F) (AE F E) (j a)) = a := fun t => by
+    change splitProj t (evFin F v (1 + atPlace v (a.1 - 1)) ⊗ₜ[F] 1) = _
+    simp [evFin_atPlace, -map_sub]
+  rw [← chi_at hσ τ χ (x := Units.map (algebraMap (AF F) (AE F E) : AF F →* AE F E) (Units.map j a)) ?_ (e _) (e _),
+    hr.triv_of_even (by simp), Circle.coe_one]
+  change At _ (algebraMap (AF F) (AE F E) (1 + atPlace v (a.1 - 1)) - 1)
+  rw [map_add, map_one, add_sub_cancel_left]
+  exact at_tensAt v ((a.1 - 1) ⊗ₜ[F] 1)
+
+theorem selfDual {B : Base F E} {r s : ℕ} (hY : Y.IsHerm σ B r s) (hd : ((1 : E) • Y.Jᵀ).det ≠ 0) :
+    IsSelfDualAt σ ((1 : E) • Y.Jᵀ) Y.L v :=
+  PositivityTheory.ThKG.Loc.Iwa.selfDual_of hd hY.lat (fun y hy x hx => SelfDual.inclR_mem_intLoc v (by
+    rw [PositivityTheory.ThKG.Loc.Iwa.hE_smul, one_mul]; exact ⟨⟨_, (hY.dual y).1 hy x hx⟩, rfl⟩)) (s := 1)
+    ((Ideal.ne_top_iff_one _).1 v.isPrime.ne_top) fun y hy => by
+      simp only [OneMemClass.coe_one, map_one, one_smul]
+      refine (hY.dual y).2 fun x hx => ?_
+      obtain ⟨o, ho⟩ := hy x hx
+      rw [PositivityTheory.ThKG.Loc.Iwa.hE_smul, one_mul] at ho
+      rw [← ho]; exact o.isIntegral_coe
+
+omit [NumberField E] in
+theorem piW_incM (J : Matrix (Fin n) (Fin n) E) : (incM F J).map (piW τ) = J.map τ := Matrix.ext fun i j => by
+  change splitProj τ (evFin F v 1 ⊗ₜ[F] J i j) = τ (J i j)
+  rw [splitProj_tmul, map_one, one_mul]
+
+theorem frames {B : Base F E} {r s : ℕ} (hσ : IsCMExt F E σ) (hY : Y.IsHerm σ B r s) : ∃ J b b' : GL (Fin n) (Fv F v),
+    (incM F Y.J).map (piW τ) = J.1 ∧ (incM F Y.J).map (piW (τ.comp σ)) = J.1ᵀ ∧ IsSplitBasis τ Y.L b ∧
+      IsSplitBasis (τ.comp σ) Y.L b' ∧ b.1ᵀ * J.1 * b'.1 = 1 := by
+  have hd : ((1 : E) • Y.Jᵀ).det ≠ 0 := by rw [one_smul, Matrix.det_transpose]; exact (Vac.herm_det hY).ne_zero
+  have hJ : IsHermND σ ((1 : E) • Y.Jᵀ) := ⟨fun i j => by simp [hY.herm], hd⟩
+  have := hY.lat
+  obtain ⟨b, hb⟩ := exists_isSplitBasis τ Y.L hσ
+  have h1 := IsSplitBasis.dual hσ hJ (selfDual hY hd) hb
+  have h2 := splitGram_val hJ τ
+  generalize splitGram hJ τ = G at h1 h2
+  rw [one_smul] at h2
+  have e : ((invT G)⁻¹).1 = G.1ᵀ := GlobalTheory.SplitFlip.invT_inv_val G
+  refine ⟨(invT G)⁻¹, b, _, ?_, ?_, hb, h1, ?_⟩
+  · rw [e, h2, piW_incM]; rfl
+  · rw [e, h2, piW_incM]
+    exact Matrix.ext fun i j => congrArg τ (hY.herm j i)
+  · rw [e, dualConj_one_val, ← Matrix.transpose_mul, ← Matrix.transpose_mul, ← Units.val_mul, Units.inv_mul, Matrix.transpose_one]
+
+end GlobalTheory.ThK.Dbl.Split
+
+end
+end
+
+section
+open MeasureTheory Matrix GlobalTheory.CompanionTheory.QL
+
+namespace GlobalTheory.ThK.Dbl.Split
+
+set_option hygiene false in
+local notation "𝟙" => (1 : Matrix (Fin n) (Fin n) k)
+set_option hygiene false in
+local notation "𝟘" => (0 : Matrix (Fin n) (Fin n) k)
+
+variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {O : Subring k} {ϖ : kˣ}
+  {nrm : AbsoluteValue k ℝ} {q n : ℕ}
+
+theorem zeta (h : LF O (ϖ : k) nrm q) {A : kˣ →* ℂ} (hA : ∀ u : kˣ, nrm u = 1 → A u = 1)
+    (hb : ∀ i < n, ‖A ϖ‖ * (q : ℝ) ^ i < 1) (κ : Measure (GL (Fin n) k)) [hκ : κ.IsMulLeftInvariant]
+    (h1 : κ (GLint O n : Set (GL (Fin n) k)) = 1) :
+    IntegrableOn (fun g => A (GeneralLinearGroup.det g)) (Mint O n) κ ∧
+      ∫ g in Mint O n, A (GeneralLinearGroup.det g) ∂κ = ∏ i ∈ Finset.range n, (1 - A ϖ * (q : ℂ) ^ i)⁻¹ := by
+  classical
+  have hq : (0 : ℝ) < q := by exact_mod_cast zero_lt_one.trans (GlobalTheory.CompanionTheory.QL.NormalisedValue.main h).1
+  have hϖ : A ϖ ≠ 0 := left_ne_zero_of_mul_eq_one (b := A ϖ⁻¹) (by rw [← map_mul, mul_inv_cancel, map_one])
+  let a : Fin n → ℝ := fun i => ((n : ℝ) - 1) / 2 - (i : ℕ)
+  have e : ∀ i : Fin n, (q : ℝ) ^ a i * (q : ℝ) ^ (((n : ℝ) - 1) / 2 - 0) = (q : ℝ) ^ (n - 1 - i : ℕ) := fun i => by
+    have := i.2
+    rw [← Real.rpow_add hq, ← Real.rpow_natCast, Nat.cast_sub (by omega), Nat.cast_sub (by omega)]
+    congr 1; simp only [a]; push_cast; ring
+  have := GlobalTheory.CompanionTheory.ZetaSph.zeta_spherical h (fun i x => if hx : x = 0 then 0 else A (Units.mk0 x hx) * (nrm x ^ (-a i) : ℝ))
+    (fun i => A ϖ * ((q : ℝ) ^ a i : ℝ)) ⟨fun i => mul_ne_zero hϖ
+      (by exact_mod_cast (Real.rpow_pos_of_pos hq _).ne'), fun i x m hx => ?_⟩ (fun g => A (GeneralLinearGroup.det g))
+    (fun b hb κ hκ => ?_) κ hκ h1 0 fun i => ?_
+  · simp only [Real.rpow_zero, Complex.ofReal_one, mul_one] at this
+    refine ⟨this.1, this.2.trans ?_⟩
+    rw [← Finset.prod_range_reflect, ← Fin.prod_univ_eq_prod_range fun i => (1 - A ϖ * (q : ℂ) ^ (n - 1 - i))⁻¹]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    rw [mul_assoc, ← Complex.ofReal_mul, e]; simp
+  · have h0 : x ≠ 0 := fun h0 => by rw [h0, map_zero] at hx; exact (zpow_pos hq _).ne hx
+    have : A (Units.mk0 x h0 * (ϖ ^ m)⁻¹) = 1 := hA _ (by
+      simp only [Units.val_mul, Units.val_mk0, Units.val_inv_eq_inv_val, Units.val_zpow_eq_zpow_val, map_mul, map_inv₀,
+        map_zpow₀, hx, h.nrm_pi, _root_.inv_zpow', ne_eq]
+      exact mul_inv_cancel₀ (zpow_pos hq _).ne')
+    rw [map_mul, map_inv, map_zpow, mul_inv_eq_one₀ (zpow_ne_zero _ hϖ)] at this
+    beta_reduce
+    rw [dif_neg h0, this, mul_zpow, hx, ← Complex.ofReal_zpow, ← Real.rpow_intCast, ← Real.rpow_intCast, ← Real.rpow_mul hq.le,
+      ← Real.rpow_mul hq.le]
+    congr 3; push_cast; ring
+  · have hd : b.1.det = ∏ i, b.1 i i := det_of_upperTriangular hb
+    have h0 : ∀ i, b.1 i i ≠ 0 := fun i => Finset.prod_ne_zero_iff.1 (hd.symm.trans_ne b.det_ne_zero) i (Finset.mem_univ _)
+    have : GeneralLinearGroup.det b = ∏ i, Units.mk0 _ (h0 i) := Units.ext (by simp [hd])
+    beta_reduce
+    rw [map_mul, map_mul, hA (GeneralLinearGroup.det κ) ((GlobalTheory.CompanionTheory.QLDet.mem_GLint_iff h n κ).1 hκ).2, mul_one, this, map_prod]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    rw [dif_neg (h0 i), mul_assoc, ← Complex.ofReal_mul, ← Real.rpow_add (nrm.pos (h0 i))]
+    simp [a]
+  · rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (Real.rpow_nonneg hq.le _), mul_assoc, e]
+    exact hb _ (by have := i.2; omega)
+
+def IsGcd (O : Subring k) (g t : GL (Fin n) k) : Prop := ∀ a, a ∈ Mint O n ∧ g⁻¹ * a ∈ Mint O n ↔ t⁻¹ * a ∈ Mint O n
+
+theorem doubling (h : LF O (ϖ : k) nrm q) {A B : kˣ →* ℂ} (hA : ∀ u : kˣ, nrm u = 1 → A u = 1)
+    (hB : ∀ u : kˣ, nrm u = 1 → B u = 1) (bA : ∀ i < n, ‖A ϖ‖ * (q : ℝ) ^ i < 1) (bB : ∀ i < n, ‖B ϖ‖ * (q : ℝ) ^ i < 1)
+    (bC : ∀ i < n, ‖(A * B) ϖ‖ * (q : ℝ) ^ i < 1) (μ : Measure (GL (Fin n) k)) [μ.IsHaarMeasure]
+    (h1 : μ (GLint O n : Set (GL (Fin n) k)) = 1) {φ : GL (Fin n) k → ℂ}
+    (hφ : ∀ g, ∃ t, IsGcd O g t ∧ φ g = B (GeneralLinearGroup.det g⁻¹) * (A * B) (GeneralLinearGroup.det t)) :
+    Integrable φ μ ∧ (∫ g, φ g ∂μ) * ∏ i ∈ Finset.range n, (1 - (A * B) ϖ * (q : ℂ) ^ i)⁻¹ =
+      (∏ i ∈ Finset.range n, (1 - A ϖ * (q : ℂ) ^ i)⁻¹) * ∏ i ∈ Finset.range n, (1 - B ϖ * (q : ℂ) ^ i)⁻¹ := by
+  obtain ⟨-, -, _, _, _, hM, -⟩ := GlobalTheory.CompanionTheory.QLTop.gl_topology h n
+  obtain ⟨-, _⟩ := (GlobalTheory.CompanionTheory.QL.HaarGL.exists_haar_unimodular h n).2 μ inferInstance
+  obtain ⟨iA, zA⟩ := zeta h hA bA μ h1
+  obtain ⟨iB, zB⟩ := zeta h hB bB μ h1
+  obtain ⟨-, zC⟩ := zeta h (A := A * B) (fun u hu => by simp [hA u hu, hB u hu]) bC μ h1
+  rw [← integral_indicator hM.measurableSet] at zA zB zC
+  rw [← integrable_indicator_iff hM.measurableSet] at iA iB
+  set a := (Mint O n).indicator fun g => A (GeneralLinearGroup.det g)
+  set b := (Mint O n).indicator fun g => B (GeneralLinearGroup.det g)
+  set Z := ∏ i ∈ Finset.range n, (1 - (A * B) ϖ * (q : ℂ) ^ i)⁻¹
+  have hZ : Z ≠ 0 := Finset.prod_ne_zero_iff.2 fun i hi => inv_ne_zero (sub_ne_zero.2 fun e => by
+    have := bC i (Finset.mem_range.1 hi)
+    rw [← Complex.norm_natCast q, ← norm_pow, ← norm_mul, ← e, norm_one] at this
+    exact this.false)
+  have key : ∀ g, ∫ x, a x * b (g⁻¹ * x) ∂μ = φ g * Z := fun g => by
+    obtain ⟨t, ht, e⟩ := hφ g
+    rw [← zC, ← integral_mul_left_eq_self _ t, ← integral_const_mul]
+    congr 1; ext x
+    have := ht (t * x)
+    rw [inv_mul_cancel_left] at this
+    by_cases hx : x ∈ Mint O n
+    · obtain ⟨h2, h3⟩ := this.2 hx
+      simp only [a, b, Set.indicator_of_mem, hx, h2, h3, e, map_mul, MonoidHom.mul_apply]; ring
+    · rw [Set.indicator_of_notMem hx, mul_zero]
+      by_cases h2 : t * x ∈ Mint O n
+      · rw [show b _ = 0 from Set.indicator_of_notMem (fun h3 => hx (this.1 ⟨h2, h3⟩)) _, mul_zero]
+      · rw [show a _ = 0 from Set.indicator_of_notMem h2 _, zero_mul]
+  let e : GL (Fin n) k × GL (Fin n) k ≃ᵐ GL (Fin n) k × GL (Fin n) k := MeasurableEquiv.shearMulRight _
+  have he : MeasurePreserving e (μ.prod μ) (μ.prod μ) := measurePreserving_prod_mul μ μ
+  let H : GL (Fin n) k × GL (Fin n) k → ℂ := fun z => a z.1 * b (z.2⁻¹ * z.1)
+  have hH : H ∘ e = fun z => a z.1 * b z.2⁻¹ := by ext z; simp [H, e, MeasurableEquiv.shearMulRight]
+  have iH : Integrable H (μ.prod μ) :=
+    (he.integrable_comp_emb e.measurableEmbedding).1 (hH ▸ iA.mul_prod iB.comp_inv)
+  have i2 : Integrable (fun g => φ g * Z) μ := by simpa only [H, key] using iH.integral_prod_right
+  refine ⟨(integrable_mul_const_iff hZ.isUnit _).1 i2, ?_⟩
+  rw [← integral_mul_const, ← zA, ← zB, ← integral_inv_eq_self b, ← integral_prod_mul, ← hH]
+  refine Eq.trans ?_ (he.integral_comp' H).symm
+  rw [integral_prod_symm _ iH]
+  simp only [H, key]
+
+theorem exists_frame (h : LF O (ϖ : k) nrm q) (g : GL (Fin n) k) : ∃ (t : GL (Fin n) k) (κ : GL (Fin n ⊕ Fin n) k),
+    (∀ i j, κ.1 i j ∈ O) ∧ (∀ i j, (κ⁻¹).1 i j ∈ O) ∧ IsGcd O g t ∧
+      (κ⁻¹).1 * fromRows 𝟙 𝟙 = fromRows ((g⁻¹).1 * t.1) t.1 := by
+  let r := (reindexAlgEquiv k k (finSumFinEquiv (m := n) (n := n))).toMulEquiv
+  let N : GL (Fin n ⊕ Fin n) k := ⟨fromBlocks g.1 0 (-g.1) 1, fromBlocks (g⁻¹).1 0 1 1,
+    by simp [fromBlocks_multiply], by simp [fromBlocks_multiply]⟩
+  obtain ⟨b', hb, κ', hκ, e⟩ := GlobalTheory.CompanionTheory.QL.Iwasawa.exists_upper_mul_int h _ (Units.mapEquiv r N)
+  let b := (Units.mapEquiv r).symm b'
+  let c := (Units.mapEquiv r).symm κ'
+  have e' : N = b * c := by rw [← map_mul, ← e, MulEquiv.symm_apply_apply]
+  have c1 : ∀ i j, c.1 i j ∈ O := fun i j => hκ.1 _ _
+  have c2 : ∀ i j, (c⁻¹).1 i j ∈ O := fun i j => hκ.2 _ _
+  have b0 : b.1.toBlocks₂₁ = 0 := Matrix.ext fun i j => hb (show finSumFinEquiv (.inl j) < finSumFinEquiv (.inr i) by
+    simp [Fin.lt_def]; omega)
+  have bb : b.1 = fromBlocks b.1.toBlocks₁₁ b.1.toBlocks₁₂ 0 b.1.toBlocks₂₂ := by rw [← b0, fromBlocks_toBlocks]
+  have ht : b.1.toBlocks₁₁.det ≠ 0 := left_ne_zero_of_mul (b := b.1.toBlocks₂₂.det) (by rw [← det_fromBlocks_zero₂₁, ← bb]; exact GeneralLinearGroup.det_ne_zero b)
+  let t : GL (Fin n) k := GeneralLinearGroup.mkOfDetNeZero _ ht
+  have key : (c⁻¹).1 * fromRows 𝟙 𝟘 = fromRows ((g⁻¹).1 * t.1) t.1 := by
+    rw [show c⁻¹ = N⁻¹ * b by rw [e']; group, Units.val_mul, Matrix.mul_assoc, bb, fromBlocks_mul_fromRows]
+    exact (fromBlocks_mul_fromRows _ _ _ _ _ _).trans (by simp; rfl)
+  let C : GL (Fin n ⊕ Fin n) k := ⟨fromBlocks 1 0 1 1, fromBlocks 1 0 (-1) 1,
+    by simp [fromBlocks_multiply], by simp [fromBlocks_multiply]⟩
+  have o : ∀ i j : Fin n, (1 : Matrix (Fin n) (Fin n) k) i j ∈ O := fun i j => by
+    rw [one_apply]; split_ifs; exacts [O.one_mem, O.zero_mem]
+  have mul : ∀ {α β γ : Type} [Fintype β] (x : Matrix α β k) (y : Matrix β γ k), (∀ i j, x i j ∈ O) → (∀ i j, y i j ∈ O) →
+      ∀ i j, (x * y) i j ∈ O := fun x y hx hy i j => O.sum_mem fun l _ => O.mul_mem (hx i l) (hy l j)
+  refine ⟨t, C * c, mul _ _ ?_ c1, ?_, fun a => ?_, ?_⟩
+  · rintro (i | i) (j | j); exacts [o i j, O.zero_mem, o i j, o i j]
+  · rw [_root_.mul_inv_rev]
+    refine mul _ _ c2 ?_
+    rintro (i | i) (j | j); exacts [o i j, O.zero_mem, O.neg_mem (o i j), o i j]
+  · have k2 : (c⁻¹).1 * fromRows (t⁻¹ * a).1 𝟘 = fromRows (g⁻¹ * a).1 a.1 := by
+      have := congrArg (· * (t⁻¹ * a).1) key
+      simpa only [Matrix.mul_assoc, fromRows_mul, Matrix.one_mul, Matrix.zero_mul, Units.val_mul,
+        Units.mul_inv_cancel_left] using this
+    refine ⟨fun ⟨h1, h2⟩ i j => ?_, fun h1 => ?_⟩
+    · have := mul c.1 (fromRows (g⁻¹ * a).1 a.1) c1 (by rintro (i | i) j; exacts [h2 i j, h1 i j]) (.inl i) j
+      rwa [← k2, ← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul] at this
+    · have := mul _ (fromRows (t⁻¹ * a).1 𝟘) c2 (by rintro (i | i) j; exacts [h1 i j, O.zero_mem])
+      rw [k2] at this
+      exact ⟨fun i j => this (.inr i) j, fun i j => this (.inl i) j⟩
+  · rw [_root_.mul_inv_rev, Units.val_mul, Matrix.mul_assoc, ← key]
+    congr 1
+    exact (fromBlocks_mul_fromRows _ _ _ _ _ _).trans (by simp)
+
+omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
+
+theorem exists_dual (J : GL (Fin n) k) {p J₂ : GL (Fin n ⊕ Fin n) k} (hJ : J₂.1 = fromBlocks J.1 0 0 (-J.1)) {t : GL (Fin n) k}
+    (h : p.1 * fromRows 𝟙 𝟙 = fromRows 𝟙 𝟙 * t.1) : ∃ t' : GL (Fin n) k,
+      (J₂⁻¹).1 * (p⁻¹).1ᵀ * J₂.1 * fromRows 𝟙 𝟙 = fromRows 𝟙 𝟙 * t'.1 ∧
+        GeneralLinearGroup.det t' = GeneralLinearGroup.det t * (GeneralLinearGroup.det p)⁻¹ := by
+  obtain ⟨A, B, C, D, e⟩ : ∃ A B C D, p.1 = fromBlocks A B C D := ⟨_, _, _, _, (fromBlocks_toBlocks _).symm⟩
+  rw [e, fromBlocks_mul_fromRows, fromRows_mul] at h
+  simp only [Matrix.mul_one, Matrix.one_mul, fromRows_ext_iff] at h
+  have hA : A = t.1 - B := eq_sub_of_add_eq h.1
+  have hC : C = t.1 - D := eq_sub_of_add_eq h.2
+  have d : p.1.det = t.1.det * (D - B).det := by
+    have : p.1 * fromBlocks 𝟙 𝟘 𝟙 𝟙 = fromBlocks 𝟙 𝟘 𝟙 𝟙 * fromBlocks t.1 B 0 (D - B) := by
+      simp [e, fromBlocks_multiply, hA, hC]
+    simpa [det_fromBlocks_zero₂₁, det_fromBlocks_zero₁₂] using congrArg det this
+  have hs : (D - B)ᵀ.det ≠ 0 := by
+    rw [det_transpose]; exact right_ne_zero_of_mul (d.symm.trans_ne (GeneralLinearGroup.det_ne_zero p))
+  let s := GeneralLinearGroup.mkOfDetNeZero _ hs
+  have k1 : p.1ᵀ * fromRows 𝟙 (-𝟙) = fromRows 𝟙 (-𝟙) * s.1 := by
+    rw [e, fromBlocks_transpose, fromBlocks_mul_fromRows, fromRows_mul, hA, hC]
+    change _ = fromRows (𝟙 * (D - B)ᵀ) (-𝟙 * (D - B)ᵀ)
+    congr 1 <;> simp [transpose_sub] <;> abel
+  have k2 : (p⁻¹).1ᵀ * fromRows 𝟙 (-𝟙) = fromRows 𝟙 (-𝟙) * (s⁻¹).1 := by
+    have := congrArg (fun x => (p⁻¹).1ᵀ * x * (s⁻¹).1) k1
+    simp only [← Matrix.mul_assoc, ← transpose_mul, Units.mul_inv, transpose_one, Matrix.one_mul] at this
+    rw [this, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one]
+  have k3 : J₂.1 * fromRows 𝟙 𝟙 = fromRows 𝟙 (-𝟙) * J.1 := by rw [hJ, fromBlocks_mul_fromRows, fromRows_mul]; simp
+  refine ⟨J⁻¹ * s⁻¹ * J, ?_, Units.ext ?_⟩
+  · rw [Matrix.mul_assoc, k3, ← Matrix.mul_assoc, Matrix.mul_assoc (J₂⁻¹).1, k2, Units.val_mul, Units.val_mul,
+      ← Matrix.mul_assoc, ← Matrix.mul_assoc, ← Matrix.mul_assoc]
+    congr 2
+    have := congrArg (fun x => (J₂⁻¹).1 * x * (J⁻¹).1) k3
+    simp only [← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul] at this
+    rw [this, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one]
+  · have := GeneralLinearGroup.det_ne_zero t
+    have := GeneralLinearGroup.det_ne_zero J
+    rw [det_transpose] at hs
+    simp only [map_mul, map_inv, Units.val_mul, Units.val_inv_eq_inv_val, GeneralLinearGroup.val_det_apply, d]
+    rw [show s.1.det = (D - B).det from det_transpose _]
+    field_simp
+
+end GlobalTheory.ThK.Dbl.Split
+end
+
+section
 noncomputable section
 
 namespace GlobalTheory.ThK.Dbl.Split
@@ -306,4 +766,5 @@ theorem locUnrSplit : LocUnrSplit := by
 
 end GlobalTheory.ThK.Dbl
 
+end
 end

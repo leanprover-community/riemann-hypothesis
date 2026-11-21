@@ -1,10 +1,946 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PermMMulTranspose
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianHaarLeOneOfDimZero
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentNormalizedHaarLeTwoMulLieHaar
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FrameBallSubsetExpChartImageFrameBox
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianLieMeasureFrameBoxLe
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianHaarIndependentOfOrthonormalFrame
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalCongruenceConjMemArithmeticGroup
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LocallyCompactSecondCountableBorelCountable
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RiemannianLieMeasureFrameBoxGe
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetNeZeroOfIsIdent
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsOrthonormalOfLinearIndependent
+import BuildAid.ForwardExisting
 
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.SUVol.Degenerate
+
+theorem realSU_subsingleton {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+    (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (h : Ψ.card = 0 ∨ r = 1) :
+    Subsingleton (realSU Ψ G) := by
+  refine ⟨fun g g' => ?_⟩
+  have key : ∀ g : realSU Ψ G, g = 1 := by
+    intro g
+    apply Subtype.ext
+    funext τ
+    rcases h with h | h
+    · exact absurd (Finset.card_pos.2 ⟨τ.1, τ.2⟩) (by omega)
+    · subst h
+      apply Units.ext
+      have hd := (g.2 τ).1
+      rw [Matrix.det_unique] at hd
+      ext a b
+      rw [Subsingleton.elim a default, Subsingleton.elim b default]
+      simpa using hd
+  rw [key g, key g']
+
+theorem realLie_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+    (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (h : Ψ.card = 0 ∨ r = 1)
+    (X : Ψ → Fin r → Fin r → ℂ) (hX : X ∈ realLie Ψ G) : X = 0 := by
+  funext τ
+  rcases h with h | h
+  · exact absurd (Finset.card_pos.2 ⟨τ.1, τ.2⟩) (by omega)
+  · subst h
+    have ht := (hX τ).1
+    rw [Matrix.trace_fin_one] at ht
+    funext a b
+    rw [Subsingleton.elim a 0, Subsingleton.elim b 0]
+    simpa using ht
+
+theorem fromFrame_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+    {Ψ : Finset (E →+* ℂ)} (x : Frame Ψ r) (hdet : ∀ τ, (mat x τ).det ≠ 0)
+    (Y : EuclideanSpace ℂ (Ψ × Fin r × Fin r)) (hY : fromFrame x Y = 0) : Y = 0 := by
+  ext ⟨τ, a, b⟩
+  have h1 := congrFun hY τ
+  have hu : IsUnit (mat x τ).det := isUnit_iff_ne_zero.2 (hdet τ)
+  have h2 : Matrix.of (fun a b => Y (τ, a, b)) = 0 := by
+    have e : (mat x τ)⁻¹ * (mat x τ * Matrix.of (fun a b => Y (τ, a, b)) * (mat x τ)⁻¹) * mat x τ =
+        Matrix.of (fun a b => Y (τ, a, b)) := by
+      rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hu, Matrix.one_mul,
+        Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hu, Matrix.mul_one]
+    rw [← e]
+    have h1' : (mat x τ * Matrix.of (fun a b => Y (τ, a, b)) * (mat x τ)⁻¹ : Matrix (Fin r) (Fin r) ℂ) = 0 := h1
+    rw [h1', Matrix.mul_zero, Matrix.zero_mul]
+  have := congrFun (congrFun h2 a) b
+  simpa using this
+
+end GlobalTheory.SUVol.Degenerate
+
+open GlobalTheory.SUVol.Degenerate in
+
+theorem GlobalTheory.SUVol.Degenerate.riemHaar_le_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r), 1 ≤ r → (∀ τ, (mat x τ).det ≠ 0) → Ψ.card * (r ^ 2 - 1) = 0 → ∀ S : Set (realSU Ψ G), riemHaar Ψ G x S ≤ 1 := by
+  intro E _ _ _ r Ψ G x hr hdet hc S
+  have h : Ψ.card = 0 ∨ r = 1 := by
+    rcases Nat.mul_eq_zero.1 hc with h | h
+    · exact Or.inl h
+    · right
+      have : r ^ 2 ≤ 1 := by omega
+      nlinarith
+  haveI := realSU_subsingleton Ψ G h
+  haveI : CompactSpace (realSU Ψ G) := Finite.compactSpace
+  set K := (realLie Ψ G).comap (fromFrame x) with hK
+  haveI hKs : Subsingleton K := by
+    refine ⟨fun Y Y' => ?_⟩
+    have hz : ∀ Y : K, Y = 0 := fun Y => by
+      apply Subtype.ext
+      exact fromFrame_eq_zero x hdet Y.1 (realLie_eq_zero Ψ G h _ Y.2)
+    rw [hz Y, hz Y']
+
+  have hν : ∀ s, riemLie Ψ G x s ≤ 1 := by
+    intro s
+    set b := (stdOrthonormalBasis ℝ K).toBasis
+    have hb : b.addHaar Set.univ = 1 := by
+      rw [Module.Basis.addHaar, ← Set.Nonempty.eq_univ (b.parallelepiped).nonempty]
+      exact Measure.addHaarMeasure_self
+    calc riemLie Ψ G x s ≤ riemLie Ψ G x Set.univ := measure_mono (Set.subset_univ _)
+      _ ≤ 1 := by
+        unfold riemLie
+        by_cases hm : AEMeasurable (fun Y : K => fromFrame x Y.1) b.addHaar
+        · rw [Measure.map_apply_of_aemeasurable hm MeasurableSet.univ, Set.preimage_univ, hb]
+        · rw [Measure.map_of_not_aemeasurable hm]; simp
+  set μ := (Measure.haar : Measure (realSU Ψ G))
+  have hu0 : μ Set.univ ≠ 0 := (isOpen_univ.measure_ne_zero μ Set.univ_nonempty)
+  have hut : μ Set.univ ≠ ⊤ := (isCompact_univ.measure_lt_top).ne
+  have hball : ∀ ε : ℝ, 0 < ε → grpBall (realSU Ψ G) ε = Set.univ := by
+    intro ε hε
+    ext g
+    simp only [Set.mem_univ, iff_true]
+    rw [Subsingleton.elim g 1]
+    intro τ a b
+    simpa using hε
+  have hlim : Filter.limsup (fun ε : ℝ => riemLie Ψ G x (tanBall Ψ r ε) / μ (grpBall (realSU Ψ G) ε))
+      (nhdsWithin 0 (Set.Ioi 0)) ≤ 1 / μ Set.univ := by
+    refine Filter.limsup_le_of_le (h := ?_)
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    rw [hball ε hε]
+    exact ENNReal.div_le_div_right (hν _) _
+  show riemHaar Ψ G x S ≤ 1
+  unfold riemHaar tangentHaar
+  rw [Measure.smul_apply, smul_eq_mul]
+  calc _ ≤ (1 / μ Set.univ) * μ Set.univ :=
+        mul_le_mul' hlim (measure_mono (Set.subset_univ S))
+    _ = 1 := ENNReal.div_mul_cancel hu0 hut
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.riemannianHaar_le_one_of_dim_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r), 1 ≤ r → (∀ τ, (mat x τ).det ≠ 0) → Ψ.card * (r ^ 2 - 1) = 0 → ∀ S : Set (realSU Ψ G), riemHaar Ψ G x S ≤ 1 := by
+  atlas_forward_decl GlobalTheory.SUVol.Degenerate.riemHaar_le_one
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CovTop.VolUp.UpDens
+
+open Filter Topology Metric Set GlobalTheory.SUVol.DensOne
+open scoped NNReal
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+theorem tangentHaar_le_two_mul_lam : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (hG : G.det ≠ 0) (lam : Measure (realLie Ψ G)) [lam.IsAddHaarMeasure], ∃ δ : ℝ, 0 < δ ∧ ∀ s : Set (realLie Ψ G), MeasurableSet s → s ⊆ Metric.ball 0 δ → tangentHaar (realSU Ψ G) (lam.map Subtype.val) (GlobalTheory.SUVol.DensOne.chartExp Ψ G hG '' s) ≤ 2 * lam s := by
+  intro E _ _ _ r Ψ G hG lam _
+  obtain ⟨hH, hD⟩ := tangentHaar_realSU_of_det Ψ G hG lam
+  generalize tangentHaar (realSU Ψ G) (lam.map Subtype.val) = μ at hH hD ⊢
+  let ι : realLie Ψ G →ₗᵢ[ℝ] (Ψ → Matrix (Fin r) (Fin r) ℂ) :=
+    ⟨(incl Ψ G).toLinearMap, fun X => norm_incl Ψ G X⟩
+  let L₀ : (Ψ → Matrix (Fin r) (Fin r) ℂ) →ₗ[ℝ]
+      ((Ψ → Matrix (Fin r) (Fin r) ℂ) →L[ℝ] (Ψ → Matrix (Fin r) (Fin r) ℂ)) :=
+    LinearMap.toContinuousLinearMap.toLinearMap ∘ₗ LinearMap.mul ℝ _
+  have hL₀ : Continuous L₀ := L₀.continuous_of_finiteDimensional
+  have he : Continuous (chartExp Ψ G hG) := continuous_chartExp Ψ G hG
+  have he0 : chartExp Ψ G hG 0 = 1 := chartExp_zero Ψ G hG
+  have hd : HasStrictFDerivAt (fun x => matR Ψ G (chartExp Ψ G hG x)) ι.toContinuousLinearMap 0 :=
+    hasStrictFDerivAt_chart Ψ G hG
+  have hL : ContinuousAt (fun g => L₀ (matR Ψ G g)) 1 := (hL₀.comp (continuous_matR Ψ G)).continuousAt
+  have hL1 : (fun g => L₀ (matR Ψ G g)) 1 = ContinuousLinearMap.id ℝ _ := by ext1 A; exact one_mul A
+  have hm : ∀ g h, matR Ψ G (g * h) = (fun g => L₀ (matR Ψ G g)) g (matR Ψ G h) := fun g h => rfl
+  have hn : ∀ ρ : ℝ, 0 < ρ → chartExp Ψ G hG '' ball 0 ρ ∈ 𝓝 (1 : realSU Ψ G) := fun ε hε =>
+    (tendsto_iff_comap.1 ((continuous_matR Ψ G).tendsto 1))
+      (eventually_mem_image Ψ G hG (ball_mem_nhds 0 hε))
+
+  haveI : ProperSpace (realLie Ψ G) := FiniteDimensional.proper_real _
+  obtain ⟨δ₀, hδ₀, hinj⟩ : ∃ δ₀ : ℝ, 0 < δ₀ ∧ InjOn (chartExp Ψ G hG) (closedBall 0 δ₀) := by
+    obtain ⟨s, hs, ha⟩ := hd.approximates_deriv_on_nhds (c := 1 / 2) (Or.inr (by norm_num))
+    obtain ⟨δ, hδ, hsub⟩ := nhds_basis_closedBall.mem_iff.1 hs
+    refine ⟨δ, hδ, fun x hx y hy hxy => ?_⟩
+    have h1 := ha x (hsub hx) y (hsub hy)
+    simp only [hxy, sub_self, zero_sub, norm_neg, LinearIsometry.coe_toContinuousLinearMap,
+      LinearIsometry.norm_map] at h1
+    have h2 : ‖x - y‖ ≤ 0 := by
+      have h3 : ((1 / 2 : ℝ≥0) : ℝ) = 1 / 2 := by norm_num
+      rw [h3] at h1
+      linarith
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h2)
+  have hK : MeasurableSet (closedBall (0 : realLie Ψ G) δ₀) := measurableSet_closedBall
+  have hemb := ContinuousOn.measurableEmbedding hK he.continuousOn hinj
+  set ν : Measure (realLie Ψ G) :=
+    (μ.comap ((closedBall (0 : realLie Ψ G) δ₀).domRestrict (chartExp Ψ G hG))).map Subtype.val with hν
+  have hνS : ∀ S : Set (realLie Ψ G), MeasurableSet S →
+      ν S = μ (chartExp Ψ G hG '' (S ∩ closedBall 0 δ₀)) := by
+    intro S hS
+    rw [hν, Measure.map_apply measurable_subtype_coe hS, hemb.comap_apply]
+    congr 1
+    ext g
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨x.1, ⟨hx, x.2⟩, rfl⟩
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨⟨x, hx.2⟩, hx.1, rfl⟩
+  have hνsub : ∀ S : Set (realLie Ψ G), MeasurableSet S → S ⊆ closedBall 0 δ₀ →
+      ν S = μ (chartExp Ψ G hG '' S) := fun S hS h => by rw [hνS S hS, inter_eq_left.2 h]
+  haveI : IsFiniteMeasure ν := by
+    refine ⟨?_⟩
+    rw [hνS _ MeasurableSet.univ, univ_inter]
+    exact ((isCompact_closedBall _ _).image he).measure_lt_top
+  have hball : ∀ (X : realLie Ψ G) (ρ : ℝ), ‖X‖ + ρ ≤ δ₀ → ball X ρ ⊆ closedBall 0 δ₀ := by
+    intro X ρ h y hy
+    rw [mem_ball_iff_norm] at hy
+    rw [mem_closedBall_zero_iff]
+    have := norm_le_norm_add_norm_sub' y X
+    linarith
+  have hpos : ∀ ρ > 0, 0 < ν (closedBall (0 : realLie Ψ G) ρ) := by
+    intro ρ hρ
+    have h1 : ν (ball 0 (min ρ δ₀)) ≠ 0 := by
+      rw [hνsub _ measurableSet_ball (hball 0 _ (by simp))]
+      exact (μ.measure_pos_of_mem_nhds (hn _ (lt_min hρ hδ₀))).ne'
+    exact pos_iff_ne_zero.2 fun h => h1 (measure_mono_null
+      ((ball_subset_closedBall).trans (closedBall_subset_closedBall (min_le_left _ _))) h)
+
+  have himg : ∀ (g : realSU Ψ G) (S : Set (realSU Ψ G)), μ ((fun h => g * h) '' S) = μ S := fun g S => by
+    rw [image_mul_left, measure_preimage_mul]
+  have hq : ∀ ε : ℝ, 0 < ε → ε < 1 → ∃ δ > 0, Formalism.BasicNotions.Examples₂.CD.QInv ν ε δ := by
+    intro ε hε0 hε1
+    obtain ⟨δ, hδ, H⟩ := GlobalTheory.translate_chart_ball_distortion _ _ _ (chartExp Ψ G hG) (matR Ψ G) ι
+      (fun g => L₀ (matR Ψ G g)) he he0 hd hL hL1 hm hn (1 + ε / 3) (by linarith)
+    refine ⟨min (δ / 2) (δ₀ / 4), by positivity, fun X hX ρ hρ0 hρ => ?_⟩
+    have hXδ : ‖X‖ < δ / 2 := lt_of_lt_of_le hX (min_le_left _ _)
+    have hX4 : ‖X‖ < δ₀ / 4 := lt_of_lt_of_le hX (min_le_right _ _)
+    have hρδ : ρ < δ / 2 := lt_of_lt_of_le hρ (min_le_left _ _)
+    have hρ4 : ρ < δ₀ / 4 := lt_of_lt_of_le hρ (min_le_right _ _)
+    have hXb : X ∈ ball (0 : realLie Ψ G) δ := mem_ball_zero_iff.2 (by linarith)
+    have hκ0 : 0 < 1 + ε / 3 := by linarith
+    have hκ2 : 1 + ε / 3 < 2 := by linarith
+    have hcl0 : closedBall (0 : realLie Ψ G) ρ ⊆ closedBall 0 δ₀ :=
+      closedBall_subset_closedBall (by linarith)
+    constructor
+    · have hr1 : 0 < ρ / (1 + ε / 3) := div_pos hρ0 hκ0
+      have hr2 : ρ / (1 + ε / 3) < ρ := div_lt_self hρ0 (by linarith)
+      have hr3 : (1 - ε) * ρ < ρ / (1 + ε / 3) := by
+        rw [lt_div_iff₀ hκ0]; nlinarith [mul_pos hρ0 hε0, mul_pos (mul_pos hρ0 hε0) hε0]
+      have H2 := (H X hXb (ρ / (1 + ε / 3)) ⟨hr1, by linarith⟩).2
+      rw [mul_div_cancel₀ _ hκ0.ne'] at H2
+      calc ν (closedBall X ((1 - ε) * ρ)) ≤ ν (ball X (ρ / (1 + ε / 3))) :=
+            measure_mono (closedBall_subset_ball hr3)
+        _ = μ (chartExp Ψ G hG '' ball X (ρ / (1 + ε / 3))) :=
+            hνsub _ measurableSet_ball (hball X _ (by linarith))
+        _ ≤ μ ((fun h => chartExp Ψ G hG X * h) '' (chartExp Ψ G hG '' ball 0 ρ)) := measure_mono H2
+        _ = μ (chartExp Ψ G hG '' ball 0 ρ) := himg _ _
+        _ ≤ μ (chartExp Ψ G hG '' closedBall 0 ρ) := measure_mono (image_mono ball_subset_closedBall)
+        _ = ν (closedBall 0 ρ) := (hνsub _ measurableSet_closedBall hcl0).symm
+    · have hr1 : 0 < (1 + ε / 3) * ρ := by positivity
+      have hr2 : (1 + ε / 3) * ρ < δ := by nlinarith
+      have H1 := (H X hXb ((1 + ε / 3) * ρ) ⟨hr1, hr2⟩).1
+      have hsq : (1 + ε / 3) * ((1 + ε / 3) * ρ) ≤ (1 + ε) * ρ := by
+        nlinarith [mul_pos (mul_pos hρ0 hε0) (by linarith : (0:ℝ) < 3 - ε)]
+      calc ν (closedBall 0 ρ) ≤ ν (ball 0 ((1 + ε / 3) * ρ)) :=
+            measure_mono (closedBall_subset_ball (by nlinarith))
+        _ = μ (chartExp Ψ G hG '' ball 0 ((1 + ε / 3) * ρ)) :=
+            hνsub _ measurableSet_ball (hball 0 _ (by rw [norm_zero]; nlinarith))
+        _ = μ ((fun h => chartExp Ψ G hG X * h) '' (chartExp Ψ G hG '' ball 0 ((1 + ε / 3) * ρ))) :=
+            (himg _ _).symm
+        _ ≤ μ (chartExp Ψ G hG '' ball X ((1 + ε / 3) * ((1 + ε / 3) * ρ))) := measure_mono H1
+        _ = ν (ball X ((1 + ε / 3) * ((1 + ε / 3) * ρ))) :=
+            (hνsub _ measurableSet_ball (hball X _ (by nlinarith))).symm
+        _ ≤ ν (closedBall X ((1 + ε) * ρ)) :=
+            measure_mono (ball_subset_closedBall.trans (closedBall_subset_closedBall hsq))
+  obtain ⟨c, hc0, hct, hup, hdown⟩ := Formalism.BasicNotions.Examples₂.CD.exists_density lam ν hq hpos
+
+  have hνt : ∀ ε : ℝ, 0 < ε → (lam.map Subtype.val) (tanBall Ψ r ε) = lam (ball 0 ε) := by
+    intro ε hε
+    rw [Measure.map_apply measurable_subtype_coe, preimage_tanBall Ψ G hε]
+    rw [show tanBall Ψ r ε = ball (0 : Ψ → Fin r → Fin r → ℂ) ε by
+      ext X; rw [mem_ball_zero_iff, pi_norm_lt_iff hε]; simp only [pi_norm_lt_iff hε]; rfl]
+    exact measurableSet_ball
+  have hc : c < ((2 : ℝ≥0) : ℝ≥0∞) := by
+    by_contra hcon
+    rw [not_lt] at hcon
+    have h32 : (((3 / 2 : ℝ≥0)) : ℝ≥0∞) < c :=
+      lt_of_lt_of_le (by rw [ENNReal.coe_lt_coe]; norm_num) hcon
+    obtain ⟨δ₁, hδ₁, H1⟩ := hdown (3 / 2) h32
+    obtain ⟨t, ht1, htn⟩ : ∃ t : ℝ, 1 < t ∧ t ^ Module.finrank ℝ (realLie Ψ G) < 4 / 3 := by
+      have h := ((continuous_pow (Module.finrank ℝ (realLie Ψ G))).tendsto (1 : ℝ)).eventually
+        (gt_mem_nhds (show (1 : ℝ) ^ Module.finrank ℝ (realLie Ψ G) < 4 / 3 by norm_num))
+      have h' : ∀ᶠ x in 𝓝[>] (1 : ℝ), x ^ Module.finrank ℝ (realLie Ψ G) < 4 / 3 :=
+        h.filter_mono nhdsWithin_le_nhds
+      obtain ⟨t, h1, h2⟩ := (h'.and self_mem_nhdsWithin).exists
+      exact ⟨t, h2, h1⟩
+    have ht0 : 0 < t := by linarith
+    have hti0 : 0 < t⁻¹ := inv_pos.2 ht0
+    have hev : ∀ᶠ ε in 𝓝[>] (0 : ℝ), ((3 / 2 : ℝ≥0) : ℝ≥0∞) * ENNReal.ofReal (t⁻¹ ^ Module.finrank ℝ (realLie Ψ G)) ≤
+        μ (grpBall (realSU Ψ G) ε) / (lam.map Subtype.val) (tanBall Ψ r ε) := by
+      filter_upwards [chart_squeeze Ψ G hG ht1,
+        Ioo_mem_nhdsGT (show 0 < min δ₁ δ₀ * t by positivity)] with ε hsq hε
+      obtain ⟨hε0, hε1⟩ := hε
+      have hte : t⁻¹ * ε < min δ₁ δ₀ := by
+        rw [inv_mul_lt_iff₀ ht0, mul_comm]; exact hε1
+      rw [lt_min_iff] at hte
+      rw [hνt ε hε0]
+      rw [ENNReal.le_div_iff_mul_le (Or.inl (measure_ball_pos lam 0 hε0).ne')
+        (Or.inl measure_ball_lt_top.ne)]
+      calc ((3 / 2 : ℝ≥0) : ℝ≥0∞) * ENNReal.ofReal (t⁻¹ ^ Module.finrank ℝ (realLie Ψ G)) * lam (ball 0 ε)
+          = ((3 / 2 : ℝ≥0) : ℝ≥0∞) * lam (ball 0 (t⁻¹ * ε)) := by
+            rw [Measure.addHaar_ball_mul_of_pos lam 0 hti0 ε, mul_assoc]
+        _ ≤ ν (ball 0 (t⁻¹ * ε)) := H1 _ (ball_subset_ball hte.1.le)
+        _ = μ (chartExp Ψ G hG '' ball 0 (t⁻¹ * ε)) :=
+            hνsub _ measurableSet_ball (hball 0 _ (by rw [norm_zero]; linarith))
+        _ ≤ μ (grpBall (realSU Ψ G) ε) := measure_mono hsq.1
+    have h1 := ge_of_tendsto hD hev
+    have h2 : 1 < ((3 / 2 : ℝ≥0) : ℝ≥0∞) * ENNReal.ofReal (t⁻¹ ^ Module.finrank ℝ (realLie Ψ G)) := by
+      rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_one,
+        ENNReal.ofReal_lt_ofReal_iff (by positivity)]
+      have hp : 0 < t ^ Module.finrank ℝ (realLie Ψ G) := by positivity
+      rw [inv_pow]
+      push_cast
+      rw [← div_eq_mul_inv, lt_div_iff₀ hp]
+      linarith
+    exact absurd h1 (not_le.2 h2)
+  obtain ⟨δ₂, hδ₂, H2⟩ := hup 2 hc
+  refine ⟨min δ₂ δ₀, lt_min hδ₂ hδ₀, fun s hs hsub => ?_⟩
+  have h1 := H2 s (hsub.trans (ball_subset_ball (min_le_left _ _)))
+  have h2 : ν s = μ (chartExp Ψ G hG '' s) :=
+    hνsub s hs (hsub.trans ((ball_subset_ball (min_le_right _ _)).trans ball_subset_closedBall))
+  rw [← h2]
+  calc ν s ≤ ((2 : ℝ≥0) : ℝ≥0∞) * lam s := h1
+    _ = 2 * lam s := by norm_num
+
+end GlobalTheory.CovTop.VolUp.UpDens
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.tangentNormalizedHaar_le_two_mul_lieHaar : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (hG : G.det ≠ 0) (lam : Measure (realLie Ψ G)) [lam.IsAddHaarMeasure], ∃ δ : ℝ, 0 < δ ∧ ∀ s : Set (realLie Ψ G), MeasurableSet s → s ⊆ Metric.ball 0 δ → tangentHaar (realSU Ψ G) (lam.map Subtype.val) (GlobalTheory.SUVol.DensOne.chartExp Ψ G hG '' s) ≤ 2 * lam s := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.UpDens.tangentHaar_le_two_mul_lam
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CovTop.VolUp.BallCover
+
+section Exp
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+theorem exists_exp_lower (n : Type) [Fintype n] [DecidableEq n] :
+    ∃ ρ : ℝ, 0 < ρ ∧ ∀ Y : Matrix n n ℂ, ‖Y‖ < ρ → ‖Y‖ ≤ 2 * ‖NormedSpace.exp Y - 1‖ := by
+  have h := (hasFDerivAt_iff_isLittleO_nhds_zero.1
+    (GlobalTheory.CompactDualExists.exp_strict (n := n)).hasFDerivAt).def (by norm_num : (0 : ℝ) < 1 / 2)
+  obtain ⟨δ, hδ, hh⟩ := Metric.eventually_nhds_iff.1 h
+  refine ⟨δ, hδ, fun Y hY => ?_⟩
+  have := hh (y := Y) (by rwa [dist_zero_right])
+  simp only [zero_add, NormedSpace.exp_zero] at this
+  have h1 : ‖NormedSpace.exp Y - 1 - Y‖ ≤ 1 / 2 * ‖Y‖ := this
+  have h2 : ‖Y‖ ≤ ‖NormedSpace.exp Y - 1‖ + ‖NormedSpace.exp Y - 1 - Y‖ := by
+    calc ‖Y‖ = ‖(NormedSpace.exp Y - 1) - (NormedSpace.exp Y - 1 - Y)‖ := by congr 1; abel
+      _ ≤ _ := norm_sub_le _ _
+  linarith
+
+end Exp
+
+section Main
+
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+
+theorem frBall_subset_chartExp_image : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r) (hG : G.det ≠ 0), (∀ τ, (mat x τ).det ≠ 0) → ∀ δ : ℝ, 0 < δ → ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 < ε → ε < ε₀ → frBall Ψ G x ε ⊆ GlobalTheory.SUVol.DensOne.chartExp Ψ G hG '' {X : realLie Ψ G | ‖X‖ < δ ∧ ∀ τ a b, ‖((mat x τ)⁻¹ * Matrix.of (X.1 τ) * mat x τ) a b‖ < 2 * ε} := by
+  intro E _ _ _ r Ψ G x hG hx δ hδ
+  obtain ⟨ρ, hρ, hexp⟩ := exists_exp_lower (Fin r)
+  let cj : (Ψ → Fin r → Fin r → ℂ) → (Ψ → Matrix (Fin r) (Fin r) ℂ) :=
+    fun X τ => (mat x τ)⁻¹ * Matrix.of (X τ) * mat x τ
+  have hcj : Continuous cj :=
+    continuous_pi fun τ => (continuous_const.matrix_mul (continuous_apply τ)).matrix_mul continuous_const
+  let U : Set (realLie Ψ G) := {X | ‖X‖ < δ ∧ ∀ τ, ‖cj X.1 τ‖ < ρ}
+  have hU : U ∈ nhds 0 := by
+    refine IsOpen.mem_nhds ?_ ?_
+    · refine (isOpen_lt continuous_norm continuous_const).inter ?_
+      change IsOpen {X : realLie Ψ G | ∀ τ, ‖cj X.1 τ‖ < ρ}
+      rw [Set.setOf_forall]
+      exact isOpen_iInter_of_finite fun τ =>
+        isOpen_lt ((continuous_apply τ).comp (hcj.comp continuous_subtype_val)).norm continuous_const
+    · refine ⟨by simpa using hδ, fun τ => ?_⟩
+      have e : cj (0 : realLie Ψ G).1 τ = 0 := by
+        change (mat x τ)⁻¹ * (0 : Matrix (Fin r) (Fin r) ℂ) * mat x τ = 0
+        simp
+      rw [e, norm_zero]; exact hρ
+  have hev := GlobalTheory.SUVol.DensOne.eventually_mem_image Ψ G hG hU
+  rw [Filter.eventually_comap] at hev
+  obtain ⟨η, hη, hh⟩ := Metric.eventually_nhds_iff.1 hev
+  let bk : (Ψ → Matrix (Fin r) (Fin r) ℂ) → (Ψ → Matrix (Fin r) (Fin r) ℂ) :=
+    fun A τ => mat x τ * A τ * (mat x τ)⁻¹
+  have hbk : Continuous bk :=
+    continuous_pi fun τ => (continuous_const.matrix_mul (continuous_apply τ)).matrix_mul continuous_const
+  have hbk0 : bk 0 = 0 := by funext τ; simp [bk]
+  obtain ⟨ε₁, hε₁, hbkε⟩ := Metric.continuous_iff.1 hbk 0 η hη
+  refine ⟨ε₁, hε₁, fun ε hε hεε₁ g hg => ?_⟩
+  let A : Ψ → Matrix (Fin r) (Fin r) ℂ := fun τ => (mat x τ)⁻¹ * GlobalTheory.SUVol.DensOne.matR Ψ G g τ * mat x τ - 1
+  have hA : ‖A‖ < ε := (pi_norm_lt_iff hε).2 fun τ => (Matrix.norm_lt_iff hε).2 fun a b => hg τ a b
+  have hbkA : bk A = GlobalTheory.SUVol.DensOne.matR Ψ G g - 1 := by
+    funext τ
+    change mat x τ * ((mat x τ)⁻¹ * GlobalTheory.SUVol.DensOne.matR Ψ G g τ * mat x τ - 1) * (mat x τ)⁻¹ =
+      GlobalTheory.SUVol.DensOne.matR Ψ G g τ - 1
+    rw [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.mul_nonsing_inv _ (hx τ).isUnit,
+      Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_right _ _ (hx τ).isUnit,
+      Matrix.mul_nonsing_inv_cancel_left _ _ (hx τ).isUnit]
+  have hdist : dist (GlobalTheory.SUVol.DensOne.matR Ψ G g) 1 < η := by
+    have := hbkε A (by rw [dist_zero_right]; linarith)
+    rw [hbk0, dist_zero_right, hbkA] at this
+    rwa [dist_eq_norm]
+  obtain ⟨X, ⟨hXδ, hXρ⟩, rfl⟩ := hh hdist g rfl
+  refine ⟨X, ⟨hXδ, fun τ a b => ?_⟩, rfl⟩
+  have hY := hexp (cj X.1 τ) (hXρ τ)
+  have he : NormedSpace.exp (cj X.1 τ) - 1 = A τ := by
+    change NormedSpace.exp ((mat x τ)⁻¹ * Matrix.of (X.1 τ) * mat x τ) - 1 =
+      (mat x τ)⁻¹ * NormedSpace.exp (Matrix.of (X.1 τ)) * mat x τ - 1
+    rw [Matrix.exp_conj' _ _ ((Matrix.isUnit_iff_isUnit_det _).2 (hx τ).isUnit)]
+  have hAτ : ‖A τ‖ < ε := lt_of_le_of_lt (norm_le_pi_norm A τ) hA
+  rw [he] at hY
+  calc ‖((mat x τ)⁻¹ * Matrix.of (X.1 τ) * mat x τ) a b‖ = ‖cj X.1 τ a b‖ := rfl
+    _ ≤ ‖cj X.1 τ‖ := Matrix.norm_entry_le_entrywise_sup_norm _
+    _ ≤ 2 * ‖A τ‖ := hY
+    _ < 2 * ε := by linarith
+
+end Main
+
+end GlobalTheory.CovTop.VolUp.BallCover
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.frameBall_subset_expChart_image_frameBox : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r) (hG : G.det ≠ 0), (∀ τ, (mat x τ).det ≠ 0) → ∀ δ : ℝ, 0 < δ → ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 < ε → ε < ε₀ → frBall Ψ G x ε ⊆ GlobalTheory.SUVol.DensOne.chartExp Ψ G hG '' {X : realLie Ψ G | ‖X‖ < δ ∧ ∀ τ a b, ‖((mat x τ)⁻¹ * Matrix.of (X.1 τ) * mat x τ) a b‖ < 2 * ε} := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.BallCover.frBall_subset_chartExp_image
+end
+
+section
+section
+open MeasureTheory
+
+namespace GlobalTheory.CoordBox
+
+theorem volume_coordBox_le (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+    [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (K : Type) [Fintype K]
+    (w : K → V) (t : ℝ) (ht : 0 ≤ t) (hK : Fintype.card K = Module.finrank ℝ V) :
+    MeasureTheory.volume {y : V | ∃ c : K → ℝ, (∀ k, |c k| ≤ t) ∧ y = ∑ k, c k • w k}
+      ≤ ENNReal.ofReal ((2 * t) ^ Fintype.card K * ∏ k, ‖w k‖) := by
+  classical
+  set n := Fintype.card K with hn
+  let o : OrthonormalBasis K ℝ V :=
+    (stdOrthonormalBasis ℝ V).reindex (Fintype.equivFinOfCardEq hK).symm
+  let v : K → V := fun k => (2 * t) • w k
+  let a : V := -∑ k, t • w k
+  have hsub : {y : V | ∃ c : K → ℝ, (∀ k, |c k| ≤ t) ∧ y = ∑ k, c k • w k}
+      ⊆ (fun x => x + a) '' parallelepiped v := by
+    rintro y ⟨c, hc, rfl⟩
+    set s : K → ℝ := fun k => (c k + t) / (2 * t) with hs
+    have hkey : ∀ k, s k * (2 * t) = c k + t := by
+      intro k
+      rcases ht.eq_or_lt with h0 | hpos
+      · have hck : c k = 0 := by
+          have := hc k
+          rw [← h0] at this
+          exact abs_nonpos_iff.mp this
+        simp [hs, ← h0, hck]
+      · simp only [hs]
+        field_simp
+    refine ⟨∑ k, s k • v k, ?_, ?_⟩
+    · rw [mem_parallelepiped_iff]
+      refine ⟨s, ?_, rfl⟩
+      constructor
+      · intro k
+        have h1 := (abs_le.mp (hc k)).1
+        exact div_nonneg (by linarith) (by linarith)
+      · intro k
+        have h2 := (abs_le.mp (hc k)).2
+        exact div_le_one_of_le₀ (by linarith) (by linarith)
+    · simp only [v, a, smul_smul, hkey, add_smul, Finset.sum_add_distrib]
+      abel
+  have hvol : volume (parallelepiped v) = ENNReal.ofReal ((2 * t) ^ n * |o.toBasis.det w|) := by
+    rw [← o.addHaar_eq_volume, MeasureTheory.Measure.addHaar_parallelepiped]
+    congr 1
+    have hsm : o.toBasis.det v = (∏ _k : K, (2 * t)) • o.toBasis.det w :=
+      o.toBasis.det.toMultilinearMap.map_smul_univ (fun _ => 2 * t) w
+    rw [hsm, Finset.prod_const, Finset.card_univ, smul_eq_mul, abs_mul, abs_pow,
+      abs_of_nonneg (by linarith : (0:ℝ) ≤ 2 * t)]
+  have hdet : |o.toBasis.det w| ≤ ∏ k, ‖w k‖ := by
+    have := GlobalTheory.Hadamard.norm_orthonormalBasis_det_le (𝕜 := ℝ) o w
+    simpa [Real.norm_eq_abs] using this
+  calc volume {y : V | ∃ c : K → ℝ, (∀ k, |c k| ≤ t) ∧ y = ∑ k, c k • w k}
+      ≤ volume ((fun x => x + a) '' parallelepiped v) := measure_mono hsub
+    _ = volume (parallelepiped v) := by
+        rw [Set.image_add_right, measure_preimage_add_right]
+    _ = ENNReal.ofReal ((2 * t) ^ n * |o.toBasis.det w|) := hvol
+    _ ≤ ENNReal.ofReal ((2 * t) ^ Fintype.card K * ∏ k, ‖w k‖) := by
+        apply ENNReal.ofReal_le_ofReal
+        exact mul_le_mul_of_nonneg_left hdet (pow_nonneg (by linarith) _)
+
+end GlobalTheory.CoordBox
+end
+
+open MeasureTheory
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.volume_coordinateBox_le_hadamard : ∀ (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (K : Type) [Fintype K] (w : K → V) (t : ℝ), 0 ≤ t → Fintype.card K = Module.finrank ℝ V → MeasureTheory.volume {y : V | ∃ c : K → ℝ, (∀ k, |c k| ≤ t) ∧ y = ∑ k, c k • w k} ≤ ENNReal.ofReal ((2 * t) ^ Fintype.card K * ∏ k, ‖w k‖) := by
+  atlas_forward_decl GlobalTheory.CoordBox.volume_coordBox_le
+end
+
+section
+section
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+
+private theorem conj_zero_iff' {R : Type} [Ring R] (a b c d S : R) (hba : b * a = 1) (hcd : c * d = 1) :
+    S = 0 ↔ a * S * c = 0 := by
+  refine ⟨fun h => by simp [h], fun h => ?_⟩
+  have e : S = b * (a * S * c) * d := by
+    simp only [← mul_assoc, hba, one_mul]; rw [mul_assoc, hcd, mul_one]
+  rw [e, h]; simp
+
+private theorem expand' {R : Type} [Ring R] (a b c d y z g : R) (hab : a * b = 1) (hdc : d * c = 1) :
+    a * (b * (y * a) * g + g * (c * z * d)) * c = y * (a * g * c) + (a * g * c) * z := by
+  have : a * (b * (y * a) * g + g * (c * z * d)) * c = (a * b) * y * (a * g * c) + (a * g * c) * z * (d * c) := by
+    simp only [mul_add, add_mul, mul_assoc]
+  rw [this, hab, hdc, one_mul, mul_one]
+
+private theorem permJ' {r : ℕ} (p q : ℕ) (e : Fin p ⊕ Fin q ≃ Fin r) :
+    (permM e)ᵀ * Formalism.UG.Jpq p q * permM e = diagonal (fun a => if (e.symm a).isLeft then (1:ℂ) else -1) := by
+  ext a b
+  simp [Matrix.mul_apply, permM, Equiv.apply_eq_iff_eq_symm_apply, diagonal_apply, Formalism.UG.Jpq]
+  by_cases hab : a = b
+  · subst hab; rw [if_pos rfl]; rcases e.symm a with i | i <;> simp
+  · rw [if_neg hab]
+    have h := e.symm.injective.ne hab
+    revert h
+    generalize e.symm a = i
+    generalize e.symm b = j
+    rcases i with i | i <;> rcases j with j | j <;> intro h <;> simp_all [one_apply]
+
+namespace GlobalTheory.CovTop.VolUp.FrameBox
+
+theorem mem_comap_realLie_iff_skewCond : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (κ : Type)
+    (p q : κ → ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r) (σ : κ ≃ Ψ)
+    (A : ∀ ρ, Matrix (Fin (p ρ) ⊕ Fin (q ρ)) (Fin r) ℂ) (e : ∀ ρ, Fin (p ρ) ⊕ Fin (q ρ) ≃ Fin r),
+    IsIdent p q Ψ G x σ A e → ∀ Y : EuclideanSpace ℂ (Ψ × Fin r × Fin r),
+      Y ∈ (realLie Ψ G).comap (fromFrame x) ↔ SkewCond (sgnR σ e) Y := by
+  intro E _ _ _ r κ p q Ψ G x σ A e hI Y
+  rw [Submodule.mem_comap, GlobalTheory.SUVol.DensOne.mem_realLie_iff]
+  refine forall_congr' fun τ => ?_
+  have hdet := (det_ne_zero_of_isIdent hI τ).1
+  obtain ⟨h1, h2⟩ := hI (σ.symm τ)
+  rw [Equiv.apply_symm_apply] at h1 h2
+  set P := permM (e (σ.symm τ)) with hP
+  set J := Formalism.UG.Jpq (p (σ.symm τ)) (q (σ.symm τ)) with hJdef
+  set M := mat x τ with hMdef
+  set B := A (σ.symm τ) with hBdef
+  set Gt := G.map τ.1 with hGt
+  set Yt : Matrix (Fin r) (Fin r) ℂ := Matrix.of fun a b => Y (τ, a, b) with hYt
+  have hu : IsUnit M.det := isUnit_iff_ne_zero.mpr hdet
+  set N := M⁻¹ with hN
+  have hMN : M * N = 1 := Matrix.mul_nonsing_inv M hu
+  have hNM : N * M = 1 := Matrix.nonsing_inv_mul M hu
+  have hX : Matrix.of (fromFrame x Y τ) = M * Yt * N := rfl
+  rw [hX]
+  set D : Matrix (Fin r) (Fin r) ℂ := diagonal (fun a => ((sgnR σ e τ a : ℝ) : ℂ)) with hD
+  have hPJP : Pᵀ * J * P = D := by
+    rw [hP, hJdef, permJ', hD]
+    congr 1; funext a; simp only [sgnR]; split_ifs <;> simp
+  have hPc : Pᴴ = Pᵀ := by
+    ext i j; simp only [hP, permM, conjTranspose_apply, transpose_apply, of_apply]; split_ifs <;> simp
+  have hMt : (Mᴴ)ᵀ = M.map (starRingEnd ℂ) := by ext i j; simp
+  have hG' : Gt = -(Bᴴ * J * B)ᵀ := by rw [h1, transpose_neg, transpose_transpose, neg_neg]
+  have hH : Mᵀ * Gt * M.map (starRingEnd ℂ) = -D := by
+    rw [hG', ← hMt, Matrix.mul_neg, Matrix.neg_mul]
+    rw [show Mᵀ * (Bᴴ * J * B)ᵀ * (Mᴴ)ᵀ = (Mᴴ * (Bᴴ * J * B) * M)ᵀ by simp only [transpose_mul, Matrix.mul_assoc]]
+    have : Mᴴ * (Bᴴ * J * B) * M = Pᵀ * J * P := by
+      rw [← hPc, ← h2, conjTranspose_mul]; simp only [Matrix.mul_assoc]
+    rw [this, hPJP, hD, diagonal_transpose]
+  have hc1 : M.map (starRingEnd ℂ) * N.map (starRingEnd ℂ) = 1 := by
+    rw [← Matrix.map_mul, hMN, Matrix.map_one _ (map_zero _) (map_one _)]
+  have hc2 : N.map (starRingEnd ℂ) * M.map (starRingEnd ℂ) = 1 := by
+    rw [← Matrix.map_mul, hNM, Matrix.map_one _ (map_zero _) (map_one _)]
+  have ht1 : Mᵀ * Nᵀ = 1 := by rw [← transpose_mul, hNM, transpose_one]
+  have ht2 : Nᵀ * Mᵀ = 1 := by rw [← transpose_mul, hMN, transpose_one]
+  have htr : (M * Yt * N).trace = ∑ a, Y (τ, a, a) := by
+    rw [trace_mul_comm, ← Matrix.mul_assoc, hNM, Matrix.one_mul]; rfl
+  rw [htr, and_comm]
+  refine and_congr_right fun _ => ?_
+  rw [conj_zero_iff' Mᵀ Nᵀ (M.map (starRingEnd ℂ)) (N.map (starRingEnd ℂ)) _ ht2 hc1]
+  rw [transpose_mul, transpose_mul, Matrix.map_mul, Matrix.map_mul]
+  rw [expand' _ _ _ _ _ _ _ ht1 hc2, hH]
+  rw [Matrix.mul_neg, Matrix.neg_mul, ← neg_add, neg_eq_zero, ← Matrix.ext_iff]
+  refine forall_congr' fun a => forall_congr' fun b => ?_
+  rw [eq_comm (b := (0 : Matrix (Fin r) (Fin r) ℂ) a b)]
+  simp [hD, hYt, Matrix.mul_diagonal, Matrix.diagonal_mul]
+  exact eq_comm
+
+end GlobalTheory.CovTop.VolUp.FrameBox
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.mem_realLie_iff_traceFree_skew_signs : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (κ : Type) (p q : κ → ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r) (σ : κ ≃ Ψ) (A : ∀ ρ, Matrix (Fin (p ρ) ⊕ Fin (q ρ)) (Fin r) ℂ) (e : ∀ ρ, Fin (p ρ) ⊕ Fin (q ρ) ≃ Fin r), IsIdent p q Ψ G x σ A e → ∀ Y : EuclideanSpace ℂ (Ψ × Fin r × Fin r), Y ∈ (realLie Ψ G).comap (fromFrame x) ↔ SkewCond (sgnR σ e) Y := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.FrameBox.mem_comap_realLie_iff_skewCond
+end
+
+section
+section
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+
+namespace GlobalTheory.CovTop.VolUp.FrameBox
+
+theorem sum_boxEnt_diag {r : ℕ} (d : Fin r → ℝ) (z a b : Fin r) (h : (a, b) ≠ (z, z)) :
+    ∑ c, boxEnt d z a b c c = 0 := by
+  rcases lt_trichotomy a b with hab | hab | hab
+  · refine Finset.sum_eq_zero fun c _ => ?_
+    have h1 : ¬ (c = a ∧ c = b) := fun hc => hab.ne (hc.1.symm.trans hc.2)
+    have h2 : ¬ (c = b ∧ c = a) := fun hc => hab.ne (hc.2.symm.trans hc.1)
+    simp only [boxEnt, if_pos hab, if_neg h1, if_neg h2]
+  · subst hab
+    have haz : a ≠ z := fun hz => h (by rw [hz])
+    have : ∀ c, boxEnt d z a a c c = (if c = a then Complex.I else 0) + (if c = z then -Complex.I else 0) := by
+      intro c
+      simp only [boxEnt, lt_irrefl, if_false, and_self]
+      by_cases h1 : c = a
+      · subst h1
+        simp [haz]
+      · simp [h1]
+    simp [this, Finset.sum_add_distrib]
+  · refine Finset.sum_eq_zero fun c _ => ?_
+    have h1 : ¬ (c = a ∧ c = b) := fun hc => hab.ne' (hc.1.symm.trans hc.2)
+    have h2 : ¬ (c = b ∧ c = a) := fun hc => hab.ne' (hc.2.symm.trans hc.1)
+    simp only [boxEnt, if_pos hab, if_neg hab.not_gt, if_neg h1, if_neg h2]
+
+theorem boxEnt_skew {r : ℕ} (d : Fin r → ℝ) (hd : ∀ a, d a = 1 ∨ d a = -1) (z a b a' b' : Fin r) :
+    boxEnt d z a b b' a' * (d b' : ℂ) + (d a' : ℂ) * (starRingEnd ℂ) (boxEnt d z a b a' b') = 0 := by
+  rcases lt_trichotomy a b with hab | hab | hab
+  · have hne := hab.ne
+    have hne' := hab.ne'
+    simp only [boxEnt, if_pos hab]
+    by_cases h1 : a' = a ∧ b' = b
+    · obtain ⟨rfl, rfl⟩ := h1
+      rcases hd a' with h | h <;> rcases hd b' with h' | h' <;> simp [hne, hne', h, h']
+    · by_cases h2 : a' = b ∧ b' = a
+      · obtain ⟨rfl, rfl⟩ := h2
+        rcases hd a' with h | h <;> rcases hd b' with h' | h' <;> simp [hne, hne', h, h']
+      · have h1' : ¬ (b' = b ∧ a' = a) := fun hc => h1 hc.symm
+        have h2' : ¬ (b' = a ∧ a' = b) := fun hc => h2 hc.symm
+        simp only [if_neg h1, if_neg h2, if_neg h1', if_neg h2']
+        simp
+  · subst hab
+    simp only [boxEnt, lt_irrefl, if_false]
+    by_cases h1 : a' = a ∧ b' = a
+    · obtain ⟨rfl, rfl⟩ := h1
+      simp [mul_comm]
+    · have h1' : ¬ (b' = a ∧ a' = a) := fun hc => h1 hc.symm
+      simp only [if_neg h1, if_neg h1']
+      by_cases h2 : a' = z ∧ b' = z
+      · obtain ⟨rfl, rfl⟩ := h2
+        simp [mul_comm]
+      · have h2' : ¬ (b' = z ∧ a' = z) := fun hc => h2 hc.symm
+        simp only [if_neg h2, if_neg h2']
+        simp
+  · have hne := hab.ne
+    have hne' := hab.ne'
+    simp only [boxEnt, if_pos hab, if_neg hab.not_gt]
+    by_cases h1 : a' = a ∧ b' = b
+    · obtain ⟨rfl, rfl⟩ := h1
+      rcases hd a' with h | h <;> rcases hd b' with h' | h' <;> simp [hne, hne', h, h']
+    · by_cases h2 : a' = b ∧ b' = a
+      · obtain ⟨rfl, rfl⟩ := h2
+        rcases hd a' with h | h <;> rcases hd b' with h' | h' <;> simp [hne, hne', h, h']
+      · have h1' : ¬ (b' = b ∧ a' = a) := fun hc => h1 hc.symm
+        have h2' : ¬ (b' = a ∧ a' = b) := fun hc => h2 hc.symm
+        simp only [if_neg h1, if_neg h2, if_neg h1', if_neg h2']
+        simp
+
+theorem skewCond_boxVec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ))
+    (d : Ψ → Fin r → ℝ) (z : Fin r), (∀ τ a, d τ a = 1 ∨ d τ a = -1) → ∀ k, SkewCond d (boxVec d z k) := by
+  intro E _ _ _ r Ψ d z hd k τ
+  by_cases hτ : τ = k.1
+  · have he : ∀ a b, boxVec d z k (τ, a, b) = boxEnt (d τ) z k.2.1.1 k.2.1.2 a b := by
+      intro a b
+      simp only [boxVec, if_pos hτ]
+      rw [hτ]
+    simp only [he]
+    exact ⟨sum_boxEnt_diag _ _ _ _ k.2.2, fun a b => boxEnt_skew _ (hd τ) _ _ _ _ _⟩
+  · have he : ∀ a b, boxVec d z k (τ, a, b) = 0 := by
+      intro a b
+      simp only [boxVec, if_neg hτ]
+    simp [he]
+
+end GlobalTheory.CovTop.VolUp.FrameBox
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.skewHermitianBasisVector_traceFreeSkewCond : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (d : Ψ → Fin r → ℝ) (z : Fin r), (∀ τ a, d τ a = 1 ∨ d τ a = -1) → ∀ k, SkewCond d (boxVec d z k) := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.FrameBox.skewCond_boxVec
+end
+
+section
+section
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+open Classical
+
+namespace GlobalTheory.CovTop.VolUp.FrameBox
+
+theorem boxCoord_boxVec (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ))
+    (d : Ψ → Fin r → ℝ) (z : Fin r) (_hd : ∀ τ a, d τ a = 1 ∨ d τ a = -1) :
+    ∀ j k, boxCoord z j (boxVec d z k) = if j = k then 1 else 0 := by
+  rintro ⟨τ', ⟨⟨a', b'⟩, hj⟩⟩ ⟨τ, ⟨⟨a, b⟩, hk⟩⟩
+  have hjk : ((τ', (⟨(a', b'), hj⟩ : {ab : Fin r × Fin r // ab ≠ (z, z)})) =
+      (τ, (⟨(a, b), hk⟩ : {ab : Fin r × Fin r // ab ≠ (z, z)}))) ↔ τ' = τ ∧ a' = a ∧ b' = b := by
+    constructor
+    · intro h
+      simp only [Prod.mk.injEq, Subtype.mk.injEq] at h
+      exact ⟨h.1, h.2.1, h.2.2⟩
+    · rintro ⟨rfl, rfl, rfl⟩; rfl
+  simp only [hjk]
+  simp only [boxCoord, boxVec, LinearMap.coe_comp, Function.comp_apply, Complex.reLm_coe, Complex.imLm_coe]
+  simp only [entryL, LinearMap.restrictScalars_apply, ContinuousLinearMap.coe_coe, EuclideanSpace.proj, PiLp.toLp_apply]
+  by_cases hτ : τ' = τ
+  swap
+  · split_ifs <;> simp_all
+  subst hτ
+  simp only [true_and, if_true]
+  clear hjk
+  split_ifs with h1 h1' h3 h3 h3 h3 h3 h3
+  all_goals simp only [LinearMap.coe_comp, Function.comp_apply, Complex.reLm_coe, Complex.imLm_coe, entryL, LinearMap.restrictScalars_apply, ContinuousLinearMap.coe_coe, EuclideanSpace.proj, PiLp.toLp_apply, PiLp.proj_apply, boxEnt, if_true]
+  all_goals rcases lt_trichotomy a b with h2 | rfl | h2
+  all_goals (try simp only [lt_irrefl, if_false])
+  all_goals (try simp only [h2, not_lt_of_gt h2, if_true, if_false])
+  all_goals clear _hd
+  all_goals (split_ifs with e1 e2 <;> (try obtain ⟨rfl, rfl⟩ := h1') <;> (try obtain ⟨rfl, rfl⟩ := e1) <;> (try obtain ⟨rfl, rfl⟩ := e2) <;> (try simp))
+  all_goals (try (simp only [Fin.lt_iff_val_lt_val, Fin.ext_iff, Prod.ext_iff, ne_eq, Prod.mk.injEq] at *; omega))
+  all_goals exact absurd ⟨rfl, rfl⟩ h3
+
+end GlobalTheory.CovTop.VolUp.FrameBox
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+open Classical
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.skewHermitianCoordinate_dual_basisVector : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (d : Ψ → Fin r → ℝ) (z : Fin r), (∀ τ a, d τ a = 1 ∨ d τ a = -1) → ∀ j k, boxCoord z j (boxVec d z k) = if j = k then 1 else 0 := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.FrameBox.boxCoord_boxVec
+end
+
+section
+section
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+
+namespace GlobalTheory.CovTop.VolUp.FrameBox
+
+theorem boxEnt_norm_sq_eq {r : ℕ} (d : Fin r → ℝ) (hd : ∀ a, d a = 1 ∨ d a = -1) (z a b : Fin r)
+    (hab : (a, b) ≠ (z, z)) :
+    ∃ P Q : Fin r × Fin r, P ≠ Q ∧ ∀ p : Fin r × Fin r,
+      ‖boxEnt d z a b p.1 p.2‖ ^ 2 = (if p = P then 1 else 0) + (if p = Q then 1 else 0) := by
+  have hdd : ‖((d a * d b : ℝ) : ℂ)‖ = 1 := by
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_mul]
+    rcases hd a with h | h <;> rcases hd b with h' | h' <;> simp [h, h']
+  rcases lt_trichotomy a b with h | h | h
+  · refine ⟨(a, b), (b, a), ?_, ?_⟩
+    · intro e; simp only [Prod.mk.injEq] at e; exact h.ne e.1
+    · rintro ⟨a', b'⟩
+      simp only [boxEnt, if_pos h, Prod.mk.injEq]
+      split_ifs <;> (try simp only [norm_neg, norm_mul, hdd, Complex.norm_I, norm_one, norm_zero]) <;> first | (norm_num; done) | (rename_i h1 h2; exact absurd (h1.1.symm.trans h2.1) h.ne)
+  · subst h
+    have haz : a ≠ z := fun e => hab (by rw [e])
+    refine ⟨(a, a), (z, z), ?_, ?_⟩
+    · intro e; simp only [Prod.mk.injEq] at e; exact haz e.1
+    · rintro ⟨a', b'⟩
+      simp only [boxEnt, lt_irrefl, if_false, Prod.mk.injEq]
+      split_ifs <;> simp_all
+  · refine ⟨(b, a), (a, b), ?_, ?_⟩
+    · intro e; simp only [Prod.mk.injEq] at e; exact h.ne e.1
+    · rintro ⟨a', b'⟩
+      simp only [boxEnt, if_neg (not_lt.2 h.le), if_pos h, Prod.mk.injEq]
+      split_ifs <;> (try simp only [norm_neg, norm_mul, hdd, Complex.norm_I, norm_one, norm_zero]) <;> first | (norm_num; done) | (rename_i h1 h2; exact absurd (h1.1.symm.trans h2.1) h.ne)
+
+theorem norm_boxVec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (d : Ψ → Fin r → ℝ) (z : Fin r), (∀ τ a, d τ a = 1 ∨ d τ a = -1) → ∀ k, ‖boxVec d z k‖ = √2 := by
+  intro E _ _ _ r Ψ d z hd k
+  obtain ⟨τ, ⟨⟨a, b⟩, hab⟩⟩ := k
+  obtain ⟨P, Q, hPQ, hPn⟩ := boxEnt_norm_sq_eq (d τ) (hd τ) z a b hab
+  rw [EuclideanSpace.norm_eq]
+  congr 1
+  rw [Fintype.sum_prod_type, Finset.sum_eq_single τ]
+  · have : ∀ p : Fin r × Fin r, ‖(boxVec d z ⟨τ, ⟨(a, b), hab⟩⟩) (τ, p)‖ ^ 2 =
+        (if p = P then 1 else 0) + (if p = Q then 1 else 0) := by
+      intro p
+      rw [← hPn p]
+      simp [boxVec]
+    simp only [this, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    norm_num
+  · intro τ' _ hτ'
+    apply Finset.sum_eq_zero
+    intro p _
+    simp [boxVec, hτ']
+  · simp
+
+end GlobalTheory.CovTop.VolUp.FrameBox
+end
+
+open NumberField MeasureTheory Matrix GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.CovTop.VolUp GlobalTheory.CovTop.VolUp.FrameBox
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.norm_skewHermitianBasisVector_eq_sqrt_two : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ)) (d : Ψ → Fin r → ℝ) (z : Fin r), (∀ τ a, d τ a = 1 ∨ d τ a = -1) → ∀ k, ‖boxVec d z k‖ = √2 := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.FrameBox.norm_boxVec
+end
+
+section
+section
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+noncomputable section
+
+namespace GlobalTheory.CovTop.VolUp.FrameBox
+open Matrix
+
+theorem riemLie_frameBox_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (κ : Type) (p q : κ → ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r) (σ : κ ≃ Ψ) (A : ∀ ρ, Matrix (Fin (p ρ) ⊕ Fin (q ρ)) (Fin r) ℂ) (e : ∀ ρ, Fin (p ρ) ⊕ Fin (q ρ) ≃ Fin r), 1 ≤ r → IsIdent p q Ψ G x σ A e → ∀ t : ℝ, 0 < t → riemLie Ψ G x {X | ∀ τ a b, ‖((mat x τ)⁻¹ * Matrix.of (X τ) * mat x τ) a b‖ < t} ≤ ENNReal.ofReal ((3 * t) ^ (Ψ.card * (r ^ 2 - 1))) := by
+  classical
+  intro E _ _ _ r κ p q Ψ G x σ A e hr hI t ht
+  set W := (realLie Ψ G).comap (fromFrame x) with hW
+  set z : Fin r := ⟨0, hr⟩ with hz
+  set d := sgnR σ e with hd_def
+  have hd : ∀ τ a, d τ a = 1 ∨ d τ a = -1 := fun τ a => by
+    simp only [d, sgnR]; split_ifs <;> simp
+  have hinv := det_ne_zero_of_isIdent hI
+  have hvW : ∀ k, boxVec d z k ∈ W := fun k =>
+    (GlobalTheory.T.mem_realLie_iff_traceFree_skew_signs E r κ p q Ψ G x σ A e hI _).2 (GlobalTheory.T.skewHermitianBasisVector_traceFreeSkewCond E r Ψ d z hd k)
+  let K := Ψ × {ab : Fin r × Fin r // ab ≠ (z, z)}
+  let w : K → W := fun k => ⟨boxVec d z k, hvW k⟩
+  have hdual := GlobalTheory.T.skewHermitianCoordinate_dual_basisVector E r Ψ d z hd
+  have hcoord : ∀ (g : K → ℝ) j, boxCoord z j ((∑ k, g k • w k : W) : EuclideanSpace ℂ (Ψ × Fin r × Fin r)) = g j := by
+    intro g j
+    simp only [Submodule.coe_sum, Submodule.coe_smul, map_sum, map_smul, w, hdual, smul_eq_mul, mul_ite, mul_one, mul_zero]
+    rw [Fintype.sum_eq_single j (fun k hk => by rw [if_neg (Ne.symm hk)])]
+    rw [if_pos rfl]
+  have hli : LinearIndependent ℝ w := by
+    rw [Fintype.linearIndependent_iff]
+    intro g hg j
+    have := hcoord g j
+    rw [hg] at this
+    simpa using this.symm
+  have hcardK : Fintype.card K = Ψ.card * (r ^ 2 - 1) := by
+    simp [K, Fintype.card_prod, Fintype.card_coe, sq]
+  have hfin : Fintype.card K = Module.finrank ℝ W := by
+    refine le_antisymm hli.fintype_card_le_finrank ?_
+    rw [hcardK]
+    rcases Ψ.eq_empty_or_nonempty with h0 | ⟨τ0, hτ0⟩
+    · have hs : Subsingleton W := ⟨fun a b => Subtype.ext (PiLp.ext fun m => by
+        have := m.1.2; simp [h0] at this)⟩
+      rw [Module.finrank_zero_of_subsingleton]; exact Nat.zero_le _
+    · have hG : G.det ≠ 0 := by
+        intro h
+        apply (hinv ⟨τ0, hτ0⟩).2
+        rw [← RingHom.mapMatrix_apply, ← RingHom.map_det, h, map_zero]
+      exact finrank_comap_realLie_le Ψ G x hr hG fun τ => (hinv τ).1
+  have hspan : Submodule.span ℝ (Set.range w) = ⊤ := hli.span_eq_top_of_card_eq_finrank' hfin
+  have hrep : ∀ Y : W, Y = ∑ k, boxCoord z k (Y : EuclideanSpace ℂ (Ψ × Fin r × Fin r)) • w k := by
+    intro Y
+    have hYs : Y ∈ Submodule.span ℝ (Set.range w) := hspan ▸ Submodule.mem_top
+    obtain ⟨c, hc⟩ := Submodule.mem_span_range_iff_exists_fun ℝ |>.1 hYs
+    have h2 : ∀ j, boxCoord z j (Y : EuclideanSpace ℂ (Ψ × Fin r × Fin r)) = c j := by
+      intro j
+      rw [← hc]
+      exact hcoord _ j
+    simp_rw [h2]; exact hc.symm
+  set S := {X : Ψ → Fin r → Fin r → ℂ | ∀ τ a b, ‖((mat x τ)⁻¹ * Matrix.of (X τ) * mat x τ) a b‖ < t} with hS_def
+  have hSo : IsOpen S := by
+    simp only [hS_def, Set.setOf_forall]
+    refine isOpen_iInter_of_finite fun τ => isOpen_iInter_of_finite fun a => isOpen_iInter_of_finite fun b => isOpen_lt ?_ continuous_const
+    have : Continuous fun X : Ψ → Fin r → Fin r → ℂ => Matrix.of (X τ) := continuous_apply τ
+    exact (((continuous_const.matrix_mul this).matrix_mul continuous_const).matrix_elem a b).norm
+  have hf : Measurable (fun Y : W => fromFrame x Y.1) :=
+    ((fromFrame x).comp W.subtype).continuous_of_finiteDimensional.measurable
+  unfold riemLie
+  rw [Measure.map_apply hf hSo.measurableSet, OrthonormalBasis.addHaar_eq_volume]
+  have key1 : ∀ τ (M : Matrix (Fin r) (Fin r) ℂ),
+      (mat x τ)⁻¹ * (mat x τ * M * (mat x τ)⁻¹) * mat x τ = M := fun τ M => by
+    rw [Matrix.mul_assoc, Matrix.nonsing_inv_mul_cancel_right _ _ (hinv τ).1.isUnit,
+      Matrix.nonsing_inv_mul_cancel_left _ _ (hinv τ).1.isUnit]
+  have hsub : (fun Y : W => fromFrame x Y.1) ⁻¹' S ⊆
+      {y : W | ∃ c : K → ℝ, (∀ k, |c k| ≤ t) ∧ y = ∑ k, c k • w k} := by
+    intro Y hY
+    have hY' : ∀ τ a b, ‖(Y : EuclideanSpace ℂ (Ψ × Fin r × Fin r)) (τ, a, b)‖ < t := by
+      intro τ a b
+      have := hY τ a b
+      have e1 : Matrix.of (fromFrame x Y.1 τ) =
+          mat x τ * Matrix.of (fun a b => (Y : EuclideanSpace ℂ (Ψ × Fin r × Fin r)) (τ, a, b)) * (mat x τ)⁻¹ := rfl
+      rwa [e1, key1] at this
+    refine ⟨fun k => boxCoord z k (Y : EuclideanSpace ℂ (Ψ × Fin r × Fin r)), fun k => ?_, hrep Y⟩
+    obtain ⟨τ, ⟨⟨a, b⟩, hab⟩⟩ := k
+    simp only [boxCoord]
+    split_ifs
+    · exact (Complex.abs_re_le_norm _).trans (hY' _ _ _).le
+    · exact (Complex.abs_im_le_norm _).trans (hY' _ _ _).le
+    · exact (Complex.abs_im_le_norm _).trans (hY' _ _ _).le
+  refine (measure_mono hsub).trans ((GlobalTheory.T.volume_coordinateBox_le_hadamard W K w t ht.le hfin).trans (ENNReal.ofReal_le_ofReal ?_))
+  have hn : ∀ k, ‖w k‖ = √2 := fun k => GlobalTheory.T.norm_skewHermitianBasisVector_eq_sqrt_two E r Ψ d z hd k
+  simp only [hn, Finset.prod_const, Finset.card_univ]
+  rw [hcardK, ← mul_pow]
+  have h2 : 2 * t * √2 ≤ 3 * t := by
+    have hs : √2 ≤ 3 / 2 := by
+      rw [Real.sqrt_le_left (by norm_num)]; norm_num
+    nlinarith
+  exact pow_le_pow_left₀ (by positivity) h2 _
+
+end GlobalTheory.CovTop.VolUp.FrameBox
+end
+end
+
+open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
+open scoped ENNReal
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.riemannianLieMeasure_frameBox_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (κ : Type) (p q : κ → ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r) (σ : κ ≃ Ψ) (A : ∀ ρ, Matrix (Fin (p ρ) ⊕ Fin (q ρ)) (Fin r) ℂ) (e : ∀ ρ, Fin (p ρ) ⊕ Fin (q ρ) ≃ Fin r), 1 ≤ r → IsIdent p q Ψ G x σ A e → ∀ t : ℝ, 0 < t → riemLie Ψ G x {X | ∀ τ a b, ‖((mat x τ)⁻¹ * Matrix.of (X τ) * mat x τ) a b‖ < t} ≤ ENNReal.ofReal ((3 * t) ^ (Ψ.card * (r ^ 2 - 1))) := by
+  atlas_forward_decl GlobalTheory.CovTop.VolUp.FrameBox.riemLie_frameBox_le
+end
+
+section
 section
 open NumberField IsDedekindDomain MeasureTheory Matrix GlobalTheory.AdLat GlobalTheory.UCls GlobalTheory.SUVol ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.CovTop.VolUp
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.IndefR.Datum GlobalTheory.AdelicScalar
@@ -166,3 +1102,4 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.riemannianHaar_frameBall_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (κ : Type) (p q : κ → ℕ) (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E) (x : Frame Ψ r) (σ : κ ≃ Ψ) (A : ∀ ρ, Matrix (Fin (p ρ) ⊕ Fin (q ρ)) (Fin r) ℂ) (e : ∀ ρ, Fin (p ρ) ⊕ Fin (q ρ) ≃ Fin r), 1 ≤ r → IsIdent p q Ψ G x σ A e → ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 < ε → ε < ε₀ → riemHaar Ψ G x (frBall Ψ G x ε) ≤ ENNReal.ofReal ((8 * ε) ^ (Ψ.card * (r ^ 2 - 1))) := by
   atlas_forward_decl GlobalTheory.CovTop.VolUp.UpBall.riemHaar_frBall_le
+end

@@ -2,15 +2,457 @@ import Mathlib
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsLeadOfUnif
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusExtensionSmoothAffineSurjectiveFourierTerms
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.FlatSurjectiveKernel
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsImmersionOfForallAffineSurjectiveAppLE
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTorusPt
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSecBGenerating
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsVeryAmpleBySecBZero
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusExtensionSmoothAffineSurjectiveFourierTermsStatement
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsAmpleTensorAmplePowProjective
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.VtPull
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUnitSvalIff
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GermPullbackRestrictEq
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SvalEqSecRatioMul
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubringEqTopOfWeightUnits
 
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.Mum
+
+namespace GlobalTheory
+
+theorem isImmersion_of_forall_affine_surjective_appLE : ∀ (Y Z : Scheme.{0}) (φ : Y ⟶ Z), (∀ y : Y, ∃ (U : Z.Opens) (W : Y.Opens) (h : W ≤ φ ⁻¹ᵁ U), IsAffineOpen U ∧ φ y ∈ U ∧ φ ⁻¹ᵁ U ≤ W ∧ IsAffineOpen W ∧ Function.Surjective (φ.appLE U W h).hom) → IsImmersion φ := by
+  intro Y Z φ H
+  have H' : ∀ y : Y, ∃ U : Z.Opens, φ y ∈ U ∧ IsClosedImmersion (φ ∣_ U) := by
+    intro y
+    obtain ⟨U, W, h, hU, hy, hW, hWa, hs⟩ := H y
+    obtain rfl : W = φ ⁻¹ᵁ U := le_antisymm h hW
+    refine ⟨U, hy, ?_⟩
+    have : IsAffine U := hU
+    have : IsAffine (φ ⁻¹ᵁ U) := hWa
+    rw [MorphismProperty.arrow_mk_iso_iff @IsClosedImmersion
+      (Arrow.isoMk hWa.isoSpec hU.isoSpec (Scheme.Opens.toSpecΓ_naturality φ _) :
+        Arrow.mk (φ ∣_ U) ≅ Arrow.mk (Spec.map (φ.app U)))]
+    rw [Scheme.Hom.app_eq_appLE]
+    exact IsClosedImmersion.spec_of_surjective _ hs
+  choose U hyU hU using H'
+  have : MorphismProperty.RespectsRight @IsImmersion @IsOpenImmersion :=
+    ⟨fun i hi g hg => by
+      have : IsOpenImmersion i := hi
+      have : IsImmersion g := hg
+      infer_instance⟩
+  refine IsZariskiLocalAtTarget.of_range_subset_iSup (P := @IsImmersion) U ?_ fun y => ?_
+  · rintro _ ⟨y, rfl⟩
+    exact (le_iSup U y : U y ≤ ⨆ i, U i) (hyU y)
+  · have := hU y
+    infer_instance
+
+end GlobalTheory
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.Mum
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace GlobalTheory.Mum
+
+variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R}
+
+namespace Ext
+
+open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.Semi.Rosenlicht GlobalTheory.TorusModel GlobalTheory.TorusExt GlobalTheory.Serre
+
+theorem exists_torusPt {T : Over (Sp R)} (x : T ⟶ splitTorus (Sp R) D.X) : ∃ g : GtPt D T, g.b = 1 ∧
+    ∀ (χ : D.X) (Z : Scheme.{0}) (r : Z ⟶ T.left) y J, Good D.P.L y J →
+      (val (g.s χ) r y J).val = gs r y ⊤ ((coord x).hom (AddMonoidAlgebra.single χ 1)) := by
+  let u : Multiplicative D.X →* Γ(T.left, ⊤) :=
+    { toFun := fun χ => (coord x).hom (AddMonoidAlgebra.single χ.toAdd 1)
+      map_one' := Diag.coord_single_zero x
+      map_mul' := fun a b => Diag.coord_single_add x _ _ }
+  let v : ∀ χ : D.X, LB.Gen (LB.LinComb D.P.L (Y := T.left) (K := PEmpty.{1}) PEmpty.elim PEmpty.elim) := fun χ =>
+    ⟨fun _ => res le_top (u.toHomUnits (Multiplicative.ofAdd χ))⟩
+  have hv : ∀ χ (Z : Scheme.{0}) (r : Z ⟶ T.left) y J, Good D.P.L y J →
+      val (v χ) r y J = gm r y ⊤ (u.toHomUnits (Multiplicative.ofAdd χ)) := fun χ Z r y J hJ =>
+    gm_res r y _ (hJ.mem PEmpty.elim r) _
+  obtain ⟨g, hb, hg⟩ := exists_pt (1 : T ⟶ D.P.A) v (fun χ i j => by
+      obtain rfl : i = j := funext fun k => k.elim
+      have e : (LB.LinComb D.P.L (Y := T.left) (K := PEmpty.{1}) PEmpty.elim PEmpty.elim).g i i = 1 := by
+        dsimp only [LB.LinComb]
+        erw [Fintype.prod_empty]
+        rfl
+      rw [e, _root_.one_mul])
+    (fun χ U _ h => by
+      rw [prod_pt, _root_.mul_one, Fintype.prod_empty, inv_mul_cancel, _root_.one_mul, mul_inv_cancel])
+    (fun y J hJ => by rw [hv _ _ _ _ _ hJ, ofAdd_zero, map_one, map_one])
+    (fun χ χ' y J hJ => by
+      have C : IsCub (th D (T := T) y J) := isCub_cubV D.cub hJ
+      rw [C.face₃, _root_.mul_one, hv _ _ _ _ _ hJ, hv _ _ _ _ _ hJ, hv _ _ _ _ _ hJ, ofAdd_add, map_mul, map_mul])
+  exact ⟨g, hb, fun χ Z r y J hJ => by
+    rw [hg _ _ _ _ _ hJ, hv _ _ _ _ _ hJ]; exact (gs_unit r y ⊤ trivial _).symm⟩
+
+variable (Y : Ext D)
+
+theorem pt_b {T : Over (Sp R)} (x : T ⟶ Y.H) : (Y.Φ T x).b = x ≫ Y.q := by
+  have h := ((isPull_iff _ _ _).1 (Y.rep.1 T Y.H x (𝟙 _))).1
+  rwa [Category.comp_id] at h
+
+def torI : splitTorus (Sp R) D.X ⟶ Y.H :=
+  (Y.Φ _).symm (exists_torusPt (D := D) (𝟙 _)).choose
+
+theorem torI_pt {T : Over (Sp R)} (x : T ⟶ splitTorus (Sp R) D.X) : (Y.Φ T (x ≫ Y.torI)).b = 1 ∧
+    ∀ (χ : D.X) y J, Good D.P.L y J →
+      (cv (Y.Φ T (x ≫ Y.torI)) χ y J).val = gs (𝟙 _) y ⊤ ((coord x).hom (AddMonoidAlgebra.single χ 1)) := by
+  obtain ⟨h₁, h₂⟩ := (isPull_iff _ _ _).1 (Y.rep.1 T _ x Y.torI)
+  obtain ⟨e₁, e₂⟩ := (exists_torusPt (D := D) (𝟙 _)).choose_spec
+  have e : Y.Φ _ Y.torI = (exists_torusPt (D := D) (𝟙 _)).choose := Equiv.apply_symm_apply _ _
+  rw [e] at h₁ h₂
+  refine ⟨by rw [h₁, e₁, MonObj.comp_one], fun χ y J hJ => ?_⟩
+  rw [h₂ χ y J hJ, e₂ χ _ _ y J hJ]
+  conv_rhs => rw [← Category.comp_id x, coord_comp]
+  exact (gs_eq x.left y ⊤ trivial _).trans (gs_eq (𝟙 _) y ⊤ trivial _).symm
+
+theorem torI_q : Y.torI ≫ Y.q = 1 := by
+  have h := (Y.torI_pt (𝟙 _)).1
+  rwa [pt_b, Category.id_comp] at h
+
+theorem isMonHom_torI : IsMonHom Y.torI :=
+  isMonHom_of_mul _ fun T x x' => (Y.Φ T).injective <| by
+    refine isAdd_unique ((TorusModel.isAdd_iff _ _ _).2 ⟨?_, fun χ y J hJ => Units.ext ?_⟩) (Y.rep.2 T _ _)
+    · rw [(Y.torI_pt _).1, (Y.torI_pt _).1, (Y.torI_pt _).1, _root_.mul_one]
+    · have C : IsCub (th D (T := T) y J) := isCub_cubV D.cub hJ
+      rw [(Y.torI_pt x').1, C.face₃, _root_.mul_one, Units.val_mul, (Y.torI_pt _).2 χ y J hJ, (Y.torI_pt _).2 χ y J hJ,
+        (Y.torI_pt _).2 χ y J hJ]
+      exact (congrArg (gs _ y ⊤) (Diag.coord_mul x x' χ)).trans (gs_mul (𝟙 _) y ⊤ trivial _ _)
+
+theorem isKernel_torI : IsPullback Y.torI (toUnit _) Y.q η[D.P.A] := by
+  have ex : ∀ {T : Over (Sp R)} y, ∃ J, Good D.P.L (Z := T.left) y J := fun y => by
+    choose I hI using fun χ => exists_chart D.P.isLB ((χ : _ ⟶ D.P.A.left) y)
+    exact ⟨I, hI⟩
+  refine Diag.isPullback_toUnit_of_lift _ Y.torI_q (fun {T} a b h => Diag.hom_ext fun χ => fn_ext fun y _ => ?_)
+    fun {T} x hx => ?_
+  · obtain ⟨J, hJ⟩ := ex y
+    exact ((Y.torI_pt a).2 χ y J hJ).symm.trans (h ▸ (Y.torI_pt b).2 χ y J hJ)
+  · have hb : (Y.Φ T x).b = 1 := (Y.pt_b x).trans hx
+    have hF : ∀ χ, FormEq (DegPre.gtφT D T (Y.Φ T x).b χ) DegPre.gtε (K' := PEmpty.{1}) PEmpty.elim PEmpty.elim :=
+      fun χ U _ h => by
+        rw [prod_pt, hb, _root_.mul_one, Fintype.prod_empty, inv_mul_cancel, _root_.one_mul, mul_inv_cancel]
+    choose s _ vs using fun χ => exists_gen D.P.isLB (hF χ) _ ((Y.Φ T x).isGen χ)
+    have le : (⊤ : T.left.Opens) ≤ LB.wchart D.P.L (K := PEmpty.{1}) PEmpty.elim PEmpty.elim :=
+      fun _ _ => Set.mem_iInter.2 fun k => k.elim
+    let u : D.X → Γ(T.left, ⊤)ˣ := fun χ => res le ((s χ).s PEmpty.elim)
+    have hu : ∀ χ y J, Good D.P.L y J → gs (𝟙 _) y ⊤ (u χ).val = (cv (Y.Φ T x) χ y J).val := fun χ y J hJ =>
+      (gs_unit _ y ⊤ trivial _).trans (congrArg Units.val ((gm_res _ y le trivial _).trans
+        ((val_of (s χ) _ y J PEmpty.elim fun k => k.elim).symm.trans (vs χ _ _ y J hJ))))
+    let g : Multiplicative D.X →* Γ(T.left, ⊤) :=
+      { toFun := fun χ => (u χ.toAdd).val
+        map_one' := fn_ext fun y _ => by
+          obtain ⟨J, hJ⟩ := ex y
+          refine (hu 0 y J hJ).trans ?_
+          rw [cv_zero _ hJ, gs_eq _ y ⊤ trivial, map_one, map_one, Units.val_one]
+        map_mul' := fun a b => fn_ext fun y _ => by
+          obtain ⟨J, hJ⟩ := ex y
+          have C : IsCub (th D (T := T) y J) := isCub_cubV D.cub hJ
+          have e := cv_add (Y.Φ T x) hJ a.toAdd b.toAdd
+          rw [hb, C.face₃, _root_.mul_one] at e
+          refine (hu _ y J hJ).trans (Eq.trans ?_ (gs_mul _ y ⊤ trivial _ _).symm)
+          exact (congrArg Units.val e).trans (congrArg₂ (· * ·) (hu _ y J hJ) (hu _ y J hJ)).symm }
+    refine ⟨Diag.ofChar T g, (Y.Φ T).injective (pt_ext ((Y.torI_pt _).1.trans hb.symm) fun χ y J hJ => Units.ext ?_)⟩
+    exact ((Y.torI_pt _).2 χ y J hJ).trans ((congrArg (gs _ y ⊤) (Diag.coord_ofChar T g χ)).trans (hu χ y J hJ))
+
+theorem cv_torI {Z : Over (Sp R)} (t : Z ⟶ splitTorus (Sp R) D.X) (χ : D.X) (z : Z.left) J (hJ : Good D.P.L z J) :
+    cv (Y.Φ Z (t ≫ Y.torI)) χ z J = gm t.left z ⊤ (charUnit (Sp R) D.X χ) := by
+  have hc : t.left.appTop.hom (charUnit (Sp R) D.X χ).val = (coord t).hom (AddMonoidAlgebra.single χ 1) := by
+    rw [GlobalTheory.SplitTorus.charUnit_val]
+    conv_rhs => rw [← Category.comp_id t, coord_comp]
+    rfl
+  refine Units.ext (((Y.torI_pt t).2 χ z J hJ).trans ?_)
+  rw [← gs_unit t.left z ⊤ trivial, ← hc]
+  exact (gs_eq (𝟙 _) z ⊤ trivial _).trans (gs_eq t.left z ⊤ trivial _).symm
+
+theorem cv_torI_mul {Z : Over (Sp R)} (t : Z ⟶ splitTorus (Sp R) D.X) (g : Z ⟶ Y.H) (χ : D.X) (z : Z.left) J
+    (hJ : Good D.P.L z J) :
+    cv (Y.Φ Z ((t ≫ Y.torI) * g)) χ z J = gm t.left z ⊤ (charUnit (Sp R) D.X χ) * cv (Y.Φ Z g) χ z J := by
+  have h := ((TorusModel.isAdd_iff _ _ _).1 (Y.rep.2 Z (t ≫ Y.torI) g)).2 χ z J hJ
+  have C : IsCub (th D (T := Z) z J) := isCub_cubV D.cub hJ
+  rw [(Y.torI_pt t).1, C.face₂, _root_.mul_one, Y.cv_torI t χ z J hJ] at h
+  exact h
+
+end Ext
+
+theorem ext_torus : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (Y : Ext D), ∃ i : splitTorus (Sp R) D.X ⟶ Y.H,
+    IsMonHom i ∧ IsPullback i (toUnit _) Y.q η[D.P.A] ∧ ∀ (χ : D.X) (Z : Over (Sp R)) (t : Z ⟶ splitTorus (Sp R) D.X)
+      (g : Z ⟶ Y.H) (z : Z.left) J, Good D.P.L z J →
+        val ((Y.Φ Z ((t ≫ i) * g)).s χ) (𝟙 _) z J = gm t.left z ⊤ (charUnit (Sp R) D.X χ) * val ((Y.Φ Z g).s χ) (𝟙 _) z J :=
+  fun _ _ _ _ Y => ⟨Y.torI, Y.isMonHom_torI, Y.isKernel_torI, fun χ _ t g z J hJ => Y.cv_torI_mul t g χ z J hJ⟩
+
+end GlobalTheory.Mum
+end
+end
+
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits Filter
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open GlobalTheory.CechPic
+
+namespace GlobalTheory.Mum
+
+theorem exists_secB_generating : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] (D : DegPre R) (α : D.X),
+    ∃ k₀ : ℕ, ∀ k ≥ k₀, ∃ (n : ℕ) (b : Fin n → D.SecB k α), ⨆ j, nonzeroLocus (b j) = ⊤ := by
+  intro R _ _ _ D α
+  have hL := D.P.isLB
+  have := D.P.isAb.proper
+  have hA : IsAmpleLB D.P.L := (relAmple_iff_isAmpleLB_of_isAffine D.P.A hL).1 D.P.ample
+  have hN : ∀ k, (LB.LinComb D.P.L (D.famφB α) (DegPre.famε k)).IsLB := fun k => LB.isLB_linComb hL _ _
+  obtain ⟨k₀, hk⟩ := eventually_atTop.1 (hA.eventually_isGenerated_tens_lbPow (hN 0))
+  refine ⟨k₀, fun k h => ?_⟩
+  have hP := isLB_lbPow hL k
+  have hT := isLB_tens (hN 0) hP
+  refine (hk k h).of_lbIso (hN k) ((cls_eq_iff (hN k) hT).1 ?_)
+  rw [cls_tens (hN 0) hP hT, cls_lbPow hL, cls_linComb hL, cls_linComb hL]
+  simp only [Fin.sum_univ_four, DegPre.famφB, DegPre.famε, Matrix.cons_val, pull_id]
+  module
+
+end GlobalTheory.Mum
+end
+end
+
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+
+namespace GlobalTheory.Mum.WeightZero
+
+open GlobalTheory.ProjSpace GlobalTheory.AbLaw GlobalTheory.Cartier
+
+theorem veryAmpleBy_of_sval {R : Type} [CommRing R] {X Y Z : Scheme.{0}} {L : LB X} (hL : L.IsLB)
+    {K K' : Type} [Fintype K] [Fintype K'] {φ : K → (Y ⟶ X)} {ε : K → ℤ} {φ' : K' → (Z ⟶ X)} {ε' : K' → ℤ}
+    (g : Z ⟶ Y) [IsIso g] (f : Y ⟶ Sp R) {m : ℕ} (s : Fin (m + 1) → (LB.LinComb L φ ε).Sec)
+    (t : Fin (m + 1) → (LB.LinComb L φ' ε').Sec)
+    (h : ∀ i z J, Good L z J → sval (t i) (𝟙 Z) z J = sval (s i) g z J) (hs : VeryAmpleBy f _ s) :
+    VeryAmpleBy (g ≫ f) _ t := by
+  obtain ⟨hc, hi⟩ := (veryAmpleBy_iff f s).1 hs
+  have key : ∀ z : Z, ∃ (W : Z.Opens) (_ : z ∈ W) (k : (LB.LinComb L φ ε).ι)
+      (hk : W ≤ g ⁻¹ᵁ (LB.LinComb L φ ε).U k) (l : (LB.LinComb L φ' ε').ι) (hl : W ≤ (LB.LinComb L φ' ε').U l),
+      ∀ j, resG Z hl ((t j).f l) = (g.appLE _ W hk).hom ((s j).f k) := by
+    intro z
+    choose J hJ using fun χ : Z ⟶ X => exists_chart hL (χ z)
+    refine ⟨LB.wchart L φ' (fun k => J (𝟙 Z ≫ φ' k)) ⊓ g ⁻¹ᵁ LB.wchart L φ (fun k => J (g ≫ φ k)),
+      ⟨Good.mem hJ φ' (𝟙 Z), Good.mem hJ φ g⟩, fun k => J (g ≫ φ k), inf_le_right, fun k => J (𝟙 Z ≫ φ' k),
+      inf_le_left, fun j => fn_ext fun y hy => ?_⟩
+    obtain ⟨J', hJ', e⟩ := exists_good L hL y (Sum.elim (fun k => 𝟙 Z ≫ φ' k) (fun k => g ≫ φ k))
+      (fun a => J (Sum.elim (fun k => 𝟙 Z ≫ φ' k) (fun k => g ≫ φ k) a)) (fun a b e => congrArg J e) (by
+        rintro (a | a)
+        exacts [Set.mem_iInter.1 hy.1 a, Set.mem_iInter.1 hy.2 a])
+    have e₁ := h j y J' hJ'
+    rw [sval_of (t j) _ y J' _ (fun k => e (.inl k)), sval_of (s j) _ y J' _ (fun k => e (.inr k))] at e₁
+    refine (gs_res _ y _ hy _).trans (e₁.trans (Eq.symm ?_))
+    exact (gs_res (𝟙 Z) y inf_le_right hy _).trans (gs_pull (𝟙 Z) g y _ hy.2 _)
+  have ht : ⨆ i, nonzeroLocus (t i) = ⊤ := by
+    refine _root_.top_le_iff.1 fun z _ => ?_
+    obtain ⟨W, hz, k, hk, l, hl, e⟩ := key z
+    obtain ⟨i, hi⟩ := TopologicalSpace.Opens.mem_iSup.1 (hc.ge (Set.mem_univ (g z)))
+    have h₁ : z ∈ Z.basicOpen (resG Z hl ((t i).f l)) := by
+      rw [e i, Scheme.basicOpen_appLE]
+      exact ⟨hz, (mem_nonzeroLocus_iff _ k (hk hz)).1 hi⟩
+    rw [Scheme.basicOpen_res] at h₁
+    exact TopologicalSpace.Opens.mem_iSup.2 ⟨i, basicOpen_le_nonzeroLocus _ l h₁.2⟩
+  refine (veryAmpleBy_iff _ t).2 ⟨ht, ?_⟩
+  rw [toProj_eq_comp_of_locally hc g ht fun z => by
+    obtain ⟨W, hz, k, hk, l, hl, e⟩ := key z
+    exact ⟨W, hz, k, hk, l, hl, 1, fun j => (e j).trans (_root_.one_mul _).symm⟩]
+  infer_instance
+
+theorem formEq_weight_zero {R : Type} [CommRing R] [IsDomain R] (D : DegPre R) (k : ℕ) :
+    FormEq (fun _ : Fin k => 𝟙 D.P.A.left) (fun _ => 1) (D.famφB 0) (DegPre.famε k) := by
+  intro U _ h
+  have h0 : D.c 0 = 1 := by
+    have h : D.c 0 = D.c 0 * D.c 0 := by
+      have := D.c_add 0 0
+      rwa [add_zero] at this
+    exact mul_eq_left.1 h.symm
+  have h1 : toUnit D.P.A ≫ D.c 0 = 1 := by rw [h0, comp_one]
+  have h2 : toUnit D.P.A ≫ η[D.P.A] = 1 := rfl
+  have h3 : padd D.P.A (𝟙 D.P.A) (1 : D.P.A ⟶ D.P.A) = 𝟙 _ := _root_.mul_one (𝟙 D.P.A)
+  rw [Fin.prod_univ_four]
+  simp only [DegPre.famφB, DegPre.famε, h1, h2, h3]
+  simp [zpow_sub]
+
+theorem exists_veryAmpleBy_secB_zero (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] (D : DegPre R) (k : ℕ)
+    (hk : 4 ≤ k) : ∃ (m : ℕ) (s : Fin (m + 1) → D.SecB k 0), VeryAmpleBy D.P.A.hom _ s := by
+  obtain ⟨m, s, H⟩ := (GlobalTheory.allSixLaws.1.ample (Sp R) D.P k hk).2 ⊤ (isAffineOpen_top _)
+  have : IsIso (⊤ : (Sp R).Opens).ι := inferInstanceAs (IsIso (Sp R).topIso.hom)
+  have : IsIso (D.P.A.hom ⁻¹ᵁ ⊤).ι := inferInstanceAs (IsIso D.P.A.left.topIso.hom)
+  have h' := (veryAmpleBy_comp_iff (D.P.A.hom ∣_ ⊤) (⊤ : (Sp R).Opens).ι s).2 H
+  rw [morphismRestrict_ι] at h'
+  let ψ := inv (D.P.A.hom ⁻¹ᵁ ⊤).ι
+  have hψ : ψ ≫ (D.P.A.hom ⁻¹ᵁ ⊤).ι = 𝟙 _ := IsIso.inv_hom_id _
+  choose s' hs' using fun i => exists_sec_pull (L := D.P.L) _ _ (s i) ψ (fun _ : Fin k => 𝟙 D.P.A.left) fun _ => hψ.symm
+  choose t ht using fun i => exists_sec D.P.isLB (formEq_weight_zero D k) (s' i)
+  have := veryAmpleBy_of_sval D.P.isLB ψ _ s t (fun i z J hJ => by
+    refine (ht i _ _ z J hJ).trans ((hs' i _ z _ (hJ.mem _ _)).trans ?_)
+    rw [Category.id_comp, sval_of (s i) ψ z J (fun _ => J (𝟙 _ ≫ 𝟙 _)) fun _ => by rw [hψ, Category.id_comp]]) h'
+  rw [← Category.assoc, hψ, Category.id_comp] at this
+  exact ⟨m, t, this⟩
+
+end GlobalTheory.Mum.WeightZero
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.Mum
+
+namespace GlobalTheory.Mum
+
+theorem germPullback_restrict_eq {X Z : Scheme.{0}} (f : Z ⟶ X) (z : Z) {U V : X.Opens} (hle : V ≤ U) (h : f z ∈ V)
+    (a : Γ(X, U)) : gs f z V (resG X hle a) = gs f z U a := gs_res f z hle h a
+
+open GlobalTheory.ProjSpace in
+
+theorem secRatio_isTermOf_zero : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (Y : Ext D) (k : ℕ) (b₀ b : D.SecB k 0) (τ₀ τ : SecK D.P.L Y.q.left k), IsTermOf Y b₀ τ₀ → IsTermOf Y b τ → ∀ (W : Y.H.left.Opens) (h₁ : W ≤ Y.q.left ⁻¹ᵁ nonzeroLocus b₀) (h₂ : W ≤ nonzeroLocus τ₀), (Y.q.left.appLE (nonzeroLocus b₀) W h₁).hom (GlobalTheory.ProjSpace.secRatio b₀ b) = resG Y.H.left h₂ (GlobalTheory.ProjSpace.secRatio τ₀ τ) := by
+  intro R _ _ D Y k b₀ b τ₀ τ h₀ h W h₁ h₂
+  apply fn_ext
+  intro y hy
+  rw [gs_appLE Y.q.left (nonzeroLocus b₀) W h₁ (𝟙 _) y hy, Category.id_comp,
+    germPullback_restrict_eq (𝟙 Y.H.left) y h₂ hy]
+  choose J hJ using fun ψ : Y.H.left ⟶ D.P.A.left => ReciprocityTheory.ChartRestriction.G.Geo.Tor.exists_chart D.P.isLB (ψ y)
+  have hG : Good D.P.L y J := hJ
+  have e := h Y.H (𝟙 _) y J hG
+  have e₀ := h₀ Y.H (𝟙 _) y J hG
+  rw [Category.id_comp] at e e₀
+
+  have hqy : Y.q.left y ∈ nonzeroLocus b₀ ⊓ LB.wchart D.P.L (D.famφB 0) (fun κ => J (Y.q.left ≫ D.famφB 0 κ)) :=
+    ⟨h₁ hy, hG.mem (D.famφB 0) Y.q.left⟩
+  have sb := congrArg (gs Y.q.left y _) (secRatio_on b₀ b (fun κ => J (Y.q.left ≫ D.famφB 0 κ))
+    (W := nonzeroLocus b₀ ⊓ LB.wchart D.P.L (D.famφB 0) (fun κ => J (Y.q.left ≫ D.famφB 0 κ))) inf_le_left inf_le_right)
+  rw [gs_mul _ y _ hqy] at sb
+  erw [germPullback_restrict_eq _ y _ hqy, germPullback_restrict_eq _ y _ hqy, germPullback_restrict_eq _ y _ hqy] at sb
+
+  have hyτ : (𝟙 Y.H.left) y ∈ nonzeroLocus τ₀ ⊓ LB.wchart D.P.L (fun _ : Fin 1 => Y.q.left) (fun _ : Fin 1 => J (𝟙 Y.H.left ≫ Y.q.left)) :=
+    ⟨h₂ hy, hG.mem (fun _ : Fin 1 => Y.q.left) (𝟙 Y.H.left)⟩
+  have sτ := congrArg (gs (𝟙 Y.H.left) y _) (secRatio_on τ₀ τ (fun _ : Fin 1 => J (𝟙 Y.H.left ≫ Y.q.left))
+    (W := nonzeroLocus τ₀ ⊓ LB.wchart D.P.L (fun _ : Fin 1 => Y.q.left) (fun _ : Fin 1 => J (𝟙 Y.H.left ≫ Y.q.left))) inf_le_left inf_le_right)
+  rw [gs_mul _ y _ hyτ] at sτ
+  erw [germPullback_restrict_eq _ y _ hyτ, germPullback_restrict_eq _ y _ hyτ, germPullback_restrict_eq _ y _ hyτ] at sτ
+  have hu : IsUnit (sval τ₀ (𝟙 Y.H.left) y J) :=
+    (GlobalTheory.AmpleSpan.mem_nonzeroLocus_iff_gs τ₀ (𝟙 Y.H.left) y hyτ.2).1 hyτ.1
+  change sval τ (𝟙 Y.H.left) y J = _ * sval τ₀ (𝟙 Y.H.left) y J at sτ
+  change sval b Y.q.left y J = _ * sval b₀ Y.q.left y J at sb
+  change sval τ (𝟙 Y.H.left) y J = _ at e
+  change sval τ₀ (𝟙 Y.H.left) y J = _ at e₀
+  refine hu.mul_right_cancel ?_
+  rw [← sτ, e, sb, e₀]
+  exact (_root_.mul_assoc _ _ _).symm
+end GlobalTheory.Mum
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.Mum
+
+noncomputable section
+
+namespace GlobalTheory.Mum.TermWeight
+
+theorem sval_eq_secRatio_mul {X Y Z : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} {ε : K → ℤ}
+    (a b : LB.Sec (LB.LinComb L φ ε)) (r : Z ⟶ Y) (z : Z) {J} (hJ : Good L z J) (hz : r z ∈ nonzeroLocus a) :
+    sval b r z J = gs r z (nonzeroLocus a) (GlobalTheory.ProjSpace.secRatio a b) * sval a r z J := by
+  have hm : r z ∈ nonzeroLocus a ⊓ LB.wchart L φ (fun k => J (r ≫ φ k)) := ⟨hz, hJ.mem φ r⟩
+  have e := congrArg (gs r z _) (GlobalTheory.ProjSpace.secRatio_on a b (fun k => J (r ≫ φ k))
+    (W := nonzeroLocus a ⊓ LB.wchart L φ (fun k => J (r ≫ φ k))) inf_le_left inf_le_right)
+  exact (gs_res r z inf_le_right hm _).symm.trans (e.trans ((gs_mul r z _ hm _ _).trans
+    (congrArg₂ (· * ·) (gs_res r z inf_le_left hm _) (gs_res r z inf_le_right hm _))))
+
+theorem isWt_secRatio : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (Y : Ext D) (i : splitTorus (Sp R) D.X ⟶ Y.H), (∀ (χ : D.X) (Z : Over (Sp R)) (t : Z ⟶ splitTorus (Sp R) D.X) (g : Z ⟶ Y.H) (z : Z.left) J, Good D.P.L z J → val ((Y.Φ Z ((t ≫ i) * g)).s χ) (𝟙 _) z J = gm t.left z ⊤ (charUnit (Sp R) D.X χ) * val ((Y.Φ Z g).s χ) (𝟙 _) z J) → IsPullback i (toUnit _) Y.q η[D.P.A] → ∀ (k : ℕ) (α : D.X) (b₀ : D.SecB k 0) (b : D.SecB k α) (τ₀ τ : SecK D.P.L Y.q.left k), IsTermOf Y b₀ τ₀ → IsTermOf Y b τ → GlobalTheory.UU.IsWt i (nonzeroLocus τ₀) (GlobalTheory.ProjSpace.secRatio τ₀ τ) α := by
+  intro R _ _ D Y i hi hk k α b₀ b τ₀ τ h₀ h
+  have := Y.isMonHom_q
+  refine GlobalTheory.GtCoordCompare.isWt_of_gs fun Z t g hg z => ?_
+  obtain ⟨J, hJ⟩ := GlobalTheory.UU.exists_good_pt D.P.isLB z
+  have hq : (((t ≫ i) * g) ≫ Y.q).left = (g ≫ Y.q).left := GlobalTheory.GtCoordCompare.act_comp hk.w t g
+  have z₁ : val ((Y.Φ Z ((t ≫ i) * g)).s 0) (𝟙 _) z J = 1 := GlobalTheory.TorusModel.cv_zero _ hJ
+  have z₂ : val ((Y.Φ Z g).s 0) (𝟙 _) z J = 1 := GlobalTheory.TorusModel.cv_zero _ hJ
+  have e₀ : sval τ₀ ((t ≫ i) * g).left z J = sval τ₀ g.left z J := by
+    rw [h₀ Z _ z J hJ, h₀ Z g z J hJ, hq, z₁, z₂]
+  have e : sval τ ((t ≫ i) * g).left z J =
+      (gm t.left z ⊤ (charUnit (Sp R) D.X α)).val * sval τ g.left z J := by
+    rw [h Z _ z J hJ, h Z g z J hJ, hq, hi α Z t g z J hJ, Units.val_mul, mul_left_comm]
+  have hz : g.left z ∈ nonzeroLocus τ₀ := hg (Set.mem_univ z)
+  have hu : IsUnit (sval τ₀ g.left z J) := (TermLocus.isUnit_sval_iff τ₀ _ z hJ).2 hz
+  have hz' : ((t ≫ i) * g).left z ∈ nonzeroLocus τ₀ := (TermLocus.isUnit_sval_iff τ₀ _ z hJ).1 (e₀ ▸ hu)
+  refine hu.mul_right_cancel ?_
+  rw [_root_.mul_assoc, ← sval_eq_secRatio_mul τ₀ τ g.left z hJ hz, ← e, sval_eq_secRatio_mul τ₀ τ _ z hJ hz', e₀]
+
+end GlobalTheory.Mum.TermWeight
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj
+attribute [local instance] Over.cartesianMonoidalCategory
+open GlobalTheory.Mum
+
+namespace GlobalTheory.Mum
+
+set_option maxHeartbeats 1000000 in
+
+theorem subring_eq_top_of_weight_units : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (Y : Ext D) (i : splitTorus (Sp R) D.X ⟶ Y.H), IsMonHom i → IsPullback i (toUnit _) Y.q η[D.P.A] → ∀ {κ : Type} (bs : Module.Basis κ ℤ D.X) (V : D.P.A.left.Opens), IsAffineOpen V → ∀ (u : κ → Γ(Y.H.left, Y.q.left ⁻¹ᵁ V)ˣ), (∀ c, GlobalTheory.UU.IsWt i _ (u c).val (bs c)) → ∀ S : Subring Γ(Y.H.left, Y.q.left ⁻¹ᵁ V), (∀ c, (Y.q.left.app V).hom c ∈ S) → (∀ c, (u c).val ∈ S ∧ ((u c)⁻¹).val ∈ S) → S = ⊤ := by
+  intro R _ _ D Y i hi hk κ bs V hV u hu S hS hSu
+  obtain ⟨hsm, haff, hsurj⟩ := Y.q_props
+  have hmon : IsMonHom Y.q := Y.isMonHom_q
+  let m : Multiplicative D.X →* Γ(Y.H.left, Y.q.left ⁻¹ᵁ V)ˣ :=
+    AddMonoidHom.toMultiplicativeLeft (bs.constr ℤ (fun k => Additive.ofMul (u k))).toAddMonoidHom
+  have hm : ∀ k, m (Multiplicative.ofAdd (bs k)) = u k := fun k =>
+    congrArg Additive.toMul (bs.constr_basis ℤ (fun k => Additive.ofMul (u k)) k)
+  have key : ∀ χ : D.X, GlobalTheory.UU.IsWt i _ (m (Multiplicative.ofAdd χ)).val χ ∧
+      (m (Multiplicative.ofAdd χ)).val ∈ S ∧ (m (Multiplicative.ofAdd χ))⁻¹.val ∈ S := by
+    intro χ
+    have hχ : χ ∈ AddSubgroup.closure (Set.range bs) := by
+      rw [← Submodule.span_int_eq_addSubgroupClosure, bs.span_eq]; trivial
+    refine AddSubgroup.closure_induction (p := fun x _ => GlobalTheory.UU.IsWt i _ (m (Multiplicative.ofAdd x)).val x ∧
+      (m (Multiplicative.ofAdd x)).val ∈ S ∧ (m (Multiplicative.ofAdd x))⁻¹.val ∈ S) ?_ ?_ ?_ ?_ hχ
+    · rintro _ ⟨k, rfl⟩
+      rw [hm]; exact ⟨hu k, hSu k⟩
+    · rw [ofAdd_zero, map_one]; exact ⟨GlobalTheory.UU.isWt_one, S.one_mem, by simpa using S.one_mem⟩
+    · intro x y _ _ hx hy
+      rw [ofAdd_add, map_mul]
+      refine ⟨hx.1.mul hy.1, ?_, ?_⟩
+      · rw [Units.val_mul]; exact S.mul_mem hx.2.1 hy.2.1
+      · rw [mul_inv, Units.val_mul]; exact S.mul_mem hx.2.2 hy.2.2
+    · intro x _ hx
+      rw [ofAdd_neg, map_inv]
+      exact ⟨hx.1.inv, hx.2.2, by rw [inv_inv]; exact hx.2.1⟩
+  have hbij := (isAffineOpen_and_bijective_of_weight_units (Sp R) D.X Y.H D.P.A Y.q i hmon hi inferInstance
+    hsurj inferInstance hk V hV m (fun χ => (key χ).1)).2
+  refine (Subring.eq_top_iff' S).2 fun f => ?_
+  obtain ⟨x, rfl⟩ := hbij.2 f
+  induction x using AddMonoidAlgebra.induction_linear with
+  | zero => rw [map_zero]; exact S.zero_mem
+  | add a b ha hb => rw [map_add]; exact S.add_mem ha hb
+  | single χ c =>
+    change AddMonoidAlgebra.liftNC _ _ _ ∈ S
+    rw [AddMonoidAlgebra.liftNC_single]
+    exact S.mul_mem (hS c) (key χ).2.1
+
+end GlobalTheory.Mum
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -232,3 +674,4 @@ open GlobalTheory.Mum
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.exists_theta_immersion_torus_extension_projective : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (Y : Ext D.toPre), ∃ (S : Finset D.toPre.X) (k₁ : ℕ), ∀ k ≥ k₁, ∃ (N : ℕ) (α : Fin (N + 1) → D.toPre.X) (b : ∀ i, D.toPre.SecB k (α i)) (τ : Fin (N + 1) → SecK D.toPre.P.L Y.q.left k) (hτ : ⨆ i, nonzeroLocus (τ i) = ⊤), (∀ i, α i ∈ S ∧ IsTermOf Y (b i) (τ i)) ∧ IsImmersion (GlobalTheory.ProjSpace.toProj Y.H.hom τ hτ) := by
   atlas_forward_decl GlobalTheory.Mum.ThetaImm.exists_immersion
+end

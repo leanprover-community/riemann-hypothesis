@@ -1,10 +1,539 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.IsGaloisCover
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.MemRangeOfIsPullback
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaLevelAbelianSchemePullback
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaLevelPullbackIdCompCancelStatement
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaLevelIsoUniqueOfDenseCommonFibres
+import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.FiniteHomogeneousInf
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SurjectiveAppTopPullbackSndOfApp
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabComp
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsProjectiveModel
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.HasThetaConstantsIffOfThetaLevelPullback
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaConstantsUniqueUpToUnit
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaConstantsSatisfyClosureEquationsOfDenseClas
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.HasThetaConstantsRingBaseChangeStatement
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsThetaConstantsLocallyOnBase
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ThetaCosetNonvanishingOfHasThStatement
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsObjectAtMinimalPrime
 
+section
+noncomputable section
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+open GlobalTheory.ZM
+
+namespace GlobalTheory.RigidLocal
+
+open GlobalTheory.CechPic
+
+private theorem surjective_app_of_eq_of_surjective_comp_injective {X S : Scheme.{0}} (f : X ⟶ S) {W V : S.Opens} (e : W = V)
+    {R : CommRingCat} (g : Γ(X, f ⁻¹ᵁ W) ⟶ R)
+    (h : Function.Surjective (f.app W ≫ g).hom) (hg : Function.Injective g.hom) :
+    Function.Surjective (f.app V).hom := by
+  subst e
+  rw [CommRingCat.hom_comp, RingHom.coe_comp] at h
+  exact h.of_comp_left hg
+
+theorem surjective_app_of_pullback_snd {X S : Scheme.{0}} (f : X ⟶ S) (V : S.Opens)
+    (h : Function.Surjective (pullback.snd f V.ι).appTop.hom) : Function.Surjective (f.app V).hom := by
+  rw [← pullbackRestrictIsoRestrict_hom_morphismRestrict f V, Scheme.Hom.comp_appTop,
+    CommRingCat.hom_comp, RingHom.coe_comp] at h
+  have hi : IsIso (pullbackRestrictIsoRestrict f V).hom.appTop :=
+    inferInstanceAs (IsIso ((pullbackRestrictIsoRestrict f V).hom.app ⊤))
+  have h2 : Function.Surjective (f ∣_ V).appTop.hom :=
+    h.of_comp_left (ConcreteCategory.bijective_of_isIso (pullbackRestrictIsoRestrict f V).hom.appTop).1
+  rw [morphismRestrict_appTop] at h2
+  refine surjective_app_of_eq_of_surjective_comp_injective f V.ι_image_top _ h2 ?_
+  exact (ConcreteCategory.bijective_of_isIso
+    (X.presheaf.mapIso (eqToIso (image_morphismRestrict_preimage f V ⊤)).op).hom).1
+
+theorem eSec_comp {S : Scheme.{0}} {A A' : Over S} [GrpObj A] [GrpObj A'] {φ : A.left ⟶ A'.left}
+    (h : IsGrpPullback A A' (𝟙 S) φ) : eSec A ≫ φ = eSec A' :=
+  (GlobalTheory.PolBaseChange.eSec_comm h).trans (Category.id_comp _)
+
+theorem lbIso_of_local : Out.GlobalFnsSt → ∀ (S : Scheme.{0}) (A A' : Over S) [GrpObj A] [GrpObj A'] (L : LB A.left) (L' : LB A'.left) (φ : A.left ⟶ A'.left), IsAbelianScheme A → L.IsLB → L'.IsLB → Out.Rigidified A L → Out.Rigidified A' L' → IsGrpPullback A A' (𝟙 S) φ → (∀ p : S, ∃ (V B : Scheme.{0}) (x : V ⟶ S) (q : B ⟶ V) (a : B ⟶ A.left), IsOpenImmersion x ∧ p ∈ Set.range x ∧ IsPullback a q A.hom x ∧ LBIso (L.pull a) (L'.pull (a ≫ φ))) → LBIso L (L'.pull φ) := by
+  intro hG S A A' _ _ L L' φ hA hL hL' hR hR' hφ hloc
+  have hM : (L'.pull φ).IsLB := LB.isLB_pull hL' φ
+  have hN : (LB.div L (L'.pull φ)).IsLB := LB.isLB_div hL hM
+
+  have key : ∀ {Y : Scheme.{0}} (g : Y ⟶ A.left),
+      (∃ t : LB.Gen ((LB.div L (L'.pull φ)).pull g), t.IsGen) ↔
+        CechPic.pull g (CechPic.cls L hL) = CechPic.pull g (CechPic.cls _ hM) := by
+    intro Y g
+    rw [← cls_eq_zero_iff (LB.isLB_pull hN g), cls_pull hN g (LB.isLB_pull hN g), cls_div hL hM hN,
+      map_sub, sub_eq_zero]
+
+  have hsec : ∃ t : LB.Gen ((LB.div L (L'.pull φ)).pull (eSec A)), t.IsGen := by
+    rw [key]
+    have h1 : CechPic.pull (eSec A) (CechPic.cls L hL) = 0 := by
+      rw [← cls_pull hL (eSec A) (LB.isLB_pull hL _)]
+      exact (cls_eq_zero_iff _).2 hR
+    have h2 : CechPic.pull (eSec A') (CechPic.cls L' hL') = 0 := by
+      rw [← cls_pull hL' (eSec A') (LB.isLB_pull hL' _)]
+      exact (cls_eq_zero_iff _).2 hR'
+    rw [h1, cls_pull hL' φ hM, ← pull_comp, eSec_comp hφ, h2]
+
+  have hloc' : ∀ s : S, ∃ U : S.Opens, s ∈ U ∧
+      ∃ t : LB.Gen ((LB.div L (L'.pull φ)).pull (A.hom ⁻¹ᵁ U).ι), t.IsGen := by
+    intro s
+    obtain ⟨V, B, x, q, a, hx, hs, hpb, hiso⟩ := hloc s
+    refine ⟨x.opensRange, hs, ?_⟩
+    rw [key]
+    have w : (A.hom ⁻¹ᵁ x.opensRange).ι ≫ A.hom = ((A.hom ∣_ x.opensRange) ≫ x.isoOpensRange.inv) ≫ x := by
+      rw [Category.assoc, Scheme.Hom.isoOpensRange_inv_comp, morphismRestrict_ι]
+    obtain ⟨e, he⟩ : ∃ e, e ≫ a = (A.hom ⁻¹ᵁ x.opensRange).ι := ⟨hpb.lift _ _ w, hpb.lift_fst _ _ w⟩
+    have ha : CechPic.pull a (CechPic.cls L hL) = CechPic.pull a (CechPic.cls _ hM) := by
+      have h := (cls_eq_iff (LB.isLB_pull hL a) (LB.isLB_pull hL' (a ≫ φ))).2 hiso
+      rw [cls_pull hL a, cls_pull hL' (a ≫ φ), pull_comp] at h
+      rw [h, cls_pull hL' φ hM]
+    rw [← he, pull_comp, pull_comp, ha]
+  have hσ : eSec A ≫ A.hom = 𝟙 S := by
+    unfold eSec
+    exact (Over.w _).trans rfl
+  have hsurj : ∀ U : S.Opens, Function.Surjective (A.hom.app U).hom := fun U =>
+    surjective_app_of_pullback_snd A.hom U (surj_snd hG hA (Over.mk U.ι))
+  obtain ⟨t, ht⟩ := exists_gen_of_local_of_section A.left S A.hom (eSec A) _ hN hσ hsurj hloc' hsec
+  exact (cls_eq_iff hL hM).1 (sub_eq_zero.1 ((cls_div hL hM hN).symm.trans ((cls_eq_zero_iff hN).2 ⟨t, ht⟩)))
+
+end GlobalTheory.RigidLocal
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+open GlobalTheory.ZM
+
+noncomputable section
+namespace GlobalTheory.GrpLoc
+
+theorem hom_ext_loc {X Y : Scheme.{0}} {f g : X ⟶ Y}
+    (h : ∀ p : X, ∃ (W : Scheme.{0}) (a : W ⟶ X), IsOpenImmersion a ∧ p ∈ Set.range a ∧ a ≫ f = a ≫ g) : f = g := by
+  choose W a ha hp hfg using h
+  exact Scheme.Cover.hom_ext (Scheme.Cover.mkOfCovers (P := @IsOpenImmersion) X W a
+    (fun x => by obtain ⟨y, hy⟩ := hp x; exact ⟨x, y, hy⟩) ha) f g hfg
+
+theorem range_of_isPullback {P X Y Z : Scheme.{0}} {a : P ⟶ X} {b : P ⟶ Y} {f : X ⟶ Z} {g : Y ⟶ Z}
+    (h : IsPullback a b f g) (x : X) : x ∈ Set.range a ↔ f x ∈ Set.range g := by
+  constructor
+  · rintro ⟨p, rfl⟩
+    exact ⟨b p, by rw [← Scheme.Hom.comp_apply, ← h.w, Scheme.Hom.comp_apply]⟩
+  · rintro ⟨y, hy⟩
+    obtain ⟨q, hq₁, -⟩ := Scheme.Pullback.exists_preimage_pullback x y hy.symm
+    refine ⟨h.isoPullback.inv q, ?_⟩
+    rw [← Scheme.Hom.comp_apply, h.isoPullback_inv_fst, hq₁]
+
+theorem mul_left_pre {S : Scheme.{0}} {G : Over S} [GrpObj G] {T T' : Over S} (k : T'.left ⟶ T.left)
+    (hk : k ≫ T.hom = T'.hom) (x y : T ⟶ G) (x' y' : T' ⟶ G) (hx : x'.left = k ≫ x.left)
+    (hy : y'.left = k ≫ y.left) : (x' * y').left = k ≫ (x * y).left := by
+  have ex : x' = Over.homMk k hk ≫ x := by ext; simp [hx]
+  have ey : y' = Over.homMk k hk ≫ y := by ext; simp [hy]
+  rw [ex, ey, ← MonObj.comp_mul, Over.comp_left]
+  rfl
+
+theorem isGrpPullback_id_of_loc {S : Scheme.{0}} {A A' : Over S} [GrpObj A] [GrpObj A'] (φ : A.left ⟶ A'.left) [IsIso φ]
+    (w : φ ≫ A'.hom = A.hom)
+    (h : ∀ p : S, ∃ (W : Scheme.{0}) (x : W ⟶ S) (B : Over W) (_ : GrpObj B) (a : B.left ⟶ A.left),
+      IsOpenImmersion x ∧ p ∈ Set.range x ∧ IsGrpPullback B A x a ∧ IsGrpPullback B A' x (a ≫ φ)) :
+    IsGrpPullback A A' (𝟙 S) φ := by
+  refine ⟨IsPullback.of_horiz_isIso ⟨by simpa using w⟩, ?_⟩
+  intro T x y x₀ y₀ hx hy
+  apply hom_ext_loc
+  intro t
+  obtain ⟨W, xS, B, _, a, hxo, ⟨w0, hw0⟩, hB, hB'⟩ := h (T.hom t)
+  refine ⟨pullback T.hom xS, pullback.fst T.hom xS, inferInstance,
+    (range_of_isPullback (IsPullback.of_hasPullback T.hom xS) t).2 ⟨w0, hw0⟩, ?_⟩
+  let TW : Over W := Over.mk (pullback.snd T.hom xS)
+  have cx : (pullback.fst T.hom xS ≫ x.left) ≫ A.hom = pullback.snd T.hom xS ≫ xS := by
+    rw [Category.assoc, Over.w x, pullback.condition]
+  have cy : (pullback.fst T.hom xS ≫ y.left) ≫ A.hom = pullback.snd T.hom xS ≫ xS := by
+    rw [Category.assoc, Over.w y, pullback.condition]
+  have cx' : (pullback.fst T.hom xS ≫ x.left ≫ φ) ≫ A'.hom = pullback.snd T.hom xS ≫ xS := by
+    simpa [w] using cx
+  have cy' : (pullback.fst T.hom xS ≫ y.left ≫ φ) ≫ A'.hom = pullback.snd T.hom xS ≫ xS := by
+    simpa [w] using cy
+  let XB : TW ⟶ B := Over.homMk (hB.1.lift _ _ cx) (hB.1.lift_snd _ _ cx)
+  let YB : TW ⟶ B := Over.homMk (hB.1.lift _ _ cy) (hB.1.lift_snd _ _ cy)
+  let x' : Over.mk (TW.hom ≫ xS) ⟶ A := Over.homMk (pullback.fst T.hom xS ≫ x.left) cx
+  let y' : Over.mk (TW.hom ≫ xS) ⟶ A := Over.homMk (pullback.fst T.hom xS ≫ y.left) cy
+  let x₁ : Over.mk (TW.hom ≫ xS) ⟶ A' := Over.homMk (pullback.fst T.hom xS ≫ x.left ≫ φ) cx'
+  let y₁ : Over.mk (TW.hom ≫ xS) ⟶ A' := Over.homMk (pullback.fst T.hom xS ≫ y.left ≫ φ) cy'
+  have e1 : (x' * y').left = (XB * YB).left ≫ a :=
+    hB.2 TW XB YB x' y' (hB.1.lift_fst _ _ cx).symm (hB.1.lift_fst _ _ cy).symm
+  have e2 : (x₁ * y₁).left = (XB * YB).left ≫ a ≫ φ := by
+    refine hB'.2 TW XB YB x₁ y₁ ?_ ?_
+    · simp only [x₁, XB, Over.homMk_left]
+      rw [← Category.assoc (hB.1.lift _ _ cx), hB.1.lift_fst, Category.assoc]
+    · simp only [y₁, YB, Over.homMk_left]
+      rw [← Category.assoc (hB.1.lift _ _ cy), hB.1.lift_fst, Category.assoc]
+  have hk : pullback.fst T.hom xS ≫ T.hom = (Over.mk (TW.hom ≫ xS)).hom := by
+    simp [TW, pullback.condition]
+  have hk' : pullback.fst T.hom xS ≫ (Over.mk (T.hom ≫ 𝟙 S)).hom = (Over.mk (TW.hom ≫ xS)).hom := by
+    simp [TW, pullback.condition]
+  have m1 := mul_left_pre (pullback.fst T.hom xS) hk x y x' y' rfl rfl
+  have m2 := mul_left_pre (pullback.fst T.hom xS) hk' x₀ y₀ x₁ y₁
+    (by simp only [x₁, Over.homMk_left, hx]) (by simp only [y₁, Over.homMk_left, hy])
+  rw [← m2, e2, ← Category.assoc, ← e1, m1, Category.assoc]
+
+theorem isGrpPullback_local_on_base : ∀ (S : Scheme.{0}) (A A' : Over S) [GrpObj A] [GrpObj A'] (φ : A.left ⟶ A'.left), IsIso φ → φ ≫ A'.hom = A.hom → (∀ p : S, ∃ (V : Scheme.{0}) (x : V ⟶ S) (B : Over V) (_ : GrpObj B) (a : B.left ⟶ A.left), IsOpenImmersion x ∧ p ∈ Set.range x ∧ IsGrpPullback B A x a ∧ IsGrpPullback B A' x (a ≫ φ)) → IsGrpPullback A A' (𝟙 S) φ := by
+  intro S A A' _ _ φ hφ w h
+  exact isGrpPullback_id_of_loc φ w h
+
+end GlobalTheory.GrpLoc
+end
+end
+
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+open GlobalTheory.ZM
+
+namespace GlobalTheory.ZM.UnivProp
+
+set_option backward.isDefEq.respectTransparency false
+
+theorem exists_spMap {A B : Type} [CommRing A] [CommRing B] (f : Sp B ⟶ Sp A) : ∃ β : A →+* B, f = spMap β :=
+  ⟨(Spec.preimage f).hom, by simp [spMap]⟩
+
+theorem spMap_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
+    spMap g ≫ spMap f = spMap (g.comp f) := by
+  simp [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
+
+theorem exists_geomPt (X : Scheme.{0}) (p : X) :
+    ∃ (K : Type) (_ : Field K) (_ : IsAlgClosed K) (y : Sp K ⟶ X), p ∈ Set.range y := by
+  refine ⟨AlgebraicClosure (X.residueField p), inferInstance, inferInstance,
+    spMap (algebraMap (X.residueField p) _) ≫ X.fromSpecResidueField p, ⟨(default : PrimeSpectrum _), ?_⟩⟩
+  rw [Scheme.Hom.comp_apply]
+  exact Scheme.fromSpecResidueField_apply p _
+
+theorem exists_lift_field {X V : Scheme.{0}} (x : V ⟶ X) [IsOpenImmersion x] {K : Type} [Field K] (y : Sp K ⟶ X)
+    {p : X} (hy : p ∈ Set.range y) (hx : p ∈ Set.range x) : ∃ z : Sp K ⟶ V, z ≫ x = y := by
+  have : Subsingleton (Sp K) := inferInstanceAs (Subsingleton (PrimeSpectrum K))
+  refine ⟨IsOpenImmersion.lift x y ?_, IsOpenImmersion.lift_fac _ _ _⟩
+  rintro _ ⟨a, rfl⟩
+  obtain ⟨a', rfl⟩ := hy
+  rwa [Subsingleton.elim a a']
+
+theorem hom_ext_affine {X Y : Scheme.{0}} (f g : X ⟶ Y)
+    (h : ∀ p : X, ∃ (V : Scheme.{0}) (x : V ⟶ X), IsOpenImmersion x ∧ p ∈ Set.range x ∧ x ≫ f = x ≫ g) : f = g := by
+  refine Scheme.hom_ext_of_forall f g fun p => ?_
+  obtain ⟨V, x, hx, hp, e⟩ := h p
+  refine ⟨x.opensRange, hp, ?_⟩
+  rw [← x.isoOpensRange_inv_comp, Category.assoc, Category.assoc, e]
+
+theorem exists_glue {X Y : Scheme.{0}} {I : Type} (V : I → Scheme.{0}) (x : ∀ i, V i ⟶ X) (hx : ∀ i, IsOpenImmersion (x i))
+    (hc : ∀ p : X, ∃ i, p ∈ Set.range (x i)) (f : ∀ i, V i ⟶ Y)
+    (h : ∀ i j (T : Type) [CommRing T] (z : Sp T ⟶ V i) (z' : Sp T ⟶ V j), z ≫ x i = z' ≫ x j → z ≫ f i = z' ≫ f j) :
+    ∃ F : X ⟶ Y, ∀ i, x i ≫ F = f i := by
+  let 𝒰 : X.OpenCover := Scheme.Cover.mkOfCovers I V x hc hx
+  refine ⟨Scheme.Cover.glueMorphisms 𝒰 f fun i j => ?_, fun i => Scheme.Cover.ι_glueMorphisms 𝒰 f _ i⟩
+  refine hom_ext_affine _ _ fun p => ?_
+  obtain ⟨W, hW, hp, -⟩ := exists_isAffineOpen_mem_and_subset (U := ⊤) (x := p) trivial
+  refine ⟨_, hW.fromSpec, inferInstance, by rw [hW.range_fromSpec]; exact hp, ?_⟩
+  have := h i j Γ(pullback (x i) (x j), W) (hW.fromSpec ≫ pullback.fst (x i) (x j)) (hW.fromSpec ≫ pullback.snd (x i) (x j))
+    (by rw [Category.assoc, Category.assoc, pullback.condition])
+  rw [Category.assoc, Category.assoc] at this
+  exact this
+
+theorem exists_glue' {X Y : Scheme.{0}} {I : Type} (V : I → Scheme.{0}) (x : ∀ i, V i ⟶ X) (hx : ∀ i, IsOpenImmersion (x i))
+    (hc : ∀ p : X, ∃ i, p ∈ Set.range (x i)) (f : ∀ i, V i ⟶ Y)
+    (h : ∀ i j (p : X), p ∈ Set.range (x i) → p ∈ Set.range (x j) → ∃ (k : I) (c : V k ⟶ V i) (c' : V k ⟶ V j),
+      p ∈ Set.range (x k) ∧ c ≫ x i = x k ∧ c' ≫ x j = x k ∧ c ≫ f i = c' ≫ f j) :
+    ∃ F : X ⟶ Y, ∀ i, x i ≫ F = f i := by
+  refine exists_glue V x hx hc f fun i j T _ z z' e => hom_ext_affine _ _ fun p => ?_
+  obtain ⟨k, c, c', hp, e₁, e₂, e₃⟩ := h i j ((z ≫ x i) p) ⟨z p, by simp⟩ (by rw [e]; exact ⟨z' p, by simp⟩)
+  have := hx i
+  have := hx j
+  have := hx k
+  refine ⟨_, pullback.fst (z ≫ x i) (x k), inferInstance, by rw [Scheme.Pullback.range_fst]; exact hp, ?_⟩
+  have a₁ : pullback.fst (z ≫ x i) (x k) ≫ z = pullback.snd (z ≫ x i) (x k) ≫ c := by
+    rw [← cancel_mono (x i), Category.assoc, Category.assoc, e₁, pullback.condition]
+  have a₂ : pullback.fst (z ≫ x i) (x k) ≫ z' = pullback.snd (z ≫ x i) (x k) ≫ c' := by
+    rw [← cancel_mono (x j), Category.assoc, Category.assoc, e₂, ← e, pullback.condition]
+  rw [← Category.assoc, ← Category.assoc, a₁, a₂, Category.assoc, Category.assoc, e₃]
+
+variable {o : Type} [CommRing o] {g : ℕ} {J : Type}
+
+def TBy {k : ℕ} {b : TBase o k} {S S' : Scheme.{0}} {s : S ⟶ Sp o} {s' : S' ⟶ Sp o} (t' : TObj g k J b s')
+    (t : TObj g k J b s) (f : S' ⟶ S) (φ : t'.A.left ⟶ t.A.left) : Prop :=
+  IsGrpPullback t'.A t.A f φ ∧ LBIso t'.L (t.L.pull φ) ∧
+    (∀ i, (t'.pt i).left ≫ φ = f ≫ (t.pt i).left) ∧ ∀ j, (t'.act j).left ≫ φ = φ ≫ (t.act j).left
+
+theorem TBy.comp {k : ℕ} {b : TBase o k} {S S' S'' : Scheme.{0}} {s : S ⟶ Sp o} {s' : S' ⟶ Sp o} {s'' : S'' ⟶ Sp o}
+    {t : TObj g k J b s} {t' : TObj g k J b s'} {t'' : TObj g k J b s''} {f : S' ⟶ S} {f' : S'' ⟶ S'} {φ} {φ'}
+    (h' : TBy t'' t' f' φ') (h : TBy t' t f φ) : TBy t'' t (f' ≫ f) (φ' ≫ φ) := by
+  refine ⟨h'.1.comp h.1, LBIso.trans t''.isLB (pull_isLB t'.isLB _) (pull_isLB t.isLB _) h'.2.1
+    (GlobalTheory.GenSpread.lbIso_pull_of_lbIso h.2.1 φ' rfl), fun i => ?_, fun j => ?_⟩
+  · rw [← Category.assoc, h'.2.2.1, Category.assoc, h.2.2.1, Category.assoc]
+  · rw [← Category.assoc, h'.2.2.2, Category.assoc, h.2.2.2, Category.assoc]
+
+variable {N' : ℕ} {b : TBase o (N' ^ 2)} {m : ℕ}
+
+theorem TBy.unique (hL : Out.Laws) (hL2 : Out.Laws2) (hm : 2 ≤ m) (hd : m ^ 2 ∣ N') (ho : Odd N')
+    {R : Type} [CommRing R] [_root_.IsReduced R] {β : o →+* R} {S : Scheme.{0}} {s : S ⟶ Sp o}
+    {t : TObj g (N' ^ 2) J b s} {u : TObj g (N' ^ 2) J b (spMap β)} {x : Sp R ⟶ S} {φ φ'}
+    (h : TBy u t x φ) (h' : TBy u t x φ') : φ = φ' := by
+  obtain ⟨e, he, e₁⟩ := grpPullback_iso h'.1 h.1
+  have : IsMonHom (Iso.refl u.A).hom := inferInstanceAs (IsMonHom (𝟙 u.A))
+  have hd := (GlobalTheory.T.thetaLevel_iso_unique_of_dense_common_fibres hL hL2 o g N' J b m R β u u hm hd ho (fun p => subset_closure (by
+    obtain ⟨K, _, _, y, hy⟩ := exists_geomPt _ p
+    obtain ⟨w, hw⟩ := GlobalTheory.tObj_pull o g _ J b _ _ (spMap β) _ y u rfl
+    exact ⟨K, inferInstance, y, w, hy, hw, hw⟩))).2 e.hom.left (Iso.refl u.A).hom.left
+    (isGrpPullback_of_iso e) (isGrpPullback_of_iso (Iso.refl u.A))
+    (LBIso.trans u.isLB (pull_isLB t.isLB _) (pull_isLB u.isLB _) h'.2.1
+      (GlobalTheory.GenSpread.lbIso_pull_of_lbIso h.2.1 _ e₁.symm).symm)
+    (LBIso.trans u.isLB (pull_isLB t.isLB _) (pull_isLB u.isLB _) h.2.1
+      (GlobalTheory.GenSpread.lbIso_pull_of_lbIso h.2.1 _ (by simp)).symm) (fun i => by
+      apply h.1.1.hom_ext
+      · rw [Category.assoc, e₁, h'.2.2.1]
+        simpa using (h.2.2.1 i).symm
+      · simp)
+  rw [← e₁, hd]
+  simp
+
+theorem exists_common (hL : Out.Laws) (hL2 : Out.Laws2) (hm : 2 ≤ m) (hd : m ^ 2 ∣ N') (ho : Odd N')
+    {S : Scheme.{0}} {s : S ⟶ Sp o} {t t' : TObj g (N' ^ 2) J b s}
+    (h : ∀ (K : Type) [Field K] [IsAlgClosed K] (y : Sp K ⟶ S) (u : TObj g (N' ^ 2) J b (y ≫ s)), TMap u t y → TMap u t' y)
+    {R : Type} [CommRing R] [_root_.IsReduced R] (x : Sp R ⟶ S) (β : o →+* R) (hβ : x ≫ s = spMap β) :
+    ∃ (u : TObj g (N' ^ 2) J b (spMap β)) (a : _) (φ : _), TBy u t x a ∧ TBy u t' x φ := by
+  obtain ⟨u, a, ha⟩ := GlobalTheory.tObj_pull o g _ J b _ _ s _ x t hβ
+  obtain ⟨u', hu'⟩ := GlobalTheory.tObj_pull o g _ J b _ _ s _ x t' hβ
+  have h' : ∀ (K : Type) [Field K] [IsAlgClosed K] (y : Sp K ⟶ S) (sy : Sp K ⟶ Sp o) (u : TObj g (N' ^ 2) J b sy),
+      y ≫ s = sy → TMap u t y → TMap u t' y := by
+    intro K _ _ y sy u e
+    subst e
+    exact h K y u
+  have h₁ : TMap u u' (𝟙 _) := (GlobalTheory.T.thetaLevel_iso_unique_of_dense_common_fibres hL hL2 o g N' J b m R β u u' hm hd ho (fun p => subset_closure (by
+    obtain ⟨K, _, _, y, hy⟩ := exists_geomPt _ p
+    obtain ⟨w, hw⟩ := GlobalTheory.tObj_pull o g _ J b _ _ (spMap β) _ y u rfl
+    refine ⟨K, inferInstance, y, w, hy, hw, ((GlobalTheory.T.thetaLevelPullback_id_comp_cancel o g _ J b _ _ _ _ _ _ t' u' w).2 x y hu').2 ?_⟩
+    exact h' K _ _ w (by rw [Category.assoc, hβ])
+      (((GlobalTheory.T.thetaLevelPullback_id_comp_cancel o g _ J b _ _ _ _ _ _ t u w).2 x y ⟨a, ha⟩).1 hw)))).1
+  have h₂ := ((GlobalTheory.T.thetaLevelPullback_id_comp_cancel o g _ J b _ _ _ _ _ _ t' u' u).2 x _ hu').1 h₁
+  rw [Category.id_comp] at h₂
+  obtain ⟨φ, hφ⟩ := h₂
+  exact ⟨u, a, φ, ha, hφ⟩
+
+theorem mem_range_of_isPullback {P X Y Z : Scheme.{0}} {a : P ⟶ X} {q : P ⟶ Y} {f : X ⟶ Z} {x : Y ⟶ Z}
+    (h : IsPullback a q f x) (p : X) : p ∈ Set.range a ↔ f p ∈ Set.range x := by
+  constructor
+  · rintro ⟨z, rfl⟩
+    exact ⟨q z, by rw [← Scheme.Hom.comp_apply, ← h.w, Scheme.Hom.comp_apply]⟩
+  · rintro ⟨y, hy⟩
+    obtain ⟨z, hz, -⟩ := Scheme.exists_preimage_of_isPullback h p y hy.symm
+    exact ⟨z, hz⟩
+
+theorem tMap_id_of_geomPt (hL : Out.Laws) (hL2 : Out.Laws2) (hm : 2 ≤ m) (hd : m ^ 2 ∣ N') (ho : Odd N')
+    {S : Scheme.{0}} [IsReduced S] {s : S ⟶ Sp o} {t t' : TObj g (N' ^ 2) J b s}
+    (h : ∀ (K : Type) [Field K] [IsAlgClosed K] (y : Sp K ⟶ S) (u : TObj g (N' ^ 2) J b (y ≫ s)), TMap u t y → TMap u t' y) :
+    TMap t t' (𝟙 S) := by
+  let x : ∀ V : S.affineOpens, Sp Γ(S, V) ⟶ S := fun V => V.2.fromSpec
+  have hx : ∀ V, IsOpenImmersion (x V) := fun V => inferInstanceAs (IsOpenImmersion V.2.fromSpec)
+  have rx : ∀ V, Set.range (x V) = V.1 := fun V => V.2.range_fromSpec
+  choose β hβ using fun V => exists_spMap (x V ≫ s)
+  choose u a φ ha hφ using fun V => exists_common hL hL2 hm hd ho h (x V) (β V) (hβ V)
+  have cov : ∀ p : S, ∃ V, p ∈ Set.range (x V) := fun p => by
+    obtain ⟨W, hW, hp, -⟩ := exists_isAffineOpen_mem_and_subset (U := ⊤) (x := p) trivial
+    exact ⟨⟨W, hW⟩, by rw [rx]; exact hp⟩
+  have res : ∀ V W : S.affineOpens, W.1 ≤ V.1 → ∃ c : (u W).A.left ⟶ (u V).A.left, c ≫ a V = a W ∧ c ≫ φ V = φ W := by
+    intro V W hle
+    have := hx V
+    have e := IsOpenImmersion.lift_fac (x V) (x W) (by rw [rx, rx]; exact hle)
+    obtain ⟨c, hc⟩ := ((GlobalTheory.T.thetaLevelPullback_id_comp_cancel o g _ J b _ _ _ _ _ _ t (u V) (u W)).2 (x V) _ ⟨_, ha V⟩).2
+      (by rw [e]; exact ⟨_, ha W⟩)
+    have h₁ := TBy.comp hc (ha V)
+    have h₂ := TBy.comp hc (hφ V)
+    rw [e] at h₁ h₂
+    exact ⟨c, h₁.unique hL hL2 hm hd ho (ha W), h₂.unique hL hL2 hm hd ho (hφ W)⟩
+  have ref : ∀ (V V' : S.affineOpens) (p : S), p ∈ Set.range (x V) → p ∈ Set.range (x V') →
+      ∃ (W : S.affineOpens) (c : (u W).A.left ⟶ (u V).A.left) (c' : (u W).A.left ⟶ (u V').A.left),
+        p ∈ Set.range (x W) ∧ c ≫ a V = a W ∧ c ≫ φ V = φ W ∧ c' ≫ a V' = a W ∧ c' ≫ φ V' = φ W := by
+    intro V V' p hp hp'
+    rw [rx] at hp hp'
+    obtain ⟨W, hW, hpW, hle⟩ := exists_isAffineOpen_mem_and_subset (U := V.1 ⊓ V'.1) (x := p) ⟨hp, hp'⟩
+    obtain ⟨c, e₁, e₂⟩ := res V ⟨W, hW⟩ fun z hz => (hle hz).1
+    obtain ⟨c', e₁', e₂'⟩ := res V' ⟨W, hW⟩ fun z hz => (hle hz).2
+    exact ⟨⟨W, hW⟩, c, c', by rw [rx]; exact hpW, e₁, e₂, e₁', e₂'⟩
+  have oa : ∀ V, IsOpenImmersion (a V) := fun V => MorphismProperty.of_isPullback (ha V).1.1.flip (hx V)
+  have oφ : ∀ V, IsOpenImmersion (φ V) := fun V => MorphismProperty.of_isPullback (hφ V).1.1.flip (hx V)
+  have ca : ∀ p : t.A.left, ∃ V, p ∈ Set.range (a V) := fun p => by
+    obtain ⟨V, hV⟩ := cov (t.A.hom p)
+    exact ⟨V, (mem_range_of_isPullback (ha V).1.1 p).2 hV⟩
+  have cφ : ∀ p : t'.A.left, ∃ V, p ∈ Set.range (φ V) := fun p => by
+    obtain ⟨V, hV⟩ := cov (t'.A.hom p)
+    exact ⟨V, (mem_range_of_isPullback (hφ V).1.1 p).2 hV⟩
+  obtain ⟨Φ, hΦ⟩ := exists_glue' _ a oa ca φ fun V V' p hp hp' => by
+    obtain ⟨W, c, c', hW, e₁, e₂, e₃, e₄⟩ := ref V V' _ ((mem_range_of_isPullback (ha V).1.1 p).1 hp)
+      ((mem_range_of_isPullback (ha V').1.1 p).1 hp')
+    exact ⟨W, c, c', (mem_range_of_isPullback (ha W).1.1 p).2 hW, e₁, e₃, e₂.trans e₄.symm⟩
+  obtain ⟨Ψ, hΨ⟩ := exists_glue' _ φ oφ cφ a fun V V' p hp hp' => by
+    obtain ⟨W, c, c', hW, e₁, e₂, e₃, e₄⟩ := ref V V' _ ((mem_range_of_isPullback (hφ V).1.1 p).1 hp)
+      ((mem_range_of_isPullback (hφ V').1.1 p).1 hp')
+    exact ⟨W, c, c', (mem_range_of_isPullback (hφ W).1.1 p).2 hW, e₂, e₄, e₁.trans e₃.symm⟩
+  have exta : ∀ {Y : Scheme.{0}} (f f' : t.A.left ⟶ Y), (∀ V, a V ≫ f = a V ≫ f') → f = f' := fun f f' e =>
+    hom_ext_affine f f' fun p => by
+      obtain ⟨V, hV⟩ := ca p
+      exact ⟨_, a V, oa V, hV, e V⟩
+  have iso : IsIso Φ := ⟨Ψ, exta _ _ fun V => by rw [← Category.assoc, hΦ, hΨ, Category.comp_id],
+    hom_ext_affine _ _ fun p => by
+      obtain ⟨V, hV⟩ := cφ p
+      exact ⟨_, φ V, oφ V, hV, by rw [← Category.assoc, hΨ, hΦ, Category.comp_id]⟩⟩
+  have grp : IsGrpPullback t.A t'.A (𝟙 S) Φ := GlobalTheory.GrpLoc.isGrpPullback_local_on_base S t.A t'.A Φ iso
+    (exta _ _ fun V => by rw [← Category.assoc, hΦ, (hφ V).1.1.w, (ha V).1.1.w]) fun p => by
+      obtain ⟨V, hV⟩ := cov p
+      exact ⟨_, x V, (u V).A, inferInstance, a V, hx V, hV, (ha V).1, by rw [hΦ]; exact (hφ V).1⟩
+  refine ⟨Φ, grp, GlobalTheory.RigidLocal.lbIso_of_local hL.globalFns S t.A t'.A t.L t'.L Φ t.ab t.isLB t'.isLB t.rigid t'.rigid grp fun p => ?_,
+    fun i => hom_ext_affine _ _ fun p => ?_, fun j => exta _ _ fun V => ?_⟩
+  · obtain ⟨V, hV⟩ := cov p
+    refine ⟨_, _, x V, (u V).A.hom, a V, hx V, hV, (ha V).1.1, ?_⟩
+    rw [hΦ]
+    exact LBIso.trans (pull_isLB t.isLB _) (u V).isLB (pull_isLB t'.isLB _) (ha V).2.1.symm (hφ V).2.1
+  · obtain ⟨V, hV⟩ := cov p
+    refine ⟨_, x V, hx V, hV, ?_⟩
+    rw [← Category.assoc, ← (ha V).2.2.1, Category.assoc, hΦ, (hφ V).2.2.1, Category.id_comp]
+  · rw [← Category.assoc, ← (ha V).2.2.2, Category.assoc, hΦ, (hφ V).2.2.2, ← Category.assoc, hΦ]
+
+end GlobalTheory.ZM.UnivProp
+end
+
+section
+section
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+open GlobalTheory.ZM
+
+namespace GlobalTheory.ZM
+
+theorem eval₂_mul_eq_zero_of_complex {o K₀ K σ : Type} [CommRing o] [Field K₀] [CommRing K] (β : o →+* K₀)
+    (i : K₀ →+* K) (j : K₀ →+* ℂ) (v : σ → K₀) (F : MvPolynomial σ o)
+    (h : ∀ c : ℂ, c ≠ 0 → MvPolynomial.eval₂ (j.comp β) (fun a => c * j (v a)) F = 0) (u : K) :
+    MvPolynomial.eval₂ (i.comp β) (fun a => u * i (v a)) F = 0 := by
+  let P : Polynomial K₀ :=
+    MvPolynomial.eval₂ (Polynomial.C.comp β) (fun a => Polynomial.X * Polynomial.C (v a)) F
+  have key : ∀ {E : Type} [CommRing E] (k : K₀ →+* E) (c : E),
+      Polynomial.eval₂RingHom k c P = MvPolynomial.eval₂ (k.comp β) (fun a => c * k (v a)) F := by
+    intro E _ k c
+    simp only [P]
+    rw [MvPolynomial.hom_eval₂]
+    congr 1
+    · ext r
+      simp
+    · funext a
+      rw [map_mul]
+      simp
+  have hP : P.map j = 0 := by
+    refine Polynomial.eq_zero_of_infinite_isRoot _ ((Set.finite_singleton (0 : ℂ)).infinite_compl.mono fun c hc => ?_)
+    change (P.map j).eval c = 0
+    rw [Polynomial.eval_map]
+    exact (key j c).trans (h c hc)
+  rw [Polynomial.map_eq_zero] at hP
+  rw [← key, hP, map_zero]
+
+theorem TObj.exists_hasTh_field (hL : Out.Laws) (hL2 : Out.Laws2) {o : Type} [CommRing o] {g N' : ℕ} {J : Type}
+    {b : TBase o (N' ^ 2)} {K : Type} [Field K] {s : Sp K ⟶ Sp o} (t : TObj g (N' ^ 2) J b s) (hN : Odd N') :
+    ∃ v : Ix g (N' ^ 2) → K, t.HasTh (𝟙 _) v := by
+  obtain ⟨R, _, x, v, hx, ⟨p, hp⟩, hth⟩ := GlobalTheory.ThetaLocal.exists_hasTh hL hL2 o g N' J b _ s t hN
+    (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum K)
+  have hr : Set.range (𝟙 (Sp K) : Sp K ⟶ Sp K) ⊆ Set.range x := by
+    rintro q -
+    exact ⟨p, Subsingleton.elim (α := PrimeSpectrum K) _ _⟩
+  obtain ⟨φ, hφ⟩ := Spec.map_surjective (IsOpenImmersion.lift x (𝟙 _) hr)
+  have e : spMap φ.hom ≫ x = 𝟙 _ := by
+    rw [← IsOpenImmersion.lift_fac x (𝟙 _) hr, ← hφ]
+    rfl
+  exact ⟨_, e ▸ GlobalTheory.T.hasThetaConstants_ring_baseChange hL2 o g N' J b _ s t R K φ.hom x v hth⟩
+
+theorem eval₂_eq_zero_of_fromC (hL : Out.Laws) (hL2 : Out.Laws2) {o : Type} [CommRing o] {g n N' : ℕ} {J : Type}
+    {b : TBase o (N' ^ 2)} {em : o →+* ℂ} {C : TObj g (N' ^ 2) J b (spMap em) → Prop} {S : Scheme.{0}}
+    {s : S ⟶ Sp o} {t : TObj g (N' ^ 2) J b s} (h2 : 2 ≤ n) (hn : n ∣ N') (hN : Odd N') {K : Type} [Field K]
+    {y : Sp K ⟶ S} (hy : FromC em C t y) (β : o →+* K) (hβ : y ≫ s = spMap β) {w : Ix g (N' ^ 2) → K}
+    (hw : t.HasTh y w) {F : MvPolynomial (Ix g (N' ^ 2)) o} (hF : F ∈ thIdeal em C) :
+    MvPolynomial.eval₂ β w F = 0 := by
+  obtain ⟨K₀, _, β₀, i, j, t₀, tx, tc, hem, hs, m1, m2, m3, hC⟩ := hy
+  have hβi : β = i.comp β₀ := by
+    have e : Spec.map (CommRingCat.ofHom β) = Spec.map (CommRingCat.ofHom β₀ ≫ CommRingCat.ofHom i) := by
+      rw [Spec.map_comp]
+      exact hβ.symm.trans hs
+    exact congrArg CommRingCat.Hom.hom (Spec.map_injective e)
+  have a1 : tx.HasTh (𝟙 _) w :=
+    (GlobalTheory.hasTh_iff_of_tmap o g N' J b _ _ t _ _ tx y K (𝟙 _) w m1).2 (by rwa [Category.id_comp])
+  have a2 : t₀.HasTh (spMap i) w := by
+    have := (GlobalTheory.hasTh_iff_of_tmap o g N' J b _ _ t₀ _ _ tx (spMap i) K (𝟙 _) w m2).1 a1
+    rwa [Category.id_comp] at this
+  obtain ⟨v₀, hv₀⟩ := t₀.exists_hasTh_field hL hL2 hN
+  have a3 : t₀.HasTh (spMap i) (fun a => i (v₀ a)) := by
+    have := GlobalTheory.T.hasThetaConstants_ring_baseChange hL2 o g N' J b _ _ t₀ K₀ K i (𝟙 _) v₀ hv₀
+    rwa [Category.comp_id] at this
+  have hspan : Ideal.span (Set.range fun a => i (v₀ a)) = ⊤ := by
+    obtain ⟨a, ha⟩ := GlobalTheory.T.thetaCosetNonvanishing_of_hasTh hL hL2 o g N' J b _ _ t₀ n K (spMap i) _ ⊥ h2 hn a3 Ideal.isPrime_bot 0
+    rw [Ideal.mem_bot] at ha
+    exact Ideal.eq_top_of_isUnit_mem _ (Ideal.subset_span ⟨_, rfl⟩) (Ne.isUnit ha)
+  obtain ⟨u, hu⟩ := GlobalTheory.hasTh_unique_unit hL hL2 o g N' J b _ _ t₀ K (spMap i) _ w a3 a2 hspan
+  have a4 : tc.HasTh (𝟙 _) (fun a => j (v₀ a)) := by
+    refine (GlobalTheory.hasTh_iff_of_tmap o g N' J b _ _ t₀ _ _ tc (spMap j) ℂ (𝟙 _) _ m3).2 ?_
+    have := GlobalTheory.T.hasThetaConstants_ring_baseChange hL2 o g N' J b _ _ t₀ K₀ ℂ j (𝟙 _) v₀ hv₀
+    rw [Category.comp_id] at this
+    rwa [Category.id_comp]
+  rw [hβi, funext hu]
+  refine eval₂_mul_eq_zero_of_complex β₀ i j v₀ F (fun c hc => ?_) u
+  have hle : thIdeal em C ≤ RingHom.ker (MvPolynomial.eval₂Hom em (fun a => c * j (v₀ a))) :=
+    iInf_le_of_le tc (iInf_le_of_le _ (iInf_le_of_le ⟨hC, a4.unit_mul c hc.isUnit⟩ le_rfl))
+  rw [hem]
+  exact hle hF
+
+theorem inMM_of_dense_fromSet :
+    Out.Laws → Out.Laws2 → ∀ (o : Type) [CommRing o] (g n N' : ℕ) (J : Type) (b : TBase o (N' ^ 2)) (em : o →+* ℂ) (C : TObj g (N' ^ 2) J b (spMap em) → Prop) (S : Scheme.{0}) (s : S ⟶ Sp o) (t : TObj g (N' ^ 2) J b s) (R : Type) [CommRing R] (β : o →+* R) (x : Sp R ⟶ S) (v : Ix g (N' ^ 2) → R), 2 ≤ n → n ∣ N' → Odd N' → IsReduced S → Dense (fromSet em C t) → IsOpenImmersion x → x ≫ s = spMap β → t.HasTh x v → InMM n N' (thIdeal em C) β v := by
+  intro hL hL2 o _ g n N' J b em C S s t R _ β x v h2 hn hN hS hd hx hβ hth
+  refine ⟨fun F hF => ?_, fun q hq => GlobalTheory.T.thetaCosetNonvanishing_of_hasTh hL hL2 o g N' J b S s t n R x v q h2 hn hth hq⟩
+  have hR : IsReduced (Sp R) := isReduced_of_isOpenImmersion x
+  have hR' : _root_.IsReduced R := (affine_isReduced_iff (CommRingCat.of R)).1 hR
+  refine IsNilpotent.eq_zero ((PrimeSpectrum.basicOpen_eq_bot_iff _).1 ?_)
+  by_contra hne
+  have hd' : Dense (x ⁻¹' fromSet em C t) := hd.preimage x.isOpenEmbedding.isOpenMap
+  obtain ⟨q, hq, K, _, y, ⟨p, hp⟩, hy⟩ := hd'.inter_open_nonempty
+    (PrimeSpectrum.basicOpen (MvPolynomial.eval₂ β v F) : Set (PrimeSpectrum R))
+    (PrimeSpectrum.basicOpen _).isOpen ((TopologicalSpace.Opens.ne_bot_iff_nonempty _).1 hne)
+  have hr : Set.range y ⊆ Set.range x := by
+    rintro _ ⟨p', rfl⟩
+    exact ⟨q, by rw [← hp, Subsingleton.elim (α := PrimeSpectrum K) p p']⟩
+  obtain ⟨φ, hφ⟩ := Spec.map_surjective (IsOpenImmersion.lift x y hr)
+  have e : spMap φ.hom ≫ x = y := by
+    rw [← IsOpenImmersion.lift_fac x y hr, ← hφ]
+    rfl
+  have hq' : PrimeSpectrum.comap φ.hom p = q := by
+    apply x.isOpenEmbedding.injective
+    rw [← hp, ← e]
+    rfl
+  have hw : t.HasTh y (fun a => φ.hom (v a)) := e ▸ GlobalTheory.T.hasThetaConstants_ring_baseChange hL2 o g N' J b S s t R K φ.hom x v hth
+  have hs : y ≫ s = spMap (φ.hom.comp β) := by
+    rw [← e, Category.assoc, hβ, ← Spec.map_comp]
+    rfl
+  have h0 := eval₂_eq_zero_of_fromC hL hL2 h2 hn hN hy _ hs hw hF
+  rw [← MvPolynomial.hom_eval₂] at h0
+  apply hq
+  rw [← hq']
+  change φ.hom _ ∈ PrimeSpectrum.asIdeal p
+  rw [h0]
+  exact Ideal.zero_mem _
+
+end GlobalTheory.ZM
+end
+
+open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
+open scoped CategoryTheory.Obj TensorProduct
+open GlobalTheory.ZM
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.thetaConstants_satisfy_closure_equations_of_dense_class : Out.Laws → Out.Laws2 → ∀ (o : Type) [CommRing o] (g n N' : ℕ) (J : Type) (b : TBase o (N' ^ 2)) (em : o →+* ℂ) (C : TObj g (N' ^ 2) J b (spMap em) → Prop) (S : Scheme.{0}) (s : S ⟶ Sp o) (t : TObj g (N' ^ 2) J b s) (R : Type) [CommRing R] (β : o →+* R) (x : Sp R ⟶ S) (v : Ix g (N' ^ 2) → R), 2 ≤ n → n ∣ N' → Odd N' → IsReduced S → Dense (fromSet em C t) → IsOpenImmersion x → x ≫ s = spMap β → t.HasTh x v → InMM n N' (thIdeal em C) β v := by
+  atlas_forward_decl GlobalTheory.ZM.inMM_of_dense_fromSet
+end
+
+section
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -147,3 +676,4 @@ open GlobalTheory.ZM
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.existsUnique_map_to_thetaFamily_openPart : Out.Laws → Out.Laws2 → ∀ (g : ℕ) (J : Type) [Finite J] (Mat : J → Matrix (Fin (2 * g)) (Fin (2 * g)) ℤ) (κ n : ℕ) (w w' : J), n.Prime → Odd n → ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ (o : Type) [CommRing o] (b : TBase o ((n ^ j) ^ 2)) (em : o →+* ℂ) (C : TObj g ((n ^ j) ^ 2) J b (spMap em) → Prop) (d : ℕ), ArBase em → GoodClass em C Mat κ w w' d → ∀ (F : WFam n em C Mat κ) (S : Scheme.{0}) (s' : S ⟶ Sp o) (t : TObj g ((n ^ j) ^ 2) J b s'), IsReduced S → Dense (fromSet em C t) → t.FibShape Mat κ → ∃! f : S ⟶ F.U.toScheme, f ≫ F.U.ι ≫ F.Y.s = s' ∧ TMap t F.univ f := by
   atlas_forward_decl GlobalTheory.ZM.UnivProp.existsUnique_map_of_wFam
+end

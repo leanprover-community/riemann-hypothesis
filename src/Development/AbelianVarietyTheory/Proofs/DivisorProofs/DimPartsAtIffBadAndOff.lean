@@ -5,16 +5,658 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SumWIffGoodFormsOrt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletelySplitPrimeHostPlaceProperties
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LevelHyperspecialTrivialCharacterSplitsOffPlaces
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrimeToPartFrob
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLabelsSemisimpleParameterGLFiniteFieldStatement
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquarefreeMonicPolyLabelsSemisimpleParameter
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TameLabelsOfGenerator
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ParabolicCharacterEqProdSuperdiagonalSum
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LabelsCharOne
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspidalCharacterFormula
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesLabelExistsUniqueGLn
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ISupIInfEigenspaceEqTop
+import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DsExistsOfDiscreteSeriesExists
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSelfDualAdelicFrameLevelOne
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBilinCyclic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseFrameIntegralGramMatrix
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GoodParameterFirstSpace
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryIntegralAdelicElementExists
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TypeCharacterConjugateInverse
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolomorphicShapeIntegralWeightGoodEmbedding
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasModelOfAntitone
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LemmaLSeriesWeightsOfGreenCuspidalParametrisatio
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.TameGeneratorWindow
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TypeIdempotentCoeffAcrossLayers
 
+section
+open Polynomial GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters GlobalTheory.ParamLabel
+
+namespace GlobalTheory.ParamLabel
+
+variable {p : ℕ} [Fact p.Prime]
+
+theorem exists_labelsChar_of_pos (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) (θ : Tor p d →* ℂˣ) :
+    ∃ x : Fbar p, LabelsChar L θ x := by
+  have hp : 0 < p ^ d - 1 := Nat.sub_pos_of_lt (Nat.one_lt_pow hd.ne' (Fact.out : p.Prime).one_lt)
+  haveI : NeZero (p ^ d - 1) := ⟨hp.ne'⟩
+  have hprim : IsPrimitiveRoot (L.gen d) (p ^ d - 1) := L.gen_order d hd ▸ IsPrimitiveRoot.orderOf _
+  have h0 : L.gen d ≠ 0 := hprim.ne_zero hp.ne'
+  have hprimC : IsPrimitiveRoot (L.teich (L.gen d)) (p ^ d - 1) := by
+    refine ⟨by rw [← map_pow, hprim.pow_eq_one, map_one], fun l hl => hprim.dvd_of_pow_eq_one l ?_⟩
+    exact L.teich_inj _ _ (pow_ne_zero _ h0) one_ne_zero (by rw [map_pow, hl, map_one])
+  let γ : Tor p d := ⟨Units.mk0 _ h0, by
+    rw [mem_rootsOfUnity]
+    exact Units.ext (by simpa using hprim.pow_eq_one)⟩
+  have hγ : γ ^ (p ^ d - 1) = 1 := Subtype.ext ((mem_rootsOfUnity _ _).1 γ.2)
+  obtain ⟨k, -, hk⟩ := hprimC.eq_pow_of_pow_eq_one (ξ := ((θ γ : ℂˣ) : ℂ))
+    (by rw [← Units.val_pow_eq_pow_val, ← map_pow, hγ, map_one, Units.val_one])
+  refine ⟨L.gen d ^ k, by rw [← pow_mul, mul_comm, pow_mul, hprim.pow_eq_one, one_pow], fun u => ?_⟩
+  have hu : ((u : (Fbar p)ˣ) : Fbar p) ^ (p ^ d - 1) = 1 := by
+    rw [← Units.val_pow_eq_pow_val, (mem_rootsOfUnity _ _).1 u.2, Units.val_one]
+  obtain ⟨n, -, hn⟩ := hprim.eq_pow_of_pow_eq_one hu
+  have hex : ∃ n : ℕ, ((u : (Fbar p)ˣ) : Fbar p) = L.gen d ^ n := ⟨n, hn.symm⟩
+  unfold GlobalTheory.GLq.thetaOf
+  rw [dif_pos hex]
+  have e : u = γ ^ hex.choose := Subtype.ext (Units.ext (by simpa [γ] using hex.choose_spec))
+  rw [map_pow, hk, ← Units.val_pow_eq_pow_val, ← map_pow, ← e]
+
+theorem prod_frobenius_orbit_mem_lifts {d : ℕ} {x : Fbar p} (hx : x ^ (p ^ d - 1) = 1) :
+    (∏ i : Fin d, (X - C (x ^ p ^ (i : ℕ)))) ∈ Polynomial.lifts (algebraMap (ZMod p) (Fbar p)) := by
+  have hxd : x ^ p ^ d = x := by
+    have h1 : p ^ d = (p ^ d - 1) + 1 := (Nat.sub_add_cancel (Nat.one_le_pow _ _ (Fact.out : p.Prime).pos)).symm
+    rw [h1, pow_succ, hx, one_mul]
+  rw [Fin.prod_univ_eq_prod_range (fun i => (X - C (x ^ p ^ i) : (Fbar p)[X])) d]
+  have hfix : (∏ i ∈ Finset.range d, (X - C (x ^ p ^ i) : (Fbar p)[X])).map (frobenius (Fbar p) p) =
+      ∏ i ∈ Finset.range d, (X - C (x ^ p ^ i)) := by
+    have h1 := Finset.prod_range_succ (fun i => (X - C (x ^ p ^ i) : (Fbar p)[X])) d
+    rw [Finset.prod_range_succ', hxd, pow_zero, pow_one] at h1
+    rw [Polynomial.map_prod, ← mul_right_cancel₀ (X_sub_C_ne_zero x) h1]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    rw [Polynomial.map_sub, map_X, map_C, frobenius_def, pow_succ, pow_mul]
+  rw [Polynomial.lifts_iff_coeff_lifts]
+  intro n
+  have h2 := congrArg (fun q => q.coeff n) hfix
+  simp only [coeff_map, frobenius_def] at h2
+  obtain ⟨m, hm⟩ := (mem_bot_iff_intCast p (Fbar p)).1 ((Subfield.mem_bot_iff_pow_eq_self (Fbar p) p).2 h2)
+  exact ⟨(m : ZMod p), by rw [map_intCast, hm]⟩
+
+theorem exists_labels (p : ℕ) [Fact p.Prime] (L : GlobalTheory.GLq.LabelDatum p) (r : ℕ) (s : SSParam p ℂ r) :
+    ∃ (x : Cyc s.1 → Fbar p) (f : (ZMod p)[X]), Labels L s x f := by
+  choose x hx using fun c : Cyc s.1 => exists_labelsChar_of_pos L (cycLen_pos s.1 c) (s.2 c)
+  have hl : (∏ y : Σ c : Cyc s.1, Fin (cycLen s.1 c), (X - C (rootElt x y))) ∈
+      Polynomial.lifts (algebraMap (ZMod p) (Fbar p)) := by
+    rw [Fintype.prod_sigma]
+    refine Subsemiring.prod_mem _ fun c _ => ?_
+    simp only [rootElt]
+    exact prod_frobenius_orbit_mem_lifts (d := cycLen s.1 c) (x := x c) (hx c).1
+  obtain ⟨f, hf, -, hm⟩ := Polynomial.lifts_and_natDegree_eq_and_monic hl
+    (monic_prod_of_monic _ _ fun y _ => monic_X_sub_C _)
+  refine ⟨x, f, hx, fun c => (hx c).1, hm, ?_⟩
+  unfold Formalism.CyclotomicNorms.rootsBar
+  rw [hf, ← Polynomial.roots_multiset_prod_X_sub_C (Finset.univ.val.map (rootElt x)), Multiset.map_map]
+  rfl
+
+end GlobalTheory.ParamLabel
+end
+
+section
+open Polynomial GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters GlobalTheory.ParamLabel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.exists_labels_semisimple_parameter_GL_finiteField : ∀ (p : ℕ) [Fact p.Prime] (L : GlobalTheory.GLq.LabelDatum p) (r : ℕ) (s : SSParam p ℂ r), ∃ (x : Cyc s.1 → Fbar p) (f : (ZMod p)[X]), Labels L s x f := by
+  first | exact @GlobalTheory.ParamLabel.exists_labels | exact GlobalTheory.ParamLabel.exists_labels | (intros; apply GlobalTheory.ParamLabel.exists_labels <;> assumption)
+end
+
+section
+section
+noncomputable section
+
+open Polynomial GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters GlobalTheory.ParamLabel
+
+namespace GlobalTheory.ParamExists
+
+open GlobalTheory.GoodCharsCompare
+
+variable {p : ℕ} [Fact p.Prime]
+
+theorem thetaOf_gen_pow (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) {x : Fbar p} (hx : x ^ (p ^ d - 1) = 1)
+    (n : ℕ) : GlobalTheory.GLq.thetaOf L d x (L.gen d ^ n) = L.teich x ^ n := by
+  have hp : 0 < p ^ d - 1 := g_pow_sub_pos hd
+  have h : ∃ m : ℕ, L.gen d ^ n = L.gen d ^ m := ⟨n, rfl⟩
+  unfold GlobalTheory.GLq.thetaOf
+  rw [dif_pos h]
+  have hfin : IsOfFinOrder (L.gen d) := by
+    rw [← orderOf_pos_iff, L.gen_order d hd]; exact hp
+  have h1 := hfin.pow_eq_pow_iff_modEq.1 h.choose_spec
+  rw [L.gen_order d hd] at h1
+  have h2 : L.teich x ^ (p ^ d - 1) = 1 := by rw [← map_pow, hx, map_one]
+  rw [pow_eq_pow_mod _ h2, pow_eq_pow_mod n h2]
+  exact congrArg _ h1.symm
+
+theorem exists_gen_pow (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) (u : Tor p d) :
+    ∃ n : ℕ, ((u : (Fbar p)ˣ) : Fbar p) = L.gen d ^ n := by
+  haveI : NeZero (p ^ d - 1) := ⟨(g_pow_sub_pos hd).ne'⟩
+  have hprim : IsPrimitiveRoot (L.gen d) (p ^ d - 1) := L.gen_order d hd ▸ IsPrimitiveRoot.orderOf _
+  have hu : ((u : (Fbar p)ˣ) : Fbar p) ^ (p ^ d - 1) = 1 := by
+    rw [← Units.val_pow_eq_pow_val, (mem_rootsOfUnity _ _).1 u.2, Units.val_one]
+  obtain ⟨n, -, hn⟩ := hprim.eq_pow_of_pow_eq_one hu
+  exact ⟨n, hn.symm⟩
+
+theorem exists_char (L : GlobalTheory.GLq.LabelDatum p) {d : ℕ} (hd : 0 < d) {x : Fbar p} (hx : x ^ (p ^ d - 1) = 1) :
+    ∃ θ : Tor p d →* ℂˣ, LabelsChar L θ x := by
+  let φ : Tor p d →* ℂ :=
+    { toFun := fun u => GlobalTheory.GLq.thetaOf L d x ((u : (Fbar p)ˣ) : Fbar p)
+      map_one' := by
+        have := thetaOf_gen_pow L hd hx 0
+        simpa using this
+      map_mul' := by
+        intro u v
+        obtain ⟨n, hn⟩ := exists_gen_pow L hd u
+        obtain ⟨m, hm⟩ := exists_gen_pow L hd v
+        rw [Subgroup.coe_mul, Units.val_mul, hn, hm, ← pow_add, thetaOf_gen_pow L hd hx,
+          thetaOf_gen_pow L hd hx, thetaOf_gen_pow L hd hx, pow_add] }
+  exact ⟨φ.toHomUnits, hx, fun u => rfl⟩
+
+theorem minpoly_eq_of_mem {y z : Fbar p} (h : z ∈ Formalism.CyclotomicNorms.rootsBar (minpoly (ZMod p) y)) :
+    minpoly (ZMod p) z = minpoly (ZMod p) y :=
+  (eq_minpoly (minpoly.monic (isInt y)) (minpoly.irreducible (isInt y)) h).symm
+
+theorem self_mem (y : Fbar p) : y ∈ Formalism.CyclotomicNorms.rootsBar (minpoly (ZMod p) y) :=
+  mem_roots_minpoly.2 ⟨0, by simp⟩
+
+theorem exists_rootPoly (r : ℕ) (f : (ZMod p)[X]) (hm : f.Monic) (hr : f.natDegree = r) (h0 : f.coeff 0 ≠ 0)
+    (hs : Squarefree f) : ∃ (b : Fin r → Fin r) (x : Cyc b → Fbar p), IsRootPoly x f := by
+  classical
+  have hf := hm.ne_zero
+  have hnd := (squarefree_iff hf).1 hs
+  have hz0 := (coeff_zero_iff hf).1 h0
+  let S := (Formalism.CyclotomicNorms.rootsBar f).toFinset
+  have hS : S.card = r := by rw [Multiset.toFinset_card_of_nodup hnd, card_rootsBar, hr]
+  let e : Fin r ≃ S := (Finset.equivFinOfCardEq hS).symm
+  let z : Fin r → Fbar p := fun i => (e i : Fbar p)
+  have zinj : Function.Injective z := Subtype.val_injective.comp e.injective
+  have zmem : ∀ i, z i ∈ Formalism.CyclotomicNorms.rootsBar f := fun i => Multiset.mem_toFinset.1 (e i).2
+  have zsurj : ∀ w ∈ Formalism.CyclotomicNorms.rootsBar f, ∃ i, z i = w := fun w hw =>
+    ⟨e.symm ⟨w, Multiset.mem_toFinset.2 hw⟩, by simp [z]⟩
+  let m : Fin r → (ZMod p)[X] := fun i => minpoly (ZMod p) (z i)
+  have hsub : ∀ i w, w ∈ Formalism.CyclotomicNorms.rootsBar (m i) → w ∈ Formalism.CyclotomicNorms.rootsBar f := by
+    intro i w hw
+    obtain ⟨k, rfl⟩ := mem_roots_minpoly.1 hw
+    rw [mem_rootsBar hf]
+    exact aeval_pow_g _ _ _ ((mem_rootsBar hf).1 (zmem i))
+  have hb : ∃ b : Fin r → Fin r, (∀ i, m (b i) = m i) ∧ ∀ i j, m i = m j → b i = b j := by
+    refine ⟨fun i => @Function.invFun _ _ ⟨i⟩ m (m i), fun i => @Function.invFun_eq _ _ ⟨i⟩ m _ ⟨i, rfl⟩, ?_⟩
+    intro i j h
+    simp only [h]
+  obtain ⟨b, hb1, hb2⟩ := hb
+  have hbc : ∀ c : Cyc b, ∀ i, b i = c.1 ↔ m i = m c.1 := by
+    rintro ⟨c, j, rfl⟩ i
+    exact ⟨fun h => by rw [← hb1 i]; exact congrArg m h, fun h => hb2 _ _ (h.trans (hb1 j))⟩
+  have hlen : ∀ c : Cyc b, cycLen b c = dg (z c.1) := by
+    intro c
+    rw [dg, ← card_rootsBar, ← Multiset.toFinset_card_of_nodup (nodup_minpoly _), cycLen, Fintype.card_subtype]
+    refine Finset.card_bij (fun i _ => z i) ?_ ?_ ?_
+    · intro i hi
+      have h1 : m i = m c.1 := (hbc c i).1 (Finset.mem_filter.1 hi).2
+      rw [Multiset.mem_toFinset]
+      exact (show minpoly (ZMod p) (z i) = minpoly (ZMod p) (z c.1) from h1) ▸ self_mem (z i)
+    · intro i _ j _ h
+      exact zinj h
+    · intro w hw
+      rw [Multiset.mem_toFinset] at hw
+      obtain ⟨i, rfl⟩ := zsurj w (hsub _ w hw)
+      exact ⟨i, Finset.mem_filter.2 ⟨Finset.mem_univ _, (hbc c i).2 (minpoly_eq_of_mem hw)⟩, rfl⟩
+  refine ⟨b, fun c => z c.1, fun c => ?_, hm, ?_⟩
+  · rw [hlen]
+    exact pow_dg (fun h => hz0 (h ▸ zmem _))
+  · rw [Multiset.Nodup.ext hnd (Finset.univ.nodup.map ?_)]
+    · intro w
+      rw [Multiset.mem_map]
+      constructor
+      · intro hw
+        obtain ⟨i, rfl⟩ := zsurj w hw
+        let c : Cyc b := ⟨b i, i, rfl⟩
+        have h1 : z i ∈ Formalism.CyclotomicNorms.rootsBar (minpoly (ZMod p) (z c.1)) :=
+          (show minpoly (ZMod p) (z i) = minpoly (ZMod p) (z c.1) from (hb1 i).symm) ▸ self_mem (z i)
+        rw [← Multiset.mem_toFinset, roots_minpoly] at h1
+        obtain ⟨k, hk, hk'⟩ := Finset.mem_image.1 h1
+        exact ⟨⟨c, ⟨k, by rw [hlen]; exact Finset.mem_range.1 hk⟩⟩, Finset.mem_univ_val _, hk'⟩
+      · rintro ⟨y, -, rfl⟩
+        exact hsub y.1.1 _ (mem_roots_minpoly.2 ⟨_, rfl⟩)
+    · rintro ⟨c, i⟩ ⟨c', j⟩ h
+      have h' : z c.1 ^ p ^ (i : ℕ) = z c'.1 ^ p ^ (j : ℕ) := h
+      have e1 := minpoly_eq_of_mem (y := z c.1) (mem_roots_minpoly.2 ⟨i, rfl⟩)
+      have e2 := minpoly_eq_of_mem (y := z c'.1) (mem_roots_minpoly.2 ⟨j, rfl⟩)
+      have e3 : m c.1 = m c'.1 := e1.symm.trans (h' ▸ e2)
+      have e4 : c = c' := Subtype.ext (((hbc c c.1).2 rfl).symm.trans ((hbc c' c.1).2 e3))
+      subst e4
+      have := (frobenius_orbit_degreeOverPrimeFieldFbar (z c.1)).2 i (hlen c ▸ i.2) j (hlen c ▸ j.2) h'
+      rw [Fin.ext this]
+
+theorem param_exists : ∀ (p : ℕ) [Fact p.Prime] (L : GlobalTheory.GLq.LabelDatum p) (r : ℕ) (f : (ZMod p)[X]),
+    f.Monic → f.natDegree = r → f.coeff 0 ≠ 0 → Squarefree f →
+    ∃ (s : SSParam p ℂ r) (x : Cyc s.1 → Fbar p), Labels L s x f := by
+  intro p _ L r f hm hr h0 hs
+  obtain ⟨b, x, hx⟩ := exists_rootPoly r f hm hr h0 hs
+  choose θ hθ using fun c => exists_char L (cycLen_pos b c) (hx.1 c)
+  exact ⟨⟨b, θ⟩, x, hθ, hx⟩
+
+end GlobalTheory.ParamExists
+
+end
+end
+
+open Polynomial GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters GlobalTheory.ParamLabel
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.squarefree_monic_poly_labels_semisimple_parameter : ∀ (p : ℕ) [Fact p.Prime] (L : GlobalTheory.GLq.LabelDatum p) (r : ℕ) (f : (ZMod p)[X]), f.Monic → f.natDegree = r → f.coeff 0 ≠ 0 → Squarefree f → ∃ (s : SSParam p ℂ r) (x : Cyc s.1 → Fbar p), Labels L s x f := by
+  atlas_forward_decl GlobalTheory.ParamExists.param_exists
+end
+
+section
+noncomputable section
+
+open Polynomial GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters GlobalTheory.ParamLabel
+
+namespace GlobalTheory.TameLabel
+
+variable {p : ℕ} [Fact p.Prime]
+
+def teichU (L : GlobalTheory.GLq.LabelDatum p) : (ZMod p)ˣ →* ℂˣ :=
+  (L.teich.comp (((algebraMap (ZMod p) (Fbar p)).toMonoidHom).comp (Units.coeHom (ZMod p)))).toHomUnits
+
+theorem teichU_val (L : GlobalTheory.GLq.LabelDatum p) (a : (ZMod p)ˣ) :
+    ((teichU L a : ℂˣ) : ℂ) = L.teich (algebraMap (ZMod p) (Fbar p) (a : ZMod p)) := rfl
+
+theorem theta_gen_pow (L : GlobalTheory.GLq.LabelDatum p) {x : Fbar p} (hx : x ^ (p ^ 1 - 1) = 1) (n : ℕ) :
+    GlobalTheory.GLq.thetaOf L 1 x (L.gen 1 ^ n) = L.teich x ^ n := by
+  have h : ∃ m : ℕ, L.gen 1 ^ n = L.gen 1 ^ m := ⟨n, rfl⟩
+  unfold GlobalTheory.GLq.thetaOf
+  rw [dif_pos h]
+  have hpos : 0 < p ^ 1 - 1 := Nat.sub_pos_of_lt (Nat.one_lt_pow one_ne_zero (Fact.out : p.Prime).one_lt)
+  have hfin : IsOfFinOrder (L.gen 1) := by
+    rw [← orderOf_pos_iff, L.gen_order 1 one_pos]; exact hpos
+  have hm : n ≡ h.choose [MOD p ^ 1 - 1] := by
+    rw [← L.gen_order 1 one_pos]; exact hfin.pow_eq_pow_iff_modEq.1 h.choose_spec
+  have h1 : L.teich x ^ (p ^ 1 - 1) = 1 := by rw [← map_pow, hx, map_one]
+  rw [pow_eq_pow_mod h.choose h1, pow_eq_pow_mod n h1, hm]
+
+theorem zpowers_top_iff (γ : (ZMod p)ˣ) : Subgroup.zpowers γ = ⊤ ↔ orderOf γ = p - 1 := by
+  rw [← Subgroup.card_eq_iff_eq_top, Nat.card_zpowers, Nat.card_eq_fintype_card, ZMod.card_units]
+
+theorem exists_gen (L : GlobalTheory.GLq.LabelDatum p) : ∃ g : (ZMod p)ˣ, orderOf g = p - 1 ∧
+    ∀ (χ : (ZMod p)ˣ →* ℂˣ) (a : (ZMod p)ˣ), LabelsTame L χ a ↔ χ g = teichU L a := by
+  have ho := L.gen_order 1 one_pos
+  obtain ⟨g, hg⟩ := GlobalTheory.GoodCharsCompare.exists_unit_of_pow (g := p) (y := L.gen 1)
+    (by rw [← ho, pow_orderOf_eq_one])
+  have hog : orderOf g = p - 1 := by
+    rw [← hg, pow_one] at ho
+    rw [← ho, ← orderOf_units]
+    exact (orderOf_injective (algebraMap (ZMod p) (Fbar p)).toMonoidHom
+      (algebraMap (ZMod p) (Fbar p)).injective _).symm
+  have hval : ∀ (a : (ZMod p)ˣ) (n : ℕ), GlobalTheory.GLq.thetaOf L 1 (algebraMap (ZMod p) (Fbar p) (a : ZMod p))
+      (algebraMap (ZMod p) (Fbar p) ((g ^ n : (ZMod p)ˣ) : ZMod p)) = ((teichU L a : ℂˣ) : ℂ) ^ n := by
+    intro a n
+    rw [Units.val_pow_eq_pow_val, map_pow, teichU_val]
+    have := theta_gen_pow L (GlobalTheory.GoodCharsCompare.unit_pow a) n
+    rw [← hg] at this
+    exact this
+  refine ⟨g, hog, fun χ a => ⟨fun h => ?_, fun h u => ?_⟩⟩
+  · have := hval a 1
+    rw [pow_one, pow_one, h g] at this
+    exact Units.ext this
+  · have hu : u ∈ Subgroup.zpowers g := by rw [(zpowers_top_iff g).2 hog]; trivial
+    obtain ⟨n, rfl⟩ := (mem_powers_iff_mem_zpowers).2 hu
+    rw [hval, map_pow, h, Units.val_pow_eq_pow_val]
+
+end GlobalTheory.TameLabel
+
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Mult Formalism.IndefR.Lev GlobalTheory.IndefiniteRowSideFullHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+namespace GlobalTheory.TypeDatumRefactor
+
+variable {E : Type} [Field E] [NumberField E] [StarRing E]
+
+noncomputable def cjEquiv (E : Type) [Field E] [NumberField E] [StarRing E] : 𝓞 E ≃+* 𝓞 E :=
+  RingEquiv.ofRingHom (SumWCompare.cj E) (SumWCompare.cj E) (RingHom.ext SumWCompare.cj_cj) (RingHom.ext SumWCompare.cj_cj)
+
+theorem mul_cj {g : ℕ} {p : 𝓞 E} (hn : (p : E) * star (p : E) = (g : E)) : p * SumWCompare.cj E p = (g : 𝓞 E) :=
+  RingOfIntegers.ext (by simpa [SumWCompare.cj_coe] using hn)
+
+theorem key_of_mem {gp : Fin 2 → ℕ} {pb : Fin 2 → 𝓞 E} (h : IsTypeDatum gp pb) (i : Fin 2) (w : Pl E)
+    (hw : pb i ∈ w.asIdeal) : Nat.card (kP w) = gp i ∧ ((gp i : ℕ) : 𝓞 E) ∉ w.asIdeal ^ 2 := by
+  refine ⟨h.deg1 i w hw, fun hg => ?_⟩
+  rw [← mul_cj (h.norm i), mul_comm] at hg
+  have := w.isPrime
+  rcases Ideal.IsPrime.mul_mem_pow w.asIdeal hg with h1 | h1
+  · exact h.split i w hw _ (SumWCompare.cj_coe _) h1
+  · exact h.unram i w hw h1
+
+theorem key {gp : Fin 2 → ℕ} {pb : Fin 2 → 𝓞 E} (h : IsTypeDatum gp pb) (i : Fin 2) (w : Pl E)
+    (hw : ((gp i : ℕ) : 𝓞 E) ∈ w.asIdeal) : Nat.card (kP w) = gp i ∧ ((gp i : ℕ) : 𝓞 E) ∉ w.asIdeal ^ 2 := by
+  rw [← mul_cj (h.norm i)] at hw
+  rcases w.isPrime.mem_or_mem hw with h1 | h1
+  · exact key_of_mem h i w h1
+  · have := w.isPrime
+    have hmap : (w.asIdeal.comap (SumWCompare.cj E)).map (cjEquiv E : 𝓞 E →+* 𝓞 E) = w.asIdeal :=
+      Ideal.map_comap_of_surjective (SumWCompare.cj E) (cjEquiv E).surjective _
+    let w' : Pl E := ⟨w.asIdeal.comap (SumWCompare.cj E), Ideal.comap_isPrime _ _, fun h0 => by
+      rw [h0, Ideal.map_bot] at hmap
+      exact w.ne_bot hmap.symm⟩
+    obtain ⟨h2, h3⟩ := key_of_mem h i w' h1
+    refine ⟨?_, fun hg => h3 ?_⟩
+    · rw [← h2]
+      exact (Nat.card_congr (Ideal.quotientEquiv w'.asIdeal w.asIdeal (cjEquiv E) hmap.symm).toEquiv).symm
+    · have h4 := Ideal.mem_map_of_mem (SumWCompare.cj E) hg
+      rw [map_natCast, Ideal.map_pow] at h4
+      refine Ideal.pow_right_mono ?_ 2 h4
+      rw [Ideal.map_le_iff_le_comap]
+      intro x hx
+      change SumWCompare.cj E (SumWCompare.cj E x) ∈ w.asIdeal
+      rwa [SumWCompare.cj_cj]
+
+theorem isTypeDatum_of_norm : ∀ (E : Type) [Field E] [NumberField E] [StarRing E] (gp : Fin 2 → ℕ) (pb π : Fin 2 → 𝓞 E), IsTypeDatum gp pb → (∀ i, (π i : E) * star (π i : E) = (gp i : E)) → IsTypeDatum gp π := by
+  intro E _ _ _ gp pb π h hn
+  have hg : ∀ i (w : Pl E), π i ∈ w.asIdeal → ((gp i : ℕ) : 𝓞 E) ∈ w.asIdeal := fun i w hw => by
+    rw [← mul_cj (hn i)]; exact w.asIdeal.mul_mem_right _ hw
+  refine ⟨h.prime, h.ne, hn, fun i w hw => (key h i w (hg i w hw)).1, fun i w hw h2 => ?_, fun i w hw c hc h2 => ?_⟩
+  · refine (key h i w (hg i w hw)).2 ?_
+    rw [← mul_cj (hn i)]; exact Ideal.mul_mem_right _ _ h2
+  · refine (key h i w (hg i w hw)).2 ?_
+    obtain rfl : c = SumWCompare.cj E (π i) := RingOfIntegers.ext hc
+    rw [← mul_cj (hn i), sq]; exact Ideal.mul_mem_mul hw h2
+
+end GlobalTheory.TypeDatumRefactor
+end
+
+section
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Mult Formalism.IndefR.Lev GlobalTheory.IndefiniteRowSideFullHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+set_option maxHeartbeats 1000000 in
+theorem _root_.GlobalTheory.T.unitary_integral_adelic_element_exists : ∀ (D : D7) (n : ℕ) (J : Matrix (Fin n) (Fin n) D.host.E) (β : GL (Fin n) (EAf D)) (G : GL (Fin n) (Formalism.L2.Herm.intAf D.host.F D.host.E)), (intGL D.host.F D.host.E n G).val = Formalism.UG.cT (Formalism.UG.sigR D.sp.cm.sig (Formalism.L2.Herm.Af D.host.F)) β.val * J.map (Formalism.UG.inclE (F := D.host.F) (Formalism.L2.Herm.Af D.host.F)) * β.val → ∀ S : Finset (HeightOneSpectrum (𝓞 D.host.F)), ∃ y : GL (Fin n) (Formalism.L2.Herm.intAf D.host.F D.host.E), ∀ x ∈ UA D.sp.cm J, x ∈ St β → ∀ (w' : Pl D.host.E) (v : HeightOneSpectrum (𝓞 D.host.F)), w'.asIdeal.comap (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) = v.asIdeal → (v ∉ S → redFn (β * intGL D.host.F D.host.E n y) w' x = redFn β w' x) ∧ (v ∈ S → ∀ w : Pl D.host.E, IsConjPl w w' → ∀ (p : ℕ) (e : kP w ≃+* ZMod p) (e' : ZMod p ≃+* kP w') (i j : Fin n), (redFn (β * intGL D.host.F D.host.E n y) w' x).val i j = e' (e (((redFn β w x)⁻¹).val j.rev i.rev))) := by
+  first | exact @GlobalTheory.FrameMove.exists_frame_move | exact GlobalTheory.FrameMove.exists_frame_move | (intros; apply GlobalTheory.FrameMove.exists_frame_move <;> assumption)
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions GlobalTheory.IndefiniteRowSideFullHecke GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters
+
+namespace GlobalTheory.GoodIdemFlip
+
+section Local
+
+variable {p : ℕ} [Fact p.Prime] {K : Type} [Field K] {r : ℕ}
+
+def invParam (s : SSParam p K r) : SSParam p K r := ⟨s.1, fun c => (s.2 c)⁻¹⟩
+
+theorem cycChar_invParam (s : SSParam p K r) (c : Cyc (invParam s).1) : cycChar (invParam s) c = (cycChar s c)⁻¹ := by
+  ext x; rfl
+
+theorem rootChar_invParam (s : SSParam p K r) (x : Σ c : Cyc (invParam s).1, Fin (cycLen (invParam s).1 c)) :
+    rootChar (invParam s) x = (rootChar s x)⁻¹ := by
+  have h : rootChar (invParam s) x = (cycChar s x.1)⁻¹ ^ (p ^ x.2.val) := by
+    rw [← cycChar_invParam s x.1]; rfl
+  rw [h, inv_pow]
+  rfl
+
+theorem congrMod_inv {A : Type} [CommGroup A] (l : ℕ) (a b : A) : CongrMod l a⁻¹ b⁻¹ ↔ CongrMod l a b := by
+  have : a⁻¹ / b⁻¹ = (a / b)⁻¹ := by rw [inv_div_inv, inv_div]
+  simp only [CongrMod, this, inv_pow, inv_eq_one]
+
+theorem congrMod_inv_left {A : Type} [CommGroup A] (l : ℕ) (a b : A) : CongrMod l a⁻¹ b ↔ CongrMod l a b⁻¹ := by
+  rw [← congrMod_inv, inv_inv]
+
+theorem inv_comp_baseNorm (χ : (ZMod p)ˣ →* Kˣ) (D : ℕ) :
+    χ⁻¹.comp (baseNorm p D) = (χ.comp (baseNorm p D))⁻¹ := by
+  ext x; rfl
+
+theorem goodAt_flip {ι J : Type} (χ : J → ((ZMod p)ˣ →* Kˣ)) (s s' : ι → SSParam p K r)
+    (h : ∀ v, s' v = s v ∨ s' v = invParam (s v)) (hs : GoodAt χ s) : GoodAt χ s' := by
+  obtain ⟨h1, h2, ⟨h3, h3'⟩, h4, v5, h5⟩ := hs
+  refine ⟨fun v => ?_, fun l hl hl' v => ?_, ⟨fun l hl hl' v => ?_, fun v => ?_⟩, ?_, v5, ?_⟩
+  · rcases h v with e | e <;> rw [e]
+    · exact h1 v
+    · intro x y hxy
+      rw [rootChar_invParam, rootChar_invParam] at hxy
+      exact h1 v (inv_injective hxy)
+  · rcases h v with e | e <;> rw [e]
+    · exact h2 l hl hl' v
+    · intro x y hxy
+      rw [rootChar_invParam, rootChar_invParam, congrMod_inv]
+      exact h2 l hl hl' v x y hxy
+  · rcases h v with e | e <;> rw [e]
+    · exact h3 l hl hl' v
+    · intro j c
+      have := h3 l hl hl' v j c
+      rw [inv_comp_baseNorm] at this
+      rw [cycChar_invParam, inv_comp_baseNorm, congrMod_inv, congrMod_inv_left]
+      exact this.symm
+  · rcases h v with e | e <;> rw [e]
+    · exact h3' v
+    · intro j x
+      have := h3' v j x
+      rw [inv_comp_baseNorm] at this
+      rw [rootChar_invParam, inv_comp_baseNorm, Ne, Ne, inv_inj, inv_eq_iff_eq_inv]
+      exact this.symm
+  · rintro ⟨a, ha, ha', hA⟩
+    refine h4 ⟨a, ha, ha', fun v => ?_⟩
+    have := hA v
+    rcases h v with e | e <;> rw [e] at this <;> exact this
+  · rcases h v5 with e | e <;> rw [e] <;> exact h5
+
+theorem isConj_inv_inv {G : Type} [Group G] {a b : G} (h : IsConj a b) : IsConj a⁻¹ b⁻¹ := by
+  obtain ⟨c, rfl⟩ := isConj_iff.1 h
+  exact isConj_iff.2 ⟨c, by group⟩
+
+end Local
+
+section Global
+
+variable {R : Ranks} {H : Host R} {K : Type} [Field K]
+
+open Classical in
+
+def flipAt (S : Set (Sq H)) (x : LevelGroup H) : LevelGroup H := fun v => if v ∈ S then (x v)⁻¹ else x v
+
+open Classical in
+
+def flipParam (S : Set (Sq H)) (s : ∀ v : Sq H, SSParam (H.g v.1) K R.r) : ∀ v : Sq H, SSParam (H.g v.1) K R.r :=
+  fun v => if v ∈ S then invParam (s v) else s v
+
+theorem flipAt_flipAt (S : Set (Sq H)) (x : LevelGroup H) : flipAt S (flipAt S x) = x := by
+  funext v
+  by_cases hv : v ∈ S <;> simp [flipAt, hv]
+
+theorem flipAt_one (S : Set (Sq H)) : flipAt S 1 = 1 := by
+  funext v
+  by_cases hv : v ∈ S <;> simp [flipAt, hv]
+
+theorem tupleChar_flipParam (S : Set (Sq H)) (s : ∀ v : Sq H, SSParam (H.g v.1) K R.r) :
+    tupleChar (flipParam S s) = tupleChar s ∘ flipAt S := by
+  funext x
+  refine Finset.prod_congr rfl fun v _ => ?_
+  by_cases hv : v ∈ S
+  · simp only [flipParam, flipAt, if_pos hv]
+    exact (GlobalTheory.TypeCharacterConjugateInverse.typeChar_conj_inv _ K _ (s v)).2 (x v)
+  · simp only [flipParam, flipAt, if_neg hv]
+
+theorem tupleChar_congr (s : ∀ v : Sq H, SSParam (H.g v.1) K R.r) {x y : LevelGroup H}
+    (h : ∀ v, IsConj (x v) (y v)) : tupleChar s x = tupleChar s y :=
+  Finset.prod_congr rfl fun v _ => (GlobalTheory.TypeCharacterConjugateInverse.typeChar_conj_inv _ K _ (s v)).1 _ _ (h v)
+
+theorem comp_flipAt_mem (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* Kˣ) (S : Set (Sq H)) {τ : LevelGroup H → K}
+    (hτ : τ ∈ goodTypes om) : τ ∘ flipAt S ∈ goodTypes om := by
+  obtain ⟨s, hs, rfl⟩ := hτ
+  refine ⟨flipParam S s, fun i => goodAt_flip _ _ _ (fun w => ?_) (hs i), tupleChar_flipParam S s⟩
+  by_cases hv : (⟨i, w⟩ : Sq H) ∈ S
+  · exact Or.inr (if_pos hv)
+  · exact Or.inl (if_neg hv)
+
+end Global
+
+theorem coeff_goodIdem_flip (R : Ranks) (H : Host R) (om : ∀ i : Fin 2, (ZMod (H.g i))ˣ →* ℂˣ) (S : Set (Sq H))
+    (x y : LevelGroup H) (h1 : ∀ v ∈ S, IsConj (x v)⁻¹ (y v)) (h2 : ∀ v ∉ S, IsConj (x v) (y v)) :
+    (goodIdem om).coeff y = (goodIdem om).coeff x := by
+  simp only [goodIdem, MonoidAlgebra.coeff_sum, Finsupp.finsetSum_apply, GlobalTheory.SumWCompare.coeff_centralIdem]
+  have inv : ∀ τ : LevelGroup H → ℂ, (τ ∘ flipAt S) ∘ flipAt S = τ := fun τ => by
+    funext z; simp [flipAt_flipAt]
+  refine Finset.sum_nbij' (fun τ => τ ∘ flipAt S) (fun τ => τ ∘ flipAt S) ?_ ?_ (fun τ _ => inv τ) (fun τ _ => inv τ) ?_
+  · intro τ hτ
+    exact (Set.Finite.mem_toFinset _).2 (comp_flipAt_mem om S ((Set.Finite.mem_toFinset _).1 hτ))
+  · intro τ hτ
+    exact (Set.Finite.mem_toFinset _).2 (comp_flipAt_mem om S ((Set.Finite.mem_toFinset _).1 hτ))
+  · intro τ hτ
+    obtain ⟨s, -, rfl⟩ := (Set.Finite.mem_toFinset _).1 hτ
+    have key : tupleChar s y⁻¹ = tupleChar s (flipAt S x⁻¹) := by
+      refine tupleChar_congr s fun v => ?_
+      by_cases hv : v ∈ S
+      · simp only [flipAt, if_pos hv, Pi.inv_apply]
+        exact isConj_inv_inv (h1 v hv).symm
+      · simp only [flipAt, if_neg hv, Pi.inv_apply]
+        exact isConj_inv_inv (h2 v hv).symm
+    rw [Function.comp_apply, Function.comp_apply, flipAt_one, key]
+
+end GlobalTheory.GoodIdemFlip
+end
+end
+
+section
+noncomputable section
+
+open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Mult Formalism.IndefR.Lev GlobalTheory.IndefiniteRowSideFullHecke
+open scoped TensorProduct
+attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters.factPrime
+
+namespace GlobalTheory.PartsOccurProof
+
+section Flip
+
+variable {k k' : Type} [CommRing k] [CommRing k'] {r : ℕ}
+
+def tw (x : GL (Fin r) k) : GL (Fin r) k where
+  val := (x⁻¹).val.transpose.submatrix Fin.revPerm Fin.revPerm
+  inv := x.val.transpose.submatrix Fin.revPerm Fin.revPerm
+  val_inv := by
+    rw [Matrix.submatrix_mul_equiv, ← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one, Matrix.submatrix_one_equiv]
+  inv_val := by
+    rw [Matrix.submatrix_mul_equiv, ← Matrix.transpose_mul, Units.inv_mul, Matrix.transpose_one, Matrix.submatrix_one_equiv]
+
+theorem tw_apply (x : GL (Fin r) k) (i j : Fin r) : (tw x).val i j = (x⁻¹).val j.rev i.rev := rfl
+
+theorem tw_tw (x : GL (Fin r) k) : tw (tw x) = x := by
+  ext i j
+  show x.val i.rev.rev j.rev.rev = _
+  rw [Fin.rev_rev, Fin.rev_rev]
+
+end Flip
+
+variable {D : D7}
+
+section Transport
+
+variable {V : HSp D} {β β' : GL (Fin V.rank) (EAf D)} {L L' : LevDat D.host.E ℂ V.rank}
+  {ι : G0 L.Pg L.r → G0 L'.Pg L'.r}
+  (hpar : parLev D.sp.cm V.gram β' L' = parLev D.sp.cm V.gram β L)
+  (htup : ∀ x ∈ parLev D.sp.cm V.gram β L, rTup β' L' x = ι (rTup β L x))
+
+include hpar htup
+
+end Transport
+
+section Groups
+
+variable {Pg Pg' : Finset (Pl D.host.E)} (pl : LevelCuspCharacters.Sq D.host ≃ ↥Pg)
+  (red : ∀ v : LevelCuspCharacters.Sq D.host, kP (pl v).1 ≃+* ZMod (D.host.g v.1)) (b : ↥Pg' ≃ LevelCuspCharacters.Sq D.host)
+  (φ : ∀ PP : ↥Pg', ZMod (D.host.g (b PP).1) ≃+* kP PP.1) (S : Set (LevelCuspCharacters.Sq D.host))
+
+open Classical in
+
+def fl (z : LevelCuspCharacters.LevelGroup D.host) : LevelCuspCharacters.LevelGroup D.host := fun v => if v ∈ S then tw (z v) else z v
+
+def iota {n : ℕ} (hn : n = D.R.r) (x : G0 Pg n) : G0 Pg' D.R.r :=
+  BadPlacesGoodCoefficients.toG0 b φ (fl S (GoodReductionModelReading.readG0 pl red hn x))
+
+theorem reduction_reading_apply (x : G0 Pg D.R.r) (v : LevelCuspCharacters.Sq D.host) :
+    GoodReductionModelReading.readG0 pl red rfl x v = Matrix.GeneralLinearGroup.map (red v).toRingHom (x (pl v)) := by
+  ext a b
+  rfl
+
+theorem mem_lastZeroOrthImageSubspace_iff {Q : Finset (Pl D.host.E)} {n : ℕ} (ψ : ∀ PP : Pl D.host.E, AddChar (kP PP) ℂ) (u : G0 Q n) :
+    u ∈ (P0 Q n ψ).H ↔ ∀ PP, u PP ∈ unip (kP PP.1) n :=
+  ⟨fun h PP => h PP (Set.mem_univ _), fun h PP _ => h PP⟩
+
+end Groups
+
+section Frames
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
+
+theorem restrictedBlock_self_apply {κ : Type} [CommRing κ] (hr : n ≤ n) (g : GL (Fin n) κ) : upperLeftBlock hr g = g := by
+  apply Units.ext
+  rw [upper_block_val_submatrix hr (fun i j hij => by simp [blk2] at hij)]
+  rfl
+
+end Frames
+
+section Main
+
+variable {Pg Pg' : Finset (Pl D.host.E)} (pl : LevelCuspCharacters.Sq D.host ≃ ↥Pg)
+  (red : ∀ v : LevelCuspCharacters.Sq D.host, kP (pl v).1 ≃+* ZMod (D.host.g v.1)) (b : ↥Pg' ≃ LevelCuspCharacters.Sq D.host)
+  (φ : ∀ PP : ↥Pg', ZMod (D.host.g (b PP).1) ≃+* kP PP.1) (S : Set (LevelCuspCharacters.Sq D.host))
+
+theorem redFn_same {n : ℕ} (β x : GL (Fin n) (EAf D)) {w w' : Pl D.host.E} (h : w = w') {p : ℕ} (e : kP w ≃+* ZMod p)
+    (e' : ZMod p ≃+* kP w') (i j : Fin n) : (redFn β w' x).val i j = e' (e ((redFn β w x).val i j)) := by
+  subst h
+  obtain rfl : e' = e.symm := RingEquiv.toRingHom_injective (Subsingleton.elim _ _)
+  exact (e.symm_apply_apply _).symm
+
+theorem exists_move {n : ℕ} (hn : n = D.R.r) (hr : D.R.r ≤ n) (J : Matrix (Fin n) (Fin n) D.host.E) (β : GL (Fin n) (EAf D))
+    (G : GL (Fin n) (Formalism.L2.Herm.intAf D.host.F D.host.E))
+    (hG : (intGL D.host.F D.host.E n G).val = Formalism.UG.cT (Formalism.UG.sigR D.sp.cm.sig (Formalism.L2.Herm.Af D.host.F)) β.val *
+      J.map (Formalism.UG.inclE (F := D.host.F) (Formalism.L2.Herm.Af D.host.F)) * β.val)
+    (hb : BadPlacesGoodCoefficients.IsBelow b) (SF : Finset (HeightOneSpectrum (𝓞 D.host.F))) (hSF : ∀ v, v.2.1 ∈ SF ↔ v ∈ S)
+    (hS : ∀ PP : ↥Pg', (b PP ∉ S → (pl (b PP)).1 = PP.1) ∧ (b PP ∈ S → IsConjPl (pl (b PP)).1 PP.1)) :
+    ∃ y : GL (Fin n) (Formalism.L2.Herm.intAf D.host.F D.host.E), ∀ x ∈ UA D.sp.cm J, x ∈ St β →
+      (fun PP : ↥Pg' => upperLeftBlock hr (redFn (β * intGL D.host.F D.host.E n y) PP.1 x)) =
+        iota pl red b φ S hn (fun PP : ↥Pg => upperLeftBlock le_rfl (redFn β PP.1 x)) := by
+  subst hn
+  obtain ⟨y, hy⟩ := GlobalTheory.T.unitary_integral_adelic_element_exists D _ J β G hG SF
+  refine ⟨y, fun x hx hx' => funext fun PP => ?_⟩
+  have h := hy x hx hx' PP.1 (b PP).2.1 (hb PP).symm
+  simp only [restrictedBlock_self_apply]
+  ext i j
+  show _ = φ PP ((fl S (GoodReductionModelReading.readG0 pl red rfl fun PP : ↥Pg => redFn β PP.1 x) (b PP)).val i j)
+  unfold fl
+  rw [reduction_reading_apply]
+  split_ifs with hv
+  · rw [h.2 ((hSF _).2 hv) _ ((hS PP).2 hv) _ (red (b PP)) (φ PP), tw_apply, ← map_inv]
+    rfl
+  · rw [h.1 (fun h' => hv ((hSF _).1 h'))]
+    exact redFn_same β x ((hS PP).1 hv) (red (b PP)) (φ PP) i j
+
+end Main
+
+theorem below_of_match {Pg : Finset (Pl D.host.E)} {pl : LevelCuspCharacters.Sq D.host ≃ ↥Pg} (h : GoodReductionModelReading.IsPlaceMatch pl)
+    (v : LevelCuspCharacters.Sq D.host) : (pl v).1.asIdeal.comap (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) = v.2.1.asIdeal := by
+  ext x
+  exact (h v x _ rfl).symm
+
+theorem exists_frame (V : HSp D) : ∃ β, BadPlacesGoodCoefficients.IsFrameAtG V β := by
+  have hs := (GlobalTheory.PlaceModel.isSelfDualC_latFrame V).2
+  have hd : Formalism.L2.Herm.dualL D.sp.cm V (GlobalTheory.PlaceModel.latFrame V) = GlobalTheory.PlaceModel.latFrame V := by
+    have : dualSet (D.sp.cm.sig : D.host.E →+* D.host.E) V.gram (GlobalTheory.PlaceModel.latFrame V) =
+        (GlobalTheory.PlaceModel.latFrame V : Set _) := Set.ext fun y => (hs y).symm
+    unfold Formalism.L2.Herm.dualL
+    rw [this, Submodule.span_eq]
+  obtain ⟨β, c, h⟩ := GlobalTheory.AdelicFrame.exists_isSDFrame D V _ (GlobalTheory.PlaceModel.coe_latFrame V) hd
+  exact ⟨β, _, 0, by rwa [one_pow] at h⟩
+
+end GlobalTheory.PartsOccurProof
+end
+end
+
+section
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField Formalism.L2.Theta
@@ -680,4 +1322,5 @@ def ExcessChars : Prop :=
 
 end GlobalTheory.DimPartsCompare
 
+end
 end

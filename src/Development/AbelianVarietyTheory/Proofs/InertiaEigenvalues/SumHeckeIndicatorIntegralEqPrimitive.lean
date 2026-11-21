@@ -1,9 +1,63 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.UnivOfNotLinearIndependent
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardInversePrimeRepsIntegralRightMulHecke
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumCardSubspaces
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardSubspacesFinrankCongr
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.GaussBinomMulProd
 
+section
+open scoped BigOperators
+
+namespace GlobalTheory.GaussSubspace
+
+theorem sum_card_subspaces :
+    ∀ (k : Type) [Field k] [Finite k] (m : ℕ) (A : Type) [CommRing A] (Y : A), ∑ j ∈ Finset.range (m + 1), (-1 : A) ^ j * (Nat.card k : A) ^ (j * (j - 1) / 2) * (Nat.card {W : Submodule k (Fin m → k) // Module.finrank k W = j} : A) * Y ^ j = ∏ i ∈ Finset.range m, (1 - (Nat.card k : A) ^ i * Y) := by
+  intro k _ _ m A _ Y
+  rw [← GlobalTheory.GaussCount.gauss_formula (Nat.card k) A Y m]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  have h := GlobalTheory.GaussCount.subspaceCount k (Fin m → k) j
+  rw [Module.finrank_fin_fun] at h
+  rw [h]
+
+end GlobalTheory.GaussSubspace
+end
+
+section
+open scoped BigOperators
+
+namespace GlobalTheory
+
+open Module
+
+theorem card_subspaces_le_eq {k V : Type} [Field k] [AddCommGroup V] [Module k V]
+    (p : Submodule k V) (j : ℕ) :
+    Nat.card {U : Submodule k V // U ≤ p ∧ finrank k U = j} =
+      Nat.card {U : Submodule k p // finrank k U = j} := by
+  symm
+  refine Nat.card_congr (Equiv.ofBijective
+    (fun U => ⟨U.1.map p.subtype, Submodule.map_subtype_le p U.1, ?_⟩) ⟨?_, ?_⟩)
+  · rw [Submodule.finrank_map_subtype_eq]; exact U.2
+  · intro U U' h
+    exact Subtype.ext (Submodule.map_injective_of_injective p.injective_subtype
+      (congrArg Subtype.val h))
+  · rintro ⟨U, hU, hj⟩
+    have h : (U.comap p.subtype).map p.subtype = U := by
+      rw [Submodule.map_comap_subtype, inf_eq_right.2 hU]
+    refine ⟨⟨U.comap p.subtype, ?_⟩, Subtype.ext h⟩
+    rw [← Submodule.finrank_map_subtype_eq, h, hj]
+
+theorem card_subspaces_finrank_congr {k V V' : Type} [Field k] [AddCommGroup V] [Module k V]
+    [AddCommGroup V'] [Module k V'] (e : V ≃ₗ[k] V') (j : ℕ) :
+    Nat.card {U : Submodule k V // finrank k U = j} =
+      Nat.card {U : Submodule k V' // finrank k U = j} := by
+  refine Nat.card_congr (Equiv.subtypeEquiv (Submodule.orderIsoMapComap e).toEquiv ?_)
+  intro U
+  have : finrank k (U.map (e : V →ₗ[k] V')) = finrank k U := LinearEquiv.finrank_map_eq e U
+  change _ ↔ finrank k (U.map (e : V →ₗ[k] V')) = j
+  rw [this]
+
+end GlobalTheory
+end
+
+section
 section
 noncomputable section
 
@@ -175,3 +229,4 @@ open Matrix GlobalTheory.SplitHecke GlobalTheory.ExportSeries
 set_option maxHeartbeats 1000000 in
 theorem _root_.GlobalTheory.T.sum_hecke_indicator_integral_eq_primitive : ∀ (O K : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] [Finite (IsLocalRing.ResidueField O)] (p : O), Irreducible p → ∀ (r n : ℕ) (ι : Type) (α : ℕ → GL (Fin r) K) (R : ℕ → Finset ι) (ρ : ι → GL (Fin r) K), (∀ k ∈ Finset.Icc 1 r, Hk O p k (α k) ∧ Reps O (α k) (R k) ρ) → ∀ z : Matrix (Fin r) (Fin n) O, (1 : ℂ) + ∑ k ∈ Finset.Icc 1 r, (-1 : ℂ) ^ k * (Nat.card (IsLocalRing.ResidueField O) : ℂ) ^ (k * (k - 1) / 2) * (Nat.card {γ : ι // γ ∈ R k ∧ IntM O (((ρ γ)⁻¹).1 * z.map (algebraMap O K))} : ℂ) = ((prim (z.map (IsLocalRing.residue O)) : ℚ) : ℂ) := by
   atlas_forward_decl GlobalTheory.HeckeMobius.sum_hecke_indicator_eq_prim
+end

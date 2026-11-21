@@ -1,7 +1,99 @@
 import Mathlib
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReadsDeco
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DecoRawMulLevelIwahoriReduction
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RTupQEqOneIff
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StepZeroTwistReferenceTupleEqId
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsClosedNFlag
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.IntegralFundamentalDomainEqSumDoubleCoset
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsRepsOfOpenCompact
+
+section
+open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.TopStep Matrix
+open Formalism.L2.Theta GlobalTheory.Mem.Th Filter Topology MeasureTheory
+open GlobalTheory.Mem.ColAd GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2.TC
+attribute [local instance] GlobalTheory.Mem.Col2.starE
+
+noncomputable section
+
+open Formalism.UG Formalism.MainNotions
+
+namespace GlobalTheory.Mem.ColAd.LevGrp
+
+section Gen
+
+variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
+  (hc : CMData F E) {n : ℕ} [NeZero n] {ST SG Q : Finset (HeightOneSpectrum (𝓞 E))}
+
+theorem decoRaw_mul_levelIwahori_reduction (g z : GL (Fin n) (AfE F E)) (hz : z ∈ J0 hc n ST) :
+    decoRaw ST SG (g * z) = (decoRaw ST SG g).act 1 (redG hc n ST SG ⟨z, hz⟩)⁻¹ := by
+  have h := decoRaw_rawSm hc ST SG 1 (⟨z, hz⟩⁻¹ : J0 hc n ST) g
+  rw [map_one, map_inv] at h
+  have e : Formalism.UG.bc (iA F E) ((1 : URat hc n) : GL (Fin n) E) * g *
+      (((⟨z, hz⟩⁻¹ : J0 hc n ST) : J0 hc n ST) : GL (Fin n) (AfE F E))⁻¹ = g * z := by
+    simp
+  rw [e] at h
+  exact h
+
+end Gen
+
+section Top
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+variable {D : D7} (V : HSp D) {n : ℕ} (hn : V.rank = n) [NeZero n]
+
+end Top
+
+end GlobalTheory.Mem.ColAd.LevGrp
+
+namespace GlobalTheory.Mem.Col2.TC
+
+open GlobalTheory.Mem.ColAd.LevGrp
+
+end GlobalTheory.Mem.Col2.TC
+end
+end
+
+section
+open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
+open scoped TensorProduct InnerProductSpace
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
+
+noncomputable section
+
+namespace GlobalTheory.Mem.R3.RowAct
+
+section Gen
+
+variable {D : D7} (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (L : LevDat D.host.E ℂ V.rank)
+
+theorem parLev_of_Q (q : (levEnv V β L).Q) :
+    Formalism.UG.bc (swapAE D) ((q : Bridge.Gf V) : GL _ _) ∈ parLev D.sp.cm V.gram β L := q.2.1
+
+def rTupQ : (levEnv V β L).Q →* G0 L.Pg L.r where
+  toFun q := rTup β L (Formalism.UG.bc (swapAE D) ((q : Bridge.Gf V) : GL _ _))
+  map_one' := by
+    simp only [OneMemClass.coe_one, map_one]
+    exact rTup_one
+  map_mul' x y := by
+    simp only [Subgroup.coe_mul, map_mul]
+    exact rTup_mul (parLev_of_Q V β L x) (parLev_of_Q V β L y)
+
+
+theorem rTupQ_eq_one_iff (q : (levEnv V β L).Q) :
+    rTupQ V β L q = 1 ↔ ((q : Bridge.Gf V)) ∈ (levEnv V β L).J := by
+  constructor
+  · intro h
+    exact ⟨parLev_of_Q V β L q, Subgroup.mem_bot.2 h⟩
+  · intro h
+    exact Subgroup.mem_bot.1 h.2
+
+end Gen
+
+end GlobalTheory.Mem.R3.RowAct
+end
+end
+
+section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -146,3 +238,7 @@ theorem redG_ptE {U : Set I.ι} (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I
     (Formalism.L2.DIV.parLev_St (RowAct.parLev_of_Q X.toD7.sp.X' L.βX (L.datXt t) q)) (Formalism.L2.Col.congruence_subgroup_le_stabilizer _ _ _ hz) w.1
 
 end GlobalTheory.Mem.R3.RowDeco
+end
+end
+end
+end

@@ -1,6 +1,42 @@
-import Formalism.PeriodIntegrals.HaarDefs
+import Formalism.FormalDegreeBessel.StatementBF
 import Formalism.FormalDegreeBessel.FinalG
 
+section
+open MeasureTheory Matrix
+
+noncomputable section
+
+namespace PI
+
+def IsHaarOn {k r : ℕ} (S : Set (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ))
+    (μ : Measure (Formalism.QuantumDeterminants.Mt k r)) : Prop :=
+  SigmaFinite μ ∧ μ ≠ 0 ∧ μ {x | Matrix.of x ∉ S} = 0 ∧
+    ∀ s ∈ S, μ.map (Formalism.QuantumDeterminants.lmulM s) = μ
+
+def muS {k r : ℕ} (μW μN : Measure (Formalism.QuantumDeterminants.Mt k r)) : Measure (Formalism.QuantumDeterminants.Mt k r) :=
+  (μW.prod μN).map (fun p => fun i j => (Matrix.of p.1 * Matrix.of p.2) i j)
+
+def realifyFun {m : ℕ} (X : Matrix (Fin m) (Fin m) ℂ) : Fin m × Fin m × Bool → ℝ :=
+  fun p => if p.2.2 then (X p.1 p.2.1).im else (X p.1 p.2.1).re
+
+def unrealify {m : ℕ} (x : EuclideanSpace ℝ (Fin m × Fin m × Bool)) : Matrix (Fin m) (Fin m) ℂ :=
+  fun i j => ⟨x (i, j, false), x (i, j, true)⟩
+
+def lieOf {m : ℕ} (S : Set (Matrix (Fin m) (Fin m) ℂ)) : Set (Matrix (Fin m) (Fin m) ℂ) :=
+  {X | ∀ t : ℝ, NormedSpace.exp ((t : ℂ) • X) ∈ S}
+
+def lieE {m : ℕ} (S : Set (Matrix (Fin m) (Fin m) ℂ)) : Submodule ℝ (EuclideanSpace ℝ (Fin m × Fin m × Bool)) :=
+  Submodule.span ℝ ((fun X => (WithLp.equiv 2 _).symm (realifyFun X)) '' lieOf S)
+
+def haarLie {k r : ℕ} (S : Set (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)) (κ : ENNReal) :
+    Measure (Formalism.QuantumDeterminants.Mt k r) :=
+  κ • Measure.map (fun x : lieE S => fun i j => NormedSpace.exp (unrealify (x : EuclideanSpace ℝ _)) i j) volume
+
+end PI
+end
+end
+
+section
 open MeasureTheory Matrix Finset
 open scoped InnerProductSpace ContDiff
 
@@ -212,3 +248,5 @@ instance (S : Set (Mx k r)) (κ : ENNReal) : SFinite (haarLie S κ) := by
   infer_instance
 
 end PI
+end
+end
