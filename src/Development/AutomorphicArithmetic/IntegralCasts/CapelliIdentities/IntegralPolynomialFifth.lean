@@ -16,15 +16,7 @@ noncomputable def UpperTheory.Reformulated.B.IntegralPolynomialOverPadicAlgCl.Is
         (@OfNat.ofNat Real (nat_lit 1) (@One.toOfNat1 Real Real.instOne))
 
 theorem UpperTheory.Reformulated.B.IntegralPolynomialOverPadicAlgCl.aux2 :
-    ∀ {p : Nat} [inst : Fact (Nat.Prime p)],
-      @IsTopologicalDivisionRing (@PadicAlgCl p inst)
-        (@Field.toDivisionRing (@PadicAlgCl p inst) (@AlgebraicClosure.instField (@Padic p inst) (@instFieldPadic p inst)))
-        (@UniformSpace.toTopologicalSpace (@PadicAlgCl p inst)
-          (@Valued.toUniformSpace (@PadicAlgCl p inst)
-            (@DivisionRing.toRing (@PadicAlgCl p inst)
-              (@Field.toDivisionRing (@PadicAlgCl p inst)
-                (@AlgebraicClosure.instField (@Padic p inst) (@instFieldPadic p inst))))
-            NNReal NNReal.instLinearOrderedCommGroupWithZero (@PadicAlgCl.valued p inst))) := by
+    ∀ {p : ℕ} [inst : Fact (Nat.Prime p)], IsTopologicalDivisionRing (PadicAlgCl p) := by
   intro p inst
   exact Valued.isTopologicalDivisionRing
 
@@ -40,18 +32,7 @@ theorem UpperTheory.Reformulated.B.IntegralPolynomialOverPadicAlgCl.aux3 :
   exact NormedField.instCompletableTopField
 
 theorem UpperTheory.Reformulated.B.IntegralPolynomialOverPadicAlgCl.aux4 :
-    ∀ {p : Nat} [inst : Fact (Nat.Prime p)],
-      @IsUniformAddGroup (@PadicAlgCl p inst)
-        (@Valued.toUniformSpace (@PadicAlgCl p inst)
-          (@DivisionRing.toRing (@PadicAlgCl p inst)
-            (@Field.toDivisionRing (@PadicAlgCl p inst)
-              (@AlgebraicClosure.instField (@Padic p inst) (@instFieldPadic p inst))))
-          NNReal NNReal.instLinearOrderedCommGroupWithZero (@PadicAlgCl.valued p inst))
-        (@AddGroupWithOne.toAddGroup (@PadicAlgCl p inst)
-          (@Ring.toAddGroupWithOne (@PadicAlgCl p inst)
-            (@DivisionRing.toRing (@PadicAlgCl p inst)
-              (@Field.toDivisionRing (@PadicAlgCl p inst)
-                (@AlgebraicClosure.instField (@Padic p inst) (@instFieldPadic p inst)))))) := by
+    ∀ {p : ℕ} [inst : Fact (Nat.Prime p)], IsUniformAddGroup (PadicAlgCl p) := by
   intro p inst
   exact Valued.toIsUniformAddGroup
 
