@@ -9,6 +9,8 @@ import hashlib
 from pathlib import Path
 import re
 
+from fold_names import DeclarationOwners
+
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("root", type=Path, help="fork checkout")
 parser.add_argument("plan", type=Path, help="module-folds.py TSV from before declaration pruning")
@@ -55,24 +57,51 @@ def inspect(body):
                 names.add(".".join([v for k,v in stack if k == "namespace"] + [name]))
     return names, "".join("end" + ((" "+part) if part else "") + "\n" for _,part in reversed(stack))
 
+by_name = sorted(".".join(p.relative_to(src).with_suffix("").parts) for p in src.rglob("*.lean"))
+present = set(by_name)
+catalog = DeclarationOwners()
 names = defaultdict(set)
 with gzip.open(args.decls, "rt") as f:
     for row in csv.DictReader(f):
         m = row["module"]
-        if m in participants:
+        if m in present:
             name = row["decl"]
-            if name.startswith("_private." + m + "."):
-                name = name[len("_private."+m+"."):].split(".",1)[-1]
-            names[m].add(name)
+            prefix = "_private." + m + "."
+            private = name.startswith(prefix)
+            if private:
+                name = name[len(prefix):].split(".",1)[-1]
+            catalog.add(name, m, private)
+            if m in participants:
+                names[m].add(name)
 deps, closure_ends, blocked = {}, {}, {}
 roots = {p.name for p in src.iterdir() if p.is_dir()} | {"Main","Statements","Challenge"}
-by_name = sorted(".".join(p.relative_to(src).with_suffix("").parts) for p in src.rglob("*.lean"))
 for m in by_name:
     text = source(m).read_text()
     h = header.match(text).end()
     deps[m] = import_line.findall(text[:h])
     if import_line.search(text[h:]):
         raise ValueError(f"Unexpected import after source commands in {m}")
+    # The export can attribute an identically named theorem to just one of its
+    # modules. Also register names from the source, including relocated aliases.
+    stack = []
+    for line in text[h:].splitlines():
+        sc = scope.fullmatch(line)
+        if sc:
+            cmd, label = sc.groups()
+            parts = label.split(".") if label else [""]
+            if cmd == "end":
+                del stack[-len(parts):]
+            else:
+                stack.extend((cmd, v) for v in parts)
+        else:
+            d = declaration.match(line)
+            if d:
+                name = d[1]
+                if name.startswith("_root_."):
+                    name = name[7:]
+                else:
+                    name = ".".join([v for k,v in stack if k == "namespace"] + [name])
+                catalog.add(name, m, "private" in line[:d.start(1)].split())
     if m not in participants:
         continue
     if special.search(text[h:]):
@@ -101,9 +130,24 @@ for m in order:
             names[m].update(names[child])
             folds[child] = m
 
-owners = {}
-for m in reversed(order):
-    owners[m] = owners[folds[m]] if m in folds else m
+def group_owners():
+    result = {}
+    for m in reversed(order):
+        result[m] = result[folds[m]] if m in folds else m
+    return result
+
+owners = group_owners()
+while True:
+    conflicts = catalog.conflicting_groups(graph, owners)
+    if not conflicts:
+        break
+    unsafe = [m for m in folds if owners[m] in conflicts]
+    if not unsafe:
+        raise ValueError("Unable to isolate conflicting imported declarations")
+    for m in unsafe:
+        del folds[m]
+    skipped["newly visible same-name declaration"] += len(unsafe)
+    owners = group_owners()
 groups = defaultdict(set)
 for m,owner in owners.items():
     groups[owner].add(m)

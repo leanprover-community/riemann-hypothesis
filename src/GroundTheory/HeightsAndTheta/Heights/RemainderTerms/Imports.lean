@@ -7,7 +7,7 @@ import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagBasic
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.InhabitantsComb
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.InhabitantsElem
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.JacobiTrudi
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsComb
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCharacterAtIdentity
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCharacterBound
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvAboveTopGeneral
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvAboveTop
@@ -21,6 +21,7 @@ import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvPolynomialReduc
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvStaircaseComponent
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvStaircaseDegree
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvStepReduction
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCardYoungCells
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCellOfWordInj
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCellOfWordMem
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombCellOfWordMono
@@ -44,6 +45,7 @@ import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombTableauRowCount
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombTableauRowLattice
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombTableauRowPrefix
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.ImportsAlt
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombVandermondeSucc
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombWordOfTableau
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCombYoungRowCard
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagAltCoeffInjective
@@ -54,8 +56,7 @@ import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagCoeffBlockPermut
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagDiffNotDvd
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagDiffPrime
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagDividedDifferencePoly
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsFlag
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PHomogeneousComponentMul
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagHomogeneousComponentMul
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagInjSumBound
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagIntegralAntisymmetrize
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagIntegralKillsPowerSums
@@ -66,21 +67,26 @@ import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagIntegralVandermo
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagIntegralVandermondePos
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagIntegralViaQuotient
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagPowerSumPreimage
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagPowerSumSymmetric
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagProdPrimesDvd
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagQuotientHomogeneous
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagRestrictConstantCoeff
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagRestrictDecomposition
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagRestrictHomogeneous
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagRestrictPowerSum
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagRestrictSymmetric
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagStaircaseOrbit
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagSwapDivisible
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagSymmetricMulAntisym
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagVandermondeDvd
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFlagVandermondeHomogeneous
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFrobeniusCharacterFormula
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PFrobeniusDimensionFormula
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PHookCharacterSumIdentity
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PHookDimensionSum
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PHookSumBound
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PHookTableauCount
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PIntegralIsDividedDifference
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PLemmaA
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PLemmaB
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PLemmaC
@@ -89,21 +95,23 @@ import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Pluecker
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.POtherFactorBound
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.POtherFactorFormula
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.NumStandardTablePos
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsElem
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestBound
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestBoundOfPrimeBound
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestInnerTsumBound
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestKSumBound
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsCoinv
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestPolynomialDecomposes
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestPolynomialHomogeneousDecomposition
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestPolynomialHomogeneous
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestPrimeBound
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestPrimeBoundOfFactor
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PRestTermWellDefined
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSameFactorBound
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchAevalSignedRename
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsSchur
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchAlternantHomogeneous
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchAlternantRenamePlace
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchAltPartitionExpansion
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchAntisymmetrizePlace
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchBlockVandermondeOne
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchCompleteAtRootsOfUnity
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchCompleteGenerating
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchConcatAlternant
@@ -137,304 +145,9 @@ import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.AntisymmetrizeBlockVa
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StaircaseIsHomogeneous
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.TenNinthsLe
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.RestAt
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
-import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.NumStandardTableEqCardMonotone
+import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.OfHookCharacterSumIdentity
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagIntegralHomogeneousComponent
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.SumPderivRealApply
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-open MvPolynomial Finset Comb
-
-noncomputable section
-
-theorem symmetricGroupCharacter_eq_cf {m : ℕ} (lam : Fin m → ℕ) (rho : List ℕ) :
-    symmetricGroupCharacter lam rho =
-      cf (fun i => lam i + stair m i) (alternantPsum m rho) := rfl
-
-theorem CharacterAtIdentity.proof (h1 : CombTableEqWords.Statement)
-    (h2 : CombCfAtStair.Statement) : CharacterAtIdentity.Statement := by
-  intro m lam hlam
-  rw [symmetricGroupCharacter_eq_cf, h2 m (∑ i, lam i) lam hlam, h1 m lam hlam]
-
-end
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-open Finset
-
-theorem CombCardYoungCells.proof : CombCardYoungCells.Statement := by
-  intro m lam
-  classical
-  unfold youngCells
-  rw [Finset.card_filter, Finset.sum_product]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  have hle : lam i ≤ ∑ j, lam j :=
-    Finset.single_le_sum (fun j _ => Nat.zero_le (lam j)) (Finset.mem_univ i)
-  have hset : (Finset.range (∑ j, lam j)).filter (fun c => c < lam i) = Finset.range (lam i) := by
-    ext c
-    simp only [Finset.mem_filter, Finset.mem_range]
-    omega
-  rw [← Finset.card_range (lam i), ← hset, Finset.card_filter]
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-open Finset
-
-theorem CombVandermondeSucc.proof : CombVandermondeSucc.Statement := by
-  intro n v
-  unfold vandermondeOf
-  have hI : ∀ {k : ℕ} (i : Fin k), Ioi i = univ.filter (fun j => i < j) := by
-    intro k i; ext j; simp
-  simp only [hI, Finset.prod_filter]
-  rw [Fin.prod_univ_succ]
-  congr 1
-  · rw [Fin.prod_univ_succ]
-    simp [Fin.succ_pos]
-  · refine Finset.prod_congr rfl (fun i _ => ?_)
-    rw [Fin.prod_univ_succ]
-    simp [Fin.succ_lt_succ_iff]
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-open MvPolynomial
-
-theorem FlagHomogeneousComponentMul.proof : FlagHomogeneousComponentMul.Statement := by
-  intro σ P G k n hP
-  exact HomogeneousComponentMul.proof σ ℚ P G k n hP
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights
-
-namespace RestTerms
-
-open MvPolynomial Finset
-
-theorem FlagPowerSumSymmetric.proof : FlagPowerSumSymmetric.Statement := by
-  intro f N k τ w
-  simp only [blockPowerSum, map_sum, map_pow, Flag.blockPermute_X]
-  exact Equiv.sum_comp (w τ) (fun i => (X (τ, i) : RootRing f N) ^ k)
-
-end RestTerms
-
-end GroundTheory.Heights₂.Heights
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-open MvPolynomial
-
-theorem FlagRestrictHomogeneous.proof : FlagRestrictHomogeneous.Statement := by
-  intro f N τ R k hR
-  have h := hR.aeval (fun p : Fin f × Fin N => if p.1 = τ then X p.2 else 0) (n := 1) (by
-    intro p
-    split_ifs
-    · exact isHomogeneous_X ℚ _
-    · exact isHomogeneous_zero _ _ _)
-  rw [one_mul] at h
-  exact h
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights
-
-namespace RestTerms
-
-open MvPolynomial Finset
-
-theorem FlagSymmetricMulAntisym.proof : FlagSymmetricMulAntisym.Statement := by
-  intro f N P H hP
-  unfold antisymmetrize
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl (fun w _ => ?_)
-  rw [map_mul, hP w, mul_smul_comm]
-
-end RestTerms
-
-end GroundTheory.Heights₂.Heights
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-open Comb
-
-theorem FrobeniusDimensionFormula.proof (h1 : CombTableEqWords.Statement)
-    (h2 : CombCfAtStair.Statement) (h3 : CombCfVandermondePsumOne.Statement) :
-    FrobeniusDimensionFormula.Statement := by
-  intro m lam hlam
-  have hsum : ∑ i, (lam i + stair m i) = ∑ i, stair m i + ∑ i, lam i := by
-    rw [Finset.sum_add_distrib, add_comm]
-  have e := h3 m (∑ i, lam i) (fun i => lam i + stair m i) hsum
-  rw [h2 m (∑ i, lam i) lam hlam] at e
-  rw [h1 m lam hlam, e]
-  simp only [stair]
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights
-
-namespace RestTerms
-
-theorem IntegralIsDividedDifference.proof (h1 : FlagIntegralTopDegree.Statement)
-    (h2 : FlagIntegralVandermondePos.Statement) : IntegralIsDividedDifference.Statement := by
-  intro f N
-  refine ⟨flagIntegral f N (blockVandermonde f N) / (N.factorial : ℚ) ^ f, ?_, ?_⟩
-  · exact div_ne_zero (h2 f N).ne' (pow_ne_zero _ (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero N)))
-  · intro H hH
-    exact h1 f N H hH
-
-end RestTerms
-
-end GroundTheory.Heights₂.Heights
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights
-
-namespace RestTerms
-
-theorem RestBound.proof (h₁ : RestPrimeBound.Statement) (h₂ : RestBoundOfPrimeBound.Statement) :
-    RestBound.Statement := by
-  intro f r a c B₀ hf hr ha hB
-  refine ⟨(h₁ f r a c B₀ hf hr ha hB).1, ?_⟩
-  intro Q hQ s e he P
-  exact h₂ f r a c B₀ hf hr ha hB Q s e
-    (fun p hp hpB => (h₁ f r a c B₀ hf hr ha hB).2 Q hQ s e he p hp hpB) P
-
-end RestTerms
-
-end GroundTheory.Heights₂.Heights
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-theorem RestPolynomialDecomposes.proof (h1 : RestPolynomialHomogeneousDecomposition.Statement) :
-    RestPolynomialDecomposes.Statement := by
-  intro f r a c
-  obtain ⟨Q, hQ, -⟩ := h1 f r a c
-  exact ⟨Q, hQ⟩
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-open MvPolynomial Finset
-
-theorem RestPolynomialHomogeneousDecomposition.proof (h1 : CoinvAboveTop.Statement)
-    (h2 : RestPolynomialHomogeneous.Statement) :
-    RestPolynomialHomogeneousDecomposition.Statement := by
-  intro f r a c
-  obtain ⟨Q, hQ, hF⟩ := h1 ℚ f (r + a) (topDegree f (r + a) + 1) (restPolynomial f r a c)
-    (h2 f r a c) (by unfold Coinv.coinvTop topDegree; omega)
-  exact ⟨Q, hF, hQ⟩
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-open MvPolynomial
-
-theorem SchAlternantHomogeneous.proof : SchAlternantHomogeneous.Statement := by
-  intro ι _ _ e
-  unfold alternant
-  rw [Matrix.det_apply]
-  apply IsHomogeneous.sum
-  intro σ _
-  have h : IsHomogeneous (∏ i, (X (σ i) : MvPolynomial ι ℚ) ^ e i) (∑ i, e i) :=
-    IsHomogeneous.prod _ _ _ (fun i _ => isHomogeneous_X_pow _ _)
-  rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with hs | hs <;>
-    simp only [hs, Matrix.of_apply, one_smul, Units.neg_smul]
-  · exact h
-  · exact h.neg
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms
-
-open MvPolynomial Finset
-
-theorem SchBlockVandermondeOne.proof : SchBlockVandermondeOne.Statement := by
-  intro N
-  simp only [blockVandermonde, vandermondeOf, Fin.prod_univ_one, map_prod, map_sub, rename_X]
-
-end GroundTheory.Heights₂.Heights.RestTerms
-end
-
-section
-set_option maxSynthPendingDepth 1
-
-namespace GroundTheory.Heights₂.Heights.RestTerms.HookCharacterShiftIdentity
-
-open Finset
-
-def HookCharacterSumIdentitySmall.Statement : Prop :=
-  ∀ r a : ℕ, 1 ≤ r → r ≤ a →
-    (a : ℚ) * numStandardTable (fun i : Fin r => a + if (i : ℕ) = 0 then 1 else 0) =
-      ∑ k ∈ Finset.Icc 2 (r + a), ∑ l ∈ Finset.range (min r k),
-        (-1 : ℚ) ^ l * symmetricGroupCharacter (fun i => a + hookShape r k l i)
-          ((k - 1) :: List.replicate (r * a + 1) 1)
-
-end GroundTheory.Heights₂.Heights.RestTerms.HookCharacterShiftIdentity
-end
-
-section
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights
@@ -885,4 +598,3 @@ theorem SmallRankWeakHypothesis.full : SmallRankWeakHypothesis.Statement :=
 end RestTerms
 
 end GroundTheory.Heights₂.Heights
-end
